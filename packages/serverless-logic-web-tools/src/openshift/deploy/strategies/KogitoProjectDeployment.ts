@@ -69,7 +69,7 @@ export class KogitoProjectDeployment extends DeploymentStrategy {
       importBaseImage: `FROM ${BaseBuilder.CONTAINER_IMAGE}`,
       setupEnvVars: `ENV ${BaseBuilder.ENV}`,
       createProjectFolder: `RUN mkdir ${projectPaths.folders.root}/`,
-      copyFilesIntoContainer: `COPY . ${projectPaths.folders.root}/`,
+      copyFilesIntoContainer: `COPY --chown=kogito:root . ${projectPaths.folders.root}/`,
       configCluster: {
         setServer: `${BaseBuilder.KUBECTL_PATH} config set-cluster ${clusterName} --server=${this.args.openShiftConnection.host}`,
         setCredentials: `${BaseBuilder.KUBECTL_PATH} config set-credentials ${clusterCredentialsName} --token=${this.args.openShiftConnection.token}`,

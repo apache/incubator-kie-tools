@@ -9632,6 +9632,9 @@ importers:
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6
+      sonataflow-deployment-webapp:
+        specifier: workspace:*
+        version: link:../sonataflow-deployment-webapp
 
   packages/serverless-logic-web-tools-swf-dev-mode-image-env:
     devDependencies:

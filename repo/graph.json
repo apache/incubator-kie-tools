@@ -1067,6 +1067,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image",
+        "target": "sonataflow-deployment-webapp",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/serverless-workflow-diagram-editor",
         "target": "@kie-tools/maven-config-setup-helper",
         "weight": 1
