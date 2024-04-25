@@ -44,34 +44,24 @@ fi
 
 echo "Set new version to ${new_version} (img_suffix = '${imageSuffix}', majorMinor = ${newMajorMinorVersion})"
 
-sed -i "s|^VERSION ?=.*|VERSION ?= ${new_version}|g" Makefile
-sed -i "s|^REDUCED_VERSION ?=.*|REDUCED_VERSION ?= ${newMajorMinorVersion}|g" Makefile
-sed -i "s|newTag:.*|newTag: ${new_version}|g" config/manager/kustomization.yaml
 
-sed -i "s|IMAGE_TAG_BASE ?=.*|IMAGE_TAG_BASE ?= ${imageTag}${imageSuffix}|g" Makefile
-sed -i "s|newName:.*|newName: ${imageTag}${imageSuffix}|g" config/manager/kustomization.yaml
+node -p "require('replace-in-file').sync({ from: /\bVERSION\ \?=.*\b/g, to: 'VERSION ?= ${new_version}', files: ['./Makefile'] });"
+node -p "require('replace-in-file').sync({ from: /\bREDUCED_VERSION\ \?=.*\b/g, to: 'REDUCED_VERSION ?= ${newMajorMinorVersion}', files: ['./Makefile'] });"
+node -p "require('replace-in-file').sync({ from: /\bIMAGE_TAG_BASE\ \?=.*\b/g, to: 'IMAGE_TAG_BASE ?= ${imageTag}${imageSuffix}', files: ['./Makefile'] });"
 
-sed -i "s|\bversion: .*\b|version: ${new_version}|g" images/bundle.yaml
-sed -i "s|\bversion: .*\b|version: ${new_version}|g" images/manager.yaml
+node -p "require('replace-in-file').sync({ from: /\bnewTag:.*\b/g, to: 'newTag: ${new_version}', files: ['./config/manager/kustomization.yaml'] });"
+node -p "require('replace-in-file').sync({ from: /\bnewName:.*\b/g, to: 'newName: ${imageTag}${imageSuffix}', files: ['./config/manager/kustomization.yaml'] });"
+
+node -p "require('replace-in-file').sync({ from: /\bversion: .*\b/g, to: 'version: ${new_version}', files: ['./images/bundle.yaml'] });"
+node -p "require('replace-in-file').sync({ from: /\bversion: .*\b/g, to: 'version: ${new_version}', files: ['./images/manager.yaml'] });"
 
 # Update kogito-swf-* images
-find . -name "*.yaml" -exec sed -i "s|quay.io/kiegroup/kogito-swf-builder.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}|" {} +
-find . -name "*.containerfile" -exec sed -i "s|quay.io/kiegroup/kogito-swf-builder.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}|" {} +
-find . -name "*.dockerfile" -exec sed -i "s|quay.io/kiegroup/kogito-swf-builder.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}|" {} +
-find . -name "Dockerfile" -exec sed -i "s|quay.io/kiegroup/kogito-swf-builder.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}|" {} +
-find . -name "*.go" -exec sed -i "s|quay.io/kiegroup/kogito-swf-builder.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}|" {} +
+node -p "require('replace-in-file').sync({ from: 'quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${oldMajorMinorVersion}', to: 'quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*.Dockerfile', '**/*.go'] });"
+node -p "require('replace-in-file').sync({ from: 'quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${oldMajorMinorVersion}', to: 'quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${newMajorMinorVersion}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*.Dockerfile', '**/*.go'] });"
+node -p "require('replace-in-file').sync({ from: 'quay.io/kiegroup/kogito-serverless-operator${imageSuffix}:${oldMajorMinorVersion}', to: 'quay.io/kiegroup/kogito-serverless-operator${imageSuffix}:${newMajorMinorVersion}', files: ['**/*.yaml'] });"
 
-find . -name "*.yaml" -exec sed -i "s|quay.io/kiegroup/kogito-swf-devmode.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${newMajorMinorVersion}|" {} +
-find . -name "*.containerfile" -exec sed -i "s|quay.io/kiegroup/kogito-swf-devmode.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${newMajorMinorVersion}|" {} +
-find . -name "*.dockerfile" -exec sed -i "s|quay.io/kiegroup/kogito-swf-devmode.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${newMajorMinorVersion}|" {} +
-find . -name "Dockerfile" -exec sed -i "s|quay.io/kiegroup/kogito-swf-devmode.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${newMajorMinorVersion}|" {} +
-find . -name "*.go" -exec sed -i "s|quay.io/kiegroup/kogito-swf-devmode.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${newMajorMinorVersion}|" {} +
-
-find . -name "*.yaml" -exec sed -i "s|quay.io/kiegroup/kogito-serverless-operator.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-serverless-operator${imageSuffix}:${newMajorMinorVersion}|" {} +
-
-sed -i -r "s|OperatorVersion = .*|OperatorVersion = \"${new_version}\"|g" version/version.go
-
-sed -i "s|containerImage:.*|containerImage: ${imageTag}${imageSuffix}:${newMajorMinorVersion}|g" $(getCsvFile)
+node -p "require('replace-in-file').sync({ from: /\bOperatorVersion = .*\b/g, to: 'OperatorVersion = \"${new_version}\"', files: ['**/*.yaml'] });"
+node -p "require('replace-in-file').sync({ from: /\bcontainerImage:.*\b/g, to: 'containerImage: ${imageTag}${imageSuffix}:${newMajorMinorVersion}', files: ['$(getCsvFile)'] });"
 
 make generate-all
 make vet

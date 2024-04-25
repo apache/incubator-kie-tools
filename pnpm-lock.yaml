@@ -5999,6 +5999,9 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+      replace-in-file:
+        specifier: ^7.1.0
+        version: 7.1.0
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -48616,6 +48619,17 @@ packages:
     resolution:
       { integrity: sha512-PV0dzCYDNfRi1jCDbJzpW7jNNDRuCOG/jI5ctQcGKt/clZD+YcPS3yIlWuTJMmESC8aevCFmWJy5wjAFgNqN6w== }
     engines: { node: ">=0.10" }
+    dev: true
+
+  /replace-in-file@7.1.0:
+    resolution:
+      { integrity: sha512-1uZmJ78WtqNYCSuPC9IWbweXkGxPOtk2rKuar8diTw7naVIQZiE3Tm8ACx2PCMXDtVH6N+XxwaRY2qZ2xHPqXw== }
+    engines: { node: ">=10" }
+    hasBin: true
+    dependencies:
+      chalk: 4.1.2
+      glob: 8.1.0
+      yargs: 17.7.2
     dev: true
 
   /replace-string@3.1.0:
