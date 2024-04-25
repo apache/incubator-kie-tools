@@ -60,7 +60,7 @@ node -p "require('replace-in-file').sync({ from: 'quay.io/kiegroup/kogito-swf-bu
 node -p "require('replace-in-file').sync({ from: 'quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${oldMajorMinorVersion}', to: 'quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${newMajorMinorVersion}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*.Dockerfile', '**/*.go'] });"
 node -p "require('replace-in-file').sync({ from: 'quay.io/kiegroup/kogito-serverless-operator${imageSuffix}:${oldMajorMinorVersion}', to: 'quay.io/kiegroup/kogito-serverless-operator${imageSuffix}:${newMajorMinorVersion}', files: ['**/*.yaml'] });"
 
-node -p "require('replace-in-file').sync({ from: /\bOperatorVersion = .*\b/g, to: 'OperatorVersion = \"${new_version}\"', files: ['**/*.yaml'] });"
+node -p "require('replace-in-file').sync({ from: /\bOperatorVersion = .*/g, to: 'OperatorVersion = \"${new_version}\"', files: ['version/version.go'] });"
 node -p "require('replace-in-file').sync({ from: /\bcontainerImage:.*\b/g, to: 'containerImage: ${imageTag}${imageSuffix}:${newMajorMinorVersion}', files: ['$(getCsvFile)'] });"
 
 make generate-all
