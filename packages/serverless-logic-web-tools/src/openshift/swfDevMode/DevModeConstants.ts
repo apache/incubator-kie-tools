@@ -76,7 +76,7 @@ export const buildEndpoints = (routeUrl: string): DevModeEndpoints => ({
   base: routeUrl,
   upload: `${routeUrl}/upload`,
   quarkusDevUi: `${routeUrl}/q/dev`,
-  swfDevUi: `${routeUrl}/q/dev/org.kie.kogito.kogito-quarkus-serverless-workflow-devui/workflowInstances`,
+  swfDevUi: `${routeUrl}/q/dev-ui/org.apache.kie.sonataflow.sonataflow-quarkus-devui/workflows`,
   swaggerUi: `${routeUrl}/q/swagger-ui`,
   health: {
     live: `${routeUrl}/q/health/live`,
