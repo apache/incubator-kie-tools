@@ -54,7 +54,7 @@ import {
 import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 import { isEnum } from "./ConstraintsEnum";
 import { isRange } from "./ConstraintsRange";
-import { constraintTypeHelper } from "./Constraints";
+import { constraintTypeHelper, recursevelyGetDmnBuiltInDataType } from "./Constraints";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 import { useDmnEditor } from "../DmnEditorContext";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
@@ -94,6 +94,9 @@ export function ItemComponentsTable({
   const expandedItemComponentIds = useDmnEditorStore((s) => s.dataTypesEditor.expandedItemComponentIds);
   const allTopLevelDataTypesByFeelName = useDmnEditorStore(
     (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName
+  );
+  const allTopLevelItemDefinitionUniqueNames = useDmnEditorStore(
+    (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelItemDefinitionUniqueNames
   );
   const importsByNamespace = useDmnEditorStore((s) => s.computed(s).importsByNamespace());
 
@@ -290,17 +293,30 @@ export function ItemComponentsTable({
 
                 const constraintValue =
                   dt.itemDefinition.typeConstraint?.text.__$$text ?? dt.itemDefinition.allowedValues?.text.__$$text;
+
+                const typeHelper = constraintTypeHelper(
+                  dt.itemDefinition,
+                  allDataTypesById,
+                  allTopLevelItemDefinitionUniqueNames
+                );
+
                 if (constraintValue === undefined) {
                   return <>None</>;
                 }
-                if (isEnum(constraintValue, constraintTypeHelper(dt.itemDefinition).check)) {
+                if (isEnum(constraintValue, typeHelper.check)) {
                   return <>Enumeration</>;
                 }
-                if (isRange(constraintValue, constraintTypeHelper(dt.itemDefinition).check)) {
+                if (isRange(constraintValue, typeHelper.check)) {
                   return <>Range</>;
                 }
                 return <>Expression</>;
               };
+
+              const rootItemDefinition = recursevelyGetDmnBuiltInDataType(
+                dt.itemDefinition,
+                allDataTypesById,
+                allTopLevelItemDefinitionUniqueNames
+              );
 
               return (
                 <React.Fragment key={dt.itemDefinition["@_id"]}>
@@ -438,7 +454,7 @@ export function ItemComponentsTable({
                         />
                       </td>
                       <td>
-                        {canHaveConstraints(dt.itemDefinition) ? (
+                        {canHaveConstraints(rootItemDefinition) ? (
                           <Button
                             variant={ButtonVariant.link}
                             onClick={() => {

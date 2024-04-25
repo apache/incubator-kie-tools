@@ -77,7 +77,7 @@ enum ConstraintsType {
   NONE = "None",
 }
 
-function recursevelyGetDmnBuiltInDataTypeContraints(
+export function recursevelyGetDmnBuiltInDataType(
   itemDefinition: DMN15__tItemDefinition,
   allDataTypesById: DataTypeIndex,
   allTopLevelItemDefinitionUniqueNames: UniqueNameIndex
@@ -92,7 +92,7 @@ function recursevelyGetDmnBuiltInDataTypeContraints(
     const parentType = allDataTypesById.get(parentId ?? "");
     if (parentType !== undefined) {
       return parentType.itemDefinition.typeRef?.__$$text
-        ? recursevelyGetDmnBuiltInDataTypeContraints(
+        ? recursevelyGetDmnBuiltInDataType(
             parentType.itemDefinition,
             allDataTypesById,
             allTopLevelItemDefinitionUniqueNames
@@ -111,11 +111,7 @@ export const constraintTypeHelper = (
 ): TypeHelper => {
   const typeRef =
     allDataTypesById !== undefined && allTopLevelItemDefinitionUniqueNames !== undefined
-      ? recursevelyGetDmnBuiltInDataTypeContraints(
-          itemDefinition,
-          allDataTypesById,
-          allTopLevelItemDefinitionUniqueNames
-        )
+      ? recursevelyGetDmnBuiltInDataType(itemDefinition, allDataTypesById, allTopLevelItemDefinitionUniqueNames)
       : itemDefinition.typeRef?.__$$text;
 
   const typeHelper = {
@@ -429,7 +425,7 @@ export function ConstraintsFromAllowedValuesAttribute({
     allTopLevelItemDefinitionUniqueNames
   );
 
-  const rootItemDefinition = recursevelyGetDmnBuiltInDataTypeContraints(
+  const rootItemDefinition = recursevelyGetDmnBuiltInDataType(
     itemDefinition,
     allDataTypesById,
     allTopLevelItemDefinitionUniqueNames
@@ -568,8 +564,8 @@ export function ConstraintsFromTypeConstraintAttribute({
   );
 
   const enabledConstraints = constrainableBuiltInFeelTypes.get(
-    recursevelyGetDmnBuiltInDataTypeContraints(itemDefinition, allDataTypesById, allTopLevelItemDefinitionUniqueNames)
-      .typeRef?.__$$text as DmnBuiltInDataType as DmnBuiltInDataType.Undefined
+    recursevelyGetDmnBuiltInDataType(itemDefinition, allDataTypesById, allTopLevelItemDefinitionUniqueNames).typeRef
+      ?.__$$text as DmnBuiltInDataType as DmnBuiltInDataType.Undefined
   );
 
   const {
