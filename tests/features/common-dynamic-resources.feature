@@ -5,8 +5,6 @@
 #@quay.io/kiegroup/kogito-jit-runner
 @quay.io/kiegroup/kogito-jobs-service-ephemeral
 #@quay.io/kiegroup/kogito-jobs-service-postgresql
-#@quay.io/kiegroup/kogito-management-console
-#@quay.io/kiegroup/kogito-task-console
 Feature: Common tests for Kogito images
 
   Scenario: Verify if the properties were correctly set using DEFAULT MEM RATIO

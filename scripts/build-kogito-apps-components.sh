@@ -51,12 +51,6 @@ if [ ! -z "${CYPRESS_BINARY_URL}" ]; then
 fi
 
 case ${imageName} in
-    "kogito-management-console")
-        contextDir="management-console"
-        ;;
-    "kogito-task-console")
-        contextDir="task-console"
-        ;;
     "kogito-data-index-ephemeral")
         contextDir="data-index/data-index-service/data-index-service-inmemory"
         ;;

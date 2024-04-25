@@ -31,7 +31,7 @@ display-image-version:
 build: clone-repos _build
 
 _build:
-	@for f in $(shell make list); do make build-image image_name=$${iname}; done
+	@for f in $(shell make list); do make build-image image_name=$${f}; done
 
 
 .PHONY: build-image

@@ -46,11 +46,10 @@ BEHAVE_BASE_DIR = 'tests/features'
 CLONE_REPO_SCRIPT = 'tests/test-apps/clone-repo.sh'
 SETUP_MAVEN_SCRIPT = 'scripts/setup-maven.sh'
 
-SUPPORTING_SERVICES_IMAGES = {"kogito-data-index-ephemeral", 
-                              "kogito-data-index-postgresql", 
+SUPPORTING_SERVICES_IMAGES = {"kogito-data-index-ephemeral",
+                              "kogito-data-index-postgresql",
                               "kogito-jit-runner", "kogito-jobs-service-ephemeral",
                               "kogito-jobs-service-postgresql", "kogito-jobs-service-allinone",
-                              "kogito-management-console", "kogito-task-console"
                               }
 
 SWF_BUILDER_IMAGES = {"kogito-swf-builder", "kogito-swf-devmode", "kogito-base-builder"}
@@ -445,7 +444,7 @@ def update_env_value(env_name, env_value):
     for image_name in images:
         image_filename = "{}-image.yaml".format(image_name)
         update_env_value_in_file(image_filename, env_name, env_value)
-    
+
     for module_dir in modules:
         module_file = os.path.join(module_dir, "module.yaml")
         update_env_value_in_file(module_file, env_name, env_value)
@@ -519,7 +518,7 @@ def update_env_value_in_build_config_modules(env_name, new_value, ignore_empty =
 
 def update_label_value(label_name, label_value):
     """
-    Update label value in all module / image files 
+    Update label value in all module / image files
     :param label_name: label name to update
     :param label_value: value to set
     """
@@ -532,7 +531,7 @@ def update_label_value(label_name, label_value):
     for image_name in images:
         image_filename = "{}-image.yaml".format(image_name)
         update_label_value_in_file(image_filename, label_name, label_value)
-    
+
     for module_dir in modules:
         module_file = os.path.join(module_dir, "module.yaml")
         update_label_value_in_file(module_file, label_name, label_name)
@@ -548,7 +547,7 @@ def update_label_value_in_file(filename, label_name, label_value):
     try:
         with open(filename) as yaml_file:
             data = yaml_loader().load(yaml_file)
-            update_label_value_in_data(data, label_name, label_value)            
+            update_label_value_in_data(data, label_name, label_value)
 
         with open(filename, 'w') as yaml_file:
             yaml_loader().dump(data, yaml_file)

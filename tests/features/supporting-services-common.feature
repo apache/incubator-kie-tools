@@ -1,5 +1,3 @@
-@quay.io/kiegroup/kogito-management-console
-@quay.io/kiegroup/kogito-task-console
 @quay.io/kiegroup/kogito-data-index-ephemeral
 @quay.io/kiegroup/kogito-data-index-postgresql
 @quay.io/kiegroup/kogito-jit-runner

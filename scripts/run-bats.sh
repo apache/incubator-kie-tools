@@ -32,11 +32,5 @@ fi
 echo "----> running bats on kogito-jobs-service-common"
 ./bats/bin/bats modules/kogito-jobs-service-common/tests/bats
 
-echo "----> running bats on kogito-management-console"
-./bats/bin/bats modules/kogito-management-console/tests/bats/
-
-echo "----> running bats on kogito-task-console"
-./bats/bin/bats modules/kogito-task-console/tests/bats/
-
 echo "----> running bats on kogito-swf-builder"
 ./bats/bin/bats modules/kogito-swf/common/scripts/tests/bats

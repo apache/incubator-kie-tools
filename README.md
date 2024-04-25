@@ -31,8 +31,6 @@ Table of Contents
     - [Kogito Data Index Component Images](#kogito-data-index-component-images)
     - [Kogito Jobs Service Component Images](#kogito-jobs-service-component-images)
       - [Jobs Services All-in-one](#jobs-services-all-in-one)
-    - [Kogito Management Console Component Image](#kogito-management-console-component-image)
-    - [Kogito Task Console Component Image](#kogito-task-console-component-image)
     - [Kogito JIT Runner Component Image](#kogito-jit-runner-component-image)
   - [Contributing to Kogito Images repository](#contributing-to-kogito-images-repository)
     - [Building Images](#building-images)
@@ -154,8 +152,6 @@ Today we have the following Kogito Component Images:
 * [quay.io/kiegroup/kogito-jobs-service-ephemeral](https://quay.io/kiegroup/kogito-jobs-service-ephemeral) 
 * [quay.io/kiegroup/kogito-jobs-service-postgresql](https://quay.io/kiegroup/kogito-jobs-service-postgresql)
 * [quay.io/kiegroup/kogito-jobs-service-allinone](https://quay.io/kiegroup/kogito-jobs-service-allinone)
-* [quay.io/kiegroup/kogito-management-console](https://quay.io/kiegroup/kogito-management-console)
-* [quay.io/kiegroup/kogito-task-console](https://quay.io/kiegroup/kogito-task-console)
 * [quay.io/kiegroup/kogito-jit-runner](https://quay.io/kiegroup/kogito-jit-runner)
 
 
@@ -264,60 +260,6 @@ The above command will spinup the Jobs-service so you can connect your applicati
 The [Kogito Operator](https://github.com/apache/incubator-kie-kogito-operator) can be used to deploy the Kogito Jobs Service
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications
 
-
-### Kogito Management Console Component Image
-
-The Kogito Management Console allows you to have a intuitive way to manage your Kogito processes in execution.
-It depends on the Kogito Data Index Service on which the Console will connect to so it can be able to manage it.
-Keep in mind that when using the [Process Instance Management Add-on](https://docs.jboss.org/kogito/release/latest/html_single/#con_bpmn-process-instance-management_kogito-developing-process-services) 
-it will enable your Kogito service be manageable through REST API.
-
-
-To work correctly, the Kogito Management Console needs the Kogito Data Index Service url. If not provided, it will try to connect to the default one (http://localhost:8180).
-
-Basic usage:
-
-```bash
-$ docker run -it --env KOGITO_DATAINDEX_HTTP_URL=data-index-service-url:9090 quay.io/kiegroup/kogito-management-console:latest
-```
-
-To enable debug just use this env while running this image:
-
-```bash
-docker run -it --env SCRIPT_DEBUG=true --env KOGITO_DATAINDEX_HTTP_URL=data-index-service-url:9090 quay.io/kiegroup/kogito-management-console:latest
-```
-You should notice a few debug messages being printed in the system output.
-
-To know what configurations this image accepts please take a look [here](kogito-management-console-image.yaml) on the **envs** section.
-
-The [Kogito Operator](https://github.com/apache/incubator-kie-kogito-operator) can be used to deploy the Kogito Management Console 
-to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
-
-### Kogito Task Console Component Image
-
-The Kogito Task Console allows you to have an intuitive way to work with User Tasks in Kogito processes.
-It depends on the Kogito Data Index Service on which the Console will connect to, so it can be able to manage it.
-
-To work correctly, the Kogito Task Console needs the Kogito Data Index Service url. If not provided, it will try to connect to the default one (http://localhost:8180).
-
-Basic usage:
-
-```bash
-$ docker run -it --env KOGITO_DATAINDEX_HTTP_URL=data-index-service-url:9090 quay.io/kiegroup/kogito-task-console:latest
-```
-
-To enable debug just use this env while running this image:
-
-```bash
-docker run -it --env SCRIPT_DEBUG=true --env KOGITO_DATAINDEX_HTTP_URL=data-index-service-url:9090 quay.io/kiegroup/kogito-task-console:latest
-```
-You should notice a few debug messages being printed in the system output.
-
-To know what configurations this image accepts please take a look [here](kogito-task-console-image.yaml) on the **envs** section.
-
-The [Kogito Operator](https://github.com/apache/incubator-kie-kogito-operator) can be used to deploy the Kogito Task Console
-to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
-
 ### Kogito JIT Runner Component Image
 
 The Kogito JIT Runner provides a tool that allows you to submit a DMN model and evaluate it on the fly with a simple HTTP request. You can find more details on JIT [here](https://github.com/apache/incubator-kie-kogito-apps/tree/main/jitexecutor).
@@ -367,7 +309,6 @@ With this Makefile you can:
      $ make build-image image_name=kogito-jobs-service-ephemeral
      $ make build-image image_name=kogito-jobs-service-postgresql
      $ make build-image image_name=kogito-jobs-service-allinone
-     $ make build-image image_name=kogito-management-console
      $ make build-image image_name=kogito-jit-runner
      ```
   
@@ -432,7 +373,6 @@ Below you can find all modules used to build the Kogito Images
 - [kogito-jobs-service-allinone](modules/kogito-jobs-service-all-in-one): Provides the runner script that supports all jobs-service flavors
 - [kogito-launch-scripts](modules/kogito-launch-scripts): Main script for all images, it contains the startup script for Kogito Images
 - [kogito-logging](modules/kogito-logging): Provides common logging functions.
-- [kogito-management-console](modules/kogito-management-console): Installs and Configure the management-console jar inside the image
 - [kogito-jit-runner](modules/kogito-jit-runner): Installs and Configure the jit-runner jar inside the image
 - [kogito-maven](modules/kogito-maven): Provides custom configuration script.
 
@@ -444,8 +384,7 @@ Please inspect the image files to learn which modules are being installed on eac
 - [quay.io/kiegroup/kogito-data-index-postgresql](kogito-data-index-postgresql-image.yaml)
 - [quay.io/kiegroup/kogito-jobs-service-ephemeral](kogito-jobs-service-ephemeral-image.yaml)
 - [quay.io/kiegroup/kogito-jobs-service-postgresql](kogito-jobs-service-postgresql-image.yaml)
-- [quay.io/kiegroup/kogito-jobs-service-allinone](kogito-jobs-service-allinone-image.yaml) 
-- [quay.io/kiegroup/kogito-management-console](kogito-management-console-image.yaml)
+- [quay.io/kiegroup/kogito-jobs-service-allinone](kogito-jobs-service-allinone-image.yaml)
 - [quay.io/kiegroup/kogito-jit-runner](kogito-jit-runner-image.yaml)
 
 ### Testing Images
