@@ -1,0 +1,22 @@
+.filter-expression-cell {
+  display: flex;
+  align-content: center;
+}
+
+.filter-expression-cell .bracket-sign-container {
+  background-color: var(--pf-global--palette--black-200);
+  width: 20px;
+  min-width: 20px;
+  max-width: 20px;
+  color: var(--pf-global--palette--black-600);
+  font-family: Menlo, monospace;
+  display: flex;
+  align-content: center;
+  align-items: center;
+}
+
+.bracket-sign {
+  width: 20px;
+  min-width: 20px;
+  max-width: 20px;
+}
