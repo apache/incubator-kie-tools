@@ -36,7 +36,7 @@
   packages:
     manager: microdnf
 
-- name: "quay.io/kiegroup/kogito-swf-devmode"
+- name: "quay.io/kiegroup/kogito-swf-devmode-nightly"
   from: "registry.access.redhat.com/ubi8/openjdk-17:1.19"
   version: "0.0.0"
   description: "Kogito Serverless Workflow development mode with Quarkus extensions libraries preinstalled"

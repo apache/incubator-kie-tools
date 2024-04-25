@@ -36,13 +36,22 @@ execSync(
   { stdio: "inherit" }
 );
 
+// Find and read the -image.yaml file
 const resourcesPath = path.resolve(__dirname, "./resources");
 const files = fs.readdirSync(resourcesPath);
-const imageYaml = files.filter((fileName) => fileName.endsWith("-image.yaml"));
-if (imageYaml.length !== 1) {
+const imageYamlFiles = files.filter((fileName) => fileName.endsWith("-image.yaml"));
+if (imageYamlFiles.length !== 1) {
   throw new Error("There should only be one -image.yaml file on ./resources!");
 }
-fs.renameSync(
-  path.join(resourcesPath, imageYaml[0]),
-  path.join(resourcesPath, `${buildEnv.env.kogitoSwfDevMode.name}-image.yaml`)
+const originalYamlPath = path.join(resourcesPath, imageYamlFiles[0]);
+let imageYaml = fs.readFileSync(originalYamlPath, "utf8");
+
+// Replace the whole string between quotes ("") with the image name
+imageYaml = imageYaml.replace(
+  /(?<=")(.*kogito-swf-devmode.*)(?=")/gm,
+  `${buildEnv.env.kogitoSwfDevMode.registry}/${buildEnv.env.kogitoSwfDevMode.account}/${buildEnv.env.kogitoSwfDevMode.name}`
 );
+
+// Write file and then rename it to match the image name
+fs.writeFileSync(originalYamlPath, imageYaml);
+fs.renameSync(originalYamlPath, path.join(resourcesPath, `${buildEnv.env.kogitoSwfDevMode.name}-image.yaml`));
