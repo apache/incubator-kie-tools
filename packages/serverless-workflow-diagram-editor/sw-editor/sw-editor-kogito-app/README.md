@@ -30,7 +30,7 @@ Change to the `kie-tools/packages/serverless-workflow-diagram-editor/` root fold
 - set compilationLevel of j2cl-maven-plugin to `BUNDLE_JAR` in `kie-tools/packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/pom.xml`
 - run `mvn clean org.kie.j2cl.tools:j2cl-maven-plugin:watch` in the `kie-tools/packages/serverless-workflow-diagram-editor` root folder
 - once the build is finished (there will be `Build Complete: ready for browser refresh` in the terminal window), open another terminal in `kie-tools/packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/target/sw-editor-kogito-app/org.kie.workbench.common.stunner.sw.KogitoSWEditor` folder
-- start a local web server by: `python -m SimpleHTTPServer 8001` or `http-server -p 8001` or any other web server
+- start a local web server by: `python3 -m SimpleHTTPServer 8001` or `http-server -p 8001` or any other web server
 - Navigate to `http://localhost:8001/test.html`
 
 In any question, please follow the j2cl-maven-plugin documentation
