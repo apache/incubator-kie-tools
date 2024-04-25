@@ -290,18 +290,12 @@ export function ShapeOptions({
   }, [setShapeStyles, temporaryFillColor]);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (currentlyReShapedNodeId !== nodeIds[0]) {
-        setWidth(boundWidth);
-        setHeight(boundHeight);
-        setCurrentlyReShapedNodeId(nodeIds[0]);
-      }
-    }, 0);
+    setWidth(boundWidth);
+  }, [boundWidth]);
 
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [boundWidth, boundHeight, currentlyReShapedNodeId, nodeIds]);
+  useEffect(() => {
+    setHeight(boundHeight);
+  }, [boundHeight]);
 
   const onReset = useCallback(() => {
     setShapeStyles((shapes, state) => {
