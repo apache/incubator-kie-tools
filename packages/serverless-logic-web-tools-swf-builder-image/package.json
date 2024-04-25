@@ -21,7 +21,7 @@
     "build:prod:win32": "echo \"Build not supported on Windows\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:assets": "pnpm copy:webapp",
-    "copy:webapp": "cp -r ../sonataflow-deployment-webapp/dist dist-dev/webapp",
+    "copy:webapp": "cp -r ./node_modules/sonataflow-deployment-webapp/dist dist-dev/webapp",
     "image:docker:build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker build --ulimit nofile=5000:5000 $(echo $(build-env swfBuilderImage.buildTags) | xargs printf -- \"-t $(build-env swfBuilderImageEnv.registry)/$(build-env swfBuilderImageEnv.account)/$(build-env swfBuilderImageEnv.name):%s\n\" | xargs echo) --build-arg KOGITO_IMAGE_TAG=$(build-env swfBuilderImage.kogitoImageTag) .\" --else \"echo Docker not found, skipping image build.\"",
     "image:podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build --ulimit nofile=5000:5000 $(echo $(build-env swfBuilderImage.buildTags) | xargs printf -- \"-t $(build-env swfBuilderImageEnv.registry)/$(build-env swfBuilderImageEnv.account)/$(build-env swfBuilderImageEnv.name):%s\n\" | xargs echo) --build-arg KOGITO_IMAGE_TAG=$(build-env swfBuilderImage.kogitoImageTag) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
   },

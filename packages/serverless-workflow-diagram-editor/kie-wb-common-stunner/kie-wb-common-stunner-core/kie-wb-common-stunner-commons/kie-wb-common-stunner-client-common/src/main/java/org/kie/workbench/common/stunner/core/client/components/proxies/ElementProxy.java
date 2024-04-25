@@ -23,12 +23,12 @@ package org.kie.workbench.common.stunner.core.client.components.proxies;
 import java.lang.annotation.Annotation;
 import java.util.function.Supplier;
 
-import io.crysknife.client.ManagedInstance;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Any;
 import jakarta.inject.Inject;
 import org.gwtproject.timer.client.Timer;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;

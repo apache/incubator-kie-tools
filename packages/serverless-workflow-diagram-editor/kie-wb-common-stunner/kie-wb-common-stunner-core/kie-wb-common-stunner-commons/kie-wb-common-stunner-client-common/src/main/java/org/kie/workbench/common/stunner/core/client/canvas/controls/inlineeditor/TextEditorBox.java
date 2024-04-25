@@ -20,7 +20,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor;
 
-import io.crysknife.client.IsElement;
+import org.kie.j2cl.tools.di.core.IsElement;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Element;

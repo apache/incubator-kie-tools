@@ -23,8 +23,8 @@ package org.uberfire.ext.editor.commons.client.file.exports.jso;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-import io.crysknife.ui.common.client.injectors.ScriptInjector;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.kie.j2cl.tools.di.ui.common.client.injectors.ScriptInjector;
 import org.uberfire.ext.editor.commons.client.file.exports.FileExportResources;
 
 /**

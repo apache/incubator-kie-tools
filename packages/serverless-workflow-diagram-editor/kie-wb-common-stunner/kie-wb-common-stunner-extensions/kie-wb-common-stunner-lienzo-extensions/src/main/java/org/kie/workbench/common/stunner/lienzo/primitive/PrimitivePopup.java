@@ -25,7 +25,7 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.client.widget.panel.impl.LienzoFixedPanel;
 import elemental2.dom.HTMLElement;
-import io.crysknife.client.IsElement;
+import org.kie.j2cl.tools.di.core.IsElement;
 import org.kie.workbench.common.stunner.lienzo.flowpanel.FloatingWidgetView;
 
 import static elemental2.dom.CSSProperties.ZIndexUnionType;

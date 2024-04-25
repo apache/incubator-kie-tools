@@ -25,11 +25,11 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import io.crysknife.client.BeanManager;
-import io.crysknife.client.SyncBeanDef;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.BeanManager;
+import org.kie.j2cl.tools.di.core.SyncBeanDef;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;

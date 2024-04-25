@@ -1,0 +1,46 @@
+{
+  "private": true,
+  "name": "@kie-tools/kogito-swf-builder",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "scripts": {
+    "build:dev": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm image:build\"",
+    "build:prod": "pnpm build:dev && pnpm image:test",
+    "copy-assets": "run-script-os",
+    "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/kogito-swf-common/resources build && cp -R resources/* build",
+    "copy-test-assets": "run-script-os",
+    "copy-test-assets:linux:darwin": "cp -R ./node_modules/@kie-tools/kogito-swf-common/test-resources/* build && cp -R test-resources/* build",
+    "image:build": "run-script-os",
+    "image:build:darwin:win32": "echo \"Build skipped on macOS and Windows\"",
+    "image:build:linux": "pnpm setup:env make -C ./build build",
+    "image:test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"run-script-os\"",
+    "image:test:darwin:win32": "echo \"Tests skipped on macOS and Windows\"",
+    "image:test:linux": "pnpm copy-test-assets && pnpm setup:env make -C ./build test-image",
+    "install": "node install.js",
+    "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env SWF_IMAGE_REGISTRY=$(build-env kogitoSwfBuilder.registry) SWF_IMAGE_REGISTRY_ACCOUNT=$(build-env kogitoSwfBuilder.account) SWF_IMAGE_NAME=$(build-env kogitoSwfBuilder.name) SWF_IMAGE_TAG=$(build-env kogitoSwfBuilder.tag) QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) KOGITO_VERSION=$(build-env kogitoRuntime.version)"
+  },
+  "devDependencies": {
+    "@kie-tools/kogito-swf-common": "workspace:*",
+    "@kie-tools/python-venv": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "cross-env": "^7.0.3",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "python3",
+      "make",
+      "s2i"
+    ]
+  }
+}

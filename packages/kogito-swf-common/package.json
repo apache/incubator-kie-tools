@@ -1,0 +1,28 @@
+{
+  "private": true,
+  "name": "@kie-tools/kogito-swf-common",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "scripts": {
+    "install": "node install.js"
+  },
+  "devDependencies": {
+    "@kie-tools/python-venv": "workspace:*",
+    "@kie-tools/root-env": "workspace:*"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "python3",
+      "make"
+    ]
+  }
+}
