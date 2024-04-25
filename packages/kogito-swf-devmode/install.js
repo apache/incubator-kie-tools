@@ -18,6 +18,7 @@
  */
 
 const { execSync } = require("child_process");
+const fs = require("fs");
 
 const buildEnv = require("./env");
 const path = require("path");
@@ -33,4 +34,15 @@ execSync(
   `${activateCmd} && \
   python ${kogitoSwfCommonDir}/resources/scripts/versions_manager.py --bump-to ${buildEnv.env.kogitoSwfDevMode.version} --source-folder ./resources`,
   { stdio: "inherit" }
+);
+
+const resourcesPath = path.resolve(__dirname, "./resources");
+const files = fs.readdirSync(resourcesPath);
+const imageYaml = files.filter((fileName) => fileName.endsWith("-image.yaml"));
+if (imageYaml.length !== 1) {
+  throw new Error("There should only be one -image.yaml file on ./resources!");
+}
+fs.renameSync(
+  path.join(resourcesPath, imageYaml[0]),
+  path.join(resourcesPath, `${buildEnv.env.kogitoSwfDevMode.name}-image.yaml`)
 );
