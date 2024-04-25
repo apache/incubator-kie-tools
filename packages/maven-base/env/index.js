@@ -17,14 +17,24 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
+  vars: varsWithName({
+    KIE_TOOLS_BUILD__mavenDeploySkip: {
+      default: "true",
+      description: "Determines if a Maven build skips a deploy",
+    },
+  }),
   get env() {
     return {
       mavenBase: {
         version: require("../package.json").version,
+      },
+      maven: {
+        deploy: {
+          skip: getOrDefault(this.vars.KIE_TOOLS_BUILD__mavenDeploySkip),
+        },
       },
     };
   },
