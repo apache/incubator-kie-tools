@@ -137,11 +137,11 @@ export function FilterExpressionComponent({
   const beeTableAdditionalRow = useMemo(() => {
     return [
       <FilterExpressionMatchCell
-        key={0}
+        key={"filter-expression-match-cell"}
         rowIndex={1}
+        columnIndex={1}
         parentElementId={parentElementId}
         data={[filterExpression.match]}
-        columnIndex={0}
         columnId={"filterExpressionColumn"}
       />,
     ];
