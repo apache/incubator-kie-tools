@@ -118,6 +118,19 @@ pipeline {
             }
         }
 
+        stage('Create "latest" tag for kogito-swf-devmode') {
+            steps {
+                script {
+                    dockerUtils.tagImage(
+                        "${env.KOGITO_SWF_DEVMODE_IMAGE__registry}/${env.KOGITO_SWF_DEVMODE_IMAGE__account}",
+                        "${env.KOGITO_SWF_DEVMODE_IMAGE__name}",
+                        "${env.KOGITO_SWF_DEVMODE_IMAGE__buildTag}",
+                        'latest'
+                    )
+                }
+            }
+        }
+
         stage('Push kogito-swf-devmode to quay.io') {
             when {
                 expression { !params.DRY_RUN }
@@ -127,7 +140,7 @@ pipeline {
                     dockerUtils.pushImageToRegistry(
                         "${env.KOGITO_SWF_DEVMODE_IMAGE__registry}/${env.KOGITO_SWF_DEVMODE_IMAGE__account}",
                         "${env.KOGITO_SWF_DEVMODE_IMAGE__name}",
-                        "${env.KOGITO_SWF_DEVMODE_IMAGE__buildTag}",
+                        "${env.KOGITO_SWF_DEVMODE_IMAGE__buildTag} latest",
                         "${pipelineVars.quayKiegroupPushCredentialsId}"
                     )
                 }
