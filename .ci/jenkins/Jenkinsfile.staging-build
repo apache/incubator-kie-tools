@@ -125,12 +125,13 @@ pipeline {
         KOGITO_SWF_DEVMODE_IMAGE__registry = 'quay.io'
         KOGITO_SWF_DEVMODE_IMAGE__account = 'kiegroup'
         KOGITO_SWF_DEVMODE_IMAGE__name = 'kogito-swf-devmode'
-        KOGITO_SWF_DEVMODE_IMAGE__buildTag = "${params.RELEASE_VERSION}-staging"
+        KOGITO_SWF_DEVMODE_IMAGE__buildTag = "${params.TAG}-prerelease"
+        
+        JBPM_QUARKUS_DEVUI_EXTENSION__version = "${params.TAG}-SNAPSHOT"
+        SONATAFLOW_QUARKUS_DEVUI_EXTENSION__version = "${params.TAG}-SNAPSHOT"
 
-        KOGITO_SERVERLESS_OPERATOR__registry = 'quay.io'
-        KOGITO_SERVERLESS_OPERATOR__account = 'kiegroup'
-        KOGITO_SERVERLESS_OPERATOR__name = 'kogito-serverless-operator'
-        KOGITO_SERVERLESS_OPERATOR__buildTag = "${params.RELEASE_VERSION}-staging"
+        MAVEN_DEPLOY_REPOSITORY = 'https://repository.apache.org/content/repositories/snapshots'
+        MAVEN_DEPLOY_TARGET_ID = 'apache-snapshots-repository'
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
     }
@@ -1161,5 +1162,4 @@ def loadLocalSharedScripts() {
     dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
     helmUtils = load '.ci/jenkins/shared-scripts/helmUtils.groovy'
     zipUtils = load '.ci/jenkins/shared-scripts/zipUtils.groovy'
-    mvnUtils = load '.ci/jenkins/shared-scripts/mavenUtils.groovy'
 }

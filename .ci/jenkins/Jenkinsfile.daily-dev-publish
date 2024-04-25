@@ -131,9 +131,6 @@ pipeline {
         KOGITO_SWF_DEVMODE_IMAGE__account = 'kiegroup'
         KOGITO_SWF_DEVMODE_IMAGE__name = 'kogito-swf-devmode-nightly'
         KOGITO_SWF_DEVMODE_IMAGE__buildTag = 'latest'
-        
-        JBPM_QUARKUS_DEVUI_EXTENSION__version = '0.0.0-SNAPSHOT'
-        SONATAFLOW_QUARKUS_DEVUI_EXTENSION__version = '0.0.0-SNAPSHOT'
 
         MAVEN_DEPLOY_REPOSITORY = 'https://repository.apache.org/content/repositories/snapshots'
         MAVEN_DEPLOY_TARGET_ID = 'apache-snapshots-repository'
@@ -538,53 +535,30 @@ pipeline {
             }
         }
 
-        stage('Build & Test & Deploy locally (jbpm-quarkus-devui)') {
+        stage('Build (jbpm-quarkus-devui and sonataflow-quarkus-devui)') {
             steps {
                 dir('kie-tools') {
                     script {
-                        mvnUtils.runMavenLocalDeploy('jbpm-quarkus-devui', "${pipelineVars.mavenSettingsConfigFileId}")
+                        sh '''#!/bin/bash -el
+                        pnpm update-version-to 0.0.0-SNAPSHOT --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui...
+                        pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... build:prod
+                        '''.trim()
                     }
                 }
             }
         }
 
-        stage('Upload jbpm-quarkus-devui artifacts') {
+        stage('Deploy (jbpm-quarkus-devui and sonataflow-quarkus-devui)') {
             steps {
                 dir('kie-tools') {
                     script {
-                        mvnUtils.uploadJavaArtifacts(
-                            'jbpm-quarkus-devui',
-                            "${env.MAVEN_DEPLOY_REPOSITORY}",
-                            "${env.MAVEN_DEPLOY_TARGET_ID}",
-                            "${pipelineVars.mavenDeployRepositoryCredentialsId}",
-                            "${pipelineVars.mavenSettingsConfigFileId}"
-                        )
-                    }
-                }
-            }
-        }
-
-        stage('Build & Test & Deploy locally (sonataflow-quarkus-devui)') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        mvnUtils.runMavenLocalDeploy('sonataflow-quarkus-devui', "${pipelineVars.mavenSettingsConfigFileId}")
-                    }
-                }
-            }
-        }
-
-        stage('Upload sonataflow-quarkus-devui artifacts') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        mvnUtils.uploadJavaArtifacts(
-                            'sonataflow-quarkus-devui',
-                            "${env.MAVEN_DEPLOY_REPOSITORY}",
-                            "${env.MAVEN_DEPLOY_TARGET_ID}",
-                            "${pipelineVars.mavenDeployRepositoryCredentialsId}",
-                            "${pipelineVars.mavenSettingsConfigFileId}"
-                        )
+                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.mavenDeployRepositoryCredentialsId}", usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+                            configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
+                                sh """#!/bin/bash -el
+                                pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... exec mvn jar:test-jar jar:jar source:jar-no-fork deploy:deploy -s ${MAVEN_SETTINGS_FILE} -Dapache.snapshot.repository.username=${REPOSITORY_USER} -Dapache.snapshot.repository.password=${REPOSITORY_TOKEN} -DaltDeploymentRepository=${MAVEN_DEPLOY_TARGET_ID}::${MAVEN_DEPLOY_REPOSITORY}
+                                """.trim()
+                            }
+                        }
                     }
                 }
             }
