@@ -68,7 +68,14 @@ export function ShapeOptions({
   const boundPositionX = useMemo(() => +(shapeBound?.["@_x"]?.toFixed(2) ?? ""), [shapeBound]);
   const boundPositionY = useMemo(() => +(shapeBound?.["@_y"]?.toFixed(2) ?? ""), [shapeBound]);
 
-  // this variable was introduced because of scenarios, when user switches between nodes without closing and reopening the properties panel
+  /**
+   * This variable was introduced for a special scenario when the **width** or **height** Shape input field has a focus.
+   * Then, do not close or reopen the Properties panel, however, immediately select another node.
+   * This will cause **onBlur** handler is invoked for **width** or **height** accordingly.
+   * The problem is in the time of **onBlur** execution, the selected node id (**nodeIds[0]**) refers to the new node,
+   * while **event.target.value** of the **onBlur** handler refers to value of the previously selected node.
+   * So in the **onBlur** implementation, we need to check, if the selected node is the same node that was used as source for the value in the event.target.value.
+   */
   const [currentlyReShapedNodeId, setCurrentlyReShapedNodeId] = useState<string>(nodeIds[0]);
 
   const [width, setWidth] = useState<number>(boundWidth);
@@ -290,12 +297,14 @@ export function ShapeOptions({
   }, [setShapeStyles, temporaryFillColor]);
 
   useEffect(() => {
+    setCurrentlyReShapedNodeId(nodeIds[0]);
     setWidth(boundWidth);
-  }, [boundWidth]);
+  }, [boundWidth, nodeIds]);
 
   useEffect(() => {
+    setCurrentlyReShapedNodeId(nodeIds[0]);
     setHeight(boundHeight);
-  }, [boundHeight]);
+  }, [boundHeight, nodeIds]);
 
   const onReset = useCallback(() => {
     setShapeStyles((shapes, state) => {
