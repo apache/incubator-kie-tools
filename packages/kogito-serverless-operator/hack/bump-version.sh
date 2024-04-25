@@ -51,6 +51,9 @@ sed -i "s|newTag:.*|newTag: ${new_version}|g" config/manager/kustomization.yaml
 sed -i "s|IMAGE_TAG_BASE ?=.*|IMAGE_TAG_BASE ?= ${imageTag}${imageSuffix}|g" Makefile
 sed -i "s|newName:.*|newName: ${imageTag}${imageSuffix}|g" config/manager/kustomization.yaml
 
+sed -i "s|\bversion: .*\b|version: ${new_version}|g" images/bundle.yaml
+sed -i "s|\bversion: .*\b|version: ${new_version}|g" images/manager.yaml
+
 # Update kogito-swf-* images
 find . -name "*.yaml" -exec sed -i "s|quay.io/kiegroup/kogito-swf-builder.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}|" {} +
 find . -name "*.containerfile" -exec sed -i "s|quay.io/kiegroup/kogito-swf-builder.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}|" {} +
