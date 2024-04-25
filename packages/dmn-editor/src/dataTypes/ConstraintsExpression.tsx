@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useMemo, useState, useCallback, useRef } from "react";
+import { useMemo, useState, useCallback, useRef } from "react";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { FeelInput } from "@kie-tools/feel-input-component/dist";
 import "./ConstraintsExpression.css";
@@ -28,10 +28,12 @@ import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/a
 import { TypeHelper } from "./Constraints";
 
 export function ConstraintsExpression({
+  id,
   isReadonly,
   value,
   onSave,
 }: {
+  id: string;
   isReadonly: boolean;
   value?: string;
   savedValue?: string;
@@ -41,11 +43,15 @@ export function ConstraintsExpression({
   isDisabled?: boolean;
 }) {
   const [preview, setPreview] = useState(value ?? "");
+  const valueCopy = useRef(value);
   const editingValue = useRef(value);
   const onFeelChange = useCallback(
     (_, content, preview) => {
-      onSave?.(content.trim());
-      setPreview(preview);
+      if (valueCopy.current !== content) {
+        onSave?.(content.trim());
+        setPreview(preview);
+        valueCopy.current = content;
+      }
     },
     [onSave]
   );
@@ -64,7 +70,9 @@ export function ConstraintsExpression({
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+    // FeelInput doens't react to `onFeelChange` updates
+    // making it necessary to add a key to force a re-render;
+    <div key={id} style={{ display: "flex", flexDirection: "column", width: "100%" }}>
       {isReadonly && (
         <Title size={"md"} headingLevel="h5" style={{ paddingBottom: "10px" }}>
           Equivalent FEEL expression:
@@ -85,7 +93,7 @@ export function ConstraintsExpression({
             <p style={{ fontStyle: "italic" }}>{`<None>`}</p>
           ))}
         <FeelInput
-          value={isReadonly ? editingValue.current : value}
+          value={isReadonly ? value : editingValue.current}
           onChange={onFeelChange}
           onPreviewChanged={(newPreview: string) => setPreview(newPreview)}
           enabled={!isReadonly}

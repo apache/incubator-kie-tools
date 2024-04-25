@@ -288,16 +288,15 @@ export function ItemComponentsTable({
                   return <>Range</>;
                 }
 
-                const constraintValue = dt.itemDefinition.allowedValues?.text.__$$text;
-                const typeRef =
-                  (dt.itemDefinition.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
+                const constraintValue =
+                  dt.itemDefinition.typeConstraint?.text.__$$text ?? dt.itemDefinition.allowedValues?.text.__$$text;
                 if (constraintValue === undefined) {
                   return <>None</>;
                 }
-                if (isEnum(constraintValue, constraintTypeHelper(typeRef).check)) {
+                if (isEnum(constraintValue, constraintTypeHelper(dt.itemDefinition).check)) {
                   return <>Enumeration</>;
                 }
-                if (isRange(constraintValue, constraintTypeHelper(typeRef).check)) {
+                if (isRange(constraintValue, constraintTypeHelper(dt.itemDefinition).check)) {
                   return <>Range</>;
                 }
                 return <>Expression</>;

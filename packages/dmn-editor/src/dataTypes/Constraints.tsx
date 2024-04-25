@@ -28,7 +28,7 @@ import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-co
 import { ConstraintsEnum, isEnum } from "./ConstraintsEnum";
 import { ConstraintsRange, isRange } from "./ConstraintsRange";
 import { KIE__tConstraintType } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
-import { EditItemDefinition } from "./DataTypes";
+import { DataTypeIndex, EditItemDefinition } from "./DataTypes";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import { constrainableBuiltInFeelTypes } from "./DataTypeSpec";
 import moment from "moment";
@@ -46,6 +46,9 @@ import {
 } from "./ConstraintComponents/ConstraintYearsMonthsDuration";
 import { invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import { ConstraintProps } from "./ConstraintComponents/Constraint";
+import { useDmnEditorStore } from "../store/StoreContext";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 
 export type TypeHelper = {
   check: (value: string) => boolean;
@@ -56,6 +59,7 @@ export type TypeHelper = {
 };
 
 export interface ConstraintComponentProps {
+  id: string;
   isReadonly: boolean;
   value?: string;
   expressionValue?: string;
@@ -73,11 +77,51 @@ enum ConstraintsType {
   NONE = "None",
 }
 
-export const constraintTypeHelper = (typeRef: DmnBuiltInDataType): TypeHelper => {
-  return {
+function recursevelyGetDmnBuiltInDataTypeContraints(
+  itemDefinition: DMN15__tItemDefinition,
+  allDataTypesById: DataTypeIndex,
+  allTopLevelItemDefinitionUniqueNames: UniqueNameIndex
+): DMN15__tItemDefinition {
+  const enabledConstraints = constrainableBuiltInFeelTypes.get(
+    (itemDefinition.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined
+  );
+  if (enabledConstraints === undefined) {
+    const parentId = allTopLevelItemDefinitionUniqueNames.get(
+      (itemDefinition.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined
+    );
+    const parentType = allDataTypesById.get(parentId ?? "");
+    if (parentType !== undefined) {
+      return parentType.itemDefinition.typeRef?.__$$text
+        ? recursevelyGetDmnBuiltInDataTypeContraints(
+            parentType.itemDefinition,
+            allDataTypesById,
+            allTopLevelItemDefinitionUniqueNames
+          )
+        : itemDefinition;
+    }
+    return itemDefinition;
+  }
+  return itemDefinition;
+}
+
+export const constraintTypeHelper = (
+  itemDefinition: DMN15__tItemDefinition,
+  allDataTypesById?: DataTypeIndex,
+  allTopLevelItemDefinitionUniqueNames?: UniqueNameIndex
+): TypeHelper => {
+  const typeRef =
+    allDataTypesById !== undefined && allTopLevelItemDefinitionUniqueNames !== undefined
+      ? recursevelyGetDmnBuiltInDataTypeContraints(
+          itemDefinition,
+          allDataTypesById,
+          allTopLevelItemDefinitionUniqueNames
+        )
+      : itemDefinition.typeRef?.__$$text;
+
+  const typeHelper = {
     // check if the value has the correct type
     check: (value: string) => {
-      const recoveredValue = constraintTypeHelper(typeRef).recover(value);
+      const recoveredValue = typeHelper.recover(value);
       switch (typeRef) {
         case DmnBuiltInDataType.Any:
           return true;
@@ -85,19 +129,19 @@ export const constraintTypeHelper = (typeRef: DmnBuiltInDataType): TypeHelper =>
           if (recoveredValue === "") {
             return true;
           }
-          if (constraintTypeHelper(DmnBuiltInDataType.Date).check(value)) {
+          if (typeHelper.check(value)) {
             return false;
           }
-          if (constraintTypeHelper(DmnBuiltInDataType.DateTime).check(value)) {
+          if (typeHelper.check(value)) {
             return false;
           }
-          if (constraintTypeHelper(DmnBuiltInDataType.DateTimeDuration).check(value)) {
+          if (typeHelper.check(value)) {
             return false;
           }
-          if (constraintTypeHelper(DmnBuiltInDataType.Time).check(value)) {
+          if (typeHelper.check(value)) {
             return false;
           }
-          if (constraintTypeHelper(DmnBuiltInDataType.YearsMonthsDuration).check(value)) {
+          if (typeHelper.check(value)) {
             return false;
           }
           return typeof recoveredValue === "string";
@@ -125,7 +169,7 @@ export const constraintTypeHelper = (typeRef: DmnBuiltInDataType): TypeHelper =>
     // parse the value to the type
     // useful for comparisons
     parse: (value: string) => {
-      const recoveredValue = constraintTypeHelper(typeRef).recover(value);
+      const recoveredValue = typeHelper.recover(value);
       switch (typeRef) {
         case DmnBuiltInDataType.Number:
           return parseFloat(recoveredValue ?? "");
@@ -163,7 +207,7 @@ export const constraintTypeHelper = (typeRef: DmnBuiltInDataType): TypeHelper =>
       }
     },
     // recover the value before use it
-    recover: (value?: string) => {
+    recover: (value: string | undefined) => {
       if (value === undefined) {
         return undefined;
       }
@@ -248,41 +292,40 @@ export const constraintTypeHelper = (typeRef: DmnBuiltInDataType): TypeHelper =>
       }
     },
   };
+  return typeHelper;
 };
 
 export function useConstraint({
   constraint,
   itemDefinition,
-  isCollectionConstraintEnable,
+  isCollectionConstraintEnabled,
+  constraintTypeHelper,
+  enabledConstraints,
 }: {
   constraint: DMN15__tUnaryTests | undefined;
   itemDefinition: DMN15__tItemDefinition;
-  isCollectionConstraintEnable: boolean;
+  isCollectionConstraintEnabled: boolean;
+  constraintTypeHelper: TypeHelper;
+  enabledConstraints: KIE__tConstraintType[] | undefined;
 }) {
-  const constraintValue = useMemo(() => constraint?.text.__$$text, [constraint?.text.__$$text]);
-  const kieConstraintType = useMemo(() => constraint?.["@_kie:constraintType"], [constraint]);
-  const isCollection = useMemo(() => itemDefinition["@_isCollection"] ?? false, [itemDefinition]);
-  const itemDefinitionId = useMemo(() => itemDefinition["@_id"], [itemDefinition]);
-
-  const typeRef: DmnBuiltInDataType = useMemo(
-    () => (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined,
-    [itemDefinition?.typeRef?.__$$text]
-  );
+  const constraintValue = constraint?.text.__$$text;
+  const kieConstraintType = constraint?.["@_kie:constraintType"];
+  const isCollection = itemDefinition["@_isCollection"];
 
   const isConstraintEnum = useMemo(
     () =>
-      isCollection === true && isCollectionConstraintEnable === true // collection doesn't support enumeration constraint
+      isCollection === true && isCollectionConstraintEnabled === true // collection doesn't support enumeration constraint
         ? undefined
-        : isEnum(constraintValue, constraintTypeHelper(typeRef).check),
-    [constraintValue, isCollectionConstraintEnable, isCollection, typeRef]
+        : isEnum(constraintValue, constraintTypeHelper.check),
+    [constraintTypeHelper.check, constraintValue, isCollection, isCollectionConstraintEnabled]
   );
 
   const isConstraintRange = useMemo(
     () =>
-      isCollection === true && isCollectionConstraintEnable === true // collection doesn't support range constraint
+      isCollection === true && isCollectionConstraintEnabled === true // collection doesn't support range constraint
         ? undefined
-        : isRange(constraintValue, constraintTypeHelper(typeRef).check),
-    [constraintValue, isCollectionConstraintEnable, isCollection, typeRef]
+        : isRange(constraintValue, constraintTypeHelper.check),
+    [constraintTypeHelper, constraintValue, isCollection, isCollectionConstraintEnabled]
   );
 
   const enumToKieConstraintType: (selection: ConstraintsType) => KIE__tConstraintType | undefined = useCallback(
@@ -303,19 +346,18 @@ export function useConstraint({
   );
 
   const isConstraintEnabled = useMemo(() => {
-    const enabledConstraints = constrainableBuiltInFeelTypes.get(typeRef);
     return {
       enumeration:
-        !(isCollection === true && isCollectionConstraintEnable === true) &&
+        !(isCollection === true && isCollectionConstraintEnabled === true) &&
         (enabledConstraints ?? []).includes(enumToKieConstraintType(ConstraintsType.ENUMERATION)!),
       range:
-        !(isCollection === true && isCollectionConstraintEnable === true) &&
+        !(isCollection === true && isCollectionConstraintEnabled === true) &&
         (enabledConstraints ?? []).includes(enumToKieConstraintType(ConstraintsType.RANGE)!),
       expression:
-        (isCollection === true && isCollectionConstraintEnable === true) ||
+        (isCollection === true && isCollectionConstraintEnabled === true) ||
         (enabledConstraints ?? []).includes(enumToKieConstraintType(ConstraintsType.EXPRESSION)!),
     };
-  }, [typeRef, isCollection, isCollectionConstraintEnable, enumToKieConstraintType]);
+  }, [enabledConstraints, enumToKieConstraintType, isCollection, isCollectionConstraintEnabled]);
 
   const selectedConstraint = useMemo<ConstraintsType>(() => {
     if (isConstraintEnabled.enumeration && kieConstraintType === "enumeration") {
@@ -347,27 +389,14 @@ export function useConstraint({
     kieConstraintType,
   ]);
 
-  return useMemo(() => {
-    return {
-      constraintValue,
-      typeRef,
-      isConstraintEnum,
-      isConstraintRange,
-      isConstraintEnabled,
-      itemDefinitionId,
-      selectedConstraint,
-      enumToKieConstraintType,
-    };
-  }, [
+  return {
     constraintValue,
-    isConstraintEnabled,
     isConstraintEnum,
     isConstraintRange,
-    itemDefinitionId,
+    isConstraintEnabled,
     selectedConstraint,
-    typeRef,
     enumToKieConstraintType,
-  ]);
+  };
 }
 
 export function ConstraintsFromAllowedValuesAttribute({
@@ -383,26 +412,53 @@ export function ConstraintsFromAllowedValuesAttribute({
   isEnumDisabled?: boolean;
   isRangeDisabled?: boolean;
 }) {
+  const { externalModelsByNamespace } = useExternalModels();
+  const allDataTypesById = useDmnEditorStore(
+    (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allDataTypesById
+  );
+  const allTopLevelItemDefinitionUniqueNames = useDmnEditorStore(
+    (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelItemDefinitionUniqueNames
+  );
+
   const allowedValues = useMemo(() => itemDefinition?.allowedValues, [itemDefinition?.allowedValues]);
 
+  const typeRef = (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
+  const typeRefConstraintTypeHelper = constraintTypeHelper(
+    itemDefinition,
+    allDataTypesById,
+    allTopLevelItemDefinitionUniqueNames
+  );
+
+  const rootItemDefinition = recursevelyGetDmnBuiltInDataTypeContraints(
+    itemDefinition,
+    allDataTypesById,
+    allTopLevelItemDefinitionUniqueNames
+  );
+
+  const enabledConstraints = constrainableBuiltInFeelTypes.get(
+    (rootItemDefinition.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined
+  );
   const {
     constraintValue,
-    typeRef,
     isConstraintEnum,
     isConstraintRange,
     isConstraintEnabled,
-    itemDefinitionId,
     selectedConstraint,
     enumToKieConstraintType,
   } = useConstraint({
     constraint: allowedValues,
     itemDefinition,
-    isCollectionConstraintEnable: false, // allowedValues doesn't support constraint to the collection itself
+    isCollectionConstraintEnabled:
+      itemDefinition["@_id"] !== rootItemDefinition["@_id"] ? rootItemDefinition["@_isCollection"] ?? false : false, // allowedValues doesn't support constraint to the collection itself
+    constraintTypeHelper: typeRefConstraintTypeHelper,
+    enabledConstraints,
   });
+
+  const itemDefinitionId = itemDefinition["@_id"]!;
 
   const onConstraintChange = useCallback(
     (value?: string) => {
-      editItemDefinition(itemDefinitionId!, (itemDefinition) => {
+      editItemDefinition(itemDefinitionId, (itemDefinition) => {
         itemDefinition.allowedValues ??= { text: { __$$text: "" } };
         itemDefinition.allowedValues.text.__$$text = value ?? "";
         itemDefinition.allowedValues["@_id"] = itemDefinition.allowedValues?.["@_id"] ?? generateUuid();
@@ -419,13 +475,13 @@ export function ConstraintsFromAllowedValuesAttribute({
       }
       const selection = event.currentTarget.id as ConstraintsType;
       if (selection === ConstraintsType.NONE) {
-        editItemDefinition(itemDefinitionId!, (itemDefinition) => {
+        editItemDefinition(itemDefinitionId, (itemDefinition) => {
           itemDefinition.allowedValues = undefined;
         });
         return;
       }
 
-      editItemDefinition(itemDefinitionId!, (itemDefinition) => {
+      editItemDefinition(itemDefinitionId, (itemDefinition) => {
         itemDefinition.allowedValues ??= { text: { __$$text: "" } };
         const previousKieContraintType = itemDefinition.allowedValues["@_kie:constraintType"];
         itemDefinition.allowedValues["@_kie:constraintType"] = enumToKieConstraintType(selection);
@@ -437,12 +493,7 @@ export function ConstraintsFromAllowedValuesAttribute({
         if (
           previousKieContraintType === "expression" &&
           selection === ConstraintsType.ENUMERATION &&
-          isEnum(
-            itemDefinition.allowedValues.text.__$$text,
-            constraintTypeHelper(
-              (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined
-            ).check
-          )
+          isEnum(itemDefinition.allowedValues.text.__$$text, typeRefConstraintTypeHelper.check)
         ) {
           return;
         }
@@ -450,12 +501,7 @@ export function ConstraintsFromAllowedValuesAttribute({
         if (
           previousKieContraintType === "expression" &&
           selection === ConstraintsType.RANGE &&
-          isRange(
-            itemDefinition.allowedValues.text.__$$text,
-            constraintTypeHelper(
-              (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined
-            ).check
-          )
+          isRange(itemDefinition.allowedValues.text.__$$text, typeRefConstraintTypeHelper.check)
         ) {
           return;
         }
@@ -464,14 +510,15 @@ export function ConstraintsFromAllowedValuesAttribute({
         return;
       });
     },
-    [editItemDefinition, enumToKieConstraintType, itemDefinitionId]
+    [editItemDefinition, enumToKieConstraintType, itemDefinitionId, typeRefConstraintTypeHelper.check]
   );
 
   return (
     <Constraints
       isReadonly={isReadonly}
-      itemDefinition={itemDefinition}
+      itemDefinitionId={itemDefinitionId}
       constraintValue={constraintValue}
+      typeHelper={typeRefConstraintTypeHelper}
       typeRef={typeRef}
       isConstraintEnum={isConstraintEnum}
       isConstraintRange={isConstraintRange}
@@ -497,6 +544,14 @@ export function ConstraintsFromTypeConstraintAttribute({
   renderOnPropertiesPanel?: boolean;
   defaultsToAllowedValues: boolean;
 }) {
+  const { externalModelsByNamespace } = useExternalModels();
+  const allDataTypesById = useDmnEditorStore(
+    (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allDataTypesById
+  );
+  const allTopLevelItemDefinitionUniqueNames = useDmnEditorStore(
+    (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelItemDefinitionUniqueNames
+  );
+
   const typeConstraint = useMemo(
     () =>
       defaultsToAllowedValues
@@ -505,27 +560,42 @@ export function ConstraintsFromTypeConstraintAttribute({
     [defaultsToAllowedValues, itemDefinition?.allowedValues, itemDefinition?.typeConstraint]
   );
 
+  const typeRef = (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
+  const typeRefConstraintTypeHelper = constraintTypeHelper(
+    itemDefinition,
+    allDataTypesById,
+    allTopLevelItemDefinitionUniqueNames
+  );
+
+  const enabledConstraints = constrainableBuiltInFeelTypes.get(
+    recursevelyGetDmnBuiltInDataTypeContraints(itemDefinition, allDataTypesById, allTopLevelItemDefinitionUniqueNames)
+      .typeRef?.__$$text as DmnBuiltInDataType as DmnBuiltInDataType.Undefined
+  );
+
   const {
     constraintValue,
-    typeRef,
     isConstraintEnum,
     isConstraintRange,
     isConstraintEnabled,
-    itemDefinitionId,
     selectedConstraint,
     enumToKieConstraintType,
   } = useConstraint({
     constraint: typeConstraint,
-    itemDefinition,
-    isCollectionConstraintEnable: true, // typeConstraint enables to add a constraint to the collection itself
+    itemDefinition: itemDefinition,
+    isCollectionConstraintEnabled: true, // typeConstraint enables to add a constraint to the collection itself
+    constraintTypeHelper: typeRefConstraintTypeHelper,
+    enabledConstraints,
   });
 
+  const itemDefinitionId = itemDefinition["@_id"]!;
+
   const onConstraintChange = useCallback(
-    (value?: string) => {
-      editItemDefinition(itemDefinitionId!, (itemDefinition) => {
+    (value: string | undefined) => {
+      editItemDefinition(itemDefinitionId, (itemDefinition) => {
         itemDefinition.typeConstraint ??= { text: { __$$text: "" } };
         itemDefinition.typeConstraint.text.__$$text = value ?? "";
         itemDefinition.typeConstraint["@_id"] = itemDefinition.typeConstraint?.["@_id"] ?? generateUuid();
+        return;
       });
     },
     [editItemDefinition, itemDefinitionId]
@@ -538,13 +608,13 @@ export function ConstraintsFromTypeConstraintAttribute({
       }
       const selection = event.currentTarget.id as ConstraintsType;
       if (selection === ConstraintsType.NONE) {
-        editItemDefinition(itemDefinitionId!, (itemDefinition) => {
+        editItemDefinition(itemDefinitionId, (itemDefinition) => {
           itemDefinition.typeConstraint = undefined;
         });
         return;
       }
 
-      editItemDefinition(itemDefinitionId!, (itemDefinition) => {
+      editItemDefinition(itemDefinitionId, (itemDefinition) => {
         itemDefinition.typeConstraint ??= { text: { __$$text: "" } };
         const previousKieContraintType = itemDefinition.typeConstraint["@_kie:constraintType"];
         itemDefinition.typeConstraint["@_kie:constraintType"] = enumToKieConstraintType(selection);
@@ -556,12 +626,7 @@ export function ConstraintsFromTypeConstraintAttribute({
         if (
           previousKieContraintType === "expression" &&
           selection === ConstraintsType.ENUMERATION &&
-          isEnum(
-            itemDefinition.typeConstraint.text.__$$text,
-            constraintTypeHelper(
-              (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined
-            ).check
-          )
+          isEnum(itemDefinition.typeConstraint.text.__$$text, typeRefConstraintTypeHelper.check)
         ) {
           return;
         }
@@ -569,12 +634,7 @@ export function ConstraintsFromTypeConstraintAttribute({
         if (
           previousKieContraintType === "expression" &&
           selection === ConstraintsType.RANGE &&
-          isRange(
-            itemDefinition.typeConstraint.text.__$$text,
-            constraintTypeHelper(
-              (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined
-            ).check
-          )
+          isRange(itemDefinition.typeConstraint.text.__$$text, typeRefConstraintTypeHelper.check)
         ) {
           return;
         }
@@ -582,14 +642,15 @@ export function ConstraintsFromTypeConstraintAttribute({
         itemDefinition.typeConstraint.text.__$$text = "";
       });
     },
-    [editItemDefinition, enumToKieConstraintType, itemDefinitionId]
+    [editItemDefinition, enumToKieConstraintType, itemDefinitionId, typeRefConstraintTypeHelper.check]
   );
 
   return (
     <Constraints
       isReadonly={isReadonly}
-      itemDefinition={itemDefinition}
+      itemDefinitionId={itemDefinitionId}
       constraintValue={constraintValue}
+      typeHelper={typeRefConstraintTypeHelper}
       typeRef={typeRef}
       isConstraintEnum={isConstraintEnum}
       isConstraintRange={isConstraintRange}
@@ -604,8 +665,9 @@ export function ConstraintsFromTypeConstraintAttribute({
 
 export function Constraints({
   isReadonly,
-  itemDefinition,
+  itemDefinitionId,
   constraintValue,
+  typeHelper,
   typeRef,
   isConstraintEnum,
   isConstraintRange,
@@ -616,8 +678,9 @@ export function Constraints({
   renderOnPropertiesPanel,
 }: {
   isReadonly: boolean;
-  itemDefinition: DMN15__tItemDefinition;
+  itemDefinitionId: string;
   constraintValue: string | undefined;
+  typeHelper: TypeHelper;
   typeRef: DmnBuiltInDataType;
   isConstraintEnum: string[] | undefined;
   isConstraintRange: [string, string] | undefined;
@@ -692,9 +755,10 @@ export function Constraints({
           <div style={{ paddingTop: "20px" }}>
             {selectedConstraint === ConstraintsType.ENUMERATION && (
               <ConstraintsEnum
+                id={itemDefinitionId}
                 isReadonly={isReadonly}
                 type={typeRef}
-                typeHelper={constraintTypeHelper(typeRef)}
+                typeHelper={typeHelper}
                 value={isConstraintEnum ? constraintValue : undefined}
                 expressionValue={constraintValue}
                 onSave={onConstraintChange}
@@ -704,10 +768,11 @@ export function Constraints({
             )}
             {selectedConstraint === ConstraintsType.RANGE && (
               <ConstraintsRange
+                id={itemDefinitionId}
                 isReadonly={isReadonly}
                 expressionValue={constraintValue}
                 type={typeRef}
-                typeHelper={constraintTypeHelper(typeRef)}
+                typeHelper={typeHelper}
                 value={isConstraintRange ? constraintValue : undefined}
                 onSave={onConstraintChange}
                 isDisabled={!isConstraintEnabled.range}
@@ -716,6 +781,7 @@ export function Constraints({
             )}
             {selectedConstraint === ConstraintsType.EXPRESSION && (
               <ConstraintsExpression
+                id={itemDefinitionId}
                 isReadonly={isReadonly}
                 type={typeRef}
                 value={constraintValue}
