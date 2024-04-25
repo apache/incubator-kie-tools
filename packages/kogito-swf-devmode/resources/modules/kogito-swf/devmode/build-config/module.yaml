@@ -23,7 +23,7 @@ description: "Kogito Serverless Workflow devmode image build configuration"
 
 envs:
   - name: "SCRIPT_DEBUG"
-    value: "true"
+    value: "false"
   - name: QUARKUS_EXTENSIONS
     # NOTE: If you change the QUARKUS_EXTENSIONS value remember to update the scripts/logic/build-quarkus-app.sh too!
     # Follow up issue to remove KOGITO_VERSION: https://issues.redhat.com/browse/KOGITO-9270
