@@ -1,5 +1,7 @@
 FROM cruizba/ubuntu-dind:latest
 
+SHELL ["/bin/bash", "-c"]
+
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
     sudo bash wget gpg locales uidmap apt-transport-https ca-certificates curl software-properties-common \
     && rm -rf /var/lib/apt/lists/* \
@@ -23,7 +25,15 @@ libxi6 \
 libnss3 \
 libgconf-2-4 \
 libpci-dev \
-openjdk-17-jdk \
+libglvnd0 \
+libbtrfs-dev \
+libgpgme-dev \
+libdevmapper-dev \
+python3 \
+python3-pip \
+python3-dev \
+python3-venv \
+python3-gssapi \
 git \
 jq \
 vim \
@@ -60,35 +70,39 @@ RUN groupadd docker && usermod -aG docker nonrootuser
 USER nonrootuser
 
 # NVM setup
-RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash && \
+RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && \
     echo 'export NVM_DIR="${HOME}/.nvm"' | sudo tee /etc/profile.d/nvm.sh && \
     echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' | sudo tee -a /etc/profile.d/nvm.sh && \
     echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' | sudo tee -a /etc/profile.d/nvm.sh && \
     echo "source /etc/profile.d/nvm.sh" >> $HOME/.bashrc
 
 # Node setup
-RUN bash -c 'source $HOME/.nvm/nvm.sh && \
-             nvm install 18.14.0'
+RUN source $HOME/.nvm/nvm.sh && \
+    nvm install 18.14.0 && \
+    sudo update-alternatives --install /usr/local/bin/node node $(which node) 1 && \
+    sudo update-alternatives --install /usr/local/bin/npm npm $(which npm) 1
 
 # PNPM setup
-RUN bash -c 'source $HOME/.nvm/nvm.sh && \
-             npm install -g pnpm@8.7.0'
+RUN source $HOME/.nvm/nvm.sh && \
+    npm install -g pnpm@8.7.0 && \
+    sudo update-alternatives --install /usr/local/bin/pnpm pnpm $(which pnpm) 1
 
 # Maven setup
-RUN wget https://archive.apache.org/dist/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz -P /tmp && \
-    sudo tar xzf /tmp/apache-maven-3.9.6-bin.tar.gz -C /opt && rm /tmp/apache-maven-3.9.6-bin.tar.gz && \
-    sudo ln -s /opt/apache-maven-3.9.6 /opt/maven && \
-    echo 'export M2_HOME=/opt/maven' | sudo tee -a /etc/profile.d/maven.sh && \
-    echo 'export MAVEN_HOME=${M2_HOME}' | sudo tee -a /etc/profile.d/maven.sh && \
-    echo 'export PATH=${M2_HOME}/bin:${PATH}' | sudo tee -a /etc/profile.d/maven.sh && \
-    echo "source /etc/profile.d/maven.sh" >> $HOME/.bashrc
+RUN curl -s "https://get.sdkman.io" | bash && \
+    source "$HOME/.sdkman/bin/sdkman-init.sh" && \
+    sdk install java 17.0.10-zulu && \
+    sudo update-alternatives --install /usr/local/bin/java java $(which java) 1 && \
+    sdk install maven 3.9.6 && \
+    sudo update-alternatives --install /usr/local/bin/mvn mvn $(which mvn) 1 && \
+    sdk flush
 
 # Golang setup
 RUN wget https://go.dev/dl/go1.21.5.linux-amd64.tar.gz -P /tmp && \
     sudo tar xzf /tmp/go1.21.5.linux-amd64.tar.gz -C /opt && rm /tmp/go1.21.5.linux-amd64.tar.gz && \
     echo 'export GOPATH=${HOME}/go' | sudo tee /etc/profile.d/go.sh && \
     echo 'export PATH=${PATH}:/opt/go/bin:${GOPATH}/bin' | sudo tee -a /etc/profile.d/go.sh && \
-    echo "source /etc/profile.d/go.sh" >> $HOME/.bashrc
+    echo "source /etc/profile.d/go.sh" >> $HOME/.bashrc && \
+    sudo update-alternatives --install /usr/local/bin/go go /opt/go/bin/go 1
 
 # CodeQL setup
 RUN wget https://github.com/github/codeql-action/releases/latest/download/codeql-bundle-linux64.tar.gz -P /tmp && \
@@ -102,13 +116,26 @@ RUN wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/opensh
     sudo tar -C /usr/bin/ -xvzf /tmp/openshift-client-linux.tar.gz oc && rm /tmp/openshift-client-linux.tar.gz
 
 # Helm CLI setup
-RUN wget https://get.helm.sh/helm-v3.13.3-linux-amd64.tar.gz -P /tmp && \
-    sudo tar -C /usr/bin/ -zxvf /tmp/helm-v3.13.3-linux-amd64.tar.gz linux-amd64/helm --strip-components 1 && rm /tmp/helm-v3.13.3-linux-amd64.tar.gz
+RUN wget https://get.helm.sh/helm-v3.14.3-linux-amd64.tar.gz -P /tmp && \
+    sudo tar -C /usr/bin/ -zxvf /tmp/helm-v3.14.3-linux-amd64.tar.gz linux-amd64/helm --strip-components 1 && rm /tmp/helm-v3.14.3-linux-amd64.tar.gz
+
+# Python setup
+RUN sudo update-alternatives --install /usr/local/bin/python python $(which python3) 1 && \
+    sudo update-alternatives --install /usr/local/bin/pip pip $(which pip3) 1
+
+# s2i (source-to-image) setup
+RUN go install github.com/openshift/source-to-image/cmd/s2i@v1.3.9
 
 # Env vars
-ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
+ENV HOME="/home/nonrootuser"
+ENV JAVA_HOME="${HOME}/.sdkman/candidates/java/current/"
+ENV MAVEN_HOME="${HOME}/.sdkman/candidates/maven/current/"
+ENV NODE_HOME="${HOME}/.nvm/versions/node/v18.14.0"
 ENV DISPLAY=":99"
 ENV NODE_OPTIONS="--max_old_space_size=4096"
+ENV GOPATH="${HOME}/go"
+ENV GOROOT="/opt/go"
+ENV PATH="${PATH}:${GOROOT}/bin:${GOPATH}/bin"
 
 ENTRYPOINT [""]
 

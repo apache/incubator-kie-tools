@@ -122,6 +122,16 @@ pipeline {
         KOGITO_MANAGEMENT_CONSOLE__name = 'kogito-management-console'
         KOGITO_MANAGEMENT_CONSOLE__buildTags = 'daily-dev'
 
+        KOGITO_SWF_BUILDER_IMAGE__registry = 'quay.io'
+        KOGITO_SWF_BUILDER_IMAGE__account = 'kiegroup'
+        KOGITO_SWF_BUILDER_IMAGE__name = 'kogito-swf-builder-nightly'
+        KOGITO_SWF_BUILDER_IMAGE__buildTag = 'latest'
+
+        KOGITO_SWF_DEVMODE_IMAGE__registry = 'quay.io'
+        KOGITO_SWF_DEVMODE_IMAGE__account = 'kiegroup'
+        KOGITO_SWF_DEVMODE_IMAGE__name = 'kogito-swf-devmode-nightly'
+        KOGITO_SWF_DEVMODE_IMAGE__buildTag = 'latest'
+
         BUILD_DATE = sh(script: "echo `date +'%Y-%m-%d %T'`", returnStdout: true).trim()
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
@@ -211,6 +221,32 @@ pipeline {
                     export SERVERLESS_LOGIC_WEB_TOOLS__buildInfo="${env.VERSION} (daily-dev) @ ${env.GIT_COMMIT} (${env.BUILD_DATE})"
                     pnpm -r --workspace-concurrency=1 build:prod
                     """.trim()
+                }
+            }
+        }
+
+        stage('Push kogito-swf-builder to quay.io') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.KOGITO_SWF_BUILDER_IMAGE__registry}/${env.KOGITO_SWF_BUILDER_IMAGE__account}",
+                        "${env.KOGITO_SWF_BUILDER_IMAGE__name}",
+                        "${env.KOGITO_SWF_BUILDER_IMAGE__buildTag}",
+                        "${pipelineVars.quayKiegroupPushCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Push kogito-swf-devmode to quay.io') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.KOGITO_SWF_DEVMODE_IMAGE__registry}/${env.KOGITO_SWF_DEVMODE_IMAGE__account}",
+                        "${env.KOGITO_SWF_DEVMODE_IMAGE__name}",
+                        "${env.KOGITO_SWF_DEVMODE_IMAGE__buildTag}",
+                        "${pipelineVars.quayKiegroupPushCredentialsId}"
+                    )
                 }
             }
         }
