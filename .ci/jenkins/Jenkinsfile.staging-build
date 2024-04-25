@@ -127,6 +127,11 @@ pipeline {
         KOGITO_SWF_DEVMODE_IMAGE__name = 'kogito-swf-devmode'
         KOGITO_SWF_DEVMODE_IMAGE__buildTag = "${params.TAG}-prerelease"
 
+        KOGITO_SERVERLESS_OPERATOR__registry = 'quay.io'
+        KOGITO_SERVERLESS_OPERATOR__account = 'kiegroup'
+        KOGITO_SERVERLESS_OPERATOR__name = 'kogito-serverless-operator'
+        KOGITO_SERVERLESS_OPERATOR__buildTag = "${params.TAG}-prerelease"
+
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
     }
 
@@ -726,6 +731,17 @@ pipeline {
                 }
             }
         }
+
+        stage('STAGING: Push kogito-serverless-operator to quay.io') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    pushKogitoServerlessOperatorToQuay()
+                }
+            }
+        }
     }
 
     post {
@@ -1148,6 +1164,15 @@ def pushKogitoSwfDevModeToQuay() {
         "${env.KOGITO_SWF_DEVMODE_IMAGE__registry}/${env.KOGITO_SWF_DEVMODE_IMAGE__account}",
         "${env.KOGITO_SWF_DEVMODE_IMAGE__name}",
         "${env.KOGITO_SWF_DEVMODE_IMAGE__buildTag}",
+        "${pipelineVars.quayKiegroupPushCredentialsId}"
+    )
+}
+
+def pushKogitoServerlessOperatorToQuay() {
+    dockerUtils.pushImageToRegistry(
+        "${env.KOGITO_SERVERLESS_OPERATOR__registry}/${env.KOGITO_SERVERLESS_OPERATOR__account}",
+        "${env.KOGITO_SERVERLESS_OPERATOR__name}",
+        "${env.KOGITO_SERVERLESS_OPERATOR__buildTag}",
         "${pipelineVars.quayKiegroupPushCredentialsId}"
     )
 }
