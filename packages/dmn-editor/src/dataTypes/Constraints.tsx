@@ -110,34 +110,35 @@ export const constraintTypeHelper = (
   allTopLevelItemDefinitionUniqueNames?: UniqueNameIndex
 ): TypeHelper => {
   const typeRef =
-    allDataTypesById !== undefined && allTopLevelItemDefinitionUniqueNames !== undefined
-      ? recursevelyGetDmnBuiltInDataType(itemDefinition, allDataTypesById, allTopLevelItemDefinitionUniqueNames)
-      : itemDefinition.typeRef?.__$$text;
+    (allDataTypesById !== undefined && allTopLevelItemDefinitionUniqueNames !== undefined
+      ? recursevelyGetDmnBuiltInDataType(itemDefinition, allDataTypesById, allTopLevelItemDefinitionUniqueNames).typeRef
+          ?.__$$text
+      : itemDefinition.typeRef?.__$$text) ?? DmnBuiltInDataType.Undefined;
 
   const typeHelper = {
     // check if the value has the correct type
-    check: (value: string) => {
+    check: (value: string, type?: DmnBuiltInDataType) => {
       const recoveredValue = typeHelper.recover(value);
-      switch (typeRef) {
+      switch (type ?? typeRef) {
         case DmnBuiltInDataType.Any:
           return true;
         case DmnBuiltInDataType.String:
           if (recoveredValue === "") {
             return true;
           }
-          if (typeHelper.check(value)) {
+          if (typeHelper.check(value, DmnBuiltInDataType.Date)) {
             return false;
           }
-          if (typeHelper.check(value)) {
+          if (typeHelper.check(value, DmnBuiltInDataType.DateTime)) {
             return false;
           }
-          if (typeHelper.check(value)) {
+          if (typeHelper.check(value, DmnBuiltInDataType.DateTimeDuration)) {
             return false;
           }
-          if (typeHelper.check(value)) {
+          if (typeHelper.check(value, DmnBuiltInDataType.Time)) {
             return false;
           }
-          if (typeHelper.check(value)) {
+          if (typeHelper.check(value, DmnBuiltInDataType.YearsMonthsDuration)) {
             return false;
           }
           return typeof recoveredValue === "string";
