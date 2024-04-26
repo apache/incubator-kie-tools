@@ -45,15 +45,15 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
         <version.junit>4.13.1</version.junit>
-        <j2cl.maven.plugin.version>0.20</j2cl.maven.plugin.version>
+        <j2cl.maven.plugin.version>0.23.0</j2cl.maven.plugin.version>
         <version.org.junit>4.13.1</version.org.junit>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.treblereel.gwt.yaml.mapper</groupId>
+            <groupId>org.kie.j2cl.tools.yaml.mapper</groupId>
             <artifactId>common</artifactId>
-            <version>${yaml.mapper}</version>
+            <version>0.4</version>
         </dependency>
 
         <dependency>
@@ -85,9 +85,9 @@
         </resources>
         <plugins>
             <plugin>
-                <groupId>com.vertispan.j2cl</groupId>
+                <groupId>org.kie.j2cl.tools</groupId>
                 <artifactId>j2cl-maven-plugin</artifactId>
-                <version>${j2cl.maven.plugin.version}</version>
+                <version>0.23.0</version>
                 <executions>
                     <execution>
                         <goals>

@@ -6,7 +6,7 @@ import java.util.Map;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import io.crysknife.client.IsElement;
+import org.kie.j2cl.tools.di.core.IsElement;
 
 public class FlowPanel implements IsElement {
 

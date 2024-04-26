@@ -106,9 +106,7 @@ export function useDeployDropdownItems(props: Props) {
           data-testid="alert-dev-mode-ready"
           actionClose={<AlertActionCloseButton onClose={close} />}
           actionLinks={
-            <AlertActionLink onClick={() => window.open(routeUrl, "_blank")}>
-              {"Go to Serverless Workflow Dev UI ↗"}
-            </AlertActionLink>
+            <AlertActionLink onClick={() => window.open(routeUrl, "_blank")}>{"Go to Dev Mode ↗"}</AlertActionLink>
           }
         >
           <>
@@ -236,7 +234,7 @@ export function useDeployDropdownItems(props: Props) {
           return;
         }
         uploadToDevModeSuccessAlert.close();
-        devModeReadyAlert.show({ routeUrl: devMode.endpoints!.swfDevUi, filePaths: result.uploadedPaths });
+        devModeReadyAlert.show({ routeUrl: devMode.endpoints!.base, filePaths: result.uploadedPaths });
         window.clearInterval(fetchDevModeDeploymentTask);
       }, FETCH_DEV_MODE_DEPLOYMENT_POLLING_TIME);
     } else {

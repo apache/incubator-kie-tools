@@ -1,0 +1,36 @@
+{
+  "private": true,
+  "name": "@kie-tools/dmn-marshaller-backend-compatibility-tester",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build:dev": "rimraf dist && tsc -p tsconfig.json && pnpm prefetch",
+    "build:prod": "pnpm build:dev",
+    "prefetch": "node dist/dependenciesFetch.js"
+  },
+  "dependencies": {
+    "@jbangdev/jbang": "0.2.0"
+  },
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.6.2"
+  }
+}

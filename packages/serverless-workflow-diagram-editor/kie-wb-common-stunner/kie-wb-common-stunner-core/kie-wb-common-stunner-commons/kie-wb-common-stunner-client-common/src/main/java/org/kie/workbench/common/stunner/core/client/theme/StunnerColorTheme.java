@@ -35,5 +35,11 @@ public interface StunnerColorTheme {
 
     String getEdgeTextStrokeColor();
 
+    String getScrollbarColor();
+
+    String getCanvasBackgroundColor();
+
+    String getScrollbarBackgroundColor();
+
     boolean isDarkTheme();
 }

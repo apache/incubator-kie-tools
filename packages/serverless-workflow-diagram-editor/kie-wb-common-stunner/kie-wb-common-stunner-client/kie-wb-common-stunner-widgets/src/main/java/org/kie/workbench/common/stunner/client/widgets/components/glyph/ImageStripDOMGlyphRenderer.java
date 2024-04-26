@@ -24,12 +24,12 @@ import java.util.function.BiFunction;
 
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
-import io.crysknife.client.IsElement;
-import io.crysknife.client.ManagedInstance;
-import io.crysknife.ui.common.client.injectors.StyleInjector;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.IsElement;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
+import org.kie.j2cl.tools.processors.common.injectors.StyleInjector;
 import org.kie.workbench.common.stunner.core.client.components.glyph.DOMGlyphRenderer;
 import org.kie.workbench.common.stunner.core.client.components.views.WidgetElementRendererView;
 import org.kie.workbench.common.stunner.core.client.shape.ImageStrip;
