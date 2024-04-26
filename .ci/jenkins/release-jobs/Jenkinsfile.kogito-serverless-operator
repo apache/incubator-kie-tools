@@ -140,7 +140,7 @@ pipeline {
                     dockerUtils.pushImageToRegistry(
                         "${env.KOGITO_SERVERLESS_OPERATOR__registry}/${env.KOGITO_SERVERLESS_OPERATOR__account}",
                         "${env.KOGITO_SERVERLESS_OPERATOR__name}",
-                        "${env.KOGITO_SERVERLESS_OPERATOR__buildTag}",
+                        "${env.KOGITO_SERVERLESS_OPERATOR__buildTag} latest",
                         "${pipelineVars.quayKiegroupPushCredentialsId}"
                     )
                 }
