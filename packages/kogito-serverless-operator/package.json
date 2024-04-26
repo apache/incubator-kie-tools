@@ -31,7 +31,7 @@
     "test:darwin:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"make test\"",
     "test:e2e": "run-script-os",
     "test:e2e:darwin:win32": "echo 'E2E tests not supported on Windows and macOS'",
-    "test:e2e:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"make full-test-e2e\"",
+    "test:e2e:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --bool \"$(build-env kogitoServerlessOperator.endToEndTests.run)\" --then \"make full-test-e2e\"",
     "test:win32": ".\\node_modules\\@kie-tools\\python-venv\\venv\\Scripts\\Activate.bat && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"make test\""
   },
   "dependencies": {},
