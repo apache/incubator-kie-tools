@@ -171,17 +171,14 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
     return this;
   }
 
-  public attribute() {
+  // skipAlreadyAttributedIds is true by default
+  public randomize(args?: { skipAlreadyAttributedIds: boolean }) {
     for (const [path, u] of this.toAttribute) {
       const newId = this.args.newIdGenerator();
       this.attributed.set(path, newId);
       u({ newId });
     }
-    return this;
-  }
 
-  // skipAlreadyAttributedIds is true by default
-  public randomize(args?: { skipAlreadyAttributedIds: boolean }) {
     for (const [id, us] of this.updaters) {
       // Generates new unique id's for all properties of type xsd:ID that were undefined.
       if (id === undefined) {

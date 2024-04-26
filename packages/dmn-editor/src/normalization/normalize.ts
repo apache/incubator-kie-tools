@@ -18,8 +18,8 @@
  */
 
 import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
+import { addMissingImportNamespaces } from "../mutations/addMissingImportNamespaces";
 import { State } from "../store/Store";
-import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 export function normalize(model: State["dmn"]["model"]) {
   getNewDmnIdRandomizer()
@@ -48,42 +48,9 @@ export function normalize(model: State["dmn"]["model"]) {
       type: "DMN15__tDefinitions",
       attr: "itemDefinition",
     })
-    .attribute()
     .randomize({ skipAlreadyAttributedIds: true });
 
   addMissingImportNamespaces(model.definitions);
 
   return model;
-}
-
-function addMissingImportNamespaces(definitions: DMN15__tDefinitions) {
-  if (definitions.import === undefined) {
-    return;
-  }
-
-  // Collect all declared namespaces
-  const definedNamespaces = new Set(
-    Object.keys(definitions)
-      .filter((keys: keyof DMN15__tDefinitions) => String(keys).startsWith("xmlns:"))
-      .map((xmlnsKey: keyof DMN15__tDefinitions) => definitions[xmlnsKey])
-  );
-
-  // Add missing import namespace declarations as `xmlns:included*`
-  let includedIndex = 0;
-  for (let index = 0; index < definitions.import.length; index++) {
-    const importedModelNamespace = definitions.import[index]["@_namespace"];
-
-    // Check if namespace is already declared
-    if (definedNamespaces.has(importedModelNamespace)) {
-      // Ignore namespaces that are already declared
-      continue;
-    }
-
-    // Get next available `included*` namespace declaration name
-    while (definitions[`@_xmlns:included${includedIndex}`]) {
-      includedIndex++;
-    }
-
-    definitions[`@_xmlns:included${includedIndex}`] = importedModelNamespace;
-  }
 }
