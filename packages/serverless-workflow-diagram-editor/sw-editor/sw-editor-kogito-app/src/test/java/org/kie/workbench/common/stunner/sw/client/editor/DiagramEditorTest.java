@@ -269,7 +269,7 @@ public class DiagramEditorTest {
         tested.applyTheme(DarkMode.NAME);
 
         verify(tested, times(1)).reloadEditorContent();
-        verify(tested, times(1)).setCanvasBackgroundColor();
+        verify(tested, times(1)).setCanvasColors();
         assertNull(tested.themeToBeApplied);
         assertTrue(StunnerTheme.getTheme() instanceof DarkMode);
     }
@@ -288,7 +288,7 @@ public class DiagramEditorTest {
         tested.applyTheme(DarkMode.NAME);
 
         verify(tested, times(0)).reloadEditorContent();
-        verify(tested, times(0)).setCanvasBackgroundColor();
+        verify(tested, times(0)).setCanvasColors();
         assertTrue(tested.themeToBeApplied instanceof DarkMode);
     }
 
@@ -304,7 +304,7 @@ public class DiagramEditorTest {
         tested.applyTheme(null);
 
         verify(tested, times(0)).reloadEditorContent();
-        verify(tested, times(0)).setCanvasBackgroundColor();
+        verify(tested, times(0)).setCanvasColors();
         assertNull(tested.themeToBeApplied);
         assertTrue(StunnerTheme.getTheme() instanceof LightMode);
     }
@@ -321,7 +321,7 @@ public class DiagramEditorTest {
         tested.applyTheme(LightMode.NAME);
 
         verify(tested, times(0)).reloadEditorContent();
-        verify(tested, times(0)).setCanvasBackgroundColor();
+        verify(tested, times(0)).setCanvasColors();
         assertNull(tested.themeToBeApplied);
         assertTrue(StunnerTheme.getTheme() instanceof LightMode);
     }

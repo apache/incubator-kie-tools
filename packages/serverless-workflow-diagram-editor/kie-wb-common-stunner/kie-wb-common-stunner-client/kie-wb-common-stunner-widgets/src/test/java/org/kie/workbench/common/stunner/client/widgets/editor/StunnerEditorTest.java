@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
+import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,6 +62,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -240,5 +242,43 @@ public class StunnerEditorTest {
         doReturn(null).when(sessionEditorPresenter).getDisplayer();
         doCallRealMethod().when(sessionEditorPresenter).getInstance();
         assertNull(sessionEditorPresenter.getInstance());
+    }
+
+    @Test
+    public void testSetCanvasBackgroundColor() {
+        tested.setReadOnly(true);
+        openSuccess();
+        tested.setCanvasBackgroundColor();
+
+        verify(canvas, times(1)).setBackgroundColor(any());
+    }
+
+    @Test
+    public void testSetCanvasBackgroundColorNoSession() {
+        tested.setCanvasBackgroundColor();
+
+        verify(canvas, times(0)).setBackgroundColor(any());
+    }
+
+    @Test
+    public void testSetScrollbarColors() {
+        ScrollablePanel scrollablePanel = mock(ScrollablePanel.class);
+        when(panel.getView()).thenReturn(scrollablePanel);
+
+        tested.setReadOnly(true);
+        openSuccess();
+        tested.setScrollbarColors();
+
+        verify(scrollablePanel, times(1)).setScrollbarColors(any(), any());
+    }
+
+    @Test
+    public void testSetScrollbarColorsNoSession() {
+        ScrollablePanel scrollablePanel = mock(ScrollablePanel.class);
+        lenient().when(panel.getView()).thenReturn(scrollablePanel);
+
+        tested.setScrollbarColors();
+
+        verify(scrollablePanel, times(0)).setScrollbarColors(any(), any());
     }
 }
