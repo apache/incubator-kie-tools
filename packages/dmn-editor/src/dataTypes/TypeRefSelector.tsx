@@ -26,7 +26,6 @@ import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon
 import { DmnEditorTab } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { DataType } from "./DataTypes";
 import { builtInFeelTypeNames, builtInFeelTypes } from "./BuiltInFeelTypes";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -117,21 +116,19 @@ export function TypeRefSelector({
       spaceItems={{ default: "spaceItemsNone" }}
     >
       {selectedDataType?.itemDefinition && (
-        <Tooltip content="Jump to definition" appendTo={() => document.getElementById(id)!}>
-          <Button
-            title={"Jump to definition"}
-            className={"kie-dmn-editor--data-type-jump-to-definition"}
-            variant={ButtonVariant.control}
-            onClick={(e) =>
-              dmnEditorStoreApi.setState((state) => {
-                state.navigation.tab = DmnEditorTab.DATA_TYPES;
-                state.dataTypesEditor.activeItemDefinitionId = selectedDataType?.itemDefinition?.["@_id"];
-              })
-            }
-          >
-            <ArrowUpIcon />
-          </Button>
-        </Tooltip>
+        <Button
+          title={"Jump to definition"}
+          className={"kie-dmn-editor--data-type-jump-to-definition"}
+          variant={ButtonVariant.control}
+          onClick={(e) =>
+            dmnEditorStoreApi.setState((state) => {
+              state.navigation.tab = DmnEditorTab.DATA_TYPES;
+              state.dataTypesEditor.activeItemDefinitionId = selectedDataType?.itemDefinition?.["@_id"];
+            })
+          }
+        >
+          <ArrowUpIcon />
+        </Button>
       )}
       <Select
         toggleRef={toggleRef}
