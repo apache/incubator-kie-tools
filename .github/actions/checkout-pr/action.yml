@@ -56,7 +56,7 @@ runs:
           git log -n 1
           echo "base_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
 
-          git merge --squash $USER/$HEAD_REF
+          git merge --allow-unrelated-histories --squash $USER/$HEAD_REF
           git commit --no-edit
 
           echo "After merging..."
