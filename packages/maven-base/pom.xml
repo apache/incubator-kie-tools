@@ -195,17 +195,4 @@
       </plugin>
     </plugins>
   </build>
-
-  <distributionManagement>
-    <repository>
-      <id>apache-release-repository</id>
-      <name>Apache Release Staging Repository</name>
-      <url>https://repository.apache.org/service/local/staging/deploy/maven2</url>
-    </repository>
-    <snapshotRepository>
-      <id>apache-snapshot-repository</id>
-      <name>Apache Snapshot Repository</name>
-      <url>https://repository.apache.org/content/repositories/snapshots/</url>
-    </snapshotRepository>
-    </distributionManagement>
 </project>
