@@ -52,9 +52,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git@github.com:apache/incubator-kie-tools.git</connection>
-    <developerConnection>scm:git:git@github.com:apache/incubator-kie-tools.git</developerConnection>
-    <url>scm:git:git@github.com:apache/incubator-kie-tools.git</url>
+    <connection>scm:git:https://github.com/apache/incubator-kie-tools.git</connection>
+    <developerConnection>scm:git:https://github.com/apache/incubator-kie-tools.git</developerConnection>
+    <url>https://github.com/apache/incubator-kie-tools</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -62,6 +62,39 @@
     <system>github-issues</system>
     <url>https://github.com/apache/incubator-kie-issues/issues</url>
   </issueManagement>
+
+  <developers>
+    <developer>
+      <name>The Apache KIE Team</name>
+      <email>dev@kie.apache.org</email>
+      <url>https://kie.apache.org</url>
+      <organization>Apache Software Foundation</organization>
+      <organizationUrl>http://apache.org/</organizationUrl>
+    </developer>
+  </developers>
+  <mailingLists>
+    <mailingList>
+      <name>Development List</name>
+      <subscribe>dev-subscribe@kie.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@kie.apache.org</unsubscribe>
+      <post>dev@kie.apache.org</post>
+      <archive>https://lists.apache.org/list.html?dev@kie.apache.org</archive>
+    </mailingList>
+    <mailingList>
+      <name>User List</name>
+      <subscribe>users-subscribe@kie.apache.org</subscribe>
+      <unsubscribe>users-unsubscribe@kie.apache.org</unsubscribe>
+      <post>users@kie.apache.org</post>
+      <archive>https://lists.apache.org/list.html?users@kie.apache.org</archive>
+    </mailingList>
+    <mailingList>
+      <name>Commits List</name>
+      <subscribe>commits-subscribe@kie.apache.org</subscribe>
+      <unsubscribe>commits-unsubscribe@kie.apache.org</unsubscribe>
+      <post>commits@kie.apache.org</post>
+      <archive>https://lists.apache.org/list.html?commits@kie.apache.org</archive>
+    </mailingList>
+  </mailingLists>
 
   <properties>
     <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
@@ -114,9 +147,9 @@
         <scope>import</scope>
       </dependency>
       <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-quarkus-test-utils</artifactId>
-          <version>${version.org.kie.kogito}</version>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-quarkus-test-utils</artifactId>
+        <version>${version.org.kie.kogito}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
