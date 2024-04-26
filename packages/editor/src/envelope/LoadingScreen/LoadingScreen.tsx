@@ -47,7 +47,7 @@ export function LoadingScreen(props: { loading: boolean; styleTag?: string }) {
     }
   }, [props.loading]);
 
-  const style = (props.style ? `${props.style} ` : "") + "kie-tools--loading-screen";
+  const style = (props.styleTag ? `${props.styleTag} ` : "") + "kie-tools--loading-screen";
 
   return (
     (mustRender && (

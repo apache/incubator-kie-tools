@@ -466,7 +466,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
 
   return (
     <div style={{ height: "100%", background: themeStyle.backgroundColor }}>
-      <LoadingScreen loading={!isCombinedEditorReady} style={themeStyle.loadScreen} />
+      <LoadingScreen loading={!isCombinedEditorReady} styleTag={themeStyle.loadScreen} />
       {previewOptions?.editorMode === "diagram" ? (
         renderDiagramEditor()
       ) : previewOptions?.editorMode === "text" ? (
