@@ -9606,7 +9606,7 @@ importers:
   packages/serverless-logic-web-tools-swf-builder-image:
     devDependencies:
       "@kie-tools/kogito-swf-builder":
-        specifier: workspace*
+        specifier: workspace:*
         version: link:../kogito-swf-builder
       "@kie-tools/root-env":
         specifier: workspace:*
