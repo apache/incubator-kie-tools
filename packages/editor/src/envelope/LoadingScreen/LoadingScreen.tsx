@@ -24,7 +24,7 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { useEditorEnvelopeI18nContext } from "../i18n";
 
-export function LoadingScreen(props: { loading: boolean; styleTag?: string }) {
+export function LoadingScreen(props: { loading: boolean; style?: string }) {
   const [mustRender, setMustRender] = useState(true);
   const { i18n } = useEditorEnvelopeI18nContext();
 

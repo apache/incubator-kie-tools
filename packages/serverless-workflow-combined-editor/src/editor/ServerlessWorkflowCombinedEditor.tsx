@@ -493,7 +493,7 @@ interface ThemeStyleTag {
   loadScreen: string;
 }
 
-function getThemeStyle(theme: EditorTheme): ThemeStyle {
+function getThemeStyle(theme: EditorTheme): ThemeStyleTag {
   switch (theme) {
     case EditorTheme.DARK: {
       return {
