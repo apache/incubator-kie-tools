@@ -86,11 +86,11 @@ jobs:
         run: |
           pnpm -F "@kie-tools/kogito-serverless-operator^..." build:prod
 
-      - name: "Build @kie-tools/kogito-serverless-operator"
+      - name: "Build and test @kie-tools/kogito-serverless-operator"
         # if: steps.setup_build_mode.outputs.mode == 'run' # TODO: Tiago --> Temporarily commented until I fix the package filtering.
         env:
-          KIE_TOOLS_BUILD__runLinters: "true"
-          KIE_TOOLS_BUILD__runTests: "true"
+          KIE_TOOLS_BUILD__runLinters: "false" # No need.. the normal CI will do this.
+          KIE_TOOLS_BUILD__runTests: "false" # Only E2E!
           KIE_TOOLS_BUILD__runEndToEndTests: "true"
           KIE_TOOLS_BUILD__buildContainerImages: "true"
           KOGITO_SERVERLESS_OPERATOR__runEndToEndTests: "true"
