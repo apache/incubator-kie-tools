@@ -84,6 +84,7 @@ export function InputDataProperties({
               drgElement.variable["@_typeRef"] = newTypeRef;
             });
           }}
+          removeDataTypes={[]}
         />
       </FormGroup>
       <FormGroup label="Description">

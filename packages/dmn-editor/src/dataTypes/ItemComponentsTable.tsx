@@ -437,6 +437,7 @@ export function ItemComponentsTable({
                                 }
                               });
                             }}
+                            removeDataTypes={[]}
                           />
                         )}
                       </td>

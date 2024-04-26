@@ -48,6 +48,7 @@ export function TypeRefSelector({
   menuAppendTo,
   onCreate,
   onToggle,
+  removeDataTypes,
 }: {
   zoom?: number;
   heightRef: React.RefObject<HTMLElement>;
@@ -57,6 +58,7 @@ export function TypeRefSelector({
   onCreate?: OnCreateDataType;
   onToggle?: OnToggle;
   menuAppendTo?: "parent";
+  removeDataTypes: DataType[];
 }) {
   const [isOpen, setOpen] = useState(false);
   const { externalModelsByNamespace } = useExternalModels();
@@ -87,7 +89,9 @@ export function TypeRefSelector({
         }
 
         if (s.namespace === state.dmn.model.definitions["@_namespace"]) {
-          customDataTypes.push(s);
+          if ((removeDataTypes ?? []).findIndex((removeDataType) => removeDataType.feelName === s.feelName) < 0) {
+            customDataTypes.push(s);
+          }
         } else {
           externalDataTypes.push(s);
         }
