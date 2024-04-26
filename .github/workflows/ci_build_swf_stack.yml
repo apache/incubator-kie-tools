@@ -48,7 +48,7 @@ jobs:
           export PKGS_IN_SWF_STACK=("@kie-tools/serverless-logic-web-tools-swf-builder-image" "@kie-tools/kn-plugin-workflow" "@kie-tools/serverless-logic-web-tools" "@kie-tools/serverless-logic-web-tools-base-builder-image")
 
           npm install -g graph-data-structure@2.0.0
-          export GREP_RES=$(NODE_PATH=$(npm prefix -g)/lib/node_modules node scripts/sparse-checkout/list_packages_dependencies.js ./repo $PKGS_IN_SWF_STACK | tr -d '\n' | xargs -d ' ' -I{} echo -n " -e \"{}\"")
+          export GREP_RES=$(NODE_PATH=$(npm prefix -g)/lib/node_modules node scripts/sparse-checkout/list_packages_dependencies.js ./repo "${PKGS_IN_SWF_STACK[@]}" | tr -d '\n' | xargs -d ' ' -I{} echo -n " -e \"{}\"")
           echo "GREP RES:"
           echo $GREP_RES
           npm uninstall -g graph-data-structure
