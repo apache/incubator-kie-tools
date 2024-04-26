@@ -465,7 +465,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   const themeStyle = getThemeStyle(theme!);
 
   return (
-    <div style={{ height: "100%" }}>
+    <div style={{ height: "100%", background: themeStyle.backgroundColor }}>
       <LoadingScreen loading={!isCombinedEditorReady} style={themeStyle.loadScreen} />
       {previewOptions?.editorMode === "diagram" ? (
         renderDiagramEditor()
@@ -491,6 +491,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
 interface ThemeStyleTag {
   drawer: string;
   loadScreen: string;
+  backgroundColor: string;
 }
 
 function getThemeStyle(theme: EditorTheme): ThemeStyleTag {
@@ -499,12 +500,14 @@ function getThemeStyle(theme: EditorTheme): ThemeStyleTag {
       return {
         drawer: "dark",
         loadScreen: "vscode-dark",
+        backgroundColor: "black",
       };
     }
     default: {
       return {
         drawer: "",
         loadScreen: "",
+        backgroundColor: "",
       };
     }
   }
