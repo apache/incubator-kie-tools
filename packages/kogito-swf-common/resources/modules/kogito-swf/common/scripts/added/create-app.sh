@@ -126,6 +126,9 @@ if [ "${SCRIPT_DEBUG^^}" = "TRUE" ]; then
     cat pom.xml
 fi
 
+ls -la "${KOGITO_HOME}"/.m2/repository/org/apache/kie/
+ls -la "${KOGITO_HOME}"/.m2/repository/org/kie/
+
 # we force the dependencies download beforehand, so we won't have problems when running or building our apps in offline mode
 # see:
 #   https://quarkus.io/guides/maven-tooling#downloading-maven-artifact-dependencies-for-offline-development-and-testing
