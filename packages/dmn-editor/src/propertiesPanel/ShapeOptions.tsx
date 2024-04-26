@@ -70,14 +70,6 @@ export function ShapeOptions({
   const boundPositionX = useMemo(() => +(shapeBound?.["@_x"]?.toFixed(2) ?? ""), [shapeBound]);
   const boundPositionY = useMemo(() => +(shapeBound?.["@_y"]?.toFixed(2) ?? ""), [shapeBound]);
 
-  /**
-   * This variable was introduced for a special scenario when the **width** or **height** Shape input field has a focus.
-   * Then, do not close or reopen the Properties panel, however, immediately select another node.
-   * This will cause **onBlur** handler is invoked for **width** or **height** accordingly.
-   * The problem is in the time of **onBlur** execution, the selected node id (**nodeIds[0]**) refers to the new node,
-   * while **event.target.value** of the **onBlur** handler refers to value of the previously selected node.
-   * So in the **onBlur** implementation, we need to check, if the selected node is the same node that was used as source for the value in the event.target.value.
-   */
   const [width, setWidth] = useState<number>(boundWidth);
   const [height, setHeight] = useState<number>(boundHeight);
   /**
@@ -90,11 +82,13 @@ export function ShapeOptions({
 
   useEffect(() => {
     setWidth(boundWidth);
-  }, [boundWidth]);
+    previousNodeId.current = nodeIds[0];
+  }, [boundWidth, nodeIds]);
 
   useEffect(() => {
     setHeight(boundHeight);
-  }, [boundHeight]);
+    previousNodeId.current = nodeIds[0];
+  }, [boundHeight, nodeIds]);
 
   const fillColor = useMemo(() => {
     const b = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_blue"] ?? DEFAULT_FILL_COLOR["@_red"]).toString(16);
@@ -136,13 +130,9 @@ export function ShapeOptions({
     [dmnEditorStoreApi]
   );
 
-  const onChangeWidth = useCallback(
-    (newWidth: string) => {
-      setWidth(+newWidth);
-      previousNodeId.current = nodeIds[0];
-    },
-    [nodeIds]
-  );
+  const onChangeWidth = useCallback((newWidth: string) => {
+    setWidth(+newWidth);
+  }, []);
 
   const onBlurWidth = useCallback(
     (event) => {
@@ -164,13 +154,9 @@ export function ShapeOptions({
     [nodesById, setBounds]
   );
 
-  const onChangeHeight = useCallback(
-    (newHeight: string) => {
-      setHeight(+newHeight);
-      previousNodeId.current = nodeIds[0];
-    },
-    [nodeIds]
-  );
+  const onChangeHeight = useCallback((newHeight: string) => {
+    setHeight(+newHeight);
+  }, []);
 
   const onBlurHeight = useCallback(
     (event) => {
