@@ -48,8 +48,7 @@
     "requiredPreinstalledCliCommands": [
       "go",
       "make",
-      "python3",
-      "pip3"
+      "python3"
     ]
   }
 }

@@ -5948,6 +5948,12 @@ importers:
 
   packages/kn-plugin-workflow:
     devDependencies:
+      "@kie-tools/kogito-serverless-operator":
+        specifier: workspace:*
+        version: link:../kogito-serverless-operator
+      "@kie-tools/kogito-swf-devmode":
+        specifier: workspace:*
+        version: link:../kogito-swf-devmode
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -6050,6 +6056,9 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+      "@kie-tools/sonataflow-quarkus-devui":
+        specifier: workspace:*
+        version: link:../sonataflow-quarkus-devui
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -9596,6 +9605,9 @@ importers:
 
   packages/serverless-logic-web-tools-swf-builder-image:
     devDependencies:
+      "@kie-tools/kogito-swf-builder":
+        specifier: workspace*
+        version: link:../kogito-swf-builder
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env

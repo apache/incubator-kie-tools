@@ -18,6 +18,7 @@
  */
 
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
+const sonataFlowQuarkusDevUiEnv = require("@kie-tools/sonataflow-quarkus-devui/env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
@@ -37,6 +38,10 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "latest",
       description: "The image tag.",
     },
+    KOGITO_SWF_DEVMODE_IMAGE__sonataflowQuarkusDevUiVersion: {
+      default: sonataFlowQuarkusDevUiEnv.env.sonataflowQuarkusDevuiExtension.version,
+      description: "SonataFlow Quarkus Dev UI version",
+    },
   }),
   get env() {
     return {
@@ -46,6 +51,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         name: getOrDefault(this.vars.KOGITO_SWF_DEVMODE_IMAGE__name),
         tag: getOrDefault(this.vars.KOGITO_SWF_DEVMODE_IMAGE__buildTag),
         version: require("../package.json").version,
+        sonataflowQuarkusDevUiVersion: getOrDefault(this.vars.KOGITO_SWF_DEVMODE_IMAGE__sonataflowQuarkusDevUiVersion),
       },
     };
   },

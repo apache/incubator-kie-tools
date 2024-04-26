@@ -124,13 +124,14 @@ digraph G {
   "@kie-tools/kie-sandbox-helm-chart" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/online-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kn-plugin-workflow" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/kogito-serverless-operator" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kogito-management-console" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/runtime-tools-management-console-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/kogito-serverless-operator" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kogito-swf-builder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kogito-swf-devmode" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kogito-swf-common" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/python-venv" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/sonataflow-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kogito-task-console" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/runtime-tools-task-console-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/kubernetes-bridge" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -170,7 +171,6 @@ digraph G {
   "@kie-tools/serverless-workflow-service-catalog" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "swf-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/sonataflow-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/stunner-editors-dmn-loader" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-dashbuilder-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -393,7 +393,7 @@ digraph G {
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/image-env-to-json" [ style = "solid", color = "black" ];
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/online-editor" [ style = "solid", color = "black" ];
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
-  "@kie-tools/kn-plugin-workflow" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/kn-plugin-workflow" -> "@kie-tools/kogito-serverless-operator" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-management-console" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-management-console" -> "@kie-tools/image-env-to-json" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-management-console" -> "@kie-tools/runtime-tools-management-console-webapp" [ style = "dashed", color = "black" ];
@@ -403,6 +403,7 @@ digraph G {
   "@kie-tools/kogito-swf-common" -> "@kie-tools/python-venv" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-swf-common" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-swf-devmode" -> "@kie-tools/kogito-swf-common" [ style = "dashed", color = "black" ];
+  "@kie-tools/kogito-swf-devmode" -> "@kie-tools/sonataflow-quarkus-devui" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-task-console" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-task-console" -> "@kie-tools/image-env-to-json" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-task-console" -> "@kie-tools/runtime-tools-task-console-webapp" [ style = "dashed", color = "black" ];
@@ -488,6 +489,7 @@ digraph G {
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-base-builder-image" -> "@kie-tools/serverless-logic-web-tools-base-builder-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-base-builder-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/serverless-logic-web-tools-swf-builder-image" -> "@kie-tools/kogito-swf-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-builder-image" -> "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-builder-image" -> "sonataflow-deployment-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
