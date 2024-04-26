@@ -488,7 +488,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   );
 };
 
-interface ThemeStyle {
+interface ThemeStyleTag {
   drawer: string;
   loadScreen: string;
 }
