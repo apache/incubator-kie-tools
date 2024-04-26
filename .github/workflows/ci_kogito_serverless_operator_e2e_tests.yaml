@@ -36,7 +36,7 @@ jobs:
         id: ci_patterns
         uses: ./.github/actions/setup-ci-patterns
 
-      - name: "Setup build mode {none,run}"
+      - name: "Setup build mode {none,full}"
         id: setup_build_mode
         shell: bash
         run: |
@@ -45,18 +45,26 @@ jobs:
           echo ${#CHANGED_SOURCE_PATHS[@]}
           printf '%s\n' "${CHANGED_SOURCE_PATHS[@]}"
 
-          export CHANGED_SOURCE_PATHS_KOGITO_SERVERLESS_OPERATOR_OR_UPSTREAM=($(printf '%s\n' "${CHANGED_SOURCE_PATHS[@]}" | grep -v -e "^packages" -e "^examples")) # TODO: Tiago --> Fix this
+          export PKGS_IN_KOGITO_SERVERLESS_OPERATOR_STACK=("@kie-tools/kogito-serverless-operator")
+
+          npm install -g graph-data-structure@2.0.0
+          export GREP_RES=$(NODE_PATH=$(npm prefix -g)/lib/node_modules node scripts/sparse-checkout/list_packages_dependencies.js ./repo $PKGS_IN_KOGITO_SERVERLESS_OPERATOR_STACK | tr -d '\n' | xargs -d ' ' -I{} echo -n " -e \"{}\"")
+          echo "GREP RES:"
+          echo $GREP_RES
+          npm uninstall -g graph-data-structure
+
+          export CHANGED_SOURCE_PATHS_IN_KOGITO_SERVERLESS_OPERATOR_OR_UPSTREAM=($(eval "printf '%s\\n' "${CHANGED_SOURCE_PATHS[@]}" | grep $GREP_RES"))
           echo "Changed source paths in "@kie-tools/kogito-serverless-operator" or upstream:"
-          echo ${#CHANGED_SOURCE_PATHS_KOGITO_SERVERLESS_OPERATOR_OR_UPSTREAM[@]}
-          printf '%s\n' "${CHANGED_SOURCE_PATHS_KOGITO_SERVERLESS_OPERATOR_OR_UPSTREAM[@]}"
+          echo ${#CHANGED_SOURCE_PATHS_IN_KOGITO_SERVERLESS_OPERATOR_OR_UPSTREAM[@]}
+          printf '%s\n' "${CHANGED_SOURCE_PATHS_IN_KOGITO_SERVERLESS_OPERATOR_OR_UPSTREAM[@]}"
 
           if [ ${#CHANGED_SOURCE_PATHS[@]} -eq 0 ]; then
             echo 'No source files changed; `CI :: Kogito Serverless Operator :: E2E Tests` (none) will run.'
             echo "mode=none" >> $GITHUB_OUTPUT
           elif [ ! ${{ github.event.pull_request }} ]; then
             echo 'Push to the `main` branch happened; `CI :: Kogito Serverless Operator :: E2E Tests` (full) will run.'
-            echo "mode=run" >> $GITHUB_OUTPUT
-          elif [ ${#CHANGED_SOURCE_PATHS_KOGITO_SERVERLESS_OPERATOR_OR_UPSTREAM[@]} -eq 0 ]; then
+            echo "mode=full" >> $GITHUB_OUTPUT
+          elif [ ${#CHANGED_SOURCE_PATHS_IN_KOGITO_SERVERLESS_OPERATOR_OR_UPSTREAM[@]} -eq 0 ]; then
             echo 'No source files changed in "@kie-tools/kogito-serverless-operator" or upstream; `CI :: Kogito Serverless Operator :: E2E Tests` (none) will run.'
             echo "mode=none" >> $GITHUB_OUTPUT
           else
@@ -67,17 +75,17 @@ jobs:
           echo "Done"
 
       - name: "Setup environment"
-        # if: steps.setup_build_mode.outputs.mode != 'none' # TODO: Tiago --> Temporarily commented until I fix the package filtering.
+        if: steps.setup_build_mode.outputs.mode != 'none'
         uses: ./.github/actions/setup-env
 
       - name: "Bootstrap"
-        # if: steps.setup_build_mode.outputs.mode == 'run' # TODO: Tiago --> Temporarily commented until I fix the package filtering.
+        if: steps.setup_build_mode.outputs.mode == 'full'
         uses: ./.github/actions/bootstrap
         with:
           pnpm_filter_string: -F "@kie-tools/kogito-serverless-operator..."
 
       - name: "Build upstream"
-        # if: steps.setup_build_mode.outputs.mode == 'run' # TODO: Tiago --> Temporarily commented until I fix the package filtering.
+        if: steps.setup_build_mode.outputs.mode == 'full'
         env:
           KIE_TOOLS_BUILD__runLinters: "false"
           KIE_TOOLS_BUILD__runTests: "false"
@@ -87,7 +95,7 @@ jobs:
           pnpm -F "@kie-tools/kogito-serverless-operator^..." build:prod
 
       - name: "Build and test @kie-tools/kogito-serverless-operator"
-        # if: steps.setup_build_mode.outputs.mode == 'run' # TODO: Tiago --> Temporarily commented until I fix the package filtering.
+        if: steps.setup_build_mode.outputs.mode == 'full'
         env:
           KIE_TOOLS_BUILD__runLinters: "false" # No need.. the normal CI will do this.
           KIE_TOOLS_BUILD__runTests: "false" # Only E2E!
