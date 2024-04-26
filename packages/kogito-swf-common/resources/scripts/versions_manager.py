@@ -35,7 +35,7 @@ if __name__ == "__main__":
     parser.add_argument('--source-folder', dest='source_folder')
     parser.add_argument('--quarkus-version', dest='quarkus_version', help='Sets the image Quarkus Version')
     parser.add_argument('--kogito-version', dest='kogito_version', help='Sets the image Kogito Version')
-    parser.add_argument('--sonataflow-quarkus-devui-version', dest='sonataflow_quarkus_devui_version', help='Sets the image SonataFlow Quarkus DevUI Version')
+    parser.add_argument('--sonataflow-quarkus-devui-version', dest='sonataflow_quarkus_devui_version', help='Sets the image SonataFlow Quarkus DevUI Version', required=False)
 
     args = parser.parse_args()
 
