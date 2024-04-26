@@ -25,7 +25,7 @@ runs:
       uses: actions/checkout@v3
       with:
         ref: ${{ inputs.ref }}
-        fetch-depth: 1
+        fetch-depth: 0
         path: ${{ inputs.path }}
 
     - name: "Setup global Git user (kie-tools-bot)"
@@ -50,13 +50,13 @@ runs:
 
           echo "Merge changes from $USER/$HEAD_REF"
           git remote add $USER https://github.com/$USER/$PR_HEAD_REPO_NAME.git
-          git fetch $USER $HEAD_REF --depth 1
+          git fetch $USER $HEAD_REF
           
           echo "Before merging..."
           git log -n 1
           echo "base_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
 
-          git merge --allow-unrelated-histories --squash $USER/$HEAD_REF
+          git merge --squash $USER/$HEAD_REF
           git commit --no-edit
 
           echo "After merging..."
