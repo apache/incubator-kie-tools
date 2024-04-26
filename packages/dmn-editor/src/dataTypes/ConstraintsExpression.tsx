@@ -44,7 +44,6 @@ export function ConstraintsExpression({
 }) {
   const [preview, setPreview] = useState(value ?? "");
   const valueCopy = useRef(value);
-  const editingValue = useRef(value);
   const onFeelChange = useCallback(
     (_, content, preview) => {
       if (valueCopy.current !== content) {
@@ -93,7 +92,7 @@ export function ConstraintsExpression({
             <p style={{ fontStyle: "italic" }}>{`<None>`}</p>
           ))}
         <FeelInput
-          value={isReadonly ? value : editingValue.current}
+          value={value}
           onChange={onFeelChange}
           onPreviewChanged={(newPreview: string) => setPreview(newPreview)}
           enabled={!isReadonly}
