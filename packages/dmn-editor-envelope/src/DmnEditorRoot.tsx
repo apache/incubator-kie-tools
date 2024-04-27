@@ -78,11 +78,13 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
   private readonly externalModelsManagerDoneBootstraping = imperativePromiseHandle<void>();
 
   private readonly dmnEditorRef: React.RefObject<DmnEditor.DmnEditorRef>;
+  private keyboardShortcutIds: number[];
 
   constructor(props: DmnEditorRootProps) {
     super(props);
     props.exposing(this);
     this.dmnEditorRef = React.createRef();
+    this.keyboardShortcutIds = [];
     this.state = {
       externalModelsByNamespace: {},
       marshaller: undefined,
@@ -273,21 +275,81 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     );
   };
 
-  private componentDidMount() {
+  public componentDidMount() {
+    const keyboardShortcuts = this.dmnEditorRef.current?.getKeyboardShortcuts();
+    if (keyboardShortcuts === undefined || this.props.keyboardShortcutsService === undefined) {
+      return;
+    }
+
+    this.keyboardShortcutIds.push(
+      this.props.keyboardShortcutsService.registerKeyPress("Escape", "Diagram | Cancel action", async () =>
+        keyboardShortcuts.cancelAction()
+      )
+    );
+    this.keyboardShortcutIds.push(
+      this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+C", "Diagram | Copy", async () =>
+        keyboardShortcuts.copy()
+      )
+    );
+    this.keyboardShortcutIds.push(
+      this.props.keyboardShortcutsService?.registerKeyPress(
+        "g",
+        "Diagram | Create group wrapping selection",
+        async () => keyboardShortcuts.createGroup()
+      )
+    );
+    this.keyboardShortcutIds.push(
+      this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+X", "Diagram | Cut", async () =>
+        keyboardShortcuts.cut()
+      )
+    );
+    this.keyboardShortcutIds.push(
+      this.props.keyboardShortcutsService?.registerKeyPress("b", "Diagram | Focus on node bounds", async () =>
+        keyboardShortcuts.focusOnBounds()
+      )
+    );
+    this.keyboardShortcutIds.push(
+      this.props.keyboardShortcutsService?.registerKeyPress("x", "Diagram | Hide from DRD", async () =>
+        keyboardShortcuts.hideFromDrd()
+      )
+    );
+    this.keyboardShortcutIds.push(
+      this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+V", "Diagram | Paste", async () =>
+        keyboardShortcuts.paste()
+      )
+    );
+    this.keyboardShortcutIds.push(
+      this.props.keyboardShortcutsService?.registerKeyPress("Space", "Diagram | Reset position to origin", async () =>
+        keyboardShortcuts.resetPosition()
+      )
+    );
+    this.keyboardShortcutIds.push(
+      this.props.keyboardShortcutsService?.registerKeyPress("A", "Diagram | Select/Deselect all", async () =>
+        keyboardShortcuts.selectAll()
+      )
+    );
+    this.keyboardShortcutIds.push(
+      this.props.keyboardShortcutsService?.registerKeyPress("h", "Diagram | Toggle hierarchy highlights", async () =>
+        keyboardShortcuts.toggleHierarchyHighlight()
+      )
+    );
+    this.keyboardShortcutIds.push(
+      this.props.keyboardShortcutsService?.registerKeyPress("i", "Diagram | Show properties panel", async () =>
+        keyboardShortcuts.togglePropertiesPanel()
+      )
+    );
+  }
+
+  public componentWillUnmount() {
     const keyboardShortcuts = this.dmnEditorRef.current?.getKeyboardShortcuts();
     if (keyboardShortcuts === undefined) {
       return;
     }
-    Object(keyboardShortcuts)
-      .keys()
-      .forEach((keyboardShortcutMethodName: keyof typeof keyboardShortcuts) => {
-        this.props.keyboardShortcutsService?.registerKeyPress("", "", async () =>
-          keyboardShortcuts[keyboardShortcutMethodName]()
-        );
-      });
-  }
 
-  private componentDidUnmount() {}
+    this.keyboardShortcutIds.forEach((id) => {
+      this.props.keyboardShortcutsService?.deregister(id);
+    });
+  }
 
   public render() {
     return (

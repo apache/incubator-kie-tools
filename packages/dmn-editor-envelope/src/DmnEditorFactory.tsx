@@ -141,7 +141,7 @@ function DmnEditorRootWrapper({
     [envelopeContext]
   );
 
-  useDmnEditorKeyboardShortcuts(envelopeContext?.services.keyboardShortcuts);
+  // useDmnEditorKeyboardShortcuts(envelopeContext?.services.keyboardShortcuts);
 
   return (
     <DmnEditorRoot

@@ -190,12 +190,12 @@ export const DmnEditorInternal = ({
 
   const { dmnModelBeforeEditingRef, dmnEditorRootElementRef } = useDmnEditor();
   const { externalModelsByNamespace } = useExternalModels();
-  useKeyboardShortcuts();
 
   // Refs
   const diagramRef = useRef<DiagramRef>(null);
   const diagramContainerRef = useRef<HTMLDivElement>(null);
   const beeContainerRef = useRef<HTMLDivElement>(null);
+  const rfStoreApi = RF.useStoreApi();
 
   // Allow imperativelly controlling the Editor.
   useImperativeHandle(
@@ -248,10 +248,36 @@ export const DmnEditorInternal = ({
         return new XMLSerializer().serializeToString(svg);
       },
       getKeyboardShortcuts: () => {
-        return dmnEditorStoreApi.getState().keyboardShortcuts;
+        return {
+          cancelAction: async () => {
+            rfStoreApi.setState((rfState) => {
+              if (rfState.connectionNodeId) {
+                console.debug("DMN DIAGRAM: Esc pressed. Cancelling connection.");
+                rfState.cancelConnection();
+                dmnEditorStoreApi.setState((state) => {
+                  state.diagram.ongoingConnection = undefined;
+                });
+              } else {
+                (document.activeElement as any)?.blur?.();
+              }
+
+              return rfState;
+            });
+          },
+          copy: async () => {},
+          createGroup: async () => {},
+          cut: async () => {},
+          focusOnBounds: async () => {},
+          hideFromDrd: async () => {},
+          paste: async () => {},
+          resetPosition: async () => {},
+          selectAll: async () => {},
+          toggleHierarchyHighlight: async () => {},
+          togglePropertiesPanel: async () => {},
+        };
       },
     }),
-    [dmnEditorStoreApi, externalModelsByNamespace]
+    [dmnEditorStoreApi, externalModelsByNamespace, rfStoreApi]
   );
 
   // Make sure the DMN Editor reacts to props changing.
