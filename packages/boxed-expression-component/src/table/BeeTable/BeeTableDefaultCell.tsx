@@ -18,11 +18,12 @@
  */
 
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { BeeTableCellUpdate } from ".";
 import { BeeTableEditableCellContent } from "./BeeTableEditableCellContent";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import * as ReactTable from "react-table";
+import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 
 export function BeeTableDefaultCell<R extends object>({
   cellProps,
@@ -66,6 +67,17 @@ export function BeeTableDefaultCell<R extends object>({
     onCellChanged,
     getValue
   );
+
+  // FIXME: The BeeTable shouldn't know about DMN or GWT
+  // The following useEffect shouldn't be placed here.
+  const { beeGwtService } = useBoxedExpressionEditor();
+  useEffect(() => {
+    if (isActive) {
+      const column = cellProps.column.id;
+      const cell = cellProps.row.values[column] as { id: string; content: string };
+      beeGwtService?.selectObject(cell ? cell.id : "");
+    }
+  }, [beeGwtService, cellProps.column.id, cellProps.columns, cellProps.row.values, isActive]);
 
   return (
     <BeeTableEditableCellContent

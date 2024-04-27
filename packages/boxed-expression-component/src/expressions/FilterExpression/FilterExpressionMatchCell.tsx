@@ -21,9 +21,10 @@ import { BeeTableCellProps, BoxedFilter } from "../../api";
 import {
   NestedExpressionDispatchContextProvider,
   OnSetExpression,
+  useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../../BoxedExpressionEditorContext";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 import { ROWTYPE } from "./FilterExpressionComponent";
 import "./FilterExpression.css";
@@ -32,13 +33,8 @@ import {
   NestedExpressionContainerContextType,
   useNestedExpressionContainer,
 } from "../../resizing/NestedExpressionContainerContext";
-import {
-  FILTER_EXPRESSION_MATCH_ROW_EXTRA_WIDTH,
-  LITERAL_EXPRESSION_EXTRA_WIDTH,
-  LITERAL_EXPRESSION_MIN_WIDTH,
-} from "../../resizing/WidthConstants";
-import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
-import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
+import { FILTER_EXPRESSION_MATCH_ROW_EXTRA_WIDTH } from "../../resizing/WidthConstants";
+import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 
 export function FilterExpressionMatchCell({
   rowIndex,
@@ -49,6 +45,15 @@ export function FilterExpressionMatchCell({
   parentElementId: string;
 }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
+  const { expression } = items[0];
+  const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
+  const { beeGwtService } = useBoxedExpressionEditor();
+
+  useEffect(() => {
+    if (isActive) {
+      beeGwtService?.selectObject(expression?.["@_id"]);
+    }
+  }, [beeGwtService, expression, isActive]);
 
   const onSetExpression = useCallback<OnSetExpression>(
     ({ getNewExpression }) => {

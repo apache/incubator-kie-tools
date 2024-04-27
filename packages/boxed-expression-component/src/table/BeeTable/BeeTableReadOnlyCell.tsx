@@ -41,8 +41,9 @@ export const BeeTableReadOnlyCell: React.FunctionComponent<BeeTableReadOnlyCellP
     getValue
   );
 
+  // FIXME: The BeeTable shouldn't know about DMN or GWT
+  // The following useEffect shouldn't be placed here.
   const { beeGwtService } = useBoxedExpressionEditor();
-
   useEffect(() => {
     if (isActive) {
       beeGwtService?.selectObject("");

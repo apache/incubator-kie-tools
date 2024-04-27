@@ -224,6 +224,7 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
             "@_id": e.entryInfo.id,
             expression: gwtToBee(e.entryExpression, __widths)!,
             parameter: {
+              "@_id": e.entryInfo.id,
               "@_name": e.entryInfo.name,
               "@_typeRef": e.entryInfo.dataType,
             },
@@ -261,7 +262,7 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
             expression: r.cells.map((cell) => ({
               __$$element: "literalExpression",
               text: { __$$text: cell.content },
-              id: cell.id,
+              "@_id": cell.id,
             })),
           };
         }),

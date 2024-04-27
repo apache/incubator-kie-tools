@@ -44,7 +44,6 @@ import {
   JAVA_FUNCTION_EXPRESSION_VALUES_COLUMN_WIDTH_INDEX,
   JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
 } from "../../resizing/WidthConstants";
-import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
@@ -55,6 +54,7 @@ import {
   DMN15__tLiteralExpression,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import "./JavaFunctionExpression.css";
+import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 
 export type JAVA_ROWTYPE = {
   value: string;
@@ -120,6 +120,10 @@ export function JavaFunctionExpression({
   );
 
   const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(functionExpression.formalParameter);
+  const parametersId = useMemo(
+    () => (functionExpression["@_id"] ? `${functionExpression["@_id"]}-parameters` : "parameters"),
+    [functionExpression]
+  );
 
   const beeTableColumns = useMemo<ReactTable.Column<JAVA_ROWTYPE>[]>(() => {
     return [
@@ -132,7 +136,7 @@ export function JavaFunctionExpression({
         columns: [
           {
             headerCellElement: parametersColumnHeader,
-            accessor: "parameters" as any,
+            accessor: parametersId as any,
             label: "parameters",
             isRowIndexColumn: false,
             dataType: undefined as any,
@@ -168,6 +172,7 @@ export function JavaFunctionExpression({
     classAndMethodNamesWidth,
     parametersColumnHeader,
     setClassAndMethodNamesWidth,
+    parametersId,
   ]);
 
   const headerVisibility = useMemo(() => {

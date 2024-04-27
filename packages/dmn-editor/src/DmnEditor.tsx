@@ -20,32 +20,33 @@
 import "@patternfly/react-core/dist/styles/base.css";
 import "reactflow/dist/style.css";
 
-import { AllDmnMarshallers, DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import * as RF from "reactflow";
+import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { original } from "immer";
 import { PMML } from "@kie-tools/pmml-editor-marshaller";
-import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
-import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { Tab, TabTitleIcon, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/components/Tabs";
+import { DmnLatestModel, AllDmnMarshallers } from "@kie-tools/dmn-marshaller";
 import { FileIcon } from "@patternfly/react-icons/dist/js/icons/file-icon";
 import { InfrastructureIcon } from "@patternfly/react-icons/dist/js/icons/infrastructure-icon";
 import { PficonTemplateIcon } from "@patternfly/react-icons/dist/js/icons/pficon-template-icon";
-import { original } from "immer";
-import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import * as ReactDOM from "react-dom";
-import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
-import * as RF from "reactflow";
-import { DmnEditorContextProvider, useDmnEditor } from "./DmnEditorContext";
-import { DmnEditorErrorFallback } from "./DmnEditorErrorFallback";
+import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { Tab, TabTitleIcon, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/components/Tabs";
 import { BoxedExpressionScreen } from "./boxedExpressions/BoxedExpressionScreen";
 import { DataTypes } from "./dataTypes/DataTypes";
 import { Diagram, DiagramRef } from "./diagram/Diagram";
 import { DmnVersionLabel } from "./diagram/DmnVersionLabel";
+import { normalize } from "./normalization/normalize";
+import { BoxedExpressionPropertiesPanel } from "./propertiesPanel/BoxedExpressionPropertiesPanel";
+import { DmnEditorContextProvider, useDmnEditor } from "./DmnEditorContext";
+import { DmnEditorErrorFallback } from "./DmnEditorErrorFallback";
 import {
   DmnEditorExternalModelsContextProvider,
   useExternalModels,
 } from "./includedModels/DmnEditorDependenciesContext";
 import { IncludedModels } from "./includedModels/IncludedModels";
-import { BeePropertiesPanel } from "./propertiesPanel/BeePropertiesPanel";
 import { DiagramPropertiesPanel } from "./propertiesPanel/DiagramPropertiesPanel";
 import { ComputedStateCache } from "./store/ComputedStateCache";
 import { Computed, DmnEditorTab, createDmnEditorStore, defaultStaticState } from "./store/Store";
@@ -243,8 +244,8 @@ export const DmnEditorInternal = ({
       if (model === original(state.dmn.model)) {
         return;
       }
-      state.dmn.model = model;
-      dmnModelBeforeEditingRef.current = model;
+      state.dmn.model = normalize(model);
+      dmnModelBeforeEditingRef.current = state.dmn.model;
     });
   }, [dmnEditorStoreApi, model]);
 
@@ -328,7 +329,7 @@ export const DmnEditorInternal = ({
   }, [dmn.model.definitions.import?.length, dmn.model.definitions.itemDefinition?.length]);
 
   const diagramPropertiesPanel = useMemo(() => <DiagramPropertiesPanel />, []);
-  const beePropertiesPanel = useMemo(() => <BeePropertiesPanel />, []);
+  const beePropertiesPanel = useMemo(() => <BoxedExpressionPropertiesPanel />, []);
 
   return (
     <div ref={dmnEditorRootElementRef} className={"kie-dmn-editor--root"}>

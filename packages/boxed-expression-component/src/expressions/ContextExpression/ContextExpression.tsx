@@ -262,7 +262,7 @@ export function ContextExpression({
 
   const beeTableAdditionalRow = useMemo(() => {
     return [
-      <ContextResultInfoCell key={"context-result-info"} />,
+      <ContextResultInfoCell key={"context-result-info"} parentElementId={parentElementId} />,
       <ContextResultExpressionCell
         key={"context-result-expression"}
         contextExpression={contextExpression}
@@ -270,7 +270,7 @@ export function ContextExpression({
         columnIndex={2}
       />,
     ];
-  }, [contextExpression]);
+  }, [contextExpression, parentElementId]);
 
   const getDefaultContextEntry = useCallback(
     (name?: string): DMN15__tContextEntry => {
@@ -284,6 +284,7 @@ export function ContextExpression({
         "@_id": generateUuid(),
         expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
         variable: {
+          "@_id": generateUuid(),
           "@_name": variableName,
           "@_typeRef": DmnBuiltInDataType.Undefined,
           description: { __$$text: "" },
@@ -509,7 +510,7 @@ export function solveResultAndEntriesIndex({
   return { isResultOperation, hasResultEntry, resultIndex, entryIndex };
 }
 
-export function ContextResultInfoCell() {
+export function ContextResultInfoCell(props: { parentElementId: string }) {
   const { containerCellCoordinates } = useBeeTableCoordinates();
 
   const value = useMemo(() => {
@@ -529,11 +530,12 @@ export function ContextResultInfoCell() {
 
   const { beeGwtService } = useBoxedExpressionEditor();
 
+  // Selecting the context result cell should be the parent data type
   useEffect(() => {
     if (isActive) {
-      beeGwtService?.selectObject("");
+      beeGwtService?.selectObject(props.parentElementId);
     }
-  }, [beeGwtService, isActive]);
+  }, [beeGwtService, isActive, props.parentElementId]);
 
   return <div className="context-result">{value}</div>;
 }

@@ -48,9 +48,6 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
       onFunctionKindSelect(itemId as DMN15__tFunctionKind);
       setVisibleHelp("");
       hide();
-      setTimeout(() => {
-        onFunctionKindSelect(itemId as DMN15__tFunctionKind);
-      }, 0);
     },
     [onFunctionKindSelect]
   );
