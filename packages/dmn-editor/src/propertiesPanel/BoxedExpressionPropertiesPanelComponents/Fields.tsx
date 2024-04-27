@@ -103,7 +103,6 @@ export function TypeRefField(props: {
         typeRef={props.typeRef}
         isDisabled={props.isReadonly}
         onChange={(newValue: string) => props.onChange?.(newValue)}
-        removeDataTypes={[]}
       />
     </FormGroup>
   );

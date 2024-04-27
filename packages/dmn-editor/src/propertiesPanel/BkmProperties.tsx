@@ -85,7 +85,6 @@ export function BkmProperties({
               drgElement.variable["@_typeRef"] = newTypeRef;
             });
           }}
-          removeDataTypes={[]}
         />
       </FormGroup>
 

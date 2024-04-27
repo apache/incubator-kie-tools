@@ -130,7 +130,6 @@ export function DecisionServiceProperties({
               drgElement.variable["@_typeRef"] = newTypeRef;
             });
           }}
-          removeDataTypes={[]}
         />
       </FormGroup>
 

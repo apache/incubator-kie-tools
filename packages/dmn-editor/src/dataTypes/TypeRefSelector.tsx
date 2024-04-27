@@ -57,7 +57,7 @@ export function TypeRefSelector({
   onCreate?: OnCreateDataType;
   onToggle?: OnToggle;
   menuAppendTo?: "parent";
-  removeDataTypes: DataType[];
+  removeDataTypes?: DataType[];
 }) {
   const [isOpen, setOpen] = useState(false);
   const { externalModelsByNamespace } = useExternalModels();

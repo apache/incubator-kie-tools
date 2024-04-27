@@ -85,7 +85,6 @@ export function DecisionProperties({
               drgElement.variable["@_typeRef"] = newTypeRef;
             });
           }}
-          removeDataTypes={[]}
         />
       </FormGroup>
 

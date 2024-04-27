@@ -74,7 +74,6 @@ export function DataTypeNodePanel(props: {
               onToggle={props.onToggle}
               menuAppendTo={"parent"}
               isDisabled={isExternalNode}
-              removeDataTypes={[]}
             />
           </div>
         </div>
