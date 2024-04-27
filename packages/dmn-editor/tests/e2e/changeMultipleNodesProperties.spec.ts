@@ -45,4 +45,45 @@ test.describe("Change Properties - Multiple Nodes", () => {
 
     await expect(diagram.get()).toHaveScreenshot("change-multiple-nodes-font.png");
   });
+
+  test("should reset multiple nodes shape", async ({ nodes, palette, diagram, multipleNodesPropertiesPanel }) => {
+    await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
+    await nodes.resize({ nodeName: DefaultNodeName.INPUT_DATA, xOffset: 50, yOffset: 50 });
+    await diagram.resetFocus();
+    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 400, y: 100 } });
+    await nodes.resize({ nodeName: DefaultNodeName.DECISION, xOffset: 50, yOffset: 50 });
+    await diagram.resetFocus();
+
+    await multipleNodesPropertiesPanel.open();
+    await nodes.selectMultiple({ names: [DefaultNodeName.INPUT_DATA, DefaultNodeName.DECISION] });
+    await multipleNodesPropertiesPanel.resetShape();
+
+    await expect(diagram.get()).toHaveScreenshot("change-multiple-nodes-shape.png");
+  });
+
+  test("should update shape properties when switching between nodes", async ({
+    nodes,
+    palette,
+    diagram,
+    inputDataPropertiesPanel,
+    decisionPropertiesPanel,
+  }) => {
+    await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
+    await nodes.resize({ nodeName: DefaultNodeName.INPUT_DATA, xOffset: 50, yOffset: 50 });
+    await diagram.resetFocus();
+    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 400, y: 100 } });
+    await nodes.resize({ nodeName: DefaultNodeName.DECISION, xOffset: 100, yOffset: 100 });
+    await diagram.resetFocus();
+
+    await inputDataPropertiesPanel.open();
+    await nodes.select({ name: DefaultNodeName.INPUT_DATA });
+    const { width: inputDataWidth, height: inputDataHeight } = await inputDataPropertiesPanel.getShape();
+    expect(inputDataWidth).toEqual("200");
+    expect(inputDataHeight).toEqual("120");
+
+    await nodes.select({ name: DefaultNodeName.DECISION });
+    const { width: decisionWidth, height: decisionHeight } = await decisionPropertiesPanel.getShape();
+    expect(decisionWidth).toEqual("260");
+    expect(decisionHeight).toEqual("180");
+  });
 });

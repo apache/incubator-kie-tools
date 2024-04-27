@@ -189,7 +189,6 @@ test.describe("Resize node - Input Data", () => {
         type: TestAnnotations.REGRESSION,
         description: "https://github.com/apache/incubator-kie-issues/issues/1074",
       });
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1074");
       await inputDataPropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.INPUT_DATA });
       await inputDataPropertiesPanel.setShape({ width: "50", height: "50" });
@@ -207,7 +206,6 @@ test.describe("Resize node - Input Data", () => {
         type: TestAnnotations.REGRESSION,
         description: "https://github.com/apache/incubator-kie-issues/issues/1075",
       });
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1075");
       await inputDataPropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.INPUT_DATA });
       await inputDataPropertiesPanel.setShape({ width: "300", height: "300" });
