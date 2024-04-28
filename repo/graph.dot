@@ -169,6 +169,7 @@ digraph G {
   "@kie-tools/serverless-workflow-service-catalog" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "swf-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/sonataflow-management-console-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/sonataflow-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/stunner-editors-dmn-loader" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -521,6 +522,8 @@ digraph G {
   "sonataflow-deployment-webapp" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
   "sonataflow-deployment-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
   "sonataflow-deployment-webapp" -> "@kie-tools/runtime-tools-swf-webapp-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/runtime-tools-process-webapp-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/sonataflow-quarkus-devui" -> "@kie-tools/serverless-workflow-dev-ui-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools/storybook-base" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/storybook-base" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];

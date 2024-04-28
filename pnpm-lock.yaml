@@ -11047,6 +11047,259 @@ importers:
         specifier: ^5.9.0
         version: 5.9.0
 
+  packages/sonataflow-management-console-webapp:
+    dependencies:
+      "@kie-tools/runtime-tools-components":
+        specifier: workspace:*
+        version: link:../runtime-tools-components
+      "@kie-tools/runtime-tools-process-enveloped-components":
+        specifier: workspace:*
+        version: link:../runtime-tools-process-enveloped-components
+      "@kie-tools/runtime-tools-process-gateway-api":
+        specifier: workspace:*
+        version: link:../runtime-tools-process-gateway-api
+      "@kie-tools/runtime-tools-process-webapp-components":
+        specifier: workspace:*
+        version: link:../runtime-tools-process-webapp-components
+      "@kie-tools/runtime-tools-shared-enveloped-components":
+        specifier: workspace:*
+        version: link:../runtime-tools-shared-enveloped-components
+      "@kie-tools/runtime-tools-shared-gateway-api":
+        specifier: workspace:*
+        version: link:../runtime-tools-shared-gateway-api
+      "@kie-tools/runtime-tools-shared-webapp-components":
+        specifier: workspace:*
+        version: link:../runtime-tools-shared-webapp-components
+      "@patternfly/patternfly":
+        specifier: ^4.224.2
+        version: 4.224.2
+      "@patternfly/react-core":
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
+      apollo-cache-inmemory:
+        specifier: 1.6.6
+        version: 1.6.6(graphql@14.3.1)
+      apollo-client:
+        specifier: 2.6.10
+        version: 2.6.10(graphql@14.3.1)
+      apollo-link-context:
+        specifier: ^1.0.20
+        version: 1.0.20(graphql@14.3.1)
+      apollo-link-error:
+        specifier: 1.1.13
+        version: 1.1.13(graphql@14.3.1)
+      apollo-link-http:
+        specifier: 1.5.17
+        version: 1.5.17(graphql@14.3.1)
+      axios:
+        specifier: ^1.6.4
+        version: 1.6.4
+      graphql:
+        specifier: 14.3.1
+        version: 14.3.1
+      history:
+        specifier: ^4.9.0
+        version: 4.10.1
+      react:
+        specifier: ^17.0.2
+        version: 17.0.2
+      react-apollo:
+        specifier: 3.1.3
+        version: 3.1.3(@types/react@17.0.21)(apollo-cache@1.3.5)(apollo-client@2.6.10)(apollo-link@1.2.14)(apollo-utilities@1.3.4)(graphql@14.3.1)(react-dom@17.0.2)(react@17.0.2)
+      react-apollo-hooks:
+        specifier: ^0.5.0
+        version: 0.5.0(apollo-client@2.6.10)(graphql@14.3.1)(react@17.0.2)
+      react-dom:
+        specifier: ^17.0.2
+        version: 17.0.2(react@17.0.2)
+      react-router:
+        specifier: ^5.3.4
+        version: 5.3.4(react@17.0.2)
+      react-router-dom:
+        specifier: ^5.3.4
+        version: 5.3.4(react@17.0.2)
+    devDependencies:
+      "@babel/core":
+        specifier: ^7.16.0
+        version: 7.23.9
+      "@babel/preset-env":
+        specifier: ^7.16.0
+        version: 7.23.9(@babel/core@7.23.9)
+      "@graphql-codegen/add":
+        specifier: ^3.2.3
+        version: 3.2.3(graphql@14.3.1)
+      "@graphql-codegen/cli":
+        specifier: ^2.16.5
+        version: 2.16.5(@babel/core@7.23.9)(@types/node@18.17.18)(graphql@14.3.1)(typescript@4.8.4)
+      "@graphql-codegen/introspection":
+        specifier: ^2.2.3
+        version: 2.2.3(graphql@14.3.1)
+      "@graphql-codegen/typescript":
+        specifier: ^2.8.8
+        version: 2.8.8(graphql@14.3.1)
+      "@graphql-codegen/typescript-operations":
+        specifier: ^2.5.13
+        version: 2.5.13(graphql@14.3.1)
+      "@graphql-codegen/typescript-react-apollo":
+        specifier: ^3.3.7
+        version: 3.3.7(graphql-tag@2.0.0)(graphql@14.3.1)
+      "@kie-tools-core/webpack-base":
+        specifier: workspace:*
+        version: link:../webpack-base
+      "@kie-tools/eslint":
+        specifier: workspace:*
+        version: link:../eslint
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@testing-library/jest-dom":
+        specifier: ^5.16.1
+        version: 5.16.1
+      "@types/enzyme":
+        specifier: ^3.10.13
+        version: 3.10.18
+      "@types/jest":
+        specifier: ^26.0.23
+        version: 26.0.23
+      "@types/react":
+        specifier: ^17.0.6
+        version: 17.0.21
+      "@types/react-dom":
+        specifier: ^17.0.5
+        version: 17.0.8
+      "@types/react-router":
+        specifier: ^5.1.20
+        version: 5.1.20
+      "@types/react-router-dom":
+        specifier: ^5.3.3
+        version: 5.3.3
+      "@types/webpack":
+        specifier: ^4.41.33
+        version: 4.41.38
+      "@wojtekmaj/enzyme-adapter-react-17":
+        specifier: ^0.8.0
+        version: 0.8.0(enzyme@3.11.0)(react-dom@17.0.2)(react@17.0.2)
+      apollo-server-express:
+        specifier: ^3.13.0
+        version: 3.13.0(express@4.18.2)(graphql@14.3.1)
+      babel-jest:
+        specifier: ^25.5.1
+        version: 25.5.1(@babel/core@7.23.9)
+      body-parser:
+        specifier: ^1.20.2
+        version: 1.20.2
+      concurrently:
+        specifier: ^8.2.2
+        version: 8.2.2
+      copy-webpack-plugin:
+        specifier: ^11.0.0
+        version: 11.0.0(webpack@5.88.2)
+      core-js:
+        specifier: 3.6.5
+        version: 3.6.5
+      cors:
+        specifier: ^2.8.5
+        version: 2.8.5
+      css-loader:
+        specifier: ^5.2.6
+        version: 5.2.7(webpack@5.88.2)
+      css-minimizer-webpack-plugin:
+        specifier: ^5.0.1
+        version: 5.0.1(webpack@5.88.2)
+      enzyme:
+        specifier: ^3.11.0
+        version: 3.11.0
+      enzyme-to-json:
+        specifier: ^3.6.2
+        version: 3.6.2(enzyme@3.11.0)
+      express:
+        specifier: ^4.18.2
+        version: 4.18.2
+      file-loader:
+        specifier: ^6.2.0
+        version: 6.2.0(webpack@5.88.2)
+      html-webpack-plugin:
+        specifier: ^5.3.2
+        version: 5.5.3(webpack@5.88.2)
+      https-browserify:
+        specifier: ^1.0.0
+        version: 1.0.0
+      identity-obj-proxy:
+        specifier: ^3.0.0
+        version: 3.0.0
+      jest:
+        specifier: ^26.6.3
+        version: 26.6.3(ts-node@10.9.1)
+      jest-junit:
+        specifier: ^14.0.0
+        version: 14.0.0
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+      mini-css-extract-plugin:
+        specifier: ^2.7.6
+        version: 2.8.1(webpack@5.88.2)
+      nodemon:
+        specifier: ^2.0.22
+        version: 2.0.22
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      sass-loader:
+        specifier: ^12.3.0
+        version: 12.4.0(webpack@5.88.2)
+      serve:
+        specifier: ^12.0.1
+        version: 12.0.1
+      start-server-and-test:
+        specifier: ^1.12.1
+        version: 1.12.1
+      stream-http:
+        specifier: ^3.2.0
+        version: 3.2.0
+      style-loader:
+        specifier: ^2.0.0
+        version: 2.0.0(webpack@5.88.2)
+      svg-url-loader:
+        specifier: ^8.0.0
+        version: 8.0.0(webpack@5.88.2)
+      ts-jest:
+        specifier: ^26.5.6
+        version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      ts-loader:
+        specifier: ^9.4.2
+        version: 9.4.2(typescript@4.8.4)(webpack@5.88.2)
+      tsconfig-paths-webpack-plugin:
+        specifier: ^3.5.2
+        version: 3.5.2
+      typescript:
+        specifier: ^4.6.2
+        version: 4.8.4
+      url-loader:
+        specifier: ^4.1.1
+        version: 4.1.1(file-loader@6.2.0)(webpack@5.88.2)
+      uuid:
+        specifier: ^8.3.2
+        version: 8.3.2
+      waait:
+        specifier: ^1.0.5
+        version: 1.0.5
+      webpack:
+        specifier: ^5.88.2
+        version: 5.88.2(webpack-cli@4.10.0)
+      webpack-cli:
+        specifier: ^4.10.0
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
+      webpack-dev-server:
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
+      webpack-merge:
+        specifier: ^5.9.0
+        version: 5.9.0
+
   packages/sonataflow-quarkus-devui:
     devDependencies:
       "@kie-tools/maven-base":
@@ -32022,7 +32275,7 @@ packages:
       array-buffer-byte-length: 1.0.1
       call-bind: 1.0.7
       define-properties: 1.2.1
-      es-abstract: 1.22.3
+      es-abstract: 1.23.2
       get-intrinsic: 1.2.4
       is-array-buffer: 3.0.4
       is-shared-array-buffer: 1.0.3
@@ -32041,7 +32294,6 @@ packages:
       get-intrinsic: 1.2.4
       is-array-buffer: 3.0.4
       is-shared-array-buffer: 1.0.3
-    dev: true
 
   /arrify@2.0.1:
     resolution:
@@ -34812,15 +35064,15 @@ packages:
     peerDependencies:
       webpack: ^4.27.0 || ^5.0.0
     dependencies:
-      icss-utils: 5.1.0(postcss@8.4.12)
-      loader-utils: 2.0.2
-      postcss: 8.4.12
-      postcss-modules-extract-imports: 3.0.0(postcss@8.4.12)
-      postcss-modules-local-by-default: 4.0.0(postcss@8.4.12)
-      postcss-modules-scope: 3.0.0(postcss@8.4.12)
-      postcss-modules-values: 4.0.0(postcss@8.4.12)
+      icss-utils: 5.1.0(postcss@8.4.38)
+      loader-utils: 2.0.4
+      postcss: 8.4.38
+      postcss-modules-extract-imports: 3.0.0(postcss@8.4.38)
+      postcss-modules-local-by-default: 4.0.0(postcss@8.4.38)
+      postcss-modules-scope: 3.0.0(postcss@8.4.38)
+      postcss-modules-values: 4.0.0(postcss@8.4.38)
       postcss-value-parser: 4.2.0
-      schema-utils: 3.1.1
+      schema-utils: 3.3.0
       semver: 7.5.4
       webpack: 5.88.2(webpack-cli@4.10.0)
     dev: true
@@ -35540,7 +35792,6 @@ packages:
       call-bind: 1.0.7
       es-errors: 1.3.0
       is-data-view: 1.0.1
-    dev: true
 
   /data-view-byte-length@1.0.1:
     resolution:
@@ -35550,7 +35801,6 @@ packages:
       call-bind: 1.0.7
       es-errors: 1.3.0
       is-data-view: 1.0.1
-    dev: true
 
   /data-view-byte-offset@1.0.0:
     resolution:
@@ -35560,7 +35810,6 @@ packages:
       call-bind: 1.0.7
       es-errors: 1.3.0
       is-data-view: 1.0.1
-    dev: true
 
   /dataloader@2.2.2:
     resolution:
@@ -36582,15 +36831,6 @@ packages:
       tapable: 2.2.1
     dev: true
 
-  /enhanced-resolve@5.9.3:
-    resolution:
-      { integrity: sha512-Bq9VSor+kjvW3f9/MiiR4eE3XYgOl7/rS8lnSxbRbF3kS0B2r+Y9w5krBWxZgDxASVZbdYrn5wT4j/Wb0J9qow== }
-    engines: { node: ">=10.13.0" }
-    dependencies:
-      graceful-fs: 4.2.11
-      tapable: 2.2.1
-    dev: true
-
   /enquirer@2.3.6:
     resolution:
       { integrity: sha512-yjNnPr315/FjS4zIsUxYguYUPP2e1NK4d7E7ZOLiyYCcbFBiTMyID+2wvm2w6+pZ/odMA7cRkjhsPbltwBOrLg== }
@@ -36726,7 +36966,7 @@ packages:
       call-bind: 1.0.7
       es-set-tostringtag: 2.0.1
       es-to-primitive: 1.2.1
-      function.prototype.name: 1.1.5
+      function.prototype.name: 1.1.6
       get-intrinsic: 1.2.4
       get-symbol-description: 1.0.0
       globalthis: 1.0.3
@@ -36749,12 +36989,13 @@ packages:
       object.assign: 4.1.5
       regexp.prototype.flags: 1.5.2
       safe-regex-test: 1.0.0
-      string.prototype.trim: 1.2.7
+      string.prototype.trim: 1.2.9
       string.prototype.trimend: 1.0.6
       string.prototype.trimstart: 1.0.6
       typed-array-length: 1.0.4
       unbox-primitive: 1.0.2
       which-typed-array: 1.1.15
+    dev: true
 
   /es-abstract@1.22.3:
     resolution:
@@ -36791,7 +37032,7 @@ packages:
       regexp.prototype.flags: 1.5.2
       safe-array-concat: 1.0.1
       safe-regex-test: 1.0.0
-      string.prototype.trim: 1.2.8
+      string.prototype.trim: 1.2.9
       string.prototype.trimend: 1.0.7
       string.prototype.trimstart: 1.0.7
       typed-array-buffer: 1.0.0
@@ -36853,7 +37094,6 @@ packages:
       typed-array-length: 1.0.6
       unbox-primitive: 1.0.2
       which-typed-array: 1.1.15
-    dev: true
 
   /es-array-method-boxes-properly@1.0.0:
     resolution:
@@ -36928,7 +37168,6 @@ packages:
     engines: { node: ">= 0.4" }
     dependencies:
       es-errors: 1.3.0
-    dev: true
 
   /es-set-tostringtag@2.0.1:
     resolution:
@@ -36938,6 +37177,7 @@ packages:
       get-intrinsic: 1.2.4
       has: 1.0.3
       has-tostringtag: 1.0.2
+    dev: true
 
   /es-set-tostringtag@2.0.3:
     resolution:
@@ -36947,7 +37187,6 @@ packages:
       get-intrinsic: 1.2.4
       has-tostringtag: 1.0.2
       hasown: 2.0.2
-    dev: true
 
   /es-shim-unscopables@1.0.0:
     resolution:
@@ -38878,16 +39117,6 @@ packages:
     resolution:
       { integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA== }
 
-  /function.prototype.name@1.1.5:
-    resolution:
-      { integrity: sha512-uN7m/BzVKQnCUF/iW8jYea67v++2u7m5UgENbHRtdDVclOUP+FMPlCNdmk0h/ysGyo2tavMJEDqJAkJdRa1vMA== }
-    engines: { node: ">= 0.4" }
-    dependencies:
-      call-bind: 1.0.7
-      define-properties: 1.2.1
-      es-abstract: 1.21.2
-      functions-have-names: 1.2.3
-
   /function.prototype.name@1.1.6:
     resolution:
       { integrity: sha512-Z5kx79swU5P27WEayXM1tBi5Ze/lbIyiNgU3qyXUOf9b2rgXYyF9Dy9Cx+IQv/Lc8WCG6L82zwUPpSS9hGehIg== }
@@ -38895,9 +39124,8 @@ packages:
     dependencies:
       call-bind: 1.0.7
       define-properties: 1.2.1
-      es-abstract: 1.22.3
+      es-abstract: 1.23.2
       functions-have-names: 1.2.3
-    dev: true
 
   /functions-have-names@1.2.3:
     resolution:
@@ -39027,6 +39255,7 @@ packages:
     dependencies:
       call-bind: 1.0.7
       get-intrinsic: 1.2.4
+    dev: true
 
   /get-symbol-description@1.0.2:
     resolution:
@@ -39036,7 +39265,6 @@ packages:
       call-bind: 1.0.7
       es-errors: 1.3.0
       get-intrinsic: 1.2.4
-    dev: true
 
   /get-user-locale@1.5.1:
     resolution:
@@ -40088,16 +40316,6 @@ packages:
       safer-buffer: 2.1.2
     dev: true
 
-  /icss-utils@5.1.0(postcss@8.4.12):
-    resolution:
-      { integrity: sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA== }
-    engines: { node: ^10 || ^12 || >= 14 }
-    peerDependencies:
-      postcss: ^8.1.0
-    dependencies:
-      postcss: 8.4.12
-    dev: true
-
   /icss-utils@5.1.0(postcss@8.4.38):
     resolution:
       { integrity: sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA== }
@@ -40515,7 +40733,6 @@ packages:
     engines: { node: ">= 0.4" }
     dependencies:
       is-typed-array: 1.1.13
-    dev: true
 
   /is-date-object@1.0.5:
     resolution:
@@ -40680,12 +40897,12 @@ packages:
     resolution:
       { integrity: sha512-dqJvarLawXsFbNDeJW7zAz8ItJ9cd28YufuuFzh0G8pNHjJMnY08Dv7sYX2uF5UpQOwieAeOExEYAWWfu7ZZUA== }
     engines: { node: ">= 0.4" }
+    dev: true
 
   /is-negative-zero@2.0.3:
     resolution:
       { integrity: sha512-5KoIu2Ngpyek75jXodFvnafB6DJgr3u8uuK0LEZJjrU19DrMD3EVERaR8sjz8CCGgpZvxPl9SuE1GMVPFHx1mw== }
     engines: { node: ">= 0.4" }
-    dev: true
 
   /is-number-object@1.0.5:
     resolution:
@@ -40906,7 +41123,6 @@ packages:
   /isarray@2.0.5:
     resolution:
       { integrity: sha512-xHjhDr3cNBK0BzdUJSPXZntQUx/mwMS5Rw4A7lPJ90XGAO6ISP/ePDNuo0vhqOZU+UD5JoodwCAAoZQd3FeAKw== }
-    dev: true
 
   /isbinaryfile@4.0.8:
     resolution:
@@ -43656,7 +43872,7 @@ packages:
     peerDependencies:
       webpack: ^5.0.0
     dependencies:
-      schema-utils: 4.0.0
+      schema-utils: 4.2.0
       tapable: 2.2.1
       webpack: 5.88.2(webpack-cli@4.10.0)
     dev: true
@@ -46207,16 +46423,6 @@ packages:
       postcss-selector-parser: 6.0.16
     dev: true
 
-  /postcss-modules-extract-imports@3.0.0(postcss@8.4.12):
-    resolution:
-      { integrity: sha512-bdHleFnP3kZ4NYDhuGlVK+CMrQ/pqUm8bx/oGL93K6gVwiclvX5x0n76fYMKuIGKzlABOy13zsvqjb0f92TEXw== }
-    engines: { node: ^10 || ^12 || >= 14 }
-    peerDependencies:
-      postcss: ^8.1.0
-    dependencies:
-      postcss: 8.4.12
-    dev: true
-
   /postcss-modules-extract-imports@3.0.0(postcss@8.4.38):
     resolution:
       { integrity: sha512-bdHleFnP3kZ4NYDhuGlVK+CMrQ/pqUm8bx/oGL93K6gVwiclvX5x0n76fYMKuIGKzlABOy13zsvqjb0f92TEXw== }
@@ -46225,19 +46431,6 @@ packages:
       postcss: ^8.1.0
     dependencies:
       postcss: 8.4.38
-    dev: true
-
-  /postcss-modules-local-by-default@4.0.0(postcss@8.4.12):
-    resolution:
-      { integrity: sha512-sT7ihtmGSF9yhm6ggikHdV0hlziDTX7oFoXtuVWeDd3hHObNkcHRo9V3yg7vCAY7cONyxJC/XXCmmiHHcvX7bQ== }
-    engines: { node: ^10 || ^12 || >= 14 }
-    peerDependencies:
-      postcss: ^8.1.0
-    dependencies:
-      icss-utils: 5.1.0(postcss@8.4.12)
-      postcss: 8.4.12
-      postcss-selector-parser: 6.0.16
-      postcss-value-parser: 4.2.0
     dev: true
 
   /postcss-modules-local-by-default@4.0.0(postcss@8.4.38):
@@ -46253,17 +46446,6 @@ packages:
       postcss-value-parser: 4.2.0
     dev: true
 
-  /postcss-modules-scope@3.0.0(postcss@8.4.12):
-    resolution:
-      { integrity: sha512-hncihwFA2yPath8oZ15PZqvWGkWf+XUfQgUGamS4LqoP1anQLOsOJw0vr7J7IwLpoY9fatA2qiGUGmuZL0Iqlg== }
-    engines: { node: ^10 || ^12 || >= 14 }
-    peerDependencies:
-      postcss: ^8.1.0
-    dependencies:
-      postcss: 8.4.12
-      postcss-selector-parser: 6.0.16
-    dev: true
-
   /postcss-modules-scope@3.0.0(postcss@8.4.38):
     resolution:
       { integrity: sha512-hncihwFA2yPath8oZ15PZqvWGkWf+XUfQgUGamS4LqoP1anQLOsOJw0vr7J7IwLpoY9fatA2qiGUGmuZL0Iqlg== }
@@ -46273,17 +46455,6 @@ packages:
     dependencies:
       postcss: 8.4.38
       postcss-selector-parser: 6.0.16
-    dev: true
-
-  /postcss-modules-values@4.0.0(postcss@8.4.12):
-    resolution:
-      { integrity: sha512-RDxHkAiEGI78gS2ofyvCsu7iycRv7oqw5xMWn9iMoR0N/7mf9D50ecQqUo5BZ9Zh2vH4bCUR/ktCqbB9m8vJjQ== }
-    engines: { node: ^10 || ^12 || >= 14 }
-    peerDependencies:
-      postcss: ^8.1.0
-    dependencies:
-      icss-utils: 5.1.0(postcss@8.4.12)
-      postcss: 8.4.12
     dev: true
 
   /postcss-modules-values@4.0.0(postcss@8.4.38):
@@ -46609,16 +46780,6 @@ packages:
   /postcss-value-parser@4.2.0:
     resolution:
       { integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ== }
-    dev: true
-
-  /postcss@8.4.12:
-    resolution:
-      { integrity: sha512-lg6eITwYe9v6Hr5CncVbK70SoioNQIq81nsaG86ev5hAidQvmOeETBqs7jm43K2F5/Ley3ytDtriImV6TpNiSg== }
-    engines: { node: ^10 || ^12 || >=14 }
-    dependencies:
-      nanoid: 3.3.7
-      picocolors: 1.0.0
-      source-map-js: 1.2.0
     dev: true
 
   /postcss@8.4.16:
@@ -48998,7 +49159,6 @@ packages:
       get-intrinsic: 1.2.4
       has-symbols: 1.0.3
       isarray: 2.0.5
-    dev: true
 
   /safe-buffer@5.1.2:
     resolution:
@@ -49033,6 +49193,7 @@ packages:
       call-bind: 1.0.7
       get-intrinsic: 1.2.4
       is-regex: 1.1.4
+    dev: true
 
   /safe-regex-test@1.0.3:
     resolution:
@@ -49042,7 +49203,6 @@ packages:
       call-bind: 1.0.7
       es-errors: 1.3.0
       is-regex: 1.1.4
-    dev: true
 
   /safe-regex@1.1.0:
     resolution:
@@ -50352,15 +50512,6 @@ packages:
       side-channel: 1.0.4
     dev: true
 
-  /string.prototype.trim@1.2.7:
-    resolution:
-      { integrity: sha512-p6TmeT1T3411M8Cgg9wBTMRtY2q9+PNy9EV1i2lIXUN/btt763oIfxwN3RR8VU6wHX8j/1CFy0L+YuThm6bgOg== }
-    engines: { node: ">= 0.4" }
-    dependencies:
-      call-bind: 1.0.7
-      define-properties: 1.2.1
-      es-abstract: 1.21.2
-
   /string.prototype.trim@1.2.8:
     resolution:
       { integrity: sha512-lfjY4HcixfQXOfaqCvcBuOIapyaroTXhbkfJN3gcB1OtyupngWK4sEET9Knd0cXd28kTUqu/kHoV4HKSJdnjiQ== }
@@ -50380,7 +50531,6 @@ packages:
       define-properties: 1.2.1
       es-abstract: 1.23.2
       es-object-atoms: 1.0.0
-    dev: true
 
   /string.prototype.trimend@1.0.6:
     resolution:
@@ -50388,7 +50538,8 @@ packages:
     dependencies:
       call-bind: 1.0.7
       define-properties: 1.2.1
-      es-abstract: 1.21.2
+      es-abstract: 1.23.2
+    dev: true
 
   /string.prototype.trimend@1.0.7:
     resolution:
@@ -50396,7 +50547,7 @@ packages:
     dependencies:
       call-bind: 1.0.7
       define-properties: 1.2.1
-      es-abstract: 1.22.3
+      es-abstract: 1.23.2
     dev: true
 
   /string.prototype.trimend@1.0.8:
@@ -50406,7 +50557,6 @@ packages:
       call-bind: 1.0.7
       define-properties: 1.2.1
       es-object-atoms: 1.0.0
-    dev: true
 
   /string.prototype.trimstart@1.0.6:
     resolution:
@@ -50414,7 +50564,8 @@ packages:
     dependencies:
       call-bind: 1.0.7
       define-properties: 1.2.1
-      es-abstract: 1.21.2
+      es-abstract: 1.23.2
+    dev: true
 
   /string.prototype.trimstart@1.0.7:
     resolution:
@@ -50422,8 +50573,7 @@ packages:
     dependencies:
       call-bind: 1.0.7
       define-properties: 1.2.1
-      es-abstract: 1.22.3
-    dev: true
+      es-abstract: 1.23.2
 
   /string_decoder@0.10.31:
     resolution:
@@ -50552,8 +50702,8 @@ packages:
     peerDependencies:
       webpack: ^4.0.0 || ^5.0.0
     dependencies:
-      loader-utils: 2.0.2
-      schema-utils: 3.1.1
+      loader-utils: 2.0.4
+      schema-utils: 3.3.0
       webpack: 5.88.2(webpack-cli@4.10.0)
     dev: true
 
@@ -50810,7 +50960,7 @@ packages:
       object-inspect: 1.12.3
       resolve: 1.22.8
       resumer: 0.0.0
-      string.prototype.trim: 1.2.7
+      string.prototype.trim: 1.2.9
       through: 2.3.8
     dev: false
 
@@ -51395,7 +51545,7 @@ packages:
       webpack: ^5.0.0
     dependencies:
       chalk: 4.1.2
-      enhanced-resolve: 5.9.3
+      enhanced-resolve: 5.15.0
       micromatch: 4.0.5
       semver: 7.5.4
       typescript: 4.8.4
@@ -51602,7 +51752,6 @@ packages:
       call-bind: 1.0.7
       es-errors: 1.3.0
       is-typed-array: 1.1.13
-    dev: true
 
   /typed-array-byte-length@1.0.0:
     resolution:
@@ -51625,7 +51774,6 @@ packages:
       gopd: 1.0.1
       has-proto: 1.0.3
       is-typed-array: 1.1.13
-    dev: true
 
   /typed-array-byte-offset@1.0.0:
     resolution:
@@ -51650,7 +51798,6 @@ packages:
       gopd: 1.0.1
       has-proto: 1.0.3
       is-typed-array: 1.1.13
-    dev: true
 
   /typed-array-length@1.0.4:
     resolution:
@@ -51659,6 +51806,7 @@ packages:
       call-bind: 1.0.7
       for-each: 0.3.3
       is-typed-array: 1.1.13
+    dev: true
 
   /typed-array-length@1.0.6:
     resolution:
@@ -51671,7 +51819,6 @@ packages:
       has-proto: 1.0.3
       is-typed-array: 1.1.13
       possible-typed-array-names: 1.0.0
-    dev: true
 
   /typed-assert@1.0.8:
     resolution:
@@ -52074,9 +52221,9 @@ packages:
       file-loader:
         optional: true
     dependencies:
-      loader-utils: 2.0.2
+      loader-utils: 2.0.4
       mime-types: 2.1.34
-      schema-utils: 3.1.1
+      schema-utils: 3.3.0
       webpack: 5.88.2(webpack-cli@4.10.0)
     dev: true
 
@@ -53553,7 +53700,7 @@ packages:
       { integrity: sha512-YmjsSMDBYsM1CaFiayOVT06+KJeXf0o5M/CAd4o1lTadFAtacTUM49zoYxr/oroopFDfhvN6iEcBxUyc3gvKmw== }
     engines: { node: ">= 0.4" }
     dependencies:
-      function.prototype.name: 1.1.5
+      function.prototype.name: 1.1.6
       has-tostringtag: 1.0.2
       is-async-function: 2.0.0
       is-date-object: 1.0.5
