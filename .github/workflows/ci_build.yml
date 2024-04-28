@@ -21,6 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-13, windows-latest]
+        partition: [0, 1, 2]
     runs-on: ${{ matrix.os }}
     steps:
       - name: "Support longpaths"
@@ -36,6 +37,16 @@ jobs:
         with:
           ref: ${{ github.base_ref }}
 
+      - name: "Setup pnpm"
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8.7.0
+
+      - name: "Setup Node"
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.14.0
+
       - name: "Setup CI patterns"
         id: ci_patterns
         uses: ./.github/actions/setup-ci-patterns
@@ -44,44 +55,42 @@ jobs:
         id: setup_build_mode
         shell: bash
         run: |
-          export CHANGED_SOURCE_PATHS=($(eval "git diff --name-only ${{ steps.checkout_pr.outputs.base_sha }} ${{ steps.checkout_pr.outputs.head_sha }} -- ${{ steps.ci_patterns.outputs.non_source_files_patterns_for_git_diff }}"))
-          echo "Changed source paths:"
-          echo ${#CHANGED_SOURCE_PATHS[@]}
-          printf '%s\n' "${CHANGED_SOURCE_PATHS[@]}"
 
-          export CHANGED_SOURCE_PATHS_IN_ROOT=($(printf '%s\n' "${CHANGED_SOURCE_PATHS[@]}" | grep -v -e "^packages" -e "^examples"))
-          echo "Changed source paths in root:"
-          echo ${#CHANGED_SOURCE_PATHS_IN_ROOT[@]}
-          printf '%s\n' "${CHANGED_SOURCE_PATHS_IN_ROOT[@]}"
+          npm -g install bun@1.1.6
 
-          if [ ${#CHANGED_SOURCE_PATHS[@]} -eq 0 ]; then
-            echo 'No source files changed; `CI :: Build` (none) will run.'
-            echo "mode=none" >> $GITHUB_OUTPUT
-          elif [ ! ${{ github.event.pull_request }} ]; then
-            echo 'Push to the `main` branch happened; `CI :: Build` (full) will run.'
-            echo "mode=full" >> $GITHUB_OUTPUT
-          elif [ ${#CHANGED_SOURCE_PATHS_IN_ROOT[@]} -eq 0 ]; then
-            echo 'No source files changed in root; `CI :: Build` (partial) will run.'
-            echo "mode=partial" >> $GITHUB_OUTPUT
-          else
-            echo 'Source files changed in root; `CI :: Build` (full) will run.'
-            echo "mode=full" >> $GITHUB_OUTPUT
-          fi
+          bun ./.github/supporting-files/ci/build-partitioning/build_partitioning.ts \
+            --outputPath='/tmp/partitions.json' \
+            --forceFull='${{ !github.event.pull_request }}' \
+            --baseSha='${{ steps.checkout_pr.outputs.base_sha }}' \
+            --headSha='${{steps.checkout_pr.outputs.head_sha }}' \
+            --graphJsonPath='./repo/graph.json' \
+            --partition='./.github/supporting-files/ci/partitions/partition0.txt' \
+            --partition='./.github/supporting-files/ci/partitions/partition1.txt'
 
-          echo "Done"
+          npm -g uninstall bun 
+
+          echo "mode=$(jq --raw-output '.[${{ matrix.partition }}].mode' /tmp/partitions.json)" >> $GITHUB_OUTPUT
+          echo "bootstrapPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].bootstrapPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT
+          echo "fullBuildPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].fullBuildPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT
+          echo "upstreamPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].upstreamPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT
+          echo "affectedPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].affectedPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT
+          echo "Done."
 
       - name: "Setup environment"
         if: steps.setup_build_mode.outputs.mode != 'none'
         uses: ./.github/actions/setup-env
 
-      - name: "FULL → Bootstrap"
-        if: steps.setup_build_mode.outputs.mode == 'full'
+      - name: "Bootstrap"
+        if: steps.setup_build_mode.outputs.mode != 'none'
         env:
           PLAYWRIGHT_BASE__installDeps: "true"
         uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: ${{ steps.setup_build_mode.outputs.bootstrapPnpmFilterString }}
 
-      - name: "FULL → Build (without SWF Stack)"
+      - name: "FULL → Build"
         if: steps.setup_build_mode.outputs.mode == 'full'
+        shell: bash
         env:
           WEBPACK__minimize: "false"
           WEBPACK__tsLoaderTranspileOnly: "false"
@@ -96,35 +105,19 @@ jobs:
           START_SERVER_AND_TEST_INSECURE: "true"
           NODE_OPTIONS: "--max_old_space_size=4096"
         run: >-
-          pnpm
-          -F='!@kie-tools/serverless-logic-web-tools-swf-builder-image...'
-          -F='!@kie-tools/serverless-logic-web-tools-base-builder-image...'
-          -F='!@kie-tools/kn-plugin-workflow...'
-          -F='!@kie-tools/serverless-logic-web-tools...'
-          -r --workspace-concurrency=1 build:prod
+          eval "pnpm ${{ steps.setup_build_mode.outputs.fullBuildPnpmFilterString }} --workspace-concurrency=1 build:prod"
 
-      - name: "PARTIAL → Bootstrap"
-        if: steps.setup_build_mode.outputs.mode == 'partial'
-        env:
-          PLAYWRIGHT_BASE__installDeps: "true"
-        uses: ./.github/actions/bootstrap
-        with:
-          pnpm_filter_string: -F "...[${{ steps.checkout_pr.outputs.base_sha }}]..." -F='!@kie-tools/serverless-logic-web-tools-swf-builder-image...' -F='!@kie-tools/serverless-logic-web-tools-base-builder-image...' -F='!@kie-tools/kn-plugin-workflow...' -F='!@kie-tools/serverless-logic-web-tools...'
-
-      - name: "PARTIAL → Build dependencies"
+      - name: "PARTIAL → Build upstream"
         if: steps.setup_build_mode.outputs.mode == 'partial'
         shell: bash
         env:
           KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os != 'Windows' }}
           KIE_TOOLS_BUILD__buildExamples: "true"
         run: |
-          export ALL_DEPENDENCIES_FILTER=$(pnpm -F="...[${{ steps.checkout_pr.outputs.base_sha }}]" exec bash -c 'echo -n " -F=$(jq --raw-output .name package.json)^..."')
-          export CHANGED_PKGS_EXCLUSION_FILTER=$(pnpm -F="...[${{ steps.checkout_pr.outputs.base_sha }}]" exec bash -c 'echo -n " -F='"'"'!$(jq --raw-output .name package.json)'"'"'"')
-          echo $ALL_DEPENDENCIES_FILTER
-          echo $CHANGED_PKGS_EXCLUSION_FILTER
-          eval "pnpm $ALL_DEPENDENCIES_FILTER $CHANGED_PKGS_EXCLUSION_FILTER -F='!@kie-tools/serverless-logic-web-tools-swf-builder-image...' -F='!@kie-tools/serverless-logic-web-tools-base-builder-image...' -F='!@kie-tools/kn-plugin-workflow...' -F='!@kie-tools/serverless-logic-web-tools...' build:dev"
+          eval "pnpm ${{ steps.setup_build_mode.outputs.upstreamPnpmFilterString }} build:dev"
 
-      - name: "PARTIAL → Build changed and dependents"
+      - name: "PARTIAL → Build changed and downstream"
+        shell: bash
         if: steps.setup_build_mode.outputs.mode == 'partial'
         env:
           WEBPACK__minimize: "false"
@@ -137,7 +130,7 @@ jobs:
           START_SERVER_AND_TEST_INSECURE: "true"
           NODE_OPTIONS: "--max_old_space_size=4096"
         run: |
-          pnpm -F "...[${{ steps.checkout_pr.outputs.base_sha }}]" -F='!@kie-tools/serverless-logic-web-tools-swf-builder-image...' -F='!@kie-tools/serverless-logic-web-tools-base-builder-image...' -F='!@kie-tools/kn-plugin-workflow...' -F='!@kie-tools/serverless-logic-web-tools...' --workspace-concurrency=1 build:prod
+          eval "pnpm ${{ steps.setup_build_mode.outputs.affectedPnpmFilterString }} --workspace-concurrency=1 build:prod"
 
       - name: "Check tests result (`main` only)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'

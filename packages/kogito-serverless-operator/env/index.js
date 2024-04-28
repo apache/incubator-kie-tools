@@ -17,7 +17,7 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv, getOrDefault, str2bool } = require("@kie-tools-scripts/build-env");
+const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
@@ -37,10 +37,6 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "latest",
       description: "The image tag",
     },
-    KOGITO_SERVERLESS_OPERATOR__runEndToEndTests: {
-      default: `${false}`,
-      description: "Boolean flag to enable or disable running E2E tests.",
-    },
   }),
   get env() {
     return {
@@ -49,9 +45,6 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         account: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__account),
         name: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__name),
         tag: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__buildTag),
-        endToEndTests: {
-          run: str2bool(getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__runEndToEndTests)),
-        },
         version: require("../package.json").version,
       },
     };

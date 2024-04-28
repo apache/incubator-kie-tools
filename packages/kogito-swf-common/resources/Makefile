@@ -19,7 +19,7 @@
 
 # Image build envs
 CEKIT_BUILD_OPTIONS 		?=
-CEKIT_CMD 					:= cekit -v ${CEKIT_BUILD_OPTIONS}
+CEKIT_CMD 					:= cekit ${CEKIT_BUILD_OPTIONS}
 BUILD_ENGINE 				?= docker
 BUILD_ENGINE_OPTIONS 	 	?=
 
