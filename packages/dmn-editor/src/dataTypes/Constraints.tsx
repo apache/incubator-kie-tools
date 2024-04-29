@@ -78,6 +78,9 @@ enum ConstraintsType {
   NONE = "None",
 }
 
+// Recurse the `itemDefinition` until find `typeRef` attribute
+// that is part of the built in FEEL types.
+// If the found `itemDefinition` is a collection, it will have a early stop.
 export function recursivelyGetRootItemDefinition(
   itemDefinition: DMN15__tItemDefinition,
   allDataTypesById: DataTypeIndex,
@@ -86,12 +89,10 @@ export function recursivelyGetRootItemDefinition(
   const typeRef: DmnBuiltInDataType =
     (itemDefinition.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
 
-  const isBuiltIn = builtInFeelTypeNames.has(typeRef);
-  if (isBuiltIn === false) {
-    // Get the parent typeRef, and check if it has enabled constraints
-    const parentDataTypeId = allTopLevelItemDefinitionUniqueNames.get(typeRef);
-    const parentDataType = allDataTypesById.get(parentDataTypeId ?? "");
+  if (builtInFeelTypeNames.has(typeRef) === false) {
+    const parentDataType = allDataTypesById.get(allTopLevelItemDefinitionUniqueNames.get(typeRef) ?? "");
     if (parentDataType !== undefined && isCollection(parentDataType.itemDefinition)) {
+      // Parent `itemDefinition` is a collection. Early stop.
       return parentDataType.itemDefinition;
     } else if (parentDataType !== undefined) {
       return recursivelyGetRootItemDefinition(
@@ -100,9 +101,11 @@ export function recursivelyGetRootItemDefinition(
         allTopLevelItemDefinitionUniqueNames
       );
     }
-    return itemDefinition; // returns caller
+    // Something wrong. Caller `itemDefinition` isn't a built-in FEEL type and doesn't have parent.
+    return itemDefinition;
   }
-  return itemDefinition; // returns caller
+  // Caller `itemDefinition` is a built-in FEEL type
+  return itemDefinition;
 }
 
 export const constraintTypeHelper = (
@@ -418,29 +421,35 @@ export function ConstraintsFromAllowedValuesAttribute({
   );
 
   const allowedValues = useMemo(() => itemDefinition?.allowedValues, [itemDefinition?.allowedValues]);
-
+  const itemDefinitionId = itemDefinition["@_id"]!;
   const typeRef = (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
-  const typeRefConstraintTypeHelper = constraintTypeHelper(
-    itemDefinition,
-    allDataTypesById,
-    allTopLevelItemDefinitionUniqueNames
+  const typeRefConstraintTypeHelper = useMemo(
+    () => constraintTypeHelper(itemDefinition, allDataTypesById, allTopLevelItemDefinitionUniqueNames),
+    [allDataTypesById, allTopLevelItemDefinitionUniqueNames, itemDefinition]
   );
 
-  const rootItemDefinition = recursivelyGetRootItemDefinition(
-    itemDefinition,
-    allDataTypesById,
-    allTopLevelItemDefinitionUniqueNames
+  const rootItemDefinition = useMemo(
+    () => recursivelyGetRootItemDefinition(itemDefinition, allDataTypesById, allTopLevelItemDefinitionUniqueNames),
+    [allDataTypesById, allTopLevelItemDefinitionUniqueNames, itemDefinition]
   );
 
-  const enabledConstraints = isStruct(rootItemDefinition)
-    ? (["expression"] as KIE__tConstraintType[])
-    : constrainableBuiltInFeelTypes.get(
-        (rootItemDefinition.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined
-      );
+  const enabledConstraints = useMemo(
+    () =>
+      isStruct(rootItemDefinition)
+        ? (["expression"] as KIE__tConstraintType[])
+        : constrainableBuiltInFeelTypes.get(
+            (rootItemDefinition.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined
+          ),
+    [rootItemDefinition]
+  );
 
-  // Collection constraint must be enabled on cases where `rootItemDefinition` is a collection
-  const isCollectionConstraintEnable =
-    itemDefinition["@_id"] !== rootItemDefinition["@_id"] ? rootItemDefinition["@_isCollection"] ?? false : false;
+  // Collection constraint on the `allowedValues` must be enabled on cases where `rootItemDefinition` is a collection
+  const isCollectionConstraintEnable = useMemo(() => {
+    if (itemDefinitionId !== rootItemDefinition["@_id"]) {
+      return rootItemDefinition["@_isCollection"] ?? false;
+    }
+    return false;
+  }, [itemDefinitionId, rootItemDefinition]);
 
   const {
     constraintValue,
@@ -457,15 +466,16 @@ export function ConstraintsFromAllowedValuesAttribute({
     enabledConstraints,
   });
 
-  const itemDefinitionId = itemDefinition["@_id"]!;
-
   const onConstraintChange = useCallback(
-    (value?: string) => {
+    (value: string | undefined) => {
       editItemDefinition(itemDefinitionId, (itemDefinition) => {
-        itemDefinition.allowedValues ??= { text: { __$$text: "" } };
-        itemDefinition.allowedValues.text.__$$text = value ?? "";
-        itemDefinition.allowedValues["@_id"] = itemDefinition.allowedValues?.["@_id"] ?? generateUuid();
-        return;
+        if (value === "" || value === undefined) {
+          itemDefinition.allowedValues = undefined;
+        } else {
+          itemDefinition.allowedValues ??= { text: { __$$text: "" } };
+          itemDefinition.allowedValues.text.__$$text = value ?? "";
+          itemDefinition.allowedValues["@_id"] = itemDefinition.allowedValues?.["@_id"] ?? generateUuid();
+        }
       });
     },
     [editItemDefinition, itemDefinitionId]
@@ -554,7 +564,7 @@ export function ConstraintsFromTypeConstraintAttribute({
   const allTopLevelItemDefinitionUniqueNames = useDmnEditorStore(
     (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelItemDefinitionUniqueNames
   );
-
+  const itemDefinitionId = itemDefinition["@_id"]!;
   const typeConstraint = useMemo(
     () =>
       defaultsToAllowedValues
@@ -564,16 +574,14 @@ export function ConstraintsFromTypeConstraintAttribute({
   );
 
   const typeRef = (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
-  const typeRefConstraintTypeHelper = constraintTypeHelper(
-    itemDefinition,
-    allDataTypesById,
-    allTopLevelItemDefinitionUniqueNames
+  const typeRefConstraintTypeHelper = useMemo(
+    () => constraintTypeHelper(itemDefinition, allDataTypesById, allTopLevelItemDefinitionUniqueNames),
+    [allDataTypesById, allTopLevelItemDefinitionUniqueNames, itemDefinition]
   );
 
-  const rootItemDefinition = recursivelyGetRootItemDefinition(
-    itemDefinition,
-    allDataTypesById,
-    allTopLevelItemDefinitionUniqueNames
+  const rootItemDefinition = useMemo(
+    () => recursivelyGetRootItemDefinition(itemDefinition, allDataTypesById, allTopLevelItemDefinitionUniqueNames),
+    [allDataTypesById, allTopLevelItemDefinitionUniqueNames, itemDefinition]
   );
 
   const enabledConstraints = useMemo(() => {
@@ -603,15 +611,16 @@ export function ConstraintsFromTypeConstraintAttribute({
     enabledConstraints,
   });
 
-  const itemDefinitionId = itemDefinition["@_id"]!;
-
   const onConstraintChange = useCallback(
     (value: string | undefined) => {
       editItemDefinition(itemDefinitionId, (itemDefinition) => {
-        itemDefinition.typeConstraint ??= { text: { __$$text: "" } };
-        itemDefinition.typeConstraint.text.__$$text = value ?? "";
-        itemDefinition.typeConstraint["@_id"] = itemDefinition.typeConstraint?.["@_id"] ?? generateUuid();
-        return;
+        if (value === "" || value === undefined) {
+          itemDefinition.typeConstraint = undefined;
+        } else {
+          itemDefinition.typeConstraint ??= { text: { __$$text: "" } };
+          itemDefinition.typeConstraint.text.__$$text = value ?? "";
+          itemDefinition.typeConstraint["@_id"] = itemDefinition.typeConstraint?.["@_id"] ?? generateUuid();
+        }
       });
     },
     [editItemDefinition, itemDefinitionId]
