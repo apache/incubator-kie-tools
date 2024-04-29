@@ -28,7 +28,7 @@ module.exports = composeEnv(
         description: "",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderKogitoImageTag: {
-        default: "999-20240417",
+        default: "999-20240428",
         description: "",
       },
     }),
