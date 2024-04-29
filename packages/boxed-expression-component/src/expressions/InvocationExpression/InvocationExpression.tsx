@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useEffect } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableContextMenuAllowedOperationsConditions,
@@ -49,6 +49,7 @@ import { ArgumentEntryExpressionCell } from "./ArgumentEntryExpressionCell";
 import { ExpressionVariableCell, ExpressionWithVariable } from "../../expressionVariable/ExpressionVariableCell";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
+import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { DMN15__tBinding } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { findAllIdsDeep } from "../../ids/ids";
 import "./InvocationExpression.css";
@@ -112,6 +113,20 @@ export function InvocationExpression({
     }
   }, []);
 
+  const { containerCellCoordinates } = useBeeTableCoordinates();
+  const { isActive } = useBeeTableSelectableCellRef(
+    containerCellCoordinates?.rowIndex ?? 0,
+    containerCellCoordinates?.columnIndex ?? 0,
+    undefined
+  );
+
+  const { beeGwtService } = useBoxedExpressionEditor();
+  useEffect(() => {
+    if (isActive) {
+      beeGwtService?.selectObject();
+    }
+  }, [beeGwtService, isActive]);
+
   /// //////////////////////////////////////////////////////
   /// ///////////// RESIZING WIDTHS ////////////////////////
   /// //////////////////////////////////////////////////////
@@ -158,6 +173,11 @@ export function InvocationExpression({
     }));
   }, [invocationExpression.binding]);
 
+  const invocationId = useMemo(
+    () => invocationExpression.expression?.["@_id"] ?? "functionName",
+    [invocationExpression.expression]
+  );
+
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
@@ -168,7 +188,7 @@ export function InvocationExpression({
         width: undefined,
         columns: [
           {
-            accessor: "functionName" as keyof ROWTYPE,
+            accessor: invocationId as keyof ROWTYPE,
             label:
               invocationExpression.expression?.__$$element === "literalExpression"
                 ? invocationExpression.expression.text?.__$$text ?? "Function name"
@@ -202,18 +222,25 @@ export function InvocationExpression({
         ],
       },
     ],
-    [expressionHolderId, invocationExpression, parametersWidth, setParametersWidth]
+    [expressionHolderId, invocationExpression, parametersWidth, invocationId, setParametersWidth]
   );
 
   const onColumnUpdates = useCallback(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
       for (const u of columnUpdates) {
-        if (u.column.originalId === "functionName") {
+        if (u.column.originalId === id) {
+          setExpression((prev: BoxedInvocation) => ({
+            ...prev,
+            "@_id": prev["@_id"],
+            name: u.name,
+          }));
+        } else if (u.column.originalId === invocationId) {
           setExpression((prev: BoxedInvocation) => {
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
             const ret: BoxedInvocation = {
               ...prev,
               expression: {
+                ...prev.expression,
                 __$$element: "literalExpression",
                 text: {
                   __$$text: u.name,
@@ -237,7 +264,7 @@ export function InvocationExpression({
         }
       }
     },
-    [setExpression]
+    [setExpression, id, invocationId]
   );
 
   const headerVisibility = useMemo(

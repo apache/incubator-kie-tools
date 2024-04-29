@@ -189,7 +189,10 @@ export function RelationExpression({
           (tableRow: ROWTYPE, column, columnIndex) => {
             const cellExpression = row.expression?.[columnIndex];
             if (cellExpression?.__$$element === "literalExpression") {
-              tableRow[column["@_id"]!] = cellExpression.text?.__$$text ?? "";
+              tableRow[column["@_id"]!] = {
+                id: cellExpression["@_id"] ?? generateUuid(),
+                content: cellExpression.text?.__$$text ?? "",
+              };
             }
             return tableRow;
           },

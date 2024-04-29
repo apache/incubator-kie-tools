@@ -86,8 +86,14 @@ export function beeToGwt(
       })),
       rules: (expression.rule ?? []).map((r) => ({
         id: r["@_id"]!,
-        inputEntries: (r.inputEntry ?? []).map((i) => ({ id: i["@_id"]!, content: i.text?.__$$text ?? "" })),
-        outputEntries: (r.outputEntry ?? []).map((o) => ({ id: o["@_id"]!, content: o.text?.__$$text ?? "" })),
+        inputEntries: (r.inputEntry ?? []).map((i) => ({
+          id: i["@_id"]!,
+          content: i.text?.__$$text ?? "",
+        })),
+        outputEntries: (r.outputEntry ?? []).map((o) => ({
+          id: o["@_id"]!,
+          content: o.text?.__$$text ?? "",
+        })),
         annotationEntries: (r.annotationEntry ?? []).map((a) => a.text?.__$$text ?? ""),
       })),
     };

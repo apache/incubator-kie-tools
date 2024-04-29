@@ -74,6 +74,10 @@ export function FeelFunctionExpression({
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
 
   const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(functionExpression.formalParameter);
+  const parametersId = useMemo(
+    () => (functionExpression["@_id"] ? `${functionExpression["@_id"]}-parameters` : "parameters"),
+    [functionExpression]
+  );
 
   const beeTableColumns = useMemo<ReactTable.Column<FEEL_ROWTYPE>[]>(() => {
     return [
@@ -86,7 +90,7 @@ export function FeelFunctionExpression({
         columns: [
           {
             headerCellElement: parametersColumnHeader,
-            accessor: "parameters" as any,
+            accessor: parametersId as any,
             label: "parameters",
             isRowIndexColumn: false,
             dataType: undefined as any,
@@ -95,7 +99,7 @@ export function FeelFunctionExpression({
         ],
       },
     ];
-  }, [expressionHolderId, functionExpression, parametersColumnHeader]);
+  }, [expressionHolderId, functionExpression, parametersColumnHeader, parametersId]);
 
   const headerVisibility = useMemo(() => {
     return isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
@@ -138,9 +142,9 @@ export function FeelFunctionExpression({
 
   const cellComponentByColumnAccessor: BeeTableProps<FEEL_ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(() => {
     return {
-      parameters: (props) => <FeelFunctionImplementationCell {...props} parentElementId={parentElementId} />,
+      [`${parametersId}`]: (props) => <FeelFunctionImplementationCell {...props} parentElementId={parentElementId} />,
     };
-  }, [parentElementId]);
+  }, [parentElementId, parametersId]);
 
   const getRowKey = useCallback((r: ReactTable.Row<FEEL_ROWTYPE>) => {
     return r.id;

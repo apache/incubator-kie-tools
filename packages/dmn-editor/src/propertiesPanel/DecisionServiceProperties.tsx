@@ -122,6 +122,7 @@ export function DecisionServiceProperties({
         <TypeRefSelector
           heightRef={dmnEditorRootElementRef}
           typeRef={resolvedTypeRef}
+          isDisabled={isReadonly}
           onChange={(newTypeRef) => {
             setState((state) => {
               const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService;
@@ -184,6 +185,7 @@ export function DecisionServiceProperties({
                 newInputDecisions;
             });
           }}
+          isDisabled={isReadonly}
         />
       </FormGroup>
       <FormGroup label="Input data">
@@ -196,6 +198,7 @@ export function DecisionServiceProperties({
               (state.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService).inputData = newInputData;
             });
           }}
+          isDisabled={isReadonly}
         />
       </FormGroup>
 
@@ -276,11 +279,13 @@ export function DraggableDecisionServiceElementList({
   elements,
   allDrgElementsByHref,
   onChange,
+  isDisabled,
 }: {
   decisionServiceNamespace: string | undefined;
   elements: DMN15__tDecisionService["outputDecision"];
   allDrgElementsByHref: AllKnownDrgElementsByHref;
   onChange: (hrefs: DMN15__tDMNElementReference[] | undefined) => void;
+  isDisabled: boolean;
 }) {
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const [keys, setKeys] = React.useState(() => elements?.map((e) => e["@_href"]) ?? []);
@@ -328,6 +333,7 @@ export function DraggableDecisionServiceElementList({
           handlerStyle={
             keys[index] ? { paddingLeft: "16px", paddingRight: "16px" } : { paddingLeft: "16px", paddingRight: "16px" }
           }
+          isDisabled={isDisabled}
         >
           <li key={potentialExternalHref}>
             <DmnObjectListItem
@@ -340,7 +346,7 @@ export function DraggableDecisionServiceElementList({
         </Draggable>
       );
     },
-    [allDrgElementsByHref, decisionServiceNamespace, keys, thisDmnsNamespace]
+    [allDrgElementsByHref, decisionServiceNamespace, isDisabled, keys, thisDmnsNamespace]
   );
 
   return (
@@ -357,7 +363,7 @@ export function DraggableDecisionServiceElementList({
         onDragEnd={onDragEnd}
         values={elements}
         draggableItem={draggableItem}
-        isDisabled={false}
+        isDisabled={isDisabled}
       />
     </ul>
   );

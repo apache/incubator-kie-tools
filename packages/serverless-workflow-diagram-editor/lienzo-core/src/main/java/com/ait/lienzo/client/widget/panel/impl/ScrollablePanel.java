@@ -100,6 +100,23 @@ public class ScrollablePanel extends LienzoBoundsPanel {
         return this;
     }
 
+    public void setScrollbarColors(String color, String backgroundColor) {
+        final String attribute = "scrollbar-color:";
+        String scrollbarStyle = scrollPanel.style.cssText;
+
+        // scrollbar-color clean up
+        if (scrollbarStyle.contains(attribute)) {
+            scrollbarStyle = scrollbarStyle.replaceAll(attribute + "[^;]*?;", "");
+        }
+
+        // If no colors are provided "scrollbar-color" is set to "auto" by default
+        if (null != color && !color.isEmpty() && null != backgroundColor && !backgroundColor.isEmpty()) {
+            scrollbarStyle = attribute + color + " " + backgroundColor + "; " + scrollbarStyle;
+        }
+
+        scrollPanel.style.cssText = scrollbarStyle;
+    }
+
     public Bounds getVisibleBounds() {
         if (null != getViewport()) {
             final Viewport viewport = getViewport();

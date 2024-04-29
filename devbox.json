@@ -26,7 +26,7 @@
     ],
     "scripts": {
       "versions": [
-        "java --version && mvn -v && node -v && pnpm -v && go version && helm version && make -v && python --version && pip --version"
+        "java --version && mvn -v && node -v && pnpm -v && go version && helm version && make -v && python3 --version && pip3 --version"
       ]
     }
   }

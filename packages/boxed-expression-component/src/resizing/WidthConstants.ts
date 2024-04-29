@@ -75,3 +75,7 @@ export const CONDITIONAL_EXPRESSION_EXTRA_WIDTH = 2; // 2px for borders of conte
 export const ITERATOR_EXPRESSION_LABEL_COLUMN_WIDTH = 80;
 export const ITERATOR_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH = 210;
 export const ITERATOR_EXPRESSION_EXTRA_WIDTH = 2; // 2px for borders of context entry expression // It's a mistery why to this cell is counting the borders.
+
+export const FILTER_EXPRESSION_MIN_WIDTH = 250;
+export const FILTER_EXPRESSION_MATCH_ROW_EXTRA_WIDTH = 2 * 20; // 20px is the size of the 'bracket-sign-container' CSS class in the FilterExpression.css file
+export const FILTER_EXPRESSION_EXTRA_WIDTH = 2; // 2px for borders of context entry expression // It's a mistery why to this cell is counting the borders.

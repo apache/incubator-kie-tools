@@ -176,6 +176,7 @@ export function DocumentationLinksFormGroup({
               ? { alignSelf: "flex-start", paddingTop: "8px", paddingLeft: "16px", paddingRight: "16px" }
               : { paddingLeft: "16px", paddingRight: "16px" }
           }
+          isDisabled={isReadonly}
         >
           <li>
             <DocumentationLinksInput

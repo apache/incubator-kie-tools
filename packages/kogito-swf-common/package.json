@@ -21,7 +21,7 @@
   },
   "kieTools": {
     "requiredPreinstalledCliCommands": [
-      "python",
+      "python3",
       "make"
     ]
   }

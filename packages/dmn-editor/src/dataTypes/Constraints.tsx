@@ -63,6 +63,7 @@ export interface ConstraintComponentProps {
   typeHelper: TypeHelper;
   onSave: (value?: string) => void;
   isDisabled: boolean;
+  renderOnPropertiesPanel?: boolean;
 }
 
 enum ConstraintsType {
@@ -373,10 +374,12 @@ export function ConstraintsFromAllowedValuesAttribute({
   isReadonly,
   itemDefinition,
   editItemDefinition,
+  renderOnPropertiesPanel,
 }: {
   isReadonly: boolean;
   itemDefinition: DMN15__tItemDefinition;
   editItemDefinition: EditItemDefinition;
+  renderOnPropertiesPanel?: boolean;
   isEnumDisabled?: boolean;
   isRangeDisabled?: boolean;
 }) {
@@ -476,6 +479,7 @@ export function ConstraintsFromAllowedValuesAttribute({
       selectedConstraint={selectedConstraint}
       onToggleGroupChange={onToggleGroupChange}
       onConstraintChange={onConstraintChange}
+      renderOnPropertiesPanel={renderOnPropertiesPanel}
     />
   );
 }
@@ -484,11 +488,13 @@ export function ConstraintsFromTypeConstraintAttribute({
   isReadonly,
   itemDefinition,
   editItemDefinition,
+  renderOnPropertiesPanel,
   defaultsToAllowedValues,
 }: {
   isReadonly: boolean;
   itemDefinition: DMN15__tItemDefinition;
   editItemDefinition: EditItemDefinition;
+  renderOnPropertiesPanel?: boolean;
   defaultsToAllowedValues: boolean;
 }) {
   const typeConstraint = useMemo(
@@ -591,6 +597,7 @@ export function ConstraintsFromTypeConstraintAttribute({
       selectedConstraint={selectedConstraint}
       onToggleGroupChange={onToggleGroupChange}
       onConstraintChange={onConstraintChange}
+      renderOnPropertiesPanel={renderOnPropertiesPanel}
     />
   );
 }
@@ -606,6 +613,7 @@ export function Constraints({
   selectedConstraint,
   onToggleGroupChange,
   onConstraintChange,
+  renderOnPropertiesPanel,
 }: {
   isReadonly: boolean;
   itemDefinition: DMN15__tItemDefinition;
@@ -619,6 +627,7 @@ export function Constraints({
     expression: boolean;
   };
   selectedConstraint: ConstraintsType;
+  renderOnPropertiesPanel?: boolean;
   onToggleGroupChange: (
     selected: boolean,
     event: React.KeyboardEvent<Element> | MouseEvent | React.MouseEvent<any, MouseEvent>
@@ -652,6 +661,11 @@ export function Constraints({
                 isDisabled={isReadonly}
               />
               <ToggleGroupItem
+                // The default ToggleGroupItem zIndex is bigger than the
+                // the Monaco suggestion zIndex. This causes the button
+                // to be on top of the Monaco suggestion. The 10
+                // is an arbirtrary value, which solves the issue.
+                style={{ zIndex: 10 }}
                 text={ConstraintsType.EXPRESSION}
                 buttonId={ConstraintsType.EXPRESSION}
                 isSelected={selectedConstraint === ConstraintsType.EXPRESSION}
@@ -685,6 +699,7 @@ export function Constraints({
                 expressionValue={constraintValue}
                 onSave={onConstraintChange}
                 isDisabled={!isConstraintEnabled.enumeration}
+                renderOnPropertiesPanel={renderOnPropertiesPanel}
               />
             )}
             {selectedConstraint === ConstraintsType.RANGE && (
@@ -696,6 +711,7 @@ export function Constraints({
                 value={isConstraintRange ? constraintValue : undefined}
                 onSave={onConstraintChange}
                 isDisabled={!isConstraintEnabled.range}
+                renderOnPropertiesPanel={renderOnPropertiesPanel}
               />
             )}
             {selectedConstraint === ConstraintsType.EXPRESSION && (

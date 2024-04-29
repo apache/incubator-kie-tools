@@ -54,6 +54,9 @@ import {
   ITERATOR_EXPRESSION_LABEL_COLUMN_WIDTH,
   ITERATOR_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH,
   ITERATOR_EXPRESSION_EXTRA_WIDTH,
+  FILTER_EXPRESSION_MIN_WIDTH,
+  FILTER_EXPRESSION_MATCH_ROW_EXTRA_WIDTH,
+  FILTER_EXPRESSION_EXTRA_WIDTH,
 } from "./WidthConstants";
 
 export function getExpressionMinWidth(expression?: BoxedExpression): number {
@@ -167,6 +170,17 @@ export function getExpressionMinWidth(expression?: BoxedExpression): number {
       ITERATOR_EXPRESSION_EXTRA_WIDTH
     );
   }
+
+  // Filter
+  else if (expression.__$$element === "filter") {
+    const inExpressionWidth = getExpressionMinWidth(expression.in.expression);
+    const matchExpressionWidth =
+      getExpressionMinWidth(expression.match.expression) + FILTER_EXPRESSION_MATCH_ROW_EXTRA_WIDTH;
+    return (
+      Math.max(FILTER_EXPRESSION_MIN_WIDTH, inExpressionWidth, matchExpressionWidth) + FILTER_EXPRESSION_EXTRA_WIDTH
+    );
+  }
+
   // Others
   else {
     throw new Error("Shouldn't ever reach this point");
@@ -378,9 +392,23 @@ export function getExpressionResizingWidth(
     );
   }
 
+  // Filter
+  else if (expression.__$$element === "filter") {
+    const inExpressionWidth = getExpressionResizingWidth(expression.in.expression, resizingWidths, widthsById);
+    const matchExpressionWidth =
+      getExpressionResizingWidth(expression.match.expression, resizingWidths, widthsById) +
+      FILTER_EXPRESSION_MATCH_ROW_EXTRA_WIDTH;
+    return (
+      resizingWidth ??
+      Math.max(FILTER_EXPRESSION_MIN_WIDTH, inExpressionWidth, matchExpressionWidth) + FILTER_EXPRESSION_EXTRA_WIDTH
+    );
+  }
+
   // Others
   else {
-    throw new Error(`Can't determine resizing width for expression of unknown type '${expression.__$$element}'`);
+    throw new Error(
+      `Can't determine resizing width for expression of unknown type '${(expression as any).__$$element}'`
+    );
   }
 }
 

@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
@@ -34,6 +34,11 @@ import UndoAltIcon from "@patternfly/react-icons/dist/js/icons/undo-alt-icon";
 import { ColorPicker } from "./ColorPicker";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import "./ShapeOptions.css";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
+import { NodeType } from "../diagram/connections/graphStructure";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { DC__Dimension } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_2/ts-gen/types";
 
 const DEFAULT_FILL_COLOR = { "@_blue": 255, "@_green": 255, "@_red": 255 };
 const DEFAULT_STROKE_COLOR = { "@_blue": 0, "@_green": 0, "@_red": 0 };
@@ -50,10 +55,12 @@ export function ShapeOptions({
   isPositioningEnabled: boolean;
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const { externalModelsByNamespace } = useExternalModels();
 
   const shapes = useDmnEditorStore((s) =>
     nodeIds.map((nodeId) => s.computed(s).indexedDrd().dmnShapesByHref.get(nodeId))
   );
+  const nodesById = useDmnEditorStore((s) => s.computed(s).getDiagramData(externalModelsByNamespace).nodesById);
   const shapeStyles = useMemo(() => shapes.map((shape) => shape?.["di:Style"]), [shapes]);
 
   // For when a single node is selected.
@@ -62,6 +69,26 @@ export function ShapeOptions({
   const boundHeight = useMemo(() => +(shapeBound?.["@_height"]?.toFixed(2) ?? ""), [shapeBound]);
   const boundPositionX = useMemo(() => +(shapeBound?.["@_x"]?.toFixed(2) ?? ""), [shapeBound]);
   const boundPositionY = useMemo(() => +(shapeBound?.["@_y"]?.toFixed(2) ?? ""), [shapeBound]);
+
+  const [width, setWidth] = useState<number>(boundWidth);
+  const [height, setHeight] = useState<number>(boundHeight);
+  /**
+   * The `setBounds` method uses the `nodeId` to update a specific node.
+   * Filling the `TextField` and changing the `nodeId` will cause the `onBlur`
+   * method to be called with this new `nodeId`. This reference keep the
+   * old `nodeId` saved, so the `setBounds` can be update the correct node.
+   */
+  const previousNodeId = useRef(nodeIds[0]);
+
+  useEffect(() => {
+    setWidth(boundWidth);
+    previousNodeId.current = nodeIds[0];
+  }, [boundWidth, nodeIds]);
+
+  useEffect(() => {
+    setHeight(boundHeight);
+    previousNodeId.current = nodeIds[0];
+  }, [boundHeight, nodeIds]);
 
   const fillColor = useMemo(() => {
     const b = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_blue"] ?? DEFAULT_FILL_COLOR["@_blue"]).toString(16);
@@ -80,13 +107,13 @@ export function ShapeOptions({
   const [isShapeSectionExpanded, setShapeSectionExpanded] = useState<boolean>(startExpanded);
 
   const setBounds = useCallback(
-    (callback: (bounds: DC__Bounds, state: State) => void) => {
+    (callback: (bounds: DC__Bounds, state: State) => void, nodeId: string) => {
       dmnEditorStoreApi.setState((s) => {
         const { diagramElements } = addOrGetDrd({ definitions: s.dmn.model.definitions, drdIndex: s.diagram.drdIndex });
 
-        const index = nodeIds.map((nodeId) => s.computed(s).indexedDrd().dmnShapesByHref.get(nodeId))[0]?.index ?? -1;
+        const index = s.computed(s).indexedDrd()?.dmnShapesByHref?.get(nodeId)?.index ?? -1;
         if (index < 0) {
-          throw new Error(`DMN Shape for '${nodeIds[0]}' does not exist.`);
+          throw new Error(`DMN Shape for '${nodeId}' does not exist.`);
         }
 
         const shape = diagramElements?.[index];
@@ -100,61 +127,103 @@ export function ShapeOptions({
         callback(shape["dc:Bounds"], s);
       });
     },
-    [dmnEditorStoreApi, nodeIds]
+    [dmnEditorStoreApi]
   );
 
-  const onChangeWidth = useCallback(
-    (newWidth: string) => {
-      setBounds((bounds) => {
-        bounds["@_width"] = +parseFloat(newWidth).toFixed(2);
-      });
+  const onChangeWidth = useCallback((newWidth: string) => {
+    setWidth(+newWidth);
+  }, []);
+
+  const onBlurWidth = useCallback(
+    (event) => {
+      setBounds((bounds, state) => {
+        const node = nodesById.get(previousNodeId.current);
+        const minNodeSize = MIN_NODE_SIZES[node?.type as NodeType]({
+          snapGrid: state.diagram.snapGrid,
+          isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+        });
+
+        if (parseInt(event.target.value) < minNodeSize["@_width"]) {
+          bounds["@_width"] = minNodeSize["@_width"];
+          setWidth(minNodeSize["@_width"]);
+        } else {
+          bounds["@_width"] = parseInt(event.target.value);
+        }
+      }, previousNodeId.current);
     },
-    [setBounds]
+    [nodesById, setBounds]
   );
 
-  const onChangeHeight = useCallback(
-    (newHeight: string) => {
-      setBounds((bounds) => {
-        bounds["@_height"] = +parseFloat(newHeight).toFixed(2);
-      });
+  const onChangeHeight = useCallback((newHeight: string) => {
+    setHeight(+newHeight);
+  }, []);
+
+  const onBlurHeight = useCallback(
+    (event) => {
+      setBounds((bounds, state) => {
+        const node = nodesById.get(previousNodeId.current);
+        const minNodeSize = MIN_NODE_SIZES[node?.type as NodeType]({
+          snapGrid: state.diagram.snapGrid,
+          isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+        });
+
+        if (parseInt(event.target.value) < minNodeSize["@_height"]) {
+          bounds["@_height"] = minNodeSize["@_height"];
+          setHeight(minNodeSize["@_height"]);
+        } else {
+          bounds["@_height"] = parseInt(event.target.value);
+        }
+      }, previousNodeId.current);
     },
-    [setBounds]
+    [nodesById, setBounds]
   );
 
   const onChangePositionX = useCallback(
     (newX: string) => {
       setBounds((bounds) => {
         bounds["@_x"] = +parseFloat(newX).toFixed(2);
-      });
+      }, nodeIds[0]);
     },
-    [setBounds]
+    [nodeIds, setBounds]
   );
 
   const onChangePositionY = useCallback(
     (newY: string) => {
       setBounds((bounds) => {
         bounds["@_y"] = +parseFloat(newY).toFixed(2);
-      });
+      }, nodeIds[0]);
     },
-    [setBounds]
+    [nodeIds, setBounds]
   );
 
   const setShapeStyles = useCallback(
-    (callback: (shape: DMNDI15__DMNShape[], state: State) => void) => {
+    (
+      callback: (
+        shapesWithMinNodeSize: { shape: DMNDI15__DMNShape; minNodeSize: DC__Dimension }[],
+        state: State
+      ) => void
+    ) => {
       dmnEditorStoreApi.setState((s) => {
         const { diagramElements } = addOrGetDrd({ definitions: s.dmn.model.definitions, drdIndex: s.diagram.drdIndex });
 
-        const shapes = nodeIds.map((nodeId) => {
+        const shapesWithMinNodeSize = nodeIds.map((nodeId) => {
           const shape = s.computed(s).indexedDrd().dmnShapesByHref.get(nodeId);
+          const node = s.computed(s).getDiagramData(externalModelsByNamespace).nodesById.get(nodeId);
+
+          const minNodeSize = MIN_NODE_SIZES[node?.type as NodeType]({
+            snapGrid: s.diagram.snapGrid,
+            isAlternativeInputDataShape: s.computed(s).isAlternativeInputDataShape(),
+          });
+
           if (!shape) {
             throw new Error(`DMN Shape for '${nodeId}' does not exist.`);
           }
 
-          return diagramElements[shape.index];
+          return { shape: diagramElements[shape.index], minNodeSize };
         });
 
         let i = 0;
-        for (const shape of shapes) {
+        for (const { shape } of shapesWithMinNodeSize) {
           if (shape.__$$element !== "dmndi:DMNShape") {
             throw new Error(`DMN Element with index ${i++} is not a DMNShape.`);
           }
@@ -162,10 +231,10 @@ export function ShapeOptions({
           shape["di:Style"] ??= { __$$element: "dmndi:DMNStyle" };
         }
 
-        callback(shapes, s);
+        callback(shapesWithMinNodeSize, s);
       });
     },
-    [dmnEditorStoreApi, nodeIds]
+    [dmnEditorStoreApi, externalModelsByNamespace, nodeIds]
   );
 
   const [temporaryStrokeColor, setTemporaryStrokeColor] = useState<string | undefined>();
@@ -187,10 +256,10 @@ export function ShapeOptions({
 
       setTemporaryStrokeColor(undefined);
 
-      setShapeStyles((shapes, state) => {
-        shapes.forEach((shape) => {
+      setShapeStyles((shapesWithMinNodeSize, state) => {
+        shapesWithMinNodeSize.forEach(({ shape }) => {
           state.diagram.isEditingStyle = false;
-          shape!["di:Style"]!["dmndi:StrokeColor"] ??= { "@_red": 0, "@_green": 0, "@_blue": 0 };
+          shape!["di:Style"]!["dmndi:StrokeColor"] ??= { ...DEFAULT_STROKE_COLOR };
           shape!["di:Style"]!["dmndi:StrokeColor"]["@_red"] = parseInt(temporaryStrokeColor.slice(0, 2), 16);
           shape!["di:Style"]!["dmndi:StrokeColor"]["@_green"] = parseInt(temporaryStrokeColor.slice(2, 4), 16);
           shape!["di:Style"]!["dmndi:StrokeColor"]["@_blue"] = parseInt(temporaryStrokeColor.slice(4, 6), 16);
@@ -222,10 +291,10 @@ export function ShapeOptions({
 
       setTemporaryFillColor(undefined);
 
-      setShapeStyles((shapes, state) => {
-        shapes.forEach((shape) => {
+      setShapeStyles((shapesWithMinNodeSize, state) => {
+        shapesWithMinNodeSize.forEach(({ shape }) => {
           state.diagram.isEditingStyle = false;
-          shape!["di:Style"]!["dmndi:FillColor"] ??= { "@_red": 0, "@_green": 0, "@_blue": 0 };
+          shape!["di:Style"]!["dmndi:FillColor"] ??= { ...DEFAULT_FILL_COLOR };
           shape!["di:Style"]!["dmndi:FillColor"]["@_red"] = parseInt(temporaryFillColor.slice(0, 2), 16);
           shape!["di:Style"]!["dmndi:FillColor"]["@_green"] = parseInt(temporaryFillColor.slice(2, 4), 16);
           shape!["di:Style"]!["dmndi:FillColor"]["@_blue"] = parseInt(temporaryFillColor.slice(4, 6), 16);
@@ -239,17 +308,24 @@ export function ShapeOptions({
   }, [setShapeStyles, temporaryFillColor]);
 
   const onReset = useCallback(() => {
-    setShapeStyles((shapes) => {
-      shapes.forEach((shape) => {
-        shape!["di:Style"]!["dmndi:FillColor"] ??= { "@_red": 0, "@_green": 0, "@_blue": 0 };
-        shape!["di:Style"]!["dmndi:FillColor"]["@_red"] = DEFAULT_FILL_COLOR["@_red"];
-        shape!["di:Style"]!["dmndi:FillColor"]["@_green"] = DEFAULT_FILL_COLOR["@_green"];
-        shape!["di:Style"]!["dmndi:FillColor"]["@_blue"] = DEFAULT_FILL_COLOR["@_blue"];
+    setShapeStyles((shapeWithNodes) => {
+      shapeWithNodes.forEach(({ shape, minNodeSize }) => {
+        shape["di:Style"] ??= {
+          __$$element: "dmndi:DMNStyle",
+          "dmndi:FillColor": { ...DEFAULT_FILL_COLOR },
+          "dmndi:StrokeColor": { ...DEFAULT_STROKE_COLOR },
+        };
+        shape["di:Style"]["dmndi:FillColor"] = { ...DEFAULT_FILL_COLOR };
+        shape["di:Style"]["dmndi:StrokeColor"] = { ...DEFAULT_STROKE_COLOR };
 
-        shape!["di:Style"]!["dmndi:StrokeColor"] ??= { "@_red": 0, "@_green": 0, "@_blue": 0 };
-        shape!["di:Style"]!["dmndi:StrokeColor"]["@_red"] = DEFAULT_STROKE_COLOR["@_red"];
-        shape!["di:Style"]!["dmndi:StrokeColor"]["@_green"] = DEFAULT_STROKE_COLOR["@_green"];
-        shape!["di:Style"]!["dmndi:StrokeColor"]["@_blue"] = DEFAULT_STROKE_COLOR["@_blue"];
+        shape["dc:Bounds"] ??= {
+          "@_width": minNodeSize["@_width"],
+          "@_height": minNodeSize["@_width"],
+          "@_x": 0,
+          "@_y": 0,
+        };
+        shape["dc:Bounds"]["@_width"] = minNodeSize["@_width"];
+        shape["dc:Bounds"]["@_height"] = minNodeSize["@_height"];
       });
     });
   }, [setShapeStyles]);
@@ -266,9 +342,19 @@ export function ShapeOptions({
         isSectionExpanded={isShapeSectionExpanded}
         toogleSectionExpanded={() => setShapeSectionExpanded((prev) => !prev)}
         title={"Shape"}
+        action={
+          <Button
+            variant={ButtonVariant.plain}
+            onClick={onReset}
+            style={{ paddingBottom: 0, paddingTop: 0 }}
+            title={"Reset shape"}
+          >
+            <UndoAltIcon />
+          </Button>
+        }
       />
       {isShapeSectionExpanded && (
-        <FormSection style={{ paddingLeft: "20px", marginTop: "0px" }}>
+        <FormSection style={{ paddingLeft: "20px", marginTop: "0px", marginBottom: "16px" }}>
           <FormGroup label={"Style"}>
             <ToggleGroup>
               <Tooltip content={"Fill color"}>
@@ -349,10 +435,11 @@ export function ShapeOptions({
                         data-testid={"kie-tools--dmn-editor--properties-panel-node-shape-width-input"}
                         type={"number"}
                         isDisabled={isDimensioningEnabled ? false : true}
-                        value={isDimensioningEnabled ? boundWidth : undefined}
+                        value={isDimensioningEnabled ? width : undefined}
                         placeholder={isDimensioningEnabled ? "Enter a value..." : undefined}
+                        onBlur={onBlurWidth}
                         onChange={onChangeWidth}
-                        style={{ maxWidth: "80px", minWidth: "60px", border: "none", backgroundColor: "transparent" }}
+                        style={{ border: "none", backgroundColor: "transparent" }}
                       />
                       <div>
                         <ArrowsAltHIcon aria-label={"Width"} />
@@ -375,10 +462,11 @@ export function ShapeOptions({
                         data-testid={"kie-tools--dmn-editor--properties-panel-node-shape-height-input"}
                         type={"number"}
                         isDisabled={isDimensioningEnabled ? false : true}
-                        value={isDimensioningEnabled ? boundHeight : undefined}
+                        value={isDimensioningEnabled ? height : undefined}
                         placeholder={isDimensioningEnabled ? "Enter a value..." : undefined}
+                        onBlur={onBlurHeight}
                         onChange={onChangeHeight}
-                        style={{ maxWidth: "80px", minWidth: "60px", border: "none", backgroundColor: "transparent" }}
+                        style={{ border: "none", backgroundColor: "transparent" }}
                       />
                       <div>
                         <ArrowsAltVIcon aria-label={"Height"} />
@@ -387,16 +475,6 @@ export function ShapeOptions({
                   }
                   key={"bound-height"}
                   buttonId={"shape-style-toggle-group-bound-height"}
-                />
-              </Tooltip>
-              <Tooltip content={"Reset shape"}>
-                <ToggleGroupItem
-                  title={"Reset shape"}
-                  onClick={onReset}
-                  className={"kie-dmn-editor--shape-options-toggle-button"}
-                  text={<UndoAltIcon />}
-                  key={"reset"}
-                  buttonId={"shape-style-toggle-group-reset"}
                 />
               </Tooltip>
             </ToggleGroup>
