@@ -276,6 +276,16 @@ public class LightMode implements ColorTheme {
     }
 
     @Override
+    public String getScrollbarColor() {
+        return null;
+    }
+
+    @Override
+    public String getScrollbarBackgroundColor() {
+        return null;
+    }
+
+    @Override
     public boolean isDarkTheme() {
         return false;
     }

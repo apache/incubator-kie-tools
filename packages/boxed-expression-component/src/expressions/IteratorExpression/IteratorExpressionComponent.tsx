@@ -28,7 +28,7 @@ import {
 } from "../../api";
 import { BeeTable, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   DMN15__tChildExpression,
   DMN15__tTypedChildExpression,
@@ -47,7 +47,8 @@ import {
   ITERATOR_EXPRESSION_LABEL_COLUMN_WIDTH,
 } from "../../resizing/WidthConstants";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
-import { InlineEditableTextInput } from "../../table/BeeTable/InlineEditableTextInput";
+import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
+import { IteratorExpressionVariableCell } from "./IteratorExpressionVariableCell";
 
 type ROWTYPE = IteratorClause;
 
@@ -192,32 +193,13 @@ export function IteratorExpressionComponent({
       child: (props) => {
         if (props.rowIndex === 0) {
           return (
-            <div
-              style={{
-                minHeight: "60px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <InlineEditableTextInput
-                {...props}
-                value={props.data[props.rowIndex].child as string}
-                onChange={(updatedValue) => {
-                  setExpression((prev: BoxedIterator) => {
-                    // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-                    const ret: BoxedIterator = {
-                      ...prev,
-                      "@_iteratorVariable": updatedValue,
-                    };
-                    return ret;
-                  });
-                }}
-                setActiveCellEditing={(value) => {
-                  beeTableRef.current?.setActiveCellEditing(value);
-                }}
-              />
-            </div>
+            <IteratorExpressionVariableCell
+              data={props.data}
+              rowIndex={props.rowIndex}
+              columnIndex={props.columnIndex}
+              currentElementId={id}
+              beeTableRef={beeTableRef}
+            />
           );
         } else if (props.rowIndex === 1 || props.rowIndex === 2) {
           return (
@@ -232,7 +214,7 @@ export function IteratorExpressionComponent({
         }
       },
     };
-  }, [parentElementId, setExpression]);
+  }, [id, parentElementId]);
 
   const { nestedExpressionContainerValue, onColumnResizingWidthChange } =
     useNestedExpressionContainerWithNestedExpressions(

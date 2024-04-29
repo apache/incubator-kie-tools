@@ -24,7 +24,7 @@ BUILD_ENGINE 				?= docker
 BUILD_ENGINE_OPTIONS 	 	?=
 
 # Resolving the current image version from the kogito.project.versions module. Cekit will use it to tag the image.
-CURRENT_IMAGE_VERSION 		:= $(shell python scripts/retrieve_version.py)
+CURRENT_IMAGE_VERSION 		:= $(shell python3 scripts/retrieve_version.py)
 
 # SWF Image creation envs
 SWF_IMAGE_NAME				?= # Image name
@@ -51,7 +51,7 @@ endif
 # Upgrade Quarkus & Kogito versions in the images and modules
 _run_version_manager:
 ifneq ($(QUARKUS_PLATFORM_VERSION)$(KOGITO_VERSION),)
-	python scripts/versions_manager.py --quarkus-version ${QUARKUS_PLATFORM_VERSION} --kogito-version ${KOGITO_VERSION}
+	python3 scripts/versions_manager.py --quarkus-version ${QUARKUS_PLATFORM_VERSION} --kogito-version ${KOGITO_VERSION}
 endif
 
 _fix_platform_versions: _check_versions _run_version_manager

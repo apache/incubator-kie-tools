@@ -17,9 +17,9 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
+const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools/maven-base/env")], {
   vars: varsWithName({}),
   get env() {
     return {

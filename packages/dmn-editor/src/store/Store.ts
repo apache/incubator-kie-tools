@@ -25,6 +25,7 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { ExternalModelsIndex } from "../DmnEditor";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
+import { normalize } from "../normalization/normalize";
 import { ComputedStateCache } from "./ComputedStateCache";
 import { computeAllFeelVariableUniqueNames } from "./computed/computeAllFeelVariableUniqueNames";
 import { computeDataTypes } from "./computed/computeDataTypes";
@@ -217,7 +218,7 @@ export function createDmnEditorStore(model: State["dmn"]["model"], computedCache
   return create(
     immer<State>(() => ({
       dmn: {
-        model,
+        model: normalize(model),
       },
       ...defaultStaticState(),
       dispatch(s: State) {

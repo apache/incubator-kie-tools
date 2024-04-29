@@ -111,6 +111,14 @@ export const sumDiffDs = `<definitions
     <typeRef>number</typeRef>
   </itemComponent>
 </itemDefinition>
+<itemDefinition id="_2B4E9593-3239-4E04-A213-345F0AA0AF9E" name="Fine" isCollection="false">
+  <itemComponent id="_3EF27B7D-3378-429E-B6DB-B856F5EB0AEE" name="Value" isCollection="false">
+    <typeRef>number</typeRef>
+    <allowedValues id="_5BD13D9D-412F-4E6B-914A-3D8AAAC6A701">
+      <text>100,500,1000</text>
+    </allowedValues>
+  </itemComponent>
+</itemDefinition>
 <dmndi:DMNDI>
   <dmndi:DMNDiagram>
     <dmndi:DMNShape id="_495CB0A7-017A-4A2F-A4D7-3133C82708E0" dmnElementRef="_721B7634-7227-42B4-AAA4-17DE60A7A967" isCollapsed="false" isListedInputData="false">

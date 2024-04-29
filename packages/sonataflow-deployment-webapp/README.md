@@ -50,7 +50,7 @@ To create a consumer app for local tests following the Quarkus Getting Started A
     <executions>
         <execution>
             <id>unpack-webjar</id>
-            <phase>process-resources</phase>
+            <phase>generate-resources</phase>
             <goals>
                 <goal>unpack</goal>
             </goals>
@@ -106,7 +106,7 @@ Add a plugin to unpack and copy the Webjar in the plugins section
           <executions>
               <execution>
                   <id>unpack-sonataflow-deployment-webapp</id>
-                  <phase>process-resources</phase>
+                  <phase>generate-resources</phase>
                   <goals>
                       <goal>unpack</goal>
                   </goals>
@@ -130,7 +130,7 @@ Add a plugin to unpack and copy the Webjar in the plugins section
           <executions>
               <execution>
                   <id>copy-sonataflow-deployment-webapp-resources</id>
-                  <phase>process-resources</phase>
+                  <phase>generate-resources</phase>
                   <goals>
                       <goal>copy-resources</goal>
                   </goals>

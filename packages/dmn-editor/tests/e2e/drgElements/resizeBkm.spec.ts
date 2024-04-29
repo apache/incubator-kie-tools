@@ -185,7 +185,6 @@ test.describe("Resize node - BKM", () => {
         type: TestAnnotations.REGRESSION,
         description: "https://github.com/apache/incubator-kie-issues/issues/1074",
       });
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1074");
       await bkmPropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.BKM });
       await bkmPropertiesPanel.setShape({ width: "50", height: "50" });
@@ -203,7 +202,6 @@ test.describe("Resize node - BKM", () => {
         type: TestAnnotations.REGRESSION,
         description: "https://github.com/apache/incubator-kie-issues/issues/1075",
       });
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1075");
       await bkmPropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.BKM });
       await bkmPropertiesPanel.setShape({ width: "300", height: "300" });

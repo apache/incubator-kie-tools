@@ -31,6 +31,10 @@ export type XmlParserTsIdRandomizerMatcher<M extends Meta> = (args: {
 
 export class XmlParserTsIdRandomizer<M extends Meta> {
   private readonly updaters = new Map<string, XmlParserTsIdRandomizerUpdater[]>();
+  private readonly toAttribute = new Map<string, XmlParserTsIdRandomizerUpdater>();
+
+  private readonly attributed = new Map<string, string>(); // Path -> New
+  private readonly randomized = new Map<string, string>(); // Prev -> New
 
   constructor(
     private readonly args: {
@@ -52,21 +56,24 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
     attr,
     __$$element,
     arrayIndex,
+    path,
   }: {
-    json: any;
+    json: any | undefined;
     type: X;
     attr: keyof M[X];
     arrayIndex?: number;
     __$$element?: string;
     parentJson?: any;
+    path?: string;
   }): XmlParserTsIdRandomizer<M> {
-    if (json === undefined) {
+    const rootMetaProp = this.args.meta[type][attr];
+
+    if (json === undefined && !(rootMetaProp.xsdType === "xsd:ID")) {
       console.debug(`ID RANDOMIZER: ack: ${String(type)}.${String(attr)}: ${json}. skip.`);
       return this;
     }
 
-    const rootMetaProp = this.args.meta[type][attr];
-    const resolvedRootMetaPropTypeName = this.args.elements[__$$element ?? json.__$$element] ?? rootMetaProp.type;
+    const resolvedRootMetaPropTypeName = this.args.elements[__$$element ?? json?.__$$element] ?? rootMetaProp.type;
 
     // Array
     // Arrays and arrays element will have the same `rootMetaProp`, but array elements will have an array index associated with it
@@ -78,6 +85,7 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
           attr: attr,
           type: type,
           arrayIndex: index,
+          path: path === undefined ? `${String(attr)}.${index}` : `${path}.${index}`,
         });
       }
     }
@@ -91,6 +99,7 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
           parentJson: json,
           attr: metaPropName,
           type: resolvedRootMetaPropTypeName,
+          path: path === undefined ? `${String(attr)}.${metaPropName}` : `${path}.${metaPropName}`,
         });
       }
     }
@@ -105,6 +114,11 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
 
       // ID, IDREF
       if (rootMetaProp.xsdType === "xsd:ID" || rootMetaProp.xsdType === "xsd:IDREF") {
+        // On leaf values, `json` is the string representing an xsd:ID or an xsd:IDREF.
+        // When `json` === undefined it means that an object that has an xsd:ID property doesn't have an id.
+        // In other words `parentJson` is an undentified object.
+        // The second condition of this if statement allows attributing an id to an xsd:ID property
+        // that previously wasn't defined.
         const u: XmlParserTsIdRandomizerUpdater = ({ newId }) => {
           console.debug(
             `ID RANDOMIZER: [ID,IDREF] Updating id from ${parentJson[accessor]} to ${newId} @ (${String(type)}.${String(
@@ -113,12 +127,18 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
           );
           return (parentJson[accessor] = newId);
         };
-        this.updaters.set(json, [...(this.updaters.get(json) ?? []), u]);
+
+        // Attributes an ID in case `json` === undefined
+        if (json === undefined) {
+          this.toAttribute.set(path === undefined ? String(attr) : path, u);
+        } else {
+          this.updaters.set(json, [...(this.updaters.get(json) ?? []), u]);
+        }
       }
 
       // QName
       else if (rootMetaProp.xsdType === "xsd:QName") {
-        const qname = parseXmlQName(json);
+        const qname = parseXmlQName(json ?? "");
         const u: XmlParserTsIdRandomizerUpdater = ({ newId }) => {
           console.debug(
             `ID RANDOMIZER: [QName] Updating id from ${qname.localPart} to ${newId} @ (${String(type)}.${String(
@@ -151,16 +171,41 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
     return this;
   }
 
-  public randomize(): Map<string, string> {
-    const newIdsByOriginalId = new Map<string, string>();
+  // skipAlreadyAttributedIds is true by default
+  public randomize(args?: { skipAlreadyAttributedIds: boolean }) {
+    for (const [path, u] of this.toAttribute) {
+      const newId = this.args.newIdGenerator();
+      this.attributed.set(path, newId);
+      u({ newId });
+    }
 
     for (const [id, us] of this.updaters) {
-      const newId = this.args.newIdGenerator();
-      newIdsByOriginalId.set(id, newId);
-      for (const u of us) {
-        u({ newId });
+      // Generates new unique id's for all properties of type xsd:ID that were undefined.
+      if (id === undefined) {
+        const newId = this.args.newIdGenerator();
+        this.randomized.set(id, newId);
+        for (const u of us) {
+          u({ newId });
+        }
+      }
+
+      // Generates a new id an updates all references to the old one with the same value.
+      else if (args?.skipAlreadyAttributedIds === false) {
+        const newId = this.args.newIdGenerator();
+        this.randomized.set(id, newId);
+        for (const u of us) {
+          u({ newId });
+        }
       }
     }
-    return newIdsByOriginalId;
+    return this;
+  }
+
+  public getAttributed() {
+    return this.attributed;
+  }
+
+  public getRandomized() {
+    return this.randomized;
   }
 }

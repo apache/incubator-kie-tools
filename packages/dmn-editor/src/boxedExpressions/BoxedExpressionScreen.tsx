@@ -286,8 +286,6 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
           },
         });
 
-        console.log(defaultWidthsById);
-
         return {
           expression: defaultExpression,
           widthsById: defaultWidthsById,
@@ -385,10 +383,10 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
             pmmlDocuments={pmmlDocuments}
             isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
             expressionHolderId={activeDrgElementId!}
-            expressionHolderName={drgElement?.variable?.["@_name"] || drgElement?.["@_name"] || ""}
+            expressionHolderName={drgElement?.variable?.["@_name"] ?? drgElement?.["@_name"] ?? ""}
             expressionHolderTypeRef={
-              drgElement?.variable?.["@_typeRef"] ||
-              expression?.boxedExpression?.["@_typeRef"] ||
+              drgElement?.variable?.["@_typeRef"] ??
+              expression?.boxedExpression?.["@_typeRef"] ??
               DmnBuiltInDataType.Undefined
             }
             expression={expression?.boxedExpression}
@@ -405,7 +403,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
   );
 }
 
-function drgElementToBoxedExpression(
+export function drgElementToBoxedExpression(
   expressionHolder:
     | (DMN15__tDecision & { __$$element: "decision" })
     | (DMN15__tBusinessKnowledgeModel & { __$$element: "businessKnowledgeModel" })
@@ -418,7 +416,7 @@ function drgElementToBoxedExpression(
         }
       : {
           __$$element: "functionDefinition",
-          "@_id": generateUuid(),
+          "@_id": expressionHolder.variable?.["@_id"] ?? generateUuid(),
           "@_kind": "FEEL",
           expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
           formalParameter: [],
@@ -426,7 +424,16 @@ function drgElementToBoxedExpression(
           "@_typeRef": expressionHolder.variable?.["@_typeRef"],
         };
   } else if (expressionHolder.__$$element === "decision") {
-    return expressionHolder.expression;
+    return expressionHolder.expression
+      ? {
+          ...expressionHolder.expression,
+          "@_label":
+            expressionHolder?.variable?.["@_name"] ??
+            expressionHolder.expression["@_label"] ??
+            expressionHolder?.["@_name"],
+          "@_typeRef": expressionHolder?.variable?.["@_typeRef"] ?? expressionHolder.expression["@_typeRef"],
+        }
+      : undefined;
   } else {
     throw new Error(
       `Unknown __$$element of expressionHolder that has an expression '${(expressionHolder as any).__$$element}'.`

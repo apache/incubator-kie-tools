@@ -187,7 +187,6 @@ test.describe("Resize node - Decision", () => {
         type: TestAnnotations.REGRESSION,
         description: "https://github.com/apache/incubator-kie-issues/issues/1074",
       });
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1074");
       await decisionPropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.DECISION });
       await decisionPropertiesPanel.setShape({ width: "50", height: "50" });
@@ -205,7 +204,6 @@ test.describe("Resize node - Decision", () => {
         type: TestAnnotations.REGRESSION,
         description: "https://github.com/apache/incubator-kie-issues/issues/1075",
       });
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1075");
       await decisionPropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.DECISION });
       await decisionPropertiesPanel.setShape({ width: "300", height: "300" });

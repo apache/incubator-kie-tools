@@ -60,9 +60,11 @@ import {
   DMN15__tDecisionRule,
   DMN15__tHitPolicy,
   DMN15__tInputClause,
+  DMN15__tLiteralExpression,
   DMN15__tOutputClause,
   DMN15__tRuleAnnotation,
   DMN15__tRuleAnnotationClause,
+  DMN15__tUnaryTests,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import "./DecisionTableExpression.css";
 import { Unpacked } from "../../tsExt/tsExt";
@@ -420,7 +422,10 @@ export function DecisionTableExpression({
 
         return getColumnsAtLastLevel(beeTableColumns).reduce(
           (tableRow: ROWTYPE, column, columnIndex) => {
-            tableRow[column.accessor] = ruleRow[columnIndex]?.text?.__$$text ?? "";
+            tableRow[column.accessor] = {
+              id: (ruleRow[columnIndex] as DMN15__tUnaryTests & DMN15__tLiteralExpression)?.["@_id"] ?? "",
+              content: ruleRow[columnIndex]?.text?.__$$text ?? "",
+            };
             return tableRow;
           },
           { id: rule["@_id"] }

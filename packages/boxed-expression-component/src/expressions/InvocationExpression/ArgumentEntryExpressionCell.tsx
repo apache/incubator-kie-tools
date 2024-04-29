@@ -18,23 +18,32 @@
  */
 
 import * as React from "react";
+import { useCallback, useEffect } from "react";
 import { BoxedInvocation, BeeTableCellProps } from "../../api";
+import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 import {
   NestedExpressionDispatchContextProvider,
   OnSetExpression,
+  useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../../BoxedExpressionEditorContext";
-import { useCallback } from "react";
-import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 import { ROWTYPE } from "./InvocationExpression";
 import "../ContextExpression/ContextEntryExpressionCell.css";
+import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 
 export const ArgumentEntryExpressionCell: React.FunctionComponent<
   BeeTableCellProps<ROWTYPE> & { parentElementId: string }
 > = ({ data, rowIndex, columnIndex, parentElementId }) => {
   const { setExpression } = useBoxedExpressionEditorDispatch();
-
   const { expression, variable, index } = data[rowIndex];
+  const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
+  const { beeGwtService } = useBoxedExpressionEditor();
+
+  useEffect(() => {
+    if (isActive) {
+      expression ? beeGwtService?.selectObject(expression["@_id"]) : "";
+    }
+  }, [beeGwtService, columnIndex, expression, isActive]);
 
   const onSetExpression = useCallback<OnSetExpression>(
     ({ getNewExpression }) => {

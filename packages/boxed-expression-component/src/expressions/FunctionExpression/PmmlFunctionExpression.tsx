@@ -75,10 +75,14 @@ export function PmmlFunctionExpression({
   parentElementId: string;
 }) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
+  const { expressionHolderId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(functionExpression.formalParameter);
+  const parametersId = useMemo(
+    () => (functionExpression["@_id"] ? `${functionExpression["@_id"]}-parameters` : "parameters"),
+    [functionExpression]
+  );
 
   const beeTableColumns = useMemo<ReactTable.Column<PMML_ROWTYPE>[]>(() => {
     return [
@@ -91,7 +95,7 @@ export function PmmlFunctionExpression({
         columns: [
           {
             headerCellElement: parametersColumnHeader,
-            accessor: "parameters" as any,
+            accessor: parametersId as any,
             label: "parameters",
             isRowIndexColumn: false,
             dataType: undefined as any,
@@ -121,7 +125,7 @@ export function PmmlFunctionExpression({
         ],
       },
     ];
-  }, [expressionHolderId, functionExpression, parametersColumnHeader]);
+  }, [expressionHolderId, functionExpression, parametersColumnHeader, parametersId]);
 
   const headerVisibility = useMemo(() => {
     return isNested ? BeeTableHeaderVisibility.SecondToLastLevel : BeeTableHeaderVisibility.AllLevels;

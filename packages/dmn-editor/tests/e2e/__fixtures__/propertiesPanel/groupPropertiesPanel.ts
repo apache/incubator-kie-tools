@@ -34,8 +34,8 @@ export class GroupPropertiesPanel extends PropertiesPanelBase {
   constructor(public diagram: Diagram, public page: Page) {
     super(diagram, page);
     this.nameProperties = new NameProperties(this.panel(), page);
-    this.descriptionProperties = new DescriptionProperties(this.panel(), diagram);
-    this.fontProperties = new FontProperties(this.panel(), diagram);
+    this.descriptionProperties = new DescriptionProperties(this.panel());
+    this.fontProperties = new FontProperties(this.panel());
     this.shapeProperties = new ShapeProperties(this.panel());
   }
 
