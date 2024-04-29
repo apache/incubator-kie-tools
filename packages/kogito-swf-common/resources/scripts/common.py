@@ -14,6 +14,8 @@ KOGITO_VERSION_LABEL_NAME = "org.kie.kogito.version"
 QUARKUS_PLATFORM_VERSION_ENV_KEY = "QUARKUS_PLATFORM_VERSION"
 QUARKUS_PLATFORM_VERSION_LABEL_NAME = "io.quarkus.platform.version"
 
+SONATAFLOW_QUARKUS_DEVUI_VERSION_ENV_KEY = "SONATAFLOW_QUARKUS_DEVUI_VERSION"
+
 
 def yaml_loader():
     """
@@ -157,6 +159,14 @@ def update_quarkus_platform_version(quarkus_platform_version):
     print("Setting Quarkus version: " + quarkus_platform_version)
     update_env_value(QUARKUS_PLATFORM_VERSION_ENV_KEY, quarkus_platform_version)
     update_label_value(QUARKUS_PLATFORM_VERSION_LABEL_NAME, quarkus_platform_version)
+
+def update_sonataflow_quarkus_devui_version(sonataflow_quarkus_devui_version):
+    """
+    Update sonataflow_quarkus_devui_version version into images/modules
+    :param sonataflow_quarkus_devui_version: sonataflow quarkus devui version to set
+    """
+    print("Setting SonataFlow Quarkus DevUI version: " + sonataflow_quarkus_devui_version)
+    update_env_value(SONATAFLOW_QUARKUS_DEVUI_VERSION_ENV_KEY, sonataflow_quarkus_devui_version)
 
 def update_env_value(env_name, env_value):
     """

@@ -50,7 +50,9 @@ endif
 
 # Upgrade Quarkus & Kogito versions in the images and modules
 _run_version_manager:
-ifneq ($(QUARKUS_PLATFORM_VERSION)$(KOGITO_VERSION),)
+ifneq ($(SONATAFLOW_QUARKUS_DEVUI_VERSION),)
+	python3 scripts/versions_manager.py --quarkus-version ${QUARKUS_PLATFORM_VERSION} --kogito-version ${KOGITO_VERSION} --sonataflow-quarkus-devui-version ${SONATAFLOW_QUARKUS_DEVUI_VERSION}
+else
 	python3 scripts/versions_manager.py --quarkus-version ${QUARKUS_PLATFORM_VERSION} --kogito-version ${KOGITO_VERSION}
 endif
 

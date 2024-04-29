@@ -15,9 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-ARG KOGITO_IMAGE_TAG
+ARG BASE_IMAGE_URL
 
-FROM --platform=linux/amd64 quay.io/kiegroup/kogito-swf-builder-nightly:$KOGITO_IMAGE_TAG
+FROM --platform=linux/amd64 $BASE_IMAGE_URL
 
 ENV PATH="${PATH}:/usr/share/maven/bin"
 
@@ -26,6 +26,6 @@ COPY dist-dev/webapp/ src/main/resources/META-INF/resources/
 RUN rm .dockerignore .gitignore README.md \
   && rm -rf .mvn/ src/main/java/ \
   && mvn quarkus:add-extension -Dextensions="quarkus-jsonp,quarkus-smallrye-openapi,quarkus-resteasy,smallrye-health" \
-  && echo -e '\nquarkus.http.enable-compression=true\nquarkus.swagger-ui.always-include=true\nquarkus.http.host=0.0.0.0\nquarkus.http.cors=true\nquarkus.http.cors.origins=*\nkogito.service.url=http://localhost:8080' >> src/main/resources/application.properties \
+  && echo -e '\nquarkus.http.enable-compression=true\nquarkus.swagger-ui.always-include=true\nquarkus.http.host=0.0.0.0\nquarkus.http.cors=true\nquarkus.http.cors.origins=*' >> src/main/resources/application.properties \
   && mvn clean package -B -ntp \
   && rm -rf target/

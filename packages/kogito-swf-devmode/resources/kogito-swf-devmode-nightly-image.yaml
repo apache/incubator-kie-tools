@@ -30,19 +30,18 @@
       - name: org.kie.kogito.maven.common
       - name: org.kie.kogito.project.versions
       - name: org.kie.kogito.swf.common.scripts
-      - name: org.kie.kogito.swf.builder.build-config
+      - name: org.kie.kogito.swf.devmode.build-config
       - name: org.kie.kogito.swf.common.build
 
-- name: "quay.io/kiegroup/kogito-swf-builder"
+  packages:
+    manager: microdnf
+
+- name: "quay.io/kiegroup/kogito-swf-devmode-nightly"
   from: "registry.access.redhat.com/ubi8/openjdk-17:1.19"
   version: "0.0.0"
-  description: "Kogito Serverless Workflow base builder with Quarkus extensions libraries preinstalled"
+  description: "Kogito Serverless Workflow development mode with Quarkus extensions libraries preinstalled"
 
   labels:
-    - name: "io.openshift.s2i.scripts-url"
-      value: "image:///usr/local/s2i"
-    - name: "io.openshift.s2i.destination"
-      value: "/tmp"
     - name: "io.quarkus.platform.version"
       value: "### SET ME DURING BUILD PROCESS ###"
     - name: "org.kie.kogito.version"
@@ -54,7 +53,12 @@
     - name: "io.k8s.display-name"
       value: "Kogito SWF Builder"
     - name: "io.openshift.tags"
-      value: "kogito,builder,serverless,workflow"
+      value: "kogito,development,serverless,workflow"
+    - name: "io.openshift.expose-services"
+      value: "8080:http,5005:http"
+
+  packages:
+    manager: microdnf
 
   modules:
     repositories:
@@ -67,8 +71,15 @@
       - name: org.kie.kogito.maven.common
       - name: org.kie.kogito.project.versions
       - name: org.kie.kogito.swf.common.scripts
-      - name: org.kie.kogito.swf.builder.runtime.community
+      - name: org.kie.kogito.swf.devmode.runtime.common
+      - name: org.kie.kogito.swf.devmode.runtime.community
+
+  ports:
+    - value: 8080
+    - value: 5005
 
   run:
     workdir: "/home/kogito/${PROJECT_ARTIFACT_ID}"
     user: 1001
+    cmd:
+      - "/home/kogito/launch/run-app-devmode.sh"

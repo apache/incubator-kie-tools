@@ -1,3 +1,4 @@
+#!/bin/sh
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -16,18 +17,22 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-schema_version: 1
-name: org.kie.kogito.project.versions
-version: "0.0.0"
-description: "Kogito Project versions information"
+set -e
 
-envs:
-  - name: "KOGITO_VERSION"
-    value: "### SET ME DURING BUILD PROCESS ###"
-    description: Defines the Kogito version to be used by the builder images. Not intended to be changed by end user.
-  - name: "QUARKUS_PLATFORM_VERSION"
-    value: "### SET ME DURING BUILD PROCESS ###"
-    description: Defines the Quarkus Platform version to be used by the builder images. Not intended to be changed by end user.
-  - name: "SONATAFLOW_QUARKUS_DEVUI_VERSION"
-    value: "### SET ME DURING BUILD PROCESS ###"
-    description: Defines the SonataFlow Quarkus Dev UI version to be used by the devmode image. Not intended to be changed by end user.
+# mvn install:install-file \
+#    -Dfile=/tmp/artifacts/sonataflow-quarkus-devui.jar \
+#    -DgroupId=org.apache.kie.sonataflow \
+#    -DartifactId=sonataflow-quarkus-devui \
+#    -Dversion=$SONATAFLOW_QUARKUS_DEVUI_VERSION \
+#    -Dpackaging=jar \
+#    -DgeneratePom=true
+
+ls -la /tmp/artifacts
+
+mkdir -p "${KOGITO_HOME}"/.m2/repository/org/apache/kie/
+mkdir -p "${KOGITO_HOME}"/.m2/repository/org/kie/
+tar xf /tmp/artifacts/sonataflow-quarkus-devui-maven-repo.tar -C "${KOGITO_HOME}"/.m2/repository/org/apache/kie/
+tar xf /tmp/artifacts/kie-tools-maven-base-maven-repo.tar -C "${KOGITO_HOME}"/.m2/repository/org/kie/
+
+find "${KOGITO_HOME}"/.m2/repository -name _remote.repositories | xargs rm
+
