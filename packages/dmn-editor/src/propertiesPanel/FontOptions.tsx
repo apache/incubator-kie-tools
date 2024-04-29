@@ -233,7 +233,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
       setShapeStyles((shapes, state) => {
         shapes.forEach((shape) => {
           state.diagram.isEditingStyle = false;
-          shape["di:Style"]!["dmndi:FontColor"] ??= { "@_red": 0, "@_green": 0, "@_blue": 0 };
+          shape["di:Style"]!["dmndi:FontColor"] ??= { ...DEFAULT_FONT_COLOR };
           shape["di:Style"]!["dmndi:FontColor"]["@_red"] = parseInt(temporaryFontColor.slice(0, 2), 16);
           shape["di:Style"]!["dmndi:FontColor"]["@_green"] = parseInt(temporaryFontColor.slice(2, 4), 16);
           shape["di:Style"]!["dmndi:FontColor"]["@_blue"] = parseInt(temporaryFontColor.slice(4, 6), 16);
@@ -256,10 +256,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
         shape["di:Style"]!["@_fontStrikeThrough"] = undefined;
         shape["di:Style"]!["@_fontSize"] = undefined;
         shape["di:Style"]!["@_fontFamily"] = undefined;
-        shape["di:Style"]!["dmndi:FontColor"] ??= { "@_red": 0, "@_green": 0, "@_blue": 0 };
-        shape["di:Style"]!["dmndi:FontColor"]!["@_red"] = DEFAULT_FONT_COLOR["@_red"];
-        shape["di:Style"]!["dmndi:FontColor"]!["@_green"] = DEFAULT_FONT_COLOR["@_green"];
-        shape["di:Style"]!["dmndi:FontColor"]!["@_blue"] = DEFAULT_FONT_COLOR["@_blue"];
+        shape["di:Style"]!["dmndi:FontColor"] = { ...DEFAULT_FONT_COLOR };
       });
     });
   }, [setShapeStyles]);

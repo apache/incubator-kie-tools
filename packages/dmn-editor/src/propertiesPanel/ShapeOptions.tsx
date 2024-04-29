@@ -320,7 +320,7 @@ export function ShapeOptions({
 
         shape["dc:Bounds"] ??= {
           "@_width": minNodeSize["@_width"],
-          "@_height": minNodeSize["@_width"],
+          "@_height": minNodeSize["@_height"],
           "@_x": 0,
           "@_y": 0,
         };
