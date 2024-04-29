@@ -52,7 +52,8 @@ SUPPORTING_SERVICES_IMAGES = {"kogito-data-index-ephemeral",
                               "kogito-jobs-service-postgresql", "kogito-jobs-service-allinone",
                               }
 
-SWF_BUILDER_IMAGES = {"kogito-swf-builder", "kogito-swf-devmode", "kogito-base-builder"}
+# Temporary removal of kogito-swf-* images that have been moved to kie-tools for the Apache 10 release
+SWF_BUILDER_IMAGES = {"kogito-base-builder"}
 
 
 def yaml_loader():

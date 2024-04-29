@@ -441,10 +441,7 @@ String[] getImages() {
     if (env.IMAGES_LIST) {
         return env.IMAGES_LIST.split(',')
     }
-    String images = sh(returnStdout: true, script: "make list | tr '\\n' ','").trim()
-    // Temporary removal of kogito-swf-* images that have been moved to kie-tools for the Apache 10 release
-    images = images.replace("kogito-swf-builder,", "").replace("kogito-swf-devmode,", "")
-    return images.split(',')
+    return sh(returnStdout: true, script: "make list | tr '\\n' ','").trim().split(',')
 }
 
 String getQuarkusPlatformVersion() {
