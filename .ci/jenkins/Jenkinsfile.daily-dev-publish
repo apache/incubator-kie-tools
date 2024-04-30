@@ -132,6 +132,7 @@ pipeline {
         KOGITO_SWF_DEVMODE_IMAGE__name = 'kogito-swf-devmode-nightly'
         KOGITO_SWF_DEVMODE_IMAGE__buildTag = 'latest'
 
+<<<<<<< HEAD
         MAVEN_DEPLOY_REPOSITORY = 'https://repository.apache.org/content/repositories/snapshots'
         MAVEN_DEPLOY_TARGET_ID = 'apache-snapshots-repository'
 
@@ -140,6 +141,8 @@ pipeline {
         KOGITO_SERVERLESS_OPERATOR__name = 'kogito-serverless-operator-nightly'
         KOGITO_SERVERLESS_OPERATOR__buildTag = 'latest'
 
+=======
+>>>>>>> 5027b12472 (Using the unified approach to upload java artifacts)
         BUILD_DATE = sh(script: "echo `date +'%Y-%m-%d %T'`", returnStdout: true).trim()
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
@@ -534,27 +537,40 @@ pipeline {
             }
         }
 
-        stage('Build (jbpm-quarkus-devui and sonataflow-quarkus-devui)') {
+        stage('Build and Deploy (jbpm-quarkus-devui)') {
             steps {
-                dir('kie-tools') {
+                dir('kie-tools/packages/jbpm-quarkus-devui') {
                     script {
-                        sh '''#!/bin/bash -el
-                        pnpm update-version-to 0.0.0-SNAPSHOT --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui...
-                        pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... build:prod
-                        '''.trim()
+                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.mavenDeployRepositoryCredentialsId}", usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+                            configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
+                                sh """#!/bin/bash -el
+                                export KIE_TOOLS_BUILD__mavenDeploySkip=false
+                                pnpm -r exec 'bash' '-c' echo "-s ${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config
+                                pnpm -r exec 'bash' '-c' echo "-Dapache.snapshot.repository.username=${REPOSITORY_USER}" >> .mvn/maven.config
+                                pnpm -r exec 'bash' '-c' echo "-Dapache.snapshot.repository.password=${REPOSITORY_TOKEN}" >> .mvn/maven.config
+                                pnpm --filter-prod jbpm-quarkus-devui... update-version-to 0.0.0-SNAPSHOT
+                                pnpm --filter-prod jbpm-quarkus-devui... build:prod
+                                """.trim()
+                            }
+                        }
                     }
                 }
             }
         }
 
-        stage('Deploy (jbpm-quarkus-devui and sonataflow-quarkus-devui)') {
+        stage('Build and Deploy (sonataflow-quarkus-devui)') {
             steps {
-                dir('kie-tools') {
+                dir('kie-tools/packages/sonataflow-quarkus-devui') {
                     script {
                         withCredentials([usernamePassword(credentialsId: "${pipelineVars.mavenDeployRepositoryCredentialsId}", usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
                             configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
                                 sh """#!/bin/bash -el
-                                pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... exec mvn jar:test-jar jar:jar source:jar-no-fork deploy:deploy -s ${MAVEN_SETTINGS_FILE} -Dapache.snapshot.repository.username=${REPOSITORY_USER} -Dapache.snapshot.repository.password=${REPOSITORY_TOKEN} -DaltDeploymentRepository=${MAVEN_DEPLOY_TARGET_ID}::${MAVEN_DEPLOY_REPOSITORY}
+                                export KIE_TOOLS_BUILD__mavenDeploySkip=false
+                                pnpm -r exec 'bash' '-c' echo "-s ${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config
+                                pnpm -r exec 'bash' '-c' echo "-Dapache.snapshot.repository.username=${REPOSITORY_USER}" >> .mvn/maven.config
+                                pnpm -r exec 'bash' '-c' echo "-Dapache.snapshot.repository.password=${REPOSITORY_TOKEN}" >> .mvn/maven.config
+                                pnpm --filter-prod sonataflow-quarkus-devui... update-version-to 0.0.0-SNAPSHOT
+                                pnpm --filter-prod sonataflow-quarkus-devui... build:prod
                                 """.trim()
                             }
                         }
