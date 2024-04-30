@@ -19,7 +19,7 @@
 
 import * as RF from "reactflow";
 import * as React from "react";
-import { useEffect, useImperativeHandle } from "react";
+import { useEffect } from "react";
 import {
   DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE,
   DmnEditorDiagramClipboard,
@@ -44,36 +44,23 @@ import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
 import { DEFAULT_VIEWPORT } from "../diagram/Diagram";
 import { useKeyboardShortcuts } from "../keyboardShortcuts/KeybordShortcuts";
 
-export interface DiagramKeyboardShortcutsInterface {
-  hideFromDrd: () => Promise<void>;
-  toggleHierarchyHighlight: () => Promise<void>;
-  togglePropertiesPanel: () => Promise<void>;
-  createGroup: () => Promise<void>;
-  selectAll: () => Promise<void>;
-  paste: () => Promise<void>;
-  copy: () => Promise<void>;
-  cut: () => Promise<void>;
-  cancelAction: () => Promise<void>;
-  focusOnBounds: () => Promise<void>;
-  resetPosition: () => Promise<void>;
-}
-
 export function DiagramKeyboardShortcuts(props: {}) {
   const rfStoreApi = RF.useStoreApi();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const keyboardShortcuts = useKeyboardShortcuts();
+  const { keyboardShortcutsRef } = useKeyboardShortcuts();
   const { externalModelsByNamespace } = useExternalModels();
   const rf = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();
 
+  // TODO: CHECK
   // Cancel action -> Not used;
   useEffect(() => {
-    if (!keyboardShortcuts.keyboardShortcutsRef.current) {
+    if (!keyboardShortcutsRef.current) {
       return;
     }
-    keyboardShortcuts.keyboardShortcutsRef.current.cancelAction = async () => {
+    keyboardShortcutsRef.current.cancelAction = async () => {
       rfStoreApi.setState((rfState) => {
         if (rfState.connectionNodeId) {
-          console.debug("DMN DIAGRAM: Keyboard Shortcuts: Canceling action...");
+          console.debug("DMN DIAGRAM: KEYBOARD SHORTCUTS: Canceling action...");
           rfState.cancelConnection();
           dmnEditorStoreApi.setState((state) => {
             state.diagram.ongoingConnection = undefined;
@@ -85,26 +72,26 @@ export function DiagramKeyboardShortcuts(props: {}) {
         return rfState;
       });
     };
-  }, [dmnEditorStoreApi, keyboardShortcuts.keyboardShortcutsRef, rfStoreApi]);
+  }, [dmnEditorStoreApi, keyboardShortcutsRef, rfStoreApi]);
 
   // Reset position to origin
   useEffect(() => {
-    if (!keyboardShortcuts.keyboardShortcutsRef.current) {
+    if (!keyboardShortcutsRef.current) {
       return;
     }
-    keyboardShortcuts.keyboardShortcutsRef.current.resetPosition = async () => {
-      console.debug("DMN DIAGRAM: Keyboard Shortcuts: Reseting position...");
+    keyboardShortcutsRef.current.resetPosition = async () => {
+      console.debug("DMN DIAGRAM: KEYBOARD SHORTCUTS: Reseting position...");
       rf.setViewport(DEFAULT_VIEWPORT, { duration: 200 });
     };
-  }, [keyboardShortcuts.keyboardShortcutsRef, rf]);
+  }, [keyboardShortcutsRef, rf]);
 
-  // Focus on node bounds
+  // Focus on selection
   useEffect(() => {
-    if (!keyboardShortcuts.keyboardShortcutsRef.current) {
+    if (!keyboardShortcutsRef.current) {
       return;
     }
-    keyboardShortcuts.keyboardShortcutsRef.current.focusOnBounds = async () => {
-      console.debug("DMN DIAGRAM: Keyboard Shortcuts: Focusing on selected bounds...");
+    keyboardShortcutsRef.current.focusOnSelection = async () => {
+      console.debug("DMN DIAGRAM: KEYBOARD SHORTCUTS: Focusing on selected bounds...");
       const selectedNodes = rf.getNodes().filter((s) => s.selected);
       if (selectedNodes.length <= 0) {
         return;
@@ -125,15 +112,15 @@ export function DiagramKeyboardShortcuts(props: {}) {
         { duration: 200 }
       );
     };
-  }, [keyboardShortcuts.keyboardShortcutsRef, rf]);
+  }, [keyboardShortcutsRef, rf]);
 
-  // Cut
+  // Cut nodes
   useEffect(() => {
-    if (!keyboardShortcuts.keyboardShortcutsRef.current) {
+    if (!keyboardShortcutsRef.current) {
       return;
     }
-    keyboardShortcuts.keyboardShortcutsRef.current.cut = async () => {
-      console.debug("DMN DIAGRAM: Keyboard Shortcuts: Cutting selected nodes...");
+    keyboardShortcutsRef.current.cut = async () => {
+      console.debug("DMN DIAGRAM: KEYBOARD SHORTCUTS: Cutting selected nodes...");
 
       const { clipboard, copiedEdgesById, danglingEdgesById, copiedNodesById } = buildClipboardFromDiagram(
         rfStoreApi.getState(),
@@ -184,28 +171,28 @@ export function DiagramKeyboardShortcuts(props: {}) {
         });
       });
     };
-  }, [dmnEditorStoreApi, externalModelsByNamespace, keyboardShortcuts.keyboardShortcutsRef, rfStoreApi]);
+  }, [dmnEditorStoreApi, externalModelsByNamespace, keyboardShortcutsRef, rfStoreApi]);
 
-  // Copy
+  // Copy nodes
   useEffect(() => {
-    if (!keyboardShortcuts.keyboardShortcutsRef.current) {
+    if (!keyboardShortcutsRef.current) {
       return;
     }
-    keyboardShortcuts.keyboardShortcutsRef.current.copy = async () => {
-      console.debug("DMN DIAGRAM: Keyboard Shortcuts: Copying selected nodes...");
+    keyboardShortcutsRef.current.copy = async () => {
+      console.debug("DMN DIAGRAM: KEYBOARD SHORTCUTS: Copying selected nodes...");
 
       const { clipboard } = buildClipboardFromDiagram(rfStoreApi.getState(), dmnEditorStoreApi.getState());
       navigator.clipboard.writeText(JSON.stringify(clipboard));
     };
-  }, [dmnEditorStoreApi, keyboardShortcuts.keyboardShortcutsRef, rfStoreApi]);
+  }, [dmnEditorStoreApi, keyboardShortcutsRef, rfStoreApi]);
 
-  // Paste
+  // Paste nodes
   useEffect(() => {
-    if (!keyboardShortcuts.keyboardShortcutsRef.current) {
+    if (!keyboardShortcutsRef.current) {
       return;
     }
-    keyboardShortcuts.keyboardShortcutsRef.current.paste = async () => {
-      console.debug("DMN DIAGRAM: Keyboard Shortcuts: Pasting nodes...");
+    keyboardShortcutsRef.current.paste = async () => {
+      console.debug("DMN DIAGRAM: KEYBOARD SHORTCUTS: Pasting nodes...");
 
       navigator.clipboard.readText().then((text) => {
         const clipboard = getClipboard<DmnEditorDiagramClipboard>(text, DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE);
@@ -271,15 +258,15 @@ export function DiagramKeyboardShortcuts(props: {}) {
         });
       });
     };
-  }, [dmnEditorStoreApi, keyboardShortcuts.keyboardShortcutsRef]);
+  }, [dmnEditorStoreApi, keyboardShortcutsRef]);
 
-  // Select/deselect all
+  // Select/deselect all nodes
   useEffect(() => {
-    if (!keyboardShortcuts.keyboardShortcutsRef.current) {
+    if (!keyboardShortcutsRef.current) {
       return;
     }
-    keyboardShortcuts.keyboardShortcutsRef.current.selectAll = async () => {
-      console.debug("DMN DIAGRAM: Keyboard Shortcuts: Selecting/Deselecting nodes...");
+    keyboardShortcutsRef.current.selectAll = async () => {
+      console.debug("DMN DIAGRAM: KEYBOARD SHORTCUTS: Selecting/Deselecting nodes...");
       const allNodeIds = rfStoreApi
         .getState()
         .getNodes()
@@ -303,15 +290,15 @@ export function DiagramKeyboardShortcuts(props: {}) {
         }
       });
     };
-  }, [dmnEditorStoreApi, keyboardShortcuts.keyboardShortcutsRef, rfStoreApi]);
+  }, [dmnEditorStoreApi, keyboardShortcutsRef, rfStoreApi]);
 
   // Create group wrapping selection
   useEffect(() => {
-    if (!keyboardShortcuts.keyboardShortcutsRef.current) {
+    if (!keyboardShortcutsRef.current) {
       return;
     }
-    keyboardShortcuts.keyboardShortcutsRef.current.createGroup = async () => {
-      console.debug("DMN DIAGRAM: Keyboard Shortcuts: Grouping nodes...");
+    keyboardShortcutsRef.current.createGroup = async () => {
+      console.debug("DMN DIAGRAM: KEYBOARD SHORTCUTS: Grouping nodes...");
       const selectedNodes = rf.getNodes().filter((s) => s.selected);
       if (selectedNodes.length <= 0) {
         return;
@@ -337,41 +324,41 @@ export function DiagramKeyboardShortcuts(props: {}) {
         state.dispatch(state).diagram.setNodeStatus(newNodeId, { selected: true });
       });
     };
-  }, [dmnEditorStoreApi, keyboardShortcuts.keyboardShortcutsRef, rf]);
+  }, [dmnEditorStoreApi, keyboardShortcutsRef, rf]);
 
   // Toggle hierarchy highlights
   useEffect(() => {
-    if (!keyboardShortcuts.keyboardShortcutsRef.current) {
+    if (!keyboardShortcutsRef.current) {
       return;
     }
-    keyboardShortcuts.keyboardShortcutsRef.current.toggleHierarchyHighlight = async () => {
-      console.debug("DMN DIAGRAM: Keyboard Shortcuts: Toggle hierarchy highlights...");
+    keyboardShortcutsRef.current.toggleHierarchyHighlight = async () => {
+      console.debug("DMN DIAGRAM: KEYBOARD SHORTCUTS: Toggle hierarchy highlights...");
       dmnEditorStoreApi.setState((state) => {
         state.diagram.overlays.enableNodeHierarchyHighlight = !state.diagram.overlays.enableNodeHierarchyHighlight;
       });
     };
-  }, [dmnEditorStoreApi, keyboardShortcuts.keyboardShortcutsRef]);
+  }, [dmnEditorStoreApi, keyboardShortcutsRef]);
 
   // Show Properties panel
   useEffect(() => {
-    if (!keyboardShortcuts.keyboardShortcutsRef.current) {
+    if (!keyboardShortcutsRef.current) {
       return;
     }
-    keyboardShortcuts.keyboardShortcutsRef.current.togglePropertiesPanel = async () => {
-      console.debug("DMN DIAGRAM: Keyboard Shortcuts: Toggle properties panel...");
+    keyboardShortcutsRef.current.togglePropertiesPanel = async () => {
+      console.debug("DMN DIAGRAM: KEYBOARD SHORTCUTS: Toggle properties panel...");
       dmnEditorStoreApi.setState((state) => {
         state.diagram.propertiesPanel.isOpen = !state.diagram.propertiesPanel.isOpen;
       });
     };
-  }, [dmnEditorStoreApi, keyboardShortcuts.keyboardShortcutsRef]);
+  }, [dmnEditorStoreApi, keyboardShortcutsRef]);
 
   // Hide from DRD
   useEffect(() => {
-    if (!keyboardShortcuts.keyboardShortcutsRef.current) {
+    if (!keyboardShortcutsRef.current) {
       return;
     }
-    keyboardShortcuts.keyboardShortcutsRef.current.hideFromDrd = async () => {
-      console.debug("DMN DIAGRAM: Keyboard Shortcuts: Hide node from DRD...");
+    keyboardShortcutsRef.current.hideFromDrd = async () => {
+      console.debug("DMN DIAGRAM: KEYBOARD SHORTCUTS: Hide node from DRD...");
       const nodesById = rf
         .getNodes()
         .reduce((acc, s) => acc.set(s.id, s), new Map<string, RF.Node<DmnDiagramNodeData>>());
@@ -438,33 +425,29 @@ export function DiagramKeyboardShortcuts(props: {}) {
         }
       });
     };
-  }, [dmnEditorStoreApi, externalModelsByNamespace, keyboardShortcuts.keyboardShortcutsRef, rf]);
+  }, [dmnEditorStoreApi, externalModelsByNamespace, keyboardShortcutsRef, rf]);
 
   useEffect(() => {
-    if (!keyboardShortcuts.keyboardShortcutsRef.current) {
+    if (!keyboardShortcutsRef.current) {
       return;
     }
-    keyboardShortcuts.keyboardShortcutsRef.current.panDown = async () => {
-      rfStoreApi.setState({
-        nodesDraggable: true,
-        nodesConnectable: true,
-        elementsSelectable: true,
-      });
-    };
-  }, [keyboardShortcuts.keyboardShortcutsRef, rfStoreApi]);
-
-  useEffect(() => {
-    if (!keyboardShortcuts.keyboardShortcutsRef.current) {
-      return;
-    }
-    keyboardShortcuts.keyboardShortcutsRef.current.panUp = async () => {
+    keyboardShortcutsRef.current.panDown = async () => {
+      console.debug("DMN DIAGRAM: KEYBOARD SHORTCUTS: Panning down");
       rfStoreApi.setState({
         nodesDraggable: false,
         nodesConnectable: false,
         elementsSelectable: false,
       });
     };
-  }, [keyboardShortcuts.keyboardShortcutsRef, rfStoreApi]);
+    keyboardShortcutsRef.current.panUp = async () => {
+      console.debug("DMN DIAGRAM: KEYBOARD SHORTCUTS: Panning up");
+      rfStoreApi.setState({
+        nodesDraggable: true,
+        nodesConnectable: true,
+        elementsSelectable: true,
+      });
+    };
+  }, [keyboardShortcutsRef, rfStoreApi]);
 
   return <></>;
 }

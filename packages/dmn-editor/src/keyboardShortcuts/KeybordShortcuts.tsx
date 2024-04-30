@@ -17,50 +17,27 @@
  * under the License.
  */
 
-import * as RF from "reactflow";
 import * as React from "react";
 import { useContext, useRef } from "react";
-import {
-  DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE,
-  DmnEditorDiagramClipboard,
-  buildClipboardFromDiagram,
-  getClipboard,
-} from "../clipboard/Clipboard";
-import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
-import { NodeNature, nodeNatures } from "../mutations/NodeNature";
-import { addOrGetDrd } from "../mutations/addOrGetDrd";
-import { addStandaloneNode } from "../mutations/addStandaloneNode";
-import { EdgeDeletionMode, deleteEdge } from "../mutations/deleteEdge";
-import { NodeDeletionMode, canRemoveNodeFromDrdOnly, deleteNode } from "../mutations/deleteNode";
-import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "../mutations/repopulateInputDataAndDecisionsOnDecisionService";
-import { useDmnEditorStoreApi } from "../store/StoreContext";
-import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
-import { CONTAINER_NODES_DESIRABLE_PADDING, getBounds } from "../diagram/maths/DmnMaths";
-import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
-import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
-import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
-import { NodeType } from "../diagram/connections/graphStructure";
-import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
-import { DEFAULT_VIEWPORT } from "../diagram/Diagram";
 
 export interface KeyboardShortcuts {
-  hideFromDrd: () => Promise<void>;
-  toggleHierarchyHighlight: () => Promise<void>;
-  togglePropertiesPanel: () => Promise<void>;
-  createGroup: () => Promise<void>;
-  selectAll: () => Promise<void>;
-  panDown: () => Promise<void>;
-  panUp: () => Promise<void>;
-  paste: () => Promise<void>;
-  copy: () => Promise<void>;
-  cut: () => Promise<void>;
-  cancelAction: () => Promise<void>;
-  focusOnBounds: () => Promise<void>;
-  resetPosition: () => Promise<void>;
+  hideFromDrd: () => void;
+  toggleHierarchyHighlight: () => void;
+  togglePropertiesPanel: () => void;
+  createGroup: () => void;
+  selectAll: () => void;
+  panDown: () => void;
+  panUp: () => void;
+  paste: () => void;
+  copy: () => void;
+  cut: () => void;
+  cancelAction: () => void;
+  focusOnSelection: () => void;
+  resetPosition: () => void;
 }
 
 const KeyboardShortcutsContext = React.createContext<{
-  keyboardShortcutsRef: React.MutableRefObject<KeyboardShortcuts | undefined>;
+  keyboardShortcutsRef: React.MutableRefObject<KeyboardShortcuts>;
 }>({} as any);
 
 export function useKeyboardShortcuts() {
@@ -69,23 +46,23 @@ export function useKeyboardShortcuts() {
 
 export function KeyboardShortcutsProvider(props: React.PropsWithChildren<{}>) {
   const keyboardShortcutsRef = useRef<KeyboardShortcuts>({
-    hideFromDrd: async () => {},
-    toggleHierarchyHighlight: async () => {},
-    togglePropertiesPanel: async () => {},
-    createGroup: async () => {},
-    selectAll: async () => {},
-    panDown: async () => {},
-    panUp: async () => {},
-    paste: async () => {},
-    copy: async () => {},
-    cut: async () => {},
-    cancelAction: async () => {},
-    focusOnBounds: async () => {},
-    resetPosition: async () => {},
+    hideFromDrd: () => {},
+    toggleHierarchyHighlight: () => {},
+    togglePropertiesPanel: () => {},
+    createGroup: () => {},
+    selectAll: () => {},
+    panDown: () => {},
+    panUp: () => {},
+    paste: () => {},
+    copy: () => {},
+    cut: () => {},
+    cancelAction: () => {},
+    focusOnSelection: () => {},
+    resetPosition: () => {},
   });
 
   return (
-    <KeyboardShortcutsContext.Provider value={{ keyboardShortcutsRef: keyboardShortcutsRef }}>
+    <KeyboardShortcutsContext.Provider value={{ keyboardShortcutsRef }}>
       {props.children}
     </KeyboardShortcutsContext.Provider>
   );

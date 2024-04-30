@@ -56,7 +56,11 @@ import { INITIAL_COMPUTED_CACHE } from "./store/computed/initial";
 
 import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
-import { KeyboardShortcutsProvider, useKeyboardShortcuts } from "./keyboardShortcuts/KeybordShortcuts";
+import {
+  KeyboardShortcuts,
+  KeyboardShortcutsProvider,
+  useKeyboardShortcuts,
+} from "./keyboardShortcuts/KeybordShortcuts";
 
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
@@ -65,22 +69,7 @@ const SVG_PADDING = 20;
 export type DmnEditorRef = {
   reset: (mode: DmnLatestModel) => void;
   getDiagramSvg: () => Promise<string | undefined>;
-  getKeyboardShortcuts: () =>
-    | {
-        hideFromDrd: () => void;
-        toggleHierarchyHighlight: () => void;
-        togglePropertiesPanel: () => void;
-        createGroup: () => void;
-        selectAll: () => void;
-        paste: () => void;
-        copy: () => void;
-        cut: () => void;
-        cancelAction: () => void;
-        focusOnBounds: () => void;
-        resetPosition: () => void;
-      }
-    | undefined
-    | null;
+  getKeyboardShortcuts: () => KeyboardShortcuts;
 };
 
 export type EvaluationResults = Record<string, any>;

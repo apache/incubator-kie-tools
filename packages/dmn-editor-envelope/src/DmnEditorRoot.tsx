@@ -42,7 +42,6 @@ import {
   PromiseImperativeHandle,
 } from "@kie-tools-core/react-hooks/dist/useImperativePromiseHandler";
 import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
-import { create } from "domain";
 
 export const EXTERNAL_MODELS_SEARCH_GLOB_PATTERN = "**/*.{dmn,pmml}";
 
@@ -283,73 +282,70 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     prevState: Readonly<DmnEditorRootState>,
     snapshot?: any
   ): void {
-    const keyboardShortcuts = this.dmnEditorRef.current?.getKeyboardShortcuts();
-    if (
-      keyboardShortcuts === undefined ||
-      keyboardShortcuts === null ||
-      this.props.keyboardShortcutsService === undefined ||
-      this.state.keyboardShortcutsSet === true
-    ) {
+    if (this.props.keyboardShortcutsService === undefined || this.state.keyboardShortcutsSet === true) {
       return;
     }
 
-    const cancelAction = this.props.keyboardShortcutsService.registerKeyPress(
-      "Escape",
-      "Diagram | Cancel action",
-      async () => keyboardShortcuts.cancelAction()
+    const keyboardShortcuts = this.dmnEditorRef.current?.getKeyboardShortcuts();
+    if (keyboardShortcuts === undefined) {
+      return;
+    }
+
+    const selectAll = this.props.keyboardShortcutsService?.registerKeyPress(
+      "A",
+      "Edit | Select/Deselect all",
+      async () => keyboardShortcuts.selectAll()
     );
-    const copy = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+C", "Diagram | Copy", async () =>
-      keyboardShortcuts.copy()
+    const focusOnBounds = this.props.keyboardShortcutsService?.registerKeyPress(
+      "B",
+      "Edit | Focus on selection",
+      async () => keyboardShortcuts.focusOnSelection()
     );
     const createGroup = this.props.keyboardShortcutsService?.registerKeyPress(
-      "g",
-      "Diagram | Create group wrapping selection",
+      "G",
+      "Edit | Create group wrapping selection",
       async () => {
         console.log(" KEY GROUP PRESSED, ", keyboardShortcuts);
         return keyboardShortcuts.createGroup();
       }
     );
-    const cut = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+X", "Diagram | Cut", async () =>
-      keyboardShortcuts.cut()
-    );
-    const focusOnBounds = this.props.keyboardShortcutsService?.registerKeyPress(
-      "b",
-      "Diagram | Focus on node bounds",
-      async () => keyboardShortcuts.focusOnBounds()
-    );
-    const hideFromDrd = this.props.keyboardShortcutsService?.registerKeyPress(
-      "x",
-      "Diagram | Hide from DRD",
-      async () => keyboardShortcuts.hideFromDrd()
-    );
-    const pan = this.props.keyboardShortcutsService?.registerKeyDownThenUp(
-      "Alt",
-      "Diagram | Pan",
-      async () => keyboardShortcuts.panDown(),
-      async () => keyboardShortcuts.panUp()
-    );
-    const paste = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+V", "Diagram | Paste", async () =>
-      keyboardShortcuts.paste()
-    );
-    const resetPosition = this.props.keyboardShortcutsService?.registerKeyPress(
-      "Space",
-      "Diagram | Reset position to origin",
-      async () => keyboardShortcuts.resetPosition()
-    );
-    const selectAll = this.props.keyboardShortcutsService?.registerKeyPress(
-      "A",
-      "Diagram | Select/Deselect all",
-      async () => keyboardShortcuts.selectAll()
-    );
     const toggleHierarchyHighlight = this.props.keyboardShortcutsService?.registerKeyPress(
-      "h",
-      "Diagram | Toggle hierarchy highlights",
+      "H",
+      "Edit | Toggle hierarchy highlights",
       async () => keyboardShortcuts.toggleHierarchyHighlight()
     );
     const togglePropertiesPanel = this.props.keyboardShortcutsService?.registerKeyPress(
-      "i",
-      "Diagram | Show properties panel",
+      "I",
+      "Edit | Open/Close properties panel",
       async () => keyboardShortcuts.togglePropertiesPanel()
+    );
+    const hideFromDrd = this.props.keyboardShortcutsService?.registerKeyPress("X", "Edit | Hide from DRD", async () =>
+      keyboardShortcuts.hideFromDrd()
+    );
+    const resetPosition = this.props.keyboardShortcutsService?.registerKeyPress(
+      "Space",
+      "Edit | Reset position to origin",
+      async () => keyboardShortcuts.resetPosition()
+    );
+    const cancelAction = this.props.keyboardShortcutsService.registerKeyPress(
+      "Escape",
+      "Edit | Cancel action",
+      async () => keyboardShortcuts.cancelAction()
+    );
+    const pan = this.props.keyboardShortcutsService?.registerKeyDownThenUp(
+      "Alt",
+      "Edit | Pan",
+      async () => keyboardShortcuts.panDown(),
+      async () => keyboardShortcuts.panUp()
+    );
+    const copy = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+C", "Edit | Copy nodes", async () =>
+      keyboardShortcuts.copy()
+    );
+    const cut = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+X", "Edit | Cut nodes", async () =>
+      keyboardShortcuts.cut()
+    );
+    const paste = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+V", "Edit | Paste nodes", async () =>
+      keyboardShortcuts.paste()
     );
 
     this.setState((prev) => ({
