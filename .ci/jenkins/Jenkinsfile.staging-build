@@ -653,21 +653,11 @@ pipeline {
             }
         }
 
-        stage('STAGING: Build (jbpm-quarkus-devui and sonataflow-quarkus-devui)') {
+        stage('STAGING: Build and Deploy (jbpm-quarkus-devui and sonataflow-quarkus-devui)') {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildDevUiJavaPackages()
-                    }
-                }
-            }
-        }
-
-        stage('STAGING: Deploy (jbpm-quarkus-devui and sonataflow-quarkus-devui)') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        deployDevUiJavaArtifacts()
+                        buildAndDeployDevUiJavaPackages()
                     }
                 }
             }
@@ -1116,21 +1106,6 @@ def buildImage(String packageName) {
     echo "Build @kie-tools/${packageName}"
     pnpm -F @kie-tools/${packageName}... --workspace-concurrency=1 build:prod
     """.trim()
-}
-
-def buildAndDeployDevUiJavaPackage(String packageName) {
-    withCredentials([usernamePassword(credentialsId: "${pipelineVars.mavenDeployRepositoryCredentialsId}", usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
-        configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
-            sh """#!/bin/bash -el
-            export KIE_TOOLS_BUILD__mavenDeploySkip=false
-            pnpm --filter-prod ${packageName}... exec 'bash' '-c' 'echo -s ${MAVEN_SETTINGS_FILE} >> .mvn/maven.config'
-            pnpm --filter-prod ${packageName}... exec 'bash' '-c' 'echo -Dapache.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
-            pnpm --filter-prod ${packageName}... exec 'bash' '-c' 'echo -Dapache.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
-            pnpm --filter-prod ${packageName}... update-version-to ${params.TAG}-SNAPSHOT
-            pnpm --filter-prod ${packageName}... build:prod
-            """.trim()
-        }
-    }
 }
 
 def buildAndDeployDevUiJavaPackages() {
