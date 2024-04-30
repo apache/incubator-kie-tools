@@ -155,7 +155,6 @@ pipeline {
                     openShiftUtils = load '.ci/jenkins/shared-scripts/openShiftUtils.groovy'
                     dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
                     helmUtils = load '.ci/jenkins/shared-scripts/helmUtils.groovy'
-                    mvnUtils = load '.ci/jenkins/shared-scripts/mavenUtils.groovy'
                 }
             }
         }
