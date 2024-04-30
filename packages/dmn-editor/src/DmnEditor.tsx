@@ -56,7 +56,7 @@ import { INITIAL_COMPUTED_CACHE } from "./store/computed/initial";
 
 import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
-import { useKeyboardShortcuts } from "./keyboardShortcuts/keyboardShortcuts";
+import { KeyboardShortcutsProvider, useKeyboardShortcuts } from "./keyboardShortcuts/KeybordShortcuts";
 
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
@@ -79,7 +79,8 @@ export type DmnEditorRef = {
         focusOnBounds: () => void;
         resetPosition: () => void;
       }
-    | undefined;
+    | undefined
+    | null;
 };
 
 export type EvaluationResults = Record<string, any>;
@@ -187,6 +188,7 @@ export const DmnEditorInternal = ({
   const dmn = useDmnEditorStore((s) => s.dmn);
   const isDiagramEditingInProgress = useDmnEditorStore((s) => s.computed(s).isDiagramEditingInProgress());
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const { keyboardShortcutsRef } = useKeyboardShortcuts();
 
   const { dmnModelBeforeEditingRef, dmnEditorRootElementRef } = useDmnEditor();
   const { externalModelsByNamespace } = useExternalModels();
@@ -195,7 +197,6 @@ export const DmnEditorInternal = ({
   const diagramRef = useRef<DiagramRef>(null);
   const diagramContainerRef = useRef<HTMLDivElement>(null);
   const beeContainerRef = useRef<HTMLDivElement>(null);
-  const rfStoreApi = RF.useStoreApi();
 
   // Allow imperativelly controlling the Editor.
   useImperativeHandle(
@@ -247,37 +248,9 @@ export const DmnEditorInternal = ({
 
         return new XMLSerializer().serializeToString(svg);
       },
-      getKeyboardShortcuts: () => {
-        return {
-          cancelAction: async () => {
-            rfStoreApi.setState((rfState) => {
-              if (rfState.connectionNodeId) {
-                console.debug("DMN DIAGRAM: Esc pressed. Cancelling connection.");
-                rfState.cancelConnection();
-                dmnEditorStoreApi.setState((state) => {
-                  state.diagram.ongoingConnection = undefined;
-                });
-              } else {
-                (document.activeElement as any)?.blur?.();
-              }
-
-              return rfState;
-            });
-          },
-          copy: async () => {},
-          createGroup: async () => {},
-          cut: async () => {},
-          focusOnBounds: async () => {},
-          hideFromDrd: async () => {},
-          paste: async () => {},
-          resetPosition: async () => {},
-          selectAll: async () => {},
-          toggleHierarchyHighlight: async () => {},
-          togglePropertiesPanel: async () => {},
-        };
-      },
+      getKeyboardShortcuts: () => keyboardShortcutsRef.current,
     }),
-    [dmnEditorStoreApi, externalModelsByNamespace, rfStoreApi]
+    [dmnEditorStoreApi, externalModelsByNamespace, keyboardShortcutsRef]
   );
 
   // Make sure the DMN Editor reacts to props changing.
@@ -450,7 +423,9 @@ export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref
       <ErrorBoundary FallbackComponent={DmnEditorErrorFallback} onReset={resetState}>
         <DmnEditorExternalModelsContextProvider {...props}>
           <DmnEditorStoreApiContext.Provider value={storeRef.current}>
-            <DmnEditorInternal forwardRef={ref} {...props} />
+            <KeyboardShortcutsProvider>
+              <DmnEditorInternal forwardRef={ref} {...props} />
+            </KeyboardShortcutsProvider>
           </DmnEditorStoreApiContext.Provider>
         </DmnEditorExternalModelsContextProvider>
       </ErrorBoundary>

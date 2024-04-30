@@ -33,7 +33,6 @@ import { computeExternalModelsByType } from "./computed/computeExternalModelsByT
 import { computeImportsByNamespace } from "./computed/computeImportsByNamespace";
 import { computeIndexedDrd } from "./computed/computeIndexes";
 import { computeIsDropTargetNodeValidForSelection } from "./computed/computeIsDropTargetNodeValidForSelection";
-import { KeyboardShortcuts } from "../keyboardShortcuts/keyboardShortcuts";
 
 enableMapSet(); // Necessary because `Computed` has a lot of Maps and Sets.
 
@@ -115,7 +114,6 @@ export interface State {
     movingDividerLines: Array<string>;
     isEditingStyle: boolean;
   };
-  keyboardShortcuts: KeyboardShortcuts;
 }
 
 // Read this to understand why we need computed as part of the store.
@@ -212,19 +210,6 @@ export const defaultStaticState = (): Omit<State, "dmn" | "dispatch" | "computed
     draggingWaypoints: [],
     movingDividerLines: [],
     isEditingStyle: false,
-  },
-  keyboardShortcuts: {
-    hideFromDrd: async () => {},
-    toggleHierarchyHighlight: async () => {},
-    togglePropertiesPanel: async () => {},
-    createGroup: async () => {},
-    selectAll: async () => {},
-    paste: async () => {},
-    copy: async () => {},
-    cut: async () => {},
-    cancelAction: async () => {},
-    focusOnBounds: async () => {},
-    resetPosition: async () => {},
   },
 });
 

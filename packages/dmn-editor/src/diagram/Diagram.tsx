@@ -117,16 +117,7 @@ import {
   getDecisionServicePropertiesRelativeToThisDmn,
 } from "../mutations/addExistingDecisionServiceToDrd";
 import { updateExpressionWidths } from "../mutations/updateExpressionWidths";
-import { KeyboardShortcuts, useKeyboardShortcuts } from "../keyboardShortcuts/keyboardShortcuts";
-import {
-  buildClipboardFromDiagram,
-  DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE,
-  DmnEditorDiagramClipboard,
-  getClipboard,
-} from "../clipboard/Clipboard";
-import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "../mutations/repopulateInputDataAndDecisionsOnDecisionService";
-import { addOrGetDrd } from "../mutations/addOrGetDrd";
-import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
+import { DiagramKeyboardShortcuts, DiagramKeyboardShortcutsInterface } from "./DiagramKeyboardShortcuts";
 
 const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
 
@@ -1180,7 +1171,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             <SelectionStatus />
             <Palette pulse={isEmptyStateShowing} />
             <TopRightCornerPanels />
-            <PanWhenAltPressed />
+            <DiagramKeyboardShortcuts />
             {!isFirefox && <RF.Background />}
             <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />
             <SetConnectionToReactFlowStore />
@@ -1484,19 +1475,4 @@ export function SelectionStatus() {
       )) || <></>}
     </>
   );
-}
-
-export function PanWhenAltPressed() {
-  const altPressed = RF.useKeyPress("Alt");
-  const rfStoreApi = RF.useStoreApi();
-
-  useEffect(() => {
-    rfStoreApi.setState({
-      nodesDraggable: !altPressed,
-      nodesConnectable: !altPressed,
-      elementsSelectable: !altPressed,
-    });
-  }, [altPressed, rfStoreApi]);
-
-  return <></>;
 }

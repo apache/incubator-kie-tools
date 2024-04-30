@@ -141,8 +141,6 @@ function DmnEditorRootWrapper({
     [envelopeContext]
   );
 
-  // useDmnEditorKeyboardShortcuts(envelopeContext?.services.keyboardShortcuts);
-
   return (
     <DmnEditorRoot
       exposing={exposing}
