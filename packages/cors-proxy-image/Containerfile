@@ -29,7 +29,7 @@ RUN mkdir $HOME \
   && chgrp -R 0 $HOME \
   && chmod -R g=u $HOME \
   && chown -R 1000:0 $HOME \
-  && microdnf --disableplugin=subscription-manager install -y tar-2:1.34-6.el9_1.x86_64 gzip-1.12-1.el9.x86_64 \
+  && microdnf --disableplugin=subscription-manager install -y tar gzip \
   && microdnf --disableplugin=subscription-manager clean all \
   && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash \
   && /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION" \
