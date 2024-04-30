@@ -1,0 +1,8 @@
+{
+  "eslint.options": {
+    "overrideConfigFile": "packages/eslint/.eslintrc.js"
+  },
+  "files.associations": {
+    "*.yaml.helm": "helm"
+  }
+}
