@@ -28,7 +28,7 @@ ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=8092
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=dev
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH="/"
 
-RUN microdnf install -y tar gzip findutils
+RUN microdnf --disableplugin=subscription-manager install -y tar gzip findutils
 
 CMD curl $DDUS_FILESERVER_IP:${DDUS_FILESERVER_PORT}/apache/incubator-kie-tools/releases/download/$DDUS_VERSION/getDevDeploymentUploadService.sh | sed 's/localhost:${DDUS_FILESERVER_PORT}/$DDUS_FILESERVER_IP:${DDUS_FILESERVER_PORT}/; s/https:\/\/github.com/http:\/\/$DDUS_FILESERVER_IP:${DDUS_FILESERVER_PORT}/' | bash \
   && dev-deployment-upload-service \
