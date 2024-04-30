@@ -51,16 +51,15 @@ export function DiagramKeyboardShortcuts(props: {}) {
   const { externalModelsByNamespace } = useExternalModels();
   const rf = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();
 
-  // TODO: CHECK
-  // Cancel action -> Not used;
+  // Cancel action
   useEffect(() => {
     if (!keyboardShortcutsRef.current) {
       return;
     }
     keyboardShortcutsRef.current.cancelAction = async () => {
+      console.debug("DMN DIAGRAM: KEYBOARD SHORTCUTS: Canceling action...");
       rfStoreApi.setState((rfState) => {
         if (rfState.connectionNodeId) {
-          console.debug("DMN DIAGRAM: KEYBOARD SHORTCUTS: Canceling action...");
           rfState.cancelConnection();
           dmnEditorStoreApi.setState((state) => {
             state.diagram.ongoingConnection = undefined;
@@ -121,7 +120,6 @@ export function DiagramKeyboardShortcuts(props: {}) {
     }
     keyboardShortcutsRef.current.cut = async () => {
       console.debug("DMN DIAGRAM: KEYBOARD SHORTCUTS: Cutting selected nodes...");
-
       const { clipboard, copiedEdgesById, danglingEdgesById, copiedNodesById } = buildClipboardFromDiagram(
         rfStoreApi.getState(),
         dmnEditorStoreApi.getState()
@@ -180,7 +178,6 @@ export function DiagramKeyboardShortcuts(props: {}) {
     }
     keyboardShortcutsRef.current.copy = async () => {
       console.debug("DMN DIAGRAM: KEYBOARD SHORTCUTS: Copying selected nodes...");
-
       const { clipboard } = buildClipboardFromDiagram(rfStoreApi.getState(), dmnEditorStoreApi.getState());
       navigator.clipboard.writeText(JSON.stringify(clipboard));
     };
@@ -193,7 +190,6 @@ export function DiagramKeyboardShortcuts(props: {}) {
     }
     keyboardShortcutsRef.current.paste = async () => {
       console.debug("DMN DIAGRAM: KEYBOARD SHORTCUTS: Pasting nodes...");
-
       navigator.clipboard.readText().then((text) => {
         const clipboard = getClipboard<DmnEditorDiagramClipboard>(text, DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE);
         if (!clipboard) {

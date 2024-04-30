@@ -30,7 +30,7 @@ import {
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnEditorRoot } from "./DmnEditorRoot";
 import { ResourceContent, ResourcesList, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 
 export class DmnEditorFactory implements EditorFactory<Editor, KogitoEditorChannelApi> {
   public createEditor(

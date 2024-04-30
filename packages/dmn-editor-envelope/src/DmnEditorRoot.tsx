@@ -72,8 +72,8 @@ export type DmnEditorRootState = {
   externalModelsByNamespace: DmnEditor.ExternalModelsIndex;
   readonly: boolean;
   externalModelsManagerDoneBootstraping: boolean;
-  keyboardShortcutIds: number[];
-  keyboardShortcutsSet: boolean;
+  keyboardShortcutsRegisterIds: number[];
+  keyboardShortcutsRegistred: boolean;
 };
 
 export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditorRootState> {
@@ -93,8 +93,8 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: undefined,
       readonly: true,
       externalModelsManagerDoneBootstraping: false,
-      keyboardShortcutIds: [],
-      keyboardShortcutsSet: false,
+      keyboardShortcutsRegisterIds: [],
+      keyboardShortcutsRegistred: false,
     };
   }
 
@@ -350,8 +350,8 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
 
     this.setState((prev) => ({
       ...prev,
-      keyboardShortcutsSet: true,
-      keyboardShortcutIds: [
+      keyboardShortcutsRegistred: true,
+      keyboardShortcutsRegisterIds: [
         cancelAction,
         copy,
         createGroup,
@@ -374,13 +374,9 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       return;
     }
 
-    this.state.keyboardShortcutIds.forEach((id) => {
+    this.state.keyboardShortcutsRegisterIds.forEach((id) => {
       this.props.keyboardShortcutsService?.deregister(id);
     });
-  }
-
-  private setRef(dmnEditorRef: DmnEditor.DmnEditorRef) {
-    // this.setState((prev) => ({ ...prev, dmnEditorRef: dmnEditorRef }))
   }
 
   public render() {
