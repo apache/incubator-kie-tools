@@ -18,7 +18,9 @@ npx bun .github/supporting-files/ci/build-partitioning/build_partitioning.ts \
     --forceFull="false" \
     --baseSha="$(git rev-parse HEAD~1)" \
     --headSha="$(git rev-parse HEAD~0)" \
-    --graphJsonPath='./repo/graph.json'
+    --graphJsonPath='./repo/graph.json' \
+    --partition='.github/supporting-files/ci/partitions/partition0.txt' \
+    --partition='.github/supporting-files/ci/partitions/partition1.txt'
 ```
 
 - `--outputPath`: Where the resulting JSON should be written to.
@@ -26,3 +28,4 @@ npx bun .github/supporting-files/ci/build-partitioning/build_partitioning.ts \
 - `--baseSha`: Base Git commit SHA.
 - `--headSha`: HEAD Git commit SHA.
 - `--graphJsonPath`: Where to find the `graph.json` of the monorepo in Datavis graph format.
+- `--partition`: Files containing new-line-separated leaf package names that define a partition. Accepts multiple values.
