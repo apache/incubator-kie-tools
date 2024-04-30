@@ -545,9 +545,9 @@ pipeline {
                             configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
                                 sh """#!/bin/bash -el
                                 export KIE_TOOLS_BUILD__mavenDeploySkip=false
-                                pnpm -r exec 'bash' '-c' echo "-s ${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config
-                                pnpm -r exec 'bash' '-c' echo "-Dapache.snapshot.repository.username=${REPOSITORY_USER}" >> .mvn/maven.config
-                                pnpm -r exec 'bash' '-c' echo "-Dapache.snapshot.repository.password=${REPOSITORY_TOKEN}" >> .mvn/maven.config
+                                pnpm exec 'bash' '-c' 'echo -s ${MAVEN_SETTINGS_FILE} >> .mvn/maven.config'
+                                pnpm exec 'bash' '-c' 'echo -Dapache.snapshot.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
+                                pnpm exec 'bash' '-c' 'echo -Dapache.snapshot.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
                                 pnpm --filter-prod jbpm-quarkus-devui... update-version-to 0.0.0-SNAPSHOT
                                 pnpm --filter-prod jbpm-quarkus-devui... build:prod
                                 """.trim()
@@ -566,9 +566,9 @@ pipeline {
                             configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
                                 sh """#!/bin/bash -el
                                 export KIE_TOOLS_BUILD__mavenDeploySkip=false
-                                pnpm -r exec 'bash' '-c' echo "-s ${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config
-                                pnpm -r exec 'bash' '-c' echo "-Dapache.snapshot.repository.username=${REPOSITORY_USER}" >> .mvn/maven.config
-                                pnpm -r exec 'bash' '-c' echo "-Dapache.snapshot.repository.password=${REPOSITORY_TOKEN}" >> .mvn/maven.config
+                                pnpm exec 'bash' '-c' 'echo -s ${MAVEN_SETTINGS_FILE} >> .mvn/maven.config'
+                                pnpm exec 'bash' '-c' 'echo -Dapache.snapshot.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
+                                pnpm exec 'bash' '-c' 'echo -Dapache.snapshot.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
                                 pnpm --filter-prod sonataflow-quarkus-devui... update-version-to 0.0.0-SNAPSHOT
                                 pnpm --filter-prod sonataflow-quarkus-devui... build:prod
                                 """.trim()
