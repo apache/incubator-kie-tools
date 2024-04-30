@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useState, useEffect } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import {
   DMN15__tItemDefinition,
@@ -311,6 +311,7 @@ export function useConstraint({
 }) {
   const constraintValue = constraint?.text.__$$text;
   const kieConstraintType = constraint?.["@_kie:constraintType"];
+  const itemDefinitionId = itemDefinition["@_id"]!;
 
   const isConstraintEnum = useMemo(
     () =>
@@ -359,7 +360,7 @@ export function useConstraint({
     };
   }, [enabledConstraints, enumToKieConstraintType, isCollectionConstraintEnabled, itemDefinition]);
 
-  const selectedConstraint = useMemo<ConstraintsType>(() => {
+  const initialSelectedConstraint = useCallback(() => {
     if (isConstraintEnabled.enumeration && kieConstraintType === "enumeration") {
       return ConstraintsType.ENUMERATION;
     }
@@ -389,6 +390,13 @@ export function useConstraint({
     kieConstraintType,
   ]);
 
+  const [selectedConstraint, setSelectedConstraint] = useState<ConstraintsType>(initialSelectedConstraint);
+  // Changing the `itemDefinitionId` should re-calculate the initial state of `selectedConstraint`;
+  useEffect(() => {
+    setSelectedConstraint(initialSelectedConstraint());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [itemDefinitionId]);
+
   return {
     constraintValue,
     isConstraintEnum,
@@ -396,6 +404,7 @@ export function useConstraint({
     isConstraintEnabled,
     selectedConstraint,
     enumToKieConstraintType,
+    setSelectedConstraint,
   };
 }
 
@@ -458,6 +467,7 @@ export function ConstraintsFromAllowedValuesAttribute({
     isConstraintEnabled,
     selectedConstraint,
     enumToKieConstraintType,
+    setSelectedConstraint,
   } = useConstraint({
     constraint: allowedValues,
     itemDefinition,
@@ -486,44 +496,47 @@ export function ConstraintsFromAllowedValuesAttribute({
       if (!newSelection) {
         return;
       }
-      const selection = event.currentTarget.id as ConstraintsType;
-      if (selection === ConstraintsType.NONE) {
-        editItemDefinition(itemDefinitionId, (itemDefinition) => {
-          itemDefinition.allowedValues = undefined;
-        });
-        return;
-      }
+      const selectedConstraint = event.currentTarget.id as ConstraintsType;
+      setSelectedConstraint(selectedConstraint);
 
       editItemDefinition(itemDefinitionId, (itemDefinition) => {
-        itemDefinition.allowedValues ??= { text: { __$$text: "" } };
-        const previousKieContraintType = itemDefinition.allowedValues["@_kie:constraintType"];
-        itemDefinition.allowedValues["@_kie:constraintType"] = enumToKieConstraintType(selection);
+        if (selectedConstraint === ConstraintsType.NONE) {
+          itemDefinition.allowedValues = undefined;
+          return;
+        }
 
-        if (selection === ConstraintsType.EXPRESSION) {
+        if (itemDefinition.allowedValues) {
+          itemDefinition.allowedValues["@_kie:constraintType"] = enumToKieConstraintType(selectedConstraint);
+        }
+
+        if (selectedConstraint === ConstraintsType.EXPRESSION) {
           return;
         }
 
         if (
-          previousKieContraintType === "expression" &&
-          selection === ConstraintsType.ENUMERATION &&
-          isEnum(itemDefinition.allowedValues.text.__$$text, typeRefConstraintTypeHelper.check)
+          selectedConstraint === ConstraintsType.ENUMERATION &&
+          isEnum(itemDefinition.allowedValues?.text.__$$text, typeRefConstraintTypeHelper.check)
         ) {
           return;
         }
 
         if (
-          previousKieContraintType === "expression" &&
-          selection === ConstraintsType.RANGE &&
-          isRange(itemDefinition.allowedValues.text.__$$text, typeRefConstraintTypeHelper.check)
+          selectedConstraint === ConstraintsType.RANGE &&
+          isRange(itemDefinition.allowedValues?.text.__$$text, typeRefConstraintTypeHelper.check)
         ) {
           return;
         }
 
-        itemDefinition.allowedValues.text.__$$text = "";
-        return;
+        itemDefinition.allowedValues = undefined;
       });
     },
-    [editItemDefinition, enumToKieConstraintType, itemDefinitionId, typeRefConstraintTypeHelper.check]
+    [
+      editItemDefinition,
+      itemDefinitionId,
+      setSelectedConstraint,
+      enumToKieConstraintType,
+      typeRefConstraintTypeHelper.check,
+    ]
   );
 
   return (
@@ -603,6 +616,7 @@ export function ConstraintsFromTypeConstraintAttribute({
     isConstraintEnabled,
     selectedConstraint,
     enumToKieConstraintType,
+    setSelectedConstraint,
   } = useConstraint({
     constraint: typeConstraint,
     itemDefinition: itemDefinition,
@@ -631,43 +645,47 @@ export function ConstraintsFromTypeConstraintAttribute({
       if (!newSelection) {
         return;
       }
-      const selection = event.currentTarget.id as ConstraintsType;
-      if (selection === ConstraintsType.NONE) {
-        editItemDefinition(itemDefinitionId, (itemDefinition) => {
-          itemDefinition.typeConstraint = undefined;
-        });
-        return;
-      }
+      const selectedConstraint = event.currentTarget.id as ConstraintsType;
+      setSelectedConstraint(selectedConstraint);
 
       editItemDefinition(itemDefinitionId, (itemDefinition) => {
-        itemDefinition.typeConstraint ??= { text: { __$$text: "" } };
-        const previousKieContraintType = itemDefinition.typeConstraint["@_kie:constraintType"];
-        itemDefinition.typeConstraint["@_kie:constraintType"] = enumToKieConstraintType(selection);
+        if (selectedConstraint === ConstraintsType.NONE) {
+          itemDefinition.typeConstraint = undefined;
+          return;
+        }
 
-        if (selection === ConstraintsType.EXPRESSION) {
+        if (itemDefinition.typeConstraint) {
+          itemDefinition.typeConstraint["@_kie:constraintType"] = enumToKieConstraintType(selectedConstraint);
+        }
+
+        if (selectedConstraint === ConstraintsType.EXPRESSION) {
           return;
         }
 
         if (
-          previousKieContraintType === "expression" &&
-          selection === ConstraintsType.ENUMERATION &&
-          isEnum(itemDefinition.typeConstraint.text.__$$text, typeRefConstraintTypeHelper.check)
+          selectedConstraint === ConstraintsType.ENUMERATION &&
+          isEnum(itemDefinition.typeConstraint?.text.__$$text, typeRefConstraintTypeHelper.check)
         ) {
           return;
         }
 
         if (
-          previousKieContraintType === "expression" &&
-          selection === ConstraintsType.RANGE &&
-          isRange(itemDefinition.typeConstraint.text.__$$text, typeRefConstraintTypeHelper.check)
+          selectedConstraint === ConstraintsType.RANGE &&
+          isRange(itemDefinition.typeConstraint?.text.__$$text, typeRefConstraintTypeHelper.check)
         ) {
           return;
         }
 
-        itemDefinition.typeConstraint.text.__$$text = "";
+        itemDefinition.typeConstraint = undefined;
       });
     },
-    [editItemDefinition, enumToKieConstraintType, itemDefinitionId, typeRefConstraintTypeHelper.check]
+    [
+      editItemDefinition,
+      itemDefinitionId,
+      setSelectedConstraint,
+      enumToKieConstraintType,
+      typeRefConstraintTypeHelper.check,
+    ]
   );
 
   return (
