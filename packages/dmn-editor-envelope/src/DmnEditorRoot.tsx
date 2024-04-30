@@ -282,7 +282,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     prevState: Readonly<DmnEditorRootState>,
     snapshot?: any
   ): void {
-    if (this.props.keyboardShortcutsService === undefined || this.state.keyboardShortcutsSet === true) {
+    if (this.props.keyboardShortcutsService === undefined || this.state.keyboardShortcutsRegistred === true) {
       return;
     }
 
@@ -290,16 +290,24 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     if (keyboardShortcuts === undefined) {
       return;
     }
+    const cancelAction = this.props.keyboardShortcutsService.registerKeyPress("Escape", "Edit | Unselect", async () =>
+      keyboardShortcuts.cancelAction()
+    );
+    const deleteSelectionBackspace = this.props.keyboardShortcutsService.registerKeyPress(
+      "Backspace",
+      "Edit | Delete selection",
+      async () => {}
+    );
+    const deleteSelectionDelete = this.props.keyboardShortcutsService.registerKeyPress(
+      "Delete",
+      "Edit | Delete selection",
+      async () => {}
+    );
 
     const selectAll = this.props.keyboardShortcutsService?.registerKeyPress(
       "A",
       "Edit | Select/Deselect all",
       async () => keyboardShortcuts.selectAll()
-    );
-    const focusOnBounds = this.props.keyboardShortcutsService?.registerKeyPress(
-      "B",
-      "Edit | Focus on selection",
-      async () => keyboardShortcuts.focusOnSelection()
     );
     const createGroup = this.props.keyboardShortcutsService?.registerKeyPress(
       "G",
@@ -309,35 +317,10 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
         return keyboardShortcuts.createGroup();
       }
     );
-    const toggleHierarchyHighlight = this.props.keyboardShortcutsService?.registerKeyPress(
-      "H",
-      "Edit | Toggle hierarchy highlights",
-      async () => keyboardShortcuts.toggleHierarchyHighlight()
-    );
-    const togglePropertiesPanel = this.props.keyboardShortcutsService?.registerKeyPress(
-      "I",
-      "Edit | Open/Close properties panel",
-      async () => keyboardShortcuts.togglePropertiesPanel()
-    );
     const hideFromDrd = this.props.keyboardShortcutsService?.registerKeyPress("X", "Edit | Hide from DRD", async () =>
       keyboardShortcuts.hideFromDrd()
     );
-    const resetPosition = this.props.keyboardShortcutsService?.registerKeyPress(
-      "Space",
-      "Edit | Reset position to origin",
-      async () => keyboardShortcuts.resetPosition()
-    );
-    const cancelAction = this.props.keyboardShortcutsService.registerKeyPress(
-      "Escape",
-      "Edit | Cancel action",
-      async () => keyboardShortcuts.cancelAction()
-    );
-    const pan = this.props.keyboardShortcutsService?.registerKeyDownThenUp(
-      "Alt",
-      "Edit | Pan",
-      async () => keyboardShortcuts.panDown(),
-      async () => keyboardShortcuts.panUp()
-    );
+
     const copy = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+C", "Edit | Copy nodes", async () =>
       keyboardShortcuts.copy()
     );
@@ -348,22 +331,114 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       keyboardShortcuts.paste()
     );
 
+    const togglePropertiesPanel = this.props.keyboardShortcutsService?.registerKeyPress(
+      "I",
+      "Misc | Open/Close properties panel",
+      async () => keyboardShortcuts.togglePropertiesPanel()
+    );
+    const toggleHierarchyHighlight = this.props.keyboardShortcutsService?.registerKeyPress(
+      "H",
+      "Misc | Toggle hierarchy highlights",
+      async () => keyboardShortcuts.toggleHierarchyHighlight()
+    );
+
+    const moveUp = this.props.keyboardShortcutsService.registerKeyPress(
+      "Up",
+      "Move | Move selection up",
+      async () => {}
+    );
+    const moveDown = this.props.keyboardShortcutsService.registerKeyPress(
+      "Down",
+      "Move | Move selection down",
+      async () => {}
+    );
+    const moveLeft = this.props.keyboardShortcutsService.registerKeyPress(
+      "Left",
+      "Move | Move selection left",
+      async () => {}
+    );
+    const moveRight = this.props.keyboardShortcutsService.registerKeyPress(
+      "Right",
+      "Move | Move selection right",
+      async () => {}
+    );
+    const bigMoveUp = this.props.keyboardShortcutsService.registerKeyPress(
+      "Shift + Up",
+      "Move | Move selection up a big distance",
+      async () => {}
+    );
+    const bigMoveDown = this.props.keyboardShortcutsService.registerKeyPress(
+      "Shift + Down",
+      "Move | Move selection down a big distance",
+      async () => {}
+    );
+    const bigMoveLeft = this.props.keyboardShortcutsService.registerKeyPress(
+      "Shift + Left",
+      "Move | Move selection left a big distance",
+      async () => {}
+    );
+    const bigMoveRight = this.props.keyboardShortcutsService.registerKeyPress(
+      "Shift + Right",
+      "Move | Move selection right a big distance",
+      async () => {}
+    );
+
+    const focusOnBounds = this.props.keyboardShortcutsService?.registerKeyPress(
+      "B",
+      "Navigate | Focus on selection",
+      async () => keyboardShortcuts.focusOnSelection()
+    );
+
+    const resetPosition = this.props.keyboardShortcutsService?.registerKeyPress(
+      "Space",
+      "Navigate | Reset position to origin",
+      async () => keyboardShortcuts.resetPosition()
+    );
+    const pan = this.props.keyboardShortcutsService?.registerKeyDownThenUp(
+      "Alt",
+      "Navigate | Hold and drag to Pan",
+      async () => keyboardShortcuts.panDown(),
+      async () => keyboardShortcuts.panUp()
+    );
+    const zoom = this.props.keyboardShortcutsService?.registerKeyPress(
+      "Ctrl",
+      "Navigate | Hold and scroll to zoom in/out",
+      async () => {}
+    );
+    const navigateHorizontally = this.props.keyboardShortcutsService?.registerKeyPress(
+      "Shift",
+      "Navigate | Hold and scroll to navigate horizontally",
+      async () => {}
+    );
+
     this.setState((prev) => ({
       ...prev,
       keyboardShortcutsRegistred: true,
       keyboardShortcutsRegisterIds: [
+        bigMoveDown,
+        bigMoveLeft,
+        bigMoveRight,
+        bigMoveUp,
         cancelAction,
         copy,
         createGroup,
         cut,
+        deleteSelectionBackspace,
+        deleteSelectionDelete,
         focusOnBounds,
         hideFromDrd,
+        moveDown,
+        moveLeft,
+        moveRight,
+        moveUp,
+        navigateHorizontally,
         pan,
         paste,
         resetPosition,
         selectAll,
         toggleHierarchyHighlight,
         togglePropertiesPanel,
+        zoom,
       ],
     }));
   }
