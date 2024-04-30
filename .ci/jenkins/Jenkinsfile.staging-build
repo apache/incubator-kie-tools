@@ -450,6 +450,17 @@ pipeline {
             }
         }
 
+        stage('STAGING: Upload Kogito Serverless Operator YAML file') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    uploadKogitoServerlessOperator()
+                }
+            }
+        }
+
         stage('STAGING: Push kie-sandbox-extended-services-image to quay.io') {
             when {
                 expression { !params.DRY_RUN }
@@ -947,6 +958,16 @@ def uploadOnlineEditor() {
         'kie-tools/packages/online-editor/dist.zip',
         "STAGING__online_editor_${params.TAG}.zip",
         'application/zip',
+        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+    )
+}
+
+def uploadKogitoServerlessOperator() {
+    githubUtils.uploadReleaseAsset(
+        "${params.UPLOAD_ASSET_URL}",
+        'kie-tools/packages/kogito-serverless-operator/operator.yaml',
+        "STAGING__operator_${params.TAG}.yaml",
+        'application/yaml',
         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
     )
 }

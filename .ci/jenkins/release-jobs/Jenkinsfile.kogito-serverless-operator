@@ -118,6 +118,23 @@ pipeline {
             }
         }
 
+        stage('Upload Kogito Serverless Operator YAML file') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    githubUtils.uploadReleaseAsset(
+                        "${params.UPLOAD_ASSET_URL}",
+                        'kie-tools/packages/kogito-serverless-operator/operator.yaml',
+                        "operator_${params.TAG}.yaml",
+                        'application/yaml',
+                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
         stage('Create "latest" tag for kogito-serverless-operator') {
             steps {
                 script {
