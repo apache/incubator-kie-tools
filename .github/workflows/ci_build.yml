@@ -76,7 +76,6 @@ jobs:
         uses: ./.github/actions/setup-env
 
       - name: "FULL → Bootstrap"
-        id: bootstrap
         if: steps.setup_build_mode.outputs.mode == 'full'
         env:
           PLAYWRIGHT_BASE__installDeps: "true"
@@ -193,7 +192,6 @@ jobs:
           pnpm -F @kie-tools/dashbuilder-viewer-image... --workspace-concurrency=1 build:prod
 
       - name: "PARTIAL → Bootstrap"
-        id: bootstrap
         if: steps.setup_build_mode.outputs.mode == 'partial'
         env:
           PLAYWRIGHT_BASE__installDeps: "true"
@@ -230,7 +228,7 @@ jobs:
           pnpm -F "...[${{ steps.checkout_pr.outputs.base_sha }}]" --workspace-concurrency=1 build:prod
 
       - name: "Check tests result (`main` only)"
-        if: always() && !cancelled() && steps.bootstrap.conclusion == 'success'
+        if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
         uses: actions/github-script@v6
         env:
           KIE_TOOLS_CI__JUNIT_REPORT_RESULTS_PATTERNS: |-
@@ -248,7 +246,7 @@ jobs:
             await script({ core, glob, patterns });
 
       - name: "Check build-env access errors log"
-        if: always() && !cancelled() && steps.bootstrap.conclusion == 'success'
+        if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
         shell: bash
         run: |
           touch "$BUILD_ENV__accessErrorsLogFileAbsolutePath"
@@ -256,18 +254,18 @@ jobs:
           [ "0" == "$(cat "$BUILD_ENV__accessErrorsLogFileAbsolutePath" | wc -l | tr -d ' ')" ]
 
       - name: "Check hanging uncommitted files (you should commit those!)"
-        if: always() && !cancelled() && steps.bootstrap.conclusion == 'success'
+        if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
         shell: bash
         run: |
           git diff
           [ "0" == "$(git diff | wc -l | tr -d ' ')" ]
 
       - name: "Upload reports and artifacts"
-        if: always() && !cancelled() && steps.bootstrap.conclusion == 'success'
+        if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
         uses: ./.github/actions/upload-ci-reports-and-artifacts
 
       - name: "Upload end-to-end tests results to Buildkite (`main` only)"
-        if: always() && !cancelled() && steps.bootstrap.conclusion == 'success' && !github.event.pull_request
+        if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none' && !github.event.pull_request
         shell: bash
         env:
           BUILDKITE_ANALYTICS_TOKEN: ${{ secrets.BUILDKITE_TOKEN }}
