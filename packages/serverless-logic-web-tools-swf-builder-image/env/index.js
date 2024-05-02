@@ -19,26 +19,27 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv(
-  [require("@kie-tools/root-env/env"), require("@kie-tools/serverless-logic-web-tools-swf-builder-image-env/env")],
-  {
-    vars: varsWithName({
-      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags: {
-        default: "latest",
-        description: "",
-      },
-      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderKogitoImageTag: {
-        default: "999-20240417",
-        description: "",
-      },
-    }),
-    get env() {
-      return {
-        swfBuilderImage: {
-          buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags),
-          kogitoImageTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderKogitoImageTag),
-        },
-      };
+const rootEnv = require("@kie-tools/root-env/env");
+const serverlessLogicWebToolsSwfBuilderImageEnv = require("@kie-tools/serverless-logic-web-tools-swf-builder-image-env/env");
+const kogitoSwfBuilderEnv = require("@kie-tools/kogito-swf-builder/env");
+
+module.exports = composeEnv([rootEnv, serverlessLogicWebToolsSwfBuilderImageEnv, kogitoSwfBuilderEnv], {
+  vars: varsWithName({
+    SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags: {
+      default: "latest",
+      description: "",
     },
-  }
-);
+    SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE__baseImageUrl: {
+      default: `${kogitoSwfBuilderEnv.env.kogitoSwfBuilder.registry}/${kogitoSwfBuilderEnv.env.kogitoSwfBuilder.account}/${kogitoSwfBuilderEnv.env.kogitoSwfBuilder.name}:${kogitoSwfBuilderEnv.env.kogitoSwfBuilder.tag}`,
+      description: "The image used in the FROM import.",
+    },
+  }),
+  get env() {
+    return {
+      swfBuilderImage: {
+        buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags),
+        baseImageUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE__baseImageUrl),
+      },
+    };
+  },
+});

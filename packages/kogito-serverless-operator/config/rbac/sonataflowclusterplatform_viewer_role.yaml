@@ -1,0 +1,27 @@
+# permissions for end users to view sonataflowclusterplatforms.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: sonataflowclusterplatform-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: sonataflow-operator
+    app.kubernetes.io/part-of: sonataflow-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: sonataflowclusterplatform-viewer-role
+rules:
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowclusterplatforms
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowclusterplatforms/status
+    verbs:
+      - get

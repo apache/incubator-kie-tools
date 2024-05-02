@@ -1,0 +1,41 @@
+resources:
+  - manager.yaml
+generatorOptions:
+  disableNameSuffixHash: true
+# No need to generate this CM since we are not using it.
+# Must also uncomment config/manager/kustomization.yaml to mount it in the controller
+
+#- files:
+#  - controller_manager_config.yaml
+#  name: manager-config
+configMapGenerator:
+  - files:
+      - Dockerfile=SonataFlow-Builder.containerfile
+    literals:
+      - DEFAULT_WORKFLOW_EXTENSION=.sw.json
+    name: builder-config
+  - files:
+      - controllers_cfg.yaml
+    name: controllers-config
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+images:
+  - name: controller
+    newName: quay.io/kiegroup/kogito-serverless-operator-nightly
+    newTag: latest
+# Patching the manager deployment file to add an env var with the operator namespace in
+patchesJson6902:
+  - patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/env
+        value:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+    target:
+      group: apps
+      kind: Deployment
+      name: controller-manager
+      namespace: system
+      version: v1

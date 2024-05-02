@@ -1,0 +1,31 @@
+name: org.apache.kie.sonataflow.goModDownload
+version: "1.0"
+description: Download and cache the modules
+artifacts:
+  - name: gomod
+    path: "../../../../go.mod"
+    target: "go.mod"
+    dest: /workspace/
+
+  - name: gosum
+    path: "../../../../go.sum"
+    target: "go.sum"
+    dest: /workspace/
+
+    # this is a local module, adding in here since the main go.mod refers to it
+  - name: api
+    path: "../../../../api"
+    dest: /workspace/api
+
+  # this is a local module, adding in here since the main go.mod refers to it
+  - name: workflowproj
+    path: "../../../../workflowproj"
+    dest: /workspace/workflowproj
+
+    # this is a local module, adding in here since the main go.mod refers to it
+  - name: container-builder
+    path: "../../../../container-builder"
+    dest: /workspace/container-builder
+
+execute:
+  - script: install.sh

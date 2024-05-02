@@ -1,0 +1,28 @@
+name: org.apache.kie.sonataflow.operatorBuilder
+version: "1.0"
+description: Builds the operator binary
+
+artifacts:
+  - name: main
+    path: "../../../../main.go"
+    target: "main.go"
+    dest: /workspace/
+
+  - name: controllers
+    path: "../../../../controllers"
+    dest: /workspace/controllers
+
+  - name: version
+    path: "../../../../version"
+    dest: /workspace/version
+
+  - name: utils
+    path: "../../../../utils"
+    dest: /workspace/utils
+
+  - name: log
+    path: "../../../../log"
+    dest: /workspace/log
+
+execute:
+  - script: install.sh

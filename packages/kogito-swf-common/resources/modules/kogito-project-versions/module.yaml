@@ -28,3 +28,6 @@ envs:
   - name: "QUARKUS_PLATFORM_VERSION"
     value: "### SET ME DURING BUILD PROCESS ###"
     description: Defines the Quarkus Platform version to be used by the builder images. Not intended to be changed by end user.
+  - name: "SONATAFLOW_QUARKUS_DEVUI_VERSION"
+    value: "### SET ME DURING BUILD PROCESS ###"
+    description: Defines the SonataFlow Quarkus Dev UI version to be used by the devmode image. Not intended to be changed by end user.

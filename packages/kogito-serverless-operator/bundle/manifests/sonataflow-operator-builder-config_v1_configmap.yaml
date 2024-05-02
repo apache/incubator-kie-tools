@@ -1,0 +1,21 @@
+apiVersion: v1
+data:
+  DEFAULT_WORKFLOW_EXTENSION: .sw.json
+  Dockerfile: "FROM quay.io/kiegroup/kogito-swf-builder-nightly:latest AS builder\n\n#
+    variables that can be overridden by the builder\n# To add a Quarkus extension
+    to your application\nARG QUARKUS_EXTENSIONS\n# Args to pass to the Quarkus CLI
+    add extension command\nARG QUARKUS_ADD_EXTENSION_ARGS\n# Additional java/mvn arguments
+    to pass to the builder\nARG MAVEN_ARGS_APPEND\n\n# Copy from build context to
+    skeleton resources project\nCOPY --chown=1001 . ./resources\n\nRUN /home/kogito/launch/build-app.sh
+    ./resources\n  \n#=============================\n# Runtime Run\n#=============================\nFROM
+    registry.access.redhat.com/ubi9/openjdk-17:latest\n\nENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'\n
+    \ \n# We make four distinct layers so if there are application changes the library
+    layers can be re-used\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/lib/
+    /deployments/lib/\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/*.jar
+    /deployments/\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/app/
+    /deployments/app/\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/quarkus/
+    /deployments/quarkus/\n\nEXPOSE 8080\nUSER 185\nENV AB_JOLOKIA_OFF=\"\"\nENV JAVA_OPTS=\"-Dquarkus.http.host=0.0.0.0
+    -Djava.util.logging.manager=org.jboss.logmanager.LogManager\"\nENV JAVA_APP_JAR=\"/deployments/quarkus-run.jar\"\n"
+kind: ConfigMap
+metadata:
+  name: sonataflow-operator-builder-config

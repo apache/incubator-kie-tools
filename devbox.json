@@ -7,9 +7,7 @@
     "kubernetes-helm": "3.13.3",
     "gnumake": "4.4.1",
     "go": "1.21.8",
-    "python": "3.12.2",
-    "operator-sdk": "1.34.1",
-    "kubebuilder": "3.14.0"
+    "python": "3.12.2"
   },
   "env": {
     "PLAYWRIGHT_BROWSERS_PATH": "0",
@@ -22,7 +20,7 @@
   "shell": {
     "init_hook": [
       ". $VENV_DIR/bin/activate",
-      "[[ $OSTYPE == 'darwin'* ]] && export PATH=$(echo $PATH | tr ':' '\n' | sed '\\|^/nix/store/|d' | paste -sd ':' -)"
+      "[[ $OSTYPE == 'darwin'* ]] && export PATH=$(echo $PATH | tr ':' '\n' | grep -vi 'xcode\\|clang\\|cctools' | paste -sd ':' -)"
     ],
     "scripts": {
       "versions": [

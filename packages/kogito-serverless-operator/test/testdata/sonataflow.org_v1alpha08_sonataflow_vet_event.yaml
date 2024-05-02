@@ -1,0 +1,72 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+apiVersion: sonataflow.org/v1alpha08
+kind: SonataFlow
+metadata:
+  name: vet
+  annotations:
+    sonataflow.org/description: Vet service call via events
+    sonataflow.org/version: 0.0.1
+spec:
+  sink:
+    ref:
+      name: default
+      namespace: default
+      apiVersion: eventing.knative.dev/v1
+      kind: Broker
+  flow:
+    events:
+      - name: MakeVetAppointment
+        source: VetServiceSource
+        type: events.vet.appointments
+        kind: produced
+      - name: VetAppointmentInfo
+        source: VetServiceSource
+        type: events.vet.appointments
+      - name: VetAppointmentRequestReceived
+        source: checkAccountInfo
+        type: events.vet.appointments.request
+    functions:
+      - name: StoreNewPatientInfo
+        operation: specs/services.yaml#checkAccountInfo
+    states:
+      - name: AppointmentRequestReceived
+        type: event
+        onEvents:
+          - eventRefs:
+              - VetAppointmentRequestReceived
+            actions:
+              - name: checkAccount
+                functionRef:
+                  refName: checkAccountInfo
+                  arguments:
+                    account: "${ .accountId }"
+        transition: MakeVetAppointmentState
+      - name: MakeVetAppointmentState
+        type: callback
+        action:
+          name: MakeAppointmentAction
+          eventRef:
+            triggerEventRef: MakeVetAppointment
+            data: "${ .patientInfo }"
+        eventRef: VetAppointmentInfo
+        timeouts:
+          stateExecTimeout: PT15M
+        eventDataFilter:
+          toStateData: .test
+        end: true
