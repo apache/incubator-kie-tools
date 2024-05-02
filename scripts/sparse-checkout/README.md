@@ -14,7 +14,7 @@ Keep in mind that sparse checkouts make Git behave a little differently for some
 ORG="apache"
 BRANCH="main"
 PKGS="@kie-tools/boxed-expression-component"
-bash <(curl -s https://raw.githubusercontent.com/$ORG/kie-tools/$BRANCH/scripts/sparse-checkout/run.sh) $ORG $BRANCH ${(z)PKGS}
+bash <(curl -s https://raw.githubusercontent.com/$ORG/incubator-kie-tools/$BRANCH/scripts/sparse-checkout/run.sh) $ORG $BRANCH ${(z)PKGS}
 pnpm -F boxed-expression-component... build:dev
 ```
 
@@ -26,7 +26,7 @@ pnpm -F boxed-expression-component... build:dev
 ORG="apache"
 BRANCH="main"
 PKGS="@kie-tools/boxed-expression-component"
-bash <(curl -s https://raw.githubusercontent.com/$ORG/kie-tools/$BRANCH/scripts/sparse-checkout/run.sh) $ORG $BRANCH $PKGS
+bash <(curl -s https://raw.githubusercontent.com/$ORG/incubator-kie-tools/$BRANCH/scripts/sparse-checkout/run.sh) $ORG $BRANCH $PKGS
 pnpm -F boxed-expression-component... build:dev
 ```
 
