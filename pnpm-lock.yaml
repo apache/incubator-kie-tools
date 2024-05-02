@@ -1541,6 +1541,9 @@ importers:
       "@kie-tools/dashbuilder-component-assembler":
         specifier: workspace:*
         version: link:../dashbuilder-component-assembler
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../maven-base
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
@@ -3083,6 +3086,9 @@ importers:
       "@kie-tools/image-builder":
         specifier: workspace:*
         version: link:../image-builder
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../maven-base
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
@@ -3268,6 +3274,9 @@ importers:
 
   packages/dev-deployment-kogito-quarkus-blank-app:
     devDependencies:
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../maven-base
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
@@ -4371,6 +4380,9 @@ importers:
 
   packages/extended-services-java:
     devDependencies:
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../maven-base
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
@@ -9644,6 +9656,9 @@ importers:
 
   packages/serverless-logic-web-tools-swf-deployment-quarkus-app:
     devDependencies:
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../maven-base
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
@@ -10100,6 +10115,9 @@ importers:
 
   packages/serverless-workflow-diagram-editor:
     devDependencies:
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../maven-base
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
@@ -11196,6 +11214,9 @@ importers:
 
   packages/stunner-editors:
     devDependencies:
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../maven-base
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
@@ -12435,6 +12456,9 @@ importers:
 
   packages/vscode-java-code-completion-extension-plugin:
     devDependencies:
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../maven-base
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
@@ -13032,6 +13056,9 @@ importers:
 
   packages/yard-model:
     devDependencies:
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../maven-base
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
@@ -13087,6 +13114,9 @@ importers:
 
   packages/yard-validator-worker:
     devDependencies:
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../maven-base
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper

@@ -29,7 +29,7 @@
     <groupId>org.kie</groupId>
     <artifactId>kie-tools-maven-base</artifactId>
     <version>${revision}</version>
-    <relativePath>../maven-base/pom.xml</relativePath>
+    <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>

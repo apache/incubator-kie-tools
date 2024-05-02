@@ -23,10 +23,16 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 >
 
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-tools-maven-base</artifactId>
+    <version>${revision}</version>
+    <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
+  </parent>
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
   <artifactId>stunner-editors-parent</artifactId>
-  <version>${revision}</version>
   <packaging>pom</packaging>
 
   <name>Stunner Editors Java - Parent</name>
