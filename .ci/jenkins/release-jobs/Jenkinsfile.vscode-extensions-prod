@@ -28,7 +28,7 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
         string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL')
     }
@@ -122,8 +122,8 @@ pipeline {
                 script {
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
-                        "packages/bpmn-vscode-extension/dist/bpmn_vscode_extension_${params.TAG}.vsix",
-                        "bpmn_vscode_extension_${params.TAG}.vsix",
+                        "packages/bpmn-vscode-extension/dist/bpmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
+                        "bpmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
                         'application/zip',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )
@@ -139,8 +139,8 @@ pipeline {
                 script {
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
-                        "packages/dmn-vscode-extension/dist/dmn_vscode_extension_${params.TAG}.vsix",
-                        "dmn_vscode_extension_${params.TAG}.vsix",
+                        "packages/dmn-vscode-extension/dist/dmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
+                        "dmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
                         'application/zip',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )
@@ -156,8 +156,8 @@ pipeline {
                 script {
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
-                        "packages/pmml-vscode-extension/dist/pmml_vscode_extension_${params.TAG}.vsix",
-                        "pmml_vscode_extension_${params.TAG}.vsix",
+                        "packages/pmml-vscode-extension/dist/pmml_vscode_extension_${params.RELEASE_VERSION}.vsix",
+                        "pmml_vscode_extension_${params.RELEASE_VERSION}.vsix",
                         'application/zip',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )
@@ -173,8 +173,8 @@ pipeline {
                 script {
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
-                        "packages/vscode-extension-kogito-bundle/dist/vscode_extension_kogito_bundle_${params.TAG}.vsix",
-                        "vscode_extension_kogito_bundle_${params.TAG}.vsix",
+                        "packages/vscode-extension-kogito-bundle/dist/vscode_extension_kogito_bundle_${params.RELEASE_VERSION}.vsix",
+                        "vscode_extension_kogito_bundle_${params.RELEASE_VERSION}.vsix",
                         'application/zip',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )
@@ -190,8 +190,8 @@ pipeline {
                 script {
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
-                        "packages/vscode-extension-kie-ba-bundle/dist/vscode_extension_kie_ba_bundle_${params.TAG}.vsix",
-                        "vscode_extension_kie_ba_bundle_${params.TAG}.vsix",
+                        "packages/vscode-extension-kie-ba-bundle/dist/vscode_extension_kie_ba_bundle_${params.RELEASE_VERSION}.vsix",
+                        "vscode_extension_kie_ba_bundle_${params.RELEASE_VERSION}.vsix",
                         'application/zip',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )
@@ -207,8 +207,8 @@ pipeline {
                 script {
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
-                        "packages/serverless-workflow-vscode-extension/dist/serverless_workflow_vscode_extension_${params.TAG}.vsix",
-                        "serverless_workflow_vscode_extension_${params.TAG}.vsix",
+                        "packages/serverless-workflow-vscode-extension/dist/serverless_workflow_vscode_extension_${params.RELEASE_VERSION}.vsix",
+                        "serverless_workflow_vscode_extension_${params.RELEASE_VERSION}.vsix",
                         'application/zip',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )
@@ -224,8 +224,8 @@ pipeline {
                 script {
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
-                        "packages/vscode-extension-dashbuilder-editor/dist/vscode_extension_dashbuilder_editor_${params.TAG}.vsix",
-                        "vscode_extension_dashbuilder_editor_${params.TAG}.vsix",
+                        "packages/vscode-extension-dashbuilder-editor/dist/vscode_extension_dashbuilder_editor_${params.RELEASE_VERSION}.vsix",
+                        "vscode_extension_dashbuilder_editor_${params.RELEASE_VERSION}.vsix",
                         'application/zip',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )

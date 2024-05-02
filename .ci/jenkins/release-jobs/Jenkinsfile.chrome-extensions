@@ -28,7 +28,7 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
         string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL')
     }
@@ -40,11 +40,11 @@ pipeline {
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
         CHROME_EXTENSION__routerTargetOrigin = 'https://apache.github.io'
-        CHROME_EXTENSION__routerRelativePath = "incubator-kie-kogito-online/chrome-extension/${params.TAG}"
+        CHROME_EXTENSION__routerRelativePath = "incubator-kie-kogito-online/chrome-extension/${params.RELEASE_VERSION}"
         CHROME_EXTENSION__manifestFile = 'manifest.prod.json'
         CHROME_EXTENSION__onlineEditorUrl = 'https://apache.github.io/incubator-kie-kogito-online'
         SWF_CHROME_EXTENSION__routerTargetOrigin = 'https://apache.github.io'
-        SWF_CHROME_EXTENSION__routerRelativePath = "kogito-online/swf-chrome-extension/${params.TAG}"
+        SWF_CHROME_EXTENSION__routerRelativePath = "kogito-online/swf-chrome-extension/${params.RELEASE_VERSION}"
         SWF_CHROME_EXTENSION__manifestFile = 'manifest.prod.json'
 
         PNPM_FILTER_STRING = '-F chrome-extension-pack-kogito-kie-editors... -F chrome-extension-serverless-workflow-editor...'
@@ -142,8 +142,8 @@ pipeline {
                 script {
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
-                        "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.TAG}.zip",
-                        "chrome_extension_kogito_kie_editors_${params.TAG}.zip",
+                        "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.RELEASE_VERSION}.zip",
+                        "chrome_extension_kogito_kie_editors_${params.RELEASE_VERSION}.zip",
                         'application/zip',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )
@@ -158,8 +158,8 @@ pipeline {
             steps {
                 dir('kogito-online') {
                     script {
-                        EDITORS_DIR = "editors/${params.TAG}"
-                        CHROME_EXTENSION_DIR = "chrome-extension/${params.TAG}"
+                        EDITORS_DIR = "editors/${params.RELEASE_VERSION}"
+                        CHROME_EXTENSION_DIR = "chrome-extension/${params.RELEASE_VERSION}"
 
                         sh """#!/bin/bash -el
                         git config user.email asf-ci-kie@jenkins.kie.apache.org
@@ -177,7 +177,7 @@ pipeline {
 
                         echo "Commit changes and push"
                         git add .
-                        git commit -m "Deploy ${params.TAG} (Chrome Extension for Kogito KIE Editors)"
+                        git commit -m "Deploy ${params.RELEASE_VERSION} (Chrome Extension for Kogito KIE Editors)"
                         """.trim()
 
                         githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.asfGithubPushCredentialsId}")
@@ -195,7 +195,7 @@ pipeline {
                     env.CHROME_EXTESION_KIE_EDITORS_UPLOAD_STATUS = chromeStoreUtils.uploadExtension(
                         "${pipelineVars.chromeStoreCredentialsId}",
                         "${pipelineVars.chromeStoreRefreshTokenCredentialsId}",
-                        "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.TAG}.zip",
+                        "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.RELEASE_VERSION}.zip",
                         "${pipelineVars.chromeExtensionIdCredentialsId}"
                     )
                 }
@@ -247,8 +247,8 @@ pipeline {
                 script {
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
-                        "kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${params.TAG}.zip",
-                        "chrome_extension_serverless_workflow_editor_${params.TAG}.zip",
+                        "kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${params.RELEASE_VERSION}.zip",
+                        "chrome_extension_serverless_workflow_editor_${params.RELEASE_VERSION}.zip",
                         'application/zip',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )
@@ -263,7 +263,7 @@ pipeline {
             steps {
                 dir('kogito-online') {
                     script {
-                        DEPLOYMENT_DIR = "swf-chrome-extension/${params.TAG}"
+                        DEPLOYMENT_DIR = "swf-chrome-extension/${params.RELEASE_VERSION}"
 
                         sh """#!/bin/bash -el
                         git config user.email asf-ci-kie@jenkins.kie.apache.org
@@ -278,7 +278,7 @@ pipeline {
 
                         echo "Commit changes and push"
                         git add .
-                        git commit -m "Deploy ${params.TAG} (Chrome Extension for Serverless Workflow Editor)"
+                        git commit -m "Deploy ${params.RELEASE_VERSION} (Chrome Extension for Serverless Workflow Editor)"
                         """.trim()
 
                         githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.asfGithubPushCredentialsId}")
@@ -296,7 +296,7 @@ pipeline {
                     env.CHROME_EXTESION_SERVERLESS_WORKFLOW_EDITOR_UPLOAD_STATUS = chromeStoreUtils.uploadExtension(
                         "${pipelineVars.chromeStoreCredentialsId}",
                         "${pipelineVars.chromeStoreRefreshTokenCredentialsId}",
-                        "kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${params.TAG}.zip",
+                        "kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${params.RELEASE_VERSION}.zip",
                         "${pipelineVars.swfChromeExtensionIdCredentialsId}"
                     )
                 }

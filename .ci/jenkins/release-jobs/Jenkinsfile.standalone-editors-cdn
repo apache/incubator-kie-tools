@@ -28,7 +28,7 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
     }
 
@@ -131,7 +131,7 @@ pipeline {
             steps {
                 dir('kogito-online') {
                     script {
-                        STANDALONE_EDITORS_DIR = "standalone/${params.TAG}"
+                        STANDALONE_EDITORS_DIR = "standalone/${params.RELEASE_VERSION}"
 
                         sh """#!/bin/bash -el
                         git config user.email asf-ci-kie@jenkins.kie.apache.org
@@ -148,13 +148,13 @@ pipeline {
                         rm -f ./standalone/bpmn/index.js
                         rm -f ./standalone/dmn/index.js
                         rm -f ./standalone/swf/index.js
-                        ln -s ../${params.TAG}/bpmn/index.js ./standalone/bpmn/index.js
-                        ln -s ../${params.TAG}/dmn/index.js ./standalone/dmn/index.js
-                        ln -s ../${params.TAG}/swf/index.js ./standalone/swf/index.js
+                        ln -s ../${params.RELEASE_VERSION}/bpmn/index.js ./standalone/bpmn/index.js
+                        ln -s ../${params.RELEASE_VERSION}/dmn/index.js ./standalone/dmn/index.js
+                        ln -s ../${params.RELEASE_VERSION}/swf/index.js ./standalone/swf/index.js
 
                         echo "Commit changes and push"
                         git add .
-                        git commit -m "Deploy ${params.TAG} (Standalone Editors)"
+                        git commit -m "Deploy ${params.RELEASE_VERSION} (Standalone Editors)"
                         """.trim()
 
                         githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.asfGithubPushCredentialsId}")

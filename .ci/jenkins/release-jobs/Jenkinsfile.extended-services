@@ -28,7 +28,7 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
         string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL')
     }
@@ -116,7 +116,7 @@ pipeline {
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
                         'packages/extended-services/dist/linux/kie_sandbox_extended_services.tar.gz',
-                        "kie_sandbox_extended_services_linux_${params.TAG}.tar.gz",
+                        "kie_sandbox_extended_services_linux_${params.RELEASE_VERSION}.tar.gz",
                         'application/tar+gzip',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )

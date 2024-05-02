@@ -28,7 +28,7 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
         string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL')
     }
@@ -112,7 +112,7 @@ pipeline {
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
                         'packages/kn-plugin-workflow/dist/kn-workflow-linux-amd64',
-                        "kn-workflow-linux-amd64-${params.TAG}",
+                        "kn-workflow-linux-amd64-${params.RELEASE_VERSION}",
                         'application/octet-stream',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )
@@ -129,7 +129,7 @@ pipeline {
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
                         'packages/kn-plugin-workflow/dist/kn-workflow-darwin-amd64',
-                        "kn-workflow-darwin-amd64-${params.TAG}",
+                        "kn-workflow-darwin-amd64-${params.RELEASE_VERSION}",
                         'application/octet-stream',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )
@@ -146,7 +146,7 @@ pipeline {
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
                         'packages/kn-plugin-workflow/dist/kn-workflow-darwin-arm64',
-                        "kn-workflow-darwin-arm64-${params.TAG}",
+                        "kn-workflow-darwin-arm64-${params.RELEASE_VERSION}",
                         'application/octet-stream',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )
@@ -163,7 +163,7 @@ pipeline {
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
                         'packages/kn-plugin-workflow/dist/kn-workflow-windows-amd64.exe',
-                        "kn-workflow-windows-amd64-${params.TAG}.exe",
+                        "kn-workflow-windows-amd64-${params.RELEASE_VERSION}.exe",
                         'application/octet-stream',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )

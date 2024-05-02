@@ -28,7 +28,7 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
     }
 
@@ -38,29 +38,29 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        ONLINE_EDITOR__buildInfo = "${params.TAG}"
-        ONLINE_EDITOR__extendedServicesDownloadUrlLinux = "https://github.com/apache/incubator-kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_linux_${params.TAG}.tar.gz"
-        ONLINE_EDITOR__extendedServicesDownloadUrlMacOs = "https://github.com/apache/incubator-kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_macos_${params.TAG}.dmg"
-        ONLINE_EDITOR__extendedServicesDownloadUrlWindows = "https://github.com/apache/incubator-kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_windows_${params.TAG}.exe"
-        ONLINE_EDITOR__extendedServicesCompatibleVersion = "${params.TAG}"
+        ONLINE_EDITOR__buildInfo = "${params.RELEASE_VERSION}"
+        ONLINE_EDITOR__extendedServicesDownloadUrlLinux = "https://github.com/apache/incubator-kie-tools/releases/download/${params.RELEASE_VERSION}/kie_sandbox_extended_services_linux_${params.RELEASE_VERSION}.tar.gz"
+        ONLINE_EDITOR__extendedServicesDownloadUrlMacOs = "https://github.com/apache/incubator-kie-tools/releases/download/${params.RELEASE_VERSION}/kie_sandbox_extended_services_macos_${params.RELEASE_VERSION}.dmg"
+        ONLINE_EDITOR__extendedServicesDownloadUrlWindows = "https://github.com/apache/incubator-kie-tools/releases/download/${params.RELEASE_VERSION}/kie_sandbox_extended_services_windows_${params.RELEASE_VERSION}.exe"
+        ONLINE_EDITOR__extendedServicesCompatibleVersion = "${params.RELEASE_VERSION}"
         ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'quay.io'
         ONLINE_EDITOR__devDeploymentBaseImageAccount = 'kie-tools'
         ONLINE_EDITOR__devDeploymentBaseImageName = 'dev-deployment-base-image'
-        ONLINE_EDITOR__devDeploymentBaseImageTag = "${params.TAG}"
+        ONLINE_EDITOR__devDeploymentBaseImageTag = "${params.RELEASE_VERSION}"
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry = 'quay.io'
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'kie-tools'
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'dev-deployment-dmn-form-webapp-image'
-        ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = "${params.TAG}"
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = "${params.RELEASE_VERSION}"
         ONLINE_EDITOR__gtmId = 'GTM-PQGMKNW'
         ONLINE_EDITOR__corsProxyUrl = 'https://cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
         DEV_DEPLOYMENT_BASE_IMAGE__registry = 'quay.io'
         DEV_DEPLOYMENT_BASE_IMAGE__account = 'kie-tools'
         DEV_DEPLOYMENT_BASE_IMAGE__name = 'dev-deployment-base-image'
-        DEV_DEPLOYMENT_BASE_IMAGE__buildTags = "latest ${params.TAG}"
+        DEV_DEPLOYMENT_BASE_IMAGE__buildTags = "latest ${params.RELEASE_VERSION}"
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry = 'quay.io'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account = 'kie-tools'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name = 'dev-deployment-dmn-form-webapp-image'
-        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags = "latest ${params.TAG}"
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags = "latest ${params.RELEASE_VERSION}"
 
         PNPM_FILTER_STRING = '-F @kie-tools/online-editor...'
     }
@@ -155,12 +155,12 @@ pipeline {
             steps {
                 dir('kogito-online') {
                     script {
-                        EDITORS_DIR = "editors/${params.TAG}"
+                        EDITORS_DIR = "editors/${params.RELEASE_VERSION}"
 
                         sh """#!/bin/bash -el
                         git config user.email asf-ci-kie@jenkins.kie.apache.org
                         git config user.name asf-ci-kie
-                        
+
                         git checkout gh-pages
 
                         echo "Reset deployment dir"
@@ -174,7 +174,7 @@ pipeline {
                         cp -RL ${WORKSPACE}/kie-tools/packages/stunner-editors/dist/bpmn ${EDITORS_DIR}
                         cp -RL ${WORKSPACE}/kie-tools/packages/stunner-editors/dist/scesim ${EDITORS_DIR}
                         rm -rf ./editors/latest
-                        ln -s ${params.TAG} ./editors/latest
+                        ln -s ${params.RELEASE_VERSION} ./editors/latest
 
                         echo "Copy Online Editor resources"
                         rm -rf ./gwt-editors
@@ -184,7 +184,7 @@ pipeline {
 
                         echo "Commit changes and push"
                         git add .
-                        git commit -m "Deploy ${params.TAG} (Editors + Online Editor)"
+                        git commit -m "Deploy ${params.RELEASE_VERSION} (Editors + Online Editor)"
                         """.trim()
 
                         githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.asfGithubPushCredentialsId}")
