@@ -60,6 +60,7 @@ export type TypeHelper = {
 };
 
 export interface ConstraintComponentProps {
+  id: string;
   isReadonly: boolean;
   value?: string;
   expressionValue?: string;
@@ -472,9 +473,9 @@ export function ConstraintsFromAllowedValuesAttribute({
           itemDefinition.allowedValues = undefined;
         } else {
           itemDefinition.allowedValues ??= { text: { __$$text: "" } };
-          itemDefinition.allowedValues.text.__$$text = value ?? "";
+          itemDefinition.allowedValues.text.__$$text = value;
           itemDefinition.allowedValues["@_id"] = itemDefinition.allowedValues?.["@_id"] ?? generateUuid();
-          itemDefinition.allowedValues["@_kie:constraintType"] ??= enumToKieConstraintType(selectedConstraint);
+          itemDefinition.allowedValues["@_kie:constraintType"] = enumToKieConstraintType(selectedConstraint);
         }
       });
     },
@@ -613,9 +614,9 @@ export function ConstraintsFromTypeConstraintAttribute({
           itemDefinition.typeConstraint = undefined;
         } else {
           itemDefinition.typeConstraint ??= { text: { __$$text: "" } };
-          itemDefinition.typeConstraint.text.__$$text = value ?? "";
+          itemDefinition.typeConstraint.text.__$$text = value;
           itemDefinition.typeConstraint["@_id"] = itemDefinition.typeConstraint?.["@_id"] ?? generateUuid();
-          itemDefinition.typeConstraint["@_kie:constraintType"] ??= enumToKieConstraintType(selectedConstraint);
+          itemDefinition.typeConstraint["@_kie:constraintType"] = enumToKieConstraintType(selectedConstraint);
         }
       });
     },
@@ -808,6 +809,7 @@ export function Constraints({
             {(selectedKieConstraintType === ConstraintsType.ENUMERATION ||
               internalSelectedConstraint === ConstraintsType.ENUMERATION) && (
               <ConstraintsEnum
+                id={itemDefinitionId}
                 isReadonly={isReadonly}
                 type={typeRef}
                 typeHelper={typeHelper}
@@ -821,6 +823,7 @@ export function Constraints({
             {(selectedKieConstraintType === ConstraintsType.RANGE ||
               internalSelectedConstraint === ConstraintsType.RANGE) && (
               <ConstraintsRange
+                id={itemDefinitionId}
                 isReadonly={isReadonly}
                 expressionValue={constraintValue}
                 type={typeRef}
@@ -834,6 +837,7 @@ export function Constraints({
             {(selectedKieConstraintType === ConstraintsType.EXPRESSION ||
               internalSelectedConstraint === ConstraintsType.EXPRESSION) && (
               <ConstraintsExpression
+                id={itemDefinitionId}
                 isReadonly={isReadonly}
                 type={typeRef}
                 value={constraintValue}
