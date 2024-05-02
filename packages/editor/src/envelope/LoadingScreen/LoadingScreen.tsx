@@ -24,7 +24,7 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { useEditorEnvelopeI18nContext } from "../i18n";
 
-export function LoadingScreen(props: { loading: boolean }) {
+export function LoadingScreen(props: { loading: boolean; styleTag?: string }) {
   const [mustRender, setMustRender] = useState(true);
   const { i18n } = useEditorEnvelopeI18nContext();
 
@@ -47,9 +47,11 @@ export function LoadingScreen(props: { loading: boolean }) {
     }
   }, [props.loading]);
 
+  const style = (props.styleTag ? `${props.styleTag} ` : "") + "kie-tools--loading-screen";
+
   return (
     (mustRender && (
-      <div id="loading-screen" className="kie-tools--loading-screen">
+      <div id="loading-screen" className={style}>
         <div
           className={`kie-tools--loading-screen ${loadingScreenClassName}`}
           onAnimationEnd={onAnimationEnd}

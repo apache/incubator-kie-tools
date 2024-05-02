@@ -1,0 +1,47 @@
+schema_version: 1
+name: "sonataflow-operator-bundle"
+description: "SonataFlow Operator Bundle"
+version: 0.0.0
+from: "scratch"
+
+labels:
+  - name: maintainer
+    value: dev@kie.apache.org
+  - name: io.k8s.description
+    value: Operator Bundle for deploying OpenShift Serverless Logic Operator
+  - name: io.k8s.display-name
+    value: SonataFlow Operator Bundle
+  - name: io.openshift.tags
+    value: sonataflow,serverless,workflow,operator
+  - name: operators.operatorframework.io.bundle.mediatype.v1
+    value: registry+v1
+  - name: operators.operatorframework.io.bundle.manifests.v1
+    value: manifests/
+  - name: operators.operatorframework.io.bundle.metadata.v1
+    value: metadata/
+  - name: operators.operatorframework.io.bundle.package.v1
+    value: sonataflow-operator
+  - name: operators.operatorframework.io.bundle.channels.v1
+    value: "alpha"
+  - name: operators.operatorframework.io.bundle.channel.default.v1
+    value: alpha
+  - name: operators.operatorframework.io.metrics.mediatype.v1
+    value: metrics+v1
+  - name: operators.operatorframework.io.metrics.builder
+    value: operator-sdk-v1.25.0
+  - name: operators.operatorframework.io.metrics.project_layout
+    value: go.kubebuilder.io/v3
+  - name: operators.operatorframework.io.test.config.v1
+    value: tests/scorecard/
+  - name: operators.operatorframework.io.test.mediatype.v1
+    value: scorecard+v1
+  - name: com.redhat.delivery.operator.bundle
+    value: "true"
+  - name: com.redhat.openshift.versions
+    value: v4.10
+
+modules:
+  repositories:
+    - path: modules
+  install:
+    - name: org.apache.kie.sonataflow.bundle

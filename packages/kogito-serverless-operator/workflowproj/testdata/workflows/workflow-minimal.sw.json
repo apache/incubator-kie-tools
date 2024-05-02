@@ -1,0 +1,16 @@
+{
+  "id": "hello",
+  "specVersion": "0.8.0",
+  "name": "Hello World",
+  "start": "HelloWorld",
+  "states": [
+    {
+      "name": "HelloWorld",
+      "type": "inject",
+      "data": {
+        "message": "Hello World"
+      },
+      "end": true
+    }
+  ]
+}

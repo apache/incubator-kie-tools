@@ -18,6 +18,7 @@
  */
 
 const { execSync } = require("child_process");
+const fs = require("fs");
 
 const buildEnv = require("./env");
 const path = require("path");
@@ -34,3 +35,23 @@ execSync(
   python3 ${kogitoSwfCommonDir}/resources/scripts/versions_manager.py --bump-to ${buildEnv.env.kogitoSwfBuilder.version} --source-folder ./resources`,
   { stdio: "inherit" }
 );
+
+// Find and read the -image.yaml file
+const resourcesPath = path.resolve(__dirname, "./resources");
+const files = fs.readdirSync(resourcesPath);
+const imageYamlFiles = files.filter((fileName) => fileName.endsWith("-image.yaml"));
+if (imageYamlFiles.length !== 1) {
+  throw new Error("There should only be one -image.yaml file on ./resources!");
+}
+const originalYamlPath = path.join(resourcesPath, imageYamlFiles[0]);
+let imageYaml = fs.readFileSync(originalYamlPath, "utf8");
+
+// Replace the whole string between quotes ("") with the image name
+imageYaml = imageYaml.replace(
+  /(?<=")(.*kogito-swf-builder.*)(?=")/gm,
+  `${buildEnv.env.kogitoSwfBuilder.registry}/${buildEnv.env.kogitoSwfBuilder.account}/${buildEnv.env.kogitoSwfBuilder.name}`
+);
+
+// Write file and then rename it to match the image name
+fs.writeFileSync(originalYamlPath, imageYaml);
+fs.renameSync(originalYamlPath, path.join(resourcesPath, `${buildEnv.env.kogitoSwfBuilder.name}-image.yaml`));

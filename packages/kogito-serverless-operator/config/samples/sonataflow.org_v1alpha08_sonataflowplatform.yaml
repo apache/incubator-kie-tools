@@ -1,0 +1,10 @@
+apiVersion: sonataflow.org/v1alpha08
+kind: SonataFlowPlatform
+metadata:
+  name: sonataflow-platform
+spec:
+  build:
+    config:
+      registry:
+        address: quay.io/kiegroup
+        secret: regcred

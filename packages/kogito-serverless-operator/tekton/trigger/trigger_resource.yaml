@@ -1,0 +1,11 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: Trigger
+metadata:
+  name: kogito-serverless-operator-trigger
+  namespace: sonataflow-operator-system
+spec:
+  serviceAccountName: pipeline
+  bindings:
+    - ref: kogito-serverless-operator-trigger-binding
+  template:
+    ref: kogito-serverless-operator-trigger-template

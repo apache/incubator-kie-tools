@@ -1,0 +1,30 @@
+{
+  "id": "service",
+  "specVersion": "0.8.0",
+  "name": "Hello Service",
+  "start": "Service",
+  "dataInputSchema": "specs/workflow-service-schema.json",
+  "functions": [
+    {
+      "name": "isWinner",
+      "operation": "specs/workflow-service-openapi.json#isWinner",
+      "type": "rest"
+    }
+  ],
+  "states": [
+    {
+      "name": "Service",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "CallService",
+          "functionRef": {
+            "refName": "isWinner",
+            "arguments": {}
+          }
+        }
+      ],
+      "end": true
+    }
+  ]
+}

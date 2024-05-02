@@ -35,6 +35,7 @@ if __name__ == "__main__":
     parser.add_argument('--source-folder', dest='source_folder')
     parser.add_argument('--quarkus-version', dest='quarkus_version', help='Sets the image Quarkus Version')
     parser.add_argument('--kogito-version', dest='kogito_version', help='Sets the image Kogito Version')
+    parser.add_argument('--sonataflow-quarkus-devui-version', dest='sonataflow_quarkus_devui_version', help='Sets the image SonataFlow Quarkus DevUI Version', required=False)
 
     args = parser.parse_args()
 
@@ -47,3 +48,5 @@ if __name__ == "__main__":
             common.update_kogito_platform_version(args.kogito_version)
         if args.quarkus_version is not None:
             common.update_quarkus_platform_version(args.quarkus_version)
+        if args.sonataflow_quarkus_devui_version is not None:
+            common.update_sonataflow_quarkus_devui_version(args.sonataflow_quarkus_devui_version)

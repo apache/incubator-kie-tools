@@ -27,7 +27,7 @@ source "${script_dir_path}"/logging.sh
 
 if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     set -x
-    export MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND} -X --batch-mode" 
+    export MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND} -X --batch-mode"
     log_info "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
     printenv
 fi
@@ -43,6 +43,8 @@ source "${script_dir_path}"/configure-jvm-mvn.sh
   -DprojectVersionId="${PROJECT_VERSION}" \
   -DplatformVersion="${QUARKUS_PLATFORM_VERSION}" \
   -Dextensions="${QUARKUS_EXTENSIONS}"
+
+# TODO: Install sonataflow-quarkus-devui by patching the pom instead of using -Dextensions
 
 cd "${PROJECT_ARTIFACT_ID}"
 
@@ -124,6 +126,13 @@ if [ "${SCRIPT_DEBUG^^}" = "TRUE" ]; then
     cat pom.xml
 fi
 
+ls -la "${KOGITO_HOME}"/.m2/repository/org/apache/kie/
+ls -la "${KOGITO_HOME}"/.m2/repository/org/kie/
+
+# mkdir .mvn
+touch .mvn/maven.config
+echo " -Dversion.org.kie.kogito=${KOGITO_VERSION} -Dquarkus.platform.version=${QUARKUS_PLATFORM_VERSION}" >> .mvn/maven.config
+
 # we force the dependencies download beforehand, so we won't have problems when running or building our apps in offline mode
 # see:
 #   https://quarkus.io/guides/maven-tooling#downloading-maven-artifact-dependencies-for-offline-development-and-testing
@@ -139,4 +148,4 @@ fi
 "${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
   -nsu \
   -s "${MAVEN_SETTINGS_PATH}" \
-  clean 
+  clean
