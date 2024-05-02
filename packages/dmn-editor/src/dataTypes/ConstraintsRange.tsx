@@ -31,7 +31,6 @@ const CONSTRAINT_START_ID = "start";
 const CONSTRAINT_END_ID = "end";
 
 export function ConstraintsRange({
-  id,
   isReadonly,
   value,
   expressionValue,
@@ -313,7 +312,7 @@ export function ConstraintsRange({
       {!renderOnPropertiesPanel && (
         <>
           <br />
-          <ConstraintsExpression id={id} isReadonly={true} value={expressionValue ?? ""} type={type} />
+          <ConstraintsExpression isReadonly={true} value={expressionValue ?? ""} type={type} />
         </>
       )}
     </div>

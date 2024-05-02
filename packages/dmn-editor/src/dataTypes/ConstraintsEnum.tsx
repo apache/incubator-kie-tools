@@ -31,7 +31,6 @@ import { ConstraintComponentProps, TypeHelper } from "./Constraints";
 export const ENUM_SEPARATOR = ",";
 
 export function ConstraintsEnum({
-  id,
   isReadonly,
   value,
   expressionValue,
@@ -183,7 +182,7 @@ export function ConstraintsEnum({
         <>
           <br />
           <br />
-          <ConstraintsExpression id={id} isReadonly={true} value={expressionValue ?? ""} type={type} />
+          <ConstraintsExpression isReadonly={true} value={expressionValue ?? ""} type={type} />
         </>
       )}
     </div>

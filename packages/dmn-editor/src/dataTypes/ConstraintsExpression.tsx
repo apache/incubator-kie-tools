@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useMemo, useState, useCallback, useRef } from "react";
+import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { FeelInput } from "@kie-tools/feel-input-component/dist";
 import "./ConstraintsExpression.css";
@@ -28,12 +28,10 @@ import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/a
 import { TypeHelper } from "./Constraints";
 
 export function ConstraintsExpression({
-  id,
   isReadonly,
   value,
   onSave,
 }: {
-  id: string;
   isReadonly: boolean;
   value?: string;
   savedValue?: string;
@@ -43,17 +41,24 @@ export function ConstraintsExpression({
   isDisabled?: boolean;
 }) {
   const [preview, setPreview] = useState(value ?? "");
-  const valueCopy = useRef(value);
-  const onFeelChange = useCallback(
-    (_, content, preview) => {
-      if (valueCopy.current !== content) {
-        onSave?.(content.trim());
-        setPreview(preview);
-        valueCopy.current = content;
+  const [editingValue, setEditingValue] = useState(value);
+  const [isEditing, setEditing] = useState(false);
+
+  const onFeelBlur = useCallback(
+    (valueOnBlur: string) => {
+      if (value !== valueOnBlur) {
+        onSave?.(valueOnBlur.trim());
       }
+      setEditing(false);
     },
-    [onSave]
+    [onSave, value]
   );
+
+  const onFeelChange = useCallback((_, content, preview) => {
+    setPreview(preview);
+  }, []);
+
+  const onPreviewChanged = useCallback((newPreview: string) => setPreview(newPreview), []);
 
   const monacoOptions = useMemo(
     () => ({
@@ -68,10 +73,30 @@ export function ConstraintsExpression({
     []
   );
 
+  useEffect(() => {
+    setEditingValue((prev) => (isEditing ? prev : value));
+  }, [isEditing, value]);
+
+  const onKeyDown = useCallback(
+    (e) => {
+      // When inside FEEL Input, all keyboard events should be kept inside it.
+      // Exceptions to this strategy are handled on `onFeelKeyDown`.
+      if (isEditing) {
+        e.stopPropagation();
+      }
+
+      // This is used to start editing a cell without being in edit mode.
+      if (!isEditing) {
+        setEditing(true);
+      }
+    },
+    [isEditing]
+  );
+
   return (
     // FeelInput doens't react to `onFeelChange` updates
     // making it necessary to add a key to force a re-render;
-    <div key={id} style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+    <div style={{ display: "flex", flexDirection: "column", width: "100%" }} onKeyDown={onKeyDown}>
       {isReadonly && (
         <Title size={"md"} headingLevel="h5" style={{ paddingBottom: "10px" }}>
           Equivalent FEEL expression:
@@ -92,9 +117,10 @@ export function ConstraintsExpression({
             <p style={{ fontStyle: "italic" }}>{`<None>`}</p>
           ))}
         <FeelInput
-          value={value}
+          value={isReadonly || !isEditing ? value : editingValue}
           onChange={onFeelChange}
-          onPreviewChanged={(newPreview: string) => setPreview(newPreview)}
+          onBlur={onFeelBlur}
+          onPreviewChanged={onPreviewChanged}
           enabled={!isReadonly}
           options={monacoOptions as any}
         />

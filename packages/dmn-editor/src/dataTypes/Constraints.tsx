@@ -60,7 +60,6 @@ export type TypeHelper = {
 };
 
 export interface ConstraintComponentProps {
-  id: string;
   isReadonly: boolean;
   value?: string;
   expressionValue?: string;
@@ -311,7 +310,6 @@ export function useConstraint({
 }) {
   const constraintValue = constraint?.text.__$$text;
   const kieConstraintType = constraint?.["@_kie:constraintType"];
-  const itemDefinitionId = itemDefinition["@_id"]!;
 
   const isConstraintEnum = useMemo(
     () =>
@@ -360,7 +358,7 @@ export function useConstraint({
     };
   }, [enabledConstraints, enumToKieConstraintType, isCollectionConstraintEnabled, itemDefinition]);
 
-  const initialSelectedConstraint = useCallback(() => {
+  const selectedKieConstraintType = useMemo(() => {
     if (isConstraintEnabled.enumeration && kieConstraintType === "enumeration") {
       return ConstraintsType.ENUMERATION;
     }
@@ -390,21 +388,13 @@ export function useConstraint({
     kieConstraintType,
   ]);
 
-  const [selectedConstraint, setSelectedConstraint] = useState<ConstraintsType>(initialSelectedConstraint);
-  // Changing the `itemDefinitionId` should re-calculate the initial state of `selectedConstraint`;
-  useEffect(() => {
-    setSelectedConstraint(initialSelectedConstraint());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [itemDefinitionId]);
-
   return {
     constraintValue,
     isConstraintEnum,
     isConstraintRange,
     isConstraintEnabled,
-    selectedConstraint,
+    selectedKieConstraintType,
     enumToKieConstraintType,
-    setSelectedConstraint,
   };
 }
 
@@ -465,9 +455,8 @@ export function ConstraintsFromAllowedValuesAttribute({
     isConstraintEnum,
     isConstraintRange,
     isConstraintEnabled,
-    selectedConstraint,
+    selectedKieConstraintType,
     enumToKieConstraintType,
-    setSelectedConstraint,
   } = useConstraint({
     constraint: allowedValues,
     itemDefinition,
@@ -477,7 +466,7 @@ export function ConstraintsFromAllowedValuesAttribute({
   });
 
   const onConstraintChange = useCallback(
-    (value: string | undefined) => {
+    (value: string | undefined, selectedConstraint: ConstraintsType) => {
       editItemDefinition(itemDefinitionId, (itemDefinition) => {
         if (value === "" || value === undefined) {
           itemDefinition.allowedValues = undefined;
@@ -485,19 +474,18 @@ export function ConstraintsFromAllowedValuesAttribute({
           itemDefinition.allowedValues ??= { text: { __$$text: "" } };
           itemDefinition.allowedValues.text.__$$text = value ?? "";
           itemDefinition.allowedValues["@_id"] = itemDefinition.allowedValues?.["@_id"] ?? generateUuid();
+          itemDefinition.allowedValues["@_kie:constraintType"] ??= enumToKieConstraintType(selectedConstraint);
         }
       });
     },
-    [editItemDefinition, itemDefinitionId]
+    [editItemDefinition, enumToKieConstraintType, itemDefinitionId]
   );
 
   const onToggleGroupChange = useCallback(
-    (newSelection: boolean, event: React.KeyboardEvent<Element> | MouseEvent | React.MouseEvent<any, MouseEvent>) => {
+    (newSelection: boolean, selectedConstraint: ConstraintsType) => {
       if (!newSelection) {
         return;
       }
-      const selectedConstraint = event.currentTarget.id as ConstraintsType;
-      setSelectedConstraint(selectedConstraint);
 
       editItemDefinition(itemDefinitionId, (itemDefinition) => {
         if (selectedConstraint === ConstraintsType.NONE) {
@@ -530,13 +518,7 @@ export function ConstraintsFromAllowedValuesAttribute({
         itemDefinition.allowedValues = undefined;
       });
     },
-    [
-      editItemDefinition,
-      itemDefinitionId,
-      setSelectedConstraint,
-      enumToKieConstraintType,
-      typeRefConstraintTypeHelper.check,
-    ]
+    [editItemDefinition, itemDefinitionId, enumToKieConstraintType, typeRefConstraintTypeHelper.check]
   );
 
   return (
@@ -549,7 +531,7 @@ export function ConstraintsFromAllowedValuesAttribute({
       isConstraintEnum={isConstraintEnum}
       isConstraintRange={isConstraintRange}
       isConstraintEnabled={isConstraintEnabled}
-      selectedConstraint={selectedConstraint}
+      selectedKieConstraintType={selectedKieConstraintType}
       onToggleGroupChange={onToggleGroupChange}
       onConstraintChange={onConstraintChange}
       renderOnPropertiesPanel={renderOnPropertiesPanel}
@@ -614,9 +596,8 @@ export function ConstraintsFromTypeConstraintAttribute({
     isConstraintEnum,
     isConstraintRange,
     isConstraintEnabled,
-    selectedConstraint,
+    selectedKieConstraintType,
     enumToKieConstraintType,
-    setSelectedConstraint,
   } = useConstraint({
     constraint: typeConstraint,
     itemDefinition: itemDefinition,
@@ -626,7 +607,7 @@ export function ConstraintsFromTypeConstraintAttribute({
   });
 
   const onConstraintChange = useCallback(
-    (value: string | undefined) => {
+    (value: string | undefined, selectedConstraint: ConstraintsType) => {
       editItemDefinition(itemDefinitionId, (itemDefinition) => {
         if (value === "" || value === undefined) {
           itemDefinition.typeConstraint = undefined;
@@ -634,19 +615,18 @@ export function ConstraintsFromTypeConstraintAttribute({
           itemDefinition.typeConstraint ??= { text: { __$$text: "" } };
           itemDefinition.typeConstraint.text.__$$text = value ?? "";
           itemDefinition.typeConstraint["@_id"] = itemDefinition.typeConstraint?.["@_id"] ?? generateUuid();
+          itemDefinition.typeConstraint["@_kie:constraintType"] ??= enumToKieConstraintType(selectedConstraint);
         }
       });
     },
-    [editItemDefinition, itemDefinitionId]
+    [editItemDefinition, enumToKieConstraintType, itemDefinitionId]
   );
 
   const onToggleGroupChange = useCallback(
-    (newSelection: boolean, event: React.KeyboardEvent<Element> | MouseEvent | React.MouseEvent<any, MouseEvent>) => {
+    (newSelection: boolean, selectedConstraint: ConstraintsType) => {
       if (!newSelection) {
         return;
       }
-      const selectedConstraint = event.currentTarget.id as ConstraintsType;
-      setSelectedConstraint(selectedConstraint);
 
       editItemDefinition(itemDefinitionId, (itemDefinition) => {
         if (selectedConstraint === ConstraintsType.NONE) {
@@ -679,13 +659,7 @@ export function ConstraintsFromTypeConstraintAttribute({
         itemDefinition.typeConstraint = undefined;
       });
     },
-    [
-      editItemDefinition,
-      itemDefinitionId,
-      setSelectedConstraint,
-      enumToKieConstraintType,
-      typeRefConstraintTypeHelper.check,
-    ]
+    [editItemDefinition, itemDefinitionId, enumToKieConstraintType, typeRefConstraintTypeHelper.check]
   );
 
   return (
@@ -698,7 +672,7 @@ export function ConstraintsFromTypeConstraintAttribute({
       isConstraintEnum={isConstraintEnum}
       isConstraintRange={isConstraintRange}
       isConstraintEnabled={isConstraintEnabled}
-      selectedConstraint={selectedConstraint}
+      selectedKieConstraintType={selectedKieConstraintType}
       onToggleGroupChange={onToggleGroupChange}
       onConstraintChange={onConstraintChange}
       renderOnPropertiesPanel={renderOnPropertiesPanel}
@@ -715,7 +689,7 @@ export function Constraints({
   isConstraintEnum,
   isConstraintRange,
   isConstraintEnabled,
-  selectedConstraint,
+  selectedKieConstraintType,
   onToggleGroupChange,
   onConstraintChange,
   renderOnPropertiesPanel,
@@ -732,14 +706,37 @@ export function Constraints({
     range: boolean;
     expression: boolean;
   };
-  selectedConstraint: ConstraintsType;
+  selectedKieConstraintType: ConstraintsType;
   renderOnPropertiesPanel?: boolean;
-  onToggleGroupChange: (
-    selected: boolean,
-    event: React.KeyboardEvent<Element> | MouseEvent | React.MouseEvent<any, MouseEvent>
-  ) => void;
-  onConstraintChange: (value?: string) => void;
+  onToggleGroupChange: (selected: boolean, selectedConstraint: ConstraintsType) => void;
+  onConstraintChange: (value: string | undefined, selectedConstraint: ConstraintsType) => void;
 }) {
+  const [internalSelectedConstraint, setInternalSelectedConstraint] =
+    useState<ConstraintsType>(selectedKieConstraintType);
+
+  // Updates the `selectedConstraint` only after changing the active item definition
+  // Both `internalSelectedConstraint` and `selectedKieConstraintType` should not be coupled together
+  useEffect(() => {
+    setInternalSelectedConstraint(selectedKieConstraintType);
+    // eslint-disable-next-line
+  }, [itemDefinitionId]);
+
+  const onToggleGroupChangeInternal = useCallback(
+    (selected: boolean, event: React.KeyboardEvent<Element> | MouseEvent | React.MouseEvent<any, MouseEvent>) => {
+      const selectedConstraint = event.currentTarget.id as ConstraintsType;
+      setInternalSelectedConstraint(selectedConstraint);
+      onToggleGroupChange(selected, selectedConstraint);
+    },
+    [onToggleGroupChange]
+  );
+
+  const onConstraintChangeInternal = useCallback(
+    (value: string | undefined) => {
+      onConstraintChange(value, internalSelectedConstraint);
+    },
+    [onConstraintChange, internalSelectedConstraint]
+  );
+
   return (
     <>
       {isConstraintEnabled.expression === false &&
@@ -762,8 +759,11 @@ export function Constraints({
               <ToggleGroupItem
                 text={ConstraintsType.NONE}
                 buttonId={ConstraintsType.NONE}
-                isSelected={selectedConstraint === ConstraintsType.NONE}
-                onChange={onToggleGroupChange}
+                isSelected={
+                  selectedKieConstraintType === ConstraintsType.NONE &&
+                  internalSelectedConstraint === ConstraintsType.NONE
+                }
+                onChange={onToggleGroupChangeInternal}
                 isDisabled={isReadonly}
               />
               <ToggleGroupItem
@@ -774,77 +774,87 @@ export function Constraints({
                 style={{ zIndex: 10 }}
                 text={ConstraintsType.EXPRESSION}
                 buttonId={ConstraintsType.EXPRESSION}
-                isSelected={selectedConstraint === ConstraintsType.EXPRESSION}
-                onChange={onToggleGroupChange}
+                isSelected={
+                  selectedKieConstraintType === ConstraintsType.EXPRESSION ||
+                  internalSelectedConstraint === ConstraintsType.EXPRESSION
+                }
+                onChange={onToggleGroupChangeInternal}
                 isDisabled={isReadonly || !isConstraintEnabled.expression}
               />
               <ToggleGroupItem
                 text={ConstraintsType.ENUMERATION}
                 buttonId={ConstraintsType.ENUMERATION}
-                isSelected={selectedConstraint === ConstraintsType.ENUMERATION}
-                onChange={onToggleGroupChange}
+                isSelected={
+                  selectedKieConstraintType === ConstraintsType.ENUMERATION ||
+                  internalSelectedConstraint === ConstraintsType.ENUMERATION
+                }
+                onChange={onToggleGroupChangeInternal}
                 isDisabled={isReadonly || !isConstraintEnabled.enumeration}
               />
               <ToggleGroupItem
                 text={ConstraintsType.RANGE}
                 buttonId={ConstraintsType.RANGE}
-                isSelected={selectedConstraint === ConstraintsType.RANGE}
-                onChange={onToggleGroupChange}
+                isSelected={
+                  selectedKieConstraintType === ConstraintsType.RANGE ||
+                  internalSelectedConstraint === ConstraintsType.RANGE
+                }
+                onChange={onToggleGroupChangeInternal}
                 isDisabled={isReadonly || !isConstraintEnabled.range}
               />
             </ToggleGroup>
           </div>
 
           <div style={{ paddingTop: "20px" }}>
-            {selectedConstraint === ConstraintsType.ENUMERATION && (
+            {(selectedKieConstraintType === ConstraintsType.ENUMERATION ||
+              internalSelectedConstraint === ConstraintsType.ENUMERATION) && (
               <ConstraintsEnum
-                id={itemDefinitionId}
                 isReadonly={isReadonly}
                 type={typeRef}
                 typeHelper={typeHelper}
                 value={isConstraintEnum ? constraintValue : undefined}
                 expressionValue={constraintValue}
-                onSave={onConstraintChange}
+                onSave={onConstraintChangeInternal}
                 isDisabled={!isConstraintEnabled.enumeration}
                 renderOnPropertiesPanel={renderOnPropertiesPanel}
               />
             )}
-            {selectedConstraint === ConstraintsType.RANGE && (
+            {(selectedKieConstraintType === ConstraintsType.RANGE ||
+              internalSelectedConstraint === ConstraintsType.RANGE) && (
               <ConstraintsRange
-                id={itemDefinitionId}
                 isReadonly={isReadonly}
                 expressionValue={constraintValue}
                 type={typeRef}
                 typeHelper={typeHelper}
                 value={isConstraintRange ? constraintValue : undefined}
-                onSave={onConstraintChange}
+                onSave={onConstraintChangeInternal}
                 isDisabled={!isConstraintEnabled.range}
                 renderOnPropertiesPanel={renderOnPropertiesPanel}
               />
             )}
-            {selectedConstraint === ConstraintsType.EXPRESSION && (
+            {(selectedKieConstraintType === ConstraintsType.EXPRESSION ||
+              internalSelectedConstraint === ConstraintsType.EXPRESSION) && (
               <ConstraintsExpression
-                id={itemDefinitionId}
                 isReadonly={isReadonly}
                 type={typeRef}
                 value={constraintValue}
                 savedValue={constraintValue}
-                onSave={onConstraintChange}
+                onSave={onConstraintChangeInternal}
                 isDisabled={!isConstraintEnabled.expression}
               />
             )}
-            {selectedConstraint === ConstraintsType.NONE && (
-              <p
-                style={{
-                  padding: "24px",
-                  background: "#eee",
-                  borderRadius: "10px",
-                  textAlign: "center",
-                }}
-              >
-                {`All values are allowed`}
-              </p>
-            )}
+            {selectedKieConstraintType === ConstraintsType.NONE &&
+              internalSelectedConstraint === ConstraintsType.NONE && (
+                <p
+                  style={{
+                    padding: "24px",
+                    background: "#eee",
+                    borderRadius: "10px",
+                    textAlign: "center",
+                  }}
+                >
+                  {`All values are allowed`}
+                </p>
+              )}
           </div>
         </div>
       )}
