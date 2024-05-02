@@ -1,6 +1,6 @@
 # Build partitioning
 
-This script uses `bun` as runtime and has the purpose of splitting the monorepo build in 2 partitions that, when built, will ensure the entire monorepo has been covered.
+This script uses `bun` as runtime and has the purpose of splitting the monorepo build in N partitions that, when built, will ensure the entire monorepo has been covered.
 
 Each partition is completely independent from each other, and partition builds will be assigned a mode:
 
