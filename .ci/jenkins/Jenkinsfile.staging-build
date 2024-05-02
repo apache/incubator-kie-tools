@@ -130,9 +130,6 @@ pipeline {
         JBPM_QUARKUS_DEVUI_EXTENSION__version = "${params.TAG}-SNAPSHOT"
         SONATAFLOW_QUARKUS_DEVUI_EXTENSION__version = "${params.TAG}-SNAPSHOT"
 
-        MAVEN_DEPLOY_REPOSITORY = 'https://repository.apache.org/content/repositories/snapshots'
-        MAVEN_DEPLOY_TARGET_ID = 'apache-snapshots-repository'
-
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
     }
 
