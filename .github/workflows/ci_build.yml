@@ -13,6 +13,7 @@ concurrency:
 
 env:
   TMPDIR: "/tmp"
+  BUILD_ENV__accessErrorsLogFileAbsolutePath: "/tmp/build-env-access-errors.log"
 
 jobs:
   run:
@@ -149,6 +150,14 @@ jobs:
 
             const script = require("./scripts/check-junit-report-results/src/index.js");
             await script({ core, glob, patterns });
+
+      - name: "Check build-env access errors log"
+        if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
+        shell: bash
+        run: |
+          touch "$BUILD_ENV__accessErrorsLogFileAbsolutePath"
+          cat "$BUILD_ENV__accessErrorsLogFileAbsolutePath"
+          [ "0" == "$(cat "$BUILD_ENV__accessErrorsLogFileAbsolutePath" | wc -l | tr -d ' ')" ]
 
       - name: "Check hanging uncommitted files (you should commit those!)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
