@@ -91,16 +91,16 @@ export function ShapeOptions({
   }, [boundHeight, nodeIds]);
 
   const fillColor = useMemo(() => {
-    const b = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_blue"] ?? DEFAULT_FILL_COLOR["@_red"]).toString(16);
+    const b = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_blue"] ?? DEFAULT_FILL_COLOR["@_blue"]).toString(16);
     const g = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_green"] ?? DEFAULT_FILL_COLOR["@_green"]).toString(16);
-    const r = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_red"] ?? DEFAULT_FILL_COLOR["@_blue"]).toString(16);
+    const r = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_red"] ?? DEFAULT_FILL_COLOR["@_red"]).toString(16);
     return `#${r.length === 1 ? "0" + r : r}${g.length === 1 ? "0" + g : g}${b.length === 1 ? "0" + b : b}`;
   }, [shapeStyles]);
 
   const strokeColor = useMemo(() => {
-    const b = (shapeStyles[0]?.["dmndi:StrokeColor"]?.["@_blue"] ?? DEFAULT_STROKE_COLOR["@_red"]).toString(16);
+    const b = (shapeStyles[0]?.["dmndi:StrokeColor"]?.["@_blue"] ?? DEFAULT_STROKE_COLOR["@_blue"]).toString(16);
     const g = (shapeStyles[0]?.["dmndi:StrokeColor"]?.["@_green"] ?? DEFAULT_STROKE_COLOR["@_green"]).toString(16);
-    const r = (shapeStyles[0]?.["dmndi:StrokeColor"]?.["@_red"] ?? DEFAULT_STROKE_COLOR["@_blue"]).toString(16);
+    const r = (shapeStyles[0]?.["dmndi:StrokeColor"]?.["@_red"] ?? DEFAULT_STROKE_COLOR["@_red"]).toString(16);
     return `#${r.length === 1 ? "0" + r : r}${g.length === 1 ? "0" + g : g}${b.length === 1 ? "0" + b : b}`;
   }, [shapeStyles]);
 
@@ -320,7 +320,7 @@ export function ShapeOptions({
 
         shape["dc:Bounds"] ??= {
           "@_width": minNodeSize["@_width"],
-          "@_height": minNodeSize["@_width"],
+          "@_height": minNodeSize["@_height"],
           "@_x": 0,
           "@_y": 0,
         };

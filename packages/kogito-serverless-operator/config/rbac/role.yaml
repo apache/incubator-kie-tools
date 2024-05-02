@@ -1,0 +1,111 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowbuilds
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowbuilds/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowbuilds/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowclusterplatforms
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowclusterplatforms/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowclusterplatforms/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowplatforms
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowplatforms/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowplatforms/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflows
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflows/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflows/status
+    verbs:
+      - get
+      - patch
+      - update

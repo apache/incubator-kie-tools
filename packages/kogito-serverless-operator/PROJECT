@@ -1,0 +1,45 @@
+domain: org
+layout:
+- go.kubebuilder.io/v3
+plugins:
+  manifests.sdk.operatorframework.io/v2: {}
+  scorecard.sdk.operatorframework.io/v2: {}
+projectName: sonataflow-operator
+repo: github.com/apache/incubator-kie-tools/packages/kogito-serverless-operator
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: org
+  group: sonataflow
+  kind: SonataFlow
+  path: github.com/apache/incubator-kie-tools/packages/kogito-serverless-operator/api/v1alpha08
+  version: v1alpha08
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: org
+  group: sonataflow
+  kind: SonataFlowBuild
+  path: github.com/apache/incubator-kie-tools/packages/kogito-serverless-operator/api/v1alpha08
+  version: v1alpha08
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: org
+  group: sonataflow
+  kind: SonataFlowPlatform
+  path: github.com/apache/incubator-kie-tools/packages/kogito-serverless-operator/api/v1alpha08
+  version: v1alpha08
+- api:
+    crdVersion: v1
+  controller: true
+  domain: org
+  group: sonataflow
+  kind: SonataFlowClusterPlatform
+  path: github.com/apache/incubator-kie-tools/packages/kogito-serverless-operator/api/v1alpha08
+  version: v1alpha08
+version: "3"

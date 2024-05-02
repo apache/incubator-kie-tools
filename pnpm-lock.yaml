@@ -5999,6 +5999,12 @@ importers:
 
   packages/kn-plugin-workflow:
     devDependencies:
+      "@kie-tools/kogito-serverless-operator":
+        specifier: workspace:*
+        version: link:../kogito-serverless-operator
+      "@kie-tools/kogito-swf-devmode":
+        specifier: workspace:*
+        version: link:../kogito-swf-devmode
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -6035,6 +6041,30 @@ importers:
       ts-json-schema-generator:
         specifier: ^1.1.2
         version: 1.1.2
+
+  packages/kogito-serverless-operator:
+    devDependencies:
+      "@kie-tools/kogito-swf-builder":
+        specifier: workspace:*
+        version: link:../kogito-swf-builder
+      "@kie-tools/kogito-swf-devmode":
+        specifier: workspace:*
+        version: link:../kogito-swf-devmode
+      "@kie-tools/python-venv":
+        specifier: workspace:*
+        version: link:../python-venv
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      replace-in-file:
+        specifier: ^7.1.0
+        version: 7.1.0
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
 
   packages/kogito-swf-builder:
     devDependencies:
@@ -6077,6 +6107,9 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+      "@kie-tools/sonataflow-quarkus-devui":
+        specifier: workspace:*
+        version: link:../sonataflow-quarkus-devui
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -9632,6 +9665,9 @@ importers:
 
   packages/serverless-logic-web-tools-swf-builder-image:
     devDependencies:
+      "@kie-tools/kogito-swf-builder":
+        specifier: workspace:*
+        version: link:../kogito-swf-builder
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -48670,6 +48706,17 @@ packages:
     resolution:
       { integrity: sha512-PV0dzCYDNfRi1jCDbJzpW7jNNDRuCOG/jI5ctQcGKt/clZD+YcPS3yIlWuTJMmESC8aevCFmWJy5wjAFgNqN6w== }
     engines: { node: ">=0.10" }
+    dev: true
+
+  /replace-in-file@7.1.0:
+    resolution:
+      { integrity: sha512-1uZmJ78WtqNYCSuPC9IWbweXkGxPOtk2rKuar8diTw7naVIQZiE3Tm8ACx2PCMXDtVH6N+XxwaRY2qZ2xHPqXw== }
+    engines: { node: ">=10" }
+    hasBin: true
+    dependencies:
+      chalk: 4.1.2
+      glob: 8.1.0
+      yargs: 17.7.2
     dev: true
 
   /replace-string@3.1.0:

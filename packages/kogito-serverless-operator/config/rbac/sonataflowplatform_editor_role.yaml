@@ -1,0 +1,24 @@
+# permissions for end users to edit sonataflowplatforms.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: sonataflowplatform-editor-role
+rules:
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowplatforms
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowplatforms/status
+    verbs:
+      - get

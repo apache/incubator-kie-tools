@@ -1,0 +1,40 @@
+- name: operator-builder
+  version: 0.0.0
+  from: "golang:1.21.6"
+  description: Builder Image for the Operator
+
+  args:
+    - name: SOURCE_DATE_EPOCH
+      value:
+
+  modules:
+    repositories:
+      - path: modules
+    install:
+      - name: org.apache.kie.sonataflow.goModDownload
+      - name: org.apache.kie.sonataflow.operatorBuilder
+
+- name: sonataflow-operator
+  version: 0.0.0
+  from: "registry.access.redhat.com/ubi9/ubi-micro:9.3-9"
+  description: Runtime Image for the Operator
+
+  args:
+    - name: SOURCE_DATE_EPOCH
+      value:
+
+  labels:
+    - name: maintainer
+      value: dev@kie.apache.org
+
+  artifacts:
+    - path: /workspace/manager
+      image: operator-builder
+      dest: /usr/local/bin
+      name: manager
+
+  run:
+    workdir: /usr/local/bin
+    user: "65532:65532"
+    entrypoint:
+      - manager

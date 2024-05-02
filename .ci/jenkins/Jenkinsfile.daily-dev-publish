@@ -132,6 +132,11 @@ pipeline {
         KOGITO_SWF_DEVMODE_IMAGE__name = 'kogito-swf-devmode-nightly'
         KOGITO_SWF_DEVMODE_IMAGE__buildTag = 'latest'
 
+        KOGITO_SERVERLESS_OPERATOR__registry = 'quay.io'
+        KOGITO_SERVERLESS_OPERATOR__account = 'kiegroup'
+        KOGITO_SERVERLESS_OPERATOR__name = 'kogito-serverless-operator-nightly'
+        KOGITO_SERVERLESS_OPERATOR__buildTag = 'latest'
+
         BUILD_DATE = sh(script: "echo `date +'%Y-%m-%d %T'`", returnStdout: true).trim()
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
@@ -245,6 +250,19 @@ pipeline {
                         "${env.KOGITO_SWF_DEVMODE_IMAGE__registry}/${env.KOGITO_SWF_DEVMODE_IMAGE__account}",
                         "${env.KOGITO_SWF_DEVMODE_IMAGE__name}",
                         "${env.KOGITO_SWF_DEVMODE_IMAGE__buildTag}",
+                        "${pipelineVars.quayKiegroupPushCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Push kogito-serverless-operator to quay.io') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.KOGITO_SERVERLESS_OPERATOR__registry}/${env.KOGITO_SERVERLESS_OPERATOR__account}",
+                        "${env.KOGITO_SERVERLESS_OPERATOR__name}",
+                        "${env.KOGITO_SERVERLESS_OPERATOR__buildTag}",
                         "${pipelineVars.quayKiegroupPushCredentialsId}"
                     )
                 }
@@ -517,7 +535,6 @@ pipeline {
     post {
         always {
             archiveArtifacts artifacts: "kie-tools/packages/serverless-workflow-vscode-extension/dist/serverless_workflow_vscode_extension_${env.VERSION}.vsix, kie-tools/packages/vscode-extension-dashbuilder-editor/dist/vscode_extension_dashbuilder_editor_${env.VERSION}.vsix, kie-tools/packages/kie-editors-dev-vscode-extension/dist/kie_editors_dev_vscode_extension_${env.VERSION}.vsix, kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${env.VERSION}.zip, kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${env.VERSION}.zip"
-
             cleanWs(deleteDirs: true, disableDeferredWipeout: true)
         }
     }

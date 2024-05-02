@@ -1,0 +1,8 @@
+apiVersion: sonataflow.org/v1alpha08
+kind: SonataFlowClusterPlatform
+metadata:
+  name: sonataflow-clusterplatform
+spec:
+  platformRef:
+    name: sonataflow-platform
+    namespace: sonataflow-operator-system

@@ -462,15 +462,17 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     }
   }, [editorEnvelopeCtx, isCombinedEditorReady]);
 
+  const themeStyle = getThemeStyle(theme!);
+
   return (
-    <div style={{ height: "100%" }}>
-      <LoadingScreen loading={!isCombinedEditorReady} />
+    <div style={{ height: "100%", background: themeStyle.backgroundColor }}>
+      <LoadingScreen loading={!isCombinedEditorReady} styleTag={themeStyle.loadScreen} />
       {previewOptions?.editorMode === "diagram" ? (
         renderDiagramEditor()
       ) : previewOptions?.editorMode === "text" ? (
         renderTextEditor()
       ) : (
-        <Drawer isExpanded={true} isInline={true} className={getThemeStyle(theme!)}>
+        <Drawer isExpanded={true} isInline={true} className={themeStyle.drawer}>
           <DrawerContent
             panelContent={
               <DrawerPanelContent isResizable={true} defaultSize={previewOptions?.defaultWidth ?? "50%"}>
@@ -486,13 +488,27 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   );
 };
 
-function getThemeStyle(theme: EditorTheme) {
+interface ThemeStyleTag {
+  drawer: string;
+  loadScreen: string;
+  backgroundColor: string;
+}
+
+function getThemeStyle(theme: EditorTheme): ThemeStyleTag {
   switch (theme) {
     case EditorTheme.DARK: {
-      return "dark";
+      return {
+        drawer: "dark",
+        loadScreen: "vscode-dark",
+        backgroundColor: "black",
+      };
     }
     default: {
-      return "";
+      return {
+        drawer: "",
+        loadScreen: "",
+        backgroundColor: "",
+      };
     }
   }
 }

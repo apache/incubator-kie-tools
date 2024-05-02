@@ -18,10 +18,9 @@
  */
 
 import * as path from "path";
-import * as url from "url";
 import * as fs from "fs";
 import { markdownTable } from "markdown-table";
-import { treatVarToPrint } from "@kie-tools-scripts/build-env";
+import { treatVarToPrint, requireEnv } from "@kie-tools-scripts/build-env/dist/lib.js";
 import { pnpmFilter } from "./pnpm_filter.js";
 
 let pnpmFilterString;
@@ -50,21 +49,16 @@ async function main() {
   }
 
   // NOTE: This is not recursive as build-env
-  const pkgPathsWithEnvDir = Object.keys(await pnpmFilter(pnpmFilterString, { alwaysIncludeRoot: false })).filter(
+  const pkgDirsWithEnvDir = Object.keys(await pnpmFilter(pnpmFilterString, { alwaysIncludeRoot: false })).filter(
     (pkgPath) => fs.existsSync(path.resolve(pkgPath, "env"))
   );
 
   const pkgs = await Promise.all(
-    pkgPathsWithEnvDir.map(async (pkgPath) => {
-      const envPathJS = path.resolve(path.join(pkgPath, "env", "index.js"));
-      const envPathCJS = path.resolve(path.join(pkgPath, "env", "index.cjs"));
-      const envPathJSExist = fs.existsSync(envPathJS);
-      const envPath = envPathJSExist ? envPathJS : envPathCJS;
-
+    pkgDirsWithEnvDir.map(async (pkgDir) => {
       return {
-        env: (await import(url.pathToFileURL(envPath))).default,
-        manifest: JSON.parse(fs.readFileSync(path.resolve(pkgPath, "package.json"), "utf-8")),
-        dir: pkgPath,
+        env: await requireEnv(pkgDir),
+        manifest: JSON.parse(fs.readFileSync(path.resolve(pkgDir, "package.json"), "utf-8")),
+        dir: pkgDir,
       };
     })
   );

@@ -1,0 +1,14 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: kogito-serverless-operator-webhook-event-listener-route
+  namespace: sonataflow-operator-system
+spec:
+  host: ""
+  port:
+    targetPort: 8080
+  to:
+    kind: Service
+    name: el-kogito-serverless-operator-webhook
+    weight: 100
+  wildcardPolicy: None

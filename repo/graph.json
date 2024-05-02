@@ -137,12 +137,15 @@
       { "id": "@kie-tools-core/kubernetes-bridge" },
       { "id": "@kie-tools/unitables-dmn" },
       { "id": "@kie-tools/kn-plugin-workflow" },
+      { "id": "@kie-tools/kogito-serverless-operator" },
+      { "id": "@kie-tools/kogito-swf-builder" },
+      { "id": "@kie-tools/kogito-swf-devmode" },
       { "id": "@kie-tools/kogito-management-console" },
       { "id": "@kie-tools/runtime-tools-management-console-webapp" },
-      { "id": "@kie-tools/kogito-swf-builder" },
       { "id": "@kie-tools/kogito-swf-common" },
+      { "id": "@kie-tools/sonataflow-quarkus-devui" },
       { "id": "@kie-tools/python-venv" },
-      { "id": "@kie-tools/kogito-swf-devmode" },
+      { "id": "@kie-tools/serverless-workflow-dev-ui-webapp" },
       { "id": "@kie-tools/kogito-task-console" },
       { "id": "@kie-tools/runtime-tools-task-console-webapp" },
       { "id": "@kie-tools/unitables" },
@@ -861,7 +864,12 @@
       { "source": "@kie-tools/kie-sandbox-helm-chart", "target": "@kie-tools/kie-sandbox-image", "weight": 1 },
       { "source": "@kie-tools-core/kubernetes-bridge", "target": "@kie-tools/cors-proxy-api", "weight": 1 },
       { "source": "@kie-tools/unitables-dmn", "target": "@kie-tools/unitables", "weight": 1 },
-      { "source": "@kie-tools/kn-plugin-workflow", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/kn-plugin-workflow", "target": "@kie-tools/kogito-serverless-operator", "weight": 1 },
+      { "source": "@kie-tools/kogito-serverless-operator", "target": "@kie-tools/kogito-swf-builder", "weight": 1 },
+      { "source": "@kie-tools/kogito-serverless-operator", "target": "@kie-tools/kogito-swf-devmode", "weight": 1 },
+      { "source": "@kie-tools/kogito-swf-builder", "target": "@kie-tools/kogito-swf-common", "weight": 1 },
+      { "source": "@kie-tools/kogito-swf-devmode", "target": "@kie-tools/kogito-swf-common", "weight": 1 },
+      { "source": "@kie-tools/kogito-swf-devmode", "target": "@kie-tools/sonataflow-quarkus-devui", "weight": 1 },
       { "source": "@kie-tools/kogito-management-console", "target": "@kie-tools/image-builder", "weight": 1 },
       { "source": "@kie-tools/kogito-management-console", "target": "@kie-tools/image-env-to-json", "weight": 1 },
       {
@@ -879,10 +887,28 @@
         "target": "@kie-tools/runtime-tools-shared-webapp-components",
         "weight": 1
       },
-      { "source": "@kie-tools/kogito-swf-builder", "target": "@kie-tools/kogito-swf-common", "weight": 1 },
       { "source": "@kie-tools/kogito-swf-common", "target": "@kie-tools/python-venv", "weight": 1 },
       { "source": "@kie-tools/kogito-swf-common", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools/kogito-swf-devmode", "target": "@kie-tools/kogito-swf-common", "weight": 1 },
+      {
+        "source": "@kie-tools/sonataflow-quarkus-devui",
+        "target": "@kie-tools/serverless-workflow-dev-ui-webapp",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-swf-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-dev-ui-webapp",
+        "target": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp",
+        "weight": 1
+      },
       { "source": "@kie-tools/kogito-task-console", "target": "@kie-tools/image-builder", "weight": 1 },
       { "source": "@kie-tools/kogito-task-console", "target": "@kie-tools/image-env-to-json", "weight": 1 },
       {
@@ -1055,6 +1081,11 @@
       {
         "source": "@kie-tools/serverless-logic-web-tools-base-builder-image",
         "target": "@kie-tools/serverless-logic-web-tools-base-builder-image-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-logic-web-tools-swf-builder-image",
+        "target": "@kie-tools/kogito-swf-builder",
         "weight": 1
       },
       {
@@ -1272,6 +1303,7 @@
     ["@kie-tools/kie-sandbox-image", "packages/kie-sandbox-image"],
     ["@kie-tools/kn-plugin-workflow", "packages/kn-plugin-workflow"],
     ["@kie-tools/kogito-management-console", "packages/kogito-management-console"],
+    ["@kie-tools/kogito-serverless-operator", "packages/kogito-serverless-operator"],
     ["@kie-tools/kogito-swf-builder", "packages/kogito-swf-builder"],
     ["@kie-tools/kogito-swf-common", "packages/kogito-swf-common"],
     ["@kie-tools/kogito-swf-devmode", "packages/kogito-swf-devmode"],

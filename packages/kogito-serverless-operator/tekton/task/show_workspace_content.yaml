@@ -1,0 +1,23 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: show-workspace
+spec:
+  params:
+    - default: /workspace/source
+      description: The directory in source that contains yaml manifests
+      name: source
+      type: string
+  steps:
+    - args:
+        - "-c"
+        - |
+          set -ex
+          find /workspace
+      command:
+        - /bin/sh
+      image: alpine
+      name: dump-directory
+      resources: {}
+  workspaces:
+    - name: source
