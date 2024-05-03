@@ -25,6 +25,10 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "http://localhost:4000/graphql",
       description: "URL for the Data Index service",
     },
+    SONATAFLOW_MANAGEMENT_CONSOLE_WEBAPP__sonataflowOpenApiBaseUrl: {
+      default: "http://localhost:4000",
+      description: "Base URL for the OpenAPI",
+    },
     SONATAFLOW_MANAGEMENT_CONSOLE_WEBAPP__sonataflowEnvMode: {
       default: "DEV",
       description: "DEV or PROD. PROD enables Keycloak integration",
@@ -42,6 +46,9 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     return {
       sonataflowManagementConsoleWebapp: {
         sonataflowDataIndexUrl: getOrDefault(this.vars.SONATAFLOW_MANAGEMENT_CONSOLE_WEBAPP__sonataflowDataIndexUrl),
+        sonataflowOpenApiBaseUrl: getOrDefault(
+          this.vars.SONATAFLOW_MANAGEMENT_CONSOLE_WEBAPP__sonataflowOpenApiBaseUrl
+        ),
         sonataflowEnvMode: getOrDefault(this.vars.SONATAFLOW_MANAGEMENT_CONSOLE_WEBAPP__sonataflowEnvMode),
         host: getOrDefault(this.vars.SONATAFLOW_MANAGEMENT_CONSOLE_WEBAPP__host),
         port: getOrDefault(this.vars.SONATAFLOW_MANAGEMENT_CONSOLE_WEBAPP__port),

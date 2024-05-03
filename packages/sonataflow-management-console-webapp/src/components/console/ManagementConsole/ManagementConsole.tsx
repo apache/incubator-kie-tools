@@ -28,6 +28,7 @@ import {
   UserContext,
 } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
 import { PageLayout } from "@kie-tools/runtime-tools-components/dist/components/PageLayout";
+import { WorkflowDefinitionListContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionList";
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
@@ -58,11 +59,13 @@ const ManagementConsole: React.FC<IOwnProps> = ({ apolloClient, userContext, chi
   return (
     <ApolloProvider client={apolloClient}>
       <KogitoAppContextProvider userContext={userContext}>
-        <Router>
-          <Switch>
-            <Route path="/" render={renderPage} />
-          </Switch>
-        </Router>
+        <WorkflowDefinitionListContextProvider kogitoServiceUrl={window["SONATAFLOW_OPENAPIBASE_URL"]}>
+          <Router>
+            <Switch>
+              <Route path="/" render={renderPage} />
+            </Switch>
+          </Router>
+        </WorkflowDefinitionListContextProvider>
       </KogitoAppContextProvider>
     </ApolloProvider>
   );

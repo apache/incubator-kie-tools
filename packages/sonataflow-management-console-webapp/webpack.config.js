@@ -19,6 +19,7 @@
 
 const path = require("path");
 const { merge } = require("webpack-merge");
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
@@ -71,6 +72,9 @@ module.exports = async (env) => {
             transform: () => JSON.stringify(defaultEnvJson, null, 2),
           },
         ],
+      }),
+      new NodePolyfillPlugin({
+        includeAliases: ["process", "Buffer"],
       }),
     ],
     module: {
