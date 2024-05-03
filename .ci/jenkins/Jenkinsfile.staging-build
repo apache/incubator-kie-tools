@@ -127,6 +127,11 @@ pipeline {
         KOGITO_SWF_DEVMODE_IMAGE__name = 'kogito-swf-devmode'
         KOGITO_SWF_DEVMODE_IMAGE__buildTag = "${params.RELEASE_VERSION}-staging"
 
+        KOGITO_SERVERLESS_OPERATOR__registry = 'quay.io'
+        KOGITO_SERVERLESS_OPERATOR__account = 'kiegroup'
+        KOGITO_SERVERLESS_OPERATOR__name = 'kogito-serverless-operator'
+        KOGITO_SERVERLESS_OPERATOR__buildTag = "${params.RELEASE_VERSION}-staging"
+
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
     }
 

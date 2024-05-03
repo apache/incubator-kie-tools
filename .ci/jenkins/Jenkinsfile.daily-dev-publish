@@ -539,10 +539,10 @@ pipeline {
                             configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
                                 sh """#!/bin/bash -el
                                 export KIE_TOOLS_BUILD__mavenDeploySkip=false
-                                pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -s ${MAVEN_SETTINGS_FILE} >> .mvn/maven.config'
+                                pnpm update-version-to 0.0.0-SNAPSHOT --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui....
+                                pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
                                 pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Dapache.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
                                 pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Dapache.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
-                                pnpm update-version-to 0.0.0-SNAPSHOT --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui....
                                 pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... build:prod
                                 """.trim()
                             }
