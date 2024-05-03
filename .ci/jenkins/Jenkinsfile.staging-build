@@ -125,10 +125,7 @@ pipeline {
         KOGITO_SWF_DEVMODE_IMAGE__registry = 'quay.io'
         KOGITO_SWF_DEVMODE_IMAGE__account = 'kiegroup'
         KOGITO_SWF_DEVMODE_IMAGE__name = 'kogito-swf-devmode'
-        KOGITO_SWF_DEVMODE_IMAGE__buildTag = "${params.TAG}-prerelease"
-        
-        JBPM_QUARKUS_DEVUI_EXTENSION__version = "${params.TAG}-SNAPSHOT"
-        SONATAFLOW_QUARKUS_DEVUI_EXTENSION__version = "${params.TAG}-SNAPSHOT"
+        KOGITO_SWF_DEVMODE_IMAGE__buildTag = "${params.RELEASE_VERSION}-staging"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
     }
@@ -646,6 +643,17 @@ pipeline {
             steps {
                 script {
                     pushKogitoSwfDevModeToQuay()
+                }
+            }
+        }
+
+        stage('STAGING: Push kogito-serverless-operator to quay.io') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    pushKogitoServerlessOperatorToQuay()
                 }
             }
         }

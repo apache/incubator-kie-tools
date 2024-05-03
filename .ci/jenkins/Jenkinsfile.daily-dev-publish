@@ -132,17 +132,11 @@ pipeline {
         KOGITO_SWF_DEVMODE_IMAGE__name = 'kogito-swf-devmode-nightly'
         KOGITO_SWF_DEVMODE_IMAGE__buildTag = 'latest'
 
-<<<<<<< HEAD
-        MAVEN_DEPLOY_REPOSITORY = 'https://repository.apache.org/content/repositories/snapshots'
-        MAVEN_DEPLOY_TARGET_ID = 'apache-snapshots-repository'
-
         KOGITO_SERVERLESS_OPERATOR__registry = 'quay.io'
         KOGITO_SERVERLESS_OPERATOR__account = 'kiegroup'
         KOGITO_SERVERLESS_OPERATOR__name = 'kogito-serverless-operator-nightly'
         KOGITO_SERVERLESS_OPERATOR__buildTag = 'latest'
 
-=======
->>>>>>> 5027b12472 (Using the unified approach to upload java artifacts)
         BUILD_DATE = sh(script: "echo `date +'%Y-%m-%d %T'`", returnStdout: true).trim()
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
