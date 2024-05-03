@@ -169,6 +169,8 @@ jobs:
       - name: "Upload reports and artifacts"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
         uses: ./.github/actions/upload-ci-reports-and-artifacts
+        with:
+          partition_index: ${{ matrix.partition }}
 
       - name: "Upload end-to-end tests results to Buildkite (`main` only)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none' && !github.event.pull_request

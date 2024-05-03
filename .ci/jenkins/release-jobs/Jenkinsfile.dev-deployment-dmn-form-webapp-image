@@ -28,7 +28,7 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
     }
 
@@ -41,7 +41,7 @@ pipeline {
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry = 'quay.io'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account = 'kie-tools'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name = 'dev-deployment-dmn-form-webapp-image'
-        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags = "latest ${params.TAG}"
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags = "latest ${params.RELEASE_VERSION}"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 

@@ -28,7 +28,7 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
     }
 
@@ -41,7 +41,7 @@ pipeline {
         KOGITO_MANAGEMENT_CONSOLE__registry = 'quay.io'
         KOGITO_MANAGEMENT_CONSOLE__account = 'kie-tools'
         KOGITO_MANAGEMENT_CONSOLE__name = 'kogito-management-console'
-        KOGITO_MANAGEMENT_CONSOLE__buildTags = "latest ${params.TAG}"
+        KOGITO_MANAGEMENT_CONSOLE__buildTags = "latest ${params.RELEASE_VERSION}"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 

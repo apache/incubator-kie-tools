@@ -28,7 +28,7 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
         string(description: 'Kie Sandbox Extendend Services Url', name: 'KIE_SANDBOX_EXTENDED_SERVICES_URL')
         string(description: 'Kie Sandbox Cors Proxy Url', name: 'KIE_SANDBOX_CORS_PROXY_URL')
@@ -47,20 +47,20 @@ pipeline {
         KIE_SANDBOX__imageRegistry = 'quay.io'
         KIE_SANDBOX__imageAccount = 'kie-tools'
         KIE_SANDBOX__imageName = 'kie-sandbox-image'
-        KIE_SANDBOX__imageBuildTags = "latest ${params.TAG}"
-        ONLINE_EDITOR__buildInfo = "${params.TAG}"
-        ONLINE_EDITOR__extendedServicesDownloadUrlLinux = "https://github.com/apache/incubator-kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_linux_${params.TAG}.tar.gz"
-        ONLINE_EDITOR__extendedServicesDownloadUrlMacOs = "https://github.com/apache/incubator-kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_macos_${params.TAG}.dmg"
-        ONLINE_EDITOR__extendedServicesDownloadUrlWindows = "https://github.com/apache/incubator-kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_windows_${params.TAG}.exe"
-        ONLINE_EDITOR__extendedServicesCompatibleVersion = "${params.TAG}"
+        KIE_SANDBOX__imageBuildTags = "latest ${params.RELEASE_VERSION}"
+        ONLINE_EDITOR__buildInfo = "${params.RELEASE_VERSION}"
+        ONLINE_EDITOR__extendedServicesDownloadUrlLinux = "https://github.com/apache/incubator-kie-tools/releases/download/${params.RELEASE_VERSION}/kie_sandbox_extended_services_linux_${params.RELEASE_VERSION}.tar.gz"
+        ONLINE_EDITOR__extendedServicesDownloadUrlMacOs = "https://github.com/apache/incubator-kie-tools/releases/download/${params.RELEASE_VERSION}/kie_sandbox_extended_services_macos_${params.RELEASE_VERSION}.dmg"
+        ONLINE_EDITOR__extendedServicesDownloadUrlWindows = "https://github.com/apache/incubator-kie-tools/releases/download/${params.RELEASE_VERSION}/kie_sandbox_extended_services_windows_${params.RELEASE_VERSION}.exe"
+        ONLINE_EDITOR__extendedServicesCompatibleVersion = "${params.RELEASE_VERSION}"
         ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'quay.io'
         ONLINE_EDITOR__devDeploymentBaseImageAccount = 'kie-tools'
         ONLINE_EDITOR__devDeploymentBaseImageName = 'dev-deployment-base-image'
-        ONLINE_EDITOR__devDeploymentBaseImageTag = "${params.TAG}"
+        ONLINE_EDITOR__devDeploymentBaseImageTag = "${params.RELEASE_VERSION}"
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry = 'quay.io'
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'kie-tools'
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'dev-deployment-dmn-form-webapp-image'
-        ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = "${params.TAG}"
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = "${params.RELEASE_VERSION}"
         ONLINE_EDITOR__gtmId = 'GTM-PQGMKNW'
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
@@ -176,8 +176,8 @@ pipeline {
                     openShiftUtils.createOrUpdateApp(
                         "${env.OPENSHIFT_NAMESPACE}",
                         "${env.OPENSHIFT_APP_NAME}",
-                        "${params.TAG}",
-                        "${env.KIE_SANDBOX__imageRegistry}/${env.KIE_SANDBOX__imageAccount}/${env.KIE_SANDBOX__imageName}:${params.TAG}",
+                        "${params.RELEASE_VERSION}",
+                        "${env.KIE_SANDBOX__imageRegistry}/${env.KIE_SANDBOX__imageAccount}/${env.KIE_SANDBOX__imageName}:${params.RELEASE_VERSION}",
                         "${env.OPENSHIFT_PART_OF}",
                         'js',
                         "${pipelineVars.openshiftCredentialsId}",

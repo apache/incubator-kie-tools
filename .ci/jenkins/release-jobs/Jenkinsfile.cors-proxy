@@ -28,7 +28,7 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
     }
 
@@ -45,7 +45,7 @@ pipeline {
         CORS_PROXY_IMAGE__imageRegistry = 'quay.io'
         CORS_PROXY_IMAGE__imageAccount = 'kie-tools'
         CORS_PROXY_IMAGE__imageName = 'cors-proxy-image'
-        CORS_PROXY_IMAGE__imageBuildTags = "latest ${params.TAG}"
+        CORS_PROXY_IMAGE__imageBuildTags = "latest ${params.RELEASE_VERSION}"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
@@ -148,8 +148,8 @@ pipeline {
                     openShiftUtils.createOrUpdateApp(
                         "${env.OPENSHIFT_NAMESPACE}",
                         "${env.OPENSHIFT_APP_NAME}",
-                        "${params.TAG}",
-                        "${env.CORS_PROXY_IMAGE__imageRegistry}/${env.CORS_PROXY_IMAGE__imageAccount}/${env.CORS_PROXY_IMAGE__imageName}:${params.TAG}",
+                        "${params.RELEASE_VERSION}",
+                        "${env.CORS_PROXY_IMAGE__imageRegistry}/${env.CORS_PROXY_IMAGE__imageAccount}/${env.CORS_PROXY_IMAGE__imageName}:${params.RELEASE_VERSION}",
                         "${env.OPENSHIFT_PART_OF}",
                         'nodejs',
                         "${pipelineVars.openshiftCredentialsId}"

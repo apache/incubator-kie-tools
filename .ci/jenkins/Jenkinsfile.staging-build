@@ -33,7 +33,7 @@ pipeline {
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
         string(description: 'Base Ref', name: 'BASE_REF')
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Commit SHA', name: 'COMMIT_SHA', defaultValue: 'main')
         string(description: 'Download asset url', name: 'DOWNLOAD_ASSET_URL', defaultValue: '')
         string(description: 'Upload asset url', name: 'UPLOAD_ASSET_URL', defaultValue: '')
@@ -46,86 +46,91 @@ pipeline {
         DEV_DEPLOYMENT_BASE_IMAGE__registry = 'quay.io'
         DEV_DEPLOYMENT_BASE_IMAGE__account = 'kie-tools'
         DEV_DEPLOYMENT_BASE_IMAGE__name = 'dev-deployment-base-image'
-        DEV_DEPLOYMENT_BASE_IMAGE__buildTags = "${params.TAG}-prerelease"
+        DEV_DEPLOYMENT_BASE_IMAGE__buildTags = "${params.RELEASE_VERSION}-staging"
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry = 'quay.io'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account = 'kie-tools'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name = 'dev-deployment-dmn-form-webapp-image'
-        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags = "${params.TAG}-prerelease"
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags = "${params.RELEASE_VERSION}-staging"
         DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry = 'quay.io'
         DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account = 'kie-tools'
         DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name = 'dev-deployment-kogito-quarkus-blank-app-image'
-        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTags = "${params.TAG}-prerelease"
+        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTags = "${params.RELEASE_VERSION}-staging"
         ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'quay.io'
         ONLINE_EDITOR__devDeploymentBaseImageAccount = 'kie-tools'
         ONLINE_EDITOR__devDeploymentBaseImageName = 'dev-deployment-base-image'
-        ONLINE_EDITOR__devDeploymentBaseImageTag = "${params.TAG}-prerelease"
+        ONLINE_EDITOR__devDeploymentBaseImageTag = "${params.RELEASE_VERSION}-staging"
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry = 'quay.io'
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'kie-tools'
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'dev-deployment-dmn-form-webapp-image'
-        ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = "${params.TAG}-prerelease"
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = "${params.RELEASE_VERSION}-staging"
 
         KIE_SANDBOX__imageRegistry = 'quay.io'
         KIE_SANDBOX__imageAccount = 'kie-tools'
         KIE_SANDBOX__imageName = 'kie-sandbox-image'
-        KIE_SANDBOX__imageBuildTags = "${params.TAG}-prerelease"
+        KIE_SANDBOX__imageBuildTags = "${params.RELEASE_VERSION}-staging"
 
         KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry = 'quay.io'
         KIE_SANDBOX_EXTENDED_SERVICES__imageAccount = 'kie-tools'
         KIE_SANDBOX_EXTENDED_SERVICES__imageName = 'kie-sandbox-extended-services-image'
-        KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags = "${params.TAG}-prerelease"
+        KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags = "${params.RELEASE_VERSION}-staging"
 
         CORS_PROXY_IMAGE__imageRegistry = 'quay.io'
         CORS_PROXY_IMAGE__imageAccount = 'kie-tools'
         CORS_PROXY_IMAGE__imageName = 'cors-proxy-image'
-        CORS_PROXY_IMAGE__imageBuildTags = "${params.TAG}-prerelease"
+        CORS_PROXY_IMAGE__imageBuildTags = "${params.RELEASE_VERSION}-staging"
 
-        DEPLOY_TAG = "${params.TAG}-prerelease"
+        DEPLOY_TAG = "${params.RELEASE_VERSION}-staging"
 
         DASHBUILDER__viewerImageRegistry = 'quay.io'
         DASHBUILDER__viewerImageAccount = 'kie-tools'
         DASHBUILDER__viewerImageName = 'dashbuilder-viewer-image'
-        DASHBUILDER__viewerImageBuildTags = "${params.TAG}-prerelease"
-        SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag = "${params.TAG}-prerelease"
+        DASHBUILDER__viewerImageBuildTags = "${params.RELEASE_VERSION}-staging"
+        SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag = "${params.RELEASE_VERSION}-staging"
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry = 'quay.io'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount = 'kie-tools'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName = 'serverless-logic-web-tools-swf-builder-image'
-        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag = "${params.TAG}-prerelease"
-        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags = "${params.TAG}-prerelease"
+        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag = "${params.RELEASE_VERSION}-staging"
+        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags = "${params.RELEASE_VERSION}-staging"
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry = 'quay.io'
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount = 'kie-tools'
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName = 'serverless-logic-web-tools-base-builder-image'
-        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageTag = "${params.TAG}-prerelease"
-        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags = "${params.TAG}-prerelease"
+        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageTag = "${params.RELEASE_VERSION}-staging"
+        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags = "${params.RELEASE_VERSION}-staging"
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry = 'quay.io'
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount = 'kie-tools'
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName = 'serverless-logic-web-tools-swf-dev-mode-image'
-        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag = "${params.TAG}-prerelease"
-        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags = "${params.TAG}-prerelease"
+        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag = "${params.RELEASE_VERSION}-staging"
+        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags = "${params.RELEASE_VERSION}-staging"
 
         KIE_SANDBOX_HELM_CHART__registry = 'quay.io'
         KIE_SANDBOX_HELM_CHART__account = 'kie-tools'
         KIE_SANDBOX_HELM_CHART__name = 'kie-sandbox-helm-chart'
-        KIE_SANDBOX_HELM_CHART__tag = "${params.TAG}-prerelease"
+        KIE_SANDBOX_HELM_CHART__tag = "${params.RELEASE_VERSION}-staging"
 
         KOGITO_TASK_CONSOLE__registry = 'quay.io'
         KOGITO_TASK_CONSOLE__account = 'kie-tools'
         KOGITO_TASK_CONSOLE__name = 'kogito-task-console'
-        KOGITO_TASK_CONSOLE__buildTags = "${params.TAG}-prerelease"
+        KOGITO_TASK_CONSOLE__buildTags = "${params.RELEASE_VERSION}-staging"
 
         KOGITO_MANAGEMENT_CONSOLE__registry = 'quay.io'
         KOGITO_MANAGEMENT_CONSOLE__account = 'kie-tools'
         KOGITO_MANAGEMENT_CONSOLE__name = 'kogito-management-console'
-        KOGITO_MANAGEMENT_CONSOLE__buildTags = "${params.TAG}-prerelease"
+        KOGITO_MANAGEMENT_CONSOLE__buildTags = "${params.RELEASE_VERSION}-staging"
 
         KOGITO_SWF_BUILDER_IMAGE__registry = 'quay.io'
         KOGITO_SWF_BUILDER_IMAGE__account = 'kiegroup'
         KOGITO_SWF_BUILDER_IMAGE__name = 'kogito-swf-builder'
-        KOGITO_SWF_BUILDER_IMAGE__buildTag = "${params.TAG}-prerelease"
+        KOGITO_SWF_BUILDER_IMAGE__buildTag = "${params.RELEASE_VERSION}-staging"
 
         KOGITO_SWF_DEVMODE_IMAGE__registry = 'quay.io'
         KOGITO_SWF_DEVMODE_IMAGE__account = 'kiegroup'
         KOGITO_SWF_DEVMODE_IMAGE__name = 'kogito-swf-devmode'
-        KOGITO_SWF_DEVMODE_IMAGE__buildTag = "${params.TAG}-prerelease"
+        KOGITO_SWF_DEVMODE_IMAGE__buildTag = "${params.RELEASE_VERSION}-staging"
+
+        KOGITO_SERVERLESS_OPERATOR__registry = 'quay.io'
+        KOGITO_SERVERLESS_OPERATOR__account = 'kiegroup'
+        KOGITO_SERVERLESS_OPERATOR__name = 'kogito-serverless-operator'
+        KOGITO_SERVERLESS_OPERATOR__buildTag = "${params.RELEASE_VERSION}-staging"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
     }
@@ -204,11 +209,11 @@ pipeline {
             }
         }
 
-        stage('Build (without some images)') {
+        stage('Build') {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildPartial()
+                        build()
                     }
                 }
             }
@@ -232,7 +237,7 @@ pipeline {
             steps {
                 dir('kogito-online-staging') {
                     script {
-                        deployOnlineEditor("${params.TAG}", "${pipelineVars.asfGithubPushCredentialsId}")
+                        deployOnlineEditor("${params.RELEASE_VERSION}", "${pipelineVars.asfGithubPushCredentialsId}")
                     }
                 }
             }
@@ -445,6 +450,17 @@ pipeline {
             }
         }
 
+        stage('STAGING: Upload Kogito Serverless Operator YAML file') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    uploadKogitoServerlessOperator()
+                }
+            }
+        }
+
         stage('STAGING: Push kie-sandbox-extended-services-image to quay.io') {
             when {
                 expression { !params.DRY_RUN }
@@ -523,16 +539,6 @@ pipeline {
             }
         }
 
-        stage('STAGING: Build (serverless-logic-web-tools-swf-dev-mode-image)') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildImage('serverless-logic-web-tools-swf-dev-mode-image')
-                    }
-                }
-            }
-        }
-
         stage('STAGING: Push serverless-logic-web-tools-swf-dev-mode-image to quay.io') {
             when {
                 expression { !params.DRY_RUN }
@@ -540,17 +546,6 @@ pipeline {
             steps {
                 script {
                     pushServerlessLogicWebToolsSWFDevModeImageToQuay()
-                }
-            }
-        }
-
-        stage('Build (dev-deployment-base-image and dev-deployment-kogito-quarkus-blank-app-image)') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildImage('dev-deployment-base-image')
-                        buildImage('dev-deployment-kogito-quarkus-blank-app-image')
-                    }
                 }
             }
         }
@@ -567,16 +562,6 @@ pipeline {
             }
         }
 
-        stage('STAGING: Build (dev-deployment-dmn-form-webapp-image)') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildImage('dev-deployment-dmn-form-webapp-image')
-                    }
-                }
-            }
-        }
-
         stage('STAGING: Push dev-deployment-dmn-form-webapp-image to quay.io') {
             when {
                 expression { !params.DRY_RUN }
@@ -588,16 +573,6 @@ pipeline {
             }
         }
 
-        stage('STAGING: Build (serverless-logic-web-tools-base-builder-image)') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildImage('serverless-logic-web-tools-base-builder-image')
-                    }
-                }
-            }
-        }
-
         stage('STAGING: Push serverless-logic-web-tools-base-builder-image to quay.io') {
             when {
                 expression { !params.DRY_RUN }
@@ -605,16 +580,6 @@ pipeline {
             steps {
                 script {
                     pushServerlessLogicWebToolsBaseBuilderImageToQuay()
-                }
-            }
-        }
-
-        stage('STAGING: Build (dashbuilder-viewer-image)') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildImage('dashbuilder-viewer-image')
-                    }
                 }
             }
         }
@@ -643,16 +608,6 @@ pipeline {
             }
         }
 
-        stage('STAGING: Build (kogito-task-console)') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildImage('kogito-task-console')
-                    }
-                }
-            }
-        }
-
         stage('STAGING: Push kogito-task-console to quay.io') {
             when {
                 expression { !params.DRY_RUN }
@@ -660,16 +615,6 @@ pipeline {
             steps {
                 script {
                     pushKogitoTaskConsoleToQuay()
-                }
-            }
-        }
-
-        stage('STAGING: Build (kogito-management-console)') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildImage('kogito-management-console')
-                    }
                 }
             }
         }
@@ -685,16 +630,6 @@ pipeline {
             }
         }
 
-        stage('STAGING: Build (kogito-swf-builder)') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildImage('kogito-swf-builder')
-                    }
-                }
-            }
-        }
-
         stage('STAGING: Push kogito-swf-builder to quay.io') {
             when {
                 expression { !params.DRY_RUN }
@@ -702,16 +637,6 @@ pipeline {
             steps {
                 script {
                     pushKogitoSwfBuilderToQuay()
-                }
-            }
-        }
-
-        stage('STAGING: Build (kogito-swf-devmode)') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildImage('kogito-swf-devmode')
-                    }
                 }
             }
         }
@@ -726,6 +651,17 @@ pipeline {
                 }
             }
         }
+
+        stage('STAGING: Push kogito-serverless-operator to quay.io') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    pushKogitoServerlessOperatorToQuay()
+                }
+            }
+        }
     }
 
     post {
@@ -735,7 +671,7 @@ pipeline {
     }
 }
 
-def buildPartial() {
+def build() {
     sh """#!/bin/bash -el
     export KIE_TOOLS_BUILD__runEndToEndTests=false
     export KIE_TOOLS_BUILD__runTests=false
@@ -744,34 +680,26 @@ def buildPartial() {
     export WEBPACK__minimize=true
     export WEBPACK__tsLoaderTranspileOnly=false
     export CHROME_EXTENSION__routerTargetOrigin=https://apache.github.io
-    export CHROME_EXTENSION__routerRelativePath=incubator-kie-kogito-online-staging/${params.TAG}-prerelease/chrome-extension
-    export CHROME_EXTENSION__onlineEditorUrl=https://apache.github.io/incubator-kie-kogito-online-staging/${params.TAG}-prerelease
+    export CHROME_EXTENSION__routerRelativePath=incubator-kie-kogito-online-staging/${params.RELEASE_VERSION}-staging/chrome-extension
+    export CHROME_EXTENSION__onlineEditorUrl=https://apache.github.io/incubator-kie-kogito-online-staging/${params.RELEASE_VERSION}-staging
     export CHROME_EXTENSION__manifestFile=manifest.prod.json
     export SWF_CHROME_EXTENSION__routerTargetOrigin=https://apache.github.io
-    export SWF_CHROME_EXTENSION__routerRelativePath=incubator-kie-kogito-online-staging/${params.TAG}-prerelease/swf-chrome-extension
+    export SWF_CHROME_EXTENSION__routerRelativePath=incubator-kie-kogito-online-staging/${params.RELEASE_VERSION}-staging/swf-chrome-extension
     export SWF_CHROME_EXTENSION__manifestFile=manifest.prod.json
-    export ONLINE_EDITOR__buildInfo="${params.TAG} (staging) @ ${params.COMMIT_SHA}"
-    export ONLINE_EDITOR__extendedServicesDownloadUrlLinux=${params.DOWNLOAD_ASSET_URL}/STAGING__kie_sandbox_extended_services_linux_${params.TAG}.tar.gz
-    export ONLINE_EDITOR__extendedServicesDownloadUrlMacOs=${params.DOWNLOAD_ASSET_URL}/STAGING__kie_sandbox_extended_services_macos_${params.TAG}.dmg
-    export ONLINE_EDITOR__extendedServicesDownloadUrlWindows=${params.DOWNLOAD_ASSET_URL}/STAGING__kie_sandbox_extended_services_windows_${params.TAG}.exe
-    export ONLINE_EDITOR__extendedServicesCompatibleVersion=${params.TAG}
+    export ONLINE_EDITOR__buildInfo="${params.RELEASE_VERSION} (staging) @ ${params.COMMIT_SHA}"
+    export ONLINE_EDITOR__extendedServicesDownloadUrlLinux=${params.DOWNLOAD_ASSET_URL}/STAGING__kie_sandbox_extended_services_linux_${params.RELEASE_VERSION}.tar.gz
+    export ONLINE_EDITOR__extendedServicesDownloadUrlMacOs=${params.DOWNLOAD_ASSET_URL}/STAGING__kie_sandbox_extended_services_macos_${params.RELEASE_VERSION}.dmg
+    export ONLINE_EDITOR__extendedServicesDownloadUrlWindows=${params.DOWNLOAD_ASSET_URL}/STAGING__kie_sandbox_extended_services_windows_${params.RELEASE_VERSION}.exe
+    export ONLINE_EDITOR__extendedServicesCompatibleVersion=${params.RELEASE_VERSION}
     export ONLINE_EDITOR__gtmId=""
     export ONLINE_EDITOR__corsProxyUrl=https://staging-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud
-    export EXTENDED_SERVICES__kieSandboxUrl=https://apache.github.io/incubator-kie-kogito-online-staging/${params.TAG}-prerelease
-    export SERVERLESS_LOGIC_WEB_TOOLS__version=${params.TAG}-prerelease
-    export SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef=${params.TAG}
-    export SERVERLESS_LOGIC_WEB_TOOLS__buildInfo="${params.TAG} (staging) @ ${params.COMMIT_SHA}"
+    export EXTENDED_SERVICES__kieSandboxUrl=https://apache.github.io/incubator-kie-kogito-online-staging/${params.RELEASE_VERSION}-staging
+    export SERVERLESS_LOGIC_WEB_TOOLS__version=${params.RELEASE_VERSION}-staging
+    export SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef=${params.RELEASE_VERSION}
+    export SERVERLESS_LOGIC_WEB_TOOLS__buildInfo="${params.RELEASE_VERSION} (staging) @ ${params.COMMIT_SHA}"
     export SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl=https://staging-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud
 
-    pnpm -F='!@kie-tools/serverless-logic-web-tools-swf-dev-mode-image' \
-    -F='!@kie-tools/dev-deployment-base-image' \
-    -F='!@kie-tools/dev-deployment-dmn-form-webapp-image' \
-    -F='!@kie-tools/dev-deployment-kogito-quarkus-blank-app-image' \
-    -F='!@kie-tools/serverless-logic-web-tools-base-builder-image' \
-    -F='!@kie-tools/dashbuilder-viewer-image' \
-    -F='!@kie-tools/kogito-task-console' \
-    -F='!@kie-tools/kogito-management-console' \
-    -r --workspace-concurrency=1 build:prod
+    pnpm -r --workspace-concurrency=1 build:prod
     """.trim()
 }
 
@@ -779,7 +707,7 @@ def uploadKnativeCliWorkflowPluginForWindows() {
     githubUtils.uploadReleaseAsset(
         "${params.UPLOAD_ASSET_URL}",
         'kie-tools/packages/kn-plugin-workflow/dist/kn-workflow-windows-amd64.exe',
-        "STAGING__kn-workflow-windows-amd64-${params.TAG}.exe",
+        "STAGING__kn-workflow-windows-amd64-${params.RELEASE_VERSION}.exe",
         'application/octet-stream',
         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
     )
@@ -789,7 +717,7 @@ def uploadKnativeCliWorkflowPluginForMacOsM1() {
     githubUtils.uploadReleaseAsset(
         "${params.UPLOAD_ASSET_URL}",
         'kie-tools/packages/kn-plugin-workflow/dist/kn-workflow-darwin-arm64',
-        "STAGING__kn-workflow-darwin-arm64-${params.TAG}",
+        "STAGING__kn-workflow-darwin-arm64-${params.RELEASE_VERSION}",
         'application/octet-stream',
         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
     )
@@ -799,7 +727,7 @@ def uploadKnativeCliWorkflowPluginForMacOs() {
     githubUtils.uploadReleaseAsset(
         "${params.UPLOAD_ASSET_URL}",
         'kie-tools/packages/kn-plugin-workflow/dist/kn-workflow-darwin-amd64',
-        "STAGING__kn-workflow-darwin-amd64-${params.TAG}",
+        "STAGING__kn-workflow-darwin-amd64-${params.RELEASE_VERSION}",
         'application/octet-stream',
         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
     )
@@ -809,7 +737,7 @@ def uploadKnativeCliWorkflowPluginForLinux() {
     githubUtils.uploadReleaseAsset(
         "${params.UPLOAD_ASSET_URL}",
         'kie-tools/packages/kn-plugin-workflow/dist/kn-workflow-linux-amd64',
-        "STAGING__kn-workflow-linux-amd64-${params.TAG}",
+        "STAGING__kn-workflow-linux-amd64-${params.RELEASE_VERSION}",
         'application/octet-stream',
         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
     )
@@ -819,7 +747,7 @@ def uploadExtendedServicesForLinux() {
     githubUtils.uploadReleaseAsset(
         "${params.UPLOAD_ASSET_URL}",
         'kie-tools/packages/extended-services/dist/linux/kie_sandbox_extended_services.tar.gz',
-        "STAGING__kie_sandbox_extended_services_linux_${params.TAG}.tar.gz",
+        "STAGING__kie_sandbox_extended_services_linux_${params.RELEASE_VERSION}.tar.gz",
         'application/zip',
         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
     )
@@ -828,8 +756,8 @@ def uploadExtendedServicesForLinux() {
 def uploadChromeExtensionForServerlessWorkflowEditor() {
     githubUtils.uploadReleaseAsset(
         "${params.UPLOAD_ASSET_URL}",
-        "kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${params.TAG}.zip",
-        "STAGING__chrome_extension_serverless_workflow_editor_${params.TAG}.zip",
+        "kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${params.RELEASE_VERSION}.zip",
+        "STAGING__chrome_extension_serverless_workflow_editor_${params.RELEASE_VERSION}.zip",
         'application/zip',
         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
     )
@@ -838,8 +766,8 @@ def uploadChromeExtensionForServerlessWorkflowEditor() {
 def uploadChromeExtensionForKieEditors() {
     githubUtils.uploadReleaseAsset(
         "${params.UPLOAD_ASSET_URL}",
-        "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.TAG}.zip",
-        "STAGING__chrome_extension_kogito_kie_editors_${params.TAG}.zip",
+        "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.RELEASE_VERSION}.zip",
+        "STAGING__chrome_extension_kogito_kie_editors_${params.RELEASE_VERSION}.zip",
         'application/zip',
         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
     )
@@ -848,8 +776,8 @@ def uploadChromeExtensionForKieEditors() {
 def uploadVSCodeExtensionKieBusinessAutomationBundle() {
     githubUtils.uploadReleaseAsset(
         "${params.UPLOAD_ASSET_URL}",
-        "kie-tools/packages/vscode-extension-kie-ba-bundle/dist/vscode_extension_kie_ba_bundle_${params.TAG}.vsix",
-        "STAGING__vscode_extension_kie_ba_bundle_${params.TAG}.vsix",
+        "kie-tools/packages/vscode-extension-kie-ba-bundle/dist/vscode_extension_kie_ba_bundle_${params.RELEASE_VERSION}.vsix",
+        "STAGING__vscode_extension_kie_ba_bundle_${params.RELEASE_VERSION}.vsix",
         'application/zip',
         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
     )
@@ -858,8 +786,8 @@ def uploadVSCodeExtensionKieBusinessAutomationBundle() {
 def uploadVSCodeExtensionKogitoBundle() {
     githubUtils.uploadReleaseAsset(
         "${params.UPLOAD_ASSET_URL}",
-        "kie-tools/packages/vscode-extension-kogito-bundle/dist/vscode_extension_kogito_bundle_${params.TAG}.vsix",
-        "STAGING__vscode_extension_kogito_bundle_${params.TAG}.vsix",
+        "kie-tools/packages/vscode-extension-kogito-bundle/dist/vscode_extension_kogito_bundle_${params.RELEASE_VERSION}.vsix",
+        "STAGING__vscode_extension_kogito_bundle_${params.RELEASE_VERSION}.vsix",
         'application/zip',
         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
     )
@@ -868,8 +796,8 @@ def uploadVSCodeExtensionKogitoBundle() {
 def uploadVSCodeExtensionDashbuilderEditor() {
     githubUtils.uploadReleaseAsset(
         "${params.UPLOAD_ASSET_URL}",
-        "kie-tools/packages/vscode-extension-dashbuilder-editor/dist/vscode_extension_dashbuilder_editor_${params.TAG}.vsix",
-        "STAGING__vscode_extension_dashbuilder_editor_${params.TAG}.vsix",
+        "kie-tools/packages/vscode-extension-dashbuilder-editor/dist/vscode_extension_dashbuilder_editor_${params.RELEASE_VERSION}.vsix",
+        "STAGING__vscode_extension_dashbuilder_editor_${params.RELEASE_VERSION}.vsix",
         'application/zip',
         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
     )
@@ -878,8 +806,8 @@ def uploadVSCodeExtensionDashbuilderEditor() {
 def uploadVSCodeExtensionServerlessWorkflowEditor() {
     githubUtils.uploadReleaseAsset(
         "${params.UPLOAD_ASSET_URL}",
-        "kie-tools/packages/serverless-workflow-vscode-extension/dist/serverless_workflow_vscode_extension_${params.TAG}.vsix",
-        "STAGING__serverless_workflow_vscode_extension_${params.TAG}.vsix",
+        "kie-tools/packages/serverless-workflow-vscode-extension/dist/serverless_workflow_vscode_extension_${params.RELEASE_VERSION}.vsix",
+        "STAGING__serverless_workflow_vscode_extension_${params.RELEASE_VERSION}.vsix",
         'application/zip',
         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
     )
@@ -888,8 +816,8 @@ def uploadVSCodeExtensionServerlessWorkflowEditor() {
 def uploadVSCodeExtensionPMMLEditor() {
     githubUtils.uploadReleaseAsset(
         "${params.UPLOAD_ASSET_URL}",
-        "kie-tools/packages/pmml-vscode-extension/dist/pmml_vscode_extension_${params.TAG}.vsix",
-        "STAGING__pmml_vscode_extension_${params.TAG}.vsix",
+        "kie-tools/packages/pmml-vscode-extension/dist/pmml_vscode_extension_${params.RELEASE_VERSION}.vsix",
+        "STAGING__pmml_vscode_extension_${params.RELEASE_VERSION}.vsix",
         'application/zip',
         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
     )
@@ -898,8 +826,8 @@ def uploadVSCodeExtensionPMMLEditor() {
 def uploadVSCodeExtensionDMNEditor() {
     githubUtils.uploadReleaseAsset(
         "${params.UPLOAD_ASSET_URL}",
-        "kie-tools/packages/dmn-vscode-extension/dist/dmn_vscode_extension_${params.TAG}.vsix",
-        "STAGING__dmn_vscode_extension_${params.TAG}.vsix",
+        "kie-tools/packages/dmn-vscode-extension/dist/dmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
+        "STAGING__dmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
         'application/zip',
         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
     )
@@ -908,8 +836,8 @@ def uploadVSCodeExtensionDMNEditor() {
 def uploadVSCodeExtension() {
     githubUtils.uploadReleaseAsset(
         "${params.UPLOAD_ASSET_URL}",
-        "kie-tools/packages/kie-editors-dev-vscode-extension/dist/kie_editors_dev_vscode_extension_${params.TAG}.vsix",
-        "STAGING__vscode_extension_dev_${params.TAG}.vsix",
+        "kie-tools/packages/kie-editors-dev-vscode-extension/dist/kie_editors_dev_vscode_extension_${params.RELEASE_VERSION}.vsix",
+        "STAGING__vscode_extension_dev_${params.RELEASE_VERSION}.vsix",
         'application/zip',
         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
     )
@@ -919,7 +847,7 @@ def uploadServerlessLogicWebTools() {
     githubUtils.uploadReleaseAsset(
         "${params.UPLOAD_ASSET_URL}",
         'kie-tools/packages/serverless-logic-web-tools/dist.zip',
-        "STAGING__serverless_logic_web_tools_${params.TAG}.zip",
+        "STAGING__serverless_logic_web_tools_${params.RELEASE_VERSION}.zip",
         'application/zip',
         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
     )
@@ -929,8 +857,18 @@ def uploadOnlineEditor() {
     githubUtils.uploadReleaseAsset(
         "${params.UPLOAD_ASSET_URL}",
         'kie-tools/packages/online-editor/dist.zip',
-        "STAGING__online_editor_${params.TAG}.zip",
+        "STAGING__online_editor_${params.RELEASE_VERSION}.zip",
         'application/zip',
+        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+    )
+}
+
+def uploadKogitoServerlessOperator() {
+    githubUtils.uploadReleaseAsset(
+        "${params.UPLOAD_ASSET_URL}",
+        'kie-tools/packages/kogito-serverless-operator/operator.yaml',
+        "STAGING__operator_${params.RELEASE_VERSION}.yaml",
+        'application/yaml',
         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
     )
 }
@@ -1148,6 +1086,15 @@ def pushKogitoSwfDevModeToQuay() {
         "${env.KOGITO_SWF_DEVMODE_IMAGE__registry}/${env.KOGITO_SWF_DEVMODE_IMAGE__account}",
         "${env.KOGITO_SWF_DEVMODE_IMAGE__name}",
         "${env.KOGITO_SWF_DEVMODE_IMAGE__buildTag}",
+        "${pipelineVars.quayKiegroupPushCredentialsId}"
+    )
+}
+
+def pushKogitoServerlessOperatorToQuay() {
+    dockerUtils.pushImageToRegistry(
+        "${env.KOGITO_SERVERLESS_OPERATOR__registry}/${env.KOGITO_SERVERLESS_OPERATOR__account}",
+        "${env.KOGITO_SERVERLESS_OPERATOR__name}",
+        "${env.KOGITO_SERVERLESS_OPERATOR__buildTag}",
         "${pipelineVars.quayKiegroupPushCredentialsId}"
     )
 }
