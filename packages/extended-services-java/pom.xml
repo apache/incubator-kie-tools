@@ -44,12 +44,6 @@
     </license>
   </licenses>
 
-  <scm>
-    <connection>scm:git:git@github.com:apache/incubator-kie-tools.git</connection>
-    <developerConnection>scm:git:git@github.com:apache/incubator-kie-tools.git</developerConnection>
-    <url>scm:git:git@github.com:apache/incubator-kie-tools.git</url>
-  </scm>
-
   <properties>
     <java.module.name>org.kie.tools.extended-services</java.module.name>
   </properties>

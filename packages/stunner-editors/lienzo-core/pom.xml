@@ -37,58 +37,6 @@
 
 	<url>http://www.kiegroup.org</url>
 	<inceptionYear>2001</inceptionYear>
-	<organization>
-		<name>JBoss by Red Hat</name>
-		<url>http://www.jboss.org/</url>
-	</organization>
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-	<developers>
-		<developer>
-			<name>All developers are listed on the team website</name>
-			<url>http://www.drools.org/community/team.html</url>
-		</developer>
-	</developers>
-
-	<repositories>
-		<repository>
-			<id>google-snapshots</id>
-			<name>google-snapshots</name>
-			<url>https://oss.sonatype.org/content/repositories/google-snapshots/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>sonatype-snapshots-repo</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-				<checksumPolicy>fail</checksumPolicy>
-			</snapshots>
-		</repository>
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>sonatype-snapshots-repo</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-				<checksumPolicy>fail</checksumPolicy>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<dependencies>
 		<dependency>

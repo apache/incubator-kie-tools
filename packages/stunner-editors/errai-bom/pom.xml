@@ -6,52 +6,15 @@
 >
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.kie.kogito.stunner.editors</groupId>
+  <parent>
+    <groupId>org.kie.kogito.stunner.editors</groupId>
+    <artifactId>stunner-editors-parent</artifactId>
+    <version>${revision}</version>
+  </parent>
+
   <artifactId>errai-bom</artifactId>
-  <version>${revision}</version>
   <packaging>pom</packaging>
-  <name>JBoss Errai BOM</name>
-
-  <url>http://erraiframework.org</url>
-
-  <developers>
-    <developer>
-      <name>JBoss Errai Team</name>
-    </developer>
-  </developers>
-
-  <scm>
-    <connection>scm:git:git@github.com:errai/errai.git</connection>
-    <developerConnection>scm:git:git@github.com:errai/errai.git</developerConnection>
-    <url>scm:git:git@github.com:errai/errai.git</url>
-  </scm>
-
-  <organization>
-    <name>JBoss, a division of Red Hat</name>
-    <url>http://www.jboss.org</url>
-  </organization>
-
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-
-  <distributionManagement>
-      <repository>
-          <id>jboss-releases-repository</id>
-          <name>JBoss Releases Repository</name>
-          <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
-      </repository>
-
-      <snapshotRepository>
-          <id>jboss-snapshots-repository</id>
-          <name>JBoss Snapshots Repository</name>
-          <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
-      </snapshotRepository>
-  </distributionManagement>
+  <name>Errai BOM</name>
 
   <description>
     Dependency Management for all Errai third-party dependencies.
@@ -156,22 +119,6 @@
     <version.org.slf4j>1.7.26</version.org.slf4j>
     <version.xml-apis>1.4.01</version.xml-apis>
   </properties>
-
-  <repositories>
-    <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
 
   <dependencyManagement>
 

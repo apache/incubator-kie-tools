@@ -39,69 +39,6 @@
 
   <url>http://kogito.kie.org</url>
   <inceptionYear>2021</inceptionYear>
-  <organization>
-    <name>JBoss by Red Hat</name>
-    <url>http://www.jboss.org/</url>
-  </organization>
-
-  <licenses>
-    <license>
-      <name>Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-
-  <scm>
-    <connection>scm:git:git@github.com:apache/incubator-kie-tools.git</connection>
-    <developerConnection>scm:git:git@github.com:apache/incubator-kie-tools.git</developerConnection>
-    <url>scm:git:git@github.com:apache/incubator-kie-tools.git</url>
-  </scm>
-
-  <issueManagement>
-    <system>github-issues</system>
-    <url>https://github.com/apache/incubator-kie-issues/issues</url>
-  </issueManagement>
-
-  <repositories>
-    <repository>
-      <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,
-           as the Maven Central is now treated as the first (default) repository (because it is before the Apache Nexus one).
-           Artifacts with release (fixed) versions are being downloaded primarily from there. Without the central being the
-           first repository the Apache Nexus would be contacted first and since it is quite slow it slows down the build.
-           We use Apache repo only to download our SNAPSHOTs. -->
-      <id>central</id>
-      <name>Central Repository</name>
-      <url>https://repo.maven.apache.org/maven2</url>
-      <layout>default</layout>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>apache-public-repository-group</id>
-      <name>Apache Public Repository Group</name>
-      <url>https://repository.apache.org/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>jboss</id>
-      <name>JBoss Public Repo</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public</url>
-    </repository>
-    <repository>
-      <id>sonatype-public</id>
-      <name>Sonatype Public Snapshots Repo</name>
-      <url>https://oss.sonatype.org/content/repositories/public</url>
-    </repository>
-  </repositories>
 
   <modules>
     <!-- ERRAI -->
@@ -147,51 +84,6 @@
     <module>lienzo-webapp</module>
 
   </modules>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,
-           as the Maven Central is now treated as the first (default) repository (because it is before the Apache Nexus one).
-           Artifacts with release (fixed) versions are being downloaded primarily from there. Without the central being the
-           first repository the Apache Nexus would be contacted first and since it is quite slow it slows down the build.
-           We use Apache repo only to download our SNAPSHOTs. -->
-      <id>central</id>
-      <name>Central Repository</name>
-      <url>https://repo.maven.apache.org/maven2</url>
-      <layout>default</layout>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>apache-public-repository-group</id>
-      <name>Apache Public Repository Group</name>
-      <url>https://repository.apache.org/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>jboss</id>
-      <name>JBoss Public Repo</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>public-snapshots-repo</id>
-      <url>https://oss.sonatype.org/content/repositories/public/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
 
   <dependencies>
     <dependency>

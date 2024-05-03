@@ -9,6 +9,7 @@
     <artifactId>stunner-editors-parent</artifactId>
     <version>${revision}</version>
   </parent>
+
   <modelVersion>4.0.0</modelVersion>
   <name>Errai::Codegen</name>
   <artifactId>errai-codegen</artifactId>

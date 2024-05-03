@@ -45,12 +45,6 @@
         </license>
     </licenses>
 
-    <scm>
-        <connection>scm:git:git@github.com:apache/incubator-kie-tools.git</connection>
-        <developerConnection>scm:git:git@github.com:apache/incubator-kie-tools.git</developerConnection>
-        <url>scm:git:git@github.com:apache/incubator-kie-tools.git</url>
-    </scm>
-
     <properties>
         <dependency-plugin.version>3.6.1</dependency-plugin.version>
     </properties>

@@ -46,29 +46,6 @@
     </license>
   </licenses>
 
-  <scm>
-    <connection>scm:git:git@github.com:apache/incubator-kie-tools.git</connection>
-    <developerConnection>scm:git:git@github.com:apache/incubator-kie-tools.git</developerConnection>
-    <url>scm:git:git@github.com:apache/incubator-kie-tools.git</url>
-  </scm>
-
-  <issueManagement>
-    <system>github-issues</system>
-    <url>https://github.com/apache/incubator-kie-issues/issues</url>
-  </issueManagement>
-
-  <repositories>
-    <repository>
-      <id>jboss</id>
-      <name>JBoss Public Repo</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public</url>
-    </repository>
-    <repository>
-      <id>sonatype-public</id>
-      <name>Sonatype Public Snapshots Repo</name>
-      <url>https://oss.sonatype.org/content/repositories/public</url>
-    </repository>
-  </repositories>
 
   <properties>
     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>

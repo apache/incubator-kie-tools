@@ -22,53 +22,24 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 >
+  <parent>
+    <groupId>org.kie.kogito.stunner.editors</groupId>
+    <artifactId>stunner-editors-parent</artifactId>
+    <version>${revision}</version>
+  </parent>
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito.stunner.editors</groupId>
   <artifactId>kie-wb-common-bom</artifactId>
-  <version>${revision}</version>
+
   <packaging>pom</packaging>
 
   <name>Kie-wb-common BOM</name>
   <description>Kie-wb-common BOM</description>
 
   <url>http://kogito.kie.org</url>
+
   <inceptionYear>2021</inceptionYear>
-  <organization>
-    <name>JBoss by Red Hat</name>
-    <url>http://www.jboss.org/</url>
-  </organization>
-
-  <licenses>
-    <license>
-      <name>Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-
-  <scm>
-    <connection>scm:git:git@github.com:apache/incubator-kie-tools.git</connection>
-    <developerConnection>scm:git:git@github.com:apache/incubator-kie-tools.git</developerConnection>
-    <url>scm:git:git@github.com:apache/incubator-kie-tools.git</url>
-  </scm>
-
-  <issueManagement>
-    <system>github-issues</system>
-    <url>https://github.com/apache/incubator-kie-issues/issues</url>
-  </issueManagement>
-
-  <repositories>
-    <repository>
-      <id>jboss</id>
-      <name>JBoss Public Repo</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public</url>
-    </repository>
-    <repository>
-      <id>sonatype-public</id>
-      <name>Sonatype Public Snapshots Repo</name>
-      <url>https://oss.sonatype.org/content/repositories/public</url>
-    </repository>
-  </repositories>
 
   <properties>
     <sonar.skip>true</sonar.skip>

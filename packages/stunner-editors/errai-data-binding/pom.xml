@@ -16,12 +16,6 @@
 
   <description />
 
-  <developers>
-    <developer>
-      <name>Christian Sadilek</name>
-    </developer>
-  </developers>
-
   <build>
     <testOutputDirectory>war/WEB-INF/classes</testOutputDirectory>
     <resources>

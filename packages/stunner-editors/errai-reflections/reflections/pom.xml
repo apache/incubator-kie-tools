@@ -16,7 +16,6 @@
 
   <name>Reflections</name>
   <description>Reflections - a Java runtime metadata analysis</description>
-  <url>http://code.google.com/p/reflections/</url>
 
   <dependencies>
     <dependency>

@@ -40,42 +40,6 @@
 
   <url>http://kogito.kie.org</url>
   <inceptionYear>2021</inceptionYear>
-  <organization>
-    <name>JBoss by Red Hat</name>
-    <url>http://www.jboss.org/</url>
-  </organization>
-
-  <licenses>
-    <license>
-      <name>Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-
-  <scm>
-    <connection>scm:git:git@github.com:apache/incubator-kie-tools.git</connection>
-    <developerConnection>scm:git:git@github.com:apache/incubator-kie-tools.git</developerConnection>
-    <url>scm:git:git@github.com:apache/incubator-kie-tools.git</url>
-  </scm>
-
-  <issueManagement>
-    <system>github-issues</system>
-    <url>https://github.com/apache/incubator-kie-issues/issues</url>
-  </issueManagement>
-
-  <repositories>
-    <repository>
-      <id>jboss</id>
-      <name>JBoss Public Repo</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public</url>
-    </repository>
-    <repository>
-      <id>sonatype-public</id>
-      <name>Sonatype Public Snapshots Repo</name>
-      <url>https://oss.sonatype.org/content/repositories/public</url>
-    </repository>
-  </repositories>
 
   <modules>
     <!-- APPFORMER -->
@@ -101,29 +65,6 @@
     <module>third_party</module>
 
   </modules>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>jboss-snapshots-repository</id>
-      <name>JBoss Snapshot Repository</name>
-      <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>sonatype-releases-repository</id>
-      <name>Sonatype Release Repository</name>
-      <url>https://oss.sonatype.org/content/repositories/releases/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>sonatype-snapshots-repository</id>
-      <name>Sonatype Snapshot Repository</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-    </pluginRepository>
-  </pluginRepositories>
 
   <dependencies>
     <dependency>
