@@ -131,7 +131,7 @@ export function deleteNode({
       throw new Error(`DMN MUTATION: Unknown node nature '${nodeNature}'.`);
     }
 
-    if (!dmnObject) {
+    if (!dmnObject && nodeNature !== NodeNature.UNKNOWN) {
       throw new Error(`DMN MUTATION: Can't delete DMN object that doesn't exist: ID=${dmnObjectId}`);
     }
   }
