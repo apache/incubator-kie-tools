@@ -241,6 +241,36 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
+  examples/dmn-quarkus-example:
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../../packages/maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../../packages/root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
+  examples/drools-process-usertasks-quarkus-example:
+    devDependencies:
+      "@kie-tools/jbpm-quarkus-devui":
+        specifier: workspace:*
+        version: link:../../packages/jbpm-quarkus-devui
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../../packages/maven-base
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../../packages/maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../../packages/root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
   examples/ping-pong-view:
     dependencies:
       "@kie-tools-core/envelope":
@@ -381,6 +411,24 @@ importers:
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
+
+  examples/sonataflow-greeting-quarkus-example:
+    devDependencies:
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../../packages/maven-base
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../../packages/maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../../packages/root-env
+      "@kie-tools/sonataflow-quarkus-devui":
+        specifier: workspace:*
+        version: link:../../packages/sonataflow-quarkus-devui
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
 
   examples/todo-list-view:
     dependencies:
