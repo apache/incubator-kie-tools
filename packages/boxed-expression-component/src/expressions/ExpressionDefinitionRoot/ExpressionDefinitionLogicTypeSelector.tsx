@@ -347,7 +347,7 @@ export function ExpressionDefinitionLogicTypeSelector({
       case "for":
         return (
           "A boxed iterator offers a visual representation of an iterator statement. " +
-          'For the for loop, the right part of the "for" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection.' +
+          'For the "for" loop, the right part of the "for" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection.' +
           " The last row contains the expression that will process each element of the collection."
         );
 
@@ -355,13 +355,13 @@ export function ExpressionDefinitionLogicTypeSelector({
         return (
           "A boxed iterator offers a visual representation of an iterator statement. " +
           'For the "every" loop, the right part of the "every" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection.' +
-          "The last line is an expression that will be evaluated on each item. The expression defined in the satisfies MUST resolve to a boolean."
+          'The last line is an expression that will be evaluated on each item. The expression defined in the "satisfies" MUST resolve to a boolean.'
         );
       case "some":
         return (
           "A boxed iterator offers a visual representation of an iterator statement. " +
           'For the "some" loop, the right part of the "some" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection. ' +
-          "The last line is an expression that will be evaluated on each item. The expression defined in the satisfies MUST resolve to a boolean."
+          'The last line is an expression that will be evaluated on each item. The expression defined in the "satisfies" MUST resolve to a boolean.'
         );
       case "filter":
         return (
