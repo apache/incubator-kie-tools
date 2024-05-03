@@ -28,7 +28,7 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
     }
 
@@ -41,7 +41,7 @@ pipeline {
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry = 'quay.io'
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount = 'kie-tools'
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName = 'serverless-logic-web-tools-base-builder-image'
-        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags = "latest ${params.TAG}"
+        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags = "latest ${params.RELEASE_VERSION}"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 

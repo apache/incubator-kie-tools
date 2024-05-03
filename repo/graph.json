@@ -143,9 +143,7 @@
       { "id": "@kie-tools/kogito-management-console" },
       { "id": "@kie-tools/runtime-tools-management-console-webapp" },
       { "id": "@kie-tools/kogito-swf-common" },
-      { "id": "@kie-tools/sonataflow-quarkus-devui" },
       { "id": "@kie-tools/python-venv" },
-      { "id": "@kie-tools/serverless-workflow-dev-ui-webapp" },
       { "id": "@kie-tools/kogito-task-console" },
       { "id": "@kie-tools/runtime-tools-task-console-webapp" },
       { "id": "@kie-tools/unitables" },
@@ -889,26 +887,6 @@
       },
       { "source": "@kie-tools/kogito-swf-common", "target": "@kie-tools/python-venv", "weight": 1 },
       { "source": "@kie-tools/kogito-swf-common", "target": "@kie-tools/root-env", "weight": 1 },
-      {
-        "source": "@kie-tools/sonataflow-quarkus-devui",
-        "target": "@kie-tools/serverless-workflow-dev-ui-webapp",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-workflow-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-shared-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-workflow-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-swf-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-workflow-dev-ui-webapp",
-        "target": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp",
-        "weight": 1
-      },
       { "source": "@kie-tools/kogito-task-console", "target": "@kie-tools/image-builder", "weight": 1 },
       { "source": "@kie-tools/kogito-task-console", "target": "@kie-tools/image-env-to-json", "weight": 1 },
       {

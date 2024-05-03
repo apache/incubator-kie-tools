@@ -134,7 +134,6 @@ digraph G {
   "@kie-tools/kogito-swf-devmode" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kogito-swf-common" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/python-venv" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/sonataflow-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kogito-task-console" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/runtime-tools-task-console-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/kubernetes-bridge" [ color = "purple", fontcolor = "purple", style = "rounded" ];

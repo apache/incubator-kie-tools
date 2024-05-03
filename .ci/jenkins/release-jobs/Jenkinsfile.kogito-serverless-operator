@@ -28,7 +28,7 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
     }
 
@@ -41,7 +41,7 @@ pipeline {
         KOGITO_SERVERLESS_OPERATOR__registry = 'quay.io'
         KOGITO_SERVERLESS_OPERATOR__account = 'kiegroup'
         KOGITO_SERVERLESS_OPERATOR__name = 'kogito-serverless-operator'
-        KOGITO_SERVERLESS_OPERATOR__buildTag = "${params.TAG}"
+        KOGITO_SERVERLESS_OPERATOR__buildTag = "${params.RELEASE_VERSION}"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
@@ -127,7 +127,7 @@ pipeline {
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
                         'kie-tools/packages/kogito-serverless-operator/operator.yaml',
-                        "operator_${params.TAG}.yaml",
+                        "operator_${params.RELEASE_VERSION}.yaml",
                         'application/yaml',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )

@@ -28,7 +28,7 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
     }
 
@@ -122,7 +122,7 @@ pipeline {
                     echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
                     PNPM_FILTER_STRING_FOR_PUBLISHING=\$(pnpm -r exec 'bash' '-c' 'PKG_NAME=\$(jq -r ".name" package.json) PKG_IS_PVT=\$(jq -r ".private" package.json); if [[ "\$PKG_IS_PVT" != "true" ]]; then echo "-F \$PKG_NAME"; fi')
                     echo \$PNPM_FILTER_STRING_FOR_PUBLISHING
-                    pnpm \$PNPM_FILTER_STRING_FOR_PUBLISHING exec 'bash' '-c' 'PKG_NAME=\$(jq -r ".name" package.json); NPM_PKG_INFO=\$(npm view \$PKG_NAME@${params.TAG} name || echo ""); if [[ -z \$NPM_PKG_INFO ]]; then pnpm publish --no-git-checks --access public; fi'
+                    pnpm \$PNPM_FILTER_STRING_FOR_PUBLISHING exec 'bash' '-c' 'PKG_NAME=\$(jq -r ".name" package.json); NPM_PKG_INFO=\$(npm view \$PKG_NAME@${params.RELEASE_VERSION} name || echo ""); if [[ -z \$NPM_PKG_INFO ]]; then pnpm publish --no-git-checks --access public; fi'
                     """.trim()
                 }
             }
