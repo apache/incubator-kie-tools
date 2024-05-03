@@ -11049,6 +11049,9 @@ importers:
 
   packages/sonataflow-management-console-webapp:
     dependencies:
+      "@kie-tools-core/react-hooks":
+        specifier: workspace:*
+        version: link:../react-hooks
       "@kie-tools/runtime-tools-components":
         specifier: workspace:*
         version: link:../runtime-tools-components
@@ -11106,6 +11109,9 @@ importers:
       history:
         specifier: ^4.9.0
         version: 4.10.1
+      monaco-editor:
+        specifier: ^0.39.0
+        version: 0.39.0
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -11248,6 +11254,9 @@ importers:
       mini-css-extract-plugin:
         specifier: ^2.7.6
         version: 2.8.1(webpack@5.88.2)
+      monaco-editor-webpack-plugin:
+        specifier: ^7.0.1
+        version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4)(webpack@5.88.2)
       node-polyfill-webpack-plugin:
         specifier: ^2.0.1
         version: 2.0.1(webpack@5.88.2)
@@ -44192,7 +44201,7 @@ packages:
       monaco-yaml: "*"
       webpack: ^4.5.0 || 5.x
     dependencies:
-      loader-utils: 2.0.2
+      loader-utils: 2.0.4
       monaco-editor: 0.39.0
       monaco-yaml: 4.0.4(monaco-editor@0.39.0)
       webpack: 5.88.2(webpack-cli@4.10.0)
@@ -44250,7 +44259,7 @@ packages:
       vscode-languageserver-textdocument: 1.0.7
       vscode-languageserver-types: 3.17.2
       vscode-uri: 3.0.7
-      yaml: 2.0.1
+      yaml: 2.3.2
 
   /mongo-object@0.1.4:
     resolution:
@@ -54102,16 +54111,10 @@ packages:
     engines: { node: ">= 12" }
     dev: true
 
-  /yaml@2.0.1:
-    resolution:
-      { integrity: sha512-1NpAYQ3wjzIlMs0mgdBmYzLkFgWBIWrzYVDYfrixhoFNNgJ444/jT2kUT2sicRbJES3oQYRZugjB6Ro8SjKeFg== }
-    engines: { node: ">= 14" }
-
   /yaml@2.3.2:
     resolution:
       { integrity: sha512-N/lyzTPaJasoDmfV7YTrYCI0G/3ivm/9wdG0aHuheKowWQwGTsK0Eoiw6utmzAnI6pkJa0DUVygvp3spqqEKXg== }
     engines: { node: ">= 14" }
-    dev: false
 
   /yargs-parser@18.1.3:
     resolution:

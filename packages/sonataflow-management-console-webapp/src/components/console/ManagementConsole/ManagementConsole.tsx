@@ -29,14 +29,17 @@ import {
 } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
 import { PageLayout } from "@kie-tools/runtime-tools-components/dist/components/PageLayout";
 import { WorkflowDefinitionListContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionList";
+import { GlobalAlertsContextProvider } from "../../../alerts/GlobalAlertsContext";
+import { WorkflowFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowForm";
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
   userContext: UserContext;
   children: React.ReactElement;
+  openApiBaseUrl: string;
 }
 
-const ManagementConsole: React.FC<IOwnProps> = ({ apolloClient, userContext, children }) => {
+const ManagementConsole: React.FC<IOwnProps> = ({ apolloClient, userContext, children, openApiBaseUrl }) => {
   const renderPage = useCallback(
     (routeProps) => {
       return (
@@ -59,13 +62,17 @@ const ManagementConsole: React.FC<IOwnProps> = ({ apolloClient, userContext, chi
   return (
     <ApolloProvider client={apolloClient}>
       <KogitoAppContextProvider userContext={userContext}>
-        <WorkflowDefinitionListContextProvider kogitoServiceUrl={window["SONATAFLOW_OPENAPIBASE_URL"]}>
-          <Router>
-            <Switch>
-              <Route path="/" render={renderPage} />
-            </Switch>
-          </Router>
-        </WorkflowDefinitionListContextProvider>
+        <GlobalAlertsContextProvider>
+          <WorkflowDefinitionListContextProvider kogitoServiceUrl={openApiBaseUrl}>
+            <WorkflowFormContextProvider kogitoServiceUrl={`${openApiBaseUrl}`}>
+              <Router>
+                <Switch>
+                  <Route path="/" render={renderPage} />
+                </Switch>
+              </Router>
+            </WorkflowFormContextProvider>
+          </WorkflowDefinitionListContextProvider>
+        </GlobalAlertsContextProvider>
       </KogitoAppContextProvider>
     </ApolloProvider>
   );

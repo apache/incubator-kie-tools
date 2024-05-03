@@ -22,6 +22,7 @@ const { merge } = require("webpack-merge");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const { env: buildEnv } = require("./env");
 const { defaultEnvJson } = require("./build/defaultEnvJson");
@@ -73,9 +74,10 @@ module.exports = async (env) => {
           },
         ],
       }),
-      new NodePolyfillPlugin({
-        includeAliases: ["process", "Buffer"],
+      new MonacoWebpackPlugin({
+        languages: ["json"],
       }),
+      new NodePolyfillPlugin(),
     ],
     module: {
       rules: [

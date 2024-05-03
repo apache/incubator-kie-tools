@@ -21,6 +21,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import EmptyPage from "../../pages/EmptyPage";
 import { RuntimeToolsWorkflowDefinitions } from "../../../runtimeTools/pages/RuntimeToolsWorkflowDefinitions";
 import { routes } from "../../../navigation/Routes";
+import { RuntimeToolsWorkflowForm } from "../../../runtimeTools/pages/RuntimeToolsWorkflowForm";
 
 const ManagementConsoleRoutes: React.FC = () => {
   return (
@@ -33,6 +34,9 @@ const ManagementConsoleRoutes: React.FC = () => {
       <Route exact path={routes.runtimeToolsWorkflowInstances.path({})} component={EmptyPage} />
       <Route exact path={routes.runtimeToolsWorkflowDefinitions.path({})} component={RuntimeToolsWorkflowDefinitions} />
       <Route exact path={routes.runtimeToolsTriggerCloudEvent.path({})} component={EmptyPage} />
+      <Route path={routes.runtimeToolsWorkflowForm.path({ workflowName: ":workflowName" })}>
+        <RuntimeToolsWorkflowForm />
+      </Route>
       <Route exact path={routes.monitoring.path({})} component={EmptyPage} />
     </Switch>
   );
