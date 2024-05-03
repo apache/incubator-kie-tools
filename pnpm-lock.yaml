@@ -9656,6 +9656,9 @@ importers:
 
   packages/serverless-logic-web-tools-swf-dev-mode-image:
     devDependencies:
+      "@kie-tools/kogito-swf-devmode":
+        specifier: workspace:*
+        version: link:../kogito-swf-devmode
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env

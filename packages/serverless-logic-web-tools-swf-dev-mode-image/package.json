@@ -26,6 +26,7 @@
     "image:podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build --ulimit nofile=5000:5000 $(echo $(build-env swfDevModeImage.buildTags) | xargs printf -- \"-t $(build-env swfDevModeImageEnv.registry)/$(build-env swfDevModeImageEnv.account)/$(build-env swfDevModeImageEnv.name):%s\n\" | xargs echo) --build-arg KOGITO_IMAGE_TAG=$(build-env swfDevModeImage.kogitoImageTag) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
   },
   "devDependencies": {
+    "@kie-tools/kogito-swf-devmode": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app": "workspace:*",
     "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env": "workspace:*",
