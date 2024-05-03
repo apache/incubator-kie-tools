@@ -286,12 +286,12 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       return;
     }
 
-    const keyboardShortcuts = this.dmnEditorRef.current?.getKeyboardShortcuts();
-    if (keyboardShortcuts === undefined) {
+    const commands = this.dmnEditorRef.current?.getCommands();
+    if (commands === undefined) {
       return;
     }
     const cancelAction = this.props.keyboardShortcutsService.registerKeyPress("Escape", "Edit | Unselect", async () =>
-      keyboardShortcuts.cancelAction()
+      commands.cancelAction()
     );
     const deleteSelectionBackspace = this.props.keyboardShortcutsService.registerKeyPress(
       "Backspace",
@@ -303,45 +303,41 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       "Edit | Delete selection",
       async () => {}
     );
-
     const selectAll = this.props.keyboardShortcutsService?.registerKeyPress(
       "A",
       "Edit | Select/Deselect all",
-      async () => keyboardShortcuts.selectAll()
+      async () => commands.selectAll()
     );
     const createGroup = this.props.keyboardShortcutsService?.registerKeyPress(
       "G",
       "Edit | Create group wrapping selection",
       async () => {
-        console.log(" KEY GROUP PRESSED, ", keyboardShortcuts);
-        return keyboardShortcuts.createGroup();
+        console.log(" KEY GROUP PRESSED, ", commands);
+        return commands.createGroup();
       }
     );
     const hideFromDrd = this.props.keyboardShortcutsService?.registerKeyPress("X", "Edit | Hide from DRD", async () =>
-      keyboardShortcuts.hideFromDrd()
+      commands.hideFromDrd()
     );
-
     const copy = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+C", "Edit | Copy nodes", async () =>
-      keyboardShortcuts.copy()
+      commands.copy()
     );
     const cut = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+X", "Edit | Cut nodes", async () =>
-      keyboardShortcuts.cut()
+      commands.cut()
     );
     const paste = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+V", "Edit | Paste nodes", async () =>
-      keyboardShortcuts.paste()
+      commands.paste()
     );
-
     const togglePropertiesPanel = this.props.keyboardShortcutsService?.registerKeyPress(
       "I",
       "Misc | Open/Close properties panel",
-      async () => keyboardShortcuts.togglePropertiesPanel()
+      async () => commands.togglePropertiesPanel()
     );
     const toggleHierarchyHighlight = this.props.keyboardShortcutsService?.registerKeyPress(
       "H",
       "Misc | Toggle hierarchy highlights",
-      async () => keyboardShortcuts.toggleHierarchyHighlight()
+      async () => commands.toggleHierarchyHighlight()
     );
-
     const moveUp = this.props.keyboardShortcutsService.registerKeyPress(
       "Up",
       "Move | Move selection up",
@@ -382,23 +378,21 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       "Move | Move selection right a big distance",
       async () => {}
     );
-
     const focusOnBounds = this.props.keyboardShortcutsService?.registerKeyPress(
       "B",
       "Navigate | Focus on selection",
-      async () => keyboardShortcuts.focusOnSelection()
+      async () => commands.focusOnSelection()
     );
-
     const resetPosition = this.props.keyboardShortcutsService?.registerKeyPress(
       "Space",
       "Navigate | Reset position to origin",
-      async () => keyboardShortcuts.resetPosition()
+      async () => commands.resetPosition()
     );
     const pan = this.props.keyboardShortcutsService?.registerKeyDownThenUp(
       "Alt",
       "Navigate | Hold and drag to Pan",
-      async () => keyboardShortcuts.panDown(),
-      async () => keyboardShortcuts.panUp()
+      async () => commands.panDown(),
+      async () => commands.panUp()
     );
     const zoom = this.props.keyboardShortcutsService?.registerKeyPress(
       "Ctrl",
@@ -444,7 +438,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
   }
 
   public componentWillUnmount() {
-    const keyboardShortcuts = this.dmnEditorRef.current?.getKeyboardShortcuts();
+    const keyboardShortcuts = this.dmnEditorRef.current?.getCommands();
     if (keyboardShortcuts === undefined) {
       return;
     }

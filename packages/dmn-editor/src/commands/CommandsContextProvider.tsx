@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useContext, useRef } from "react";
 
-export interface KeyboardShortcuts {
+export interface Commands {
   hideFromDrd: () => void;
   toggleHierarchyHighlight: () => void;
   togglePropertiesPanel: () => void;
@@ -36,16 +36,16 @@ export interface KeyboardShortcuts {
   resetPosition: () => void;
 }
 
-const KeyboardShortcutsContext = React.createContext<{
-  keyboardShortcutsRef: React.MutableRefObject<KeyboardShortcuts>;
+const CommandsContext = React.createContext<{
+  commandsRef: React.MutableRefObject<Commands>;
 }>({} as any);
 
-export function useKeyboardShortcuts() {
-  return useContext(KeyboardShortcutsContext);
+export function useCommands() {
+  return useContext(CommandsContext);
 }
 
-export function KeyboardShortcutsProvider(props: React.PropsWithChildren<{}>) {
-  const keyboardShortcutsRef = useRef<KeyboardShortcuts>({
+export function CommandsContextProvider(props: React.PropsWithChildren<{}>) {
+  const commandsRef = useRef<Commands>({
     hideFromDrd: () => {},
     toggleHierarchyHighlight: () => {},
     togglePropertiesPanel: () => {},
@@ -61,9 +61,5 @@ export function KeyboardShortcutsProvider(props: React.PropsWithChildren<{}>) {
     resetPosition: () => {},
   });
 
-  return (
-    <KeyboardShortcutsContext.Provider value={{ keyboardShortcutsRef }}>
-      {props.children}
-    </KeyboardShortcutsContext.Provider>
-  );
+  return <CommandsContext.Provider value={{ commandsRef }}>{props.children}</CommandsContext.Provider>;
 }

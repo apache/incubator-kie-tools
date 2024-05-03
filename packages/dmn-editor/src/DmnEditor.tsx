@@ -56,11 +56,7 @@ import { INITIAL_COMPUTED_CACHE } from "./store/computed/initial";
 
 import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
-import {
-  KeyboardShortcuts,
-  KeyboardShortcutsProvider,
-  useKeyboardShortcuts,
-} from "./keyboardShortcuts/KeybordShortcuts";
+import { Commands, CommandsContextProvider, useCommands } from "./commands/CommandsContextProvider";
 
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
@@ -69,7 +65,7 @@ const SVG_PADDING = 20;
 export type DmnEditorRef = {
   reset: (mode: DmnLatestModel) => void;
   getDiagramSvg: () => Promise<string | undefined>;
-  getKeyboardShortcuts: () => KeyboardShortcuts;
+  getCommands: () => Commands;
 };
 
 export type EvaluationResults = Record<string, any>;
@@ -177,7 +173,7 @@ export const DmnEditorInternal = ({
   const dmn = useDmnEditorStore((s) => s.dmn);
   const isDiagramEditingInProgress = useDmnEditorStore((s) => s.computed(s).isDiagramEditingInProgress());
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { keyboardShortcutsRef } = useKeyboardShortcuts();
+  const { commandsRef } = useCommands();
 
   const { dmnModelBeforeEditingRef, dmnEditorRootElementRef } = useDmnEditor();
   const { externalModelsByNamespace } = useExternalModels();
@@ -237,9 +233,9 @@ export const DmnEditorInternal = ({
 
         return new XMLSerializer().serializeToString(svg);
       },
-      getKeyboardShortcuts: () => keyboardShortcutsRef.current,
+      getCommands: () => commandsRef.current,
     }),
-    [dmnEditorStoreApi, externalModelsByNamespace, keyboardShortcutsRef]
+    [dmnEditorStoreApi, externalModelsByNamespace, commandsRef]
   );
 
   // Make sure the DMN Editor reacts to props changing.
@@ -412,9 +408,9 @@ export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref
       <ErrorBoundary FallbackComponent={DmnEditorErrorFallback} onReset={resetState}>
         <DmnEditorExternalModelsContextProvider {...props}>
           <DmnEditorStoreApiContext.Provider value={storeRef.current}>
-            <KeyboardShortcutsProvider>
+            <CommandsContextProvider>
               <DmnEditorInternal forwardRef={ref} {...props} />
-            </KeyboardShortcutsProvider>
+            </CommandsContextProvider>
           </DmnEditorStoreApiContext.Provider>
         </DmnEditorExternalModelsContextProvider>
       </ErrorBoundary>

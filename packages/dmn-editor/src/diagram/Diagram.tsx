@@ -117,7 +117,7 @@ import {
   getDecisionServicePropertiesRelativeToThisDmn,
 } from "../mutations/addExistingDecisionServiceToDrd";
 import { updateExpressionWidths } from "../mutations/updateExpressionWidths";
-import { DiagramKeyboardShortcuts } from "./DiagramKeyboardShortcuts";
+import { DiagramCommands } from "./DiagramCommands";
 
 const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
 
@@ -1171,7 +1171,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             <SelectionStatus />
             <Palette pulse={isEmptyStateShowing} />
             <TopRightCornerPanels />
-            <DiagramKeyboardShortcuts />
+            <DiagramCommands />
             {!isFirefox && <RF.Background />}
             <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />
             <SetConnectionToReactFlowStore />
