@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "@kie-tools/vscode-java-code-completion-extension-plugin",
   "version": "0.0.0",
   "description": "",

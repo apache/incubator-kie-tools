@@ -26,7 +26,7 @@
     "image:build": "run-script-os",
     "image:build:darwin:win32": "echo 'Image build not supported on Windows and macOS'",
     "image:build:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && run-script-if --bool \"$(build-env containerImages.build)\" --then \"make container-build\"",
-    "install": "go mod tidy && pnpm bump-version && pnpm format",
+    "install": "rimraf bin && go mod tidy && pnpm bump-version && pnpm format",
     "test": "run-script-os",
     "test-e2e": "run-script-os",
     "test-e2e:darwin:win32": "echo 'E2E tests not supported on Windows and macOS'",

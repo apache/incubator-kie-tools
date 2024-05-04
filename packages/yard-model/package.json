@@ -1,5 +1,5 @@
 {
-  "private": false,
+  "private": true,
   "name": "@kie-tools/yard-model",
   "version": "0.0.0",
   "description": "",
