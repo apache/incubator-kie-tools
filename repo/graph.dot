@@ -299,7 +299,7 @@ digraph G {
   "@kie-tools/dev-deployment-dmn-form-webapp" -> "@kie-tools/form-dmn" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/dev-deployment-dmn-form-webapp" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
-  "@kie-tools/dev-deployment-kogito-quarkus-blank-app" -> "@kie-tools/maven-base" [ style = "dashed", color = "black" ];
+  "@kie-tools/dev-deployment-kogito-quarkus-blank-app" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" -> "@kie-tools/dev-deployment-base-image" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" -> "@kie-tools/dev-deployment-kogito-quarkus-blank-app" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-upload-service" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
@@ -502,7 +502,8 @@ digraph G {
   "@kie-tools/serverless-workflow-dev-ui-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-workflow-dev-ui-webapp" -> "@kie-tools/runtime-tools-swf-webapp-components" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-workflow-dev-ui-webapp" -> "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp" [ style = "solid", color = "black" ];
-  "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools/maven-base" [ style = "dashed", color = "black" ];
+  "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
+  "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-workflow-diagram-editor-assets" -> "@kie-tools/serverless-workflow-diagram-editor" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-diagram-editor-assets" -> "@kie-tools/serverless-workflow-diagram-editor-envelope" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-diagram-editor-envelope" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];

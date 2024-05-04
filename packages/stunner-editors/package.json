@@ -33,7 +33,6 @@
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "devDependencies": {
-    "@kie-tools/maven-base": "workspace:*",
     "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/stunner-editors-dmn-loader": "workspace:*",

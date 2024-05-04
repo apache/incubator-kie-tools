@@ -33,8 +33,10 @@
     "rename:app:win32": "ren dist\\quarkus-app extended-services-java",
     "start": "mvn quarkus:dev"
   },
+  "dependencies": {
+    "@kie-tools/maven-base": "workspace:*"
+  },
   "devDependencies": {
-    "@kie-tools/maven-base": "workspace:*",
     "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "copyfiles": "^2.4.1",

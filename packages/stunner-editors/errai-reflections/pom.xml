@@ -9,6 +9,7 @@
     <groupId>org.kie.kogito.stunner.editors</groupId>
     <artifactId>stunner-editors-parent</artifactId>
     <version>${revision}</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>reflections-parent</artifactId>
@@ -16,13 +17,39 @@
 
   <name>Reflections parent</name>
 
+  <url>http://jboss.org/errai/errai</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
   <description>
     Reflections framework
   </description>
 
+  <developers>
+    <developer>
+      <name>Various Persons</name>
+    </developer>
+  </developers>
+
   <modules>
     <module>reflections</module>
   </modules>
+
+  <scm>
+    <connection>scm:git:git@github.com:errai/Reflections.git</connection>
+    <developerConnection>scm:git:git@github.com:errai/Reflections.git</developerConnection>
+    <url>scm:git:git@github.com:errai/Reflections.git</url>
+  </scm>
 
 
   <build>

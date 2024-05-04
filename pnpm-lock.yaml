@@ -10115,9 +10115,6 @@ importers:
 
   packages/serverless-workflow-diagram-editor:
     devDependencies:
-      "@kie-tools/maven-base":
-        specifier: workspace:*
-        version: link:../maven-base
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
@@ -11214,9 +11211,6 @@ importers:
 
   packages/stunner-editors:
     devDependencies:
-      "@kie-tools/maven-base":
-        specifier: workspace:*
-        version: link:../maven-base
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper

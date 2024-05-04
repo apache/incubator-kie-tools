@@ -4,17 +4,18 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 >
-  <parent>
-    <groupId>org.kie.kogito.stunner.editors</groupId>
-    <artifactId>stunner-editors-parent</artifactId>
-    <version>${revision}</version>
-  </parent>
-
   <modelVersion>4.0.0</modelVersion>
   <name>Errai::IOC</name>
   <artifactId>errai-ioc</artifactId>
   <packaging>jar</packaging>
 
+  <!-- Parent -->
+  <parent>
+    <groupId>org.kie.kogito.stunner.editors</groupId>
+    <artifactId>stunner-editors-parent</artifactId>
+    <version>${revision}</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
   <build>
     <resources>

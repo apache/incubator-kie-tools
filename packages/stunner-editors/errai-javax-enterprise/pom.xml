@@ -12,6 +12,7 @@
         <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>stunner-editors-parent</artifactId>
         <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <dependencies>

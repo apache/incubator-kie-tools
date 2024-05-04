@@ -1084,7 +1084,12 @@
         "target": "sonataflow-deployment-webapp",
         "weight": 1
       },
-      { "source": "@kie-tools/serverless-workflow-diagram-editor", "target": "@kie-tools/maven-base", "weight": 1 },
+      {
+        "source": "@kie-tools/serverless-workflow-diagram-editor",
+        "target": "@kie-tools/maven-config-setup-helper",
+        "weight": 1
+      },
+      { "source": "@kie-tools/serverless-workflow-diagram-editor", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/serverless-workflow-diagram-editor-envelope",
         "target": "@kie-tools/kie-bc-editors",
