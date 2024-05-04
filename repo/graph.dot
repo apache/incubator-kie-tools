@@ -17,10 +17,14 @@ digraph G {
   "@kie-tools-core/vscode-extension" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-examples/commit-message-validation-service" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/root-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools-examples/drools-process-usertasks-quarkus-example" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "@kie-tools/jbpm-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/ping-pong-view" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-core/envelope" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-examples/ping-pong-view-angular" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/ping-pong-view-react" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "@kie-tools-examples/sonataflow-greeting-quarkus-example" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "@kie-tools/sonataflow-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/todo-list-view" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "kie-tools-examples-todo-list-view-vscode-extension" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/uniforms-patternfly" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
@@ -110,7 +114,6 @@ digraph G {
   "@kie-tools/image-env-to-json" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/import-java-classes-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/vscode-java-code-completion" [ color = "purple", fontcolor = "purple", style = "rounded" ];
-  "@kie-tools/jbpm-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/runtime-tools-process-dev-ui-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yaml-language-server" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/k8s-yaml-to-apiserver-requests" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -131,7 +134,6 @@ digraph G {
   "@kie-tools/kogito-swf-devmode" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kogito-swf-common" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/python-venv" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/sonataflow-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kogito-task-console" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/runtime-tools-task-console-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/kubernetes-bridge" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -196,9 +198,11 @@ digraph G {
   "kie-tools-examples-base64png-editor-vscode-extension" -> "@kie-tools-examples/base64png-editor" [ style = "solid", color = "orange" ];
   "kie-tools-examples-base64png-editor-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/commit-message-validation-service" -> "@kie-tools/root-env" [ style = "dashed", color = "orange" ];
+  "@kie-tools-examples/drools-process-usertasks-quarkus-example" -> "@kie-tools/jbpm-quarkus-devui" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/ping-pong-view" -> "@kie-tools-core/envelope" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/ping-pong-view-angular" -> "@kie-tools-examples/ping-pong-view" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/ping-pong-view-react" -> "@kie-tools-examples/ping-pong-view" [ style = "solid", color = "orange" ];
+  "@kie-tools-examples/sonataflow-greeting-quarkus-example" -> "@kie-tools/sonataflow-quarkus-devui" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/todo-list-view" -> "@kie-tools-core/envelope" [ style = "solid", color = "orange" ];
   "kie-tools-examples-todo-list-view-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "orange" ];
   "kie-tools-examples-todo-list-view-vscode-extension" -> "@kie-tools-examples/todo-list-view" [ style = "solid", color = "orange" ];

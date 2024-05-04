@@ -357,6 +357,7 @@ export function DataTypePanel({
               isDisabled={isReadonly}
               typeRef={resolvedTypeRef}
               onChange={changeTypeRef}
+              removeDataTypes={[dataType]}
             />
             <br />
             <br />

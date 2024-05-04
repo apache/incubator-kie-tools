@@ -87,7 +87,7 @@ export type EditItemDefinition = (
 export function DataTypes() {
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { activeItemDefinitionId } = useDmnEditorStore((s) => s.dataTypesEditor);
+  const activeItemDefinitionId = useDmnEditorStore((s) => s.dataTypesEditor.activeItemDefinitionId);
 
   const [filter, setFilter] = useState("");
   const { externalModelsByNamespace } = useExternalModels();
