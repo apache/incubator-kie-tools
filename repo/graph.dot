@@ -198,11 +198,11 @@ digraph G {
   "kie-tools-examples-base64png-editor-vscode-extension" -> "@kie-tools-examples/base64png-editor" [ style = "solid", color = "orange" ];
   "kie-tools-examples-base64png-editor-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/commit-message-validation-service" -> "@kie-tools/root-env" [ style = "dashed", color = "orange" ];
-  "@kie-tools-examples/drools-process-usertasks-quarkus-example" -> "@kie-tools/jbpm-quarkus-devui" [ style = "dashed", color = "orange" ];
+  "@kie-tools-examples/drools-process-usertasks-quarkus-example" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/ping-pong-view" -> "@kie-tools-core/envelope" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/ping-pong-view-angular" -> "@kie-tools-examples/ping-pong-view" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/ping-pong-view-react" -> "@kie-tools-examples/ping-pong-view" [ style = "solid", color = "orange" ];
-  "@kie-tools-examples/sonataflow-greeting-quarkus-example" -> "@kie-tools/sonataflow-quarkus-devui" [ style = "dashed", color = "orange" ];
+  "@kie-tools-examples/sonataflow-greeting-quarkus-example" -> "@kie-tools/sonataflow-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/todo-list-view" -> "@kie-tools-core/envelope" [ style = "solid", color = "orange" ];
   "kie-tools-examples-todo-list-view-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "orange" ];
   "kie-tools-examples-todo-list-view-vscode-extension" -> "@kie-tools-examples/todo-list-view" [ style = "solid", color = "orange" ];
@@ -303,7 +303,7 @@ digraph G {
   "@kie-tools/dev-deployment-dmn-form-webapp" -> "@kie-tools/form-dmn" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/dev-deployment-dmn-form-webapp" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
-  "@kie-tools/dev-deployment-kogito-quarkus-blank-app" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
+  "@kie-tools/dev-deployment-kogito-quarkus-blank-app" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" -> "@kie-tools/dev-deployment-base-image" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" -> "@kie-tools/dev-deployment-kogito-quarkus-blank-app" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-upload-service" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];

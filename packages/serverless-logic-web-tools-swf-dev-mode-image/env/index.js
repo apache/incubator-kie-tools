@@ -35,6 +35,7 @@ module.exports = composeEnv(
     get env() {
       return {
         swfDevModeImage: {
+          version: require("../package.json").version,
           buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags),
           kogitoImageTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeKogitoImageTag),
         },

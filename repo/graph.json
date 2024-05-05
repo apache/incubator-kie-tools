@@ -706,7 +706,7 @@
       },
       {
         "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app",
-        "target": "@kie-tools/maven-base",
+        "target": "@kie-tools/jbpm-quarkus-devui",
         "weight": 1
       },
       {

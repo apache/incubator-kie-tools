@@ -254,13 +254,14 @@ importers:
         version: 1.1.6
 
   examples/drools-process-usertasks-quarkus-example:
-    devDependencies:
+    dependencies:
       "@kie-tools/jbpm-quarkus-devui":
         specifier: workspace:*
         version: link:../../packages/jbpm-quarkus-devui
       "@kie-tools/maven-base":
         specifier: workspace:*
         version: link:../../packages/maven-base
+    devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../../packages/maven-config-setup-helper
@@ -413,19 +414,20 @@ importers:
         version: 4.8.4
 
   examples/sonataflow-greeting-quarkus-example:
-    devDependencies:
+    dependencies:
       "@kie-tools/maven-base":
         specifier: workspace:*
         version: link:../../packages/maven-base
+      "@kie-tools/sonataflow-quarkus-devui":
+        specifier: workspace:*
+        version: link:../../packages/sonataflow-quarkus-devui
+    devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../../packages/maven-config-setup-helper
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../../packages/root-env
-      "@kie-tools/sonataflow-quarkus-devui":
-        specifier: workspace:*
-        version: link:../../packages/sonataflow-quarkus-devui
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6
@@ -3324,9 +3326,9 @@ importers:
 
   packages/dev-deployment-kogito-quarkus-blank-app:
     dependencies:
-      "@kie-tools/maven-base":
+      "@kie-tools/jbpm-quarkus-devui":
         specifier: workspace:*
-        version: link:../maven-base
+        version: link:../jbpm-quarkus-devui
     devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
@@ -9726,6 +9728,9 @@ importers:
 
   packages/serverless-logic-web-tools-swf-dev-mode-image:
     devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../maven-config-setup-helper
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env

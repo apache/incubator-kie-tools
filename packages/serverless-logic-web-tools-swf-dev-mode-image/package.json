@@ -19,13 +19,16 @@
     "build:prod:linux": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy:assets\" \"pnpm image:podman:build\"",
     "build:prod:win32": "echo \"Build not supported on Windows\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
-    "copy:assets": "pnpm copy:serverless-logic-web-tools-swf-deployment-quarkus-app && pnpm copy:sonataflow-deployment-webapp",
-    "copy:serverless-logic-web-tools-swf-deployment-quarkus-app": "cp -R ./node_modules/@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app/ ./dist-dev/serverless-logic-web-tools-swf-deployment-quarkus-app && mkdir -p ./dist-dev/serverless-logic-web-tools-swf-deployment-quarkus-app/src/main/resources/META-INF/resources/",
+    "copy:assets": "pnpm copy:quarkus-app && pnpm copy:sonataflow-deployment-webapp && pnpm copy:m2-for-sonataflow-quarkus-devui",
+    "copy:m2-for-sonataflow-quarkus-devui": "mvn dependency:copy-dependencies -Dmdep.useRepositoryLayout=true -Dmdep.copyPom=true -DexcludeTransitive=true -DoutputDirectory=./dist-dev/quarkus-app-m2",
+    "copy:quarkus-app": "cp -R ./node_modules/@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app/ ./dist-dev/serverless-logic-web-tools-swf-deployment-quarkus-app && mkdir -p ./dist-dev/serverless-logic-web-tools-swf-deployment-quarkus-app/src/main/resources/META-INF/resources/",
     "copy:sonataflow-deployment-webapp": "cp -R ./node_modules/sonataflow-deployment-webapp/dist/* ./dist-dev/serverless-logic-web-tools-swf-deployment-quarkus-app/src/main/resources/META-INF/resources",
     "image:docker:build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker build --ulimit nofile=5000:5000 $(echo $(build-env swfDevModeImage.buildTags) | xargs printf -- \"-t $(build-env swfDevModeImageEnv.registry)/$(build-env swfDevModeImageEnv.account)/$(build-env swfDevModeImageEnv.name):%s\n\" | xargs echo) --build-arg KOGITO_IMAGE_TAG=$(build-env swfDevModeImage.kogitoImageTag) .\" --else \"echo Docker not found, skipping image build.\"",
-    "image:podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build --ulimit nofile=5000:5000 $(echo $(build-env swfDevModeImage.buildTags) | xargs printf -- \"-t $(build-env swfDevModeImageEnv.registry)/$(build-env swfDevModeImageEnv.account)/$(build-env swfDevModeImageEnv.name):%s\n\" | xargs echo) --build-arg KOGITO_IMAGE_TAG=$(build-env swfDevModeImage.kogitoImageTag) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
+    "image:podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build --ulimit nofile=5000:5000 $(echo $(build-env swfDevModeImage.buildTags) | xargs printf -- \"-t $(build-env swfDevModeImageEnv.registry)/$(build-env swfDevModeImageEnv.account)/$(build-env swfDevModeImageEnv.name):%s\n\" | xargs echo) --build-arg KOGITO_IMAGE_TAG=$(build-env swfDevModeImage.kogitoImageTag) -f Containerfile\" --else \"echo Podman not found, skipping image build.\"",
+    "install": "node install.js"
   },
   "devDependencies": {
+    "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app": "workspace:*",
     "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env": "workspace:*",
