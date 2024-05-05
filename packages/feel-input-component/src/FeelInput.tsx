@@ -348,6 +348,50 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
         });
 
         editor.onKeyDown((e) => {
+          if (e?.metaKey && e?.code == "KeyC") {
+            let selection = editor.getSelection();
+            let selectedtext = selection && editor.getModel()?.getValueInRange(selection);
+            selectedtext && navigator.clipboard.writeText(selectedtext);
+          }
+
+          if (e?.metaKey && e?.code == "KeyX") {
+            let selection = editor.getSelection();
+            if (selection) {
+              let selectedtext = editor.getModel()?.getValueInRange(selection);
+              selectedtext && navigator.clipboard.writeText(selectedtext);
+
+              const range = new Monaco.Range(
+                selection.startLineNumber,
+                selection.startColumn,
+                selection.endLineNumber,
+                selection.endColumn
+              );
+              const textEdits = [{ range: range, text: "" }];
+              editor.executeEdits("paste", textEdits);
+            }
+          }
+
+          if (e?.metaKey && e?.code == "KeyV") {
+            navigator.clipboard
+              .readText()
+              .then((text) => {
+                const selection = editor.getSelection();
+
+                if (selection) {
+                  const range = new Monaco.Range(
+                    selection.startLineNumber,
+                    selection.startColumn,
+                    selection.endLineNumber,
+                    selection.endColumn
+                  );
+                  const textEdits = [{ range, text }];
+                  editor.executeEdits("paste", textEdits);
+                }
+              })
+              .catch((error) => {
+                console.error("Failed to read text from clipboard:", error);
+              });
+          }
           onKeyDown?.(e, editor.getValue());
         });
 

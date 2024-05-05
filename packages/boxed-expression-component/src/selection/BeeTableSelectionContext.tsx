@@ -286,9 +286,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
       return;
     }
 
-    const clipboardMatrix = clipboardValue
-      .split(CLIPBOARD_TO_TEXT_ROW_SEPARATOR)
-      .map((r) => r.split(CLIPBOARD_COLUMN_SEPARATOR));
+    const clipboardMatrix = clipboardValue;
 
     const { startRow, endRow, startColumn, endColumn } = getSelectionIterationBoundaries(selectionRef.current);
 
@@ -300,7 +298,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
         refs.current
           ?.get(r)
           ?.get(c)
-          ?.forEach((e) => e.setValue?.(clipboardMatrix[r - startRow]?.[c - startColumn]));
+          ?.forEach((e) => e.setValue?.(clipboardMatrix));
       }
     }
 
