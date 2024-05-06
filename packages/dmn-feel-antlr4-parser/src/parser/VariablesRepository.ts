@@ -122,7 +122,7 @@ export class VariablesRepository {
         expressions: new Map<string, Expression>(),
       };
 
-      const newContext = {
+      const newContext: VariableContext = {
         uuid: variableUuid,
         parent: parentContext,
         variable: newVariable,
@@ -285,14 +285,16 @@ export class VariablesRepository {
     name: string,
     variableType: FeelSyntacticSymbolNature,
     parent?: VariableContext,
-    typeRef?: string
+    typeRef?: string,
+    allowDynamicVariables?: boolean
   ) {
     const node = this.createVariableNode(
       this.buildVariableUuid(uuid),
       this.buildName(name),
       variableType,
       parent,
-      typeRef
+      typeRef,
+      allowDynamicVariables
     );
 
     this.variablesIndexedByUuid.set(this.buildVariableUuid(uuid), node);
@@ -305,13 +307,15 @@ export class VariablesRepository {
     name: string,
     variableType: FeelSyntacticSymbolNature,
     parent: VariableContext | undefined,
-    typeRef: string | undefined
-  ) {
+    typeRef: string | undefined,
+    allowDynamicVariables: boolean | undefined
+  ): VariableContext {
     return {
       uuid: uuid,
       children: new Map<string, VariableContext>(),
       parent: parent,
       inputVariables: new Array<string>(),
+      allowDynamicVariables: allowDynamicVariables,
       variable: {
         value: name,
         feelSyntacticSymbolNature: variableType,
@@ -481,29 +485,76 @@ export class VariablesRepository {
   }
 
   private addIterable(parent: VariableContext, expression: DmnSome | DmnEvery) {
-    if (expression.satisfies.expression) {
-      this.addInnerExpression(parent, expression.satisfies.expression);
-    }
+    const localParent = this.addIteratorVariable(parent, expression);
+
     if (expression.in.expression) {
-      this.addInnerExpression(parent, expression.in.expression);
+      this.addInnerExpression(localParent, expression.in.expression);
+    }
+    if (expression.satisfies.expression) {
+      this.addInnerExpression(localParent, expression.satisfies.expression);
     }
   }
 
   private addFor(parent: VariableContext, expression: DmnFor) {
+    const localParent = this.addIteratorVariable(parent, expression);
+
     if (expression.return.expression) {
-      this.addInnerExpression(parent, expression.return.expression);
+      this.addInnerExpression(localParent, expression.return.expression);
     }
     if (expression.in.expression) {
-      this.addInnerExpression(parent, expression.in.expression);
+      this.addInnerExpression(localParent, expression.in.expression);
     }
   }
 
-  private addFilter(parent: VariableContext, expression: DmnFilter) {
+  private addFilterVariable(parent: VariableContext, expression: DmnFilter) {
+    let type = undefined;
+
+    // We're assuming that the 'in' expression is with the correct type (a list of @_typeRef).
+    // If it is not the expression will fail anyway.
     if (expression.in.expression) {
-      this.addInnerExpression(parent, expression.in.expression);
+      type = expression.in.expression["@_typeRef"];
+    }
+    const localParent = this.addVariable(
+      expression["@_id"] ?? "",
+      "item",
+      FeelSyntacticSymbolNature.LocalVariable,
+      parent,
+      type,
+      true
+    );
+
+    return localParent;
+  }
+
+  private addIteratorVariable(parent: VariableContext, expression: DmnFor | DmnEvery | DmnSome) {
+    let localParent = parent;
+    if (expression["@_iteratorVariable"]) {
+      let type = undefined;
+
+      // We're assuming that the 'in' expression is with the correct type (a list of @_typeRef).
+      // If it is not the expression will fail anyway.
+      if (expression.in.expression) {
+        type = expression.in.expression["@_typeRef"];
+      }
+      localParent = this.addVariable(
+        expression["@_id"] ?? "",
+        expression["@_iteratorVariable"],
+        FeelSyntacticSymbolNature.LocalVariable,
+        parent,
+        type,
+        true
+      );
+    }
+    return localParent;
+  }
+
+  private addFilter(parent: VariableContext, expression: DmnFilter) {
+    const localParent = this.addFilterVariable(parent, expression);
+    if (expression.in.expression) {
+      this.addInnerExpression(localParent, expression.in.expression);
     }
     if (expression.match.expression) {
-      this.addInnerExpression(parent, expression.match.expression);
+      this.addInnerExpression(localParent, expression.match.expression);
     }
   }
 
