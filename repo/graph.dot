@@ -495,7 +495,7 @@ digraph G {
   "@kie-tools/serverless-logic-web-tools-swf-builder-image" -> "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-builder-image" -> "sonataflow-deployment-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
-  "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app" -> "@kie-tools/sonataflow-quarkus-devui" [ style = "dashed", color = "black" ];
+  "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app" -> "@kie-tools/sonataflow-quarkus-devui" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" -> "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" -> "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" -> "sonataflow-deployment-webapp" [ style = "dashed", color = "black" ];
