@@ -46,19 +46,45 @@ export function useCommands() {
 
 export function CommandsContextProvider(props: React.PropsWithChildren<{}>) {
   const commandsRef = useRef<Commands>({
-    hideFromDrd: () => {},
-    toggleHierarchyHighlight: () => {},
-    togglePropertiesPanel: () => {},
-    createGroup: () => {},
-    selectAll: () => {},
-    panDown: () => {},
-    panUp: () => {},
-    paste: () => {},
-    copy: () => {},
-    cut: () => {},
-    cancelAction: () => {},
-    focusOnSelection: () => {},
-    resetPosition: () => {},
+    hideFromDrd: () => {
+      throw new Error("DMN EDITOR: hideFromDrd command not implemented.");
+    },
+    toggleHierarchyHighlight: () => {
+      throw new Error("DMN EDITOR: toggleHierarchyHighlight command not implemented.");
+    },
+    togglePropertiesPanel: () => {
+      throw new Error("DMN EDITOR: togglePropertiesPanel command not implemented.");
+    },
+    createGroup: () => {
+      throw new Error("DMN EDITOR: createGroup command not implemented.");
+    },
+    selectAll: () => {
+      throw new Error("DMN EDITOR: selectAll command not implemented.");
+    },
+    panDown: () => {
+      throw new Error("DMN EDITOR: panDown command not implemented.");
+    },
+    panUp: () => {
+      throw new Error("DMN EDITOR: panUp command not implemented.");
+    },
+    paste: () => {
+      throw new Error("DMN EDITOR: paste command not implemented.");
+    },
+    copy: () => {
+      throw new Error("DMN EDITOR: copy command not implemented.");
+    },
+    cut: () => {
+      throw new Error("DMN EDITOR: cut command not implemented.");
+    },
+    cancelAction: () => {
+      throw new Error("DMN EDITOR: cancelAction command not implemented.");
+    },
+    focusOnSelection: () => {
+      throw new Error("DMN EDITOR: focusOnSelection command not implemented.");
+    },
+    resetPosition: () => {
+      throw new Error("DMN EDITOR: resetPosition command not implemented.");
+    },
   });
 
   return <CommandsContext.Provider value={{ commandsRef }}>{props.children}</CommandsContext.Provider>;
