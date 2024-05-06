@@ -3630,6 +3630,9 @@ importers:
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
+      "@kie-tools-core/keyboard-shortcuts":
+        specifier: workspace:*
+        version: link:../keyboard-shortcuts
       "@kie-tools-core/notifications":
         specifier: workspace:*
         version: link:../notifications

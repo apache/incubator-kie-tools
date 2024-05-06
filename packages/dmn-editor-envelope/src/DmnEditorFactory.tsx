@@ -150,6 +150,7 @@ function DmnEditorRootWrapper({
         onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot
       }
       workspaceRootAbsolutePosixPath={workspaceRootAbsolutePosixPath}
+      keyboardShortcutsService={envelopeContext?.services.keyboardShortcuts}
     />
   );
 }
