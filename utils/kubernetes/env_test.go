@@ -56,3 +56,24 @@ func TestCreateOrReplaceEnv(t *testing.T) {
 	CreateOrReplaceEnv(&containerWithEnv.Spec.Template.Spec.Containers[0], "myvar", "mutated")
 	assert.Equal(t, "mutated", containerWithEnv.Spec.Template.Spec.Containers[0].Env[0].Value)
 }
+
+func TestAddIfNotPresent(t *testing.T) {
+	containerNoEnv := &v1.Container{Env: nil}
+
+	wasAdded := AddEnvIfNotPresent(containerNoEnv, v1.EnvVar{Name: "var1", Value: "value1"})
+	assert.True(t, wasAdded)
+	assert.Equal(t, v1.EnvVar{Name: "var1", Value: "value1"}, containerNoEnv.Env[0])
+
+	containerWithEnv := &v1.Container{Env: []v1.EnvVar{{Name: "var1", Value: "value1"}, {Name: "var2", Value: "value2"}}}
+	wasAdded = AddEnvIfNotPresent(containerWithEnv, v1.EnvVar{Name: "var1", Value: "value1Changed"})
+	assert.False(t, wasAdded)
+	assert.Equal(t, v1.EnvVar{Name: "var1", Value: "value1"}, containerWithEnv.Env[0])
+	assert.Equal(t, v1.EnvVar{Name: "var2", Value: "value2"}, containerWithEnv.Env[1])
+
+	wasAdded = AddEnvIfNotPresent(containerWithEnv, v1.EnvVar{Name: "var3", Value: "value3"})
+	assert.True(t, wasAdded)
+
+	assert.Equal(t, v1.EnvVar{Name: "var1", Value: "value1"}, containerWithEnv.Env[0])
+	assert.Equal(t, v1.EnvVar{Name: "var2", Value: "value2"}, containerWithEnv.Env[1])
+	assert.Equal(t, v1.EnvVar{Name: "var3", Value: "value3"}, containerWithEnv.Env[2])
+}

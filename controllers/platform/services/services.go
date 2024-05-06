@@ -23,6 +23,7 @@ import (
 	"fmt"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/cfg"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 
@@ -238,9 +239,7 @@ func (d DataIndexHandler) ConfigurePersistence(containerSpec *corev1.Container) 
 }
 
 func (d DataIndexHandler) MergeContainerSpec(containerSpec *corev1.Container) (*corev1.Container, error) {
-	c := containerSpec.DeepCopy()
-	err := mergo.Merge(c, d.platform.Spec.Services.DataIndex.PodTemplate.Container.ToContainer(), mergo.WithOverride)
-	return c, err
+	return mergeContainerSpec(containerSpec, &d.platform.Spec.Services.DataIndex.PodTemplate.Container)
 }
 
 func (d DataIndexHandler) GetReplicaCount() int32 {
@@ -387,9 +386,7 @@ func (j JobServiceHandler) GetReplicaCount() int32 {
 }
 
 func (j JobServiceHandler) MergeContainerSpec(containerSpec *corev1.Container) (*corev1.Container, error) {
-	c := containerSpec.DeepCopy()
-	err := mergo.Merge(c, j.platform.Spec.Services.JobService.PodTemplate.Container.ToContainer(), mergo.WithOverride)
-	return c, err
+	return mergeContainerSpec(containerSpec, &j.platform.Spec.Services.JobService.PodTemplate.Container)
 }
 
 // hasPostgreSQLConfigured returns true when either the SonataFlow Platform PostgreSQL CR's structure or the one in the Job service specification is not nil
@@ -481,4 +478,29 @@ func GenerateServiceURL(protocol string, namespace string, name string) string {
 		serviceUrl = fmt.Sprintf("%s://%s", protocol, name)
 	}
 	return serviceUrl
+}
+
+// mergeContainerSpec Produces the merging between the operatorapi.ContainerSpec provided in a SonataFlowPlatform
+// service, for example, platform.services.jobsService.podTemplate.container, and the destination container for the
+// corresponding service deployment. This method consider specific processing like not overriding environment vars
+// already configured by the operator in the destination container.
+func mergeContainerSpec(dest *corev1.Container, sourceSpec *operatorapi.ContainerSpec) (*corev1.Container, error) {
+	result := dest.DeepCopy()
+	source := sourceSpec.ToContainer()
+	err := mergeContainerPreservingEnvVars(result, &source)
+	return result, err
+}
+
+// mergeContainerSpecPreservingEnvVars Merges the source container into the dest container by giving priority to the
+// env variables already configured in the dest container when both containers have the same variable name.
+func mergeContainerPreservingEnvVars(dest *corev1.Container, source *corev1.Container) error {
+	currentEnv := dest.Env
+	if err := mergo.Merge(dest, source, mergo.WithOverride); err != nil {
+		return err
+	}
+	dest.Env = currentEnv
+	for _, envVar := range source.Env {
+		kubernetes.AddEnvIfNotPresent(dest, envVar)
+	}
+	return nil
 }

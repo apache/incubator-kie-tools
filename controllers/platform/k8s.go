@@ -106,7 +106,7 @@ func createOrUpdateDeployment(ctx context.Context, client client.Client, platfor
 	liveProbe := readyProbe.DeepCopy()
 	liveProbe.ProbeHandler.HTTPGet.Path = constants.QuarkusHealthPathLive
 	imageTag := psh.GetServiceImageName(constants.PersistenceTypeEphemeral)
-	dataDeployContainer := &corev1.Container{
+	serviceContainer := &corev1.Container{
 		Image:           imageTag,
 		ImagePullPolicy: kubeutil.GetImagePullPolicy(imageTag),
 		Env:             psh.GetEnvironmentVariables(),
@@ -127,18 +127,18 @@ func createOrUpdateDeployment(ctx context.Context, client client.Client, platfor
 			},
 		},
 	}
-	dataDeployContainer = psh.ConfigurePersistence(dataDeployContainer)
-	dataDeployContainer, err := psh.MergeContainerSpec(dataDeployContainer)
+	serviceContainer = psh.ConfigurePersistence(serviceContainer)
+	serviceContainer, err := psh.MergeContainerSpec(serviceContainer)
 	if err != nil {
 		return err
 	}
 
 	// immutable
-	dataDeployContainer.Name = psh.GetContainerName()
+	serviceContainer.Name = psh.GetContainerName()
 
 	replicas := psh.GetReplicaCount()
 	lbl, selectorLbl := getLabels(platform, psh)
-	dataDeploySpec := appsv1.DeploymentSpec{
+	serviceDeploymentSpec := appsv1.DeploymentSpec{
 		Selector: &metav1.LabelSelector{
 			MatchLabels: selectorLbl,
 		},
@@ -164,25 +164,25 @@ func createOrUpdateDeployment(ctx context.Context, client client.Client, platfor
 		},
 	}
 
-	dataDeploySpec.Template.Spec, err = psh.MergePodSpec(dataDeploySpec.Template.Spec)
+	serviceDeploymentSpec.Template.Spec, err = psh.MergePodSpec(serviceDeploymentSpec.Template.Spec)
 	if err != nil {
 		return err
 	}
-	kubeutil.AddOrReplaceContainer(dataDeployContainer.Name, *dataDeployContainer, &dataDeploySpec.Template.Spec)
+	kubeutil.AddOrReplaceContainer(serviceContainer.Name, *serviceContainer, &serviceDeploymentSpec.Template.Spec)
 
-	dataDeploy := &appsv1.Deployment{
+	serviceDeployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: platform.Namespace,
 			Name:      psh.GetServiceName(),
 			Labels:    lbl,
 		}}
-	if err := controllerutil.SetControllerReference(platform, dataDeploy, client.Scheme()); err != nil {
+	if err := controllerutil.SetControllerReference(platform, serviceDeployment, client.Scheme()); err != nil {
 		return err
 	}
 
 	// Create or Update the deployment
-	if op, err := controllerutil.CreateOrUpdate(ctx, client, dataDeploy, func() error {
-		dataDeploy.Spec = dataDeploySpec
+	if op, err := controllerutil.CreateOrUpdate(ctx, client, serviceDeployment, func() error {
+		serviceDeployment.Spec = serviceDeploymentSpec
 
 		return nil
 	}); err != nil {
