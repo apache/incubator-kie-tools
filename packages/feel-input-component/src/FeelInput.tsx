@@ -349,15 +349,15 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
 
         editor.onKeyDown((e) => {
           if (e?.metaKey && e?.code == "KeyC") {
-            let selection = editor.getSelection();
-            let selectedtext = selection && editor.getModel()?.getValueInRange(selection);
+            const selection = editor.getSelection();
+            const selectedtext = selection && editor.getModel()?.getValueInRange(selection);
             selectedtext && navigator.clipboard.writeText(selectedtext);
           }
 
           if (e?.metaKey && e?.code == "KeyX") {
-            let selection = editor.getSelection();
+            const selection = editor.getSelection();
             if (selection) {
-              let selectedtext = editor.getModel()?.getValueInRange(selection);
+              const selectedtext = editor.getModel()?.getValueInRange(selection);
               selectedtext && navigator.clipboard.writeText(selectedtext);
 
               const range = new Monaco.Range(
