@@ -13,9 +13,9 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
-    "build:dev": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm image:docker:build\"",
-    "build:prod": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm image:docker:build\"",
-    "copy-assets": "rimraf dist-dev && mkdir -p ./dist-dev && pnpm copy:m2-for-jbpm-quarkus-devui && pnpm copy:quarkus-app",
+    "build:dev": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy:assets\" \"pnpm image:docker:build\"",
+    "build:prod": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy:assets\" \"pnpm image:docker:build\"",
+    "copy:assets": "rimraf dist-dev && mkdir -p ./dist-dev && pnpm copy:m2-for-jbpm-quarkus-devui && pnpm copy:quarkus-app",
     "copy:m2-for-jbpm-quarkus-devui": "mvn dependency:copy-dependencies -Dmdep.useRepositoryLayout=true -Dmdep.copyPom=true -DexcludeTransitive=true -DoutputDirectory=./dist-dev/quarkus-app-m2",
     "copy:quarkus-app": "run-script-os",
     "copy:quarkus-app:linux:darwin": " cp -R ./node_modules/@kie-tools/dev-deployment-kogito-quarkus-blank-app/ ./dist-dev/quarkus-app && rm -rf ./dist-dev/quarkus-app/node_modules ./dist-dev/quarkus-app/install.js ./dist-dev/quarkus-app/env ./dist-dev/quarkus-app/package.json",

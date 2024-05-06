@@ -23,7 +23,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 >
   <!-- Purposefully not declaring maven-base as parent -->
-  <!-- As this app aims to work as any consumer app would.  -->
+  <!-- As this app aims to work as any consumer app would. -->
 
   <parent>
     <groupId>org.apache</groupId>

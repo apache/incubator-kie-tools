@@ -22,6 +22,14 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 >
+  <!-- Purposefully not declaring maven-base as parent -->
+  <!-- As this package is not intended to be published. -->
+
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>32</version>
+  </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito.stunner.editors</groupId>
@@ -57,46 +65,6 @@
     <system>github-issues</system>
     <url>https://github.com/apache/incubator-kie-issues/issues</url>
   </issueManagement>
-
-  <repositories>
-    <repository>
-      <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,
-           as the Maven Central is now treated as the first (default) repository (because it is before the Apache Nexus one).
-           Artifacts with release (fixed) versions are being downloaded primarily from there. Without the central being the
-           first repository the Apache Nexus would be contacted first and since it is quite slow it slows down the build.
-           We use Apache repo only to download our SNAPSHOTs. -->
-      <id>central</id>
-      <name>Central Repository</name>
-      <url>https://repo.maven.apache.org/maven2</url>
-      <layout>default</layout>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>apache-public-repository-group</id>
-      <name>Apache Public Repository Group</name>
-      <url>https://repository.apache.org/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>jboss</id>
-      <name>JBoss Public Repo</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public</url>
-    </repository>
-    <repository>
-      <id>sonatype-public</id>
-      <name>Sonatype Public Snapshots Repo</name>
-      <url>https://oss.sonatype.org/content/repositories/public</url>
-    </repository>
-  </repositories>
 
   <modules>
     <!-- ERRAI -->
@@ -145,10 +113,14 @@
 
   <pluginRepositories>
     <pluginRepository>
-      <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,
-           as the Maven Central is now treated as the first (default) repository (because it is before the Apache Nexus one).
-           Artifacts with release (fixed) versions are being downloaded primarily from there. Without the central being the
-           first repository the Apache Nexus would be contacted first and since it is quite slow it slows down the build.
+      <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM)
+      makes the build much faster,
+           as the Maven Central is now treated as the first (default) repository (because it is before the
+      Apache Nexus one).
+           Artifacts with release (fixed) versions are being downloaded primarily from there. Without the
+      central being the
+           first repository the Apache Nexus would be contacted first and since it is quite slow it slows down
+      the build.
            We use Apache repo only to download our SNAPSHOTs. -->
       <id>central</id>
       <name>Central Repository</name>
@@ -285,7 +257,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <!-- JaCoCo coverage data file location -->
-    <!--suppress UnresolvedMavenProperty -->
+    <!--suppress
+    UnresolvedMavenProperty -->
     <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
     <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
     <checkstyle.header.extensions>java</checkstyle.header.extensions>
@@ -774,7 +747,8 @@
         </configuration>
       </plugin>
 
-      <!--Fix translations from Zanata -->
+      <!--Fix
+      translations from Zanata -->
       <plugin>
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>replacer</artifactId>
@@ -823,7 +797,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
-          <!-- Temporary workaround for https://issues.jboss.org/browse/ERRAI-1101. Needs to stay here until
+          <!-- Temporary workaround for https://issues.jboss.org/browse/ERRAI-1101. Needs to stay
+          here until
           we find a general solution (e.g. moving all localized code to Errai TranslationService. -->
           <execution>
             <id>create-default-i18n-resource</id>
@@ -948,7 +923,8 @@
                       <property name="eachLine" value="true" />
                     </module>
                     <module name="TreeWalker">
-                      <!-- Import settings: getting rid of redundant import, forbid star notation, defined order of imports. -->
+                      <!-- Import settings: getting rid of redundant import, forbid star notation,
+                      defined order of imports. -->
                       <module name="RedundantImport" />
                       <module name="AvoidStarImport">
                         <property name="allowClassImports" value="false" />
@@ -1098,7 +1074,8 @@
                   >
                     <reportOnly>${illegaltransitivereportonly}</reportOnly>
                     <regexIgnoredClasses combine.children="append">
-                      <!-- The marshalling classes are generated by Errai during GWT compilation. These classes
+                      <!-- The marshalling classes are generated by Errai during GWT compilation.
+                      These classes
                            usually contain references to other dependencies which are not part of the project
                            (transitive dependencies), which then results in the dependency check failure.
                            From the maintenance point of view, ignoring these generated classes seems like the
@@ -1106,8 +1083,10 @@
                       <regexIgnoredClass>
                         org\.jboss\.errai\.marshalling\.server\.impl\.ServerMarshallingFactory.*
                       </regexIgnoredClass>
-                      <!-- The maven-shade-plugin needs these classes to be compile-scope in guvnor-ala-openshift-client to be picked up, and
-                           then referenced in guvnor-ala-openshift-provider. When we don't need to shade anymore, we can remove these lines. -->
+                      <!-- The maven-shade-plugin needs these classes to be compile-scope in
+                      guvnor-ala-openshift-client to be picked up, and
+                           then referenced in guvnor-ala-openshift-provider. When we don't need to shade anymore, we can
+                      remove these lines. -->
                       <regexIgnoredClass>io\.fabric8\.kubernetes.*</regexIgnoredClass>
                       <regexIgnoredClass>io\.fabric8\.openshift.*</regexIgnoredClass>
                       <regexIgnoredClass>com\.sun\.net\.httpserver\..+</regexIgnoredClass>
@@ -1130,17 +1109,22 @@
                   <bannedDependencies>
                     <excludes combine.children="append">
                       <!-- Ban blacklisted logging deps (we only use SLF4J + Logback) -->
-                      <!-- In case of transitive dependency, exclude it and use 'org.slf4j:jcl-over-slf4j' instead -->
+                      <!-- In case of transitive dependency, exclude it and use
+                      'org.slf4j:jcl-over-slf4j' instead -->
                       <exclude>commons-logging:commons-log*</exclude>
-                      <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' instead -->
+                      <!-- In case of transitive dependency, exclude it and use
+                      'org.slf4j:log4j-over-slf4j' instead -->
                       <exclude>log4j:log4j</exclude>
-                      <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' instead -->
+                      <!-- In case of transitive dependency, exclude it and use
+                      'org.javassist:javassist' instead -->
                       <exclude>javassist:javassist</exclude>
                       <exclude>org.apache.cxf:cxf-bundle-jaxrs</exclude>
                       <exclude>org.jboss.weld.se:weld-se
-                      </exclude><!-- Use weld-se-core instead -->
+                      </exclude><!-- Use
+                      weld-se-core instead -->
                       <exclude>org.jboss.weld.servlet:weld-servlet
-                      </exclude><!-- Use weld-servlet-core instead -->
+                      </exclude><!-- Use
+                      weld-servlet-core instead -->
                       <exclude>org.mockito:mockito-all</exclude><!-- Use mockito-core instead -->
                     </excludes>
                   </bannedDependencies>
@@ -1158,12 +1142,14 @@
                 <rules>
                   <banDuplicateClasses>
                     <ignoreClasses>
-                      <!-- Ban 'org.elasticsearch:elasticsearch' internal classes, as the artifact contains
+                      <!-- Ban 'org.elasticsearch:elasticsearch' internal classes, as the artifact
+                      contains
                         some duplicated classes for Joda time ones and it has the joda artifact
                         as transitive dependency as well. -->
                       <ignoreClass>org.joda.time.*</ignoreClass>
                       <!-- Classes bundled in errai-javax-enterprise which are GWT friendly.
-                           See https://github.com/apache/incubator-kie-tools/blob/main/packages/stunner-editors/errai-javax-enterprise/README -->
+                           See
+                      https://github.com/apache/incubator-kie-tools/blob/main/packages/stunner-editors/errai-javax-enterprise/README -->
                       <ignoreClass>javax.interceptor.InvocationContext</ignoreClass>
                       <ignoreClass>javax.inject.Provider</ignoreClass>
                       <ignoreClass>javax.inject.Named</ignoreClass>
@@ -1178,16 +1164,19 @@
                       <!-- Classes from gwt-user duplicated in errai-uibinder -->
                       <ignoreClass>com.google.gwt.uibinder.rebind.UiBinderWriter</ignoreClass>
                       <ignoreClass>com.google.gwt.uibinder.rebind.UiBinderGenerator</ignoreClass>
-                      <!-- Duplicated by XStream's transitive deps, with very little chance to get properly fixed -->
+                      <!-- Duplicated by XStream's transitive deps, with very little chance to get
+                      properly fixed -->
                       <ignoreClass>org.xmlpull.v1.XmlPullParserException</ignoreClass>
                       <ignoreClass>org.xmlpull.v1.XmlPullParser</ignoreClass>
-                      <!-- Duplicated in xml-apis:xml-apis:jar:1.4.01 and xerces:xercesImpl:jar:2.11.0.SP4. The class is identical
+                      <!-- Duplicated in xml-apis:xml-apis:jar:1.4.01 and
+                      xerces:xercesImpl:jar:2.11.0.SP4. The class is identical
                            and there is very little chance this will get ever fixed. -->
                       <ignoreClass>org.w3c.dom.ElementTraversal</ignoreClass>
                       <ignoreClass>org.w3c.dom.UserDataHandler</ignoreClass>
                     </ignoreClasses>
                     <dependencies>
-                      <!-- gwt-user bundles javax.servlet classes which usually conflicts with the servlet dependencies
+                      <!-- gwt-user bundles javax.servlet classes which usually conflicts with the
+                      servlet dependencies
                            in -webapp modules. -->
                       <dependency>
                         <groupId>org.gwtproject</groupId>
@@ -1197,7 +1186,8 @@
                           <ignoreClass>javax.servlet.*</ignoreClass>
                         </ignoreClasses>
                       </dependency>
-                      <!-- gwt-dev bundles dozens of different 3rd party dependencies, but can not be usually excluded
+                      <!-- gwt-dev bundles dozens of different 3rd party dependencies, but can not
+                      be usually excluded
                            as e.g. GWT Mockito tests are using the com.google.gwt classes inside. Ignoring it for the
                            duplicate classes check seems to be the only way. -->
                       <dependency>
@@ -1208,7 +1198,8 @@
                           <ignoreClass>*</ignoreClass>
                         </ignoreClasses>
                       </dependency>
-                      <!-- netty-all duplicates many netty-* jars but they are managed to the same version -->
+                      <!-- netty-all duplicates many netty-* jars but they are managed to the same
+                      version -->
                       <dependency>
                         <groupId>io.netty</groupId>
                         <artifactId>netty-all</artifactId>
@@ -1222,7 +1213,8 @@
                         <artifactId>xmlbeans</artifactId>
                         <type>jar</type>
                         <ignoreClasses>
-                          <!-- Classes duplicated by the jar itself (bug), see https://issues.apache.org/jira/browse/XMLBEANS-499 -->
+                          <!-- Classes duplicated by the jar itself (bug), see
+                          https://issues.apache.org/jira/browse/XMLBEANS-499 -->
                           <ignoreClass>org.apache.xmlbeans.xml.stream.XMLName</ignoreClass>
                           <ignoreClass>org.apache.xmlbeans.xml.stream.XMLInputStream</ignoreClass>
                           <ignoreClass>org.apache.xmlbeans.xml.stream.utils.NestedThrowable</ignoreClass>
@@ -1262,9 +1254,11 @@
                   <bannedDependencies>
                     <excludes>
                       <!-- Ban unwanted logging deps -->
-                      <!-- In case of transitive dependency, exclude it and use jcl-over-slf4j instead -->
+                      <!-- In case of transitive dependency, exclude it and use jcl-over-slf4j
+                      instead -->
                       <exclude>commons-logging:commons-log*</exclude>
-                      <!-- In case of transitive dependency, exclude it and use log4j-over-slf4j instead -->
+                      <!-- In case of transitive dependency, exclude it and use log4j-over-slf4j
+                      instead -->
                       <exclude>log4j:log4j</exclude>
                       <!-- Ban 'javassist:javassist' in favor of 'org.javassist:javassist' -->
                       <exclude>javassist:javassist</exclude>
@@ -1363,7 +1357,8 @@
                 </archive>
               </configuration>
             </execution>
-            <!-- No OSGi manifestEntries for <goal>jar</goal>: if it supported, then felix has already added them -->
+            <!-- No OSGi manifestEntries for <goal>jar</goal>: if it supported, then felix has
+            already added them -->
             <execution>
               <id>test-jar</id>
               <goals>
@@ -1609,7 +1604,9 @@
             </dependency>
             <dependency>
               <groupId>org.jboss.pressgang</groupId>
-              <!--Non-namespaced version for DocBook 4.5 compatibility. For XSD namespaced version, use pressgang-xslt-ns -->
+              <!--Non-namespaced
+              version for DocBook 4.5 compatibility. For XSD namespaced version, use
+              pressgang-xslt-ns -->
               <artifactId>pressgang-xslt</artifactId>
               <version>${version.org.jboss.pressbang}</version>
             </dependency>
@@ -1681,7 +1678,9 @@
           <family>mac</family>
         </os>
       </activation>
-      <!-- If we could limit this profile to JDK <=6 on Mac, we'd include -d32 in argLine. But we can't, because profile activation settings are ORed rather than ANDed together. See http://jira.codehaus.org/browse/MNG-4565 -->
+      <!-- If we could limit this profile to JDK <=6 on Mac, we'd include -d32 in argLine. But we
+      can't, because profile activation settings are ORed rather than ANDed together. See
+      http://jira.codehaus.org/browse/MNG-4565 -->
       <properties>
         <argLine>-XX:CompileThreshold=1000 -Djava.awt.headless=true</argLine>
       </properties>
@@ -1766,7 +1765,8 @@
               <useSystemClassLoader>false</useSystemClassLoader>
               <useManifestOnlyJar>false</useManifestOnlyJar>
               <!--               <forkMode>pertest</forkMode> this is the same as below -->
-              <!-- http://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html#Migrating_the_Deprecated_forkMode_Parameter_to_forkCount_and_reuseForks -->
+              <!--
+              http://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html#Migrating_the_Deprecated_forkMode_Parameter_to_forkCount_and_reuseForks -->
               <forkCount>1</forkCount>
               <reuseForks>false</reuseForks>
               <argLine>${argLine}</argLine>
@@ -1821,7 +1821,8 @@
       <id>graph</id>
       <build>
         <plugins>
-          <!-- Important: you need to have Graphviz installed on your system to make the plugin work! -->
+          <!-- Important: you need to have Graphviz installed on your system to make the plugin
+          work! -->
           <plugin>
             <groupId>org.fusesource.mvnplugins</groupId>
             <artifactId>maven-graph-plugin</artifactId>
@@ -1868,16 +1869,19 @@
                   </roots>
                 </configurationFile>
               </analysisConfigurationFiles>
-              <!-- By default, revapi will only fail the build if there are potentially breaking or breaking changes. However, in the report
+              <!-- By default, revapi will only fail the build if there are potentially breaking or
+              breaking changes. However, in the report
                    we want even non breaking changes to be present. -->
               <reportSeverity>nonBreaking</reportSeverity>
               <failSeverity>potentiallyBreaking</failSeverity>
             </configuration>
-            <!-- Running two executions is a workaround to make sure we get a HTML report in case revapi finds
+            <!-- Running two executions is a workaround to make sure we get a HTML report in case
+            revapi finds
                  some incompatible changes. The "check" goal will simply fail the whole build before it could get
                  to the report. To make sure we always get a HTML report, the "report" goal needs to be executed
                  before the "check" goal.
-                 Once https://github.com/revapi/revapi/issues/11 is fixed it should be possible to use single execution. -->
+                 Once https://github.com/revapi/revapi/issues/11 is fixed it should be possible to use single
+            execution. -->
             <executions>
               <execution>
                 <id>check</id>
@@ -1993,7 +1997,8 @@
             <executions>
               <execution>
                 <id>ban-duplicated-classes</id>
-                <!-- The execution's configuration is part of the pluginManagement. This piece here only makes sure the
+                <!-- The execution's configuration is part of the pluginManagement. This piece here
+                only makes sure the
                      execution is enabled (by specifying a phase) for full profile builds. -->
                 <phase>validate</phase>
               </execution>
@@ -2016,7 +2021,8 @@
       </build>
     </profile>
     <!--
-     Creates JaCoCo XML reports and invokes the Sonar scanner, which uploads code quality data into the SonarCloud.
+     Creates JaCoCo XML reports and invokes the Sonar scanner, which uploads code quality data into the
+    SonarCloud.
    -->
     <profile>
       <id>sonarcloud-analysis</id>
@@ -2025,7 +2031,8 @@
         >${project.reporting.outputDirectory}/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.organization>kiegroup</sonar.organization>
-        <!--suppress UnresolvedMavenProperty -->
+        <!--suppress
+        UnresolvedMavenProperty -->
         <sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
       </properties>
       <build>
@@ -2143,11 +2150,14 @@
       </activation>
       <properties>
         <sonar.pullrequest.provider>GitHub</sonar.pullrequest.provider>
-        <!--suppress UnresolvedMavenProperty -->
+        <!--suppress
+        UnresolvedMavenProperty -->
         <sonar.pullrequest.branch>${env.ghprbSourceBranch}</sonar.pullrequest.branch>
-        <!--suppress UnresolvedMavenProperty -->
+        <!--suppress
+        UnresolvedMavenProperty -->
         <sonar.pullrequest.key>${env.ghprbPullId}</sonar.pullrequest.key>
-        <!--suppress UnresolvedMavenProperty -->
+        <!--suppress
+        UnresolvedMavenProperty -->
         <sonar.pullrequest.base>${env.ghprbTargetBranch}</sonar.pullrequest.base>
       </properties>
     </profile>
