@@ -5,7 +5,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 >
     <parent>
-        <artifactId>stunner-editors-parent</artifactId>
+        <artifactId>serverless-workflow-diagram-editor-parent</artifactId>
         <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <version>${revision}</version>
     </parent>

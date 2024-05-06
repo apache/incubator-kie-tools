@@ -230,7 +230,7 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
         name: partition.name,
         bootstrapPnpmFilterString: [...relevantPackageNamesInPartition].map((p) => `-F '${p}'`).join(" "),
         upstreamPnpmFilterString: [...upstreamPackageNamesInPartition].map((p) => `-F '${p}'`).join(" "),
-        affectedPnpmFilterString: [...affectedPackageNamesInPartition].map((p) => `-F '...${p}'`).join(" "),
+        affectedPnpmFilterString: [...affectedPackageNamesInPartition].map((p) => `-F '${p}'`).join(" "),
       };
     })
   );

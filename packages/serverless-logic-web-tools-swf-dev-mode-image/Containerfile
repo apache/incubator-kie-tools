@@ -25,7 +25,8 @@ USER root
 RUN chown kogito /home/kogito/.m2
 USER kogito
 
-COPY --chown=kogito:root dist-dev/serverless-logic-web-tools-swf-deployment-quarkus-app/ /home/kogito/serverless-logic-web-tools-swf-deployment-quarkus-app/
+COPY --chown=kogito:root dist-dev/quarkus-app/ /home/kogito/serverless-logic-web-tools-swf-deployment-quarkus-app/
+COPY --chown=kogito:root dist-dev/quarkus-app-m2/ /home/kogito/.m2/repository
 
 WORKDIR /home/kogito/serverless-logic-web-tools-swf-deployment-quarkus-app/
 
