@@ -22,6 +22,15 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 >
+  <!-- Purposefully not declaring maven-base as parent -->
+  <!-- As this app aims to work as any consumer app would. -->
+
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>32</version>
+  </parent>
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito</groupId>
   <artifactId>serverless-logic-web-tools-swf-deployment-quarkus-app</artifactId>
@@ -42,50 +51,6 @@
     <com.github.erosb.everit-json-schema.version>1.14.2</com.github.erosb.everit-json-schema.version>
     <surefire-plugin.version>3.2.5</surefire-plugin.version>
   </properties>
-
-  <repositories>
-    <repository>
-      <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,
-           as the Maven Central is now treated as the first (default) repository (because it is before the Apache Nexus one).
-           Artifacts with release (fixed) versions are being downloaded primarily from there. Without the central being the
-           first repository the Apache Nexus would be contacted first and since it is quite slow it slows down the build.
-           We use Apache repo only to download our SNAPSHOTs. -->
-      <id>central</id>
-      <name>Central Repository</name>
-      <url>https://repo.maven.apache.org/maven2</url>
-      <layout>default</layout>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>apache-public-repository-group</id>
-      <name>Apache Public Repository Group</name>
-      <url>https://repository.apache.org/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
 
   <dependencyManagement>
     <dependencies>
@@ -146,6 +111,7 @@
     <dependency>
       <groupId>org.apache.kie.sonataflow</groupId>
       <artifactId>sonataflow-quarkus-devui</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>

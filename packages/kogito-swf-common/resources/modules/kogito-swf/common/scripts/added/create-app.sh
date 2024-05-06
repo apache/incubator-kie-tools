@@ -44,8 +44,6 @@ source "${script_dir_path}"/configure-jvm-mvn.sh
   -DplatformVersion="${QUARKUS_PLATFORM_VERSION}" \
   -Dextensions="${QUARKUS_EXTENSIONS}"
 
-# TODO: Install sonataflow-quarkus-devui by patching the pom instead of using -Dextensions
-
 cd "${PROJECT_ARTIFACT_ID}"
 
 source "${script_dir_path}"/configure-jvm-mvn.sh
@@ -128,10 +126,6 @@ fi
 
 ls -la "${KOGITO_HOME}"/.m2/repository/org/apache/kie/
 ls -la "${KOGITO_HOME}"/.m2/repository/org/kie/
-
-# mkdir .mvn
-touch .mvn/maven.config
-echo " -Dversion.org.kie.kogito=${KOGITO_VERSION} -Dquarkus.platform.version=${QUARKUS_PLATFORM_VERSION}" >> .mvn/maven.config
 
 # we force the dependencies download beforehand, so we won't have problems when running or building our apps in offline mode
 # see:

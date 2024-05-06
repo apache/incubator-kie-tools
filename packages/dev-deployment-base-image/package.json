@@ -31,6 +31,9 @@
     "install:mvnw:win32": "pnpm powershell \"mvn -e org.apache.maven.plugins:maven-wrapper-plugin:3.3.0:wrapper\"",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
+  "dependencies": {
+    "@kie-tools/maven-base": "workspace:*"
+  },
   "devDependencies": {
     "@kie-tools/dev-deployment-upload-service": "workspace:*",
     "@kie-tools/image-builder": "workspace:*",

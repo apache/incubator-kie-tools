@@ -22,10 +22,16 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 >
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-tools-maven-base</artifactId>
+    <version>${revision}</version>
+    <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
+  </parent>
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.dashbuilder</groupId>
   <artifactId>dashbuilder-parent</artifactId>
-  <version>${revision}</version>
   <packaging>pom</packaging>
 
   <name>Dashbuilder parent</name>
