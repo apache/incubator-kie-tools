@@ -62,7 +62,6 @@
       { "id": "bpmn-vscode-extension" },
       { "id": "@kie-tools/vscode-java-code-completion-extension-plugin" },
       { "id": "@kie-tools/pmml-editor-marshaller" },
-      { "id": "@kie-tools/maven-config-setup-helper" },
       { "id": "@kie-tools/stunner-editors-dmn-loader" },
       { "id": "chrome-extension-pack-kogito-kie-editors" },
       { "id": "@kie-tools/chrome-extension-test-helper" },
@@ -75,6 +74,7 @@
       { "id": "@kie-tools/image-builder" },
       { "id": "@kie-tools/dashbuilder" },
       { "id": "@kie-tools/dashbuilder-component-assembler" },
+      { "id": "@kie-tools/maven-config-setup-helper" },
       { "id": "@kie-tools/dashbuilder-component-echarts" },
       { "id": "@kie-tools/dashbuilder-component-map" },
       { "id": "@kie-tools/dashbuilder-component-svg-heatmap" },
@@ -399,20 +399,15 @@
       { "source": "@kie-tools/xml-parser-ts", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "bpmn-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "bpmn-vscode-extension", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
+      { "source": "bpmn-vscode-extension", "target": "@kie-tools/stunner-editors", "weight": 1 },
       {
         "source": "bpmn-vscode-extension",
         "target": "@kie-tools/vscode-java-code-completion-extension-plugin",
         "weight": 1
       },
-      { "source": "bpmn-vscode-extension", "target": "@kie-tools/stunner-editors", "weight": 1 },
       {
         "source": "@kie-tools/vscode-java-code-completion-extension-plugin",
-        "target": "@kie-tools/maven-config-setup-helper",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/vscode-java-code-completion-extension-plugin",
-        "target": "@kie-tools/root-env",
+        "target": "@kie-tools/maven-base",
         "weight": 1
       },
       { "source": "@kie-tools/pmml-editor-marshaller", "target": "@kie-tools/eslint", "weight": 1 },
@@ -481,8 +476,8 @@
       { "source": "@kie-tools/cors-proxy-image", "target": "@kie-tools/cors-proxy", "weight": 1 },
       { "source": "@kie-tools/cors-proxy-image", "target": "@kie-tools/image-builder", "weight": 1 },
       { "source": "@kie-tools/image-builder", "target": "@kie-tools/tsconfig", "weight": 1 },
+      { "source": "@kie-tools/dashbuilder", "target": "@kie-tools/maven-base", "weight": 1 },
       { "source": "@kie-tools/dashbuilder", "target": "@kie-tools/dashbuilder-component-assembler", "weight": 1 },
-      { "source": "@kie-tools/dashbuilder", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
       {
         "source": "@kie-tools/dashbuilder-component-assembler",
         "target": "@kie-tools/dashbuilder-component-echarts",
@@ -681,17 +676,13 @@
         "weight": 1
       },
       { "source": "@kie-tools/dashbuilder-viewer-image-env", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/dev-deployment-base-image", "target": "@kie-tools/maven-base", "weight": 1 },
       {
         "source": "@kie-tools/dev-deployment-base-image",
         "target": "@kie-tools/dev-deployment-upload-service",
         "weight": 1
       },
       { "source": "@kie-tools/dev-deployment-base-image", "target": "@kie-tools/image-builder", "weight": 1 },
-      {
-        "source": "@kie-tools/dev-deployment-base-image",
-        "target": "@kie-tools/maven-config-setup-helper",
-        "weight": 1
-      },
       { "source": "@kie-tools/dev-deployment-upload-service", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/dev-deployment-dmn-form-webapp",
@@ -715,10 +706,9 @@
       },
       {
         "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app",
-        "target": "@kie-tools/maven-config-setup-helper",
+        "target": "@kie-tools/jbpm-quarkus-devui",
         "weight": 1
       },
-      { "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image",
         "target": "@kie-tools/dev-deployment-base-image",
@@ -763,15 +753,14 @@
       { "source": "dmn-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "dmn-vscode-extension", "target": "@kie-tools/dmn-editor-envelope", "weight": 1 },
       { "source": "dmn-vscode-extension", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
+      { "source": "dmn-vscode-extension", "target": "@kie-tools/stunner-editors", "weight": 1 },
       {
         "source": "dmn-vscode-extension",
         "target": "@kie-tools/vscode-java-code-completion-extension-plugin",
         "weight": 1
       },
-      { "source": "dmn-vscode-extension", "target": "@kie-tools/stunner-editors", "weight": 1 },
       { "source": "@kie-tools/extended-services", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools/extended-services-java", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
-      { "source": "@kie-tools/extended-services-java", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/extended-services-java", "target": "@kie-tools/maven-base", "weight": 1 },
       { "source": "@kie-tools/form-generation-tool", "target": "@kie-tools/uniforms-bootstrap4-codegen", "weight": 1 },
       { "source": "@kie-tools/form-generation-tool", "target": "@kie-tools/uniforms-patternfly-codegen", "weight": 1 },
       { "source": "@kie-tools/uniforms-bootstrap4-codegen", "target": "@kie-tools-core/webpack-base", "weight": 1 },
@@ -1089,12 +1078,7 @@
       },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
-        "target": "@kie-tools/maven-config-setup-helper",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
-        "target": "@kie-tools/root-env",
+        "target": "@kie-tools/sonataflow-quarkus-devui",
         "weight": 1
       },
       {
@@ -1177,8 +1161,7 @@
       { "source": "vscode-extension-kogito-bundle", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/yard-validator-worker", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/yard-validator-worker", "target": "@kie-tools/yard-model", "weight": 1 },
-      { "source": "@kie-tools/yard-model", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
-      { "source": "@kie-tools/yard-model", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/yard-model", "target": "@kie-tools/maven-base", "weight": 1 },
       { "source": "yard-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "yard-vscode-extension", "target": "@kie-tools/yard-editor", "weight": 1 },
       { "source": "yard-vscode-extension", "target": "@kie-tools/vscode-extension-common-test-helpers", "weight": 1 }

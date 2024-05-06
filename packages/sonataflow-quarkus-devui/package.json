@@ -26,8 +26,10 @@
     "quarkus:dev:darwin:linux": "mvn clean package quarkus:dev -DskipTests",
     "quarkus:dev:win32": "mvn clean package quarkus:dev -DskipTests"
   },
+  "dependencies": {
+    "@kie-tools/maven-base": "workspace:*"
+  },
   "devDependencies": {
-    "@kie-tools/maven-base": "workspace:*",
     "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/serverless-workflow-dev-ui-webapp": "workspace:*",
