@@ -9711,6 +9711,10 @@ importers:
         version: link:../root-env
 
   packages/serverless-logic-web-tools-swf-deployment-quarkus-app:
+    dependencies:
+      "@kie-tools/sonataflow-quarkus-devui":
+        specifier: workspace:*
+        version: link:../sonataflow-quarkus-devui
     devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*

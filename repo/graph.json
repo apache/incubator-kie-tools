@@ -1078,12 +1078,7 @@
       },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
-        "target": "@kie-tools/maven-config-setup-helper",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
-        "target": "@kie-tools/root-env",
+        "target": "@kie-tools/sonataflow-quarkus-devui",
         "weight": 1
       },
       {
