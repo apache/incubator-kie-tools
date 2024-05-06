@@ -132,6 +132,11 @@ export function deleteNode({
     }
 
     if (!dmnObject && nodeNature !== NodeNature.UNKNOWN) {
+      /**
+       * We do not want to throw error in case of `nodeNature` equals to `NodeNature.UNKNOWN`.
+       * In such scenario it is expected `dmnObject` is undefined as we can not pair `dmnObject` with the `DMNShape`.
+       * However we are still able to delete at least the selected `DMNShape` from the diagram.
+       */
       throw new Error(`DMN MUTATION: Can't delete DMN object that doesn't exist: ID=${dmnObjectId}`);
     }
   }
