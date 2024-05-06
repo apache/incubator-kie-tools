@@ -334,7 +334,7 @@ generate-all: generate generate-deploy bundle addheaders vet fmt
 
 .PHONY: test-e2e # You will need to have a Minikube/Kind cluster up in running to run this target, and run container-builder before the test
 test-e2e:
-	go test ./test/e2e/* -v -ginkgo.v -ginkgo.no-color -ginkgo.junit-report=./e2e-test-report.xml -timeout 60m
+	go test ./test/e2e/* -v -ginkgo.v -ginkgo.no-color -ginkgo.junit-report=./dist-e2e-tests/junit-report-it.xml -timeout 60m
 
 .PHONY: before-pr
 before-pr: test generate-all
@@ -359,4 +359,4 @@ load-docker-image: install-kind
 .PHONY: full-test-e2e
 full-test-e2e: create-cluster load-docker-image deploy
 	kubectl wait pod -A -l control-plane=sonataflow-operator --for condition=Ready --timeout 120s
-	go test ./test/e2e/* -v -ginkgo.v -ginkgo.no-color -ginkgo.junit-report=./e2e-test-report.xml -timeout 60m
+	go test ./test/e2e/* -v -ginkgo.v -ginkgo.no-color -ginkgo.junit-report=./dist-e2e-tests/junit-report-it.xml -timeout 60m

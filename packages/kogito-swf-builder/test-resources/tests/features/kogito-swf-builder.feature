@@ -1,4 +1,4 @@
-@quay.io/kiegroup/kogito-swf-builder
+@quay.io/kiegroup/kogito-swf-builder-nightly
 Feature: Serverless Workflow builder images
 
   Scenario: Verify that the application is built and started correctly
