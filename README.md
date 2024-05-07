@@ -43,11 +43,11 @@ To build and test all packages of the Apache KIE Tools project, you're going to 
 
 #### Step 1: Bootstrap
 
-Bootstrapping installs the necessary dependencies for each packages.
+Bootstrapping installs the necessary dependencies for each package.
 
 - `pnpm bootstrap` --> Will bootstrap all packages
 - `pnpm bootstrap [pnpm-filter]` --> Will bootstrap packages filtered by [`pnpm` filter](https://pnpm.io/filtering)
-  > E.g.,
+- > E.g.,
   >
   > `pnpm bootstrap -F dmn-editor...` bootstraps the `dmn-editor` package and its dependencies.
 
