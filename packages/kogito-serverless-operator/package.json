@@ -20,7 +20,7 @@
     "build:prod:darwin:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && make build && pnpm image:build && pnpm test && pnpm test-e2e && pnpm format",
     "build:prod:win32": "echo 'Build not supported on Windows'",
     "bump-version": "run-script-os",
-    "bump-version:darwin:linux": "./hack/bump-version.sh $(pnpm build-env kogitoServerlessOperator.version)",
+    "bump-version:darwin:linux": "./hack/bump-version.sh",
     "bump-version:win32": "echo 'Bumping version not supported on Windows'",
     "format": "prettier --write .",
     "image:build": "run-script-os",

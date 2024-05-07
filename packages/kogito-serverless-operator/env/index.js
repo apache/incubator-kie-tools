@@ -30,7 +30,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "The image registry account.",
     },
     KOGITO_SERVERLESS_OPERATOR__name: {
-      default: "kogito-serverless-operator-nightly",
+      default: "kogito-serverless-operator",
       description: "The image name.",
     },
     KOGITO_SERVERLESS_OPERATOR__buildTag: {

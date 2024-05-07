@@ -20,11 +20,11 @@ set -e
 script_dir_path=$(dirname "${BASH_SOURCE[0]}")
 source "${script_dir_path}"/env.sh
 
-imageTag='quay.io/kiegroup/kogito-serverless-operator'
+imageTag=$(pnpm build-env kogitoServerlessOperator.registry)/$(pnpm build-env kogitoServerlessOperator.account)/$(pnpm build-env kogitoServerlessOperator.name)
 # shellcheck disable=SC2034
 old_version=$(getOperatorVersion)
 latest_version=$(getOperatorLatestVersion)
-new_version=$1
+new_version=$(pnpm build-env kogitoServerlessOperator.version)
 
 if [ -z "${new_version}" ]; then
   echo "Please inform the new version"
