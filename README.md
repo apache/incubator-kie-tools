@@ -90,9 +90,9 @@ Bootstrapping installs the necessary dependencies for each package.
 >
 > The Apache KIE Tools build is parameterized by several Environment Variables. For an extensive list of these variables, please see the list printed by the `bootstrap` step.
 >
-> To enable the examples build: `export KIE_TOOLS_BUILD__buildExamples=true`
-> To enable container images build: `export KIE_TOOLS_BUILD__buildContainerImages=true`
-> To enable E2E tests: `export KIE_TOOLS_BUILD__runEndToEndTests=true`
+> - To enable the examples build: `export KIE_TOOLS_BUILD__buildExamples=true`
+> - To enable container images build: `export KIE_TOOLS_BUILD__buildContainerImages=true`
+> - To enable E2E tests: `export KIE_TOOLS_BUILD__runEndToEndTests=true`
 
 > **ℹ️ NOTE**
 >
