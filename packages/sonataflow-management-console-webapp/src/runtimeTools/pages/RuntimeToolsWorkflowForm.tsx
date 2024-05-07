@@ -134,13 +134,11 @@ export function RuntimeToolsWorkflowForm() {
       <PageSection variant={"light"}>
         <TextContent>
           <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
-          <Text component={TextVariants.p}>
-            <InlineEdit
-              ref={inlineEditRef}
-              setBusinessKey={(bk: string) => gatewayApi.setBusinessKey(bk)}
-              getBusinessKey={getBusinessKey}
-            />
-          </Text>
+          <InlineEdit
+            ref={inlineEditRef}
+            setBusinessKey={(bk: string) => gatewayApi.setBusinessKey(bk)}
+            getBusinessKey={getBusinessKey}
+          />
         </TextContent>
       </PageSection>
 

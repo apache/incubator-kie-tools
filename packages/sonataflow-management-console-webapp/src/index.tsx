@@ -46,7 +46,7 @@ const onLoadFailure = (): void => {
 
 const appRender = async (ctx: UserContext) => {
   const httpLink = new HttpLink({
-    uri: window["DATA_INDEX_ENDPOINT"],
+    uri: window["SONATAFLOW_DATA_INDEX_URL"],
   });
   const fallbackUI = onError(({ networkError }: any) => {
     if (networkError && networkError.stack === "TypeError: Failed to fetch") {
