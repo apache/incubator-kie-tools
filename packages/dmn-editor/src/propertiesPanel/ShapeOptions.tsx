@@ -109,7 +109,10 @@ export function ShapeOptions({
   const setBounds = useCallback(
     (callback: (bounds: DC__Bounds, state: State) => void, nodeId: string) => {
       dmnEditorStoreApi.setState((s) => {
-        const { diagramElements } = addOrGetDrd({ definitions: s.dmn.model.definitions, drdIndex: s.diagram.drdIndex });
+        const { diagramElements } = addOrGetDrd({
+          definitions: s.dmn.model.definitions,
+          drdIndex: s.computed(s).getDrdIndex(),
+        });
 
         const index = s.computed(s).indexedDrd()?.dmnShapesByHref?.get(nodeId)?.index ?? -1;
         if (index < 0) {
@@ -204,7 +207,10 @@ export function ShapeOptions({
       ) => void
     ) => {
       dmnEditorStoreApi.setState((s) => {
-        const { diagramElements } = addOrGetDrd({ definitions: s.dmn.model.definitions, drdIndex: s.diagram.drdIndex });
+        const { diagramElements } = addOrGetDrd({
+          definitions: s.dmn.model.definitions,
+          drdIndex: s.computed(s).getDrdIndex(),
+        });
 
         const shapesWithMinNodeSize = nodeIds.map((nodeId) => {
           const shape = s.computed(s).indexedDrd().dmnShapesByHref.get(nodeId);

@@ -34,7 +34,7 @@ export function usePotentialWaypointControls(
   interactionPathRef: React.RefObject<SVGPathElement>
 ) {
   const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
-  const drdIndex = useDmnEditorStore((s) => s.diagram.drdIndex);
+  const drdIndex = useDmnEditorStore((s) => s.computed(s).getDrdIndex());
   const isDraggingWaypoint = useDmnEditorStore((s) => !!s.diagram.draggingWaypoints.find((e) => e === edgeId));
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const reactFlowInstance = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();

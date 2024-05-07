@@ -88,7 +88,10 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
   const setShapeStyles = useCallback(
     (callback: (shape: DMNDI15__DMNShape[], state: State) => void) => {
       dmnEditorStoreApi.setState((s) => {
-        const { diagramElements } = addOrGetDrd({ definitions: s.dmn.model.definitions, drdIndex: s.diagram.drdIndex });
+        const { diagramElements } = addOrGetDrd({
+          definitions: s.dmn.model.definitions,
+          drdIndex: s.computed(s).getDrdIndex(),
+        });
 
         const shapes = nodeIds.map((nodeId) => {
           const shape = s.computed(s).indexedDrd().dmnShapesByHref.get(nodeId);

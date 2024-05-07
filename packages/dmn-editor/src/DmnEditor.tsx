@@ -246,15 +246,6 @@ export const DmnEditorInternal = ({
       }
       state.dmn.model = normalize(model);
 
-      // Ensures DRD Index will be valid
-      // In case the `drdIndex` points to a DRD that was deleted by external events (e.g. undo)
-      // the `drdIndex` should be updated to the latest valid index
-      state.diagram.drdIndex =
-        state.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.length &&
-        state.diagram.drdIndex > state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"].length - 1
-          ? state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"].length - 1
-          : state.diagram.drdIndex;
-
       dmnModelBeforeEditingRef.current = state.dmn.model;
     });
   }, [dmnEditorStoreApi, model]);

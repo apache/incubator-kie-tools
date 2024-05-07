@@ -101,6 +101,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
     (s) => s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).pmmls
   );
   const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
+  const drdIndex = useDmnEditorStore((s) => s.computed(s).getDrdIndex());
 
   const onRequestFeelVariables = useCallback(() => {
     const externalModels = new Map<string, DmnLatestModel>();
@@ -142,7 +143,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
   // recalculated, breaking batching.
   const widthsById = useMemo(() => {
     return (
-      thisDmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[diagram.drdIndex]["di:extension"]?.[
+      thisDmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[drdIndex]["di:extension"]?.[
         "kie:ComponentsWidthsExtension"
       ]?.["kie:ComponentWidths"] ?? []
     ).reduce((acc, c) => {
@@ -155,7 +156,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
         );
       }
     }, new Map<string, number[]>());
-  }, [diagram.drdIndex, thisDmn.model.definitions]);
+  }, [drdIndex, thisDmn.model.definitions]);
 
   const expression = useMemo(() => {
     if (!drgElement) {
@@ -193,7 +194,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
 
         updateExpressionWidths({
           definitions: state.dmn.model.definitions,
-          drdIndex: state.diagram.drdIndex,
+          drdIndex: state.computed(state).getDrdIndex(),
           widthsById: newWidthsById,
         });
       });
