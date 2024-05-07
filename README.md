@@ -20,45 +20,85 @@ This repository contains tooling applications and libraries for KIE projects.
 
 ## Build from source
 
-> **💡 Nix development environment**: A _devbox_ configuration is provided to automatically setup all the tools above, read more in [here](./NIX_DEV_ENV.md).
+#### Step 0: Install the necessary tools
 
-To start building the Apache KIE Tools project, you're going to need:
+> **💡 RECOMMENDED**
+>
+> **Nix development environment**: A _devbox_ configuration is provided to automatically setup all the tools below. Read more in [here](./NIX_DEV_ENV.md).
+
+To build and test all packages of the Apache KIE Tools project, you're going to need:
 
 - Node `18` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
-- pnpm `8.7.0` _(To install, follow these instructions: https://pnpm.io/installation)_
+- pnpm `8.7.0` _(To install, follow these instructions: https://pnpm.io/installation#using-npm)_
 - Maven `3.9.6`
 - Java `17`
-- Go `1.21.5` _(To install, follow these instructions: https://go.dev/doc/install)_
+- Go `1.21.9` _(To install, follow these instructions: https://go.dev/doc/install)_
+- Python `3.12` _(To install, follow these instructions: https://www.python.org/downloads/)_
 - Helm `3.13.3` _(To install, follow these instructions: https://helm.sh/docs/intro/install/)_
+- Make
 
-> **ℹ️ NOTE:** Some packages will require that `make` is available as well.
+> **ℹ️ NOTE**
+>
+> If you plan on building container images, make sure you have a working Docker setup. Setting `KIE_TOOLS_BUILD__buildContainerImages=true` will also be necessary.
 
-After installing the tools above, you'll need to download the dependencies and link the packages locally. Simply run:
+#### Step 1: Bootstrap
 
-- `pnpm bootstrap`
+Bootstrapping installs the necessary dependencies for each package.
 
-  > **ℹ️ NOTE:** If you plan on running Playwright tests, set the `PLAYWRIGHT_BASE__installDeps` environment variable to `true` before running the command above: `PLAYWRIGHT_BASE__installDeps=true pnpm bootstrap`. This will install all Playwright dependencies (such as browsers engines and OS specific libraries).
+- `pnpm bootstrap` --> Will bootstrap all packages
+- `pnpm bootstrap [pnpm-filter]` --> Will bootstrap packages filtered by [`pnpm` filter](https://pnpm.io/filtering)
+- > E.g.,
+  >
+  > `pnpm bootstrap -F dmn-editor...` bootstraps the `dmn-editor` package and its dependencies.
 
-To install only the dependencies that are relevant to the package called `[pkg-name]`.
+> **ℹ️ NOTE**
+>
+> If you plan on running Playwright tests, set the `PLAYWRIGHT_BASE__installDeps` environment variable to `true` before running the command above.
+>
+> `PLAYWRIGHT_BASE__installDeps=true pnpm bootstrap`.
+>
+> This will install all Playwright dependencies (such as browsers engines and OS-specific libraries).
 
-- `pnpm bootstrap -F [pkg-name]...`
+#### Step 2: Build
 
-  > **ℹ️ NOTE:** Here, `...` is actually **necessary**! They're part of a [`pnpm` filter](https://pnpm.io/filtering#--filter-package_name-1).
+- Dev
 
-After dependencies are installed, you'll be able to build. To do so, you'll have two choices - `dev`, or `prod`.
+  - `pnpm -r build:dev`
+    - Will build all packages for development. Skipping linters, tests, minifiers etc.
+  - `pnpm [pnpm-filter] build:dev`
+    - Will build packages filtered by [`pnpm` filter](https://pnpm.io/filtering)
+  - > E.g.,
+    >
+    > `pnpm -F dmn-editor... build:dev` builds the `dmn-editor` package and its dependencies.
 
-Note that it is recommended that you specify which package you want to build, so replace `[pkg-name]` with the name of the desired package on one of the commands below:
+- Prod
 
-- `pnpm -F [pkg-name]... build:dev` - This is fast, but not as strict. It skips tests, linters, and some type checks. Be prepared for the CI to fail on your PRs.
-- `pnpm -F [pkg-name]... build:prod` - The default command to build production-ready packages. Use that to make sure your changes are correct.
+  - `pnpm -r build:prod`
+    - Will build all packages for production. Optimizers will run, binaries will be produced for multiple architectures etc.
+  - `pnpm [pnpm-filter] build:prod`
+    - Will build packages filtered by [`pnpm` filter](https://pnpm.io/filtering)
+  - > E.g.,
+    >
+    > `pnpm -F dmn-editor... build:prod` builds the `dmn-editor` package and its dependencies.
 
-> **ℹ️ NOTE:** Here, `...` is actually **necessary**! They're part of a [`pnpm` filter](https://pnpm.io/filtering#--filter-package_name-1).
+- Changed
+  - `pnpm -F '...[HEAD]' build:dev`; or
+  - `pnpm -F '...[HEAD]' build:prod`
+    - Will build changed and affected packages based on your local changes. Useful for verifying that you didn't break anything.
 
-> **ℹ️ NOTE:** If you want to build _everything_, run `pnpm -r build:dev` or `pnpm -r build:prod`. It's going to take a while, though :)
+> **ℹ️ NOTE**
+>
+> The Apache KIE Tools build is parameterized by several Environment Variables. For an extensive list of these variables, please see the list printed by the `bootstrap` step.
+>
+> - To enable the examples build: `export KIE_TOOLS_BUILD__buildExamples=true`
+> - To enable container images build: `export KIE_TOOLS_BUILD__buildContainerImages=true`
+> - To enable E2E tests: `export KIE_TOOLS_BUILD__runEndToEndTests=true`
 
-> **ℹ️ NOTE:** The Apache KIE Tools build is parameterized by several Environment Variables. For an extensive list of these variables, please see the list printed by the `bootstrap` script.
+> **ℹ️ NOTE**
+>
+> Final artifacts will be in `{packages,examples}/*/dist` directories.
 
-> **ℹ️ NOTE:** Final artifacts will be on `{packages,examples}/*/dist` directories.
+---
 
 ## Applications
 
