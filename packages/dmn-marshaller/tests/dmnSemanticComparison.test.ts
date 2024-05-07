@@ -82,7 +82,7 @@ const dmnTestingImportedModels = [
 
 export const dmnSemanticComparisonGeneratedFilesDirectory = path.join(
   __dirname,
-  "../../dist-tests/dmnSemanticComparison-generated-files"
+  "../dist-tests/dmnSemanticComparison-generated-files"
 );
 
 describe("DMN Semantic Comparison", () => {
