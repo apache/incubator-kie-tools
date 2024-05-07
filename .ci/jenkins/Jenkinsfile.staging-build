@@ -881,8 +881,8 @@ def pushKieSandboxHelmChartToQuay() {
     )
 }
 
-def deployOnlineEditor(String tag, String credentialsId) {
-    DEPLOYMENT_DIR = "${tag}-prerelease"
+def deployOnlineEditor(String releaseVersion, String credentialsId) {
+    DEPLOYMENT_DIR = "${releaseVersion}-staging"
 
     sh """#!/bin/bash -el
     git config user.email asf-ci-kie@jenkins.kie.apache.org
@@ -916,8 +916,8 @@ def deployOnlineEditor(String tag, String credentialsId) {
     ln -s chrome-extension ${DEPLOYMENT_DIR}/gwt-editors
 
     echo "Commit changes and push"
-    git add ${tag}-prerelease
-    git commit -m "Deploy ${tag}-prerelease (staging)"
+    git add ${releaseVersion}-staging
+    git commit -m "Deploy ${releaseVersion}-staging"
     """.trim()
 
     githubUtils.pushObject('origin', 'main', "${credentialsId}")

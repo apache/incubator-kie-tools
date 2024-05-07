@@ -67,50 +67,58 @@ pipeline {
 
         stage('Checkout kie-tools') {
             steps {
-                script {
-                    githubUtils.checkoutRepo(
-                        "http://github.com/${pipelineVars.githubRepositorySlug}.git",
-                        "${params.BASE_REF}",
-                        "${pipelineVars.kieToolsBotGithubCredentialsId}"
-                    )
+                dir('kie-tools') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            "http://github.com/${pipelineVars.githubRepositorySlug}.git",
+                            "${params.BASE_REF}",
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
                 }
             }
         }
 
         stage('Setup PNPM') {
             steps {
-                script {
-                    buildUtils.setupPnpm()
+                dir('kie-tools') {
+                    script {
+                        buildUtils.setupPnpm()
+                    }
                 }
             }
         }
 
         stage('PNPM Bootstrap') {
             steps {
-                sh '''#!/bin/bash -el
-                pnpm bootstrap -F bpmn-vscode-extension... \
-                -F dmn-vscode-extension... \
-                -F pmml-vscode-extension... \
-                -F vscode-extension-kogito-bundle... \
-                -F swf-vscode-extension... \
-                -F vscode-extension-kie-ba-bundle... \
-                -F vscode-extension-dashbuilder-editor...
-                '''.trim()
+                dir('kie-tools') {
+                    sh '''#!/bin/bash -el
+                    pnpm bootstrap -F bpmn-vscode-extension... \
+                    -F dmn-vscode-extension... \
+                    -F pmml-vscode-extension... \
+                    -F vscode-extension-kogito-bundle... \
+                    -F swf-vscode-extension... \
+                    -F vscode-extension-kie-ba-bundle... \
+                    -F vscode-extension-dashbuilder-editor...
+                    '''.trim()
+                }
             }
         }
 
         stage('Build') {
             steps {
-                sh '''#!/bin/bash -el
-                pnpm -F bpmn-vscode-extension... \
-                -F dmn-vscode-extension... \
-                -F pmml-vscode-extension... \
-                -F vscode-extension-kogito-bundle... \
-                -F swf-vscode-extension... \
-                -F vscode-extension-kie-ba-bundle... \
-                -F vscode-extension-dashbuilder-editor... \
-                build:prod
-                '''.trim()
+                dir('kie-tools') {
+                    sh '''#!/bin/bash -el
+                    pnpm -F bpmn-vscode-extension... \
+                    -F dmn-vscode-extension... \
+                    -F pmml-vscode-extension... \
+                    -F vscode-extension-kogito-bundle... \
+                    -F swf-vscode-extension... \
+                    -F vscode-extension-kie-ba-bundle... \
+                    -F vscode-extension-dashbuilder-editor... \
+                    build:prod
+                    '''.trim()
+                }
             }
         }
 
@@ -119,14 +127,16 @@ pipeline {
                 expression { !params.DRY_RUN }
             }
             steps {
-                script {
-                    githubUtils.uploadReleaseAsset(
-                        "${params.UPLOAD_ASSET_URL}",
-                        "packages/bpmn-vscode-extension/dist/bpmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
-                        "bpmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
-                        'application/zip',
-                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
-                    )
+                dir('kie-tools') {
+                    script {
+                        githubUtils.uploadReleaseAsset(
+                            "${params.UPLOAD_ASSET_URL}",
+                            "packages/bpmn-vscode-extension/dist/bpmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
+                            "bpmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
+                            'application/zip',
+                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                        )
+                    }
                 }
             }
         }
@@ -136,14 +146,16 @@ pipeline {
                 expression { !params.DRY_RUN }
             }
             steps {
-                script {
-                    githubUtils.uploadReleaseAsset(
-                        "${params.UPLOAD_ASSET_URL}",
-                        "packages/dmn-vscode-extension/dist/dmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
-                        "dmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
-                        'application/zip',
-                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
-                    )
+                dir('kie-tools') {
+                    script {
+                        githubUtils.uploadReleaseAsset(
+                            "${params.UPLOAD_ASSET_URL}",
+                            "packages/dmn-vscode-extension/dist/dmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
+                            "dmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
+                            'application/zip',
+                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                        )
+                    }
                 }
             }
         }
@@ -153,14 +165,16 @@ pipeline {
                 expression { !params.DRY_RUN }
             }
             steps {
-                script {
-                    githubUtils.uploadReleaseAsset(
-                        "${params.UPLOAD_ASSET_URL}",
-                        "packages/pmml-vscode-extension/dist/pmml_vscode_extension_${params.RELEASE_VERSION}.vsix",
-                        "pmml_vscode_extension_${params.RELEASE_VERSION}.vsix",
-                        'application/zip',
-                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
-                    )
+                dir('kie-tools') {
+                    script {
+                        githubUtils.uploadReleaseAsset(
+                            "${params.UPLOAD_ASSET_URL}",
+                            "packages/pmml-vscode-extension/dist/pmml_vscode_extension_${params.RELEASE_VERSION}.vsix",
+                            "pmml_vscode_extension_${params.RELEASE_VERSION}.vsix",
+                            'application/zip',
+                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                        )
+                    }
                 }
             }
         }
@@ -170,14 +184,16 @@ pipeline {
                 expression { !params.DRY_RUN }
             }
             steps {
-                script {
-                    githubUtils.uploadReleaseAsset(
-                        "${params.UPLOAD_ASSET_URL}",
-                        "packages/vscode-extension-kogito-bundle/dist/vscode_extension_kogito_bundle_${params.RELEASE_VERSION}.vsix",
-                        "vscode_extension_kogito_bundle_${params.RELEASE_VERSION}.vsix",
-                        'application/zip',
-                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
-                    )
+                dir('kie-tools') {
+                    script {
+                        githubUtils.uploadReleaseAsset(
+                            "${params.UPLOAD_ASSET_URL}",
+                            "packages/vscode-extension-kogito-bundle/dist/vscode_extension_kogito_bundle_${params.RELEASE_VERSION}.vsix",
+                            "vscode_extension_kogito_bundle_${params.RELEASE_VERSION}.vsix",
+                            'application/zip',
+                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                        )
+                    }
                 }
             }
         }
@@ -187,14 +203,16 @@ pipeline {
                 expression { !params.DRY_RUN }
             }
             steps {
-                script {
-                    githubUtils.uploadReleaseAsset(
-                        "${params.UPLOAD_ASSET_URL}",
-                        "packages/vscode-extension-kie-ba-bundle/dist/vscode_extension_kie_ba_bundle_${params.RELEASE_VERSION}.vsix",
-                        "vscode_extension_kie_ba_bundle_${params.RELEASE_VERSION}.vsix",
-                        'application/zip',
-                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
-                    )
+                dir('kie-tools') {
+                    script {
+                        githubUtils.uploadReleaseAsset(
+                            "${params.UPLOAD_ASSET_URL}",
+                            "packages/vscode-extension-kie-ba-bundle/dist/vscode_extension_kie_ba_bundle_${params.RELEASE_VERSION}.vsix",
+                            "vscode_extension_kie_ba_bundle_${params.RELEASE_VERSION}.vsix",
+                            'application/zip',
+                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                        )
+                    }
                 }
             }
         }
@@ -204,14 +222,16 @@ pipeline {
                 expression { !params.DRY_RUN }
             }
             steps {
-                script {
-                    githubUtils.uploadReleaseAsset(
-                        "${params.UPLOAD_ASSET_URL}",
-                        "packages/serverless-workflow-vscode-extension/dist/serverless_workflow_vscode_extension_${params.RELEASE_VERSION}.vsix",
-                        "serverless_workflow_vscode_extension_${params.RELEASE_VERSION}.vsix",
-                        'application/zip',
-                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
-                    )
+                dir('kie-tools') {
+                    script {
+                        githubUtils.uploadReleaseAsset(
+                            "${params.UPLOAD_ASSET_URL}",
+                            "packages/serverless-workflow-vscode-extension/dist/serverless_workflow_vscode_extension_${params.RELEASE_VERSION}.vsix",
+                            "serverless_workflow_vscode_extension_${params.RELEASE_VERSION}.vsix",
+                            'application/zip',
+                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                        )
+                    }
                 }
             }
         }
@@ -221,14 +241,16 @@ pipeline {
                 expression { !params.DRY_RUN }
             }
             steps {
-                script {
-                    githubUtils.uploadReleaseAsset(
-                        "${params.UPLOAD_ASSET_URL}",
-                        "packages/vscode-extension-dashbuilder-editor/dist/vscode_extension_dashbuilder_editor_${params.RELEASE_VERSION}.vsix",
-                        "vscode_extension_dashbuilder_editor_${params.RELEASE_VERSION}.vsix",
-                        'application/zip',
-                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
-                    )
+                dir('kie-tools') {
+                    script {
+                        githubUtils.uploadReleaseAsset(
+                            "${params.UPLOAD_ASSET_URL}",
+                            "packages/vscode-extension-dashbuilder-editor/dist/vscode_extension_dashbuilder_editor_${params.RELEASE_VERSION}.vsix",
+                            "vscode_extension_dashbuilder_editor_${params.RELEASE_VERSION}.vsix",
+                            'application/zip',
+                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                        )
+                    }
                 }
             }
         }

@@ -66,48 +66,58 @@ pipeline {
 
         stage('Checkout kie-tools') {
             steps {
-                script {
-                    githubUtils.checkoutRepo(
-                        "http://github.com/${pipelineVars.githubRepositorySlug}.git",
-                        "${params.BASE_REF}",
-                        "${pipelineVars.kieToolsBotGithubCredentialsId}"
-                    )
+                dir('kie-tools') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            "http://github.com/${pipelineVars.githubRepositorySlug}.git",
+                            "${params.BASE_REF}",
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
                 }
             }
         }
 
         stage('Setup PNPM') {
             steps {
-                script {
-                    buildUtils.setupPnpm()
+                dir('kie-tools') {
+                    script {
+                        buildUtils.setupPnpm()
+                    }
                 }
             }
         }
 
         stage('Create PNPM filter for building') {
             steps {
-                script {
-                    pnpmFilter = sh returnStdout: true, script:"""#!/bin/bash -el
-                    PNPM_FILTER_STRING_FOR_BUILDING=\$(pnpm -r exec 'bash' '-c' 'PKG_NAME=\$(jq -r ".name" package.json) PKG_IS_PVT=\$(jq -r ".private" package.json); if [[ "\$PKG_IS_PVT" != "true" ]]; then echo "-F \$PKG_NAME..."; fi')
-                    echo \$PNPM_FILTER_STRING_FOR_BUILDING
-                    """.trim()
-                    env.PNPM_FILTER_STRING_FOR_BUILDING = pnpmFilter.trim()
+                dir('kie-tools') {
+                    script {
+                        pnpmFilter = sh returnStdout: true, script:"""#!/bin/bash -el
+                        PNPM_FILTER_STRING_FOR_BUILDING=\$(pnpm -r exec 'bash' '-c' 'PKG_NAME=\$(jq -r ".name" package.json) PKG_IS_PVT=\$(jq -r ".private" package.json); if [[ "\$PKG_IS_PVT" != "true" ]]; then echo "-F \$PKG_NAME..."; fi')
+                        echo \$PNPM_FILTER_STRING_FOR_BUILDING
+                        """.trim()
+                        env.PNPM_FILTER_STRING_FOR_BUILDING = pnpmFilter.trim()
+                    }
                 }
             }
         }
 
         stage('PNPM Bootstrap') {
             steps {
-                script {
-                    buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING_FOR_BUILDING}")
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING_FOR_BUILDING}")
+                    }
                 }
             }
         }
 
         stage('Build') {
             steps {
-                script {
-                    buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING_FOR_BUILDING}")
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING_FOR_BUILDING}")
+                    }
                 }
             }
         }
@@ -117,13 +127,15 @@ pipeline {
                 expression { !params.DRY_RUN }
             }
             steps {
-                withCredentials([string(credentialsId: "${pipelineVars.npmTokenCredentialsId}", variable: 'NPM_TOKEN')]) {
-                    sh """#!/bin/bash -el
-                    echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-                    PNPM_FILTER_STRING_FOR_PUBLISHING=\$(pnpm -r exec 'bash' '-c' 'PKG_NAME=\$(jq -r ".name" package.json) PKG_IS_PVT=\$(jq -r ".private" package.json); if [[ "\$PKG_IS_PVT" != "true" ]]; then echo "-F \$PKG_NAME"; fi')
-                    echo \$PNPM_FILTER_STRING_FOR_PUBLISHING
-                    pnpm \$PNPM_FILTER_STRING_FOR_PUBLISHING exec 'bash' '-c' 'PKG_NAME=\$(jq -r ".name" package.json); NPM_PKG_INFO=\$(npm view \$PKG_NAME@${params.RELEASE_VERSION} name || echo ""); if [[ -z \$NPM_PKG_INFO ]]; then pnpm publish --no-git-checks --access public; fi'
-                    """.trim()
+                dir('kie-tools') {
+                    withCredentials([string(credentialsId: "${pipelineVars.npmTokenCredentialsId}", variable: 'NPM_TOKEN')]) {
+                        sh """#!/bin/bash -el
+                        echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+                        PNPM_FILTER_STRING_FOR_PUBLISHING=\$(pnpm -r exec 'bash' '-c' 'PKG_NAME=\$(jq -r ".name" package.json) PKG_IS_PVT=\$(jq -r ".private" package.json); if [[ "\$PKG_IS_PVT" != "true" ]]; then echo "-F \$PKG_NAME"; fi')
+                        echo \$PNPM_FILTER_STRING_FOR_PUBLISHING
+                        pnpm \$PNPM_FILTER_STRING_FOR_PUBLISHING exec 'bash' '-c' 'PKG_NAME=\$(jq -r ".name" package.json); NPM_PKG_INFO=\$(npm view \$PKG_NAME@${params.RELEASE_VERSION} name || echo ""); if [[ -z \$NPM_PKG_INFO ]]; then pnpm publish --no-git-checks --access public; fi'
+                        """.trim()
+                    }
                 }
             }
         }
