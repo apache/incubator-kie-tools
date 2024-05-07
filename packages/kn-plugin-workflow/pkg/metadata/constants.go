@@ -41,7 +41,7 @@ var KogitoBomDependency = Dependency{
 var KogitoDependencies = []Dependency{
 	{GroupId: "org.kie", ArtifactId: "kie-addons-quarkus-knative-eventing"},
 	{GroupId: "org.kie", ArtifactId: "kie-addons-quarkus-source-files"},
-	{GroupId: "org.apache.kie.sonataflow", ArtifactId: "sonataflow-quarkus-devui", Version: "0.0.0"},
+	{GroupId: "org.apache.kie.sonataflow", ArtifactId: "sonataflow-quarkus-devui", Version: PluginVersion},
 	{GroupId: "org.kie", ArtifactId: "kogito-addons-quarkus-data-index-inmemory"},
 	{GroupId: "org.apache.kie.sonataflow", ArtifactId: "sonataflow-quarkus"},
 }
