@@ -78,7 +78,7 @@ module.exports = {
       // this is primarily useful when applying a CSS background using an SVG
       include: (input) => input.indexOf(BG_IMAGES_DIRNAME) > -1,
       use: {
-        loader: "svg-url-loader",
+        loader: require.resolve("svg-url-loader"),
         options: {},
       },
     },

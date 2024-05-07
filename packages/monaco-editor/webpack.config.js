@@ -34,15 +34,15 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: "ts-loader",
+        loader: require.resolve("ts-loader"),
       },
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"],
+        use: [require.resolve("style-loader"), require.resolve("css-loader")],
       },
       {
         test: /\.ttf$/,
-        use: ["url-loader"],
+        use: [require.resolve("url-loader")],
       },
     ],
   },
