@@ -17,21 +17,22 @@
  * under the License.
  */
 
-import * as React from "react";
-import { WorkflowDefinitionListContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionList";
-import { useSettings } from "../../settings/SettingsContext";
-import { useEnv } from "../../env/EnvContext";
+import { getWorkflowDefinitions } from "@kie-tools/runtime-tools-swf-gateway-api/dist/gatewayApi";
+import { WorkflowDefinition } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { ApolloClient } from "apollo-client";
 
-export function WebToolsWorkflowDefinitionListContextProvider(props: React.PropsWithChildren<{}>) {
-  const settings = useSettings();
-  const { env } = useEnv();
+export interface WorkflowDefinitionListQueries {
+  getWorkflowDefinitions(): Promise<WorkflowDefinition[]>;
+}
 
-  return (
-    <WorkflowDefinitionListContextProvider
-      proxyEndpoint={env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL}
-      dataIndexUrl={settings.runtimeTools.config.dataIndexUrl}
-    >
-      {props.children}
-    </WorkflowDefinitionListContextProvider>
-  );
+export class GraphQLWorkflowDefinitionListQueries implements WorkflowDefinitionListQueries {
+  private readonly client: ApolloClient<any>;
+
+  constructor(client: ApolloClient<any>) {
+    this.client = client;
+  }
+
+  getWorkflowDefinitions(): Promise<WorkflowDefinition[]> {
+    return getWorkflowDefinitions(this.client);
+  }
 }

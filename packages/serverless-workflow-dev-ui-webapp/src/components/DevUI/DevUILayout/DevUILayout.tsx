@@ -34,7 +34,7 @@ import { WorkflowFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp
 import CustomDashboardListContextProvider from "../../../channel/CustomDashboardList/CustomDashboardListContextProvider";
 import { CustomDashboardViewContextProvider } from "../../../channel/CustomDashboardView";
 import { CloudEventFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventForm";
-import { WorkflowDefinitionListContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionList";
+import { WorkflowDefinitionListContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionList";
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
@@ -83,7 +83,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
       >
         <WorkflowListContextProviderWithApolloClient apolloClient={apolloClient}>
           <WorkflowDetailsContextProviderWithApolloClient apolloClient={apolloClient}>
-            <WorkflowDefinitionListContextProvider kogitoServiceUrl={`${openApiBaseUrl}`}>
+            <WorkflowDefinitionListContextProviderWithApolloClient apolloClient={apolloClient}>
               <FormsListContextProvider>
                 <CustomDashboardListContextProvider>
                   <CustomDashboardViewContextProvider>
@@ -101,7 +101,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
                   </CustomDashboardViewContextProvider>
                 </CustomDashboardListContextProvider>
               </FormsListContextProvider>
-            </WorkflowDefinitionListContextProvider>
+            </WorkflowDefinitionListContextProviderWithApolloClient>
           </WorkflowDetailsContextProviderWithApolloClient>
         </WorkflowListContextProviderWithApolloClient>
       </DevUIAppContextProvider>

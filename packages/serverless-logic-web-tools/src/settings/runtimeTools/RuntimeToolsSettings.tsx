@@ -158,7 +158,11 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
             <FormGroup
               label={"Data Index URL"}
               labelIcon={
-                <Popover bodyContent={"Data Index URL associated with your running Kogito runtime service."}>
+                <Popover
+                  bodyContent={
+                    "Data Index URL associated with your running SonataFlow runtime service. Used to list workflow instances and definitions."
+                  }
+                >
                   <button
                     type="button"
                     aria-label="More info for Data Index URL field"
@@ -202,7 +206,11 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
             <FormGroup
               label={"SonataFlow Service URL"}
               labelIcon={
-                <Popover bodyContent={"URL associated with your running SonataFlow runtime service."}>
+                <Popover
+                  bodyContent={
+                    "URL associated with your running SonataFlow runtime service. Used to trigger cloud events."
+                  }
+                >
                   <button
                     type="button"
                     aria-label="More info for SonataFlow Service URL field"
