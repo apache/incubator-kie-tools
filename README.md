@@ -64,7 +64,7 @@ Bootstrapping installs the necessary dependencies for each package.
 - Dev
 
   - `pnpm -r build:dev`
-    - Will build all packages in for development. Skipping linters, tests, minifiers etc.
+    - Will build all packages for development. Skipping linters, tests, minifiers etc.
   - `pnpm [pnpm-filter] build:dev`
     - Will build packages filtered by [`pnpm` filter](https://pnpm.io/filtering)
   - > E.g.,
@@ -74,7 +74,7 @@ Bootstrapping installs the necessary dependencies for each package.
 - Prod
 
   - `pnpm -r build:prod`
-    - Will build all packages in for production. Optimizers will run, binaries will be produced for multiple architectures etc.
+    - Will build all packages for production. Optimizers will run, binaries will be produced for multiple architectures etc.
   - `pnpm [pnpm-filter] build:prod`
     - Will build packages filtered by [`pnpm` filter](https://pnpm.io/filtering)
   - > E.g.,
