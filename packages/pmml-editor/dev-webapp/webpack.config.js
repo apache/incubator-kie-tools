@@ -48,7 +48,7 @@ module.exports = (env) =>
       rules: [
         {
           test: /\.ttf$/,
-          use: ["file-loader"],
+          use: [require.resolve("file-loader")],
         },
         ...patternflyBase.webpackModuleRules,
       ],

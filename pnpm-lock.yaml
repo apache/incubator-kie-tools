@@ -6715,6 +6715,9 @@ importers:
       style-loader:
         specifier: ^2.0.0
         version: 2.0.0(webpack@5.88.2)
+      svg-url-loader:
+        specifier: ^8.0.0
+        version: 8.0.0(webpack@5.88.2)
       url-loader:
         specifier: ^4.1.1
         version: 4.1.1(file-loader@6.2.0)(webpack@5.88.2)
@@ -7518,6 +7521,9 @@ importers:
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
+      url:
+        specifier: ^0.11.3
+        version: 0.11.3
       url-loader:
         specifier: ^4.1.1
         version: 4.1.1(file-loader@6.2.0)(webpack@5.88.2)
@@ -7825,6 +7831,9 @@ importers:
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
+      url:
+        specifier: ^0.11.3
+        version: 0.11.3
       url-loader:
         specifier: ^4.1.1
         version: 4.1.1(file-loader@6.2.0)(webpack@5.88.2)
@@ -9085,6 +9094,9 @@ importers:
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
+      url:
+        specifier: ^0.11.3
+        version: 0.11.3
       url-loader:
         specifier: ^4.1.1
         version: 4.1.1(file-loader@6.2.0)(webpack@5.88.2)
@@ -10160,6 +10172,9 @@ importers:
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
+      url:
+        specifier: ^0.11.3
+        version: 0.11.3
       url-loader:
         specifier: ^4.1.1
         version: 4.1.1(file-loader@6.2.0)(webpack@5.88.2)
@@ -11148,6 +11163,9 @@ importers:
       ts-jest:
         specifier: ^26.5.6
         version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      url:
+        specifier: ^0.11.3
+        version: 0.11.3
       webpack:
         specifier: ^5.88.2
         version: 5.88.2(webpack-cli@4.10.0)
@@ -50816,7 +50834,7 @@ packages:
       webpack: ^5.0.0
     dependencies:
       file-loader: 6.2.0(webpack@5.88.2)
-      webpack: 5.88.2(webpack-cli@4.10.0)
+      webpack: 5.88.2
     dev: true
 
   /svgo@2.8.0:
