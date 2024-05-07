@@ -57,20 +57,9 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        env.TAG = sh(returnStdout: true, script: "#!/bin/bash -el \n node -p \"'\${GIT_BRANCH}'.match(/(.+)-prerelease/)[1]\"").trim()
-                        env.PACKAGE_VERSION = sh(returnStdout: true, script: "#!/bin/bash -el \n node -p \"require('./package.json').version\"").trim()
+                        env.RELEASE_VERSION = sh(returnStdout: true, script: "#!/bin/bash -el \n node -p \"require('./package.json').version\"").trim()
                         env.COMMIT_SHA = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
                     }
-                }
-            }
-        }
-
-        stage('Check `tag` against `package.json.version`') {
-            steps {
-                dir('kie-tools') {
-                    sh """#!/bin/bash -el
-                    [[ "${env.TAG}" == "${env.PACKAGE_VERSION}" ]]
-                    """.trim()
                 }
             }
         }
@@ -80,8 +69,8 @@ pipeline {
                 script {
                     response = githubUtils.createRelease(
                         "${pipelineVars.githubRepositorySlug}",
-                        "${env.TAG} @ (alpha)",
-                        "${env.TAG}",
+                        "${env.RELEASE_VERSION} @ (alpha)",
+                        "${env.RELEASE_VERSION}",
                         "${env.COMMIT_SHA}",
                         true,
                         true,
@@ -110,7 +99,7 @@ pipeline {
                 build job: 'KIE/kie-tools/kie-tools-staging-build', parameters: [
                     booleanParam(name: 'DRY_RUN', value: false),
                     string(name: 'BASE_REF', value: "${GIT_BRANCH}"),
-                    string(name: 'TAG', value: "${env.TAG}"),
+                    string(name: 'RELEASE_VERSION', value: "${env.RELEASE_VERSION}"),
                     string(name: 'COMMIT_SHA', value: "${env.COMMIT_SHA}"),
                     string(name: 'DOWNLOAD_ASSET_URL', value: "${env.RELEASE_DOWNLOAD_ASSET_URL}"),
                     string(name: 'UPLOAD_ASSET_URL', value: "${env.RELEASE_UPLOAD_ASSET_URL}")

@@ -50,27 +50,18 @@ import { AutolayoutButton } from "../autolayout/AutolayoutButton";
 import { getDefaultColumnWidth } from "../boxedExpressions/getDefaultColumnWidth";
 import { getDefaultBoxedExpression } from "../boxedExpressions/getDefaultBoxedExpression";
 import {
-  DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE,
-  DmnEditorDiagramClipboard,
-  buildClipboardFromDiagram,
-  getClipboard,
-} from "../clipboard/Clipboard";
-import {
   ExternalNode,
   MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS,
 } from "../externalNodes/ExternalNodesPanel";
-import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 import { NodeNature, nodeNatures } from "../mutations/NodeNature";
 import { addConnectedNode } from "../mutations/addConnectedNode";
 import { addDecisionToDecisionService } from "../mutations/addDecisionToDecisionService";
 import { addEdge } from "../mutations/addEdge";
-import { addOrGetDrd } from "../mutations/addOrGetDrd";
 import { addShape } from "../mutations/addShape";
 import { addStandaloneNode } from "../mutations/addStandaloneNode";
 import { deleteDecisionFromDecisionService } from "../mutations/deleteDecisionFromDecisionService";
 import { EdgeDeletionMode, deleteEdge } from "../mutations/deleteEdge";
 import { NodeDeletionMode, canRemoveNodeFromDrdOnly, deleteNode } from "../mutations/deleteNode";
-import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "../mutations/repopulateInputDataAndDecisionsOnDecisionService";
 import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
 import { updateExpression } from "../mutations/updateExpression";
@@ -99,12 +90,12 @@ import {
 } from "./edges/Edges";
 import { buildHierarchy } from "./graph/graph";
 import {
-  CONTAINER_NODES_DESIRABLE_PADDING,
-  getBounds,
   getDmnBoundsCenterPoint,
   getContainmentRelationship,
   getHandlePosition,
   getNodeTypeFromDmnObject,
+  getBounds,
+  CONTAINER_NODES_DESIRABLE_PADDING,
 } from "./maths/DmnMaths";
 import { DEFAULT_NODE_SIZES, MIN_NODE_SIZES } from "./nodes/DefaultSizes";
 import { NODE_TYPES } from "./nodes/NodeTypes";
@@ -126,6 +117,7 @@ import {
   getDecisionServicePropertiesRelativeToThisDmn,
 } from "../mutations/addExistingDecisionServiceToDrd";
 import { updateExpressionWidths } from "../mutations/updateExpressionWidths";
+import { DiagramCommands } from "./DiagramCommands";
 
 const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
 
@@ -133,7 +125,7 @@ const PAN_ON_DRAG = [1, 2];
 
 const FIT_VIEW_OPTIONS: RF.FitViewOptions = { maxZoom: 1, minZoom: 0.1, duration: 400 };
 
-const DEFAULT_VIEWPORT = { x: 100, y: 100, zoom: 1 };
+export const DEFAULT_VIEWPORT = { x: 100, y: 100, zoom: 1 };
 
 const DELETE_NODE_KEY_CODES = ["Backspace", "Delete"];
 
@@ -167,7 +159,6 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     const { externalModelsByNamespace } = useExternalModels();
     const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
     const thisDmn = useDmnEditorStore((s) => s.dmn);
-
     const { dmnModelBeforeEditingRef } = useDmnEditor();
 
     // State
@@ -177,7 +168,6 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     >(undefined);
 
     // Refs
-
     React.useImperativeHandle(
       ref,
       () => ({
@@ -1181,8 +1171,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             <SelectionStatus />
             <Palette pulse={isEmptyStateShowing} />
             <TopRightCornerPanels />
-            <PanWhenAltPressed />
-            <KeyboardShortcuts />
+            <DiagramCommands />
             {!isFirefox && <RF.Background />}
             <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />
             <SetConnectionToReactFlowStore />
@@ -1486,394 +1475,4 @@ export function SelectionStatus() {
       )) || <></>}
     </>
   );
-}
-
-export function KeyboardShortcuts(props: {}) {
-  const rfStoreApi = RF.useStoreApi();
-  const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { externalModelsByNamespace } = useExternalModels();
-
-  const rf = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();
-
-  // Reset position to origin
-  const space = RF.useKeyPress(["Space"]);
-  useEffect(() => {
-    if (!space) {
-      return;
-    }
-
-    rf.setViewport(DEFAULT_VIEWPORT, { duration: 200 });
-  }, [rf, space]);
-
-  // Focus on node bounds
-  const b = RF.useKeyPress(["b"]);
-  useEffect(() => {
-    if (!b) {
-      return;
-    }
-
-    const selectedNodes = rf.getNodes().filter((s) => s.selected);
-    if (selectedNodes.length <= 0) {
-      return;
-    }
-
-    const bounds = getBounds({
-      nodes: selectedNodes,
-      padding: 100,
-    });
-
-    rf.fitBounds(
-      {
-        x: bounds["@_x"],
-        y: bounds["@_y"],
-        width: bounds["@_width"],
-        height: bounds["@_height"],
-      },
-      { duration: 200 }
-    );
-  }, [b, rf]);
-
-  // Cancel action
-  const esc = RF.useKeyPress(["Escape"]);
-  useEffect(() => {
-    if (!esc) {
-      return;
-    }
-
-    rfStoreApi.setState((rfState) => {
-      if (rfState.connectionNodeId) {
-        console.debug("DMN DIAGRAM: Esc pressed. Cancelling connection.");
-        rfState.cancelConnection();
-        dmnEditorStoreApi.setState((state) => {
-          state.diagram.ongoingConnection = undefined;
-        });
-      } else {
-        (document.activeElement as any)?.blur?.();
-      }
-
-      return rfState;
-    });
-  }, [esc, dmnEditorStoreApi, rfStoreApi]);
-
-  // Cut
-  const cut = RF.useKeyPress(["Meta+x"]);
-  useEffect(() => {
-    if (!cut) {
-      return;
-    }
-    console.debug("DMN DIAGRAM: Cutting selected nodes...");
-
-    const { clipboard, copiedEdgesById, danglingEdgesById, copiedNodesById } = buildClipboardFromDiagram(
-      rfStoreApi.getState(),
-      dmnEditorStoreApi.getState()
-    );
-
-    navigator.clipboard.writeText(JSON.stringify(clipboard)).then(() => {
-      dmnEditorStoreApi.setState((state) => {
-        // Delete edges
-        [...copiedEdgesById.values(), ...danglingEdgesById.values()].forEach((edge) => {
-          deleteEdge({
-            definitions: state.dmn.model.definitions,
-            drdIndex: state.computed(state).getDrdIndex(),
-            edge: { id: edge.id, dmnObject: edge.data!.dmnObject },
-            mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
-          });
-          state.dispatch(state).diagram.setEdgeStatus(edge.id, {
-            selected: false,
-            draggingWaypoint: false,
-          });
-        });
-
-        // Delete nodes
-        rfStoreApi
-          .getState()
-          .getNodes()
-          .forEach((node: RF.Node<DmnDiagramNodeData>) => {
-            if (copiedNodesById.has(node.id)) {
-              deleteNode({
-                drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
-                definitions: state.dmn.model.definitions,
-                drdIndex: state.computed(state).getDrdIndex(),
-                dmnObjectNamespace: node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
-                dmnObjectQName: node.data.dmnObjectQName,
-                dmnObjectId: node.data.dmnObject?.["@_id"],
-                nodeNature: nodeNatures[node.type as NodeType],
-                mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
-                externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace)
-                  .dmns,
-              });
-              state.dispatch(state).diagram.setNodeStatus(node.id, {
-                selected: false,
-                dragging: false,
-                resizing: false,
-              });
-            }
-          });
-      });
-    });
-  }, [cut, dmnEditorStoreApi, rfStoreApi, externalModelsByNamespace]);
-
-  // Copy
-  const copy = RF.useKeyPress(["Meta+c"]);
-  useEffect(() => {
-    if (!copy) {
-      return;
-    }
-
-    console.debug("DMN DIAGRAM: Copying selected nodes...");
-
-    const { clipboard } = buildClipboardFromDiagram(rfStoreApi.getState(), dmnEditorStoreApi.getState());
-    navigator.clipboard.writeText(JSON.stringify(clipboard));
-  }, [copy, dmnEditorStoreApi, rfStoreApi]);
-
-  // Paste
-  const paste = RF.useKeyPress(["Meta+v"]);
-  useEffect(() => {
-    if (!paste) {
-      return;
-    }
-
-    console.debug("DMN DIAGRAM: Pasting nodes...");
-
-    navigator.clipboard.readText().then((text) => {
-      const clipboard = getClipboard<DmnEditorDiagramClipboard>(text, DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE);
-      if (!clipboard) {
-        return;
-      }
-
-      getNewDmnIdRandomizer()
-        .ack({
-          json: clipboard.drgElements,
-          type: "DMN15__tDefinitions",
-          attr: "drgElement",
-        })
-        .ack({
-          json: clipboard.artifacts,
-          type: "DMN15__tDefinitions",
-          attr: "artifact",
-        })
-        .ack({
-          json: clipboard.shapes,
-          type: "DMNDI15__DMNDiagram",
-          attr: "dmndi:DMNDiagramElement",
-          __$$element: "dmndi:DMNShape",
-        })
-        .ack({
-          json: clipboard.edges,
-          type: "DMNDI15__DMNDiagram",
-          attr: "dmndi:DMNDiagramElement",
-          __$$element: "dmndi:DMNEdge",
-        })
-        .ack<any>({
-          // This `any` argument ideally wouldn't be here, but the type of DMN's `meta` is not composed with KIE's `meta` in compile-time
-          json: clipboard.widths,
-          type: "KIE__tComponentsWidthsExtension",
-          attr: "kie:ComponentWidths",
-        })
-        .randomize();
-
-      dmnEditorStoreApi.setState((state) => {
-        state.dmn.model.definitions.drgElement ??= [];
-        state.dmn.model.definitions.drgElement.push(...clipboard.drgElements);
-        state.dmn.model.definitions.artifact ??= [];
-        state.dmn.model.definitions.artifact.push(...clipboard.artifacts);
-
-        const { diagramElements, widths } = addOrGetDrd({
-          definitions: state.dmn.model.definitions,
-          drdIndex: state.computed(state).getDrdIndex(),
-        });
-        diagramElements.push(...clipboard.shapes.map((s) => ({ ...s, __$$element: "dmndi:DMNShape" as const })));
-        diagramElements.push(...clipboard.edges.map((s) => ({ ...s, __$$element: "dmndi:DMNEdge" as const })));
-
-        widths.push(...clipboard.widths);
-
-        repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions: state.dmn.model.definitions });
-
-        state.diagram._selectedNodes = [...clipboard.drgElements, ...clipboard.artifacts].map((s) =>
-          buildXmlHref({ id: s["@_id"]! })
-        );
-
-        if (state.diagram._selectedNodes.length === 1) {
-          state.focus.consumableId = parseXmlHref(state.diagram._selectedNodes[0]).id;
-        }
-      });
-    });
-  }, [paste, dmnEditorStoreApi]);
-
-  // Select/deselect all
-  const selectAll = RF.useKeyPress(["a", "Meta+a"]);
-  useEffect(() => {
-    if (!selectAll) {
-      return;
-    }
-
-    const allNodeIds = rfStoreApi
-      .getState()
-      .getNodes()
-      .map((s) => s.id);
-
-    const allEdgeIds = rfStoreApi.getState().edges.map((s) => s.id);
-
-    dmnEditorStoreApi.setState((state) => {
-      const allSelectedNodesSet = new Set(state.diagram._selectedNodes);
-      const allSelectedEdgesSet = new Set(state.diagram._selectedEdges);
-
-      // If everything is selected, deselect everything.
-      if (
-        allNodeIds.every((id) => allSelectedNodesSet.has(id) && allEdgeIds.every((id) => allSelectedEdgesSet.has(id)))
-      ) {
-        state.diagram._selectedNodes = [];
-        state.diagram._selectedEdges = [];
-      } else {
-        state.diagram._selectedNodes = allNodeIds;
-        state.diagram._selectedEdges = allEdgeIds;
-      }
-    });
-  }, [selectAll, dmnEditorStoreApi, rfStoreApi]);
-
-  // Create group wrapping selection
-  const g = RF.useKeyPress(["g"]);
-  useEffect(() => {
-    if (!g) {
-      return;
-    }
-
-    const selectedNodes = rf.getNodes().filter((s) => s.selected);
-    if (selectedNodes.length <= 0) {
-      return;
-    }
-
-    dmnEditorStoreApi.setState((state) => {
-      if (state.diagram._selectedNodes.length <= 0) {
-        return;
-      }
-
-      const { href: newNodeId } = addStandaloneNode({
-        definitions: state.dmn.model.definitions,
-        drdIndex: state.computed(state).getDrdIndex(),
-        newNode: {
-          type: NODE_TYPES.group,
-          bounds: getBounds({
-            nodes: selectedNodes,
-            padding: CONTAINER_NODES_DESIRABLE_PADDING,
-          }),
-        },
-      });
-
-      state.dispatch(state).diagram.setNodeStatus(newNodeId, { selected: true });
-    });
-  }, [g, dmnEditorStoreApi, rf]);
-
-  // Toggle hierarchy highlights
-  const h = RF.useKeyPress(["h"]);
-  useEffect(() => {
-    if (!h) {
-      return;
-    }
-
-    dmnEditorStoreApi.setState((state) => {
-      state.diagram.overlays.enableNodeHierarchyHighlight = !state.diagram.overlays.enableNodeHierarchyHighlight;
-    });
-  }, [h, dmnEditorStoreApi]);
-
-  // Show Properties panel
-  const i = RF.useKeyPress(["i"]);
-  useEffect(() => {
-    if (!i) {
-      return;
-    }
-
-    dmnEditorStoreApi.setState((state) => {
-      state.diagram.propertiesPanel.isOpen = !state.diagram.propertiesPanel.isOpen;
-    });
-  }, [i, dmnEditorStoreApi]);
-
-  // Hide from DRD
-  const x = RF.useKeyPress(["x"]);
-  useEffect(() => {
-    if (!x) {
-      return;
-    }
-
-    const nodesById = rf
-      .getNodes()
-      .reduce((acc, s) => acc.set(s.id, s), new Map<string, RF.Node<DmnDiagramNodeData>>());
-
-    dmnEditorStoreApi.setState((state) => {
-      const selectedNodeIds = new Set(state.diagram._selectedNodes);
-      for (const edge of rf.getEdges()) {
-        if (
-          (selectedNodeIds.has(edge.source) &&
-            canRemoveNodeFromDrdOnly({
-              externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
-              definitions: state.dmn.model.definitions,
-              drdIndex: state.computed(state).getDrdIndex(),
-              dmnObjectNamespace:
-                nodesById.get(edge.source)!.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
-              dmnObjectId: nodesById.get(edge.source)!.data.dmnObject?.["@_id"],
-            })) ||
-          (selectedNodeIds.has(edge.target) &&
-            canRemoveNodeFromDrdOnly({
-              externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
-              definitions: state.dmn.model.definitions,
-              drdIndex: state.computed(state).getDrdIndex(),
-              dmnObjectNamespace:
-                nodesById.get(edge.target)!.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
-              dmnObjectId: nodesById.get(edge.target)!.data.dmnObject?.["@_id"],
-            }))
-        ) {
-          deleteEdge({
-            definitions: state.dmn.model.definitions,
-            drdIndex: state.computed(state).getDrdIndex(),
-            edge: { id: edge.id, dmnObject: edge.data!.dmnObject },
-            mode: EdgeDeletionMode.FROM_CURRENT_DRD_ONLY,
-          });
-          state.dispatch(state).diagram.setEdgeStatus(edge.id, { selected: false, draggingWaypoint: false });
-        }
-      }
-
-      for (const node of rf.getNodes().filter((s) => s.selected)) {
-        // Prevent hiding artifact nodes from DRD;
-        if (nodeNatures[node.type as NodeType] === NodeNature.ARTIFACT) {
-          continue;
-        }
-        const { deletedDmnShapeOnCurrentDrd: deletedShape } = deleteNode({
-          drgEdges: [], // Deleting from DRD only.
-          definitions: state.dmn.model.definitions,
-          externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
-          drdIndex: state.computed(state).getDrdIndex(),
-          dmnObjectNamespace: node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
-          dmnObjectQName: node.data.dmnObjectQName,
-          dmnObjectId: node.data.dmnObject?.["@_id"],
-          nodeNature: nodeNatures[node.type as NodeType],
-          mode: NodeDeletionMode.FROM_CURRENT_DRD_ONLY,
-        });
-
-        if (deletedShape) {
-          state.dispatch(state).diagram.setNodeStatus(node.id, {
-            selected: false,
-            dragging: false,
-            resizing: false,
-          });
-        }
-      }
-    });
-  }, [x, dmnEditorStoreApi, rf, externalModelsByNamespace]);
-
-  return <></>;
-}
-
-export function PanWhenAltPressed() {
-  const altPressed = RF.useKeyPress("Alt");
-  const rfStoreApi = RF.useStoreApi();
-
-  useEffect(() => {
-    rfStoreApi.setState({
-      nodesDraggable: !altPressed,
-      nodesConnectable: !altPressed,
-      elementsSelectable: !altPressed,
-    });
-  }, [altPressed, rfStoreApi]);
-
-  return <></>;
 }

@@ -162,12 +162,6 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
     __PACKAGES_ROOT_DIRS.every((pkgDir) => !path.startsWith(`${pkgDir}/`))
   );
 
-  const relevantPackageDirsInAllPartitions = stdoutArray(
-    await execSync(`pnpm -F ...[${__ARG_baseSha}]... exec bash -c pwd`).toString()
-  )
-    .map((pkgDir) => path.relative(cwd, pkgDir))
-    .map((pkgDir) => pkgDir.split(path.sep).join(path.posix.sep));
-
   const affectedPackageDirsInAllPartitions = stdoutArray(
     await execSync(`pnpm -F ...[${__ARG_baseSha}] exec bash -c pwd`).toString()
   )
@@ -216,7 +210,7 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
 
       console.log(`[build-partitioning] 'Partial' build of '${partition.name}'`);
       console.log(
-        `[build-partitioning] Building ${relevantPackageNamesInPartition.size}/${relevantPackageDirsInAllPartitions.length}/${allPackageDirs.size} packages.`
+        `[build-partitioning] Building ${relevantPackageNamesInPartition.size}/${partition.dirs.size}/${allPackageDirs.size} packages.`
       );
       console.log(relevantPackageNamesInPartition);
 
@@ -236,7 +230,7 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
         name: partition.name,
         bootstrapPnpmFilterString: [...relevantPackageNamesInPartition].map((p) => `-F '${p}'`).join(" "),
         upstreamPnpmFilterString: [...upstreamPackageNamesInPartition].map((p) => `-F '${p}'`).join(" "),
-        affectedPnpmFilterString: [...affectedPackageNamesInPartition].map((p) => `-F '...${p}'`).join(" "),
+        affectedPnpmFilterString: [...affectedPackageNamesInPartition].map((p) => `-F '${p}'`).join(" "),
       };
     })
   );

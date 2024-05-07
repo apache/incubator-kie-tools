@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InlineFeelNameInput } from "../../feel/InlineFeelNameInput";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";

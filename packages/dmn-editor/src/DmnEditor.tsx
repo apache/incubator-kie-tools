@@ -57,6 +57,7 @@ import { INITIAL_COMPUTED_CACHE } from "./store/computed/initial";
 
 import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
+import { Commands, CommandsContextProvider, useCommands } from "./commands/CommandsContextProvider";
 
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
@@ -65,6 +66,7 @@ const SVG_PADDING = 20;
 export type DmnEditorRef = {
   reset: (mode: DmnLatestModel) => void;
   getDiagramSvg: () => Promise<string | undefined>;
+  getCommands: () => Commands;
 };
 
 export type EvaluationResults = Record<string, any>;
@@ -171,14 +173,13 @@ export const DmnEditorInternal = ({
   const navigationTab = useDmnEditorStore((s) => s.navigation.tab);
   const dmn = useDmnEditorStore((s) => s.dmn);
   const isDiagramEditingInProgress = useDmnEditorStore((s) => s.computed(s).isDiagramEditingInProgress());
-
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const { commandsRef } = useCommands();
 
   const { dmnModelBeforeEditingRef, dmnEditorRootElementRef } = useDmnEditor();
   const { externalModelsByNamespace } = useExternalModels();
 
   // Refs
-
   const diagramRef = useRef<DiagramRef>(null);
   const diagramContainerRef = useRef<HTMLDivElement>(null);
   const beeContainerRef = useRef<HTMLDivElement>(null);
@@ -233,8 +234,9 @@ export const DmnEditorInternal = ({
 
         return new XMLSerializer().serializeToString(svg);
       },
+      getCommands: () => commandsRef.current,
     }),
-    [dmnEditorStoreApi, externalModelsByNamespace]
+    [dmnEditorStoreApi, externalModelsByNamespace, commandsRef]
   );
 
   // Make sure the DMN Editor reacts to props changing.
@@ -408,7 +410,9 @@ export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref
       <ErrorBoundary FallbackComponent={DmnEditorErrorFallback} onReset={resetState}>
         <DmnEditorExternalModelsContextProvider {...props}>
           <DmnEditorStoreApiContext.Provider value={storeRef.current}>
-            <DmnEditorInternal forwardRef={ref} {...props} />
+            <CommandsContextProvider>
+              <DmnEditorInternal forwardRef={ref} {...props} />
+            </CommandsContextProvider>
           </DmnEditorStoreApiContext.Provider>
         </DmnEditorExternalModelsContextProvider>
       </ErrorBoundary>

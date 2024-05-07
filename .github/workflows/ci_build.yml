@@ -39,14 +39,14 @@ jobs:
           ref: ${{ github.base_ref }}
 
       - name: "Setup pnpm"
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
           version: 8.7.0
 
       - name: "Setup Node"
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.14.0
+          node-version: 18.20.2
 
       - name: "Setup CI patterns"
         id: ci_patterns
@@ -169,6 +169,8 @@ jobs:
       - name: "Upload reports and artifacts"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
         uses: ./.github/actions/upload-ci-reports-and-artifacts
+        with:
+          partition_index: ${{ matrix.partition }}
 
       - name: "Upload end-to-end tests results to Buildkite (`main` only)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none' && !github.event.pull_request

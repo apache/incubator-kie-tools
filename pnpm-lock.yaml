@@ -241,6 +241,37 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
+  examples/dmn-quarkus-example:
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../../packages/maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../../packages/root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
+  examples/drools-process-usertasks-quarkus-example:
+    dependencies:
+      "@kie-tools/jbpm-quarkus-devui":
+        specifier: workspace:*
+        version: link:../../packages/jbpm-quarkus-devui
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../../packages/maven-base
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../../packages/maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../../packages/root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
   examples/ping-pong-view:
     dependencies:
       "@kie-tools-core/envelope":
@@ -381,6 +412,25 @@ importers:
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
+
+  examples/sonataflow-greeting-quarkus-example:
+    dependencies:
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../../packages/maven-base
+      "@kie-tools/sonataflow-quarkus-devui":
+        specifier: workspace:*
+        version: link:../../packages/sonataflow-quarkus-devui
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../../packages/maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../../packages/root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
 
   examples/todo-list-view:
     dependencies:
@@ -1003,9 +1053,6 @@ importers:
       "@kie-tools/kie-bc-editors":
         specifier: workspace:*
         version: link:../kie-bc-editors
-      "@kie-tools/vscode-java-code-completion-extension-plugin":
-        specifier: workspace:*
-        version: link:../vscode-java-code-completion-extension-plugin
     devDependencies:
       "@kie-tools-core/webpack-base":
         specifier: workspace:*
@@ -1022,6 +1069,9 @@ importers:
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
+      "@kie-tools/vscode-java-code-completion-extension-plugin":
+        specifier: workspace:*
+        version: link:../vscode-java-code-completion-extension-plugin
       "@types/vscode":
         specifier: 1.67.0
         version: 1.67.0
@@ -1537,6 +1587,10 @@ importers:
         version: 1.1.6
 
   packages/dashbuilder:
+    dependencies:
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../maven-base
     devDependencies:
       "@kie-tools/dashbuilder-component-assembler":
         specifier: workspace:*
@@ -3076,6 +3130,10 @@ importers:
         version: link:../root-env
 
   packages/dev-deployment-base-image:
+    dependencies:
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../maven-base
     devDependencies:
       "@kie-tools/dev-deployment-upload-service":
         specifier: workspace:*
@@ -3267,6 +3325,10 @@ importers:
         version: 1.1.6
 
   packages/dev-deployment-kogito-quarkus-blank-app:
+    dependencies:
+      "@kie-tools/jbpm-quarkus-devui":
+        specifier: workspace:*
+        version: link:../jbpm-quarkus-devui
     devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
@@ -3582,6 +3644,9 @@ importers:
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
+      "@kie-tools-core/keyboard-shortcuts":
+        specifier: workspace:*
+        version: link:../keyboard-shortcuts
       "@kie-tools-core/notifications":
         specifier: workspace:*
         version: link:../notifications
@@ -3938,10 +4003,11 @@ importers:
         version: 4.8.4
 
   packages/dmn-testing-models:
-    devDependencies:
+    dependencies:
       "@kie-tools/maven-base":
         specifier: workspace:*
         version: link:../maven-base
+    devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
@@ -3981,9 +4047,6 @@ importers:
       "@kie-tools/kie-bc-editors":
         specifier: workspace:*
         version: link:../kie-bc-editors
-      "@kie-tools/vscode-java-code-completion-extension-plugin":
-        specifier: workspace:*
-        version: link:../vscode-java-code-completion-extension-plugin
     devDependencies:
       "@kie-tools-core/webpack-base":
         specifier: workspace:*
@@ -4000,6 +4063,9 @@ importers:
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
+      "@kie-tools/vscode-java-code-completion-extension-plugin":
+        specifier: workspace:*
+        version: link:../vscode-java-code-completion-extension-plugin
       "@types/vscode":
         specifier: 1.67.0
         version: 1.67.0
@@ -4370,6 +4436,10 @@ importers:
         version: 4.8.4
 
   packages/extended-services-java:
+    dependencies:
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../maven-base
     devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
@@ -5132,10 +5202,11 @@ importers:
         version: 5.9.0
 
   packages/jbpm-quarkus-devui:
-    devDependencies:
+    dependencies:
       "@kie-tools/maven-base":
         specifier: workspace:*
         version: link:../maven-base
+    devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
@@ -9643,6 +9714,10 @@ importers:
         version: link:../root-env
 
   packages/serverless-logic-web-tools-swf-deployment-quarkus-app:
+    dependencies:
+      "@kie-tools/sonataflow-quarkus-devui":
+        specifier: workspace:*
+        version: link:../sonataflow-quarkus-devui
     devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
@@ -9656,6 +9731,9 @@ importers:
 
   packages/serverless-logic-web-tools-swf-dev-mode-image:
     devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../maven-config-setup-helper
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -11084,10 +11162,11 @@ importers:
         version: 5.9.0
 
   packages/sonataflow-quarkus-devui:
-    devDependencies:
+    dependencies:
       "@kie-tools/maven-base":
         specifier: workspace:*
         version: link:../maven-base
+    devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
@@ -12434,6 +12513,10 @@ importers:
         version: 4.8.4
 
   packages/vscode-java-code-completion-extension-plugin:
+    dependencies:
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../maven-base
     devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
@@ -13031,6 +13114,10 @@ importers:
         version: 4.8.4
 
   packages/yard-model:
+    dependencies:
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../maven-base
     devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
@@ -13059,9 +13146,6 @@ importers:
       "@kie-tools-core/notifications":
         specifier: workspace:*
         version: link:../notifications
-      "@kie-tools/yard-validator-worker":
-        specifier: workspace:*
-        version: link:../yard-validator-worker
     devDependencies:
       "@kie-tools/eslint":
         specifier: workspace:*
@@ -13072,6 +13156,9 @@ importers:
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
+      "@kie-tools/yard-validator-worker":
+        specifier: workspace:*
+        version: link:../yard-validator-worker
       copyfiles:
         specifier: ^2.4.1
         version: 2.4.1
@@ -13086,6 +13173,10 @@ importers:
         version: 4.8.4
 
   packages/yard-validator-worker:
+    dependencies:
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../maven-base
     devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
@@ -34515,7 +34606,7 @@ packages:
       glob-parent: 6.0.2
       globby: 13.1.2
       normalize-path: 3.0.0
-      schema-utils: 4.2.0
+      schema-utils: 4.0.0
       serialize-javascript: 6.0.1
       webpack: 5.76.1
     dev: true

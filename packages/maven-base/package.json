@@ -19,9 +19,15 @@
     "build:prod": "pnpm lint && run-script-os",
     "build:prod:darwin:linux": "mvn clean deploy -DdeployAtEnd -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -Dmaven.deploy.skip=$(build-env maven.deploy.skip)",
     "build:prod:win32": "pnpm powershell \"mvn clean deploy `-DdeployAtEnd `-DskipTests `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-Dmaven.deploy.skip=$(build-env maven.deploy.skip)\"",
-    "install": "node install.js",
+    "install": "pnpm set-quarkus-version && pnpm set-kogito-version && node install.js",
     "lint": "echo 'Linting'",
-    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "set-kogito-version": "run-script-os",
+    "set-kogito-version:darwin:linux": "mvn versions:set-property -Dproperty=version.org.kie.kogito -DnewVersion=$(build-env kogitoRuntime.version)",
+    "set-kogito-version:win32": "pnpm powershell \"mvn versions:set-property `-Dproperty=version.org.kie.kogito `-DnewVersion=$(build-env kogitoRuntime.version)\"",
+    "set-quarkus-version": "run-script-os",
+    "set-quarkus-version:darwin:linux": "mvn versions:set-property -Dproperty=quarkus.platform.version -DnewVersion=$(build-env quarkusPlatform.version)",
+    "set-quarkus-version:win32": "pnpm powershell \"mvn versions:set-property `-Dproperty=quarkus.platform.version `-DnewVersion=$(build-env quarkusPlatform.version)\""
   },
   "devDependencies": {
     "@kie-tools/maven-config-setup-helper": "workspace:*",

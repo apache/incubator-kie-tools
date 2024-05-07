@@ -27,7 +27,7 @@ module.exports = composeEnv(
         default: "latest",
         description: "",
       },
-      SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeKogitoImageTag: {
+      SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__kogitoBaseBuilderImageTag: {
         default: "999-20240417",
         description: "",
       },
@@ -35,8 +35,9 @@ module.exports = composeEnv(
     get env() {
       return {
         swfDevModeImage: {
+          version: require("../package.json").version,
           buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags),
-          kogitoImageTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeKogitoImageTag),
+          kogitoImageTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__kogitoBaseBuilderImageTag),
         },
       };
     },
