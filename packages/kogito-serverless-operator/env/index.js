@@ -19,7 +19,11 @@
 
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+const kogitoSwfBuilderEnv = require("@kie-tools/kogito-swf-builder/env");
+const kogitoSwfDevModeEnv = require("@kie-tools/kogito-swf-devmode/env");
+const rootEnv = require("@kie-tools/root-env/env");
+
+module.exports = composeEnv([rootEnv, kogitoSwfBuilderEnv, kogitoSwfDevModeEnv], {
   vars: varsWithName({
     KOGITO_SERVERLESS_OPERATOR__registry: {
       default: "quay.io",
@@ -30,12 +34,20 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "The image registry account.",
     },
     KOGITO_SERVERLESS_OPERATOR__name: {
-      default: "kogito-serverless-operator",
+      default: "kogito-serverless-operator-nightly",
       description: "The image name.",
     },
     KOGITO_SERVERLESS_OPERATOR__buildTag: {
       default: "latest",
       description: "The image tag",
+    },
+    KOGITO_SERVERLESS_OPERATOR__kogitoSwfBuilderImage: {
+      default: `${kogitoSwfBuilderEnv.env.kogitoSwfBuilder.registry}/${kogitoSwfBuilderEnv.env.kogitoSwfBuilder.account}/${kogitoSwfBuilderEnv.env.kogitoSwfBuilder.name}:${kogitoSwfBuilderEnv.env.kogitoSwfBuilder.tag}`,
+      description: "Kogito SWF Builder image",
+    },
+    KOGITO_SERVERLESS_OPERATOR__kogitoSwfDevModeImage: {
+      default: `${kogitoSwfDevModeEnv.env.kogitoSwfDevMode.registry}/${kogitoSwfDevModeEnv.env.kogitoSwfDevMode.account}/${kogitoSwfDevModeEnv.env.kogitoSwfDevMode.name}:${kogitoSwfDevModeEnv.env.kogitoSwfDevMode.tag}`,
+      description: "Kogito SWF DevMode image",
     },
   }),
   get env() {
@@ -46,6 +58,8 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         name: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__name),
         tag: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__buildTag),
         version: require("../package.json").version,
+        kogitoSwfBuilderImage: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__kogitoSwfBuilderImage),
+        kogitoSwfDevModeImage: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__kogitoSwfDevModeImage),
       },
     };
   },

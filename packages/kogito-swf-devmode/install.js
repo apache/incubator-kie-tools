@@ -24,6 +24,7 @@ const buildEnv = require("./env");
 const path = require("path");
 const pythonVenvDir = path.dirname(require.resolve("@kie-tools/python-venv/package.json"));
 const kogitoSwfCommonDir = path.dirname(require.resolve("@kie-tools/kogito-swf-common/package.json"));
+const replaceInFile = require("replace-in-file");
 
 const activateCmd =
   process.platform === "win32"
@@ -46,12 +47,18 @@ if (imageYamlFiles.length !== 1) {
 const originalYamlPath = path.join(resourcesPath, imageYamlFiles[0]);
 let imageYaml = fs.readFileSync(originalYamlPath, "utf8");
 
+const imageUrl = `${buildEnv.env.kogitoSwfDevMode.registry}/${buildEnv.env.kogitoSwfDevMode.account}/${buildEnv.env.kogitoSwfDevMode.name}`;
+
 // Replace the whole string between quotes ("") with the image name
-imageYaml = imageYaml.replace(
-  /(?<=")(.*kogito-swf-devmode.*)(?=")/gm,
-  `${buildEnv.env.kogitoSwfDevMode.registry}/${buildEnv.env.kogitoSwfDevMode.account}/${buildEnv.env.kogitoSwfDevMode.name}`
-);
+imageYaml = imageYaml.replace(/(?<=")(.*kogito-swf-devmode.*)(?=")/gm, imageUrl);
 
 // Write file and then rename it to match the image name
 fs.writeFileSync(originalYamlPath, imageYaml);
 fs.renameSync(originalYamlPath, path.join(resourcesPath, `${buildEnv.env.kogitoSwfDevMode.name}-image.yaml`));
+
+// Replace image URL in .feature files
+replaceInFile.sync({
+  files: ["**/*.feature"],
+  from: /@quay.io\/kiegroup\/.*/g,
+  to: `@${imageUrl}`,
+});
