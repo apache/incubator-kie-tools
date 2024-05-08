@@ -1,0 +1,52 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: knative-manager-role
+rules:
+  - apiGroups:
+      - eventing.knative.dev
+    resources:
+      - triggers
+      - triggers/status
+      - triggers/finalizers
+    verbs:
+      - create
+      - delete
+      - deletecollection
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - sources.knative.dev
+    resources:
+      - sinkbindings
+      - sinkbindings/status
+      - sinkbindings/finalizers
+    verbs:
+      - create
+      - delete
+      - deletecollection
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - serving.knative.dev
+    resources:
+      - service
+      - services
+      - services/status
+      - services/finalizers
+    verbs:
+      - create
+      - delete
+      - deletecollection
+      - get
+      - list
+      - patch
+      - update
+      - watch

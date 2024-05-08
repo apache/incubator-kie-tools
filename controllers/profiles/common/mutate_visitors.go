@@ -27,6 +27,7 @@ import (
 	"github.com/imdario/mergo"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
@@ -50,6 +51,25 @@ func ImageDeploymentMutateVisitor(workflow *operatorapi.SonataFlow, image string
 			_, idx := kubeutil.GetContainerByName(operatorapi.DefaultContainerName, &deployment.Spec.Template.Spec)
 			deployment.Spec.Template.Spec.Containers[idx].Image = image
 			deployment.Spec.Template.Spec.Containers[idx].ImagePullPolicy = kubeutil.GetImagePullPolicy(image)
+			return nil
+		}
+	}
+}
+
+// ImageKServiceMutateVisitor same as ImageDeploymentMutateVisitor for Knative Serving
+func ImageKServiceMutateVisitor(workflow *operatorapi.SonataFlow, image string) MutateVisitor {
+	return func(object client.Object) controllerutil.MutateFn {
+		// noop since we already have an image in the flow container defined by the user.
+		if workflow.HasContainerSpecImage() {
+			return func() error {
+				return nil
+			}
+		}
+		return func() error {
+			ksvc := object.(*servingv1.Service)
+			_, idx := kubeutil.GetContainerByName(operatorapi.DefaultContainerName, &ksvc.Spec.Template.Spec.PodSpec)
+			ksvc.Spec.Template.Spec.Containers[idx].Image = image
+			ksvc.Spec.Template.Spec.Containers[idx].ImagePullPolicy = kubeutil.GetImagePullPolicy(image)
 			return nil
 		}
 	}
@@ -85,6 +105,36 @@ func EnsureDeployment(original *appsv1.Deployment, object *appsv1.Deployment) er
 
 	// we do a merge to not keep changing the spec since k8s will set default values to the podSpec
 	return mergo.Merge(&object.Spec.Template.Spec, original.Spec.Template.Spec, mergo.WithOverride)
+}
+
+// KServiceMutateVisitor guarantees the state of the default Knative Service object
+func KServiceMutateVisitor(workflow *operatorapi.SonataFlow, plf *operatorapi.SonataFlowPlatform) MutateVisitor {
+	return func(object client.Object) controllerutil.MutateFn {
+		return func() error {
+			if kubeutil.IsObjectNew(object) {
+				return nil
+			}
+			original, err := KServiceCreator(workflow, plf)
+			if err != nil {
+				return err
+			}
+			return EnsureKService(original.(*servingv1.Service), object.(*servingv1.Service))
+		}
+	}
+}
+
+// EnsureKService Ensure that the original Knative Service fields are immutable.
+func EnsureKService(original *servingv1.Service, object *servingv1.Service) error {
+	object.Labels = original.GetLabels()
+
+	// Clean up the volumes, they are inherited from original, additional are added by other visitors
+	object.Spec.Template.Spec.Volumes = nil
+	for i := range object.Spec.Template.Spec.Containers {
+		object.Spec.Template.Spec.Containers[i].VolumeMounts = nil
+	}
+
+	// we do a merge to not keep changing the spec since k8s will set default values to the podSpec
+	return mergo.Merge(&object.Spec.Template.Spec.PodSpec, original.Spec.Template.Spec.PodSpec, mergo.WithOverride)
 }
 
 func ServiceMutateVisitor(workflow *operatorapi.SonataFlow) MutateVisitor {

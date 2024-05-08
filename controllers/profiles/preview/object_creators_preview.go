@@ -24,6 +24,7 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
+	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
@@ -64,28 +65,40 @@ func addOpenShiftImageTriggerDeploymentMutateVisitor(workflow *v1alpha08.SonataF
 	}
 }
 
-// mountDevConfigMapsMutateVisitor mounts the required configMaps in the Workflow Dev Deployment
-func mountProdConfigMapsMutateVisitor(workflow *operatorapi.SonataFlow, userPropsCM *v1.ConfigMap, managedPropsCM *v1.ConfigMap) common.MutateVisitor {
+// mountConfigMapsMutateVisitor mounts the required configMaps in the SonataFlow instance
+func mountConfigMapsMutateVisitor(workflow *operatorapi.SonataFlow, userPropsCM *v1.ConfigMap, managedPropsCM *v1.ConfigMap) common.MutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
 		return func() error {
-			deployment := object.(*appsv1.Deployment)
-			_, idx := kubeutil.GetContainerByName(v1alpha08.DefaultContainerName, &deployment.Spec.Template.Spec)
+			var podTemplateSpec *v1.PodSpec
 
-			if len(deployment.Spec.Template.Spec.Volumes) == 0 {
-				deployment.Spec.Template.Spec.Volumes = make([]v1.Volume, 0, 1)
+			if workflow.IsKnativeDeployment() {
+				ksvc := object.(*servingv1.Service)
+				podTemplateSpec = &ksvc.Spec.Template.Spec.PodSpec
+			} else {
+				deployment := object.(*appsv1.Deployment)
+				podTemplateSpec = &deployment.Spec.Template.Spec
+				if err := kubeutil.AnnotateDeploymentConfigChecksum(workflow, deployment, userPropsCM, managedPropsCM); err != nil {
+					return err
+				}
 			}
-			if len(deployment.Spec.Template.Spec.Containers[idx].VolumeMounts) == 0 {
-				deployment.Spec.Template.Spec.Containers[idx].VolumeMounts = make([]v1.VolumeMount, 0, 1)
+
+			_, idx := kubeutil.GetContainerByName(v1alpha08.DefaultContainerName, podTemplateSpec)
+
+			if len(podTemplateSpec.Volumes) == 0 {
+				podTemplateSpec.Volumes = make([]v1.Volume, 0, 1)
+			}
+			if len(podTemplateSpec.Containers[idx].VolumeMounts) == 0 {
+				podTemplateSpec.Containers[idx].VolumeMounts = make([]v1.VolumeMount, 0, 1)
 			}
 
 			defaultResourcesVolume := v1.Volume{Name: constants.ConfigMapWorkflowPropsVolumeName, VolumeSource: v1.VolumeSource{Projected: &v1.ProjectedVolumeSource{}}}
 			kubeutil.VolumeProjectionAddConfigMap(defaultResourcesVolume.Projected, userPropsCM.Name, v1.KeyToPath{Key: workflowproj.ApplicationPropertiesFileName, Path: workflowproj.ApplicationPropertiesFileName})
 			kubeutil.VolumeProjectionAddConfigMap(defaultResourcesVolume.Projected, managedPropsCM.Name, v1.KeyToPath{Key: workflowproj.GetManagedPropertiesFileName(workflow), Path: workflowproj.GetManagedPropertiesFileName(workflow)})
-			kubeutil.AddOrReplaceVolume(&deployment.Spec.Template.Spec, defaultResourcesVolume)
-			kubeutil.AddOrReplaceVolumeMount(idx, &deployment.Spec.Template.Spec,
+			kubeutil.AddOrReplaceVolume(podTemplateSpec, defaultResourcesVolume)
+			kubeutil.AddOrReplaceVolumeMount(idx, podTemplateSpec,
 				kubeutil.VolumeMount(constants.ConfigMapWorkflowPropsVolumeName, true, quarkusProdConfigMountPath))
 
-			return kubeutil.AnnotateDeploymentConfigChecksum(workflow, deployment, userPropsCM, managedPropsCM)
+			return nil
 		}
 	}
 }

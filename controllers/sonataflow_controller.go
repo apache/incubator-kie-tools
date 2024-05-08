@@ -23,6 +23,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 	"k8s.io/klog/v2"
 
 	profiles "github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/factory"
@@ -89,12 +90,26 @@ func (r *SonataFlowReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		return ctrl.Result{}, err
 	}
 
+	r.setDefaults(workflow)
+
 	// Only process resources assigned to the operator
 	if !platform.IsOperatorHandlerConsideringLock(ctx, r.Client, req.Namespace, workflow) {
 		klog.V(log.I).InfoS("Ignoring request because resource is not assigned to current operator")
 		return reconcile.Result{}, nil
 	}
 	return profiles.NewReconciler(r.Client, r.Config, r.Recorder, workflow).Reconcile(ctx, workflow)
+}
+
+// TODO: move to webhook see https://github.com/apache/incubator-kie-kogito-serverless-operator/pull/239
+func (r *SonataFlowReconciler) setDefaults(workflow *operatorapi.SonataFlow) {
+	if workflow.Annotations == nil {
+		workflow.Annotations = map[string]string{}
+	}
+	profile := metadata.GetProfileOrDefault(workflow.Annotations)
+	workflow.Annotations[metadata.Profile] = string(profile)
+	if profile == metadata.DevProfile {
+		workflow.Spec.PodTemplate.DeploymentModel = operatorapi.KubernetesDeploymentModel
+	}
 }
 
 func platformEnqueueRequestsFromMapFunc(c client.Client, p *operatorapi.SonataFlowPlatform) []reconcile.Request {

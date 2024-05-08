@@ -28,10 +28,42 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
+	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 )
 
+type fakeDeploymentReconciler struct {
+	DeploymentReconciler
+}
+
+func Test_CheckDeploymentModelIsKnative(t *testing.T) {
+	workflow := test.GetBaseSonataFlowWithPreviewProfile(t.Name())
+	workflow.Spec.PodTemplate.DeploymentModel = v1alpha08.KnativeDeploymentModel
+
+	cli := test.NewSonataFlowClientBuilderWithKnative().
+		WithRuntimeObjects(workflow).
+		WithStatusSubresource(workflow).
+		Build()
+	stateSupport := fakeReconcilerSupport(cli)
+	handler := NewDeploymentReconciler(stateSupport, NewObjectEnsurers(stateSupport))
+
+	result, objects, err := handler.ensureObjects(context.TODO(), workflow, "")
+	assert.NoError(t, err)
+	assert.NotEmpty(t, objects)
+	assert.True(t, result.Requeue)
+
+	var ksvc *servingv1.Service
+	for _, o := range objects {
+		if _, ok := o.(*servingv1.Service); ok {
+			ksvc = o.(*servingv1.Service)
+			assert.Equal(t, v1alpha08.DefaultContainerName, ksvc.Spec.Template.Spec.Containers[0].Name)
+			break
+		}
+	}
+	assert.NotNil(t, ksvc)
+}
+
 func Test_CheckPodTemplateChangesReflectDeployment(t *testing.T) {
-	workflow := test.GetBaseSonataFlowWithProdOpsProfile(t.Name())
+	workflow := test.GetBaseSonataFlowWithPreviewProfile(t.Name())
 
 	client := test.NewSonataFlowClientBuilder().
 		WithRuntimeObjects(workflow).
@@ -53,18 +85,20 @@ func Test_CheckPodTemplateChangesReflectDeployment(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotEmpty(t, objects)
 	assert.True(t, result.Requeue)
+	var deployment *v1.Deployment
 	for _, o := range objects {
 		if _, ok := o.(*v1.Deployment); ok {
-			deployment := o.(*v1.Deployment)
+			deployment = o.(*v1.Deployment)
 			assert.Equal(t, expectedImg, deployment.Spec.Template.Spec.Containers[0].Image)
 			assert.Equal(t, v1alpha08.DefaultContainerName, deployment.Spec.Template.Spec.Containers[0].Name)
 			break
 		}
 	}
+	assert.NotNil(t, deployment)
 }
 
 func Test_CheckDeploymentRolloutAfterCMChange(t *testing.T) {
-	workflow := test.GetBaseSonataFlowWithProdOpsProfile(t.Name())
+	workflow := test.GetBaseSonataFlowWithPreviewProfile(t.Name())
 
 	client := test.NewSonataFlowClientBuilder().
 		WithRuntimeObjects(workflow).
@@ -126,7 +160,7 @@ func Test_CheckDeploymentRolloutAfterCMChange(t *testing.T) {
 }
 
 func Test_CheckDeploymentUnchangedAfterCMChangeOtherKeys(t *testing.T) {
-	workflow := test.GetBaseSonataFlowWithProdOpsProfile(t.Name())
+	workflow := test.GetBaseSonataFlowWithPreviewProfile(t.Name())
 
 	client := test.NewSonataFlowClientBuilder().
 		WithRuntimeObjects(workflow).

@@ -90,8 +90,7 @@ func deploymentMutateVisitor(workflow *operatorapi.SonataFlow, plf *operatorapi.
 			if err != nil {
 				return err
 			}
-			common.EnsureDeployment(original.(*appsv1.Deployment), object.(*appsv1.Deployment))
-			return nil
+			return common.EnsureDeployment(original.(*appsv1.Deployment), object.(*appsv1.Deployment))
 		}
 	}
 }

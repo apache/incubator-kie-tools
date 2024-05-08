@@ -289,6 +289,9 @@ spec:
         name: A Deployment for the Flow
         version: apps/v1
       - kind: Service
+        name: A Knative Serving Service for the Flow
+        version: serving.knative.dev/v1
+      - kind: Service
         name: A Service for the Flow
         version: v1
       - kind: SonataFlowBuild
@@ -428,6 +431,22 @@ spec:
           - sinkbindings
           - sinkbindings/status
           - sinkbindings/finalizers
+          verbs:
+          - create
+          - delete
+          - deletecollection
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - serving.knative.dev
+          resources:
+          - service
+          - services
+          - services/status
+          - services/finalizers
           verbs:
           - create
           - delete

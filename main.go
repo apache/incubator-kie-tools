@@ -26,6 +26,7 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/cfg"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
+	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 
 	"k8s.io/klog/v2/klogr"
 
@@ -60,6 +61,7 @@ func init() {
 	utilruntime.Must(operatorapi.AddToScheme(scheme))
 	utilruntime.Must(sourcesv1.AddToScheme(scheme))
 	utilruntime.Must(eventingv1.AddToScheme(scheme))
+	utilruntime.Must(servingv1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 

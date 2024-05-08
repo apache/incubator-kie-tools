@@ -189,7 +189,7 @@ func (h *deployWithBuildWorkflowState) Do(ctx context.Context, workflow *operato
 	}
 
 	// didn't change, business as usual
-	return NewDeploymentReconciler(h.StateSupport, h.ensurers).reconcileWithBuiltImage(ctx, workflow, build.Status.ImageTag)
+	return NewDeploymentReconciler(h.StateSupport, h.ensurers).reconcileWithImage(ctx, workflow, build.Status.ImageTag)
 }
 
 func (h *deployWithBuildWorkflowState) PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error {

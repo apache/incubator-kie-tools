@@ -26,7 +26,9 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/klog/v2"
+	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
@@ -38,6 +40,8 @@ import (
 )
 
 var _ WorkflowDeploymentManager = &deploymentHandler{}
+
+const knativeDeploymentSuffix = "-deployment"
 
 // WorkflowDeploymentManager interface to handle workflow deployment features.
 type WorkflowDeploymentManager interface {
@@ -58,24 +62,42 @@ type deploymentHandler struct {
 	c client.Client
 }
 
-func (d *deploymentHandler) RolloutDeployment(ctx context.Context, workflow *operatorapi.SonataFlow) error {
-	deployment := &appsv1.Deployment{}
-	if err := d.c.Get(ctx, client.ObjectKeyFromObject(workflow), deployment); err != nil {
-		// Deployment not found, nothing to do.
-		if errors.IsNotFound(err) {
-			return nil
+func (d *deploymentHandler) getDeployment(ctx context.Context, workflow *operatorapi.SonataFlow) (*appsv1.Deployment, error) {
+	deploymentName := workflow.Name
+	if workflow.IsKnativeDeployment() {
+		ksvc := &servingv1.Service{}
+		if err := d.c.Get(ctx, client.ObjectKeyFromObject(workflow), ksvc); err != nil {
+			if errors.IsNotFound(err) {
+				return nil, nil
+			}
+			return nil, err
 		}
+		deploymentName = ksvc.Status.LatestCreatedRevisionName + knativeDeploymentSuffix
+	}
+	deployment := &appsv1.Deployment{}
+	if err := d.c.Get(ctx, types.NamespacedName{Namespace: workflow.Namespace, Name: deploymentName}, deployment); err != nil {
+		if errors.IsNotFound(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return deployment, nil
+}
+
+func (d *deploymentHandler) RolloutDeployment(ctx context.Context, workflow *operatorapi.SonataFlow) error {
+	deployment, err := d.getDeployment(ctx, workflow)
+	if err != nil || deployment == nil {
 		return err
 	}
-	if err := kubeutil.MarkDeploymentToRollout(deployment); err != nil {
+	if err = kubeutil.MarkDeploymentToRollout(deployment); err != nil {
 		return err
 	}
 	return d.c.Update(ctx, deployment)
 }
 
 func (d *deploymentHandler) SyncDeploymentStatus(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, error) {
-	deployment := &appsv1.Deployment{}
-	if err := d.c.Get(ctx, client.ObjectKeyFromObject(workflow), deployment); err != nil {
+	deployment, err := d.getDeployment(ctx, workflow)
+	if err != nil || deployment == nil {
 		// we should have the deployment by this time, so even if the error above is not found, we should halt.
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, "Couldn't find the workflow deployment")
 		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, err

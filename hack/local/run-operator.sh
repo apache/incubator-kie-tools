@@ -17,6 +17,9 @@
 # under the License.
 
 # Runs the operator locally via go main
+POD_NAMESPACE=$(kubectl config view --minify | grep namespace | cut -d" " -f6)
+
+export POD_NAMESPACE
 
 kubectl delete --ignore-not-found=true -f ./bundle/manifests/sonataflow.org_sonataflowclusterplatforms.yaml
 kubectl delete --ignore-not-found=true -f ./bundle/manifests/sonataflow.org_sonataflowplatforms.yaml

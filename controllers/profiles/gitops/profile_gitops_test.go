@@ -29,7 +29,7 @@ import (
 )
 
 func Test_Reconciler_ProdOps(t *testing.T) {
-	workflow := test.GetBaseSonataFlowWithProdOpsProfile(t.Name())
+	workflow := test.GetBaseSonataFlowWithPreviewProfile(t.Name())
 	workflow.Spec.PodTemplate.PodSpec.InitContainers = append(workflow.Spec.PodTemplate.PodSpec.InitContainers, corev1.Container{
 		Name:    "check-postgres",
 		Image:   "registry.access.redhat.com/ubi9/ubi-micro:latest",

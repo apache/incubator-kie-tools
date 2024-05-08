@@ -25,20 +25,7 @@ import (
 )
 
 const (
-	defaultDatabaseName  = "sonataflow"
-	timeoutSeconds       = 3
-	failureThreshold     = 5
-	initialPeriodSeconds = 15
-	initialDelaySeconds  = 10
-	successThreshold     = 1
-
-	postgreSQLCPULimit      = "500m"
-	postgreSQLMemoryLimit   = "256Mi"
-	postgreSQLMemoryRequest = "256Mi"
-	postgreSQLCPURequest    = "100m"
-
-	defaultPostgreSQLUsername  = "sonataflow"
-	defaultPostgresSQLPassword = "sonataflow"
+	defaultDatabaseName = "sonataflow"
 )
 
 func ConfigurePostgreSQLEnv(postgresql *operatorapi.PersistencePostgreSQL, databaseSchema, databaseNamespace string) []corev1.EnvVar {

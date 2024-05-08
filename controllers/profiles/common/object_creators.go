@@ -24,6 +24,7 @@ import (
 	"strings"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/workflowdef"
+	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 
 	cncfmodel "github.com/serverlessworkflow/sdk-go/v2/model"
 
@@ -108,6 +109,41 @@ func DeploymentCreator(workflow *operatorapi.SonataFlow, plf *operatorapi.Sonata
 	return deployment, nil
 }
 
+// KServiceCreator creates the default Knative Service object for SonataFlow instances. It's based on the default DeploymentCreator.
+func KServiceCreator(workflow *operatorapi.SonataFlow, plf *operatorapi.SonataFlowPlatform) (client.Object, error) {
+	lbl := workflowproj.GetMergedLabels(workflow)
+	ksvc := &servingv1.Service{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      workflow.Name,
+			Namespace: workflow.Namespace,
+			Labels:    lbl,
+		},
+		Spec: servingv1.ServiceSpec{
+			ConfigurationSpec: servingv1.ConfigurationSpec{
+				Template: servingv1.RevisionTemplateSpec{
+					ObjectMeta: metav1.ObjectMeta{
+						Labels: lbl,
+					},
+					Spec: servingv1.RevisionSpec{
+						PodSpec: corev1.PodSpec{},
+					},
+				},
+			},
+		},
+	}
+
+	if err := mergo.Merge(&ksvc.Spec.Template.Spec.PodSpec, workflow.Spec.PodTemplate.PodSpec.ToPodSpec(), mergo.WithOverride); err != nil {
+		return nil, err
+	}
+	flowContainer, err := defaultContainer(workflow, plf)
+	if err != nil {
+		return nil, err
+	}
+	kubeutil.AddOrReplaceContainer(operatorapi.DefaultContainerName, *flowContainer, &ksvc.Spec.Template.Spec.PodSpec)
+
+	return ksvc, nil
+}
+
 func getReplicasOrDefault(workflow *operatorapi.SonataFlow) *int32 {
 	var dReplicas int32 = 1
 	if workflow.Spec.PodTemplate.Replicas == nil {
@@ -119,7 +155,7 @@ func getReplicasOrDefault(workflow *operatorapi.SonataFlow) *int32 {
 func defaultContainer(workflow *operatorapi.SonataFlow, plf *operatorapi.SonataFlowPlatform) (*corev1.Container, error) {
 	defaultContainerPort := corev1.ContainerPort{
 		ContainerPort: variables.DefaultHTTPWorkflowPortIntStr.IntVal,
-		Name:          utils.HttpScheme,
+		Name:          utils.DefaultServicePortName,
 		Protocol:      corev1.ProtocolTCP,
 	}
 	defaultFlowContainer := &corev1.Container{
@@ -134,6 +170,7 @@ func defaultContainer(workflow *operatorapi.SonataFlow, plf *operatorapi.SonataF
 				},
 			},
 			TimeoutSeconds: healthTimeoutSeconds,
+			PeriodSeconds:  healthStartedPeriodSeconds,
 		},
 		ReadinessProbe: &corev1.Probe{
 			ProbeHandler: corev1.ProbeHandler{
@@ -143,6 +180,7 @@ func defaultContainer(workflow *operatorapi.SonataFlow, plf *operatorapi.SonataF
 				},
 			},
 			TimeoutSeconds: healthTimeoutSeconds,
+			PeriodSeconds:  healthStartedPeriodSeconds,
 		},
 		StartupProbe: &corev1.Probe{
 			ProbeHandler: corev1.ProbeHandler{
@@ -173,7 +211,7 @@ func defaultContainer(workflow *operatorapi.SonataFlow, plf *operatorapi.SonataF
 	defaultFlowContainer.Name = operatorapi.DefaultContainerName
 	portIdx := -1
 	for i := range defaultFlowContainer.Ports {
-		if defaultFlowContainer.Ports[i].Name == utils.HttpScheme ||
+		if defaultFlowContainer.Ports[i].Name == utils.DefaultServicePortName ||
 			defaultFlowContainer.Ports[i].ContainerPort == variables.DefaultHTTPWorkflowPortIntStr.IntVal {
 			portIdx = i
 			break

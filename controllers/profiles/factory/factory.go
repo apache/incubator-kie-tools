@@ -34,10 +34,6 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/dev"
 )
 
-const (
-	defaultProfile = metadata.PreviewProfile
-)
-
 type reconcilerBuilder func(client client.Client, cfg *rest.Config, recorder record.EventRecorder) profiles.ProfileReconciler
 
 var profileBuilders = map[metadata.ProfileType]reconcilerBuilder{
@@ -47,25 +43,22 @@ var profileBuilders = map[metadata.ProfileType]reconcilerBuilder{
 }
 
 func profileBuilder(workflow *operatorapi.SonataFlow) reconcilerBuilder {
-	profile := workflow.Annotations[metadata.Profile]
-	if len(profile) == 0 {
-		profile = defaultProfile.String()
-	}
+	profile := metadata.GetProfileOrDefault(workflow.Annotations)
 	// keep backward compatibility
-	if profile == metadata.ProdProfile.String() {
+	if profile == metadata.ProdProfile {
 		klog.V(log.W).Infof("Profile %s is deprecated, please use '%s' instead.", metadata.ProdProfile, metadata.PreviewProfile)
-		profile = metadata.PreviewProfile.String()
+		profile = metadata.PreviewProfile
 	}
 	// Enforce GitOps profile if the .spec.podTemplate.container.image is set in the Preview profile.
-	if (profile == metadata.PreviewProfile.String() || profile == metadata.ProdProfile.String()) && workflow.HasContainerSpecImage() {
+	if (profile == metadata.PreviewProfile || profile == metadata.ProdProfile) && workflow.HasContainerSpecImage() {
 		workflow.Annotations[metadata.Profile] = metadata.GitOpsProfile.String()
 		return profileBuilders[metadata.GitOpsProfile]
 	}
-	if _, ok := profileBuilders[metadata.ProfileType(profile)]; !ok {
-		klog.V(log.W).Infof("Profile %s not supported, please use '%s' or '%s'. Falling back to %s", profile, metadata.PreviewProfile, metadata.DevProfile, defaultProfile)
-		return profileBuilders[defaultProfile]
+	if _, ok := profileBuilders[profile]; !ok {
+		klog.V(log.W).Infof("Profile %s not supported, please use '%s' or '%s'. Falling back to %s", profile, metadata.PreviewProfile, metadata.DevProfile, metadata.DefaultProfile)
+		return profileBuilders[metadata.DefaultProfile]
 	}
-	return profileBuilders[metadata.ProfileType(profile)]
+	return profileBuilders[profile]
 }
 
 // NewReconciler creates a new ProfileReconciler based on the given workflow and context.

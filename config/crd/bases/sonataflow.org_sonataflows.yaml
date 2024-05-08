@@ -5627,6 +5627,13 @@ spec:
                       - name
                       type: object
                     type: array
+                  deploymentModel:
+                    description: Defines the kind of deployment model for this pod
+                      spec. In dev profile, only "kubernetes" is valid.
+                    enum:
+                    - kubernetes
+                    - knative
+                    type: string
                   dnsConfig:
                     description: Specifies the DNS parameters of a pod. Parameters
                       specified here will be merged to the generated DNS configuration
@@ -7154,6 +7161,8 @@ spec:
                       type: object
                     type: array
                   replicas:
+                    description: Replicas define the number of pods to start by default
+                      for this deployment model. Ignored in "knative" deployment model.
                     format: int32
                     type: integer
                   resourceClaims:

@@ -115,7 +115,7 @@ func createOrUpdateDeployment(ctx context.Context, client client.Client, platfor
 		LivenessProbe:   liveProbe,
 		Ports: []corev1.ContainerPort{
 			{
-				Name:          utils.HttpScheme,
+				Name:          utils.DefaultServicePortName,
 				ContainerPort: int32(constants.DefaultHTTPWorkflowPortInt),
 				Protocol:      corev1.ProtocolTCP,
 			},
@@ -199,7 +199,7 @@ func createOrUpdateService(ctx context.Context, client client.Client, platform *
 	dataSvcSpec := corev1.ServiceSpec{
 		Ports: []corev1.ServicePort{
 			{
-				Name:       utils.HttpScheme,
+				Name:       utils.DefaultServicePortName,
 				Protocol:   corev1.ProtocolTCP,
 				Port:       80,
 				TargetPort: variables.DefaultHTTPWorkflowPortIntStr,

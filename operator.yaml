@@ -22523,6 +22523,13 @@ spec:
                       - name
                       type: object
                     type: array
+                  deploymentModel:
+                    description: Defines the kind of deployment model for this pod
+                      spec. In dev profile, only "kubernetes" is valid.
+                    enum:
+                    - kubernetes
+                    - knative
+                    type: string
                   dnsConfig:
                     description: Specifies the DNS parameters of a pod. Parameters
                       specified here will be merged to the generated DNS configuration
@@ -24050,6 +24057,8 @@ spec:
                       type: object
                     type: array
                   replicas:
+                    description: Replicas define the number of pods to start by default
+                      for this deployment model. Ignored in "knative" deployment model.
                     format: int32
                     type: integer
                   resourceClaims:
@@ -26492,6 +26501,12 @@ rules:
   - patch
   - update
   - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: sonataflow-operator-knative-manager-role
+rules:
 - apiGroups:
   - eventing.knative.dev
   resources:
@@ -26513,6 +26528,22 @@ rules:
   - sinkbindings
   - sinkbindings/status
   - sinkbindings/finalizers
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - serving.knative.dev
+  resources:
+  - service
+  - services
+  - services/status
+  - services/finalizers
   verbs:
   - create
   - delete
@@ -26857,6 +26888,19 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: sonataflow-operator-builder-manager-role
+subjects:
+- kind: ServiceAccount
+  name: sonataflow-operator-controller-manager
+  namespace: sonataflow-operator-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: sonataflow-operator-knative-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: sonataflow-operator-knative-manager-role
 subjects:
 - kind: ServiceAccount
   name: sonataflow-operator-controller-manager

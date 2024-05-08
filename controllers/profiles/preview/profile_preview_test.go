@@ -198,5 +198,6 @@ func fakeReconcilerSupport(client clientruntime.Client) *common.StateSupport {
 	return &common.StateSupport{
 		C:        client,
 		Recorder: test.NewFakeRecorder(),
+		Cfg:      &rest.Config{},
 	}
 }

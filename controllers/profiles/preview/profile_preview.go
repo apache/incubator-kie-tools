@@ -23,6 +23,7 @@ import (
 	"time"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"k8s.io/client-go/rest"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
@@ -48,20 +49,42 @@ const (
 	quarkusProdConfigMountPath = "/deployments/config"
 )
 
-// ObjectEnsurers is a struct for the objects that ReconciliationState needs to create in the platform for the Production profile.
+// ObjectEnsurers is a struct for the objects that ReconciliationState needs to create in the platform for the preview profile.
 // ReconciliationState that needs access to it must include this struct as an attribute and initialize it in the profile builder.
 // Use NewObjectEnsurers to facilitate building this struct
 type ObjectEnsurers struct {
-	deployment            common.ObjectEnsurerWithPlatform
+	// deployment for this ensurer. Don't call it directly, use DeploymentByDeploymentModel instead
+	deployment common.ObjectEnsurerWithPlatform
+	// kservice Knative Serving deployment for this ensurer. Don't call it directly, use DeploymentByDeploymentModel instead
+	kservice common.ObjectEnsurerWithPlatform
+	// service for this ensurer. Don't call it directly, use ServiceByDeploymentModel instead
 	service               common.ObjectEnsurer
 	userPropsConfigMap    common.ObjectEnsurer
 	managedPropsConfigMap common.ObjectEnsurerWithPlatform
+}
+
+// DeploymentByDeploymentModel gets the deployment ensurer based on the SonataFlow deployment model
+func (o *ObjectEnsurers) DeploymentByDeploymentModel(workflow *v1alpha08.SonataFlow) common.ObjectEnsurerWithPlatform {
+	if workflow.IsKnativeDeployment() {
+		return o.kservice
+	}
+	return o.deployment
+}
+
+// ServiceByDeploymentModel gets the service ensurer based on the SonataFlow deployment model
+func (o *ObjectEnsurers) ServiceByDeploymentModel(workflow *v1alpha08.SonataFlow) common.ObjectEnsurer {
+	if workflow.IsKnativeDeployment() {
+		// Knative Serving handles the service
+		return common.NewNoopObjectEnsurer()
+	}
+	return o.service
 }
 
 // NewObjectEnsurers common.ObjectEnsurer(s) for the preview profile.
 func NewObjectEnsurers(support *common.StateSupport) *ObjectEnsurers {
 	return &ObjectEnsurers{
 		deployment:            common.NewObjectEnsurerWithPlatform(support.C, common.DeploymentCreator),
+		kservice:              common.NewObjectEnsurerWithPlatform(support.C, common.KServiceCreator),
 		service:               common.NewObjectEnsurer(support.C, common.ServiceCreator),
 		userPropsConfigMap:    common.NewObjectEnsurer(support.C, common.UserPropsConfigMapCreator),
 		managedPropsConfigMap: common.NewObjectEnsurerWithPlatform(support.C, common.ManagedPropsConfigMapCreator),
