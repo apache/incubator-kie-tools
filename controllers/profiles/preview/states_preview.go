@@ -40,6 +40,7 @@ import (
 
 type newBuilderState struct {
 	*common.StateSupport
+	ensurers *ObjectEnsurers
 }
 
 func (h *newBuilderState) CanReconcile(workflow *operatorapi.SonataFlow) bool {
@@ -49,7 +50,7 @@ func (h *newBuilderState) CanReconcile(workflow *operatorapi.SonataFlow) bool {
 }
 
 func (h *newBuilderState) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
-	_, err := platform.GetActivePlatform(ctx, h.C, workflow.Namespace)
+	pl, err := platform.GetActivePlatform(ctx, h.C, workflow.Namespace)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.WaitingForPlatformReason,
@@ -62,6 +63,26 @@ func (h *newBuilderState) Do(ctx context.Context, workflow *operatorapi.SonataFl
 		klog.V(log.E).ErrorS(err, "Failed to get active platform")
 		return ctrl.Result{RequeueAfter: requeueWhileWaitForPlatform}, nil, err
 	}
+
+	// Perform status updated to ensure workflow.Status.Services references are set before properties calculation.
+	_, err = h.PerformStatusUpdate(ctx, workflow)
+	// Ensure the user and managed properties are prepared before starting the build process, and thus, we make them
+	// available at build time.
+	userPropsCM, _, err := h.ensurers.userPropsConfigMap.Ensure(ctx, workflow)
+	if err != nil {
+		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.ExternalResourcesNotFoundReason, "Unable to retrieve the user properties config map")
+		_, err = h.PerformStatusUpdate(ctx, workflow)
+		return ctrl.Result{}, nil, err
+	}
+
+	_, _, err = h.ensurers.managedPropsConfigMap.Ensure(ctx, workflow, pl,
+		common.ManagedPropertiesMutateVisitor(ctx, h.StateSupport.Catalog, workflow, pl, userPropsCM.(*corev1.ConfigMap)))
+	if err != nil {
+		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.ExternalResourcesNotFoundReason, "Unable to retrieve the managed properties config map")
+		_, err = h.PerformStatusUpdate(ctx, workflow)
+		return ctrl.Result{}, nil, err
+	}
+
 	// If there is an active platform we have got all the information to build but...
 	// ...let's check before if we have got already a build!
 	buildManager := builder.NewSonataFlowBuildManager(ctx, h.C)

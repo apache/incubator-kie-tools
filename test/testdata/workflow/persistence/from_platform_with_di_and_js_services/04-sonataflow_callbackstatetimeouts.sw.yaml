@@ -20,11 +20,6 @@ metadata:
     sonataflow.org/description: Callback State Timeouts Example k8s
     sonataflow.org/version: 0.0.1
 spec:
-  podTemplate:
-    container:
-      env:
-      - name: QUARKUS_FLYWAY_MIGRATE_AT_START
-        value: "true"
   flow:
     start: PrintStartMessage
     events:

@@ -121,7 +121,7 @@ func CreateNewUserPropsConfigMap(workflow *operatorapi.SonataFlow) *corev1.Confi
 	}
 }
 
-// CreateNewManagedPropsConfigMap creates a new ConfigMap object to hold the managed application properties of the workflos.
+// CreateNewManagedPropsConfigMap creates a new ConfigMap object to hold the managed application properties of the workflows.
 func CreateNewManagedPropsConfigMap(workflow *operatorapi.SonataFlow, properties string) *corev1.ConfigMap {
 	return &corev1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{

@@ -12,12 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: sonataflow.org/v1alpha08
-kind: SonataFlowPlatform
+apiVersion: v1
+data:
+  application.properties: |
+    # set the flyway initialization in the WF ConfigMap
+    quarkus.flyway.migrate-at-start=true
+kind: ConfigMap
 metadata:
-  name: sonataflow-platform
-spec:
-  build:
-    config:
-      strategyOptions:
-        KanikoBuildCacheEnabled: "true"
+  labels:
+    app: callbackstatetimeouts
+  name: callbackstatetimeouts-props

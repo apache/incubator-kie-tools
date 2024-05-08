@@ -304,5 +304,18 @@ func (w *workflowProjectHandler) addResourceConfigMapToProject(cm *corev1.Config
 
 // IsDevProfile detects if the workflow is using the Dev profile or not
 func IsDevProfile(workflow *operatorapi.SonataFlow) bool {
-	return metadata.IsDevProfile(workflow.Annotations)
+	return isProfile(workflow, metadata.DevProfile)
+}
+
+// IsGitOpsProfile detects if the workflow is using the GitOps profile or not
+func IsGitOpsProfile(workflow *operatorapi.SonataFlow) bool {
+	return isProfile(workflow, metadata.GitOpsProfile)
+}
+
+func isProfile(workflow *operatorapi.SonataFlow, profileType metadata.ProfileType) bool {
+	profile := workflow.Annotations[metadata.Profile]
+	if len(profile) == 0 {
+		return false
+	}
+	return metadata.ProfileType(profile) == profileType
 }

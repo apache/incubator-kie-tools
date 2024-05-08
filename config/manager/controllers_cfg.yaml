@@ -26,3 +26,15 @@ sonataFlowBaseBuilderImageTag: ""
 sonataFlowDevModeImageTag: ""
 # The default name of the builder configMap in the operator's namespace
 builderConfigMapName: "sonataflow-operator-builder-config"
+# Quarkus extensions required for workflows persistence. These extensions are used by the SonataFlow build system,
+# in cases where the workflow being built has configured postgresql persistence.
+postgreSQLPersistenceExtensions:
+  - groupId: io.quarkus
+    artifactId: quarkus-jdbc-postgresql
+    version: 3.2.10.Final
+  - groupId: io.quarkus
+    artifactId: quarkus-agroal
+    version: 3.2.10.Final
+  - groupId: org.kie
+    artifactId: kie-addons-quarkus-persistence-jdbc
+    version: 999-SNAPSHOT

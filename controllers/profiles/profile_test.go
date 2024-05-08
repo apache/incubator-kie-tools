@@ -37,3 +37,17 @@ func Test_workflowIsDevProfile(t *testing.T) {
 	workflowWithProdProfile := test.GetBaseSonataFlowWithProdProfile(t.Name())
 	assert.False(t, IsDevProfile(workflowWithProdProfile))
 }
+
+func Test_workflowGitOpsProfile(t *testing.T) {
+	workflowWithDevProfile := test.GetBaseSonataFlowWithDevProfile(t.Name())
+	assert.False(t, IsGitOpsProfile(workflowWithDevProfile))
+
+	workflowWithNoProfile := test.GetBaseSonataFlow(t.Name())
+	assert.False(t, IsGitOpsProfile(workflowWithNoProfile))
+
+	workflowWithProdProfile := test.GetBaseSonataFlowWithProdProfile(t.Name())
+	assert.False(t, IsGitOpsProfile(workflowWithProdProfile))
+
+	workflowWithGitopsProfile := test.GetBaseSonataFlowWithGitopsProfile(t.Name())
+	assert.True(t, IsGitOpsProfile(workflowWithGitopsProfile))
+}

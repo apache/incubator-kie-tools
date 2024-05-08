@@ -12,13 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package workflows
+package persistence
+
+import (
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/magiconair/properties"
+)
 
 const (
 	QuarkusFlywayMigrateAtStart         string = "quarkus.flyway.migrate-at-start"
+	QuarkusDatasourceDBKind             string = "quarkus.datasource.db-kind"
 	QuarkusDatasourceJDBCURL            string = "quarkus.datasource.jdbc.url"
 	KogitoPersistenceType               string = "kogito.persistence.type"
 	JDBCPersistenceType                 string = "jdbc"
 	KogitoPersistenceQueryTimeoutMillis string = "kogito.persistence.query.timeout.millis"
 	KogitoPersistenceProtoMarshaller    string = "kogito.persistence.proto.marshaller"
+	PostgreSQLDBKind                    string = "postgresql"
 )
+
+// ResolveWorkflowPersistenceProperties returns the set of application properties required for the workflow persistence.
+// Never nil.
+func ResolveWorkflowPersistenceProperties(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) (*properties.Properties, error) {
+	if UsesPostgreSQLPersistence(workflow, platform) {
+		return GetPostgreSQLWorkflowProperties(workflow), nil
+	}
+	return properties.NewProperties(), nil
+}

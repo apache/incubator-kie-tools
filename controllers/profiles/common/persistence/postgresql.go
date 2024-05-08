@@ -17,17 +17,21 @@ package persistence
 import (
 	"fmt"
 
-	corev1 "k8s.io/api/core/v1"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/cfg"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles"
+	"github.com/magiconair/properties"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
+	corev1 "k8s.io/api/core/v1"
 )
 
 const (
 	defaultDatabaseName = "sonataflow"
 )
 
+// ConfigurePostgreSQLEnv returns the common env variables required for the DataIndex or JobsService when postresql persistence is used.
 func ConfigurePostgreSQLEnv(postgresql *operatorapi.PersistencePostgreSQL, databaseSchema, databaseNamespace string) []corev1.EnvVar {
 	dataSourcePort := constants.DefaultPostgreSQLPort
 	databaseName := defaultDatabaseName
@@ -89,14 +93,6 @@ func ConfigurePostgreSQLEnv(postgresql *operatorapi.PersistencePostgreSQL, datab
 			Name:  "KOGITO_PERSISTENCE_TYPE",
 			Value: "jdbc",
 		},
-		{
-			Name:  "KOGITO_PERSISTENCE_PROTO_MARSHALLER",
-			Value: "false",
-		},
-		{
-			Name:  "KOGITO_PERSISTENCE_QUERY_TIMEOUT_MILLIS",
-			Value: "10000",
-		},
 	}
 }
 
@@ -131,4 +127,28 @@ func RetrieveConfiguration(primary *v1alpha08.PersistenceOptionsSpec, platformPe
 		}
 	}
 	return c
+}
+
+func UsesPostgreSQLPersistence(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) bool {
+	return (workflow.Spec.Persistence != nil && workflow.Spec.Persistence.PostgreSQL != nil) ||
+		(workflow.Spec.Persistence == nil && platform.Spec.Persistence != nil && platform.Spec.Persistence.PostgreSQL != nil)
+}
+
+// GetPostgreSQLExtensions returns the Quarkus extensions required for postgresql persistence.
+func GetPostgreSQLExtensions() []cfg.GAV {
+	return cfg.GetCfg().PostgreSQLPersistenceExtensions
+}
+
+// GetPostgreSQLWorkflowProperties returns the set of application properties required for postgresql persistence.
+// Never nil.
+func GetPostgreSQLWorkflowProperties(workflow *operatorapi.SonataFlow) *properties.Properties {
+	props := properties.NewProperties()
+	if !profiles.IsDevProfile(workflow) && !profiles.IsGitOpsProfile(workflow) {
+		// build-time property required by kogito-runtimes to feed flyway build-time settings and package the necessary .sql files.
+		props.Set(QuarkusDatasourceDBKind, PostgreSQLDBKind)
+		// build-time properties for kogito-runtimes to use jdbc
+		props.Set(KogitoPersistenceType, JDBCPersistenceType)
+		props.Set(KogitoPersistenceProtoMarshaller, "false")
+	}
+	return props
 }

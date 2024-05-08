@@ -76,3 +76,6 @@ type ReconciliationState interface {
 
 // IsDevProfile is an alias for workflowproj.IsDevProfile
 var IsDevProfile = workflowproj.IsDevProfile
+
+// IsGitOpsProfile is an alias for workflowproj.IsGitOpsProfile
+var IsGitOpsProfile = workflowproj.IsGitOpsProfile

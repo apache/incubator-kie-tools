@@ -23,6 +23,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/persistence"
+
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
@@ -149,6 +151,11 @@ func NewManagedPropertyHandler(workflow *operatorapi.SonataFlow, platform *opera
 	props.Set(constants.KogitoUserTasksEventsEnabled, "false")
 	if platform != nil {
 		p, err := resolvePlatformWorkflowProperties(platform)
+		if err != nil {
+			return nil, err
+		}
+		props.Merge(p)
+		p, err = persistence.ResolveWorkflowPersistenceProperties(workflow, platform)
 		if err != nil {
 			return nil, err
 		}

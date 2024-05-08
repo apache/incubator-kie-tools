@@ -22,6 +22,10 @@ package builder
 import (
 	"time"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
+
+	corev1 "k8s.io/api/core/v1"
+
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/cfg"
 	"k8s.io/klog/v2"
 
@@ -52,6 +56,7 @@ type kanikoBuildInput struct {
 	task               *api.KanikoTask
 	workflowDefinition []byte
 	workflow           *operatorapi.SonataFlow
+	workflowProperties []operatorapi.ConfigMapWorkflowResource
 	dockerfile         string
 	imageTag           string
 }
@@ -139,6 +144,7 @@ func (c *containerBuilderManager) scheduleNewKanikoBuildWithContainerFile(build 
 		task:               task,
 		workflowDefinition: workflowDef,
 		workflow:           workflow,
+		workflowProperties: buildWorkflowPropertyResources(workflow),
 		dockerfile:         platform.GetCustomizedBuilderDockerfile(c.builderConfigMap.Data[defaultBuilderResourceName], *c.platform),
 		imageTag:           buildNamespacedImageTag(workflow),
 	}
@@ -200,6 +206,11 @@ func newBuild(buildInput kanikoBuildInput, platform api.PlatformContainerBuild, 
 		newBuilder.AddConfigMapResource(res.ConfigMap, res.WorkflowPath)
 	}
 
+	//make the workflow properties available to the kaniko build.
+	for _, props := range buildInput.workflowProperties {
+		newBuilder.AddConfigMapResource(props.ConfigMap, props.WorkflowPath)
+	}
+
 	return newBuilder.Scheduler().
 		WithAdditionalArgs(buildInput.task.AdditionalFlags).
 		WithResourceRequirements(buildInput.task.Resources).
@@ -212,4 +223,11 @@ func newBuild(buildInput kanikoBuildInput, platform api.PlatformContainerBuild, 
 // ImageStreams are already namespaced.
 func buildNamespacedImageTag(workflow *operatorapi.SonataFlow) string {
 	return workflow.Namespace + "/" + workflowdef.GetWorkflowAppImageNameTag(workflow)
+}
+
+func buildWorkflowPropertyResources(workflow *operatorapi.SonataFlow) []operatorapi.ConfigMapWorkflowResource {
+	return []operatorapi.ConfigMapWorkflowResource{
+		{ConfigMap: corev1.LocalObjectReference{Name: workflowproj.GetWorkflowUserPropertiesConfigMapName(workflow)}, WorkflowPath: ""},
+		{ConfigMap: corev1.LocalObjectReference{Name: workflowproj.GetWorkflowManagedPropertiesConfigMapName(workflow)}, WorkflowPath: ""},
+	}
 }

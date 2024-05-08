@@ -34,6 +34,7 @@ spec:
   podTemplate:
     container:
       env:
+      # set the flyway initialization in the WF container env
       - name: QUARKUS_FLYWAY_MIGRATE_AT_START
         value: "true"
     initContainers:

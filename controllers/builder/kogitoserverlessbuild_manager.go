@@ -21,7 +21,12 @@ package builder
 
 import (
 	"context"
+	"strings"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/cfg"
+
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/persistence"
+	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -30,6 +35,8 @@ import (
 
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 )
+
+const QuarkusExtensionsBuildArg = "QUARKUS_EXTENSIONS"
 
 var _ SonataFlowBuildManager = &sonataFlowBuildManager{}
 
@@ -54,7 +61,11 @@ func (k *sonataFlowBuildManager) GetOrCreateBuild(workflow *operatorapi.SonataFl
 			if plat, err = platform.GetActivePlatform(k.ctx, k.client, workflow.Namespace); err != nil {
 				return nil, err
 			}
-			buildInstance.Spec.BuildTemplate = plat.Spec.Build.Template
+			workflowBuildTemplate := plat.Spec.Build.Template.DeepCopy()
+			if persistence.UsesPostgreSQLPersistence(workflow, plat) {
+				addPersistenceExtensions(workflowBuildTemplate)
+			}
+			buildInstance.Spec.BuildTemplate = *workflowBuildTemplate
 			if err = controllerutil.SetControllerReference(workflow, buildInstance, k.client.Scheme()); err != nil {
 				return nil, err
 			}
@@ -85,4 +96,45 @@ func NewSonataFlowBuildManager(ctx context.Context, client client.Client) Sonata
 		client: client,
 		ctx:    ctx,
 	}
+}
+
+// addPersistenceExtensions Adds the persistence related extensions to the current BuildTemplate if none of them is
+// already provided. If any of them is detected, its assumed that users might already have provided them in the
+// SonataFlowPlatform, so we just let the provided configuration.
+func addPersistenceExtensions(template *operatorapi.BuildTemplate) {
+	quarkusExtensions := getBuildArg(template.BuildArgs, QuarkusExtensionsBuildArg)
+	if quarkusExtensions == nil {
+		template.BuildArgs = append(template.BuildArgs, v1.EnvVar{Name: QuarkusExtensionsBuildArg})
+		quarkusExtensions = &template.BuildArgs[len(template.BuildArgs)-1]
+	}
+	if !hasAnyExtensionPresent(quarkusExtensions, persistence.GetPostgreSQLExtensions()) {
+		for _, extension := range persistence.GetPostgreSQLExtensions() {
+			if len(quarkusExtensions.Value) > 0 {
+				quarkusExtensions.Value = quarkusExtensions.Value + ","
+			}
+			quarkusExtensions.Value = quarkusExtensions.Value + extension.String()
+		}
+	}
+}
+
+func getBuildArg(buildArgs []v1.EnvVar, name string) *v1.EnvVar {
+	for i := 0; i < len(buildArgs); i++ {
+		if buildArgs[i].Name == name {
+			return &buildArgs[i]
+		}
+	}
+	return nil
+}
+
+func hasAnyExtensionPresent(buildArg *v1.EnvVar, extensions []cfg.GAV) bool {
+	for _, extension := range extensions {
+		if isExtensionPresent(buildArg, extension) {
+			return true
+		}
+	}
+	return false
+}
+
+func isExtensionPresent(buildArg *v1.EnvVar, extension cfg.GAV) bool {
+	return strings.Contains(buildArg.Value, extension.GroupAndArtifact())
 }

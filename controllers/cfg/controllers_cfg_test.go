@@ -32,6 +32,25 @@ func TestInitializeControllersCfgAt_ValidFile(t *testing.T) {
 	assert.Equal(t, "local/data-index:1.0.0", cfg.DataIndexPostgreSQLImageTag)
 	assert.Equal(t, "local/sonataflow-builder:1.0.0", cfg.SonataFlowBaseBuilderImageTag)
 	assert.Equal(t, "local/sonataflow-devmode:1.0.0", cfg.SonataFlowDevModeImageTag)
+	assert.Equal(t, 3, len(cfg.PostgreSQLPersistenceExtensions))
+	postgresExtensions := cfg.PostgreSQLPersistenceExtensions
+	assert.Equal(t, GAV{
+		GroupId:    "io.quarkus",
+		ArtifactId: "quarkus-jdbc-postgresql",
+		Version:    "3.2.10.Final",
+	}, postgresExtensions[0])
+
+	assert.Equal(t, GAV{
+		GroupId:    "io.quarkus",
+		ArtifactId: "quarkus-agroal",
+		Version:    "3.2.10.Final",
+	}, postgresExtensions[1])
+
+	assert.Equal(t, GAV{
+		GroupId:    "org.kie",
+		ArtifactId: "kie-addons-quarkus-persistence-jdbc",
+		Version:    "999-SNAPSHOT",
+	}, postgresExtensions[2])
 }
 
 func TestInitializeControllersCfgAt_FileNotFound(t *testing.T) {

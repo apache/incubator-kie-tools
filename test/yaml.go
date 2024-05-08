@@ -199,6 +199,10 @@ func SetPreviewProfile(workflow *operatorapi.SonataFlow) {
 	workflow.Annotations["sonataflow.org/profile"] = "preview"
 }
 
+func SetGitopsProfile(workflow *operatorapi.SonataFlow) {
+	workflow.Annotations["sonataflow.org/profile"] = "gitops"
+}
+
 func GetBaseSonataFlow(namespace string) *operatorapi.SonataFlow {
 	return NewSonataFlow(sonataFlowSampleYamlCR, namespace)
 }
@@ -218,6 +222,10 @@ func GetBaseSonataFlowWithProdProfile(namespace string) *operatorapi.SonataFlow 
 // GetBaseSonataFlowWithPreviewProfile gets a base workflow that has a pre-built image set in podTemplate.
 func GetBaseSonataFlowWithPreviewProfile(namespace string) *operatorapi.SonataFlow {
 	return NewSonataFlow(SonataFlowSimpleOpsYamlCR, namespace)
+}
+
+func GetBaseSonataFlowWithGitopsProfile(namespace string) *operatorapi.SonataFlow {
+	return NewSonataFlow(sonataFlowSampleYamlCR, namespace, SetGitopsProfile)
 }
 
 func GetBaseClusterPlatformInReadyPhase(namespace string) *operatorapi.SonataFlowClusterPlatform {

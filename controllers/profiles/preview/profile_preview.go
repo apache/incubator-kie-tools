@@ -102,7 +102,7 @@ func NewProfileReconciler(client client.Client, cfg *rest.Config, recorder recor
 	}
 	// the reconciliation state machine
 	stateMachine := common.NewReconciliationStateMachine(
-		&newBuilderState{StateSupport: support},
+		&newBuilderState{StateSupport: support, ensurers: NewObjectEnsurers(support)},
 		&followBuildStatusState{StateSupport: support},
 		&deployWithBuildWorkflowState{StateSupport: support, ensurers: NewObjectEnsurers(support)},
 	)

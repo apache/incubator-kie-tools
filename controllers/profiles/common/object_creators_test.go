@@ -295,14 +295,6 @@ func TestMergePodSpec_WithPostgreSQL_and_JDBC_URL_field(t *testing.T) {
 			Name:  "KOGITO_PERSISTENCE_TYPE",
 			Value: "jdbc",
 		},
-		{
-			Name:  "KOGITO_PERSISTENCE_PROTO_MARSHALLER",
-			Value: "false",
-		},
-		{
-			Name:  "KOGITO_PERSISTENCE_QUERY_TIMEOUT_MILLIS",
-			Value: "10000",
-		},
 	}
 	assert.Len(t, deployment.Spec.Template.Spec.Containers, 2)
 	assert.Equal(t, "superuser", deployment.Spec.Template.Spec.ServiceAccountName)
@@ -387,14 +379,6 @@ func TestMergePodSpec_OverrideContainers_WithPostgreSQL_In_Workflow_CR(t *testin
 			Name:  "KOGITO_PERSISTENCE_TYPE",
 			Value: "jdbc",
 		},
-		{
-			Name:  "KOGITO_PERSISTENCE_PROTO_MARSHALLER",
-			Value: "false",
-		},
-		{
-			Name:  "KOGITO_PERSISTENCE_QUERY_TIMEOUT_MILLIS",
-			Value: "10000",
-		},
 	}
 	assert.Len(t, deployment.Spec.Template.Spec.Containers, 1)
 	flowContainer, _ := kubeutil.GetContainerByName(v1alpha08.DefaultContainerName, &deployment.Spec.Template.Spec)
@@ -466,14 +450,6 @@ func TestMergePodSpec_WithServicedPostgreSQL_In_Platform_CR_And_Worflow_Requesti
 		{
 			Name:  "KOGITO_PERSISTENCE_TYPE",
 			Value: "jdbc",
-		},
-		{
-			Name:  "KOGITO_PERSISTENCE_PROTO_MARSHALLER",
-			Value: "false",
-		},
-		{
-			Name:  "KOGITO_PERSISTENCE_QUERY_TIMEOUT_MILLIS",
-			Value: "10000",
 		},
 	}
 	assert.Len(t, deployment.Spec.Template.Spec.Containers, 1)
@@ -574,14 +550,6 @@ func TestMergePodSpec_WithServicedPostgreSQL_In_Platform_And_In_Workflow_CR(t *t
 		{
 			Name:  "KOGITO_PERSISTENCE_TYPE",
 			Value: "jdbc",
-		},
-		{
-			Name:  "KOGITO_PERSISTENCE_PROTO_MARSHALLER",
-			Value: "false",
-		},
-		{
-			Name:  "KOGITO_PERSISTENCE_QUERY_TIMEOUT_MILLIS",
-			Value: "10000",
 		},
 	}
 	assert.Len(t, deployment.Spec.Template.Spec.Containers, 1)

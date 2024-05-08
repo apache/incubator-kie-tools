@@ -103,7 +103,7 @@ func Test_openshiftbuilder_externalCMs(t *testing.T) {
 		},
 	}
 	workflow.Spec.Resources.ConfigMaps = append(workflow.Spec.Resources.ConfigMaps,
-		operatorapi.ConfigMapWorkflowResource{ConfigMap: v1.LocalObjectReference{Name: externalCm.Name}})
+		operatorapi.ConfigMapWorkflowResource{ConfigMap: v1.LocalObjectReference{Name: externalCm.Name}, WorkflowPath: "specs"})
 
 	namespacedName := types.NamespacedName{Namespace: workflow.Namespace, Name: workflow.Name}
 	client := test.NewKogitoClientBuilderWithOpenShift().WithRuntimeObjects(workflow, platform, config, externalCm).Build()
@@ -129,7 +129,13 @@ func Test_openshiftbuilder_externalCMs(t *testing.T) {
 	bc := &buildv1.BuildConfig{}
 	assert.NoError(t, client.Get(context.TODO(), namespacedName, bc))
 
-	assert.Len(t, bc.Spec.Source.ConfigMaps, 1)
+	assert.Len(t, bc.Spec.Source.ConfigMaps, 3)
+	assert.Equal(t, "myopenapis", bc.Spec.Source.ConfigMaps[0].ConfigMap.Name)
+	assert.Equal(t, "specs", bc.Spec.Source.ConfigMaps[0].DestinationDir)
+	assert.Equal(t, "greeting-props", bc.Spec.Source.ConfigMaps[1].ConfigMap.Name)
+	assert.Equal(t, "", bc.Spec.Source.ConfigMaps[1].DestinationDir)
+	assert.Equal(t, "greeting-managed-props", bc.Spec.Source.ConfigMaps[2].ConfigMap.Name)
+	assert.Equal(t, "", bc.Spec.Source.ConfigMaps[2].DestinationDir)
 }
 
 func Test_openshiftbuilder_forcePull(t *testing.T) {

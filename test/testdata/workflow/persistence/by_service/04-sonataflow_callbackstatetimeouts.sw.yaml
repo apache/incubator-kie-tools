@@ -32,10 +32,6 @@ spec:
         databaseName: sonataflow
         databaseSchema: callbackstatetimeouts
   podTemplate:
-    container:
-      env:
-      - name: QUARKUS_FLYWAY_MIGRATE_AT_START
-        value: "true"
     initContainers:
       - name: init-postgres
         image: registry.access.redhat.com/ubi9/ubi-micro:latest

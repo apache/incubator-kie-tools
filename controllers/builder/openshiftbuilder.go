@@ -186,9 +186,6 @@ func (o *openshiftBuilderManager) newDefaultBuildConfig(build *operatorapi.Sonat
 }
 
 func (o *openshiftBuilderManager) addExternalResources(config *buildv1.BuildConfig, workflow *operatorapi.SonataFlow) error {
-	if len(workflow.Spec.Resources.ConfigMaps) == 0 {
-		return nil
-	}
 	var configMapSources []buildv1.ConfigMapBuildSource
 	for _, workflowRes := range workflow.Spec.Resources.ConfigMaps {
 		configMapSources = append(configMapSources, buildv1.ConfigMapBuildSource{
@@ -196,6 +193,14 @@ func (o *openshiftBuilderManager) addExternalResources(config *buildv1.BuildConf
 			DestinationDir: workflowRes.WorkflowPath,
 		})
 	}
+	//make the workflow properties available to the OpenShift build config.
+	configMapSources = append(configMapSources, buildv1.ConfigMapBuildSource{
+		ConfigMap:      corev1.LocalObjectReference{Name: workflowproj.GetWorkflowUserPropertiesConfigMapName(workflow)},
+		DestinationDir: ""})
+	configMapSources = append(configMapSources, buildv1.ConfigMapBuildSource{
+		ConfigMap:      corev1.LocalObjectReference{Name: workflowproj.GetWorkflowManagedPropertiesConfigMapName(workflow)},
+		DestinationDir: ""})
+
 	config.Spec.Source.ConfigMaps = configMapSources
 	return nil
 }
