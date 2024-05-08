@@ -7650,6 +7650,9 @@ importers:
       react-router-dom:
         specifier: ^5.3.4
         version: 5.3.4(react@17.0.2)
+      util:
+        specifier: ^0.12.5
+        version: 0.12.5
       uuid:
         specifier: ^8.3.2
         version: 8.3.2
@@ -8066,6 +8069,9 @@ importers:
       react-apollo-hooks:
         specifier: ^0.5.0
         version: 0.5.0(apollo-client@2.6.10)(graphql@14.3.1)
+      util:
+        specifier: ^0.12.5
+        version: 0.12.5
       uuid:
         specifier: ^8.3.2
         version: 8.3.2
@@ -8692,6 +8698,9 @@ importers:
       react-apollo-hooks:
         specifier: ^0.5.0
         version: 0.5.0(apollo-client@2.6.10)(graphql@14.3.1)
+      util:
+        specifier: ^0.12.5
+        version: 0.12.5
       uuid:
         specifier: ^8.3.2
         version: 8.3.2
@@ -11105,6 +11114,9 @@ importers:
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
+      util:
+        specifier: ^0.12.5
+        version: 0.12.5
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -40757,7 +40769,6 @@ packages:
     engines: { node: ">= 0.4" }
     dependencies:
       has-tostringtag: 1.0.2
-    dev: true
 
   /is-glob@4.0.3:
     resolution:
@@ -52236,9 +52247,9 @@ packages:
       file-loader:
         optional: true
     dependencies:
-      loader-utils: 2.0.2
+      loader-utils: 2.0.4
       mime-types: 2.1.34
-      schema-utils: 3.1.1
+      schema-utils: 3.3.0
       webpack: 5.88.2(webpack-cli@4.10.0)
     dev: true
 
@@ -52413,7 +52424,6 @@ packages:
       is-generator-function: 1.0.10
       is-typed-array: 1.1.13
       which-typed-array: 1.1.15
-    dev: true
 
   /utila@0.4.0:
     resolution:
