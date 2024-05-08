@@ -42,4 +42,9 @@ export enum FeelSyntacticSymbolNature {
    * Parameters of functions.
    */
   Parameter,
+
+  /**
+   * Variables which the parser currently doesn't know if it is valid or not because they are validated at runtime.
+   */
+  DynamicVariable,
 }

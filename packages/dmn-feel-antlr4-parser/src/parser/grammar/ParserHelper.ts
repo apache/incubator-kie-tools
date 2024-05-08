@@ -57,12 +57,15 @@ export class ParserHelper {
     return this._variables;
   }
 
-  public pushScope(type?: Type) {
-    this.currentScope = new ScopeImpl(this.currentName.peek(), this.currentScope, type);
+  public pushScope(type?: Type, allowDynamicVariables?: boolean) {
+    this.currentScope = new ScopeImpl(this.currentName.peek(), this.currentScope, type, allowDynamicVariables);
   }
 
   public popScope() {
     this.currentScope = this.currentScope?.getParentScope();
+    if (this.currentScope?.allowDynamicVariables) {
+      this.currentScope = this.currentScope.getParentScope();
+    }
   }
 
   public enableDynamicResolution() {
@@ -107,13 +110,15 @@ export class ParserHelper {
     variable: string | ParserRuleContext,
     type?: Type,
     variableType?: FeelSyntacticSymbolNature,
-    variableSource?: Variable
+    variableSource?: Variable,
+    allowDynamicVariables?: boolean
   ) {
     const variableSymbol = new VariableSymbol(
       variable instanceof ParserRuleContext ? this.getName(variable) : variable,
       type,
       variableType,
-      variableSource
+      variableSource,
+      allowDynamicVariables
     );
 
     if (variableSymbol.getId()) {
@@ -143,18 +148,9 @@ export class ParserHelper {
     const s = this.currentScope?.getChildScopes().get(scopeName);
     if (s != null) {
       this.currentScope = s;
-
-      //const type = this.currentScope.getType();
-      // if (type && type === BuiltInType.UNKNOWN) {
-      //   this.enableDynamicResolution();
-      // }
     } else {
       const resolved = this.currentScope?.resolve(scopeName);
       const scopeType = resolved?.getType();
-      // if (scopeType instanceof GenListType) {
-      //   scopeType = ((GenListType) scopeType).getGen();
-      // }
-
       if (resolved != null && scopeType instanceof MapBackedType) {
         this.pushScope(scopeType);
         for (const f of scopeType.properties) {
@@ -198,7 +194,6 @@ export class ParserHelper {
     } else {
       const symbol = this.currentScope?.resolve(variableName);
       if (symbol) {
-        symbol.getType();
         if (symbol instanceof VariableSymbol) {
           const scopeSymbols = [];
           if ((symbol as VariableSymbol).getType() instanceof MapBackedType) {
@@ -210,6 +205,11 @@ export class ParserHelper {
               });
             }
           }
+
+          if (symbol.allowDynamicVariables) {
+            this.pushScope(undefined, true);
+          }
+
           this.variables.push(
             new FeelVariable(
               start,

@@ -81,7 +81,9 @@ function getTokenTypeIndex(symbolType: FeelSyntacticSymbolNature) {
     default:
     case FeelSyntacticSymbolNature.LocalVariable:
     case FeelSyntacticSymbolNature.GlobalVariable:
-      return Element.InputDataVariable;
+      return Element.Variable;
+    case FeelSyntacticSymbolNature.DynamicVariable:
+      return Element.DynamicVariable;
     case FeelSyntacticSymbolNature.Unknown:
       return Element.UnknownVariable;
     case FeelSyntacticSymbolNature.Invocable:
