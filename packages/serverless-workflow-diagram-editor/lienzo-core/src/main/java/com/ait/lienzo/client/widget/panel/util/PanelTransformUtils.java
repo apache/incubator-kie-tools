@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package com.ait.lienzo.client.widget.panel.util;
 
 import com.ait.lienzo.client.core.shape.Viewport;
