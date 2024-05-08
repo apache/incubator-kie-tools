@@ -68,11 +68,16 @@ ifneq ($(SWF_IMAGE_TAG), $(CURRENT_IMAGE_VERSION))
 	${BUILD_ENGINE} tag ${SWF_FULL_IMAGE_NAME}:${CURRENT_IMAGE_VERSION} ${SWF_FULL_IMAGE_NAME}:${SWF_IMAGE_TAG}
 endif
 
+_create_e2e_dir:
+	rm -rf ../dist-e2e-tests
+	mkdir ../dist-e2e-tests
+
 # Trigger the image tests
-.PHONY test-image: _check_swf_image_name bats _test_image
+.PHONY test-image: _create_e2e_dir _check_swf_image_name bats _test_image
 _test_image:
-	${CEKIT_CMD} --descriptor ${SWF_IMAGE_FILENAME} test behave
-	tests/shell/run.sh ${SWF_IMAGE_NAME} ${SWF_FULL_IMAGE_NAME}:${SWF_IMAGE_TAG}
+	-${CEKIT_CMD} --descriptor ${SWF_IMAGE_FILENAME} test behave
+	cp -r target/test/results ../dist-e2e-tests/cekit/
+	-tests/shell/run.sh ${SWF_IMAGE_NAME} ${SWF_FULL_IMAGE_NAME}:${SWF_IMAGE_TAG}
 
 .PHONY build: _check_swf_image_name _fix_platform_versions _cekit_build _tag_image
 

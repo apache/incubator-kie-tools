@@ -21,6 +21,8 @@
 
 set -e
 
+script_dir_path="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 if [[ $(command -v ./bats/bin/bats) ]]; then    #skip if bats already installed else will install the bats
     echo "---> bats already available running tests"
 else
@@ -29,5 +31,7 @@ else
     rm -rf bats-core
 fi
 
+tests_output_path="${script_dir_path}/../../dist-e2e-tests"
+
 echo "----> running bats"
-./bats/bin/bats modules/kogito-swf/common/scripts/tests/bats
+./bats/bin/bats modules/kogito-swf/common/scripts/tests/bats --formatter junit --report-formatter junit --output "${tests_output_path}"

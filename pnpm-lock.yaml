@@ -6103,6 +6103,9 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
+      replace-in-file:
+        specifier: ^7.1.0
+        version: 7.1.0
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -6136,6 +6139,9 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
+      replace-in-file:
+        specifier: ^7.1.0
+        version: 7.1.0
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
