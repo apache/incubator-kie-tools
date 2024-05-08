@@ -32,7 +32,7 @@ const ManagementConsoleNav: React.FC<IOwnProps> = ({ pathname }) => {
       <NavList>
         <NavItem
           key={"workflow-instances-nav"}
-          isActive={pathname === "/WorkflowInstances"}
+          isActive={pathname === routes.runtimeToolsWorkflowInstances.path({})}
           ouiaId="workflow-instances"
         >
           <Link
@@ -44,7 +44,7 @@ const ManagementConsoleNav: React.FC<IOwnProps> = ({ pathname }) => {
         </NavItem>
         <NavItem
           key={"workflow-definitions-nav"}
-          isActive={pathname === "/WorkflowDefinitions"}
+          isActive={pathname === routes.runtimeToolsWorkflowDefinitions.path({})}
           ouiaId="workflow-definitions"
         >
           <Link
@@ -56,7 +56,7 @@ const ManagementConsoleNav: React.FC<IOwnProps> = ({ pathname }) => {
         </NavItem>
         <NavItem
           key={"trigger-cloud-event-nav"}
-          isActive={pathname === "/TriggerCloudEvent"}
+          isActive={pathname === routes.runtimeToolsTriggerCloudEvent.path({})}
           ouiaId="trigger-cloud-event"
         >
           <Link
@@ -66,7 +66,7 @@ const ManagementConsoleNav: React.FC<IOwnProps> = ({ pathname }) => {
             Trigger Cloud Event
           </Link>
         </NavItem>
-        <NavItem key={"monitoring-nav"} isActive={pathname === "/Monitoring"} ouiaId="monitoring">
+        <NavItem key={"monitoring-nav"} isActive={pathname === routes.monitoring.path({})} ouiaId="monitoring">
           <Link to={routes.monitoring.path({})} {...ouiaAttribute("data-ouia-navigation-name", "monitoring")}>
             Monitoring
           </Link>

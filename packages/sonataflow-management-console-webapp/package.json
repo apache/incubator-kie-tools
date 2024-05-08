@@ -24,6 +24,8 @@
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
+    "@kie-tools-core/editor": "workspace:*",
+    "@kie-tools-core/keyboard-shortcuts": "workspace:*",
     "@kie-tools-core/react-hooks": "workspace:*",
     "@kie-tools/runtime-tools-components": "workspace:*",
     "@kie-tools/runtime-tools-process-enveloped-components": "workspace:*",
@@ -34,6 +36,10 @@
     "@kie-tools/runtime-tools-shared-webapp-components": "workspace:*",
     "@kie-tools/runtime-tools-swf-gateway-api": "workspace:*",
     "@kie-tools/runtime-tools-swf-webapp-components": "workspace:*",
+    "@kie-tools/serverless-workflow-combined-editor": "workspace:*",
+    "@kie-tools/serverless-workflow-diagram-editor-assets": "workspace:*",
+    "@kie-tools/serverless-workflow-diagram-editor-envelope": "workspace:*",
+    "@kie-tools/serverless-workflow-text-editor": "workspace:*",
     "@patternfly/patternfly": "^4.224.2",
     "@patternfly/react-core": "^4.276.6",
     "apollo-cache-inmemory": "1.6.6",

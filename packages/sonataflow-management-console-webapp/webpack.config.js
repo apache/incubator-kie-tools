@@ -21,6 +21,7 @@ const path = require("path");
 const { merge } = require("webpack-merge");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const swEditorAssets = require("@kie-tools/serverless-workflow-diagram-editor-assets");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
@@ -33,6 +34,9 @@ module.exports = async (env) => {
   return merge(common(env), {
     entry: {
       index: path.resolve(__dirname, "src", "index.tsx"),
+      "serverless-workflow-combined-editor-envelope": "./src/envelope/ServerlessWorkflowCombinedEditorEnvelopeApp.ts",
+      "serverless-workflow-diagram-editor-envelope": "./src/envelope/ServerlessWorkflowDiagramEditorEnvelopeApp.ts",
+      "serverless-workflow-text-editor-envelope": "./src/envelope/ServerlessWorkflowTextEditorEnvelopeApp.ts",
     },
     devServer: {
       static: {
@@ -67,10 +71,34 @@ module.exports = async (env) => {
       }),
       new CopyPlugin({
         patterns: [
+          { from: "./resources", to: "./resources" },
+          {
+            from: "./resources/serverless-workflow-combined-editor-envelope.html",
+            to: "./serverless-workflow-combined-editor-envelope.html",
+          },
+          {
+            from: "./resources/serverless-workflow-diagram-editor-envelope.html",
+            to: "./serverless-workflow-diagram-editor-envelope.html",
+          },
+          {
+            from: "./resources/serverless-workflow-text-editor-envelope.html",
+            to: "./serverless-workflow-text-editor-envelope.html",
+          },
           {
             from: "./src/static/env.json",
             to: "./env.json",
             transform: () => JSON.stringify(defaultEnvJson, null, 2),
+          },
+          {
+            from: swEditorAssets.swEditorPath(),
+            to: "./diagram",
+            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
+          },
+          {
+            context: swEditorAssets.swEditorFontsPath(),
+            from: "fontawesome-webfont.*",
+            to: "./fonts",
+            force: true,
           },
         ],
       }),

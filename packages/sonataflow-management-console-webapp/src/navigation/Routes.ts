@@ -124,7 +124,7 @@ export const routes = {
   runtimeToolsWorkflowDetails: new Route<{
     queryParams: QueryParams.FILTERS | QueryParams.SORT_BY;
     pathParams: PathParams.WORKFLOW_ID;
-  }>(({ workflowId }) => `/runtime-tools/workflow-details/${workflowId}`),
+  }>(({ workflowId }) => `/WorkflowDetails/${workflowId}`),
   runtimeToolsWorkflowForm: new Route<{
     pathParams: PathParams.WORKFLOW_NAME;
   }>(({ workflowName }) => `/WorkflowDefinition/${workflowName}`),

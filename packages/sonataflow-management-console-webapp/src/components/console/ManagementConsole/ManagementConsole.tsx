@@ -32,6 +32,7 @@ import { WorkflowListContextProviderWithApolloClient } from "@kie-tools/runtime-
 import { WorkflowDefinitionListContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionList";
 import { GlobalAlertsContextProvider } from "../../../alerts/GlobalAlertsContext";
 import { WorkflowFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowForm";
+import { WorkflowDetailsContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDetails";
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
@@ -64,17 +65,19 @@ const ManagementConsole: React.FC<IOwnProps> = ({ apolloClient, userContext, chi
     <ApolloProvider client={apolloClient}>
       <KogitoAppContextProvider userContext={userContext}>
         <GlobalAlertsContextProvider>
-          <WorkflowListContextProviderWithApolloClient apolloClient={apolloClient}>
-            <WorkflowDefinitionListContextProvider kogitoServiceUrl={openApiBaseUrl}>
-              <WorkflowFormContextProvider kogitoServiceUrl={`${openApiBaseUrl}`}>
-                <Router>
-                  <Switch>
-                    <Route path="/" render={renderPage} />
-                  </Switch>
-                </Router>
-              </WorkflowFormContextProvider>
-            </WorkflowDefinitionListContextProvider>
-          </WorkflowListContextProviderWithApolloClient>
+          <WorkflowDetailsContextProviderWithApolloClient apolloClient={apolloClient}>
+            <WorkflowListContextProviderWithApolloClient apolloClient={apolloClient}>
+              <WorkflowDefinitionListContextProvider kogitoServiceUrl={openApiBaseUrl}>
+                <WorkflowFormContextProvider kogitoServiceUrl={`${openApiBaseUrl}`}>
+                  <Router>
+                    <Switch>
+                      <Route path="/" render={renderPage} />
+                    </Switch>
+                  </Router>
+                </WorkflowFormContextProvider>
+              </WorkflowDefinitionListContextProvider>
+            </WorkflowListContextProviderWithApolloClient>
+          </WorkflowDetailsContextProviderWithApolloClient>
         </GlobalAlertsContextProvider>
       </KogitoAppContextProvider>
     </ApolloProvider>

@@ -11049,6 +11049,12 @@ importers:
 
   packages/sonataflow-management-console-webapp:
     dependencies:
+      "@kie-tools-core/editor":
+        specifier: workspace:*
+        version: link:../editor
+      "@kie-tools-core/keyboard-shortcuts":
+        specifier: workspace:*
+        version: link:../keyboard-shortcuts
       "@kie-tools-core/react-hooks":
         specifier: workspace:*
         version: link:../react-hooks
@@ -11079,6 +11085,18 @@ importers:
       "@kie-tools/runtime-tools-swf-webapp-components":
         specifier: workspace:*
         version: link:../runtime-tools-swf-webapp-components
+      "@kie-tools/serverless-workflow-combined-editor":
+        specifier: workspace:*
+        version: link:../serverless-workflow-combined-editor
+      "@kie-tools/serverless-workflow-diagram-editor-assets":
+        specifier: workspace:*
+        version: link:../serverless-workflow-diagram-editor-assets
+      "@kie-tools/serverless-workflow-diagram-editor-envelope":
+        specifier: workspace:*
+        version: link:../serverless-workflow-diagram-editor-envelope
+      "@kie-tools/serverless-workflow-text-editor":
+        specifier: workspace:*
+        version: link:../serverless-workflow-text-editor
       "@patternfly/patternfly":
         specifier: ^4.224.2
         version: 4.224.2
@@ -26745,7 +26763,7 @@ packages:
       { integrity: sha512-lrIyDa5jI+nfMZg2Q2u70cRJBRGu2FtASVgzci7/MW5YxtTFYGYfc4rRxuMEf3EHVSFCVTKrtCYp4v2rHeLQYw== }
     engines: { node: ">=15.0", npm: ">=7.0.0" }
     dependencies:
-      ajv: 8.11.0
+      ajv: 8.12.0
       js-yaml: 4.1.0
     dev: false
 
@@ -31668,6 +31686,7 @@ packages:
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
       uri-js: 4.4.1
+    dev: true
 
   /ajv@8.12.0:
     resolution:
@@ -36451,12 +36470,12 @@ packages:
     resolution:
       { integrity: sha512-/VTCrvm5Z0JGty/BWHljh+BAiw3IK+2j87NGMu8Nwc/f48WoDAC395uomO9ZD117ZOBaHmkX1oyLvkVM/aIT3w== }
     engines: { node: ">=0.3.1" }
+    dev: true
 
   /diff@5.1.0:
     resolution:
       { integrity: sha512-D+mk+qE8VC/PAUrlAU34N+VfXev0ghe5ywmpqrawphmVZc1bEfn56uo9qpyGp1p4xpzOHkSW4ztBd6L7Xx4ACw== }
     engines: { node: ">=0.3.1" }
-    dev: true
 
   /diffie-hellman@5.0.3:
     resolution:
@@ -49863,11 +49882,12 @@ packages:
   /sinon@11.1.1:
     resolution:
       { integrity: sha512-ZSSmlkSyhUWbkF01Z9tEbxZLF/5tRC9eojCdFh33gtQaP7ITQVaMWQHGuFM7Cuf/KEfihuh1tTl3/ABju3AQMg== }
+    deprecated: 16.1.1
     dependencies:
       "@sinonjs/commons": 1.8.3
       "@sinonjs/fake-timers": 7.1.2
       "@sinonjs/samsam": 6.0.2
-      diff: 5.0.0
+      diff: 5.1.0
       nise: 5.1.0
       supports-color: 7.2.0
     dev: false
