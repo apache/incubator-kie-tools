@@ -188,9 +188,9 @@ export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorS
     .getOriginalIds();
 
   clipboard.widths = (
-    dmnEditorState.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[dmnEditorState.diagram.drdIndex][
-      "di:extension"
-    ]?.["kie:ComponentsWidthsExtension"]?.["kie:ComponentWidths"] ?? []
+    dmnEditorState.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[
+      dmnEditorState.computed(dmnEditorState).getDrdIndex()
+    ]["di:extension"]?.["kie:ComponentsWidthsExtension"]?.["kie:ComponentWidths"] ?? []
   ).filter((w: KIE__tComponentWidths) => idsOnDrgElementTrees.has(w["@_dmnElementRef"]!));
 
   const artifacts = dmnEditorState.dmn.model.definitions.artifact ?? [];

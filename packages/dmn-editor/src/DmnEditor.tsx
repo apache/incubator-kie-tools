@@ -247,6 +247,7 @@ export const DmnEditorInternal = ({
         return;
       }
       state.dmn.model = normalize(model);
+
       dmnModelBeforeEditingRef.current = state.dmn.model;
     });
   }, [dmnEditorStoreApi, model]);

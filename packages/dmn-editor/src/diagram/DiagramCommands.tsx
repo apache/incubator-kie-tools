@@ -131,7 +131,7 @@ export function DiagramCommands(props: {}) {
           [...copiedEdgesById.values(), ...danglingEdgesById.values()].forEach((edge) => {
             deleteEdge({
               definitions: state.dmn.model.definitions,
-              drdIndex: state.diagram.drdIndex,
+              drdIndex: state.computed(state).getDrdIndex(),
               edge: { id: edge.id, dmnObject: edge.data!.dmnObject },
               mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
             });
@@ -150,7 +150,7 @@ export function DiagramCommands(props: {}) {
                 deleteNode({
                   drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
                   definitions: state.dmn.model.definitions,
-                  drdIndex: state.diagram.drdIndex,
+                  drdIndex: state.computed(state).getDrdIndex(),
                   dmnObjectNamespace: node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
                   dmnObjectQName: node.data.dmnObjectQName,
                   dmnObjectId: node.data.dmnObject?.["@_id"],
@@ -235,7 +235,7 @@ export function DiagramCommands(props: {}) {
 
           const { diagramElements, widths } = addOrGetDrd({
             definitions: state.dmn.model.definitions,
-            drdIndex: state.diagram.drdIndex,
+            drdIndex: state.computed(state).getDrdIndex(),
           });
           diagramElements.push(...clipboard.shapes.map((s) => ({ ...s, __$$element: "dmndi:DMNShape" as const })));
           diagramElements.push(...clipboard.edges.map((s) => ({ ...s, __$$element: "dmndi:DMNEdge" as const })));
@@ -307,7 +307,7 @@ export function DiagramCommands(props: {}) {
 
         const { href: newNodeId } = addStandaloneNode({
           definitions: state.dmn.model.definitions,
-          drdIndex: state.diagram.drdIndex,
+          drdIndex: state.computed(state).getDrdIndex(),
           newNode: {
             type: NODE_TYPES.group,
             bounds: getBounds({
@@ -368,7 +368,7 @@ export function DiagramCommands(props: {}) {
                 externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace)
                   .dmns,
                 definitions: state.dmn.model.definitions,
-                drdIndex: state.diagram.drdIndex,
+                drdIndex: state.computed(state).getDrdIndex(),
                 dmnObjectNamespace:
                   nodesById.get(edge.source)!.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
                 dmnObjectId: nodesById.get(edge.source)!.data.dmnObject?.["@_id"],
@@ -378,7 +378,7 @@ export function DiagramCommands(props: {}) {
                 externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace)
                   .dmns,
                 definitions: state.dmn.model.definitions,
-                drdIndex: state.diagram.drdIndex,
+                drdIndex: state.computed(state).getDrdIndex(),
                 dmnObjectNamespace:
                   nodesById.get(edge.target)!.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
                 dmnObjectId: nodesById.get(edge.target)!.data.dmnObject?.["@_id"],
@@ -386,7 +386,7 @@ export function DiagramCommands(props: {}) {
           ) {
             deleteEdge({
               definitions: state.dmn.model.definitions,
-              drdIndex: state.diagram.drdIndex,
+              drdIndex: state.computed(state).getDrdIndex(),
               edge: { id: edge.id, dmnObject: edge.data!.dmnObject },
               mode: EdgeDeletionMode.FROM_CURRENT_DRD_ONLY,
             });
@@ -403,7 +403,7 @@ export function DiagramCommands(props: {}) {
             drgEdges: [], // Deleting from DRD only.
             definitions: state.dmn.model.definitions,
             externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
-            drdIndex: state.diagram.drdIndex,
+            drdIndex: state.computed(state).getDrdIndex(),
             dmnObjectNamespace: node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
             dmnObjectQName: node.data.dmnObjectQName,
             dmnObjectId: node.data.dmnObject?.["@_id"],

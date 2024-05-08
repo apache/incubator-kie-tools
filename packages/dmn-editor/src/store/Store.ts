@@ -88,7 +88,7 @@ export interface State {
     tab: DmnEditorTab;
   };
   diagram: {
-    drdIndex: number;
+    __unsafeDrdIndex: number;
     edgeIdBeingUpdated: string | undefined;
     dropTargetNode: DropTargetNode;
     ongoingConnection: RF.OnConnectStartParams | undefined;
@@ -136,6 +136,12 @@ export type Computed = {
     e: ExternalModelsIndex | undefined
   ) => ReturnType<typeof computeExternalModelsByType>;
 
+  /**
+   * Get a valid DRD index.
+   * `__unsafeDrdIndex` can point to a DRD that doens't exist.
+   */
+  getDrdIndex(): number;
+
   getDataTypes(e: ExternalModelsIndex | undefined): ReturnType<typeof computeDataTypes>;
 
   getAllFeelVariableUniqueNames(): ReturnType<typeof computeAllFeelVariableUniqueNames>;
@@ -181,7 +187,7 @@ export const defaultStaticState = (): Omit<State, "dmn" | "dispatch" | "computed
     expandedItemComponentIds: [],
   },
   diagram: {
-    drdIndex: 0,
+    __unsafeDrdIndex: 0,
     edgeIdBeingUpdated: undefined,
     dropTargetNode: undefined,
     ongoingConnection: undefined,
@@ -334,7 +340,7 @@ export function createDmnEditorStore(model: State["dmn"]["model"], computedCache
             return computedCache.cached("indexedDrd", computeIndexedDrd, [
               s.dmn.model.definitions["@_namespace"],
               s.dmn.model.definitions,
-              s.diagram.drdIndex,
+              s.computed(s).getDrdIndex(),
             ]);
           },
 
@@ -348,7 +354,7 @@ export function createDmnEditorStore(model: State["dmn"]["model"], computedCache
             computedCache.cached(
               "isAlternativeInputDataShape",
               (drdIndex, dmnDiagram) => dmnDiagram?.[drdIndex]?.["@_useAlternativeInputDataShape"] ?? false,
-              [s.diagram.drdIndex, s.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]] as const
+              [s.computed(s).getDrdIndex(), s.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]] as const
             ),
 
           isDropTargetNodeValidForSelection: (externalModelsByNamespace: ExternalModelsIndex | undefined) =>
@@ -356,6 +362,16 @@ export function createDmnEditorStore(model: State["dmn"]["model"], computedCache
               s.diagram.dropTargetNode,
               s.computed(s).getDiagramData(externalModelsByNamespace),
             ]),
+
+          getDrdIndex: () =>
+            computedCache.cached(
+              "getDrdIndex",
+              (__unsafeDrdIndex, dmnDiagram) =>
+                dmnDiagram?.length && __unsafeDrdIndex > dmnDiagram.length - 1
+                  ? dmnDiagram.length - 1
+                  : __unsafeDrdIndex,
+              [s.diagram.__unsafeDrdIndex, s.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]] as const
+            ),
 
           getDataTypes: (externalModelsByNamespace: ExternalModelsIndex | undefined) =>
             computedCache.cached("getDataTypes", computeDataTypes, [

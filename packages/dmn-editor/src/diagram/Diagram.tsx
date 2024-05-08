@@ -209,7 +209,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
           addEdge({
             definitions: state.dmn.model.definitions,
-            drdIndex: state.diagram.drdIndex,
+            drdIndex: state.computed(state).getDrdIndex(),
             edge: {
               type: sourceHandle as EdgeType,
               targetHandle: targetHandle as PositionalNodeHandleId,
@@ -307,7 +307,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           dmnEditorStoreApi.setState((state) => {
             const { id, href: newNodeId } = addStandaloneNode({
               definitions: state.dmn.model.definitions,
-              drdIndex: state.diagram.drdIndex,
+              drdIndex: state.computed(state).getDrdIndex(),
               newNode: {
                 type: typeOfNewNodeFromPalette,
                 bounds: {
@@ -371,7 +371,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               addExistingDecisionServiceToDrd({
                 decisionService: externalDrgElement,
                 decisionServiceNamespace: externalNodeDmn.model.definitions["@_namespace"],
-                drdIndex: state.diagram.drdIndex,
+                drdIndex: state.computed(state).getDrdIndex(),
                 dropPoint,
                 externalDmnsIndex,
                 thisDmnsDefinitions: state.dmn.model.definitions,
@@ -382,7 +382,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               const externalNodeType = getNodeTypeFromDmnObject(externalDrgElement)!;
               addShape({
                 definitions: state.dmn.model.definitions,
-                drdIndex: state.diagram.drdIndex,
+                drdIndex: state.computed(state).getDrdIndex(),
                 nodeType: externalNodeType,
                 shape: {
                   "@_dmnElementRef": xmlHrefToQName(externalNodeHref, state.dmn.model.definitions),
@@ -419,7 +419,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               addExistingDecisionServiceToDrd({
                 decisionService: drgElement,
                 decisionServiceNamespace: state.dmn.model.definitions["@_namespace"],
-                drdIndex: state.diagram.drdIndex,
+                drdIndex: state.computed(state).getDrdIndex(),
                 dropPoint,
                 externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace)
                   .dmns,
@@ -431,7 +431,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               const nodeType = getNodeTypeFromDmnObject(drgElement)!;
               addShape({
                 definitions: state.dmn.model.definitions,
-                drdIndex: state.diagram.drdIndex,
+                drdIndex: state.computed(state).getDrdIndex(),
                 nodeType,
                 shape: {
                   "@_dmnElementRef": buildXmlQName({ type: "xml-qname", localPart: drgElement["@_id"]! }),
@@ -524,7 +524,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
           const { id, href: newDmnObejctHref } = addConnectedNode({
             definitions: state.dmn.model.definitions,
-            drdIndex: state.diagram.drdIndex,
+            drdIndex: state.computed(state).getDrdIndex(),
             edgeType,
             sourceNode: {
               href: sourceNode.id,
@@ -629,7 +629,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   ) {
                     resizeNode({
                       definitions: state.dmn.model.definitions,
-                      drdIndex: state.diagram.drdIndex,
+                      drdIndex: state.computed(state).getDrdIndex(),
                       dmnShapesByHref: state.computed(state).indexedDrd().dmnShapesByHref,
                       snapGrid: state.diagram.snapGrid,
                       change: {
@@ -668,7 +668,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                     .nodesById.get(change.id)!;
                   const { delta } = repositionNode({
                     definitions: state.dmn.model.definitions,
-                    drdIndex: state.diagram.drdIndex,
+                    drdIndex: state.computed(state).getDrdIndex(),
                     controlWaypointsByEdge,
                     change: {
                       type: "absolute",
@@ -713,7 +713,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                       );
                       repositionNode({
                         definitions: state.dmn.model.definitions,
-                        drdIndex: state.diagram.drdIndex,
+                        drdIndex: state.computed(state).getDrdIndex(),
                         controlWaypointsByEdge,
                         change: {
                           type: "absolute",
@@ -739,7 +739,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 deleteNode({
                   drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
                   definitions: state.dmn.model.definitions,
-                  drdIndex: state.diagram.drdIndex,
+                  drdIndex: state.computed(state).getDrdIndex(),
                   dmnObjectNamespace: node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
                   dmnObjectQName: node.data.dmnObjectQName,
                   dmnObjectId: node.data.dmnObject?.["@_id"],
@@ -877,7 +877,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               for (let i = 0; i < selectedNodes.length; i++) {
                 addDecisionToDecisionService({
                   definitions: state.dmn.model.definitions,
-                  drdIndex: state.diagram.drdIndex,
+                  drdIndex: state.computed(state).getDrdIndex(),
                   decisionId: selectedNodes[i].data.dmnObject!["@_id"]!, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
                   decisionServiceId: state
                     .computed(state)
@@ -915,7 +915,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 if (edge?.data) {
                   deleteEdge({
                     definitions: state.dmn.model.definitions,
-                    drdIndex: state.diagram.drdIndex,
+                    drdIndex: state.computed(state).getDrdIndex(),
                     edge: { id: change.id, dmnObject: edge.data.dmnObject },
                     mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
                   });
@@ -966,7 +966,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
           const { newDmnEdge } = addEdge({
             definitions: state.dmn.model.definitions,
-            drdIndex: state.diagram.drdIndex,
+            drdIndex: state.computed(state).getDrdIndex(),
             edge: {
               autoPositionedEdgeMarker: undefined,
               type: oldEdge.type as EdgeType,
@@ -999,7 +999,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           if (newDmnEdge["@_dmnElementRef"] !== oldEdge.id) {
             const { deletedDmnEdgeOnCurrentDrd } = deleteEdge({
               definitions: state.dmn.model.definitions,
-              drdIndex: state.diagram.drdIndex,
+              drdIndex: state.computed(state).getDrdIndex(),
               edge: { id: oldEdge.id, dmnObject: oldEdge.data!.dmnObject },
               mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
             });
@@ -1229,7 +1229,7 @@ function DmnDiagramEmptyState({
                 dmnEditorStoreApi.setState((state) => {
                   const { href: decisionNodeHref } = addStandaloneNode({
                     definitions: state.dmn.model.definitions,
-                    drdIndex: state.diagram.drdIndex,
+                    drdIndex: state.computed(state).getDrdIndex(),
                     newNode: {
                       type: NODE_TYPES.decision,
                       bounds: {
@@ -1267,7 +1267,7 @@ function DmnDiagramEmptyState({
 
                   updateExpressionWidths({
                     definitions: state.dmn.model.definitions,
-                    drdIndex: state.diagram.drdIndex,
+                    drdIndex: state.computed(state).getDrdIndex(),
                     widthsById: defaultWidthsById,
                   });
 
@@ -1298,7 +1298,7 @@ function DmnDiagramEmptyState({
 
                   const { href: inputDataNodeHref, shapeId: inputDataShapeId } = addStandaloneNode({
                     definitions: state.dmn.model.definitions,
-                    drdIndex: state.diagram.drdIndex,
+                    drdIndex: state.computed(state).getDrdIndex(),
                     newNode: {
                       type: NODE_TYPES.inputData,
                       bounds: inputDataNodeBounds,
@@ -1307,7 +1307,7 @@ function DmnDiagramEmptyState({
 
                   const { href: decisionNodeHref } = addConnectedNode({
                     definitions: state.dmn.model.definitions,
-                    drdIndex: state.diagram.drdIndex,
+                    drdIndex: state.computed(state).getDrdIndex(),
                     edgeType: EDGE_TYPES.informationRequirement,
                     sourceNode: {
                       href: inputDataNodeHref,

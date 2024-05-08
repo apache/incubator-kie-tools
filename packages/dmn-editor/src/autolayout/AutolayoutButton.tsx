@@ -372,7 +372,7 @@ export function AutolayoutButton() {
 
           repositionNode({
             definitions: s.dmn.model.definitions,
-            drdIndex: s.diagram.drdIndex,
+            drdIndex: s.computed(s).getDrdIndex(),
             controlWaypointsByEdge: new Map(),
             change: {
               nodeType: node.type as NodeType,
@@ -406,7 +406,7 @@ export function AutolayoutButton() {
 
           resizeNode({
             definitions: s.dmn.model.definitions,
-            drdIndex: s.diagram.drdIndex,
+            drdIndex: s.computed(s).getDrdIndex(),
             dmnShapesByHref: s.computed(s).indexedDrd().dmnShapesByHref,
             snapGrid,
             change: {
@@ -454,7 +454,7 @@ export function AutolayoutButton() {
 
         updateDecisionServiceDividerLine({
           definitions: s.dmn.model.definitions,
-          drdIndex: s.diagram.drdIndex,
+          drdIndex: s.computed(s).getDrdIndex(),
           dmnShapesByHref: s.computed(s).indexedDrd().dmnShapesByHref,
           drgElementIndex: parentNode.data.index,
           shapeIndex: parentNode.data.shape.index,
@@ -481,7 +481,7 @@ export function AutolayoutButton() {
 
         addEdge({
           definitions: s.dmn.model.definitions,
-          drdIndex: s.diagram.drdIndex,
+          drdIndex: s.computed(s).getDrdIndex(),
           edge: {
             autoPositionedEdgeMarker: undefined,
             type: edge.type as EdgeType,
