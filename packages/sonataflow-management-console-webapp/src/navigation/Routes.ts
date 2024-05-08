@@ -131,6 +131,6 @@ export const routes = {
   runtimeToolsTriggerCloudEvent: new Route<{}>(() => `/TriggerCloudEvent`),
   runtimeToolsTriggerCloudEventForWorkflow: new Route<{
     pathParams: PathParams.WORKFLOW_ID;
-  }>(({ workflowId }) => `/runtime-tools/trigger-cloud-event/${workflowId}`),
+  }>(({ workflowId }) => `/TriggerCloudEvent/${workflowId}`),
   monitoring: new Route<{}>(({}) => `/Monitoring`),
 };

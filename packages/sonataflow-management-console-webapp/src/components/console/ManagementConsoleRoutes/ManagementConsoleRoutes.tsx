@@ -24,6 +24,7 @@ import { routes } from "../../../navigation/Routes";
 import { RuntimeToolsWorkflowForm } from "../../../runtimeTools/pages/RuntimeToolsWorkflowForm";
 import { RuntimeToolsWorkflowInstances } from "../../../runtimeTools/pages/RuntimeToolsWorkflowInstances";
 import { RuntimeToolsWorkflowDetails } from "../../../runtimeTools/pages/RuntimeToolsWorkflowDetails";
+import { RuntimeToolsTriggerCloudEvent } from "../../../runtimeTools/pages/RuntimeToolsTriggerCloudEvent";
 
 const ManagementConsoleRoutes: React.FC = () => {
   return (
@@ -38,7 +39,7 @@ const ManagementConsoleRoutes: React.FC = () => {
       <Route path={routes.runtimeToolsWorkflowDetails.path({ workflowId: ":workflowId" })}>
         {({ match }) => <RuntimeToolsWorkflowDetails workflowId={match!.params.workflowId!} />}
       </Route>
-      <Route exact path={routes.runtimeToolsTriggerCloudEvent.path({})} component={EmptyPage} />
+      <Route exact path={routes.runtimeToolsTriggerCloudEvent.path({})} component={RuntimeToolsTriggerCloudEvent} />
       <Route path={routes.runtimeToolsWorkflowForm.path({ workflowName: ":workflowName" })}>
         <RuntimeToolsWorkflowForm />
       </Route>
