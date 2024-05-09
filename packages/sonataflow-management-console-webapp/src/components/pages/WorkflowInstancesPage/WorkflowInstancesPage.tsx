@@ -24,11 +24,11 @@ import { WorkflowListContainer } from "@kie-tools/runtime-tools-swf-webapp-compo
 import { CloudEventPageSource } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventForm";
 import { useHistory } from "react-router";
 import { WorkflowListState } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
-import { routes } from "../../navigation/Routes";
+import { routes } from "../../../navigation/Routes";
 
 const PAGE_TITLE = "Workflow Instances";
 
-export function RuntimeToolsWorkflowInstances() {
+export function WorkflowInstancesPage() {
   const history = useHistory();
 
   const initialState: WorkflowListState = history.location && (history.location.state as WorkflowListState);

@@ -22,12 +22,12 @@ import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Pag
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { CloudEventFormContainer } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventFormContainer";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
-import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
+import { useGlobalAlert } from "../../../alerts/GlobalAlertsContext";
 
 const PAGE_TITLE = "Trigger Cloud Event";
 const KUBESMARTS_CLOUD_SOURCE = "/local/kubesmarts";
 
-export function RuntimeToolsTriggerCloudEvent() {
+export function TriggerCloudEventPage() {
   const triggerEventSuccessAlert = useGlobalAlert<{ message: string }>(
     useCallback(({ close }, { message }) => {
       return (

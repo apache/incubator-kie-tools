@@ -32,14 +32,14 @@ import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Pag
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { useHistory } from "react-router";
-import { routes } from "../../navigation/Routes";
+import { routes } from "../../../navigation/Routes";
 
 const PAGE_TITLE = "Workflow Details";
 
 interface WorkflowListContainerProps {
   workflowId: string;
 }
-export function RuntimeToolsWorkflowDetails(props: WorkflowListContainerProps) {
+export function WorkflowDetailsPage(props: WorkflowListContainerProps) {
   const history = useHistory();
   const gatewayApi: WorkflowDetailsGatewayApi = useWorkflowDetailsGatewayApi();
 

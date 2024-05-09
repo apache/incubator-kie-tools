@@ -31,12 +31,12 @@ import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { useHistory } from "react-router";
-import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
-import { routes } from "../../navigation/Routes";
+import { routes } from "../../../navigation/Routes";
+import { useGlobalAlert } from "../../../alerts/GlobalAlertsContext";
 
 const PAGE_TITLE = "Start new workflow";
 
-export function RuntimeToolsWorkflowForm() {
+export function WorkflowFormPage() {
   const history = useHistory();
   const gatewayApi: WorkflowFormGatewayApi = useWorkflowFormGatewayApi();
 

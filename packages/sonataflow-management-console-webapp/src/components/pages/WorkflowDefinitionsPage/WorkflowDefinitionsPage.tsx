@@ -23,12 +23,12 @@ import { Card } from "@patternfly/react-core/dist/esm/components/Card";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { useHistory } from "react-router";
-import { routes } from "../../navigation/Routes";
+import { routes } from "../../../navigation/Routes";
 import { WorkflowDefinition } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 
 const PAGE_TITLE = "Workflow Definitions";
 
-export function RuntimeToolsWorkflowDefinitions() {
+export function WorkflowDefinitionsPage() {
   const history = useHistory();
 
   const onOpenWorkflowForm = useCallback(
