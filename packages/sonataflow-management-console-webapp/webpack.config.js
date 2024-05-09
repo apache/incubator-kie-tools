@@ -86,10 +86,7 @@ module.exports = async (env) => {
             to: "./serverless-workflow-text-editor-envelope.html",
           },
           {
-            from: path.join(
-              path.dirname(require.resolve("@kie-tools/serverless-workflow-dev-ui-monitoring-webapp/package.json")),
-              "/dist"
-            ),
+            from: "./resources/monitoring-webapp",
             to: "./monitoring-webapp",
           },
           {

@@ -37,7 +37,6 @@
     "@kie-tools/runtime-tools-swf-gateway-api": "workspace:*",
     "@kie-tools/runtime-tools-swf-webapp-components": "workspace:*",
     "@kie-tools/serverless-workflow-combined-editor": "workspace:*",
-    "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp": "workspace:*",
     "@kie-tools/serverless-workflow-diagram-editor-assets": "workspace:*",
     "@kie-tools/serverless-workflow-diagram-editor-envelope": "workspace:*",
     "@kie-tools/serverless-workflow-text-editor": "workspace:*",
