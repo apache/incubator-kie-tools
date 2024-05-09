@@ -93,6 +93,11 @@ export class BoxedExpressionEditor {
     await this.page.getByRole("menuitem", { name: "Function" }).click();
   }
 
+  public async selectBoxedFilter(from: Page | Locator = this.page) {
+    this.select(from);
+    await this.page.getByRole("menuitem", { name: "Filter" }).click();
+  }
+
   public async goto() {
     await this.page.goto(`${this.baseURL}/iframe.html?id=misc-empty-boxed-expression--base` ?? "");
   }
