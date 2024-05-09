@@ -162,23 +162,16 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         }
 
         const workspaceFiles = await workspaces.getFiles({ workspaceId });
-        // Adds all files to the stage area
+        // Create a backup branch with the current files, but stay on main
+        await workspaces.branch({ workspaceId, name: BACKUP_BRANCH_NAME, checkout: false });
+
+        // Adds all files to the staging area
         await workspaces.add({
           workspaceId,
           relativePath: ".",
         });
 
-        // Commit all files to the default branch
-        await workspaces.commit({
-          workspaceId,
-          commitMessage: `${env.KIE_SANDBOX_APP_NAME}: Backup files before applying ${accelerator.name} Accelerator`,
-          targetBranch: GIT_DEFAULT_BRANCH,
-        });
-
-        // Create a backup branch with the current files, but stay on main
-        await workspaces.branch({ workspaceId, name: BACKUP_BRANCH_NAME, checkout: false });
-
-        // Commit all files to the backup branch
+        // Commit staged changes to the backup branch
         await workspaces.commit({
           workspaceId,
           commitMessage: `${env.KIE_SANDBOX_APP_NAME}: Backup files before applying ${accelerator.name} Accelerator`,
