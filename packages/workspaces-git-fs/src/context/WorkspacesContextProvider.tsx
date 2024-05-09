@@ -251,15 +251,6 @@ export function WorkspacesContextProvider(props: Props) {
     [hasLocalChanges, props, workspacesSharedWorker]
   );
 
-  const stageFile = useCallback(
-    async (args: { workspaceId: string; relativePath: string }) => {
-      return workspacesSharedWorker.withBus((workspacesWorkerBus) =>
-        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_stageFile(args)
-      );
-    },
-    [workspacesSharedWorker]
-  );
-
   const getGitServerRefs = useCallback(
     async (args: {
       url: string;
@@ -613,7 +604,6 @@ export function WorkspacesContextProvider(props: Props) {
       prepareZip,
       getUniqueFileIdentifier,
       createSavePoint,
-      stageFile,
       commit,
       pull,
       add,
@@ -654,7 +644,6 @@ export function WorkspacesContextProvider(props: Props) {
       addFile,
       existsFile,
       createSavePoint,
-      stageFile,
       commit,
       createWorkspaceFromGitRepository,
       createWorkspaceFromLocal,

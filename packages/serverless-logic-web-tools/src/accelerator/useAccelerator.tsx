@@ -162,7 +162,7 @@ export function useAccelerator(props: Props) {
               newDirPath: join(destinationFolder, file.relativeDirPath),
             });
 
-            await workspaces.stageFile({
+            await workspaces.add({
               workspaceId: props.workspaceId,
               relativePath: movedFile.relativePath,
             });
@@ -223,7 +223,7 @@ export function useAccelerator(props: Props) {
       const acceleratorFiles = await workspaces.getFiles({ workspaceId: props.workspaceId });
       await Promise.all(
         acceleratorFiles.map(async (file) =>
-          workspaces.stageFile({
+          workspaces.add({
             workspaceId: props.workspaceId,
             relativePath: file.relativePath,
           })
@@ -238,7 +238,7 @@ export function useAccelerator(props: Props) {
 
       await Promise.all(
         movedFiles.map(async (file) => {
-          return workspaces.stageFile({
+          return workspaces.add({
             workspaceId: props.workspaceId,
             relativePath: file.relativePath,
           });

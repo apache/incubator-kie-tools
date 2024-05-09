@@ -187,8 +187,6 @@ export interface WorkspacesContextType {
     forceHasChanges?: boolean;
   }): Promise<void>;
 
-  stageFile: (args: { workspaceId: string; relativePath: string }) => Promise<void>;
-
   fetch(args: {
     workspaceId: string;
     remote: string;
