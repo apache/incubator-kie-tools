@@ -162,27 +162,23 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         }
 
         const workspaceFiles = await workspaces.getFiles({ workspaceId });
+        // Adds all files to the stage area
         await workspaces.add({
           workspaceId,
           relativePath: ".",
         });
+
+        // Commit all files to the default branch
         await workspaces.commit({
           workspaceId,
           commitMessage: `${env.KIE_SANDBOX_APP_NAME}: Backup files before applying ${accelerator.name} Accelerator`,
           targetBranch: GIT_DEFAULT_BRANCH,
         });
 
-        // Create new temporary branch with current files, but stay on main
+        // Create a backup branch with the current files, but stay on main
         await workspaces.branch({ workspaceId, name: BACKUP_BRANCH_NAME, checkout: false });
 
-        // Checkout to moved files branch
-        await workspaces.checkout({
-          workspaceId,
-          ref: BACKUP_BRANCH_NAME,
-          remote: GIT_ORIGIN_REMOTE_NAME,
-        });
-
-        // Commit moved files to moved files branch (this commit will never be pushed, as this branch will be deleted)
+        // Commit all files to the backup branch
         await workspaces.commit({
           workspaceId,
           commitMessage: `${env.KIE_SANDBOX_APP_NAME}: Backup files before applying ${accelerator.name} Accelerator`,
