@@ -48,3 +48,8 @@
 .kogito--alert-container .pf-c-alert {
   pointer-events: visible;
 }
+
+.Dev-ui__card-size,
+.Dev-ui__custom-dashboard-viewer > div {
+  height: 100%;
+}
