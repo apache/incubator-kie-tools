@@ -4,5 +4,6 @@
   },
   "files.associations": {
     "*.yaml.helm": "helm"
-  }
+  },
+  "java.configuration.updateBuildConfiguration": "disabled"
 }

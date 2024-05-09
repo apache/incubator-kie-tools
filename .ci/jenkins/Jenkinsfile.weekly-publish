@@ -1,0 +1,129 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import java.text.SimpleDateFormat
+
+def sdf = new SimpleDateFormat("yyyy-MM-dd")
+def dateDefaultValue = sdf.format(new Date())
+
+@Library('jenkins-pipeline-shared-libraries')_
+
+pipeline {
+    agent {
+        docker {
+            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            args '--shm-size=2g --privileged --group-add docker'
+            label util.avoidFaultyNodes()
+        }
+    }
+
+    options {
+        timeout(time: 240, unit: 'MINUTES')
+    }
+
+    parameters {
+        string(name: 'GIT_CHECKOUT_DATETIME', defaultValue: "${dateDefaultValue} 02:00", description: 'Git checkout date and time - (Y-m-d H:i)', trim: true)
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                }
+            }
+        }
+
+        stage('Clean workspace before build') {
+            steps {
+                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Checkout kie-tools') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        checkout scm
+                        sh "git checkout `git rev-list -n 1 --before=\"${params.GIT_CHECKOUT_DATETIME}\" main`"
+                    }
+                }
+            }
+        }
+
+        stage('Setup PNPM') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.setupPnpm()
+                    }
+                }
+            }
+        }
+
+        stage('Build and Publish devui packages') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.mavenDeployRepositoryCredentialsId}", usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+                            configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
+                                sh """#!/bin/bash -el
+                                export KIE_TOOLS_BUILD__buildContainerImages=false
+                                export KIE_TOOLS_BUILD__runLinters=false
+                                export KIE_TOOLS_BUILD__runTests=false
+                                export KIE_TOOLS_BUILD__runEndToEndTests=false
+                                export KIE_TOOLS_BUILD__mavenDeploySkip=false
+                                pnpm update-version-to "999-${getDateFromCheckoutDateTime()}-SNAPSHOT" --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui....
+                                pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
+                                pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Dapache.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
+                                pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Dapache.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
+                                pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... build:prod
+                                """.trim()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Create a new tag') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        tagName = "999-${getDateFromCheckoutDateTime()}"
+                        githubUtils.createTag("${tagName}")
+                        githubUtils.pushObject('origin', "${tagName}", "${pipelineVars.asfGithubPushCredentialsId}")
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+        }
+    }
+}
+
+String getDateFromCheckoutDateTime() {
+    /* groovylint-disable-next-line DuplicateNumberLiteral */
+    def parsedDate = (params.GIT_CHECKOUT_DATETIME =~ /(\d{4}-\d{2}-\d{2})/)[0][0]
+    return parsedDate.replace('-', '')
+}
