@@ -19,38 +19,32 @@
 
 import * as vscode from "vscode";
 
-export class KIEFile {
-  public readonly fsPath: string;
+export class KieFile {
+  public readonly uri: vscode.Uri;
 
-  private kieFileChangedEventHandler: KIEFileChangedHandler | null;
   private fileWatcher: vscode.FileSystemWatcher;
+  private kieFileChangedEventHandler: (() => void) | null;
 
   constructor(textDocument: vscode.TextDocument) {
-    this.fsPath = textDocument.uri.fsPath;
-    this.fileWatcher = vscode.workspace.createFileSystemWatcher(this.fsPath);
-    this.fileWatcher.onDidChange(this.fireKIEFileChangedEvent, this);
+    this.uri = textDocument.uri;
+    this.fileWatcher = vscode.workspace.createFileSystemWatcher(this.uri.fsPath, true, false, true);
+    this.fileWatcher.onDidChange(this.fireKieFileChangedEvent, this);
   }
 
-  private fireKIEFileChangedEvent() {
-    if (this.kieFileChangedEventHandler) {
-      this.kieFileChangedEventHandler();
-    }
+  private fireKieFileChangedEvent() {
+    this.kieFileChangedEventHandler?.();
   }
 
-  public subscribeKIEFileChanged(handler: KIEFileChangedHandler) {
+  public subscribeKieFileChanged(handler: () => void) {
     this.kieFileChangedEventHandler = handler;
   }
 
-  public unsubscribeKIEFileChanged() {
+  public unsubscribeKieFileChanged() {
     this.kieFileChangedEventHandler = null;
   }
 
   public dispose() {
-    this.unsubscribeKIEFileChanged();
     this.fileWatcher.dispose();
+    this.unsubscribeKieFileChanged();
   }
-}
-
-interface KIEFileChangedHandler {
-  (): void;
 }
