@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~ 
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~ 
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.      
+-->
 <dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kie.apache.org/dmn/_62DDE5A4-A35A-4AE9-A474-65947ACB2A26" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="https://kie.apache.org/dmn/extensions/1.0" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:included1="https://kie.apache.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB22" xmlns:included2="https://kie.apache.org/dmn/_3CB391B5-9A6F-4CB4-9DF9-14F7E91BAD37" xmlns:included3="https://kie.apache.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB21" id="_C1078415-32C8-415A-A6DF-70C673ACBD38" name="Adjudication" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kie.apache.org/dmn/_62DDE5A4-A35A-4AE9-A474-65947ACB2A26">
   <dmn:extensionElements/>
   <dmn:import id="_64A9CFED-04CE-4CD2-9558-B44B5FEE535F" name="t" namespace="https://kie.apache.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB22" locationURI="Types.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
