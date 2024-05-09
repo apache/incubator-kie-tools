@@ -56,27 +56,30 @@ const MonitoringPage: React.FC<OUIAProps & Props> = ({ ouiaId, ouiaSafe, dataInd
   const [selectedWorkflow, setSelectedWorkflow] = useState<WorkflowInstance>();
   const [activeTabKey, setActiveTabKey] = useState<ReactText>(0);
 
-  const initialLoad = () =>
-    gatewayApi.initialLoad(
-      {
-        status: [
-          WorkflowInstanceState.Aborted,
-          WorkflowInstanceState.Active,
-          WorkflowInstanceState.Completed,
-          WorkflowInstanceState.Error,
-          WorkflowInstanceState.Suspended,
-        ],
-        businessKey: [],
-      },
-      { start: OrderBy.DESC }
-    );
+  const initialLoad = useCallback(
+    () =>
+      gatewayApi.initialLoad(
+        {
+          status: [
+            WorkflowInstanceState.Aborted,
+            WorkflowInstanceState.Active,
+            WorkflowInstanceState.Completed,
+            WorkflowInstanceState.Error,
+            WorkflowInstanceState.Suspended,
+          ],
+          businessKey: [],
+        },
+        { start: OrderBy.DESC }
+      ),
+    [gatewayApi]
+  );
 
   const loadWorkflowList = useCallback(() => {
     gatewayApi.query(0, 1000).then((list) => {
       setSelectedWorkflow(list[0]);
       setWorkflowList(list);
     });
-  }, [workflowList, selectedWorkflow]);
+  }, [gatewayApi]);
 
   useEffect(() => {
     const intervaId = setInterval(() => {
@@ -92,13 +95,13 @@ const MonitoringPage: React.FC<OUIAProps & Props> = ({ ouiaId, ouiaSafe, dataInd
       }
     }, 500);
     return () => clearInterval(intervaId);
-  }, [hasWorkflow, loading]);
+  }, [hasWorkflow, loading, gatewayApi, initialLoad, loadWorkflowList]);
 
   useEffect(() => {
     if (dashboard === Dashboard.DETAILS) {
       loadWorkflowList();
     }
-  }, [dashboard]);
+  }, [dashboard, loadWorkflowList]);
 
   useEffect(() => {
     return ouiaPageTypeAndObjectId("monitoring");
@@ -111,7 +114,7 @@ const MonitoringPage: React.FC<OUIAProps & Props> = ({ ouiaId, ouiaSafe, dataInd
         <>
           <Tabs
             activeKey={activeTabKey}
-            onSelect={(event, tabIndex) => {
+            onSelect={(_event, tabIndex) => {
               setActiveTabKey(tabIndex);
               const dashboard = tabIndex === 0 ? Dashboard.MONITORING : Dashboard.DETAILS;
               setDashboard(dashboard);
@@ -136,7 +139,7 @@ const MonitoringPage: React.FC<OUIAProps & Props> = ({ ouiaId, ouiaSafe, dataInd
                         <Select
                           aria-labelledby={"workfflow-id-select"}
                           variant={SelectVariant.single}
-                          onSelect={(event, v) => {
+                          onSelect={(_event, v) => {
                             setSelectedWorkflow(workflowList.find((p) => p.id === v));
                             setOpenWorkflowSelect(false);
                           }}
