@@ -23,16 +23,16 @@ export class VsCodeRecommendation {
   public static showExtendedServicesRecommendation(context: vscode.ExtensionContext) {
     const message =
       "There is another extension available that might help you.\n" +
-      "Click [here](command:bpmn-vscode-extension.installExtendedServices) to install it.";
+      "Click [here](command:vscode-extension.installExtendedServices) to install it.";
     const action = "Install Extended-Services VS Code Extension";
 
-    const disposable = vscode.commands.registerCommand("bpmn-vscode-extension.installExtendedServices", () => {
+    const disposable = vscode.commands.registerCommand("vscode-extension.installExtendedServices", () => {
       vscode.env.openExternal(vscode.Uri.parse("vscode:extension/kie-group.extended-services-vscode-extension"));
     });
 
     vscode.window.showInformationMessage(message, action).then((selection) => {
       if (selection === action) {
-        vscode.commands.executeCommand("bpmn-vscode-extension.installExtendedServices");
+        vscode.commands.executeCommand("vscode-extension.installExtendedServices");
       }
     });
 

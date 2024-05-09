@@ -18,10 +18,10 @@
  */
 
 import * as vscode from "vscode";
-import { Configuration } from "./configuration";
+import * as config from "./Configuration";
 
 export class ConfigurationWatcher {
-  private configurationChangedHandler: ConfigurationChangedHandler | null = null;
+  private configurationChangedHandler: (() => void) | null;
   private configurationChangeListener: vscode.Disposable | undefined;
 
   constructor() {
@@ -29,23 +29,22 @@ export class ConfigurationWatcher {
   }
 
   private handleConfigurationChange(configurationChange: vscode.ConfigurationChangeEvent) {
-    const autoRunChanged = configurationChange.affectsConfiguration(Configuration.autoRunConfigurationID);
-    const changedServiceURLChanged = configurationChange.affectsConfiguration(Configuration.serviceURLConfigurationID);
-    const changedConnectionHeartbeatIntervalChanged = configurationChange.affectsConfiguration(
-      Configuration.connectionHeartbeatIntervalConfigurationID
+    const enableAutoRunChanged = configurationChange.affectsConfiguration(config.enableAutoRunID);
+    const connectionHeartbeatIntervalinSecsChanged = configurationChange.affectsConfiguration(
+      config.connectionHeartbeatIntervalinSecsID
     );
-    if (autoRunChanged || changedServiceURLChanged || changedConnectionHeartbeatIntervalChanged) {
+    const extendedServicesURLChanged = configurationChange.affectsConfiguration(config.extendedServicesURLID);
+
+    if (enableAutoRunChanged || connectionHeartbeatIntervalinSecsChanged || extendedServicesURLChanged) {
       this.fireConfigurationChangedEvent();
     }
   }
 
   private fireConfigurationChangedEvent() {
-    if (this.configurationChangedHandler) {
-      this.configurationChangedHandler();
-    }
+    this.configurationChangedHandler?.();
   }
 
-  public subscribeSettingsChanged(handler: ConfigurationChangedHandler) {
+  public subscribeSettingsChanged(handler: () => void) {
     this.configurationChangedHandler = handler;
   }
 
@@ -54,13 +53,7 @@ export class ConfigurationWatcher {
   }
 
   public dispose(): void {
-    if (this.configurationChangeListener) {
-      this.configurationChangeListener.dispose();
-    }
     this.unsubscribeSettingsChanged();
+    this.configurationChangeListener?.dispose();
   }
-}
-
-interface ConfigurationChangedHandler {
-  (): void;
 }

@@ -17,12 +17,7 @@
  * under the License.
  */
 
-export interface KIEValidateBodyPayload {
-  mainURI: string;
-  resources: KIEValidateResourcePayload[];
-}
+import { TextEncoder } from "util";
+import fetchMock from "jest-fetch-mock";
 
-export interface KIEValidateResourcePayload {
-  URI: string;
-  content: string;
-}
+global.TextEncoder = TextEncoder;
