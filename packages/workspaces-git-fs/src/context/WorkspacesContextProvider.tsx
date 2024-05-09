@@ -139,6 +139,14 @@ export function WorkspacesContextProvider(props: Props) {
     [workspacesSharedWorker]
   );
 
+  const add = useCallback(
+    async (args: { workspaceId: string; relativePath: string }) =>
+      workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_add(args)
+      ),
+    [workspacesSharedWorker]
+  );
+
   const addRemote = useCallback(
     async (args: { workspaceId: string; name: string; url: string; force: boolean }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
@@ -608,6 +616,7 @@ export function WorkspacesContextProvider(props: Props) {
       stageFile,
       commit,
       pull,
+      add,
       addRemote,
       deleteRemote,
       push,
@@ -660,6 +669,7 @@ export function WorkspacesContextProvider(props: Props) {
       moveFile,
       prepareZip,
       pull,
+      add,
       addRemote,
       deleteRemote,
       push,

@@ -110,6 +110,8 @@ export interface WorkspacesWorkerGitApi {
     filepaths: string[];
   }): Promise<void>;
 
+  kieSandboxWorkspacesGit_add(args: { workspaceId: string; relativePath: string }): Promise<void>;
+
   kieSandboxWorkspacesGit_addRemote(args: {
     workspaceId: string;
     name: string;

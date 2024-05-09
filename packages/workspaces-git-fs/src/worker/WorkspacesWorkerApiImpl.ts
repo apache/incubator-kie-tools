@@ -389,6 +389,19 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
 
   //git
 
+  public async kieSandboxWorkspacesGit_add(args: { workspaceId: string; relativePath: string }): Promise<void> {
+    return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
+      args.workspaceId,
+      async ({ fs, broadcaster }) => {
+        return this.args.services.gitService.add({
+          fs: fs,
+          dir: this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId }),
+          relativePath: args.relativePath,
+        });
+      }
+    );
+  }
+
   public async kieSandboxWorkspacesGit_addRemote(args: {
     workspaceId: string;
     name: string;
