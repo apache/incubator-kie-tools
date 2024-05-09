@@ -36,7 +36,18 @@ pipeline {
     }
 
     parameters {
+        string(name: 'BUILD_BRANCH_NAME', defaultValue: 'main', description: 'Set the Git branch to checkout', trim: true)
         string(name: 'GIT_CHECKOUT_DATETIME', defaultValue: "${dateDefaultValue} 02:00", description: 'Git checkout date and time - (Y-m-d H:i)', trim: true)
+    }
+
+    environment {
+        KIE_TOOLS_BUILD__runLinters = 'false'
+        KIE_TOOLS_BUILD__runTests = 'false'
+        KIE_TOOLS_BUILD__runEndToEndTests = 'false'
+        KIE_TOOLS_BUILD__buildContainerImages = 'false'
+        KIE_TOOLS_BUILD__mavenDeploySkip = 'false'
+
+        PNPM_FILTER_STRING = '--filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui...'
     }
 
     stages {
@@ -61,7 +72,10 @@ pipeline {
                 dir('kie-tools') {
                     script {
                         checkout scm
-                        sh "git checkout `git rev-list -n 1 --before=\"${params.GIT_CHECKOUT_DATETIME}\" main`"
+                        sh """#!/bin/bash -el
+                        git checkout ${params.BUILD_BRANCH_NAME}
+                        git checkout `git rev-list -n 1 --before=\"${params.GIT_CHECKOUT_DATETIME}\" ${params.BUILD_BRANCH_NAME}`
+                        """.trim()
                     }
                 }
             }
@@ -81,7 +95,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap()
+                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
                     }
                 }
             }
@@ -95,16 +109,11 @@ pipeline {
                             configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
                                 timestampedSnapshotVersion = "999-${getDateFromCheckoutDateTime()}-SNAPSHOT"
                                 sh """#!/bin/bash -el
-                                export KIE_TOOLS_BUILD__buildContainerImages=false
-                                export KIE_TOOLS_BUILD__runLinters=false
-                                export KIE_TOOLS_BUILD__runTests=false
-                                export KIE_TOOLS_BUILD__runEndToEndTests=false
-                                export KIE_TOOLS_BUILD__mavenDeploySkip=false
-                                pnpm update-version-to "${timestampedSnapshotVersion}" --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui....
-                                pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
-                                pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Dapache.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
-                                pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Dapache.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
-                                pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... build:prod
+                                pnpm update-version-to ${timestampedSnapshotVersion} ${env.PNPM_FILTER_STRING}
+                                pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
+                                pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dapache.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
+                                pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dapache.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
+                                pnpm ${env.PNPM_FILTER_STRING} build:prod
                                 """.trim()
                             }
                         }
