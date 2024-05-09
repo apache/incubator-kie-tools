@@ -20,11 +20,12 @@
 const path = require("path");
 const { merge } = require("webpack-merge");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
-const common = require("@kie-tools-core/webpack-base/webpack.common.config");
-const swEditorAssets = require("@kie-tools/serverless-workflow-diagram-editor-assets");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
+const FileManagerPlugin = require("filemanager-webpack-plugin");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const swEditorAssets = require("@kie-tools/serverless-workflow-diagram-editor-assets");
 const { env: buildEnv } = require("./env");
 const { defaultEnvJson } = require("./build/defaultEnvJson");
 
@@ -85,6 +86,13 @@ module.exports = async (env) => {
             to: "./serverless-workflow-text-editor-envelope.html",
           },
           {
+            from: path.join(
+              path.dirname(require.resolve("@kie-tools/serverless-workflow-dev-ui-monitoring-webapp/package.json")),
+              "/dist"
+            ),
+            to: "./monitoring-webapp",
+          },
+          {
             from: "./src/static/env.json",
             to: "./env.json",
             transform: () => JSON.stringify(defaultEnvJson, null, 2),
@@ -101,6 +109,22 @@ module.exports = async (env) => {
             force: true,
           },
         ],
+      }),
+      new FileManagerPlugin({
+        events: {
+          onEnd: {
+            mkdir: ["./dist/resources/webapp/"],
+            copy: [
+              { source: "./dist/*.js", destination: "./dist/resources/webapp/" },
+              { source: "./dist/*.map", destination: "./dist/resources/webapp/" },
+              { source: "./dist/fonts", destination: "./dist/resources/webapp/fonts" },
+              {
+                source: "./dist/monitoring-webapp",
+                destination: "./dist/resources/webapp/monitoring-webapp",
+              },
+            ],
+          },
+        },
       }),
       new MonacoWebpackPlugin({
         languages: ["json"],
