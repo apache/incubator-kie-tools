@@ -47,7 +47,7 @@ pipeline {
         KIE_TOOLS_BUILD__buildContainerImages = 'false'
         KIE_TOOLS_BUILD__mavenDeploySkip = 'false'
 
-        PNPM_FILTER_STRING = '--filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui...'
+        PNPM_FILTER_STRING = '-F jbpm-quarkus-devui... -F sonataflow-quarkus-devui...'
     }
 
     stages {
