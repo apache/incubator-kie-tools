@@ -565,18 +565,6 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     });
   }
 
-  public async kieSandboxWorkspacesGit_stageFile(args: { workspaceId: string; relativePath: string }) {
-    const workspaceRootDirPath = this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId });
-
-    return this.args.services.workspaceFsService.withReadWriteInMemoryFs(args.workspaceId, async ({ fs }) => {
-      await this.args.services.gitService.add({
-        fs,
-        dir: workspaceRootDirPath,
-        relativePath: args.relativePath,
-      });
-    });
-  }
-
   public async kieSandboxWorkspacesGit_commit(args: {
     workspaceId: string;
     gitConfig?: { email: string; name: string };

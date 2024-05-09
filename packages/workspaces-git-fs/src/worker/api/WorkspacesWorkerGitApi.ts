@@ -125,8 +125,6 @@ export interface WorkspacesWorkerGitApi {
     workspaceId: string;
   }): Promise<UnstagedModifiedFilesStatusEntryType[]>;
 
-  kieSandboxWorkspacesGit_stageFile(args: { workspaceId: string; relativePath: string }): Promise<void>;
-
   kieSandboxWorkspacesGit_commit(args: {
     workspaceId: string;
     targetBranch: string;
