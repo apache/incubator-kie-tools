@@ -184,8 +184,9 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
       }
 
       const changedSourcePathsInPartition = changedSourcePaths.filter((path) =>
-        [...partition.dirs].some((partitionDir) => path.startsWith(partitionDir))
+        [...partition.dirs].some((partitionDir) => path.startsWith(`${partitionDir}/`))
       );
+
       if (changedSourcePathsInPartition.length === 0) {
         console.log(`[build-partitioning] 'None' build of '${partition.name}'.`);
         console.log(`[build-partitioning] Building 0/${partition.dirs.size}/${allPackageDirs.size} packages.`);
@@ -203,7 +204,7 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
       );
 
       const relevantPackageNamesInPartition = new Set(
-        [...(await getDirsOfDependencies(affectedPackageNamesInPartition))].map(
+        [...(await getDirsOfDependencies(affectedPackageNamesInPartition, partition.name))].map(
           (pkgDir) => packageNamesByDir.get(pkgDir)!
         )
       );
