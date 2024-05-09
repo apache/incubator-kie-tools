@@ -12,5 +12,3 @@ repo
 .vscode
 .idea
 .github/CODEOWNERS
-.github/supporting-files/ci/build-partitioning
-.github/supporting-files/ci/patterns
