@@ -77,6 +77,16 @@ pipeline {
             }
         }
 
+        stage('PNPM Bootstrap') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBootstrap()
+                    }
+                }
+            }
+        }
+
         stage('Build and Publish devui packages') {
             steps {
                 dir('kie-tools') {
