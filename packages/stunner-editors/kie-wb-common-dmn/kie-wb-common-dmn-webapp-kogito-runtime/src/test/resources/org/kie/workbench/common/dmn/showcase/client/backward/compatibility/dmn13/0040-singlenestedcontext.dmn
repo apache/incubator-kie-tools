@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~ 
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~ 
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.      
+-->
 <definitions exporter="DMN Modeler" exporterVersion="6.1.5" namespace="http://www.trisotech.com/definitions/_00ca39fd-8843-49e7-ac80-ecc77b01a01c" name="Drawing 1" triso:logoChoice="Default" id="_00ca39fd-8843-49e7-ac80-ecc77b01a01c" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <extensionElements/>
     <decision name="Boxed Context" id="_3a383644-10da-49c4-b097-bc2ce96ced5f">
@@ -145,4 +163,3 @@
         </dmndi:DMNDiagram>
     </dmndi:DMNDI>
 </definitions>
-
