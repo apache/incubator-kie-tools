@@ -17,7 +17,7 @@
 
 ARG KOGITO_IMAGE_TAG
 
-FROM --platform=linux/amd64 quay.io/kiegroup/kogito-base-builder:$KOGITO_IMAGE_TAG
+FROM --platform=linux/amd64 quay.io/kiegroup/kogito-base-builder-nightly:$KOGITO_IMAGE_TAG
 
 ENV PATH="${PATH}:/usr/share/maven/bin"
 
