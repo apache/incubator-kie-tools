@@ -21,7 +21,7 @@ import _ from "lodash";
 import * as React from "react";
 import { useCallback } from "react";
 import * as ReactTable from "react-table";
-import { BeeTableHeaderVisibility, DmnBuiltInDataType, BoxedExpression, InsertRowColumnsDirection } from "../../api";
+import { BeeTableHeaderVisibility, BoxedExpression, InsertRowColumnsDirection } from "../../api";
 import { BeeTableTh } from "./BeeTableTh";
 import { BeeTableThResizable } from "./BeeTableThResizable";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
@@ -32,7 +32,7 @@ import { InlineEditableTextInput } from "./InlineEditableTextInput";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 
 export interface BeeTableColumnUpdate<R extends object> {
-  typeRef: string;
+  typeRef: string | undefined;
   name: string;
   column: ReactTable.ColumnInstance<R>;
   columnIndex: number;
@@ -120,10 +120,7 @@ export function BeeTableHeader<R extends object>({
     ) => (args: Pick<BoxedExpression, "@_label" | "@_typeRef">) => void
   >(
     (column, columnIndex) => {
-      return ({
-        "@_label": name = DEFAULT_EXPRESSION_VARIABLE_NAME,
-        "@_typeRef": typeRef = DmnBuiltInDataType.Undefined,
-      }) => {
+      return ({ "@_label": name = DEFAULT_EXPRESSION_VARIABLE_NAME, "@_typeRef": typeRef = undefined }) => {
         onColumnUpdates?.([
           {
             // Subtract one because of the rowIndex column.

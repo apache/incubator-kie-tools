@@ -45,10 +45,7 @@ export function DataTypeNodePanel(props: {
 
   const { dmnEditorRootElementRef } = useDmnEditor();
 
-  const resolvedTypeRef = useResolvedTypeRef(
-    props.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
-    props.dmnObjectNamespace
-  );
+  const resolvedTypeRef = useResolvedTypeRef(props.variable?.["@_typeRef"], props.dmnObjectNamespace);
 
   const isExternalNode = !!props.dmnObjectNamespace;
 

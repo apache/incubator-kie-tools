@@ -71,7 +71,7 @@ export const dataTypes = [
 ];
 
 export const beeGwtService: BeeGwtService = {
-  getDefaultExpressionDefinition(logicType: BoxedExpression["__$$element"] | undefined, dataType: string) {
+  getDefaultExpressionDefinition(logicType: BoxedExpression["__$$element"] | undefined, dataType: string | undefined) {
     const widthsById = new Map();
     const expression = getDefaultBoxedExpressionForStories({ logicType, typeRef: dataType, widthsById });
     return {
@@ -167,9 +167,7 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
         expressionHolderName={
           props?.expressionHolderName ?? args?.expressionHolderName ?? DEFAULT_EXPRESSION_VARIABLE_NAME
         }
-        expressionHolderTypeRef={
-          props?.expressionHolderTypeRef ?? args?.expressionHolderTypeRef ?? DmnBuiltInDataType.Undefined
-        }
+        expressionHolderTypeRef={props?.expressionHolderTypeRef ?? args?.expressionHolderTypeRef}
         expression={expressionState}
         onExpressionChange={setExpressionState}
         onWidthsChange={onWidthsChange}

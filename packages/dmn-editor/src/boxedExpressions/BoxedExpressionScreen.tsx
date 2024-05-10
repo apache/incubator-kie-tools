@@ -385,11 +385,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
             isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
             expressionHolderId={activeDrgElementId!}
             expressionHolderName={drgElement?.variable?.["@_name"] ?? drgElement?.["@_name"] ?? ""}
-            expressionHolderTypeRef={
-              drgElement?.variable?.["@_typeRef"] ??
-              expression?.boxedExpression?.["@_typeRef"] ??
-              DmnBuiltInDataType.Undefined
-            }
+            expressionHolderTypeRef={drgElement?.variable?.["@_typeRef"] ?? expression?.boxedExpression?.["@_typeRef"]}
             expression={expression?.boxedExpression}
             onExpressionChange={onExpressionChange}
             dataTypes={dataTypes}
@@ -432,7 +428,9 @@ export function drgElementToBoxedExpression(
             expressionHolder?.variable?.["@_name"] ??
             expressionHolder.expression["@_label"] ??
             expressionHolder?.["@_name"],
-          "@_typeRef": expressionHolder?.variable?.["@_typeRef"] ?? expressionHolder.expression["@_typeRef"],
+          "@_typeRef": expressionHolder?.variable
+            ? expressionHolder?.variable["@_typeRef"]
+            : expressionHolder.expression["@_typeRef"],
         }
       : undefined;
   } else {

@@ -135,7 +135,7 @@ export function DataTypeName({
           />
           {!isEditingLabel && (
             <TypeRefLabel
-              typeRef={itemDefinition.typeRef?.__$$text}
+              typeRef={itemDefinition.typeRef?.__$$text ?? "<Undefined>"}
               isCollection={itemDefinition["@_isCollection"]}
               relativeToNamespace={relativeToNamespace}
             />

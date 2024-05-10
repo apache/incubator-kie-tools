@@ -46,7 +46,7 @@ export function updateExpression({
 
   if (drgElement?.__$$element === "decision") {
     drgElement.expression = expression;
-    drgElement.variable!["@_typeRef"] = expression?.["@_typeRef"] ?? drgElement.variable!["@_typeRef"];
+    drgElement.variable!["@_typeRef"] = expression ? expression["@_typeRef"] : drgElement.variable!["@_typeRef"];
   } else if (drgElement?.__$$element === "businessKnowledgeModel") {
     if (expression.__$$element !== "functionDefinition") {
       throw new Error("DMN MUTATION: Can't have an expression on a BKM that is not a Function.");

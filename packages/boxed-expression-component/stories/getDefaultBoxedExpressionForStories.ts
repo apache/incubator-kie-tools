@@ -64,7 +64,7 @@ export function getDefaultBoxedExpressionForStories({
   widthsById,
 }: {
   logicType: BoxedExpression["__$$element"] | undefined;
-  typeRef: string;
+  typeRef: string | undefined;
   widthsById: Map<string, number[]>;
 }): BoxedExpression {
   if (logicType === "literalExpression") {
@@ -166,7 +166,7 @@ export function getDefaultBoxedExpressionForStories({
         {
           "@_id": generateUuid(),
           "@_name": "column-1",
-          "@_typeRef": DmnBuiltInDataType.Undefined,
+          "@_typeRef": undefined,
         },
       ],
     };
@@ -179,11 +179,11 @@ export function getDefaultBoxedExpressionForStories({
   } else if (logicType === "decisionTable") {
     const singleOutputColumn = {
       name: "output-1",
-      typeRef: DmnBuiltInDataType.Undefined,
+      typeRef: undefined,
     };
     const singleInputColumn = {
       name: "input-1",
-      typeRef: DmnBuiltInDataType.Undefined,
+      typeRef: undefined,
     };
 
     const input = [
@@ -192,7 +192,7 @@ export function getDefaultBoxedExpressionForStories({
         inputExpression: {
           "@_id": generateUuid(),
           text: { __$$text: singleInputColumn.name },
-          "@_typeRef": singleInputColumn.typeRef ?? DmnBuiltInDataType.Undefined,
+          "@_typeRef": singleInputColumn.typeRef,
         },
       },
     ];

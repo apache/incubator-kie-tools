@@ -89,7 +89,7 @@ const expression: BoxedExpression = {
         "@_kind": BoxedFunctionKind.Feel,
         expression: {
           "@_id": "_C1F325BF-D812-4192-AA90-B820C892EA9A",
-          "@_typeRef": DmnBuiltInDataType.Undefined,
+          "@_typeRef": undefined,
           __$$element: "context",
           contextEntry: [
             {
@@ -149,7 +149,7 @@ const expression: BoxedExpression = {
                         {
                           "@_id": "_64AA2820-EC4F-4A5B-9045-A474983CC86E",
                           "@_name": "Result Expression",
-                          "@_typeRef": DmnBuiltInDataType.Undefined,
+                          "@_typeRef": undefined,
                         },
                       ],
                       annotation: [

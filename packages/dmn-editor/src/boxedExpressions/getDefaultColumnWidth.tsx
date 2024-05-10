@@ -29,7 +29,7 @@ export function getDefaultColumnWidth({ name, typeRef }: { name: string; typeRef
       DEFAULT_MIN_WIDTH,
       getTextWidth(name, "700 11.2px Menlo, monospace"),
       getTextWidth(
-        `(${typeRef ?? DmnBuiltInDataType.Undefined})`,
+        `(${typeRef ?? "<Undefined>"})`,
         "700 11.6667px RedHatText, Overpass, overpass, helvetica, arial, sans-serif"
       )
     )

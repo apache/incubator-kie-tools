@@ -123,7 +123,7 @@ export function DataTypePanel({
       }
 
       editItemDefinition(dataType.itemDefinition["@_id"]!, (itemDefinition) => {
-        itemDefinition.typeRef = { __$$text: typeRef };
+        itemDefinition.typeRef = typeRef ? { __$$text: typeRef } : undefined;
         const originalItemDefinition = original(itemDefinition);
         if (originalItemDefinition?.typeRef?.__$$text !== typeRef) {
           itemDefinition.typeConstraint = undefined;

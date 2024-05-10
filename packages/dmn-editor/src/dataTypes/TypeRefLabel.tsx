@@ -18,9 +18,9 @@
  */
 
 import * as React from "react";
+import { useMemo } from "react";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { buildFeelQNameFromXmlQName } from "../feel/buildFeelQName";
-import { useMemo } from "react";
 import { buildXmlQName, parseXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { useDmnEditorStore } from "../store/StoreContext";
 import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";

@@ -45,7 +45,7 @@ import {
 
 export function getDefaultBoxedExpressionForDevWebapp(
   logicType: BoxedExpression["__$$element"] | undefined,
-  typeRef: string
+  typeRef: string | undefined
 ): BoxedExpression {
   if (logicType === "literalExpression") {
     const literalExpression: BoxedLiteral = {
