@@ -160,7 +160,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
 
         const workspaceFiles = await workspaces.getFiles({ workspaceId });
 
-        // Create new temporary branch with current files, but stay on main
+        // Create new temporary branch with current files, but stay on current branch
         await workspaces.branch({ workspaceId, name: BACKUP_BRANCH_NAME, checkout: false });
 
         // Commit files to backup branch (this commit will never be pushed, as this branch will be deleted)
@@ -169,14 +169,8 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
           commitMessage: `${env.KIE_SANDBOX_APP_NAME}: Backup files before applying ${accelerator.name} Accelerator`,
           targetBranch: BACKUP_BRANCH_NAME,
         });
-        // Create new temporary branch for moved files, but stay on main
-        await workspaces.branch({ workspaceId, name: MOVED_FILES_BRANCH_NAME, checkout: false });
-        // Checkout to moved files branch
-        await workspaces.checkout({
-          workspaceId,
-          ref: MOVED_FILES_BRANCH_NAME,
-          remote: GIT_ORIGIN_REMOTE_NAME,
-        });
+        // Create and checkout new temporary branch for moved files
+        await workspaces.branch({ workspaceId, name: MOVED_FILES_BRANCH_NAME, checkout: true });
 
         // Move files
         let currentFileAfterAccelerator: WorkspaceFile | undefined;
@@ -219,7 +213,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
           targetBranch: MOVED_FILES_BRANCH_NAME,
         });
 
-        // Go back to main
+        // Go back to original branch
         await workspaces.checkout({
           workspaceId,
           ref: workspace.descriptor.origin.branch,
@@ -334,7 +328,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
           await workspaces.deleteFile({ file: configFile });
         }
 
-        // Return to main
+        // Return to original branch
         await workspaces.checkout({
           workspaceId,
           ref: workspace.descriptor.origin.branch,
