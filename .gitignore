@@ -56,6 +56,9 @@ package-lock.json
 ## runtime-tools-management-console-webapp
 !packages/runtime-tools-management-console-webapp/build
 
+## sonataflow-management-console-webapp
+!packages/sonataflow-management-console-webapp/build
+
 ## vscode-*
 **/.vscode-test/
 **/.vscode-test-web/
