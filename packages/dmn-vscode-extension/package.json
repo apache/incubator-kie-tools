@@ -42,7 +42,7 @@
     "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*",
     "@types/vscode": "1.67.0",
     "@vscode/test-web": "^0.0.30",
-    "@vscode/vsce": "^2.22.0",
+    "@vscode/vsce": "^2.26.1",
     "buffer": "^6.0.3",
     "copy-webpack-plugin": "^11.0.0",
     "process": "^0.11.10",
