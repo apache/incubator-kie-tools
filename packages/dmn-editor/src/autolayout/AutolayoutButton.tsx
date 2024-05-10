@@ -18,14 +18,14 @@
  */
 
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { DC__Bounds } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DC__Bounds, DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import OptimizeIcon from "@patternfly/react-icons/dist/js/icons/optimize-icon";
 import ELK, * as Elk from "elkjs/lib/elk.bundled.js";
 import * as React from "react";
 import { PositionalNodeHandleId } from "../diagram/connections/PositionalNodeHandles";
 import { EdgeType, NodeType } from "../diagram/connections/graphStructure";
 import { getAdjMatrix, traverse } from "../diagram/graph/graph";
-import { getContainmentRelationship } from "../diagram/maths/DmnMaths";
+import { getContainmentRelationship, getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
 import { DEFAULT_NODE_SIZES, MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
@@ -34,6 +34,9 @@ import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
 import { updateDecisionServiceDividerLine } from "../mutations/updateDecisionServiceDividerLine";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
+import { parseXmlHref } from "../xml/xmlHrefs";
+import { addShape } from "../mutations/addShape";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 
 const elk = new ELK();
 
@@ -97,14 +100,95 @@ export function AutolayoutButton() {
      */
     const fakeEdgesForElk = new Set<Elk.ElkExtendedEdge>();
 
-    const state = dmnEditorStoreApi.getState();
+    const state2 = dmnEditorStoreApi.getState();
+    const drgElementsWithoutVisualRepresentationOnCurrentDrd = state2
+      .computed(state2)
+      .getDiagramData(externalModelsByNamespace).drgElementsWithoutVisualRepresentationOnCurrentDrd;
+    const drgElements = state2.dmn.model.definitions.drgElement;
+    const drgEdges = state2.computed(state2).getDiagramData(externalModelsByNamespace).drgEdges;
+    const nodesById2 = state2.computed(state2).getDiagramData(externalModelsByNamespace).nodesById;
 
+    const missingNodesHref = drgEdges.reduce((acc, drgEdge) => {
+      if (!nodesById2.has(drgEdge.sourceId)) {
+        acc.add(drgEdge.sourceId);
+      }
+      if (!nodesById2.has(drgEdge.targetId)) {
+        acc.add(drgEdge.targetId);
+      }
+      return acc;
+    }, new Set<string>());
+
+    // generate shape for drgElementsWithoutVisualRepresentationOnCurrentDrd
+    drgElementsWithoutVisualRepresentationOnCurrentDrd.forEach((withoutRepresentation) => {
+      missingNodesHref.delete(withoutRepresentation);
+      const nodeId = parseXmlHref(withoutRepresentation).id;
+      const drgElement = drgElements?.filter((drgElement) => drgElement["@_id"] === nodeId);
+      dmnEditorStoreApi.setState((s) => {
+        addShape({
+          definitions: s.dmn.model.definitions,
+          drdIndex: 0,
+          nodeType: getNodeTypeFromDmnObject(drgElement![0])!,
+          shape: {
+            "@_dmnElementRef": nodeId, // needs to use drgElement id
+            "@_isCollapsed": false,
+            "@_isListedInputData": false,
+            "dc:Bounds": {
+              "@_x": 0,
+              "@_y": 0,
+              "@_width": 160, // default value
+              "@_height": 80, // default value
+            },
+          },
+        });
+      });
+    });
+
+    const importsByNamespace = state2.computed(state2).importsByNamespace();
+    const definedNamespaces = new Map(
+      Object.keys(state2.dmn.model.definitions)
+        .filter((keys: keyof DMN15__tDefinitions) => String(keys).startsWith("@_xmlns:"))
+        .map((xmlnsKey: keyof DMN15__tDefinitions) => [
+          state2.dmn.model.definitions[xmlnsKey],
+          xmlnsKey.split("@_xmlns:")[1],
+        ])
+    );
+
+    // generate external nodes
+    missingNodesHref.forEach((href) => {
+      const { namespace, id } = parseXmlHref(href);
+      if (namespace) {
+        const externalModel = externalModelsByNamespace?.[namespace];
+        if (externalModel && (externalModel.model as DmnLatestModel).definitions) {
+          const drgElements = (externalModel.model as DmnLatestModel).definitions.drgElement;
+          const drgElement = drgElements?.filter((drgElement) => drgElement["@_id"] === id);
+          dmnEditorStoreApi.setState((s) => {
+            addShape({
+              definitions: s.dmn.model.definitions,
+              drdIndex: 0,
+              nodeType: getNodeTypeFromDmnObject(drgElement![0])!,
+              shape: {
+                "@_dmnElementRef": `${definedNamespaces.get(namespace)}:${id}`, // needs to use drgElement id
+                "@_isCollapsed": false,
+                "@_isListedInputData": false,
+                "dc:Bounds": {
+                  "@_x": 0,
+                  "@_y": 0,
+                  "@_width": 160, // default value
+                  "@_height": 80, // default value
+                },
+              },
+            });
+          });
+        }
+      }
+    });
+
+    const state = dmnEditorStoreApi.getState();
     const snapGrid = state.diagram.snapGrid;
     const nodesById = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById;
     const edgesById = state.computed(state).getDiagramData(externalModelsByNamespace).edgesById;
     const nodes = state.computed(state).getDiagramData(externalModelsByNamespace).nodes;
     const edges = state.computed(state).getDiagramData(externalModelsByNamespace).edges;
-    const drgEdges = state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges;
 
     const adjMatrix = getAdjMatrix(drgEdges);
 
