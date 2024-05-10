@@ -166,7 +166,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         await workspaces.branch({ workspaceId, name: BACKUP_BRANCH_NAME, checkout: false });
 
         // Adds all files to the staging area
-        await workspaces.add({
+        await workspaces.stageFile({
           workspaceId,
           relativePath: ".",
         });
@@ -207,7 +207,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
               newDirPath: join(fileNewDestination, dirname(file.relativePath)),
             });
 
-            await workspaces.add({ workspaceId, relativePath: movedFile.relativePath });
+            await workspaces.stageFile({ workspaceId, relativePath: movedFile.relativePath });
 
             if (file.relativePath === currentFile.relativePath) {
               currentFileAfterAccelerator = movedFile;
@@ -267,7 +267,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         const acceleratorFiles = await workspaces.getFiles({ workspaceId });
         await Promise.all(
           acceleratorFiles.map(async (file) => {
-            return workspaces.add({
+            return workspaces.stageFile({
               workspaceId,
               relativePath: file.relativePath,
             });
@@ -284,7 +284,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         // Stage all moved files
         await Promise.all(
           movedFiles.map(async (file) => {
-            return workspaces.add({
+            return workspaces.stageFile({
               workspaceId,
               relativePath: file.relativePath,
             });
@@ -303,7 +303,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
           extension: ACCELERATOR_CONFIG_FILE_EXTENSION,
         });
 
-        await workspaces.add({
+        await workspaces.stageFile({
           workspaceId,
           relativePath: ACCELERATOR_CONFIG_FILE_RELATIVE_PATH,
         });

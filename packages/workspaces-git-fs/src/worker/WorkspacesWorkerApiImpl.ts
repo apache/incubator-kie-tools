@@ -389,19 +389,6 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
 
   //git
 
-  public async kieSandboxWorkspacesGit_add(args: { workspaceId: string; relativePath: string }): Promise<void> {
-    return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
-      args.workspaceId,
-      async ({ fs, broadcaster }) => {
-        return this.args.services.gitService.add({
-          fs: fs,
-          dir: this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId }),
-          relativePath: args.relativePath,
-        });
-      }
-    );
-  }
-
   public async kieSandboxWorkspacesGit_addRemote(args: {
     workspaceId: string;
     name: string;
@@ -561,6 +548,18 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
         fs,
         dir: workspaceRootDirPath,
         exclude: (filepath) => !this.args.fileFilter.isEditable(filepath),
+      });
+    });
+  }
+
+  public async kieSandboxWorkspacesGit_stageFile(args: { workspaceId: string; relativePath: string }) {
+    const workspaceRootDirPath = this.args.services.workspaceService.getAbsolutePath({ workspaceId: args.workspaceId });
+
+    return this.args.services.workspaceFsService.withReadWriteInMemoryFs(args.workspaceId, async ({ fs }) => {
+      await this.args.services.gitService.add({
+        fs,
+        dir: workspaceRootDirPath,
+        relativePath: args.relativePath,
       });
     });
   }

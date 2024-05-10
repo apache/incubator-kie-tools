@@ -139,14 +139,6 @@ export function WorkspacesContextProvider(props: Props) {
     [workspacesSharedWorker]
   );
 
-  const add = useCallback(
-    async (args: { workspaceId: string; relativePath: string }) =>
-      workspacesSharedWorker.withBus((workspacesWorkerBus) =>
-        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_add(args)
-      ),
-    [workspacesSharedWorker]
-  );
-
   const addRemote = useCallback(
     async (args: { workspaceId: string; name: string; url: string; force: boolean }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
@@ -249,6 +241,15 @@ export function WorkspacesContextProvider(props: Props) {
       }
     },
     [hasLocalChanges, props, workspacesSharedWorker]
+  );
+
+  const stageFile = useCallback(
+    async (args: { workspaceId: string; relativePath: string }) => {
+      return workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_stageFile(args)
+      );
+    },
+    [workspacesSharedWorker]
   );
 
   const getGitServerRefs = useCallback(
@@ -606,7 +607,6 @@ export function WorkspacesContextProvider(props: Props) {
       createSavePoint,
       commit,
       pull,
-      add,
       addRemote,
       deleteRemote,
       push,
@@ -658,7 +658,6 @@ export function WorkspacesContextProvider(props: Props) {
       moveFile,
       prepareZip,
       pull,
-      add,
       addRemote,
       deleteRemote,
       push,

@@ -144,8 +144,6 @@ export interface WorkspacesContextType {
 
   checkoutFilesFromLocalHead(args: { workspaceId: string; ref?: string; filepaths?: string[] }): Promise<void>;
 
-  add(args: { workspaceId: string; relativePath: string }): Promise<void>;
-
   addRemote(args: { workspaceId: string; name: string; url: string; force: boolean }): Promise<void>;
 
   deleteRemote(args: { workspaceId: string; name: string }): Promise<void>;
@@ -186,6 +184,8 @@ export interface WorkspacesContextType {
     commitMessage?: string;
     forceHasChanges?: boolean;
   }): Promise<void>;
+
+  stageFile: (args: { workspaceId: string; relativePath: string }) => Promise<void>;
 
   fetch(args: {
     workspaceId: string;

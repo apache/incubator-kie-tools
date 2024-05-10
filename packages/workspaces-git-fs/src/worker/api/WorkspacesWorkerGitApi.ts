@@ -110,8 +110,6 @@ export interface WorkspacesWorkerGitApi {
     filepaths: string[];
   }): Promise<void>;
 
-  kieSandboxWorkspacesGit_add(args: { workspaceId: string; relativePath: string }): Promise<void>;
-
   kieSandboxWorkspacesGit_addRemote(args: {
     workspaceId: string;
     name: string;
@@ -124,6 +122,8 @@ export interface WorkspacesWorkerGitApi {
   kieSandboxWorkspacesGit_getUnstagedModifiedFilesStatus(args: {
     workspaceId: string;
   }): Promise<UnstagedModifiedFilesStatusEntryType[]>;
+
+  kieSandboxWorkspacesGit_stageFile(args: { workspaceId: string; relativePath: string }): Promise<void>;
 
   kieSandboxWorkspacesGit_commit(args: {
     workspaceId: string;

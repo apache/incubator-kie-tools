@@ -166,7 +166,7 @@ export function NewFileDropdownMenu(props: {
       await Promise.all(
         uploadedFiles.map(async (file) => {
           if (!isEditable(file.relativePath)) {
-            return workspaces.add({
+            return workspaces.stageFile({
               workspaceId: props.workspaceDescriptor.workspaceId,
               relativePath: file.relativePath,
             });
