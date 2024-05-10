@@ -18,7 +18,7 @@ pipeline {
     agent any
 
     parameters {
-        string(description: 'Image tag', name: 'IMAGE_TAG', defaultValue: 'latest')
+        string(description: 'Image tag', name: 'IMAGE_TAG', defaultValue: env.BRANCH_NAME)
     }
 
     environment {
@@ -80,7 +80,7 @@ pipeline {
         }
 
         // Trigger by PR = Tag is GIT commit hash and it has expiration = 1d
-        // Trigger by Branch = Tags are GIT commit and latest and they have no expiration
+        // Trigger by Branch = Tags are GIT commit and "env.BRANCH_NAME" and they have no expiration
         stage('Build image') {
             when {
                 expression { !IMAGE_EXISTS }
@@ -88,12 +88,12 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        if (!env.CHANGE_ID && env.BRANCH_NAME == 'main') {
+                        if (!env.CHANGE_ID) {
                             sh """
                             docker build -t ${IMAGE_NAME_TAG} -f .ci/kie-tools-ci-build.Dockerfile .
-                            docker tag ${IMAGE_NAME_TAG} ${IMAGE_ACCOUNT}/${IMAGE_NAME}:latest
+                            docker tag ${IMAGE_NAME_TAG} ${IMAGE_ACCOUNT}/${IMAGE_NAME}:${env.BRANCH_NAME}
                             """
-                            IMAGE_TAGS = "${params.IMAGE_TAG} latest"
+                            IMAGE_TAGS = "${params.IMAGE_TAG}"
                         } else {
                             sh "docker build -t ${IMAGE_NAME_TAG} --label 'quay.expires-after=1d' -f .ci/kie-tools-ci-build.Dockerfile ."
                             IMAGE_TAGS = "${params.IMAGE_TAG}"

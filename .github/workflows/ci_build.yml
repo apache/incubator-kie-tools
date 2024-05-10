@@ -2,13 +2,13 @@ name: "CI :: Build"
 
 on:
   push:
-    branches: [main]
+    branches: ["**"]
   pull_request:
     branches: ["**"]
     types: [opened, reopened, ready_for_review, synchronize]
 
 concurrency:
-  group: ${{ github.event.pull_request && format('ci-build-full-pr-{0}', github.event.pull_request.number) || format('ci-build-full-push-main-{0}', github.sha) }}
+  group: ${{ github.event.pull_request && format('ci-build-full-pr-{0}', github.event.pull_request.number) || format('ci-build-full-push-{0}', github.sha) }}
   cancel-in-progress: true
 
 env:
@@ -133,7 +133,7 @@ jobs:
         run: |
           eval "pnpm ${{ steps.setup_build_mode.outputs.affectedPnpmFilterString }} --workspace-concurrency=1 build:prod"
 
-      - name: "Check tests result (`main` only)"
+      - name: "Check tests result"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
         uses: actions/github-script@v6
         env:
@@ -172,7 +172,7 @@ jobs:
         with:
           partition_index: ${{ matrix.partition }}
 
-      - name: "Upload end-to-end tests results to Buildkite (`main` only)"
+      - name: "Upload end-to-end tests results to Buildkite (on `push` only)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none' && !github.event.pull_request
         shell: bash
         env:
