@@ -41,10 +41,7 @@ import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancela
 import { useAuthSession } from "../authSessions/AuthSessionsContext";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { useWorkspaceFilePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceFileHooks";
-import {
-  GIT_DEFAULT_BRANCH,
-  GIT_ORIGIN_REMOTE_NAME,
-} from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
+import { GIT_ORIGIN_REMOTE_NAME } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 
 const TEMP_ACCELERATOR_REMOTE_NAME = "__kie-sandbox__accelerator-remote";
@@ -70,7 +67,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
   const { i18n } = useOnlineI18n();
   const { gitConfig } = useAuthSession(workspace.descriptor.gitAuthSessionId);
 
-  const apllyingAcceleratorAlert = useGlobalAlert(
+  const applyingAcceleratorAlert = useGlobalAlert(
     useCallback(
       (_, staticArgs: { acceleratorName: string }) => (
         <Alert
@@ -132,7 +129,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
 
   const applyAcceleratorToWorkspace = useCallback(
     async (accelerator: AcceleratorConfig, currentFile: WorkspaceFile) => {
-      apllyingAcceleratorAlert.show({ acceleratorName: accelerator.name });
+      applyingAcceleratorAlert.show({ acceleratorName: accelerator.name });
 
       const workspaceId = workspace.descriptor.workspaceId;
 
@@ -177,16 +174,8 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
           commitMessage: `${env.KIE_SANDBOX_APP_NAME}: Backup files before applying ${accelerator.name} Accelerator`,
           targetBranch: BACKUP_BRANCH_NAME,
         });
-
-        // Create new temporary branch for moved files, but stay on main
-        await workspaces.branch({ workspaceId, name: MOVED_FILES_BRANCH_NAME, checkout: false });
-
-        // Checkout to moved files branch
-        await workspaces.checkout({
-          workspaceId,
-          ref: MOVED_FILES_BRANCH_NAME,
-          remote: GIT_ORIGIN_REMOTE_NAME,
-        });
+        // Create and checkout new temporary branch for moved files
+        await workspaces.branch({ workspaceId, name: MOVED_FILES_BRANCH_NAME, checkout: true });
 
         // Move files
         let currentFileAfterAccelerator: WorkspaceFile | undefined;
@@ -229,8 +218,12 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
           targetBranch: MOVED_FILES_BRANCH_NAME,
         });
 
-        // Go back to main
-        await workspaces.checkout({ workspaceId, ref: GIT_DEFAULT_BRANCH, remote: GIT_ORIGIN_REMOTE_NAME });
+        // Go back to original branch
+        await workspaces.checkout({
+          workspaceId,
+          ref: workspace.descriptor.origin.branch,
+          remote: GIT_ORIGIN_REMOTE_NAME,
+        });
 
         // Add Accelerator remote and fetch it
         await workspaces.addRemote({
@@ -316,7 +309,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
           forceHasChanges: true,
         });
 
-        apllyingAcceleratorAlert.close();
+        applyingAcceleratorAlert.close();
 
         applyAcceleratorSuccessAlert.show({ acceleratorName: accelerator.name });
 
@@ -330,7 +323,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
           }),
         });
       } catch (e) {
-        apllyingAcceleratorAlert.close();
+        applyingAcceleratorAlert.close();
         applyAcceleratorFailAlert.show({ acceleratorName: accelerator.name });
 
         console.error(e);
@@ -340,8 +333,12 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
           await workspaces.deleteFile({ file: configFile });
         }
 
-        // Return to main
-        await workspaces.checkout({ workspaceId, ref: GIT_DEFAULT_BRANCH, remote: GIT_ORIGIN_REMOTE_NAME });
+        // Return to original branch
+        await workspaces.checkout({
+          workspaceId,
+          ref: workspace.descriptor.origin.branch,
+          remote: GIT_ORIGIN_REMOTE_NAME,
+        });
 
         // Revert repo
         await workspaces.checkoutFilesFromLocalHead({
@@ -372,7 +369,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
       }
     },
     [
-      apllyingAcceleratorAlert,
+      applyingAcceleratorAlert,
       applyAcceleratorFailAlert,
       applyAcceleratorSuccessAlert,
       attemptToDeleteTemporaryBranches,
@@ -381,6 +378,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
       history,
       i18n.accelerators,
       routes.workspaceWithFilePath,
+      workspace.descriptor.origin.branch,
       workspace.descriptor.workspaceId,
       workspaces,
     ]

@@ -37,7 +37,7 @@
 
   <properties>
     <java.module.name>org.jbpm.quarkus.dev.ui.deployment</java.module.name>
-    <path.to.webapp.app>../../runtime-tools-process-dev-ui-webapp</path.to.webapp.app>
+    <path.to.webapp.app>../node_modules/@kie-tools/runtime-tools-process-dev-ui-webapp</path.to.webapp.app>
   </properties>
 
   <dependencies>
