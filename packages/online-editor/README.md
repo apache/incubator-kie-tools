@@ -71,13 +71,13 @@ Obs.: _To use different Git providers remember to change the Caddyfile_;
 
 Obs.: _`github.com` and `github.<enterprise_name>.com` use different APIs. If your Caddyfile is proxying `github.com` you'll need to change the `getGithubInstanceApiUrl` function in [github/Hooks.tsx](src/github/Hooks.tsx)_.
 
-# Dev deployments
+# Dev Deployments
 
-KIE Sandbox allows for Dev deployments targeting OpenShift or simple Kubernetes clusters. This is achieved by applying pre-defined [Kubernetes](src/devDeployments/services/resources/kubernetes/index.ts) and [OpenShift](src/devDeployments/services/resources/openshift/index.ts) resources for each provider.
+KIE Sandbox allows for Dev Deployments targeting OpenShift or simple Kubernetes clusters. This is achieved by applying pre-defined [Kubernetes](src/devDeployments/services/resources/kubernetes/index.ts) and [OpenShift](src/devDeployments/services/resources/openshift/index.ts) resources for each provider.
 
-To apply those YAMLs the `k8s-yaml-to-apiserver-requests` library is used. It first maps the cluster API resources and then parses a YAML to make the required requests. This creates the resources at the Kubernetes cluster and return the resources created.
+To apply those YAMLs the `k8s-yaml-to-apiserver-requests` library is used. It first maps the cluster API resources and then parses a YAML to make the required requests. This creates the resources at the Kubernetes cluster and returns the resources created.
 
-Dev deployments requires some information to be present on the resources metadata so that it can list and manage these resources, including a Dev deployment name, related workspace id and a created by tag with the value `kie-tools`. To make this easier a set of tokens is generated and can be used to interpolate variables inside the resource YAML. Here's an example:
+Dev Deployments require some information to be present on the resource's metadata so that it can list and manage these resources, including a Dev Deployment name, related workspace ID, and a created by tag with the value `kie-tools`. To make this easier a set of tokens is generated and can be used to interpolate variables inside the resource YAML. Here's an example:
 
 ```yaml
 kind: Deployment
@@ -102,7 +102,7 @@ As you can see, there are several variables in use here: `devDeployment.uniqueNa
 
 ## Required metadata, labels and annotations
 
-For a successfull deployment this is the required information the resource should have:
+For a successful deployment, this is the required information the resource should have:
 
 ```yaml
 metadata:
@@ -122,6 +122,8 @@ metadata:
 - The annotations (`workspaceId` and `workspaceName`) are useful to match a deployment to a workspace.
 
 Anything else can be customized.
+
+**_Obs.: It's important to note that our Dev Deployment service inside KIE Sandbox already applies these required labels and annotations by patching the resource YAMLs._**
 
 ## Available tokens
 
@@ -159,3 +161,153 @@ These tokens can be referenced in the YAML resource using the following notation
 - `${{ devDeployment.kubernetes.namespace }}`
 
 **\*Obs.:** It's important to note that if you're defining a resource YAML in a `.js`/`.ts` file you'll need to escape the `$` character, so a variable would become `\${{ varPath.varName}}`.\*
+
+## Creating your own Dev Deployment image
+
+For convenience, one of the deployment options in KIE Sandbox allows the user the input a custom image and a custom command to start the application once the upload is complete.
+
+KIE Sandbox expects a few things from your custom image to make sure that it can upload the project assets and manage de deployment on the Kubernetes cluster.
+
+### Requirements:
+
+1. Have the [dev-deployment-upload-service](../dev-deployment-upload-service/) binary installed and available globally, as KIE Sandbox will override the default command from your image with `dev-deployment-upload-service && <CUSTOM_COMMAND>` (`<CUSTOM_COMMAND>` is defined in the UI when deploying the image);
+2. The image must expose port `8080` and all services running on the container should listen to this port. This includes the `dev-deployment-upload-service`, which can be configured by setting the `DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT` environment variable to `8080`;
+3. After KIE Sandbox uploads the assets to the `dev-deployment-upload-service` listening inside your image, and the service finishes unzipping and placing the files in the configured directory, it's expected that an application starts and provides an endpoint `/q/health` that responds with **`HTTP 200`** so that KIE Sandbox can acknowledge that the application started successfully and is running;
+
+**_Obs.: More info on how to configure the `dev-deployment-upload-service` is available here: [dev-deployment-upload-service/README.md](../dev-deployment-upload-service/README.md)._**
+
+### Example 1:
+
+Using the `registry.access.redhat.com/ubi9/openjdk-17` image as base, let's create a Dev Deployment image that follows all the requirements listed above and results in a Quarkus app running with the project files uploaded by KIE Sandbox.
+
+-> **Containerfile**
+
+```docker
+# Set the base image with Java 17 and Maven.
+FROM registry.access.redhat.com/ubi9/openjdk-17
+
+# Arguments and environment variables to define our user and home path.
+# Obs.: This can vary according to your base image.
+ARG USER_ID_ARG=185
+ARG HOME_PATH_ARG=$HOME
+ENV USER_ID=${USER_ID_ARG}
+ENV HOME_PATH=${HOME_PATH_ARG}
+
+# Start as root to install all required dependencies.
+USER root
+
+# Configure the dev-deployment-upload-service:
+# Our extraction directory is /src/main/resources inside of our Quarkus app, but it may differ for your application.
+# This is the path where all files from your KIE Sandbox project (including .dmn, .bpmn, etc) will be extracted to after upload.
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=$HOME_PATH/app/src/main/resources
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=8080
+
+# Install `tar` and `gzip` packages, as they are required by the dev-deployment-upload-service to unzip the uploaded files.
+RUN microdnf --disableplugin=subscription-manager install -y tar gzip \
+  && microdnf --disableplugin=subscription-manager clean all
+
+# Create the user home, tmp, and .m2 paths to be used by our application.
+# Setting the permission to 777 is important so that our user can access and modify these files during runtime.
+RUN mkdir -p -m 777 $HOME_PATH/app \
+  && mkdir -p -m 777 /tmp/app \
+  && mkdir -p -m 777 /.m2
+
+# Copy the dev-deployment-upload-service to the /usr/local/bin directory, making it globally available.
+# NOTE: In this base image /usr/local/bin is included in the PATH environment variable,
+# if you're using a different one, make sure that the binary is globally accessible.
+COPY dev-deployment-upload-service /usr/local/bin
+# Alternatively you can use the released install script for the dev-deployment-upload-service binary:
+# RUN curl github.com/apache/incubator-kie-tools/releases/download/<RELEASE_VERSION>/getDevDeploymentUploadService.sh | bash
+
+# Another round of changing permissions and ownership of directories.
+# This is important because our Quarkus app will make changes to files during runtime.
+RUN chgrp -R 0 $HOME_PATH/app && \
+  chmod -R 777 $HOME_PATH/app && \
+  chgrp -R 0 /.m2 && \
+  chmod -R 777 /.m2
+
+# Change the work directory to our app path.
+WORKDIR $HOME_PATH/app/
+
+# Copy your Quarkus app folder with everything needed to run a Quarkus app with .dmn and .bpmn resources,
+# setting the permissions/ownership to our user.
+COPY --chown=$USER_ID:$USER_ID ./my-quarkus-app $HOME_PATH/app/
+
+# Expose port 8080
+EXPOSE 8080
+
+# Set to a user different than root (in this case, user ID 185, but it may vary depending on your base image).
+USER $USER_ID
+
+# Set the entrypoint to run bash.
+ENTRYPOINT ["/bin/bash", "-c"]
+
+# The CMD directive is not necessary since KIE Sandbox will overwrite it.
+```
+
+As an example of a template Quarkus app, checkout [dev-deployment-kogito-quarkus-blank-app](../dev-deployment-kogito-quarkus-blank-app).
+
+Now all you have to do is build and publish your image.
+
+### Example 2:
+
+Instead of the `openjdk` image, let's use the `dev-deployment-base-image` as a base, since it already has the `dev-deployment-upload-service` pre-configured.
+
+-> **Containerfile**
+
+```docker
+# Set the base image with Java 17, Maven, and the dev-deployment-upload-service.
+FROM quay.io/kie-tools/dev-deployment-base-image:latests
+
+# Start as root to get elevated access.
+USER root
+
+# Configure the dev-deployment-upload-service:
+# Our extraction directory is /src/main/resources inside of our Quarkus app, but it may differ for your application.
+# This is the path where all files from your KIE Sandbox project (including .dmn, .bpmn, etc) will be extracted to after upload.
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=$HOME_PATH/app/src/main/resources
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=8080
+
+# Copy your Quarkus app folder with everything needed to run a Quarkus app with .dmn and .bpmn resources,
+# setting the permissions/ownership to our user.
+COPY --chown=$USER_ID:$USER_ID ./my-quarkus-app $HOME_PATH/app/
+
+# Expose port 8080
+EXPOSE 8080
+
+# Set to a user different than root (in this case, user ID 185, coming from our base image).
+USER $USER_ID
+
+# Set the entrypoint to run bash.
+ENTRYPOINT ["/bin/bash", "-c"]
+
+# The CMD directive is not necessary since KIE Sandbox will overwrite it.
+```
+
+### Using your custom image on KIE Sandbox
+
+For the next steps, let's say you tagged and pushed your image to `quay.io/myUserName/myDevDeploymentImage:latest`.
+
+When creating a Dev Deployment on KIE Tools you'll be met with this modal:
+
+![Deploy modal](./docs/create_dev_deployment.png)
+
+By default, it's going to use the pre-configured `Kogito Quarkus Blank App` option, but we want to use our custom image, so we need to open the dropdown and select `Custom Image`.
+
+![Deploy modal with custom image](./docs/create_dev_deployment_custom_image.png)
+
+Notice the `Docker Image` parameter, it's set to our custom image tag (`quay.io/myUserName/myDevDeploymentImage:latest`).
+
+Also, notice the `Command` parameter, it will execute `mvn quarkus:dev` inside our `$HOME_PATH/app` directory after the upload step is done. The resulting `CMD` for our container will be `dev-deployment-upload-service && mvn quarkus:dev`.
+
+> **_NOTE:_** When deploying to a local Kubernetes cluster configured via the Kubernetes Cluster Wizard from KIE Sandbox the `Command` will need a few more parameters for a Quarkus app:
+>
+> `mvn quarkus:dev -Dquarkus.http.non-application-root-path=/${{ devDeployment.uniqueName }}/q -Dquarkus.http.root-path=/${{ devDeployment.uniqueName }}"`
+>
+> When deploying to an OpenShift cluster `mvn quarkus:dev` will work without any flags.
+>
+> This is because the Ingress controller is configured to use sub-paths for each Dev Deployment instead of new subdomains on the Kubernetes cluster, so we need to make sure that the Quarkus app conforms to these sub-paths.
+
+## How Dev Deployments work?
+
+TODO
