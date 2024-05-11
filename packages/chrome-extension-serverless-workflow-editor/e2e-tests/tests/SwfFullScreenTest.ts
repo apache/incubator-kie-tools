@@ -59,7 +59,6 @@ test(TEST_NAME, async () => {
   expect(await fullScreenEditor.isDiagramEditorKeyboardShortcutsIconPresent()).toBe(true);
 
   const editorContent: string = await fullScreenEditor.getTextEditorContent();
-  console.log(editorContent);
   expect(editorContent).toContain('id: "chrome_extension_sample_yaml"');
   expect(editorContent).toContain('name: "Chrome Extension Sample YAML"');
   expect(editorContent).toContain('description: "This YAML sample is created for testing purposes."');

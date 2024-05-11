@@ -52,11 +52,7 @@ export default class SwfEditor extends Editor {
   public async getTextEditorContent(): Promise<string> {
     await this.enterIFrame(SwfEditor.TEXT_EDITOR_LOCATOR);
     const textEditor: Element = await this.tools.by(SwfEditor.EDITOR_TEXTAREA_LOCATOR).getElement();
-    console.log("textEditor");
-    console.log(textEditor.getText());
     const content: string = await textEditor.getAttribute("value");
-    console.log("content");
-    console.log(content);
     await this.leaveIFrame();
     return content;
   }
