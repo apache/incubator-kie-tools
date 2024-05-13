@@ -73,7 +73,6 @@ You can find an example of the Java / Maven versions upgrade in [this PR](https:
 
 The Quarkus version is present in the following file categories:
 
-- `install.js` files
 - `root-env/env/index.js` file
 - go test files
 
@@ -87,16 +86,7 @@ You can find an example of the Quarkus upgrade in [this PR](https://github.com/a
 
 # Upgrading Kogito
 
-The Kogito version is present in the following file categories:
-
-- `install.js` files
-- `root-env/env/index.js` file
-- `package.json` files (eg. jit-executor reference in `extended-service`)
-
-The best (and fastest) way to catch all the Kogito versions is to perform a search a grep (or the IDE integrated search) and replace it with the new version. So, as a key, you can use:
-
-- The version number: `X.Y.Z` or `X.Y.Z-YYYYMMDD-SNAPSHOT` format (eg. `10.0.0` or `10.1.0-20240424-SNAPSHOT`);
-- Images references: `main-YYYY-MM-DD` (Daily builds) or `X.Y.Z-YYYYMMDD` (Weekly builds) format (eg. `main-2024-04-24` or `10.1.0-20240424` in case of snapshot version)
+In the root directory, run `pnpm update-kogito-version-to --maven [version] --images-tag [tag]`.
 
 Of course, a new Kogito version may lead to incompatibilities in the code and with other dependencies. In such a case, an investigation and evetually a fix is required to complete the process.
 

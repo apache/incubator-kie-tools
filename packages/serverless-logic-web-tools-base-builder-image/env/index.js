@@ -31,10 +31,12 @@ module.exports = composeEnv(
         default: "v1.27.3",
         description: "",
       },
+      /* (begin) This part of the file is referenced in `scripts/update-kogito-version` */
       SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag: {
         default: "999-20240509",
         description: "",
       },
+      /* end */
     }),
     get env() {
       return {

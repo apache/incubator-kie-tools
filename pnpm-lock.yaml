@@ -45,6 +45,9 @@ importers:
       "@kie-tools-scripts/sparse-checkout":
         specifier: workspace:*
         version: link:scripts/sparse-checkout
+      "@kie-tools-scripts/update-kogito-version":
+        specifier: workspace:*
+        version: link:scripts/update-kogito-version
       "@kie-tools-scripts/update-version":
         specifier: workspace:*
         version: link:scripts/update-version
@@ -13460,6 +13463,8 @@ importers:
       graph-data-structure:
         specifier: ^2.0.0
         version: 2.0.0
+
+  scripts/update-kogito-version: {}
 
   scripts/update-version: {}
 

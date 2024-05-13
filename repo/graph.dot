@@ -7,6 +7,7 @@ digraph G {
   "@kie-tools-scripts/check-junit-report-results" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-scripts/run-script-if" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-scripts/sparse-checkout" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools-scripts/update-kogito-version" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-scripts/update-version" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/base64png-editor" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-core/editor" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -189,6 +190,7 @@ digraph G {
   "kie-tools-root" -> "@kie-tools-scripts/check-junit-report-results" [ style = "dashed", color = "black" ];
   "kie-tools-root" -> "@kie-tools-scripts/run-script-if" [ style = "dashed", color = "black" ];
   "kie-tools-root" -> "@kie-tools-scripts/sparse-checkout" [ style = "dashed", color = "black" ];
+  "kie-tools-root" -> "@kie-tools-scripts/update-kogito-version" [ style = "dashed", color = "black" ];
   "kie-tools-root" -> "@kie-tools-scripts/update-version" [ style = "dashed", color = "black" ];
   "@kie-tools-examples/base64png-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/base64png-editor-chrome-extension" -> "@kie-tools-core/chrome-extension" [ style = "solid", color = "orange" ];
