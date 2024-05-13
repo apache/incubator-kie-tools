@@ -80,14 +80,14 @@ pipeline {
             steps {
                 script {
                     dir(helper.getRepoName()) {
-                        helper.checkoutRepo()
 
                         // Merge PR
                         String prLink = properties.retrieve("${helper.getRepoName()}.pr.link")
-                        if (prLink) {
+                        if (prLink?.trim()) {
+                            githubscm.approvePR(prLink, helper.getGitAuthorCredsId())
                             githubscm.mergePR(prLink, helper.getGitAuthorPushCredsId())
-                            githubscm.pushObject('origin', helper.getBuildBranch(), helper.getGitAuthorPushCredsId())
                         }
+                        helper.checkoutRepo()
 
                         // Tag api / container-builder
                         helper.createTag("api/${helper.getGitTag()}")
