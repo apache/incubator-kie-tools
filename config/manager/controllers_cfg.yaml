@@ -31,10 +31,10 @@ builderConfigMapName: "sonataflow-operator-builder-config"
 postgreSQLPersistenceExtensions:
   - groupId: io.quarkus
     artifactId: quarkus-jdbc-postgresql
-    version: 3.2.10.Final
+    version: 3.8.4
   - groupId: io.quarkus
     artifactId: quarkus-agroal
-    version: 3.2.10.Final
+    version: 3.8.4
   - groupId: org.kie
     artifactId: kie-addons-quarkus-persistence-jdbc
     version: 999-SNAPSHOT
