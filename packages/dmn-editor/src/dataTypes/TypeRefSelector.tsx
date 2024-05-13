@@ -133,13 +133,13 @@ export function TypeRefSelector({
         className={!exists && typeRef ? "kie-dmn-editor--type-ref-selector-invalid-value" : undefined}
         isDisabled={isDisabled}
         variant={SelectVariant.typeahead}
-        typeAheadAriaLabel={"<Undefined>"}
+        typeAheadAriaLabel={DmnBuiltInDataType.Undefined}
         onToggle={_onToggle}
         onSelect={(e, v) => {
           _onToggle(false);
-          onChange(v === "<Undefined>" ? undefined : (v as string));
+          onChange(v === DmnBuiltInDataType.Undefined ? undefined : (v as string));
         }}
-        selections={typeRef ?? "<Undefined>"}
+        selections={typeRef ?? DmnBuiltInDataType.Undefined}
         isOpen={isOpen}
         aria-labelledby={"Data types selector"}
         placeholderText={"Select a data type..."}

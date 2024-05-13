@@ -20,7 +20,7 @@
 import _ from "lodash";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { BoxedFunction, BoxedFunctionKind, generateUuid } from "../../api";
+import { BoxedFunction, BoxedFunctionKind, DmnBuiltInDataType, generateUuid } from "../../api";
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
@@ -167,7 +167,9 @@ export function useFunctionExpressionParametersColumnHeader(
                   <React.Fragment key={i}>
                     <span>{parameter["@_name"]}</span>
                     <span>{": "}</span>
-                    <span className={"expression-info-data-type"}>({parameter["@_typeRef"]})</span>
+                    <span className={"expression-info-data-type"}>
+                      ({parameter["@_typeRef"] ?? DmnBuiltInDataType.Undefined})
+                    </span>
                     {i < (formalParameters ?? []).length - 1 && <span>{", "}</span>}
                   </React.Fragment>
                 ))}

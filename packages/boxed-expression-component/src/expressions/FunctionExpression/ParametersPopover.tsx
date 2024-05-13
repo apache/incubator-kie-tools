@@ -24,7 +24,7 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { OutlinedTrashAltIcon } from "@patternfly/react-icons/dist/js/icons/outlined-trash-alt-icon";
 import * as React from "react";
 import { ChangeEvent, useCallback } from "react";
-import { BoxedFunction, generateUuid, getNextAvailablePrefixedName } from "../../api";
+import { BoxedFunction, DmnBuiltInDataType, generateUuid, getNextAvailablePrefixedName } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
 import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";

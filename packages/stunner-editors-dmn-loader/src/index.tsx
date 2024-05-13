@@ -98,7 +98,7 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
   const beeGwtService: BeeGwtService = {
     getDefaultExpressionDefinition(logicType, dataType, isRoot) {
       const defaultExpression = gwtExpressionToDmnExpression(
-        window.beeApiWrapper?.getDefaultExpressionDefinition(gwtLogicType(logicType), dataType ?? "<Undefined>")
+        window.beeApiWrapper?.getDefaultExpressionDefinition(gwtLogicType(logicType), dataType)
       );
       if (isRoot === false) {
         defaultExpression.expression["@_label"] = undefined;

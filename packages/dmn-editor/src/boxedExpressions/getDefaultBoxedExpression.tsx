@@ -18,30 +18,30 @@
  */
 
 import {
-  DmnBuiltInDataType,
-  BoxedExpression,
-  generateUuid,
-  BoxedLiteral,
-  BoxedFunction,
-  BoxedContext,
-  BoxedList,
-  BoxedInvocation,
-  BoxedRelation,
-  BoxedDecisionTable,
   BoxedConditional,
-  BoxedFor,
-  BoxedSome,
+  BoxedContext,
+  BoxedDecisionTable,
   BoxedEvery,
+  BoxedExpression,
   BoxedFilter,
+  BoxedFor,
+  BoxedFunction,
+  BoxedInvocation,
+  BoxedList,
+  BoxedLiteral,
+  BoxedRelation,
+  BoxedSome,
+  DmnBuiltInDataType,
+  generateUuid,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import {
-  LITERAL_EXPRESSION_MIN_WIDTH,
+  BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
   CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
+  DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
   DECISION_TABLE_INPUT_DEFAULT_WIDTH,
   DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
-  DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
+  LITERAL_EXPRESSION_MIN_WIDTH,
   RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
-  BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
 } from "@kie-tools/boxed-expression-component/dist/resizing/WidthConstants";
 import {
   DECISION_TABLE_INPUT_DEFAULT_VALUE,
@@ -71,7 +71,7 @@ export function getDefaultBoxedExpression({
   getDefaultColumnWidth?: (args: { name: string; typeRef: string | undefined }) => number | undefined;
   widthsById: Map<string, number[]>;
 }): BoxedExpression {
-  const dataType = allTopLevelDataTypesByFeelName.get(typeRef ?? "<Undefined>");
+  const dataType = allTopLevelDataTypesByFeelName.get(typeRef ?? DmnBuiltInDataType.Undefined);
 
   if (logicType === "literalExpression") {
     const literalExpression: BoxedLiteral = {
