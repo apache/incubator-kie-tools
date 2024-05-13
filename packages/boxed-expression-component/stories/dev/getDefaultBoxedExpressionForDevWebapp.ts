@@ -34,10 +34,7 @@ import {
   BoxedEvery,
   BoxedFilter,
 } from "../../src/api";
-import {
-  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
-  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
-} from "../../src/expressions/InvocationExpression/InvocationExpression";
+import { INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME } from "../../src/expressions/InvocationExpression/InvocationExpression";
 import {
   DECISION_TABLE_INPUT_DEFAULT_VALUE,
   DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
@@ -110,7 +107,7 @@ export function getDefaultBoxedExpressionForDevWebapp(
           parameter: {
             "@_id": generateUuid(),
             "@_name": INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
-            "@_typeRef": INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+            "@_typeRef": undefined,
           },
         },
       ],

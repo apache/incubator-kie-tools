@@ -18,7 +18,6 @@
  */
 
 import {
-  DMN15__tContextEntry,
   DMN15__tItemDefinition,
   DMN15__tOutputClause,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
@@ -27,22 +26,17 @@ import {
   BoxedDecisionTable,
   BoxedExpression,
   BoxedFunction,
-  BoxedFunctionKind,
   BoxedInvocation,
   BoxedList,
   BoxedLiteral,
   BoxedRelation,
-  DmnBuiltInDataType,
   generateUuid,
 } from "../src/api";
 import {
   DECISION_TABLE_INPUT_DEFAULT_VALUE,
   DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
 } from "../src/expressions/DecisionTableExpression/DecisionTableExpression";
-import {
-  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
-  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
-} from "../src/expressions/InvocationExpression/InvocationExpression";
+import { INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME } from "../src/expressions/InvocationExpression/InvocationExpression";
 import {
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
   CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
@@ -132,7 +126,7 @@ export function getDefaultBoxedExpressionForStories({
           parameter: {
             "@_id": generateUuid(),
             "@_name": INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
-            "@_typeRef": INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+            "@_typeRef": undefined,
           },
           expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
         },
