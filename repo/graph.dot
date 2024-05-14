@@ -5,7 +5,7 @@ digraph G {
   "kie-tools-root" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-scripts/bootstrap" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-scripts/check-junit-report-results" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools-scripts/run-script-if" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools-scripts/run-script-if" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-scripts/sparse-checkout" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-scripts/update-version" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/base64png-editor" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
@@ -55,7 +55,7 @@ digraph G {
   "@kie-tools/cors-proxy-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/eslint" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/cors-proxy-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/image-builder" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/image-builder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/maven-base" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-component-assembler" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -355,7 +355,7 @@ digraph G {
   "@kie-tools-core/i18n" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/i18n" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
   "@kie-tools/i18n-common-dictionary" -> "@kie-tools-core/i18n" [ style = "solid", color = "blue" ];
-  "@kie-tools/image-builder" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
+  "@kie-tools/image-builder" -> "@kie-tools/tsconfig" [ style = "dashed", color = "black" ];
   "@kie-tools/image-env-to-json" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "black" ];
   "@kie-tools/image-env-to-json" -> "@kie-tools/eslint" [ style = "dashed", color = "black" ];
   "@kie-tools/image-env-to-json" -> "@kie-tools/tsconfig" [ style = "dashed", color = "black" ];
