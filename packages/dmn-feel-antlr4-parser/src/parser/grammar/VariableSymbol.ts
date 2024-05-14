@@ -22,16 +22,24 @@ import { Type } from "./Type";
 
 import { FeelSyntacticSymbolNature } from "../FeelSyntacticSymbolNature";
 import { Variable } from "../Variable";
+import { Scope } from "./Scope";
 
 export class VariableSymbol extends BaseSymbol {
   private readonly _symbolType: FeelSyntacticSymbolNature | undefined;
-
   private readonly _variableSource: Variable | undefined;
+  private readonly _allowDynamicVariables: boolean | undefined;
 
-  constructor(id?: string, type?: Type, variableType?: FeelSyntacticSymbolNature, variableSource?: Variable) {
+  constructor(
+    id?: string,
+    type?: Type,
+    variableType?: FeelSyntacticSymbolNature,
+    variableSource?: Variable,
+    allowDynamicVariables?: boolean
+  ) {
     super(id, type);
     this._symbolType = variableType;
     this._variableSource = variableSource;
+    this._allowDynamicVariables = allowDynamicVariables;
   }
 
   get symbolType(): FeelSyntacticSymbolNature | undefined {
@@ -40,5 +48,9 @@ export class VariableSymbol extends BaseSymbol {
 
   get variableSource(): Variable | undefined {
     return this._variableSource;
+  }
+
+  get allowDynamicVariables(): boolean | undefined {
+    return this._allowDynamicVariables;
   }
 }

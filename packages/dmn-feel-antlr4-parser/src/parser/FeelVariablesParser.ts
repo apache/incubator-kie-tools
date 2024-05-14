@@ -132,7 +132,8 @@ export class FeelVariablesParser {
         context.variable.value,
         context.variable.typeRef ? this.createType(context.variable.typeRef) : undefined,
         context.variable.feelSyntacticSymbolNature,
-        context.variable
+        context.variable,
+        context.allowDynamicVariables
       );
     }
   }

@@ -36,6 +36,7 @@ const dmnTestingModelsPath = path.dirname(require.resolve("@kie-tools/dmn-testin
 
 const dmnTestingModels = [
   "dist/valid_models/DMNv1_5/AllowedValuesChecksInsideCollection.dmn",
+  "dist/valid_models/DMNv1_5/ConstraintsChecks.dmn",
   "dist/valid_models/DMNv1_5/DateToDateTimeFunction.dmn",
   "dist/valid_models/DMNv1_5/ForLoopDatesEvaluate.dmn",
   "dist/valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
