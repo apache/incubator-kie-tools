@@ -77,6 +77,20 @@ pipeline {
             }
         }
 
+        stage('CI Image Build') {
+            steps {
+                script {
+                    build(
+                        job: "KIE/kie-tools/kie-tools-ci-jobs/kie-tools-ci-image-build/${params.CHECKOUT_BRANCH_NAME}",
+                        wait: false,
+                        parameters: [
+                            string(name: 'IMAGE_TAG', value: "${params.KIE_TOOLS_VERSION}")
+                        ]
+                    )
+                }
+            }
+        }
+
         stage('Setup PNPM') {
             steps {
                 dir('kie-tools') {
@@ -126,6 +140,18 @@ pipeline {
                 dir('kie-tools') {
                     script {
                         buildUtils.pnpmUpdateKogitoVersion(params.KOGITO_MAVEN_VERSION, params.KOGITO_IMAGES_TAG)
+                    }
+                }
+            }
+        }
+
+        stage('Replace CI image tag') {
+            steps {
+                dir('kie-tools/.ci/jenkins') {
+                    script {
+                        sh """#!/bin/bash -el
+                        find . -type f -name 'Jenkinsfile.*' -exec sed -E -i "s%(kie-tools-ci-build:).*%\1${params.KIE_TOOLS_VERSION}% {} \;"
+                        """.trim()
                     }
                 }
             }
