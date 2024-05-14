@@ -62,7 +62,7 @@ export class Stories {
     await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-relation--${type}`)}` ?? "");
   }
 
-  public async openBoxedFilter(type: BoxedExpressionTypes) {
+  public async openBoxedFilter(type: BoxedExpressionTypes | "rebooked-flights" = "base") {
     await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-filter--${type}`)}` ?? "");
   }
 }

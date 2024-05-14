@@ -101,7 +101,7 @@ export function FilterExpressionMatchCell({
       >
         <div className={"bracket-sign"}>[</div>
       </div>
-      <div>
+      <div data-testid={"kie-tools--boxed-expression-component---filter-collection-match"}>
         <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
           <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
             <ExpressionContainer
