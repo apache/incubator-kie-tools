@@ -310,4 +310,4 @@ Also, notice the `Command` parameter, it will execute `mvn quarkus:dev` inside o
 
 ## How Dev Deployments work?
 
-TODO
+![Dev Deployment Flow](./docs/dev_deployment_flow.png)
