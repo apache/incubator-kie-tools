@@ -34,8 +34,8 @@ pipeline {
         string(name: 'CHECKOUT_BRANCH_NAME', defaultValue: 'main' description: 'Set the Git branch to checkout', trim: true)
         string(name: 'NEW_BRANCH_NAME', description: 'Set the Git branch to be created', trim: true)
         string(name: 'KIE_TOOLS_VERSION', description: 'KIE Tools version to set', trim: true)
-        string(name: 'KOGITO_VERSION', description: 'Kogito version to set', trim: true)
-        string(name: 'IMAGES_TAG', description: 'Kogito images tag to set', trim: true)
+        string(name: 'KOGITO_MAVEN_VERSION', description: 'Kogito maven version to set', trim: true)
+        string(name: 'KOGITO_IMAGES_TAG', description: 'Kogito images tag to set', trim: true)
     }
 
     stages {
@@ -87,6 +87,16 @@ pipeline {
             }
         }
 
+        stage('PNPM Bootstrap') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBootstrap()
+                    }
+                }
+            }
+        }
+
         stage('Setup new branch') {
             steps {
                 dir('kie-tools') {
@@ -115,7 +125,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmUpdateKogitoVersion(params.KOGITO_VERSION, params.IMAGES_TAG)
+                        buildUtils.pnpmUpdateKogitoVersion(params.KOGITO_MAVEN_VERSION, params.KOGITO_IMAGES_TAG)
                     }
                 }
             }
