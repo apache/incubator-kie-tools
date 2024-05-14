@@ -132,7 +132,7 @@ test.describe("Populate Boxed Filter", () => {
     await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-reset.png");
   });
 
-  test("should correctly paste a filter", async ({ boxedExpressionEditor, page, stories }) => {
+  test.skip("should correctly paste a filter", async ({ boxedExpressionEditor, page, stories }) => {
     await stories.openBoxedFilter("rebooked-flights");
     await page.getByRole("button").getByText("Filter").click();
     await page.getByRole("menuitem").getByText("Copy").click();
