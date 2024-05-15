@@ -220,13 +220,18 @@ export const defaultStaticState = (): Omit<State, "dmn" | "dispatch" | "computed
   },
 });
 
-export function createDmnEditorStore(model: State["dmn"]["model"], computedCache: ComputedStateCache<Computed>) {
+export function createDmnEditorStore(
+  model: State["dmn"]["model"],
+  externalModelsByNamespace: ExternalModelsIndex | undefined,
+  computedCache: ComputedStateCache<Computed>
+) {
+  const defaultState = defaultStaticState();
   return create(
     immer<State>(() => ({
       dmn: {
-        model: normalize(model),
+        model: normalize(model, externalModelsByNamespace, defaultState.diagram),
       },
-      ...defaultStaticState(),
+      ...defaultState,
       dispatch(s: State) {
         return {
           dmn: {
