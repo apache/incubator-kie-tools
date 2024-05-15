@@ -79,7 +79,7 @@
     <version.jakarta.enterprise.cdi-api>2.0.2</version.jakarta.enterprise.cdi-api>
     <version.org.apache.poi>4.1.2</version.org.apache.poi>
     <version.org.owasp.encoder>1.2</version.org.owasp.encoder>
-    <version.org.jboss.xnio>3.8.4.Final</version.org.jboss.xnio>
+    <version.org.jboss.xnio>3.8.14.Final</version.org.jboss.xnio>
     <version.io.netty>4.1.59.Final</version.io.netty>
     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
     <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
