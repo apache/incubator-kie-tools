@@ -871,4 +871,49 @@ test.describe("Resizing", () => {
       expect(await literal.boundingBox()).toHaveProperty("width", 283);
     });
   });
+
+  test.describe("Filter expression", async () => {
+    test("should correctly resize a filter", async ({ boxedExpressionEditor, page, resizing, stories }) => {
+      await stories.openBoxedFilter("base");
+
+      await resizing.resizeCell(
+        page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }),
+        { x: 0, y: 0 },
+        { x: 80, y: 0 }
+      );
+
+      await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-resized.png");
+    });
+
+    test("should correctly resize a nested filter - in", async ({ boxedExpressionEditor, page, resizing, stories }) => {
+      await stories.openBoxedFilter("nested");
+
+      await resizing.resizeCell(
+        page.getByTestId("kie-tools--boxed-expression-component---filter-collection-in"),
+        { x: 0, y: 0 },
+        { x: 80, y: 0 }
+      );
+
+      await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-resized-using-in.png");
+    });
+
+    test("should correctly resize a nested filter - match", async ({
+      boxedExpressionEditor,
+      page,
+      resizing,
+      stories,
+    }) => {
+      await stories.openBoxedFilter("nested");
+
+      await resizing.resizeCell(
+        page.getByTestId("kie-tools--boxed-expression-component---filter-collection-match"),
+        { x: 0, y: 0 },
+        { x: 80, y: 0 }
+      );
+
+      await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot(
+        "boxed-filter-nested-resized-using-match.png"
+      );
+    });
+  });
 });

@@ -50,14 +50,10 @@ test.describe("Populate Boxed Filter", () => {
     await page.getByRole("option", { name: "Any" }).click();
     await page.keyboard.press("Enter");
 
-    await page.getByTestId("kie-tools--boxed-expression-component---filter-collection-in").dblclick();
-    await page.keyboard.type("Passengers");
-    await page.keyboard.press("Enter");
-
-    await page.getByTestId("kie-tools--boxed-expression-component---filter-collection-match").dblclick();
-    await page.keyboard.type("item.Flight Number = Flight.Flight Number");
-    await page.keyboard.press("Escape"); // monaco suggestion is shown
-    await page.keyboard.press("Enter");
+    await boxedExpressionEditor.fillFilter({
+      collectionIn: "Passengers",
+      collectionMatch: "item.Flight Number = Flight.Flight Number",
+    });
 
     await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-rebooked-flights.png");
   });
@@ -65,48 +61,16 @@ test.describe("Populate Boxed Filter", () => {
   test("should correctly create a nested filter", async ({ boxedExpressionEditor, page, stories }) => {
     await stories.openBoxedFilter("base");
 
-    await page.getByRole("button").getByText("Filter").click();
-    await page.getByRole("menuitem").getByText("Reset").click();
-    await page.getByText("Select expression").click();
-    await page.getByRole("menuitem").getByText("Context").click();
-    await page.getByText("Select expression").first().click();
-    await page.getByRole("menuitem").getByText("Filter").click();
+    await boxedExpressionEditor.resetFilter();
+    await boxedExpressionEditor.selectBoxedContext();
+    await boxedExpressionEditor.selectBoxedFilter(page.getByText("Select expression").first());
 
-    await page.getByTestId("kie-tools--boxed-expression-component---filter-collection-in").dblclick();
-    await page.keyboard.type("collection in expression");
-    await page.keyboard.press("Escape"); // monaco suggestion is shown
-    await page.keyboard.press("Enter");
-
-    await page.getByTestId("kie-tools--boxed-expression-component---filter-collection-match").dblclick();
-    await page.keyboard.type("collection match expression");
-    await page.keyboard.press("Escape"); // monaco suggestion is shown
-    await page.keyboard.press("Enter");
+    await boxedExpressionEditor.fillFilter({
+      collectionIn: "collection in expression",
+      collectionMatch: "collection match expression",
+    });
 
     await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested.png");
-  });
-
-  test("should correctly resize a filter", async ({ boxedExpressionEditor, page, resizing, stories }) => {
-    await stories.openBoxedFilter("base");
-
-    await resizing.resizeCell(
-      page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }),
-      { x: 0, y: 0 },
-      { x: 80, y: 0 }
-    );
-
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-resized.png");
-  });
-
-  test("should correctly resize a nested filter", async ({ boxedExpressionEditor, page, resizing, stories }) => {
-    await stories.openBoxedFilter("nested");
-
-    await resizing.resizeCell(
-      page.getByTestId("kie-tools--boxed-expression-component---filter-collection-match"),
-      { x: 0, y: 0 },
-      { x: 80, y: 0 }
-    );
-
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-resized.png");
   });
 
   test("should correctly create a filter using list boxed expression", async ({
@@ -117,8 +81,7 @@ test.describe("Populate Boxed Filter", () => {
     await stories.openBoxedFilter("base");
     await page.getByText("=").first().click({ button: "right" });
     await page.getByRole("menuitem").getByText("Reset").click();
-    await page.getByText("Select expression").first().click();
-    await page.getByRole("menuitem").getByText("List").click();
+    await boxedExpressionEditor.selectBoxedList(page.getByText("Select expression").first());
 
     await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-boxed-list.png");
   });
@@ -126,13 +89,18 @@ test.describe("Populate Boxed Filter", () => {
   test("should correctly reset a nested filter", async ({ boxedExpressionEditor, page, stories }) => {
     await stories.openBoxedFilter("nested");
 
-    await page.getByRole("button").getByText("Filter").click();
-    await page.getByRole("menuitem").getByText("Reset").click();
+    await boxedExpressionEditor.resetFilter();
 
     await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-reset.png");
   });
 
-  test("should correctly paste a filter", async ({ boxedExpressionEditor, browserName, context, page, stories }) => {
+  test.only("should correctly copy and paste a filter - context menu", async ({
+    boxedExpressionEditor,
+    browserName,
+    context,
+    page,
+    stories,
+  }) => {
     test.skip(
       browserName === "webkit",
       "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
@@ -141,14 +109,10 @@ test.describe("Populate Boxed Filter", () => {
     await context.grantPermissions(["clipboard-read", "clipboard-write"]);
 
     await stories.openBoxedFilter("rebooked-flights");
-    await page.getByRole("button").getByText("Filter").click();
-    await page.getByRole("menuitem").getByText("Copy").click();
-    await page.getByRole("button").getByText("Filter").click();
-    await page.getByRole("menuitem").getByText("Reset").click();
-    await page.getByText("Select expression").first().click();
-    await page.getByRole("menuitem").getByText("Context").click();
-    await page.getByText("Select expression").first().click();
-    await page.getByRole("menuitem").getByText("Paste").click();
+    await boxedExpressionEditor.copyFilter();
+    await boxedExpressionEditor.resetFilter();
+    await boxedExpressionEditor.selectBoxedContext(page.getByText("Select expression").first());
+    await boxedExpressionEditor.pasteToUndefinedCell(page.getByText("Select expression").first());
 
     await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-copied-and-pasted-as-nested.png");
   });

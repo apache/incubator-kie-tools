@@ -33,6 +33,11 @@ export class BoxedExpressionEditor {
     await from.getByText("Select expression").click();
   }
 
+  public async pasteToUndefinedCell(from: Page | Locator = this.page) {
+    this.select(from);
+    await from.getByRole("menuitem").getByText("Paste").click();
+  }
+
   public async selectBoxedLiteral(from: Page | Locator = this.page) {
     this.select(from);
     await this.page.getByRole("menuitem", { name: "Literal" }).click();
@@ -96,6 +101,31 @@ export class BoxedExpressionEditor {
   public async selectBoxedFilter(from: Page | Locator = this.page) {
     this.select(from);
     await this.page.getByRole("menuitem", { name: "Filter" }).click();
+  }
+
+  public async copyFilter(from: Page | Locator = this.page) {
+    await from.getByRole("button").getByText("Filter").click();
+    await from.getByRole("menuitem").getByText("Copy").click();
+  }
+
+  public async resetFilter(from: Page | Locator = this.page) {
+    await from.getByRole("button").getByText("Filter").click();
+    await from.getByRole("menuitem").getByText("Reset").click();
+  }
+
+  /**
+   * !!! Warning !!!
+   * For now works only for a single boxed 'Filter' present in whole expression
+   */
+  public async fillFilter(args: { collectionIn: any; collectionMatch: any }) {
+    await this.monaco.fill({
+      monacoParentLocator: this.page.getByTestId("kie-tools--boxed-expression-component---filter-collection-in"),
+      content: args.collectionIn,
+    });
+    await this.monaco.fill({
+      monacoParentLocator: this.page.getByTestId("kie-tools--boxed-expression-component---filter-collection-match"),
+      content: args.collectionMatch,
+    });
   }
 
   public async goto() {
