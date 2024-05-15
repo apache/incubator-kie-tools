@@ -132,7 +132,14 @@ test.describe("Populate Boxed Filter", () => {
     await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-reset.png");
   });
 
-  test.skip("should correctly paste a filter", async ({ boxedExpressionEditor, page, stories }) => {
+  test("should correctly paste a filter", async ({ boxedExpressionEditor, browserName, context, page, stories }) => {
+    test.skip(
+      browserName === "webkit",
+      "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
+    );
+
+    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+
     await stories.openBoxedFilter("rebooked-flights");
     await page.getByRole("button").getByText("Filter").click();
     await page.getByRole("menuitem").getByText("Copy").click();

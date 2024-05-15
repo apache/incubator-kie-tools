@@ -29,7 +29,7 @@ test.describe("Selection", () => {
     test.describe(() => {
       test.beforeEach(async ({ clipboard, context, browserName }) => {
         test.skip(
-          browserName !== "chromium",
+          browserName === "webkit",
           "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
         );
         clipboard.setup(context, browserName);

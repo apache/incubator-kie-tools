@@ -71,7 +71,7 @@ test.describe("Selection", () => {
 
     test("should select multiple cells and copy/paste", async ({ stories, page, clipboard, browserName }) => {
       test.skip(
-        browserName !== "chromium",
+        browserName === "webkit",
         "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
       );
 
@@ -103,7 +103,7 @@ test.describe("Selection", () => {
       browserName,
     }) => {
       test.skip(
-        browserName !== "chromium",
+        browserName === "webkit",
         "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
       );
 

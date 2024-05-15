@@ -22,7 +22,7 @@ import { test, expect } from "../__fixtures__/base";
 test.describe("Boxed expression header", () => {
   test.beforeEach(async ({ boxedExpressionEditor, browserName }) => {
     test.skip(
-      browserName !== "chromium",
+      browserName === "webkit",
       "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
     );
 
