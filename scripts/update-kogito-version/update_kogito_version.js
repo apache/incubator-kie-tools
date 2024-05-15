@@ -61,7 +61,7 @@ try {
       .readFileSync(serverlessLogicWebToolsBaseBuilderImageEnvPath, "utf-8")
       .replace(
         /SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag:[\s\n]*{[\s\n]*default:[\s\n]*".*"/,
-        `SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag: {\n      default: "${newImagesTag}"`
+        `SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag: {\n        default: "${newImagesTag}"`
       )
   );
 
@@ -78,7 +78,7 @@ try {
       .readFileSync(serverlessLogicWebToolsSwfDevModeImageEnvPath, "utf-8")
       .replace(
         /SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__kogitoBaseBuilderImageTag:[\s\n]*{[\s\n]*default:[\s\n]*".*"/,
-        `SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__kogitoBaseBuilderImageTag: {\n      default: "${newImagesTag}"`
+        `SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__kogitoBaseBuilderImageTag: {\n        default: "${newImagesTag}"`
       )
   );
 
