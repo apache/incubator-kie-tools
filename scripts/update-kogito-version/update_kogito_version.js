@@ -50,6 +50,35 @@ try {
       )
   );
 
+  console.info(
+    "[update-kogito-version] Updating 'packages/kogito-serverless-operator/test/testdata/.../02-sonataflow_platform.yaml'..."
+  );
+  const sonataflowPlatformFiles = fs
+    .readdirSync(path.resolve(__dirname, "../../packages/kogito-serverless-operator/test/testdata"), {
+      recursive: true,
+    })
+    .filter((fileName) => fileName.endsWith("02-sonataflow_platform.yaml"));
+  sonataflowPlatformFiles.forEach((filePath) => {
+    const fullFilePath = path.resolve(
+      __dirname,
+      path.join("../../packages/kogito-serverless-operator/test/testdata"),
+      filePath
+    );
+    fs.writeFileSync(
+      fullFilePath,
+      fs
+        .readFileSync(fullFilePath, "utf-8")
+        .replace(
+          /org\.kie:kie-addons-quarkus-persistence-jdbc:[^,\n]*/,
+          `org.kie:kie-addons-quarkus-persistence-jdbc:${newMavenVersion}`
+        )
+        .replace(
+          /org\.kie\.kogito:kogito-addons-quarkus-jobs-knative-eventing:[^,\n]*/,
+          `org.kie.kogito:kogito-addons-quarkus-jobs-knative-eventing:${newMavenVersion}`
+        )
+    );
+  });
+
   console.info("[update-kogito-version] Updating 'serverless-logic-web-tools-base-builder-image/env/index.js'...");
   const serverlessLogicWebToolsBaseBuilderImageEnvPath = path.resolve(
     __dirname,
@@ -61,7 +90,7 @@ try {
       .readFileSync(serverlessLogicWebToolsBaseBuilderImageEnvPath, "utf-8")
       .replace(
         /SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag:[\s\n]*{[\s\n]*default:[\s\n]*".*"/,
-        `SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag: {\n      default: "${newImagesTag}"`
+        `SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag: {\n        default: "${newImagesTag}"`
       )
   );
 
@@ -78,7 +107,7 @@ try {
       .readFileSync(serverlessLogicWebToolsSwfDevModeImageEnvPath, "utf-8")
       .replace(
         /SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__kogitoBaseBuilderImageTag:[\s\n]*{[\s\n]*default:[\s\n]*".*"/,
-        `SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__kogitoBaseBuilderImageTag: {\n      default: "${newImagesTag}"`
+        `SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__kogitoBaseBuilderImageTag: {\n        default: "${newImagesTag}"`
       )
   );
 
