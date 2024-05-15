@@ -85,6 +85,24 @@ def pnpmBuild(String filters, Integer workspaceConcurrency = 1) {
 }
 
 /**
+* PNPM update project version to
+*/
+def pnpmUpdateProjectVersion(String projectVersion) {
+    sh """#!/bin/bash -el
+    pnpm update-version-to ${projectVersion}
+    """.trim()
+}
+
+/**
+* PNPM update kogito version to
+*/
+def pnpmUpdateKogitoVersion(String kogitoVersion, String imagesTag) {
+    sh """#!/bin/bash -el
+    pnpm update-kogito-version-to --maven ${kogitoVersion} --images-tag ${imagesTag}
+    """.trim()
+}
+
+/**
 * Start KIE-Tools required services for build and test
 */
 def startRequiredServices() {
