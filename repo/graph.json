@@ -6,6 +6,7 @@
       { "id": "@kie-tools-scripts/check-junit-report-results" },
       { "id": "@kie-tools-scripts/run-script-if" },
       { "id": "@kie-tools-scripts/sparse-checkout" },
+      { "id": "@kie-tools-scripts/update-kogito-version" },
       { "id": "@kie-tools-scripts/update-version" },
       { "id": "@kie-tools-scripts/build-env" },
       { "id": "@kie-tools-examples/base64png-editor" },
@@ -190,6 +191,7 @@
       { "source": "kie-tools-root", "target": "@kie-tools-scripts/check-junit-report-results", "weight": 1 },
       { "source": "kie-tools-root", "target": "@kie-tools-scripts/run-script-if", "weight": 1 },
       { "source": "kie-tools-root", "target": "@kie-tools-scripts/sparse-checkout", "weight": 1 },
+      { "source": "kie-tools-root", "target": "@kie-tools-scripts/update-kogito-version", "weight": 1 },
       { "source": "kie-tools-root", "target": "@kie-tools-scripts/update-version", "weight": 1 },
       { "source": "@kie-tools-scripts/bootstrap", "target": "@kie-tools-scripts/build-env", "weight": 1 },
       { "source": "@kie-tools-examples/base64png-editor", "target": "@kie-tools-core/editor", "weight": 1 },
@@ -1383,6 +1385,7 @@
     ["@kie-tools-scripts/check-junit-report-results", "scripts/check-junit-report-results"],
     ["@kie-tools-scripts/run-script-if", "scripts/run-script-if"],
     ["@kie-tools-scripts/sparse-checkout", "scripts/sparse-checkout"],
+    ["@kie-tools-scripts/update-kogito-version", "scripts/update-kogito-version"],
     ["@kie-tools-scripts/update-version", "scripts/update-version"]
   ]
 }

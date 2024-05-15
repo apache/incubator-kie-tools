@@ -54,10 +54,12 @@ module.exports = composeEnv([], {
       default: "3.8.4",
       description: "Quarkus version to be used on dependency declaration.",
     },
+    /* (begin) This part of the file is referenced in `scripts/update-kogito-version` */
     KOGITO_RUNTIME_version: {
       default: "999-20240509-SNAPSHOT",
       description: "Kogito version to be used on dependency declaration.",
     },
+    /* (end) */
   }),
   get env() {
     return {
