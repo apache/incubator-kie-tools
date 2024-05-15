@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:latest'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -38,9 +38,9 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry = 'quay.io'
-        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount = 'kie-tools'
-        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName = 'serverless-logic-web-tools-swf-dev-mode-image'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry = 'docker.io'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount = 'apache'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName = 'incubator-kie-serverless-logic-web-tools-swf-dev-mode'
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags = "latest ${params.RELEASE_VERSION}"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
@@ -118,7 +118,7 @@ pipeline {
             }
         }
 
-        stage('Push serverless-logic-web-tools-swf-dev-mode-image to quay.io') {
+        stage('Push serverless-logic-web-tools-swf-dev-mode-image to docker.io') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -128,7 +128,7 @@ pipeline {
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry}/${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }

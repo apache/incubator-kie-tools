@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:latest'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -38,9 +38,9 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        KOGITO_SERVERLESS_OPERATOR__registry = 'quay.io'
-        KOGITO_SERVERLESS_OPERATOR__account = 'kiegroup'
-        KOGITO_SERVERLESS_OPERATOR__name = 'kogito-serverless-operator'
+        KOGITO_SERVERLESS_OPERATOR__registry = 'docker.io'
+        KOGITO_SERVERLESS_OPERATOR__account = 'apache'
+        KOGITO_SERVERLESS_OPERATOR__name = 'incubator-kie-sonataflow-operator'
         KOGITO_SERVERLESS_OPERATOR__buildTag = "${params.RELEASE_VERSION}"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
@@ -148,7 +148,7 @@ pipeline {
             }
         }
 
-        stage('Push kogito-serverless-operator to quay.io') {
+        stage('Push kogito-serverless-operator to docker.io') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -158,7 +158,7 @@ pipeline {
                         "${env.KOGITO_SERVERLESS_OPERATOR__registry}/${env.KOGITO_SERVERLESS_OPERATOR__account}",
                         "${env.KOGITO_SERVERLESS_OPERATOR__name}",
                         "${env.KOGITO_SERVERLESS_OPERATOR__buildTag} latest",
-                        "${pipelineVars.quayKiegroupPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }

@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:latest'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -38,9 +38,9 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        DASHBUILDER__viewerImageRegistry = 'quay.io'
-        DASHBUILDER__viewerImageAccount = 'kie-tools'
-        DASHBUILDER__viewerImageName = 'dashbuilder-viewer-image'
+        DASHBUILDER__viewerImageRegistry = 'docker.io'
+        DASHBUILDER__viewerImageAccount = 'apache'
+        DASHBUILDER__viewerImageName = 'incubator-kie-dashbuilder-viewer'
         DASHBUILDER__viewerImageBuildTags = "latest ${params.RELEASE_VERSION}"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
@@ -118,7 +118,7 @@ pipeline {
             }
         }
 
-        stage('Push dashbuilder-viewer-image to quay.io') {
+        stage('Push dashbuilder-viewer-image to docker.io') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -128,7 +128,7 @@ pipeline {
                         "${env.DASHBUILDER__viewerImageRegistry}/${env.DASHBUILDER__viewerImageAccount}",
                         "${env.DASHBUILDER__viewerImageName}",
                         "${env.DASHBUILDER__viewerImageBuildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }

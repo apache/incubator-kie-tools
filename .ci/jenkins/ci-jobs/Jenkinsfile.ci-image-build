@@ -22,8 +22,8 @@ pipeline {
     }
 
     environment {
-        IMAGE_ACCOUNT = 'quay.io/kie-tools'
-        IMAGE_NAME = 'kie-tools-ci-build'
+        IMAGE_ACCOUNT = 'docker.io/apache'
+        IMAGE_NAME = 'incubator-kie-tools-ci-build'
         IMAGE_NAME_TAG = "${IMAGE_ACCOUNT}/${IMAGE_NAME}:${params.IMAGE_TAG}"
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
     }
@@ -73,7 +73,7 @@ pipeline {
                         "${IMAGE_ACCOUNT}",
                         "${IMAGE_NAME}",
                         "${params.IMAGE_TAG}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }
@@ -113,7 +113,7 @@ pipeline {
                         "${IMAGE_ACCOUNT}",
                         "${IMAGE_NAME}",
                         "${IMAGE_TAGS}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }
