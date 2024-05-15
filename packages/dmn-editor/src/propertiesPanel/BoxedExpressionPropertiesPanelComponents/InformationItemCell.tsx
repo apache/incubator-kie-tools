@@ -76,7 +76,7 @@ export function InformationItemCell(props: {
       />
       <TypeRefField
         isReadonly={props.isReadonly}
-        typeRef={cell["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+        typeRef={cell["@_typeRef"]}
         dmnEditorRootElementRef={dmnEditorRootElementRef}
         onChange={props.onTypeRefChange}
       />

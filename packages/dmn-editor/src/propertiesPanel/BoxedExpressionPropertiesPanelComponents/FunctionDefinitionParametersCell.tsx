@@ -156,7 +156,7 @@ function FunctionDefinitionParameterTypeRef(props: {
       <TypeRefField
         isReadonly={props.isReadonly}
         dmnEditorRootElementRef={dmnEditorRootElementRef}
-        typeRef={props.parameter["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+        typeRef={props.parameter["@_typeRef"]}
         onChange={props.onTypeRefChange}
       />
       {itemDefinition && (

@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableContextMenuAllowedOperationsConditions,
@@ -26,21 +26,21 @@ import {
   BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
+  BoxedExpression,
+  BoxedInvocation,
   DmnBuiltInDataType,
   generateUuid,
   getNextAvailablePrefixedName,
-  BoxedInvocation,
-  BoxedExpression,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
 import { ResizerStopBehavior, ResizingWidth } from "../../resizing/ResizingWidthsContext";
 import {
   CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
-  INVOCATION_PARAMETER_MIN_WIDTH,
   INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
   INVOCATION_EXTRA_WIDTH,
   INVOCATION_PARAMETER_INFO_COLUMN_WIDTH_INDEX,
+  INVOCATION_PARAMETER_MIN_WIDTH,
 } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
@@ -57,7 +57,6 @@ import "./InvocationExpression.css";
 export type ROWTYPE = ExpressionWithVariable & { index: number };
 
 export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME = "p-1";
-export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE = DmnBuiltInDataType.Undefined;
 
 export function InvocationExpression({
   isNested,
@@ -203,7 +202,7 @@ export function InvocationExpression({
                 accessor: "parameter" as any,
                 label: "parameter",
                 isRowIndexColumn: false,
-                dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+                dataType: DmnBuiltInDataType.Undefined,
                 isWidthPinned: true,
                 minWidth: CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
                 width: parametersWidth,
@@ -213,7 +212,7 @@ export function InvocationExpression({
                 accessor: "expression" as any,
                 label: "expression",
                 isRowIndexColumn: false,
-                dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+                dataType: DmnBuiltInDataType.Undefined,
                 minWidth: INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
                 width: undefined,
               },
@@ -333,7 +332,7 @@ export function InvocationExpression({
       return {
         parameter: {
           "@_id": generateUuid(),
-          "@_typeRef": DmnBuiltInDataType.Undefined,
+          "@_typeRef": undefined,
           "@_name":
             name ||
             getNextAvailablePrefixedName(

@@ -46,7 +46,6 @@ test.describe("Add node - Decision Service", () => {
           variable: {
             "@_id": decisionService.variable?.["@_id"],
             "@_name": DefaultNodeName.DECISION_SERVICE,
-            "@_typeRef": DataType.Undefined,
           },
         });
         expect(await jsonModel.drd.getDrgElementBoundsOnDrd({ drgElementIndex: 0, drdIndex: 0 })).toEqual({

@@ -25,7 +25,7 @@ import { BoxedExpression } from "./BoxedExpression";
 export interface BeeGwtService {
   getDefaultExpressionDefinition(
     logicType: BoxedExpression["__$$element"] | undefined,
-    typeRef: string,
+    typeRef: string | undefined,
     isRoot?: boolean
   ): { expression: BoxedExpression; widthsById: Map<string, number[]> };
 

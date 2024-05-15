@@ -18,7 +18,6 @@
  */
 
 import {
-  DMN15__tContextEntry,
   DMN15__tItemDefinition,
   DMN15__tOutputClause,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
@@ -27,22 +26,17 @@ import {
   BoxedDecisionTable,
   BoxedExpression,
   BoxedFunction,
-  BoxedFunctionKind,
   BoxedInvocation,
   BoxedList,
   BoxedLiteral,
   BoxedRelation,
-  DmnBuiltInDataType,
   generateUuid,
 } from "../src/api";
 import {
   DECISION_TABLE_INPUT_DEFAULT_VALUE,
   DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
 } from "../src/expressions/DecisionTableExpression/DecisionTableExpression";
-import {
-  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
-  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
-} from "../src/expressions/InvocationExpression/InvocationExpression";
+import { INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME } from "../src/expressions/InvocationExpression/InvocationExpression";
 import {
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
   CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
@@ -64,7 +58,7 @@ export function getDefaultBoxedExpressionForStories({
   widthsById,
 }: {
   logicType: BoxedExpression["__$$element"] | undefined;
-  typeRef: string;
+  typeRef: string | undefined;
   widthsById: Map<string, number[]>;
 }): BoxedExpression {
   if (logicType === "literalExpression") {
@@ -132,7 +126,7 @@ export function getDefaultBoxedExpressionForStories({
           parameter: {
             "@_id": generateUuid(),
             "@_name": INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
-            "@_typeRef": INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+            "@_typeRef": undefined,
           },
           expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
         },
@@ -166,7 +160,7 @@ export function getDefaultBoxedExpressionForStories({
         {
           "@_id": generateUuid(),
           "@_name": "column-1",
-          "@_typeRef": DmnBuiltInDataType.Undefined,
+          "@_typeRef": undefined,
         },
       ],
     };
@@ -179,11 +173,11 @@ export function getDefaultBoxedExpressionForStories({
   } else if (logicType === "decisionTable") {
     const singleOutputColumn = {
       name: "output-1",
-      typeRef: DmnBuiltInDataType.Undefined,
+      typeRef: undefined,
     };
     const singleInputColumn = {
       name: "input-1",
-      typeRef: DmnBuiltInDataType.Undefined,
+      typeRef: undefined,
     };
 
     const input = [
@@ -192,7 +186,7 @@ export function getDefaultBoxedExpressionForStories({
         inputExpression: {
           "@_id": generateUuid(),
           text: { __$$text: singleInputColumn.name },
-          "@_typeRef": singleInputColumn.typeRef ?? DmnBuiltInDataType.Undefined,
+          "@_typeRef": singleInputColumn.typeRef,
         },
       },
     ];

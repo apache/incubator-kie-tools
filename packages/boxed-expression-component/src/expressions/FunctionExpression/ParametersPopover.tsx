@@ -24,7 +24,7 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { OutlinedTrashAltIcon } from "@patternfly/react-icons/dist/js/icons/outlined-trash-alt-icon";
 import * as React from "react";
 import { ChangeEvent, useCallback } from "react";
-import { DmnBuiltInDataType, BoxedFunction, generateUuid, getNextAvailablePrefixedName } from "../../api";
+import { BoxedFunction, DmnBuiltInDataType, generateUuid, getNextAvailablePrefixedName } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
 import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
@@ -51,7 +51,7 @@ export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> 
               (prev.formalParameter ?? []).map((p) => p["@_name"]),
               "p"
             ),
-            "@_typeRef": DmnBuiltInDataType.Undefined,
+            "@_typeRef": undefined,
           },
         ];
 
@@ -120,7 +120,7 @@ function ParameterEntry({ parameter, index }: { parameter: DMN15__tInformationIt
   );
 
   const onDataTypeChange = useCallback(
-    (typeRef: string) => {
+    (typeRef: string | undefined) => {
       setExpression((prev: BoxedFunction) => {
         const newParameters = [...(prev.formalParameter ?? [])];
         newParameters[index] = {
@@ -166,11 +166,7 @@ function ParameterEntry({ parameter, index }: { parameter: DMN15__tInformationIt
         placeholder={"Parameter Name"}
         defaultValue={parameter["@_name"]}
       />
-      <DataTypeSelector
-        value={parameter["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
-        onChange={onDataTypeChange}
-        menuAppendTo="parent"
-      />
+      <DataTypeSelector value={parameter["@_typeRef"]} onChange={onDataTypeChange} menuAppendTo="parent" />
       <Button
         variant="danger"
         className="delete-parameter"

@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useMemo, useCallback, useState, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import {
   DMN15__tItemDefinition,
@@ -86,8 +86,7 @@ export function recursivelyGetRootItemDefinition(
   allDataTypesById: DataTypeIndex,
   allTopLevelItemDefinitionUniqueNames: UniqueNameIndex
 ): DMN15__tItemDefinition {
-  const typeRef: DmnBuiltInDataType =
-    (itemDefinition.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
+  const typeRef: DmnBuiltInDataType = itemDefinition.typeRef?.__$$text as DmnBuiltInDataType;
 
   if (builtInFeelTypeNames.has(typeRef) === false) {
     const parentDataType = allDataTypesById.get(allTopLevelItemDefinitionUniqueNames.get(typeRef) ?? "");
@@ -422,7 +421,7 @@ export function ConstraintsFromAllowedValuesAttribute({
 
   const allowedValues = useMemo(() => itemDefinition?.allowedValues, [itemDefinition?.allowedValues]);
   const itemDefinitionId = itemDefinition["@_id"]!;
-  const typeRef = (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
+  const typeRef = itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType;
   const typeRefConstraintTypeHelper = useMemo(
     () => constraintTypeHelper(itemDefinition, allDataTypesById, allTopLevelItemDefinitionUniqueNames),
     [allDataTypesById, allTopLevelItemDefinitionUniqueNames, itemDefinition]
@@ -569,7 +568,7 @@ export function ConstraintsFromTypeConstraintAttribute({
     [defaultsToAllowedValues, itemDefinition?.allowedValues, itemDefinition?.typeConstraint]
   );
 
-  const typeRef = (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
+  const typeRef = itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType;
   const typeRefConstraintTypeHelper = useMemo(
     () => constraintTypeHelper(itemDefinition, allDataTypesById, allTopLevelItemDefinitionUniqueNames),
     [allDataTypesById, allTopLevelItemDefinitionUniqueNames, itemDefinition]
@@ -587,9 +586,7 @@ export function ConstraintsFromTypeConstraintAttribute({
     if (isCollection(rootItemDefinition)) {
       return ["expression"] as KIE__tConstraintType[];
     }
-    return constrainableBuiltInFeelTypes.get(
-      (rootItemDefinition.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined
-    );
+    return constrainableBuiltInFeelTypes.get(rootItemDefinition.typeRef?.__$$text as DmnBuiltInDataType);
   }, [rootItemDefinition]);
 
   const {

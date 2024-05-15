@@ -171,7 +171,7 @@ export function DataTypes() {
     <>
       {(dataTypesTree.length <= 0 && (
         <DataTypesEmptyState
-          onAdd={() => addTopLevelItemDefinition({ typeRef: { __$$text: DmnBuiltInDataType.Undefined } })}
+          onAdd={() => addTopLevelItemDefinition({ typeRef: undefined })}
           onPaste={pasteTopLevelItemDefinition}
         />
       )) || (
@@ -203,9 +203,7 @@ export function DataTypes() {
                               {...extraPropsForDropdownToggleAction}
                               key="add-data-type-action"
                               aria-label="Add Data Type"
-                              onClick={() =>
-                                addTopLevelItemDefinition({ typeRef: { __$$text: DmnBuiltInDataType.Undefined } })
-                              }
+                              onClick={() => addTopLevelItemDefinition({ typeRef: undefined })}
                             >
                               <PlusCircleIcon />
                             </DropdownToggleAction>,

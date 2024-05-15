@@ -62,7 +62,7 @@ export function addConnectedNode({
     definitions.drgElement ??= [];
     const variableBase = {
       "@_id": generateUuid(),
-      "@_typeRef": DmnBuiltInDataType.Undefined,
+      "@_typeRef": undefined,
     };
     definitions.drgElement?.push(
       switchExpression(newNode.type as Exclude<NodeType, "node_group" | "node_textAnnotation" | "node_unknown">, {

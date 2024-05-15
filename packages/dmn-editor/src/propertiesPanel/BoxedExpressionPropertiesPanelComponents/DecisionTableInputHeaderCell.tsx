@@ -110,7 +110,7 @@ export function DecisionTableInputHeaderCell(props: {
             <TypeRefField
               isReadonly={props.isReadonly}
               dmnEditorRootElementRef={dmnEditorRootElementRef}
-              typeRef={inputExpression?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+              typeRef={inputExpression?.["@_typeRef"]}
               onChange={(newTypeRef) =>
                 updater((dmnObject) => {
                   dmnObject.inputExpression ??= {};

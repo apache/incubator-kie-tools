@@ -101,10 +101,10 @@ export function ExpressionDefinitionLogicTypeSelector({
       "invocation",
       ...(isNested ? (["functionDefinition"] as const) : []),
       ...(!hideDmn14BoxedExpressions ? (["conditional"] as const) : []),
-      "for",
-      "every",
-      "some",
-      "filter",
+      ...(!hideDmn14BoxedExpressions ? (["for"] as const) : []),
+      ...(!hideDmn14BoxedExpressions ? (["every"] as const) : []),
+      ...(!hideDmn14BoxedExpressions ? (["some"] as const) : []),
+      ...(!hideDmn14BoxedExpressions ? (["filter"] as const) : []),
     ],
     [hideDmn14BoxedExpressions, isNested]
   );

@@ -119,7 +119,7 @@ export function DecisionTableOutputHeaderCell(props: {
             alternativeFieldName={`${alternativeFieldName} Type`}
             isReadonly={true}
             dmnEditorRootElementRef={dmnEditorRootElementRef}
-            typeRef={root?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+            typeRef={root?.["@_typeRef"]}
           />
         </>
       )}
@@ -139,7 +139,7 @@ export function DecisionTableOutputHeaderCell(props: {
         alternativeFieldName={root?.output.length === 1 ? "Column Type" : undefined}
         isReadonly={props.isReadonly}
         dmnEditorRootElementRef={dmnEditorRootElementRef}
-        typeRef={cell?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+        typeRef={cell?.["@_typeRef"]}
         onChange={(newTypeRef) =>
           updater((dmnObject) => {
             dmnObject["@_typeRef"] = newTypeRef;

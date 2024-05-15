@@ -1251,7 +1251,7 @@ function DmnDiagramEmptyState({
                   const defaultExpression = getDefaultBoxedExpression({
                     logicType: "decisionTable",
                     allTopLevelDataTypesByFeelName: new Map(),
-                    typeRef: DmnBuiltInDataType.Undefined,
+                    typeRef: undefined,
                     getDefaultColumnWidth,
                     widthsById: defaultWidthsById,
                   });

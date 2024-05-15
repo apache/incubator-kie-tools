@@ -35,11 +35,11 @@ import {
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
-import { ResizerStopBehavior, ResizingWidth, useResizingWidths } from "../../resizing/ResizingWidthsContext";
+import { ResizerStopBehavior, ResizingWidth } from "../../resizing/ResizingWidthsContext";
 import {
   CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-  CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
   CONTEXT_ENTRY_VARIABLE_COLUMN_WIDTH_INDEX,
+  CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
   CONTEXT_EXPRESSION_EXTRA_WIDTH,
 } from "../../resizing/WidthConstants";
 import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
@@ -49,12 +49,10 @@ import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/Expre
 import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
 import { ExpressionVariableCell, ExpressionWithVariable } from "../../expressionVariable/ExpressionVariableCell";
 import { ContextResultExpressionCell } from "./ContextResultExpressionCell";
-import { getExpressionMinWidth, getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
+import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
 import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { findAllIdsDeep } from "../../ids/ids";
 import "./ContextExpression.css";
-
-const CONTEXT_ENTRY_DEFAULT_DATA_TYPE = DmnBuiltInDataType.Undefined;
 
 export type ROWTYPE = ExpressionWithVariable & { index: number };
 
@@ -156,7 +154,7 @@ export function ContextExpression({
         accessor: expressionHolderId as any, // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
         label: contextExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
         isRowIndexColumn: false,
-        dataType: contextExpression["@_typeRef"] ?? CONTEXT_ENTRY_DEFAULT_DATA_TYPE,
+        dataType: contextExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         width: undefined,
         columns: [
           {
@@ -286,7 +284,7 @@ export function ContextExpression({
         variable: {
           "@_id": generateUuid(),
           "@_name": variableName,
-          "@_typeRef": DmnBuiltInDataType.Undefined,
+          "@_typeRef": undefined,
           description: { __$$text: "" },
         },
       };

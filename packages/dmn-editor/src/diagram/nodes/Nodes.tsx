@@ -1475,7 +1475,7 @@ export function useDataTypeCreationCallbackForNodes(index: number, drgElementNam
         drgElement.variable["@_typeRef"] = newDataTypeName;
         const newItemDefinition = addTopLevelItemDefinition({
           definitions: state.dmn.model.definitions,
-          partial: { "@_name": newDataTypeName, typeRef: { __$$text: DmnBuiltInDataType.Undefined } },
+          partial: { "@_name": newDataTypeName, typeRef: undefined },
         });
         state.dataTypesEditor.activeItemDefinitionId = newItemDefinition["@_id"];
         state.navigation.tab = DmnEditorTab.DATA_TYPES;

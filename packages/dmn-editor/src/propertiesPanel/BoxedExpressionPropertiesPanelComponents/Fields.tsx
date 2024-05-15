@@ -91,7 +91,7 @@ export function NameField(props: {
 
 export function TypeRefField(props: {
   alternativeFieldName?: string;
-  typeRef: string;
+  typeRef?: string;
   isReadonly: boolean;
   dmnEditorRootElementRef: React.RefObject<HTMLElement>;
   onChange?: (newTypeRef: string) => void;

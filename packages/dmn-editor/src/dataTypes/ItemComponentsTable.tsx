@@ -39,16 +39,16 @@ import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
 import { EyeIcon } from "@patternfly/react-icons/dist/js/icons/eye-icon";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
-import { DataType, EditItemDefinition, AddItemComponent, DataTypeIndex } from "./DataTypes";
+import { AddItemComponent, DataType, DataTypeIndex, EditItemDefinition } from "./DataTypes";
 import { DataTypeName } from "./DataTypeName";
-import { isStruct, canHaveConstraints, getNewItemDefinition } from "./DataTypeSpec";
+import { canHaveConstraints, getNewItemDefinition, isStruct } from "./DataTypeSpec";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import {
+  buildClipboardFromDataType,
   DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE,
   DmnEditorDataTypesClipboard,
-  buildClipboardFromDataType,
   getClipboard,
 } from "../clipboard/Clipboard";
 import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
@@ -110,6 +110,7 @@ export function ItemComponentsTable({
 
   const flatTree = useMemo(() => {
     const ret: { dataType: DataType; allUniqueNamesAtLevel: UniqueNameIndex }[] = [];
+
     function traverse(dataType: DataType[], allUniqueNamesAtLevel: UniqueNameIndex) {
       for (let i = 0; i < (dataType?.length ?? 0); i++) {
         ret.push({ dataType: dataType[i], allUniqueNamesAtLevel });
@@ -162,7 +163,7 @@ export function ItemComponentsTable({
                 onClick={() =>
                   addItemComponent(parent.itemDefinition["@_id"]!, "unshift", {
                     "@_name": "New property",
-                    typeRef: { __$$text: DmnBuiltInDataType.Undefined },
+                    typeRef: undefined,
                   })
                 }
               >
@@ -376,7 +377,7 @@ export function ItemComponentsTable({
                                 onClick={() => {
                                   addItemComponent(dt.itemDefinition["@_id"]!, "unshift", {
                                     "@_name": "New property",
-                                    typeRef: { __$$text: DmnBuiltInDataType.Undefined },
+                                    typeRef: undefined,
                                   });
                                   dmnEditorStoreApi.setState((state) => {
                                     state.dataTypesEditor.expandedItemComponentIds.push(dt.itemDefinition["@_id"]!);
@@ -434,11 +435,11 @@ export function ItemComponentsTable({
                             })}
                             onChange={(newDataType) => {
                               editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
-                                itemDefinition.typeRef = { __$$text: newDataType };
                                 if (itemDefinition.typeRef?.__$$text !== newDataType) {
                                   itemDefinition.typeConstraint = undefined;
                                   itemDefinition.allowedValues = undefined;
                                 }
+                                itemDefinition.typeRef = newDataType ? { __$$text: newDataType } : undefined;
                               });
                             }}
                           />
@@ -640,7 +641,7 @@ export function ItemComponentsTable({
                     onClick={() =>
                       addItemComponent(parent.itemDefinition["@_id"]!, "push", {
                         "@_name": "New property",
-                        typeRef: { __$$text: DmnBuiltInDataType.Undefined },
+                        typeRef: undefined,
                       })
                     }
                     style={{ paddingLeft: 0 }}

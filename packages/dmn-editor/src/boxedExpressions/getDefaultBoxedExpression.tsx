@@ -18,39 +18,36 @@
  */
 
 import {
-  DmnBuiltInDataType,
-  BoxedExpression,
-  generateUuid,
-  BoxedLiteral,
-  BoxedFunction,
-  BoxedContext,
-  BoxedList,
-  BoxedInvocation,
-  BoxedRelation,
-  BoxedDecisionTable,
   BoxedConditional,
-  BoxedFor,
-  BoxedSome,
+  BoxedContext,
+  BoxedDecisionTable,
   BoxedEvery,
+  BoxedExpression,
   BoxedFilter,
+  BoxedFor,
+  BoxedFunction,
+  BoxedInvocation,
+  BoxedList,
+  BoxedLiteral,
+  BoxedRelation,
+  BoxedSome,
+  DmnBuiltInDataType,
+  generateUuid,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import {
-  LITERAL_EXPRESSION_MIN_WIDTH,
+  BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
   CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
+  DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
   DECISION_TABLE_INPUT_DEFAULT_WIDTH,
   DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
-  DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
+  LITERAL_EXPRESSION_MIN_WIDTH,
   RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
-  BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
 } from "@kie-tools/boxed-expression-component/dist/resizing/WidthConstants";
 import {
   DECISION_TABLE_INPUT_DEFAULT_VALUE,
   DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
 } from "@kie-tools/boxed-expression-component/dist/expressions/DecisionTableExpression/DecisionTableExpression";
-import {
-  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
-  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
-} from "@kie-tools/boxed-expression-component/dist/expressions/InvocationExpression/InvocationExpression";
+import { INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME } from "@kie-tools/boxed-expression-component/dist/expressions/InvocationExpression/InvocationExpression";
 import { RELATION_EXPRESSION_DEFAULT_VALUE } from "@kie-tools/boxed-expression-component/dist/expressions/RelationExpression/RelationExpression";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
 import { isStruct } from "../dataTypes/DataTypeSpec";
@@ -68,13 +65,13 @@ export function getDefaultBoxedExpression({
   getDefaultColumnWidth,
 }: {
   logicType: BoxedExpression["__$$element"] | undefined;
-  typeRef: string;
+  typeRef: string | undefined;
   allTopLevelDataTypesByFeelName: DataTypeIndex;
   getInputs?: () => { name: string; typeRef: string | undefined }[] | undefined;
   getDefaultColumnWidth?: (args: { name: string; typeRef: string | undefined }) => number | undefined;
   widthsById: Map<string, number[]>;
 }): BoxedExpression {
-  const dataType = allTopLevelDataTypesByFeelName.get(typeRef);
+  const dataType = allTopLevelDataTypesByFeelName.get(typeRef ?? DmnBuiltInDataType.Undefined);
 
   if (logicType === "literalExpression") {
     const literalExpression: BoxedLiteral = {
@@ -109,7 +106,6 @@ export function getDefaultBoxedExpression({
           variable: {
             "@_id": generateUuid(),
             "@_name": "ContextEntry-1",
-            "@_typeRef": DmnBuiltInDataType.Undefined,
           },
           expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
         },
@@ -117,7 +113,7 @@ export function getDefaultBoxedExpression({
     } else {
       contextEntries = (dataType.itemDefinition.itemComponent ?? []).map((ic) => {
         const name = ic["@_name"];
-        const typeRef = isStruct(ic) ? DmnBuiltInDataType.Any : ic.typeRef?.__$$text ?? DmnBuiltInDataType.Undefined;
+        const typeRef = isStruct(ic) ? DmnBuiltInDataType.Any : ic.typeRef?.__$$text;
         maxWidthBasedOnEntryNames = Math.max(
           maxWidthBasedOnEntryNames,
           getDefaultColumnWidth?.({ name, typeRef }) ?? CONTEXT_ENTRY_VARIABLE_MIN_WIDTH
@@ -169,7 +165,7 @@ export function getDefaultBoxedExpression({
           parameter: {
             "@_id": generateUuid(),
             "@_name": INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
-            "@_typeRef": INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+            "@_typeRef": undefined,
           },
           expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
         },
@@ -206,14 +202,12 @@ export function getDefaultBoxedExpression({
             {
               "@_id": generateUuid(),
               "@_name": dataType?.itemDefinition["@_name"] ?? "column-1",
-              "@_typeRef": dataType?.feelName ?? DmnBuiltInDataType.Undefined,
+              "@_typeRef": dataType?.feelName,
             },
           ]
         : (dataType.itemDefinition.itemComponent ?? []).map((ic) => {
             const name = ic["@_name"];
-            const typeRef = isStruct(ic)
-              ? DmnBuiltInDataType.Any
-              : ic.typeRef?.__$$text ?? DmnBuiltInDataType.Undefined;
+            const typeRef = isStruct(ic) ? DmnBuiltInDataType.Any : ic.typeRef?.__$$text;
             return {
               "@_id": generateUuid(),
               "@_name": name,
@@ -236,11 +230,11 @@ export function getDefaultBoxedExpression({
   } else if (logicType === "decisionTable") {
     const singleOutputColumn = {
       name: "Output-1",
-      typeRef: dataType?.feelName ?? DmnBuiltInDataType.Undefined,
+      typeRef: dataType?.feelName,
     };
     const singleInputColumn = {
       name: "Input-1",
-      typeRef: DmnBuiltInDataType.Undefined,
+      typeRef: undefined,
     };
 
     const input = getInputs?.()?.map((input) => ({
@@ -248,7 +242,7 @@ export function getDefaultBoxedExpression({
       inputExpression: {
         "@_id": generateUuid(),
         text: { __$$text: input.name },
-        "@_typeRef": input.typeRef ?? DmnBuiltInDataType.Undefined,
+        "@_typeRef": input.typeRef,
       },
     })) ?? [
       {
@@ -256,7 +250,7 @@ export function getDefaultBoxedExpression({
         inputExpression: {
           "@_id": generateUuid(),
           text: { __$$text: singleInputColumn.name },
-          "@_typeRef": singleInputColumn.typeRef ?? DmnBuiltInDataType.Undefined,
+          "@_typeRef": singleInputColumn.typeRef,
         },
       },
     ];
@@ -273,7 +267,7 @@ export function getDefaultBoxedExpression({
         : (dataType.itemDefinition.itemComponent ?? []).map((ic) => ({
             "@_id": generateUuid(),
             "@_name": ic["@_name"],
-            "@_typeRef": isStruct(ic) ? DmnBuiltInDataType.Any : ic.typeRef?.__$$text ?? DmnBuiltInDataType.Undefined,
+            "@_typeRef": isStruct(ic) ? DmnBuiltInDataType.Any : ic.typeRef?.__$$text,
           }));
 
     const decisionTableExpression: BoxedDecisionTable = {
