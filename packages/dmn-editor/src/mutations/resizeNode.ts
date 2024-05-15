@@ -37,13 +37,13 @@ import { DECISION_SERVICE_DIVIDER_LINE_PADDING } from "./updateDecisionServiceDi
 export function resizeNode({
   definitions,
   drdIndex,
-  dmnShapesByHref,
+  __readonly_dmnShapesByHref,
   snapGrid,
   change,
 }: {
   definitions: DMN15__tDefinitions;
   drdIndex: number;
-  dmnShapesByHref: Map<string, DMNDI15__DMNShape & { index: number }>;
+  __readonly_dmnShapesByHref: Map<string, DMNDI15__DMNShape & { index: number }>;
   snapGrid: SnapGrid;
   change: {
     nodeType: NodeType;
@@ -76,7 +76,7 @@ export function resizeNode({
     // We ignore handling the contents of the Decision Service when it is external
     if (!change.isExternal) {
       ds.encapsulatedDecision?.forEach((ed) => {
-        const edShape = dmnShapesByHref.get(ed["@_href"])!;
+        const edShape = __readonly_dmnShapesByHref.get(ed["@_href"])!;
         const dim = snapShapeDimensions(snapGrid, edShape, MIN_NODE_SIZES[NODE_TYPES.decision]({ snapGrid }));
         const pos = snapShapePosition(snapGrid, edShape);
         if (pos.x + dim.width > limit.x) {
@@ -90,7 +90,7 @@ export function resizeNode({
 
       // Output Decisions don't limit the resizing vertically, only horizontally.
       ds.outputDecision?.forEach((ed) => {
-        const edShape = dmnShapesByHref.get(ed["@_href"])!;
+        const edShape = __readonly_dmnShapesByHref.get(ed["@_href"])!;
         const dim = snapShapeDimensions(snapGrid, edShape, MIN_NODE_SIZES[NODE_TYPES.decision]({ snapGrid }));
         const pos = snapShapePosition(snapGrid, edShape);
         if (pos.x + dim.width > limit.x) {

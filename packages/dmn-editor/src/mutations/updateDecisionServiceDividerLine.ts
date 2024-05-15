@@ -35,7 +35,7 @@ export const DECISION_SERVICE_DIVIDER_LINE_PADDING = 100;
 export function updateDecisionServiceDividerLine({
   definitions,
   drdIndex,
-  dmnShapesByHref,
+  __readonly_dmnShapesByHref,
   shapeIndex,
   localYPosition,
   drgElementIndex,
@@ -43,7 +43,7 @@ export function updateDecisionServiceDividerLine({
 }: {
   definitions: DMN15__tDefinitions;
   drdIndex: number;
-  dmnShapesByHref: Map<string, DMNDI15__DMNShape & { index: number }>;
+  __readonly_dmnShapesByHref: Map<string, DMNDI15__DMNShape & { index: number }>;
   shapeIndex: number;
   localYPosition: number;
   drgElementIndex: number;
@@ -70,13 +70,13 @@ export function updateDecisionServiceDividerLine({
 
   const upperLimit = (ds.outputDecision ?? []).reduce((acc, od) => {
     const v =
-      snapShapePosition(snapGrid, dmnShapesByHref.get(od["@_href"])!).y +
-      snapShapeDimensions(snapGrid, dmnShapesByHref.get(od["@_href"])!, decisionMinSizes).height;
+      snapShapePosition(snapGrid, __readonly_dmnShapesByHref.get(od["@_href"])!).y +
+      snapShapeDimensions(snapGrid, __readonly_dmnShapesByHref.get(od["@_href"])!, decisionMinSizes).height;
     return v > acc ? v : acc;
   }, snappedPosition.y + DECISION_SERVICE_DIVIDER_LINE_PADDING);
 
   const lowerLimit = (ds.encapsulatedDecision ?? []).reduce((acc, ed) => {
-    const v = snapShapePosition(snapGrid, dmnShapesByHref.get(ed["@_href"])!).y;
+    const v = snapShapePosition(snapGrid, __readonly_dmnShapesByHref.get(ed["@_href"])!).y;
     return v < acc ? v : acc;
   }, snappedPosition.y + snappedDimensions.height - DECISION_SERVICE_DIVIDER_LINE_PADDING);
 

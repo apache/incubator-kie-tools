@@ -20,12 +20,49 @@
 import * as React from "react";
 import OptimizeIcon from "@patternfly/react-icons/dist/js/icons/optimize-icon";
 import { useAutoLayout } from "./AutoLayoutHook";
+import { useDmnEditorStoreApi } from "../store/StoreContext";
+import { autolayout } from "./autolayout";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export function AutolayoutButton() {
-  const onApply = useAutoLayout();
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const { externalModelsByNamespace } = useExternalModels();
+
+  const applyAutoLayout = useAutoLayout();
+
+  const onClick = React.useCallback(async () => {
+    const state = dmnEditorStoreApi.getState();
+    const snapGrid = state.diagram.snapGrid;
+    const nodesById = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById;
+    const edgesById = state.computed(state).getDiagramData(externalModelsByNamespace).edgesById;
+    const nodes = state.computed(state).getDiagramData(externalModelsByNamespace).nodes;
+    const drgEdges = state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges;
+    const isAlternativeInputDataShape = state.computed(state).isAlternativeInputDataShape();
+
+    const { autolayouted, parentNodesById } = await autolayout({
+      snapGrid,
+      nodesById,
+      edgesById,
+      nodes,
+      drgEdges,
+      isAlternativeInputDataShape,
+    });
+
+    dmnEditorStoreApi.setState((s) => {
+      applyAutoLayout({
+        s,
+        __old_dmnShapesByHref: s.computed(s).indexedDrd().dmnShapesByHref,
+        __old_edges: s.computed(s).getDiagramData(externalModelsByNamespace).edges,
+        __old_edgesById: s.computed(s).getDiagramData(externalModelsByNamespace).edgesById,
+        __old_nodesById: s.computed(s).getDiagramData(externalModelsByNamespace).nodesById,
+        autolayouted: autolayouted,
+        parentNodesById: parentNodesById,
+      });
+    });
+  }, [applyAutoLayout, dmnEditorStoreApi, externalModelsByNamespace]);
 
   return (
-    <button className={"kie-dmn-editor--autolayout-panel-toggle-button"} onClick={onApply} title={"Autolayout (beta)"}>
+    <button className={"kie-dmn-editor--autolayout-panel-toggle-button"} onClick={onClick} title={"Autolayout (beta)"}>
       <OptimizeIcon />
     </button>
   );
