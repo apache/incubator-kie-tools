@@ -33,7 +33,7 @@ pipeline {
     parameters {
         string(name: 'CHECKOUT_BRANCH_NAME', defaultValue: '0.0.0' description: 'Set the Git branch to checkout', trim: true)
         string(name: 'NEW_BRANCH_NAME', description: 'Set the Git branch to be created. (x.x.999)', trim: true)
-        string(name: 'KOGITO_MAVEN_VERSION', description: 'Kogito maven version to set', trim: true)
+        string(name: 'KOGITO_VERSION', description: 'Kogito version to set', trim: true)
     }
 
     stages {
@@ -85,7 +85,7 @@ pipeline {
                 dir('kie-sandbox-quarkus-accelerator') {
                     script {
                         sh """#!/bin/bash -el
-                        mvn versions:set-property -Dproperty=kogito.bom.version -DnewVersion=${params.KOGITO_MAVEN_VERSION}
+                        mvn versions:set-property -Dproperty=kogito.bom.version -DnewVersion=${params.KOGITO_VERSION}
                         """.trim()
                     }
                 }
@@ -98,7 +98,7 @@ pipeline {
                     script {
                         sh """#!/bin/bash -el
                         git add .
-                        git commit --allow-empty -am "Update kogito version to ${params.KOGITO_MAVEN_VERSION}"
+                        git commit --allow-empty -am "Update kogito version to ${params.KOGITO_VERSION}"
                         """.trim()
                         githubUtils.pushObject('origin', "${params.NEW_BRANCH_NAME}", "${pipelineVars.asfGithubPushCredentialsId}")
                     }
