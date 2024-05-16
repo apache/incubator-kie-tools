@@ -35,7 +35,7 @@ export class BoxedExpressionEditor {
 
   public async pasteToUndefinedCell(from: Page | Locator = this.page) {
     this.select(from);
-    await from.getByRole("menuitem").getByText("Paste").click();
+    await this.page.getByRole("menuitem").getByText("Paste").click();
   }
 
   public async selectBoxedLiteral(from: Page | Locator = this.page) {
@@ -105,12 +105,12 @@ export class BoxedExpressionEditor {
 
   public async copyFilter(from: Page | Locator = this.page) {
     await from.getByRole("button").getByText("Filter").click();
-    await from.getByRole("menuitem").getByText("Copy").click();
+    await this.page.getByRole("menuitem").getByText("Copy").click();
   }
 
   public async resetFilter(from: Page | Locator = this.page) {
     await from.getByRole("button").getByText("Filter").click();
-    await from.getByRole("menuitem").getByText("Reset").click();
+    await this.page.getByRole("menuitem").getByText("Reset").click();
   }
 
   /**

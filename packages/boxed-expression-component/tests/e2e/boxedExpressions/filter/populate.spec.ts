@@ -94,7 +94,7 @@ test.describe("Populate Boxed Filter", () => {
     await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-reset.png");
   });
 
-  test.only("should correctly copy and paste a filter - context menu", async ({
+  test("should correctly copy and paste a filter - context menu", async ({
     boxedExpressionEditor,
     browserName,
     context,
