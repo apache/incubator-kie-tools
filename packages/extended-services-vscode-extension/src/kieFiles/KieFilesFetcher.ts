@@ -18,7 +18,7 @@
  */
 
 import * as vscode from "vscode";
-import * as kieFile from "./KieFile";
+import { KieFile } from "./KieFile";
 
 interface KieDocumentFilter extends vscode.DocumentFilter {
   language: string;
@@ -35,14 +35,13 @@ export const dmnDocumentFilter: KieDocumentFilter = {
   scheme: "file",
 };
 
-export async function findActiveKieFiles(kieDocumentFilters: KieDocumentFilter[]): Promise<kieFile.KieFile[]> {
+export async function findActiveKieFiles(kieDocumentFilters: KieDocumentFilter[]): Promise<KieFile[]> {
   const tabGroups: readonly vscode.TabGroup[] = vscode.window.tabGroups.all;
 
   const activeUris: vscode.Uri[] = tabGroups
     .flatMap((tabGroup) => tabGroup.tabs)
     .map((tab) => tab.input)
-    .filter((input) => "uri" in (input as any))
-    //.filter((input) => instanceof vscode.TabInputCustom || instanceof vscode.TabInputText)
+    .filter((input) => input instanceof vscode.TabInputCustom || input instanceof vscode.TabInputText)
     .map((input: vscode.TabInputCustom | vscode.TabInputText) => input.uri);
 
   const uniqueActiveUris: vscode.Uri[] = activeUris.reduce((unique, uri) => {
@@ -56,9 +55,9 @@ export async function findActiveKieFiles(kieDocumentFilters: KieDocumentFilter[]
     uniqueActiveUris.map((uri) => vscode.workspace.openTextDocument(uri))
   );
 
-  const activeKieFiles: kieFile.KieFile[] = activeTextDocuments
+  const activeKieFiles: KieFile[] = activeTextDocuments
     .filter((textDocument) => vscode.languages.match(kieDocumentFilters, textDocument) > 0)
-    .map((textDocument) => new kieFile.KieFile(textDocument));
+    .map((textDocument) => new KieFile(textDocument));
 
   return activeKieFiles;
 }

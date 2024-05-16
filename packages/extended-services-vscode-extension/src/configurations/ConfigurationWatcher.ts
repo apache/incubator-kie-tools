@@ -18,7 +18,7 @@
  */
 
 import * as vscode from "vscode";
-import * as config from "./Configuration";
+import * as configuration from "./Configuration";
 
 export class ConfigurationWatcher {
   private configurationChangedHandler: (() => void) | null;
@@ -29,11 +29,11 @@ export class ConfigurationWatcher {
   }
 
   private handleConfigurationChange(configurationChange: vscode.ConfigurationChangeEvent) {
-    const enableAutoRunChanged = configurationChange.affectsConfiguration(config.enableAutoRunID);
+    const enableAutoRunChanged = configurationChange.affectsConfiguration(configuration.enableAutoRunID);
     const connectionHeartbeatIntervalinSecsChanged = configurationChange.affectsConfiguration(
-      config.connectionHeartbeatIntervalinSecsID
+      configuration.connectionHeartbeatIntervalinSecsID
     );
-    const extendedServicesURLChanged = configurationChange.affectsConfiguration(config.extendedServicesURLID);
+    const extendedServicesURLChanged = configurationChange.affectsConfiguration(configuration.extendedServicesURLID);
 
     if (enableAutoRunChanged || connectionHeartbeatIntervalinSecsChanged || extendedServicesURLChanged) {
       this.fireConfigurationChangedEvent();

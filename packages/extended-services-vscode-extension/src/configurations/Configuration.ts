@@ -35,50 +35,65 @@ export class Configuration {
   }
 }
 
-function fetchEnableAutoRun(): boolean | undefined {
+function fetchEnableAutoRun(): boolean {
   const enableAutoRun = vscode.workspace.getConfiguration().get<boolean>(enableAutoRunID);
   if (!enableAutoRun) {
-    vscode.window.showErrorMessage("Enable Auto Run configuration not found");
+    throw new Error("Enable Auto Run configuration not found");
   }
   return enableAutoRun;
 }
 
-function fetchConnectionHeartbeatIntervalinSecs(): number | undefined {
+function fetchConnectionHeartbeatIntervalinSecs(): number {
   const connectionHeartbeatIntervalinSecs = vscode.workspace
     .getConfiguration()
     .get<number>(connectionHeartbeatIntervalinSecsID);
   if (!connectionHeartbeatIntervalinSecs) {
-    vscode.window.showErrorMessage("Connection Heartbeat Interval configuration not found");
+    throw new Error("Connection Heartbeat Interval configuration not found");
   }
 
   return connectionHeartbeatIntervalinSecs;
 }
 
-function fetchExtendedServicesURL(): URL | undefined {
+function fetchExtendedServicesURL(): URL {
   const extendedServicesURL = vscode.workspace.getConfiguration().get<string>(extendedServicesURLID);
   if (!extendedServicesURL) {
-    vscode.window.showErrorMessage("Extended Services URL configuration not found");
-    return undefined;
+    throw new Error("Extended Services URL configuration not found");
   }
 
   try {
     return new URL(extendedServicesURL);
   } catch (error) {
-    vscode.window.showErrorMessage("Invalid service URL:" + error.message);
-    return undefined;
+    throw new Error("Invalid service URL:" + error.message);
   }
 }
 
-export function fetchConfiguration(): Configuration | undefined {
-  const enableAutoRun = fetchEnableAutoRun();
-  const connectionHeartbeatIntervalinSecs = fetchConnectionHeartbeatIntervalinSecs();
-  const extendedServicesURL = fetchExtendedServicesURL();
+export function fetchConfiguration(): Configuration {
+  let errorMessages: string[] = [];
+  let enableAutoRun: boolean = true;
+  let connectionHeartbeatIntervalinSecs: number = 1;
+  let extendedServicesURL: URL = new URL("http://localhost:21345");
 
-  let configuration;
-
-  if (enableAutoRun && connectionHeartbeatIntervalinSecs && extendedServicesURL) {
-    configuration = new Configuration(enableAutoRun, connectionHeartbeatIntervalinSecs, extendedServicesURL);
+  try {
+    enableAutoRun = fetchEnableAutoRun();
+  } catch (error) {
+    errorMessages.push(error.message);
   }
 
-  return configuration;
+  try {
+    connectionHeartbeatIntervalinSecs = fetchConnectionHeartbeatIntervalinSecs();
+  } catch (error) {
+    errorMessages.push(error.message);
+  }
+
+  try {
+    extendedServicesURL = fetchExtendedServicesURL();
+  } catch (error) {
+    errorMessages.push(error.message);
+  }
+
+  if (errorMessages.length < 0) {
+    throw new Error("CONFIGURATION ERROR - " + errorMessages.join(", "));
+  } else {
+    return new Configuration(enableAutoRun, connectionHeartbeatIntervalinSecs, extendedServicesURL);
+  }
 }

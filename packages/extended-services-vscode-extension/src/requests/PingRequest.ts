@@ -17,21 +17,27 @@
  * under the License.
  */
 
-import * as vscode from "vscode";
 import * as pingresponse from "./PingResponse";
 
-export async function ping(serviceURL: URL): Promise<pingresponse.PingResponse> {
-  const url = new URL("/ping", serviceURL);
+export async function ping(extendedServicesURL: URL): Promise<pingresponse.PingResponse> {
+  const url = new URL("/ping", extendedServicesURL);
 
   try {
     const response = await fetch(url.toString());
-    const responseData = (await response.json()) as pingresponse.PingResponse;
-    return responseData;
+    if (response.ok) {
+      const responseData = (await response.json()) as pingresponse.PingResponse;
+      return responseData;
+    } else {
+      throw new Error(
+        "Failed to ping service at " +
+          extendedServicesURL +
+          " with error " +
+          response.status +
+          "and message " +
+          response.statusText
+      );
+    }
   } catch (error) {
-    vscode.window.showErrorMessage("Error at Ping request: ", error.message);
-    return {
-      started: false,
-      version: "undefined",
-    };
+    throw new Error("Failed to ping service at " + extendedServicesURL + " with error " + error.message);
   }
 }

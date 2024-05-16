@@ -42,12 +42,7 @@ function buildRequestBody(document: vscode.TextDocument): string {
     ],
   };
 
-  try {
-    return JSON.stringify(body);
-  } catch (error) {
-    vscode.window.showErrorMessage("Error building body payload: ", error.message);
-    throw error;
-  }
+  return JSON.stringify(body);
 }
 
 async function validate(
@@ -77,8 +72,7 @@ export async function validateBPMN(
   try {
     return validate(serviceURL, kieFile, "/jitbpmn/validate", validationresponse.parseBPMNValidationResponse);
   } catch (error) {
-    vscode.window.showErrorMessage("Error at Validate BPMN request: ", error.message);
-    throw error;
+    throw new Error("VALIDATE BPMN REQUEST ERROR: \n", error.message);
   }
 }
 
@@ -89,7 +83,6 @@ export async function validateDMN(
   try {
     return validate(serviceURL, kieFile, "/jitdmn/validate", validationresponse.parseDMNValidationResponse);
   } catch (error) {
-    vscode.window.showErrorMessage("Error at Validate DMN request: ", error.message);
-    throw error;
+    throw new Error("VALIDATE DMN REQUEST ERROR: \n", error.message);
   }
 }

@@ -17,68 +17,48 @@
  * under the License.
  */
 
-import * as childProcess from "child_process";
 import * as path from "path";
-import * as vscode from "vscode";
+import { ChildProcess, SpawnOptions, spawn } from "child_process";
+import { Configuration } from "./configurations/Configuration";
 
 export class LocalExtendedServices {
-  readonly startLocalExtendedServicesCommandUID: string =
-    "extended-services-vscode-extension.startLocalExtendedServices";
-  readonly stopLocalExtendedServicesCommandUID: string = "extended-services-vscode-extension.stopLocalExtendedServices";
-
-  private startLocalExtendedServicesCommand: vscode.Disposable;
-  private stopLocalExtendedServicesCommand: vscode.Disposable;
-
-  private startLocalExtendedServicesCommandHandler = (extendedServicesURL: URL, extensionAbsolutePath: string) => {
-    this.start(extendedServicesURL, extensionAbsolutePath);
-  };
-  private stopLocalExtendedServicesCommandHandler = () => {
-    this.stop();
-  };
-
-  private localExtendedServicesStartedHandler: (() => void) | null = null;
+  private localExtendedServicesStartedHandler: ((configuration: Configuration) => void) | null = null;
+  private localExtendedServicesOutputChangedHandler: ((output: string) => void) | null = null;
+  private localExtendedServicesErrorOutputChangedHandler: ((output: string) => void) | null = null;
   private localExtendedServicesStoppedHandler: (() => void) | null = null;
 
-  private readonly esNormalizedFsPathRelativeToWorkspace: string = "dist/extended-services-java";
-  private readonly esJarFileName: string = "quarkus-run.jar";
+  private serviceProcess: ChildProcess | null = null;
 
-  private serviceProcess: childProcess.ChildProcess | null = null;
-
-  constructor() {
-    this.startLocalExtendedServicesCommand = vscode.commands.registerCommand(
-      this.startLocalExtendedServicesCommandUID,
-      this.startLocalExtendedServicesCommandHandler
-    );
-    this.stopLocalExtendedServicesCommand = vscode.commands.registerCommand(
-      this.stopLocalExtendedServicesCommandUID,
-      this.stopLocalExtendedServicesCommandHandler
-    );
-  }
-
-  private start(extendedServicesURL: URL, extensionAbsoluteFsPath: string): void {
+  public start(configuration: Configuration, extensionAbsoluteFsPath: string): void {
+    const distDirectory: string = "dist";
+    const extendedServicesDirectory: string = "extended-services-java";
+    const extendedServicesJarFileName: string = "quarkus-run.jar";
     const jarAbsoluteFilePath: string = path.join(
       extensionAbsoluteFsPath,
-      this.esNormalizedFsPathRelativeToWorkspace,
-      this.esJarFileName
+      distDirectory,
+      extendedServicesDirectory,
+      extendedServicesJarFileName
     );
-    const hostname = extendedServicesURL.hostname;
-    const port = extendedServicesURL.port;
+
+    const hostname = configuration.extendedServicesURL.hostname;
+    const port = configuration.extendedServicesURL.port;
     const command =
       "java -jar -Dquarkus.http.host=" + hostname + " -Dquarkus.http.port=" + port + " " + jarAbsoluteFilePath;
 
-    const options: childProcess.SpawnOptions = {
+    const options: SpawnOptions = {
       shell: true,
       stdio: "pipe",
     };
 
     try {
-      this.serviceProcess = childProcess.spawn(command, options);
+      this.serviceProcess = spawn(command, options);
 
       if (this.serviceProcess.stdout) {
         this.serviceProcess.stdout.on("data", (data) => {
           const output = data.toString();
-          if (output.includes("Listening on: " + extendedServicesURL.origin)) {
-            this.fireLocalExtendedServicesStartedEvent();
+          if (output.includes("Listening on: " + configuration.extendedServicesURL.origin)) {
+            this.fileLocalExtendedServicesOutputChangedEvent(output);
+            this.fireLocalExtendedServicesStartedEvent(configuration);
           }
         });
       }
@@ -86,37 +66,52 @@ export class LocalExtendedServices {
       if (this.serviceProcess.stderr) {
         this.serviceProcess.stderr.on("data", (data) => {
           const errorOutput = data.toString();
-          vscode.window.showErrorMessage(errorOutput);
+          this.fileLocalExtendedServicesErrorOutputChangedEvent(errorOutput);
         });
       }
 
-      this.serviceProcess.on("exit", (code, signal) => {
+      this.serviceProcess.on("exit", () => {
         this.fireLocalExtendedServicesStoppedEvent();
       });
     } catch (error) {
-      vscode.window.showErrorMessage("Error running local service: " + error.message);
+      throw new Error("LOCAL EXTENDED SERVICES ERROR: " + error.message);
     }
   }
 
-  private stop(): void {
-    if (this.serviceProcess) {
-      if (!this.serviceProcess.kill()) {
-        vscode.window.showErrorMessage("Local service failed to terminate.");
-      }
-      this.serviceProcess = null;
+  public stop(): void {
+    if (this.serviceProcess && this.serviceProcess.pid) {
+      process.kill(this.serviceProcess.pid);
     }
+
+    this.serviceProcess = null;
   }
 
-  private fireLocalExtendedServicesStartedEvent() {
-    this.localExtendedServicesStartedHandler?.();
+  private fireLocalExtendedServicesStartedEvent(configuration: Configuration) {
+    this.localExtendedServicesStartedHandler?.(configuration);
+  }
+
+  private fileLocalExtendedServicesOutputChangedEvent(output: string) {
+    this.localExtendedServicesOutputChangedHandler?.(output);
+  }
+
+  private fileLocalExtendedServicesErrorOutputChangedEvent(output: string) {
+    this.localExtendedServicesErrorOutputChangedHandler?.(output);
   }
 
   private fireLocalExtendedServicesStoppedEvent() {
     this.localExtendedServicesStoppedHandler?.();
   }
 
-  public subscribeLocalExtendedServicesStarted(handler: () => void) {
+  public subscribeLocalExtendedServicesStarted(handler: (configuration: Configuration) => void) {
     this.localExtendedServicesStartedHandler = handler;
+  }
+
+  public subscribeLocalExtendedServicesOutputChanged(handler: (output: string) => void) {
+    this.localExtendedServicesOutputChangedHandler = handler;
+  }
+
+  public subscribeLocalExtendedServicesErrorOutputChanged(handler: (output: string) => void) {
+    this.localExtendedServicesErrorOutputChangedHandler = handler;
   }
 
   public subscribeLocalExtendedServicesStopped(handler: () => void) {
@@ -127,6 +122,14 @@ export class LocalExtendedServices {
     this.localExtendedServicesStartedHandler = null;
   }
 
+  public unsubscribeLocalExtendedServicesOutputChanged() {
+    this.localExtendedServicesOutputChangedHandler = null;
+  }
+
+  public unsubscribeLocalExtendedServicesErrorOutputChanged() {
+    this.localExtendedServicesErrorOutputChangedHandler = null;
+  }
+
   public unsubscribeLocalExtendedServicesStopped() {
     this.localExtendedServicesStoppedHandler = null;
   }
@@ -134,8 +137,7 @@ export class LocalExtendedServices {
   public dispose(): void {
     this.stop();
     this.unsubscribeLocalExtendedServicesStarted();
+    this.unsubscribeLocalExtendedServicesOutputChanged();
     this.unsubscribeLocalExtendedServicesStopped();
-    this.startLocalExtendedServicesCommand.dispose();
-    this.stopLocalExtendedServicesCommand.dispose();
   }
 }
