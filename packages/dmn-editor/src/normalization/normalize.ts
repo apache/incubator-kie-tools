@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { autolayout } from "../autolayout/autolayout";
 import { ExternalModelsIndex } from "../DmnEditor";
 import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 import { addMissingImportNamespaces } from "../mutations/addMissingImportNamespaces";
