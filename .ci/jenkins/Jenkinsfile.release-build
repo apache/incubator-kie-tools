@@ -435,7 +435,7 @@ pipeline {
                         script {
                             env.KOGITO_SERVERLESS_OPERATOR_JOB_RESULT = build(
                                 wait: true,
-                                job: 'KIE/kie-tools/kie-tools-release-jobs/kogito-serverless-operator',
+                                job: 'KIE/kie-tools/kie-tools-release-jobs/sonataflow-operator',
                                 parameters: [
                                     booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                     string(name: 'BASE_REF', value: "${params.BASE_REF}"),

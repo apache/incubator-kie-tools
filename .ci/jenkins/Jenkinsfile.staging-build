@@ -131,10 +131,10 @@ pipeline {
         SONATAFLOW_DEVMODE_IMAGE__name = 'incubator-kie-sonataflow-devmode'
         SONATAFLOW_DEVMODE_IMAGE__buildTag = "${params.RELEASE_VERSION}-staging"
 
-        KOGITO_SERVERLESS_OPERATOR__registry = 'quay.io'
-        KOGITO_SERVERLESS_OPERATOR__account = 'kiegroup'
-        KOGITO_SERVERLESS_OPERATOR__name = 'kogito-serverless-operator'
-        KOGITO_SERVERLESS_OPERATOR__buildTag = "${params.RELEASE_VERSION}-staging"
+        SONATAFLOW_OPERATOR__registry = 'docker.io'
+        SONATAFLOW_OPERATOR__account = 'apache'
+        SONATAFLOW_OPERATOR__name = 'incubator-kie-sonataflow-operator'
+        SONATAFLOW_OPERATOR__buildTag = "${params.RELEASE_VERSION}-staging"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
     }
@@ -656,7 +656,7 @@ pipeline {
             }
         }
 
-        stage('STAGING: Push kogito-serverless-operator to quay.io') {
+        stage('STAGING: Push sonataflow-operator to quay.io') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -870,7 +870,7 @@ def uploadOnlineEditor() {
 def uploadKogitoServerlessOperator() {
     githubUtils.uploadReleaseAsset(
         "${params.UPLOAD_ASSET_URL}",
-        'kie-tools/packages/kogito-serverless-operator/operator.yaml',
+        'kie-tools/packages/sonataflow-operator/operator.yaml',
         "STAGING__operator_${params.RELEASE_VERSION}.yaml",
         'application/yaml',
         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
@@ -1096,9 +1096,9 @@ def pushKogitoSwfDevModeToQuay() {
 
 def pushKogitoServerlessOperatorToQuay() {
     dockerUtils.pushImageToRegistry(
-        "${env.KOGITO_SERVERLESS_OPERATOR__registry}/${env.KOGITO_SERVERLESS_OPERATOR__account}",
-        "${env.KOGITO_SERVERLESS_OPERATOR__name}",
-        "${env.KOGITO_SERVERLESS_OPERATOR__buildTag}",
+        "${env.SONATAFLOW_OPERATOR__registry}/${env.SONATAFLOW_OPERATOR__account}",
+        "${env.SONATAFLOW_OPERATOR__name}",
+        "${env.SONATAFLOW_OPERATOR__buildTag}",
         "${pipelineVars.quayKiegroupPushCredentialsId}"
     )
 }

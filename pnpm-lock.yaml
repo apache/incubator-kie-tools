@@ -6050,9 +6050,9 @@ importers:
 
   packages/kn-plugin-workflow:
     devDependencies:
-      "@kie-tools/kogito-serverless-operator":
+      "@kie-tools/sonataflow-operator":
         specifier: workspace:*
-        version: link:../kogito-serverless-operator
+        version: link:../sonataflow-operator
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -6093,7 +6093,7 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2
 
-  packages/kogito-serverless-operator:
+  packages/sonataflow-operator:
     devDependencies:
       "@kie-tools/python-venv":
         specifier: workspace:*

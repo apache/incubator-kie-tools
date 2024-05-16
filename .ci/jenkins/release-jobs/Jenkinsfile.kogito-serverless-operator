@@ -38,14 +38,14 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        KOGITO_SERVERLESS_OPERATOR__registry = 'quay.io'
-        KOGITO_SERVERLESS_OPERATOR__account = 'kiegroup'
-        KOGITO_SERVERLESS_OPERATOR__name = 'kogito-serverless-operator'
-        KOGITO_SERVERLESS_OPERATOR__buildTag = "${params.RELEASE_VERSION}"
+        SONATAFLOW_OPERATOR__registry = 'docker.io'
+        SONATAFLOW_OPERATOR__account = 'apache'
+        SONATAFLOW_OPERATOR__name = 'incubator-kie-sonataflow-operator'
+        SONATAFLOW_OPERATOR__buildTag = "${params.RELEASE_VERSION}"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
-        PNPM_FILTER_STRING = '-F @kie-tools/kogito-serverless-operator...'
+        PNPM_FILTER_STRING = '-F @kie-tools/sonataflow-operator...'
     }
 
     stages {
@@ -126,7 +126,7 @@ pipeline {
                 script {
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
-                        'kie-tools/packages/kogito-serverless-operator/operator.yaml',
+                        'kie-tools/packages/sonataflow-operator/operator.yaml',
                         "operator_${params.RELEASE_VERSION}.yaml",
                         'application/yaml',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
@@ -135,29 +135,29 @@ pipeline {
             }
         }
 
-        stage('Create "latest" tag for kogito-serverless-operator') {
+        stage('Create "latest" tag for sonataflow-operator') {
             steps {
                 script {
                     dockerUtils.tagImage(
-                        "${env.KOGITO_SERVERLESS_OPERATOR__registry}/${env.KOGITO_SERVERLESS_OPERATOR__account}",
-                        "${env.KOGITO_SERVERLESS_OPERATOR__name}",
-                        "${env.KOGITO_SERVERLESS_OPERATOR__buildTag}",
+                        "${env.SONATAFLOW_OPERATOR__registry}/${env.SONATAFLOW_OPERATOR__account}",
+                        "${env.SONATAFLOW_OPERATOR__name}",
+                        "${env.SONATAFLOW_OPERATOR__buildTag}",
                         'latest'
                     )
                 }
             }
         }
 
-        stage('Push kogito-serverless-operator to quay.io') {
+        stage('Push sonataflow-operator to quay.io') {
             when {
                 expression { !params.DRY_RUN }
             }
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.KOGITO_SERVERLESS_OPERATOR__registry}/${env.KOGITO_SERVERLESS_OPERATOR__account}",
-                        "${env.KOGITO_SERVERLESS_OPERATOR__name}",
-                        "${env.KOGITO_SERVERLESS_OPERATOR__buildTag} latest",
+                        "${env.SONATAFLOW_OPERATOR__registry}/${env.SONATAFLOW_OPERATOR__account}",
+                        "${env.SONATAFLOW_OPERATOR__name}",
+                        "${env.SONATAFLOW_OPERATOR__buildTag} latest",
                         "${pipelineVars.quayKiegroupPushCredentialsId}"
                     )
                 }

@@ -136,10 +136,10 @@ pipeline {
         SONATAFLOW_DEVMODE_IMAGE__name = 'incubator-kie-sonataflow-devmode'
         SONATAFLOW_DEVMODE_IMAGE__buildTag = 'latest'
 
-        KOGITO_SERVERLESS_OPERATOR__registry = 'quay.io'
-        KOGITO_SERVERLESS_OPERATOR__account = 'kiegroup'
-        KOGITO_SERVERLESS_OPERATOR__name = 'kogito-serverless-operator-nightly'
-        KOGITO_SERVERLESS_OPERATOR__buildTag = 'latest'
+        SONATAFLOW_OPERATOR__registry = 'docker.io'
+        SONATAFLOW_OPERATOR__account = 'apache'
+        SONATAFLOW_OPERATOR__name = 'incubator-kie-sonataflow-operator'
+        SONATAFLOW_OPERATOR__buildTag = 'latest'
 
         BUILD_DATE = sh(script: "echo `date +'%Y-%m-%d %T'`", returnStdout: true).trim()
 
@@ -260,13 +260,13 @@ pipeline {
             }
         }
 
-        stage('Push kogito-serverless-operator to quay.io') {
+        stage('Push sonataflow-operator to quay.io') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.KOGITO_SERVERLESS_OPERATOR__registry}/${env.KOGITO_SERVERLESS_OPERATOR__account}",
-                        "${env.KOGITO_SERVERLESS_OPERATOR__name}",
-                        "${env.KOGITO_SERVERLESS_OPERATOR__buildTag}",
+                        "${env.SONATAFLOW_OPERATOR__registry}/${env.SONATAFLOW_OPERATOR__account}",
+                        "${env.SONATAFLOW_OPERATOR__name}",
+                        "${env.SONATAFLOW_OPERATOR__buildTag}",
                         "${pipelineVars.quayKiegroupPushCredentialsId}"
                     )
                 }
