@@ -1,0 +1,89 @@
+{
+  "id": "greeting",
+  "description": "Greeting example on k8s!",
+  "version": "0.0.1",
+  "start": {
+    "stateName": "ChooseOnLanguage"
+  },
+  "dataInputSchema": {
+    "schema": "schemas/input.json",
+    "failOnValidationErrors": true
+  },
+  "specVersion": "0.8",
+  "expressionLang": "jq",
+  "states": [
+    {
+      "name": "ChooseOnLanguage",
+      "type": "switch",
+      "defaultCondition": {
+        "transition": {
+          "nextState": "GreetInEnglish"
+        }
+      },
+      "dataConditions": [
+        {
+          "condition": "${ .language == \"English\" }",
+          "transition": {
+            "nextState": "GreetInEnglish"
+          }
+        },
+        {
+          "condition": "${ .language == \"Spanish\" }",
+          "transition": {
+            "nextState": "GreetInSpanish"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GreetInEnglish",
+      "type": "inject",
+      "transition": {
+        "nextState": "GreetPerson"
+      },
+      "data": {
+        "greeting": "Hello from JSON Workflow, "
+      }
+    },
+    {
+      "name": "GreetInSpanish",
+      "type": "inject",
+      "transition": {
+        "nextState": "GreetPerson"
+      },
+      "data": {
+        "greeting": "Saludos desde JSON Workflow, "
+      }
+    },
+    {
+      "name": "GreetPerson",
+      "type": "operation",
+      "end": {
+        "terminate": true
+      },
+      "actionMode": "sequential",
+      "actions": [
+        {
+          "name": "greetAction",
+          "functionRef": {
+            "refName": "greetFunction",
+            "arguments": {
+              "message": ".greeting+.name"
+            },
+            "invoke": "sync"
+          },
+          "actionDataFilter": {
+            "useResults": true
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "name": "greetFunction",
+      "operation": "sysout",
+      "type": "custom"
+    }
+  ]
+}

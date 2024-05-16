@@ -17,9 +17,9 @@
 # under the License.
 #
 schema_version: 1
-name: org.kie.kogito.swf.builder.build-config
+name: org.kie.sonataflow.builder.build-config
 version: "0.0.0"
-description: "Kogito Serverless Workflow builder image build configuration"
+description: "Sonataflow builder image build configuration"
 
 envs:
   - name: "SCRIPT_DEBUG"

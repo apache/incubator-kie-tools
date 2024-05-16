@@ -634,7 +634,7 @@ pipeline {
             }
         }
 
-        stage('STAGING: Push kogito-swf-builder to quay.io') {
+        stage('STAGING: Push sonataflow-builder to quay.io') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -645,7 +645,7 @@ pipeline {
             }
         }
 
-        stage('STAGING: Push kogito-swf-devmode to quay.io') {
+        stage('STAGING: Push sonataflow-devmode to quay.io') {
             when {
                 expression { !params.DRY_RUN }
             }

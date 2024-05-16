@@ -31,7 +31,7 @@
    under the License.
 -->
 
-# kogito-swf-common utility scripts
+# sonataflow-image-common utility scripts
 
 This directory contains a set of python scripts used to help to perform some tasks during the build and configuration of the `kogito-swf` images:
 

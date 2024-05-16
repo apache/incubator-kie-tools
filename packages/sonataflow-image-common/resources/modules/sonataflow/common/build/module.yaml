@@ -17,15 +17,9 @@
 # under the License.
 #
 schema_version: 1
-name: org.kie.kogito.swf.builder.runtime.community
+name: org.kie.sonataflow.common.build
 version: "0.0.0"
-description: "Kogito Serverless Workflow builder runtime module"
-
-artifacts:
-  - image: builder
-    path: /home/kogito/build_output/kogito-swf-quarkus-app.tar
-  - image: builder
-    path: /home/kogito/build_output/kogito-swf-maven-repo.tar
+description: "Kogito Serverless Workflow image build process"
 
 execute:
   - script: configure.sh

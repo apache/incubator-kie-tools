@@ -17,7 +17,7 @@
 # under the License.
 #
 schema_version: 1
-name: org.kie.kogito.swf.devmode.runtime.common
+name: org.kie.sonataflow.devmode.runtime.common
 version: "0.0.0"
 description: "Kogito Serverless Workflow devmode common module"
 

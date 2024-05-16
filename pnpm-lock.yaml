@@ -6117,66 +6117,6 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
-  packages/kogito-swf-builder:
-    devDependencies:
-      "@kie-tools/python-venv":
-        specifier: workspace:*
-        version: link:../python-venv
-      "@kie-tools/root-env":
-        specifier: workspace:*
-        version: link:../root-env
-      "@kie-tools/sonataflow-image-common":
-        specifier: workspace:*
-        version: link:../kogito-swf-common
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
-      replace-in-file:
-        specifier: ^7.1.0
-        version: 7.1.0
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6
-
-  packages/kogito-swf-common:
-    devDependencies:
-      "@kie-tools/python-venv":
-        specifier: workspace:*
-        version: link:../python-venv
-      "@kie-tools/root-env":
-        specifier: workspace:*
-        version: link:../root-env
-
-  packages/kogito-swf-devmode:
-    devDependencies:
-      "@kie-tools/python-venv":
-        specifier: workspace:*
-        version: link:../python-venv
-      "@kie-tools/root-env":
-        specifier: workspace:*
-        version: link:../root-env
-      "@kie-tools/sonataflow-image-common":
-        specifier: workspace:*
-        version: link:../kogito-swf-common
-      "@kie-tools/sonataflow-quarkus-devui":
-        specifier: workspace:*
-        version: link:../sonataflow-quarkus-devui
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
-      replace-in-file:
-        specifier: ^7.1.0
-        version: 7.1.0
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6
-
   packages/kogito-task-console:
     devDependencies:
       "@kie-tools/image-builder":

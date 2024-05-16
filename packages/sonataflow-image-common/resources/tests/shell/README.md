@@ -26,7 +26,7 @@
 The `run.sh` should be used to run the tests since it must set a few env vars. To run from your terminal, try:
 
 ```shell
-tests/shell/run.sh kogito-swf-devmode quay.io/kiegroup/kogito-swf-devmode:999-20240509-SNAPSHOT
+tests/shell/run.sh sonataflow-devmode quay.io/kiegroup/sonataflow-devmode:999-20240509-SNAPSHOT
 ```
 
 The first argument is the test case to run and the second, the image.

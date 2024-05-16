@@ -118,7 +118,7 @@ pipeline {
             }
         }
 
-        stage('Create "latest" tag for kogito-swf-devmode') {
+        stage('Create "latest" tag for sonataflow-devmode') {
             steps {
                 script {
                     dockerUtils.tagImage(
@@ -131,7 +131,7 @@ pipeline {
             }
         }
 
-        stage('Push kogito-swf-devmode to quay.io') {
+        stage('Push sonataflow-devmode to quay.io') {
             when {
                 expression { !params.DRY_RUN }
             }

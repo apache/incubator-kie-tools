@@ -17,7 +17,7 @@
 # under the License.
 #
 schema_version: 1
-name: org.kie.kogito.swf.devmode.build-config
+name: org.kie.sonataflow.devmode.build-config
 version: "0.0.0"
 description: "Kogito Serverless Workflow devmode image build configuration"
 

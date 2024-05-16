@@ -234,7 +234,7 @@ pipeline {
             }
         }
 
-        stage('Push kogito-swf-builder to quay.io') {
+        stage('Push sonataflow-builder to quay.io') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
@@ -247,7 +247,7 @@ pipeline {
             }
         }
 
-        stage('Push kogito-swf-devmode to quay.io') {
+        stage('Push sonataflow-devmode to quay.io') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(

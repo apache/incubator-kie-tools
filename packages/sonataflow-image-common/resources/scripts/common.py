@@ -69,7 +69,7 @@ def get_all_module_dirs(source_folder = None):
         for item in f:
             if MODULE_FILENAME == item:
                 modules.append(os.path.dirname(os.path.join(r, item)))
-                print("[kogito-swf-common] Processing modules of '" + os.path.dirname(os.path.join(r, item)) + "'")
+                print("[sonataflow-image-common] Processing modules of '" + os.path.dirname(os.path.join(r, item)) + "'")
 
     return modules
 

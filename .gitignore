@@ -310,12 +310,12 @@ packages/dmn-marshaller/**/ts-gen
 packages/scesim-marshaller/**/ts-gen
 
 # kogito-sf-{builder|devmode}-image: excluding module build folders
-!packages/kogito-swf-common/resources/**/build
-!packages/kogito-swf-builder/resources/**/build
-!packages/kogito-swf-devmode/resources/**/build
-!packages/kogito-swf-common/test-resources/
-!packages/kogito-swf-builder/test-resources/
-!packages/kogito-swf-devmode/test-resources/
+!packages/sonataflow-image-common/resources/**/build
+!packages/sonataflow-builder-image/resources/**/build
+!packages/sonataflow-devmode-image/resources/**/build
+!packages/sonataflow-image-common/test-resources/
+!packages/sonataflow-builder-image/test-resources/
+!packages/sonataflow-devmode-image/test-resources/
 
 __pycache__
 packages/python-venv/venv

@@ -17,7 +17,7 @@
     "build:prod": "pnpm build:dev && pnpm image:test",
     "copy-assets": "run-script-os",
     "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources build && cp -R resources/* build && pnpm copy-devui-repo",
-    "copy-devui-repo": "tar -C ~/.m2/repository/org/apache/kie/ -cvf build/modules/kogito-swf/devmode/build-config/sonataflow-quarkus-devui-maven-repo.tar sonataflow && tar -C ~/.m2/repository/org/kie/ -cvf build/modules/kogito-swf/devmode/build-config/kie-tools-maven-base-maven-repo.tar kie-tools-maven-base",
+    "copy-devui-repo": "tar -C ~/.m2/repository/org/apache/kie/ -cvf build/modules/sonataflow/devmode/build-config/sonataflow-quarkus-devui-maven-repo.tar sonataflow && tar -C ~/.m2/repository/org/kie/ -cvf build/modules/sonataflow/devmode/build-config/kie-tools-maven-base-maven-repo.tar kie-tools-maven-base",
     "copy-test-assets": "run-script-os",
     "copy-test-assets:linux:darwin": "cp -R ./node_modules/@kie-tools/sonataflow-image-common/test-resources/* build && cp -R test-resources/* build",
     "format": "prettier --write .",

@@ -15,9 +15,9 @@
    under the License.
 -->
 
-# kogito-swf-common
+# sonataflow-image-common
 
-This package contains the necessary resources to help other modules to build the `kogito-swf-{builder|devmode}` images.
+This package contains the necessary resources to help other modules to build the `sonataflow-{builder|devmode}` images.
 
 The contents of this package are:
 

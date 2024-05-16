@@ -50,7 +50,7 @@ let imageYaml = fs.readFileSync(originalYamlPath, "utf8");
 const imageUrl = `${buildEnv.env.sonataflowBuilderImage.registry}/${buildEnv.env.sonataflowBuilderImage.account}/${buildEnv.env.sonataflowBuilderImage.name}`;
 
 // Replace the whole string between quotes ("") with the image name
-imageYaml = imageYaml.replace(/(?<=")(.*kogito-swf-builder.*)(?=")/gm, imageUrl);
+imageYaml = imageYaml.replace(/(?<=")(.*sonataflow-builder.*)(?=")/gm, imageUrl);
 
 // Write file and then rename it to match the image name
 fs.writeFileSync(originalYamlPath, imageYaml);
@@ -59,6 +59,6 @@ fs.renameSync(originalYamlPath, path.join(resourcesPath, `${buildEnv.env.sonataf
 // Replace image URL in .feature files
 replaceInFile.sync({
   files: ["**/*.feature"],
-  from: /@quay.io\/kiegroup\/.*/g,
+  from: /@docker.io\/apache\/.*/g,
   to: `@${imageUrl}`,
 });
