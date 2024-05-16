@@ -871,4 +871,14 @@ test.describe("Resizing", () => {
       expect(await literal.boundingBox()).toHaveProperty("width", 283);
     });
   });
+
+  test.describe("Conditional expression", async () => {
+    test("should resize a Conditional", async ({ boxedExpressionEditor, page, resizing, stories }) => {});
+
+    test("should resize a Conditional - if", async ({ boxedExpressionEditor, page, resizing, stories }) => {});
+
+    test("should resize a Conditional - then", async ({ boxedExpressionEditor, page, resizing, stories }) => {});
+
+    test("should resize a Conditional - else", async ({ boxedExpressionEditor, page, resizing, stories }) => {});
+  });
 });
