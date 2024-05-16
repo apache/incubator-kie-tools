@@ -26,7 +26,7 @@ import { addEdge } from "../mutations/addEdge";
 import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
 import { updateDecisionServiceDividerLine } from "../mutations/updateDecisionServiceDividerLine";
-import { AutolayoutParentNode, FAKE_MARKER, visitNodeAndNested } from "./autolayout";
+import { AutolayoutParentNode, FAKE_MARKER, visitNodeAndNested } from "./autoLayout";
 import { State } from "../store/Store";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";

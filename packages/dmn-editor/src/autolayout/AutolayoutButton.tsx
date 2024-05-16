@@ -21,7 +21,7 @@ import * as React from "react";
 import OptimizeIcon from "@patternfly/react-icons/dist/js/icons/optimize-icon";
 import { useAutoLayout } from "./AutoLayoutHook";
 import { useDmnEditorStoreApi } from "../store/StoreContext";
-import { autoLayout } from "./autolayout";
+import { autoLayout } from "./autoLayout";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export function AutolayoutButton() {
