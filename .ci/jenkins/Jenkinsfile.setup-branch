@@ -31,7 +31,7 @@ pipeline {
     }
 
     parameters {
-        string(name: 'CHECKOUT_BRANCH_NAME', defaultValue: 'main' description: 'Set the Git branch to checkout', trim: true)
+        string(name: 'CHECKOUT_BRANCH_NAME', defaultValue: 'main', description: 'Set the Git branch to checkout', trim: true)
         string(name: 'NEW_BRANCH_NAME', description: 'Set the Git branch to be created', trim: true)
         string(name: 'KIE_TOOLS_VERSION', description: 'KIE Tools version to set', trim: true)
         string(name: 'KOGITO_MAVEN_VERSION', description: 'Kogito maven version to set', trim: true)
