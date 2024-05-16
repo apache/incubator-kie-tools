@@ -40,10 +40,10 @@ export function useAutoLayout() {
       s,
       autolayouted,
       parentNodesById,
-      __old_nodesById,
-      __old_edgesById,
-      __old_edges,
-      __old_dmnShapesByHref,
+      nodesById,
+      edgesById,
+      edges,
+      dmnShapesByHref,
     }: {
       s: State;
       autolayouted: {
@@ -52,10 +52,10 @@ export function useAutoLayout() {
         edges: Elk.ElkExtendedEdge[] | undefined;
       };
       parentNodesById: Map<string, AutolayoutParentNode>;
-      __old_nodesById: Map<string, RF.Node<DmnDiagramNodeData, string | undefined>>;
-      __old_edgesById: Map<string, RF.Edge<DmnDiagramEdgeData>>;
-      __old_edges: RF.Edge<DmnDiagramEdgeData>[];
-      __old_dmnShapesByHref: Map<
+      nodesById: Map<string, RF.Node<DmnDiagramNodeData, string | undefined>>;
+      edgesById: Map<string, RF.Edge<DmnDiagramEdgeData>>;
+      edges: RF.Edge<DmnDiagramEdgeData>[];
+      dmnShapesByHref: Map<
         string,
         DMNDI15__DMNShape & {
           index: number;
@@ -75,7 +75,7 @@ export function useAutoLayout() {
           autolayoutedElkNodesById.set(elkNode.id, elkNode);
 
           const nodeId = elkNode.id;
-          const node = __old_nodesById.get(nodeId)!;
+          const node = nodesById.get(nodeId)!;
 
           repositionNode({
             definitions: s.dmn.model.definitions,
@@ -88,12 +88,12 @@ export function useAutoLayout() {
                 x: elkNode.x! + positionOffset.x,
                 y: elkNode.y! + positionOffset.y,
               },
-              selectedEdges: [...__old_edgesById.keys()],
+              selectedEdges: [...edgesById.keys()],
               shapeIndex: node.data?.shape.index,
-              sourceEdgeIndexes: __old_edges.flatMap((e) =>
+              sourceEdgeIndexes: edges.flatMap((e) =>
                 e.source === nodeId && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
               ),
-              targetEdgeIndexes: __old_edges.flatMap((e) =>
+              targetEdgeIndexes: edges.flatMap((e) =>
                 e.target === nodeId && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
               ),
             },
@@ -109,12 +109,12 @@ export function useAutoLayout() {
           }
 
           const nodeId = elkNode.id;
-          const node = __old_nodesById.get(nodeId)!;
+          const node = nodesById.get(nodeId)!;
 
           resizeNode({
             definitions: s.dmn.model.definitions,
             drdIndex: s.computed(s).getDrdIndex(),
-            __readonly_dmnShapesByHref: __old_dmnShapesByHref,
+            __readonly_dmnShapesByHref: dmnShapesByHref,
             snapGrid: s.diagram.snapGrid,
             change: {
               index: node.data.index,
@@ -125,10 +125,10 @@ export function useAutoLayout() {
                 "@_height": elkNode.height!,
               },
               shapeIndex: node.data?.shape.index,
-              sourceEdgeIndexes: __old_edges.flatMap((e) =>
+              sourceEdgeIndexes: edges.flatMap((e) =>
                 e.source === nodeId && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
               ),
-              targetEdgeIndexes: __old_edges.flatMap((e) =>
+              targetEdgeIndexes: edges.flatMap((e) =>
                 e.target === nodeId && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
               ),
             },
@@ -138,7 +138,7 @@ export function useAutoLayout() {
 
       // 9. Updating Decision Service divider lines after all nodes are repositioned and resized.
       for (const [parentNodeId] of parentNodesById) {
-        const parentNode = __old_nodesById.get(parentNodeId);
+        const parentNode = nodesById.get(parentNodeId);
         if (parentNode?.type !== NODE_TYPES.decisionService) {
           continue;
         }
@@ -162,7 +162,7 @@ export function useAutoLayout() {
         updateDecisionServiceDividerLine({
           definitions: s.dmn.model.definitions,
           drdIndex: s.computed(s).getDrdIndex(),
-          __readonly_dmnShapesByHref: __old_dmnShapesByHref,
+          __readonly_dmnShapesByHref: dmnShapesByHref,
           drgElementIndex: parentNode.data.index,
           shapeIndex: parentNode.data.shape.index,
           snapGrid: s.diagram.snapGrid,
@@ -176,10 +176,10 @@ export function useAutoLayout() {
           continue;
         }
 
-        const edge = __old_edgesById.get(elkEdge.id)!;
+        const edge = edgesById.get(elkEdge.id)!;
 
-        const sourceNode = __old_nodesById.get(elkEdge.sources[0])!;
-        const targetNode = __old_nodesById.get(elkEdge.targets[0])!;
+        const sourceNode = nodesById.get(elkEdge.sources[0])!;
+        const targetNode = nodesById.get(elkEdge.targets[0])!;
 
         // If the target is an external node, we don't have to create the edge.
         if (targetNode.data.dmnObjectQName.prefix) {

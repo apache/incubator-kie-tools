@@ -51,10 +51,10 @@ export function AutolayoutButton() {
     dmnEditorStoreApi.setState((s) => {
       applyAutoLayout({
         s,
-        __old_dmnShapesByHref: s.computed(s).indexedDrd().dmnShapesByHref,
-        __old_edges: s.computed(s).getDiagramData(externalModelsByNamespace).edges,
-        __old_edgesById: s.computed(s).getDiagramData(externalModelsByNamespace).edgesById,
-        __old_nodesById: s.computed(s).getDiagramData(externalModelsByNamespace).nodesById,
+        dmnShapesByHref: s.computed(s).indexedDrd().dmnShapesByHref,
+        edges: s.computed(s).getDiagramData(externalModelsByNamespace).edges,
+        edgesById: s.computed(s).getDiagramData(externalModelsByNamespace).edgesById,
+        nodesById: s.computed(s).getDiagramData(externalModelsByNamespace).nodesById,
         autolayouted: autolayouted,
         parentNodesById: parentNodesById,
       });
