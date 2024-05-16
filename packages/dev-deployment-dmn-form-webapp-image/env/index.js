@@ -22,15 +22,15 @@ const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/b
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry: {
-      default: "quay.io",
+      default: "docker.io",
       description: "The image registry.",
     },
     DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account: {
-      default: "kie-tools",
+      default: "apache",
       description: "The image registry account.",
     },
     DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name: {
-      default: "dev-deployment-dmn-form-webapp-image",
+      default: "incubator-kie-sandbox-dev-deployment-dmn-form-webapp",
       description: "The image name.",
     },
     DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags: {

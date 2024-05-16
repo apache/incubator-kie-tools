@@ -34,15 +34,15 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "The container Home Path.",
     },
     DEV_DEPLOYMENT_BASE_IMAGE__registry: {
-      default: "quay.io",
+      default: "docker.io",
       description: "The image registry.",
     },
     DEV_DEPLOYMENT_BASE_IMAGE__account: {
-      default: "kie-tools",
+      default: "apache",
       description: "The image registry account.",
     },
     DEV_DEPLOYMENT_BASE_IMAGE__name: {
-      default: "dev-deployment-base-image",
+      default: "incubator-kie-sandbox-dev-deployment-base",
       description: "The image name.",
     },
     DEV_DEPLOYMENT_BASE_IMAGE__buildTags: {

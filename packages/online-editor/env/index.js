@@ -78,15 +78,15 @@ module.exports = composeEnv(
         description: "The name used to refer to a particular KIE Sandbox distribution.",
       },
       ONLINE_EDITOR__devDeploymentBaseImageRegistry: {
-        default: "quay.io",
+        default: "docker.io",
         description: "Image registry to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentBaseImageAccount: {
-        default: "kie-tools",
+        default: "apache",
         description: "Image account to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentBaseImageName: {
-        default: "dev-deployment-base-image",
+        default: "incubator-kie-sandbox-dev-deployment-base",
         description: "Image name to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentBaseImageTag: {
@@ -94,15 +94,15 @@ module.exports = composeEnv(
         description: "Image tag to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageRegistry: {
-        default: "quay.io",
+        default: "docker.io",
         description: "Image registry to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageAccount: {
-        default: "kie-tools",
+        default: "apache",
         description: "Image account to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageName: {
-        default: "dev-deployment-kogito-quarkus-blank-app-image",
+        default: "incubator-kie-sandbox-dev-deployment-kogito-quarkus-blank-app",
         description: "Image name to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageTag: {
@@ -110,15 +110,15 @@ module.exports = composeEnv(
         description: "Image tag to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry: {
-        default: "quay.io",
+        default: "docker.io",
         description: "Image registry to be used by Dev deployments to display a form for deployed DMN models.",
       },
       ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount: {
-        default: "kie-tools",
+        default: "apache",
         description: "Image account to be used by Dev deployments to display a form for deployed DMN models.",
       },
       ONLINE_EDITOR__devDeploymentDmnFormWebappImageName: {
-        default: "dev-deployment-dmn-form-webapp-image",
+        default: "incubator-kie-sandbox-dev-deployment-dmn-form-webapp",
         description: "Image name to be used by Dev deployments to display a form for deployed DMN models.",
       },
       ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag: {

@@ -43,24 +43,20 @@ pipeline {
         ONLINE_EDITOR__extendedServicesDownloadUrlMacOs = "https://github.com/apache/incubator-kie-tools/releases/download/${params.RELEASE_VERSION}/kie_sandbox_extended_services_macos_${params.RELEASE_VERSION}.dmg"
         ONLINE_EDITOR__extendedServicesDownloadUrlWindows = "https://github.com/apache/incubator-kie-tools/releases/download/${params.RELEASE_VERSION}/kie_sandbox_extended_services_windows_${params.RELEASE_VERSION}.exe"
         ONLINE_EDITOR__extendedServicesCompatibleVersion = "${params.RELEASE_VERSION}"
-        ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'quay.io'
-        ONLINE_EDITOR__devDeploymentBaseImageAccount = 'kie-tools'
-        ONLINE_EDITOR__devDeploymentBaseImageName = 'dev-deployment-base-image'
+        ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'docker.io'
+        ONLINE_EDITOR__devDeploymentBaseImageAccount = 'apache'
+        ONLINE_EDITOR__devDeploymentBaseImageName = 'incubator-kie-sandbox-dev-deployment-base'
         ONLINE_EDITOR__devDeploymentBaseImageTag = "${params.RELEASE_VERSION}"
-        ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry = 'quay.io'
-        ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'kie-tools'
-        ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'dev-deployment-dmn-form-webapp-image'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry = 'docker.io'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'apache'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'incubator-kie-sandbox-dev-deployment-dmn-form-webapp'
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = "${params.RELEASE_VERSION}"
+        ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageRegistry = 'docker.io'
+        ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageAccount = 'apache'
+        ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageName = 'incubator-kie-sandbox-dev-deployment-kogito-quarkus-blank-app'
+        ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageTag = "${params.RELEASE_VERSION}"
         ONLINE_EDITOR__gtmId = 'GTM-PQGMKNW'
         ONLINE_EDITOR__corsProxyUrl = 'https://cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
-        DEV_DEPLOYMENT_BASE_IMAGE__registry = 'quay.io'
-        DEV_DEPLOYMENT_BASE_IMAGE__account = 'kie-tools'
-        DEV_DEPLOYMENT_BASE_IMAGE__name = 'dev-deployment-base-image'
-        DEV_DEPLOYMENT_BASE_IMAGE__buildTags = "latest ${params.RELEASE_VERSION}"
-        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry = 'quay.io'
-        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account = 'kie-tools'
-        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name = 'dev-deployment-dmn-form-webapp-image'
-        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags = "latest ${params.RELEASE_VERSION}"
 
         PNPM_FILTER_STRING = '-F @kie-tools/online-editor...'
     }

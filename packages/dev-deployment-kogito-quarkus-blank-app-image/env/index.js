@@ -33,15 +33,15 @@ module.exports = composeEnv([buildEnv, devDeploymentBaseImageEnv], {
       description: "The image used in the FROM import.",
     },
     DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry: {
-      default: "quay.io",
+      default: "docker.io",
       description: "The image registry.",
     },
     DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account: {
-      default: "kie-tools",
+      default: "apache",
       description: "The image registry account.",
     },
     DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name: {
-      default: "dev-deployment-kogito-quarkus-blank-app-image",
+      default: "incubator-kie-sandbox-dev-deployment-kogito-quarkus-blank-app",
       description: "The image name.",
     },
     DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTags: {
