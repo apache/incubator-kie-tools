@@ -17,82 +17,63 @@
  * under the License.
  */
 
-import * as pingrequest from "./requests/PingRequest";
-import * as pingresponse from "./requests/PingResponse";
-import * as vscode from "vscode";
+import { Configuration } from "./configurations/Configuration";
+import { ping } from "./requests/PingRequest";
+import { PingResponse } from "./requests/PingResponse";
 
 export class Connection {
-  readonly startConnectionHeartbeatCommandUID: string = "extended-services-vscode-extension.startConnectionHeartbeat";
-  readonly stopConnectionHeartbeatCommandUID: string = "extended-services-vscode-extension.stopConnectionHeartbeat";
-
-  private startConnectionHeartbeatCommand: vscode.Disposable;
-  private stopConnectionHeartbeatCommand: vscode.Disposable;
-
-  private readonly startConnectionHeartbeatCommandHandler = (
-    extendedServicesURL: URL,
-    connectionHeartbeatIntervalInSecs: number
-  ) => {
-    this.start(extendedServicesURL, connectionHeartbeatIntervalInSecs);
-  };
-  private readonly stopConnectionHeartbeatCommandHandler = () => {
-    this.stop();
-  };
-
-  private connectedHandler: (() => void) | null = null;
+  private connectedHandler: ((configuration: Configuration) => void) | null = null;
+  private connectionLostHandler: ((errorMessage: string) => void) | null = null;
   private disconnectedHandler: (() => void) | null = null;
 
   private timeout: NodeJS.Timeout | null = null;
-  private lastPingStarted: boolean = false;
+  private connected: boolean = false;
 
-  constructor() {
-    this.startConnectionHeartbeatCommand = vscode.commands.registerCommand(
-      this.startConnectionHeartbeatCommandUID,
-      this.startConnectionHeartbeatCommandHandler
-    );
-    this.stopConnectionHeartbeatCommand = vscode.commands.registerCommand(
-      this.stopConnectionHeartbeatCommandUID,
-      this.stopConnectionHeartbeatCommandHandler
-    );
-  }
-
-  private async performHeartbeatCheck(serviceURL: URL): Promise<void> {
-    const pingResponse: pingresponse.PingResponse = await pingrequest.ping(serviceURL);
-    if (pingResponse.started != this.lastPingStarted) {
-      if (pingResponse.started) {
-        this.fireConnectedEvent();
-      } else {
-        this.fireDisconnectedEvent();
-      }
-      this.lastPingStarted = pingResponse.started;
-    }
-  }
-
-  private async start(extendedServicesURL: URL, connectionHeartbeatInterval: number): Promise<void> {
-    this.performHeartbeatCheck(extendedServicesURL);
+  public async start(configuration: Configuration): Promise<void> {
     this.timeout = setInterval(async () => {
-      this.performHeartbeatCheck(extendedServicesURL);
-    }, connectionHeartbeatInterval * 1000);
+      this.performHeartbeatCheck(configuration);
+    }, configuration.connectionHeartbeatIntervalinSecs * 1000);
   }
 
-  private stop(): void {
+  public stop(): void {
     if (this.timeout) {
       this.fireDisconnectedEvent();
       clearInterval(this.timeout);
       this.timeout = null;
-      this.lastPingStarted = false;
+      this.connected = false;
     }
   }
 
-  private fireConnectedEvent() {
-    this.connectedHandler?.();
+  private async performHeartbeatCheck(configuration: Configuration): Promise<void> {
+    try {
+      const pingResponse: PingResponse = await ping(configuration.extendedServicesURL);
+      if (pingResponse.started && !this.connected) {
+        this.fireConnectedEvent(configuration);
+        this.connected = true;
+      }
+    } catch (error) {
+      this.fireConnectionLost(error.message);
+    }
+  }
+
+  private fireConnectedEvent(configuration: Configuration) {
+    this.connectedHandler?.(configuration);
+  }
+
+  private fireConnectionLost(errorMessage: string) {
+    this.connectionLostHandler?.(errorMessage);
   }
 
   private fireDisconnectedEvent() {
     this.disconnectedHandler?.();
   }
 
-  public subscribeConnected(handler: () => void) {
+  public subscribeConnected(handler: (configuration: Configuration) => void) {
     this.connectedHandler = handler;
+  }
+
+  public subscribeConnectionLost(handler: (errorMessage: string) => void) {
+    this.connectionLostHandler = handler;
   }
 
   public subscribeDisconnected(handler: () => void) {
@@ -103,6 +84,10 @@ export class Connection {
     this.connectedHandler = null;
   }
 
+  public unsubscribeConnectionLost() {
+    this.connectionLostHandler = null;
+  }
+
   public unsubscribeDisconnected() {
     this.disconnectedHandler = null;
   }
@@ -110,8 +95,7 @@ export class Connection {
   public dispose(): void {
     this.stop();
     this.unsubscribeConnected();
+    this.unsubscribeConnectionLost();
     this.unsubscribeDisconnected();
-    this.startConnectionHeartbeatCommand.dispose();
-    this.stopConnectionHeartbeatCommand.dispose();
   }
 }

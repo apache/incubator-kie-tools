@@ -23,112 +23,53 @@ import * as validationRequests from "./requests/ValidationRequests";
 import * as validationResponse from "./requests/ValidationResponse";
 import * as vscode from "vscode";
 
-export class Validator {
-  readonly source = "Apache KIE Extended Services";
-  readonly clearValidationCommandUID: string = "extended-services-vscode-extension.clearValidation";
-  readonly validateCommandUID: string = "extended-services-vscode-extension.validate";
+const source: string = "Apache KIE Extended Services";
 
-  private clearValidationCommand: vscode.Disposable;
-  private validateCommand: vscode.Disposable;
-  private diagnosticCollection: vscode.DiagnosticCollection;
-
-  private readonly clearValidationCommandHandler = () => {
-    this.clearValidation();
-  };
-  private readonly validateCommandHandler = (serviceURL: URL) => {
-    this.validate(serviceURL);
-  };
-
-  constructor() {
-    this.diagnosticCollection = vscode.languages.createDiagnosticCollection("KIE Files Diagnostics");
-    this.clearValidationCommand = vscode.commands.registerCommand(
-      this.clearValidationCommandUID,
-      this.clearValidationCommandHandler
+function createBPMNDiagnostics(validationResponses: validationResponse.BPMNValidationResponse[]): vscode.Diagnostic[] {
+  return validationResponses.map((validationResponse) => {
+    const diagnostic = new vscode.Diagnostic(
+      new vscode.Range(0, 0, 0, 0),
+      validationResponse.error,
+      vscode.DiagnosticSeverity.Error
     );
-    this.validateCommand = vscode.commands.registerCommand(this.validateCommandUID, this.validateCommandHandler);
+    diagnostic.source = source;
+    return diagnostic;
+  });
+}
+
+function createDMNDiagnostics(validationResponses: validationResponse.DMNValidationResponse[]): vscode.Diagnostic[] {
+  return validationResponses.map((validationResponse) => {
+    const diagnostic = new vscode.Diagnostic(
+      new vscode.Range(0, 0, 0, 0),
+      validationResponse.message,
+      vscode.DiagnosticSeverity.Error
+    );
+    diagnostic.code = validationResponse.messageType;
+    diagnostic.source = source;
+    return diagnostic;
+  });
+}
+
+export async function validateBPMN(serviceURL: URL, kieFile: kieFile.KieFile): Promise<vscode.Diagnostic[]> {
+  try {
+    const validationResponses: validationResponse.BPMNValidationResponse[] = await validationRequests.validateBPMN(
+      serviceURL,
+      kieFile
+    );
+    return createBPMNDiagnostics(validationResponses);
+  } catch (error) {
+    throw new Error("VALIDATE BPMN ERROR - " + error.message);
   }
+}
 
-  private clearValidation(): void {
-    this.diagnosticCollection.clear();
-  }
-
-  private createBPMNDiagnostics(
-    kieFile: kieFile.KieFile,
-    validationResponses: validationResponse.BPMNValidationResponse[]
-  ): void {
-    const diagnostics: vscode.Diagnostic[] = [];
-
-    for (const validationResponse of validationResponses) {
-      const diagnostic = new vscode.Diagnostic(
-        new vscode.Range(0, 0, 0, 0),
-        validationResponse.error,
-        vscode.DiagnosticSeverity.Error
-      );
-      diagnostic.source = this.source;
-      diagnostics.push(diagnostic);
-    }
-
-    this.diagnosticCollection.set(kieFile.uri, diagnostics);
-  }
-
-  private createDMNDiagnostics(
-    kieFile: kieFile.KieFile,
-    validationResponses: validationResponse.DMNValidationResponse[]
-  ): void {
-    const diagnostics: vscode.Diagnostic[] = [];
-
-    for (const validationResponse of validationResponses) {
-      const diagnostic = new vscode.Diagnostic(
-        new vscode.Range(0, 0, 0, 0),
-        validationResponse.message,
-        vscode.DiagnosticSeverity.Error
-      );
-      diagnostic.code = validationResponse.messageType;
-      diagnostic.source = this.source;
-
-      diagnostics.push(diagnostic);
-    }
-
-    this.diagnosticCollection.set(kieFile.uri, diagnostics);
-  }
-
-  public async validateBPMN(serviceURL: URL, kieFiles: kieFile.KieFile[]): Promise<void> {
-    for (const kieFile of kieFiles) {
-      try {
-        const validationResponses: validationResponse.BPMNValidationResponse[] = await validationRequests.validateBPMN(
-          serviceURL,
-          kieFile
-        );
-        this.createBPMNDiagnostics(kieFile, validationResponses);
-      } catch (error) {
-        vscode.window.showErrorMessage("Validate BPMN error: " + error.message);
-      }
-    }
-  }
-
-  public async validateDMN(serviceURL: URL, kieFiles: kieFile.KieFile[]): Promise<void> {
-    for (const kieFile of kieFiles) {
-      try {
-        const validationResponses: validationResponse.DMNValidationResponse[] = await validationRequests.validateDMN(
-          serviceURL,
-          kieFile
-        );
-        this.createDMNDiagnostics(kieFile, validationResponses);
-      } catch (error) {
-        vscode.window.showErrorMessage("Validate DMN error: " + error.message);
-      }
-    }
-  }
-
-  public async validate(serviceURL: URL): Promise<void> {
-    const bpmnFiles: kieFile.KieFile[] = await kieFilesFetcher.findActiveKieFiles([kieFilesFetcher.bpmnDocumentFilter]);
-    const dmnFiles: kieFile.KieFile[] = await kieFilesFetcher.findActiveKieFiles([kieFilesFetcher.dmnDocumentFilter]);
-    await this.validateBPMN(serviceURL, bpmnFiles);
-    await this.validateDMN(serviceURL, dmnFiles);
-  }
-
-  public dispose(): void {
-    this.validateCommand.dispose();
-    this.clearValidationCommand.dispose();
+export async function validateDMN(serviceURL: URL, kieFile: kieFile.KieFile): Promise<vscode.Diagnostic[]> {
+  try {
+    const validationResponses: validationResponse.DMNValidationResponse[] = await validationRequests.validateDMN(
+      serviceURL,
+      kieFile
+    );
+    return createDMNDiagnostics(validationResponses);
+  } catch (error) {
+    throw new Error("VALIDATE DMN ERROR - " + error.message);
   }
 }

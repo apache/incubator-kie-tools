@@ -16,11 +16,11 @@
   "browser": "dist/extension/extension-browser.js",
   "main": "dist/extension/extension-main.js",
   "scripts": {
-    "build:dev": "pnpm clean && pnpm copy:extended-services-java && webpack --env dev",
-    "build:prod": "pnpm clean && pnpm copy:extended-services-java && webpack && pnpm pack:prod",
-    "clean": "rimraf dist",
+    "build:dev": "pnpm dist && webpack --env dev",
+    "build:prod": "pnpm dist && webpack && pnpm pack:prod",
     "compile": "webpack",
     "copy:extended-services-java": "cp -R ../extended-services-java/dist/extended-services-java ./dist/extended-services-java",
+    "dist": "rimraf dist && mkdir dist && pnpm copy:extended-services-java",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "open-in-browser": "vscode-test-web --extensionDevelopmentPath=. .",
     "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/extended_services_vscode_extension_$npm_package_version.vsix",
@@ -63,20 +63,20 @@
     "commands": [
       {
         "category": "Extended-Services",
-        "command": "extended-services-vscode-extension.connectExtendedServices",
-        "title": "Connect Apache KIE Extended-Services",
+        "command": "extended-services-vscode-extension.startExtendedServices",
+        "title": "Start Apache KIE Extended-Services",
         "when": "extended-services-vscode-extension.connected"
       },
       {
         "category": "Extended-Services",
-        "command": "extended-services-vscode-extension.disconnectExtendedServices",
-        "title": "Disconnect Apache KIE Extended-Services"
+        "command": "extended-services-vscode-extension.stopExtendedServices",
+        "title": "Stop Apache KIE Extended-Services"
       }
     ],
     "configuration": {
       "properties": {
         "extendedServices.connectionHeartbeatIntervalinSecs": {
-          "default": 5,
+          "default": 1,
           "description": "Specifies the interval (in seconds) between each connection check.",
           "format": "time",
           "order": 2,
@@ -147,11 +147,11 @@
     "menus": {
       "commandPalette": [
         {
-          "command": "extended-services-vscode-extension.connectExtendedServices",
+          "command": "extended-services-vscode-extension.startExtendedServices",
           "when": "!extended-services-vscode-extension.connected"
         },
         {
-          "command": "extended-services-vscode-extension.disconnectExtendedServices",
+          "command": "extended-services-vscode-extension.stopExtendedServices",
           "when": "extended-services-vscode-extension.connected"
         }
       ]
@@ -161,7 +161,8 @@
     "onLanguage:bpmn",
     "onLanguage:dmn",
     "onCustomEditor:kieKogitoWebviewEditorsBpmn",
-    "onCustomEditor:kieKogitoWebviewEditorsDmn"
+    "onCustomEditor:kieKogitoWebviewEditorsDmn",
+    "onCustomEditor:kieToolsDmnEditor"
   ],
   "icon": "icon.png",
   "capabilities": {

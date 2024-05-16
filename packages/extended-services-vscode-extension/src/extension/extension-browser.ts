@@ -17,161 +17,189 @@
  * under the License.
  */
 
+import * as kiefilesfetcher from "../kieFiles/KieFilesFetcher";
 import * as vscode from "vscode";
-import * as conf from "../configurations/Configuration";
-import * as cw from "../configurations/ConfigurationWatcher";
-import * as conn from "../Connection";
-import * as kfw from "../kieFiles/KieFilesWatcher";
-import * as vldt from "../Validator";
+import * as validator from "../Validator";
+import { Configuration, fetchConfiguration } from "../configurations/Configuration";
+import { ConfigurationWatcher } from "../configurations/ConfigurationWatcher";
+import { Connection } from "../Connection";
+import { KieFile } from "../kieFiles/KieFile";
+import { KieFilesWatcher } from "../kieFiles/KieFilesWatcher";
 
-const connectExtendedServicesCommandUID: string = "extended-services-vscode-extension.connectExtendedServices";
-const disconnectExtendedServicesCommandUID: string = "extended-services-vscode-extension.disconnectExtendedServices";
+const startExtendedServicesCommandUID: string = "extended-services-vscode-extension.startExtendedServices";
+const stopExtendedServicesCommandUID: string = "extended-services-vscode-extension.stopExtendedServices";
 const connectedEnablementUID: string = "extended-services-vscode-extension.connected";
 
 let connectExtendedServicesCommand: vscode.Disposable;
 let disconnectExtendedServicesCommand: vscode.Disposable;
 
-let kieFileWatcher: kfw.KieFilesWatcher;
-let configurationWatcher: cw.ConfigurationWatcher;
-let connection: conn.Connection;
-let validator: vldt.Validator;
 let statusBarItem: vscode.StatusBarItem;
-let userDisconnected: boolean;
-let connected: boolean;
+let diagnosticCollection: vscode.DiagnosticCollection;
 
-function initializeCommands(context: vscode.ExtensionContext): void {
-  const connectExtendedServicesCommandHandler = () => {
-    connectExtendedServices();
-  };
+let kieFilesWatcher: KieFilesWatcher;
+let configurationWatcher: ConfigurationWatcher;
+let connection: Connection;
 
-  const disconnectExtendedServicesCommandHandler = () => {
-    disconnectExtendedServices();
-  };
+let userDisconnected: boolean = false;
+let configuration: Configuration | null = null;
 
-  connectExtendedServicesCommand = vscode.commands.registerCommand(
-    connectExtendedServicesCommandUID,
-    connectExtendedServicesCommandHandler
-  );
-
-  disconnectExtendedServicesCommand = vscode.commands.registerCommand(
-    disconnectExtendedServicesCommandUID,
-    disconnectExtendedServicesCommandHandler
-  );
-
-  context.subscriptions.push(connectExtendedServicesCommand);
-  context.subscriptions.push(disconnectExtendedServicesCommand);
+function initializeCommands(context: vscode.ExtensionContext) {
+  connectExtendedServicesCommand = vscode.commands.registerCommand(startExtendedServicesCommandUID, () => {
+    userDisconnected = false;
+    startExtendedServices(context);
+  });
+  disconnectExtendedServicesCommand = vscode.commands.registerCommand(stopExtendedServicesCommandUID, () => {
+    userDisconnected = true;
+    stopExtendedServices();
+  });
 }
 
-function connectExtendedServices(): void {
-  userDisconnected = false;
-  const configuration = conf.fetchConfiguration();
-  if (configuration) {
-    vscode.commands.executeCommand(
-      connection.startConnectionHeartbeatCommandUID,
-      configuration.extendedServicesURL,
-      configuration.connectionHeartbeatIntervalinSecs
-    );
-  }
-}
-
-function disconnectExtendedServices(): void {
-  userDisconnected = true;
-  const configuration: conf.Configuration | undefined = conf.fetchConfiguration();
-  if (configuration) {
-    vscode.commands.executeCommand(connection.stopConnectionHeartbeatCommandUID);
-  }
-}
-
-export async function activate(context: vscode.ExtensionContext): Promise<void> {
+function initializeVSCodeElements() {
   vscode.commands.executeCommand("setContext", connectedEnablementUID, false);
-  userDisconnected = false;
-  connected = false;
 
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+  statusBarItem.text = "$(extended-services-disconnected)";
+  statusBarItem.tooltip = "Apache KIE Extended Services are not connected. \n" + "Click to connect.";
+  statusBarItem.command = startExtendedServicesCommandUID;
   statusBarItem.show();
-  context.subscriptions.push(statusBarItem);
 
-  kieFileWatcher = await kfw.KieFilesWatcher.create();
-  configurationWatcher = new cw.ConfigurationWatcher();
-  connection = new conn.Connection();
-  validator = new vldt.Validator();
+  diagnosticCollection = vscode.languages.createDiagnosticCollection("KIE Files Diagnostics");
+}
 
-  initializeCommands(context);
+function startExtendedServices(context: vscode.ExtensionContext): void {
+  let config: Configuration;
+  try {
+    statusBarItem.show();
+    config = fetchConfiguration();
+  } catch (error) {
+    stopExtendedServices();
+    vscode.window.showErrorMessage("An error happened while trying to start the Extended Services: " + error.message);
+    return;
+  }
+
+  try {
+    connection.start(config);
+  } catch (error) {
+    stopExtendedServices();
+    vscode.window.showErrorMessage("An error happened while trying to connect to the service:" + error.message);
+  }
+}
+
+function stopExtendedServices() {
+  configuration = null;
+  connection.stop();
+}
+
+async function validate(configuration: Configuration) {
+  diagnosticCollection.clear();
+
+  const bpmnFiles: KieFile[] = await kiefilesfetcher.findActiveKieFiles([kiefilesfetcher.bpmnDocumentFilter]);
+  const dmnFiles: KieFile[] = await kiefilesfetcher.findActiveKieFiles([kiefilesfetcher.dmnDocumentFilter]);
+
+  for (const bpmnFile of bpmnFiles) {
+    try {
+      const bpmnDiagnostics: vscode.Diagnostic[] = await validator.validateBPMN(
+        configuration.extendedServicesURL,
+        bpmnFile
+      );
+      diagnosticCollection.set(bpmnFile.uri, bpmnDiagnostics);
+    } catch (error) {
+      stopExtendedServices();
+      vscode.window.showErrorMessage(
+        "An error happened while trying to validate " + bpmnFile.uri.path + ": " + error.message
+      );
+    }
+  }
+
+  for (const dmnFile of dmnFiles) {
+    try {
+      const bpmnDiagnostics: vscode.Diagnostic[] = await validator.validateDMN(
+        configuration.extendedServicesURL,
+        dmnFile
+      );
+      diagnosticCollection.set(dmnFile.uri, bpmnDiagnostics);
+    } catch (error) {
+      stopExtendedServices();
+      vscode.window.showErrorMessage(
+        "An error happened while trying to validate " + dmnFile.uri.path + ": " + error.message
+      );
+    }
+  }
+}
+
+export function activate(context: vscode.ExtensionContext) {
+  configurationWatcher = new ConfigurationWatcher();
+  kieFilesWatcher = new KieFilesWatcher();
+  connection = new Connection();
 
   configurationWatcher.subscribeSettingsChanged(() => {
-    if (!userDisconnected && connected) {
-      const configuration: conf.Configuration | undefined = conf.fetchConfiguration();
-
-      if (configuration) {
-        vscode.commands.executeCommand(connection.stopConnectionHeartbeatCommandUID);
-        vscode.commands.executeCommand(
-          connection.startConnectionHeartbeatCommandUID,
-          configuration.extendedServicesURL,
-          configuration.connectionHeartbeatIntervalinSecs
-        );
-      }
-    }
-  });
-
-  kieFileWatcher.subscribeKieFilesOpened(() => {
-    statusBarItem.show();
+    stopExtendedServices();
     if (!userDisconnected) {
-      const configuration = conf.fetchConfiguration();
-      if (configuration) {
-        vscode.commands.executeCommand(
-          connection.startConnectionHeartbeatCommandUID,
-          configuration.extendedServicesURL,
-          configuration.connectionHeartbeatIntervalinSecs
-        );
-      }
+      startExtendedServices(context);
     }
   });
 
-  kieFileWatcher.subscribeKieFileChanged(() => {
-    vscode.commands.executeCommand(validator.clearValidationCommandUID);
-    const configuration: conf.Configuration | undefined = conf.fetchConfiguration();
-    if (configuration && connected) {
-      vscode.commands.executeCommand(validator.validateCommandUID, configuration.extendedServicesURL);
+  kieFilesWatcher.subscribeKieFilesOpened(() => {
+    statusBarItem.show();
+    if (userDisconnected) {
+      return;
     }
-  });
 
-  kieFileWatcher.subscribeKieFilesClosed(() => {
-    statusBarItem.hide();
-    const configuration: conf.Configuration | undefined = conf.fetchConfiguration();
     if (configuration) {
-      vscode.commands.executeCommand(connection.stopConnectionHeartbeatCommandUID);
+      validate(configuration);
+    } else {
+      startExtendedServices(context);
     }
   });
 
-  connection.subscribeConnected(() => {
-    connected = true;
+  kieFilesWatcher.subscribeKieFileChanged(() => {
+    if (configuration) {
+      validate(configuration);
+    }
+  });
+
+  kieFilesWatcher.subscribeKieFilesClosed(() => {
+    if (kieFilesWatcher.watchedKieFiles.length === 0) {
+      stopExtendedServices();
+      statusBarItem.hide();
+    } else if (configuration) {
+      validate(configuration);
+    }
+  });
+
+  connection.subscribeConnected((config: Configuration) => {
+    configuration = config;
     vscode.commands.executeCommand("setContext", connectedEnablementUID, true);
     statusBarItem.text = "$(extended-services-connected)";
-    statusBarItem.tooltip = "Apache KIE Extended Services are connected. \n" + "Click to disconnect.";
-    statusBarItem.command = disconnectExtendedServicesCommandUID;
-    vscode.commands.executeCommand(validator.clearValidationCommandUID);
-    const configuration: conf.Configuration | undefined = conf.fetchConfiguration();
-    if (configuration && connected) {
-      vscode.commands.executeCommand(validator.validateCommandUID, configuration.extendedServicesURL);
-    }
+    statusBarItem.tooltip = "Apache KIE Extended Services are connected. Click to disconnect.";
+    statusBarItem.command = stopExtendedServicesCommandUID;
+    validate(configuration);
+  });
+
+  connection.subscribeConnectionLost((errorMessage: string) => {
+    vscode.window.showErrorMessage("Connection error: " + errorMessage);
+    stopExtendedServices();
   });
 
   connection.subscribeDisconnected(() => {
-    connected = false;
     vscode.commands.executeCommand("setContext", connectedEnablementUID, false);
     statusBarItem.text = "$(extended-services-disconnected)";
-    statusBarItem.tooltip = "Apache KIE Extended Services are not connected. \n" + "Click to connect.";
-    statusBarItem.command = connectExtendedServicesCommandUID;
-    vscode.commands.executeCommand(validator.clearValidationCommandUID);
+    statusBarItem.tooltip = "Apache KIE Extended Services are not connected. Click to connect.";
+    statusBarItem.command = startExtendedServicesCommandUID;
+    diagnosticCollection.clear();
   });
+
+  initializeCommands(context);
+  initializeVSCodeElements();
+
+  kieFilesWatcher.updateWatchedKieFiles();
 }
 
 export function deactivate(): void {
   connectExtendedServicesCommand.dispose();
   disconnectExtendedServicesCommand.dispose();
-  validator.dispose();
-  connection.dispose();
-  kieFileWatcher.dispose();
-  configurationWatcher.dispose();
   statusBarItem.dispose();
+  connection.dispose();
+  kieFilesWatcher.dispose();
+  configurationWatcher.dispose();
 }

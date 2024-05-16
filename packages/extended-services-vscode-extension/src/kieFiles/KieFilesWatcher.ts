@@ -18,90 +18,74 @@
  */
 
 import * as vscode from "vscode";
-import * as kiefile from "./KieFile";
-import * as kiefilesfetcher from "./KieFilesFetcher";
+import { KieFile } from "./KieFile";
+import { bpmnDocumentFilter, dmnDocumentFilter, findActiveKieFiles } from "./KieFilesFetcher";
 
 export class KieFilesWatcher {
-  private kieFilesOpenedHandler: ((openedKieFiles: kiefile.KieFile[]) => void) | null = null;
-  private kieFileChangedHandler: ((changedKieFile: kiefile.KieFile) => void) | null = null;
-  private kieFilesClosedHandler: ((closedKieFiles: kiefile.KieFile[]) => void) | null = null;
+  private kieFilesOpenedHandler: ((openedKieFiles: KieFile[]) => void) | null = null;
+  private kieFileChangedHandler: ((changedKieFile: KieFile) => void) | null = null;
+  private kieFilesClosedHandler: ((closedKieFiles: KieFile[]) => void) | null = null;
 
   private tabChangeListener: vscode.Disposable;
-  private watchedKieFiles: kiefile.KieFile[];
 
-  public static async create(): Promise<KieFilesWatcher> {
-    const watcher = new KieFilesWatcher();
-    await watcher.updateWatchedKieFiles();
-    return watcher;
-  }
+  public watchedKieFiles: readonly KieFile[];
 
-  private constructor() {
+  public constructor() {
     this.watchedKieFiles = [];
     this.tabChangeListener = vscode.window.tabGroups.onDidChangeTabs(this.updateWatchedKieFiles, this);
   }
 
-  private async updateWatchedKieFiles() {
-    const activeKieFiles: kiefile.KieFile[] = await kiefilesfetcher.findActiveKieFiles([
-      kiefilesfetcher.bpmnDocumentFilter,
-      kiefilesfetcher.dmnDocumentFilter,
-    ]);
+  public async updateWatchedKieFiles() {
+    const activeKieFiles: KieFile[] = await findActiveKieFiles([bpmnDocumentFilter, dmnDocumentFilter]);
 
-    const kieFilesToStartWatching: kiefile.KieFile[] = activeKieFiles.filter(
+    const kieFilesToStartWatching: KieFile[] = activeKieFiles.filter(
       (activeFile) => !this.watchedKieFiles.some((watchedFile) => watchedFile.uri.fsPath === activeFile.uri.fsPath)
     );
-
-    const kieFilesToStopWatching: kiefile.KieFile[] = this.watchedKieFiles.filter(
-      (watchedFile) => !activeKieFiles.some((activeFile) => activeFile.uri.fsPath === watchedFile.uri.fsPath)
+    kieFilesToStartWatching.forEach((kieFile) =>
+      kieFile.subscribeKieFileChanged(() => this.fireKieFileChangedEvent(kieFile))
     );
 
-    this.stopWatching(kieFilesToStopWatching);
-    this.startWatching(kieFilesToStartWatching);
-  }
+    const kieFilesToStopWatching: KieFile[] = this.watchedKieFiles.filter(
+      (watchedFile) => !activeKieFiles.some((activeFile) => activeFile.uri.fsPath === watchedFile.uri.fsPath)
+    );
+    kieFilesToStopWatching.forEach((kieFile) => kieFile.dispose());
 
-  private stopWatching(kieFilesToStopWatching: kiefile.KieFile[]) {
-    kieFilesToStopWatching.forEach((kieFile) => {
-      const index = this.watchedKieFiles.indexOf(kieFile);
-      this.watchedKieFiles.splice(index, 1);
-      kieFile.dispose();
-    });
+    const kieFilesToKeepWatching: KieFile[] = this.watchedKieFiles.filter((watchedFile) =>
+      activeKieFiles.some((activeFile) => activeFile.uri.fsPath === watchedFile.uri.fsPath)
+    );
+
+    this.watchedKieFiles = [...kieFilesToStartWatching, ...kieFilesToKeepWatching];
+
+    if (kieFilesToStartWatching.length > 0) {
+      this.fireKieFilesOpenedEvent(kieFilesToStartWatching);
+    }
 
     if (kieFilesToStopWatching.length > 0) {
       this.fireKieFilesClosedEvent(kieFilesToStopWatching);
     }
   }
 
-  private startWatching(kieFilesToStartWatching: kiefile.KieFile[]) {
-    kieFilesToStartWatching.forEach((kieFile) => {
-      this.watchedKieFiles.push(kieFile);
-      kieFile.subscribeKieFileChanged(() => this.fireKieFileChangedEvent(kieFile));
-    });
-
-    if (kieFilesToStartWatching.length > 0) {
-      this.fireKieFilesOpenedEvent(kieFilesToStartWatching);
-    }
-  }
-
-  private fireKieFilesOpenedEvent(openedKieFiles: kiefile.KieFile[]) {
+  private fireKieFilesOpenedEvent(openedKieFiles: KieFile[]) {
     this.kieFilesOpenedHandler?.(openedKieFiles);
   }
 
-  private fireKieFileChangedEvent(changedKieFile: kiefile.KieFile) {
+  private fireKieFileChangedEvent(changedKieFile: KieFile) {
     this.kieFileChangedHandler?.(changedKieFile);
   }
 
-  private fireKieFilesClosedEvent(closedKieFiles: kiefile.KieFile[]) {
+  private fireKieFilesClosedEvent(closedKieFiles: KieFile[]) {
     this.kieFilesClosedHandler?.(closedKieFiles);
   }
 
-  public subscribeKieFilesOpened(handler: (opendKieFiles: kiefile.KieFile[]) => void) {
+  public subscribeKieFilesOpened(handler: (opendKieFiles: KieFile[]) => void) {
     this.kieFilesOpenedHandler = handler;
   }
 
-  public subscribeKieFileChanged(handler: (changedKieFile: kiefile.KieFile) => void) {
+  public subscribeKieFileChanged(handler: (changedKieFile: KieFile) => void) {
     this.kieFileChangedHandler = handler;
   }
 
-  public subscribeKieFilesClosed(handler: (closedKieFiles: kiefile.KieFile[]) => void) {
+  public subscribeKieFilesClosed(handler: (closedKieFiles: KieFile[]) => void) {
     this.kieFilesClosedHandler = handler;
   }
 
