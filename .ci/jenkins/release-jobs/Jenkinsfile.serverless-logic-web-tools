@@ -53,9 +53,9 @@ pipeline {
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount = 'kie-tools'
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName = 'serverless-logic-web-tools-swf-dev-mode-image'
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag = "${params.RELEASE_VERSION}"
-        DASHBUILDER__viewerImageRegistry = 'quay.io'
-        DASHBUILDER__viewerImageAccount = 'kie-tools'
-        DASHBUILDER__viewerImageName = 'dashbuilder-viewer-image'
+        DASHBUILDER__viewerImageRegistry = 'docker.io'
+        DASHBUILDER__viewerImageAccount = 'apache'
+        DASHBUILDER__viewerImageName = 'incubator-kie-dashbuilder-viewer'
         SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag = "${params.RELEASE_VERSION}"
         SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl = 'https://cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
 

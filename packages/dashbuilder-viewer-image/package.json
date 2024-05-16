@@ -13,11 +13,12 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
-    "build:dev": "pnpm cleanup",
-    "build:prod": "pnpm cleanup && run-script-os",
-    "build:prod:darwin": "pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
-    "build:prod:linux": "pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:podman:build\"",
-    "build:prod:win32": "echo \"Build not supported on Windows\"",
+    "build": "run-script-os",
+    "build:darwin": "pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
+    "build:dev": "pnpm cleanup && pnpm build",
+    "build:linux": "pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:podman:build\"",
+    "build:prod": "pnpm cleanup && pnpm build",
+    "build:win32": "echo \"Build not supported on Windows\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:assets": "cp -R ./node_modules/@kie-tools/dashbuilder-viewer-deployment-webapp/dist/ ./dist-dev/dashbuilder-viewer-deployment-webapp",
     "image:docker:build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker build $(echo $(build-env dashbuilderViewerImage.buildTags) | xargs printf -- \"-t $(build-env dashbuilderViewerImageEnv.registry)/$(build-env dashbuilderViewerImageEnv.account)/$(build-env dashbuilderViewerImageEnv.name):%s\n\" | xargs echo) .\" --else \"echo Docker not found, skipping image build.\"",

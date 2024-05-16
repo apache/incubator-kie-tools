@@ -81,9 +81,9 @@ pipeline {
 
         DEPLOY_TAG = "${params.RELEASE_VERSION}-staging"
 
-        DASHBUILDER__viewerImageRegistry = 'quay.io'
-        DASHBUILDER__viewerImageAccount = 'kie-tools'
-        DASHBUILDER__viewerImageName = 'dashbuilder-viewer-image'
+        DASHBUILDER__viewerImageRegistry = 'docker.io'
+        DASHBUILDER__viewerImageAccount = 'apache'
+        DASHBUILDER__viewerImageName = 'incubator-kie-dashbuilder-viewer'
         DASHBUILDER__viewerImageBuildTags = "${params.RELEASE_VERSION}-staging"
         SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag = "${params.RELEASE_VERSION}-staging"
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry = 'quay.io'

@@ -89,9 +89,9 @@ pipeline {
         OPENSHIFT_PART_OF = 'daily-dev-kie-sandbox-app'
         DEPLOY_TAG = 'daily-dev'
 
-        DASHBUILDER__viewerImageRegistry = 'quay.io'
-        DASHBUILDER__viewerImageAccount = 'kie-tools'
-        DASHBUILDER__viewerImageName = 'dashbuilder-viewer-image'
+        DASHBUILDER__viewerImageRegistry = 'docker.io'
+        DASHBUILDER__viewerImageAccount = 'apache'
+        DASHBUILDER__viewerImageName = 'incubator-kie-dashbuilder-viewer'
         DASHBUILDER__viewerImageBuildTags = 'daily-dev'
 
         SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag = 'daily-dev'
