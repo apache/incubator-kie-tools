@@ -21,7 +21,7 @@ import * as React from "react";
 import OptimizeIcon from "@patternfly/react-icons/dist/js/icons/optimize-icon";
 import { useAutoLayout } from "./AutoLayoutHook";
 import { useDmnEditorStoreApi } from "../store/StoreContext";
-import { autolayout } from "./autolayout";
+import { autoLayout } from "./autolayout";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export function AutolayoutButton() {
@@ -39,7 +39,7 @@ export function AutolayoutButton() {
     const drgEdges = state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges;
     const isAlternativeInputDataShape = state.computed(state).isAlternativeInputDataShape();
 
-    const { autolayouted, parentNodesById } = await autolayout({
+    const { autolayouted, parentNodesById } = await autoLayout({
       snapGrid,
       nodesById,
       edgesById,

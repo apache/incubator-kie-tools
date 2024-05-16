@@ -251,6 +251,7 @@ export const DmnEditorInternal = ({
         model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] === undefined &&
         model.definitions.drgElement !== undefined;
       state.dmn.model = normalize(model);
+      console.log("Make sure the DMN Editor reacts to props changing.");
 
       dmnModelBeforeEditingRef.current = state.dmn.model;
     });

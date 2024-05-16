@@ -77,7 +77,7 @@ export interface AutolayoutParentNode {
 
 export const FAKE_MARKER = "__$FAKE$__";
 
-export async function autolayout({
+export async function autoLayout({
   snapGrid,
   nodesById,
   edgesById,
