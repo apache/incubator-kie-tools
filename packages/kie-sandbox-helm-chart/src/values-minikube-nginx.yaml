@@ -41,4 +41,4 @@ extended_services:
 global:
   ingressSource: "minikube"
   kubernetesIngressClass: nginx
-  kubernetesClusterDomain: local
+  kubernetesClusterDomain: localhost

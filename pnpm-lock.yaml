@@ -5846,9 +5846,9 @@ importers:
       "@kie-tools/kie-sandbox-extended-services-image":
         specifier: workspace:*
         version: link:../kie-sandbox-extended-services-image
-      "@kie-tools/kie-sandbox-image":
+      "@kie-tools/kie-sandbox-webapp-image":
         specifier: workspace:*
-        version: link:../kie-sandbox-image
+        version: link:../kie-sandbox-webapp-image
     devDependencies:
       "@kie-tools/root-env":
         specifier: workspace:*
@@ -5978,9 +5978,9 @@ importers:
       "@kie-tools/kie-sandbox-extended-services-image":
         specifier: workspace:*
         version: link:../kie-sandbox-extended-services-image
-      "@kie-tools/kie-sandbox-image":
+      "@kie-tools/kie-sandbox-webapp-image":
         specifier: workspace:*
-        version: link:../kie-sandbox-image
+        version: link:../kie-sandbox-webapp-image
     devDependencies:
       "@kie-tools/root-env":
         specifier: workspace:*
@@ -5999,6 +5999,31 @@ importers:
         version: 1.1.6
 
   packages/kie-sandbox-image:
+    dependencies:
+      "@kie-tools/image-env-to-json":
+        specifier: workspace:*
+        version: link:../image-env-to-json
+      "@kie-tools/online-editor":
+        specifier: workspace:*
+        version: link:../online-editor
+    devDependencies:
+      "@kie-tools/image-builder":
+        specifier: workspace:*
+        version: link:../image-builder
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+      ts-json-schema-generator:
+        specifier: ^1.1.2
+        version: 1.1.2
+
+  packages/kie-sandbox-webapp-image:
     dependencies:
       "@kie-tools/image-env-to-json":
         specifier: workspace:*

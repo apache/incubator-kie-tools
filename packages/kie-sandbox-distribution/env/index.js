@@ -22,28 +22,28 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 const buildEnv = require("@kie-tools/root-env/env");
 const extendedServicesImageEnv = require("@kie-tools/kie-sandbox-extended-services-image/env");
 const corsProxyImageEnv = require("@kie-tools/cors-proxy-image/env");
-const kieSandboxImageEnv = require("@kie-tools/kie-sandbox-image/env");
+const kieSandboxWebappImageEnv = require("@kie-tools/kie-sandbox-webapp-image/env");
 
-module.exports = composeEnv([buildEnv, extendedServicesImageEnv, corsProxyImageEnv, kieSandboxImageEnv], {
+module.exports = composeEnv([buildEnv, extendedServicesImageEnv, corsProxyImageEnv, kieSandboxWebappImageEnv], {
   vars: varsWithName({
     KIE_SANDBOX_DISTRIBUTION__kieSandboxImageRegistry: {
-      default: kieSandboxImageEnv.env.kieSandbox.image.registry,
+      default: kieSandboxWebappImageEnv.env.kieSandboxWebappImage.registry,
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__kieSandboxImageAccount: {
-      default: kieSandboxImageEnv.env.kieSandbox.image.account,
+      default: kieSandboxWebappImageEnv.env.kieSandboxWebappImage.account,
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__kieSandboxImageName: {
-      default: kieSandboxImageEnv.env.kieSandbox.image.name,
+      default: kieSandboxWebappImageEnv.env.kieSandboxWebappImage.name,
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__kieSandboxImageTag: {
-      default: kieSandboxImageEnv.env.kieSandbox.image.buildTags.split(" ")[0],
+      default: kieSandboxWebappImageEnv.env.kieSandboxWebappImage.buildTags.split(" ")[0],
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__kieSandboxContainerPort: {
-      default: kieSandboxImageEnv.env.kieSandbox.image.port,
+      default: kieSandboxWebappImageEnv.env.kieSandboxWebappImage.port,
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__kieSandboxExposedPort: {
@@ -102,7 +102,7 @@ module.exports = composeEnv([buildEnv, extendedServicesImageEnv, corsProxyImageE
   get env() {
     return {
       kieSandboxDistribution: {
-        kieSandbox: {
+        kieSandboxWebapp: {
           imageRegistry: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__kieSandboxImageRegistry),
           imageAccount: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__kieSandboxImageAccount),
           imageName: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__kieSandboxImageName),

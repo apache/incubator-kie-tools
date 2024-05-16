@@ -24,7 +24,7 @@
   "dependencies": {
     "@kie-tools/cors-proxy-image": "workspace:*",
     "@kie-tools/kie-sandbox-extended-services-image": "workspace:*",
-    "@kie-tools/kie-sandbox-image": "workspace:*"
+    "@kie-tools/kie-sandbox-webapp-image": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",

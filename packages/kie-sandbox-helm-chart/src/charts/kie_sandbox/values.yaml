@@ -33,9 +33,9 @@ replicaCount: 1
 
 # -- Image source configuration for the KIE Sandbox image
 image:
-  registry: quay.io
-  account: kie-tools
-  name: kie-sandbox-image
+  registry: docker.io
+  account: apache
+  name: incubator-kie-sandbox-webapp
   tag: "latest"
   pullPolicy: IfNotPresent
 

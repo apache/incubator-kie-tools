@@ -34,11 +34,11 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 - (Optional) The image name and tags can be customized by setting the following environment variables:
 
   ```bash
-  export KIE_SANDBOX__imageRegistry=<registry>
-  export KIE_SANDBOX__imageAccount=<account>
-  export KIE_SANDBOX__imageName=<image-name>
-  export KIE_SANDBOX__imageBuildTags=<image-tags>
-  export KIE_SANDBOX__imagePort=<port>
+  export KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry=<registry>
+  export KIE_SANDBOX_WEBAPP_IMAGE__imageAccount=<account>
+  export KIE_SANDBOX_WEBAPP_IMAGE__imageName=<image-name>
+  export KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags=<image-tags>
+  export KIE_SANDBOX_WEBAPP_IMAGE__imagePort=<port>
   ```
 
   > Default values can be found [here](./env/index.js).
@@ -46,7 +46,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 - After optionally setting up the environment variables, run the following in the root folder of the repository to build the package:
 
   ```bash
-  pnpm -F @kie-tools/kie-sandbox-image... build:prod
+  pnpm -F @kie-tools/kie-sandbox-webapp-image... build:prod
   ```
 
 - Then check if the image is correctly stored:

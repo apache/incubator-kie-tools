@@ -68,10 +68,10 @@ pipeline {
         ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageName = 'incubator-kie-sandbox-dev-deployment-kogito-quarkus-blank-app'
         ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageTag = "${params.RELEASE_VERSION}-staging"
 
-        KIE_SANDBOX__imageRegistry = 'quay.io'
-        KIE_SANDBOX__imageAccount = 'kie-tools'
-        KIE_SANDBOX__imageName = 'kie-sandbox-image'
-        KIE_SANDBOX__imageBuildTags = "${params.RELEASE_VERSION}-staging"
+        KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry = 'docker.io'
+        KIE_SANDBOX_WEBAPP_IMAGE__imageAccount = 'apache'
+        KIE_SANDBOX_WEBAPP_IMAGE__imageName = 'incubator-kie-sandbox-webapp'
+        KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags = "${params.RELEASE_VERSION}-staging"
 
         KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry = 'docker.io'
         KIE_SANDBOX_EXTENDED_SERVICES__imageAccount = 'apache'
@@ -960,7 +960,7 @@ def deployKieSandboxImageToOpenshift() {
         "${env.OPENSHIFT_NAMESPACE}",
         'staging-kie-sandbox',
         "${env.DEPLOY_TAG}",
-        "${env.KIE_SANDBOX__imageRegistry}/${env.KIE_SANDBOX__imageAccount}/${env.KIE_SANDBOX__imageName}:${env.DEPLOY_TAG}",
+        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageName}:${env.DEPLOY_TAG}",
         "${env.OPENSHIFT_PART_OF}",
         'js',
         "${pipelineVars.openshiftCredentialsId}",
@@ -997,9 +997,9 @@ def pushCorsProxyImageToQuay() {
 
 def pushKieSandboxImageToQuay() {
     dockerUtils.pushImageToRegistry(
-        "${env.KIE_SANDBOX__imageRegistry}/${env.KIE_SANDBOX__imageAccount}",
-        "${env.KIE_SANDBOX__imageName}",
-        "${env.KIE_SANDBOX__imageBuildTags}",
+        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}",
+        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageName}",
+        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags}",
         "${pipelineVars.quayPushCredentialsId}"
     )
 }
