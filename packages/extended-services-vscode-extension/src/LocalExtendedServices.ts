@@ -18,7 +18,7 @@
  */
 
 import * as path from "path";
-import { ChildProcess, SpawnOptions, spawn } from "child_process";
+import { ChildProcess, SpawnOptions, spawn, spawnSync } from "child_process";
 import { Configuration } from "./configurations/Configuration";
 
 export class LocalExtendedServices {
@@ -79,8 +79,29 @@ export class LocalExtendedServices {
   }
 
   public stop(): void {
-    if (this.serviceProcess && this.serviceProcess.pid) {
-      process.kill(this.serviceProcess.pid);
+    if (!this.serviceProcess) {
+      return;
+    }
+
+    if (!this.serviceProcess.pid) {
+      this.serviceProcess = null;
+      return;
+    }
+
+    /*
+     * On Windows, simply calling this.serviceProcess.kill() does not kill the process and it remains running.
+     * This is because the kill() method sends a SIGTERM signal to the process, which is not supported on Windows.
+     * To kill the process, we need to use the taskkill command.
+     *
+     * On Unix-based systems, this.serviceProcess.kill() works as expected.
+     *
+     * For more information, see:
+     * https://nodejs.org/api/child_process.html#subprocesskillsignal
+     */
+    if (process.platform == "win32") {
+      spawnSync("taskkill", ["/pid", this.serviceProcess.pid.toString(), "/f", "/t"]);
+    } else {
+      this.serviceProcess.kill();
     }
 
     this.serviceProcess = null;
