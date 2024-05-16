@@ -24,15 +24,15 @@ const corsProxyEnv = require("@kie-tools/cors-proxy/env");
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     CORS_PROXY_IMAGE__imageRegistry: {
-      default: "quay.io",
+      default: "docker.io",
       description: "",
     },
     CORS_PROXY_IMAGE__imageAccount: {
-      default: "kie-tools",
+      default: "apache",
       description: "",
     },
     CORS_PROXY_IMAGE__imageName: {
-      default: "cors-proxy-image",
+      default: "incubator-kie-cors-proxy",
       description: "",
     },
     CORS_PROXY_IMAGE__imageBuildTags: {

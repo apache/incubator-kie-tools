@@ -74,9 +74,9 @@ pipeline {
         KIE_SANDBOX_EXTENDED_SERVICES__imageName = 'kie-sandbox-extended-services-image'
         KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags = "${params.RELEASE_VERSION}-staging"
 
-        CORS_PROXY_IMAGE__imageRegistry = 'quay.io'
-        CORS_PROXY_IMAGE__imageAccount = 'kie-tools'
-        CORS_PROXY_IMAGE__imageName = 'cors-proxy-image'
+        CORS_PROXY_IMAGE__imageRegistry = 'docker.io'
+        CORS_PROXY_IMAGE__imageAccount = 'apache'
+        CORS_PROXY_IMAGE__imageName = 'incubator-kie-cors-proxy'
         CORS_PROXY_IMAGE__imageBuildTags = "${params.RELEASE_VERSION}-staging"
 
         DEPLOY_TAG = "${params.RELEASE_VERSION}-staging"
