@@ -9457,8 +9457,8 @@ importers:
         specifier: ^4.94.6
         version: 4.94.6
       "@rhoas/registry-instance-sdk":
-        specifier: ^1.0.2
-        version: 1.0.2
+        specifier: ^0.34.1
+        version: 0.34.4
       apollo-cache-inmemory:
         specifier: 1.6.6
         version: 1.6.6(graphql@14.3.1)
@@ -10907,8 +10907,8 @@ importers:
         specifier: workspace:*
         version: link:../serverless-workflow-service-catalog
       "@rhoas/registry-instance-sdk":
-        specifier: ^1.0.2
-        version: 1.0.2
+        specifier: ^0.34.1
+        version: 0.34.4
       monaco-editor:
         specifier: ^0.39.0
         version: 0.39.0
@@ -26592,9 +26592,9 @@ packages:
       { integrity: sha512-AW8PKd6iX3vAZ0vA43nOUOnbq/X5ihgU+mSXXqunMkeQADGiqw/PY0JNeYtD5sr0PAy51YPgAPbDoeapv9r8WA== }
     dev: true
 
-  /@rhoas/registry-instance-sdk@1.0.2:
+  /@rhoas/registry-instance-sdk@0.34.4:
     resolution:
-      { integrity: sha512-mXRwKmLYaD7RjICjf6aa59Qy9pYRo1tC4hewTJ3hYfGmhA0YYRsrMnKmIRneluZVipTOkNxbpdDCeit7Toglbw== }
+      { integrity: sha512-Z5RzLL0lXvE8jp6bKI0o2Q7MKX6hQrDX+swq0i9ikNaqzgWl69xHQx4v94GOnwYtK/WOb1PkjTAdzOibhgM8xw== }
     dependencies:
       axios: 0.27.2
     transitivePeerDependencies:

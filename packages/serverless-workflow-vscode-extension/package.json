@@ -44,7 +44,7 @@
     "@kie-tools/serverless-workflow-jq-expressions": "workspace:*",
     "@kie-tools/serverless-workflow-language-service": "workspace:*",
     "@kie-tools/serverless-workflow-service-catalog": "workspace:*",
-    "@rhoas/registry-instance-sdk": "^1.0.2",
+    "@rhoas/registry-instance-sdk": "^0.34.1",
     "monaco-editor": "^0.39.0",
     "monaco-yaml": "^4.0.4",
     "openapi-types": "^7.0.1",
