@@ -19,11 +19,11 @@
 
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
-const kogitoSwfBuilderEnv = require("@kie-tools/kogito-swf-builder/env");
-const kogitoSwfDevModeEnv = require("@kie-tools/kogito-swf-devmode/env");
+const sonataflowBuilderImageEnv = require("@kie-tools/sonataflow-builder-image/env");
+const sonataflowDevModeImageEnv = require("@kie-tools/sonataflow-devmode-image/env");
 const rootEnv = require("@kie-tools/root-env/env");
 
-module.exports = composeEnv([rootEnv, kogitoSwfBuilderEnv, kogitoSwfDevModeEnv], {
+module.exports = composeEnv([rootEnv, sonataflowBuilderImageEnv, sonataflowDevModeImageEnv], {
   vars: varsWithName({
     KOGITO_SERVERLESS_OPERATOR__registry: {
       default: "quay.io",
@@ -41,12 +41,12 @@ module.exports = composeEnv([rootEnv, kogitoSwfBuilderEnv, kogitoSwfDevModeEnv],
       default: "latest",
       description: "The image tag",
     },
-    KOGITO_SERVERLESS_OPERATOR__kogitoSwfBuilderImage: {
-      default: `${kogitoSwfBuilderEnv.env.kogitoSwfBuilder.registry}/${kogitoSwfBuilderEnv.env.kogitoSwfBuilder.account}/${kogitoSwfBuilderEnv.env.kogitoSwfBuilder.name}:${kogitoSwfBuilderEnv.env.kogitoSwfBuilder.tag}`,
+    KOGITO_SERVERLESS_OPERATOR__sonataflowBuilderImageImage: {
+      default: `${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.registry}/${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.account}/${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.name}:${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.tag}`,
       description: "Kogito SWF Builder image",
     },
-    KOGITO_SERVERLESS_OPERATOR__kogitoSwfDevModeImage: {
-      default: `${kogitoSwfDevModeEnv.env.kogitoSwfDevMode.registry}/${kogitoSwfDevModeEnv.env.kogitoSwfDevMode.account}/${kogitoSwfDevModeEnv.env.kogitoSwfDevMode.name}:${kogitoSwfDevModeEnv.env.kogitoSwfDevMode.tag}`,
+    KOGITO_SERVERLESS_OPERATOR__sonataflowDevModeImageImage: {
+      default: `${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.registry}/${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.account}/${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.name}:${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.tag}`,
       description: "Kogito SWF DevMode image",
     },
   }),
@@ -58,8 +58,8 @@ module.exports = composeEnv([rootEnv, kogitoSwfBuilderEnv, kogitoSwfDevModeEnv],
         name: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__name),
         tag: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__buildTag),
         version: require("../package.json").version,
-        kogitoSwfBuilderImage: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__kogitoSwfBuilderImage),
-        kogitoSwfDevModeImage: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__kogitoSwfDevModeImage),
+        sonataflowBuilderImageImage: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__sonataflowBuilderImageImage),
+        sonataflowDevModeImageImage: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__sonataflowDevModeImageImage),
       },
     };
   },

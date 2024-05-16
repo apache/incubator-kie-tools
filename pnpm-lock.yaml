@@ -6053,12 +6053,12 @@ importers:
       "@kie-tools/kogito-serverless-operator":
         specifier: workspace:*
         version: link:../kogito-serverless-operator
-      "@kie-tools/kogito-swf-devmode":
-        specifier: workspace:*
-        version: link:../kogito-swf-devmode
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+      "@kie-tools/sonataflow-devmode-image":
+        specifier: workspace:*
+        version: link:../sonataflow-devmode-image
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -6095,18 +6095,18 @@ importers:
 
   packages/kogito-serverless-operator:
     devDependencies:
-      "@kie-tools/kogito-swf-builder":
-        specifier: workspace:*
-        version: link:../kogito-swf-builder
-      "@kie-tools/kogito-swf-devmode":
-        specifier: workspace:*
-        version: link:../kogito-swf-devmode
       "@kie-tools/python-venv":
         specifier: workspace:*
         version: link:../python-venv
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+      "@kie-tools/sonataflow-builder-image":
+        specifier: workspace:*
+        version: link:../sonataflow-builder-image
+      "@kie-tools/sonataflow-devmode-image":
+        specifier: workspace:*
+        version: link:../sonataflow-devmode-image
       replace-in-file:
         specifier: ^7.1.0
         version: 7.1.0
@@ -6119,15 +6119,15 @@ importers:
 
   packages/kogito-swf-builder:
     devDependencies:
-      "@kie-tools/kogito-swf-common":
-        specifier: workspace:*
-        version: link:../kogito-swf-common
       "@kie-tools/python-venv":
         specifier: workspace:*
         version: link:../python-venv
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+      "@kie-tools/sonataflow-image-common":
+        specifier: workspace:*
+        version: link:../kogito-swf-common
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -6152,15 +6152,15 @@ importers:
 
   packages/kogito-swf-devmode:
     devDependencies:
-      "@kie-tools/kogito-swf-common":
-        specifier: workspace:*
-        version: link:../kogito-swf-common
       "@kie-tools/python-venv":
         specifier: workspace:*
         version: link:../python-venv
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+      "@kie-tools/sonataflow-image-common":
+        specifier: workspace:*
+        version: link:../kogito-swf-common
       "@kie-tools/sonataflow-quarkus-devui":
         specifier: workspace:*
         version: link:../sonataflow-quarkus-devui
@@ -9743,15 +9743,15 @@ importers:
 
   packages/serverless-logic-web-tools-swf-builder-image:
     devDependencies:
-      "@kie-tools/kogito-swf-builder":
-        specifier: workspace:*
-        version: link:../kogito-swf-builder
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
       "@kie-tools/serverless-logic-web-tools-swf-builder-image-env":
         specifier: workspace:*
         version: link:../serverless-logic-web-tools-swf-builder-image-env
+      "@kie-tools/sonataflow-builder-image":
+        specifier: workspace:*
+        version: link:../sonataflow-builder-image
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -11053,6 +11053,30 @@ importers:
         specifier: ^5.9.0
         version: 5.9.0
 
+  packages/sonataflow-builder-image:
+    devDependencies:
+      "@kie-tools/python-venv":
+        specifier: workspace:*
+        version: link:../python-venv
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/sonataflow-image-common":
+        specifier: workspace:*
+        version: link:../sonataflow-image-common
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      replace-in-file:
+        specifier: ^7.1.0
+        version: 7.1.0
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
   packages/sonataflow-deployment-webapp:
     dependencies:
       "@apidevtools/swagger-parser":
@@ -11224,6 +11248,42 @@ importers:
       webpack-merge:
         specifier: ^5.9.0
         version: 5.9.0
+
+  packages/sonataflow-devmode-image:
+    devDependencies:
+      "@kie-tools/python-venv":
+        specifier: workspace:*
+        version: link:../python-venv
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/sonataflow-image-common":
+        specifier: workspace:*
+        version: link:../sonataflow-image-common
+      "@kie-tools/sonataflow-quarkus-devui":
+        specifier: workspace:*
+        version: link:../sonataflow-quarkus-devui
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      replace-in-file:
+        specifier: ^7.1.0
+        version: 7.1.0
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
+  packages/sonataflow-image-common:
+    devDependencies:
+      "@kie-tools/python-venv":
+        specifier: workspace:*
+        version: link:../python-venv
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
 
   packages/sonataflow-quarkus-devui:
     dependencies:

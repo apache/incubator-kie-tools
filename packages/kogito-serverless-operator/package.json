@@ -36,10 +36,10 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@kie-tools/kogito-swf-builder": "workspace:*",
-    "@kie-tools/kogito-swf-devmode": "workspace:*",
     "@kie-tools/python-venv": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/sonataflow-builder-image": "workspace:*",
+    "@kie-tools/sonataflow-devmode-image": "workspace:*",
     "replace-in-file": "^7.1.0",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6"

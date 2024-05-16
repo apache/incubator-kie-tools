@@ -27,8 +27,8 @@ imageName=$(pnpm build-env kogitoServerlessOperator.registry)/$(pnpm build-env k
 imageTag=$(pnpm build-env kogitoServerlessOperator.tag)
 version=$(pnpm build-env kogitoServerlessOperator.version)
 
-targetKogitoSwfBuilderImage=$(pnpm build-env kogitoServerlessOperator.kogitoSwfBuilderImage)
-targetKogitoSwfDevModeImage=$(pnpm build-env kogitoServerlessOperator.kogitoSwfDevModeImage)
+targetSonataflowBuilderImage=$(pnpm build-env kogitoServerlessOperator.sonataflowBuilderImageImage)
+targetSonataflowDevModeImage=$(pnpm build-env kogitoServerlessOperator.sonataflowDevModeImageImage)
 
 if [ -z "${version}" ]; then
   echo "Please inform the new version"
@@ -53,8 +53,8 @@ node -p "require('replace-in-file').sync({ from: /\bversion: .*\b/g, to: 'versio
 node -p "require('replace-in-file').sync({ from: /\bversion: .*\b/g, to: 'version: ${version}', files: ['./images/manager.yaml'] });"
 
 # Update kogito-swf-* images
-node -p "require('replace-in-file').sync({ from: '/quay.io\/kiegroup\/kogito-swf-builder.*/g', to: '${targetKogitoSwfBuilderImage}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*.Dockerfile', '**/*.go'] });"
-node -p "require('replace-in-file').sync({ from: '/quay.io\/kiegroup\/kogito-swf-devmode.*/g', to: '${targetKogitoSwfDevModeImage}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*.Dockerfile', '**/*.go'] });"
+node -p "require('replace-in-file').sync({ from: '/docker.io\/apache\/sonataflow-builder.*/g', to: '${targetSonataflowBuilderImage}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*.Dockerfile', '**/*.go'] });"
+node -p "require('replace-in-file').sync({ from: '/docker.io\/apache\/sonataflow-devmode.*/g', to: '${targetSonataflowDevModeImage}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*.Dockerfile', '**/*.go'] });"
 node -p "require('replace-in-file').sync({ from: '/quay.io\/kiegroup\/kogito-serverless-operator.*/g', to: '${targetKogitoServerlessOperatorImage}', files: ['**/*.yaml'] });"
 
 node -p "require('replace-in-file').sync({ from: /\bOperatorVersion = .*/g, to: 'OperatorVersion = \"${version}\"', files: ['version/version.go'] });"

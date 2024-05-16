@@ -121,15 +121,15 @@ pipeline {
         KOGITO_MANAGEMENT_CONSOLE__name = 'incubator-kie-kogito-management-console'
         KOGITO_MANAGEMENT_CONSOLE__buildTags = "${params.RELEASE_VERSION}-staging"
 
-        KOGITO_SWF_BUILDER_IMAGE__registry = 'quay.io'
-        KOGITO_SWF_BUILDER_IMAGE__account = 'kiegroup'
-        KOGITO_SWF_BUILDER_IMAGE__name = 'kogito-swf-builder'
-        KOGITO_SWF_BUILDER_IMAGE__buildTag = "${params.RELEASE_VERSION}-staging"
+        SONATAFLOW_BUILDER_IMAGE__registry = 'docker.io'
+        SONATAFLOW_BUILDER_IMAGE__account = 'apache'
+        SONATAFLOW_BUILDER_IMAGE__name = 'incubator-kie-sonataflow-builder'
+        SONATAFLOW_BUILDER_IMAGE__buildTag = "${params.RELEASE_VERSION}-staging"
 
-        KOGITO_SWF_DEVMODE_IMAGE__registry = 'quay.io'
-        KOGITO_SWF_DEVMODE_IMAGE__account = 'kiegroup'
-        KOGITO_SWF_DEVMODE_IMAGE__name = 'kogito-swf-devmode'
-        KOGITO_SWF_DEVMODE_IMAGE__buildTag = "${params.RELEASE_VERSION}-staging"
+        SONATAFLOW_DEVMODE_IMAGE__registry = 'docker.io'
+        SONATAFLOW_DEVMODE_IMAGE__account = 'apache'
+        SONATAFLOW_DEVMODE_IMAGE__name = 'incubator-kie-sonataflow-devmode'
+        SONATAFLOW_DEVMODE_IMAGE__buildTag = "${params.RELEASE_VERSION}-staging"
 
         KOGITO_SERVERLESS_OPERATOR__registry = 'quay.io'
         KOGITO_SERVERLESS_OPERATOR__account = 'kiegroup'
@@ -1078,18 +1078,18 @@ def pushKogitoManagementConsoleToQuay() {
 
 def pushKogitoSwfBuilderToQuay() {
     dockerUtils.pushImageToRegistry(
-        "${env.KOGITO_SWF_BUILDER_IMAGE__registry}/${env.KOGITO_SWF_BUILDER_IMAGE__account}",
-        "${env.KOGITO_SWF_BUILDER_IMAGE__name}",
-        "${env.KOGITO_SWF_BUILDER_IMAGE__buildTag}",
+        "${env.SONATAFLOW_BUILDER_IMAGE__registry}/${env.SONATAFLOW_BUILDER_IMAGE__account}",
+        "${env.SONATAFLOW_BUILDER_IMAGE__name}",
+        "${env.SONATAFLOW_BUILDER_IMAGE__buildTag}",
         "${pipelineVars.quayKiegroupPushCredentialsId}"
     )
 }
 
 def pushKogitoSwfDevModeToQuay() {
     dockerUtils.pushImageToRegistry(
-        "${env.KOGITO_SWF_DEVMODE_IMAGE__registry}/${env.KOGITO_SWF_DEVMODE_IMAGE__account}",
-        "${env.KOGITO_SWF_DEVMODE_IMAGE__name}",
-        "${env.KOGITO_SWF_DEVMODE_IMAGE__buildTag}",
+        "${env.SONATAFLOW_DEVMODE_IMAGE__registry}/${env.SONATAFLOW_DEVMODE_IMAGE__account}",
+        "${env.SONATAFLOW_DEVMODE_IMAGE__name}",
+        "${env.SONATAFLOW_DEVMODE_IMAGE__buildTag}",
         "${pipelineVars.quayKiegroupPushCredentialsId}"
     )
 }

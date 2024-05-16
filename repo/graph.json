@@ -139,16 +139,16 @@
       { "id": "@kie-tools/unitables-dmn" },
       { "id": "@kie-tools/kn-plugin-workflow" },
       { "id": "@kie-tools/kogito-serverless-operator" },
-      { "id": "@kie-tools/kogito-swf-builder" },
-      { "id": "@kie-tools/kogito-swf-devmode" },
+      { "id": "@kie-tools/sonataflow-builder-image" },
+      { "id": "@kie-tools/sonataflow-devmode-image" },
       { "id": "@kie-tools/kogito-management-console" },
       { "id": "@kie-tools/runtime-tools-management-console-webapp" },
-      { "id": "@kie-tools/kogito-swf-common" },
-      { "id": "@kie-tools/python-venv" },
+      { "id": "@kie-tools/sonataflow-image-common" },
       { "id": "@kie-tools/kogito-task-console" },
       { "id": "@kie-tools/runtime-tools-task-console-webapp" },
       { "id": "@kie-tools/unitables" },
       { "id": "pmml-vscode-extension" },
+      { "id": "@kie-tools/python-venv" },
       { "id": "@kie-tools/runtime-tools-components" },
       { "id": "@kie-tools/runtime-tools-shared-gateway-api" },
       { "id": "@kie-tools/runtime-tools-process-enveloped-components" },
@@ -854,11 +854,19 @@
       { "source": "@kie-tools-core/kubernetes-bridge", "target": "@kie-tools/cors-proxy-api", "weight": 1 },
       { "source": "@kie-tools/unitables-dmn", "target": "@kie-tools/unitables", "weight": 1 },
       { "source": "@kie-tools/kn-plugin-workflow", "target": "@kie-tools/kogito-serverless-operator", "weight": 1 },
-      { "source": "@kie-tools/kogito-serverless-operator", "target": "@kie-tools/kogito-swf-builder", "weight": 1 },
-      { "source": "@kie-tools/kogito-serverless-operator", "target": "@kie-tools/kogito-swf-devmode", "weight": 1 },
-      { "source": "@kie-tools/kogito-swf-builder", "target": "@kie-tools/kogito-swf-common", "weight": 1 },
-      { "source": "@kie-tools/kogito-swf-devmode", "target": "@kie-tools/kogito-swf-common", "weight": 1 },
-      { "source": "@kie-tools/kogito-swf-devmode", "target": "@kie-tools/sonataflow-quarkus-devui", "weight": 1 },
+      {
+        "source": "@kie-tools/kogito-serverless-operator",
+        "target": "@kie-tools/sonataflow-builder-image",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kogito-serverless-operator",
+        "target": "@kie-tools/sonataflow-devmode-image",
+        "weight": 1
+      },
+      { "source": "@kie-tools/sonataflow-builder-image", "target": "@kie-tools/sonataflow-image-common", "weight": 1 },
+      { "source": "@kie-tools/sonataflow-devmode-image", "target": "@kie-tools/sonataflow-image-common", "weight": 1 },
+      { "source": "@kie-tools/sonataflow-devmode-image", "target": "@kie-tools/sonataflow-quarkus-devui", "weight": 1 },
       { "source": "@kie-tools/kogito-management-console", "target": "@kie-tools/image-builder", "weight": 1 },
       { "source": "@kie-tools/kogito-management-console", "target": "@kie-tools/image-env-to-json", "weight": 1 },
       {
@@ -876,8 +884,8 @@
         "target": "@kie-tools/runtime-tools-shared-webapp-components",
         "weight": 1
       },
-      { "source": "@kie-tools/kogito-swf-common", "target": "@kie-tools/python-venv", "weight": 1 },
-      { "source": "@kie-tools/kogito-swf-common", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/sonataflow-image-common", "target": "@kie-tools/python-venv", "weight": 1 },
+      { "source": "@kie-tools/sonataflow-image-common", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/kogito-task-console", "target": "@kie-tools/image-builder", "weight": 1 },
       { "source": "@kie-tools/kogito-task-console", "target": "@kie-tools/image-env-to-json", "weight": 1 },
       {
@@ -1054,12 +1062,12 @@
       },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-builder-image",
-        "target": "@kie-tools/kogito-swf-builder",
+        "target": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env",
         "weight": 1
       },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-builder-image",
-        "target": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env",
+        "target": "@kie-tools/sonataflow-builder-image",
         "weight": 1
       },
       {
@@ -1267,9 +1275,6 @@
     ["@kie-tools/kn-plugin-workflow", "packages/kn-plugin-workflow"],
     ["@kie-tools/kogito-management-console", "packages/kogito-management-console"],
     ["@kie-tools/kogito-serverless-operator", "packages/kogito-serverless-operator"],
-    ["@kie-tools/kogito-swf-builder", "packages/kogito-swf-builder"],
-    ["@kie-tools/kogito-swf-common", "packages/kogito-swf-common"],
-    ["@kie-tools/kogito-swf-devmode", "packages/kogito-swf-devmode"],
     ["@kie-tools/kogito-task-console", "packages/kogito-task-console"],
     ["@kie-tools-core/kubernetes-bridge", "packages/kubernetes-bridge"],
     ["@kie-tools/maven-base", "packages/maven-base"],
@@ -1345,7 +1350,10 @@
     ["@kie-tools/serverless-workflow-standalone-editor", "packages/serverless-workflow-standalone-editor"],
     ["@kie-tools/serverless-workflow-text-editor", "packages/serverless-workflow-text-editor"],
     ["swf-vscode-extension", "packages/serverless-workflow-vscode-extension"],
+    ["@kie-tools/sonataflow-builder-image", "packages/sonataflow-builder-image"],
     ["sonataflow-deployment-webapp", "packages/sonataflow-deployment-webapp"],
+    ["@kie-tools/sonataflow-devmode-image", "packages/sonataflow-devmode-image"],
+    ["@kie-tools/sonataflow-image-common", "packages/sonataflow-image-common"],
     ["@kie-tools/sonataflow-quarkus-devui", "packages/sonataflow-quarkus-devui"],
     ["@kie-tools/storybook-base", "packages/storybook-base"],
     ["@kie-tools/stunner-editors", "packages/stunner-editors"],

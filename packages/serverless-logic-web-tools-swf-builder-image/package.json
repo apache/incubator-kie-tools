@@ -26,9 +26,9 @@
     "image:podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build --ulimit nofile=5000:5000 $(echo $(build-env swfBuilderImage.buildTags) | xargs printf -- \"-t $(build-env swfBuilderImageEnv.registry)/$(build-env swfBuilderImageEnv.account)/$(build-env swfBuilderImageEnv.name):%s\n\" | xargs echo) --build-arg BASE_IMAGE_URL=$(build-env swfBuilderImage.baseImageUrl) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
   },
   "devDependencies": {
-    "@kie-tools/kogito-swf-builder": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/serverless-logic-web-tools-swf-builder-image-env": "workspace:*",
+    "@kie-tools/sonataflow-builder-image": "workspace:*",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
     "sonataflow-deployment-webapp": "workspace:*"

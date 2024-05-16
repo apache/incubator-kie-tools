@@ -28,8 +28,8 @@ import (
 const (
 	latestImageTag              = "latest"
 	nightlySuffix               = "nightly"
-	defaultWorkflowDevModeImage = "quay.io/kiegroup/kogito-swf-devmode"
-	defaultWorkflowBuilderImage = "quay.io/kiegroup/kogito-swf-builder"
+	defaultWorkflowDevModeImage = "docker.io/apache/incubator-kie-sonataflow-devmode"
+	defaultWorkflowBuilderImage = "docker.io/apache/incubator-kie-sonataflow-builder"
 )
 
 // GetWorkflowAppImageNameTag returns the image name with tag to use for the image to be produced for a given workflow.

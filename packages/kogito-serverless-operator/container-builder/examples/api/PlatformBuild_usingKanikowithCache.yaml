@@ -20,7 +20,7 @@
 name: platform-kaniko-using-cache
 spec:
   publishStrategy: "Kaniko"
-  baseImage: quay.io/kiegroup/kogito-swf-builder-nightly:latest
+  baseImage: docker.io/apache/incubator-kie-sonataflow-builder:latest
   registry:
     address: quay.io/kiegroup
     secret: regcred
