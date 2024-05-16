@@ -22,8 +22,8 @@ pipeline {
     }
 
     environment {
-        IMAGE_ACCOUNT = 'quay.io/kie-tools'
-        IMAGE_NAME = 'kie-tools-ci-build'
+        IMAGE_ACCOUNT = 'docker.io/apache'
+        IMAGE_NAME = 'incubator-kie-tools-ci-build'
         IMAGE_NAME_TAG = "${IMAGE_ACCOUNT}/${IMAGE_NAME}:${params.IMAGE_TAG}"
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
     }
@@ -90,12 +90,12 @@ pipeline {
                     script {
                         if (!env.CHANGE_ID && env.BRANCH_NAME == 'main') {
                             sh """
-                            docker build -t ${IMAGE_NAME_TAG} -f .ci/kie-tools-ci-build.Dockerfile .
+                            docker build -t ${IMAGE_NAME_TAG} -f .ci/incubator-kie-tools-ci-build.Dockerfile .
                             docker tag ${IMAGE_NAME_TAG} ${IMAGE_ACCOUNT}/${IMAGE_NAME}:latest
                             """
                             IMAGE_TAGS = "${params.IMAGE_TAG} latest"
                         } else {
-                            sh "docker build -t ${IMAGE_NAME_TAG} --label 'quay.expires-after=1d' -f .ci/kie-tools-ci-build.Dockerfile ."
+                            sh "docker build -t ${IMAGE_NAME_TAG} --label 'quay.expires-after=1d' -f .ci/incubator-kie-tools-ci-build.Dockerfile ."
                             IMAGE_TAGS = "${params.IMAGE_TAG}"
                         }
                     }
