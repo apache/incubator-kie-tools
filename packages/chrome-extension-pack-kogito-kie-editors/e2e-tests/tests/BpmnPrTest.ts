@@ -31,9 +31,9 @@ beforeEach(async () => {
   tools = await Tools.init(TEST_NAME);
 });
 
-test(TEST_NAME, async () => {
+test.skip(TEST_NAME, async () => {
   // TODO create PR in Apache KIE
-  const PR_WEB_PAGE = "https://github.com/tomasdavidorg/chrome-extension-pr-test/pull/2/files";
+  const PR_WEB_PAGE = "";
 
   // open PR and check that source is opened
   const gitHubPrPage: GitHubPrPage = await tools.openPage(GitHubPrPage, PR_WEB_PAGE);
