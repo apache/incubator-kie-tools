@@ -22,15 +22,15 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     KIE_SANDBOX_HELM_CHART__registry: {
-      default: "quay.io",
+      default: "docker.io",
       description: "",
     },
     KIE_SANDBOX_HELM_CHART__account: {
-      default: "kie-tools",
+      default: "apache",
       description: "",
     },
     KIE_SANDBOX_HELM_CHART__name: {
-      default: "kie-sandbox",
+      default: "incubator-kie-sandbox-helm-chart",
       description: "",
     },
     KIE_SANDBOX_HELM_CHART__tag: {

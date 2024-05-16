@@ -106,9 +106,9 @@ pipeline {
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag = "${params.RELEASE_VERSION}-staging"
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags = "${params.RELEASE_VERSION}-staging"
 
-        KIE_SANDBOX_HELM_CHART__registry = 'quay.io'
-        KIE_SANDBOX_HELM_CHART__account = 'kie-tools'
-        KIE_SANDBOX_HELM_CHART__name = 'kie-sandbox-helm-chart'
+        KIE_SANDBOX_HELM_CHART__registry = 'docker.io'
+        KIE_SANDBOX_HELM_CHART__account = 'apache'
+        KIE_SANDBOX_HELM_CHART__name = 'incubator-kie-sandbox-helm-chart'
         KIE_SANDBOX_HELM_CHART__tag = "${params.RELEASE_VERSION}-staging"
 
         KOGITO_TASK_CONSOLE__registry = 'quay.io'

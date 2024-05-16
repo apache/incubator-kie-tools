@@ -84,9 +84,9 @@ pipeline {
         CORS_PROXY_IMAGE__imageName = 'incubator-kie-cors-proxy'
         CORS_PROXY_IMAGE__imageBuildTags = 'daily-dev'
 
-        KIE_SANDBOX_HELM_CHART__registry = 'quay.io'
-        KIE_SANDBOX_HELM_CHART__account = 'kie-tools'
-        KIE_SANDBOX_HELM_CHART__name = 'kie-sandbox-helm-chart'
+        KIE_SANDBOX_HELM_CHART__registry = 'docker.io'
+        KIE_SANDBOX_HELM_CHART__account = 'apache'
+        KIE_SANDBOX_HELM_CHART__name = 'incubator-kie-sandbox-helm-chart'
         KIE_SANDBOX_HELM_CHART__tag = '0.0.0-daily-dev'
 
         OPENSHIFT_NAMESPACE = 'kie-sandbox'
