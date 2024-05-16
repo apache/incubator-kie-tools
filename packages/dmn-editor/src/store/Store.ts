@@ -226,11 +226,7 @@ export const defaultStaticState = (): Omit<State, "dmn" | "dispatch" | "computed
   },
 });
 
-export function createDmnEditorStore(
-  model: State["dmn"]["model"],
-  externalModelsByNamespace: ExternalModelsIndex | undefined,
-  computedCache: ComputedStateCache<Computed>
-) {
+export function createDmnEditorStore(model: State["dmn"]["model"], computedCache: ComputedStateCache<Computed>) {
   const { diagram, ...defaultState } = defaultStaticState();
   return create(
     immer<State>(() => ({

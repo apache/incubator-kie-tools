@@ -28,11 +28,12 @@ import { generateEmptyDmn15 } from "./misc/empty/Empty.stories";
 export const evaluationResults: EvaluationResults = {};
 export const validationMessages: ValidationMessages = {};
 
-export type StorybookDmnEditorProps = DmnEditorProps & { xml: string; ref: React.RefObject<DmnEditorRef> };
+export type StorybookDmnEditorProps = DmnEditorProps & { xml: string };
 
 export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
   const [args, updateArgs] = useArgs<StorybookDmnEditorProps>();
   const argsCopy = useRef(args);
+  const ref = useRef<DmnEditorRef>(null);
   const [modelArgs, setModelArgs] = useState<DmnLatestModel>(args.model);
   const model = useMemo(() => props?.model ?? modelArgs, [modelArgs, props?.model]);
   const [modelChanged, setModelChange] = useState<boolean>(false);
@@ -76,7 +77,7 @@ export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
       )}
       <div style={{ position: "absolute", width: "100%", height: "100%", top: "0px", left: "0px" }}>
         <DmnEditor
-          ref={props?.ref}
+          ref={ref}
           model={model}
           originalVersion={props?.originalVersion ?? args.originalVersion}
           onModelChange={onModelChange}

@@ -34,8 +34,6 @@ export interface Commands {
   cancelAction: () => void;
   focusOnSelection: () => void;
   resetPosition: () => void;
-  redo: () => void;
-  undo: () => void;
 }
 
 const CommandsContext = React.createContext<{
@@ -86,12 +84,6 @@ export function CommandsContextProvider(props: React.PropsWithChildren<{}>) {
     },
     resetPosition: () => {
       throw new Error("DMN EDITOR: resetPosition command not implemented.");
-    },
-    redo: () => {
-      throw new Error("DMN EDITOR: redo command not implemented.");
-    },
-    undo: () => {
-      throw new Error("DMN EDITOR: undo command not implemented.");
     },
   });
 

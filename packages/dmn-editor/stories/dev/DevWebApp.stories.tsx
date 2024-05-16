@@ -66,7 +66,6 @@ function DevWebApp(args: DmnEditorProps) {
       pointer: 0,
     };
   });
-  const ref = useRef<DmnEditorRef>(null);
 
   const onDrop = useCallback((e: React.DragEvent) => {
     console.log("DMN Editor :: Dev webapp :: File(s) dropped! Opening it.");
@@ -119,7 +118,6 @@ function DevWebApp(args: DmnEditorProps) {
 
   const undo = useCallback(() => {
     setState((prev) => ({ ...prev, pointer: Math.max(0, prev.pointer - 1) }));
-    ref.current?.getCommands().undo();
   }, []);
 
   const redo = useCallback(() => {
@@ -224,7 +222,6 @@ function DevWebApp(args: DmnEditorProps) {
                 evaluationResults: args.evaluationResults,
                 issueTrackerHref: args.issueTrackerHref,
                 onRequestToJumpToPath,
-                ref: ref,
               })}
             </PageSection>
           </Page>
