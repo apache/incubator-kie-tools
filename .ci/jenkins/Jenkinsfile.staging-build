@@ -111,14 +111,14 @@ pipeline {
         KIE_SANDBOX_HELM_CHART__name = 'incubator-kie-sandbox-helm-chart'
         KIE_SANDBOX_HELM_CHART__tag = "${params.RELEASE_VERSION}-staging"
 
-        KOGITO_TASK_CONSOLE__registry = 'quay.io'
-        KOGITO_TASK_CONSOLE__account = 'kie-tools'
-        KOGITO_TASK_CONSOLE__name = 'kogito-task-console'
+        KOGITO_TASK_CONSOLE__registry = 'docker.io'
+        KOGITO_TASK_CONSOLE__account = 'apache'
+        KOGITO_TASK_CONSOLE__name = 'incubator-kie-kogito-task-console'
         KOGITO_TASK_CONSOLE__buildTags = "${params.RELEASE_VERSION}-staging"
 
-        KOGITO_MANAGEMENT_CONSOLE__registry = 'quay.io'
-        KOGITO_MANAGEMENT_CONSOLE__account = 'kie-tools'
-        KOGITO_MANAGEMENT_CONSOLE__name = 'kogito-management-console'
+        KOGITO_MANAGEMENT_CONSOLE__registry = 'docker.io'
+        KOGITO_MANAGEMENT_CONSOLE__account = 'apache'
+        KOGITO_MANAGEMENT_CONSOLE__name = 'incubator-kie-kogito-management-console'
         KOGITO_MANAGEMENT_CONSOLE__buildTags = "${params.RELEASE_VERSION}-staging"
 
         KOGITO_SWF_BUILDER_IMAGE__registry = 'quay.io'

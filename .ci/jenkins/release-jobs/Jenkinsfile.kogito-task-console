@@ -38,9 +38,9 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        KOGITO_TASK_CONSOLE__registry = 'quay.io'
-        KOGITO_TASK_CONSOLE__account = 'kie-tools'
-        KOGITO_TASK_CONSOLE__name = 'kogito-task-console'
+        KOGITO_TASK_CONSOLE__registry = 'docker.io'
+        KOGITO_TASK_CONSOLE__account = 'apache'
+        KOGITO_TASK_CONSOLE__name = 'incubator-kie-kogito-task-console'
         KOGITO_TASK_CONSOLE__buildTags = "latest ${params.RELEASE_VERSION}"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
