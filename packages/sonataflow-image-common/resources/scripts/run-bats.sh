@@ -34,4 +34,4 @@ fi
 tests_output_path="${script_dir_path}/../../dist-e2e-tests"
 
 echo "----> running bats"
-./bats/bin/bats modules/kogito-swf/common/scripts/tests/bats --formatter junit --report-formatter junit --output "${tests_output_path}"
+./bats/bin/bats modules/sonataflow/common/scripts/tests/bats --formatter junit --report-formatter junit --output "${tests_output_path}"
