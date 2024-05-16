@@ -73,9 +73,9 @@ pipeline {
         KIE_SANDBOX__imageName = 'kie-sandbox-image'
         KIE_SANDBOX__imageBuildTags = "${params.RELEASE_VERSION}-staging"
 
-        KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry = 'quay.io'
-        KIE_SANDBOX_EXTENDED_SERVICES__imageAccount = 'kie-tools'
-        KIE_SANDBOX_EXTENDED_SERVICES__imageName = 'kie-sandbox-extended-services-image'
+        KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry = 'docker.io'
+        KIE_SANDBOX_EXTENDED_SERVICES__imageAccount = 'apache'
+        KIE_SANDBOX_EXTENDED_SERVICES__imageName = 'incubator-kie-sandbox-extended-services'
         KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags = "${params.RELEASE_VERSION}-staging"
 
         CORS_PROXY_IMAGE__imageRegistry = 'docker.io'

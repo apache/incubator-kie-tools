@@ -26,9 +26,9 @@ replicaCount: 1
 
 # -- Image source configuration for the Extended Services image
 image:
-  registry: quay.io
-  account: kie-tools
-  name: kie-sandbox-extended-services-image
+  registry: docker.io
+  account: apache
+  name: incubator-kie-sandbox-extended-services
   pullPolicy: IfNotPresent
   tag: "latest"
 

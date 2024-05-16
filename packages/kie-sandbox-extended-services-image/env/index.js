@@ -28,15 +28,15 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "The image used in the FROM import.",
     },
     KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry: {
-      default: "quay.io",
+      default: "docker.io",
       description: "",
     },
     KIE_SANDBOX_EXTENDED_SERVICES__imageAccount: {
-      default: "kie-tools",
+      default: "apache",
       description: "",
     },
     KIE_SANDBOX_EXTENDED_SERVICES__imageName: {
-      default: "kie-sandbox-extended-services-image",
+      default: "incubator-kie-sandbox-extended-services",
       description: "",
     },
     KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags: {
