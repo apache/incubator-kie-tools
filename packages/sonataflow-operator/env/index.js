@@ -38,7 +38,7 @@ module.exports = composeEnv([rootEnv, sonataflowBuilderImageEnv, sonataflowDevMo
       description: "The image name.",
     },
     SONATAFLOW_OPERATOR__buildTag: {
-      default: "latest",
+      default: rootEnv.env.root.streamName,
       description: "The image tag",
     },
     SONATAFLOW_OPERATOR__sonataflowBuilderImageImage: {

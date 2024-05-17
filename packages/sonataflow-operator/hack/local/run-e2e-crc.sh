@@ -24,7 +24,7 @@ oc registry login --insecure=true
 docker login -u $(oc whoami) -p $(oc whoami -t) default-route-openshift-image-registry.apps-crc.testing
 oc new-project "${NAMESPACE}"
 
-export OPERATOR_IMAGE_NAME=default-route-openshift-image-registry.apps-crc.testing/"${NAMESPACE}"/sonataflow-operator:latest
+export OPERATOR_IMAGE_NAME=default-route-openshift-image-registry.apps-crc.testing/"${NAMESPACE}"/sonataflow-operator:latest # TODO: Replace `latest` with $KIE_TOOLS_BUILD__streamName through $(build-env rootEnv.env.root.streamName).
 if ! make container-build BUILDER=docker IMG="${OPERATOR_IMAGE_NAME}"; then
   echo "Failure: Failed to build image, exiting " >&2
   exit 1

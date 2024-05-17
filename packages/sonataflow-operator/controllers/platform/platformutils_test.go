@@ -38,7 +38,7 @@ func TestSonataFlowBuildController(t *testing.T) {
 	dockerfile := string(dockerfileBytes)
 	// 1 - Let's verify that the default image is used (for this unit test is docker.io/apache/incubator-kie-sonataflow-builder:latest)
 	resDefault := GetCustomizedBuilderDockerfile(dockerfile, *platform)
-	foundDefault, err := regexp.MatchString("FROM docker.io/apache/incubator-kie-sonataflow-builder:latest AS builder", resDefault)
+	foundDefault, err := regexp.MatchString("FROM docker.io/apache/incubator-kie-sonataflow-builder:latest AS builder", resDefault) // TODO: Replace `latest` with $KIE_TOOLS_BUILD__streamName through $(build-env rootEnv.env.root.streamName).
 	assert.NoError(t, err)
 	assert.True(t, foundDefault)
 

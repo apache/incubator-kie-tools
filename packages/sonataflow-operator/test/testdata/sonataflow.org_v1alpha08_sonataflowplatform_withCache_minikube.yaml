@@ -24,6 +24,6 @@ metadata:
 spec:
   build:
     config:
-      baseImage: docker.io/apache/incubator-kie-sonataflow-builder:latest
+      baseImage: docker.io/apache/incubator-kie-sonataflow-builder:latest # TODO: Replace `latest` with $KIE_TOOLS_BUILD__streamName through $(build-env rootEnv.env.root.streamName).
       strategyOptions:
         KanikoBuildCacheEnabled: "true"

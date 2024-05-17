@@ -16,6 +16,7 @@
 # under the License.
 
 FROM docker.io/apache/incubator-kie-sonataflow-builder:latest AS builder
+# TODO: Replace `latest` with $KIE_TOOLS_BUILD__streamName through $(build-env rootEnv.env.root.streamName).
 
 # Kogito User
 USER 1001

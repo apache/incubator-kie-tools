@@ -48,6 +48,9 @@ importers:
       "@kie-tools-scripts/update-kogito-version":
         specifier: workspace:*
         version: link:scripts/update-kogito-version
+      "@kie-tools-scripts/update-stream-name":
+        specifier: workspace:*
+        version: link:scripts/update-stream-name
       "@kie-tools-scripts/update-version":
         specifier: workspace:*
         version: link:scripts/update-version
@@ -5985,9 +5988,6 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
-      js-yaml:
-        specifier: ^4.1.0
-        version: 4.1.0
       prettier:
         specifier: ^2.8.8
         version: 2.8.8
@@ -5997,6 +5997,9 @@ importers:
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6
+      yaml:
+        specifier: ^2.3.2
+        version: 2.3.2
 
   packages/kie-sandbox-image:
     dependencies:
@@ -6050,15 +6053,15 @@ importers:
 
   packages/kn-plugin-workflow:
     devDependencies:
-      "@kie-tools/sonataflow-operator":
-        specifier: workspace:*
-        version: link:../sonataflow-operator
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
       "@kie-tools/sonataflow-devmode-image":
         specifier: workspace:*
         version: link:../sonataflow-devmode-image
+      "@kie-tools/sonataflow-operator":
+        specifier: workspace:*
+        version: link:../sonataflow-operator
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -6092,30 +6095,6 @@ importers:
       ts-json-schema-generator:
         specifier: ^1.1.2
         version: 1.1.2
-
-  packages/sonataflow-operator:
-    devDependencies:
-      "@kie-tools/python-venv":
-        specifier: workspace:*
-        version: link:../python-venv
-      "@kie-tools/root-env":
-        specifier: workspace:*
-        version: link:../root-env
-      "@kie-tools/sonataflow-builder-image":
-        specifier: workspace:*
-        version: link:../sonataflow-builder-image
-      "@kie-tools/sonataflow-devmode-image":
-        specifier: workspace:*
-        version: link:../sonataflow-devmode-image
-      replace-in-file:
-        specifier: ^7.1.0
-        version: 7.1.0
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6
 
   packages/kogito-task-console:
     devDependencies:
@@ -11225,6 +11204,30 @@ importers:
         specifier: workspace:*
         version: link:../root-env
 
+  packages/sonataflow-operator:
+    devDependencies:
+      "@kie-tools/python-venv":
+        specifier: workspace:*
+        version: link:../python-venv
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/sonataflow-builder-image":
+        specifier: workspace:*
+        version: link:../sonataflow-builder-image
+      "@kie-tools/sonataflow-devmode-image":
+        specifier: workspace:*
+        version: link:../sonataflow-devmode-image
+      replace-in-file:
+        specifier: ^7.1.0
+        version: 7.1.0
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
   packages/sonataflow-quarkus-devui:
     dependencies:
       "@kie-tools/maven-base":
@@ -13490,6 +13493,8 @@ importers:
         version: 2.0.0
 
   scripts/update-kogito-version: {}
+
+  scripts/update-stream-name: {}
 
   scripts/update-version: {}
 
@@ -54133,7 +54138,6 @@ packages:
     resolution:
       { integrity: sha512-N/lyzTPaJasoDmfV7YTrYCI0G/3ivm/9wdG0aHuheKowWQwGTsK0Eoiw6utmzAnI6pkJa0DUVygvp3spqqEKXg== }
     engines: { node: ">= 14" }
-    dev: false
 
   /yargs-parser@18.1.3:
     resolution:

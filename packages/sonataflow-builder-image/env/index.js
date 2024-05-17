@@ -19,7 +19,9 @@
 
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+const rootEnv = require("@kie-tools/root-env/env");
+
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     SONATAFLOW_BUILDER_IMAGE__registry: {
       default: "docker.io",
@@ -34,7 +36,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "The image name.",
     },
     SONATAFLOW_BUILDER_IMAGE__buildTag: {
-      default: "latest",
+      default: rootEnv.env.root.streamName,
       description: "The image tag.",
     },
   }),

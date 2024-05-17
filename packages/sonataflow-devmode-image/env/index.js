@@ -20,7 +20,9 @@
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 const sonataFlowQuarkusDevUiEnv = require("@kie-tools/sonataflow-quarkus-devui/env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+const rootEnv = require("@kie-tools/root-env/env");
+
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     SONATAFLOW_DEVMODE_IMAGE__registry: {
       default: "docker.io",
@@ -35,7 +37,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "The image name.",
     },
     SONATAFLOW_DEVMODE_IMAGE__buildTag: {
-      default: "latest",
+      default: rootEnv.env.root.streamName,
       description: "The image tag.",
     },
     SONATAFLOW_DEVMODE_IMAGE__sonataflowQuarkusDevUiVersion: {

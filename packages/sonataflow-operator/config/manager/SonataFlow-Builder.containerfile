@@ -1,4 +1,5 @@
 FROM docker.io/apache/incubator-kie-sonataflow-builder:latest AS builder
+# TODO: Replace `latest` with $KIE_TOOLS_BUILD__streamName through $(build-env rootEnv.env.root.streamName).
 
 # variables that can be overridden by the builder
 # To add a Quarkus extension to your application

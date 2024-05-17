@@ -1,4 +1,5 @@
 ARG BUILDER_IMAGE_TAG="docker.io/apache/incubator-kie-sonataflow-builder:latest"
+# TODO: Replace `latest` with $KIE_TOOLS_BUILD__streamName through $(build-env rootEnv.env.root.streamName).
 
 FROM ${BUILDER_IMAGE_TAG} AS builder
 

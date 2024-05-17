@@ -19,7 +19,9 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+const rootEnv = require("@kie-tools/root-env/env");
+
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry: {
       default: "docker.io",
@@ -34,7 +36,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "",
     },
     KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags: {
-      default: "latest",
+      default: rootEnv.env.root.streamName,
       description: "",
     },
     KIE_SANDBOX_WEBAPP_IMAGE__imagePort: {
