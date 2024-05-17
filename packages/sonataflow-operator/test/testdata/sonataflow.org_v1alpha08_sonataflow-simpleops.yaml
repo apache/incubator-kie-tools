@@ -30,7 +30,7 @@ metadata:
 spec:
   podTemplate:
     container:
-      image: docker.io/apache/sonataflow-minimal-example:latest
+      image: docker.io/apache/incubator-kie-sonataflow-minimal-example:latest
   flow:
     start: HelloWorld
     states:

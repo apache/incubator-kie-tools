@@ -110,9 +110,9 @@ make run-tests 2>&1 | tee log.out
 ```
 $ make
 $ make container-build
-$ podman tag docker.io/apache/sonataflow-operator:latest docker.io/{USERNAME}/sonataflow-operator:latest
-$ podman push docker.io/{USERNAME}/sonataflow-operator:latest
-$ make run-tests cr_deployment_only=true local_cluster=true operator_image_tag=docker.io/{USERNAME}/sonataflow-operator:latest
+$ podman tag docker.io/apache/incubator-kie-sonataflow-operator:latest docker.io/{USERNAME}/incubator-kie-sonataflow-operator:latest
+$ podman push docker.io/{USERNAME}/incubator-kie-sonataflow-operator:latest
+$ make run-tests cr_deployment_only=true local_cluster=true operator_image_tag=docker.io/{USERNAME}/incubator-kie-sonataflow-operator:latest
 ```
 
 **NOTE:** Replace {USERNAME} with the username/group you want to push to. Podman needs to be logged in to docker.io and be able to push to your username/group. If you want to use docker, just append `BUILDER=docker` to the `make container-build` command.
