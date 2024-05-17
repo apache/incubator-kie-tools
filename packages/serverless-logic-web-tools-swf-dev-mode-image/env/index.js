@@ -19,29 +19,28 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv(
-  [require("@kie-tools/root-env/env"), require("@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env/env")],
-  {
-    vars: varsWithName({
-      SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags: {
-        default: "latest",
-        description: "",
-      },
-      /* (begin) This part of the file is referenced in `scripts/update-kogito-version` */
-      SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__kogitoBaseBuilderImageTag: {
-        default: "999-20240509",
-        description: "",
-      },
-      /* end */
-    }),
-    get env() {
-      return {
-        swfDevModeImage: {
-          version: require("../package.json").version,
-          buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags),
-          kogitoImageTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__kogitoBaseBuilderImageTag),
-        },
-      };
+const rootEnv = require("@kie-tools/root-env/env");
+
+module.exports = composeEnv([rootEnv, require("@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env/env")], {
+  vars: varsWithName({
+    SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags: {
+      default: rootEnv.env.root.streamName,
+      description: "",
     },
-  }
-);
+    /* (begin) This part of the file is referenced in `scripts/update-kogito-version` */
+    SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__kogitoBaseBuilderImageTag: {
+      default: "999-20240509",
+      description: "",
+    },
+    /* end */
+  }),
+  get env() {
+    return {
+      swfDevModeImage: {
+        version: require("../package.json").version,
+        buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags),
+        kogitoImageTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__kogitoBaseBuilderImageTag),
+      },
+    };
+  },
+});

@@ -19,12 +19,12 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-const buildEnv = require("@kie-tools/root-env/env");
+const rootEnv = require("@kie-tools/root-env/env");
 const extendedServicesImageEnv = require("@kie-tools/kie-sandbox-extended-services-image/env");
 const corsProxyImageEnv = require("@kie-tools/cors-proxy-image/env");
 const kieSandboxWebappImageEnv = require("@kie-tools/kie-sandbox-webapp-image/env");
 
-module.exports = composeEnv([buildEnv, extendedServicesImageEnv, corsProxyImageEnv, kieSandboxWebappImageEnv], {
+module.exports = composeEnv([rootEnv, extendedServicesImageEnv, corsProxyImageEnv, kieSandboxWebappImageEnv], {
   vars: varsWithName({
     KIE_SANDBOX_DISTRIBUTION__kieSandboxImageRegistry: {
       default: kieSandboxWebappImageEnv.env.kieSandboxWebappImage.registry,

@@ -19,7 +19,9 @@
 
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+const rootEnv = require("@kie-tools/root-env/env");
+
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     DEV_DEPLOYMENT_BASE_IMAGE__builderImage: {
       default: "registry.access.redhat.com/ubi9/openjdk-17:1.18",
@@ -46,7 +48,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "The image name.",
     },
     DEV_DEPLOYMENT_BASE_IMAGE__buildTags: {
-      default: "daily-dev",
+      default: rootEnv.env.root.streamName,
       description: "The image tag.",
     },
   }),

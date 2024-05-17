@@ -76,12 +76,12 @@ image along with the modules and scripts provided in `@kie-tools/sonataflow-imag
 
 ## Envs
 
-|                 Name                 |                    Description                     |       Default        |
-| :----------------------------------: | :------------------------------------------------: | :------------------: |
-| `SONATAFLOW_BUILDER_IMAGE__registry` | Registry where the generated image will be pushed. |      "quay.io"       |
-| `SONATAFLOW_BUILDER_IMAGE__account`  |        Account where image will be stored.         |      "kiegroup"      |
-|   `SONATAFLOW_BUILDER_IMAGE__name`   |              SWF Builder Image name.               | "sonataflow-builder" |
-| `SONATAFLOW_BUILDER_IMAGE__buildTag` |                    Tag to use .                    |       "latest"       |
+|                 Name                 |                    Description                     |                          Default                          |
+| :----------------------------------: | :------------------------------------------------: | :-------------------------------------------------------: |
+| `SONATAFLOW_BUILDER_IMAGE__registry` | Registry where the generated image will be pushed. |                         "quay.io"                         |
+| `SONATAFLOW_BUILDER_IMAGE__account`  |        Account where image will be stored.         |                        "kiegroup"                         |
+|   `SONATAFLOW_BUILDER_IMAGE__name`   |              SWF Builder Image name.               |                   "sonataflow-builder"                    |
+| `SONATAFLOW_BUILDER_IMAGE__buildTag` |                    Tag to use .                    | $KIE_TOOLS_BUILD\_\_streamName (E.g., "main" or "10.0.x") |
 
 ---
 

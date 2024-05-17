@@ -5,7 +5,7 @@ metadata:
     alm-examples: "[]"
     capabilities: Basic Install
     categories: Application Runtime
-    containerImage: docker.io/apache/incubator-kie-sonataflow-operator:latest
+    containerImage: docker.io/apache/incubator-kie-sonataflow-operator:main
     description: SonataFlow Kubernetes Operator for deploying workflow applications
       based on the CNCF Serverless Workflow specification
     operators.operatorframework.io/internal-objects: '["sonataflowbuilds.sonataflow.org"]'

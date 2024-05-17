@@ -13,6 +13,7 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
+    "build:dev": "pnpm build:prod",
     "build:prod": "run-script-os",
     "build:prod:linux:darwin": "pnpm cleanup && run-script-if --bool $([ $(command -v helm) ] && echo true || echo false) --then \"helm package -u -d ./dist ./src\"",
     "build:prod:win32": "pnpm cleanup && run-script-if --bool \"$([bool](Get-Command helm -errorAction SilentlyContinue))\" --then \"helm package -u -d ./dist ./src\"",
@@ -28,10 +29,10 @@
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
-    "js-yaml": "^4.1.0",
     "prettier": "^2.8.8",
     "rimraf": "^3.0.2",
-    "run-script-os": "^1.1.6"
+    "run-script-os": "^1.1.6",
+    "yaml": "^2.3.2"
   },
   "kieTools": {
     "requiredPreinstalledCliCommands": [

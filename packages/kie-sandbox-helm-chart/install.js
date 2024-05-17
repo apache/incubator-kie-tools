@@ -17,38 +17,51 @@
  * under the License.
  */
 
-const buildEnv = require("./env");
-const yaml = require("js-yaml");
+const { env } = require("./env");
+const yaml = require("yaml");
 const fs = require("fs");
 
 // Set version for the Chart (and its dependencies) and Subcharts
-const files = [
+console.log("[kie-sandbox-helm-chart install.js] Updating Chart.yaml files...");
+const chartFiles = [
   "src/Chart.yaml",
   "src/charts/extended_services/Chart.yaml",
   "src/charts/cors_proxy/Chart.yaml",
   "src/charts/kie_sandbox/Chart.yaml",
 ];
-files.forEach((file) => {
-  const doc = yaml.load(fs.readFileSync(file, "utf8"));
-  doc.version = buildEnv.env.kieSandboxHelmChart.tag;
-  doc.appVersion = buildEnv.env.kieSandboxHelmChart.tag;
-  if (doc.dependencies) {
-    doc.dependencies = doc.dependencies.map((dep) => {
-      if (["extended_services", "cors_proxy", "kie_sandbox"].includes(dep.name)) {
-        return { ...dep, version: buildEnv.env.kieSandboxHelmChart.tag };
-      }
-      return dep;
-    });
+chartFiles.forEach((file) => {
+  const doc = yaml.parseDocument(fs.readFileSync(file, "utf8"));
+  doc.setIn(["version"], env.kieSandboxHelmChart.tag);
+  doc.setIn(["appVersion"], env.kieSandboxHelmChart.tag);
+  if (doc.getIn(["dependencies"])) {
+    doc.setIn(["dependencies", "0", "version"], env.kieSandboxHelmChart.tag);
+    doc.setIn(["dependencies", "1", "version"], env.kieSandboxHelmChart.tag);
+    doc.setIn(["dependencies", "2", "version"], env.kieSandboxHelmChart.tag);
   }
-  console.log(doc);
-  fs.writeFileSync(file, yaml.dump(doc), "utf8");
+  console.log(yaml.stringify(doc));
+  fs.writeFileSync(file, yaml.stringify(doc), "utf8");
+});
+
+// Set tags used for images
+console.log("[kie-sandbox-helm-chart install.js] Updating values.yaml files...");
+const valuesFiles = [
+  "src/charts/extended_services/values.yaml",
+  "src/charts/cors_proxy/values.yaml",
+  "src/charts/kie_sandbox/values.yaml",
+];
+valuesFiles.forEach((file) => {
+  const doc = yaml.parseDocument(fs.readFileSync(file, "utf8"));
+  doc.setIn(["image", "tag"], env.root.streamName);
+  console.log(yaml.stringify(doc));
+  fs.writeFileSync(file, yaml.stringify(doc));
 });
 
 // Update Values table on README
-const readme = fs.readFileSync("./README.md").toString();
-const chartReadme = fs.readFileSync("./src/README.md").toString();
-const chartReadmeSections = chartReadme.split("## Values");
-const readmeSections = readme.split("<!-- CHART_VALUES_README -->");
+console.log("[kie-sandbox-helm-chart install.js] Updating README.md files...");
+const chartReadmeSections = fs.readFileSync("./src/README.md").toString().split("## Values");
+const readmeSections = fs.readFileSync("./README.md").toString().split("<!-- CHART_VALUES_README -->");
 readmeSections[1] = chartReadmeSections[1];
 const newContent = readmeSections.join("<!-- CHART_VALUES_README -->");
 fs.writeFileSync("./README.md", newContent);
+
+console.log("[kie-sandbox-helm-chart install.js] Done.");

@@ -26,7 +26,7 @@ const sonataflowBuilderImageEnv = require("@kie-tools/sonataflow-builder-image/e
 module.exports = composeEnv([rootEnv, serverlessLogicWebToolsSwfBuilderImageEnv, sonataflowBuilderImageEnv], {
   vars: varsWithName({
     SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags: {
-      default: "latest",
+      default: rootEnv.env.root.streamName,
       description: "",
     },
     SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE__baseImageUrl: {

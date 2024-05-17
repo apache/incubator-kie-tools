@@ -11,6 +11,7 @@
     "format:check": "prettier --check . '**/*.xml'",
     "prepare": "husky install",
     "update-kogito-version-to": "kie-tools--update-kogito-version-to",
+    "update-stream-name-to": "kie-tools--update-stream-name-to",
     "update-version-to": "kie-tools--update-version-to"
   },
   "devDependencies": {
@@ -20,6 +21,7 @@
     "@kie-tools-scripts/run-script-if": "workspace:*",
     "@kie-tools-scripts/sparse-checkout": "workspace:*",
     "@kie-tools-scripts/update-kogito-version": "workspace:*",
+    "@kie-tools-scripts/update-stream-name": "workspace:*",
     "@kie-tools-scripts/update-version": "workspace:*",
     "@nice-move/prettier-plugin-package-json": "^0.6.1",
     "@prettier/plugin-xml": "^2",

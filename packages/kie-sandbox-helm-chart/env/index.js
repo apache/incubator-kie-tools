@@ -19,7 +19,9 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+const rootEnv = require("@kie-tools/root-env/env");
+
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     KIE_SANDBOX_HELM_CHART__registry: {
       default: "docker.io",
@@ -34,7 +36,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "",
     },
     KIE_SANDBOX_HELM_CHART__tag: {
-      default: require("../package.json").version,
+      default: require("../package.json").version, // Needs to be SemVer, so we can't use rootEnv.env.root.streamName.
       description: "",
     },
   }),

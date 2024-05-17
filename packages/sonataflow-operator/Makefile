@@ -5,7 +5,7 @@
 # - use environment variables to overwrite this value (e.g export VERSION=0.0.2)
 VERSION ?= 0.0.0
 REDUCED_VERSION ?= 0.0
-IMAGE_TAG ?= latest
+IMAGE_TAG ?= main
 
 # CHANNELS define the bundle channels used in the bundle.
 # Add a new line here if you would like to change its default config. (E.g CHANNELS = "candidate,fast,stable")
@@ -183,7 +183,8 @@ docker-buildx: generate ## Build and push docker image for the manager for cross
 container-build: ## Build the container image
 	cekit -v --descriptor images/manager.yaml build ${build_options} $(BUILDER) --build-arg SOURCE_DATE_EPOCH="$(shell git log -1 --pretty=%ct)"
 ifneq ($(ignore_tag),true)
-	$(BUILDER) tag sonataflow-operator:latest ${IMG}
+# TODO: Replace `latest` with $KIE_TOOLS_BUILD__streamName through $(build-env rootEnv.env.root.streamName). ???
+	$(BUILDER) tag sonataflow-operator:latest ${IMG} 
 endif
 
 .PHONY: container-push
@@ -262,6 +263,7 @@ bundle: manifests kustomize install-operator-sdk ## Generate bundle manifests an
 bundle-build: ## Build the bundle image
 	cekit -v --descriptor images/bundle.yaml build ${build_options} $(BUILDER) --no-squash --build-arg SOURCE_DATE_EPOCH="$(shell git log -1 --pretty=%ct)"
 ifneq ($(ignore_tag),true)
+# TODO: Replace `latest` with $KIE_TOOLS_BUILD__streamName through $(build-env rootEnv.env.root.streamName). ???
 	$(BUILDER) tag sonataflow-operator-bundle:latest $(BUNDLE_IMG)
 endif
 

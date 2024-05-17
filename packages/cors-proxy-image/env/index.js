@@ -19,9 +19,10 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
+const rootEnv = require("@kie-tools/root-env/env");
 const corsProxyEnv = require("@kie-tools/cors-proxy/env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     CORS_PROXY_IMAGE__imageRegistry: {
       default: "docker.io",
@@ -36,7 +37,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "",
     },
     CORS_PROXY_IMAGE__imageBuildTags: {
-      default: "latest",
+      default: rootEnv.env.root.streamName,
       description: "",
     },
     CORS_PROXY_IMAGE__imagePort: {
