@@ -27,7 +27,6 @@ import (
 
 const (
 	latestImageTag              = "latest"
-	nightlySuffix               = "nightly"
 	defaultWorkflowDevModeImage = "docker.io/apache/incubator-kie-sonataflow-devmode"
 	defaultWorkflowBuilderImage = "docker.io/apache/incubator-kie-sonataflow-builder"
 )
@@ -63,9 +62,6 @@ func GetDefaultWorkflowBuilderImageTag() string {
 }
 
 func GetDefaultImageTag(imgTag string) string {
-	if version.IsSnapshot() {
-		imgTag += "-" + nightlySuffix
-	}
 	imgTag += ":"
 	if version.IsLatestVersion() {
 		imgTag += latestImageTag

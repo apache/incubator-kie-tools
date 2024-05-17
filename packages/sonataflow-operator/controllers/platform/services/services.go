@@ -110,14 +110,11 @@ func (d DataIndexHandler) GetServiceImageName(persistenceType constants.Persiste
 		return cfg.GetCfg().DataIndexEphemeralImageTag
 	}
 	var tag = version.GetMajorMinor()
-	var suffix = ""
 	if version.IsSnapshot() {
-		tag = "latest"
-		//TODO, remove
-		suffix = constants.ImageNameNightlySuffix
+		tag = "999-20240509"
 	}
 	// returns "quay.io/kiegroup/kogito-data-index-<persistence_layer>:<tag>"
-	return fmt.Sprintf("%s-%s-%s:%s", constants.ImageNamePrefix, constants.DataIndexName, persistenceType.String()+suffix, tag)
+	return fmt.Sprintf("%s-%s-%s:%s", constants.ImageNamePrefix, constants.DataIndexName, persistenceType.String(), tag)
 }
 
 func (d DataIndexHandler) GetServiceName() string {
@@ -281,14 +278,12 @@ func (j JobServiceHandler) GetServiceImageName(persistenceType constants.Persist
 		return cfg.GetCfg().JobsServiceEphemeralImageTag
 	}
 	var tag = version.GetMajorMinor()
-	var suffix = ""
+
 	if version.IsSnapshot() {
-		tag = "latest"
-		//TODO remove
-		suffix = constants.ImageNameNightlySuffix
+		tag = "999-20240509"
 	}
 	// returns "quay.io/kiegroup/kogito-jobs-service-<persistece_layer>:<tag>"
-	return fmt.Sprintf("%s-%s-%s:%s", constants.ImageNamePrefix, constants.JobServiceName, persistenceType.String()+suffix, tag)
+	return fmt.Sprintf("%s-%s-%s:%s", constants.ImageNamePrefix, constants.JobServiceName, persistenceType.String(), tag)
 }
 
 func (j JobServiceHandler) GetServiceName() string {
