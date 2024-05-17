@@ -219,7 +219,7 @@
           "type": "string"
         }
       },
-      "title": "Serverless Workflow Editor"
+      "title": "Apache KIE™ Serverless Workflow Editor"
     },
     "configurationDefaults": {
       "[json]": {

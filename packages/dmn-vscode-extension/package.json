@@ -56,7 +56,7 @@
   "engines": {
     "vscode": "^1.67.0"
   },
-  "displayName": "KIE DMN Editor",
+  "displayName": "Apache KIE™ DMN Editor",
   "categories": [
     "Other"
   ],
