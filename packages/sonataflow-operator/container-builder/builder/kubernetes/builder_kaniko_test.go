@@ -68,7 +68,7 @@ func TestNewBuildWithKanikoCustomizations(t *testing.T) {
 	addFlags[0] = "--use-new-run=true"
 
 	// create the new build, schedule with cache enabled, a specific set of resources and additional flags
-	build, err := NewBuild(ContainerBuilderInfo{FinalImageName: "quay.io/kiegroup/buildexample:latest", BuildUniqueName: "build1", Platform: platform}).
+	build, err := NewBuild(ContainerBuilderInfo{FinalImageName: "docker.io/apache/buildexample:latest", BuildUniqueName: "build1", Platform: platform}).
 		AddResource("Dockerfile", dockerFile).
 		AddResource("greetings.sw.json", workflowDefinition).
 		WithClient(c).
@@ -134,7 +134,7 @@ func TestNewBuildWithKanikoWithBuildArgsAndEnv(t *testing.T) {
 		},
 	}
 
-	build, err := NewBuild(ContainerBuilderInfo{FinalImageName: "quay.io/kiegroup/buildexample:latest", BuildUniqueName: "build1", Platform: platform}).
+	build, err := NewBuild(ContainerBuilderInfo{FinalImageName: "docker.io/apache/buildexample:latest", BuildUniqueName: "build1", Platform: platform}).
 		AddResource("Dockerfile", dockerFile).
 		AddResource("greetings.sw.json", workflowDefinition).
 		WithClient(c).

@@ -109,7 +109,7 @@ metadata:
             "build": {
               "config": {
                 "registry": {
-                  "address": "quay.io/kiegroup",
+                  "address": "docker.io/apache",
                   "secret": "regcred"
                 }
               }
