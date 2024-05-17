@@ -62,7 +62,7 @@ export class FormDmnValidator extends Validator {
             return { ...error, message: (this.i18n as FormDmnI18n).validation.xDmnAllowedValues };
           }
           if (error.keyword === X_DMN_TYPE_CONSTRAINTS_KEYWORD) {
-            return { ...error, message: (this.i18n as FormDmnI18n).validation.xDmnAllowedValues };
+            return { ...error, message: (this.i18n as FormDmnI18n).validation.xDmnTypeConstraint };
           }
           return error;
         }),
