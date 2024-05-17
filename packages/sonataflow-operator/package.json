@@ -15,7 +15,7 @@
   "scripts": {
     "build:dev": "run-script-os",
     "build:dev:darwin:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && make build && pnpm image:build && pnpm format",
-    "build:dev:win32": ".\\node_modules\\@kie-tools\\python-venv\\venv\\Scripts\\Activate.bat && make build && pnpm image:build && pnpm format",
+    "build:dev:win32": "echo 'Build not supported on Windows'",
     "build:prod": "run-script-os",
     "build:prod:darwin:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && make build && pnpm image:build && pnpm test && pnpm test-e2e && pnpm format",
     "build:prod:win32": "echo 'Build not supported on Windows'",
