@@ -27085,6 +27085,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
           image: docker.io/apache/incubator-kie-sonataflow-operator:latest
+          imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
               path: /healthz

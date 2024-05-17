@@ -33,6 +33,7 @@ spec:
             - name: manager-config
               mountPath: /controller_manager_config.yaml
               subPath: controller_manager_config.yaml
+          imagePullPolicy: IfNotPresent
       volumes:
         - name: manager-config
           configMap:

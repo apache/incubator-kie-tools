@@ -31,6 +31,7 @@ spec:
             - name: controllers-config
               mountPath: /config/controllers_cfg.yaml
               subPath: controllers_cfg.yaml
+          imagePullPolicy: IfNotPresent
       volumes:
         - name: controllers-config
           configMap:
