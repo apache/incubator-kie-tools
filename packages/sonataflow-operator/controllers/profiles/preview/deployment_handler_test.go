@@ -46,7 +46,7 @@ func Test_CheckPodTemplateChangesReflectDeployment(t *testing.T) {
 	assert.True(t, result.Requeue)
 
 	// Second reconciliation, we do change the image and that must reflect the deployment
-	expectedImg := "quay.io/apache/my-new-workflow:1.0.0"
+	expectedImg := "docker.io/apache/my-new-workflow:1.0.0"
 	workflow.Spec.PodTemplate.Container.Image = expectedImg
 	utilruntime.Must(client.Update(context.TODO(), workflow))
 	result, objects, err = handler.Reconcile(context.TODO(), workflow)

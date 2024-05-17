@@ -65,13 +65,13 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 - Start up a clean container with:
 
   ```bash
-  docker run -t -p 8080:8080 -i --rm quay.io/kie-tools/runtime-tools-managment-console-image:daily-dev
+  docker run -t -p 8080:8080 -i --rm docker.io/apache/incubator-kie-kogito-managment-console:daily-dev
   ```
 
   or
 
   ```bash
-  podman run -t -p 8080:8080 -i --rm quay.io/kie-tools/runtime-tools-managment-console-image:daily-dev
+  podman run -t -p 8080:8080 -i --rm docker.io/apache/incubator-kie-kogito-managment-console:daily-dev
   ```
 
   Management Console will be up at http://localhost:8080
@@ -100,7 +100,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    1. Using a different Data Index Service.
 
       ```bash
-      docker run -t -p 8080:8080 -e RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT=<my_value> -i --rm quay.io/kie-tools/runtime-tools-managment-console-webapp-image:daily-dev
+      docker run -t -p 8080:8080 -e RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT=<my_value> -i --rm docker.io/apache/incubator-kie-kogito-managment-console:daily-dev
       ```
 
       _NOTE: Replace `docker` with `podman` if necessary._
@@ -108,7 +108,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 2. Write a custom `Containerfile/Dockerfile` from the image:
 
    ```docker
-   FROM quay.io/kie-tools/runtime-tools-managment-console-webapp-image:daily-dev
+   FROM docker.io/apache/incubator-kie-kogito-managment-console:daily-dev
 
    ENV RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT=<my_value>
    ```

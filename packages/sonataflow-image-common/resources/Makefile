@@ -28,8 +28,8 @@ CURRENT_IMAGE_VERSION 		:= $(shell python3 scripts/retrieve_version.py)
 
 # SWF Image creation envs
 SWF_IMAGE_NAME				?= # Image name
-SWF_IMAGE_REGISTRY 			?= 'quay.io'
-SWF_IMAGE_REGISTRY_ACCOUNT 	?= 'kiegroup'
+SWF_IMAGE_REGISTRY 			?= 'docker.io'
+SWF_IMAGE_REGISTRY_ACCOUNT 	?= 'apache'
 SWF_IMAGE_TAG 				?= $(CURRENT_IMAGE_VERSION) # Setting a default value if SWF_IMAGE_TAG env is not present
 SWF_FULL_IMAGE_NAME 		:= $(SWF_IMAGE_REGISTRY)/$(SWF_IMAGE_REGISTRY_ACCOUNT)/$(SWF_IMAGE_NAME)
 SWF_IMAGE_FILENAME			:= ${SWF_IMAGE_NAME}-image.yaml

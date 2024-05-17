@@ -66,13 +66,13 @@ $ podman images
 Start up a new container with:
 
 ```bash
-$ docker run -p 21345:21345 -i --rm quay.io/kie-tools/kie-sandbox-extended-services-image:latest
+$ docker run -p 21345:21345 -i --rm docker.io/apache/incubator-kie-sandbox-extended-services:latest
 ```
 
 or
 
 ```bash
-$ podman run -p 21345:21345 -i --rm quay.io/kie-tools/kie-sandbox-extended-services-image:latest
+$ podman run -p 21345:21345 -i --rm docker.io/apache/incubator-kie-sandbox-extended-services:latest
 ```
 
 The service will be up at http://localhost:21345

@@ -164,32 +164,32 @@ No need to run any commands. KIE Sandbox should be accessible via https://kie-sa
 
 ## Installing a released version from the OCI registry:
 
-Very similar to the way you install the chart from source code, you can also install a released version available on quay.io registry:
+Very similar to the way you install the chart from source code, you can also install a released version available on docker.io registry:
 
 ### Default install
 
 ```console
-$ helm install kie-sandbox oci://quay.io/kie-tools/kie-sandbox-helm-chart --version=0.0.0
+$ helm install kie-sandbox oci://docker.io/apache/incubator-kie-sandbox-helm-chart --version=0.0.0
 ```
 
 ### Minikube install
 
 ```console
-$ helm pull oci://quay.io/kie-tools/kie-sandbox-helm-chart --version=0.0.0 --untar
+$ helm pull oci://docker.io/apache/incubator-kie-sandbox-helm-chart --version=0.0.0 --untar
 $ helm install kie-sandbox ./kie-sandbox-helm-chart --values ./kie-sandbox-helm-chart/values-minikube-nginx.yaml
 ```
 
 ### Kubernetes install
 
 ```console
-$ helm pull oci://quay.io/kie-tools/kie-sandbox-helm-chart --version=0.0.0 --untar
+$ helm pull oci://docker.io/apache/incubator-kie-sandbox-helm-chart --version=0.0.0 --untar
 $ helm install kie-sandbox ./kie-sandbox-helm-chart --values ./kie-sandbox-helm-chart/values-kubernetes.yaml --set global.kubernetesClusterDomain="<YOUR_KUBERNETES_CLUSTER_DOMAIN>" --set global.kubernetesIngressClass="<YOUR_KUBERNETES_INGRESS_CLASS>"
 ```
 
 ### OpenShift install
 
 ```console
-$ helm pull oci://quay.io/kie-tools/kie-sandbox-helm-chart --version=0.0.0 --untar
+$ helm pull oci://docker.io/apache/incubator-kie-sandbox-helm-chart --version=0.0.0 --untar
 $ helm install kie-sandbox ./kie-sandbox-helm-chart --values ./kie-sandbox-helm-chart/values-openshift.yaml --set global.openshiftRouteDomain="<YOUR_OCP_ROUTE_DOMAIN>"
 ```
 
@@ -206,7 +206,7 @@ $ helm uninstall kie-sandbox
 This chart uses default environmental variables from `values.yaml` file. We can override those by passing it from command line.
 
 ```console
-$ helm install kie-sandbox ./src --set image.repository=quay.io
+$ helm install kie-sandbox ./src --set image.repository=docker.io
 ```
 
 ## Configuration

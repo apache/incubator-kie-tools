@@ -232,7 +232,7 @@ func GetBasePlatformWithBaseImageInReadyPhase(namespace string) *operatorapi.Son
 	platform := GetBasePlatform()
 	platform.Namespace = namespace
 	platform.Status.Manager().MarkTrue(api.SucceedConditionType)
-	platform.Spec.Build.Config.BaseImage = "quay.io/customx/custom-swf-builder:24.8.17"
+	platform.Spec.Build.Config.BaseImage = "docker.io/customx/custom-swf-builder:24.8.17"
 	return platform
 }
 
@@ -240,7 +240,7 @@ func GetBasePlatformWithDevBaseImageInReadyPhase(namespace string) *operatorapi.
 	platform := GetBasePlatform()
 	platform.Namespace = namespace
 	platform.Status.Manager().MarkTrue(api.SucceedConditionType)
-	platform.Spec.DevMode.BaseImage = "quay.io/customgroup/custom-swf-builder-nightly:42.43.7"
+	platform.Spec.DevMode.BaseImage = "docker.io/customgroup/custom-swf-builder-nightly:42.43.7"
 	return platform
 }
 

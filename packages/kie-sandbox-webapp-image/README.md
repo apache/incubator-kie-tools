@@ -66,13 +66,13 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 - Start up a clean container with:
 
   ```bash
-  docker run -t -p 8080:8080 -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+  docker run -t -p 8080:8080 -i --rm docker.io/apache/incubator-kie-sandbox-webapp:latest
   ```
 
   or
 
   ```bash
-  podman run -t -p 8080:8080 -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+  podman run -t -p 8080:8080 -i --rm docker.io/apache/incubator-kie-sandbox-webapp:latest
   ```
 
   KIE Sandbox will be up at http://localhost:8080
@@ -103,7 +103,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    1. Using a different Extended Services deployment.
 
       ```bash
-      docker run -t -p 8080:8080 -e KIE_SANDBOX_EXTENDED_SERVICES_URL=<my_value> -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+      docker run -t -p 8080:8080 -e KIE_SANDBOX_EXTENDED_SERVICES_URL=<my_value> -i --rm docker.io/apache/incubator-kie-sandbox-webapp:latest
       ```
 
       _NOTE: Replace `docker` with `podman` if necessary._
@@ -126,7 +126,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
       ]
       EOConfig
       )" \
-      -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+      -i --rm docker.io/apache/incubator-kie-sandbox-webapp:latest
       ```
 
       _NOTE: Replace `docker` with `podman` if necessary._
@@ -134,7 +134,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    3. Requiring users to input a custom commit message on every commit.
 
       ```bash
-      docker run -t -p 8080:8080 -e KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE='true' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+      docker run -t -p 8080:8080 -e KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE='true' -i --rm docker.io/apache/incubator-kie-sandbox-webapp:latest
       ```
 
       _NOTE: Replace `docker` with `podman` if necessary._
@@ -142,7 +142,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    4. Requiring users to input a custom commit message on every commit and validate it via the example [Commit Message Validation Service](../../examples/commit-message-validation-service/README.md).
 
       ```bash
-      docker run -t -p 8080:8080 -e KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE='true' KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL='http://localhost:8090/validate' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+      docker run -t -p 8080:8080 -e KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE='true' KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL='http://localhost:8090/validate' -i --rm docker.io/apache/incubator-kie-sandbox-webapp:latest
       ```
 
       _NOTE: Replace `docker` with `podman` if necessary._
@@ -165,7 +165,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
       ]
       EOConfig
       )" \
-      -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+      -i --rm docker.io/apache/incubator-kie-sandbox-webapp:latest
       ```
 
       _NOTE: Replace `docker` with `podman` if necessary._
@@ -173,7 +173,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 2. Write a custom `Containerfile/Dockerfile` from the image:
 
    ```docker
-   FROM quay.io/kie-tools/kie-sandbox-image:latest
+   FROM docker.io/apache/incubator-kie-sandbox-webapp:latest
 
    ENV KIE_SANDBOX_EXTENDED_SERVICES_URL=<my_value>
    ENV KIE_SANDBOX_CORS_PROXY_URL=<my_value>
@@ -369,9 +369,9 @@ KIE Sandbox can be customized to show your own logo and/or branding by extending
 KIE Sandbox allows for the images used on DMN Dev deployments to be customized. For example:
 
 ```docker
-ENV KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL="quay.io/kie-tools/dev-deployment-base-image:latest"
-ENV KIE_SANDBOX_DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE_URL="quay.io/kie-tools/dev-deployment-kogito-quarkus-blank-app-image:latest"
-ENV KIE_SANDBOX_DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_URL="quay.io/kie-tools/dev-deployment-dmn-form-webapp-image:latest"
+ENV KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL="docker.io/apache/incubator-kie-sandbox0dev-deployment-base:latest"
+ENV KIE_SANDBOX_DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE_URL="docker.io/apache/incubator-kie-sandbox0dev-deployment-kogito-quarkus-blank-app:latest"
+ENV KIE_SANDBOX_DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_URL="docker.io/apache/incubator-kie-sandbox0dev-deployment-dmn-form-webapp:latest"
 ```
 
 ---

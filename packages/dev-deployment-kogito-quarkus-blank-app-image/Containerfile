@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Defaults to quay.io/kie-tools/dev-deployment-base-image (check env/index.js)
+# Defaults to docker.io/apache/incubator-kie-sandbox-dev-deployment-base (check env/index.js)
 ARG BUILDER_IMAGE_ARG
 
 FROM --platform=linux/amd64 ${BUILDER_IMAGE_ARG}

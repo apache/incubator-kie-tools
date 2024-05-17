@@ -22,7 +22,7 @@
 registry=$1
 
 if [ -z "${registry}" ]; then
-    registry="quay.io/${USERNAME}"
+    registry="docker.io/${USERNAME}"
     echo "No registry given. Setting up default."
 fi
 
