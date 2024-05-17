@@ -17,7 +17,7 @@
     "."
   ],
   "devDependencies": {
-    "@babel/traverse": "^7.16.0",
+    "@babel/traverse": "^7.23.2",
     "@kie-tools/root-env": "workspace:*",
     "buffer": "^6.0.3",
     "os-browserify": "^0.3.0",
