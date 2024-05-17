@@ -5,6 +5,5 @@
   "search.exclude": {
     "out": true
   },
-  "typescript.tsc.autoDetect": "off",
-  "prettier.tabWidth": 4
+  "typescript.tsc.autoDetect": "off"
 }
