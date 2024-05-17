@@ -41,7 +41,7 @@
     "apollo-link-context": "^1.0.20",
     "apollo-link-error": "1.1.13",
     "apollo-link-http": "1.5.17",
-    "axios": "^1.6.4",
+    "axios": "^1.6.8",
     "graphql": "14.3.1",
     "history": "^4.9.0",
     "lodash": "^4.17.21",
