@@ -56,12 +56,4 @@ valuesFiles.forEach((file) => {
   fs.writeFileSync(file, yaml.stringify(doc));
 });
 
-// Update Values table on README
-console.log("[kie-sandbox-helm-chart install.js] Updating README.md files...");
-const chartReadmeSections = fs.readFileSync("./src/README.md").toString().split("## Values");
-const readmeSections = fs.readFileSync("./README.md").toString().split("<!-- CHART_VALUES_README -->");
-readmeSections[1] = chartReadmeSections[1];
-const newContent = readmeSections.join("<!-- CHART_VALUES_README -->");
-fs.writeFileSync("./README.md", newContent);
-
 console.log("[kie-sandbox-helm-chart install.js] Done.");
