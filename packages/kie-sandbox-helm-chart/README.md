@@ -213,23 +213,6 @@ $ helm install kie-sandbox ./src --set image.repository=docker.io
 
 The following table lists the configurable parameters of the KIE Sandbox chart and their default values.
 
-<details>
-  <summary markdown="span">How to update this list?</summary>
-  <ul>
-    <li>Install <a href="https://github.com/norwoodj/helm-docs">norwoodj/helm-docs</a>;</li>
-    <li>
-      Run the following commands:
-<pre>
-$ cd src
-$ helm-docs --document-dependency-values=true --chart-search-root=.
-</pre>
-    </li>
-    <li>
-      Run the install script.
-    </li>
-  </ul>
-</details>
-
 <!-- CHART_VALUES_README -->
 
 | Key                                | Type   | Default                                                                                                                                                                                                                                                | Description                                                                                                                                     |
