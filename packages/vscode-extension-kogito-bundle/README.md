@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## Kogito Bundle
+## Apache KIE™ Kogito Bundle
 
 ![vs-code-support](https://img.shields.io/badge/Visual%20Studio%20Code-1.67.0+-blue.svg)
 ![github-ci](https://github.com/apache/incubator-kie-tools/actions/workflows/ci_build.yml/badge.svg)
