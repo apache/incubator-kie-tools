@@ -154,7 +154,8 @@ export class DmnRunnerAjv {
       const isOverTheMaxBoundary: (value: Date | String | number, maxBoundary: Date | String | number) => boolean =
         maxAllowedIncluded ? (value, maxBoundary) => value > maxBoundary : (value, maxBoundary) => value >= maxBoundary;
 
-      return (data: string) => {
+      return (rawData: string | Date) => {
+        let data = rawData instanceof Date ? rawData.toISOString() : rawData;
         if (data.includes(".") && data.endsWith("Z")) {
           // adjusting from "2023-06-01T10:42:00.000Z" to "2023-06-01T10:42:00"
           data = data.substring(0, data.lastIndexOf("."));
