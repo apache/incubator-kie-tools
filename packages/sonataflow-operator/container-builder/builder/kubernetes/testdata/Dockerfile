@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM docker.io/apache/incubator-kie-sonataflow-builder:latest AS builder
+FROM docker.io/apache/incubator-kie-sonataflow-builder:main AS builder
 # TODO: Replace `latest` with $KIE_TOOLS_BUILD__streamName through $(build-env rootEnv.env.root.streamName).
 
 # Kogito User

@@ -20,6 +20,8 @@
 package workflowdef
 
 import (
+	"fmt"
+
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/controllers/cfg"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/version"
@@ -62,11 +64,5 @@ func GetDefaultWorkflowBuilderImageTag() string {
 }
 
 func GetDefaultImageTag(imgTag string) string {
-	imgTag += ":"
-	if version.IsLatestVersion() {
-		imgTag += latestImageTag
-	} else {
-		imgTag += version.GetMajorMinor()
-	}
-	return imgTag
+	return fmt.Sprintf("%s:%s", imgTag, version.GetTagVersion())
 }

@@ -24,6 +24,7 @@ import (
 	"os"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/controllers/cfg"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/version"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 
@@ -156,7 +157,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	klog.V(log.I).InfoS("starting manager")
+	klog.V(log.I).InfoS("starting manager", "version:", version.GetOperatorVersion())
 	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
 		klog.V(log.E).ErrorS(err, "problem running manager")
 		os.Exit(1)

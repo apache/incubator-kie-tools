@@ -22,13 +22,13 @@ CSV_DIR="config/manifests/bases"
 BUNDLE_DIR="bundle/manifests"
 
 getOperatorVersion() {
-  local version=$(grep -m 1 'OperatorVersion' version/version.go | awk -F\" '{print $2}')
+  local version=$(grep -m 1 'operatorVersion = ' version/version.go | awk -F\" '{print $2}')
   echo "${version}"
 }
 
-getOperatorLatestVersion() {
-  local version=$(grep -m 1 'latestVersion' version/version.go | awk -F\" '{print $2}')
-  echo "${version}"
+getImageTagVersion() {
+  local tag_version=$(grep -m 1 'tagVersion = ' version/version.go | awk -F\" '{print $2}')
+  echo "${tag_version}"
 }
 
 getOperatorImageName() {

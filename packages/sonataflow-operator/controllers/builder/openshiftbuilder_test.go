@@ -23,6 +23,7 @@ import (
 	"context"
 	"testing"
 
+	platformUtils "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/controllers/platform"
 	buildv1 "github.com/openshift/api/build/v1"
 	imgv1 "github.com/openshift/api/image/v1"
 	buildfake "github.com/openshift/client-go/build/clientset/versioned/fake"
@@ -138,6 +139,10 @@ func Test_openshiftbuilder_forcePull(t *testing.T) {
 	workflow := test.GetBaseSonataFlow(ns)
 	platform := test.GetBasePlatformInReadyPhase(t.Name())
 	config := test.GetSonataFlowBuilderConfig(ns)
+
+	dockerFile := config.Data[defaultBuilderResourceName]
+	config.Data[defaultBuilderResourceName] = platformUtils.ReplaceFromImageTagDockerfile(dockerFile, "FROM image:latest AS builder")
+
 	namespacedName := types.NamespacedName{Namespace: workflow.Namespace, Name: workflow.Name}
 	client := test.NewKogitoClientBuilderWithOpenShift().WithRuntimeObjects(workflow, platform, config).Build()
 	buildClient := buildfake.NewSimpleClientset().BuildV1()

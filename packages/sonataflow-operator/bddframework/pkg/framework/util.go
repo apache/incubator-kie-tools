@@ -292,7 +292,7 @@ func AppendImageDefaultValues(image *api.Image) {
 	}
 
 	if len(image.Tag) == 0 {
-		image.Tag = GetKogitoImageVersion(version.OperatorVersion)
+		image.Tag = GetKogitoImageVersion(version.GetTagVersion())
 	}
 }
 

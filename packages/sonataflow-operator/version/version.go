@@ -19,27 +19,26 @@
 
 package version
 
-import (
-	"strings"
-)
-
 const (
-	// Current version
-	OperatorVersion = "0.0.0"
+	// Use the script /hack/ci/bump-version.sh to update these constants. DO NOT UPDATE THEM MANUALLY!
 
-	// Should not be changed
-	latestVersion = "0.0.0"
+	// operatorVersion is the current BINARY version of the operator, not the image tag.
+	operatorVersion = "0.0.0"
+	// tagVersion is the images version tag.
+	// For example, docker.io/apache/incubator-kie-sonataflow-operator:main
+	//
+	// This tag must reflect an existing tag in the registry. In development, must follow the git branch naming.
+	// When released, this version should reflect the `major.minor` version in the registry.
+	// For example, docker.io/apache/incubator-kie-sonataflow-operator:10.0
+	tagVersion = "main"
 )
 
-func IsSnapshot() bool {
-	return OperatorVersion == "0.0.0"
+// GetOperatorVersion gets the current binary version of the operator. Do not use it to compose image tags!
+func GetOperatorVersion() string {
+	return operatorVersion
 }
 
-func IsLatestVersion() bool {
-	return latestVersion == OperatorVersion
-}
-
-func GetMajorMinor() string {
-	v := strings.Split(OperatorVersion, ".")
-	return v[0] + "." + v[1]
+// GetTagVersion gets the current tag version for the operator and platform images.
+func GetTagVersion() string {
+	return tagVersion
 }

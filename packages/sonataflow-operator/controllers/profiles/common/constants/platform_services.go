@@ -57,7 +57,7 @@ const (
 
 	DataIndexServiceName = "data-index-service"
 	JobServiceName       = "jobs-service"
-	ImageNamePrefix      = "quay.io/kiegroup/kogito"
+	ImageNamePrefix      = "docker.io/apache/incubator-kie-kogito"
 	DataIndexName        = "data-index"
 
 	DefaultDatabaseName   string = "sonataflow"
