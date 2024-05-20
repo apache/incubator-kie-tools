@@ -1,5 +1,5 @@
-ARG BUILDER_IMAGE_TAG="docker.io/apache/incubator-kie-sonataflow-builder:latest"
-# TODO: Replace `latest` with $KIE_TOOLS_BUILD__streamName through $(build-env rootEnv.env.root.streamName).
+ARG BUILDER_IMAGE_TAG="docker.io/apache/incubator-kie-sonataflow-builder:main"
+# This argument is overriden by run.sh script based on the image tag set on the Makefile
 
 FROM ${BUILDER_IMAGE_TAG} AS builder
 
