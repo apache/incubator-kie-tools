@@ -60,6 +60,7 @@ import { useDmnEditor } from "../DmnEditorContext";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { resolveTypeRef } from "./resolveTypeRef";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { Normalized } from "../normalization/normalize";
 
 export const BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL = 5;
 export const STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE = 95;
@@ -516,7 +517,7 @@ export function ItemComponentsTable({
                                       "@_isCollection": false,
                                     });
 
-                                    const newItemDefinitionCopy: DMN15__tItemDefinition = JSON.parse(
+                                    const newItemDefinitionCopy: Normalized<DMN15__tItemDefinition> = JSON.parse(
                                       JSON.stringify(newItemDefinition)
                                     ); // Necessary because idRandomizer will mutate this object.
 

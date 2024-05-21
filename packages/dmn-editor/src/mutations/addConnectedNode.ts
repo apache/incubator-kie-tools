@@ -37,6 +37,7 @@ import { addOrGetDrd } from "./addOrGetDrd";
 import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { buildXmlHref } from "../xml/xmlHrefs";
+import { Normalized } from "../normalization/normalize";
 
 export function addConnectedNode({
   definitions,
@@ -45,7 +46,7 @@ export function addConnectedNode({
   newNode,
   edgeType,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   sourceNode: { type: NodeType; href: string; bounds: DC__Bounds; shapeId: string | undefined };
   newNode: { type: NodeType; bounds: DC__Bounds };
@@ -179,40 +180,53 @@ export function getRequirementsFromEdge(
   sourceNode: { type: NodeType; href: string },
   newEdgeId: string,
   edge: EdgeType
-) {
+):
+  | (Pick<Normalized<DMN15__tDecision>, "informationRequirement"> &
+      Pick<Normalized<DMN15__tDecision>, "knowledgeRequirement"> &
+      Pick<Normalized<DMN15__tDecision>, "authorityRequirement">)
+  | undefined {
   const ir:
     | undefined //
-    | Required<Pick<DMN15__tInformationRequirement, "requiredInput" | "@_id">>
-    | Required<Pick<DMN15__tInformationRequirement, "requiredDecision" | "@_id">> = switchExpression(sourceNode.type, {
-    [NODE_TYPES.inputData]: { "@_id": newEdgeId, requiredInput: { "@_href": `${sourceNode.href}` } },
-    [NODE_TYPES.decision]: { "@_id": newEdgeId, requiredDecision: { "@_href": `${sourceNode.href}` } },
-    default: undefined,
-  });
+    | Required<Pick<Normalized<DMN15__tInformationRequirement>, "requiredInput" | "@_id">>
+    | Required<Pick<Normalized<DMN15__tInformationRequirement>, "requiredDecision" | "@_id">> = switchExpression(
+    sourceNode.type,
+    {
+      [NODE_TYPES.inputData]: { "@_id": newEdgeId, requiredInput: { "@_href": `${sourceNode.href}` } },
+      [NODE_TYPES.decision]: { "@_id": newEdgeId, requiredDecision: { "@_href": `${sourceNode.href}` } },
+      default: undefined,
+    }
+  );
 
   const kr:
     | undefined //
-    | Required<Pick<DMN15__tKnowledgeRequirement, "requiredKnowledge" | "@_id">> = switchExpression(sourceNode.type, {
-    [NODE_TYPES.bkm]: { "@_id": newEdgeId, requiredKnowledge: { "@_href": `${sourceNode.href}` } },
-    [NODE_TYPES.decisionService]: { "@_id": newEdgeId, requiredKnowledge: { "@_href": `${sourceNode.href}` } },
-    default: undefined,
-  });
+    | Required<Pick<Normalized<DMN15__tKnowledgeRequirement>, "requiredKnowledge" | "@_id">> = switchExpression(
+    sourceNode.type,
+    {
+      [NODE_TYPES.bkm]: { "@_id": newEdgeId, requiredKnowledge: { "@_href": `${sourceNode.href}` } },
+      [NODE_TYPES.decisionService]: { "@_id": newEdgeId, requiredKnowledge: { "@_href": `${sourceNode.href}` } },
+      default: undefined,
+    }
+  );
 
   const ar:
     | undefined //
-    | Required<Pick<DMN15__tAuthorityRequirement, "requiredInput" | "@_id">>
-    | Required<Pick<DMN15__tAuthorityRequirement, "requiredDecision" | "@_id">>
-    | Required<Pick<DMN15__tAuthorityRequirement, "requiredAuthority" | "@_id">> = switchExpression(sourceNode.type, {
-    [NODE_TYPES.inputData]: { "@_id": newEdgeId, requiredInput: { "@_href": `${sourceNode.href}` } },
-    [NODE_TYPES.decision]: { "@_id": newEdgeId, requiredDecision: { "@_href": `${sourceNode.href}` } },
-    [NODE_TYPES.knowledgeSource]: { "@_id": newEdgeId, requiredAuthority: { "@_href": `${sourceNode.href}` } },
-    default: undefined,
-  });
+    | Required<Pick<Normalized<DMN15__tAuthorityRequirement>, "requiredInput" | "@_id">>
+    | Required<Pick<Normalized<DMN15__tAuthorityRequirement>, "requiredDecision" | "@_id">>
+    | Required<Pick<Normalized<DMN15__tAuthorityRequirement>, "requiredAuthority" | "@_id">> = switchExpression(
+    sourceNode.type,
+    {
+      [NODE_TYPES.inputData]: { "@_id": newEdgeId, requiredInput: { "@_href": `${sourceNode.href}` } },
+      [NODE_TYPES.decision]: { "@_id": newEdgeId, requiredDecision: { "@_href": `${sourceNode.href}` } },
+      [NODE_TYPES.knowledgeSource]: { "@_id": newEdgeId, requiredAuthority: { "@_href": `${sourceNode.href}` } },
+      default: undefined,
+    }
+  );
 
   // We can use tDecision to type here, because it contains all requirement types.
   const requirements:
-    | (Pick<DMN15__tDecision, "informationRequirement"> &
-        Pick<DMN15__tDecision, "knowledgeRequirement"> &
-        Pick<DMN15__tDecision, "authorityRequirement">)
+    | (Pick<Normalized<DMN15__tDecision>, "informationRequirement"> &
+        Pick<Normalized<DMN15__tDecision>, "knowledgeRequirement"> &
+        Pick<Normalized<DMN15__tDecision>, "authorityRequirement">)
     | undefined = switchExpression(edge, {
     [EDGE_TYPES.informationRequirement]: ir ? { informationRequirement: [ir] } : undefined,
     [EDGE_TYPES.knowledgeRequirement]: kr ? { knowledgeRequirement: [kr] } : undefined,

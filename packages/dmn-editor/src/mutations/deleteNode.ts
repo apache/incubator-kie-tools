@@ -30,6 +30,7 @@ import { EdgeDeletionMode, deleteEdge } from "./deleteEdge";
 import { Computed } from "../store/Store";
 import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeContainingDecisionServiceHrefsByDecisionHrefs.ts";
 import { xmlHrefToQName } from "../xml/xmlHrefToQName";
+import { Normalized } from "../normalization/normalize";
 
 export enum NodeDeletionMode {
   FROM_DRG_AND_ALL_DRDS,
@@ -47,7 +48,7 @@ export function deleteNode({
   externalDmnsIndex,
   mode,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   drgEdges: DrgEdge[];
   drdIndex: number;
   nodeNature: NodeNature;
@@ -57,8 +58,8 @@ export function deleteNode({
   dmnObjectQName: XmlQName;
   mode: NodeDeletionMode;
 }): {
-  deletedDmnObject: Unpacked<DMN15__tDefinitions["drgElement" | "artifact"]> | undefined;
-  deletedDmnShapeOnCurrentDrd: DMNDI15__DMNShape | undefined;
+  deletedDmnObject: Unpacked<Normalized<DMN15__tDefinitions>["drgElement" | "artifact"]> | undefined;
+  deletedDmnShapeOnCurrentDrd: Normalized<DMNDI15__DMNShape> | undefined;
 } {
   if (
     mode === NodeDeletionMode.FROM_CURRENT_DRD_ONLY &&
@@ -107,7 +108,7 @@ export function deleteNode({
     }
   }
 
-  let dmnObject: Unpacked<DMN15__tDefinitions["drgElement" | "artifact"]> | undefined;
+  let dmnObject: Unpacked<Normalized<DMN15__tDefinitions>["drgElement" | "artifact"]> | undefined;
 
   // External or unknown nodes don't have a dmnObject associated with it, just the shape..
   if (!dmnObjectQName.prefix) {
@@ -144,7 +145,7 @@ export function deleteNode({
   const shapeDmnElementRef = buildXmlQName(dmnObjectQName);
 
   // Deleting the DMNShape's
-  let deletedDmnShapeOnCurrentDrd: DMNDI15__DMNShape | undefined;
+  let deletedDmnShapeOnCurrentDrd: Normalized<DMNDI15__DMNShape> | undefined;
 
   const deletedIdsOnDmnObjectTree = dmnObject
     ? getNewDmnIdRandomizer()
@@ -191,7 +192,7 @@ export function canRemoveNodeFromDrdOnly({
 }: {
   dmnObjectNamespace: string;
   dmnObjectId: string | undefined;
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   externalDmnsIndex: ReturnType<Computed["getExternalModelTypesByNamespace"]>["dmns"];
 }) {

@@ -31,6 +31,7 @@ import { InlineFeelNameInput, OnInlineFeelNameRenamed } from "../feel/InlineFeel
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { State } from "../store/Store";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { Normalized } from "../normalization/normalize";
 
 export function DataTypeName({
   isReadonly,
@@ -44,7 +45,7 @@ export function DataTypeName({
 }: {
   isReadonly: boolean;
   editMode: "hover" | "double-click";
-  itemDefinition: DMN15__tItemDefinition;
+  itemDefinition: Normalized<DMN15__tItemDefinition>;
   isActive: boolean;
   relativeToNamespace: string;
   shouldCommitOnBlur?: boolean;

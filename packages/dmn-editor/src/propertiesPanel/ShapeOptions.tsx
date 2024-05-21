@@ -39,6 +39,8 @@ import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { DC__Dimension } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_2/ts-gen/types";
+import { Normalized } from "../normalization/normalize";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 const DEFAULT_FILL_COLOR = { "@_blue": 255, "@_green": 255, "@_red": 255 };
 const DEFAULT_STROKE_COLOR = { "@_blue": 0, "@_green": 0, "@_red": 0 };
@@ -202,7 +204,7 @@ export function ShapeOptions({
   const setShapeStyles = useCallback(
     (
       callback: (
-        shapesWithMinNodeSize: { shape: DMNDI15__DMNShape; minNodeSize: DC__Dimension }[],
+        shapesWithMinNodeSize: { shape: Normalized<DMNDI15__DMNShape>; minNodeSize: DC__Dimension }[],
         state: State
       ) => void
     ) => {
@@ -234,7 +236,7 @@ export function ShapeOptions({
             throw new Error(`DMN Element with index ${i++} is not a DMNShape.`);
           }
 
-          shape["di:Style"] ??= { __$$element: "dmndi:DMNStyle" };
+          shape["di:Style"] ??= { "@_id": generateUuid(), __$$element: "dmndi:DMNStyle" };
         }
 
         callback(shapesWithMinNodeSize, s);
@@ -318,6 +320,7 @@ export function ShapeOptions({
       shapeWithNodes.forEach(({ shape, minNodeSize }) => {
         shape["di:Style"] ??= {
           __$$element: "dmndi:DMNStyle",
+          "@_id": generateUuid(),
           "dmndi:FillColor": { ...DEFAULT_FILL_COLOR },
           "dmndi:StrokeColor": { ...DEFAULT_STROKE_COLOR },
         };

@@ -20,7 +20,7 @@
 import * as RF from "reactflow";
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import {
   DC__Bounds,
   DC__Dimension,
@@ -118,6 +118,7 @@ import {
 } from "../mutations/addExistingDecisionServiceToDrd";
 import { updateExpressionWidths } from "../mutations/updateExpressionWidths";
 import { DiagramCommands } from "./DiagramCommands";
+import { Normalized, normalize } from "../normalization/normalize";
 
 const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
 
@@ -385,6 +386,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 drdIndex: state.computed(state).getDrdIndex(),
                 nodeType: externalNodeType,
                 shape: {
+                  "@_id": generateUuid(),
                   "@_dmnElementRef": xmlHrefToQName(externalNodeHref, state.dmn.model.definitions),
                   "dc:Bounds": {
                     "@_x": dropPoint.x,
@@ -401,7 +403,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           console.debug(`DMN DIAGRAM: Adding external node`, JSON.stringify(externalNode));
         } else if (e.dataTransfer.getData(MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE)) {
           const drgElement = JSON.parse(e.dataTransfer.getData(MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE)) as Unpacked<
-            DMN15__tDefinitions["drgElement"]
+            Normalized<DMN15__tDefinitions>["drgElement"]
           >;
 
           dmnEditorStoreApi.setState((state) => {
@@ -434,6 +436,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 drdIndex: state.computed(state).getDrdIndex(),
                 nodeType,
                 shape: {
+                  "@_id": generateUuid(),
                   "@_dmnElementRef": buildXmlQName({ type: "xml-qname", localPart: drgElement["@_id"]! }),
                   "@_isCollapsed": false,
                   "dc:Bounds": {
@@ -695,7 +698,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
                   // Update contained Decisions of Decision Service if in expanded form
                   if (node.type === NODE_TYPES.decisionService && !(node.data.shape["@_isCollapsed"] ?? false)) {
-                    const decisionService = node.data.dmnObject as DMN15__tDecisionService;
+                    const decisionService = node.data.dmnObject as Normalized<DMN15__tDecisionService>;
 
                     const { containedDecisionHrefsRelativeToThisDmn } = getDecisionServicePropertiesRelativeToThisDmn({
                       thisDmnsNamespace: state.dmn.model.definitions["@_namespace"],
@@ -773,7 +776,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
     const resetToBeforeEditingBegan = useCallback(() => {
       dmnEditorStoreApi.setState((state) => {
-        state.dmn.model = dmnModelBeforeEditingRef.current;
+        state.dmn.model = normalize(dmnModelBeforeEditingRef.current);
         state.diagram.draggingNodes = [];
         state.diagram.draggingWaypoints = [];
         state.diagram.resizingNodes = [];
