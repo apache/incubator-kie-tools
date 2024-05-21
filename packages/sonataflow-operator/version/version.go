@@ -29,7 +29,7 @@ const (
 	//
 	// This tag must reflect an existing tag in the registry. In development, must follow the git branch naming.
 	// When released, this version should reflect the `major.minor` version in the registry.
-	// For example, docker.io/apache/incubator-kie-sonataflow-operator:10.0
+	// For example, docker.io/apache/incubator-kie-sonataflow-operator:main -> 10.0
 	tagVersion = "main"
 )
 

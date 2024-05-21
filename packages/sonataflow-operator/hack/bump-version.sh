@@ -27,8 +27,8 @@ imageName=$(pnpm build-env sontaflowOperator.registry)/$(pnpm build-env sontaflo
 imageTag=$(pnpm build-env sontaflowOperator.tag)
 version=$(pnpm build-env sontaflowOperator.version)
 
-targetSonataflowBuilderImage=$(pnpm build-env sontaflowOperator.sonataflowBuilderImageImage)
-targetSonataflowDevModeImage=$(pnpm build-env sontaflowOperator.sonataflowDevModeImageImage)
+targetSonataflowBuilderImage=$(pnpm build-env sontaflowOperator.sonataflowBuilderImage)
+targetSonataflowDevModeImage=$(pnpm build-env sontaflowOperator.sonataflowDevModeImage)
 
 if [ -z "${version}" ]; then
   echo "Please inform the new version"
@@ -52,10 +52,10 @@ node -p "require('replace-in-file').sync({ from: /\bnewName:.*\b/g, to: 'newName
 node -p "require('replace-in-file').sync({ from: /\bversion: .*\b/g, to: 'version: ${version}', files: ['./images/bundle.yaml'] });"
 node -p "require('replace-in-file').sync({ from: /\bversion: .*\b/g, to: 'version: ${version}', files: ['./images/manager.yaml'] });"
 
-# Update kogito-swf-* images
-node -p "require('replace-in-file').sync({ from: '/docker.io\/apache\/sonataflow-builder.*/g', to: '${targetSonataflowBuilderImage}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*.Dockerfile', '**/*.go'] });"
-node -p "require('replace-in-file').sync({ from: '/docker.io\/apache\/sonataflow-devmode.*/g', to: '${targetSonataflowDevModeImage}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*.Dockerfile', '**/*.go'] });"
-node -p "require('replace-in-file').sync({ from: '/docker.io\/apache\/incubator-kie-sonataflow-operator.*/g', to: '${targetSonataflowOperatorImage}', files: ['**/*.yaml'] });"
+# Update sonataflow-* images
+node -p "require('replace-in-file').sync({ from: /docker\.io\/apache\/incubator-kie-sonataflow-builder:[\w\.]*/g, to: '${targetSonataflowBuilderImage}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*Dockerfile', '**/*.go'] });"
+node -p "require('replace-in-file').sync({ from: /docker\.io\/apache\/incubator-kie-sonataflow-devmode:[\w\.]*/g, to: '${targetSonataflowDevModeImage}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*Dockerfile', '**/*.go'] });"
+node -p "require('replace-in-file').sync({ from: /docker\.io\/apache\/incubator-kie-sonataflow-operator:[\w\.]*/g, to: '${targetSonataflowOperatorImage}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*Dockerfile', '**/*.go'] });"
 
 node -p "require('replace-in-file').sync({ from: /\bOperatorVersion = .*/g, to: 'OperatorVersion = \"${version}\"', files: ['version/version.go'] });"
 node -p "require('replace-in-file').sync({ from: /\bcontainerImage:.*\b/g, to: 'containerImage: ${targetSonataflowOperatorImage}', files: ['$(getCsvFile)'] });"

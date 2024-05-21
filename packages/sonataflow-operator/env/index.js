@@ -41,11 +41,11 @@ module.exports = composeEnv([rootEnv, sonataflowBuilderImageEnv, sonataflowDevMo
       default: rootEnv.env.root.streamName,
       description: "The image tag",
     },
-    SONATAFLOW_OPERATOR__sonataflowBuilderImageImage: {
+    SONATAFLOW_OPERATOR__sonataflowBuilderImage: {
       default: `${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.registry}/${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.account}/${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.name}:${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.tag}`,
       description: "Sonataflow Builder image",
     },
-    SONATAFLOW_OPERATOR__sonataflowDevModeImageImage: {
+    SONATAFLOW_OPERATOR__sonataflowDevModeImage: {
       default: `${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.registry}/${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.account}/${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.name}:${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.tag}`,
       description: "Sonataflow DevMode image",
     },
@@ -58,8 +58,8 @@ module.exports = composeEnv([rootEnv, sonataflowBuilderImageEnv, sonataflowDevMo
         name: getOrDefault(this.vars.SONATAFLOW_OPERATOR__name),
         tag: getOrDefault(this.vars.SONATAFLOW_OPERATOR__buildTag),
         version: require("../package.json").version,
-        sonataflowBuilderImageImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__sonataflowBuilderImageImage),
-        sonataflowDevModeImageImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__sonataflowDevModeImageImage),
+        sonataflowBuilderImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__sonataflowBuilderImage),
+        sonataflowDevModeImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__sonataflowDevModeImage),
       },
     };
   },

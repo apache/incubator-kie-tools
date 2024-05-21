@@ -29,8 +29,8 @@ import (
 
 const (
 	latestImageTag              = "latest"
-	defaultWorkflowDevModeImage = "docker.io/apache/incubator-kie-sonataflow-devmode"
-	defaultWorkflowBuilderImage = "docker.io/apache/incubator-kie-sonataflow-builder"
+	defaultWorkflowDevModeImage = "docker.io/apache/incubator-kie-sonataflow-devmode:main"
+	defaultWorkflowBuilderImage = "docker.io/apache/incubator-kie-sonataflow-builder:main"
 )
 
 // GetWorkflowAppImageNameTag returns the image name with tag to use for the image to be produced for a given workflow.

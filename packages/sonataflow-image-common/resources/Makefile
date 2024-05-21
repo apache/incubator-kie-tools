@@ -60,9 +60,10 @@ _fix_platform_versions: _check_versions _run_version_manager
 
 # Building the SWF image with Cekit
 _cekit_build:
-	${CEKIT_CMD} --descriptor ${SWF_IMAGE_FILENAME} build ${CEKIT_BUILD_OPTIONS} ${BUILD_ENGINE} ${BUILD_ENGINE_OPTIONS}
+	${CEKIT_CMD} --descriptor ${SWF_IMAGE_FILENAME} build ${CEKIT_BUILD_OPTIONS} ${BUILD_ENGINE} ${BUILD_ENGINE_OPTIONS} --tag ${SWF_FULL_IMAGE_NAME}:${CURRENT_IMAGE_VERSION} --tag ${SWF_FULL_IMAGE_NAME}:${SWF_IMAGE_TAG}
 
 # Tagging the generated image if SWF_IMAGE_TAG doesn't match the CURRENT_IMAGE_VERSION
+# Currently unused, as cekit will tag the image for us
 _tag_image:
 ifneq ($(SWF_IMAGE_TAG), $(CURRENT_IMAGE_VERSION))
 	${BUILD_ENGINE} tag ${SWF_FULL_IMAGE_NAME}:${CURRENT_IMAGE_VERSION} ${SWF_FULL_IMAGE_NAME}:${SWF_IMAGE_TAG}
@@ -78,7 +79,7 @@ _test_image:
 	${CEKIT_CMD} --descriptor ${SWF_IMAGE_FILENAME} test behave
 	tests/shell/run.sh ${SWF_IMAGE_NAME} ${SWF_FULL_IMAGE_NAME}:${SWF_IMAGE_TAG}
 
-.PHONY build: _check_swf_image_name _fix_platform_versions _cekit_build _tag_image
+.PHONY build: _check_swf_image_name _fix_platform_versions _cekit_build
 
 # run bat tests locally
 .PHONY: bats

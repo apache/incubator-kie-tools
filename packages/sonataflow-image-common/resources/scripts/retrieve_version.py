@@ -18,7 +18,7 @@
 # under the License.
 #
 
-#Script responsible to update the tests with 
+#Script responsible to update the tests with
 #Should be run from root directory of the repository
 #Sample usage:  python3 scripts/retrieve_version.py
 

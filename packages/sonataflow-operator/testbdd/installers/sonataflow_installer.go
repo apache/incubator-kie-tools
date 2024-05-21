@@ -33,7 +33,7 @@ import (
 	srvframework "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/testbdd/framework"
 )
 
-const defaultOperatorImage = "docker.io/apache/incubator-kie-sonataflow-operator"
+const defaultOperatorImage = "docker.io/apache/incubator-kie-sonataflow-operator:main"
 
 var (
 	// sonataFlowYamlClusterInstaller installs SonataFlow operator cluster wide using YAMLs
