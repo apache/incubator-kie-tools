@@ -17,17 +17,14 @@
  * under the License.
  */
 
-import { defaultDmnRunnerAutoFieldValue } from "@kie-tools/dmn-runner/dist/uniforms";
-import { RECURSION_KEYWORD } from "@kie-tools/dmn-runner/dist/jsonSchemaConstants";
-import { Context, GuaranteedProps } from "uniforms/esm";
-import FormDmnNotSupportedField from "./FormDmnNotSupportedField";
+export const TIME_FEEL_REGEXP = /time\("([^.,\s]*)"\)/g;
+export const TIME_ENUM_REGEXP = /time\("([^.,\s]*)"\)[,]{0,1}[\s]*/g;
 
-export function formDmnRunnerAutoFieldValue(
-  props: GuaranteedProps<unknown>,
-  uniforms: Context<Record<string, unknown>>
-) {
-  if (props.field?.[`${RECURSION_KEYWORD}`]) {
-    return FormDmnNotSupportedField;
-  }
-  return defaultDmnRunnerAutoFieldValue(props, uniforms);
-}
+export const DATE_FEEL_REGEXP = /date\("([^.,\s]*)"\)/g;
+export const DATE_ENUM_REGEXP = /date\("([^.,\s]*)"\)[,]{0,1}[\s]*/g;
+
+export const DATE_AND_TIME_FEEL_REGEXP = /date and time\("([^.,\s]*)"\)/g;
+export const DATE_AND_TIME_ENUM_REGEXP = /date and time\("([^.,\s]*)"\)[,]{0,1}[\s]*/g;
+
+export const DURATION_FEEL_REGEXP = /duration\("([^.,\s]*)"\)/g;
+export const DURATION_ENUM_REGEXP = /duration\("([^.,\s]*)"\)[,]{0,1}[\s]*/g;

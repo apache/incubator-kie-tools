@@ -42,7 +42,7 @@ import {
   ExtendedServicesModelPayload,
 } from "@kie-tools/extended-services-api";
 import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
-import { SCHEMA_DRAFT4 } from "@kie-tools/dmn-runner/dist/constants";
+import { SCHEMA_DRAFT4 } from "@kie-tools/dmn-runner/dist/jsonSchemaConstants";
 import { useDmnRunnerPersistence } from "../dmnRunnerPersistence/DmnRunnerPersistenceHook";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";

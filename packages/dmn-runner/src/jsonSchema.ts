@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { JSON_SCHEMA_INPUT_SET_PATH, RECURSION_KEYWORD, RECURSION_REF_KEYWORD, X_DMN_TYPE_KEYWORD } from "./constants";
+import { JSON_SCHEMA_INPUT_SET_PATH, RECURSION_KEYWORD, RECURSION_REF_KEYWORD } from "./jsonSchemaConstants";
 import { DmnAjvSchemaFormat, ValidateFunction } from "./ajv";
 import {
   ExtendedServicesDmnJsonSchema,
@@ -29,6 +29,7 @@ import cloneDeep from "lodash/cloneDeep";
 import getObjectValueByPath from "lodash/get";
 import setObjectValueByPath from "lodash/set";
 import unsetObjectValueByPath from "lodash/unset";
+import { X_DMN_TYPE_KEYWORD } from "./jitExecutorKeywords";
 
 function getFieldDefaultValue(dmnField: DmnInputFieldProperties): string | boolean | [] | object | undefined {
   if (dmnField?.type === "string" && dmnField?.format === undefined) {

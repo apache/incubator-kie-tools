@@ -17,17 +17,7 @@
  * under the License.
  */
 
-import { defaultDmnRunnerAutoFieldValue } from "@kie-tools/dmn-runner/dist/uniforms";
-import { RECURSION_KEYWORD } from "@kie-tools/dmn-runner/dist/jsonSchemaConstants";
-import { Context, GuaranteedProps } from "uniforms/esm";
-import FormDmnNotSupportedField from "./FormDmnNotSupportedField";
-
-export function formDmnRunnerAutoFieldValue(
-  props: GuaranteedProps<unknown>,
-  uniforms: Context<Record<string, unknown>>
-) {
-  if (props.field?.[`${RECURSION_KEYWORD}`]) {
-    return FormDmnNotSupportedField;
-  }
-  return defaultDmnRunnerAutoFieldValue(props, uniforms);
-}
+export const RECURSION_KEYWORD = "recursion";
+export const RECURSION_REF_KEYWORD = "recursionRef";
+export const SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
+export const JSON_SCHEMA_INPUT_SET_PATH = "definitions.InputSet.properties";
