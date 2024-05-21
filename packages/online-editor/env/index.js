@@ -74,7 +74,7 @@ module.exports = composeEnv(
         description: "Service URL to validate commit messages.",
       },
       ONLINE_EDITOR__appName: {
-        default: "KIE Sandbox",
+        default: "Apache KIE™ Sandbox",
         description: "The name used to refer to a particular KIE Sandbox distribution.",
       },
       ONLINE_EDITOR__devDeploymentBaseImageRegistry: {
