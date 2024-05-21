@@ -8,7 +8,7 @@ elementpath==4.4.0
 pyyaml==6.0.1
 ruamel.yaml==0.18.6
 python-dateutil==2.9.0.post0
-Jinja2==3.1.3
+Jinja2==3.1.4
 pykwalify==1.8.0
 colorlog==6.8.2
 click==8.1.7
