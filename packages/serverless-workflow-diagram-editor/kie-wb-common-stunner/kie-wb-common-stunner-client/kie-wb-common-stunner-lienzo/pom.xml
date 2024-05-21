@@ -172,7 +172,7 @@
             <executions>
                 <execution>
                     <id>unpack-external-dependencies</id>
-                    <phase>generate-resources</phase>
+                    <phase>generate-sources</phase>
                     <goals>
                         <goal>unpack</goal>
                     </goals>
@@ -216,7 +216,7 @@
             <executions>
                 <execution>
                     <id>rename-files</id>
-                    <phase>process-resources</phase>
+                    <phase>process-sources</phase>
                     <goals>
                         <goal>rename</goal>
                     </goals>
