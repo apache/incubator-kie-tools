@@ -52,7 +52,7 @@ export interface DmnSchemaDefitionProperties {
 }
 
 // JSON schema returned from extended-services /schema/form;
-export interface ExtendedServicesDmnJsonSchema {
+export interface ExtendedServicesFormSchema {
   $ref?: string;
   definitions?: Record<DmnSchemaDefinitions, DmnSchemaDefitionProperties>;
 }

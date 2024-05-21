@@ -37,7 +37,7 @@ import { useExtendedServices } from "../extendedServices/ExtendedServicesContext
 import { InputRow } from "@kie-tools/form-dmn";
 import {
   DecisionResult,
-  ExtendedServicesDmnJsonSchema,
+  ExtendedServicesFormSchema,
   DmnEvaluationMessages,
   ExtendedServicesModelPayload,
 } from "@kie-tools/extended-services-api";
@@ -72,7 +72,7 @@ import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Tex
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { diff } from "deep-object-diff";
 import {
-  resolveReferencesAndCheckForRecursion,
+  deferencesAndCheckForRecursion,
   removeChangedPropertiesAndAdditionalProperties,
   getDefaultValues,
 } from "@kie-tools/dmn-runner/dist/jsonSchema";
@@ -138,7 +138,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   // States that are in control of the DmnRunnerProvider;
   const [canBeVisualized, setCanBeVisualized] = useState<boolean>(false);
   const [extendedServicesError, setExtendedServicesError] = useState<boolean>(false);
-  const [jsonSchema, setJsonSchema] = useState<ExtendedServicesDmnJsonSchema | undefined>(undefined);
+  const [jsonSchema, setJsonSchema] = useState<ExtendedServicesFormSchema | undefined>(undefined);
   const [{ results, resultsDifference }, setDmnRunnerResults] = useReducer(
     dmnRunnerResultsReducer,
     initialDmnRunnerResults
@@ -321,6 +321,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     }
 
     // it should exec only when the relativePath changes;
+    // eslint-disable-next-line
   }, [props.workspaceFile.relativePath]);
 
   useLayoutEffect(() => {
@@ -538,17 +539,12 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             if (canceled.get() || modelPayload === undefined) {
               return;
             }
-            extendedServices.client.formSchema(modelPayload).then((jsonSchema) => {
+            extendedServices.client.formSchema(modelPayload).then((formSchema) => {
               if (canceled.get()) {
                 return;
               }
 
-              const jsonSchemaDraft4 = {
-                $schema: SCHEMA_DRAFT4,
-                ...jsonSchema,
-              };
-
-              resolveReferencesAndCheckForRecursion(jsonSchemaDraft4, canceled)
+              deferencesAndCheckForRecursion(formSchema, canceled)
                 .then((resolvedSchema) => {
                   if (canceled.get() || !resolvedSchema) {
                     return;

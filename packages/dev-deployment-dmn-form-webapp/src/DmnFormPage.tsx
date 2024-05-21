@@ -20,7 +20,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { FormDmn, FormDmnOutputs } from "@kie-tools/form-dmn";
-import { DecisionResult, ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
+import { DecisionResult, ExtendedServicesFormSchema } from "@kie-tools/extended-services-api";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -54,7 +54,7 @@ export function DmnFormPage(props: Props) {
   const [formOutputs, setFormOutputs] = useState<DecisionResult[]>();
   const [formOutputDiffs, setFormOutputDiffs] = useState<object[]>();
   const [formError, setFormError] = useState(false);
-  const [jsonSchema, setJsonSchema] = useState<ExtendedServicesDmnJsonSchema | undefined>(undefined);
+  const [jsonSchema, setJsonSchema] = useState<ExtendedServicesFormSchema | undefined>(undefined);
   const [openAlert, setOpenAlert] = useState(AlertTypes.NONE);
   const [pageError, setPageError] = useState<boolean>(false);
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
