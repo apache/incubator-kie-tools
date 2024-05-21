@@ -56,6 +56,7 @@ node -p "require('replace-in-file').sync({ from: /\bversion: .*\b/g, to: 'versio
 node -p "require('replace-in-file').sync({ from: /docker\.io\/apache\/incubator-kie-sonataflow-builder:[\w\.]*/g, to: '${targetSonataflowBuilderImage}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*Dockerfile', '**/*.go'] });"
 node -p "require('replace-in-file').sync({ from: /docker\.io\/apache\/incubator-kie-sonataflow-devmode:[\w\.]*/g, to: '${targetSonataflowDevModeImage}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*Dockerfile', '**/*.go'] });"
 node -p "require('replace-in-file').sync({ from: /docker\.io\/apache\/incubator-kie-sonataflow-operator:[\w\.]*/g, to: '${targetSonataflowOperatorImage}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*Dockerfile', '**/*.go'] });"
+node -p "require('replace-in-file').sync({ from: /sonataflow-operator-system\/sonataflow-operator:[\w\.]*/g, to: 'sonataflow-operator-system/sonataflow-operator:${imageTag}', files: ['**/*.yaml'] });"
 
 node -p "require('replace-in-file').sync({ from: /\bOperatorVersion = .*/g, to: 'OperatorVersion = \"${version}\"', files: ['version/version.go'] });"
 node -p "require('replace-in-file').sync({ from: /\bcontainerImage:.*\b/g, to: 'containerImage: ${targetSonataflowOperatorImage}', files: ['$(getCsvFile)'] });"

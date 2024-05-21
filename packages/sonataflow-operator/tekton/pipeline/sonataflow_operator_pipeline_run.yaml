@@ -40,6 +40,6 @@ spec:
     - name: git-revision
       value: "main"
     - name: IMAGE
-      value: "image-registry.openshift-image-registry.svc:5000/sonataflow-operator-system/sonataflow-operator:latest" # TODO: Replace `latest` with $KIE_TOOLS_BUILD__streamName through $(build-env rootEnv.env.root.streamName).
+      value: "image-registry.openshift-image-registry.svc:5000/sonataflow-operator-system/sonataflow-operator:main" # This image name and tag is auto-replaced using environment variables during install, don't touch.
   pipelineRef:
     name: sonataflow-operator-pipeline

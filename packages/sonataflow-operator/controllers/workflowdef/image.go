@@ -33,6 +33,8 @@ const (
 	defaultWorkflowBuilderImage = "docker.io/apache/incubator-kie-sonataflow-builder:main"
 )
 
+// These image names and tags are auto-replaced using environment variables during install, don't touch.
+
 // GetWorkflowAppImageNameTag returns the image name with tag to use for the image to be produced for a given workflow.
 // Before, we generated the tags based on the workflow version annotation, however this produced the following undesired
 // effects. Empirically, it was detected that, if we deploy a workflow several times, for instance, the workflow is deleted
