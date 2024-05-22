@@ -75,11 +75,19 @@ const UTC_NEGATIVE_TIMEZONES = [
   "-01:00",
 ];
 
+const TIME_REGEXP = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]([+|-](0[0-9]|1[0-9]|2[0-3]):[0-9][0-9])?$/;
+
 export function ConstraintTime({ value, onChange, isValid }: ConstraintProps) {
   const time = useMemo(() => {
+    if (value.match(TIME_REGEXP) === null) {
+      return "";
+    }
     return value.includes("+") ? value.split("+")[0] : value.split("-")[0];
   }, [value]);
   const timezone = useMemo<string>(() => {
+    if (value.match(TIME_REGEXP) === null) {
+      return UTC_POSITEVE_TIMEZONES[0];
+    }
     return value.includes("+")
       ? `+${value.split("+")[1]}`
       : value.includes("-")
