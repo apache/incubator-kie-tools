@@ -26,10 +26,11 @@ import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { useDmnEditorStore } from "../../store/StoreContext";
+import { Normalized } from "../../normalization/normalize";
 
 type DecisionTableRoot = Pick<
-  DMN15__tDecisionTable,
-  "@_label" | "description" | "@_typeRef" | "@_outputLabel" | "@_aggregation" | "@_hitPolicy"
+  Normalized<DMN15__tDecisionTable>,
+  "@_label" | "description" | "@_typeRef" | "@_outputLabel" | "@_aggregation" | "@_hitPolicy" | "@_id"
 >;
 
 export function DecisionTableRootCell(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadonly: boolean }) {

@@ -22,6 +22,7 @@ import { DMNDI15__DMNStyle } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_
 import { NodeType } from "../connections/graphStructure";
 import { NODE_TYPES } from "./NodeTypes";
 import { NodeLabelPosition } from "./NodeSvgs";
+import { Normalized } from "../../normalization/normalize";
 
 export interface NodeStyle {
   fontCssProperties: React.CSSProperties;
@@ -61,7 +62,7 @@ export const DEFAULT_NODE_STROKE_COLOR = "rgba(0, 0, 0, 1)";
 export const DEFAULT_FONT_COLOR = "rgba(0, 0, 0, 1)";
 
 export function useNodeStyle(args: {
-  dmnStyle?: DMNDI15__DMNStyle;
+  dmnStyle?: Normalized<DMNDI15__DMNStyle>;
   nodeType?: NodeType;
   isEnabled?: boolean;
 }): NodeStyle {
@@ -111,7 +112,7 @@ export function getNodeStyle({
 }
 
 export function getNodeShapeFillColor(args: {
-  dmnStyle?: DMNDI15__DMNStyle | undefined;
+  dmnStyle?: Normalized<DMNDI15__DMNStyle> | undefined;
   nodeType?: NodeType | undefined;
   isEnabled?: boolean | undefined;
 }) {
@@ -134,7 +135,7 @@ export function getNodeShapeFillColor(args: {
 }
 
 export function getNodeShapeStrokeColor(args: {
-  dmnStyle?: DMNDI15__DMNStyle | undefined;
+  dmnStyle?: Normalized<DMNDI15__DMNStyle> | undefined;
   isEnabled?: boolean | undefined;
 }) {
   const blue = args.dmnStyle?.["dmndi:StrokeColor"]?.["@_blue"];
@@ -148,7 +149,7 @@ export function getNodeShapeStrokeColor(args: {
 }
 
 export function getDmnFontStyle(args: {
-  dmnStyle?: DMNDI15__DMNStyle | undefined;
+  dmnStyle?: Normalized<DMNDI15__DMNStyle> | undefined;
   isEnabled?: boolean | undefined;
 }): DmnFontStyle {
   const blue = args.dmnStyle?.["dmndi:FontColor"]?.["@_blue"];

@@ -27,6 +27,7 @@ import { useDmnEditorStore } from "../../store/StoreContext";
 import { OnCreateDataType, OnToggle, OnTypeRefChange, TypeRefSelector } from "../../dataTypes/TypeRefSelector";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useResolvedTypeRef } from "../../dataTypes/useResolvedTypeRef";
+import { Normalized } from "../../normalization/normalize";
 
 function stopPropagation(e: React.MouseEvent | React.KeyboardEvent) {
   e.stopPropagation();
@@ -34,8 +35,8 @@ function stopPropagation(e: React.MouseEvent | React.KeyboardEvent) {
 
 export function DataTypeNodePanel(props: {
   isVisible: boolean;
-  variable: DMN15__tInformationItem | undefined;
-  shape: DMNDI15__DMNShape | undefined;
+  variable: Normalized<DMN15__tInformationItem> | undefined;
+  shape: Normalized<DMNDI15__DMNShape> | undefined;
   onChange: OnTypeRefChange;
   onCreate?: OnCreateDataType;
   onToggle?: OnToggle;

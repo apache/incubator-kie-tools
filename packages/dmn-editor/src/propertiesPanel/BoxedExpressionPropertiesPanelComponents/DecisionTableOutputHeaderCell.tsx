@@ -24,7 +24,7 @@ import { ContentField, DescriptionField, ExpressionLanguageField, NameField, Typ
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { DMN15__tOutputClause } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
-import { BoxedDecisionTable, DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { BoxedDecisionTable, DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
@@ -32,6 +32,7 @@ import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constrai
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { State } from "../../store/Store";
+import { Normalized } from "../../normalization/normalize";
 
 export function DecisionTableOutputHeaderCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
@@ -47,9 +48,14 @@ export function DecisionTableOutputHeaderCell(props: {
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updater = useBoxedExpressionUpdater<DMN15__tOutputClause>(selectedObjectInfos?.expressionPath ?? []);
+  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tOutputClause>>(
+    selectedObjectInfos?.expressionPath ?? []
+  );
 
-  const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tOutputClause, [selectedObjectInfos?.cell]);
+  const cell = useMemo(
+    () => selectedObjectInfos?.cell as Normalized<DMN15__tOutputClause>,
+    [selectedObjectInfos?.cell]
+  );
   const defaultOutputEntry = useMemo(() => cell.defaultOutputEntry, [cell.defaultOutputEntry]);
   const outputValues = useMemo(() => cell.outputValues, [cell.outputValues]);
 
@@ -66,7 +72,7 @@ export function DecisionTableOutputHeaderCell(props: {
     () =>
       props.boxedExpressionIndex?.get(
         selectedObjectInfos?.expressionPath[selectedObjectInfos?.expressionPath.length - 1]?.root ?? ""
-      )?.cell as BoxedDecisionTable | undefined,
+      )?.cell as Normalized<BoxedDecisionTable> | undefined,
     [props.boxedExpressionIndex, selectedObjectInfos?.expressionPath]
   );
 
@@ -184,7 +190,7 @@ export function DecisionTableOutputHeaderCell(props: {
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newExpressionLanguage) =>
                 updater((dmnObject) => {
-                  dmnObject.defaultOutputEntry ??= {};
+                  dmnObject.defaultOutputEntry ??= { "@_id": generateUuid() };
                   dmnObject.defaultOutputEntry["@_expressionLanguage"] = newExpressionLanguage;
                 })
               }
@@ -195,7 +201,7 @@ export function DecisionTableOutputHeaderCell(props: {
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newText) =>
                 updater((dmnObject) => {
-                  dmnObject.defaultOutputEntry ??= { text: { __$$text: "" } };
+                  dmnObject.defaultOutputEntry ??= { "@_id": generateUuid(), text: { __$$text: "" } };
                   dmnObject.defaultOutputEntry.text ??= { __$$text: "" };
                   dmnObject.defaultOutputEntry.text.__$$text = newText;
                 })
@@ -207,7 +213,7 @@ export function DecisionTableOutputHeaderCell(props: {
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newDescription) =>
                 updater((dmnObject) => {
-                  dmnObject.defaultOutputEntry ??= { description: { __$$text: "" } };
+                  dmnObject.defaultOutputEntry ??= { "@_id": generateUuid(), description: { __$$text: "" } };
                   dmnObject.defaultOutputEntry.description ??= { __$$text: "" };
                   dmnObject.defaultOutputEntry.description.__$$text = newDescription;
                 })
@@ -232,7 +238,7 @@ export function DecisionTableOutputHeaderCell(props: {
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newExpressionLanguage) =>
                 updater((dmnObject) => {
-                  dmnObject.outputValues ??= { text: { __$$text: "" } };
+                  dmnObject.outputValues ??= { "@_id": generateUuid(), text: { __$$text: "" } };
                   dmnObject.outputValues["@_expressionLanguage"] = newExpressionLanguage;
                 })
               }
@@ -243,7 +249,7 @@ export function DecisionTableOutputHeaderCell(props: {
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newText) =>
                 updater((dmnObject) => {
-                  dmnObject.outputValues ??= { text: { __$$text: "" } };
+                  dmnObject.outputValues ??= { "@_id": generateUuid(), text: { __$$text: "" } };
                   dmnObject.outputValues.text.__$$text = newText;
                 })
               }
@@ -254,7 +260,7 @@ export function DecisionTableOutputHeaderCell(props: {
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newDescription: string) =>
                 updater((dmnObject) => {
-                  dmnObject.outputValues ??= { text: { __$$text: "" } };
+                  dmnObject.outputValues ??= { "@_id": generateUuid(), text: { __$$text: "" } };
                   dmnObject.outputValues.description ??= { __$$text: "" };
                   dmnObject.outputValues.description.__$$text = newDescription;
                 })

@@ -30,6 +30,8 @@ import { xmlHrefToQName } from "../xml/xmlHrefToQName";
 import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
 import { addShape } from "./addShape";
 import { repositionNode } from "./repositionNode";
+import { Normalized } from "../normalization/normalize";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 /**
  * When adding a Decision Service to a DRD, we need to bring all its encapsulated and output Decisions with it,
@@ -46,10 +48,10 @@ export function addExistingDecisionServiceToDrd({
   dropPoint,
 }: {
   decisionServiceNamespace: string;
-  decisionService: DMN15__tDecisionService;
+  decisionService: Normalized<DMN15__tDecisionService>;
   externalDmnsIndex: ReturnType<Computed["getExternalModelTypesByNamespace"]>["dmns"];
   thisDmnsNamespace: string;
-  thisDmnsDefinitions: DMN15__tDefinitions;
+  thisDmnsDefinitions: Normalized<DMN15__tDefinitions>;
   thisDmnsIndexedDrd: ReturnType<Computed["indexedDrd"]>;
   drdIndex: number;
   dropPoint: { x: number; y: number };
@@ -95,6 +97,7 @@ export function addExistingDecisionServiceToDrd({
       drdIndex,
       nodeType: NODE_TYPES.decisionService,
       shape: {
+        "@_id": generateUuid(),
         "@_dmnElementRef": xmlHrefToQName(decisionServiceHrefRelativeToThisDmn, thisDmnsDefinitions),
         "@_isCollapsed": true,
         "dc:Bounds": {
@@ -151,6 +154,7 @@ export function addExistingDecisionServiceToDrd({
       drdIndex,
       nodeType: NODE_TYPES.decisionService,
       shape: {
+        "@_id": generateUuid(),
         "@_dmnElementRef": xmlHrefToQName(decisionServiceHrefRelativeToThisDmn, thisDmnsDefinitions),
         "dc:Bounds": {
           "@_x": dropPoint.x,
@@ -208,6 +212,7 @@ export function addExistingDecisionServiceToDrd({
           drdIndex,
           nodeType: NODE_TYPES.decision,
           shape: {
+            "@_id": generateUuid(),
             "@_dmnElementRef": xmlHrefToQName(decisionHref, thisDmnsDefinitions),
             "dc:Bounds": {
               "@_x": x,
@@ -229,7 +234,7 @@ export function getDecisionServicePropertiesRelativeToThisDmn({
 }: {
   thisDmnsNamespace: string;
   decisionServiceNamespace: string;
-  decisionService: DMN15__tDecisionService;
+  decisionService: Normalized<DMN15__tDecisionService>;
 }) {
   const decisionServiceNamespaceForHref =
     decisionServiceNamespace === thisDmnsNamespace ? "" : decisionServiceNamespace;

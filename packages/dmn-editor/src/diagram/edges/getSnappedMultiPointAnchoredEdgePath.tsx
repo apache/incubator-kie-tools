@@ -31,6 +31,7 @@ import { getBoundsCenterPoint } from "../maths/Maths";
 import { Bounds, getDiscretelyAutoPositionedEdgeParams } from "../maths/Maths";
 import { AutoPositionedEdgeMarker } from "./AutoPositionedEdgeMarker";
 import { SnapGrid } from "../../store/Store";
+import { Normalized } from "../../normalization/normalize";
 
 export function getSnappedMultiPointAnchoredEdgePath({
   snapGrid,
@@ -41,11 +42,11 @@ export function getSnappedMultiPointAnchoredEdgePath({
   dmnShapeTarget,
 }: {
   snapGrid: SnapGrid;
-  dmnEdge: DMNDI15__DMNEdge | undefined;
+  dmnEdge: Normalized<DMNDI15__DMNEdge> | undefined;
   sourceNodeBounds: Bounds | undefined;
   targetNodeBounds: Bounds | undefined;
-  dmnShapeSource: DMNDI15__DMNShape | undefined;
-  dmnShapeTarget: DMNDI15__DMNShape | undefined;
+  dmnShapeSource: Normalized<DMNDI15__DMNShape> | undefined;
+  dmnShapeTarget: Normalized<DMNDI15__DMNShape> | undefined;
 }) {
   if (!sourceNodeBounds || !targetNodeBounds) {
     return { path: undefined, points: [] };
@@ -107,7 +108,7 @@ export function getSnappedMultiPointAnchoredEdgePath({
 }
 
 export function getSnappedHandlePosition(
-  shape: DMNDI15__DMNShape,
+  shape: Normalized<DMNDI15__DMNShape>,
   snappedNode: Bounds,
   originalHandleWaypoint: DC__Point,
   snappedSecondWaypoint: DC__Point

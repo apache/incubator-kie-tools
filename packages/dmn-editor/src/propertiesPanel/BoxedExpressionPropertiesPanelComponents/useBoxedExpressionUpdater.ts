@@ -27,6 +27,7 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContex
 import { buildXmlHref } from "../../xml/xmlHrefs";
 import { AllExpressionsWithoutTypes } from "../../dataTypes/DataTypeSpec";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
+import { Normalized } from "../../normalization/normalize";
 
 export function useBoxedExpressionUpdater<T extends AllExpressionsWithoutTypes>(
   expressionPath: ExpressionPath[] | undefined
@@ -49,15 +50,19 @@ export function useBoxedExpressionUpdater<T extends AllExpressionsWithoutTypes>(
         if (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0]?.__$$element === "businessKnowledgeModel") {
           const dmnObject = getDmnObjectByPath(
             expressionPath ?? [],
-            (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0] as DMN15__tBusinessKnowledgeModel)
-              ?.encapsulatedLogic
+            (
+              state.dmn.model.definitions.drgElement?.[
+                node?.data.index ?? 0
+              ] as Normalized<DMN15__tBusinessKnowledgeModel>
+            )?.encapsulatedLogic
           );
           dmnObject && consumer(dmnObject as T);
         }
         if (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0]?.__$$element === "decision") {
           const dmnObject = getDmnObjectByPath(
             expressionPath ?? [],
-            (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0] as DMN15__tDecision)?.expression
+            (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0] as Normalized<DMN15__tDecision>)
+              ?.expression
           );
           dmnObject && consumer(dmnObject as T);
         }

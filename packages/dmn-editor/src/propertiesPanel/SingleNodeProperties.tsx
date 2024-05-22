@@ -50,6 +50,7 @@ import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import { UnknownProperties } from "./UnknownProperties";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import "./SingleNodeProperties.css";
+import { Normalized } from "../normalization/normalize";
 
 export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -133,7 +134,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                   case NODE_TYPES.inputData:
                     return (
                       <InputDataProperties
-                        inputData={node.data!.dmnObject as DMN15__tInputData}
+                        inputData={node.data!.dmnObject as Normalized<DMN15__tInputData>}
                         namespace={node.data.dmnObjectNamespace}
                         index={node.data.index}
                       />
@@ -141,7 +142,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                   case NODE_TYPES.decision:
                     return (
                       <DecisionProperties
-                        decision={node.data!.dmnObject as DMN15__tDecision}
+                        decision={node.data!.dmnObject as Normalized<DMN15__tDecision>}
                         namespace={node.data.dmnObjectNamespace}
                         index={node.data.index}
                       />
@@ -149,7 +150,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                   case NODE_TYPES.bkm:
                     return (
                       <BkmProperties
-                        bkm={node.data!.dmnObject as DMN15__tBusinessKnowledgeModel}
+                        bkm={node.data!.dmnObject as Normalized<DMN15__tBusinessKnowledgeModel>}
                         namespace={node.data.dmnObjectNamespace}
                         index={node.data.index}
                       />
@@ -157,7 +158,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                   case NODE_TYPES.decisionService:
                     return (
                       <DecisionServiceProperties
-                        decisionService={node.data!.dmnObject as DMN15__tDecisionService}
+                        decisionService={node.data!.dmnObject as Normalized<DMN15__tDecisionService>}
                         namespace={node.data.dmnObjectNamespace}
                         index={node.data.index}
                       />
@@ -165,7 +166,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                   case NODE_TYPES.knowledgeSource:
                     return (
                       <KnowledgeSourceProperties
-                        knowledgeSource={node.data!.dmnObject as DMN15__tKnowledgeSource}
+                        knowledgeSource={node.data!.dmnObject as Normalized<DMN15__tKnowledgeSource>}
                         namespace={node.data.dmnObjectNamespace}
                         index={node.data.index}
                       />
@@ -173,12 +174,17 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                   case NODE_TYPES.textAnnotation:
                     return (
                       <TextAnnotationProperties
-                        textAnnotation={node.data!.dmnObject as DMN15__tTextAnnotation}
+                        textAnnotation={node.data!.dmnObject as Normalized<DMN15__tTextAnnotation>}
                         index={node.data.index}
                       />
                     );
                   case NODE_TYPES.group:
-                    return <GroupProperties group={node.data!.dmnObject as DMN15__tGroup} index={node.data.index} />;
+                    return (
+                      <GroupProperties
+                        group={node.data!.dmnObject as Normalized<DMN15__tGroup>}
+                        index={node.data.index}
+                      />
+                    );
                   case NODE_TYPES.unknown:
                     return <UnknownProperties shape={node.data.shape} dmnElementRefQName={node.data.dmnObjectQName} />;
                   default:

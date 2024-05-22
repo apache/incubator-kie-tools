@@ -17,11 +17,22 @@
  * under the License.
  */
 
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 import { addMissingImportNamespaces } from "../mutations/addMissingImportNamespaces";
 import { State } from "../store/Store";
 
-export function normalize(model: State["dmn"]["model"]) {
+export type Normalized<T> = WithRequiredDeep<T, "@_id">;
+
+type WithRequiredDeep<T, K extends keyof any> = T extends undefined
+  ? T
+  : T extends Array<infer U>
+  ? Array<WithRequiredDeep<U, K>>
+  : { [P in keyof T]: WithRequiredDeep<T[P], K> } & (K extends keyof T
+      ? { [P in K]-?: NonNullable<WithRequiredDeep<T[P], K>> }
+      : T);
+
+export function normalize(model: DmnLatestModel): State["dmn"]["model"] {
   getNewDmnIdRandomizer()
     .ack({
       json: model.definitions.drgElement,
@@ -50,7 +61,9 @@ export function normalize(model: State["dmn"]["model"]) {
     })
     .randomize({ skipAlreadyAttributedIds: true });
 
-  addMissingImportNamespaces(model.definitions);
+  const normalizedModel = model as Normalized<DmnLatestModel>;
 
-  return model;
+  addMissingImportNamespaces(normalizedModel.definitions);
+
+  return normalizedModel;
 }

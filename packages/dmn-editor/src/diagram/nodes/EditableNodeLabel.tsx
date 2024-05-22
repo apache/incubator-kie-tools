@@ -34,6 +34,7 @@ import { flushSync } from "react-dom";
 import { NodeLabelPosition } from "./NodeSvgs";
 import { State } from "../../store/Store";
 import "./EditableNodeLabel.css";
+import { Normalized } from "../../normalization/normalize";
 
 export type OnEditableNodeLabelChange = (value: string | undefined) => void;
 
@@ -59,7 +60,7 @@ export function EditableNodeLabel({
   shouldCommitOnBlur?: boolean;
   grow?: boolean;
   truncate?: boolean;
-  namedElement?: DMN15__tNamedElement;
+  namedElement?: Normalized<DMN15__tNamedElement>;
   namedElementQName?: XmlQName;
   position: NodeLabelPosition;
   isEditing: boolean;
