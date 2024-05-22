@@ -22,7 +22,7 @@ import { Context, GuaranteedProps } from "uniforms/esm";
 import UnitablesListField from "./UnitablesListField";
 import UnitablesNestField from "./UnitablesNestField";
 import UnitablesNotSupportedField from "./UnitablesNotSupportedField";
-import { RECURSION_KEYWORD } from "@kie-tools/dmn-runner/dist/constants";
+import { RECURSION_KEYWORD } from "@kie-tools/dmn-runner/dist/jsonSchemaConstants";
 
 export function unitablesDmnRunnerAutoFieldValue(
   props: GuaranteedProps<unknown>,

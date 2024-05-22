@@ -130,6 +130,8 @@ export const DEFAULT_VIEWPORT = { x: 100, y: 100, zoom: 1 };
 
 const DELETE_NODE_KEY_CODES = ["Backspace", "Delete"];
 
+const AREA_ABOVE_OVERLAYS_PANEL = 120;
+
 const nodeTypes: Record<NodeType, any> = {
   [NODE_TYPES.decisionService]: DecisionServiceNode,
   [NODE_TYPES.group]: GroupNode,
@@ -437,7 +439,10 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 nodeType,
                 shape: {
                   "@_id": generateUuid(),
-                  "@_dmnElementRef": buildXmlQName({ type: "xml-qname", localPart: drgElement["@_id"]! }),
+                  "@_dmnElementRef": buildXmlQName({
+                    type: "xml-qname",
+                    localPart: drgElement["@_id"]!,
+                  }),
                   "@_isCollapsed": false,
                   "dc:Bounds": {
                     "@_x": dropPoint.x,
@@ -922,7 +927,10 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                     edge: { id: change.id, dmnObject: edge.data.dmnObject },
                     mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
                   });
-                  state.dispatch(state).diagram.setEdgeStatus(change.id, { selected: false, draggingWaypoint: false });
+                  state.dispatch(state).diagram.setEdgeStatus(change.id, {
+                    selected: false,
+                    draggingWaypoint: false,
+                  });
                 }
                 break;
               case "add":
@@ -1173,7 +1181,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           >
             <SelectionStatus />
             <Palette pulse={isEmptyStateShowing} />
-            <TopRightCornerPanels />
+            <TopRightCornerPanels availableHeight={container.current?.offsetHeight} />
             <DiagramCommands />
             {!isFirefox && <RF.Background />}
             <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />
@@ -1361,7 +1369,11 @@ export function SetConnectionToReactFlowStore(props: {}) {
   return <></>;
 }
 
-export function TopRightCornerPanels() {
+interface TopRightCornerPanelsProps {
+  availableHeight?: number | undefined;
+}
+
+export function TopRightCornerPanels({ availableHeight }: TopRightCornerPanelsProps) {
   const diagram = useDmnEditorStore((s) => s.diagram);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
@@ -1407,7 +1419,7 @@ export function TopRightCornerPanels() {
             flipBehavior={["bottom-end"]}
             hideOnOutsideClick={false}
             isVisible={diagram.overlaysPanel.isOpen}
-            bodyContent={<OverlaysPanel />}
+            bodyContent={<OverlaysPanel availableHeight={(availableHeight ?? 0) - AREA_ABOVE_OVERLAYS_PANEL} />}
           >
             <button
               className={"kie-dmn-editor--overlays-panel-toggle-button"}

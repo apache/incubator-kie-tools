@@ -100,7 +100,7 @@ pipeline {
                         git add .
                         git commit --allow-empty -am "Update kogito version to ${params.KOGITO_VERSION}"
                         """.trim()
-                        githubUtils.pushObject('origin', "${params.NEW_BRANCH_NAME}", "${pipelineVars.asfGithubPushCredentialsId}")
+                        githubUtils.pushObject('origin', "${params.NEW_BRANCH_NAME}", "${pipelineVars.asfCIGithubCredentialsId}")
                     }
                 }
             }

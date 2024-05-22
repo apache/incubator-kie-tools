@@ -20,14 +20,14 @@
 import { Validator } from "@kie-tools/form/dist/Validator";
 import { FormDmnI18n } from "./i18n";
 import { FormDmnJsonSchemaBridge } from "./uniforms";
+import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/dmn-runner/dist/dmnFormats";
 import {
-  DAYS_AND_TIME_DURATION_FORMAT,
   X_DMN_ALLOWED_VALUES_KEYWORD,
-  YEARS_AND_MONTHS_DURATION_FORMAT,
-} from "@kie-tools/dmn-runner/dist/constants";
+  X_DMN_TYPE_CONSTRAINTS_KEYWORD,
+} from "@kie-tools/dmn-runner/dist/jitExecutorKeywords";
 import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
-import { SCHEMA_DRAFT4 } from "@kie-tools/dmn-runner/dist/constants";
+import { SCHEMA_DRAFT4 } from "@kie-tools/dmn-runner/dist/jsonSchemaConstants";
 
 export class FormDmnValidator extends Validator {
   private dmnRunnerAjv = new DmnRunnerAjv();
@@ -60,6 +60,9 @@ export class FormDmnValidator extends Validator {
           }
           if (error.keyword === X_DMN_ALLOWED_VALUES_KEYWORD) {
             return { ...error, message: (this.i18n as FormDmnI18n).validation.xDmnAllowedValues };
+          }
+          if (error.keyword === X_DMN_TYPE_CONSTRAINTS_KEYWORD) {
+            return { ...error, message: (this.i18n as FormDmnI18n).validation.xDmnTypeConstraint };
           }
           return error;
         }),
