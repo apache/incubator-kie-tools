@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import _ from "lodash";
 import { test, expect } from "../../__fixtures__/base";
 
 test.describe("Populate Boxed Filter", () => {
