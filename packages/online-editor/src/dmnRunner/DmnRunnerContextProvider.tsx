@@ -546,7 +546,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                     return;
                   }
 
-                  const resolvedSchema = openapiSchemaToJsonSchema(dereferencedOpenApiSchema, {
+                  const jsonSchema = openapiSchemaToJsonSchema(dereferencedOpenApiSchema, {
                     definitionKeywords: ["definitions"],
                   });
 
@@ -554,10 +554,10 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                     // Early bailout in the DMN first render;
                     // This prevents to set the inputs from the previous DMN
                     if (!previousJsonSchema) {
-                      return resolvedSchema;
+                      return jsonSchema;
                     }
 
-                    const validateInputs = dmnRunnerAjv.compile(resolvedSchema);
+                    const validateInputs = dmnRunnerAjv.compile(jsonSchema);
 
                     // Add default values and delete changed data types;
                     setDmnRunnerPersistenceJson({
@@ -571,17 +571,17 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                           const id = input.id;
                           removeChangedPropertiesAndAdditionalProperties(validateInputs, input);
                           input.id = id;
-                          return { ...getDefaultValues(resolvedSchema), ...input };
+                          return { ...getDefaultValues(jsonSchema), ...input };
                         });
                       },
                       cancellationToken: canceled,
                     });
 
                     // This should be done to remove any previous errors or to add new errors
-                    if (Object.keys(diff(previousJsonSchema, resolvedSchema)).length > 0) {
+                    if (Object.keys(diff(previousJsonSchema, jsonSchema)).length > 0) {
                       forceDmnRunnerReRender();
                     }
-                    return resolvedSchema;
+                    return jsonSchema;
                   });
                 })
                 .catch((err) => {
