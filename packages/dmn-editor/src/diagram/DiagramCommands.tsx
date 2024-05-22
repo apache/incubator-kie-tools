@@ -225,7 +225,7 @@ export function DiagramCommands(props: {}) {
             type: "KIE__tComponentsWidthsExtension",
             attr: "kie:ComponentWidths",
           })
-          .randomize();
+          .randomize({ skipAlreadyAttributedIds: false });
 
         dmnEditorStoreApi.setState((state) => {
           state.dmn.model.definitions.drgElement ??= [];
