@@ -17,8 +17,9 @@
  * under the License.
  */
 
-import { DecisionResult, ExtendedServicesFormSchema } from "@kie-tools/extended-services-api";
+import { DecisionResult } from "@kie-tools/extended-services-api";
 import { DmnRunnerPersistenceJson } from "../dmnRunnerPersistence/DmnRunnerPersistenceTypes";
+import type { JSONSchema4 } from "json-schema";
 
 export interface DmnRunnerResults {
   results: Array<DecisionResult[] | undefined>;
@@ -66,6 +67,6 @@ export type DmnRunnerProviderAction =
   | DmnRunnerProviderActionToggleExpanded;
 
 export interface DmnRunnerCompanionRefreshCallback {
-  jsonSchema?: ExtendedServicesFormSchema;
+  jsonSchema?: JSONSchema4;
   dmnRunnerPersistenceJson?: DmnRunnerPersistenceJson;
 }

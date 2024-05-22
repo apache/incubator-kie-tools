@@ -51,7 +51,7 @@ export interface DmnSchemaDefitionProperties {
   "x-dmn-type"?: X_DMN_TYPE | string;
 }
 
-// JSON schema returned from extended-services /schema/form;
+// OpenAPI Schema returned from extended-services /schema/form;
 export interface ExtendedServicesFormSchema {
   $ref?: string;
   definitions?: Record<DmnSchemaDefinitions, DmnSchemaDefitionProperties>;

@@ -23,8 +23,9 @@ import { DmnRunnerPersistenceJson } from "../dmnRunnerPersistence/DmnRunnerPersi
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { UnitablesInputsConfigs } from "@kie-tools/unitables";
 import { InputRow } from "@kie-tools/form-dmn";
-import { DecisionResult, ExtendedServicesFormSchema } from "@kie-tools/extended-services-api";
+import { DecisionResult } from "@kie-tools/extended-services-api";
 import { DmnRunnerProviderAction } from "./DmnRunnerTypes";
+import type { JSONSchema4 } from "json-schema";
 
 export interface DmnRunnerContextType {
   configs: UnitablesInputsConfigs;
@@ -35,7 +36,7 @@ export interface DmnRunnerContextType {
   inputs: Array<InputRow>;
   isExpanded: boolean;
   canBeVisualized: boolean;
-  jsonSchema?: ExtendedServicesFormSchema;
+  jsonSchema?: JSONSchema4;
   mode: DmnRunnerMode;
   results: Array<DecisionResult[] | undefined>;
   resultsDifference: Array<Array<object>>;
