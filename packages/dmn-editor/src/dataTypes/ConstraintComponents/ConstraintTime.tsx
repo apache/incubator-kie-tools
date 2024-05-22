@@ -27,6 +27,7 @@ import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useInViewSelect } from "../../responsiveness/useInViewSelect";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import moment from "moment";
 
 // Time zone list from https://www.timeanddate.com/time/zones/
 const UTC_POSITEVE_TIMEZONES = [
@@ -76,7 +77,7 @@ const UTC_NEGATIVE_TIMEZONES = [
   "-01:00",
 ];
 
-const TIME_REGEXP = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]([+|-](0[0-9]|1[0-9]|2[0-3]):[0-9][0-9])?$/;
+const TIME_REGEXP = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?([+|-](0[0-9]|1[0-9]|2[0-3]):[0-9][0-9])?$/;
 
 export function ConstraintTime({ value, onChange, isValid }: ConstraintProps) {
   const time = useMemo(() => {
@@ -132,10 +133,17 @@ export function ConstraintTime({ value, onChange, isValid }: ConstraintProps) {
         className={`kie-dmn-editor--constraint-time kie-dmn-editor--constraint-input ${
           isValid ? "" : "kie-dmn-editor--constraint-invalid"
         }`}
-        inputProps={{ className: "kie-dmn-editor--constraint-input" }}
+        inputProps={{
+          className: "kie-dmn-editor--constraint-input",
+          onBlur: (e: React.FocusEvent<HTMLInputElement>) => {
+            if (moment(value, "HH:mm", true).isValid() || moment(value, "HH:mm:ss", true).isValid()) {
+              onChangeTime(value);
+            }
+          },
+        }}
         time={time}
-        onChange={(e, value, hour, minute, seconds, isValid) => {
-          if (isValid) {
+        onChange={(e, value) => {
+          if (moment(value, "HH:mm", true).isValid() || moment(value, "HH:mm:ss", true).isValid()) {
             onChangeTime(value);
           }
         }}

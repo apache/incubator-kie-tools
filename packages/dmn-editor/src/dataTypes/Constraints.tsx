@@ -150,6 +150,7 @@ export const constraintTypeHelper = (
         case DmnBuiltInDataType.DateTime:
           return (
             moment(recoveredValue, "YYYY-MM-DDTHH:mm:ssZZ", true).isValid() ||
+            moment(recoveredValue, "YYYY-MM-DDTHH:mmZZ", true).isValid() ||
             moment(recoveredValue, "YYYY-MM-DD", true).isValid() ||
             value === "" ||
             recoveredValue === ""
@@ -159,7 +160,12 @@ export const constraintTypeHelper = (
         case DmnBuiltInDataType.Number:
           return !isNaN(parseFloat(recoveredValue ?? "")) || value === "" || recoveredValue === "";
         case DmnBuiltInDataType.Time:
-          return moment(recoveredValue, "HH:mm:ssZZ", true).isValid() || value === "" || recoveredValue === "";
+          return (
+            moment(recoveredValue, "HH:mmZZ", true).isValid() ||
+            moment(recoveredValue, "HH:mm:ssZZ", true).isValid() ||
+            value === "" ||
+            recoveredValue === ""
+          );
         case DmnBuiltInDataType.YearsMonthsDuration:
           return REGEX_YEARS_MONTH_DURATION.test(recoveredValue ?? "") || value === "" || recoveredValue === "";
         default:
