@@ -26,6 +26,7 @@ import { ConstraintProps } from "./Constraint";
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useInViewSelect } from "../../responsiveness/useInViewSelect";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 // Time zone list from https://www.timeanddate.com/time/zones/
 const UTC_POSITEVE_TIMEZONES = [
@@ -140,27 +141,43 @@ export function ConstraintTime({ value, onChange, isValid }: ConstraintProps) {
         }}
         includeSeconds={true}
       />
-      <Select
-        toggleRef={toggleRef}
-        className={`kie-dmn-editor--constraint-time-timezone ${
-          isValid ? "" : "kie-dmn-editor--constraint-time-timezone-invalid"
-        }`}
-        variant={SelectVariant.single}
-        placeholderText="Select timezone"
-        aria-label="Select timezone"
-        onToggle={(isExpanded) => setSelectTimezoneOpen(isExpanded)}
-        onSelect={onSelectTimezone}
-        selections={timezone}
-        isOpen={isSelectTimezoneOpen}
-        isDisabled={false}
-        isPlain={true}
-        maxHeight={inViewTimezoneSelect.maxHeight}
-        direction={inViewTimezoneSelect.direction}
-      >
-        {[...UTC_NEGATIVE_TIMEZONES, ...UTC_POSITEVE_TIMEZONES].map((timezone) => (
-          <SelectOption key={timezone} value={timezone} />
-        ))}
-      </Select>
+      {time === "" ? (
+        <Tooltip content={"To tweak the timezone it's necessary to set a time first"}>
+          <Select
+            className={"kie-dmn-editor--constraint-time-timezone"}
+            variant={SelectVariant.single}
+            onToggle={() => {}}
+            selections={UTC_POSITEVE_TIMEZONES[0]}
+            isOpen={false}
+            isDisabled={true}
+            isPlain={true}
+          >
+            {[<SelectOption key={UTC_POSITEVE_TIMEZONES[0]} value={UTC_POSITEVE_TIMEZONES[0]} />]}
+          </Select>
+        </Tooltip>
+      ) : (
+        <Select
+          toggleRef={toggleRef}
+          className={`kie-dmn-editor--constraint-time-timezone ${
+            isValid ? "" : "kie-dmn-editor--constraint-time-timezone-invalid"
+          }`}
+          variant={SelectVariant.single}
+          placeholderText="Select timezone"
+          aria-label="Select timezone"
+          onToggle={(isExpanded) => setSelectTimezoneOpen(isExpanded)}
+          onSelect={onSelectTimezone}
+          selections={timezone}
+          isOpen={isSelectTimezoneOpen}
+          isDisabled={false}
+          isPlain={true}
+          maxHeight={inViewTimezoneSelect.maxHeight}
+          direction={inViewTimezoneSelect.direction}
+        >
+          {[...UTC_NEGATIVE_TIMEZONES, ...UTC_POSITEVE_TIMEZONES].map((timezone) => (
+            <SelectOption key={timezone} value={timezone} />
+          ))}
+        </Select>
+      )}
     </div>
   );
 }
