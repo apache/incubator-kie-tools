@@ -85,8 +85,6 @@ func createKanikoCacheWarmerPod(ctx context.Context, client client.Client, platf
 						"--force",
 						"--cache-dir=" + kanikoCacheDir,
 						"--image=" + platform.Spec.Build.Config.BaseImage,
-						"--registry-mirror=kind-registry:5000",
-						"--insecure-pull",
 					},
 					VolumeMounts: []corev1.VolumeMount{
 						{

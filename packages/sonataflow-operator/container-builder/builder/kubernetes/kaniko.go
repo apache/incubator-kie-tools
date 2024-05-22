@@ -87,7 +87,6 @@ func addKanikoTaskToPod(ctx context.Context, c client.Client, build *api.Contain
 		"--context=dir://" + task.ContextDir,
 		"--destination=" + task.GetRepositoryImageTag(),
 		"--ignore-path=/product_uuid",
-		"--registry-mirror=kind-registry:5000",
 	}
 
 	if task.AdditionalFlags != nil && len(task.AdditionalFlags) > 0 {
