@@ -27,6 +27,7 @@ import getObjectValueByPath from "lodash/get";
 import setObjectValueByPath from "lodash/set";
 import unsetObjectValueByPath from "lodash/unset";
 import { X_DMN_TYPE_KEYWORD } from "./jitExecutorKeywords";
+import type { JSONSchema4 } from "json-schema";
 
 function getFieldDefaultValue(dmnField: DmnInputFieldProperties): string | boolean | [] | object | undefined {
   if (dmnField?.type === "string" && dmnField?.format === undefined) {
@@ -50,7 +51,7 @@ function getFieldDefaultValue(dmnField: DmnInputFieldProperties): string | boole
 /**
  * get default values based on the jsonSchema
  */
-export function getDefaultValues(jsonSchema: ExtendedServicesFormSchema) {
+export function getDefaultValues(jsonSchema: JSONSchema4) {
   return Object.entries(getObjectValueByPath(jsonSchema, JSON_SCHEMA_INPUT_SET_PATH) ?? {})?.reduce(
     (acc, [key, field]: [string, Record<string, string>]) => {
       acc[key] = getFieldDefaultValue(field);
@@ -103,7 +104,7 @@ export function removeChangedPropertiesAndAdditionalProperties<T extends Validat
  * All circular $refs are changed to "recursionRef" instead of "$ref"
  * The JSON schema is resolved a second time to ensure all circular $ref were removed.
  */
-export async function deferencesAndCheckForRecursion(
+export async function dereferenceAndCheckForRecursion(
   formSchema: ExtendedServicesFormSchema,
   canceled?: Holder<boolean>
 ): Promise<ExtendedServicesFormSchema | undefined> {
