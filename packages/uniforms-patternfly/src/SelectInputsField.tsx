@@ -42,16 +42,22 @@ function SelectInputsField(props: SelectInputProps) {
     if (props.value === undefined) {
       return [];
     }
+    if (props.value === null) {
+      return "null";
+    }
     if (Array.isArray(props.value)) {
       return [...props.value];
     }
-    return [props.value];
+    return props.value;
   });
 
   // Parses the selection to a string or string[]
   // This prevents a bug where the number 0 can't be selected
   const parseSelection = useCallback(
-    (selection: string | SelectOptionObject, fieldType: typeof Array): SelectFieldValue => {
+    (selection: string | number | SelectOptionObject, fieldType: typeof Array): SelectFieldValue => {
+      if (selection === null) {
+        return `${selection}`;
+      }
       const parsedSelection = isSelectOptionObject(selection) ? selection.toString() : selection;
 
       if (fieldType !== Array) {
@@ -59,10 +65,10 @@ function SelectInputsField(props: SelectInputProps) {
       }
 
       if (Array.isArray(selected)) {
-        if (selected.includes(parsedSelection)) {
-          return selected.filter((s) => s !== parsedSelection);
+        if (selected.includes(`${parsedSelection}`)) {
+          return selected.filter((s) => s !== `${parsedSelection}`);
         }
-        return [parsedSelection, ...selected];
+        return [`${parsedSelection}`, ...selected];
       }
       return [];
     },
@@ -75,16 +81,23 @@ function SelectInputsField(props: SelectInputProps) {
         props.onChange(undefined);
         setSelected([]);
       } else {
-        const selectedItems = parseSelection(selection, props.fieldType);
-        // If the selection is a number we should convert the selectedItems back to a number
-        const onChanged =
-          typeof selection === "number"
-            ? Array.isArray(selectedItems)
-              ? selectedItems.map((item) => JSON.parse(item))
-              : JSON.parse(selectedItems)
-            : selectedItems;
-        props.onChange(onChanged);
-        setSelected(selectedItems);
+        if (selection === "null") {
+          props.onChange(null);
+          setSelected("null");
+        } else {
+          const selectedItems = parseSelection(selection, props.fieldType);
+          // If the selection is a number we should convert the selectedItems back to a number
+          const onChanged =
+            selection === null
+              ? null
+              : typeof selection === "number"
+              ? Array.isArray(selectedItems)
+                ? selectedItems.map((item) => JSON.parse(item))
+                : JSON.parse(selectedItems)
+              : selectedItems;
+          props.onChange(onChanged);
+          setSelected(selectedItems);
+        }
       }
       setExpanded(false);
     },

@@ -39,7 +39,7 @@ export type SelectCheckboxProps = FieldProps<
 >;
 
 export type SelectInputProps = FieldProps<
-  string | string[],
+  string | string[] | null,
   SelectProps,
   {
     checkboxes?: boolean;

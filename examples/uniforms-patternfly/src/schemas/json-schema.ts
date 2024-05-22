@@ -84,8 +84,8 @@ const schema = {
         },
         numberOfBeds: {
           placeholder: "Select...",
-          enum: [0, 1, 2],
-          type: "number",
+          enum: [null, 0, 1, 2],
+          type: ["null", "number"],
         },
       },
     },
