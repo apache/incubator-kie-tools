@@ -24,7 +24,7 @@
     "image:build": "run-script-os",
     "image:build:darwin:win32": "echo \"Build skipped on macOS and Windows\"",
     "image:build:linux": "pnpm setup:env make -C ./build build",
-    "image:test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"run-script-os\" --finally \"cp -r build/target/test/results dist-e2e-tests/\"",
+    "image:test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"run-script-os\" --finally \"cp -r build/target/test/results dist-e2e-tests/\"",
     "image:test:darwin:win32": "echo \"Tests skipped on macOS and Windows\"",
     "image:test:linux": "pnpm copy-test-assets && pnpm setup:env make -C ./build test-image",
     "install": "node install.js && pnpm format",

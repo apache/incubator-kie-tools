@@ -32,6 +32,5 @@ secretGenerator:
       - POSTGRES_PASSWORD=sonataflow
       - POSTGRES_DATABASE=sonataflow
       - PGDATA=/var/lib/pgsql/data/userdata
-
-sortOptions:
-  order: fifo
+# sortOptions:
+#  order: fifo

@@ -20,5 +20,5 @@
 
 source ./hack/go-path.sh
 
-command -v goimports >/dev/null || go install golang.org/x/tools/cmd/goimports@latest
+command -v goimports >/dev/null || go install -modcacherw golang.org/x/tools/cmd/goimports@latest
 goimports -local github.com/kiegroup -l -w .

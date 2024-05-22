@@ -29,5 +29,5 @@ spec:
   build:
     config:
       registry:
-        address: docker.io/apache
+        address: kind-registry:5000
         secret: regcred

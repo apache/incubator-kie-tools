@@ -55,10 +55,11 @@ const (
 	DataIndexKafkaSmallRyeHealthProperty  = `quarkus.smallrye-health.check."io.quarkus.kafka.client.health.KafkaHealthCheck".enabled`
 	JobServiceKafkaSmallRyeHealthProperty = `quarkus.smallrye-health.check."org.kie.kogito.jobs.service.messaging.http.health.knative.KSinkInjectionHealthCheck".enabled`
 
-	DataIndexServiceName = "data-index-service"
-	JobServiceName       = "jobs-service"
-	ImageNamePrefix      = "docker.io/apache/incubator-kie-kogito"
-	DataIndexName        = "data-index"
+	DataIndexServiceName  = "data-index-service"
+	JobServiceName        = "jobs-service"
+	ImageNamePrefix       = "docker.io/apache/incubator-kie-kogito"
+	KogitoImageNamePrefix = "quay.io/kiegroup/kogito"
+	DataIndexName         = "data-index"
 
 	DefaultDatabaseName   string = "sonataflow"
 	DefaultPostgreSQLPort int    = 5432

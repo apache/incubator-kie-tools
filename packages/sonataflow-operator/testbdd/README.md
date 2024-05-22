@@ -131,7 +131,7 @@ All options from BDD tests do also apply here.
 #### Running devMode tests
 
 ```bash
-make run-tests cr_deployment_only=true local_cluster=true show_scenarios=true tags=devMode  namespace_name=my-namespace operator_image_tag=docker.io/apache/sonataflow-operator:latest
+make run-tests cr_deployment_only=true local_cluster=true show_scenarios=true tags=devMode  namespace_name=my-namespace operator_image_tag=docker.io/apache/incubator-kie-sonataflow-operator:latest
 ```
 
 If you want to have a more readable format, you can specify the `format=pretty` parameter. You can also specify your own operator image. Namespace is always created automatically, however, you can provide its name as in the command above, otherwise it will be automatically generated.

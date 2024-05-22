@@ -24,6 +24,6 @@ metadata:
 spec:
   build:
     config:
-      baseImage: docker.io/apache/incubator-kie-sonataflow-builder:main # This image name and tag is auto-replaced using environment variables during install, don't touch.
+      baseImage: kind-registry:5000/incubator-kie-sonataflow-builder:main # This image name and tag is auto-replaced using environment variables during install, don't touch.
       strategyOptions:
         KanikoBuildCacheEnabled: "true"

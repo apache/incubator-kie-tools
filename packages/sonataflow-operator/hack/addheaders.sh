@@ -19,7 +19,7 @@
 #
 
 if ! hash addlicense 2>/dev/null; then
-  go install github.com/google/addlicense@latest
+  go install -modcacherw github.com/google/addlicense@latest
 fi
 
 # shellcheck disable=SC2035

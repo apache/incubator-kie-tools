@@ -224,7 +224,7 @@ undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/confi
 ## Location to install dependencies to
 LOCALBIN ?= $(shell pwd)/bin
 $(LOCALBIN):
-	mkdir -p $(LOCALBIN)
+	mkdir -p -m 777 $(LOCALBIN)
 
 ## Tool Binaries
 KUSTOMIZE ?= $(LOCALBIN)/kustomize
@@ -240,17 +240,17 @@ KUSTOMIZE_INSTALL_SCRIPT ?= "https://raw.githubusercontent.com/kubernetes-sigs/k
 .PHONY: kustomize
 kustomize: $(KUSTOMIZE) ## Download kustomize locally if necessary.
 $(KUSTOMIZE): $(LOCALBIN)
-	test -s $(LOCALBIN)/kustomize || GO111MODULE=on GOBIN=$(LOCALBIN) GOFLAGS=-modcacherw go install sigs.k8s.io/kustomize/kustomize/v4@$(KUSTOMIZE_VERSION)
+	test -s $(LOCALBIN)/kustomize || GO111MODULE=on GOBIN=$(LOCALBIN) go install -modcacherw sigs.k8s.io/kustomize/kustomize/v4@$(KUSTOMIZE_VERSION)
 
 .PHONY: controller-gen
 controller-gen: $(CONTROLLER_GEN) ## Download controller-gen locally if necessary.
 $(CONTROLLER_GEN): $(LOCALBIN)
-	test -s $(LOCALBIN)/controller-gen || GOBIN=$(LOCALBIN) GOFLAGS=-modcacherw go install sigs.k8s.io/controller-tools/cmd/controller-gen@$(CONTROLLER_TOOLS_VERSION)
+	test -s $(LOCALBIN)/controller-gen || GOBIN=$(LOCALBIN) go install -modcacherw sigs.k8s.io/controller-tools/cmd/controller-gen@$(CONTROLLER_TOOLS_VERSION)
 
 .PHONY: envtest
 envtest: $(ENVTEST) ## Download envtest-setup locally if necessary.
 $(ENVTEST): $(LOCALBIN)
-	test -s $(LOCALBIN)/setup-envtest || GOBIN=$(LOCALBIN) GOFLAGS=-modcacherw go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
+	test -s $(LOCALBIN)/setup-envtest || GOBIN=$(LOCALBIN) go install -modcacherw sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
 
 .PHONY: bundle
 bundle: manifests kustomize install-operator-sdk ## Generate bundle manifests and metadata, then validate generated files.
@@ -344,7 +344,7 @@ before-pr: test generate-all
 
 .PHONY: install-kind
 install-kind:
-	command -v kind >/dev/null || go install sigs.k8s.io/kind@$(KIND_VERSION)
+	command -v kind >/dev/null || go install -modcacherw sigs.k8s.io/kind@$(KIND_VERSION)
 
 .PHONY: create-cluster
 create-cluster: install-kind
@@ -357,8 +357,15 @@ delete-cluster: install-kind
 .PHONY: load-docker-image
 load-docker-image: install-kind
 	kind load docker-image $(IMG)
+	docker tag docker.io/apache/incubator-kie-sonataflow-builder:main localhost:5001/apache/incubator-kie-sonataflow-builder:main
+	docker tag docker.io/apache/incubator-kie-sonataflow-devmode:main localhost:5001/apache/incubator-kie-sonataflow-devmode:main
+	docker push localhost:5001/apache/incubator-kie-sonataflow-builder:main
+	docker push localhost:5001/apache/incubator-kie-sonataflow-devmode:main
+	kind load docker-image docker.io/apache/incubator-kie-sonataflow-builder:main
+	kind load docker-image docker.io/apache/incubator-kie-sonataflow-devmode:main
 
 .PHONY: full-test-e2e
 full-test-e2e: create-cluster load-docker-image deploy
+	sleep 60
 	kubectl wait pod -A -l control-plane=sonataflow-operator --for condition=Ready --timeout 120s
 	go test ./test/e2e/* -v -ginkgo.v -ginkgo.no-color -ginkgo.junit-report=./dist-e2e-tests/junit-report-it.xml -timeout 60m
