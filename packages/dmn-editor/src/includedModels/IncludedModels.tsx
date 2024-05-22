@@ -55,6 +55,7 @@ import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { State } from "../store/Store";
+import "./IncludedModels.css";
 
 export const EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER = "<Default>";
 
@@ -79,6 +80,7 @@ export function IncludedModels() {
   const [importName, setImportName] = useState("");
 
   const [selectedModel, setSelectedModel] = useState<ExternalModel | undefined>(undefined);
+  const [selectedModelError, setSelectedModelError] = useState<string | undefined>(undefined);
 
   useCancelableEffect(
     useCallback(
@@ -101,9 +103,13 @@ export function IncludedModels() {
               return;
             }
 
+            setSelectedModelError(undefined);
             setSelectedModel(externalModel);
           })
           .catch((err) => {
+            setSelectedModelError(
+              `An error occurred when parsing the selected model '${selectedPathRelativeToThisDmn}'. Please double-check it is a non-empty valid model.`
+            );
             console.error(err);
             return;
           });
@@ -121,6 +127,7 @@ export function IncludedModels() {
     setModelSelectOpen(false);
     setSelectedPathRelativeToThisDmn(undefined);
     setImportName("");
+    setSelectedModelError(undefined);
   }, []);
 
   const add = useCallback(() => {
@@ -161,6 +168,7 @@ export function IncludedModels() {
     });
 
     setTimeout(() => {
+      setSelectedModelError(undefined);
       setSelectedModel(undefined);
     }, 5000); // Give it time for the `externalModelsByNamespace` object to be reassembled externally.
 
@@ -239,11 +247,11 @@ export function IncludedModels() {
     <>
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => cancel()}
         title={"Include model"}
         variant={ModalVariant.large}
         actions={
-          (modelPathsRelativeToThisDmnNotYetIncluded?.length ?? 0) > 0
+          (modelPathsRelativeToThisDmnNotYetIncluded?.length ?? 0) > 0 && selectedModelError === undefined
             ? [
                 <Button key="confirm" variant="primary" onClick={add}>
                   Include model
@@ -348,6 +356,9 @@ export function IncludedModels() {
                     />
                   </FormGroup>
                   <br />
+                  {selectedModelError !== undefined && (
+                    <span className={"selected-model-to-include-error"}>{selectedModelError}</span>
+                  )}
                 </Form>
               </>
             )) || (
