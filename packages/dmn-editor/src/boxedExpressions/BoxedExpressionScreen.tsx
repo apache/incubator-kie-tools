@@ -414,7 +414,7 @@ export function drgElementToBoxedExpression(
         }
       : {
           __$$element: "functionDefinition",
-          "@_id": expressionHolder.variable?.["@_id"] ?? generateUuid(),
+          "@_id": generateUuid(),
           "@_kind": "FEEL",
           expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
           formalParameter: [],
