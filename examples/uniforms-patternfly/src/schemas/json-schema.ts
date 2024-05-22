@@ -27,6 +27,7 @@ function createValidator(schema: any) {
   return (model: any) => {
     validator(model);
     if (validator.errors && validator.errors.length) {
+      console.error("VALIDATION ERROR: MODEL: ", model);
       throw { details: validator.errors };
     }
   };
@@ -83,7 +84,7 @@ const schema = {
         },
         numberOfBeds: {
           placeholder: "Select...",
-          enum: [1, 2, 3],
+          enum: [0, 1, 2],
           type: "number",
         },
       },
