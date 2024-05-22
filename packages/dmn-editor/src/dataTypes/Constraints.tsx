@@ -730,9 +730,11 @@ export function Constraints({
 
   const onConstraintChangeInternal = useCallback(
     (value: string | undefined) => {
-      onConstraintChange(value, internalSelectedConstraint);
+      if (constraintValue !== value) {
+        onConstraintChange(value, internalSelectedConstraint);
+      }
     },
-    [onConstraintChange, internalSelectedConstraint]
+    [onConstraintChange, internalSelectedConstraint, constraintValue]
   );
 
   return (
