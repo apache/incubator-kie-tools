@@ -29,8 +29,8 @@ import (
 
 const (
 	latestImageTag              = "latest"
-	defaultWorkflowDevModeImage = "docker.io/apache/incubator-kie-sonataflow-devmode:main"
-	defaultWorkflowBuilderImage = "docker.io/apache/incubator-kie-sonataflow-builder:main"
+	defaultWorkflowDevModeImage = "docker.io/apache/incubator-kie-sonataflow-devmode"
+	defaultWorkflowBuilderImage = "docker.io/apache/incubator-kie-sonataflow-builder"
 )
 
 // These image names and tags are auto-replaced using environment variables during install, don't touch.
