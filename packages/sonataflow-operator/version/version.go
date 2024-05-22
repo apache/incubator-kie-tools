@@ -32,7 +32,7 @@ const (
 	// For example, docker.io/apache/incubator-kie-sonataflow-operator:main -> 10.0
 	tagVersion = "main"
 	// Kogito version
-	// kogitoVersion = "999-20240509"
+	// kogitoVersion = "999-20240509" TODO: Uncomment this and update the value via bump-version.sh
 	kogitoVersion = "latest"
 )
 
