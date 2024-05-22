@@ -17,7 +17,7 @@
 # under the License.
 #
 
-@quay.io/kiegroup/kogito-jit-runner
+@docker.io/apache/incubator-kie-kogito-jit-runner
 Feature: Kogito-jit-runner feature.
 
   Scenario: verify if all labels are correctly set on kogito-jit-runner image

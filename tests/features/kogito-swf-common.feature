@@ -17,8 +17,8 @@
 # under the License.
 #
 
-@quay.io/kiegroup/kogito-swf-builder
-@quay.io/kiegroup/kogito-swf-devmode
+@docker.io/apache/incubator-kie-sonataflow-builder
+@docker.io/apache/incubator-kie-sonataflow-devmode
 Feature: Serverless Workflow images common
 
   Scenario: Verify if the swf and quarkus files are under /home/kogito/.m2/repository

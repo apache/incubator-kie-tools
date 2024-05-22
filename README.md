@@ -123,7 +123,7 @@ The main purpose of this image is to be used within the Kogito Serverless Operat
 an example on how to use it:
 
 ```bash
-FROM quay.io/kiegroup/kogito-swf-builder:latest AS builder
+FROM docker.io/apache/incubator-kie-sonataflow-builder:latest AS builder
 
 # Copy all files from current directory to the builder context
 COPY * ./resources/
@@ -143,7 +143,7 @@ If you run the image, it will start an empty [Kogito Serverless Workflow](https:
 To run the image for testing your local workflow files, run:
 
 ```shell
-docker run -it --rm -p 8080:8080 -v <local_workflow_path>:/home/kogito/serverless-workflow-project/src/main/resources/workflows quay.io/kiegroup/kogito-swf-builder:latest
+docker run -it --rm -p 8080:8080 -v <local_workflow_path>:/home/kogito/serverless-workflow-project/src/main/resources/workflows docker.io/apache/incubator-kie-sonataflow-builder:latest
 ```
 
 Replace `<local_workflow_path>` with your local filesystem containing your workflow files. You can test with the [example application](https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/getting-started/create-your-first-workflow-service.html#proc-creating-workflow).
@@ -166,12 +166,12 @@ The Kogito Component Images can be considered as lightweight images that will co
 by providing extra capabilities, like managing the processes on a web UI or providing persistence layer to the Kogito applications.
 Today we have the following Kogito Component Images:
 
-* [quay.io/kiegroup/kogito-data-index-ephemeral](https://quay.io/kiegroup/kogito-data-index-ephemeral)
-* [quay.io/kiegroup/kogito-data-index-postgresql](https://quay.io/kiegroup/kogito-data-index-postgresql)
-* [quay.io/kiegroup/kogito-jobs-service-ephemeral](https://quay.io/kiegroup/kogito-jobs-service-ephemeral) 
-* [quay.io/kiegroup/kogito-jobs-service-postgresql](https://quay.io/kiegroup/kogito-jobs-service-postgresql)
-* [quay.io/kiegroup/kogito-jobs-service-allinone](https://quay.io/kiegroup/kogito-jobs-service-allinone)
-* [quay.io/kiegroup/kogito-jit-runner](https://quay.io/kiegroup/kogito-jit-runner)
+* [docker.io/apache/incubator-kie-kogito-data-index-ephemeral](https://hub.docker.com/r/apache/incubator-kie-kogito-data-index-ephemeral)
+* [docker.io/apache/incubator-kie-kogito-data-index-postgresql](https://hub.docker.com/r/apache/incubator-kie-kogito-data-index-postgresql)
+* [docker.io/apache/incubator-kie-kogito-jobs-service-ephemeral](https://hub.docker.com/r/apache/incubator-kie-kogito-jobs-service-ephemeral) 
+* [docker.io/apache/incubator-kie-kogito-jobs-service-postgresql](https://hub.docker.com/r/apache/incubator-kie-kogito-jobs-service-postgresql)
+* [docker.io/apache/incubator-kie-kogito-jobs-service-allinone](https://hub.docker.com/r/apache/incubator-kie-kogito-jobs-service-allinone)
+* [docker.io/apache/incubator-kie-kogito-jit-runner](https://hub.docker.com/r/apache/incubator-kie-kogito-jit-runner)
 
 
 ### Kogito Data Index Component Images
@@ -181,14 +181,14 @@ For more information please visit this (link)(https://docs.jboss.org/kogito/rele
 The Data Index Service depends on a PostgreSQL instance.
 The Persistence service can be switched by using its corresponding image
 
-- Ephemeral PostgreSQL: quay.io/kiegroup/kogito-data-index-ephemeral
+- Ephemeral PostgreSQL: docker.io/apache/incubator-kie-kogito-data-index-ephemeral
   [image.yaml](kogito-data-index-ephemeral-image.yaml)
-- PostgreSQL: quay.io/kiegroup/kogito-data-index-postgresql
+- PostgreSQL: docker.io/apache/incubator-kie-kogito-data-index-postgresql
   [image.yaml](kogito-data-index-postgresql-image.yaml)
 
 Basic usage with Ephemeral PostgreSQL:
 ```bash
-$ docker run -it quay.io/kiegroup/kogito-data-index-ephemeral:latest
+$ docker run -it docker.io/apache/incubator-kie-kogito-data-index-ephemeral:latest
 ```
 
 Basic usage with PostgreSQL:
@@ -196,13 +196,13 @@ Basic usage with PostgreSQL:
 $ docker run -it --env QUARKUS_DATASOURCE_JDBC_URL="jdbc:postgresql://localhost:5432/quarkus"  \
     --env QUARKUS_DATASOURCE_USERNAME="kogito" \
     --env QUARKUS_DATASOURCE_PASSWORD="secret" \
-    quay.io/kiegroup/kogito-data-index-postgresql:latest
+    docker.io/apache/incubator-kie-kogito-data-index-postgresql:latest
 ```
 
 To enable debug just use this env while running this image:
 
 ```bash
-$ docker run -it --env SCRIPT_DEBUG=true quay.io/kiegroup/kogito-data-index-postgresql:latest
+$ docker run -it --env SCRIPT_DEBUG=true docker.io/apache/incubator-kie-kogito-data-index-postgresql:latest
 ```
 You should notice a few debug messages present in the system output.
 
@@ -226,13 +226,13 @@ Today, the Jobs service contains four images:
 Basic usage:
 
 ```bash
-$ docker run -it quay.io/kiegroup/kogito-jobs-service-ephemeral:latest
+$ docker run -it docker.io/apache/incubator-kie-kogito-jobs-service-ephemeral:latest
 ```
 
 To enable debug on the Jobs Service images, set the ` SCRIPT_DEBUG` to `true`, example: 
 
 ```bash
-docker run -it --env SCRIPT_DEBUG=true quay.io/kiegroup/kogito-jobs-service-postgresql:latest
+docker run -it --env SCRIPT_DEBUG=true docker.io/apache/incubator-kie-kogito-jobs-service-postgresql:latest
 ```
 
 You should notice a few debug messages being printed in the system output.
@@ -258,13 +258,13 @@ using either environment variables or system properties.
 
 Using environment variables:
 ```bash
-podman run -it -e VARIABLE_NAME=value quay.io/kiegroup/kogito-jobs-service-allinone:latest
+podman run -it -e VARIABLE_NAME=value docker.io/apache/incubator-kie-kogito-jobs-service-allinone:latest
 ```
 
 Using system properties:
 ```bash
 podman run -it -e JAVA_OPTIONS='-Dmy.sys.prop1=value1 -Dmy.sys.prop2=value2' \
-  quay.io/kiegroup/kogito-jobs-service-allinone:latest
+  docker.io/apache/incubator-kie-kogito-jobs-service-allinone:latest
 ```
 
 For convenience there are `container-compose` files that can be used to start the Jobs Service with the desired
@@ -286,13 +286,13 @@ The Kogito JIT Runner provides a tool that allows you to submit a DMN model and 
 Basic usage:
 
 ```bash
-$ docker run -it quay.io/kiegroup/kogito-jit-runner:latest
+$ docker run -it docker.io/apache/incubator-kie-kogito-jit-runner:latest
 ```
 
 To enable debug just use this env while running this image:
 
 ```bash
-docker run -it --env SCRIPT_DEBUG=true quay.io/kiegroup/kogito-jit-runner:latest
+docker run -it --env SCRIPT_DEBUG=true docker.io/apache/incubator-kie-kogito-jit-runner:latest
 ```
 You should notice a few debug messages being printed in the system output. You can then visit `localhost:8080/index.html` to test the service.
 
@@ -399,12 +399,12 @@ Below you can find all modules used to build the Kogito Images
 For each image, we use a specific *-image.yaml file.
 Please inspect the image files to learn which modules are being installed on each image:
 
-- [quay.io/kiegroup/kogito-data-index-ephemeral](kogito-data-index-ephemeral-image.yaml)
-- [quay.io/kiegroup/kogito-data-index-postgresql](kogito-data-index-postgresql-image.yaml)
-- [quay.io/kiegroup/kogito-jobs-service-ephemeral](kogito-jobs-service-ephemeral-image.yaml)
-- [quay.io/kiegroup/kogito-jobs-service-postgresql](kogito-jobs-service-postgresql-image.yaml)
-- [quay.io/kiegroup/kogito-jobs-service-allinone](kogito-jobs-service-allinone-image.yaml)
-- [quay.io/kiegroup/kogito-jit-runner](kogito-jit-runner-image.yaml)
+- [docker.io/apache/incubator-kie-kogito-data-index-ephemeral](kogito-data-index-ephemeral-image.yaml)
+- [docker.io/apache/incubator-kie-kogito-data-index-postgresql](kogito-data-index-postgresql-image.yaml)
+- [docker.io/apache/incubator-kie-kogito-jobs-service-ephemeral](kogito-jobs-service-ephemeral-image.yaml)
+- [docker.io/apache/incubator-kie-kogito-jobs-service-postgresql](kogito-jobs-service-postgresql-image.yaml)
+- [docker.io/apache/incubator-kie-kogito-jobs-service-allinone](kogito-jobs-service-allinone-image.yaml)
+- [docker.io/apache/incubator-kie-kogito-jit-runner](kogito-jit-runner-image.yaml)
 
 ### Testing Images
 
@@ -428,12 +428,12 @@ See [Writing Behave Tests](#writing-behave-tests).
 
 Example:
 ```bash
-make build-image image_name=kogito-swf-builder test_options=--wip
+make build-image image_name=sonataflow-builder test_options=--wip
 ```
 
 Or by name:
 ```bash
-make build-image image_name=kogito-swf-builder test_options=--name <Test Scenario Name>
+make build-image image_name=sonataflow-builder test_options=--name <Test Scenario Name>
 ```
 
 You can also add `cekit_option` to the make command, which will be appended to the Cekit command. Default is `cekit -v`.
@@ -497,12 +497,12 @@ this can be easily done by adding the **@wip** tag on the behave test that you a
 All images have already test feature files. If a new image is being created, a new feature file will need to be created
 and the very first line of this file would need to contain a tag with the image name.
 
-For example, if we are creating a new image called quay.io/kiegroup/kogito-moon-service, we would have a feature called
+For example, if we are creating a new image called docker.io/apache/incubator-kie-kogito-moon-service, we would have a feature called
 **kogito-moon-service.feature** under the **tests/features** directory and this file will look like with the following
 example:
 
 ```text
-@quay.io/kiegroup/kogito-data-index-postgresql
+@docker.io/apache/incubator-kie-kogito-data-index-postgresql
 Feature: Kogito-data-index-postgresql feature.
     ...
     Scenarios......

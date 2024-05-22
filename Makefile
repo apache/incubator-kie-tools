@@ -65,13 +65,13 @@ endif
 # tag with shortened version
 ifneq ($(ignore_tag),true)
     ifneq ($(findstring rc,$(IMAGE_VERSION)),rc)
-	    ${BUILD_ENGINE} tag quay.io/kiegroup/${image_name}:${IMAGE_VERSION} quay.io/kiegroup/${image_name}:${SHORTENED_LATEST_VERSION}
+	    ${BUILD_ENGINE} tag docker.io/apache/incubator-kie-${image_name}:${IMAGE_VERSION} docker.io/apache/incubator-kie-${image_name}:${SHORTENED_LATEST_VERSION}
     endif
 endif
 # if ignore_test is set to true, ignore the tests
 ifneq ($(ignore_test),true)
 	${CEKIT_CMD} --descriptor ${image_name}-image.yaml test behave ${test_options}
-	tests/shell/run.sh ${image_name} "quay.io/kiegroup/${image_name}:${SHORTENED_LATEST_VERSION}"
+	tests/shell/run.sh ${image_name} "docker.io/apache/incubator-kie-${image_name}:${SHORTENED_LATEST_VERSION}"
 endif
 
 
@@ -85,11 +85,11 @@ _push:
 .PHONY: push-image
 image_name=
 push-image:
-	${BUILD_ENGINE} ${BUILD_ENGINE_TLS_OPTIONS} push quay.io/kiegroup/${image_name}:${IMAGE_VERSION}
-	${BUILD_ENGINE} ${BUILD_ENGINE_TLS_OPTIONS} push quay.io/kiegroup/${image_name}:latest
+	${BUILD_ENGINE} ${BUILD_ENGINE_TLS_OPTIONS} push docker.io/apache/incubator-kie-${image_name}:${IMAGE_VERSION}
+	${BUILD_ENGINE} ${BUILD_ENGINE_TLS_OPTIONS} push docker.io/apache/incubator-kie-${image_name}:latest
 ifneq ($(findstring rc,$(IMAGE_VERSION)), rc)
 	@echo "${SHORTENED_LATEST_VERSION} will be pushed"
-	${BUILD_ENGINE} ${BUILD_ENGINE_TLS_OPTIONS} push quay.io/kiegroup/${image_name}:${SHORTENED_LATEST_VERSION}
+	${BUILD_ENGINE} ${BUILD_ENGINE_TLS_OPTIONS} push docker.io/apache/incubator-kie-${image_name}:${SHORTENED_LATEST_VERSION}
 endif
 
 

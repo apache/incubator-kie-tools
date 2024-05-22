@@ -91,7 +91,7 @@ This script will help you while building images and test in a local OpenShift Cl
 images built in your local registry with the tag following the patter: X.Z, e.g. 0.10:
 
 ```text
-quay.io/kiegroup/kogito-jobs-service-ephemeral:0.10
+docker.io/apache/incubator-kie-kogito-jobs-service-ephemeral:0.10
 ```
 
 The [Makefile](../Makefile) has an option to do it, it can be invoked as the following sample:

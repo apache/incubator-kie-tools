@@ -32,5 +32,5 @@ fi
 echo "----> running bats on kogito-jobs-service-common"
 ./bats/bin/bats modules/kogito-jobs-service-common/tests/bats
 
-echo "----> running bats on kogito-swf-builder"
-./bats/bin/bats modules/kogito-swf/common/scripts/tests/bats
+echo "----> running bats on sonataflow-builder"
+./bats/bin/bats modules/sonataflow/common/scripts/tests/bats

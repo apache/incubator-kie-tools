@@ -348,7 +348,7 @@ void setupWeeklyDeployJob(JobType jobType) {
         QUARKUS_PLATFORM_NEXUS_URL: Utils.getMavenQuarkusPlatformRepositoryUrl(this),
     ])
 
-    // Temporary removal of kogito-swf-* images that have been moved to kie-tools for the Apache 10 release
+    // Temporary removal of sonataflow-* images that have been moved to kie-tools for the Apache 10 release
     jobParams.env.put('IMAGES_LIST', 'kogito-base-builder')
 
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {

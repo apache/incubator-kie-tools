@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -16,16 +17,18 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-schema_version: 1
-name: org.kie.kogito.swf.builder.runtime.community
-version: "999-SNAPSHOT"
-description: "Kogito Serverless Workflow builder runtime module"
 
-artifacts:
-  - image: builder
-    path: /home/kogito/build_output/kogito-swf-quarkus-app.tar
-  - image: builder
-    path: /home/kogito/build_output/kogito-swf-maven-repo.tar
+set -e
 
-execute:
-  - script: configure.sh
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SOURCES_DIR=/tmp/artifacts
+
+mkdir -p "${KOGITO_HOME}/${PROJECT_ARTIFACT_ID}"
+mkdir -p "${KOGITO_HOME}"/.m2/repository
+
+# Unzip Quarkus app and Maven repository
+tar xf "${SOURCES_DIR}"/sonataflow-quarkus-app.tar -C "${KOGITO_HOME}/${PROJECT_ARTIFACT_ID}"
+tar xf "${SOURCES_DIR}"/sonataflow-maven-repo.tar -C "${KOGITO_HOME}"/.m2/repository
+
+chown -R 1001:0 "${KOGITO_HOME}"
+chmod -R ug+rwX "${KOGITO_HOME}"

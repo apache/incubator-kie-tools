@@ -43,9 +43,9 @@ envs:
 
 artifacts:
   - image: builder
-    path: /home/kogito/build_output/kogito-swf-quarkus-app.tar
+    path: /home/kogito/build_output/sonataflow-quarkus-app.tar
   - image: builder
-    path: /home/kogito/build_output/kogito-swf-maven-repo.tar
+    path: /home/kogito/build_output/sonataflow-maven-repo.tar
 
 execute:
   - script: configure.sh

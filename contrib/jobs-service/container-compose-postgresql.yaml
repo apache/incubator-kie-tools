@@ -34,7 +34,7 @@ services:
       - POSTGRES_PASSWORD=postgres
 
   jobs-service-all-in-one:
-    image: quay.io/kiegroup/kogito-jobs-service-allinone:latest
+    image: docker.io/apache/incubator-kie-kogito-jobs-service-allinone:latest
     container_name: jobs-service
     ports:
       - "8080:8080"

@@ -37,8 +37,8 @@ import common
 import argparse
 
 IMAGES_NEXT_RC_TAG = []
-QUAY_KOGITO_ORG_PLACE_HOLDER = "quay.io/kiegroup/{}:{}"
-QUAY_KOGITO_ORG_PLACE_HOLDER_NO_TAG = "quay.io/kiegroup/{}"
+QUAY_KOGITO_ORG_PLACE_HOLDER = "docker.io/apache/incubator-kie-{}:{}"
+QUAY_KOGITO_ORG_PLACE_HOLDER_NO_TAG = "docker.io/apache/incubator-kie-{}"
 
 
 def find_next_tag(override_tags):

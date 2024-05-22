@@ -17,11 +17,11 @@
 # under the License.
 #
 
-@quay.io/kiegroup/kogito-data-index-ephemeral
-@quay.io/kiegroup/kogito-data-index-postgresql
-@quay.io/kiegroup/kogito-jit-runner
-@quay.io/kiegroup/kogito-jobs-service-ephemeral
-@quay.io/kiegroup/kogito-jobs-service-postgresql
+@docker.io/apache/incubator-kie-kogito-data-index-ephemeral
+@docker.io/apache/incubator-kie-kogito-data-index-postgresql
+@docker.io/apache/incubator-kie-kogito-jit-runner
+@docker.io/apache/incubator-kie-kogito-jobs-service-ephemeral
+@docker.io/apache/incubator-kie-kogito-jobs-service-postgresql
 Feature: Common tests for Custom TrustStore configuration
   # This test sets an invalid certificate to the container, it fails to start, and if timing is bad cekit hangs on 'Running command ps -C java in container'
   # See https://github.com/apache/incubator-kie-kogito-images/issues/1722

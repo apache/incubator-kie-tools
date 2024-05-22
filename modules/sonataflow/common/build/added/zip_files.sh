@@ -25,10 +25,10 @@ BUILD_OUTPUT="${KOGITO_HOME}"/build_output/
 mkdir -p "${BUILD_OUTPUT}"
 
 echo "Zip and copy scaffold project"
-tar cf kogito-swf-quarkus-app.tar -C "${PROJECT_ARTIFACT_ID}" .
-cp -v kogito-swf-quarkus-app.tar "${BUILD_OUTPUT}"
+tar cf sonataflow-quarkus-app.tar -C "${PROJECT_ARTIFACT_ID}" .
+cp -v sonataflow-quarkus-app.tar "${BUILD_OUTPUT}"
 
 echo "Zip and copy maven repo"
 cd "${KOGITO_HOME}"/.m2/repository/
-tar cf kogito-swf-maven-repo.tar .
-cp -v kogito-swf-maven-repo.tar "${BUILD_OUTPUT}"
+tar cf sonataflow-maven-repo.tar .
+cp -v sonataflow-maven-repo.tar "${BUILD_OUTPUT}"

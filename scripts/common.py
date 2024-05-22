@@ -52,7 +52,7 @@ SUPPORTING_SERVICES_IMAGES = {"kogito-data-index-ephemeral",
                               "kogito-jobs-service-postgresql", "kogito-jobs-service-allinone",
                               }
 
-# Temporary removal of kogito-swf-* images that have been moved to kie-tools for the Apache 10 release
+# Temporary removal of sonataflow-* images that have been moved to kie-tools for the Apache 10 release
 SWF_BUILDER_IMAGES = {"kogito-base-builder"}
 
 

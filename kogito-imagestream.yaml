@@ -27,7 +27,7 @@ items:
   - kind: ImageStream
     apiVersion: v1
     metadata:
-      name: kogito-swf-builder
+      name: kie-sonataflow-builder
       annotations:
         openshift.io/display-name: Kogito Serverless Workflow builder with basic Quarkus SWF extensions preinstalled
         openshift.io/provider-display-name: KIE Group.
@@ -44,7 +44,7 @@ items:
             type: Local
           from:
             kind: DockerImage
-            name: quay.io/kiegroup/kogito-swf-builder:999-SNAPSHOT
+            name: docker.io/apache/incubator-kie-sonataflow-builder:999-SNAPSHOT
   - kind: ImageStream
     apiVersion: v1
     metadata:
@@ -65,7 +65,7 @@ items:
             type: Local
           from:
             kind: DockerImage
-            name: quay.io/kiegroup/kogito-base-builder:999-SNAPSHOT
+            name: docker.io/apache/incubator-kie-kogito-base-builder:999-SNAPSHOT
   - kind: ImageStream
     apiVersion: v1
     metadata:
@@ -86,7 +86,7 @@ items:
             type: Local
           from:
             kind: DockerImage
-            name: quay.io/kiegroup/kogito-data-index-ephemeral:999-SNAPSHOT
+            name: docker.io/apache/incubator-kie-kogito-data-index-ephemeral:999-SNAPSHOT
   - kind: ImageStream
     apiVersion: v1
     metadata:
@@ -107,7 +107,7 @@ items:
             type: Local
           from:
             kind: DockerImage
-            name: quay.io/kiegroup/kogito-data-index-postgresql:999-SNAPSHOT
+            name: docker.io/apache/incubator-kie-kogito-data-index-postgresql:999-SNAPSHOT
   - kind: ImageStream
     apiVersion: v1
     metadata:
@@ -128,7 +128,7 @@ items:
             type: Local
           from:
             kind: DockerImage
-            name: quay.io/kiegroup/kogito-jit-runner:999-SNAPSHOT
+            name: docker.io/apache/incubator-kie-kogito-jit-runner:999-SNAPSHOT
   - kind: ImageStream
     apiVersion: v1
     metadata:
@@ -149,7 +149,7 @@ items:
             type: Local
           from:
             kind: DockerImage
-            name: quay.io/kiegroup/kogito-jobs-service-ephemeral:999-SNAPSHOT
+            name: docker.io/apache/incubator-kie-kogito-jobs-service-ephemeral:999-SNAPSHOT
   - kind: ImageStream
     apiVersion: v1
     metadata:
@@ -170,7 +170,7 @@ items:
             type: Local
           from:
             kind: DockerImage
-            name: quay.io/kiegroup/kogito-jobs-service-postgresql:999-SNAPSHOT
+            name: docker.io/apache/incubator-kie-kogito-jobs-service-postgresql:999-SNAPSHOT
   - kind: ImageStream
     apiVersion: v1
     metadata:
@@ -191,4 +191,4 @@ items:
             type: Local
           from:
             kind: DockerImage
-            name: quay.io/kiegroup/kogito-jobs-service-allinone:999-SNAPSHOT
+            name: docker.io/apache/incubator-kie-kogito-jobs-service-allinone:999-SNAPSHOT

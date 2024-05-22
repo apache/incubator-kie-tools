@@ -17,7 +17,7 @@
 # under the License.
 #
 
-@quay.io/kiegroup/kogito-jobs-service-allinone
+@docker.io/apache/incubator-kie-kogito-jobs-service-allinone
 Feature: Kogito-jobs-service-all-in-one feature.
 
   Scenario: verify if all labels are correctly set kogito-jobs-service image image

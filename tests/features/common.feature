@@ -17,13 +17,13 @@
 # under the License.
 #
 
-@quay.io/kiegroup/kogito-data-index-ephemeral
-@quay.io/kiegroup/kogito-data-index-postgresql
-@quay.io/kiegroup/kogito-jit-runner
-@quay.io/kiegroup/kogito-jobs-service-ephemeral
-@quay.io/kiegroup/kogito-jobs-service-postgresql
-@quay.io/kiegroup/kogito-swf-builder
-@quay.io/kiegroup/kogito-base-builder
+@docker.io/apache/incubator-kie-kogito-data-index-ephemeral
+@docker.io/apache/incubator-kie-kogito-data-index-postgresql
+@docker.io/apache/incubator-kie-kogito-jit-runner
+@docker.io/apache/incubator-kie-kogito-jobs-service-ephemeral
+@docker.io/apache/incubator-kie-kogito-jobs-service-postgresql
+@docker.io/apache/incubator-kie-sonataflow-builder
+@docker.io/apache/incubator-kie-kogito-base-builder
 Feature: Common tests for Kogito images
 
   Scenario: Verify if Kogito user is correctly configured

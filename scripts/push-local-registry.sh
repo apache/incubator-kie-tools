@@ -42,7 +42,7 @@ echo "Images version ${version} will be pushed to registry ${registry}"
 
 while read image; do
     echo "tagging image ${image} to ${registry}/${namespace}/${image}:${version}"
-    ${BUILD_ENGINE} tag quay.io/kiegroup/${image}:${version} ${registry}/${namespace}/${image}:${version}
+    ${BUILD_ENGINE} tag docker.io/apache/incubator-kie-${image}:${version} ${registry}/${namespace}/${image}:${version}
     echo "Deleting imagestream ${image} if exists `oc delete oc -n ${namespace} ${image}`"
     ${BUILD_ENGINE} push ${registry}/${namespace}/${image}:${version}
 done <<<$(python scripts/list-images.py)

@@ -17,7 +17,7 @@
 # under the License.
 #
 
-@quay.io/kiegroup/kogito-data-index-ephemeral
+@docker.io/apache/incubator-kie-kogito-data-index-ephemeral
 Feature: Kogito-data-index ephemeral postgresql feature.
 
   Scenario: verify if all labels are correctly set on kogito-data-index-ephemeral image

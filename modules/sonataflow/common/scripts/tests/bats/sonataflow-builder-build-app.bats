@@ -35,7 +35,7 @@ teardown() {
 
 @test "verify copy resources is working" {
     TEMPD=$(mktemp -d)
-    cp -r $BATS_TEST_DIRNAME/../../../../../../tests/shell/kogito-swf-builder/resources/greet-with-inputschema/* ${TEMPD}
+    cp -r $BATS_TEST_DIRNAME/../../../../../../tests/shell/sonataflow-builder/resources/greet-with-inputschema/* ${TEMPD}
 
     # We don't care about the errors to try to execute and build the program, just the copy matters
     source ${KOGITO_HOME}/launch/build-app.sh ${TEMPD} || true

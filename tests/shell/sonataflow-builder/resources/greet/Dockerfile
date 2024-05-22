@@ -17,7 +17,7 @@
 # under the License.
 #
 
-ARG BUILDER_IMAGE_TAG="quay.io/kiegroup/kogito-swf-builder:2.0"
+ARG BUILDER_IMAGE_TAG="docker.io/apache/incubator-kie-sonataflow-builder:2.0"
 
 FROM ${BUILDER_IMAGE_TAG} AS builder
 

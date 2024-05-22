@@ -25,12 +25,12 @@
 - Install VSCode Red Hat's Java plugin
 - Install VSCode JBang plugin
 
-You can then edit the files in `kogito-swf-builder` and `kogito-swf-devmode` with intellisense.
+You can then edit the files in `sonataflow-builder` and `sonataflow-devmode` with intellisense.
 
 The `run.sh` should be used to run the tests since it must set a few env vars. To run from your terminal, try:
 
 ```shell
-tests/shell/run.sh kogito-swf-devmode quay.io/kiegroup/kogito-swf-devmode:999-SNAPSHOT
+tests/shell/run.sh sonataflow-devmode docker.io/apache/incubator-kie-sonataflow-devmode:999-SNAPSHOT
 ```
 
 The first argument is the test case to run and the second, the image.

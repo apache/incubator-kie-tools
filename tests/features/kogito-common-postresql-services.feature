@@ -17,7 +17,7 @@
 # under the License.
 #
 
-@quay.io/kiegroup/kogito-data-index-postgresql
+@docker.io/apache/incubator-kie-kogito-data-index-postgresql
 Feature: Kogito-data-index postgresql feature.
 
   Scenario: verify if of container is correctly started with postgresql parameters

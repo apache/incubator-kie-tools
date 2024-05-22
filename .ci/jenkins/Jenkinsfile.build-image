@@ -204,7 +204,7 @@ pipeline {
                 script {
                     updateGithubCommitStatus('PENDING', 'Tests in progress')
 
-                    String testImageTag = "quay.io/kiegroup/${getBuildImageName()}:${getImageVersion()}"
+                    String testImageTag = "docker.io/apache/incubator-kie-${getBuildImageName()}:${getImageVersion()}"
                     String builtImageTag = getBuiltImageTag()
                     // Pull and tag to test image
                     sh """

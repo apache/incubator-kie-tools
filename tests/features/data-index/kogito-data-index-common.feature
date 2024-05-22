@@ -17,8 +17,8 @@
 # under the License.
 #
 
-@quay.io/kiegroup/kogito-data-index-ephemeral
-@quay.io/kiegroup/kogito-data-index-postgresql
+@docker.io/apache/incubator-kie-kogito-data-index-ephemeral
+@docker.io/apache/incubator-kie-kogito-data-index-postgresql
 Feature: Kogito-data-index common feature.
 
   Scenario: Verify if the debug is correctly enabled and test default http port

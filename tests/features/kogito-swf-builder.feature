@@ -17,7 +17,7 @@
 # under the License.
 #
 
-@quay.io/kiegroup/kogito-swf-builder
+@docker.io/apache/incubator-kie-sonataflow-builder
 Feature: Serverless Workflow builder images
 
   Scenario: Verify that the application is built and started correctly
