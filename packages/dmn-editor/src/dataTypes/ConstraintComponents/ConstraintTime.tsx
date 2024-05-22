@@ -143,7 +143,10 @@ export function ConstraintTime({ value, onChange, isValid }: ConstraintProps) {
         }}
         time={time}
         onChange={(e, value) => {
-          if (moment(value, "HH:mm", true).isValid() || moment(value, "HH:mm:ss", true).isValid()) {
+          if (moment(value, "HH:mm", true).isValid()) {
+            onChangeTime(`${value}:00`);
+          }
+          if (moment(value, "HH:mm:ss", true).isValid()) {
             onChangeTime(value);
           }
         }}
