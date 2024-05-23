@@ -74,4 +74,4 @@ def getAppRoute(String project, String appName, String credentialsId) {
     }
 }
 
-return this;
+return this

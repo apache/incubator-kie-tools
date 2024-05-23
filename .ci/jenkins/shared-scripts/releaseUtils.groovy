@@ -16,13 +16,18 @@
  */
 
 /**
-* Push a Helm Chart to a given registry
+* Setup the GPG Key to sign release artifacts
 */
-def pushChartToRegistry(String registry, String chart, String credentialsId) {
-    withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PWD')]) {
-        sh "set +x && helm registry login -u $REGISTRY_USER -p $REGISTRY_PWD $registry"
-        sh "helm push ${chart} oci://${registry}"
-        sh "helm registry logout ${registry}"
+def setupSigningKey(String gpgKeyCredentialsId, String gpgKeyPasswordCredentialsId) {
+    withCredentials([file(credentialsId: gpgKeyCredentialsId, variable: 'SIGNING_KEY')]) {
+        withCredentials([string(credentialsId: gpgKeyPasswordCredentialsId, variable: 'SIGNING_KEY_PASSWORD')]) {
+            sh """#!/bin/bash -el
+            cat ${SIGNING_KEY} > ${WORKSPACE}/signkey.gpg
+            gpg --list-keys
+            gpg --batch --pinentry-mode=loopback --passphrase "${SIGNING_KEY_PASSWORD}" --import ${WORKSPACE}/signkey.gpg
+            rm ${WORKSPACE}/signkey.gpg
+            """.trim()
+        }
     }
 }
 
