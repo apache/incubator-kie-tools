@@ -20,7 +20,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { FormDmn, FormDmnOutputs } from "@kie-tools/form-dmn";
-import { DecisionResult, ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
+import { DecisionResult } from "@kie-tools/extended-services-api";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -32,9 +32,11 @@ import { DmnFormToolbar } from "./DmnFormToolbar";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { useDmnFormI18n } from "./i18n";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
-import { resolveReferencesAndCheckForRecursion, getDefaultValues } from "@kie-tools/dmn-runner/dist/jsonSchema";
+import { dereferenceAndCheckForRecursion, getDefaultValues } from "@kie-tools/dmn-runner/dist/jsonSchema";
 import { extractDifferences } from "@kie-tools/dmn-runner/dist/results";
 import { DmnFormAppProps } from "./DmnFormApp";
+import { openapiSchemaToJsonSchema } from "@openapi-contrib/openapi-schema-to-json-schema";
+import type { JSONSchema4 } from "json-schema";
 
 interface Props extends DmnFormAppProps {
   formData: FormData;
@@ -54,7 +56,7 @@ export function DmnFormPage(props: Props) {
   const [formOutputs, setFormOutputs] = useState<DecisionResult[]>();
   const [formOutputDiffs, setFormOutputDiffs] = useState<object[]>();
   const [formError, setFormError] = useState(false);
-  const [jsonSchema, setJsonSchema] = useState<ExtendedServicesDmnJsonSchema | undefined>(undefined);
+  const [jsonSchema, setJsonSchema] = useState<JSONSchema4 | undefined>(undefined);
   const [openAlert, setOpenAlert] = useState(AlertTypes.NONE);
   const [pageError, setPageError] = useState<boolean>(false);
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
@@ -62,18 +64,21 @@ export function DmnFormPage(props: Props) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        resolveReferencesAndCheckForRecursion(props.formData.schema, canceled).then((resolvedJsonSchema) => {
-          if (canceled.get()) {
+        dereferenceAndCheckForRecursion(props.formData.schema, canceled).then((dereferencedSchema) => {
+          if (canceled.get() || !dereferencedSchema) {
             return;
           }
 
-          setJsonSchema(resolvedJsonSchema);
+          const jsonSchema = openapiSchemaToJsonSchema(dereferencedSchema, {
+            definitionKeywords: ["definitions"],
+          });
+          setJsonSchema(jsonSchema);
           setFormInputs((previousFormInputs) => {
-            if (!resolvedJsonSchema) {
+            if (!jsonSchema) {
               return {};
             }
             return {
-              ...getDefaultValues(resolvedJsonSchema),
+              ...getDefaultValues(jsonSchema),
               ...previousFormInputs,
             };
           });

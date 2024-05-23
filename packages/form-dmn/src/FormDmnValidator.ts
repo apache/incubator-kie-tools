@@ -25,9 +25,9 @@ import {
   X_DMN_ALLOWED_VALUES_KEYWORD,
   X_DMN_TYPE_CONSTRAINTS_KEYWORD,
 } from "@kie-tools/dmn-runner/dist/jitExecutorKeywords";
-import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
 import { SCHEMA_DRAFT4 } from "@kie-tools/dmn-runner/dist/jsonSchemaConstants";
+import type { JSONSchema4 } from "json-schema";
 
 export class FormDmnValidator extends Validator {
   private dmnRunnerAjv = new DmnRunnerAjv();
@@ -70,7 +70,7 @@ export class FormDmnValidator extends Validator {
     };
   }
 
-  public getBridge(formSchema: ExtendedServicesDmnJsonSchema): FormDmnJsonSchemaBridge {
+  public getBridge(formSchema: JSONSchema4): FormDmnJsonSchemaBridge {
     const formDraft4 = { ...formSchema, $schema: SCHEMA_DRAFT4 };
     const validator = this.createValidator(formDraft4);
     return new FormDmnJsonSchemaBridge(formDraft4, validator, this.i18n as FormDmnI18n);

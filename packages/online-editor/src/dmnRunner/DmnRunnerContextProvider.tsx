@@ -35,14 +35,8 @@ import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStat
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 import { InputRow } from "@kie-tools/form-dmn";
-import {
-  DecisionResult,
-  ExtendedServicesDmnJsonSchema,
-  DmnEvaluationMessages,
-  ExtendedServicesModelPayload,
-} from "@kie-tools/extended-services-api";
+import { DecisionResult, DmnEvaluationMessages, ExtendedServicesModelPayload } from "@kie-tools/extended-services-api";
 import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
-import { SCHEMA_DRAFT4 } from "@kie-tools/dmn-runner/dist/jsonSchemaConstants";
 import { useDmnRunnerPersistence } from "../dmnRunnerPersistence/DmnRunnerPersistenceHook";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
@@ -72,11 +66,13 @@ import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Tex
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { diff } from "deep-object-diff";
 import {
-  resolveReferencesAndCheckForRecursion,
+  dereferenceAndCheckForRecursion,
   removeChangedPropertiesAndAdditionalProperties,
   getDefaultValues,
 } from "@kie-tools/dmn-runner/dist/jsonSchema";
 import { extractDifferencesFromArray } from "@kie-tools/dmn-runner/dist/results";
+import { openapiSchemaToJsonSchema } from "@openapi-contrib/openapi-schema-to-json-schema";
+import type { JSONSchema4 } from "json-schema";
 
 interface Props {
   isEditorReady?: boolean;
@@ -138,7 +134,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   // States that are in control of the DmnRunnerProvider;
   const [canBeVisualized, setCanBeVisualized] = useState<boolean>(false);
   const [extendedServicesError, setExtendedServicesError] = useState<boolean>(false);
-  const [jsonSchema, setJsonSchema] = useState<ExtendedServicesDmnJsonSchema | undefined>(undefined);
+  const [jsonSchema, setJsonSchema] = useState<JSONSchema4 | undefined>(undefined);
   const [{ results, resultsDifference }, setDmnRunnerResults] = useReducer(
     dmnRunnerResultsReducer,
     initialDmnRunnerResults
@@ -321,6 +317,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     }
 
     // it should exec only when the relativePath changes;
+    // eslint-disable-next-line
   }, [props.workspaceFile.relativePath]);
 
   useLayoutEffect(() => {
@@ -538,30 +535,29 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             if (canceled.get() || modelPayload === undefined) {
               return;
             }
-            extendedServices.client.formSchema(modelPayload).then((jsonSchema) => {
+            extendedServices.client.formSchema(modelPayload).then((formSchema) => {
               if (canceled.get()) {
                 return;
               }
 
-              const jsonSchemaDraft4 = {
-                $schema: SCHEMA_DRAFT4,
-                ...jsonSchema,
-              };
-
-              resolveReferencesAndCheckForRecursion(jsonSchemaDraft4, canceled)
-                .then((resolvedSchema) => {
-                  if (canceled.get() || !resolvedSchema) {
+              dereferenceAndCheckForRecursion(formSchema, canceled)
+                .then((dereferencedOpenApiSchema) => {
+                  if (canceled.get() || !dereferencedOpenApiSchema) {
                     return;
                   }
+
+                  const jsonSchema = openapiSchemaToJsonSchema(dereferencedOpenApiSchema, {
+                    definitionKeywords: ["definitions"],
+                  });
 
                   setJsonSchema((previousJsonSchema) => {
                     // Early bailout in the DMN first render;
                     // This prevents to set the inputs from the previous DMN
                     if (!previousJsonSchema) {
-                      return resolvedSchema;
+                      return jsonSchema;
                     }
 
-                    const validateInputs = dmnRunnerAjv.compile(resolvedSchema);
+                    const validateInputs = dmnRunnerAjv.compile(jsonSchema);
 
                     // Add default values and delete changed data types;
                     setDmnRunnerPersistenceJson({
@@ -575,17 +571,17 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                           const id = input.id;
                           removeChangedPropertiesAndAdditionalProperties(validateInputs, input);
                           input.id = id;
-                          return { ...getDefaultValues(resolvedSchema), ...input };
+                          return { ...getDefaultValues(jsonSchema), ...input };
                         });
                       },
                       cancellationToken: canceled,
                     });
 
                     // This should be done to remove any previous errors or to add new errors
-                    if (Object.keys(diff(previousJsonSchema, resolvedSchema)).length > 0) {
+                    if (Object.keys(diff(previousJsonSchema, jsonSchema)).length > 0) {
                       forceDmnRunnerReRender();
                     }
-                    return resolvedSchema;
+                    return jsonSchema;
                   });
                 })
                 .catch((err) => {

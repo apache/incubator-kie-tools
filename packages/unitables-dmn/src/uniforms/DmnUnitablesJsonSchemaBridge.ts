@@ -19,10 +19,10 @@
 
 import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/dmn-runner/dist/dmnFormats";
 import { UnitablesJsonSchemaBridge } from "@kie-tools/unitables/dist/uniforms";
-import { DmnInputFieldProperties, ExtendedServicesDmnJsonSchema, X_DMN_TYPE } from "@kie-tools/extended-services-api";
+import { DmnInputFieldProperties, ExtendedServicesFormSchema, X_DMN_TYPE } from "@kie-tools/extended-services-api";
 
 export class DmnUnitablesJsonSchemaBridge extends UnitablesJsonSchemaBridge {
-  schema: ExtendedServicesDmnJsonSchema;
+  schema: ExtendedServicesFormSchema;
 
   public getField(name: string) {
     const field = super.getField(name) as DmnInputFieldProperties;

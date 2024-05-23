@@ -151,6 +151,7 @@ export const constraintTypeHelper = (
         case DmnBuiltInDataType.DateTime:
           return (
             moment(recoveredValue, "YYYY-MM-DDTHH:mm:ssZZ", true).isValid() ||
+            moment(recoveredValue, "YYYY-MM-DDTHH:mmZZ", true).isValid() ||
             moment(recoveredValue, "YYYY-MM-DD", true).isValid() ||
             value === "" ||
             recoveredValue === ""
@@ -160,7 +161,12 @@ export const constraintTypeHelper = (
         case DmnBuiltInDataType.Number:
           return !isNaN(parseFloat(recoveredValue ?? "")) || value === "" || recoveredValue === "";
         case DmnBuiltInDataType.Time:
-          return moment(recoveredValue, "HH:mm:ssZZ", true).isValid() || value === "" || recoveredValue === "";
+          return (
+            moment(recoveredValue, "HH:mmZZ", true).isValid() ||
+            moment(recoveredValue, "HH:mm:ssZZ", true).isValid() ||
+            value === "" ||
+            recoveredValue === ""
+          );
         case DmnBuiltInDataType.YearsMonthsDuration:
           return REGEX_YEARS_MONTH_DURATION.test(recoveredValue ?? "") || value === "" || recoveredValue === "";
         default:
@@ -633,6 +639,11 @@ export function ConstraintsFromTypeConstraintAttribute({
           return;
         }
 
+        if (!itemDefinition.typeConstraint && itemDefinition.allowedValues) {
+          itemDefinition.typeConstraint = itemDefinition.allowedValues;
+          itemDefinition.allowedValues = undefined;
+        }
+
         if (itemDefinition.typeConstraint) {
           itemDefinition.typeConstraint["@_kie:constraintType"] = enumToKieConstraintType(selectedConstraint);
         }
@@ -710,20 +721,26 @@ export function Constraints({
   onToggleGroupChange: (selected: boolean, selectedConstraint: ConstraintsType) => void;
   onConstraintChange: (value: string | undefined, selectedConstraint: ConstraintsType) => void;
 }) {
-  const [internalSelectedConstraint, setInternalSelectedConstraint] =
-    useState<ConstraintsType>(selectedKieConstraintType);
+  const [internalSelectedConstraint, setInternalSelectedConstraint] = useState<{
+    selectedConstraint: ConstraintsType;
+    itemDefinitionId: string;
+  }>({ selectedConstraint: selectedKieConstraintType, itemDefinitionId });
 
   // Updates the `selectedConstraint` only after changing the active item definition
   // Both `internalSelectedConstraint` and `selectedKieConstraintType` should not be coupled together
   useEffect(() => {
-    setInternalSelectedConstraint(selectedKieConstraintType);
-    // eslint-disable-next-line
-  }, [itemDefinitionId]);
+    setInternalSelectedConstraint((prev) => {
+      if (selectedKieConstraintType === ConstraintsType.NONE && prev.itemDefinitionId === itemDefinitionId) {
+        return prev;
+      }
+      return { selectedConstraint: selectedKieConstraintType, itemDefinitionId };
+    });
+  }, [itemDefinitionId, selectedKieConstraintType]);
 
   const onToggleGroupChangeInternal = useCallback(
     (selected: boolean, event: React.KeyboardEvent<Element> | MouseEvent | React.MouseEvent<any, MouseEvent>) => {
       const selectedConstraint = event.currentTarget.id as ConstraintsType;
-      setInternalSelectedConstraint(selectedConstraint);
+      setInternalSelectedConstraint((prev) => ({ selectedConstraint, itemDefinitionId: prev.itemDefinitionId }));
       onToggleGroupChange(selected, selectedConstraint);
     },
     [onToggleGroupChange]
@@ -731,9 +748,11 @@ export function Constraints({
 
   const onConstraintChangeInternal = useCallback(
     (value: string | undefined) => {
-      onConstraintChange(value, internalSelectedConstraint);
+      if (constraintValue !== value) {
+        onConstraintChange(value, internalSelectedConstraint.selectedConstraint);
+      }
     },
-    [onConstraintChange, internalSelectedConstraint]
+    [onConstraintChange, internalSelectedConstraint, constraintValue]
   );
 
   return (
@@ -758,10 +777,7 @@ export function Constraints({
               <ToggleGroupItem
                 text={ConstraintsType.NONE}
                 buttonId={ConstraintsType.NONE}
-                isSelected={
-                  selectedKieConstraintType === ConstraintsType.NONE &&
-                  internalSelectedConstraint === ConstraintsType.NONE
-                }
+                isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.NONE}
                 onChange={onToggleGroupChangeInternal}
                 isDisabled={isReadonly}
               />
@@ -773,30 +789,21 @@ export function Constraints({
                 style={{ zIndex: 10 }}
                 text={ConstraintsType.EXPRESSION}
                 buttonId={ConstraintsType.EXPRESSION}
-                isSelected={
-                  selectedKieConstraintType === ConstraintsType.EXPRESSION ||
-                  internalSelectedConstraint === ConstraintsType.EXPRESSION
-                }
+                isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.EXPRESSION}
                 onChange={onToggleGroupChangeInternal}
                 isDisabled={isReadonly || !isConstraintEnabled.expression}
               />
               <ToggleGroupItem
                 text={ConstraintsType.ENUMERATION}
                 buttonId={ConstraintsType.ENUMERATION}
-                isSelected={
-                  selectedKieConstraintType === ConstraintsType.ENUMERATION ||
-                  internalSelectedConstraint === ConstraintsType.ENUMERATION
-                }
+                isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.ENUMERATION}
                 onChange={onToggleGroupChangeInternal}
                 isDisabled={isReadonly || !isConstraintEnabled.enumeration}
               />
               <ToggleGroupItem
                 text={ConstraintsType.RANGE}
                 buttonId={ConstraintsType.RANGE}
-                isSelected={
-                  selectedKieConstraintType === ConstraintsType.RANGE ||
-                  internalSelectedConstraint === ConstraintsType.RANGE
-                }
+                isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.RANGE}
                 onChange={onToggleGroupChangeInternal}
                 isDisabled={isReadonly || !isConstraintEnabled.range}
               />
@@ -804,8 +811,7 @@ export function Constraints({
           </div>
 
           <div style={{ paddingTop: "20px" }}>
-            {(selectedKieConstraintType === ConstraintsType.ENUMERATION ||
-              internalSelectedConstraint === ConstraintsType.ENUMERATION) && (
+            {internalSelectedConstraint.selectedConstraint === ConstraintsType.ENUMERATION && (
               <ConstraintsEnum
                 id={itemDefinitionId}
                 isReadonly={isReadonly}
@@ -818,8 +824,7 @@ export function Constraints({
                 renderOnPropertiesPanel={renderOnPropertiesPanel}
               />
             )}
-            {(selectedKieConstraintType === ConstraintsType.RANGE ||
-              internalSelectedConstraint === ConstraintsType.RANGE) && (
+            {internalSelectedConstraint.selectedConstraint === ConstraintsType.RANGE && (
               <ConstraintsRange
                 id={itemDefinitionId}
                 isReadonly={isReadonly}
@@ -832,8 +837,7 @@ export function Constraints({
                 renderOnPropertiesPanel={renderOnPropertiesPanel}
               />
             )}
-            {(selectedKieConstraintType === ConstraintsType.EXPRESSION ||
-              internalSelectedConstraint === ConstraintsType.EXPRESSION) && (
+            {internalSelectedConstraint.selectedConstraint === ConstraintsType.EXPRESSION && (
               <ConstraintsExpression
                 id={itemDefinitionId}
                 isReadonly={isReadonly}
@@ -844,19 +848,18 @@ export function Constraints({
                 isDisabled={!isConstraintEnabled.expression}
               />
             )}
-            {selectedKieConstraintType === ConstraintsType.NONE &&
-              internalSelectedConstraint === ConstraintsType.NONE && (
-                <p
-                  style={{
-                    padding: "24px",
-                    background: "#eee",
-                    borderRadius: "10px",
-                    textAlign: "center",
-                  }}
-                >
-                  {`All values are allowed`}
-                </p>
-              )}
+            {internalSelectedConstraint.selectedConstraint === ConstraintsType.NONE && (
+              <p
+                style={{
+                  padding: "24px",
+                  background: "#eee",
+                  borderRadius: "10px",
+                  textAlign: "center",
+                }}
+              >
+                {`All values are allowed`}
+              </p>
+            )}
           </div>
         </div>
       )}
