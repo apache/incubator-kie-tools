@@ -50,6 +50,12 @@ module.exports = composeEnv([], {
       default: `${false}`,
       description: "Enables/disables building example packages during the build.",
     },
+    /* (begin) This part of the file is referenced in `scripts/update-stream-name` */
+    KIE_TOOLS_BUILD__streamName: {
+      default: "main",
+      description: `Name of the release/development stream. E.g, 'main', or '10.0.x' etc. Useful for publishing "nightly" or "snapshot" artifacts. Created to reflect the Git branch name without coupling with Git itself.`,
+    },
+    /* (end) */
     QUARKUS_PLATFORM_version: {
       default: "3.8.4",
       description: "Quarkus version to be used on dependency declaration.",
@@ -65,6 +71,7 @@ module.exports = composeEnv([], {
     return {
       root: {
         version: rootPackageJson.version,
+        streamName: getOrDefault(this.vars.KIE_TOOLS_BUILD__streamName),
       },
       tests: {
         run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__runTests)),

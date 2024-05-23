@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:latest'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -38,9 +38,9 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        DEV_DEPLOYMENT_BASE_IMAGE__registry = 'quay.io'
-        DEV_DEPLOYMENT_BASE_IMAGE__account = 'kie-tools'
-        DEV_DEPLOYMENT_BASE_IMAGE__name = 'dev-deployment-base-image'
+        DEV_DEPLOYMENT_BASE_IMAGE__registry = 'docker.io'
+        DEV_DEPLOYMENT_BASE_IMAGE__account = 'apache'
+        DEV_DEPLOYMENT_BASE_IMAGE__name = 'incubator-kie-sandbox-dev-deployment-base'
         DEV_DEPLOYMENT_BASE_IMAGE__buildTags = "latest ${params.RELEASE_VERSION}"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"

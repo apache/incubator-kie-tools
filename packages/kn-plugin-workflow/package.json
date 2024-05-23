@@ -50,9 +50,9 @@
     "test:e2e:quarkus:logs": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm go:test:e2e:quarkus:logs\" \"pnpm go:test:e2e:report\""
   },
   "devDependencies": {
-    "@kie-tools/kogito-serverless-operator": "workspace:*",
-    "@kie-tools/kogito-swf-devmode": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/sonataflow-devmode-image": "workspace:*",
+    "@kie-tools/sonataflow-operator": "workspace:*",
     "cross-env": "^7.0.3",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6"

@@ -48,7 +48,7 @@ pipeline {
         stage('Check code quality') {
             agent {
                 docker {
-                    image "quay.io/kie-tools/kie-tools-ci-build:${params.IMAGE_TAG}"
+                    image "docker.io/apache/incubator-kie-tools-ci-build:${params.IMAGE_TAG}"
                 }
             }
 

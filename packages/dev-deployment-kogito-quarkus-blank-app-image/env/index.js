@@ -19,10 +19,10 @@
 
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
-const buildEnv = require("@kie-tools/root-env/env");
+const rootEnv = require("@kie-tools/root-env/env");
 const devDeploymentBaseImageEnv = require("@kie-tools/dev-deployment-base-image/env");
 
-module.exports = composeEnv([buildEnv, devDeploymentBaseImageEnv], {
+module.exports = composeEnv([rootEnv, devDeploymentBaseImageEnv], {
   vars: varsWithName({
     DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__builderImage: {
       default: `${devDeploymentBaseImageEnv.env.devDeploymentBaseImage.registry}/${
@@ -33,19 +33,19 @@ module.exports = composeEnv([buildEnv, devDeploymentBaseImageEnv], {
       description: "The image used in the FROM import.",
     },
     DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry: {
-      default: "quay.io",
+      default: "docker.io",
       description: "The image registry.",
     },
     DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account: {
-      default: "kie-tools",
+      default: "apache",
       description: "The image registry account.",
     },
     DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name: {
-      default: "dev-deployment-kogito-quarkus-blank-app-image",
+      default: "incubator-kie-sandbox-dev-deployment-kogito-quarkus-blank-app",
       description: "The image name.",
     },
     DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTags: {
-      default: "daily-dev",
+      default: rootEnv.env.root.streamName,
       description: "The image tag.",
     },
   }),

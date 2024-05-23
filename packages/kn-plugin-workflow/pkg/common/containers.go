@@ -199,9 +199,13 @@ func GracefullyStopTheContainerWhenInterrupted(containerTool string) {
 }
 
 func pullDockerImage(cli *client.Client, ctx context.Context) (io.ReadCloser, error) {
-	// Check if the image exists locally
+	// Check if the image exists locally.
+	// For that we should check only the image name and tag, removing the registry,
+	// as `docker image ls --filter reference=<image_full_url>` will return empty if the image_full_url is not the first tag
+	// of an image.
+	imageNameWithoutRegistry := strings.Split(metadata.DevModeImage, "/")
 	imageFilters := filters.NewArgs()
-	imageFilters.Add("reference", metadata.DevModeImage)
+	imageFilters.Add("reference", fmt.Sprintf("*/%s", imageNameWithoutRegistry[len(imageNameWithoutRegistry)-1]))
 	images, err := cli.ImageList(ctx, types.ImageListOptions{Filters: imageFilters})
 	if err != nil {
 		return nil, fmt.Errorf("error listing images: %s", err)

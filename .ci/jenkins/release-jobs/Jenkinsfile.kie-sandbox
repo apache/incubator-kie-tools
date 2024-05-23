@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:latest'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -44,28 +44,28 @@ pipeline {
         OPENSHIFT_PART_OF = 'kie-sandbox-app'
         OPENSHIFT_NAMESPACE = 'kie-sandbox'
 
-        KIE_SANDBOX__imageRegistry = 'quay.io'
-        KIE_SANDBOX__imageAccount = 'kie-tools'
-        KIE_SANDBOX__imageName = 'kie-sandbox-image'
-        KIE_SANDBOX__imageBuildTags = "latest ${params.RELEASE_VERSION}"
+        KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry = 'docker.io'
+        KIE_SANDBOX_WEBAPP_IMAGE__imageAccount = 'apache'
+        KIE_SANDBOX_WEBAPP_IMAGE__imageName = 'incubator-kie-sandbox-webapp'
+        KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags = "latest ${params.RELEASE_VERSION}"
         ONLINE_EDITOR__buildInfo = "${params.RELEASE_VERSION}"
         ONLINE_EDITOR__extendedServicesDownloadUrlLinux = "https://github.com/apache/incubator-kie-tools/releases/download/${params.RELEASE_VERSION}/kie_sandbox_extended_services_linux_${params.RELEASE_VERSION}.tar.gz"
         ONLINE_EDITOR__extendedServicesDownloadUrlMacOs = "https://github.com/apache/incubator-kie-tools/releases/download/${params.RELEASE_VERSION}/kie_sandbox_extended_services_macos_${params.RELEASE_VERSION}.dmg"
         ONLINE_EDITOR__extendedServicesDownloadUrlWindows = "https://github.com/apache/incubator-kie-tools/releases/download/${params.RELEASE_VERSION}/kie_sandbox_extended_services_windows_${params.RELEASE_VERSION}.exe"
         ONLINE_EDITOR__extendedServicesCompatibleVersion = "${params.RELEASE_VERSION}"
-        ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'quay.io'
-        ONLINE_EDITOR__devDeploymentBaseImageAccount = 'kie-tools'
-        ONLINE_EDITOR__devDeploymentBaseImageName = 'dev-deployment-base-image'
+        ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'docker.io'
+        ONLINE_EDITOR__devDeploymentBaseImageAccount = 'apache'
+        ONLINE_EDITOR__devDeploymentBaseImageName = 'incubator-kie-sandbox-dev-deployment-base'
         ONLINE_EDITOR__devDeploymentBaseImageTag = "${params.RELEASE_VERSION}"
-        ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry = 'quay.io'
-        ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'kie-tools'
-        ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'dev-deployment-dmn-form-webapp-image'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry = 'docker.io'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'apache'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'incubator-kie-sandbox-dev-deployment-dmn-form-webapp'
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = "${params.RELEASE_VERSION}"
         ONLINE_EDITOR__gtmId = 'GTM-PQGMKNW'
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
-        PNPM_FILTER_STRING = '-F @kie-tools/kie-sandbox-image...'
+        PNPM_FILTER_STRING = '-F @kie-tools/kie-sandbox-webapp-image...'
     }
 
     stages {
@@ -146,9 +146,9 @@ pipeline {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.KIE_SANDBOX__imageRegistry}/${env.KIE_SANDBOX__imageAccount}",
-                        "${env.KIE_SANDBOX__imageName}",
-                        "${env.KIE_SANDBOX__imageBuildTags}",
+                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}",
+                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageName}",
+                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags}",
                         "${pipelineVars.quayPushCredentialsId}"
                     )
                 }
@@ -177,7 +177,7 @@ pipeline {
                         "${env.OPENSHIFT_NAMESPACE}",
                         "${env.OPENSHIFT_APP_NAME}",
                         "${params.RELEASE_VERSION}",
-                        "${env.KIE_SANDBOX__imageRegistry}/${env.KIE_SANDBOX__imageAccount}/${env.KIE_SANDBOX__imageName}:${params.RELEASE_VERSION}",
+                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageName}:${params.RELEASE_VERSION}",
                         "${env.OPENSHIFT_PART_OF}",
                         'js',
                         "${pipelineVars.openshiftCredentialsId}",

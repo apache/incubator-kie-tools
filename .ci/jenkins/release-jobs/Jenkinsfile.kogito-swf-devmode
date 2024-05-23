@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:latest'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -38,14 +38,14 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        KOGITO_SWF_DEVMODE_IMAGE__registry = 'quay.io'
-        KOGITO_SWF_DEVMODE_IMAGE__account = 'kiegroup'
-        KOGITO_SWF_DEVMODE_IMAGE__name = 'kogito-swf-devmode'
-        KOGITO_SWF_DEVMODE_IMAGE__buildTag = "${params.RELEASE_VERSION}"
+        SONATAFLOW_DEVMODE_IMAGE__registry = 'docker.io'
+        SONATAFLOW_DEVMODE_IMAGE__account = 'apache'
+        SONATAFLOW_DEVMODE_IMAGE__name = 'incubator-kie-sonataflow-devmode'
+        SONATAFLOW_DEVMODE_IMAGE__buildTag = "${params.RELEASE_VERSION}"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
-        PNPM_FILTER_STRING = '-F @kie-tools/kogito-swf-devmode...'
+        PNPM_FILTER_STRING = '-F @kie-tools/sonataflow-devmode-image...'
     }
 
     stages {
@@ -118,29 +118,29 @@ pipeline {
             }
         }
 
-        stage('Create "latest" tag for kogito-swf-devmode') {
+        stage('Create "latest" tag for sonataflow-devmode') {
             steps {
                 script {
                     dockerUtils.tagImage(
-                        "${env.KOGITO_SWF_DEVMODE_IMAGE__registry}/${env.KOGITO_SWF_DEVMODE_IMAGE__account}",
-                        "${env.KOGITO_SWF_DEVMODE_IMAGE__name}",
-                        "${env.KOGITO_SWF_DEVMODE_IMAGE__buildTag}",
+                        "${env.SONATAFLOW_DEVMODE_IMAGE__registry}/${env.SONATAFLOW_DEVMODE_IMAGE__account}",
+                        "${env.SONATAFLOW_DEVMODE_IMAGE__name}",
+                        "${env.SONATAFLOW_DEVMODE_IMAGE__buildTag}",
                         'latest'
                     )
                 }
             }
         }
 
-        stage('Push kogito-swf-devmode to quay.io') {
+        stage('Push sonataflow-devmode to quay.io') {
             when {
                 expression { !params.DRY_RUN }
             }
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.KOGITO_SWF_DEVMODE_IMAGE__registry}/${env.KOGITO_SWF_DEVMODE_IMAGE__account}",
-                        "${env.KOGITO_SWF_DEVMODE_IMAGE__name}",
-                        "${env.KOGITO_SWF_DEVMODE_IMAGE__buildTag} latest",
+                        "${env.SONATAFLOW_DEVMODE_IMAGE__registry}/${env.SONATAFLOW_DEVMODE_IMAGE__account}",
+                        "${env.SONATAFLOW_DEVMODE_IMAGE__name}",
+                        "${env.SONATAFLOW_DEVMODE_IMAGE__buildTag} latest",
                         "${pipelineVars.quayKiegroupPushCredentialsId}"
                     )
                 }

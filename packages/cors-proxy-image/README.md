@@ -68,13 +68,13 @@ $ podman images
 Start up a new container with:
 
 ```bash
-$ docker run -p 8080:8080 -i --rm quay.io/kie-tools/cors-proxy-image:latest
+$ docker run -p 8080:8080 -i --rm docker.io/apache/incubator-kie-cors-proxy:latest
 ```
 
 or
 
 ```bash
-$ podman run -p 8080:8080 -i --rm quay.io/kie-tools/cors-proxy-image:latest
+$ podman run -p 8080:8080 -i --rm docker.io/apache/incubator-kie-cors-proxy:latest
 ```
 
 The service will be up at http://localhost:8080

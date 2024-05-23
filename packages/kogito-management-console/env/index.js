@@ -19,22 +19,24 @@
 
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+const rootEnv = require("@kie-tools/root-env/env");
+
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     KOGITO_MANAGEMENT_CONSOLE__registry: {
-      default: "quay.io",
+      default: "docker.io",
       description: "The image registry.",
     },
     KOGITO_MANAGEMENT_CONSOLE__account: {
-      default: "kie-tools",
+      default: "apache",
       description: "The image registry account.",
     },
     KOGITO_MANAGEMENT_CONSOLE__name: {
-      default: "kogito-management-console",
+      default: "incubator-kie-kogito-management-console",
       description: "The image name.",
     },
     KOGITO_MANAGEMENT_CONSOLE__buildTags: {
-      default: "daily-dev",
+      default: rootEnv.env.root.streamName,
       description: "The image tag.",
     },
     KOGITO_MANAGEMENT_CONSOLE__port: {
