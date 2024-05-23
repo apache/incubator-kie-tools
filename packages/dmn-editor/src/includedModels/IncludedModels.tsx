@@ -54,11 +54,9 @@ import { Dropdown, DropdownItem, KebabToggle } from "@patternfly/react-core/dist
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
-import { defaultStaticState, State } from "../store/Store";
+import { State } from "../store/Store";
 import "./IncludedModels.css";
 import { Normalized } from "../normalization/normalize";
-import { computeDiagramData } from "../store/computed/computeDiagramData";
-import { computeIndexedDrd } from "../store/computed/computeIndexes";
 
 export const EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER = "<Default>";
 

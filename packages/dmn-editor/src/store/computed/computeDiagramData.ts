@@ -115,12 +115,10 @@ export function computeDiagramData(
     };
 
     if (sourceNamespace && sourceNamespace !== KIE_UNKNOWN_NAMESPACE) {
-      const externalEdges = externalEdgesByNamespace.get(sourceNamespace) ?? [];
-      externalEdgesByNamespace.set(sourceNamespace, [...externalEdges, edge]);
+      externalEdgesByNamespace.set(sourceNamespace, [...(externalEdgesByNamespace.get(sourceNamespace) ?? []), edge]);
     }
     if (sourceNamespace !== targetNamespace && targetNamespace && targetNamespace !== KIE_UNKNOWN_NAMESPACE) {
-      const externalEdges = externalEdgesByNamespace.get(targetNamespace) ?? [];
-      externalEdgesByNamespace.set(targetNamespace, [...externalEdges, edge]);
+      externalEdgesByNamespace.set(targetNamespace, [...(externalEdgesByNamespace.get(targetNamespace) ?? []), edge]);
     }
 
     edgesById.set(edge.id, edge);
@@ -241,8 +239,10 @@ export function computeDiagramData(
     }
 
     if (dmnObjectNamespace && dmnObjectNamespace !== KIE_UNKNOWN_NAMESPACE) {
-      const externalNamespaceNodes = externalNodesByNamespace.get(dmnObjectNamespace) ?? [];
-      externalNodesByNamespace.set(dmnObjectNamespace, [...externalNamespaceNodes, newNode]);
+      externalNodesByNamespace.set(dmnObjectNamespace, [
+        ...(externalNodesByNamespace.get(dmnObjectNamespace) ?? []),
+        newNode,
+      ]);
     }
 
     nodesById.set(newNode.id, newNode);
