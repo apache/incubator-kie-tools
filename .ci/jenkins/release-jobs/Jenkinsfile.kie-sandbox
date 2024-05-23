@@ -139,7 +139,7 @@ pipeline {
             }
         }
 
-        stage('Push kie-sandbox-image to quay.io') {
+        stage('Push kie-sandbox-image to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }

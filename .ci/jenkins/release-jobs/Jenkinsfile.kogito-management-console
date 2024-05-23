@@ -118,7 +118,7 @@ pipeline {
             }
         }
 
-        stage('Push kogito-management-console to quay.io') {
+        stage('Push kogito-management-console to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }

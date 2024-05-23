@@ -234,7 +234,7 @@ pipeline {
             }
         }
 
-        stage('Push sonataflow-builder to quay.io') {
+        stage('Push sonataflow-builder to Docker Hub') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
@@ -247,7 +247,7 @@ pipeline {
             }
         }
 
-        stage('Push sonataflow-devmode to quay.io') {
+        stage('Push sonataflow-devmode to Docker Hub') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
@@ -260,7 +260,7 @@ pipeline {
             }
         }
 
-        stage('Push sonataflow-operator to quay.io') {
+        stage('Push sonataflow-operator to Docker Hub') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
@@ -273,7 +273,7 @@ pipeline {
             }
         }
 
-        stage('Push dev-deployment-base-image to quay.io') {
+        stage('Push dev-deployment-base-image to Docker Hub') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
@@ -286,7 +286,7 @@ pipeline {
             }
         }
 
-        stage('Push dev-deployment-dmn-form-webapp-image to quay.io') {
+        stage('Push dev-deployment-dmn-form-webapp-image to Docker Hub') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
@@ -299,7 +299,7 @@ pipeline {
             }
         }
 
-        stage('Push dev-deployment-kogito-quarkus-blank-app-image to quay.io') {
+        stage('Push dev-deployment-kogito-quarkus-blank-app-image to Docker Hub') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
@@ -312,7 +312,7 @@ pipeline {
             }
         }
 
-        stage('Push kie-sandbox-extended-services-image to quay.io') {
+        stage('Push kie-sandbox-extended-services-image to Docker Hub') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
@@ -343,7 +343,7 @@ pipeline {
             }
         }
 
-        stage('Push cors-proxy-image to quay.io') {
+        stage('Push cors-proxy-image to Docker Hub') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
@@ -374,7 +374,7 @@ pipeline {
             }
         }
 
-        stage('Push kie-sandbox-image to quay.io') {
+        stage('Push kie-sandbox-image to Docker Hub') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
@@ -413,7 +413,7 @@ pipeline {
             }
         }
 
-        stage('Push serverless-logic-web-tools-swf-builder-image to quay.io') {
+        stage('Push serverless-logic-web-tools-swf-builder-image to Docker Hub') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
@@ -426,7 +426,7 @@ pipeline {
             }
         }
 
-        stage('Push serverless-logic-web-tools-base-builder-image to quay.io') {
+        stage('Push serverless-logic-web-tools-base-builder-image to Docker Hub') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
@@ -439,7 +439,7 @@ pipeline {
             }
         }
 
-        stage('Push serverless-logic-web-tools-swf-dev-mode-image to quay.io') {
+        stage('Push serverless-logic-web-tools-swf-dev-mode-image to Docker Hub') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
@@ -452,7 +452,7 @@ pipeline {
             }
         }
 
-        stage('Push dashbuilder-viewer-image to quay.io') {
+        stage('Push dashbuilder-viewer-image to Docker Hub') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
@@ -465,7 +465,7 @@ pipeline {
             }
         }
 
-        stage('Push kogito-task-console to quay.io') {
+        stage('Push kogito-task-console to Docker Hub') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
@@ -478,7 +478,7 @@ pipeline {
             }
         }
 
-        stage('Push kogito-management-console to quay.io') {
+        stage('Push kogito-management-console to Docker Hub') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
@@ -491,7 +491,7 @@ pipeline {
             }
         }
 
-        stage('Push kie-sandbox-helm-chart to quay.io') {
+        stage('Push kie-sandbox-helm-chart to Docker Hub') {
             steps {
                 dir('kie-tools') {
                     script {

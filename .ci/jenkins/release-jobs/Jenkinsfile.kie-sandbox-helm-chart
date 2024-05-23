@@ -118,7 +118,7 @@ pipeline {
             }
         }
 
-        stage('Push kie-sandbox-helm-chart to quay.io') {
+        stage('Push kie-sandbox-helm-chart to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }

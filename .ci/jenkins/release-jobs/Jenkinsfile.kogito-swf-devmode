@@ -131,7 +131,7 @@ pipeline {
             }
         }
 
-        stage('Push sonataflow-devmode to quay.io') {
+        stage('Push sonataflow-devmode to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }

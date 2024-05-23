@@ -118,7 +118,7 @@ pipeline {
             }
         }
 
-        stage('Push dev-deployment-base-image to quay.io') {
+        stage('Push dev-deployment-base-image to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
