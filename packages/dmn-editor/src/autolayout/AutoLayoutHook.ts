@@ -33,6 +33,7 @@ import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import * as RF from "reactflow";
+import { Normalized } from "../normalization/normalize";
 
 export function useAutoLayout() {
   return useCallback(
@@ -57,7 +58,7 @@ export function useAutoLayout() {
       edges: RF.Edge<DmnDiagramEdgeData>[];
       dmnShapesByHref: Map<
         string,
-        DMNDI15__DMNShape & {
+        Normalized<DMNDI15__DMNShape> & {
           index: number;
           dmnElementRefQName: XmlQName;
         }
