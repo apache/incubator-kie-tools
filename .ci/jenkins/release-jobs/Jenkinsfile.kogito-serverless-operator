@@ -60,6 +60,7 @@ pipeline {
                     githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
                     dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
                     releaseUtils = load '.ci/jenkins/shared-scripts/releaseUtils.groovy'
+                    zipUtils = load '.ci/jenkins/shared-scripts/zipUtils.groovy'
                 }
             }
         }
