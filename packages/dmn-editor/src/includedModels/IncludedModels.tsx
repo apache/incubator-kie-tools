@@ -456,23 +456,13 @@ function IncludedModelCard({
   const remove = useCallback(
     (index: number) => {
       dmnEditorStoreApi.setState((state) => {
-        const drgEdges = state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges;
         const externalModelTypesByNamespace = state
           .computed(state)
           .getExternalModelTypesByNamespace(externalModelsByNamespace);
-        const externalEdgesByNamespace = state
-          .computed(state)
-          .getDiagramData(externalModelsByNamespace).externalEdgesByNamespace;
-        const externalNodesByNamespace = state
-          .computed(state)
-          .getDiagramData(externalModelsByNamespace).externalNodesByNamespace;
         deleteImport({
           definitions: state.dmn.model.definitions,
           index,
-          drgEdges,
-          externalDmnsIndex: externalModelTypesByNamespace.dmns,
-          externalEdgesByNamespace,
-          externalNodesByNamespace,
+          externalModelTypesByNamespace,
         });
       });
     },
@@ -607,23 +597,13 @@ function UnknownIncludedModelCard({
   const remove = useCallback(
     (index: number) => {
       dmnEditorStoreApi.setState((state) => {
-        const drgEdges = state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges;
-        const externalDmnsIndex = state
+        const externalModelTypesByNamespace = state
           .computed(state)
-          .getExternalModelTypesByNamespace(externalModelsByNamespace).dmns;
-        const externalEdgesByNamespace = state
-          .computed(state)
-          .getDiagramData(externalModelsByNamespace).externalEdgesByNamespace;
-        const externalNodesByNamespace = state
-          .computed(state)
-          .getDiagramData(externalModelsByNamespace).externalNodesByNamespace;
+          .getExternalModelTypesByNamespace(externalModelsByNamespace);
         deleteImport({
           definitions: state.dmn.model.definitions,
           index,
-          drgEdges,
-          externalDmnsIndex,
-          externalEdgesByNamespace,
-          externalNodesByNamespace,
+          externalModelTypesByNamespace,
         });
       });
     },
