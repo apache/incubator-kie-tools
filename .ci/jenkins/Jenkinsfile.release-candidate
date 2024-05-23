@@ -31,15 +31,8 @@ pipeline {
     }
 
     parameters {
-        string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Set the Git branch to checkout', trim: true)
-        string(name: 'TAG_NAME', description: 'Tag to create', trim: true)
-    }
-
-    environment {
-        KIE_TOOLS_BUILD__runLinters = 'false'
-        KIE_TOOLS_BUILD__runTests = 'false'
-        KIE_TOOLS_BUILD__runEndToEndTests = 'false'
-        KIE_TOOLS_BUILD__buildContainerImages = 'true'
+        string(name: 'BRANCH_NAME', description: 'Set the Git branch to checkout (0.0.x)', trim: true)
+        string(name: 'RELEASE_CANDIDATE_VERSION', description: 'Release Candidate version', trim: true)
     }
 
     stages {
@@ -111,7 +104,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmUpdateProjectVersion(params.TAG_NAME)
+                        buildUtils.pnpmUpdateProjectVersion(params.RELEASE_CANDIDATE_VERSION)
                     }
                 }
             }
@@ -121,7 +114,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmUpdateKogitoVersion(params.TAG_NAME, params.TAG_NAME)
+                        buildUtils.pnpmUpdateKogitoVersion(params.RELEASE_CANDIDATE_VERSION, params.RELEASE_CANDIDATE_VERSION)
                     }
                 }
             }
@@ -133,9 +126,22 @@ pipeline {
                     script {
                         sh """#!/bin/bash -el
                         git add .
-                        git commit --allow-empty -am "Update project version to ${params.TAG_NAME}"
+                        git commit --allow-empty -am "Update project version to ${params.RELEASE_CANDIDATE_VERSION}"
                         """.trim()
                         githubUtils.pushObject('origin', "${params.NEW_BRANCH_NAME}", "${pipelineVars.asfGithubPushCredentialsId}")
+                    }
+                }
+            }
+        }
+
+        stage('Check `tag` against `package.json.version`') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        packageVersion = sh(returnStdout: true, script: "#!/bin/bash -el \n node -p \"require('./package.json').version\"").trim()
+                        sh """#!/bin/bash -el
+                        [[ "${params.RELEASE_CANDIDATE_VERSION}" == "${packageVersion}" ]]
+                        """.trim()
                     }
                 }
             }
@@ -145,32 +151,23 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        githubUtils.createTag("${params.TAG_NAME}")
-                        githubUtils.pushObject('origin', "${params.TAG_NAME}", "${pipelineVars.asfGithubPushCredentialsId}")
+                        githubUtils.createTag("${params.RELEASE_CANDIDATE_VERSION}")
+                        githubUtils.pushObject('origin', "${params.RELEASE_CANDIDATE_VERSION}", "${pipelineVars.asfGithubPushCredentialsId}")
                     }
                 }
             }
         }
 
-        stage('Build') {
+        stage('Build and Publish release candidate artifacts') {
             steps {
-                dir('kie-tools') {
-                    sh '''#!/bin/bash -el
-                    pnpm -r --workspace-concurrency=1 build:prod
-                    '''.trim()
-                }
-            }
-        }
-
-        stage('Upload images zip') {
-            steps {
-                dir('kie-tools') {
-                    sh """#!/#!/bin/bash -el
-                    docker save "quay.io/${QUAY_ORGANIZATION}/canvas:${BAMOE_VERSION_IMAGES}" | gzip >"${ZIP_FILE_NAME_CANVAS}"
-                    docker save "quay.io/${QUAY_ORGANIZATION}/extended-services:${BAMOE_VERSION_IMAGES}" | gzip >"${ZIP_FILE_NAME_EXTENDED_SERVICES}"
-                    docker save "quay.io/${QUAY_ORGANIZATION}/cors-proxy:${BAMOE_VERSION_IMAGES}" | gzip >"${ZIP_FILE_NAME_CORS_PROXY}"
-                    """.trim()
-                }
+                build job: 'KIE/kie-tools/kie-tools-release-build', parameters: [
+                    booleanParam(name: 'DRY_RUN', value: false),
+                    string(name: 'BASE_REF', value: "${env.BRANCH_NAME}"),
+                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+                    string(name: 'UPLOAD_ASSET_URL', value: "${env.RELEASE_UPLOAD_ASSET_URL}"),
+                    string(name: 'RUNNERS', value: "${params.RUNNERS}"),
+                    booleanParam(name: 'RELEASE_CANDIDATE', value: true)
+                ]
             }
         }
     }
