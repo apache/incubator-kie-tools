@@ -133,7 +133,7 @@ pipeline {
                         "${env.CORS_PROXY_IMAGE__imageRegistry}/${env.CORS_PROXY_IMAGE__imageAccount}",
                         "${env.CORS_PROXY_IMAGE__imageName}",
                         "${env.CORS_PROXY_IMAGE__imageBuildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }

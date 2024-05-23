@@ -128,7 +128,7 @@ pipeline {
                         "${env.KOGITO_TASK_CONSOLE__registry}/${env.KOGITO_TASK_CONSOLE__account}",
                         "${env.KOGITO_TASK_CONSOLE__name}",
                         "${env.KOGITO_TASK_CONSOLE__buildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }

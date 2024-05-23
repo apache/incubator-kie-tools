@@ -141,7 +141,7 @@ pipeline {
                         "${env.SONATAFLOW_DEVMODE_IMAGE__registry}/${env.SONATAFLOW_DEVMODE_IMAGE__account}",
                         "${env.SONATAFLOW_DEVMODE_IMAGE__name}",
                         "${env.SONATAFLOW_DEVMODE_IMAGE__buildTag} latest",
-                        "${pipelineVars.quayKiegroupPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }

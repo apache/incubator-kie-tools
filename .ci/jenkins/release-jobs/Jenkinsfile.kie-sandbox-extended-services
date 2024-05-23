@@ -133,7 +133,7 @@ pipeline {
                         "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry}/${env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount}",
                         "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageName}",
                         "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }

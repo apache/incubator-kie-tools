@@ -241,7 +241,7 @@ pipeline {
                         "${env.SONATAFLOW_BUILDER_IMAGE__registry}/${env.SONATAFLOW_BUILDER_IMAGE__account}",
                         "${env.SONATAFLOW_BUILDER_IMAGE__name}",
                         "${env.SONATAFLOW_BUILDER_IMAGE__buildTag}",
-                        "${pipelineVars.quayKiegroupPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }
@@ -254,7 +254,7 @@ pipeline {
                         "${env.SONATAFLOW_DEVMODE_IMAGE__registry}/${env.SONATAFLOW_DEVMODE_IMAGE__account}",
                         "${env.SONATAFLOW_DEVMODE_IMAGE__name}",
                         "${env.SONATAFLOW_DEVMODE_IMAGE__buildTag}",
-                        "${pipelineVars.quayKiegroupPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }
@@ -267,7 +267,7 @@ pipeline {
                         "${env.SONATAFLOW_OPERATOR__registry}/${env.SONATAFLOW_OPERATOR__account}",
                         "${env.SONATAFLOW_OPERATOR__name}",
                         "${env.SONATAFLOW_OPERATOR__buildTag}",
-                        "${pipelineVars.quayKiegroupPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }
@@ -280,7 +280,7 @@ pipeline {
                         "${env.DEV_DEPLOYMENT_BASE_IMAGE__registry}/${env.DEV_DEPLOYMENT_BASE_IMAGE__account}",
                         "${env.DEV_DEPLOYMENT_BASE_IMAGE__name}",
                         "${env.DEV_DEPLOYMENT_BASE_IMAGE__buildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }
@@ -293,7 +293,7 @@ pipeline {
                         "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry}/${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account}",
                         "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name}",
                         "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }
@@ -306,7 +306,7 @@ pipeline {
                         "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry}/${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account}",
                         "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name}",
                         "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }
@@ -319,7 +319,7 @@ pipeline {
                         "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry}/${env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount}",
                         "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageName}",
                         "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }
@@ -350,7 +350,7 @@ pipeline {
                         "${env.CORS_PROXY_IMAGE__imageRegistry}/${env.CORS_PROXY_IMAGE__imageAccount}",
                         "${env.CORS_PROXY_IMAGE__imageName}",
                         "${env.CORS_PROXY_IMAGE__imageBuildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }
@@ -381,7 +381,7 @@ pipeline {
                         "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}",
                         "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageName}",
                         "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }
@@ -420,7 +420,7 @@ pipeline {
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry}/${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }
@@ -433,7 +433,7 @@ pipeline {
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry}/${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }
@@ -446,7 +446,7 @@ pipeline {
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry}/${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }
@@ -459,7 +459,7 @@ pipeline {
                         "${env.DASHBUILDER__viewerImageRegistry}/${env.DASHBUILDER__viewerImageAccount}",
                         "${env.DASHBUILDER__viewerImageName}",
                         "${env.DASHBUILDER__viewerImageBuildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }
@@ -472,7 +472,7 @@ pipeline {
                         "${env.KOGITO_TASK_CONSOLE__registry}/${env.KOGITO_TASK_CONSOLE__account}",
                         "${env.KOGITO_TASK_CONSOLE__name}",
                         "${env.KOGITO_TASK_CONSOLE__buildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }
@@ -485,7 +485,7 @@ pipeline {
                         "${env.KOGITO_MANAGEMENT_CONSOLE__registry}/${env.KOGITO_MANAGEMENT_CONSOLE__account}",
                         "${env.KOGITO_MANAGEMENT_CONSOLE__name}",
                         "${env.KOGITO_MANAGEMENT_CONSOLE__buildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }
@@ -498,7 +498,7 @@ pipeline {
                         helmUtils.pushChartToRegistry(
                             "${env.KIE_SANDBOX_HELM_CHART__registry}/${env.KIE_SANDBOX_HELM_CHART__account}",
                             "packages/kie-sandbox-helm-chart/dist/${env.KIE_SANDBOX_HELM_CHART__name}-${env.KIE_SANDBOX_HELM_CHART__tag}.tgz",
-                            "${pipelineVars.quayPushCredentialsId}"
+                            "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                         )
                     }
                 }
