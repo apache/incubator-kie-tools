@@ -37,6 +37,7 @@ import { TypeOrReturnType } from "../ComputedStateCache";
 import { Computed, State } from "../Store";
 import { getDecisionServicePropertiesRelativeToThisDmn } from "../../mutations/addExistingDecisionServiceToDrd";
 import { Normalized } from "../../normalization/normalize";
+import { KIE_UNKNOWN_NAMESPACE } from "../../kie/kie";
 
 export const NODE_LAYERS = {
   GROUP_NODE: 0,
@@ -78,6 +79,7 @@ export function computeDiagramData(
   const nodesById = new Map<string, RF.Node<DmnDiagramNodeData>>();
   const edgesById = new Map<string, RF.Edge<DmnDiagramEdgeData>>();
   const parentIdsById = new Map<string, DmnDiagramNodeData>();
+  const externalNodesByNamespace = new Map<string, Array<RF.Node<DmnDiagramNodeData>>>();
 
   const { selectedNodes, draggingNodes, resizingNodes, selectedEdges } = {
     selectedNodes: new Set(diagram._selectedNodes),
@@ -224,6 +226,11 @@ export function computeDiagramData(
       }
     }
 
+    if (dmnObjectNamespace && dmnObjectNamespace !== KIE_UNKNOWN_NAMESPACE) {
+      const externalNamespaceNodes = externalNodesByNamespace.get(dmnObjectNamespace) ?? [];
+      externalNodesByNamespace.set(dmnObjectNamespace, [...externalNamespaceNodes, newNode]);
+    }
+
     nodesById.set(newNode.id, newNode);
     if (newNode.selected) {
       selectedNodesById.set(newNode.id, newNode);
@@ -360,6 +367,7 @@ export function computeDiagramData(
     nodes: sortedNodes,
     edges: sortedEdges,
     edgesById,
+    externalNodesByNamespace,
     nodesById,
     selectedNodeTypes,
     selectedNodesById,

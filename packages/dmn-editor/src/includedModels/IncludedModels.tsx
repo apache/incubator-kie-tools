@@ -54,9 +54,11 @@ import { Dropdown, DropdownItem, KebabToggle } from "@patternfly/react-core/dist
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
-import { State } from "../store/Store";
+import { defaultStaticState, State } from "../store/Store";
 import "./IncludedModels.css";
 import { Normalized } from "../normalization/normalize";
+import { computeDiagramData } from "../store/computed/computeDiagramData";
+import { computeIndexedDrd } from "../store/computed/computeIndexes";
 
 export const EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER = "<Default>";
 
@@ -448,6 +450,7 @@ function IncludedModelCard({
   index: number;
   isReadonly: boolean;
 }) {
+  const { externalModelsByNamespace } = useExternalModels();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const { onRequestToJumpToPath, onRequestToResolvePath } = useDmnEditor();
@@ -455,13 +458,25 @@ function IncludedModelCard({
   const remove = useCallback(
     (index: number) => {
       dmnEditorStoreApi.setState((state) => {
-        deleteImport({ definitions: state.dmn.model.definitions, index });
+        const drgEdges = state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges;
+        const externalNodesByNamespace = state
+          .computed(state)
+          .getDiagramData(externalModelsByNamespace).externalNodesByNamespace;
+        const externalModelTypesByNamespace = state
+          .computed(state)
+          .getExternalModelTypesByNamespace(externalModelsByNamespace);
+
+        deleteImport({
+          definitions: state.dmn.model.definitions,
+          index,
+          drgEdges,
+          externalNodesByNamespace,
+          externalDmnsIndex: externalModelTypesByNamespace.dmns,
+        });
       });
     },
-    [dmnEditorStoreApi]
+    [dmnEditorStoreApi, externalModelsByNamespace]
   );
-
-  const { externalModelsByNamespace } = useExternalModels();
 
   const rename = useCallback<OnInlineFeelNameRenamed>(
     (newName) => {
@@ -586,17 +601,29 @@ function UnknownIncludedModelCard({
   isReadonly: boolean;
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const { externalModelsByNamespace } = useExternalModels();
 
   const remove = useCallback(
     (index: number) => {
       dmnEditorStoreApi.setState((state) => {
-        deleteImport({ definitions: state.dmn.model.definitions, index });
+        const drgEdges = state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges;
+        const externalNodesByNamespace = state
+          .computed(state)
+          .getDiagramData(externalModelsByNamespace).externalNodesByNamespace;
+        const externalDmnsIndex = state
+          .computed(state)
+          .getExternalModelTypesByNamespace(externalModelsByNamespace).dmns;
+        deleteImport({
+          definitions: state.dmn.model.definitions,
+          index,
+          drgEdges,
+          externalNodesByNamespace,
+          externalDmnsIndex,
+        });
       });
     },
-    [dmnEditorStoreApi]
+    [dmnEditorStoreApi, externalModelsByNamespace]
   );
-
-  const { externalModelsByNamespace } = useExternalModels();
 
   const rename = useCallback<OnInlineFeelNameRenamed>(
     (newName) => {

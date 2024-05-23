@@ -20,8 +20,25 @@
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 import { Normalized } from "../normalization/normalize";
+import { computeDiagramData } from "../store/computed/computeDiagramData";
+import { deleteNode, NodeDeletionMode } from "./deleteNode";
+import { nodeNatures } from "./NodeNature";
+import { NodeType } from "../diagram/connections/graphStructure";
+import { ExternalDmnsIndex } from "../DmnEditor";
 
-export function deleteImport({ definitions, index }: { definitions: Normalized<DMN15__tDefinitions>; index: number }) {
+export function deleteImport({
+  definitions,
+  index,
+  drgEdges,
+  externalNodesByNamespace,
+  externalDmnsIndex,
+}: {
+  definitions: Normalized<DMN15__tDefinitions>;
+  index: number;
+  drgEdges: ReturnType<typeof computeDiagramData>["drgEdges"];
+  externalNodesByNamespace: ReturnType<typeof computeDiagramData>["externalNodesByNamespace"];
+  externalDmnsIndex: ExternalDmnsIndex;
+}) {
   definitions.import ??= [];
   const [deleted] = definitions.import.splice(index, 1);
 
@@ -29,6 +46,21 @@ export function deleteImport({ definitions, index }: { definitions: Normalized<D
     rootElement: definitions,
     namespace: deleted["@_namespace"],
   });
+
+  externalNodesByNamespace.get(deleted["@_namespace"])?.forEach((node) => {
+    deleteNode({
+      definitions,
+      drgEdges: drgEdges,
+      drdIndex: 0,
+      nodeNature: nodeNatures[node.type! as NodeType],
+      dmnObjectId: node.data.dmnObject?.["@_id"],
+      dmnObjectQName: node.data.dmnObjectQName,
+      dmnObjectNamespace: node.data.dmnObjectNamespace!, // ?? state.dmn.model.definitions["@_namespace"],
+      externalDmnsIndex,
+      mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
+    });
+  });
+
   if (namespaceName) {
     delete definitions[`@_xmlns:${namespaceName}`];
   }
