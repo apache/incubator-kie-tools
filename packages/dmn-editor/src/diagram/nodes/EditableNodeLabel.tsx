@@ -219,7 +219,11 @@ export function EditableNodeLabel({
   );
 
   return (
-    <div className={`kie-dmn-editor--editable-node-name-input ${position} ${grow ? "grow" : ""}`}>
+    <div
+      className={`kie-dmn-editor--editable-node-name-input ${position} ${grow ? "grow" : ""} ${
+        namedElementQName?.prefix ? "kie-dmn-editor--node-external" : ""
+      }`}
+    >
       {(isEditing && (
         <input
           spellCheck={"false"} // Let's not confuse FEEL name validation with the browser's grammar check.

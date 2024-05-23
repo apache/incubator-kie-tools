@@ -168,8 +168,6 @@ export const InputDataNode = React.memo(
       isEnabled: enableCustomNodeStyles,
     });
 
-    const additionalClasses = `${className} ${dmnObjectQName.prefix ? "external" : ""}`;
-
     const { externalModelsByNamespace } = useExternalModels();
 
     const isCollection = useDmnEditorStore((s) => {
@@ -208,9 +206,9 @@ export const InputDataNode = React.memo(
     return (
       <>
         <svg
-          className={`kie-dmn-editor--node-shape ${additionalClasses} ${
-            isAlternativeInputDataShape ? "alternative" : ""
-          } ${selected ? "selected" : ""}`}
+          className={`kie-dmn-editor--node-shape ${className} ${isAlternativeInputDataShape ? "alternative" : ""} ${
+            selected ? "selected" : ""
+          }`}
         >
           {isAlternativeInputDataShape ? (
             <AlternativeInputDataNodeSvg
@@ -240,7 +238,7 @@ export const InputDataNode = React.memo(
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
           style={alternativeSvgStyle}
-          className={`kie-dmn-editor--input-data-node ${additionalClasses} ${selectedAlternativeClass}`}
+          className={`kie-dmn-editor--input-data-node ${className} ${selectedAlternativeClass}`}
           ref={ref}
           tabIndex={-1}
           data-nodehref={id}
@@ -397,8 +395,6 @@ export const DecisionNode = React.memo(
       isEnabled: enableCustomNodeStyles,
     });
 
-    const additionalClasses = `${className} ${dmnObjectQName.prefix ? "external" : ""}`;
-
     const { externalModelsByNamespace } = useExternalModels();
 
     const isCollection = useDmnEditorStore((s) => {
@@ -414,7 +410,7 @@ export const DecisionNode = React.memo(
 
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${additionalClasses}`}>
+        <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <DecisionNodeSvg
             isCollection={isCollection}
             {...nodeDimensions}
@@ -431,7 +427,7 @@ export const DecisionNode = React.memo(
 
         <div
           ref={ref}
-          className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${additionalClasses}`}
+          className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${className}`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
@@ -556,11 +552,9 @@ export const BkmNode = React.memo(
       isEnabled: enableCustomNodeStyles,
     });
 
-    const additionalClasses = `${className} ${dmnObjectQName.prefix ? "external" : ""}`;
-
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${additionalClasses}`}>
+        <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <BkmNodeSvg
             {...nodeDimensions}
             x={0}
@@ -576,7 +570,7 @@ export const BkmNode = React.memo(
 
         <div
           ref={ref}
-          className={`kie-dmn-editor--node kie-dmn-editor--bkm-node ${additionalClasses}`}
+          className={`kie-dmn-editor--node kie-dmn-editor--bkm-node ${className}`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
@@ -683,11 +677,9 @@ export const KnowledgeSourceNode = React.memo(
       isEnabled: enableCustomNodeStyles,
     });
 
-    const additionalClasses = `${className} ${dmnObjectQName.prefix ? "external" : ""}`;
-
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${additionalClasses}`}>
+        <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <KnowledgeSourceNodeSvg
             {...nodeDimensions}
             x={0}
@@ -703,7 +695,7 @@ export const KnowledgeSourceNode = React.memo(
 
         <div
           ref={ref}
-          className={`kie-dmn-editor--node kie-dmn-editor--knowledge-source-node ${additionalClasses}`}
+          className={`kie-dmn-editor--node kie-dmn-editor--knowledge-source-node ${className}`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
@@ -801,11 +793,9 @@ export const TextAnnotationNode = React.memo(
       isEnabled: enableCustomNodeStyles,
     });
 
-    const additionalClasses = `${className} ${dmnObjectQName.prefix ? "external" : ""}`;
-
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${additionalClasses}`}>
+        <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <TextAnnotationNodeSvg
             {...nodeDimensions}
             x={0}
@@ -820,7 +810,7 @@ export const TextAnnotationNode = React.memo(
 
         <div
           ref={ref}
-          className={`kie-dmn-editor--node kie-dmn-editor--text-annotation-node ${additionalClasses}`}
+          className={`kie-dmn-editor--node kie-dmn-editor--text-annotation-node ${className}`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
@@ -994,11 +984,9 @@ export const DecisionServiceNode = React.memo(
       isEnabled: enableCustomNodeStyles,
     });
 
-    const additionalClasses = `${className} ${dmnObjectQName.prefix ? "external" : ""}`;
-
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${additionalClasses}`}>
+        <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <DecisionServiceNodeSvg
             dividerLineRef={dividerLineRef}
             ref={ref}
@@ -1018,7 +1006,7 @@ export const DecisionServiceNode = React.memo(
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
 
         <div
-          className={`kie-dmn-editor--node kie-dmn-editor--decision-service-node ${additionalClasses}`}
+          className={`kie-dmn-editor--node kie-dmn-editor--decision-service-node ${className}`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
@@ -1147,11 +1135,9 @@ export const GroupNode = React.memo(
       isEnabled: enableCustomNodeStyles,
     });
 
-    const additionalClasses = `${className} ${dmnObjectQName.prefix ? "external" : ""}`;
-
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${additionalClasses}`}>
+        <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <GroupNodeSvg
             ref={ref}
             {...nodeDimensions}
@@ -1164,7 +1150,7 @@ export const GroupNode = React.memo(
         </svg>
 
         <div
-          className={`kie-dmn-editor--node kie-dmn-editor--group-node ${additionalClasses}`}
+          className={`kie-dmn-editor--node kie-dmn-editor--group-node ${className}`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
