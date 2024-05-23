@@ -459,19 +459,22 @@ function IncludedModelCard({
     (index: number) => {
       dmnEditorStoreApi.setState((state) => {
         const drgEdges = state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges;
-        const externalNodesByNamespace = state
-          .computed(state)
-          .getDiagramData(externalModelsByNamespace).externalNodesByNamespace;
         const externalModelTypesByNamespace = state
           .computed(state)
           .getExternalModelTypesByNamespace(externalModelsByNamespace);
-
+        const externalEdgesByNamespace = state
+          .computed(state)
+          .getDiagramData(externalModelsByNamespace).externalEdgesByNamespace;
+        const externalNodesByNamespace = state
+          .computed(state)
+          .getDiagramData(externalModelsByNamespace).externalNodesByNamespace;
         deleteImport({
           definitions: state.dmn.model.definitions,
           index,
           drgEdges,
-          externalNodesByNamespace,
           externalDmnsIndex: externalModelTypesByNamespace.dmns,
+          externalEdgesByNamespace,
+          externalNodesByNamespace,
         });
       });
     },
@@ -607,18 +610,22 @@ function UnknownIncludedModelCard({
     (index: number) => {
       dmnEditorStoreApi.setState((state) => {
         const drgEdges = state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges;
-        const externalNodesByNamespace = state
-          .computed(state)
-          .getDiagramData(externalModelsByNamespace).externalNodesByNamespace;
         const externalDmnsIndex = state
           .computed(state)
           .getExternalModelTypesByNamespace(externalModelsByNamespace).dmns;
+        const externalEdgesByNamespace = state
+          .computed(state)
+          .getDiagramData(externalModelsByNamespace).externalEdgesByNamespace;
+        const externalNodesByNamespace = state
+          .computed(state)
+          .getDiagramData(externalModelsByNamespace).externalNodesByNamespace;
         deleteImport({
           definitions: state.dmn.model.definitions,
           index,
           drgEdges,
-          externalNodesByNamespace,
           externalDmnsIndex,
+          externalEdgesByNamespace,
+          externalNodesByNamespace,
         });
       });
     },

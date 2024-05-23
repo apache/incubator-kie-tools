@@ -25,6 +25,7 @@ import { deleteNode, NodeDeletionMode } from "./deleteNode";
 import { nodeNatures } from "./NodeNature";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { ExternalDmnsIndex } from "../DmnEditor";
+import { deleteEdge, EdgeDeletionMode } from "./deleteEdge";
 
 export function deleteImport({
   definitions,
@@ -32,12 +33,14 @@ export function deleteImport({
   drgEdges,
   externalNodesByNamespace,
   externalDmnsIndex,
+  externalEdgesByNamespace,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   index: number;
   drgEdges: ReturnType<typeof computeDiagramData>["drgEdges"];
-  externalNodesByNamespace: ReturnType<typeof computeDiagramData>["externalNodesByNamespace"];
   externalDmnsIndex: ExternalDmnsIndex;
+  externalEdgesByNamespace: ReturnType<typeof computeDiagramData>["externalEdgesByNamespace"];
+  externalNodesByNamespace: ReturnType<typeof computeDiagramData>["externalNodesByNamespace"];
 }) {
   definitions.import ??= [];
   const [deleted] = definitions.import.splice(index, 1);
@@ -58,6 +61,15 @@ export function deleteImport({
       dmnObjectNamespace: node.data.dmnObjectNamespace!, // ?? state.dmn.model.definitions["@_namespace"],
       externalDmnsIndex,
       mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
+    });
+  });
+
+  externalEdgesByNamespace.get(deleted["@_namespace"])?.forEach((edge) => {
+    deleteEdge({
+      definitions,
+      drdIndex: 0,
+      edge: { id: edge.id, dmnObject: edge.data!.dmnObject },
+      mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
     });
   });
 
