@@ -357,7 +357,7 @@ export function IncludedModels() {
                   </FormGroup>
                   <br />
                   {selectedModelError !== undefined && (
-                    <span className={"selected-model-to-include-error"}>{selectedModelError}</span>
+                    <span className={"kie-dmn-editor--selected-model-to-include-error"}>{selectedModelError}</span>
                   )}
                 </Form>
               </>
