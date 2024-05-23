@@ -728,7 +728,6 @@ export const KnowledgeSourceNode = React.memo(
             setEditing={setEditingLabel}
             value={knowledgeSource["@_label"] ?? knowledgeSource["@_name"]}
             onChange={setName}
-            skipValidation={true}
             onGetAllUniqueNames={getAllFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
