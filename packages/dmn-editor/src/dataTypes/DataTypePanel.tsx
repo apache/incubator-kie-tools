@@ -52,6 +52,8 @@ import { useDmnEditor } from "../DmnEditorContext";
 import { useResolvedTypeRef } from "./useResolvedTypeRef";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert/Alert";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { InfoAltIcon } from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
 
 export function DataTypePanel({
   isReadonly,
@@ -363,9 +365,21 @@ export function DataTypePanel({
             <br />
             {dataType.itemDefinition["@_isCollection"] === true ? (
               <>
-                <Title size={"md"} headingLevel="h4">
-                  Collection constraint
-                </Title>
+                <Flex direction={{ default: "row" }} alignItems={{ default: "alignItemsCenter" }}>
+                  <Title size={"md"} headingLevel="h4">
+                    Collection constraint
+                  </Title>
+                  <Tooltip
+                    content={
+                      <div>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id feugiat augue, nec fringilla
+                        turpis.
+                      </div>
+                    }
+                  >
+                    <InfoAltIcon />
+                  </Tooltip>
+                </Flex>
                 <ConstraintsFromTypeConstraintAttribute
                   isReadonly={isReadonly}
                   itemDefinition={dataType.itemDefinition}
@@ -374,9 +388,21 @@ export function DataTypePanel({
                 />
                 <br />
                 <br />
-                <Title size={"md"} headingLevel="h4">
-                  Collection item constraint
-                </Title>
+                <Flex direction={{ default: "row" }} alignItems={{ default: "alignItemsCenter" }}>
+                  <Title size={"md"} headingLevel="h4">
+                    Collection item constraint
+                  </Title>
+                  <Tooltip
+                    content={
+                      <div>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id feugiat augue, nec fringilla
+                        turpis.
+                      </div>
+                    }
+                  >
+                    <InfoAltIcon />
+                  </Tooltip>
+                </Flex>
                 <Alert variant="warning" isInline isPlain title="Deprecated">
                   <p>
                     Creating constraints for the collection items directly on the collection itself is deprecated since
