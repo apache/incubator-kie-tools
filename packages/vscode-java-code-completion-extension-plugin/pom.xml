@@ -153,6 +153,14 @@
             <forkedProcessTimeoutInSeconds>60</forkedProcessTimeoutInSeconds>
           </configuration>
         </plugin>
+        <!-- Do not generate a source jar - It conflicts with tycho-source-plugin -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <configuration>
+            <skipSource>true</skipSource>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>

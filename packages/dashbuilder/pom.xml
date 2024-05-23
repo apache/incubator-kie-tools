@@ -99,7 +99,6 @@
     <version.org.javassist>3.26.0-GA</version.org.javassist>
 
     <!-- Plugins -->
-    <version.source.plugin>3.1.0</version.source.plugin>
     <version.jar.plugin>3.1.2</version.jar.plugin>
     <version.org.apache.maven.plugins.dependency>3.3.0</version.org.apache.maven.plugins.dependency>
     <version.surefire.plugin>2.22.2</version.surefire.plugin>
@@ -569,7 +568,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>${version.source.plugin}</version>
           <executions>
             <execution>
               <id>attach-sources</id>
