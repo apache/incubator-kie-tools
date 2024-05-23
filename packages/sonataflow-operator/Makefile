@@ -357,12 +357,12 @@ delete-cluster: install-kind
 .PHONY: load-docker-image
 load-docker-image: install-kind
 	kind load docker-image $(IMG)
-	docker tag docker.io/apache/incubator-kie-sonataflow-builder:main localhost:5001/apache/incubator-kie-sonataflow-builder:main
-	docker tag docker.io/apache/incubator-kie-sonataflow-devmode:main localhost:5001/apache/incubator-kie-sonataflow-devmode:main
-	docker push localhost:5001/apache/incubator-kie-sonataflow-builder:main
-	docker push localhost:5001/apache/incubator-kie-sonataflow-devmode:main
 	kind load docker-image docker.io/apache/incubator-kie-sonataflow-builder:main
 	kind load docker-image docker.io/apache/incubator-kie-sonataflow-devmode:main
+# docker tag docker.io/apache/incubator-kie-sonataflow-builder:main localhost:5001/apache/incubator-kie-sonataflow-builder:main
+# docker tag docker.io/apache/incubator-kie-sonataflow-devmode:main localhost:5001/apache/incubator-kie-sonataflow-devmode:main
+# docker push localhost:5001/apache/incubator-kie-sonataflow-builder:main
+# docker push localhost:5001/apache/incubator-kie-sonataflow-devmode:main
 
 .PHONY: full-test-e2e
 full-test-e2e: create-cluster load-docker-image deploy
