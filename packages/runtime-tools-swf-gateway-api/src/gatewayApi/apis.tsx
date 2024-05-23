@@ -314,7 +314,7 @@ export const handleNodeTrigger = async (
         mutation: GraphQL.HandleNodeTriggerDocument,
         variables: {
           processId: workflowInstance.id,
-          nodeId: node.nodeDefinitionId,
+          nodeId: node.id,
         },
         fetchPolicy: "no-cache",
       })
@@ -434,7 +434,7 @@ export const getTriggerableNodes = async (
 ): Promise<any> => {
   return client
     .query({
-      query: GraphQL.GetProcessInstanceNodeDefinitionsDocument,
+      query: GraphQL.GetProcessDefinitionNodesDocument,
       variables: {
         processId: workflowInstance.id,
       },

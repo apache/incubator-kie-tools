@@ -105,3 +105,14 @@ To test the `kie-sandbox-quarkus-accelerator` module with the updated version, p
 - Run `pnpm -F @kie-tools/online-editor... build:dev` and `pnpm -F @kie-tools/online-editor start` to test it.
 
 You can find an example of the Kogito version upgrade in [this PR](https://github.com/apache/incubator-kie-sandbox-quarkus-accelerator/pull/8)
+
+# Upgrading GraphQL schemas in `@kie-tools/runtime-tools-process-gateway-api`& `@kie-tools/runtime-tools-swf-gateway-api`
+
+The following commands will help to sync up the gateway apis the GraphQL schema with the new Kogito Data Index GraphQL schema:
+
+- Start a blank Data Index Container, for example `docker run -p8180:8080 docker.io/apache/incubator-kie-kogito-data-index-ephemeral:{$KOGITO_VERSION}`
+- Run `pnpm -F @kie-tools/runtime-tools-process-gateway-api graphql:codegen`
+- Run `pnpm -F @kie-tools/runtime-tools-swf-gateway-api graphql:codegen`
+
+After upgrading the GraphQL schemas it is recommended to verify that the incoming changes aren't breaking the consoles or
+devui's and fix any possible conflict if needed.
