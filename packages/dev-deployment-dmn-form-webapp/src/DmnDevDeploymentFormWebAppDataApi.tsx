@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
+import { ExtendedServicesFormSchema } from "@kie-tools/extended-services-api";
 import OpenAPIParser from "@readme/openapi-parser";
 import { routes } from "./Routes";
 import { DmnFormAppProps } from "./DmnFormApp";
@@ -25,7 +25,7 @@ import * as path from "path";
 
 export interface FormData {
   modelName: string;
-  schema: ExtendedServicesDmnJsonSchema;
+  schema: ExtendedServicesFormSchema;
 }
 
 export interface AppData {

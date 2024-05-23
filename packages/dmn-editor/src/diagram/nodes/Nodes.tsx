@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import {
   DMN15__tBusinessKnowledgeModel,
   DMN15__tDecision,
@@ -71,6 +71,7 @@ import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
 import { propsHaveSameValuesDeep } from "../memoization/memoization";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { NODE_LAYERS } from "../../store/computed/computeDiagramData";
+import { Normalized } from "../../normalization/normalize";
 
 export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any
   ? E["__$$element"] extends Filter
@@ -80,14 +81,14 @@ export type ElementFilter<E extends { __$$element: string }, Filter extends stri
 
 export type NodeDmnObjects =
   | null
-  | Unpacked<DMN15__tDefinitions["drgElement"]>
-  | ElementFilter<Unpacked<DMN15__tDefinitions["artifact"]>, "textAnnotation" | "group">;
+  | Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]>
+  | ElementFilter<Unpacked<Normalized<DMN15__tDefinitions>["artifact"]>, "textAnnotation" | "group">;
 
 export type DmnDiagramNodeData<T extends NodeDmnObjects = NodeDmnObjects> = {
   dmnObjectNamespace: string | undefined;
   dmnObjectQName: XmlQName;
   dmnObject: T;
-  shape: DMNDI15__DMNShape & { index: number };
+  shape: Normalized<DMNDI15__DMNShape> & { index: number };
   index: number;
   hasHiddenRequirements: boolean;
   /**
@@ -106,7 +107,7 @@ export const InputDataNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tInputData & { __$$element: "inputData" }>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN15__tInputData> & { __$$element: "inputData" }>>) => {
     const renderCount = useRef<number>(0);
     renderCount.current++;
 
@@ -149,8 +150,8 @@ export const InputDataNode = React.memo(
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
         dmnEditorStoreApi.setState((state) => {
-          const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tInputData;
-          drgElement.variable ??= { "@_name": inputData["@_name"] };
+          const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tInputData>;
+          drgElement.variable ??= { "@_id": generateUuid(), "@_name": inputData["@_name"] };
           drgElement.variable["@_typeRef"] = newTypeRef;
         });
       },
@@ -336,7 +337,7 @@ export const DecisionNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tDecision & { __$$element: "decision" }>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN15__tDecision> & { __$$element: "decision" }>>) => {
     const renderCount = useRef<number>(0);
     renderCount.current++;
 
@@ -375,8 +376,8 @@ export const DecisionNode = React.memo(
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
         dmnEditorStoreApi.setState((state) => {
-          const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tDecision;
-          drgElement.variable ??= { "@_name": decision["@_name"] };
+          const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>;
+          drgElement.variable ??= { "@_id": generateUuid(), "@_name": decision["@_name"] };
           drgElement.variable["@_typeRef"] = newTypeRef;
           if (drgElement.expression) {
             drgElement.expression["@_typeRef"] = newTypeRef;
@@ -495,7 +496,9 @@ export const BkmNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tBusinessKnowledgeModel & { __$$element: "businessKnowledgeModel" }>>) => {
+  }: RF.NodeProps<
+    DmnDiagramNodeData<Normalized<DMN15__tBusinessKnowledgeModel> & { __$$element: "businessKnowledgeModel" }>
+  >) => {
     const renderCount = useRef<number>(0);
     renderCount.current++;
 
@@ -530,8 +533,10 @@ export const BkmNode = React.memo(
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
         dmnEditorStoreApi.setState((state) => {
-          const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel;
-          drgElement.variable ??= { "@_name": bkm["@_name"] };
+          const drgElement = state.dmn.model.definitions.drgElement![
+            index
+          ] as Normalized<DMN15__tBusinessKnowledgeModel>;
+          drgElement.variable ??= { "@_id": generateUuid(), "@_name": bkm["@_name"] };
           drgElement.variable["@_typeRef"] = newTypeRef;
           if (drgElement.encapsulatedLogic) {
             drgElement.encapsulatedLogic["@_typeRef"] = newTypeRef;
@@ -634,7 +639,7 @@ export const KnowledgeSourceNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tKnowledgeSource & { __$$element: "knowledgeSource" }>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN15__tKnowledgeSource> & { __$$element: "knowledgeSource" }>>) => {
     const renderCount = useRef<number>(0);
     renderCount.current++;
 
@@ -752,7 +757,7 @@ export const TextAnnotationNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tTextAnnotation & { __$$element: "textAnnotation" }>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN15__tTextAnnotation> & { __$$element: "textAnnotation" }>>) => {
     const renderCount = useRef<number>(0);
     renderCount.current++;
 
@@ -869,7 +874,7 @@ export const DecisionServiceNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tDecisionService & { __$$element: "decisionService" }>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN15__tDecisionService> & { __$$element: "decisionService" }>>) => {
     const renderCount = useRef<number>(0);
     renderCount.current++;
 
@@ -930,8 +935,8 @@ export const DecisionServiceNode = React.memo(
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
         dmnEditorStoreApi.setState((state) => {
-          const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tInputData;
-          drgElement.variable ??= { "@_name": decisionService["@_name"] };
+          const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tInputData>;
+          drgElement.variable ??= { "@_id": generateUuid(), "@_name": decisionService["@_name"] };
           drgElement.variable["@_typeRef"] = newTypeRef;
         });
       },
@@ -1076,7 +1081,7 @@ export const GroupNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tGroup & { __$$element: "group" }>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN15__tGroup> & { __$$element: "group" }>>) => {
     const renderCount = useRef<number>(0);
     renderCount.current++;
 
@@ -1342,7 +1347,7 @@ function useNodeResizing(id: string): boolean {
 
 type NodeDimensionsArgs = {
   snapGrid: SnapGrid;
-  shape: DMNDI15__DMNShape;
+  shape: Normalized<DMNDI15__DMNShape>;
 } & (
   | { nodeType: Extract<NodeType, typeof NODE_TYPES.inputData>; isAlternativeInputDataShape: boolean }
   | { nodeType: Exclude<NodeType, typeof NODE_TYPES.inputData> }
@@ -1470,8 +1475,8 @@ export function useDataTypeCreationCallbackForNodes(index: number, drgElementNam
   return useCallback<OnCreateDataType>(
     (newDataTypeName) => {
       dmnEditorStoreApi.setState((state) => {
-        const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tInputData;
-        drgElement.variable ??= { "@_name": drgElementName };
+        const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tInputData>;
+        drgElement.variable ??= { "@_id": generateUuid(), "@_name": drgElementName };
         drgElement.variable["@_typeRef"] = newDataTypeName;
         const newItemDefinition = addTopLevelItemDefinition({
           definitions: state.dmn.model.definitions,

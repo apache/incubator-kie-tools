@@ -33,6 +33,7 @@ import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/a
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
+import { Normalized } from "../../normalization/normalize";
 
 export function DecisionTableOutputRuleCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
@@ -61,16 +62,21 @@ export function DecisionTableOutputRuleCell(props: {
       ) {
         const typeRef =
           allTopLevelItemDefinitionUniqueNames.get(
-            (root?.cell as DMN15__tDecisionTable)?.output?.[cellPath.column ?? 0]["@_typeRef"] ?? ""
+            (root?.cell as Normalized<DMN15__tDecisionTable>)?.output?.[cellPath.column ?? 0]["@_typeRef"] ?? ""
           ) ?? DmnBuiltInDataType.Undefined;
         return { typeRef, itemDefinition: allDataTypesById.get(typeRef)?.itemDefinition };
       }
     }
   }, [dmnEditorStoreApi, externalModelsByNamespace, props.boxedExpressionIndex, selectedObjectInfos?.expressionPath]);
 
-  const updater = useBoxedExpressionUpdater<DMN15__tLiteralExpression>(selectedObjectInfos?.expressionPath ?? []);
+  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tLiteralExpression>>(
+    selectedObjectInfos?.expressionPath ?? []
+  );
 
-  const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tLiteralExpression, [selectedObjectInfos?.cell]);
+  const cell = useMemo(
+    () => selectedObjectInfos?.cell as Normalized<DMN15__tLiteralExpression>,
+    [selectedObjectInfos?.cell]
+  );
 
   return (
     <>

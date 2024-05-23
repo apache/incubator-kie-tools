@@ -55,6 +55,7 @@ import {
   DMN15__tContextEntry,
   DMN15__tOutputClause,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "../normalization/normalize";
 
 export function getDefaultBoxedExpression({
   logicType,
@@ -64,17 +65,17 @@ export function getDefaultBoxedExpression({
   getInputs,
   getDefaultColumnWidth,
 }: {
-  logicType: BoxedExpression["__$$element"] | undefined;
+  logicType: Normalized<BoxedExpression>["__$$element"] | undefined;
   typeRef: string | undefined;
   allTopLevelDataTypesByFeelName: DataTypeIndex;
   getInputs?: () => { name: string; typeRef: string | undefined }[] | undefined;
   getDefaultColumnWidth?: (args: { name: string; typeRef: string | undefined }) => number | undefined;
   widthsById: Map<string, number[]>;
-}): BoxedExpression {
+}): Normalized<BoxedExpression> {
   const dataType = allTopLevelDataTypesByFeelName.get(typeRef ?? DmnBuiltInDataType.Undefined);
 
   if (logicType === "literalExpression") {
-    const literalExpression: BoxedLiteral = {
+    const literalExpression: Normalized<BoxedLiteral> = {
       __$$element: "literalExpression",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
@@ -85,7 +86,7 @@ export function getDefaultBoxedExpression({
   }
   //
   else if (logicType === "functionDefinition") {
-    const functionExpression: BoxedFunction = {
+    const functionExpression: Normalized<BoxedFunction> = {
       __$$element: "functionDefinition",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
@@ -98,7 +99,7 @@ export function getDefaultBoxedExpression({
   else if (logicType === "context") {
     let maxWidthBasedOnEntryNames = CONTEXT_ENTRY_VARIABLE_MIN_WIDTH;
 
-    let contextEntries: DMN15__tContextEntry[];
+    let contextEntries: Normalized<DMN15__tContextEntry>[];
     if (!dataType || !isStruct(dataType.itemDefinition)) {
       contextEntries = [
         {
@@ -136,7 +137,7 @@ export function getDefaultBoxedExpression({
       expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
     });
 
-    const contextExpression: BoxedContext = {
+    const contextExpression: Normalized<BoxedContext> = {
       __$$element: "context",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
@@ -146,7 +147,7 @@ export function getDefaultBoxedExpression({
     widthsById.set(contextExpression["@_id"]!, [maxWidthBasedOnEntryNames]);
     return contextExpression;
   } else if (logicType === "list") {
-    const listExpression: BoxedList = {
+    const listExpression: Normalized<BoxedList> = {
       __$$element: "list",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
@@ -156,7 +157,7 @@ export function getDefaultBoxedExpression({
     };
     return listExpression;
   } else if (logicType === "invocation") {
-    const invocationExpression: BoxedInvocation = {
+    const invocationExpression: Normalized<BoxedInvocation> = {
       __$$element: "invocation",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
@@ -181,7 +182,7 @@ export function getDefaultBoxedExpression({
   } else if (logicType === "relation") {
     const isSimple = !dataType || !isStruct(dataType.itemDefinition);
 
-    const relationExpression: BoxedRelation = {
+    const relationExpression: Normalized<BoxedRelation> = {
       __$$element: "relation",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
@@ -255,7 +256,7 @@ export function getDefaultBoxedExpression({
       },
     ];
 
-    const output: DMN15__tOutputClause[] =
+    const output: Normalized<DMN15__tOutputClause>[] =
       !dataType || !isStruct(dataType.itemDefinition)
         ? [
             {
@@ -270,7 +271,7 @@ export function getDefaultBoxedExpression({
             "@_typeRef": isStruct(ic) ? DmnBuiltInDataType.Any : ic.typeRef?.__$$text,
           }));
 
-    const decisionTableExpression: BoxedDecisionTable = {
+    const decisionTableExpression: Normalized<BoxedDecisionTable> = {
       __$$element: "decisionTable",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
@@ -319,7 +320,8 @@ export function getDefaultBoxedExpression({
 
     return decisionTableExpression;
   } else if (logicType === "conditional") {
-    const conditionalExpression: BoxedConditional = {
+    const conditionalExpression: Normalized<BoxedConditional> = {
+      "@_id": generateUuid(),
       __$$element: "conditional",
       if: {
         "@_id": generateUuid(),
@@ -337,7 +339,8 @@ export function getDefaultBoxedExpression({
 
     return conditionalExpression;
   } else if (logicType === "for") {
-    const forExpression: BoxedFor = {
+    const forExpression: Normalized<BoxedFor> = {
+      "@_id": generateUuid(),
       __$$element: "for",
       return: {
         "@_id": generateUuid(),
@@ -350,7 +353,8 @@ export function getDefaultBoxedExpression({
     };
     return forExpression;
   } else if (logicType == "some") {
-    const someExpression: BoxedSome = {
+    const someExpression: Normalized<BoxedSome> = {
+      "@_id": generateUuid(),
       __$$element: "some",
       satisfies: {
         "@_id": generateUuid(),
@@ -363,7 +367,8 @@ export function getDefaultBoxedExpression({
     };
     return someExpression;
   } else if (logicType === "every") {
-    const everyExpression: BoxedEvery = {
+    const everyExpression: Normalized<BoxedEvery> = {
+      "@_id": generateUuid(),
       __$$element: "every",
       satisfies: {
         "@_id": generateUuid(),
@@ -376,7 +381,8 @@ export function getDefaultBoxedExpression({
     };
     return everyExpression;
   } else if (logicType === "filter") {
-    const filterExpression: BoxedFilter = {
+    const filterExpression: Normalized<BoxedFilter> = {
+      "@_id": generateUuid(),
       __$$element: "filter",
       match: {
         "@_id": generateUuid(),

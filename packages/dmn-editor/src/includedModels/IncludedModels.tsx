@@ -56,6 +56,7 @@ import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { State } from "../store/Store";
 import "./IncludedModels.css";
+import { Normalized } from "../normalization/normalize";
 
 export const EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER = "<Default>";
 
@@ -442,7 +443,7 @@ function IncludedModelCard({
   externalModel,
   isReadonly,
 }: {
-  _import: DMN15__tImport;
+  _import: Normalized<DMN15__tImport>;
   externalModel: ExternalModel;
   index: number;
   isReadonly: boolean;
@@ -580,7 +581,7 @@ function UnknownIncludedModelCard({
   index,
   isReadonly,
 }: {
-  _import: DMN15__tImport;
+  _import: Normalized<DMN15__tImport>;
   index: number;
   isReadonly: boolean;
 }) {

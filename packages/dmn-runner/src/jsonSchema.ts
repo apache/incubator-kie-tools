@@ -19,10 +19,7 @@
 
 import { JSON_SCHEMA_INPUT_SET_PATH, RECURSION_KEYWORD, RECURSION_REF_KEYWORD } from "./jsonSchemaConstants";
 import { DmnAjvSchemaFormat, ValidateFunction } from "./ajv";
-import {
-  ExtendedServicesDmnJsonSchema,
-  DmnInputFieldProperties,
-} from "@kie-tools/extended-services-api/dist/jsonSchema";
+import { ExtendedServicesFormSchema, DmnInputFieldProperties } from "@kie-tools/extended-services-api/dist/formSchema";
 import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { resolveRefs, pathFromPtr } from "json-refs";
 import cloneDeep from "lodash/cloneDeep";
@@ -30,6 +27,7 @@ import getObjectValueByPath from "lodash/get";
 import setObjectValueByPath from "lodash/set";
 import unsetObjectValueByPath from "lodash/unset";
 import { X_DMN_TYPE_KEYWORD } from "./jitExecutorKeywords";
+import type { JSONSchema4 } from "json-schema";
 
 function getFieldDefaultValue(dmnField: DmnInputFieldProperties): string | boolean | [] | object | undefined {
   if (dmnField?.type === "string" && dmnField?.format === undefined) {
@@ -53,7 +51,7 @@ function getFieldDefaultValue(dmnField: DmnInputFieldProperties): string | boole
 /**
  * get default values based on the jsonSchema
  */
-export function getDefaultValues(jsonSchema: ExtendedServicesDmnJsonSchema) {
+export function getDefaultValues(jsonSchema: JSONSchema4) {
   return Object.entries(getObjectValueByPath(jsonSchema, JSON_SCHEMA_INPUT_SET_PATH) ?? {})?.reduce(
     (acc, [key, field]: [string, Record<string, string>]) => {
       acc[key] = getFieldDefaultValue(field);
@@ -106,16 +104,16 @@ export function removeChangedPropertiesAndAdditionalProperties<T extends Validat
  * All circular $refs are changed to "recursionRef" instead of "$ref"
  * The JSON schema is resolved a second time to ensure all circular $ref were removed.
  */
-export async function resolveReferencesAndCheckForRecursion(
-  jsonSchema: ExtendedServicesDmnJsonSchema,
+export async function dereferenceAndCheckForRecursion(
+  formSchema: ExtendedServicesFormSchema,
   canceled?: Holder<boolean>
-): Promise<ExtendedServicesDmnJsonSchema | undefined> {
+): Promise<ExtendedServicesFormSchema | undefined> {
   try {
-    const jsonSchemaCopy = cloneDeep(jsonSchema);
-    const $ref = getObjectValueByPath(jsonSchemaCopy, "$ref");
-    unsetObjectValueByPath(jsonSchemaCopy, "$ref");
+    const formSchemaCopy = cloneDeep(formSchema);
+    const $ref = getObjectValueByPath(formSchemaCopy, "$ref");
+    unsetObjectValueByPath(formSchemaCopy, "$ref");
 
-    const { refs, resolved } = await resolveRefs(jsonSchemaCopy as any);
+    const { refs, resolved } = await resolveRefs(formSchemaCopy as any);
     if (canceled?.get()) {
       return;
     }

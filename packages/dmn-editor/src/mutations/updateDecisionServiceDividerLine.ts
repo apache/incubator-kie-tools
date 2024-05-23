@@ -29,6 +29,8 @@ import { snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
 import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { SnapGrid } from "../store/Store";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
+import { Normalized } from "../normalization/normalize";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 export const DECISION_SERVICE_DIVIDER_LINE_PADDING = 100;
 
@@ -41,9 +43,9 @@ export function updateDecisionServiceDividerLine({
   drgElementIndex,
   snapGrid,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
-  dmnShapesByHref: Map<string, DMNDI15__DMNShape & { index: number }>;
+  dmnShapesByHref: Map<string, Normalized<DMNDI15__DMNShape> & { index: number }>;
   shapeIndex: number;
   localYPosition: number;
   drgElementIndex: number;
@@ -51,13 +53,13 @@ export function updateDecisionServiceDividerLine({
 }) {
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
-  const shape = diagramElements?.[shapeIndex] as DMNDI15__DMNShape | undefined;
+  const shape = diagramElements?.[shapeIndex] as Normalized<DMNDI15__DMNShape> | undefined;
   const shapeBounds = shape?.["dc:Bounds"];
   if (!shapeBounds) {
     throw new Error("DMN MUTATION: Cannot reposition divider line of non-existent shape bounds");
   }
 
-  const ds = definitions.drgElement![drgElementIndex] as DMN15__tDecisionService;
+  const ds = definitions.drgElement![drgElementIndex] as Normalized<DMN15__tDecisionService>;
   if (!ds) {
     throw new Error("DMN MUTATION: Cannot reposition divider line of non-existent Decision Service");
   }
@@ -87,8 +89,11 @@ export function updateDecisionServiceDividerLine({
   shape["dmndi:DMNDecisionServiceDividerLine"]["di:waypoint"]![1]["@_y"] = newDividerLineYPosition;
 }
 
-export function getCentralizedDecisionServiceDividerLine(bounds: DC__Bounds): DMNDI15__DMNDecisionServiceDividerLine {
+export function getCentralizedDecisionServiceDividerLine(
+  bounds: DC__Bounds
+): Normalized<DMNDI15__DMNDecisionServiceDividerLine> {
   return {
+    "@_id": generateUuid(),
     "di:waypoint": [
       { "@_x": bounds["@_x"], "@_y": bounds["@_y"] + bounds["@_height"] / 2 },
       {

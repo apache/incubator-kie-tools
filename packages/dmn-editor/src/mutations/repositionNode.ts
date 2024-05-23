@@ -27,6 +27,7 @@ import { NodeType } from "../diagram/connections/graphStructure";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
+import { Normalized } from "../normalization/normalize";
 
 export function repositionNode({
   definitions,
@@ -39,7 +40,7 @@ export function repositionNode({
    * This will make sure we only move edges once, even though they might be source/target edges for multiple nodes.
    */
   controlWaypointsByEdge: Map<number, Set<number>>;
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   change: {
     nodeType: NodeType;
@@ -60,7 +61,7 @@ export function repositionNode({
 }) {
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
-  const shape = diagramElements?.[change.shapeIndex] as DMNDI15__DMNShape | undefined;
+  const shape = diagramElements?.[change.shapeIndex] as Normalized<DMNDI15__DMNShape> | undefined;
   const shapeBounds = shape?.["dc:Bounds"];
   if (!shapeBounds) {
     throw new Error("DMN MUTATION: Cannot reposition non-existent shape bounds");
@@ -84,7 +85,7 @@ export function repositionNode({
 
   const offsetEdges = (args: { edgeIndexes: number[]; waypoint: "last" | "first" }) => {
     for (const edgeIndex of args.edgeIndexes) {
-      const edge = diagramElements[edgeIndex] as DMNDI15__DMNEdge | undefined;
+      const edge = diagramElements[edgeIndex] as Normalized<DMNDI15__DMNEdge> | undefined;
       if (!edge || !edge["di:waypoint"]) {
         throw new Error("DMN MUTATION: Cannot reposition non-existent edge");
       }

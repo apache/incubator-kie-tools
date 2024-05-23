@@ -80,6 +80,7 @@ import { DmnEditorTab } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { getDefaultColumnWidth } from "./getDefaultColumnWidth";
 import { getDefaultBoxedExpression } from "./getDefaultBoxedExpression";
+import { Normalized } from "../normalization/normalize";
 
 export function BoxedExpressionScreen({ container }: { container: React.RefObject<HTMLElement> }) {
   const { externalModelsByNamespace } = useExternalModels();
@@ -172,7 +173,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
   }, [drgElement, drgElementIndex]);
 
   const widthsByIdRef = useRef<Map<string, number[]>>(widthsById);
-  const boxedExpressionRef = useRef<BoxedExpression | undefined>(expression?.boxedExpression);
+  const boxedExpressionRef = useRef<Normalized<BoxedExpression> | undefined>(expression?.boxedExpression);
 
   useEffect(() => {
     widthsByIdRef.current = widthsById;
@@ -202,7 +203,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
     [dmnEditorStoreApi]
   );
 
-  const onExpressionChange: React.Dispatch<React.SetStateAction<BoxedExpression>> = useCallback(
+  const onExpressionChange: React.Dispatch<React.SetStateAction<Normalized<BoxedExpression>>> = useCallback(
     (newExpressionAction) => {
       dmnEditorStoreApi.setState((state) => {
         const newExpression =
@@ -402,9 +403,9 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
 
 export function drgElementToBoxedExpression(
   expressionHolder:
-    | (DMN15__tDecision & { __$$element: "decision" })
-    | (DMN15__tBusinessKnowledgeModel & { __$$element: "businessKnowledgeModel" })
-): BoxedExpression | undefined {
+    | (Normalized<DMN15__tDecision> & { __$$element: "decision" })
+    | (Normalized<DMN15__tBusinessKnowledgeModel> & { __$$element: "businessKnowledgeModel" })
+): Normalized<BoxedExpression> | undefined {
   if (expressionHolder.__$$element === "businessKnowledgeModel") {
     return expressionHolder.encapsulatedLogic
       ? {
@@ -413,7 +414,7 @@ export function drgElementToBoxedExpression(
         }
       : {
           __$$element: "functionDefinition",
-          "@_id": expressionHolder.variable?.["@_id"] ?? generateUuid(),
+          "@_id": generateUuid(),
           "@_kind": "FEEL",
           expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
           formalParameter: [],
@@ -441,7 +442,7 @@ export function drgElementToBoxedExpression(
 }
 
 function determineInputsForDecision(
-  decision: DMN15__tDecision,
+  decision: Normalized<DMN15__tDecision>,
   allTopLevelDataTypesByFeelName: DataTypeIndex,
   nodesById: Map<string, RF.Node<DmnDiagramNodeData>>
 ) {
@@ -485,7 +486,7 @@ function flattenItemComponents({
   itemDefinition,
   acc,
 }: {
-  itemDefinition: DMN15__tItemDefinition;
+  itemDefinition: Normalized<DMN15__tItemDefinition>;
   acc: string;
 }): { name: string; typeRef: string | undefined }[] {
   if (!isStruct(itemDefinition)) {

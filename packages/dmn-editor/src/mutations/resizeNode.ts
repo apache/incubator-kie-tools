@@ -33,6 +33,7 @@ import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { SnapGrid } from "../store/Store";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { DECISION_SERVICE_DIVIDER_LINE_PADDING } from "./updateDecisionServiceDividerLine";
+import { Normalized } from "../normalization/normalize";
 
 export function resizeNode({
   definitions,
@@ -41,9 +42,9 @@ export function resizeNode({
   snapGrid,
   change,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
-  dmnShapesByHref: Map<string, DMNDI15__DMNShape & { index: number }>;
+  dmnShapesByHref: Map<string, Normalized<DMNDI15__DMNShape> & { index: number }>;
   snapGrid: SnapGrid;
   change: {
     nodeType: NodeType;
@@ -59,7 +60,7 @@ export function resizeNode({
 
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
-  const shape = diagramElements?.[change.shapeIndex] as DMNDI15__DMNShape | undefined;
+  const shape = diagramElements?.[change.shapeIndex] as Normalized<DMNDI15__DMNShape> | undefined;
   const shapeBounds = shape?.["dc:Bounds"];
   if (!shapeBounds) {
     throw new Error("DMN MUTATION: Cannot resize non-existent shape bounds");
@@ -67,7 +68,7 @@ export function resizeNode({
 
   const limit = { x: 0, y: 0 };
   if (change.nodeType === NODE_TYPES.decisionService) {
-    const ds = definitions.drgElement![change.index] as DMN15__tDecisionService;
+    const ds = definitions.drgElement![change.index] as Normalized<DMN15__tDecisionService>;
 
     const dividerLineY =
       shape["dmndi:DMNDecisionServiceDividerLine"]?.["di:waypoint"]?.[0]?.["@_y"] ?? shapeBounds["@_y"];
@@ -128,7 +129,7 @@ export function resizeNode({
 
       edgeIndexesAlreadyUpdated.add(edgeIndex);
 
-      const edge = diagramElements[edgeIndex] as DMNDI15__DMNEdge | undefined;
+      const edge = diagramElements[edgeIndex] as Normalized<DMNDI15__DMNEdge> | undefined;
       if (!edge || !edge["di:waypoint"]) {
         throw new Error("DMN MUTATION: Cannot reposition non-existent edge");
       }

@@ -25,7 +25,7 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { ExternalModelsIndex } from "../DmnEditor";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
-import { normalize } from "../normalization/normalize";
+import { Normalized, normalize } from "../normalization/normalize";
 import { ComputedStateCache } from "./ComputedStateCache";
 import { computeAllFeelVariableUniqueNames } from "./computed/computeAllFeelVariableUniqueNames";
 import { computeDataTypes } from "./computed/computeDataTypes";
@@ -69,7 +69,7 @@ export type DropTargetNode = undefined | RF.Node<DmnDiagramNodeData>;
 export interface State {
   dispatch: (s: State) => Dispatch;
   computed: (s: State) => Computed;
-  dmn: { model: DmnLatestModel };
+  dmn: { model: Normalized<DmnLatestModel> };
   focus: {
     consumableId: string | undefined;
   };
@@ -220,7 +220,7 @@ export const defaultStaticState = (): Omit<State, "dmn" | "dispatch" | "computed
   },
 });
 
-export function createDmnEditorStore(model: State["dmn"]["model"], computedCache: ComputedStateCache<Computed>) {
+export function createDmnEditorStore(model: DmnLatestModel, computedCache: ComputedStateCache<Computed>) {
   return create(
     immer<State>(() => ({
       dmn: {

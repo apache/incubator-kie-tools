@@ -18,13 +18,14 @@
  */
 
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
+import { normalize } from "@kie-tools/dmn-editor/dist/normalization/normalize";
 import { XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 import * as DmnEditor from "../../src/DmnEditor";
 import { getPmmlNamespace } from "../../src/pmml/pmml";
 import { sumBkm, sumDiffDs, testTreePmml } from "./externalModels";
 
-export const sumBkmModel = getMarshaller(sumBkm, { upgradeTo: "latest" }).parser.parse();
-export const sumDiffDsModel = getMarshaller(sumDiffDs, { upgradeTo: "latest" }).parser.parse();
+export const sumBkmModel = normalize(getMarshaller(sumBkm, { upgradeTo: "latest" }).parser.parse());
+export const sumDiffDsModel = normalize(getMarshaller(sumDiffDs, { upgradeTo: "latest" }).parser.parse());
 export const testTreePmmlModel = XML2PMML(testTreePmml);
 
 export const avaiableModels: DmnEditor.ExternalModel[] = [
@@ -42,9 +43,11 @@ export const avaiableModels: DmnEditor.ExternalModel[] = [
   },
   {
     type: "dmn",
-    model: getMarshaller(`<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" />`, {
-      upgradeTo: "latest",
-    }).parser.parse(),
+    model: normalize(
+      getMarshaller(`<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" />`, {
+        upgradeTo: "latest",
+      }).parser.parse()
+    ),
     svg: "",
     normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-models-to-include/empty.dmn",
   },

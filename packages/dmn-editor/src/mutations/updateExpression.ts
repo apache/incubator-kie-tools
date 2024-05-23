@@ -23,14 +23,15 @@ import {
   DMN15__tFunctionDefinition,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { renameDrgElement } from "./renameNode";
+import { Normalized } from "../normalization/normalize";
 
 export function updateExpression({
   definitions,
   expression,
   drgElementIndex,
 }: {
-  definitions: DMN15__tDefinitions;
-  expression: BoxedExpression;
+  definitions: Normalized<DMN15__tDefinitions>;
+  expression: Normalized<BoxedExpression>;
   drgElementIndex: number;
 }): void {
   const drgElement = definitions.drgElement?.[drgElementIndex];
@@ -58,7 +59,7 @@ export function updateExpression({
 
     // We remove the __$$element here, because otherwise the "functionDefinition" element name will be used in the final XML.
     const { __$$element, ..._updateExpression } = expression;
-    drgElement.encapsulatedLogic = _updateExpression as DMN15__tFunctionDefinition;
+    drgElement.encapsulatedLogic = _updateExpression as Normalized<DMN15__tFunctionDefinition>;
     drgElement.variable!["@_typeRef"] = _updateExpression?.["@_typeRef"] ?? drgElement.variable!["@_typeRef"];
   } else {
     throw new Error("DMN MUTATION: Can't update expression for drgElement that is not a Decision or a BKM.");

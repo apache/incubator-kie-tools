@@ -19,8 +19,9 @@
 
 import { FormJsonSchemaBridge } from "@kie-tools/form/dist/uniforms/FormJsonSchemaBridge";
 import { FormDmnI18n } from "../i18n";
-import { DmnInputFieldProperties, ExtendedServicesDmnJsonSchema, X_DMN_TYPE } from "@kie-tools/extended-services-api";
+import { DmnInputFieldProperties, ExtendedServicesFormSchema, X_DMN_TYPE } from "@kie-tools/extended-services-api";
 import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/dmn-runner/dist/dmnFormats";
+import type { JSONSchema4 } from "json-schema";
 
 export enum Duration {
   DaysAndTimeDuration,
@@ -28,9 +29,9 @@ export enum Duration {
 }
 
 export class FormDmnJsonSchemaBridge extends FormJsonSchemaBridge {
-  schema: ExtendedServicesDmnJsonSchema;
+  schema: ExtendedServicesFormSchema;
 
-  constructor(formSchema: ExtendedServicesDmnJsonSchema, validator: (model: object) => void, i18n: FormDmnI18n) {
+  constructor(formSchema: JSONSchema4, validator: (model: object) => void, i18n: FormDmnI18n) {
     super(formSchema, validator, i18n);
     this.i18n = i18n;
   }

@@ -20,6 +20,7 @@
 import * as __path from "path";
 import * as React from "react";
 import * as DmnEditor from "@kie-tools/dmn-editor/dist/DmnEditor";
+import { Normalized, normalize } from "@kie-tools/dmn-editor/dist/normalization/normalize";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import {
@@ -66,7 +67,7 @@ export type DmnEditorRootProps = {
 
 export type DmnEditorRootState = {
   marshaller: DmnMarshaller<typeof DMN_LATEST_VERSION> | undefined;
-  stack: DmnLatestModel[];
+  stack: Normalized<DmnLatestModel>[];
   pointer: number;
   openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
   externalModelsByNamespace: DmnEditor.ExternalModelsIndex;
@@ -129,12 +130,16 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     const marshaller = getMarshaller(content || EMPTY_DMN(), { upgradeTo: "latest" });
 
     // Save stack
-    let savedStackPointer: DmnLatestModel[] = [];
+    let savedStackPointer: Normalized<DmnLatestModel>[] = [];
 
     // Set the model and path for external models manager.
     this.setState((prev) => {
       savedStackPointer = [...prev.stack];
-      return { stack: [marshaller.parser.parse()], openFilenormalizedPosixPathRelativeToTheWorkspaceRoot, pointer: 0 };
+      return {
+        stack: [normalize(marshaller.parser.parse())],
+        openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
+        pointer: 0,
+      };
     });
 
     // Wait the external manager models to load.
@@ -151,7 +156,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
         return {
           marshaller,
           openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
-          stack: [...newStack, marshaller.parser.parse()],
+          stack: [...newStack, normalize(marshaller.parser.parse())],
           readonly: false,
           pointer: newStack.length,
           externalModelsManagerDoneBootstraping: true,
@@ -163,7 +168,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
         return {
           marshaller,
           openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
-          stack: [marshaller.parser.parse()],
+          stack: [normalize(marshaller.parser.parse())],
           readonly: false,
           pointer: 0,
           externalModelsManagerDoneBootstraping: true,
@@ -174,7 +179,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
 
   // Internal methods
 
-  public get model(): DmnLatestModel | undefined {
+  public get model(): Normalized<DmnLatestModel> | undefined {
     return this.state.stack[this.state.pointer];
   }
 
@@ -253,7 +258,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       return {
         normalizedPosixPathRelativeToTheOpenFile,
         type: "dmn",
-        model: getMarshaller(resource?.content ?? "", { upgradeTo: "latest" }).parser.parse(),
+        model: normalize(getMarshaller(resource?.content ?? "", { upgradeTo: "latest" }).parser.parse()),
         svg: "",
       };
     } else if (ext === ".pmml") {
@@ -502,7 +507,7 @@ function ExternalModelsManager({
 }: {
   workspaceRootAbsolutePosixPath: string;
   thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
-  model: DmnLatestModel;
+  model: Normalized<DmnLatestModel>;
   onChange: (externalModelsByNamespace: DmnEditor.ExternalModelsIndex) => void;
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onRequestWorkspaceFilesList: WorkspaceChannelApi["kogitoWorkspace_resourceListRequest"];
@@ -602,7 +607,7 @@ function ExternalModelsManager({
 
               externalModelsIndex[namespace] = {
                 normalizedPosixPathRelativeToTheOpenFile,
-                model: getMarshaller(content, { upgradeTo: "latest" }).parser.parse(),
+                model: normalize(getMarshaller(content, { upgradeTo: "latest" }).parser.parse()),
                 type: "dmn",
                 svg: "",
               };
