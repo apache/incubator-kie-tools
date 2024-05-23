@@ -53,7 +53,6 @@ type AckEdge = (args: {
   source: string;
   target: string;
   sourceNamespace: string | undefined;
-  targetNamespace: string | undefined;
 }) => RF.Edge<DmnDiagramEdgeData>;
 
 type AckNode = (
@@ -82,7 +81,7 @@ export function computeDiagramData(
   const edgesById = new Map<string, RF.Edge<DmnDiagramEdgeData>>();
   const parentIdsById = new Map<string, DmnDiagramNodeData>();
   const externalNodesByNamespace = new Map<string, Array<RF.Node<DmnDiagramNodeData>>>();
-  const externalEdgesByNamespace = new Map<string, Array<RF.Edge<DmnDiagramEdgeData>>>();
+  const edgesFromExternalNodesByNamespace = new Map<string, Array<RF.Edge<DmnDiagramEdgeData>>>();
 
   const { selectedNodes, draggingNodes, resizingNodes, selectedEdges } = {
     selectedNodes: new Set(diagram._selectedNodes),
@@ -97,7 +96,7 @@ export function computeDiagramData(
   const drgEdges: DrgEdge[] = [];
   const drgAdjacencyList: DrgAdjacencyList = new Map();
 
-  const ackEdge: AckEdge = ({ id, type, dmnObject, source, target, sourceNamespace, targetNamespace }) => {
+  const ackEdge: AckEdge = ({ id, type, dmnObject, source, target, sourceNamespace }) => {
     const data = {
       dmnObject,
       dmnEdge: id ? indexedDrd.dmnEdgesByDmnElementRef.get(id) : undefined,
@@ -115,10 +114,10 @@ export function computeDiagramData(
     };
 
     if (sourceNamespace && sourceNamespace !== KIE_UNKNOWN_NAMESPACE) {
-      externalEdgesByNamespace.set(sourceNamespace, [...(externalEdgesByNamespace.get(sourceNamespace) ?? []), edge]);
-    }
-    if (sourceNamespace !== targetNamespace && targetNamespace && targetNamespace !== KIE_UNKNOWN_NAMESPACE) {
-      externalEdgesByNamespace.set(targetNamespace, [...(externalEdgesByNamespace.get(targetNamespace) ?? []), edge]);
+      edgesFromExternalNodesByNamespace.set(sourceNamespace, [
+        ...(edgesFromExternalNodesByNamespace.get(sourceNamespace) ?? []),
+        edge,
+      ]);
     }
 
     edgesById.set(edge.id, edge);
@@ -162,7 +161,6 @@ export function computeDiagramData(
       source: dmnObject.sourceRef?.["@_href"],
       target: dmnObject.targetRef?.["@_href"],
       sourceNamespace: undefined, // association are always from the current namespace
-      targetNamespace: undefined, // association are always from the current namespace
     });
   });
 
@@ -382,7 +380,7 @@ export function computeDiagramData(
     edges: sortedEdges,
     edgesById,
     externalNodesByNamespace,
-    externalEdgesByNamespace,
+    externalEdgesByNamespace: edgesFromExternalNodesByNamespace,
     nodesById,
     selectedNodeTypes,
     selectedNodesById,
@@ -417,7 +415,6 @@ function ackRequirementEdges(
           source: buildXmlHref({ namespace: irHref.namespace ?? namespace, id: irHref.id }),
           target: buildXmlHref({ namespace, id: dmnObject["@_id"]! }),
           sourceNamespace: irHref.namespace ?? namespace,
-          targetNamespace: namespace,
         });
       });
     }
@@ -438,7 +435,6 @@ function ackRequirementEdges(
           source: buildXmlHref({ namespace: krHref.namespace ?? namespace, id: krHref.id }),
           target: buildXmlHref({ namespace, id: dmnObject["@_id"]! }),
           sourceNamespace: krHref.namespace ?? namespace,
-          targetNamespace: namespace,
         });
       });
     }
@@ -463,7 +459,6 @@ function ackRequirementEdges(
           source: buildXmlHref({ namespace: arHref.namespace ?? namespace, id: arHref.id }),
           target: buildXmlHref({ namespace, id: dmnObject["@_id"]! }),
           sourceNamespace: arHref.namespace ?? namespace,
-          targetNamespace: namespace,
         });
       });
     }
