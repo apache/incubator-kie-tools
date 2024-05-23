@@ -78,7 +78,7 @@
   "engines": {
     "vscode": "^1.67.0"
   },
-  "displayName": "Dashbuilder Editor",
+  "displayName": "Apache KIE™ Dashbuilder Editor",
   "contributes": {
     "capabilities": {
       "untrustedWorkspaces": {

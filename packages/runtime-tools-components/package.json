@@ -36,7 +36,7 @@
     "@patternfly/react-styles": "^4.92.6",
     "@patternfly/react-table": "^4.112.39",
     "ajv": "^6.12.6",
-    "axios": "^1.6.4",
+    "axios": "^1.6.8",
     "copyfiles": "^2.4.1",
     "history": "^4.9.0",
     "keycloak-js": "^23.0.5",

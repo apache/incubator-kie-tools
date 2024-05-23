@@ -24,6 +24,7 @@ import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/
 import { useDmnEditorStore } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { InformationItemCell } from "./InformationItemCell";
+import { Normalized } from "../../normalization/normalize";
 
 export function RelationInformationItemCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
@@ -35,7 +36,9 @@ export function RelationInformationItemCell(props: {
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updater = useBoxedExpressionUpdater<DMN15__tInformationItem>(selectedObjectInfos?.expressionPath ?? []);
+  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tInformationItem>>(
+    selectedObjectInfos?.expressionPath ?? []
+  );
 
   return (
     <>

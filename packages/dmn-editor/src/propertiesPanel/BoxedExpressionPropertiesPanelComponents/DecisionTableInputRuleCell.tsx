@@ -30,6 +30,7 @@ import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constrai
 import { useDmnEditor } from "../../DmnEditorContext";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
+import { Normalized } from "../../normalization/normalize";
 
 export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadonly: boolean }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -56,16 +57,18 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
           .getDataTypes(externalModelsByNamespace);
         const typeRef =
           allTopLevelItemDefinitionUniqueNames.get(
-            (root?.cell as DMN15__tDecisionTable)?.input?.[cellPath.column ?? 0].inputExpression["@_typeRef"] ?? ""
+            (root?.cell as Normalized<DMN15__tDecisionTable>)?.input?.[cellPath.column ?? 0].inputExpression[
+              "@_typeRef"
+            ] ?? ""
           ) ?? DmnBuiltInDataType.Undefined;
         return { typeRef, itemDefinition: allDataTypesById.get(typeRef)?.itemDefinition };
       }
     }
   }, [dmnEditorStoreApi, externalModelsByNamespace, props.boxedExpressionIndex, selectedObjectInfos?.expressionPath]);
 
-  const updater = useBoxedExpressionUpdater<DMN15__tUnaryTests>(selectedObjectInfos?.expressionPath ?? []);
+  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tUnaryTests>>(selectedObjectInfos?.expressionPath ?? []);
 
-  const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tUnaryTests, [selectedObjectInfos?.cell]);
+  const cell = useMemo(() => selectedObjectInfos?.cell as Normalized<DMN15__tUnaryTests>, [selectedObjectInfos?.cell]);
 
   return (
     <>

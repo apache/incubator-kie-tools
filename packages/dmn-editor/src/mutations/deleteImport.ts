@@ -19,8 +19,9 @@
 
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
+import { Normalized } from "../normalization/normalize";
 
-export function deleteImport({ definitions, index }: { definitions: DMN15__tDefinitions; index: number }) {
+export function deleteImport({ definitions, index }: { definitions: Normalized<DMN15__tDefinitions>; index: number }) {
   definitions.import ??= [];
   const [deleted] = definitions.import.splice(index, 1);
 

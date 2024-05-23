@@ -44,7 +44,6 @@ test.describe("Add node - Decision", () => {
           variable: {
             "@_id": decision.variable?.["@_id"],
             "@_name": DefaultNodeName.DECISION,
-            "@_typeRef": DataType.Undefined,
           },
         });
         expect(await jsonModel.drd.getDrgElementBoundsOnDrd({ drgElementIndex: 0, drdIndex: 0 })).toEqual({
@@ -89,7 +88,6 @@ test.describe("Add node - Decision", () => {
           variable: {
             "@_id": inputData.variable?.["@_id"],
             "@_name": DefaultNodeName.INPUT_DATA,
-            "@_typeRef": DataType.Undefined,
           },
         });
         const decision = await jsonModel.drgElements.getDecision({ drgElementIndex: 1, drdIndex: 0 });
@@ -108,7 +106,6 @@ test.describe("Add node - Decision", () => {
           variable: {
             "@_id": decision.variable?.["@_id"],
             "@_name": DefaultNodeName.DECISION,
-            "@_typeRef": DataType.Undefined,
           },
         });
       });

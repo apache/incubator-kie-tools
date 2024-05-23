@@ -32,11 +32,9 @@ import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
-export type OnTypeRefChange = (newDataType: DmnBuiltInDataType) => void;
+export type OnTypeRefChange = (newDataType: string | undefined) => void;
 export type OnCreateDataType = (newDataTypeName: string) => void;
 export type OnToggle = (isExpanded: boolean) => void;
-
-export const typeRefSelectorLimitedSpaceStyle = { maxHeight: "600px", boxShadow: "none", overflowY: "scroll" };
 
 export function TypeRefSelector({
   zoom,
@@ -132,16 +130,16 @@ export function TypeRefSelector({
       )}
       <Select
         toggleRef={toggleRef}
-        className={!exists ? "kie-dmn-editor--type-ref-selector-invalid-value" : undefined}
+        className={!exists && typeRef ? "kie-dmn-editor--type-ref-selector-invalid-value" : undefined}
         isDisabled={isDisabled}
         variant={SelectVariant.typeahead}
         typeAheadAriaLabel={DmnBuiltInDataType.Undefined}
         onToggle={_onToggle}
         onSelect={(e, v) => {
           _onToggle(false);
-          onChange(v as DmnBuiltInDataType);
+          onChange(v === DmnBuiltInDataType.Undefined ? undefined : (v as string));
         }}
-        selections={typeRef}
+        selections={typeRef ?? DmnBuiltInDataType.Undefined}
         isOpen={isOpen}
         aria-labelledby={"Data types selector"}
         placeholderText={"Select a data type..."}

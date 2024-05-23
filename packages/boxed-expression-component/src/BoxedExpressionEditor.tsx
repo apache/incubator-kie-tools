@@ -20,7 +20,7 @@
 import "@patternfly/react-styles/css/components/Drawer/drawer.css";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import * as React from "react";
-import { BeeGwtService, DmnDataType, BoxedExpression, PmmlDocument } from "./api";
+import { BeeGwtService, BoxedExpression, DmnDataType, PmmlDocument } from "./api";
 import {
   boxedExpressionEditorDictionaries,
   BoxedExpressionEditorI18nContext,
@@ -42,7 +42,7 @@ export interface BoxedExpressionEditorProps {
   /** Name of the Decision or BKM containing `expression` */
   expressionHolderName: string;
   /** TypeRef of the Decision or BKM containing `expression` */
-  expressionHolderTypeRef: string;
+  expressionHolderTypeRef: string | undefined;
   /** The boxed expression itself */
   expression: BoxedExpression | undefined;
   /** Called every time something changes on the expression */

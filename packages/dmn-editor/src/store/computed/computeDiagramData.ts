@@ -36,6 +36,7 @@ import { buildXmlHref, parseXmlHref } from "../../xml/xmlHrefs";
 import { TypeOrReturnType } from "../ComputedStateCache";
 import { Computed, State } from "../Store";
 import { getDecisionServicePropertiesRelativeToThisDmn } from "../../mutations/addExistingDecisionServiceToDrd";
+import { Normalized } from "../../normalization/normalize";
 
 export const NODE_LAYERS = {
   GROUP_NODE: 0,
@@ -260,11 +261,11 @@ export function computeDiagramData(
         namespace,
         (externalDmn.model.definitions.drgElement ?? []).reduce(
           (acc, e, index) => acc.set(e["@_id"]!, { element: e, index }),
-          new Map<string, { index: number; element: Unpacked<DMN15__tDefinitions["drgElement"]> }>()
+          new Map<string, { index: number; element: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]> }>()
         )
       );
     },
-    new Map<string, Map<string, { index: number; element: Unpacked<DMN15__tDefinitions["drgElement"]> }>>()
+    new Map<string, Map<string, { index: number; element: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]> }>>()
   );
 
   const externalNodes = [...indexedDrd.dmnShapesByHref.entries()].flatMap(([href, shape]) => {
@@ -370,7 +371,7 @@ export function computeDiagramData(
 function ackRequirementEdges(
   thisDmnsNamespace: string,
   drgElementsNamespace: string,
-  drgElements: DMN15__tDefinitions["drgElement"],
+  drgElements: Normalized<DMN15__tDefinitions>["drgElement"],
   ackEdge: AckEdge
 ) {
   const namespace = drgElementsNamespace === thisDmnsNamespace ? "" : drgElementsNamespace;

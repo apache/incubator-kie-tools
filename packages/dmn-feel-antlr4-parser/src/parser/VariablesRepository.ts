@@ -258,7 +258,7 @@ export class VariablesRepository {
     const parent = this.addVariable(
       drg["@_id"] ?? "",
       drg["@_name"],
-      FeelSyntacticSymbolNature.GlobalVariable,
+      FeelSyntacticSymbolNature.InvisibleVariables,
       undefined,
       drg.variable?.["@_typeRef"]
     );
@@ -514,7 +514,7 @@ export class VariablesRepository {
     if (expression.in.expression) {
       type = expression.in.expression["@_typeRef"];
     }
-    const localParent = this.addVariable(
+    return this.addVariable(
       expression["@_id"] ?? "",
       "item",
       FeelSyntacticSymbolNature.LocalVariable,
@@ -522,8 +522,6 @@ export class VariablesRepository {
       type,
       true
     );
-
-    return localParent;
   }
 
   private addIteratorVariable(parent: VariableContext, expression: DmnFor | DmnEvery | DmnSome) {
@@ -549,10 +547,11 @@ export class VariablesRepository {
   }
 
   private addFilter(parent: VariableContext, expression: DmnFilter) {
-    const localParent = this.addFilterVariable(parent, expression);
     if (expression.in.expression) {
-      this.addInnerExpression(localParent, expression.in.expression);
+      this.addInnerExpression(parent, expression.in.expression);
     }
+
+    const localParent = this.addFilterVariable(parent, expression);
     if (expression.match.expression) {
       this.addInnerExpression(localParent, expression.match.expression);
     }

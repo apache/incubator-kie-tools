@@ -24,6 +24,7 @@ import "@patternfly/react-core/dist/styles/base.css";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DmnLatestModel, getMarshaller, DmnMarshaller } from "@kie-tools/dmn-marshaller";
+import { Normalized, normalize } from "@kie-tools/dmn-editor/dist/normalization/normalize";
 import { availableModelsByPath, modelsByNamespace } from "./availableModelsToInclude";
 import { generateEmptyDmn15 } from "../misc/empty/Empty.stories";
 import { loanPreQualificationDmn } from "../useCases/loanPreQualification/LoanPreQualification.stories";
@@ -65,11 +66,15 @@ const emptyDrd = `<?xml version="1.0" encoding="UTF-8" ?>
 `;
 
 function DevWebApp(args: DmnEditorProps) {
-  const [state, setState] = useState<{ marshaller: DmnMarshaller; stack: DmnLatestModel[]; pointer: number }>(() => {
+  const [state, setState] = useState<{
+    marshaller: DmnMarshaller;
+    stack: Normalized<DmnLatestModel>[];
+    pointer: number;
+  }>(() => {
     const initialDmnMarshaller = getMarshaller(initialModel, { upgradeTo: "latest" });
     return {
       marshaller: initialDmnMarshaller,
-      stack: [initialDmnMarshaller.parser.parse()],
+      stack: [normalize(initialDmnMarshaller.parser.parse())],
       pointer: 0,
     };
   });
@@ -86,7 +91,7 @@ function DevWebApp(args: DmnEditorProps) {
           const reader = new FileReader();
           reader.addEventListener("load", ({ target }) => {
             const marshaller = getMarshaller(target?.result as string, { upgradeTo: "latest" });
-            setState({ marshaller, stack: [marshaller.parser.parse()], pointer: 0 });
+            setState({ marshaller, stack: [normalize(marshaller.parser.parse())], pointer: 0 });
           });
           reader.readAsText(item.getAsFile() as any);
         }
@@ -102,7 +107,7 @@ function DevWebApp(args: DmnEditorProps) {
     const marshaller = getMarshaller(generateEmptyDmn15(), { upgradeTo: "latest" });
     setState({
       marshaller,
-      stack: [marshaller.parser.parse()],
+      stack: [normalize(marshaller.parser.parse())],
       pointer: 0,
     });
   }, []);
@@ -144,7 +149,7 @@ function DevWebApp(args: DmnEditorProps) {
 
   const onSelectModel = useCallback(
     (newModel) => {
-      onModelChange(getMarshaller(newModel, { upgradeTo: "latest" }).parser.parse());
+      onModelChange(normalize(getMarshaller(newModel, { upgradeTo: "latest" }).parser.parse()));
     },
     [onModelChange]
   );

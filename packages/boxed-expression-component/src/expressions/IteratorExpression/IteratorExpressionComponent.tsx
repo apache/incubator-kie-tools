@@ -28,7 +28,7 @@ import {
 } from "../../api";
 import { BeeTable, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import {
   DMN15__tChildExpression,
   DMN15__tTypedChildExpression,
@@ -47,7 +47,6 @@ import {
   ITERATOR_EXPRESSION_LABEL_COLUMN_WIDTH,
 } from "../../resizing/WidthConstants";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
-import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { IteratorExpressionVariableCell } from "./IteratorExpressionVariableCell";
 
 type ROWTYPE = IteratorClause;

@@ -18,9 +18,9 @@
  */
 
 import * as React from "react";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { buildFeelQNameFromXmlQName } from "../feel/buildFeelQName";
 import { useMemo } from "react";
+import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { buildFeelQNameFromXmlQName } from "../feel/buildFeelQName";
 import { buildXmlQName, parseXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { useDmnEditorStore } from "../store/StoreContext";
 import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
@@ -74,7 +74,10 @@ export function TypeRefLabel({
       importsByNamespace,
       relativeToNamespace: thisDmn.model.definitions["@_namespace"],
       model: thisDmn.model.definitions,
-      namedElement: { "@_name": parsedFeelQName.importName ? parsedFeelQName.localPart : typeRef },
+      namedElement: {
+        "@_id": generateUuid(),
+        "@_name": parsedFeelQName.importName ? parsedFeelQName.localPart : typeRef,
+      },
       namedElementQName: xmlQName,
     }).full;
 

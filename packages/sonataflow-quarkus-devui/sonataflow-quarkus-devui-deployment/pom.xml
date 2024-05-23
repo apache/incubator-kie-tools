@@ -36,6 +36,7 @@
 
   <properties>
       <path.to.webapp.app>../node_modules/@kie-tools/serverless-workflow-dev-ui-webapp</path.to.webapp.app>
+      <version.apache.mime4j>0.8.11</version.apache.mime4j>
   </properties>
 
   <dependencies>
@@ -67,6 +68,14 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-multipart-deployment</artifactId>
+    </dependency>
+    <!-- Transitively imported by io.quarkus:quarkus-resteasy-multipart-deployment
+         Overriding it to fix CVE-2024-21742
+         Can be removed once the parent dependency updates it to a 0.8.11+ version -->
+    <dependency>
+      <groupId>org.apache.james</groupId>
+      <artifactId>apache-mime4j-core</artifactId>
+      <version>${version.apache.mime4j}</version>
     </dependency>
 
     <!-- Undertow is needed so that the static resource serving can correctly locate CP resources from `META-INF/resources` of the application, as it would be normally expected.
@@ -109,7 +118,7 @@
             <path>
               <groupId>io.quarkus</groupId>
               <artifactId>quarkus-extension-processor</artifactId>
-              <version>${quarkus.platform.version}</version> 
+              <version>${quarkus.platform.version}</version>
             </path>
           </annotationProcessorPaths>
         </configuration>
