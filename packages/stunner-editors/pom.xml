@@ -316,7 +316,7 @@
     <version.site.plugin>3.7.1</version.site.plugin>
     <version.spotbugs-maven-plugin>3.1.8</version.spotbugs-maven-plugin>
     <version.sonar.plugin>3.9.1.2184</version.sonar.plugin>
-    <version.source.plugin>3.3.1</version.source.plugin>
+    <version.source.plugin>3.0.1</version.source.plugin>
     <version.surefire.plugin>3.2.5</version.surefire.plugin>
     <version.war.plugin>3.2.2</version.war.plugin>
     <version.zanata.plugin>2.3.0</version.zanata.plugin>
