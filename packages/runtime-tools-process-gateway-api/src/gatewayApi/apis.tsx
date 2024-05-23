@@ -305,7 +305,7 @@ export const handleNodeTrigger = async (
         mutation: GraphQL.HandleNodeTriggerDocument,
         variables: {
           processId: processInstance.id,
-          nodeId: node.nodeDefinitionId,
+          nodeId: node.id,
         },
         fetchPolicy: "no-cache",
       })
@@ -442,14 +442,14 @@ export const getTriggerableNodes = async (
 ): Promise<any> => {
   return client
     .query({
-      query: GraphQL.GetProcessInstanceNodeDefinitionsDocument,
+      query: GraphQL.GetProcessDefinitionNodesDocument,
       variables: {
-        processId: processInstance.id,
+        processId: processInstance.processId,
       },
       fetchPolicy: "no-cache",
     })
     .then((value) => {
-      return value.data.ProcessInstances[0].nodeDefinitions;
+      return value.data.ProcessDefinitions[0].nodes;
     })
     .catch((reason) => {
       return reason;
