@@ -169,10 +169,12 @@ export function BeeTableTh<R extends object>({
     useCallback(() => {
       if (column.dataType) {
         return `${column.label} (${column.dataType})`;
-      } else {
+      } else if (!column.isInlineEditable) {
         return column.label;
+      } else {
+        return "";
       }
-    }, [column.dataType, column.label])
+    }, [column.dataType, column.isInlineEditable, column.label])
   );
 
   const coordinates = useMemo<BeeTableCellCoordinates>(
