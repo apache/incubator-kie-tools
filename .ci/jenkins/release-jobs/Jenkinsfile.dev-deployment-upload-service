@@ -199,10 +199,10 @@ pipeline {
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
-                    cp "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-darwin-amd64-${params.RELEASE_VERSION}.tar.gz" ${env.RELEASE_ARTIFACTS_DIR}/${env.DEV_DEPLOYMENT_UPLOAD_SERVICE_MAC_ARM64_RELEASE_FILE}
-                    cp "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-darwin-arm64-${params.RELEASE_VERSION}.tar.gz" ${env.RELEASE_ARTIFACTS_DIR}/${env.DEV_DEPLOYMENT_UPLOAD_SERVICE_MAC_X86_RELEASE_FILE}
-                    cp "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-linux-amd64-${params.RELEASE_VERSION}.tar.gz" ${env.RELEASE_ARTIFACTS_DIR}/${env.DEV_DEPLOYMENT_UPLOAD_SERVICE_LINUX_X86_RELEASE_FILE}
-                    cp "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-windows-amd64-${params.RELEASE_VERSION}.tar.gz" ${env.RELEASE_ARTIFACTS_DIR}/${env.DEV_DEPLOYMENT_UPLOAD_SERVICE_WINDOWS_X86_RELEASE_FILE}
+                    cp "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-darwin-amd64-${params.RELEASE_VERSION}.tar.gz" "${env.RELEASE_ARTIFACTS_DIR}/${env.DEV_DEPLOYMENT_UPLOAD_SERVICE_MAC_ARM64_RELEASE_FILE}"
+                    cp "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-darwin-arm64-${params.RELEASE_VERSION}.tar.gz" "${env.RELEASE_ARTIFACTS_DIR}/${env.DEV_DEPLOYMENT_UPLOAD_SERVICE_MAC_X86_RELEASE_FILE}"
+                    cp "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-linux-amd64-${params.RELEASE_VERSION}.tar.gz" "${env.RELEASE_ARTIFACTS_DIR}/${env.DEV_DEPLOYMENT_UPLOAD_SERVICE_LINUX_X86_RELEASE_FILE}"
+                    cp "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-windows-amd64-${params.RELEASE_VERSION}.tar.gz" "${env.RELEASE_ARTIFACTS_DIR}/${env.DEV_DEPLOYMENT_UPLOAD_SERVICE_WINDOWS_X86_RELEASE_FILE}"
                     """.trim()
                 }
             }

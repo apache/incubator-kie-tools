@@ -150,7 +150,7 @@ pipeline {
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
-                    cp kie-tools/packages/kie-sandbox-helm-chart/dist/${env.KIE_SANDBOX_HELM_CHART__name}-${env.KIE_SANDBOX_HELM_CHART__tag}.tgz ${env.RELEASE_ARTIFACTS_DIR}/${RELEASE_TAR_FILE}
+                    cp "kie-tools/packages/kie-sandbox-helm-chart/dist/${env.KIE_SANDBOX_HELM_CHART__name}-${env.KIE_SANDBOX_HELM_CHART__tag}.tgz" "${env.RELEASE_ARTIFACTS_DIR}/${RELEASE_TAR_FILE}"
                     """.trim()
                 }
             }

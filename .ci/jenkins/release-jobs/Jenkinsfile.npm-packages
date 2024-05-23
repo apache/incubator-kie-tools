@@ -157,7 +157,7 @@ pipeline {
                         sh """#!/bin/bash -el
                         mkdir ${env.RELEASE_ARTIFACTS_DIR}
                         npm pack
-                        cp "kie-tools/kie-tools-root-${params.RELEASE_VERSION}.tgz" ${env.RELEASE_ARTIFACTS_DIR}/${RELEASE_TAR_FILE}
+                        cp "kie-tools/kie-tools-root-${params.RELEASE_VERSION}.tgz" "${env.RELEASE_ARTIFACTS_DIR}/${RELEASE_TAR_FILE}"
                         """.trim()
                     }
                 }

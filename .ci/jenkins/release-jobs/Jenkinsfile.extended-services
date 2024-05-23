@@ -141,7 +141,7 @@ pipeline {
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
-                    cp kie-tools/packages/extended-services/dist/linux/kie_sandbox_extended_services.tar.gz ${env.RELEASE_ARTIFACTS_DIR}/${RELEASE_TAR_FILE}
+                    cp kie-tools/packages/extended-services/dist/linux/kie_sandbox_extended_services.tar.gz "${env.RELEASE_ARTIFACTS_DIR}/${RELEASE_TAR_FILE}"
                     """.trim()
                 }
             }

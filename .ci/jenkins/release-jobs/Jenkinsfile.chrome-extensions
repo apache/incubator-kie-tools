@@ -356,8 +356,8 @@ pipeline {
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
-                    cp "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.RELEASE_VERSION}.zip" ${env.RELEASE_ARTIFACTS_DIR}/${CHROME_EXTENSION_RELEASE_ZIP_FILE}
-                    cp "kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${params.RELEASE_VERSION}.zip" ${env.RELEASE_ARTIFACTS_DIR}/${SWF_CHROME_EXTENSION_RELEASE_ZIP_FILE}
+                    cp "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.RELEASE_VERSION}.zip" "${env.RELEASE_ARTIFACTS_DIR}/${CHROME_EXTENSION_RELEASE_ZIP_FILE}"
+                    cp "kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${params.RELEASE_VERSION}.zip" "${env.RELEASE_ARTIFACTS_DIR}/${SWF_CHROME_EXTENSION_RELEASE_ZIP_FILE}"
                     """.trim()
                 }
             }
