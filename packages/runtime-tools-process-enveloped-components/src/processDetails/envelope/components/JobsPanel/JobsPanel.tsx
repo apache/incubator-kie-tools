@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import { Card, CardHeader, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
@@ -41,27 +41,30 @@ interface JobsPanelProps {
 }
 
 const JobsPanel: React.FC<JobsPanelProps & OUIAProps> = ({ jobs, driver, ouiaId, ouiaSafe }) => {
-  const [rows, setRows] = useState<IRow[]>([]);
+  const columns: ICell[] = useMemo(() => {
+    return [
+      {
+        title: "Job id",
+      },
+      {
+        title: "Status",
+      },
+      {
+        title: "Expiration time",
+      },
+      {
+        title: "Actions",
+      },
+    ];
+  }, []);
 
-  const columns: ICell[] = [
-    {
-      title: "Job id",
-    },
-    {
-      title: "Status",
-    },
-    {
-      title: "Expiration time",
-    },
-    {
-      title: "Actions",
-    },
-  ];
+  const rows: IRow[] = useMemo(() => {
+    if (!jobs) {
+      return [];
+    }
 
-  const createRows = (jobsArray: Job[]): IRow[] => {
-    const jobRows: IRow[] = [];
-    jobsArray.forEach((job) => {
-      jobRows.push({
+    return jobs.map((job) => {
+      return {
         cells: [
           {
             title: (
@@ -94,15 +97,8 @@ const JobsPanel: React.FC<JobsPanelProps & OUIAProps> = ({ jobs, driver, ouiaId,
             title: <JobActionsKebab job={job} driver={driver} />,
           },
         ],
-      });
+      };
     });
-    return jobRows;
-  };
-
-  useEffect(() => {
-    if (jobs.length > 0) {
-      setRows(createRows(jobs));
-    }
   }, [jobs]);
 
   if (jobs.length > 0) {
