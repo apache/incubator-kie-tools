@@ -111,7 +111,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   const loadJobs = useCallback(async () => {
     const jobsResponse: Job[] = await driver.jobsQuery(processDetails.id);
     jobsResponse && setJobs(jobsResponse);
-  }, [processDetails, driver]);
+  }, [processDetails.id, driver]);
 
   const handleSvgErrorModal = (): void => {
     setSvgErrorModalOpen(!svgErrorModalOpen);
@@ -145,13 +145,13 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
       handleSvgApi();
       getVariableJSON();
     }
-  }, [data]);
+  }, [driver, data, isEnvelopeConnectedToChannel, processDetails.id]);
 
   useEffect(() => {
     if (svgError && svgError.length > 0 && !showSwfDiagram) {
       setSvgErrorModalOpen(true);
     }
-  }, [svgError]);
+  }, [svgError, showSwfDiagram]);
 
   useEffect(() => {
     if (variableError && variableError.length > 0) {
@@ -165,7 +165,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
       setData(processDetails);
       loadJobs();
     }
-  }, [isEnvelopeConnectedToChannel]);
+  }, [isEnvelopeConnectedToChannel, loadJobs, processDetails]);
 
   /* istanbul ignore next */
   const handleSave = (): void => {

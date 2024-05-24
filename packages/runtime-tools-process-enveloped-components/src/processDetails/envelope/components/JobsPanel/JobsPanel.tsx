@@ -99,7 +99,7 @@ const JobsPanel: React.FC<JobsPanelProps & OUIAProps> = ({ jobs, driver, ouiaId,
         ],
       };
     });
-  }, [jobs]);
+  }, [driver, jobs]);
 
   if (jobs.length > 0) {
     return (
