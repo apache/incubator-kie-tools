@@ -46,7 +46,6 @@ import { ApolloClient } from "apollo-client";
 import { buildWorkflowListWhereArgument } from "./QueryUtils";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-import SwaggerParser from "@apidevtools/swagger-parser";
 
 export const getWorkflowInstances = async (
   offset: number,
@@ -675,12 +674,20 @@ export const getCustomWorkflowSchemaFromApi = async (
 export const getCustomWorkflowSchema = async (
   baseUrl: string,
   openApiPath: string,
-  workflowName: string
+  workflowName: string,
+  proxyEndpoint?: string
 ): Promise<Record<string, any>> => {
   return new Promise((resolve, reject) => {
-    SwaggerParser.parse(`${baseUrl}/${openApiPath}`)
+    const url = `${baseUrl}/${openApiPath}`;
+    axios
+      .request({
+        url: proxyEndpoint || url,
+        headers: {
+          ...(proxyEndpoint ? { "Target-Url": url } : {}),
+        },
+      })
       .then(async (response: any) => {
-        resolve(await getCustomWorkflowSchemaFromApi(response, workflowName));
+        resolve(await getCustomWorkflowSchemaFromApi(response.data, workflowName));
       })
       .catch((err) => reject(err));
   });
