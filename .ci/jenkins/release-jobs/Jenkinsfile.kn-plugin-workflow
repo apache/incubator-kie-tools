@@ -220,10 +220,10 @@ pipeline {
             steps {
                 script {
                     releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.KN_PLUGIN_LINUX_X86_RELEASE_ZIP_FILE}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.KN_PLUGIN_MACOS_ARM_RELEASE_ZIP_FILE}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.KN_PLUGIN_MACOS_X86_RELEASE_ZIP_FILE}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.KN_PLUGIN_WINDOWS_X86_RELEASE_ZIP_FILE}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.KN_PLUGIN_LINUX_X86_RELEASE_ZIP_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.KN_PLUGIN_MACOS_ARM_RELEASE_ZIP_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.KN_PLUGIN_MACOS_X86_RELEASE_ZIP_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.KN_PLUGIN_WINDOWS_X86_RELEASE_ZIP_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
                 }
             }
         }

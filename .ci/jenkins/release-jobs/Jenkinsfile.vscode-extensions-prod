@@ -327,14 +327,14 @@ pipeline {
             steps {
                 script {
                     releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.BPMN_VSCODE_EXTENSION_RELEASE_FILE}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.DMN_VSCODE_EXTENSION_RELEASE_FILE}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.PMML_VSCODE_EXTENSION_RELEASE_FILE}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.YARD_VSCODE_EXTENSION_RELEASE_FILE}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.KOGITO_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.BUSINESS_AUTOMATION_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.BPMN_VSCODE_EXTENSION_RELEASE_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.DMN_VSCODE_EXTENSION_RELEASE_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.PMML_VSCODE_EXTENSION_RELEASE_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.YARD_VSCODE_EXTENSION_RELEASE_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.KOGITO_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.BUSINESS_AUTOMATION_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
                 }
             }
         }

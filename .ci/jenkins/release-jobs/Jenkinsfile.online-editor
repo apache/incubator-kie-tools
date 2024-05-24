@@ -214,7 +214,7 @@ pipeline {
             steps {
                 script {
                     releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_ZIP_FILE}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_ZIP_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
                 }
             }
         }
