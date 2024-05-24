@@ -74,6 +74,16 @@ export function deleteNode({
     console.warn("DMN MUTATION: Cannot hide a Decision that's contained by a Decision Service from a DRD.");
     return { deletedDmnObject: undefined, deletedDmnShapeOnCurrentDrd: undefined };
   }
+  if (
+    mode === NodeDeletionMode.FROM_CURRENT_DRD_ONLY &&
+    !canRemoveDecisionService({
+      definitions,
+      dmnObjectId,
+    })
+  ) {
+    console.warn("DMN MUTATION: Cannot hide a Decision Service that isn't present in another DRD");
+    return { deletedDmnObject: undefined, deletedDmnShapeOnCurrentDrd: undefined };
+  }
 
   if (mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
     // Delete Edges
@@ -230,4 +240,37 @@ export function canRemoveNodeFromDrdOnly({
   );
 
   return !isContainedByDecisionService || !isContainingDecisionServiceInExpandedFormPresentInTheDrd;
+}
+
+export function canRemoveDecisionService({
+  definitions,
+  dmnObjectId,
+}: {
+  definitions: Normalized<DMN15__tDefinitions>;
+  dmnObjectId: string | undefined;
+}) {
+  const elementByDrd = JSON.parse(JSON.stringify(definitions));
+
+  let count = 0;
+  for (let i = 0; i < elementByDrd["dmndi:DMNDI"]["dmndi:DMNDiagram"].length; i++) {
+    for (let j = 0; j < elementByDrd["dmndi:DMNDI"]["dmndi:DMNDiagram"][i]["dmndi:DMNDiagramElement"].length; j++) {
+      if (
+        // Element with selected ID
+        elementByDrd["dmndi:DMNDI"]["dmndi:DMNDiagram"][i]["dmndi:DMNDiagramElement"][j]["@_dmnElementRef"] ===
+          dmnObjectId &&
+        //Element that is not collapsed
+        !elementByDrd["dmndi:DMNDI"]["dmndi:DMNDiagram"][i]["dmndi:DMNDiagramElement"][j]["@_isCollapsed"] &&
+        //Element is a decision Service
+        elementByDrd["dmndi:DMNDI"]["dmndi:DMNDiagram"][i]["dmndi:DMNDiagramElement"][j][
+          "dmndi:DMNDecisionServiceDividerLine"
+        ]
+      ) {
+        count++;
+      }
+    }
+  }
+  if (count === 1) {
+    return false;
+  }
+  return true;
 }
