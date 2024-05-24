@@ -957,7 +957,7 @@ export const DecisionServiceNode = React.memo(
             updateDecisionServiceDividerLine({
               definitions: state.dmn.model.definitions,
               drdIndex: state.computed(state).getDrdIndex(),
-              dmnShapesByHref: state.computed(state).indexedDrd().dmnShapesByHref,
+              __readonly_dmnShapesByHref: state.computed(state).indexedDrd().dmnShapesByHref,
               drgElementIndex: index,
               shapeIndex: shape.index,
               localYPosition: e.y,
