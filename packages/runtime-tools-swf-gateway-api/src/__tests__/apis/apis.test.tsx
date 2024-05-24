@@ -140,11 +140,11 @@ describe("swf custom form tests", () => {
   });
 });
 
-describe("triiger cloud events serction", () => {
+describe("trigger cloud events section", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  it("trigger cloud event start - with businesskey", async () => {
+  it("trigger cloud event start - with business key", async () => {
     mockedAxios.request.mockResolvedValue("success");
     const event = {
       method: CloudEventMethod.POST,
@@ -157,6 +157,7 @@ describe("triiger cloud events serction", () => {
           kogitobusinesskey: "1234",
         },
       },
+      serviceUrl: "http://localhost:8090/",
     };
     const response = await triggerStartCloudEvent(event, "http://localhost:8080/");
 
@@ -174,7 +175,7 @@ describe("triiger cloud events serction", () => {
     expect(request.data).toHaveProperty("data", JSON.parse(event.data));
   });
 
-  it("trigger cloud event start - without businesskey", async () => {
+  it("trigger cloud event start - without business key", async () => {
     mockedAxios.request.mockResolvedValue("success");
     const event = {
       method: CloudEventMethod.POST,
@@ -185,6 +186,7 @@ describe("triiger cloud events serction", () => {
         source: "eventSource",
         extensions: {},
       },
+      serviceUrl: "http://localhost:8090/",
     };
     const response = await triggerStartCloudEvent(event, "http://localhost:8080/");
 
@@ -211,6 +213,7 @@ describe("triiger cloud events serction", () => {
           kogitoprocrefid: "1234",
         },
       },
+      serviceUrl: "http://localhost:8090/",
     };
     const response = await triggerCloudEvent(event, "http://localhost:8080/");
 
@@ -236,6 +239,7 @@ describe("triiger cloud events serction", () => {
         source: "eventSource",
         extensions: {},
       },
+      serviceUrl: "http://localhost:8090/",
     };
     const response = await triggerCloudEvent(event, "http://localhost:8080/");
 
@@ -263,6 +267,7 @@ describe("triiger cloud events serction", () => {
           kogitoprocrefid: "1234",
         },
       },
+      serviceUrl: "http://localhost:8090/",
     };
     const response = await triggerCloudEvent(event, "http://localhost:8080/");
 

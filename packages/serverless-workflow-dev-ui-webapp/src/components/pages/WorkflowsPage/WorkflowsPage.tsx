@@ -90,6 +90,21 @@ const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
     [history]
   );
 
+  const onOpenTriggerCloudEvent = useCallback(
+    (workflowDefinition: WorkflowDefinition) => {
+      history.push({
+        pathname: `/WorkflowDefinitions/CloudEvent`,
+        state: {
+          workflowDefinition: {
+            workflowName: workflowDefinition.workflowName,
+            endpoint: workflowDefinition.endpoint,
+          },
+        },
+      });
+    },
+    [history]
+  );
+
   return (
     <React.Fragment>
       {activeTabKey === 0 && <PageSectionHeader titleText={`Workflow Instances`} ouiaId={ouiaId} />}
@@ -120,6 +135,7 @@ const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
               <Card className="Dev-ui__card-size">
                 <WorkflowDefinitionListContainer
                   onOpenWorkflowForm={onOpenWorkflowForm}
+                  onOpenTriggerCloudEventForWorkflow={onOpenTriggerCloudEvent}
                   targetOrigin={apiContext.getDevUIUrl()}
                 />
               </Card>

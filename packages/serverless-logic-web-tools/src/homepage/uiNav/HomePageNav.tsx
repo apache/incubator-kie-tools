@@ -49,14 +49,6 @@ export function HomePageNav(props: { pathname: string }) {
           >
             <Link to={routes.runtimeToolsWorkflowInstances.path({})}>Workflow Instances</Link>
           </NavItem>
-          <NavItem
-            itemId={5}
-            key={"RuntimeToolsTriggerCloudEvent-nav"}
-            isActive={props.pathname === routes.runtimeToolsTriggerCloudEvent.path({})}
-            ouiaId="runtime-tools-trigger-cloud-event-nav"
-          >
-            <Link to={routes.runtimeToolsTriggerCloudEvent.path({})}>Trigger Cloud Event</Link>
-          </NavItem>
         </NavExpandable>
       );
     }

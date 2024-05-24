@@ -30,6 +30,7 @@ import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/P
 import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import { useHistory } from "react-router-dom";
 import { CloudEventFormContainer } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventFormContainer";
+import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 
 export interface CloudEventPageState {
   source?: CloudEventPageSource;
@@ -43,13 +44,15 @@ export enum CloudEventPageSource {
 const CloudEventFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const [notification, setNotification] = useState<Notification>();
 
+  const context = useDevUIAppContext();
+
   const history = useHistory();
 
   const initialState = history.location && (history.location.state as CloudEventPageState);
 
   const isTriggerNewInstance = useMemo(() => {
     const source = initialState.source;
-    return source === CloudEventPageSource.DEFINITIONS;
+    return source !== CloudEventPageSource.INSTANCES;
   }, [history]);
 
   const showNotification = useCallback(
@@ -76,7 +79,7 @@ const CloudEventFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   );
 
   const onSubmitSuccess = useCallback((): void => {
-    showNotification("success", "");
+    showNotification("success", "The CloudEvent has been successfully triggered.");
   }, []);
 
   const onSubmitError = useCallback((details?: string) => {
@@ -108,10 +111,12 @@ const CloudEventFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
           <CardBody className="pf-u-h-100">
             <CloudEventFormContainer
               isTriggerNewInstance={isTriggerNewInstance}
-              cloudEventSource={`${initialState}`}
+              cloudEventSource={"/local/devui"}
               onStartWorkflowError={(details) => onSubmitError(details)}
               onTriggerCloudEventSuccess={() => onSubmitSuccess()}
               onTriggerStartCloudEventSuccess={() => onSubmitSuccess()}
+              serviceUrl={context.getDevUIUrl()}
+              targetOrigin={context.getDevUIUrl()}
             />
           </CardBody>
         </Card>

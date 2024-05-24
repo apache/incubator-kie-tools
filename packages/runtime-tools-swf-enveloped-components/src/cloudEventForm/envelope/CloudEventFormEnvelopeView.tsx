@@ -41,6 +41,7 @@ export const CloudEventFormEnvelopeView = React.forwardRef<CloudEventFormEnvelop
     const [isEnvelopeConnectedToChannel, setEnvelopeConnectedToChannel] = useState<boolean>(false);
     const [isNewInstanceEvent, setIsNewInstanceEvent] = useState<boolean>(false);
     const [defaultValues, setDefaultValues] = useState<CloudEventFormDefaultValues>();
+    const [serviceUrl, setServiceUrl] = useState<string>("");
 
     useImperativeHandle(
       forwardedRef,
@@ -49,6 +50,7 @@ export const CloudEventFormEnvelopeView = React.forwardRef<CloudEventFormEnvelop
           setEnvelopeConnectedToChannel(true);
           setIsNewInstanceEvent(args.isNewInstanceEvent);
           setDefaultValues(args.defaultValues);
+          setServiceUrl(args.serviceUrl);
         },
       }),
       []
@@ -78,7 +80,12 @@ export const CloudEventFormEnvelopeView = React.forwardRef<CloudEventFormEnvelop
     return (
       <Card>
         <CardBody>
-          <CloudEventForm driver={driver} isNewInstanceEvent={isNewInstanceEvent} defaultValues={defaultValues} />
+          <CloudEventForm
+            driver={driver}
+            serviceUrl={serviceUrl}
+            isNewInstanceEvent={isNewInstanceEvent}
+            defaultValues={defaultValues}
+          />
         </CardBody>
       </Card>
     );

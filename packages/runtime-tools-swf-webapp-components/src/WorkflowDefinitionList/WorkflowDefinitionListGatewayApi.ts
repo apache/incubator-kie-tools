@@ -26,7 +26,7 @@ export interface WorkflowDefinitionListGatewayApi {
   setWorkflowDefinitionFilter: (filter: string[]) => Promise<void>;
   getWorkflowDefinitionsQuery: () => Promise<WorkflowDefinition[]>;
   openWorkflowForm: (workflowDefinition: WorkflowDefinition) => Promise<void>;
-  openTriggerCloudEvent: () => void;
+  openTriggerCloudEvent: (workflowDefinition: WorkflowDefinition) => Promise<void>;
   onOpenWorkflowFormListen: (listener: OnOpenWorkflowFormListener) => UnSubscribeHandler;
   onOpenTriggerCloudEventListen: (listener: OnOpenTriggerCloudEventListener) => UnSubscribeHandler;
 }
@@ -36,7 +36,7 @@ export interface OnOpenWorkflowFormListener {
 }
 
 export interface OnOpenTriggerCloudEventListener {
-  onOpen: () => void;
+  onOpen: (workflowDefinition: WorkflowDefinition) => void;
 }
 
 export interface UnSubscribeHandler {
@@ -102,7 +102,8 @@ export class WorkflowDefinitionListGatewayApiImpl implements WorkflowDefinitionL
     return this.queries.getWorkflowDefinitions();
   }
 
-  openTriggerCloudEvent(): void {
-    this.onOpenTriggerCloudEventListeners.forEach((listener) => listener.onOpen());
+  openTriggerCloudEvent(workflowDefinition: WorkflowDefinition): Promise<void> {
+    this.onOpenTriggerCloudEventListeners.forEach((listener) => listener.onOpen(workflowDefinition));
+    return Promise.resolve();
   }
 }

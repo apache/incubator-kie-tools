@@ -27,7 +27,11 @@ import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 const PAGE_TITLE = "Trigger Cloud Event";
 const KUBESMARTS_CLOUD_SOURCE = "/local/kubesmarts";
 
-export function RuntimeToolsTriggerCloudEvent() {
+interface TriggerCloudEventContainerProps {
+  serviceUrl: string;
+}
+
+export function RuntimeToolsTriggerCloudEvent(props: TriggerCloudEventContainerProps) {
   const triggerEventSuccessAlert = useGlobalAlert<{ message: string }>(
     useCallback(({ close }, { message }) => {
       return (
@@ -105,6 +109,7 @@ export function RuntimeToolsTriggerCloudEvent() {
           onStartWorkflowError={onStartWorkflowError}
           onTriggerCloudEventSuccess={onTriggerEventSuccessAlert}
           onTriggerStartCloudEventSuccess={onTriggerStartCloudEventSuccess}
+          serviceUrl={props.serviceUrl}
         />
       </PageSection>
     </Page>

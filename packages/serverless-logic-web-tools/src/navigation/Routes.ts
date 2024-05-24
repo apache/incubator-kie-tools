@@ -148,14 +148,21 @@ export const routes = {
   runtimeToolsWorkflowDetails: new Route<{
     queryParams: QueryParams.FILTERS | QueryParams.SORT_BY;
     pathParams: PathParams.WORKFLOW_ID;
-  }>(({ workflowId }) => `/runtime-tools/workflow-details/${workflowId}`),
+  }>(({ workflowId }) => `/runtime-tools/workflow-instances/${workflowId}`),
   runtimeToolsWorkflowForm: new Route<{
     pathParams: PathParams.WORKFLOW_NAME;
   }>(({ workflowName }) => `/runtime-tools/workflow-definition/${workflowName}`),
-  runtimeToolsTriggerCloudEvent: new Route<{}>(() => `/runtime-tools/trigger-cloud-event`),
-  runtimeToolsTriggerCloudEventForWorkflow: new Route<{
+  /*  runtimeToolsTriggerCloudEvent: new Route<{
+    queryParams: QueryParams.URL;
+  }>(() => `/runtime-tools/trigger-cloud-event`),*/
+  runtimeToolsTriggerCloudEventForWorkflowInstance: new Route<{
+    queryParams: QueryParams.URL;
     pathParams: PathParams.WORKFLOW_ID;
-  }>(({ workflowId }) => `/runtime-tools/trigger-cloud-event/${workflowId}`),
+  }>(({ workflowId }) => `/runtime-tools/workflow-instances/${workflowId}/trigger-cloud-event`),
+  runtimeToolsTriggerCloudEventForWorkflowDefinition: new Route<{
+    queryParams: QueryParams.URL;
+    pathParams: PathParams.WORKFLOW_NAME;
+  }>(({ workflowName }) => `/runtime-tools/workflow-definition/${workflowName}/trigger-cloud-event`),
 
   settings: {
     home: new Route<{}>(() => SETTINGS_ROUTE),

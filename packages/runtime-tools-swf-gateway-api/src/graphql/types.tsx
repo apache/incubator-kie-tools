@@ -1430,6 +1430,7 @@ export namespace GraphQL {
       ProcessDefinitions {
         id
         endpoint
+        serviceUrl
       }
     }
   `;

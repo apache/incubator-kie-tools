@@ -491,9 +491,14 @@ const doTriggerCloudEvent = (event: CloudEventRequest, baseUrl: string, proxyEnd
   return axios.request({
     url: proxyEndpoint || url,
     method: event.method,
-    data: cloudEvent,
+    data: cloudEvent.data,
     headers: {
       ...(proxyEndpoint ? { "Target-Url": url } : {}),
+      "ce-type": cloudEvent.type,
+      "ce-source": cloudEvent.source,
+      "ce-id": cloudEvent.id,
+      "ce-specversion": cloudEvent.specversion,
+      ...event.headers.extensions,
     },
   });
 };
@@ -529,10 +534,11 @@ export const getWorkflowDefinitions = (client: ApolloClient<any>): Promise<Workf
       .then((value) => {
         const workflowDefinitions = value.data.ProcessDefinitions;
         resolve(
-          value.data.ProcessDefinitions.map((item: { id: string; endpoint: string }) => {
+          value.data.ProcessDefinitions.map((item: { id: string; endpoint: string; serviceUrl: string }) => {
             return {
               workflowName: item.id,
               endpoint: item.endpoint,
+              serviceUrl: item.serviceUrl,
             };
           })
         );
