@@ -23,7 +23,7 @@ import {
   TriggerableNode,
 } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { ProcessDetailsChannelApi, ProcessDetailsDriver } from "../api";
-import { Job, JobCancel, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { Job, JobOperationResult, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export class ProcessDetailsChannelApiImpl implements ProcessDetailsChannelApi {
   constructor(private readonly driver: ProcessDetailsDriver) {}
@@ -36,7 +36,7 @@ export class ProcessDetailsChannelApiImpl implements ProcessDetailsChannelApi {
     return this.driver.handleProcessAbort(processInstance);
   }
 
-  processDetails__cancelJob(job: Pick<Job, "id" | "endpoint">): Promise<JobCancel> {
+  processDetails__cancelJob(job: Pick<Job, "id" | "endpoint">): Promise<JobOperationResult> {
     return this.driver.cancelJob(job);
   }
 

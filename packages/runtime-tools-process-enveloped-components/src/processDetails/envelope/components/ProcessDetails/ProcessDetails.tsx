@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
@@ -100,7 +100,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
     try {
       const processResponse: ProcessInstance = await driver.processDetailsQuery(processDetails.id);
       processResponse && setData(processResponse);
-      getAllJobs();
+      loadJobs();
       setIsLoading(false);
     } catch (errorString) {
       setError(errorString);
@@ -108,10 +108,10 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
     }
   };
 
-  const getAllJobs = async (): Promise<void> => {
+  const loadJobs = useCallback(async () => {
     const jobsResponse: Job[] = await driver.jobsQuery(processDetails.id);
     jobsResponse && setJobs(jobsResponse);
-  };
+  }, [processDetails.id, driver]);
 
   const handleSvgErrorModal = (): void => {
     setSvgErrorModalOpen(!svgErrorModalOpen);
@@ -145,13 +145,13 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
       handleSvgApi();
       getVariableJSON();
     }
-  }, [data]);
+  }, [driver, data, isEnvelopeConnectedToChannel, processDetails.id]);
 
   useEffect(() => {
     if (svgError && svgError.length > 0 && !showSwfDiagram) {
       setSvgErrorModalOpen(true);
     }
-  }, [svgError]);
+  }, [svgError, showSwfDiagram]);
 
   useEffect(() => {
     if (variableError && variableError.length > 0) {
@@ -163,9 +163,9 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
     /* istanbul ignore else*/
     if (isEnvelopeConnectedToChannel) {
       setData(processDetails);
-      getAllJobs();
+      loadJobs();
     }
-  }, [isEnvelopeConnectedToChannel]);
+  }, [isEnvelopeConnectedToChannel, loadJobs, processDetails]);
 
   /* istanbul ignore next */
   const handleSave = (): void => {
@@ -204,7 +204,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   };
 
   const handleRefresh = (): void => {
-    if (displayLabel === true) {
+    if (displayLabel) {
       setConfirmationModal(true);
     } else {
       handleReload();

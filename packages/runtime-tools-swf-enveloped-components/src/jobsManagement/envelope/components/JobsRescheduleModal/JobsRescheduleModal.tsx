@@ -38,7 +38,12 @@ interface IOwnProps {
   job: Job;
   rescheduleError: string;
   setRescheduleError: (rescheduleError: string) => void;
-  handleJobReschedule: any;
+  handleJobReschedule: (
+    job: Job,
+    repeatInterval: string | number,
+    repeatLimit: string | number,
+    scheduleDate: Date
+  ) => void;
 }
 
 export const JobsRescheduleModal: React.FC<IOwnProps & OUIAProps> = ({

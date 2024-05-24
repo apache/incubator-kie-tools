@@ -19,7 +19,7 @@
 
 import { GraphQL } from "../graphql";
 import {
-  JobCancel,
+  JobOperationResult,
   JobStatus,
   Job,
   JobsSortBy,
@@ -92,44 +92,38 @@ export const getChildProcessInstances = async (
 
 //Rest Api to Cancel multiple Jobs
 export const performMultipleCancel = async (
-  jobsToBeActioned: (GraphQL.Job & { errorMessage?: string })[],
+  jobsToBeActioned: (Job & { errorMessage?: string })[],
   client: ApolloClient<any>
 ): Promise<any> => {
-  const multipleCancel: Promise<any>[] = [];
-  for (const job of jobsToBeActioned) {
-    multipleCancel.push(
-      new Promise((resolve, reject) => {
-        client
-          .mutate({
-            mutation: GraphQL.JobCancelDocument,
-            variables: {
-              jobId: job.id,
-            },
-            fetchPolicy: "no-cache",
-          })
-          .then((value) => {
-            resolve({ successJob: job });
-          })
-          .catch((reason) => {
-            job.errorMessage = JSON.stringify(reason.message);
-            reject({ failedJob: job });
-          });
-      })
-    );
-  }
+  const multipleCancel: Promise<any>[] = jobsToBeActioned.map((job) => {
+    return new Promise((resolve, reject) => {
+      client
+        .mutate({
+          mutation: GraphQL.JobCancelDocument,
+          variables: {
+            jobId: job.id,
+          },
+          fetchPolicy: "no-cache",
+        })
+        .then((value) => {
+          resolve({ successJob: job });
+        })
+        .catch((reason) => {
+          job.errorMessage = JSON.stringify(reason.message);
+          reject({ failedJob: job });
+        });
+    });
+  });
   return Promise.all(multipleCancel.map((mc) => mc.catch((error) => error))).then((result) => {
     return Promise.resolve(result);
   });
 };
 
 //Rest Api to Cancel a Job
-export const jobCancel = async (
-  job: Pick<GraphQL.Job, "id" | "endpoint">,
-  client: ApolloClient<any>
-): Promise<JobCancel> => {
+export const jobCancel = async (job: Job, client: ApolloClient<any>): Promise<JobOperationResult> => {
   let modalTitle: string;
   let modalContent: string;
-  return new Promise<JobCancel>((resolve, reject) => {
+  return new Promise<JobOperationResult>((resolve, reject) => {
     client
       .mutate({
         mutation: GraphQL.JobCancelDocument,
@@ -174,7 +168,7 @@ export const handleJobReschedule = async (
     };
   }
 
-  return new Promise<JobCancel>((resolve, reject) => {
+  return new Promise<JobOperationResult>((resolve, reject) => {
     client
       .mutate({
         mutation: GraphQL.HandleJobRescheduleDocument,
