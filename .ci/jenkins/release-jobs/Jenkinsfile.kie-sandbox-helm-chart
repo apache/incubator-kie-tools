@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:latest'
+            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -118,7 +118,7 @@ pipeline {
             }
         }
 
-        stage('Push kie-sandbox-helm-chart to quay.io') {
+        stage('Push kie-sandbox-helm-chart to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -128,7 +128,7 @@ pipeline {
                         helmUtils.pushChartToRegistry(
                             "${env.KIE_SANDBOX_HELM_CHART__registry}/${env.KIE_SANDBOX_HELM_CHART__account}",
                             "packages/kie-sandbox-helm-chart/dist/${env.KIE_SANDBOX_HELM_CHART__name}-${env.KIE_SANDBOX_HELM_CHART__tag}.tgz",
-                            "${pipelineVars.quayPushCredentialsId}"
+                            "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                         )
                     }
                 }

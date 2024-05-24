@@ -20,7 +20,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:latest'
+            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
             label util.avoidFaultyNodes()
         }
     }

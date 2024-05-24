@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:latest'
+            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -148,7 +148,7 @@ pipeline {
             }
         }
 
-        stage('Push sonataflow-operator to quay.io') {
+        stage('Push sonataflow-operator to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -158,7 +158,7 @@ pipeline {
                         "${env.SONATAFLOW_OPERATOR__registry}/${env.SONATAFLOW_OPERATOR__account}",
                         "${env.SONATAFLOW_OPERATOR__name}",
                         "${env.SONATAFLOW_OPERATOR__buildTag} latest",
-                        "${pipelineVars.quayKiegroupPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }

@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:latest'
+            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -123,7 +123,7 @@ pipeline {
             }
         }
 
-        stage('Push cors-proxy-image to quay.io') {
+        stage('Push cors-proxy-image to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -133,7 +133,7 @@ pipeline {
                         "${env.CORS_PROXY_IMAGE__imageRegistry}/${env.CORS_PROXY_IMAGE__imageAccount}",
                         "${env.CORS_PROXY_IMAGE__imageName}",
                         "${env.CORS_PROXY_IMAGE__imageBuildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }

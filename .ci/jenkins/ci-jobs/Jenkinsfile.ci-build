@@ -49,7 +49,7 @@ pipeline {
             agent {
                 docker {
                     label("${buildUtils.apacheAgentLabels()}")
-                    image "docker.io/apache/incubator-kie-tools-ci-build:${params.IMAGE_TAG}"
+                    image "quay.io/kie-tools/kie-tools-ci-build:${params.IMAGE_TAG}"
                     args '--shm-size=2g --privileged --group-add docker'
                 }
             }

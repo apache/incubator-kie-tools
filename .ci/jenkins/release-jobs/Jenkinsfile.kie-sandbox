@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:latest'
+            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -139,7 +139,7 @@ pipeline {
             }
         }
 
-        stage('Push kie-sandbox-image to quay.io') {
+        stage('Push kie-sandbox-image to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -149,7 +149,7 @@ pipeline {
                         "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}",
                         "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageName}",
                         "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }
