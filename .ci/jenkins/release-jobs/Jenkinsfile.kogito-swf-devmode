@@ -31,6 +31,7 @@ pipeline {
         string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
         booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
     environment {
@@ -157,7 +158,7 @@ pipeline {
             }
             steps {
                 script {
-                    env.RELEASE_IMAGE_TAR_FILE = "incubator-kie-${params.RELEASE_VERSION}-sonataflow-devmode-image.tar.gz"
+                    env.RELEASE_IMAGE_TAR_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-devmode-image.tar.gz"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
@@ -188,7 +189,7 @@ pipeline {
                     releaseUtils.publishArtifacts(
                         "${env.RELEASE_ARTIFACTS_DIR}",
                         "${pipelineVars.asfReleaseStagingRepository}",
-                        "${params.RELEASE_VERSION}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
                         "${pipelineVars.asfReleaseUserCredentialsId}"
                     )
                 }

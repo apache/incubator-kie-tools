@@ -31,6 +31,7 @@ pipeline {
         string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
         booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
     environment {
@@ -198,7 +199,7 @@ pipeline {
             }
             steps {
                 script {
-                    env.RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_VERSION}-sandbox-webapp.zip"
+                    env.RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-webapp.zip"
 
                     sh "mkdir ${env.RELEASE_ARTIFACTS_DIR}"
                     zipUtils.zipArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE}", 'kie-tools/packages/online-editor/dist/')
@@ -227,7 +228,7 @@ pipeline {
                     releaseUtils.publishArtifacts(
                         "${env.RELEASE_ARTIFACTS_DIR}",
                         "${pipelineVars.asfReleaseStagingRepository}",
-                        "${params.RELEASE_VERSION}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
                         "${pipelineVars.asfReleaseUserCredentialsId}"
                     )
                 }

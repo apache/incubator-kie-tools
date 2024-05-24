@@ -58,13 +58,3 @@ def publishArtifacts(String artifactsDir, String releaseRepository, String relea
         """.trim()
     }
 }
-
-/**
-* Return the final release version from a release candidate version (10.0.0-rc1 -> 10.0.0)
-*/
-def getFinalReleaseVersion(String releaseCandidateVersion) {
-    finalReleaseVersion = releaseCandidateVersion.replaceAll(/-rc\d{1,2}/, '')
-    return finalReleaseVersion
-}
-
-return this

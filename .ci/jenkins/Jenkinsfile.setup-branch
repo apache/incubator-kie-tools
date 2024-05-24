@@ -145,6 +145,16 @@ pipeline {
             }
         }
 
+        stage('Update stream name') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmUpdateStreamName(params.NEW_BRANCH_NAME)
+                    }
+                }
+            }
+        }
+
         stage('Replace CI image tag') {
             steps {
                 dir('kie-tools/.ci/jenkins') {

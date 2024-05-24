@@ -33,6 +33,7 @@ pipeline {
         string(description: 'Kie Sandbox Extendend Services Url', name: 'KIE_SANDBOX_EXTENDED_SERVICES_URL')
         string(description: 'Kie Sandbox Cors Proxy Url', name: 'KIE_SANDBOX_CORS_PROXY_URL')
         booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
     environment {
@@ -197,7 +198,7 @@ pipeline {
             }
             steps {
                 script {
-                    env.RELEASE_IMAGE_TAR_FILE = "incubator-kie-${params.RELEASE_VERSION}-sandbox-webapp-image.tar.gz"
+                    env.RELEASE_IMAGE_TAR_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-webapp-image.tar.gz"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
@@ -228,7 +229,7 @@ pipeline {
                     releaseUtils.publishArtifacts(
                         "${env.RELEASE_ARTIFACTS_DIR}",
                         "${pipelineVars.asfReleaseStagingRepository}",
-                        "${params.RELEASE_VERSION}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
                         "${pipelineVars.asfReleaseUserCredentialsId}"
                     )
                 }

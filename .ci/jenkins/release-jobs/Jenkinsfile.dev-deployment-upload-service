@@ -32,6 +32,7 @@ pipeline {
         string(description: 'Base Ref', name: 'BASE_REF')
         string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL')
         booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
     environment {
@@ -191,10 +192,10 @@ pipeline {
             }
             steps {
                 script {
-                    env.DEV_DEPLOYMENT_UPLOAD_SERVICE_MAC_ARM64_RELEASE_FILE = "incubator-kie-${params.RELEASE_VERSION}-sandbox-dev-deployment-upload-service-macOS-arm64.tar.gz"
-                    env.DEV_DEPLOYMENT_UPLOAD_SERVICE_MAC_X86_RELEASE_FILE = "incubator-kie-${params.RELEASE_VERSION}-sandbox-dev-deployment-upload-service-macOS-x86.tar.gz"
-                    env.DEV_DEPLOYMENT_UPLOAD_SERVICE_LINUX_X86_RELEASE_FILE = "incubator-kie-${params.RELEASE_VERSION}-sandbox-dev-deployment-upload-service-linux-x86.tar.gz"
-                    env.DEV_DEPLOYMENT_UPLOAD_SERVICE_WINDOWS_X86_RELEASE_FILE = "incubator-kie-${params.RELEASE_VERSION}-sandbox-dev-deployment-upload-service-windows-x86.tar.gz"
+                    env.DEV_DEPLOYMENT_UPLOAD_SERVICE_MAC_ARM64_RELEASE_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-dev-deployment-upload-service-macOS-arm64.tar.gz"
+                    env.DEV_DEPLOYMENT_UPLOAD_SERVICE_MAC_X86_RELEASE_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-dev-deployment-upload-service-macOS-x86.tar.gz"
+                    env.DEV_DEPLOYMENT_UPLOAD_SERVICE_LINUX_X86_RELEASE_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-dev-deployment-upload-service-linux-x86.tar.gz"
+                    env.DEV_DEPLOYMENT_UPLOAD_SERVICE_WINDOWS_X86_RELEASE_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-dev-deployment-upload-service-windows-x86.tar.gz"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
@@ -231,7 +232,7 @@ pipeline {
                     releaseUtils.publishArtifacts(
                         "${env.RELEASE_ARTIFACTS_DIR}",
                         "${pipelineVars.asfReleaseStagingRepository}",
-                        "${params.RELEASE_VERSION}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
                         "${pipelineVars.asfReleaseUserCredentialsId}"
                     )
                 }
