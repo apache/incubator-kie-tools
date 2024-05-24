@@ -26,8 +26,6 @@ export interface Commands {
   togglePropertiesPanel: () => void;
   createGroup: () => void;
   selectAll: () => void;
-  panDown: () => void;
-  panUp: () => void;
   paste: () => void;
   copy: () => void;
   cut: () => void;
@@ -60,12 +58,6 @@ export function CommandsContextProvider(props: React.PropsWithChildren<{}>) {
     },
     selectAll: () => {
       throw new Error("DMN EDITOR: selectAll command not implemented.");
-    },
-    panDown: () => {
-      throw new Error("DMN EDITOR: panDown command not implemented.");
-    },
-    panUp: () => {
-      throw new Error("DMN EDITOR: panUp command not implemented.");
     },
     paste: () => {
       throw new Error("DMN EDITOR: paste command not implemented.");

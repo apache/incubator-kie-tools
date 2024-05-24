@@ -393,11 +393,10 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       "Navigate | Reset position to origin",
       async () => commands.resetPosition()
     );
-    const pan = this.props.keyboardShortcutsService?.registerKeyDownThenUp(
-      "Alt",
+    const pan = this.props.keyboardShortcutsService?.registerKeyPress(
+      "Right Mouse Button",
       "Navigate | Hold and drag to Pan",
-      async () => commands.panDown(),
-      async () => commands.panUp()
+      async () => {}
     );
     const zoom = this.props.keyboardShortcutsService?.registerKeyPress(
       "Ctrl",
