@@ -295,15 +295,14 @@ pipeline {
             }
             steps {
                 script {
-                    env.FINAL_RELEASE_VERSION = releaseUtils.getFinalReleaseVersion("${params.RELEASE_VERSION}")
-                    env.BPMN_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${env.FINAL_RELEASE_VERSION}-bpmn-vscode-extension.vsix"
-                    env.DMN_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${env.FINAL_RELEASE_VERSION}-dmn-vscode-extension.vsix"
-                    env.PMML_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${env.FINAL_RELEASE_VERSION}-pmml-vscode-extension.vsix"
-                    env.DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${env.FINAL_RELEASE_VERSION}-dashbuilder-vscode-extension.vsix"
-                    env.SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${env.FINAL_RELEASE_VERSION}-sonataflow-vscode-extension.vsix"
-                    env.YARD_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${env.FINAL_RELEASE_VERSION}-yard-vscode-extension.vsix"
-                    env.KOGITO_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${env.FINAL_RELEASE_VERSION}-kogito-bundle-vscode-extension.vsix"
-                    env.BUSINESS_AUTOMATION_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${env.FINAL_RELEASE_VERSION}-business-automation-bundle-vscode-extension.vsix"
+                    env.BPMN_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${params.RELEASE_VERSION}-bpmn-vscode-extension.vsix"
+                    env.DMN_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${params.RELEASE_VERSION}-dmn-vscode-extension.vsix"
+                    env.PMML_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${params.RELEASE_VERSION}-pmml-vscode-extension.vsix"
+                    env.DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${params.RELEASE_VERSION}-dashbuilder-vscode-extension.vsix"
+                    env.SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${params.RELEASE_VERSION}-sonataflow-vscode-extension.vsix"
+                    env.YARD_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${params.RELEASE_VERSION}-yard-vscode-extension.vsix"
+                    env.KOGITO_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${params.RELEASE_VERSION}-kogito-bundle-vscode-extension.vsix"
+                    env.BUSINESS_AUTOMATION_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${params.RELEASE_VERSION}-business-automation-bundle-vscode-extension.vsix"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
@@ -348,7 +347,7 @@ pipeline {
                     releaseUtils.publishArtifacts(
                         "${env.RELEASE_ARTIFACTS_DIR}",
                         "${pipelineVars.asfReleaseStagingRepository}",
-                        "${env.FINAL_RELEASE_VERSION}",
+                        "${params.RELEASE_VERSION}",
                         "${pipelineVars.asfReleaseUserCredentialsId}"
                     )
                 }

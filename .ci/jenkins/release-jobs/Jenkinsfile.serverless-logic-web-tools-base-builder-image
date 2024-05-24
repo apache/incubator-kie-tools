@@ -144,8 +144,7 @@ pipeline {
             }
             steps {
                 script {
-                    env.FINAL_RELEASE_VERSION = releaseUtils.getFinalReleaseVersion("${params.RELEASE_VERSION}")
-                    env.RELEASE_IMAGE_TAR_FILE = "incubator-kie-${env.FINAL_RELEASE_VERSION}-${SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName}.tar.gz"
+                    env.RELEASE_IMAGE_TAR_FILE = "incubator-kie-${params.RELEASE_VERSION}-${SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName}.tar.gz"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
@@ -176,7 +175,7 @@ pipeline {
                     releaseUtils.publishArtifacts(
                         "${env.RELEASE_ARTIFACTS_DIR}",
                         "${pipelineVars.asfReleaseStagingRepository}",
-                        "${env.FINAL_RELEASE_VERSION}",
+                        "${params.RELEASE_VERSION}",
                         "${pipelineVars.asfReleaseUserCredentialsId}"
                     )
                 }

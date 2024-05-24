@@ -198,8 +198,7 @@ pipeline {
             }
             steps {
                 script {
-                    env.FINAL_RELEASE_VERSION = releaseUtils.getFinalReleaseVersion("${params.RELEASE_VERSION}")
-                    env.RELEASE_ZIP_FILE = "incubator-kie-${env.FINAL_RELEASE_VERSION}-sandbox-webapp.zip"
+                    env.RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_VERSION}-sandbox-webapp.zip"
 
                     sh "mkdir ${env.RELEASE_ARTIFACTS_DIR}"
                     zipUtils.zipArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE}", 'kie-tools/packages/online-editor/dist/')
@@ -228,7 +227,7 @@ pipeline {
                     releaseUtils.publishArtifacts(
                         "${env.RELEASE_ARTIFACTS_DIR}",
                         "${pipelineVars.asfReleaseStagingRepository}",
-                        "${env.FINAL_RELEASE_VERSION}",
+                        "${params.RELEASE_VERSION}",
                         "${pipelineVars.asfReleaseUserCredentialsId}"
                     )
                 }

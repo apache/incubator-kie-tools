@@ -175,9 +175,8 @@ pipeline {
             }
             steps {
                 script {
-                    env.FINAL_RELEASE_VERSION = releaseUtils.getFinalReleaseVersion("${params.RELEASE_VERSION}")
-                    env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE = "incubator-kie-${env.FINAL_RELEASE_VERSION}-business-automation-standalone-editors.zip"
-                    env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE = "incubator-kie-${env.FINAL_RELEASE_VERSION}-sonataflow-standalone-editors.zip"
+                    env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_VERSION}-business-automation-standalone-editors.zip"
+                    env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_VERSION}-sonataflow-standalone-editors.zip"
 
                     sh "mkdir ${env.RELEASE_ARTIFACTS_DIR}"
                     zipUtils.zipArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE}", 'kie-tools/packages/kie-editors-standalone/dist')
@@ -208,7 +207,7 @@ pipeline {
                     releaseUtils.publishArtifacts(
                         "${env.RELEASE_ARTIFACTS_DIR}",
                         "${pipelineVars.asfReleaseStagingRepository}",
-                        "${env.FINAL_RELEASE_VERSION}",
+                        "${params.RELEASE_VERSION}",
                         "${pipelineVars.asfReleaseUserCredentialsId}"
                     )
                 }
