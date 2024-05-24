@@ -39,7 +39,7 @@ def uploadExtension(String chromeStoreCredentialsId, String chromeStoreRefreshTo
 * @return String status
 */
 def publishExtension(String chromeStoreCredentialsId, String chromeStoreRefreshTokenCredentialsId, String chromeExtensionIdCredentialsId) {
-   withCredentials([usernamePassword(credentialsId: "${chromeStoreCredentialsId}", usernameVariable: 'CLIENT_ID', passwordVariable: 'CLIENT_SECRET')]) {
+    withCredentials([usernamePassword(credentialsId: "${chromeStoreCredentialsId}", usernameVariable: 'CLIENT_ID', passwordVariable: 'CLIENT_SECRET')]) {
         withCredentials([string(credentialsId: "${chromeStoreRefreshTokenCredentialsId}", variable: 'REFRESH_TOKEN')]) {
             withCredentials([string(credentialsId: "${chromeExtensionIdCredentialsId}", variable: 'EXTENSION_ID')]) {
                 script {
@@ -53,4 +53,4 @@ def publishExtension(String chromeStoreCredentialsId, String chromeStoreRefreshT
     }
 }
 
-return this;
+return this
