@@ -24,11 +24,47 @@ def setupSigningKey(String gpgKeyCredentialsId, String gpgKeyPasswordCredentials
             sh """#!/bin/bash -el
             cat ${SIGNING_KEY} > ${WORKSPACE}/signkey.gpg
             gpg --list-keys
-            gpg --batch --pinentry-mode=loopback --passphrase "${SIGNING_KEY_PASSWORD}" --import ${WORKSPACE}/signkey.gpg
+            gpg --batch --pinentry-mode loopback --passphrase "${SIGNING_KEY_PASSWORD}" --import ${WORKSPACE}/signkey.gpg
             rm ${WORKSPACE}/signkey.gpg
             """.trim()
         }
     }
+}
+
+/**
+* Sign an artifact using GPG
+*/
+def signArtifact(String artifactFileName, String gpgKeyPasswordCredentialsId) {
+    withCredentials([string(credentialsId: gpgKeyPasswordCredentialsId, variable: 'SIGNING_KEY_PASSWORD')]) {
+        sh """#!/bin/bash -el
+        echo ${SIGNING_KEY_PASSWORD} | gpg --no-tty --batch --sign --pinentry-mode loopback --passphrase-fd 0 --output ${artifactFileName}.asc --detach-sig ${artifactFileName}
+        shasum -a 512 ${artifactFileName} > ${artifactFileName}.sha512
+        """.trim()
+    }
+}
+
+/**
+* Publish release artifacts to a SVN repository
+*/
+def publishArtifacts(String artifactsDir, String releaseRepository, String releaseVersion, String credentialsId) {
+    withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'ASF_USERNAME', passwordVariable: 'ASF_PASSWORD')]) {
+        sh """#!/bin/bash -el
+        svn co --depth=empty ${releaseRepository} svn-kie
+        cp ${artifactsDir}/* svn-kie/${releaseVersion}/
+        svn add "svn-kie/${releaseVersion}"
+        cd svn-kie
+        svn ci --non-interactive --no-auth-cache --username ${ASF_USERNAME} --password '${ASF_PASSWORD}' -m "Apache KIE ${releaseVersion} artifacts"
+        rm -rf svn-kie
+        """.trim()
+    }
+}
+
+/**
+* Return the final release version from a release candidate version (10.0.0-rc1 -> 10.0.0)
+*/
+def getFinalReleaseVersion(String releaseCandidateVersion) {
+    finalReleaseVersion = releaseCandidateVersion.replaceAll(/-rc\d{1,2}/, '')
+    return finalReleaseVersion
 }
 
 return this
