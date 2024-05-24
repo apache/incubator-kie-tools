@@ -31,48 +31,48 @@ import { TypeOrReturnType } from "../store/ComputedStateCache";
 
 export function deleteImport({
   definitions,
-  index,
-  externalModelTypesByNamespace,
+  __readonly_index,
+  __readonly_externalModelTypesByNamespace,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
-  index: number;
-  externalModelTypesByNamespace: TypeOrReturnType<Computed["getExternalModelTypesByNamespace"]>;
+  __readonly_index: number;
+  __readonly_externalModelTypesByNamespace: TypeOrReturnType<Computed["getExternalModelTypesByNamespace"]>;
 }) {
   definitions.import ??= [];
-  const [deleted] = definitions.import.splice(index, 1);
+  const [deletedImport] = definitions.import.splice(__readonly_index, 1);
 
   const namespaceName = getXmlNamespaceDeclarationName({
     rootElement: definitions,
-    namespace: deleted["@_namespace"],
+    namespace: deletedImport["@_namespace"],
   });
 
   // Delete from all DRDs
   const defaultDiagram = defaultStaticState().diagram;
   definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.forEach((_, i) => {
     const indexedDrd = computeIndexedDrd(definitions["@_namespace"], definitions, i);
-    const diagramData = computeDiagramData(
+    const { externalNodesByNamespace, drgEdges, edgesFromExternalNodesByNamespace } = computeDiagramData(
       defaultDiagram,
       definitions,
-      externalModelTypesByNamespace,
+      __readonly_externalModelTypesByNamespace,
       indexedDrd,
       false
     );
 
-    diagramData.externalNodesByNamespace.get(deleted["@_namespace"])?.forEach((node) => {
+    externalNodesByNamespace.get(deletedImport["@_namespace"])?.forEach((node) => {
       deleteNode({
         definitions,
-        drgEdges: diagramData.drgEdges,
+        drgEdges: drgEdges,
         drdIndex: 0,
         nodeNature: nodeNatures[node.type! as NodeType],
         dmnObjectId: node.data.dmnObject?.["@_id"],
         dmnObjectQName: node.data.dmnObjectQName,
-        dmnObjectNamespace: node.data.dmnObjectNamespace!, // ?? state.dmn.model.definitions["@_namespace"],
-        externalDmnsIndex: externalModelTypesByNamespace.dmns,
+        dmnObjectNamespace: node.data.dmnObjectNamespace!,
+        externalDmnsIndex: __readonly_externalModelTypesByNamespace.dmns,
         mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
       });
     });
 
-    diagramData.externalEdgesByNamespace.get(deleted["@_namespace"])?.forEach((edge) => {
+    edgesFromExternalNodesByNamespace.get(deletedImport["@_namespace"])?.forEach((edge) => {
       deleteEdge({
         definitions,
         drdIndex: 0,

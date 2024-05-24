@@ -380,7 +380,7 @@ export function computeDiagramData(
     edges: sortedEdges,
     edgesById,
     externalNodesByNamespace,
-    externalEdgesByNamespace: edgesFromExternalNodesByNamespace,
+    edgesFromExternalNodesByNamespace,
     nodesById,
     selectedNodeTypes,
     selectedNodesById,

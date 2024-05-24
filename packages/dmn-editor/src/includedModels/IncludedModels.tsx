@@ -461,8 +461,8 @@ function IncludedModelCard({
           .getExternalModelTypesByNamespace(externalModelsByNamespace);
         deleteImport({
           definitions: state.dmn.model.definitions,
-          index,
-          externalModelTypesByNamespace,
+          __readonly_index: index,
+          __readonly_externalModelTypesByNamespace: externalModelTypesByNamespace,
         });
       });
     },
@@ -602,8 +602,8 @@ function UnknownIncludedModelCard({
           .getExternalModelTypesByNamespace(externalModelsByNamespace);
         deleteImport({
           definitions: state.dmn.model.definitions,
-          index,
-          externalModelTypesByNamespace,
+          __readonly_index: index,
+          __readonly_externalModelTypesByNamespace: externalModelTypesByNamespace,
         });
       });
     },
