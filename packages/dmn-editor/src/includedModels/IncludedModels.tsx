@@ -562,9 +562,15 @@ function IncludedModelCard({
                 >
                   {extension === "dmn" && (
                     <>
-                      Removing a included DMN will erase all its imported nodes and connected edges from your model. The
-                      references to item definitions, BKMs functions and Decision expressions will remain, requiring to
-                      be manually removed.
+                      Removing an included DMN will erase all its imported nodes and connected edges from your model.
+                      The references to item definitions, BKMs functions, and Decision expressions will remain,
+                      requiring to be manually removed.
+                    </>
+                  )}
+                  {extension === "pmml" && (
+                    <>
+                      Removing an included PMML will not erase references on BKM functions, requiring it to be manually
+                      removed.
                     </>
                   )}
                 </Alert>
