@@ -19,18 +19,13 @@
 
 import * as React from "react";
 import { WorkflowFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowForm";
-import { useSettings } from "../../settings/SettingsContext";
 import { useEnv } from "../../env/EnvContext";
 
 export function WebToolsCloudEventFormContextProvider(props: React.PropsWithChildren<{}>) {
-  const settings = useSettings();
   const { env } = useEnv();
 
   return (
-    <WorkflowFormContextProvider
-      proxyEndpoint={env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL}
-      kogitoServiceUrl={settings.runtimeTools.config.kogitoServiceUrl}
-    >
+    <WorkflowFormContextProvider proxyEndpoint={env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL}>
       {props.children}
     </WorkflowFormContextProvider>
   );

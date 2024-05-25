@@ -40,6 +40,7 @@ export function RuntimeToolsWorkflowDefinitions() {
           workflowDefinition: {
             workflowName: workflowDefinition.workflowName,
             endpoint: workflowDefinition.endpoint,
+            serviceUrl: workflowDefinition.serviceUrl,
           },
         },
       });
@@ -54,6 +55,11 @@ export function RuntimeToolsWorkflowDefinitions() {
           workflowName: workflowDefinition.workflowName,
         }),
         state: {
+          workflowDefinition: {
+            workflowName: workflowDefinition.workflowName,
+            endpoint: workflowDefinition.endpoint,
+            serviceUrl: workflowDefinition.serviceUrl,
+          },
           source: CloudEventPageSource.DEFINITIONS,
         },
       });

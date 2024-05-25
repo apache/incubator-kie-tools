@@ -30,7 +30,7 @@ export function HomePageNav(props: { pathname: string }) {
   const settings = useSettings();
 
   const runtimeToolsNavItem = useMemo(() => {
-    if (settings.runtimeTools.config.kogitoServiceUrl && settings.runtimeTools.config.dataIndexUrl) {
+    if (settings.runtimeTools.config.dataIndexUrl) {
       return (
         <NavExpandable title="Runtime Tools" groupId="runtime-tools-nav-group">
           <NavItem

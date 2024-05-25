@@ -83,6 +83,7 @@ const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
           workflowDefinition: {
             workflowName: workflowDefinition.workflowName,
             endpoint: workflowDefinition.endpoint,
+            serviceUrl: workflowDefinition.serviceUrl,
           },
         },
       });
@@ -98,6 +99,7 @@ const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
           workflowDefinition: {
             workflowName: workflowDefinition.workflowName,
             endpoint: workflowDefinition.endpoint,
+            serviceUrl: workflowDefinition.serviceUrl,
           },
         },
       });

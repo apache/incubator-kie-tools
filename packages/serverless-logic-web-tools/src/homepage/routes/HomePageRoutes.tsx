@@ -80,10 +80,10 @@ export function HomePageRoutes(props: { isNavOpen: boolean }) {
         <SamplesCatalog />
       </Route>
       <Route path={routes.runtimeToolsTriggerCloudEventForWorkflowInstance.path({ workflowId: ":workflowId" })}>
-        {({ match }) => <RuntimeToolsTriggerCloudEvent serviceUrl={match!.params.url!} />}
+        {({ match }) => <RuntimeToolsTriggerCloudEvent />}
       </Route>
       <Route path={routes.runtimeToolsTriggerCloudEventForWorkflowDefinition.path({ workflowName: ":workflowName" })}>
-        {({ match }) => <RuntimeToolsTriggerCloudEvent serviceUrl={match!.params.url!} />}
+        {({ match }) => <RuntimeToolsTriggerCloudEvent />}
       </Route>
       <Route path={routes.runtimeToolsWorkflowDetails.path({ workflowId: ":workflowId" })}>
         {({ match }) => <RuntimeToolsWorkflowDetails workflowId={match!.params.workflowId!} />}

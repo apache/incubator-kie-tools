@@ -22,19 +22,17 @@ import { getCustomWorkflowSchema, startWorkflowRest } from "@kie-tools/runtime-t
 export interface WorkflowFormGatewayApi {
   setBusinessKey(bk: string): void;
   getBusinessKey(): string;
-  getCustomWorkflowSchema(workflowName: string): Promise<Record<string, any>>;
+  getCustomWorkflowSchema(workflowName: string, serviceUrl: string): Promise<Record<string, any>>;
   startWorkflow(endpoint: string, data: Record<string, any>): Promise<string>;
 }
 
 export class WorkflowFormGatewayApiImpl implements WorkflowFormGatewayApi {
   private businessKey: string;
-  private readonly baseUrl: string;
   private readonly openApiPath: string;
   private readonly proxyEndpoint?: string;
 
-  constructor(baseUrl: string, openApiPath: string, proxyEndpoint?: string) {
+  constructor(openApiPath: string, proxyEndpoint?: string) {
     this.businessKey = "";
-    this.baseUrl = baseUrl;
     this.openApiPath = openApiPath;
     this.proxyEndpoint = proxyEndpoint;
   }
@@ -47,8 +45,8 @@ export class WorkflowFormGatewayApiImpl implements WorkflowFormGatewayApi {
     return this.businessKey;
   }
 
-  getCustomWorkflowSchema(workflowName: string): Promise<Record<string, any>> {
-    return getCustomWorkflowSchema(this.baseUrl, this.openApiPath, workflowName, this.proxyEndpoint);
+  getCustomWorkflowSchema(workflowName: string, serviceUrl: string): Promise<Record<string, any>> {
+    return getCustomWorkflowSchema(serviceUrl, this.openApiPath, workflowName, this.proxyEndpoint);
   }
 
   async startWorkflow(endpoint: string, data: Record<string, any>): Promise<string> {

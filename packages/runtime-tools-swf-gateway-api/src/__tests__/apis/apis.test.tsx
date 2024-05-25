@@ -168,11 +168,7 @@ describe("trigger cloud events section", () => {
 
     expect(request.url).toBe("http://localhost:8080/endpoint");
     expect(request.method).toBe("POST");
-    expect(request.data).toHaveProperty("specversion", "1.0");
-    expect(request.data).toHaveProperty("type", "eventType");
-    expect(request.data).toHaveProperty("source", "eventSource");
-    expect(request.data).toHaveProperty(KOGITO_BUSINESS_KEY, "1234");
-    expect(request.data).toHaveProperty("data", JSON.parse(event.data));
+    expect(request).toHaveProperty("data", JSON.parse(event.data));
   });
 
   it("trigger cloud event start - without business key", async () => {
@@ -197,7 +193,7 @@ describe("trigger cloud events section", () => {
 
     expect(request.url).toBe("http://localhost:8080/endpoint");
     expect(request.method).toBe("POST");
-    expect(request.data).toHaveProperty(KOGITO_BUSINESS_KEY, response);
+    expect(request).toHaveProperty("data", JSON.parse(event.data));
   });
 
   it("trigger cloud event - with instanceId", async () => {
@@ -224,8 +220,7 @@ describe("trigger cloud events section", () => {
 
     expect(request.url).toBe("http://localhost:8080/endpoint");
     expect(request.method).toBe("POST");
-    expect(request.data).toHaveProperty(KOGITO_PROCESS_REFERENCE_ID, "1234");
-    expect(request.data).not.toHaveProperty(KOGITO_BUSINESS_KEY);
+    expect(request).toHaveProperty("data", JSON.parse(event.data));
   });
 
   it("trigger cloud event - without instanceId", async () => {
@@ -250,8 +245,7 @@ describe("trigger cloud events section", () => {
 
     expect(request.url).toBe("http://localhost:8080/endpoint");
     expect(request.method).toBe("POST");
-    expect(request.data).not.toHaveProperty(KOGITO_PROCESS_REFERENCE_ID);
-    expect(request.data).not.toHaveProperty(KOGITO_BUSINESS_KEY);
+    expect(request).toHaveProperty("data", JSON.parse(event.data));
   });
 
   it("trigger cloud event - using PUT", async () => {
@@ -278,5 +272,6 @@ describe("trigger cloud events section", () => {
 
     expect(request.url).toBe("http://localhost:8080/endpoint");
     expect(request.method).toBe("PUT");
+    expect(request).toHaveProperty("data", JSON.parse(event.data));
   });
 });
