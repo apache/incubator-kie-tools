@@ -3805,6 +3805,9 @@ importers:
       antlr4:
         specifier: ^4.13.0
         version: 4.13.0
+      uuid:
+        specifier: ^8.3.2
+        version: 8.3.2
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -3827,6 +3830,9 @@ importers:
       "@types/jest":
         specifier: ^26.0.23
         version: 26.0.23
+      "@types/uuid":
+        specifier: ^8.3.0
+        version: 8.3.0
       jest:
         specifier: ^26.6.3
         version: 26.6.3

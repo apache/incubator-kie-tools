@@ -27,7 +27,8 @@
   "dependencies": {
     "@kie-tools/dmn-feel-antlr4-parser": "workspace:*",
     "@kie-tools/dmn-marshaller": "workspace:*",
-    "antlr4": "^4.13.0"
+    "antlr4": "^4.13.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -37,6 +38,7 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/jest": "^26.0.23",
+    "@types/uuid": "^8.3.0",
     "jest": "^26.6.3",
     "jest-junit": "^14.0.0",
     "rimraf": "^3.0.2",
