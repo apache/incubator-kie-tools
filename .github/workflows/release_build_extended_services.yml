@@ -144,8 +144,8 @@ jobs:
         if: ${{ runner.os == 'macOS' && !inputs.dry_run && inputs.release_candidate }}
         shell: bash
         env:
-          ASF_USERNAME: ${{ secrets.ASF_USERNAME }}
-          ASF_PASSWORD: ${{ secrets.ASF_PASSWORD }}
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           PROJECT_VERSION: ${{ inputs.release_candidate_version }}
           ARTIFACT_ZIP_FILE: ${{ steps.macos_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
         run: |
@@ -153,7 +153,7 @@ jobs:
           cp ./extended-services-release-artifacts/* svn-kie/$PROJECT_VERSION/
           svn add "svn-kie/$PROJECT_VERSION"
           cd svn-kie
-          svn ci --non-interactive --no-auth-cache --username "$ASF_USERNAME" --password "$ASF_PASSWORD" -m "Apache KIE $PROJECT_VERSION Extended Services for macOS artifact"
+          svn ci --non-interactive --no-auth-cache --username "$SVN_USERNAME" --password "$SVN_PASSWORD" -m "Apache KIE $PROJECT_VERSION Extended Services for macOS artifact"
           rm -rf svn-kie
 
       - name: "Setup Extended Services for Windows artifacts"
@@ -187,8 +187,8 @@ jobs:
         if: ${{ runner.os == 'Windows' && !inputs.dry_run && inputs.release_candidate }}
         shell: pwsh
         env:
-          ASF_USERNAME: ${{ secrets.ASF_USERNAME }}
-          ASF_PASSWORD: ${{ secrets.ASF_PASSWORD }}
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           PROJECT_VERSION: ${{ inputs.release_candidate_version }}
           ARTIFACT_ZIP_FILE: ${{ steps.windows_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
         run: |
@@ -196,5 +196,5 @@ jobs:
           cp ./extended-services-release-artifacts/* svn-kie/$PROJECT_VERSION/
           svn add "svn-kie/$PROJECT_VERSION"
           cd svn-kie
-          svn ci --non-interactive --no-auth-cache --username "$ASF_USERNAME" --password "$ASF_PASSWORD" -m "Apache KIE $PROJECT_VERSION Extended Services for Windows artifact"
+          svn ci --non-interactive --no-auth-cache --username "$SVN_USERNAME" --password "$SVN_PASSWORD" -m "Apache KIE $PROJECT_VERSION Extended Services for Windows artifact"
           rm -rf svn-kie

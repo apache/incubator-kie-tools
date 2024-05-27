@@ -209,7 +209,7 @@ pipeline {
                         "${env.RELEASE_ARTIFACTS_DIR}",
                         "${pipelineVars.asfReleaseStagingRepository}",
                         "${params.RELEASE_CANDIDATE_VERSION}",
-                        "${pipelineVars.asfReleaseUserCredentialsId}"
+                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
                     )
                 }
             }
