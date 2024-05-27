@@ -132,7 +132,7 @@ export const handleNodeInstanceCancel = (
 
 export const jobCancel = async (
   drive: ProcessDetailsDriver,
-  job: Pick<Job, "id" | "endpoint">,
+  job: Job,
   setModalTitle: (title: JSX.Element) => void,
   setModalContent: (content: string) => void
 ) => {
@@ -142,9 +142,9 @@ export const jobCancel = async (
 };
 
 export const handleJobRescheduleUtil = async (
-  repeatInterval,
-  repeatLimit,
-  scheduleDate,
+  repeatInterval: string | number,
+  repeatLimit: string | number,
+  scheduleDate: Date,
   selectedJob: Job,
   handleRescheduleAction: () => void,
   driver: ProcessDetailsDriver,
@@ -154,7 +154,6 @@ export const handleJobRescheduleUtil = async (
   if (response && response.modalTitle === "success") {
     handleRescheduleAction();
   } else if (response && response.modalTitle === "failure") {
-    handleRescheduleAction();
     setRescheduleError(response.modalContent);
   }
 };

@@ -38,7 +38,7 @@ pipeline {
         stage('Check code formatting') {
             agent {
                 docker {
-                    image "docker.io/apache/incubator-kie-tools-ci-build:${params.IMAGE_TAG}"
+                    image "quay.io/kie-tools/kie-tools-ci-build:${params.IMAGE_TAG}"
                 }
             }
 

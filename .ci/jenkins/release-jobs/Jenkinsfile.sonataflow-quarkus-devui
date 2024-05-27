@@ -23,29 +23,25 @@ pipeline {
     }
 
     options {
-        timeout(time: 60, unit: 'MINUTES')
+        timeout(time: 180, unit: 'MINUTES')
     }
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
         string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
+        booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
     }
 
     environment {
         KIE_TOOLS_BUILD__runLinters = 'false'
         KIE_TOOLS_BUILD__runTests = 'false'
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
-        KIE_TOOLS_BUILD__buildContainerImages = 'true'
-
-        KOGITO_MANAGEMENT_CONSOLE__registry = 'docker.io'
-        KOGITO_MANAGEMENT_CONSOLE__account = 'apache'
-        KOGITO_MANAGEMENT_CONSOLE__name = 'incubator-kie-kogito-management-console'
-        KOGITO_MANAGEMENT_CONSOLE__buildTags = "latest ${params.RELEASE_VERSION}"
+        KIE_TOOLS_BUILD__mavenDeploySkip = 'false'
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
-        PNPM_FILTER_STRING = '-F @kie-tools/kogito-management-console...'
+        PNPM_FILTER_STRING = '-F sonataflow-quarkus-devui...'
     }
 
     stages {
@@ -55,7 +51,7 @@ pipeline {
                     pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
                     buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
                     githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
-                    dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
+                    releaseUtils = load '.ci/jenkins/shared-scripts/releaseUtils.groovy'
                 }
             }
         }
@@ -108,28 +104,36 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Setup signing key') {
             steps {
-                dir('kie-tools') {
-                    script {
-                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
-                    }
+                script {
+                    releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
                 }
             }
         }
 
-        stage('Push kogito-management-console to Docker Hub') {
-            when {
-                expression { !params.DRY_RUN }
-            }
+        stage('Build and Deploy') {
             steps {
-                script {
-                    dockerUtils.pushImageToRegistry(
-                        "${env.KOGITO_MANAGEMENT_CONSOLE__registry}/${env.KOGITO_MANAGEMENT_CONSOLE__account}",
-                        "${env.KOGITO_MANAGEMENT_CONSOLE__name}",
-                        "${env.KOGITO_MANAGEMENT_CONSOLE__buildTags}",
-                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
-                    )
+                dir('kie-tools') {
+                    script {
+                        if (params.DRY_RUN) {
+                            env.KIE_TOOLS_BUILD__mavenDeploySkip = 'true'
+                        }
+                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.mavenDeployRepositoryCredentialsId}", usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+                            withCredentials([string(credentialsId: "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}", variable: 'SIGNING_KEY_PASSWORD')]) {
+                                configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
+                                    sh """#!/bin/bash -el
+                                    pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
+                                    pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dapache.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
+                                    pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dapache.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
+                                    pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dgpg.passphrase=${SIGNING_KEY_PASSWORD} >> .mvn/maven.config'
+                                    pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Papache-release >> .mvn/maven.config'
+                                    pnpm ${env.PNPM_FILTER_STRING} build:prod
+                                    """.trim()
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

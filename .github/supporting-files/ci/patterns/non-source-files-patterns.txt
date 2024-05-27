@@ -11,4 +11,5 @@ gifs
 repo
 .vscode
 .idea
+.ci
 .github/CODEOWNERS

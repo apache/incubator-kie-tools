@@ -422,28 +422,5 @@ export function DiagramCommands(props: {}) {
       });
     };
   }, [dmnEditorStoreApi, externalModelsByNamespace, commandsRef, rf]);
-
-  useEffect(() => {
-    if (!commandsRef.current) {
-      return;
-    }
-    commandsRef.current.panDown = async () => {
-      console.debug("DMN DIAGRAM: COMMANDS: Panning down");
-      rfStoreApi.setState({
-        nodesDraggable: false,
-        nodesConnectable: false,
-        elementsSelectable: false,
-      });
-    };
-    commandsRef.current.panUp = async () => {
-      console.debug("DMN DIAGRAM: COMMANDS: Panning up");
-      rfStoreApi.setState({
-        nodesDraggable: true,
-        nodesConnectable: true,
-        elementsSelectable: true,
-      });
-    };
-  }, [commandsRef, rfStoreApi]);
-
   return <></>;
 }

@@ -20,7 +20,7 @@ class PipelineVars implements Serializable {
     String githubRepositoryName = 'incubator-kie-tools'
     String githubRepositorySlug = 'apache/incubator-kie-tools'
     String quayPushCredentialsId = 'quay-io-kie-tools-token'
-    String quayKiegroupPushCredentialsId = 'quay_kiegroup_registry_token'
+    String dockerHubApacheKiePushCredentialsId = 'dockerhub_apache_kie_registry_token'
     String openshiftCredentialsId = 'openshift-kie-tools-token'
     String kieToolsBotGithubCredentialsId = 'kie-tools-bot-gh'
     String kieToolsBotGithubTokenCredentialsId = 'kie-tools-bot-gh-token'
@@ -37,7 +37,9 @@ class PipelineVars implements Serializable {
     String mavenSettingsConfigFileId = 'kie-release-settings'
     String mavenDeployRepositoryCredentialsId = 'apache-nexus-kie-deploy-credentials'
     String defaultArtifactsTempDir = 'artifacts-tmp'
+    String asfReleaseGPGKeyCredentialsId = 'asf-release-gpg-signing-key'
+    String asfReleaseGPGKeyPasswordCredentialsId = 'asf-release-gpg-signing-key-password'
 
 }
 
-return new PipelineVars();
+return new PipelineVars()

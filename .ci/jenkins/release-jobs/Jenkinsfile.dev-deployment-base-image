@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:latest'
+            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -118,7 +118,7 @@ pipeline {
             }
         }
 
-        stage('Push dev-deployment-base-image to quay.io') {
+        stage('Push dev-deployment-base-image to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -128,7 +128,7 @@ pipeline {
                         "${env.DEV_DEPLOYMENT_BASE_IMAGE__registry}/${env.DEV_DEPLOYMENT_BASE_IMAGE__account}",
                         "${env.DEV_DEPLOYMENT_BASE_IMAGE__name}",
                         "${env.DEV_DEPLOYMENT_BASE_IMAGE__buildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
             }

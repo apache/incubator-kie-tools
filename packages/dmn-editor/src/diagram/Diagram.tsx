@@ -1154,7 +1154,6 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             preventScrolling={true}
             selectionOnDrag={true}
             panOnDrag={PAN_ON_DRAG}
-            panActivationKeyCode={"Alt"}
             selectionMode={RF.SelectionMode.Full} // For selections happening inside Groups/DecisionServices it's better to leave it as "Full"
             isValidConnection={isValidConnection}
             connectionLineComponent={ConnectionLine}

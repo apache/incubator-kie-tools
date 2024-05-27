@@ -20,7 +20,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:latest'
+            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
             args '--shm-size=2g --privileged --group-add docker'
             label util.avoidFaultyNodes()
         }
@@ -223,7 +223,7 @@ pipeline {
             }
         }
 
-        stage('STAGING: Push serverless-logic-web-tools-swf-builder-image to quay.io') {
+        stage('STAGING: Push serverless-logic-web-tools-swf-builder-image to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -465,7 +465,7 @@ pipeline {
             }
         }
 
-        stage('STAGING: Push kie-sandbox-extended-services-image to quay.io') {
+        stage('STAGING: Push kie-sandbox-extended-services-image to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -487,7 +487,7 @@ pipeline {
             }
         }
 
-        stage('STAGING: Push cors-proxy-image to quay.io') {
+        stage('STAGING: Push cors-proxy-image to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -509,7 +509,7 @@ pipeline {
             }
         }
 
-        stage('STAGING: Push kie-sandbox-image to quay.io') {
+        stage('STAGING: Push kie-sandbox-image to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -543,7 +543,7 @@ pipeline {
             }
         }
 
-        stage('STAGING: Push serverless-logic-web-tools-swf-dev-mode-image to quay.io') {
+        stage('STAGING: Push serverless-logic-web-tools-swf-dev-mode-image to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -554,7 +554,7 @@ pipeline {
             }
         }
 
-        stage('STAGING: Push dev-deployment-base-image and dev-deployment-kogito-quarkus-blank-app-image to quay.io') {
+        stage('STAGING: Push dev-deployment-base-image and dev-deployment-kogito-quarkus-blank-app-image to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -566,7 +566,7 @@ pipeline {
             }
         }
 
-        stage('STAGING: Push dev-deployment-dmn-form-webapp-image to quay.io') {
+        stage('STAGING: Push dev-deployment-dmn-form-webapp-image to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -577,7 +577,7 @@ pipeline {
             }
         }
 
-        stage('STAGING: Push serverless-logic-web-tools-base-builder-image to quay.io') {
+        stage('STAGING: Push serverless-logic-web-tools-base-builder-image to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -588,7 +588,7 @@ pipeline {
             }
         }
 
-        stage('STAGING: Push dashbuilder-viewer-image to quay.io') {
+        stage('STAGING: Push dashbuilder-viewer-image to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -599,7 +599,7 @@ pipeline {
             }
         }
 
-        stage('STAGING: Push kie-sandbox-helm-chart to quay.io') {
+        stage('STAGING: Push kie-sandbox-helm-chart to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -612,7 +612,7 @@ pipeline {
             }
         }
 
-        stage('STAGING: Push kogito-task-console to quay.io') {
+        stage('STAGING: Push kogito-task-console to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -623,7 +623,7 @@ pipeline {
             }
         }
 
-        stage('STAGING: Push kogito-management-console to quay.io') {
+        stage('STAGING: Push kogito-management-console to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -634,7 +634,7 @@ pipeline {
             }
         }
 
-        stage('STAGING: Push sonataflow-builder to quay.io') {
+        stage('STAGING: Push sonataflow-builder to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -645,7 +645,7 @@ pipeline {
             }
         }
 
-        stage('STAGING: Push sonataflow-devmode to quay.io') {
+        stage('STAGING: Push sonataflow-devmode to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
@@ -656,13 +656,23 @@ pipeline {
             }
         }
 
-        stage('STAGING: Push sonataflow-operator to quay.io') {
+        stage('STAGING: Push sonataflow-operator to Docker Hub') {
             when {
                 expression { !params.DRY_RUN }
             }
             steps {
                 script {
                     pushKogitoServerlessOperatorToQuay()
+                }
+            }
+        }
+
+        stage('STAGING: Build and Deploy (jbpm-quarkus-devui and sonataflow-quarkus-devui)') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildAndDeployDevUiJavaPackages()
+                    }
                 }
             }
         }
@@ -702,7 +712,6 @@ def build() {
     export SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef=${params.RELEASE_VERSION}
     export SERVERLESS_LOGIC_WEB_TOOLS__buildInfo="${params.RELEASE_VERSION} (staging) @ ${params.COMMIT_SHA}"
     export SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl=https://staging-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud
-
     pnpm -r --workspace-concurrency=1 build:prod
     """.trim()
 }
@@ -881,7 +890,7 @@ def pushKieSandboxHelmChartToQuay() {
     helmUtils.pushChartToRegistry(
         "${env.KIE_SANDBOX_HELM_CHART__registry}/${env.KIE_SANDBOX_HELM_CHART__account}",
         "packages/kie-sandbox-helm-chart/dist/${env.KIE_SANDBOX_HELM_CHART__name}-${env.KIE_SANDBOX_HELM_CHART__tag}.tgz",
-        "${pipelineVars.quayPushCredentialsId}"
+        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
     )
 }
 
@@ -973,7 +982,7 @@ def pushServerlessLogicWebToolsSWFBuilderImageToQuay() {
         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry}/${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount}",
         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName}",
         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags}",
-        "${pipelineVars.quayPushCredentialsId}"
+        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
     )
 }
 
@@ -982,7 +991,7 @@ def pushKieSandboxExtendedServicesImageToQuay() {
         "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry}/${env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount}",
         "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageName}",
         "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags}",
-        "${pipelineVars.quayPushCredentialsId}"
+        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
     )
 }
 
@@ -991,7 +1000,7 @@ def pushCorsProxyImageToQuay() {
         "${env.CORS_PROXY_IMAGE__imageRegistry}/${env.CORS_PROXY_IMAGE__imageAccount}",
         "${env.CORS_PROXY_IMAGE__imageName}",
         "${env.CORS_PROXY_IMAGE__imageBuildTags}",
-        "${pipelineVars.quayPushCredentialsId}"
+        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
     )
 }
 
@@ -1000,7 +1009,7 @@ def pushKieSandboxImageToQuay() {
         "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}",
         "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageName}",
         "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags}",
-        "${pipelineVars.quayPushCredentialsId}"
+        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
     )
 }
 
@@ -1009,7 +1018,7 @@ def pushServerlessLogicWebToolsSWFDevModeImageToQuay() {
         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry}/${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount}",
         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName}",
         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags}",
-        "${pipelineVars.quayPushCredentialsId}"
+        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
     )
 }
 
@@ -1018,7 +1027,7 @@ def pushDevDeploymentBaseImageToQuay() {
         "${env.DEV_DEPLOYMENT_BASE_IMAGE__registry}/${env.DEV_DEPLOYMENT_BASE_IMAGE__account}",
         "${env.DEV_DEPLOYMENT_BASE_IMAGE__name}",
         "${env.DEV_DEPLOYMENT_BASE_IMAGE__buildTags}",
-        "${pipelineVars.quayPushCredentialsId}"
+        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
     )
 }
 
@@ -1027,7 +1036,7 @@ def pushDevDeploymentDmnFormWebappImageToQuay() {
         "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry}/${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account}",
         "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name}",
         "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags}",
-        "${pipelineVars.quayPushCredentialsId}"
+        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
     )
 }
 
@@ -1036,7 +1045,7 @@ def pushDevDeploymentKogitoQuarkusBlankAppImageToQuay() {
         "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry}/${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account}",
         "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name}",
         "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTags}",
-        "${pipelineVars.quayPushCredentialsId}"
+        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
     )
 }
 
@@ -1045,7 +1054,7 @@ def pushDashbuilderViewerImageToQuay() {
         "${env.DASHBUILDER__viewerImageRegistry}/${env.DASHBUILDER__viewerImageAccount}",
         "${env.DASHBUILDER__viewerImageName}",
         "${env.DASHBUILDER__viewerImageBuildTags}",
-        "${pipelineVars.quayPushCredentialsId}"
+        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
     )
 }
 
@@ -1054,7 +1063,7 @@ def pushServerlessLogicWebToolsBaseBuilderImageToQuay() {
         "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry}/${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount}",
         "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName}",
         "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags}",
-        "${pipelineVars.quayPushCredentialsId}"
+        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
     )
 }
 
@@ -1063,7 +1072,7 @@ def pushKogitoTaskConsoleToQuay() {
         "${env.KOGITO_TASK_CONSOLE__registry}/${env.KOGITO_TASK_CONSOLE__account}",
         "${env.KOGITO_TASK_CONSOLE__name}",
         "${env.KOGITO_TASK_CONSOLE__buildTags}",
-        "${pipelineVars.quayPushCredentialsId}"
+        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
     )
 }
 
@@ -1072,7 +1081,7 @@ def pushKogitoManagementConsoleToQuay() {
         "${env.KOGITO_MANAGEMENT_CONSOLE__registry}/${env.KOGITO_MANAGEMENT_CONSOLE__account}",
         "${env.KOGITO_MANAGEMENT_CONSOLE__name}",
         "${env.KOGITO_MANAGEMENT_CONSOLE__buildTags}",
-        "${pipelineVars.quayPushCredentialsId}"
+        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
     )
 }
 
@@ -1081,7 +1090,7 @@ def pushKogitoSwfBuilderToQuay() {
         "${env.SONATAFLOW_BUILDER_IMAGE__registry}/${env.SONATAFLOW_BUILDER_IMAGE__account}",
         "${env.SONATAFLOW_BUILDER_IMAGE__name}",
         "${env.SONATAFLOW_BUILDER_IMAGE__buildTag}",
-        "${pipelineVars.quayKiegroupPushCredentialsId}"
+        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
     )
 }
 
@@ -1090,7 +1099,7 @@ def pushKogitoSwfDevModeToQuay() {
         "${env.SONATAFLOW_DEVMODE_IMAGE__registry}/${env.SONATAFLOW_DEVMODE_IMAGE__account}",
         "${env.SONATAFLOW_DEVMODE_IMAGE__name}",
         "${env.SONATAFLOW_DEVMODE_IMAGE__buildTag}",
-        "${pipelineVars.quayKiegroupPushCredentialsId}"
+        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
     )
 }
 
@@ -1099,7 +1108,7 @@ def pushKogitoServerlessOperatorToQuay() {
         "${env.SONATAFLOW_OPERATOR__registry}/${env.SONATAFLOW_OPERATOR__account}",
         "${env.SONATAFLOW_OPERATOR__name}",
         "${env.SONATAFLOW_OPERATOR__buildTag}",
-        "${pipelineVars.quayKiegroupPushCredentialsId}"
+        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
     )
 }
 
@@ -1111,6 +1120,24 @@ def buildImage(String packageName) {
     echo "Build @kie-tools/${packageName}"
     pnpm -F @kie-tools/${packageName}... --workspace-concurrency=1 build:prod
     """.trim()
+}
+
+def buildAndDeployDevUiJavaPackages() {
+    withCredentials([usernamePassword(credentialsId: "${pipelineVars.mavenDeployRepositoryCredentialsId}", usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+        configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
+            sh """#!/bin/bash -el
+            export KIE_TOOLS_BUILD__runEndToEndTests=false
+            export KIE_TOOLS_BUILD__runTests=false
+            export KIE_TOOLS_BUILD__runLinters=false
+            export KIE_TOOLS_BUILD__mavenDeploySkip=false
+            pnpm update-version-to ${params.RELEASE_VERSION}-SNAPSHOT -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui...
+            pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
+            pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Dapache.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
+            pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Dapache.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
+            pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... build:prod
+            """.trim()
+        }
+    }
 }
 
 def loadLocalSharedScripts() {

@@ -152,8 +152,8 @@ def pushObject(String remote, String object, String credentialsId) {
 */
 def getRepoSlug(String url) {
     tokens = url.tokenize('/')
-    org = tokens[tokens.size()-4]
-    repo = tokens[tokens.size()-3]
+    org = tokens[tokens.size() - 4]
+    repo = tokens[tokens.size() - 3]
 
     return "${org}/${repo}"
 }
@@ -178,4 +178,4 @@ def fileIsInChangeset(String file) {
     return changeset.contains(file)
 }
 
-return this;
+return this

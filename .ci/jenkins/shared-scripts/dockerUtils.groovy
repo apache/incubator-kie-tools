@@ -50,4 +50,4 @@ def tagImage(String registry, String image, String oldTag, String newTag) {
     sh "docker tag ${registry}/${image}:${oldTag} ${registry}/${image}:${newTag}"
 }
 
-return this;
+return this
