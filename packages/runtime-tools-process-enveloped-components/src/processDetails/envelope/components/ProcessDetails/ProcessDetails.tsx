@@ -320,7 +320,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   const renderProcessVariables = (): JSX.Element => {
     return (
       <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
-        {Object.keys(updateJson).length > 0 && (
+        {updateJson && Object.keys(updateJson).length > 0 && (
           <FlexItem>
             <ProcessVariables
               displayLabel={displayLabel}
