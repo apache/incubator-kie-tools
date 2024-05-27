@@ -108,6 +108,7 @@
       </exclusions>
     </dependency>
     <!-- This still requires docker to run. Uncomment when solved. -->
+    <!-- https://github.com/apache/incubator-kie-issues/issues/1272 -->
     <!-- <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-quarkus-devui</artifactId>
