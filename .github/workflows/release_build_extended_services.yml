@@ -118,9 +118,9 @@ jobs:
         if: ${{ runner.os == 'macOS' && !inputs.dry_run && inputs.release_candidate }}
         shell: bash
         env:
-          RC_VERSION: ${{ inputs.release_candidate_version }}
+          PROJECT_VERSION: ${{ inputs.release_candidate_version }}
         run: |
-          ARTIFACT_ZIP_FILE="./extended-services-release-artifacts/incubator-kie-$RC_VERSION-sandbox-extended-services-macOS.zip"
+          ARTIFACT_ZIP_FILE="./extended-services-release-artifacts/incubator-kie-$PROJECT_VERSION-sandbox-extended-services-macOS.zip"
           echo "ARTIFACT_ZIP_FILE=$ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
           mkdir ./extended-services-release-artifacts
           zip $ARTIFACT_ZIP_FILE ./packages/extended-services/dist/darwin/Kogito.dmg
@@ -131,7 +131,6 @@ jobs:
         env:
           GPG_KEY: ${{ secrets.GPG_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-          RC_VERSION: ${{ inputs.release_candidate_version }}
           ARTIFACT_ZIP_FILE: ${{ steps.macos_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
         run: |
           echo $GPG_KEY > ./signkey.gpg
@@ -147,14 +146,14 @@ jobs:
         env:
           ASF_USERNAME: ${{ secrets.ASF_USERNAME }}
           ASF_PASSWORD: ${{ secrets.ASF_PASSWORD }}
-          RC_VERSION: ${{ inputs.release_candidate_version }}
+          PROJECT_VERSION: ${{ inputs.release_candidate_version }}
           ARTIFACT_ZIP_FILE: ${{ steps.macos_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
         run: |
           svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie svn-kie
-          cp ./extended-services-release-artifacts/* svn-kie/$RC_VERSION/
-          svn add "svn-kie/$RC_VERSION"
+          cp ./extended-services-release-artifacts/* svn-kie/$PROJECT_VERSION/
+          svn add "svn-kie/$PROJECT_VERSION"
           cd svn-kie
-          svn ci --non-interactive --no-auth-cache --username $ASF_USERNAME --password '$ASF_PASSWORD' -m "Apache KIE $RC_VERSION Extended Services for macOS artifact"
+          svn ci --non-interactive --no-auth-cache --username "$ASF_USERNAME" --password "$ASF_PASSWORD" -m "Apache KIE $PROJECT_VERSION Extended Services for macOS artifact"
           rm -rf svn-kie
 
       - name: "Setup Extended Services for Windows artifacts"
@@ -162,9 +161,9 @@ jobs:
         if: ${{ runner.os == 'macOS' && !inputs.dry_run && inputs.release_candidate }}
         shell: pwsh
         env:
-          RC_VERSION: ${{ inputs.release_candidate_version }}
+          PROJECT_VERSION: ${{ inputs.release_candidate_version }}
         run: |
-          ARTIFACT_ZIP_FILE="./extended-services-release-artifacts/incubator-kie-$RC_VERSION-sandbox-extended-services-macOS.zip"
+          ARTIFACT_ZIP_FILE="./extended-services-release-artifacts/incubator-kie-$PROJECT_VERSION-sandbox-extended-services-macOS.zip"
           echo "ARTIFACT_ZIP_FILE=$ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
           mkdir ./extended-services-release-artifacts
           zip $ARTIFACT_ZIP_FILE ./packages/extended-services/dist/win32/kie_sandbox_extended_services.exe
@@ -175,7 +174,6 @@ jobs:
         env:
           GPG_KEY: ${{ secrets.GPG_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-          RC_VERSION: ${{ inputs.release_candidate_version }}
           ARTIFACT_ZIP_FILE: ${{ steps.windows_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
         run: |
           echo $GPG_KEY > ./signkey.gpg
@@ -191,12 +189,12 @@ jobs:
         env:
           ASF_USERNAME: ${{ secrets.ASF_USERNAME }}
           ASF_PASSWORD: ${{ secrets.ASF_PASSWORD }}
-          RC_VERSION: ${{ inputs.release_candidate_version }}
+          PROJECT_VERSION: ${{ inputs.release_candidate_version }}
           ARTIFACT_ZIP_FILE: ${{ steps.windows_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
         run: |
           svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie svn-kie
-          cp ./extended-services-release-artifacts/* svn-kie/$RC_VERSION/
-          svn add "svn-kie/$RC_VERSION"
+          cp ./extended-services-release-artifacts/* svn-kie/$PROJECT_VERSION/
+          svn add "svn-kie/$PROJECT_VERSION"
           cd svn-kie
-          svn ci --non-interactive --no-auth-cache --username $ASF_USERNAME --password '$ASF_PASSWORD' -m "Apache KIE $RC_VERSION Extended Services for Windows artifact"
+          svn ci --non-interactive --no-auth-cache --username "$ASF_USERNAME" --password "$ASF_PASSWORD" -m "Apache KIE $PROJECT_VERSION Extended Services for Windows artifact"
           rm -rf svn-kie
