@@ -23,6 +23,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"sort"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -264,13 +265,25 @@ func (w *workflowProjectHandler) parseRawResources() error {
 	}
 
 	resourceCount := 1
-	for path, resources := range w.rawResources {
+	paths := []string{}
+	for k := range w.rawResources {
+		paths = append(paths, k)
+	}
+	// Sort the paths to generate a deterministric list of files.
+	// Without sorting Golang map iteration on the strings is inconsistent because
+	// iteration order is not specified, so each time we could get 01-configmap-NAME-resources.yaml
+	// with schemas, and the next time with subflows, or other way round.
+	sort.Strings(paths)
+	for _, path := range paths {
+		// For better usability also convenience we add the 'path' from which the config map is taken
+		// so the config map file will have a meaningful name like
+		// 01-configmap-NAME-resources-specs.yaml or -subflow.yaml or -schemas.yaml
 		cm := &corev1.ConfigMap{
-			ObjectMeta: metav1.ObjectMeta{Namespace: w.namespace, Name: fmt.Sprintf("%02d-%s-resources", resourceCount, w.name)},
+			ObjectMeta: metav1.ObjectMeta{Namespace: w.namespace, Name: fmt.Sprintf("%02d-%s-resources-%s", resourceCount, w.name, path)},
 			Data:       map[string]string{},
 		}
 
-		for _, r := range resources {
+		for _, r := range w.rawResources[path] {
 			contents, err := io.ReadAll(r.contents)
 			if err != nil {
 				return err
