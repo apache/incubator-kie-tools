@@ -300,7 +300,7 @@ void createBuildAndTestStageClosure(String image) {
             buildParams.add(string(name: 'TESTS_KOGITO_EXAMPLES_URI', value: params.EXAMPLES_URI))
             buildParams.add(string(name: 'TESTS_KOGITO_EXAMPLES_REF', value: params.EXAMPLES_REF))
 
-            buildParams.add(booleanParam(name: 'DEPLOY_IMAGE', value: true))
+            buildParams.add(booleanParam(name: 'DEPLOY_IMAGE', value: isDeployImage()))
             buildParams.add(booleanParam(name: 'DEPLOY_IMAGE_USE_OPENSHIFT_REGISTRY', value: isDeployImageInOpenshiftRegistry()))
             buildParams.add(string(name: 'DEPLOY_IMAGE_REGISTRY_CREDENTIALS', value: getDeployImageRegistryCredentials()))
             buildParams.add(string(name: 'DEPLOY_IMAGE_REGISTRY', value: getDeployImageRegistry()))
@@ -353,6 +353,10 @@ List getTestFailedImages() {
 ////////////////////////////////////////////////////////////////////////
 // Deploy image information
 ////////////////////////////////////////////////////////////////////////
+
+boolean isDeployImage() {
+    return !env.DISABLE_IMAGES_DEPLOY
+}
 
 boolean isDeployImageInOpenshiftRegistry() {
     return params.IMAGE_USE_OPENSHIFT_REGISTRY

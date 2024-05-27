@@ -222,6 +222,31 @@ pipeline {
                 }
             }
         }
+        stage('Export, Sign and Archive Image and signature') {
+            when {
+                expression { return shouldExportAndGpgSign() }
+            }
+            steps {
+                script {
+                    def resultingFileName = "${getFinalImageName()}.tar.gz"
+                    def signatureFileName = "${resultingFileName}.asc"
+                    sh """
+                        docker pull ${getBuiltImageTag()}
+                        docker save ${getBuiltImageTag()} | gzip > ${resultingFileName}
+                    """
+                    release.gpgImportKeyFromFileWithPassword(getReleaseGpgSignKeyCredsId(), getReleaseGpgSignPassphraseCredsId())
+                    release.gpgSignFileDetachedSignatureWithPassword(resultingFileName, signatureFileName, getReleaseGpgSignPassphraseCredsId())
+                    release.svnUploadFileToRepository(getReleaseSvnRepository(), getReleaseSvnCredsId(), getReleaseVersion(), resultingFileName, signatureFileName)
+                }
+            }
+            post {
+                always {
+                    script {
+                        archiveArtifacts(artifacts: '**/*.tar.gz,**/*.tar.gz.asc', fingerprint: false, allowEmptyArchive: true)
+                    }
+                }
+            }
+        }
     }
     post {
         always {
@@ -372,6 +397,10 @@ boolean shouldDeployImage() {
     return params.DEPLOY_IMAGE
 }
 
+boolean shouldExportAndGpgSign() {
+    return params.EXPORT_AND_GPG_SIGN_IMAGE
+}
+
 String getBuildKogitoAppsRef() {
     return params.BUILD_KOGITO_APPS_REF
 }
@@ -426,4 +455,19 @@ String getTriggeringProjectName() {
         return currentBuild.upstreamBuilds[0].projectName
     }
     return ""
+}
+String getReleaseGpgSignKeyCredsId() {
+    return env.RELEASE_GPG_SIGN_KEY_CREDS_ID
+}
+
+String getReleaseGpgSignPassphraseCredsId() {
+    return env.RELEASE_GPG_SIGN_PASSPHRASE_CREDS_ID
+}
+
+String getReleaseSvnRepository() {
+    return env.RELEASE_SVN_REPOSITORY
+}
+
+String getReleaseSvnCredsId() {
+    return env.RELEASE_SVN_CREDS_ID
 }

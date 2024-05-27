@@ -115,6 +115,8 @@ void setupDeployJob(JobType jobType) {
         DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
 
         QUARKUS_PLATFORM_NEXUS_URL: Utils.getMavenQuarkusPlatformRepositoryUrl(this),
+
+        DISABLE_IMAGES_DEPLOY: (jobType==JobType.NIGHTLY) ? true : Utils.isImagesDeployDisabled(this)
     ])
     if (Utils.hasBindingValue(this, 'CLOUD_IMAGES')) {
         jobParams.env.put('IMAGES_LIST', Utils.getBindingValue(this, 'CLOUD_IMAGES'))
@@ -167,6 +169,11 @@ void setupBuildImageJob(JobType jobType) {
 
         GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
         GIT_AUTHOR_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
+
+        RELEASE_GPG_SIGN_KEY_CREDS_ID: Utils.getReleaseGpgSignKeyCredentialsId(this),
+        RELEASE_GPG_SIGN_PASSPHRASE_CREDS_ID: Utils.getReleaseGpgSignPassphraseCredentialsId(this),
+        RELEASE_SVN_REPOSITORY: Utils.getReleaseSvnCredentialsId(this),
+        RELEASE_SVN_CREDS_ID: Utils.getReleaseSvnStagingRepository(this)
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         logRotator {
@@ -202,6 +209,7 @@ void setupBuildImageJob(JobType jobType) {
             stringParam('DEPLOY_IMAGE_NAME_SUFFIX', '', 'Image name suffix to use to deploy images. In case you need to change the final image name, you can add a suffix to it.')
             stringParam('DEPLOY_IMAGE_TAG', '', 'Image tag to use to deploy images')
             booleanParam('DEPLOY_WITH_LATEST_TAG', false, 'Set to true if you want the deployed images to also be with the `latest` tag')
+            booleanParam('EXPORT_AND_GPG_SIGN_IMAGE', jobType == JobType.RELEASE, 'Set to true if should images be exported and signed.')
         }
     }
 }
