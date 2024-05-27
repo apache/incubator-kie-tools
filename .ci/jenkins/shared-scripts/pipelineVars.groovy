@@ -40,6 +40,7 @@ class PipelineVars implements Serializable {
     String asfReleaseStagingRepository = 'https://dist.apache.org/repos/dist/dev/incubator/kie'
     String asfReleaseGPGKeyCredentialsId = 'asf-release-gpg-signing-key'
     String asfReleaseGPGKeyPasswordCredentialsId = 'asf-release-gpg-signing-key-password'
+    String asfReleaseUserCredentialsId = 'asf-release-credentials'
 
 }
 
