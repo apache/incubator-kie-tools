@@ -79,6 +79,16 @@ pipeline {
             }
         }
 
+        stage('Load upstream images') {
+            steps {
+                script {
+                    upstreamReleaseArtifactsDir = "${WORKSPACE}/upstream-release-artifacts"
+                    releaseUtils.downloadReleaseArtifacts("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}")
+                    dockerUtils.loadImages(releaseUtils.getUpstreamImagesArtifactsList("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}"))
+                }
+            }
+        }
+
         stage('Checkout kie-tools') {
             steps {
                 dir('kie-tools') {

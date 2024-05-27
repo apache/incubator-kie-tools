@@ -125,7 +125,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmUpdateStreamName(params.BRANCH_NAME)
+                        buildUtils.pnpmUpdateStreamName(params.RELEASE_VERSION)
                     }
                 }
             }

@@ -50,4 +50,20 @@ def tagImage(String registry, String image, String oldTag, String newTag) {
     sh "docker tag ${registry}/${image}:${oldTag} ${registry}/${image}:${newTag}"
 }
 
+/**
+* Load an image
+*/
+def loadImage(String imageFile) {
+    sh "docker load < ${imageFile}"
+}
+
+/**
+* Load multiple images
+*/
+def loadImages(String... imagesFiles) {
+    for (imageFile in imagesFiles) {
+        loadImage(imageFile)
+    }
+}
+
 return this
