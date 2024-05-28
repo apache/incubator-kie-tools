@@ -18,14 +18,15 @@
  */
 
 import { WorkflowDefinition } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
-import { getWorkflowDefinitionList } from "@kie-tools/runtime-tools-swf-gateway-api/dist/gatewayApi";
+import { getWorkflowDefinitions } from "@kie-tools/runtime-tools-swf-gateway-api/dist/gatewayApi";
+import { WorkflowDefinitionListQueries } from "../WorkflowDefinitionList/WorkflowDefinitionListQueries";
 
 export interface WorkflowDefinitionListGatewayApi {
   getWorkflowDefinitionFilter: () => Promise<string[]>;
   setWorkflowDefinitionFilter: (filter: string[]) => Promise<void>;
   getWorkflowDefinitionsQuery: () => Promise<WorkflowDefinition[]>;
   openWorkflowForm: (workflowDefinition: WorkflowDefinition) => Promise<void>;
-  openTriggerCloudEvent: () => void;
+  openTriggerCloudEvent: (workflowDefinition: WorkflowDefinition) => Promise<void>;
   onOpenWorkflowFormListen: (listener: OnOpenWorkflowFormListener) => UnSubscribeHandler;
   onOpenTriggerCloudEventListen: (listener: OnOpenTriggerCloudEventListener) => UnSubscribeHandler;
 }
@@ -35,7 +36,7 @@ export interface OnOpenWorkflowFormListener {
 }
 
 export interface OnOpenTriggerCloudEventListener {
-  onOpen: () => void;
+  onOpen: (workflowDefinition: WorkflowDefinition) => void;
 }
 
 export interface UnSubscribeHandler {
@@ -46,13 +47,11 @@ export class WorkflowDefinitionListGatewayApiImpl implements WorkflowDefinitionL
   private readonly onOpenWorkflowListeners: OnOpenWorkflowFormListener[] = [];
   private readonly onOpenTriggerCloudEventListeners: OnOpenTriggerCloudEventListener[] = [];
 
-  private readonly baseUrl: string;
-  private readonly openApiPath: string;
+  private readonly queries: WorkflowDefinitionListQueries;
   private workflowDefinitionFilter: string[] = [];
 
-  constructor(url: string, path: string) {
-    this.baseUrl = url;
-    this.openApiPath = path;
+  constructor(queries: WorkflowDefinitionListQueries) {
+    this.queries = queries;
   }
 
   getWorkflowDefinitionFilter(): Promise<string[]> {
@@ -100,10 +99,11 @@ export class WorkflowDefinitionListGatewayApiImpl implements WorkflowDefinitionL
   }
 
   getWorkflowDefinitionsQuery(): Promise<WorkflowDefinition[]> {
-    return getWorkflowDefinitionList(this.baseUrl, this.openApiPath);
+    return this.queries.getWorkflowDefinitions();
   }
 
-  openTriggerCloudEvent(): void {
-    this.onOpenTriggerCloudEventListeners.forEach((listener) => listener.onOpen());
+  openTriggerCloudEvent(workflowDefinition: WorkflowDefinition): Promise<void> {
+    this.onOpenTriggerCloudEventListeners.forEach((listener) => listener.onOpen(workflowDefinition));
+    return Promise.resolve();
   }
 }

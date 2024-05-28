@@ -1425,6 +1425,16 @@ export namespace GraphQL {
 
   export type HandleJobRescheduleMutation = { __typename?: "Mutation"; JobReschedule?: string | null };
 
+  export const GetProcessDefinitionsDocument = gql`
+    query getProcessDefinitions {
+      ProcessDefinitions {
+        id
+        endpoint
+        serviceUrl
+      }
+    }
+  `;
+
   export const GetProcessInstancesDocument = gql`
     query getProcessInstances(
       $where: ProcessInstanceArgument

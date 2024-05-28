@@ -27,10 +27,7 @@ export function WebToolsWorkflowFormContextProvider(props: React.PropsWithChildr
   const { env } = useEnv();
 
   return (
-    <CloudEventFormContextProvider
-      proxyEndpoint={env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL}
-      kogitoServiceUrl={settings.runtimeTools.config.kogitoServiceUrl}
-    >
+    <CloudEventFormContextProvider proxyEndpoint={env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL}>
       {props.children}
     </CloudEventFormContextProvider>
   );

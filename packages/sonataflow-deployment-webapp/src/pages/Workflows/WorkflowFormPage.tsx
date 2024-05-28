@@ -61,6 +61,7 @@ export function WorkflowFormPage(props: { workflowId: string }) {
     () => ({
       workflowName: props.workflowId,
       endpoint: `/${props.workflowId}`,
+      serviceUrl: window.location.href.split("/#")[0],
     }),
     [props.workflowId]
   );

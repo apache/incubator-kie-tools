@@ -34,4 +34,5 @@ export type CloudEventFormDefaultValues = {
 export type CloudEventFormInitArgs = {
   isNewInstanceEvent: boolean;
   defaultValues?: CloudEventFormDefaultValues;
+  serviceUrl: string;
 };

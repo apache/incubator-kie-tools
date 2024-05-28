@@ -70,18 +70,19 @@ const WorkflowDefinitionList: React.FC<WorkflowDefinitionListProps & OUIAProps> 
   const columns: DataTableColumn[] = [
     getColumn("workflowName", `Workflow Name`),
     getColumn("endpoint", "Endpoint"),
-    getActionColumn((workflowDefinition) => {
-      driver.openWorkflowForm(workflowDefinition);
-    }),
+    getActionColumn(
+      (workflowDefinition) => {
+        driver.openWorkflowForm(workflowDefinition);
+      },
+      (workflowDefinition) => {
+        driver.openTriggerCloudEvent(workflowDefinition);
+      }
+    ),
   ];
 
   const applyFilter = async (): Promise<void> => {
     await driver.setWorkflowDefinitionFilter(filterWorkflowNames);
   };
-
-  const onOpenTriggerCloudEvent = useCallback(() => {
-    driver.openTriggerCloudEvent();
-  }, []);
 
   const filterWorkflowDefinition = (): WorkflowDefinition[] => {
     if (filterWorkflowNames.length === 0) {

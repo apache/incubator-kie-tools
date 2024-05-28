@@ -17,16 +17,22 @@
  * under the License.
  */
 
-import React, { useMemo } from "react";
-import CloudEventFormContext from "./CloudEventFormContext";
-import { CloudEventFormGatewayApiImpl } from "./CloudEventFormGatewayApi";
+import { getWorkflowDefinitions } from "@kie-tools/runtime-tools-swf-gateway-api/dist/gatewayApi";
+import { WorkflowDefinition } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { ApolloClient } from "apollo-client";
 
-export function CloudEventFormContextProvider(props: React.PropsWithChildren<{ proxyEndpoint?: string }>) {
-  const { proxyEndpoint } = props;
-
-  const gatewayApi = useMemo(() => new CloudEventFormGatewayApiImpl(proxyEndpoint), [proxyEndpoint]);
-
-  return <CloudEventFormContext.Provider value={gatewayApi}>{props.children}</CloudEventFormContext.Provider>;
+export interface WorkflowDefinitionListQueries {
+  getWorkflowDefinitions(): Promise<WorkflowDefinition[]>;
 }
 
-export default CloudEventFormContextProvider;
+export class GraphQLWorkflowDefinitionListQueries implements WorkflowDefinitionListQueries {
+  private readonly client: ApolloClient<any>;
+
+  constructor(client: ApolloClient<any>) {
+    this.client = client;
+  }
+
+  getWorkflowDefinitions(): Promise<WorkflowDefinition[]> {
+    return getWorkflowDefinitions(this.client);
+  }
+}
