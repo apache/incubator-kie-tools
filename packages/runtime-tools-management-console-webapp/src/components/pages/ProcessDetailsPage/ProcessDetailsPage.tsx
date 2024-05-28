@@ -17,7 +17,7 @@
  * under the License.
  */
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
@@ -54,7 +54,6 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
   const [processInstance, setProcessInstance] = useState<ProcessInstance>({} as ProcessInstance);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  let currentPage = JSON.parse(window.localStorage.getItem("state"));
 
   useEffect(() => {
     window.onpopstate = () => {
@@ -62,18 +61,21 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
     };
   });
 
-  async function fetchDetails() {
+  const fetchDetails = useCallback(async () => {
     let response: ProcessInstance = {} as ProcessInstance;
+    let responseError: string;
     try {
       setIsLoading(true);
       response = await gatewayApi.processDetailsQuery(processId);
       setProcessInstance(response);
     } catch (error) {
-      setError(error);
+      responseError = error;
     } finally {
       setIsLoading(false);
-      /* istanbul ignore else */
-      if (error.length === 0 && Object.keys(response).length === 0) {
+      if (responseError) {
+        setError(error);
+      } else if (!response || Object.keys(response).length === 0) {
+        let currentPage = JSON.parse(window.localStorage.getItem("state"));
         let prevPath;
         /* istanbul ignore else */
         if (currentPage) {
@@ -98,50 +100,46 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
         });
       }
     }
-  }
+  }, [error, gatewayApi, history, processId, props.location.state]);
 
   useEffect(() => {
     /* istanbul ignore else */
     if (processId) {
       fetchDetails();
     }
-  }, [processId]);
+  }, [processId, fetchDetails]);
 
-  const processName = processInstance ? processInstance.processName : "";
-
-  const renderItems = () => {
-    if (!isLoading) {
-      return (
-        <>
-          {processInstance && Object.keys(processInstance).length > 0 && !error ? (
-            <ProcessDetailsContainer processInstance={processInstance} />
-          ) : (
-            <>
-              {error.length > 0 && (
-                <Card className="kogito-management-console__card-size">
-                  <Bullseye>
-                    <ServerErrors error={error} variant="large" />
-                  </Bullseye>
-                </Card>
-              )}
-            </>
-          )}
-        </>
-      );
-    } else {
+  const body = useMemo(() => {
+    if (isLoading) {
       return (
         <Card>
           <KogitoSpinner spinnerText="Loading process details..." />
         </Card>
       );
     }
-  };
+
+    if (processInstance && Object.keys(processInstance).length > 0 && !error) {
+      return <ProcessDetailsContainer processInstance={processInstance} />;
+    }
+
+    if (error) {
+      return (
+        <>
+          <Card className="kogito-management-console__card-size">
+            <Bullseye>
+              <ServerErrors error={error} variant="large" />
+            </Bullseye>
+          </Card>
+        </>
+      );
+    }
+  }, [error, isLoading, processInstance]);
 
   return (
     <React.Fragment>
       <PageSectionHeader
         titleText="Process Details"
-        breadcrumbText={["Home", "Processes", processName]}
+        breadcrumbText={["Home", "Processes", processInstance ? processInstance.processName : ""]}
         breadcrumbPath={[
           "/",
           {
@@ -150,7 +148,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
           },
         ]}
       />
-      <PageSection>{renderItems()}</PageSection>
+      <PageSection>{body}</PageSection>
     </React.Fragment>
   );
 };
