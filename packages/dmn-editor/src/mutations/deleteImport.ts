@@ -64,10 +64,11 @@ export function deleteImport({
         drgEdges: drgEdges,
         drdIndex: 0,
         nodeNature: nodeNatures[node.type! as NodeType],
+        dmnObject: node.data.dmnObject,
         dmnObjectId: node.data.dmnObject?.["@_id"],
         dmnObjectQName: node.data.dmnObjectQName,
         dmnObjectNamespace: node.data.dmnObjectNamespace!,
-        externalDmnsIndex: __readonly_externalModelTypesByNamespace.dmns,
+        __readonly_externalModelTypesByNamespace,
         mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
       });
     });

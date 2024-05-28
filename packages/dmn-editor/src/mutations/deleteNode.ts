@@ -17,7 +17,11 @@
  * under the License.
  */
 
-import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import {
+  DMN15__tDecisionService,
+  DMN15__tDefinitions,
+  DMNDI15__DMNShape,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { NodeNature } from "./NodeNature";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
@@ -31,6 +35,8 @@ import { Computed } from "../store/Store";
 import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeContainingDecisionServiceHrefsByDecisionHrefs.ts";
 import { xmlHrefToQName } from "../xml/xmlHrefToQName";
 import { Normalized } from "../normalization/normalize";
+import { computeIndexedDrd } from "../store/computed/computeIndexes";
+import { NodeDmnObjects } from "../diagram/nodes/Nodes";
 
 export enum NodeDeletionMode {
   FROM_DRG_AND_ALL_DRDS,
@@ -42,19 +48,21 @@ export function deleteNode({
   drgEdges,
   drdIndex,
   nodeNature,
+  dmnObject,
   dmnObjectId,
-  dmnObjectQName,
   dmnObjectNamespace,
-  externalDmnsIndex,
+  dmnObjectQName,
+  __readonly_externalModelTypesByNamespace,
   mode,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   drgEdges: DrgEdge[];
   drdIndex: number;
   nodeNature: NodeNature;
-  externalDmnsIndex: ReturnType<Computed["getExternalModelTypesByNamespace"]>["dmns"];
-  dmnObjectNamespace: string;
+  __readonly_externalModelTypesByNamespace: ReturnType<Computed["getExternalModelTypesByNamespace"]>;
+  dmnObject: NodeDmnObjects;
   dmnObjectId: string | undefined;
+  dmnObjectNamespace: string;
   dmnObjectQName: XmlQName;
   mode: NodeDeletionMode;
 }): {
@@ -68,7 +76,7 @@ export function deleteNode({
       drdIndex,
       dmnObjectNamespace,
       dmnObjectId,
-      externalDmnsIndex,
+      __readonly_externalDmnsIndex: __readonly_externalModelTypesByNamespace.dmns,
     })
   ) {
     console.warn("DMN MUTATION: Cannot hide a Decision that's contained by a Decision Service from a DRD.");
@@ -76,9 +84,14 @@ export function deleteNode({
   }
   if (
     mode === NodeDeletionMode.FROM_CURRENT_DRD_ONLY &&
+    dmnObject?.__$$element === "decisionService" &&
+    dmnObjectId &&
     !canRemoveDecisionService({
       definitions,
+      dmnObjectNamespace,
       dmnObjectId,
+      dmnObject: dmnObject as Normalized<DMN15__tDecisionService>,
+      drdIndex,
     })
   ) {
     console.warn("DMN MUTATION: Cannot hide a Decision Service that isn't present in another DRD");
@@ -118,7 +131,7 @@ export function deleteNode({
     }
   }
 
-  let dmnObject: Unpacked<Normalized<DMN15__tDefinitions>["drgElement" | "artifact"]> | undefined;
+  let deletedDmnObject: Unpacked<Normalized<DMN15__tDefinitions>["drgElement" | "artifact"]> | undefined;
 
   // External or unknown nodes don't have a dmnObject associated with it, just the shape..
   if (!dmnObjectQName.prefix) {
@@ -126,13 +139,13 @@ export function deleteNode({
     if (nodeNature === NodeNature.ARTIFACT) {
       if (mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
         const nodeIndex = (definitions.artifact ?? []).findIndex((a) => a["@_id"] === dmnObjectId);
-        dmnObject = definitions.artifact?.splice(nodeIndex, 1)?.[0];
+        deletedDmnObject = definitions.artifact?.splice(nodeIndex, 1)?.[0];
       } else {
         throw new Error(`DMN MUTATION: Can't hide an artifact node.`);
       }
     } else if (nodeNature === NodeNature.DRG_ELEMENT) {
       const nodeIndex = (definitions.drgElement ?? []).findIndex((d) => d["@_id"] === dmnObjectId);
-      dmnObject =
+      deletedDmnObject =
         mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS
           ? definitions.drgElement?.splice(nodeIndex, 1)?.[0]
           : definitions.drgElement?.[nodeIndex];
@@ -142,7 +155,7 @@ export function deleteNode({
       throw new Error(`DMN MUTATION: Unknown node nature '${nodeNature}'.`);
     }
 
-    if (!dmnObject && nodeNature !== NodeNature.UNKNOWN) {
+    if (!deletedDmnObject && nodeNature !== NodeNature.UNKNOWN) {
       /**
        * We do not want to throw error in case of `nodeNature` equals to `NodeNature.UNKNOWN`.
        * In such scenario it is expected `dmnObject` is undefined as we can not pair `dmnObject` with the `DMNShape`.
@@ -157,9 +170,9 @@ export function deleteNode({
   // Deleting the DMNShape's
   let deletedDmnShapeOnCurrentDrd: Normalized<DMNDI15__DMNShape> | undefined;
 
-  const deletedIdsOnDmnObjectTree = dmnObject
+  const deletedIdsOnDmnObjectTree = deletedDmnObject
     ? getNewDmnIdRandomizer()
-        .ack({ json: [dmnObject], type: "DMN15__tDefinitions", attr: "drgElement" })
+        .ack({ json: [deletedDmnObject], type: "DMN15__tDefinitions", attr: "drgElement" })
         .getOriginalIds()
     : new Set<string>();
 
@@ -188,7 +201,7 @@ export function deleteNode({
   repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
 
   return {
-    deletedDmnObject: mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS ? dmnObject : undefined,
+    deletedDmnObject: mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS ? deletedDmnObject : undefined,
     deletedDmnShapeOnCurrentDrd,
   };
 }
@@ -198,13 +211,13 @@ export function canRemoveNodeFromDrdOnly({
   drdIndex,
   dmnObjectNamespace,
   dmnObjectId,
-  externalDmnsIndex,
+  __readonly_externalDmnsIndex,
 }: {
   dmnObjectNamespace: string;
   dmnObjectId: string | undefined;
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
-  externalDmnsIndex: ReturnType<Computed["getExternalModelTypesByNamespace"]>["dmns"];
+  __readonly_externalDmnsIndex: ReturnType<Computed["getExternalModelTypesByNamespace"]>["dmns"];
 }) {
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
@@ -216,7 +229,7 @@ export function canRemoveNodeFromDrdOnly({
   const drgElements =
     definitions["@_namespace"] === dmnObjectNamespace
       ? definitions.drgElement ?? []
-      : externalDmnsIndex.get(dmnObjectNamespace)?.model.definitions.drgElement ?? [];
+      : __readonly_externalDmnsIndex.get(dmnObjectNamespace)?.model.definitions.drgElement ?? [];
 
   const containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn =
     computeContainingDecisionServiceHrefsByDecisionHrefs({
@@ -244,33 +257,48 @@ export function canRemoveNodeFromDrdOnly({
 
 export function canRemoveDecisionService({
   definitions,
+  dmnObjectNamespace,
   dmnObjectId,
+  dmnObject,
+  drdIndex,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
-  dmnObjectId: string | undefined;
+  dmnObjectNamespace: string;
+  dmnObjectId: string;
+  dmnObject: Normalized<DMN15__tDecisionService>;
+  drdIndex: number;
 }) {
-  const elementByDrd = JSON.parse(JSON.stringify(definitions));
+  const drds = definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
 
-  let count = 0;
-  for (let i = 0; i < elementByDrd["dmndi:DMNDI"]["dmndi:DMNDiagram"].length; i++) {
-    for (let j = 0; j < elementByDrd["dmndi:DMNDI"]["dmndi:DMNDiagram"][i]["dmndi:DMNDiagramElement"].length; j++) {
-      if (
-        // Element with selected ID
-        elementByDrd["dmndi:DMNDI"]["dmndi:DMNDiagram"][i]["dmndi:DMNDiagramElement"][j]["@_dmnElementRef"] ===
-          dmnObjectId &&
-        //Element that is not collapsed
-        !elementByDrd["dmndi:DMNDI"]["dmndi:DMNDiagram"][i]["dmndi:DMNDiagramElement"][j]["@_isCollapsed"] &&
-        //Element is a decision Service
-        elementByDrd["dmndi:DMNDI"]["dmndi:DMNDiagram"][i]["dmndi:DMNDiagramElement"][j][
-          "dmndi:DMNDecisionServiceDividerLine"
-        ]
-      ) {
-        count++;
-      }
+  // list of hrefs of the decision service;
+  const containedDecisionHrefsRelativeToThisDmn = [
+    ...(dmnObject.encapsulatedDecision ?? []),
+    ...(dmnObject.outputDecision ?? []),
+  ].map((e) => e["@_href"]);
+
+  // For each DRD checks the Decision Service node
+  for (let i = 0; i < drds.length; i++) {
+    if (drdIndex === i) {
+      continue; // Skip current DRD;
+    }
+
+    const indexedDrd = computeIndexedDrd(definitions["@_namespace"], definitions, i);
+    const dsShape = indexedDrd.dmnShapesByHref.get(
+      buildXmlHref({
+        namespace: dmnObjectNamespace === definitions["@_namespace"] ? undefined : dmnObjectNamespace,
+        id: dmnObjectId,
+      })
+    );
+
+    // Search on the DRD if it has the complete depicition of the Decision Service
+    const hasAllDecisionServiceNodes = containedDecisionHrefsRelativeToThisDmn.every((dHref) =>
+      indexedDrd.dmnShapesByHref.has(dHref)
+    );
+
+    // The shape must be present, shouldn't be collapsed and should have the complete depicition
+    if (dsShape && !(dsShape["@_isCollapsed"] ?? false) && hasAllDecisionServiceNodes) {
+      return true;
     }
   }
-  if (count === 1) {
-    return false;
-  }
-  return true;
+  return false;
 }

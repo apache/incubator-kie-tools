@@ -754,10 +754,12 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   dmnObjectNamespace: node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
                   dmnObjectQName: node.data.dmnObjectQName,
                   dmnObjectId: node.data.dmnObject?.["@_id"],
+                  dmnObject: node.data.dmnObject,
                   nodeNature: nodeNatures[node.type as NodeType],
                   mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
-                  externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace)
-                    .dmns,
+                  __readonly_externalModelTypesByNamespace: state
+                    .computed(state)
+                    .getExternalModelTypesByNamespace(externalModelsByNamespace),
                 });
                 state.dispatch(state).diagram.setNodeStatus(node.id, {
                   selected: false,
