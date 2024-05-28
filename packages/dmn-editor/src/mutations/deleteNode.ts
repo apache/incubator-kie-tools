@@ -73,9 +73,9 @@ export function deleteNode({
     mode === NodeDeletionMode.FROM_CURRENT_DRD_ONLY &&
     !canRemoveNodeFromDrdOnly({
       definitions,
-      drdIndex: __readonly_drdIndex,
-      dmnObjectNamespace: __readonly_dmnObjectNamespace,
-      dmnObjectId: __readonly_dmnObjectId,
+      __readonly_drdIndex,
+      __readonly_dmnObjectNamespace,
+      __readonly_dmnObjectId,
       __readonly_externalDmnsIndex: __readonly_externalModelTypesByNamespace.dmns,
     })
   ) {
@@ -88,10 +88,10 @@ export function deleteNode({
     __readonly_dmnObjectId &&
     !canRemoveDecisionService({
       definitions,
-      dmnObjectNamespace: __readonly_dmnObjectNamespace,
-      dmnObjectId: __readonly_dmnObjectId,
-      dmnObject: __readonly_dmnObject as Normalized<DMN15__tDecisionService>,
-      drdIndex: __readonly_drdIndex,
+      __readonly_dmnObjectNamespace,
+      __readonly_dmnObjectId,
+      __readonly_dmnObject: __readonly_dmnObject as Normalized<DMN15__tDecisionService>,
+      __readonly_drdIndex,
     })
   ) {
     console.warn("DMN MUTATION: Cannot hide a Decision Service that isn't present in another DRD");
@@ -208,33 +208,33 @@ export function deleteNode({
 
 export function canRemoveNodeFromDrdOnly({
   definitions,
-  drdIndex,
-  dmnObjectNamespace,
-  dmnObjectId,
+  __readonly_drdIndex,
+  __readonly_dmnObjectNamespace,
+  __readonly_dmnObjectId,
   __readonly_externalDmnsIndex,
 }: {
-  dmnObjectNamespace: string;
-  dmnObjectId: string | undefined;
   definitions: Normalized<DMN15__tDefinitions>;
-  drdIndex: number;
+  __readonly_dmnObjectNamespace: string;
+  __readonly_dmnObjectId: string | undefined;
+  __readonly_drdIndex: number;
   __readonly_externalDmnsIndex: ReturnType<Computed["getExternalModelTypesByNamespace"]>["dmns"];
 }) {
-  const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
+  const { diagramElements } = addOrGetDrd({ definitions, drdIndex: __readonly_drdIndex });
 
   const dmnObjectHref = buildXmlHref({
-    namespace: dmnObjectNamespace === definitions["@_namespace"] ? "" : dmnObjectNamespace,
-    id: dmnObjectId!,
+    namespace: __readonly_dmnObjectNamespace === definitions["@_namespace"] ? "" : __readonly_dmnObjectNamespace,
+    id: __readonly_dmnObjectId!,
   });
 
   const drgElements =
-    definitions["@_namespace"] === dmnObjectNamespace
+    definitions["@_namespace"] === __readonly_dmnObjectNamespace
       ? definitions.drgElement ?? []
-      : __readonly_externalDmnsIndex.get(dmnObjectNamespace)?.model.definitions.drgElement ?? [];
+      : __readonly_externalDmnsIndex.get(__readonly_dmnObjectNamespace)?.model.definitions.drgElement ?? [];
 
   const containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn =
     computeContainingDecisionServiceHrefsByDecisionHrefs({
       thisDmnsNamespace: definitions["@_namespace"],
-      drgElementsNamespace: dmnObjectNamespace,
+      drgElementsNamespace: __readonly_dmnObjectNamespace,
       drgElements,
     });
 
@@ -257,36 +257,37 @@ export function canRemoveNodeFromDrdOnly({
 
 export function canRemoveDecisionService({
   definitions,
-  dmnObjectNamespace,
-  dmnObjectId,
-  dmnObject,
-  drdIndex,
+  __readonly_dmnObjectNamespace,
+  __readonly_dmnObjectId,
+  __readonly_dmnObject,
+  __readonly_drdIndex,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
-  dmnObjectNamespace: string;
-  dmnObjectId: string;
-  dmnObject: Normalized<DMN15__tDecisionService>;
-  drdIndex: number;
+  __readonly_dmnObjectNamespace: string;
+  __readonly_dmnObjectId: string;
+  __readonly_dmnObject: Normalized<DMN15__tDecisionService>;
+  __readonly_drdIndex: number;
 }) {
   const drds = definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
 
   // list of hrefs of the decision service;
   const containedDecisionHrefsRelativeToThisDmn = [
-    ...(dmnObject.encapsulatedDecision ?? []),
-    ...(dmnObject.outputDecision ?? []),
+    ...(__readonly_dmnObject.encapsulatedDecision ?? []),
+    ...(__readonly_dmnObject.outputDecision ?? []),
   ].map((e) => e["@_href"]);
 
   // For each DRD checks the Decision Service node
   for (let i = 0; i < drds.length; i++) {
-    if (drdIndex === i) {
+    if (__readonly_drdIndex === i) {
       continue; // Skip current DRD;
     }
 
     const indexedDrd = computeIndexedDrd(definitions["@_namespace"], definitions, i);
     const dsShape = indexedDrd.dmnShapesByHref.get(
       buildXmlHref({
-        namespace: dmnObjectNamespace === definitions["@_namespace"] ? undefined : dmnObjectNamespace,
-        id: dmnObjectId,
+        namespace:
+          __readonly_dmnObjectNamespace === definitions["@_namespace"] ? undefined : __readonly_dmnObjectNamespace,
+        id: __readonly_dmnObjectId,
       })
     );
 
