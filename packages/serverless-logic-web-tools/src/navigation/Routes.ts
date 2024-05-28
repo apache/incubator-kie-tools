@@ -152,9 +152,6 @@ export const routes = {
   runtimeToolsWorkflowForm: new Route<{
     pathParams: PathParams.WORKFLOW_NAME;
   }>(({ workflowName }) => `/runtime-tools/workflow-definition/${workflowName}`),
-  /*  runtimeToolsTriggerCloudEvent: new Route<{
-    queryParams: QueryParams.URL;
-  }>(() => `/runtime-tools/trigger-cloud-event`),*/
   runtimeToolsTriggerCloudEventForWorkflowInstance: new Route<{
     queryParams: QueryParams.URL;
     pathParams: PathParams.WORKFLOW_ID;
