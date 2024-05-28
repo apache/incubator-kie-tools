@@ -51,9 +51,9 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
   const gatewayApi: ProcessDetailsGatewayApi = useProcessDetailsGatewayApi();
 
   const history = useHistory();
-  const [processInstance, setProcessInstance] = useState<ProcessInstance>({} as ProcessInstance);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [processInstance, setProcessInstance] = useState<ProcessInstance>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>();
 
   useEffect(() => {
     window.onpopstate = () => {
@@ -62,45 +62,16 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
   });
 
   const fetchDetails = useCallback(async () => {
-    let response: ProcessInstance = {} as ProcessInstance;
-    let responseError: string;
     try {
       setIsLoading(true);
-      response = await gatewayApi.processDetailsQuery(processId);
+      const response = await gatewayApi.processDetailsQuery(processId);
       setProcessInstance(response);
     } catch (error) {
-      responseError = error;
+      setError(error);
     } finally {
       setIsLoading(false);
-      if (responseError) {
-        setError(error);
-      } else if (!response || Object.keys(response).length === 0) {
-        let currentPage = JSON.parse(window.localStorage.getItem("state"));
-        let prevPath;
-        /* istanbul ignore else */
-        if (currentPage) {
-          currentPage = Object.assign({}, currentPage, props.location.state);
-          const tempPath = currentPage.prev.split("/");
-          prevPath = tempPath.filter((item) => item);
-        }
-        history.push({
-          pathname: "/NoData",
-          state: {
-            prev: currentPage ? currentPage.prev : "/ProcessInstances",
-            title: "Process not found",
-            description: `Process instance with the id ${processId} not found`,
-            buttonText: currentPage
-              ? `Go to ${prevPath[0]
-                  .replace(/([A-Z])/g, " $1")
-                  .trim()
-                  .toLowerCase()}`
-              : "Go to process instances",
-            rememberedData: Object.assign({}, props.location.state),
-          },
-        });
-      }
     }
-  }, [error, gatewayApi, history, processId, props.location.state]);
+  }, [gatewayApi, processId]);
 
   useEffect(() => {
     /* istanbul ignore else */
@@ -109,7 +80,37 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
     }
   }, [processId, fetchDetails]);
 
+  useEffect(() => {
+    // Redirecting to NoData page if the ProcessInstance cannot be found.
+    if (!isLoading && !error && !processInstance) {
+      let currentPage = JSON.parse(window.localStorage.getItem("state"));
+      let prevPath;
+      /* istanbul ignore else */
+      if (currentPage) {
+        currentPage = Object.assign({}, currentPage, props.location.state);
+        const tempPath = currentPage.prev.split("/");
+        prevPath = tempPath.filter((item) => item);
+      }
+      history.push({
+        pathname: "/NoData",
+        state: {
+          prev: currentPage ? currentPage.prev : "/ProcessInstances",
+          title: "Process not found",
+          description: `Process instance with the id ${processId} not found`,
+          buttonText: currentPage
+            ? `Go to ${prevPath[0]
+                .replace(/([A-Z])/g, " $1")
+                .trim()
+                .toLowerCase()}`
+            : "Go to process instances",
+          rememberedData: Object.assign({}, props.location.state),
+        },
+      });
+    }
+  }, [error, history, isLoading, processId, processInstance, props.location.state]);
+
   const body = useMemo(() => {
+    // Loading State
     if (isLoading) {
       return (
         <Card>
@@ -118,10 +119,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
       );
     }
 
-    if (processInstance && Object.keys(processInstance).length > 0 && !error) {
-      return <ProcessDetailsContainer processInstance={processInstance} />;
-    }
-
+    // Error State
     if (error) {
       return (
         <>
@@ -132,6 +130,11 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
           </Card>
         </>
       );
+    }
+
+    // Process Instance Details
+    if (processInstance) {
+      return <ProcessDetailsContainer processInstance={processInstance} />;
     }
   }, [error, isLoading, processInstance]);
 
