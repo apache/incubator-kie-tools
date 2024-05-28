@@ -27,7 +27,9 @@ ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=$HOME_PATH/app/src/main/resour
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=8080
 
 COPY --chown=$USER_ID:$USER_ID dist-dev/quarkus-app $HOME_PATH/app/
-COPY --chown=$USER_ID:$USER_ID dist-dev/quarkus-app-m2 /tmp/kogito/.m2/repository
+# This copies the jbpm-quarkus-devui dependencies to the m2 repository.
+# Commented out for now as it still requires docker to run. https://github.com/apache/incubator-kie-issues/issues/1272
+# COPY --chown=$USER_ID:$USER_ID dist-dev/quarkus-app-m2 /tmp/kogito/.m2/repository
 
 RUN ./mvnw clean package -B -ntp -Dmaven.test.skip -Dmaven.repo.local=/tmp/kogito/.m2/repository -Dquarkus.http.non-application-root-path=${ROOT_PATH}/q -Dquarkus.http.root-path=${ROOT_PATH} \
   && chgrp -R 0 $HOME_PATH/app && chmod -R g=u $HOME_PATH/app && chgrp -R 0 /tmp/kogito && chmod -R g=u /tmp/kogito && chgrp -R 0 /.m2 && chmod -R g=u /.m2

@@ -3337,10 +3337,6 @@ importers:
         version: 1.1.6
 
   packages/dev-deployment-kogito-quarkus-blank-app:
-    dependencies:
-      "@kie-tools/jbpm-quarkus-devui":
-        specifier: workspace:*
-        version: link:../jbpm-quarkus-devui
     devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
