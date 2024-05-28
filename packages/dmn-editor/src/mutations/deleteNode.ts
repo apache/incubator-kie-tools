@@ -268,6 +268,11 @@ export function canRemoveDecisionService({
   __readonly_dmnObject: Normalized<DMN15__tDecisionService>;
   __readonly_drdIndex: number;
 }) {
+  // If it's a external Decision Service it can be removed.
+  if (definitions["@_namespace"] !== __readonly_dmnObjectNamespace) {
+    return true;
+  }
+
   const drds = definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
 
   // list of hrefs of the decision service;
