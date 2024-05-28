@@ -18,5 +18,5 @@
  */
 
 export * from "./WorkflowDefinitionListContext";
-export { default as WorkflowDefinitionListContextProvider } from "./WorkflowDefinitionListContextProvider";
+export * from "./WorkflowDefinitionListContextProvider";
 export { WorkflowDefinitionListGatewayApi } from "./WorkflowDefinitionListGatewayApi";

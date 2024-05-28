@@ -40,7 +40,7 @@ export class WorkflowDefinitionListChannelApiImpl implements WorkflowDefinitionL
     return this.driver.getWorkflowDefinitionsQuery();
   }
 
-  workflowDefinitionsList__openTriggerCloudEvent(): void {
-    this.driver.openTriggerCloudEvent();
+  workflowDefinitionsList__openTriggerCloudEvent(workflowDefinition: WorkflowDefinition): Promise<void> {
+    return this.driver.openTriggerCloudEvent(workflowDefinition);
   }
 }

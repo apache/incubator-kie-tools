@@ -20,9 +20,11 @@
 import React from "react";
 import { DataTableColumn } from "@kie-tools/runtime-tools-components/dist/components/DataTable";
 import { PlayIcon } from "@patternfly/react-icons/dist/js/icons/play-icon";
+import { SitemapIcon } from "@patternfly/react-icons/dist/js/icons/sitemap-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { WorkflowDefinition } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+
 export const getColumn = (columnPath: string, columnLabel: string): DataTableColumn => {
   return {
     label: columnLabel,
@@ -31,16 +33,26 @@ export const getColumn = (columnPath: string, columnLabel: string): DataTableCol
   };
 };
 
-export const getActionColumn = (startWorkflow: (workflowDefinition: WorkflowDefinition) => void): DataTableColumn => {
+export const getActionColumn = (
+  startWorkflow: (workflowDefinition: WorkflowDefinition) => void,
+  triggerCloudEvent: (workflowDefinition: WorkflowDefinition) => void
+): DataTableColumn => {
   return {
     label: "Actions",
     path: "actions",
     bodyCellTransformer: (value: any, rowData: WorkflowDefinition) => (
-      <Tooltip content={`Start new workflow`}>
-        <Button onClick={() => startWorkflow(rowData)} variant="link">
-          <PlayIcon />
-        </Button>
-      </Tooltip>
+      <>
+        <Tooltip content={`Start new workflow`}>
+          <Button onClick={() => startWorkflow(rowData)} variant="link">
+            <PlayIcon />
+          </Button>
+        </Tooltip>
+        <Tooltip content={`Trigger cloud event`}>
+          <Button onClick={() => triggerCloudEvent(rowData)} variant="link">
+            <SitemapIcon />
+          </Button>
+        </Tooltip>
+      </>
     ),
   };
 };

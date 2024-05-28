@@ -25,22 +25,28 @@ import { CloudEventRequest } from "@kie-tools/runtime-tools-swf-gateway-api/dist
 
 interface CloudEventFormContainerProps {
   instanceId?: string;
+  definitionName?: string;
   cloudEventSource: string;
   isTriggerNewInstance: boolean;
   onStartWorkflowError: (error: any) => void;
   onTriggerCloudEventSuccess: () => void;
   onTriggerStartCloudEventSuccess: (businessKey: string) => void;
+  serviceUrl: string;
+  targetOrigin?: string;
 }
 
 export const CloudEventFormContainer: React.FC<CloudEventFormContainerProps & OUIAProps> = ({
   instanceId,
+  definitionName,
   cloudEventSource,
   isTriggerNewInstance,
   onStartWorkflowError,
   onTriggerCloudEventSuccess,
   onTriggerStartCloudEventSuccess,
+  serviceUrl,
   ouiaId,
   ouiaSafe,
+  targetOrigin,
 }) => {
   const gatewayApi = useCloudEventFormGatewayApi();
 
@@ -71,15 +77,16 @@ export const CloudEventFormContainer: React.FC<CloudEventFormContainerProps & OU
   return (
     <EmbeddedCloudEventForm
       {...componentOuiaProps(ouiaId, "cloud-event-form-container", ouiaSafe)}
-      targetOrigin={window.location.origin}
+      targetOrigin={targetOrigin || window.location.origin}
       isNewInstanceEvent={isTriggerNewInstance}
-      defaultValues={{ cloudEventSource, instanceId }}
+      defaultValues={{ cloudEventSource, instanceId, definitionName }}
       driver={{
         triggerCloudEvent(event: CloudEventRequest): Promise<void> {
           const doTrigger = isTriggerNewInstance ? triggerStartCloudEvent : triggerCloudEvent;
           return doTrigger(event);
         },
       }}
+      serviceUrl={serviceUrl}
     />
   );
 };

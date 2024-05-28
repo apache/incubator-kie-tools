@@ -83,6 +83,23 @@ const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
           workflowDefinition: {
             workflowName: workflowDefinition.workflowName,
             endpoint: workflowDefinition.endpoint,
+            serviceUrl: workflowDefinition.serviceUrl,
+          },
+        },
+      });
+    },
+    [history]
+  );
+
+  const onOpenTriggerCloudEvent = useCallback(
+    (workflowDefinition: WorkflowDefinition) => {
+      history.push({
+        pathname: `/WorkflowDefinitions/CloudEvent`,
+        state: {
+          workflowDefinition: {
+            workflowName: workflowDefinition.workflowName,
+            endpoint: workflowDefinition.endpoint,
+            serviceUrl: workflowDefinition.serviceUrl,
           },
         },
       });
@@ -120,6 +137,7 @@ const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
               <Card className="Dev-ui__card-size">
                 <WorkflowDefinitionListContainer
                   onOpenWorkflowForm={onOpenWorkflowForm}
+                  onOpenTriggerCloudEventForWorkflow={onOpenTriggerCloudEvent}
                   targetOrigin={apiContext.getDevUIUrl()}
                 />
               </Card>

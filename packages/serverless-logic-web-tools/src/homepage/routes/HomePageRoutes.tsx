@@ -79,8 +79,11 @@ export function HomePageRoutes(props: { isNavOpen: boolean }) {
       <Route path={routes.sampleCatalog.path({})}>
         <SamplesCatalog />
       </Route>
-      <Route path={routes.runtimeToolsWorkflowInstances.path({})}>
-        <RuntimeToolsWorkflowInstances />
+      <Route path={routes.runtimeToolsTriggerCloudEventForWorkflowInstance.path({ workflowId: ":workflowId" })}>
+        {({ match }) => <RuntimeToolsTriggerCloudEvent />}
+      </Route>
+      <Route path={routes.runtimeToolsTriggerCloudEventForWorkflowDefinition.path({ workflowName: ":workflowName" })}>
+        {({ match }) => <RuntimeToolsTriggerCloudEvent />}
       </Route>
       <Route path={routes.runtimeToolsWorkflowDetails.path({ workflowId: ":workflowId" })}>
         {({ match }) => <RuntimeToolsWorkflowDetails workflowId={match!.params.workflowId!} />}
@@ -91,8 +94,8 @@ export function HomePageRoutes(props: { isNavOpen: boolean }) {
       <Route path={routes.runtimeToolsWorkflowDefinitions.path({})}>
         <RuntimeToolsWorkflowDefinitions />
       </Route>
-      <Route path={routes.runtimeToolsTriggerCloudEvent.path({})}>
-        <RuntimeToolsTriggerCloudEvent />
+      <Route path={routes.runtimeToolsWorkflowInstances.path({})}>
+        <RuntimeToolsWorkflowInstances />
       </Route>
       <Route component={NoMatchPage} />
     </Switch>

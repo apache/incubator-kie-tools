@@ -46,7 +46,6 @@ import { ApolloClient } from "apollo-client";
 import { buildWorkflowListWhereArgument } from "./QueryUtils";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-import SwaggerParser from "@apidevtools/swagger-parser";
 
 export const getWorkflowInstances = async (
   offset: number,
@@ -491,9 +490,14 @@ const doTriggerCloudEvent = (event: CloudEventRequest, baseUrl: string, proxyEnd
   return axios.request({
     url: proxyEndpoint || url,
     method: event.method,
-    data: cloudEvent,
+    data: cloudEvent.data,
     headers: {
       ...(proxyEndpoint ? { "Target-Url": url } : {}),
+      "ce-type": cloudEvent.type,
+      "ce-source": cloudEvent.source,
+      "ce-id": cloudEvent.id,
+      "ce-specversion": cloudEvent.specversion,
+      ...event.headers.extensions,
     },
   });
 };
@@ -518,42 +522,29 @@ export const triggerCloudEvent = (event: CloudEventRequest, baseUrl: string, pro
   return doTriggerCloudEvent(event, baseUrl, proxyEndpoint);
 };
 
-export const createWorkflowDefinitionList = (
-  workflowDefinitionObjs: WorkflowDefinition[],
-  url: string
-): WorkflowDefinition[] => {
-  const workflowDefinitionList: WorkflowDefinition[] = [];
-  workflowDefinitionObjs.forEach((workflowDefObj) => {
-    const workflowName = Object.keys(workflowDefObj)[0].split("/")[1];
-    const endpoint = `${url}/${workflowName}`;
-    workflowDefinitionList.push({
-      workflowName,
-      endpoint,
-    });
-  });
-  return workflowDefinitionList;
-};
-
-export const getWorkflowDefinitionList = (baseUrl: string, openApiPath: string): Promise<WorkflowDefinition[]> => {
-  return new Promise((resolve, reject) => {
-    SwaggerParser.parse(`${baseUrl}/${openApiPath}`)
-      .then((response) => {
-        const workflowDefinitionObjs: any[] = [];
-        const paths = response.paths;
-        const regexPattern = /^\/[^\n/]+\/schema/;
-        Object.getOwnPropertyNames(paths)
-          .filter((path) => regexPattern.test(path.toString()))
-          .forEach((url) => {
-            let workflowArray = url.split("/");
-            workflowArray = workflowArray.filter((name) => name.length !== 0);
-            /* istanbul ignore else*/
-            if (Object.prototype.hasOwnProperty.call(paths![`/${workflowArray[0]}`], "post")) {
-              workflowDefinitionObjs.push({ [url]: paths![url] });
-            }
-          });
-        resolve(createWorkflowDefinitionList(workflowDefinitionObjs, baseUrl));
+export const getWorkflowDefinitions = (client: ApolloClient<any>): Promise<WorkflowDefinition[]> => {
+  return new Promise<WorkflowDefinition[]>((resolve, reject) => {
+    client
+      .query({
+        query: GraphQL.GetProcessDefinitionsDocument,
+        fetchPolicy: "network-only",
+        errorPolicy: "all",
       })
-      .catch((err: any) => reject(err));
+      .then((value) => {
+        const workflowDefinitions = value.data.ProcessDefinitions;
+        resolve(
+          value.data.ProcessDefinitions.map((item: { id: string; endpoint: string; serviceUrl: string }) => {
+            return {
+              workflowName: item.id,
+              endpoint: item.endpoint,
+              serviceUrl: item.serviceUrl,
+            };
+          })
+        );
+      })
+      .catch((reason) => {
+        reject({ errorMessage: JSON.stringify(reason) });
+      });
   });
 };
 
@@ -683,12 +674,20 @@ export const getCustomWorkflowSchemaFromApi = async (
 export const getCustomWorkflowSchema = async (
   baseUrl: string,
   openApiPath: string,
-  workflowName: string
+  workflowName: string,
+  proxyEndpoint?: string
 ): Promise<Record<string, any>> => {
   return new Promise((resolve, reject) => {
-    SwaggerParser.parse(`${baseUrl}/${openApiPath}`)
+    const url = `${baseUrl}/${openApiPath}`;
+    axios
+      .request({
+        url: proxyEndpoint || url,
+        headers: {
+          ...(proxyEndpoint ? { "Target-Url": url } : {}),
+        },
+      })
       .then(async (response: any) => {
-        resolve(await getCustomWorkflowSchemaFromApi(response, workflowName));
+        resolve(await getCustomWorkflowSchemaFromApi(response.data, workflowName));
       })
       .catch((err) => reject(err));
   });

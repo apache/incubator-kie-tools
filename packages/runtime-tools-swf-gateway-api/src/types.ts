@@ -140,6 +140,7 @@ export interface WorkflowListState {
 export interface WorkflowDefinition {
   workflowName: string;
   endpoint: string;
+  serviceUrl: string;
 }
 
 export interface WorkflowResponse {
@@ -153,6 +154,7 @@ export enum CloudEventMethod {
 }
 
 export interface CloudEventRequest {
+  serviceUrl: string;
   endpoint: string;
   method: CloudEventMethod;
 

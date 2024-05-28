@@ -1522,6 +1522,16 @@ export namespace GraphQL {
     JobReschedule?: string | null | undefined;
   };
 
+  export const GetProcessDefinitionsDocument = gql`
+    query getProcessDefinitions {
+      ProcessDefinitions {
+        id
+        endpoint
+        serviceUrl
+      }
+    }
+  `;
+
   export const GetProcessInstancesDocument = gql`
     query getProcessInstances(
       $where: ProcessInstanceArgument
