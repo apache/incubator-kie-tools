@@ -748,14 +748,15 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 console.debug(`DMN DIAGRAM: 'onNodesChange' --> remove '${change.id}'`);
                 const node = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById.get(change.id)!;
                 deleteNode({
-                  drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
                   definitions: state.dmn.model.definitions,
-                  drdIndex: state.computed(state).getDrdIndex(),
-                  dmnObjectNamespace: node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
-                  dmnObjectQName: node.data.dmnObjectQName,
-                  dmnObjectId: node.data.dmnObject?.["@_id"],
-                  dmnObject: node.data.dmnObject,
-                  nodeNature: nodeNatures[node.type as NodeType],
+                  __readonly_drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
+                  __readonly_drdIndex: state.computed(state).getDrdIndex(),
+                  __readonly_dmnObjectNamespace:
+                    node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
+                  __readonly_dmnObjectQName: node.data.dmnObjectQName,
+                  __readonly_dmnObjectId: node.data.dmnObject?.["@_id"],
+                  __readonly_dmnObject: node.data.dmnObject,
+                  __readonly_nodeNature: nodeNatures[node.type as NodeType],
                   mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
                   __readonly_externalModelTypesByNamespace: state
                     .computed(state)

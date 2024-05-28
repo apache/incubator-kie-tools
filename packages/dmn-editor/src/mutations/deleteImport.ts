@@ -61,13 +61,13 @@ export function deleteImport({
     externalNodesByNamespace.get(deletedImport["@_namespace"])?.forEach((node) => {
       deleteNode({
         definitions,
-        drgEdges: drgEdges,
-        drdIndex: 0,
-        nodeNature: nodeNatures[node.type! as NodeType],
-        dmnObject: node.data.dmnObject,
-        dmnObjectId: node.data.dmnObject?.["@_id"],
-        dmnObjectQName: node.data.dmnObjectQName,
-        dmnObjectNamespace: node.data.dmnObjectNamespace!,
+        __readonly_drgEdges: drgEdges,
+        __readonly_drdIndex: 0,
+        __readonly_nodeNature: nodeNatures[node.type! as NodeType],
+        __readonly_dmnObject: node.data.dmnObject,
+        __readonly_dmnObjectId: node.data.dmnObject?.["@_id"],
+        __readonly_dmnObjectQName: node.data.dmnObjectQName,
+        __readonly_dmnObjectNamespace: node.data.dmnObjectNamespace!,
         __readonly_externalModelTypesByNamespace,
         mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
       });
