@@ -511,39 +511,28 @@ export const saveFormContent = (formName: string, content: FormContent): Promise
   });
 };
 
-export const createProcessDefinitionList = (processDefinitionObjs: any, url: string): ProcessDefinition[] => {
-  const processDefinitionList: ProcessDefinition[] = [];
-  processDefinitionObjs.forEach((processDefObj: any) => {
-    const processName = Object.keys(processDefObj)[0].split("/")[1];
-    const endpoint = `${url}/${processName}`;
-    processDefinitionList.push({
-      processName,
-      endpoint,
-    });
-  });
-  return processDefinitionList;
-};
-
-export const getProcessDefinitionList = (kogitoAppUrl: string, openApiPath: string): Promise<ProcessDefinition[]> => {
-  return new Promise((resolve, reject) => {
-    SwaggerParser.parse(`${kogitoAppUrl}/${openApiPath.replace(/^\//, "")}`)
-      .then((response) => {
-        const processDefinitionObjs: any = [];
-        const paths = response.paths;
-        const regexPattern = /^\/[^\n/]+\/schema/;
-        Object.getOwnPropertyNames(paths)
-          .filter((path) => regexPattern.test(path.toString()))
-          .forEach((url) => {
-            let processArray = url.split("/");
-            processArray = processArray.filter((name) => name.length !== 0);
-            /* istanbul ignore else*/
-            if (Object.prototype.hasOwnProperty.call(paths[`/${processArray[0]}`], "post")) {
-              processDefinitionObjs.push({ [url]: paths[url] });
-            }
-          });
-        resolve(createProcessDefinitionList(processDefinitionObjs, kogitoAppUrl));
+export const getProcessDefinitions = (client: ApolloClient<any>): Promise<ProcessDefinition[]> => {
+  return new Promise<ProcessDefinition[]>((resolve, reject) => {
+    client
+      .query({
+        query: GraphQL.GetProcessDefinitionsDocument,
+        fetchPolicy: "network-only",
+        errorPolicy: "all",
       })
-      .catch((err) => reject(err));
+      .then((value) => {
+        const processDefinitions = value.data.ProcessDefinitions;
+        resolve(
+          value.data.ProcessDefinitions.map((item: { id: string; endpoint: string }) => {
+            return {
+              processName: item.id,
+              endpoint: item.endpoint,
+            };
+          })
+        );
+      })
+      .catch((reason) => {
+        reject({ errorMessage: JSON.stringify(reason) });
+      });
   });
 };
 
