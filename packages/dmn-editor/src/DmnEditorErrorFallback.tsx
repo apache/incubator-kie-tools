@@ -19,7 +19,6 @@
 
 import * as React from "react";
 import { useDmnEditor } from "./DmnEditorContext";
-import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import {
   EmptyState,
