@@ -48,7 +48,7 @@ export function deleteNode({
   __readonly_drgEdges,
   __readonly_drdIndex,
   __readonly_nodeNature,
-  __readonly_dmnObject,
+  __readonly_dmnObject, // TODO CLEAN UP
   __readonly_dmnObjectId,
   __readonly_dmnObjectNamespace,
   __readonly_dmnObjectQName,

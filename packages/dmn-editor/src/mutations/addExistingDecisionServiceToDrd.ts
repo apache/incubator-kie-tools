@@ -23,7 +23,7 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DECISION_SERVICE_COLLAPSED_DIMENSIONS, MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
-import { Computed, State } from "../store/Store";
+import { Computed, SnapGrid, State } from "../store/Store";
 import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeContainingDecisionServiceHrefsByDecisionHrefs.ts";
 import { computeIndexedDrd } from "../store/computed/computeIndexes";
 import { xmlHrefToQName } from "../xml/xmlHrefToQName";
@@ -38,62 +38,59 @@ import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
  * copying their layout from other DRDs, or formatting with autolayout.
  */
 export async function addExistingDecisionServiceToDrd({
-  decisionServiceNamespace,
-  decisionService,
-  externalDmnsIndex,
-  thisDmnsNamespace,
-  thisDmnsDefinitions,
-  thisDmnsIndexedDrd,
-  drdIndex,
-  dropPoint,
+  definitions,
+  __readonly_decisionServiceNamespace,
+  __readonly_drgElement,
+  __readonly_externalDmnsIndex,
+  __readonly_namespace,
+  __readonly_indexedDrd,
+  __readonly_drdIndex,
+  __readonly_dropPoint,
+  __readonly_snapGrid,
   applyAutoLayout,
 }: {
-  decisionServiceNamespace: string;
-  decisionService: Normalized<DMN15__tDecisionService>;
-  externalDmnsIndex: ReturnType<Computed["getExternalModelTypesByNamespace"]>["dmns"];
-  thisDmnsNamespace: string;
-  thisDmnsDefinitions: Normalized<DMN15__tDefinitions>;
-  thisDmnsIndexedDrd: ReturnType<Computed["indexedDrd"]>;
-  drdIndex: number;
-  dropPoint: { x: number; y: number };
-  applyAutoLayout: (
-    toApplyAutoLayout: (args: {
-      model: State["dmn"]["model"];
-      diagram: State["diagram"];
-      indexedDrd: ReturnType<typeof computeIndexedDrd>;
-      drdIndex: number;
-    }) => void
-  ) => Promise<void>;
+  definitions: Normalized<DMN15__tDefinitions>;
+  __readonly_decisionServiceNamespace: string;
+  __readonly_drgElement: Normalized<DMN15__tDecisionService>;
+  __readonly_externalDmnsIndex: ReturnType<Computed["getExternalModelTypesByNamespace"]>["dmns"];
+  __readonly_namespace: string;
+  __readonly_indexedDrd: ReturnType<Computed["indexedDrd"]>;
+  __readonly_drdIndex: number;
+  __readonly_dropPoint: { x: number; y: number };
+  __readonly_snapGrid: SnapGrid;
+  applyAutoLayout: (addDecisionServiceShapes: () => void) => Promise<void>;
 }) {
   const decisionServiceDmnDefinitions =
-    !decisionServiceNamespace || decisionServiceNamespace === thisDmnsNamespace
-      ? thisDmnsDefinitions
-      : externalDmnsIndex.get(decisionServiceNamespace)?.model.definitions;
+    !__readonly_decisionServiceNamespace || __readonly_decisionServiceNamespace === __readonly_namespace
+      ? definitions
+      : __readonly_externalDmnsIndex.get(__readonly_decisionServiceNamespace)?.model.definitions;
   if (!decisionServiceDmnDefinitions) {
-    throw new Error(`DMN MUTATION: Can't find definitions for model with namespace ${decisionServiceNamespace}`);
+    throw new Error(
+      `DMN MUTATION: Can't find definitions for model with namespace ${__readonly_decisionServiceNamespace}`
+    );
   }
   const { decisionServiceNamespaceForHref, containedDecisionHrefsRelativeToThisDmn } =
     getDecisionServicePropertiesRelativeToThisDmn({
-      thisDmnsNamespace,
-      decisionServiceNamespace,
-      decisionService,
+      thisDmnsNamespace: __readonly_namespace,
+      decisionServiceNamespace: __readonly_decisionServiceNamespace,
+      decisionService: __readonly_drgElement,
     });
 
   const decisionServiceHrefRelativeToThisDmn = buildXmlHref({
     namespace: decisionServiceNamespaceForHref,
-    id: decisionService["@_id"]!,
+    id: __readonly_drgElement["@_id"]!,
   });
 
   const containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn =
     computeContainingDecisionServiceHrefsByDecisionHrefs({
-      thisDmnsNamespace,
-      drgElementsNamespace: decisionServiceNamespace,
+      thisDmnsNamespace: __readonly_namespace,
+      drgElementsNamespace: __readonly_decisionServiceNamespace,
       drgElements: decisionServiceDmnDefinitions.drgElement,
     });
 
   const doesThisDrdHaveConflictingDecisionService = containedDecisionHrefsRelativeToThisDmn.some((decisionHref) =>
     (containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn.get(decisionHref) ?? []).some((d) =>
-      thisDmnsIndexedDrd.dmnShapesByHref.has(d)
+      __readonly_indexedDrd.dmnShapesByHref.has(d)
     )
   );
 
@@ -102,16 +99,16 @@ export async function addExistingDecisionServiceToDrd({
     // As the DMN specification doesn't allow two copies of the same DRG element to be depicted in the same DRD, we can't add the Decision Service in expanded form.
     // To not disallow depicting the Decision Service in this DRD, though, we add it in collpased form.
     addShape({
-      definitions: thisDmnsDefinitions,
-      drdIndex,
+      definitions: definitions,
+      drdIndex: __readonly_drdIndex,
       nodeType: NODE_TYPES.decisionService,
       shape: {
         "@_id": generateUuid(),
-        "@_dmnElementRef": xmlHrefToQName(decisionServiceHrefRelativeToThisDmn, thisDmnsDefinitions),
+        "@_dmnElementRef": xmlHrefToQName(decisionServiceHrefRelativeToThisDmn, definitions),
         "@_isCollapsed": true,
         "dc:Bounds": {
-          "@_x": dropPoint.x,
-          "@_y": dropPoint.y,
+          "@_x": __readonly_dropPoint.x,
+          "@_y": __readonly_dropPoint.y,
           "@_width": DECISION_SERVICE_COLLAPSED_DIMENSIONS.width,
           "@_height": DECISION_SERVICE_COLLAPSED_DIMENSIONS.height,
         },
@@ -121,14 +118,13 @@ export async function addExistingDecisionServiceToDrd({
   }
 
   const drds = decisionServiceDmnDefinitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
-
   let indexedDrd: ReturnType<Computed["indexedDrd"]> | undefined;
   for (let i = 0; i < drds.length; i++) {
-    if (thisDmnsNamespace === decisionServiceNamespace && i === drdIndex) {
+    if (__readonly_namespace === __readonly_decisionServiceNamespace && i === __readonly_drdIndex) {
       continue; // Skip the current DRD!
     }
 
-    const _indexedDrd = computeIndexedDrd(thisDmnsNamespace, decisionServiceDmnDefinitions, i);
+    const _indexedDrd = computeIndexedDrd(__readonly_namespace, decisionServiceDmnDefinitions, i);
     const dsShape = _indexedDrd.dmnShapesByHref.get(decisionServiceHrefRelativeToThisDmn);
     const hasCompleteExpandedDepictionOfDecisionService =
       dsShape &&
@@ -143,50 +139,50 @@ export async function addExistingDecisionServiceToDrd({
 
   if (!indexedDrd) {
     // There's no DRD which inclues a complete expanded depiction of the Decision Service. Let's proceed with auto-layout.
-
-    await applyAutoLayout(({ diagram, model, drdIndex, indexedDrd }) => {
+    await applyAutoLayout(() => {
       const minNodeSize = MIN_NODE_SIZES[NODE_TYPES.decisionService]({
-        snapGrid: diagram.snapGrid,
+        snapGrid: __readonly_snapGrid,
       });
       addShape({
-        definitions: model.definitions,
-        drdIndex: drdIndex,
+        definitions: definitions,
+        drdIndex: __readonly_drdIndex,
         nodeType: NODE_TYPES.decisionService,
         shape: {
           "@_id": generateUuid(),
-          "@_dmnElementRef": xmlHrefToQName(decisionServiceHrefRelativeToThisDmn, model.definitions),
+          "@_dmnElementRef": xmlHrefToQName(decisionServiceHrefRelativeToThisDmn, definitions),
           "dc:Bounds": {
-            "@_x": dropPoint.x,
-            "@_y": dropPoint.y,
+            "@_x": 0, // Auto-layout will be applied;
+            "@_y": 0, // Auto-layout will be applied;
             ...minNodeSize,
           },
         },
       });
 
       for (const decisionHref of containedDecisionHrefsRelativeToThisDmn) {
-        const existingDecisionShape = indexedDrd.dmnShapesByHref.get(decisionHref);
+        const existingDecisionShape = __readonly_indexedDrd.dmnShapesByHref.get(decisionHref);
         if (existingDecisionShape) {
-          continue; // Auto-layout will be applied;
+          continue; // Auto-layout will be applied afterwards;
         }
         const decisionNs = parseXmlHref(decisionHref).namespace;
         const decisionDmnDefinitions =
-          !decisionNs || decisionNs === model.definitions["@_namespace"]
-            ? model.definitions
-            : externalDmnsIndex.get(decisionNs)?.model.definitions;
+          !decisionNs || decisionNs === definitions["@_namespace"]
+            ? definitions
+            : __readonly_externalDmnsIndex.get(decisionNs)?.model.definitions;
         if (!decisionDmnDefinitions) {
-          throw new Error(`DMN MUTATION: Can't find definitions for model with namespace ${decisionServiceNamespace}`);
+          throw new Error(
+            `DMN MUTATION: Can't find definitions for model with namespace ${__readonly_decisionServiceNamespace}`
+          );
         }
-
         const minNodeSize = MIN_NODE_SIZES[NODE_TYPES.decision]({
-          snapGrid: diagram.snapGrid,
+          snapGrid: __readonly_snapGrid,
         });
         addShape({
-          definitions: model.definitions,
-          drdIndex,
+          definitions: definitions,
+          drdIndex: __readonly_drdIndex,
           nodeType: NODE_TYPES.decision,
           shape: {
             "@_id": generateUuid(),
-            "@_dmnElementRef": xmlHrefToQName(decisionHref, model.definitions),
+            "@_dmnElementRef": xmlHrefToQName(decisionHref, definitions),
             "dc:Bounds": {
               "@_x": 0, // Auto-layout will be applied;
               "@_y": 0, // Auto-layout will be applied;
@@ -211,15 +207,15 @@ export async function addExistingDecisionServiceToDrd({
     }
 
     addShape({
-      definitions: thisDmnsDefinitions,
-      drdIndex,
+      definitions: definitions,
+      drdIndex: __readonly_drdIndex,
       nodeType: NODE_TYPES.decisionService,
       shape: {
         "@_id": generateUuid(),
-        "@_dmnElementRef": xmlHrefToQName(decisionServiceHrefRelativeToThisDmn, thisDmnsDefinitions),
+        "@_dmnElementRef": xmlHrefToQName(decisionServiceHrefRelativeToThisDmn, definitions),
         "dc:Bounds": {
-          "@_x": dropPoint.x,
-          "@_y": dropPoint.y,
+          "@_x": __readonly_dropPoint.x,
+          "@_y": __readonly_dropPoint.y,
           "@_width": dsShapeOnOtherDrd["dc:Bounds"]["@_width"],
           "@_height": dsShapeOnOtherDrd["dc:Bounds"]["@_height"],
         },
@@ -239,14 +235,16 @@ export async function addExistingDecisionServiceToDrd({
         );
       }
 
-      const x = dropPoint.x + (decisionShapeOnOtherDrd["dc:Bounds"]["@_x"] - dsShapeOnOtherDrd["dc:Bounds"]["@_x"]);
-      const y = dropPoint.y + (decisionShapeOnOtherDrd["dc:Bounds"]["@_y"] - dsShapeOnOtherDrd["dc:Bounds"]["@_y"]);
+      const x =
+        __readonly_dropPoint.x + (decisionShapeOnOtherDrd["dc:Bounds"]["@_x"] - dsShapeOnOtherDrd["dc:Bounds"]["@_x"]);
+      const y =
+        __readonly_dropPoint.y + (decisionShapeOnOtherDrd["dc:Bounds"]["@_y"] - dsShapeOnOtherDrd["dc:Bounds"]["@_y"]);
 
-      const existingDecisionShape = thisDmnsIndexedDrd.dmnShapesByHref.get(decisionHref);
+      const existingDecisionShape = __readonly_indexedDrd.dmnShapesByHref.get(decisionHref);
       if (existingDecisionShape) {
         repositionNode({
-          definitions: thisDmnsDefinitions,
-          drdIndex,
+          definitions: definitions,
+          drdIndex: __readonly_drdIndex,
           controlWaypointsByEdge: new Map(),
           change: {
             nodeType: NODE_TYPES.decision,
@@ -261,20 +259,22 @@ export async function addExistingDecisionServiceToDrd({
       } else {
         const decisionNs = parseXmlHref(decisionHref).namespace;
         const decisionDmnDefinitions =
-          !decisionNs || decisionNs === thisDmnsNamespace
-            ? thisDmnsDefinitions
-            : externalDmnsIndex.get(decisionNs)?.model.definitions;
+          !decisionNs || decisionNs === __readonly_namespace
+            ? definitions
+            : __readonly_externalDmnsIndex.get(decisionNs)?.model.definitions;
         if (!decisionDmnDefinitions) {
-          throw new Error(`DMN MUTATION: Can't find definitions for model with namespace ${decisionServiceNamespace}`);
+          throw new Error(
+            `DMN MUTATION: Can't find definitions for model with namespace ${__readonly_decisionServiceNamespace}`
+          );
         }
 
         addShape({
-          definitions: thisDmnsDefinitions,
-          drdIndex,
+          definitions: definitions,
+          drdIndex: __readonly_drdIndex,
           nodeType: NODE_TYPES.decision,
           shape: {
             "@_id": generateUuid(),
-            "@_dmnElementRef": xmlHrefToQName(decisionHref, thisDmnsDefinitions),
+            "@_dmnElementRef": xmlHrefToQName(decisionHref, definitions),
             "dc:Bounds": {
               "@_x": x,
               "@_y": y,
