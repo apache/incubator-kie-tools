@@ -46,6 +46,7 @@
   <modules>
     <module>sonataflow-quarkus-devui-deployment</module>
     <module>sonataflow-quarkus-devui</module>
+    <module>sonataflow-quarkus-devui-bom</module>
   </modules>
 
   <build>
