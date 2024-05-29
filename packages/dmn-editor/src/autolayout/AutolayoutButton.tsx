@@ -19,16 +19,14 @@
 
 import * as React from "react";
 import OptimizeIcon from "@patternfly/react-icons/dist/js/icons/optimize-icon";
-import { useMutateDiagramWithAutoLayoutInfo } from "./AutoLayoutHook";
 import { useDmnEditorStoreApi } from "../store/StoreContext";
 import { getAutoLayoutedInfo } from "./autoLayout";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { mutateDiagramWithAutoLayoutInfo } from "./AutoLayoutHook";
 
 export function AutolayoutButton() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { externalModelsByNamespace } = useExternalModels();
-
-  const applyAutoLayout = useMutateDiagramWithAutoLayoutInfo();
 
   const onClick = React.useCallback(async () => {
     const state = dmnEditorStoreApi.getState();
@@ -49,7 +47,7 @@ export function AutolayoutButton() {
     });
 
     dmnEditorStoreApi.setState((s) => {
-      applyAutoLayout({
+      mutateDiagramWithAutoLayoutInfo({
         state: s,
         __readonly_dmnShapesByHref: s.computed(s).indexedDrd().dmnShapesByHref,
         __readonly_edges: s.computed(s).getDiagramData(externalModelsByNamespace).edges,
@@ -60,7 +58,7 @@ export function AutolayoutButton() {
         __readonly_drdIndex: s.computed(s).getDrdIndex(),
       });
     });
-  }, [applyAutoLayout, dmnEditorStoreApi, externalModelsByNamespace]);
+  }, [dmnEditorStoreApi, externalModelsByNamespace]);
 
   return (
     <button className={"kie-dmn-editor--autolayout-panel-toggle-button"} onClick={onClick} title={"Autolayout (beta)"}>
