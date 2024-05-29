@@ -65,6 +65,10 @@ module.exports = composeEnv(
         default: `http://${extendedServicesEnv.env.extendedServices.ip}:${extendedServicesEnv.env.extendedServices.port}`,
         description: "Extended Services URL.",
       },
+      ONLINE_EDITOR__feedbackUrl: {
+        default: "https://github.com/apache/incubator-kie-issues/issues/439#issuecomment-1821845917",
+        description: "URL where users can give feedback, currently present in the New DMN Editor dropdown.",
+      },
       ONLINE_EDITOR__requireCustomCommitMessage: {
         default: `${false}`,
         description: "Require users to type a custom commit message when creating a new commit.",
@@ -158,6 +162,7 @@ module.exports = composeEnv(
           appName: getOrDefault(this.vars.ONLINE_EDITOR__appName),
           extendedServicesUrl: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesUrl),
           corsProxyUrl: getOrDefault(this.vars.ONLINE_EDITOR__corsProxyUrl),
+          feedbackUrl: getOrDefault(this.vars.ONLINE_EDITOR__feedbackUrl),
           requireCustomCommitMessage: str2bool(getOrDefault(this.vars.ONLINE_EDITOR__requireCustomCommitMessage)),
           customCommitMessageValidationServiceUrl: getOrDefault(
             this.vars.ONLINE_EDITOR__customCommitMessageValidationServiceUrl

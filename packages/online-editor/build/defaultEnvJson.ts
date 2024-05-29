@@ -42,6 +42,7 @@ function getDevDeploymentImageUrl(imageEnvVars: any) {
 export const defaultEnvJson: EnvJson = {
   KIE_SANDBOX_VERSION: buildEnv.root.version,
   KIE_SANDBOX_CORS_PROXY_URL: buildEnv.onlineEditor.corsProxyUrl,
+  KIE_SANDBOX_FEEDBACK_URL: buildEnv.onlineEditor.feedbackUrl,
   KIE_SANDBOX_EXTENDED_SERVICES_URL: buildEnv.onlineEditor.extendedServicesUrl,
   KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL: getDevDeploymentImageUrl(buildEnv.devDeployments.baseImage),
   KIE_SANDBOX_DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE_URL: getDevDeploymentImageUrl(
