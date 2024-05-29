@@ -46,6 +46,7 @@
   <modules>
     <module>jbpm-quarkus-devui-runtime</module>
     <module>jbpm-quarkus-devui-deployment</module>
+    <module>jbpm-quarkus-devui-bom</module>
   </modules>
 
   <build>
