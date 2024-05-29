@@ -1,4 +1,5 @@
 properties:
+  dataIndexUrl: ${dataIndexUrl}
   # seconds
   refresh: 10
 

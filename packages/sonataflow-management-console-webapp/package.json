@@ -27,6 +27,7 @@
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/keyboard-shortcuts": "workspace:*",
     "@kie-tools-core/react-hooks": "workspace:*",
+    "@kie-tools/dashbuilder-client": "workspace:*",
     "@kie-tools/runtime-tools-components": "workspace:*",
     "@kie-tools/runtime-tools-process-enveloped-components": "workspace:*",
     "@kie-tools/runtime-tools-process-gateway-api": "workspace:*",

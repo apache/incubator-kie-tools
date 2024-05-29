@@ -86,6 +86,10 @@ module.exports = async (env) => {
             to: "./serverless-workflow-text-editor-envelope.html",
           },
           {
+            from: path.join(path.dirname(require.resolve("@kie-tools/dashbuilder-client/package.json")), "/dist"),
+            to: "./monitoring-webapp",
+          },
+          {
             from: "./resources/monitoring-webapp",
             to: "./monitoring-webapp",
           },
