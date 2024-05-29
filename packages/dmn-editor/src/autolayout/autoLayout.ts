@@ -77,20 +77,20 @@ export interface AutolayoutParentNode {
 
 export const FAKE_MARKER = "__$FAKE$__";
 
-export async function autoLayout({
-  snapGrid,
-  nodesById,
-  edgesById,
-  nodes,
-  drgEdges,
-  isAlternativeInputDataShape,
+export async function getAutoLayoutedInfo({
+  __readonly_snapGrid,
+  __readonly_nodesById,
+  __readonly_edgesById,
+  __readonly_nodes,
+  __readonly_drgEdges,
+  __readonly_isAlternativeInputDataShape,
 }: {
-  snapGrid: SnapGrid;
-  nodesById: Map<string, Node<DmnDiagramNodeData, string | undefined>>;
-  edgesById: Map<string, Edge<DmnDiagramEdgeData>>;
-  nodes: Node<DmnDiagramNodeData, string | undefined>[];
-  drgEdges: DrgEdge[];
-  isAlternativeInputDataShape: boolean;
+  __readonly_snapGrid: SnapGrid;
+  __readonly_nodesById: Map<string, Node<DmnDiagramNodeData, string | undefined>>;
+  __readonly_edgesById: Map<string, Edge<DmnDiagramEdgeData>>;
+  __readonly_nodes: Node<DmnDiagramNodeData, string | undefined>[];
+  __readonly_drgEdges: DrgEdge[];
+  __readonly_isAlternativeInputDataShape: boolean;
 }) {
   const parentNodesById = new Map<string, AutolayoutParentNode>();
   const nodeParentsById = new Map<string, Set<string>>();
@@ -101,10 +101,10 @@ export async function autoLayout({
    */
   const fakeEdgesForElk = new Set<Elk.ElkExtendedEdge>();
 
-  const adjMatrix = getAdjMatrix(drgEdges);
+  const adjMatrix = getAdjMatrix(__readonly_drgEdges);
 
   // 1. First we populate the `parentNodesById` map so that we know exactly what parent nodes we're dealing with. Decision Service nodes have two fake nodes to represent Output and Encapsulated sections.
-  for (const node of nodes) {
+  for (const node of __readonly_nodes) {
     const dependencies = new Set<string>();
     const dependents = new Set<string>();
 
@@ -115,7 +115,7 @@ export async function autoLayout({
       const idOfFakeNodeForOutputSection = `${node.id}${FAKE_MARKER}dsOutput`;
       const idOfFakeNodeForEncapsulatedSection = `${node.id}${FAKE_MARKER}dsEncapsulated`;
 
-      const dsSize = MIN_NODE_SIZES[NODE_TYPES.decisionService]({ snapGrid });
+      const dsSize = MIN_NODE_SIZES[NODE_TYPES.decisionService]({ snapGrid: __readonly_snapGrid });
       parentNodesById.set(node.id, {
         elkNode: {
           id: node.id,
@@ -174,7 +174,7 @@ export async function autoLayout({
         targets: [idOfFakeNodeForOutputSection],
       });
     } else if (node.data?.dmnObject?.__$$element === "group") {
-      const groupSize = DEFAULT_NODE_SIZES[NODE_TYPES.group]({ snapGrid });
+      const groupSize = DEFAULT_NODE_SIZES[NODE_TYPES.group]({ snapGrid: __readonly_snapGrid });
       const groupBounds = node.data.shape["dc:Bounds"];
       parentNodesById.set(node.id, {
         decisionServiceSection: "n/a",
@@ -195,10 +195,10 @@ export async function autoLayout({
           isInside: getContainmentRelationship({
             bounds: bounds!,
             container: groupBounds!,
-            snapGrid,
-            isAlternativeInputDataShape,
+            snapGrid: __readonly_snapGrid,
+            isAlternativeInputDataShape: __readonly_isAlternativeInputDataShape,
             containerMinSizes: MIN_NODE_SIZES[NODE_TYPES.group],
-            boundsMinSizes: MIN_NODE_SIZES[nodesById.get(id)?.type as NodeType],
+            boundsMinSizes: MIN_NODE_SIZES[__readonly_nodesById.get(id)?.type as NodeType],
           }).isInside,
           decisionServiceSection: "n/a",
         }),
@@ -209,13 +209,16 @@ export async function autoLayout({
   }
 
   // 2. Then we map all the nodes to elkNodes, including the parents. We mutate parents on the fly when iterating over the nodes list.
-  const elkNodes = nodes.flatMap((node) => {
+  const elkNodes = __readonly_nodes.flatMap((node) => {
     const parent = parentNodesById.get(node.id);
     if (parent) {
       return [];
     }
 
-    const defaultSize = DEFAULT_NODE_SIZES[node.type as NodeType]({ snapGrid, isAlternativeInputDataShape });
+    const defaultSize = DEFAULT_NODE_SIZES[node.type as NodeType]({
+      snapGrid: __readonly_snapGrid,
+      isAlternativeInputDataShape: __readonly_isAlternativeInputDataShape,
+    });
     const elkNode: Elk.ElkNode = {
       id: node.id,
       width: node.data.shape["dc:Bounds"]?.["@_width"] ?? defaultSize["@_width"],
@@ -271,7 +274,7 @@ export async function autoLayout({
       parentNode.dependents.add(n);
     });
 
-    const p = nodesById.get(parentNode.elkNode.id);
+    const p = __readonly_nodesById.get(parentNode.elkNode.id);
     if (p?.type === NODE_TYPES.group && parentNode.elkNode.children?.length === 0) {
       continue; // Ignore empty group nodes.
     } else {
@@ -280,13 +283,13 @@ export async function autoLayout({
   }
 
   // 4. After we have all containment and hierarchical relationships defined, we can add the fake edges so that ELK creates the structure correctly.
-  for (const node of nodes) {
+  for (const node of __readonly_nodes) {
     const parentNodes = [...parentNodesById.values()];
 
     const dependents = parentNodes.filter((p) => p.hasDependencyTo({ id: node.id }));
     for (const dependent of dependents) {
       // Not all nodes are present in all DRD
-      if (nodesById.has(node.id) && nodesById.has(dependent.elkNode.id)) {
+      if (__readonly_nodesById.has(node.id) && __readonly_nodesById.has(dependent.elkNode.id)) {
         fakeEdgesForElk.add({
           id: `${generateUuid()}${FAKE_MARKER}__fake`,
           sources: [node.id],
@@ -296,7 +299,7 @@ export async function autoLayout({
 
       for (const p of nodeParentsById.get(node.id) ?? []) {
         // Not all nodes are present in all DRD
-        if (nodesById.has(p) && nodesById.has(dependent.elkNode.id)) {
+        if (__readonly_nodesById.has(p) && __readonly_nodesById.has(dependent.elkNode.id)) {
           fakeEdgesForElk.add({
             id: `${generateUuid()}${FAKE_MARKER}__fake`,
             sources: [p],
@@ -309,7 +312,7 @@ export async function autoLayout({
     const dependencies = parentNodes.filter((p) => p.isDependencyOf({ id: node.id }));
     for (const dependency of dependencies) {
       // Not all nodes are present in all DRD
-      if (nodesById.has(node.id) && nodesById.has(dependency.elkNode.id)) {
+      if (__readonly_nodesById.has(node.id) && __readonly_nodesById.has(dependency.elkNode.id)) {
         fakeEdgesForElk.add({
           id: `${generateUuid()}${FAKE_MARKER}__fake`,
           sources: [dependency.elkNode.id],
@@ -319,7 +322,7 @@ export async function autoLayout({
 
       for (const p of nodeParentsById.get(node.id) ?? []) {
         // Not all nodes are present in all DRD
-        if (nodesById.has(p) && nodesById.has(dependency.elkNode.id)) {
+        if (__readonly_nodesById.has(p) && __readonly_nodesById.has(dependency.elkNode.id)) {
           fakeEdgesForElk.add({
             id: `${generateUuid()}${FAKE_MARKER}__fake`,
             sources: [dependency.elkNode.id],
@@ -333,9 +336,9 @@ export async function autoLayout({
   // 5. Concatenate real and fake edges to pass to ELK.
   const elkEdges = [
     ...fakeEdgesForElk,
-    ...[...edgesById.values()].flatMap((e) => {
+    ...[...__readonly_edgesById.values()].flatMap((e) => {
       // Not all nodes are present in all DRD
-      if (nodesById.has(e.source) && nodesById.has(e.target)) {
+      if (__readonly_nodesById.has(e.source) && __readonly_nodesById.has(e.target)) {
         return {
           id: e.id,
           sources: [e.source],
@@ -348,9 +351,9 @@ export async function autoLayout({
   ];
 
   // 6. Run ELK.
-  const autolayouted = await runElk(elkNodes, elkEdges, ELK_OPTIONS);
+  const autoLayoutedNodes = await runElk(elkNodes, elkEdges, ELK_OPTIONS);
   return {
-    autolayouted,
+    autoLayoutedNodes,
     parentNodesById,
   };
 }

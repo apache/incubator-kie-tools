@@ -19,16 +19,16 @@
 
 import * as React from "react";
 import OptimizeIcon from "@patternfly/react-icons/dist/js/icons/optimize-icon";
-import { useAutoLayout } from "./AutoLayoutHook";
+import { useMutateDiagramWithAutoLayoutInfo } from "./AutoLayoutHook";
 import { useDmnEditorStoreApi } from "../store/StoreContext";
-import { autoLayout } from "./autoLayout";
+import { getAutoLayoutedInfo } from "./autoLayout";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export function AutolayoutButton() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { externalModelsByNamespace } = useExternalModels();
 
-  const applyAutoLayout = useAutoLayout();
+  const applyAutoLayout = useMutateDiagramWithAutoLayoutInfo();
 
   const onClick = React.useCallback(async () => {
     const state = dmnEditorStoreApi.getState();
@@ -39,24 +39,25 @@ export function AutolayoutButton() {
     const drgEdges = state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges;
     const isAlternativeInputDataShape = state.computed(state).isAlternativeInputDataShape();
 
-    const { autolayouted, parentNodesById } = await autoLayout({
-      snapGrid,
-      nodesById,
-      edgesById,
-      nodes,
-      drgEdges,
-      isAlternativeInputDataShape,
+    const { autoLayoutedNodes: autolayouted, parentNodesById } = await getAutoLayoutedInfo({
+      __readonly_snapGrid: snapGrid,
+      __readonly_nodesById: nodesById,
+      __readonly_edgesById: edgesById,
+      __readonly_nodes: nodes,
+      __readonly_drgEdges: drgEdges,
+      __readonly_isAlternativeInputDataShape: isAlternativeInputDataShape,
     });
 
     dmnEditorStoreApi.setState((s) => {
       applyAutoLayout({
-        s,
-        dmnShapesByHref: s.computed(s).indexedDrd().dmnShapesByHref,
-        edges: s.computed(s).getDiagramData(externalModelsByNamespace).edges,
-        edgesById: s.computed(s).getDiagramData(externalModelsByNamespace).edgesById,
-        nodesById: s.computed(s).getDiagramData(externalModelsByNamespace).nodesById,
-        autolayouted: autolayouted,
-        parentNodesById: parentNodesById,
+        state: s,
+        __readonly_dmnShapesByHref: s.computed(s).indexedDrd().dmnShapesByHref,
+        __readonly_edges: s.computed(s).getDiagramData(externalModelsByNamespace).edges,
+        __readonly_edgesById: s.computed(s).getDiagramData(externalModelsByNamespace).edgesById,
+        __readonly_nodesById: s.computed(s).getDiagramData(externalModelsByNamespace).nodesById,
+        __readonly_autoLayoutedNodes: autolayouted,
+        __readonly_parentNodesById: parentNodesById,
+        __readonly_drdIndex: s.computed(s).getDrdIndex(),
       });
     });
   }, [applyAutoLayout, dmnEditorStoreApi, externalModelsByNamespace]);
