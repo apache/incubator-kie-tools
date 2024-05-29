@@ -16,7 +16,7 @@ const srcPath = path.join(packageRootPath, "./src");
 console.log(srcPath);
 
 console.log("[kie-sandbox-helm-chart scripts/update-readmes.js] Updating Charts README.md files...");
-execSync(`cd ${srcPath} && helm-docs --document-dependency-values=true -t templates/README.md.gotmpl`);
+execSync(`cd ${srcPath} && helm-docs --document-dependency-values=true -t ../scripts/README.md.gotmpl`);
 
 console.log("[kie-sandbox-helm-chart scripts/update-readmes.js] Updating package README.md file");
 const srcReadmePath = path.resolve(path.join(packageRootPath, "./src/README.md"));
