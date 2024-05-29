@@ -124,14 +124,14 @@
       "commandPalette": [
         {
           "command": "extension.kogito.getPreviewSvgBpmn",
-          "when": "resourceLangId =~ /bpmn|bpmn2/"
+          "when": "resourceLangId =~ /bpmn|bpmn2/ && activeCustomEditorId == 'kieKogitoWebviewEditorsBpmn'"
         }
       ],
       "editor/title": [
         {
           "command": "extension.kogito.getPreviewSvgBpmn",
           "group": "navigation",
-          "when": "resourceLangId =~ /bpmn|bpmn2/"
+          "when": "resourceLangId =~ /bpmn|bpmn2/ && activeCustomEditorId == 'kieKogitoWebviewEditorsBpmn'"
         }
       ]
     }
