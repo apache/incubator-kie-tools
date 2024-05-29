@@ -174,7 +174,7 @@ docker-buildx: generate ## Build and push docker image for the manager for cross
 	sed -e '1 s/\(^FROM\)/FROM --platform=\$$\{BUILDPLATFORM\}/; t' -e ' 1,// s//FROM --platform=\$$\{BUILDPLATFORM\}/' Dockerfile > Dockerfile.cross
 	- docker buildx create --name project-v3-builder
 	docker buildx use project-v3-builder
-	- docker buildx build --build-arg SOURCE_DATE_EPOCH=$(shell git log -1 --pretty=%ct) --push --platform=$(PLATFORMS) --tag ${IMG} -f Dockerfile.cross
+	- docker buildx build --build-arg SOURCE_DATE_EPOCH=$(shell git log -1 --pretty=%ct) --push . --platform=$(PLATFORMS) --tag ${IMG} -f Dockerfile.cross
 	- docker buildx rm project-v3-builder
 	rm Dockerfile.cross
 
@@ -297,12 +297,16 @@ ifneq ($(origin CATALOG_BASE_IMG), undefined)
 FROM_INDEX_OPT := --from-index $(CATALOG_BASE_IMG)
 endif
 
+PLATFORM ?= linux/amd64
+
 # Build a catalog image by adding bundle images to an empty catalog using the operator package manager tool, 'opm'.
 # This recipe invokes 'opm' in 'semver' bundle add mode. For more information on add modes, see:
 # https://github.com/operator-framework/community-operators/blob/7f1438c/docs/packaging-operator.md#updating-your-existing-operator
 .PHONY: catalog-build
 catalog-build: opm ## Build a catalog image.
-	$(OPM) index add --container-tool $(BUILDER) --mode semver --tag $(CATALOG_IMG) --bundles $(BUNDLE_IMGS) $(FROM_INDEX_OPT)
+	$(OPM) index add --container-tool $(BUILDER) --mode semver --tag $(CATALOG_IMG) --bundles $(BUNDLE_IMGS) $(FROM_INDEX_OPT) --generate -d ./index.Dockerfile
+	$(BUILDER) build --platform $(PLATFORM) -f ./index.Dockerfile -t $(CATALOG_IMG) .
+	rm ./index.Dockerfile
 
 # Push the catalog image.
 .PHONY: catalog-push
