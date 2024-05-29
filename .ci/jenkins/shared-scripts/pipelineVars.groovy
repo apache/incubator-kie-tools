@@ -37,8 +37,10 @@ class PipelineVars implements Serializable {
     String mavenSettingsConfigFileId = 'kie-release-settings'
     String mavenDeployRepositoryCredentialsId = 'apache-nexus-kie-deploy-credentials'
     String defaultArtifactsTempDir = 'artifacts-tmp'
+    String asfReleaseStagingRepository = 'https://dist.apache.org/repos/dist/dev/incubator/kie'
     String asfReleaseGPGKeyCredentialsId = 'asf-release-gpg-signing-key'
-    String asfReleaseGPGKeyPasswordCredentialsId = 'asf-release-gpg-signing-key-password'
+    String asfReleaseGPGKeyPasswordCredentialsId = 'asf-release-gpg-signing-key-passphrase'
+    String asfReleaseSVNStagingCredentialsId = 'asf-release-svn-staging'
 
 }
 

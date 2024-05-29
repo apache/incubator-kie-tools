@@ -36,6 +36,8 @@ pipeline {
         string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Upload asset url', name: 'UPLOAD_ASSET_URL', defaultValue: '')
         string(description: 'Runners', name: 'RUNNERS', defaultValue: '{"dev_deployment_base_image":"false","dev_deployment_kogito_quakus_blank_app_image":"false","dev_deployment_dmn_form_webapp_image":"false","dev_deployment_upload_service":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false", "chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","serverless_logic_web_tools":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","dashbuilder_viewer_image":"false","kn_plugin_workflow":"false","kie_sandbox_helm_chart":"false","kogito_task_console":"false","kogito_management_console":"false","kogito_swf_builder":"false","kogito_swf_devmode":"false","kogito_serverless_operator":"false","jbpm_quarkus_devui":"false","sonataflow_quarkus_devui":"false"}')
+        booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
     environment {
@@ -154,7 +156,10 @@ pipeline {
                                 parameters: [
                                     booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                     string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                    booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                 ]
                             ).result
                         }
@@ -174,7 +179,9 @@ pipeline {
                                     booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                     string(name: 'BASE_REF', value: "${params.BASE_REF}"),
                                     string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-                                    string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}")
+                                    string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
+                                    booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                 ]
                             ).result
                         }
@@ -214,7 +221,9 @@ pipeline {
                                     booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                     string(name: 'BASE_REF', value: "${params.BASE_REF}"),
                                     string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-                                    string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}")
+                                    string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
+                                    booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                 ]
                             ).result
                         }
@@ -233,7 +242,9 @@ pipeline {
                                 parameters: [
                                     booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                     string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                    booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                 ]
                             ).result
                         }
@@ -253,7 +264,9 @@ pipeline {
                                     booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                     string(name: 'BASE_REF', value: "${params.BASE_REF}"),
                                     string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-                                    string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}")
+                                    string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
+                                    booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                 ]
                             ).result
                         }
@@ -272,7 +285,9 @@ pipeline {
                                 parameters: [
                                     booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                     string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                    booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                 ]
                             ).result
                         }
@@ -291,7 +306,9 @@ pipeline {
                                 parameters: [
                                     booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                     string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                    booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                 ]
                             ).result
                         }
@@ -310,7 +327,9 @@ pipeline {
                                 parameters: [
                                     booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                     string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                    booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                 ]
                             ).result
                         }
@@ -329,7 +348,9 @@ pipeline {
                                 parameters: [
                                     booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                     string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                    booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                 ]
                             ).result
                         }
@@ -367,7 +388,9 @@ pipeline {
                                 parameters: [
                                     booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                     string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                    booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                 ]
                             ).result
                         }
@@ -386,7 +409,9 @@ pipeline {
                                 parameters: [
                                     booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                     string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                    booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                 ]
                             ).result
                         }
@@ -405,7 +430,9 @@ pipeline {
                                 parameters: [
                                     booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                     string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                    booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                 ]
                             ).result
                         }
@@ -424,7 +451,9 @@ pipeline {
                                 parameters: [
                                     booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                     string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                    booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                 ]
                             ).result
                         }
@@ -443,7 +472,48 @@ pipeline {
                                 parameters: [
                                     booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                     string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                    booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+                                ]
+                            ).result
+                        }
+                    }
+                }
+
+                stage('JBPM Quarkus Dev UI') {
+                    when {
+                        expression { env.JBPM_QUARKUS_DEVUI == 'true' }
+                    }
+                    steps {
+                        script {
+                            env.JBPM_QUARKUS_DEVUI_JOB_RESULT = build(
+                                wait: true,
+                                job: 'KIE/kie-tools/kie-tools-release-jobs/jbpm-quarkus-devui',
+                                parameters: [
+                                    booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+                                    string(name: 'BASE_REF', value: "${params.BASE_REF}"),
                                     string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+                                ]
+                            ).result
+                        }
+                    }
+                }
+
+                stage('Sonataflow Quarkus Dev UI') {
+                    when {
+                        expression { env.SONATAFLOW_QUARKUS_DEVUI == 'true' }
+                    }
+                    steps {
+                        script {
+                            env.SONATAFLOW_QUARKUS_DEVUI_JOB_RESULT = build(
+                                wait: true,
+                                job: 'KIE/kie-tools/kie-tools-release-jobs/sonataflow-quarkus-devui',
+                                parameters: [
+                                    booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+                                    string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                    booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}")
                                 ]
                             ).result
                         }
@@ -502,7 +572,9 @@ pipeline {
                                         parameters: [
                                             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+                                            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                            booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
                                 }
@@ -521,7 +593,9 @@ pipeline {
                                         parameters: [
                                             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+                                            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                            booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
                                 }
@@ -541,7 +615,9 @@ pipeline {
                                             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
                                             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-                                            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}")
+                                            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
+                                            booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
                                 }
@@ -560,7 +636,9 @@ pipeline {
                                         parameters: [
                                             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+                                            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                            booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
                                 }
@@ -580,7 +658,9 @@ pipeline {
                                             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
                                             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-                                            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}")
+                                            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
+                                            booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
                                 }
@@ -599,7 +679,9 @@ pipeline {
                                         parameters: [
                                             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+                                            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                            booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
                                 }
@@ -622,7 +704,9 @@ pipeline {
                                         parameters: [
                                             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+                                            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                            booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
 
@@ -643,7 +727,9 @@ pipeline {
                                         parameters: [
                                             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+                                            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                            booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
 
@@ -666,7 +752,9 @@ pipeline {
                                             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
                                             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
                                             string(name: 'KIE_SANDBOX_EXTENDED_SERVICES_URL', value: "${env.KIE_SANDBOX_EXTENDED_SERVICES_URL}"),
-                                            string(name: 'KIE_SANDBOX_CORS_PROXY_URL', value: "${env.KIE_SANDBOX_CORS_PROXY_URL}")
+                                            string(name: 'KIE_SANDBOX_CORS_PROXY_URL', value: "${env.KIE_SANDBOX_CORS_PROXY_URL}"),
+                                            booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
 
@@ -687,7 +775,9 @@ pipeline {
                                         parameters: [
                                             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                                             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+                                            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                            booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
                                 }

@@ -103,6 +103,15 @@ def pnpmUpdateKogitoVersion(String kogitoVersion, String imagesTag) {
 }
 
 /**
+* PNPM update stream name to
+*/
+def pnpmUpdateStreamName(String streamName) {
+    sh """#!/bin/bash -el
+    pnpm update-stream-name-to ${streamName}
+    """.trim()
+}
+
+/**
 * Start KIE-Tools required services for build and test
 */
 def startRequiredServices() {

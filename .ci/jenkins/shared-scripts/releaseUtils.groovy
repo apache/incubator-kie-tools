@@ -60,11 +60,25 @@ def publishArtifacts(String artifactsDir, String releaseRepository, String relea
 }
 
 /**
-* Return the final release version from a release candidate version (10.0.0-rc1 -> 10.0.0)
+* Download release artifacts from a specific release
 */
-def getFinalReleaseVersion(String releaseCandidateVersion) {
-    finalReleaseVersion = releaseCandidateVersion.replaceAll(/-rc\d{1,2}/, '')
-    return finalReleaseVersion
+def downloadReleaseArtifacts(String artifactsDir, String releaseVersion) {
+    sh """#!/bin/bash -el
+    svn co "${releaseRepository}/${releaseVersion}" "${artifactsDir}/${releaseVersion}"
+    """.trim()
 }
 
-return this
+/**
+* Return a list of upstream images artifacts
+*/
+def getUpstreamImagesArtifactsList(String artifactsDir, String releaseVersion) {
+    return [
+        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-base-builder-image.tar.gz",
+        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-data-index-ephemeral-image.tar.gz",
+        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-data-index-postgresql-image.tar.gz",
+        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jit-runner-image.tar.gz",
+        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jobs-service-allinone-image.tar.gz",
+        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jobs-service-ephemeral-image.tar.gz",
+        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jobs-service-postgresql-image.tar.gz"
+    ]
+}
