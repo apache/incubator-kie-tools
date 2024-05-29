@@ -358,7 +358,7 @@ export function EditorToolbarWithWorkspace(
                               });
                             }}
                           >
-                            <small>Switch back to the legacy DMN Editor</small>
+                            <small>Switch back to the classic DMN Editor</small>
                           </DropdownItem>,
                         ]}
                       />

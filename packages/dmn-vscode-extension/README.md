@@ -22,7 +22,7 @@
 
 Create and edit DMN and SceSim files.
 
-> NOTE: This extension provides two DMN Editors. The legacy one will be removed in future versions. See the details of the new DMN Editor [here](https://github.com/apache/incubator-kie-issues/issues/439).
+> NOTE: This extension provides two DMN Editors. The classic one will be removed in future versions. See the details of the new DMN Editor [here](https://github.com/apache/incubator-kie-issues/issues/439).
 
 ## Features
 
