@@ -43,15 +43,6 @@ export function WorkflowInstancesPage() {
     [history]
   );
 
-  const onOpenTriggerCloudEvent = useCallback(() => {
-    history.push({
-      pathname: routes.runtimeToolsTriggerCloudEvent.path({}),
-      state: {
-        source: CloudEventPageSource.INSTANCES,
-      },
-    });
-  }, [history]);
-
   const onOpenTriggerCloudEventForWorkflow = useCallback(
     (workflowId: string) => {
       history.push({
@@ -79,7 +70,6 @@ export function WorkflowInstancesPage() {
         <WorkflowListContainer
           initialState={initialState}
           onOpenWorkflowDetails={onOpenWorkflowDetails}
-          onOpenTriggerCloudEvent={onOpenTriggerCloudEvent}
           onOpenTriggerCloudEventForWorkflow={onOpenTriggerCloudEventForWorkflow}
         />
       </PageSection>

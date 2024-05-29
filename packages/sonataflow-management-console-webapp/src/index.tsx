@@ -52,11 +52,7 @@ const appRender = async (ctx: UserContext) => {
     if (networkError && networkError.stack === "TypeError: Failed to fetch") {
       // eslint-disable-next-line react/no-render-return-value
       return ReactDOM.render(
-        <ManagementConsole
-          apolloClient={client}
-          userContext={ctx}
-          openApiBaseUrl={window["SONATAFLOW_OPENAPIBASE_URL"]}
-        >
+        <ManagementConsole apolloClient={client} userContext={ctx}>
           <ServerUnavailablePage displayName={"Management Console"} reload={() => window.location.reload()} />
         </ManagementConsole>,
         document.getElementById("root")
@@ -93,7 +89,7 @@ const appRender = async (ctx: UserContext) => {
     link: setGQLContext.concat(fallbackUI.concat(httpLink)),
   });
   ReactDOM.render(
-    <ManagementConsole apolloClient={client} userContext={ctx} openApiBaseUrl={window["SONATAFLOW_OPENAPIBASE_URL"]}>
+    <ManagementConsole apolloClient={client} userContext={ctx}>
       <ManagementConsoleRoutes />
     </ManagementConsole>,
     document.getElementById("root")

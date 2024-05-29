@@ -23,11 +23,16 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { CloudEventFormContainer } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventFormContainer";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { useGlobalAlert } from "../../../alerts/GlobalAlertsContext";
+import { WorkflowDefinition } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { useHistory } from "react-router";
 
 const PAGE_TITLE = "Trigger Cloud Event";
 const KUBESMARTS_CLOUD_SOURCE = "/local/kubesmarts";
 
 export function TriggerCloudEventPage() {
+  const history = useHistory();
+  const workflowDefinition: WorkflowDefinition = (history.location.state as any)["workflowDefinition"];
+
   const triggerEventSuccessAlert = useGlobalAlert<{ message: string }>(
     useCallback(({ close }, { message }) => {
       return (
@@ -105,6 +110,7 @@ export function TriggerCloudEventPage() {
           onStartWorkflowError={onStartWorkflowError}
           onTriggerCloudEventSuccess={onTriggerEventSuccessAlert}
           onTriggerStartCloudEventSuccess={onTriggerStartCloudEventSuccess}
+          serviceUrl={workflowDefinition.serviceUrl}
         />
       </PageSection>
     </Page>

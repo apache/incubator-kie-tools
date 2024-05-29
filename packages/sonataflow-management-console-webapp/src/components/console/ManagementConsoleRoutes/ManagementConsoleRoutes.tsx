@@ -39,7 +39,9 @@ const ManagementConsoleRoutes: React.FC = () => {
       <Route path={routes.runtimeToolsWorkflowDetails.path({ workflowId: ":workflowId" })}>
         {({ match }) => <WorkflowDetailsPage workflowId={match!.params.workflowId!} />}
       </Route>
-      <Route exact path={routes.runtimeToolsTriggerCloudEvent.path({})} component={TriggerCloudEventPage} />
+      <Route path={routes.runtimeToolsTriggerCloudEventForWorkflowDefinition.path({ workflowName: ":workflowName" })}>
+        {({ match }) => <TriggerCloudEventPage />}
+      </Route>
       <Route path={routes.runtimeToolsWorkflowForm.path({ workflowName: ":workflowName" })}>
         <WorkflowFormPage />
       </Route>

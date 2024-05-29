@@ -27,7 +27,7 @@ import {
 } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
 import { PageLayout } from "@kie-tools/runtime-tools-components/dist/components/PageLayout";
 import { WorkflowListContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowList";
-import { WorkflowDefinitionListContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionList";
+import { WorkflowDefinitionListContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionList";
 import { WorkflowFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowForm";
 import { WorkflowDetailsContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDetails";
 import { CloudEventFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventForm";
@@ -39,10 +39,9 @@ interface IOwnProps {
   apolloClient: ApolloClient<any>;
   userContext: UserContext;
   children: React.ReactElement;
-  openApiBaseUrl: string;
 }
 
-const ManagementConsole: React.FC<IOwnProps> = ({ apolloClient, userContext, children, openApiBaseUrl }) => {
+const ManagementConsole: React.FC<IOwnProps> = ({ apolloClient, userContext, children }) => {
   const renderPage = useCallback(
     (routeProps) => {
       return (
@@ -66,18 +65,18 @@ const ManagementConsole: React.FC<IOwnProps> = ({ apolloClient, userContext, chi
     <ApolloProvider client={apolloClient}>
       <KogitoAppContextProvider userContext={userContext}>
         <GlobalAlertsContextProvider>
-          <CloudEventFormContextProvider kogitoServiceUrl={`${openApiBaseUrl}`}>
+          <CloudEventFormContextProvider>
             <WorkflowDetailsContextProviderWithApolloClient apolloClient={apolloClient}>
               <WorkflowListContextProviderWithApolloClient apolloClient={apolloClient}>
-                <WorkflowDefinitionListContextProvider kogitoServiceUrl={openApiBaseUrl}>
-                  <WorkflowFormContextProvider kogitoServiceUrl={`${openApiBaseUrl}`}>
+                <WorkflowDefinitionListContextProviderWithApolloClient apolloClient={apolloClient}>
+                  <WorkflowFormContextProvider>
                     <Router>
                       <Switch>
                         <Route path="/" render={renderPage} />
                       </Switch>
                     </Router>
                   </WorkflowFormContextProvider>
-                </WorkflowDefinitionListContextProvider>
+                </WorkflowDefinitionListContextProviderWithApolloClient>
               </WorkflowListContextProviderWithApolloClient>
             </WorkflowDetailsContextProviderWithApolloClient>
           </CloudEventFormContextProvider>
