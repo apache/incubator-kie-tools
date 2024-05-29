@@ -21,9 +21,9 @@ import {
   DMN15__tDecisionService,
   DMN15__tDefinitions,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { DECISION_SERVICE_COLLAPSED_DIMENSIONS } from "../diagram/nodes/DefaultSizes";
+import { DECISION_SERVICE_COLLAPSED_DIMENSIONS, MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
-import { Computed } from "../store/Store";
+import { Computed, State } from "../store/Store";
 import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeContainingDecisionServiceHrefsByDecisionHrefs.ts";
 import { computeIndexedDrd } from "../store/computed/computeIndexes";
 import { xmlHrefToQName } from "../xml/xmlHrefToQName";
@@ -37,7 +37,7 @@ import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
  * When adding a Decision Service to a DRD, we need to bring all its encapsulated and output Decisions with it,
  * copying their layout from other DRDs, or formatting with autolayout.
  */
-export function addExistingDecisionServiceToDrd({
+export async function addExistingDecisionServiceToDrd({
   decisionServiceNamespace,
   decisionService,
   externalDmnsIndex,
@@ -46,6 +46,7 @@ export function addExistingDecisionServiceToDrd({
   thisDmnsIndexedDrd,
   drdIndex,
   dropPoint,
+  applyAutoLayout,
 }: {
   decisionServiceNamespace: string;
   decisionService: Normalized<DMN15__tDecisionService>;
@@ -55,6 +56,14 @@ export function addExistingDecisionServiceToDrd({
   thisDmnsIndexedDrd: ReturnType<Computed["indexedDrd"]>;
   drdIndex: number;
   dropPoint: { x: number; y: number };
+  applyAutoLayout: (
+    toApplyAutoLayout: (args: {
+      model: State["dmn"]["model"];
+      diagram: State["diagram"];
+      indexedDrd: ReturnType<typeof computeIndexedDrd>;
+      drdIndex: number;
+    }) => void
+  ) => Promise<void>;
 }) {
   const decisionServiceDmnDefinitions =
     !decisionServiceNamespace || decisionServiceNamespace === thisDmnsNamespace
@@ -134,7 +143,59 @@ export function addExistingDecisionServiceToDrd({
 
   if (!indexedDrd) {
     // There's no DRD which inclues a complete expanded depiction of the Decision Service. Let's proceed with auto-layout.
-    // TODO: Tiago
+
+    await applyAutoLayout(({ diagram, model, drdIndex, indexedDrd }) => {
+      const minNodeSize = MIN_NODE_SIZES[NODE_TYPES.decisionService]({
+        snapGrid: diagram.snapGrid,
+      });
+      addShape({
+        definitions: model.definitions,
+        drdIndex: drdIndex,
+        nodeType: NODE_TYPES.decisionService,
+        shape: {
+          "@_id": generateUuid(),
+          "@_dmnElementRef": xmlHrefToQName(decisionServiceHrefRelativeToThisDmn, model.definitions),
+          "dc:Bounds": {
+            "@_x": dropPoint.x,
+            "@_y": dropPoint.y,
+            ...minNodeSize,
+          },
+        },
+      });
+
+      for (const decisionHref of containedDecisionHrefsRelativeToThisDmn) {
+        const existingDecisionShape = indexedDrd.dmnShapesByHref.get(decisionHref);
+        if (existingDecisionShape) {
+          continue; // Auto-layout will be applied;
+        }
+        const decisionNs = parseXmlHref(decisionHref).namespace;
+        const decisionDmnDefinitions =
+          !decisionNs || decisionNs === model.definitions["@_namespace"]
+            ? model.definitions
+            : externalDmnsIndex.get(decisionNs)?.model.definitions;
+        if (!decisionDmnDefinitions) {
+          throw new Error(`DMN MUTATION: Can't find definitions for model with namespace ${decisionServiceNamespace}`);
+        }
+
+        const minNodeSize = MIN_NODE_SIZES[NODE_TYPES.decision]({
+          snapGrid: diagram.snapGrid,
+        });
+        addShape({
+          definitions: model.definitions,
+          drdIndex,
+          nodeType: NODE_TYPES.decision,
+          shape: {
+            "@_id": generateUuid(),
+            "@_dmnElementRef": xmlHrefToQName(decisionHref, model.definitions),
+            "dc:Bounds": {
+              "@_x": 0, // Auto-layout will be applied;
+              "@_y": 0, // Auto-layout will be applied;
+              ...minNodeSize,
+            },
+          },
+        });
+      }
+    });
   } else {
     // Let's copy the expanded depiction of the Decision Service from `drd`.
     // Adding or moving nodes that already exist in the current DRD to inside the Decision Service.

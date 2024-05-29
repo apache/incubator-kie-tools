@@ -82,21 +82,6 @@ export function deleteNode({
     console.warn("DMN MUTATION: Cannot hide a Decision that's contained by a Decision Service from a DRD.");
     return { deletedDmnObject: undefined, deletedDmnShapeOnCurrentDrd: undefined };
   }
-  if (
-    mode === NodeDeletionMode.FROM_CURRENT_DRD_ONLY &&
-    __readonly_dmnObject?.__$$element === "decisionService" &&
-    __readonly_dmnObjectId &&
-    !canRemoveDecisionService({
-      definitions,
-      __readonly_dmnObjectNamespace,
-      __readonly_dmnObjectId,
-      __readonly_dmnObject: __readonly_dmnObject as Normalized<DMN15__tDecisionService>,
-      __readonly_drdIndex,
-    })
-  ) {
-    console.warn("DMN MUTATION: Cannot hide a Decision Service that isn't present in another DRD");
-    return { deletedDmnObject: undefined, deletedDmnShapeOnCurrentDrd: undefined };
-  }
 
   if (mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
     // Delete Edges
@@ -253,58 +238,4 @@ export function canRemoveNodeFromDrdOnly({
   );
 
   return !isContainedByDecisionService || !isContainingDecisionServiceInExpandedFormPresentInTheDrd;
-}
-
-export function canRemoveDecisionService({
-  definitions,
-  __readonly_dmnObjectNamespace,
-  __readonly_dmnObjectId,
-  __readonly_dmnObject,
-  __readonly_drdIndex,
-}: {
-  definitions: Normalized<DMN15__tDefinitions>;
-  __readonly_dmnObjectNamespace: string;
-  __readonly_dmnObjectId: string;
-  __readonly_dmnObject: Normalized<DMN15__tDecisionService>;
-  __readonly_drdIndex: number;
-}) {
-  // If it's a external Decision Service it can be removed.
-  if (definitions["@_namespace"] !== __readonly_dmnObjectNamespace) {
-    return true;
-  }
-
-  const drds = definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
-
-  // list of hrefs of the decision service;
-  const containedDecisionHrefsRelativeToThisDmn = [
-    ...(__readonly_dmnObject.encapsulatedDecision ?? []),
-    ...(__readonly_dmnObject.outputDecision ?? []),
-  ].map((e) => e["@_href"]);
-
-  // For each DRD checks the Decision Service node
-  for (let i = 0; i < drds.length; i++) {
-    if (__readonly_drdIndex === i) {
-      continue; // Skip current DRD;
-    }
-
-    const indexedDrd = computeIndexedDrd(definitions["@_namespace"], definitions, i);
-    const dsShape = indexedDrd.dmnShapesByHref.get(
-      buildXmlHref({
-        namespace:
-          __readonly_dmnObjectNamespace === definitions["@_namespace"] ? undefined : __readonly_dmnObjectNamespace,
-        id: __readonly_dmnObjectId,
-      })
-    );
-
-    // Search on the DRD if it has the complete depicition of the Decision Service
-    const hasAllDecisionServiceNodes = containedDecisionHrefsRelativeToThisDmn.every((dHref) =>
-      indexedDrd.dmnShapesByHref.has(dHref)
-    );
-
-    // The shape must be present, shouldn't be collapsed and should have the complete depicition
-    if (dsShape && !(dsShape["@_isCollapsed"] ?? false) && hasAllDecisionServiceNodes) {
-      return true;
-    }
-  }
-  return false;
 }
