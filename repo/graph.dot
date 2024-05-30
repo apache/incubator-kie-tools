@@ -90,6 +90,7 @@ digraph G {
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/maven-config-setup-helper" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/maven-m2-repo-via-http-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/react-hooks" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/pmml-editor-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -311,6 +312,7 @@ digraph G {
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" -> "@kie-tools/dev-deployment-base-image" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" -> "@kie-tools/dev-deployment-kogito-quarkus-blank-app" [ style = "solid", color = "black" ];
+  "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" -> "@kie-tools/maven-m2-repo-via-http-image" [ style = "dashed", color = "black" ];
   "@kie-tools/dev-deployment-upload-service" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/dmn-editor" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-editor" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
@@ -410,6 +412,8 @@ digraph G {
   "@kie-tools-core/kubernetes-bridge" -> "@kie-tools/cors-proxy-api" [ style = "solid", color = "purple" ];
   "@kie-tools/maven-base" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/maven-base" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/maven-m2-repo-via-http-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
+  "@kie-tools/maven-m2-repo-via-http-image" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools-core/monaco-editor" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/monaco-editor" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/monaco-editor" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];

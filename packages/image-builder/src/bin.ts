@@ -35,6 +35,7 @@ type ArgsType = {
   push: boolean;
   buildArg: string[];
   arch: string;
+  allowHostNetworkAccess: boolean;
 };
 
 function shell() {
@@ -61,7 +62,7 @@ function getImageFullNames(args: ArgsType) {
   return args.tags.map((tag) => `${imageFullNameWithoutTags}:${tag}`);
 }
 
-function createAndUseDockerBuilder() {
+function createAndUseDockerBuilder(args: { allowHostNetworkAccess: boolean }) {
   try {
     console.info("-> Checking for existing kie-tools-builder...");
     execSync("docker buildx inspect kie-tools-builder", { stdio: "inherit" });
@@ -69,9 +70,19 @@ function createAndUseDockerBuilder() {
     execSync("docker buildx use kie-tools-builder", { stdio: "inherit" });
   } catch (e) {
     console.info("- kie-tools-builder not found, creating it.");
-    execSync("docker buildx create --name kie-tools-builder --driver docker-container --bootstrap --use", {
-      stdio: "inherit",
-    });
+    execSync(
+      `docker buildx create
+        ${args.allowHostNetworkAccess ? "--buildkitd-flags '--allow-insecure-entitlement network.host'" : ""}
+        --name kie-tools-builder
+        --driver docker-container
+        --bootstrap
+        --use`
+        .split("\n")
+        .join(" "),
+      {
+        stdio: "inherit",
+      }
+    );
   }
 }
 
@@ -93,23 +104,35 @@ function buildArchImage(args: ArgsType & { arch: "arm64" | "amd64" }, imageFullN
     amd64: "linux/amd64",
   }[args.arch];
 
-  createAndUseDockerBuilder();
+  createAndUseDockerBuilder({ allowHostNetworkAccess: args.allowHostNetworkAccess });
 
-  const buildPlatformCommand = `docker buildx build --progress=plain --load --platform ${platform} ${
-    args.push ? "--push" : ""
-  } ${imageFullNames.map((fullName) => `-t ${fullName}`).join(" ")} ${args.buildArg
-    .map((arg: string) => `--build-arg ${arg}`)
-    .join(" ")} ${args.context} -f ${args.containerfile}`;
+  const buildPlatformCommand = `docker buildx build 
+    ${args.allowHostNetworkAccess ? "--allow network.host --network host" : ""}
+    --progress=plain
+    --load 
+    --platform ${platform}
+    ${args.push ? "--push" : ""}
+    ${imageFullNames.map((fullName) => `-t ${fullName}`).join(" ")}
+    ${args.buildArg.map((arg) => `--build-arg ${arg}`).join(" ")}
+    ${args.context} 
+    -f ${args.containerfile}`
+    .split("\n")
+    .join(" ");
 
   execSync(buildPlatformCommand, { stdio: "inherit" });
 }
 
 function buildNativeImage(args: ArgsType, imageFullNames: string[]) {
-  const buildNativeCommand = `${args.engine} build --progress=plain ${args.push ? "--push" : ""} ${imageFullNames
-    .map((fullName) => `-t ${fullName}`)
-    .join(" ")} ${args.buildArg.map((arg: string) => `--build-arg ${arg}`).join(" ")} ${args.context} -f ${
-    args.containerfile
-  }`;
+  const buildNativeCommand = `${args.engine} build 
+    --progress=plain 
+    ${args.allowHostNetworkAccess ? "--allow network.host --network host" : ""}
+    ${args.push ? "--push" : ""} 
+    ${imageFullNames.map((fullName) => `-t ${fullName}`).join(" ")}
+    ${args.buildArg.map((arg) => `--build-arg ${arg}`).join(" ")} 
+    ${args.context} 
+    -f ${args.containerfile}`
+    .split("\n")
+    .join(" ");
 
   execSync(buildNativeCommand, { stdio: "inherit" });
 }
@@ -257,6 +280,12 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
           describe: "Push the image to the registry",
           type: "boolean",
         },
+        allowHostNetworkAccess: {
+          demandOption: false,
+          default: false,
+          describe: "Allows host network access during build",
+          type: "boolean",
+        },
         containerfile: {
           alias: "f",
           demandOption: false,
@@ -321,6 +350,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
     - buildArgs: ${args.buildArg.join(" ")}
     - engine: ${args.engine}
     - push: ${args.push}
+    - allowHostNetworkAccess: ${args.allowHostNetworkAccess}
     - arch: linux/${args.arch}
         `);
           if (args.arch !== "native" && args.engine !== "docker") {
@@ -348,6 +378,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
     - buildArg: ${args.buildArg?.join(" ") ?? " - "}
     - engine: ${args.engine}
     - push: ${args.push}
+    - allowHostNetworkAccess: ${args.allowHostNetworkAccess}
     - arch: linux/amd64`);
 
           if (args.engine !== "docker") {
@@ -390,6 +421,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
     - engine: ${args.engine}
     - push: ${args.push}
     - arch: linux/amd64
+    - allowHostNetworkAccess: ${args.allowHostNetworkAccess} (ignored)
     - kindClusterName: ${args.kindClusterName}
         `);
 
@@ -429,6 +461,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
     - buildArg: ${args.buildArg?.join(" ") ?? " - "}
     - engine: ${args.engine} (ignored)
     - push: ${args.push}
+    - allowHostNetworkAccess: ${args.allowHostNetworkAccess} (ignored)
     - arch: linux/amd64
         `);
 

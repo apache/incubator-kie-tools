@@ -3363,6 +3363,9 @@ importers:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
+      "@kie-tools/maven-m2-repo-via-http-image":
+        specifier: workspace:*
+        version: link:../maven-m2-repo-via-http-image
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -6211,6 +6214,18 @@ importers:
         version: 1.1.6
 
   packages/maven-config-setup-helper: {}
+
+  packages/maven-m2-repo-via-http-image:
+    devDependencies:
+      "@kie-tools/image-builder":
+        specifier: workspace:*
+        version: link:../image-builder
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
 
   packages/monaco-editor:
     dependencies:
