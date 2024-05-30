@@ -51,7 +51,7 @@ export function parseBPMNValidationResponse(jsonResponse: string[]): BPMNValidat
       const uri = uriResponse ? uriResponse.substring(uriMarker.length).trim() : "";
       const processId = processIdResponse ? processIdResponse.substring(processIdMarker.length).trim() : "";
       const name = nameResponse ? nameResponse.substring(nameMarker.length).trim() : "";
-      const error = errorResponse ? errorResponse.substring(errorMarker.length).trim() : "";
+      const error = errorResponse ? errorResponse.substring(errorMarker.length).trim() : response;
 
       return {
         uri: vscode.Uri.parse(uri),
