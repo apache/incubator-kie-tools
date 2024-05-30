@@ -64,13 +64,13 @@
       {
         "category": "Extended-Services",
         "command": "extended-services-vscode-extension.startExtendedServices",
-        "title": "Start Apache KIE Extended-Services",
+        "title": "Connect Apache KIE Extended-Services",
         "when": "extended-services-vscode-extension.connected"
       },
       {
         "category": "Extended-Services",
         "command": "extended-services-vscode-extension.stopExtendedServices",
-        "title": "Stop Apache KIE Extended-Services"
+        "title": "Disconnect Apache KIE Extended-Services"
       }
     ],
     "configuration": {

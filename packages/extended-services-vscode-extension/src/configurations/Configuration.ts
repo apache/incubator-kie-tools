@@ -69,9 +69,9 @@ function fetchExtendedServicesURL(): URL {
 
 export function fetchConfiguration(): Configuration {
   let errorMessages: string[] = [];
-  let enableAutoRun: boolean = true;
-  let connectionHeartbeatIntervalinSecs: number = 1;
-  let extendedServicesURL: URL = new URL("http://localhost:21345");
+  let enableAutoRun: any;
+  let connectionHeartbeatIntervalinSecs: any;
+  let extendedServicesURL: any;
 
   try {
     enableAutoRun = fetchEnableAutoRun();

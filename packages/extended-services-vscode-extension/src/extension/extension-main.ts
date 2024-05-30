@@ -157,7 +157,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   configurationWatcher.subscribeSettingsChanged(() => {
     stopExtendedServices();
-    if (!userDisconnected) {
+    if (!userDisconnected && kieFilesWatcher.watchedKieFiles.length > 0) {
       startExtendedServices(context);
     }
   });
