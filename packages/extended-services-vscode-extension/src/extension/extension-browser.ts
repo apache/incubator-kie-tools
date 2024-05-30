@@ -46,7 +46,7 @@ let configuration: Configuration | null = null;
 function initializeCommands(context: vscode.ExtensionContext) {
   connectExtendedServicesCommand = vscode.commands.registerCommand(startExtendedServicesCommandUID, () => {
     userDisconnected = false;
-    startExtendedServices(context);
+    startExtendedServices();
   });
   disconnectExtendedServicesCommand = vscode.commands.registerCommand(stopExtendedServicesCommandUID, () => {
     userDisconnected = true;
@@ -66,7 +66,7 @@ function initializeVSCodeElements() {
   diagnosticCollection = vscode.languages.createDiagnosticCollection("KIE Files Diagnostics");
 }
 
-function startExtendedServices(context: vscode.ExtensionContext): void {
+function startExtendedServices(): void {
   let config: Configuration;
   try {
     statusBarItem.show();
@@ -134,8 +134,8 @@ export function activate(context: vscode.ExtensionContext) {
 
   configurationWatcher.subscribeSettingsChanged(() => {
     stopExtendedServices();
-    if (!userDisconnected) {
-      startExtendedServices(context);
+    if (!userDisconnected && kieFilesWatcher.watchedKieFiles.length > 0) {
+      startExtendedServices();
     }
   });
 
@@ -148,7 +148,7 @@ export function activate(context: vscode.ExtensionContext) {
     if (configuration) {
       validate(configuration);
     } else {
-      startExtendedServices(context);
+      startExtendedServices();
     }
   });
 
