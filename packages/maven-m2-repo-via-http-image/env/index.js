@@ -47,10 +47,6 @@ module.exports = composeEnv([rootEnv], {
         account: getOrDefault(this.vars.MAVEN_M2_REPO_VIA_HTTP_IMAGE__account),
         name: getOrDefault(this.vars.MAVEN_M2_REPO_VIA_HTTP_IMAGE__name),
         tag: getOrDefault(this.vars.MAVEN_M2_REPO_VIA_HTTP_IMAGE__buildTag),
-        version: require("../package.json").version,
-        dev: {
-          port: 8008,
-        },
       },
     };
   },
