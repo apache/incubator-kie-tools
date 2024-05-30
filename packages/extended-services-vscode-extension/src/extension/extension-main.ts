@@ -127,7 +127,6 @@ async function validate(configuration: Configuration) {
       );
       diagnosticCollection.set(bpmnFile.uri, bpmnDiagnostics);
     } catch (error) {
-      stopExtendedServices();
       vscode.window.showErrorMessage(
         "An error happened while trying to validate " + bpmnFile.uri.path + ": " + error.message
       );

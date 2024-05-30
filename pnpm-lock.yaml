@@ -3362,10 +3362,6 @@ importers:
         version: 1.1.6
 
   packages/dev-deployment-kogito-quarkus-blank-app:
-    dependencies:
-      "@kie-tools/jbpm-quarkus-devui":
-        specifier: workspace:*
-        version: link:../jbpm-quarkus-devui
     devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
@@ -6141,12 +6137,6 @@ importers:
 
   packages/kn-plugin-workflow:
     devDependencies:
-      "@kie-tools/kogito-serverless-operator":
-        specifier: workspace:*
-        version: link:../kogito-serverless-operator
-      "@kie-tools/kogito-swf-devmode":
-        specifier: workspace:*
-        version: link:../kogito-swf-devmode
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -9774,9 +9764,6 @@ importers:
 
   packages/serverless-logic-web-tools-swf-builder-image:
     devDependencies:
-      "@kie-tools/kogito-swf-builder":
-        specifier: workspace:*
-        version: link:../kogito-swf-builder
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -11340,25 +11327,6 @@ importers:
   packages/sonataflow-quarkus-devui:
     dependencies:
       "@kie-tools/maven-base":
-        specifier: workspace:*
-        version: link:../maven-base
-    devDependencies:
-      "@kie-tools/maven-config-setup-helper":
-        specifier: workspace:*
-        version: link:../maven-config-setup-helper
-      "@kie-tools/root-env":
-        specifier: workspace:*
-        version: link:../root-env
-      "@kie-tools/serverless-workflow-dev-ui-webapp":
-        specifier: workspace:*
-        version: link:../serverless-workflow-dev-ui-webapp
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6
-
-  packages/storybook-base:
-    devDependencies:
-      "@kie-tools-core/webpack-base":
         specifier: workspace:*
         version: link:../maven-base
     devDependencies:
@@ -33823,6 +33791,32 @@ snapshots:
       semver: 6.3.1
     dev: true
 
+  /@babel/helper-create-regexp-features-plugin@7.21.8(@babel/core@7.16.12):
+    resolution:
+      { integrity: sha512-zGuSdedkFtsFHGbexAvNuipg1hbtitDLo2XE8/uf6Y9sOQV1xsYX/2pNbtedp/X0eU1pIt+kGvaqHCowkRbS5g== }
+    engines: { node: ">=6.9.0" }
+    peerDependencies:
+      "@babel/core": ^7.0.0
+    dependencies:
+      "@babel/core": 7.16.12
+      "@babel/helper-annotate-as-pure": 7.22.5
+      regexpu-core: 5.3.2
+      semver: 6.3.1
+    dev: true
+
+  /@babel/helper-create-regexp-features-plugin@7.21.8(@babel/core@7.23.9):
+    resolution:
+      { integrity: sha512-zGuSdedkFtsFHGbexAvNuipg1hbtitDLo2XE8/uf6Y9sOQV1xsYX/2pNbtedp/X0eU1pIt+kGvaqHCowkRbS5g== }
+    engines: { node: ">=6.9.0" }
+    peerDependencies:
+      "@babel/core": ^7.0.0
+    dependencies:
+      "@babel/core": 7.23.9
+      "@babel/helper-annotate-as-pure": 7.22.5
+      regexpu-core: 5.3.2
+      semver: 6.3.1
+    dev: true
+
   /@babel/helper-create-regexp-features-plugin@7.22.15(@babel/core@7.16.12):
     resolution:
       { integrity: sha512-29FkPLFjn4TPEa3RE7GpW+qbE8tlsu3jntNYNfcGsc49LphF1PQIiD+vMZ1z1xVOKt+93khA9tc2JBs3kBjA7w== }
@@ -33992,7 +33986,7 @@ snapshots:
 
   "@babel/helper-module-transforms@7.17.7":
     dependencies:
-      "@babel/helper-environment-visitor": 7.22.20
+      "@babel/helper-environment-visitor": 7.21.5
       "@babel/helper-module-imports": 7.22.15
       "@babel/helper-simple-access": 7.22.5
       "@babel/helper-split-export-declaration": 7.18.6
@@ -34645,7 +34639,7 @@ snapshots:
   "@babel/plugin-proposal-unicode-property-regex@7.16.7(@babel/core@7.16.12)":
     dependencies:
       "@babel/core": 7.16.12
-      "@babel/helper-create-regexp-features-plugin": 7.22.15(@babel/core@7.16.12)
+      "@babel/helper-create-regexp-features-plugin": 7.21.8(@babel/core@7.16.12)
       "@babel/helper-plugin-utils": 7.22.5
 
   "@babel/plugin-proposal-unicode-property-regex@7.16.7(@babel/core@7.23.9)":
@@ -35530,7 +35524,7 @@ snapshots:
   "@babel/plugin-transform-exponentiation-operator@7.16.7(@babel/core@7.16.12)":
     dependencies:
       "@babel/core": 7.16.12
-      "@babel/helper-builder-binary-assignment-operator-visitor": 7.22.15
+      "@babel/helper-builder-binary-assignment-operator-visitor": 7.21.5
       "@babel/helper-plugin-utils": 7.22.5
 
   "@babel/plugin-transform-exponentiation-operator@7.16.7(@babel/core@7.23.9)":
@@ -36784,7 +36778,7 @@ snapshots:
   "@babel/plugin-transform-unicode-regex@7.16.7(@babel/core@7.16.12)":
     dependencies:
       "@babel/core": 7.16.12
-      "@babel/helper-create-regexp-features-plugin": 7.22.15(@babel/core@7.16.12)
+      "@babel/helper-create-regexp-features-plugin": 7.21.8(@babel/core@7.16.12)
       "@babel/helper-plugin-utils": 7.22.5
 
   "@babel/plugin-transform-unicode-regex@7.16.7(@babel/core@7.23.9)":
