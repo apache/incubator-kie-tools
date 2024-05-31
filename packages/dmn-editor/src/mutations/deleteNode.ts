@@ -79,7 +79,11 @@ export function deleteNode({
   if (mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
     // Delete Edges
     // A DRD doesn't necessarily renders all edges of the DRG, so we need to look for what DRG edges to delete when deleting a node from any DRD.
-    const nodeId = buildXmlHref({ namespace: __readonly_dmnObjectNamespace, id: __readonly_dmnObjectId! });
+    const nodeId = buildXmlHref({
+      namespace:
+        __readonly_dmnObjectNamespace === definitions["@_namespace"] ? undefined : __readonly_dmnObjectNamespace,
+      id: __readonly_dmnObjectId!,
+    });
     for (let i = 0; i < __readonly_drgEdges.length; i++) {
       const drgEdge = __readonly_drgEdges[i];
       // Only delete edges that end at or start from the node being deleted.
@@ -200,7 +204,7 @@ export function canRemoveNodeFromDrdOnly({
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex: __readonly_drdIndex });
 
   const dmnObjectHref = buildXmlHref({
-    namespace: __readonly_dmnObjectNamespace === definitions["@_namespace"] ? "" : __readonly_dmnObjectNamespace,
+    namespace: __readonly_dmnObjectNamespace === definitions["@_namespace"] ? undefined : __readonly_dmnObjectNamespace,
     id: __readonly_dmnObjectId!,
   });
 
