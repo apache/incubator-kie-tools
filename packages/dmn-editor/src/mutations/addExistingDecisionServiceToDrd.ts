@@ -34,8 +34,7 @@ import { Normalized } from "../normalization/normalize";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { computeExternalModelsByType } from "../store/computed/computeExternalModelsByType";
 import { computeDiagramData } from "../store/computed/computeDiagramData";
-import { getAutoLayoutedInfo } from "../autolayout/autoLayout";
-import { mutateDiagramWithAutoLayoutInfo } from "../autolayout/AutoLayoutHook";
+import { getAutoLayoutedInfo, mutateDiagramWithAutoLayoutInfo } from "../autolayout/autoLayout";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { ExternalModelsIndex } from "../DmnEditor";
 

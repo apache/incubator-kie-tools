@@ -20,9 +20,8 @@
 import * as React from "react";
 import OptimizeIcon from "@patternfly/react-icons/dist/js/icons/optimize-icon";
 import { useDmnEditorStoreApi } from "../store/StoreContext";
-import { getAutoLayoutedInfo } from "./autoLayout";
+import { getAutoLayoutedInfo, mutateDiagramWithAutoLayoutInfo } from "./autoLayout";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
-import { mutateDiagramWithAutoLayoutInfo } from "./AutoLayoutHook";
 
 export function AutolayoutButton() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
