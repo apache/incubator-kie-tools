@@ -17,11 +17,7 @@
  * under the License.
  */
 
-import {
-  DMN15__tDecisionService,
-  DMN15__tDefinitions,
-  DMNDI15__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { NodeNature } from "./NodeNature";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
@@ -35,7 +31,6 @@ import { Computed } from "../store/Store";
 import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeContainingDecisionServiceHrefsByDecisionHrefs.ts";
 import { xmlHrefToQName } from "../xml/xmlHrefToQName";
 import { Normalized } from "../normalization/normalize";
-import { computeIndexedDrd } from "../store/computed/computeIndexes";
 import { NodeDmnObjects } from "../diagram/nodes/Nodes";
 
 export enum NodeDeletionMode {
@@ -48,7 +43,6 @@ export function deleteNode({
   __readonly_drgEdges,
   __readonly_drdIndex,
   __readonly_nodeNature,
-  __readonly_dmnObject, // TODO CLEAN UP
   __readonly_dmnObjectId,
   __readonly_dmnObjectNamespace,
   __readonly_dmnObjectQName,
@@ -60,7 +54,6 @@ export function deleteNode({
   __readonly_drdIndex: number;
   __readonly_nodeNature: NodeNature;
   __readonly_externalModelTypesByNamespace: ReturnType<Computed["getExternalModelTypesByNamespace"]>;
-  __readonly_dmnObject: NodeDmnObjects;
   __readonly_dmnObjectId: string | undefined;
   __readonly_dmnObjectNamespace: string;
   __readonly_dmnObjectQName: XmlQName;
