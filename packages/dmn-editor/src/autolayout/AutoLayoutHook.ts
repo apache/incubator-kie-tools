@@ -36,7 +36,7 @@ import { Normalized } from "../normalization/normalize";
 
 export function mutateDiagramWithAutoLayoutInfo({
   state,
-  __readonly_autoLayoutedNodes,
+  __readonly_autoLayoutedInfo,
   __readonly_parentNodesById,
   __readonly_nodesById,
   __readonly_edgesById,
@@ -45,7 +45,7 @@ export function mutateDiagramWithAutoLayoutInfo({
   __readonly_drdIndex,
 }: {
   state: State;
-  __readonly_autoLayoutedNodes: {
+  __readonly_autoLayoutedInfo: {
     isHorizontal: boolean;
     nodes: Elk.ElkNode[] | undefined;
     edges: Elk.ElkExtendedEdge[] | undefined;
@@ -66,7 +66,7 @@ export function mutateDiagramWithAutoLayoutInfo({
   // 7. Update all nodes positions skipping empty groups, which will be positioned manually after all nodes are done being repositioned.
   const autolayoutedElkNodesById = new Map<string, Elk.ElkNode>();
 
-  for (const topLevelElkNode of __readonly_autoLayoutedNodes.nodes ?? []) {
+  for (const topLevelElkNode of __readonly_autoLayoutedInfo.nodes ?? []) {
     visitNodeAndNested(topLevelElkNode, { x: 100, y: 100 }, (elkNode, positionOffset) => {
       if (elkNode.id.includes(FAKE_MARKER)) {
         return;
@@ -102,7 +102,7 @@ export function mutateDiagramWithAutoLayoutInfo({
   }
 
   // 8. Resize all nodes using the sizes calculated by ELK.
-  for (const topLevelElkNode of __readonly_autoLayoutedNodes.nodes ?? []) {
+  for (const topLevelElkNode of __readonly_autoLayoutedInfo.nodes ?? []) {
     visitNodeAndNested(topLevelElkNode, { x: 0, y: 0 }, (elkNode) => {
       if (elkNode.id.includes(FAKE_MARKER)) {
         return;
@@ -171,7 +171,7 @@ export function mutateDiagramWithAutoLayoutInfo({
   }
 
   // 10. Update the edges. Edges always go from top to bottom, removing waypoints.
-  for (const elkEdge of __readonly_autoLayoutedNodes.edges ?? []) {
+  for (const elkEdge of __readonly_autoLayoutedInfo.edges ?? []) {
     if (elkEdge.id.includes(FAKE_MARKER)) {
       continue;
     }

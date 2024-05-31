@@ -351,10 +351,10 @@ export async function getAutoLayoutedInfo({
   ];
 
   // 6. Run ELK.
-  const autoLayoutedNodes = await runElk(elkNodes, elkEdges, ELK_OPTIONS);
+  const autoLayoutedInfo = await runElk(elkNodes, elkEdges, ELK_OPTIONS);
   return {
-    autoLayoutedNodes,
-    parentNodesById,
+    __readonly_autoLayoutedInfo: autoLayoutedInfo,
+    __readonly_parentNodesById: parentNodesById,
   };
 }
 

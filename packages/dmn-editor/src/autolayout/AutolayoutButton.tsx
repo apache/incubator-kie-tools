@@ -37,7 +37,7 @@ export function AutolayoutButton() {
     const drgEdges = state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges;
     const isAlternativeInputDataShape = state.computed(state).isAlternativeInputDataShape();
 
-    const { autoLayoutedNodes: autolayouted, parentNodesById } = await getAutoLayoutedInfo({
+    const { __readonly_autoLayoutedInfo, __readonly_parentNodesById } = await getAutoLayoutedInfo({
       __readonly_snapGrid: snapGrid,
       __readonly_nodesById: nodesById,
       __readonly_edgesById: edgesById,
@@ -53,8 +53,8 @@ export function AutolayoutButton() {
         __readonly_edges: s.computed(s).getDiagramData(externalModelsByNamespace).edges,
         __readonly_edgesById: s.computed(s).getDiagramData(externalModelsByNamespace).edgesById,
         __readonly_nodesById: s.computed(s).getDiagramData(externalModelsByNamespace).nodesById,
-        __readonly_autoLayoutedNodes: autolayouted,
-        __readonly_parentNodesById: parentNodesById,
+        __readonly_autoLayoutedInfo,
+        __readonly_parentNodesById,
         __readonly_drdIndex: s.computed(s).getDrdIndex(),
       });
     });
