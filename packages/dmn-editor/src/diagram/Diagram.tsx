@@ -831,7 +831,11 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
                     for (let i = 0; i < containedDecisionHrefsRelativeToThisDmn.length; i++) {
                       const diagramData = state.computed(state).getDiagramData(externalModelsByNamespace);
-                      const nestedNode = diagramData.nodesById.get(containedDecisionHrefsRelativeToThisDmn[i])!;
+                      const nestedNode = diagramData.nodesById.get(containedDecisionHrefsRelativeToThisDmn[i]);
+                      if (nestedNode?.data?.shape === undefined) {
+                        // In case we have an incomple depiction of the decision service in the current DRD
+                        continue;
+                      }
                       const snappedNestedNodeShapeWithAppliedDelta = snapShapePosition(
                         state.diagram.snapGrid,
                         offsetShapePosition(nestedNode.data.shape, delta)
