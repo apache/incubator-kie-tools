@@ -17,7 +17,11 @@
  * under the License.
  */
 
-import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import {
+  DMN15__tDefinitions,
+  DMNDI15__DMNDecisionServiceDividerLine,
+  DMNDI15__DMNShape,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { Normalized } from "../normalization/normalize";
@@ -29,17 +33,23 @@ export function addShape({
   drdIndex,
   nodeType,
   shape,
+  decisionServiceDividerLine,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   nodeType: NodeType;
   shape: Normalized<DMNDI15__DMNShape>;
+  decisionServiceDividerLine?: Normalized<DMNDI15__DMNDecisionServiceDividerLine>;
 }) {
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
   diagramElements.push({
     __$$element: "dmndi:DMNShape",
     ...(nodeType === NODE_TYPES.decisionService
-      ? { "dmndi:DMNDecisionServiceDividerLine": getCentralizedDecisionServiceDividerLine(shape["dc:Bounds"]!) }
+      ? {
+          "dmndi:DMNDecisionServiceDividerLine": decisionServiceDividerLine
+            ? { ...decisionServiceDividerLine }
+            : getCentralizedDecisionServiceDividerLine(shape["dc:Bounds"]!),
+        }
       : {}),
     ...shape,
   });

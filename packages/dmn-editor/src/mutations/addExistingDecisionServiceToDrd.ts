@@ -37,6 +37,7 @@ import { computeDiagramData } from "../store/computed/computeDiagramData";
 import { getAutoLayoutedInfo, mutateDiagramWithAutoLayoutInfo } from "../autolayout/autoLayout";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { ExternalModelsIndex } from "../DmnEditor";
+import { updateDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
 
 export enum AddExistingDecisionServiceStrategy {
   AUTO_GENERATE,
@@ -406,6 +407,7 @@ export function addExistingDecisionServiceToDrd({
     );
   }
 
+  const dsDividirLineOnOtherDrd = dsShapeOnOtherDrd["dmndi:DMNDecisionServiceDividerLine"];
   addShape({
     definitions: definitions,
     drdIndex: __readonly_drdIndex,
@@ -420,6 +422,7 @@ export function addExistingDecisionServiceToDrd({
         "@_height": dsShapeOnOtherDrd["dc:Bounds"]["@_height"],
       },
     },
+    decisionServiceDividerLine: dsDividirLineOnOtherDrd,
   });
 
   for (const decisionHref of __readonly_containedDecisionHrefsRelativeToThisDmn) {
