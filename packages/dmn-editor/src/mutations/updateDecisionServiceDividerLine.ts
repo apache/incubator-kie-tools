@@ -31,6 +31,7 @@ import { SnapGrid } from "../store/Store";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { Normalized } from "../normalization/normalize";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { buildXmlHref } from "../xml/xmlHrefs";
 
 export const DECISION_SERVICE_DIVIDER_LINE_PADDING = 100;
 
@@ -38,6 +39,7 @@ export function updateDecisionServiceDividerLine({
   definitions,
   drdIndex,
   __readonly_dmnShapesByHref,
+  dmnObjectNamespace,
   shapeIndex,
   localYPosition,
   drgElementIndex,
@@ -46,6 +48,7 @@ export function updateDecisionServiceDividerLine({
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   __readonly_dmnShapesByHref: Map<string, Normalized<DMNDI15__DMNShape> & { index: number }>;
+  dmnObjectNamespace: string | undefined;
   shapeIndex: number;
   localYPosition: number;
   drgElementIndex: number;

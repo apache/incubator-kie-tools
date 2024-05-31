@@ -959,6 +959,7 @@ export const DecisionServiceNode = React.memo(
               drdIndex: state.computed(state).getDrdIndex(),
               __readonly_dmnShapesByHref: state.computed(state).indexedDrd().dmnShapesByHref,
               drgElementIndex: index,
+              dmnObjectNamespace: dmnObjectNamespace,
               shapeIndex: shape.index,
               localYPosition: e.y,
               snapGrid: state.diagram.snapGrid,
@@ -975,7 +976,7 @@ export const DecisionServiceNode = React.memo(
       return () => {
         selection.on(".drag", null);
       };
-    }, [decisionService, dmnEditorStoreApi, id, index, shape.index]);
+    }, [decisionService, dmnEditorStoreApi, dmnObjectNamespace, id, index, shape.index]);
 
     const { fontCssProperties, shapeStyle } = useNodeStyle({
       dmnStyle: shape["di:Style"],

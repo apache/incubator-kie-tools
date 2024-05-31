@@ -20,8 +20,9 @@
 import * as React from "react";
 import OptimizeIcon from "@patternfly/react-icons/dist/js/icons/optimize-icon";
 import { useDmnEditorStoreApi } from "../store/StoreContext";
-import { getAutoLayoutedInfo, mutateDiagramWithAutoLayoutInfo } from "./autoLayout";
+import { getAutoLayoutedInfo } from "./autoLayoutInfo";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { applyAutoLayoutToDrd } from "../mutations/applyAutoLayoutToDrd";
 
 export function AutolayoutButton() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -46,7 +47,7 @@ export function AutolayoutButton() {
     });
 
     dmnEditorStoreApi.setState((s) => {
-      mutateDiagramWithAutoLayoutInfo({
+      applyAutoLayoutToDrd({
         state: s,
         __readonly_dmnShapesByHref: s.computed(s).indexedDrd().dmnShapesByHref,
         __readonly_edges: s.computed(s).getDiagramData(externalModelsByNamespace).edges,

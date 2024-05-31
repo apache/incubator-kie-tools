@@ -28,13 +28,11 @@ export function getDefaultDrdName({ drdIndex }: { drdIndex: number }) {
 export function addOrGetDrd({
   definitions,
   drdIndex,
-  __readonly_name,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
-  __readonly_name?: string;
 }) {
-  const drdName = __readonly_name ? __readonly_name : getDefaultDrdName({ drdIndex: drdIndex });
+  const drdName = getDefaultDrdName({ drdIndex: drdIndex });
 
   // diagram
   definitions["dmndi:DMNDI"] ??= {};

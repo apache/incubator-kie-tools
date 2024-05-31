@@ -46,9 +46,8 @@ export function addShape({
     __$$element: "dmndi:DMNShape",
     ...(nodeType === NODE_TYPES.decisionService
       ? {
-          "dmndi:DMNDecisionServiceDividerLine": decisionServiceDividerLine
-            ? decisionServiceDividerLine
-            : getCentralizedDecisionServiceDividerLine(shape["dc:Bounds"]!),
+          "dmndi:DMNDecisionServiceDividerLine":
+            decisionServiceDividerLine ?? getCentralizedDecisionServiceDividerLine(shape["dc:Bounds"]!),
         }
       : {}),
     ...shape,
