@@ -47,7 +47,7 @@ module.exports = composeEnv([rootEnv], {
       default: "incubator-kie-sandbox-dev-deployment-base",
       description: "The image name.",
     },
-    DEV_DEPLOYMENT_BASE_IMAGE__buildTags: {
+    DEV_DEPLOYMENT_BASE_IMAGE__buildTag: {
       default: rootEnv.env.root.streamName,
       description: "The image tag.",
     },
@@ -61,7 +61,7 @@ module.exports = composeEnv([rootEnv], {
         registry: getOrDefault(this.vars.DEV_DEPLOYMENT_BASE_IMAGE__registry),
         account: getOrDefault(this.vars.DEV_DEPLOYMENT_BASE_IMAGE__account),
         name: getOrDefault(this.vars.DEV_DEPLOYMENT_BASE_IMAGE__name),
-        tags: getOrDefault(this.vars.DEV_DEPLOYMENT_BASE_IMAGE__buildTags),
+        buildTag: getOrDefault(this.vars.DEV_DEPLOYMENT_BASE_IMAGE__buildTag),
         version: require("../package.json").version,
       },
     };

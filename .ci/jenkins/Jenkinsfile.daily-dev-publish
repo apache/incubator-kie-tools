@@ -41,17 +41,17 @@ pipeline {
         DEV_DEPLOYMENT_BASE_IMAGE__registry = 'docker.io'
         DEV_DEPLOYMENT_BASE_IMAGE__account = 'apache'
         DEV_DEPLOYMENT_BASE_IMAGE__name = 'incubator-kie-sandbox-dev-deployment-base'
-        DEV_DEPLOYMENT_BASE_IMAGE__buildTags = 'daily-dev'
+        DEV_DEPLOYMENT_BASE_IMAGE__buildTag = 'daily-dev'
 
         DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry = 'docker.io'
         DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account = 'apache'
         DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name = 'incubator-dev-deployment-kogito-quarkus-blank-app'
-        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTags = 'daily-dev'
+        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag = 'daily-dev'
 
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry = 'docker.io'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account = 'apache'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name = 'incubator-dev-deployment-dmn-form-webapp'
-        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags = 'daily-dev'
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTag = 'daily-dev'
 
         ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'docker.io'
         ONLINE_EDITOR__devDeploymentBaseImageAccount = 'apache'
@@ -119,12 +119,12 @@ pipeline {
         KOGITO_TASK_CONSOLE__registry = 'docker.io'
         KOGITO_TASK_CONSOLE__account = 'apache'
         KOGITO_TASK_CONSOLE__name = 'incubator-kie-kogito-task-console'
-        KOGITO_TASK_CONSOLE__buildTags = 'daily-dev'
+        KOGITO_TASK_CONSOLE__buildTag = 'daily-dev'
 
         KOGITO_MANAGEMENT_CONSOLE__registry = 'docker.io'
         KOGITO_MANAGEMENT_CONSOLE__account = 'apache'
         KOGITO_MANAGEMENT_CONSOLE__name = 'incubator-kie-kogito-management-console'
-        KOGITO_MANAGEMENT_CONSOLE__buildTags = 'daily-dev'
+        KOGITO_MANAGEMENT_CONSOLE__buildTag = 'daily-dev'
 
         SONATAFLOW_BUILDER_IMAGE__registry = 'docker.io'
         SONATAFLOW_BUILDER_IMAGE__account = 'apache'
@@ -279,7 +279,7 @@ pipeline {
                     dockerUtils.pushImageToRegistry(
                         "${env.DEV_DEPLOYMENT_BASE_IMAGE__registry}/${env.DEV_DEPLOYMENT_BASE_IMAGE__account}",
                         "${env.DEV_DEPLOYMENT_BASE_IMAGE__name}",
-                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__buildTags}",
+                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__buildTag}",
                         "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
@@ -292,7 +292,7 @@ pipeline {
                     dockerUtils.pushImageToRegistry(
                         "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry}/${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account}",
                         "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name}",
-                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags}",
+                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTag}",
                         "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
@@ -305,7 +305,7 @@ pipeline {
                     dockerUtils.pushImageToRegistry(
                         "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry}/${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account}",
                         "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name}",
-                        "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTags}",
+                        "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag}",
                         "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
@@ -471,7 +471,7 @@ pipeline {
                     dockerUtils.pushImageToRegistry(
                         "${env.KOGITO_TASK_CONSOLE__registry}/${env.KOGITO_TASK_CONSOLE__account}",
                         "${env.KOGITO_TASK_CONSOLE__name}",
-                        "${env.KOGITO_TASK_CONSOLE__buildTags}",
+                        "${env.KOGITO_TASK_CONSOLE__buildTag}",
                         "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
@@ -484,7 +484,7 @@ pipeline {
                     dockerUtils.pushImageToRegistry(
                         "${env.KOGITO_MANAGEMENT_CONSOLE__registry}/${env.KOGITO_MANAGEMENT_CONSOLE__account}",
                         "${env.KOGITO_MANAGEMENT_CONSOLE__name}",
-                        "${env.KOGITO_MANAGEMENT_CONSOLE__buildTags}",
+                        "${env.KOGITO_MANAGEMENT_CONSOLE__buildTag}",
                         "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }
