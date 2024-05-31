@@ -22,7 +22,6 @@ if [ -n "$1" ]; then
   fi
 fi
 
-echo "Kogito Consoles Image tag: $CONSOLES_IMAGE_TAG"
 echo "PROJECT_VERSION=${PROJECT_VERSION}" > ".env"
 echo "KOGITO_MANAGEMENT_CONSOLE_IMAGE=${KOGITO_MANAGEMENT_CONSOLE_IMAGE}" >> ".env"
 echo "KOGITO_TASK_CONSOLE_IMAGE=${KOGITO_TASK_CONSOLE_IMAGE}" >> ".env"
