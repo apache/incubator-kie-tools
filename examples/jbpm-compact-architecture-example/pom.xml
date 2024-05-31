@@ -29,8 +29,14 @@
     <version>${revision}</version>
     <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
   </parent>
+
   <artifactId>jbpm-compact-architecture-quarkus-example</artifactId>
   <name>Kie-Tools Example :: jBPM Compact Architecture Quarkus Example</name>
+
+  <properties>
+    <kogito.management-console.image>docker.io/apache/incubator-kie-kogito-management-console:main</kogito.management-console.image>
+    <kogito.task-console.image>docker.io/apache/incubator-kie-kogito-task-console:main</kogito.task-console.image>
+  </properties>
 
   <dependencyManagement>
     <dependencies>
@@ -98,6 +104,12 @@
       <artifactId>kie-addons-quarkus-persistence-jdbc</artifactId>
     </dependency>
 
+    <!-- Data Index Addon -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kogito-addons-quarkus-data-index-postgresql</artifactId>
+    </dependency>
+
     <!-- Data Index Persistence -->
     <dependency>
       <groupId>org.kie</groupId>
@@ -145,10 +157,6 @@
       </properties>
       <dependencies>
         <dependency>
-          <groupId>org.kie</groupId>
-          <artifactId>kogito-addons-quarkus-data-index-postgresql</artifactId>
-        </dependency>
-        <dependency>
           <groupId>org.jbpm</groupId>
           <artifactId>jbpm-quarkus-devui</artifactId>
         </dependency>
@@ -182,7 +190,7 @@
             <configuration>
               <target>
                 <copy todir="./docker-compose/svg" overwrite="true">
-                  <fileset dir="target/classes/META-INF/processSVG/"/>
+                  <fileset dir="target/classes/META-INF/processSVG/" />
                 </copy>
               </target>
             </configuration>

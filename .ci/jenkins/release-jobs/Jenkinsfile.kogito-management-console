@@ -43,7 +43,7 @@ pipeline {
         KOGITO_MANAGEMENT_CONSOLE__registry = 'docker.io'
         KOGITO_MANAGEMENT_CONSOLE__account = 'apache'
         KOGITO_MANAGEMENT_CONSOLE__name = 'incubator-kie-kogito-management-console'
-        KOGITO_MANAGEMENT_CONSOLE__buildTags = "latest ${params.RELEASE_VERSION}"
+        KOGITO_MANAGEMENT_CONSOLE__buildTag = "latest ${params.RELEASE_VERSION}"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
@@ -142,7 +142,7 @@ pipeline {
                     dockerUtils.pushImageToRegistry(
                         "${env.KOGITO_MANAGEMENT_CONSOLE__registry}/${env.KOGITO_MANAGEMENT_CONSOLE__account}",
                         "${env.KOGITO_MANAGEMENT_CONSOLE__name}",
-                        "${env.KOGITO_MANAGEMENT_CONSOLE__buildTags}",
+                        "${env.KOGITO_MANAGEMENT_CONSOLE__buildTag}",
                         "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }

@@ -247,18 +247,6 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
-  examples/dmn-quarkus-example:
-    devDependencies:
-      "@kie-tools/maven-config-setup-helper":
-        specifier: workspace:*
-        version: link:../../packages/maven-config-setup-helper
-      "@kie-tools/root-env":
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6
-
   examples/drools-process-usertasks-quarkus-example:
     dependencies:
       "@kie-tools/jbpm-quarkus-devui":
@@ -279,13 +267,20 @@ importers:
         version: 1.1.6
 
   examples/jbpm-compact-architecture-example:
-    devDependencies:
+    dependencies:
       "@kie-tools/jbpm-quarkus-devui":
         specifier: workspace:*
         version: link:../../packages/jbpm-quarkus-devui
       "@kie-tools/maven-base":
         specifier: workspace:*
         version: link:../../packages/maven-base
+    devDependencies:
+      "@kie-tools/kogito-management-console":
+        specifier: workspace:*
+        version: link:../../packages/kogito-management-console
+      "@kie-tools/kogito-task-console":
+        specifier: workspace:*
+        version: link:../../packages/kogito-task-console
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../../packages/maven-config-setup-helper
@@ -6038,31 +6033,6 @@ importers:
       yaml:
         specifier: ^2.3.2
         version: 2.3.2
-
-  packages/kie-sandbox-image:
-    dependencies:
-      "@kie-tools/image-env-to-json":
-        specifier: workspace:*
-        version: link:../image-env-to-json
-      "@kie-tools/online-editor":
-        specifier: workspace:*
-        version: link:../online-editor
-    devDependencies:
-      "@kie-tools/image-builder":
-        specifier: workspace:*
-        version: link:../image-builder
-      "@kie-tools/root-env":
-        specifier: workspace:*
-        version: link:../root-env
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6
-      ts-json-schema-generator:
-        specifier: ^1.1.2
-        version: 1.1.2
 
   packages/kie-sandbox-webapp-image:
     dependencies:

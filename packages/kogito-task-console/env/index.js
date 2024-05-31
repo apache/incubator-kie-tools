@@ -35,7 +35,7 @@ module.exports = composeEnv([rootEnv], {
       default: "incubator-kie-kogito-task-console",
       description: "The image name.",
     },
-    KOGITO_TASK_CONSOLE__buildTags: {
+    KOGITO_TASK_CONSOLE__buildTag: {
       default: rootEnv.env.root.streamName,
       description: "The image tag.",
     },
@@ -50,7 +50,7 @@ module.exports = composeEnv([rootEnv], {
         registry: getOrDefault(this.vars.KOGITO_TASK_CONSOLE__registry),
         account: getOrDefault(this.vars.KOGITO_TASK_CONSOLE__account),
         name: getOrDefault(this.vars.KOGITO_TASK_CONSOLE__name),
-        tags: getOrDefault(this.vars.KOGITO_TASK_CONSOLE__buildTags),
+        buildTag: getOrDefault(this.vars.KOGITO_TASK_CONSOLE__buildTag),
         port: getOrDefault(this.vars.KOGITO_TASK_CONSOLE__port),
         version: require("../package.json").version,
       },

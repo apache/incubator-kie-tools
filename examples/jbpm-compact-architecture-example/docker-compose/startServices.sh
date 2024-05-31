@@ -5,15 +5,9 @@ PROFILE="full"
 echo "Script requires your Kogito Example to be compiled"
 
 PROJECT_VERSION=$(cd ../ && mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+KOGITO_MANAGEMENT_CONSOLE_IMAGE=$(cd ../ && mvn help:evaluate -Dexpression=kogito.management-console.image -q -DforceStdout)
+KOGITO_TASK_CONSOLE_IMAGE=$(cd ../ && mvn help:evaluate -Dexpression=kogito.task-console.image -q -DforceStdout)
 
-echo "Project version: ${PROJECT_VERSION}"
-
-if [[ $PROJECT_VERSION == 0.0.0 ]];
-then
-  KOGITO_VERSION="main"
-else
-  KOGITO_VERSION=${PROJECT_VERSION%.*}
-fi
 
 if [ -n "$1" ]; then
   if [[ ("$1" == "full") || ("$1" == "infra") || ("$1" == "example")]];
@@ -28,8 +22,10 @@ if [ -n "$1" ]; then
   fi
 fi
 
-echo "Kogito Image version: ${KOGITO_VERSION}"
-echo "KOGITO_VERSION=${KOGITO_VERSION}" > ".env"
+echo "Kogito Consoles Image tag: $CONSOLES_IMAGE_TAG"
+echo "PROJECT_VERSION=${PROJECT_VERSION}" > ".env"
+echo "KOGITO_MANAGEMENT_CONSOLE_IMAGE=${KOGITO_MANAGEMENT_CONSOLE_IMAGE}" >> ".env"
+echo "KOGITO_TASK_CONSOLE_IMAGE=${KOGITO_TASK_CONSOLE_IMAGE}" >> ".env"
 echo "COMPOSE_PROFILES='${PROFILE}'" >> ".env"
 
 if [ "$(uname)" == "Darwin" ]; then

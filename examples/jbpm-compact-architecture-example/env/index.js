@@ -19,11 +19,30 @@
 
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
+const {
+  env: { kogitoManagementConsole: kogitoManagementConsoleEnv },
+} = require("@kie-tools/kogito-management-console/env");
+
+const {
+  env: { kogitoTaskConsole: kogitoTaskConsoleEnv },
+} = require("@kie-tools/kogito-task-console/env");
+
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
+  vars: varsWithName({
+    JBPM_COMPACT_ARCHITECTURE_EXAMPLE__managementConsoleImage: {
+      default: `${kogitoManagementConsoleEnv.registry}/${kogitoManagementConsoleEnv.account}/${kogitoManagementConsoleEnv.name}:${kogitoManagementConsoleEnv.buildTag}`,
+      description: "The image for the Kogito Management Console Image.",
+    },
+    JBPM_COMPACT_ARCHITECTURE_EXAMPLE__taskConsoleImage: {
+      default: `${kogitoTaskConsoleEnv.registry}/${kogitoTaskConsoleEnv.account}/${kogitoTaskConsoleEnv.name}:${kogitoTaskConsoleEnv.buildTag}`,
+      description: "The image for the Kogito Task Console Image.",
+    },
+  }),
   get env() {
     return {
       jbpmCompactArchitectureExample: {
+        kogitoManagementConsoleImage: getOrDefault(this.vars.JBPM_COMPACT_ARCHITECTURE_EXAMPLE__managementConsoleImage),
+        kogitoTaskConsoleImage: getOrDefault(this.vars.JBPM_COMPACT_ARCHITECTURE_EXAMPLE__taskConsoleImage),
         version: require("../package.json").version,
       },
     };

@@ -34,7 +34,7 @@
     "copy-jitexecutor:win32": "pnpm powershell \"Copy-Item $(build-env extendedServices.jitexecutor.nativeBinaryPath.win32) jitexecutor\"",
     "install": "go mod tidy",
     "pack-app": "run-script-os",
-    "pack-app:darwin": "cd ./scripts/macos &&pnpm ./build.sh",
+    "pack-app:darwin": "cd ./scripts/macos && ./build.sh",
     "pack-app:linux": "cd ./dist/linux && tar -pcvzf kie_sandbox_extended_services.tar.gz kie_sandbox_extended_services",
     "pack-app:win32": "echo 'Nothing to do'",
     "start": "cross-env ENV=dev make start"
