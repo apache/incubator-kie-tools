@@ -108,6 +108,7 @@
       { "id": "@kie-tools/dev-deployment-dmn-form-webapp-image" },
       { "id": "@kie-tools/dev-deployment-kogito-quarkus-blank-app" },
       { "id": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" },
+      { "id": "@kie-tools/maven-m2-repo-via-http-image" },
       { "id": "@kie-tools/dmn-editor" },
       { "id": "@kie-tools/dmn-editor-envelope" },
       { "id": "@kie-tools/dmn-feel-antlr4-parser" },
@@ -724,6 +725,13 @@
         "target": "@kie-tools/dev-deployment-kogito-quarkus-blank-app",
         "weight": 1
       },
+      {
+        "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image",
+        "target": "@kie-tools/maven-m2-repo-via-http-image",
+        "weight": 1
+      },
+      { "source": "@kie-tools/maven-m2-repo-via-http-image", "target": "@kie-tools/image-builder", "weight": 1 },
+      { "source": "@kie-tools/maven-m2-repo-via-http-image", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/dmn-editor", "target": "@kie-tools-core/react-hooks", "weight": 1 },
       { "source": "@kie-tools/dmn-editor", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "@kie-tools/dmn-editor", "target": "@kie-tools/pmml-editor-marshaller", "weight": 1 },
@@ -1273,6 +1281,7 @@
     ["@kie-tools-core/kubernetes-bridge", "packages/kubernetes-bridge"],
     ["@kie-tools/maven-base", "packages/maven-base"],
     ["@kie-tools/maven-config-setup-helper", "packages/maven-config-setup-helper"],
+    ["@kie-tools/maven-m2-repo-via-http-image", "packages/maven-m2-repo-via-http-image"],
     ["@kie-tools-core/monaco-editor", "packages/monaco-editor"],
     ["@kie-tools-core/notifications", "packages/notifications"],
     ["@kie-tools/online-editor", "packages/online-editor"],

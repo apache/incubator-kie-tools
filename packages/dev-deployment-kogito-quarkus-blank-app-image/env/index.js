@@ -20,16 +20,21 @@
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
 const rootEnv = require("@kie-tools/root-env/env");
-const devDeploymentBaseImageEnv = require("@kie-tools/dev-deployment-base-image/env");
 
-module.exports = composeEnv([rootEnv, devDeploymentBaseImageEnv], {
+const {
+  env: { devDeploymentBaseImage: devDedevDeploymentBaseImageEnv },
+} = require("@kie-tools/dev-deployment-base-image/env");
+
+const {
+  env: { mavenM2RepoViaHttpImage: mavenM2RepoViaHttpImageEnv },
+} = require("@kie-tools/maven-m2-repo-via-http-image/env");
+
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__builderImage: {
-      default: `${devDeploymentBaseImageEnv.env.devDeploymentBaseImage.registry}/${
-        devDeploymentBaseImageEnv.env.devDeploymentBaseImage.account
-      }/${devDeploymentBaseImageEnv.env.devDeploymentBaseImage.name}:${
-        devDeploymentBaseImageEnv.env.devDeploymentBaseImage.tags.split(" ")[0]
-      }`,
+      default: `${devDedevDeploymentBaseImageEnv.registry}/${devDedevDeploymentBaseImageEnv.account}/${
+        devDedevDeploymentBaseImageEnv.name
+      }:${devDedevDeploymentBaseImageEnv.tags.split(" ")[0]}`,
       description: "The image used in the FROM import.",
     },
     DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry: {
@@ -48,6 +53,10 @@ module.exports = composeEnv([rootEnv, devDeploymentBaseImageEnv], {
       default: rootEnv.env.root.streamName,
       description: "The image tag.",
     },
+    DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__mavenM2RepoViaHttpImage: {
+      default: `${mavenM2RepoViaHttpImageEnv.registry}/${mavenM2RepoViaHttpImageEnv.account}/${mavenM2RepoViaHttpImageEnv.name}:${mavenM2RepoViaHttpImageEnv.tag}`,
+      description: "The image tag for the Maven M2 Repo via HTTP. Used during the build only.",
+    },
   }),
   get env() {
     return {
@@ -58,6 +67,12 @@ module.exports = composeEnv([rootEnv, devDeploymentBaseImageEnv], {
         name: getOrDefault(this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name),
         tags: getOrDefault(this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTags),
         version: require("../package.json").version,
+        dev: {
+          mavenM2RepoViaHttpImage: getOrDefault(
+            this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__mavenM2RepoViaHttpImage
+          ),
+          mavenM2RepoViaHttpImagePort: 8008,
+        },
       },
     };
   },
