@@ -24,8 +24,12 @@ setup(`
     -Drevision=${buildEnv.env.jbpmCompactArchitectureExample.version}
 `);
 
-setPomProperty(
-  "kogito.management-console.image",
-  buildEnv.env.jbpmCompactArchitectureExample.kogitoManagementConsoleImage
-);
-setPomProperty("kogito.task-console.image", buildEnv.env.jbpmCompactArchitectureExample.kogitoTaskConsoleImage);
+setPomProperty({
+  key: "kogito.management-console.image",
+  value: buildEnv.env.jbpmCompactArchitectureExample.kogitoManagementConsoleImage,
+});
+
+setPomProperty({
+  key: "kogito.task-console.image",
+  value: buildEnv.env.jbpmCompactArchitectureExample.kogitoTaskConsoleImage,
+});

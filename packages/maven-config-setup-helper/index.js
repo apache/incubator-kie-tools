@@ -25,21 +25,21 @@ const MVN_CONFIG_ORIGINAL_FILE_PATH = path.join(".mvn", "maven.config.original")
 const MVN_CONFIG_FILE_PATH = path.join(".mvn", "maven.config");
 
 module.exports = {
-  setPomProperty: (propertyKey, propertyValue) => {
-    if (!propertyKey || !propertyValue) {
+  setPomProperty: ({ key, value }) => {
+    if (!key || !value) {
       console.error("[maven-config-setup-helper] Wrong values provided");
       process.exit(1);
     }
 
     if (process.platform === "win32") {
-      execSync(
-        `mvn versions:set-property \`-Dproperty=${propertyKey} \`-DnewVersion=${propertyValue} \`-DgenerateBackupPoms=false`,
-        { shell: "powershell.exe" }
-      );
+      execSync(`mvn versions:set-property \`-Dproperty=${key} \`-DnewVersion=${value} \`-DgenerateBackupPoms=false`, {
+        stdio: "inherit",
+        shell: "powershell.exe",
+      });
     } else {
-      execSync(
-        `mvn versions:set-property -Dproperty=${propertyKey} -DnewVersion=${propertyValue} -DgenerateBackupPoms=false`
-      );
+      execSync(`mvn versions:set-property -Dproperty=${key} -DnewVersion=${value} -DgenerateBackupPoms=false`, {
+        stdio: "inherit",
+      });
     }
   },
   setup: (mavenConfigString) => {
