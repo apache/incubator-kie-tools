@@ -22,13 +22,12 @@ import * as vscode from "vscode";
 export class KieFile {
   public readonly uri: vscode.Uri;
 
-  private fileWatcher: vscode.FileSystemWatcher;
+  private onDidChangeTextDocumentListener: vscode.Disposable;
   private kieFileChangedEventHandler: (() => void) | null;
 
   constructor(textDocument: vscode.TextDocument) {
     this.uri = textDocument.uri;
-    this.fileWatcher = vscode.workspace.createFileSystemWatcher(this.uri.fsPath, true, false, true);
-    this.fileWatcher.onDidChange(this.fireKieFileChangedEvent, this);
+    this.onDidChangeTextDocumentListener = vscode.workspace.onDidChangeTextDocument(this.fireKieFileChangedEvent, this);
   }
 
   private fireKieFileChangedEvent() {
@@ -44,7 +43,7 @@ export class KieFile {
   }
 
   public dispose() {
-    this.fileWatcher.dispose();
+    this.onDidChangeTextDocumentListener.dispose();
     this.unsubscribeKieFileChanged();
   }
 }

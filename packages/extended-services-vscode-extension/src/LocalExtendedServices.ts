@@ -48,8 +48,7 @@ export class LocalExtendedServices {
     const options: SpawnOptions = {
       shell: true,
       stdio: "pipe",
-      detached: true,
-      windowsHide: true,
+      detached: process.platform != "win32",
     };
 
     try {
