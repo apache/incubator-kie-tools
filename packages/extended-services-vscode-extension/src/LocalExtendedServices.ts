@@ -48,6 +48,8 @@ export class LocalExtendedServices {
     const options: SpawnOptions = {
       shell: true,
       stdio: "pipe",
+      detached: true,
+      windowsHide: true,
     };
 
     try {
@@ -101,9 +103,8 @@ export class LocalExtendedServices {
     if (process.platform == "win32") {
       spawnSync("taskkill", ["/pid", this.serviceProcess.pid.toString(), "/f", "/t"]);
     } else {
-      this.serviceProcess.kill();
+      process.kill(-this.serviceProcess.pid);
     }
-
     this.serviceProcess = null;
   }
 
