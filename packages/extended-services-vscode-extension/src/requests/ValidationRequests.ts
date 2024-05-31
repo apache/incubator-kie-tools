@@ -51,7 +51,10 @@ async function validate(
   endpoint: string,
   parseFunction: (data: any) => any[]
 ): Promise<any[]> {
-  const textDocument = await vscode.workspace.openTextDocument(kieFile.uri);
+  let textDocument = vscode.workspace.textDocuments.find((doc) => doc.uri === kieFile.uri);
+  if (!textDocument) {
+    textDocument = await vscode.workspace.openTextDocument(kieFile.uri);
+  }
   const url = new URL(endpoint, serviceURL);
   const response = await fetch(url.toString(), {
     method: "POST",
