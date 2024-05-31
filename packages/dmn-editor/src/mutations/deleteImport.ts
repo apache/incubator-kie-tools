@@ -64,7 +64,6 @@ export function deleteImport({
         __readonly_drgEdges: drgEdges,
         __readonly_drdIndex: 0,
         __readonly_nodeNature: nodeNatures[node.type! as NodeType],
-        __readonly_dmnObject: node.data.dmnObject,
         __readonly_dmnObjectId: node.data.dmnObject?.["@_id"],
         __readonly_dmnObjectQName: node.data.dmnObjectQName,
         __readonly_dmnObjectNamespace: node.data.dmnObjectNamespace!,

@@ -155,7 +155,6 @@ export function DiagramCommands(props: {}) {
                     node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
                   __readonly_dmnObjectQName: node.data.dmnObjectQName,
                   __readonly_dmnObjectId: node.data.dmnObject?.["@_id"],
-                  __readonly_dmnObject: node.data.dmnObject,
                   __readonly_nodeNature: nodeNatures[node.type as NodeType],
                   mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
                   __readonly_externalModelTypesByNamespace: state
@@ -414,7 +413,6 @@ export function DiagramCommands(props: {}) {
             __readonly_dmnObjectNamespace: node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
             __readonly_dmnObjectQName: node.data.dmnObjectQName,
             __readonly_dmnObjectId: node.data.dmnObject?.["@_id"],
-            __readonly_dmnObject: node.data.dmnObject,
             __readonly_nodeNature: nodeNatures[node.type as NodeType],
             mode: NodeDeletionMode.FROM_CURRENT_DRD_ONLY,
           });
