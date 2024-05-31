@@ -34,7 +34,8 @@
   <name>Kie-Tools Example :: jBPM Compact Architecture Quarkus Example</name>
 
   <properties>
-    <kogito.management-console.image>docker.io/apache/incubator-kie-kogito-management-console:main</kogito.management-console.image>
+    <kogito.management-console.image
+    >docker.io/apache/incubator-kie-kogito-management-console:main</kogito.management-console.image>
     <kogito.task-console.image>docker.io/apache/incubator-kie-kogito-task-console:main</kogito.task-console.image>
   </properties>
 
