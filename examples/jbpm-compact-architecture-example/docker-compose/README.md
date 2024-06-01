@@ -4,7 +4,6 @@ To allow a quick setup of all services required to run this demo, we provide a d
 
 - Postgresql
 - PgAdmin
-- Kogito Data Index
 - Kogito Example Service (Only available if the example has been compiled using the `container` mvn profile eg: `mvn cleanp package -Dcontainer`)
 - Kogito Management Console
 - Kogito Task Console
@@ -33,7 +32,6 @@ Once the services are started (depending on the profile), the following ports wi
 
 - Postgresql: 5432
 - PgAdmin: 8055
-- Kogito Data Index: 8180
 - Kogito Example Service: 8080
 - Kogito Management Console: 8280
 - Kogito Task Console: 8380
@@ -59,5 +57,5 @@ docker-compose -f docker-compose-postgresql.yml stop
 For more details please check the Docker Compose documentation.
 
 ```shell
-docker-compose --help
+docker compose --help
 ```

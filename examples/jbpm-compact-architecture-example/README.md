@@ -173,7 +173,6 @@ And when using native image compilation, you will also need:
 This quickstart provides a docker compose template that starts all the required services. This setup ensures that all services are connected with a default configuration.
 
 - PostgreSQL: 5432
-- Data Index: 8180
 - Management Console: 8280
 - Task Console: 8380
 - Keycloak: 8480
@@ -201,6 +200,13 @@ To execute the full example (including consoles), open a Terminal and run the fo
 ```shell
 sh startServices.sh
 ```
+
+> **_IMPORTANT:_** if you are running this example on MacOs and you are not using **Docker Desktop**, please append
+> the following entry in your `/etc/hosts` file to enable a good communication between al components.
+>
+> ```
+> 127.0.0.1 kubernetes.docker.internal
+> ```
 
 Additionally, if you want to start only the example and the minimal Infrastructure Services (PostgreSQL, Data-Index and Jobs Service),
 you can run the same `startServices.sh` script but passing the `example` argument
