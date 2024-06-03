@@ -17,16 +17,18 @@
  * under the License.
  */
 
-import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { App } from "./App";
-import "../static/resources/style.css";
+import * as incompatibleBrowser from "./IncompatibleBrowser";
 
-async function main() {
-  const appContainer = document.getElementById("app")!;
-  // eslint-disable-next-line react/no-deprecated
-  ReactDOM.render(<App />, appContainer);
+interface Props {
+  children: React.ReactNode;
 }
 
-main();
+const isIncompatibleBrowser = incompatibleBrowser.isTrue();
+
+export function StartupBlockerProvider(props: Props) {
+  if (isIncompatibleBrowser) {
+    return <incompatibleBrowser.Component />;
+  }
+  return <>{props.children}</>;
+}
