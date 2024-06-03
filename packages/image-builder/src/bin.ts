@@ -64,15 +64,15 @@ function getImageFullNames(args: ArgsType) {
 
 function createAndUseDockerBuilder(args: { allowHostNetworkAccess: boolean }) {
   try {
-    console.info("-> Checking for existing kie-tools-builder...");
+    console.info("[image-builder] Checking for existing kie-tools-builder...");
     execSync("docker buildx inspect kie-tools-builder", { stdio: "inherit" });
-    console.info("-> kie-tools-builder found, using it.");
+    console.info("[image-builder] kie-tools-builder found, using it.");
     execSync("docker buildx use kie-tools-builder", { stdio: "inherit" });
   } catch (e) {
-    console.info("- kie-tools-builder not found, creating it.");
+    console.info("[image-builder] kie-tools-builder not found, creating it.");
     execSync(
       `docker buildx create
-        ${args.allowHostNetworkAccess ? "--buildkitd-flags '--allow-insecure-entitlement network.host'" : ""}
+        --buildkitd-flags '--allow-insecure-entitlement network.host'
         --name kie-tools-builder
         --driver docker-container
         --bootstrap
@@ -93,7 +93,7 @@ function checkBuildEngine(args: ArgsType) {
       ...shell(),
     });
   } catch (e) {
-    console.log(`Build engine "${args.engine}" not available. Skipping build!`);
+    console.log(`[image-builder] Build engine "${args.engine}" not available. Skipping build!`);
     return;
   }
 }
@@ -105,16 +105,16 @@ function buildArchImage(args: ArgsType & { arch: "arm64" | "amd64" }, imageFullN
   }[args.arch];
 
   createAndUseDockerBuilder({ allowHostNetworkAccess: args.allowHostNetworkAccess });
-
-  const buildPlatformCommand = `docker buildx build 
+  console.log(`[image-builder] Building arch image ${args.arch}`);
+  const buildPlatformCommand = `docker buildx build
     ${args.allowHostNetworkAccess ? "--allow network.host --network host" : ""}
     --progress=plain
-    --load 
+    --load
     --platform ${platform}
     ${args.push ? "--push" : ""}
     ${imageFullNames.map((fullName) => `-t ${fullName}`).join(" ")}
     ${args.buildArg.map((arg) => `--build-arg ${arg}`).join(" ")}
-    ${args.context} 
+    ${args.context}
     -f ${args.containerfile}`
     .split("\n")
     .join(" ");
@@ -123,13 +123,14 @@ function buildArchImage(args: ArgsType & { arch: "arm64" | "amd64" }, imageFullN
 }
 
 function buildNativeImage(args: ArgsType, imageFullNames: string[]) {
-  const buildNativeCommand = `${args.engine} build 
-    --progress=plain 
+  console.log(`[image-builder] Building native image`);
+  const buildNativeCommand = `${args.engine} build
+    --progress=plain
     ${args.allowHostNetworkAccess ? "--allow network.host --network host" : ""}
-    ${args.push ? "--push" : ""} 
+    ${args.push ? "--push" : ""}
     ${imageFullNames.map((fullName) => `-t ${fullName}`).join(" ")}
-    ${args.buildArg.map((arg) => `--build-arg ${arg}`).join(" ")} 
-    ${args.context} 
+    ${args.buildArg.map((arg) => `--build-arg ${arg}`).join(" ")}
+    ${args.context}
     -f ${args.containerfile}`
     .split("\n")
     .join(" ");
@@ -208,10 +209,10 @@ EOF
 
 async function main() {
   function prettyPrintError(error: Error) {
-    console.error("\x1b[31m%s\x1b[0m", error);
+    console.error("\x1b[31m[image-builder] %s\x1b[0m", error);
   }
   try {
-    const argv = await yargs(hideBin(process.argv))
+    await yargs(hideBin(process.argv))
       .version(false)
       .scriptName("")
       .wrap(Math.min(150, terminalWidth()))
@@ -340,7 +341,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
         () => {},
         (args) => {
           console.info(`
-  Building local image.
+[image-builder] Building local image.
     - registry: ${args.registry}
     - account: ${args.account}
     - name: ${args.name}
@@ -368,7 +369,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
         () => {},
         (args) => {
           console.info(`
-  Building local image and loading it to Minikube cluster.
+[image-builder] Building local image and loading it to Minikube cluster.
     - registry: ${args.registry}
     - account: ${args.account}
     - name: ${args.name}
@@ -410,7 +411,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
         },
         (args) => {
           console.info(`
-  Building local image and loading it to Kind cluster.
+[image-builder] Building local image and loading it to Kind cluster.
     - registry: ${args.registry}
     - account: ${args.account}
     - name: ${args.name}
@@ -451,7 +452,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
         () => {},
         (args) => {
           console.info(`
-  Building image on OpenShift cluster.
+[image-builder] Building image on OpenShift cluster.
     - registry: ${args.registry} (ignored)
     - account: ${args.account} (ignored)
     - name: ${args.name}
