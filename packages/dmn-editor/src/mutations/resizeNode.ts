@@ -34,11 +34,14 @@ import { SnapGrid } from "../store/Store";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { DECISION_SERVICE_DIVIDER_LINE_PADDING } from "./updateDecisionServiceDividerLine";
 import { Normalized } from "../normalization/normalize";
+import { ExternalDmnsIndex } from "../DmnEditor";
 
 export function resizeNode({
   definitions,
   drdIndex,
   __readonly_dmnShapesByHref,
+  __readonly_dmnObjectNamespace,
+  __readonly_externalDmnsIndex,
   snapGrid,
   change,
 }: {
@@ -46,6 +49,8 @@ export function resizeNode({
   drdIndex: number;
   __readonly_dmnShapesByHref: Map<string, Normalized<DMNDI15__DMNShape> & { index: number }>;
   snapGrid: SnapGrid;
+  __readonly_dmnObjectNamespace: string | undefined;
+  __readonly_externalDmnsIndex: ExternalDmnsIndex;
   change: {
     nodeType: NodeType;
     isExternal: boolean;
@@ -68,7 +73,15 @@ export function resizeNode({
 
   const limit = { x: 0, y: 0 };
   if (change.nodeType === NODE_TYPES.decisionService) {
-    const ds = definitions.drgElement![change.index] as Normalized<DMN15__tDecisionService>;
+    const externalDmn = __readonly_externalDmnsIndex.get(__readonly_dmnObjectNamespace ?? "");
+
+    const ds =
+      externalDmn === undefined
+        ? (definitions.drgElement![change.index] as Normalized<DMN15__tDecisionService>)
+        : (externalDmn.model.definitions.drgElement![change.index] as Normalized<DMN15__tDecisionService>);
+    if (!ds) {
+      throw new Error("DMN MUTATION: Cannot reposition divider line of non-existent Decision Service");
+    }
 
     const dividerLineY =
       shape["dmndi:DMNDecisionServiceDividerLine"]?.["di:waypoint"]?.[0]?.["@_y"] ?? shapeBounds["@_y"];

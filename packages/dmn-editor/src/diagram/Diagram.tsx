@@ -752,6 +752,10 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                       drdIndex: state.computed(state).getDrdIndex(),
                       __readonly_dmnShapesByHref: state.computed(state).indexedDrd().dmnShapesByHref,
                       snapGrid: state.diagram.snapGrid,
+                      __readonly_dmnObjectNamespace: node.data.dmnObjectNamespace,
+                      __readonly_externalDmnsIndex: state
+                        .computed(state)
+                        .getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
                       change: {
                         isExternal: !!node.data.dmnObjectQName.prefix,
                         nodeType: node.type as NodeType,
@@ -1420,6 +1424,10 @@ function DmnDiagramWithoutDrd() {
                     __readonly_autoLayoutedInfo,
                     __readonly_parentNodesById,
                     __readonly_drdIndex: dereferencedState.computed(dereferencedState).getDrdIndex(),
+                    __readonly_dmnObjectNamespace: dereferencedState.dmn.model.definitions["@_namespace"],
+                    __readonly_externalDmnsIndex: dereferencedState
+                      .computed(dereferencedState)
+                      .getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
                   });
                   s.dmn.model = dereferencedState.dmn.model;
                 });

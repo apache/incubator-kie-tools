@@ -29,6 +29,7 @@ import { DEFAULT_NODE_SIZES, MIN_NODE_SIZES } from "../diagram/nodes/DefaultSize
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { SnapGrid } from "../store/Store";
+import { addNamespaceToHref, parseXmlHref } from "../xml/xmlHrefs";
 
 const elk = new ELK();
 
@@ -109,8 +110,15 @@ export async function getAutoLayoutedInfo({
     const dependents = new Set<string>();
 
     if (node.data?.dmnObject?.__$$element === "decisionService") {
-      const outputs = new Set([...(node.data.dmnObject.outputDecision ?? []).map((s) => s["@_href"])]);
-      const encapsulated = new Set([...(node.data.dmnObject.encapsulatedDecision ?? []).map((s) => s["@_href"])]);
+      const { namespace } = parseXmlHref(node.id);
+      const outputs = new Set([
+        ...(node.data.dmnObject.outputDecision ?? []).map((s) => addNamespaceToHref({ href: s["@_href"], namespace })),
+      ]);
+      const encapsulated = new Set([
+        ...(node.data.dmnObject.encapsulatedDecision ?? []).map((s) =>
+          addNamespaceToHref({ href: s["@_href"], namespace })
+        ),
+      ]);
 
       const idOfFakeNodeForOutputSection = `${node.id}${FAKE_MARKER}dsOutput`;
       const idOfFakeNodeForEncapsulatedSection = `${node.id}${FAKE_MARKER}dsEncapsulated`;

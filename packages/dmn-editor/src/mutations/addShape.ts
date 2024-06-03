@@ -18,6 +18,7 @@
  */
 
 import {
+  DC__Point,
   DMN15__tDefinitions,
   DMNDI15__DMNDecisionServiceDividerLine,
   DMNDI15__DMNShape,
@@ -27,19 +28,20 @@ import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { Normalized } from "../normalization/normalize";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 export function addShape({
   definitions,
   drdIndex,
   nodeType,
   shape,
-  decisionServiceDividerLine,
+  decisionServiceDividerLineWaypoint: decisionServiceDividerLineWaypoint,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   nodeType: NodeType;
   shape: Normalized<DMNDI15__DMNShape>;
-  decisionServiceDividerLine?: Normalized<DMNDI15__DMNDecisionServiceDividerLine>;
+  decisionServiceDividerLineWaypoint?: DC__Point[];
 }) {
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
   diagramElements.push({
@@ -47,7 +49,9 @@ export function addShape({
     ...(nodeType === NODE_TYPES.decisionService
       ? {
           "dmndi:DMNDecisionServiceDividerLine":
-            decisionServiceDividerLine ?? getCentralizedDecisionServiceDividerLine(shape["dc:Bounds"]!),
+            decisionServiceDividerLineWaypoint !== undefined
+              ? { "@_id": generateUuid(), "di:waypoint": [...decisionServiceDividerLineWaypoint] }
+              : getCentralizedDecisionServiceDividerLine(shape["dc:Bounds"]!),
         }
       : {}),
     ...shape,

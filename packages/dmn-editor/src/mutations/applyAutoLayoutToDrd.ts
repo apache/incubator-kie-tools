@@ -33,6 +33,7 @@ import { updateDecisionServiceDividerLine } from "../mutations/updateDecisionSer
 import { Normalized } from "../normalization/normalize";
 import { State } from "../store/Store";
 import { AutolayoutParentNode, FAKE_MARKER, visitNodeAndNested } from "../autolayout/autoLayoutInfo";
+import { ExternalDmnsIndex } from "../DmnEditor";
 
 export function applyAutoLayoutToDrd({
   state,
@@ -43,6 +44,8 @@ export function applyAutoLayoutToDrd({
   __readonly_edges,
   __readonly_dmnShapesByHref,
   __readonly_drdIndex,
+  __readonly_dmnObjectNamespace,
+  __readonly_externalDmnsIndex,
 }: {
   state: State;
   __readonly_autoLayoutedInfo: {
@@ -62,6 +65,8 @@ export function applyAutoLayoutToDrd({
     }
   >;
   __readonly_drdIndex: number;
+  __readonly_dmnObjectNamespace: string | undefined;
+  __readonly_externalDmnsIndex: ExternalDmnsIndex;
 }) {
   // 7. Update all nodes positions skipping empty groups, which will be positioned manually after all nodes are done being repositioned.
   const autolayoutedElkNodesById = new Map<string, Elk.ElkNode>();
@@ -116,6 +121,8 @@ export function applyAutoLayoutToDrd({
         drdIndex: __readonly_drdIndex,
         __readonly_dmnShapesByHref: __readonly_dmnShapesByHref,
         snapGrid: state.diagram.snapGrid,
+        __readonly_dmnObjectNamespace,
+        __readonly_externalDmnsIndex,
         change: {
           index: node.data.index,
           isExternal: !!node.data.dmnObjectQName.prefix,
@@ -162,8 +169,9 @@ export function applyAutoLayoutToDrd({
     updateDecisionServiceDividerLine({
       definitions: state.dmn.model.definitions,
       drdIndex: __readonly_drdIndex,
-      __readonly_dmnShapesByHref: __readonly_dmnShapesByHref,
-      dmnObjectNamespace: undefined, // TODO FIX THIS!
+      __readonly_dmnShapesByHref,
+      __readonly_dmnObjectNamespace,
+      __readonly_externalDmnsIndex,
       drgElementIndex: parentNode.data.index,
       shapeIndex: parentNode.data.shape.index,
       snapGrid: state.diagram.snapGrid,
