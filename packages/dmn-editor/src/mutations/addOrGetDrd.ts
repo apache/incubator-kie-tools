@@ -32,7 +32,7 @@ export function addOrGetDrd({
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
 }) {
-  const defaultName = getDefaultDrdName({ drdIndex });
+  const drdName = getDefaultDrdName({ drdIndex: drdIndex });
 
   // diagram
   definitions["dmndi:DMNDI"] ??= {};
@@ -41,7 +41,7 @@ export function addOrGetDrd({
 
   const defaultDiagram = definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][drdIndex];
   defaultDiagram["@_id"] ??= generateUuid();
-  defaultDiagram["@_name"] ??= defaultName;
+  defaultDiagram["@_name"] ??= drdName;
   defaultDiagram["@_useAlternativeInputDataShape"] ??= false;
   defaultDiagram["dmndi:DMNDiagramElement"] ??= [];
 

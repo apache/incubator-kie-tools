@@ -19,16 +19,14 @@
 
 import * as React from "react";
 import OptimizeIcon from "@patternfly/react-icons/dist/js/icons/optimize-icon";
-import { useAutoLayout } from "./AutoLayoutHook";
 import { useDmnEditorStoreApi } from "../store/StoreContext";
-import { autoLayout } from "./autoLayout";
+import { getAutoLayoutedInfo } from "./autoLayoutInfo";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { applyAutoLayoutToDrd } from "../mutations/applyAutoLayoutToDrd";
 
 export function AutolayoutButton() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { externalModelsByNamespace } = useExternalModels();
-
-  const applyAutoLayout = useAutoLayout();
 
   const onClick = React.useCallback(async () => {
     const state = dmnEditorStoreApi.getState();
@@ -39,27 +37,30 @@ export function AutolayoutButton() {
     const drgEdges = state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges;
     const isAlternativeInputDataShape = state.computed(state).isAlternativeInputDataShape();
 
-    const { autolayouted, parentNodesById } = await autoLayout({
-      snapGrid,
-      nodesById,
-      edgesById,
-      nodes,
-      drgEdges,
-      isAlternativeInputDataShape,
+    const { __readonly_autoLayoutedInfo, __readonly_parentNodesById } = await getAutoLayoutedInfo({
+      __readonly_snapGrid: snapGrid,
+      __readonly_nodesById: nodesById,
+      __readonly_edgesById: edgesById,
+      __readonly_nodes: nodes,
+      __readonly_drgEdges: drgEdges,
+      __readonly_isAlternativeInputDataShape: isAlternativeInputDataShape,
     });
 
     dmnEditorStoreApi.setState((s) => {
-      applyAutoLayout({
-        s,
-        dmnShapesByHref: s.computed(s).indexedDrd().dmnShapesByHref,
-        edges: s.computed(s).getDiagramData(externalModelsByNamespace).edges,
-        edgesById: s.computed(s).getDiagramData(externalModelsByNamespace).edgesById,
-        nodesById: s.computed(s).getDiagramData(externalModelsByNamespace).nodesById,
-        autolayouted: autolayouted,
-        parentNodesById: parentNodesById,
+      applyAutoLayoutToDrd({
+        state: s,
+        __readonly_dmnShapesByHref: s.computed(s).indexedDrd().dmnShapesByHref,
+        __readonly_edges: s.computed(s).getDiagramData(externalModelsByNamespace).edges,
+        __readonly_edgesById: s.computed(s).getDiagramData(externalModelsByNamespace).edgesById,
+        __readonly_nodesById: s.computed(s).getDiagramData(externalModelsByNamespace).nodesById,
+        __readonly_autoLayoutedInfo,
+        __readonly_parentNodesById,
+        __readonly_drdIndex: s.computed(s).getDrdIndex(),
+        __readonly_dmnObjectNamespace: s.dmn.model.definitions["@_namespace"],
+        __readonly_externalDmnsIndex: s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
       });
     });
-  }, [applyAutoLayout, dmnEditorStoreApi, externalModelsByNamespace]);
+  }, [dmnEditorStoreApi, externalModelsByNamespace]);
 
   return (
     <button className={"kie-dmn-editor--autolayout-panel-toggle-button"} onClick={onClick} title={"Autolayout (beta)"}>

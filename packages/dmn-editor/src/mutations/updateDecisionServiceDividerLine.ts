@@ -31,6 +31,8 @@ import { SnapGrid } from "../store/Store";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { Normalized } from "../normalization/normalize";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { addNamespaceToHref } from "../xml/xmlHrefs";
+import { ExternalDmnsIndex } from "../DmnEditor";
 
 export const DECISION_SERVICE_DIVIDER_LINE_PADDING = 100;
 
@@ -38,6 +40,8 @@ export function updateDecisionServiceDividerLine({
   definitions,
   drdIndex,
   __readonly_dmnShapesByHref,
+  __readonly_dmnObjectNamespace,
+  __readonly_externalDmnsIndex,
   shapeIndex,
   localYPosition,
   drgElementIndex,
@@ -46,6 +50,8 @@ export function updateDecisionServiceDividerLine({
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   __readonly_dmnShapesByHref: Map<string, Normalized<DMNDI15__DMNShape> & { index: number }>;
+  __readonly_dmnObjectNamespace: string | undefined;
+  __readonly_externalDmnsIndex: ExternalDmnsIndex;
   shapeIndex: number;
   localYPosition: number;
   drgElementIndex: number;
@@ -59,7 +65,12 @@ export function updateDecisionServiceDividerLine({
     throw new Error("DMN MUTATION: Cannot reposition divider line of non-existent shape bounds");
   }
 
-  const ds = definitions.drgElement![drgElementIndex] as Normalized<DMN15__tDecisionService>;
+  const externalDmn = __readonly_externalDmnsIndex.get(__readonly_dmnObjectNamespace ?? "");
+
+  const ds =
+    externalDmn === undefined
+      ? (definitions.drgElement![drgElementIndex] as Normalized<DMN15__tDecisionService>)
+      : (externalDmn.model.definitions.drgElement![drgElementIndex] as Normalized<DMN15__tDecisionService>);
   if (!ds) {
     throw new Error("DMN MUTATION: Cannot reposition divider line of non-existent Decision Service");
   }
@@ -71,14 +82,32 @@ export function updateDecisionServiceDividerLine({
   const snappedDimensions = snapShapeDimensions(snapGrid, shape, decisionServiceMinSizes);
 
   const upperLimit = (ds.outputDecision ?? []).reduce((acc, od) => {
+    // For external Decision Services, the Output Decision will have the relative namespace. e.g. without namespace.
+    const href =
+      __readonly_dmnObjectNamespace !== undefined
+        ? addNamespaceToHref({
+            href: od["@_href"],
+            namespace:
+              definitions["@_namespace"] === __readonly_dmnObjectNamespace ? undefined : __readonly_dmnObjectNamespace,
+          })
+        : od["@_href"];
     const v =
-      snapShapePosition(snapGrid, __readonly_dmnShapesByHref.get(od["@_href"])!).y +
-      snapShapeDimensions(snapGrid, __readonly_dmnShapesByHref.get(od["@_href"])!, decisionMinSizes).height;
+      snapShapePosition(snapGrid, __readonly_dmnShapesByHref.get(href)!).y +
+      snapShapeDimensions(snapGrid, __readonly_dmnShapesByHref.get(href)!, decisionMinSizes).height;
     return v > acc ? v : acc;
   }, snappedPosition.y + DECISION_SERVICE_DIVIDER_LINE_PADDING);
 
   const lowerLimit = (ds.encapsulatedDecision ?? []).reduce((acc, ed) => {
-    const v = snapShapePosition(snapGrid, __readonly_dmnShapesByHref.get(ed["@_href"])!).y;
+    // For external Decision Services, the Encapsulated Decision will have the relative namespace. e.g. without namespace.
+    const href =
+      __readonly_dmnObjectNamespace !== undefined
+        ? addNamespaceToHref({
+            href: ed["@_href"],
+            namespace:
+              definitions["@_namespace"] === __readonly_dmnObjectNamespace ? undefined : __readonly_dmnObjectNamespace,
+          })
+        : ed["@_href"];
+    const v = snapShapePosition(snapGrid, __readonly_dmnShapesByHref.get(href)!).y;
     return v < acc ? v : acc;
   }, snappedPosition.y + snappedDimensions.height - DECISION_SERVICE_DIVIDER_LINE_PADDING);
 

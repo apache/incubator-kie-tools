@@ -17,29 +17,42 @@
  * under the License.
  */
 
-import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import {
+  DC__Point,
+  DMN15__tDefinitions,
+  DMNDI15__DMNDecisionServiceDividerLine,
+  DMNDI15__DMNShape,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { Normalized } from "../normalization/normalize";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 export function addShape({
   definitions,
   drdIndex,
   nodeType,
   shape,
+  decisionServiceDividerLineWaypoint: decisionServiceDividerLineWaypoint,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   nodeType: NodeType;
   shape: Normalized<DMNDI15__DMNShape>;
+  decisionServiceDividerLineWaypoint?: DC__Point[];
 }) {
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
   diagramElements.push({
     __$$element: "dmndi:DMNShape",
     ...(nodeType === NODE_TYPES.decisionService
-      ? { "dmndi:DMNDecisionServiceDividerLine": getCentralizedDecisionServiceDividerLine(shape["dc:Bounds"]!) }
+      ? {
+          "dmndi:DMNDecisionServiceDividerLine":
+            decisionServiceDividerLineWaypoint !== undefined
+              ? { "@_id": generateUuid(), "di:waypoint": [...decisionServiceDividerLineWaypoint] }
+              : getCentralizedDecisionServiceDividerLine(shape["dc:Bounds"]!),
+        }
       : {}),
     ...shape,
   });

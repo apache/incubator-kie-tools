@@ -148,16 +148,18 @@ export function DiagramCommands(props: {}) {
             .forEach((node: RF.Node<DmnDiagramNodeData>) => {
               if (copiedNodesById.has(node.id)) {
                 deleteNode({
-                  drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
+                  __readonly_drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
                   definitions: state.dmn.model.definitions,
-                  drdIndex: state.computed(state).getDrdIndex(),
-                  dmnObjectNamespace: node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
-                  dmnObjectQName: node.data.dmnObjectQName,
-                  dmnObjectId: node.data.dmnObject?.["@_id"],
-                  nodeNature: nodeNatures[node.type as NodeType],
+                  __readonly_drdIndex: state.computed(state).getDrdIndex(),
+                  __readonly_dmnObjectNamespace:
+                    node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
+                  __readonly_dmnObjectQName: node.data.dmnObjectQName,
+                  __readonly_dmnObjectId: node.data.dmnObject?.["@_id"],
+                  __readonly_nodeNature: nodeNatures[node.type as NodeType],
                   mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
-                  externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace)
-                    .dmns,
+                  __readonly_externalModelTypesByNamespace: state
+                    .computed(state)
+                    .getExternalModelTypesByNamespace(externalModelsByNamespace),
                 });
                 state.dispatch(state).diagram.setNodeStatus(node.id, {
                   selected: false,
@@ -365,23 +367,25 @@ export function DiagramCommands(props: {}) {
           if (
             (selectedNodeIds.has(edge.source) &&
               canRemoveNodeFromDrdOnly({
-                externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace)
-                  .dmns,
+                __readonly_externalDmnsIndex: state
+                  .computed(state)
+                  .getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
                 definitions: state.dmn.model.definitions,
-                drdIndex: state.computed(state).getDrdIndex(),
-                dmnObjectNamespace:
+                __readonly_drdIndex: state.computed(state).getDrdIndex(),
+                __readonly_dmnObjectNamespace:
                   nodesById.get(edge.source)!.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
-                dmnObjectId: nodesById.get(edge.source)!.data.dmnObject?.["@_id"],
+                __readonly_dmnObjectId: nodesById.get(edge.source)!.data.dmnObject?.["@_id"],
               })) ||
             (selectedNodeIds.has(edge.target) &&
               canRemoveNodeFromDrdOnly({
-                externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace)
-                  .dmns,
+                __readonly_externalDmnsIndex: state
+                  .computed(state)
+                  .getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
                 definitions: state.dmn.model.definitions,
-                drdIndex: state.computed(state).getDrdIndex(),
-                dmnObjectNamespace:
+                __readonly_drdIndex: state.computed(state).getDrdIndex(),
+                __readonly_dmnObjectNamespace:
                   nodesById.get(edge.target)!.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
-                dmnObjectId: nodesById.get(edge.target)!.data.dmnObject?.["@_id"],
+                __readonly_dmnObjectId: nodesById.get(edge.target)!.data.dmnObject?.["@_id"],
               }))
           ) {
             deleteEdge({
@@ -400,14 +404,16 @@ export function DiagramCommands(props: {}) {
             continue;
           }
           const { deletedDmnShapeOnCurrentDrd: deletedShape } = deleteNode({
-            drgEdges: [], // Deleting from DRD only.
             definitions: state.dmn.model.definitions,
-            externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
-            drdIndex: state.computed(state).getDrdIndex(),
-            dmnObjectNamespace: node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
-            dmnObjectQName: node.data.dmnObjectQName,
-            dmnObjectId: node.data.dmnObject?.["@_id"],
-            nodeNature: nodeNatures[node.type as NodeType],
+            __readonly_drgEdges: [], // Deleting from DRD only.
+            __readonly_externalModelTypesByNamespace: state
+              .computed(state)
+              .getExternalModelTypesByNamespace(externalModelsByNamespace),
+            __readonly_drdIndex: state.computed(state).getDrdIndex(),
+            __readonly_dmnObjectNamespace: node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
+            __readonly_dmnObjectQName: node.data.dmnObjectQName,
+            __readonly_dmnObjectId: node.data.dmnObject?.["@_id"],
+            __readonly_nodeNature: nodeNatures[node.type as NodeType],
             mode: NodeDeletionMode.FROM_CURRENT_DRD_ONLY,
           });
 
