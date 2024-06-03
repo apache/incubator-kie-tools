@@ -27,7 +27,7 @@ import (
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
-	apiMetadata "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
+	apimetadata "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 )
 
 type DeployUndeployCmdConfig struct {
@@ -206,8 +206,8 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 		handler.AddResourceAt(filepath.Base(dashboardFile), metadata.DashboardsDefaultDirName, specIO)
 	}
 
-	if cfg.Profile != "" {
-		handler.Profile(apiMetadata.ProfileType(cfg.Profile))
+	if len(cfg.Profile) > 0 {
+		handler.Profile(apimetadata.ProfileType(cfg.Profile))
 	}
 
 	_, err = handler.AsObjects()
