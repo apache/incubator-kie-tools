@@ -35,7 +35,7 @@ module.exports = composeEnv([rootEnv], {
       default: "incubator-kie-kogito-management-console",
       description: "The image name.",
     },
-    KOGITO_MANAGEMENT_CONSOLE__buildTags: {
+    KOGITO_MANAGEMENT_CONSOLE__buildTag: {
       default: rootEnv.env.root.streamName,
       description: "The image tag.",
     },
@@ -50,7 +50,7 @@ module.exports = composeEnv([rootEnv], {
         registry: getOrDefault(this.vars.KOGITO_MANAGEMENT_CONSOLE__registry),
         account: getOrDefault(this.vars.KOGITO_MANAGEMENT_CONSOLE__account),
         name: getOrDefault(this.vars.KOGITO_MANAGEMENT_CONSOLE__name),
-        tags: getOrDefault(this.vars.KOGITO_MANAGEMENT_CONSOLE__buildTags),
+        buildTag: getOrDefault(this.vars.KOGITO_MANAGEMENT_CONSOLE__buildTag),
         port: getOrDefault(this.vars.KOGITO_MANAGEMENT_CONSOLE__port),
         version: require("../package.json").version,
       },

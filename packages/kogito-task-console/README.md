@@ -37,7 +37,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
   export KOGITO_TASK_CONSOLE__registry=<registry>
   export KOGITO_TASK_CONSOLE__account=<account>
   export KOGITO_TASK_CONSOLE__name=<image-name>
-  export KOGITO_TASK_CONSOLE__buildTags=<image-tags>
+  export KOGITO_TASK_CONSOLE__buildTag=<image-tags>
   ```
 
   > Default values can be found [here](./env/index.js).

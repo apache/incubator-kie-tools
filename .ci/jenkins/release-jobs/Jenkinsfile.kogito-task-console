@@ -43,7 +43,7 @@ pipeline {
         KOGITO_TASK_CONSOLE__registry = 'docker.io'
         KOGITO_TASK_CONSOLE__account = 'apache'
         KOGITO_TASK_CONSOLE__name = 'incubator-kie-kogito-task-console'
-        KOGITO_TASK_CONSOLE__buildTags = "latest ${params.RELEASE_VERSION}"
+        KOGITO_TASK_CONSOLE__buildTag = "latest ${params.RELEASE_VERSION}"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
@@ -142,7 +142,7 @@ pipeline {
                     dockerUtils.pushImageToRegistry(
                         "${env.KOGITO_TASK_CONSOLE__registry}/${env.KOGITO_TASK_CONSOLE__account}",
                         "${env.KOGITO_TASK_CONSOLE__name}",
-                        "${env.KOGITO_TASK_CONSOLE__buildTags}",
+                        "${env.KOGITO_TASK_CONSOLE__buildTag}",
                         "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
                     )
                 }

@@ -22,7 +22,7 @@ const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/b
 const rootEnv = require("@kie-tools/root-env/env");
 
 const {
-  env: { devDeploymentBaseImage: devDedevDeploymentBaseImageEnv },
+  env: { devDeploymentBaseImage: devDeploymentBaseImageEnv },
 } = require("@kie-tools/dev-deployment-base-image/env");
 
 const {
@@ -32,9 +32,7 @@ const {
 module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__builderImage: {
-      default: `${devDedevDeploymentBaseImageEnv.registry}/${devDedevDeploymentBaseImageEnv.account}/${
-        devDedevDeploymentBaseImageEnv.name
-      }:${devDedevDeploymentBaseImageEnv.tags.split(" ")[0]}`,
+      default: `${devDeploymentBaseImageEnv.registry}/${devDeploymentBaseImageEnv.account}/${devDeploymentBaseImageEnv.name}:${devDeploymentBaseImageEnv.buildTag}`,
       description: "The image used in the FROM import.",
     },
     DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry: {
@@ -49,7 +47,7 @@ module.exports = composeEnv([rootEnv], {
       default: "incubator-kie-sandbox-dev-deployment-kogito-quarkus-blank-app",
       description: "The image name.",
     },
-    DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTags: {
+    DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag: {
       default: rootEnv.env.root.streamName,
       description: "The image tag.",
     },
@@ -65,7 +63,7 @@ module.exports = composeEnv([rootEnv], {
         registry: getOrDefault(this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry),
         account: getOrDefault(this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account),
         name: getOrDefault(this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name),
-        tags: getOrDefault(this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTags),
+        buildTag: getOrDefault(this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag),
         version: require("../package.json").version,
         dev: {
           mavenM2RepoViaHttpImage: getOrDefault(
