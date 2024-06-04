@@ -18,22 +18,30 @@
  */
 // HTTP SERVER
 const express = require("express");
+const swaggerUi = require("swagger-ui-express");
+const swaggerApiDoc = require("./MockData/openAPI/openapi.json");
 var cors = require("cors");
 const app = express();
 const { ApolloServer } = require("apollo-server-express");
 var bodyParser = require("body-parser");
 // GraphQL - Apollo
 const { GraphQLScalarType } = require("graphql");
-const { v1: uuidv1 } = require("uuid");
 const _ = require("lodash");
 // Config
 const config = require("./config");
 
 //Mock data
 const data = require("./MockData/graphql");
+const controller = require("./MockData/controllers");
 const typeDefs = require("./MockData/types");
 
 const DEFAULT_TIMEOUT = 0;
+
+const swaggerOptions = {
+  swaggerOptions: {
+    url: "/q/openapi.json",
+  },
+};
 
 function setPort(port = 4000) {
   app.set("port", parseInt(port, 10));
@@ -56,6 +64,20 @@ app.use(
     optionsSuccessStatus: 200,
   })
 );
+
+app.post("/", controller.triggerCloudEvent);
+app.put("/", controller.triggerCloudEvent);
+
+app.get("/q/openapi.json", (req, res) => res.json(swaggerApiDoc));
+app.use("/docs", swaggerUi.serveFiles(null, swaggerOptions), swaggerUi.setup(null, swaggerOptions));
+
+app.get("/forms/list", controller.getForms);
+app.get("/customDashboard/list", controller.getCustomDashboards);
+app.get("/customDashboard/:name", controller.getCustomDashboardContent);
+app.get("/forms/:formName", controller.getFormContent);
+app.post("/forms/:formName", controller.saveFormContent);
+
+app.post(/^\/(service|hello|systout|jsongreet|order|yamlgreet)$/, controller.startProcessInstance);
 
 function timeout(ms = DEFAULT_TIMEOUT) {
   return new Promise((resolve) => setTimeout(resolve, ms));
