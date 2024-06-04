@@ -27035,7 +27035,7 @@ data:
     jobsServiceEphemeralImageTag: ""
     # The Data Index image to use, if empty the operator will use the default Apache Community one based on the current operator's version
     dataIndexPostgreSQLImageTag: ""
-    dataIndexEphemeralTag: ""
+    dataIndexEphemeralImageTag: ""
     # SonataFlow base builder image used in the internal Dockerfile to build workflow applications in preview profile
     # Order of precedence is:
     # 1. SonataFlowPlatform in the given namespace
