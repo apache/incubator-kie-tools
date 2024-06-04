@@ -6,7 +6,7 @@
       <id>kie-tools--maven-m2-repo-via-http-allowed</id>
       <mirrorOf>kie-tools--maven-m2-repo-via-http</mirrorOf>
       <name>Mirror to override default blocking mirror that blocks http.</name>
-      <url>http://localhost:$M2_REPO_VIA_HTTP_PORT</url>
+      <url>http://$M2_REPO_VIA_HTTP_URL_WITHOUT_PROTOCOL</url>
     </mirror>
   </mirrors>
 
@@ -20,7 +20,7 @@
         <repository>
           <id>kie-tools--maven-m2-repo-via-http</id>
           <name>KIE Tools :: Maven M2 Repo via HTTP</name>
-          <url>http://localhost:$M2_REPO_VIA_HTTP_PORT/</url>
+          <url>http://$M2_REPO_VIA_HTTP_URL_WITHOUT_PROTOCOL/</url>
           <layout>default</layout>
           <releases>
             <enabled>true</enabled>
@@ -37,7 +37,7 @@
         <pluginRepository>
           <id>kie-tools--maven-m2-repo-via-http</id>
           <name>KIE Tools :: Maven M2 Repo via HTTP</name>
-          <url>http://localhost:$M2_REPO_VIA_HTTP_PORT/</url>
+          <url>http://$M2_REPO_VIA_HTTP_URL_WITHOUT_PROTOCOL/</url>
           <layout>default</layout>
           <releases>
             <enabled>true</enabled>
