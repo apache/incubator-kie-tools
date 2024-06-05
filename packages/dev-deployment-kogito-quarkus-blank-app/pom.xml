@@ -46,6 +46,7 @@
     <surefire-plugin.version>3.2.5</surefire-plugin.version>
     <version.junit>4.13.2</version.junit>
     <quarkus.analytics.disabled>true</quarkus.analytics.disabled>
+    <version.org.apache.commons.commons-compress>1.26.1</version.org.apache.commons.commons-compress>
   </properties>
 
   <dependencyManagement>
@@ -73,6 +74,13 @@
   </dependencyManagement>
 
   <dependencies>
+    <!-- Bring this explicit version of common-compress to solve critical CVE. -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>${version.org.apache.commons.commons-compress}</version>
+    </dependency>
+
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy</artifactId>
