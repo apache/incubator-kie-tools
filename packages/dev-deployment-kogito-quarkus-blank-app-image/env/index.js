@@ -69,7 +69,6 @@ module.exports = composeEnv([rootEnv], {
           mavenM2RepoViaHttpImage: getOrDefault(
             this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__mavenM2RepoViaHttpImage
           ),
-          mavenM2RepoViaHttpImagePort: 8008,
         },
       },
     };
