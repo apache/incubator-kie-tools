@@ -173,7 +173,7 @@ export function ExpressionDefinitionLogicTypeSelector({
     }
   }, [expression, isNested, parentElementId]);
 
-  const onSelectMenuItem = useCallback(
+  const selectLogicType = useCallback(
     (mouseEvent: React.MouseEvent, itemId?: string | number) => {
       if (itemId !== PASTE_MENU_ITEM_ID) {
         onLogicTypeSelected(itemId as BoxedExpression["__$$element"] | undefined);
@@ -563,7 +563,7 @@ export function ExpressionDefinitionLogicTypeSelector({
         }}
         ref={selectLogicTypeContainer}
       >
-        <Menu onSelect={onSelectMenuItem}>
+        <Menu onSelect={selectLogicType}>
           <MenuGroup className="menu-with-help" style={{ paddingBottom: "16px" }}>
             <MenuList>
               {selectableLogicTypes.map((key) => {
@@ -609,7 +609,7 @@ export function ExpressionDefinitionLogicTypeSelector({
     pasteExpressionError,
     position.x,
     position.y,
-    onSelectMenuItem,
+    selectLogicType,
     selectableLogicTypes,
     toggleVisibleHelp,
     visibleHelp,
