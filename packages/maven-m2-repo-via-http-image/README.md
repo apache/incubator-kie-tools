@@ -19,8 +19,8 @@ Interpolating settings.xml
 
 - Linux and macOS:
 
-  `M2_REPO_VIA_HTTP_PORT=8008 envsubst < settings.xml.envsubst > /tmp/settings.xml`
+  `M2_REPO_VIA_HTTP_URL_WITHOUT_PROTOCOL=localhost:8008 envsubst < settings.xml.envsubst > /tmp/settings.xml`
 
 - Windows (PowerShell):
 
-  `(Get-Content settings.xml.envsubst) -replace '$M2_REPO_VIA_HTTP_PORT', 8008 | Set-Content /tmp/settings.xml`
+  `(Get-Content settings.xml.envsubst) -replace '$M2_REPO_VIA_HTTP_URL_WITHOUT_PROTOCOL', localhost:8008 | Set-Content /tmp/settings.xml`
