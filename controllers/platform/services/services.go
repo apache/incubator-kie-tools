@@ -227,7 +227,7 @@ func (d DataIndexHandler) hasPostgreSQLConfigured() bool {
 
 func (d DataIndexHandler) ConfigurePersistence(containerSpec *corev1.Container) *corev1.Container {
 	if d.hasPostgreSQLConfigured() {
-		p := persistence.RetrieveConfiguration(d.platform.Spec.Services.DataIndex.Persistence, d.platform.Spec.Persistence, d.GetServiceName())
+		p := persistence.RetrievePostgreSQLConfiguration(d.platform.Spec.Services.DataIndex.Persistence, d.platform.Spec.Persistence, d.GetServiceName())
 		c := containerSpec.DeepCopy()
 		c.Image = d.GetServiceImageName(constants.PersistenceTypePostgreSQL)
 		c.Env = append(c.Env, persistence.ConfigurePostgreSQLEnv(p.PostgreSQL, d.GetServiceName(), d.platform.Namespace)...)
@@ -397,11 +397,10 @@ func (j JobServiceHandler) hasPostgreSQLConfigured() bool {
 }
 
 func (j JobServiceHandler) ConfigurePersistence(containerSpec *corev1.Container) *corev1.Container {
-
 	if j.hasPostgreSQLConfigured() {
 		c := containerSpec.DeepCopy()
 		c.Image = j.GetServiceImageName(constants.PersistenceTypePostgreSQL)
-		p := persistence.RetrieveConfiguration(j.platform.Spec.Services.JobService.Persistence, j.platform.Spec.Persistence, j.GetServiceName())
+		p := persistence.RetrievePostgreSQLConfiguration(j.platform.Spec.Services.JobService.Persistence, j.platform.Spec.Persistence, j.GetServiceName())
 		c.Env = append(c.Env, persistence.ConfigurePostgreSQLEnv(p.PostgreSQL, j.GetServiceName(), j.platform.Namespace)...)
 		// Specific to Job Service
 		c.Env = append(c.Env, corev1.EnvVar{Name: "QUARKUS_FLYWAY_MIGRATE_AT_START", Value: "true"})
@@ -423,7 +422,7 @@ func (j JobServiceHandler) GenerateServiceProperties() (*properties.Properties, 
 	props.Set(constants.JobServiceKafkaSmallRyeHealthProperty, "false")
 	// add data source reactive URL
 	if j.hasPostgreSQLConfigured() {
-		p := persistence.RetrieveConfiguration(j.platform.Spec.Services.JobService.Persistence, j.platform.Spec.Persistence, j.GetServiceName())
+		p := persistence.RetrievePostgreSQLConfiguration(j.platform.Spec.Services.JobService.Persistence, j.platform.Spec.Persistence, j.GetServiceName())
 		dataSourceReactiveURL, err := generateReactiveURL(p.PostgreSQL, j.GetServiceName(), j.platform.Namespace, constants.DefaultDatabaseName, constants.DefaultPostgreSQLPort)
 		if err != nil {
 			return nil, err

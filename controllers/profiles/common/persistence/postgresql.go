@@ -112,6 +112,19 @@ func RetrieveConfiguration(primary *v1alpha08.PersistenceOptionsSpec, platformPe
 	if platformPersistence == nil {
 		return nil
 	}
+	return buildPersistenceOptionsSpec(platformPersistence, schema)
+}
+
+// RetrievePostgreSQLConfiguration return the PersistenceOptionsSpec considering that postgresql is the database manager
+// to look for. Gives priority to the primary configuration.
+func RetrievePostgreSQLConfiguration(primary *v1alpha08.PersistenceOptionsSpec, platformPersistence *v1alpha08.PlatformPersistenceOptionsSpec, schema string) *v1alpha08.PersistenceOptionsSpec {
+	if primary != nil && primary.PostgreSQL != nil {
+		return primary
+	}
+	return buildPersistenceOptionsSpec(platformPersistence, schema)
+}
+
+func buildPersistenceOptionsSpec(platformPersistence *v1alpha08.PlatformPersistenceOptionsSpec, schema string) *v1alpha08.PersistenceOptionsSpec {
 	c := &v1alpha08.PersistenceOptionsSpec{}
 	if platformPersistence.PostgreSQL != nil {
 		c.PostgreSQL = &v1alpha08.PersistencePostgreSQL{
