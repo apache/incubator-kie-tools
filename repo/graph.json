@@ -175,6 +175,7 @@
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
       { "id": "swf-vscode-extension" },
       { "id": "@kie-tools/sonataflow-management-console-webapp" },
+      { "id": "@kie-tools/sonataflow-mock-server" },
       { "id": "@kie-tools/sonataflow-quarkus-devui" },
       { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
@@ -1153,6 +1154,13 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/sonataflow-management-console-webapp",
+        "target": "@kie-tools/sonataflow-mock-server",
+        "weight": 1
+      },
+      { "source": "@kie-tools/sonataflow-mock-server", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "@kie-tools/sonataflow-mock-server", "target": "@kie-tools/root-env", "weight": 1 },
+      {
         "source": "@kie-tools/sonataflow-quarkus-devui",
         "target": "@kie-tools/serverless-workflow-dev-ui-webapp",
         "weight": 1
@@ -1356,6 +1364,7 @@
     ["swf-vscode-extension", "packages/serverless-workflow-vscode-extension"],
     ["sonataflow-deployment-webapp", "packages/sonataflow-deployment-webapp"],
     ["@kie-tools/sonataflow-management-console-webapp", "packages/sonataflow-management-console-webapp"],
+    ["@kie-tools/sonataflow-mock-server", "packages/sonataflow-mock-server"],
     ["@kie-tools/sonataflow-quarkus-devui", "packages/sonataflow-quarkus-devui"],
     ["@kie-tools/storybook-base", "packages/storybook-base"],
     ["@kie-tools/stunner-editors", "packages/stunner-editors"],

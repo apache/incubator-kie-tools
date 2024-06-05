@@ -16,9 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-const graphData = require("./graphql");
 const path = require("path");
-const _ = require("lodash");
 const fs = require("fs");
 const formData = require("../MockData/forms/formData");
 const customDashboardData = require("../MockData/customDashboard/data");
