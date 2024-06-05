@@ -23,7 +23,7 @@ ARG CORS_PROXY_DEFAULT_VERBOSE=false
 
 ENV HOME          /home/kie-sandbox
 ENV NVM_DIR       $HOME/.nvm
-ENV NODE_VERSION  v20.8.1
+ENV NODE_VERSION  v20.14.0
 
 RUN mkdir $HOME \
   && chgrp -R 0 $HOME \
