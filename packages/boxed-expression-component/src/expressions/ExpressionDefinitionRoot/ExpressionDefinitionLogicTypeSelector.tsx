@@ -77,6 +77,7 @@ export interface ExpressionDefinitionLogicTypeSelectorProps {
 
 const DEFAULT_LOGIC_TYPE_SELECTOR_HEIGHT = 550;
 const LOGIC_TYPE_SELECTOR_BOTTOM_MARGIN = 5;
+const PASTE_MENU_ITEM_ID = "paste";
 
 export function ExpressionDefinitionLogicTypeSelector({
   expression,
@@ -174,9 +175,10 @@ export function ExpressionDefinitionLogicTypeSelector({
 
   const selectLogicType = useCallback(
     (mouseEvent: React.MouseEvent, itemId?: string | number) => {
-      onLogicTypeSelected(itemId as BoxedExpression["__$$element"] | undefined);
+      if (itemId !== PASTE_MENU_ITEM_ID) {
+        onLogicTypeSelected(itemId as BoxedExpression["__$$element"] | undefined);
+      }
       setCurrentlyOpenContextMenu(undefined);
-      setPasteExpressionError("");
       setVisibleHelp("");
       setOpen(false);
       mouseEvent.stopPropagation();
@@ -581,6 +583,7 @@ export function ExpressionDefinitionLogicTypeSelector({
               })}
               <Divider style={{ padding: "16px" }} />
               <MenuItem
+                itemId={PASTE_MENU_ITEM_ID}
                 className={pasteExpressionError ? "paste-from-clipboard-error" : ""}
                 description={pasteExpressionError ? "Paste operation was not successful" : ""}
                 onClick={pasteExpression}
