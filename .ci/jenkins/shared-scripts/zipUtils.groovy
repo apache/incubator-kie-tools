@@ -34,4 +34,4 @@ def unzipArtifact(String filePath, String targetDir) {
     """.trim()
 }
 
-return this;
+return this

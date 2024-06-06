@@ -53,7 +53,7 @@
   "engines": {
     "vscode": "^1.67.0"
   },
-  "displayName": "KIE PMML Editor",
+  "displayName": "Apache KIE™ PMML Editor",
   "categories": [
     "Other"
   ],

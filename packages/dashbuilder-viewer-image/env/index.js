@@ -19,21 +19,20 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv(
-  [require("@kie-tools/root-env/env"), require("@kie-tools/dashbuilder-viewer-image-env/env")],
-  {
-    vars: varsWithName({
-      DASHBUILDER__viewerImageBuildTags: {
-        default: "latest",
-        description: "",
-      },
-    }),
-    get env() {
-      return {
-        dashbuilderViewerImage: {
-          buildTags: getOrDefault(this.vars.DASHBUILDER__viewerImageBuildTags),
-        },
-      };
+const rootEnv = require("@kie-tools/root-env/env");
+
+module.exports = composeEnv([rootEnv, require("@kie-tools/dashbuilder-viewer-image-env/env")], {
+  vars: varsWithName({
+    DASHBUILDER__viewerImageBuildTags: {
+      default: rootEnv.env.root.streamName,
+      description: "",
     },
-  }
-);
+  }),
+  get env() {
+    return {
+      dashbuilderViewerImage: {
+        buildTags: getOrDefault(this.vars.DASHBUILDER__viewerImageBuildTags),
+      },
+    };
+  },
+});

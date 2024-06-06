@@ -28,13 +28,14 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useCallback } from "react";
+import { Normalized } from "../normalization/normalize";
 
 export function KnowledgeSourceProperties({
   knowledgeSource,
   namespace,
   index,
 }: {
-  knowledgeSource: DMN15__tKnowledgeSource;
+  knowledgeSource: Normalized<DMN15__tKnowledgeSource>;
   namespace: string | undefined;
   index: number;
 }) {
@@ -75,7 +76,7 @@ export function KnowledgeSourceProperties({
           value={knowledgeSource.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource).description = {
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>).description = {
                 __$$text: newDescription,
               };
             });
@@ -100,7 +101,9 @@ export function KnowledgeSourceProperties({
           value={knowledgeSource.type?.__$$text}
           onChange={(newType) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource).type = { __$$text: newType };
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>).type = {
+                __$$text: newType,
+              };
             });
           }}
           placeholder={"Enter source type..."}
@@ -115,7 +118,7 @@ export function KnowledgeSourceProperties({
           value={knowledgeSource["@_locationURI"]}
           onChange={(newLocationUri) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource)["@_locationURI"] =
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>)["@_locationURI"] =
                 newLocationUri;
             });
           }}
@@ -128,9 +131,10 @@ export function KnowledgeSourceProperties({
         values={knowledgeSource.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource).extensionElements = {
-              "kie:attachment": newExtensionElements,
-            };
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>).extensionElements =
+              {
+                "kie:attachment": newExtensionElements,
+              };
           });
         }}
       />

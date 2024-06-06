@@ -30,7 +30,7 @@
     "start-test-servers": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"node scripts/runTestServers.js\"",
     "stop-test-servers": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"node scripts/runTestServers.js --cleanup\"",
     "test": "run-script-os",
-    "test:linux": "run-script-if --bool \"$(build-env containerImages.build)\" --bool \"$(build-env tests.run)\" --ignore-errors \"$(build-env tests.ignoreFailures)\" --then  \"jest --verbose --silent=false\"",
+    "test:linux": "run-script-if --bool \"$(build-env containerImages.build)\" --bool \"$(build-env endToEndTests.run)\" --ignore-errors \"$(build-env tests.ignoreFailures)\" --then  \"jest --verbose --silent=false\"",
     "test:win32:darwin": "echo 'Not supported'"
   },
   "devDependencies": {

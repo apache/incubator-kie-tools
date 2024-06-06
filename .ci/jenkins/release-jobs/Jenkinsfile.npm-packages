@@ -30,6 +30,8 @@ pipeline {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
         string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
+        booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
     environment {
@@ -37,6 +39,8 @@ pipeline {
         KIE_TOOLS_BUILD__runTests = 'false'
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
+
+        RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
     }
 
     stages {
@@ -46,6 +50,8 @@ pipeline {
                     pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
                     buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
                     githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                    releaseUtils = load '.ci/jenkins/shared-scripts/releaseUtils.groovy'
+                    zipUtils = load '.ci/jenkins/shared-scripts/zipUtils.groovy'
                 }
             }
         }
@@ -124,7 +130,7 @@ pipeline {
 
         stage('Publish packages to the NPM registry') {
             when {
-                expression { !params.DRY_RUN }
+                expression { !params.DRY_RUN && !params.RELEASE_CANDIDATE }
             }
             steps {
                 dir('kie-tools') {
@@ -136,6 +142,56 @@ pipeline {
                         pnpm \$PNPM_FILTER_STRING_FOR_PUBLISHING exec 'bash' '-c' 'PKG_NAME=\$(jq -r ".name" package.json); NPM_PKG_INFO=\$(npm view \$PKG_NAME@${params.RELEASE_VERSION} name || echo ""); if [[ -z \$NPM_PKG_INFO ]]; then pnpm publish --no-git-checks --access public; fi'
                         """.trim()
                     }
+                }
+            }
+        }
+
+        stage('Setup release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        env.RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-tools-npm-packages.zip"
+                        env.TMP_RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-tools-npm-packages"
+
+                        sh """#!/bin/bash -el
+                        mkdir ${env.TMP_RELEASE_ARTIFACTS_DIR} ${env.RELEASE_ARTIFACTS_DIR}
+                        PNPM_FILTER_STRING_FOR_PUBLISHING=\$(pnpm -r exec 'bash' '-c' 'PKG_NAME=\$(jq -r ".name" package.json) PKG_IS_PVT=\$(jq -r ".private" package.json); if [[ "\$PKG_IS_PVT" != "true" ]]; then echo "-F \$PKG_NAME"; fi')
+                        echo \$PNPM_FILTER_STRING_FOR_PUBLISHING
+                        pnpm \$PNPM_FILTER_STRING_FOR_PUBLISHING exec 'bash' '-c' 'pnpm pack --pack-destination ${env.TMP_RELEASE_ARTIFACTS_DIR}'
+                        """.trim()
+                        zipUtils.zipArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_ZIP_FILE}", "${env.TMP_RELEASE_ARTIFACTS_DIR}")
+                    }
+                }
+            }
+        }
+
+        stage('Sign artifact for Apache release') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_ZIP_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                }
+            }
+        }
+
+        stage('Publish Release Candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${env.RELEASE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
+                    )
                 }
             }
         }

@@ -172,7 +172,7 @@
 /* (end) decisionService and group nodes */
 
 /* (begin) external nodes */
-.kie-dmn-editor--node.external {
+.kie-dmn-editor--node-external {
   text-decoration: underline;
 }
 /* (end) external node */

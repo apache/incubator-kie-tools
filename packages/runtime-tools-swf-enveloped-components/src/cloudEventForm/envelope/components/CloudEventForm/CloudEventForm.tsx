@@ -47,12 +47,14 @@ import {
 
 export interface CloudEventFormProps {
   driver: CloudEventFormDriver;
+  serviceUrl: string;
   isNewInstanceEvent?: boolean;
   defaultValues?: CloudEventFormDefaultValues;
 }
 
 export const CloudEventForm: React.FC<CloudEventFormProps & OUIAProps> = ({
   driver,
+  serviceUrl,
   isNewInstanceEvent,
   defaultValues,
   ouiaId,
@@ -124,6 +126,7 @@ export const CloudEventForm: React.FC<CloudEventFormProps & OUIAProps> = ({
         source: eventSource,
         extensions,
       },
+      serviceUrl: serviceUrl,
     };
 
     const validations = validateCloudEventRequest(eventRequest);

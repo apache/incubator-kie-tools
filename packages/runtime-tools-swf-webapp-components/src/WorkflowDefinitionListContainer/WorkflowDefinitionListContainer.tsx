@@ -20,16 +20,18 @@
 import React, { useEffect } from "react";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { EmbeddedWorkflowDefinitionList } from "@kie-tools/runtime-tools-swf-enveloped-components/dist/workflowDefinitions";
-import { WorkflowDefinition } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { WorkflowDefinition, WorkflowInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { useWorkflowDefinitionListGatewayApi, WorkflowDefinitionListGatewayApi } from "../WorkflowDefinitionList";
 
 interface WorkflowDefinitionListContainerProps {
   onOpenWorkflowForm: (workflowDefinition: WorkflowDefinition) => void;
+  onOpenTriggerCloudEventForWorkflow: (workflowDefinition: WorkflowDefinition) => void;
   targetOrigin?: string;
 }
 
 export const WorkflowDefinitionListContainer: React.FC<WorkflowDefinitionListContainerProps & OUIAProps> = ({
   onOpenWorkflowForm,
+  onOpenTriggerCloudEventForWorkflow,
   ouiaId,
   ouiaSafe,
   targetOrigin,
@@ -42,11 +44,17 @@ export const WorkflowDefinitionListContainer: React.FC<WorkflowDefinitionListCon
         onOpenWorkflowForm(workflowDefinition);
       },
     });
+    const onTriggerCloudEventUnsubscriber = gatewayApi.onOpenTriggerCloudEventListen({
+      onOpen(workflowDefinition: WorkflowDefinition) {
+        onOpenTriggerCloudEventForWorkflow(workflowDefinition);
+      },
+    });
 
     return () => {
       onOpenDefinitionUnsubscriber.unSubscribe();
+      onTriggerCloudEventUnsubscriber.unSubscribe();
     };
-  }, [gatewayApi, onOpenWorkflowForm]);
+  }, [gatewayApi, onOpenWorkflowForm, onOpenTriggerCloudEventForWorkflow]);
 
   return (
     <EmbeddedWorkflowDefinitionList

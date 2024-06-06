@@ -140,11 +140,11 @@ describe("swf custom form tests", () => {
   });
 });
 
-describe("triiger cloud events serction", () => {
+describe("trigger cloud events section", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  it("trigger cloud event start - with businesskey", async () => {
+  it("trigger cloud event start - with business key", async () => {
     mockedAxios.request.mockResolvedValue("success");
     const event = {
       method: CloudEventMethod.POST,
@@ -157,6 +157,7 @@ describe("triiger cloud events serction", () => {
           kogitobusinesskey: "1234",
         },
       },
+      serviceUrl: "http://localhost:8090/",
     };
     const response = await triggerStartCloudEvent(event, "http://localhost:8080/");
 
@@ -167,14 +168,10 @@ describe("triiger cloud events serction", () => {
 
     expect(request.url).toBe("http://localhost:8080/endpoint");
     expect(request.method).toBe("POST");
-    expect(request.data).toHaveProperty("specversion", "1.0");
-    expect(request.data).toHaveProperty("type", "eventType");
-    expect(request.data).toHaveProperty("source", "eventSource");
-    expect(request.data).toHaveProperty(KOGITO_BUSINESS_KEY, "1234");
-    expect(request.data).toHaveProperty("data", JSON.parse(event.data));
+    expect(request).toHaveProperty("data", JSON.parse(event.data));
   });
 
-  it("trigger cloud event start - without businesskey", async () => {
+  it("trigger cloud event start - without business key", async () => {
     mockedAxios.request.mockResolvedValue("success");
     const event = {
       method: CloudEventMethod.POST,
@@ -185,6 +182,7 @@ describe("triiger cloud events serction", () => {
         source: "eventSource",
         extensions: {},
       },
+      serviceUrl: "http://localhost:8090/",
     };
     const response = await triggerStartCloudEvent(event, "http://localhost:8080/");
 
@@ -195,7 +193,7 @@ describe("triiger cloud events serction", () => {
 
     expect(request.url).toBe("http://localhost:8080/endpoint");
     expect(request.method).toBe("POST");
-    expect(request.data).toHaveProperty(KOGITO_BUSINESS_KEY, response);
+    expect(request).toHaveProperty("data", JSON.parse(event.data));
   });
 
   it("trigger cloud event - with instanceId", async () => {
@@ -211,6 +209,7 @@ describe("triiger cloud events serction", () => {
           kogitoprocrefid: "1234",
         },
       },
+      serviceUrl: "http://localhost:8090/",
     };
     const response = await triggerCloudEvent(event, "http://localhost:8080/");
 
@@ -221,8 +220,7 @@ describe("triiger cloud events serction", () => {
 
     expect(request.url).toBe("http://localhost:8080/endpoint");
     expect(request.method).toBe("POST");
-    expect(request.data).toHaveProperty(KOGITO_PROCESS_REFERENCE_ID, "1234");
-    expect(request.data).not.toHaveProperty(KOGITO_BUSINESS_KEY);
+    expect(request).toHaveProperty("data", JSON.parse(event.data));
   });
 
   it("trigger cloud event - without instanceId", async () => {
@@ -236,6 +234,7 @@ describe("triiger cloud events serction", () => {
         source: "eventSource",
         extensions: {},
       },
+      serviceUrl: "http://localhost:8090/",
     };
     const response = await triggerCloudEvent(event, "http://localhost:8080/");
 
@@ -246,8 +245,7 @@ describe("triiger cloud events serction", () => {
 
     expect(request.url).toBe("http://localhost:8080/endpoint");
     expect(request.method).toBe("POST");
-    expect(request.data).not.toHaveProperty(KOGITO_PROCESS_REFERENCE_ID);
-    expect(request.data).not.toHaveProperty(KOGITO_BUSINESS_KEY);
+    expect(request).toHaveProperty("data", JSON.parse(event.data));
   });
 
   it("trigger cloud event - using PUT", async () => {
@@ -263,6 +261,7 @@ describe("triiger cloud events serction", () => {
           kogitoprocrefid: "1234",
         },
       },
+      serviceUrl: "http://localhost:8090/",
     };
     const response = await triggerCloudEvent(event, "http://localhost:8080/");
 
@@ -273,5 +272,6 @@ describe("triiger cloud events serction", () => {
 
     expect(request.url).toBe("http://localhost:8080/endpoint");
     expect(request.method).toBe("PUT");
+    expect(request).toHaveProperty("data", JSON.parse(event.data));
   });
 });

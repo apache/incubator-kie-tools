@@ -28,8 +28,9 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { useDmnEditor } from "../DmnEditorContext";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { Normalized } from "../normalization/normalize";
 
-export function UnknownProperties(props: { shape: DMNDI15__DMNShape; dmnElementRefQName: XmlQName }) {
+export function UnknownProperties(props: { shape: Normalized<DMNDI15__DMNShape>; dmnElementRefQName: XmlQName }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const { externalModelsByNamespace } = useExternalModels();
   const externalDmnsByNamespace = useDmnEditorStore(
@@ -53,7 +54,7 @@ export function UnknownProperties(props: { shape: DMNDI15__DMNShape; dmnElementR
 
     const externalDrgElementsById = (externalDmn.model.definitions.drgElement ?? []).reduce(
       (acc, e, index) => acc.set(e["@_id"]!, { element: e, index }),
-      new Map<string, { index: number; element: Unpacked<DMN15__tDefinitions["drgElement"]> }>()
+      new Map<string, { index: number; element: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]> }>()
     );
 
     const externalDrgElement = externalDrgElementsById.get(props.dmnElementRefQName.localPart);

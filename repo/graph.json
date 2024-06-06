@@ -6,6 +6,8 @@
       { "id": "@kie-tools-scripts/check-junit-report-results" },
       { "id": "@kie-tools-scripts/run-script-if" },
       { "id": "@kie-tools-scripts/sparse-checkout" },
+      { "id": "@kie-tools-scripts/update-kogito-version" },
+      { "id": "@kie-tools-scripts/update-stream-name" },
       { "id": "@kie-tools-scripts/update-version" },
       { "id": "@kie-tools-scripts/build-env" },
       { "id": "@kie-tools-examples/base64png-editor" },
@@ -26,6 +28,13 @@
       { "id": "@kie-tools/jbpm-quarkus-devui" },
       { "id": "@kie-tools/maven-base" },
       { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
+      { "id": "@kie-tools-examples/jbpm-compact-architecture-example" },
+      { "id": "@kie-tools/kogito-management-console" },
+      { "id": "@kie-tools/kogito-task-console" },
+      { "id": "@kie-tools/image-builder" },
+      { "id": "@kie-tools/image-env-to-json" },
+      { "id": "@kie-tools/runtime-tools-management-console-webapp" },
+      { "id": "@kie-tools/runtime-tools-task-console-webapp" },
       { "id": "@kie-tools-examples/ping-pong-view" },
       { "id": "@kie-tools-core/envelope-bus" },
       { "id": "@kie-tools-examples/ping-pong-view-angular" },
@@ -71,7 +80,6 @@
       { "id": "@kie-tools/cors-proxy" },
       { "id": "@kie-tools/cors-proxy-api" },
       { "id": "@kie-tools/cors-proxy-image" },
-      { "id": "@kie-tools/image-builder" },
       { "id": "@kie-tools/dashbuilder" },
       { "id": "@kie-tools/dashbuilder-component-assembler" },
       { "id": "@kie-tools/maven-config-setup-helper" },
@@ -106,6 +114,7 @@
       { "id": "@kie-tools/dev-deployment-dmn-form-webapp-image" },
       { "id": "@kie-tools/dev-deployment-kogito-quarkus-blank-app" },
       { "id": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" },
+      { "id": "@kie-tools/maven-m2-repo-via-http-image" },
       { "id": "@kie-tools/dmn-editor" },
       { "id": "@kie-tools/dmn-editor-envelope" },
       { "id": "@kie-tools/dmn-feel-antlr4-parser" },
@@ -121,7 +130,6 @@
       { "id": "@kie-tools/form-generation-tool" },
       { "id": "@kie-tools/uniforms-bootstrap4-codegen" },
       { "id": "@kie-tools/uniforms-patternfly-codegen" },
-      { "id": "@kie-tools/image-env-to-json" },
       { "id": "@kie-tools/import-java-classes-component" },
       { "id": "@kie-tools/runtime-tools-process-webapp-components" },
       { "id": "@kie-tools/runtime-tools-shared-webapp-components" },
@@ -131,23 +139,18 @@
       { "id": "@kie-tools/vscode-extension-common-test-helpers" },
       { "id": "@kie-tools/kie-sandbox-distribution" },
       { "id": "@kie-tools/kie-sandbox-extended-services-image" },
-      { "id": "@kie-tools/kie-sandbox-image" },
+      { "id": "@kie-tools/kie-sandbox-webapp-image" },
       { "id": "@kie-tools/online-editor" },
       { "id": "@kie-tools/kie-sandbox-helm-chart" },
       { "id": "@kie-tools-core/kubernetes-bridge" },
       { "id": "@kie-tools/unitables-dmn" },
       { "id": "@kie-tools/kn-plugin-workflow" },
-      { "id": "@kie-tools/kogito-serverless-operator" },
-      { "id": "@kie-tools/kogito-swf-builder" },
-      { "id": "@kie-tools/kogito-swf-devmode" },
-      { "id": "@kie-tools/kogito-management-console" },
-      { "id": "@kie-tools/runtime-tools-management-console-webapp" },
-      { "id": "@kie-tools/kogito-swf-common" },
-      { "id": "@kie-tools/python-venv" },
-      { "id": "@kie-tools/kogito-task-console" },
-      { "id": "@kie-tools/runtime-tools-task-console-webapp" },
+      { "id": "@kie-tools/sonataflow-operator" },
+      { "id": "@kie-tools/sonataflow-builder-image" },
+      { "id": "@kie-tools/sonataflow-devmode-image" },
       { "id": "@kie-tools/unitables" },
       { "id": "pmml-vscode-extension" },
+      { "id": "@kie-tools/python-venv" },
       { "id": "@kie-tools/runtime-tools-components" },
       { "id": "@kie-tools/runtime-tools-shared-gateway-api" },
       { "id": "@kie-tools/runtime-tools-process-enveloped-components" },
@@ -169,6 +172,7 @@
       { "id": "@kie-tools/serverless-logic-web-tools-base-builder-image" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-builder-image" },
       { "id": "sonataflow-deployment-webapp" },
+      { "id": "@kie-tools/sonataflow-image-common" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor" },
@@ -190,6 +194,8 @@
       { "source": "kie-tools-root", "target": "@kie-tools-scripts/check-junit-report-results", "weight": 1 },
       { "source": "kie-tools-root", "target": "@kie-tools-scripts/run-script-if", "weight": 1 },
       { "source": "kie-tools-root", "target": "@kie-tools-scripts/sparse-checkout", "weight": 1 },
+      { "source": "kie-tools-root", "target": "@kie-tools-scripts/update-kogito-version", "weight": 1 },
+      { "source": "kie-tools-root", "target": "@kie-tools-scripts/update-stream-name", "weight": 1 },
       { "source": "kie-tools-root", "target": "@kie-tools-scripts/update-version", "weight": 1 },
       { "source": "@kie-tools-scripts/bootstrap", "target": "@kie-tools-scripts/build-env", "weight": 1 },
       { "source": "@kie-tools-examples/base64png-editor", "target": "@kie-tools-core/editor", "weight": 1 },
@@ -268,6 +274,64 @@
       },
       {
         "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/jbpm-compact-architecture-example",
+        "target": "@kie-tools/jbpm-quarkus-devui",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/jbpm-compact-architecture-example",
+        "target": "@kie-tools/kogito-management-console",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/jbpm-compact-architecture-example",
+        "target": "@kie-tools/kogito-task-console",
+        "weight": 1
+      },
+      { "source": "@kie-tools/kogito-management-console", "target": "@kie-tools/image-builder", "weight": 1 },
+      { "source": "@kie-tools/kogito-management-console", "target": "@kie-tools/image-env-to-json", "weight": 1 },
+      {
+        "source": "@kie-tools/kogito-management-console",
+        "target": "@kie-tools/runtime-tools-management-console-webapp",
+        "weight": 1
+      },
+      { "source": "@kie-tools/kogito-task-console", "target": "@kie-tools/image-builder", "weight": 1 },
+      { "source": "@kie-tools/kogito-task-console", "target": "@kie-tools/image-env-to-json", "weight": 1 },
+      {
+        "source": "@kie-tools/kogito-task-console",
+        "target": "@kie-tools/runtime-tools-task-console-webapp",
+        "weight": 1
+      },
+      { "source": "@kie-tools/image-builder", "target": "@kie-tools/tsconfig", "weight": 1 },
+      { "source": "@kie-tools/image-env-to-json", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools/image-env-to-json", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "@kie-tools/image-env-to-json", "target": "@kie-tools/tsconfig", "weight": 1 },
+      {
+        "source": "@kie-tools/runtime-tools-management-console-webapp",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-management-console-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-task-console-webapp",
+        "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-task-console-webapp",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-task-console-webapp",
         "target": "@kie-tools/runtime-tools-shared-webapp-components",
         "weight": 1
       },
@@ -475,7 +539,6 @@
       { "source": "@kie-tools/cors-proxy-api", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/cors-proxy-image", "target": "@kie-tools/cors-proxy", "weight": 1 },
       { "source": "@kie-tools/cors-proxy-image", "target": "@kie-tools/image-builder", "weight": 1 },
-      { "source": "@kie-tools/image-builder", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/dashbuilder", "target": "@kie-tools/maven-base", "weight": 1 },
       { "source": "@kie-tools/dashbuilder", "target": "@kie-tools/dashbuilder-component-assembler", "weight": 1 },
       {
@@ -706,9 +769,10 @@
       },
       {
         "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app",
-        "target": "@kie-tools/jbpm-quarkus-devui",
+        "target": "@kie-tools/maven-config-setup-helper",
         "weight": 1
       },
+      { "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image",
         "target": "@kie-tools/dev-deployment-base-image",
@@ -719,6 +783,13 @@
         "target": "@kie-tools/dev-deployment-kogito-quarkus-blank-app",
         "weight": 1
       },
+      {
+        "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image",
+        "target": "@kie-tools/maven-m2-repo-via-http-image",
+        "weight": 1
+      },
+      { "source": "@kie-tools/maven-m2-repo-via-http-image", "target": "@kie-tools/image-builder", "weight": 1 },
+      { "source": "@kie-tools/maven-m2-repo-via-http-image", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/dmn-editor", "target": "@kie-tools-core/react-hooks", "weight": 1 },
       { "source": "@kie-tools/dmn-editor", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "@kie-tools/dmn-editor", "target": "@kie-tools/pmml-editor-marshaller", "weight": 1 },
@@ -769,9 +840,6 @@
       { "source": "@kie-tools/uniforms-patternfly-codegen", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "@kie-tools/uniforms-patternfly-codegen", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools/uniforms-patternfly-codegen", "target": "@kie-tools/tsconfig", "weight": 1 },
-      { "source": "@kie-tools/image-env-to-json", "target": "@kie-tools-core/webpack-base", "weight": 1 },
-      { "source": "@kie-tools/image-env-to-json", "target": "@kie-tools/eslint", "weight": 1 },
-      { "source": "@kie-tools/image-env-to-json", "target": "@kie-tools/tsconfig", "weight": 1 },
       {
         "source": "@kie-tools/import-java-classes-component",
         "target": "@kie-tools-core/vscode-java-code-completion",
@@ -821,16 +889,16 @@
         "target": "@kie-tools/kie-sandbox-extended-services-image",
         "weight": 1
       },
-      { "source": "@kie-tools/kie-sandbox-distribution", "target": "@kie-tools/kie-sandbox-image", "weight": 1 },
+      { "source": "@kie-tools/kie-sandbox-distribution", "target": "@kie-tools/kie-sandbox-webapp-image", "weight": 1 },
       {
         "source": "@kie-tools/kie-sandbox-extended-services-image",
         "target": "@kie-tools/extended-services-java",
         "weight": 1
       },
       { "source": "@kie-tools/kie-sandbox-extended-services-image", "target": "@kie-tools/image-builder", "weight": 1 },
-      { "source": "@kie-tools/kie-sandbox-image", "target": "@kie-tools/image-env-to-json", "weight": 1 },
-      { "source": "@kie-tools/kie-sandbox-image", "target": "@kie-tools/online-editor", "weight": 1 },
-      { "source": "@kie-tools/kie-sandbox-image", "target": "@kie-tools/image-builder", "weight": 1 },
+      { "source": "@kie-tools/kie-sandbox-webapp-image", "target": "@kie-tools/image-env-to-json", "weight": 1 },
+      { "source": "@kie-tools/kie-sandbox-webapp-image", "target": "@kie-tools/online-editor", "weight": 1 },
+      { "source": "@kie-tools/kie-sandbox-webapp-image", "target": "@kie-tools/image-builder", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools-core/k8s-yaml-to-apiserver-requests", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools-core/kubernetes-bridge", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools-core/workspaces-git-fs", "weight": 1 },
@@ -848,56 +916,15 @@
         "target": "@kie-tools/kie-sandbox-extended-services-image",
         "weight": 1
       },
-      { "source": "@kie-tools/kie-sandbox-helm-chart", "target": "@kie-tools/kie-sandbox-image", "weight": 1 },
+      { "source": "@kie-tools/kie-sandbox-helm-chart", "target": "@kie-tools/kie-sandbox-webapp-image", "weight": 1 },
       { "source": "@kie-tools-core/kubernetes-bridge", "target": "@kie-tools/cors-proxy-api", "weight": 1 },
       { "source": "@kie-tools/unitables-dmn", "target": "@kie-tools/unitables", "weight": 1 },
-      { "source": "@kie-tools/kn-plugin-workflow", "target": "@kie-tools/kogito-serverless-operator", "weight": 1 },
-      { "source": "@kie-tools/kogito-serverless-operator", "target": "@kie-tools/kogito-swf-builder", "weight": 1 },
-      { "source": "@kie-tools/kogito-serverless-operator", "target": "@kie-tools/kogito-swf-devmode", "weight": 1 },
-      { "source": "@kie-tools/kogito-swf-builder", "target": "@kie-tools/kogito-swf-common", "weight": 1 },
-      { "source": "@kie-tools/kogito-swf-devmode", "target": "@kie-tools/kogito-swf-common", "weight": 1 },
-      { "source": "@kie-tools/kogito-swf-devmode", "target": "@kie-tools/sonataflow-quarkus-devui", "weight": 1 },
-      { "source": "@kie-tools/kogito-management-console", "target": "@kie-tools/image-builder", "weight": 1 },
-      { "source": "@kie-tools/kogito-management-console", "target": "@kie-tools/image-env-to-json", "weight": 1 },
-      {
-        "source": "@kie-tools/kogito-management-console",
-        "target": "@kie-tools/runtime-tools-management-console-webapp",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-management-console-webapp",
-        "target": "@kie-tools/runtime-tools-process-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-management-console-webapp",
-        "target": "@kie-tools/runtime-tools-shared-webapp-components",
-        "weight": 1
-      },
-      { "source": "@kie-tools/kogito-swf-common", "target": "@kie-tools/python-venv", "weight": 1 },
-      { "source": "@kie-tools/kogito-swf-common", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools/kogito-task-console", "target": "@kie-tools/image-builder", "weight": 1 },
-      { "source": "@kie-tools/kogito-task-console", "target": "@kie-tools/image-env-to-json", "weight": 1 },
-      {
-        "source": "@kie-tools/kogito-task-console",
-        "target": "@kie-tools/runtime-tools-task-console-webapp",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-task-console-webapp",
-        "target": "@kie-tools-core/react-hooks",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-task-console-webapp",
-        "target": "@kie-tools/runtime-tools-process-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-task-console-webapp",
-        "target": "@kie-tools/runtime-tools-shared-webapp-components",
-        "weight": 1
-      },
+      { "source": "@kie-tools/kn-plugin-workflow", "target": "@kie-tools/sonataflow-operator", "weight": 1 },
+      { "source": "@kie-tools/sonataflow-operator", "target": "@kie-tools/sonataflow-builder-image", "weight": 1 },
+      { "source": "@kie-tools/sonataflow-operator", "target": "@kie-tools/sonataflow-devmode-image", "weight": 1 },
+      { "source": "@kie-tools/sonataflow-builder-image", "target": "@kie-tools/sonataflow-image-common", "weight": 1 },
+      { "source": "@kie-tools/sonataflow-devmode-image", "target": "@kie-tools/sonataflow-image-common", "weight": 1 },
+      { "source": "@kie-tools/sonataflow-devmode-image", "target": "@kie-tools/sonataflow-quarkus-devui", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/dmn-runner", "weight": 1 },
       { "source": "pmml-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
@@ -1052,12 +1079,12 @@
       },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-builder-image",
-        "target": "@kie-tools/kogito-swf-builder",
+        "target": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env",
         "weight": 1
       },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-builder-image",
-        "target": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env",
+        "target": "@kie-tools/sonataflow-builder-image",
         "weight": 1
       },
       {
@@ -1076,6 +1103,8 @@
         "target": "@kie-tools/runtime-tools-swf-webapp-components",
         "weight": 1
       },
+      { "source": "@kie-tools/sonataflow-image-common", "target": "@kie-tools/python-venv", "weight": 1 },
+      { "source": "@kie-tools/sonataflow-image-common", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
         "target": "@kie-tools/sonataflow-quarkus-devui",
@@ -1177,6 +1206,7 @@
       "@kie-tools-examples/drools-process-usertasks-quarkus-example",
       "examples/drools-process-usertasks-quarkus-example"
     ],
+    ["@kie-tools-examples/jbpm-compact-architecture-example", "examples/jbpm-compact-architecture-example"],
     ["@kie-tools-examples/ping-pong-view", "examples/ping-pong-view"],
     ["@kie-tools-examples/ping-pong-view-angular", "examples/ping-pong-view-angular"],
     ["@kie-tools-examples/ping-pong-view-react", "examples/ping-pong-view-react"],
@@ -1261,17 +1291,14 @@
     ["@kie-tools/kie-sandbox-extended-services-image", "packages/kie-sandbox-extended-services-image"],
     ["@kie-tools/kie-sandbox-fs", "packages/kie-sandbox-fs"],
     ["@kie-tools/kie-sandbox-helm-chart", "packages/kie-sandbox-helm-chart"],
-    ["@kie-tools/kie-sandbox-image", "packages/kie-sandbox-image"],
+    ["@kie-tools/kie-sandbox-webapp-image", "packages/kie-sandbox-webapp-image"],
     ["@kie-tools/kn-plugin-workflow", "packages/kn-plugin-workflow"],
     ["@kie-tools/kogito-management-console", "packages/kogito-management-console"],
-    ["@kie-tools/kogito-serverless-operator", "packages/kogito-serverless-operator"],
-    ["@kie-tools/kogito-swf-builder", "packages/kogito-swf-builder"],
-    ["@kie-tools/kogito-swf-common", "packages/kogito-swf-common"],
-    ["@kie-tools/kogito-swf-devmode", "packages/kogito-swf-devmode"],
     ["@kie-tools/kogito-task-console", "packages/kogito-task-console"],
     ["@kie-tools-core/kubernetes-bridge", "packages/kubernetes-bridge"],
     ["@kie-tools/maven-base", "packages/maven-base"],
     ["@kie-tools/maven-config-setup-helper", "packages/maven-config-setup-helper"],
+    ["@kie-tools/maven-m2-repo-via-http-image", "packages/maven-m2-repo-via-http-image"],
     ["@kie-tools-core/monaco-editor", "packages/monaco-editor"],
     ["@kie-tools-core/notifications", "packages/notifications"],
     ["@kie-tools/online-editor", "packages/online-editor"],
@@ -1343,7 +1370,11 @@
     ["@kie-tools/serverless-workflow-standalone-editor", "packages/serverless-workflow-standalone-editor"],
     ["@kie-tools/serverless-workflow-text-editor", "packages/serverless-workflow-text-editor"],
     ["swf-vscode-extension", "packages/serverless-workflow-vscode-extension"],
+    ["@kie-tools/sonataflow-builder-image", "packages/sonataflow-builder-image"],
     ["sonataflow-deployment-webapp", "packages/sonataflow-deployment-webapp"],
+    ["@kie-tools/sonataflow-devmode-image", "packages/sonataflow-devmode-image"],
+    ["@kie-tools/sonataflow-image-common", "packages/sonataflow-image-common"],
+    ["@kie-tools/sonataflow-operator", "packages/sonataflow-operator"],
     ["@kie-tools/sonataflow-quarkus-devui", "packages/sonataflow-quarkus-devui"],
     ["@kie-tools/storybook-base", "packages/storybook-base"],
     ["@kie-tools/stunner-editors", "packages/stunner-editors"],
@@ -1383,6 +1414,8 @@
     ["@kie-tools-scripts/check-junit-report-results", "scripts/check-junit-report-results"],
     ["@kie-tools-scripts/run-script-if", "scripts/run-script-if"],
     ["@kie-tools-scripts/sparse-checkout", "scripts/sparse-checkout"],
+    ["@kie-tools-scripts/update-kogito-version", "scripts/update-kogito-version"],
+    ["@kie-tools-scripts/update-stream-name", "scripts/update-stream-name"],
     ["@kie-tools-scripts/update-version", "scripts/update-version"]
   ]
 }

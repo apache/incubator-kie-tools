@@ -56,7 +56,7 @@
   "engines": {
     "vscode": "^1.67.0"
   },
-  "displayName": "KIE DMN Editor",
+  "displayName": "Apache KIE™ DMN Editor",
   "categories": [
     "Other"
   ],
@@ -68,11 +68,11 @@
           "dark": "./static/svg-icon-dark.png",
           "light": "./static/svg-icon-light.png"
         },
-        "title": "Generate DMN Editor preview SVG (legacy)"
+        "title": "Generate DMN Editor preview SVG (classic)"
       },
       {
         "command": "extension.kogito.silentlyGenerateSvgDmn",
-        "title": "Generate DMN Editor preview SVG (legacy) without any notification"
+        "title": "Generate DMN Editor preview SVG (classic) without any notification"
       },
       {
         "command": "extension.kie.tools.generatePreviewSvgDmn",
@@ -108,7 +108,7 @@
     },
     "customEditors": [
       {
-        "displayName": "KIE DMN/SceSim Editors (legacy)",
+        "displayName": "KIE DMN/SceSim Editors (classic)",
         "selector": [
           {
             "filenamePattern": "*.{dmn,scesim}"

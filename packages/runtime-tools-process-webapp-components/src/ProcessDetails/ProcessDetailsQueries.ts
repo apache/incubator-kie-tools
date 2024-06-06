@@ -38,7 +38,7 @@ import {
   getSVG,
   getTriggerableNodes,
 } from "@kie-tools/runtime-tools-process-gateway-api/dist/gatewayApi";
-import { Job, JobCancel, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { Job, JobOperationResult, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export interface ProcessDetailsQueries {
   getProcessDetails(id: string): Promise<ProcessInstance>;
@@ -47,7 +47,7 @@ export interface ProcessDetailsQueries {
   handleProcessAbort(processInstance: ProcessInstance): Promise<void>;
   handleProcessRetry(processInstance: ProcessInstance): Promise<void>;
   getSVG(processInstance: ProcessInstance): Promise<any>;
-  jobCancel(job: Job): Promise<JobCancel>;
+  jobCancel(job: Job): Promise<JobOperationResult>;
   rescheduleJob: (
     job: Job,
     repeatInterval: number | string,
@@ -95,7 +95,7 @@ export class GraphQLProcessDetailsQueries implements ProcessDetailsQueries {
     return Promise.resolve(getSVG(processInstance, this.client));
   }
 
-  async jobCancel(job: Job): Promise<JobCancel> {
+  async jobCancel(job: Job): Promise<JobOperationResult> {
     return jobCancel(job, this.client);
   }
 

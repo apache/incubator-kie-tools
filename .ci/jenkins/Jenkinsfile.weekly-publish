@@ -17,7 +17,7 @@
 
 import java.text.SimpleDateFormat
 
-def sdf = new SimpleDateFormat("yyyy-MM-dd")
+def sdf = new SimpleDateFormat('yyyy-MM-dd')
 def dateDefaultValue = sdf.format(new Date())
 
 @Library('jenkins-pipeline-shared-libraries')_
@@ -81,6 +81,16 @@ pipeline {
             }
         }
 
+        stage('Setup package version') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        env.PACKAGE_VERSION = sh(returnStdout: true, script: "#!/bin/bash -el \n node -p \"require('./package.json').version\"").trim()
+                    }
+                }
+            }
+        }
+
         stage('Setup PNPM') {
             steps {
                 dir('kie-tools') {
@@ -107,12 +117,12 @@ pipeline {
                     script {
                         withCredentials([usernamePassword(credentialsId: "${pipelineVars.mavenDeployRepositoryCredentialsId}", usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
                             configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
-                                timestampedSnapshotVersion = "999.0.0-${getDateFromCheckoutDateTime()}-SNAPSHOT"
+                                timestampedSnapshotVersion = getTimestampedSnapshotVersion()
                                 sh """#!/bin/bash -el
-                                pnpm update-version-to ${timestampedSnapshotVersion} ${env.PNPM_FILTER_STRING}
                                 pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
                                 pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dapache.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
                                 pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dapache.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
+                                pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Drevision=${timestampedSnapshotVersion} >> .mvn/maven.config'
                                 pnpm ${env.PNPM_FILTER_STRING} build:prod
                                 """.trim()
                             }
@@ -126,7 +136,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        tagName = "999-${getDateFromCheckoutDateTime()}"
+                        tagName = getTagName()
                         githubUtils.createTag("${tagName}")
                         githubUtils.pushObject('origin', "${tagName}", "${pipelineVars.asfGithubPushCredentialsId}")
                     }
@@ -146,4 +156,18 @@ String getDateFromCheckoutDateTime() {
     /* groovylint-disable-next-line DuplicateNumberLiteral */
     def parsedDate = (params.GIT_CHECKOUT_DATETIME =~ /(\d{4}-\d{2}-\d{2})/)[0][0]
     return parsedDate.replace('-', '')
+}
+
+String getTagName() {
+    if (env.PACKAGE_VERSION == '0.0.0') {
+        return "999-${getDateFromCheckoutDateTime()}"
+    }
+    return "${env.PACKAGE_VERSION}-${getDateFromCheckoutDateTime()}"
+}
+
+String getTimestampedSnapshotVersion() {
+    if (env.PACKAGE_VERSION == '0.0.0') {
+        return "999-${getDateFromCheckoutDateTime()}-SNAPSHOT"
+    }
+    return "${env.PACKAGE_VERSION}-${getDateFromCheckoutDateTime()}-SNAPSHOT"
 }

@@ -24,7 +24,7 @@ import {
   SvgSuccessResponse,
   TriggerableNode,
 } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
-import { Job, JobCancel, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { Job, JobOperationResult, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export default class ProcessDetailsEnvelopeViewDriver implements ProcessDetailsDriver {
   constructor(private readonly channelApi: MessageBusClientApi<ProcessDetailsChannelApi>) {}
@@ -37,7 +37,7 @@ export default class ProcessDetailsEnvelopeViewDriver implements ProcessDetailsD
     return this.channelApi.requests.processDetails__handleProcessAbort(processInstance);
   }
 
-  cancelJob(job: Pick<Job, "id" | "endpoint">): Promise<JobCancel> {
+  cancelJob(job: Pick<Job, "id" | "endpoint">): Promise<JobOperationResult> {
     return this.channelApi.requests.processDetails__cancelJob(job);
   }
 

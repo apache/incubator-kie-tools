@@ -90,7 +90,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
             <ProcessListContextProvider apolloClient={apolloClient}>
               <ProcessDetailsContextProvider apolloClient={apolloClient}>
                 <JobsManagementContextProvider apolloClient={apolloClient}>
-                  <ProcessDefinitionListContextProvider>
+                  <ProcessDefinitionListContextProvider apolloClient={apolloClient}>
                     <FormsListContextProvider>
                       <FormDetailsContextProvider>
                         <ProcessFormContextProvider>

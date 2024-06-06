@@ -30,6 +30,8 @@ pipeline {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
         string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
+        booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
     environment {
@@ -38,14 +40,16 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        KOGITO_SWF_BUILDER_IMAGE__registry = 'quay.io'
-        KOGITO_SWF_BUILDER_IMAGE__account = 'kiegroup'
-        KOGITO_SWF_BUILDER_IMAGE__name = 'kogito-swf-builder'
-        KOGITO_SWF_BUILDER_IMAGE__buildTag = "${params.RELEASE_VERSION}"
+        SONATAFLOW_BUILDER_IMAGE__registry = 'docker.io'
+        SONATAFLOW_BUILDER_IMAGE__account = 'apache'
+        SONATAFLOW_BUILDER_IMAGE__name = 'incubator-kie-sonataflow-builder'
+        SONATAFLOW_BUILDER_IMAGE__buildTag = "${params.RELEASE_VERSION}"
+
+        RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
-        PNPM_FILTER_STRING = '-F @kie-tools/kogito-swf-builder...'
+        PNPM_FILTER_STRING = '-F @kie-tools/sonataflow-builder-image...'
     }
 
     stages {
@@ -56,6 +60,7 @@ pipeline {
                     buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
                     githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
                     dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
+                    releaseUtils = load '.ci/jenkins/shared-scripts/releaseUtils.groovy'
                 }
             }
         }
@@ -71,6 +76,16 @@ pipeline {
         stage('Clean workspace before build') {
             steps {
                 cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Load upstream images') {
+            steps {
+                script {
+                    upstreamReleaseArtifactsDir = "${WORKSPACE}/upstream-release-artifacts"
+                    releaseUtils.downloadReleaseArtifacts("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}")
+                    dockerUtils.loadImages(releaseUtils.getUpstreamImagesArtifactsList("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}"))
+                }
             }
         }
 
@@ -118,30 +133,74 @@ pipeline {
             }
         }
 
-        stage('Create "latest" tag for kogito-swf-builder') {
+        stage('Create "latest" tag for sonataflow-builder') {
             steps {
                 script {
                     dockerUtils.tagImage(
-                        "${env.KOGITO_SWF_BUILDER_IMAGE__registry}/${env.KOGITO_SWF_BUILDER_IMAGE__account}",
-                        "${env.KOGITO_SWF_BUILDER_IMAGE__name}",
-                        "${env.KOGITO_SWF_BUILDER_IMAGE__buildTag}",
+                        "${env.SONATAFLOW_BUILDER_IMAGE__registry}/${env.SONATAFLOW_BUILDER_IMAGE__account}",
+                        "${env.SONATAFLOW_BUILDER_IMAGE__name}",
+                        "${env.SONATAFLOW_BUILDER_IMAGE__buildTag}",
                         'latest'
                     )
                 }
             }
         }
 
-        stage('Push kogito-swf-builder to quay.io') {
+        stage('Push sonataflow-builder to Docker Hub') {
             when {
-                expression { !params.DRY_RUN }
+                expression { !params.DRY_RUN && !params.RELEASE_CANDIDATE }
             }
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.KOGITO_SWF_BUILDER_IMAGE__registry}/${env.KOGITO_SWF_BUILDER_IMAGE__account}",
-                        "${env.KOGITO_SWF_BUILDER_IMAGE__name}",
-                        "${env.KOGITO_SWF_BUILDER_IMAGE__buildTag} latest",
-                        "${pipelineVars.quayKiegroupPushCredentialsId}"
+                        "${env.SONATAFLOW_BUILDER_IMAGE__registry}/${env.SONATAFLOW_BUILDER_IMAGE__account}",
+                        "${env.SONATAFLOW_BUILDER_IMAGE__name}",
+                        "${env.SONATAFLOW_BUILDER_IMAGE__buildTag} latest",
+                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Setup release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    env.RELEASE_IMAGE_TAR_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-builder-image.tar.gz"
+
+                    sh """#!/bin/bash -el
+                    mkdir ${env.RELEASE_ARTIFACTS_DIR}
+                    docker save "${env.KOGITO_SWF_BUILDER_IMAGE__registry}/${env.KOGITO_SWF_BUILDER_IMAGE__account}/${env.KOGITO_SWF_BUILDER_IMAGE__name}:${params.RELEASE_VERSION}" | gzip > "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}"
+                    """.trim()
+                }
+            }
+        }
+
+        stage('Sign artifact for Apache release') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                }
+            }
+        }
+
+        stage('Publish Release Candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${env.RELEASE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
                     )
                 }
             }

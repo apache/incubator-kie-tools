@@ -20,15 +20,15 @@
 import _ from "lodash";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { DmnBuiltInDataType, BoxedFunction, BoxedFunctionKind, generateUuid } from "../../api";
+import { BoxedFunction, BoxedFunctionKind, DmnBuiltInDataType, generateUuid } from "../../api";
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
-import { FeelFunctionExpression, BoxedFunctionFeel } from "./FeelFunctionExpression";
+import { BoxedFunctionFeel, FeelFunctionExpression } from "./FeelFunctionExpression";
 import { FunctionKindSelector } from "./FunctionKindSelector";
-import { JavaFunctionExpression, BoxedFunctionJava } from "./JavaFunctionExpression";
+import { BoxedFunctionJava, JavaFunctionExpression } from "./JavaFunctionExpression";
 import { ParametersPopover } from "./ParametersPopover";
-import { PmmlFunctionExpression, BoxedFunctionPmml } from "./PmmlFunctionExpression";
+import { BoxedFunctionPmml, PmmlFunctionExpression } from "./PmmlFunctionExpression";
 import {
   DMN15__tFunctionDefinition,
   DMN15__tFunctionKind,
@@ -86,11 +86,11 @@ export function useFunctionExpressionControllerCell(functionKind: DMN15__tFuncti
             "@_label": prev["@_label"],
             "@_id": generateUuid(),
             "@_kind": BoxedFunctionKind.Feel,
-            "@_typeRef": DmnBuiltInDataType.Undefined,
+            "@_typeRef": undefined,
             expression: {
               __$$element: "literalExpression",
               "@_id": generateUuid(),
-              "@_typeRef": DmnBuiltInDataType.Undefined,
+              "@_typeRef": undefined,
             },
             formalParameter: [],
           };
@@ -108,7 +108,7 @@ export function useFunctionExpressionControllerCell(functionKind: DMN15__tFuncti
               "@_id": generateUuid(),
             },
             "@_kind": BoxedFunctionKind.Java,
-            "@_typeRef": DmnBuiltInDataType.Undefined,
+            "@_typeRef": undefined,
             formalParameter: [],
           };
           return retJava;
@@ -123,7 +123,7 @@ export function useFunctionExpressionControllerCell(functionKind: DMN15__tFuncti
               "@_id": generateUuid(),
             },
             "@_kind": BoxedFunctionKind.Pmml,
-            "@_typeRef": DmnBuiltInDataType.Undefined,
+            "@_typeRef": undefined,
             formalParameter: [],
           };
           return retPmml;
@@ -167,7 +167,9 @@ export function useFunctionExpressionParametersColumnHeader(
                   <React.Fragment key={i}>
                     <span>{parameter["@_name"]}</span>
                     <span>{": "}</span>
-                    <span className={"expression-info-data-type"}>({parameter["@_typeRef"]})</span>
+                    <span className={"expression-info-data-type"}>
+                      ({parameter["@_typeRef"] ?? DmnBuiltInDataType.Undefined})
+                    </span>
                     {i < (formalParameters ?? []).length - 1 && <span>{", "}</span>}
                   </React.Fragment>
                 ))}

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { Job, JobCancel, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { Job, JobOperationResult, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { ProcessDetailsQueries } from "./ProcessDetailsQueries";
 import {
   SvgSuccessResponse,
@@ -41,7 +41,7 @@ export interface ProcessDetailsGatewayApi {
   processDetailsState: any;
   getProcessDiagram: (data: ProcessInstance) => Promise<SvgSuccessResponse | SvgErrorResponse>;
   handleProcessAbort: (processInstance: ProcessInstance) => Promise<void>;
-  cancelJob: (job: Pick<Job, "id" | "endpoint">) => Promise<JobCancel>;
+  cancelJob: (job: Pick<Job, "id" | "endpoint">) => Promise<JobOperationResult>;
   rescheduleJob: (
     job: Job,
     repeatInterval: number | string,
@@ -89,7 +89,7 @@ export class ProcessDetailsGatewayApiImpl implements ProcessDetailsGatewayApi {
     return this.queries.handleProcessAbort(processInstance);
   };
 
-  cancelJob = (job: Job): Promise<JobCancel> => {
+  cancelJob = (job: Job): Promise<JobOperationResult> => {
     return this.queries.jobCancel(job);
   };
 

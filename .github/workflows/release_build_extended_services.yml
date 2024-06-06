@@ -1,3 +1,22 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
 name: "Release :: Build (Extended Services)"
 
 on:
@@ -14,6 +33,14 @@ on:
         required: false
         default: "0.0.0"
       upload_asset_url:
+        type: string
+        required: false
+        default: ""
+      release_candidate:
+        type: boolean
+        required: false
+        default: false
+      release_candidate_version:
         type: string
         required: false
         default: ""
@@ -64,8 +91,8 @@ jobs:
         run: |
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
-      - name: "Upload Extended Services for macOS (macOS only)"
-        if: ${{ runner.os == 'macOS' && !inputs.dry_run }}
+      - name: "Upload Extended Services for macOS"
+        if: ${{ runner.os == 'macOS' && !inputs.dry_run && !inputs.release_candidate }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -75,8 +102,8 @@ jobs:
           asset_name: kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg
           asset_content_type: application/octet-stream
 
-      - name: "Upload Extended Services for Windows (Windows only)"
-        if: ${{ runner.os == 'Windows' && !inputs.dry_run }}
+      - name: "Upload Extended Services for Windows"
+        if: ${{ runner.os == 'Windows' && !inputs.dry_run && !inputs.release_candidate }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -85,3 +112,89 @@ jobs:
           asset_path: "./packages/extended-services/dist/win32/kie_sandbox_extended_services.exe"
           asset_name: "kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
           asset_content_type: application/octet-stream
+
+      - name: "Setup Extended Services for macOS artifacts"
+        id: macos_setup_artifact
+        if: ${{ runner.os == 'macOS' && !inputs.dry_run && inputs.release_candidate }}
+        shell: bash
+        env:
+          PROJECT_VERSION: ${{ inputs.release_candidate_version }}
+        run: |
+          ARTIFACT_ZIP_FILE="./extended-services-release-artifacts/incubator-kie-$PROJECT_VERSION-sandbox-extended-services-macOS.zip"
+          echo "ARTIFACT_ZIP_FILE=$ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
+          mkdir ./extended-services-release-artifacts
+          zip $ARTIFACT_ZIP_FILE ./packages/extended-services/dist/darwin/Kogito.dmg
+
+      - name: "Sign Extended Services for macOS artifact"
+        if: ${{ runner.os == 'macOS' && !inputs.dry_run && inputs.release_candidate }}
+        shell: bash
+        env:
+          GPG_KEY: ${{ secrets.GPG_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          ARTIFACT_ZIP_FILE: ${{ steps.macos_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
+        run: |
+          echo $GPG_KEY > ./signkey.gpg
+          gpg --list-keys
+          gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --import ./signkey.gpg
+          rm ./signkey.gpg
+          echo $GPG_PASSPHRASE | gpg --no-tty --batch --sign --pinentry-mode loopback --passphrase-fd 0 --output $ARTIFACT_ZIP_FILE.asc --detach-sig $ARTIFACT_ZIP_FILE
+          shasum -a 512 $ARTIFACT_ZIP_FILE > $ARTIFACT_ZIP_FILE.sha512
+
+      - name: "Upload Extended Services for macOS artifact"
+        if: ${{ runner.os == 'macOS' && !inputs.dry_run && inputs.release_candidate }}
+        shell: bash
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          PROJECT_VERSION: ${{ inputs.release_candidate_version }}
+          ARTIFACT_ZIP_FILE: ${{ steps.macos_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
+        run: |
+          svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie svn-kie
+          cp ./extended-services-release-artifacts/* svn-kie/$PROJECT_VERSION/
+          svn add "svn-kie/$PROJECT_VERSION"
+          cd svn-kie
+          svn ci --non-interactive --no-auth-cache --username "$SVN_USERNAME" --password "$SVN_PASSWORD" -m "Apache KIE $PROJECT_VERSION Extended Services for macOS artifact"
+          rm -rf svn-kie
+
+      - name: "Setup Extended Services for Windows artifacts"
+        id: windows_setup_artifact
+        if: ${{ runner.os == 'macOS' && !inputs.dry_run && inputs.release_candidate }}
+        shell: pwsh
+        env:
+          PROJECT_VERSION: ${{ inputs.release_candidate_version }}
+        run: |
+          ARTIFACT_ZIP_FILE="./extended-services-release-artifacts/incubator-kie-$PROJECT_VERSION-sandbox-extended-services-macOS.zip"
+          echo "ARTIFACT_ZIP_FILE=$ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
+          mkdir ./extended-services-release-artifacts
+          zip $ARTIFACT_ZIP_FILE ./packages/extended-services/dist/win32/kie_sandbox_extended_services.exe
+
+      - name: "Sign Extended Services for Windows artifact"
+        if: ${{ runner.os == 'Windows' && !inputs.dry_run && inputs.release_candidate }}
+        shell: pwsh
+        env:
+          GPG_KEY: ${{ secrets.GPG_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          ARTIFACT_ZIP_FILE: ${{ steps.windows_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
+        run: |
+          echo $GPG_KEY > ./signkey.gpg
+          gpg --list-keys
+          gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --import ./signkey.gpg
+          rm ./signkey.gpg
+          echo $GPG_PASSPHRASE | gpg --no-tty --batch --sign --pinentry-mode loopback --passphrase-fd 0 --output $ARTIFACT_ZIP_FILE.asc --detach-sig $ARTIFACT_ZIP_FILE
+          shasum -a 512 $ARTIFACT_ZIP_FILE > $ARTIFACT_ZIP_FILE.sha512
+
+      - name: "Upload Extended Services for Windows artifact"
+        if: ${{ runner.os == 'Windows' && !inputs.dry_run && inputs.release_candidate }}
+        shell: pwsh
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          PROJECT_VERSION: ${{ inputs.release_candidate_version }}
+          ARTIFACT_ZIP_FILE: ${{ steps.windows_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
+        run: |
+          svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie svn-kie
+          cp ./extended-services-release-artifacts/* svn-kie/$PROJECT_VERSION/
+          svn add "svn-kie/$PROJECT_VERSION"
+          cd svn-kie
+          svn ci --non-interactive --no-auth-cache --username "$SVN_USERNAME" --password "$SVN_PASSWORD" -m "Apache KIE $PROJECT_VERSION Extended Services for Windows artifact"
+          rm -rf svn-kie

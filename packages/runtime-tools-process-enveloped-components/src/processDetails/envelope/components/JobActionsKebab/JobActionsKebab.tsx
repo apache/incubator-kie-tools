@@ -67,7 +67,12 @@ const JobActionsKebab: React.FC<IOwnProps & OUIAProps> = ({ job, driver, ouiaId,
     setIsRescheduleModalOpen(!isRescheduleModalOpen);
   };
 
-  const handleJobReschedule = async (repeatInterval, repeatLimit, scheduleDate): Promise<void> => {
+  const handleJobReschedule = async (
+    _job: Job,
+    repeatInterval: string | number,
+    repeatLimit: string | number,
+    scheduleDate: Date
+  ): Promise<void> => {
     await handleJobRescheduleUtil(
       repeatInterval,
       repeatLimit,

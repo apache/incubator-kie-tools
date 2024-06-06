@@ -44,7 +44,6 @@ test.describe("Add node - BKM", () => {
           variable: {
             "@_id": bkm.variable?.["@_id"],
             "@_name": DefaultNodeName.BKM,
-            "@_typeRef": DataType.Undefined,
           },
         });
         expect(await jsonModel.drd.getDrgElementBoundsOnDrd({ drgElementIndex: 0, drdIndex: 0 })).toEqual({

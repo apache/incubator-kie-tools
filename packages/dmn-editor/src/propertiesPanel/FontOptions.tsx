@@ -35,6 +35,8 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { ColorPicker } from "./ColorPicker";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import "./FontOptions.css";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { Normalized } from "../normalization/normalize";
 
 // https://www.w3schools.com/cssref/css_websafe_fonts.php
 // Array of [name, family]
@@ -86,7 +88,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
   const [isStyleSectionExpanded, setStyleSectionExpanded] = useState<boolean>(startExpanded);
 
   const setShapeStyles = useCallback(
-    (callback: (shape: DMNDI15__DMNShape[], state: State) => void) => {
+    (callback: (shape: Normalized<DMNDI15__DMNShape>[], state: State) => void) => {
       dmnEditorStoreApi.setState((s) => {
         const { diagramElements } = addOrGetDrd({
           definitions: s.dmn.model.definitions,
@@ -103,7 +105,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
         });
 
         for (const shape of shapes) {
-          shape["di:Style"] ??= { __$$element: "dmndi:DMNStyle" };
+          shape["di:Style"] ??= { "@_id": generateUuid(), __$$element: "dmndi:DMNStyle" };
         }
 
         callback(shapes, s);

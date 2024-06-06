@@ -36,6 +36,8 @@ import { buildXmlHref, parseXmlHref } from "../../xml/xmlHrefs";
 import { TypeOrReturnType } from "../ComputedStateCache";
 import { Computed, State } from "../Store";
 import { getDecisionServicePropertiesRelativeToThisDmn } from "../../mutations/addExistingDecisionServiceToDrd";
+import { Normalized } from "../../normalization/normalize";
+import { KIE_UNKNOWN_NAMESPACE } from "../../kie/kie";
 
 export const NODE_LAYERS = {
   GROUP_NODE: 0,
@@ -50,6 +52,7 @@ type AckEdge = (args: {
   type: EdgeType;
   source: string;
   target: string;
+  sourceNamespace: string | undefined;
 }) => RF.Edge<DmnDiagramEdgeData>;
 
 type AckNode = (
@@ -77,6 +80,8 @@ export function computeDiagramData(
   const nodesById = new Map<string, RF.Node<DmnDiagramNodeData>>();
   const edgesById = new Map<string, RF.Edge<DmnDiagramEdgeData>>();
   const parentIdsById = new Map<string, DmnDiagramNodeData>();
+  const externalNodesByNamespace = new Map<string, Array<RF.Node<DmnDiagramNodeData>>>();
+  const edgesFromExternalNodesByNamespace = new Map<string, Array<RF.Edge<DmnDiagramEdgeData>>>();
 
   const { selectedNodes, draggingNodes, resizingNodes, selectedEdges } = {
     selectedNodes: new Set(diagram._selectedNodes),
@@ -91,7 +96,7 @@ export function computeDiagramData(
   const drgEdges: DrgEdge[] = [];
   const drgAdjacencyList: DrgAdjacencyList = new Map();
 
-  const ackEdge: AckEdge = ({ id, type, dmnObject, source, target }) => {
+  const ackEdge: AckEdge = ({ id, type, dmnObject, source, target, sourceNamespace }) => {
     const data = {
       dmnObject,
       dmnEdge: id ? indexedDrd.dmnEdgesByDmnElementRef.get(id) : undefined,
@@ -107,6 +112,13 @@ export function computeDiagramData(
       target,
       selected: selectedEdges.has(id),
     };
+
+    if (sourceNamespace && sourceNamespace !== KIE_UNKNOWN_NAMESPACE) {
+      edgesFromExternalNodesByNamespace.set(sourceNamespace, [
+        ...(edgesFromExternalNodesByNamespace.get(sourceNamespace) ?? []),
+        edge,
+      ]);
+    }
 
     edgesById.set(edge.id, edge);
     if (edge.selected) {
@@ -148,6 +160,7 @@ export function computeDiagramData(
       type: EDGE_TYPES.association,
       source: dmnObject.sourceRef?.["@_href"],
       target: dmnObject.targetRef?.["@_href"],
+      sourceNamespace: undefined, // association are always from the current namespace
     });
   });
 
@@ -223,6 +236,13 @@ export function computeDiagramData(
       }
     }
 
+    if (dmnObjectNamespace && dmnObjectNamespace !== KIE_UNKNOWN_NAMESPACE) {
+      externalNodesByNamespace.set(dmnObjectNamespace, [
+        ...(externalNodesByNamespace.get(dmnObjectNamespace) ?? []),
+        newNode,
+      ]);
+    }
+
     nodesById.set(newNode.id, newNode);
     if (newNode.selected) {
       selectedNodesById.set(newNode.id, newNode);
@@ -260,11 +280,11 @@ export function computeDiagramData(
         namespace,
         (externalDmn.model.definitions.drgElement ?? []).reduce(
           (acc, e, index) => acc.set(e["@_id"]!, { element: e, index }),
-          new Map<string, { index: number; element: Unpacked<DMN15__tDefinitions["drgElement"]> }>()
+          new Map<string, { index: number; element: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]> }>()
         )
       );
     },
-    new Map<string, Map<string, { index: number; element: Unpacked<DMN15__tDefinitions["drgElement"]> }>>()
+    new Map<string, Map<string, { index: number; element: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]> }>>()
   );
 
   const externalNodes = [...indexedDrd.dmnShapesByHref.entries()].flatMap(([href, shape]) => {
@@ -359,6 +379,8 @@ export function computeDiagramData(
     nodes: sortedNodes,
     edges: sortedEdges,
     edgesById,
+    externalNodesByNamespace,
+    edgesFromExternalNodesByNamespace,
     nodesById,
     selectedNodeTypes,
     selectedNodesById,
@@ -370,7 +392,7 @@ export function computeDiagramData(
 function ackRequirementEdges(
   thisDmnsNamespace: string,
   drgElementsNamespace: string,
-  drgElements: DMN15__tDefinitions["drgElement"],
+  drgElements: Normalized<DMN15__tDefinitions>["drgElement"],
   ackEdge: AckEdge
 ) {
   const namespace = drgElementsNamespace === thisDmnsNamespace ? "" : drgElementsNamespace;
@@ -392,6 +414,7 @@ function ackRequirementEdges(
           type: EDGE_TYPES.informationRequirement,
           source: buildXmlHref({ namespace: irHref.namespace ?? namespace, id: irHref.id }),
           target: buildXmlHref({ namespace, id: dmnObject["@_id"]! }),
+          sourceNamespace: irHref.namespace ?? namespace,
         });
       });
     }
@@ -411,6 +434,7 @@ function ackRequirementEdges(
           type: EDGE_TYPES.knowledgeRequirement,
           source: buildXmlHref({ namespace: krHref.namespace ?? namespace, id: krHref.id }),
           target: buildXmlHref({ namespace, id: dmnObject["@_id"]! }),
+          sourceNamespace: krHref.namespace ?? namespace,
         });
       });
     }
@@ -434,6 +458,7 @@ function ackRequirementEdges(
           type: EDGE_TYPES.authorityRequirement,
           source: buildXmlHref({ namespace: arHref.namespace ?? namespace, id: arHref.id }),
           target: buildXmlHref({ namespace, id: dmnObject["@_id"]! }),
+          sourceNamespace: arHref.namespace ?? namespace,
         });
       });
     }

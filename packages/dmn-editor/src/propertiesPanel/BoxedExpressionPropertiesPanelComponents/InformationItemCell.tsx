@@ -30,6 +30,7 @@ import { useDmnEditor } from "../../DmnEditorContext";
 import { Constraints, ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constraints";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { State } from "../../store/Store";
+import { Normalized } from "../../normalization/normalize";
 
 export function InformationItemCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
@@ -47,7 +48,10 @@ export function InformationItemCell(props: {
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tInformationItem, [selectedObjectInfos?.cell]);
+  const cell = useMemo(
+    () => selectedObjectInfos?.cell as Normalized<DMN15__tInformationItem>,
+    [selectedObjectInfos?.cell]
+  );
 
   const itemDefinition = useMemo(() => {
     const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = dmnEditorStoreApi
@@ -76,7 +80,7 @@ export function InformationItemCell(props: {
       />
       <TypeRefField
         isReadonly={props.isReadonly}
-        typeRef={cell["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+        typeRef={cell["@_typeRef"]}
         dmnEditorRootElementRef={dmnEditorRootElementRef}
         onChange={props.onTypeRefChange}
       />

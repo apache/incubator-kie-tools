@@ -31,7 +31,7 @@ import {
   GwtExpressionDefinitionLogicType,
 } from "./types";
 import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
-import { BoxedExpression } from "@kie-tools/boxed-expression-component/dist/api";
+import { BoxedExpression, DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
 /** Converts a GwtExpressionDefinition to a BoxedExpression. This convertion is
  *  necessary for historical reasons, as the Boxed Expression Editor was
@@ -48,7 +48,7 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
         __$$element: "context",
         "@_id": expression.id,
         "@_label": expression.name,
-        "@_typeRef": expression.dataType,
+        "@_typeRef": normalizeTypeRef(expression.dataType),
         contextEntry: [
           ...expression.contextEntries.map((e) => {
             __widths.set(expression.id, expression.entryInfoWidth ? [expression.entryInfoWidth] : []);
@@ -57,7 +57,7 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
               expression: gwtToBee(e.entryExpression, __widths)!,
               variable: {
                 "@_name": e.entryInfo.name,
-                "@_typeRef": e.entryInfo.dataType,
+                "@_typeRef": normalizeTypeRef(e.entryInfo.dataType),
               },
             };
           }),
@@ -77,7 +77,7 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
         __$$element: "decisionTable",
         "@_id": expression.id,
         "@_label": expression.name,
-        "@_typeRef": expression.dataType,
+        "@_typeRef": normalizeTypeRef(expression.dataType),
         "@_hitPolicy": expression.hitPolicy,
         "@_aggregation": (() => {
           switch (expression.aggregation) {
@@ -102,7 +102,7 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
             "@_id": s.id,
             inputExpression: {
               "@_id": s.idLiteralExpression,
-              "@_typeRef": s.dataType,
+              "@_typeRef": normalizeTypeRef(s.dataType),
               text: { __$$text: s.name }, // This is really bad... `s.name` is actually an expression. Will be addressed by https://github.com/apache/incubator-kie-issues/issues/455
             },
           };
@@ -115,7 +115,7 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
           return {
             "@_id": o.id,
             "@_name": o.name,
-            "@_typeRef": o.dataType,
+            "@_typeRef": normalizeTypeRef(o.dataType),
           };
         }),
         annotation: (expression.annotations ?? []).map((a) => {
@@ -142,11 +142,11 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
         "@_id": expression.id,
         "@_label": expression.name,
         "@_kind": expression.functionKind,
-        "@_typeRef": expression.dataType,
+        "@_typeRef": normalizeTypeRef(expression.dataType),
         formalParameter: expression.formalParameters.map((p) => ({
           "@_id": p.id,
           "@_name": p.name,
-          "@_typeRef": p.dataType,
+          "@_typeRef": normalizeTypeRef(p.dataType),
         })),
         expression:
           expression.functionKind === FunctionExpressionDefinitionKind.Feel
@@ -212,7 +212,7 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
         __$$element: "invocation",
         "@_id": expression.id,
         "@_label": expression.name,
-        "@_typeRef": expression.dataType,
+        "@_typeRef": normalizeTypeRef(expression.dataType),
         expression: {
           __$$element: "literalExpression",
           "@_id": expression.invokedFunction.id,
@@ -226,7 +226,7 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
             parameter: {
               "@_id": e.entryInfo.id,
               "@_name": e.entryInfo.name,
-              "@_typeRef": e.entryInfo.dataType,
+              "@_typeRef": normalizeTypeRef(e.entryInfo.dataType),
             },
           };
         }),
@@ -237,7 +237,7 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
         __$$element: "list",
         "@_id": expression.id,
         "@_label": expression.name,
-        "@_typeRef": expression.dataType,
+        "@_typeRef": normalizeTypeRef(expression.dataType),
         expression: expression.items.map((i) => gwtToBee(i, __widths)!),
       };
     case GwtExpressionDefinitionLogicType.Literal:
@@ -246,7 +246,7 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
         __$$element: "literalExpression",
         "@_id": expression.id,
         "@_label": expression.name,
-        "@_typeRef": expression.dataType,
+        "@_typeRef": normalizeTypeRef(expression.dataType),
         text: { __$$text: expression.content ?? "" },
       };
     case GwtExpressionDefinitionLogicType.Relation:
@@ -255,7 +255,7 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
         __$$element: "relation",
         "@_id": expression.id,
         "@_label": expression.name,
-        "@_typeRef": expression.dataType,
+        "@_typeRef": normalizeTypeRef(expression.dataType),
         row: (expression.rows ?? []).map((r) => {
           return {
             "@_id": r.id,
@@ -271,11 +271,15 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
           return {
             "@_id": c.id,
             "@_name": c.name,
-            "@_typeRef": c.dataType,
+            "@_typeRef": normalizeTypeRef(c.dataType),
           };
         }),
       };
     default:
       throw new Error(`Unknown logicType for expression: '${(expression as any).logicType}'`);
   }
+}
+
+function normalizeTypeRef(dataType: DmnBuiltInDataType) {
+  return dataType === DmnBuiltInDataType.Undefined ? undefined : dataType;
 }

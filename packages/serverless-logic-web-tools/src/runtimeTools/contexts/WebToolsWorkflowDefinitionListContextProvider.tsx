@@ -20,12 +20,17 @@
 import * as React from "react";
 import { WorkflowDefinitionListContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionList";
 import { useSettings } from "../../settings/SettingsContext";
+import { useEnv } from "../../env/EnvContext";
 
 export function WebToolsWorkflowDefinitionListContextProvider(props: React.PropsWithChildren<{}>) {
   const settings = useSettings();
+  const { env } = useEnv();
 
   return (
-    <WorkflowDefinitionListContextProvider kogitoServiceUrl={settings.runtimeTools.config.kogitoServiceUrl}>
+    <WorkflowDefinitionListContextProvider
+      proxyEndpoint={env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL}
+      dataIndexUrl={settings.runtimeTools.config.dataIndexUrl}
+    >
       {props.children}
     </WorkflowDefinitionListContextProvider>
   );

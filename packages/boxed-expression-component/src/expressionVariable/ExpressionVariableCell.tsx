@@ -49,7 +49,7 @@ export const ExpressionVariableCell: React.FunctionComponent<
   const { expression, variable, index } = data[rowIndex];
 
   const onVariableUpdated = useCallback<OnExpressionVariableUpdated>(
-    ({ name = DEFAULT_EXPRESSION_VARIABLE_NAME, typeRef = DmnBuiltInDataType.Undefined }) => {
+    ({ name = DEFAULT_EXPRESSION_VARIABLE_NAME, typeRef = undefined }) => {
       onExpressionWithVariableUpdated(index, {
         // `expression` and `variable` must always have the same `typeRef` and `name/label`, as those are dictated by `variable`.
         expression: expression
@@ -99,7 +99,7 @@ export const ExpressionVariableCell: React.FunctionComponent<
     rowIndex,
     columnIndex,
     undefined,
-    useCallback(() => `${variable["@_name"]} (${variable["@_typeRef"] ?? DmnBuiltInDataType.Undefined}})`, [variable])
+    useCallback(() => `${variable["@_name"]} (${variable["@_typeRef"]}})`, [variable])
   );
 
   const { beeGwtService } = useBoxedExpressionEditor();

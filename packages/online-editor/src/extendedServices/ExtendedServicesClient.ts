@@ -19,7 +19,7 @@
 
 import {
   ExtendedServicesDmnResult,
-  ExtendedServicesDmnJsonSchema,
+  ExtendedServicesFormSchema,
   ExtendedServicesValidateResponse,
   ExtendedServicesModelPayload,
 } from "@kie-tools/extended-services-api";
@@ -83,7 +83,7 @@ export class ExtendedServicesClient {
     return await response.json();
   }
 
-  public async formSchema(payload: ExtendedServicesModelPayload): Promise<ExtendedServicesDmnJsonSchema> {
+  public async formSchema(payload: ExtendedServicesModelPayload): Promise<ExtendedServicesFormSchema> {
     if (!this.isPayloadValid(payload)) {
       return {};
     }

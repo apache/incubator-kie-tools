@@ -26,7 +26,7 @@ import (
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
-	"github.com/apache/incubator-kie-tools/packages/kogito-serverless-operator/workflowproj"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
 )
 
 type DeployUndeployCmdConfig struct {

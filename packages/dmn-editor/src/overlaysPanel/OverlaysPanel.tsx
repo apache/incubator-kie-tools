@@ -23,17 +23,37 @@ import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form"
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Slider } from "@patternfly/react-core/dist/js/components/Slider";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
+import { useLayoutEffect, useRef } from "react";
 
 const MIN_SNAP = 5;
 const MAX_SNAP = 50;
 const SNAP_STEP = 5;
+const BOTTOM_MARGIN = 10;
 
-export function OverlaysPanel() {
+interface OverlaysPanelProps {
+  availableHeight?: number;
+}
+
+export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
   const diagram = useDmnEditorStore((s) => s.diagram);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const overlayPanelContainer = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    if (overlayPanelContainer.current && availableHeight) {
+      const bounds = overlayPanelContainer.current.getBoundingClientRect();
+      const currentHeight = bounds.height;
+      const yPos = bounds.y;
+      if (currentHeight + yPos >= availableHeight) {
+        overlayPanelContainer.current.style.height = availableHeight - BOTTOM_MARGIN + "px";
+        overlayPanelContainer.current.style.overflowY = "scroll";
+      } else {
+        overlayPanelContainer.current.style.overflowY = "visible";
+      }
+    }
+  });
 
   return (
-    <>
+    <div ref={overlayPanelContainer}>
       <Form
         onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Overlays Panel
       >
@@ -140,6 +160,6 @@ export function OverlaysPanel() {
           />
         </FormGroup>
       </Form>
-    </>
+    </div>
   );
 }

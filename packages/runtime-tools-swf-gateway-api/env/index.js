@@ -17,11 +17,27 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
+  vars: varsWithName({
+    RUNTIME_TOOLS_SWF_GATEWAY_API_graphqlCodegenEnabled: {
+      default: true,
+      description: "Enable the Grapqhl Codegen schema updates",
+    },
+    RUNTIME_TOOLS_SWF_GATEWAY_API_graphqlCodegenDataIndexUrl: {
+      default: "http://localhost:8180/graphql",
+      description: "URL for the Data Index service",
+    },
+  }),
   get env() {
-    return {};
+    return {
+      runtimeToolsSWFGatewayApi: {
+        graphqlCodegen: {
+          enabled: getOrDefault(this.vars.RUNTIME_TOOLS_SWF_GATEWAY_API_graphqlCodegenEnabled),
+          dataIndexUrl: getOrDefault(this.vars.RUNTIME_TOOLS_SWF_GATEWAY_API_graphqlCodegenDataIndexUrl),
+        },
+      },
+    };
   },
 });

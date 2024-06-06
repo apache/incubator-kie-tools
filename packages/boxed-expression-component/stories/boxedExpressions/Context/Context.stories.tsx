@@ -43,13 +43,13 @@ export const Base: Story = {
       __$$element: "context",
       "@_id": "_35255561-88FA-4A78-9C3F-61855213EE0F",
       "@_label": "Expression Name",
-      "@_typeRef": DmnBuiltInDataType.Undefined,
+      "@_typeRef": undefined,
       contextEntry: [
         {
           variable: {
             "@_id": generateUuid(),
             "@_name": "ContextEntry-1",
-            "@_typeRef": DmnBuiltInDataType.Undefined,
+            "@_typeRef": undefined,
           },
           expression: undefined!,
         },

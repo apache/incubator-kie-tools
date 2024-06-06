@@ -44,7 +44,7 @@
     <properties>
         <yaml.mapper>0.4</yaml.mapper>
         <org.jresearch.gwt.time>2.0.10</org.jresearch.gwt.time>
-        <compiler-plugin.version>3.8.1</compiler-plugin.version>
+        <compiler-plugin.version>3.13.0</compiler-plugin.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <j2cl.maven.plugin.version>0.23.0</j2cl.maven.plugin.version>

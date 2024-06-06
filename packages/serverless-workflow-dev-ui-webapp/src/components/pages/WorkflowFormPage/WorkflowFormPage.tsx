@@ -80,7 +80,7 @@ const WorkflowFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   };
 
   const onSubmitSuccess = (message: string): void => {
-    showNotification("success", message);
+    showNotification("success", `A workflow with id ${message} was started successfully.`);
   };
 
   const onSubmitError = (details?: string) => {

@@ -1,0 +1,56 @@
+<settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <mirrors>
+    <mirror>
+      <id>kie-tools--maven-m2-repo-via-http-allowed</id>
+      <mirrorOf>kie-tools--maven-m2-repo-via-http</mirrorOf>
+      <name>Mirror to override default blocking mirror that blocks http.</name>
+      <url>http://$M2_REPO_VIA_HTTP_URL_WITHOUT_PROTOCOL</url>
+    </mirror>
+  </mirrors>
+
+  <profiles>
+    <profile>
+      <id>kie-tools--maven-m2-repo-via-http-allowed-profile</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <repositories>
+        <repository>
+          <id>kie-tools--maven-m2-repo-via-http</id>
+          <name>KIE Tools :: Maven M2 Repo via HTTP</name>
+          <url>http://$M2_REPO_VIA_HTTP_URL_WITHOUT_PROTOCOL/</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </repository>
+      </repositories>
+
+      <pluginRepositories>
+        <pluginRepository>
+          <id>kie-tools--maven-m2-repo-via-http</id>
+          <name>KIE Tools :: Maven M2 Repo via HTTP</name>
+          <url>http://$M2_REPO_VIA_HTTP_URL_WITHOUT_PROTOCOL/</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+
+
+</settings>

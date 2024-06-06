@@ -32,7 +32,9 @@ export interface EmbeddedCloudEventFormProps {
   defaultValues?: {
     cloudEventSource?: string;
     instanceId?: string;
+    definitionName?: string;
   };
+  serviceUrl: string;
 }
 
 export const EmbeddedCloudEventForm = React.forwardRef(
@@ -66,6 +68,7 @@ export const EmbeddedCloudEventForm = React.forwardRef(
           {
             isNewInstanceEvent: props.isNewInstanceEvent ?? true,
             defaultValues: props.defaultValues,
+            serviceUrl: props.serviceUrl,
           }
         );
       },

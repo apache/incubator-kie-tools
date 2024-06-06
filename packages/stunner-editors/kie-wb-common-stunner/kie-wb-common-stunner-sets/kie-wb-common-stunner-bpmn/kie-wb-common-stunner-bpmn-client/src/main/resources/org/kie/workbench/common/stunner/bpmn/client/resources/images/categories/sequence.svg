@@ -1,18 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 20.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!-- Generator: Adobe Illustrator 20.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) -->
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 448 448" style="enable-background:new 0 0 448 448;" xml:space="preserve">
+	<!--
+	- Licensed to the Apache Software Foundation (ASF) under one
+	- or more contributor license agreements.  See the NOTICE file
+	- distributed with this work for additional information
+	- regarding copyright ownership.  The ASF licenses this file
+	- to you under the Apache License, Version 2.0 (the
+	- "License"); you may not use this file except in compliance
+	- with the License.  You may obtain a copy of the License at
+	-
+	-   http://www.apache.org/licenses/LICENSE-2.0
+	-
+	- Unless required by applicable law or agreed to in writing,
+	- software distributed under the License is distributed on an
+	- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	- KIND, either express or implied.  See the License for the
+	- specific language governing permissions and limitations
+	- under the License.
+	-->
 	<style type="text/css">
-	.st0{display:none;}
-	.st1{display:inline;}
-	.st2{opacity:0.3;fill:none;stroke:#449FDB;enable-background:new    ;}
-	.st3{fill:none;stroke:#449FDB;}
-	.st4{fill:#FFFFFF;}
-	.st5{fill:#FFFFFF;stroke:#000000;stroke-width:32;stroke-miterlimit:10;}
-	.st6{display:inline;fill:none;stroke:#000000;stroke-width:16;stroke-linecap:round;stroke-miterlimit:10;}
-	.st7{fill:none;stroke:#000000;stroke-width:16;stroke-linecap:round;stroke-miterlimit:10;}
-</style>
+		.st0{display:none;}
+		.st1{display:inline;}
+		.st2{opacity:0.3;fill:none;stroke:#449FDB;enable-background:new    ;}
+		.st3{fill:none;stroke:#449FDB;}
+		.st4{fill:#FFFFFF;}
+		.st5{fill:#FFFFFF;stroke:#000000;stroke-width:32;stroke-miterlimit:10;}
+		.st6{display:inline;fill:none;stroke:#000000;stroke-width:16;stroke-linecap:round;stroke-miterlimit:10;}
+		.st7{fill:none;stroke:#000000;stroke-width:16;stroke-linecap:round;stroke-miterlimit:10;}
+	</style>
 	<g id="Layer_1_1_" class="st0">
-		<title>circle-intermediate-3</title>
+		<title>
+			circle-intermediate-3
+		</title>
 		<g id="Grid" class="st1">
 			<g id="icomoon-ignore">
 				<line class="st2" x1="16" y1="0" x2="16" y2="448" />
@@ -71,7 +91,8 @@
 				<line class="st2" x1="0" y1="432" x2="448" y2="432" />
 			</g>
 		</g>
-		<g id="icomoon-ignore_1_" class="st1"></g>
+		<g id="icomoon-ignore_1_" class="st1">
+		</g>
 	</g>
 	<path d="M438.3,212.2L427,200.9c0,0,0,0,0,0l-68.2-68.2c-6.2-6.2-16.4-6.2-22.6,0L324.9,144c-6.2,6.2-6.2,16.4,0,22.6l23.5,23.5
 	c-0.1,0.5-0.1,0.9-0.2,1.4H64c-17.7,0-32,14.3-32,32c0,17.7,14.3,32,32,32h284.2c0,0.5,0.1,1,0.2,1.4l-23.5,23.5

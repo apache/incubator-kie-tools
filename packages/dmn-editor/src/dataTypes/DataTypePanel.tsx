@@ -52,6 +52,8 @@ import { useDmnEditor } from "../DmnEditorContext";
 import { useResolvedTypeRef } from "./useResolvedTypeRef";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert/Alert";
+import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
+import { InfoAltIcon } from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
 
 export function DataTypePanel({
   isReadonly,
@@ -123,7 +125,7 @@ export function DataTypePanel({
       }
 
       editItemDefinition(dataType.itemDefinition["@_id"]!, (itemDefinition) => {
-        itemDefinition.typeRef = { __$$text: typeRef };
+        itemDefinition.typeRef = typeRef ? { __$$text: typeRef } : undefined;
         const originalItemDefinition = original(itemDefinition);
         if (originalItemDefinition?.typeRef?.__$$text !== typeRef) {
           itemDefinition.typeConstraint = undefined;
@@ -185,6 +187,8 @@ export function DataTypePanel({
   const allTopLevelItemDefinitionUniqueNames = useDmnEditorStore(
     (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelItemDefinitionUniqueNames
   );
+  const [isCollectionConstraintPopoverOpen, setIsCollectionConstraintPopoverOpen] = useState(false);
+  const [isCollectionItemConstraintPopoverOpen, setIsCollectionItemConstraintPopoverOpen] = useState(false);
 
   const allUniqueNames = useMemo(
     () =>
@@ -363,9 +367,30 @@ export function DataTypePanel({
             <br />
             {dataType.itemDefinition["@_isCollection"] === true ? (
               <>
-                <Title size={"md"} headingLevel="h4">
-                  Collection constraint
-                </Title>
+                <Flex direction={{ default: "row" }} alignItems={{ default: "alignItemsCenter" }}>
+                  <Title size={"md"} headingLevel="h4">
+                    Collection constraint
+                  </Title>
+                  <Popover
+                    isVisible={isCollectionConstraintPopoverOpen}
+                    shouldClose={() => setIsCollectionConstraintPopoverOpen(false)}
+                    headerContent="Collection Constraints (Type Constraint)"
+                    headerIcon={<InfoAltIcon />}
+                    headerComponent="h1"
+                    bodyContent={
+                      <p>
+                        As per the DMN specification, the <b>Type Constraint</b> attribute lists the possible values
+                        <br />
+                        or ranges of values in the base type that are allowed in this ItemDefinition.
+                      </p>
+                    }
+                  >
+                    <InfoAltIcon
+                      onMouseEnter={() => setIsCollectionConstraintPopoverOpen(true)}
+                      onMouseLeave={() => setIsCollectionConstraintPopoverOpen(false)}
+                    />
+                  </Popover>
+                </Flex>
                 <ConstraintsFromTypeConstraintAttribute
                   isReadonly={isReadonly}
                   itemDefinition={dataType.itemDefinition}
@@ -374,9 +399,30 @@ export function DataTypePanel({
                 />
                 <br />
                 <br />
-                <Title size={"md"} headingLevel="h4">
-                  Collection item constraint
-                </Title>
+                <Flex direction={{ default: "row" }} alignItems={{ default: "alignItemsCenter" }}>
+                  <Title size={"md"} headingLevel="h4">
+                    Collection item constraint
+                  </Title>
+                  <Popover
+                    isVisible={isCollectionItemConstraintPopoverOpen}
+                    shouldClose={() => setIsCollectionItemConstraintPopoverOpen(false)}
+                    headerContent="Collection Item Constraints (Allowed Values)"
+                    headerIcon={<InfoAltIcon />}
+                    headerComponent="h1"
+                    bodyContent={
+                      <p>
+                        As per the DMN specification, the <b>Allowed Values</b> attribute lists the possible values
+                        <br />
+                        or ranges of values in the base type that are allowed in this ItemDefinition.
+                      </p>
+                    }
+                  >
+                    <InfoAltIcon
+                      onMouseEnter={() => setIsCollectionItemConstraintPopoverOpen(true)}
+                      onMouseLeave={() => setIsCollectionItemConstraintPopoverOpen(false)}
+                    />
+                  </Popover>
+                </Flex>
                 <Alert variant="warning" isInline isPlain title="Deprecated">
                   <p>
                     Creating constraints for the collection items directly on the collection itself is deprecated since

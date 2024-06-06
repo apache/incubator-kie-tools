@@ -27,13 +27,14 @@ import { addOrGetDrd as getDefaultDiagram } from "./addOrGetDrd";
 import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { buildXmlHref } from "../xml/xmlHrefs";
+import { Normalized } from "../normalization/normalize";
 
 export function addStandaloneNode({
   definitions,
   drdIndex,
   newNode,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   newNode: { type: NodeType; bounds: DC__Bounds };
 }) {
@@ -44,7 +45,7 @@ export function addStandaloneNode({
     definitions.drgElement ??= [];
     const variableBase = {
       "@_id": generateUuid(),
-      "@_typeRef": DmnBuiltInDataType.Undefined,
+      "@_typeRef": undefined,
     };
     definitions.drgElement?.push(
       switchExpression(newNode.type as Exclude<NodeType, "node_group" | "node_textAnnotation" | "node_unknown">, {
@@ -120,13 +121,15 @@ export function addStandaloneNode({
   const shapeId = generateUuid();
   diagramElements?.push({
     __$$element: "dmndi:DMNShape",
-    "@_id": shapeId,
+    "@_id": shapeId, // FIXME: Tiago --> This should break if removed.
     "@_dmnElementRef": newNodeId,
     "@_isCollapsed": false,
     "@_isListedInputData": false,
     "dc:Bounds": newNode.bounds,
     ...(newNode.type === NODE_TYPES.decisionService
-      ? { "dmndi:DMNDecisionServiceDividerLine": getCentralizedDecisionServiceDividerLine(newNode.bounds) }
+      ? {
+          "dmndi:DMNDecisionServiceDividerLine": getCentralizedDecisionServiceDividerLine(newNode.bounds),
+        }
       : {}),
   });
 
