@@ -4,9 +4,9 @@ This is the web application for SonataFlow Deployments.
 
 ## Run local web server
 
-To run the local web server, use the following command:
+To run the local web server and the mock server, use the following command:
 
-    pnpm start
+    pnpm dev
 
 ## Build the Webjar
 

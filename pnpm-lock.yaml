@@ -10968,6 +10968,9 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+      "@kie-tools/sonataflow-mock-server":
+        specifier: workspace:*
+        version: link:../sonataflow-mock-server
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
@@ -10986,6 +10989,9 @@ importers:
       "@types/react-router-dom":
         specifier: ^5.3.3
         version: 5.3.3
+      concurrently:
+        specifier: ^8.2.2
+        version: 8.2.2
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.88.2)

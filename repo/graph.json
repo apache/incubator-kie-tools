@@ -1051,6 +1051,7 @@
         "target": "@kie-tools/runtime-tools-swf-webapp-components",
         "weight": 1
       },
+      { "source": "sonataflow-deployment-webapp", "target": "@kie-tools/sonataflow-mock-server", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
         "target": "@kie-tools/maven-config-setup-helper",
