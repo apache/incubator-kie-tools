@@ -9440,6 +9440,9 @@ importers:
       "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env":
         specifier: workspace:*
         version: link:../serverless-logic-web-tools-swf-dev-mode-image-env
+      "@kie-tools/sonataflow-mock-server":
+        specifier: workspace:*
+        version: link:../sonataflow-mock-server
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
