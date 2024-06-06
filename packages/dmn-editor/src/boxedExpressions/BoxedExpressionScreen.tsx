@@ -410,6 +410,8 @@ export function drgElementToBoxedExpression(
     return expressionHolder.encapsulatedLogic
       ? {
           __$$element: "functionDefinition",
+          "@_label": expressionHolder.encapsulatedLogic["@_label"] ?? expressionHolder["@_name"],
+          "@_typeRef": expressionHolder.encapsulatedLogic["@_typeRef"] ?? expressionHolder.variable?.["@_typeRef"],
           ...expressionHolder.encapsulatedLogic,
         }
       : {
