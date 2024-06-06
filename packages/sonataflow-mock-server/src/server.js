@@ -35,7 +35,7 @@ const data = require("./MockData/graphql");
 const controller = require("./MockData/controllers");
 const typeDefs = require("./MockData/types");
 
-const DEFAULT_TIMEOUT = 0;
+const DEFAULT_TIMEOUT = 2000;
 
 const swaggerOptions = {
   swaggerOptions: {
