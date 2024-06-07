@@ -31,7 +31,7 @@ More suitable for running particular tests from `e2e-tests`.
 
 More suitable for running `e2e-tests` completely.
 
-- `packages/online-editor$ KIE_TOOLS_BUILD__runEndToEndTests=true pnpm test:e2e`
+- `packages/online-editor$ KIE_TOOLS_BUILD__runEndToEndTests=true pnpm test-e2e`
 
 > **NOTE:**
 > Before test development, you may need to build `online-editor` as:

@@ -6,7 +6,7 @@
   "keywords": [],
   "scripts": {
     "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.json",
-    "build:prod": "rimraf dist && pnpm copy:css && pnpm lint && tsc -p tsconfig.json && pnpm test && pnpm test:e2e",
+    "build:prod": "rimraf dist && pnpm copy:css && pnpm lint && tsc -p tsconfig.json && pnpm test && pnpm test-e2e",
     "build:storybook": "storybook build -o dist-storybook",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
     "deploy": "gh-pages -d dist-dev",
@@ -16,9 +16,9 @@
     "start:linux:darwin": "cross-env STORYBOOK_PORT=$(build-env boxedExpressionComponent.storybook.port) pnpm storybook-base --storybookArgs=\"dev --no-open\"",
     "start:win32": "pnpm powershell \"cross-env STORYBOOK_PORT=$(build-env boxedExpressionComponent.storybook.port) pnpm storybook-base --storybookArgs='dev --no-open'",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "test:e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm rimraf ./dist-e2e-tests\" \"pnpm test:e2e:run\"",
-    "test:e2e:open": "pnpm exec playwright show-report dist-e2e-tests/reports",
-    "test:e2e:run": "pnpm exec playwright test"
+    "test-e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm rimraf ./dist-tests-e2e\" \"pnpm test-e2e:run\"",
+    "test-e2e:open": "pnpm exec playwright show-report dist-tests-e2e/reports",
+    "test-e2e:run": "pnpm exec playwright test"
   },
   "dependencies": {
     "@kie-tools-core/i18n": "workspace:*",
