@@ -1,4 +1,4 @@
-FROM cruizba/ubuntu-dind:latest
+FROM cruizba/ubuntu-dind:noble-26.1.3
 
 SHELL ["/bin/bash", "-c"]
 
@@ -23,7 +23,6 @@ libgtk-3-dev \
 libssl-dev \
 libxi6 \
 libnss3 \
-libgconf-2-4 \
 libpci-dev \
 libglvnd0 \
 libbtrfs-dev \
@@ -34,6 +33,7 @@ python3-pip \
 python3-dev \
 python3-venv \
 python3-gssapi \
+gettext \
 git \
 jq \
 vim \
@@ -42,7 +42,7 @@ zip \
 unzip \
 bzip2 \
 xvfb \
-fluxbox && \
+fluxbox \
 subversion && \
 apt-get clean autoclean && apt-get autoremove --yes && \
 rm -rf /var/lib/{apt,dpkg,cache,log}/
