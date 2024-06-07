@@ -68,7 +68,7 @@
       <url>https://repo.eclipse.org/content/repositories/jdtls-releases/</url>
     </repository>
   </repositories>
-    <pluginRepositories>
+  <pluginRepositories>
     <pluginRepository>
       <id>cbi-release</id>
       <url>https://repo.eclipse.org/content/repositories/cbi-releases/</url>

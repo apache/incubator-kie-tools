@@ -85,29 +85,6 @@
 
   </modules>
 
-  <pluginRepositories>
-    <pluginRepository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>jboss-snapshots-repository</id>
-      <name>JBoss Snapshot Repository</name>
-      <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>sonatype-releases-repository</id>
-      <name>Sonatype Release Repository</name>
-      <url>https://oss.sonatype.org/content/repositories/releases/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>sonatype-snapshots-repository</id>
-      <name>Sonatype Snapshot Repository</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-    </pluginRepository>
-  </pluginRepositories>
-
   <dependencies>
     <dependency>
       <groupId>org.assertj</groupId>
