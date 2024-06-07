@@ -18,7 +18,7 @@
  */
 
 import { describe, it, expect } from "@jest/globals";
-import { jsonParseWithDate } from "../../../src/json/JsonParse";
+import { jsonParseWithDate } from "../../src/json/JsonParse";
 
 describe("utils::jsonParseWithDate", () => {
   it("should parse JSON strings with dates properly", () => {
