@@ -226,6 +226,14 @@ func Test_Handler_WorkflowService_SaveAs(t *testing.T) {
 	})
 }
 
+func TestWorkflowProjectHandler_Image(t *testing.T) {
+	handler := New("default").WithWorkflow(getWorkflowService())
+	proj, err := handler.AsObjects()
+	handler.Image("quay.io/kiegroup/kogito-service:latest")
+	assert.NoError(t, err)
+	assert.Equal(t, "quay.io/kiegroup/kogito-service:latest", proj.Workflow.Spec.PodTemplate.Container.Image)
+}
+
 func getWorkflowMinimalInvalid() io.Reader {
 	return mustGetFile("testdata/workflows/workflow-minimal-invalid.sw.json")
 }
