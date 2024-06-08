@@ -61,7 +61,7 @@ function initializeVSCodeElements() {
   statusBarItem.text = "$(extended-services-disconnected)";
   statusBarItem.tooltip = "Apache KIE Extended Services are not connected. \n" + "Click to connect.";
   statusBarItem.command = startExtendedServicesCommandUID;
-  statusBarItem.show();
+  statusBarItem.hide();
 
   diagnosticCollection = vscode.languages.createDiagnosticCollection("KIE Files Diagnostics");
 }

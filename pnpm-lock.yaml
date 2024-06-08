@@ -4535,9 +4535,18 @@ importers:
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
+      "@kie-tools/vscode-extension-common-test-helpers":
+        specifier: workspace:*
+        version: link:../vscode-extension-common-test-helpers
+      "@types/selenium-webdriver":
+        specifier: ^4.1.20
+        version: 4.1.20
       "@types/vscode":
         specifier: 1.67.0
         version: 1.67.0
+      "@vscode/test-electron":
+        specifier: ^2.3.6
+        version: 2.3.6
       "@vscode/test-web":
         specifier: ^0.0.30
         version: 0.0.30
@@ -4547,15 +4556,24 @@ importers:
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.88.2)
+      cpr:
+        specifier: ^3.0.1
+        version: 3.0.1
       node-fetch:
         specifier: ^3.3.1
         version: 3.3.1
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
-      ts-jest:
-        specifier: ^26.5.6
-        version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      selenium-webdriver:
+        specifier: ^4.15.0
+        version: 4.15.0(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
+      vscode-extension-tester:
+        specifier: 5.10.0
+        version: 5.10.0(mocha@9.2.0)(typescript@4.8.4)
       webpack:
         specifier: ^5.88.2
         version: 5.88.2(webpack-cli@4.10.0)
@@ -39174,6 +39192,7 @@ packages:
     resolution:
       { integrity: sha512-WvJ193OHa0GHPEL+AycEJgxvBEwyfRkN1vhjca23OaPVMCaLCXTd5qAu82AjTcgP1UJmytkOKb63Ypde7raDIg== }
     engines: { node: ">=0.6" }
+    deprecated: This package is no longer supported.
     dependencies:
       graceful-fs: 4.2.11
       inherits: 2.0.4
@@ -39484,6 +39503,7 @@ packages:
     resolution:
       { integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ== }
     engines: { node: ">=12" }
+    deprecated: Glob versions prior to v9 are no longer supported
     dependencies:
       fs.realpath: 1.0.0
       inflight: 1.0.6
@@ -44294,6 +44314,7 @@ packages:
   /monaco-page-objects@3.10.0(selenium-webdriver@4.15.0)(typescript@4.8.4):
     resolution:
       { integrity: sha512-5D53tuMvYNoYFJNVc2qQWEekjsroTIXp6nYZqiS9J/mFTuxMZqIwPzYj74Cf8aB87ai8MVT4ZhvKuWAArtl7iQ== }
+    deprecated: Deprecated - This package was replaced by @redhat-developer/page-objects
     peerDependencies:
       selenium-webdriver: ^4.6.1
       typescript: ">=4.6.2"
@@ -53056,6 +53077,7 @@ packages:
   /vscode-extension-tester-locators@3.8.0(monaco-page-objects@3.10.0)(selenium-webdriver@4.15.0):
     resolution:
       { integrity: sha512-i+iTdQmFBuhbH95EAzFZOiZWZ8umc6oahPyZGqffEOyizqzVcrQPN5YT4UX91agCqMODx0aS7yUpZZz1tg8Oew== }
+    deprecated: Deprecated - This package was replaced by @redhat-developer/locators
     peerDependencies:
       monaco-page-objects: ^3.10.0
       selenium-webdriver: ^4.6.1

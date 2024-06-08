@@ -64,7 +64,7 @@ function initializeVSCodeElements() {
   statusBarItem.text = "$(extended-services-disconnected)";
   statusBarItem.tooltip = "Apache KIE Extended Services are not connected. \n" + "Click to connect.";
   statusBarItem.command = startExtendedServicesCommandUID;
-  statusBarItem.show();
+  statusBarItem.hide();
 
   outputChannel = vscode.window.createOutputChannel("Extended Services VS Code Extension");
 
