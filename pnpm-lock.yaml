@@ -247,6 +247,18 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
+  examples/dmn-quarkus-example:
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../../packages/maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../../packages/root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
   examples/drools-process-usertasks-quarkus-example:
     dependencies:
       "@kie-tools/jbpm-quarkus-devui":
@@ -4492,6 +4504,88 @@ importers:
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6
+
+  packages/extended-services-vscode-extension:
+    dependencies:
+      "@kie-tools-core/vscode-extension":
+        specifier: workspace:*
+        version: link:../vscode-extension
+    devDependencies:
+      "@babel/core":
+        specifier: ^7.16.0
+        version: 7.23.9
+      "@babel/preset-env":
+        specifier: ^7.16.0
+        version: 7.23.9(@babel/core@7.23.9)
+      "@babel/preset-react":
+        specifier: ^7.16.0
+        version: 7.22.15(@babel/core@7.23.9)
+      "@kie-tools-core/webpack-base":
+        specifier: workspace:*
+        version: link:../webpack-base
+      "@kie-tools/eslint":
+        specifier: workspace:*
+        version: link:../eslint
+      "@kie-tools/extended-services-java":
+        specifier: workspace:*
+        version: link:../extended-services-java
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@kie-tools/vscode-extension-common-test-helpers":
+        specifier: workspace:*
+        version: link:../vscode-extension-common-test-helpers
+      "@types/selenium-webdriver":
+        specifier: ^4.1.20
+        version: 4.1.20
+      "@types/vscode":
+        specifier: 1.67.0
+        version: 1.67.0
+      "@vscode/test-electron":
+        specifier: ^2.3.6
+        version: 2.3.6
+      "@vscode/test-web":
+        specifier: ^0.0.30
+        version: 0.0.30
+      "@vscode/vsce":
+        specifier: ^2.22.0
+        version: 2.22.0
+      copy-webpack-plugin:
+        specifier: ^11.0.0
+        version: 11.0.0(webpack@5.88.2)
+      cpr:
+        specifier: ^3.0.1
+        version: 3.0.1
+      node-fetch:
+        specifier: ^3.3.1
+        version: 3.3.1
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      selenium-webdriver:
+        specifier: ^4.15.0
+        version: 4.15.0(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
+      vscode-extension-tester:
+        specifier: 5.10.0
+        version: 5.10.0(mocha@9.2.0)(typescript@4.8.4)
+      webpack:
+        specifier: ^5.88.2
+        version: 5.88.2(webpack-cli@4.10.0)
+      webpack-cli:
+        specifier: ^4.10.0
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
+      webpack-dev-server:
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
+      webpack-merge:
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/feel-input-component:
     dependencies:
@@ -23516,6 +23610,7 @@ packages:
     resolution:
       { integrity: sha512-ORNjq5z4EmQPriKbR0ER3k4Gh7YGNhWDL7JBW+8wXDrHLbWYKYSJaOJ9aN06npF5tbTxe2JBOsurpJDAvjiXKw== }
     engines: { node: ">= 8.0.0" }
+    deprecated: "**IMPORTANT 10x+ PERFORMANCE UPGRADE**: Please upgrade to v12.0.1+ as we have fixed an issue with debuglog causing 10x slower router benchmark performance, see https://github.com/koajs/router/pull/173"
     dependencies:
       debug: 4.3.4
       http-errors: 1.8.1
@@ -39097,6 +39192,7 @@ packages:
     resolution:
       { integrity: sha512-WvJ193OHa0GHPEL+AycEJgxvBEwyfRkN1vhjca23OaPVMCaLCXTd5qAu82AjTcgP1UJmytkOKb63Ypde7raDIg== }
     engines: { node: ">=0.6" }
+    deprecated: This package is no longer supported.
     dependencies:
       graceful-fs: 4.2.11
       inherits: 2.0.4
@@ -39407,6 +39503,7 @@ packages:
     resolution:
       { integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ== }
     engines: { node: ">=12" }
+    deprecated: Glob versions prior to v9 are no longer supported
     dependencies:
       fs.realpath: 1.0.0
       inflight: 1.0.6
@@ -40465,6 +40562,7 @@ packages:
   /inflight@1.0.6:
     resolution:
       { integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA== }
+    deprecated: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
     dependencies:
       once: 1.4.0
       wrappy: 1.0.2
@@ -40481,6 +40579,7 @@ packages:
   /ini@1.3.8:
     resolution:
       { integrity: sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew== }
+    requiresBuild: true
     dev: true
 
   /ini@2.0.0:
@@ -44215,6 +44314,7 @@ packages:
   /monaco-page-objects@3.10.0(selenium-webdriver@4.15.0)(typescript@4.8.4):
     resolution:
       { integrity: sha512-5D53tuMvYNoYFJNVc2qQWEekjsroTIXp6nYZqiS9J/mFTuxMZqIwPzYj74Cf8aB87ai8MVT4ZhvKuWAArtl7iQ== }
+    deprecated: Deprecated - This package was replaced by @redhat-developer/page-objects
     peerDependencies:
       selenium-webdriver: ^4.6.1
       typescript: ">=4.6.2"
@@ -49143,6 +49243,7 @@ packages:
   /rimraf@2.5.4:
     resolution:
       { integrity: sha512-Lw7SHMjssciQb/rRz7JyPIy9+bbUshEucPoLRvWqy09vC5zQixl8Uet+Zl+SROBB/JMWHJRdCk1qdxNWHNMvlQ== }
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     dependencies:
       glob: 7.2.3
@@ -49151,6 +49252,7 @@ packages:
   /rimraf@2.6.3:
     resolution:
       { integrity: sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA== }
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     dependencies:
       glob: 7.2.3
@@ -49159,6 +49261,7 @@ packages:
   /rimraf@2.7.1:
     resolution:
       { integrity: sha512-uWjbaKIK3T1OSVptzX7Nl6PvQ3qAGtKEtVRjRuazjfL3Bx5eI409VZSqgND+4UNnmzLVdPj9FqFJNPqBZFve4w== }
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     dependencies:
       glob: 7.2.3
@@ -49167,6 +49270,7 @@ packages:
   /rimraf@3.0.2:
     resolution:
       { integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA== }
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     dependencies:
       glob: 7.2.3
@@ -52973,6 +53077,7 @@ packages:
   /vscode-extension-tester-locators@3.8.0(monaco-page-objects@3.10.0)(selenium-webdriver@4.15.0):
     resolution:
       { integrity: sha512-i+iTdQmFBuhbH95EAzFZOiZWZ8umc6oahPyZGqffEOyizqzVcrQPN5YT4UX91agCqMODx0aS7yUpZZz1tg8Oew== }
+    deprecated: Deprecated - This package was replaced by @redhat-developer/locators
     peerDependencies:
       monaco-page-objects: ^3.10.0
       selenium-webdriver: ^4.6.1
