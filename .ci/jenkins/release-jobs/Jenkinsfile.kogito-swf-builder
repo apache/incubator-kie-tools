@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -156,7 +156,8 @@ pipeline {
                         "${env.SONATAFLOW_BUILDER_IMAGE__registry}/${env.SONATAFLOW_BUILDER_IMAGE__account}",
                         "${env.SONATAFLOW_BUILDER_IMAGE__name}",
                         "${env.SONATAFLOW_BUILDER_IMAGE__buildTag} latest",
-                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
                 }
             }

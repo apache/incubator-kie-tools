@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -143,7 +143,8 @@ pipeline {
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry}/${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags}",
-                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
                 }
             }

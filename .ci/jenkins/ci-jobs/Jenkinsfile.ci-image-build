@@ -18,12 +18,12 @@ pipeline {
     agent any
 
     parameters {
-        string(description: 'Image tag', name: 'IMAGE_TAG', defaultValue: 'latest')
+        string(description: 'Image tag', name: 'IMAGE_TAG', defaultValue: 'main')
     }
 
     environment {
-        IMAGE_ACCOUNT = 'quay.io/kie-tools'
-        IMAGE_NAME = 'kie-tools-ci-build'
+        IMAGE_ACCOUNT = 'docker.io/apache'
+        IMAGE_NAME = 'incubator-kie-tools-ci-build'
         IMAGE_NAME_TAG = "${IMAGE_ACCOUNT}/${IMAGE_NAME}:${params.IMAGE_TAG}"
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
     }
@@ -73,7 +73,8 @@ pipeline {
                         "${IMAGE_ACCOUNT}",
                         "${IMAGE_NAME}",
                         "${params.IMAGE_TAG}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
                 }
             }
@@ -91,7 +92,7 @@ pipeline {
                         if (!env.CHANGE_ID && env.BRANCH_NAME == 'main') {
                             sh """
                             docker build -t ${IMAGE_NAME_TAG} -f .ci/incubator-kie-tools-ci-build.Dockerfile .
-                            docker tag ${IMAGE_NAME_TAG} ${IMAGE_ACCOUNT}/${IMAGE_NAME}:latest
+                            docker tag ${IMAGE_NAME_TAG} ${IMAGE_ACCOUNT}/${IMAGE_NAME}:main
                             """
                             IMAGE_TAGS = "${params.IMAGE_TAG} latest"
                         } else {
@@ -133,6 +134,8 @@ pipeline {
                     node --version
                     npm --version
                     pnpm --version
+                    python --version
+                    helm version
                     go version
                 '''.trim()
             }
