@@ -10187,15 +10187,9 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
-      adm-zip:
-        specifier: ^0.5.10
-        version: 0.5.10
       cpr:
         specifier: ^3.0.1
         version: 3.0.1
-      mvn-artifact-download:
-        specifier: 6.1.1
-        version: 6.1.1
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -31484,12 +31478,6 @@ packages:
       regex-parser: 2.2.11
     dev: true
 
-  /adm-zip@0.5.10:
-    resolution:
-      { integrity: sha512-x0HvcHqVJNTPk/Bw8JbLWlWoo6Wwnsug0fnYYro1HBrjxZ3G7/AZk7Ahv8JwDe1uIcz8eBqvu86FuF1POiG7vQ== }
-    engines: { node: ">=6.0" }
-    dev: true
-
   /agent-base@4.3.0:
     resolution:
       { integrity: sha512-salcGninV0nPrwpGNn4VTXBb1SOuXQBiqbrNXoeizJsHrsL6ERFM2Ne3JUSBWRE6aeNJI2ROP/WEEIDUiDe3cg== }
@@ -44338,43 +44326,6 @@ packages:
   /mute-stream@0.0.8:
     resolution:
       { integrity: sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA== }
-
-  /mvn-artifact-download@6.1.1:
-    resolution:
-      { integrity: sha512-BG7eFGeGSjoPon4MC7It5k/m+mvXJ9lxABzdWq16mIkePPsGWlILWv+zbinyhYHixT/RWDg4wIjIeH7vpdJmRg== }
-    engines: { node: ">=12" }
-    dependencies:
-      mvn-artifact-filename: 6.1.0
-      mvn-artifact-name-parser: 6.1.0
-      mvn-artifact-url: 6.1.0
-      node-fetch: 2.6.11
-    transitivePeerDependencies:
-      - encoding
-    dev: true
-
-  /mvn-artifact-filename@6.1.0:
-    resolution:
-      { integrity: sha512-LmRzDDZw5cmI2kYCNMdfwf9KBS+HVolU9xV4+xhZ5WRAGF6xpsVRxq5+e+5/GOZB+534b1qBXxLhGafbyBdIDw== }
-    engines: { node: ">=12" }
-    dev: true
-
-  /mvn-artifact-name-parser@6.1.0:
-    resolution:
-      { integrity: sha512-H82T18s4tS8Go4knZWPL9RcBv9vjKpN9bJMbuvWJWFmZ1fvEgKOFQ28E0FU1Z0xd8VGq7GAGLlDoE94qJdOPiA== }
-    engines: { node: ">=12" }
-    dev: true
-
-  /mvn-artifact-url@6.1.0:
-    resolution:
-      { integrity: sha512-G7U7LUtrCRporzsu5VXhgGUE5B9VtCh8iqeLOKxOZALbeELzF8ftj3aSpkR+5fBRBVRwvUC2rQpiwU9cBFYRFQ== }
-    engines: { node: ">=12" }
-    dependencies:
-      mvn-artifact-filename: 6.1.0
-      node-fetch: 2.6.11
-      xml2js: 0.5.0
-    transitivePeerDependencies:
-      - encoding
-    dev: true
 
   /nanoid@3.2.0:
     resolution:
