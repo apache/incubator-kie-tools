@@ -16,7 +16,7 @@
     "build:dev": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm image:build\"",
     "build:prod": "pnpm build:dev && pnpm image:test",
     "copy-assets": "run-script-os",
-    "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources build && cp -R resources/* build",
+    "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources build && mkdir -p build/target/test/results && cp -R resources/* build",
     "copy-test-assets": "run-script-os",
     "copy-test-assets:linux:darwin": "cp -R ./node_modules/@kie-tools/sonataflow-image-common/test-resources/* build && cp -R test-resources/* build",
     "format": "prettier --write .",
