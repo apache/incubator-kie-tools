@@ -18,28 +18,32 @@
 /**
 * Push an image to a given registry
 */
-def pushImageToRegistry(String registry, String image, String tags, String credentialsId) {
-    withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PWD')]) {
-        sh "set +x && docker login -u $REGISTRY_USER -p $REGISTRY_PWD $registry"
-        tagList = tags.split(' ')
-        for (tag in tagList) {
-            sh "docker push $registry/$image:$tag"
+def pushImageToRegistry(String registry, String image, String tags, String userCredentialsId, String tokenCredentialsId) {
+    withCredentials([string(credentialsId: userCredentialsId, variable: 'DOCKER_USER')]) {
+        withCredentials([string(credentialsId: tokenCredentialsId, variable: 'DOCKER_TOKEN')]) {
+            sh "set +x && docker login -u $DOCKER_USER -p $DOCKER_TOKEN $registry"
+            tagList = tags.split(' ')
+            for (tag in tagList) {
+                sh "docker push $registry/$image:$tag"
+            }
+            sh 'docker logout'
         }
-        sh 'docker logout'
     }
 }
 
 /**
 * @return bool image exists in a given registry
 */
-def checkImageExistsInRegistry(String registry, String image, String tag, String credentialsId) {
-    withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PWD')]) {
-        sh "set +x && docker login -u $REGISTRY_USER -p $REGISTRY_PWD $registry"
-        result = sh returnStatus: true, script: """
-        docker manifest inspect $registry/$image:$tag > /dev/null 2>&1
-        """.trim()
-        sh 'docker logout'
-        return result == 0
+def checkImageExistsInRegistry(String registry, String image, String tag, String userCredentialsId, String tokenCredentialsId) {
+    withCredentials([string(credentialsId: userCredentialsId, variable: 'DOCKER_USER')]) {
+        withCredentials([string(credentialsId: tokenCredentialsId, variable: 'DOCKER_TOKEN')]) {
+            sh "set +x && docker login -u $DOCKER_USER -p $DOCKER_TOKEN $registry"
+            result = sh returnStatus: true, script: """
+            docker manifest inspect $registry/$image:$tag > /dev/null 2>&1
+            """.trim()
+            sh 'docker logout'
+            return result == 0
+        }
     }
 }
 
