@@ -11336,7 +11336,7 @@ importers:
         specifier: ^4.18.2
         version: 4.18.2
       graphql:
-        specifier: ^14.3.1
+        specifier: 14.3.1
         version: 14.3.1
       jest:
         specifier: ^26.6.3
