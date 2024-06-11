@@ -27,7 +27,7 @@ import {
 } from "./schemas/scesim-1_8/ts-gen/meta";
 import { SceSim__ScenarioSimulationModelType } from "./schemas/scesim-1_8/ts-gen/types";
 
-type SceSimMarshaller = {
+export type SceSimMarshaller = {
   parser: { parse(): SceSimModel };
   builder: { build(json: SceSimModel): string };
   instanceNs: Map<string, string>;
@@ -57,7 +57,7 @@ export function getMarshaller(xml: string): SceSimMarshaller {
     version: "1.8",
     root: scesim18root,
     meta: scesim18meta,
-    parser: { parse: () => p.parse({ xml, instanceNs }).json },
+    parser: { parse: () => p.parse({ type: "domdoc", domdoc, instanceNs }).json },
     builder: { build: (json: SceSimModel) => p.build({ json, instanceNs }) },
   };
 }

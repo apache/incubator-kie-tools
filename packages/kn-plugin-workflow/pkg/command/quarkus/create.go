@@ -6,23 +6,24 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 package quarkus
 
 import (
 	"fmt"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
+
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )
@@ -94,7 +95,7 @@ func runCreate() error {
 	}
 
 	workflowFilePath := fmt.Sprintf("./%s/src/main/resources/%s", cfg.ProjectName, metadata.WorkflowSwJson)
-	common.CreateWorkflow(workflowFilePath)
+	common.CreateWorkflow(workflowFilePath, false)
 
 	fmt.Println("🎉 Quarkus SonataFlow project successfully created")
 	return nil
@@ -135,15 +136,10 @@ func runCreateCmdConfig() (cfg CreateQuarkusProjectConfig, err error) {
 
 	cfg = CreateQuarkusProjectConfig{
 		ProjectName: viper.GetString("name"),
-		Extensions: fmt.Sprintf("%s,%s,%s,%s,%s,%s,%s,%s,%s",
-			metadata.KogitoQuarkusServerlessWorkflowExtension,
-			metadata.KogitoAddonsQuarkusKnativeEventingExtension,
+		Extensions: fmt.Sprintf("%s,%s,%s,%s",
 			metadata.QuarkusKubernetesExtension,
 			metadata.QuarkusResteasyJacksonExtension,
-			metadata.KogitoQuarkusServerlessWorkflowDevUi,
-			metadata.KogitoAddonsQuarkusSourceFiles,
 			metadata.SmallryeHealth,
-			metadata.KogitoDataIndexInMemory,
 			viper.GetString("extension"),
 		),
 		DependenciesVersion: metadata.DependenciesVersion{

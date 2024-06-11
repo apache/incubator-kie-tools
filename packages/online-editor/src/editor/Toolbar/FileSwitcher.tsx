@@ -84,7 +84,7 @@ import {
 } from "../../workspace/components/WorkspaceStatusIndicator";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
-import { switchExpression } from "../../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { GitStatusProps } from "../../workspace/components/GitStatusIndicatorActions";
 
 const ROOT_MENU_ID = "rootMenu";

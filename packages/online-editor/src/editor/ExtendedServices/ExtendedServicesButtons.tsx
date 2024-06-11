@@ -25,7 +25,7 @@ import {
   DropdownToggleAction,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
 import * as React from "react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { useDevDeployments } from "../../devDeployments/DevDeploymentsContext";
 import { useDevDeploymentsDeployDropdownItems } from "../../devDeployments/DevDeploymentsDeployDropdownItems";
@@ -79,19 +79,10 @@ export function ExtendedServicesButtons(props: Props) {
 
   const toggleDevDeploymentsDropdown = useCallback(
     (isOpen: boolean) => {
-      if (extendedServices.status === ExtendedServicesStatus.RUNNING) {
-        devDeployments.setDeployDropdownOpen(isOpen);
-        return;
-      }
-      extendedServices.setInstallTriggeredBy(DependentFeature.DEV_DEPLOYMENTS);
-      extendedServices.setModalOpen(true);
+      devDeployments.setDeployDropdownOpen(isOpen);
     },
-    [devDeployments, extendedServices]
+    [devDeployments]
   );
-
-  const isExtendedServicesRunning = useMemo(() => {
-    return extendedServices.status === ExtendedServicesStatus.RUNNING;
-  }, [extendedServices.status]);
 
   const [runModeOpen, setRunModeOpen] = useState<boolean>(false);
 
@@ -118,131 +109,133 @@ export function ExtendedServicesButtons(props: Props) {
 
   return (
     <>
-      <FeatureDependentOnExtendedServices isLight={true} position="top">
-        <Dropdown
-          className={isExtendedServicesRunning ? "pf-m-active" : ""}
-          onSelect={() => devDeployments.setDeployDropdownOpen(false)}
-          toggle={
-            <DropdownToggle
-              id="dmn-dev-deployment-dropdown-button"
-              onToggle={toggleDevDeploymentsDropdown}
-              data-testid="dmn-dev-deployment-button"
-            >
-              Deploy
-            </DropdownToggle>
-          }
-          isOpen={devDeployments.isDeployDropdownOpen}
-          position={DropdownPosition.right}
-          dropdownItems={devDeploymentsDropdownItems}
-        />
-      </FeatureDependentOnExtendedServices>
-      {"  "}
-      <FeatureDependentOnExtendedServices isLight={true} position="top">
-        <Dropdown
-          onSelect={() => setRunModeOpen(!runModeOpen)}
-          toggle={
-            <DropdownToggle
-              splitButtonItems={[
-                <DropdownToggleAction
-                  key={"dmn-runner-run-button"}
-                  id="dmn-runner-button"
-                  onClick={toggleDmnRunnerDrawer}
-                  className={isExpanded ? "pf-m-active" : ""}
-                  data-testid={"dmn-runner-button"}
-                >
-                  {i18n.terms.run}
-                </DropdownToggleAction>,
-              ]}
-              splitButtonVariant="action"
-              onToggle={(isOpen) => {
-                setRunModeOpen(isOpen);
-              }}
-            />
-          }
-          isOpen={runModeOpen}
-          dropdownItems={[
-            <DropdownItem
-              key={"form-view"}
-              component={"button"}
-              icon={<ListIcon />}
-              onClick={() => {
-                if (extendedServices.status === ExtendedServicesStatus.RUNNING) {
-                  setDmnRunnerMode(DmnRunnerMode.FORM);
-                  setDmnRunnerContextProviderState({
-                    type: DmnRunnerProviderActionType.DEFAULT,
-                    newState: { isExpanded: true },
-                  });
-                }
-              }}
-            >
-              As Form
-            </DropdownItem>,
-            <DropdownItem
-              key={"table-view"}
-              component={"button"}
-              icon={<TableIcon />}
-              onClick={() => {
-                if (extendedServices.status === ExtendedServicesStatus.RUNNING) {
-                  setDmnRunnerMode(DmnRunnerMode.TABLE);
-                  onOpenPanel(PanelId.DMN_RUNNER_TABLE);
-                  setDmnRunnerContextProviderState({
-                    type: DmnRunnerProviderActionType.DEFAULT,
-                    newState: { isExpanded: true },
-                  });
-                }
-              }}
-            >
-              As Table
-            </DropdownItem>,
-            <React.Fragment key={"dmn-runner-inputs"}>
-              <Divider />
-              <DropdownItem
-                component={"button"}
-                icon={<DownloadIcon />}
-                onClick={() => handleDmnRunnerInputsDownload()}
-              >
-                Download inputs
-              </DropdownItem>
-            </React.Fragment>,
-            <DropdownItem
-              key={"dmn-runner--upload-inputs"}
-              component={"button"}
-              icon={<UploadIcon />}
-              onClick={() => uploadDmnRunnerInputsRef.current?.click()}
-            >
-              Load inputs
-            </DropdownItem>,
-            <React.Fragment key={"dmn-runner--delete-inputs"}>
-              <Divider />
-              <DropdownItem component={"div"} style={{ padding: "4px" }}>
-                <DeleteDropdownWithConfirmation
-                  onDelete={() => {
-                    setDmnRunnerContextProviderState({
-                      type: DmnRunnerProviderActionType.DEFAULT,
-                      newState: { currentInputIndex: 0 },
-                    });
-                    onDeleteDmnRunnerPersistenceJson(props.workspaceFile);
-                  }}
-                  item={`Delete DMN Runner inputs`}
-                  label={" Delete inputs"}
-                  isHoverable={false}
-                />
-              </DropdownItem>
-            </React.Fragment>,
-          ]}
-        />
-      </FeatureDependentOnExtendedServices>
-      <a ref={downloadDmnRunnerInputsRef} />
-      <input
-        ref={uploadDmnRunnerInputsRef}
-        type="file"
-        style={{ display: "none" }}
-        onChange={handleDmnRunnerInputsUpload}
-        accept={".json"}
-        onClick={(event: any) => {
-          event.target.value = null;
-        }}
+      <Dropdown
+        className={"pf-m-active"}
+        onSelect={() => devDeployments.setDeployDropdownOpen(false)}
+        toggle={
+          <DropdownToggle
+            id="dmn-dev-deployment-dropdown-button"
+            onToggle={toggleDevDeploymentsDropdown}
+            data-testid="dmn-dev-deployment-button"
+          >
+            Deploy
+          </DropdownToggle>
+        }
+        isOpen={devDeployments.isDeployDropdownOpen}
+        position={DropdownPosition.right}
+        dropdownItems={devDeploymentsDropdownItems}
       />
+      {"  "}
+      {props.workspaceFile.extension === "dmn" && (
+        <>
+          <FeatureDependentOnExtendedServices isLight={true} position="top">
+            <Dropdown
+              onSelect={() => setRunModeOpen(!runModeOpen)}
+              toggle={
+                <DropdownToggle
+                  splitButtonItems={[
+                    <DropdownToggleAction
+                      key={"dmn-runner-run-button"}
+                      id="dmn-runner-button"
+                      onClick={toggleDmnRunnerDrawer}
+                      className={isExpanded ? "pf-m-active" : ""}
+                      data-testid={"dmn-runner-button"}
+                    >
+                      {i18n.terms.run}
+                    </DropdownToggleAction>,
+                  ]}
+                  splitButtonVariant="action"
+                  onToggle={(isOpen) => {
+                    setRunModeOpen(isOpen);
+                  }}
+                />
+              }
+              isOpen={runModeOpen}
+              dropdownItems={[
+                <DropdownItem
+                  key={"form-view"}
+                  component={"button"}
+                  icon={<ListIcon />}
+                  onClick={() => {
+                    if (extendedServices.status === ExtendedServicesStatus.RUNNING) {
+                      setDmnRunnerMode(DmnRunnerMode.FORM);
+                      setDmnRunnerContextProviderState({
+                        type: DmnRunnerProviderActionType.DEFAULT,
+                        newState: { isExpanded: true },
+                      });
+                    }
+                  }}
+                >
+                  As Form
+                </DropdownItem>,
+                <DropdownItem
+                  key={"table-view"}
+                  component={"button"}
+                  icon={<TableIcon />}
+                  onClick={() => {
+                    if (extendedServices.status === ExtendedServicesStatus.RUNNING) {
+                      setDmnRunnerMode(DmnRunnerMode.TABLE);
+                      onOpenPanel(PanelId.DMN_RUNNER_TABLE);
+                      setDmnRunnerContextProviderState({
+                        type: DmnRunnerProviderActionType.DEFAULT,
+                        newState: { isExpanded: true },
+                      });
+                    }
+                  }}
+                >
+                  As Table
+                </DropdownItem>,
+                <React.Fragment key={"dmn-runner-inputs"}>
+                  <Divider />
+                  <DropdownItem
+                    component={"button"}
+                    icon={<DownloadIcon />}
+                    onClick={() => handleDmnRunnerInputsDownload()}
+                  >
+                    Download inputs
+                  </DropdownItem>
+                </React.Fragment>,
+                <DropdownItem
+                  key={"dmn-runner--upload-inputs"}
+                  component={"button"}
+                  icon={<UploadIcon />}
+                  onClick={() => uploadDmnRunnerInputsRef.current?.click()}
+                >
+                  Load inputs
+                </DropdownItem>,
+                <React.Fragment key={"dmn-runner--delete-inputs"}>
+                  <Divider />
+                  <DropdownItem component={"div"} style={{ padding: "4px" }}>
+                    <DeleteDropdownWithConfirmation
+                      onDelete={() => {
+                        setDmnRunnerContextProviderState({
+                          type: DmnRunnerProviderActionType.DEFAULT,
+                          newState: { currentInputIndex: 0 },
+                        });
+                        onDeleteDmnRunnerPersistenceJson(props.workspaceFile);
+                      }}
+                      item={`Delete DMN Runner inputs`}
+                      label={" Delete inputs"}
+                      isHoverable={false}
+                    />
+                  </DropdownItem>
+                </React.Fragment>,
+              ]}
+            />
+          </FeatureDependentOnExtendedServices>
+          <a ref={downloadDmnRunnerInputsRef} />
+          <input
+            ref={uploadDmnRunnerInputsRef}
+            type="file"
+            style={{ display: "none" }}
+            onChange={handleDmnRunnerInputsUpload}
+            accept={".json"}
+            onClick={(event: any) => {
+              event.target.value = null;
+            }}
+          />
+        </>
+      )}
     </>
   );
 }

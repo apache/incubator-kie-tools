@@ -1,4 +1,23 @@
-name: "Setup KIE Tools build environment"
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+name: "Setup Apache KIE Tools build environment"
 description: ""
 
 inputs:
@@ -10,28 +29,30 @@ inputs:
 runs:
   using: "composite"
   steps:
-    # This cleans up the GitHub action images, removing unnecessary packages such as Android Studio and DOTNet libraries.
-    # This can provide up to 7GB of free space for the rest of the build.
     - name: "Clear storage usage from unnecessary packages"
-      uses: jlumbroso/free-disk-space@76866dbe54312617f00798d1762df7f43def6e5c
       if: runner.os == 'Linux'
-      with:
-        # this might remove tools that are actually needed,
-        # if set to "true" but frees about 6 GB
-        tool-cache: false
-        # other packages
-        android: true
-        dotnet: true
-        haskell: true
-        large-packages: false
-        swap-storage: false
+      shell: bash
+      run: |
+        echo "Removing large packages"
+        sudo apt-get update
+        sudo apt-get remove -y '^dotnet-.*'
+        sudo apt-get remove -y '^llvm-.*'
+        sudo apt-get remove -y 'php.*'
+        sudo apt-get remove -y '^mongodb-.*'
+        sudo apt-get autoremove -y
+        sudo apt-get clean
+        echo "Removing large directories"
+        sudo rm -rf /opt/ghc || true
+        sudo rm -rf /usr/local/.ghcup || true
+        sudo rm -rf /usr/share/dotnet || true
+        sudo rm -rf /usr/local/lib/android || true
 
     - name: "Print storage usage (before setup)"
       shell: bash
       run: |
         echo "STEP: Print storage usage (before setup)"
         cd ${{ inputs.working_dir }}
-        du -sh .
+        df -h .
 
     - name: "Create temp dir"
       shell: bash
@@ -41,30 +62,34 @@ runs:
         mkdir tmp
 
     - name: "Setup pnpm"
-      uses: pnpm/action-setup@c3b53f6a16e57305370b4ae5a540c2077a1d50dd
+      uses: pnpm/action-setup@v3
       with:
         version: 8.7.0
 
     - name: "Setup Node"
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: 18.14.0
+        node-version: 20.14.0
 
-    - name: "Setup JDK 11"
-      uses: actions/setup-java@de1bb2b0c5634f0fc4438d7aa9944e68f9bf86cc
+    - name: "Setup JDK 17"
+      uses: actions/setup-java@v4
       with:
-        java-version: 11
+        java-version: 17
         distribution: "zulu"
 
-    - name: "Set up GOLANG 1.21.1"
-      uses: actions/setup-go@v3
+    - name: "Set up GOLANG 1.21.9"
+      uses: actions/setup-go@v5
       with:
-        go-version: "1.21.1"
+        go-version: "1.21.9"
 
     - name: "Set up Maven"
-      uses: stCarolas/setup-maven@07fbbe97d97ef44336b7382563d66743297e442f #v4.5
+      uses: stCarolas/setup-maven@v5
       with:
-        maven-version: 3.8.6
+        maven-version: 3.9.6
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: 3.12
 
     - name: Setup docker (macOS only)
       if: runner.os == 'macOS'
@@ -72,29 +97,48 @@ runs:
       env:
         HOMEBREW_NO_INSTALL_FROM_API:
       run: |
-        brew untap homebrew/core homebrew/cask
-        brew update
-        brew install docker docker-compose
-        cat >entitlements.xml <<EOF
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-        <dict>
-            <key>com.apple.security.hypervisor</key>
-            <true/>
-        </dict>
-        </plist>
-        EOF
-
-        codesign --sign - --entitlements entitlements.xml --force /usr/local/bin/qemu-system-$(uname -m | sed -e s/arm64/aarch64/)
+        echo "STEP: Setup docker (macOS only)"
+        brew update --preinstall
+        LIMA_VERSION=v0.20.1
+        curl -fsSL "https://github.com/lima-vm/lima/releases/download/${LIMA_VERSION}/lima-${LIMA_VERSION:1}-$(uname -s)-$(uname -m).tar.gz" | tar Cxzvm /usr/local
+        COLIMA_VERSION=v0.6.8
+        curl -LO https://github.com/abiosoft/colima/releases/download/${COLIMA_VERSION}/colima-$(uname)-$(uname -m)
+        install colima-$(uname)-$(uname -m) /usr/local/bin/colima
+        brew install docker docker-compose docker-Buildx qemu 2>&1 | tee install.log
         mkdir -p ~/.docker/cli-plugins
-        ln -sfn $(brew --prefix)/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
-        brew install docker-Buildx
+        ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" ~/.docker/cli-plugins/docker-compose
         ln -sfn $(brew --prefix)/opt/docker-buildx/bin/docker-buildx ~/.docker/cli-plugins/docker-buildx
-        colima stop
-        colima delete
+        if grep -q "qemu 8.1.0 is already installed" install.log
+        then
+            echo "Detected broken QEMU bottle installed by brew, removing and reinstalling."
+            brew reinstall qemu
+        fi
         colima start --memory 4 --network-address --verbose
-      # QEMU is reinstalled due to this bug: https://github.com/lima-vm/lima/issues/1742
+
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        echo "version<<$EOF" >> "$GITHUB_OUTPUT"
+        docker version >> "$GITHUB_OUTPUT"
+        echo "$EOF" >> "$GITHUB_OUTPUT"
+
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        echo "version<<$EOF" >> "$GITHUB_OUTPUT"
+        docker compose version >> "$GITHUB_OUTPUT"
+        echo "$EOF" >> "$GITHUB_OUTPUT"
+
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        echo "version<<$EOF" >> "$GITHUB_OUTPUT"
+        colima version >> "$GITHUB_OUTPUT"
+        echo "$EOF" >> "$GITHUB_OUTPUT"
+
+    - name: "Setup Helm (Ubuntu)"
+      if: runner.os == 'Linux'
+      shell: bash
+      env:
+        HELM_VERSION: "v3.13.3"
+      run: |
+        echo "STEP: Install Helm (Ubuntu only)"
+        sudo wget -q https://get.helm.sh/helm-$HELM_VERSION-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm
+        sudo chmod +x /usr/local/bin/helm
 
     - name: "Setup network timeout"
       shell: bash
@@ -110,8 +154,21 @@ runs:
         cd ${{ inputs.working_dir }}
         pnpm -r exec 'bash' '-c' 'mkdir .mvn'
         pnpm -r exec 'bash' '-c' 'echo -B > .mvn/maven.config'
-        pnpm -r exec 'bash' '-c' 'echo -ntp >> .mvn/maven.config'
         pnpm -r exec 'bash' '-c' 'echo -Xmx2g > .mvn/jvm.config'
+
+    - name: "Install s2i pre-reqs (Ubuntu only)"
+      shell: bash
+      run: |
+        echo "STEP: Install libbtrfs-dev (Ubuntu only)"
+        cd ${{ inputs.working_dir }}
+        if [ "${{ runner.os }}" == "Linux" ]; then
+          sudo apt-get -y install libbtrfs-dev libgpgme-dev libdevmapper-dev > /dev/null 2>&1
+        fi
+
+    - name: "Setup s2i (source-to-image)"
+      shell: bash
+      run: |
+        go install github.com/openshift/source-to-image/cmd/s2i@v1.3.9
 
     - name: "Install Fluxbox (Ubuntu only)"
       shell: bash
@@ -176,4 +233,4 @@ runs:
       run: |
         echo "STEP: Print storage usage (after setup)"
         cd ${{ inputs.working_dir }}
-        du -sh .
+        df -h .

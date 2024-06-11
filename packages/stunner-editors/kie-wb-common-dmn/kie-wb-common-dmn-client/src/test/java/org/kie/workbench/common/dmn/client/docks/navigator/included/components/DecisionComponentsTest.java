@@ -411,7 +411,7 @@ public class DecisionComponentsTest {
         final String namespace = "The Namespace";
         final String type = "The type";
         final String file = "my file.dmn";
-        final String filePath = "//users//some//" + file;
+        final String filePath = "users/some/" + file;
         final Import anImport = new Import();
         anImport.setName(new Name(modelName));
         anImport.setNamespace(namespace);
@@ -423,7 +423,7 @@ public class DecisionComponentsTest {
         assertEquals(modelName, includedModel.getModelName());
         assertEquals(namespace, includedModel.getNamespace());
         assertEquals(type, includedModel.getImportType());
-        assertEquals(file, includedModel.getPath());
+        assertEquals(filePath, includedModel.getPath());
     }
 
     @Test

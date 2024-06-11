@@ -111,6 +111,19 @@ export function openRepoInExternalEditorContainer(id: string, container: HTMLEle
   return element();
 }
 
+export function openRepoInExternalEditorContainerFromRepositoryHome(id: string, container: HTMLElement) {
+  const element = () => document.querySelector(`.${KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS}.${id}`)!;
+
+  if (!element()) {
+    container.insertAdjacentHTML(
+      "beforeend",
+      `<li><div class="${KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS} ${id}"></div></li>`
+    );
+  }
+
+  return element();
+}
+
 export function extractOpenFileExtension(url: string) {
   return url
     .split(".")

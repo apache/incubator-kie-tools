@@ -1,0 +1,224 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+pipeline {
+    agent {
+        docker {
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            args '--shm-size=2g --privileged --group-add docker'
+        }
+    }
+
+    options {
+        timeout(time: 120, unit: 'MINUTES')
+    }
+
+    parameters {
+        booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
+        string(description: 'Base Ref', name: 'BASE_REF')
+        booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
+    }
+
+    environment {
+        KIE_TOOLS_BUILD__runLinters = 'false'
+        KIE_TOOLS_BUILD__runTests = 'false'
+        KIE_TOOLS_BUILD__runEndToEndTests = 'false'
+        KIE_TOOLS_BUILD__buildContainerImages = 'true'
+
+        RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
+
+        PNPM_FILTER_STRING = '-F @kie-tools/kie-editors-standalone... -F @kie-tools/serverless-workflow-standalone-editor...'
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                    releaseUtils = load '.ci/jenkins/shared-scripts/releaseUtils.groovy'
+                    releaseUtils = load '.ci/jenkins/shared-scripts/releaseUtils.groovy'
+                    zipUtils = load '.ci/jenkins/shared-scripts/zipUtils.groovy'
+                }
+            }
+        }
+
+        stage('Start required services for build and tests (DinD, Xvfb, Fluxbox)') {
+            steps {
+                script {
+                    buildUtils.startRequiredServices()
+                }
+            }
+        }
+
+        stage('Clean workspace before build') {
+            steps {
+                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Checkout kie-tools') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            "http://github.com/${pipelineVars.githubRepositorySlug}.git",
+                            "${params.BASE_REF}",
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Checkout kogito-online') {
+            steps {
+                dir('kogito-online') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            'http://github.com/apache/incubator-kie-kogito-online.git',
+                            'gh-pages',
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Setup PNPM') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.setupPnpm()
+                    }
+                }
+            }
+        }
+
+        stage('PNPM Bootstrap') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                    }
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to GitHub Pages (kogito-online)') {
+            when {
+                expression { !params.DRY_RUN && !params.RELEASE_CANDIDATE }
+            }
+            steps {
+                dir('kogito-online') {
+                    script {
+                        STANDALONE_EDITORS_DIR = "standalone/${params.RELEASE_VERSION}"
+
+                        sh """#!/bin/bash -el
+                        git config user.email asf-ci-kie@jenkins.kie.apache.org
+                        git config user.name asf-ci-kie
+
+                        git checkout gh-pages
+
+                        echo "Copy standalone resources"
+                        rm -rf ${STANDALONE_EDITORS_DIR}
+                        mkdir -p ${STANDALONE_EDITORS_DIR}/bpmn ${STANDALONE_EDITORS_DIR}/dmn ${STANDALONE_EDITORS_DIR}/swf
+                        cp ${WORKSPACE}/kie-tools/packages/kie-editors-standalone/dist/bpmn/index.js ${STANDALONE_EDITORS_DIR}/bpmn/
+                        cp ${WORKSPACE}/kie-tools/packages/kie-editors-standalone/dist/dmn/index.js ${STANDALONE_EDITORS_DIR}/dmn/
+                        cp ${WORKSPACE}/kie-tools/packages/serverless-workflow-standalone-editor/dist/swf/index.js ${STANDALONE_EDITORS_DIR}/swf/
+                        rm -f ./standalone/bpmn/index.js
+                        rm -f ./standalone/dmn/index.js
+                        rm -f ./standalone/swf/index.js
+                        ln -s ../${params.RELEASE_VERSION}/bpmn/index.js ./standalone/bpmn/index.js
+                        ln -s ../${params.RELEASE_VERSION}/dmn/index.js ./standalone/dmn/index.js
+                        ln -s ../${params.RELEASE_VERSION}/swf/index.js ./standalone/swf/index.js
+
+                        echo "Commit changes and push"
+                        git add .
+                        git commit -m "Deploy ${params.RELEASE_VERSION} (Standalone Editors)"
+                        """.trim()
+
+                        githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.asfGithubPushCredentialsId}")
+                    }
+                }
+            }
+        }
+
+        stage('Setup release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-business-automation-standalone-editors.zip"
+                    env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-standalone-editors.zip"
+
+                    sh "mkdir ${env.RELEASE_ARTIFACTS_DIR}"
+                    zipUtils.zipArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE}", 'kie-tools/packages/kie-editors-standalone/dist')
+                    zipUtils.zipArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE}", 'kie-tools/packages/serverless-workflow-standalone-editor/dist')
+                }
+            }
+        }
+
+        stage('Sign artifacts for Apache release') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                }
+            }
+        }
+
+        stage('Publish Release Candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${env.RELEASE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
+                    )
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs(deleteDirs: true)
+        }
+    }
+}

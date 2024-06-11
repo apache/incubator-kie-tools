@@ -27,7 +27,6 @@ import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 import org.kie.workbench.common.dmn.api.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.stunner.core.util.FileUtils;
 
 import static org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils.isBuiltInType;
 
@@ -36,7 +35,7 @@ public class DMNIncludedNodeFactory {
     public DMNIncludedNode makeDMNIncludeNode(final String path,
                                               final IncludedModel includeModel,
                                               final DRGElement drgElement) {
-        return new DMNIncludedNode(FileUtils.getFileName(path), drgElementWithNamespace(drgElement, includeModel));
+        return new DMNIncludedNode(path, drgElementWithNamespace(drgElement, includeModel));
     }
 
     DRGElement drgElementWithNamespace(final DRGElement drgElement,

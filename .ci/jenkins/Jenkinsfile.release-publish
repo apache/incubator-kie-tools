@@ -1,0 +1,109 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@Library('jenkins-pipeline-shared-libraries')_
+
+pipeline {
+    agent {
+        docker {
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            label util.avoidFaultyNodes()
+        }
+    }
+
+    options {
+        timeout(time: 900, unit: 'MINUTES')
+    }
+
+    parameters {
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
+        string(description: 'Runners', name: 'RUNNERS', defaultValue: '{"dev_deployment_base_image":"true","dev_deployment_kogito_quakus_blank_app_image":"true","dev_deployment_dmn_form_webapp_image":"true","dev_deployment_upload_service":"true","kie_sandbox_image":"true","kie_sandbox_extended_services_image":"true","cors_proxy_image":"true","online_editor":"true","chrome_extensions":"true","vscode_extensions_dev":"true","vscode_extensions_prod":"true","npm_packages":"true","standalone_editors_cdn":"true","extended_services":"true","serverless_logic_web_tools":"true","serverless_logic_web_tools_swf_builder_image":"true","serverless_logic_web_tools_base_builder_image":"true","serverless_logic_web_tools_swf_dev_mode_image":"true","dashbuilder_viewer_image":"true","kn_plugin_workflow":"true","kie_sandbox_helm_chart":"true","kogito_task_console":"true","kogito_management_console":"true","kogito_swf_builder":"true","kogito_serverless_operator":"true","jbpm_quarkus_devui":"true","sonataflow_quarkus_devui":"true"}')
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                }
+            }
+        }
+
+        stage('Clean workspace before build') {
+            steps {
+                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Fetch release') {
+            steps {
+                script {
+                    response = githubUtils.fetchRelease("${pipelineVars.githubRepositorySlug}", "${params.TAG}", "${pipelineVars.kieToolsBotGithubTokenCredentialsId}")
+                    respJSON = readJSON text: response
+                    env.RELEASE_TAG_REF = respJSON.target_commitish
+                    env.RELEASE_UPLOAD_ASSET_URL = githubUtils.parseReleaseAssetUploadUrl(respJSON.upload_url)
+                }
+            }
+        }
+
+        stage('Checkout kie-tools') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            "http://github.com/${pipelineVars.githubRepositorySlug}.git",
+                            "${env.RELEASE_TAG_REF}",
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Check `tag` against `package.json.version`') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        packageVersion = sh(returnStdout: true, script: "#!/bin/bash -el \n node -p \"require('./package.json').version\"").trim()
+                        sh """#!/bin/bash -el
+                        [[ "${params.TAG}" == "${packageVersion}" ]]
+                        """.trim()
+                    }
+                }
+            }
+        }
+
+        stage('Release Build and Publish') {
+            steps {
+                build job: 'KIE/kie-tools/kie-tools-release-build', parameters: [
+                    booleanParam(name: 'DRY_RUN', value: false),
+                    string(name: 'BASE_REF', value: "${env.RELEASE_TAG_REF}"),
+                    string(name: 'TAG', value: "${params.TAG}"),
+                    string(name: 'UPLOAD_ASSET_URL', value: "${env.RELEASE_UPLOAD_ASSET_URL}"),
+                    string(name: 'RUNNERS', value: "${params.RUNNERS}")
+                ]
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs(deleteDirs: true)
+        }
+    }
+}

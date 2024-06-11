@@ -68,6 +68,7 @@ import { ServerlessWorkflowCombinedEditorChannelApi, SwfPreviewOptions } from ".
 import { useSwfDiagramEditorChannelApi } from "./hooks/useSwfDiagramEditorChannelApi";
 import { UseSwfTextEditorChannelApiArgs, useSwfTextEditorChannelApi } from "./hooks/useSwfTextEditorChannelApi";
 import { colorNodes } from "./helpers/ColorNodes";
+import "./styles.scss";
 
 interface Props {
   locale: string;
@@ -79,7 +80,7 @@ interface Props {
 }
 
 export type ServerlessWorkflowCombinedEditorRef = {
-  setContent(path: string, content: string): Promise<void>;
+  setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void>;
   colorNodes(nodeNames: string[], color: string, colorConnectedEnds: boolean): void;
   moveCursorToPosition(position: Position): void;
 };
@@ -116,6 +117,8 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   const { editor: textEditor, editorRef: textEditorRef } = useEditorRef();
   const { editor: diagramEditor, editorRef: diagramEditorRef } = useEditorRef();
 
+  const [theme] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoEditor_theme);
+
   const [previewOptions] = useSharedValue<SwfPreviewOptions>(
     editorEnvelopeCtx.channelApi?.shared.kogitoSwfPreviewOptions_get
   );
@@ -131,6 +134,18 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   const isStandalone = useMemo(() => props.channelType === ChannelType.STANDALONE, [props.channelType]);
 
   const targetOrigin = useMemo(() => (isVscode ? "vscode" : window.location.origin), [isVscode]);
+
+  const applyEditorTheme = useCallback(
+    (theme: EditorTheme) => Promise.all([textEditor?.setTheme(theme), diagramEditor?.setTheme(theme)]),
+    [textEditor, diagramEditor]
+  );
+
+  useEffect(() => {
+    if (theme === undefined) {
+      return;
+    }
+    applyEditorTheme(theme);
+  }, [theme, applyEditorTheme]);
 
   const isCombinedEditorReady = useMemo(() => {
     if (previewOptions?.editorMode === "diagram") {
@@ -203,17 +218,17 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     forwardedRef,
     () => {
       return {
-        setContent: async (path: string, content: string) => {
+        setContent: async (normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string) => {
           try {
-            const match = /\.sw\.(json|yml|yaml)$/.exec(path.toLowerCase());
-            const dotExtension = match ? match[0] : extname(path);
+            const match = /\.sw\.(json|yml|yaml)$/.exec(normalizedPosixPathRelativeToTheWorkspaceRoot.toLowerCase());
+            const dotExtension = match ? match[0] : extname(normalizedPosixPathRelativeToTheWorkspaceRoot);
             const extension = dotExtension.slice(1);
-            const fileName = basename(path);
+            const fileName = basename(normalizedPosixPathRelativeToTheWorkspaceRoot);
             const getFileContentsFn = async () => content;
 
-            setFile({ content, path });
+            setFile({ content, path: normalizedPosixPathRelativeToTheWorkspaceRoot });
             setEmbeddedTextEditorFile({
-              path: path,
+              normalizedPosixPathRelativeToTheWorkspaceRoot,
               getFileContents: getFileContentsFn,
               isReadOnly: props.isReadOnly,
               fileExtension: extension,
@@ -221,7 +236,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
             });
 
             setEmbeddedDiagramEditorFile({
-              path: path,
+              normalizedPosixPathRelativeToTheWorkspaceRoot,
               getFileContents: getFileContentsFn,
               isReadOnly: true,
               fileExtension: extension,
@@ -241,9 +256,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
           await Promise.all([textEditor?.redo(), diagramEditor?.redo()]);
         },
         validate: async (): Promise<Notification[]> => textEditor?.validate() ?? [],
-        setTheme: async (theme: EditorTheme) => {
-          await Promise.all([textEditor?.setTheme(theme), diagramEditor?.setTheme(theme)]);
-        },
+        setTheme: async (theme: EditorTheme) => applyEditorTheme(theme),
         colorNodes: (nodeNames: string[], color: string, colorConnectedEnds: boolean) => {
           colorNodes(nodeNames, color, colorConnectedEnds);
         },
@@ -252,7 +265,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
         },
       };
     },
-    [diagramEditor, file, props.isReadOnly, textEditor, textEditorEnvelopeApi]
+    [diagramEditor, file, props.isReadOnly, textEditor, textEditorEnvelopeApi, applyEditorTheme]
   );
 
   useStateControlSubscription(
@@ -449,15 +462,17 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     }
   }, [editorEnvelopeCtx, isCombinedEditorReady]);
 
+  const themeStyle = getThemeStyle(theme!);
+
   return (
-    <div style={{ height: "100%" }}>
-      <LoadingScreen loading={!isCombinedEditorReady} />
+    <div style={{ height: "100%", background: themeStyle.backgroundColor }}>
+      <LoadingScreen loading={!isCombinedEditorReady} styleTag={themeStyle.loadScreen} />
       {previewOptions?.editorMode === "diagram" ? (
         renderDiagramEditor()
       ) : previewOptions?.editorMode === "text" ? (
         renderTextEditor()
       ) : (
-        <Drawer isExpanded={true} isInline={true}>
+        <Drawer isExpanded={true} isInline={true} className={themeStyle.drawer}>
           <DrawerContent
             panelContent={
               <DrawerPanelContent isResizable={true} defaultSize={previewOptions?.defaultWidth ?? "50%"}>
@@ -472,5 +487,30 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     </div>
   );
 };
+
+interface ThemeStyleTag {
+  drawer: string;
+  loadScreen: string;
+  backgroundColor: string;
+}
+
+function getThemeStyle(theme: EditorTheme): ThemeStyleTag {
+  switch (theme) {
+    case EditorTheme.DARK: {
+      return {
+        drawer: "dark",
+        loadScreen: "vscode-dark",
+        backgroundColor: "black",
+      };
+    }
+    default: {
+      return {
+        drawer: "",
+        loadScreen: "",
+        backgroundColor: "",
+      };
+    }
+  }
+}
 
 export const ServerlessWorkflowCombinedEditor = forwardRef(RefForwardingServerlessWorkflowCombinedEditor);

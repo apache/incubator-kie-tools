@@ -19,6 +19,8 @@
 
 import { ScopeImpl } from "./ScopeImpl";
 import { Scope } from "./Scope";
+import { ReservedWords } from "../ReservedWords";
+import { FunctionSymbol } from "./FunctionSymbol";
 
 export class Scopes {
   private readonly builtInScope: Scope;
@@ -27,6 +29,10 @@ export class Scopes {
   constructor() {
     this.builtInScope = new ScopeImpl("<builtin>");
     this.globalScope = new ScopeImpl("<global>", this.builtInScope);
+
+    ReservedWords.FeelFunctions.forEach((word) => {
+      this.globalScope.define(new FunctionSymbol(word));
+    });
   }
 
   public getBuiltInScope() {

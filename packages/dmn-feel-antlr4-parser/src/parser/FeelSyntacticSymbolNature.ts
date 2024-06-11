@@ -42,4 +42,15 @@ export enum FeelSyntacticSymbolNature {
    * Parameters of functions.
    */
   Parameter,
+
+  /**
+   * Variables which the parser currently doesn't know if it is valid or not because they are validated at runtime.
+   */
+  DynamicVariable,
+
+  /**
+   * Invisible variables are variables used only for the tree structure purpose of the VariablesRepository
+   * and are not available to the user.
+   */
+  InvisibleVariables,
 }

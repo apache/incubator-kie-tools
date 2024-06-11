@@ -22,6 +22,7 @@ const patternflyBase = require("@kie-tools-core/patternfly-base");
 const stunnerEditors = require("@kie-tools/stunner-editors");
 const vscodeJavaCodeCompletionExtensionPlugin = require("@kie-tools/vscode-java-code-completion-extension-plugin");
 const { merge } = require("webpack-merge");
+const { ProvidePlugin } = require("webpack");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 
 const commonConfig = (env) =>
@@ -39,11 +40,22 @@ const commonConfig = (env) =>
 
 module.exports = async (env) => [
   merge(commonConfig(env), {
-    target: "web",
+    target: "node",
     entry: {
       "extension/extension": "./src/extension/extension.ts",
     },
-    plugins: [],
+  }),
+  merge(commonConfig(env), {
+    target: "webworker",
+    entry: {
+      "extension/extensionWeb": "./src/extension/extension.ts",
+    },
+    plugins: [
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
+    ],
   }),
   merge(commonConfig(env), {
     target: "web",
@@ -54,6 +66,10 @@ module.exports = async (env) => [
       rules: [...patternflyBase.webpackModuleRules],
     },
     plugins: [
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
       new CopyWebpackPlugin({
         patterns: [
           {

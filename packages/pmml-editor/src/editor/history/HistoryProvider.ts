@@ -18,7 +18,7 @@
  */
 
 import { applyPatches, produce } from "immer";
-import type { WritableDraft } from "immer/dist/types/types-external";
+import type { WritableDraft } from "immer";
 import { PMML } from "@kie-tools/pmml-editor-marshaller/dist/marshaller/model";
 import { cloneDeep, get, set } from "lodash";
 import { Path } from "../paths";

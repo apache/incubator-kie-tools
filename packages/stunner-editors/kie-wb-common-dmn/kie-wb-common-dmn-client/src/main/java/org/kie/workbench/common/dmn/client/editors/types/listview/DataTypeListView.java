@@ -159,7 +159,9 @@ public class DataTypeListView implements DataTypeList.View {
     }
 
     void setupAddButtonReadOnlyStatus() {
-        addButton.disabled = readOnlyProvider.isReadOnlyDiagram();
+        boolean isReadOnly = readOnlyProvider.isReadOnlyDiagram();
+        addButton.disabled = isReadOnly;
+        addButtonPlaceholder.disabled = isReadOnly;
     }
 
     public void importJavaClasses(final List<JavaClass> javaClasses) {

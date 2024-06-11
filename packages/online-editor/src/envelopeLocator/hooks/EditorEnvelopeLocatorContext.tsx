@@ -19,15 +19,29 @@
 
 import * as React from "react";
 import { useContext, useMemo } from "react";
-// import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
-import { EditorEnvelopeLocatorFactory } from "../EditorEnvelopeLocatorFactory";
+import { EditorEnvelopeLocatorFactory, GLOB_PATTERN } from "../EditorEnvelopeLocatorFactory";
 import { useEnv } from "../../env/hooks/EnvContext";
 import { EditorConfig } from "../EditorEnvelopeLocatorApi";
+import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api/EditorEnvelopeLocator";
+import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 
 export type SupportedFileExtensions = "bpmn" | "bpmn2" | "BPMN" | "BPMN2" | "dmn" | "DMN" | "pmml" | "PMML";
 
-// FIXME: Chaging `any` to `EditorEnvelopeLocator` breaks --env live. Please adress this as part of https://github.com/kiegroup/kie-issues/issues/109
-export const EditorEnvelopeLocatorContext = React.createContext<any>({} as any);
+// FIXME: Chaging `any` to `EditorEnvelopeLocator` breaks --env live. Please adress this as part of https://github.com/apache/incubator-kie-issues/issues/109
+export const EditorEnvelopeLocatorContext = React.createContext<EditorEnvelopeLocator>({} as any);
+
+export const LEGACY_DMN_EDITOR_EDITOR_CONFIG: EditorConfig = {
+  extension: FileTypes.DMN,
+  filePathGlob: GLOB_PATTERN.dmn,
+  editor: {
+    resourcesPathPrefix: "gwt-editors/dmn",
+    path: "dmn-envelope.html",
+  },
+  card: {
+    title: "Decision",
+    description: "DMN files are used to generate decision models",
+  },
+};
 
 export function EditorEnvelopeLocatorContextProvider(props: { children: React.ReactNode }) {
   const editorsConfig = useEditorsConfig();

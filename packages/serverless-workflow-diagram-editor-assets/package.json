@@ -4,13 +4,13 @@
   "description": "",
   "license": "Apache-2.0",
   "keywords": [],
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "types": "index.d.ts",
   "main": "index.js",
@@ -21,11 +21,12 @@
     "build:dev": "pnpm dist",
     "build:prod": "pnpm lint && pnpm dist",
     "dist": "rimraf dist && mkdir dist && pnpm dist:sw",
-    "dist:sw": "mkdir \"dist/sw\" && cpr ../serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/target/sw-editor-kogito-app/org.kie.workbench.common.stunner.sw.KogitoSWEditor ./dist/sw/org.kie.workbench.common.stunner.sw.KogitoSWEditor",
+    "dist:sw": "mkdir \"dist/sw\" && cpr ./node_modules/@kie-tools/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/target/sw-editor-kogito-app/org.kie.workbench.common.stunner.sw.KogitoSWEditor ./dist/sw/org.kie.workbench.common.stunner.sw.KogitoSWEditor",
     "lint": "echo 'Linting'"
   },
   "devDependencies": {
     "@kie-tools/serverless-workflow-diagram-editor": "workspace:*",
+    "@kie-tools/serverless-workflow-diagram-editor-envelope": "workspace:*",
     "cpr": "^3.0.1",
     "rimraf": "^3.0.2"
   }

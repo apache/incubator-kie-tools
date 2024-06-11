@@ -28,9 +28,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command/quarkus"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command/quarkus"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 )
 
 type CfgTestInputQuarkusCreate struct {
@@ -50,7 +50,7 @@ var cfgTestInputQuarkusCreate_Success = []CfgTestInputQuarkusCreate{
 		Extensions:  "quarkus-jsonp,quarkus-smallrye-openapi",
 		DependenciesVersion: metadata.DependenciesVersion{
 			QuarkusPlatformGroupId: "io.quarkus.platform",
-			QuarkusVersion:         "2.16.6.Final",
+			QuarkusVersion:         "3.8.4",
 		},
 	}},
 }
@@ -145,11 +145,10 @@ func RunQuarkusCreateTest(t *testing.T, test CfgTestInputQuarkusCreate) string {
 
 	// Verify the content of the file `workflow.sw.json`
 	workflowFilePath := filepath.Join(projectDir, "src/main/resources/workflow.sw.json")
-	workflowFileData, err := common.GetWorkflowTemplate()
+	workflowFileData, err := common.GetWorkflowTemplate(false)
 	require.NoErrorf(t, err, "Error reading workflow template: %v", err)
 	expectedFileContent := string(workflowFileData)
 	VerifyFileContent(t, workflowFilePath, expectedFileContent)
-
 	return projectName
 }
 

@@ -19,6 +19,7 @@
 
 import { DataType } from "./DataType";
 import { FeelSyntacticSymbolNature } from "./FeelSyntacticSymbolNature";
+import { Expression } from "./VariableOccurrence";
 
 /**
  * Describe a variable in FEEL.
@@ -38,4 +39,9 @@ export interface Variable {
    * The type of the variable, which can be a custom data type defined by the user, a built-in type or not defined.
    */
   typeRef?: DataType | string | undefined;
+
+  /**
+   * The expressions where this variable is being used.
+   */
+  expressions: Map<string, Expression>;
 }

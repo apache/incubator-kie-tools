@@ -18,6 +18,6 @@
  */
 
 export * from "./dmnResult";
-export * from "./jsonSchema";
+export * from "./formSchema";
 export * from "./payload";
 export * from "./validate";

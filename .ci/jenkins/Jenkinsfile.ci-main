@@ -1,0 +1,146 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@Library('jenkins-pipeline-shared-libraries')_
+
+pipeline {
+    agent {
+        label util.avoidFaultyNodes()
+    }
+
+    options {
+        timeout(time: 600, unit: 'MINUTES')
+        disableConcurrentBuilds(abortPrevious: true)
+    }
+
+    environment {
+        BUILD_IMAGE_TAG = 'latest'
+        BUILD_IMAGE_JOB_STATUS = 'SKIPPED'
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                }
+            }
+        }
+
+        stage('Checkout Apache KIE Tools (Simulated squashed merge)') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        githubUtils.checkoutRepoSquashedMerge(
+                            env.CHANGE_AUTHOR,
+                            env.CHANGE_BRANCH,
+                            "https://github.com/${env.CHANGE_AUTHOR}/${pipelineVars.githubRepositoryName}.git",
+                            env.CHANGE_TARGET ?: env.BRANCH_NAME,
+                            "https://github.com/${pipelineVars.githubRepositoryOrg}/${pipelineVars.githubRepositoryName}.git",
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+
+                        BUILD_IMAGE_REQUIRED = githubUtils.fileIsInChangeset('incubator-kie-tools-ci-build.Dockerfile')
+                    }
+                }
+            }
+        }
+
+        stage('Image Build') {
+            when {
+                expression { BUILD_IMAGE_REQUIRED }
+            }
+            steps {
+                script {
+                    BUILD_IMAGE_TAG = "${env.GIT_COMMIT}"
+                    BUILD_IMAGE_JOB_STATUS = build(
+                        job: "KIE/kie-tools/kie-tools-ci-jobs/kie-tools-ci-image-build/${BRANCH_NAME}",
+                        parameters: [
+                            string(name: 'IMAGE_TAG', value: "${env.GIT_COMMIT}")
+                        ]
+                    ).result
+                }
+            }
+        }
+
+        stage('Apache KIE Tools CI') {
+            when {
+                expression { BUILD_IMAGE_JOB_STATUS == 'SKIPPED' ||  BUILD_IMAGE_JOB_STATUS == 'SUCCESS' }
+            }
+            parallel {
+                stage('Apache KIE Tools Build') {
+                    steps {
+                        script {
+                            build(
+                                job: "KIE/kie-tools/kie-tools-ci-jobs/kie-tools-ci-build/${BRANCH_NAME}",
+                                parameters: [
+                                    string(name: 'IMAGE_TAG', value: "${BUILD_IMAGE_TAG}")
+                                ]
+                            )
+                        }
+                    }
+                }
+
+                stage('Check Dependencies') {
+                    steps {
+                        script {
+                            build(
+                                job: "KIE/kie-tools/kie-tools-ci-jobs/kie-tools-ci-check-dependencies/${BRANCH_NAME}",
+                                parameters: [
+                                    string(name: 'IMAGE_TAG', value: "${BUILD_IMAGE_TAG}")
+                                ]
+                            )
+                        }
+                    }
+                }
+
+                stage('Check Code Formatting') {
+                    steps {
+                        script {
+                            build(
+                                job: "KIE/kie-tools/kie-tools-ci-jobs/kie-tools-ci-check-code-formatting/${BRANCH_NAME}",
+                                parameters: [
+                                    string(name: 'IMAGE_TAG', value: "${BUILD_IMAGE_TAG}")
+                                ]
+                            )
+                        }
+                    }
+                }
+
+                stage('Check Code Quality') {
+                    steps {
+                        script {
+                            build(
+                                job: "KIE/kie-tools/kie-tools-ci-jobs/kie-tools-ci-check-code-quality/${BRANCH_NAME}",
+                                parameters: [
+                                    string(name: 'IMAGE_TAG', value: "${BUILD_IMAGE_TAG}")
+                                ]
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs(deleteDirs: true)
+        }
+    }
+}

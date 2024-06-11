@@ -34,6 +34,8 @@ import { EnvelopeBusMessage } from "@kie-tools-core/envelope-bus/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { VsCodeKieEditorCustomDocument } from "./VsCodeKieEditorCustomDocument";
+import * as __path from "path";
+import { getWorkspaceRoot } from "./workspace/workspaceRoot";
 
 function fileExtension(documentUri: vscode.Uri) {
   const lastSlashIndex = documentUri.fsPath.lastIndexOf("/");
@@ -89,6 +91,9 @@ export class VsCodeKieEditorController implements EditorApi {
             initialLocale: vscode.env.language,
             isReadOnly: false,
             channel: vscode.env.uiKind === UIKind.Desktop ? ChannelType.VSCODE_DESKTOP : ChannelType.VSCODE_WEB,
+            workspaceRootAbsolutePosixPath:
+              // On VS Code web, when dangling files are open, `vscode.workspace.workspaceFolders` is [].
+              vscode.workspace.workspaceFolders?.[0]?.uri.path ?? __path.dirname(document.document.uri.path),
           }
         )
     )
@@ -113,9 +118,9 @@ export class VsCodeKieEditorController implements EditorApi {
     return this.envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content);
   }
 
-  public setContent(path: string, content: string) {
+  public setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string) {
     return this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
-      { path, content },
+      { normalizedPosixPathRelativeToTheWorkspaceRoot, content },
       { showLoadingOverlay: true }
     );
   }
@@ -264,7 +269,9 @@ export class VsCodeKieEditorController implements EditorApi {
       this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
         {
           content: e.document.getText(),
-          path: e.document.uri.path,
+          normalizedPosixPathRelativeToTheWorkspaceRoot: __path.posix.normalize(
+            __path.relative(getWorkspaceRoot(e.document).workspaceRootAbsoluteFsPath, e.document.uri.fsPath)
+          ),
         },
         { showLoadingOverlay: false }
       );

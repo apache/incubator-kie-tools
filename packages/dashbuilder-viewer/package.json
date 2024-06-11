@@ -4,13 +4,13 @@
   "description": "",
   "license": "Apache-2.0",
   "keywords": [],
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "types": "./dist/envelope/index.d.ts",
   "main": "dist/envelope/index.js",
@@ -62,7 +62,7 @@
     "jest-junit": "^14.0.0",
     "jest-when": "^3.5.0",
     "rimraf": "^3.0.2",
-    "start-server-and-test": "^1.12.1",
+    "start-server-and-test": "^2.0.3",
     "ts-jest": "^26.5.6",
     "typescript": "^4.6.2",
     "vscode-json-languageservice": "^4.2.1",

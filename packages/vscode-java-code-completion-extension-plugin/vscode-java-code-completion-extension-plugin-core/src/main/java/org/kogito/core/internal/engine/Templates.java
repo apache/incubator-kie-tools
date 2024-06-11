@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kogito.core.internal.engine;
 
 public class Templates {

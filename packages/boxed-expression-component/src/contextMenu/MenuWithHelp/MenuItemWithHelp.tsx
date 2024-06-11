@@ -18,10 +18,10 @@
  */
 
 import * as React from "react";
-import "./MenuWithHelp.css";
 import { MenuItem } from "@patternfly/react-core/dist/js/components/Menu/MenuItem";
 import { MenuItemAction } from "@patternfly/react-core/dist/js/components/Menu/MenuItemAction";
 import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
+import "./MenuWithHelp.css";
 
 export interface MenuItemWithHelpProps {
   menuItemKey: string;
@@ -52,7 +52,10 @@ export function MenuItemWithHelp({
       actions={
         (isHovered || visibleHelp === menuItemHelp) && (
           <MenuItemAction
-            onClick={() => setVisibleHelp(menuItemHelp)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setVisibleHelp(menuItemHelp);
+            }}
             icon={<HelpIcon aria-hidden />}
             actionId={menuItemKey + "-help"}
             aria-label={menuItemKey + "-help"}

@@ -17,8 +17,7 @@
  * under the License.
  */
 
-import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDevDeployments as useDevDeployments } from "./DevDeploymentsContext";
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { DevDeploymentsDropdownItem } from "./DevDeploymentsDropdownItem";
@@ -28,8 +27,6 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
-import { DependentFeature, useExtendedServices } from "../extendedServices/ExtendedServicesContext";
-import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
 import CaretDownIcon from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
@@ -45,14 +42,13 @@ import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useOnlineI18n } from "../i18n";
 import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
-import { KieSandboxDeployedModel } from "./services/types";
+import { KieSandboxDeployment } from "./services/types";
 
 const REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS = 30;
 
 export function DevDeploymentsDropdown() {
   const { i18n } = useOnlineI18n();
   const devDeployments = useDevDeployments();
-  const extendedServices = useExtendedServices();
   const accountsDispatch = useAccountsDispatch();
   const [authSessionId, setAuthSessionId] = useState<string | undefined>();
   const { authSessions } = useAuthSessions();
@@ -78,7 +74,7 @@ export function DevDeploymentsDropdown() {
     });
   }, [authSessions, suggestedAuthSessionForDeployment]);
 
-  const [deployments, refresh] = useLivePromiseState<KieSandboxDeployedModel[]>(
+  const [deployments, refresh] = useLivePromiseState<KieSandboxDeployment[]>(
     useMemo(() => {
       if (!authSession || (authSession.type !== "openshift" && authSession.type !== "kubernetes")) {
         return { error: "Can't load Dev deployments with this AuthSession." };
@@ -86,7 +82,7 @@ export function DevDeploymentsDropdown() {
 
       return () => {
         setRefreshCountdownInSeconds(REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS);
-        return devDeployments.loadDeployments({ authSession });
+        return devDeployments.loadDevDeployments({ authSession });
       };
     }, [authSession, devDeployments])
   );
@@ -97,7 +93,7 @@ export function DevDeploymentsDropdown() {
     }
     devDeployments.setConfirmDeleteModalState({
       isOpen: true,
-      resourceNames: (deployments.data ?? []).map((s) => s.resourceName),
+      resources: (deployments.data ?? []).reduce((acc, deployment) => [...acc, ...deployment.resources], []),
       cloudAuthSessionId: authSessionId,
     });
   }, [authSessionId, deployments.data, devDeployments]);
@@ -221,95 +217,57 @@ export function DevDeploymentsDropdown() {
             onToggle={() => devDeployments.setDeploymentsDropdownOpen((dropdownOpen) => !dropdownOpen)}
             className={"kie-tools--masthead-hoverable-dark"}
           >
-            <PficonSatelliteIcon
-              color={extendedServices.status !== ExtendedServicesStatus.RUNNING ? "gray" : undefined}
-            />
+            <PficonSatelliteIcon color={undefined} />
             &nbsp;&nbsp; Dev deployments &nbsp;&nbsp;
-            <CaretDownIcon color={extendedServices.status !== ExtendedServicesStatus.RUNNING ? "gray" : undefined} />
+            <CaretDownIcon color={undefined} />
           </ResponsiveDropdownToggle>
         }
         isOpen={devDeployments.isDeploymentsDropdownOpen}
         isPlain={true}
         className="kogito--editor__dev-deployments-dropdown"
         title="Dev deployments"
-        dropdownItems={
-          extendedServices.status !== ExtendedServicesStatus.RUNNING
-            ? [
-                <DropdownItem
-                  key="setup-extended-services"
-                  style={{ maxWidth: "400px", minWidth: "400px" }}
-                  onClick={() => {
-                    setTimeout(() => {
-                      extendedServices.setInstallTriggeredBy(DependentFeature.DEV_DEPLOYMENTS);
-                      extendedServices.setModalOpen(true);
-                    });
-                  }}
-                >
-                  <Bullseye>
-                    <EmptyState>
-                      <EmptyStateIcon icon={PficonSatelliteIcon} />
-                      <Title
-                        headingLevel="h4"
-                        size="md"
-                        style={{
-                          width: "300px",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "break-spaces",
-                        }}
-                      >
-                        {`Please setup Extended Services to be able to see your Dev deployments`}
-                      </Title>
-                      <br />
-                      <Button variant={ButtonVariant.link}>Setup...</Button>
-                    </EmptyState>
-                  </Bullseye>
-                </DropdownItem>,
-              ]
-            : [
-                <div style={{ padding: "8px 16px", minWidth: "400px" }} key={"cloud-auth-session-select"}>
-                  <AuthSessionSelect
-                    position={SelectPosition.right}
-                    authSessionId={authSessionId}
-                    setAuthSessionId={(newAuthSessionId) => {
-                      setAuthSessionId(newAuthSessionId);
-                      setTimeout(() => {
-                        accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
-                        devDeployments.setDeploymentsDropdownOpen(true);
-                      }, 0);
-                    }}
-                    isPlain={false}
-                    title={"Select Cloud provider..."}
-                    filter={cloudAuthSessionSelectFilter()}
-                    showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.CLOUD}
-                  />
-                  {authSessionId && (
-                    <>
-                      <br />
-                      <br />
-                      <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-                        <small style={{ color: "darkgray" }}>
-                          {deployments.status !== PromiseStateStatus.PENDING && (
-                            <i>{`Refreshing in ${refreshCountdownInSeconds} seconds...`}</i>
-                          )}
-                        </small>
-                        <Button
-                          variant={ButtonVariant.link}
-                          onClick={() => refresh(new Holder(false))}
-                          style={{ padding: 0 }}
-                          isDisabled={deployments.status === PromiseStateStatus.PENDING}
-                        >
-                          <small>
-                            {deployments.status === PromiseStateStatus.PENDING ? "Refreshing..." : "Refresh"}
-                          </small>
-                        </Button>
-                      </Flex>
-                      <Divider />
-                    </>
-                  )}
-                </div>,
-                ...(items ?? []),
-              ]
-        }
+        dropdownItems={[
+          <div style={{ padding: "8px 16px", minWidth: "400px" }} key={"cloud-auth-session-select"}>
+            <AuthSessionSelect
+              position={SelectPosition.right}
+              authSessionId={authSessionId}
+              setAuthSessionId={(newAuthSessionId) => {
+                setAuthSessionId(newAuthSessionId);
+                setTimeout(() => {
+                  accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
+                  devDeployments.setDeploymentsDropdownOpen(true);
+                }, 0);
+              }}
+              isPlain={false}
+              title={"Select Cloud provider..."}
+              filter={cloudAuthSessionSelectFilter()}
+              showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.CLOUD}
+            />
+            {authSessionId && (
+              <>
+                <br />
+                <br />
+                <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                  <small style={{ color: "darkgray" }}>
+                    {deployments.status !== PromiseStateStatus.PENDING && (
+                      <i>{`Refreshing in ${refreshCountdownInSeconds} seconds...`}</i>
+                    )}
+                  </small>
+                  <Button
+                    variant={ButtonVariant.link}
+                    onClick={() => refresh(new Holder(false))}
+                    style={{ padding: 0 }}
+                    isDisabled={deployments.status === PromiseStateStatus.PENDING}
+                  >
+                    <small>{deployments.status === PromiseStateStatus.PENDING ? "Refreshing..." : "Refresh"}</small>
+                  </Button>
+                </Flex>
+                <Divider />
+              </>
+            )}
+          </div>,
+          ...(items ?? []),
+        ]}
       />
     </>
   );

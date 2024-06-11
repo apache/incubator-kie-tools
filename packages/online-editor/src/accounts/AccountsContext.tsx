@@ -20,7 +20,6 @@
 import * as React from "react";
 import { useCallback, useContext, useReducer } from "react";
 import {
-  AuthProvider,
   AuthProviderGroup,
   GitAuthProvider,
   KubernetesAuthProvider,

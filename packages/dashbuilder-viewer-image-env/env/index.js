@@ -22,15 +22,15 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     DASHBUILDER__viewerImageRegistry: {
-      default: "quay.io",
+      default: "docker.io",
       description: "",
     },
     DASHBUILDER__viewerImageAccount: {
-      default: "kie-tools",
+      default: "apache",
       description: "",
     },
     DASHBUILDER__viewerImageName: {
-      default: "dashbuilder-viewer-image",
+      default: "incubator-kie-dashbuilder-viewer",
       description: "",
     },
   }),

@@ -6,23 +6,23 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 package command
 
 import (
 	"fmt"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 	"os"
@@ -30,6 +30,7 @@ import (
 
 type CreateCmdConfig struct {
 	ProjectName string
+	YAML        bool
 }
 
 func NewCreateCommand() *cobra.Command {
@@ -43,8 +44,18 @@ func NewCreateCommand() *cobra.Command {
 	Workflow file definition.
 
 	Additionally, you can define the configurable parameters of your application in the 
-	"application.properties" file (inside the root directory). 
-	You can also store your spec files (i.e., Open API files) inside the "specs" folder.
+	"application.properties" file (inside the root project directory).
+	You can also store your spec files (i.e., Open API files) inside the "specs" folder,
+	schemas file inside "schemas" folder and also subflows inside "subflows" folder.
+
+	A SonataFlow project, as the following structure by default:
+
+	Workflow project root
+		/specs (optional)
+		/schemas (optional)
+		/subflows (optional)
+		workflow.sw.{json|yaml|yml} (mandatory)
+
 	`,
 		Example: `
 	# Create a project in the local directory
@@ -53,9 +64,12 @@ func NewCreateCommand() *cobra.Command {
 
 	# Create a project with an specific name
 	{{.Name}} create --name myproject
+
+	# Creates a YAML sample workflow file (JSON is default)
+	{{.Name}} create --yaml-workflow
 		`,
-		SuggestFor: []string{"vreate", "creaet", "craete", "new"},
-		PreRunE:    common.BindEnv("name"),
+		SuggestFor: []string{"vreate", "creaet", "craete", "new"}, //nolint:misspell
+		PreRunE:    common.BindEnv("name", "yaml-workflow"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -67,6 +81,7 @@ func NewCreateCommand() *cobra.Command {
 	}
 
 	cmd.Flags().StringP("name", "n", "new-project", "Project name created in the current directory.")
+	cmd.Flags().Bool("yaml-workflow", false, "Create a sample YAML workflow file.")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd
@@ -79,8 +94,15 @@ func runCreate(cfg CreateCmdConfig) error {
 		return fmt.Errorf("❌ ERROR: Error creating project directory: %w", err)
 	}
 
-	workflowPath := fmt.Sprintf("./%s/%s", cfg.ProjectName, metadata.WorkflowSwJson)
-	if err := common.CreateWorkflow(workflowPath); err != nil {
+	var workflowFormat string
+	if cfg.YAML {
+		workflowFormat = metadata.WorkflowSwYaml
+	} else {
+		workflowFormat = metadata.WorkflowSwJson
+	}
+
+	workflowPath := fmt.Sprintf("./%s/%s", cfg.ProjectName, workflowFormat)
+	if err := common.CreateWorkflow(workflowPath, cfg.YAML); err != nil {
 		return fmt.Errorf("❌ ERROR: Error creating workflow file: %w", err)
 	}
 
@@ -94,6 +116,7 @@ func runCreateCmdConfig() (cfg CreateCmdConfig, err error) {
 
 	cfg = CreateCmdConfig{
 		ProjectName: viper.GetString("name"),
+		YAML:        viper.GetBool("yaml-workflow"),
 	}
 	return cfg, nil
 }

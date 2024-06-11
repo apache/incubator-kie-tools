@@ -1,0 +1,52 @@
+{
+  "private": true,
+  "name": "@kie-tools/dev-deployment-upload-service",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "run-script-os",
+    "build-all": "run-script-os",
+    "build-all:linux:darwin": "cross-env DDUS_VERSION=$(build-env root.version) make build-all",
+    "build-all:win32": "pnpm powershell \"cross-env DDUS_VERSION=$(build-env root.version) make build-all\"",
+    "build-install-script:dev": "node scripts/generateInstallScript.js --dev",
+    "build-install-script:prod": "node scripts/generateInstallScript.js",
+    "build:dev": "rimraf dist && pnpm build-install-script:dev && pnpm build-all",
+    "build:prod": "rimraf dist && pnpm build-install-script:prod && pnpm build-all && pnpm test",
+    "install": "go mod tidy",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "start": "make start",
+    "start-test-servers": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"node scripts/runTestServers.js\"",
+    "stop-test-servers": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"node scripts/runTestServers.js --cleanup\"",
+    "test": "run-script-os",
+    "test:linux": "run-script-if --bool \"$(build-env containerImages.build)\" --bool \"$(build-env endToEndTests.run)\" --ignore-errors \"$(build-env tests.ignoreFailures)\" --then  \"jest --verbose --silent=false\"",
+    "test:win32:darwin": "echo 'Not supported'"
+  },
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*",
+    "@types/jest": "^26.0.23",
+    "cross-env": "^7.0.3",
+    "jest": "^26.6.3",
+    "jest-junit": "^14.0.0",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6",
+    "wait-on": "^7.2.0"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "go",
+      "make"
+    ]
+  }
+}

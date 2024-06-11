@@ -23,8 +23,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/root"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/root"
 )
 
 func main() {

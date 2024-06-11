@@ -22,8 +22,6 @@ import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
 import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
-import { VsCodeWorkspaceChannelApiImpl } from "@kie-tools-core/workspace/dist/vscode";
-import { VsCodeNotificationsChannelApiImpl } from "@kie-tools-core/notifications/dist/vscode";
 import * as vscode from "vscode";
 
 let backendProxy: VsCodeBackendProxy;
@@ -31,9 +29,7 @@ let backendProxy: VsCodeBackendProxy;
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
-  const workspaceApi = new VsCodeWorkspaceChannelApiImpl();
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
-  const notificationsApi = new VsCodeNotificationsChannelApiImpl(workspaceApi);
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
 
   KogitoVsCode.startExtension({

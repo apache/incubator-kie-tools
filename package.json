@@ -10,6 +10,8 @@
     "format": "prettier --write . '**/*.xml'",
     "format:check": "prettier --check . '**/*.xml'",
     "prepare": "husky install",
+    "update-kogito-version-to": "kie-tools--update-kogito-version-to",
+    "update-stream-name-to": "kie-tools--update-stream-name-to",
     "update-version-to": "kie-tools--update-version-to"
   },
   "devDependencies": {
@@ -18,11 +20,12 @@
     "@kie-tools-scripts/check-junit-report-results": "workspace:*",
     "@kie-tools-scripts/run-script-if": "workspace:*",
     "@kie-tools-scripts/sparse-checkout": "workspace:*",
+    "@kie-tools-scripts/update-kogito-version": "workspace:*",
+    "@kie-tools-scripts/update-stream-name": "workspace:*",
     "@kie-tools-scripts/update-version": "workspace:*",
     "@nice-move/prettier-plugin-package-json": "^0.6.1",
     "@prettier/plugin-xml": "^2",
-    "@types/node": "^18.13.0",
-    "filemanager-webpack-plugin": "^7.0.0",
+    "@types/node": "^20.14.2",
     "husky": "^6.0.0",
     "postinstall-postinstall": "^2.1.0",
     "prettier": "^2.8.8",
@@ -36,6 +39,7 @@
     "node": ">=18",
     "pnpm": "8.7.0"
   },
+  "packageManager": "pnpm@8.7.0",
   "pnpm": {
     "packageExtensions": {
       "monaco-editor-webpack-plugin": {
@@ -45,7 +49,11 @@
       }
     },
     "patchedDependencies": {
-      "selenium-webdriver@4.10.0": "patches/selenium-webdriver@4.10.0.patch"
+      "immer@10.0.3": "patches/immer@10.0.3.patch",
+      "isomorphic-git@1.11.1": "patches/isomorphic-git@1.11.1.patch",
+      "karma-firefox-launcher@2.1.2": "patches/karma-firefox-launcher@2.1.2.patch",
+      "selenium-webdriver@4.15.0": "patches/selenium-webdriver@4.15.0.patch",
+      "zustand@4.4.2": "patches/zustand@4.4.2.patch"
     }
   },
   "kieTools": {

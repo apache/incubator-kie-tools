@@ -70,6 +70,16 @@ module.exports = {
       },
     },
     {
+      files: ["**/tests/**/*.js"],
+      extends: ["eslint:recommended"],
+      env: {
+        browser: false,
+        node: true,
+        amd: true,
+        jest: true,
+      },
+    },
+    {
       files: ["*.ts", "*.tsx"],
       rules: {
         "no-restricted-imports": [
@@ -78,11 +88,11 @@ module.exports = {
             paths: [
               {
                 name: "@patternfly/react-core",
-                message: "Please use specific imports from @patternfly/react-core/dist/js/**)",
+                message: "Please use specific imports from @patternfly/react-core/dist/js/components/**)",
               },
               {
                 name: "@patternfly/react-icons",
-                message: "Please use specific imports from @patternfly/react-icons/dist/js/**)",
+                message: "Please use specific imports from @patternfly/react-icons/dist/js/icons/**)",
               },
             ],
             patterns: ["!@patternfly/react-core/dist/*", "!@patternfly/react-icons/dist/*"],

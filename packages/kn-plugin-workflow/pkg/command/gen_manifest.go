@@ -21,12 +21,15 @@ package command
 
 import (
 	"fmt"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
-	"github.com/ory/viper"
-	"github.com/spf13/cobra"
 	"os"
 	"path/filepath"
+	"strings"
+
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
+	apiMetadata "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
+	"github.com/ory/viper"
+	"github.com/spf13/cobra"
 )
 
 func NewGenManifest() *cobra.Command {
@@ -36,17 +39,38 @@ func NewGenManifest() *cobra.Command {
 		Long: `
 	Generate a list of Operator manifests for a SonataFlow project.
 	By default, the manifests are generated in the ./manifests directory,
-	but they can be configured by --manifestPath flag.
+	but they can be configured by --custom-generated-manifest-dir flag.
 		 `,
 		Example: `
-	# Persist the generated Operator manifests on a default path (./manifests)
+	# Persist the generated Operator manifests on a default path (default ./manifests)
 	{{.Name}} gen-manifest
-	# Persist the generated Operator manifests on a specific path 
-	{{.Name}} gen-manifest --manifestPath=<full_directory_path>
-	# Specify a custom support files folder. 
-	{{.Name}} gen-manifest --supportFilesFolder=<full_directory_path>
+
+	# Specify a custom target namespace. (default: kubeclt current namespace; --namespace "" to don't set namespace on your manifest)
+	{{.Name}} deploy --namespace <your_namespace>
+
+	# Skip namespace creation
+	{{.Name}} gen-manifest --skip-namespace
+
+	# Persist the generated Operator manifests on a specific custom path
+	{{.Name}} gen-manifest --custom-generated-manifest-dir=<full_directory_path>
+
+	# Specify a custom subflows files directory. (default: ./subflows)
+	{{.Name}} gen-manifest --subflows-dir=<full_directory_path>
+
+	# Specify a custom support specs directory. (default: ./specs)
+	{{.Name}} gen-manifest --specs-dir=<full_directory_path>
+
+	# Specify a custom support schemas directory. (default: ./schemas)
+	{{.Name}} gen-manifest --schemas-dir=<full_directory_path>
+
+	# Specify a profile to use for the deployment. (default: dev)
+	{{.Name}} gen-manifest --profile=<profile_name>
+
+	# Specify a custom image to use for the deployment.
+	{{.Name}} gen-manifest --image=<image_name>
+
 			 `,
-		PreRunE:    common.BindEnv("namespace", "manifestPath", "supportFilesFolder"),
+		PreRunE:    common.BindEnv("namespace", "custom-generated-manifests-dir", "specs-dir", "schemas-dir", "subflows-dir"),
 		SuggestFor: []string{"gen-manifests", "generate-manifest"}, //nolint:misspell
 	}
 
@@ -54,9 +78,14 @@ func NewGenManifest() *cobra.Command {
 		return generateManifestsCmd(cmd, args)
 	}
 
-	cmd.Flags().StringP("namespace", "n", "", "Target namespace of your deployment.")
-	cmd.Flags().StringP("manifestPath", "c", "", "Target directory of your generated Operator manifests.")
-	cmd.Flags().StringP("supportFilesFolder", "s", "", "Specify a custom support files folder")
+	cmd.Flags().StringP("namespace", "n", "", "Target namespace of your deployment. (default: kubeclt current namespace; \"\" to don't set namespace on your manifest)")
+	cmd.Flags().BoolP("skip-namespace", "k", false, "Skip namespace creation")
+	cmd.Flags().StringP("custom-generated-manifests-dir", "c", "", "Target directory of your generated Operator manifests.")
+	cmd.Flags().StringP("specs-dir", "p", "", "Specify a custom specs files directory")
+	cmd.Flags().StringP("subflows-dir", "s", "", "Specify a custom subflows files directory")
+	cmd.Flags().StringP("schemas-dir", "t", "", "Specify a custom schemas files directory")
+	cmd.Flags().StringP("profile", "f", "dev", "Specify a profile to use for the deployment")
+	cmd.Flags().StringP("image", "i", "", "Specify a custom image to use for the deployment")
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
@@ -71,7 +100,7 @@ func generateManifestsCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	fmt.Println("🛠️️ Generating a list of Operator manifests for a SonataFlow project...")
-	fmt.Printf("📂 Manifests will be generated in %s\n", cfg.ManifestPath)
+	fmt.Printf("📂 Manifests will be generated in %s\n", cfg.CustomGeneratedManifestDir)
 
 	if err := setupEnvironment(&cfg); err != nil {
 		return fmt.Errorf("❌ ERROR: setup environment: %w", err)
@@ -89,18 +118,65 @@ func generateManifestsCmd(cmd *cobra.Command, args []string) error {
 func runGenManifestCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, err error) {
 
 	cfg = DeployUndeployCmdConfig{
-		NameSpace:         viper.GetString("namespace"),
-		SupportFileFolder: viper.GetString("supportFilesFolder"),
-		ManifestPath:      viper.GetString("manifestPath"),
+		NameSpace:                  viper.GetString("namespace"),
+		SpecsDir:                   viper.GetString("specs-dir"),
+		SchemasDir:                 viper.GetString("schemas-dir"),
+		SubflowsDir:                viper.GetString("subflows-dir"),
+		CustomGeneratedManifestDir: viper.GetString("custom-generated-manifests-dir"),
+		Profile:                    viper.GetString("profile"),
+		Image:                      viper.GetString("image"),
 	}
 
-	if len(cfg.SupportFileFolder) == 0 {
-		dir, err := os.Getwd()
-		cfg.SupportFileFolder = dir + "/specs"
-		if err != nil {
-			return cfg, fmt.Errorf("❌ ERROR: failed to get default support files folder: %w", err)
+	if cmd.Flags().Changed("namespace") && len(cfg.NameSpace) == 0 {
+		// distinguish between a user intentionally setting an empty value
+		// and not providing the flag at all
+		cfg.EmptyNameSpace = true
+	}
+
+	if skipNamespace, _ := cmd.Flags().GetBool("skip-namespace"); skipNamespace {
+		cfg.NameSpace = ""
+		cfg.EmptyNameSpace = true
+	}
+
+	if cmd.Flags().Changed("profile") && len(cfg.Profile) == 0 {
+		profile, _ := cmd.Flags().GetString("profile")
+		if err := isValidProfile(profile); err != nil{
+			return cfg, err
+		}
+		cfg.Profile = profile
+	}
+
+	if cmd.Flags().Changed("image") {
+		image, _ := cmd.Flags().GetString("image")
+		if image != "" {
+			cfg.Image = image
 		}
 	}
+
+	if len(cfg.SubflowsDir) == 0 {
+		dir, err := os.Getwd()
+		cfg.SubflowsDir = dir + "/subflows"
+		if err != nil {
+			return cfg, fmt.Errorf("❌ ERROR: failed to get default subflows workflow files folder: %w", err)
+		}
+	}
+
+	if len(cfg.SpecsDir) == 0 {
+		dir, err := os.Getwd()
+		cfg.SpecsDir = dir + "/specs"
+		if err != nil {
+			return cfg, fmt.Errorf("❌ ERROR: failed to get default support specs files folder: %w", err)
+		}
+	}
+
+	if len(cfg.SchemasDir) == 0 {
+		dir, err := os.Getwd()
+		cfg.SchemasDir = dir + "/schemas"
+		if err != nil {
+			return cfg, fmt.Errorf("❌ ERROR: failed to get default support schemas files folder: %w", err)
+		}
+	}
+
 	dir, err := os.Getwd()
 	cfg.DefaultDashboardsFolder = dir + "/" + metadata.DashboardsDefaultDirName
 	if err != nil {
@@ -108,11 +184,11 @@ func runGenManifestCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, e
 	}
 
 	//setup manifest path
-	manifestDir, err := resolveManifestDir(cfg.ManifestPath)
+	manifestDir, err := resolveManifestDir(cfg.CustomGeneratedManifestDir)
 	if err != nil {
 		return cfg, fmt.Errorf("❌ ERROR: failed to get manifest directory: %w", err)
 	}
-	cfg.ManifestPath = manifestDir
+	cfg.CustomGeneratedManifestDir = manifestDir
 
 	return cfg, nil
 }
@@ -121,7 +197,7 @@ func setupEnvironment(cfg *DeployUndeployCmdConfig) error {
 	fmt.Println("\n🔎 Checking your environment...")
 
 	//setup namespace
-	if len(cfg.NameSpace) == 0 {
+	if len(cfg.NameSpace) == 0 && !cfg.EmptyNameSpace {
 		if defaultNamespace, err := common.GetKubectlNamespace(); err == nil {
 			cfg.NameSpace = defaultNamespace
 			fmt.Printf(" - ✅  resolved namespace: %s\n", cfg.NameSpace)
@@ -129,6 +205,8 @@ func setupEnvironment(cfg *DeployUndeployCmdConfig) error {
 			cfg.NameSpace = "default"
 			fmt.Printf(" - ✅  resolved namespace (default): %s\n", cfg.NameSpace)
 		}
+	} else if cfg.EmptyNameSpace {
+		fmt.Printf(" -  ❗ empty namespace manifest (you will have to setup one later) \n")
 	} else {
 		fmt.Printf(" - ✅  resolved namespace: %s\n", cfg.NameSpace)
 	}
@@ -154,4 +232,24 @@ func resolveManifestDir(folderName string) (string, error) {
 	}
 
 	return absPath, nil
+}
+
+func isValidProfile(profile string) error {
+	var allProfiles = []apiMetadata.ProfileType{
+		apiMetadata.DevProfile,
+		apiMetadata.ProdProfile,
+		apiMetadata.PreviewProfile,
+		apiMetadata.GitOpsProfile,
+	}
+
+	for _, t := range allProfiles {
+		if t.String() == profile {
+			return nil
+		}
+	}
+	keys := make([]string, 0, len(allProfiles))
+	for k := range allProfiles {
+		keys = append(keys, allProfiles[k].String())
+	}
+	return fmt.Errorf("❌ ERROR: invalid profile: %s, valid profiles are: %s", profile, strings.Join(keys, ","))
 }

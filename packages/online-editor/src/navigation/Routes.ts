@@ -163,9 +163,15 @@ export const routes = {
       bitbucketLogo: new Route<{}>(() => `images/bitbucket-logo.svg`),
       openshiftLogo: new Route<{}>(() => `images/openshift-logo.svg`),
     },
-    kubernetes: {
-      kindClusterConfig: new Route<{}>(() => `kubernetes/kind-cluster-config.yaml`),
-      kieSandboxDevDeploymentsResources: new Route<{}>(() => `kubernetes/kie-sandbox-dev-deployments-resources.yaml`),
+    devDeployments: {
+      kubernetes: {
+        clusterConfig: {
+          kindClusterConfig: new Route<{}>(() => `dev-deployments/kubernetes/cluster-config/kind-cluster-config.yaml`),
+          kieSandboxDevDeploymentsResources: new Route<{}>(
+            () => `dev-deployments/kubernetes/cluster-config/kie-sandbox-dev-deployments-resources.yaml`
+          ),
+        },
+      },
     },
   },
 };

@@ -17,9 +17,9 @@
  * under the License.
  */
 
-import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
+import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { VsCodeNotificationsChannelApiImpl } from "@kie-tools-core/notifications/dist/vscode";
+import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import * as vscode from "vscode";
 import {
   CancellationToken,
@@ -29,13 +29,14 @@ import {
   EventEmitter,
   Uri,
 } from "vscode";
-import { VsCodeI18n } from "./i18n";
-import * as __path from "path";
 import { VsCodeKieEditorController } from "./VsCodeKieEditorController";
 import { VsCodeKieEditorStore } from "./VsCodeKieEditorStore";
 import { VsCodeOutputLogger } from "./VsCodeOutputLogger";
-import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
+import { VsCodeI18n } from "./i18n";
+import { VsCodeNotificationsChannelApiImpl } from "./notifications/VsCodeNotificationsChannelApiImpl";
 import { executeOnSaveHook } from "./onSaveHook";
+import { getNormalizedPosixPathRelativeToWorkspaceRoot, getWorkspaceRoot } from "./workspace/workspaceRoot";
+import * as __path from "path";
 
 export class VsCodeKieEditorCustomDocument implements CustomDocument {
   private readonly encoder = new TextEncoder();
@@ -54,7 +55,7 @@ export class VsCodeKieEditorCustomDocument implements CustomDocument {
     public readonly initialBackup: Uri | undefined,
     public readonly editorStore: VsCodeKieEditorStore,
     private readonly vsCodeI18n: I18n<VsCodeI18n>,
-    private readonly vsCodeNotifications: VsCodeNotificationsChannelApiImpl,
+    private readonly vscodeNotifications: VsCodeNotificationsChannelApiImpl,
     private readonly editorEnvelopeLocator: EditorEnvelopeLocator
   ) {}
 
@@ -64,15 +65,13 @@ export class VsCodeKieEditorCustomDocument implements CustomDocument {
     this._onDidChange.dispose();
   }
 
-  get relativePath() {
-    // For some reason, `asRelativePath` always returns paths with the '/' separator,
-    // so on Windows, we need to replace it to the correct one, which is '\'.
-    return vscode.workspace.asRelativePath(this.uri).replace(/\//g, __path.sep);
+  get normalizedPosixPathRelativeToTheWorkspaceRoot() {
+    return getNormalizedPosixPathRelativeToWorkspaceRoot(this);
   }
 
   get fileExtension() {
-    const lastSlashIndex = this.uri.fsPath.lastIndexOf("/");
-    const fileName = this.uri.fsPath.substring(lastSlashIndex + 1);
+    const lastSlashIndex = this.uri.path.lastIndexOf("/");
+    const fileName = this.uri.path.substring(lastSlashIndex + 1);
 
     const firstDotIndex = fileName.indexOf(".");
     const fileExtension = fileName.substring(firstDotIndex + 1);
@@ -95,7 +94,13 @@ export class VsCodeKieEditorCustomDocument implements CustomDocument {
 
       try {
         const notifications = await editor.validate();
-        this.vsCodeNotifications.kogitoNotifications_setNotifications(destination.fsPath, notifications);
+        this.vscodeNotifications.setNotifications(
+          this,
+          __path.posix.normalize(
+            __path.relative(getWorkspaceRoot(this).workspaceRootAbsoluteFsPath, destination.fsPath)
+          ),
+          notifications
+        );
       } catch (e) {
         this.vsCodeLogger.warn(`File was not validated: ${e}`);
       }
@@ -140,7 +145,7 @@ export class VsCodeKieEditorCustomDocument implements CustomDocument {
     const input = await vscode.workspace.fs.readFile(this.uri);
     const editor = this.editorStore.get(this.uri);
     if (editor) {
-      return editor.setContent(this.relativePath, this.decoder.decode(input));
+      return editor.setContent(this.normalizedPosixPathRelativeToTheWorkspaceRoot, this.decoder.decode(input));
     }
   }
 

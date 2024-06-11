@@ -1,0 +1,152 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kube-apiserver-proxy
+  namespace: default
+  labels:
+    app: kube-apiserver-proxy
+    deploymentconfig: kube-apiserver-proxy
+spec:
+  containers:
+    - name: kube-apiserver-proxy
+      image: alpine/curl:latest
+      command: ["/bin/sh"]
+      args:
+        - -c
+        - >-
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" &&
+          chmod +x kubectl &&
+          ./kubectl proxy --address 0.0.0.0 --port 8051 --accept-hosts '^*$'
+      ports:
+        - containerPort: 8051
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-apiserver-proxy
+  namespace: default
+spec:
+  ports:
+    - name: 8051-tcp
+      protocol: TCP
+      port: 8051
+      targetPort: 8051
+  selector:
+    app: kube-apiserver-proxy
+    deploymentconfig: kube-apiserver-proxy
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kube-apiserver-proxy
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: HTTP
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /kube-apiserver(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: kube-apiserver-proxy
+                port:
+                  number: 8051
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: kie-sandbox-service-account
+  namespace: default
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: default
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: all-access-cluster-role
+  namespace: default
+rules:
+  - verbs:
+      - "*"
+    apiGroups:
+      - "*"
+    resources:
+      - "*"
+  - verbs:
+      - "*"
+    nonResourceURLs:
+      - "*"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: all-access-cluster-role-binding-kie-sandbox-service-account
+subjects:
+  - namespace: default
+    kind: ServiceAccount
+    name: kie-sandbox-service-account
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: all-access-cluster-role
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: all-access-cluster-role-binding-default
+subjects:
+  - namespace: default
+    kind: ServiceAccount
+    name: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: all-access-cluster-role
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kie-sandbox-secret
+  annotations:
+    kubernetes.io/service-account.name: kie-sandbox-service-account
+type: kubernetes.io/service-account-token
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: default-secret
+  annotations:
+    kubernetes.io/service-account.name: default
+type: kubernetes.io/service-account-token
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: local-kie-sandbox-dev-deployments

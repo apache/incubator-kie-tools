@@ -25,7 +25,7 @@ import { DMN14__tKnowledgeSource } from "../dist/schemas/dmn-1_4/ts-gen/types";
 describe("kie-extensions", () => {
   test("kie:attachment", () => {
     const xml = fs.readFileSync(path.join(__dirname, "../tests-data--manual/other/attachment.dmn"), "utf-8");
-    const { parser } = getMarshaller(xml);
+    const { parser } = getMarshaller(xml, { upgradeTo: "latest" });
     const json = parser.parse();
 
     const attachments = (json.definitions.drgElement ?? [])
@@ -37,7 +37,7 @@ describe("kie-extensions", () => {
 
   test("kie:ComponentWidthsExtension", () => {
     const xml = fs.readFileSync(path.join(__dirname, "../tests-data--manual/other/sample12.dmn"), "utf-8");
-    const { parser } = getMarshaller(xml);
+    const { parser } = getMarshaller(xml, { upgradeTo: "latest" });
     const json = parser.parse();
 
     const componentWidthsExtension = (json.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? []).flatMap(

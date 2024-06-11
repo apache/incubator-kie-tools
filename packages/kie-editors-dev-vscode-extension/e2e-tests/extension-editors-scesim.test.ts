@@ -49,12 +49,13 @@ describe("KIE Editors End to End Test Suite - SCESIM Editor", () => {
   });
 
   beforeEach(async function () {
+    this.timeout(30000);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });
 
   afterEach(async function () {
-    this.timeout(15000);
+    this.timeout(30000);
     await testHelper.takeScreenshotOnTestFailure(this, DIST_E2E_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
@@ -66,7 +67,7 @@ describe("KIE Editors End to End Test Suite - SCESIM Editor", () => {
    * As the opened scesim file is empty, a prompt to specify file under test should be shown
    */
   it.skip("Opens demo-dmn.scesim file in SCESIM Editor", async function () {
-    this.timeout(20000);
+    this.timeout(30000);
 
     const editorWebviews = await testHelper.openFileFromSidebar(DEMO_DMN_SCESIM);
     webview = editorWebviews[0];

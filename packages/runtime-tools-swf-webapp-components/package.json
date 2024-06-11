@@ -1,0 +1,62 @@
+{
+  "name": "@kie-tools/runtime-tools-swf-webapp-components",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:dev": "rimraf dist && tsc -p tsconfig.json",
+    "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.json && pnpm test",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
+  },
+  "dependencies": {
+    "@kie-tools/runtime-tools-components": "workspace:*",
+    "@kie-tools/runtime-tools-shared-enveloped-components": "workspace:*",
+    "@kie-tools/runtime-tools-shared-gateway-api": "workspace:*",
+    "@kie-tools/runtime-tools-swf-enveloped-components": "workspace:*",
+    "@kie-tools/runtime-tools-swf-gateway-api": "workspace:*",
+    "@patternfly/react-core": "^4.276.6",
+    "@patternfly/react-icons": "^4.93.6",
+    "apollo-cache-inmemory": "1.6.6",
+    "apollo-client": "2.6.10",
+    "apollo-link-http": "1.5.17",
+    "history": "^4.9.0",
+    "react": "^17.0.2",
+    "react-router": "^5.3.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^11.2.6",
+    "@types/history": "^4.7.3",
+    "@types/jest": "^26.0.23",
+    "@types/react": "^17.0.6",
+    "@types/react-router": "^5.1.20",
+    "@types/testing-library__jest-dom": "^5.9.1",
+    "@types/testing-library__react": "^9.1.2",
+    "jest": "^26.6.3",
+    "jest-junit": "^14.0.0",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.5.6",
+    "typescript": "^4.6.2"
+  }
+}

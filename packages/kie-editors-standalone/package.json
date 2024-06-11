@@ -4,13 +4,13 @@
   "description": "",
   "license": "Apache-2.0",
   "keywords": [],
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "files": [
     "dist/bpmn",
@@ -61,10 +61,10 @@
     "@types/minimatch": "^3.0.5",
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
-    "@types/react-router-dom": "^5.1.7",
+    "@types/react-router-dom": "^5.3.3",
     "@types/underscore": "^1.11.2",
     "copy-webpack-plugin": "^11.0.0",
-    "cypress": "^13.2.0",
+    "cypress": "^13.5.1",
     "cypress-file-upload": "^5.0.8",
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",
@@ -74,13 +74,14 @@
     "jest-when": "^3.5.0",
     "junit-report-merger": "^4.0.0",
     "minimatch": "^3.0.5",
+    "process": "^0.11.10",
     "raw-loader": "^4.0.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-router-dom": "^5.2.1",
+    "react-router-dom": "^5.3.4",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
-    "start-server-and-test": "^1.12.1",
+    "start-server-and-test": "^2.0.3",
     "ts-jest": "^26.5.6",
     "typescript": "^4.6.2",
     "underscore": "^1.13.1",

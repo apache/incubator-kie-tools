@@ -40,6 +40,6 @@ public class NotificationsApiInteropWrapper implements NotificationsApi {
     @JsMethod
     public native void removeNotifications(String path);
 
-    @JsProperty(name = "notificationsApi")
+    @JsProperty(name = "notificationsService")
     public native static NotificationsApiInteropWrapper get();
 }

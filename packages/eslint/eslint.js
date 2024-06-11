@@ -28,8 +28,6 @@ const localConfigPathExists = fs.existsSync(localConfigPath);
 const configPath = localConfigPathExists ? localConfigPath : require.resolve(`./${configFileName}`);
 const potentialIgnorePath = path.resolve(".", ".eslintignore");
 
-const config = require(configPath);
-
 console.info("[kie-tools--eslint] Lint path: " + lintPath);
 console.info("[kie-tools--eslint] Config path: " + configPath);
 

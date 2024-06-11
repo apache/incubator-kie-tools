@@ -1,0 +1,34 @@
+# edges (src https://www.omg.org/spec/DMN/1.4/PDF -- PDF page 37, document page 23)
+
+```
+
+Information ------>
+Knowledge   - - - >
+Authority   - - - o
+Association - - - -
+
+--
+
+Input data          --(Information)-->  Decision
+Input data          --(Authority)-->    Knowledge Source
+
+Decision            --(Information)-->  Decision
+Decision            --(Authority)-->    Knowledge Source
+
+BKM                 --(Knowledge)-->    BKM
+BKM                 --(Knowledge)-->    Decision
+
+Decision Service    --(Knowledge)-->    BKM
+Decision Service    --(Knowledge)-->    Decision
+
+Knowledge Source    --(Authority)-->    BKM
+Knowledge Source    --(Authority)-->    Decision
+Knowledge Source    --(Authority)-->    Knowledge Source
+
+Text Annotation     --(Association)-->  Input data
+Text Annotation     --(Association)-->  Decision
+Text Annotation     --(Association)-->  Decision Service
+Text Annotation     --(Association)-->  BKM
+Text Annotation     --(Association)-->  Knowledge Source
+
+```

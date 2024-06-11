@@ -19,32 +19,45 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools/extended-services-java/env")], {
+const rootEnv = require("@kie-tools/root-env/env");
+const extendedServicesJavaEnv = require("@kie-tools/extended-services-java/env");
+
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
+    KIE_SANDBOX_EXTENDED_SERVICES__builderImage: {
+      default: "registry.access.redhat.com/ubi9/openjdk-17:1.18",
+      description: "The image used in the FROM import.",
+    },
     KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry: {
-      default: "quay.io",
+      default: "docker.io",
       description: "",
     },
     KIE_SANDBOX_EXTENDED_SERVICES__imageAccount: {
-      default: "kie-tools",
+      default: "apache",
       description: "",
     },
     KIE_SANDBOX_EXTENDED_SERVICES__imageName: {
-      default: "kie-sandbox-extended-services-image",
+      default: "incubator-kie-sandbox-extended-services",
       description: "",
     },
     KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags: {
-      default: "latest",
+      default: rootEnv.env.root.streamName,
+      description: "",
+    },
+    KIE_SANDBOX_EXTENDED_SERVICES__imagePort: {
+      default: extendedServicesJavaEnv.env.extendedServicesJava.port,
       description: "",
     },
   }),
   get env() {
     return {
       extendedServicesImage: {
+        builderImage: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__builderImage),
         registry: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry),
         account: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount),
         name: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageName),
         buildTags: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags),
+        port: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imagePort),
       },
     };
   },

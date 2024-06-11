@@ -24,20 +24,29 @@ import * as ReactTable from "react-table";
 import {
   BeeTableCellCoordinates,
   BeeTableCoordinatesContextProvider,
+  useBeeTableSelectableCell,
   useBeeTableSelectableCellRef,
 } from "../../selection/BeeTableSelectionContext";
-import { useBeeTableSelectableCell } from "../../selection/BeeTableSelectionContext";
-import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
+import { InsertRowColumnsDirection } from "../../api";
 
 export interface BeeTableThProps<R extends object> {
   groupType: string | undefined;
-  onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
+  onColumnAdded?: (args: {
+    beforeIndex: number;
+    currentIndex: number;
+    groupType: string | undefined;
+    columnsCount: number;
+    insertDirection: InsertRowColumnsDirection;
+  }) => void;
   className: string;
   thProps: Partial<ReactTable.TableHeaderProps>;
   onClick?: React.MouseEventHandler;
+  onHeaderKeyUp?: React.KeyboardEventHandler;
   isLastLevelColumn: boolean;
   rowIndex: number;
   rowSpan: number;
+  columnKey: string;
   columnIndex: number;
   column: ReactTable.ColumnInstance<R>;
   shouldShowColumnsInlineControls: boolean;
@@ -60,7 +69,9 @@ export function BeeTableTh<R extends object>({
   className,
   thProps,
   onClick,
+  onHeaderKeyUp,
   columnIndex,
+  columnKey,
   rowIndex,
   rowSpan,
   groupType,
@@ -79,7 +90,14 @@ export function BeeTableTh<R extends object>({
       }
 
       // This index doesn't take into account the rowIndex column, so we actually need to subtract 1.
-      onColumnAdded?.({ beforeIndex: hoverInfo.part === "left" ? columnIndex - 1 : columnIndex, groupType: groupType });
+      onColumnAdded?.({
+        beforeIndex: hoverInfo.part === "left" ? columnIndex - 1 : columnIndex,
+        groupType: groupType,
+        columnsCount: 1,
+        insertDirection:
+          hoverInfo.part === "left" ? InsertRowColumnsDirection.BelowOrLeft : InsertRowColumnsDirection.AboveOrRight,
+        currentIndex: columnIndex,
+      });
 
       if (hoverInfo.part === "left") {
         setHoverInfo({ isHovered: false });
@@ -90,13 +108,18 @@ export function BeeTableTh<R extends object>({
 
   const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
 
+  // FIXME: The BeeTable shouldn't know about DMN or GWT
+  // The following useEffect shouldn't be placed here.
   const { beeGwtService } = useBoxedExpressionEditor();
-
   useEffect(() => {
-    if (isActive && column.isRowIndexColumn) {
-      beeGwtService?.selectObject("");
+    if (isActive) {
+      if (column.isRowIndexColumn || groupType === "annotation") {
+        beeGwtService?.selectObject("");
+      } else {
+        beeGwtService?.selectObject(columnKey);
+      }
     }
-  }, [beeGwtService, isActive]);
+  }, [beeGwtService, column.isRowIndexColumn, columnKey, groupType, isActive]);
 
   const _thRef = useRef<HTMLTableCellElement>(null);
   const thRef = forwardRef ?? _thRef;
@@ -146,10 +169,12 @@ export function BeeTableTh<R extends object>({
     useCallback(() => {
       if (column.dataType) {
         return `${column.label} (${column.dataType})`;
-      } else {
+      } else if (!column.isInlineEditable) {
         return column.label;
+      } else {
+        return "";
       }
-    }, [column.dataType, column.label])
+    }, [column.dataType, column.isInlineEditable, column.label])
   );
 
   const coordinates = useMemo<BeeTableCellCoordinates>(
@@ -170,6 +195,7 @@ export function BeeTableTh<R extends object>({
         onMouseDown={onMouseDown}
         onDoubleClick={onDoubleClick}
         onClick={onClick}
+        onKeyUp={onHeaderKeyUp}
         className={`${className} ${cssClasses}`}
         tabIndex={-1}
       >

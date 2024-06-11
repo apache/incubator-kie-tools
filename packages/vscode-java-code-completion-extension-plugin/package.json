@@ -1,16 +1,17 @@
 {
+  "private": true,
   "name": "@kie-tools/vscode-java-code-completion-extension-plugin",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
   "keywords": [],
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "types": "index.d.ts",
   "main": "index.js",
@@ -19,14 +20,17 @@
     "index.d.ts"
   ],
   "scripts": {
-    "build:dev": "pnpm install:mvnw && mvn clean install -DskipTests",
+    "build:dev": "mvn clean install -DskipTests",
     "build:prod": "pnpm lint && run-script-os",
-    "build:prod:darwin:linux": "pnpm install:mvnw && mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
-    "build:prod:win32": "pnpm install:mvnw && pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
-    "install": "node install.js",
-    "install:mvnw": "mvn wrapper:wrapper -f ./",
+    "build:prod:darwin:linux": "mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
+    "build:prod:win32": "pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
+    "install": "node install.js && pnpm install:mvnw",
+    "install:mvnw": "mvn -e org.apache.maven.plugins:maven-wrapper-plugin:3.3.0:wrapper -f ./",
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
+  },
+  "dependencies": {
+    "@kie-tools/maven-base": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools/maven-config-setup-helper": "workspace:*",

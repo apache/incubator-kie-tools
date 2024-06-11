@@ -72,6 +72,8 @@ export async function renderSingleEditorApp(args: Globals & { fileInfo: FileInfo
       extensionIconUrl={args.extensionIconUrl}
       resourceContentServiceFactory={args.resourceContentServiceFactory}
       externalEditorManager={args.externalEditorManager}
+      customChannelApiImpl={args.customChannelApiImpl}
+      stateControl={args.stateControl}
     >
       <SingleEditorEditApp openFileExtension={openFileExtension} fileInfo={args.fileInfo} />
     </Main>,

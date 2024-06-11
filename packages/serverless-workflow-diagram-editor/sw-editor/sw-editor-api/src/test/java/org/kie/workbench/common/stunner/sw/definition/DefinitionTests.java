@@ -70,8 +70,6 @@ public class DefinitionTests {
 
     private static final String DIAGRAM_PANEL = "root-container";
     private static final String CANVAS_PANEL = "canvas-panel";
-    private static final Boolean HEADLESS = Boolean.valueOf(System.getProperty("org.kie.sw.editor.browser.headless"));
-
     /**
      * Selenium web driver
      */
@@ -79,13 +77,13 @@ public class DefinitionTests {
 
     @BeforeClass
     public static void setupClass() {
-        WebDriverManager.firefoxdriver().useMirror().setup();
+        WebDriverManager.firefoxdriver().setup();
     }
 
     @Before
     public void openSWEditor() {
         final FirefoxOptions firefoxOptions = new FirefoxOptions();
-        firefoxOptions.setHeadless(HEADLESS);
+        firefoxOptions.addArguments("--headless");
         driver = new FirefoxDriver(firefoxOptions);
 
         driver.manage().window().maximize();
@@ -340,6 +338,6 @@ public class DefinitionTests {
     }
 
     private WebDriverWait waitOperation() {
-        return new WebDriverWait(driver, Duration.ofSeconds(2).getSeconds());
+        return new WebDriverWait(driver, Duration.ofSeconds(2));
     }
 }

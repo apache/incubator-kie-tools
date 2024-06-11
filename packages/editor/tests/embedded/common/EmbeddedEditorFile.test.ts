@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 
 describe("EmbeddedEditorFile", () => {
@@ -26,6 +25,7 @@ describe("EmbeddedEditorFile", () => {
       fileName: "new-file",
       isReadOnly: true,
       getFileContents: () => Promise.resolve("content"),
+      normalizedPosixPathRelativeToTheWorkspaceRoot: "new-file.dmn",
     };
 
     expect(file.fileName).toEqual("new-file");

@@ -29,8 +29,12 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { useOnlineI18n } from "../../i18n";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
-import { KubernetesAuthSession } from "../../authSessions/AuthSessionApi";
-import { KieSandboxKubernetesService } from "../../devDeployments/services/KieSandboxKubernetesService";
+import {
+  AUTH_SESSION_VERSION_NUMBER,
+  CloudAuthSessionType,
+  KubernetesAuthSession,
+} from "../../authSessions/AuthSessionApi";
+import { KieSandboxKubernetesService } from "../../devDeployments/services/kubernetes/KieSandboxKubernetesService";
 import { KubernetesInstanceStatus } from "./KubernetesInstanceStatus";
 import {
   KubernetesConnection,
@@ -49,13 +53,14 @@ enum FormValiationOptions {
 }
 
 export function ConnectToKubernetesSimple(props: {
-  kubernetesService: KieSandboxKubernetesService;
+  kieSandboxKubernetesService?: KieSandboxKubernetesService;
   connection: KubernetesConnection;
   setConnection: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
   status: KubernetesInstanceStatus;
   setStatus: React.Dispatch<React.SetStateAction<KubernetesInstanceStatus>>;
   setMode: React.Dispatch<React.SetStateAction<KubernetesSettingsTabMode>>;
   setNewAuthSession: React.Dispatch<React.SetStateAction<KubernetesAuthSession>>;
+  isLoadingService: boolean;
 }) {
   const { i18n } = useOnlineI18n();
   const [isConnectionValidated, setConnectionValidated] = useState(FormValiationOptions.INITIAL);
@@ -73,16 +78,19 @@ export function ConnectToKubernetesSimple(props: {
     }
 
     setConnecting(true);
-    const isConnectionEstablished = await props.kubernetesService.isConnectionEstablished();
+    const isConnectionEstablished =
+      props.kieSandboxKubernetesService && (await props.kieSandboxKubernetesService.isConnectionEstablished());
     setConnecting(false);
 
-    if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED) {
+    if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED && props.kieSandboxKubernetesService) {
       const newAuthSession: KubernetesAuthSession = {
-        type: "kubernetes",
+        type: CloudAuthSessionType.Kubernetes,
+        version: AUTH_SESSION_VERSION_NUMBER,
         id: uuid(),
         ...props.connection,
         authProviderId: "kubernetes",
         createdAtDateISO: new Date().toISOString(),
+        k8sApiServerEndpointsByResourceKind: props.kieSandboxKubernetesService.args.k8sApiServerEndpointsByResourceKind,
       };
       props.setStatus(KubernetesInstanceStatus.CONNECTED);
       authSessionsDispatch.add(newAuthSession);
@@ -355,8 +363,8 @@ export function ConnectToKubernetesSimple(props: {
             variant="primary"
             onClick={onConnect}
             data-testid="save-config-button"
-            isLoading={isConnecting}
-            isDisabled={isConnecting}
+            isLoading={isConnecting || props.isLoadingService}
+            isDisabled={isConnecting || props.isLoadingService}
             spinnerAriaValueText={isConnecting ? "Loading" : undefined}
           >
             {isConnecting ? "Connecting" : "Connect"}

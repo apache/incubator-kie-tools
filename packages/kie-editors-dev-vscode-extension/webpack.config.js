@@ -20,6 +20,7 @@
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
+const { ProvidePlugin } = require("webpack");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const stunnerEditors = require("@kie-tools/stunner-editors");
 const vscodeJavaCodeCompletionExtensionPlugin = require("@kie-tools/vscode-java-code-completion-extension-plugin");
@@ -35,11 +36,31 @@ module.exports = async (env) => [
     externals: {
       vscode: "commonjs vscode",
     },
-    target: "web",
+    target: "node",
     entry: {
       "extension/extension": "./src/extension/extension.ts",
     },
-    plugins: [],
+  }),
+  merge(common(env), {
+    output: {
+      library: "AppFormer.VsCodePack",
+      libraryTarget: "umd",
+      umdNamedDefine: true,
+      globalObject: "this",
+    },
+    externals: {
+      vscode: "commonjs vscode",
+    },
+    target: "webworker",
+    entry: {
+      "extension/extensionWeb": "./src/extension/extension.ts",
+    },
+    plugins: [
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
+    ],
   }),
   merge(common(env), {
     output: {
@@ -60,6 +81,10 @@ module.exports = async (env) => [
       rules: [...patternflyBase.webpackModuleRules],
     },
     plugins: [
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
       new CopyWebpackPlugin({
         patterns: [
           { from: "./static", to: "static" },
@@ -112,10 +137,16 @@ module.exports = async (env) => [
       rules: [
         {
           test: /\.ttf$/,
-          use: ["file-loader"],
+          use: [require.resolve("file-loader")],
         },
         ...patternflyBase.webpackModuleRules,
       ],
     },
+    plugins: [
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
+    ],
   }),
 ];

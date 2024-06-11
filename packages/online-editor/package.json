@@ -4,13 +4,13 @@
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "types": "./dist/index.d.ts",
   "main": "dist/index.js",
@@ -23,13 +23,14 @@
     "test:e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then  \"pnpm rimraf ./dist-e2e-tests\" \"pnpm test:e2e:run\"",
     "test:e2e:open": "pnpm exec playwright show-report dist-e2e-tests/reports",
     "test:e2e:run": "ONLINE_EDITOR_DEV__https=false pnpm exec playwright test",
-    "test:e2e:start:cors-proxy": "npm --prefix ../cors-proxy run start",
-    "test:e2e:start:extended-services": "npm --prefix ../extended-services run start"
+    "test:e2e:start:cors-proxy": "npm --prefix ./node_modules/@kie-tools/cors-proxy run start",
+    "test:e2e:start:extended-services": "npm --prefix ./node_modules/@kie-tools/extended-services run start"
   },
   "dependencies": {
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",
+    "@kie-tools-core/k8s-yaml-to-apiserver-requests": "workspace:*",
     "@kie-tools-core/keyboard-shortcuts": "workspace:*",
     "@kie-tools-core/kubernetes-bridge": "workspace:*",
     "@kie-tools-core/monaco-editor": "workspace:*",
@@ -37,10 +38,12 @@
     "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/react-hooks": "workspace:*",
+    "@kie-tools-core/switch-expression-ts": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
     "@kie-tools-core/workspaces-git-fs": "workspace:*",
     "@kie-tools/boxed-expression-component": "workspace:*",
     "@kie-tools/cors-proxy-api": "workspace:*",
+    "@kie-tools/dmn-editor-envelope": "workspace:*",
     "@kie-tools/dmn-language-service": "workspace:*",
     "@kie-tools/dmn-runner": "workspace:*",
     "@kie-tools/emscripten-fs": "^0.0.2",
@@ -54,6 +57,7 @@
     "@kie-tools/unitables-dmn": "workspace:*",
     "@octokit/plugin-rest-endpoint-methods": "^5.0.1",
     "@octokit/rest": "^18.5.3",
+    "@openapi-contrib/openapi-schema-to-json-schema": "^5.1.0",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
     "@patternfly/react-tokens": "^4.94.6",
@@ -69,8 +73,8 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-dropzone": "^11.4.2",
-    "react-router": "^5.2.1",
-    "react-router-dom": "^5.2.1",
+    "react-router": "^5.3.4",
+    "react-router-dom": "^5.3.4",
     "react-virtualized-auto-sizer": "^1.0.7",
     "react-window": "^1.3.1",
     "uuid": "^8.3.2"
@@ -93,11 +97,12 @@
     "@testing-library/react": "^11.2.6",
     "@types/history": "^4.7.3",
     "@types/js-yaml": "^4.0.5",
+    "@types/json-schema": "^7.0.11",
     "@types/lodash": "^4.14.168",
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
-    "@types/react-router": "^5.1.14",
-    "@types/react-router-dom": "^5.1.7",
+    "@types/react-router": "^5.1.20",
+    "@types/react-router-dom": "^5.3.3",
     "@types/react-virtualized-auto-sizer": "^1.0.1",
     "@types/react-window": "^1.8.5",
     "@types/testing-library__jest-dom": "^5.9.1",

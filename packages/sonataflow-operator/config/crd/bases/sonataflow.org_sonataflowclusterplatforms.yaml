@@ -1,0 +1,128 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.9.2
+  creationTimestamp: null
+  name: sonataflowclusterplatforms.sonataflow.org
+spec:
+  group: sonataflow.org
+  names:
+    kind: SonataFlowClusterPlatform
+    listKind: SonataFlowClusterPlatformList
+    plural: sonataflowclusterplatforms
+    singular: sonataflowclusterplatform
+  scope: Cluster
+  versions:
+    - additionalPrinterColumns:
+        - jsonPath: .spec.platformRef.name
+          name: Platform_Name
+          type: string
+        - jsonPath: .spec.platformRef.namespace
+          name: Platform_NS
+          type: string
+        - jsonPath: .status.conditions[?(@.type=='Succeed')].status
+          name: Ready
+          type: string
+        - jsonPath: .status.conditions[?(@.type=='Succeed')].reason
+          name: Reason
+          type: string
+      name: v1alpha08
+      schema:
+        openAPIV3Schema:
+          description: SonataFlowClusterPlatform is the Schema for the sonataflowclusterplatforms
+            API
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation
+                of an object. Servers should convert recognized schemas to the latest
+                internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: string
+            kind:
+              description: "Kind is a string value representing the REST resource this
+                object represents. Servers may infer this from the endpoint the client
+                submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: SonataFlowClusterPlatformSpec defines the desired state of
+                SonataFlowClusterPlatform
+              properties:
+                capabilities:
+                  description: Capabilities defines which platform capabilities should
+                    be applied cluster-wide. If nil, defaults to `capabilities.workflows["services"]`
+                  properties:
+                    workflows:
+                      description: Workflows defines which platform capabilities should
+                        be applied to workflows cluster-wide.
+                      items:
+                        enum:
+                          - services
+                        type: string
+                      type: array
+                  type: object
+                platformRef:
+                  description: PlatformRef defines which existing SonataFlowPlatform's
+                    supporting services should be used cluster-wide.
+                  properties:
+                    name:
+                      description: Name of the SonataFlowPlatform
+                      type: string
+                    namespace:
+                      description: Namespace of the SonataFlowPlatform
+                      type: string
+                  required:
+                    - name
+                    - namespace
+                  type: object
+              required:
+                - platformRef
+              type: object
+            status:
+              description: SonataFlowClusterPlatformStatus defines the observed state
+                of SonataFlowClusterPlatform
+              properties:
+                conditions:
+                  description: The latest available observations of a resource's current
+                    state.
+                  items:
+                    description: Condition describes the common structure for conditions
+                      in our types
+                    properties:
+                      lastUpdateTime:
+                        description: The last time this condition was updated.
+                        format: date-time
+                        type: string
+                      message:
+                        description: A human-readable message indicating details about
+                          the transition.
+                        type: string
+                      reason:
+                        description: The reason for the condition's last transition.
+                        type: string
+                      status:
+                        description: Status of the condition, one of True, False, Unknown.
+                        type: string
+                      type:
+                        description: Type condition for the given object
+                        type: string
+                    required:
+                      - status
+                      - type
+                    type: object
+                  type: array
+                observedGeneration:
+                  description: The generation observed by the deployment controller.
+                  format: int64
+                  type: integer
+                version:
+                  description: Version the operator version controlling this ClusterPlatform
+                  type: string
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}

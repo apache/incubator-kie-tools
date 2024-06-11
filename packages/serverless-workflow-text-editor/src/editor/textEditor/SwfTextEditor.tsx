@@ -96,6 +96,8 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
       return;
     }
 
+    setBackgroundColor(theme!, container.current!);
+
     const instance = controller.show(container.current, theme ?? EditorTheme.LIGHT);
     const commands = initAugmentationCommands(instance, editorEnvelopeCtx.channelApi);
 
@@ -115,11 +117,25 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
     theme,
     editorEnvelopeCtx.channelApi,
     editorEnvelopeCtx.operatingSystem,
+    isReadOnly,
   ]);
 
   useImperativeHandle(forwardedRef, () => controller, [controller]);
 
   return <div style={{ height: "100%" }} ref={container} />;
 };
+
+function setBackgroundColor(theme: EditorTheme, element: HTMLDivElement) {
+  switch (theme) {
+    case EditorTheme.DARK: {
+      element.style.background = "#000";
+      break;
+    }
+    default: {
+      element.style.background = "#fff";
+      break;
+    }
+  }
+}
 
 export const SwfTextEditor = React.forwardRef(RefForwardingSwfTextEditor);

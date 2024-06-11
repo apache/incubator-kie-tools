@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 package org.kie.workbench.common.dmn.client.editors.included.modal.dropdown;
@@ -153,8 +153,8 @@ public class DMNAssetsDropdownItemsProviderTest {
         final IncludedModel includedModel5 = makePMMLIncludedModel(5);
         final Import import1 = mock(Import.class);
         final Import import2 = mock(Import.class);
-        final LocationURI import1URI = new LocationURI("/src/main/kie3");
-        final LocationURI import2URI = new LocationURI("/src/main/kie4");
+        final LocationURI import1URI = new LocationURI("src/main/kie3.pmml");
+        final LocationURI import2URI = new LocationURI("src/main/kie4.pmml");
         final KieAssetsDropdownItem dropdownItem1 = mock(KieAssetsDropdownItem.class);
         final KieAssetsDropdownItem dropdownItem2 = mock(KieAssetsDropdownItem.class);
         final KieAssetsDropdownItem dropdownItem5 = mock(KieAssetsDropdownItem.class);
@@ -182,8 +182,9 @@ public class DMNAssetsDropdownItemsProviderTest {
                                                     final int modelCount) {
         return new PMMLIncludedModel("name" + id,
                                      "com.kie.pmml",
-                                     "/src/main/kie" + id,
+                                     "src/main/kie" + id + ".pmml",
                                      PMML.getDefaultNamespace(),
+                                     "https://kie.org/pmml#src/main/kie" + id + ".pmml",
                                      modelCount);
     }
 

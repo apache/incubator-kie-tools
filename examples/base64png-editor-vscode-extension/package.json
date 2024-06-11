@@ -5,13 +5,13 @@
   "description": "",
   "license": "Apache-2.0",
   "publisher": "kie-tools-examples",
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "main": "dist/extension.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "build:prod": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build\" \"pnpm pack\"",
     "compile": "pnpm build --env dev",
     "pack": "vsce package --no-dependencies -o ./dist/kie_tools_examples_base64_editor_vscode_extension_$npm_package_version.vsix",
-    "watch": "pnpm build --env dev"
+    "watch": "export WEBPACK__sourceMaps=true; WEBPACK__minimize=false; webpack --env dev"
   },
   "dependencies": {
     "@kie-tools-core/backend": "workspace:*",
@@ -35,7 +35,7 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/vscode": "1.67.0",
-    "@vscode/vsce": "^2.20.1",
+    "@vscode/vsce": "^2.22.0",
     "rimraf": "^3.0.2",
     "typescript": "^4.6.2",
     "webpack": "^5.88.2",

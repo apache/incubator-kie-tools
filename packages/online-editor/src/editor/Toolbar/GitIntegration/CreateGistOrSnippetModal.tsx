@@ -44,7 +44,7 @@ import {
   isSupportedGitAuthProviderType,
 } from "../../../authProviders/AuthProvidersApi";
 import { useAuthProvider } from "../../../authProviders/AuthProvidersContext";
-import { switchExpression } from "../../../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { useOnlineI18n } from "../../../i18n";
 import { LoadOrganizationsSelect, SelectOptionObjectType } from "./LoadOrganizationsSelect";
 import { useGitIntegration } from "./GitIntegrationContextProvider";
@@ -245,7 +245,10 @@ If you are, it means that creating this Snippet failed and it can safely be dele
       variant={ModalVariant.medium}
       aria-label={i18n.createGistOrSnippetModal[authProvider.type].create}
       isOpen={props.isOpen}
-      onClose={props.onClose}
+      onClose={() => {
+        setError(undefined);
+        props.onClose();
+      }}
       title={i18n.createGistOrSnippetModal[authProvider.type].create}
       titleIconVariant={switchExpression(authProvider.type, {
         bitbucket: BitbucketIcon,

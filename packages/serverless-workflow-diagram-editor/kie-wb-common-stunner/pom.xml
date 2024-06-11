@@ -23,7 +23,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 >
   <parent>
-    <artifactId>stunner-editors-parent</artifactId>
+    <artifactId>serverless-workflow-diagram-editor-parent</artifactId>
     <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
     <version>${revision}</version>
   </parent>
@@ -196,12 +196,6 @@
         <!-- Entry needed to create test-jars even for packaging types war, bundle, ... -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <!-- Entry needed to create, install and deploy sources jars -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
       </plugin>
 
       <plugin>

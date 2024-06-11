@@ -24,15 +24,19 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import elemental2.promise.Promise;
-import io.crysknife.ui.translation.client.TranslationService;
 import org.appformer.kogito.bridge.client.resource.ResourceContentService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.j2cl.tools.di.ui.translation.client.TranslationService;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateHandler;
+import org.kie.workbench.common.stunner.core.client.theme.StunnerTheme;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.sw.client.theme.ColorTheme;
+import org.kie.workbench.common.stunner.sw.client.theme.LightMode;
 import org.kie.workbench.common.stunner.sw.definition.CallbackState;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
 import org.kie.workbench.common.stunner.sw.definition.ForEachState;
@@ -75,18 +79,11 @@ public class StateShapeTest {
     private final String ANSIBLE = "ansible";
     private final String KAOTO = "kaoto";
     private final String IMAGE_DATA = "imageData";
-    private final String INJECT_COLOR = "#8BC1F7";
-    private final String SWITCH_COLOR = "#009596";
-    private final String OPERATION_COLOR = "#0066CC";
-    private final String EVENT_COLOR = "#F4C145";
-    private final String CALLBACK_COLOR = "#EC7A08";
-    private final String FOR_EACH_COLOR = "#8F4700";
-    private final String PARALLEL_COLOR = "#4CB140";
-    private final String SLEEP_COLOR = "#5752D1";
     private final String ANSIBLE_COLOR = "#BB271A";
     private final String KAOTO_COLOR = "#332174";
     private final int SHAPE_X = 50;
     private final int SHAPE_Y = 50;
+    private final ColorTheme theme = LightMode.getInstance();
 
     @Mock
     ResourceContentService kogitoService;
@@ -94,44 +91,49 @@ public class StateShapeTest {
     @Mock
     private TranslationService translationService;
 
+    @Before
+    public void setup() {
+        StunnerTheme.setTheme(LightMode.getInstance());
+    }
+
     @Test
     public void injectStateColorTest() {
-        simpleStateIconTest(INJECT, INJECT_COLOR);
+        simpleStateIconTest(INJECT, theme.getInjectStateIconFillColor());
     }
 
     @Test
     public void switchStateColorTest() {
-        simpleStateIconTest(SWITCH, SWITCH_COLOR);
+        simpleStateIconTest(SWITCH, theme.getSwitchStateIconFillColor());
     }
 
     @Test
     public void operationStateColorTest() {
-        simpleStateIconTest(OPERATION, OPERATION_COLOR);
+        simpleStateIconTest(OPERATION, theme.getOperationStateIconFillColor());
     }
 
     @Test
     public void eventStateColorTest() {
-        simpleStateIconTest(EVENT, EVENT_COLOR);
+        simpleStateIconTest(EVENT, theme.getEventStateIconFillColor());
     }
 
     @Test
     public void callbackStateColorTest() {
-        simpleStateIconTest(CALLBACK, CALLBACK_COLOR);
+        simpleStateIconTest(CALLBACK, theme.getCallbackStateIconFillColor());
     }
 
     @Test
     public void forEachStateColorTest() {
-        simpleStateIconTest(FOREACH, FOR_EACH_COLOR);
+        simpleStateIconTest(FOREACH, theme.getForeachStateIconFillColor());
     }
 
     @Test
     public void parallelStateColorTest() {
-        simpleStateIconTest(PARALLEL, PARALLEL_COLOR);
+        simpleStateIconTest(PARALLEL, theme.getParallelStateIconFillColor());
     }
 
     @Test
     public void sleepStateColorTest() {
-        simpleStateIconTest(SLEEP, SLEEP_COLOR);
+        simpleStateIconTest(SLEEP, theme.getSleepStateIconFillColor());
     }
 
     @Test
@@ -181,7 +183,7 @@ public class StateShapeTest {
 
         shape.applyProperties(createElement(state), null);
         assertFalse(shape.getView().isIconEmpty());
-        assertEquals("#FFF", shape.getView().getIconBackgroundColor());
+        assertEquals(theme.getBackgroundIconCircleFillColor(), shape.getView().getIconBackgroundColor());
     }
 
     @Test
@@ -200,7 +202,7 @@ public class StateShapeTest {
 
         shape.applyProperties(createElement(state), null);
         assertFalse(shape.getView().isIconEmpty());
-        assertEquals(INJECT_COLOR, shape.getView().getIconBackgroundColor());
+        assertEquals(theme.getInjectStateIconFillColor(), shape.getView().getIconBackgroundColor());
     }
 
     @Test

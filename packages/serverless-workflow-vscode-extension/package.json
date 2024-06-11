@@ -5,13 +5,13 @@
   "license": "Apache-2.0",
   "publisher": "kie-group",
   "keywords": [],
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "browser": "./dist/extension/extensionWeb.js",
   "main": "dist/extension/extension.js",
@@ -27,7 +27,7 @@
     "test:e2e:clean:offline": "rimraf ./dist-e2e-tests && rimraf ./out && rimraf ./e2e-tests-tmp && rimraf *.vsix",
     "test:e2e:insider": "rimraf ./test-resources && rimraf ./out && tsc --project tsconfig.e2e-tests.json --skipLibCheck --sourceMap true && extest setup-and-run --yarn -t insider -u -e ./test-resources -o ./e2e-tests/settings.json out/*.test.js",
     "test:e2e:offline": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm test:e2e:clean:offline\" \"cpr e2e-tests/resources e2e-tests-tmp/resources\" \"tsc --project tsconfig.e2e-tests.json\" \"extest setup-and-run --offline --yarn -c max -u -e ./test-resources -o e2e-tests/settings.json out/*.test.js\"",
-    "watch": "webpack --env dev"
+    "watch": "export WEBPACK__sourceMaps=true; WEBPACK__minimize=false; webpack --env dev"
   },
   "dependencies": {
     "@kie-tools-core/backend": "workspace:*",
@@ -62,11 +62,11 @@
     "@types/chai": "^4.3.6",
     "@types/fs-extra": "^11.0.1",
     "@types/mocha": "^8.2.2",
-    "@types/selenium-webdriver": "^4.1.15",
+    "@types/selenium-webdriver": "^4.1.20",
     "@types/vscode": "1.67.0",
-    "@vscode/test-electron": "^2.3.4",
+    "@vscode/test-electron": "^2.3.6",
     "@vscode/test-web": "^0.0.30",
-    "@vscode/vsce": "^2.20.1",
+    "@vscode/vsce": "^2.22.0",
     "chai": "^4.3.10",
     "copy-webpack-plugin": "^11.0.0",
     "cpr": "^3.0.1",
@@ -75,11 +75,12 @@
     "mocha-junit-reporter": "^2.0.2",
     "mocha-multi-reporters": "^1.5.1",
     "monaco-editor-webpack-plugin": "^7.0.1",
+    "process": "^0.11.10",
     "rimraf": "^3.0.2",
     "sanitize-filename-ts": "^1.0.2",
-    "selenium-webdriver": "^4.10.0",
+    "selenium-webdriver": "^4.15.0",
     "typescript": "^4.6.2",
-    "vscode-extension-tester": "5.9.1",
+    "vscode-extension-tester": "5.10.0",
     "webpack": "^5.88.2",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1",
@@ -218,20 +219,20 @@
           "type": "string"
         }
       },
-      "title": "Serverless Workflow Editor"
+      "title": "Apache KIE™ Serverless Workflow Editor"
     },
     "configurationDefaults": {
       "[json]": {
-        "editor.wordBasedSuggestions": false
+        "editor.wordBasedSuggestions": "off"
       },
       "[serverless-workflow-json]": {
-        "editor.wordBasedSuggestions": false
+        "editor.wordBasedSuggestions": "off"
       },
       "[serverless-workflow-yaml]": {
-        "editor.wordBasedSuggestions": false
+        "editor.wordBasedSuggestions": "off"
       },
       "[yaml]": {
-        "editor.wordBasedSuggestions": false
+        "editor.wordBasedSuggestions": "off"
       },
       "files.associations": {
         "*.sw.json": "json",

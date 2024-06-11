@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 package com.ait.lienzo.client.widget.panel.impl;
@@ -49,7 +49,6 @@ public class ScrollablePanel extends LienzoBoundsPanel {
 
     private static final Bounds EMPTY = Bounds.empty();
     private static final int DRAG_BOUNDS_LIMIT_SIZE = 50;
-    private static final int PADDING_OFFSET = 4;
 
     private final HTMLDivElement domElementContainer = createDiv();
     private final HTMLDivElement internalScrollPanel = createDiv();
@@ -99,6 +98,23 @@ public class ScrollablePanel extends LienzoBoundsPanel {
         synchronizeScrollSize();
         initViewport();
         return this;
+    }
+
+    public void setScrollbarColors(String color, String backgroundColor) {
+        final String attribute = "scrollbar-color:";
+        String scrollbarStyle = scrollPanel.style.cssText;
+
+        // scrollbar-color clean up
+        if (scrollbarStyle.contains(attribute)) {
+            scrollbarStyle = scrollbarStyle.replaceAll(attribute + "[^;]*?;", "");
+        }
+
+        // If no colors are provided "scrollbar-color" is set to "auto" by default
+        if (null != color && !color.isEmpty() && null != backgroundColor && !backgroundColor.isEmpty()) {
+            scrollbarStyle = attribute + color + " " + backgroundColor + "; " + scrollbarStyle;
+        }
+
+        scrollPanel.style.cssText = scrollbarStyle;
     }
 
     public Bounds getVisibleBounds() {
@@ -491,12 +507,9 @@ public class ScrollablePanel extends LienzoBoundsPanel {
 
     private void updatePanelsSizes(final int widePx,
                                    final int highPx) {
-        // Adjust high to avoid horizontal scrollbar overlap
-        final int highPxFixed = highPx - PADDING_OFFSET;
-
-        setPanelSize(scrollPanel, widePx, highPxFixed);
+        setPanelSize(scrollPanel, widePx, highPx);
         final int w = widePx - scrollbarWidth();
-        final int h = highPxFixed - scrollbarHeight();
+        final int h = highPx - scrollbarHeight();
         setPanelSize(domElementContainer, w, h);
         getLienzoPanel().setPixelSize(w, h);
     }

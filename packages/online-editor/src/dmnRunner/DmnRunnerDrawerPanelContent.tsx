@@ -48,7 +48,7 @@ const DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION = 711;
 
 interface DmnRunnerStylesConfig {
   contentWidth: "50%" | "100%";
-  contentHeight: "50%" | "100%";
+  contentHeight: "50%" | undefined;
   contentFlexDirection: "row" | "column";
   buttonPosition: ButtonPosition;
 }
@@ -58,7 +58,7 @@ export function DmnRunnerDrawerPanelContent() {
   const [drawerError, setDrawerError] = useState<boolean>(false);
   const [dmnRunnerStylesConfig, setDmnRunnerStylesConfig] = useState<DmnRunnerStylesConfig>({
     contentWidth: "50%",
-    contentHeight: "100%",
+    contentHeight: undefined,
     contentFlexDirection: "row",
     buttonPosition: ButtonPosition.OUTPUT,
   });
@@ -82,7 +82,7 @@ export function DmnRunnerDrawerPanelContent() {
       setDmnRunnerStylesConfig({
         buttonPosition: ButtonPosition.OUTPUT,
         contentWidth: "50%",
-        contentHeight: "100%",
+        contentHeight: undefined,
         contentFlexDirection: "row",
       });
     } else {

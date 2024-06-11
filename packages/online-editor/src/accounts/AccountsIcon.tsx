@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import * as React from "react";
+import React, { useCallback } from "react";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
@@ -26,19 +26,13 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import AngleLeftIcon from "@patternfly/react-icons/dist/js/icons/angle-left-icon";
 import UserIcon from "@patternfly/react-icons/dist/js/icons/user-icon";
-import { useCallback } from "react";
 import { ConnectToGitSection } from "./git/ConnectToGitSection";
 import { AuthProvidersGallery } from "../authProviders/AuthProvidersGallery";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
 import { AuthSessionsList } from "../authSessions/AuthSessionsList";
 import { useAuthSessions } from "../authSessions/AuthSessionsContext";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import {
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
-  EmptyStateVariant,
-} from "@patternfly/react-core/dist/js/components/EmptyState";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import UsersIcon from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "./AccountsContext";

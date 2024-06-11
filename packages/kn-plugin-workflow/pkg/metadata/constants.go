@@ -6,18 +6,45 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 package metadata
+
+// Dependency represents a Maven dependency.
+type Dependency struct {
+	GroupId    string
+	ArtifactId string
+	Version    string
+	Type       string
+	Scope      string
+}
+
+var KogitoBomDependency = Dependency{
+	GroupId:    "org.kie.kogito",
+	ArtifactId: "kogito-bom",
+	Version:    KogitoVersion,
+	Type:       "pom",
+	Scope:      "import",
+}
+
+// KogitoDependencies defines the set of dependencies to be added to the pom.xml
+// of created and converted Quarkus projects.
+var KogitoDependencies = []Dependency{
+	{GroupId: "org.kie", ArtifactId: "kie-addons-quarkus-knative-eventing"},
+	{GroupId: "org.kie", ArtifactId: "kie-addons-quarkus-source-files"},
+	{GroupId: "org.apache.kie.sonataflow", ArtifactId: "sonataflow-quarkus-devui", Version: PluginVersion},
+	{GroupId: "org.kie", ArtifactId: "kogito-addons-quarkus-data-index-inmemory"},
+	{GroupId: "org.apache.kie.sonataflow", ArtifactId: "sonataflow-quarkus"},
+}
 
 const (
 	QuarkusMavenPlugin                          = "quarkus-maven-plugin"
@@ -26,10 +53,10 @@ const (
 	QuarkusContainerImageJib                    = "quarkus-container-image-jib"
 	SmallryeHealth                              = "smallrye-health"
 	QuarkusContainerImageDocker                 = "quarkus-container-image-docker"
-	KogitoQuarkusServerlessWorkflowExtension    = "kogito-quarkus-serverless-workflow"
-	KogitoAddonsQuarkusKnativeEventingExtension = "kogito-addons-quarkus-knative-eventing"
-	KogitoQuarkusServerlessWorkflowDevUi        = "kogito-quarkus-serverless-workflow-devui"
-	KogitoAddonsQuarkusSourceFiles              = "kogito-addons-quarkus-source-files"
+	KogitoQuarkusServerlessWorkflowExtension    = "sonataflow-quarkus"
+	KogitoAddonsQuarkusKnativeEventingExtension = "kie-addons-quarkus-knative-eventing"
+	KogitoQuarkusServerlessWorkflowDevUi        = "sonataflow-quarkus-devui"
+	KogitoAddonsQuarkusSourceFiles              = "kie-addons-quarkus-source-files"
 	KogitoDataIndexInMemory                     = "kogito-addons-quarkus-data-index-inmemory"
 
 	JavaVersion       = 11
@@ -38,20 +65,25 @@ const (
 
 	DefaultTag     = "latest"
 	WorkflowSwJson = "workflow.sw.json"
+	WorkflowSwYaml = "workflow.sw.yaml"
 
 	OperatorName       = "sonataflow-operator-system"
 	OperatorManagerPod = "sonataflow-operator-controller-manager"
 
-	YAMLExtension         = "sw.yaml"
-	YAMLExtensionShort    = "sw.yml"
-	JSONExtension         = "sw.json"
+	YAMLExtension         = ".yaml"
+	YMLExtension          = ".yml"
+	JSONExtension         = ".json"
+	YAMLSWExtension       = "sw.yaml"
+	YMLSWExtension        = "sw.yml"
+	JSONSWExtension       = "sw.json"
 	ApplicationProperties = "application.properties"
 
 	ManifestServiceFilesKind = "SonataFlow"
 
 	DockerInternalPort = "8080/tcp"
 	// VolumeBindPath The :z is to let docker know that the volume content can be shared between containers(SELinux)
-	VolumeBindPath = "/home/kogito/serverless-workflow-project/src/main/resources:z"
+	VolumeBindPathSELinux = "/home/kogito/serverless-workflow-project/src/main/resources:z"
+	VolumeBindPath        = "/home/kogito/serverless-workflow-project/src/main/resources"
 
 	DashboardsDefaultDirName = "dashboards"
 )

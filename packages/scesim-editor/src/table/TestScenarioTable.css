@@ -1,0 +1,47 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License. 
+ */
+
+.test-scenario-table .expression-container table thead th.given,
+.test-scenario-table .expression-container thead th.given .add-column-button,
+.test-scenario-table .expression-container table thead th.given-header,
+.test-scenario-table .expression-container table thead th.given-instance {
+  background-color: #def3ff;
+}
+
+.test-scenario-table .expression-container table thead th.expect,
+.test-scenario-table .expression-container table thead th.expect .add-column-button,
+.test-scenario-table .expression-container table thead th.expect-header,
+.test-scenario-table .expression-container table thead th.expect-instance {
+  background-color: #bee1f4;
+}
+
+.test-scenario-table .expression-container table thead th.other,
+.test-scenario-table .expression-container table thead th.other .add-column-button {
+  background-color: #ffffff;
+}
+
+.test-scenario-table .inline-editable-preview {
+  font-family: Menlo, monospace;
+  font-size: 0.8em;
+  white-space: pre !important;
+}
+
+.test-scenario-table .header-cell-info input[type="text"] {
+  font-size: 0.8em;
+}

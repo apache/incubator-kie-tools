@@ -1,3 +1,20 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+     http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+
 # 0.32.0 (alpha)
 
 - [KOGITO-9668](https://issues.redhat.com/browse/KOGITO-9668) - SWF Editor - In VSCode the diagram reloads if a user clicks on any area of the canvas
@@ -39,23 +56,23 @@
 
 # 0.28.0 (alpha)
 
-- [KOGITO-8730](https://issues.redhat.com/browse/KOGITO-8730) - Show code lenses on VS Code web by @caponetto in https://github.com/kiegroup/kie-tools/pull/1485
-- [KOGITO-8716](https://issues.redhat.com/browse/KOGITO-8716) - [SWF Viewer] Backward orthogonal Lines should not overlap states by @handreyrc in https://github.com/kiegroup/kie-tools/pull/1476
-- [KOGITO-8714](https://issues.redhat.com/browse/KOGITO-8714) - SWF Viewer - display stateDataFilter parameter with icon by @hasys in https://github.com/kiegroup/kie-tools/pull/1474
-- [KOGITO-8677](https://issues.redhat.com/browse/KOGITO-8677) - SWF Diagram Editor - i18n by @hasys in https://github.com/kiegroup/kie-tools/pull/1501
-- [KOGITO-8802](https://issues.redhat.com/browse/KOGITO-8802) - SWF Diagram Editor - depiction of actionMode parameter by @hasys in https://github.com/kiegroup/kie-tools/pull/1511
-- [KOGITO-8783](https://issues.redhat.com/browse/KOGITO-8783) - [SWF Editor] Create empty workflow on code lens by @Sara4994 in https://github.com/kiegroup/kie-tools/pull/1513
-- [KOGITO-8335](https://issues.redhat.com/browse/KOGITO-8335) - [SWF Editor] Provide feedback when operationId is missing from Open API spec by @bxf12315 in https://github.com/kiegroup/kie-tools/pull/1458
-- [KOGITO-8624](https://issues.redhat.com/browse/KOGITO-8624) - Provide autocomplete support for JQ expressions by @AjayJagan in https://github.com/kiegroup/kie-tools/pull/1472
-- [KOGITO-8793](https://issues.redhat.com/browse/KOGITO-8793) - BoudingBox values of states with tooltip boxes are wrong by @hasys in https://github.com/kiegroup/kie-tools/pull/1515
-- [KOGITO-8696](https://issues.redhat.com/browse/KOGITO-8696) - [SWF Editor] Add support to Camel routes in Service Catalog by @Sara4994 in https://github.com/kiegroup/kie-tools/pull/1467
-- [KOGITO-8844](https://issues.redhat.com/browse/KOGITO-8844) - SWF Viewer - Preserve background color of a node in stunner diagram by @hasys in https://github.com/kiegroup/kie-tools/pull/1532
-- [KOGITO-8197](https://issues.redhat.com/browse/KOGITO-8197) - SWF Editor - States example export is broken by @hasys in https://github.com/kiegroup/kie-tools/pull/1537
-- [KOGITO-8907](https://issues.redhat.com/browse/KOGITO-8907) - [SWF Editor] Highlight selected node after setContent in VS Code extension by @paulovmr in https://github.com/kiegroup/kie-tools/pull/1536
-- [KOGITO-8316](https://issues.redhat.com/browse/KOGITO-8316) - SWF Viewer - Parallel state requires more details by @hasys in https://github.com/kiegroup/kie-tools/pull/1541
-- [KOGITO-7999](https://issues.redhat.com/browse/KOGITO-7999) - Stunner - Editor API Canvas/Session/Domain Definitions exposed in JS by @handreyrc in https://github.com/kiegroup/kie-tools/pull/1366
-- [KOGITO-6864](https://issues.redhat.com/browse/KOGITO-6864) - [SWF Diagram Editor] Support for YAML workflow declaration by @treblereel in https://github.com/kiegroup/kie-tools/pull/1444
-- [KOGITO-8938](https://issues.redhat.com/browse/KOGITO-8938) - SWF Viewer - show missing parameters info in Callback State icons by @hasys in https://github.com/kiegroup/kie-tools/pull/1560
+- [KOGITO-8730](https://issues.redhat.com/browse/KOGITO-8730) - Show code lenses on VS Code web by @caponetto in https://github.com/apache/incubator-kie-tools/pull/1485
+- [KOGITO-8716](https://issues.redhat.com/browse/KOGITO-8716) - [SWF Viewer] Backward orthogonal Lines should not overlap states by @handreyrc in https://github.com/apache/incubator-kie-tools/pull/1476
+- [KOGITO-8714](https://issues.redhat.com/browse/KOGITO-8714) - SWF Viewer - display stateDataFilter parameter with icon by @hasys in https://github.com/apache/incubator-kie-tools/pull/1474
+- [KOGITO-8677](https://issues.redhat.com/browse/KOGITO-8677) - SWF Diagram Editor - i18n by @hasys in https://github.com/apache/incubator-kie-tools/pull/1501
+- [KOGITO-8802](https://issues.redhat.com/browse/KOGITO-8802) - SWF Diagram Editor - depiction of actionMode parameter by @hasys in https://github.com/apache/incubator-kie-tools/pull/1511
+- [KOGITO-8783](https://issues.redhat.com/browse/KOGITO-8783) - [SWF Editor] Create empty workflow on code lens by @Sara4994 in https://github.com/apache/incubator-kie-tools/pull/1513
+- [KOGITO-8335](https://issues.redhat.com/browse/KOGITO-8335) - [SWF Editor] Provide feedback when operationId is missing from Open API spec by @bxf12315 in https://github.com/apache/incubator-kie-tools/pull/1458
+- [KOGITO-8624](https://issues.redhat.com/browse/KOGITO-8624) - Provide autocomplete support for JQ expressions by @AjayJagan in https://github.com/apache/incubator-kie-tools/pull/1472
+- [KOGITO-8793](https://issues.redhat.com/browse/KOGITO-8793) - BoudingBox values of states with tooltip boxes are wrong by @hasys in https://github.com/apache/incubator-kie-tools/pull/1515
+- [KOGITO-8696](https://issues.redhat.com/browse/KOGITO-8696) - [SWF Editor] Add support to Camel routes in Service Catalog by @Sara4994 in https://github.com/apache/incubator-kie-tools/pull/1467
+- [KOGITO-8844](https://issues.redhat.com/browse/KOGITO-8844) - SWF Viewer - Preserve background color of a node in stunner diagram by @hasys in https://github.com/apache/incubator-kie-tools/pull/1532
+- [KOGITO-8197](https://issues.redhat.com/browse/KOGITO-8197) - SWF Editor - States example export is broken by @hasys in https://github.com/apache/incubator-kie-tools/pull/1537
+- [KOGITO-8907](https://issues.redhat.com/browse/KOGITO-8907) - [SWF Editor] Highlight selected node after setContent in VS Code extension by @paulovmr in https://github.com/apache/incubator-kie-tools/pull/1536
+- [KOGITO-8316](https://issues.redhat.com/browse/KOGITO-8316) - SWF Viewer - Parallel state requires more details by @hasys in https://github.com/apache/incubator-kie-tools/pull/1541
+- [KOGITO-7999](https://issues.redhat.com/browse/KOGITO-7999) - Stunner - Editor API Canvas/Session/Domain Definitions exposed in JS by @handreyrc in https://github.com/apache/incubator-kie-tools/pull/1366
+- [KOGITO-6864](https://issues.redhat.com/browse/KOGITO-6864) - [SWF Diagram Editor] Support for YAML workflow declaration by @treblereel in https://github.com/apache/incubator-kie-tools/pull/1444
+- [KOGITO-8938](https://issues.redhat.com/browse/KOGITO-8938) - SWF Viewer - show missing parameters info in Callback State icons by @hasys in https://github.com/apache/incubator-kie-tools/pull/1560
 
 # 0.27.0 (alpha)
 
@@ -93,7 +110,7 @@
 
 # 0.25.0 (alpha)
 
-- [KOGITO-8077](https://issues.redhat.com/browse/KOGITO-8077) - KIE Tools Security updates (3rd round)
+- [KOGITO-8077](https://issues.redhat.com/browse/KOGITO-8077) - Apache KIE Tools Security updates (3rd round)
 - [KOGITO-8092](https://issues.redhat.com/browse/KOGITO-8092) - [SWF Editor] Improve the creation of workflow from an empty file
 
 # 0.24.0 (alpha)
@@ -177,7 +194,7 @@
 - [KOGITO-6558](https://issues.redhat.com/browse/KOGITO-6558) - [SW Editor] - YAML support
 - [KOGITO-6646](https://issues.redhat.com/browse/KOGITO-6646) - Marshaller Issues
 - [KOGITO-6647](https://issues.redhat.com/browse/KOGITO-6647) - Upgrade Extension for 0.8 specification
-- [KOGITO-6648](https://issues.redhat.com/browse/KOGITO-6648) - Migrate Extension to KIE Tools Repository
+- [KOGITO-6648](https://issues.redhat.com/browse/KOGITO-6648) - Migrate Extension to Apache KIE Tools Repository
 - [KOGITO-6795](https://issues.redhat.com/browse/KOGITO-6795) - Serverless Workflow Editor Issues
 - [KOGITO-6807](https://issues.redhat.com/browse/KOGITO-6807) - Implement undo, redo and isDirty
 - [KOGITO-6796](https://issues.redhat.com/browse/KOGITO-6796) - Fetch error on console when opening the editor

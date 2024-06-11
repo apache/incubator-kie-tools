@@ -160,9 +160,10 @@ export class WorkspaceService {
     fs: KieSandboxWorkspacesFs,
     schema: FsSchema,
     workspaceId: string,
-    onlyExtensions?: string[]
+    onlyExtensions?: string[],
+    globPattern?: string
   ): Promise<Blob> {
-    const wwfds = await this.getFilteredWorkspaceFileDescriptors(schema, workspaceId);
+    const wwfds = await this.getFilteredWorkspaceFileDescriptors(schema, workspaceId, globPattern);
 
     const filesToZip = (
       await Promise.all(

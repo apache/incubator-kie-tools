@@ -28,8 +28,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 )
 
 type CfgTestInputCreate struct {
@@ -93,7 +93,7 @@ func RunCreateTest(t *testing.T, test CfgTestInputCreate) string {
 	VerifyFilesExist(t, projectDir, expectedFiles)
 
 	// Verify the content of the file `workflow.sw.json`
-	workflowFileData, err := common.GetWorkflowTemplate()
+	workflowFileData, err := common.GetWorkflowTemplate(false)
 	expectedFileContent := string(workflowFileData)
 	VerifyFileContent(t, filepath.Join(projectDir, "workflow.sw.json"), expectedFileContent)
 

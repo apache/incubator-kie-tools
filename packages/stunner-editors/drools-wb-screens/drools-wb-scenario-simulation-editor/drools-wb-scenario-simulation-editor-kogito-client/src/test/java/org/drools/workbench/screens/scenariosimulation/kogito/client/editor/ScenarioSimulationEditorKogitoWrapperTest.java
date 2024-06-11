@@ -348,7 +348,6 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
         verify(scenarioSimulationEditorPresenterMock, times(1)).getModelSuccessCallbackMethod(dataManagementStrategyCaptor.capture(), eq(scenarioSimulationModelMock));
         assertTrue(dataManagementStrategyCaptor.getValue() instanceof KogitoDMODataManagementStrategy);
         verify(scenarioSimulationViewMock, times(1)).setScenarioGridWidgetAsContent();
-        verify(scenarioSimulationEditorPresenterMock, times(1)).showDocks();
         verify(scenarioSimulationViewMock, times(1)).setScenarioTabBarVisibility(true);
     }
 
@@ -362,7 +361,6 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
         verify(scenarioSimulationEditorPresenterMock, times(1)).getModelSuccessCallbackMethod(dataManagementStrategyCaptor.capture(), eq(scenarioSimulationModelMock));
         assertTrue(dataManagementStrategyCaptor.getValue() instanceof KogitoDMNDataManagementStrategy);
         verify(scenarioSimulationViewMock, times(1)).setScenarioGridWidgetAsContent();
-        verify(scenarioSimulationEditorPresenterMock, times(1)).showDocks();
         verify(scenarioSimulationViewMock, times(1)).setScenarioTabBarVisibility(true);
     }
 

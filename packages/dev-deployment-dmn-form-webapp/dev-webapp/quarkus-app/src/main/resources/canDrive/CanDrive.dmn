@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~ 
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~ 
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.      
+-->
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kie.apache.org/dmn/_208FB4E9-6BFF-42FF-8040-6331EC1470BB" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="https://kie.apache.org/dmn/extensions/1.0" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:included1="https://kie.apache.org/dmn/_3245A223-9F8F-41B5-B83E-9CA87AD6F53F" id="_8718F0E7-4AF0-4509-B494-38FFFA4A26C3" name="Can Drive" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kie.apache.org/dmn/_208FB4E9-6BFF-42FF-8040-6331EC1470BB">
+  <dmn:extensionElements/>
+  <dmn:import id="_68BD2C9F-FA1F-4611-A42F-D65BAC664A3D" name="Types3" namespace="https://kie.apache.org/dmn/_3245A223-9F8F-41B5-B83E-9CA87AD6F53F" locationURI="Types3.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
+  <dmn:itemDefinition id="_0CFC572E-88B1-45F5-8226-1163DE86E5BE" name="tPerson" isCollection="false">
+    <dmn:itemComponent id="_2D3A4B85-F452-4D1D-8BD7-79162D1216E9" name="Country" isCollection="false">
+      <dmn:typeRef>Types3.Country</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_B8CE3911-744D-43C5-9F9C-DE4D9694A397" name="Age" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_66B82652-6454-4792-A989-7C97C4DF4672" name="Person">
+    <dmn:extensionElements/>
+    <dmn:variable id="_6866698D-4B5B-44C2-952F-98EB982F16B6" name="Person" typeRef="tPerson"/>
+  </dmn:inputData>
+  <dmn:decision id="_753802DC-87F4-4485-81AE-E5393C61B1AC" name="Can drive?">
+    <dmn:extensionElements/>
+    <dmn:variable id="_F1CBDD9A-1300-469A-A478-7A2D1C00C5B6" name="Can drive?" typeRef="boolean"/>
+    <dmn:informationRequirement id="_38ACC6DC-3700-4896-B305-057991B59FDD">
+      <dmn:requiredInput href="#_66B82652-6454-4792-A989-7C97C4DF4672"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_21608B6A-1D9E-426D-86CF-B0CA7AB20D31" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_E2F88F75-7FD2-4CED-A7AC-015619176072">
+        <dmn:inputExpression id="_092AF86E-5D8C-4299-9998-8CB3B2DDF711" typeRef="number">
+          <dmn:text>Person.Age</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_6B5D4A99-C73E-4DC2-8EEC-0158196F30D6">
+        <dmn:inputExpression id="_14C2BCC6-5059-40A2-9406-E206C5CB6AF5" typeRef="string">
+          <dmn:text>Person.Country</dmn:text>
+        </dmn:inputExpression>
+        <dmn:inputValues kie:constraintType="enumeration" id="_6C9245EF-3444-4D16-B706-511649E3B81B">
+          <dmn:text>"Brazil", "US", "England"</dmn:text>
+        </dmn:inputValues>
+      </dmn:input>
+      <dmn:output id="_6E8F61D6-308A-4E37-A088-F0265CD73F1B"/>
+      <dmn:annotation name="annotation-1"/>
+      <dmn:rule id="_E81327B9-5E47-4C41-AFDC-73EDCA1D43B8">
+        <dmn:inputEntry id="_7EFC4F27-09D0-4206-BD5C-1C72081D9A75">
+          <dmn:text>&gt;= 18</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_A4BD080A-6F76-463A-B8E8-8560C9A79319">
+          <dmn:text>"Brazil"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_F40832D4-8E1B-41CD-8A1E-2384EED9863F">
+          <dmn:text>true</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_1FAF2352-4C74-4DB2-9844-5446E7A732C4">
+        <dmn:inputEntry id="_34F94774-6D0F-474F-88FB-CBA164A25756">
+          <dmn:text>&lt; 18</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_FF4C4EED-7845-42F8-82A6-15F002A65F5B">
+          <dmn:text>"Brazil"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_D06D4AE9-2246-4A36-8B97-FE18BB893ABD">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_00B2707A-36FE-4927-B43C-CD36D71DD0AE">
+        <dmn:inputEntry id="_EA0C9FA0-F959-46DA-97A7-98B935C00414">
+          <dmn:text>&gt;= 17</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_F8F56AA9-223B-4C66-B666-15127AA8AB86">
+          <dmn:text>"England"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_51179D92-A775-4776-9228-502A1746FB1F">
+          <dmn:text>true</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_2DFCD2B1-FC83-4398-B482-3315D4809640">
+        <dmn:inputEntry id="_974148CB-2372-4044-8CB4-AE0B36819829">
+          <dmn:text>&lt; 17</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_D7929881-A203-438F-BE79-81632351501D">
+          <dmn:text>"England"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_6ACB8D90-F867-4BCE-AC3A-1100CC2B778E">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_5E3E58B6-AEA8-4580-8BAB-1848CAE675E8">
+        <dmn:inputEntry id="_244C0142-2F80-4FC5-A02B-303B36A22D6A">
+          <dmn:text>&gt;= 16</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_FF24BDE6-72F0-49EB-9819-579040D5A0D7">
+          <dmn:text>"USA"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_45E663A1-3B52-4672-97D6-05CA66390D20">
+          <dmn:text>true</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_ABF08DF5-CD29-4453-8F73-612565D75E03">
+        <dmn:inputEntry id="_C6E28F29-CD4A-4B1A-855C-6FAC51FA09D2">
+          <dmn:text>&lt; 16</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_A4F61557-2D30-485E-80B1-EE8B815C4FF5">
+          <dmn:text>"USA"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_F2042E73-CDE0-4BAC-A219-8D7E52175D94">
+          <dmn:text>false</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_1ED795B9-32EE-417C-8D14-C48D140B6ED5" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_21608B6A-1D9E-426D-86CF-B0CA7AB20D31">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_66B82652-6454-4792-A989-7C97C4DF4672" dmnElementRef="_66B82652-6454-4792-A989-7C97C4DF4672" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="240" y="220" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_753802DC-87F4-4485-81AE-E5393C61B1AC" dmnElementRef="_753802DC-87F4-4485-81AE-E5393C61B1AC" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="240" y="90" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_38ACC6DC-3700-4896-B305-057991B59FDD-AUTO-SOURCE-AUTO-TARGET" dmnElementRef="_38ACC6DC-3700-4896-B305-057991B59FDD">
+        <di:waypoint x="290" y="220"/>
+        <di:waypoint x="290" y="140"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

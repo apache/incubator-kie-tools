@@ -19,6 +19,7 @@
 
 const nodePath = require("path");
 const nodeFs = require("fs");
+const gwtEditorMapping = require("@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api/GwtEditorMapping");
 
 module.exports = {
   swEditorPath: () => {
@@ -29,6 +30,17 @@ module.exports = {
     }
 
     console.info(`Serverless Workflow Editor :: Serverless Editor path: ${path}`);
+
+    return path;
+  },
+  swEditorFontsPath: () => {
+    const path = nodePath.resolve(__dirname, "dist", "sw", gwtEditorMapping.editors.swf.name, "fonts");
+
+    if (!nodeFs.existsSync(path)) {
+      throw new Error(`Serverless Workflow Editor :: Serverless Editor fonts path doesn't exist: ${path}`);
+    }
+
+    console.info(`Serverless Workflow Editor :: Serverless Editor fonts path: ${path}`);
 
     return path;
   },

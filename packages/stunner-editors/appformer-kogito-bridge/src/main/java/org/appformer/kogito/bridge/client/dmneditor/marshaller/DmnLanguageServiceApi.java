@@ -23,7 +23,7 @@ package org.appformer.kogito.bridge.client.dmneditor.marshaller;
 import org.appformer.kogito.bridge.client.dmneditor.marshaller.model.DmnDocumentData;
 
 /**
- * API which interfaces with Dmn Language Service available into KIE Tools.
+ * API which interfaces with Dmn Language Service available into Apache KIE Tools.
  */
 public interface DmnLanguageServiceApi {
 

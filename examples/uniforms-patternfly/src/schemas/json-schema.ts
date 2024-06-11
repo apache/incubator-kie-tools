@@ -27,6 +27,7 @@ function createValidator(schema: any) {
   return (model: any) => {
     validator(model);
     if (validator.errors && validator.errors.length) {
+      console.error("VALIDATION ERROR: MODEL: ", model);
       throw { details: validator.errors };
     }
   };
@@ -55,6 +56,7 @@ const schema = {
           type: "string",
           format: "date-time",
           max: "2000-04-04T10:30:00.000Z",
+          description: "this is date and time field",
         },
       },
       disabled: false,
@@ -82,8 +84,8 @@ const schema = {
         },
         numberOfBeds: {
           placeholder: "Select...",
-          enum: [1, 2, 3],
-          type: "number",
+          enum: [null, 0, 1, 2],
+          type: ["null", "number"],
         },
       },
     },

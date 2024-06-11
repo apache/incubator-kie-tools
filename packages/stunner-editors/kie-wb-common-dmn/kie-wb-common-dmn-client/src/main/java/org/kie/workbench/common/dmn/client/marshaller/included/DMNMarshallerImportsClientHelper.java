@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 package org.kie.workbench.common.dmn.client.marshaller.included;
@@ -117,7 +117,7 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
                     } else {
                         final Map<String, JSITDefinitions> otherDefinitions = new ConcurrentHashMap<>();
                         return promises.all(Arrays.asList(list),
-                                            (String file) -> loadDefinitionFromFile(file, otherDefinitions))
+                                        (String file) -> loadDefinitionFromFile(file, otherDefinitions))
                                 .then(v -> promises.resolve(otherDefinitions))
                                 .catch_(error -> {
                                     LOGGER.severe(error::toString);
@@ -171,23 +171,23 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
         final String path = filePath;
         return dmnImportsContentService.loadFile(path)
                 .then(content -> promises.create((success, fail) ->
-                                                         dmnImportsService.getDRGElements(content, new ServiceCallback<List<DRGElement>>() {
-                                                             @Override
-                                                             public void onSuccess(final List<DRGElement> drgElements) {
-                                                                 final List<DMNIncludedNode> nodes = drgElements
-                                                                         .stream()
-                                                                         .map(node -> includedModelFactory.makeDMNIncludeNode(path, model, node))
-                                                                         .collect(Collectors.toList());
-                                                                 result.addAll(nodes);
-                                                                 success.onInvoke(nodes);
-                                                             }
+                        dmnImportsService.getDRGElements(content, new ServiceCallback<List<DRGElement>>() {
+                            @Override
+                            public void onSuccess(final List<DRGElement> drgElements) {
+                                final List<DMNIncludedNode> nodes = drgElements
+                                        .stream()
+                                        .map(node -> includedModelFactory.makeDMNIncludeNode(path, model, node))
+                                        .collect(Collectors.toList());
+                                result.addAll(nodes);
+                                success.onInvoke(nodes);
+                            }
 
-                                                             @Override
-                                                             public void onError(final ClientRuntimeError error) {
-                                                                 LOGGER.severe(error::getMessage);
-                                                                 fail.onInvoke(error);
-                                                             }
-                                                         })
+                            @Override
+                            public void onError(final ClientRuntimeError error) {
+                                LOGGER.severe(error::getErrorMessage);
+                                fail.onInvoke(error);
+                            }
+                        })
                 )).catch_(error -> {
                     LOGGER.severe(error::toString);
                     return promises.reject(error);
@@ -210,18 +210,18 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
                                         final int drgElementCount = definitions.getDrgElement().size();
                                         final int itemDefinitionCount = definitions.getItemDefinition().size();
                                         models.add(new DMNIncludedModel(fileName,
-                                                                        modelPackage,
-                                                                        fileName,
-                                                                        namespace,
-                                                                        importType,
-                                                                        drgElementCount,
-                                                                        itemDefinitionCount));
+                                                modelPackage,
+                                                file,
+                                                namespace,
+                                                importType,
+                                                drgElementCount,
+                                                itemDefinitionCount));
                                         success.onInvoke(promises.resolve());
                                     }
 
                                     @Override
                                     public void onError(final ClientRuntimeError error) {
-                                        LOGGER.warning(error::getMessage);
+                                        LOGGER.warning(error::getErrorMessage);
                                         //Swallow. Since it must try to load other paths.
                                         success.onInvoke(promises.resolve());
                                     }
@@ -235,10 +235,11 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
                                 .then(pmmlDocumentMetadata -> {
                                     int modelCount = pmmlDocumentMetadata.getModels() != null ? pmmlDocumentMetadata.getModels().size() : 0;
                                     models.add(new PMMLIncludedModel(fileName,
-                                                                     "",
-                                                                     fileName,
-                                                                     DMNImportTypes.PMML.getDefaultNamespace(),
-                                                                     modelCount));
+                                            "",
+                                            file,
+                                            DMNImportTypes.PMML.getDefaultNamespace(),
+                                            "https://kie.org/pmml#" + (file.startsWith("./") ? file.substring(2) : file),
+                                            modelCount));
                                     return promises.resolve();
                                 }).catch_(error -> {
                                     LOGGER.severe(error::toString);
@@ -287,7 +288,7 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
 
             @Override
             public void onError(final ClientRuntimeError error) {
-                LOGGER.log(Level.SEVERE, error.getMessage());
+                LOGGER.log(Level.SEVERE, error.getErrorMessage());
             }
         };
     }
@@ -323,7 +324,7 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
 
                         for (final Map.Entry<String, PMMLDocumentMetadata> entry : otherDefinitions.entrySet()) {
                             final PMMLDocumentMetadata def = entry.getValue();
-                            findImportByPMMLDocument(FileUtils.getFileName(def.getPath()), imports).ifPresent(anImport -> {
+                            findImportByPMMLDocument(def.getPath(), imports).ifPresent(anImport -> {
                                 final JSITImport foundImported = Js.uncheckedCast(anImport);
                                 importDefinitions.put(foundImported, def);
                             });
@@ -346,7 +347,7 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
                     } else {
                         final Map<String, PMMLDocumentMetadata> definitions = new HashMap<>();
                         return promises.all(Arrays.asList(files), file -> loadPMMLDefinitionFromFile(file, definitions)
-                                .then(v -> promises.resolve(definitions)))
+                                        .then(v -> promises.resolve(definitions)))
                                 .catch_(error -> {
                                     LOGGER.severe(error::toString);
                                     return promises.reject(error);
@@ -495,13 +496,13 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
         loadPMMLDefinitions()
                 .then(allDefinitions -> {
                     final Map<String, String> filesToNameMap = includedModels.stream().collect(Collectors.toMap(PMMLIncludedModel::getPath,
-                                                                                                                PMMLIncludedModel::getModelName));
+                            PMMLIncludedModel::getModelName));
                     final List<PMMLDocumentMetadata> pmmlDocumentMetadata = allDefinitions.entrySet().stream()
-                            .filter(entry -> filesToNameMap.keySet().contains(FileUtils.getFileName(entry.getKey())))
+                            .filter(entry -> filesToNameMap.keySet().contains(entry.getKey()))
                             .map(entry -> new PMMLDocumentMetadata(entry.getValue().getPath(),
-                                                                   filesToNameMap.get(FileUtils.getFileName(entry.getKey())),
-                                                                   entry.getValue().getImportType(),
-                                                                   entry.getValue().getModels()))
+                                    filesToNameMap.get(entry.getKey()),
+                                    entry.getValue().getImportType(),
+                                    entry.getValue().getModels()))
                             .collect(Collectors.toList());
                     pmmlDocumentMetadata.sort(Comparator.comparing(PMMLDocumentMetadata::getName));
                     callback.onSuccess(pmmlDocumentMetadata);
@@ -525,7 +526,7 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
                             for (int j = 0; j < items.size(); j++) {
                                 final JSITItemDefinition jsitItemDefinition = Js.uncheckedCast(items.get(j));
                                 final ItemDefinition converted = ImportedItemDefinitionPropertyConverter.wbFromDMN(jsitItemDefinition,
-                                                                                                                   modelName);
+                                        modelName);
                                 result.add(converted);
                             }
                         }

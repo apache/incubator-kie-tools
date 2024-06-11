@@ -18,12 +18,8 @@
  */
 
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
-import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDevDeployments as useDevDeployments } from "./DevDeploymentsContext";
-import { FeatureDependentOnExtendedServices } from "../extendedServices/FeatureDependentOnExtendedServices";
-import { DependentFeature, useExtendedServices } from "../extendedServices/ExtendedServicesContext";
-import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { FileLabel } from "../filesList/FileLabel";
@@ -36,7 +32,6 @@ import { cloudAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSess
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
 
 export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace | undefined) {
-  const extendedServices = useExtendedServices();
   const devDeployments = useDevDeployments();
   const accountsDispatch = useAccountsDispatch();
   const { authSessions } = useAuthSessions();
@@ -60,26 +55,19 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
     });
   }, [authSessions, suggestedAuthSessionForDeployment]);
 
-  const isExtendedServicesRunning = useMemo(
-    () => extendedServices.status === ExtendedServicesStatus.RUNNING,
-    [extendedServices.status]
-  );
-
   const onDeploy = useCallback(() => {
-    if (isExtendedServicesRunning && authSessionId) {
+    if (authSessionId) {
       devDeployments.setConfirmDeployModalState({ isOpen: true, cloudAuthSessionId: authSessionId });
       return;
     }
-    extendedServices.setInstallTriggeredBy(DependentFeature.DEV_DEPLOYMENTS);
-    extendedServices.setModalOpen(true);
-  }, [isExtendedServicesRunning, authSessionId, extendedServices, devDeployments]);
+  }, [authSessionId, devDeployments]);
 
   return useMemo(() => {
     return [
       <React.Fragment key={"dmn-dev-deployment-dropdown-items"}>
         {workspace && (
-          <FeatureDependentOnExtendedServices isLight={false} position="left">
-            <div style={{ padding: "8px 16px" }}>
+          <>
+            <div style={{ padding: "0px 8px" }}>
               <AuthSessionSelect
                 position={SelectPosition.right}
                 authSessionId={authSessionId}
@@ -102,7 +90,7 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
               key={`dropdown-dmn-dev-deployment-deploy`}
               component={"button"}
               onClick={onDeploy}
-              isDisabled={!isExtendedServicesRunning || !authSessionId}
+              isDisabled={!authSessionId}
               ouiaId={"deploy-to-dmn-dev-deployment-dropdown-button"}
               description="For development only!"
               style={{ minWidth: "400px" }}
@@ -127,9 +115,9 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
                 </Flex>
               )}
             </DropdownItem>
-          </FeatureDependentOnExtendedServices>
+          </>
         )}
       </React.Fragment>,
     ];
-  }, [accountsDispatch, authSessionId, devDeployments, isExtendedServicesRunning, onDeploy, workspace]);
+  }, [accountsDispatch, authSessionId, devDeployments, onDeploy, workspace]);
 }

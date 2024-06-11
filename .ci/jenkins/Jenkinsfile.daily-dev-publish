@@ -1,0 +1,582 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@Library('jenkins-pipeline-shared-libraries')_
+
+pipeline {
+    agent {
+        docker {
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            args '--shm-size=2g --privileged --group-add docker'
+            label util.avoidFaultyNodes()
+        }
+    }
+
+    options {
+        timeout(time: 240, unit: 'MINUTES')
+    }
+
+    environment {
+        KIE_SANDBOX_EXTENDED_SERVICES_VERSION = '0.0.0'
+
+        KIE_TOOLS_BUILD__buildContainerImages = 'true'
+        KIE_TOOLS_BUILD__runLinters = 'false'
+        KIE_TOOLS_BUILD__runTests = 'false'
+        KIE_TOOLS_BUILD__runEndToEndTests = 'false'
+
+        DEV_DEPLOYMENT_BASE_IMAGE__registry = 'docker.io'
+        DEV_DEPLOYMENT_BASE_IMAGE__account = 'apache'
+        DEV_DEPLOYMENT_BASE_IMAGE__name = 'incubator-kie-sandbox-dev-deployment-base'
+        DEV_DEPLOYMENT_BASE_IMAGE__buildTag = 'daily-dev'
+
+        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry = 'docker.io'
+        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account = 'apache'
+        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name = 'incubator-dev-deployment-kogito-quarkus-blank-app'
+        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag = 'daily-dev'
+
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry = 'docker.io'
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account = 'apache'
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name = 'incubator-dev-deployment-dmn-form-webapp'
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTag = 'daily-dev'
+
+        ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'docker.io'
+        ONLINE_EDITOR__devDeploymentBaseImageAccount = 'apache'
+        ONLINE_EDITOR__devDeploymentBaseImageName = 'incubator-kie-sandbox-dev-deployment-base'
+        ONLINE_EDITOR__devDeploymentBaseImageTag = 'daily-dev'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry = 'docker.io'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'apache'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'incubator-kie-sandbox-dev-deployment-dmn-form-webapp'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = 'daily-dev'
+        ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageRegistry = 'docker.io'
+        ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageAccount = 'apache'
+        ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageName = 'incubator-kie-sandbox-dev-deployment-kogito-quarkus-blank-app'
+        ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageTag = 'daily-dev'
+        ONLINE_EDITOR__corsProxyUrl = 'https://daily-dev-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
+
+        EXTENDED_SERVICES__kieSandboxUrl = 'https://apache.github.io/incubator-kie-kogito-online/dev'
+
+        KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry = 'docker.io'
+        KIE_SANDBOX_WEBAPP_IMAGE__imageAccount = 'apache'
+        KIE_SANDBOX_WEBAPP_IMAGE__imageName = 'incubator-kie-sandbox-webapp'
+        KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags = 'daily-dev'
+
+        KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry = 'docker.io'
+        KIE_SANDBOX_EXTENDED_SERVICES__imageAccount = 'apache'
+        KIE_SANDBOX_EXTENDED_SERVICES__imageName = 'incubator-kie-sandbox-extended-services'
+        KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags = 'daily-dev'
+
+        CORS_PROXY_IMAGE__imageRegistry = 'docker.io'
+        CORS_PROXY_IMAGE__imageAccount = 'apache'
+        CORS_PROXY_IMAGE__imageName = 'incubator-kie-cors-proxy'
+        CORS_PROXY_IMAGE__imageBuildTags = 'daily-dev'
+
+        KIE_SANDBOX_HELM_CHART__registry = 'docker.io'
+        KIE_SANDBOX_HELM_CHART__account = 'apache'
+        KIE_SANDBOX_HELM_CHART__name = 'incubator-kie-sandbox-helm-chart'
+        KIE_SANDBOX_HELM_CHART__tag = '0.0.0-daily-dev'
+
+        OPENSHIFT_NAMESPACE = 'kie-sandbox'
+        OPENSHIFT_PART_OF = 'daily-dev-kie-sandbox-app'
+        DEPLOY_TAG = 'daily-dev'
+
+        DASHBUILDER__viewerImageRegistry = 'docker.io'
+        DASHBUILDER__viewerImageAccount = 'apache'
+        DASHBUILDER__viewerImageName = 'incubator-kie-dashbuilder-viewer'
+        DASHBUILDER__viewerImageBuildTags = 'daily-dev'
+
+        SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag = 'daily-dev'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry = 'docker.io'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount = 'apache'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName = 'incubator-serverless-logic-web-tools-swf-builder'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag = 'daily-dev'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags = 'daily-dev'
+        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry = 'docker.io'
+        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount = 'apache'
+        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName = 'incubator-kie-serverless-logic-web-tools-base-builder'
+        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageTag = 'daily-dev'
+        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags = 'daily-dev'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry = 'docker.io'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount = 'apache'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName = 'incubator-kie-serverless-logic-web-tools-swf-dev-mode'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag = 'daily-dev'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags = 'daily-dev'
+        SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl = 'https://daily-dev-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
+
+        KOGITO_TASK_CONSOLE__registry = 'docker.io'
+        KOGITO_TASK_CONSOLE__account = 'apache'
+        KOGITO_TASK_CONSOLE__name = 'incubator-kie-kogito-task-console'
+        KOGITO_TASK_CONSOLE__buildTag = 'daily-dev'
+
+        KOGITO_MANAGEMENT_CONSOLE__registry = 'docker.io'
+        KOGITO_MANAGEMENT_CONSOLE__account = 'apache'
+        KOGITO_MANAGEMENT_CONSOLE__name = 'incubator-kie-kogito-management-console'
+        KOGITO_MANAGEMENT_CONSOLE__buildTag = 'daily-dev'
+
+        SONATAFLOW_BUILDER_IMAGE__registry = 'docker.io'
+        SONATAFLOW_BUILDER_IMAGE__account = 'apache'
+        SONATAFLOW_BUILDER_IMAGE__name = 'incubator-kie-sonataflow-builder'
+        SONATAFLOW_BUILDER_IMAGE__buildTag = 'latest'
+
+        SONATAFLOW_DEVMODE_IMAGE__registry = 'docker.io'
+        SONATAFLOW_DEVMODE_IMAGE__account = 'apache'
+        SONATAFLOW_DEVMODE_IMAGE__name = 'incubator-kie-sonataflow-devmode'
+        SONATAFLOW_DEVMODE_IMAGE__buildTag = 'latest'
+
+        SONATAFLOW_OPERATOR__registry = 'docker.io'
+        SONATAFLOW_OPERATOR__account = 'apache'
+        SONATAFLOW_OPERATOR__name = 'incubator-kie-sonataflow-operator'
+        SONATAFLOW_OPERATOR__buildTag = 'latest'
+
+        BUILD_DATE = sh(script: "echo `date +'%Y-%m-%d %T'`", returnStdout: true).trim()
+
+        DOCKER_CONFIG = "${WORKSPACE}/.docker"
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                    openShiftUtils = load '.ci/jenkins/shared-scripts/openShiftUtils.groovy'
+                    dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
+                    helmUtils = load '.ci/jenkins/shared-scripts/helmUtils.groovy'
+                }
+            }
+        }
+
+        stage('Start required services for build and tests (DinD, Xvfb, Fluxbox)') {
+            steps {
+                script {
+                    buildUtils.startRequiredServices()
+                }
+            }
+        }
+
+        stage('Clean workspace before build') {
+            steps {
+                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Checkout kie-tools') {
+            steps {
+                dir('kie-tools') {
+                    checkout scm
+                }
+            }
+        }
+
+        stage('Output version') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        env.VERSION = sh(returnStdout: true, script: "#!/bin/bash -el \n node -e \"console.log(require('./package.json').version);\"").trim()
+                    }
+                }
+            }
+        }
+
+        stage('Setup PNPM') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.setupPnpm()
+                    }
+                }
+            }
+        }
+
+        stage('PNPM Bootstrap') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBootstrap()
+                    }
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('kie-tools') {
+                    sh """#!/bin/bash -el
+                    export WEBPACK__minimize=true
+                    export WEBPACK__tsLoaderTranspileOnly=false
+                    export CHROME_EXTENSION__routerTargetOrigin=https://apache.github.io
+                    export CHROME_EXTENSION__routerRelativePath=incubator-kie-kogito-online/dev/editors/
+                    export SWF_CHROME_EXTENSION__routerTargetOrigin=https://apache.github.io
+                    export SWF_CHROME_EXTENSION__routerRelativePath=incubator-kie-kogito-online/dev/editors/
+                    export ONLINE_EDITOR__extendedServicesDownloadUrlLinux=https://github.com/apache/incubator-kie-tools/releases/download/${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}/kie_sandbox_extended_services_linux_${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}.tar.gz
+                    export ONLINE_EDITOR__extendedServicesDownloadUrlMacOs=https://github.com/apache/incubator-kie-tools/releases/download/${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}/kie_sandbox_extended_services_macos_${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}.dmg
+                    export ONLINE_EDITOR__extendedServicesDownloadUrlWindows=https://github.com/apache/incubator-kie-tools/releases/download/${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}/kie_sandbox_extended_services_windows_${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}.exe
+                    export ONLINE_EDITOR__extendedServicesCompatibleVersion=${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}
+                    export ONLINE_EDITOR__buildInfo="${env.VERSION} (daily-dev) @ ${env.GIT_COMMIT} (${env.BUILD_DATE})"
+                    export SERVERLESS_LOGIC_WEB_TOOLS__buildInfo="${env.VERSION} (daily-dev) @ ${env.GIT_COMMIT} (${env.BUILD_DATE})"
+                    pnpm -r --workspace-concurrency=1 build:prod
+                    """.trim()
+                }
+            }
+        }
+
+        stage('Push sonataflow-builder to Docker Hub') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.SONATAFLOW_BUILDER_IMAGE__registry}/${env.SONATAFLOW_BUILDER_IMAGE__account}",
+                        "${env.SONATAFLOW_BUILDER_IMAGE__name}",
+                        "${env.SONATAFLOW_BUILDER_IMAGE__buildTag}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Push sonataflow-devmode to Docker Hub') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.SONATAFLOW_DEVMODE_IMAGE__registry}/${env.SONATAFLOW_DEVMODE_IMAGE__account}",
+                        "${env.SONATAFLOW_DEVMODE_IMAGE__name}",
+                        "${env.SONATAFLOW_DEVMODE_IMAGE__buildTag}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Push sonataflow-operator to Docker Hub') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.SONATAFLOW_OPERATOR__registry}/${env.SONATAFLOW_OPERATOR__account}",
+                        "${env.SONATAFLOW_OPERATOR__name}",
+                        "${env.SONATAFLOW_OPERATOR__buildTag}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Push dev-deployment-base-image to Docker Hub') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__registry}/${env.DEV_DEPLOYMENT_BASE_IMAGE__account}",
+                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__name}",
+                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__buildTag}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Push dev-deployment-dmn-form-webapp-image to Docker Hub') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry}/${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account}",
+                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name}",
+                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTag}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Push dev-deployment-kogito-quarkus-blank-app-image to Docker Hub') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry}/${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account}",
+                        "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name}",
+                        "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Push kie-sandbox-extended-services-image to Docker Hub') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry}/${env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount}",
+                        "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageName}",
+                        "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Deploy kie-sandbox-extended-services-image to OpenShift') {
+            steps {
+                script {
+                    appName = 'daily-dev-kie-sandbox-extended-services'
+                    openShiftUtils.createOrUpdateApp(
+                        "${env.OPENSHIFT_NAMESPACE}",
+                        "${appName}",
+                        "${env.DEPLOY_TAG}",
+                        "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry}/${env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount}/${env.KIE_SANDBOX_EXTENDED_SERVICES__imageName}:${env.DEPLOY_TAG}",
+                        "${env.OPENSHIFT_PART_OF}",
+                        'golang',
+                        "${pipelineVars.openshiftCredentialsId}"
+                    )
+                    env.KIE_SANDBOX_EXTENDED_SERVICES_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", "${appName}", "${pipelineVars.openshiftCredentialsId}")
+                }
+            }
+        }
+
+        stage('Push cors-proxy-image to Docker Hub') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.CORS_PROXY_IMAGE__imageRegistry}/${env.CORS_PROXY_IMAGE__imageAccount}",
+                        "${env.CORS_PROXY_IMAGE__imageName}",
+                        "${env.CORS_PROXY_IMAGE__imageBuildTags}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Deploy cors-proxy-image to OpenShift') {
+            steps {
+                script {
+                    appName = 'daily-dev-cors-proxy'
+                    openShiftUtils.createOrUpdateApp(
+                        "${env.OPENSHIFT_NAMESPACE}",
+                        "${appName}",
+                        "${env.DEPLOY_TAG}",
+                        "${env.CORS_PROXY_IMAGE__imageRegistry}/${env.CORS_PROXY_IMAGE__imageAccount}/${env.CORS_PROXY_IMAGE__imageName}:${env.DEPLOY_TAG}",
+                        "${env.OPENSHIFT_PART_OF}",
+                        'nodejs',
+                        "${pipelineVars.openshiftCredentialsId}"
+                    )
+                    env.KIE_SANDBOX_CORS_PROXY_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", "${appName}", "${pipelineVars.openshiftCredentialsId}")
+                }
+            }
+        }
+
+        stage('Push kie-sandbox-image to Docker Hub') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}",
+                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageName}",
+                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Prepare environment variables for OpenShift deployment') {
+            steps {
+                sh """#!/bin/bash -el
+                echo "KIE_SANDBOX_EXTENDED_SERVICES_URL=${env.KIE_SANDBOX_EXTENDED_SERVICES_URL}" >> deployment.env
+                echo "KIE_SANDBOX_CORS_PROXY_URL=${env.KIE_SANDBOX_CORS_PROXY_URL}" >> deployment.env
+                """.trim()
+            }
+        }
+
+        stage('Deploy kie-sandbox-image to OpenShift') {
+            steps {
+                script {
+                    openShiftUtils.createOrUpdateApp(
+                        "${env.OPENSHIFT_NAMESPACE}",
+                        'daily-dev-kie-sandbox',
+                        "${env.DEPLOY_TAG}",
+                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageName}:${env.DEPLOY_TAG}",
+                        "${env.OPENSHIFT_PART_OF}",
+                        'js',
+                        "${pipelineVars.openshiftCredentialsId}",
+                        './deployment.env'
+                    )
+                }
+            }
+        }
+
+        stage('Push serverless-logic-web-tools-swf-builder-image to Docker Hub') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry}/${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount}",
+                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName}",
+                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Push serverless-logic-web-tools-base-builder-image to Docker Hub') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry}/${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount}",
+                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName}",
+                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Push serverless-logic-web-tools-swf-dev-mode-image to Docker Hub') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry}/${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount}",
+                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName}",
+                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Push dashbuilder-viewer-image to Docker Hub') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.DASHBUILDER__viewerImageRegistry}/${env.DASHBUILDER__viewerImageAccount}",
+                        "${env.DASHBUILDER__viewerImageName}",
+                        "${env.DASHBUILDER__viewerImageBuildTags}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Push kogito-task-console to Docker Hub') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.KOGITO_TASK_CONSOLE__registry}/${env.KOGITO_TASK_CONSOLE__account}",
+                        "${env.KOGITO_TASK_CONSOLE__name}",
+                        "${env.KOGITO_TASK_CONSOLE__buildTag}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Push kogito-management-console to Docker Hub') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.KOGITO_MANAGEMENT_CONSOLE__registry}/${env.KOGITO_MANAGEMENT_CONSOLE__account}",
+                        "${env.KOGITO_MANAGEMENT_CONSOLE__name}",
+                        "${env.KOGITO_MANAGEMENT_CONSOLE__buildTag}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Push kie-sandbox-helm-chart to Docker Hub') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        helmUtils.pushChartToRegistry(
+                            "${env.KIE_SANDBOX_HELM_CHART__registry}/${env.KIE_SANDBOX_HELM_CHART__account}",
+                            "packages/kie-sandbox-helm-chart/dist/${env.KIE_SANDBOX_HELM_CHART__name}-${env.KIE_SANDBOX_HELM_CHART__tag}.tgz",
+                            "${pipelineVars.dockerHubUserCredentialsId}",
+                            "${pipelineVars.dockerHubTokenCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Update kogito-online resources') {
+            steps {
+                dir('kogito-online') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            'https://github.com/apache/incubator-kie-kogito-online.git',
+                            'gh-pages',
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+
+                        sh """#!/bin/bash -el
+                        git config user.email asf-ci-kie@jenkins.kie.apache.org
+                        git config user.name asf-ci-kie
+                        git checkout gh-pages
+                        rm -rf dev && mkdir -p dev/editors
+                        cp -RL ${WORKSPACE}/kie-tools/packages/stunner-editors/dist/dmn dev/editors/
+                        cp -RL ${WORKSPACE}/kie-tools/packages/stunner-editors/dist/bpmn dev/editors/
+                        cp -RL ${WORKSPACE}/kie-tools/packages/stunner-editors/dist/scesim dev/editors/
+                        cp -r ${WORKSPACE}/kie-tools/packages/online-editor/dist/* dev/
+                        rm -rf dev/gwt-editors
+                        ln -s editors dev/gwt-editors
+                        git add . && git commit -m "Apache KIE Tools Daily Dev Build resources - ${env.BUILD_DATE}" || echo 'No changes.'
+                        """.trim()
+
+                        githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.asfGithubPushCredentialsId}")
+                    }
+                }
+            }
+        }
+
+        stage('Build and Deploy (jbpm-quarkus-devui and sonataflow-quarkus-devui)') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.mavenDeployRepositoryCredentialsId}", usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+                            configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
+                                sh """#!/bin/bash -el
+                                export KIE_TOOLS_BUILD__mavenDeploySkip=false
+                                pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
+                                pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Dapache.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
+                                pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Dapache.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
+                                pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Drevision=999-SNAPSHOT >> .mvn/maven.config'
+                                pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... build:prod
+                                """.trim()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: "kie-tools/packages/serverless-workflow-vscode-extension/dist/serverless_workflow_vscode_extension_${env.VERSION}.vsix, kie-tools/packages/vscode-extension-dashbuilder-editor/dist/vscode_extension_dashbuilder_editor_${env.VERSION}.vsix, kie-tools/packages/kie-editors-dev-vscode-extension/dist/kie_editors_dev_vscode_extension_${env.VERSION}.vsix, kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${env.VERSION}.zip, kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${env.VERSION}.zip"
+            cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+        }
+    }
+}

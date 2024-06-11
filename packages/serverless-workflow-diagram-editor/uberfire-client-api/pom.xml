@@ -26,7 +26,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-    <artifactId>stunner-editors-parent</artifactId>
+    <artifactId>serverless-workflow-diagram-editor-parent</artifactId>
     <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
@@ -60,12 +60,12 @@
     </dependency>
 
     <dependency>
-      <groupId>org.treblereel.j2cl.processors</groupId>
+      <groupId>org.kie.j2cl.tools.processors</groupId>
       <artifactId>annotations</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.treblereel.j2cl.processors</groupId>
+      <groupId>org.kie.j2cl.tools.processors</groupId>
       <artifactId>processors</artifactId>
       <scope>provided</scope>
     </dependency>

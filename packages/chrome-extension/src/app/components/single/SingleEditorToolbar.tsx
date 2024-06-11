@@ -40,26 +40,39 @@ export function SingleEditorToolbar(props: {
   const linkToExternalEditorTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const copyLinkSuccessAlertRef = useRef<HTMLDivElement>(null);
   const { i18n } = useChromeExtensionI18n();
+  const { onFullScreen, onSeeAsSource, onSeeAsDiagram, onOpenInExternalEditor } = props;
 
-  const goFullScreen = useCallback((e: any) => {
-    e.preventDefault();
-    props.onFullScreen();
-  }, []);
+  const goFullScreen = useCallback(
+    (e: any) => {
+      e.preventDefault();
+      onFullScreen();
+    },
+    [onFullScreen]
+  );
 
-  const seeAsSource = useCallback((e: any) => {
-    e.preventDefault();
-    props.onSeeAsSource();
-  }, []);
+  const seeAsSource = useCallback(
+    (e: any) => {
+      e.preventDefault();
+      onSeeAsSource();
+    },
+    [onSeeAsSource]
+  );
 
-  const seeAsDiagram = useCallback((e: any) => {
-    e.preventDefault();
-    props.onSeeAsDiagram();
-  }, []);
+  const seeAsDiagram = useCallback(
+    (e: any) => {
+      e.preventDefault();
+      onSeeAsDiagram();
+    },
+    [onSeeAsDiagram]
+  );
 
-  const openInExternalEditor = useCallback((e: any) => {
-    e.preventDefault();
-    props.onOpenInExternalEditor?.();
-  }, []);
+  const openInExternalEditor = useCallback(
+    (e: any) => {
+      e.preventDefault();
+      onOpenInExternalEditor?.();
+    },
+    [onOpenInExternalEditor]
+  );
 
   const copyLinkToExternalEditor = useCallback((e: any) => {
     e.preventDefault();
@@ -83,7 +96,7 @@ export function SingleEditorToolbar(props: {
     return () => {
       /* Do nothing */
     };
-  }, [copyLinkSuccessAlertVisible]);
+  }, [closeCopyLinkSuccessAlert, copyLinkSuccessAlertVisible]);
 
   return (
     <>

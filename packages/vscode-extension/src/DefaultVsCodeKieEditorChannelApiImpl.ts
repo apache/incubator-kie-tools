@@ -18,34 +18,37 @@
  */
 
 import { BackendProxy } from "@kie-tools-core/backend/dist/api";
-import {
-  WorkspaceEdit,
-  ResourceContentRequest,
-  ResourceContentService,
-  ResourceListRequest,
-  WorkspaceChannelApi,
-} from "@kie-tools-core/workspace/dist/api";
 import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kie-tools-core/editor/dist/api";
-import * as __path from "path";
-import * as vscode from "vscode";
-import { VsCodeKieEditorController } from "./VsCodeKieEditorController";
-import { Notification, NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
-import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
+import { toFsPath } from "./paths/paths";
 import {
   JavaCodeCompletionAccessor,
   JavaCodeCompletionApi,
   JavaCodeCompletionChannelApi,
   JavaCodeCompletionClass,
 } from "@kie-tools-core/vscode-java-code-completion/dist/api";
+import {
+  ResourceContentRequest,
+  ResourceContentService,
+  ResourceListRequest,
+  WorkspaceEdit,
+} from "@kie-tools-core/workspace/dist/api";
+import * as __path from "path";
+import * as vscode from "vscode";
+import { VsCodeKieEditorController } from "./VsCodeKieEditorController";
+import { VsCodeI18n } from "./i18n";
+import { VsCodeNotificationsChannelApiImpl } from "./notifications/VsCodeNotificationsChannelApiImpl";
+import { VsCodeWorkspaceChannelApiImpl } from "./workspace/VsCodeWorkspaceChannelApiImpl";
+import { getNormalizedPosixPathRelativeToWorkspaceRoot, getWorkspaceRoot } from "./workspace/workspaceRoot";
 
 export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannelApi, JavaCodeCompletionChannelApi {
   constructor(
     private readonly editor: VsCodeKieEditorController,
     private readonly resourceContentService: ResourceContentService,
-    private readonly workspaceApi: WorkspaceChannelApi,
+    private readonly vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
     private readonly backendProxy: BackendProxy,
-    private readonly notificationsApi: NotificationsChannelApi,
+    private readonly vscodeNotifications: VsCodeNotificationsChannelApiImpl,
     private readonly javaCodeCompletionApi: JavaCodeCompletionApi,
     private readonly viewType: string,
     private readonly i18n: I18n<VsCodeI18n>
@@ -88,24 +91,50 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
     throw new Error("Document type not supported");
   }
 
-  public kogitoWorkspace_openFile(path: string) {
-    this.workspaceApi.kogitoWorkspace_openFile(
-      __path.isAbsolute(path) ? path : __path.join(__path.dirname(this.editor.document.document.uri.path), path)
+  public kogitoWorkspace_openFile(normalizedPosixPathRelativeToTheWorkspaceRoot: string) {
+    if (__path.isAbsolute(normalizedPosixPathRelativeToTheWorkspaceRoot)) {
+      throw new Error(
+        "VS CODE DEFAULT CHANNEL API IMPL: Can't open absolute path. Paths must be relative to the workspace root."
+      );
+    }
+
+    this.vscodeWorkspace.openFile(
+      __path.join(
+        getWorkspaceRoot(this.editor.document.document).workspaceRootAbsoluteFsPath,
+        toFsPath(normalizedPosixPathRelativeToTheWorkspaceRoot)
+      )
     );
   }
 
   public async kogitoEditor_contentRequest() {
+    const normalizedPosixPathRelativeToTheWorkspaceRoot = getNormalizedPosixPathRelativeToWorkspaceRoot(
+      this.editor.document.document
+    );
+
     let content: string;
     try {
       content = await this.editor.getDocumentContent();
     } catch (e) {
       // If file doesn't exist, we create an empty one.
       // This is important for the use-case where users type `code new-file.dmn` on a terminal.
-      await vscode.workspace.fs.writeFile(this.editor.document.document.uri, new Uint8Array());
-      return { content: "", path: this.editor.document.document.uri.path };
+      try {
+        await vscode.workspace.fs.writeFile(this.editor.document.document.uri, new Uint8Array());
+        return { content: "", normalizedPosixPathRelativeToTheWorkspaceRoot };
+      } catch (error) {
+        console.error(
+          "Failed on vscode.workspace.fs.writeFile. document uri: ",
+          this.editor.document.document.uri,
+          "error: ",
+          error
+        );
+        throw error;
+      }
     }
 
-    return { content, path: this.editor.document.document.uri.path };
+    return {
+      content,
+      normalizedPosixPathRelativeToTheWorkspaceRoot,
+    };
   }
 
   public kogitoEditor_setContentError(editorContent: EditorContent) {
@@ -152,7 +181,7 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
   }
 
   public kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest) {
-    return this.resourceContentService.get(request.path, request.opts);
+    return this.resourceContentService.get(request.normalizedPosixPathRelativeToTheWorkspaceRoot, request.opts);
   }
 
   public kogitoWorkspace_resourceListRequest(request: ResourceListRequest) {
@@ -164,15 +193,25 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
   }
 
   public kogitoNotifications_createNotification(notification: Notification): void {
-    this.notificationsApi.kogitoNotifications_createNotification(notification);
+    this.vscodeNotifications.createNotification(this.editor.document.document, notification);
   }
 
-  public kogitoNotifications_setNotifications(path: string, notifications: Notification[]): void {
-    this.notificationsApi.kogitoNotifications_setNotifications(path, notifications);
+  public kogitoNotifications_setNotifications(
+    normalizedPosixPathRelativeToTheWorkspaceRoot: string,
+    notifications: Notification[]
+  ): void {
+    this.vscodeNotifications.setNotifications(
+      this.editor.document.document,
+      normalizedPosixPathRelativeToTheWorkspaceRoot,
+      notifications
+    );
   }
 
-  public kogitoNotifications_removeNotifications(path: string): void {
-    this.notificationsApi.kogitoNotifications_removeNotifications(path);
+  public kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
+    this.vscodeNotifications.removeNotifications(
+      this.editor.document.document,
+      normalizedPosixPathRelativeToTheWorkspaceRoot
+    );
   }
 
   public kogitoJavaCodeCompletion__getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]> {

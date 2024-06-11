@@ -4,19 +4,18 @@
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
     "build:dev": "echo Nothing to do",
     "build:prod": "pnpm cleanup && run-script-os",
-    "build:prod:darwin": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
-    "build:prod:linux": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:podman:build\"",
+    "build:prod:linux:darwin": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
     "build:prod:win32": "echo \"Build not supported on Windows\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "image:docker:build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker build --ulimit nofile=5000:5000 $(echo $(build-env baseBuilderImage.buildTags) | xargs printf -- \"-t $(build-env baseBuilderImageEnv.registry)/$(build-env baseBuilderImageEnv.account)/$(build-env baseBuilderImageEnv.name):%s\n\" | xargs echo) --build-arg KOGITO_IMAGE_TAG=$(build-env baseBuilderImage.kogitoImageTag) --build-arg KUBECTL_VERSION=$(build-env baseBuilderImage.kubectlVersion) .\" --else \"echo Docker not found, skipping image build.\"",

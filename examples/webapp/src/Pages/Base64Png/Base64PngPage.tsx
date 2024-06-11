@@ -40,7 +40,7 @@ export function Base64PngPage() {
     fileExtension: "base64png",
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false,
-    path: "new-file.base64png",
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "new-file.base64png",
   });
 
   /**
@@ -56,7 +56,7 @@ export function Base64PngPage() {
           envelopeContent: { type: EnvelopeContentType.PATH, path: "envelope/base64-editor.html" },
         }),
       ]),
-    [file]
+    []
   );
 
   return (

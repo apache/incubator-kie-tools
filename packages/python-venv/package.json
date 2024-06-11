@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "name": "@kie-tools/python-venv",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "scripts": {
+    "install": "python3 -m venv ./venv && run-script-os",
+    "install:linux:darwin": ". ./venv/bin/activate && pnpm install:pip",
+    "install:pip": "pip3 install -r requirements.txt",
+    "install:win32": ".\\venv\\Scripts\\Activate.bat && pnpm install:pip"
+  },
+  "devDependencies": {
+    "run-script-os": "^1.1.6"
+  }
+}

@@ -23,6 +23,7 @@ const stunnerEditors = require("@kie-tools/stunner-editors");
 const vscodeJavaCodeCompletionExtensionPlugin = require("@kie-tools/vscode-java-code-completion-extension-plugin");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const { ProvidePlugin } = require("webpack");
 
 const commonConfig = (env) =>
   merge(common(env), {
@@ -32,6 +33,12 @@ const commonConfig = (env) =>
       umdNamedDefine: true,
       globalObject: "this",
     },
+    plugins: [
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
+    ],
     externals: {
       vscode: "commonjs vscode",
     },
@@ -39,17 +46,29 @@ const commonConfig = (env) =>
 
 module.exports = async (env) => [
   merge(commonConfig(env), {
-    target: "web",
+    target: "node",
     entry: {
       "extension/extension": "./src/extension/extension.ts",
     },
-    plugins: [],
+  }),
+  merge(commonConfig(env), {
+    target: "webworker",
+    entry: {
+      "extension/extensionWeb": "./src/extension/extension.ts",
+    },
+    plugins: [
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
+    ],
   }),
   merge(commonConfig(env), {
     target: "web",
     entry: {
       "webview/DmnEditorEnvelopeApp": "./src/webview/DmnEditorEnvelopeApp.ts",
       "webview/SceSimEditorEnvelopeApp": "./src/webview/SceSimEditorEnvelopeApp.ts",
+      "webview/NewDmnEditorEnvelopeApp": "./src/webview/NewDmnEditorEnvelopeApp.ts",
     },
     module: {
       rules: [...patternflyBase.webpackModuleRules],
@@ -80,5 +99,11 @@ module.exports = async (env) => [
         ],
       }),
     ],
+    resolve: {
+      fallback: {
+        stream: require.resolve("stream-browserify"),
+        buffer: require.resolve("buffer/"),
+      },
+    },
   }),
 ];

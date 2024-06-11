@@ -1,0 +1,16 @@
+{
+  "extends": "recommended-jenkinsfile",
+  "rules": {
+    "CouldBeElvis": "off",
+    "CouldBeSwitchStatement": "off",
+    "DuplicateStringLiteral": {
+      "enabled": false
+    },
+    "LineLength": {
+      "enabled": false
+    },
+    "VariableName": {
+      "severity": "info"
+    }
+  }
+}

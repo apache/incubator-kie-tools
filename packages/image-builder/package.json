@@ -1,16 +1,17 @@
 {
+  "private": true,
   "name": "@kie-tools/image-builder",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
   "keywords": [],
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "bin": {
     "kie-tools--image-builder": "bin.js"
@@ -31,6 +32,7 @@
     "yargs": "^17.0.1"
   },
   "devDependencies": {
+    "@kie-tools/tsconfig": "workspace:*",
     "@types/yargs": "^17.0.1",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",

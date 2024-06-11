@@ -37,6 +37,7 @@ describe("EmbeddedViewer::ONLINE", () => {
     fileExtension: "dmn",
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false,
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "test.dmn",
   };
 
   const editorEnvelopeLocator = new EditorEnvelopeLocator("localhost:8888", [

@@ -25,8 +25,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class DMNIncludedModel extends BaseIncludedModel {
 
-    private String namespace;
-
     private final Integer drgElementsCount;
 
     private final Integer itemDefinitionsCount;
@@ -41,14 +39,10 @@ public class DMNIncludedModel extends BaseIncludedModel {
         super(modelName,
               modelPackage,
               path,
-              importType);
-        this.namespace = namespace;
+              importType,
+              namespace);
         this.drgElementsCount = drgElementsCount;
         this.itemDefinitionsCount = itemDefinitionsCount;
-    }
-
-    public String getNamespace() {
-        return namespace;
     }
 
     public Integer getDrgElementsCount() {

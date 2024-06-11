@@ -17,10 +17,10 @@
  * under the License. 
  */
 
-
 package org.uberfire.client.workbench.panels;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
+import java.util.Objects;
+
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
 
@@ -37,9 +37,12 @@ public class MaximizeToggleButtonPresenter {
     private Command unmaximizeCommand;
 
     public MaximizeToggleButtonPresenter(View view) {
-        this.view = PortablePreconditions.checkNotNull("view",
-                                                       view);
+        this.view = checkNotNull("view", view);
         view.init(this);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     /**

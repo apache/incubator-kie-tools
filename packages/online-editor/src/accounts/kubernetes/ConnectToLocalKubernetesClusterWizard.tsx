@@ -33,7 +33,11 @@ import { KubernetesSettingsTabMode } from "./ConnectToKubernetesSection";
 import { KubernetesInstanceStatus } from "./KubernetesInstanceStatus";
 import { v4 as uuid } from "uuid";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
-import { KubernetesAuthSession } from "../../authSessions/AuthSessionApi";
+import {
+  AUTH_SESSION_VERSION_NUMBER,
+  CloudAuthSessionType,
+  KubernetesAuthSession,
+} from "../../authSessions/AuthSessionApi";
 import {
   KubernetesConnection,
   KubernetesConnectionStatus,
@@ -45,7 +49,7 @@ import {
 import { OperatingSystem, getOperatingSystem } from "@kie-tools-core/operating-system";
 import { SelectOs } from "../../os/SelectOs";
 import { SelectDirection } from "@patternfly/react-core/dist/js/components/Select";
-import { KieSandboxKubernetesService } from "../../devDeployments/services/KieSandboxKubernetesService";
+import { KieSandboxKubernetesService } from "../../devDeployments/services/kubernetes/KieSandboxKubernetesService";
 import { Tab, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/components/Tabs";
 import ExternalLinkAltIcon from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { useRoutes } from "../../navigation/Hooks";
@@ -105,13 +109,14 @@ type ClusterConfigCommands = {
 };
 
 export function ConnectToLocalKubernetesClusterWizard(props: {
-  kubernetesService: KieSandboxKubernetesService;
+  kieSandboxKubernetesService?: KieSandboxKubernetesService;
   setMode: React.Dispatch<React.SetStateAction<KubernetesSettingsTabMode>>;
   connection: KubernetesConnection;
   setConnection: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
   status: KubernetesInstanceStatus;
   setStatus: React.Dispatch<React.SetStateAction<KubernetesInstanceStatus>>;
   setNewAuthSession: React.Dispatch<React.SetStateAction<KubernetesAuthSession>>;
+  isLoadingService: boolean;
 }) {
   const { i18n } = useOnlineI18n();
   const routes = useRoutes();
@@ -225,12 +230,13 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
       if (id === WizardStepIds.CONNECT) {
         setConnectLoading(true);
         setConnectionValidated(
-          (await props.kubernetesService.isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
+          (props.kieSandboxKubernetesService && (await props.kieSandboxKubernetesService.isConnectionEstablished())) ===
+            KubernetesConnectionStatus.CONNECTED
         );
         setConnectLoading(false);
       }
     },
-    [props.kubernetesService]
+    [props.kieSandboxKubernetesService]
   );
 
   const onSave = useCallback(async () => {
@@ -243,16 +249,19 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
     }
 
     setConnecting(true);
-    const isConnectionEstablished = await props.kubernetesService.isConnectionEstablished();
+    const isConnectionEstablished =
+      props.kieSandboxKubernetesService && (await props.kieSandboxKubernetesService.isConnectionEstablished());
     setConnecting(false);
 
-    if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED) {
+    if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED && props.kieSandboxKubernetesService) {
       const newAuthSession: KubernetesAuthSession = {
-        type: "kubernetes",
+        type: CloudAuthSessionType.Kubernetes,
+        version: AUTH_SESSION_VERSION_NUMBER,
         id: uuid(),
         ...props.connection,
         authProviderId: "kubernetes",
         createdAtDateISO: new Date().toISOString(),
+        k8sApiServerEndpointsByResourceKind: props.kieSandboxKubernetesService.args.k8sApiServerEndpointsByResourceKind,
       };
       setConnectionValidated(true);
       props.setStatus(KubernetesInstanceStatus.CONNECTED);
@@ -308,7 +317,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                   command={clusterConfigCommands.createCluster(
                     `${window.location.origin}${
                       window.location.pathname
-                    }${routes.static.kubernetes.kindClusterConfig.path({})}`
+                    }${routes.static.devDeployments.kubernetes.clusterConfig.kindClusterConfig.path({})}`
                   )}
                 />
               </ListItem>
@@ -330,7 +339,9 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                   command={clusterConfigCommands.applyDeploymentResources(
                     `${window.location.origin}${
                       window.location.pathname
-                    }${routes.static.kubernetes.kieSandboxDevDeploymentsResources.path({})}`
+                    }${routes.static.devDeployments.kubernetes.clusterConfig.kieSandboxDevDeploymentsResources.path(
+                      {}
+                    )}`
                   )}
                 />
               </ListItem>
@@ -344,7 +355,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
       i18n.devDeployments.kubernetesConfigWizard.steps.first,
       kubernetesFlavor,
       operatingSystem,
-      routes.static.kubernetes,
+      routes.static.devDeployments.kubernetes.clusterConfig,
     ]
   );
 

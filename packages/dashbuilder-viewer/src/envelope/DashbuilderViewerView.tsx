@@ -50,7 +50,7 @@ export class DashbuilderViewerView implements Editor {
     });
   }
 
-  public setContent(path: string, content: string): Promise<void> {
+  public setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
     this.dashbuilderWrapper.setContent(content);
     return Promise.resolve();
   }

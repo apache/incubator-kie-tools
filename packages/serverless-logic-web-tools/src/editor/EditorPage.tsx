@@ -71,7 +71,7 @@ export function EditorPage(props: Props) {
   const queryParams = useQueryParams();
   const alertsDispatch = useGlobalAlertsDispatchContext();
 
-  const notifications = useEditorNotifications({
+  const { notifications, onLazyValidate } = useEditorNotifications({
     webToolsEditor,
     content: lastContent.current,
     fileRelativePath: props.fileRelativePath,
@@ -135,7 +135,7 @@ export function EditorPage(props: Props) {
           lastContent.current = content;
 
           setEmbeddedEditorFile({
-            path: workspaceFilePromise.data.workspaceFile.relativePath,
+            normalizedPosixPathRelativeToTheWorkspaceRoot: workspaceFilePromise.data.workspaceFile.relativePath,
             getFileContents: async () => content,
             isReadOnly: !isEditable(workspaceFilePromise.data.workspaceFile.relativePath),
             fileExtension: workspaceFilePromise.data.workspaceFile.extension,
@@ -234,7 +234,11 @@ export function EditorPage(props: Props) {
       resolved={(file) => (
         <>
           <Page>
-            <EditorToolbar workspaceFile={file.workspaceFile} editor={webToolsEditor?.editor} />
+            <EditorToolbar
+              workspaceFile={file.workspaceFile}
+              editor={webToolsEditor?.editor}
+              onValidate={onLazyValidate}
+            />
             <Divider />
             <EditorPageDockDrawer
               ref={editorPageDockRef}

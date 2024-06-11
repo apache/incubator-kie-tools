@@ -39,12 +39,13 @@ pages:
 - components:
     - html: <h1>Welcome to Dashbuilder!</h1>`;
 
-const FILE = {
+const FILE: EmbeddedEditorFile = {
   fileName: "test.dash.yaml",
   fileExtension: "dash.yaml",
   getFileContents: function (): Promise<string | undefined> {
     return Promise.resolve(TEST_CONTENT);
   },
+  normalizedPosixPathRelativeToTheWorkspaceRoot: "test.dash.yaml",
   isReadOnly: false,
 };
 

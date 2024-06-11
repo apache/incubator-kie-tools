@@ -18,14 +18,15 @@
  */
 
 import { FeelVariablesParser } from "./parser/FeelVariablesParser";
-import { VariablesRepository } from "./parser/VariablesRepository";
+import { DmnDefinitions, VariablesRepository } from "./parser/VariablesRepository";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 
 export class FeelVariables {
   private readonly _parser: FeelVariablesParser;
   private readonly _repository: VariablesRepository;
 
-  constructor(xml: string) {
-    this._repository = new VariablesRepository(xml);
+  constructor(dmnDefinitions: DmnDefinitions, externalDefinitions: Map<string, DmnLatestModel>) {
+    this._repository = new VariablesRepository(dmnDefinitions, externalDefinitions);
     this._parser = new FeelVariablesParser(this._repository);
   }
 

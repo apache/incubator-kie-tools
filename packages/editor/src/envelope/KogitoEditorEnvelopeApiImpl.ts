@@ -24,6 +24,7 @@ import {
   EditorContent,
   EditorFactory,
   EditorInitArgs,
+  EditorTheme,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContextType,
@@ -44,6 +45,7 @@ export class KogitoEditorEnvelopeApiImpl<
 {
   protected view: () => EditorEnvelopeViewApi<E>;
   private capturedInitRequestYet = false;
+  private normalizedPosixPathRelativeToTheWorkspaceRoot: string;
   private editor: E;
 
   constructor(
@@ -83,6 +85,13 @@ export class KogitoEditorEnvelopeApiImpl<
 
     this.editor = await this.editorFactory.createEditor(this.args.envelopeContext, initArgs);
 
+    // "Permanent" theme subscription, destroyed along editor's iFrame
+    if (this.args.envelopeContext.supportedThemes.length > 1) {
+      this.args.envelopeContext.channelApi.shared.kogitoEditor_theme.subscribe((theme: EditorTheme) => {
+        this.editor.setTheme(theme);
+      });
+    }
+
     await this.view().setEditor(this.editor);
 
     this.editor.af_onStartup?.();
@@ -91,9 +100,10 @@ export class KogitoEditorEnvelopeApiImpl<
     this.view().setLoading();
 
     const editorContent = await this.args.envelopeContext.channelApi.requests.kogitoEditor_contentRequest();
+    this.normalizedPosixPathRelativeToTheWorkspaceRoot = editorContent.normalizedPosixPathRelativeToTheWorkspaceRoot;
 
     await this.editor
-      .setContent(editorContent.path ?? "", editorContent.content)
+      .setContent(editorContent.normalizedPosixPathRelativeToTheWorkspaceRoot, editorContent.content)
       .catch((e) => this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError.send(editorContent))
       .finally(() => this.view().setLoadingFinished());
 
@@ -108,7 +118,7 @@ export class KogitoEditorEnvelopeApiImpl<
     }
 
     return this.editor
-      .setContent(editorContent.path ?? "", editorContent.content)
+      .setContent(editorContent.normalizedPosixPathRelativeToTheWorkspaceRoot, editorContent.content)
       .catch((e) => {
         this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError.send(editorContent);
         throw e;
@@ -125,7 +135,10 @@ export class KogitoEditorEnvelopeApiImpl<
   }
 
   public kogitoEditor_contentRequest() {
-    return this.editor.getContent().then((content) => ({ content: sanitize(content) }));
+    return this.editor.getContent().then((content) => ({
+      content: sanitize(content),
+      normalizedPosixPathRelativeToTheWorkspaceRoot: this.normalizedPosixPathRelativeToTheWorkspaceRoot,
+    }));
   }
 
   public kogitoEditor_previewRequest() {

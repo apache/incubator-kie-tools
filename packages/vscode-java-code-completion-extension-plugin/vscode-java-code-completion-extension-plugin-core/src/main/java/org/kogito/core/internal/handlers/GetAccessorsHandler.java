@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kogito.core.internal.handlers;
 
 import java.util.List;
@@ -113,7 +112,27 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
                 item.getLabel() + item.getLabelDetails().getDetail() :
                 item.getLabel());
         /* Retrieving the class type SIMPLE NAME */
-        result.setType(item.getLabelDetails().getDescription());
+        String type = item.getLabelDetails().getDescription();
+        /* Retrieving the class type FQCN */
+        /* The API we used to retrieve the FQNC are no more available. To enable the Project
+         * compilation, the following block is a temporary commented. The impact on the feature, is
+         * that the Fecthing feature will no work properly, until we found an alternative solution
+         * https://github.com/apache/incubator-kie-issues/issues/114
+         */
+        /*
+        Map<String,String> data = (Map<String, String>) item.getData();
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            JavaLanguageServerPlugin.logInfo("ENTRY: " + entry.getKey() + " " + entry.getValue());
+        }
+        if (data != null && data.containsKey(DATA_FIELD_SIGNATURE)) {
+            String fqcnType = data.get(DATA_FIELD_SIGNATURE);
+            /* The DATA_FIELD_SIGNATURE format is: `method()Ljava.lang.String;` */ /*
+            if (fqcnType != null && fqcnType.contains(")L")) {
+                type = fqcnType.split("\\)L")[1];
+                type = type.replaceAll(";$", "");
+            }
+        } */
+        result.setType(type);
 
         return result;
     }

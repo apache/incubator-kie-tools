@@ -24,10 +24,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
-import io.crysknife.client.ManagedInstance;
-import io.crysknife.ui.translation.client.TranslationService;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
+import org.kie.j2cl.tools.di.ui.translation.client.TranslationService;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.graph.Node;

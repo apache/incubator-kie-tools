@@ -30,10 +30,10 @@ import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Base64PngEditor } from "./Base64PngEditor";
 
 /**
- * This class implements the Editor interface, a contract made by the KIE Tools that determines what methods an Editor needs to implement and its properties.
+ * This class implements the Editor interface, a contract made by the Apache KIE Tools that determines what methods an Editor needs to implement and its properties.
  * The implemented methods in this class are used to communicate with the Channel.
  *
- * @constructor envelopeContext All the features and information provided by the KIE Tools Envelope.
+ * @constructor envelopeContext All the features and information provided by the Apache KIE Tools Envelope.
  * @constructor envelopeContext.services The services available to be used by the Editor.
  * @constructor envelopeContext.services.keyboardShortcuts Give the possibility to register keyboard shortcuts on your Editor
  * @constructor envelopeContext.services.i18n Give the possibility to subscribe to locale changes that happened on the Channel.
@@ -75,11 +75,11 @@ export class Base64PngEditorInterface implements Editor {
 
   /**
    * Set the Editor content
-   * @param path The file path that is being open.
+   * @param normalizedPosixPathRelativeToTheWorkspaceRoot The file normalizedPosixPathRelativeToTheWorkspaceRoot that is being open.
    * @param content The file content in a string format.
    */
-  public setContent(path: string, content: string): Promise<void> {
-    return this.editorRef.current!.setContent(path, content)!;
+  public setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
+    return this.editorRef.current!.setContent(normalizedPosixPathRelativeToTheWorkspaceRoot, content)!;
   }
 
   /**

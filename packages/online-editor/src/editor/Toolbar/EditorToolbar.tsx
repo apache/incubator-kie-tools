@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
   Dropdown,
   DropdownItem,
@@ -77,6 +77,14 @@ import { SyncDropdownMenu } from "./SyncDropdownMenu";
 import { AcceleratorsDropdown } from "./Accelerators/AcceleratorsDropdown";
 import { listDeletedFiles } from "../../workspace/components/WorkspaceStatusIndicator";
 import { PromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { useEnv } from "../../env/hooks/EnvContext";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
+import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggle";
+import BellIcon from "@patternfly/react-icons/dist/js/icons/bell-icon";
+import { SettingsTabs } from "../../settings/SettingsModalBody";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
@@ -110,6 +118,9 @@ const hideWhenTiny: ToolbarItemProps["visibility"] = {
 export function EditorToolbarWithWorkspace(
   props: Props & { workspace: ActiveWorkspace; workspaceGitStatusPromise: PromiseState<WorkspaceGitStatusType> }
 ) {
+  const { env } = useEnv();
+  const { settings } = useSettings();
+  const settingsDispatch = useSettingsDispatch();
   const routes = useRoutes();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const history = useHistory();
@@ -254,6 +265,8 @@ export function EditorToolbarWithWorkspace(
     [props.workspace.descriptor, props.workspace.files.length, props.workspaceGitStatusPromise]
   );
 
+  const [isNewDmnEditorDropdownOpen, setNewDmnEditorDropdownOpen] = useState(false);
+
   return (
     <>
       <PageSection type={"nav"} variant={"light"} padding={{ default: "noPadding" }}>
@@ -275,7 +288,7 @@ export function EditorToolbarWithWorkspace(
           </Flex>
         )}
       </PageSection>
-      <PageSection type={"nav"} variant={"light"} style={{ paddingTop: 0, paddingBottom: "16px" }}>
+      <PageSection type={"nav"} variant={"light"} style={{ paddingTop: 0, paddingBottom: 0 }}>
         <Flex
           justifyContent={{ default: "justifyContentSpaceBetween" }}
           alignItems={{ default: "alignItemsCenter" }}
@@ -307,6 +320,61 @@ export function EditorToolbarWithWorkspace(
             <Toolbar>
               <ToolbarContent style={{ paddingRight: 0 }}>
                 <ToolbarGroup>
+                  {props.workspaceFile.extension === "dmn" && !settings.editors.useLegacyDmnEditor && (
+                    <>
+                      <Dropdown
+                        toggle={
+                          <Toggle onToggle={setNewDmnEditorDropdownOpen} id="new-dmn-editor-dropdown-toggle">
+                            <Label color="cyan" variant={"outline"}>
+                              &nbsp;{`New DMN Editor`}&nbsp;&nbsp;
+                              <CaretDownIcon />
+                            </Label>
+                          </Toggle>
+                        }
+                        onSelect={() => setNewDmnEditorDropdownOpen(false)}
+                        isOpen={isNewDmnEditorDropdownOpen}
+                        isPlain={true}
+                        dropdownItems={[
+                          <DropdownItem key="give-feedback" description={"We'd love to hear from you!"}>
+                            <small>
+                              <a href={env.KIE_SANDBOX_FEEDBACK_URL} target="_blank">
+                                Give feedback&nbsp;
+                                <ExternalLinkAltIcon />
+                              </a>
+                            </small>
+                          </DropdownItem>,
+                          <DropdownItem
+                            key="switch-back"
+                            description="...and consider telling us why."
+                            onClick={() => {
+                              settingsDispatch.open(SettingsTabs.EDITORS);
+                              settingsDispatch.set((settings) => {
+                                settings.editors.useLegacyDmnEditor = true;
+                              });
+                            }}
+                          >
+                            <small>Switch back to the classic DMN Editor</small>
+                          </DropdownItem>,
+                        ]}
+                      />
+                    </>
+                  )}
+                  {props.workspaceFile.extension === "dmn" && settings.editors.useLegacyDmnEditor && (
+                    <>
+                      <Button
+                        icon={<BellIcon />}
+                        onClick={() => {
+                          settingsDispatch.set((settings) => {
+                            settings.editors.useLegacyDmnEditor = false;
+                          });
+                        }}
+                        variant={ButtonVariant.link}
+                      >
+                        Try the new DMN Editor!
+                      </Button>
+                    </>
+                  )}
+
                   <ToolbarItem>
                     <AcceleratorsDropdown workspaceFile={props.workspaceFile} />
                   </ToolbarItem>
@@ -348,11 +416,9 @@ export function EditorToolbarWithWorkspace(
                     </ResponsiveDropdown>
                   </ToolbarItem>
                   <ToolbarItem visibility={hideWhenSmall}>
-                    {props.workspaceFile.extension === "dmn" && (
-                      <ToolbarGroup>
-                        <ExtendedServicesButtons workspace={props.workspace} workspaceFile={props.workspaceFile} />
-                      </ToolbarGroup>
-                    )}
+                    <ToolbarGroup>
+                      <ExtendedServicesButtons workspace={props.workspace} workspaceFile={props.workspaceFile} />
+                    </ToolbarGroup>
                   </ToolbarItem>
                   {props.workspace.descriptor.origin.kind !== WorkspaceKind.LOCAL && (
                     <ToolbarItem>

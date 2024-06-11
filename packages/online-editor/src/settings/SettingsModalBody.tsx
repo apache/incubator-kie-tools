@@ -17,23 +17,28 @@
  * under the License.
  */
 
-import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import * as React from "react";
+import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { ExtendedServicesSettingsTab } from "./ExtendedServicesSettingsTab";
+import { EditorsSettingsTab } from "./EditorsSettingsTab";
+import { CorsProxySettingsTab } from "./CorsProxySettingsTab";
+import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 
 export enum SettingsTabs {
-  OPENSHIFT = "openshift",
   KIE_SANDBOX_EXTENDED_SERVICES = "extendedServices",
+  CORS_PROXY = "corsProxy",
+  EDITORS = "editors",
 }
 
 export function SettingsModalBody() {
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
 
   return (
     <Tabs
-      activeKey={settings.activeTab}
+      activeKey={settings.tab}
       onSelect={(e, k) => settingsDispatch.open(k as SettingsTabs)}
       isVertical={false}
       isBox={false}
@@ -45,6 +50,22 @@ export function SettingsModalBody() {
       >
         <ExtendedServicesSettingsTab />
       </Tab>
+      <Tab
+        className="kie-tools--settings-tab"
+        eventKey={SettingsTabs.CORS_PROXY}
+        title={<TabTitleText>CORS Proxy</TabTitleText>}
+      >
+        <CorsProxySettingsTab />
+      </Tab>
+      {editorEnvelopeLocator.hasMappingFor("*.dmn") && (
+        <Tab
+          className="kie-tools--settings-tab"
+          eventKey={SettingsTabs.EDITORS}
+          title={<TabTitleText>Editors</TabTitleText>}
+        >
+          <EditorsSettingsTab />
+        </Tab>
+      )}
     </Tabs>
   );
 }

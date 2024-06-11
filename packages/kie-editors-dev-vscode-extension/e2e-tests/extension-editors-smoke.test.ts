@@ -48,12 +48,13 @@ describe("KIE Editors End to End Test Suite - Smoke tests", () => {
   });
 
   beforeEach(async function () {
+    this.timeout(30000);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });
 
   afterEach(async function () {
-    this.timeout(15000);
+    this.timeout(30000);
     await testHelper.takeScreenshotOnTestFailure(this, DIST_E2E_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
@@ -61,7 +62,7 @@ describe("KIE Editors End to End Test Suite - Smoke tests", () => {
   });
 
   it("Opens demo.bpmn file in BPMN Editor and loads correct diagram", async function () {
-    this.timeout(20000);
+    this.timeout(30000);
     const editorWebviews = await testHelper.openFileFromSidebar(DEMO_BPMN);
     webview = editorWebviews[0];
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
@@ -80,7 +81,7 @@ describe("KIE Editors End to End Test Suite - Smoke tests", () => {
   });
 
   it("Opens demo.dmn file in DMN Editor", async function () {
-    this.timeout(20000);
+    this.timeout(30000);
     const editorWebviews = await testHelper.openFileFromSidebar(DEMO_DMN);
     webview = editorWebviews[0];
     const dmnEditorTester = new DmnEditorTestHelper(webview);
@@ -94,7 +95,7 @@ describe("KIE Editors End to End Test Suite - Smoke tests", () => {
   });
 
   it("Opens demo.scesim file in SCESIM Editor", async function () {
-    this.timeout(20000);
+    this.timeout(30000);
 
     const editorWebviews = await testHelper.openFileFromSidebar(DEMO_SCESIM);
     webview = editorWebviews[0];
@@ -109,7 +110,7 @@ describe("KIE Editors End to End Test Suite - Smoke tests", () => {
   });
 
   it("Opens demo.pmml file in PMML Editor", async function () {
-    this.timeout(20000);
+    this.timeout(30000);
     const editorWebviews = await testHelper.openFileFromSidebar(DEMO_PMML);
     webview = editorWebviews[0];
     const pmmlEditorTester = new PmmlEditorTestHelper(webview);

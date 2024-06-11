@@ -25,14 +25,15 @@ import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
+import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
-import io.crysknife.client.ManagedInstance;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jsinterop.base.Js;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.kie.workbench.common.stunner.client.lienzo.util.StunnerStateApplier;
@@ -53,6 +54,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.theme.StunnerTheme;
 import org.kie.workbench.common.stunner.core.definition.exception.DefinitionNotFoundException;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
@@ -77,6 +79,9 @@ public class StunnerEditor {
     private Consumer<DiagramParsingException> parsingExceptionProcessor;
     private Consumer<Throwable> exceptionProcessor;
     private AlertsControl<AbstractCanvas> alertsControl;
+
+    private static final String ROOT_CONTAINER_LIGHT_CSS = "root-container";
+    private static final String ROOT_CONTAINER_DARK_CSS = "root-container root-container-dark";
 
     // CDI proxy.
     public StunnerEditor() {
@@ -174,7 +179,7 @@ public class StunnerEditor {
 
     private void resize(HTMLDivElement rootContainer) {
         resizeTo(rootContainer, DomGlobal.document.body.clientWidth,
-                DomGlobal.document.body.clientHeight);
+                 DomGlobal.document.body.clientHeight);
     }
 
     private void resizeTo(HTMLDivElement rootContainer, int width,
@@ -196,13 +201,13 @@ public class StunnerEditor {
         LienzoCanvas canvas = (LienzoCanvas) session.getCanvasHandler().getCanvas();
         LienzoPanel panel = (LienzoPanel) canvas.getView().getPanel();
         LienzoBoundsPanel lienzoPanel = panel.getView();
-        JsCanvas jsCanvas = new JsCanvas(lienzoPanel, lienzoPanel.getLayer(), new StunnerStateApplier() {
+        JsCanvas jsCanvas = JsCanvas.getInstance().init(lienzoPanel, lienzoPanel.getLayer(), new StunnerStateApplier() {
             @Override
             public Shape getShape(String uuid) {
                 return canvas.getShape(uuid);
             }
         });
-        JsCanvasWrapper jsCanvasWrapper = new JsCanvasWrapper().setWrapper(jsCanvas);
+        JsCanvasWrapper jsCanvasWrapper = new JsCanvasWrapper();
         JsWindow.setCanvas(jsCanvasWrapper);
         JsWindow.getEditor().setCanvas(jsCanvasWrapper);
     }
@@ -254,14 +259,22 @@ public class StunnerEditor {
     protected void clearRootAndDrawError() {
         HTMLDivElement rootContainer = (HTMLDivElement) DomGlobal.document.getElementById("root-container");
         removeAllChildren(rootContainer);
+
+        // Error page theme
+        final boolean isDarkTheme = StunnerTheme.getTheme().isDarkTheme();
+        rootContainer.className = isDarkTheme ? ROOT_CONTAINER_DARK_CSS : ROOT_CONTAINER_LIGHT_CSS;
+        errorPage.setDarkTheme(isDarkTheme);
+
         rootContainer.appendChild(errorPage.getElement());
     }
 
     public StunnerEditor close() {
+        clearAlerts();
+
         if (!isClosed()) {
+            alertsControl = null;
             diagramPresenter.destroy();
             diagramPresenter = null;
-            alertsControl = null;
             editorSessionPresenterInstances.destroyAll();
             viewerSessionPresenterInstances.destroyAll();
         }
@@ -319,8 +332,8 @@ public class StunnerEditor {
     }
 
     public void clearAlerts() {
-        if (!isClosed()) {
-            hasErrors = false;
+        hasErrors = false;
+        if (null != alertsControl) {
             alertsControl.clear();
         }
     }
@@ -337,6 +350,25 @@ public class StunnerEditor {
             message += error.toString();
         }
         return message;
+    }
+
+    public void setScrollbarColors() {
+        if (null != getSession()) {
+            LienzoCanvas canvas = (LienzoCanvas) getSession().getCanvasHandler().getCanvas();
+            LienzoPanel panel = (LienzoPanel) canvas.getView().getPanel();
+            LienzoBoundsPanel lienzoPanel = panel.getView();
+
+            ((ScrollablePanel) lienzoPanel).setScrollbarColors(StunnerTheme.getTheme().getScrollbarColor(),
+                                                               StunnerTheme.getTheme().getScrollbarBackgroundColor());
+        }
+    }
+
+    public void setCanvasBackgroundColor() {
+        if (null != getSession()) {
+            LienzoCanvas canvas = (LienzoCanvas) getSession().getCanvasHandler().getCanvas();
+
+            canvas.setBackgroundColor(StunnerTheme.getTheme().getCanvasBackgroundColor());
+        }
     }
 
     @PreDestroy

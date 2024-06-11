@@ -6,17 +6,16 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
-
 
 import { EnvJson } from "../src/env/EnvJson";
 import { routes } from "../src/navigation/Routes";
@@ -29,11 +28,11 @@ import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/Exte
 import { GLOB_PATTERN } from "../src/envelopeLocator/EditorEnvelopeLocatorFactory";
 const buildEnv: any = env; // build-env is not typed
 
-function getDmnDevDeploymentBaseImageUrl() {
-  const baseImageRegistry = buildEnv.devDeployments.dmn.baseImage.registry;
-  const baseImageAccount = buildEnv.devDeployments.dmn.baseImage.account;
-  const baseImageName = buildEnv.devDeployments.dmn.baseImage.name;
-  const baseImageTag = buildEnv.devDeployments.dmn.baseImage.tag;
+function getDevDeploymentImageUrl(imageEnvVars: any) {
+  const baseImageRegistry = imageEnvVars.registry;
+  const baseImageAccount = imageEnvVars.account;
+  const baseImageName = imageEnvVars.name;
+  const baseImageTag = imageEnvVars.tag;
 
   return baseImageRegistry && baseImageAccount
     ? `${baseImageRegistry}/${baseImageAccount}/${baseImageName}:${baseImageTag}`
@@ -43,8 +42,16 @@ function getDmnDevDeploymentBaseImageUrl() {
 export const defaultEnvJson: EnvJson = {
   KIE_SANDBOX_VERSION: buildEnv.root.version,
   KIE_SANDBOX_CORS_PROXY_URL: buildEnv.onlineEditor.corsProxyUrl,
+  KIE_SANDBOX_FEEDBACK_URL: buildEnv.onlineEditor.feedbackUrl,
   KIE_SANDBOX_EXTENDED_SERVICES_URL: buildEnv.onlineEditor.extendedServicesUrl,
-  KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL: getDmnDevDeploymentBaseImageUrl(),
+  KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL: getDevDeploymentImageUrl(buildEnv.devDeployments.baseImage),
+  KIE_SANDBOX_DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE_URL: getDevDeploymentImageUrl(
+    buildEnv.devDeployments.kogitoQuarkusBlankAppImage
+  ),
+  KIE_SANDBOX_DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_URL: getDevDeploymentImageUrl(
+    buildEnv.devDeployments.dmnFormWebappImage
+  ),
+  KIE_SANDBOX_DEV_DEPLOYMENT_IMAGE_PULL_POLICY: buildEnv.devDeployments.imagePullPolicy,
   KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE: buildEnv.onlineEditor.requireCustomCommitMessage,
   KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL:
     buildEnv.onlineEditor.customCommitMessageValidationServiceUrl,
@@ -102,8 +109,8 @@ export const defaultEnvJson: EnvJson = {
   KIE_SANDBOX_ACCELERATORS: [
     {
       name: "Quarkus",
-      iconUrl: `https://github.com/kiegroup/kie-sandbox-quarkus-accelerator/raw/${buildEnv.root.version}/quarkus-logo.png`,
-      gitRepositoryUrl: "https://github.com/kiegroup/kie-sandbox-quarkus-accelerator",
+      iconUrl: `https://github.com/apache/incubator-kie-sandbox-quarkus-accelerator/raw/${buildEnv.root.version}/quarkus-logo.png`,
+      gitRepositoryUrl: "https://github.com/apache/incubator-kie-sandbox-quarkus-accelerator",
       gitRepositoryGitRef: buildEnv.root.version,
       dmnDestinationFolder: "src/main/resources/dmn",
       bpmnDestinationFolder: "src/main/resources/bpmn",
@@ -127,8 +134,8 @@ export const defaultEnvJson: EnvJson = {
       extension: FileTypes.DMN,
       filePathGlob: GLOB_PATTERN.dmn,
       editor: {
-        resourcesPathPrefix: "gwt-editors/dmn",
-        path: "dmn-envelope.html",
+        resourcesPathPrefix: "",
+        path: "new-dmn-editor-envelope.html",
       },
       card: {
         title: "Decision",

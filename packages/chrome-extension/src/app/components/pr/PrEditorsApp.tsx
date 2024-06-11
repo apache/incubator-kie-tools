@@ -18,21 +18,35 @@
  */
 
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useGlobals } from "../common/GlobalContext";
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import { Dependencies } from "../../Dependencies";
 import { getOriginalFilePath, IsolatedPrEditor, PrInfo } from "./IsolatedPrEditor";
 import { Logger } from "../../../Logger";
+import { GitHubPageType } from "../../github/GitHubPageType";
 
-export function PrEditorsApp(props: { prInfo: PrInfo }) {
+export function PrEditorsApp(props: {
+  prInfo: PrInfo;
+  pageType: GitHubPageType.PR_COMMITS | GitHubPageType.PR_FILES | GitHubPageType.PR_HOME;
+}) {
   const globals = useGlobals();
 
   const [prFileContainers, setPrFileContainers] = useState<HTMLElement[]>([]);
 
   useEffect(() => {
     setPrFileContainers(supportedPrFileElements(globals.logger, globals.envelopeLocator, globals.dependencies));
-  }, []);
+  }, [globals.dependencies, globals.envelopeLocator, globals.logger]);
+
+  const mutationObserverTargetNode = useCallback(() => {
+    if (props.pageType === GitHubPageType.PR_COMMITS) {
+      return globals.dependencies.all.pr__commitsMutationObserverTarget()!;
+    } else if (props.pageType === GitHubPageType.PR_FILES) {
+      return globals.dependencies.all.pr__filesMutationObserverTarget()!;
+    } else {
+      return globals.dependencies.all.pr__homeMutationObserverTarget()!;
+    }
+  }, [globals.dependencies.all, props.pageType]);
 
   useEffect(() => {
     const observer = new MutationObserver((mutations) => {
@@ -51,7 +65,7 @@ export function PrEditorsApp(props: { prInfo: PrInfo }) {
       setPrFileContainers(newContainers);
     });
 
-    observer.observe(globals.dependencies.all.pr__mutationObserverTarget()!, {
+    observer.observe(mutationObserverTargetNode(), {
       childList: true,
       subtree: true,
     });
@@ -59,7 +73,7 @@ export function PrEditorsApp(props: { prInfo: PrInfo }) {
     return () => {
       observer.disconnect();
     };
-  }, [prFileContainers]);
+  }, [globals.dependencies, globals.envelopeLocator, globals.logger, mutationObserverTargetNode, prFileContainers]);
 
   return (
     <>

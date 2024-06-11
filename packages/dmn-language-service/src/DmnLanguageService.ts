@@ -19,77 +19,250 @@
 
 import { DmnDocumentData } from "./DmnDocumentData";
 import { DmnDecision } from "./DmnDecision";
-import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
+import * as path from "path";
+import { getMarshaller } from "@kie-tools/dmn-marshaller";
+import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
+import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { v4 as uuid } from "uuid";
 
-const IMPORT = "import";
 const INPUT_DATA = "inputData";
 const XML_MIME = "text/xml";
-const LOCATION_URI_ATTRIBUTE = "locationURI";
 const DECISION_NAME_ATTRIBUTE = "name";
 const NAMESPACE = "namespace";
 const DMN_NAME = "name";
 const DECISION = "decision";
 const DEFINITIONS = "definitions";
 
-export interface DmnLanguageServiceImportedModel {
+// FIXME: This was duplicated from boxed-expression-editor
+const generateUuid = () => {
+  return `_${uuid()}`.toLocaleUpperCase();
+};
+
+// FIXME: This was duplicated from dmn-editor-envelope
+const EMPTY_DMN = () => `<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="${dmn15ns.get("")}"
+  expressionLanguage="${DMN15_SPEC.expressionLanguage.default}"
+  namespace="https://kie.org/dmn/${generateUuid()}"
+  id="${generateUuid()}"
+  name="DMN${generateUuid()}">
+</definitions>`;
+
+/**
+ * The normalized posix path relative to the workspace root is a string
+ * Example of paths: "myFolderInsideWorkspace/myFile.txt"
+ */
+type NormalizedPosixPathRelativeToWorkspaceRoot = string & {}; // Stops TypeScript of auto casting to string;
+
+export interface DmnLanguageServiceResource {
   content: string;
-  relativePath: string;
+  normalizedPosixPathRelativeToTheWorkspaceRoot: NormalizedPosixPathRelativeToWorkspaceRoot;
+}
+
+/**
+ * The hierarchy is a map of NormalizedPosixPathRelativeToWorkspaceRoot to `deep` and `immediate` sets
+ * The `deep` Set contains all direct and indirect imported DMNs of the given DMN
+ * The `immediate` Set contains all direct imported DMNs of the given DMN
+ */
+type ImportIndexHierarchy = Map<
+  NormalizedPosixPathRelativeToWorkspaceRoot,
+  {
+    deep: Set<NormalizedPosixPathRelativeToWorkspaceRoot>;
+    immediate: Set<NormalizedPosixPathRelativeToWorkspaceRoot>;
+  }
+>;
+
+/**
+ * The models is a map of NormalizedPosixPathRelativeToWorkspaceRoot to `definitions` and `xml`
+ * The `definitions` is the parsed definitions of the given DMN
+ * The `xml` is the plain text of the given DMN
+ */
+type ImportIndexModels = Map<
+  NormalizedPosixPathRelativeToWorkspaceRoot,
+  {
+    definitions: DMN15__tDefinitions;
+    xml: string;
+  }
+>;
+
+/**
+ * The ImportIndex collects the hierarchy and the models of all imported DMNs
+ */
+export interface ImportIndex {
+  hierarchy: ImportIndexHierarchy;
+  models: ImportIndexModels;
 }
 
 export class DmnLanguageService {
-  private readonly parser = new DOMParser();
-  private readonly importTagRegExp = new RegExp(`([a-z]*:)?(${IMPORT})`);
-  private readonly inputDataRegEx = new RegExp(`([a-z]*:)?(${INPUT_DATA})`);
-  private readonly decisionsTagRegExp = new RegExp(`([a-z]*:)?(${DECISION})`);
-  private readonly definitionsTagRegExp = new RegExp(`([a-z]*:)?(${DEFINITIONS})`);
+  private readonly parser = new DOMParser(); // TODO: Delete this when the new Marshaller is being used for everything.
+  private readonly inputDataRegEx = new RegExp(`([a-z]*:)?(${INPUT_DATA})`); // TODO: Delete this when the new Marshaller is being used for everything.
+  private readonly decisionsTagRegExp = new RegExp(`([a-z]*:)?(${DECISION})`); // TODO: Delete this when the new Marshaller is being used for everything.
+  private readonly definitionsTagRegExp = new RegExp(`([a-z]*:)?(${DEFINITIONS})`); // TODO: Delete this when the new Marshaller is being used for everything.
 
   constructor(
     private readonly args: {
-      getDmnImportedModel: (importedModelRelativePath: string) => Promise<DmnLanguageServiceImportedModel | undefined>;
+      getModelXml: (args: { normalizedPosixPathRelativeToTheWorkspaceRoot: string }) => Promise<string>;
     }
   ) {}
 
-  private getImportedModelRelativePath(model: string): string[] {
-    const xmlContent = this.parser.parseFromString(model, XML_MIME);
-    const importTag = this.importTagRegExp.exec(model);
-    const importedModels = xmlContent.getElementsByTagName(importTag?.[0] ?? IMPORT);
-    return Array.from(importedModels)
-      .map((importedModel) => importedModel.getAttribute(LOCATION_URI_ATTRIBUTE))
-      .filter((e) => e !== null) as string[];
+  private async buildImportIndexModel(normalizedPosixPathRelativeToTheWorkspaceRoot: string) {
+    const xml = await this.args.getModelXml({ normalizedPosixPathRelativeToTheWorkspaceRoot });
+    return {
+      definitions: getMarshaller(xml, { upgradeTo: "latest" }).parser.parse().definitions,
+      xml,
+    };
   }
 
-  public getImportedModelRelativePaths(models: string | string[]): string[] {
-    if (Array.isArray(models)) {
-      return models.flatMap((model) => this.getImportedModelRelativePath(model));
+  private async recusivelyPopulateImportIndex(
+    normalizedPosixPathRelativeToTheWorkspaceRoot: string,
+    importIndex: ImportIndex,
+    parents: string[],
+    depth: number
+  ): Promise<void> {
+    // Depth === -1 means we're going to recursve forever.
+    // Depth === 0 means we'll stop without including any imports in the index
+    // Depth > 0 means we'll keep going down one level of imports at a time and add them to the index, when it reaches zero, we stop.
+    if (depth === 0) {
+      return;
     }
 
-    return this.getImportedModelRelativePath(models);
+    // Add the current model to the index if not present
+    const model =
+      importIndex.models.get(normalizedPosixPathRelativeToTheWorkspaceRoot) ??
+      importIndex.models
+        .set(
+          normalizedPosixPathRelativeToTheWorkspaceRoot,
+          await this.buildImportIndexModel(normalizedPosixPathRelativeToTheWorkspaceRoot)
+        )
+        .get(normalizedPosixPathRelativeToTheWorkspaceRoot)!;
+
+    // Ensure a hierarchy always exists
+    const hierarchy =
+      importIndex.hierarchy.get(normalizedPosixPathRelativeToTheWorkspaceRoot) ??
+      importIndex.hierarchy
+        .set(normalizedPosixPathRelativeToTheWorkspaceRoot, { immediate: new Set(), deep: new Set() })
+        .get(normalizedPosixPathRelativeToTheWorkspaceRoot)!;
+
+    // Iterate over the imports
+    const basedir = path.dirname(normalizedPosixPathRelativeToTheWorkspaceRoot);
+    for (const i of model.definitions.import ?? []) {
+      const locationUri = i["@_locationURI"];
+      if (!locationUri) {
+        // TODO: Write a test for this case temporarily, while we still depend on `locationURI`s and not exclusively on the namespace.
+        // Can't determine import without a locationURI.
+        console.warn(`Ignoring import with namespace '${i["@_namespace"]}' because it doesn't have a locationURI.`);
+        continue;
+      }
+
+      /** Normalized POSIX path of the DMN import relative to the workspace root.*/
+      const p = path.posix.join(basedir, path.posix.normalize(locationUri));
+
+      // Prevent cycles by looking if already in immediate hierarchy
+      if (hierarchy.immediate.has(p)) {
+        // We're going to abort the recursion, but some parents might not have had this import's hierarchy added to their deep dependencies lists.
+        for (const parent of parents) {
+          const parentHierarchy = importIndex.hierarchy.get(parent);
+
+          parentHierarchy?.deep.add(p);
+
+          for (const i of importIndex.hierarchy.get(p)?.deep ?? []) {
+            parentHierarchy?.deep.add(i);
+          }
+        }
+
+        continue; // Abort recursion, as a cycle has been found.
+      }
+
+      // Proceed normally, first by adding `p` to the hierarchy and to the parents too. Then recursing one more level down.
+      hierarchy.immediate.add(p);
+      hierarchy.deep.add(p);
+      for (const parent of parents) {
+        importIndex.hierarchy.get(parent)?.deep.add(p);
+      }
+
+      parents.push(normalizedPosixPathRelativeToTheWorkspaceRoot);
+      await this.recusivelyPopulateImportIndex(p, importIndex, parents, depth - 1);
+      parents.pop();
+    }
   }
 
+  /**
+   * This method collects the hierarchy and the models of all imported DMNs from the given DMNs
+   *
+   * @param resources the given resources to be used to build the `ImportIndex`
+   * @param depth the recursion max depth level of the hierarchy and models.
+   *
+   * Example:
+   *
+   * `-1: total recursion`
+   *
+   * `0: one level of recursion`
+   *
+   * @returns an `ImportIndex` with the hierarchy and models of all DMNs from the given resources. It includes the given resources and it'll build based on the given depth.
+   */
+  public async buildImportIndex(
+    resources: DmnLanguageServiceResource[],
+    depth = -1 // By default, we recurse infinitely.
+  ): Promise<ImportIndex> {
+    try {
+      const importIndex: ImportIndex = {
+        hierarchy: new Map(),
+        models: new Map(
+          resources.map((r) => [
+            r.normalizedPosixPathRelativeToTheWorkspaceRoot,
+            {
+              xml: r.content,
+              definitions: getMarshaller(r.content || EMPTY_DMN(), { upgradeTo: "latest" }).parser.parse().definitions,
+            },
+          ])
+        ),
+      };
+
+      for (const r of resources) {
+        await this.recusivelyPopulateImportIndex(
+          r.normalizedPosixPathRelativeToTheWorkspaceRoot,
+          importIndex, // will be modified
+          [], // parents stack
+          depth // unaltered initial depth
+        );
+      }
+
+      return importIndex;
+    } catch (error) {
+      throw new Error(`
+DMN LANGUAGE SERVICE - buildImportIndex: Error while getting imported models from model resources.
+Tried to use the following model resources: ${JSON.stringify(resources)}
+Error details: ${error}`);
+    }
+  }
+
+  // TODO: Rewrite this using the new Marshaller.
   // Receive all contents, paths and a node ID and returns the model that contains the node.
-  public getPathFromNodeId(resourceContents: DmnLanguageServiceImportedModel[], nodeId: string): string {
-    for (const resourceContent of resourceContents) {
+  public getPathFromNodeId(resources: DmnLanguageServiceResource[], nodeId: string): string {
+    for (const resourceContent of resources) {
       const xmlContent = this.parser.parseFromString(resourceContent.content ?? "", XML_MIME);
       const inputDataTag = this.inputDataRegEx.exec(resourceContent.content ?? "");
       const inputs = xmlContent.getElementsByTagName(inputDataTag?.[0] ?? INPUT_DATA);
       for (const input of Array.from(inputs)) {
         if (input.id === nodeId) {
-          return resourceContent.relativePath;
+          return resourceContent.normalizedPosixPathRelativeToTheWorkspaceRoot;
         }
       }
     }
     return "";
   }
 
-  public getDmnDocumentData(dmnContent: string): DmnDocumentData {
-    const xmlContent = this.parser.parseFromString(dmnContent, XML_MIME);
-    const definitionsTag = this.definitionsTagRegExp.exec(dmnContent);
+  // TODO: Rewrite this using the new Marshaller.
+  public getDmnDocumentData(xml: string): DmnDocumentData {
+    const xmlContent = this.parser.parseFromString(xml, XML_MIME);
+    const definitionsTag = this.definitionsTagRegExp.exec(xml);
     const definitions = xmlContent.getElementsByTagName(definitionsTag ? definitionsTag[0] : DEFINITIONS);
     const definition = definitions[0];
     const namespace = definition.getAttribute(NAMESPACE);
     const dmnModelName = definition.getAttribute(DMN_NAME);
 
-    const dmnDecisions = this.decisionsTagRegExp.exec(dmnContent);
+    const dmnDecisions = this.decisionsTagRegExp.exec(xml);
     const dmnDecisionsContent = xmlContent.getElementsByTagName(dmnDecisions ? dmnDecisions[0] : DECISION);
 
     const decisions = Array.from(dmnDecisionsContent)
@@ -98,27 +271,15 @@ export class DmnLanguageService {
     return new DmnDocumentData(namespace ?? "", dmnModelName ?? "", decisions);
   }
 
-  // recursively get imported models
-  public async getAllImportedModelsResources(modelsContent: string[]): Promise<DmnLanguageServiceImportedModel[]> {
-    // get imported models resources
-    const importedModelRelativePaths = this.getImportedModelRelativePaths(modelsContent);
-    if (importedModelRelativePaths && importedModelRelativePaths.length > 0) {
-      const importedModels = (
-        await Promise.all(
-          importedModelRelativePaths.map((importedModelRelativePath) =>
-            this.args.getDmnImportedModel(importedModelRelativePath)
-          )
-        )
-      ).filter((e) => e !== undefined) as DmnLanguageServiceImportedModel[];
-
-      const importedModelsContent = this.getImportedModelRelativePaths(
-        importedModels.map((importedModel) => importedModel.content ?? "")
-      );
-      if (importedModelsContent.length > 0) {
-        return [...importedModels, ...(await this.getAllImportedModelsResources(importedModelsContent))];
-      }
-      return [...importedModels];
+  public getSpecVersion(xml: string) {
+    if (xml === "") {
+      return;
     }
-    return [];
+
+    try {
+      return getMarshaller(xml).originalVersion;
+    } catch (error) {
+      return;
+    }
   }
 }

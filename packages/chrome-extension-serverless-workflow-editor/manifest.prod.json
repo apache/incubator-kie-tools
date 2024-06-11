@@ -1,5 +1,5 @@
 {
-  "name": "Serverless Workflow Editor for GitHub",
+  "name": "Apache KIE™ Serverless Workflow Editor for GitHub",
   "version": "0.0.0",
   "manifest_version": 3,
   "description": "Visualize and edit Serverless Workflow files using a graphical editor on GitHub",
@@ -23,8 +23,8 @@
     "matches": [
       "https://*.github.com/*",
       "http://*.github.com/*",
-      "https://kiegroup.github.io/*",
-      "http://kiegroup.github.io/*"
+      "https://apache.github.io/incubator-kie*",
+      "http://apache.github.io/incubator-kie*"
     ]
   }
 }

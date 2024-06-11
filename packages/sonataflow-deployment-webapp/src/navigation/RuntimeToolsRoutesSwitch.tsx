@@ -18,9 +18,9 @@
  */
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import { RuntimeToolsWorkflowInstances } from "../runtimeTools/workflows/RuntimeToolsWorkflowInstances";
+import { RuntimeToolsWorkflowInstances } from "../runtimeTools/pages/RuntimeToolsWorkflowInstances";
 import { routes } from "../routes";
-import { RuntimeToolsWorkflowDetails } from "../runtimeTools/workflows/RuntimeToolsWorkflowDetails";
+import { RuntimeToolsWorkflowDetails } from "../runtimeTools/pages/RuntimeToolsWorkflowDetails";
 
 export function RuntimeToolsRoutesSwitch() {
   return (

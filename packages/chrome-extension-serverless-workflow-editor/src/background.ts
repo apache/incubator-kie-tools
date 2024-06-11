@@ -18,5 +18,5 @@
  */
 
 chrome.runtime.onInstalled.addListener(() => {
-  console.log("KIE Tools extension is running.");
+  console.log("Apache KIE Tools extension is running.");
 });

@@ -21,11 +21,11 @@
 package org.kie.workbench.common.stunner.client.widgets.inlineeditor;
 
 import elemental2.dom.HTMLDivElement;
-import io.crysknife.client.IsElement;
-import io.crysknife.ui.templates.client.annotation.DataField;
-import io.crysknife.ui.translation.client.TranslationService;
 import jakarta.inject.Inject;
 import org.gwtproject.core.client.Scheduler;
+import org.kie.j2cl.tools.di.core.IsElement;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.DataField;
+import org.kie.j2cl.tools.di.ui.translation.client.TranslationService;
 import org.uberfire.mvp.Command;
 
 public abstract class AbstractInlineTextEditorBoxView<T extends InlineEditorBoxView.Presenter> implements IsElement {

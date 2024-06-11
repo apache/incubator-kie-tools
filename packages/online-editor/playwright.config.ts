@@ -52,7 +52,7 @@ const customConfig = defineConfig({
       url: `http://localhost:${buildEnv.onlineEditor.dev.port}`,
       reuseExistingServer: !process.env.CI || true,
       ignoreHTTPSErrors: true,
-      timeout: 180000,
+      timeout: 240000,
     },
   ],
 });

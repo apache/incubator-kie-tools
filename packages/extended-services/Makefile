@@ -1,4 +1,4 @@
-METADATA_PATH                 			:= github.com/kiegroup/kie-tools/packages/extended-services/pkg/metadata
+METADATA_PATH                 			:= github.com/apache/incubator-kie-tools/packages/extended-services/pkg/metadata
 SET_EXTENDED_SERVICES_VERSION 			:= $(METADATA_PATH).Version=$(shell pnpm build-env extendedServices.version)
 SET_EXTENDED_SERVICES_IP      			:= $(METADATA_PATH).Ip=$(shell build-env extendedServices.ip)
 SET_EXTENDED_SERVICES_PORT    			:= $(METADATA_PATH).Port=$(shell build-env extendedServices.port)

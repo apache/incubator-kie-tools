@@ -22,16 +22,16 @@ import { HashRouter } from "react-router-dom";
 import { AppContextProvider } from "./context/AppContextProvider";
 import { OpenApiContextProvider } from "./context/OpenApiContextProvider";
 import { RoutesSwitch } from "./navigation/RoutesSwitch";
-import { WorkflowListContextProvider } from "./runtimeTools/workflows/WorkflowList";
-import { WorkflowDetailsContextProvider } from "./runtimeTools/workflows/WorkflowDetails";
+import { DeploymentWorkflowListContextProvider } from "./runtimeTools/contexts/DeploymentWorkflowListContextProvider";
+import { DeploymentWorkflowDetailsContextProvider } from "./runtimeTools/contexts/DeploymentWorkflowDetailsContextProvider";
 
 export const App = () => (
   <HashRouter>
     {nest(
       [AppContextProvider, {}],
       [OpenApiContextProvider, {}],
-      [WorkflowListContextProvider, {}],
-      [WorkflowDetailsContextProvider, {}],
+      [DeploymentWorkflowListContextProvider, {}],
+      [DeploymentWorkflowDetailsContextProvider, {}],
       [RoutesSwitch, {}]
     )}
   </HashRouter>

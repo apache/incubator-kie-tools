@@ -21,6 +21,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const swEditor = require("@kie-tools/serverless-workflow-diagram-editor-assets");
 const { merge } = require("webpack-merge");
+const { ProvidePlugin } = require("webpack");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 
 const commonConfig = (env) =>
@@ -48,6 +49,12 @@ module.exports = async (env) => [
     entry: {
       "extension/extensionWeb": "./src/extension/extension.ts",
     },
+    plugins: [
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
+    ],
   }),
   merge(commonConfig(env), {
     target: "web",
@@ -64,6 +71,10 @@ module.exports = async (env) => [
             globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
           },
         ],
+      }),
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
       }),
     ],
     module: {

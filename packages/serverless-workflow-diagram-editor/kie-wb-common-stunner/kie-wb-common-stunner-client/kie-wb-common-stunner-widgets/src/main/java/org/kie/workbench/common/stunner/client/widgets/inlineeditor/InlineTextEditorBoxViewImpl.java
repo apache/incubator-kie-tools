@@ -26,17 +26,17 @@ import elemental2.dom.Event;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.KeyboardEvent;
-import io.crysknife.client.IsElement;
-import io.crysknife.ui.templates.client.annotation.DataField;
-import io.crysknife.ui.templates.client.annotation.EventHandler;
-import io.crysknife.ui.templates.client.annotation.ForEvent;
-import io.crysknife.ui.templates.client.annotation.Templated;
-import io.crysknife.ui.translation.client.TranslationService;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jsinterop.base.Js;
 import org.gwtproject.core.client.Scheduler;
+import org.kie.j2cl.tools.di.core.IsElement;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.DataField;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.EventHandler;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.ForEvent;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.Templated;
+import org.kie.j2cl.tools.di.ui.translation.client.TranslationService;
 import org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor.InlineTextEditorBox;
 import org.uberfire.mvp.Command;
@@ -47,7 +47,7 @@ import org.uberfire.mvp.Command;
 public class InlineTextEditorBoxViewImpl
         extends AbstractInlineTextEditorBoxView
         implements InlineEditorBoxView,
-                   IsElement {
+        IsElement {
 
     @Inject
     @DataField

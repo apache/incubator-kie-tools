@@ -1,3 +1,20 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+     http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+
 # 0.32.0 (alpha)
 
 - NO-ISSUE - Improved localization for Stunner BPMN Editor
@@ -20,19 +37,19 @@
 
 # 0.28.0 (alpha)
 
-- [kie-issues#102](https://github.com/kiegroup/kie-issues/issues/102) - BPMN Editor: Zooming in/out does not update the toolbox for correct size by @inodeman in https://github.com/kiegroup/kie-tools/pull/1470
-- [kie-issues#139](https://github.com/kiegroup/kie-issues/issues/139) - BPMN Editor breaking if `bpmn2` file lacks `id` by @pefernan in https://github.com/kiegroup/kie-tools/pull/1523
-- [kie-issues#117](https://github.com/kiegroup/kie-issues/issues/117) - BPMN Editor: Enable auto population of DMN fields in Business Rule Task by @inodeman in https://github.com/kiegroup/kie-tools/pull/1524
-- [KOGITO-8946](https://issues.redhat.com/browse/KOGITO-8946) - Missing structureref type for service task in VSCode BPMN editor by @hasys in https://github.com/kiegroup/kie-tools/pull/1542
+- [kie-issues#102](https://github.com/apache/incubator-kie-issues/issues/102) - BPMN Editor: Zooming in/out does not update the toolbox for correct size by @inodeman in https://github.com/apache/incubator-kie-tools/pull/1470
+- [kie-issues#139](https://github.com/apache/incubator-kie-issues/issues/139) - BPMN Editor breaking if `bpmn2` file lacks `id` by @pefernan in https://github.com/apache/incubator-kie-tools/pull/1523
+- [kie-issues#117](https://github.com/apache/incubator-kie-issues/issues/117) - BPMN Editor: Enable auto population of DMN fields in Business Rule Task by @inodeman in https://github.com/apache/incubator-kie-tools/pull/1524
+- [KOGITO-8946](https://issues.redhat.com/browse/KOGITO-8946) - Missing structureref type for service task in VSCode BPMN editor by @hasys in https://github.com/apache/incubator-kie-tools/pull/1542
 
 # 0.26.0 (alpha)
 
-- [kie-issues#6](https://github.com/kiegroup/kie-issues/issues/6) - Bump `gwt` version to `2.10.0` version in `stunner-editors` module
+- [kie-issues#6](https://github.com/apache/incubator-kie-issues/issues/6) - Bump `gwt` version to `2.10.0` version in `stunner-editors` module
 - [KOGITO-6974](https://issues.redhat.com/browse/KOGITO-6974) - Stunner Editors - Line control points are enabled in view only mode, but they should not
 
 # 0.25.0 (alpha)
 
-- [KOGITO-8077](https://issues.redhat.com/browse/KOGITO-8077) - KIE Tools Security updates (3rd round)
+- [KOGITO-8077](https://issues.redhat.com/browse/KOGITO-8077) - Apache KIE Tools Security updates (3rd round)
 
 # 0.24.0 (alpha)
 

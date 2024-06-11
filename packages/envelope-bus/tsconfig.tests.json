@@ -1,9 +1,9 @@
 {
   "extends": "@kie-tools/tsconfig/tsconfig.json",
   "compilerOptions": {
-    "rootDir": "./tests",
+    "rootDir": "./src-tests",
     "outDir": "dist-tests"
   },
   "exclude": ["**/*.test.*"],
-  "include": ["tests"]
+  "include": ["src-tests"]
 }

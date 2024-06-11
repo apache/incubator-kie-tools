@@ -5,15 +5,15 @@
   "license": "Apache-2.0",
   "publisher": "kie-group",
   "keywords": [],
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
-  "browser": "./dist/extension/extension.js",
+  "browser": "./dist/extension/extensionWeb.js",
   "main": "dist/extension/extension.js",
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev",
@@ -22,7 +22,7 @@
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/bpmn_vscode_extension_$npm_package_version.vsix",
     "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
-    "watch": "webpack"
+    "watch": "export WEBPACK__sourceMaps=true; WEBPACK__minimize=false; webpack --env dev"
   },
   "dependencies": {
     "@kie-tools-core/backend": "workspace:*",
@@ -30,8 +30,7 @@
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/vscode-extension": "workspace:*",
-    "@kie-tools/kie-bc-editors": "workspace:*",
-    "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*"
+    "@kie-tools/kie-bc-editors": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
@@ -39,10 +38,12 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
+    "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*",
     "@types/vscode": "1.67.0",
     "@vscode/test-web": "^0.0.30",
-    "@vscode/vsce": "^2.20.1",
+    "@vscode/vsce": "^2.22.0",
     "copy-webpack-plugin": "^11.0.0",
+    "process": "^0.11.10",
     "rimraf": "^3.0.2",
     "webpack": "^5.88.2",
     "webpack-cli": "^4.10.0",
@@ -52,7 +53,7 @@
   "engines": {
     "vscode": "^1.67.0"
   },
-  "displayName": "KIE BPMN Editor",
+  "displayName": "Apache KIE™ BPMN Editor",
   "categories": [
     "Other"
   ],
@@ -101,9 +102,6 @@
         "viewType": "kieKogitoWebviewEditorsBpmn"
       }
     ],
-    "javaExtensions": [
-      "./dist/server/vscode-java-code-completion-extension-plugin-core.jar"
-    ],
     "languages": [
       {
         "aliases": [
@@ -126,14 +124,14 @@
       "commandPalette": [
         {
           "command": "extension.kogito.getPreviewSvgBpmn",
-          "when": "resourceLangId =~ /bpmn|bpmn2/"
+          "when": "resourceLangId =~ /bpmn|bpmn2/ && activeCustomEditorId == 'kieKogitoWebviewEditorsBpmn'"
         }
       ],
       "editor/title": [
         {
           "command": "extension.kogito.getPreviewSvgBpmn",
           "group": "navigation",
-          "when": "resourceLangId =~ /bpmn|bpmn2/"
+          "when": "resourceLangId =~ /bpmn|bpmn2/ && activeCustomEditorId == 'kieKogitoWebviewEditorsBpmn'"
         }
       ]
     }

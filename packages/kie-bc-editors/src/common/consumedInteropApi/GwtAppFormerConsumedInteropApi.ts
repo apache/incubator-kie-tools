@@ -31,10 +31,11 @@ declare global {
 
 export interface GwtEditor {
   getContent(): Promise<string>;
-  setContent(path: string, content: string): Promise<void>;
+  setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void>;
   getPreview(): Promise<string | undefined>;
   validate(): Promise<Notification[]>;
   selectStateByName(name: string | null): Promise<void>;
+  applyTheme(name: string | null): Promise<void>;
 }
 
 export class GwtAppFormerConsumedInteropApi {

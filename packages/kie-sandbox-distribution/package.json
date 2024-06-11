@@ -4,13 +4,13 @@
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
     "build:dev": "pnpm docker:build",
@@ -22,12 +22,14 @@
     "docker:start-no-pull": "docker compose up -d --wait --pull=never",
     "docker:stop": "docker compose stop",
     "install": "pnpm docker:create-env-file",
-    "test": "run-script-if --bool \"$(build-env containerImages.build)\" --bool \"$(build-env tests.run)\" --ignore-errors \"$(build-env tests.ignoreFailures)\" --then  \"pnpm docker:start-no-pull\" \"sleep 10\" \"jest --silent --verbose\" \"pnpm docker:stop\""
+    "test": "run-script-os",
+    "test:darwin:win32": "echo 'Testing kie-sandbox-distribution not supported'",
+    "test:linux": "run-script-if --bool \"$(build-env containerImages.build)\" --bool \"$(build-env tests.run)\" --ignore-errors \"$(build-env tests.ignoreFailures)\" --then \"jest --verbose\""
   },
   "dependencies": {
     "@kie-tools/cors-proxy-image": "workspace:*",
     "@kie-tools/kie-sandbox-extended-services-image": "workspace:*",
-    "@kie-tools/kie-sandbox-image": "workspace:*"
+    "@kie-tools/kie-sandbox-webapp-image": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
@@ -36,6 +38,8 @@
     "jest-junit": "^14.0.0",
     "node-fetch": "^3.3.1",
     "rimraf": "^3.0.2",
-    "typescript": "^4.6.2"
+    "run-script-os": "^1.1.6",
+    "typescript": "^4.6.2",
+    "wait-on": "^7.2.0"
   }
 }

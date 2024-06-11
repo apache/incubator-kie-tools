@@ -1,0 +1,13 @@
+diff --git a/index.js b/index.js
+index 7b317b531bd1f2eff58bc4bceefebeb633f5deb3..21e861d618e14d4e2e69c977d215bfbd04add8a0 100755
+--- a/index.js
++++ b/index.js
+@@ -171,7 +171,7 @@ const getFirefoxWithFallbackOnOSX = function () {
+ 
+   const firefoxDirNames = Array.prototype.slice.call(arguments)
+   const prefix = '/Applications/'
+-  const suffix = '.app/Contents/MacOS/firefox-bin'
++  const suffix = '.app/Contents/MacOS/firefox'
+ 
+   let bin
+   let homeBin

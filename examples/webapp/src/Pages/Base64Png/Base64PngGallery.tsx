@@ -37,17 +37,20 @@ const samplePaths = [
  * @param props
  * @constructor
  */
-export function Base64PngGallery(props: { setFile: React.Dispatch<EmbeddedEditorFile> }) {
+export function Base64PngGallery({ setFile }: { setFile: React.Dispatch<EmbeddedEditorFile> }) {
   // Set the chosen file
-  const openSample = useCallback((fileName: string, filePath: string) => {
-    props.setFile({
-      isReadOnly: false,
-      fileExtension: "base64png",
-      fileName: fileName,
-      getFileContents: () => fetch(filePath).then((response) => response.text()),
-      path: filePath,
-    });
-  }, []);
+  const openSample = useCallback(
+    (fileName: string, filePath: string) => {
+      setFile({
+        isReadOnly: false,
+        fileExtension: "base64png",
+        fileName: fileName,
+        getFileContents: () => fetch(filePath).then((response) => response.text()),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: filePath,
+      });
+    },
+    [setFile]
+  );
 
   const [images, setImages] = useState<{ name: string; content: string; path: string }[]>([]);
   useEffect(() => {
@@ -57,7 +60,7 @@ export function Base64PngGallery(props: { setFile: React.Dispatch<EmbeddedEditor
           .then((response) => response.text())
           .then((content) => ({ name: fileName, content: content, path }))
       )
-    ).then((samples) => setImages([...images, ...samples]));
+    ).then((samples) => setImages((prev) => [...prev, ...samples]));
   }, []);
 
   return (

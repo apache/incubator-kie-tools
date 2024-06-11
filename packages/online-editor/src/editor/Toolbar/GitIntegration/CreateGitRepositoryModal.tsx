@@ -41,7 +41,7 @@ import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { useGitHubClient } from "../../../github/Hooks";
 import { AuthProviderGroup, isSupportedGitAuthProviderType } from "../../../authProviders/AuthProvidersApi";
 import { useAuthProvider } from "../../../authProviders/AuthProvidersContext";
-import { switchExpression } from "../../../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { useOnlineI18n } from "../../../i18n";
 import { LoadOrganizationsSelect, SelectOptionObjectType } from "./LoadOrganizationsSelect";
 import { useGitIntegration } from "./GitIntegrationContextProvider";
@@ -255,7 +255,10 @@ export function CreateGitRepositoryModal(props: {
       variant={ModalVariant.medium}
       aria-label={i18n.createGitRepositoryModal[authProvider.type].createRepository}
       isOpen={props.isOpen}
-      onClose={props.onClose}
+      onClose={() => {
+        setError(undefined);
+        props.onClose();
+      }}
       title={i18n.createGitRepositoryModal[authProvider.type].createRepository}
       titleIconVariant={switchExpression(authProvider.type, {
         bitbucket: BitbucketIcon,

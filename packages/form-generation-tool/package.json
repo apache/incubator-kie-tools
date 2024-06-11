@@ -4,13 +4,16 @@
   "description": "",
   "license": "Apache-2.0",
   "keywords": [],
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "bin": {
+    "form-generation-tool": "bin.js"
   },
   "types": "./dist/index.d.ts",
   "main": "dist/index.js",
@@ -18,12 +21,13 @@
     "dist"
   ],
   "scripts": {
-    "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack && run-script-os",
+    "build-binaries": "run-script-os",
+    "build-binaries:darwin": "pkg dist/index.js --output dist/form-generation-cli-macos --target node18-macos-x64",
+    "build-binaries:linux": "pkg dist/index.js --output dist/form-generation-cli-linux --target node18-linux-x64",
+    "build-binaries:win32": "pkg dist/index.js --output dist/form-generation-cli-win.exe --target node18-win-x64",
+    "build:dev": "rimraf dist && webpack --env dev && pnpm build-binaries",
+    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack && pnpm build-binaries:darwin && pnpm build-binaries:linux && pnpm build-binaries:win32",
     "build:prod:all": "pnpm lint && pnpm test && rimraf dist && webpack && pnpm && pnpm package:prod:linux && pnpm package:prod:darwin && pnpm package:prod:win32",
-    "build:prod:darwin": "pkg dist/index.js --output dist/form-generation-cli-macos --target node18-macos-x64",
-    "build:prod:linux": "pkg dist/index.js --output dist/form-generation-cli-linux --target node18-linux-x64",
-    "build:prod:win32": "pkg dist/index.js --output dist/form-generation-cli-win.exe --target node18-win-x64",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
@@ -43,10 +47,12 @@
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
+    "@testing-library/jest-dom": "^5.16.1",
     "@types/inquirer": "^7.3.2",
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",
     "@types/lodash": "^4.14.168",
+    "@types/testing-library__jest-dom": "^5.9.1",
     "jest": "^26.6.3",
     "jest-junit": "^14.0.0",
     "jest-when": "^3.5.0",

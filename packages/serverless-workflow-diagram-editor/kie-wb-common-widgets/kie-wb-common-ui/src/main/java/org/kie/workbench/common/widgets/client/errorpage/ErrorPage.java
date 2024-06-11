@@ -21,11 +21,11 @@
 package org.kie.workbench.common.widgets.client.errorpage;
 
 import elemental2.dom.HTMLDivElement;
-import io.crysknife.client.IsElement;
-import io.crysknife.ui.templates.client.annotation.DataField;
-import io.crysknife.ui.templates.client.annotation.Templated;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.IsElement;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.DataField;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.Templated;
 
 @Dependent
 @Templated
@@ -34,4 +34,15 @@ public class ErrorPage implements IsElement {
     @Inject
     @DataField
     private HTMLDivElement content;
+
+    @Inject
+    @DataField
+    private HTMLDivElement body;
+
+    private static final String BODY_LIGHT_CSS = "blank-slate-pf";
+    private static final String BODY_DARK_CSS = "blank-slate-pf blank-slate-pf-dark";
+
+    public void setDarkTheme(boolean isDark) {
+        body.className = isDark ? BODY_DARK_CSS : BODY_LIGHT_CSS;
+    }
 }

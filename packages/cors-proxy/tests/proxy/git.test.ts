@@ -19,7 +19,7 @@
 
 import { GIT_CONSTS, GIT_HTTP_METHODS, isGitOperation } from "../../src/proxy/git";
 
-const baseGitURL = "https://github.com/kiegroup/kie-tools.git";
+const baseGitURL = "https://github.com/apache/incubator-kie-tools.git";
 
 describe("Git isGitOperation tests", () => {
   it("Non valid Git Operations", () => {

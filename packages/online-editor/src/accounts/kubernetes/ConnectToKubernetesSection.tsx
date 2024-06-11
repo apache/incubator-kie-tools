@@ -17,23 +17,19 @@
  * under the License.
  */
 
-import React, { useMemo, useState } from "react";
-import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { KubernetesInstanceStatus } from "./KubernetesInstanceStatus";
-import { DependentFeature, useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
 import { ConnectToKubernetesSimple } from "./ConnectToKubernetesSimple";
-import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "../AccountsContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { KubernetesAuthSession } from "../../authSessions/AuthSessionApi";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert";
 import { AuthSessionDescriptionList } from "../../authSessions/AuthSessionsList";
-import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import PficonSatelliteIcon from "@patternfly/react-icons/dist/js/icons/pficon-satellite-icon";
-import { KieSandboxKubernetesService } from "../../devDeployments/services/KieSandboxKubernetesService";
+import { KieSandboxKubernetesService } from "../../devDeployments/services/kubernetes/KieSandboxKubernetesService";
 import { EMPTY_KUBERNETES_CONNECTION } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { ConnectToLocalKubernetesClusterWizard } from "./ConnectToLocalKubernetesClusterWizard";
+import { KubernetesService, isKubernetesConnectionValid } from "../../devDeployments/services/KubernetesService";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 
 export enum KubernetesSettingsTabMode {
   SIMPLE,
@@ -41,26 +37,67 @@ export enum KubernetesSettingsTabMode {
 }
 
 export function ConnectToKubernetesSection() {
-  const extendedServices = useExtendedServices();
   const accounts = useAccounts();
   const accountsDispatch = useAccountsDispatch();
 
   const [mode, setMode] = useState(KubernetesSettingsTabMode.SIMPLE);
   const [newAuthSession, setNewAuthSession] = useState<KubernetesAuthSession>();
-  const [status, setStatus] = useState(
-    extendedServices.status === ExtendedServicesStatus.RUNNING
-      ? KubernetesInstanceStatus.DISCONNECTED
-      : KubernetesInstanceStatus.UNAVAILABLE
-  );
+  const [status, setStatus] = useState(KubernetesInstanceStatus.DISCONNECTED);
   const [connection, setConnection] = useState(EMPTY_KUBERNETES_CONNECTION);
+  const [kieSandboxKubernetesService, setKieSandboxKubernetesService] = useState<KieSandboxKubernetesService>();
+  const [isLoadingService, setIsLoadingService] = useState(false);
 
-  const kubernetesService = useMemo(
-    () =>
-      new KieSandboxKubernetesService({
-        connection,
-      }),
-    [connection]
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (isKubernetesConnectionValid(connection)) {
+          setIsLoadingService(true);
+          KubernetesService.getK8sApiServerEndpointsMap({
+            connection,
+          })
+            .then((k8sApiServerEndpointsByResourceKind) => {
+              if (canceled.get()) {
+                return;
+              }
+              setKieSandboxKubernetesService(
+                new KieSandboxKubernetesService({ connection, k8sApiServerEndpointsByResourceKind })
+              );
+            })
+            .catch((e) => {
+              if (canceled.get()) {
+                return;
+              }
+              console.error(e);
+              setKieSandboxKubernetesService(undefined);
+              setStatus(KubernetesInstanceStatus.DISCONNECTED);
+            });
+          setIsLoadingService(false);
+        }
+      },
+      [connection]
+    )
   );
+
+  useEffect(() => {
+    (async () => {
+      if (isKubernetesConnectionValid(connection)) {
+        setIsLoadingService(true);
+        try {
+          const k8sApiServerEndpointsByResourceKind = await KubernetesService.getK8sApiServerEndpointsMap({
+            connection,
+          });
+          setKieSandboxKubernetesService(
+            new KieSandboxKubernetesService({ connection, k8sApiServerEndpointsByResourceKind })
+          );
+        } catch (e) {
+          console.error(e);
+          setKieSandboxKubernetesService(undefined);
+          setStatus(KubernetesInstanceStatus.DISCONNECTED);
+        }
+        setIsLoadingService(false);
+      }
+    })();
+  }, [connection]);
 
   const successPrimaryAction = useMemo(() => {
     if (accounts.section !== AccountsSection.CONNECT_TO_KUBERNETES || !newAuthSession) {
@@ -82,39 +119,6 @@ export function ConnectToKubernetesSection() {
 
   return (
     <>
-      {status === KubernetesInstanceStatus.UNAVAILABLE && (
-        <>
-          <Bullseye>
-            <EmptyState>
-              <EmptyStateIcon icon={PficonSatelliteIcon} />
-              <Title
-                headingLevel="h4"
-                size="md"
-                style={{
-                  width: "300px",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "break-spaces",
-                }}
-              >
-                {`Please setup Extended Services to be able to connect to Kubernetes.`}
-              </Title>
-              <br />
-              <Button
-                onClick={() => {
-                  setTimeout(() => {
-                    extendedServices.setInstallTriggeredBy(DependentFeature.DEV_DEPLOYMENTS);
-                    extendedServices.setModalOpen(true);
-                    accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
-                  });
-                }}
-              >
-                Setup
-              </Button>
-            </EmptyState>
-          </Bullseye>
-        </>
-      )}
-
       {status === KubernetesInstanceStatus.CONNECTED && newAuthSession && (
         <>
           <Alert isPlain={true} isInline={true} variant={AlertVariant.success} title={`Successfully connected`}></Alert>
@@ -139,7 +143,8 @@ export function ConnectToKubernetesSection() {
               status={status}
               setStatus={setStatus}
               setNewAuthSession={setNewAuthSession}
-              kubernetesService={kubernetesService}
+              kieSandboxKubernetesService={kieSandboxKubernetesService}
+              isLoadingService={isLoadingService}
             />
           )}
           {mode === KubernetesSettingsTabMode.WIZARD && (
@@ -150,7 +155,8 @@ export function ConnectToKubernetesSection() {
               status={status}
               setStatus={setStatus}
               setNewAuthSession={setNewAuthSession}
-              kubernetesService={kubernetesService}
+              kieSandboxKubernetesService={kieSandboxKubernetesService}
+              isLoadingService={isLoadingService}
             />
           )}
         </>

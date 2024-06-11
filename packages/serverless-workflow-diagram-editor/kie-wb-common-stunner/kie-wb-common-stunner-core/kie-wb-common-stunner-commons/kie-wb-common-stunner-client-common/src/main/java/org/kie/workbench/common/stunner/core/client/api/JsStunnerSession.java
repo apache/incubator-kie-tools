@@ -25,6 +25,7 @@ import java.util.stream.StreamSupport;
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import org.kie.j2cl.tools.processors.annotations.GWT3Export;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -41,6 +42,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 
 @JsType
+@GWT3Export
 public class JsStunnerSession {
 
     @JsIgnore

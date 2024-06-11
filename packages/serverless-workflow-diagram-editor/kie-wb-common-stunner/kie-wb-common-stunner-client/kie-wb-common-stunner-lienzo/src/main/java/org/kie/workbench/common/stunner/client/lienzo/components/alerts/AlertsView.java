@@ -23,14 +23,14 @@ package org.kie.workbench.common.stunner.client.lienzo.components.alerts;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLElement;
-import io.crysknife.ui.templates.client.annotation.DataField;
-import io.crysknife.ui.templates.client.annotation.EventHandler;
-import io.crysknife.ui.templates.client.annotation.ForEvent;
-import io.crysknife.ui.templates.client.annotation.Templated;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.DataField;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.EventHandler;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.ForEvent;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.Templated;
 
 @Dependent
 @Templated

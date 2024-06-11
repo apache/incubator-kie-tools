@@ -1,0 +1,31 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetpack-io/devbox/0.10.4/.schema/devbox.schema.json",
+  "packages": {
+    "temurin-bin-17": "17.0.9",
+    "nodejs": "20.12.2",
+    "maven": "3.9.6",
+    "kubernetes-helm": "3.13.3",
+    "gnumake": "4.4.1",
+    "go": "1.21.9",
+    "python": "3.12.2"
+  },
+  "env": {
+    "PLAYWRIGHT_BROWSERS_PATH": "0",
+    "PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS": "true",
+    "DEVBOX_COREPACK_ENABLED": "true",
+    "GOFLAGS": "-modcacherw",
+    "GOPATH": "$DEVBOX_PROJECT_ROOT/.devbox/gopkgs",
+    "PATH": "$DEVBOX_PROJECT_ROOT/.devbox/gopkgs/bin:$PATH"
+  },
+  "shell": {
+    "init_hook": [
+      ". $VENV_DIR/bin/activate",
+      "[[ $OSTYPE == 'darwin'* ]] && export PATH=$(echo $PATH | tr ':' '\n' | grep -vi 'xcode\\|clang\\|cctools' | paste -sd ':' -)"
+    ],
+    "scripts": {
+      "versions": [
+        "java --version && mvn -v && node -v && pnpm -v && go version && helm version && make -v && python3 --version && pip3 --version"
+      ]
+    }
+  }
+}

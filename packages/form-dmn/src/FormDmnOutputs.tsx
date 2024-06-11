@@ -41,7 +41,7 @@ import { ErrorBoundary } from "@kie-tools/dmn-runner/dist/ErrorBoundary";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { DecisionResult, DmnEvaluationStatus, DmnEvaluationResult } from "@kie-tools/extended-services-api";
 
-const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
+const ISSUES_URL = "https://github.com/apache/incubator-kie-issues/issues";
 
 const DATE_REGEX = /\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[1-2]\d|3[0-1])T(?:[0-1]\d|2[0-3]):[0-5]\d:[0-5]\dZ/;
 
@@ -283,8 +283,8 @@ export function FormDmnOutputs({ openExecutionTab, ...props }: FormDmnOutputsPro
               <I18nWrapped
                 components={{
                   jira: (
-                    <a href={KOGITO_JIRA_LINK} target={"_blank"}>
-                      {KOGITO_JIRA_LINK}
+                    <a href={ISSUES_URL} target={"_blank"} rel={"noopener noreferrer"}>
+                      {ISSUES_URL}
                     </a>
                   ),
                 }}

@@ -25,8 +25,8 @@ import java.util.Collections;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
+import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
-import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNotificationEvent;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.ScenarioSimulationKogitoDMNDataManager;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.model.KogitoDMNModel;
@@ -46,8 +46,7 @@ import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -59,6 +58,8 @@ public class KogitoDMNDataManagementStrategyTest {
 
     @Mock
     private EventBus eventBusMock;
+    @Mock
+    private ScenarioSimulationEditorPresenter scenarioSimulationEditorPresenterMock;
     @Mock
     private ScenarioSimulationKogitoDMNDataManager kogitoDMNDataManagerMock;
     @Mock
@@ -79,8 +80,6 @@ public class KogitoDMNDataManagementStrategyTest {
     private ArgumentCaptor<Callback<KogitoDMNModel>> callbackArgumentCaptor;
     @Captor
     private ArgumentCaptor<ErrorCallback<Object>> errorCallbackArgumentCaptor;
-    @Captor
-    private ArgumentCaptor<ScenarioNotificationEvent> scenarioNotificationEventArgumentCaptor;
 
     private KogitoDMNModel kogitoDMNModel;
     private KogitoDMNDataManagementStrategy kogitoDMNDataManagementStrategySpy;
@@ -88,13 +87,14 @@ public class KogitoDMNDataManagementStrategyTest {
     @Before
     public void setup() {
         kogitoDMNModel = new KogitoDMNModel(jsitDefinitionsMock, Collections.emptyMap());
-        kogitoDMNDataManagementStrategySpy = spy(new KogitoDMNDataManagementStrategy(eventBusMock, kogitoDMNDataManagerMock, dmnMarshallerServiceMock) {
+        kogitoDMNDataManagementStrategySpy = spy(new KogitoDMNDataManagementStrategy(kogitoDMNDataManagerMock, dmnMarshallerServiceMock, scenarioSimulationEditorPresenterMock) {
             {
                 this.dmnFilePath = "path/dmnFile.dmn";
             }
         });
         when(kogitoDMNDataManagementStrategySpy.getSuccessCallback(testToolsPresenterMock, scenarioSimulationContextMock, gridWidgetMock)).thenReturn(factModelTupleRemoteCallbackMock);
         when(kogitoDMNDataManagerMock.getFactModelTuple(kogitoDMNModel)).thenReturn(factModelTupleMock);
+        when(scenarioSimulationEditorPresenterMock.getEventBus()).thenReturn(eventBusMock);
     }
 
     @Test
@@ -109,9 +109,8 @@ public class KogitoDMNDataManagementStrategyTest {
         verify(factModelTupleRemoteCallbackMock, times(1)).callback(factModelTupleMock);
 
         errorCallbackArgumentCaptor.getValue().error("Error Message", new Exception());
-        verify(eventBusMock, times(1)).fireEvent(scenarioNotificationEventArgumentCaptor.capture());
-        assertEquals(NotificationEvent.NotificationType.ERROR, scenarioNotificationEventArgumentCaptor.getValue().getNotificationType());
-        assertTrue(scenarioNotificationEventArgumentCaptor.getValue().getMessage().contains("Error Message"));
+        verify(scenarioSimulationEditorPresenterMock, times(1)).sendNotification(anyString(), eq(NotificationEvent.NotificationType.ERROR), eq(false));
+        verify(scenarioSimulationEditorPresenterMock, times(1)).expandSettingsDock();
    }
 
 }

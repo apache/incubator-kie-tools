@@ -17,7 +17,7 @@
 package com.ait.lienzo.client.core.image;
 
 import com.ait.lienzo.tools.client.collection.NFastStringMap;
-import org.treblereel.j2cl.processors.common.resources.ImageResource;
+import org.kie.j2cl.tools.processors.common.resources.ImageResource;
 
 public final class ImageCache {
 

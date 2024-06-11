@@ -110,10 +110,6 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     if (!container) {
       throw new Error("We need a container to show the editor!");
     }
-    if (this.editor !== undefined) {
-      this.setTheme(theme);
-      return this.editor;
-    }
 
     this.editor = editor.create(container, {
       model: this.model,

@@ -30,7 +30,6 @@ import { useRoutes } from "../navigation/Hooks";
 import { QueryParams } from "../navigation/Routes";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useQueryParam, useQueryParams } from "../queryParams/QueryParamsContext";
-import { useSettingsDispatch } from "../settings/SettingsContext";
 import {
   ImportableUrl,
   isPotentiallyGit,
@@ -187,7 +186,7 @@ export function NewWorkspaceFromUrlPage() {
 
   // Startup the page. Only import if those are set.
   useEffect(() => {
-    if (!selectedGitRefName || !queryParamUrl) {
+    if (!queryParamUrl) {
       return;
     }
 
@@ -198,12 +197,19 @@ export function NewWorkspaceFromUrlPage() {
       urlDomain: new URL(queryParamUrl).hostname,
     });
 
+    let newQueryParams = queryParams;
+    if (authSession?.id && AUTH_SESSION_NONE.id !== authSession?.id) {
+      newQueryParams = newQueryParams.with(QueryParams.AUTH_SESSION_ID, authSession?.id);
+    } else if (compatible.length > 0) {
+      newQueryParams = newQueryParams.with(QueryParams.AUTH_SESSION_ID, compatible[0].id);
+    }
+
+    if (selectedGitRefName) {
+      newQueryParams = newQueryParams.with(QueryParams.BRANCH, selectedGitRefName);
+    }
     history.replace({
       pathname: routes.import.path({}),
-      search: queryParams
-        .with(QueryParams.BRANCH, selectedGitRefName)
-        .with(QueryParams.AUTH_SESSION_ID, authSession?.id ?? compatible[0].id)
-        .toString(),
+      search: newQueryParams.toString(),
     });
   }, [
     authProviders,
@@ -416,13 +422,13 @@ export function NewWorkspaceFromUrlPage() {
   ]);
 
   useEffect(() => {
-    if (!queryParamUrl) {
+    if (!queryParamUrl || (importingError && queryParamAuthSessionId)) {
       history.replace({
         pathname: routes.import.path({}),
         search: queryParams.with(QueryParams.CONFIRM, "true").toString(),
       });
     }
-  }, [history, queryParamUrl, queryParams, routes.import]);
+  }, [history, importingError, queryParamUrl, queryParams, queryParamAuthSessionId, routes.import]);
 
   useEffect(() => {
     if ((!queryParamBranch || !queryParamAuthSessionId) && selectedGitRefName) {

@@ -22,9 +22,8 @@ import { useCallback, useEffect } from "react";
 import { BeeTableCellUpdate } from ".";
 import { BeeTableEditableCellContent } from "./BeeTableEditableCellContent";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
-import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import * as ReactTable from "react-table";
-import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
+import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 
 export function BeeTableDefaultCell<R extends object>({
   cellProps,
@@ -34,7 +33,6 @@ export function BeeTableDefaultCell<R extends object>({
   setEditing,
   navigateHorizontally,
   navigateVertically,
-  variables,
 }: {
   isReadOnly: boolean;
   cellProps: ReactTable.CellProps<R, string | { content: string; id: string }>;
@@ -43,7 +41,6 @@ export function BeeTableDefaultCell<R extends object>({
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
   navigateVertically: (args: { isShiftPressed: boolean }) => void;
   navigateHorizontally: (args: { isShiftPressed: boolean }) => void;
-  variables?: FeelVariables;
 }) {
   const onCellChanged = useCallback(
     (value: string) => {
@@ -71,13 +68,16 @@ export function BeeTableDefaultCell<R extends object>({
     getValue
   );
 
+  // FIXME: The BeeTable shouldn't know about DMN or GWT
+  // The following useEffect shouldn't be placed here.
   const { beeGwtService } = useBoxedExpressionEditor();
-
   useEffect(() => {
     if (isActive) {
-      beeGwtService?.selectObject(typeof cellProps.value === "string" ? "" : cellProps.value?.id);
+      const column = cellProps.column.id;
+      const cell = cellProps.row.values[column] as { id: string; content: string };
+      beeGwtService?.selectObject(cell ? cell.id : "");
     }
-  }, [isActive, beeGwtService, cellProps]);
+  }, [beeGwtService, cellProps.column.id, cellProps.columns, cellProps.row.values, isActive]);
 
   return (
     <BeeTableEditableCellContent
@@ -89,7 +89,6 @@ export function BeeTableDefaultCell<R extends object>({
       isReadOnly={isReadOnly}
       onFeelEnterKeyDown={navigateVertically}
       onFeelTabKeyDown={navigateHorizontally}
-      variables={variables}
       expressionId={typeof cellProps.value === "string" ? "" : cellProps.value?.id}
     />
   );

@@ -1,0 +1,10 @@
+# Requirements for cekit 4.11.0 build
+# see: https://pip.pypa.io/en/stable/reference/requirements-file-format/
+docker-squash
+odcs
+docker
+python-docker
+behave
+lxml
+krb5
+cekit == 4.11.0

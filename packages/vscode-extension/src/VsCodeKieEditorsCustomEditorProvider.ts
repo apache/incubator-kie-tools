@@ -33,8 +33,8 @@ import { VsCodeKieEditorStore } from "./VsCodeKieEditorStore";
 import { VsCodeKieEditorCustomDocument } from "./VsCodeKieEditorCustomDocument";
 import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { VsCodeNotificationsChannelApiImpl } from "@kie-tools-core/notifications/dist/vscode";
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
+import { VsCodeNotificationsChannelApiImpl } from "./notifications/VsCodeNotificationsChannelApiImpl";
 
 export class VsCodeKieEditorsCustomEditorProvider implements CustomEditorProvider<VsCodeKieEditorCustomDocument> {
   private readonly _onDidChangeCustomDocument = new EventEmitter<
@@ -48,7 +48,7 @@ export class VsCodeKieEditorsCustomEditorProvider implements CustomEditorProvide
     private readonly editorStore: VsCodeKieEditorStore,
     private readonly editorFactory: VsCodeKieEditorControllerFactory,
     private readonly vsCodeI18n: I18n<VsCodeI18n>,
-    private readonly vsCodeNotificationsApi: VsCodeNotificationsChannelApiImpl,
+    private readonly vscodeNotifications: VsCodeNotificationsChannelApiImpl,
     private readonly editorEnvelopeLocator: EditorEnvelopeLocator
   ) {}
 
@@ -75,7 +75,7 @@ export class VsCodeKieEditorsCustomEditorProvider implements CustomEditorProvide
       this.resolveBackupUri(openContext.backupId),
       this.editorStore,
       this.vsCodeI18n,
-      this.vsCodeNotificationsApi,
+      this.vscodeNotifications,
       this.editorEnvelopeLocator
     );
     this.setupListeners(document);

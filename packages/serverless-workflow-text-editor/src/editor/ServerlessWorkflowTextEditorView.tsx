@@ -37,8 +37,8 @@ export class ServerlessWorkflowTextEditorView implements ServerlessWorkflowTextE
     this.editorRef = React.createRef<ServerlessWorkflowTextEditorApi>();
   }
 
-  public setContent(path: string, content: string): Promise<void> {
-    return this.editorRef.current!.setContent(path, content);
+  public setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
+    return this.editorRef.current!.setContent(normalizedPosixPathRelativeToTheWorkspaceRoot, content);
   }
 
   public getContent(): Promise<string> {

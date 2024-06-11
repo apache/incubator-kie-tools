@@ -58,7 +58,7 @@ public class ImportFactory {
             final ImportPMML pmml = new ImportPMML();
             final PMMLIncludedModelActiveRecord pmmlRecord = (PMMLIncludedModelActiveRecord) record;
             pmml.setName(name(record));
-            pmml.setNamespace(name(record).getValue());
+            pmml.setNamespace(record.getNamespace());
             pmml.setLocationURI(location(record));
             pmml.setImportType(record.getImportType());
             pmml.setModelCount(pmmlRecord.getModelCount());

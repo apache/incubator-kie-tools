@@ -19,8 +19,8 @@
 
 import { KieBcEditorsI18n } from "../KieBcEditorsI18n";
 
-const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
+const ISSUES_URL = "https://github.com/apache/incubator-kie-issues/issues";
 
 export const de: KieBcEditorsI18n = {
-  unsupportedFile: `Diese Datei enthält ein Konstrukt, das noch nicht unterstützt wird. Bitte konsultieren Sie ${KOGITO_JIRA_LINK} und melden Sie ein Problem. Vergessen Sie nicht, die aktuelle Datei hochzuladen.`,
+  unsupportedFile: `Diese Datei enthält ein Konstrukt, das noch nicht unterstützt wird. Bitte konsultieren Sie ${ISSUES_URL} und melden Sie ein Problem. Vergessen Sie nicht, die aktuelle Datei hochzuladen.`,
 };

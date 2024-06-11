@@ -19,11 +19,10 @@
 
 package org.drools.workbench.screens.scenariosimulation.kogito.client.editor.strategies;
 
-import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
+import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.AbstractDMNDataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
-import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNotificationEvent;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.ScenarioSimulationKogitoDMNDataManager;
@@ -38,15 +37,18 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 public class KogitoDMNDataManagementStrategy extends AbstractDMNDataManagementStrategy {
 
-    private ScenarioSimulationKogitoDMNDataManager dmnDataManager;
-    private ScenarioSimulationKogitoDMNMarshallerService dmnMarshallerService;
+    private final ScenarioSimulationKogitoDMNDataManager dmnDataManager;
+    private final ScenarioSimulationKogitoDMNMarshallerService dmnMarshallerService;
+    private final ScenarioSimulationEditorPresenter scenarioSimulationEditorPresenter;
 
-    public KogitoDMNDataManagementStrategy(EventBus eventBus,
-                                           ScenarioSimulationKogitoDMNDataManager dmnDataManager,
-                                           ScenarioSimulationKogitoDMNMarshallerService dmnMarshallerService) {
-        super(eventBus);
+
+    public KogitoDMNDataManagementStrategy(ScenarioSimulationKogitoDMNDataManager dmnDataManager,
+                                           ScenarioSimulationKogitoDMNMarshallerService scenarioSimulationKogitoDMNMarshallerService,
+                                           ScenarioSimulationEditorPresenter scenarioSimulationEditorPresenter) {
+        super(scenarioSimulationEditorPresenter.getEventBus());
         this.dmnDataManager = dmnDataManager;
-        this.dmnMarshallerService = dmnMarshallerService;
+        this.dmnMarshallerService = scenarioSimulationKogitoDMNMarshallerService;
+        this.scenarioSimulationEditorPresenter = scenarioSimulationEditorPresenter;
     }
 
     @Override
@@ -71,10 +73,11 @@ public class KogitoDMNDataManagementStrategy extends AbstractDMNDataManagementSt
 
     private ErrorCallback<Object> getDMNContentErrorCallback(String dmnFilePath) {
         return (message, throwable) -> {
-            eventBus.fireEvent(new ScenarioNotificationEvent(ScenarioSimulationEditorConstants.INSTANCE.dmnPathErrorDetailedLabel(dmnFilePath,
-                                                                                                                                  message.toString()),
-                                                             NotificationEvent.NotificationType.ERROR,
-                                                             false));
+            scenarioSimulationEditorPresenter.sendNotification(
+                    ScenarioSimulationEditorConstants.INSTANCE.dmnPathErrorDetailedLabel(dmnFilePath, message.toString()),
+                    NotificationEvent.NotificationType.ERROR,
+                    false);
+            scenarioSimulationEditorPresenter.expandSettingsDock();
             return false;
         };
     }

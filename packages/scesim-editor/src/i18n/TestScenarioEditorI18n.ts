@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
+import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 
 interface TestScenarioEditorDictionary extends ReferenceDictionary {
   alerts: {
@@ -26,6 +26,25 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
     ruleDataNotAvailable: string;
     dmnDataRetrievedFromScesim: string;
     ruleDataRetrievedFromScesim: string;
+  };
+  creationPanel: {
+    assetsGroup: string;
+    assetsOption: {
+      dmn: string;
+      noChoice: string;
+      rule: string;
+    };
+    autoFillTable: string;
+    autoFillTableTooltip: string;
+    createButton: string;
+    dmnGroup: string;
+    dmnNoChoice: string;
+    kieSessionGroup: string;
+    kieAgendaGroup: string;
+    optional: string;
+    statelessSession: string;
+    testSkip: string;
+    title: string;
   };
   drawer: {
     cheatSheet: {
@@ -57,7 +76,7 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
       paragraph6Rule: string;
       title: string;
     };
-    dataObjects: {
+    dataSelector: {
       clearSelection: string;
       collapseAll: string;
       dataObjectsDescriptionDMN: string;
@@ -70,6 +89,10 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
       emptyDataObjectsDescriptionRule: string;
       expandAll: string;
       insertDataObject: string;
+      insertDataObjectTooltipColumnSelectionMessage: string;
+      insertDataObjectTooltipDataObjectSelectionMessage: string;
+      insertDataObjectTooltipDataObjectAlreadyAssignedMessage: string;
+      insertDataObjectTooltipDataObjectAssignMessage: string;
       titleDMN: string;
       titleRule: string;
     };
@@ -94,12 +117,38 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
   };
   sidebar: {
     cheatSheetTooltip: string;
-    dataObjectsTooltip: string;
+    dataSelectorTooltip: string;
     settingsTooltip: string;
   };
   tab: {
     backgroundTabTitle: string;
+    backgroundTabInfo: string;
     scenarioTabTitle: string;
+    scenarioTabInfo: string;
+  };
+  table: {
+    simulation: { singleEntry: string };
+    background: {};
+    copy: string;
+    cut: string;
+    delete: string;
+    duplicate: string;
+    deleteField: string;
+    deleteInstance: string;
+    expect: string;
+    field: string;
+    given: string;
+    insert: string;
+    insertAbove: string;
+    insertBelow: string;
+    insertLeftField: string;
+    insertRightField: string;
+    insertLeftInstance: string;
+    insertRightInstance: string;
+    instance: string;
+    paste: string;
+    reset: string;
+    selection: string;
   };
 }
 

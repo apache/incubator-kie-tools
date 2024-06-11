@@ -38,7 +38,7 @@ function useFullScreenEditorTogglingEffect(fullscreen: boolean) {
     } else {
       iframeFullscreenContainer(globals.id, globals.dependencies.all.body()).classList.remove("hidden");
     }
-  }, [fullscreen]);
+  }, [fullscreen, globals.dependencies.all, globals.id]);
 }
 
 export function SingleEditorApp(props: {
@@ -78,14 +78,22 @@ export function SingleEditorApp(props: {
         onSetContentError={onSetContentError}
       />
     ),
-    [textMode, onSetContentError]
+    [
+      isolatedEditorRef,
+      props.getFileContents,
+      props.fileInfo.path,
+      props.openFileExtension,
+      props.readonly,
+      textMode,
+      onSetContentError,
+    ]
   );
 
   const exitFullScreen = useCallback(() => {
     setFullscreen(false);
     setTextModeAvailable(false);
     globals.dependencies.all.showDocumentBody();
-  }, []);
+  }, [globals.dependencies.all]);
 
   const deactivateTextMode = useCallback(() => {
     setTextMode(false);
@@ -99,7 +107,7 @@ export function SingleEditorApp(props: {
   const goFullScreen = useCallback(() => {
     setFullscreen(true);
     globals.dependencies.all.hideDocumentBody();
-  }, []);
+  }, [globals.dependencies.all]);
 
   const { getFileContents, getFileName } = props;
 
@@ -130,7 +138,7 @@ export function SingleEditorApp(props: {
       owner: props.fileInfo.org,
       repo: props.fileInfo.repo,
     };
-  }, []);
+  }, [props.fileInfo.gitRef, props.fileInfo.org, props.fileInfo.repo]);
 
   return (
     <>

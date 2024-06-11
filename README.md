@@ -1,15 +1,32 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+     http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+
 <p align="center"><img width=40% src="docs/kie.svg"></p>
 
 ---
 
 The **[KIE Community](http://kie.org)** is a home for leading Open Source projects that play a role in delivering solutions around Business Automation and Artificial Intelligence in the Cloud.
 
-[![GitHub Stars](https://img.shields.io/github/stars/kiegroup/kie-tools.svg)](https://github.com/kiegroup/kie-tools/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/kiegroup/kie-tools.svg)](https://github.com/kiegroup/kie-tools/network/members)
-[![GitHub Issues](https://img.shields.io/github/issues/kiegroup/kie-tools.svg)]()
-[![Pull Requests](https://img.shields.io/github/issues-pr/kiegroup/kie-tools.svg?style=flat-square)](https://github.com/kiegroup/kie-tools/pulls)
-[![Contributors](https://img.shields.io/github/contributors/kiegroup/kie-tools.svg?style=flat-square)](https://github.com/kiegroup/kie-tools/graphs/contributors)
-[![License](https://img.shields.io/github/license/kiegroup/kie-tools.svg)](https://github.com/kiegroup/kie-tools/blob/main/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/apache/incubator-kie-tools.svg)](https://github.com/apache/incubator-kie-tools/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/apache/incubator-kie-tools.svg)](https://github.com/apache/incubator-kie-tools/network/members)
+[![GitHub Issues](https://img.shields.io/github/issues/apache/incubator-kie-tools.svg)]()
+[![Pull Requests](https://img.shields.io/github/issues-pr/apache/incubator-kie-tools.svg?style=flat-square)](https://github.com/apache/incubator-kie-tools/pulls)
+[![Contributors](https://img.shields.io/github/contributors/apache/incubator-kie-tools.svg?style=flat-square)](https://github.com/apache/incubator-kie-tools/graphs/contributors)
+[![License](https://img.shields.io/github/license/apache/incubator-kie-tools.svg)](https://github.com/apache/incubator-kie-tools/blob/main/LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/KieCommunity.svg?label=Follow&style=social)](https://twitter.com/KieCommunity?lang=en)
 
 This repository contains tooling applications and libraries for KIE projects.
@@ -20,53 +37,89 @@ This repository contains tooling applications and libraries for KIE projects.
 
 ## Build from source
 
-To start building the KIE Tools project, you're going to need:
+#### Step 0: Install the necessary tools
+
+> **💡 RECOMMENDED**
+>
+> **Nix development environment**: A _devbox_ configuration is provided to automatically setup all the tools below. Read more in [here](./NIX_DEV_ENV.md).
+
+To build and test all packages of the Apache KIE Tools project, you're going to need:
 
 - Node `18` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
-- pnpm `8.7.0` _(To install, follow these instructions: https://pnpm.io/installation)_
-- Maven `3.8.6`
-- Java `11`
-- Go `1.21.1` _(To install, follow these instructions: https://go.dev/doc/install)_
+- pnpm `8.7.0` _(To install, follow these instructions: https://pnpm.io/installation#using-npm)_
+- Maven `3.9.6`
+- Java `17`
+- Go `1.21.9` _(To install, follow these instructions: https://go.dev/doc/install)_
+- Python `3.12` _(To install, follow these instructions: https://www.python.org/downloads/)_
+- Helm `3.13.3` _(To install, follow these instructions: https://helm.sh/docs/intro/install/)_
+- Make
 
-> **ℹ️ NOTE:** Some packages will require that `make` is available as well.
-
-> **ℹ️ NOTE:** \*nix users will also need:
+> **ℹ️ NOTE**
 >
-> - `lib-gtk-3-dev`
-> - `appindicator3-0.1` (`libayatana-appindicator3-dev` or `libappindicator-gtk3-devel` and `gir1.2-appindicator3-0.1`)
+> If you plan on building container images, make sure you have a working Docker setup. Setting `KIE_TOOLS_BUILD__buildContainerImages=true` will also be necessary.
 
-> **ℹ️ NOTE:** Users of Fedora or RHEL will need to add a repository:
+#### Step 1: Bootstrap
+
+Bootstrapping installs the necessary dependencies for each package.
+
+- `pnpm bootstrap` --> Will bootstrap all packages
+- `pnpm bootstrap [pnpm-filter]` --> Will bootstrap packages filtered by [`pnpm` filter](https://pnpm.io/filtering)
+- > E.g.,
+  >
+  > `pnpm bootstrap -F dmn-editor...` bootstraps the `dmn-editor` package and its dependencies.
+
+> **ℹ️ NOTE**
 >
-> `sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm`
+> If you plan on running Playwright tests, set the `PLAYWRIGHT_BASE__installDeps` environment variable to `true` before running the command above.
+>
+> `PLAYWRIGHT_BASE__installDeps=true pnpm bootstrap`.
+>
+> This will install all Playwright dependencies (such as browsers engines and OS-specific libraries).
 
-After installing the tools above, you'll need to download the dependencies and link the packages locally. Simply run:
+#### Step 2: Build
 
-- `pnpm bootstrap`
+- Dev
 
-To install only the dependencies that are relevant to the package called `[pkg-name]`.
+  - `pnpm -r build:dev`
+    - Will build all packages for development. Skipping linters, tests, minifiers etc.
+  - `pnpm [pnpm-filter] build:dev`
+    - Will build packages filtered by [`pnpm` filter](https://pnpm.io/filtering)
+  - > E.g.,
+    >
+    > `pnpm -F dmn-editor... build:dev` builds the `dmn-editor` package and its dependencies.
 
-- `pnpm bootstrap -F [pkg-name]...`
+- Prod
 
-  > **⚠️ NOTE:** Here, `...` is actually **necessary**! They're part of a [`pnpm` filter](https://pnpm.io/filtering#--filter-package_name-1).
+  - `pnpm -r build:prod`
+    - Will build all packages for production. Optimizers will run, binaries will be produced for multiple architectures etc.
+  - `pnpm [pnpm-filter] build:prod`
+    - Will build packages filtered by [`pnpm` filter](https://pnpm.io/filtering)
+  - > E.g.,
+    >
+    > `pnpm -F dmn-editor... build:prod` builds the `dmn-editor` package and its dependencies.
 
-After dependencies are installed, you'll be able to build. To do so, you'll have two choices - `dev`, or `prod`.
+- Changed
+  - `pnpm -F '...[HEAD]' build:dev`; or
+  - `pnpm -F '...[HEAD]' build:prod`
+    - Will build changed and affected packages based on your local changes. Useful for verifying that you didn't break anything.
 
-Note that it is recommended that you specify which package you want to build, so replace `[pkg-name]` with the name of the desired package on one of the commands below:
+> **ℹ️ NOTE**
+>
+> The Apache KIE Tools build is parameterized by several Environment Variables. For an extensive list of these variables, please see the list printed by the `bootstrap` step.
+>
+> - To enable the examples build: `export KIE_TOOLS_BUILD__buildExamples=true`
+> - To enable container images build: `export KIE_TOOLS_BUILD__buildContainerImages=true`
+> - To enable E2E tests: `export KIE_TOOLS_BUILD__runEndToEndTests=true`
 
-- `pnpm -F [pkg-name]... build:dev` - This is fast, but not as strict. It skips tests, linters, and some type checks. Be prepared for the CI to fail on your PRs.
-- `pnpm -F [pkg-name]... build:prod` - The default command to build production-ready packages. Use that to make sure your changes are correct.
+> **ℹ️ NOTE**
+>
+> Final artifacts will be in `{packages,examples}/*/dist` directories.
 
-> **⚠️ NOTE:** Here, `...` is actually **necessary**! They're part of a [`pnpm` filter](https://pnpm.io/filtering#--filter-package_name-1).
-
-> **ℹ️ NOTE:** If you want to build _everything_, run `pnpm -r build:dev` or `pnpm -r build:prod`. It's going to take a while, though :)
-
-> **ℹ️ NOTE:** The KIE Tools build is parameterized by several Environment Variables. For an extensive list of these variables, please see the list printed by the `bootstrap` script.
-
-> **ℹ️ NOTE:** Final artifacts will be on `{packages,examples}/*/dist` directories.
+---
 
 ## Applications
 
-The KIE Tools project contains several applications. To develop each one of them individually, refer to the instructions below.
+The Apache KIE Tools project contains several applications. To develop each one of them individually, refer to the instructions below.
 
 #### VS Code Extension (DMN, BPMN, SceSim, and PMML Editors)
 
@@ -86,7 +139,7 @@ The KIE Tools project contains several applications. To develop each one of them
 1. After you've successfully built the project following the instructions above, open the `packages/chrome-extension-pack-kogito-kie-editors` folder on your favourite IDE. You can import the entire repo as well if you want to make changes to other packages.
 2. Run `pnpm build:dev` on `packages/chrome-extension-pack-kogito-kie-editors`. This will create a version of the Chrome Extension that fetches the envelope locally.
 3. Open a terminal and run `pnpm start` on `packages/chrome-extension-pack-kogito-kie-editors`. This will start a `webpack serve` instance with the editors and their envelope. We use that because we don't pack the Chrome Extension bundle with the editors inside. Instead, we fetch them from GitHub pages.
-4. You also have to enable invalid certificates for resources loaded from localhost in your browser. To do that, go to `chrome://flags/#allow-insecure-localhost` in your Chrome browser and enable this flag. Alternativelly, you can go to `https://localhost:9001` and add an exception.
+4. You also have to enable invalid certificates for resources loaded from localhost in your browser. To do that, go to `chrome://flags/#temporary-unexpire-flags-m118` in your Chrome browser, enable this flag and restart browser. Then go to `chrome://flags/#allow-insecure-localhost` in your Chrome browser and enable also this flag. Alternativelly, you can go to `https://localhost:9001` and add an exception.
 5. Open Chrome and go to `chrome://extensions`. Enable "Developer mode" in the top-right corner and click on "Load unpacked". Choose the `packages/chrome-extension-pack-kogito-kie-editors/dist` folder.
 6. From now on you can use the development version of the extension. **Remember!** After each change, you have to rebuild the changed modules and hit the "Refresh" button of the extension card.
 
@@ -95,7 +148,7 @@ The KIE Tools project contains several applications. To develop each one of them
 1. After you've successfully built the project following the instructions above, open the `packages/chrome-extension-serverless-workflow-editor` folder on your favourite IDE. You can import the entire repo as well if you want to make changes to other packages.
 1. Run `pnpm build:dev` on `packages/chrome-extension-serverless-workflow-editor`. This will create a version of the Chrome Extension that fetches the envelope locally.
 1. Open a terminal and run `pnpm start` on `packages/chrome-extension-serverless-workflow-editor`. This will start a `webpack serve` instance with the editors and their envelope. We use that because we don't pack the Chrome Extension bundle with the editors inside. Instead, we fetch them from GitHub pages.
-1. You also have to enable invalid certificates for resources loaded from localhost in your browser. To do that, go to `chrome://flags/#allow-insecure-localhost` in your Chrome browser and enable this flag. Alternativelly, you can go to `https://localhost:9000` and add an exception.
+1. You also have to enable invalid certificates for resources loaded from localhost in your browser. To do that, go to `chrome://flags/#temporary-unexpire-flags-m118` in your Chrome browser, enable this flag and restart browser. Then go to `chrome://flags/#allow-insecure-localhost` in your Chrome browser and enable also this flag. Alternativelly, you can go to `https://localhost:9000` and add an exception.
 1. Open Chrome and go to `chrome://extensions`. Enable "Developer mode" in the top-right corner and click on "Load unpacked". Choose the `packages/chrome-extension-serverless-workflow-editor/dist` folder.
 1. From now on you can use the development version of the extension. **Remember!** After each change, you have to rebuild the changed modules and hit the "Refresh" button of the extension card.
 
@@ -127,7 +180,7 @@ The KIE Tools project contains several applications. To develop each one of them
 
 #### Stunner Editors
 
-The `stunner-editors` package contains the BPMN, DMN, and SceSim Editors that are used in many applications of KIE Tools.
+The `stunner-editors` package contains the BPMN, DMN, and SceSim Editors that are used in many applications of Apache KIE Tools.
 After cloning the repo, start with a fresh build.
 
 - `pnpm bootstrap -F @kie-tools/stunner-editors...`

@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -58,8 +59,6 @@ import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * A wrapper around {@link TabPanelWithDropdowns} that adds the following capabilities:
@@ -98,6 +97,10 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget,
                                          panelManager);
         this.tabPanel = checkNotNull("tabPanel",
                                      tabPanel);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     @PostConstruct

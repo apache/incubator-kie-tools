@@ -146,7 +146,9 @@ export function GitHubSettings(props: SettingsPageProps) {
             <EmptyState>
               <EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-global--success-color--100)"} />
               <TextContent>
-                <Text component={"h2"}>{"You're signed in with GitHub."}</Text>
+                <Text component={"h2"} ouiaId={"signed-in-text"}>
+                  {"You're signed in with GitHub."}
+                </Text>
               </TextContent>
               <EmptyStateBody>
                 Gists are <b>{settings.github.scopes?.includes(GitHubTokenScope.GIST) ? "enabled" : "disabled"}.</b>
@@ -179,7 +181,7 @@ export function GitHubSettings(props: SettingsPageProps) {
                 You currently have no tokens to display. Access tokens allow you for creating repositories containing
                 models you design, and syncing changes with GitHub.
               </EmptyStateBody>
-              <Button variant={ButtonVariant.primary} onClick={handleModalToggle}>
+              <Button variant={ButtonVariant.primary} onClick={handleModalToggle} ouiaId={"add-access-token-button"}>
                 Add access token
               </Button>
             </EmptyState>
@@ -223,6 +225,7 @@ export function GitHubSettings(props: SettingsPageProps) {
                   value={githubTokenToDisplay}
                   onPaste={onPasteGitHubToken}
                   tabIndex={1}
+                  ouiaId={"token-input"}
                 />
               </InputGroup>
             </FormGroup>

@@ -20,9 +20,8 @@
 import * as React from "react";
 import * as ReactTable from "react-table";
 import { ResizerStopBehavior } from "../resizing/ResizingWidthsContext";
-import { BeeTableCellUpdate, BeeTableColumnUpdate } from "../table/BeeTable/BeeTableHeader";
+import { BeeTableCellUpdate, BeeTableColumnUpdate } from "../table/BeeTable";
 import { BeeTableSelection } from "../selection/BeeTableSelectionContext";
-import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 
 export interface BeeTableCellProps<R extends object> {
   data: readonly R[];
@@ -68,6 +67,14 @@ export interface BeeTableProps<R extends object> {
   getRowKey?: (row: ReactTable.Row<R>) => string;
   /** Custom function for getting column key prop, and avoid using the column index */
   getColumnKey?: (column: ReactTable.ColumnInstance<R>) => string;
+  /** Function to be executed when a column's header is clicked */
+  onHeaderClick?: (columnKey: string) => void;
+  /** Function to be executed when a key up event occurs in a column's header */
+  onHeaderKeyUp?: (columnKey: string) => void;
+  /** Function to be executed when a column's data cell is clicked */
+  onDataCellClick?: (columnID: string) => void;
+  /** Function to be executed when a column's data cell is clicked */
+  onDataCellKeyUp?: (columnID: string) => void;
   /** Disable/Enable cell edits. Enabled by default */
   isReadOnly?: boolean;
   /** Enable keyboard navigation */
@@ -77,15 +84,19 @@ export interface BeeTableProps<R extends object> {
   onRowDuplicated?: (args: { rowIndex: number }) => void;
   onRowReset?: (args: { rowIndex: number }) => void;
   onRowDeleted?: (args: { rowIndex: number }) => void;
-  onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
+  onColumnAdded?: (args: {
+    beforeIndex: number;
+    currentIndex?: number;
+    groupType: string | undefined;
+    columnsCount: number;
+    insertDirection: InsertRowColumnsDirection;
+  }) => void;
   onColumnDeleted?: (args: { columnIndex: number; groupType: string | undefined }) => void;
   shouldRenderRowIndexColumn: boolean;
   shouldShowRowsInlineControls: boolean;
   shouldShowColumnsInlineControls: boolean;
   resizerStopBehavior: ResizerStopBehavior;
   lastColumnMinWidth?: number;
-  /** The variables for the current expression context */
-  variables?: FeelVariables;
 }
 
 /** Possible status for the visibility of the Table's Header */
@@ -135,3 +146,8 @@ export type BeeTableContextMenuAllowedOperationsConditions = {
   column: ReactTable.ColumnInstance<any> | undefined;
   columns: ReactTable.ColumnInstance<any>[] | undefined;
 };
+
+export enum InsertRowColumnsDirection {
+  AboveOrRight,
+  BelowOrLeft,
+}

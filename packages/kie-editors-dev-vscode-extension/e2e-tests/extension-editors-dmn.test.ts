@@ -51,12 +51,13 @@ describe("KIE Editors End to End Test Suite - DMN Editor", () => {
   });
 
   beforeEach(async function () {
+    this.timeout(30000);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });
 
   afterEach(async function () {
-    this.timeout(15000);
+    this.timeout(30000);
     await testHelper.takeScreenshotOnTestFailure(this, DIST_E2E_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
@@ -64,7 +65,7 @@ describe("KIE Editors End to End Test Suite - DMN Editor", () => {
   });
 
   it("Include reusable-model in DMN Editor", async function () {
-    this.timeout(20000);
+    this.timeout(30000);
     const editorWebviews = await testHelper.openFileFromSidebar(DEMO_DMN);
     webview = editorWebviews[0];
     const dmnEditorTester = new DmnEditorTestHelper(webview);

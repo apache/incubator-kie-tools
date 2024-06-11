@@ -41,9 +41,23 @@ export default class Driver {
       );
     }
 
+    // create directory for chrome browser data
+    const CHROME_DIR: string = resolve("dist-e2e-tests", "chrome_data");
+    if (!existsSync(CHROME_DIR)) {
+      mkdirSync(CHROME_DIR, { recursive: true });
+    }
+
     // init chrome options
     const chromeOptions: Options = new Options();
-    chromeOptions.addArguments("--load-extension=" + chromeExtensionPath, "--allow-insecure-localhost");
+    chromeOptions.addArguments(
+      "--user-data-dir=" + CHROME_DIR,
+      "--load-extension=" + chromeExtensionPath,
+      "--enable-features=UnexpireFlagsM118",
+      "--allow-insecure-localhost",
+      "--disable-web-security",
+      "--remote-allow-origins=*",
+      "--disable-gpu"
+    );
 
     // init chrome driver log
     const LOGS_DIR: string = resolve("dist-e2e-tests", "logs");

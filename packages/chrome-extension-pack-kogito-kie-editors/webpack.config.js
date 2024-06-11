@@ -24,7 +24,7 @@ const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const stunnerEditors = require("@kie-tools/stunner-editors");
-const { EnvironmentPlugin } = require("webpack");
+const { EnvironmentPlugin, ProvidePlugin } = require("webpack");
 const path = require("path");
 const { env } = require("./env");
 const buildEnv = env;
@@ -68,6 +68,10 @@ module.exports = async (env) => {
       port: buildEnv.chromeExtension.dev.port,
     },
     plugins: [
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
       new EnvironmentPlugin({
         WEBPACK_REPLACE__targetOrigin: router_targetOrigin,
         WEBPACK_REPLACE__relativePath: router_relativePath,

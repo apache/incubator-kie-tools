@@ -33,12 +33,13 @@ import "./App.scss";
 
 export type ServerlessWorkflowType = "yml" | "yaml";
 
-const FILE = {
+const FILE: EmbeddedEditorFile = {
   fileName: "test.dash.yaml",
   fileExtension: "dash.yaml",
   getFileContents: function (): Promise<string | undefined> {
     return Promise.resolve("");
   },
+  normalizedPosixPathRelativeToTheWorkspaceRoot: "test.dash.yaml",
   isReadOnly: false,
 };
 

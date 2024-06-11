@@ -73,11 +73,6 @@
     </dependency>
 
     <!-- Dashbuilder -->
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
-      <scope>provided</scope>
-    </dependency>
 
     <dependency>
       <groupId>org.dashbuilder</groupId>
@@ -407,7 +402,14 @@
             -Ddashbuilder.kieserver.serverTemplate.sample-server.password=kieserver1!
             -Ddashbuilder.kieserver.defaultServerTemplate=default
             -Ddashbuilder.kieserver.serverTemplate.sample-server.replace_query=true
-            -Ddashbuilder.dev=true</extraJvmArgs>
+            -Ddashbuilder.dev=true
+            --add-opens java.base/java.lang=ALL-UNNAMED
+            --add-opens java.base/java.lang.reflect=ALL-UNNAMED
+            --add-opens java.base/java.time=ALL-UNNAMED
+            --add-opens java.base/java.time.format=ALL-UNNAMED
+            --add-opens java.base/java.text=ALL-UNNAMED
+            --add-opens java.base/java.util=ALL-UNNAMED
+          </extraJvmArgs>
           <style>OBFUSCATED</style>
           <noServer>false</noServer>
           <!-- <server>org.jboss.errai.cdi.server.gwt.EmbeddedWildFlyLauncher</server> -->
@@ -442,8 +444,6 @@
             <compileSourcesArtifact>org.uberfire:uberfire-layout-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-table</compileSourcesArtifact>
-
-            <compileSourcesArtifact>org.kie.soup:kie-soup-commons</compileSourcesArtifact>
 
             <!-- UberFire -->
             <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>

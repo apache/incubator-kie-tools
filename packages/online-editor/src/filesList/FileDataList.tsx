@@ -38,7 +38,7 @@ import { WorkspaceDescriptorDates } from "../workspace/components/WorkspaceDescr
 import { EyeIcon } from "@patternfly/react-icons/dist/js/icons/eye-icon";
 import { GitStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
 import { GitStatusIndicatorActions, GitStatusProps } from "../workspace/components/GitStatusIndicatorActions";
-import { switchExpression } from "../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 
 const FILE_DATA_LIST_HEIGHTS = {
   atRoot: 55 + 24,

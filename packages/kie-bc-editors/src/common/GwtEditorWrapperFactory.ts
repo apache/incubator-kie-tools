@@ -41,6 +41,7 @@ import { GwtEditorWrapper } from "./GwtEditorWrapper";
 import { GwtLanguageData, Resource } from "./GwtLanguageData";
 import { GwtStateControlService } from "./gwtStateControl";
 import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "./i18n";
+import * as __path from "path";
 
 export interface CustomWindow extends Window {
   startStandaloneEditor?: () => void;
@@ -70,6 +71,8 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
     public readonly kieBcEditorsI18n = new I18n(kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries)
   ) {}
 
+  public gwtEditor: E;
+
   public createEditor(
     envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>,
     initArgs: EditorInitArgs
@@ -85,7 +88,8 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
 
     const gwtFinishedLoading = new Promise<E>((res) => {
       this.gwtAppFormerConsumedInteropApi.onFinishedLoading(() => {
-        res(this.gwtEditorDelegate(this, initArgs));
+        this.gwtEditor = this.gwtEditorDelegate(this, initArgs);
+        res(this.gwtEditor);
         return Promise.resolve();
       });
     });
@@ -116,20 +120,51 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
       },
       keyboardShortcutsService: envelopeContext.services.keyboardShortcuts,
       resourceContentEditorService: {
-        get(path: string, opts?: ResourceContentOptions) {
-          return envelopeContext.channelApi.requests
-            .kogitoWorkspace_resourceContentRequest({ path, opts })
-            .then((r) => r?.content);
+        // Everything coming from or going into the Editors must be relative to the open file.
+        get: (normalizedPosixPathRelativeToTheOpenFile: string, opts?: ResourceContentOptions) => {
+          const normalizedPosixPathRelativeToTheWorkspaceRoot = __path
+            .resolve(
+              __path.dirname(this.gwtEditor.normalizedPosixPathRelativeToTheWorkspaceRoot),
+              normalizedPosixPathRelativeToTheOpenFile
+            )
+            .substring(1); // Remove leading slash. __path.resolve always adds it.
+
+          return (
+            envelopeContext.channelApi.requests
+              // Everything going to the channel must be relative to the workpsace root.
+              .kogitoWorkspace_resourceContentRequest({ normalizedPosixPathRelativeToTheWorkspaceRoot, opts })
+              .then((r) => r?.content)
+          );
         },
-        list(pattern: string, opts?: ResourceListOptions) {
-          return envelopeContext.channelApi.requests
-            .kogitoWorkspace_resourceListRequest({ pattern, opts })
-            .then((r) => r.paths.sort());
+        list: (pattern: string, opts?: ResourceListOptions) => {
+          return envelopeContext.channelApi.requests.kogitoWorkspace_resourceListRequest({ pattern, opts }).then((r) =>
+            r.normalizedPosixPathsRelativeToTheWorkspaceRoot
+              .map((p) => {
+                const normalizedPosixPathRelativeToTheOpenFile = __path.relative(
+                  __path.dirname(this.gwtEditor.normalizedPosixPathRelativeToTheWorkspaceRoot),
+                  p
+                );
+
+                // Everything coming from or going into the Editors must be relative to the open file.
+                return normalizedPosixPathRelativeToTheOpenFile;
+              })
+              .sort()
+          );
         },
       },
       workspaceService: {
-        openFile(path: string): void {
-          envelopeContext.channelApi.notifications.kogitoWorkspace_openFile.send(path);
+        // Everything coming from or going into the Editors must be relative to the open file.
+        openFile: (normalizedPosixPathRelativeToTheOpenFile: string): void => {
+          const normalizedPosixPathRelativeToTheWorkspaceRoot = __path
+            .resolve(
+              __path.dirname(this.gwtEditor.normalizedPosixPathRelativeToTheWorkspaceRoot),
+              normalizedPosixPathRelativeToTheOpenFile
+            )
+            .substring(1); // Remove leading slash. __path.resolve always adds it.
+
+          envelopeContext.channelApi.notifications.kogitoWorkspace_openFile.send(
+            normalizedPosixPathRelativeToTheWorkspaceRoot // Everything going to the channel must be relative to the workpsace root.
+          );
         },
       },
       i18nService: {
@@ -142,13 +177,38 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
       },
       notificationsService: {
         createNotification: (notification: Notification) => {
+          // This is wrong, because Notification has a property called `normalizedPosixPathRelativeToTheWorkspaceRoot`.
+          // The Editor should be sending a Notification object with a `normalizedPosixPathRelativeToTheOpenFile` instead.
+          // The Editor should've not been using Envelope APIs directly.
           envelopeContext.channelApi.notifications.kogitoNotifications_createNotification.send(notification);
         },
-        removeNotifications: (path: string) => {
-          envelopeContext.channelApi.notifications.kogitoNotifications_removeNotifications.send(path);
+        // Everything coming from or going into the Editors must be relative to the open file.
+        removeNotifications: (normalizedPosixPathRelativeToTheOpenFile: string) => {
+          const normalizedPosixPathRelativeToTheWorkspaceRoot = __path
+            .resolve(
+              __path.dirname(this.gwtEditor.normalizedPosixPathRelativeToTheWorkspaceRoot),
+              normalizedPosixPathRelativeToTheOpenFile
+            )
+            .substring(1); // Remove leading slash. __path.resolve always adds it.
+
+          envelopeContext.channelApi.notifications.kogitoNotifications_removeNotifications.send(
+            normalizedPosixPathRelativeToTheWorkspaceRoot // Everything going to the channel must be relative to the workpsace root.
+          );
         },
-        setNotifications: (path: string, notifications: Notification[]) => {
-          envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications.send(path, notifications);
+
+        // Everything coming from or going into the Editors must be relative to the open file.
+        setNotifications: (normalizedPosixPathRelativeToTheOpenFile: string, notifications: Notification[]) => {
+          const normalizedPosixPathRelativeToTheWorkspaceRoot = __path
+            .resolve(
+              __path.dirname(this.gwtEditor.normalizedPosixPathRelativeToTheWorkspaceRoot),
+              normalizedPosixPathRelativeToTheOpenFile
+            )
+            .substring(1); // Remove leading slash. __path.resolve always adds it.
+
+          envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications.send(
+            normalizedPosixPathRelativeToTheWorkspaceRoot, // Everything going to the channel must be relative to the workpsace root.
+            notifications
+          );
         },
       },
     };

@@ -21,7 +21,6 @@ import * as express from "express";
 import * as cors from "cors";
 
 import { ExpressCorsProxy } from "./ExpressCorsProxy";
-import { dnsFix } from "./dnsFix";
 
 export type ServerArgs = {
   port: number;
@@ -37,8 +36,6 @@ export const startServer = (args: ServerArgs): void => {
   app.disable("x-powered-by");
 
   const proxy = new ExpressCorsProxy(args);
-
-  dnsFix();
 
   const corsHandler = cors();
 
@@ -68,7 +65,7 @@ export const startServer = (args: ServerArgs): void => {
       <title>@kie-tools/cors-proxy</title>
       <h1>@kie-tools/cors-proxy</h1>
       <p>This is a Cors-Proxy software intended to be used to proxy requests .</p>
-      <p>The source code is hosted on Github at <a href="https://github.com/kiegroup/kie-tools/packages/cors-proxy">@kie-tools/cors-proxy</a></p>
+      <p>The source code is hosted on Github at <a href="https://github.com/apache/incubator-kie-tools/packages/cors-proxy">@kie-tools/cors-proxy</a></p>
       <p>It can also be installed from npm with <code>npm install <a href="https://npmjs.org/package/@kie-tools/cors-proxy">@kie-tools/cors-proxy</a></code></p>
     </html>`);
   });

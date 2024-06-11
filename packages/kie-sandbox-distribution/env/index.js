@@ -1,30 +1,49 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-const buildEnv = require("@kie-tools/root-env/env");
+const rootEnv = require("@kie-tools/root-env/env");
 const extendedServicesImageEnv = require("@kie-tools/kie-sandbox-extended-services-image/env");
 const corsProxyImageEnv = require("@kie-tools/cors-proxy-image/env");
-const kieSandboxImageEnv = require("@kie-tools/kie-sandbox-image/env");
+const kieSandboxWebappImageEnv = require("@kie-tools/kie-sandbox-webapp-image/env");
 
-module.exports = composeEnv([buildEnv, extendedServicesImageEnv, corsProxyImageEnv, kieSandboxImageEnv], {
+module.exports = composeEnv([rootEnv, extendedServicesImageEnv, corsProxyImageEnv, kieSandboxWebappImageEnv], {
   vars: varsWithName({
     KIE_SANDBOX_DISTRIBUTION__kieSandboxImageRegistry: {
-      default: kieSandboxImageEnv.env.kieSandbox.image.registry,
+      default: kieSandboxWebappImageEnv.env.kieSandboxWebappImage.registry,
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__kieSandboxImageAccount: {
-      default: kieSandboxImageEnv.env.kieSandbox.image.account,
+      default: kieSandboxWebappImageEnv.env.kieSandboxWebappImage.account,
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__kieSandboxImageName: {
-      default: kieSandboxImageEnv.env.kieSandbox.image.name,
+      default: kieSandboxWebappImageEnv.env.kieSandboxWebappImage.name,
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__kieSandboxImageTag: {
-      default: kieSandboxImageEnv.env.kieSandbox.image.buildTags.split(" ")[0],
+      default: kieSandboxWebappImageEnv.env.kieSandboxWebappImage.buildTags.split(" ")[0],
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__kieSandboxContainerPort: {
-      default: "8080",
+      default: kieSandboxWebappImageEnv.env.kieSandboxWebappImage.port,
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__kieSandboxExposedPort: {
@@ -72,7 +91,7 @@ module.exports = composeEnv([buildEnv, extendedServicesImageEnv, corsProxyImageE
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__corsProxyContainerPort: {
-      default: "8080",
+      default: corsProxyImageEnv.env.corsProxyImage.image.port,
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__corsProxyExposedPort: {
@@ -83,7 +102,7 @@ module.exports = composeEnv([buildEnv, extendedServicesImageEnv, corsProxyImageE
   get env() {
     return {
       kieSandboxDistribution: {
-        kieSandbox: {
+        kieSandboxWebapp: {
           imageRegistry: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__kieSandboxImageRegistry),
           imageAccount: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__kieSandboxImageAccount),
           imageName: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__kieSandboxImageName),

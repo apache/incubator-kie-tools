@@ -23,7 +23,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.command;
 import java.util.Collection;
 import java.util.function.Consumer;
 
-import io.crysknife.client.ManagedInstance;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;

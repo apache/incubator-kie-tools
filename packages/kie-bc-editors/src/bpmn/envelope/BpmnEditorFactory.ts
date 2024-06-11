@@ -35,13 +35,13 @@ declare let window: CustomWindow;
 export class BpmnEditorFactory implements EditorFactory<BpmnEditor, BpmnEditorChannelApi> {
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}
 
-  public createEditor(
+  public async createEditor(
     ctx: KogitoEditorEnvelopeContextType<BpmnEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<BpmnEditor> {
     const dmnLs = new DmnLanguageService({
       // currently does not need to implement it since we don't need a way to read other Dmn files.
-      getDmnImportedModel: () => Promise.resolve({ relativePath: "", content: "" }),
+      getModelXml: () => Promise.resolve(""),
     });
 
     const exposedInteropApi: CustomWindow["envelope"] = {
@@ -72,6 +72,7 @@ export class BpmnEditorFactory implements EditorFactory<BpmnEditor, BpmnEditorCh
       this.gwtEditorEnvelopeConfig
     );
 
-    return factory.createEditor(ctx, initArgs);
+    const editor = await factory.createEditor(ctx, initArgs);
+    return editor;
   }
 }

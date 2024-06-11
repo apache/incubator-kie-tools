@@ -1,0 +1,32 @@
+{
+  "private": true,
+  "name": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:dev": "rimraf dist && pnpm run copy:dashbuilder",
+    "build:prod": "pnpm run build:dev",
+    "copy:dashbuilder": "copyfiles -u 4 \"node_modules/@kie-tools/dashbuilder-client/dist/**/*\" ./dist/ && copyfiles -u 1 src/* ./dist/"
+  },
+  "dependencies": {
+    "@kie-tools/dashbuilder-client": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/tsconfig": "workspace:*",
+    "copyfiles": "^2.4.1",
+    "rimraf": "^3.0.2"
+  }
+}

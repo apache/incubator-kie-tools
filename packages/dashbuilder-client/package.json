@@ -4,13 +4,13 @@
   "description": "",
   "license": "Apache-2.0",
   "keywords": [],
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "files": [
     "dist/"
@@ -20,7 +20,7 @@
     "build:prod": "pnpm build:dev",
     "copy:dashbuilder": "run-script-os",
     "copy:dashbuilder:linux:darwin": "copyfiles -e \"../**/*/WEB-INF/**/*\" -e \"../**/*/ace/**/*\" -u 6 \"../dashbuilder/dashbuilder-runtime-parent/dashbuilder-runtime-client/target/dashbuilder-runtime-client/**/*\" ./dist/",
-    "copy:dashbuilder:win32": "mkdir dist && touch dist/.keep && echo \"Build not supported on Windows\""
+    "copy:dashbuilder:win32": "copyfiles -e \"../**/*/WEB-INF/**/*\" -e \"../**/*/ace/**/*\" -u 6 \"../dashbuilder/dashbuilder-runtime-parent/dashbuilder-runtime-client/target/dashbuilder-runtime-client/**/*\" ./dist/"
   },
   "devDependencies": {
     "@kie-tools/dashbuilder": "workspace:*",

@@ -44,7 +44,11 @@ export interface WorkspacesWorkerStorageApi {
     relativePath: string;
   }): Promise<string>;
 
-  kieSandboxWorkspacesStorage_prepareZip(args: { workspaceId: string; onlyExtensions?: string[] }): Promise<Blob>;
+  kieSandboxWorkspacesStorage_prepareZip(args: {
+    workspaceId: string;
+    onlyExtensions?: string[];
+    globPattern?: string;
+  }): Promise<Blob>;
 
   kieSandboxWorkspacesStorage_resourceContentList(args: {
     workspaceId: string;

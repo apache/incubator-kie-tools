@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 package command
@@ -25,8 +25,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )
@@ -42,18 +42,19 @@ func NewRunCommand() *cobra.Command {
 		Short: "Run a SonataFlow project in development mode",
 		Long: `
 	 Run a SonataFlow project in development mode.
+
 	 By default, it runs over ` + metadata.DevModeImage + ` on Docker.
 	 Alternatively, you can run the same image with Podman.
-		
+
 		 `,
 		Example: `
-    # Run the local directory
+	# Run the workflow inside the current local directory
 	{{.Name}} run
 
-	 # Run the local directory mapping a different host port to the running container port.
+	 # Run the current local directory mapping a different host port to the running container port.
 	{{.Name}} run --port 8081
 
- 	# Disable automatic browser launch of SonataFlow  Dev UI 
+ 	# Disable automatic browser launch of SonataFlow  Dev UI
 	{{.Name}} run --open-dev-ui=false
 		 `,
 		SuggestFor: []string{"rnu", "start"}, //nolint:misspell
@@ -103,7 +104,7 @@ func runSWFProject(cfg RunCmdConfig) error {
 		if err := runSWFProjectDevMode(common.Docker, cfg); err != nil {
 			return err
 		}
-	} else if errDocker := common.CheckPodman(); errDocker == nil {
+	} else if errPodman := common.CheckPodman(); errPodman == nil {
 		if err := runSWFProjectDevMode(common.Podman, cfg); err != nil {
 			return err
 		}

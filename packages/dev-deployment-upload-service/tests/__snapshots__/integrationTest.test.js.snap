@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test built images individually buildtime install 1`] = `
+"200: Successfully extracted 'test.zip' to '/tmp/unzip-at'.
+"
+`;
+
+exports[`Test built images individually buildtime install 2`] = `
+"[dev-deployment-upload-service] ✅ Created directory '/tmp/unzip-at'.
+[dev-deployment-upload-service] ℹ️  Starting HTTP server...
+[dev-deployment-upload-service] ℹ️  Running at port 8091.
+[dev-deployment-upload-service] ℹ️  The uploaded zip will be extracted to /tmp/unzip-at.
+[dev-deployment-upload-service] ℹ️  The root path is set to /.
+[dev-deployment-upload-service] ℹ️  Waiting for upload to arrive...
+[dev-deployment-upload-service] --------------------------------------------------------
+[dev-deployment-upload-service] ℹ️  Upload arrived...
+[dev-deployment-upload-service] ℹ️  Uploaded File: test.zip
+[dev-deployment-upload-service] ℹ️  File Size: 420
+[dev-deployment-upload-service] ℹ️  MIME Header: map[Content-Disposition:[form-data; name=\\"myFile\\"; filename=\\"test.zip\\"] Content-Type:[application/octet-stream]]
+[dev-deployment-upload-service] ✅ Wrote '/tmp/unzip-at/test.txt'...
+[dev-deployment-upload-service] ✅ Wrote '/tmp/unzip-at/testdir/file.md'...
+[dev-deployment-upload-service] ✅ Successfully extracted 'test.zip' to '/tmp/unzip-at'.
+[dev-deployment-upload-service] ℹ️  Shutting down HTTP server...
+[dev-deployment-upload-service] ✅ Shutdown completed successfully.
+ |-unzip-at
+ | |-test.txt
+ | |-testdir
+ | | |-file.md
+Done!
+"
+`;
+
+exports[`Test built images individually runtime install 1`] = `
+"200: Successfully extracted 'test.zip' to '/tmp/unzip-at'.
+"
+`;
+
+exports[`Test built images individually runtime install 2`] = `
+"Downloading <ddus-fileserver-ip>:8090/apache/incubator-kie-tools/releases/download/0.0.0/dev-deployment-upload-service-linux-amd64-0.0.0.tar.gz
+Verifying checksum... Done.
+Preparing to install dev-deployment-upload-service-linux-amd64 into /usr/local/bin
+dev-deployment-upload-service installed into /usr/local/bin/dev-deployment-upload-service.
+[dev-deployment-upload-service] ✅ Created directory '/tmp/unzip-at'.
+[dev-deployment-upload-service] ℹ️  Starting HTTP server...
+[dev-deployment-upload-service] ℹ️  Running at port 8092.
+[dev-deployment-upload-service] ℹ️  The uploaded zip will be extracted to /tmp/unzip-at.
+[dev-deployment-upload-service] ℹ️  The root path is set to /.
+[dev-deployment-upload-service] ℹ️  Waiting for upload to arrive...
+[dev-deployment-upload-service] --------------------------------------------------------
+[dev-deployment-upload-service] ℹ️  Upload arrived...
+[dev-deployment-upload-service] ℹ️  Uploaded File: test.zip
+[dev-deployment-upload-service] ℹ️  File Size: 420
+[dev-deployment-upload-service] ℹ️  MIME Header: map[Content-Disposition:[form-data; name=\\"myFile\\"; filename=\\"test.zip\\"] Content-Type:[application/octet-stream]]
+[dev-deployment-upload-service] ✅ Wrote '/tmp/unzip-at/test.txt'...
+[dev-deployment-upload-service] ✅ Wrote '/tmp/unzip-at/testdir/file.md'...
+[dev-deployment-upload-service] ✅ Successfully extracted 'test.zip' to '/tmp/unzip-at'.
+[dev-deployment-upload-service] ℹ️  Shutting down HTTP server...
+[dev-deployment-upload-service] ✅ Shutdown completed successfully.
+ |-unzip-at
+ | |-test.txt
+ | |-testdir
+ | | |-file.md
+Done!
+"
+`;

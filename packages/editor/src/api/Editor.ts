@@ -37,7 +37,7 @@ export interface Editor extends EditorApi {
  * Editor component API. Basic Editor feature definitions.
  */
 export interface EditorApi {
-  setContent(path: string, content: string): Promise<void>;
+  setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void>;
   getContent(): Promise<string>;
   getPreview(): Promise<string | undefined>;
   undo(): Promise<void>;

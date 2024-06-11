@@ -34,14 +34,14 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElem
 
 public class WaitUtils {
 
-    private WebDriver driver;
+    private final WebDriver driver;
 
     public WaitUtils(final WebDriver driver) {
         this.driver = driver;
     }
 
     private WebDriverWait waitOperation() {
-        return new WebDriverWait(driver, Duration.ofSeconds(10).getSeconds());
+        return new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
     public WebElement waitUntilElementIsVisible(final DMNDesignerLocator elementLocator,

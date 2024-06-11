@@ -47,30 +47,36 @@ import { AuthSession, AuthSessionStatus } from "./AuthSessionApi";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
 import { useDevDeployments } from "../devDeployments/DevDeploymentsContext";
-import { KieSandboxDeployedModel } from "../devDeployments/services/types";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { KieSandboxDeployment } from "../devDeployments/services/types";
 
 export function AuthSessionsList(props: {}) {
-  const { authSessions } = useAuthSessions();
+  const { authSessions, authSessionStatus } = useAuthSessions();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const devDeployments = useDevDeployments();
-  const [devDeploymentsUsages, setDevDeploymentsUsages] = useState(new Map<string, KieSandboxDeployedModel[]>());
+  const [devDeploymentsUsages, setDevDeploymentsUsages] = useState(new Map<string, KieSandboxDeployment[]>());
 
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
         [...authSessions.values()].map((authSession) => {
-          if (authSession.type === "openshift" || authSession.type === "kubernetes") {
-            devDeployments.loadDeployments({ authSession }).then((deployments) => {
-              if (canceled.get()) {
-                return;
-              }
-              setDevDeploymentsUsages((prev) => new Map([...prev, [authSession.id, deployments]]));
-            });
+          if (
+            (authSession.type === "openshift" || authSession.type === "kubernetes") &&
+            authSessionStatus.get(authSession.id) === AuthSessionStatus.VALID
+          ) {
+            devDeployments
+              .loadDevDeployments({ authSession })
+              .then((deployments) => {
+                if (canceled.get()) {
+                  return;
+                }
+                setDevDeploymentsUsages((prev) => new Map([...prev, [authSession.id, deployments]]));
+              })
+              .catch((e) => console.error(e));
           }
         });
       },
-      [authSessions, devDeployments]
+      [authSessionStatus, authSessions, devDeployments]
     )
   );
 
@@ -123,7 +129,7 @@ export function AuthSessionsList(props: {}) {
 
 function AuthSessionCard(props: {
   authSession: AuthSession;
-  usages: WorkspaceDescriptor[] | KieSandboxDeployedModel[] | undefined;
+  usages: WorkspaceDescriptor[] | KieSandboxDeployment[] | undefined;
 }) {
   const authSessionsDispatch = useAuthSessionsDispatch();
   const [isExpanded, setExpanded] = useState(false);
@@ -180,7 +186,7 @@ function AuthSessionCard(props: {
 
 export function AuthSessionDescriptionList(props: {
   authSession: AuthSession;
-  usages?: WorkspaceDescriptor[] | KieSandboxDeployedModel[];
+  usages?: WorkspaceDescriptor[] | KieSandboxDeployment[];
 }) {
   return (
     <>

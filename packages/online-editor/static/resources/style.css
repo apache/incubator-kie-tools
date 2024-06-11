@@ -244,14 +244,13 @@
 
 .kogito--editor__drawer-content-panel {
   position: relative;
-  overflow: hidden;
   z-index: 1;
   max-height: calc(100vh - 171px);
 }
 
 .kogito--editor__dmn-runner {
   display: flex;
-  height: calc(100vh - 171px);
+  height: 100%;
 }
 
 .kogito--editor__dmn-runner-content {
@@ -261,8 +260,6 @@
 .kogito--editor__dmn-runner-content-page {
   flex-grow: 0;
   flex-shrink: 0;
-  overflow: hidden;
-  max-height: calc(100vh - 171px);
 }
 
 @media screen and (min-width: 1200px) {
@@ -715,4 +712,10 @@ section.kie-tools--settings-tab {
 .kie-sandbox--copy-command-block input {
   font-family: var(--pf-global--FontFamily--monospace);
   font-size: revert;
+}
+
+#new-dmn-editor-dropdown-toggle {
+  padding-left: 0;
+  padding-top: 0;
+  padding-bottom: 0;
 }

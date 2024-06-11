@@ -23,10 +23,10 @@ package org.kie.workbench.common.stunner.core.client.api;
 import java.lang.annotation.Annotation;
 import java.util.Iterator;
 
-import io.crysknife.client.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.core.profile.Profile;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;

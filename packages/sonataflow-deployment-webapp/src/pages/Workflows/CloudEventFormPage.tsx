@@ -25,16 +25,17 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import React, { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router";
-import { CloudEventRequest, KOGITO_PROCESS_REFERENCE_ID } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { CloudEventRequest } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
-import { CloudEventForm } from "@kie-tools/runtime-tools-enveloped-components/dist/cloudEventForm/envelope/components/CloudEventForm/CloudEventForm";
+import { CloudEventForm } from "@kie-tools/runtime-tools-swf-enveloped-components/dist/cloudEventForm/envelope/components/CloudEventForm/CloudEventForm";
 import { useOpenApi } from "../../context/OpenApiContext";
 import { CloudEventFormGatewayApiImpl } from "../../impl/CloudEventFormGatewayApiImpl";
 import { routes } from "../../routes";
 import { BasePage } from "../BasePage";
 import { ErrorKind, ErrorPage } from "../ErrorPage";
-import { CloudEventFormDefaultValues } from "@kie-tools/runtime-tools-enveloped-components/dist/cloudEventForm";
-import { CloudEventFormDriver } from "@kie-tools/runtime-tools-enveloped-components/dist/cloudEventForm/api/CloudEventFormDriver";
+import { CloudEventFormDefaultValues } from "@kie-tools/runtime-tools-swf-enveloped-components/dist/cloudEventForm";
+import { CloudEventFormDriver } from "@kie-tools/runtime-tools-swf-enveloped-components/dist/cloudEventForm/api/CloudEventFormDriver";
+import { KOGITO_PROCESS_REFERENCE_ID } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 const defaultValues: CloudEventFormDefaultValues = {
   instanceId: "",
@@ -158,7 +159,11 @@ export function CloudEventFormPage() {
                 </Title>
               </EmptyState>
             ) : (
-              <CloudEventForm driver={driver} defaultValues={defaultValues} />
+              <CloudEventForm
+                driver={driver}
+                defaultValues={defaultValues}
+                serviceUrl={window.location.href.split("/#")[0]}
+              />
             )}
           </CardBody>
         </Card>

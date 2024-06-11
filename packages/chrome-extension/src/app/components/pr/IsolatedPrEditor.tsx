@@ -45,7 +45,6 @@ export interface PrInfo {
   targetGitRef: string;
   org: string;
   gitRef: string;
-  commitSHA: string;
 }
 
 export function IsolatedPrEditor(props: {
@@ -65,8 +64,8 @@ export function IsolatedPrEditor(props: {
   const [fileStatusOnPr, setFileStatusOnPr] = useState(FileStatusOnPr.UNKNOWN);
 
   const { isolatedEditorRef } = useIsolatedEditorRef();
-  const originalFilePath = useMemo(() => getOriginalFilePath(props.unprocessedFilePath), []);
-  const modifiedFilePath = useMemo(() => getModifiedFilePath(props.unprocessedFilePath), []);
+  const originalFilePath = useMemo(() => getOriginalFilePath(props.unprocessedFilePath), [props.unprocessedFilePath]);
+  const modifiedFilePath = useMemo(() => getModifiedFilePath(props.unprocessedFilePath), [props.unprocessedFilePath]);
 
   useIsolatedEditorTogglingEffect(
     textMode,
@@ -74,9 +73,13 @@ export function IsolatedPrEditor(props: {
     props.githubTextEditorToReplace
   );
 
-  useInitialAsyncCallEffect(() => {
-    return discoverFileStatusOnPr(githubApi.octokit(), props.prInfo, originalFilePath, modifiedFilePath);
-  }, setFileStatusOnPr);
+  useInitialAsyncCallEffect(
+    useCallback(
+      () => discoverFileStatusOnPr(githubApi.octokit(), props.prInfo, originalFilePath, modifiedFilePath),
+      [githubApi, props.prInfo, originalFilePath, modifiedFilePath]
+    ),
+    setFileStatusOnPr
+  );
 
   const closeDiagram = useCallback(() => {
     setTextMode(true);
@@ -92,7 +95,7 @@ export function IsolatedPrEditor(props: {
     return showOriginal || fileStatusOnPr === FileStatusOnPr.DELETED
       ? () => getOriginalFileContents(githubApi.octokit(), props.prInfo, originalFilePath)
       : () => getModifiedFileContents(githubApi.octokit(), props.prInfo, modifiedFilePath);
-  }, [showOriginal, fileStatusOnPr, originalFilePath, modifiedFilePath, githubApi.octokit]);
+  }, [showOriginal, fileStatusOnPr, githubApi, props.prInfo, originalFilePath, modifiedFilePath]);
 
   const shouldAddLinkToOriginalFile = useMemo(() => {
     return fileStatusOnPr === FileStatusOnPr.CHANGED || fileStatusOnPr === FileStatusOnPr.DELETED;
@@ -114,7 +117,14 @@ export function IsolatedPrEditor(props: {
           gitref: props.prInfo.gitRef,
           repo: props.prInfo.repo,
         };
-  }, [showOriginal]);
+  }, [
+    props.prInfo.gitRef,
+    props.prInfo.org,
+    props.prInfo.repo,
+    props.prInfo.targetGitRef,
+    props.prInfo.targetOrg,
+    showOriginal,
+  ]);
 
   const onEditorReady = useCallback(() => {
     setEditorReady(true);
@@ -284,19 +294,11 @@ function iframeContainer(id: string, container: HTMLElement) {
 }
 
 function getModifiedFileContents(octokit: Octokit, prInfo: PrInfo, modifiedFilePath: string) {
-  return fetchFile(octokit, prInfo.org, prInfo.repo, prInfo.gitRef, modifiedFilePath, undefined, prInfo.commitSHA);
+  return fetchFile(octokit, prInfo.org, prInfo.repo, prInfo.gitRef, modifiedFilePath, undefined);
 }
 
 function getOriginalFileContents(octokit: Octokit, prInfo: PrInfo, originalFilePath: string) {
-  return fetchFile(
-    octokit,
-    prInfo.targetOrg,
-    prInfo.repo,
-    prInfo.targetGitRef,
-    originalFilePath,
-    undefined,
-    prInfo.commitSHA
-  );
+  return fetchFile(octokit, prInfo.targetOrg, prInfo.repo, prInfo.targetGitRef, originalFilePath, undefined);
 }
 
 function viewOriginalFileHref(prInfo: PrInfo, originalFilePath: string) {

@@ -19,5 +19,5 @@
 
 export type YardFile = {
   content: string;
-  path: string;
+  normalizedPosixPathRelativeToTheWorkspaceRoot: string;
 };

@@ -42,8 +42,7 @@ test.describe("Sample", () => {
       await page.getByRole("button", { name: "Try sample" }).nth(1).click();
       await expect(page.getByRole("button", { name: "Decision Edit file name" })).toBeAttached();
       await expect(page.getByRole("button", { name: "Decision Edit file name" })).toContainText("Sample");
-      await kieSandbox.isEditorLoaded();
-      await expect(kieSandbox.getEditor().getByRole("button", { name: "DMN Input Data" })).toBeAttached();
+      await expect(kieSandbox.getEditor().getByText("Loan Pre-Qualification")).toBeAttached();
       await expect(page).toHaveScreenshot("sample-dmn.png");
     });
 
@@ -57,6 +56,6 @@ test.describe("Sample", () => {
   });
 
   test.describe("Editor", () => {
-    test.skip(true, "https://github.com/kiegroup/kie-issues/issues/547");
+    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/547");
   });
 });

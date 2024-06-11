@@ -21,24 +21,34 @@ package command
 
 import (
 	"fmt"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
-	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
 	"os"
 	"path/filepath"
+
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
+	apimetadata "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 )
 
 type DeployUndeployCmdConfig struct {
-	NameSpace                 string
-	KubectlContext            string
-	SonataFlowFile            string
-	ManifestPath              string
-	TempDir                   string
-	ApplicationPropertiesPath string
-	SupportFileFolder         string
-	DefaultDashboardsFolder   string
-	SupportFilesPath          []string
-	DashboardsPath            []string
+	EmptyNameSpace             bool
+	NameSpace                  string
+	KubectlContext             string
+	SonataFlowFile             string
+	CustomGeneratedManifestDir string
+	TempDir                    string
+	ApplicationPropertiesPath  string
+	SubflowsDir                string
+	SpecsDir                   string
+	SchemasDir                 string
+	CustomManifestsFileDir     string
+	DefaultDashboardsFolder    string
+	Profile                    string
+	Image                      string
+	SchemasFilesPath           []string
+	SpecsFilesPath             []string
+	SubFlowsFilesPath          []string
+	DashboardsPath             []string
 }
 
 func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
@@ -75,21 +85,37 @@ func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
 }
 
 func generateManifests(cfg *DeployUndeployCmdConfig) error {
+
+	workflowExtensionsType := []string{metadata.YAMLSWExtension, metadata.YMLSWExtension, metadata.JSONSWExtension}
+
 	fmt.Println("\n🛠️  Generating your manifests...")
+
 	fmt.Println("🔍 Looking for your SonataFlow files...")
-	if file, err := findSonataFlowFile(); err != nil {
+	if file, err := findSonataFlowFile(workflowExtensionsType); err != nil {
 		return err
 	} else {
 		cfg.SonataFlowFile = file
 	}
 	fmt.Printf(" - ✅ SonataFlow file found: %s\n", cfg.SonataFlowFile)
 
-	fmt.Println("🔍 Looking for your configuration support files...")
+	fmt.Println("🔍 Looking for your SonataFlow sub flows...")
+	files, err := common.FindFilesWithExtensions(cfg.SubflowsDir, workflowExtensionsType)
+	if err != nil {
+		return fmt.Errorf("❌ ERROR: failed to get subflows directory: %w", err)
+	}
+	cfg.SubFlowsFilesPath = files
+	for _, file := range cfg.SubFlowsFilesPath {
+		fmt.Printf(" - ✅ SonataFlow subflows found: %s\n", file)
+	}
+
+	fmt.Println("🔍 Looking for your workflow support files...")
 
 	dir, err := os.Getwd()
 	if err != nil {
 		return fmt.Errorf("❌ ERROR: failed to get current directory: %w", err)
 	}
+
+	fmt.Println("🔍 Looking for properties files...")
 
 	applicationPropertiesPath := findApplicationPropertiesPath(dir)
 	if applicationPropertiesPath != "" {
@@ -97,20 +123,31 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 		fmt.Printf(" - ✅ Properties file found: %s\n", cfg.ApplicationPropertiesPath)
 	}
 
-	supportFileExtensions := []string{".json", ".yaml", ".yml"}
+	supportFileExtensions := []string{metadata.JSONExtension, metadata.YAMLExtension, metadata.YMLExtension}
 
-	files, err := common.FindFilesWithExtensions(cfg.SupportFileFolder, supportFileExtensions)
+	fmt.Println("🔍 Looking for specs files...")
+	files, err = common.FindFilesWithExtensions(cfg.SpecsDir, supportFileExtensions)
 	if err != nil {
 		return fmt.Errorf("❌ ERROR: failed to get supportFiles directory: %w", err)
 	}
-	cfg.SupportFilesPath = files
-	for _, file := range cfg.SupportFilesPath {
-		fmt.Printf(" - ✅ Support file found: %s\n", file)
+	cfg.SpecsFilesPath = files
+	for _, file := range cfg.SpecsFilesPath {
+		fmt.Printf(" - ✅ Specs file found: %s\n", file)
+	}
+
+	fmt.Println("🔍 Looking for schema files...")
+	files, err = common.FindFilesWithExtensions(cfg.SchemasDir, supportFileExtensions)
+	if err != nil {
+		return fmt.Errorf("❌ ERROR: failed to get supportFiles directory: %w", err)
+	}
+	cfg.SchemasFilesPath = files
+	for _, file := range cfg.SchemasFilesPath {
+		fmt.Printf(" - ✅ Schemas file found: %s\n", file)
 	}
 
 	fmt.Println("🔍 Looking for your dashboard files...")
 
-	dashboardExtensions := []string{".yaml", ".yml"}
+	dashboardExtensions := []string{metadata.YAMLExtension, metadata.YMLExtension}
 
 	files, err = common.FindFilesWithExtensions(cfg.DefaultDashboardsFolder, dashboardExtensions)
 	if err != nil {
@@ -137,12 +174,28 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 		handler.WithAppProperties(appIO)
 	}
 
-	for _, supportFile := range cfg.SupportFilesPath {
+	for _, subflow := range cfg.SubFlowsFilesPath {
+		specIO, err := common.MustGetFile(subflow)
+		if err != nil {
+			return err
+		}
+		handler.AddResourceAt(filepath.Base(subflow), filepath.Base(cfg.SubflowsDir), specIO)
+	}
+
+	for _, supportFile := range cfg.SchemasFilesPath {
 		specIO, err := common.MustGetFile(supportFile)
 		if err != nil {
 			return err
 		}
-		handler.AddResource(filepath.Base(supportFile), specIO)
+		handler.AddResourceAt(filepath.Base(supportFile), filepath.Base(cfg.SchemasDir), specIO)
+	}
+
+	for _, supportFile := range cfg.SpecsFilesPath {
+		specIO, err := common.MustGetFile(supportFile)
+		if err != nil {
+			return err
+		}
+		handler.AddResourceAt(filepath.Base(supportFile), filepath.Base(cfg.SpecsDir), specIO)
 	}
 
 	for _, dashboardFile := range cfg.DashboardsPath {
@@ -153,12 +206,20 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 		handler.AddResourceAt(filepath.Base(dashboardFile), metadata.DashboardsDefaultDirName, specIO)
 	}
 
+	if len(cfg.Profile) > 0 {
+		handler.Profile(apimetadata.ProfileType(cfg.Profile))
+	}
+
 	_, err = handler.AsObjects()
 	if err != nil {
 		return err
 	}
 
-	err = handler.SaveAsKubernetesManifests(cfg.ManifestPath)
+	if cfg.Image != "" {
+		 handler.Image(cfg.Image)
+	}
+
+	err = handler.SaveAsKubernetesManifests(cfg.CustomGeneratedManifestDir)
 	if err != nil {
 		return err
 	}
@@ -177,8 +238,7 @@ func findApplicationPropertiesPath(directoryPath string) string {
 	return filePath
 }
 
-func findSonataFlowFile() (string, error) {
-	extensions := []string{metadata.YAMLExtension, metadata.YAMLExtensionShort, metadata.JSONExtension}
+func findSonataFlowFile(extensions []string) (string, error) {
 
 	dir, err := os.Getwd()
 	if err != nil {
@@ -203,17 +263,17 @@ func findSonataFlowFile() (string, error) {
 
 func setupConfigManifestPath(cfg *DeployUndeployCmdConfig) error {
 
-	if len(cfg.ManifestPath) == 0 {
+	if len(cfg.CustomGeneratedManifestDir) == 0 {
 		tempDir, err := os.MkdirTemp("", "manifests")
 		if err != nil {
 			return fmt.Errorf("❌ ERROR: failed to create temporary directory: %w", err)
 		}
-		cfg.ManifestPath = tempDir
+		cfg.CustomGeneratedManifestDir = tempDir
 		cfg.TempDir = tempDir
 	} else {
-		_, err := os.Stat(cfg.ManifestPath)
+		_, err := os.Stat(cfg.CustomGeneratedManifestDir)
 		if err != nil {
-			return fmt.Errorf("❌ ERROR: cannot find or open directory %s : %w", cfg.ManifestPath, err)
+			return fmt.Errorf("❌ ERROR: cannot find or open directory %s : %w", cfg.CustomGeneratedManifestDir, err)
 		}
 	}
 	return nil

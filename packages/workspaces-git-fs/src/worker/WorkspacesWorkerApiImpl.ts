@@ -339,9 +339,16 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
   public async kieSandboxWorkspacesStorage_prepareZip(args: {
     workspaceId: string;
     onlyExtensions?: string[];
+    globPattern?: string;
   }): Promise<Blob> {
     return this.args.services.workspaceFsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs, schema }) => {
-      return this.args.services.workspaceService.prepareZip(fs, schema, args.workspaceId, args.onlyExtensions);
+      return this.args.services.workspaceService.prepareZip(
+        fs,
+        schema,
+        args.workspaceId,
+        args.onlyExtensions,
+        args.globPattern
+      );
     });
   }
 

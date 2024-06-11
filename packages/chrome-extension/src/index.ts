@@ -19,18 +19,19 @@
 
 import { GitHubPageType } from "./app/github/GitHubPageType";
 import { renderSingleEditorApp } from "./app/components/single/singleEditorEdit";
-import { iframeContainer, renderSingleEditorReadonlyApp } from "./app/components/single/singleEditorView";
+import { FileInfo, iframeContainer, renderSingleEditorReadonlyApp } from "./app/components/single/singleEditorView";
 import { renderPrEditorsApp } from "./app/components/pr/prEditors";
 import { mainContainer, runAfterUriChange } from "./app/utils";
 import { Dependencies } from "./app/Dependencies";
 import * as ReactDOM from "react-dom";
-import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import "../resources/style.css";
 import { Logger } from "./Logger";
 import { Globals } from "./app/components/common/Main";
 import { ExternalEditorManager } from "./ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./app/components/common/ChromeResourceContentService";
 import { renderOpenRepoInExternalEditorApp } from "./app/components/openRepoInExternalEditor/openRepoInExternalEditorApp";
+import { StateControl } from "@kie-tools-core/editor/dist/channel";
 
 /**
  * Starts a Kogito extension.
@@ -40,6 +41,7 @@ import { renderOpenRepoInExternalEditorApp } from "./app/components/openRepoInEx
  *  @param args.githubAuthTokenCookieName The name of the cookie that will hold a GitHub PAT for your extension.
  *  @param args.editorEnvelopeLocator The file extension mapping to the provided Editors.
  *  @param args.externalEditorManager The implementation of ExternalEditorManager for your extension.
+ *  @param args.customChannelApiImpl Optional channelApi implementation.
  */
 export function startExtension(args: {
   name: string;
@@ -47,12 +49,21 @@ export function startExtension(args: {
   githubAuthTokenCookieName: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
   externalEditorManager?: ExternalEditorManager;
+  getCustomChannelApiImpl?: (
+    pageType: GitHubPageType,
+    fileInfo: FileInfo,
+    stateControl: StateControl
+  ) => KogitoEditorChannelApi | undefined;
 }) {
   const logger = new Logger(args.name);
   const resourceContentServiceFactory = new ResourceContentServiceFactory();
   const dependencies = new Dependencies();
 
-  const runInit = () =>
+  const runInit = () => {
+    const pageType = discoverCurrentGitHubPageType();
+    const fileInfo = extractFileInfoFromUrl();
+    const stateControl = new StateControl();
+
     init({
       id: chrome.runtime.id,
       logger: logger,
@@ -62,7 +73,10 @@ export function startExtension(args: {
       editorEnvelopeLocator: args.editorEnvelopeLocator,
       resourceContentServiceFactory: resourceContentServiceFactory,
       externalEditorManager: args.externalEditorManager,
+      stateControl,
+      customChannelApiImpl: args.getCustomChannelApiImpl?.(pageType, fileInfo, stateControl),
     });
+  };
 
   runAfterUriChange(logger, () => setTimeout(runInit, 0));
   setTimeout(runInit, 0);
@@ -77,31 +91,74 @@ function init(globals: Globals) {
   const fileInfo = extractFileInfoFromUrl();
   const pageType = discoverCurrentGitHubPageType();
 
-  if (pageType === GitHubPageType.ANY) {
-    globals.logger.log(`This GitHub page is not supported.`);
+  if (!globals.dependencies.all.octiconMarkGitHub() || pageType === GitHubPageType.NOT_SUPPORTED) {
+    globals.logger.warn(
+      `This is not supported GitHub web page. '${window.location.origin}${window.location.pathname}'`
+    );
     return;
   }
 
   if (pageType === GitHubPageType.EDIT) {
     renderSingleEditorApp({ ...globals, fileInfo });
   } else if (pageType === GitHubPageType.VIEW) {
-    renderSingleEditorReadonlyApp({ ...globals, fileInfo });
-  } else if (pageType === GitHubPageType.PR_FILES_OR_COMMITS) {
-    renderPrEditorsApp({ ...globals });
-  } else if (pageType === GitHubPageType.PR_HOME) {
-    renderOpenRepoInExternalEditorApp({
-      ...globals,
-      pageType,
-      className: "btn btn-sm",
-      container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()!,
-    });
-  } else if (pageType === GitHubPageType.CAN_OPEN_REPO_IN_EXTERNAL_EDITOR) {
-    renderOpenRepoInExternalEditorApp({
-      ...globals,
-      pageType,
-      className: "btn ml-2 d-none d-md-block",
-      container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoFilesList()!,
-    });
+    if (!globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoFilesList()) {
+      globals.logger.warn(
+        "The extension stopped working for this asset view. Please be sure you explore the asset with the latest GitHub instance."
+      );
+    } else {
+      renderSingleEditorReadonlyApp({
+        ...globals,
+        pageType,
+        className: "btn ml-2 d-none d-md-block",
+        container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoFilesList()!,
+        fileInfo,
+      });
+    }
+  } else if (
+    pageType === GitHubPageType.PR_HOME ||
+    pageType === GitHubPageType.PR_FILES ||
+    pageType === GitHubPageType.PR_COMMITS
+  ) {
+    if (!globals.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()) {
+      globals.logger.warn(
+        "The extension stopped working for this pull request view. Please be sure you explore the pull request on the latest GitHub instance."
+      );
+    } else {
+      renderPrEditorsApp({
+        ...globals,
+        pageType,
+        className: "btn btn-sm",
+        container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()!,
+      });
+    }
+  } else if (pageType === GitHubPageType.REPO_HOME) {
+    if (!globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoHome()) {
+      globals.logger.warn(
+        "The extension stopped working for this repository view. Please be sure you explore the repository on the latest GitHub instance."
+      );
+    } else {
+      renderOpenRepoInExternalEditorApp({
+        ...globals,
+        pageType,
+        className: "btn btn-sm",
+        container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoHome()!,
+      });
+    }
+  } else if (pageType === GitHubPageType.CAN_NOT_BE_DETERMINED_FROM_URL) {
+    // if user uses [GITHUBINSTANCE_BASE_URL]/[ORG]/[REPO] we can not determine it from the url, but it may be still valid scenario for this chrome-extension
+    if (!globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoHome()) {
+      globals.logger.warn(
+        `The extension stopped working for this view '${window.location.origin}${window.location.pathname}'. Please be sure you explore repository, asset or pull request on the latest GitHub instance.`
+      );
+    } else {
+      // presence of the 'buttonContainerOnRepoHome' locator should mean, user is really on the repository home screen view
+      renderOpenRepoInExternalEditorApp({
+        ...globals,
+        pageType,
+        className: "btn btn-sm",
+        container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoHome()!,
+      });
+    }
   } else {
     throw new Error(`Unknown GitHubPageType ${pageType}`);
   }
@@ -157,25 +214,33 @@ export function discoverCurrentGitHubPageType() {
     return GitHubPageType.VIEW;
   }
 
-  const isOrgSlashRepo = window.location.pathname.split("/").length === 3;
+  const isOrgSlashRepoSlashTreeSlashName =
+    window.location.pathname.split("/tree/").length === 2 && !window.location.pathname.split("/tree/")[1].includes("/");
 
-  if (pathnameMatches(`/.*/.*/tree/.*`) || isOrgSlashRepo) {
-    return GitHubPageType.CAN_OPEN_REPO_IN_EXTERNAL_EDITOR;
+  if (isOrgSlashRepoSlashTreeSlashName) {
+    return GitHubPageType.REPO_HOME;
   }
 
   if (pathnameMatches(`.*/.*/pull/[0-9]+/files.*`)) {
-    return GitHubPageType.PR_FILES_OR_COMMITS;
+    return GitHubPageType.PR_FILES;
   }
 
   if (pathnameMatches(`.*/.*/pull/[0-9]+/commits.*`)) {
-    return GitHubPageType.PR_FILES_OR_COMMITS;
+    return GitHubPageType.PR_COMMITS;
   }
 
-  if (pathnameMatches(`.*/.*/pull/[0-9]+.*`)) {
+  if (pathnameMatches(`^.*/.*/pull/[0-9]+$`)) {
     return GitHubPageType.PR_HOME;
   }
 
-  return GitHubPageType.ANY;
+  if (["/tree/", "/pull/"].some((pathnamePart) => window.location.pathname.includes(pathnamePart))) {
+    // if pathanme containing one of these substrings and didn't match previous `if` statements, then it is not supperted by our extension
+    // .../tree/main/some/folders/only
+    // .../pull/1/checks
+    return GitHubPageType.NOT_SUPPORTED;
+  }
+
+  return GitHubPageType.CAN_NOT_BE_DETERMINED_FROM_URL;
 }
 
 export * from "./ExternalEditorManager";

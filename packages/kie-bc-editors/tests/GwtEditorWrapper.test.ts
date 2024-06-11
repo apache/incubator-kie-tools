@@ -19,8 +19,8 @@
 
 import { GwtEditorWrapper } from "@kie-tools/kie-bc-editors/dist/common/GwtEditorWrapper";
 import { GwtStateControlService } from "@kie-tools/kie-bc-editors/dist/common/gwtStateControl";
-import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
-import { messageBusClientApiMock } from "@kie-tools-core/envelope-bus/dist-tests/common";
+import { EditorTheme, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
+import { messageBusClientApiMock } from "@kie-tools-core/envelope-bus/dist-tests/messageBusClientApiMock";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "@kie-tools/kie-bc-editors/dist/common/i18n";
 
@@ -33,6 +33,7 @@ const MockEditor = jest.fn(() => ({
   getPreview: jest.fn(),
   validate: jest.fn(),
   selectStateByName: jest.fn(() => Promise.resolve()),
+  applyTheme: jest.fn(() => Promise.resolve()),
 }));
 
 const mockEditor = new MockEditor();
@@ -64,6 +65,16 @@ describe("GwtEditorWrapper", () => {
   test("selectStateByName", async () => {
     await wrapper.selectStateByName("stateName");
     expect(mockEditor.selectStateByName).toHaveBeenCalledWith("stateName");
+  });
+
+  test("setTheme", async () => {
+    await wrapper.setTheme(EditorTheme.DARK);
+    expect(mockEditor.applyTheme).toHaveBeenCalledWith("dark");
+  });
+
+  test("setTheme", async () => {
+    await wrapper.setTheme(EditorTheme.LIGHT);
+    expect(mockEditor.applyTheme).toHaveBeenCalledWith("light");
   });
 
   test("af_onOpen removes header", () => {

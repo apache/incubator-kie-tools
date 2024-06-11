@@ -6,29 +6,29 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 package quarkus
 
 import (
 	"fmt"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
-	"github.com/ory/viper"
-	"github.com/spf13/cobra"
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
+
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
+	"github.com/ory/viper"
+	"github.com/spf13/cobra"
 )
 
 func NewConvertCommand() *cobra.Command {
@@ -76,15 +76,10 @@ func loadConvertCmdConfig() (cfg CreateQuarkusProjectConfig, err error) {
 	quarkusVersion := viper.GetString("quarkus-version")
 
 	cfg = CreateQuarkusProjectConfig{
-		Extensions: fmt.Sprintf("%s,%s,%s,%s,%s,%s,%s,%s,%s",
-			metadata.KogitoQuarkusServerlessWorkflowExtension,
-			metadata.KogitoAddonsQuarkusKnativeEventingExtension,
+		Extensions: fmt.Sprintf("%s,%s,%s,%s",
 			metadata.QuarkusKubernetesExtension,
 			metadata.QuarkusResteasyJacksonExtension,
-			metadata.KogitoQuarkusServerlessWorkflowDevUi,
-			metadata.KogitoAddonsQuarkusSourceFiles,
 			metadata.SmallryeHealth,
-			metadata.KogitoDataIndexInMemory,
 			viper.GetString("extension"),
 		),
 		DependenciesVersion: metadata.DependenciesVersion{
@@ -157,45 +152,29 @@ func runConvertProject(cfg CreateQuarkusProjectConfig) (err error) {
 func moveSWFFilesToQuarkusProject(cfg CreateQuarkusProjectConfig, rootFolder string) error {
 	targetFolder := filepath.Join(rootFolder, cfg.ProjectName+"/src/main/resources")
 
-	// ensure target directory exists
 	err := os.MkdirAll(targetFolder, os.ModePerm)
 	if err != nil {
 		return err
 	}
 
-	files, err := os.ReadDir(rootFolder)
+	items, err := os.ReadDir(rootFolder)
 	if err != nil {
 		return err
 	}
 
-	for _, file := range files {
-		// Move *.sw.yaml, *.sw.json, application.properties to target
-		if strings.HasSuffix(file.Name(), ".sw.yaml") || strings.HasSuffix(file.Name(), ".sw.json") || file.Name() == "application.properties" {
-			oldPath := filepath.Join(rootFolder, file.Name())
-			newPath := filepath.Join(targetFolder, file.Name())
-			if err := os.Rename(oldPath, newPath); err != nil {
-				return fmt.Errorf("error moving file %s: %w", oldPath, err)
-			}
+	for _, item := range items {
+		if item.IsDir() && item.Name() == cfg.ProjectName {
+			continue
 		}
 
-		// Move /specs directory to target
-		if file.IsDir() && file.Name() == "specs" {
-			oldPath := filepath.Join(rootFolder, file.Name())
-			newPath := filepath.Join(targetFolder, file.Name())
-			if err := os.Rename(oldPath, newPath); err != nil {
-				return fmt.Errorf("error moving directory %s: %w", oldPath, err)
-			}
-		}
+		srcPath := filepath.Join(rootFolder, item.Name())
+		dstPath := filepath.Join(targetFolder, item.Name())
 
-		// Move /dashboards directory to target
-		if file.IsDir() && file.Name() == metadata.DashboardsDefaultDirName {
-			oldPath := filepath.Join(rootFolder, file.Name())
-			newPath := filepath.Join(targetFolder, file.Name())
-			if err := os.Rename(oldPath, newPath); err != nil {
-				return fmt.Errorf("error moving directory %s: %w", oldPath, err)
-			}
+		if err := os.Rename(srcPath, dstPath); err != nil {
+			return fmt.Errorf("error moving %s: %w", srcPath, err)
 		}
 	}
+
 	return nil
 }
 

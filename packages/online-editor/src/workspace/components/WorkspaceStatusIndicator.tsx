@@ -32,7 +32,7 @@ import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-cir
 import { useNavigationBlocker, useRoutes } from "../../navigation/Hooks";
 import { matchPath } from "react-router";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { switchExpression } from "../../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { GitStatusIndicatorActions, GitStatusProps } from "./GitStatusIndicatorActions";
 import { FileModificationStatus } from "@kie-tools-core/workspaces-git-fs/dist/services/GitService";

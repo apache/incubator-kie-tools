@@ -102,10 +102,10 @@ interface Props {
    * Delegation for NotificationsChannelApi.kogigotNotifications_setNotifications(path, notifications) to report all validation
    * notifications to the Channel that will replace existing notification for the path. Increases the
    * decoupling of the DashbuilderEditor from the Channel.
-   * @param path The path that references the Notification
+   * @param normalizedPosixPathRelativeToTheWorkspaceRoot The path that references the Notification
    * @param notifications List of Notifications
    */
-  setNotifications: (path: string, notifications: Notification[]) => void;
+  setNotifications: (normalizedPosixPathRelativeToTheWorkspaceRoot: string, notifications: Notification[]) => void;
 
   /**
    * ChannelType where the component is running.
@@ -116,7 +116,7 @@ interface Props {
 const UPDATE_TIME = 1000;
 
 export type DashbuilderEditorRef = {
-  setContent(path: string, content: string): Promise<void>;
+  setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void>;
   moveCursorToPosition(position: Position): void;
 };
 
@@ -144,11 +144,11 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
     forwardedRef,
     () => {
       return {
-        setContent: (path: string, newContent: string): Promise<void> => {
+        setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot: string, newContent: string): Promise<void> => {
           try {
             setInitialContent({
               originalContent: newContent,
-              path: path,
+              path: normalizedPosixPathRelativeToTheWorkspaceRoot,
             });
             return Promise.resolve();
           } catch (e) {

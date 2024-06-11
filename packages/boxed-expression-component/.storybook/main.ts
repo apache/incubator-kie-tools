@@ -17,10 +17,17 @@
  * under the License.
  */
 
-import { config as baseConfig } from "@kie-tools/storybook-base/main";
+import { baseConfig } from "@kie-tools/storybook-base/dist/config/baseConfig";
+import common from "@kie-tools-core/webpack-base/webpack.common.config";
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { env } from "../env";
+const buildEnv: any = env; // build-env is not typed
 
 const config = {
-  ...baseConfig,
+  ...baseConfig(buildEnv.webpack.dev, common(buildEnv.webpack)),
+  staticDirs: ["../stories/__assets__"],
 };
 
 export default config;

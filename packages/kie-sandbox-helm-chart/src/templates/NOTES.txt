@@ -1,0 +1,147 @@
+{{- if not .Values.global.ingressSource }}
+
+In order to get {{ .Release.Name }} running you need to run these commands:
+
+{{- if .Values.cors_proxy.ingress.enabled }}
+
+1. CORS Proxy available at:
+{{- range $host := .Values.cors_proxy.ingress.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.cors_proxy.ingress.tls }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
+  {{- end }}
+{{- end }}
+{{- else }}
+
+1. Run the following commands in a separate terminal to port-forward CORS Proxy component:
+{{- if contains "NodePort" .Values.cors_proxy.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "cors_proxy.fullname" .Subcharts.cors_proxy }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.cors_proxy.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "cors_proxy.fullname" .Subcharts.cors_proxy }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "cors_proxy.fullname" .Subcharts.cors_proxy }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo http://$SERVICE_IP:{{ .Values.cors_proxy.service.port }}
+{{- else if contains "ClusterIP" .Values.cors_proxy.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/component={{ .Values.cors_proxy.name }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "CORS Proxy URL: http://127.0.0.1:8081"
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8081:$CONTAINER_PORT
+{{- end }}
+{{- end }}
+
+{{- if .Values.extended_services.ingress.enabled }}
+
+2. Extended Services available at:
+{{- range $host := .Values.extended_services.ingress.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.extended_services.ingress.tls }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
+  {{- end }}
+{{- end }}
+{{- else }}
+
+2. Run the following commands in a separate terminal to port-forward Extendend Services component:
+{{- if contains "NodePort" .Values.extended_services.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "extended_services.fullname" .Subcharts.extended_services }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.extended_services.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "extended_services.fullname" .Subcharts.extended_services }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "extended_services.fullname" .Subcharts.extended_services }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo http://$SERVICE_IP:{{ .Values.extended_services.service.port }}
+{{- else if contains "ClusterIP" .Values.extended_services.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/component={{ .Values.extended_services.name }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Extended Services URL: http://127.0.0.1:21345"
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 21345:$CONTAINER_PORT
+{{- end }}
+{{- end }}
+
+{{- if .Values.kie_sandbox.ingress.enabled }}
+
+3. KIE Sandbox available at:
+{{- range $host := .Values.kie_sandbox.ingress.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.kie_sandbox.ingress.tls }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
+  {{- end }}
+{{- end }}
+{{- else }}
+
+3. Run the following commands in a separate terminal to port-forward Sanxbox component and get the application URL:
+{{- if contains "NodePort" .Values.kie_sandbox.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "kie_sandbox.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.kie_sandbox.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "kie_sandbox.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "kie_sandbox.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo http://$SERVICE_IP:{{ .Values.kie_sandbox.service.port }}
+{{- else if contains "ClusterIP" .Values.kie_sandbox.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/component={{ .Values.kie_sandbox.name }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "KIE Sandbox URL http://127.0.0.1:8080"
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:$CONTAINER_PORT
+{{- end }}
+{{- end }}
+
+{{- else if eq .Values.global.ingressSource "minikube" }}
+
+You may need to add the above hostnames to your /etc/hosts file, mapping them to your minikube ip.
+
+Run the following commands:
+  export MINIKUBE_IP=$(minikube ip)
+  echo "\n# Minikube KIE Sandbox Helm Chart hostnames" | sudo tee -a /etc/hosts
+{{- range $host := .Values.cors_proxy.ingress.hosts }}
+  {{- range .paths }}
+  echo "$MINIKUBE_IP {{ tpl $host.host $ }}" | sudo tee -a /etc/hosts
+  {{- end }}
+{{- end }}
+{{- range $host := .Values.extended_services.ingress.hosts }}
+  {{- range .paths }}
+  echo "$MINIKUBE_IP {{ tpl $host.host $ }}" | sudo tee -a /etc/hosts
+  {{- end }}
+{{- end }}
+{{- range $host := .Values.kie_sandbox.ingress.hosts }}
+  {{- range .paths }}
+  echo "$MINIKUBE_IP {{ tpl $host.host $ }}" | sudo tee -a /etc/hosts
+  {{- end }}
+{{- end }}
+
+{{- else if eq .Values.global.ingressSource "openshift" }}
+
+1. CORS Proxy available at:
+  http{{ if .Values.cors_proxy.openshiftRoute.tls }}s{{ end }}://{{ tpl .Values.cors_proxy.openshiftRoute.host . }}
+2. Extended Services available at:
+  http{{ if $.Values.extended_services.openshiftRoute.tls }}s{{ end }}://{{ tpl .Values.extended_services.openshiftRoute.host . }}
+3. KIE Sandbox available at:
+  http{{ if $.Values.kie_sandbox.openshiftRoute.tls }}s{{ end }}://{{ tpl .Values.kie_sandbox.openshiftRoute.host . }}
+
+{{- else }}
+{{- if .Values.cors_proxy.ingress.enabled }}
+1. CORS Proxy available at:
+{{- range $host := .Values.cors_proxy.ingress.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.cors_proxy.ingress.tls }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- if .Values.extended_services.ingress.enabled }}
+2. Extended Services available at:
+{{- range $host := .Values.extended_services.ingress.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.extended_services.ingress.tls }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- if .Values.kie_sandbox.ingress.enabled }}
+3. KIE Sandbox available at:
+{{- range $host := .Values.kie_sandbox.ingress.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.kie_sandbox.ingress.tls }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
+  {{- end }}
+{{- end }}
+{{- end }}
+
+{{- end }}

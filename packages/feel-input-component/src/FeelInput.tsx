@@ -31,7 +31,6 @@ import {
 
 import { FeelSyntacticSymbolNature, FeelVariables, ParsedExpression } from "@kie-tools/dmn-feel-antlr4-parser";
 import { Element } from "./themes/Element";
-import * as monaco from "monaco-editor";
 
 export const EXPRESSION_PROPERTIES_SEPARATOR = ".";
 
@@ -82,7 +81,9 @@ function getTokenTypeIndex(symbolType: FeelSyntacticSymbolNature) {
     default:
     case FeelSyntacticSymbolNature.LocalVariable:
     case FeelSyntacticSymbolNature.GlobalVariable:
-      return Element.InputDataVariable;
+      return Element.Variable;
+    case FeelSyntacticSymbolNature.DynamicVariable:
+      return Element.DynamicVariable;
     case FeelSyntacticSymbolNature.Unknown:
       return Element.UnknownVariable;
     case FeelSyntacticSymbolNature.Invocable:
@@ -135,6 +136,15 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
       return lastValidSymbol;
     }, []);
 
+    const getSymbolAtPosition = useCallback((currentParsedExpression: ParsedExpression, position: number) => {
+      for (const feelVariable of currentParsedExpression.feelVariables) {
+        if (feelVariable.startIndex < position && position <= feelVariable.startIndex + feelVariable.length) {
+          return feelVariable;
+        }
+      }
+      return undefined;
+    }, []);
+
     const getDefaultCompletionItems = useCallback(
       (
         suggestionProvider:
@@ -172,7 +182,7 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
 
     const completionItemProvider = useCallback(() => {
       return {
-        triggerCharacters: [" ", EXPRESSION_PROPERTIES_SEPARATOR],
+        triggerCharacters: [EXPRESSION_PROPERTIES_SEPARATOR],
         provideCompletionItems: (model: Monaco.editor.ITextModel, position: Monaco.Position) => {
           const completionItems = getDefaultCompletionItems(suggestionProvider, model, position);
           const variablesSuggestions = new Array<Monaco.languages.CompletionItem>();
@@ -182,11 +192,12 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
             const expression = model.getValue();
 
             const currentChar = expression.charAt(pos - 1);
-            if (currentChar === EXPRESSION_PROPERTIES_SEPARATOR) {
+            if (currentChar === EXPRESSION_PROPERTIES_SEPARATOR || currentChar === " ") {
               pos--;
             }
 
             const lastValidSymbol = getLastValidSymbolAtPosition(currentParsedExpression, pos);
+
             if (
               lastValidSymbol &&
               lastValidSymbol.feelSymbolNature !== FeelSyntacticSymbolNature.Unknown &&
@@ -198,16 +209,48 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
                   label: scopeSymbol.name,
                   insertText: scopeSymbol.name,
                   detail: scopeSymbol.type,
+                  range: {
+                    startLineNumber: lastValidSymbol.startLine + 1,
+                    endLineNumber: lastValidSymbol.endLine + 1,
+                    startColumn: lastValidSymbol.startIndex + lastValidSymbol.length + 2, // It is +2 because of the . (dot)
+                    endColumn: lastValidSymbol.startIndex + lastValidSymbol.length + 2 + scopeSymbol.name.length,
+                  },
                 } as Monaco.languages.CompletionItem);
               }
             } else {
+              const currentSymbol = getSymbolAtPosition(currentParsedExpression, pos);
               for (const scopeSymbol of currentParsedExpression.availableSymbols) {
-                variablesSuggestions.push({
-                  kind: Monaco.languages.CompletionItemKind.Variable,
-                  label: scopeSymbol.name,
-                  insertText: scopeSymbol.name,
-                  detail: scopeSymbol.type,
-                } as Monaco.languages.CompletionItem);
+                // Consider this scenario:
+                // 1. User typed: Tax In
+                // 2. Available symbols: [Tax Incoming, Tax Input, Tax InSomethingElse, Tax Out, Tax Output]
+                // 3. "Tax In" is an invalid symbol (unrecognized symbol)
+                // In this case, we want to show all symbols that starts with "Tax In"
+                if (currentSymbol && scopeSymbol.name.startsWith(currentSymbol.text)) {
+                  variablesSuggestions.push({
+                    kind: Monaco.languages.CompletionItemKind.Variable,
+                    label: scopeSymbol.name,
+                    insertText: scopeSymbol.name,
+                    detail: scopeSymbol.type,
+                    sortText: "1", // We want the variables to be at top of autocomplete
+                    // We want to replace the current symbol with the available scopeSymbol (Tax Incoming, for example)
+                    // Note: Monaco is NOT zero-indexed. It starts with 1 but FEEL parser is zero indexed,
+                    // that's why were incrementing 1 at each position.
+                    range: {
+                      startLineNumber: currentSymbol.startLine + 1,
+                      endLineNumber: currentSymbol.endLine + 1,
+                      startColumn: currentSymbol.startIndex + 1,
+                      endColumn: currentSymbol.startIndex + 1 + scopeSymbol.name.length,
+                    },
+                  } as Monaco.languages.CompletionItem);
+                } else {
+                  variablesSuggestions.push({
+                    kind: Monaco.languages.CompletionItemKind.Variable,
+                    label: scopeSymbol.name,
+                    insertText: scopeSymbol.name,
+                    detail: scopeSymbol.type,
+                    sortText: "2", // The others variables at second level
+                  } as Monaco.languages.CompletionItem);
+                }
               }
 
               variablesSuggestions.push(...completionItems);
@@ -221,7 +264,13 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
           };
         },
       };
-    }, [currentParsedExpression, getDefaultCompletionItems, getLastValidSymbolAtPosition, suggestionProvider]);
+    }, [
+      currentParsedExpression,
+      getDefaultCompletionItems,
+      getLastValidSymbolAtPosition,
+      getSymbolAtPosition,
+      suggestionProvider,
+    ]);
 
     useEffect(() => {
       if (!enabled) {
@@ -249,22 +298,60 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
 
             if (feelVariables) {
               const text = model.getValue();
-
-              let lastPosition = 0;
-              let offset = 0;
+              const contentByLines = model.getLinesContent();
+              let startOfPreviousToken = 0;
+              let previousLine = 0;
+              let lineOffset = 0;
+              let currentLine = 0;
               const parsedExpression = feelVariables.parser.parse(expressionId ?? "", text);
               setCurrentParsedExpression(parsedExpression);
-              for (const variable of parsedExpression.feelVariables) {
-                lastPosition = variable.startIndex;
 
-                tokenTypes.push(
-                  0, // lineIndex
-                  lastPosition - offset, // columnIndex (it's relative to the PREVIOUS token NOT to the start of the line)
-                  variable.length, // tokenLength
-                  getTokenTypeIndex(variable.feelSymbolNature), // token type
-                  0 // token modifier
-                );
-                offset = lastPosition;
+              for (const variable of parsedExpression.feelVariables) {
+                if (variable.startLine != currentLine) {
+                  lineOffset += contentByLines[currentLine].length + 1; // +1 = the line break
+                  currentLine = variable.startLine;
+                }
+                variable.startIndex -= lineOffset;
+              }
+
+              for (const variable of parsedExpression.feelVariables) {
+                if (previousLine != variable.startLine) {
+                  startOfPreviousToken = 0;
+                }
+                if (variable.startLine === variable.endLine) {
+                  tokenTypes.push(
+                    variable.startLine - previousLine, // lineIndex = relative to the PREVIOUS line
+                    variable.startIndex - startOfPreviousToken, // columnIndex = relative to the start of the PREVIOUS token NOT to the start of the line
+                    variable.length,
+                    getTokenTypeIndex(variable.feelSymbolNature),
+                    0 // token modifier = not used so we keep it 0
+                  );
+
+                  previousLine = variable.startLine;
+                  startOfPreviousToken = variable.startIndex;
+                } else {
+                  tokenTypes.push(
+                    variable.startLine - previousLine,
+                    variable.startIndex - startOfPreviousToken,
+                    variable.length,
+                    getTokenTypeIndex(variable.feelSymbolNature),
+                    0
+                  );
+
+                  const length =
+                    variable.length - (contentByLines[variable.startLine].length - variable.startIndex + 1); // +1 = the line break
+
+                  tokenTypes.push(
+                    variable.endLine - variable.startLine,
+                    0,
+                    length,
+                    getTokenTypeIndex(variable.feelSymbolNature),
+                    0
+                  );
+
+                  startOfPreviousToken = 0;
+                  previousLine = variable.endLine;
+                }
               }
             }
 

@@ -18,6 +18,7 @@
  */
 
 const { merge } = require("webpack-merge");
+const { ProvidePlugin } = require("webpack");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const CopyPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
@@ -45,5 +46,11 @@ module.exports = (env) => [
     module: {
       rules: [...patternflyBase.webpackModuleRules],
     },
+    plugins: [
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
+    ],
   }),
 ];

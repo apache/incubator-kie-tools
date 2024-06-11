@@ -31,7 +31,7 @@ import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import BitbucketIcon from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
 import { UrlType, useImportableUrl } from "../../importFromUrl/ImportableUrlHooks";
-import { switchExpression } from "../../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 
 export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
   const workspaceImportableUrl = useImportableUrl(props.descriptor?.origin.url?.toString());

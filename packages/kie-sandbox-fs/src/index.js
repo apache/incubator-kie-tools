@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 const once = require("just-once");
 
 const PromisifiedKieSandboxFs = require("./PromisifiedFS");
@@ -16,6 +35,7 @@ module.exports = class KieSandboxFs {
     this.promises = new PromisifiedKieSandboxFs(...args);
     // Needed so things don't break if you destructure fs and pass individual functions around
     this.init = this.init.bind(this);
+    this.deactivate = this.deactivate.bind(this);
     this.readFile = this.readFile.bind(this);
     this.readFileBulk = this.readFileBulk.bind(this);
     this.writeFile = this.writeFile.bind(this);
@@ -35,6 +55,9 @@ module.exports = class KieSandboxFs {
   }
   init(name, options) {
     return this.promises.init(name, options);
+  }
+  deactivate() {
+    return this.promises.deactivate();
   }
   readFile(filepath, opts, cb) {
     const [resolve, reject] = wrapCallback(opts, cb);

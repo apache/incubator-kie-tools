@@ -374,13 +374,13 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                         expression,
                         concat(retrieveDefaultDataTypeProps(), retrieveCustomDataTypeProps()).toArray(DataTypeProps[]::new),
                         hasExpression.isClearSupported(),
-                        buildPmmlParams(),
-                        DMNLoader.getVariables(item));
+                        buildPmmlDocuments(),
+                        item);
             }
 
             @Override
             public void onError(final ClientRuntimeError error) {
-                LOGGER.log(Level.SEVERE, error.getMessage(), error.getThrowable());
+                LOGGER.log(Level.SEVERE, error.getErrorMessage(), error.getThrowable());
             }
         });
     }
@@ -649,7 +649,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         return qName.getLocalPart();
     }
 
-    private PMMLParam[] buildPmmlParams() {
+    private PMMLParam[] buildPmmlDocuments() {
         return pmmlDocumentMetadataProvider.getPMMLDocumentNames()
                 .stream()
                 .map(documentToPMMLParamMapper())

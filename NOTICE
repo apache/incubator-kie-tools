@@ -50,6 +50,10 @@ This product also includes the following third-party components:
 
    Copyright (C) 2013 GwtBootstrap3
 
+* highlight.js (https://highlightjs.org)
+
+   Copyright (C) highlight.js
+
 * Jakarta EE (https://jakarta.ee/)
 
    Copyright (C) Eclipse and contributors
@@ -58,7 +62,7 @@ This product also includes the following third-party components:
 
    Copyright (c) 2017, 2020 Oracle and/or its affiliates. All rights reserved.
 
-* Java Standard Edition (https://www.gwtproject.org/)
+* Java Standard Edition (https://www.oracle.com/java/technologies/java-se-glance.html)
 
    Copyright (c) 2005-2013 Oracle and/or its affiliates
 
@@ -81,3 +85,7 @@ This product also includes the following third-party components:
 * SnakeYAML (https://bitbucket.org/snakeyaml/snakeyaml)
 
    Copyright (c) 2018, SnakeYAML
+
+* wysihtml (https://github.com/Voog/wysihtml)
+
+   Copyright (C) 2012-2016 XING AG, Voog and contributors

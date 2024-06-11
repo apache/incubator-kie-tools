@@ -29,7 +29,7 @@ import { useAuthProvider } from "../../../authProviders/AuthProvidersContext";
 import { useAuthSession } from "../../../authSessions/AuthSessionsContext";
 import { useBitbucketClient } from "../../../bitbucket/Hooks";
 import { useGitHubClient } from "../../../github/Hooks";
-import { switchExpression } from "../../../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { BitbucketIcon } from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";

@@ -35,7 +35,6 @@ test.describe("Boxed expression header menu popover", () => {
     await expect(page.getByLabel("years and months duration")).toBeAttached();
     await page.keyboard.press("Enter");
 
-    await expect(page.getByText("Test (Literal)")).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "Test (years and months duration)" })).toBeAttached();
   });
 
@@ -54,7 +53,6 @@ test.describe("Boxed expression header menu popover", () => {
     await expect(page.getByLabel("years and months duration")).toBeAttached();
     await page.keyboard.press("Escape");
 
-    await expect(page.getByText("Expression Name (Literal)")).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
   });
 });

@@ -6,28 +6,29 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 package quarkus
 
 import (
 	"fmt"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
-	"github.com/ory/viper"
-	"github.com/spf13/cobra"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
+	"github.com/ory/viper"
+	"github.com/spf13/cobra"
 )
 
 type BuildCmdConfig struct {
@@ -79,7 +80,7 @@ func NewBuildCommand() *cobra.Command {
 	# Build from the local directory, passing separately image options
 	{{.Name}} build --image-registry docker.io --image-repository myuser --image-name myworkflow --image-tag 1.0
 
-	# Build using Jib instead of Docker. (Read more: https://kiegroup.github.io/kogito-docs/serverlessworkflow/main/cloud/build-workflow-image-with-quarkus-cli.html)
+	# Build using Jib instead of Docker. (Read more: https://apache.github.io/incubator-kie-kogito-docs/serverlessworkflow/main/cloud/build-workflow-image-with-quarkus-cli.html)
 	# Docker is still required to save the image if the push flag is not used
 	{{.Name}} build --jib
 	
@@ -232,7 +233,7 @@ func runBuildImage(cfg BuildCmdConfig) (out string, err error) {
 	builderConfig := getBuilderConfig(cfg)
 	executableName := getExecutableNameConfig(cfg)
 
-	build := common.ExecCommand("mvn", "package",
+	build := common.ExecCommand("mvn", "-B", "package",
 		skipTestsConfig,
 		"-Dquarkus.kubernetes.deployment-target=knative",
 		fmt.Sprintf("-Dquarkus.knative.name=%s", name),

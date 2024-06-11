@@ -24,6 +24,4 @@ setup(`
     -Drevision=${buildEnv.env.extendedServicesJava.version}
     -Dquarkus.http.port=${buildEnv.env.extendedServicesJava.port}
     -Dquarkus.http.host=${buildEnv.env.extendedServicesJava.host}
-    -Dquarkus.platform.version=${buildEnv.env.quarkusPlatform.version}
-    -Dversion.org.kie.kogito=${buildEnv.env.kogitoRuntime.version}
 `);

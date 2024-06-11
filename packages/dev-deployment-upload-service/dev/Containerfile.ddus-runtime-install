@@ -1,0 +1,36 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4
+
+ENV DDUS_FILESERVER_IP=""
+ENV DDUS_VERSION="0.0.0"
+ENV DDUS_FILESERVER_PORT=8090
+
+EXPOSE 8092
+
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=/tmp/unzip-at
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=8092
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=dev
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH="/"
+
+RUN microdnf --disableplugin=subscription-manager install -y tar gzip findutils
+
+CMD curl $DDUS_FILESERVER_IP:${DDUS_FILESERVER_PORT}/apache/incubator-kie-tools/releases/download/$DDUS_VERSION/getDevDeploymentUploadService.sh | sed 's/localhost:${DDUS_FILESERVER_PORT}/$DDUS_FILESERVER_IP:${DDUS_FILESERVER_PORT}/; s/https:\/\/github.com/http:\/\/$DDUS_FILESERVER_IP:${DDUS_FILESERVER_PORT}/' | bash \
+  && dev-deployment-upload-service \
+  && find /tmp/unzip-at | sort -k1 | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/" \
+  && echo 'Done!'

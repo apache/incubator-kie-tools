@@ -42,11 +42,11 @@ public class DMNMarshallerImportsContentServiceKogitoImpl implements DMNMarshall
 
     private final PMMLEditorMarshallerApi pmmlEditorMarshallerApi;
 
-    static final String DMN_FILES_PATTERN = "*.dmn";
+    static final String DMN_FILES_PATTERN = "**/*.dmn";
 
-    static final String PMML_FILES_PATTERN = "*.pmml";
+    static final String PMML_FILES_PATTERN = "**/*.pmml";
 
-    static final String MODEL_FILES_PATTERN = "*.{dmn,pmml}";
+    static final String MODEL_FILES_PATTERN = "**/*.{dmn,pmml}";
 
     @Inject
     public DMNMarshallerImportsContentServiceKogitoImpl(final KogitoResourceContentService contentService,
@@ -64,17 +64,17 @@ public class DMNMarshallerImportsContentServiceKogitoImpl implements DMNMarshall
 
     @Override
     public Promise<String[]> getModelsURIs() {
-        return contentService.getFilteredItems(MODEL_FILES_PATTERN, ResourceListOptions.assetFolder());
+        return contentService.getFilteredItems(MODEL_FILES_PATTERN, ResourceListOptions.traversal());
     }
 
     @Override
     public Promise<String[]> getModelsDMNFilesURIs() {
-        return contentService.getFilteredItems(DMN_FILES_PATTERN, ResourceListOptions.assetFolder());
+        return contentService.getFilteredItems(DMN_FILES_PATTERN, ResourceListOptions.traversal());
     }
 
     @Override
     public Promise<String[]> getModelsPMMLFilesURIs() {
-        return contentService.getFilteredItems(PMML_FILES_PATTERN, ResourceListOptions.assetFolder());
+        return contentService.getFilteredItems(PMML_FILES_PATTERN, ResourceListOptions.traversal());
     }
 
     @Override

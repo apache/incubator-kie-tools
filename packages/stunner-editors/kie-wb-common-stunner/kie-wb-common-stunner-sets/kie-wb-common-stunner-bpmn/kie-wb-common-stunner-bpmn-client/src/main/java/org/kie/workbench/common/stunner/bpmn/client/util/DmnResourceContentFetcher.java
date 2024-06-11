@@ -48,7 +48,7 @@ public class DmnResourceContentFetcher {
     private final DmnLanguageServiceServiceProducer dmnLanguageServiceServiceProducer;
     private Map<String, String> fileNames = new HashMap<>();
     private List<String> decisions = new ArrayList<>();
-    private final static String fileMatcher = "*.dmn";
+    private final static String fileMatcher = "**/*.dmn";
 
     @Inject
     public DmnResourceContentFetcher(final ResourceContentService resourceContentService,

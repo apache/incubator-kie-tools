@@ -6,24 +6,24 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 package command
 
 import (
 	"fmt"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 	"os"
@@ -41,12 +41,27 @@ func NewUndeployCommand() *cobra.Command {
 	# Undeploy the workflow project from the current directory's project. 
 	# You must provide target namespace.
 	{{.Name}} undeploy --namespace <your_namespace>
+
 	# Persist the generated Kubernetes manifests on a given path and deploy the 
 	# workflow from the current directory's project. 
-	{{.Name}} undeploy --manifestPath=<full_directory_path>
+	{{.Name}} undeploy --custom-generated-manifests-dir=<full_directory_path>
+
+	# Specify a custom manifest files directory.
+	# This option *will not* automatically generate the manifest files, but will use the existing ones.
+	{{.Name}} deploy --custom-manifests-dir=<full_directory_path>
+
+	# Specify a custom subflows files directory. (default: ./subflows)
+	{{.Name}} deploy --subflows-dir=<full_directory_path>
+
+	# Specify a custom support specs directory. (default: ./specs)
+	{{.Name}} deploy --specs-dir=<full_directory_path>
+
+	# Specify a custom support schemas directory. (default: ./schemas)
+	{{.Name}} deploy --schemas-dir=<full_directory_path>
+
 		`,
 
-		PreRunE:    common.BindEnv("namespace", "manifestPath"),
+		PreRunE:    common.BindEnv("namespace", "custom-manifests-dir", "custom-generated-manifests-dir", "specs-dir", "schemas-dir", "subflows-dir"),
 		SuggestFor: []string{"undelpoy", "undeplyo"},
 	}
 
@@ -55,7 +70,11 @@ func NewUndeployCommand() *cobra.Command {
 	}
 
 	cmd.Flags().StringP("namespace", "n", "", "Target namespace of your deployment.")
-	cmd.Flags().StringP("manifestPath", "c", "", "Target directory of your generated Kubernetes manifests.")
+	cmd.Flags().StringP("custom-manifests-dir", "m", "", "Specify a custom manifest files directory. This option will not automatically generate the manifest files, but will use the existing ones.")
+	cmd.Flags().StringP("custom-generated-manifests-dir", "c", "", "Target directory of your generated Kubernetes manifests.")
+	cmd.Flags().StringP("specs-dir", "p", "", "Specify a custom specs files directory")
+	cmd.Flags().StringP("subflows-dir", "s", "", "Specify a custom subflows files directory")
+	cmd.Flags().StringP("schemas-dir", "t", "", "Specify a custom schemas files directory")
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
@@ -84,8 +103,12 @@ func runUndeploy(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("❌ ERROR: checking undeploy environment: %w", err)
 	}
 
-	if err := generateManifests(&cfg); err != nil {
-		return fmt.Errorf("❌ ERROR: generating undeploy manifests: %w", err)
+	if len(cfg.CustomManifestsFileDir) == 0 {
+		if err := generateManifests(&cfg); err != nil {
+			return fmt.Errorf("❌ ERROR: generating deploy environment: %w", err)
+		}
+	} else {
+		fmt.Printf("🛠 Using manifests located at %s\n", cfg.CustomManifestsFileDir)
 	}
 
 	if err = undeploy(&cfg); err != nil {
@@ -100,10 +123,18 @@ func runUndeploy(cmd *cobra.Command, args []string) error {
 func undeploy(cfg *DeployUndeployCmdConfig) error {
 	fmt.Printf("🔨 Undeploying your SonataFlow project in namespace %s\n", cfg.NameSpace)
 
-	files, err := common.FindServiceFiles(cfg.ManifestPath)
-	if err != nil {
-		return fmt.Errorf("❌ ERROR: failed to get kubernetes manifest service files: %w", err)
+	manifestExtension := []string{metadata.YAMLExtension}
+
+	manifestPath := cfg.CustomGeneratedManifestDir
+	if len(cfg.CustomManifestsFileDir) != 0 {
+		manifestPath = cfg.CustomManifestsFileDir
 	}
+
+	files, err := common.FindFilesWithExtensions(manifestPath, manifestExtension)
+	if err != nil {
+		return fmt.Errorf("❌ ERROR: failed to get manifest directory and files: %w", err)
+	}
+
 	for _, file := range files {
 		if err = common.ExecuteKubectlDelete(file, cfg.NameSpace); err != nil {
 			return fmt.Errorf("❌ ERROR: failed to undeploy manifest %s,  %w", file, err)
@@ -117,16 +148,35 @@ func undeploy(cfg *DeployUndeployCmdConfig) error {
 func runUndeployCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, err error) {
 
 	cfg = DeployUndeployCmdConfig{
-		NameSpace:         viper.GetString("namespace"),
-		SupportFileFolder: viper.GetString("supportFilesFolder"),
-		ManifestPath:      viper.GetString("manifestPath"),
+		NameSpace:                  viper.GetString("namespace"),
+		CustomManifestsFileDir:     viper.GetString("custom-manifests-dir"),
+		CustomGeneratedManifestDir: viper.GetString("custom-generated-manifests-dir"),
+		SpecsDir:                   viper.GetString("specs-dir"),
+		SchemasDir:                 viper.GetString("schemas-dir"),
+		SubflowsDir:                viper.GetString("subflows-dir"),
 	}
 
-	if len(cfg.SupportFileFolder) == 0 {
+	if len(cfg.SubflowsDir) == 0 {
 		dir, err := os.Getwd()
-		cfg.SupportFileFolder = dir + "/specs"
+		cfg.SubflowsDir = dir + "/subflows"
 		if err != nil {
-			return cfg, fmt.Errorf("❌ ERROR: failed to get current directory: %w", err)
+			return cfg, fmt.Errorf("❌ ERROR: failed to get default subflows workflow files folder: %w", err)
+		}
+	}
+
+	if len(cfg.SpecsDir) == 0 {
+		dir, err := os.Getwd()
+		cfg.SpecsDir = dir + "/specs"
+		if err != nil {
+			return cfg, fmt.Errorf("❌ ERROR: failed to get default support specs files folder: %w", err)
+		}
+	}
+
+	if len(cfg.SchemasDir) == 0 {
+		dir, err := os.Getwd()
+		cfg.SchemasDir = dir + "/schemas"
+		if err != nil {
+			return cfg, fmt.Errorf("❌ ERROR: failed to get default support schemas files folder: %w", err)
 		}
 	}
 

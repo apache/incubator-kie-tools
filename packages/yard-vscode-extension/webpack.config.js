@@ -21,6 +21,7 @@ const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
+const { ProvidePlugin } = require("webpack");
 
 const commonConfig = (env) =>
   merge(common(env), {
@@ -47,6 +48,12 @@ module.exports = async (env) => [
     entry: {
       "extension/extensionWeb": "./src/extension/extension.ts",
     },
+    plugins: [
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
+    ],
   }),
   merge(commonConfig(env), {
     target: "web",
@@ -66,6 +73,10 @@ module.exports = async (env) => [
             },
           },
         ],
+      }),
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
       }),
     ],
     module: {

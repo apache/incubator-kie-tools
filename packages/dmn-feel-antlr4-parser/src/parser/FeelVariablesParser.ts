@@ -27,12 +27,27 @@ import { FeelVariable } from "./FeelVariable";
 import { MapBackedType } from "./grammar/MapBackedType";
 import { VariableContext } from "./VariableContext";
 import { ParsedExpression } from "./ParsedExpression";
+import { FeelSyntacticSymbolNature } from "./FeelSyntacticSymbolNature";
 
 export class FeelVariablesParser {
   private variablesRepository: VariablesRepository;
 
   constructor(variablesSource: VariablesRepository) {
     this.variablesRepository = variablesSource;
+    this.refreshExpressions();
+  }
+
+  public refreshExpressions() {
+    for (const expression of this.variablesRepository.expressions.values()) {
+      for (const variable of expression.variables) {
+        variable.source?.expressions.delete(expression.uuid);
+      }
+      const parsedExpression = this.parse(expression.uuid, expression.fullExpression);
+      expression.variables = parsedExpression.feelVariables;
+      for (const variable of parsedExpression.feelVariables) {
+        variable.source?.expressions.set(expression.uuid, expression);
+      }
+    }
   }
 
   public parse(variableContextUuid: string, expression: string): ParsedExpression {
@@ -107,17 +122,24 @@ export class FeelVariablesParser {
     for (const inputVariableId of inputVariables) {
       const inputVariable = this.variablesRepository.variables.get(inputVariableId);
       if (inputVariable) {
-        this.addToParser(parser, inputVariable);
+        this.addToParser(parser, inputVariable, true);
       }
     }
   }
 
-  private addToParser(parser: FEEL_1_1Parser, context: VariableContext) {
-    if (context.variable.value !== "") {
+  private addToParser(parser: FEEL_1_1Parser, context: VariableContext, addInvisibleVariables?: boolean) {
+    if (
+      context.variable.value !== "" &&
+      ((!addInvisibleVariables &&
+        context.variable.feelSyntacticSymbolNature != FeelSyntacticSymbolNature.InvisibleVariables) ||
+        addInvisibleVariables)
+    ) {
       parser.helper.defineVariable(
         context.variable.value,
         context.variable.typeRef ? this.createType(context.variable.typeRef) : undefined,
-        context.variable.feelSyntacticSymbolNature
+        context.variable.feelSyntacticSymbolNature,
+        context.variable,
+        context.allowDynamicVariables
       );
     }
   }

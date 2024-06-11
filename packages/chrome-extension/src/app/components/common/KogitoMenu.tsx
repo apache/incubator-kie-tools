@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useGitHubApi } from "./GitHubContext";
+import { getGitHubApiBaseUrl, useGitHubApi } from "./GitHubContext";
 import { Octokit } from "@octokit/rest";
 import { useGlobals } from "./GlobalContext";
 import { useChromeExtensionI18n } from "../../i18n";
@@ -37,36 +37,40 @@ export function KogitoMenu() {
   const [isInfoPopOverOpen, setInfoPopOverOpen] = useState(false);
   const [potentialToken, setPotentialToken] = useState("");
 
-  async function updateToken(token?: string) {
-    const validToken = await tokenIsValid(token);
-
-    if (validToken) {
-      gitHubApi.setToken(token!);
-      setPotentialToken("");
-    } else {
-      gitHubApi.setToken("");
-    }
-
-    return validToken;
-  }
+  const updateToken = useCallback(
+    async (token?: string) => {
+      const validToken = await tokenIsValid(token);
+      if (validToken) {
+        gitHubApi.setToken(token!);
+        setPotentialToken("");
+      } else {
+        gitHubApi.setToken("");
+      }
+      return validToken;
+    },
+    [gitHubApi]
+  );
 
   useEffect(() => {
     updateToken(gitHubApi.token).then(() => {
       console.debug("Checked GitHub token.");
     });
-  }, []);
+  }, [gitHubApi.token, updateToken]);
 
-  const onPaste = useCallback((e) => {
-    const token = e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE);
-    setPotentialToken(token);
-    setTimeout(async () => {
-      const wasValid = await updateToken(token);
-      if (wasValid) {
-        setTimeout(() => setWholeMenuOpen(false), 2000);
-      }
-      inputRef.current!.setSelectionRange(0, 0);
-    }, 0);
-  }, []);
+  const onPaste = useCallback(
+    (e) => {
+      const token = e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE);
+      setPotentialToken(token);
+      setTimeout(async () => {
+        const wasValid = await updateToken(token);
+        if (wasValid) {
+          setTimeout(() => setWholeMenuOpen(false), 2000);
+        }
+        inputRef.current!.setSelectionRange(0, 0);
+      }, 0);
+    },
+    [updateToken, setPotentialToken, setWholeMenuOpen]
+  );
 
   const onReset = useCallback(() => {
     gitHubApi.setToken("");
@@ -74,7 +78,7 @@ export function KogitoMenu() {
     setTimeout(() => {
       inputRef.current!.focus();
     }, 0);
-  }, []);
+  }, [gitHubApi]);
 
   const toggleInfoPopOver = useCallback(() => {
     setInfoPopOverOpen(!isInfoPopOverOpen);
@@ -96,7 +100,7 @@ export function KogitoMenu() {
               <a
                 target={"blank"}
                 className="Header-link mr-0 mr-lg-3 py-2 py-lg-0"
-                href="https://github.com/settings/tokens"
+                href={window.location.origin + "/settings/tokens"}
               >
                 {i18n.common.menu.createToken}
               </a>
@@ -172,7 +176,7 @@ async function tokenIsValid(token?: string) {
     return false;
   }
 
-  const testOctokit = new Octokit({ auth: token });
+  const testOctokit = new Octokit({ auth: token, baseUrl: getGitHubApiBaseUrl(window.location.origin) });
   return await testOctokit.emojis
     .get({})
     .then(() => true)

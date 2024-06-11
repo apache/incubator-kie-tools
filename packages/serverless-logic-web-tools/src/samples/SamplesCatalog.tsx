@@ -190,6 +190,7 @@ export function SamplesCatalog() {
         <DropdownItem
           key={`category-filter-${category}`}
           onClick={() => onSearch({ searchValue: searchFilter, category })}
+          ouiaId={`${category}-dropdown-item`}
         >
           {LABEL_MAP[category]}
         </DropdownItem>
@@ -248,6 +249,7 @@ export function SamplesCatalog() {
                           onClick={(e) => {
                             e.stopPropagation();
                           }}
+                          data-ouia-component-id={"search-sample-input"}
                         />
                       </ToolbarItem>
                       <ToolbarItem>
@@ -264,12 +266,13 @@ export function SamplesCatalog() {
                             </DropdownToggle>
                           }
                           isOpen={isCategoryFilterDropdownOpen}
+                          ouiaId={"sample-category-dropdown"}
                         />
                       </ToolbarItem>
                       <ToolbarItem>
                         {filterResultMessage && (
                           <TextContent>
-                            <Text>{filterResultMessage}</Text>
+                            <Text ouiaId={"samples-count-text"}>{filterResultMessage}</Text>
                           </TextContent>
                         )}
                       </ToolbarItem>

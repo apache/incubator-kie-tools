@@ -29,7 +29,7 @@ import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/reac
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { switchExpression } from "../../../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { useOnlineI18n } from "../../../i18n";
 
 export function useGitIntegrationAlerts(workspace: ActiveWorkspace) {

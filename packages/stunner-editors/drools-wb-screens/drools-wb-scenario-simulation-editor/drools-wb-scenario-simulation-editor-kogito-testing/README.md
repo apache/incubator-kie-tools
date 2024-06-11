@@ -1,3 +1,20 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+     http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+
 # Kogito Runtime Webapp
 
 This webapp is meant as runtime environment. It **does not provides** methods and functions (ex. file retrieval) that should be provided by running environment (ex. vs code).
@@ -10,6 +27,7 @@ Some minimal tests may be done in the following way:
 2. open the `drools-wb/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime/index.html` file inside Chrome
 3. inside the Chrome dev console, issue the command `$wnd.gwtEditorBeans.get("ScenarioSimulationEditor").get().setContent("", "")`; this will create a new - empty - scesim file.
 4. Some tricks: to avoid CORS and other policy-related issues:
+   - enable chrome://flags/#temporary-unexpire-flags-m118 flag
    - set chrome://flags/#allow-insecure-localhost for invalid certificates error
    - start chrome from cli with the command `chrome --allow-file-access-from-files` to allow loading from file.
    - Open index.html file:///(path_to_file)/index.html and get no dev compilation error.
@@ -20,7 +38,7 @@ Some minimal tests may be done in the following way:
 
 ## VSCODE Integration
 
-1. clone https://github.com/kiegroup/kie-tools
+1. clone https://github.com/apache/incubator-kie-tools
 2. Launch pnpm init on kie-tools directory
 3. Launch pnpm build:prod (pnpm build:fast to skip tests)
 4. Launch VS Code (you can find it in a path similar to: `kie-tools/packages/kie-editors-dev-vscode-extension/.vscode-test/vscode-1.43.0/VSCode-linux-x64/bin/code` ) with `--enable-proposed-api kiegroup.kie-editors-dev-vscode-extension` parameter

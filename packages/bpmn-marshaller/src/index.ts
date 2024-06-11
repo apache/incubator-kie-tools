@@ -56,7 +56,7 @@ export function getMarshaller(xml: string): BpmnMarshaller {
     version: "2.0",
     root: bpmn20root,
     meta: bpmn20meta,
-    parser: { parse: () => p.parse({ xml, domdoc, instanceNs }).json },
+    parser: { parse: () => p.parse({ type: "domdoc", domdoc, instanceNs }).json },
     builder: { build: (json: BpmnDefinitions) => p.build({ json, instanceNs }) },
   };
 }

@@ -18,116 +18,49 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { getCookie, setCookie } from "../cookies";
-import { useQueryParams } from "../queryParams/QueryParamsContext";
-import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
+import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
+import { LfsFsCache } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsFsCache";
+import { LfsStorageFile, LfsStorageService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
+import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router";
-import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import { useEnv } from "../env/hooks/EnvContext";
 import { QueryParams } from "../navigation/Routes";
-import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
+import { useQueryParams } from "../queryParams/QueryParamsContext";
+import { SettingsTabs } from "./SettingsModalBody";
+import { getCookie } from "../cookies";
+import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 
 export const EXTENDED_SERVICES_HOST_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--host";
 export const EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--port";
 
-export class ExtendedServicesConfig {
-  constructor(public readonly host: string, public readonly port: string) {}
-
-  private buildUrl(): string {
-    if (this.port.trim().length === 0) {
-      return this.host;
-    }
-    return `${this.host}:${this.port}`;
-  }
-
-  public get url() {
-    return {
-      jitExecutor: `${this.buildUrl()}/`,
-      ping: `${this.buildUrl()}/ping`,
+export type SettingsContextType = {
+  settings: {
+    version: number;
+    corsProxy: {
+      url: string;
     };
-  }
-}
-
-export interface SettingsContextType {
-  isOpen: boolean;
-  activeTab: SettingsTabs;
-  extendedServices: {
-    config: ExtendedServicesConfig;
+    extendedServices: {
+      host: string;
+      port: string;
+    };
+    editors: {
+      useLegacyDmnEditor: boolean;
+    };
   };
-}
+  isModalOpen: boolean;
+  tab: SettingsTabs;
+};
 
-export interface SettingsDispatchContextType {
+export type SettingsDispatchContextType = {
+  set(patch: (settings: SettingsContextType["settings"]) => void): void;
   open: (activeTab?: SettingsTabs) => void;
   close: () => void;
-  extendedServices: {
-    setConfig: React.Dispatch<React.SetStateAction<ExtendedServicesConfig>>;
-  };
-}
+};
 
-export const SettingsContext = React.createContext<SettingsContextType>({} as any);
-export const SettingsDispatchContext = React.createContext<SettingsDispatchContextType>({} as any);
-
-export function SettingsContextProvider(props: any) {
-  const queryParams = useQueryParams();
-  const history = useHistory();
-  const [isOpen, setOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState(SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES);
-
-  useEffect(() => {
-    setOpen(queryParams.has(QueryParams.SETTINGS));
-    setActiveTab((queryParams.get(QueryParams.SETTINGS) as SettingsTabs) ?? SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES);
-  }, [queryParams]);
-
-  const open = useCallback(
-    (activeTab = SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES) => {
-      history.replace({
-        search: queryParams.with(QueryParams.SETTINGS, activeTab).toString(),
-      });
-    },
-    [history, queryParams]
-  );
-
-  const close = useCallback(() => {
-    history.replace({
-      search: queryParams.without(QueryParams.SETTINGS).toString(),
-    });
-  }, [history, queryParams]);
-
-  const extendedServices = useExtendedServices();
-
-  const dispatch = useMemo(() => {
-    return {
-      open,
-      close,
-      extendedServices: {
-        setConfig: extendedServices.saveNewConfig,
-      },
-    };
-  }, [close, extendedServices.saveNewConfig, open]);
-
-  const value = useMemo(() => {
-    return {
-      isOpen,
-      activeTab,
-      extendedServices: {
-        config: extendedServices.config,
-      },
-    };
-  }, [activeTab, isOpen, extendedServices.config]);
-
-  return (
-    <SettingsContext.Provider value={value}>
-      <SettingsDispatchContext.Provider value={dispatch}>
-        {<>{props.children}</>}
-        <Modal title="Settings" isOpen={isOpen} onClose={close} variant={ModalVariant.large}>
-          <div style={{ height: "calc(100vh * 0.5)" }} className={"kie-tools--setings-modal-content"}>
-            <SettingsModalBody />
-          </div>
-        </Modal>
-      </SettingsDispatchContext.Provider>
-    </SettingsContext.Provider>
-  );
-}
+const SettingsContext = createContext<SettingsContextType>({} as any);
+const SettingsDispatchContext = createContext<SettingsDispatchContextType>({} as any);
 
 export function useSettings() {
   return useContext(SettingsContext);
@@ -137,6 +70,161 @@ export function useSettingsDispatch() {
   return useContext(SettingsDispatchContext);
 }
 
-function getBooleanCookieInitialValue<T>(name: string, defaultValue: boolean) {
-  return !getCookie(name) ? defaultValue : getCookie(name) === "true";
+const fsCache = new LfsFsCache();
+const fsService = new LfsStorageService();
+const broadcastChannel = new BroadcastChannel("settings");
+
+const SETTINGS_FILE_PATH = "/settings.json";
+const SETTINGS_FS_NAME = "settings";
+
+const SETTINGS_FILE_LATEST_VERSION = 0;
+
+export function SettingsContextProvider(props: PropsWithChildren<{}>) {
+  const { env } = useEnv();
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
+
+  const [settings, setSettings] = useState<SettingsContextType["settings"]>();
+
+  const defaultSettingsTab = useMemo(() => {
+    return editorEnvelopeLocator.hasMappingFor("*.dmn")
+      ? SettingsTabs.EDITORS
+      : SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES;
+  }, [editorEnvelopeLocator]);
+
+  const refresh = useCallback(async (args?: { canceled: Holder<boolean> }) => {
+    const fs = fsCache.getOrCreateFs(SETTINGS_FS_NAME);
+    const content = await (await fsService.getFile(fs, SETTINGS_FILE_PATH))?.getFileContents();
+    if (args?.canceled.get()) {
+      return;
+    }
+
+    setSettings(JSON.parse(decoder.decode(content)));
+  }, []);
+
+  const persistSettings = useCallback(
+    async (settings: SettingsContextType["settings"]) => {
+      const fs = fsCache.getOrCreateFs(SETTINGS_FS_NAME);
+      await fsService.createOrOverwriteFile(
+        fs,
+        new LfsStorageFile({
+          path: SETTINGS_FILE_PATH,
+          getFileContents: async () => encoder.encode(JSON.stringify(settings)),
+        })
+      );
+
+      // This goes to other broadcast channel instances, on other tabs
+      broadcastChannel.postMessage("UPDATE_SETTINGS");
+
+      // This updates this tab
+      refresh();
+    },
+    [refresh]
+  );
+
+  // Update after persisted
+  useCancelableEffect(
+    useCallback(
+      (canceled) => {
+        broadcastChannel.onmessage = () => refresh(canceled);
+      },
+      [refresh]
+    )
+  );
+
+  // Init
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        async function run() {
+          const fs = fsCache.getOrCreateFs(SETTINGS_FS_NAME);
+          if (!(await fsService.exists(fs, SETTINGS_FILE_PATH))) {
+            if (canceled.get()) {
+              return;
+            }
+
+            const envExtendedServicesUrl = new URL(env.KIE_SANDBOX_EXTENDED_SERVICES_URL);
+            // 0.0.0.0 is "equivalent" to localhost, but browsers don't like having mixed http/https urls with the exception of localhost
+            const envExtendedServicesHost = `${envExtendedServicesUrl.protocol}//${
+              envExtendedServicesUrl.hostname === "0.0.0.0" ? "localhost" : envExtendedServicesUrl.hostname
+            }`;
+            const envExtendedServicesPort = envExtendedServicesUrl.port;
+
+            await persistSettings({
+              version: SETTINGS_FILE_LATEST_VERSION,
+              corsProxy: {
+                url: env.KIE_SANDBOX_CORS_PROXY_URL,
+              },
+              extendedServices: {
+                host: getCookie(EXTENDED_SERVICES_HOST_COOKIE_NAME) ?? envExtendedServicesHost,
+                port: getCookie(EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? envExtendedServicesPort,
+              },
+              editors: {
+                useLegacyDmnEditor: false,
+              },
+            });
+          } else {
+            refresh();
+          }
+        }
+
+        run();
+      },
+      [env.KIE_SANDBOX_CORS_PROXY_URL, env.KIE_SANDBOX_EXTENDED_SERVICES_URL, persistSettings, refresh]
+    )
+  );
+
+  const queryParams = useQueryParams();
+  const history = useHistory();
+  const [tab, setTab] = useState(defaultSettingsTab);
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    setModalOpen(queryParams.has(QueryParams.SETTINGS));
+    setTab((queryParams.get(QueryParams.SETTINGS) as SettingsTabs) ?? defaultSettingsTab);
+  }, [defaultSettingsTab, queryParams]);
+
+  const dispatch = useMemo<SettingsDispatchContextType>(() => {
+    return {
+      open: (tab) => {
+        history.replace({
+          search: queryParams.with(QueryParams.SETTINGS, tab ?? defaultSettingsTab).toString(),
+        });
+      },
+      close: () => {
+        history.replace({
+          search: queryParams.without(QueryParams.SETTINGS).toString(),
+        });
+      },
+      set: (patch) => {
+        setSettings((s) => {
+          const copy = JSON.parse(JSON.stringify(s));
+          patch(copy);
+          persistSettings(copy);
+          return s;
+        });
+      },
+    };
+  }, [defaultSettingsTab, history, persistSettings, queryParams]);
+
+  const value = useMemo(() => {
+    if (!settings) {
+      return undefined;
+    }
+
+    return {
+      settings,
+      isModalOpen,
+      tab,
+    };
+  }, [isModalOpen, settings, tab]);
+
+  return (
+    <>
+      {value && (
+        <SettingsContext.Provider value={value}>
+          <SettingsDispatchContext.Provider value={dispatch}>{props.children}</SettingsDispatchContext.Provider>
+        </SettingsContext.Provider>
+      )}
+    </>
+  );
 }

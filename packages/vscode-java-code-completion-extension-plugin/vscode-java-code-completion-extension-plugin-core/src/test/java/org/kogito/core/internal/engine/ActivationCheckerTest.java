@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kogito.core.internal.engine;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +51,7 @@ class ActivationCheckerTest {
         TestUtil.mockWorkspace(COMMON_RESOURCE_PATH +  "test projéct" + File.separator, () -> activationChecker.check());
 
         assertThat(activationChecker.existActivator()).isTrue();
-        assertThat(activationChecker.getActivatorPath().endsWith("MyActivator.java")).isTrue();
+        assertThat(activationChecker.getActivatorPath().endsWith("Activator.java")).isTrue();
     }
 
     @Test

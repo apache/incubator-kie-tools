@@ -38,7 +38,7 @@ const INITIAL_GRAYSCALE = "0";
 const INITIAL_INVERT = "0";
 
 /**
- * envelopeContext All the features and information provided by the KIE Tools Envelope.
+ * envelopeContext All the features and information provided by the Apache KIE Tools Envelope.
  */
 interface Props {
   envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>;
@@ -48,7 +48,7 @@ interface Props {
  * This is an Editor component. By exposing its `ref` implementing EditorApi, this component exposes its imperative
  * handles and gives control to its parent. To be able to do that, it's necessary to create a RefForwardingComponent.
  *
- * The EditorApi is a contract created by KIE Tools, which determines the necessary methods for an Editor to
+ * The EditorApi is a contract created by Apache KIE Tools, which determines the necessary methods for an Editor to
  * implement so that the Channel can manipulate its contents and retrieve valuable information.
  *
  * @param props Any props that are necessary for this Editor to work. In this case..
@@ -88,7 +88,7 @@ export const Base64PngEditor = React.forwardRef<EditorApi, Props>((props, forwar
    * Callback is exposed to the Channel that is called when a new file is opened. It sets the originalContent to the received value.
    */
   const setContent = useCallback(
-    (path: string, content: string) => {
+    (normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string) => {
       setOriginalContent(content);
       updateEditorToInitialState();
     },
@@ -167,7 +167,8 @@ export const Base64PngEditor = React.forwardRef<EditorApi, Props>((props, forwar
   useImperativeHandle(forwardedRef, () => {
     return {
       getContent: () => Promise.resolve(getContent()),
-      setContent: (path: string, content: string) => Promise.resolve(setContent(path, content)),
+      setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string) =>
+        Promise.resolve(setContent(normalizedPosixPathRelativeToTheWorkspaceRoot, content)),
       getPreview: () => Promise.resolve(getPreview()),
       undo: () => Promise.resolve(undo()),
       redo: () => Promise.resolve(redo()),

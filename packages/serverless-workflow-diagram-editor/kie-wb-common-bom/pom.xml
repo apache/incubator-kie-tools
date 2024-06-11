@@ -47,38 +47,19 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git@github.com:kiegroup/kie-tools.git</connection>
-    <developerConnection>scm:git:git@github.com:kiegroup/kie-tools.git</developerConnection>
-    <url>scm:git:git@github.com:kiegroup/kie-tools.git</url>
+    <connection>scm:git:git@github.com:apache/incubator-kie-tools.git</connection>
+    <developerConnection>scm:git:git@github.com:apache/incubator-kie-tools.git</developerConnection>
+    <url>scm:git:git@github.com:apache/incubator-kie-tools.git</url>
   </scm>
 
-  <developers>
-    <developer>
-      <name>All developers are listed in the KIE GitHub organization</name>
-      <url>https://github.com/orgs/kiegroup/people</url>
-    </developer>
-  </developers>
-
   <issueManagement>
-    <system>jira</system>
-    <url>https://issues.redhat.com/browse/KOGITO</url>
+    <system>github-issues</system>
+    <url>https://github.com/apache/incubator-kie-issues/issues</url>
   </issueManagement>
-
-  <repositories>
-    <repository>
-      <id>jboss</id>
-      <name>JBoss Public Repo</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public</url>
-    </repository>
-    <repository>
-      <id>sonatype-public</id>
-      <name>Sonatype Public Snapshots Repo</name>
-      <url>https://oss.sonatype.org/content/repositories/public</url>
-    </repository>
-  </repositories>
 
   <properties>
     <sonar.skip>true</sonar.skip>
+    <j2cl.tools.version>0.1</j2cl.tools.version>
   </properties>
 
   <dependencyManagement>
@@ -223,6 +204,14 @@
         <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <artifactId>kie-wb-common-ui</artifactId>
         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.j2cl.tools</groupId>
+        <artifactId>bom</artifactId>
+        <version>${j2cl.tools.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
 
     </dependencies>

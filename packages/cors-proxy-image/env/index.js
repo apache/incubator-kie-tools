@@ -19,22 +19,37 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+const rootEnv = require("@kie-tools/root-env/env");
+const corsProxyEnv = require("@kie-tools/cors-proxy/env");
+
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     CORS_PROXY_IMAGE__imageRegistry: {
-      default: "quay.io",
+      default: "docker.io",
       description: "",
     },
     CORS_PROXY_IMAGE__imageAccount: {
-      default: "kie-tools",
+      default: "apache",
       description: "",
     },
     CORS_PROXY_IMAGE__imageName: {
-      default: "cors-proxy-image",
+      default: "incubator-kie-cors-proxy",
       description: "",
     },
     CORS_PROXY_IMAGE__imageBuildTags: {
-      default: "latest",
+      default: rootEnv.env.root.streamName,
+      description: "",
+    },
+    CORS_PROXY_IMAGE__imagePort: {
+      default: corsProxyEnv.env.corsProxy.dev.port,
+      description: "",
+    },
+    CORS_PROXY_IMAGE__imageOrigin: {
+      default: corsProxyEnv.env.corsProxy.dev.origin,
+      description: "",
+    },
+    CORS_PROXY_IMAGE__imageVerbose: {
+      default: false,
       description: "",
     },
   }),
@@ -46,6 +61,9 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
           account: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageAccount),
           name: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageName),
           buildTags: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageBuildTags),
+          port: getOrDefault(this.vars.CORS_PROXY_IMAGE__imagePort),
+          origin: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageOrigin),
+          verbose: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageVerbose),
         },
       },
     };

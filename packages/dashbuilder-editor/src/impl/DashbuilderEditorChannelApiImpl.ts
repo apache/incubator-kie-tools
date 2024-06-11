@@ -64,8 +64,8 @@ export class DashbuilderEditorChannelApiImpl implements DashbuilderEditorChannel
     this.defaultApiImpl.kogitoWorkspace_newEdit(edit);
   }
 
-  public kogitoWorkspace_openFile(path: string): void {
-    this.defaultApiImpl.kogitoWorkspace_openFile(path);
+  public kogitoWorkspace_openFile(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
+    this.defaultApiImpl.kogitoWorkspace_openFile(normalizedPosixPathRelativeToTheWorkspaceRoot);
   }
 
   public kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined> {
@@ -80,12 +80,18 @@ export class DashbuilderEditorChannelApiImpl implements DashbuilderEditorChannel
     this.defaultApiImpl.kogitoNotifications_createNotification(notification);
   }
 
-  public kogitoNotifications_removeNotifications(path: string): void {
-    this.defaultApiImpl.kogitoNotifications_removeNotifications(path);
+  public kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
+    this.defaultApiImpl.kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot);
   }
 
-  public kogitoNotifications_setNotifications(path: string, notifications: Notification[]): void {
-    this.defaultApiImpl.kogitoNotifications_setNotifications(path, notifications);
+  public kogitoNotifications_setNotifications(
+    normalizedPosixPathRelativeToTheWorkspaceRoot: string,
+    notifications: Notification[]
+  ): void {
+    this.defaultApiImpl.kogitoNotifications_setNotifications(
+      normalizedPosixPathRelativeToTheWorkspaceRoot,
+      notifications
+    );
   }
 
   public kogitoEditor_theme(): SharedValueProvider<EditorTheme> {

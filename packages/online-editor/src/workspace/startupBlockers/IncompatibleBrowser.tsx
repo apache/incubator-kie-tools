@@ -40,7 +40,7 @@ const isCompatibleBrowser = Bowser.getParser(window.navigator.userAgent).satisfi
 });
 const browserInfo = Bowser.parse(window.navigator.userAgent);
 
-export async function isTrue() {
+export function isTrue() {
   return !hasNecessaryApis || !isCompatibleBrowser;
 }
 
@@ -52,7 +52,7 @@ export function Component() {
         <br />
         <TextContent>
           <Text component={TextVariants.h4}>
-            ${env.KIE_SANDBOX_APP_NAME} is not compatible with this browser.{" "}
+            {env.KIE_SANDBOX_APP_NAME} is not compatible with this browser.{" "}
             <small style={{ display: "inline" }}>
               ({browserInfo.browser.name} {browserInfo.browser.version})
             </small>

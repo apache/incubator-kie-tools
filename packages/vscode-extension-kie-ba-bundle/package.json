@@ -5,13 +5,13 @@
   "license": "Apache-2.0",
   "publisher": "kie-group",
   "keywords": [],
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "main": "dist/extension/extension.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "compile": "webpack",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/vscode_extension_kie_ba_bundle_$npm_package_version.vsix",
-    "watch": "webpack"
+    "watch": "export WEBPACK__sourceMaps=true; WEBPACK__minimize=false; webpack --env dev"
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
@@ -28,7 +28,7 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/vscode": "1.67.0",
-    "@vscode/vsce": "^2.20.1",
+    "@vscode/vsce": "^2.22.0",
     "rimraf": "^3.0.2",
     "webpack": "^5.88.2",
     "webpack-cli": "^4.10.0",
@@ -38,7 +38,7 @@
   "engines": {
     "vscode": "^1.67.0"
   },
-  "displayName": "KIE Business Automation Bundle",
+  "displayName": "Apache KIE™ Business Automation Bundle",
   "categories": [
     "Other"
   ],

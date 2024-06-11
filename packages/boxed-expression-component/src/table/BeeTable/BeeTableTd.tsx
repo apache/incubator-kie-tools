@@ -31,11 +31,12 @@ import {
   useBeeTableSelectableCell,
   useBeeTableSelectableCellRef,
 } from "../../selection/BeeTableSelectionContext";
-import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
+import { InsertRowColumnsDirection } from "../../api";
 
 export interface BeeTableTdProps<R extends object> {
-  // Individual cells are not immutable referecens, By referencing the row, we avoid multiple re-renders and bugs.
-  onRowAdded?: (args: { beforeIndex: number }) => void;
+  // Individual cells are not immutable references, By referencing the row, we avoid multiple re-renders and bugs.
+  onRowAdded?: (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => void;
   isActive: boolean;
   shouldRenderInlineButtons: boolean;
   shouldShowRowsInlineControls: boolean;
@@ -45,6 +46,8 @@ export interface BeeTableTdProps<R extends object> {
   column: ReactTable.ColumnInstance<R>;
   resizerStopBehavior: ResizerStopBehavior;
   lastColumnMinWidth?: number;
+  onDataCellClick?: (columnID: string) => void;
+  onDataCellKeyUp?: (columnID: string) => void;
 }
 
 export type HoverInfo =
@@ -66,6 +69,8 @@ export function BeeTableTd<R extends object>({
   resizerStopBehavior,
   onRowAdded,
   lastColumnMinWidth,
+  onDataCellClick,
+  onDataCellKeyUp,
 }: BeeTableTdProps<R>) {
   const [isResizing, setResizing] = useState(false);
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
@@ -102,13 +107,16 @@ export function BeeTableTd<R extends object>({
 
   const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
 
+  // FIXME: The BeeTable shouldn't know about DMN or GWT
+  // The following useEffect shouldn't be placed here.
   const { beeGwtService, editorRef } = useBoxedExpressionEditor();
-
   useEffect(() => {
-    if (isActive && column.isRowIndexColumn) {
-      beeGwtService?.selectObject("");
+    if (isActive) {
+      if (column.isRowIndexColumn) {
+        beeGwtService?.selectObject("");
+      }
     }
-  }, [beeGwtService, isActive, column]);
+  }, [beeGwtService, isActive, column.isRowIndexColumn, cell.value]);
 
   useEffect(() => {
     const td = tdRef.current;
@@ -157,7 +165,11 @@ export function BeeTableTd<R extends object>({
         return;
       }
 
-      onRowAdded?.({ beforeIndex: hoverInfo.part === "upper" ? rowIndex : rowIndex + 1 });
+      onRowAdded?.({
+        beforeIndex: hoverInfo.part === "upper" ? rowIndex : rowIndex + 1,
+        rowsCount: 1,
+        insertDirection: InsertRowColumnsDirection.BelowOrLeft,
+      });
 
       if (hoverInfo.part === "upper") {
         setHoverInfo({ isHovered: false });
@@ -203,11 +215,21 @@ export function BeeTableTd<R extends object>({
     [column.isWidthConstant, hoverInfo.isHovered, isActive, isResizing, resizingWidth?.isPivoting]
   );
 
+  const onClick = useCallback(() => {
+    return onDataCellClick?.(column.id);
+  }, [column.id, onDataCellClick]);
+
+  const onKeyUp = useCallback(() => {
+    return onDataCellKeyUp?.(column.id);
+  }, [column.id, onDataCellKeyUp]);
+
   return (
     <BeeTableCoordinatesContextProvider coordinates={coordinates}>
       <td
         onMouseDown={onMouseDown}
         onDoubleClick={onDoubleClick}
+        onClick={onClick}
+        onKeyUp={onKeyUp}
         ref={tdRef}
         tabIndex={-1}
         className={`${cssClass} ${cssClasses}`}

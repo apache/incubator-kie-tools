@@ -73,10 +73,7 @@ public class BPMNDesignerKogitoSeleniumIT {
     private static final String DIAGRAM_EXPLORER_EXPANDED = "expanded-docks-bar-E";
     private static final String DIAGRAM_PANEL = "qe-static-workbench-panel-view";
     private static final String EDITOR_CONTENT_HAS_NOT_BEEN_SET_HEADING = "//h1[@data-i18n-key='Editor_content_has_not_been_set.']";
-    private static final String ERROR_MODAL_DIALOG = "//div[@class='modal-dialog']";
-    private static final String ERROR_MODAL_BODY = "//div[@class='modal-body']";
     private static final String PROCESS_NODE = "//div[@data-field='explorerPanelBody']//a[text()='%s']";
-    private static final Boolean HEADLESS = Boolean.valueOf(System.getProperty("org.kie.bpmn.kogito.browser.headless"));
     private static final String SCREENSHOTS_DIR = System.getProperty("org.kie.bpmn.kogito.screenshots.dir");
 
     /**
@@ -96,13 +93,13 @@ public class BPMNDesignerKogitoSeleniumIT {
 
     @BeforeClass
     public static void setupClass() {
-        WebDriverManager.firefoxdriver().useMirror().setup();
+        WebDriverManager.firefoxdriver().setup();
     }
 
     @Before
     public void openBPMNDesigner() {
         final FirefoxOptions firefoxOptions = new FirefoxOptions();
-        firefoxOptions.setHeadless(HEADLESS);
+        firefoxOptions.addArguments("--headless");
         driver = new FirefoxDriver(firefoxOptions);
         driver.manage().window().maximize();
 
@@ -300,6 +297,6 @@ public class BPMNDesignerKogitoSeleniumIT {
     }
 
     private WebDriverWait waitOperation() {
-        return new WebDriverWait(driver, Duration.ofSeconds(10).getSeconds());
+        return new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 }

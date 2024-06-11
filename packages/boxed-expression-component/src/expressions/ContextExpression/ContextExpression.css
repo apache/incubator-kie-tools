@@ -29,7 +29,7 @@
   padding: 4px;
 }
 
-.expression-container .context-entry-info-cell,
+.expression-container .expression-variable-cell,
 .expression-container .context-expression .context-result {
   height: 100%;
   display: flex;

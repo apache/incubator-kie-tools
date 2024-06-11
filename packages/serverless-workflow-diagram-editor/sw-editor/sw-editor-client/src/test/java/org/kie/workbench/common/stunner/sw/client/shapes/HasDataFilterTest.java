@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -38,7 +38,7 @@ public class HasDataFilterTest extends HasTranslationGeneralTest {
         String in = "in";
         filter.setInput(in);
 
-        assertTranslations(TEST_STRING + ":\r\n" + TEST_STRING + ": in\r\n" + TEST_STRING + ": null",
+        assertTranslations(TEST_STRING + ":\r\n" + TEST_STRING + ": in\r\n" + TEST_STRING + ": undefined",
                            hasDataFilter.getStateDataFilter(filter),
                            "Datafilter.parameter",
                            "Datafilter.input",
@@ -51,7 +51,7 @@ public class HasDataFilterTest extends HasTranslationGeneralTest {
         String out = "out";
         filter.setOutput(out);
 
-        assertTranslations(TEST_STRING + ":\r\n" + TEST_STRING + ": null\r\n" + TEST_STRING + ": out",
+        assertTranslations(TEST_STRING + ":\r\n" + TEST_STRING + ": undefined\r\n" + TEST_STRING + ": out",
                            hasDataFilter.getStateDataFilter(filter),
                            "Datafilter.parameter",
                            "Datafilter.input",
@@ -64,7 +64,7 @@ public class HasDataFilterTest extends HasTranslationGeneralTest {
         String in = "012345678901234567890123456789012345";
         filter.setInput(in);
 
-        assertTranslations(TEST_STRING + ":\r\n" + TEST_STRING + ": 012345678901234567890123456789...\r\n" + TEST_STRING + ": null",
+        assertTranslations(TEST_STRING + ":\r\n" + TEST_STRING + ": 012345678901234567890123456789...\r\n" + TEST_STRING + ": undefined",
                            hasDataFilter.getStateDataFilter(filter),
                            "Datafilter.parameter",
                            "Datafilter.input",
@@ -77,7 +77,7 @@ public class HasDataFilterTest extends HasTranslationGeneralTest {
         String out = "012345678901234567890123456789012345";
         filter.setOutput(out);
 
-        assertTranslations(TEST_STRING + ":\r\n" + TEST_STRING + ": null\r\n" + TEST_STRING + ": 012345678901234567890123456789...",
+        assertTranslations(TEST_STRING + ":\r\n" + TEST_STRING + ": undefined\r\n" + TEST_STRING + ": 012345678901234567890123456789...",
                            hasDataFilter.getStateDataFilter(filter),
                            "Datafilter.parameter",
                            "Datafilter.input",
@@ -105,7 +105,7 @@ public class HasDataFilterTest extends HasTranslationGeneralTest {
         String in = "                                                                          ";
         filter.setInput(in);
 
-        assertTranslations(TEST_STRING + ":\r\n" + TEST_STRING + ": \r\n" + TEST_STRING + ": null",
+        assertTranslations(TEST_STRING + ":\r\n" + TEST_STRING + ": \r\n" + TEST_STRING + ": undefined",
                            hasDataFilter.getStateDataFilter(filter),
                            "Datafilter.parameter",
                            "Datafilter.input",
@@ -118,7 +118,7 @@ public class HasDataFilterTest extends HasTranslationGeneralTest {
         String out = " ";
         filter.setOutput(out);
 
-        assertTranslations(TEST_STRING + ":\r\n" + TEST_STRING + ": null\r\n" + TEST_STRING + ": ",
+        assertTranslations(TEST_STRING + ":\r\n" + TEST_STRING + ": undefined\r\n" + TEST_STRING + ": ",
                            hasDataFilter.getStateDataFilter(filter),
                            "Datafilter.parameter",
                            "Datafilter.input",

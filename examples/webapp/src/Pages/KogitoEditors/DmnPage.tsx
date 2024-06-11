@@ -41,7 +41,7 @@ export function DmnPage() {
     fileExtension: "dmn",
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false,
-    path: "new-file.dmn",
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "new-file.dmn",
   });
 
   /**

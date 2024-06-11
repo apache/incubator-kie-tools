@@ -32,6 +32,26 @@ export const en: TestScenarioEditorI18n = {
     ruleDataRetrievedFromScesim:
       "Impossibile to retrieve the Java Classes from your project, therefore they have been restored from the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose its related Java Class data.",
   },
+  creationPanel: {
+    assetsGroup: "Asset type",
+    assetsOption: {
+      dmn: "Decision (DMN)",
+      noChoice: "Select a type",
+      rule: "Rule (DRL)",
+    },
+    autoFillTable: "Autofill DMN Data",
+    autoFillTableTooltip:
+      "If checked, the Test Scenario table will be automatically populated based on the provided DMN data (Input nodes assigned as GIVEN columns and Output nodes assigned as EXPECT colums)",
+    createButton: "Create",
+    dmnGroup: "Select DMN",
+    dmnNoChoice: "Select a DMN file",
+    kieSessionGroup: "KIE Session",
+    kieAgendaGroup: "Group",
+    optional: "Optional",
+    statelessSession: "Stateless Session",
+    testSkip: "Skip this file during the test",
+    title: "Create a new Test Scenario",
+  },
   drawer: {
     cheatSheet: {
       paragraph1: "To start off, use contextual menus in the table to insert or edit or delete new columns and rows.",
@@ -72,7 +92,7 @@ export const en: TestScenarioEditorI18n = {
       expression10DMN: "An empty cell is skipped from the evaluation.",
       title: "Cheatsheet",
     },
-    dataObjects: {
+    dataSelector: {
       clearSelection: "Clear selection",
       collapseAll: "Collapse all",
       dataObjectsDescriptionDMN: "DMN Nodes are Input or Decision nodes defined in your DMN asset.",
@@ -87,6 +107,12 @@ export const en: TestScenarioEditorI18n = {
       emptyDataObjectsDescriptionRule: "Impossible to retrieve the Java Classes from project.",
       expandAll: "Expand all",
       insertDataObject: "Assign",
+      insertDataObjectTooltipColumnSelectionMessage:
+        "Please select an column's field header to add or change a Type in the table.",
+      insertDataObjectTooltipDataObjectSelectionMessage:
+        "Please select a single field to assign it in the selected column",
+      insertDataObjectTooltipDataObjectAlreadyAssignedMessage: "The selected Field has been already assigned",
+      insertDataObjectTooltipDataObjectAssignMessage: "Click here to assign the selected field to the focused column.",
       titleDMN: "DMN Nodes selector",
       titleRule: "Java Classes selector",
     },
@@ -113,11 +139,40 @@ export const en: TestScenarioEditorI18n = {
   },
   sidebar: {
     cheatSheetTooltip: "CheatSheet: Useful information for Test Scenario Usage",
-    dataObjectsTooltip: "Selector: It provides a tool to edit your Scenarios",
+    dataSelectorTooltip: "Selector: It provides a tool to edit your Scenarios",
     settingsTooltip: "Setting: Properties of this Test Scenario asset",
   },
   tab: {
     backgroundTabTitle: "Background",
+    backgroundTabInfo: "For GIVEN data shared with the multiple test scenarios, you can define them only once here.",
     scenarioTabTitle: "Test Scenario",
+    scenarioTabInfo:
+      "The rows of the Test Scenario table define the individual test scenarios. A test scenario has a unique index number, description, set of input values (the GIVEN values), and a set of output values (the EXPECT values).",
+  },
+  table: {
+    simulation: {
+      singleEntry: "Scenario",
+    },
+    background: {},
+    copy: "Copy",
+    cut: "Cut",
+    delete: "Delete",
+    deleteField: "Delete Field",
+    deleteInstance: "Delete Instance",
+    duplicate: "Duplicate",
+    expect: "Expect",
+    field: "Field",
+    given: "Given",
+    insert: "Insert",
+    insertAbove: "Insert Above",
+    insertBelow: "Insert Below",
+    insertLeftField: "Insert Field Left",
+    insertRightField: "Insert Field Right",
+    insertLeftInstance: "Insert Instance Left",
+    insertRightInstance: "Insert Instance Right",
+    instance: "Instance",
+    paste: "Paste",
+    reset: "Reset",
+    selection: "Selection",
   },
 };

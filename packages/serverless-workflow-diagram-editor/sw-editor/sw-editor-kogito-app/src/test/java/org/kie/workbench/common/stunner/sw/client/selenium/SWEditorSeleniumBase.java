@@ -64,8 +64,6 @@ public class SWEditorSeleniumBase {
 
     private static final String DIAGRAM_PANEL = "root-container";
     protected static final String CANVAS_PANEL = "canvas-panel";
-    private static final Boolean HEADLESS = Boolean.valueOf(System.getProperty("org.kie.sw.editor.browser.headless"));
-
     /**
      * Selenium web driver
      */
@@ -75,7 +73,7 @@ public class SWEditorSeleniumBase {
 
     @BeforeClass
     public static void setupClass() {
-        WebDriverManager.chromedriver().useMirror().setup();
+        WebDriverManager.chromedriver().setup();
         WebDriverManager.chromedriver().clearDriverCache().setup();
     }
 
@@ -85,7 +83,7 @@ public class SWEditorSeleniumBase {
                 .usingAnyFreePort()
                 .build();
         ChromeOptions options = new ChromeOptions()
-                .setHeadless(HEADLESS);
+                .addArguments("--headless");;
         driver = new ChromeDriver(service, options);
 
         driver.manage().window().maximize();
@@ -147,6 +145,6 @@ public class SWEditorSeleniumBase {
     }
 
     protected WebDriverWait waitOperation() {
-        return new WebDriverWait(driver, Duration.ofSeconds(10).getSeconds());
+        return new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 }

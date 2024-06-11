@@ -4,21 +4,21 @@
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "files": [
     "dist"
   ],
   "scripts": {
     "build:dev": "run-script-os",
-    "build:dev:linux:darwin": "mvn clean install -DskipTests -DskipITs",
-    "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests `-DskipITs \"",
+    "build:dev:linux:darwin": "mvn clean install -DskipTests -DskipITs && pnpm dist",
+    "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests `-DskipITs\" && pnpm dist",
     "build:prod": "run-script-os",
     "build:prod:linux:darwin": "mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -DskipITs=$(build-env endToEndTests.run --not) && pnpm dist",
     "build:prod:win32": "pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-DskipITs=$(build-env endToEndTests.run --not)\" && pnpm dist",
@@ -32,6 +32,9 @@
     "rename:app:linux:darwin": "mv dist/quarkus-app dist/extended-services-java",
     "rename:app:win32": "ren dist\\quarkus-app extended-services-java",
     "start": "mvn quarkus:dev"
+  },
+  "dependencies": {
+    "@kie-tools/maven-base": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools/maven-config-setup-helper": "workspace:*",

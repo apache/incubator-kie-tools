@@ -5,15 +5,15 @@
   "license": "Apache-2.0",
   "publisher": "kie-group",
   "keywords": [],
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
-  "browser": "./dist/extension/extension.js",
+  "browser": "./dist/extension/extensionWeb.js",
   "main": "dist/extension/extension.js",
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev",
@@ -22,7 +22,7 @@
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/dmn_vscode_extension_$npm_package_version.vsix",
     "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
-    "watch": "webpack"
+    "watch": "export WEBPACK__sourceMaps=true; WEBPACK__minimize=false; webpack --env dev"
   },
   "dependencies": {
     "@kie-tools-core/backend": "workspace:*",
@@ -30,8 +30,8 @@
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/vscode-extension": "workspace:*",
-    "@kie-tools/kie-bc-editors": "workspace:*",
-    "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*"
+    "@kie-tools/dmn-editor-envelope": "workspace:*",
+    "@kie-tools/kie-bc-editors": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
@@ -39,11 +39,15 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
+    "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*",
     "@types/vscode": "1.67.0",
     "@vscode/test-web": "^0.0.30",
-    "@vscode/vsce": "^2.20.1",
+    "@vscode/vsce": "^2.22.0",
+    "buffer": "^6.0.3",
     "copy-webpack-plugin": "^11.0.0",
+    "process": "^0.11.10",
     "rimraf": "^3.0.2",
+    "stream-browserify": "3.0.0",
     "webpack": "^5.88.2",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1",
@@ -52,7 +56,7 @@
   "engines": {
     "vscode": "^1.67.0"
   },
-  "displayName": "KIE DMN Editor",
+  "displayName": "Apache KIE™ DMN Editor",
   "categories": [
     "Other"
   ],
@@ -64,11 +68,23 @@
           "dark": "./static/svg-icon-dark.png",
           "light": "./static/svg-icon-light.png"
         },
-        "title": "Get DMN Editor Preview SVG"
+        "title": "Generate DMN Editor preview SVG (classic)"
       },
       {
         "command": "extension.kogito.silentlyGenerateSvgDmn",
-        "title": "Generate SVG without any notification"
+        "title": "Generate DMN Editor preview SVG (classic) without any notification"
+      },
+      {
+        "command": "extension.kie.tools.generatePreviewSvgDmn",
+        "icon": {
+          "dark": "./static/svg-icon-dark.png",
+          "light": "./static/svg-icon-light.png"
+        },
+        "title": "Generate DMN preview SVG"
+      },
+      {
+        "command": "extension.kie.tools.silentlyGenerateSvgDmn",
+        "title": "Generate DMN preview SVG without any notification"
       }
     ],
     "configuration": {
@@ -92,13 +108,22 @@
     },
     "customEditors": [
       {
-        "displayName": "DMN/SceSim Editors",
+        "displayName": "KIE DMN/SceSim Editors (classic)",
         "selector": [
           {
             "filenamePattern": "*.{dmn,scesim}"
           }
         ],
         "viewType": "kieKogitoWebviewEditorsDmn"
+      },
+      {
+        "displayName": "KIE DMN Editor",
+        "selector": [
+          {
+            "filenamePattern": "*.dmn"
+          }
+        ],
+        "viewType": "kieToolsDmnEditor"
       }
     ],
     "javaExtensions": [
@@ -134,14 +159,23 @@
       "commandPalette": [
         {
           "command": "extension.kogito.getPreviewSvgDmn",
-          "when": "resourceLangId =~ /dmn/"
+          "when": "resourceLangId =~ /dmn/ && activeCustomEditorId == 'kieKogitoWebviewEditorsDmn'"
+        },
+        {
+          "command": "extension.kie.tools.generatePreviewSvgDmn",
+          "when": "resourceLangId =~ /dmn/ && activeCustomEditorId == 'kieToolsDmnEditor'"
         }
       ],
       "editor/title": [
         {
           "command": "extension.kogito.getPreviewSvgDmn",
           "group": "navigation",
-          "when": "resourceLangId =~ /dmn/"
+          "when": "resourceLangId =~ /dmn/ && activeCustomEditorId == 'kieKogitoWebviewEditorsDmn'"
+        },
+        {
+          "command": "extension.kie.tools.generatePreviewSvgDmn",
+          "group": "navigation",
+          "when": "resourceLangId =~ /dmn/ && activeCustomEditorId == 'kieToolsDmnEditor'"
         }
       ]
     }
