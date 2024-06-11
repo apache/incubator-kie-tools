@@ -22,9 +22,10 @@ pipeline {
     }
 
     environment {
-        IMAGE_ACCOUNT = 'docker.io/apache'
+        IMAGE_REGISTRY = 'docker.io'
+        IMAGE_ACCOUNT = 'apache'
         IMAGE_NAME = 'incubator-kie-tools-ci-build'
-        IMAGE_NAME_TAG = "${IMAGE_ACCOUNT}/${IMAGE_NAME}:${params.IMAGE_TAG}"
+        IMAGE_NAME_TAG = "${IMAGE_REGISTRY}/${IMAGE_ACCOUNT}/${IMAGE_NAME}:${params.IMAGE_TAG}"
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
     }
 
@@ -70,6 +71,7 @@ pipeline {
             steps {
                 script {
                     IMAGE_EXISTS = dockerUtils.checkImageExistsInRegistry(
+                        "${IMAGE_REGISTRY}",
                         "${IMAGE_ACCOUNT}",
                         "${IMAGE_NAME}",
                         "${params.IMAGE_TAG}",
@@ -96,7 +98,7 @@ pipeline {
                             """
                             IMAGE_TAGS = "${params.IMAGE_TAG} latest"
                         } else {
-                            sh "docker build -t ${IMAGE_NAME_TAG} --label 'quay.expires-after=1d' -f .ci/incubator-kie-tools-ci-build.Dockerfile ."
+                            sh "docker build -t ${IMAGE_NAME_TAG} -f .ci/incubator-kie-tools-ci-build.Dockerfile ."
                             IMAGE_TAGS = "${params.IMAGE_TAG}"
                         }
                     }
@@ -111,10 +113,12 @@ pipeline {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
+                        "${IMAGE_REGISTRY}",
                         "${IMAGE_ACCOUNT}",
                         "${IMAGE_NAME}",
                         "${IMAGE_TAGS}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
                 }
             }
@@ -135,6 +139,7 @@ pipeline {
                     npm --version
                     pnpm --version
                     python --version
+                    docker --version
                     helm version
                     go version
                 '''.trim()

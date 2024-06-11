@@ -140,7 +140,8 @@ pipeline {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry}/${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount}",
+                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry}",
+                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
