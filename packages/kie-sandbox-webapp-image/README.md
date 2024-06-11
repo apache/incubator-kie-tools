@@ -37,7 +37,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
   export KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry=<registry>
   export KIE_SANDBOX_WEBAPP_IMAGE__imageAccount=<account>
   export KIE_SANDBOX_WEBAPP_IMAGE__imageName=<image-name>
-  export KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags=<image-tags>
+  export KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTag=<image-tag>
   export KIE_SANDBOX_WEBAPP_IMAGE__imagePort=<port>
   ```
 

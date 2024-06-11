@@ -37,7 +37,7 @@ The image name and tags can be customized by setting the following environment v
 $ export KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry=<registry>
 $ export KIE_SANDBOX_EXTENDED_SERVICES__imageAccount=<account>
 $ export KIE_SANDBOX_EXTENDED_SERVICES__imageName=<image-name>
-$ export KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags=<image-tags>
+$ export KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTag=<image-tag>
 $ export KIE_SANDBOX_EXTENDED_SERVICES__imagePort=<port>
 ```
 

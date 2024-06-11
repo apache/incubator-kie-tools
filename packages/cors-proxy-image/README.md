@@ -37,7 +37,7 @@ The image name, tags and port can be customized by setting the following environ
 $ export CORS_PROXY_IMAGE__imageRegistry=<registry>
 $ export CORS_PROXY_IMAGE__imageAccount=<account>
 $ export CORS_PROXY_IMAGE__imageName=<image-name>
-$ export CORS_PROXY_IMAGE__imageBuildTags=<image-tags>
+$ export CORS_PROXY_IMAGE__imageBuildTag=<image-tag>
 $ export CORS_PROXY_IMAGE__imagePort=<port>
 $ export CORS_PROXY_IMAGE__imageOrigin=<origin>
 $ export CORS_PROXY_IMAGE__imageVerbose=<verbose>

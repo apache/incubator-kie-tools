@@ -25,10 +25,6 @@ const sonataflowBuilderImageEnv = require("@kie-tools/sonataflow-builder-image/e
 
 module.exports = composeEnv([rootEnv, serverlessLogicWebToolsSwfBuilderImageEnv, sonataflowBuilderImageEnv], {
   vars: varsWithName({
-    SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags: {
-      default: rootEnv.env.root.streamName,
-      description: "",
-    },
     SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE__baseImageUrl: {
       default: `${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.registry}/${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.account}/${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.name}:${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.tag}`,
       description: "The image used in the FROM import.",
@@ -37,7 +33,6 @@ module.exports = composeEnv([rootEnv, serverlessLogicWebToolsSwfBuilderImageEnv,
   get env() {
     return {
       swfBuilderImage: {
-        buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags),
         baseImageUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE__baseImageUrl),
       },
     };
