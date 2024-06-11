@@ -21,32 +21,40 @@ package org.kogito.core.internal.api;
 
 public class GetPublicResult {
 
-    private String fqcn;
-    private String accessor;
+    /**
+     * The Java Class that cointans the below accessor in FQCN format (eg. `org.Author`)
+     */
+    private String javaClassFqcn;
+    /**
+     * Accessor's name (eg. `getName()` if a method, `name` if a field
+     */
+    private String accessorName;
+    /**
+     * Accessor's type in FQCN format (eg. `java.lang.String`)
+     */
+    private String accessorTypeFqcn;
 
-    private String type;
-
-    public String getFqcn() {
-        return fqcn;
+    public String getJavaClassFqcn() {
+        return javaClassFqcn;
     }
 
-    public void setFqcn(String fqcn) {
-        this.fqcn = fqcn;
+    public void setJavaClassFqcn(String javaClassFqcn) {
+        this.javaClassFqcn = javaClassFqcn;
     }
 
-    public String getAccessor() {
-        return accessor;
+    public String getAccessorName() {
+        return accessorName;
     }
 
-    public void setAccessor(String accessor) {
-        this.accessor = accessor;
+    public void setAccessorName(String accessorName) {
+        this.accessorName = accessorName;
     }
 
-    public String getType() {
-        return type;
+    public String getAccessorTypeFqcn() {
+        return accessorTypeFqcn;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setAccessorTypeFqcn(String accessorTypeFqcn) {
+        this.accessorTypeFqcn = accessorTypeFqcn;
     }
 }

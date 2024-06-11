@@ -6,20 +6,21 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 package org.kogito.core.internal.handlers;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -50,41 +51,12 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
         GetPublicParameters parameters = checkParameters(arguments);
         BuildInformation autoCompleteBuildInformation =
                 javaEngine.buildPublicContent(this.autocompleteHandler.getActivatorPath(),
-                                              parameters.getFqcn(),
-                                              parameters.getQuery());
+                        parameters.getFqcn(),
+                        parameters.getQuery());
         JavaLanguageServerPlugin.logInfo(autoCompleteBuildInformation.getText());
         List<CompletionItem> items = this.autocompleteHandler.handle("GetAccessorsHandler", autoCompleteBuildInformation);
 
-        var publicResults = this.transformCompletionItemsToResult(parameters.getFqcn(), items);
-
-        /* Decorating the accessor results with their FQCN type */
-        publicResults.stream()
-                .filter(getPublicResult -> !getPublicResult.getType().equalsIgnoreCase("void"))
-                .forEach(getPublicResult -> {
-                    JavaLanguageServerPlugin.logInfo("Hovering to find FQCN for " + getPublicResult.getAccessor());
-                    BuildInformation hoverBuildInformation =
-                            javaEngine.buildVarTypePublicContent(this.hoverHandler.getActivatorPath(),
-                                                                 getPublicResult.getFqcn(),
-                                                                 getPublicResult.getAccessor() + ";");
-
-                    JavaLanguageServerPlugin.logInfo(hoverBuildInformation.getText());
-
-                    List<TypeHierarchyItem> hoverResult = this.hoverHandler.handle("GetAccessorsHandler", hoverBuildInformation);
-                    for (TypeHierarchyItem item : hoverResult) {
-                        if (item.getData() != null) {
-                            JavaLanguageServerPlugin.logInfo("CALL HIERARCHY DATA: " + item.getData());
-                        }
-                        JavaLanguageServerPlugin.logInfo("CALL HIERARCHY Name: " + item.getName());
-                        if (item.getDetail() != null) {
-                            JavaLanguageServerPlugin.logInfo("CALL HIERARCHY Detail: " + item.getDetail());
-                        }
-                        if (item.getUri() != null) {
-                            JavaLanguageServerPlugin.logInfo("CALL HIERARCHY Detail: " + item.getUri());
-                        }
-                    }
-                });
-
-        return publicResults;
+        return this.transformCompletionItemsToResult(parameters.getFqcn(), items);
     }
 
     private GetPublicParameters checkParameters(List<Object> arguments) {
@@ -105,35 +77,42 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
                 .collect(Collectors.toList());
     }
 
-    protected GetPublicResult getAccessor(CompletionItem item, String fqcn) {
-        GetPublicResult result = new GetPublicResult();
-        result.setFqcn(fqcn);
-        result.setAccessor(item.getLabelDetails().getDetail() != null ?
+    protected GetPublicResult getAccessor(CompletionItem item, String javaClassFqcn) {
+        String accessorName = item.getLabelDetails().getDetail() != null ?
                 item.getLabel() + item.getLabelDetails().getDetail() :
-                item.getLabel());
-        /* Retrieving the class type SIMPLE NAME */
-        String type = item.getLabelDetails().getDescription();
-        /* Retrieving the class type FQCN */
-        /* The API we used to retrieve the FQNC are no more available. To enable the Project
-         * compilation, the following block is a temporary commented. The impact on the feature, is
-         * that the Fecthing feature will no work properly, until we found an alternative solution
-         * https://github.com/apache/incubator-kie-issues/issues/114
-         */
-        /*
-        Map<String,String> data = (Map<String, String>) item.getData();
-        for (Map.Entry<String, String> entry : data.entrySet()) {
-            JavaLanguageServerPlugin.logInfo("ENTRY: " + entry.getKey() + " " + entry.getValue());
-        }
-        if (data != null && data.containsKey(DATA_FIELD_SIGNATURE)) {
-            String fqcnType = data.get(DATA_FIELD_SIGNATURE);
-            /* The DATA_FIELD_SIGNATURE format is: `method()Ljava.lang.String;` */ /*
-            if (fqcnType != null && fqcnType.contains(")L")) {
-                type = fqcnType.split("\\)L")[1];
-                type = type.replaceAll(";$", "");
-            }
-        } */
-        result.setType(type);
+                item.getLabel();
+        String accessorTypeSimpleName = item.getLabelDetails().getDescription();
+
+        GetPublicResult result = new GetPublicResult();
+        result.setJavaClassFqcn(javaClassFqcn);
+        result.setAccessorName(accessorName);
+        result.setAccessorTypeFqcn(retrieveAccessorTypeFqcn(javaClassFqcn, accessorName).orElse(accessorTypeSimpleName));
+
+        JavaLanguageServerPlugin.logInfo(" *********** RESULTS ");
+        JavaLanguageServerPlugin.logInfo(" JavaClassFqcn " + result.getJavaClassFqcn());
+        JavaLanguageServerPlugin.logInfo(" AccessorName " + result.getAccessorName());
+        JavaLanguageServerPlugin.logInfo(" AccessorTypeFqcn " + result.getAccessorTypeFqcn());
+        JavaLanguageServerPlugin.logInfo(" *********** RESULTS END " );
 
         return result;
     }
+
+    private Optional<String> retrieveAccessorTypeFqcn(String javaClassFqcn, String accessorName) {
+        BuildInformation hoverBuildInformation =
+                javaEngine.buildVarTypePublicContent(this.hoverHandler.getActivatorPath(),
+                        javaClassFqcn,
+                        accessorName + ";");
+
+        List<TypeHierarchyItem> hoverResult = this.hoverHandler.handle("GetAccessorsHandler", hoverBuildInformation);
+
+        if (hoverResult.isEmpty() || hoverResult.size() > 1) {
+            return Optional.empty();
+        }
+
+        String fullPackage = hoverResult.get(0).getDetail();
+        String classSimpleName = hoverResult.get(0).getName();
+
+        return Optional.of(fullPackage + "." + classSimpleName);
+    }
+
 }
