@@ -18,13 +18,14 @@ pipeline {
     agent any
 
     parameters {
-        string(description: 'Image tag', name: 'IMAGE_TAG', defaultValue: 'latest')
+        string(description: 'Image tag', name: 'IMAGE_TAG', defaultValue: 'main')
     }
 
     environment {
-        IMAGE_ACCOUNT = 'quay.io/kie-tools'
-        IMAGE_NAME = 'kie-tools-ci-build'
-        IMAGE_NAME_TAG = "${IMAGE_ACCOUNT}/${IMAGE_NAME}:${params.IMAGE_TAG}"
+        IMAGE_REGISTRY = 'docker.io'
+        IMAGE_ACCOUNT = 'apache'
+        IMAGE_NAME = 'incubator-kie-tools-ci-build'
+        IMAGE_NAME_TAG = "${IMAGE_REGISTRY}/${IMAGE_ACCOUNT}/${IMAGE_NAME}:${params.IMAGE_TAG}"
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
     }
 
@@ -70,10 +71,12 @@ pipeline {
             steps {
                 script {
                     IMAGE_EXISTS = dockerUtils.checkImageExistsInRegistry(
+                        "${IMAGE_REGISTRY}",
                         "${IMAGE_ACCOUNT}",
                         "${IMAGE_NAME}",
                         "${params.IMAGE_TAG}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
                 }
             }
@@ -91,11 +94,11 @@ pipeline {
                         if (!env.CHANGE_ID && env.BRANCH_NAME == 'main') {
                             sh """
                             docker build -t ${IMAGE_NAME_TAG} -f .ci/incubator-kie-tools-ci-build.Dockerfile .
-                            docker tag ${IMAGE_NAME_TAG} ${IMAGE_ACCOUNT}/${IMAGE_NAME}:latest
+                            docker tag ${IMAGE_NAME_TAG} ${IMAGE_ACCOUNT}/${IMAGE_NAME}:main
                             """
                             IMAGE_TAGS = "${params.IMAGE_TAG} latest"
                         } else {
-                            sh "docker build -t ${IMAGE_NAME_TAG} --label 'quay.expires-after=1d' -f .ci/incubator-kie-tools-ci-build.Dockerfile ."
+                            sh "docker build -t ${IMAGE_NAME_TAG} -f .ci/incubator-kie-tools-ci-build.Dockerfile ."
                             IMAGE_TAGS = "${params.IMAGE_TAG}"
                         }
                     }
@@ -110,10 +113,12 @@ pipeline {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
+                        "${IMAGE_REGISTRY}",
                         "${IMAGE_ACCOUNT}",
                         "${IMAGE_NAME}",
                         "${IMAGE_TAGS}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
                 }
             }
@@ -133,6 +138,9 @@ pipeline {
                     node --version
                     npm --version
                     pnpm --version
+                    python --version
+                    docker --version
+                    helm version
                     go version
                 '''.trim()
             }

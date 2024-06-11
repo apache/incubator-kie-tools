@@ -9,6 +9,7 @@ replace github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api v
 replace github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj v0.0.0 => ./node_modules/@kie-tools/sonataflow-operator/workflowproj
 
 require (
+	github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api v0.0.0
 	github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj v0.0.0
 	github.com/beevik/etree v1.2.0
 	github.com/docker/docker v24.0.9+incompatible
@@ -23,7 +24,6 @@ require (
 
 require (
 	github.com/Microsoft/go-winio v0.6.1 // indirect
-	github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api v0.0.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
