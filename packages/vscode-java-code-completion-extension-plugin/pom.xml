@@ -36,6 +36,10 @@
   <name>vscode-java-code-completion-extension-plugin :: parent</name>
   <description>vscode-java-code-completion-extension-plugin parent</description>
 
+  <modules>
+    <module>vscode-java-code-completion-extension-plugin-core</module>
+  </modules>
+
   <properties>
     <tycho.version>3.0.5</tycho.version>
     <tycho.extras.version>${tycho.version}</tycho.extras.version>
@@ -52,6 +56,7 @@
     <jacoco.destFile>${project.build.directory}/jacoco.exec</jacoco.destFile>
     <sonar.jacoco.reportPath>${jacoco.destFile}</sonar.jacoco.reportPath>
   </properties>
+  
   <repositories>
     <repository>
       <id>jdt.ls.p2</id>
@@ -63,6 +68,13 @@
       <url>https://repo.eclipse.org/content/repositories/jdtls-releases/</url>
     </repository>
   </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>cbi-release</id>
+      <url>https://repo.eclipse.org/content/repositories/cbi-releases/</url>
+    </pluginRepository>
+  </pluginRepositories>
+
   <build>
     <plugins>
       <plugin>
@@ -225,13 +237,4 @@
       </build>
     </profile>
   </profiles>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>cbi-release</id>
-      <url>https://repo.eclipse.org/content/repositories/cbi-releases/</url>
-    </pluginRepository>
-  </pluginRepositories>
-  <modules>
-    <module>vscode-java-code-completion-extension-plugin-core</module>
-  </modules>
 </project>

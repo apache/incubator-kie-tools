@@ -25,7 +25,7 @@
     "@kie-tools-scripts/update-version": "workspace:*",
     "@nice-move/prettier-plugin-package-json": "^0.6.1",
     "@prettier/plugin-xml": "^2",
-    "@types/node": "^18.13.0",
+    "@types/node": "^20.14.2",
     "husky": "^6.0.0",
     "postinstall-postinstall": "^2.1.0",
     "prettier": "^2.8.8",
@@ -36,10 +36,10 @@
     "react-dropzone": "^11.4.2"
   },
   "engines": {
-    "node": ">=18",
-    "pnpm": "8.7.0"
+    "node": ">=20",
+    "pnpm": "9.3.0"
   },
-  "packageManager": "pnpm@8.7.0",
+  "packageManager": "pnpm@9.3.0",
   "pnpm": {
     "packageExtensions": {
       "monaco-editor-webpack-plugin": {

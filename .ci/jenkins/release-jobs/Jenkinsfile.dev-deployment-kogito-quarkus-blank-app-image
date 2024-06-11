@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -140,10 +140,12 @@ pipeline {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry}/${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account}",
+                        "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry}",
+                        "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account}",
                         "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name}",
                         "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag}",
-                        "${pipelineVars.dockerHubApacheKiePushCredentialsId}"
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
                 }
             }
