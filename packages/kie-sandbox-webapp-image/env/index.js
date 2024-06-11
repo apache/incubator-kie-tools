@@ -25,23 +25,23 @@ module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry: {
       default: "docker.io",
-      description: "",
+      description: "E.g., `docker.io` or `quay.io`.",
     },
     KIE_SANDBOX_WEBAPP_IMAGE__imageAccount: {
       default: "apache",
-      description: "",
+      description: "E.g,. `apache` or `kie-tools-bot`",
     },
     KIE_SANDBOX_WEBAPP_IMAGE__imageName: {
       default: "incubator-kie-sandbox-webapp",
-      description: "",
+      description: "Name of the image itself.",
     },
-    KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags: {
+    KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTag: {
       default: rootEnv.env.root.streamName,
-      description: "",
+      description: "Tag version of this image. E.g., `main` or `10.0.x` or `10.0.0",
     },
     KIE_SANDBOX_WEBAPP_IMAGE__imagePort: {
       default: "8080",
-      description: "",
+      description: "The internal container port.",
     },
   }),
   get env() {
@@ -50,7 +50,7 @@ module.exports = composeEnv([rootEnv], {
         registry: getOrDefault(this.vars.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry),
         account: getOrDefault(this.vars.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount),
         name: getOrDefault(this.vars.KIE_SANDBOX_WEBAPP_IMAGE__imageName),
-        buildTags: getOrDefault(this.vars.KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags),
+        buildTag: getOrDefault(this.vars.KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTag),
         port: getOrDefault(this.vars.KIE_SANDBOX_WEBAPP_IMAGE__imagePort),
       },
     };

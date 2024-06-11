@@ -49,7 +49,7 @@ pipeline {
         KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry = 'docker.io'
         KIE_SANDBOX_WEBAPP_IMAGE__imageAccount = 'apache'
         KIE_SANDBOX_WEBAPP_IMAGE__imageName = 'incubator-kie-sandbox-webapp'
-        KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags = "latest ${params.RELEASE_VERSION}"
+        KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTag = "${params.RELEASE_VERSION}"
         ONLINE_EDITOR__buildInfo = "${params.RELEASE_VERSION}"
         ONLINE_EDITOR__extendedServicesDownloadUrlLinux = "https://github.com/apache/incubator-kie-tools/releases/download/${params.RELEASE_VERSION}/kie_sandbox_extended_services_linux_${params.RELEASE_VERSION}.tar.gz"
         ONLINE_EDITOR__extendedServicesDownloadUrlMacOs = "https://github.com/apache/incubator-kie-tools/releases/download/${params.RELEASE_VERSION}/kie_sandbox_extended_services_macos_${params.RELEASE_VERSION}.dmg"
@@ -164,7 +164,7 @@ pipeline {
                         "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}",
                         "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}",
                         "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageName}",
-                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags}",
+                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
