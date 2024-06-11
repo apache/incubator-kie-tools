@@ -85,7 +85,7 @@ RUN source $HOME/.nvm/nvm.sh && \
 
 # PNPM setup
 RUN source $HOME/.nvm/nvm.sh && \
-    npm install -g pnpm@8.7.0 && \
+    npm install -g pnpm@9.3.0 && \
     sudo update-alternatives --install /usr/local/bin/pnpm pnpm $(which pnpm) 1
 
 # Maven setup
