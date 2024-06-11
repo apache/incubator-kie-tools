@@ -22,7 +22,7 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 const rootEnv = require("@kie-tools/root-env/env");
 
 const {
-  extendedServicesJava: { env: extendedServicesJavaEnv },
+  env: { extendedServicesJava: extendedServicesJavaEnv },
 } = require("@kie-tools/extended-services-java/env");
 
 module.exports = composeEnv([rootEnv], {

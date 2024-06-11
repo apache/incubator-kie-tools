@@ -21,7 +21,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
 ## Additional requirements
 
-- docker or podman
+- docker
 
 ## Build
 
@@ -54,24 +54,12 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
   docker images
   ```
 
-  or
-
-  ```bash
-  podman images
-  ```
-
 ## Run
 
 - Start up a clean container with:
 
   ```bash
   docker run -t -p 8080:8080 -i --rm docker.io/apache/incubator-kie-kogito-task-console:daily-dev
-  ```
-
-  or
-
-  ```bash
-  podman run -t -p 8080:8080 -i --rm docker.io/apache/incubator-kie-kogito-task-console:daily-dev
   ```
 
   Task Console will be up at http://localhost:8080

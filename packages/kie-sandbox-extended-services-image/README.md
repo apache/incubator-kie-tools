@@ -21,7 +21,7 @@ This package contains the `Containerfile` and scripts to build a container image
 
 ## Additional requirements
 
-- docker or podman
+- docker
 
 ## Build
 
@@ -55,24 +55,12 @@ Then check out the image:
 $ docker images
 ```
 
-or
-
-```bash
-$ podman images
-```
-
 ## Run
 
 Start up a new container with:
 
 ```bash
 $ docker run -p 21345:21345 -i --rm docker.io/apache/incubator-kie-sandbox-extended-services:latest
-```
-
-or
-
-```bash
-$ podman run -p 21345:21345 -i --rm docker.io/apache/incubator-kie-sandbox-extended-services:latest
 ```
 
 The service will be up at http://localhost:21345
