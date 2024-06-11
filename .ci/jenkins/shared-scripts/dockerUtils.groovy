@@ -18,13 +18,15 @@
 /**
 * Push an image to a given registry
 */
-def pushImageToRegistry(String registry, String image, String tags, String userCredentialsId, String tokenCredentialsId) {
+def pushImageToRegistry(String registry, String account, String image, String tags, String userCredentialsId, String tokenCredentialsId) {
     withCredentials([string(credentialsId: userCredentialsId, variable: 'DOCKER_USER')]) {
         withCredentials([string(credentialsId: tokenCredentialsId, variable: 'DOCKER_TOKEN')]) {
-            sh "set +x && docker login -u $DOCKER_USER -p $DOCKER_TOKEN $registry"
+            sh """
+            echo "${DOCKER_TOKEN}" | docker login -u "${DOCKER_USER}" --password-stdin $registry
+            """.trim()
             tagList = tags.split(' ')
             for (tag in tagList) {
-                sh "docker push $registry/$image:$tag"
+                sh "docker push $registry/$account/$image:$tag"
             }
             sh 'docker logout'
         }
@@ -34,12 +36,14 @@ def pushImageToRegistry(String registry, String image, String tags, String userC
 /**
 * @return bool image exists in a given registry
 */
-def checkImageExistsInRegistry(String registry, String image, String tag, String userCredentialsId, String tokenCredentialsId) {
+def checkImageExistsInRegistry(String registry, String account, String image, String tag, String userCredentialsId, String tokenCredentialsId) {
     withCredentials([string(credentialsId: userCredentialsId, variable: 'DOCKER_USER')]) {
         withCredentials([string(credentialsId: tokenCredentialsId, variable: 'DOCKER_TOKEN')]) {
-            sh "set +x && docker login -u $DOCKER_USER -p $DOCKER_TOKEN $registry"
+            sh """
+            echo "${DOCKER_TOKEN}" | docker login -u "${DOCKER_USER}" --password-stdin $registry
+            """.trim()
             result = sh returnStatus: true, script: """
-            docker manifest inspect $registry/$image:$tag > /dev/null 2>&1
+            docker manifest inspect $registry/$account/$image:$tag > /dev/null 2>&1
             """.trim()
             sh 'docker logout'
             return result == 0

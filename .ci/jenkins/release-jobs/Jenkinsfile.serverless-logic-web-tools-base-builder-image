@@ -140,7 +140,8 @@ pipeline {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry}/${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount}",
+                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry}",
+                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
