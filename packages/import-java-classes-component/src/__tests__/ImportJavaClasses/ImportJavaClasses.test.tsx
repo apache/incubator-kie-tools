@@ -20,10 +20,7 @@
 import * as React from "react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import { ImportJavaClasses, GWTLayerService, JavaCodeCompletionService } from "../../components";
-import {
-  JavaCodeCompletionAccessor,
-  JavaCodeCompletionClass,
-} from "@kie-tools-core/vscode-java-code-completion/dist/api";
+import { JavaCodeCompletionClass } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 
 describe("ImportJavaClasses component tests", () => {
   test("should render ImportJavaClasses Button component", async () => {

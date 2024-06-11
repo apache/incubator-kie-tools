@@ -26,7 +26,13 @@ import org.eclipse.jdt.ls.core.internal.IDelegateCommandHandler;
 import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
 import org.kogito.core.internal.engine.ActivationChecker;
 import org.kogito.core.internal.engine.JavaEngine;
-import org.kogito.core.internal.handlers.*;
+import org.kogito.core.internal.handlers.AutocompleteHandler;
+import org.kogito.core.internal.handlers.GetAccessorsHandler;
+import org.kogito.core.internal.handlers.GetClassesHandler;
+import org.kogito.core.internal.handlers.Handler;
+import org.kogito.core.internal.handlers.HandlerConstants;
+import org.kogito.core.internal.handlers.HoverHandler;
+import org.kogito.core.internal.handlers.IsLanguageServerAvailableHandler;
 
 public class DelegateHandler implements IDelegateCommandHandler {
 

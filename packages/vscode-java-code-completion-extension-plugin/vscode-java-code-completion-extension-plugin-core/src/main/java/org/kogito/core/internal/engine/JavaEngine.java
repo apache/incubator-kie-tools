@@ -90,15 +90,15 @@ public class JavaEngine {
     protected int getFirstCharInLinePosition(String content, int lineNumber) {
         String[] split = content.split("\n");
         String line = split[lineNumber];
-        JavaLanguageServerPlugin.logInfo("LINE:" + line);
         int index = 0;
+
         for (int i = 0; i < line.length(); i++) {
             if (line.charAt(i) != ' ') {
                 index = i;
                 break;
             }
         }
-        JavaLanguageServerPlugin.logInfo("INDEX:" + index + 1 + " and character is:" + line.charAt(index + 1));
+
         return index + 1;
     }
 

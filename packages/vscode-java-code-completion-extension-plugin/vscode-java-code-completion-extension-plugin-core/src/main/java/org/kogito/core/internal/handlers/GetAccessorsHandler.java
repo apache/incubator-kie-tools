@@ -84,14 +84,14 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
         String accessorTypeSimpleName = item.getLabelDetails().getDescription();
 
         GetPublicResult result = new GetPublicResult();
-        result.setJavaClassFqcn(javaClassFqcn);
-        result.setAccessorName(accessorName);
-        result.setAccessorTypeFqcn(retrieveAccessorTypeFqcn(javaClassFqcn, accessorName).orElse(accessorTypeSimpleName));
+        result.setFqcn(javaClassFqcn);
+        result.setAccessor(accessorName);
+        result.setType(retrieveAccessorTypeFqcn(javaClassFqcn, accessorName).orElse(accessorTypeSimpleName));
 
         JavaLanguageServerPlugin.logInfo(" *********** RESULTS ");
-        JavaLanguageServerPlugin.logInfo(" JavaClassFqcn " + result.getJavaClassFqcn());
-        JavaLanguageServerPlugin.logInfo(" AccessorName " + result.getAccessorName());
-        JavaLanguageServerPlugin.logInfo(" AccessorTypeFqcn " + result.getAccessorTypeFqcn());
+        JavaLanguageServerPlugin.logInfo(" JavaClassFqcn " + result.getFqcn());
+        JavaLanguageServerPlugin.logInfo(" AccessorName " + result.getAccessor());
+        JavaLanguageServerPlugin.logInfo(" AccessorTypeFqcn " + result.getType());
         JavaLanguageServerPlugin.logInfo(" *********** RESULTS END " );
 
         return result;

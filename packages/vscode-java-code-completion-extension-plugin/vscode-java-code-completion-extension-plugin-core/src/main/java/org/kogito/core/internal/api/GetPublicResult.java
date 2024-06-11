@@ -19,42 +19,45 @@
 
 package org.kogito.core.internal.api;
 
+/**
+ *  Must be synchronized with JavaCodeCompletionAccessor.ts 
+ */
 public class GetPublicResult {
 
     /**
      * The Java Class that cointans the below accessor in FQCN format (eg. `org.Author`)
      */
-    private String javaClassFqcn;
+    private String fqcn;
     /**
      * Accessor's name (eg. `getName()` if a method, `name` if a field
      */
-    private String accessorName;
+    private String accessor;
     /**
      * Accessor's type in FQCN format (eg. `java.lang.String`)
      */
-    private String accessorTypeFqcn;
+    private String type;
 
-    public String getJavaClassFqcn() {
-        return javaClassFqcn;
+    public String getFqcn() {
+        return fqcn;
     }
 
-    public void setJavaClassFqcn(String javaClassFqcn) {
-        this.javaClassFqcn = javaClassFqcn;
+    public void setFqcn(String fqcn) {
+        this.fqcn = fqcn;
     }
 
-    public String getAccessorName() {
-        return accessorName;
+    public String getAccessor() {
+        return accessor;
     }
 
-    public void setAccessorName(String accessorName) {
-        this.accessorName = accessorName;
+    public void setAccessor(String accessor) {
+        this.accessor = accessor;
     }
 
-    public String getAccessorTypeFqcn() {
-        return accessorTypeFqcn;
+    public String getType() {
+        return type;
     }
 
-    public void setAccessorTypeFqcn(String accessorTypeFqcn) {
-        this.accessorTypeFqcn = accessorTypeFqcn;
+    public void setType(String type) {
+        this.type = type;
     }
 }
