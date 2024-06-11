@@ -22,9 +22,4 @@ const { setup } = require("@kie-tools/maven-config-setup-helper");
 
 setup(`
     -Drevision=${buildEnv.env.swfDiagramEditor.version}
-    -Duberfire.version=${buildEnv.env.swfDiagramEditor.UBERFIRE__version}
-    -Dfont_awesome.version=${buildEnv.env.swfDiagramEditor.FONT_AWESOME__version}
-    -Dgwtbootstrap3.version=${buildEnv.env.swfDiagramEditor.GWTBOOTSTRAP3__version}
-    -Dbootstrap.version=${buildEnv.env.swfDiagramEditor.BOOTSTRAP__version}
-    -Danimate_css.version=${buildEnv.env.swfDiagramEditor.ANIMATE_CSS__version}
 `);
