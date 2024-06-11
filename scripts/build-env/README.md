@@ -27,19 +27,19 @@ Env definition files are plain JavaScript, allowing for better flexibility and u
 
 ### Usage
 
-- `build-env --print-vars`
-
-  - Prints the env variables in JSON format.
-
-- `build-env --print-env`
-
-  - Prints the env properties in JSON format.
-
 - `build-env {dot.separated.property}`
   - Returns the value of a property. See available properties with `build-env --print-env`.
     - e.g. `build-env root.version` prints `0.0.0`.
   - It's possible to negate boolean values with the `--not flag.`
     - e.g. If `build-env build.runTests` prints `true`, then e.g. `build-env build.runTests --not` prints `false`
+- `build-env --print-vars`
+  - Prints the env var names.
+- `build-env --print-env-json`
+  - Prints the JSON object for this env.
+- `build-env --print-dotenv`
+  - Prints variables assigned to values in .env format.
+
+> You can append `:self` to any of the three commands above to see results that ignore composition with other envs.
 
 ### Configuration
 
@@ -102,7 +102,7 @@ $ build-env myProperty
 foo
 $ build-env myOtherProperty
 [build-env] Env property 'myOtherProperty' not found.
-[build-env] See all env properties with 'build-env --print-env'
+[build-env] See all env properties with 'build-env --print-env-json'
 
 $ cd ~/[my-repo]/packages/b
 $ build-env myProperty

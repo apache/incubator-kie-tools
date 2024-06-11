@@ -21,7 +21,7 @@ This package contains the `Containerfile` and scripts to build a container image
 
 ## Additional requirements
 
-- docker or podman
+- docker
 
 ## Build
 
@@ -57,24 +57,12 @@ Then check out the image:
 $ docker images
 ```
 
-or
-
-```bash
-$ podman images
-```
-
 ## Run
 
 Start up a new container with:
 
 ```bash
 $ docker run -p 8080:8080 -i --rm docker.io/apache/incubator-kie-cors-proxy:latest
-```
-
-or
-
-```bash
-$ podman run -p 8080:8080 -i --rm docker.io/apache/incubator-kie-cors-proxy:latest
 ```
 
 The service will be up at http://localhost:8080
