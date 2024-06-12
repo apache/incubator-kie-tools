@@ -161,7 +161,8 @@ pipeline {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}",
+                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}",
+                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}",
                         "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageName}",
                         "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags}",
                         "${pipelineVars.dockerHubUserCredentialsId}",

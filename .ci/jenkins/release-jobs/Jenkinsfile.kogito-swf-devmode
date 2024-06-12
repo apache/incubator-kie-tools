@@ -153,7 +153,8 @@ pipeline {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.SONATAFLOW_DEVMODE_IMAGE__registry}/${env.SONATAFLOW_DEVMODE_IMAGE__account}",
+                        "${env.SONATAFLOW_DEVMODE_IMAGE__registry}",
+                        "${env.SONATAFLOW_DEVMODE_IMAGE__account}",
                         "${env.SONATAFLOW_DEVMODE_IMAGE__name}",
                         "${env.SONATAFLOW_DEVMODE_IMAGE__buildTag} latest",
                         "${pipelineVars.dockerHubUserCredentialsId}",

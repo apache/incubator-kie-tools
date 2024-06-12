@@ -140,7 +140,8 @@ pipeline {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.DASHBUILDER__viewerImageRegistry}/${env.DASHBUILDER__viewerImageAccount}",
+                        "${env.DASHBUILDER__viewerImageRegistry}",
+                        "${env.DASHBUILDER__viewerImageAccount}",
                         "${env.DASHBUILDER__viewerImageName}",
                         "${env.DASHBUILDER__viewerImageBuildTags}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
