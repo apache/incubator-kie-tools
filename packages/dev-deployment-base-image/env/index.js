@@ -19,7 +19,9 @@
 
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+const rootEnv = require("@kie-tools/root-env/env");
+
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     DEV_DEPLOYMENT_BASE_IMAGE__builderImage: {
       default: "registry.access.redhat.com/ubi9/openjdk-17:1.18",
@@ -34,19 +36,19 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "The container Home Path.",
     },
     DEV_DEPLOYMENT_BASE_IMAGE__registry: {
-      default: "quay.io",
+      default: "docker.io",
       description: "The image registry.",
     },
     DEV_DEPLOYMENT_BASE_IMAGE__account: {
-      default: "kie-tools",
+      default: "apache",
       description: "The image registry account.",
     },
     DEV_DEPLOYMENT_BASE_IMAGE__name: {
-      default: "dev-deployment-base-image",
+      default: "incubator-kie-sandbox-dev-deployment-base",
       description: "The image name.",
     },
-    DEV_DEPLOYMENT_BASE_IMAGE__buildTags: {
-      default: "daily-dev",
+    DEV_DEPLOYMENT_BASE_IMAGE__buildTag: {
+      default: rootEnv.env.root.streamName,
       description: "The image tag.",
     },
   }),
@@ -59,7 +61,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         registry: getOrDefault(this.vars.DEV_DEPLOYMENT_BASE_IMAGE__registry),
         account: getOrDefault(this.vars.DEV_DEPLOYMENT_BASE_IMAGE__account),
         name: getOrDefault(this.vars.DEV_DEPLOYMENT_BASE_IMAGE__name),
-        tags: getOrDefault(this.vars.DEV_DEPLOYMENT_BASE_IMAGE__buildTags),
+        buildTag: getOrDefault(this.vars.DEV_DEPLOYMENT_BASE_IMAGE__buildTag),
         version: require("../package.json").version,
       },
     };

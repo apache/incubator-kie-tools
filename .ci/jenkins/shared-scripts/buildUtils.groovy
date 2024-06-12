@@ -85,6 +85,33 @@ def pnpmBuild(String filters, Integer workspaceConcurrency = 1) {
 }
 
 /**
+* PNPM update project version to
+*/
+def pnpmUpdateProjectVersion(String projectVersion) {
+    sh """#!/bin/bash -el
+    pnpm update-version-to ${projectVersion}
+    """.trim()
+}
+
+/**
+* PNPM update kogito version to
+*/
+def pnpmUpdateKogitoVersion(String kogitoVersion, String imagesTag) {
+    sh """#!/bin/bash -el
+    pnpm update-kogito-version-to --maven ${kogitoVersion} --images-tag ${imagesTag}
+    """.trim()
+}
+
+/**
+* PNPM update stream name to
+*/
+def pnpmUpdateStreamName(String streamName) {
+    sh """#!/bin/bash -el
+    pnpm update-stream-name-to ${streamName}
+    """.trim()
+}
+
+/**
 * Start KIE-Tools required services for build and test
 */
 def startRequiredServices() {
@@ -104,7 +131,7 @@ def buildDateTime() {
 * @return String the Apache Jenkins agent nodes with higher capacity (builds22 to builds30)
 **/
 def apacheAgentLabels() {
-    return (22..30).collect{"builds$it"}.join(' || ')
+    return (22..30).collect { "builds$it" }.join(' || ')
 }
 
-return this;
+return this

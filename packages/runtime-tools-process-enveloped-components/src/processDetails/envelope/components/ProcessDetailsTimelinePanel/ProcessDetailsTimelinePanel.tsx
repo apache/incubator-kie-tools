@@ -124,7 +124,12 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
     setSelectedJob(job);
   };
 
-  const handleJobReschedule = async (repeatInterval, repeatLimit, scheduleDate): Promise<void> => {
+  const handleJobReschedule = async (
+    _job: Job,
+    repeatInterval: string | number,
+    repeatLimit: string | number,
+    scheduleDate: Date
+  ): Promise<void> => {
     await handleJobRescheduleUtil(
       repeatInterval,
       repeatLimit,

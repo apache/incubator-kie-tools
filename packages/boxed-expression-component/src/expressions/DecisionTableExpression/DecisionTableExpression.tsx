@@ -62,7 +62,6 @@ import {
   DMN15__tInputClause,
   DMN15__tLiteralExpression,
   DMN15__tOutputClause,
-  DMN15__tRuleAnnotation,
   DMN15__tRuleAnnotationClause,
   DMN15__tUnaryTests,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
@@ -728,7 +727,7 @@ export function DecisionTableExpression({
                 "@_id": generateUuid(),
                 inputExpression: {
                   "@_id": generateUuid(),
-                  "@_typeRef": DmnBuiltInDataType.Undefined,
+                  "@_typeRef": undefined,
                   text: { __$$text: newName },
                 },
               });
@@ -768,7 +767,7 @@ export function DecisionTableExpression({
               outputColumnsToAdd.push({
                 "@_id": generateUuid(),
                 "@_name": name,
-                "@_typeRef": DmnBuiltInDataType.Undefined,
+                "@_typeRef": undefined,
               });
             }
 

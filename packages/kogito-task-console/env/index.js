@@ -19,22 +19,24 @@
 
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+const rootEnv = require("@kie-tools/root-env/env");
+
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     KOGITO_TASK_CONSOLE__registry: {
-      default: "quay.io",
+      default: "docker.io",
       description: "The image registry.",
     },
     KOGITO_TASK_CONSOLE__account: {
-      default: "kie-tools",
+      default: "apache",
       description: "The image registry account.",
     },
     KOGITO_TASK_CONSOLE__name: {
-      default: "kogito-task-console",
+      default: "incubator-kie-kogito-task-console",
       description: "The image name.",
     },
-    KOGITO_TASK_CONSOLE__buildTags: {
-      default: "daily-dev",
+    KOGITO_TASK_CONSOLE__buildTag: {
+      default: rootEnv.env.root.streamName,
       description: "The image tag.",
     },
     KOGITO_TASK_CONSOLE__port: {
@@ -48,7 +50,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         registry: getOrDefault(this.vars.KOGITO_TASK_CONSOLE__registry),
         account: getOrDefault(this.vars.KOGITO_TASK_CONSOLE__account),
         name: getOrDefault(this.vars.KOGITO_TASK_CONSOLE__name),
-        tags: getOrDefault(this.vars.KOGITO_TASK_CONSOLE__buildTags),
+        buildTag: getOrDefault(this.vars.KOGITO_TASK_CONSOLE__buildTag),
         port: getOrDefault(this.vars.KOGITO_TASK_CONSOLE__port),
         version: require("../package.json").version,
       },

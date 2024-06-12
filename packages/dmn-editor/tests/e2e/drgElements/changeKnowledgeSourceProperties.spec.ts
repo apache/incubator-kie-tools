@@ -110,7 +110,7 @@ test.describe("Change Properties - Knowledge Source", () => {
       type: TestAnnotations.REGRESSION,
       description: "https://github.com/apache/incubator-kie-issues/issues/1076",
     });
-    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1076");
+
     await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
     await knowledgeSourcePropertiesPanel.setFont({
       fontSize: "40",

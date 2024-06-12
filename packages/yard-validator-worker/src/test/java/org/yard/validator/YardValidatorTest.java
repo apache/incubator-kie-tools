@@ -136,8 +136,8 @@ public class YardValidatorTest {
         assertIssue(issue, "Redundancy found. If both rows return the same result, the other can be removed. If they return different results, the table fails to return a value.", 1, 2);
         final RowLocation first = (RowLocation) issue.getLocations()[0];
         final RowLocation second = (RowLocation) issue.getLocations()[1];
-        assertEquals(22, first.getActualRowNumberInFile());
-        assertEquals(24, second.getActualRowNumberInFile());
+        assertEquals(41, first.getActualRowNumberInFile());
+        assertEquals(43, second.getActualRowNumberInFile());
     }
 
     @Test

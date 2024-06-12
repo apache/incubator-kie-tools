@@ -82,7 +82,7 @@ test.describe("Change Properties - Text Annotation", () => {
       type: TestAnnotations.REGRESSION,
       description: "https://github.com/apache/incubator-kie-issues/issues/1076",
     });
-    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1076");
+
     await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
     await textAnnotationPropertiesPanel.setFont({
       fontSize: "40",

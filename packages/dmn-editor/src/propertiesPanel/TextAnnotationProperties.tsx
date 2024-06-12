@@ -25,12 +25,13 @@ import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { useDmnEditorStoreApi } from "../store/StoreContext";
 import { updateTextAnnotation } from "../mutations/renameNode";
+import { Normalized } from "../normalization/normalize";
 
 export function TextAnnotationProperties({
   textAnnotation,
   index,
 }: {
-  textAnnotation: DMN15__tTextAnnotation;
+  textAnnotation: Normalized<DMN15__tTextAnnotation>;
   index: number;
 }) {
   const { setState } = useDmnEditorStoreApi();
@@ -46,7 +47,8 @@ export function TextAnnotationProperties({
           placeholder={"Enter a text format..."}
           onChange={(newTextFormat) => {
             setState((state) => {
-              (state.dmn.model.definitions.artifact![index] as DMN15__tTextAnnotation)["@_textFormat"] = newTextFormat;
+              (state.dmn.model.definitions.artifact![index] as Normalized<DMN15__tTextAnnotation>)["@_textFormat"] =
+                newTextFormat;
             });
           }}
         />
@@ -81,7 +83,7 @@ export function TextAnnotationProperties({
           value={textAnnotation.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.artifact![index] as DMN15__tTextAnnotation).description = {
+              (state.dmn.model.definitions.artifact![index] as Normalized<DMN15__tTextAnnotation>).description = {
                 __$$text: newDescription,
               };
             });

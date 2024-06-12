@@ -39,3 +39,24 @@ export function parseXmlHref(href: string): XmlHref {
 
   return { namespace: split[0] ? split[0] : undefined, id: split[1] };
 }
+
+/**
+ * This function adds a `namespace` to an HREF. This operation will only succed if
+ * the provided HREF doesn't have a `namespace`.
+ *
+ * In case the provided `namespace` is `undefined`, this function will return the HREF.
+ *
+ * In case the provided HREF already have an `namespace`, this function will return the HREF.
+ */
+export function addNamespaceToHref({ href, namespace }: { href: string; namespace: string | undefined }) {
+  if (namespace === undefined) {
+    return href;
+  }
+
+  const { namespace: hrefNamespace, id } = parseXmlHref(href);
+  if (hrefNamespace !== undefined) {
+    return href;
+  }
+
+  return buildXmlHref({ namespace, id });
+}

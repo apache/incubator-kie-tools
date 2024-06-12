@@ -18,10 +18,9 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { PopoverMenu, PopoverMenuRef } from "../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../i18n";
-import { DmnBuiltInDataType, BoxedExpression } from "../api";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditorContext";
 import { DataTypeSelector } from "./DataTypeSelector";
 import { CogIcon } from "@patternfly/react-icons/dist/js/icons/cog-icon";
@@ -30,7 +29,7 @@ import { NavigationKeysUtils } from "../keysUtils/keyUtils";
 import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 import "./ExpressionVariableMenu.css";
 
-export type OnExpressionVariableUpdated = (args: { name: string; typeRef: string }) => void;
+export type OnExpressionVariableUpdated = (args: { name: string; typeRef: string | undefined }) => void;
 
 export interface ExpressionVariableMenuProps {
   /** Optional children element to be considered for triggering the edit expression menu */
@@ -62,7 +61,7 @@ export function ExpressionVariableMenu({
   arrowPlacement,
   nameField,
   dataTypeField,
-  selectedDataType = DmnBuiltInDataType.Undefined,
+  selectedDataType = undefined,
   selectedExpressionName,
   onVariableUpdated,
   position,
@@ -92,7 +91,7 @@ export function ExpressionVariableMenu({
     setExpressionName(event.target.value);
   }, []);
 
-  const onDataTypeChange = useCallback((dataType: DmnBuiltInDataType) => {
+  const onDataTypeChange = useCallback((dataType: string | undefined) => {
     setDataType(dataType);
   }, []);
 

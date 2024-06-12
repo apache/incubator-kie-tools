@@ -26,18 +26,15 @@ import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon
 import { DmnEditorTab } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { DataType } from "./DataTypes";
 import { builtInFeelTypeNames, builtInFeelTypes } from "./BuiltInFeelTypes";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
-export type OnTypeRefChange = (newDataType: DmnBuiltInDataType) => void;
+export type OnTypeRefChange = (newDataType: string | undefined) => void;
 export type OnCreateDataType = (newDataTypeName: string) => void;
 export type OnToggle = (isExpanded: boolean) => void;
-
-export const typeRefSelectorLimitedSpaceStyle = { maxHeight: "600px", boxShadow: "none", overflowY: "scroll" };
 
 export function TypeRefSelector({
   zoom,
@@ -48,6 +45,7 @@ export function TypeRefSelector({
   menuAppendTo,
   onCreate,
   onToggle,
+  removeDataTypes,
 }: {
   zoom?: number;
   heightRef: React.RefObject<HTMLElement>;
@@ -57,6 +55,7 @@ export function TypeRefSelector({
   onCreate?: OnCreateDataType;
   onToggle?: OnToggle;
   menuAppendTo?: "parent";
+  removeDataTypes?: DataType[];
 }) {
   const [isOpen, setOpen] = useState(false);
   const { externalModelsByNamespace } = useExternalModels();
@@ -87,7 +86,9 @@ export function TypeRefSelector({
         }
 
         if (s.namespace === state.dmn.model.definitions["@_namespace"]) {
-          customDataTypes.push(s);
+          if ((removeDataTypes ?? []).findIndex((removeDataType) => removeDataType.feelName === s.feelName) < 0) {
+            customDataTypes.push(s);
+          }
         } else {
           externalDataTypes.push(s);
         }
@@ -113,34 +114,32 @@ export function TypeRefSelector({
       spaceItems={{ default: "spaceItemsNone" }}
     >
       {selectedDataType?.itemDefinition && (
-        <Tooltip content="Jump to definition" appendTo={() => document.getElementById(id)!}>
-          <Button
-            title={"Jump to definition"}
-            className={"kie-dmn-editor--data-type-jump-to-definition"}
-            variant={ButtonVariant.control}
-            onClick={(e) =>
-              dmnEditorStoreApi.setState((state) => {
-                state.navigation.tab = DmnEditorTab.DATA_TYPES;
-                state.dataTypesEditor.activeItemDefinitionId = selectedDataType?.itemDefinition?.["@_id"];
-              })
-            }
-          >
-            <ArrowUpIcon />
-          </Button>
-        </Tooltip>
+        <Button
+          title={"Jump to definition"}
+          className={"kie-dmn-editor--data-type-jump-to-definition"}
+          variant={ButtonVariant.control}
+          onClick={(e) =>
+            dmnEditorStoreApi.setState((state) => {
+              state.navigation.tab = DmnEditorTab.DATA_TYPES;
+              state.dataTypesEditor.activeItemDefinitionId = selectedDataType?.itemDefinition?.["@_id"];
+            })
+          }
+        >
+          <ArrowUpIcon />
+        </Button>
       )}
       <Select
         toggleRef={toggleRef}
-        className={!exists ? "kie-dmn-editor--type-ref-selector-invalid-value" : undefined}
+        className={!exists && typeRef ? "kie-dmn-editor--type-ref-selector-invalid-value" : undefined}
         isDisabled={isDisabled}
         variant={SelectVariant.typeahead}
         typeAheadAriaLabel={DmnBuiltInDataType.Undefined}
         onToggle={_onToggle}
         onSelect={(e, v) => {
           _onToggle(false);
-          onChange(v as DmnBuiltInDataType);
+          onChange(v === DmnBuiltInDataType.Undefined ? undefined : (v as string));
         }}
-        selections={typeRef}
+        selections={typeRef ?? DmnBuiltInDataType.Undefined}
         isOpen={isOpen}
         aria-labelledby={"Data types selector"}
         placeholderText={"Select a data type..."}

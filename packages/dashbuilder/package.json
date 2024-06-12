@@ -36,6 +36,9 @@
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
+  "dependencies": {
+    "@kie-tools/maven-base": "workspace:*"
+  },
   "devDependencies": {
     "@kie-tools/dashbuilder-component-assembler": "workspace:*",
     "@kie-tools/maven-config-setup-helper": "workspace:*",

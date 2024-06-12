@@ -71,7 +71,7 @@ test.describe("Change Properties - Group", () => {
       type: TestAnnotations.REGRESSION,
       description: "https://github.com/apache/incubator-kie-issues/issues/1076",
     });
-    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1076");
+
     await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
     await groupPropertiesPanel.setFont({
       fontSize: "40",

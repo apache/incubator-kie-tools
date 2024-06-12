@@ -46,7 +46,10 @@ export const WorkflowFormContainer: React.FC<WorkflowFormContainerProps & OUIAPr
       {...componentOuiaProps(ouiaId, "workflow-form-container", ouiaSafe)}
       driver={{
         async getCustomWorkflowSchema(): Promise<Record<string, any>> {
-          return gatewayApi.getCustomWorkflowSchema(workflowDefinitionData.workflowName);
+          return gatewayApi.getCustomWorkflowSchema(
+            workflowDefinitionData.workflowName,
+            workflowDefinitionData.serviceUrl
+          );
         },
         async resetBusinessKey() {
           onResetForm();

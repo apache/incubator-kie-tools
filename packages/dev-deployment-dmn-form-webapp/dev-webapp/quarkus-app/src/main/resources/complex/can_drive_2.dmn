@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~ 
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~ 
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.      
+-->
 <dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kie.apache.org/dmn/_E9B20B8C-BBC0-4DD9-8B06-67BF1BF818EF" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="https://kie.apache.org/dmn/extensions/1.0" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:included1="https://kie.apache.org/dmn/_A6EAEE01-EA53-48EB-8CEC-99269030513D" id="_F6614D4C-0263-4BB6-8030-BCE87829766F" name="CD-2" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kie.apache.org/dmn/_E9B20B8C-BBC0-4DD9-8B06-67BF1BF818EF">
   <dmn:extensionElements/>
   <dmn:import id="_E9CA6366-09BC-4E02-A9B9-13DECC6CEF96" name="CD" namespace="https://kie.apache.org/dmn/_A6EAEE01-EA53-48EB-8CEC-99269030513D" locationURI="can_drive.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>

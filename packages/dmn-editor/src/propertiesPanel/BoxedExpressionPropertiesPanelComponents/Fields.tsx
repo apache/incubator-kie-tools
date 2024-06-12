@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InlineFeelNameInput } from "../../feel/InlineFeelNameInput";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
@@ -91,7 +91,7 @@ export function NameField(props: {
 
 export function TypeRefField(props: {
   alternativeFieldName?: string;
-  typeRef: string;
+  typeRef?: string;
   isReadonly: boolean;
   dmnEditorRootElementRef: React.RefObject<HTMLElement>;
   onChange?: (newTypeRef: string) => void;

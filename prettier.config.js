@@ -25,5 +25,9 @@ module.exports = {
       files: "package.json",
       options: { parser: "package-json" },
     },
+    {
+      files: "**/*.xml",
+      options: { parser: "xml" },
+    },
   ],
 };

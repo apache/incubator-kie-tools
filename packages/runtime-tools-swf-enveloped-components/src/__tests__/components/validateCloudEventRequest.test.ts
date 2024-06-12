@@ -31,6 +31,7 @@ describe("validateCloudEventRequest tests", () => {
         source: "any",
         extensions: {},
       },
+      serviceUrl: "http://localhost:8090/",
     });
 
     expect(validation.isValid()).toBeTruthy();
@@ -46,6 +47,7 @@ describe("validateCloudEventRequest tests", () => {
         source: "any",
         extensions: {},
       },
+      serviceUrl: "http://localhost:8090/",
     });
 
     expect(validation.isValid()).toBeFalsy();
@@ -64,6 +66,7 @@ describe("validateCloudEventRequest tests", () => {
         source: "any",
         extensions: {},
       },
+      serviceUrl: "http://localhost:8090/",
     });
 
     expect(validation.isValid()).toBeFalsy();
@@ -82,6 +85,7 @@ describe("validateCloudEventRequest tests", () => {
         source: "any",
         extensions: {},
       },
+      serviceUrl: "http://localhost:8090/",
     };
 
     let validation = validateCloudEventRequest(eventRequest);

@@ -24,7 +24,7 @@ import { ContentField, DescriptionField, ExpressionLanguageField, NameField, Typ
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { DMN15__tInputClause } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditor } from "../../DmnEditorContext";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
@@ -32,6 +32,7 @@ import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constrai
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { State } from "../../store/Store";
+import { Normalized } from "../../normalization/normalize";
 
 export function DecisionTableInputHeaderCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
@@ -46,9 +47,9 @@ export function DecisionTableInputHeaderCell(props: {
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updater = useBoxedExpressionUpdater<DMN15__tInputClause>(selectedObjectInfos?.expressionPath ?? []);
+  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tInputClause>>(selectedObjectInfos?.expressionPath ?? []);
 
-  const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tInputClause, [selectedObjectInfos?.cell]);
+  const cell = useMemo(() => selectedObjectInfos?.cell as Normalized<DMN15__tInputClause>, [selectedObjectInfos?.cell]);
   const inputExpression = useMemo(() => cell.inputExpression, [cell.inputExpression]);
   const inputValues = useMemo(() => cell.inputValues, [cell.inputValues]);
 
@@ -101,7 +102,7 @@ export function DecisionTableInputHeaderCell(props: {
               getAllUniqueNames={getAllUniqueNames}
               onChange={(newName) =>
                 updater((dmnObject) => {
-                  dmnObject.inputExpression ??= {};
+                  dmnObject.inputExpression ??= { "@_id": generateUuid() };
                   dmnObject.inputExpression.text ??= { __$$text: "" };
                   dmnObject.inputExpression.text.__$$text = newName;
                 })
@@ -110,12 +111,12 @@ export function DecisionTableInputHeaderCell(props: {
             <TypeRefField
               isReadonly={props.isReadonly}
               dmnEditorRootElementRef={dmnEditorRootElementRef}
-              typeRef={inputExpression?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+              typeRef={inputExpression?.["@_typeRef"]}
               onChange={(newTypeRef) =>
                 updater((dmnObject) => {
-                  dmnObject.inputExpression ??= {};
+                  dmnObject.inputExpression ??= { "@_id": generateUuid() };
                   dmnObject.inputExpression["@_typeRef"] = newTypeRef;
-                  dmnObject.inputValues ??= { text: { __$$text: "" } };
+                  dmnObject.inputValues ??= { "@_id": generateUuid(), text: { __$$text: "" } };
                   dmnObject.inputValues["@_typeRef"] = newTypeRef;
                 })
               }
@@ -137,7 +138,7 @@ export function DecisionTableInputHeaderCell(props: {
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newExpressionLanguage) =>
                 updater((dmnObject) => {
-                  dmnObject.inputExpression ??= {};
+                  dmnObject.inputExpression ??= { "@_id": generateUuid() };
                   dmnObject.inputExpression["@_expressionLanguage"] = newExpressionLanguage;
                 })
               }
@@ -148,7 +149,7 @@ export function DecisionTableInputHeaderCell(props: {
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newDescription) =>
                 updater((dmnObject) => {
-                  dmnObject.inputExpression ??= {};
+                  dmnObject.inputExpression ??= { "@_id": generateUuid() };
                   dmnObject.inputExpression.description ??= { __$$text: "" };
                   dmnObject.inputExpression.description.__$$text = newDescription;
                 })
@@ -173,7 +174,7 @@ export function DecisionTableInputHeaderCell(props: {
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newExpressionLanguage) =>
                 updater((dmnObject) => {
-                  dmnObject.inputValues ??= { text: { __$$text: "" } };
+                  dmnObject.inputValues ??= { "@_id": generateUuid(), text: { __$$text: "" } };
                   dmnObject.inputValues["@_expressionLanguage"] = newExpressionLanguage;
                 })
               }
@@ -184,7 +185,7 @@ export function DecisionTableInputHeaderCell(props: {
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newText) =>
                 updater((dmnObject) => {
-                  dmnObject.inputValues ??= { text: { __$$text: "" } };
+                  dmnObject.inputValues ??= { "@_id": generateUuid(), text: { __$$text: "" } };
                   dmnObject.inputValues.text ??= { __$$text: "" };
                   dmnObject.inputValues.text.__$$text = newText;
                 })
@@ -196,7 +197,7 @@ export function DecisionTableInputHeaderCell(props: {
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newDescription: string) =>
                 updater((dmnObject) => {
-                  dmnObject.inputValues ??= { text: { __$$text: "" } };
+                  dmnObject.inputValues ??= { "@_id": generateUuid(), text: { __$$text: "" } };
                   dmnObject.inputValues.description ??= { __$$text: "" };
                   dmnObject.inputValues.description.__$$text = newDescription;
                 })

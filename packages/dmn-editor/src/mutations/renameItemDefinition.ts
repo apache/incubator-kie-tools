@@ -24,6 +24,7 @@ import {
   traverseTypeRefedInExpressionHolders,
 } from "../dataTypes/DataTypeSpec";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
+import { Normalized } from "../normalization/normalize";
 
 export function renameItemDefinition({
   definitions,
@@ -31,7 +32,7 @@ export function renameItemDefinition({
   allDataTypesById,
   itemDefinitionId,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   newName: string;
   itemDefinitionId: string;
   allDataTypesById: DataTypeIndex;

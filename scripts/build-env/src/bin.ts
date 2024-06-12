@@ -17,70 +17,38 @@
  * under the License.
  */
 
-import * as path from "path";
+import { ERROR_ACCESS_LOG_FILE_ABSOLUTE_PATH_ENV_VAR_NAME, findEnv } from "./lib";
+import { LOGS } from "./console_logs";
 
-import { findEnv, flattenObj, logs, parseVars } from "./index";
+import * as path from "path";
+import * as fs from "fs";
+import * as os from "os";
+
+import { treatSpecialPrintCases } from "./special_print_cases";
+
+const opt = process.argv[2];
+const flag = process.argv[3];
 
 async function main() {
   const { env, vars, self } = await findEnv(path.resolve("."), path.resolve("."));
 
-  const opt = process.argv[2];
-  const flags = process.argv[3];
-
-  if (opt === "--print-vars") {
-    console.log(JSON.stringify(flattenObj(parseVars(vars)), undefined, 2));
-    process.exit(0);
-  }
-
-  if (opt === "--print-env") {
-    console.log(JSON.stringify(flattenObj(env), undefined, 2));
-    process.exit(0);
-  }
-
-  if (opt === "--print-env-file") {
-    const flattenedParsedVars = flattenObj(parseVars(vars));
-    let envFile = "";
-    for (const key of Object.keys(flattenedParsedVars)) {
-      envFile += `${key}=${flattenedParsedVars[key]}\n`;
-    }
-    console.log(envFile);
-    process.exit(0);
-  }
-
-  if (opt === "--print-vars:self") {
-    console.log(JSON.stringify(flattenObj(parseVars(self.vars)), undefined, 2));
-    process.exit(0);
-  }
-
-  if (opt === "--print-env:self") {
-    console.log(JSON.stringify(flattenObj(self.env), undefined, 2));
-    process.exit(0);
-  }
-
-  if (opt === "--print-env-file:self") {
-    const flattenedParsedVars = flattenObj(parseVars(self.vars));
-    let envFile = "";
-    for (const key of Object.keys(flattenedParsedVars)) {
-      envFile += `${key}=${flattenedParsedVars[key]}\n`;
-    }
-    console.log(envFile);
-    process.exit(0);
-  }
+  // This will exit the process if a special print case is requested using `opt`.
+  treatSpecialPrintCases({ opt, vars, self });
 
   const propertyPath = opt;
   if (!propertyPath) {
-    console.error(logs.pleaseProvideEnvPropertyPath());
-    console.error(logs.seeAllEnvProperties());
-    process.exit(1);
+    console.error(LOGS.error.pleaseProvideEnvPropertyPath());
+    console.error(LOGS.info.seeAllEnvProperties());
+    throw new Error(`[build-env] property-path-not-provided-error`);
   }
 
   let envPropertyValue: any = env;
   for (const p of propertyPath.split(".")) {
     envPropertyValue = envPropertyValue[p];
     if (envPropertyValue === undefined) {
-      console.error(logs.propertyNotFound(propertyPath));
-      console.error(logs.seeAllEnvProperties());
-      process.exit(1);
+      console.error(LOGS.error.propertyNotFound({ propertyPath }));
+      console.error(LOGS.info.seeAllEnvProperties());
+      throw new Error(`[build-env] property-not-found-error`);
     }
   }
 
@@ -89,23 +57,46 @@ async function main() {
     typeof envPropertyValue !== "boolean" &&
     typeof envPropertyValue !== "number"
   ) {
-    console.error(logs.cantReturnNonString(propertyPath, typeof envPropertyValue));
+    console.error(LOGS.error.cantReturnNonString({ propertyPath, propertyType: typeof envPropertyValue }));
     console.error(envPropertyValue);
-    process.exit(1);
+    throw new Error(`[build-env] cant-return-non-string-error`);
   }
 
-  if (flags === "--not") {
+  if (flag === "--not") {
     const isBoolean = `${envPropertyValue}` === "true" || `${envPropertyValue}` === "false";
-    if (isBoolean) {
-      console.log(!(`${envPropertyValue}` === "true"));
-      process.exit(0);
-    } else {
-      console.error(logs.cantNegateNonBoolean(envPropertyValue));
-      process.exit(1);
+    if (!isBoolean) {
+      console.error(LOGS.error.cantNegateNonBoolean({ envPropertyValue }));
+      throw new Error(`[build-env] cant-negate-non-boolean-error`);
     }
-  }
 
-  console.log(envPropertyValue);
+    console.log(!(`${envPropertyValue}` === "true"));
+  } else {
+    console.log(envPropertyValue);
+  }
 }
 
-main();
+main().catch((e) => {
+  const suppliedPath = process.env[ERROR_ACCESS_LOG_FILE_ABSOLUTE_PATH_ENV_VAR_NAME];
+  const defaultPath = path.join(os.tmpdir(), "build-env-access-errors.log");
+
+  let logFilePath;
+  if (!suppliedPath) {
+    logFilePath = defaultPath;
+    console.error(LOGS.warn.defaultingAccessErrorsLogFileToTmpDirBecauseNotSupplied({ logFilePath }));
+  } else if (!path.isAbsolute(suppliedPath)) {
+    logFilePath = defaultPath;
+    console.error(LOGS.warn.defaultingAccessErrorsLogFileToTmpDirBecauseNotSupplied({ logFilePath }));
+  } else {
+    logFilePath = suppliedPath;
+    console.error(LOGS.error.usingConfiguredAccessErrorLogFile({ logFilePath }));
+  }
+
+  try {
+    fs.appendFileSync(logFilePath, `${e.message} :: cwd:${path.resolve(".")} opt:${opt} flag:${flag}\n`, "utf-8");
+    console.error(LOGS.info.wroteAccessErrorLog({ logFilePath }));
+  } catch (e) {
+    console.error(LOGS.error.errorWritingAccessErrorLog({ logFilePath }));
+    console.error(e);
+    throw e;
+  }
+});

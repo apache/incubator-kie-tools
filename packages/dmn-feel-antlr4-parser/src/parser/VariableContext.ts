@@ -54,4 +54,9 @@ export interface VariableContext {
    * Input nodes that define variables.
    */
   inputVariables: Array<string>;
+
+  /**
+   * Dynamic variables are variables only validated during runtime.
+   */
+  allowDynamicVariables?: boolean;
 }

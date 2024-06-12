@@ -39,6 +39,8 @@ import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { DC__Dimension } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_2/ts-gen/types";
+import { Normalized } from "../normalization/normalize";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 const DEFAULT_FILL_COLOR = { "@_blue": 255, "@_green": 255, "@_red": 255 };
 const DEFAULT_STROKE_COLOR = { "@_blue": 0, "@_green": 0, "@_red": 0 };
@@ -91,16 +93,16 @@ export function ShapeOptions({
   }, [boundHeight, nodeIds]);
 
   const fillColor = useMemo(() => {
-    const b = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_blue"] ?? DEFAULT_FILL_COLOR["@_red"]).toString(16);
+    const b = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_blue"] ?? DEFAULT_FILL_COLOR["@_blue"]).toString(16);
     const g = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_green"] ?? DEFAULT_FILL_COLOR["@_green"]).toString(16);
-    const r = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_red"] ?? DEFAULT_FILL_COLOR["@_blue"]).toString(16);
+    const r = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_red"] ?? DEFAULT_FILL_COLOR["@_red"]).toString(16);
     return `#${r.length === 1 ? "0" + r : r}${g.length === 1 ? "0" + g : g}${b.length === 1 ? "0" + b : b}`;
   }, [shapeStyles]);
 
   const strokeColor = useMemo(() => {
-    const b = (shapeStyles[0]?.["dmndi:StrokeColor"]?.["@_blue"] ?? DEFAULT_STROKE_COLOR["@_red"]).toString(16);
+    const b = (shapeStyles[0]?.["dmndi:StrokeColor"]?.["@_blue"] ?? DEFAULT_STROKE_COLOR["@_blue"]).toString(16);
     const g = (shapeStyles[0]?.["dmndi:StrokeColor"]?.["@_green"] ?? DEFAULT_STROKE_COLOR["@_green"]).toString(16);
-    const r = (shapeStyles[0]?.["dmndi:StrokeColor"]?.["@_red"] ?? DEFAULT_STROKE_COLOR["@_blue"]).toString(16);
+    const r = (shapeStyles[0]?.["dmndi:StrokeColor"]?.["@_red"] ?? DEFAULT_STROKE_COLOR["@_red"]).toString(16);
     return `#${r.length === 1 ? "0" + r : r}${g.length === 1 ? "0" + g : g}${b.length === 1 ? "0" + b : b}`;
   }, [shapeStyles]);
 
@@ -109,7 +111,10 @@ export function ShapeOptions({
   const setBounds = useCallback(
     (callback: (bounds: DC__Bounds, state: State) => void, nodeId: string) => {
       dmnEditorStoreApi.setState((s) => {
-        const { diagramElements } = addOrGetDrd({ definitions: s.dmn.model.definitions, drdIndex: s.diagram.drdIndex });
+        const { diagramElements } = addOrGetDrd({
+          definitions: s.dmn.model.definitions,
+          drdIndex: s.computed(s).getDrdIndex(),
+        });
 
         const index = s.computed(s).indexedDrd()?.dmnShapesByHref?.get(nodeId)?.index ?? -1;
         if (index < 0) {
@@ -199,12 +204,15 @@ export function ShapeOptions({
   const setShapeStyles = useCallback(
     (
       callback: (
-        shapesWithMinNodeSize: { shape: DMNDI15__DMNShape; minNodeSize: DC__Dimension }[],
+        shapesWithMinNodeSize: { shape: Normalized<DMNDI15__DMNShape>; minNodeSize: DC__Dimension }[],
         state: State
       ) => void
     ) => {
       dmnEditorStoreApi.setState((s) => {
-        const { diagramElements } = addOrGetDrd({ definitions: s.dmn.model.definitions, drdIndex: s.diagram.drdIndex });
+        const { diagramElements } = addOrGetDrd({
+          definitions: s.dmn.model.definitions,
+          drdIndex: s.computed(s).getDrdIndex(),
+        });
 
         const shapesWithMinNodeSize = nodeIds.map((nodeId) => {
           const shape = s.computed(s).indexedDrd().dmnShapesByHref.get(nodeId);
@@ -228,7 +236,7 @@ export function ShapeOptions({
             throw new Error(`DMN Element with index ${i++} is not a DMNShape.`);
           }
 
-          shape["di:Style"] ??= { __$$element: "dmndi:DMNStyle" };
+          shape["di:Style"] ??= { "@_id": generateUuid(), __$$element: "dmndi:DMNStyle" };
         }
 
         callback(shapesWithMinNodeSize, s);
@@ -312,6 +320,7 @@ export function ShapeOptions({
       shapeWithNodes.forEach(({ shape, minNodeSize }) => {
         shape["di:Style"] ??= {
           __$$element: "dmndi:DMNStyle",
+          "@_id": generateUuid(),
           "dmndi:FillColor": { ...DEFAULT_FILL_COLOR },
           "dmndi:StrokeColor": { ...DEFAULT_STROKE_COLOR },
         };
@@ -320,7 +329,7 @@ export function ShapeOptions({
 
         shape["dc:Bounds"] ??= {
           "@_width": minNodeSize["@_width"],
-          "@_height": minNodeSize["@_width"],
+          "@_height": minNodeSize["@_height"],
           "@_x": 0,
           "@_y": 0,
         };

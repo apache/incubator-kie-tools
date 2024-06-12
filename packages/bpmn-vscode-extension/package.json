@@ -30,8 +30,7 @@
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/vscode-extension": "workspace:*",
-    "@kie-tools/kie-bc-editors": "workspace:*",
-    "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*"
+    "@kie-tools/kie-bc-editors": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
@@ -39,6 +38,7 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
+    "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*",
     "@types/vscode": "1.67.0",
     "@vscode/test-web": "^0.0.30",
     "@vscode/vsce": "^2.22.0",
@@ -53,7 +53,7 @@
   "engines": {
     "vscode": "^1.67.0"
   },
-  "displayName": "KIE BPMN Editor",
+  "displayName": "Apache KIE™ BPMN Editor",
   "categories": [
     "Other"
   ],
@@ -124,14 +124,14 @@
       "commandPalette": [
         {
           "command": "extension.kogito.getPreviewSvgBpmn",
-          "when": "resourceLangId =~ /bpmn|bpmn2/"
+          "when": "resourceLangId =~ /bpmn|bpmn2/ && activeCustomEditorId == 'kieKogitoWebviewEditorsBpmn'"
         }
       ],
       "editor/title": [
         {
           "command": "extension.kogito.getPreviewSvgBpmn",
           "group": "navigation",
-          "when": "resourceLangId =~ /bpmn|bpmn2/"
+          "when": "resourceLangId =~ /bpmn|bpmn2/ && activeCustomEditorId == 'kieKogitoWebviewEditorsBpmn'"
         }
       ]
     }

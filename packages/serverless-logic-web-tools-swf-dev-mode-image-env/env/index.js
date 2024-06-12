@@ -22,15 +22,15 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry: {
-      default: "quay.io",
+      default: "docker.io",
       description: "",
     },
     SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount: {
-      default: "kie-tools",
+      default: "apache",
       description: "",
     },
     SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName: {
-      default: "serverless-logic-web-tools-swf-dev-mode-image",
+      default: "incubator-serverless-logic-web-tools-swf-dev-mode",
       description: "",
     },
   }),

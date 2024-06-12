@@ -30,6 +30,7 @@ import {
   BeeTableProps,
   BoxedFunction,
   BoxedFunctionKind,
+  DmnBuiltInDataType,
   generateUuid,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -89,7 +90,7 @@ export function PmmlFunctionExpression({
       {
         accessor: expressionHolderId as any, // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
         label: functionExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
-        dataType: functionExpression["@_typeRef"] ?? "",
+        dataType: functionExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
         width: undefined,
         columns: [

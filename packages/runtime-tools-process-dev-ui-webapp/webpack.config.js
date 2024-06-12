@@ -101,7 +101,7 @@ module.exports = async (env) => {
         {
           test: /\.(svg|ttf|eot|woff|woff2)$/,
           use: {
-            loader: "file-loader",
+            loader: require.resolve("file-loader"),
             options: {
               // Limit at 50k. larger files emited into separate files
               limit: 5000,
@@ -115,7 +115,7 @@ module.exports = async (env) => {
           include: (input) => input.indexOf("background-filter.svg") > 1,
           use: [
             {
-              loader: "url-loader",
+              loader: require.resolve("url-loader"),
               options: {
                 limit: 5000,
                 outputPath: "svgs",
@@ -128,7 +128,7 @@ module.exports = async (env) => {
           test: /\.svg$/,
           include: (input) => input.indexOf(BG_IMAGES_DIRNAME) > -1,
           use: {
-            loader: "svg-url-loader",
+            loader: require.resolve("svg-url-loader"),
             options: {},
           },
         },
@@ -136,7 +136,7 @@ module.exports = async (env) => {
           test: /\.(jpg|jpeg|png|gif)$/i,
           use: [
             {
-              loader: "url-loader",
+              loader: require.resolve("url-loader"),
               options: {
                 limit: 5000,
                 outputPath: "images",

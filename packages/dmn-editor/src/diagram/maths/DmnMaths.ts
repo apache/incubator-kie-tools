@@ -31,6 +31,7 @@ import { AutoPositionedEdgeMarker } from "../edges/AutoPositionedEdgeMarker";
 import { NODE_TYPES } from "../nodes/NodeTypes";
 import { NodeDmnObjects } from "../nodes/Nodes";
 import { getCenter } from "./Maths";
+import { Normalized } from "../../normalization/normalize";
 
 export const DEFAULT_INTRACTION_WIDTH = 40;
 export const CONTAINER_NODES_DESIRABLE_PADDING = 60;
@@ -245,7 +246,7 @@ export function pointsToPath(points: DC__Point[]): string {
   return path;
 }
 
-export function getDecisionServiceDividerLineLocalY(shape: DMNDI15__DMNShape) {
+export function getDecisionServiceDividerLineLocalY(shape: Normalized<DMNDI15__DMNShape>) {
   return (
     (shape["dmndi:DMNDecisionServiceDividerLine"]?.["di:waypoint"]?.[0]["@_y"] ?? 0) -
     (shape["dc:Bounds"]?.["@_y"] ?? 0)

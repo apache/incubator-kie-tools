@@ -20,19 +20,20 @@ import React, { useMemo } from "react";
 import { DevUIAppContext, useDevUIAppContext } from "../../components/contexts/DevUIAppContext";
 import ProcessDefinitionListContext from "./ProcessDefinitionListContext";
 import { ProcessDefinitionListGatewayApiImpl } from "./ProcessDefinitionListGatewayApi";
+import { ApolloClient } from "apollo-client";
+import { GraphQLProcessDefinitionListQueries } from "./ProcessDefinitionListQueries";
 
 interface ProcessDefinitionListContextProviderProps {
+  apolloClient: ApolloClient<any>;
   children;
 }
 
-const ProcessDefinitionListContextProvider: React.FC<ProcessDefinitionListContextProviderProps> = ({ children }) => {
-  const runtimeToolsApi: DevUIAppContext = useDevUIAppContext();
-
+const ProcessDefinitionListContextProvider: React.FC<ProcessDefinitionListContextProviderProps> = ({
+  apolloClient,
+  children,
+}) => {
   const gatewayApiImpl = useMemo(() => {
-    return new ProcessDefinitionListGatewayApiImpl(
-      runtimeToolsApi.getRemoteKogitoAppUrl() ?? runtimeToolsApi.getDevUIUrl(),
-      runtimeToolsApi.getOpenApiPath()
-    );
+    return new ProcessDefinitionListGatewayApiImpl(new GraphQLProcessDefinitionListQueries(apolloClient));
   }, []);
 
   return (

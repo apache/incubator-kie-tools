@@ -26,4 +26,4 @@ def pushChartToRegistry(String registry, String chart, String credentialsId) {
     }
 }
 
-return this;
+return this

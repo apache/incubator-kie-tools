@@ -1,0 +1,192 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@Library('jenkins-pipeline-shared-libraries')_
+
+pipeline {
+    agent {
+        docker {
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            args '--shm-size=2g --privileged --group-add docker'
+            label util.avoidFaultyNodes()
+        }
+    }
+
+    options {
+        timeout(time: 180, unit: 'MINUTES')
+    }
+
+    parameters {
+        string(name: 'BRANCH_NAME', description: 'Set the Git branch to checkout (0.0.X)', trim: true)
+        string(name: 'RELEASE_VERSION', description: 'Release version', trim: true)
+        string(name: 'TAG_NAME', description: 'Tag name to be created', trim: true)
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                }
+            }
+        }
+
+        stage('Clean workspace before build') {
+            steps {
+                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Checkout kie-tools') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            "http://github.com/${pipelineVars.githubRepositorySlug}.git",
+                            "${params.BRANCH_NAME}",
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Setup PNPM') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.setupPnpm()
+                    }
+                }
+            }
+        }
+
+        stage('PNPM Bootstrap') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                    }
+                }
+            }
+        }
+
+        stage('Setup Git repository') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        sh """#!/bin/bash -el
+                        git config user.email asf-ci-kie@jenkins.kie.apache.org
+                        git config user.name asf-ci-kie
+                        git checkout ${params.BRANCH_NAME}
+                        """.trim()
+                    }
+                }
+            }
+        }
+
+        stage('Update project version') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmUpdateProjectVersion(params.RELEASE_VERSION)
+                    }
+                }
+            }
+        }
+
+        stage('Update kogito version') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmUpdateKogitoVersion(params.RELEASE_VERSION, params.RELEASE_VERSION)
+                    }
+                }
+            }
+        }
+
+        stage('Update stream name') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmUpdateStreamName(params.RELEASE_VERSION)
+                    }
+                }
+            }
+        }
+
+        stage('Commit and Push changes') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        sh """#!/bin/bash -el
+                        git add .
+                        git commit --allow-empty -am "Apache KIE ${params.RELEASE_VERSION} release"
+                        """.trim()
+                        githubUtils.pushObject('origin', "${params.NEW_BRANCH_NAME}", "${pipelineVars.asfGithubPushCredentialsId}")
+                    }
+                }
+            }
+        }
+
+        stage('Check `release version` against `package.json.version`') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        packageVersion = sh(returnStdout: true, script: "#!/bin/bash -el \n node -p \"require('./package.json').version\"").trim()
+                        sh """#!/bin/bash -el
+                        [[ "${params.RELEASE_VERSION}" == "${packageVersion}" ]]
+                        """.trim()
+                    }
+                }
+            }
+        }
+
+        stage('Create a new tag') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        githubUtils.createTag("${params.TAG_NAME}")
+                        githubUtils.pushObject('origin', "${params.TAG_NAME}", "${pipelineVars.asfGithubPushCredentialsId}")
+                    }
+                }
+            }
+        }
+
+        stage('Build and Publish release candidate artifacts') {
+            steps {
+                build job: 'KIE/kie-tools/kie-tools-release-build', parameters: [
+                    booleanParam(name: 'DRY_RUN', value: false),
+                    string(name: 'BASE_REF', value: "${env.BRANCH_NAME}"),
+                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                    string(name: 'UPLOAD_ASSET_URL', value: "${env.RELEASE_UPLOAD_ASSET_URL}"),
+                    string(name: 'RUNNERS', value: "${params.RUNNERS}"),
+                    booleanParam(name: 'RELEASE_CANDIDATE', value: true),
+                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${TAG_NAME}")
+                ]
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs(deleteDirs: true)
+        }
+    }
+}

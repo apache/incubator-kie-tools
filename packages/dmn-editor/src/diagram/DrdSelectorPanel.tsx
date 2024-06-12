@@ -37,11 +37,12 @@ import { useCallback } from "react";
 export function DrdSelectorPanel() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const diagram = useDmnEditorStore((s) => s.diagram);
+  const drdIndex = useDmnEditorStore((s) => s.computed(s).getDrdIndex());
   const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
   const drdName = useDmnEditorStore(
     (s) =>
-      s.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[s.diagram.drdIndex]?.["@_name"] ||
-      getDefaultDrdName({ drdIndex: s.diagram.drdIndex })
+      s.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[s.computed(s).getDrdIndex()]?.["@_name"] ||
+      getDefaultDrdName({ drdIndex: s.computed(s).getDrdIndex() })
   );
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -51,8 +52,8 @@ export function DrdSelectorPanel() {
   const removeDrd = useCallback(() => {
     dmnEditorStoreApi.setState((s) => {
       const nextDrds = s.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"];
-      nextDrds?.splice(s.diagram.drdIndex, 1);
-      s.diagram.drdIndex = Math.max(0, Math.min(s.diagram.drdIndex, (nextDrds?.length ?? 0) - 1));
+      nextDrds?.splice(s.computed(s).getDrdIndex(), 1);
+      s.diagram.__unsafeDrdIndex = Math.max(0, Math.min(s.computed(s).getDrdIndex(), (nextDrds?.length ?? 0) - 1));
     });
   }, [dmnEditorStoreApi]);
 
@@ -89,7 +90,7 @@ export function DrdSelectorPanel() {
                     drdIndex: newIndex,
                   });
 
-                  state.diagram.drdIndex = newIndex;
+                  state.diagram.__unsafeDrdIndex = newIndex;
                   state.diagram.openLhsPanel = DiagramLhsPanel.DRG_NODES;
                   state.focus.consumableId = getDrdId({ drdIndex: newIndex });
                 });
@@ -118,10 +119,10 @@ export function DrdSelectorPanel() {
             {drds.map((drd, i) => (
               <React.Fragment key={drd["@_id"]!}>
                 <button
-                  className={i === diagram.drdIndex ? "active" : undefined}
+                  className={i === drdIndex ? "active" : undefined}
                   onClick={() => {
                     dmnEditorStoreApi.setState((state) => {
-                      state.diagram.drdIndex = i;
+                      state.diagram.__unsafeDrdIndex = i;
                     });
                   }}
                 >
@@ -165,7 +166,7 @@ export function DrdSelectorPanel() {
                       dmnEditorStoreApi.setState((s) => {
                         const { diagram: drd } = addOrGetDrd({
                           definitions: s.dmn.model.definitions,
-                          drdIndex: s.diagram.drdIndex,
+                          drdIndex: s.computed(s).getDrdIndex(),
                         });
                         drd["@_useAlternativeInputDataShape"] = false;
                       })
@@ -187,7 +188,7 @@ export function DrdSelectorPanel() {
                       dmnEditorStoreApi.setState((s) => {
                         const { diagram: drd } = addOrGetDrd({
                           definitions: s.dmn.model.definitions,
-                          drdIndex: s.diagram.drdIndex,
+                          drdIndex: s.computed(s).getDrdIndex(),
                         });
                         drd["@_useAlternativeInputDataShape"] = true;
                       })

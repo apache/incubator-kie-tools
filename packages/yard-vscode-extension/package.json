@@ -81,7 +81,7 @@
   "engines": {
     "vscode": "^1.67.0"
   },
-  "displayName": "Kogito yard Editor",
+  "displayName": "Apache KIE™ YARD Editor",
   "categories": [
     "Other"
   ],

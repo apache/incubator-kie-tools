@@ -26,8 +26,12 @@ import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/Clipboa
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { DMN15__tFunctionDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditorStore } from "../../store/StoreContext";
+import { Normalized } from "../../normalization/normalize";
 
-type FunctionDefinitionRoot = Pick<DMN15__tFunctionDefinition, "@_kind" | "@_typeRef" | "description">;
+type FunctionDefinitionRoot = Pick<
+  Normalized<DMN15__tFunctionDefinition>,
+  "@_kind" | "@_typeRef" | "description" | "@_id"
+>;
 
 export function FunctionDefinitionRootCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;

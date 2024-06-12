@@ -21,7 +21,7 @@ import { ApolloClient } from "apollo-client";
 import {
   BulkCancel,
   Job,
-  JobCancel,
+  JobOperationResult,
   JobStatus,
   JobsSortBy,
 } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
@@ -34,7 +34,7 @@ import {
 
 export interface JobsManagementQueries {
   getJobs(start: number, end: number, filters: JobStatus[], sortBy: JobsSortBy | any): Promise<Job[]>;
-  cancelJob: (job: Pick<Job, "id" | "endpoint">) => Promise<JobCancel>;
+  cancelJob: (job: Pick<Job, "id" | "endpoint">) => Promise<JobOperationResult>;
   bulkCancel: (jobsToBeActioned: (Job & { errorMessage?: string })[]) => Promise<BulkCancel>;
   rescheduleJob: (
     job: Job,
@@ -55,7 +55,7 @@ export class GraphQLJobsManagementQueries implements JobsManagementQueries {
     return getJobsWithFilters(offset, limit, filters, orderBy, this.client);
   }
 
-  async cancelJob(job: Pick<Job, "id" | "endpoint">): Promise<JobCancel> {
+  async cancelJob(job: Job): Promise<JobOperationResult> {
     return jobCancel(job, this.client);
   }
 

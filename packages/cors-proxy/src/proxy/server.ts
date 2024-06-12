@@ -21,7 +21,6 @@ import * as express from "express";
 import * as cors from "cors";
 
 import { ExpressCorsProxy } from "./ExpressCorsProxy";
-import { dnsFix } from "./dnsFix";
 
 export type ServerArgs = {
   port: number;
@@ -37,8 +36,6 @@ export const startServer = (args: ServerArgs): void => {
   app.disable("x-powered-by");
 
   const proxy = new ExpressCorsProxy(args);
-
-  dnsFix();
 
   const corsHandler = cors();
 

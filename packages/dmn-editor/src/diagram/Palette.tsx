@@ -63,6 +63,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn.model);
   const rfStoreApi = RF.useStoreApi();
   const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
+  const drdIndex = useDmnEditorStore((s) => s.computed(s).getDrdIndex());
 
   const groupNodes = useCallback(() => {
     dmnEditorStoreApi.setState((state) => {
@@ -77,7 +78,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
 
       const { href: newNodeId } = addStandaloneNode({
         definitions: state.dmn.model.definitions,
-        drdIndex: diagram.drdIndex,
+        drdIndex: state.computed(state).getDrdIndex(),
         newNode: {
           type: NODE_TYPES.group,
           bounds: getBounds({
@@ -89,9 +90,9 @@ export function Palette({ pulse }: { pulse: boolean }) {
 
       state.dispatch(state).diagram.setNodeStatus(newNodeId, { selected: true });
     });
-  }, [diagram.drdIndex, dmnEditorStoreApi, rfStoreApi]);
+  }, [dmnEditorStoreApi, rfStoreApi]);
 
-  const drd = thisDmn.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[diagram.drdIndex];
+  const drd = thisDmn.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[drdIndex];
 
   const drdSelectorPopoverRef = React.useRef<HTMLDivElement>(null);
   const nodesPalletePopoverRef = React.useRef<HTMLDivElement>(null);
@@ -107,15 +108,18 @@ export function Palette({ pulse }: { pulse: boolean }) {
             validate={() => true}
             allUniqueNames={() => new Map()}
             name={drd?.["@_name"] ?? ""}
-            prefix={`${diagram.drdIndex + 1}.`}
-            id={getDrdId({ drdIndex: diagram.drdIndex })}
+            prefix={`${drdIndex + 1}.`}
+            id={getDrdId({ drdIndex: drdIndex })}
             onRenamed={(newName) => {
               dmnEditorStoreApi.setState((state) => {
-                const drd = addOrGetDrd({ definitions: state.dmn.model.definitions, drdIndex: diagram.drdIndex });
+                const drd = addOrGetDrd({
+                  definitions: state.dmn.model.definitions,
+                  drdIndex: state.computed(state).getDrdIndex(),
+                });
                 drd.diagram["@_name"] = newName;
               });
             }}
-            placeholder={getDefaultDrdName({ drdIndex: diagram.drdIndex })}
+            placeholder={getDefaultDrdName({ drdIndex: drdIndex })}
             isReadonly={false}
             isPlain={true}
             shouldCommitOnBlur={true}

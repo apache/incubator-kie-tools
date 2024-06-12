@@ -40,7 +40,7 @@ export default class WorkflowDefinitionListEnvelopeViewDriver implements Workflo
     return this.channelApi.requests.workflowDefinitionList__getWorkflowDefinitionsQuery();
   }
 
-  openTriggerCloudEvent(): void {
-    this.channelApi.notifications.workflowDefinitionsList__openTriggerCloudEvent.send();
+  openTriggerCloudEvent(workflowDefinition: WorkflowDefinition): Promise<void> {
+    return this.channelApi.requests.workflowDefinitionsList__openTriggerCloudEvent(workflowDefinition);
   }
 }

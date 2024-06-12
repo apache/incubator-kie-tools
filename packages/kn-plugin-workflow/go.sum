@@ -43,10 +43,6 @@ github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym
 github.com/Microsoft/go-winio v0.6.1 h1:9/kr64B9VUZrLm5YYwbGtUJnMgqWVOdUAXu6Migciow=
 github.com/Microsoft/go-winio v0.6.1/go.mod h1:LRdKpFKfdobln8UmuiYcKPot9D2v6svN5+sAH+4kjUM=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
-github.com/apache/incubator-kie-kogito-serverless-operator/api v0.0.0-20240126134605-2b5056d12bb9 h1:LrUW2+TRA8t0ttZTWjrDFW+gSWKaGWU2Led+RJiGUn8=
-github.com/apache/incubator-kie-kogito-serverless-operator/api v0.0.0-20240126134605-2b5056d12bb9/go.mod h1:pve19HflUPuWGb8jzBaFqrZU8DWnRG2hpcRyo3w9shQ=
-github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj v0.0.0-20240122.0.20240219180504-5ebaf85efc66 h1:z7qKamBtG5Y2ZqWuW1O+MNBeOLndLoaYqW5ypDjcKZA=
-github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj v0.0.0-20240122.0.20240219180504-5ebaf85efc66/go.mod h1:Vw5jMxj6TmDe0TOrVkcVdlquOX1z8SP9rd+wzVMqmnY=
 github.com/beevik/etree v1.2.0 h1:l7WETslUG/T+xOPs47dtd6jov2Ii/8/OjCldk5fYfQw=
 github.com/beevik/etree v1.2.0/go.mod h1:aiPf89g/1k3AShMVAzriilpcE4R/Vuor90y83zVZWFc=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
@@ -256,8 +252,6 @@ github.com/mailru/easyjson v0.7.7 h1:UGYAvKxe3sBsEDzO8ZeWOSlIQfWFlxbzLZe7hwFURr0
 github.com/mailru/easyjson v0.7.7/go.mod h1:xzfreul335JAWq5oZzymOObrkdz5UnU4kGfJJLY9Nlc=
 github.com/matttproud/golang_protobuf_extensions v1.0.4 h1:mmDVorXM7PCGKw94cs5zkfA9PSy5pEvNWRP0ET0TIVo=
 github.com/matttproud/golang_protobuf_extensions v1.0.4/go.mod h1:BSXmuO+STAnVfrANrmjBb36TMTDstsz7MSK+HVaYKv4=
-github.com/mitchellh/go-homedir v1.1.0 h1:lukF9ziXFxDFPkA1vsr5zpc1XuPDn/wFntq5mG+4E0Y=
-github.com/mitchellh/go-homedir v1.1.0/go.mod h1:SfyaCUpYCn1Vlf4IUYiD9fPX4A5wJrkLzIz1N1q0pr0=
 github.com/mitchellh/mapstructure v1.1.2/go.mod h1:FVVH3fgwuzCH5S8UJGiWEs2h04kUh9fWfEaFds41c1Y=
 github.com/mitchellh/mapstructure v1.5.0 h1:jeMsZIYE/09sWLaz43PL7Gy6RuMjD2eJVyuac5Z2hdY=
 github.com/mitchellh/mapstructure v1.5.0/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
@@ -771,10 +765,6 @@ k8s.io/kube-openapi v0.0.0-20230905202853-d090da108d2f h1:eeEUOoGYWhOz7EyXqhlR2z
 k8s.io/kube-openapi v0.0.0-20230905202853-d090da108d2f/go.mod h1:AsvuZPBlUDVuCdzJ87iajxtXuR9oktsTctW/R9wwouA=
 k8s.io/utils v0.0.0-20230726121419-3b25d923346b h1:sgn3ZU783SCgtaSJjpcVVlRqd6GSnlTLKgpAAttJvpI=
 k8s.io/utils v0.0.0-20230726121419-3b25d923346b/go.mod h1:OLgZIPagt7ERELqWJFomSt595RzquPNLL48iOWgYOg0=
-knative.dev/client v0.38.0 h1:bQNPT9evQ28nFOc47VjUwtj3u7qQOk1n+Gn5KQ0zFKg=
-knative.dev/client v0.38.0/go.mod h1:oehBPjAXDum8sw1Tj51IF+5HEyQ8ya+Pa2O+7+/9X1E=
-knative.dev/client-pkg v0.0.0-20230911133121-2bcbd97b17ec h1:zaZJpw2q0iMaJ8ijQKlN/FMKqqubC5AZXVYMS1ibfoU=
-knative.dev/client-pkg v0.0.0-20230911133121-2bcbd97b17ec/go.mod h1:GRVZm1rKOy0lpPBGRM1ugK5joDbhXFEvULINHqPoA9U=
 knative.dev/pkg v0.0.0-20231023151236-29775d7c9e5c h1:xyPoEToTWeBdn6tinhLxXfnhJhTNQt5WzHiTNiFphRw=
 knative.dev/pkg v0.0.0-20231023151236-29775d7c9e5c/go.mod h1:HHRXEd7ZlFpthgE+rwAZ6MUVnuJOAeolnaFSthXloUQ=
 rsc.io/binaryregexp v0.2.0/go.mod h1:qTv7/COck+e2FymRvadv62gMdZztPaShugOCi3I+8D8=

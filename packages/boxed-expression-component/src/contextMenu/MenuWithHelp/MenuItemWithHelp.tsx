@@ -52,7 +52,10 @@ export function MenuItemWithHelp({
       actions={
         (isHovered || visibleHelp === menuItemHelp) && (
           <MenuItemAction
-            onClick={() => setVisibleHelp(menuItemHelp)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setVisibleHelp(menuItemHelp);
+            }}
             icon={<HelpIcon aria-hidden />}
             actionId={menuItemKey + "-help"}
             aria-label={menuItemKey + "-help"}

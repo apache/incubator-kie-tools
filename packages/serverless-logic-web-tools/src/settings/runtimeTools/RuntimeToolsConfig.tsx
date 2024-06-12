@@ -20,34 +20,26 @@
 import { getCookie, makeCookieName, setCookie } from "../../cookies";
 
 export const RUNTIME_TOOLS_DATA_INDEX_URL_COOKIE_NAME = makeCookieName("runtime-tools", "data-index-url");
-export const RUNTIME_TOOLS_KOGITO_SERVICE_URL_COOKIE_NAME = makeCookieName("runtime-tools", "kogito-service-url");
 
 export interface RuntimeToolsSettingsConfig {
   dataIndexUrl: string;
-  kogitoServiceUrl: string;
 }
 
 export const EMPTY_CONFIG: RuntimeToolsSettingsConfig = {
   dataIndexUrl: "",
-  kogitoServiceUrl: "",
 };
 
 export function isRuntimeToolsConfigValid(config: RuntimeToolsSettingsConfig): boolean {
-  return isDataIndexUrlValid(config.dataIndexUrl) && isKogitoServiceUrlValid(config.kogitoServiceUrl);
+  return isDataIndexUrlValid(config.dataIndexUrl);
 }
 
 export function isDataIndexUrlValid(dataIndexUrl: string): boolean {
   return dataIndexUrl !== undefined && dataIndexUrl.trim().length > 0;
 }
 
-export function isKogitoServiceUrlValid(kogitoServiceUrl: string): boolean {
-  return kogitoServiceUrl !== undefined && kogitoServiceUrl.trim().length > 0;
-}
-
 export function readRuntimeToolsConfigCookie(): RuntimeToolsSettingsConfig {
   return {
     dataIndexUrl: getCookie(RUNTIME_TOOLS_DATA_INDEX_URL_COOKIE_NAME) ?? "",
-    kogitoServiceUrl: getCookie(RUNTIME_TOOLS_KOGITO_SERVICE_URL_COOKIE_NAME) ?? "",
   };
 }
 
@@ -59,11 +51,6 @@ export function saveDataIndexUrlCookie(dataIndexUrl: string): void {
   setCookie(RUNTIME_TOOLS_DATA_INDEX_URL_COOKIE_NAME, dataIndexUrl);
 }
 
-export function saveKogitoServiceUrlCookie(kogitoServiceUrl: string): void {
-  setCookie(RUNTIME_TOOLS_KOGITO_SERVICE_URL_COOKIE_NAME, kogitoServiceUrl);
-}
-
 export function saveConfigCookie(config: RuntimeToolsSettingsConfig): void {
   saveDataIndexUrlCookie(config.dataIndexUrl);
-  saveKogitoServiceUrlCookie(config.kogitoServiceUrl);
 }

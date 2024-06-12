@@ -26,6 +26,7 @@ import {
 import { addOrGetDrd } from "./addOrGetDrd";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
+import { Normalized } from "../normalization/normalize";
 
 export enum EdgeDeletionMode {
   FROM_DRG_AND_ALL_DRDS,
@@ -38,7 +39,7 @@ export function deleteEdge({
   edge,
   mode,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   edge: { id: string; dmnObject: DmnDiagramEdgeData["dmnObject"] };
   mode: EdgeDeletionMode;
@@ -48,7 +49,7 @@ export function deleteEdge({
     return { dmnEdge: undefined };
   }
 
-  const dmnObjects: DMN15__tDefinitions["drgElement" | "artifact"] =
+  const dmnObjects: Normalized<DMN15__tDefinitions>["drgElement" | "artifact"] =
     switchExpression(edge?.dmnObject.type, {
       association: definitions.artifact,
       group: definitions.artifact,
@@ -64,9 +65,9 @@ export function deleteEdge({
     const requirements =
       switchExpression(edge?.dmnObject.requirementType, {
         // Casting to DMN15__tDecision because if has all types of requirement, but not necessarily that's true.
-        informationRequirement: (dmnObjects[dmnObjectIndex] as DMN15__tDecision).informationRequirement,
-        knowledgeRequirement: (dmnObjects[dmnObjectIndex] as DMN15__tDecision).knowledgeRequirement,
-        authorityRequirement: (dmnObjects[dmnObjectIndex] as DMN15__tDecision).authorityRequirement,
+        informationRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN15__tDecision>).informationRequirement,
+        knowledgeRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN15__tDecision>).knowledgeRequirement,
+        authorityRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN15__tDecision>).authorityRequirement,
         association: dmnObjects,
       }) ?? [];
 
@@ -78,7 +79,7 @@ export function deleteEdge({
   }
 
   // Deleting the DMNEdge's
-  let deletedDmnEdgeOnCurrentDrd: DMNDI15__DMNEdge | undefined;
+  let deletedDmnEdgeOnCurrentDrd: Normalized<DMNDI15__DMNEdge> | undefined;
 
   const drdCount = (definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? []).length;
   for (let i = 0; i < drdCount; i++) {

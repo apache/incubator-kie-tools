@@ -57,9 +57,10 @@ import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 import { addTopLevelItemDefinition as _addTopLevelItemDefinition } from "../mutations/addTopLevelItemDefinition";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { Normalized } from "../normalization/normalize";
 
 export type DataType = {
-  itemDefinition: DMN15__tItemDefinition;
+  itemDefinition: Normalized<DMN15__tItemDefinition>;
   parentId: string | undefined;
   parents: Set<string>;
   index: number;
@@ -70,16 +71,20 @@ export type DataType = {
 export type DataTypeTreeViewDataItem = {};
 export type DataTypeIndex = Map<string, DataType>;
 
-export type AddItemComponent = (id: string, how: "unshift" | "push", partial?: Partial<DMN15__tItemDefinition>) => void;
-export type AddTopLevelItemDefinition = (partial: Partial<DMN15__tItemDefinition>) => void;
+export type AddItemComponent = (
+  id: string,
+  how: "unshift" | "push",
+  partial?: Partial<Normalized<DMN15__tItemDefinition>>
+) => void;
+export type AddTopLevelItemDefinition = (partial: Partial<Normalized<DMN15__tItemDefinition>>) => void;
 
 export type EditItemDefinition = (
   id: string,
   consumer: (
-    itemDefinition: DMN15__tItemDefinition,
-    items: DMN15__tItemDefinition[],
+    itemDefinition: Normalized<DMN15__tItemDefinition>,
+    items: Normalized<DMN15__tItemDefinition>[],
     index: number,
-    all: DMN15__tItemDefinition[],
+    all: Normalized<DMN15__tItemDefinition>[],
     state: State
   ) => void
 ) => void;
@@ -87,7 +92,7 @@ export type EditItemDefinition = (
 export function DataTypes() {
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { activeItemDefinitionId } = useDmnEditorStore((s) => s.dataTypesEditor);
+  const activeItemDefinitionId = useDmnEditorStore((s) => s.dataTypesEditor.activeItemDefinitionId);
 
   const [filter, setFilter] = useState("");
   const { externalModelsByNamespace } = useExternalModels();
@@ -171,7 +176,7 @@ export function DataTypes() {
     <>
       {(dataTypesTree.length <= 0 && (
         <DataTypesEmptyState
-          onAdd={() => addTopLevelItemDefinition({ typeRef: { __$$text: DmnBuiltInDataType.Undefined } })}
+          onAdd={() => addTopLevelItemDefinition({ typeRef: undefined })}
           onPaste={pasteTopLevelItemDefinition}
         />
       )) || (
@@ -203,9 +208,7 @@ export function DataTypes() {
                               {...extraPropsForDropdownToggleAction}
                               key="add-data-type-action"
                               aria-label="Add Data Type"
-                              onClick={() =>
-                                addTopLevelItemDefinition({ typeRef: { __$$text: DmnBuiltInDataType.Undefined } })
-                              }
+                              onClick={() => addTopLevelItemDefinition({ typeRef: undefined })}
                             >
                               <PlusCircleIcon />
                             </DropdownToggleAction>,

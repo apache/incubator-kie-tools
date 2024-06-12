@@ -60,7 +60,7 @@ export const Base: Story = {
           inputExpression: {
             "@_id": generateUuid(),
             text: { __$$text: "input-1" },
-            "@_typeRef": DmnBuiltInDataType.Undefined,
+            "@_typeRef": undefined,
           },
         },
       ],
@@ -68,7 +68,7 @@ export const Base: Story = {
         {
           "@_id": generateUuid(),
           "@_label": "output-1",
-          "@_typeRef": DmnBuiltInDataType.Undefined,
+          "@_typeRef": undefined,
         },
       ],
       annotation: [
