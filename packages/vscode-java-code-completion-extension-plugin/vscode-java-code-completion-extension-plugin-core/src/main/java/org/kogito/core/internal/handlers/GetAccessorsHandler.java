@@ -36,13 +36,13 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
 
     private final JavaEngine javaEngine;
     private final AutocompleteHandler autocompleteHandler;
-    private final HoverHandler hoverHandler;
+    private final TypeHierarchyHandler typeHierarchyHandler;
 
-    public GetAccessorsHandler(String id, JavaEngine javaEngine, AutocompleteHandler autocompleteHandler, HoverHandler hoverHandler) {
+    public GetAccessorsHandler(String id, JavaEngine javaEngine, AutocompleteHandler autocompleteHandler, TypeHierarchyHandler typeHierarchyHandler) {
         super(id);
         this.javaEngine = javaEngine;
         this.autocompleteHandler = autocompleteHandler;
-        this.hoverHandler = hoverHandler;
+        this.typeHierarchyHandler = typeHierarchyHandler;
     }
 
     @Override
@@ -88,29 +88,27 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
         result.setAccessor(accessorName);
         result.setType(retrieveAccessorTypeFqcn(javaClassFqcn, accessorName).orElse(accessorTypeSimpleName));
 
-        JavaLanguageServerPlugin.logInfo(" *********** RESULTS ");
-        JavaLanguageServerPlugin.logInfo(" JavaClassFqcn " + result.getFqcn());
-        JavaLanguageServerPlugin.logInfo(" AccessorName " + result.getAccessor());
-        JavaLanguageServerPlugin.logInfo(" AccessorTypeFqcn " + result.getType());
-        JavaLanguageServerPlugin.logInfo(" *********** RESULTS END " );
-
         return result;
     }
 
     private Optional<String> retrieveAccessorTypeFqcn(String javaClassFqcn, String accessorName) {
         BuildInformation hoverBuildInformation =
-                javaEngine.buildVarTypePublicContent(this.hoverHandler.getActivatorPath(),
+                javaEngine.buildVarTypePublicContent(this.typeHierarchyHandler.getActivatorPath(),
                         javaClassFqcn,
                         accessorName + ";");
 
-        List<TypeHierarchyItem> hoverResult = this.hoverHandler.handle("GetAccessorsHandler", hoverBuildInformation);
+        List<TypeHierarchyItem> typeHierarchyResults = this.typeHierarchyHandler.handle("GetAccessorsHandler", hoverBuildInformation);
 
-        if (hoverResult.isEmpty() || hoverResult.size() > 1) {
+        if (typeHierarchyResults.isEmpty() || typeHierarchyResults.size() > 1) {
             return Optional.empty();
         }
 
-        String fullPackage = hoverResult.get(0).getDetail();
-        String classSimpleName = hoverResult.get(0).getName();
+        String fullPackage = typeHierarchyResults.get(0).getDetail();
+        String classSimpleName = typeHierarchyResults.get(0).getName();
+
+        if (fullPackage == null || fullPackage.isBlank()) {
+            return Optional.empty();
+        }
 
         return Optional.of(fullPackage + "." + classSimpleName);
     }

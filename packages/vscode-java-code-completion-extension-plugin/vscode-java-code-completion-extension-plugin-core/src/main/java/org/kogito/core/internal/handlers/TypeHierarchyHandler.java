@@ -39,11 +39,11 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class HoverHandler {
+public class TypeHierarchyHandler {
 
     private ActivationChecker activationChecker;
 
-    public HoverHandler(ActivationChecker activationChecker) {
+    public TypeHierarchyHandler(ActivationChecker activationChecker) {
         this.activationChecker = activationChecker;
     }
 
