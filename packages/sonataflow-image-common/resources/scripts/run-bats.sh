@@ -31,7 +31,7 @@ else
     rm -rf bats-core
 fi
 
-tests_output_path="${script_dir_path}/../../dist-e2e-tests"
+tests_output_path="${script_dir_path}/../../dist-tests-e2e"
 
 echo "----> running bats"
 ./bats/bin/bats modules/sonataflow/common/scripts/tests/bats --formatter junit --report-formatter junit --output "${tests_output_path}"

@@ -250,6 +250,11 @@
     <version.org.xmlunit>2.10.0</version.org.xmlunit>
     <version.net.javacrumbs.json-unit>2.35.0</version.net.javacrumbs.json-unit>
     <version.org.glassfish.jakarta.json>2.0.1</version.org.glassfish.jakarta.json>
+    <version.uberfire>7.74.1.Final</version.uberfire>
+    <version.font_awesome>4.7.0</version.font_awesome>
+    <version.gwtbootstrap3>1.0.1</version.gwtbootstrap3>
+    <version.bootstrap>3.4.1</version.bootstrap>
+    <version.animate_css>3.5.2</version.animate_css>
   </properties>
 
   <dependencyManagement>

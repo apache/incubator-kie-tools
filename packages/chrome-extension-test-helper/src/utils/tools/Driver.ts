@@ -42,7 +42,7 @@ export default class Driver {
     }
 
     // create directory for chrome browser data
-    const CHROME_DIR: string = resolve("dist-e2e-tests", "chrome_data");
+    const CHROME_DIR: string = resolve("dist-tests-e2e", "chrome_data");
     if (!existsSync(CHROME_DIR)) {
       mkdirSync(CHROME_DIR, { recursive: true });
     }
@@ -60,7 +60,7 @@ export default class Driver {
     );
 
     // init chrome driver log
-    const LOGS_DIR: string = resolve("dist-e2e-tests", "logs");
+    const LOGS_DIR: string = resolve("dist-tests-e2e", "logs");
     if (!existsSync(LOGS_DIR)) {
       mkdirSync(LOGS_DIR, { recursive: true });
     }

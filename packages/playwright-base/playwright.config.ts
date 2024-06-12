@@ -21,8 +21,8 @@ import { devices, defineConfig } from "@playwright/test";
 import { ProjectName } from "./projectNames";
 
 export default defineConfig({
-  testDir: "./tests/e2e",
-  outputDir: "dist-e2e-tests/output",
+  testDir: "./tests-e2e",
+  outputDir: "dist-tests-e2e/output",
   snapshotPathTemplate: "{testDir}/__screenshots__/{projectName}/{testFileDir}/{arg}{ext}",
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -36,11 +36,11 @@ export default defineConfig({
   reporter: process.env.CI
     ? [
         ["github"],
-        ["junit", { outputFile: "./dist-e2e-tests/junit-report-e2e.xml" }],
-        ["html", { outputFolder: "./dist-e2e-tests/reports/", open: "never" }],
+        ["junit", { outputFile: "./dist-tests-e2e/junit-report-e2e.xml" }],
+        ["html", { outputFolder: "./dist-tests-e2e/reports/", open: "never" }],
         ["list"],
       ]
-    : [["html", { outputFolder: "./dist-e2e-tests/reports/", open: "never" }], ["list"]],
+    : [["html", { outputFolder: "./dist-tests-e2e/reports/", open: "never" }], ["list"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
