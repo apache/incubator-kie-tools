@@ -410,7 +410,7 @@ Error details: ${err}`);
   }, [editorEnvelopeLocator, props.fileRelativePath, settings.editors.useLegacyDmnEditor]);
 
   // `workspaceFilePromise` is ONLY updated when there's an external change on this file (e.g., on another tab), but
-  // when we jump between the legacy and the new DMN Editor, `settingsAwareEditorEnvelopeLocator` changes,
+  // when we jump between the classic and the new DMN Editor, `settingsAwareEditorEnvelopeLocator` changes,
   // and if we don't update `embeddedEditorFile`, the new <EmbeddedEditor> will be rendered using the `embeddedEditorFile`
   // that originally was used for opening the file, and the new chosen DMN Editor will display stale content.
   useCancelableEffect(

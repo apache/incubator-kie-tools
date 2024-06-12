@@ -18,7 +18,7 @@
  */
 
 import { defaultDmnRunnerAutoFieldValue } from "@kie-tools/dmn-runner/dist/uniforms";
-import { RECURSION_KEYWORD } from "@kie-tools/dmn-runner/dist/constants";
+import { RECURSION_KEYWORD } from "@kie-tools/dmn-runner/dist/jsonSchemaConstants";
 import { Context, GuaranteedProps } from "uniforms/esm";
 import FormDmnNotSupportedField from "./FormDmnNotSupportedField";
 

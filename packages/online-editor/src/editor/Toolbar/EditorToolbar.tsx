@@ -337,12 +337,7 @@ export function EditorToolbarWithWorkspace(
                         dropdownItems={[
                           <DropdownItem key="give-feedback" description={"We'd love to hear from you!"}>
                             <small>
-                              <a
-                                href={
-                                  "https://github.com/apache/incubator-kie-issues/issues/439#issuecomment-1821845917"
-                                }
-                                target="_blank"
-                              >
+                              <a href={env.KIE_SANDBOX_FEEDBACK_URL} target="_blank">
                                 Give feedback&nbsp;
                                 <ExternalLinkAltIcon />
                               </a>
@@ -358,7 +353,7 @@ export function EditorToolbarWithWorkspace(
                               });
                             }}
                           >
-                            <small>Switch back to the legacy DMN Editor</small>
+                            <small>Switch back to the classic DMN Editor</small>
                           </DropdownItem>,
                         ]}
                       />

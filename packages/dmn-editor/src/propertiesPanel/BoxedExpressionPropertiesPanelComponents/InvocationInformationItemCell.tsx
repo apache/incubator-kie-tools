@@ -27,6 +27,7 @@ import {
 import { useDmnEditorStore } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { InformationItemCell } from "./InformationItemCell";
+import { Normalized } from "../../normalization/normalize";
 
 export function InvocationInformationItemCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
@@ -47,8 +48,10 @@ export function InvocationInformationItemCell(props: {
     [cellPath?.root, props.boxedExpressionIndex]
   );
 
-  const updater = useBoxedExpressionUpdater<DMN15__tInformationItem>(selectedObjectInfos?.expressionPath ?? []);
-  const rootExpressionUpdater = useBoxedExpressionUpdater<DMN15__tInvocation>(rootPath ?? []);
+  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tInformationItem>>(
+    selectedObjectInfos?.expressionPath ?? []
+  );
+  const rootExpressionUpdater = useBoxedExpressionUpdater<Normalized<DMN15__tInvocation>>(rootPath ?? []);
 
   return (
     <>
@@ -71,7 +74,7 @@ export function InvocationInformationItemCell(props: {
           });
           rootExpressionUpdater((dmnObject) => {
             if (cellPath?.type === "invocation") {
-              const expression = (dmnObject as DMN15__tInvocation).binding![cellPath.row ?? 0].expression;
+              const expression = (dmnObject as Normalized<DMN15__tInvocation>).binding![cellPath.row ?? 0].expression;
               if (expression) {
                 expression["@_typeRef"] = newTypeRef;
               }

@@ -86,4 +86,26 @@ test.describe("Change Properties - Multiple Nodes", () => {
     expect(decisionWidth).toEqual("260");
     expect(decisionHeight).toEqual("180");
   });
+
+  test("should reset multiple nodes font", async ({ nodes, palette, diagram, multipleNodesPropertiesPanel }) => {
+    await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
+    await diagram.resetFocus();
+    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 300, y: 100 } });
+    await diagram.resetFocus();
+
+    await multipleNodesPropertiesPanel.open();
+    await nodes.selectMultiple({ names: [DefaultNodeName.INPUT_DATA, DefaultNodeName.DECISION] });
+    await multipleNodesPropertiesPanel.setFont({
+      fontSize: "40",
+      bold: true,
+      italic: true,
+      underline: true,
+      striketrough: true,
+      color: "#f12200",
+      fontFamily: "Verdana",
+    });
+    await multipleNodesPropertiesPanel.resetFont();
+
+    await expect(diagram.get()).toHaveScreenshot("reset-multiple-nodes-font.png");
+  });
 });

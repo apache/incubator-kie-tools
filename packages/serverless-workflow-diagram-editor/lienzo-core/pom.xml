@@ -25,7 +25,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-        <artifactId>stunner-editors-parent</artifactId>
+        <artifactId>serverless-workflow-diagram-editor-parent</artifactId>
         <version>${revision}</version>
       </parent>
 
@@ -53,41 +53,6 @@
             <url>http://www.drools.org/community/team.html</url>
         </developer>
     </developers>
-
-    <repositories>
-        <repository>
-            <id>google-snapshots</id>
-            <name>google-snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/google-snapshots/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>sonatype-snapshots-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>fail</checksumPolicy>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>sonatype-snapshots-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>fail</checksumPolicy>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
 
     <dependencies>
         <dependency>

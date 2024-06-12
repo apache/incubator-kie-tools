@@ -43,7 +43,7 @@ import {
   DMN15__tRelation,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Expression } from "./VariableOccurrence";
-import { DmnLatestModel, getMarshaller } from "@kie-tools/dmn-marshaller";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 
 type DmnLiteralExpression = { __$$element: "literalExpression" } & DMN15__tLiteralExpression;
 type DmnInvocation = { __$$element: "invocation" } & DMN15__tInvocation;
@@ -53,14 +53,11 @@ type DmnFunctionDefinition = { __$$element: "functionDefinition" } & DMN15__tFun
 type DmnRelation = { __$$element: "relation" } & DMN15__tRelation;
 type DmnList = { __$$element: "list" } & DMN15__tList;
 type DmnKnowledgeRequirement = DMN15__tKnowledgeRequirement;
-
-type UnsupportedDmnExpressions =
-  | ({ __$$element: "for" } & DMN15__tFor)
-  | ({ __$$element: "every" } & DMN15__tQuantified)
-  | ({ __$$element: "some" } & DMN15__tQuantified)
-  | ({ __$$element: "conditional" } & DMN15__tConditional)
-  | ({ __$$element: "filter" } & DMN15__tFilter);
-
+type DmnConditional = { __$$element: "conditional" } & DMN15__tConditional;
+type DmnFilter = { __$$element: "filter" } & DMN15__tFilter;
+type DmnFor = { __$$element: "for" } & DMN15__tFor;
+type DmnEvery = { __$$element: "every" } & DMN15__tQuantified;
+type DmnSome = { __$$element: "some" } & DMN15__tQuantified;
 type DmnDecisionNode = { __$$element: "decision" } & DMN15__tDecision;
 type DmnBusinessKnowledgeModel = DMN15__tBusinessKnowledgeModel;
 export type DmnDefinitions = DMN15__tDefinitions;
@@ -125,7 +122,7 @@ export class VariablesRepository {
         expressions: new Map<string, Expression>(),
       };
 
-      const newContext = {
+      const newContext: VariableContext = {
         uuid: variableUuid,
         parent: parentContext,
         variable: newVariable,
@@ -261,7 +258,7 @@ export class VariablesRepository {
     const parent = this.addVariable(
       drg["@_id"] ?? "",
       drg["@_name"],
-      FeelSyntacticSymbolNature.GlobalVariable,
+      FeelSyntacticSymbolNature.InvisibleVariables,
       undefined,
       drg.variable?.["@_typeRef"]
     );
@@ -288,14 +285,16 @@ export class VariablesRepository {
     name: string,
     variableType: FeelSyntacticSymbolNature,
     parent?: VariableContext,
-    typeRef?: string
+    typeRef?: string,
+    allowDynamicVariables?: boolean
   ) {
     const node = this.createVariableNode(
       this.buildVariableUuid(uuid),
       this.buildName(name),
       variableType,
       parent,
-      typeRef
+      typeRef,
+      allowDynamicVariables
     );
 
     this.variablesIndexedByUuid.set(this.buildVariableUuid(uuid), node);
@@ -308,13 +307,15 @@ export class VariablesRepository {
     name: string,
     variableType: FeelSyntacticSymbolNature,
     parent: VariableContext | undefined,
-    typeRef: string | undefined
-  ) {
+    typeRef: string | undefined,
+    allowDynamicVariables: boolean | undefined
+  ): VariableContext {
     return {
       uuid: uuid,
       children: new Map<string, VariableContext>(),
       parent: parent,
       inputVariables: new Array<string>(),
+      allowDynamicVariables: allowDynamicVariables,
       variable: {
         value: name,
         feelSyntacticSymbolNature: variableType,
@@ -471,6 +472,91 @@ export class VariablesRepository {
     }
   }
 
+  private addConditional(parent: VariableContext, element: DmnConditional) {
+    if (element.if?.expression) {
+      this.addInnerExpression(parent, element.if.expression);
+    }
+    if (element.then?.expression) {
+      this.addInnerExpression(parent, element.then.expression);
+    }
+    if (element.else?.expression) {
+      this.addInnerExpression(parent, element.else.expression);
+    }
+  }
+
+  private addIterable(parent: VariableContext, expression: DmnSome | DmnEvery) {
+    const localParent = this.addIteratorVariable(parent, expression);
+
+    if (expression.in.expression) {
+      this.addInnerExpression(localParent, expression.in.expression);
+    }
+    if (expression.satisfies.expression) {
+      this.addInnerExpression(localParent, expression.satisfies.expression);
+    }
+  }
+
+  private addFor(parent: VariableContext, expression: DmnFor) {
+    const localParent = this.addIteratorVariable(parent, expression);
+
+    if (expression.return.expression) {
+      this.addInnerExpression(localParent, expression.return.expression);
+    }
+    if (expression.in.expression) {
+      this.addInnerExpression(localParent, expression.in.expression);
+    }
+  }
+
+  private addFilterVariable(parent: VariableContext, expression: DmnFilter) {
+    let type = undefined;
+
+    // We're assuming that the 'in' expression is with the correct type (a list of @_typeRef).
+    // If it is not the expression will fail anyway.
+    if (expression.in.expression) {
+      type = expression.in.expression["@_typeRef"];
+    }
+    return this.addVariable(
+      expression["@_id"] ?? "",
+      "item",
+      FeelSyntacticSymbolNature.LocalVariable,
+      parent,
+      type,
+      true
+    );
+  }
+
+  private addIteratorVariable(parent: VariableContext, expression: DmnFor | DmnEvery | DmnSome) {
+    let localParent = parent;
+    if (expression["@_iteratorVariable"]) {
+      let type = undefined;
+
+      // We're assuming that the 'in' expression is with the correct type (a list of @_typeRef).
+      // If it is not the expression will fail anyway.
+      if (expression.in.expression) {
+        type = expression.in.expression["@_typeRef"];
+      }
+      localParent = this.addVariable(
+        expression["@_id"] ?? "",
+        expression["@_iteratorVariable"],
+        FeelSyntacticSymbolNature.LocalVariable,
+        parent,
+        type,
+        true
+      );
+    }
+    return localParent;
+  }
+
+  private addFilter(parent: VariableContext, expression: DmnFilter) {
+    if (expression.in.expression) {
+      this.addInnerExpression(parent, expression.in.expression);
+    }
+
+    const localParent = this.addFilterVariable(parent, expression);
+    if (expression.match.expression) {
+      this.addInnerExpression(localParent, expression.match.expression);
+    }
+  }
+
   private addInnerExpression(
     parent: VariableContext,
     expression:
@@ -481,7 +567,11 @@ export class VariablesRepository {
       | DmnFunctionDefinition
       | DmnRelation
       | DmnList
-      | UnsupportedDmnExpressions
+      | DmnFor
+      | DmnFilter
+      | DmnEvery
+      | DmnSome
+      | DmnConditional
   ) {
     switch (expression.__$$element) {
       case "literalExpression":
@@ -510,6 +600,23 @@ export class VariablesRepository {
 
       case "list":
         this.addList(parent, expression);
+        break;
+
+      case "conditional":
+        this.addConditional(parent, expression);
+        break;
+
+      case "every":
+      case "some":
+        this.addIterable(parent, expression);
+        break;
+
+      case "for":
+        this.addFor(parent, expression);
+        break;
+
+      case "filter":
+        this.addFilter(parent, expression);
         break;
 
       default:

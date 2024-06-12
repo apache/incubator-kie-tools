@@ -19,8 +19,10 @@
 
 import * as __path from "path";
 import * as React from "react";
+import { useEffect, useMemo, useState } from "react";
 import * as DmnEditor from "@kie-tools/dmn-editor/dist/DmnEditor";
-import { getMarshaller } from "@kie-tools/dmn-marshaller";
+import { normalize, Normalized } from "@kie-tools/dmn-editor/dist/normalization/normalize";
+import { DMN_LATEST_VERSION, DmnLatestModel, DmnMarshaller, getMarshaller } from "@kie-tools/dmn-marshaller";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import {
   ContentType,
@@ -30,10 +32,8 @@ import {
   WorkspaceEdit,
 } from "@kie-tools-core/workspace/dist/api";
 import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
-import { DMN_LATEST_VERSION, DmnLatestModel, DmnMarshaller } from "@kie-tools/dmn-marshaller";
 import { domParser } from "@kie-tools/xml-parser-ts";
 import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
-import { useEffect, useMemo, useState } from "react";
 import { XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 import { getPmmlNamespace } from "@kie-tools/dmn-editor/dist/pmml/pmml";
 import { getNamespaceOfDmnImport } from "@kie-tools/dmn-editor/dist/includedModels/importNamespaces";
@@ -41,6 +41,10 @@ import {
   imperativePromiseHandle,
   PromiseImperativeHandle,
 } from "@kie-tools-core/react-hooks/dist/useImperativePromiseHandler";
+import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 export const EXTERNAL_MODELS_SEARCH_GLOB_PATTERN = "**/*.{dmn,pmml}";
 
@@ -60,16 +64,20 @@ export type DmnEditorRootProps = {
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot: WorkspaceChannelApi["kogitoWorkspace_openFile"];
   workspaceRootAbsolutePosixPath: string;
+  keyboardShortcutsService: KeyboardShortcutsService | undefined;
 };
 
 export type DmnEditorRootState = {
   marshaller: DmnMarshaller<typeof DMN_LATEST_VERSION> | undefined;
-  stack: DmnLatestModel[];
+  stack: Normalized<DmnLatestModel>[];
   pointer: number;
   openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
   externalModelsByNamespace: DmnEditor.ExternalModelsIndex;
   readonly: boolean;
   externalModelsManagerDoneBootstraping: boolean;
+  keyboardShortcutsRegisterIds: number[];
+  keyboardShortcutsRegistred: boolean;
+  error: Error | undefined;
 };
 
 export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditorRootState> {
@@ -89,6 +97,9 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: undefined,
       readonly: true,
       externalModelsManagerDoneBootstraping: false,
+      keyboardShortcutsRegisterIds: [],
+      keyboardShortcutsRegistred: false,
+      error: undefined,
     };
   }
 
@@ -120,15 +131,19 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: string,
     content: string
   ): Promise<void> {
-    const marshaller = getMarshaller(content || EMPTY_DMN(), { upgradeTo: "latest" });
+    const marshaller = this.getMarshaller(content);
 
     // Save stack
-    let savedStackPointer: DmnLatestModel[] = [];
+    let savedStackPointer: Normalized<DmnLatestModel>[] = [];
 
     // Set the model and path for external models manager.
     this.setState((prev) => {
       savedStackPointer = [...prev.stack];
-      return { stack: [marshaller.parser.parse()], openFilenormalizedPosixPathRelativeToTheWorkspaceRoot, pointer: 0 };
+      return {
+        stack: [normalize(marshaller.parser.parse())],
+        openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
+        pointer: 0,
+      };
     });
 
     // Wait the external manager models to load.
@@ -145,7 +160,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
         return {
           marshaller,
           openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
-          stack: [...newStack, marshaller.parser.parse()],
+          stack: [...newStack, normalize(marshaller.parser.parse())],
           readonly: false,
           pointer: newStack.length,
           externalModelsManagerDoneBootstraping: true,
@@ -157,7 +172,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
         return {
           marshaller,
           openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
-          stack: [marshaller.parser.parse()],
+          stack: [normalize(marshaller.parser.parse())],
           readonly: false,
           pointer: 0,
           externalModelsManagerDoneBootstraping: true,
@@ -166,10 +181,22 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     });
   }
 
+  public get model(): Normalized<DmnLatestModel> | undefined {
+    return this.state.stack[this.state.pointer];
+  }
+
   // Internal methods
 
-  public get model(): DmnLatestModel | undefined {
-    return this.state.stack[this.state.pointer];
+  private getMarshaller(content: string) {
+    try {
+      return getMarshaller(content || EMPTY_DMN(), { upgradeTo: "latest" });
+    } catch (e) {
+      this.setState((s) => ({
+        ...s,
+        error: e,
+      }));
+      throw e;
+    }
   }
 
   private setExternalModelsByNamespace = (externalModelsByNamespace: DmnEditor.ExternalModelsIndex) => {
@@ -247,7 +274,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       return {
         normalizedPosixPathRelativeToTheOpenFile,
         type: "dmn",
-        model: getMarshaller(resource?.content ?? "", { upgradeTo: "latest" }).parser.parse(),
+        model: normalize(getMarshaller(resource?.content ?? "", { upgradeTo: "latest" }).parser.parse()),
         svg: "",
       };
     } else if (ext === ".pmml") {
@@ -271,9 +298,180 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     );
   };
 
+  public componentDidUpdate(
+    prevProps: Readonly<DmnEditorRootProps>,
+    prevState: Readonly<DmnEditorRootState>,
+    snapshot?: any
+  ): void {
+    if (this.props.keyboardShortcutsService === undefined || this.state.keyboardShortcutsRegistred === true) {
+      return;
+    }
+
+    const commands = this.dmnEditorRef.current?.getCommands();
+    if (commands === undefined) {
+      return;
+    }
+    const cancelAction = this.props.keyboardShortcutsService.registerKeyPress("Escape", "Edit | Unselect", async () =>
+      commands.cancelAction()
+    );
+    const deleteSelectionBackspace = this.props.keyboardShortcutsService.registerKeyPress(
+      "Backspace",
+      "Edit | Delete selection",
+      async () => {}
+    );
+    const deleteSelectionDelete = this.props.keyboardShortcutsService.registerKeyPress(
+      "Delete",
+      "Edit | Delete selection",
+      async () => {}
+    );
+    const selectAll = this.props.keyboardShortcutsService?.registerKeyPress(
+      "A",
+      "Edit | Select/Deselect all",
+      async () => commands.selectAll()
+    );
+    const createGroup = this.props.keyboardShortcutsService?.registerKeyPress(
+      "G",
+      "Edit | Create group wrapping selection",
+      async () => {
+        console.log(" KEY GROUP PRESSED, ", commands);
+        return commands.createGroup();
+      }
+    );
+    const hideFromDrd = this.props.keyboardShortcutsService?.registerKeyPress("X", "Edit | Hide from DRD", async () =>
+      commands.hideFromDrd()
+    );
+    const copy = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+C", "Edit | Copy nodes", async () =>
+      commands.copy()
+    );
+    const cut = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+X", "Edit | Cut nodes", async () =>
+      commands.cut()
+    );
+    const paste = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+V", "Edit | Paste nodes", async () =>
+      commands.paste()
+    );
+    const togglePropertiesPanel = this.props.keyboardShortcutsService?.registerKeyPress(
+      "I",
+      "Misc | Open/Close properties panel",
+      async () => commands.togglePropertiesPanel()
+    );
+    const toggleHierarchyHighlight = this.props.keyboardShortcutsService?.registerKeyPress(
+      "H",
+      "Misc | Toggle hierarchy highlights",
+      async () => commands.toggleHierarchyHighlight()
+    );
+    const moveUp = this.props.keyboardShortcutsService.registerKeyPress(
+      "Up",
+      "Move | Move selection up",
+      async () => {}
+    );
+    const moveDown = this.props.keyboardShortcutsService.registerKeyPress(
+      "Down",
+      "Move | Move selection down",
+      async () => {}
+    );
+    const moveLeft = this.props.keyboardShortcutsService.registerKeyPress(
+      "Left",
+      "Move | Move selection left",
+      async () => {}
+    );
+    const moveRight = this.props.keyboardShortcutsService.registerKeyPress(
+      "Right",
+      "Move | Move selection right",
+      async () => {}
+    );
+    const bigMoveUp = this.props.keyboardShortcutsService.registerKeyPress(
+      "Shift + Up",
+      "Move | Move selection up a big distance",
+      async () => {}
+    );
+    const bigMoveDown = this.props.keyboardShortcutsService.registerKeyPress(
+      "Shift + Down",
+      "Move | Move selection down a big distance",
+      async () => {}
+    );
+    const bigMoveLeft = this.props.keyboardShortcutsService.registerKeyPress(
+      "Shift + Left",
+      "Move | Move selection left a big distance",
+      async () => {}
+    );
+    const bigMoveRight = this.props.keyboardShortcutsService.registerKeyPress(
+      "Shift + Right",
+      "Move | Move selection right a big distance",
+      async () => {}
+    );
+    const focusOnBounds = this.props.keyboardShortcutsService?.registerKeyPress(
+      "B",
+      "Navigate | Focus on selection",
+      async () => commands.focusOnSelection()
+    );
+    const resetPosition = this.props.keyboardShortcutsService?.registerKeyPress(
+      "Space",
+      "Navigate | Reset position to origin",
+      async () => commands.resetPosition()
+    );
+    const pan = this.props.keyboardShortcutsService?.registerKeyPress(
+      "Right Mouse Button",
+      "Navigate | Hold and drag to Pan",
+      async () => {}
+    );
+    const zoom = this.props.keyboardShortcutsService?.registerKeyPress(
+      "Ctrl",
+      "Navigate | Hold and scroll to zoom in/out",
+      async () => {}
+    );
+    const navigateHorizontally = this.props.keyboardShortcutsService?.registerKeyPress(
+      "Shift",
+      "Navigate | Hold and scroll to navigate horizontally",
+      async () => {}
+    );
+
+    this.setState((prev) => ({
+      ...prev,
+      keyboardShortcutsRegistred: true,
+      keyboardShortcutsRegisterIds: [
+        bigMoveDown,
+        bigMoveLeft,
+        bigMoveRight,
+        bigMoveUp,
+        cancelAction,
+        copy,
+        createGroup,
+        cut,
+        deleteSelectionBackspace,
+        deleteSelectionDelete,
+        focusOnBounds,
+        hideFromDrd,
+        moveDown,
+        moveLeft,
+        moveRight,
+        moveUp,
+        navigateHorizontally,
+        pan,
+        paste,
+        resetPosition,
+        selectAll,
+        toggleHierarchyHighlight,
+        togglePropertiesPanel,
+        zoom,
+      ],
+    }));
+  }
+
+  public componentWillUnmount() {
+    const keyboardShortcuts = this.dmnEditorRef.current?.getCommands();
+    if (keyboardShortcuts === undefined) {
+      return;
+    }
+
+    this.state.keyboardShortcutsRegisterIds.forEach((id) => {
+      this.props.keyboardShortcutsService?.deregister(id);
+    });
+  }
+
   public render() {
     return (
       <>
+        {this.state.error && <DmnMarshallerFallbackError error={this.state.error} />}
         {this.model && (
           <>
             <DmnEditor.DmnEditor
@@ -325,7 +523,7 @@ function ExternalModelsManager({
 }: {
   workspaceRootAbsolutePosixPath: string;
   thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
-  model: DmnLatestModel;
+  model: Normalized<DmnLatestModel>;
   onChange: (externalModelsByNamespace: DmnEditor.ExternalModelsIndex) => void;
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onRequestWorkspaceFilesList: WorkspaceChannelApi["kogitoWorkspace_resourceListRequest"];
@@ -425,7 +623,7 @@ function ExternalModelsManager({
 
               externalModelsIndex[namespace] = {
                 normalizedPosixPathRelativeToTheOpenFile,
-                model: getMarshaller(content, { upgradeTo: "latest" }).parser.parse(),
+                model: normalize(getMarshaller(content, { upgradeTo: "latest" }).parser.parse()),
                 type: "dmn",
                 svg: "",
               };
@@ -466,4 +664,19 @@ function ExternalModelsManager({
   ]);
 
   return <></>;
+}
+
+function DmnMarshallerFallbackError({ error }: { error: Error }) {
+  return (
+    <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
+      <EmptyState style={{ maxWidth: "1280px" }}>
+        <EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />
+        <Title size={"lg"} headingLevel={"h4"}>
+          Unable to open file.
+        </Title>
+        <br />
+        <EmptyStateBody>Error details: {error.message}</EmptyStateBody>
+      </EmptyState>
+    </Flex>
+  );
 }

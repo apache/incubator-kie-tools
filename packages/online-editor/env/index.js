@@ -19,14 +19,14 @@
 
 const { varsWithName, getOrDefault, composeEnv, str2bool } = require("@kie-tools-scripts/build-env");
 
-const buildEnv = require("@kie-tools/root-env/env");
+const rootEnv = require("@kie-tools/root-env/env");
 const extendedServicesEnv = require("@kie-tools/extended-services/env");
 const corsProxyEnv = require("@kie-tools/cors-proxy/env");
 
 module.exports = composeEnv(
   [
     // dependencies
-    buildEnv,
+    rootEnv,
     extendedServicesEnv,
     corsProxyEnv,
   ],
@@ -37,15 +37,15 @@ module.exports = composeEnv(
         description: "Build information to be shown at the bottom of Home page.",
       },
       ONLINE_EDITOR__extendedServicesDownloadUrlLinux: {
-        default: `https://github.com/apache/incubator-kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_linux_${extendedServicesEnv.env.extendedServices.version}.tar.gz`,
+        default: `https://github.com/apache/incubator-kie-tools/releases/download/${rootEnv.env.root.version}/kie_sandbox_extended_services_linux_${extendedServicesEnv.env.extendedServices.version}.tar.gz`,
         description: "Download URL for Extended Services for Linux.",
       },
       ONLINE_EDITOR__extendedServicesDownloadUrlMacOs: {
-        default: `https://github.com/apache/incubator-kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_macos_${extendedServicesEnv.env.extendedServices.version}.dmg`,
+        default: `https://github.com/apache/incubator-kie-tools/releases/download/${rootEnv.env.root.version}/kie_sandbox_extended_services_macos_${extendedServicesEnv.env.extendedServices.version}.dmg`,
         description: "Download URL for Extended Services for macOS.",
       },
       ONLINE_EDITOR__extendedServicesDownloadUrlWindows: {
-        default: `https://github.com/apache/incubator-kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_windows_${extendedServicesEnv.env.extendedServices.version}.exe`,
+        default: `https://github.com/apache/incubator-kie-tools/releases/download/${rootEnv.env.root.version}/kie_sandbox_extended_services_windows_${extendedServicesEnv.env.extendedServices.version}.exe`,
         description: "Download URL for Extended Services for Windows.",
       },
       ONLINE_EDITOR__extendedServicesCompatibleVersion: {
@@ -62,8 +62,12 @@ module.exports = composeEnv(
         description: "CORS Proxy URL.",
       },
       ONLINE_EDITOR__extendedServicesUrl: {
-        default: `http://${extendedServicesEnv.env.extendedServices.host}:${extendedServicesEnv.env.extendedServices.port}`,
+        default: `http://${extendedServicesEnv.env.extendedServices.ip}:${extendedServicesEnv.env.extendedServices.port}`,
         description: "Extended Services URL.",
+      },
+      ONLINE_EDITOR__feedbackUrl: {
+        default: "https://github.com/apache/incubator-kie-issues/issues/439#issuecomment-1821845917",
+        description: "URL where users can give feedback, currently present in the New DMN Editor dropdown.",
       },
       ONLINE_EDITOR__requireCustomCommitMessage: {
         default: `${false}`,
@@ -74,55 +78,55 @@ module.exports = composeEnv(
         description: "Service URL to validate commit messages.",
       },
       ONLINE_EDITOR__appName: {
-        default: "KIE Sandbox",
+        default: "Apache KIE™ Sandbox",
         description: "The name used to refer to a particular KIE Sandbox distribution.",
       },
       ONLINE_EDITOR__devDeploymentBaseImageRegistry: {
-        default: "quay.io",
+        default: "docker.io",
         description: "Image registry to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentBaseImageAccount: {
-        default: "kie-tools",
+        default: "apache",
         description: "Image account to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentBaseImageName: {
-        default: "dev-deployment-base-image",
+        default: "incubator-kie-sandbox-dev-deployment-base",
         description: "Image name to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentBaseImageTag: {
-        default: "daily-dev",
+        default: rootEnv.env.root.streamName,
         description: "Image tag to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageRegistry: {
-        default: "quay.io",
+        default: "docker.io",
         description: "Image registry to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageAccount: {
-        default: "kie-tools",
+        default: "apache",
         description: "Image account to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageName: {
-        default: "dev-deployment-kogito-quarkus-blank-app-image",
+        default: "incubator-kie-sandbox-dev-deployment-kogito-quarkus-blank-app",
         description: "Image name to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageTag: {
-        default: "daily-dev",
+        default: rootEnv.env.root.streamName,
         description: "Image tag to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry: {
-        default: "quay.io",
+        default: "docker.io",
         description: "Image registry to be used by Dev deployments to display a form for deployed DMN models.",
       },
       ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount: {
-        default: "kie-tools",
+        default: "apache",
         description: "Image account to be used by Dev deployments to display a form for deployed DMN models.",
       },
       ONLINE_EDITOR__devDeploymentDmnFormWebappImageName: {
-        default: "dev-deployment-dmn-form-webapp-image",
+        default: "incubator-kie-sandbox-dev-deployment-dmn-form-webapp",
         description: "Image name to be used by Dev deployments to display a form for deployed DMN models.",
       },
       ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag: {
-        default: "daily-dev",
+        default: rootEnv.env.root.streamName,
         description: "Image tag to be used by Dev deployments to display a form for deployed DMN models.",
       },
       ONLINE_EDITOR__devDeploymentImagePullPolicy: {
@@ -158,6 +162,7 @@ module.exports = composeEnv(
           appName: getOrDefault(this.vars.ONLINE_EDITOR__appName),
           extendedServicesUrl: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesUrl),
           corsProxyUrl: getOrDefault(this.vars.ONLINE_EDITOR__corsProxyUrl),
+          feedbackUrl: getOrDefault(this.vars.ONLINE_EDITOR__feedbackUrl),
           requireCustomCommitMessage: str2bool(getOrDefault(this.vars.ONLINE_EDITOR__requireCustomCommitMessage)),
           customCommitMessageValidationServiceUrl: getOrDefault(
             this.vars.ONLINE_EDITOR__customCommitMessageValidationServiceUrl

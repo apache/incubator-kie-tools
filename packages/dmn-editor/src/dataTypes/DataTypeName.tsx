@@ -30,6 +30,8 @@ import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { InlineFeelNameInput, OnInlineFeelNameRenamed } from "../feel/InlineFeelNameInput";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { State } from "../store/Store";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { Normalized } from "../normalization/normalize";
 
 export function DataTypeName({
   isReadonly,
@@ -43,7 +45,7 @@ export function DataTypeName({
 }: {
   isReadonly: boolean;
   editMode: "hover" | "double-click";
-  itemDefinition: DMN15__tItemDefinition;
+  itemDefinition: Normalized<DMN15__tItemDefinition>;
   isActive: boolean;
   relativeToNamespace: string;
   shouldCommitOnBlur?: boolean;
@@ -135,7 +137,7 @@ export function DataTypeName({
           />
           {!isEditingLabel && (
             <TypeRefLabel
-              typeRef={itemDefinition.typeRef?.__$$text}
+              typeRef={itemDefinition.typeRef?.__$$text ?? DmnBuiltInDataType.Undefined}
               isCollection={itemDefinition["@_isCollection"]}
               relativeToNamespace={relativeToNamespace}
             />

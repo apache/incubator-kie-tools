@@ -1,3 +1,22 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
 name: "Setup CI patterns"
 description: ""
 
@@ -54,9 +73,9 @@ runs:
 
           const pnpmWorkspacePackagesRootPaths = ["packages", "examples"].map(p => path.join(cwd, p)).join("\n");
 
-          const nonSourceFilesPatterns = fs.readFileSync(path.join(cwd, "./.github/supporting-files/ci/non-source-files-patterns.txt"), "utf-8");
+          const nonSourceFilesPatterns = fs.readFileSync(path.join(cwd, "./.github/supporting-files/ci/patterns/non-source-files-patterns.txt"), "utf-8");
           const nonSourceFilesPatternsForGitDiff = nonSourceFilesPatterns.split("\n").filter(p => p.trim() !== "").map(p => `':!${p}'`).join(" ");
-          const testSourceFilesPatterns = fs.readFileSync(path.join(cwd, "./.github/supporting-files/ci/tests-source-files-patterns.txt"), "utf-8");
+          const testSourceFilesPatterns = fs.readFileSync(path.join(cwd, "./.github/supporting-files/ci/patterns/tests-source-files-patterns.txt"), "utf-8");
 
           core.setOutput("pnpm_workspace_packages_root_paths", pnpmWorkspacePackagesRootPaths);
           core.setOutput("non_source_files_patterns", nonSourceFilesPatterns);
@@ -78,14 +97,14 @@ runs:
             core.setOutput(outputName, patterns);
           }
 
-          await outputPatternsPrefixedWithRoots("tests_reports_patterns", path.join(cwd, "./.github/supporting-files/ci/tests-reports-patterns.txt"));
-          await outputPatternsPrefixedWithRoots("end_to_end_tests_reports_patterns", path.join(cwd, "./.github/supporting-files/ci/end-to-end-tests-reports-patterns.txt"));
-          await outputPatternsPrefixedWithRoots("end_to_end_tests_artifacts_patterns", path.join(cwd, "./.github/supporting-files/ci/end-to-end-tests-artifacts-patterns.txt"));
-          await outputPatternsPrefixedWithRoots("build_artifacts_patterns", path.join(cwd, "./.github/supporting-files/ci/build-artifacts-patterns.txt"));
+          await outputPatternsPrefixedWithRoots("tests_reports_patterns", path.join(cwd, "./.github/supporting-files/ci/patterns/tests-reports-patterns.txt"));
+          await outputPatternsPrefixedWithRoots("end_to_end_tests_reports_patterns", path.join(cwd, "./.github/supporting-files/ci/patterns/end-to-end-tests-reports-patterns.txt"));
+          await outputPatternsPrefixedWithRoots("end_to_end_tests_artifacts_patterns", path.join(cwd, "./.github/supporting-files/ci/patterns/end-to-end-tests-artifacts-patterns.txt"));
+          await outputPatternsPrefixedWithRoots("build_artifacts_patterns", path.join(cwd, "./.github/supporting-files/ci/patterns/build-artifacts-patterns.txt"));
 
           core.setOutput(
             "end_to_end_tests_reports_patterns_for_find", 
-            prefixWithRoots(fs.readFileSync("./.github/supporting-files/ci/end-to-end-tests-reports-patterns.txt", "utf-8"))
+            prefixWithRoots(fs.readFileSync("./.github/supporting-files/ci/patterns/end-to-end-tests-reports-patterns.txt", "utf-8"))
               .split("\n")
               .map(p => `-path '${p}'`)
               .join(" -o ")

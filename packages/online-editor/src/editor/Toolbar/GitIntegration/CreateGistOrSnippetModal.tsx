@@ -245,7 +245,10 @@ If you are, it means that creating this Snippet failed and it can safely be dele
       variant={ModalVariant.medium}
       aria-label={i18n.createGistOrSnippetModal[authProvider.type].create}
       isOpen={props.isOpen}
-      onClose={props.onClose}
+      onClose={() => {
+        setError(undefined);
+        props.onClose();
+      }}
       title={i18n.createGistOrSnippetModal[authProvider.type].create}
       titleIconVariant={switchExpression(authProvider.type, {
         bitbucket: BitbucketIcon,

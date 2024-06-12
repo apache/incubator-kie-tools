@@ -21,11 +21,12 @@ import {
   DMN15__tDecisionService,
   DMN15__tDefinitions,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "../normalization/normalize";
 
 export function repopulateInputDataAndDecisionsOnAllDecisionServices({
   definitions,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
 }) {
   for (let i = 0; i < (definitions.drgElement ?? []).length; i++) {
     const drgElement = definitions.drgElement![i];
@@ -42,8 +43,8 @@ export function repopulateInputDataAndDecisionsOnDecisionService({
   definitions,
   decisionService,
 }: {
-  definitions: DMN15__tDefinitions;
-  decisionService: DMN15__tDecisionService;
+  definitions: Normalized<DMN15__tDefinitions>;
+  decisionService: Normalized<DMN15__tDecisionService>;
 }) {
   // Save previous values to preserve order
   const inputDatas = new Set<string>([...(decisionService.inputData ?? [])].map((e) => e["@_href"])); // Using Set for uniqueness

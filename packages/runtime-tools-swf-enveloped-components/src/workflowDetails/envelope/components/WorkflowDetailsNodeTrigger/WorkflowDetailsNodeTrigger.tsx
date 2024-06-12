@@ -87,7 +87,7 @@ const WorkflowDetailsNodeTrigger: React.FC<WorkflowDetailsNodeTriggerProps & OUI
   const getSelectedNode = (selectedNodeName: string): void => {
     if (nodes.length > 0) {
       const selectedNodeObject: TriggerableNode[] = nodes.filter(
-        (node: TriggerableNode) => node.name === selectedNodeName
+        (node: TriggerableNode) => node.id === selectedNodeName
       );
 
       setSelectedNode(selectedNodeObject[0]);
@@ -102,7 +102,7 @@ const WorkflowDetailsNodeTrigger: React.FC<WorkflowDetailsNodeTriggerProps & OUI
           node.type !== "StartNode" &&
           node.type !== "Join" &&
           nodeDropDown.push(
-            <DropdownItem key={node.uniqueId} id={node.name}>
+            <DropdownItem key={node.id} id={node.id}>
               {node.name}
             </DropdownItem>
           );

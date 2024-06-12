@@ -42,10 +42,13 @@ import { useExternalModels } from "../includedModels/DmnEditorDependenciesContex
 import { DragAndDrop, Draggable } from "../draggable/Draggable";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert/Alert";
+import { Normalized } from "../normalization/normalize";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 export type AllKnownDrgElementsByHref = Map<
   string,
-  ({ __$$element: "decision" } & DMN15__tDecision) | ({ __$$element: "inputData" } & DMN15__tInputData)
+  | ({ __$$element: "decision" } & Normalized<DMN15__tDecision>)
+  | ({ __$$element: "inputData" } & Normalized<DMN15__tInputData>)
 >;
 
 export function DecisionServiceProperties({
@@ -53,7 +56,7 @@ export function DecisionServiceProperties({
   namespace,
   index,
 }: {
-  decisionService: DMN15__tDecisionService;
+  decisionService: Normalized<DMN15__tDecisionService>;
   namespace: string | undefined;
   index: number;
 }) {
@@ -125,8 +128,8 @@ export function DecisionServiceProperties({
           isDisabled={isReadonly}
           onChange={(newTypeRef) => {
             setState((state) => {
-              const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService;
-              drgElement.variable ??= { "@_name": decisionService["@_name"] };
+              const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecisionService>;
+              drgElement.variable ??= { "@_id": generateUuid(), "@_name": decisionService["@_name"] };
               drgElement.variable["@_typeRef"] = newTypeRef;
             });
           }}
@@ -141,7 +144,7 @@ export function DecisionServiceProperties({
           value={decisionService.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService).description = {
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecisionService>).description = {
                 __$$text: newDescription,
               };
             });
@@ -181,7 +184,7 @@ export function DecisionServiceProperties({
           allDrgElementsByHref={allDrgElementsByHref}
           onChange={(newInputDecisions) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService).inputDecision =
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecisionService>).inputDecision =
                 newInputDecisions;
             });
           }}
@@ -195,7 +198,8 @@ export function DecisionServiceProperties({
           allDrgElementsByHref={allDrgElementsByHref}
           onChange={(newInputData) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService).inputData = newInputData;
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecisionService>).inputData =
+                newInputData;
             });
           }}
           isDisabled={isReadonly}
@@ -213,9 +217,10 @@ export function DecisionServiceProperties({
         values={decisionService.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService).extensionElements = {
-              "kie:attachment": newExtensionElements,
-            };
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecisionService>).extensionElements =
+              {
+                "kie:attachment": newExtensionElements,
+              };
           });
         }}
       />
@@ -229,7 +234,7 @@ export function DecisionServiceElementList({
   allDrgElementsByHref,
 }: {
   decisionServiceNamespace: string | undefined;
-  elements: DMN15__tDecisionService["outputDecision"];
+  elements: Normalized<DMN15__tDecisionService>["outputDecision"];
   allDrgElementsByHref: AllKnownDrgElementsByHref;
 }) {
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
@@ -282,9 +287,9 @@ export function DraggableDecisionServiceElementList({
   isDisabled,
 }: {
   decisionServiceNamespace: string | undefined;
-  elements: DMN15__tDecisionService["outputDecision"];
+  elements: Normalized<DMN15__tDecisionService>["outputDecision"];
   allDrgElementsByHref: AllKnownDrgElementsByHref;
-  onChange: (hrefs: DMN15__tDMNElementReference[] | undefined) => void;
+  onChange: (hrefs: Normalized<DMN15__tDMNElementReference>[] | undefined) => void;
   isDisabled: boolean;
 }) {
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
@@ -310,7 +315,7 @@ export function DraggableDecisionServiceElementList({
   }, []);
 
   const draggableItem = useCallback(
-    (element: DMN15__tDMNElementReference, index: number) => {
+    (element: Normalized<DMN15__tDMNElementReference>, index: number) => {
       const localHref = parseXmlHref(element["@_href"]);
 
       // If the localHref has a namespace, then that's the one to use, as it can be that an external node is pointing to another external node in their perspective
@@ -374,7 +379,7 @@ function DecisionServiceEquivalentFunction({
   allDrgElementsByHref,
   decisionServiceNamespace,
 }: {
-  decisionService: DMN15__tDecisionService;
+  decisionService: Normalized<DMN15__tDecisionService>;
   allDrgElementsByHref: AllKnownDrgElementsByHref;
   decisionServiceNamespace: string | undefined;
 }) {
@@ -413,7 +418,10 @@ function DecisionServiceEquivalentFunction({
   );
 
   const buildFunctionArgList = useCallback(
-    (inputDecisions?: DMN15__tDMNElementReference[], inputData?: DMN15__tDMNElementReference[]) => {
+    (
+      inputDecisions?: Normalized<DMN15__tDMNElementReference>[],
+      inputData?: Normalized<DMN15__tDMNElementReference>[]
+    ) => {
       const inputDecisionNodeNames = inputDecisions?.map((ide) => getNodeNameByHref(ide["@_href"]));
       const inputDataNodeNames = inputData?.map((ida) => getNodeNameByHref(ida["@_href"]));
 

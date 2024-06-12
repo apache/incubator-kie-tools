@@ -1,0 +1,190 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@Library('jenkins-pipeline-shared-libraries')_
+
+pipeline {
+    agent {
+        docker {
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            args '--shm-size=2g --privileged --group-add docker'
+            label util.avoidFaultyNodes()
+        }
+    }
+
+    options {
+        timeout(time: 60, unit: 'MINUTES')
+    }
+
+    parameters {
+        string(name: 'CHECKOUT_BRANCH_NAME', defaultValue: 'main', description: 'Set the Git branch to checkout', trim: true)
+        string(name: 'NEW_BRANCH_NAME', description: 'Set the Git branch to be created', trim: true)
+        string(name: 'KIE_TOOLS_VERSION', description: 'KIE Tools version to set', trim: true)
+        string(name: 'KOGITO_MAVEN_VERSION', description: 'Kogito maven version to set', trim: true)
+        string(name: 'KOGITO_IMAGES_TAG', description: 'Kogito images tag to set', trim: true)
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                }
+            }
+        }
+
+        stage('Initialize') {
+            steps {
+                script {
+                    currentBuild.displayName = params.KIE_TOOLS_VERSION
+                }
+            }
+        }
+
+        stage('Clean workspace before build') {
+            steps {
+                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Checkout kie-tools') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            "http://github.com/${pipelineVars.githubRepositorySlug}.git",
+                            "${params.CHECKOUT_BRANCH_NAME}",
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('CI Image Build') {
+            steps {
+                script {
+                    build(
+                        job: "KIE/kie-tools/kie-tools-ci-jobs/kie-tools-ci-image-build/${params.CHECKOUT_BRANCH_NAME}",
+                        wait: false,
+                        parameters: [
+                            string(name: 'IMAGE_TAG', value: "${params.KIE_TOOLS_VERSION}")
+                        ]
+                    )
+                }
+            }
+        }
+
+        stage('Setup PNPM') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.setupPnpm()
+                    }
+                }
+            }
+        }
+
+        stage('PNPM Bootstrap') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBootstrap()
+                    }
+                }
+            }
+        }
+
+        stage('Setup new branch') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        sh """#!/bin/bash -el
+                        git config user.email asf-ci-kie@jenkins.kie.apache.org
+                        git config user.name asf-ci-kie
+                        git checkout -b ${params.NEW_BRANCH_NAME}
+                        """.trim()
+                    }
+                }
+            }
+        }
+
+        stage('Update project version') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmUpdateProjectVersion(params.KIE_TOOLS_VERSION)
+                    }
+                }
+            }
+        }
+
+        stage('Update kogito version') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmUpdateKogitoVersion(params.KOGITO_MAVEN_VERSION, params.KOGITO_IMAGES_TAG)
+                    }
+                }
+            }
+        }
+
+        stage('Update stream name') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmUpdateStreamName(params.NEW_BRANCH_NAME)
+                    }
+                }
+            }
+        }
+
+        stage('Replace CI image tag') {
+            steps {
+                dir('kie-tools/.ci/jenkins') {
+                    script {
+                        sh """#!/bin/bash -el
+                        find . -type f -name 'Jenkinsfile.*' -exec sed -E -i "s%(incubator-kie-tools-ci-build:).*%\1${params.KIE_TOOLS_VERSION}% {} \;"
+                        """.trim()
+                    }
+                }
+            }
+        }
+
+        stage('Commit and Push changes') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        sh """#!/bin/bash -el
+                        git add .
+                        git commit --allow-empty -am "Update development version to ${params.KIE_TOOLS_VERSION}"
+                        """.trim()
+                        githubUtils.pushObject('origin', "${params.NEW_BRANCH_NAME}", "${pipelineVars.asfGithubPushCredentialsId}")
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+        }
+    }
+}

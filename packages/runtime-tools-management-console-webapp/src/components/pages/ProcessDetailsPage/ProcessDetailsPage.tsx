@@ -17,7 +17,7 @@
  * under the License.
  */
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
@@ -51,10 +51,9 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
   const gatewayApi: ProcessDetailsGatewayApi = useProcessDetailsGatewayApi();
 
   const history = useHistory();
-  const [processInstance, setProcessInstance] = useState<ProcessInstance>({} as ProcessInstance);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
-  let currentPage = JSON.parse(window.localStorage.getItem("state"));
+  const [processInstance, setProcessInstance] = useState<ProcessInstance>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>();
 
   useEffect(() => {
     window.onpopstate = () => {
@@ -62,86 +61,88 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
     };
   });
 
-  async function fetchDetails() {
-    let response: ProcessInstance = {} as ProcessInstance;
+  const fetchDetails = useCallback(async () => {
     try {
       setIsLoading(true);
-      response = await gatewayApi.processDetailsQuery(processId);
+      const response = await gatewayApi.processDetailsQuery(processId);
       setProcessInstance(response);
     } catch (error) {
       setError(error);
     } finally {
       setIsLoading(false);
-      /* istanbul ignore else */
-      if (error.length === 0 && Object.keys(response).length === 0) {
-        let prevPath;
-        /* istanbul ignore else */
-        if (currentPage) {
-          currentPage = Object.assign({}, currentPage, props.location.state);
-          const tempPath = currentPage.prev.split("/");
-          prevPath = tempPath.filter((item) => item);
-        }
-        history.push({
-          pathname: "/NoData",
-          state: {
-            prev: currentPage ? currentPage.prev : "/ProcessInstances",
-            title: "Process not found",
-            description: `Process instance with the id ${processId} not found`,
-            buttonText: currentPage
-              ? `Go to ${prevPath[0]
-                  .replace(/([A-Z])/g, " $1")
-                  .trim()
-                  .toLowerCase()}`
-              : "Go to process instances",
-            rememberedData: Object.assign({}, props.location.state),
-          },
-        });
-      }
     }
-  }
+  }, [gatewayApi, processId]);
 
   useEffect(() => {
     /* istanbul ignore else */
     if (processId) {
       fetchDetails();
     }
-  }, [processId]);
+  }, [processId, fetchDetails]);
 
-  const processName = processInstance ? processInstance.processName : "";
+  useEffect(() => {
+    // Redirecting to NoData page if the ProcessInstance cannot be found.
+    if (!isLoading && !error && !processInstance) {
+      let currentPage = JSON.parse(window.localStorage.getItem("state"));
+      let prevPath;
+      /* istanbul ignore else */
+      if (currentPage) {
+        currentPage = Object.assign({}, currentPage, props.location.state);
+        const tempPath = currentPage.prev.split("/");
+        prevPath = tempPath.filter((item) => item);
+      }
+      history.push({
+        pathname: "/NoData",
+        state: {
+          prev: currentPage ? currentPage.prev : "/ProcessInstances",
+          title: "Process not found",
+          description: `Process instance with the id ${processId} not found`,
+          buttonText: currentPage
+            ? `Go to ${prevPath[0]
+                .replace(/([A-Z])/g, " $1")
+                .trim()
+                .toLowerCase()}`
+            : "Go to process instances",
+          rememberedData: Object.assign({}, props.location.state),
+        },
+      });
+    }
+  }, [error, history, isLoading, processId, processInstance, props.location.state]);
 
-  const renderItems = () => {
-    if (!isLoading) {
-      return (
-        <>
-          {processInstance && Object.keys(processInstance).length > 0 && !error ? (
-            <ProcessDetailsContainer processInstance={processInstance} />
-          ) : (
-            <>
-              {error.length > 0 && (
-                <Card className="kogito-management-console__card-size">
-                  <Bullseye>
-                    <ServerErrors error={error} variant="large" />
-                  </Bullseye>
-                </Card>
-              )}
-            </>
-          )}
-        </>
-      );
-    } else {
+  const body = useMemo(() => {
+    // Loading State
+    if (isLoading) {
       return (
         <Card>
           <KogitoSpinner spinnerText="Loading process details..." />
         </Card>
       );
     }
-  };
+
+    // Error State
+    if (error) {
+      return (
+        <>
+          <Card className="kogito-management-console__card-size">
+            <Bullseye>
+              <ServerErrors error={error} variant="large" />
+            </Bullseye>
+          </Card>
+        </>
+      );
+    }
+
+    // Process Instance Details
+    if (processInstance) {
+      return <ProcessDetailsContainer processInstance={processInstance} />;
+    }
+  }, [error, isLoading, processInstance]);
 
   return (
     <React.Fragment>
       <PageSectionHeader
         titleText="Process Details"
-        breadcrumbText={["Home", "Processes", processName]}
+        breadcrumbText={["Home", "Processes", processInstance ? processInstance.processName : ""]}
         breadcrumbPath={[
           "/",
           {
@@ -150,7 +151,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
           },
         ]}
       />
-      <PageSection>{renderItems()}</PageSection>
+      <PageSection>{body}</PageSection>
     </React.Fragment>
   );
 };

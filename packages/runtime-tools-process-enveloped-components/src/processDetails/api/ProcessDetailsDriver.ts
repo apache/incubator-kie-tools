@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Job, JobCancel, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { Job, JobOperationResult, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import {
   NodeInstance,
   SvgErrorResponse,
@@ -28,7 +28,7 @@ import {
 export interface ProcessDetailsDriver {
   getProcessDiagram(data: ProcessInstance): Promise<SvgSuccessResponse | SvgErrorResponse>;
   handleProcessAbort(processInstance: ProcessInstance): Promise<void>;
-  cancelJob(job: Pick<Job, "id" | "endpoint">): Promise<JobCancel>;
+  cancelJob(job: Pick<Job, "id" | "endpoint">): Promise<JobOperationResult>;
   rescheduleJob(
     job,
     repeatInterval: number | string,

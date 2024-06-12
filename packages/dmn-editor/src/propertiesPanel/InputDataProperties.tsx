@@ -30,13 +30,15 @@ import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useDmnEditor } from "../DmnEditorContext";
 import { useResolvedTypeRef } from "../dataTypes/useResolvedTypeRef";
 import { useCallback } from "react";
+import { Normalized } from "../normalization/normalize";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 export function InputDataProperties({
   inputData,
   namespace,
   index,
 }: {
-  inputData: DMN15__tInputData;
+  inputData: Normalized<DMN15__tInputData>;
   namespace: string | undefined;
   index: number;
 }) {
@@ -79,8 +81,8 @@ export function InputDataProperties({
           isDisabled={isReadonly}
           onChange={(newTypeRef) => {
             setState((state) => {
-              const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tInputData;
-              drgElement.variable ??= { "@_name": inputData["@_name"] };
+              const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tInputData>;
+              drgElement.variable ??= { "@_id": generateUuid(), "@_name": inputData["@_name"] };
               drgElement.variable["@_typeRef"] = newTypeRef;
             });
           }}
@@ -94,7 +96,7 @@ export function InputDataProperties({
           value={inputData.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).description = {
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tInputData>).description = {
                 __$$text: newDescription,
               };
             });
@@ -116,7 +118,7 @@ export function InputDataProperties({
         values={inputData.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).extensionElements = {
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tInputData>).extensionElements = {
               "kie:attachment": newExtensionElements,
             };
           });

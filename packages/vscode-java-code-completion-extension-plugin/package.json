@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "@kie-tools/vscode-java-code-completion-extension-plugin",
   "version": "0.0.0",
   "description": "",
@@ -27,6 +28,9 @@
     "install:mvnw": "mvn -e org.apache.maven.plugins:maven-wrapper-plugin:3.3.0:wrapper -f ./",
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
+  },
+  "dependencies": {
+    "@kie-tools/maven-base": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools/maven-config-setup-helper": "workspace:*",

@@ -115,6 +115,17 @@ def squashedMerge(String author, String branch, String url) {
 }
 
 /**
+* Create a new tag
+*/
+def createTag(String tagName) {
+    sh """#!/bin/bash -el
+    git config user.email asf-ci-kie@jenkins.kie.apache.org
+    git config user.name asf-ci-kie
+    git tag "${tagName}"
+    """.trim()
+}
+
+/**
 * Checkout a github repository and perform a squashed merge on a local repository
 */
 def checkoutRepoSquashedMerge(String author, String branch, String url, String targetBranch, String targetUrl, String credentialsId) {
@@ -141,8 +152,8 @@ def pushObject(String remote, String object, String credentialsId) {
 */
 def getRepoSlug(String url) {
     tokens = url.tokenize('/')
-    org = tokens[tokens.size()-4]
-    repo = tokens[tokens.size()-3]
+    org = tokens[tokens.size() - 4]
+    repo = tokens[tokens.size() - 3]
 
     return "${org}/${repo}"
 }
@@ -167,4 +178,4 @@ def fileIsInChangeset(String file) {
     return changeset.contains(file)
 }
 
-return this;
+return this

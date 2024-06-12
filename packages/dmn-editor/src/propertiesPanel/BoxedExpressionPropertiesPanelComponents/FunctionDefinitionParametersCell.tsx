@@ -21,7 +21,6 @@ import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { DescriptionField, NameField, TypeRefField } from "./Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
@@ -36,6 +35,8 @@ import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constrai
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { State } from "../../store/Store";
+import { Normalized } from "../../normalization/normalize";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 export function FunctionDefinitionParameterCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
@@ -48,9 +49,14 @@ export function FunctionDefinitionParameterCell(props: {
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updater = useBoxedExpressionUpdater<DMN15__tFunctionDefinition>(selectedObjectInfos?.expressionPath ?? []);
+  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tFunctionDefinition>>(
+    selectedObjectInfos?.expressionPath ?? []
+  );
 
-  const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tInformationItem[], [selectedObjectInfos?.cell]);
+  const cell = useMemo(
+    () => selectedObjectInfos?.cell as Normalized<DMN15__tInformationItem>[],
+    [selectedObjectInfos?.cell]
+  );
   const [isParameterExpanded, setParameterExpaded] = useState<boolean[]>([]);
 
   const getAllUniqueNames = useCallback((s: State) => new Map(), []);
@@ -96,7 +102,7 @@ export function FunctionDefinitionParameterCell(props: {
                 onChange={(newName: string) => {
                   updater((dmnObject) => {
                     dmnObject.formalParameter ??= [];
-                    dmnObject.formalParameter[i] ??= { "@_name": "" };
+                    dmnObject.formalParameter[i] ??= { "@_id": generateUuid(), "@_name": "" };
                     dmnObject.formalParameter[i]["@_name"] = newName;
                   });
                 }}
@@ -107,7 +113,7 @@ export function FunctionDefinitionParameterCell(props: {
                 onTypeRefChange={(newTypeRef) =>
                   updater((dmnObject) => {
                     dmnObject.formalParameter ??= [];
-                    dmnObject.formalParameter[i] ??= { "@_name": "" };
+                    dmnObject.formalParameter[i] ??= { "@_id": generateUuid(), "@_name": "" };
                     dmnObject.formalParameter[i]["@_typeRef"] = newTypeRef;
                   })
                 }
@@ -119,7 +125,11 @@ export function FunctionDefinitionParameterCell(props: {
                 onChange={(newDescription: string) => {
                   updater((dmnObject) => {
                     dmnObject.formalParameter ??= [];
-                    dmnObject.formalParameter[i] ??= { "@_name": "", description: { __$$text: "" } };
+                    dmnObject.formalParameter[i] ??= {
+                      "@_id": generateUuid(),
+                      "@_name": "",
+                      description: { __$$text: "" },
+                    };
                     dmnObject.formalParameter[i].description ??= { __$$text: "" };
                     dmnObject.formalParameter[i].description!.__$$text = newDescription;
                   });
@@ -134,7 +144,7 @@ export function FunctionDefinitionParameterCell(props: {
 }
 
 function FunctionDefinitionParameterTypeRef(props: {
-  parameter: DMN15__tInformationItem;
+  parameter: Normalized<DMN15__tInformationItem>;
   isReadonly: boolean;
   onTypeRefChange: (newTypeRef: string) => void;
 }) {
@@ -156,7 +166,7 @@ function FunctionDefinitionParameterTypeRef(props: {
       <TypeRefField
         isReadonly={props.isReadonly}
         dmnEditorRootElementRef={dmnEditorRootElementRef}
-        typeRef={props.parameter["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+        typeRef={props.parameter["@_typeRef"]}
         onChange={props.onTypeRefChange}
       />
       {itemDefinition && (

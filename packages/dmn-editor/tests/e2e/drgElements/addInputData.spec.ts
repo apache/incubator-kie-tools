@@ -43,7 +43,6 @@ test.describe("Add node - Input Data", () => {
           variable: {
             "@_id": inputData.variable?.["@_id"],
             "@_name": DefaultNodeName.INPUT_DATA,
-            "@_typeRef": DataType.Undefined,
           },
         });
         expect(await jsonModel.drd.getDrgElementBoundsOnDrd({ drgElementIndex: 0, drdIndex: 0 })).toEqual({

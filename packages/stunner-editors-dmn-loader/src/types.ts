@@ -25,7 +25,7 @@ declare global {
     // It requests to the GWT layer the default GwtExpressionDefinition given a selected logic type and a data type.
     getDefaultExpressionDefinition: (
       logicType: GwtExpressionDefinitionLogicType,
-      dataType: string
+      dataType: string | undefined
     ) => GwtExpressionDefinition;
 
     // It Navigates to "Data Type" tab page

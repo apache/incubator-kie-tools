@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.3
+FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.4
 
 ARG KOGITO_TASK_CONSOLE_PORT=8080
 
@@ -23,7 +23,7 @@ ENV RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_ENV_MODE="PROD"
 
 COPY entrypoint.sh dist-dev/image-env-to-json-standalone dist-dev/EnvJson.schema.json /tmp/
 
-RUN microdnf --disableplugin=subscription-manager -y install httpd-2.4.57-5.el9.x86_64 \
+RUN microdnf --disableplugin=subscription-manager -y install httpd \
   && microdnf --disableplugin=subscription-manager clean all \
   && echo "Mutex posixsem" >> /etc/httpd/conf/httpd.conf \
   && sed -i -e "/#ServerName www.example.com:80/aHeader set Content-Security-Policy \"frame-ancestors 'self';\"" /etc/httpd/conf/httpd.conf \

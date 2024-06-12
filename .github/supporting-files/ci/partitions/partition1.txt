@@ -1,0 +1,11 @@
+@kie-tools-examples/sonataflow-greeting-quarkus-example
+@kie-tools/serverless-logic-web-tools-swf-builder-image
+@kie-tools/serverless-logic-web-tools
+@kie-tools/serverless-logic-web-tools-base-builder-image
+@kie-tools/serverless-logic-web-tools-swf-dev-mode-image
+@kie-tools/dashbuilder-swf-monitoring-dashboard
+@kie-tools/dashbuilder-viewer-image
+chrome-extension-serverless-workflow-editor
+vscode-extension-dashbuilder-editor
+yard-vscode-extension
+swf-vscode-extension

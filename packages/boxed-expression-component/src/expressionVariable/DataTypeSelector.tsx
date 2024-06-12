@@ -19,18 +19,18 @@
 
 import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import * as React from "react";
-import { useCallback, useState, useRef, useMemo } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useBoxedExpressionEditorI18n } from "../i18n";
 import * as _ from "lodash";
-import { DmnDataType } from "../api";
+import { DmnBuiltInDataType, DmnDataType } from "../api";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditorContext";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
 export interface DataTypeSelectorProps {
   /** The pre-selected data type */
-  value: string;
+  value: string | undefined;
   /** On DataType selection callback */
-  onChange: (dataType: string) => void;
+  onChange: (dataType: string | undefined) => void;
   /** By default the menu will be appended inline, but it is possible to append on the parent or on other elements */
   /** Callback for toggle select behavior */
   onToggle?: (isOpen: boolean) => void;
@@ -41,6 +41,7 @@ export interface DataTypeSelectorProps {
 
 /** This is the optimal height for the dropdown menu for the "Data Type" */
 const DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT = 500;
+const MININAL_SELECT_DATA_TYPE_MENU_HEIGHT = 70;
 
 /** This margin is the height of the status bar in the on-line editor because it can't be overlaped */
 const POPUP_BOTTOM_MARGIN = 46;
@@ -64,7 +65,7 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
       /* this setTimeout keeps the context menu open after type selection changes. Without this Popover component thinks there has been a click outside the context menu, after DataTypeSelector has changed. This because the Select component has been removed from the html*/
       setTimeout(() => setOpen(false), 0);
 
-      onChange(selection);
+      onChange(selection === DmnBuiltInDataType.Undefined ? undefined : selection);
 
       // Because Select leave the focus to the detached btn, give back the focus to the selectWrapperRef
       (selectContainerRef.current?.querySelector("button") as HTMLInputElement)?.focus();
@@ -108,7 +109,7 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
       return buildSelectGroups().reduce((acc, group) => {
         const filteredGroup = React.cloneElement(group, {
           children: group.props?.children?.filter((item: React.ReactElement) =>
-            item.props.value.toLowerCase().includes(textInput.toLowerCase())
+            (item.props.value ?? DmnBuiltInDataType.Undefined).toLowerCase().includes(textInput.toLowerCase())
           ),
         });
 
@@ -140,7 +141,10 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
         DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT + yPos > availableHeight
       ) {
         const offset = DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT + yPos - availableHeight;
-        return DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT - offset - POPUP_BOTTOM_MARGIN;
+        const calculatedHeight = DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT - offset - POPUP_BOTTOM_MARGIN;
+        return calculatedHeight < MININAL_SELECT_DATA_TYPE_MENU_HEIGHT
+          ? MININAL_SELECT_DATA_TYPE_MENU_HEIGHT
+          : calculatedHeight;
       }
     }
     return DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT;
@@ -157,7 +161,7 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
         onSelect={onSelect}
         onFilter={onFilter}
         isOpen={isOpen}
-        selections={value}
+        selections={value ?? DmnBuiltInDataType.Undefined}
         isGrouped={true}
         hasInlineFilter={true}
         inlineFilterPlaceholderText={i18n.choose}

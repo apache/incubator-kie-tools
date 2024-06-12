@@ -1,11 +1,29 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
 name: "Upload CI reports and artifacts"
 description: ""
 
 inputs:
-  working_dir:
-    description: "Dir path of kie-tools"
-    required: false
-    default: "."
+  partition_index:
+    description: "Index of the partition whose artifacts are being uploaded."
+    required: true
 
 runs:
   using: "composite"
@@ -44,7 +62,7 @@ runs:
       uses: actions/upload-artifact@v3
       if: always()
       with:
-        name: ${{ runner.os }}__tests-reports
+        name: ${{ runner.os }}_${{ inputs.partition_index }}__tests-reports
         path: |
           ${{ runner.temp }}/tests-reports.zip
 
@@ -52,7 +70,7 @@ runs:
       uses: actions/upload-artifact@v3
       if: always()
       with:
-        name: ${{ runner.os }}__end-to-end-tests-reports
+        name: ${{ runner.os }}_${{ inputs.partition_index }}__end-to-end-tests-reports
         path: |
           ${{ runner.temp }}/end-to-end-tests-reports.zip
 
@@ -60,7 +78,7 @@ runs:
       uses: actions/upload-artifact@v3
       if: always()
       with:
-        name: ${{ runner.os }}__end-to-end-tests-artifacts
+        name: ${{ runner.os }}_${{ inputs.partition_index }}__end-to-end-tests-artifacts
         path: |
           ${{ runner.temp }}/end-to-end-tests-artifacts.zip
 
@@ -68,6 +86,6 @@ runs:
       uses: actions/upload-artifact@v3
       if: always()
       with:
-        name: ${{ runner.os }}__build-artifacts
+        name: ${{ runner.os }}_${{ inputs.partition_index }}__build-artifacts
         path: |
           ${{ runner.temp }}/build-artifacts.zip

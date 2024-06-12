@@ -117,7 +117,7 @@ test.describe("Change Properties - Decision", () => {
       type: TestAnnotations.REGRESSION,
       description: "https://github.com/apache/incubator-kie-issues/issues/1076",
     });
-    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1076");
+
     await nodes.select({ name: DefaultNodeName.DECISION });
     await decisionPropertiesPanel.setFont({
       fontSize: "40",

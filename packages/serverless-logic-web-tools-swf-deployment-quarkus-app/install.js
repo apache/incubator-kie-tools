@@ -23,5 +23,5 @@ const { setup } = require("@kie-tools/maven-config-setup-helper");
 setup(`
     -Drevision=${buildEnv.env.swfDeploymentQuarkusApp.version}
     -Dquarkus.platform.version=${buildEnv.env.quarkusPlatform.version}
-    -Dkogito.version=${buildEnv.env.kogitoRuntime.version}
+    -Dversion.org.kie.kogito=${buildEnv.env.kogitoRuntime.version}
 `);

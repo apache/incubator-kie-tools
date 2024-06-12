@@ -30,13 +30,15 @@ import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useDmnEditor } from "../DmnEditorContext";
 import { useResolvedTypeRef } from "../dataTypes/useResolvedTypeRef";
 import { useCallback } from "react";
+import { Normalized } from "../normalization/normalize";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 export function DecisionProperties({
   decision,
   namespace,
   index,
 }: {
-  decision: DMN15__tDecision;
+  decision: Normalized<DMN15__tDecision>;
   namespace: string | undefined;
   index: number;
 }) {
@@ -80,8 +82,8 @@ export function DecisionProperties({
           isDisabled={isReadonly}
           onChange={(newTypeRef) => {
             setState((state) => {
-              const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tDecision;
-              drgElement.variable ??= { "@_name": decision["@_name"] };
+              const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>;
+              drgElement.variable ??= { "@_id": generateUuid(), "@_name": decision["@_name"] };
               drgElement.variable["@_typeRef"] = newTypeRef;
             });
           }}
@@ -96,7 +98,7 @@ export function DecisionProperties({
           value={decision.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecision).description = {
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).description = {
                 __$$text: newDescription,
               };
             });
@@ -121,7 +123,9 @@ export function DecisionProperties({
           value={decision.question?.__$$text}
           onChange={(newQuestion) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecision).question = { __$$text: newQuestion };
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).question = {
+                __$$text: newQuestion,
+              };
             });
           }}
           placeholder={"Enter a question..."}
@@ -138,7 +142,7 @@ export function DecisionProperties({
           value={decision.allowedAnswers?.__$$text}
           onChange={(newAllowedAnswers) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecision).allowedAnswers = {
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).allowedAnswers = {
                 __$$text: newAllowedAnswers,
               };
             });
@@ -154,7 +158,7 @@ export function DecisionProperties({
         values={decision.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as DMN15__tDecision).extensionElements = {
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).extensionElements = {
               "kie:attachment": newExtensionElements,
             };
           });

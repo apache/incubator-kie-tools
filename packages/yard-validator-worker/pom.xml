@@ -22,10 +22,16 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 >
+    <parent>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-tools-maven-base</artifactId>
+        <version>${revision}</version>
+        <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
+    </parent>
+
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kie.kogito</groupId>
     <artifactId>yard-validator-worker</artifactId>
-    <version>${revision}</version>
 
     <licenses>
         <license>
@@ -38,15 +44,10 @@
     <properties>
         <yaml.mapper>0.4</yaml.mapper>
         <org.jresearch.gwt.time>2.0.10</org.jresearch.gwt.time>
-        <compiler-plugin.version>3.8.1</compiler-plugin.version>
+        <compiler-plugin.version>3.13.0</compiler-plugin.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
-        <version.junit>4.13.1</version.junit>
         <j2cl.maven.plugin.version>0.23.0</j2cl.maven.plugin.version>
-        <version.org.junit>4.13.1</version.org.junit>
     </properties>
 
     <dependencies>
@@ -71,7 +72,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>${version.org.junit}</version>
+            <version>${version.junit}</version>
             <scope>test</scope>
         </dependency>
 
@@ -87,7 +88,7 @@
             <plugin>
                 <groupId>org.kie.j2cl.tools</groupId>
                 <artifactId>j2cl-maven-plugin</artifactId>
-                <version>0.23.0</version>
+                <version>${j2cl.maven.plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>

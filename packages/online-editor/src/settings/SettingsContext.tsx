@@ -143,7 +143,10 @@ export function SettingsContextProvider(props: PropsWithChildren<{}>) {
             }
 
             const envExtendedServicesUrl = new URL(env.KIE_SANDBOX_EXTENDED_SERVICES_URL);
-            const envExtendedServicesHost = `${envExtendedServicesUrl.protocol}//${envExtendedServicesUrl.hostname}`;
+            // 0.0.0.0 is "equivalent" to localhost, but browsers don't like having mixed http/https urls with the exception of localhost
+            const envExtendedServicesHost = `${envExtendedServicesUrl.protocol}//${
+              envExtendedServicesUrl.hostname === "0.0.0.0" ? "localhost" : envExtendedServicesUrl.hostname
+            }`;
             const envExtendedServicesPort = envExtendedServicesUrl.port;
 
             await persistSettings({

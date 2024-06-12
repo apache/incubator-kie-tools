@@ -49,7 +49,7 @@ const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps & OUIAProps
     return () => {
       unSubscribeHandler.unSubscribe();
     };
-  }, [processInstance]);
+  }, [gatewayApi, history, processInstance]);
 
   return (
     <EmbeddedProcessDetails
