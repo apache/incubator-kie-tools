@@ -22,6 +22,7 @@ import {
   DMN15__tOutputClause,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import {
+  BoxedConditional,
   BoxedContext,
   BoxedDecisionTable,
   BoxedExpression,
@@ -235,6 +236,35 @@ export function getDefaultBoxedExpressionForStories({
     ]);
 
     return decisionTableExpression;
+  } else if (logicType === "conditional") {
+    const conditionalExpression: BoxedConditional = {
+      __$$element: "conditional",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+      if: {
+        "@_id": generateUuid(),
+        expression: {
+          __$$element: "literalExpression",
+          "@_id": generateUuid(),
+        },
+      },
+      then: {
+        "@_id": generateUuid(),
+        expression: {
+          __$$element: "literalExpression",
+          "@_id": generateUuid(),
+        },
+      },
+      else: {
+        "@_id": generateUuid(),
+        expression: {
+          __$$element: "literalExpression",
+          "@_id": generateUuid(),
+        },
+      },
+    };
+
+    return conditionalExpression;
   } else {
     throw new Error(`No default expression available for ${logicType}.`);
   }

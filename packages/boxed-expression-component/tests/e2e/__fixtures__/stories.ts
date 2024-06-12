@@ -58,4 +58,8 @@ export class Stories {
   public async openRelation(type: BoxedExpressionTypes | "bigger" | "people" = "base") {
     await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-relation--${type}`)}` ?? "");
   }
+
+  public async openBoxedConditional(type: BoxedExpressionTypes | "monthly-fee" = "base") {
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-conditional--${type}`)}` ?? "");
+  }
 }

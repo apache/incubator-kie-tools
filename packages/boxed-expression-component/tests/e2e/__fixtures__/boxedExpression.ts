@@ -89,6 +89,42 @@ export class BoxedExpressionEditor {
     await this.page.getByRole("menuitem", { name: "Function" }).click();
   }
 
+  public async selectBoxedConditional(from: Page | Locator = this.page) {
+    this.select(from);
+    await this.page.getByRole("menuitem", { name: "Conditional" }).click();
+  }
+
+  public async copyConditional(from: Page | Locator = this.page) {
+    await from.getByRole("button").getByText("Conditional").click();
+    await this.page.getByRole("menuitem").getByText("Copy").click();
+  }
+
+  public async resetConditional(from: Page | Locator = this.page) {
+    await from.getByRole("button").getByText("Conditional").click();
+    await this.page.getByRole("menuitem").getByText("Reset").click();
+  }
+
+  public async fillConditional(args: { ifExpr: any; thenExpr: any; elseExpr: any; from: Page | Locator }) {
+    await this.monaco.fill({
+      monacoParentLocator: args.from
+        .locator("[data-ouia-component-id='expression-row-0']")
+        .locator("[data-ouia-component-id='expression-column-1']"),
+      content: args.ifExpr,
+    });
+    await this.monaco.fill({
+      monacoParentLocator: args.from
+        .locator("[data-ouia-component-id='expression-row-1']")
+        .locator("[data-ouia-component-id='expression-column-1']"),
+      content: args.thenExpr,
+    });
+    await this.monaco.fill({
+      monacoParentLocator: args.from
+        .locator("[data-ouia-component-id='expression-row-2']")
+        .locator("[data-ouia-component-id='expression-column-1']"),
+      content: args.elseExpr,
+    });
+  }
+
   public async goto() {
     await this.page.goto(`${this.baseURL}/iframe.html?id=misc-empty-boxed-expression--base` ?? "");
   }
