@@ -1435,16 +1435,6 @@ export namespace GraphQL {
     }
   `;
 
-  export const GetProcessDefinitionsDocument = gql`
-    query getProcessDefinitions {
-      ProcessDefinitions {
-        id
-        endpoint
-        serviceUrl
-      }
-    }
-  `;
-
   export const GetProcessInstancesDocument = gql`
     query getProcessInstances(
       $where: ProcessInstanceArgument

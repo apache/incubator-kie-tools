@@ -11299,7 +11299,7 @@ importers:
         specifier: 1.5.17
         version: 1.5.17(graphql@14.3.1)
       axios:
-        specifier: ^1.6.4
+        specifier: ^1.6.8
         version: 1.6.8
       graphql:
         specifier: 14.3.1
@@ -11426,7 +11426,7 @@ importers:
         specifier: ^3.6.2
         version: 3.6.2(enzyme@3.11.0)
       express:
-        specifier: ^4.18.2
+        specifier: ^4.19.2
         version: 4.19.2
       file-loader:
         specifier: ^6.2.0
@@ -11474,8 +11474,8 @@ importers:
         specifier: ^12.0.1
         version: 12.0.1
       start-server-and-test:
-        specifier: ^1.12.1
-        version: 1.15.5
+        specifier: ^2.0.3
+        version: 2.0.3
       stream-http:
         specifier: ^3.2.0
         version: 3.2.0
@@ -30883,13 +30883,6 @@ packages:
     resolution:
       { integrity: sha512-Kpij9riA+UNg7TnphqjH7/CzctQ/owJGNbFkfEeve4Z4uxT5+JapVLFXcsurIfN34gnTWZNJ/f7NMG0E8JDzTw== }
 
-  start-server-and-test@1.15.5:
-    resolution:
-      { integrity: sha512-o3EmkX0++GV+qsvIJ/OKWm3w91fD8uS/bPQVPrh/7loaxkpXSuAIHdnmN/P/regQK9eNAK76aBJcHt+OSTk+nA== }
-    engines: { node: ">=6" }
-    deprecated: this package has been deprecated
-    hasBin: true
-
   start-server-and-test@2.0.3:
     resolution:
       { integrity: sha512-QsVObjfjFZKJE6CS6bSKNwWZCKBG6975/jKRPPGFfFh+yOQglSeGXiNWjzgQNXdphcBI9nXbyso9tPfX4YAUhg== }
@@ -32410,12 +32403,6 @@ packages:
   waait@1.0.5:
     resolution:
       { integrity: sha512-wp+unA4CpqxvBUKHHv8D86fK4jWByHAWyhEXXVHfVUZfK+16ylpj7hjQ58Z8j9ntu8XNukRQT8Fi5qbyJ8rkyw== }
-
-  wait-on@7.0.1:
-    resolution:
-      { integrity: sha512-9AnJE9qTjRQOlTZIldAaf/da2eW0eSRSgcqq85mXQja/DW3MriHxkpODDSUEg+Gri/rKEcXUZHe+cevvYItaog== }
-    engines: { node: ">=12.0.0" }
-    hasBin: true
 
   wait-on@7.2.0:
     resolution:
@@ -44430,13 +44417,6 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  axios@0.27.2(debug@4.3.4):
-    dependencies:
-      follow-redirects: 1.15.6(debug@4.3.4)
-      form-data: 4.0.0
-    transitivePeerDependencies:
-      - debug
-
   axios@1.6.8:
     dependencies:
       follow-redirects: 1.15.6
@@ -54997,19 +54977,6 @@ snapshots:
       as-table: 1.0.55
       get-source: 2.0.12
 
-  start-server-and-test@1.15.5:
-    dependencies:
-      arg: 5.0.2
-      bluebird: 3.7.2
-      check-more-types: 2.24.0
-      debug: 4.3.4
-      execa: 5.1.1
-      lazy-ass: 1.6.0
-      ps-tree: 1.2.0
-      wait-on: 7.0.1(debug@4.3.4)
-    transitivePeerDependencies:
-      - supports-color
-
   start-server-and-test@2.0.3:
     dependencies:
       arg: 5.0.2
@@ -56675,16 +56642,6 @@ snapshots:
       xml-name-validator: 4.0.0
 
   waait@1.0.5: {}
-
-  wait-on@7.0.1(debug@4.3.4):
-    dependencies:
-      axios: 0.27.2(debug@4.3.4)
-      joi: 17.12.0
-      lodash: 4.17.21
-      minimist: 1.2.8
-      rxjs: 7.8.1
-    transitivePeerDependencies:
-      - debug
 
   wait-on@7.2.0:
     dependencies:
