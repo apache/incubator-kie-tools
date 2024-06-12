@@ -71,9 +71,9 @@ pnpm start
 # Compiles a production ready showcase application
 pnpm build
 # Run PlayWright 'BoxedExpressionEditor' tests.
-pnpm test:e2e
+pnpm test-e2e
 # To update the PlayWright Snapshot files, used for the regression:
-pnpm test:e2e:run -u
+pnpm test-e2e:run -u
 ```
 
 ---

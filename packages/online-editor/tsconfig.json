@@ -9,7 +9,7 @@
     "allowSyntheticDefaultImports": true,
     "target": "es6"
   },
-  "include": ["src", "tests/__tests__", "tests/unit/json"],
+  "include": ["src", "tests/__tests__", "tests/json"],
 
   // Required to make Webpack TS config work. See https://github.com/webpack/webpack-cli/issues/2458#issuecomment-1157987399
   "ts-node": {

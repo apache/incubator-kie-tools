@@ -70,8 +70,8 @@ ifneq ($(SWF_IMAGE_TAG), $(CURRENT_IMAGE_VERSION))
 endif
 
 _create_e2e_dir:
-	rm -rf ../dist-e2e-tests
-	mkdir ../dist-e2e-tests
+	rm -rf ../dist-tests-e2e
+	mkdir ../dist-tests-e2e
 
 # Trigger the image tests
 .PHONY test-image: _create_e2e_dir _check_swf_image_name bats _test_image
