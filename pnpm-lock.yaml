@@ -10187,15 +10187,9 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
-      adm-zip:
-        specifier: ^0.5.10
-        version: 0.5.10
       cpr:
         specifier: ^3.0.1
         version: 3.0.1
-      mvn-artifact-download:
-        specifier: 6.1.1
-        version: 6.1.1
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
