@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.Button;
@@ -38,6 +39,7 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
@@ -49,6 +51,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils.FindVariableUsagesFlag;
 import static org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils.FindVariableUsagesFlag.CASE_FILE_VARIABLE;
@@ -74,6 +77,9 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
 
     private static Set<String> defaultTagsSet = new HashSet<>(Arrays.asList("internal", "required", "readonly", "input", "output", "business_relevant", "tracked"));
 
+    @Inject
+    protected Event<NotificationEvent> notification;    
+    
     @Inject
     public VariablesEditorFieldRenderer(final VariablesEditorWidgetView variablesEditor,
                                         final SessionManager sessionManager) {
@@ -272,7 +278,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     public void removeVariable(final VariableRow variableRow) {
 
         if (isBoundToNodes(variableRow.getName())) {
-            // error popup was here
+            notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.CONSTANTS.DeleteDiagramVariableError(), NotificationEvent.NotificationType.ERROR));
         } else {
             view.getVariableRows().remove(variableRow);
             doSave();
