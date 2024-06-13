@@ -18,7 +18,6 @@
  */
 
 import * as kieFile from "./kieFiles/KieFile";
-import * as kieFilesFetcher from "./kieFiles/KieFilesFetcher";
 import * as validationRequests from "./requests/ValidationRequests";
 import * as validationResponse from "./requests/ValidationResponse";
 import * as vscode from "vscode";

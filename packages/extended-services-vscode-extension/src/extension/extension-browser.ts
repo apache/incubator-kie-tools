@@ -61,16 +61,15 @@ function initializeVSCodeElements() {
   statusBarItem.text = "$(extended-services-disconnected)";
   statusBarItem.tooltip = "Apache KIE Extended Services are not connected. \n" + "Click to connect.";
   statusBarItem.command = startExtendedServicesCommandUID;
-  statusBarItem.show();
+  statusBarItem.hide();
 
   diagnosticCollection = vscode.languages.createDiagnosticCollection("KIE Files Diagnostics");
 }
 
 function startExtendedServices(): void {
-  let config: Configuration;
   try {
     statusBarItem.show();
-    config = fetchConfiguration();
+    configuration = fetchConfiguration();
   } catch (error) {
     stopExtendedServices();
     vscode.window.showErrorMessage("An error happened while trying to start the Extended Services: " + error.message);
@@ -78,7 +77,7 @@ function startExtendedServices(): void {
   }
 
   try {
-    connection.start(config);
+    connection.start(configuration.extendedServicesURL, configuration.connectionHeartbeatIntervalinSecs);
   } catch (error) {
     stopExtendedServices();
     vscode.window.showErrorMessage("An error happened while trying to connect to the service:" + error.message);
@@ -167,13 +166,14 @@ export function activate(context: vscode.ExtensionContext) {
     }
   });
 
-  connection.subscribeConnected((config: Configuration) => {
-    configuration = config;
+  connection.subscribeConnected(() => {
     vscode.commands.executeCommand("setContext", connectedEnablementUID, true);
-    statusBarItem.text = "$(extended-services-connected)";
-    statusBarItem.tooltip = "Apache KIE Extended Services are connected. Click to disconnect.";
-    statusBarItem.command = stopExtendedServicesCommandUID;
-    validate(configuration);
+    if (configuration) {
+      validate(configuration);
+      statusBarItem.text = "$(extended-services-connected)";
+      statusBarItem.tooltip = "Apache KIE Extended Services are connected. Click to disconnect.";
+      statusBarItem.command = stopExtendedServicesCommandUID;
+    }
   });
 
   connection.subscribeConnectionLost((errorMessage: string) => {

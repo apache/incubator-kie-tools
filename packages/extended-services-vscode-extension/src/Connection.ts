@@ -17,22 +17,21 @@
  * under the License.
  */
 
-import { Configuration } from "./configurations/Configuration";
 import { ping } from "./requests/PingRequest";
 import { PingResponse } from "./requests/PingResponse";
 
 export class Connection {
-  private connectedHandler: ((configuration: Configuration) => void) | null = null;
+  private connectedHandler: (() => void) | null = null;
   private connectionLostHandler: ((errorMessage: string) => void) | null = null;
   private disconnectedHandler: (() => void) | null = null;
 
   private timeout: NodeJS.Timeout | null = null;
   private connected: boolean = false;
 
-  public async start(configuration: Configuration): Promise<void> {
+  public async start(extendedServicesURL: URL, connectionHeartbeatIntervalinSecs: number): Promise<void> {
     this.timeout = setInterval(async () => {
-      this.performHeartbeatCheck(configuration);
-    }, configuration.connectionHeartbeatIntervalinSecs * 1000);
+      this.performHeartbeatCheck(extendedServicesURL);
+    }, connectionHeartbeatIntervalinSecs * 1000);
   }
 
   public stop(): void {
@@ -44,11 +43,11 @@ export class Connection {
     }
   }
 
-  private async performHeartbeatCheck(configuration: Configuration): Promise<void> {
+  private async performHeartbeatCheck(extendedServicesURL: URL): Promise<void> {
     try {
-      const pingResponse: PingResponse = await ping(configuration.extendedServicesURL);
+      const pingResponse: PingResponse = await ping(extendedServicesURL);
       if (pingResponse.started && !this.connected) {
-        this.fireConnectedEvent(configuration);
+        this.fireConnectedEvent();
         this.connected = true;
       }
     } catch (error) {
@@ -56,8 +55,8 @@ export class Connection {
     }
   }
 
-  private fireConnectedEvent(configuration: Configuration) {
-    this.connectedHandler?.(configuration);
+  private fireConnectedEvent() {
+    this.connectedHandler?.();
   }
 
   private fireConnectionLost(errorMessage: string) {
@@ -68,7 +67,7 @@ export class Connection {
     this.disconnectedHandler?.();
   }
 
-  public subscribeConnected(handler: (configuration: Configuration) => void) {
+  public subscribeConnected(handler: () => void) {
     this.connectedHandler = handler;
   }
 

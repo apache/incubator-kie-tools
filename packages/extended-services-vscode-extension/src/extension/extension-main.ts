@@ -53,7 +53,9 @@ function initializeCommands(context: vscode.ExtensionContext) {
   });
   disconnectExtendedServicesCommand = vscode.commands.registerCommand(stopExtendedServicesCommandUID, () => {
     userDisconnected = true;
-    stopExtendedServices();
+    if (configuration) {
+      stopExtendedServices(configuration);
+    }
   });
 }
 
@@ -61,10 +63,7 @@ function initializeVSCodeElements() {
   vscode.commands.executeCommand("setContext", connectedEnablementUID, false);
 
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-  statusBarItem.text = "$(extended-services-disconnected)";
-  statusBarItem.tooltip = "Apache KIE Extended Services are not connected. \n" + "Click to connect.";
-  statusBarItem.command = startExtendedServicesCommandUID;
-  statusBarItem.show();
+  statusBarItem.hide();
 
   outputChannel = vscode.window.createOutputChannel("Extended Services VS Code Extension");
 
@@ -74,41 +73,45 @@ function initializeVSCodeElements() {
 function startExtendedServices(context: vscode.ExtensionContext): void {
   let config: Configuration;
   try {
+    statusBarItem.command = undefined;
     statusBarItem.show();
-    config = fetchConfiguration();
+    configuration = fetchConfiguration();
   } catch (error) {
-    stopExtendedServices();
+    stopExtendedServices(null);
     vscode.window.showErrorMessage("An error happened while trying to start the Extended Services: " + error.message);
     return;
   }
 
-  if (config.enableAutoRun) {
-    startLocalExtendedServices(config, context);
+  if (configuration.enableAutoRun) {
+    startLocalExtendedServices(configuration, context);
   } else {
-    startConnection(config);
+    startConnection(configuration);
   }
 }
 
-function stopExtendedServices() {
-  configuration = null;
-  localService.stop();
-  connection.stop();
+function stopExtendedServices(configuration: Configuration | null) {
+  statusBarItem.command = undefined;
+  if (configuration?.enableAutoRun) {
+    localService.stop();
+  } else {
+    connection.stop();
+  }
 }
 
 function startLocalExtendedServices(configuration: Configuration, context: vscode.ExtensionContext): void {
   try {
-    localService.start(configuration, context.extensionPath);
+    localService.start(configuration.extendedServicesURL, context.extensionPath);
   } catch (error) {
-    stopExtendedServices();
+    stopExtendedServices(configuration);
     vscode.window.showErrorMessage("An error happened while trying to start the local service:" + error.message);
   }
 }
 
 function startConnection(configuration: Configuration) {
   try {
-    connection.start(configuration);
+    connection.start(configuration.extendedServicesURL, configuration.connectionHeartbeatIntervalinSecs);
   } catch (error) {
-    stopExtendedServices();
+    stopExtendedServices(configuration);
     vscode.window.showErrorMessage("An error happened while trying to connect to the service:" + error.message);
   }
 }
@@ -141,7 +144,7 @@ async function validate(configuration: Configuration) {
       );
       diagnosticCollection.set(dmnFile.uri, bpmnDiagnostics);
     } catch (error) {
-      stopExtendedServices();
+      stopExtendedServices(configuration);
       vscode.window.showErrorMessage(
         "An error happened while trying to validate " + dmnFile.uri.path + ": " + error.message
       );
@@ -156,7 +159,7 @@ export function activate(context: vscode.ExtensionContext) {
   connection = new Connection();
 
   configurationWatcher.subscribeSettingsChanged(() => {
-    stopExtendedServices();
+    stopExtendedServices(configuration);
     if (!userDisconnected && kieFilesWatcher.watchedKieFiles.length > 0) {
       startExtendedServices(context);
     }
@@ -183,15 +186,17 @@ export function activate(context: vscode.ExtensionContext) {
 
   kieFilesWatcher.subscribeKieFilesClosed(() => {
     if (kieFilesWatcher.watchedKieFiles.length === 0) {
-      stopExtendedServices();
+      stopExtendedServices(configuration);
       statusBarItem.hide();
     } else if (configuration) {
       validate(configuration);
     }
   });
 
-  localService.subscribeLocalExtendedServicesStarted((configuration: Configuration) => {
-    startConnection(configuration);
+  localService.subscribeLocalExtendedServicesStarted(() => {
+    if (configuration) {
+      startConnection(configuration);
+    }
   });
 
   localService.subscribeLocalExtendedServicesOutputChanged((output: string) => {
@@ -207,17 +212,18 @@ export function activate(context: vscode.ExtensionContext) {
     connection.stop();
   });
 
-  connection.subscribeConnected((config: Configuration) => {
-    configuration = config;
+  connection.subscribeConnected(() => {
     vscode.commands.executeCommand("setContext", connectedEnablementUID, true);
-    statusBarItem.text = "$(extended-services-connected)";
-    statusBarItem.tooltip = "Apache KIE Extended Services are connected. Click to disconnect.";
-    statusBarItem.command = stopExtendedServicesCommandUID;
-    validate(configuration);
+    if (configuration) {
+      validate(configuration);
+      statusBarItem.text = "$(extended-services-connected)";
+      statusBarItem.tooltip = "Apache KIE Extended Services are connected. Click to disconnect.";
+      statusBarItem.command = stopExtendedServicesCommandUID;
+    }
   });
 
   connection.subscribeConnectionLost((errorMessage: string) => {
-    stopExtendedServices();
+    stopExtendedServices(configuration);
     vscode.window.showErrorMessage("Connection error: " + errorMessage);
   });
 

@@ -19,17 +19,16 @@
 
 import * as path from "path";
 import { ChildProcess, SpawnOptions, spawn, spawnSync } from "child_process";
-import { Configuration } from "./configurations/Configuration";
 
 export class LocalExtendedServices {
-  private localExtendedServicesStartedHandler: ((configuration: Configuration) => void) | null = null;
+  private localExtendedServicesStartedHandler: (() => void) | null = null;
   private localExtendedServicesOutputChangedHandler: ((output: string) => void) | null = null;
   private localExtendedServicesErrorOutputChangedHandler: ((output: string) => void) | null = null;
   private localExtendedServicesStoppedHandler: (() => void) | null = null;
 
   private serviceProcess: ChildProcess | null = null;
 
-  public start(configuration: Configuration, extensionAbsoluteFsPath: string): void {
+  public start(extendedServicesURL: URL, extensionAbsoluteFsPath: string): void {
     const distDirectory: string = "dist";
     const extendedServicesDirectory: string = "extended-services-java";
     const extendedServicesJarFileName: string = "quarkus-run.jar";
@@ -40,8 +39,8 @@ export class LocalExtendedServices {
       extendedServicesJarFileName
     );
 
-    const hostname = configuration.extendedServicesURL.hostname;
-    const port = configuration.extendedServicesURL.port;
+    const hostname = extendedServicesURL.hostname;
+    const port = extendedServicesURL.port;
     const command =
       "java -jar -Dquarkus.http.host=" + hostname + " -Dquarkus.http.port=" + port + " " + jarAbsoluteFilePath;
 
@@ -57,9 +56,9 @@ export class LocalExtendedServices {
       if (this.serviceProcess.stdout) {
         this.serviceProcess.stdout.on("data", (data) => {
           const output = data.toString();
-          if (output.includes("Listening on: " + configuration.extendedServicesURL.origin)) {
+          if (output.includes("Listening on: " + extendedServicesURL.origin)) {
             this.fileLocalExtendedServicesOutputChangedEvent(output);
-            this.fireLocalExtendedServicesStartedEvent(configuration);
+            this.fireLocalExtendedServicesStartedEvent();
           }
         });
       }
@@ -73,6 +72,7 @@ export class LocalExtendedServices {
 
       this.serviceProcess.on("exit", () => {
         this.fireLocalExtendedServicesStoppedEvent();
+        this.serviceProcess = null;
       });
     } catch (error) {
       throw new Error("LOCAL EXTENDED SERVICES ERROR: " + error.message);
@@ -104,11 +104,10 @@ export class LocalExtendedServices {
     } else {
       process.kill(-this.serviceProcess.pid);
     }
-    this.serviceProcess = null;
   }
 
-  private fireLocalExtendedServicesStartedEvent(configuration: Configuration) {
-    this.localExtendedServicesStartedHandler?.(configuration);
+  private fireLocalExtendedServicesStartedEvent() {
+    this.localExtendedServicesStartedHandler?.();
   }
 
   private fileLocalExtendedServicesOutputChangedEvent(output: string) {
@@ -123,7 +122,7 @@ export class LocalExtendedServices {
     this.localExtendedServicesStoppedHandler?.();
   }
 
-  public subscribeLocalExtendedServicesStarted(handler: (configuration: Configuration) => void) {
+  public subscribeLocalExtendedServicesStarted(handler: () => void) {
     this.localExtendedServicesStartedHandler = handler;
   }
 
