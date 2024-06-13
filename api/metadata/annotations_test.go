@@ -41,3 +41,19 @@ func TestGetProfile(t *testing.T) {
 		})
 	}
 }
+
+func TestIsValidProfile(t *testing.T) {
+	profiles := []ProfileType{DefaultProfile, GitOpsProfile, DevProfile}
+	for _, profile := range profiles {
+		if !profile.isValidProfile() {
+			t.Errorf("Profile %s is not valid", profile)
+		}
+	}
+	if ProdProfile.isValidProfile() {
+		t.Errorf("ProdProfile is deprecated and should not be valid")
+	}
+	// any random string should not be a valid profile
+	if ProfileType("random").isValidProfile() {
+		t.Errorf("random is not a valid profile")
+	}
+}

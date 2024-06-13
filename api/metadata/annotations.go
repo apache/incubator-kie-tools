@@ -92,6 +92,11 @@ func GetProfileOrDefault(annotation map[string]string) ProfileType {
 	}
 }
 
+func (p ProfileType) isValidProfile() bool {
+	_, ok := supportedProfiles[p]
+	return ok
+}
+
 func IsDevProfile(annotation map[string]string) bool {
 	if annotation == nil {
 		return false
