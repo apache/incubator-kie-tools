@@ -19,8 +19,10 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 const packageJson = require("@kie-tools/kn-plugin-workflow/package.json");
+const rootEnv = require("@kie-tools/root-env/env");
+const sonataflowDevModeImageEnv = require("@kie-tools/sonataflow-devmode-image/env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+module.exports = composeEnv([rootEnv, sonataflowDevModeImageEnv], {
   vars: varsWithName({
     KN_PLUGIN_WORKFLOW__version: {
       name: "KN_PLUGIN_WORKFLOW__version",
@@ -32,10 +34,9 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "io.quarkus.platform",
       description: "Quarkus group to be used when creating the SonataFlow project",
     },
-    KN_PLUGIN_WORKFLOW__devModeImage: {
-      name: "KN_PLUGIN_WORKFLOW__devModeImage",
-      default: "quay.io/kiegroup/kogito-swf-devmode-nightly:999-20240417",
-      description: "SonataFlow dev mode image (used on cli run)",
+    KN_PLUGIN_WORKFLOW__devModeImageUrl: {
+      default: `${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.registry}/${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.account}/${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.name}:${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.tag}`,
+      description: "Kogito SWF DevMode image URL.",
     },
   }),
   get env() {
@@ -43,7 +44,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       knPluginWorkflow: {
         version: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__version),
         quarkusPlatformGroupId: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__quarkusPlatformGroupId),
-        devModeImage: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__devModeImage),
+        devModeImageUrl: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__devModeImageUrl),
       },
     };
   },

@@ -15,11 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.3
+FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.4
 
 ARG DDUS_VERSION="0.0.0"
 
-RUN microdnf -y install httpd \
+RUN microdnf --disableplugin=subscription-manager install -y httpd \
   && echo "Mutex posixsem" >> /etc/httpd/conf/httpd.conf \
   && sed -i -e 's/Listen 80/Listen 8090/' /etc/httpd/conf/httpd.conf \
   && sed -i -e 's/#ServerName www.example.com:80/ServerName 127.0.0.1:8090/' /etc/httpd/conf/httpd.conf \

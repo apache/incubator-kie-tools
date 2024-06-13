@@ -22,16 +22,11 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { App } from "./App";
 import "../static/resources/style.css";
-import * as incompatibleBrowser from "./workspace/startupBlockers/IncompatibleBrowser";
 
 async function main() {
   const appContainer = document.getElementById("app")!;
-
-  if (await incompatibleBrowser.isTrue()) {
-    ReactDOM.render(<incompatibleBrowser.Component />, appContainer);
-  } else {
-    ReactDOM.render(<App />, appContainer);
-  }
+  // eslint-disable-next-line react/no-deprecated
+  ReactDOM.render(<App />, appContainer);
 }
 
 main();

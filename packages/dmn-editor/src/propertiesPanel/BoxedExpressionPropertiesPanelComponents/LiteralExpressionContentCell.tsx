@@ -26,6 +26,7 @@ import { useDmnEditorStore } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { Normalized } from "../../normalization/normalize";
 
 export function LiteralExpressionContentCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
@@ -37,9 +38,14 @@ export function LiteralExpressionContentCell(props: {
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updater = useBoxedExpressionUpdater<DMN15__tLiteralExpression>(selectedObjectInfos?.expressionPath ?? []);
+  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tLiteralExpression>>(
+    selectedObjectInfos?.expressionPath ?? []
+  );
 
-  const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tLiteralExpression, [selectedObjectInfos?.cell]);
+  const cell = useMemo(
+    () => selectedObjectInfos?.cell as Normalized<DMN15__tLiteralExpression>,
+    [selectedObjectInfos?.cell]
+  );
 
   return (
     <>

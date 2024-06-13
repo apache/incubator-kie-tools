@@ -24,6 +24,7 @@ import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateIn
 import { SnapGrid } from "../store/Store";
 import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
+import { Normalized } from "../normalization/normalize";
 
 export function addDecisionToDecisionService({
   definitions,
@@ -32,7 +33,7 @@ export function addDecisionToDecisionService({
   drdIndex,
   snapGrid,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   decisionId: string;
   decisionServiceId: string;
   drdIndex: number;
@@ -55,11 +56,11 @@ export function addDecisionToDecisionService({
   const diagram = addOrGetDrd({ definitions, drdIndex });
   const decisionShape = diagram.diagramElements.find(
     (s) => s["@_dmnElementRef"] === decisionId && s.__$$element === "dmndi:DMNShape"
-  ) as DMNDI15__DMNShape;
+  ) as Normalized<DMNDI15__DMNShape>;
 
   const decisionServiceShape = diagram.diagramElements.find(
     (s) => s["@_dmnElementRef"] === decisionServiceId && s.__$$element === "dmndi:DMNShape"
-  ) as DMNDI15__DMNShape;
+  ) as Normalized<DMNDI15__DMNShape>;
 
   const section = getSectionForDecisionInsideDecisionService({ decisionShape, decisionServiceShape, snapGrid });
   if (section === "encapsulated") {
@@ -80,8 +81,8 @@ export function getSectionForDecisionInsideDecisionService({
   decisionServiceShape,
   snapGrid,
 }: {
-  decisionShape: DMNDI15__DMNShape;
-  decisionServiceShape: DMNDI15__DMNShape;
+  decisionShape: Normalized<DMNDI15__DMNShape>;
+  decisionServiceShape: Normalized<DMNDI15__DMNShape>;
   snapGrid: SnapGrid;
 }): "output" | "encapsulated" {
   if (!decisionShape?.["dc:Bounds"] || !decisionServiceShape?.["dc:Bounds"]) {

@@ -45,7 +45,7 @@ func NewRunCommand() *cobra.Command {
 
 	 By default, it runs over ` + metadata.DevModeImage + ` on Docker.
 	 Alternatively, you can run the same image with Podman.
-		
+
 		 `,
 		Example: `
 	# Run the workflow inside the current local directory
@@ -54,7 +54,7 @@ func NewRunCommand() *cobra.Command {
 	 # Run the current local directory mapping a different host port to the running container port.
 	{{.Name}} run --port 8081
 
- 	# Disable automatic browser launch of SonataFlow  Dev UI 
+ 	# Disable automatic browser launch of SonataFlow  Dev UI
 	{{.Name}} run --open-dev-ui=false
 		 `,
 		SuggestFor: []string{"rnu", "start"}, //nolint:misspell
@@ -100,12 +100,12 @@ func runDevCmdConfig() (cfg RunCmdConfig, err error) {
 
 func runSWFProject(cfg RunCmdConfig) error {
 
-	if errPodman := common.CheckPodman(); errPodman == nil {
-		if err := runSWFProjectDevMode(common.Podman, cfg); err != nil {
+	if errDocker := common.CheckDocker(); errDocker == nil {
+		if err := runSWFProjectDevMode(common.Docker, cfg); err != nil {
 			return err
 		}
-	} else if errDocker := common.CheckDocker(); errDocker == nil {
-		if err := runSWFProjectDevMode(common.Docker, cfg); err != nil {
+	} else if errPodman := common.CheckPodman(); errPodman == nil {
+		if err := runSWFProjectDevMode(common.Podman, cfg); err != nil {
 			return err
 		}
 	} else {

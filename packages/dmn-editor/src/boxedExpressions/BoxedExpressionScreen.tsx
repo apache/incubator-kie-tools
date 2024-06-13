@@ -80,6 +80,7 @@ import { DmnEditorTab } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { getDefaultColumnWidth } from "./getDefaultColumnWidth";
 import { getDefaultBoxedExpression } from "./getDefaultBoxedExpression";
+import { Normalized } from "../normalization/normalize";
 
 export function BoxedExpressionScreen({ container }: { container: React.RefObject<HTMLElement> }) {
   const { externalModelsByNamespace } = useExternalModels();
@@ -101,6 +102,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
     (s) => s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).pmmls
   );
   const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
+  const drdIndex = useDmnEditorStore((s) => s.computed(s).getDrdIndex());
 
   const onRequestFeelVariables = useCallback(() => {
     const externalModels = new Map<string, DmnLatestModel>();
@@ -142,7 +144,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
   // recalculated, breaking batching.
   const widthsById = useMemo(() => {
     return (
-      thisDmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[diagram.drdIndex]["di:extension"]?.[
+      thisDmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[drdIndex]["di:extension"]?.[
         "kie:ComponentsWidthsExtension"
       ]?.["kie:ComponentWidths"] ?? []
     ).reduce((acc, c) => {
@@ -155,7 +157,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
         );
       }
     }, new Map<string, number[]>());
-  }, [diagram.drdIndex, thisDmn.model.definitions]);
+  }, [drdIndex, thisDmn.model.definitions]);
 
   const expression = useMemo(() => {
     if (!drgElement) {
@@ -171,7 +173,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
   }, [drgElement, drgElementIndex]);
 
   const widthsByIdRef = useRef<Map<string, number[]>>(widthsById);
-  const boxedExpressionRef = useRef<BoxedExpression | undefined>(expression?.boxedExpression);
+  const boxedExpressionRef = useRef<Normalized<BoxedExpression> | undefined>(expression?.boxedExpression);
 
   useEffect(() => {
     widthsByIdRef.current = widthsById;
@@ -193,7 +195,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
 
         updateExpressionWidths({
           definitions: state.dmn.model.definitions,
-          drdIndex: state.diagram.drdIndex,
+          drdIndex: state.computed(state).getDrdIndex(),
           widthsById: newWidthsById,
         });
       });
@@ -201,7 +203,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
     [dmnEditorStoreApi]
   );
 
-  const onExpressionChange: React.Dispatch<React.SetStateAction<BoxedExpression>> = useCallback(
+  const onExpressionChange: React.Dispatch<React.SetStateAction<Normalized<BoxedExpression>>> = useCallback(
     (newExpressionAction) => {
       dmnEditorStoreApi.setState((state) => {
         const newExpression =
@@ -384,11 +386,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
             isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
             expressionHolderId={activeDrgElementId!}
             expressionHolderName={drgElement?.variable?.["@_name"] ?? drgElement?.["@_name"] ?? ""}
-            expressionHolderTypeRef={
-              drgElement?.variable?.["@_typeRef"] ??
-              expression?.boxedExpression?.["@_typeRef"] ??
-              DmnBuiltInDataType.Undefined
-            }
+            expressionHolderTypeRef={drgElement?.variable?.["@_typeRef"] ?? expression?.boxedExpression?.["@_typeRef"]}
             expression={expression?.boxedExpression}
             onExpressionChange={onExpressionChange}
             dataTypes={dataTypes}
@@ -405,18 +403,20 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
 
 export function drgElementToBoxedExpression(
   expressionHolder:
-    | (DMN15__tDecision & { __$$element: "decision" })
-    | (DMN15__tBusinessKnowledgeModel & { __$$element: "businessKnowledgeModel" })
-): BoxedExpression | undefined {
+    | (Normalized<DMN15__tDecision> & { __$$element: "decision" })
+    | (Normalized<DMN15__tBusinessKnowledgeModel> & { __$$element: "businessKnowledgeModel" })
+): Normalized<BoxedExpression> | undefined {
   if (expressionHolder.__$$element === "businessKnowledgeModel") {
     return expressionHolder.encapsulatedLogic
       ? {
           __$$element: "functionDefinition",
+          "@_label": expressionHolder.encapsulatedLogic["@_label"] ?? expressionHolder["@_name"],
+          "@_typeRef": expressionHolder.encapsulatedLogic["@_typeRef"] ?? expressionHolder.variable?.["@_typeRef"],
           ...expressionHolder.encapsulatedLogic,
         }
       : {
           __$$element: "functionDefinition",
-          "@_id": expressionHolder.variable?.["@_id"] ?? generateUuid(),
+          "@_id": generateUuid(),
           "@_kind": "FEEL",
           expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
           formalParameter: [],
@@ -431,7 +431,9 @@ export function drgElementToBoxedExpression(
             expressionHolder?.variable?.["@_name"] ??
             expressionHolder.expression["@_label"] ??
             expressionHolder?.["@_name"],
-          "@_typeRef": expressionHolder?.variable?.["@_typeRef"] ?? expressionHolder.expression["@_typeRef"],
+          "@_typeRef": expressionHolder?.variable
+            ? expressionHolder?.variable["@_typeRef"]
+            : expressionHolder.expression["@_typeRef"],
         }
       : undefined;
   } else {
@@ -442,7 +444,7 @@ export function drgElementToBoxedExpression(
 }
 
 function determineInputsForDecision(
-  decision: DMN15__tDecision,
+  decision: Normalized<DMN15__tDecision>,
   allTopLevelDataTypesByFeelName: DataTypeIndex,
   nodesById: Map<string, RF.Node<DmnDiagramNodeData>>
 ) {
@@ -486,7 +488,7 @@ function flattenItemComponents({
   itemDefinition,
   acc,
 }: {
-  itemDefinition: DMN15__tItemDefinition;
+  itemDefinition: Normalized<DMN15__tItemDefinition>;
   acc: string;
 }): { name: string; typeRef: string | undefined }[] {
   if (!isStruct(itemDefinition)) {

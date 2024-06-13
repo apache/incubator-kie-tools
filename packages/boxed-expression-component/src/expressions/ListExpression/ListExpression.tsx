@@ -27,10 +27,9 @@ import {
   BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
-  DmnBuiltInDataType,
-  InsertRowColumnsDirection,
-  BoxedList,
   BoxedExpression,
+  BoxedList,
+  DmnBuiltInDataType,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";

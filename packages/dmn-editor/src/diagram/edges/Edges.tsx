@@ -29,12 +29,13 @@ import { PotentialWaypoint, Waypoints } from "./Waypoints";
 import { useAlwaysVisibleEdgeUpdatersAtNodeBorders } from "./useAlwaysVisibleEdgeUpdatersAtNodeBorders";
 import { useKieEdgePath } from "./useKieEdgePath";
 import { usePotentialWaypointControls } from "./usePotentialWaypointControls";
+import { Normalized } from "../../normalization/normalize";
 
 export type DmnDiagramEdgeData = {
-  dmnEdge: (DMNDI15__DMNEdge & { index: number }) | undefined;
+  dmnEdge: (Normalized<DMNDI15__DMNEdge> & { index: number }) | undefined;
   dmnObject: DrgEdge["dmnObject"];
-  dmnShapeSource: DMNDI15__DMNShape | undefined;
-  dmnShapeTarget: DMNDI15__DMNShape | undefined;
+  dmnShapeSource: Normalized<DMNDI15__DMNShape> | undefined;
+  dmnShapeTarget: Normalized<DMNDI15__DMNShape> | undefined;
 };
 
 export const InformationRequirementPath = React.memo(

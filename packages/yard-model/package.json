@@ -1,5 +1,5 @@
 {
-  "private": false,
+  "private": true,
   "name": "@kie-tools/yard-model",
   "version": "0.0.0",
   "description": "",
@@ -26,6 +26,9 @@
     "install:mvnw:win32": "pnpm powershell \"mvn -e org.apache.maven.plugins:maven-wrapper-plugin:3.3.0:wrapper\"",
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
+  },
+  "dependencies": {
+    "@kie-tools/maven-base": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools/maven-config-setup-helper": "workspace:*",

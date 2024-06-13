@@ -24,8 +24,8 @@ import {
   BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
-  DmnBuiltInDataType,
   BoxedLiteral,
+  DmnBuiltInDataType,
 } from "../../api";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
 import {
@@ -85,11 +85,13 @@ export function LiteralExpression({
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression(() => ({
-        ...literalExpression,
-        "@_label": name,
-        "@_typeRef": typeRef,
-      }));
+      setExpression(
+        (): BoxedLiteral => ({
+          ...literalExpression,
+          "@_label": name,
+          "@_typeRef": typeRef,
+        })
+      );
     },
     [literalExpression, setExpression]
   );

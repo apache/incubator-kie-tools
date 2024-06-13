@@ -57,4 +57,8 @@ export const INITIAL_COMPUTED_CACHE: Cache<Computed> = {
     value: undefined,
     dependencies: [],
   },
+  getDrdIndex: {
+    value: undefined,
+    dependencies: [],
+  },
 };

@@ -33,18 +33,24 @@ import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { SnapGrid } from "../store/Store";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { DECISION_SERVICE_DIVIDER_LINE_PADDING } from "./updateDecisionServiceDividerLine";
+import { Normalized } from "../normalization/normalize";
+import { ExternalDmnsIndex } from "../DmnEditor";
 
 export function resizeNode({
   definitions,
   drdIndex,
-  dmnShapesByHref,
+  __readonly_dmnShapesByHref,
+  __readonly_dmnObjectNamespace,
+  __readonly_externalDmnsIndex,
   snapGrid,
   change,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
-  dmnShapesByHref: Map<string, DMNDI15__DMNShape & { index: number }>;
+  __readonly_dmnShapesByHref: Map<string, Normalized<DMNDI15__DMNShape> & { index: number }>;
   snapGrid: SnapGrid;
+  __readonly_dmnObjectNamespace: string | undefined;
+  __readonly_externalDmnsIndex: ExternalDmnsIndex;
   change: {
     nodeType: NodeType;
     isExternal: boolean;
@@ -59,7 +65,7 @@ export function resizeNode({
 
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
-  const shape = diagramElements?.[change.shapeIndex] as DMNDI15__DMNShape | undefined;
+  const shape = diagramElements?.[change.shapeIndex] as Normalized<DMNDI15__DMNShape> | undefined;
   const shapeBounds = shape?.["dc:Bounds"];
   if (!shapeBounds) {
     throw new Error("DMN MUTATION: Cannot resize non-existent shape bounds");
@@ -67,7 +73,15 @@ export function resizeNode({
 
   const limit = { x: 0, y: 0 };
   if (change.nodeType === NODE_TYPES.decisionService) {
-    const ds = definitions.drgElement![change.index] as DMN15__tDecisionService;
+    const externalDmn = __readonly_externalDmnsIndex.get(__readonly_dmnObjectNamespace ?? "");
+
+    const ds =
+      externalDmn === undefined
+        ? (definitions.drgElement![change.index] as Normalized<DMN15__tDecisionService>)
+        : (externalDmn.model.definitions.drgElement![change.index] as Normalized<DMN15__tDecisionService>);
+    if (!ds) {
+      throw new Error("DMN MUTATION: Cannot reposition divider line of non-existent Decision Service");
+    }
 
     const dividerLineY =
       shape["dmndi:DMNDecisionServiceDividerLine"]?.["di:waypoint"]?.[0]?.["@_y"] ?? shapeBounds["@_y"];
@@ -76,7 +90,7 @@ export function resizeNode({
     // We ignore handling the contents of the Decision Service when it is external
     if (!change.isExternal) {
       ds.encapsulatedDecision?.forEach((ed) => {
-        const edShape = dmnShapesByHref.get(ed["@_href"])!;
+        const edShape = __readonly_dmnShapesByHref.get(ed["@_href"])!;
         const dim = snapShapeDimensions(snapGrid, edShape, MIN_NODE_SIZES[NODE_TYPES.decision]({ snapGrid }));
         const pos = snapShapePosition(snapGrid, edShape);
         if (pos.x + dim.width > limit.x) {
@@ -90,7 +104,7 @@ export function resizeNode({
 
       // Output Decisions don't limit the resizing vertically, only horizontally.
       ds.outputDecision?.forEach((ed) => {
-        const edShape = dmnShapesByHref.get(ed["@_href"])!;
+        const edShape = __readonly_dmnShapesByHref.get(ed["@_href"])!;
         const dim = snapShapeDimensions(snapGrid, edShape, MIN_NODE_SIZES[NODE_TYPES.decision]({ snapGrid }));
         const pos = snapShapePosition(snapGrid, edShape);
         if (pos.x + dim.width > limit.x) {
@@ -128,7 +142,7 @@ export function resizeNode({
 
       edgeIndexesAlreadyUpdated.add(edgeIndex);
 
-      const edge = diagramElements[edgeIndex] as DMNDI15__DMNEdge | undefined;
+      const edge = diagramElements[edgeIndex] as Normalized<DMNDI15__DMNEdge> | undefined;
       if (!edge || !edge["di:waypoint"]) {
         throw new Error("DMN MUTATION: Cannot reposition non-existent edge");
       }

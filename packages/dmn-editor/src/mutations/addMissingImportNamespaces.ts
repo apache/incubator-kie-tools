@@ -18,8 +18,9 @@
  */
 
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "../normalization/normalize";
 
-export function addMissingImportNamespaces(definitions: DMN15__tDefinitions) {
+export function addMissingImportNamespaces(definitions: Normalized<DMN15__tDefinitions>) {
   if (definitions.import === undefined) {
     return;
   }

@@ -55,7 +55,7 @@ pipeline {
                             "${pipelineVars.kieToolsBotGithubCredentialsId}"
                         )
 
-                        BUILD_IMAGE_REQUIRED = githubUtils.fileIsInChangeset('kie-tools-ci-build.Dockerfile')
+                        BUILD_IMAGE_REQUIRED = githubUtils.fileIsInChangeset('incubator-kie-tools-ci-build.Dockerfile')
                     }
                 }
             }

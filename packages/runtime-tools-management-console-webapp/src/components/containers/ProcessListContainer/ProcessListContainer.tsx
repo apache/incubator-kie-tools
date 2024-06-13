@@ -47,7 +47,7 @@ const ProcessListContainer: React.FC<ProcessListContainerProps & OUIAProps> = ({
     return () => {
       unsubscriber.unSubscribe();
     };
-  }, []);
+  }, [gatewayApi, history]);
 
   return (
     <EmbeddedProcessList

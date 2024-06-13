@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -28,8 +28,10 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
+        booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
     environment {
@@ -42,10 +44,12 @@ pipeline {
         OPENSHIFT_PART_OF = 'kie-sandbox-app'
         OPENSHIFT_NAMESPACE = 'kie-sandbox'
 
-        CORS_PROXY_IMAGE__imageRegistry = 'quay.io'
-        CORS_PROXY_IMAGE__imageAccount = 'kie-tools'
-        CORS_PROXY_IMAGE__imageName = 'cors-proxy-image'
-        CORS_PROXY_IMAGE__imageBuildTags = "latest ${params.TAG}"
+        CORS_PROXY_IMAGE__imageRegistry = 'docker.io'
+        CORS_PROXY_IMAGE__imageAccount = 'apache'
+        CORS_PROXY_IMAGE__imageName = 'incubator-kie-cors-proxy'
+        CORS_PROXY_IMAGE__imageBuildTags = "latest ${params.RELEASE_VERSION}"
+
+        RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
@@ -61,6 +65,7 @@ pipeline {
                     githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
                     openShiftUtils = load '.ci/jenkins/shared-scripts/openShiftUtils.groovy'
                     dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
+                    releaseUtils = load '.ci/jenkins/shared-scripts/releaseUtils.groovy'
                 }
             }
         }
@@ -76,6 +81,16 @@ pipeline {
         stage('Clean workspace before build') {
             steps {
                 cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Load upstream images') {
+            steps {
+                script {
+                    upstreamReleaseArtifactsDir = "${WORKSPACE}/upstream-release-artifacts"
+                    releaseUtils.downloadReleaseArtifacts("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}")
+                    dockerUtils.loadImages(releaseUtils.getUpstreamImagesArtifactsList("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}"))
+                }
             }
         }
 
@@ -123,17 +138,19 @@ pipeline {
             }
         }
 
-        stage('Push cors-proxy-image to quay.io') {
+        stage('Push cors-proxy-image to Docker Hub') {
             when {
-                expression { !params.DRY_RUN }
+                expression { !params.DRY_RUN && !params.RELEASE_CANDIDATE }
             }
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.CORS_PROXY_IMAGE__imageRegistry}/${env.CORS_PROXY_IMAGE__imageAccount}",
+                        "${env.CORS_PROXY_IMAGE__imageRegistry}",
+                        "${env.CORS_PROXY_IMAGE__imageAccount}",
                         "${env.CORS_PROXY_IMAGE__imageName}",
                         "${env.CORS_PROXY_IMAGE__imageBuildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
                 }
             }
@@ -141,18 +158,62 @@ pipeline {
 
         stage('Deploy cors-proxy-image to OpenShift') {
             when {
-                expression { !params.DRY_RUN }
+                expression { !params.DRY_RUN && !params.RELEASE_CANDIDATE }
             }
             steps {
                 script {
                     openShiftUtils.createOrUpdateApp(
                         "${env.OPENSHIFT_NAMESPACE}",
                         "${env.OPENSHIFT_APP_NAME}",
-                        "${params.TAG}",
-                        "${env.CORS_PROXY_IMAGE__imageRegistry}/${env.CORS_PROXY_IMAGE__imageAccount}/${env.CORS_PROXY_IMAGE__imageName}:${params.TAG}",
+                        "${params.RELEASE_VERSION}",
+                        "${env.CORS_PROXY_IMAGE__imageRegistry}/${env.CORS_PROXY_IMAGE__imageAccount}/${env.CORS_PROXY_IMAGE__imageName}:${params.RELEASE_VERSION}",
                         "${env.OPENSHIFT_PART_OF}",
                         'nodejs',
                         "${pipelineVars.openshiftCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Setup release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    env.RELEASE_IMAGE_TAR_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-${env.CORS_PROXY_IMAGE__imageName}.tar.gz"
+
+                    sh """#!/bin/bash -el
+                    mkdir ${env.RELEASE_ARTIFACTS_DIR}
+                    docker save "${env.CORS_PROXY_IMAGE__imageRegistry}/${env.CORS_PROXY_IMAGE__imageAccount}/${env.CORS_PROXY_IMAGE__imageName}:${params.RELEASE_VERSION}" | gzip > "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}"
+                    """.trim()
+                }
+            }
+        }
+
+        stage('Sign artifact for Apache release') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                }
+            }
+        }
+
+        stage('Publish Release Candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${env.RELEASE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
                     )
                 }
             }

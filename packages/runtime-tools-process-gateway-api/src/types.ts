@@ -58,7 +58,7 @@ export interface BulkCancel {
   failedJobs: Job[];
 }
 
-export interface JobCancel {
+export interface JobOperationResult {
   modalTitle: string;
   modalContent: string;
 }

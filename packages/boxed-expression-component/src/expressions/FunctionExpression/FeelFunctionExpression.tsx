@@ -27,10 +27,10 @@ import {
   BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
-  DmnBuiltInDataType,
   BoxedExpression,
   BoxedFunction,
   BoxedFunctionKind,
+  DmnBuiltInDataType,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";

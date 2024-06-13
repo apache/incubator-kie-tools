@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -28,9 +28,11 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
         string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL')
+        booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
     environment {
@@ -38,6 +40,8 @@ pipeline {
         KIE_TOOLS_BUILD__runTests = 'false'
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
+
+        RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
         PNPM_FILTER_STRING = '-F @kie-tools/dev-deployment-upload-service...'
     }
@@ -49,6 +53,7 @@ pipeline {
                     pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
                     buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
                     githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                    releaseUtils = load '.ci/jenkins/shared-scripts/releaseUtils.groovy'
                 }
             }
         }
@@ -109,73 +114,126 @@ pipeline {
 
         stage('Upload Dev Deployment Upload Service assets') {
             when {
-                expression { !params.DRY_RUN }
+                expression { !params.DRY_RUN && !params.RELEASE_CANDIDATE }
             }
             steps {
                 script {
                     // macOS - amd64 - tar.gz
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
-                        "packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-darwin-amd64-${params.TAG}.tar.gz",
-                        "dev-deployment-upload-service-darwin-amd64-${params.TAG}.tar.gz",
+                        "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-darwin-amd64-${params.RELEASE_VERSION}.tar.gz",
+                        "dev-deployment-upload-service-darwin-amd64-${params.RELEASE_VERSION}.tar.gz",
                         'application/tar+gzip',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )
                     // macOS - amd64 - tar.gz.sha256
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
-                        "packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-darwin-amd64-${params.TAG}.tar.gz.sha256",
-                        "dev-deployment-upload-service-darwin-amd64-${params.TAG}.tar.gz.sha256",
+                        "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-darwin-amd64-${params.RELEASE_VERSION}.tar.gz.sha256",
+                        "dev-deployment-upload-service-darwin-amd64-${params.RELEASE_VERSION}.tar.gz.sha256",
                         'text/plain',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )
                     // macOS - arm64 - tar.gz
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
-                        "packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-darwin-arm64-${params.TAG}.tar.gz",
-                        "dev-deployment-upload-service-darwin-arm64-${params.TAG}.tar.gz",
+                        "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-darwin-arm64-${params.RELEASE_VERSION}.tar.gz",
+                        "dev-deployment-upload-service-darwin-arm64-${params.RELEASE_VERSION}.tar.gz",
                         'application/tar+gzip',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )
                     // macOS - arm64 - tar.gz.sha256
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
-                        "packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-darwin-arm64-${params.TAG}.tar.gz.sha256",
-                        "dev-deployment-upload-service-darwin-arm64-${params.TAG}.tar.gz.sha256",
+                        "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-darwin-arm64-${params.RELEASE_VERSION}.tar.gz.sha256",
+                        "dev-deployment-upload-service-darwin-arm64-${params.RELEASE_VERSION}.tar.gz.sha256",
                         'text/plain',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )
                     // linux - amd64 - tar.gz
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
-                        "packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-linux-amd64-${params.TAG}.tar.gz",
-                        "dev-deployment-upload-service-linux-amd64-${params.TAG}.tar.gz",
+                        "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-linux-amd64-${params.RELEASE_VERSION}.tar.gz",
+                        "dev-deployment-upload-service-linux-amd64-${params.RELEASE_VERSION}.tar.gz",
                         'application/tar+gzip',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )
                     // linux - amd64 - tar.gz.sha256
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
-                        "packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-linux-amd64-${params.TAG}.tar.gz.sha256",
-                        "dev-deployment-upload-service-linux-amd64-${params.TAG}.tar.gz.sha256",
+                        "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-linux-amd64-${params.RELEASE_VERSION}.tar.gz.sha256",
+                        "dev-deployment-upload-service-linux-amd64-${params.RELEASE_VERSION}.tar.gz.sha256",
                         'text/plain',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )
                     // windows - amd64 - tar.gz
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
-                        "packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-windows-amd64-${params.TAG}.tar.gz",
-                        "dev-deployment-upload-service-windows-amd64-${params.TAG}.tar.gz",
+                        "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-windows-amd64-${params.RELEASE_VERSION}.tar.gz",
+                        "dev-deployment-upload-service-windows-amd64-${params.RELEASE_VERSION}.tar.gz",
                         'application/tar+gzip',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
                     )
                     // windows - amd64 - tar.gz.sha256
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
-                        "packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-windows-amd64-${params.TAG}.tar.gz.sha256",
-                        "dev-deployment-upload-service-windows-amd64-${params.TAG}.tar.gz.sha256",
+                        "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-windows-amd64-${params.RELEASE_VERSION}.tar.gz.sha256",
+                        "dev-deployment-upload-service-windows-amd64-${params.RELEASE_VERSION}.tar.gz.sha256",
                         'text/plain',
                         "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Setup release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    env.DEV_DEPLOYMENT_UPLOAD_SERVICE_MAC_ARM64_RELEASE_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-dev-deployment-upload-service-macOS-arm64.tar.gz"
+                    env.DEV_DEPLOYMENT_UPLOAD_SERVICE_MAC_X86_RELEASE_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-dev-deployment-upload-service-macOS-x86.tar.gz"
+                    env.DEV_DEPLOYMENT_UPLOAD_SERVICE_LINUX_X86_RELEASE_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-dev-deployment-upload-service-linux-x86.tar.gz"
+                    env.DEV_DEPLOYMENT_UPLOAD_SERVICE_WINDOWS_X86_RELEASE_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-dev-deployment-upload-service-windows-x86.tar.gz"
+
+                    sh """#!/bin/bash -el
+                    mkdir ${env.RELEASE_ARTIFACTS_DIR}
+                    cp "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-darwin-amd64-${params.RELEASE_VERSION}.tar.gz" "${env.RELEASE_ARTIFACTS_DIR}/${env.DEV_DEPLOYMENT_UPLOAD_SERVICE_MAC_ARM64_RELEASE_FILE}"
+                    cp "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-darwin-arm64-${params.RELEASE_VERSION}.tar.gz" "${env.RELEASE_ARTIFACTS_DIR}/${env.DEV_DEPLOYMENT_UPLOAD_SERVICE_MAC_X86_RELEASE_FILE}"
+                    cp "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-linux-amd64-${params.RELEASE_VERSION}.tar.gz" "${env.RELEASE_ARTIFACTS_DIR}/${env.DEV_DEPLOYMENT_UPLOAD_SERVICE_LINUX_X86_RELEASE_FILE}"
+                    cp "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-windows-amd64-${params.RELEASE_VERSION}.tar.gz" "${env.RELEASE_ARTIFACTS_DIR}/${env.DEV_DEPLOYMENT_UPLOAD_SERVICE_WINDOWS_X86_RELEASE_FILE}"
+                    """.trim()
+                }
+            }
+        }
+
+        stage('Sign artifacts for Apache release') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.DEV_DEPLOYMENT_UPLOAD_SERVICE_MAC_ARM64_RELEASE_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.DEV_DEPLOYMENT_UPLOAD_SERVICE_MAC_X86_RELEASE_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.DEV_DEPLOYMENT_UPLOAD_SERVICE_LINUX_X86_RELEASE_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.DEV_DEPLOYMENT_UPLOAD_SERVICE_WINDOWS_X86_RELEASE_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                }
+            }
+        }
+
+        stage('Publish Release Candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${env.RELEASE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
                     )
                 }
             }

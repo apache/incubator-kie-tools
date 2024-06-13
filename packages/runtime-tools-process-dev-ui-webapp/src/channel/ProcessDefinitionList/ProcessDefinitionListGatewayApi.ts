@@ -18,7 +18,7 @@
  */
 
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { getProcessDefinitionList } from "@kie-tools/runtime-tools-process-gateway-api/dist/gatewayApi";
+import { ProcessDefinitionListQueries } from "./ProcessDefinitionListQueries";
 
 export interface ProcessDefinitionListGatewayApi {
   getProcessDefinitionFilter: () => Promise<string[]>;
@@ -46,13 +46,11 @@ export class ProcessDefinitionListGatewayApiImpl implements ProcessDefinitionLis
   private readonly onOpenProcessListeners: OnOpenProcessFormListener[] = [];
   private readonly onOpenTriggerCloudEventListeners: OnOpenTriggerCloudEventListener[] = [];
 
-  private readonly kogitoAppUrl: string;
-  private readonly openApiPath: string;
+  private readonly queries: ProcessDefinitionListQueries;
   private processDefinitionFilter: string[] = [];
 
-  constructor(url: string, path: string) {
-    this.kogitoAppUrl = url;
-    this.openApiPath = path;
+  constructor(queries: ProcessDefinitionListQueries) {
+    this.queries = queries;
   }
 
   getProcessDefinitionFilter(): Promise<string[]> {
@@ -100,7 +98,7 @@ export class ProcessDefinitionListGatewayApiImpl implements ProcessDefinitionLis
   }
 
   getProcessDefinitionsQuery(): Promise<ProcessDefinition[]> {
-    return getProcessDefinitionList(this.kogitoAppUrl, this.openApiPath);
+    return this.queries.getProcessDefinitions();
   }
 
   openTriggerCloudEvent(): void {

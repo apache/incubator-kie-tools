@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -28,8 +28,10 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
+        booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
     environment {
@@ -37,6 +39,8 @@ pipeline {
         KIE_TOOLS_BUILD__runTests = 'false'
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
+
+        RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
         PNPM_FILTER_STRING = '-F @kie-tools/kie-editors-standalone... -F @kie-tools/serverless-workflow-standalone-editor...'
     }
@@ -48,6 +52,9 @@ pipeline {
                     pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
                     buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
                     githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                    releaseUtils = load '.ci/jenkins/shared-scripts/releaseUtils.groovy'
+                    releaseUtils = load '.ci/jenkins/shared-scripts/releaseUtils.groovy'
+                    zipUtils = load '.ci/jenkins/shared-scripts/zipUtils.groovy'
                 }
             }
         }
@@ -126,17 +133,17 @@ pipeline {
 
         stage('Deploy to GitHub Pages (kogito-online)') {
             when {
-                expression { !params.DRY_RUN }
+                expression { !params.DRY_RUN && !params.RELEASE_CANDIDATE }
             }
             steps {
                 dir('kogito-online') {
                     script {
-                        STANDALONE_EDITORS_DIR = "standalone/${params.TAG}"
+                        STANDALONE_EDITORS_DIR = "standalone/${params.RELEASE_VERSION}"
 
                         sh """#!/bin/bash -el
                         git config user.email asf-ci-kie@jenkins.kie.apache.org
                         git config user.name asf-ci-kie
-                        
+
                         git checkout gh-pages
 
                         echo "Copy standalone resources"
@@ -148,17 +155,62 @@ pipeline {
                         rm -f ./standalone/bpmn/index.js
                         rm -f ./standalone/dmn/index.js
                         rm -f ./standalone/swf/index.js
-                        ln -s ../${params.TAG}/bpmn/index.js ./standalone/bpmn/index.js
-                        ln -s ../${params.TAG}/dmn/index.js ./standalone/dmn/index.js
-                        ln -s ../${params.TAG}/swf/index.js ./standalone/swf/index.js
+                        ln -s ../${params.RELEASE_VERSION}/bpmn/index.js ./standalone/bpmn/index.js
+                        ln -s ../${params.RELEASE_VERSION}/dmn/index.js ./standalone/dmn/index.js
+                        ln -s ../${params.RELEASE_VERSION}/swf/index.js ./standalone/swf/index.js
 
                         echo "Commit changes and push"
                         git add .
-                        git commit -m "Deploy ${params.TAG} (Standalone Editors)"
+                        git commit -m "Deploy ${params.RELEASE_VERSION} (Standalone Editors)"
                         """.trim()
 
                         githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.asfGithubPushCredentialsId}")
                     }
+                }
+            }
+        }
+
+        stage('Setup release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-business-automation-standalone-editors.zip"
+                    env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-standalone-editors.zip"
+
+                    sh "mkdir ${env.RELEASE_ARTIFACTS_DIR}"
+                    zipUtils.zipArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE}", 'kie-tools/packages/kie-editors-standalone/dist')
+                    zipUtils.zipArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE}", 'kie-tools/packages/serverless-workflow-standalone-editor/dist')
+                }
+            }
+        }
+
+        stage('Sign artifacts for Apache release') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                }
+            }
+        }
+
+        stage('Publish Release Candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${env.RELEASE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
+                    )
                 }
             }
         }

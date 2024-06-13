@@ -25,7 +25,7 @@ import "./ExpressionDefinitionRoot.css";
 
 export interface ExpressionDefinitionRootProps {
   expressionHolderId: string;
-  expressionHolderTypeRef: string;
+  expressionHolderTypeRef: string | undefined;
   expression?: BoxedExpression;
   isResetSupported: boolean | undefined;
   expressionHolderName?: string;

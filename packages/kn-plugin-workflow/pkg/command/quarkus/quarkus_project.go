@@ -122,6 +122,9 @@ func manipulatePomToKogito(filename string, cfg CreateQuarkusProjectConfig) erro
 		dependencyElement := dependencies.CreateElement("dependency")
 		dependencyElement.CreateElement("groupId").SetText(dep.GroupId)
 		dependencyElement.CreateElement("artifactId").SetText(dep.ArtifactId)
+		if dep.Version != "" {
+			dependencyElement.CreateElement("version").SetText(dep.Version)
+		}
 	}
 
 	doc.Indent(4)

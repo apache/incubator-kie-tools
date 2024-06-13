@@ -24,6 +24,7 @@ import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionInde
 import { useDmnEditorStore } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { DMN15__tIterator } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "../../normalization/normalize";
 
 export function IteratorVariableCell(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadonly: boolean }) {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
@@ -32,9 +33,9 @@ export function IteratorVariableCell(props: { boxedExpressionIndex?: BoxedExpres
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updater = useBoxedExpressionUpdater<DMN15__tIterator>(selectedObjectInfos?.expressionPath ?? []);
+  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tIterator>>(selectedObjectInfos?.expressionPath ?? []);
 
-  const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tIterator, [selectedObjectInfos?.cell]);
+  const cell = useMemo(() => selectedObjectInfos?.cell as Normalized<DMN15__tIterator>, [selectedObjectInfos?.cell]);
 
   return (
     <>

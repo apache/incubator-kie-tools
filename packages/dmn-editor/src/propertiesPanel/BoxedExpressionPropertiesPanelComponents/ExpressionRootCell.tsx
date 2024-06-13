@@ -27,7 +27,7 @@ import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/Clipboa
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { useDmnEditorStore } from "../../store/StoreContext";
 
-type ExpressionRoot = Pick<AllExpressionsWithoutTypes, "description" | "@_typeRef">;
+type ExpressionRoot = Pick<AllExpressionsWithoutTypes, "description" | "@_typeRef" | "@_id">;
 
 export function ExpressionRootCell(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadonly: boolean }) {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);

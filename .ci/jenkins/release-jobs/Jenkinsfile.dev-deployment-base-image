@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -28,8 +28,10 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
+        booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
     environment {
@@ -38,10 +40,12 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        DEV_DEPLOYMENT_BASE_IMAGE__registry = 'quay.io'
-        DEV_DEPLOYMENT_BASE_IMAGE__account = 'kie-tools'
-        DEV_DEPLOYMENT_BASE_IMAGE__name = 'dev-deployment-base-image'
-        DEV_DEPLOYMENT_BASE_IMAGE__buildTags = "latest ${params.TAG}"
+        DEV_DEPLOYMENT_BASE_IMAGE__registry = 'docker.io'
+        DEV_DEPLOYMENT_BASE_IMAGE__account = 'apache'
+        DEV_DEPLOYMENT_BASE_IMAGE__name = 'incubator-kie-sandbox-dev-deployment-base'
+        DEV_DEPLOYMENT_BASE_IMAGE__buildTag = "latest ${params.RELEASE_VERSION}"
+
+        RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
@@ -56,6 +60,7 @@ pipeline {
                     buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
                     githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
                     dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
+                    releaseUtils = load '.ci/jenkins/shared-scripts/releaseUtils.groovy'
                 }
             }
         }
@@ -71,6 +76,16 @@ pipeline {
         stage('Clean workspace before build') {
             steps {
                 cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Load upstream images') {
+            steps {
+                script {
+                    upstreamReleaseArtifactsDir = "${WORKSPACE}/upstream-release-artifacts"
+                    releaseUtils.downloadReleaseArtifacts("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}")
+                    dockerUtils.loadImages(releaseUtils.getUpstreamImagesArtifactsList("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}"))
+                }
             }
         }
 
@@ -118,22 +133,67 @@ pipeline {
             }
         }
 
-        stage('Push dev-deployment-base-image to quay.io') {
+        stage('Push dev-deployment-base-image to Docker Hub') {
             when {
-                expression { !params.DRY_RUN }
+                expression { !params.DRY_RUN && !params.RELEASE_CANDIDATE }
             }
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__registry}/${env.DEV_DEPLOYMENT_BASE_IMAGE__account}",
+                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__registry}",
+                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__account}",
                         "${env.DEV_DEPLOYMENT_BASE_IMAGE__name}",
-                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__buildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__buildTag}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
                 }
             }
         }
 
+        stage('Setup release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    env.RELEASE_IMAGE_TAR_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-dev-deployment-base-image.tar.gz"
+
+                    sh """#!/bin/bash -el
+                    mkdir ${env.RELEASE_ARTIFACTS_DIR}
+                    docker save "${env.DEV_DEPLOYMENT_BASE_IMAGE__registry}/${env.DEV_DEPLOYMENT_BASE_IMAGE__account}/${env.DEV_DEPLOYMENT_BASE_IMAGE__name}:${params.RELEASE_VERSION}" | gzip > "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}"
+                    """.trim()
+                }
+            }
+        }
+
+        stage('Sign artifact for Apache release') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                }
+            }
+        }
+
+        stage('Publish Release Candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${env.RELEASE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
+                    )
+                }
+            }
+        }
     }
 
     post {

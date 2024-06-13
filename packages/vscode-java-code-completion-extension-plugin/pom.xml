@@ -22,17 +22,25 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 >
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-tools-maven-base</artifactId>
+    <version>${revision}</version>
+    <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
+  </parent>
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.kie</groupId>
   <artifactId>vscode-java-code-completion-extension-plugin</artifactId>
-  <version>${revision}</version>
   <packaging>pom</packaging>
   <name>vscode-java-code-completion-extension-plugin :: parent</name>
   <description>vscode-java-code-completion-extension-plugin parent</description>
 
+  <modules>
+    <module>vscode-java-code-completion-extension-plugin-core</module>
+  </modules>
+
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <tycho.version>3.0.5</tycho.version>
     <tycho.extras.version>${tycho.version}</tycho.extras.version>
     <tycho.scmUrl>scm:git:https://github.com/apache/incubator-kie-tools.git</tycho.scmUrl>
@@ -47,12 +55,8 @@
     <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
     <jacoco.destFile>${project.build.directory}/jacoco.exec</jacoco.destFile>
     <sonar.jacoco.reportPath>${jacoco.destFile}</sonar.jacoco.reportPath>
-
-    <maven.compiler.target>17</maven.compiler.target>
-    <maven.compiler.source>17</maven.compiler.source>
-
-    <version.flatten.plugin>1.3.0</version.flatten.plugin>
   </properties>
+  
   <repositories>
     <repository>
       <id>jdt.ls.p2</id>
@@ -64,6 +68,13 @@
       <url>https://repo.eclipse.org/content/repositories/jdtls-releases/</url>
     </repository>
   </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>cbi-release</id>
+      <url>https://repo.eclipse.org/content/repositories/cbi-releases/</url>
+    </pluginRepository>
+  </pluginRepositories>
+
   <build>
     <plugins>
       <plugin>
@@ -154,6 +165,14 @@
             <forkedProcessTimeoutInSeconds>60</forkedProcessTimeoutInSeconds>
           </configuration>
         </plugin>
+        <!-- Do not generate a source jar - It conflicts with tycho-source-plugin -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <configuration>
+            <skipSource>true</skipSource>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -218,13 +237,4 @@
       </build>
     </profile>
   </profiles>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>cbi-release</id>
-      <url>https://repo.eclipse.org/content/repositories/cbi-releases/</url>
-    </pluginRepository>
-  </pluginRepositories>
-  <modules>
-    <module>vscode-java-code-completion-extension-plugin-core</module>
-  </modules>
 </project>

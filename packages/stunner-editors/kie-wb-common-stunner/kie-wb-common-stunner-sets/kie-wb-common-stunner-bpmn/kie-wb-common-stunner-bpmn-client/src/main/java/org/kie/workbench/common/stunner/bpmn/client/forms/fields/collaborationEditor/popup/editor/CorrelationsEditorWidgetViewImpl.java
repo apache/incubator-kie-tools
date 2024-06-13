@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.collaborationEditor.popup.editor;
 
 import java.util.Collection;

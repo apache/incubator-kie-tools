@@ -39,27 +39,28 @@ import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
 import { EyeIcon } from "@patternfly/react-icons/dist/js/icons/eye-icon";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
-import { DataType, EditItemDefinition, AddItemComponent, DataTypeIndex } from "./DataTypes";
+import { AddItemComponent, DataType, DataTypeIndex, EditItemDefinition } from "./DataTypes";
 import { DataTypeName } from "./DataTypeName";
-import { isStruct, canHaveConstraints, getNewItemDefinition } from "./DataTypeSpec";
+import { canHaveConstraints, getNewItemDefinition, isStruct } from "./DataTypeSpec";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import {
+  buildClipboardFromDataType,
   DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE,
   DmnEditorDataTypesClipboard,
-  buildClipboardFromDataType,
   getClipboard,
 } from "../clipboard/Clipboard";
 import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 import { isEnum } from "./ConstraintsEnum";
 import { isRange } from "./ConstraintsRange";
-import { constraintTypeHelper } from "./Constraints";
+import { constraintTypeHelper, recursivelyGetRootItemDefinition } from "./Constraints";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 import { useDmnEditor } from "../DmnEditorContext";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { resolveTypeRef } from "./resolveTypeRef";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { Normalized } from "../normalization/normalize";
 
 export const BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL = 5;
 export const STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE = 95;
@@ -95,6 +96,9 @@ export function ItemComponentsTable({
   const allTopLevelDataTypesByFeelName = useDmnEditorStore(
     (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName
   );
+  const allTopLevelItemDefinitionUniqueNames = useDmnEditorStore(
+    (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelItemDefinitionUniqueNames
+  );
   const importsByNamespace = useDmnEditorStore((s) => s.computed(s).importsByNamespace());
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
@@ -107,6 +111,7 @@ export function ItemComponentsTable({
 
   const flatTree = useMemo(() => {
     const ret: { dataType: DataType; allUniqueNamesAtLevel: UniqueNameIndex }[] = [];
+
     function traverse(dataType: DataType[], allUniqueNamesAtLevel: UniqueNameIndex) {
       for (let i = 0; i < (dataType?.length ?? 0); i++) {
         ret.push({ dataType: dataType[i], allUniqueNamesAtLevel });
@@ -159,7 +164,7 @@ export function ItemComponentsTable({
                 onClick={() =>
                   addItemComponent(parent.itemDefinition["@_id"]!, "unshift", {
                     "@_name": "New property",
-                    typeRef: { __$$text: DmnBuiltInDataType.Undefined },
+                    typeRef: undefined,
                   })
                 }
               >
@@ -288,20 +293,36 @@ export function ItemComponentsTable({
                   return <>Range</>;
                 }
 
-                const constraintValue = dt.itemDefinition.allowedValues?.text.__$$text;
-                const typeRef =
-                  (dt.itemDefinition.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
+                const constraintValue =
+                  dt.itemDefinition.typeConstraint?.text.__$$text ?? dt.itemDefinition.allowedValues?.text.__$$text;
+
+                const typeHelper = constraintTypeHelper(
+                  dt.itemDefinition,
+                  allDataTypesById,
+                  allTopLevelItemDefinitionUniqueNames
+                );
+
                 if (constraintValue === undefined) {
                   return <>None</>;
                 }
-                if (isEnum(constraintValue, constraintTypeHelper(typeRef).check)) {
+                if (isEnum(constraintValue, typeHelper.check)) {
                   return <>Enumeration</>;
                 }
-                if (isRange(constraintValue, constraintTypeHelper(typeRef).check)) {
+                if (isRange(constraintValue, typeHelper.check)) {
                   return <>Range</>;
                 }
                 return <>Expression</>;
               };
+
+              const rootItemDefinition = recursivelyGetRootItemDefinition(
+                dt.itemDefinition,
+                allDataTypesById,
+                allTopLevelItemDefinitionUniqueNames
+              );
+
+              const isItemComponent = !!parent.itemDefinition?.itemComponent?.find(
+                (ic) => ic["@_id"] === rootItemDefinition["@_id"]
+              );
 
               return (
                 <React.Fragment key={dt.itemDefinition["@_id"]}>
@@ -357,7 +378,7 @@ export function ItemComponentsTable({
                                 onClick={() => {
                                   addItemComponent(dt.itemDefinition["@_id"]!, "unshift", {
                                     "@_name": "New property",
-                                    typeRef: { __$$text: DmnBuiltInDataType.Undefined },
+                                    typeRef: undefined,
                                   });
                                   dmnEditorStoreApi.setState((state) => {
                                     state.dataTypesEditor.expandedItemComponentIds.push(dt.itemDefinition["@_id"]!);
@@ -415,11 +436,11 @@ export function ItemComponentsTable({
                             })}
                             onChange={(newDataType) => {
                               editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
-                                itemDefinition.typeRef = { __$$text: newDataType };
                                 if (itemDefinition.typeRef?.__$$text !== newDataType) {
                                   itemDefinition.typeConstraint = undefined;
                                   itemDefinition.allowedValues = undefined;
                                 }
+                                itemDefinition.typeRef = newDataType ? { __$$text: newDataType } : undefined;
                               });
                             }}
                           />
@@ -439,7 +460,8 @@ export function ItemComponentsTable({
                         />
                       </td>
                       <td>
-                        {canHaveConstraints(dt.itemDefinition) ? (
+                        {canHaveConstraints(rootItemDefinition) ||
+                        (isStruct(rootItemDefinition) && !isItemComponent) ? (
                           <Button
                             variant={ButtonVariant.link}
                             onClick={() => {
@@ -495,7 +517,7 @@ export function ItemComponentsTable({
                                       "@_isCollection": false,
                                     });
 
-                                    const newItemDefinitionCopy: DMN15__tItemDefinition = JSON.parse(
+                                    const newItemDefinitionCopy: Normalized<DMN15__tItemDefinition> = JSON.parse(
                                       JSON.stringify(newItemDefinition)
                                     ); // Necessary because idRandomizer will mutate this object.
 
@@ -620,7 +642,7 @@ export function ItemComponentsTable({
                     onClick={() =>
                       addItemComponent(parent.itemDefinition["@_id"]!, "push", {
                         "@_name": "New property",
-                        typeRef: { __$$text: DmnBuiltInDataType.Undefined },
+                        typeRef: undefined,
                       })
                     }
                     style={{ paddingLeft: 0 }}

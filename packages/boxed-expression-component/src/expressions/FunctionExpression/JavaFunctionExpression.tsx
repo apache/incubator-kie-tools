@@ -29,10 +29,10 @@ import {
   BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
-  DmnBuiltInDataType,
-  BoxedFunctionKind,
-  generateUuid,
   BoxedFunction,
+  BoxedFunctionKind,
+  DmnBuiltInDataType,
+  generateUuid,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";

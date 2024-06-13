@@ -22,6 +22,9 @@ import { DmnDecision } from "./DmnDecision";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
+import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { v4 as uuid } from "uuid";
 
 const INPUT_DATA = "inputData";
 const XML_MIME = "text/xml";
@@ -30,6 +33,21 @@ const NAMESPACE = "namespace";
 const DMN_NAME = "name";
 const DECISION = "decision";
 const DEFINITIONS = "definitions";
+
+// FIXME: This was duplicated from boxed-expression-editor
+const generateUuid = () => {
+  return `_${uuid()}`.toLocaleUpperCase();
+};
+
+// FIXME: This was duplicated from dmn-editor-envelope
+const EMPTY_DMN = () => `<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="${dmn15ns.get("")}"
+  expressionLanguage="${DMN15_SPEC.expressionLanguage.default}"
+  namespace="https://kie.org/dmn/${generateUuid()}"
+  id="${generateUuid()}"
+  name="DMN${generateUuid()}">
+</definitions>`;
 
 /**
  * The normalized posix path relative to the workspace root is a string
@@ -195,7 +213,7 @@ export class DmnLanguageService {
             r.normalizedPosixPathRelativeToTheWorkspaceRoot,
             {
               xml: r.content,
-              definitions: getMarshaller(r.content, { upgradeTo: "latest" }).parser.parse().definitions,
+              definitions: getMarshaller(r.content || EMPTY_DMN(), { upgradeTo: "latest" }).parser.parse().definitions,
             },
           ])
         ),

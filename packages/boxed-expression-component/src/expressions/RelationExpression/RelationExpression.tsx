@@ -26,11 +26,10 @@ import {
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
+  BoxedRelation,
   DmnBuiltInDataType,
   generateUuid,
   getNextAvailablePrefixedName,
-  InsertRowColumnsDirection,
-  BoxedRelation,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";
@@ -44,7 +43,7 @@ import {
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
-import { DMN15__tList, DMN15__tLiteralExpression } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN15__tList } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import "./RelationExpression.css";
 
 type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
@@ -326,7 +325,7 @@ export function RelationExpression({
           newItems.push({
             "@_id": generateUuid(),
             "@_name": name,
-            "@_typeRef": DmnBuiltInDataType.Undefined,
+            "@_typeRef": undefined,
           });
         }
 

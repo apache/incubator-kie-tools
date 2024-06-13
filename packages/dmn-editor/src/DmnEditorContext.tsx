@@ -21,6 +21,7 @@ import * as React from "react";
 import { useContext, useMemo, useRef } from "react";
 import { DmnEditorProps } from "./DmnEditor";
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import { Normalized } from "./normalization/normalize";
 
 export type DmnEditorContextProviderProps = Pick<
   DmnEditorProps,

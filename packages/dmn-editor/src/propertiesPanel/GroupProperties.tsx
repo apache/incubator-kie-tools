@@ -25,8 +25,9 @@ import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { useDmnEditorStoreApi } from "../store/StoreContext";
 import { renameGroupNode } from "../mutations/renameNode";
+import { Normalized } from "../normalization/normalize";
 
-export function GroupProperties({ group, index }: { group: DMN15__tGroup; index: number }) {
+export function GroupProperties({ group, index }: { group: Normalized<DMN15__tGroup>; index: number }) {
   const { setState } = useDmnEditorStoreApi();
 
   return (
@@ -58,7 +59,7 @@ export function GroupProperties({ group, index }: { group: DMN15__tGroup; index:
           value={group.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.artifact![index] as DMN15__tGroup).description = {
+              (state.dmn.model.definitions.artifact![index] as Normalized<DMN15__tGroup>).description = {
                 __$$text: newDescription,
               };
             });

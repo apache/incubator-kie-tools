@@ -255,7 +255,10 @@ export function CreateGitRepositoryModal(props: {
       variant={ModalVariant.medium}
       aria-label={i18n.createGitRepositoryModal[authProvider.type].createRepository}
       isOpen={props.isOpen}
-      onClose={props.onClose}
+      onClose={() => {
+        setError(undefined);
+        props.onClose();
+      }}
       title={i18n.createGitRepositoryModal[authProvider.type].createRepository}
       titleIconVariant={switchExpression(authProvider.type, {
         bitbucket: BitbucketIcon,

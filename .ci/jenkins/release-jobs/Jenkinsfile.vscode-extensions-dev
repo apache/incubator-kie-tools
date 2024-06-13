@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -28,7 +28,7 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
         string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL')
     }
@@ -69,36 +69,44 @@ pipeline {
 
         stage('Checkout kie-tools') {
             steps {
-                script {
-                    githubUtils.checkoutRepo(
-                        "http://github.com/${pipelineVars.githubRepositorySlug}.git",
-                        "${params.BASE_REF}",
-                        "${pipelineVars.kieToolsBotGithubCredentialsId}"
-                    )
+                dir('kie-tools') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            "http://github.com/${pipelineVars.githubRepositorySlug}.git",
+                            "${params.BASE_REF}",
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
                 }
             }
         }
 
         stage('Setup PNPM') {
             steps {
-                script {
-                    buildUtils.setupPnpm()
+                dir('kie-tools') {
+                    script {
+                        buildUtils.setupPnpm()
+                    }
                 }
             }
         }
 
         stage('PNPM Bootstrap') {
             steps {
-                script {
-                    buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                    }
                 }
             }
         }
 
         stage('Build') {
             steps {
-                script {
-                    buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
+                    }
                 }
             }
         }
@@ -108,14 +116,16 @@ pipeline {
                 expression { !params.DRY_RUN }
             }
             steps {
-                script {
-                    githubUtils.uploadReleaseAsset(
-                        "${params.UPLOAD_ASSET_URL}",
-                        "packages/kie-editors-dev-vscode-extension/dist/kie_editors_dev_vscode_extension_${params.TAG}.vsix",
-                        "vscode_extension_dev_${params.TAG}.vsix",
-                        'application/zip',
-                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
-                    )
+                dir('kie-tools') {
+                    script {
+                        githubUtils.uploadReleaseAsset(
+                            "${params.UPLOAD_ASSET_URL}",
+                            "packages/kie-editors-dev-vscode-extension/dist/kie_editors_dev_vscode_extension_${params.RELEASE_VERSION}.vsix",
+                            "vscode_extension_dev_${params.RELEASE_VERSION}.vsix",
+                            'application/zip',
+                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                        )
+                    }
                 }
             }
         }

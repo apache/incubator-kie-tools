@@ -1,3 +1,20 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+     http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+
 This guide aims to assist you in the process of upgrading all Kogito dependencies versions present in the kie-tools repository.
 Typically, these dependencies point to backend-side modules or images
 
@@ -56,7 +73,6 @@ You can find an example of the Java / Maven versions upgrade in [this PR](https:
 
 The Quarkus version is present in the following file categories:
 
-- `install.js` files
 - `root-env/env/index.js` file
 - go test files
 
@@ -70,16 +86,7 @@ You can find an example of the Quarkus upgrade in [this PR](https://github.com/a
 
 # Upgrading Kogito
 
-The Kogito version is present in the following file categories:
-
-- `install.js` files
-- `root-env/env/index.js` file
-- `package.json` files (eg. jit-executor reference in `extended-service`)
-
-The best (and fastest) way to catch all the Kogito versions is to perform a search a grep (or the IDE integrated search) and replace it with the new version. So, as a key, you can use:
-
-- The version number: `X.Y.Z` or `X.Y.Z-YYYYMMDD-SNAPSHOT` format (eg. `10.0.0` or `10.1.0-20240424-SNAPSHOT`);
-- Images references: `main-YYYY-MM-DD` (Daily builds) or `X.Y.Z-YYYYMMDD` (Weekly builds) format (eg. `main-2024-04-24` or `10.1.0-20240424` in case of snapshot version)
+In the root directory, run `pnpm update-kogito-version-to --maven [version] --images-tag [tag]`.
 
 Of course, a new Kogito version may lead to incompatibilities in the code and with other dependencies. In such a case, an investigation and evetually a fix is required to complete the process.
 
@@ -98,3 +105,14 @@ To test the `kie-sandbox-quarkus-accelerator` module with the updated version, p
 - Run `pnpm -F @kie-tools/online-editor... build:dev` and `pnpm -F @kie-tools/online-editor start` to test it.
 
 You can find an example of the Kogito version upgrade in [this PR](https://github.com/apache/incubator-kie-sandbox-quarkus-accelerator/pull/8)
+
+# Upgrading GraphQL schemas in `@kie-tools/runtime-tools-process-gateway-api`& `@kie-tools/runtime-tools-swf-gateway-api`
+
+The following commands will help to sync up the gateway apis the GraphQL schema with the new Kogito Data Index GraphQL schema:
+
+- Start a blank Data Index Container, for example `docker run -p8180:8080 docker.io/apache/incubator-kie-kogito-data-index-ephemeral:{$KOGITO_VERSION}`
+- Run `pnpm -F @kie-tools/runtime-tools-process-gateway-api graphql:codegen`
+- Run `pnpm -F @kie-tools/runtime-tools-swf-gateway-api graphql:codegen`
+
+After upgrading the GraphQL schemas it is recommended to verify that the incoming changes aren't breaking the consoles or
+devui's and fix any possible conflict if needed.
