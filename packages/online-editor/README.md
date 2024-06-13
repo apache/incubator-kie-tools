@@ -274,7 +274,7 @@ Instead of the `openjdk` image, let's use the `dev-deployment-base-image` as a b
 
 ```docker
 # Set the base image with Java 17, Maven, and the dev-deployment-upload-service.
-FROM quay.io/kie-tools/dev-deployment-base-image:latests
+FROM quay.io/kie-tools/dev-deployment-base-image:main
 
 # Start as root to get elevated access.
 USER root
@@ -328,6 +328,31 @@ Also, notice the `Command` parameter, it will execute `mvn quarkus:dev` inside o
 ## How Dev Deployments work?
 
 ![Dev Deployment Flow](./docs/dev_deployment_flow.png)
+
+The "magic" that drives Dev Deployments depends on various parts working together in sync: KIE Sandbox, your Kubernetes cluster, the container images, de upload service, etc.
+
+Before any deployment is made when adding a new Kubernetes or OpenShift cluster connection to KIE Sandbox it will automatically fetch all possible API endpoints and map them to their corresponding Kubernetes resource names, this way it _knows_ how to apply and manage different resources (such as Deployments, Ingresses, Routes, Services, etc).
+
+When you click on "Deploy" a lot has to happen behind the scenes so that your Dev Deployment happens. Here's a basic step-by-step:
+
+1. KIE Sandbox will zip all the files in the workspace being deployed (ignoring .git directories);
+2. Then it will load the chosen deployment option (Custom Image or Kogito Quarkus Blank app) YAML files and modify them dynamically:
+   - Applying the required patches to set KIE Sandbox labels, annotations, and resource names;
+   - Applying patches related to the parameters set in the deployment modal (each parameter correspond to a set of patches and tokens);
+   - Interpolate all tokens with their corresponding values, including parameters;
+   - Split the YAML files into multiple YAMLs, making one per resource kind.
+3. Using the Kubernetes resource name and the list of API endpoints saved, requests are made to the cluster to apply each resource YAML, saving the returned resource ID locally to be referenced later.
+4. The cluster will start to initiate Pods, Services, and other resources, while KIE Sandbox will keep polling the cluster to find out whether the Deployment is healthy and ready, first by fetching the Deployment resource status, then, when healthy, polling the Dev Deployment Upload Service status to check if it's ready to receive the upload.
+   - If the Deployment resource is not healthy, KIE Sandbox will keep polling its status whenever it tries to list Kubernetes resources and will show an error icon if the Deployment errors out, or a loading icon if the Deployment is pending;
+   - If the Deployment is healthy, KIE Sandbox will start polling the Dev Deployment Upload Service running inside the deployed containers, to check if it's ready to receive an upload;
+   - If the Dev Deployment Upload Service fails to respond after a certain defined timeout, the Dev Deployment fails and is updated with an error icon.
+5. After reaching the "READY" status on the Dev Deployment Upload Service, KIE Sandbox uploads the .zip file generated in Step 1 to the upload service;
+6. The Dev Deployment Upload Service receives the .zip file and extracts it to the defined path (this path is set using the configured environment variables on the container). After the extraction is over, the service ends with a status code 0 and calls the next defined command (usually `mvn quarkus:dev` or whatever is defined in the Custom Image option parameter);
+7. A quarkus application starts loading inside the container, while KIE Sandbox starts polling the container to check if the quarkus app is ready;
+8. When quarkus finishes loading and the polling succeeds, KIE Sandbox updates the Dev Deployment icon to a success icon and provides a link to the Dev Deployment endpoint, which can be either:
+   - The Quarkus swagger-ui if deployed via Custom Image or Kogito Quarkus Blank App options, without the DMN Form Webapp parameter;
+   - The DMN Form Webapp if the checkbox for it was checked;
+9. Users can interact with the Dev Deployment and test/validate their decisions and processes, after that's finished it's possible to delete a deployment by hovering over it in the Dev Deployments list and clicking on the trash icon.
 
 ---
 

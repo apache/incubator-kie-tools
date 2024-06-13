@@ -15,7 +15,17 @@
    under the License.
 -->
 
-## @kie-tools/dev-deployment-dmn-form-webapp-image
+# KIE Sandbox Dev Deployment DMN Form Webapp Image
+
+This image is ready to be used for Dev deployments that contain Decisions (`.dmn`) on KIE Sandbox.
+It expects a Quarkus application to be running at the same host, which it will use to fetch information to render a form that let's users interact with a Decision.
+
+## Run
+
+```bash
+docker run -t -p 8080:8081 -i --rm docker.io/apache/incubator-kie-sandbox-dev-deployment-dmn-form-webapp:main
+# KIE Sandbox Dev Deployment DMN Form Webapp will be up at http://localhost:8080
+```
 
 ---
 
