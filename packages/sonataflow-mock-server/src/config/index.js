@@ -16,32 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-module.exports = {
-  type: "object",
-  properties: {
-    Candidate: {
-      type: "object",
-      properties: {
-        email: {
-          type: "string",
-        },
-        name: {
-          type: "string",
-        },
-        salary: {
-          type: "integer",
-        },
-        skills: {
-          type: "string",
-        },
-      },
-    },
-    hr_approval: {
-      type: "boolean",
-    },
-    it_approval: {
-      type: "boolean",
-    },
-  },
+const commonConfig = {
+  env: process.env.NODE_ENV || "development",
+  port: parseInt(process.env.PORT, 10) || 4000,
+  corsDomain: process.env.CORS_DOMAIN || "*",
 };
+
+module.exports = commonConfig;

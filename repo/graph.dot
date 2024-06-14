@@ -159,6 +159,7 @@ digraph G {
   "@kie-tools/serverless-logic-web-tools-base-builder-image-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/sonataflow-mock-server" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-logic-web-tools-base-builder-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-logic-web-tools-swf-builder-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/sonataflow-builder-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -496,6 +497,7 @@ digraph G {
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/serverless-logic-web-tools-base-builder-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/sonataflow-mock-server" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-base-builder-image" -> "@kie-tools/serverless-logic-web-tools-base-builder-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-base-builder-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-builder-image" -> "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" [ style = "dashed", color = "black" ];
@@ -513,6 +515,7 @@ digraph G {
   "@kie-tools/serverless-workflow-dev-ui-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-workflow-dev-ui-webapp" -> "@kie-tools/runtime-tools-swf-webapp-components" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-workflow-dev-ui-webapp" -> "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp" [ style = "solid", color = "black" ];
+  "@kie-tools/serverless-workflow-dev-ui-webapp" -> "@kie-tools/sonataflow-mock-server" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-workflow-diagram-editor-assets" -> "@kie-tools/serverless-workflow-diagram-editor" [ style = "dashed", color = "blue" ];
@@ -535,6 +538,7 @@ digraph G {
   "sonataflow-deployment-webapp" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
   "sonataflow-deployment-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
   "sonataflow-deployment-webapp" -> "@kie-tools/runtime-tools-swf-webapp-components" [ style = "solid", color = "blue" ];
+  "sonataflow-deployment-webapp" -> "@kie-tools/sonataflow-mock-server" [ style = "dashed", color = "blue" ];
   "@kie-tools/sonataflow-devmode-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-devmode-image" -> "@kie-tools/sonataflow-quarkus-devui" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-image-common" -> "@kie-tools/python-venv" [ style = "dashed", color = "black" ];
@@ -543,6 +547,9 @@ digraph G {
   "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/runtime-tools-process-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/runtime-tools-swf-webapp-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/sonataflow-mock-server" [ style = "dashed", color = "blue" ];
+  "@kie-tools/sonataflow-mock-server" -> "@kie-tools/eslint" [ style = "dashed", color = "black" ];
+  "@kie-tools/sonataflow-mock-server" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-operator" -> "@kie-tools/sonataflow-builder-image" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-operator" -> "@kie-tools/sonataflow-devmode-image" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-quarkus-devui" -> "@kie-tools/serverless-workflow-dev-ui-webapp" [ style = "dashed", color = "black" ];

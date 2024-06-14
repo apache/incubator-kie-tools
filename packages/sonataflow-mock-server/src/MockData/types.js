@@ -20,22 +20,10 @@
 const { gql } = require("apollo-server-express");
 module.exports = typeDefs = gql`
   scalar DateTime
+  scalar JSON
 
   schema {
     query: Query
-    mutation: Mutation
-  }
-
-  type Mutation {
-    ProcessInstanceSkip(id: String): String
-    ProcessInstanceAbort(id: String): String
-    ProcessInstanceRetry(id: String): String
-    ProcessInstanceUpdateVariables(id: String, variables: String): String
-    NodeInstanceTrigger(id: String, nodeId: String): String
-    NodeInstanceCancel(id: String, nodeInstanceId: String): String
-    NodeInstanceRetrigger(id: String, nodeInstanceId: String): String
-    JobCancel(id: String): String
-    JobReschedule(id: String, data: String): String
   }
 
   type Query {
@@ -44,12 +32,7 @@ module.exports = typeDefs = gql`
       orderBy: ProcessInstanceOrderBy
       pagination: Pagination
     ): [ProcessInstance]
-    Travels(where: TravelsArgument, orderBy: TravelsOrderBy, pagination: Pagination): [Travels]
-    VisaApplications(
-      where: VisaApplicationsArgument
-      orderBy: VisaApplicationsOrderBy
-      pagination: Pagination
-    ): [VisaApplications]
+    ProcessDefinitions: [ProcessDefinition]
     Jobs(where: JobArgument, orderBy: JobOrderBy, pagination: Pagination): [Job]
   }
 
@@ -68,7 +51,7 @@ module.exports = typeDefs = gql`
     nodes: [NodeInstance!]!
     nodeDefinitions: [Node!]
     milestones: [Milestones!]
-    variables: String
+    variables: JSON
     start: DateTime!
     end: DateTime
     businessKey: String
@@ -80,35 +63,10 @@ module.exports = typeDefs = gql`
     diagram: String
   }
 
-  type KogitoMetadata {
-    lastUpdate: DateTime!
-    processInstances: [ProcessInstanceMeta]
-  }
-
-  input KogitoMetadataOrderBy {
-    lastUpdate: OrderBy
-  }
-
-  input KogitoMetadataArgument {
-    lastUpdate: DateArgument
-    processInstances: ProcessInstanceMetaArgument
-  }
-
-  type ProcessInstanceMeta {
+  type ProcessDefinition {
     id: String!
-    processId: String!
-    processName: String
-    parentProcessInstanceId: String
-    rootProcessInstanceId: String
-    rootProcessId: String
-    roles: [String!]
-    state: ProcessInstanceState!
     endpoint: String!
-    start: DateTime!
-    end: DateTime
-    lastUpdate: DateTime!
-    businessKey: String
-    serviceUrl: String
+    serviceUrl: String!
   }
 
   type ProcessInstanceError {
@@ -281,11 +239,6 @@ module.exports = typeDefs = gql`
     in: [ProcessInstanceState]
   }
 
-  type Subscription {
-    ProcessInstanceAdded: ProcessInstance!
-    ProcessInstanceUpdated: ProcessInstance!
-  }
-
   enum OrderBy {
     ASC
     DESC
@@ -294,206 +247,6 @@ module.exports = typeDefs = gql`
   input Pagination {
     limit: Int
     offset: Int
-  }
-
-  type Travels {
-    flight: Flight
-    hotel: Hotel
-    id: String
-    traveller: Traveller
-    trip: Trip
-    visaApplication: VisaApplication
-    metadata: KogitoMetadata
-  }
-
-  type Flight {
-    arrival: String
-    departure: String
-    flightNumber: String
-    gate: String
-    seat: String
-  }
-
-  type Hotel {
-    address: Address
-    bookingNumber: String
-    name: String
-    phone: String
-    room: String
-  }
-
-  type Address {
-    city: String
-    country: String
-    street: String
-    zipCode: String
-  }
-
-  type Traveller {
-    address: Address
-    email: String
-    firstName: String
-    lastName: String
-    nationality: String
-  }
-
-  type Trip {
-    begin: String
-    city: String
-    country: String
-    end: String
-    visaRequired: Boolean
-  }
-
-  type VisaApplication {
-    approved: Boolean
-    city: String
-    country: String
-    duration: Int
-    firstName: String
-    lastName: String
-    nationality: String
-    passportNumber: String
-  }
-
-  input TravelsArgument {
-    and: [TravelsArgument!]
-    or: [TravelsArgument!]
-    flight: FlightArgument
-    hotel: HotelArgument
-    id: IdArgument
-    traveller: TravellerArgument
-    trip: TripArgument
-    visaApplication: VisaApplicationArgument
-    metadata: KogitoMetadataArgument
-  }
-
-  input FlightArgument {
-    arrival: StringArgument
-    departure: StringArgument
-    flightNumber: StringArgument
-    gate: StringArgument
-    seat: StringArgument
-  }
-
-  input HotelArgument {
-    address: AddressArgument
-    bookingNumber: StringArgument
-    name: StringArgument
-    phone: StringArgument
-    room: StringArgument
-  }
-
-  input AddressArgument {
-    city: StringArgument
-    country: StringArgument
-    street: StringArgument
-    zipCode: StringArgument
-  }
-
-  input TravellerArgument {
-    address: AddressArgument
-    email: StringArgument
-    firstName: StringArgument
-    lastName: StringArgument
-    nationality: StringArgument
-  }
-
-  input TripArgument {
-    begin: StringArgument
-    city: StringArgument
-    country: StringArgument
-    end: StringArgument
-    visaRequired: BooleanArgument
-  }
-
-  input VisaApplicationArgument {
-    approved: BooleanArgument
-    city: StringArgument
-    country: StringArgument
-    duration: NumericArgument
-    firstName: StringArgument
-    lastName: StringArgument
-    nationality: StringArgument
-    passportNumber: StringArgument
-  }
-
-  input TravelsOrderBy {
-    flight: FlightOrderBy
-    hotel: HotelOrderBy
-    traveller: TravellerOrderBy
-    trip: TripOrderBy
-    visaApplication: VisaApplicationOrderBy
-    metadata: KogitoMetadataOrderBy
-  }
-
-  input FlightOrderBy {
-    arrival: OrderBy
-    departure: OrderBy
-    flightNumber: OrderBy
-    gate: OrderBy
-    seat: OrderBy
-  }
-
-  input HotelOrderBy {
-    address: AddressOrderBy
-    bookingNumber: OrderBy
-    name: OrderBy
-    phone: OrderBy
-    room: OrderBy
-  }
-
-  input AddressOrderBy {
-    city: OrderBy
-    country: OrderBy
-    street: OrderBy
-    zipCode: OrderBy
-  }
-
-  input TravellerOrderBy {
-    address: AddressOrderBy
-    email: OrderBy
-    firstName: OrderBy
-    lastName: OrderBy
-    nationality: OrderBy
-  }
-
-  input TripOrderBy {
-    begin: OrderBy
-    city: OrderBy
-    country: OrderBy
-    end: OrderBy
-    visaRequired: OrderBy
-  }
-
-  input VisaApplicationOrderBy {
-    approved: OrderBy
-    city: OrderBy
-    country: OrderBy
-    duration: OrderBy
-    firstName: OrderBy
-    lastName: OrderBy
-    nationality: OrderBy
-    passportNumber: OrderBy
-  }
-
-  type VisaApplications {
-    id: String
-    visaApplication: VisaApplication
-    metadata: KogitoMetadata
-  }
-
-  input VisaApplicationsArgument {
-    and: [VisaApplicationsArgument!]
-    or: [VisaApplicationsArgument!]
-    id: IdArgument
-    visaApplication: VisaApplicationArgument
-    metadata: KogitoMetadataArgument
-  }
-
-  input VisaApplicationsOrderBy {
-    visaApplication: VisaApplicationOrderBy
-    metadata: KogitoMetadataOrderBy
   }
 
   input JobArgument {

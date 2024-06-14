@@ -1,0 +1,39 @@
+{
+  "private": true,
+  "name": "@kie-tools/sonataflow-mock-server",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "author": "",
+  "keywords": [],
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "main": "index.js",
+  "scripts": {
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "start": "nodemon ./src/app.js",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "apollo-server-express": "^3.13.0",
+    "babel-jest": "^25.5.1",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "graphql": "14.3.1",
+    "jest": "^26.6.3",
+    "lodash": "^4.17.21",
+    "nodemon": "^2.0.22",
+    "swagger-ui-express": "^5.0.0",
+    "uuid": "^8.3.2"
+  }
+}

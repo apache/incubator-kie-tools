@@ -162,9 +162,10 @@ The Apache KIE Tools project contains several applications. To develop each one 
 #### Serverless Logic Web Tools
 
 1. After you've successfully built the project following the instructions above, go to `packages/serverless-logic-web-tools`.
-1. Open a terminal and run `pnpm start`. This will start a `webpack serve` instance with the Serverless Logic Web Tools resources.
-1. From now on you can use the development version of the Serverless Logic Web Tools by accessing `https://localhost:9020`.
-1. Run the CORS Proxy by running `pnpm start` at `packages/cors-proxy`.
+2. Open a terminal and run `pnpm start`. This will start a `webpack serve` instance with the Serverless Logic Web Tools resources.
+3. From now on you can use the development version of the Serverless Logic Web Tools by accessing `https://localhost:9020`.
+4. Run the CORS Proxy by running `pnpm start` at `packages/cors-proxy`.
+5. (Optional) To try the "Runtime Tools" functionalities, run the SonataFlow Mock Server by running `pnpm start` at `packages/sonataflow-mock-server`, then open `https://localhost:9020/#/settings/runtime-tools` and set `http://localhost:4000/graphql` in the "Data Index URL" field
 
 #### Standalone Editors (DMN and BPMN)
 

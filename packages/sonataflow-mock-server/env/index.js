@@ -17,8 +17,11 @@
  * under the License.
  */
 
-module.exports = ConfirmTravelForm = {
-  $schema: "https://json-schema.org/draft/2019-09/schema",
-  type: "object",
-  phases: ["complete", "release"],
-};
+const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+
+module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+  vars: varsWithName({}),
+  get env() {
+    return {};
+  },
+});
