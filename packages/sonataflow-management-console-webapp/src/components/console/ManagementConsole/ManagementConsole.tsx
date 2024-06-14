@@ -18,16 +18,22 @@
  */
 import * as React from "react";
 import { useCallback } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import { ApolloProvider } from "react-apollo";
 import { ApolloClient } from "apollo-client";
-import ManagementConsoleNav from "../ManagementConsoleNav/ManagementConsoleNav";
-import managementConsoleLogo from "../../../static/sonataflowManagementConsoleLogo.svg";
 import {
   KogitoAppContextProvider,
   UserContext,
 } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
 import { PageLayout } from "@kie-tools/runtime-tools-components/dist/components/PageLayout";
+import { WorkflowListContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowList";
+import { WorkflowDefinitionListContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionList";
+import { WorkflowFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowForm";
+import { WorkflowDetailsContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDetails";
+import { CloudEventFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventForm";
+import ManagementConsoleNav from "../ManagementConsoleNav/ManagementConsoleNav";
+import managementConsoleLogo from "../../../static/sonataflowManagementConsoleLogo.svg";
+import { GlobalAlertsContextProvider } from "../../../alerts/GlobalAlertsContext";
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
@@ -58,11 +64,23 @@ const ManagementConsole: React.FC<IOwnProps> = ({ apolloClient, userContext, chi
   return (
     <ApolloProvider client={apolloClient}>
       <KogitoAppContextProvider userContext={userContext}>
-        <Router>
-          <Switch>
-            <Route path="/" render={renderPage} />
-          </Switch>
-        </Router>
+        <GlobalAlertsContextProvider>
+          <CloudEventFormContextProvider>
+            <WorkflowDetailsContextProviderWithApolloClient apolloClient={apolloClient}>
+              <WorkflowListContextProviderWithApolloClient apolloClient={apolloClient}>
+                <WorkflowDefinitionListContextProviderWithApolloClient apolloClient={apolloClient}>
+                  <WorkflowFormContextProvider>
+                    <Router>
+                      <Switch>
+                        <Route path="/" render={renderPage} />
+                      </Switch>
+                    </Router>
+                  </WorkflowFormContextProvider>
+                </WorkflowDefinitionListContextProviderWithApolloClient>
+              </WorkflowListContextProviderWithApolloClient>
+            </WorkflowDetailsContextProviderWithApolloClient>
+          </CloudEventFormContextProvider>
+        </GlobalAlertsContextProvider>
       </KogitoAppContextProvider>
     </ApolloProvider>
   );

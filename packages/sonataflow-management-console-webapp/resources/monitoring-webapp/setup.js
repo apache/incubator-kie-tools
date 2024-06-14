@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,40 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-.kogito-management-console__card-size {
-  height: 100%;
-  position: relative;
-}
 
-.kogito--global-alert-container {
-  top: 30px;
-}
+dashbuilder = {
+  /*
+    // possible modes are EDITOR and CLIENT - if dashboards is set then CLIENT mode is assumed
+	mode: "CLIENT",
+	// The list of client dashboards - if CLIENT mode is used and no list is provided, than the dashboard "dashboard.yml" will be attempted to load. If no dashboard is found, then client opens for upload. 
+	// The dashboard can also be an URL
+	dashboards: [ "dashboard1.yaml", "dashboard2.json"],
 
-.kogito--alert-container {
-  position: fixed;
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  pointer-events: none;
-  z-index: 99999;
-}
+	// base path to look for dashboards. Default is /
+	path: "/path",
 
-.kogito--alert-list {
-  max-width: 700px;
-  min-width: 200px;
-  z-index: 999999;
-  position: absolute;
-  display: block;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.kogito--alert-container .pf-c-alert {
-  pointer-events: visible;
-}
-
-.Dev-ui__card-size,
-.Dev-ui__custom-dashboard-viewer > div {
-  height: 100%;
-}
+	// Set this as true to always hide the nav bar
+	hideNavBar: true
+*/
+  hideNavBar: true,
+  dashboards: ["MonitoringReport.dash.yml", "WorkflowDetails.dash.yml"],
+};

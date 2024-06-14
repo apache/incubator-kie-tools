@@ -11226,6 +11226,18 @@ importers:
 
   packages/sonataflow-management-console-webapp:
     dependencies:
+      "@kie-tools-core/editor":
+        specifier: workspace:*
+        version: link:../editor
+      "@kie-tools-core/keyboard-shortcuts":
+        specifier: workspace:*
+        version: link:../keyboard-shortcuts
+      "@kie-tools-core/react-hooks":
+        specifier: workspace:*
+        version: link:../react-hooks
+      "@kie-tools/dashbuilder-client":
+        specifier: workspace:*
+        version: link:../dashbuilder-client
       "@kie-tools/runtime-tools-components":
         specifier: workspace:*
         version: link:../runtime-tools-components
@@ -11247,6 +11259,24 @@ importers:
       "@kie-tools/runtime-tools-shared-webapp-components":
         specifier: workspace:*
         version: link:../runtime-tools-shared-webapp-components
+      "@kie-tools/runtime-tools-swf-gateway-api":
+        specifier: workspace:*
+        version: link:../runtime-tools-swf-gateway-api
+      "@kie-tools/runtime-tools-swf-webapp-components":
+        specifier: workspace:*
+        version: link:../runtime-tools-swf-webapp-components
+      "@kie-tools/serverless-workflow-combined-editor":
+        specifier: workspace:*
+        version: link:../serverless-workflow-combined-editor
+      "@kie-tools/serverless-workflow-diagram-editor-assets":
+        specifier: workspace:*
+        version: link:../serverless-workflow-diagram-editor-assets
+      "@kie-tools/serverless-workflow-diagram-editor-envelope":
+        specifier: workspace:*
+        version: link:../serverless-workflow-diagram-editor-envelope
+      "@kie-tools/serverless-workflow-text-editor":
+        specifier: workspace:*
+        version: link:../serverless-workflow-text-editor
       "@patternfly/patternfly":
         specifier: ^4.224.2
         version: 4.224.2
@@ -11269,7 +11299,7 @@ importers:
         specifier: 1.5.17
         version: 1.5.17(graphql@14.3.1)
       axios:
-        specifier: ^1.6.4
+        specifier: ^1.6.8
         version: 1.6.8
       graphql:
         specifier: 14.3.1
@@ -11277,6 +11307,9 @@ importers:
       history:
         specifier: ^4.9.0
         version: 4.10.1
+      monaco-editor:
+        specifier: ^0.39.0
+        version: 0.39.0
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -11393,11 +11426,14 @@ importers:
         specifier: ^3.6.2
         version: 3.6.2(enzyme@3.11.0)
       express:
-        specifier: ^4.18.2
+        specifier: ^4.19.2
         version: 4.19.2
       file-loader:
         specifier: ^6.2.0
         version: 6.2.0(webpack@5.88.2(@swc/core@1.3.92)(webpack-cli@4.10.0))
+      filemanager-webpack-plugin:
+        specifier: ^7.0.0
+        version: 7.0.0(webpack@5.88.2(@swc/core@1.3.92)(webpack-cli@4.10.0))
       html-webpack-plugin:
         specifier: ^5.3.2
         version: 5.5.3(webpack@5.88.2(@swc/core@1.3.92)(webpack-cli@4.10.0))
@@ -11419,6 +11455,12 @@ importers:
       mini-css-extract-plugin:
         specifier: ^2.7.6
         version: 2.8.1(webpack@5.88.2(@swc/core@1.3.92)(webpack-cli@4.10.0))
+      monaco-editor-webpack-plugin:
+        specifier: ^7.0.1
+        version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4(monaco-editor@0.39.0))(webpack@5.88.2(@swc/core@1.3.92)(webpack-cli@4.10.0))
+      node-polyfill-webpack-plugin:
+        specifier: ^2.0.1
+        version: 2.0.1(webpack@5.88.2(@swc/core@1.3.92)(webpack-cli@4.10.0))
       nodemon:
         specifier: ^2.0.22
         version: 2.0.22
@@ -11432,8 +11474,8 @@ importers:
         specifier: ^12.0.1
         version: 12.0.1
       start-server-and-test:
-        specifier: ^1.12.1
-        version: 1.15.5
+        specifier: ^2.0.3
+        version: 2.0.3
       stream-http:
         specifier: ^3.2.0
         version: 3.2.0
@@ -11455,6 +11497,9 @@ importers:
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
+      url:
+        specifier: ^0.11.3
+        version: 0.11.3
       url-loader:
         specifier: ^4.1.1
         version: 4.1.1(file-loader@6.2.0(webpack@5.88.2(@swc/core@1.3.92)(webpack-cli@4.10.0)))(webpack@5.88.2(@swc/core@1.3.92)(webpack-cli@4.10.0))
@@ -30838,13 +30883,6 @@ packages:
     resolution:
       { integrity: sha512-Kpij9riA+UNg7TnphqjH7/CzctQ/owJGNbFkfEeve4Z4uxT5+JapVLFXcsurIfN34gnTWZNJ/f7NMG0E8JDzTw== }
 
-  start-server-and-test@1.15.5:
-    resolution:
-      { integrity: sha512-o3EmkX0++GV+qsvIJ/OKWm3w91fD8uS/bPQVPrh/7loaxkpXSuAIHdnmN/P/regQK9eNAK76aBJcHt+OSTk+nA== }
-    engines: { node: ">=6" }
-    deprecated: this package has been deprecated
-    hasBin: true
-
   start-server-and-test@2.0.3:
     resolution:
       { integrity: sha512-QsVObjfjFZKJE6CS6bSKNwWZCKBG6975/jKRPPGFfFh+yOQglSeGXiNWjzgQNXdphcBI9nXbyso9tPfX4YAUhg== }
@@ -32366,12 +32404,6 @@ packages:
     resolution:
       { integrity: sha512-wp+unA4CpqxvBUKHHv8D86fK4jWByHAWyhEXXVHfVUZfK+16ylpj7hjQ58Z8j9ntu8XNukRQT8Fi5qbyJ8rkyw== }
 
-  wait-on@7.0.1:
-    resolution:
-      { integrity: sha512-9AnJE9qTjRQOlTZIldAaf/da2eW0eSRSgcqq85mXQja/DW3MriHxkpODDSUEg+Gri/rKEcXUZHe+cevvYItaog== }
-    engines: { node: ">=12.0.0" }
-    hasBin: true
-
   wait-on@7.2.0:
     resolution:
       { integrity: sha512-wCQcHkRazgjG5XoAq9jbTMLpNIjoSlZslrJ2+N9MxDsGEv1HnFoVjOCexL0ESva7Y9cu350j+DWADdk54s4AFQ== }
@@ -32850,11 +32882,6 @@ packages:
     resolution:
       { integrity: sha512-5kGSQrzDyjCk0BLuFfjkoUE9vYcoyrwZIZ+GnpOSM9vhkvPjItYiWJ1jpRSo0aU4QmsoNrFwDT4O7XS2UGcBQg== }
     engines: { node: ">= 12" }
-
-  yaml@2.0.1:
-    resolution:
-      { integrity: sha512-1NpAYQ3wjzIlMs0mgdBmYzLkFgWBIWrzYVDYfrixhoFNNgJ444/jT2kUT2sicRbJES3oQYRZugjB6Ro8SjKeFg== }
-    engines: { node: ">= 14" }
 
   yaml@2.3.2:
     resolution:
@@ -38415,7 +38442,7 @@ snapshots:
       jest-resolve: 26.6.2
       jest-resolve-dependencies: 26.6.3
       jest-runner: 26.6.3(ts-node@10.9.1(@swc/core@1.3.92)(@types/node@20.14.2)(typescript@4.8.4))
-      jest-runtime: 26.6.3
+      jest-runtime: 26.6.3(ts-node@10.9.1(@swc/core@1.3.92)(@types/node@20.14.2)(typescript@4.8.4))
       jest-snapshot: 26.6.2
       jest-util: 26.6.2
       jest-validate: 26.6.2
@@ -38452,7 +38479,7 @@ snapshots:
       jest-resolve: 26.6.2
       jest-resolve-dependencies: 26.6.3
       jest-runner: 26.6.3(ts-node@10.9.1(@types/node@20.14.2)(typescript@4.8.4))
-      jest-runtime: 26.6.3
+      jest-runtime: 26.6.3(ts-node@10.9.1(@types/node@20.14.2)(typescript@4.8.4))
       jest-snapshot: 26.6.2
       jest-util: 26.6.2
       jest-validate: 26.6.2
@@ -38489,7 +38516,7 @@ snapshots:
       jest-resolve: 26.6.2
       jest-resolve-dependencies: 26.6.3
       jest-runner: 26.6.3(ts-node@10.9.1(@types/node@20.14.2))
-      jest-runtime: 26.6.3
+      jest-runtime: 26.6.3(ts-node@10.9.1(@types/node@20.14.2))
       jest-snapshot: 26.6.2
       jest-util: 26.6.2
       jest-validate: 26.6.2
@@ -38596,7 +38623,7 @@ snapshots:
       graceful-fs: 4.2.11
       jest-haste-map: 26.6.2
       jest-runner: 26.6.3(ts-node@10.9.1(@swc/core@1.3.92)(@types/node@20.14.2)(typescript@4.8.4))
-      jest-runtime: 26.6.3
+      jest-runtime: 26.6.3(ts-node@10.9.1(@swc/core@1.3.92)(@types/node@20.14.2)(typescript@4.8.4))
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -38610,7 +38637,7 @@ snapshots:
       graceful-fs: 4.2.11
       jest-haste-map: 26.6.2
       jest-runner: 26.6.3(ts-node@10.9.1(@types/node@20.14.2)(typescript@4.8.4))
-      jest-runtime: 26.6.3
+      jest-runtime: 26.6.3(ts-node@10.9.1(@types/node@20.14.2)(typescript@4.8.4))
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -38624,7 +38651,7 @@ snapshots:
       graceful-fs: 4.2.11
       jest-haste-map: 26.6.2
       jest-runner: 26.6.3(ts-node@10.9.1(@types/node@20.14.2))
-      jest-runtime: 26.6.3
+      jest-runtime: 26.6.3(ts-node@10.9.1(@types/node@20.14.2))
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -40437,7 +40464,7 @@ snapshots:
 
   "@severlessworkflow/sdk-typescript@3.0.3":
     dependencies:
-      ajv: 8.11.0
+      ajv: 8.12.0
       js-yaml: 4.1.0
 
   "@sideway/address@4.1.4":
@@ -44386,13 +44413,6 @@ snapshots:
   axios@0.27.2:
     dependencies:
       follow-redirects: 1.15.6
-      form-data: 4.0.0
-    transitivePeerDependencies:
-      - debug
-
-  axios@0.27.2(debug@4.3.4):
-    dependencies:
-      follow-redirects: 1.15.6(debug@4.3.4)
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -49667,7 +49687,7 @@ snapshots:
       jest-environment-jsdom: 26.6.2
       jest-environment-node: 26.6.2
       jest-get-type: 26.3.0
-      jest-jasmine2: 26.6.3
+      jest-jasmine2: 26.6.3(ts-node@10.9.1(@swc/core@1.3.92)(@types/node@20.14.2)(typescript@4.8.4))
       jest-regex-util: 26.0.0
       jest-resolve: 26.6.2
       jest-util: 26.6.2
@@ -49695,7 +49715,7 @@ snapshots:
       jest-environment-jsdom: 26.6.2
       jest-environment-node: 26.6.2
       jest-get-type: 26.3.0
-      jest-jasmine2: 26.6.3
+      jest-jasmine2: 26.6.3(ts-node@10.9.1(@types/node@20.14.2)(typescript@4.8.4))
       jest-regex-util: 26.0.0
       jest-resolve: 26.6.2
       jest-util: 26.6.2
@@ -49723,7 +49743,7 @@ snapshots:
       jest-environment-jsdom: 26.6.2
       jest-environment-node: 26.6.2
       jest-get-type: 26.3.0
-      jest-jasmine2: 26.6.3
+      jest-jasmine2: 26.6.3(ts-node@10.9.1(@types/node@20.14.2))
       jest-regex-util: 26.0.0
       jest-resolve: 26.6.2
       jest-util: 26.6.2
@@ -49867,6 +49887,87 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  jest-jasmine2@26.6.3(ts-node@10.9.1(@swc/core@1.3.92)(@types/node@20.14.2)(typescript@4.8.4)):
+    dependencies:
+      "@babel/traverse": 7.23.9
+      "@jest/environment": 26.6.2
+      "@jest/source-map": 26.6.2
+      "@jest/test-result": 26.6.2
+      "@jest/types": 26.6.2
+      "@types/node": 20.14.2
+      chalk: 4.1.2
+      co: 4.6.0
+      expect: 26.6.2
+      is-generator-fn: 2.1.0
+      jest-each: 26.6.2
+      jest-matcher-utils: 26.6.2
+      jest-message-util: 26.6.2
+      jest-runtime: 26.6.3(ts-node@10.9.1(@swc/core@1.3.92)(@types/node@20.14.2)(typescript@4.8.4))
+      jest-snapshot: 26.6.2
+      jest-util: 26.6.2
+      pretty-format: 26.6.2
+      throat: 5.0.0
+    transitivePeerDependencies:
+      - bufferutil
+      - canvas
+      - supports-color
+      - ts-node
+      - utf-8-validate
+
+  jest-jasmine2@26.6.3(ts-node@10.9.1(@types/node@20.14.2)(typescript@4.8.4)):
+    dependencies:
+      "@babel/traverse": 7.23.9
+      "@jest/environment": 26.6.2
+      "@jest/source-map": 26.6.2
+      "@jest/test-result": 26.6.2
+      "@jest/types": 26.6.2
+      "@types/node": 20.14.2
+      chalk: 4.1.2
+      co: 4.6.0
+      expect: 26.6.2
+      is-generator-fn: 2.1.0
+      jest-each: 26.6.2
+      jest-matcher-utils: 26.6.2
+      jest-message-util: 26.6.2
+      jest-runtime: 26.6.3(ts-node@10.9.1(@types/node@20.14.2)(typescript@4.8.4))
+      jest-snapshot: 26.6.2
+      jest-util: 26.6.2
+      pretty-format: 26.6.2
+      throat: 5.0.0
+    transitivePeerDependencies:
+      - bufferutil
+      - canvas
+      - supports-color
+      - ts-node
+      - utf-8-validate
+
+  jest-jasmine2@26.6.3(ts-node@10.9.1(@types/node@20.14.2)):
+    dependencies:
+      "@babel/traverse": 7.23.9
+      "@jest/environment": 26.6.2
+      "@jest/source-map": 26.6.2
+      "@jest/test-result": 26.6.2
+      "@jest/types": 26.6.2
+      "@types/node": 20.14.2
+      chalk: 4.1.2
+      co: 4.6.0
+      expect: 26.6.2
+      is-generator-fn: 2.1.0
+      jest-each: 26.6.2
+      jest-matcher-utils: 26.6.2
+      jest-message-util: 26.6.2
+      jest-runtime: 26.6.3(ts-node@10.9.1(@types/node@20.14.2))
+      jest-snapshot: 26.6.2
+      jest-util: 26.6.2
+      pretty-format: 26.6.2
+      throat: 5.0.0
+    transitivePeerDependencies:
+      - bufferutil
+      - canvas
+      - supports-color
+      - ts-node
+      - utf-8-validate
+
   jest-junit@14.0.0:
     dependencies:
       mkdirp: 1.0.4
@@ -49980,7 +50081,7 @@ snapshots:
       jest-leak-detector: 26.6.2
       jest-message-util: 26.6.2
       jest-resolve: 26.6.2
-      jest-runtime: 26.6.3
+      jest-runtime: 26.6.3(ts-node@10.9.1(@swc/core@1.3.92)(@types/node@20.14.2)(typescript@4.8.4))
       jest-util: 26.6.2
       jest-worker: 26.6.2
       source-map-support: 0.5.21
@@ -50009,7 +50110,7 @@ snapshots:
       jest-leak-detector: 26.6.2
       jest-message-util: 26.6.2
       jest-resolve: 26.6.2
-      jest-runtime: 26.6.3
+      jest-runtime: 26.6.3(ts-node@10.9.1(@types/node@20.14.2)(typescript@4.8.4))
       jest-util: 26.6.2
       jest-worker: 26.6.2
       source-map-support: 0.5.21
@@ -50038,7 +50139,7 @@ snapshots:
       jest-leak-detector: 26.6.2
       jest-message-util: 26.6.2
       jest-resolve: 26.6.2
-      jest-runtime: 26.6.3
+      jest-runtime: 26.6.3(ts-node@10.9.1(@types/node@20.14.2))
       jest-util: 26.6.2
       jest-worker: 26.6.2
       source-map-support: 0.5.21
@@ -50081,6 +50182,114 @@ snapshots:
       yargs: 15.4.1
     transitivePeerDependencies:
       - supports-color
+
+  jest-runtime@26.6.3(ts-node@10.9.1(@swc/core@1.3.92)(@types/node@20.14.2)(typescript@4.8.4)):
+    dependencies:
+      "@jest/console": 26.6.2
+      "@jest/environment": 26.6.2
+      "@jest/fake-timers": 26.6.2
+      "@jest/globals": 26.6.2
+      "@jest/source-map": 26.6.2
+      "@jest/test-result": 26.6.2
+      "@jest/transform": 26.6.2
+      "@jest/types": 26.6.2
+      "@types/yargs": 15.0.4
+      chalk: 4.1.2
+      cjs-module-lexer: 0.6.0
+      collect-v8-coverage: 1.0.1
+      exit: 0.1.2
+      glob: 7.2.3
+      graceful-fs: 4.2.11
+      jest-config: 26.6.3(ts-node@10.9.1(@swc/core@1.3.92)(@types/node@20.14.2)(typescript@4.8.4))
+      jest-haste-map: 26.6.2
+      jest-message-util: 26.6.2
+      jest-mock: 26.6.2
+      jest-regex-util: 26.0.0
+      jest-resolve: 26.6.2
+      jest-snapshot: 26.6.2
+      jest-util: 26.6.2
+      jest-validate: 26.6.2
+      slash: 3.0.0
+      strip-bom: 4.0.0
+      yargs: 15.4.1
+    transitivePeerDependencies:
+      - bufferutil
+      - canvas
+      - supports-color
+      - ts-node
+      - utf-8-validate
+
+  jest-runtime@26.6.3(ts-node@10.9.1(@types/node@20.14.2)(typescript@4.8.4)):
+    dependencies:
+      "@jest/console": 26.6.2
+      "@jest/environment": 26.6.2
+      "@jest/fake-timers": 26.6.2
+      "@jest/globals": 26.6.2
+      "@jest/source-map": 26.6.2
+      "@jest/test-result": 26.6.2
+      "@jest/transform": 26.6.2
+      "@jest/types": 26.6.2
+      "@types/yargs": 15.0.4
+      chalk: 4.1.2
+      cjs-module-lexer: 0.6.0
+      collect-v8-coverage: 1.0.1
+      exit: 0.1.2
+      glob: 7.2.3
+      graceful-fs: 4.2.11
+      jest-config: 26.6.3(ts-node@10.9.1(@types/node@20.14.2)(typescript@4.8.4))
+      jest-haste-map: 26.6.2
+      jest-message-util: 26.6.2
+      jest-mock: 26.6.2
+      jest-regex-util: 26.0.0
+      jest-resolve: 26.6.2
+      jest-snapshot: 26.6.2
+      jest-util: 26.6.2
+      jest-validate: 26.6.2
+      slash: 3.0.0
+      strip-bom: 4.0.0
+      yargs: 15.4.1
+    transitivePeerDependencies:
+      - bufferutil
+      - canvas
+      - supports-color
+      - ts-node
+      - utf-8-validate
+
+  jest-runtime@26.6.3(ts-node@10.9.1(@types/node@20.14.2)):
+    dependencies:
+      "@jest/console": 26.6.2
+      "@jest/environment": 26.6.2
+      "@jest/fake-timers": 26.6.2
+      "@jest/globals": 26.6.2
+      "@jest/source-map": 26.6.2
+      "@jest/test-result": 26.6.2
+      "@jest/transform": 26.6.2
+      "@jest/types": 26.6.2
+      "@types/yargs": 15.0.4
+      chalk: 4.1.2
+      cjs-module-lexer: 0.6.0
+      collect-v8-coverage: 1.0.1
+      exit: 0.1.2
+      glob: 7.2.3
+      graceful-fs: 4.2.11
+      jest-config: 26.6.3(ts-node@10.9.1(@types/node@20.14.2))
+      jest-haste-map: 26.6.2
+      jest-message-util: 26.6.2
+      jest-mock: 26.6.2
+      jest-regex-util: 26.0.0
+      jest-resolve: 26.6.2
+      jest-snapshot: 26.6.2
+      jest-util: 26.6.2
+      jest-validate: 26.6.2
+      slash: 3.0.0
+      strip-bom: 4.0.0
+      yargs: 15.4.1
+    transitivePeerDependencies:
+      - bufferutil
+      - canvas
+      - supports-color
+      - ts-node
+      - utf-8-validate
 
   jest-serializer@25.5.0:
     dependencies:
@@ -51383,14 +51592,14 @@ snapshots:
 
   monaco-editor-webpack-plugin@7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4(monaco-editor@0.39.0))(webpack@5.88.2(@swc/core@1.3.92)(webpack-cli@4.10.0)):
     dependencies:
-      loader-utils: 2.0.2
+      loader-utils: 2.0.4
       monaco-editor: 0.39.0
       monaco-yaml: 4.0.4(monaco-editor@0.39.0)
       webpack: 5.88.2(@swc/core@1.3.92)(webpack-cli@4.10.0)
 
   monaco-editor-webpack-plugin@7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4(monaco-editor@0.39.0))(webpack@5.88.2(webpack-cli@4.10.0)):
     dependencies:
-      loader-utils: 2.0.2
+      loader-utils: 2.0.4
       monaco-editor: 0.39.0
       monaco-yaml: 4.0.4(monaco-editor@0.39.0)
       webpack: 5.88.2(webpack-cli@4.10.0)
@@ -51427,7 +51636,7 @@ snapshots:
       vscode-languageserver-textdocument: 1.0.7
       vscode-languageserver-types: 3.17.2
       vscode-uri: 3.0.7
-      yaml: 2.0.1
+      yaml: 2.3.2
 
   mongo-object@0.1.4: {}
 
@@ -54512,7 +54721,7 @@ snapshots:
       "@sinonjs/commons": 1.8.3
       "@sinonjs/fake-timers": 7.1.2
       "@sinonjs/samsam": 6.0.2
-      diff: 5.0.0
+      diff: 5.1.0
       nise: 5.1.0
       supports-color: 7.2.0
 
@@ -54767,19 +54976,6 @@ snapshots:
     dependencies:
       as-table: 1.0.55
       get-source: 2.0.12
-
-  start-server-and-test@1.15.5:
-    dependencies:
-      arg: 5.0.2
-      bluebird: 3.7.2
-      check-more-types: 2.24.0
-      debug: 4.3.4
-      execa: 5.1.1
-      lazy-ass: 1.6.0
-      ps-tree: 1.2.0
-      wait-on: 7.0.1(debug@4.3.4)
-    transitivePeerDependencies:
-      - supports-color
 
   start-server-and-test@2.0.3:
     dependencies:
@@ -56447,16 +56643,6 @@ snapshots:
 
   waait@1.0.5: {}
 
-  wait-on@7.0.1(debug@4.3.4):
-    dependencies:
-      axios: 0.27.2(debug@4.3.4)
-      joi: 17.12.0
-      lodash: 4.17.21
-      minimist: 1.2.8
-      rxjs: 7.8.1
-    transitivePeerDependencies:
-      - debug
-
   wait-on@7.2.0:
     dependencies:
       axios: 1.6.8
@@ -57235,8 +57421,6 @@ snapshots:
   yaml@1.10.2: {}
 
   yaml@2.0.0-11: {}
-
-  yaml@2.0.1: {}
 
   yaml@2.3.2: {}
 

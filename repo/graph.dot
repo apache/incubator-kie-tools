@@ -539,8 +539,10 @@ digraph G {
   "@kie-tools/sonataflow-devmode-image" -> "@kie-tools/sonataflow-quarkus-devui" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-image-common" -> "@kie-tools/python-venv" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-image-common" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
   "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/runtime-tools-process-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/runtime-tools-swf-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/sonataflow-operator" -> "@kie-tools/sonataflow-builder-image" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-operator" -> "@kie-tools/sonataflow-devmode-image" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-quarkus-devui" -> "@kie-tools/serverless-workflow-dev-ui-webapp" [ style = "dashed", color = "black" ];

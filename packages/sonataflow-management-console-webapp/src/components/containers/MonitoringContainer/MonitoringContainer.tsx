@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,18 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import * as React from "react";
-import { RouteComponentProps } from "react-router-dom";
-import { StaticContext } from "react-router";
-import * as H from "history";
-import "../styles.css";
-import { OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface MatchProps {}
+import React from "react";
+import { Dashboard, MonitoringView } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/monitoring";
 
-const EmptyPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.LocationState> & OUIAProps> = (props) => {
-  return <>Empty Page</>;
+interface Props {
+  dataIndexUrl?: string;
+  dashboard?: Dashboard;
+  workflow?: string;
+}
+
+const MonitoringContainer: React.FC<Props> = ({ workflow, dashboard, dataIndexUrl }) => {
+  const _dashboard = dashboard || Dashboard.MONITORING;
+  return <MonitoringView dashboard={_dashboard} workflow={workflow} dataIndexUrl={dataIndexUrl!} />;
 };
 
-export default EmptyPage;
+export default MonitoringContainer;

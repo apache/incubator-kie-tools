@@ -20,6 +20,7 @@ import * as React from "react";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
 import { Link } from "react-router-dom";
 import { ouiaAttribute } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { routes } from "../../../navigation/Routes";
 
 interface IOwnProps {
   pathname: string;
@@ -31,33 +32,30 @@ const ManagementConsoleNav: React.FC<IOwnProps> = ({ pathname }) => {
       <NavList>
         <NavItem
           key={"workflow-instances-nav"}
-          isActive={pathname === "/WorkflowInstances"}
+          isActive={pathname === routes.runtimeToolsWorkflowInstances.path({})}
           ouiaId="workflow-instances"
         >
-          <Link to="/WorkflowInstances" {...ouiaAttribute("data-ouia-navigation-name", "workflow-instances")}>
+          <Link
+            to={routes.runtimeToolsWorkflowInstances.path({})}
+            {...ouiaAttribute("data-ouia-navigation-name", "workflow-instances")}
+          >
             Workflow Instances
           </Link>
         </NavItem>
         <NavItem
           key={"workflow-definitions-nav"}
-          isActive={pathname === "/WorkflowDefinitions"}
+          isActive={pathname === routes.runtimeToolsWorkflowDefinitions.path({})}
           ouiaId="workflow-definitions"
         >
-          <Link to="/WorkflowDefinitions" {...ouiaAttribute("data-ouia-navigation-name", "workflow-definitions")}>
+          <Link
+            to={routes.runtimeToolsWorkflowDefinitions.path({})}
+            {...ouiaAttribute("data-ouia-navigation-name", "workflow-definitions")}
+          >
             Workflow Definitions
           </Link>
         </NavItem>
-        <NavItem
-          key={"trigger-cloud-event-nav"}
-          isActive={pathname === "/TriggerCloudEvent"}
-          ouiaId="trigger-cloud-event"
-        >
-          <Link to="/TriggerCloudEvent" {...ouiaAttribute("data-ouia-navigation-name", "trigger-cloud-event")}>
-            Trigger Cloud Event
-          </Link>
-        </NavItem>
-        <NavItem key={"monitoring-nav"} isActive={pathname === "/Monitoring"} ouiaId="monitoring">
-          <Link to="/Monitoring" {...ouiaAttribute("data-ouia-navigation-name", "monitoring")}>
+        <NavItem key={"monitoring-nav"} isActive={pathname === routes.monitoring.path({})} ouiaId="monitoring">
+          <Link to={routes.monitoring.path({})} {...ouiaAttribute("data-ouia-navigation-name", "monitoring")}>
             Monitoring
           </Link>
         </NavItem>

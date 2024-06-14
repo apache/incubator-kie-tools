@@ -1173,12 +1173,22 @@
       { "source": "swf-vscode-extension", "target": "@kie-tools/vscode-extension-common-test-helpers", "weight": 1 },
       {
         "source": "@kie-tools/sonataflow-management-console-webapp",
+        "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-management-console-webapp",
         "target": "@kie-tools/runtime-tools-process-webapp-components",
         "weight": 1
       },
       {
         "source": "@kie-tools/sonataflow-management-console-webapp",
         "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-management-console-webapp",
+        "target": "@kie-tools/runtime-tools-swf-webapp-components",
         "weight": 1
       },
       { "source": "vscode-extension-dashbuilder-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
