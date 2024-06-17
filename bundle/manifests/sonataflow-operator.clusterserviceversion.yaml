@@ -135,7 +135,7 @@ spec:
     owned:
     - description: SonataFlowBuild is an internal custom resource to control workflow
         build instances in the target platform
-      displayName: Sonata Flow Build
+      displayName: SonataFlowBuild
       kind: SonataFlowBuild
       name: sonataflowbuilds.sonataflow.org
       resources:
@@ -182,7 +182,7 @@ spec:
       version: v1alpha08
     - description: SonataFlowClusterPlatform is the Schema for the sonataflowclusterplatforms
         API
-      displayName: Sonata Flow Cluster Platform
+      displayName: SonataFlowClusterPlatform
       kind: SonataFlowClusterPlatform
       name: sonataflowclusterplatforms.sonataflow.org
       resources:
@@ -211,7 +211,7 @@ spec:
       version: v1alpha08
     - description: SonataFlowPlatform is the descriptor for the workflow platform
         infrastructure.
-      displayName: Sonata Flow Platform
+      displayName: SonataFlowPlatform
       kind: SonataFlowPlatform
       name: sonataflowplatforms.sonataflow.org
       resources:
@@ -281,7 +281,7 @@ spec:
       version: v1alpha08
     - description: SonataFlow is the descriptor representation for a workflow application
         based on the CNCF Serverless Workflow specification.
-      displayName: Sonata Flow
+      displayName: SonataFlow
       kind: SonataFlow
       name: sonataflows.sonataflow.org
       resources:

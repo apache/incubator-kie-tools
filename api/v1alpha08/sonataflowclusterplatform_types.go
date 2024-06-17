@@ -93,6 +93,7 @@ func (in *SonataFlowClusterPlatformStatus) IsDuplicated() bool {
 // +kubebuilder:printcolumn:name="Ready",type=string,JSONPath=`.status.conditions[?(@.type=='Succeed')].status`
 // +kubebuilder:printcolumn:name="Reason",type=string,JSONPath=`.status.conditions[?(@.type=='Succeed')].reason`
 // +operator-sdk:csv:customresourcedefinitions:resources={{SonataFlowPlatform,sonataflow.org/v1alpha08,"A SonataFlow Platform"}}
+// +operator-sdk:csv:customresourcedefinitions:displayName="SonataFlowClusterPlatform"
 type SonataFlowClusterPlatform struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

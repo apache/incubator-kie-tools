@@ -170,6 +170,7 @@ func (in *SonataFlowPlatformStatus) IsFailure() bool {
 // +kubebuilder:printcolumn:name="Ready",type=string,JSONPath=`.status.conditions[?(@.type=='Succeed')].status`
 // +kubebuilder:printcolumn:name="Reason",type=string,JSONPath=`.status.conditions[?(@.type=='Succeed')].reason`
 // +operator-sdk:csv:customresourcedefinitions:resources={{Namespace,v1,"The Namespace controlled by the platform"}}
+// +operator-sdk:csv:customresourcedefinitions:displayName="SonataFlowPlatform"
 type SonataFlowPlatform struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

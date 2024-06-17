@@ -255,6 +255,7 @@ func (s *SonataFlowStatus) IsBuildFailed() bool {
 // +operator-sdk:csv:customresourcedefinitions:resources={{Service,v1,"A Service for the Flow"}}
 // +operator-sdk:csv:customresourcedefinitions:resources={{Route,route.openshift.io/v1,"An OpenShift Route for the Flow"}}
 // +operator-sdk:csv:customresourcedefinitions:resources={{ConfigMap,v1,"The ConfigMaps with Flow definition and additional configuration files"}}
+// +operator-sdk:csv:customresourcedefinitions:displayName="SonataFlow"
 type SonataFlow struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
