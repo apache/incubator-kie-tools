@@ -28,7 +28,7 @@ import { KogitoEditorChannelApi } from "./KogitoEditorChannelApi";
  */
 export interface EditorFactory<
   E extends Editor,
-  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>
+  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>,
 > {
   /**
    * Returns an Editor instance.

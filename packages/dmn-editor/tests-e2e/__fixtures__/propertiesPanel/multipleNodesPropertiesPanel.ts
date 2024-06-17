@@ -27,7 +27,10 @@ export class MultipleNodesPropertiesPanel extends PropertiesPanelBase {
   private fontProperties: FontProperties;
   private shapeProperties: ShapeProperties;
 
-  constructor(public diagram: Diagram, public page: Page) {
+  constructor(
+    public diagram: Diagram,
+    public page: Page
+  ) {
     super(diagram, page);
     this.fontProperties = new FontProperties(this.panel());
     this.shapeProperties = new ShapeProperties(this.panel());

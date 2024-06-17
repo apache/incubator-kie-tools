@@ -23,8 +23,8 @@
     "build:dev": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build\"",
     "build:prod": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build --configuration production\"",
     "build:wc": "ng build ping-pong-view-wc && pnpm build:wc:concat",
-    "build:wc-lib": "tsc --project tsconfig.lib.json",
-    "build:wc:concat": "cat dist/wc/polyfills.js dist/wc/runtime.js dist/wc/main.js > dist/wc/index.js"
+    "build:wc:concat": "cat dist/wc/polyfills.js dist/wc/runtime.js dist/wc/main.js > dist/wc/index.js",
+    "build:wc-lib": "tsc --project tsconfig.lib.json"
   },
   "dependencies": {
     "@angular/animations": "^14.2.0",

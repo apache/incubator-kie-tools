@@ -1,5 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg version="1.1" id="eventIntermediateSignal" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="448px" height="448px" viewBox="0 0 448 448" style="enable-background:new 0 0 448 448;" xml:space="preserve">
+<?xml version="1.0" encoding="utf-8" ?>
+<svg
+  version="1.1"
+  id="eventIntermediateSignal"
+  xmlns="http://www.w3.org/2000/svg"
+  x="0px"
+  y="0px"
+  width="448px"
+  height="448px"
+  viewBox="0 0 448 448"
+  style="enable-background:new 0 0 448 448;"
+  xml:space="preserve"
+>
 	<!--
 	- Licensed to the Apache Software Foundation (ASF) under one
 	- or more contributor license agreements.  See the NOTICE file
@@ -19,9 +30,13 @@
 	- under the License.
 	-->
 	<style type="text/css">
-		.st0{fill:none;}
-		.event-intermediate-signal-css {fill: #e5a000;}
-	</style>
+.st0 {
+  fill: none;
+}
+.event-intermediate-signal-css {
+  fill: #e5a000;
+}
+  </style>
 	<g id="Grid_1_">
 		<g id="icomoon-ignore_1_">
 			<line class="st0" x1="16" y1="0" x2="16" y2="448" />
@@ -80,7 +95,11 @@
 			<line class="st0" x1="0" y1="432" x2="448" y2="432" />
 		</g>
 	</g>
-	<path id="Icon" class="event-intermediate-signal-css" d="M224.7,32.3L416.4,384H33.1L224.7,32.3 M224.7,0c-5.8,0-11.2,1.5-16.2,4.5s-8.9,7.1-11.7,12.2L5,368.8
+	<path
+    id="Icon"
+    class="event-intermediate-signal-css"
+    d="M224.7,32.3L416.4,384H33.1L224.7,32.3 M224.7,0c-5.8,0-11.2,1.5-16.2,4.5s-8.9,7.1-11.7,12.2L5,368.8
 	c-5.8,10.5-5.7,21,0.5,31.5c2.8,4.8,6.7,8.7,11.6,11.5C22,414.6,27.3,416,33,416h383.6c5.7,0,10.9-1.4,15.9-4.2s8.8-6.7,11.6-11.5
-	c6.2-10.5,6.3-21,0.5-31.5l-191.8-352c-2.8-5.2-6.7-9.2-11.7-12.2C236,1.5,230.6,0,224.7,0L224.7,0z" />
+	c6.2-10.5,6.3-21,0.5-31.5l-191.8-352c-2.8-5.2-6.7-9.2-11.7-12.2C236,1.5,230.6,0,224.7,0L224.7,0z"
+  />
 </svg>

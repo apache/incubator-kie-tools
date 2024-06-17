@@ -77,8 +77,8 @@ async function main() {
           r.default === undefined
             ? "_(undefined)_" //
             : r.default === ""
-            ? "_(empty)_" //
-            : r.default,
+              ? "_(empty)_" //
+              : r.default,
         ]),
       ])
     );

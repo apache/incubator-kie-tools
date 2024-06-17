@@ -51,7 +51,11 @@ export enum NodePosition {
 }
 
 export class Nodes {
-  constructor(public page: Page, public diagram: Diagram, public browserName: string) {}
+  constructor(
+    public page: Page,
+    public diagram: Diagram,
+    public browserName: string
+  ) {}
 
   public get(args: { name: string }) {
     return this.page.locator(`div[data-nodelabel="${args.name}"]`);

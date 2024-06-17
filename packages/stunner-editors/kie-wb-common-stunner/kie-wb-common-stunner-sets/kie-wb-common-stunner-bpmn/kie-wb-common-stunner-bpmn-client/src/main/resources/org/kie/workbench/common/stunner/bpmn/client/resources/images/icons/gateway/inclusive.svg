@@ -1,5 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg version="1.1" id="gwInclusive" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="448px" height="448px" viewBox="0 0 448 448" style="enable-background:new 0 0 448 448;" xml:space="preserve">
+<?xml version="1.0" encoding="utf-8" ?>
+<svg
+  version="1.1"
+  id="gwInclusive"
+  xmlns="http://www.w3.org/2000/svg"
+  x="0px"
+  y="0px"
+  width="448px"
+  height="448px"
+  viewBox="0 0 448 448"
+  style="enable-background:new 0 0 448 448;"
+  xml:space="preserve"
+>
 	<!--
 	- Licensed to the Apache Software Foundation (ASF) under one
 	- or more contributor license agreements.  See the NOTICE file
@@ -19,11 +30,19 @@
 	- under the License.
 	-->
 	<style type="text/css">
-		.st0{display:none;}
-		.st1{display:inline;}
-		.st2{fill:none;}
-		.inclusive-svg-css { fill: #ec7a08; }
-	</style>
+.st0 {
+  display: none;
+}
+.st1 {
+  display: inline;
+}
+.st2 {
+  fill: none;
+}
+.inclusive-svg-css {
+  fill: #ec7a08;
+}
+  </style>
 	<g id="Grid" class="st0">
 		<g id="icomoon-ignore" class="st1">
 			<line class="st2" x1="16" y1="0" x2="16" y2="448" />
@@ -82,8 +101,12 @@
 			<line class="st2" x1="0" y1="432" x2="448" y2="432" />
 		</g>
 	</g>
-	<path id="Icon" class="inclusive-svg-css" d="M224,31.9c51.3,0,99.5,20,135.8,56.2C396,124.4,416,172.6,416,223.9s-20,99.5-56.2,135.8
+	<path
+    id="Icon"
+    class="inclusive-svg-css"
+    d="M224,31.9c51.3,0,99.5,20,135.8,56.2C396,124.4,416,172.6,416,223.9s-20,99.5-56.2,135.8
 	c-36.3,36.3-84.5,56.2-135.8,56.2s-99.5-20-135.8-56.2C52,323.4,32,275.2,32,223.9s20-99.5,56.2-135.8
 	C124.5,51.9,172.7,31.9,224,31.9 M224-0.1C100.3-0.1,0,100.2,0,223.9s100.3,224,224,224s224-100.3,224-224S347.7-0.1,224-0.1
-	L224-0.1z" />
+	L224-0.1z"
+  />
 </svg>

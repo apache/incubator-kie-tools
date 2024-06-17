@@ -296,7 +296,7 @@ export class KubernetesService {
                 ...jsonData,
                 kind: args.kind,
                 apiVersion: args.apiVersion,
-              } as ResourceType)
+              }) as ResourceType
           );
       } catch (e) {
         console.error(`Failed to fetch ${args.kind} resource with id ${args.resourceId}: ${e}`);
@@ -331,7 +331,7 @@ export class KubernetesService {
               ...item,
               kind: args.kind,
               apiVersion: args.apiVersion,
-            } as ResourceType)
+            }) as ResourceType
         );
       } catch (e) {
         console.error(`Failed to fetch list of ${args.kind}: ${e}`);

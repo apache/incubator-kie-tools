@@ -49,7 +49,7 @@ export interface EnvelopeIFrameConfig {
 export interface EmbeddedEnvelopeProps<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>,
-  Ref
+  Ref,
 > {
   refDelegate: (envelopeServer: EnvelopeServer<ApiToProvide, ApiToConsume>) => Ref;
   apiImpl: ApiToProvide;
@@ -64,7 +64,7 @@ export interface EmbeddedEnvelopeProps<
 export function RefForwardingEmbeddedEnvelope<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>,
-  Ref
+  Ref,
 >(props: EmbeddedEnvelopeProps<ApiToProvide, ApiToConsume, Ref>, forwardRef: React.RefObject<Ref>) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const divRef = useRef<HTMLDivElement>(null);
@@ -96,13 +96,9 @@ export function RefForwardingEmbeddedEnvelope<
     [bus, props.origin, props.pollInit, props.config.containerType]
   );
 
-  useImperativeHandle(
-    forwardRef,
-    () => {
-      return props.refDelegate(envelopeServer);
-    },
-    [envelopeServer, props.refDelegate]
-  );
+  useImperativeHandle(forwardRef, () => {
+    return props.refDelegate(envelopeServer);
+  }, [envelopeServer, props.refDelegate]);
 
   useConnectedEnvelopeServer<ApiToProvide>(envelopeServer, props.apiImpl);
 

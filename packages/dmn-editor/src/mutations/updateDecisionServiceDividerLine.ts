@@ -97,19 +97,24 @@ export function updateDecisionServiceDividerLine({
     return v > acc ? v : acc;
   }, snappedPosition.y + DECISION_SERVICE_DIVIDER_LINE_PADDING);
 
-  const lowerLimit = (ds.encapsulatedDecision ?? []).reduce((acc, ed) => {
-    // For external Decision Services, the Encapsulated Decision will have the relative namespace. e.g. without namespace.
-    const href =
-      __readonly_dmnObjectNamespace !== undefined
-        ? addNamespaceToHref({
-            href: ed["@_href"],
-            namespace:
-              definitions["@_namespace"] === __readonly_dmnObjectNamespace ? undefined : __readonly_dmnObjectNamespace,
-          })
-        : ed["@_href"];
-    const v = snapShapePosition(snapGrid, __readonly_dmnShapesByHref.get(href)!).y;
-    return v < acc ? v : acc;
-  }, snappedPosition.y + snappedDimensions.height - DECISION_SERVICE_DIVIDER_LINE_PADDING);
+  const lowerLimit = (ds.encapsulatedDecision ?? []).reduce(
+    (acc, ed) => {
+      // For external Decision Services, the Encapsulated Decision will have the relative namespace. e.g. without namespace.
+      const href =
+        __readonly_dmnObjectNamespace !== undefined
+          ? addNamespaceToHref({
+              href: ed["@_href"],
+              namespace:
+                definitions["@_namespace"] === __readonly_dmnObjectNamespace
+                  ? undefined
+                  : __readonly_dmnObjectNamespace,
+            })
+          : ed["@_href"];
+      const v = snapShapePosition(snapGrid, __readonly_dmnShapesByHref.get(href)!).y;
+      return v < acc ? v : acc;
+    },
+    snappedPosition.y + snappedDimensions.height - DECISION_SERVICE_DIVIDER_LINE_PADDING
+  );
 
   const newDividerLineYPosition = Math.max(upperLimit, Math.min(snappedPosition.y + localYPosition, lowerLimit));
 

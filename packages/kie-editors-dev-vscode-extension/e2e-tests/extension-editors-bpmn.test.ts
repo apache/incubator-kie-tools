@@ -162,9 +162,8 @@ describe("KIE Editors End to End Test Suite - BPMN Editor", () => {
 
     propertiesPanel = await propertiesPanel.expandPropertySection(PropertiesPanelSection.PROCESS_DATA);
     const processVariableNameInputField = await propertiesPanel.rootElement.findElement(processVariableNameInput());
-    const processVariableDataTypeInputField = await propertiesPanel.rootElement.findElement(
-      processVariableDataTypeInput()
-    );
+    const processVariableDataTypeInputField =
+      await propertiesPanel.rootElement.findElement(processVariableDataTypeInput());
     await bpmnEditorTester.scrollElementIntoView(processVariableNameInputField);
     await processVariableDataTypeInputField.click();
     const customDataTypeEditOption = await processVariableDataTypeInputField.findElement(

@@ -24,14 +24,17 @@ export default class Element {
   constructor(private readonly webElement: WebElement) {}
 
   public async dragAndDrop(x: number, y: number): Promise<void> {
-    return await ErrorProcessor.run(async () => {
-      await this.click();
+    return await ErrorProcessor.run(
+      async () => {
+        await this.click();
 
-      // no other way of drag and drop works
-      const actions = this.webElement.getDriver().actions();
-      await actions.move({ origin: this.webElement, x, y }).perform();
-      return await actions.click().perform();
-    }, "Error while drag and drop element to: x=" + x + " y=" + y);
+        // no other way of drag and drop works
+        const actions = this.webElement.getDriver().actions();
+        await actions.move({ origin: this.webElement, x, y }).perform();
+        return await actions.click().perform();
+      },
+      "Error while drag and drop element to: x=" + x + " y=" + y
+    );
   }
 
   public async sendKeys(keys: string): Promise<void> {
@@ -62,18 +65,24 @@ export default class Element {
   }
 
   public async offsetClick(x: number, y: number): Promise<void> {
-    return await ErrorProcessor.run(async () => {
-      const actions = this.webElement.getDriver().actions();
-      await actions.move({ origin: this.webElement, x, y }).perform();
-      return await actions.click().perform();
-    }, "Error while clicking on element by offset: x=" + x + " ,y=" + y);
+    return await ErrorProcessor.run(
+      async () => {
+        const actions = this.webElement.getDriver().actions();
+        await actions.move({ origin: this.webElement, x, y }).perform();
+        return await actions.click().perform();
+      },
+      "Error while clicking on element by offset: x=" + x + " ,y=" + y
+    );
   }
 
   public async offsetMove(x: number, y: number): Promise<void> {
-    return await ErrorProcessor.run(async () => {
-      const actions = this.webElement.getDriver().actions();
-      return await actions.move({ origin: this.webElement, x, y }).perform();
-    }, "Error while moving from element by offset: x=" + x + " ,y=" + y);
+    return await ErrorProcessor.run(
+      async () => {
+        const actions = this.webElement.getDriver().actions();
+        return await actions.move({ origin: this.webElement, x, y }).perform();
+      },
+      "Error while moving from element by offset: x=" + x + " ,y=" + y
+    );
   }
 
   public async scroll(): Promise<void> {

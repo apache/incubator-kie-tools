@@ -1,5 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg version="1.1" id="laneIcon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="448px" height="448px" viewBox="0 0 448 448" style="enable-background:new 0 0 448 448;" xml:space="preserve">
+<?xml version="1.0" encoding="utf-8" ?>
+<svg
+  version="1.1"
+  id="laneIcon"
+  xmlns="http://www.w3.org/2000/svg"
+  x="0px"
+  y="0px"
+  width="448px"
+  height="448px"
+  viewBox="0 0 448 448"
+  style="enable-background:new 0 0 448 448;"
+  xml:space="preserve"
+>
 	<!--
 	- Licensed to the Apache Software Foundation (ASF) under one
 	- or more contributor license agreements.  See the NOTICE file
@@ -19,11 +30,23 @@
 	- under the License.
 	-->
 	<style type="text/css">
-		.st0{display:none;}
-		.st1{display:inline;}
-		.st2{opacity:0.3;fill:none;stroke:#449FDB;enable-background:new    ;}
-		.st3{fill:none;stroke:#449FDB;}
-	</style>
+.st0 {
+  display: none;
+}
+.st1 {
+  display: inline;
+}
+.st2 {
+  opacity: 0.3;
+  fill: none;
+  stroke: #449fdb;
+  enable-background: new;
+}
+.st3 {
+  fill: none;
+  stroke: #449fdb;
+}
+  </style>
 	<g id="Layer_1_1_" class="st0">
 		<title>
 			circle-intermediate-3
@@ -89,6 +112,8 @@
 		<g id="icomoon-ignore_1_" class="st1">
 		</g>
 	</g>
-	<path d="M416,128.2H128H96H32c-17.6,0-31.8,14.3-31.8,31.8v128c0,17.6,14.3,31.8,31.8,31.8h64h32h288c17.6,0,31.8-14.3,31.8-31.8
-	V160C447.8,142.4,433.6,128.2,416,128.2z M32,288V160h64v128H32z M416,288H128V160h288V288z" />
+	<path
+    d="M416,128.2H128H96H32c-17.6,0-31.8,14.3-31.8,31.8v128c0,17.6,14.3,31.8,31.8,31.8h64h32h288c17.6,0,31.8-14.3,31.8-31.8
+	V160C447.8,142.4,433.6,128.2,416,128.2z M32,288V160h64v128H32z M416,288H128V160h288V288z"
+  />
 </svg>

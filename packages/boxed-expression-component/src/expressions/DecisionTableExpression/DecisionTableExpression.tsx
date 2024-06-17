@@ -841,8 +841,8 @@ export function DecisionTableExpression({
           args.groupType === DecisionTableColumnType.InputClause
             ? DECISION_TABLE_INPUT_DEFAULT_WIDTH
             : args.groupType === DecisionTableColumnType.OutputClause
-            ? DECISION_TABLE_OUTPUT_DEFAULT_WIDTH
-            : DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH;
+              ? DECISION_TABLE_OUTPUT_DEFAULT_WIDTH
+              : DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH;
 
         const nextValues = [...prev];
         const minValuesLength = args.beforeIndex + 1 + args.columnsCount;

@@ -1,5 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg version="1.1" id="gwComplex" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 448 448" style="enable-background:new 0 0 448 448;" xml:space="preserve">
+<?xml version="1.0" encoding="utf-8" ?>
+<svg
+  version="1.1"
+  id="gwComplex"
+  xmlns="http://www.w3.org/2000/svg"
+  x="0px"
+  y="0px"
+  viewBox="0 0 448 448"
+  style="enable-background:new 0 0 448 448;"
+  xml:space="preserve"
+>
 	<!--
 	- Licensed to the Apache Software Foundation (ASF) under one
 	- or more contributor license agreements.  See the NOTICE file
@@ -19,10 +28,16 @@
 	- under the License.
 	-->
 	<style type="text/css">
-		.st0{display:none;}
-		.st1{display:inline;}
-		.st2{fill:none;}
-	</style>
+.st0 {
+  display: none;
+}
+.st1 {
+  display: inline;
+}
+.st2 {
+  fill: none;
+}
+  </style>
 	<g id="Grid" class="st0">
 		<g id="icomoon-ignore" class="st1">
 			<line class="st2" x1="16" y1="0" x2="16" y2="448" />
@@ -81,11 +96,14 @@
 			<line class="st2" x1="0" y1="432" x2="448" y2="432" />
 		</g>
 	</g>
-	<path id="Icon" d="M401,200c-4.7-4.7-10.3-7-17-7h-82.7l56.2-56.2c4.8-4.8,5.1-8.3,5.1-15s-2.4-12.3-7.1-17l-11.3-11.3
+	<path
+    id="Icon"
+    d="M401,200c-4.7-4.7-10.3-7-17-7h-82.7l56.2-56.2c4.8-4.8,5.1-8.3,5.1-15s-2.4-12.3-7.1-17l-11.3-11.3
 	c-4.8-4.8-10.3-7.1-17-7.1s-12.3,2.4-17,7.1L256,147.7V65c0-6.7-2.3-12.3-7-17s-10.3-7-17-7h-16c-6.7,0-12.3,2.3-17,7s-7,10.3-7,17
 	v82.7l-53.2-53.2c-4.8-4.8-10.3-7.1-17-7.1s-12.3,2.4-17,7.1l-11.3,11.3c-4.8,4.8-7.1,10.3-7.1,17s2.4,12.3,7.1,17l53.2,53.2H64
 	c-6.7,0-12.3,2.3-17,7s-7,10.3-7,17v16c0,6.7,2.3,12.3,7,17s10.3,7,17,7h82.7l-54.2,54.2c-4.8,4.8-7.1,10.3-7.1,17s2.4,12.3,7.1,17
 	l11.3,11.3c4.8,4.8,10.4,7.1,17,7.1c6.7,0,12.3-2.4,17-7.1l54.2-54.2V385c0,6.7,2.3,12.3,7,17s10.3,7,17,7h16c6.7,0,12.3-2.3,17-7
 	s7-10.3,7-17v-82.7l53.1,53.1c4.8,4.8,10.4,7.1,17,7.1c6.7,0,12.3-2.4,17-7.1l11.3-11.3c4.8-4.7,7.1-10.3,7.2-16.9
-	c0-6.7-2.4-12.3-7.1-17L301.3,257H384c6.7,0,12.3-2.3,17-7s7-10.3,7-17v-16C408,210.3,405.7,204.7,401,200z" />
+	c0-6.7-2.4-12.3-7.1-17L301.3,257H384c6.7,0,12.3-2.3,17-7s7-10.3,7-17v-16C408,210.3,405.7,204.7,401,200z"
+  />
 </svg>

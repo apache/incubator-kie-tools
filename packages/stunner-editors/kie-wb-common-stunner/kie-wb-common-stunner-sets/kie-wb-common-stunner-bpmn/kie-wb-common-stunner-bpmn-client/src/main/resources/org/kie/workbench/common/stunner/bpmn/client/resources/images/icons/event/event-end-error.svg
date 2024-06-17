@@ -1,5 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg version="1.1" id="eventEndError" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="448px" height="448px" viewBox="0 0 448 448" style="enable-background:new 0 0 448 448;" xml:space="preserve">
+<?xml version="1.0" encoding="utf-8" ?>
+<svg
+  version="1.1"
+  id="eventEndError"
+  xmlns="http://www.w3.org/2000/svg"
+  x="0px"
+  y="0px"
+  width="448px"
+  height="448px"
+  viewBox="0 0 448 448"
+  style="enable-background:new 0 0 448 448;"
+  xml:space="preserve"
+>
 	<!--
 	- Licensed to the Apache Software Foundation (ASF) under one
 	- or more contributor license agreements.  See the NOTICE file
@@ -19,12 +30,24 @@
 	- under the License.
 	-->
 	<style type="text/css">
-		.st0{display:none;}
-		.st1{display:inline;}
-		.st2{opacity:0.3;fill:none;enable-background:new    ;}
-		.st3{fill:none;}
-		.event-end-error-css { fill: #a30000; }
-	</style>
+.st0 {
+  display: none;
+}
+.st1 {
+  display: inline;
+}
+.st2 {
+  opacity: 0.3;
+  fill: none;
+  enable-background: new;
+}
+.st3 {
+  fill: none;
+}
+.event-end-error-css {
+  fill: #a30000;
+}
+  </style>
 	<g id="Grid" class="st0">
 		<g id="icomoon-ignore" class="st1">
 			<line class="st2" x1="16" y1="0" x2="16" y2="448" />
@@ -83,7 +106,11 @@
 			<line class="st2" x1="0" y1="432" x2="448" y2="432" />
 		</g>
 	</g>
-	<path id="Icon" class="event-end-error-css" d="M288,209.7L413.7,101c0,0,5.5-7.7,13-4.5s4.9,12.2,4.9,12.2s-97.2,270-100.3,276.8c-3.2,7.1-4.8,11.2-11.4,13.6
+	<path
+    id="Icon"
+    class="event-end-error-css"
+    d="M288,209.7L413.7,101c0,0,5.5-7.7,13-4.5s4.9,12.2,4.9,12.2s-97.2,270-100.3,276.8c-3.2,7.1-4.8,11.2-11.4,13.6
 	c-6.3,2.3-11.2-0.4-16.8-5.7L160,239.2L34.3,347c0,0-5.5,7.7-13,4.5s-4.9-12.2-4.9-12.2s87.2-270.1,90.4-276.8
-	c3.9-8.1,4.8-11.2,11.4-13.6c6.3-2.3,11.2,0.4,16.8,5.7S288,209.7,288,209.7z" />
+	c3.9-8.1,4.8-11.2,11.4-13.6c6.3-2.3,11.2,0.4,16.8,5.7S288,209.7,288,209.7z"
+  />
 </svg>

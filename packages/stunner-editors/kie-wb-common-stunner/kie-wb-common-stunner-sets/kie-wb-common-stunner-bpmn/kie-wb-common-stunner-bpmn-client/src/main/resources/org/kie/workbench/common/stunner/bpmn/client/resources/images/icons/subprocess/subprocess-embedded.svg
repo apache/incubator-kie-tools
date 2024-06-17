@@ -1,5 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg version="1.1" id="subProcessEmbedded" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="448px" height="448px" viewBox="0 0 448 448" style="enable-background:new 0 0 448 448;" xml:space="preserve">
+<?xml version="1.0" encoding="utf-8" ?>
+<svg
+  version="1.1"
+  id="subProcessEmbedded"
+  xmlns="http://www.w3.org/2000/svg"
+  x="0px"
+  y="0px"
+  width="448px"
+  height="448px"
+  viewBox="0 0 448 448"
+  style="enable-background:new 0 0 448 448;"
+  xml:space="preserve"
+>
 	<!--
 	- Licensed to the Apache Software Foundation (ASF) under one
 	- or more contributor license agreements.  See the NOTICE file
@@ -19,10 +30,16 @@
 	- under the License.
 	-->
 	<style type="text/css">
-		.st0{display:none;}
-		.st1{display:inline;}
-		.st2{fill:none;}
-	</style>
+.st0 {
+  display: none;
+}
+.st1 {
+  display: inline;
+}
+.st2 {
+  fill: none;
+}
+  </style>
 	<g id="Grid" class="st0">
 		<g id="icomoon-ignore" class="st1">
 			<line class="st2" x1="16" y1="0" x2="16" y2="448" />

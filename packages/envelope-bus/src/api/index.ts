@@ -19,7 +19,7 @@
 
 export type NotificationCallback<
   ApiToConsume extends ApiDefinition<ApiToConsume>,
-  M extends NotificationPropertyNames<ApiToConsume>
+  M extends NotificationPropertyNames<ApiToConsume>,
 > = (...args: ArgsType<ApiToConsume[M]>) => void;
 
 export type SharedValueProviderPropertyNames<T extends ApiDefinition<T>> = {
@@ -96,7 +96,7 @@ export interface MessageBusClientApi<Api extends ApiDefinition<Api>> {
 
 export interface MessageBusServer<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
-  ApiToConsume extends ApiDefinition<ApiToConsume>
+  ApiToConsume extends ApiDefinition<ApiToConsume>,
 > {
   receive(
     message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>,

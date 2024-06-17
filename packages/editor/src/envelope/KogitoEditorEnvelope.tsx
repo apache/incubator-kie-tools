@@ -38,7 +38,7 @@ import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dis
 export class KogitoEditorEnvelope<
   E extends Editor,
   EnvelopeApi extends KogitoEditorEnvelopeApi & ApiDefinition<EnvelopeApi>,
-  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>
+  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>,
 > {
   constructor(
     private readonly kogitoEditorEnvelopeApiFactory: EnvelopeApiFactory<

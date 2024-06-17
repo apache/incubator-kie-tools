@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
 ~ Licensed to the Apache Software Foundation (ASF) under one
 ~ or more contributor license agreements.  See the NOTICE file
@@ -17,7 +17,18 @@
 ~ specific language governing permissions and limitations
 ~ under the License.
 -->
-<svg version="1.1" id="taskScript" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="448px" height="448px" viewBox="0 0 448 448" style="enable-background:new 0 0 448 448;" xml:space="preserve">
+<svg
+  version="1.1"
+  id="taskScript"
+  xmlns="http://www.w3.org/2000/svg"
+  x="0px"
+  y="0px"
+  width="448px"
+  height="448px"
+  viewBox="0 0 448 448"
+  style="enable-background:new 0 0 448 448;"
+  xml:space="preserve"
+>
 	<!--
 	- Licensed to the Apache Software Foundation (ASF) under one
 	- or more contributor license agreements.  See the NOTICE file
@@ -37,11 +48,23 @@
 	- under the License.
 	-->
 	<style type="text/css">
-		.st0{display:none;}
-		.st1{display:inline;}
-		.st2{opacity:0.3;fill:none;stroke:#449FDB;enable-background:new    ;}
-		.st3{fill:none;stroke:#449FDB;}
-	</style>
+.st0 {
+  display: none;
+}
+.st1 {
+  display: inline;
+}
+.st2 {
+  opacity: 0.3;
+  fill: none;
+  stroke: #449fdb;
+  enable-background: new;
+}
+.st3 {
+  fill: none;
+  stroke: #449fdb;
+}
+  </style>
 	<g id="Layer_1_1_" class="st0">
 		<title>
 			circle-intermediate-3
@@ -107,13 +130,19 @@
 		<g id="icomoon-ignore_1_" class="st1">
 		</g>
 	</g>
-	<path d="M197.3,130.2c-2.9-2.9-7.7-2.9-10.6,0l-56.5,56.5c-2.9,2.9-2.9,7.7,0,10.6l56.5,56.5c1.4,1.5,3.4,2.2,5.3,2.2
-	c1.9,0,3.9-0.7,5.3-2.3c2.9-2.9,2.9-7.7,0-10.6L146.2,192l51.1-51.2C200.2,137.9,200.2,133.1,197.3,130.2z" />
-	<path d="M261.3,130.2c-2.9-2.9-7.7-2.9-10.6,0c-2.9,2.9-2.9,7.7,0,10.6l51.1,51.1L250.7,243c-2.9,2.9-2.9,7.7,0,10.6
-	c1.4,1.7,3.4,2.4,5.3,2.4c1.9,0,3.9-0.7,5.3-2.2l56.5-56.5c2.9-2.9,2.9-7.7,0-10.6L261.3,130.2z" />
-	<path d="M400,32c0,0-247.2,0-272,0c-66,0-64,64-64,64v192H1c0,0-5,128,77,128h242c48,0,64-48,64-80c0-21.8,0-111.6,0-176h64V96
+	<path
+    d="M197.3,130.2c-2.9-2.9-7.7-2.9-10.6,0l-56.5,56.5c-2.9,2.9-2.9,7.7,0,10.6l56.5,56.5c1.4,1.5,3.4,2.2,5.3,2.2
+	c1.9,0,3.9-0.7,5.3-2.3c2.9-2.9,2.9-7.7,0-10.6L146.2,192l51.1-51.2C200.2,137.9,200.2,133.1,197.3,130.2z"
+  />
+	<path
+    d="M261.3,130.2c-2.9-2.9-7.7-2.9-10.6,0c-2.9,2.9-2.9,7.7,0,10.6l51.1,51.1L250.7,243c-2.9,2.9-2.9,7.7,0,10.6
+	c1.4,1.7,3.4,2.4,5.3,2.4c1.9,0,3.9-0.7,5.3-2.2l56.5-56.5c2.9-2.9,2.9-7.7,0-10.6L261.3,130.2z"
+  />
+	<path
+    d="M400,32c0,0-247.2,0-272,0c-66,0-64,64-64,64v192H1c0,0-5,128,77,128h242c48,0,64-48,64-80c0-21.8,0-111.6,0-176h64V96
 	C448,96,449,32,400,32z M78,383.9c-9.5,0-16.4-2.8-22.5-9c-12.1-12.5-18-35.3-20.6-54.9h222c0.2,2.7,0.4,5.4,0.7,8.2
 	c2.4,23.4,7.1,41.9,14.3,55.7L78,383.9L78,383.9z M352,336c0,9.9-2.4,24.3-9.1,35c-5.7,9.1-12.5,13-22.9,13c-35,0-32-96-32-96H96V96
 	v-0.1v-0.8c0-4.5,1.6-16.8,8.7-23.9c1.8-1.8,7.2-7.2,23.3-7.2h228.5c-2.1,8.8-3.7,17.8-4.3,25.9c0,0.6-0.1,1.2-0.1,1.8
-	c0,0.3,0,0.6,0,0.9C352,94.8,352,96,352,96v64V336z" />
+	c0,0.3,0,0.6,0,0.9C352,94.8,352,96,352,96v64V336z"
+  />
 </svg>

@@ -61,8 +61,8 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
           isDisabled={${props.disabled || false}}
           name={'${props.name}'}
           onChange={(time, hours?, minutes?) => onTimeChange(time, ${ref.stateSetter}, ${
-    ref.stateName
-  }, hours, minutes)}
+            ref.stateName
+          }, hours, minutes)}
           style={{ width: '120px' }}
           time={parseTime(${ref.stateName})}
         />

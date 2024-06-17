@@ -1,5 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg id="task" version="1.1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" width="68px" height="68px" viewBox="0 0 73 73">
+<?xml version="1.0" encoding="utf-8" ?>
+<svg
+  id="task"
+  version="1.1"
+  xmlns="http://www.w3.org/2000/svg"
+  x="0"
+  y="0"
+  width="68px"
+  height="68px"
+  viewBox="0 0 73 73"
+>
 	<!--
 	- Licensed to the Apache Software Foundation (ASF) under one
 	- or more contributor license agreements.  See the NOTICE file
@@ -25,5 +34,14 @@
 			<feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
 		</filter>
 	</defs>
-	<rect x="0" y="0" width="68px" height="68px" rx="5" ry="5" style="fill:white; stroke: black; stroke-width: 5px;" filter="url(#svg_task_blackShadow)" />
+	<rect
+    x="0"
+    y="0"
+    width="68px"
+    height="68px"
+    rx="5"
+    ry="5"
+    style="fill:white; stroke: black; stroke-width: 5px;"
+    filter="url(#svg_task_blackShadow)"
+  />
 </svg>
