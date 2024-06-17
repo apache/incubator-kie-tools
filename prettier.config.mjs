@@ -17,9 +17,10 @@
  * under the License.
  */
 
-module.exports = {
+export default {
   printWidth: 120,
-  plugins: [require("@nice-move/prettier-plugin-package-json"), require("@prettier/plugin-xml")],
+  trailingComma: "es5",
+  plugins: ["@nice-move/prettier-plugin-package-json", "@prettier/plugin-xml"],
   overrides: [
     {
       files: "package.json",

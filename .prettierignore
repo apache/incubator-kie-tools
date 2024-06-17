@@ -1,1 +1,11 @@
-.gitignore
+pnpm-lock.yaml
+
+# Go files
+**/*.go
+**/go.mod
+**/go.sum
+**/go.work
+**/go.work.sum
+
+# XSD files
+**/*.xsd

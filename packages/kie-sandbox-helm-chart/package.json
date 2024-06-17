@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
-    "prettier": "^2.8.8",
+    "prettier": "^3.3.2",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
     "yaml": "^2.3.2"

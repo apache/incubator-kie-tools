@@ -151,19 +151,17 @@ async function main() {
     }
   }
 
-  fs.writeFileSync(
-    datavisGraphFilePath,
-    prettier.format(
-      JSON.stringify({
-        serializedDatavisGraph: datavisGraph.serialize(),
-        serializedPackagesLocationByName: Array.from(packageMap.entries()).map(([k, v]) => [
-          k,
-          path.relative(path.resolve("."), v.dir).split(path.sep).join(path.posix.sep),
-        ]),
-      }),
-      { ...(await prettier.resolveConfig(".")), parser: "json" }
-    )
+  const formattedGraph = await prettier.format(
+    JSON.stringify({
+      serializedDatavisGraph: datavisGraph.serialize(),
+      serializedPackagesLocationByName: Array.from(packageMap.entries()).map(([k, v]) => [
+        k,
+        path.relative(path.resolve("."), v.dir).split(path.sep).join(path.posix.sep),
+      ]),
+    }),
+    { ...(await prettier.resolveConfig(".")), parser: "json" },
   );
+  fs.writeFileSync(datavisGraphFilePath, formattedGraph);
 
   console.info(`[generate-packages-graph] Wrote packages Datavis graph to '${datavisGraphFilePath}'`);
 
