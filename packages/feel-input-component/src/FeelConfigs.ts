@@ -1225,7 +1225,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         label: "round down(n, scale)",
         insertText: "round down($1, $2)",
         description:
-          "Returns `n` with given `scale` and rounding mode round down. If at least one of `n` or `scale` is null, the result is null.",
+          "Returns `n` with given `scale` and rounding mode round down. If at least one of `n` or `scale` is null, the result is null. The `scale` must be in the range [−6111..6176].",
         parameters: [
           ["n", `\`number\``],
           ["scale", `\`number\``],
@@ -1241,7 +1241,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         label: "round half down(n, scale)",
         insertText: "round half down($1, $2)",
         description:
-          "Returns `n` with given `scale` and rounding mode round half down. If at least one of `n` or `scale` is null, the result is null.",
+          "Returns `n` with given `scale` and rounding mode round half down. If at least one of `n` or `scale` is null, the result is null. The `scale` must be in the range [−6111..6176].",
         parameters: [
           ["n", `\`number\``],
           ["scale", `\`number\``],
@@ -1257,7 +1257,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         label: "round half up(n, scale)",
         insertText: "round half up($1, $2)",
         description:
-          "Returns `n` with given `scale` and rounding mode round half up. If at least one of `n` or `scale` is null, the result is null.",
+          "Returns `n` with given `scale` and rounding mode round half up. If at least one of `n` or `scale` is null, the result is null. The `scale` must be in the range [−6111..6176].",
         parameters: [
           ["n", `\`number\``],
           ["scale", `\`number\``],
@@ -1273,7 +1273,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         label: "round up(n, scale)",
         insertText: "round up($1, $2)",
         description:
-          "Returns `n` with given `scale` and rounding mode round up. If at least one of `n` or `scale` is null, the result is null.",
+          "Returns `n` with given `scale` and rounding mode round up. If at least one of `n` or `scale` is null, the result is null. The `scale` must be in the range [−6111..6176].",
         parameters: [
           ["n", `\`number\``],
           ["scale", `\`number\``],
