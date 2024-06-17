@@ -57,6 +57,12 @@ func (s *StateSupport) PerformStatusUpdate(ctx context.Context, workflow *operat
 	}
 	workflow.Status.ObservedGeneration = workflow.Generation
 	services.SetServiceUrlsInWorkflowStatus(pl, workflow)
+	if workflow.Status.Platform == nil {
+		workflow.Status.Platform = &operatorapi.SonataFlowPlatformRef{}
+	}
+	workflow.Status.Platform.Name = pl.Name
+	workflow.Status.Platform.Namespace = pl.Namespace
+
 	if err = s.C.Status().Update(ctx, workflow); err != nil {
 		klog.V(log.E).ErrorS(err, "Failed to update Workflow status")
 		return false, err

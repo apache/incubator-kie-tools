@@ -80,5 +80,8 @@ func TestSonataFlowController(t *testing.T) {
 
 		assert.True(t, ksw.Spec.Flow.Start.StateName == "ChooseOnLanguage")
 		assert.True(t, len(ksw.Spec.Flow.States) == 4)
+
+		assert.Equal(t, ksp.Name, afterReconcileWorkflow.Status.Platform.Name)
+		assert.Equal(t, ksp.Namespace, afterReconcileWorkflow.Status.Platform.Namespace)
 	})
 }

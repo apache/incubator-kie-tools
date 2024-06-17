@@ -212,6 +212,9 @@ spec:
         path: endpoint
       - displayName: lastTimeRecoverAttempt
         path: lastTimeRecoverAttempt
+      - description: Platform displays which platform is being used by this workflow
+        displayName: platform
+        path: platform
       - description: keeps track of how many failure recovers a given workflow had
           so far
         displayName: recoverFailureAttempts

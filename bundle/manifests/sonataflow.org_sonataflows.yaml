@@ -9461,6 +9461,20 @@ spec:
                 description: The generation observed by the deployment controller.
                 format: int64
                 type: integer
+              platform:
+                description: Platform displays which platform is being used by this
+                  workflow
+                properties:
+                  name:
+                    description: Name of the SonataFlowPlatform
+                    type: string
+                  namespace:
+                    description: Namespace of the SonataFlowPlatform
+                    type: string
+                required:
+                - name
+                - namespace
+                type: object
               recoverFailureAttempts:
                 description: keeps track of how many failure recovers a given workflow
                   had so far

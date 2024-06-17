@@ -108,7 +108,7 @@ type SonataFlowClusterPlatformRefStatus struct {
 	Services *PlatformServicesStatus `json:"services,omitempty"`
 }
 
-// PlatformServicesStatus displays which cluster-wide services are being used by a SonataFlowPlatform
+// PlatformServicesStatus displays which cluster-wide services are being used by a SonataFlowPlatform or SonataFlow
 // +k8s:openapi-gen=true
 type PlatformServicesStatus struct {
 	// DataIndexRef displays information on the cluster-wide Data Index service

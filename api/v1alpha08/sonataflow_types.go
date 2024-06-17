@@ -182,6 +182,9 @@ type SonataFlowStatus struct {
 	// Services displays which platform services are being used by this workflow
 	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="services"
 	Services *PlatformServicesStatus `json:"services,omitempty"`
+	// Platform displays which platform is being used by this workflow
+	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="platform"
+	Platform *SonataFlowPlatformRef `json:"platform,omitempty"`
 }
 
 func (s *SonataFlowStatus) GetTopLevelConditionType() api.ConditionType {
