@@ -17,22 +17,14 @@
  * under the License.
  */
 
-const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
+const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
-const rootEnv = require("@kie-tools/root-env/env");
-
-module.exports = composeEnv([rootEnv, require("@kie-tools/dashbuilder-viewer-image-env/env")], {
-  vars: varsWithName({
-    DASHBUILDER__viewerImageBuildTags: {
-      default: rootEnv.env.root.streamName,
-      description: "",
+module.exports = composeEnv(
+  [require("@kie-tools/root-env/env"), require("@kie-tools/dashbuilder-viewer-image-env/env")],
+  {
+    vars: varsWithName({}),
+    get env() {
+      return {};
     },
-  }),
-  get env() {
-    return {
-      dashbuilderViewerImage: {
-        buildTags: getOrDefault(this.vars.DASHBUILDER__viewerImageBuildTags),
-      },
-    };
-  },
-});
+  }
+);

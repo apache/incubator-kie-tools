@@ -26,31 +26,31 @@ module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     CORS_PROXY_IMAGE__imageRegistry: {
       default: "docker.io",
-      description: "",
+      description: "E.g., `docker.io` or `quay.io`.",
     },
     CORS_PROXY_IMAGE__imageAccount: {
       default: "apache",
-      description: "",
+      description: "E.g,. `apache` or `kie-tools-bot`",
     },
     CORS_PROXY_IMAGE__imageName: {
       default: "incubator-kie-cors-proxy",
-      description: "",
+      description: "Name of the image itself.",
     },
-    CORS_PROXY_IMAGE__imageBuildTags: {
+    CORS_PROXY_IMAGE__imageBuildTag: {
       default: rootEnv.env.root.streamName,
-      description: "",
+      description: "Tag version of this image. E.g., `main` or `10.0.x` or `10.0.0",
     },
     CORS_PROXY_IMAGE__imagePort: {
       default: corsProxyEnv.env.corsProxy.dev.port,
-      description: "",
+      description: "HTTP port where the CORS proxy will run inside this image.",
     },
     CORS_PROXY_IMAGE__imageOrigin: {
       default: corsProxyEnv.env.corsProxy.dev.origin,
-      description: "",
+      description: "Origin to be used for the CORS proxy running inside this image.",
     },
     CORS_PROXY_IMAGE__imageVerbose: {
       default: false,
-      description: "",
+      description: "Toggle verbose mode on the CORS proxy logs.",
     },
   }),
   get env() {
@@ -60,7 +60,7 @@ module.exports = composeEnv([rootEnv], {
           registry: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageRegistry),
           account: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageAccount),
           name: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageName),
-          buildTags: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageBuildTags),
+          buildTag: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageBuildTag),
           port: getOrDefault(this.vars.CORS_PROXY_IMAGE__imagePort),
           origin: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageOrigin),
           verbose: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageVerbose),

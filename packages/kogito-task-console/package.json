@@ -24,8 +24,7 @@
     "copy:webapp-assets:linux:darwin": "cp -R ./node_modules/@kie-tools/runtime-tools-task-console-webapp/dist/ ./dist-dev/runtime-tools-task-console-webapp",
     "copy:webapp-assets:win32": "pnpm powershell \"Copy-Item -R ./node_modules/@kie-tools/runtime-tools-task-console-webapp/dist/ ./dist-dev/runtime-tools-task-console-webapp\"",
     "env-json:schema:generate": "ts-json-schema-generator --tsconfig ./node_modules/@kie-tools/runtime-tools-task-console-webapp/tsconfig.json --path ./node_modules/@kie-tools/runtime-tools-task-console-webapp/src/env/EnvJson.ts --type EnvJson --id EnvJson --out ./dist-dev/EnvJson.schema.json",
-    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env kogitoTaskConsole.registry)\" -a \"$(build-env kogitoTaskConsole.account)\" -n \"$(build-env kogitoTaskConsole.name)\" -t \"$(build-env kogitoTaskConsole.buildTag)\" --build-arg KOGITO_TASK_CONSOLE_PORT=\"$(build-env kogitoTaskConsole.port)\"",
-    "image:podman:build": "kie-tools--image-builder build -r \"$(build-env kogitoTaskConsole.registry)\" -a \"$(build-env kogitoTaskConsole.account)\" -n \"$(build-env kogitoTaskConsole.name)\" -t \"$(build-env kogitoTaskConsole.buildTag)\" --build-arg KOGITO_TASK_CONSOLE_PORT=\"$(build-env kogitoTaskConsole.port)\" -e podman"
+    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env kogitoTaskConsole.registry)\" -a \"$(build-env kogitoTaskConsole.account)\" -n \"$(build-env kogitoTaskConsole.name)\" -t \"$(build-env kogitoTaskConsole.buildTag)\" --build-arg KOGITO_TASK_CONSOLE_PORT=\"$(build-env kogitoTaskConsole.port)\""
   },
   "devDependencies": {
     "@kie-tools/image-builder": "workspace:*",

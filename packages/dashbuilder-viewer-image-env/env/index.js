@@ -19,19 +19,25 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+const rootEnv = require("@kie-tools/root-env/env");
+
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     DASHBUILDER__viewerImageRegistry: {
       default: "docker.io",
-      description: "",
+      description: "E.g., `docker.io` or `quay.io`.",
     },
     DASHBUILDER__viewerImageAccount: {
       default: "apache",
-      description: "",
+      description: "E.g,. `apache` or `kie-tools-bot`",
     },
     DASHBUILDER__viewerImageName: {
       default: "incubator-kie-dashbuilder-viewer",
-      description: "",
+      description: "Name of the image itself.",
+    },
+    DASHBUILDER__viewerImageBuildTag: {
+      default: rootEnv.env.root.streamName,
+      description: "Tag version of this image. E.g., `main` or `10.0.x` or `10.0.0",
     },
   }),
   get env() {
@@ -40,6 +46,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         registry: getOrDefault(this.vars.DASHBUILDER__viewerImageRegistry),
         account: getOrDefault(this.vars.DASHBUILDER__viewerImageAccount),
         name: getOrDefault(this.vars.DASHBUILDER__viewerImageName),
+        buildTag: getOrDefault(this.vars.DASHBUILDER__viewerImageBuildTag),
       },
     };
   },

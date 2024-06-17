@@ -23,19 +23,19 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     CHROME_EXTENSION__routerTargetOrigin: {
       default: "https://localhost:9000",
-      description: "",
+      description: "Route of resources such as Editors and other static assets.",
     },
     CHROME_EXTENSION__routerRelativePath: {
       default: "",
-      description: "",
+      description: "Relative path to applied to CHROME_EXTENSION__routerTargetOrigin when finding resources.",
     },
     CHROME_EXTENSION__onlineEditorUrl: {
       default: "https://localhost:9001",
-      description: "",
+      description: "The URL pointing to another application that can open a file or repo.",
     },
     CHROME_EXTENSION__manifestFile: {
       default: "manifest.dev.json",
-      description: "",
+      description: "Chrome Extension manifest file path relative to this package's root dir.",
     },
   }),
   get env() {

@@ -43,7 +43,7 @@ pipeline {
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry = 'docker.io'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount = 'apache'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName = 'incubator-serverless-logic-web-tools-swf-builder'
-        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags = "latest ${params.RELEASE_VERSION}"
+        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTag = "${params.RELEASE_VERSION}"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
@@ -143,7 +143,7 @@ pipeline {
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName}",
-                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags}",
+                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )

@@ -21,8 +21,7 @@ This chart can be used to deploy KIE Sandbox image on a [Kubernetes](https://kub
 
 ## Additional requirements
 
-- Podman (for Linux)
-- Docker (for macOS)
+- Docker
 - Minikube
 
 ## Components

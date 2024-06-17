@@ -25,23 +25,23 @@ module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     KOGITO_TASK_CONSOLE__registry: {
       default: "docker.io",
-      description: "The image registry.",
+      description: "E.g., `docker.io` or `quay.io`.",
     },
     KOGITO_TASK_CONSOLE__account: {
       default: "apache",
-      description: "The image registry account.",
+      description: "E.g,. `apache` or `kie-tools-bot`",
     },
     KOGITO_TASK_CONSOLE__name: {
       default: "incubator-kie-kogito-task-console",
-      description: "The image name.",
+      description: "Name of the image itself.",
     },
     KOGITO_TASK_CONSOLE__buildTag: {
       default: rootEnv.env.root.streamName,
-      description: "The image tag.",
+      description: "Tag version of this image. E.g., `main` or `10.0.x` or `10.0.0",
     },
     KOGITO_TASK_CONSOLE__port: {
       default: 8080,
-      description: "The default container port.",
+      description: "The internal container port.",
     },
   }),
   get env() {

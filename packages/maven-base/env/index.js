@@ -23,7 +23,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     KIE_TOOLS_BUILD__mavenDeploySkip: {
       default: "true",
-      description: "Determines if a Maven build skips a deploy",
+      description: "Determines if a Maven build skips a deploy. Can be `true` or `false`.",
     },
   }),
   get env() {

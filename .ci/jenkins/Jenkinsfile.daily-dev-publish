@@ -72,17 +72,17 @@ pipeline {
         KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry = 'docker.io'
         KIE_SANDBOX_WEBAPP_IMAGE__imageAccount = 'apache'
         KIE_SANDBOX_WEBAPP_IMAGE__imageName = 'incubator-kie-sandbox-webapp'
-        KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags = 'daily-dev'
+        KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTag = 'daily-dev'
 
         KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry = 'docker.io'
         KIE_SANDBOX_EXTENDED_SERVICES__imageAccount = 'apache'
         KIE_SANDBOX_EXTENDED_SERVICES__imageName = 'incubator-kie-sandbox-extended-services'
-        KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags = 'daily-dev'
+        KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTag = 'daily-dev'
 
         CORS_PROXY_IMAGE__imageRegistry = 'docker.io'
         CORS_PROXY_IMAGE__imageAccount = 'apache'
         CORS_PROXY_IMAGE__imageName = 'incubator-kie-cors-proxy'
-        CORS_PROXY_IMAGE__imageBuildTags = 'daily-dev'
+        CORS_PROXY_IMAGE__imageBuildTag = 'daily-dev'
 
         KIE_SANDBOX_HELM_CHART__registry = 'docker.io'
         KIE_SANDBOX_HELM_CHART__account = 'apache'
@@ -96,24 +96,24 @@ pipeline {
         DASHBUILDER__viewerImageRegistry = 'docker.io'
         DASHBUILDER__viewerImageAccount = 'apache'
         DASHBUILDER__viewerImageName = 'incubator-kie-dashbuilder-viewer'
-        DASHBUILDER__viewerImageBuildTags = 'daily-dev'
+        DASHBUILDER__viewerImageBuildTag = 'daily-dev'
 
         SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag = 'daily-dev'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry = 'docker.io'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount = 'apache'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName = 'incubator-serverless-logic-web-tools-swf-builder'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag = 'daily-dev'
-        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags = 'daily-dev'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTag = 'daily-dev'
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry = 'docker.io'
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount = 'apache'
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName = 'incubator-kie-serverless-logic-web-tools-base-builder'
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageTag = 'daily-dev'
-        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags = 'daily-dev'
+        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTag = 'daily-dev'
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry = 'docker.io'
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount = 'apache'
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName = 'incubator-kie-serverless-logic-web-tools-swf-dev-mode'
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag = 'daily-dev'
-        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags = 'daily-dev'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTag = 'daily-dev'
         SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl = 'https://daily-dev-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
 
         KOGITO_TASK_CONSOLE__registry = 'docker.io'
@@ -331,7 +331,7 @@ pipeline {
                         "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry}",
                         "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount}",
                         "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageName}",
-                        "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags}",
+                        "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
@@ -364,7 +364,7 @@ pipeline {
                         "${env.CORS_PROXY_IMAGE__imageRegistry}",
                         "${env.CORS_PROXY_IMAGE__imageAccount}",
                         "${env.CORS_PROXY_IMAGE__imageName}",
-                        "${env.CORS_PROXY_IMAGE__imageBuildTags}",
+                        "${env.CORS_PROXY_IMAGE__imageBuildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
@@ -397,7 +397,7 @@ pipeline {
                         "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}",
                         "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}",
                         "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageName}",
-                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags}",
+                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
@@ -438,7 +438,7 @@ pipeline {
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName}",
-                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags}",
+                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
@@ -453,7 +453,7 @@ pipeline {
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName}",
-                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags}",
+                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
@@ -468,7 +468,7 @@ pipeline {
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName}",
-                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags}",
+                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
@@ -483,7 +483,7 @@ pipeline {
                         "${env.DASHBUILDER__viewerImageRegistry}",
                         "${env.DASHBUILDER__viewerImageAccount}",
                         "${env.DASHBUILDER__viewerImageName}",
-                        "${env.DASHBUILDER__viewerImageBuildTags}",
+                        "${env.DASHBUILDER__viewerImageBuildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )

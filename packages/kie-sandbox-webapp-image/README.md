@@ -21,7 +21,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
 ## Additional requirements
 
-- docker or podman
+- docker
 
 ## Build
 
@@ -37,7 +37,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
   export KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry=<registry>
   export KIE_SANDBOX_WEBAPP_IMAGE__imageAccount=<account>
   export KIE_SANDBOX_WEBAPP_IMAGE__imageName=<image-name>
-  export KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags=<image-tags>
+  export KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTag=<image-tag>
   export KIE_SANDBOX_WEBAPP_IMAGE__imagePort=<port>
   ```
 
@@ -55,24 +55,12 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
   docker images
   ```
 
-  or
-
-  ```bash
-  podman images
-  ```
-
 ## Run
 
 - Start up a clean container with:
 
   ```bash
   docker run -t -p 8080:8080 -i --rm docker.io/apache/incubator-kie-sandbox-webapp:latest
-  ```
-
-  or
-
-  ```bash
-  podman run -t -p 8080:8080 -i --rm docker.io/apache/incubator-kie-sandbox-webapp:latest
   ```
 
   KIE Sandbox will be up at http://localhost:8080

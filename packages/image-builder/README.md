@@ -22,7 +22,7 @@ Options:
   -h, --help                    Show help  [boolean]
 
 Examples:
-  $ image-builder --registry "$(build-env myCustomEnv.registry)" --account "$(build-env myCustomEnv.account)" --name "$(build-env myCustomEnv.name)" --tags "$(build-env myCustomEnv.buildTags)" --engine docker --push  Build an image using parameters from your myCustomEnv build env variables
+  $ image-builder --registry "$(build-env myCustomEnv.registry)" --account "$(build-env myCustomEnv.account)" --name "$(build-env myCustomEnv.name)" --tags "$(build-env myCustomEnv.buildTag)" --engine docker --push  Build an image using parameters from your myCustomEnv build env variables
 
 
  CLI tool to help building container images using build variables and different engines on different OSes.

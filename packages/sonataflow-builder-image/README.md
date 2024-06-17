@@ -27,7 +27,7 @@ image along with the modules and scripts provided in `@kie-tools/sonataflow-imag
 - **cekit 4.11.0**: [docs.cekit.io](https://docs.cekit.io/en/latest/index.html)
 - **s2i**: [source-to-image](https://github.com/openshift/source-to-image)
 - **make**
-- **docker** or **podman**
+- **docker**
 
 ## Build
 
@@ -58,12 +58,6 @@ image along with the modules and scripts provided in `@kie-tools/sonataflow-imag
 
   ```bash
   docker images
-  ```
-
-  or
-
-  ```bash
-  podman images
   ```
 
 ## Testing the generated image (only for Linux)

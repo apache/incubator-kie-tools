@@ -53,7 +53,6 @@ def setupPnpm() {
     pnpm -r exec 'bash' '-c' 'echo -B > .mvn/maven.config'
     pnpm -r exec 'bash' '-c' 'echo -ntp >> .mvn/maven.config'
     pnpm -r exec 'bash' '-c' 'echo -Xmx2g > .mvn/jvm.config'
-    pnpm -F *-image exec sed -i 's/\\("build:prod.*".*\\)podman:build\\(.*\\)/\\1docker:build\\2/g' package.json
     """.trim()
 }
 

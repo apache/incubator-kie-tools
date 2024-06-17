@@ -23,7 +23,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     EXAMPLE_COMMIT_MESSAGE_VALIDATION_SERVICE__port: {
       default: "8090",
-      description: "Web server port",
+      description: "HTTP server port where the service will run at.",
     },
     EXAMPLE_COMMIT_MESSAGE_VALIDATION_SERVICE__validators: {
       default: "Length:5-72;IssuePrefix:kie-issues#*",

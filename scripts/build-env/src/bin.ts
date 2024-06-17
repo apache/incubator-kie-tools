@@ -25,15 +25,19 @@ import * as fs from "fs";
 import * as os from "os";
 
 import { treatSpecialPrintCases } from "./special_print_cases";
+import { treatStaticPrintCases } from "./static_print_cases";
 
 const opt = process.argv[2];
 const flag = process.argv[3];
 
 async function main() {
+  // This will exit the process if a static print case is requested using `opt`
+  treatStaticPrintCases({ opt });
+
   const { env, vars, self } = await findEnv(path.resolve("."), path.resolve("."));
 
   // This will exit the process if a special print case is requested using `opt`.
-  treatSpecialPrintCases({ opt, vars, self });
+  treatSpecialPrintCases({ opt, env, vars, self });
 
   const propertyPath = opt;
   if (!propertyPath) {
@@ -76,18 +80,18 @@ async function main() {
 }
 
 main().catch((e) => {
-  const suppliedPath = process.env[ERROR_ACCESS_LOG_FILE_ABSOLUTE_PATH_ENV_VAR_NAME];
-  const defaultPath = path.join(os.tmpdir(), "build-env-access-errors.log");
+  const suppliedLogFilePath = process.env[ERROR_ACCESS_LOG_FILE_ABSOLUTE_PATH_ENV_VAR_NAME];
+  const defaultLogFilePath = path.join(os.tmpdir(), "build-env-access-errors.log");
 
   let logFilePath;
-  if (!suppliedPath) {
-    logFilePath = defaultPath;
+  if (!suppliedLogFilePath) {
+    logFilePath = defaultLogFilePath;
     console.error(LOGS.warn.defaultingAccessErrorsLogFileToTmpDirBecauseNotSupplied({ logFilePath }));
-  } else if (!path.isAbsolute(suppliedPath)) {
-    logFilePath = defaultPath;
+  } else if (!path.isAbsolute(suppliedLogFilePath)) {
+    logFilePath = defaultLogFilePath;
     console.error(LOGS.warn.defaultingAccessErrorsLogFileToTmpDirBecauseNotSupplied({ logFilePath }));
   } else {
-    logFilePath = suppliedPath;
+    logFilePath = suppliedLogFilePath;
     console.error(LOGS.error.usingConfiguredAccessErrorLogFile({ logFilePath }));
   }
 

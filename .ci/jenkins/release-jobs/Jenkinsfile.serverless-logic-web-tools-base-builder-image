@@ -43,7 +43,7 @@ pipeline {
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry = 'docker.io'
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount = 'apache'
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName = 'incubator-kie-serverless-logic-web-tools-base-builder'
-        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags = "latest ${params.RELEASE_VERSION}"
+        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTag = "${params.RELEASE_VERSION}"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
@@ -143,7 +143,7 @@ pipeline {
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount}",
                         "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName}",
-                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags}",
+                        "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )

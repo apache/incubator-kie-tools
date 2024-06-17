@@ -44,8 +44,8 @@ execSync(`node ${require.resolve("./link_packages_with_self.js")}`, execOpts);
 console.info("\n\n[bootstrap] Generating packages graph...");
 execSync(`node ${require.resolve("./generate_packages_graph.js")} ${path.resolve(__dirname, "../../repo")}`, execOpts);
 
-console.info("\n\n[bootstrap] Generating build-env report...");
-execSync(`node ${require.resolve("./generate_build_env_report.mjs")} ${pnpmFilterString}`, execOpts);
+console.info("\n\n[bootstrap] Printing build-env report...");
+execSync(`node ${require.resolve("./print_build_env_report.mjs")} ${pnpmFilterString}`, execOpts);
 
 console.info("\n\n[bootstrap] Checking required preinstalled CLI commands...");
 execSync(`node ${require.resolve("./check_required_preinstalled_cli_commands.mjs")} ${pnpmFilterString}`, execOpts);

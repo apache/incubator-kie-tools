@@ -65,22 +65,10 @@ export async function findEnv(startDir: string, curDir: string): Promise<EnvAndV
   return findEnv(startDir, path.dirname(curDir));
 }
 
-export function treatVarToPrint<T>(varr: VarWithName) {
-  let value = getOrDefault(varr);
-  if (varr.default === undefined && value) {
-    value += " <- CHANGED 👀️ ";
-  } else if (value === undefined) {
-    value = "[unset] Default value may vary ⚠️ ";
-  } else if (value !== varr.default) {
-    value += " <- CHANGED 👀️ ";
-  }
-  return value;
-}
-
-export function parseVars<T>(vars: { [K in keyof T]: VarWithName }) {
+export function parseVarsForDotEnvPrint<T>(vars: { [K in keyof T]: VarWithName }) {
   const result: Record<string, string | undefined> = {};
   for (const v in vars) {
-    result[v] = treatVarToPrint(vars[v]);
+    result[v] = getOrDefault(vars[v]) ?? "";
   }
   return result;
 }

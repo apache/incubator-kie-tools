@@ -47,7 +47,7 @@ pipeline {
         CORS_PROXY_IMAGE__imageRegistry = 'docker.io'
         CORS_PROXY_IMAGE__imageAccount = 'apache'
         CORS_PROXY_IMAGE__imageName = 'incubator-kie-cors-proxy'
-        CORS_PROXY_IMAGE__imageBuildTags = "latest ${params.RELEASE_VERSION}"
+        CORS_PROXY_IMAGE__imageBuildTag = "${params.RELEASE_VERSION}"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
@@ -148,7 +148,7 @@ pipeline {
                         "${env.CORS_PROXY_IMAGE__imageRegistry}",
                         "${env.CORS_PROXY_IMAGE__imageAccount}",
                         "${env.CORS_PROXY_IMAGE__imageName}",
-                        "${env.CORS_PROXY_IMAGE__imageBuildTags}",
+                        "${env.CORS_PROXY_IMAGE__imageBuildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )

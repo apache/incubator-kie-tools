@@ -23,7 +23,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     FEEL_INPUT_COMPONENT_DEV_WEBAPP__feelServerUrl: {
       default: "",
-      description: "",
+      description: "For development only.",
     },
   }),
   get env() {
