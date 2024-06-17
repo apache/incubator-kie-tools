@@ -85,7 +85,7 @@ func Test_Handler_WorkflowMinimalAndPropsAndSpec(t *testing.T) {
 	assert.Equal(t, "hello-props", proj.Properties.Name)
 	assert.NotEmpty(t, proj.Properties.Data)
 	assert.Equal(t, 1, len(proj.Resources))
-	assert.Equal(t, "01-hello-resources", proj.Resources[0].Name)
+	assert.Equal(t, "01-hello-resources-specs", proj.Resources[0].Name)
 	assert.Equal(t, proj.Workflow.Spec.Resources.ConfigMaps[0].ConfigMap.Name, proj.Resources[0].Name)
 
 }
@@ -114,8 +114,8 @@ func Test_Handler_WorkflowMinimalAndPropsAndSpecAndGeneric(t *testing.T) {
 	assert.Equal(t, "hello-props", proj.Properties.Name)
 	assert.NotEmpty(t, proj.Properties.Data)
 	assert.Equal(t, 2, len(proj.Resources))
-	assert.Equal(t, "01-hello-resources", proj.Resources[0].Name)
-	assert.Equal(t, "02-hello-resources", proj.Resources[1].Name)
+	assert.Equal(t, "01-hello-resources-files", proj.Resources[0].Name)
+	assert.Equal(t, "02-hello-resources-specs", proj.Resources[1].Name)
 	assert.Equal(t, proj.Workflow.Spec.Resources.ConfigMaps[0].ConfigMap.Name, proj.Resources[0].Name)
 	assert.Equal(t, proj.Workflow.Spec.Resources.ConfigMaps[1].ConfigMap.Name, proj.Resources[1].Name)
 	data, err := getResourceDataWithFileName(proj.Resources, "myopenapi.json")
@@ -158,8 +158,8 @@ func Test_Handler_WorklflowServiceAndPropsAndSpec_SaveAs(t *testing.T) {
 
 	expectedFiles := []string{
 		"01-configmap_service-props.yaml",
-		"02-configmap_01-service-resources.yaml",
-		"03-configmap_02-service-resources.yaml",
+		"02-configmap_01-service-resources-files.yaml",
+		"03-configmap_02-service-resources-specs.yaml",
 		"04-sonataflow_service.yaml",
 	}
 	expectedKinds := []schema.GroupVersionKind{
