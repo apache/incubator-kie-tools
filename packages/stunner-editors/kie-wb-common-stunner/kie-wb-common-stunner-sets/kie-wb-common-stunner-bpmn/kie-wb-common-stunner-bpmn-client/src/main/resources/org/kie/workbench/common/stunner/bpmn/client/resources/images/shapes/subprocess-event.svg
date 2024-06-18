@@ -11,7 +11,7 @@
   height="253px"
   viewBox="-1.5 -1.5 653 253"
 >
-	<!--
+  <!--
 	- Licensed to the Apache Software Foundation (ASF) under one
 	- or more contributor license agreements.  See the NOTICE file
 	- distributed with this work for additional information
@@ -29,8 +29,8 @@
 	- specific language governing permissions and limitations
 	- under the License.
 	-->
-	<rect class="subProcess_event_background" x="0" y="0" width="650px" height="250px" rx="2" ry="2" />
-	<rect
+  <rect class="subProcess_event_background" x="0" y="0" width="650px" height="250px" rx="2" ry="2" />
+  <rect
     id="subProcess-border"
     stunner:shape-state="stroke"
     class="subProcess_event_border"
@@ -41,13 +41,13 @@
     rx="2"
     ry="2"
   />
-	<g
+  <g
     class="subProcess_group_event"
     stunner:layout="BOTTOM"
     stunner:transform="non-scalable"
     transform="translate(300,220) scale(0.05,0.05)"
   >
-		<path
+    <path
       class="subProcess_event_icon"
       d="M421.5,159.5c-15.9-3.1-31.4,6.3-36.4,21.3l0,0l0.1-0.3c0,0.1-4.3,11.8-14.9,22.9c-13,13.6-29.2,20.2-49.6,20.2
 	c-24.1,0-48.9-23-75.1-47.4c-32.3-30-68.8-64.1-117.4-64.1c-29.5,0-71.2,12.8-102.9,73.6C8.7,217.6,2.3,249.2,2,250.6v0.1
@@ -57,18 +57,18 @@
 	c0.6-1.4,4.9-11.4,13.7-21.2c13.3-14.7,29.9-21.8,50.8-21.8c23.4,0,47.9,22.8,73.8,46.9c32.5,30.3,69.4,64.6,118.7,64.6
 	c24.6,0,46.9-8.5,66.5-25.3c14-12,26.4-28.3,36.7-48.3c16.5-31.9,22.7-63.6,22.9-65C450.3,179.6,438.9,162.8,421.5,159.5z"
     />
-	</g>
-	<defs>
-		<filter id="selectShadow" height="300%" width="300%" x="-75%" y="-75%">
-			<!-- Thicken out the original shape -->
-			<feMorphology operator="dilate" radius="0" in="SourceAlpha" result="thicken" />
-			<!-- Create a drop shadow -->
-			<feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity=".6" result="droppedShadow" />
-			<!-- Layer the effects together -->
-			<feMerge>
-				<feMergeNode in="droppedShadow" />
-				<feMergeNode in="SourceGraphic" />
-			</feMerge>
-		</filter>
-	</defs>
+  </g>
+  <defs>
+    <filter id="selectShadow" height="300%" width="300%" x="-75%" y="-75%">
+      <!-- Thicken out the original shape -->
+      <feMorphology operator="dilate" radius="0" in="SourceAlpha" result="thicken" />
+      <!-- Create a drop shadow -->
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity=".6" result="droppedShadow" />
+      <!-- Layer the effects together -->
+      <feMerge>
+        <feMergeNode in="droppedShadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
 </svg>

@@ -10,7 +10,7 @@
   height="250px"
   viewBox="0 0 650 250"
 >
-	<!--
+  <!--
 	- Licensed to the Apache Software Foundation (ASF) under one
 	- or more contributor license agreements.  See the NOTICE file
 	- distributed with this work for additional information
@@ -28,6 +28,6 @@
 	- specific language governing permissions and limitations
 	- under the License.
 	-->
-	<rect class="lane_background" x="0px" y="0px" width="650px" height="250px" rx="0" ry="0" />
-	<rect class="lane_border" stunner:shape-state="stroke" x="0px" y="0px" width="650px" height="250px" rx="0" ry="0" />
+  <rect class="lane_background" x="0px" y="0px" width="650px" height="250px" rx="0" ry="0" />
+  <rect class="lane_border" stunner:shape-state="stroke" x="0px" y="0px" width="650px" height="250px" rx="0" ry="0" />
 </svg>

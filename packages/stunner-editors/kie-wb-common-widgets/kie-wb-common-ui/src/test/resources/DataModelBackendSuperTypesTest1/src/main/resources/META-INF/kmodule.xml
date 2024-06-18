@@ -17,6 +17,4 @@
   ~ specific language governing permissions and limitations
   ~ under the License.      
 -->
-<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
-
-</kmodule>
+<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule" />

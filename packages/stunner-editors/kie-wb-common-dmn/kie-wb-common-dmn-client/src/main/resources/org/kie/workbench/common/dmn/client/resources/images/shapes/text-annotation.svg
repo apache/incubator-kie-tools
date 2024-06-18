@@ -36,6 +36,6 @@
     stunner:transform="scalable"
   />
 	<g id="shapeTextAnnotation" class="textAnnotation_main" stunner:transform="scalable">
-		<rect id="main1" class="textAnnotation_background" width="100px" height="60px" />
-	</g>
+    <rect id="main1" class="textAnnotation_background" width="100px" height="60px" />
+  </g>
 </svg>

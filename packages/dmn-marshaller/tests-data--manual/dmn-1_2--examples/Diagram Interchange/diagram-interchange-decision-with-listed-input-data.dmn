@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Licensed to the Apache Software Foundation (ASF) under one
   ~ or more contributor license agreements.  See the NOTICE file
@@ -25,7 +25,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
   xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
-  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/">
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+>
   <decision id="Decision_1" name="Decision">
     <informationRequirement>
       <requiredInput href="#InputData_1" />
@@ -34,28 +35,26 @@
       <requiredInput href="#InputData_2" />
     </informationRequirement>
   </decision>
-  <inputData id="InputData_1" name="Input data 1">
-  </inputData>
-  <inputData id="InputData_2" name="Input data 2">
-  </inputData>
+  <inputData id="InputData_1" name="Input data 1" />
+  <inputData id="InputData_2" name="Input data 2" />
   <dmndi:DMNDI>
     <dmndi:DMNDiagram id="DRD1">
       <dmndi:DMNShape id="_DMNShape_Decision_1" dmnElementRef="Decision_1">
-        <dc:Bounds x="1" y="1" width="114" height="38"/>
+        <dc:Bounds x="1" y="1" width="114" height="38" />
         <dmndi:DMNLabel>
-          <dc:Bounds x="33" y="14" width="49" height="10"/>
+          <dc:Bounds x="33" y="14" width="49" height="10" />
         </dmndi:DMNLabel>
       </dmndi:DMNShape>
       <dmndi:DMNShape id="_DMNShape_InputData_1" dmnElementRef="InputData_1" isListedInputData="true">
-        <dc:Bounds x="1" y="39" width="114" height="19"/>
+        <dc:Bounds x="1" y="39" width="114" height="19" />
         <dmndi:DMNLabel>
-          <dc:Bounds x="23" y="44" width="67" height="12"/>
+          <dc:Bounds x="23" y="44" width="67" height="12" />
         </dmndi:DMNLabel>
       </dmndi:DMNShape>
       <dmndi:DMNShape id="_DMNShape_InputData_2" dmnElementRef="InputData_2" isListedInputData="true">
-        <dc:Bounds x="1" y="58" width="114" height="19"/>
+        <dc:Bounds x="1" y="58" width="114" height="19" />
         <dmndi:DMNLabel>
-          <dc:Bounds x="23" y="60" width="69" height="12"/>
+          <dc:Bounds x="23" y="60" width="69" height="12" />
         </dmndi:DMNLabel>
       </dmndi:DMNShape>
     </dmndi:DMNDiagram>

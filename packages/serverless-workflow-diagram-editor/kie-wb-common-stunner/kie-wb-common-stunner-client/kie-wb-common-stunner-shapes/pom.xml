@@ -38,5 +38,4 @@
     <module>kie-wb-common-stunner-shapes-api</module>
     <module>kie-wb-common-stunner-shapes-client</module>
   </modules>
-
 </project>

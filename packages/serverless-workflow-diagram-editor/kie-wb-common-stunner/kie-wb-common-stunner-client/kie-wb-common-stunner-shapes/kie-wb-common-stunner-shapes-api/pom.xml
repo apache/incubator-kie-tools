@@ -39,7 +39,6 @@
   </properties>
 
   <dependencies>
-
     <!-- Stunner. -->
 
     <dependency>
@@ -51,7 +50,5 @@
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-client-common</artifactId>
     </dependency>
-
   </dependencies>
-
 </project>

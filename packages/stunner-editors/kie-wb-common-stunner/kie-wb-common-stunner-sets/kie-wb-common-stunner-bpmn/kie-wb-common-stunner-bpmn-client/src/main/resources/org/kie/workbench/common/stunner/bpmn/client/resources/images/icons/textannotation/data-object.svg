@@ -36,15 +36,15 @@
 	- under the License.
 	-->
    <metadata id="metadata3785">
-		<RDF>
-			<Work rdf:about="">
-				<format>
+    <RDF>
+      <Work rdf:about="">
+        <format>
 					image/svg+xml
 				</format>
-				<type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-			</Work>
-		</RDF>
-	</metadata>
+        <type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </Work>
+    </RDF>
+  </metadata>
 	<defs id="defs3783" />
 	<namedview
     pagecolor="#ffffff"

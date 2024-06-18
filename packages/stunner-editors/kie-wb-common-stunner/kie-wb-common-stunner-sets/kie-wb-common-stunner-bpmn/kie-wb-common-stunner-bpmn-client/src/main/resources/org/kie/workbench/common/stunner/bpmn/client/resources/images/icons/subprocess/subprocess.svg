@@ -17,7 +17,7 @@ size to small values.
   height="56px"
   viewBox="0 0 61 61"
 >
-	<!--
+  <!--
 	- Licensed to the Apache Software Foundation (ASF) under one
 	- or more contributor license agreements.  See the NOTICE file
 	- distributed with this work for additional information
@@ -35,14 +35,14 @@ size to small values.
 	- specific language governing permissions and limitations
 	- under the License.
 	-->
-	<defs>
-		<filter id="svg_subprocess_blackShadow" x="0" y="0" width="200%" height="200%">
-			<feOffset result="offOut" in="SourceAlpha" dx="10" dy="10" />
-			<feGaussianBlur result="blurOut" in="offOut" stdDeviation="10" />
-			<feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
-		</filter>
-	</defs>
-	<rect
+  <defs>
+    <filter id="svg_subprocess_blackShadow" x="0" y="0" width="200%" height="200%">
+      <feOffset result="offOut" in="SourceAlpha" dx="10" dy="10" />
+      <feGaussianBlur result="blurOut" in="offOut" stdDeviation="10" />
+      <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+    </filter>
+  </defs>
+  <rect
     x="0"
     y="0"
     width="56px"
@@ -52,16 +52,16 @@ size to small values.
     style="fill:white; stroke: black; stroke-width: 5px;"
     filter="url(#svg_subprocess_blackShadow)"
   />
-	<g transform="translate(12,20) scale(0.08,0.08)" style="opacity:1">
-		<use xlink:href="subprocess-reusable.svg#subProcessReusable" />
-	</g>
-	<g transform="translate(8,20) scale(0.08,0.08)" style="opacity:1">
-		<use xlink:href="subprocess-adhoc.svg#subProcessAdHoc" />
-	</g>
-	<g transform="translate(8,20) scale(0.08,0.08)" style="opacity:1">
-		<use xlink:href="subprocess-embedded.svg#subProcessEmbedded" />
-	</g>
-	<g transform="translate(12,20) scale(0.08,0.08)" style="opacity:1">
-		<use xlink:href="subprocess-multiple-instance.svg#subProcessMultipleInstance" />
-	</g>
+  <g transform="translate(12,20) scale(0.08,0.08)" style="opacity:1">
+    <use xlink:href="subprocess-reusable.svg#subProcessReusable" />
+  </g>
+  <g transform="translate(8,20) scale(0.08,0.08)" style="opacity:1">
+    <use xlink:href="subprocess-adhoc.svg#subProcessAdHoc" />
+  </g>
+  <g transform="translate(8,20) scale(0.08,0.08)" style="opacity:1">
+    <use xlink:href="subprocess-embedded.svg#subProcessEmbedded" />
+  </g>
+  <g transform="translate(12,20) scale(0.08,0.08)" style="opacity:1">
+    <use xlink:href="subprocess-multiple-instance.svg#subProcessMultipleInstance" />
+  </g>
 </svg>

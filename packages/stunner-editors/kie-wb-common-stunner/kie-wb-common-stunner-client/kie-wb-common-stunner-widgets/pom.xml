@@ -40,7 +40,6 @@
   </properties>
 
   <dependencies>
-
     <!-- Stunner. -->
 
     <dependency>
@@ -204,7 +203,5 @@
       <artifactId>lienzo-tests</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
-
 </project>

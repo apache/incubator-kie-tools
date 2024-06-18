@@ -20,7 +20,6 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.4.0//EN"
   "http://google-web-toolkit.googlecode.com/svn/tags/2.8.2/distro-source/core/src/gwt-module.dtd">
 <module>
-
   <!-- Uberfire dependencies -->
   <inherits name="org.uberfire.UberfireAPI" />
   <inherits name="org.uberfire.client.views.PatternFlyTheme" />
@@ -41,7 +40,6 @@
   <!-- Form modeler -->
   <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient" />
   <inherits name="org.kie.workbench.common.forms.dynamic.DynamicFormsClient" />
-
 
   <!-- BPMN -->
   <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnClient" />
@@ -64,5 +62,4 @@
 
   <!-- Specify the paths for translatable code -->
   <source path="client" />
-
 </module>

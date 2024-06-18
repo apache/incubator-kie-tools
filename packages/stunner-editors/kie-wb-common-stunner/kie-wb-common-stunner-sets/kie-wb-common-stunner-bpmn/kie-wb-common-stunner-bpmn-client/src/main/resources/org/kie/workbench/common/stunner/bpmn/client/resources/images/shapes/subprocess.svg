@@ -11,7 +11,7 @@
   height="101px"
   viewBox="-1.5 -1.5 153 101"
 >
-	<!--
+  <!--
 	- Licensed to the Apache Software Foundation (ASF) under one
 	- or more contributor license agreements.  See the NOTICE file
 	- distributed with this work for additional information
@@ -29,8 +29,17 @@
 	- specific language governing permissions and limitations
 	- under the License.
 	-->
-	<rect id="subProcess-background" class="subProcess_background" x="0" y="0" width="150px" height="98px" rx="2" ry="2" />
-	<rect
+  <rect
+    id="subProcess-background"
+    class="subProcess_background"
+    x="0"
+    y="0"
+    width="150px"
+    height="98px"
+    rx="2"
+    ry="2"
+  />
+  <rect
     id="subProcess-border"
     class="subProcess_reusable_border"
     stunner:shape-state="stroke"
@@ -41,14 +50,14 @@
     rx="2"
     ry="2"
   />
-	<g
+  <g
     id="subProcessReusableNormal"
     class="subProcess_group_reusable"
     stunner:transform="non-scalable"
     stunner:layout="BOTTOM"
     transform="translate(0,0) scale(1,1)"
   >
-		<rect
+    <rect
       id="subProcessReusableNormalBoundingBox"
       class="subProcess_reusable_boundingbox"
       x="63"
@@ -56,7 +65,7 @@
       width="25px"
       height="25px"
     />
-		<path
+    <path
       id="subProcessReusableNormalReusableIcon"
       class="subProcess_reusable_icon"
       transform="translate(71.5,72.5) scale(0.03977273,0.03977273)"
@@ -64,15 +73,15 @@
 	s-7-10.3-7-17V256H24c-6.7,0-12.3-2.3-17-7s-7-10.3-7-17v-48c0-6.7,2.3-12.3,7-17s10.3-7,17-7h104V56c0-6.7,2.3-12.3,7-17
 	s10.3-7,17-7h48c6.7,0,12.3,2.3,17,7s7,10.3,7,17v104h104c6.7,0,12.3,2.3,17,7S352,177.3,352,184z"
     />
-	</g>
-	<g
+  </g>
+  <g
     id="subProcessReusableMI"
     class="subProcess_group_reusable"
     stunner:transform="non-scalable"
     stunner:layout="BOTTOM"
     transform="translate(0,0) scale(1,1)"
   >
-		<rect
+    <rect
       id="subProcessReusableMIBoundingBox"
       class="subProcess_reusable_boundingbox"
       x="63"
@@ -80,7 +89,7 @@
       width="25px"
       height="25px"
     />
-		<path
+    <path
       id="subProcessReusableMIReusableIcon"
       class="subProcess_reusable_icon"
       transform="translate(71.5,72.5) scale(0.03977273,0.03977273)"
@@ -88,30 +97,30 @@
 	s-7-10.3-7-17V256H24c-6.7,0-12.3-2.3-17-7s-7-10.3-7-17v-48c0-6.7,2.3-12.3,7-17s10.3-7,17-7h104V56c0-6.7,2.3-12.3,7-17
 	s10.3-7,17-7h48c6.7,0,12.3,2.3,17,7s7,10.3,7,17v104h104c6.7,0,12.3,2.3,17,7S352,177.3,352,184z"
     />
-		<path
+    <path
       id="subProcessReusableMIIMultipleInstanceIconParallel"
       class="subProcess_multipleInstance_icon"
       transform="translate(42,74) scale(0.035,0.035)"
       d="M92,44v424c0,6.6-5.4,12-12,12H48c-6.6,0-12-5.4-12-12V44c0-6.6,5.4-12,12-12h32C86.6,32,92,37.4,92,44z M252,44v424       c0,6.6-5.4,12-12,12h-32c-6.6,0-12-5.4-12-12V44c0-6.6,5.4-12,12-12h32C246.6,32,252,37.4,252,44z M412,44v424c0,6.6-5.4,12-12,12       h-32c-6.6,0-12-5.4-12-12V44c0-6.6,5.4-12,12-12h32C406.6,32,412,37.4,412,44z"
     />
-		<path
+    <path
       id="subProcessReusableMIIMultipleInstanceIconSequential"
       class="subProcess_multipleInstance_icon"
       transform="translate(41,75) scale(0.035,0.035)"
       d="M468 92l-424 0c-6.6 0-12-5.4-12-12L32 48c0-6.6 5.4-12 12-12L468 36c6.6 0 12 5.4 12 12l0 32C480 86.6 474.6 92 468 92zM468 252l-424 0c-6.6 0-12-5.4-12-12l0-32c0-6.6 5.4-12 12-12L468 196c6.6 0 12 5.4 12 12l0 32C480 246.6 474.6 252 468 252zM468 412l-424 0c-6.6 0-12-5.4-12-12l0-32c0-6.6 5.4-12 12-12L468 356c6.6 0 12 5.4 12 12l0 32C480 406.6 474.6 412 468 412z"
     />
-	</g>
-	<defs>
-		<filter id="selectShadow" height="300%" width="300%" x="-75%" y="-75%">
-			<!-- Thicken out the original shape -->
-			<feMorphology operator="dilate" radius="0" in="SourceAlpha" result="thicken" />
-			<!-- Create a drop shadow -->
-			<feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity=".6" result="droppedShadow" />
-			<!-- Layer the effects together -->
-			<feMerge>
-				<feMergeNode in="droppedShadow" />
-				<feMergeNode in="SourceGraphic" />
-			</feMerge>
-		</filter>
-	</defs>
+  </g>
+  <defs>
+    <filter id="selectShadow" height="300%" width="300%" x="-75%" y="-75%">
+      <!-- Thicken out the original shape -->
+      <feMorphology operator="dilate" radius="0" in="SourceAlpha" result="thicken" />
+      <!-- Create a drop shadow -->
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity=".6" result="droppedShadow" />
+      <!-- Layer the effects together -->
+      <feMerge>
+        <feMergeNode in="droppedShadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
 </svg>

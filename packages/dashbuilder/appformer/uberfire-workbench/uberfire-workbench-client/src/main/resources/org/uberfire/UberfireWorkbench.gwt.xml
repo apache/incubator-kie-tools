@@ -60,5 +60,4 @@
     <when-type-is class="org.uberfire.client.workbench.WorkbenchCloseHandler" />
     <when-property-is name="user.agent" value="gecko1_8" />
   </replace-with>
-
 </module>

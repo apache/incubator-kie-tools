@@ -24,14 +24,12 @@
   xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
   xmlns:h="urn:import:org.gwtbootstrap3.client.ui.html"
 >
+  <ui:with field="resources" type="org.uberfire.ext.widgets.common.client.resources.CommonResources" />
 
-    <ui:with field="resources" type="org.uberfire.ext.widgets.common.client.resources.CommonResources" />
-
-    <g:HTMLPanel styleName="{resources.CSS.busyPopup}">
-        <b:Well>
-            <h:Div addStyleNames="spinner spinner-lg" pull="LEFT" />
-            <h:Span ui:field="message" />
-        </b:Well>
-    </g:HTMLPanel>
-
+  <g:HTMLPanel styleName="{resources.CSS.busyPopup}">
+    <b:Well>
+      <h:Div addStyleNames="spinner spinner-lg" pull="LEFT" />
+      <h:Span ui:field="message" />
+    </b:Well>
+  </g:HTMLPanel>
 </ui:UiBinder>

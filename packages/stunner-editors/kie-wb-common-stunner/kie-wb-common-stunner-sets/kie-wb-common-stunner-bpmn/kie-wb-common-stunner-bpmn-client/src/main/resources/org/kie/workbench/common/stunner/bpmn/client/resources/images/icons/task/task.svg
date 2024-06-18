@@ -9,7 +9,7 @@
   height="68px"
   viewBox="0 0 73 73"
 >
-	<!--
+  <!--
 	- Licensed to the Apache Software Foundation (ASF) under one
 	- or more contributor license agreements.  See the NOTICE file
 	- distributed with this work for additional information
@@ -27,14 +27,14 @@
 	- specific language governing permissions and limitations
 	- under the License.
 	-->
-	<defs>
-		<filter id="svg_task_blackShadow" x="0" y="0" width="200%" height="200%">
-			<feOffset result="offOut" in="SourceAlpha" dx="10" dy="10" />
-			<feGaussianBlur result="blurOut" in="offOut" stdDeviation="10" />
-			<feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
-		</filter>
-	</defs>
-	<rect
+  <defs>
+    <filter id="svg_task_blackShadow" x="0" y="0" width="200%" height="200%">
+      <feOffset result="offOut" in="SourceAlpha" dx="10" dy="10" />
+      <feGaussianBlur result="blurOut" in="offOut" stdDeviation="10" />
+      <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+    </filter>
+  </defs>
+  <rect
     x="0"
     y="0"
     width="68px"

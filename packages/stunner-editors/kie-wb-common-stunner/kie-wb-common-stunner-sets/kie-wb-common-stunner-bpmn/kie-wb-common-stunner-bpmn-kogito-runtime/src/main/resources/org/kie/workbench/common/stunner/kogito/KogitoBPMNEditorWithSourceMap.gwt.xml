@@ -18,7 +18,6 @@
   ~ under the License.      
 -->
 <module rename-to="org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor">
-
   <inherits name="org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor" />
 
   <set-property name="compiler.useSourceMaps" value="true" />

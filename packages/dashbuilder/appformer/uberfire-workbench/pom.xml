@@ -41,5 +41,4 @@
     <module>uberfire-workbench-processors</module>
     <module>uberfire-workbench-processors-tests</module>
   </modules>
-
 </project>

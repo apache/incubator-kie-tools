@@ -34,8 +34,7 @@
   display: none;
 }
   </style>
-	<g id="icomoon-ignore" class="st0">
-	</g>
+	<g id="icomoon-ignore" class="st0" />
 	<rect x="0" y="0" width="352px" height="448px" style="fill:none; stroke: black; stroke-width: 5px;" />
 	<path
     transform="translate(44,70) scale(0.75,0.75)"

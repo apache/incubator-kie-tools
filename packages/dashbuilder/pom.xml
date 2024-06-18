@@ -369,7 +369,6 @@
         <version>${version.jakarta.activation-api}</version>
       </dependency>
 
-
       <!-- Misc -->
       <dependency>
         <groupId>net.sf.opencsv</groupId>
@@ -456,7 +455,6 @@
     </dependencies>
   </dependencyManagement>
 
-
   <modules>
     <module>dashbuilder-bom</module>
     <module>kie-soup-dataset</module>
@@ -535,7 +533,6 @@
             </archive>
           </configuration>
         </plugin>
-
 
         <plugin>
           <groupId>com.google.code.maven-replacer-plugin</groupId>
@@ -762,16 +759,19 @@
                         use 'org.slf4j:jcl-over-slf4j' instead -->
                       <exclude>commons-logging:commons-log*</exclude>
 
-                      <exclude
-                      >log4j:log4j</exclude> <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j'
+                      <exclude>log4j:log4j</exclude>
+                      <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j'
                         instead -->
-                      <exclude
-                      >javassist:javassist</exclude>  <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist'
+                      <exclude>javassist:javassist</exclude>
+                      <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist'
                         instead -->
                       <exclude>org.apache.cxf:cxf-bundle-jaxrs</exclude>
-                      <exclude>org.jboss.weld.se:weld-se</exclude> <!-- Use weld-se-core instead -->
-                      <exclude>org.jboss.weld.servlet:weld-servlet</exclude> <!-- Use weld-servlet-core instead -->
-                      <exclude>org.mockito:mockito-all</exclude> <!-- Use mockito-core instead -->
+                      <exclude>org.jboss.weld.se:weld-se</exclude>
+                      <!-- Use weld-se-core instead -->
+                      <exclude>org.jboss.weld.servlet:weld-servlet</exclude>
+                      <!-- Use weld-servlet-core instead -->
+                      <exclude>org.mockito:mockito-all</exclude>
+                      <!-- Use mockito-core instead -->
 
                       <!-- Java EE 8 Spec JARs: Use Jakarta EE 8 instead. -->
                       <exclude>javax.activation:activation</exclude>
@@ -1161,10 +1161,10 @@
           <artifactId>maven-dependency-plugin</artifactId>
           <version>${version.org.apache.maven.plugins.dependency}</version>
         </plugin>
-      <plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
-	<version>${version.org.maven.dependency.plugin}</version>
-      </plugin>
+        <plugin>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${version.org.maven.dependency.plugin}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -1178,63 +1178,63 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <executions>
-            <execution>
-              <id>validate</id>
-              <phase>validate</phase>
-              <goals>
-                <goal>check</goal>
-              </goals>
-              <configuration>
-                <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
-                <checkstyleRules>
-                  <module name="Checker">
-                    <!-- Checks for whitespace. -->
-                    <module name="FileTabCharacter">
-                      <property name="severity" value="error" />
-                      <property name="eachLine" value="true" />
+          <execution>
+            <id>validate</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
+              <checkstyleRules>
+                <module name="Checker">
+                  <!-- Checks for whitespace. -->
+                  <module name="FileTabCharacter">
+                    <property name="severity" value="error" />
+                    <property name="eachLine" value="true" />
+                  </module>
+                  <module name="TreeWalker">
+                    <!-- Import settings: getting rid of redundant import, forbid star notation, defined order of imports. -->
+                    <module name="RedundantImport" />
+                    <module name="AvoidStarImport">
+                      <property name="allowClassImports" value="false" />
+                      <property name="allowStaticMemberImports" value="false" />
                     </module>
-                    <module name="TreeWalker">
-                      <!-- Import settings: getting rid of redundant import, forbid star notation, defined order of imports. -->
-                      <module name="RedundantImport" />
-                      <module name="AvoidStarImport">
-                        <property name="allowClassImports" value="false" />
-                        <property name="allowStaticMemberImports" value="false" />
-                      </module>
-                      <module name="CustomImportOrder">
-                        <property
+                    <module name="CustomImportOrder">
+                      <property
                         name="customImportOrderRules"
                         value="STANDARD_JAVA_PACKAGE###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE###STATIC"
                       />
-                        <property name="specialImportsRegExp" value="^javax\." />
-                        <property name="standardPackageRegExp" value="^java\." />
-                        <property name="sortImportsInGroupAlphabetically" value="true" />
-                        <property name="separateLineBetweenGroups" value="true" />
-                      </module>
-                      <module name="UnusedImports" />
-                      <module name="NeedBraces">
-                        <property
+                      <property name="specialImportsRegExp" value="^javax\." />
+                      <property name="standardPackageRegExp" value="^java\." />
+                      <property name="sortImportsInGroupAlphabetically" value="true" />
+                      <property name="separateLineBetweenGroups" value="true" />
+                    </module>
+                    <module name="UnusedImports" />
+                    <module name="NeedBraces">
+                      <property
                         name="tokens"
                         value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO"
                       />
-                      </module>
-                      <module name="EqualsHashCode" />
                     </module>
-                    <module name="RegexpHeader">
-                      <property name="header" value="${checkstyle.header.template}" />
-                      <property name="fileExtensions" value="${checkstyle.header.extensions}" />
-                    </module>
+                    <module name="EqualsHashCode" />
                   </module>
-                </checkstyleRules>
-                <outputFile>${project.build.directory}/checkstyle.log</outputFile>
-                <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                <includeResources>true</includeResources>
-                <includeTestResources>true</includeTestResources>
-                <consoleOutput>false</consoleOutput>
-                <logViolationsToConsole>${checkstyle.logViolationsToConsole}</logViolationsToConsole>
-                <failsOnError>false</failsOnError>
-              </configuration>
-            </execution>
-          </executions>
+                  <module name="RegexpHeader">
+                    <property name="header" value="${checkstyle.header.template}" />
+                    <property name="fileExtensions" value="${checkstyle.header.extensions}" />
+                  </module>
+                </module>
+              </checkstyleRules>
+              <outputFile>${project.build.directory}/checkstyle.log</outputFile>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+              <includeResources>true</includeResources>
+              <includeTestResources>true</includeTestResources>
+              <consoleOutput>false</consoleOutput>
+              <logViolationsToConsole>${checkstyle.logViolationsToConsole}</logViolationsToConsole>
+              <failsOnError>false</failsOnError>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <!-- Entry needed to provide parsed version properties -->
@@ -1356,5 +1356,4 @@
       </build>
     </profile>
   </profiles>
-
 </project>

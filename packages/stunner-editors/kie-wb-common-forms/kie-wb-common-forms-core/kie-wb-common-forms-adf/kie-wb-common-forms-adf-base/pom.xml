@@ -44,5 +44,4 @@
       <artifactId>kie-wb-common-forms-api</artifactId>
     </dependency>
   </dependencies>
-
 </project>

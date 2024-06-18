@@ -6,7 +6,7 @@
   height="409"
   viewBox="0 0 1029 409"
 >
-	<!--
+  <!--
 	- Licensed to the Apache Software Foundation (ASF) under one
 	- or more contributor license agreements.  See the NOTICE file
 	- distributed with this work for additional information
@@ -24,12 +24,12 @@
 	- specific language governing permissions and limitations
 	- under the License.
 	-->
-	<defs />
-	<g transform="matrix(1,0,0,1,0,0)">
-		<g>
-			<g>
-				<g>
-					<path
+  <defs />
+  <g transform="matrix(1,0,0,1,0,0)">
+    <g>
+      <g>
+        <g>
+          <path
             fill="none"
             stroke="#d3d3d3"
             paint-order="fill stroke markers"
@@ -38,9 +38,9 @@
             stroke-opacity="0.8"
             stroke-dasharray="5"
           />
-				</g>
-				<g>
-					<path
+        </g>
+        <g>
+          <path
             fill="none"
             stroke="#d3d3d3"
             paint-order="fill stroke markers"
@@ -49,19 +49,19 @@
             stroke-opacity="0.8"
             stroke-dasharray="5"
           />
-				</g>
-			</g>
-			<g
+        </g>
+      </g>
+      <g
         id="_125D9683-9218-4BBC-94C2-59DDD449ADC6"
         bpmn2nodeid="_125D9683-9218-4BBC-94C2-59DDD449ADC6"
         transform="matrix(1,0,0,1,923,280)"
       >
-				<g>
-					<path fill="none" stroke="none" />
-				</g>
-				<g transform="matrix(0.125,0,0,0.125,0,0)">
-					<g transform="matrix(1,0,0,1,0,0)">
-						<path
+        <g>
+          <path fill="none" stroke="none" />
+        </g>
+        <g transform="matrix(0.125,0,0,0.125,0,0)">
+          <g transform="matrix(1,0,0,1,0,0)">
+            <path
               fill="#fce7e7"
               stroke="black"
               id="_125D9683-9218-4BBC-94C2-59DDD449ADC6?shapeType=BACKGROUND"
@@ -70,11 +70,11 @@
               stroke-miterlimit="10"
               stroke-dasharray=""
             />
-					</g>
-					<g>
-						<g transform="matrix(1,0,0,1,0,0)">
-							<g transform="matrix(1,0,0,1,0,0)">
-								<path
+          </g>
+          <g>
+            <g transform="matrix(1,0,0,1,0,0)">
+              <g transform="matrix(1,0,0,1,0,0)">
+                <path
                   fill="#a30000"
                   stroke="black"
                   id="_125D9683-9218-4BBC-94C2-59DDD449ADC6?shapeType=BORDER&amp;renderType=FILL"
@@ -83,12 +83,12 @@
                   stroke-miterlimit="10"
                   stroke-dasharray=""
                 />
-							</g>
-						</g>
-					</g>
-				</g>
-				<g transform="matrix(1,0,0,1,13.73828125,61)">
-					<text
+              </g>
+            </g>
+          </g>
+        </g>
+        <g transform="matrix(1,0,0,1,13.73828125,61)">
+          <text
             fill="#000000"
             stroke="none"
             font-family="Open Sans"
@@ -103,20 +103,20 @@
           >
 						End
 					</text>
-				</g>
-			</g>
-			<g transform="matrix(1,0,0,1,923,280)" />
-			<g
+        </g>
+      </g>
+      <g transform="matrix(1,0,0,1,923,280)" />
+      <g
         id="_9861B686-DF6B-4B1C-B370-F9898EEB47FD"
         bpmn2nodeid="_9861B686-DF6B-4B1C-B370-F9898EEB47FD"
         transform="matrix(1,0,0,1,319,280)"
       >
-				<g>
-					<path fill="none" stroke="none" />
-				</g>
-				<g transform="matrix(0.125,0,0,0.125,0,0)">
-					<g transform="matrix(1,0,0,1,0,0)">
-						<path
+        <g>
+          <path fill="none" stroke="none" />
+        </g>
+        <g transform="matrix(0.125,0,0,0.125,0,0)">
+          <g transform="matrix(1,0,0,1,0,0)">
+            <path
               fill="#e8fae6"
               stroke="black"
               id="_9861B686-DF6B-4B1C-B370-F9898EEB47FD?shapeType=BACKGROUND"
@@ -125,11 +125,11 @@
               stroke-miterlimit="10"
               stroke-dasharray=""
             />
-					</g>
-					<g>
-						<g transform="matrix(1,0,0,1,0,0)">
-							<g transform="matrix(1,0,0,1,0,0)">
-								<path
+          </g>
+          <g>
+            <g transform="matrix(1,0,0,1,0,0)">
+              <g transform="matrix(1,0,0,1,0,0)">
+                <path
                   fill="#4aa241"
                   stroke="black"
                   id="_9861B686-DF6B-4B1C-B370-F9898EEB47FD?shapeType=BORDER&amp;renderType=FILL"
@@ -138,12 +138,12 @@
                   stroke-miterlimit="10"
                   stroke-dasharray=""
                 />
-							</g>
-						</g>
-					</g>
-				</g>
-				<g transform="matrix(1,0,0,1,-18.4375,61)">
-					<text
+              </g>
+            </g>
+          </g>
+        </g>
+        <g transform="matrix(1,0,0,1,-18.4375,61)">
+          <text
             fill="#000000"
             stroke="none"
             font-family="Open Sans"
@@ -158,28 +158,28 @@
           >
 						StartProcess
 					</text>
-				</g>
-			</g>
-			<g transform="matrix(1,0,0,1,319,280)" />
-			<g
+        </g>
+      </g>
+      <g transform="matrix(1,0,0,1,319,280)" />
+      <g
         id="_0DBFABE8-92B0-46E6-B52E-A9593AFA4371"
         bpmn2nodeid="_0DBFABE8-92B0-46E6-B52E-A9593AFA4371"
         transform="matrix(1,0,0,1,689,257)"
       >
-				<g>
-					<path fill="none" stroke="none" />
-				</g>
-				<g transform="matrix(1,0,0,1,0,0)">
-					<path
+        <g>
+          <path fill="none" stroke="none" />
+        </g>
+        <g transform="matrix(1,0,0,1,0,0)">
+          <path
             fill="#ffffff"
             stroke="none"
             id="_0DBFABE8-92B0-46E6-B52E-A9593AFA4371?shapeType=BACKGROUND"
             paint-order="stroke fill markers"
             d=" M 2 0 L 152 0 L 152 0 A 2 2 0 0 1 154 2 L 154 100 L 154 100 A 2 2 0 0 1 152 102 L 2 102 L 2 102 A 2 2 0 0 1 0 100 L 0 2 L 0 2.0000000000000004 A 2 2 0 0 1 1.9999999999999996 0 Z"
           />
-				</g>
-				<g transform="matrix(1,0,0,1,0,0)">
-					<path
+        </g>
+        <g transform="matrix(1,0,0,1,0,0)">
+          <path
             fill="none"
             stroke="#000000"
             id="_0DBFABE8-92B0-46E6-B52E-A9593AFA4371?shapeType=BORDER&amp;renderType=STROKE"
@@ -189,11 +189,11 @@
             stroke-width="1.5"
             stroke-dasharray=""
           />
-				</g>
-				<g>
-					<g transform="matrix(0.06,0,0,0.06,9.4,9.4)">
-						<g transform="matrix(1,0,0,1,0,0)">
-							<path
+        </g>
+        <g>
+          <g transform="matrix(0.06,0,0,0.06,9.4,9.4)">
+            <g transform="matrix(1,0,0,1,0,0)">
+              <path
                 fill="#393f44"
                 stroke="black"
                 id="_0DBFABE8-92B0-46E6-B52E-A9593AFA4371_task__NPte__ikR7"
@@ -202,21 +202,21 @@
                 stroke-miterlimit="10"
                 stroke-dasharray=""
               />
-						</g>
-					</g>
-				</g>
-				<g transform="matrix(1,0,0,1,4.039999999999992,13.680000000000007)">
-					<g transform="matrix(0.04,0,0,0.04,63.36,69.12)">
-						<g transform="matrix(1,0,0,1,0,0)">
-							<path fill="none" stroke="none" />
-						</g>
-						<g transform="matrix(1,0,0,1,0,0)">
-							<path fill="none" stroke="none" />
-						</g>
-					</g>
-				</g>
-				<g transform="matrix(1,0,0,1,35,36)">
-					<text
+            </g>
+          </g>
+        </g>
+        <g transform="matrix(1,0,0,1,4.039999999999992,13.680000000000007)">
+          <g transform="matrix(0.04,0,0,0.04,63.36,69.12)">
+            <g transform="matrix(1,0,0,1,0,0)">
+              <path fill="none" stroke="none" />
+            </g>
+            <g transform="matrix(1,0,0,1,0,0)">
+              <path fill="none" stroke="none" />
+            </g>
+          </g>
+        </g>
+        <g transform="matrix(1,0,0,1,35,36)">
+          <text
             fill="#000000"
             stroke="none"
             font-family="Open Sans"
@@ -231,7 +231,7 @@
           >
 						Second Line
 					</text>
-					<text
+          <text
             fill="#000000"
             stroke="none"
             font-family="Open Sans"
@@ -246,28 +246,28 @@
           >
 						Approval
 					</text>
-				</g>
-			</g>
-			<g transform="matrix(1,0,0,1,689,257)" />
-			<g
+        </g>
+      </g>
+      <g transform="matrix(1,0,0,1,689,257)" />
+      <g
         id="_8B62D3CA-5D03-4B2B-832B-126469288BB4"
         bpmn2nodeid="_8B62D3CA-5D03-4B2B-832B-126469288BB4"
         transform="matrix(1,0,0,1,455,257)"
       >
-				<g>
-					<path fill="none" stroke="none" />
-				</g>
-				<g transform="matrix(1,0,0,1,0,0)">
-					<path
+        <g>
+          <path fill="none" stroke="none" />
+        </g>
+        <g transform="matrix(1,0,0,1,0,0)">
+          <path
             fill="#ffffff"
             stroke="none"
             id="_8B62D3CA-5D03-4B2B-832B-126469288BB4?shapeType=BACKGROUND"
             paint-order="stroke fill markers"
             d=" M 2 0 L 152 0 L 152 0 A 2 2 0 0 1 154 2 L 154 100 L 154 100 A 2 2 0 0 1 152 102 L 2 102 L 2 102 A 2 2 0 0 1 0 100 L 0 2 L 0 2.0000000000000004 A 2 2 0 0 1 1.9999999999999996 0 Z"
           />
-				</g>
-				<g transform="matrix(1,0,0,1,0,0)">
-					<path
+        </g>
+        <g transform="matrix(1,0,0,1,0,0)">
+          <path
             fill="none"
             stroke="#000000"
             id="_8B62D3CA-5D03-4B2B-832B-126469288BB4?shapeType=BORDER&amp;renderType=STROKE"
@@ -277,11 +277,11 @@
             stroke-width="1.5"
             stroke-dasharray=""
           />
-				</g>
-				<g>
-					<g transform="matrix(0.06,0,0,0.06,9.4,9.4)">
-						<g transform="matrix(1,0,0,1,0,0)">
-							<path
+        </g>
+        <g>
+          <g transform="matrix(0.06,0,0,0.06,9.4,9.4)">
+            <g transform="matrix(1,0,0,1,0,0)">
+              <path
                 fill="#393f44"
                 stroke="black"
                 id="_8B62D3CA-5D03-4B2B-832B-126469288BB4_task__NPte__ikR7"
@@ -290,21 +290,21 @@
                 stroke-miterlimit="10"
                 stroke-dasharray=""
               />
-						</g>
-					</g>
-				</g>
-				<g transform="matrix(1,0,0,1,4.039999999999992,13.680000000000007)">
-					<g transform="matrix(0.04,0,0,0.04,63.36,69.12)">
-						<g transform="matrix(1,0,0,1,0,0)">
-							<path fill="none" stroke="none" />
-						</g>
-						<g transform="matrix(1,0,0,1,0,0)">
-							<path fill="none" stroke="none" />
-						</g>
-					</g>
-				</g>
-				<g transform="matrix(1,0,0,1,41.2109375,36)">
-					<text
+            </g>
+          </g>
+        </g>
+        <g transform="matrix(1,0,0,1,4.039999999999992,13.680000000000007)">
+          <g transform="matrix(0.04,0,0,0.04,63.36,69.12)">
+            <g transform="matrix(1,0,0,1,0,0)">
+              <path fill="none" stroke="none" />
+            </g>
+            <g transform="matrix(1,0,0,1,0,0)">
+              <path fill="none" stroke="none" />
+            </g>
+          </g>
+        </g>
+        <g transform="matrix(1,0,0,1,41.2109375,36)">
+          <text
             fill="#000000"
             stroke="none"
             font-family="Open Sans"
@@ -319,7 +319,7 @@
           >
 						First Line
 					</text>
-					<text
+          <text
             fill="#000000"
             stroke="none"
             font-family="Open Sans"
@@ -334,12 +334,12 @@
           >
 						Approval
 					</text>
-				</g>
-			</g>
-			<g transform="matrix(1,0,0,1,455,257)" />
-			<g id="_9EAFE6C1-69B4-4908-B764-EF3C4A55BEE3" bpmn2nodeid="_9EAFE6C1-69B4-4908-B764-EF3C4A55BEE3">
-				<g>
-					<path
+        </g>
+      </g>
+      <g transform="matrix(1,0,0,1,455,257)" />
+      <g id="_9EAFE6C1-69B4-4908-B764-EF3C4A55BEE3" bpmn2nodeid="_9EAFE6C1-69B4-4908-B764-EF3C4A55BEE3">
+        <g>
+          <path
             fill="none"
             stroke="#000000"
             paint-order="fill stroke markers"
@@ -347,10 +347,10 @@
             stroke-miterlimit="10"
             stroke-dasharray=""
           />
-				</g>
-				<g transform="matrix(1,0,0,1,375,308)" />
-				<g transform="matrix(6.123233995736766e-17,1,-1,6.123233995736766e-17,455,303)">
-					<path
+        </g>
+        <g transform="matrix(1,0,0,1,375,308)" />
+        <g transform="matrix(6.123233995736766e-17,1,-1,6.123233995736766e-17,455,303)">
+          <path
             fill="#000000"
             stroke="#000000"
             paint-order="fill stroke markers"
@@ -358,12 +358,12 @@
             stroke-miterlimit="10"
             stroke-dasharray=""
           />
-				</g>
-				<g transform="matrix(1,0,0,1,375,298)" />
-			</g>
-			<g id="_C13522F1-230A-4C26-B5A9-533A5D9FEE9D" bpmn2nodeid="_C13522F1-230A-4C26-B5A9-533A5D9FEE9D">
-				<g>
-					<path
+        </g>
+        <g transform="matrix(1,0,0,1,375,298)" />
+      </g>
+      <g id="_C13522F1-230A-4C26-B5A9-533A5D9FEE9D" bpmn2nodeid="_C13522F1-230A-4C26-B5A9-533A5D9FEE9D">
+        <g>
+          <path
             fill="none"
             stroke="#000000"
             paint-order="fill stroke markers"
@@ -371,10 +371,10 @@
             stroke-miterlimit="10"
             stroke-dasharray=""
           />
-				</g>
-				<g transform="matrix(1,0,0,1,609,308)" />
-				<g transform="matrix(6.123233995736766e-17,1,-1,6.123233995736766e-17,689,303)">
-					<path
+        </g>
+        <g transform="matrix(1,0,0,1,609,308)" />
+        <g transform="matrix(6.123233995736766e-17,1,-1,6.123233995736766e-17,689,303)">
+          <path
             fill="#000000"
             stroke="#000000"
             paint-order="fill stroke markers"
@@ -382,12 +382,12 @@
             stroke-miterlimit="10"
             stroke-dasharray=""
           />
-				</g>
-				<g transform="matrix(1,0,0,1,609,298)" />
-			</g>
-			<g id="_078F46FB-B7A1-4DBB-BE9A-75C7CB0CCD03" bpmn2nodeid="_078F46FB-B7A1-4DBB-BE9A-75C7CB0CCD03">
-				<g>
-					<path
+        </g>
+        <g transform="matrix(1,0,0,1,609,298)" />
+      </g>
+      <g id="_078F46FB-B7A1-4DBB-BE9A-75C7CB0CCD03" bpmn2nodeid="_078F46FB-B7A1-4DBB-BE9A-75C7CB0CCD03">
+        <g>
+          <path
             fill="none"
             stroke="#000000"
             paint-order="fill stroke markers"
@@ -395,10 +395,10 @@
             stroke-miterlimit="10"
             stroke-dasharray=""
           />
-				</g>
-				<g transform="matrix(1,0,0,1,843,308)" />
-				<g transform="matrix(6.123233995736766e-17,1,-1,6.123233995736766e-17,923,303)">
-					<path
+        </g>
+        <g transform="matrix(1,0,0,1,843,308)" />
+        <g transform="matrix(6.123233995736766e-17,1,-1,6.123233995736766e-17,923,303)">
+          <path
             fill="#000000"
             stroke="#000000"
             paint-order="fill stroke markers"
@@ -406,9 +406,9 @@
             stroke-miterlimit="10"
             stroke-dasharray=""
           />
-				</g>
-				<g transform="matrix(1,0,0,1,843,298)" />
-			</g>
-		</g>
-	</g>
+        </g>
+        <g transform="matrix(1,0,0,1,843,298)" />
+      </g>
+    </g>
+  </g>
 </svg>

@@ -39,5 +39,4 @@
     <module>kie-wb-common-stunner-commons</module>
     <module>kie-wb-common-stunner-processors</module>
   </modules>
-
 </project>

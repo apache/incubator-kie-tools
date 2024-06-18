@@ -23,12 +23,10 @@
   xmlns:b='urn:import:org.gwtbootstrap3.client.ui'
   xmlns:g="urn:import:com.google.gwt.user.client.ui"
 >
-
   <ui:with field="i18nCommon" type="org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants" />
 
   <g:FlowPanel>
     <b:Button ui:field="okButton" icon="PLUS" type="PRIMARY" text="{i18nCommon.OK}" />
     <b:Button ui:field="cancelButton" type="DEFAULT" text="{i18nCommon.Cancel}" />
   </g:FlowPanel>
-
 </ui:UiBinder>

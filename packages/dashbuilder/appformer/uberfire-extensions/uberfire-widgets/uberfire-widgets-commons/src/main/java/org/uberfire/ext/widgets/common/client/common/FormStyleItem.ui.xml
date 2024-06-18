@@ -23,14 +23,12 @@
   xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
   xmlns:g="urn:import:com.google.gwt.user.client.ui"
 >
-
-    <b:FormGroup ui:field="formGroup">
-        <b:Column size="MD_4">
-            <g:FlowPanel ui:field="labelContainer" />
-        </b:Column>
-        <b:Column size="MD_8">
-            <g:FlowPanel ui:field="group" />
-        </b:Column>
-    </b:FormGroup>
-
+  <b:FormGroup ui:field="formGroup">
+    <b:Column size="MD_4">
+      <g:FlowPanel ui:field="labelContainer" />
+    </b:Column>
+    <b:Column size="MD_8">
+      <g:FlowPanel ui:field="group" />
+    </b:Column>
+  </b:FormGroup>
 </ui:UiBinder>

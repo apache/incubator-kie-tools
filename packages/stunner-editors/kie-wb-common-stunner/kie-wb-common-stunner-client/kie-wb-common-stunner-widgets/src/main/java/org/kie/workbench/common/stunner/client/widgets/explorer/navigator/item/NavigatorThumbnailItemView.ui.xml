@@ -22,7 +22,6 @@
   xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
   xmlns:g="urn:import:com.google.gwt.user.client.ui"
 >
-
   <ui:style>
     .item {
       margin: 10px;
@@ -31,31 +30,18 @@
   </ui:style>
 
   <g:FlowPanel ui:field="mainPanel">
-
     <b:Popover ui:field="popover" placement="BOTTOM">
-
       <b:Panel ui:field="panel" addStyleNames="{style.item}">
-
         <b:PanelBody ui:field="body">
-
           <b:ThumbnailLink ui:field="item">
-
             <b:Image ui:field="thumbImage" addStyleNames="{style.item}" />
-
           </b:ThumbnailLink>
-
         </b:PanelBody>
 
         <b:PanelFooter ui:field="footer">
-
           <b:Heading size="H5" ui:field="heading" />
-
         </b:PanelFooter>
-
       </b:Panel>
-
     </b:Popover>
-
   </g:FlowPanel>
-
 </ui:UiBinder>

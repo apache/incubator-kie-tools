@@ -22,23 +22,21 @@
   xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
   xmlns:c="urn:import:com.google.gwt.user.client.ui"
 >
-
-    <b:TabPanel addStyleNames="uf-tabbar-panel">
-        <c:HorizontalPanel ui:field="tabBarPanel" width="100%">
-            <c:cell horizontalAlignment='ALIGN_LEFT'>
-                <b:NavTabs ui:field="tabBar" addStyleNames="uf-tabbar-panel-nav-tabs" />
-            </c:cell>
-            <c:cell horizontalAlignment='ALIGN_RIGHT'>
-                <c:HorizontalPanel
+  <b:TabPanel addStyleNames="uf-tabbar-panel">
+    <c:HorizontalPanel ui:field="tabBarPanel" width="100%">
+      <c:cell horizontalAlignment='ALIGN_LEFT'>
+        <b:NavTabs ui:field="tabBar" addStyleNames="uf-tabbar-panel-nav-tabs" />
+      </c:cell>
+      <c:cell horizontalAlignment='ALIGN_RIGHT'>
+        <c:HorizontalPanel
           ui:field="widgetsPanel"
           addStyleNames="uf-tabbar-panel-widgets"
           width="0px"
           horizontalAlignment="ALIGN_RIGHT"
         />
-            </c:cell>
-        </c:HorizontalPanel>
+      </c:cell>
+    </c:HorizontalPanel>
 
-        <b:TabContent ui:field="tabContent" />
-    </b:TabPanel>
-
+    <b:TabContent ui:field="tabContent" />
+  </b:TabPanel>
 </ui:UiBinder>

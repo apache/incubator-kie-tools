@@ -24,8 +24,7 @@
   xmlns:b='urn:import:org.gwtbootstrap3.client.ui'
   xmlns:u='urn:import:org.uberfire.ext.widgets.common.client.common'
 >
-
-    <ui:style>
+  <ui:style>
         .datePicker {
             float: left;
             width: 275px;
@@ -35,8 +34,8 @@
         }
     </ui:style>
 
-    <g:FlowPanel>
-      <u:DatePicker ui:field="input" styleName="{style.datePicker}" addStyleNames="form-control" />
-      <b:Button ui:field="icon" icon="CALENDAR" styleName="{style.calendarIcon}" />
-    </g:FlowPanel>
+  <g:FlowPanel>
+    <u:DatePicker ui:field="input" styleName="{style.datePicker}" addStyleNames="form-control" />
+    <b:Button ui:field="icon" icon="CALENDAR" styleName="{style.calendarIcon}" />
+  </g:FlowPanel>
 </ui:UiBinder>

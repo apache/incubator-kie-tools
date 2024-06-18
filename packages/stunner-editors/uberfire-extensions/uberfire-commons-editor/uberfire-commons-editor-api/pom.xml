@@ -35,7 +35,6 @@
   <description>Uberfire Commons Editor API</description>
 
   <dependencies>
-
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-common</artifactId>
@@ -45,5 +44,4 @@
       <artifactId>uberfire-api</artifactId>
     </dependency>
   </dependencies>
-
 </project>

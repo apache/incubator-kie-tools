@@ -655,7 +655,6 @@
         <artifactId>xmlunit-assertj</artifactId>
         <version>${version.org.xmlunit}</version>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
 
@@ -1086,10 +1085,13 @@
                       <exclude>javassist:javassist</exclude>
                       <exclude>org.apache.cxf:cxf-bundle-jaxrs</exclude>
                       <exclude>org.jboss.weld.se:weld-se
-                      </exclude><!-- Use weld-se-core instead -->
+                      </exclude>
+                      <!-- Use weld-se-core instead -->
                       <exclude>org.jboss.weld.servlet:weld-servlet
-                      </exclude><!-- Use weld-servlet-core instead -->
-                      <exclude>org.mockito:mockito-all</exclude><!-- Use mockito-core instead -->
+                      </exclude>
+                      <!-- Use weld-servlet-core instead -->
+                      <exclude>org.mockito:mockito-all</exclude>
+                      <!-- Use mockito-core instead -->
                     </excludes>
                   </bannedDependencies>
                 </rules>
@@ -1853,8 +1855,10 @@
       <properties>
         <jacoco.excludes>*Lexer</jacoco.excludes>
         <code.coverage.disabled>false</code.coverage.disabled>
-        <gwt.compiler.skip>true</gwt.compiler.skip> <!-- org.codehaus.mojo:gwt-maven-plugin -->
-        <gwt.skipCompilation>true</gwt.skipCompilation> <!-- net.ltgt.gwt.maven:gwt-maven-plugin -->
+        <gwt.compiler.skip>true</gwt.compiler.skip>
+        <!-- org.codehaus.mojo:gwt-maven-plugin -->
+        <gwt.skipCompilation>true</gwt.skipCompilation>
+        <!-- net.ltgt.gwt.maven:gwt-maven-plugin -->
       </properties>
 
       <dependencyManagement>

@@ -22,7 +22,5 @@
   xmlns:ui="urn:ui:com.google.gwt.uibinder"
   xmlns:uf="urn:import:org.uberfire.ext.widgets.common.client.common"
 >
-
   <uf:FormStyleLayout ui:field="form" />
-
 </ui:UiBinder>

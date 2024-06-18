@@ -1,8 +1,13 @@
-<?xml version='1.0' encoding='UTF-8'?>
-
-<xsd:schema targetNamespace="http://www.w3.org/2001/XMLSchema" blockDefault="#all"
-  elementFormDefault="qualified" version="1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  xml:lang="EN" xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty">
+<?xml version='1.0' encoding='UTF-8' ?>
+<xsd:schema
+  targetNamespace="http://www.w3.org/2001/XMLSchema"
+  blockDefault="#all"
+  elementFormDefault="qualified"
+  version="1.0"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xml:lang="EN"
+  xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty"
+>
   <xsd:annotation>
     <xsd:documentation> Part 1 version: Id: structures.xsd,v 1.2 2004/01/15 11:34:25 ht Exp Part 2
       version: Id: datatypes.xsd,v 1.3 2004/01/23 18:11:13 ht Exp </xsd:documentation>
@@ -21,8 +26,7 @@
       this schema document</xsd:documentation>
   </xsd:annotation>
 
-  <xsd:import namespace="http://www.w3.org/XML/1998/namespace"
-    schemaLocation="xml.xsd">
+  <xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd">
     <xsd:annotation>
       <xsd:documentation> Get access to the xml: attribute groups for xml:lang as declared on
         'schema' and 'documentation' below </xsd:documentation>
@@ -171,10 +175,8 @@
           <xsd:attribute name="version" type="xsd:token" />
           <xsd:attribute name="finalDefault" type="xsd:fullDerivationSet" use="optional" default="" />
           <xsd:attribute name="blockDefault" type="xsd:blockSet" use="optional" default="" />
-          <xsd:attribute name="attributeFormDefault" type="xsd:formChoice" use="optional"
-            default="unqualified" />
-          <xsd:attribute name="elementFormDefault" type="xsd:formChoice" use="optional"
-            default="unqualified" />
+          <xsd:attribute name="attributeFormDefault" type="xsd:formChoice" use="optional" default="unqualified" />
+          <xsd:attribute name="elementFormDefault" type="xsd:formChoice" use="optional" default="unqualified" />
           <xsd:attribute name="id" type="xsd:ID" />
           <xsd:attribute ref="xml:lang" />
         </xsd:extension>
@@ -215,7 +217,6 @@
       <xsd:selector xpath=".//xsd:key|.//xsd:unique|.//xsd:keyref" />
       <xsd:field xpath="@name" />
     </xsd:key>
-
   </xsd:element>
 
   <xsd:simpleType name="allNNI">
@@ -258,7 +259,6 @@
       <xsd:element ref="xsd:sequence" />
     </xsd:choice>
   </xsd:group>
-
 
   <xsd:group name="nestedParticle">
     <xsd:choice>
@@ -526,7 +526,6 @@
     </xsd:annotation>
   </xsd:element>
 
-
   <xsd:simpleType name="blockSet">
     <xsd:annotation>
       <xsd:documentation> A utility type, not for public use</xsd:documentation>
@@ -632,7 +631,8 @@
 
   <xsd:complexType name="group" abstract="true">
     <xsd:annotation>
-      <xsd:documentation> group type for explicit groups, named top-level groups and group references</xsd:documentation>
+      <xsd:documentation
+      > group type for explicit groups, named top-level groups and group references</xsd:documentation>
     </xsd:annotation>
     <xsd:complexContent>
       <xsd:extension base="xsd:annotated">
@@ -746,7 +746,6 @@
       </xsd:choice>
     </xsd:sequence>
   </xsd:group>
-
 
   <xsd:complexType name="narrowMaxMin">
     <xsd:annotation>
@@ -865,7 +864,8 @@
   </xsd:element>
 
   <xsd:annotation>
-    <xsd:documentation> simple type for the value of the 'namespace' attr of 'any' and 'anyAttribute'</xsd:documentation>
+    <xsd:documentation
+    > simple type for the value of the 'namespace' attr of 'any' and 'anyAttribute'</xsd:documentation>
   </xsd:annotation>
   <xsd:annotation>
     <xsd:documentation> Value is ##any - - any non-conflicting WFXML/attribute at all ##other - - any
@@ -1018,8 +1018,8 @@
                     child:: is also allowed </xsd:documentation>
                 </xsd:annotation>
                 <xsd:pattern
-                  value="(\.//)?(((child::)?((\i\c*:)?(\i\c*|\*)))|\.)(/(((child::)?((\i\c*:)?(\i\c*|\*)))|\.))*(\|(\.//)?(((child::)?((\i\c*:)?(\i\c*|\*)))|\.)(/(((child::)?((\i\c*:)?(\i\c*|\*)))|\.))*)*">
-                </xsd:pattern>
+                  value="(\.//)?(((child::)?((\i\c*:)?(\i\c*|\*)))|\.)(/(((child::)?((\i\c*:)?(\i\c*|\*)))|\.))*(\|(\.//)?(((child::)?((\i\c*:)?(\i\c*|\*)))|\.)(/(((child::)?((\i\c*:)?(\i\c*|\*)))|\.))*)*"
+                />
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:attribute>
@@ -1048,8 +1048,8 @@
                     Step '/' )* ( Step | '@' NameTest ) </xsd:documentation>
                 </xsd:annotation>
                 <xsd:pattern
-                  value="(\.//)?((((child::)?((\i\c*:)?(\i\c*|\*)))|\.)/)*((((child::)?((\i\c*:)?(\i\c*|\*)))|\.)|((attribute::|@)((\i\c*:)?(\i\c*|\*))))(\|(\.//)?((((child::)?((\i\c*:)?(\i\c*|\*)))|\.)/)*((((child::)?((\i\c*:)?(\i\c*|\*)))|\.)|((attribute::|@)((\i\c*:)?(\i\c*|\*)))))*">
-                </xsd:pattern>
+                  value="(\.//)?((((child::)?((\i\c*:)?(\i\c*|\*)))|\.)/)*((((child::)?((\i\c*:)?(\i\c*|\*)))|\.)|((attribute::|@)((\i\c*:)?(\i\c*|\*))))(\|(\.//)?((((child::)?((\i\c*:)?(\i\c*|\*)))|\.)/)*((((child::)?((\i\c*:)?(\i\c*|\*)))|\.)|((attribute::|@)((\i\c*:)?(\i\c*|\*)))))*"
+                />
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:attribute>
@@ -1176,10 +1176,8 @@
     <xsd:documentation> notations for use within XML Schema schemas</xsd:documentation>
   </xsd:annotation>
 
-  <xsd:notation name="XMLSchemaStructures" public="structures"
-    system="http://www.w3.org/2000/08/XMLSchema.xsd" />
-  <xsd:notation name="XML" public="REC-xml-19980210"
-    system="http://www.w3.org/TR/1998/REC-xml-19980210" />
+  <xsd:notation name="XMLSchemaStructures" public="structures" system="http://www.w3.org/2000/08/XMLSchema.xsd" />
+  <xsd:notation name="XML" public="REC-xml-19980210" system="http://www.w3.org/TR/1998/REC-xml-19980210" />
 
   <xsd:complexType name="anyType" mixed="true">
     <xsd:annotation>
@@ -1216,21 +1214,16 @@
       <xsd:appinfo>
         <hfp:hasFacet name="length" />
         <hfp:hasFacet name="minLength" />
-        <hfp:hasFacet
-          name="maxLength" />
+        <hfp:hasFacet name="maxLength" />
         <hfp:hasFacet name="pattern" />
         <hfp:hasFacet name="enumeration" />
-        <hfp:hasFacet
-          name="whiteSpace" />
+        <hfp:hasFacet name="whiteSpace" />
         <hfp:hasProperty name="ordered" value="false" />
-        <hfp:hasProperty
-          name="bounded" value="false" />
-        <hfp:hasProperty name="cardinality"
-          value="countably infinite" />
+        <hfp:hasProperty name="bounded" value="false" />
+        <hfp:hasProperty name="cardinality" value="countably infinite" />
         <hfp:hasProperty name="numeric" value="false" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#string" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#string" />
     </xsd:annotation>
     <xsd:restriction base="xsd:anySimpleType">
       <xsd:whiteSpace value="preserve" id="string.preserve" />
@@ -1242,19 +1235,15 @@
       <xsd:appinfo>
         <hfp:hasFacet name="pattern" />
         <hfp:hasFacet name="whiteSpace" />
-        <hfp:hasProperty
-          name="ordered" value="false" />
+        <hfp:hasProperty name="ordered" value="false" />
         <hfp:hasProperty name="bounded" value="false" />
-        <hfp:hasProperty
-          name="cardinality" value="finite" />
+        <hfp:hasProperty name="cardinality" value="finite" />
         <hfp:hasProperty name="numeric" value="false" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#boolean" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#boolean" />
     </xsd:annotation>
     <xsd:restriction base="xsd:anySimpleType">
-      <xsd:whiteSpace value="collapse" fixed="true"
-        id="boolean.whiteSpace" />
+      <xsd:whiteSpace value="collapse" fixed="true" id="boolean.whiteSpace" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1263,26 +1252,20 @@
       <xsd:appinfo>
         <hfp:hasFacet name="pattern" />
         <hfp:hasFacet name="enumeration" />
-        <hfp:hasFacet
-          name="whiteSpace" />
+        <hfp:hasFacet name="whiteSpace" />
         <hfp:hasFacet name="maxInclusive" />
         <hfp:hasFacet name="maxExclusive" />
-        <hfp:hasFacet
-          name="minInclusive" />
+        <hfp:hasFacet name="minInclusive" />
         <hfp:hasFacet name="minExclusive" />
-        <hfp:hasProperty name="ordered"
-          value="total" />
+        <hfp:hasProperty name="ordered" value="total" />
         <hfp:hasProperty name="bounded" value="true" />
-        <hfp:hasProperty
-          name="cardinality" value="finite" />
+        <hfp:hasProperty name="cardinality" value="finite" />
         <hfp:hasProperty name="numeric" value="true" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#float" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#float" />
     </xsd:annotation>
     <xsd:restriction base="xsd:anySimpleType">
-      <xsd:whiteSpace value="collapse" fixed="true"
-        id="float.whiteSpace" />
+      <xsd:whiteSpace value="collapse" fixed="true" id="float.whiteSpace" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1291,26 +1274,20 @@
       <xsd:appinfo>
         <hfp:hasFacet name="pattern" />
         <hfp:hasFacet name="enumeration" />
-        <hfp:hasFacet
-          name="whiteSpace" />
+        <hfp:hasFacet name="whiteSpace" />
         <hfp:hasFacet name="maxInclusive" />
         <hfp:hasFacet name="maxExclusive" />
-        <hfp:hasFacet
-          name="minInclusive" />
+        <hfp:hasFacet name="minInclusive" />
         <hfp:hasFacet name="minExclusive" />
-        <hfp:hasProperty name="ordered"
-          value="total" />
+        <hfp:hasProperty name="ordered" value="total" />
         <hfp:hasProperty name="bounded" value="true" />
-        <hfp:hasProperty
-          name="cardinality" value="finite" />
+        <hfp:hasProperty name="cardinality" value="finite" />
         <hfp:hasProperty name="numeric" value="true" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#double" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#double" />
     </xsd:annotation>
     <xsd:restriction base="xsd:anySimpleType">
-      <xsd:whiteSpace value="collapse" fixed="true"
-        id="double.whiteSpace" />
+      <xsd:whiteSpace value="collapse" fixed="true" id="double.whiteSpace" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1319,30 +1296,22 @@
       <xsd:appinfo>
         <hfp:hasFacet name="totalDigits" />
         <hfp:hasFacet name="fractionDigits" />
-        <hfp:hasFacet
-          name="pattern" />
+        <hfp:hasFacet name="pattern" />
         <hfp:hasFacet name="whiteSpace" />
         <hfp:hasFacet name="enumeration" />
-        <hfp:hasFacet
-          name="maxInclusive" />
+        <hfp:hasFacet name="maxInclusive" />
         <hfp:hasFacet name="maxExclusive" />
-        <hfp:hasFacet
-          name="minInclusive" />
+        <hfp:hasFacet name="minInclusive" />
         <hfp:hasFacet name="minExclusive" />
-        <hfp:hasProperty name="ordered"
-          value="total" />
+        <hfp:hasProperty name="ordered" value="total" />
         <hfp:hasProperty name="bounded" value="false" />
-        <hfp:hasProperty
-          name="cardinality"
-          value="countably infinite" />
+        <hfp:hasProperty name="cardinality" value="countably infinite" />
         <hfp:hasProperty name="numeric" value="true" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#decimal" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#decimal" />
     </xsd:annotation>
     <xsd:restriction base="xsd:anySimpleType">
-      <xsd:whiteSpace value="collapse" fixed="true"
-        id="decimal.whiteSpace" />
+      <xsd:whiteSpace value="collapse" fixed="true" id="decimal.whiteSpace" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1351,27 +1320,20 @@
       <xsd:appinfo>
         <hfp:hasFacet name="pattern" />
         <hfp:hasFacet name="enumeration" />
-        <hfp:hasFacet
-          name="whiteSpace" />
+        <hfp:hasFacet name="whiteSpace" />
         <hfp:hasFacet name="maxInclusive" />
         <hfp:hasFacet name="maxExclusive" />
-        <hfp:hasFacet
-          name="minInclusive" />
+        <hfp:hasFacet name="minInclusive" />
         <hfp:hasFacet name="minExclusive" />
-        <hfp:hasProperty name="ordered"
-          value="partial" />
+        <hfp:hasProperty name="ordered" value="partial" />
         <hfp:hasProperty name="bounded" value="false" />
-        <hfp:hasProperty
-          name="cardinality"
-          value="countably infinite" />
+        <hfp:hasProperty name="cardinality" value="countably infinite" />
         <hfp:hasProperty name="numeric" value="false" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#duration" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#duration" />
     </xsd:annotation>
     <xsd:restriction base="xsd:anySimpleType">
-      <xsd:whiteSpace value="collapse" fixed="true"
-        id="duration.whiteSpace" />
+      <xsd:whiteSpace value="collapse" fixed="true" id="duration.whiteSpace" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1380,27 +1342,20 @@
       <xsd:appinfo>
         <hfp:hasFacet name="pattern" />
         <hfp:hasFacet name="enumeration" />
-        <hfp:hasFacet
-          name="whiteSpace" />
+        <hfp:hasFacet name="whiteSpace" />
         <hfp:hasFacet name="maxInclusive" />
         <hfp:hasFacet name="maxExclusive" />
-        <hfp:hasFacet
-          name="minInclusive" />
+        <hfp:hasFacet name="minInclusive" />
         <hfp:hasFacet name="minExclusive" />
-        <hfp:hasProperty name="ordered"
-          value="partial" />
+        <hfp:hasProperty name="ordered" value="partial" />
         <hfp:hasProperty name="bounded" value="false" />
-        <hfp:hasProperty
-          name="cardinality"
-          value="countably infinite" />
+        <hfp:hasProperty name="cardinality" value="countably infinite" />
         <hfp:hasProperty name="numeric" value="false" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#dateTime" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#dateTime" />
     </xsd:annotation>
     <xsd:restriction base="xsd:anySimpleType">
-      <xsd:whiteSpace value="collapse" fixed="true"
-        id="dateTime.whiteSpace" />
+      <xsd:whiteSpace value="collapse" fixed="true" id="dateTime.whiteSpace" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1409,27 +1364,20 @@
       <xsd:appinfo>
         <hfp:hasFacet name="pattern" />
         <hfp:hasFacet name="enumeration" />
-        <hfp:hasFacet
-          name="whiteSpace" />
+        <hfp:hasFacet name="whiteSpace" />
         <hfp:hasFacet name="maxInclusive" />
         <hfp:hasFacet name="maxExclusive" />
-        <hfp:hasFacet
-          name="minInclusive" />
+        <hfp:hasFacet name="minInclusive" />
         <hfp:hasFacet name="minExclusive" />
-        <hfp:hasProperty name="ordered"
-          value="partial" />
+        <hfp:hasProperty name="ordered" value="partial" />
         <hfp:hasProperty name="bounded" value="false" />
-        <hfp:hasProperty
-          name="cardinality"
-          value="countably infinite" />
+        <hfp:hasProperty name="cardinality" value="countably infinite" />
         <hfp:hasProperty name="numeric" value="false" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#time" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#time" />
     </xsd:annotation>
     <xsd:restriction base="xsd:anySimpleType">
-      <xsd:whiteSpace value="collapse" fixed="true"
-        id="time.whiteSpace" />
+      <xsd:whiteSpace value="collapse" fixed="true" id="time.whiteSpace" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1438,27 +1386,20 @@
       <xsd:appinfo>
         <hfp:hasFacet name="pattern" />
         <hfp:hasFacet name="enumeration" />
-        <hfp:hasFacet
-          name="whiteSpace" />
+        <hfp:hasFacet name="whiteSpace" />
         <hfp:hasFacet name="maxInclusive" />
         <hfp:hasFacet name="maxExclusive" />
-        <hfp:hasFacet
-          name="minInclusive" />
+        <hfp:hasFacet name="minInclusive" />
         <hfp:hasFacet name="minExclusive" />
-        <hfp:hasProperty name="ordered"
-          value="partial" />
+        <hfp:hasProperty name="ordered" value="partial" />
         <hfp:hasProperty name="bounded" value="false" />
-        <hfp:hasProperty
-          name="cardinality"
-          value="countably infinite" />
+        <hfp:hasProperty name="cardinality" value="countably infinite" />
         <hfp:hasProperty name="numeric" value="false" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#date" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#date" />
     </xsd:annotation>
     <xsd:restriction base="xsd:anySimpleType">
-      <xsd:whiteSpace value="collapse" fixed="true"
-        id="date.whiteSpace" />
+      <xsd:whiteSpace value="collapse" fixed="true" id="date.whiteSpace" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1467,27 +1408,20 @@
       <xsd:appinfo>
         <hfp:hasFacet name="pattern" />
         <hfp:hasFacet name="enumeration" />
-        <hfp:hasFacet
-          name="whiteSpace" />
+        <hfp:hasFacet name="whiteSpace" />
         <hfp:hasFacet name="maxInclusive" />
         <hfp:hasFacet name="maxExclusive" />
-        <hfp:hasFacet
-          name="minInclusive" />
+        <hfp:hasFacet name="minInclusive" />
         <hfp:hasFacet name="minExclusive" />
-        <hfp:hasProperty name="ordered"
-          value="partial" />
+        <hfp:hasProperty name="ordered" value="partial" />
         <hfp:hasProperty name="bounded" value="false" />
-        <hfp:hasProperty
-          name="cardinality"
-          value="countably infinite" />
+        <hfp:hasProperty name="cardinality" value="countably infinite" />
         <hfp:hasProperty name="numeric" value="false" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#gYearMonth" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#gYearMonth" />
     </xsd:annotation>
     <xsd:restriction base="xsd:anySimpleType">
-      <xsd:whiteSpace value="collapse" fixed="true"
-        id="gYearMonth.whiteSpace" />
+      <xsd:whiteSpace value="collapse" fixed="true" id="gYearMonth.whiteSpace" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1496,27 +1430,20 @@
       <xsd:appinfo>
         <hfp:hasFacet name="pattern" />
         <hfp:hasFacet name="enumeration" />
-        <hfp:hasFacet
-          name="whiteSpace" />
+        <hfp:hasFacet name="whiteSpace" />
         <hfp:hasFacet name="maxInclusive" />
         <hfp:hasFacet name="maxExclusive" />
-        <hfp:hasFacet
-          name="minInclusive" />
+        <hfp:hasFacet name="minInclusive" />
         <hfp:hasFacet name="minExclusive" />
-        <hfp:hasProperty name="ordered"
-          value="partial" />
+        <hfp:hasProperty name="ordered" value="partial" />
         <hfp:hasProperty name="bounded" value="false" />
-        <hfp:hasProperty
-          name="cardinality"
-          value="countably infinite" />
+        <hfp:hasProperty name="cardinality" value="countably infinite" />
         <hfp:hasProperty name="numeric" value="false" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#gYear" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#gYear" />
     </xsd:annotation>
     <xsd:restriction base="xsd:anySimpleType">
-      <xsd:whiteSpace value="collapse" fixed="true"
-        id="gYear.whiteSpace" />
+      <xsd:whiteSpace value="collapse" fixed="true" id="gYear.whiteSpace" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1525,27 +1452,20 @@
       <xsd:appinfo>
         <hfp:hasFacet name="pattern" />
         <hfp:hasFacet name="enumeration" />
-        <hfp:hasFacet
-          name="whiteSpace" />
+        <hfp:hasFacet name="whiteSpace" />
         <hfp:hasFacet name="maxInclusive" />
         <hfp:hasFacet name="maxExclusive" />
-        <hfp:hasFacet
-          name="minInclusive" />
+        <hfp:hasFacet name="minInclusive" />
         <hfp:hasFacet name="minExclusive" />
-        <hfp:hasProperty name="ordered"
-          value="partial" />
+        <hfp:hasProperty name="ordered" value="partial" />
         <hfp:hasProperty name="bounded" value="false" />
-        <hfp:hasProperty
-          name="cardinality"
-          value="countably infinite" />
+        <hfp:hasProperty name="cardinality" value="countably infinite" />
         <hfp:hasProperty name="numeric" value="false" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#gMonthDay" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#gMonthDay" />
     </xsd:annotation>
     <xsd:restriction base="xsd:anySimpleType">
-      <xsd:whiteSpace value="collapse" fixed="true"
-        id="gMonthDay.whiteSpace" />
+      <xsd:whiteSpace value="collapse" fixed="true" id="gMonthDay.whiteSpace" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1554,27 +1474,20 @@
       <xsd:appinfo>
         <hfp:hasFacet name="pattern" />
         <hfp:hasFacet name="enumeration" />
-        <hfp:hasFacet
-          name="whiteSpace" />
+        <hfp:hasFacet name="whiteSpace" />
         <hfp:hasFacet name="maxInclusive" />
         <hfp:hasFacet name="maxExclusive" />
-        <hfp:hasFacet
-          name="minInclusive" />
+        <hfp:hasFacet name="minInclusive" />
         <hfp:hasFacet name="minExclusive" />
-        <hfp:hasProperty name="ordered"
-          value="partial" />
+        <hfp:hasProperty name="ordered" value="partial" />
         <hfp:hasProperty name="bounded" value="false" />
-        <hfp:hasProperty
-          name="cardinality"
-          value="countably infinite" />
+        <hfp:hasProperty name="cardinality" value="countably infinite" />
         <hfp:hasProperty name="numeric" value="false" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#gDay" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#gDay" />
     </xsd:annotation>
     <xsd:restriction base="xsd:anySimpleType">
-      <xsd:whiteSpace value="collapse" fixed="true"
-        id="gDay.whiteSpace" />
+      <xsd:whiteSpace value="collapse" fixed="true" id="gDay.whiteSpace" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1583,27 +1496,20 @@
       <xsd:appinfo>
         <hfp:hasFacet name="pattern" />
         <hfp:hasFacet name="enumeration" />
-        <hfp:hasFacet
-          name="whiteSpace" />
+        <hfp:hasFacet name="whiteSpace" />
         <hfp:hasFacet name="maxInclusive" />
         <hfp:hasFacet name="maxExclusive" />
-        <hfp:hasFacet
-          name="minInclusive" />
+        <hfp:hasFacet name="minInclusive" />
         <hfp:hasFacet name="minExclusive" />
-        <hfp:hasProperty name="ordered"
-          value="partial" />
+        <hfp:hasProperty name="ordered" value="partial" />
         <hfp:hasProperty name="bounded" value="false" />
-        <hfp:hasProperty
-          name="cardinality"
-          value="countably infinite" />
+        <hfp:hasProperty name="cardinality" value="countably infinite" />
         <hfp:hasProperty name="numeric" value="false" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#gMonth" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#gMonth" />
     </xsd:annotation>
     <xsd:restriction base="xsd:anySimpleType">
-      <xsd:whiteSpace value="collapse" fixed="true"
-        id="gMonth.whiteSpace" />
+      <xsd:whiteSpace value="collapse" fixed="true" id="gMonth.whiteSpace" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1612,25 +1518,19 @@
       <xsd:appinfo>
         <hfp:hasFacet name="length" />
         <hfp:hasFacet name="minLength" />
-        <hfp:hasFacet
-          name="maxLength" />
+        <hfp:hasFacet name="maxLength" />
         <hfp:hasFacet name="pattern" />
         <hfp:hasFacet name="enumeration" />
-        <hfp:hasFacet
-          name="whiteSpace" />
+        <hfp:hasFacet name="whiteSpace" />
         <hfp:hasProperty name="ordered" value="false" />
-        <hfp:hasProperty
-          name="bounded" value="false" />
-        <hfp:hasProperty name="cardinality"
-          value="countably infinite" />
+        <hfp:hasProperty name="bounded" value="false" />
+        <hfp:hasProperty name="cardinality" value="countably infinite" />
         <hfp:hasProperty name="numeric" value="false" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#binary" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#binary" />
     </xsd:annotation>
     <xsd:restriction base="xsd:anySimpleType">
-      <xsd:whiteSpace value="collapse" fixed="true"
-        id="hexBinary.whiteSpace" />
+      <xsd:whiteSpace value="collapse" fixed="true" id="hexBinary.whiteSpace" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1639,25 +1539,19 @@
       <xsd:appinfo>
         <hfp:hasFacet name="length" />
         <hfp:hasFacet name="minLength" />
-        <hfp:hasFacet
-          name="maxLength" />
+        <hfp:hasFacet name="maxLength" />
         <hfp:hasFacet name="pattern" />
         <hfp:hasFacet name="enumeration" />
-        <hfp:hasFacet
-          name="whiteSpace" />
+        <hfp:hasFacet name="whiteSpace" />
         <hfp:hasProperty name="ordered" value="false" />
-        <hfp:hasProperty
-          name="bounded" value="false" />
-        <hfp:hasProperty name="cardinality"
-          value="countably infinite" />
+        <hfp:hasProperty name="bounded" value="false" />
+        <hfp:hasProperty name="cardinality" value="countably infinite" />
         <hfp:hasProperty name="numeric" value="false" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#base64Binary" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#base64Binary" />
     </xsd:annotation>
     <xsd:restriction base="xsd:anySimpleType">
-      <xsd:whiteSpace value="collapse" fixed="true"
-        id="base64Binary.whiteSpace" />
+      <xsd:whiteSpace value="collapse" fixed="true" id="base64Binary.whiteSpace" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1666,25 +1560,19 @@
       <xsd:appinfo>
         <hfp:hasFacet name="length" />
         <hfp:hasFacet name="minLength" />
-        <hfp:hasFacet
-          name="maxLength" />
+        <hfp:hasFacet name="maxLength" />
         <hfp:hasFacet name="pattern" />
         <hfp:hasFacet name="enumeration" />
-        <hfp:hasFacet
-          name="whiteSpace" />
+        <hfp:hasFacet name="whiteSpace" />
         <hfp:hasProperty name="ordered" value="false" />
-        <hfp:hasProperty
-          name="bounded" value="false" />
-        <hfp:hasProperty name="cardinality"
-          value="countably infinite" />
+        <hfp:hasProperty name="bounded" value="false" />
+        <hfp:hasProperty name="cardinality" value="countably infinite" />
         <hfp:hasProperty name="numeric" value="false" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#anyURI" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#anyURI" />
     </xsd:annotation>
     <xsd:restriction base="xsd:anySimpleType">
-      <xsd:whiteSpace value="collapse" fixed="true"
-        id="anyURI.whiteSpace" />
+      <xsd:whiteSpace value="collapse" fixed="true" id="anyURI.whiteSpace" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1693,25 +1581,19 @@
       <xsd:appinfo>
         <hfp:hasFacet name="length" />
         <hfp:hasFacet name="minLength" />
-        <hfp:hasFacet
-          name="maxLength" />
+        <hfp:hasFacet name="maxLength" />
         <hfp:hasFacet name="pattern" />
         <hfp:hasFacet name="enumeration" />
-        <hfp:hasFacet
-          name="whiteSpace" />
+        <hfp:hasFacet name="whiteSpace" />
         <hfp:hasProperty name="ordered" value="false" />
-        <hfp:hasProperty
-          name="bounded" value="false" />
-        <hfp:hasProperty name="cardinality"
-          value="countably infinite" />
+        <hfp:hasProperty name="bounded" value="false" />
+        <hfp:hasProperty name="cardinality" value="countably infinite" />
         <hfp:hasProperty name="numeric" value="false" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#QName" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#QName" />
     </xsd:annotation>
     <xsd:restriction base="xsd:anySimpleType">
-      <xsd:whiteSpace value="collapse" fixed="true"
-        id="QName.whiteSpace" />
+      <xsd:whiteSpace value="collapse" fixed="true" id="QName.whiteSpace" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1720,28 +1602,22 @@
       <xsd:appinfo>
         <hfp:hasFacet name="length" />
         <hfp:hasFacet name="minLength" />
-        <hfp:hasFacet
-          name="maxLength" />
+        <hfp:hasFacet name="maxLength" />
         <hfp:hasFacet name="pattern" />
         <hfp:hasFacet name="enumeration" />
-        <hfp:hasFacet
-          name="whiteSpace" />
+        <hfp:hasFacet name="whiteSpace" />
         <hfp:hasProperty name="ordered" value="false" />
-        <hfp:hasProperty
-          name="bounded" value="false" />
-        <hfp:hasProperty name="cardinality"
-          value="countably infinite" />
+        <hfp:hasProperty name="bounded" value="false" />
+        <hfp:hasProperty name="cardinality" value="countably infinite" />
         <hfp:hasProperty name="numeric" value="false" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#NOTATION" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#NOTATION" />
       <xsd:documentation> NOTATION cannot be used directly in a schema; rather a type must be derived
         from it by specifying at least one enumeration facet whose value is the name of a NOTATION
         declared in the schema. </xsd:documentation>
     </xsd:annotation>
     <xsd:restriction base="xsd:anySimpleType">
-      <xsd:whiteSpace value="collapse" fixed="true"
-        id="NOTATION.whiteSpace" />
+      <xsd:whiteSpace value="collapse" fixed="true" id="NOTATION.whiteSpace" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1751,19 +1627,16 @@
 
   <xsd:simpleType name="normalizedString" id="normalizedString">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#normalizedString" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#normalizedString" />
     </xsd:annotation>
     <xsd:restriction base="xsd:string">
-      <xsd:whiteSpace value="replace"
-        id="normalizedString.whiteSpace" />
+      <xsd:whiteSpace value="replace" id="normalizedString.whiteSpace" />
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="token" id="token">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#token" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#token" />
     </xsd:annotation>
     <xsd:restriction base="xsd:normalizedString">
       <xsd:whiteSpace value="collapse" id="token.whiteSpace" />
@@ -1772,16 +1645,12 @@
 
   <xsd:simpleType name="language" id="language">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#language" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#language" />
     </xsd:annotation>
     <xsd:restriction base="xsd:token">
-      <xsd:pattern
-        value="[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*"
-        id="language.pattern">
+      <xsd:pattern value="[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*" id="language.pattern">
         <xsd:annotation>
-          <xsd:documentation
-            source="http://www.ietf.org/rfc/rfc3066.txt"> pattern specifies the content of section
+          <xsd:documentation source="http://www.ietf.org/rfc/rfc3066.txt"> pattern specifies the content of section
             2.12 of XML 1.0e2 and RFC 3066 (Revised version of RFC 1766). </xsd:documentation>
         </xsd:annotation>
       </xsd:pattern>
@@ -1793,21 +1662,16 @@
       <xsd:appinfo>
         <hfp:hasFacet name="length" />
         <hfp:hasFacet name="minLength" />
-        <hfp:hasFacet
-          name="maxLength" />
+        <hfp:hasFacet name="maxLength" />
         <hfp:hasFacet name="enumeration" />
         <hfp:hasFacet name="whiteSpace" />
-        <hfp:hasFacet
-          name="pattern" />
+        <hfp:hasFacet name="pattern" />
         <hfp:hasProperty name="ordered" value="false" />
-        <hfp:hasProperty
-          name="bounded" value="false" />
-        <hfp:hasProperty name="cardinality"
-          value="countably infinite" />
+        <hfp:hasProperty name="bounded" value="false" />
+        <hfp:hasProperty name="cardinality" value="countably infinite" />
         <hfp:hasProperty name="numeric" value="false" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#IDREFS" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#IDREFS" />
     </xsd:annotation>
     <xsd:restriction>
       <xsd:simpleType>
@@ -1822,21 +1686,16 @@
       <xsd:appinfo>
         <hfp:hasFacet name="length" />
         <hfp:hasFacet name="minLength" />
-        <hfp:hasFacet
-          name="maxLength" />
+        <hfp:hasFacet name="maxLength" />
         <hfp:hasFacet name="enumeration" />
         <hfp:hasFacet name="whiteSpace" />
-        <hfp:hasFacet
-          name="pattern" />
+        <hfp:hasFacet name="pattern" />
         <hfp:hasProperty name="ordered" value="false" />
-        <hfp:hasProperty
-          name="bounded" value="false" />
-        <hfp:hasProperty name="cardinality"
-          value="countably infinite" />
+        <hfp:hasProperty name="bounded" value="false" />
+        <hfp:hasProperty name="cardinality" value="countably infinite" />
         <hfp:hasProperty name="numeric" value="false" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#ENTITIES" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#ENTITIES" />
     </xsd:annotation>
     <xsd:restriction>
       <xsd:simpleType>
@@ -1848,14 +1707,12 @@
 
   <xsd:simpleType name="NMTOKEN" id="NMTOKEN">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#NMTOKEN" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#NMTOKEN" />
     </xsd:annotation>
     <xsd:restriction base="xsd:token">
       <xsd:pattern value="\c+" id="NMTOKEN.pattern">
         <xsd:annotation>
-          <xsd:documentation
-            source="http://www.w3.org/TR/REC-xml#NT-Nmtoken"> pattern matches production 7 from the
+          <xsd:documentation source="http://www.w3.org/TR/REC-xml#NT-Nmtoken"> pattern matches production 7 from the
             XML spec </xsd:documentation>
         </xsd:annotation>
       </xsd:pattern>
@@ -1867,21 +1724,16 @@
       <xsd:appinfo>
         <hfp:hasFacet name="length" />
         <hfp:hasFacet name="minLength" />
-        <hfp:hasFacet
-          name="maxLength" />
+        <hfp:hasFacet name="maxLength" />
         <hfp:hasFacet name="enumeration" />
         <hfp:hasFacet name="whiteSpace" />
-        <hfp:hasFacet
-          name="pattern" />
+        <hfp:hasFacet name="pattern" />
         <hfp:hasProperty name="ordered" value="false" />
-        <hfp:hasProperty
-          name="bounded" value="false" />
-        <hfp:hasProperty name="cardinality"
-          value="countably infinite" />
+        <hfp:hasProperty name="bounded" value="false" />
+        <hfp:hasProperty name="cardinality" value="countably infinite" />
         <hfp:hasProperty name="numeric" value="false" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#NMTOKENS" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#NMTOKENS" />
     </xsd:annotation>
     <xsd:restriction>
       <xsd:simpleType>
@@ -1893,14 +1745,12 @@
 
   <xsd:simpleType name="Name" id="Name">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#Name" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#Name" />
     </xsd:annotation>
     <xsd:restriction base="xsd:token">
       <xsd:pattern value="\i\c*" id="Name.pattern">
         <xsd:annotation>
-          <xsd:documentation
-            source="http://www.w3.org/TR/REC-xml#NT-Name"> pattern matches production 5 from the XML
+          <xsd:documentation source="http://www.w3.org/TR/REC-xml#NT-Name"> pattern matches production 5 from the XML
             spec </xsd:documentation>
         </xsd:annotation>
       </xsd:pattern>
@@ -1909,14 +1759,12 @@
 
   <xsd:simpleType name="NCName" id="NCName">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#NCName" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#NCName" />
     </xsd:annotation>
     <xsd:restriction base="xsd:Name">
       <xsd:pattern value="[\i-[:]][\c-[:]]*" id="NCName.pattern">
         <xsd:annotation>
-          <xsd:documentation
-            source="http://www.w3.org/TR/REC-xml-names/#NT-NCName"> pattern matches production 4
+          <xsd:documentation source="http://www.w3.org/TR/REC-xml-names/#NT-NCName"> pattern matches production 4
             from the Namespaces in XML spec </xsd:documentation>
         </xsd:annotation>
       </xsd:pattern>
@@ -1925,32 +1773,28 @@
 
   <xsd:simpleType name="ID" id="ID">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#ID" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#ID" />
     </xsd:annotation>
     <xsd:restriction base="xsd:NCName" />
   </xsd:simpleType>
 
   <xsd:simpleType name="IDREF" id="IDREF">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#IDREF" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#IDREF" />
     </xsd:annotation>
     <xsd:restriction base="xsd:NCName" />
   </xsd:simpleType>
 
   <xsd:simpleType name="ENTITY" id="ENTITY">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#ENTITY" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#ENTITY" />
     </xsd:annotation>
     <xsd:restriction base="xsd:NCName" />
   </xsd:simpleType>
 
   <xsd:simpleType name="integer" id="integer">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#integer" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#integer" />
     </xsd:annotation>
     <xsd:restriction base="xsd:decimal">
       <xsd:fractionDigits value="0" fixed="true" id="integer.fractionDigits" />
@@ -1960,8 +1804,7 @@
 
   <xsd:simpleType name="nonPositiveInteger" id="nonPositiveInteger">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger" />
     </xsd:annotation>
     <xsd:restriction base="xsd:integer">
       <xsd:maxInclusive value="0" id="nonPositiveInteger.maxInclusive" />
@@ -1970,8 +1813,7 @@
 
   <xsd:simpleType name="negativeInteger" id="negativeInteger">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#negativeInteger" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#negativeInteger" />
     </xsd:annotation>
     <xsd:restriction base="xsd:nonPositiveInteger">
       <xsd:maxInclusive value="-1" id="negativeInteger.maxInclusive" />
@@ -1982,11 +1824,9 @@
     <xsd:annotation>
       <xsd:appinfo>
         <hfp:hasProperty name="bounded" value="true" />
-        <hfp:hasProperty name="cardinality"
-          value="finite" />
+        <hfp:hasProperty name="cardinality" value="finite" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#long" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#long" />
     </xsd:annotation>
     <xsd:restriction base="xsd:integer">
       <xsd:minInclusive value="-9223372036854775808" id="long.minInclusive" />
@@ -1996,8 +1836,7 @@
 
   <xsd:simpleType name="int" id="int">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#int" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#int" />
     </xsd:annotation>
     <xsd:restriction base="xsd:long">
       <xsd:minInclusive value="-2147483648" id="int.minInclusive" />
@@ -2007,8 +1846,7 @@
 
   <xsd:simpleType name="short" id="short">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#short" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#short" />
     </xsd:annotation>
     <xsd:restriction base="xsd:int">
       <xsd:minInclusive value="-32768" id="short.minInclusive" />
@@ -2018,8 +1856,7 @@
 
   <xsd:simpleType name="byte" id="byte">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#byte" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#byte" />
     </xsd:annotation>
     <xsd:restriction base="xsd:short">
       <xsd:minInclusive value="-128" id="byte.minInclusive" />
@@ -2029,8 +1866,7 @@
 
   <xsd:simpleType name="nonNegativeInteger" id="nonNegativeInteger">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger" />
     </xsd:annotation>
     <xsd:restriction base="xsd:integer">
       <xsd:minInclusive value="0" id="nonNegativeInteger.minInclusive" />
@@ -2041,44 +1877,36 @@
     <xsd:annotation>
       <xsd:appinfo>
         <hfp:hasProperty name="bounded" value="true" />
-        <hfp:hasProperty name="cardinality"
-          value="finite" />
+        <hfp:hasProperty name="cardinality" value="finite" />
       </xsd:appinfo>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#unsignedLong" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#unsignedLong" />
     </xsd:annotation>
     <xsd:restriction base="xsd:nonNegativeInteger">
-      <xsd:maxInclusive value="18446744073709551615"
-        id="unsignedLong.maxInclusive" />
+      <xsd:maxInclusive value="18446744073709551615" id="unsignedLong.maxInclusive" />
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="unsignedInt" id="unsignedInt">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#unsignedInt" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#unsignedInt" />
     </xsd:annotation>
     <xsd:restriction base="xsd:unsignedLong">
-      <xsd:maxInclusive value="4294967295"
-        id="unsignedInt.maxInclusive" />
+      <xsd:maxInclusive value="4294967295" id="unsignedInt.maxInclusive" />
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="unsignedShort" id="unsignedShort">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#unsignedShort" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#unsignedShort" />
     </xsd:annotation>
     <xsd:restriction base="xsd:unsignedInt">
-      <xsd:maxInclusive value="65535"
-        id="unsignedShort.maxInclusive" />
+      <xsd:maxInclusive value="65535" id="unsignedShort.maxInclusive" />
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="unsignedByte" id="unsignedByte">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#unsignedByte" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#unsignedByte" />
     </xsd:annotation>
     <xsd:restriction base="xsd:unsignedShort">
       <xsd:maxInclusive value="255" id="unsignedByte.maxInclusive" />
@@ -2087,8 +1915,7 @@
 
   <xsd:simpleType name="positiveInteger" id="positiveInteger">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#positiveInteger" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#positiveInteger" />
     </xsd:annotation>
     <xsd:restriction base="xsd:nonNegativeInteger">
       <xsd:minInclusive value="1" id="positiveInteger.minInclusive" />
@@ -2162,8 +1989,7 @@
           <xsd:element ref="xsd:annotation" minOccurs="0" />
           <xsd:group ref="xsd:simpleDerivation" />
         </xsd:sequence>
-        <xsd:attribute name="name" use="required"
-          type="xsd:NCName">
+        <xsd:attribute name="name" use="required" type="xsd:NCName">
           <xsd:annotation>
             <xsd:documentation> Required at the top level </xsd:documentation>
           </xsd:annotation>
@@ -2193,8 +2019,7 @@
 
   <xsd:element name="simpleType" type="xsd:topLevelSimpleType" id="simpleType">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#element-simpleType" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#element-simpleType" />
     </xsd:annotation>
   </xsd:element>
 
@@ -2229,8 +2054,7 @@
   <xsd:element name="restriction" id="restriction">
     <xsd:complexType>
       <xsd:annotation>
-        <xsd:documentation
-          source="http://www.w3.org/TR/xmlschema-2/#element-restriction"> base attribute and
+        <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#element-restriction"> base attribute and
           simpleType child are mutually exclusive, but one or other is required </xsd:documentation>
       </xsd:annotation>
       <xsd:complexContent>
@@ -2245,15 +2069,13 @@
   <xsd:element name="list" id="list">
     <xsd:complexType>
       <xsd:annotation>
-        <xsd:documentation
-          source="http://www.w3.org/TR/xmlschema-2/#element-list"> itemType attribute and simpleType
+        <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#element-list"> itemType attribute and simpleType
           child are mutually exclusive, but one or other is required </xsd:documentation>
       </xsd:annotation>
       <xsd:complexContent>
         <xsd:extension base="xsd:annotated">
           <xsd:sequence>
-            <xsd:element name="simpleType" type="xsd:localSimpleType"
-              minOccurs="0" />
+            <xsd:element name="simpleType" type="xsd:localSimpleType" minOccurs="0" />
           </xsd:sequence>
           <xsd:attribute name="itemType" type="xsd:QName" use="optional" />
         </xsd:extension>
@@ -2264,15 +2086,13 @@
   <xsd:element name="union" id="union">
     <xsd:complexType>
       <xsd:annotation>
-        <xsd:documentation
-          source="http://www.w3.org/TR/xmlschema-2/#element-union"> memberTypes attribute must be
+        <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#element-union"> memberTypes attribute must be
           non-empty or there must be at least one simpleType child </xsd:documentation>
       </xsd:annotation>
       <xsd:complexContent>
         <xsd:extension base="xsd:annotated">
           <xsd:sequence>
-            <xsd:element name="simpleType" type="xsd:localSimpleType"
-              minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="simpleType" type="xsd:localSimpleType" minOccurs="0" maxOccurs="unbounded" />
           </xsd:sequence>
           <xsd:attribute name="memberTypes" use="optional">
             <xsd:simpleType>
@@ -2288,8 +2108,7 @@
     <xsd:complexContent>
       <xsd:extension base="xsd:annotated">
         <xsd:attribute name="value" use="required" />
-        <xsd:attribute name="fixed" type="xsd:boolean" use="optional"
-          default="false" />
+        <xsd:attribute name="fixed" type="xsd:boolean" use="optional" default="false" />
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
@@ -2308,27 +2127,23 @@
 
   <xsd:element name="minExclusive" id="minExclusive" type="xsd:facet">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#element-minExclusive" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#element-minExclusive" />
     </xsd:annotation>
   </xsd:element>
   <xsd:element name="minInclusive" id="minInclusive" type="xsd:facet">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#element-minInclusive" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#element-minInclusive" />
     </xsd:annotation>
   </xsd:element>
 
   <xsd:element name="maxExclusive" id="maxExclusive" type="xsd:facet">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#element-maxExclusive" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#element-maxExclusive" />
     </xsd:annotation>
   </xsd:element>
   <xsd:element name="maxInclusive" id="maxInclusive" type="xsd:facet">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#element-maxInclusive" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#element-maxInclusive" />
     </xsd:annotation>
   </xsd:element>
 
@@ -2346,8 +2161,7 @@
 
   <xsd:element name="totalDigits" id="totalDigits">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#element-totalDigits" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#element-totalDigits" />
     </xsd:annotation>
     <xsd:complexType>
       <xsd:complexContent>
@@ -2363,41 +2177,35 @@
   </xsd:element>
   <xsd:element name="fractionDigits" id="fractionDigits" type="xsd:numFacet">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#element-fractionDigits" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#element-fractionDigits" />
     </xsd:annotation>
   </xsd:element>
 
   <xsd:element name="length" id="length" type="xsd:numFacet">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#element-length" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#element-length" />
     </xsd:annotation>
   </xsd:element>
   <xsd:element name="minLength" id="minLength" type="xsd:numFacet">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#element-minLength" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#element-minLength" />
     </xsd:annotation>
   </xsd:element>
   <xsd:element name="maxLength" id="maxLength" type="xsd:numFacet">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#element-maxLength" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#element-maxLength" />
     </xsd:annotation>
   </xsd:element>
 
   <xsd:element name="enumeration" id="enumeration" type="xsd:noFixedFacet">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#element-enumeration" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#element-enumeration" />
     </xsd:annotation>
   </xsd:element>
 
   <xsd:element name="whiteSpace" id="whiteSpace">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#element-whiteSpace" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#element-whiteSpace" />
     </xsd:annotation>
     <xsd:complexType>
       <xsd:complexContent>
@@ -2422,8 +2230,7 @@
 
   <xsd:element name="pattern" id="pattern">
     <xsd:annotation>
-      <xsd:documentation
-        source="http://www.w3.org/TR/xmlschema-2/#element-pattern" />
+      <xsd:documentation source="http://www.w3.org/TR/xmlschema-2/#element-pattern" />
     </xsd:annotation>
     <xsd:complexType>
       <xsd:complexContent>
@@ -2437,5 +2244,4 @@
       </xsd:complexContent>
     </xsd:complexType>
   </xsd:element>
-
 </xsd:schema>

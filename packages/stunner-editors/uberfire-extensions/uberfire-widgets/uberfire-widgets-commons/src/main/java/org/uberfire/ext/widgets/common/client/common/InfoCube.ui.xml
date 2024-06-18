@@ -22,7 +22,6 @@
   xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
   xmlns:bh="urn:import:org.gwtbootstrap3.client.ui.html"
 >
-
   <ui:style>
     .infoCube {
       padding: 20px;
@@ -38,5 +37,4 @@
     <b:Heading ui:field="title" size="H3" />
     <bh:Paragraph ui:field="content" addStyleNames="{style.infoCubeContent}" />
   </b:Jumbotron>
-
 </ui:UiBinder>
