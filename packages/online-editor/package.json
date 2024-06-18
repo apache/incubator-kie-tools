@@ -16,15 +16,15 @@
   "main": "dist/index.js",
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack && pnpm test:e2e",
+    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack && pnpm test-e2e",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "webpack serve --host 0.0.0.0 --env dev",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose\"",
-    "test:e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then  \"pnpm rimraf ./dist-e2e-tests\" \"pnpm test:e2e:run\"",
-    "test:e2e:open": "pnpm exec playwright show-report dist-e2e-tests/reports",
-    "test:e2e:run": "ONLINE_EDITOR_DEV__https=false pnpm exec playwright test",
-    "test:e2e:start:cors-proxy": "npm --prefix ./node_modules/@kie-tools/cors-proxy run start",
-    "test:e2e:start:extended-services": "npm --prefix ./node_modules/@kie-tools/extended-services run start"
+    "test-e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then  \"pnpm rimraf ./dist-tests-e2e\" \"pnpm test-e2e:run\"",
+    "test-e2e:open": "pnpm exec playwright show-report dist-tests-e2e/reports",
+    "test-e2e:run": "ONLINE_EDITOR_DEV__https=false pnpm exec playwright test",
+    "test-e2e:start:cors-proxy": "npm --prefix ./node_modules/@kie-tools/cors-proxy run start",
+    "test-e2e:start:extended-services": "npm --prefix ./node_modules/@kie-tools/extended-services run start"
   },
   "dependencies": {
     "@kie-tools-core/editor": "workspace:*",

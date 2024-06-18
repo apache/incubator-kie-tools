@@ -42,6 +42,9 @@ class PipelineVars implements Serializable {
     String asfReleaseGPGKeyCredentialsId = 'asf-release-gpg-signing-key'
     String asfReleaseGPGKeyPasswordCredentialsId = 'asf-release-gpg-signing-key-passphrase'
     String asfReleaseSVNStagingCredentialsId = 'asf-release-svn-staging'
+    String kieToolsCiBuildImageRegistry = 'docker.io'
+    String kieToolsCiBuildImageAccount = 'apache'
+    String kieToolsCiBuildImageName = 'incubator-kie-tools-ci-build'
 
 }
 

@@ -36,13 +36,13 @@ const customConfig = defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: "pnpm test:e2e:start:cors-proxy",
+      command: "pnpm test-e2e:start:cors-proxy",
       url: `http://localhost:${buildEnv.corsProxy.dev.port}/ping`,
       reuseExistingServer: !process.env.CI || true,
       stdout: "pipe",
     },
     {
-      command: "pnpm test:e2e:start:extended-services",
+      command: "pnpm test-e2e:start:extended-services",
       url: `http://localhost:${buildEnv.extendedServices.port}/ping`,
       reuseExistingServer: !process.env.CI || true,
       stdout: "pipe",

@@ -13,7 +13,7 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "bin": {
-    "storybook-base": "bin.js"
+    "kie-tools--storybook": "bin.js"
   },
   "main": "bin.js",
   "files": [

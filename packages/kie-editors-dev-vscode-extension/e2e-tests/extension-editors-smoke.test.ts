@@ -31,7 +31,7 @@ import PmmlEditorTestHelper from "./helpers/PmmlEditorTestHelper";
  */
 describe("KIE Editors End to End Test Suite - Smoke tests", () => {
   const RESOURCES: string = path.resolve("e2e-tests-tmp", "resources");
-  const DIST_E2E_TESTS_FOLDER: string = path.resolve("dist-e2e-tests");
+  const DIST_E2E_TESTS_FOLDER: string = path.resolve("dist-tests-e2e");
   const DEMO_BPMN: string = "demo.bpmn";
   const DEMO_DMN: string = "demo.dmn";
   const DEMO_SCESIM: string = "demo.scesim";
