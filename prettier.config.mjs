@@ -21,13 +21,14 @@ export default {
   printWidth: 120,
   trailingComma: "es5",
   plugins: ["@nice-move/prettier-plugin-package-json", "@prettier/plugin-xml"],
+  xmlWhitespaceSensitivity: "preserve",
   overrides: [
     {
       files: "package.json",
       options: { parser: "package-json" },
     },
     {
-      files: "**/*.xml",
+      files: ["**/*.dmn", "**/*.bpmn", "**/*.bpmn2", "**/*.scesim"],
       options: { parser: "xml" },
     },
   ],

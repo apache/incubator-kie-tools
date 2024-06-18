@@ -7,5 +7,7 @@ pnpm-lock.yaml
 **/go.work
 **/go.work.sum
 
-# XSD files
-**/*.xsd
+# XML DTD isn't supported by the @prettier/parser-xml plugin
+packages/xml-parser-ts-codegen/src/schemas/xsd/HFP.xsd
+packages/xml-parser-ts-codegen/src/schemas/xsd-incomplete--manually-written/HFP.xsd
+packages/xml-parser-ts-codegen/src/schemas/xsd-incomplete--manually-written/XSD.xsd
