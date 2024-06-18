@@ -24,7 +24,7 @@ import { VSCodeTestHelper, sleep } from "@kie-tools/vscode-extension-common-test
 
 describe("Serverless workflow editor - SVG generation with path setting end-to-end tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("e2e-tests-tmp", "resources", "svg-filepath");
-  const DIST_E2E_TESTS_FOLDER: string = path.resolve("dist-e2e-tests");
+  const DIST_E2E_TESTS_FOLDER: string = path.resolve("dist-tests-e2e");
 
   const FILE_NAME_NO_EXTENSION: string = "hello-world";
   const WORKFLOW_NAME: string = `${FILE_NAME_NO_EXTENSION}.sw.json`;

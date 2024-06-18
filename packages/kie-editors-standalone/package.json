@@ -21,7 +21,7 @@
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev --config webpack.build-resources.config.js && pnpm build:preprocessor && webpack --env dev --config webpack.package-resources.config.js",
     "build:preprocessor": "node dist/preprocessor/preprocessor.js",
-    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack --config webpack.build-resources.config.js && pnpm build:preprocessor && webpack --config webpack.package-resources.config.js && pnpm test:e2e",
+    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack --config webpack.build-resources.config.js && pnpm build:preprocessor && webpack --config webpack.package-resources.config.js && pnpm test-e2e",
     "build:productization": "pnpm build:prod",
     "cy:open": "run-script-os",
     "cy:open:darwin:linux": "cypress open --project e2e-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
@@ -31,11 +31,11 @@
     "cy:run:win32": "pnpm powershell \"cypress run -b chrome --project e2e-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"\"",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
-    "postreport": "jrm ./dist-e2e-tests/junit-transformed.xml \"./dist-e2e-tests/junit-report*.xml\"",
+    "postreport": "jrm ./dist-tests-e2e/junit-transformed.xml \"./dist-tests-e2e/junit-report*.xml\"",
     "start": "webpack serve --host 0.0.0.0 --config webpack.package-resources.config.js",
     "start:it": "webpack serve --host 0.0.0.0 --config ./e2e-tests/webpack.config.js",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "test:e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm rimraf ./dist-e2e-tests\" \"pnpm start-server-and-test start:it http-get://0.0.0.0:$(build-env standaloneEditors.dev.port) cy:run\" \"pnpm postreport\""
+    "test-e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm rimraf ./dist-tests-e2e\" \"pnpm start-server-and-test start:it http-get://0.0.0.0:$(build-env standaloneEditors.dev.port) cy:run\" \"pnpm postreport\""
   },
   "dependencies": {
     "@kie-tools/kie-bc-editors": "workspace:*"

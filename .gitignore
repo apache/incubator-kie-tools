@@ -25,7 +25,7 @@
 **/dist-dev/
 **/dist-dev-webapp/
 **/dist-tests/
-**/dist-e2e-tests/
+**/dist-tests-e2e/
 **/dist-storybook/
 **/e2e-tests-tmp/
 **/coverage/
