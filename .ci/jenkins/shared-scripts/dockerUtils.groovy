@@ -43,7 +43,7 @@ def checkImageExistsInRegistry(String registry, String account, String image, St
             echo "${DOCKER_TOKEN}" | docker login -u "${DOCKER_USER}" --password-stdin $registry
             """.trim()
             result = sh returnStatus: true, script: """
-            docker manifest inspect $registry/$account/$image:$tag > /dev/null 2>&1
+            docker manifest inspect $registry/$account/$image:$tag > /dev/null
             """.trim()
             sh 'docker logout'
             return result == 0
