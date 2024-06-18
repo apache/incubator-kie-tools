@@ -37,19 +37,19 @@ module.exports = composeEnv([rootEnv], {
     },
     DEV_DEPLOYMENT_BASE_IMAGE__registry: {
       default: "docker.io",
-      description: "The image registry.",
+      description: "E.g., `docker.io` or `quay.io`.",
     },
     DEV_DEPLOYMENT_BASE_IMAGE__account: {
       default: "apache",
-      description: "The image registry account.",
+      description: "E.g,. `apache` or `kie-tools-bot`",
     },
     DEV_DEPLOYMENT_BASE_IMAGE__name: {
       default: "incubator-kie-sandbox-dev-deployment-base",
-      description: "The image name.",
+      description: "Name of the image itself.",
     },
     DEV_DEPLOYMENT_BASE_IMAGE__buildTag: {
       default: rootEnv.env.root.streamName,
-      description: "The image tag.",
+      description: "Tag version of this image. E.g., `main` or `10.0.x` or `10.0.0",
     },
   }),
   get env() {
