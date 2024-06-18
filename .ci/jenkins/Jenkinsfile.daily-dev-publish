@@ -45,12 +45,12 @@ pipeline {
 
         DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry = 'docker.io'
         DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account = 'apache'
-        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name = 'incubator-dev-deployment-kogito-quarkus-blank-app'
+        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name = 'incubator-kie-sandbox-dev-deployment-quarkus-blank-app'
         DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag = 'daily-dev'
 
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry = 'docker.io'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account = 'apache'
-        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name = 'incubator-dev-deployment-dmn-form-webapp'
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name = 'incubator-kie-sandbox-dev-deployment-dmn-form-webapp'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTag = 'daily-dev'
 
         ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'docker.io'
@@ -63,7 +63,7 @@ pipeline {
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = 'daily-dev'
         ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageRegistry = 'docker.io'
         ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageAccount = 'apache'
-        ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageName = 'incubator-kie-sandbox-dev-deployment-kogito-quarkus-blank-app'
+        ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageName = 'incubator-kie-sandbox-dev-deployment-quarkus-blank-app'
         ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageTag = 'daily-dev'
         ONLINE_EDITOR__corsProxyUrl = 'https://daily-dev-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
 
@@ -101,7 +101,7 @@ pipeline {
         SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag = 'daily-dev'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry = 'docker.io'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount = 'apache'
-        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName = 'incubator-serverless-logic-web-tools-swf-builder'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName = 'incubator-kie-serverless-logic-web-tools-swf-builder'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag = 'daily-dev'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags = 'daily-dev'
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry = 'docker.io'

@@ -1,4 +1,4 @@
-FROM cruizba/ubuntu-dind:noble-26.1.3
+FROM cruizba/ubuntu-dind:jammy-26.1.3
 
 SHELL ["/bin/bash", "-c"]
 
@@ -45,7 +45,7 @@ xvfb \
 fluxbox \
 subversion && \
 apt-get clean autoclean && apt-get autoremove --yes && \
-rm -rf /var/lib/{apt,dpkg,cache,log}/
+rm -rf /var/lib/{apt,cache,log}/
 
 # Install firefox
 RUN wget -O /tmp/firefox-latest.tar.bz2 "https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US" && \
@@ -117,8 +117,8 @@ RUN wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/opensh
     sudo tar -C /usr/bin/ -xvzf /tmp/openshift-client-linux.tar.gz oc && rm /tmp/openshift-client-linux.tar.gz
 
 # Helm CLI setup
-RUN wget https://get.helm.sh/helm-v3.14.3-linux-amd64.tar.gz -P /tmp && \
-    sudo tar -C /usr/bin/ -zxvf /tmp/helm-v3.14.3-linux-amd64.tar.gz linux-amd64/helm --strip-components 1 && rm /tmp/helm-v3.14.3-linux-amd64.tar.gz
+RUN wget https://get.helm.sh/helm-v3.15.2-linux-amd64.tar.gz -P /tmp && \
+    sudo tar -C /usr/bin/ -zxvf /tmp/helm-v3.15.2-linux-amd64.tar.gz linux-amd64/helm --strip-components 1 && rm /tmp/helm-v3.15.2-linux-amd64.tar.gz
 
 # Python setup
 RUN sudo update-alternatives --install /usr/local/bin/python python $(which python3) 1 && \
