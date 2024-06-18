@@ -27,19 +27,19 @@ module.exports = composeEnv([rootEnv, sonataflowBuilderImageEnv, sonataflowDevMo
   vars: varsWithName({
     SONATAFLOW_OPERATOR__registry: {
       default: "docker.io",
-      description: "The image registry.",
+      description: "E.g., `docker.io` or `quay.io`.",
     },
     SONATAFLOW_OPERATOR__account: {
       default: "apache",
-      description: "The image registry account.",
+      description: "E.g,. `apache` or `kie-tools-bot`",
     },
     SONATAFLOW_OPERATOR__name: {
       default: "incubator-kie-sonataflow-operator",
-      description: "The image name.",
+      description: "Name of the image itself.",
     },
     SONATAFLOW_OPERATOR__buildTag: {
       default: rootEnv.env.root.streamName,
-      description: "The image tag",
+      description: "Tag version of this image. E.g., `main` or `10.0.x` or `10.0.0",
     },
     SONATAFLOW_OPERATOR__sonataflowBuilderImage: {
       default: `${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.registry}/${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.account}/${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.name}:${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.tag}`,

@@ -25,19 +25,19 @@ module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     MAVEN_M2_REPO_VIA_HTTP_IMAGE__registry: {
       default: "docker.io",
-      description: "The image registry.",
+      description: "E.g., `docker.io` or `quay.io`.",
     },
     MAVEN_M2_REPO_VIA_HTTP_IMAGE__account: {
       default: "apache",
-      description: "The image registry account.",
+      description: "E.g,. `apache` or `kie-tools-bot`",
     },
     MAVEN_M2_REPO_VIA_HTTP_IMAGE__name: {
       default: "incubator-kie-tools-maven-m2-repo-via-http",
-      description: "The image name.",
+      description: "Name of the image itself.",
     },
     MAVEN_M2_REPO_VIA_HTTP_IMAGE__buildTag: {
       default: rootEnv.env.root.streamName,
-      description: "The image tag.",
+      description: "Tag version of this image. E.g., `main` or `10.0.x` or `10.0.0",
     },
   }),
   get env() {
