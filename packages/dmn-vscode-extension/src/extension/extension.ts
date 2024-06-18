@@ -72,6 +72,8 @@ export function activate(context: vscode.ExtensionContext) {
     backendProxy: backendProxy,
   });
 
+  KogitoVsCode.VsCodeRecommendation.showExtendedServicesRecommendation(context);
+
   console.info("Extension is successfully setup.");
 }
 

@@ -1,0 +1,9 @@
+{
+  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": false,
+    "declarationMap": false
+  },
+  "include": ["src"]
+}
