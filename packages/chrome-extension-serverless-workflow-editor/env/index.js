@@ -35,7 +35,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     },
     SWF_CHROME_EXTENSION__e2eTestingToken: {
       default: "",
-      description: "", // TODO: Fill this
+      description: "GitHub token used to 'log-in' during E2E tests. 'Log-in' will be skipeed if it is empty.",
     },
   }),
   get env() {
