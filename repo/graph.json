@@ -127,6 +127,7 @@
       { "id": "dmn-vscode-extension" },
       { "id": "@kie-tools/extended-services" },
       { "id": "@kie-tools/extended-services-java" },
+      { "id": "extended-services-vscode-extension" },
       { "id": "@kie-tools/form-generation-tool" },
       { "id": "@kie-tools/uniforms-bootstrap4-codegen" },
       { "id": "@kie-tools/uniforms-patternfly-codegen" },
@@ -1543,6 +1544,21 @@
         "weight": 1
       },
       {
+        "source": "extended-services-vscode-extension",
+        "target": "@kie-tools-core/vscode-extension",
+        "weight": 1
+      },
+      {
+        "source": "extended-services-vscode-extension",
+        "target": "@kie-tools-core/webpack-base",
+        "weight": 1
+      },
+      {
+        "source": "extended-services-vscode-extension",
+        "target": "@kie-tools/extended-services-java",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/form-generation-tool",
         "target": "@kie-tools/uniforms-bootstrap4-codegen",
         "weight": 1
@@ -2369,6 +2385,7 @@
     ["@kie-tools/extended-services", "packages/extended-services"],
     ["@kie-tools/extended-services-api", "packages/extended-services-api"],
     ["@kie-tools/extended-services-java", "packages/extended-services-java"],
+    ["extended-services-vscode-extension", "packages/extended-services-vscode-extension"],
     ["@kie-tools/feel-input-component", "packages/feel-input-component"],
     ["@kie-tools/form", "packages/form"],
     ["@kie-tools/form-dmn", "packages/form-dmn"],

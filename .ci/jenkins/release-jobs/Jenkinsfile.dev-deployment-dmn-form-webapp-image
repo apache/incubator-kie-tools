@@ -42,7 +42,7 @@ pipeline {
 
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry = 'docker.io'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account = 'apache'
-        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name = 'incubator-dev-deployment-dmn-form-webapp'
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name = 'incubator-kie-sandbox-dev-deployment-dmn-form-webapp'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTag = "latest ${params.RELEASE_VERSION}"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
