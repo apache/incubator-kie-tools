@@ -83,21 +83,16 @@ public class JavaEngine {
         item.setFqcn(fqcn);
 
         String content = this.evaluate(Templates.TEMPLATE_ACCESSORS, item);
+        String varLine = 5;
+        String varMiddleChar = 2;
 
-        return new BuildInformation(filePath, getContent(filePath), content, 5, getFirstCharInLinePosition(content, 5) + 2);
+        return new BuildInformation(filePath, getContent(filePath), content, varLine, getFirstCharInLinePosition(content, varLine) + varMiddleChar);
     }
 
     protected int getFirstCharInLinePosition(String content, int lineNumber) {
         String[] split = content.split("\n");
         String line = split[lineNumber];
-        int index = 0;
-
-        for (int i = 0; i < line.length(); i++) {
-            if (line.charAt(i) != ' ') {
-                index = i;
-                break;
-            }
-        }
+        int index = line.indexOf(line.trim());
 
         return index + 1;
     }
