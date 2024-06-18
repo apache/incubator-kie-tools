@@ -271,7 +271,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         label: "ceiling(n, scale)",
         insertText: "ceiling($1, $2)",
         description:
-          "returns `n` with given scale and rounding mode ceiling. If at least one of `n` or `scale` is null, the result is null.",
+          "Returns `n` with given scale and rounding mode ceiling. If at least one of `n` or `scale` is null, the result is null. The `scale` must be in the range [−6111..6176].",
         parameters: [
           ["n", `\`number\``],
           ["scale", `\`number\``],
@@ -492,7 +492,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "decimal(n, scale)",
         insertText: "decimal($1, $2)",
-        description: "Returns `n` with given `scale`",
+        description: "Returns `n` with given `scale. The `scale` must be in the range [−6111..6176].`",
         parameters: [
           ["n", `\`number\``],
           ["scale", `\`number\``],
@@ -659,7 +659,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         label: "floor(n, scale)",
         insertText: "floor($1, $2)",
         description:
-          "returns `n` with given scale and rounding mode flooring. If at least one of `n` or scale is null, the result is null.",
+          "Returns `n` with given scale and rounding mode flooring. If at least one of `n` or scale is null, the result is null. The `scale` must be in the range [−6111..6176].",
         parameters: [
           ["n", `\`number\``],
           ["scale", `\`number\``],
