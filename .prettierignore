@@ -1,13 +1,9 @@
 pnpm-lock.yaml
 
-# Go files
-**/*.go
+# @prettier/parser-xml tries to format *.mod files as they are used to create Document Type Definitions (DTDs).
 **/go.mod
-**/go.sum
-**/go.work
-**/go.work.sum
 
-# XML DTD isn't supported by the @prettier/parser-xml plugin
+# @prettier/parser-xml plugin doesn't support DTD declaration
 packages/xml-parser-ts-codegen/src/schemas/xsd/HFP.xsd
 packages/xml-parser-ts-codegen/src/schemas/xsd-incomplete--manually-written/HFP.xsd
 packages/xml-parser-ts-codegen/src/schemas/xsd-incomplete--manually-written/XSD.xsd

@@ -18,7 +18,7 @@
     "build:prod:linux:darwin": "pnpm cleanup && run-script-if --bool $([ $(command -v helm) ] && echo true || echo false) --then \"helm package -u -d ./dist ./src\"",
     "build:prod:win32": "pnpm cleanup && run-script-if --bool \"$([bool](Get-Command helm -errorAction SilentlyContinue))\" --then \"helm package -u -d ./dist ./src\"",
     "cleanup": "rimraf Chart.lock && rimraf dist",
-    "format": "prettier --write .",
+    "format": "prettier --write . --ignore-path=../../.prettierignore --ignore-path=../../.gitignore",
     "helm:delete": "helm delete kie-sandbox-helm-chart",
     "helm:install": "pnpm cleanup && helm install --dependency-update kie-sandbox-helm-chart ./src",
     "install": "node install.js && pnpm update-readmes",
