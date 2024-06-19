@@ -45,6 +45,7 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableR
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils;
+import org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils.FindVariableUsagesFlag;
 import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldDefinition;
 import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldType;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -53,7 +54,6 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils.FindVariableUsagesFlag;
 import static org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils.FindVariableUsagesFlag.CASE_FILE_VARIABLE;
 
 @Dependent
@@ -278,11 +278,15 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     public void removeVariable(final VariableRow variableRow) {
 
         if (isBoundToNodes(variableRow.getName())) {
-            notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.CONSTANTS.DeleteDiagramVariableError(), NotificationEvent.NotificationType.ERROR));
+            fireDeleteDiagramVariableError();
         } else {
             view.getVariableRows().remove(variableRow);
             doSave();
         }
+    }
+
+    protected void fireDeleteDiagramVariableError() {
+        notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.CONSTANTS.DeleteDiagramVariableError(), NotificationEvent.NotificationType.ERROR));
     }
 
     @Override
