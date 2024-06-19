@@ -83,8 +83,8 @@ public class JavaEngine {
         item.setFqcn(fqcn);
 
         String content = this.evaluate(Templates.TEMPLATE_ACCESSORS, item);
-        String varLine = 5;
-        String varMiddleChar = 2;
+        int varLine = 5;
+        int varMiddleChar = 2;
 
         return new BuildInformation(filePath, getContent(filePath), content, varLine, getFirstCharInLinePosition(content, varLine) + varMiddleChar);
     }
