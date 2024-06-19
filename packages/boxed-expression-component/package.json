@@ -29,6 +29,7 @@
     "@kie-tools/dmn-marshaller": "workspace:*",
     "@kie-tools/feel-input-component": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
+    "@kie-tools/jest-base": "workspace:*",
     "@kie-tools/xml-parser-ts": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",

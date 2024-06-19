@@ -17,4 +17,11 @@
  * under the License.
  */
 
-import "@testing-library/jest-dom";
+/** @type {import('jest').Config} */
+module.exports = {
+  preset: "ts-jest/presets/js-with-babel-esm",
+  reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
+  moduleDirectories: ["node_modules"],
+  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
+  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
+};

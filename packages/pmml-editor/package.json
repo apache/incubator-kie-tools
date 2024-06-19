@@ -68,6 +68,7 @@
     "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/jest-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@testing-library/jest-dom": "^6.4.6",

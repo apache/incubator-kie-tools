@@ -35,6 +35,7 @@
     "@babel/preset-env": "^7.16.0",
     "@kie-tools-core/switch-expression-ts": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/jest-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/jest": "^29.5.12",

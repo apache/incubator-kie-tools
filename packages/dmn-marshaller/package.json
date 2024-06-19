@@ -42,6 +42,7 @@
     "@kie-tools/dmn-marshaller-backend-compatibility-tester": "workspace:*",
     "@kie-tools/dmn-testing-models": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/jest-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@kie-tools/xml-parser-ts-codegen": "workspace:*",

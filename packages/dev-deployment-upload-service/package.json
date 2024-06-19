@@ -34,6 +34,7 @@
     "test:win32:darwin": "echo 'Not supported'"
   },
   "devDependencies": {
+    "@kie-tools/jest-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@types/jest": "^29.5.12",
     "cross-env": "^7.0.3",

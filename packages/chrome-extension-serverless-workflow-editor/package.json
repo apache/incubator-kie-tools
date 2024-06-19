@@ -34,6 +34,7 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/chrome-extension-test-helper": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/jest-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/serverless-workflow-combined-editor": "workspace:*",
     "@kie-tools/serverless-workflow-diagram-editor-assets": "workspace:*",

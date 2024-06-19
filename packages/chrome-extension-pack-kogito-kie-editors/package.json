@@ -37,6 +37,7 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/chrome-extension-test-helper": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/jest-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",

@@ -88,6 +88,7 @@
     "@kie-tools/cors-proxy": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/extended-services": "workspace:*",
+    "@kie-tools/jest-base": "workspace:*",
     "@kie-tools/playwright-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",

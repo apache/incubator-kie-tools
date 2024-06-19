@@ -36,6 +36,7 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/cors-proxy-api": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/jest-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/cors": "^2.8.13",
