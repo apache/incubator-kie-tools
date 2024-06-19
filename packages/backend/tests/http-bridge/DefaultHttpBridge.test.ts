@@ -30,14 +30,14 @@ describe("requests throught DefaultHttpBridge", () => {
   test("should execute GET when the request does not have a body", async () => {
     mockAxios.get.mockResolvedValueOnce({});
     await bridge.request({ endpoint: testEndpoint });
-    expect(mockAxios.get).toBeCalledWith(testEndpoint);
+    expect(mockAxios.get).toHaveBeenCalledWith(testEndpoint);
   });
 
   test("should execute POST when the request has a body", async () => {
     const requestBody = { foo: "bar" };
     mockAxios.post.mockResolvedValueOnce({});
     await bridge.request({ endpoint: testEndpoint, body: requestBody });
-    expect(mockAxios.post).toBeCalledWith(testEndpoint, requestBody);
+    expect(mockAxios.post).toHaveBeenCalledWith(testEndpoint, requestBody);
   });
 
   test("should return the response data on success of a GET", async () => {

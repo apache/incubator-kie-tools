@@ -138,7 +138,7 @@ describe("MiningSchemaContainer", () => {
     expect(miningField0deleteIcon).not.toBeUndefined();
     fireEvent.click(miningField0deleteIcon, {});
 
-    expect(onDeleteFieldImpl).toBeCalledWith(0);
+    expect(onDeleteFieldImpl).toHaveBeenCalledWith(0);
 
     rerender(
       <MiningSchemaContext.Provider value={-1}>
@@ -197,7 +197,7 @@ describe("MiningSchemaContainer", () => {
     expect(miningField0deleteIcon).not.toBeUndefined();
     fireEvent.keyDown(miningField0deleteIcon, { key: "Enter" });
 
-    expect(onDeleteFieldImpl).toBeCalledWith(0);
+    expect(onDeleteFieldImpl).toHaveBeenCalledWith(0);
 
     rerender(
       <MiningSchemaContext.Provider value={-1}>

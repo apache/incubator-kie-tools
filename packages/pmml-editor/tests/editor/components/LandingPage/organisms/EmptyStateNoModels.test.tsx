@@ -36,6 +36,6 @@ describe("EmptyStateNoModels", () => {
     expect(element).toBeInstanceOf(HTMLButtonElement);
 
     (element as HTMLButtonElement).click();
-    expect(createModel).toBeCalledTimes(1);
+    expect(createModel).toHaveBeenCalledTimes(1);
   });
 });

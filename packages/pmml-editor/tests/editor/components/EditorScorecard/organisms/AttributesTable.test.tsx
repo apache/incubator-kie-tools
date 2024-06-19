@@ -144,7 +144,7 @@ describe("AttributesTable", () => {
     expect(characteristic0deleteIcon).not.toBeUndefined();
     fireEvent.click(characteristic0deleteIcon, {});
 
-    expect(deleteAttributeImpl).toBeCalledWith(0);
+    expect(deleteAttributeImpl).toHaveBeenCalledWith(0);
 
     rerender(
       <Provider store={store}>
@@ -228,7 +228,7 @@ describe("AttributesTable", () => {
     expect(characteristic0deleteIcon).not.toBeUndefined();
     fireEvent.keyDown(characteristic0deleteIcon, { key: "Enter" });
 
-    expect(deleteAttributeImpl).toBeCalledWith(0);
+    expect(deleteAttributeImpl).toHaveBeenCalledWith(0);
 
     rerender(
       <Provider store={store}>

@@ -178,7 +178,7 @@ describe("CharacteristicsTable", () => {
     expect(characteristic0deleteIcon).not.toBeUndefined();
     fireEvent.click(characteristic0deleteIcon, {});
 
-    expect(deleteCharacteristicImpl).toBeCalledWith(0);
+    expect(deleteCharacteristicImpl).toHaveBeenCalledWith(0);
 
     rerender(
       <Provider store={store}>
@@ -282,7 +282,7 @@ describe("CharacteristicsTable", () => {
     expect(characteristic0deleteIcon).not.toBeUndefined();
     fireEvent.keyDown(characteristic0deleteIcon, { key: "Enter" });
 
-    expect(deleteCharacteristicImpl).toBeCalledWith(0);
+    expect(deleteCharacteristicImpl).toHaveBeenCalledWith(0);
 
     rerender(
       <Provider store={store}>

@@ -43,8 +43,8 @@ describe("formGenerationCommand tests", () => {
       overwrite: true,
     });
 
-    expect(loadProjectSchemasMock).not.toBeCalled();
-    expect(storeFormAssetsMock).not.toBeCalled();
+    expect(loadProjectSchemasMock).not.toHaveBeenCalled();
+    expect(storeFormAssetsMock).not.toHaveBeenCalled();
   });
 
   it("Generate forms for empty project", () => {
@@ -56,8 +56,8 @@ describe("formGenerationCommand tests", () => {
       overwrite: true,
     });
 
-    expect(loadProjectSchemasMock).toBeCalledTimes(1);
-    expect(storeFormAssetsMock).not.toBeCalled();
+    expect(loadProjectSchemasMock).toHaveBeenCalledTimes(1);
+    expect(storeFormAssetsMock).not.toHaveBeenCalled();
   });
 
   it("Generate forms project with schemas", () => {
@@ -80,8 +80,8 @@ describe("formGenerationCommand tests", () => {
       overwrite: true,
     });
 
-    expect(loadProjectSchemasMock).toBeCalledTimes(1);
-    expect(storeFormAssetsMock).toBeCalledTimes(2);
+    expect(loadProjectSchemasMock).toHaveBeenCalledTimes(1);
+    expect(storeFormAssetsMock).toHaveBeenCalledTimes(2);
 
     const applyForVisaAsset: FormAsset = storeFormAssetsMock.mock.calls[0][0];
     expect(applyForVisaAsset.id).toEqual("Apply#For#Visa");
@@ -149,7 +149,7 @@ describe("formGenerationCommand tests", () => {
       overwrite: true,
     });
 
-    expect(loadProjectSchemasMock).toBeCalledTimes(1);
-    expect(storeFormAssetsMock).toBeCalledTimes(1);
+    expect(loadProjectSchemasMock).toHaveBeenCalledTimes(1);
+    expect(storeFormAssetsMock).toHaveBeenCalledTimes(1);
   });
 });

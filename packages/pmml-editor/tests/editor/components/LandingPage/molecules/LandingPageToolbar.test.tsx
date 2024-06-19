@@ -85,7 +85,7 @@ describe("LandingPageToolbar", () => {
     fireEvent.change(input, { target: { value: "filter" } });
     submit.click();
 
-    expect(setFilter).toBeCalledWith("filter");
+    expect(setFilter).toHaveBeenCalledWith("filter");
   });
 
   test("render::setShowUnsupportedModels", () => {
@@ -104,6 +104,6 @@ describe("LandingPageToolbar", () => {
 
     fireEvent.click(input);
 
-    expect(setShowUnsupportedModels).toBeCalledWith(false, expect.any(Object));
+    expect(setShowUnsupportedModels).toHaveBeenCalledWith(false, expect.any(Object));
   });
 });

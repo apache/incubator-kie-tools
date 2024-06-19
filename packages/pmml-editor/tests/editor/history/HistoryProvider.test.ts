@@ -125,6 +125,6 @@ describe("HistoryProvider", () => {
     const updated: PMML = service.commit(pmml) as PMML;
     expect(updated).not.toStrictEqual(pmml);
 
-    expect(validator).toBeCalled();
+    expect(validator).toHaveBeenCalled();
   });
 });
