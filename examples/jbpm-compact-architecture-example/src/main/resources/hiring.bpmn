@@ -117,7 +117,7 @@
       <bpmn2:script>System.out.println("###################################");
 System.out.println("To: " + candidateData.getEmail());
 System.out.println("Subject: Congratulations you made it!");
-System.out.println("Dear " + candidateData.getFullName() + ", we are happy to tell you that you've successfuly went trhough the hiring process. You'll find the fina Offer details in attached.");
+System.out.println("Dear " + candidateData.getFullName() + ", we are happy to tell you that you've successfully went through the hiring process. You'll find the final Offer details in attached.");
 System.out.println("Job Category: " + offer.getCategory());
 System.out.println("Base salary: " + offer.getSalary());
 System.out.println("###################################");</bpmn2:script>
