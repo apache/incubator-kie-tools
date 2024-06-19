@@ -33,9 +33,9 @@
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
-    "@types/jest": "^26.0.23",
-    "jest": "^26.6.3",
-    "jest-junit": "^14.0.0",
+    "@types/jest": "^29.5.12",
+    "jest": "^29.7.0",
+    "jest-junit": "^16.0.0",
     "node-fetch": "^3.3.1",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",

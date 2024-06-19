@@ -40,6 +40,7 @@ digraph G {
   "@kie-tools/serverless-workflow-standalone-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/backend" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/notifications" [ color = "purple", fontcolor = "purple", style = "rounded" ];
+  "@kie-tools/jest-base" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/boxed-expression-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/operating-system" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/feel-input-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -227,6 +228,7 @@ digraph G {
   "@kie-tools-examples/webapp" -> "@kie-tools/kie-editors-standalone" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools/serverless-workflow-standalone-editor" [ style = "solid", color = "orange" ];
   "@kie-tools-core/backend" -> "@kie-tools-core/notifications" [ style = "solid", color = "purple" ];
+  "@kie-tools-core/backend" -> "@kie-tools/jest-base" [ style = "dashed", color = "purple" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools-core/operating-system" [ style = "solid", color = "blue" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools/feel-input-component" [ style = "solid", color = "blue" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools/playwright-base" [ style = "dashed", color = "blue" ];
@@ -379,6 +381,7 @@ digraph G {
   "@kie-tools/import-java-classes-component" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/jbpm-quarkus-devui" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
   "@kie-tools/jbpm-quarkus-devui" -> "@kie-tools/runtime-tools-process-dev-ui-webapp" [ style = "dashed", color = "black" ];
+  "@kie-tools/jest-base" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/json-yaml-language-service" -> "@kie-tools/yaml-language-server" [ style = "solid", color = "blue" ];
   "@kie-tools-core/k8s-yaml-to-apiserver-requests" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/k8s-yaml-to-apiserver-requests" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
