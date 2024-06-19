@@ -192,7 +192,7 @@
       <bpmn2:script>System.out.println("###################################");
 System.out.println("To: " + candidate);
 System.out.println("Subject: Congratulations you made it!");
-System.out.println("Dear " + candidate + ", we are happy to tell you that you've successfuly went trhough the hiring process. You'll find the fina Offer details in attached.");
+System.out.println("Dear " + candidate + ", we are happy to tell you that you've successfully went through the hiring process. You'll find the final Offer details in attached.");
 System.out.println("Job Category: " + category);
 System.out.println("Base salary: " + salary + "$");
 System.out.println("Bonus: " + bonus + "$");
