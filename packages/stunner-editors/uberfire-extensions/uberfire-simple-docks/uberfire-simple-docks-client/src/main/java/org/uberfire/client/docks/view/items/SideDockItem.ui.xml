@@ -22,9 +22,13 @@
   xmlns:g="urn:import:com.google.gwt.user.client.ui"
   xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
 >
+
   <g:HTMLPanel>
+
     <b:Tooltip ui:field="itemTooltip">
       <b:Button ui:field="itemButton" />
     </b:Tooltip>
+
   </g:HTMLPanel>
+
 </ui:UiBinder>

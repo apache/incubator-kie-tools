@@ -27,6 +27,7 @@
   xmlns:uf="urn:import:org.uberfire.ext.widgets.table.client"
   xmlns:s="urn:import:org.gwtbootstrap3.extras.select.client.ui"
 >
+
   <ui:with field="i18n" type="org.uberfire.ext.widgets.table.client.resources.i18n.CommonConstants" />
 
   <ui:style>
@@ -102,4 +103,5 @@
       </b:Column>
     </b:Row>
   </g:FlowPanel>
+
 </ui:UiBinder>

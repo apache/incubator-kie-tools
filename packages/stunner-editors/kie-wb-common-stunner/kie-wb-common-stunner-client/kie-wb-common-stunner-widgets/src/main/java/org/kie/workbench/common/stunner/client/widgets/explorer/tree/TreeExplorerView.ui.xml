@@ -22,9 +22,15 @@
   xmlns:g="urn:import:com.google.gwt.user.client.ui"
   xmlns:uf="urn:import:org.uberfire.ext.widgets.core.client.tree"
 >
-  <ui:style />
+
+  <ui:style>
+
+  </ui:style>
 
   <g:FlowPanel>
+
     <uf:Tree ui:field="tree" />
+
   </g:FlowPanel>
+
 </ui:UiBinder>

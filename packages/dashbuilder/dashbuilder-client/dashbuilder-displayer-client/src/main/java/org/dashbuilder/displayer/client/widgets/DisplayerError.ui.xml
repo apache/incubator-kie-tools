@@ -23,6 +23,7 @@
   xmlns:g='urn:import:com.google.gwt.user.client.ui'
   xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
 >
+
   <ui:with field="i18n" type="org.dashbuilder.displayer.client.resources.i18n.CommonConstants" />
 
   <ui:style>

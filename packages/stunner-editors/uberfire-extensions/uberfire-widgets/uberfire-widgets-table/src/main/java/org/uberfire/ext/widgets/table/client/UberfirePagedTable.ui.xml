@@ -25,6 +25,7 @@
   xmlns:bg="urn:import:org.gwtbootstrap3.client.ui.gwt"
   xmlns:uf="urn:import:org.uberfire.ext.widgets.table.client"
 >
+
   <ui:style>
     .dataGridContainer {
       padding-top: 10px;
@@ -77,4 +78,5 @@
       </g:cell>
     </g:HorizontalPanel>
   </g:FlowPanel>
+
 </ui:UiBinder>

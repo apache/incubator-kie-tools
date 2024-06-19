@@ -23,10 +23,12 @@
   xmlns:b='urn:import:org.gwtbootstrap3.client.ui'
   xmlns:g="urn:import:com.google.gwt.user.client.ui"
 >
+
   <ui:with field="i18nCommon" type="org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants" />
 
   <g:FlowPanel>
     <b:Button ui:field="actionButton" type="PRIMARY" />
     <b:Button ui:field="ignoreButton" type="DEFAULT" text="{i18nCommon.Ignore}" />
   </g:FlowPanel>
+
 </ui:UiBinder>

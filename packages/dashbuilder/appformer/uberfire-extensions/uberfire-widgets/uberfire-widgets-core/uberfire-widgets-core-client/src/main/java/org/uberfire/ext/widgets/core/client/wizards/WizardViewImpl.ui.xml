@@ -19,15 +19,17 @@
 -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder' xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
-  <ui:with field="i18n" type="org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants" />
-  <ui:with field="res" type="org.uberfire.ext.widgets.core.client.resources.WizardResources" />
 
-  <b:Container fluid="true">
-    <b:Row>
-      <b:Column size="MD_3">
-        <b:NavPills ui:field="sideBar" stacked="true" />
-      </b:Column>
-      <b:Column size="MD_9" ui:field="body" />
-    </b:Row>
-  </b:Container>
+    <ui:with field="i18n" type="org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants" />
+    <ui:with field="res" type="org.uberfire.ext.widgets.core.client.resources.WizardResources" />
+
+    <b:Container fluid="true">
+        <b:Row>
+            <b:Column size="MD_3">
+                <b:NavPills ui:field="sideBar" stacked="true" />
+            </b:Column>
+            <b:Column size="MD_9" ui:field="body" />
+        </b:Row>
+    </b:Container>
+
 </ui:UiBinder>

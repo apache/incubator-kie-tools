@@ -24,6 +24,7 @@
   xmlns:af="urn:import:org.uberfire.client.workbench.widgets"
   xmlns:g="urn:import:com.google.gwt.user.client.ui"
 >
+
   <ui:style>
     .panel {
       width: 100%;
@@ -36,16 +37,25 @@
   </ui:style>
 
   <af:ResizeFlowPanel ui:field="mainPanel" addStyleNames="{style.panel}">
+
     <g:FlowPanel ui:field="loadingPanel" addStyleNames="{style.panel} {style.loadingPanel}">
+
       <b:Jumbotron>
+
         <b.html:Span>
+
           <b:Icon size="TIMES5" type="REFRESH" spin="true" title="Loading" />
 
           <b:Heading size="H3" title="Loading" text="Loading, please wait..." />
+
         </b.html:Span>
+
       </b:Jumbotron>
+
     </g:FlowPanel>
 
     <b:Container ui:field="container" fluid="true" addStyleNames="{style.panel}" />
+
   </af:ResizeFlowPanel>
+
 </ui:UiBinder>
