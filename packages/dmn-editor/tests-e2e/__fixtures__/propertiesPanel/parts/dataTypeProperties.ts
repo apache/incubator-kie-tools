@@ -21,7 +21,10 @@ import { Locator, Page } from "@playwright/test";
 import { DataType } from "../../jsonModel";
 
 export class DataTypeProperties {
-  constructor(public panel: Locator, public page: Page) {}
+  constructor(
+    public panel: Locator,
+    public page: Page
+  ) {}
 
   public async setDataType(args: { newDataType: DataType }) {
     await this.panel.getByPlaceholder("Select a data type...").click();

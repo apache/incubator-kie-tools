@@ -93,8 +93,8 @@ export function ConstraintTime({ value, onChange, isValid }: ConstraintProps) {
     return value.includes("+")
       ? `+${value.split("+")[1]}`
       : value.includes("-")
-      ? `-${value.split("-")[1]}`
-      : UTC_POSITEVE_TIMEZONES[0];
+        ? `-${value.split("-")[1]}`
+        : UTC_POSITEVE_TIMEZONES[0];
   }, [value]);
   const [isSelectTimezoneOpen, setSelectTimezoneOpen] = useState(false);
   const { dmnEditorRootElementRef } = useDmnEditor();

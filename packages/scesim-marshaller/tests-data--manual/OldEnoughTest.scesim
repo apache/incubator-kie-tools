@@ -22,7 +22,7 @@
     <scesimModelDescriptor>
       <factMappings>
         <FactMapping>
-          <expressionElements/>
+          <expressionElements />
           <expressionIdentifier>
             <name>Index</name>
             <type>OTHER</type>
@@ -37,7 +37,7 @@
           <columnWidth>70.0</columnWidth>
         </FactMapping>
         <FactMapping>
-          <expressionElements/>
+          <expressionElements />
           <expressionIdentifier>
             <name>Description</name>
             <type>OTHER</type>
@@ -337,7 +337,7 @@
     <scesimModelDescriptor>
       <factMappings>
         <FactMapping>
-          <expressionElements/>
+          <expressionElements />
           <expressionIdentifier>
             <name>1|1</name>
             <type>GIVEN</type>
@@ -377,6 +377,6 @@
     <stateless>false</stateless>
   </settings>
   <imports>
-    <imports/>
+    <imports />
   </imports>
 </ScenarioSimulationModel>

@@ -152,10 +152,10 @@ export function IncludedModels() {
       selectedModel.type === "dmn"
         ? selectedModel.model.definitions["@_namespace"]!
         : selectedModel.type === "pmml"
-        ? getPmmlNamespace({
-            normalizedPosixPathRelativeToTheOpenFile: selectedModel.normalizedPosixPathRelativeToTheOpenFile,
-          })
-        : KIE_UNKNOWN_NAMESPACE;
+          ? getPmmlNamespace({
+              normalizedPosixPathRelativeToTheOpenFile: selectedModel.normalizedPosixPathRelativeToTheOpenFile,
+            })
+          : KIE_UNKNOWN_NAMESPACE;
 
     setModalOpen(false);
     dmnEditorStoreApi.setState((state) => {

@@ -1,1 +1,12 @@
-{}
+{
+  "versionGroups": [
+    {
+      "dependencies": ["prettier"],
+      "packages": [
+        "@kie-tools/uniforms-bootstrap4-codegen",
+        "@kie-tools/uniforms-patternfly-codegen",
+        "@kie-tools/yaml-language-server"
+      ]
+    }
+  ]
+}

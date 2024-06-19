@@ -1,5 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg version="1.1" id="eventStartNone" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="420px" height="420px" viewBox="0 0 420 420" style="enable-background:new 0 0 420 420;" xml:space="preserve">
+<?xml version="1.0" encoding="utf-8" ?>
+<svg
+  version="1.1"
+  id="eventStartNone"
+  xmlns="http://www.w3.org/2000/svg"
+  x="0px"
+  y="0px"
+  width="420px"
+  height="420px"
+  viewBox="0 0 420 420"
+  style="enable-background:new 0 0 420 420;"
+  xml:space="preserve"
+>
 	<!--
 	- Licensed to the Apache Software Foundation (ASF) under one
 	- or more contributor license agreements.  See the NOTICE file
@@ -19,9 +30,15 @@
 	- under the License.
 	-->
 	<style type="text/css">
-		.event-start-none-svg{fill:#4AA241;}
-	</style>
-	<path id="Icon" class="event-start-none-svg" d="M210,0C94,0,0,94,0,210s94,210,210,210s210-94,210-210S326,0,210,0z M330.2,330.2
+.event-start-none-svg {
+  fill: #4aa241;
+}
+  </style>
+	<path
+    id="Icon"
+    class="event-start-none-svg"
+    d="M210,0C94,0,0,94,0,210s94,210,210,210s210-94,210-210S326,0,210,0z M330.2,330.2
 	C298.1,362.3,255.4,380,210,380s-88.1-17.7-120.2-49.8S40,255.4,40,210s17.7-88.1,49.8-120.2S164.6,40,210,40s88.1,17.7,120.2,49.8
-	S380,164.6,380,210S362.3,298.1,330.2,330.2z" />
+	S380,164.6,380,210S362.3,298.1,330.2,330.2z"
+  />
 </svg>

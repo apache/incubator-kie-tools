@@ -25,7 +25,6 @@
   <inherits name="org.jboss.errai.ui.UI" />
 
   <inherits name="org.dashbuilder.DisplayerClient" />
-  
-  <source path='echarts' />
 
+  <source path='echarts' />
 </module>

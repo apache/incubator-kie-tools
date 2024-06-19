@@ -33,7 +33,10 @@ export default class Tools {
 
   private readonly screenShot: Screenshot;
 
-  private constructor(private readonly driver: WebDriver, private readonly testName: string) {
+  private constructor(
+    private readonly driver: WebDriver,
+    private readonly testName: string
+  ) {
     this.screenShot = new Screenshot(this.driver, Tools.SCREENSHOTS_DIR);
   }
 

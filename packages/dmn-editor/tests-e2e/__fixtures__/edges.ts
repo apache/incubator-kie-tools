@@ -29,7 +29,11 @@ export enum EdgeType {
 }
 
 export class Edges {
-  constructor(public page: Page, public nodes: Nodes, public diagram: Diagram) {}
+  constructor(
+    public page: Page,
+    public nodes: Nodes,
+    public diagram: Diagram
+  ) {}
 
   public async get(args: { from: string; to: string }) {
     const from = await this.nodes.getId({ name: args.from });

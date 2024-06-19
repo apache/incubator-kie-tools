@@ -21,7 +21,10 @@ import { ProjectName } from "@kie-tools/playwright-base/projectNames";
 import { Page } from "@playwright/test";
 
 export class BackgroundTable {
-  constructor(public page: Page, public projectName: ProjectName) {}
+  constructor(
+    public page: Page,
+    public projectName: ProjectName
+  ) {}
 
   public get() {
     return this.page.getByLabel("Background");

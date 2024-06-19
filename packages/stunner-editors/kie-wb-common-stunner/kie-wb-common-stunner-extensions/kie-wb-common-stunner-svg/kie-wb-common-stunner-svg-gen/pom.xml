@@ -39,7 +39,6 @@
   </properties>
 
   <dependencies>
-
     <!-- Stunner. -->
 
     <dependency>
@@ -118,12 +117,10 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <build>
     <plugins>
-
       <!-- For the Annot. Processing stuff. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -144,8 +141,6 @@
           </includes>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
-
 </project>

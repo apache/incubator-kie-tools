@@ -40,7 +40,6 @@
   </properties>
 
   <dependencies>
-
     <dependency>
       <groupId>com.google.elemental2</groupId>
       <artifactId>elemental2-dom</artifactId>
@@ -64,7 +63,6 @@
       <groupId>org.kie.j2cl.tools.di.ui</groupId>
       <artifactId>core</artifactId>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -98,5 +96,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>

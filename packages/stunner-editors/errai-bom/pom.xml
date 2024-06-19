@@ -58,17 +58,17 @@
   </licenses>
 
   <distributionManagement>
-      <repository>
-          <id>jboss-releases-repository</id>
-          <name>JBoss Releases Repository</name>
-          <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
-      </repository>
+    <repository>
+      <id>jboss-releases-repository</id>
+      <name>JBoss Releases Repository</name>
+      <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
+    </repository>
 
-      <snapshotRepository>
-          <id>jboss-snapshots-repository</id>
-          <name>JBoss Snapshots Repository</name>
-          <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
-      </snapshotRepository>
+    <snapshotRepository>
+      <id>jboss-snapshots-repository</id>
+      <name>JBoss Snapshots Repository</name>
+      <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
+    </snapshotRepository>
   </distributionManagement>
 
   <description>
@@ -176,7 +176,6 @@
   </properties>
 
   <dependencyManagement>
-
     <dependencies>
       <!-- errai internal modules -->
       <dependency>
@@ -432,10 +431,10 @@
         <version>${version.org.quartz-scheduler}</version>
       </dependency>
       <dependency>
-         <groupId>org.eclipse.jdt</groupId>
-         <artifactId>ecj</artifactId>
-         <version>${version.org.eclipse.jdt.ecj}</version>
-       </dependency>
+        <groupId>org.eclipse.jdt</groupId>
+        <artifactId>ecj</artifactId>
+        <version>${version.org.eclipse.jdt.ecj}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.apache.stanbol</groupId>

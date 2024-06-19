@@ -187,8 +187,8 @@ export function BeeTableThResizable<R extends object>({
             isParentColumn(column) || isFlexbileColumn(column)
               ? fillingWidth
               : column.width
-              ? resizingWidth?.value
-              : "100%",
+                ? resizingWidth?.value
+                : "100%",
         },
       }}
       onClick={onClick}

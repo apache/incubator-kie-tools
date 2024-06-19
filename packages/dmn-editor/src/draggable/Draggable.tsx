@@ -194,9 +194,7 @@ export function DragAndDrop({
           onDragLeave: onInternalDragLeave,
         }}
       >
-        {valuesCopy?.map((value, index) => (
-          <div key={valuesKeys[index]}>{draggableItem?.(value, index)}</div>
-        ))}
+        {valuesCopy?.map((value, index) => <div key={valuesKeys[index]}>{draggableItem?.(value, index)}</div>)}
       </DraggableDispatchContext.Provider>
     </DraggableStateContext.Provider>
   );

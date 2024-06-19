@@ -21,7 +21,10 @@ import { Page } from "@playwright/test";
 import { Diagram } from "../diagram";
 
 export abstract class PropertiesPanelBase {
-  constructor(public diagram: Diagram, public page: Page) {}
+  constructor(
+    public diagram: Diagram,
+    public page: Page
+  ) {}
 
   public panel() {
     return this.page.getByTestId("kie-tools--dmn-editor--properties-panel-container");

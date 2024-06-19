@@ -20,7 +20,10 @@
 import { DataType } from "../../api";
 
 class DefaultDataType implements DataType {
-  constructor(public readonly name: string, public readonly defaultValue?: string) {}
+  constructor(
+    public readonly name: string,
+    public readonly defaultValue?: string
+  ) {}
 }
 
 export const ARRAY: DataType = new DefaultDataType("string[]", "[]");

@@ -56,15 +56,11 @@ export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<
       return null;
     }, []);
 
-    useImperativeHandle(
-      forwardRef,
-      () => {
-        return {
-          submit: () => autoRowRef.current?.submit(),
-        };
-      },
-      []
-    );
+    useImperativeHandle(forwardRef, () => {
+      return {
+        submit: () => autoRowRef.current?.submit(),
+      };
+    }, []);
 
     // Submits the table in the first render triggering the onValidate function
     useEffect(() => {

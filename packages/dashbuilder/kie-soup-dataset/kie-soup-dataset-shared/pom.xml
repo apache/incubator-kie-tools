@@ -36,7 +36,6 @@
   <description>KIE Soup Dataset implementation shared between client and server.</description>
 
   <dependencies>
-
     <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-dataset-api</artifactId>
@@ -47,6 +46,5 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 </project>

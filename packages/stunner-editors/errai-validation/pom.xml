@@ -145,8 +145,8 @@
                 <additionalClasspathElement>${basedir}/src/test/java/</additionalClasspathElement>
               </additionalClasspathElements>
               <useManifestOnlyJar>false</useManifestOnlyJar>
-<!--               <forkMode>pertest</forkMode> this is the same as below -->
-<!-- http://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html#Migrating_the_Deprecated_forkMode_Parameter_to_forkCount_and_reuseForks -->
+              <!--               <forkMode>pertest</forkMode> this is the same as below -->
+              <!-- http://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html#Migrating_the_Deprecated_forkMode_Parameter_to_forkCount_and_reuseForks -->
               <forkCount>1</forkCount>
               <reuseForks>false</reuseForks>
               <argLine

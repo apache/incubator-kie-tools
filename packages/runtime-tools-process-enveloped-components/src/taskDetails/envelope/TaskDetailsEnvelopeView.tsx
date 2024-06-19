@@ -36,17 +36,13 @@ interface Props {
 export const TaskDetailsEnvelopeView = React.forwardRef<TaskDetailsEnvelopeViewApi, Props>((props, forwardedRef) => {
   const [task, setTask] = useState<UserTaskInstance>();
 
-  useImperativeHandle(
-    forwardedRef,
-    () => {
-      return {
-        setTask: (userTask: UserTaskInstance) => {
-          setTask(userTask);
-        },
-      };
-    },
-    []
-  );
+  useImperativeHandle(forwardedRef, () => {
+    return {
+      setTask: (userTask: UserTaskInstance) => {
+        setTask(userTask);
+      },
+    };
+  }, []);
 
   return <TaskDetails userTask={task} />;
 });

@@ -39,7 +39,6 @@
   </properties>
 
   <dependencies>
-
     <!-- Stunner. -->
 
     <dependency>
@@ -82,8 +81,6 @@
       <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>uberfire-client-api</artifactId>
     </dependency>
-
-
 
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
@@ -186,7 +183,6 @@
       <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -204,5 +200,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>

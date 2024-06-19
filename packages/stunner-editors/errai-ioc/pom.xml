@@ -61,8 +61,7 @@
             <goals>
               <goal>test-jar</goal>
             </goals>
-            <configuration>
-            </configuration>
+            <configuration />
           </execution>
         </executions>
       </plugin>
@@ -89,7 +88,7 @@
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava-gwt</artifactId>
@@ -206,8 +205,8 @@
             <configuration>
               <!-- This is required because the BasicIOCTest is run in "simulated
                 client" mode, which prevents subsequent tests from succeeding -->
-<!--               <forkMode>pertest</forkMode> this is the same as below -->
-<!-- http://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html#Migrating_the_Deprecated_forkMode_Parameter_to_forkCount_and_reuseForks -->
+              <!--               <forkMode>pertest</forkMode> this is the same as below -->
+              <!-- http://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html#Migrating_the_Deprecated_forkMode_Parameter_to_forkCount_and_reuseForks -->
               <forkCount>1</forkCount>
               <reuseForks>false</reuseForks>
               <argLine
@@ -240,8 +239,7 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <!-- Override exclusions in parent -->
             <configuration>
-              <excludes combine.self="override">
-              </excludes>
+              <excludes combine.self="override" />
               <includes combine.self="override">
                 <include>**/unit/**/*Test.java</include>
                 <include>**/*UnitTest.java</include>
@@ -252,5 +250,4 @@
       </build>
     </profile>
   </profiles>
-
 </project>

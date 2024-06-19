@@ -33,7 +33,6 @@
   <name>Errai::Config</name>
 
   <dependencies>
-
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-codegen</artifactId>

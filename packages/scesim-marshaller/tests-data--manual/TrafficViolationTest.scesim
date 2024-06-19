@@ -22,7 +22,7 @@
     <scesimModelDescriptor>
       <factMappings>
         <FactMapping>
-          <expressionElements/>
+          <expressionElements />
           <expressionIdentifier>
             <name>Index</name>
             <type>OTHER</type>
@@ -37,7 +37,7 @@
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
         <FactMapping>
-          <expressionElements/>
+          <expressionElements />
           <expressionIdentifier>
             <name>Description</name>
             <type>OTHER</type>
@@ -71,7 +71,7 @@
           <className>number</className>
           <factAlias>Driver</factAlias>
           <expressionAlias>Points</expressionAlias>
-          <genericTypes/>
+          <genericTypes />
           <columnWidth>114</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
@@ -95,7 +95,7 @@
           <className>Type</className>
           <factAlias>Violation</factAlias>
           <expressionAlias>Type</expressionAlias>
-          <genericTypes/>
+          <genericTypes />
           <columnWidth>114</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
@@ -119,7 +119,7 @@
           <className>number</className>
           <factAlias>Violation</factAlias>
           <expressionAlias>Speed Limit</expressionAlias>
-          <genericTypes/>
+          <genericTypes />
           <columnWidth>114</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
@@ -143,7 +143,7 @@
           <className>number</className>
           <factAlias>Violation</factAlias>
           <expressionAlias>Actual Speed</expressionAlias>
-          <genericTypes/>
+          <genericTypes />
           <columnWidth>114</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
@@ -167,7 +167,7 @@
           <className>number</className>
           <factAlias>Fine</factAlias>
           <expressionAlias>Amount</expressionAlias>
-          <genericTypes/>
+          <genericTypes />
           <columnWidth>114</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
@@ -191,7 +191,7 @@
           <className>number</className>
           <factAlias>Fine</factAlias>
           <expressionAlias>Points</expressionAlias>
-          <genericTypes/>
+          <genericTypes />
           <columnWidth>114</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
@@ -212,7 +212,7 @@
           <className>string</className>
           <factAlias>Should the driver be suspended?</factAlias>
           <expressionAlias>value</expressionAlias>
-          <genericTypes/>
+          <genericTypes />
           <columnWidth>114</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
@@ -736,7 +736,7 @@
     <scesimModelDescriptor>
       <factMappings>
         <FactMapping>
-          <expressionElements/>
+          <expressionElements />
           <expressionIdentifier>
             <name>1|1</name>
             <type>GIVEN</type>
@@ -779,6 +779,6 @@
     <stateless>false</stateless>
   </settings>
   <imports>
-    <imports/>
+    <imports />
   </imports>
 </ScenarioSimulationModel>

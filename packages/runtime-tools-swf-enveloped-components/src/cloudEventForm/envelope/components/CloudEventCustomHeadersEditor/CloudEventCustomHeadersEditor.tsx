@@ -47,27 +47,23 @@ const CloudEventCustomHeadersEditor = React.forwardRef<CloudEventCustomHeadersEd
       setIsNewHeader(false);
     }, [isNewHeader]);
 
-    useImperativeHandle(
-      forwardedRef,
-      () => {
-        return {
-          reset(): void {
-            setHeaders([]);
-            setIsNewHeader(false);
-          },
-          getCustomHeaders(): Record<string, string> {
-            const result: any = {};
-            headers
-              .filter((entry) => entry.key && entry.value)
-              .forEach((entry) => {
-                result[entry.key] = entry.value;
-              });
-            return result;
-          },
-        };
-      },
-      [headers]
-    );
+    useImperativeHandle(forwardedRef, () => {
+      return {
+        reset(): void {
+          setHeaders([]);
+          setIsNewHeader(false);
+        },
+        getCustomHeaders(): Record<string, string> {
+          const result: any = {};
+          headers
+            .filter((entry) => entry.key && entry.value)
+            .forEach((entry) => {
+              result[entry.key] = entry.value;
+            });
+          return result;
+        },
+      };
+    }, [headers]);
 
     const addNewHeader = useCallback(() => {
       const headersCopy = [...headers];

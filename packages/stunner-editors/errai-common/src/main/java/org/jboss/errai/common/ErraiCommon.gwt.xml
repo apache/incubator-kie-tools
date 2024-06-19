@@ -20,13 +20,13 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 1.6//EN"
   "http://google-web-toolkit.googlecode.com/svn/releases/1.6/distro-source/core/src/gwt-module.dtd">
 <module>
-    <inherits name='com.google.gwt.user.User' />
-    <inherits name="com.google.gwt.json.JSON" />
-    <inherits name="org.jboss.errai.common.Logging" />
-    <inherits name="elemental2.dom.Dom" />
+  <inherits name='com.google.gwt.user.User' />
+  <inherits name="com.google.gwt.json.JSON" />
+  <inherits name="org.jboss.errai.common.Logging" />
+  <inherits name="elemental2.dom.Dom" />
 
-    <entry-point class="org.jboss.errai.common.client.InitCoordinator" />
+  <entry-point class="org.jboss.errai.common.client.InitCoordinator" />
 
-    <super-source path="compat" />
-    <source path="client" />
+  <super-source path="compat" />
+  <source path="client" />
 </module>

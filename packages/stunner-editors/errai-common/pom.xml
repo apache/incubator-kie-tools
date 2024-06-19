@@ -159,7 +159,6 @@
       <groupId>com.google.elemental2</groupId>
       <artifactId>elemental2-dom</artifactId>
     </dependency>
-
   </dependencies>
 
   <profiles>

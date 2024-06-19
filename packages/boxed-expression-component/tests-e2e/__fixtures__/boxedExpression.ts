@@ -21,7 +21,11 @@ import { Locator, Page } from "@playwright/test";
 import { Monaco } from "./monaco";
 
 export class BoxedExpressionEditor {
-  constructor(public page: Page, private monaco: Monaco, public baseURL?: string) {
+  constructor(
+    public page: Page,
+    private monaco: Monaco,
+    public baseURL?: string
+  ) {
     this.page = page;
   }
 
