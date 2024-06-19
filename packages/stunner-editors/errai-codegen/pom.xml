@@ -33,9 +33,9 @@
 
   <dependencies>
     <dependency>
-       <groupId>org.eclipse.jdt</groupId>
-       <artifactId>ecj</artifactId>
-     </dependency>
+      <groupId>org.eclipse.jdt</groupId>
+      <artifactId>ecj</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
@@ -162,8 +162,8 @@
                 <filter>
                   <artifact>org.gwtproject:gwt-dev</artifact>
                   <excludes>
-                      <exclude>com/google/gwt/**</exclude>
-                      <exclude>org/eclipse/jdt/**</exclude>
+                    <exclude>com/google/gwt/**</exclude>
+                    <exclude>org/eclipse/jdt/**</exclude>
                   </excludes>
                 </filter>
               </filters>
@@ -191,8 +191,7 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <excludes combine.self="override">
-          </excludes>
+          <excludes combine.self="override" />
           <additionalClasspathElements combine.self="override">
             <additionalClasspathElement>${basedir}/target/test-classes</additionalClasspathElement>
             <additionalClasspathElement>${basedir}/target/classes</additionalClasspathElement>
@@ -204,18 +203,18 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
-      
+
       <plugin>
-       <groupId>org.apache.maven.plugins</groupId>
-       <artifactId>maven-jar-plugin</artifactId>
-       <executions>
-         <execution>
-           <goals>
-             <goal>test-jar</goal>
-           </goals>
-         </execution>
-       </executions>
-     </plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 

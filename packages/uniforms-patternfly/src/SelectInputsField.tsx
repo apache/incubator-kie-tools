@@ -91,10 +91,10 @@ function SelectInputsField(props: SelectInputProps) {
             selection === null
               ? null
               : typeof selection === "number"
-              ? Array.isArray(selectedItems)
-                ? selectedItems.map((item) => JSON.parse(item))
-                : JSON.parse(selectedItems)
-              : selectedItems;
+                ? Array.isArray(selectedItems)
+                  ? selectedItems.map((item) => JSON.parse(item))
+                  : JSON.parse(selectedItems)
+                : selectedItems;
           props.onChange(onChanged);
           setSelected(selectedItems);
         }

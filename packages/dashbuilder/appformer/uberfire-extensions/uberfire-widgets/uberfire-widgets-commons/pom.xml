@@ -22,7 +22,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 >
-
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.uberfire</groupId>
@@ -37,7 +36,6 @@
   <description>Uberfire Widgets Commons</description>
 
   <dependencies>
-
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-api</artifactId>
@@ -57,7 +55,7 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-table</artifactId>
@@ -134,13 +132,12 @@
       </exclusions>
     </dependency>
 
-    <dependency><!-- to get CallerMock in unit test-->
+    <dependency>
+      <!-- to get CallerMock in unit test-->
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-testing-utils</artifactId>
       <scope>test</scope>
     </dependency>
-
-
   </dependencies>
 
   <build>
@@ -155,5 +152,4 @@
       </resource>
     </resources>
   </build>
-
 </project>

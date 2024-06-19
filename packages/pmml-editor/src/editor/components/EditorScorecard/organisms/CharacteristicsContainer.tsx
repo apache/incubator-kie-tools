@@ -71,7 +71,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
   const applyFilter = () => {
     const _filteredCharacteristics = characteristics
       ?.map<IndexedCharacteristic>(
-        (_characteristic, index) => ({ index: index, characteristic: _characteristic } as IndexedCharacteristic)
+        (_characteristic, index) => ({ index: index, characteristic: _characteristic }) as IndexedCharacteristic
       )
       .filter((ic) => {
         const _characteristicName = ic.characteristic.name;

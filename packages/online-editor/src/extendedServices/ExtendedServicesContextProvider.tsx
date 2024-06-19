@@ -117,7 +117,10 @@ export function ExtendedServicesContextProvider(props: Props) {
   );
 }
 export class ExtendedServicesConfig {
-  constructor(public readonly href: string, public readonly port: string) {}
+  constructor(
+    public readonly href: string,
+    public readonly port: string
+  ) {}
 
   public get url() {
     return {

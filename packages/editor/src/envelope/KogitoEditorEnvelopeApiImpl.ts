@@ -40,7 +40,7 @@ import { ApiDefinition } from "@kie-tools-core/envelope-bus/dist/api";
 export class KogitoEditorEnvelopeApiImpl<
   E extends Editor,
   EnvelopeApi extends KogitoEditorEnvelopeApi & ApiDefinition<EnvelopeApi> = KogitoEditorEnvelopeApi,
-  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi> = KogitoEditorChannelApi
+  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi> = KogitoEditorChannelApi,
 > implements KogitoEditorEnvelopeApi
 {
   protected view: () => EditorEnvelopeViewApi<E>;

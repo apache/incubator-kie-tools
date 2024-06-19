@@ -20,7 +20,10 @@
 import { Locator, Page } from "@playwright/test";
 
 export class DocumentationProperties {
-  constructor(public panel: Locator, public page: Page) {}
+  constructor(
+    public panel: Locator,
+    public page: Page
+  ) {}
 
   public async addDocumentationLink(args: { linkText: string; linkHref: string }) {
     await this.panel.getByTitle("Add documentation link").click();

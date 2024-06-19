@@ -50,44 +50,40 @@ const RefForwardingTextEditor: React.ForwardRefRenderFunction<TextEditorRef | un
   const [initialContent, setInitialContent] = useState<TextEditorContent | undefined>(undefined);
   const swfTextEditorRef = useRef<MonacoEditorApi>(null);
 
-  useImperativeHandle(
-    forwardedRef,
-    () => {
-      return {
-        setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot: string, newContent: string): Promise<void> => {
-          try {
-            setInitialContent({
-              originalContent: newContent,
-              normalizedPosixPathRelativeToTheWorkspaceRoot,
-            });
-            return Promise.resolve();
-          } catch (e) {
-            console.error(e);
-            return Promise.reject();
-          }
-        },
-        getContent: (): Promise<string> => {
-          return Promise.resolve(swfTextEditorRef.current?.getContent() || "");
-        },
-        getPreview: (): Promise<string> => {
-          return Promise.resolve("");
-        },
-        undo: (): Promise<void> => {
-          return swfTextEditorRef.current?.undo() || Promise.resolve();
-        },
-        redo: (): Promise<void> => {
-          return swfTextEditorRef.current?.redo() || Promise.resolve();
-        },
-        validate: (): Notification[] => {
-          return [];
-        },
-        setTheme: (theme: EditorTheme): Promise<void> => {
-          return swfTextEditorRef.current?.setTheme(theme) || Promise.resolve();
-        },
-      };
-    },
-    []
-  );
+  useImperativeHandle(forwardedRef, () => {
+    return {
+      setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot: string, newContent: string): Promise<void> => {
+        try {
+          setInitialContent({
+            originalContent: newContent,
+            normalizedPosixPathRelativeToTheWorkspaceRoot,
+          });
+          return Promise.resolve();
+        } catch (e) {
+          console.error(e);
+          return Promise.reject();
+        }
+      },
+      getContent: (): Promise<string> => {
+        return Promise.resolve(swfTextEditorRef.current?.getContent() || "");
+      },
+      getPreview: (): Promise<string> => {
+        return Promise.resolve("");
+      },
+      undo: (): Promise<void> => {
+        return swfTextEditorRef.current?.undo() || Promise.resolve();
+      },
+      redo: (): Promise<void> => {
+        return swfTextEditorRef.current?.redo() || Promise.resolve();
+      },
+      validate: (): Notification[] => {
+        return [];
+      },
+      setTheme: (theme: EditorTheme): Promise<void> => {
+        return swfTextEditorRef.current?.setTheme(theme) || Promise.resolve();
+      },
+    };
+  }, []);
 
   const setValidationErrors = (errors: editor.IMarker[]) => {
     if (!initialContent) {

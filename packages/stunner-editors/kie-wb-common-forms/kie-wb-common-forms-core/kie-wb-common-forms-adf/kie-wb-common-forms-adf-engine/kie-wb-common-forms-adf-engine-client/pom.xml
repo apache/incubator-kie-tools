@@ -80,5 +80,4 @@
       <artifactId>javax.annotation-api</artifactId>
     </dependency>
   </dependencies>
-
 </project>

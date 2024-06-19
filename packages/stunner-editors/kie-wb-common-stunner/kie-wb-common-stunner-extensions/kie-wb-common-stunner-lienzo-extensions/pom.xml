@@ -40,7 +40,6 @@
   </properties>
 
   <dependencies>
-
     <!-- GWT. -->
 
     <dependency>
@@ -95,7 +94,5 @@
       <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-common</artifactId>
     </dependency>
-
   </dependencies>
-
 </project>

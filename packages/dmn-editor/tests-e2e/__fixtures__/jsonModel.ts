@@ -42,7 +42,10 @@ export class JsonModel {
   public drgElements: DrgElement;
   public drd: Drd;
 
-  constructor(public page: Page, public baseURL?: string) {
+  constructor(
+    public page: Page,
+    public baseURL?: string
+  ) {
     this.drgElements = new DrgElement(page);
     this.drd = new Drd(page, this.drgElements);
   }

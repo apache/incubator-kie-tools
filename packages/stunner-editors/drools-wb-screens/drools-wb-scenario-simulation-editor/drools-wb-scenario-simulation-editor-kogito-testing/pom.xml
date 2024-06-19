@@ -338,7 +338,6 @@
       <scope>provided</scope>
     </dependency>
     <!-- END MARSHALLING -->
-
   </dependencies>
 
   <build>
@@ -357,10 +356,10 @@
               <goal>add-source</goal>
             </goals>
             <configuration>
-              <includes
-              >${gwt.helper.includes}</includes> <!-- will include all GWT module whose configuration file name match that pattern -->
-              <rootDirectories
-              >${gwt.helper.rootDirectories}</rootDirectories> <!-- will search inside those directories -->
+              <includes>${gwt.helper.includes}</includes>
+              <!-- will include all GWT module whose configuration file name match that pattern -->
+              <rootDirectories>${gwt.helper.rootDirectories}</rootDirectories>
+              <!-- will search inside those directories -->
             </configuration>
           </execution>
         </executions>
@@ -551,9 +550,7 @@
           </execution>
         </executions>
       </plugin>
-
     </plugins>
-
   </build>
 
   <profiles>
@@ -572,6 +569,5 @@
         </plugins>
       </build>
     </profile>
- </profiles>
-
+  </profiles>
 </project>

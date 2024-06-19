@@ -39,7 +39,6 @@
   </properties>
 
   <dependencies>
-
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-stunner-core-api</artifactId>
@@ -64,7 +63,6 @@
     </dependency>
 
     <!-- Uberfire & Errai. -->
-
 
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
@@ -150,7 +148,6 @@
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -168,5 +165,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>

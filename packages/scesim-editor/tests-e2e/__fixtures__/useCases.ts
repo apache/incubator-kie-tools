@@ -21,7 +21,11 @@ import { Page } from "@playwright/test";
 import { SelectorPanel } from "./selectorPanel";
 
 export class UseCases {
-  constructor(public page: Page, public selectorPanel: SelectorPanel, public baseURL?: string) {
+  constructor(
+    public page: Page,
+    public selectorPanel: SelectorPanel,
+    public baseURL?: string
+  ) {
     this.page = page;
     this.baseURL = baseURL;
   }

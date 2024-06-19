@@ -22,13 +22,13 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 >
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>dev-deployment-kogito-quarkus-blank-app-image</artifactId>
-    <version>${revision}</version>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.kie.kogito</groupId>
+  <artifactId>dev-deployment-kogito-quarkus-blank-app-image</artifactId>
+  <version>${revision}</version>
 
-    <dependencies>
-        <!-- <dependency>
+  <dependencies>
+    <!-- <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-quarkus-devui-deployment</artifactId>
             <version>${project.version}</version>
@@ -38,17 +38,17 @@
             <artifactId>jbpm-quarkus-devui</artifactId>
             <version>${project.version}</version>
         </dependency> -->
-        <!-- <dependency>
+    <!-- <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-quarkus-devui-parent</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency> -->
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>kie-tools-maven-base</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-        </dependency>
-    </dependencies>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-tools-maven-base</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
 </project>

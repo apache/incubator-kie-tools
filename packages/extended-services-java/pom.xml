@@ -74,11 +74,11 @@
   <build>
     <resources>
       <resource>
-          <directory>src/main/resources</directory>
-          <filtering>true</filtering>
-          <includes>
-              <include>**/*.properties</include>
-          </includes>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/*.properties</include>
+        </includes>
       </resource>
     </resources>
     <plugins>
@@ -132,5 +132,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>

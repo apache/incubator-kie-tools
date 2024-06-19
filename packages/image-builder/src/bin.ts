@@ -224,7 +224,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
     `
       )
       .example(
-        `$ image-builder --registry "$(build-env myCustomEnv.registry)" --account "$(build-env myCustomEnv.account)" --name "$(build-env myCustomEnv.name)" --tags "$(build-env myCustomEnv.buildTags)" --engine docker --push`,
+        `$ image-builder --registry "$(build-env myCustomEnv.registry)" --account "$(build-env myCustomEnv.account)" --name "$(build-env myCustomEnv.name)" --tags "$(build-env myCustomEnv.buildTag)" --engine docker --push`,
         "Build an image using parameters from your myCustomEnv build env variables"
       )
       .options({

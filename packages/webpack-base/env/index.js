@@ -23,19 +23,23 @@ module.exports = composeEnv([], {
   vars: varsWithName({
     WEBPACK__minimize: {
       default: undefined,
-      description: "",
+      description:
+        "Whether or not `webpack` should minimize its bundled files. Can be `true` or `false`. Works for all packages on invocations of `webpack` during a `kie-tools` build.",
     },
     WEBPACK__tsLoaderTranspileOnly: {
       default: undefined,
-      description: "",
+      description:
+        "Whether or not `webpack` should skip type-checking TypeScript files. Can be `true` or `false`. Works for all packages on invocations of `webpack` during a `kie-tools` build.",
     },
     WEBPACK__sourceMaps: {
       default: undefined,
-      description: "",
+      description:
+        "Whether or not `webpack` should include source maps for its bundled files. Can be `true` or `false`. Works for all packages on invocations of `webpack` during a `kie-tools` build.",
     },
     WEBPACK__mode: {
       default: undefined,
-      description: "",
+      description:
+        "Can be `development` or `production`. Works for all packages on invocations of `webpack` during a `kie-tools` build.",
     },
   }),
   get env() {

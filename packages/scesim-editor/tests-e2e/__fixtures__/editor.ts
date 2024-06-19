@@ -26,7 +26,11 @@ export enum AssetType {
 }
 
 export class Editor {
-  constructor(public page: Page, public selectorPanel: SelectorPanel, public baseURL?: string) {
+  constructor(
+    public page: Page,
+    public selectorPanel: SelectorPanel,
+    public baseURL?: string
+  ) {
     this.page = page;
     this.baseURL = baseURL;
   }

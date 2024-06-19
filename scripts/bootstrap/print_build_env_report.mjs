@@ -20,7 +20,8 @@
 import * as path from "path";
 import * as fs from "fs";
 import { markdownTable } from "markdown-table";
-import { treatVarToPrint, requireEnv } from "@kie-tools-scripts/build-env/dist/lib.js";
+import { requireEnv } from "@kie-tools-scripts/build-env/dist/lib.js";
+import { getOrDefault } from "@kie-tools-scripts/build-env/dist/index.js";
 import { pnpmFilter } from "./pnpm_filter.js";
 
 let pnpmFilterString;
@@ -41,11 +42,9 @@ if (process.argv[2] === "--write-to") {
 
 async function main() {
   if (pnpmFilterString.length === 0) {
-    console.info("[generate-build-env-report] Generating build-env report of all packages...");
+    console.info("[print-build-env-report] Printing build-env report of all packages...");
   } else {
-    console.info(
-      `[generate-build-env-report] Generating build-env report of packages filtered by '${pnpmFilterString}'`
-    );
+    console.info(`[print-build-env-report] Printing build-env report of packages filtered by '${pnpmFilterString}'`);
   }
 
   // NOTE: This is not recursive as build-env
@@ -77,8 +76,8 @@ async function main() {
           r.default === undefined
             ? "_(undefined)_" //
             : r.default === ""
-            ? "_(empty)_" //
-            : r.default,
+              ? "_(empty)_" //
+              : r.default,
         ]),
       ])
     );
@@ -91,7 +90,7 @@ async function main() {
     console.info(JSON.stringify(shortReport, undefined, 2));
   }
 
-  console.info("[generate-build-env-report] Done.");
+  console.info("[print-build-env-report] Done.");
 }
 
 function buildVarsReport(pkgs) {
@@ -124,6 +123,18 @@ function buildVarsReport(pkgs) {
 
 function concatArraysWithoutDuplicates(a, b) {
   return new Set([...(a ?? []), ...(b ?? [])]);
+}
+
+function treatVarToPrint(varWithName) {
+  let value = getOrDefault(varWithName);
+  if (varWithName.default === undefined && value) {
+    value += " <- CHANGED 👀️ ";
+  } else if (value === undefined) {
+    value = "[unset] Default value may vary ⚠️ ";
+  } else if (value !== varWithName.default) {
+    value += " <- CHANGED 👀️ ";
+  }
+  return value;
 }
 
 await main();

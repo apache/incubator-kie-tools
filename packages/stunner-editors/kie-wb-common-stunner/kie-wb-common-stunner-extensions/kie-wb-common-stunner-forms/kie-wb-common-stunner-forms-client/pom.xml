@@ -39,7 +39,6 @@
   </properties>
 
   <dependencies>
-
     <dependency>
       <groupId>org.gwtproject</groupId>
       <artifactId>gwt-user</artifactId>
@@ -65,8 +64,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-
-
 
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
@@ -174,7 +171,5 @@
       <artifactId>gwtmockito</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
-
 </project>

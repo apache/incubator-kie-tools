@@ -40,7 +40,6 @@
   </properties>
 
   <dependencies>
-
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
@@ -126,8 +125,6 @@
 
     <!-- Uberfire & Errai. -->
 
-
-
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-common</artifactId>
@@ -203,7 +200,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -250,5 +246,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>

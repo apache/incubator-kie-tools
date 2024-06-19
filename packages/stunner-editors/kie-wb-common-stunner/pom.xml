@@ -47,11 +47,8 @@
   </properties>
 
   <build>
-
     <pluginManagement>
-
       <plugins>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
@@ -144,13 +141,10 @@
             </execution>
           </executions>
         </plugin>
-
       </plugins>
-
     </pluginManagement>
 
     <plugins>
-
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
@@ -203,9 +197,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
       </plugin>
-
     </plugins>
-
   </build>
 
   <profiles>
@@ -225,5 +217,4 @@
       </properties>
     </profile>
   </profiles>
-
 </project>

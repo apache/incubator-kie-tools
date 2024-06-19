@@ -21,7 +21,10 @@ import { ProjectName } from "@kie-tools/playwright-base/projectNames";
 import { Page, Locator } from "@playwright/test";
 
 export class Monaco {
-  constructor(public page: Page, public projectName: ProjectName) {}
+  constructor(
+    public page: Page,
+    public projectName: ProjectName
+  ) {}
 
   public async fill(args: { monacoParentLocator: Locator | Page; content: string; nth?: number }) {
     if (args.nth !== undefined) {

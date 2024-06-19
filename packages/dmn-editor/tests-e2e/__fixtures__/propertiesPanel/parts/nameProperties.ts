@@ -20,7 +20,10 @@
 import { Locator, Page } from "@playwright/test";
 
 export class NameProperties {
-  constructor(public panel: Locator, public page: Page) {}
+  constructor(
+    public panel: Locator,
+    public page: Page
+  ) {}
 
   public async setName(args: { newName: string }) {
     await this.panel.getByPlaceholder("Enter a name...").fill(args.newName);

@@ -20,7 +20,10 @@
 import { Page } from "@playwright/test";
 
 export class Editor {
-  constructor(public page: Page, public baseURL?: string) {}
+  constructor(
+    public page: Page,
+    public baseURL?: string
+  ) {}
 
   public async open() {
     await this.page.goto(`${this.baseURL}/iframe.html?args=&id=misc-empty--empty&viewMode=story`);

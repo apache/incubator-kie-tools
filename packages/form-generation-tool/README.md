@@ -98,9 +98,9 @@ To do so, just add the following dependency in your project `pom.xml`:
 
 ```xml
 <dependency>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>runtime-tools-quarkus-extension</artifactId>
-    <version>${version}</version>
+  <groupId>org.kie.kogito</groupId>
+  <artifactId>runtime-tools-quarkus-extension</artifactId>
+  <version>${version}</version>
 </dependency>
 ```
 

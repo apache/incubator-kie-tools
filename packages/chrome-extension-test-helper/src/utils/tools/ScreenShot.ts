@@ -23,7 +23,10 @@ import { WebDriver } from "selenium-webdriver";
 import { join } from "path";
 
 export default class Screenshots {
-  constructor(private readonly driver: WebDriver, private readonly screenshotsDir: string) {
+  constructor(
+    private readonly driver: WebDriver,
+    private readonly screenshotsDir: string
+  ) {
     if (!existsSync(screenshotsDir)) {
       mkdirSync(screenshotsDir, { recursive: true });
     }

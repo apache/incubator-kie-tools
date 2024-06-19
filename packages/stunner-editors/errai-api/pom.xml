@@ -31,7 +31,7 @@
   <artifactId>errai-api</artifactId>
   <name>Errai::API</name>
   <description>An aggregate jar of public API (annotations and interfaces) from various Errai modules.</description>
-  
+
   <build>
     <plugins>
       <plugin>

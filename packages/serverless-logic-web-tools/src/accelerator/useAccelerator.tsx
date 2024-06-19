@@ -35,18 +35,17 @@ interface Props {
   accelerator: Accelerator;
 }
 
-export type ApplyAcceleratorResult =
-  | { backupBranchName: string; tempBranchName: string } & (
-      | {
-          success: true;
-          currentFileAfterMoving: WorkspaceFile;
-          movedFiles: WorkspaceFile[];
-        }
-      | {
-          success: false;
-          message: string;
-        }
-    );
+export type ApplyAcceleratorResult = { backupBranchName: string; tempBranchName: string } & (
+  | {
+      success: true;
+      currentFileAfterMoving: WorkspaceFile;
+      movedFiles: WorkspaceFile[];
+    }
+  | {
+      success: false;
+      message: string;
+    }
+);
 
 export function useAccelerator(props: Props) {
   const workspaces = useWorkspaces();

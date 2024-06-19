@@ -45,7 +45,8 @@
   "activationEvents": [],
   "extensionDependencies": [
     "kie-group.bpmn-vscode-extension",
-    "kie-group.dmn-vscode-extension"
+    "kie-group.dmn-vscode-extension",
+    "kie-group.extended-services-vscode-extension"
   ],
   "icon": "icon.png",
   "capabilities": {
