@@ -27,7 +27,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     },
     EXTENDED_SERVICES__version: {
       default: require("../package.json").version,
-      description: "Extended Services version",
+      description: "Extended Services version. Used by clients for checking compatibility.",
     },
     EXTENDED_SERVICES__ip: {
       default: "0.0.0.0",
@@ -35,7 +35,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     },
     EXTENDED_SERVICES__port: {
       default: "21345",
-      description: "Extended Services port",
+      description: "HTTP port",
     },
     EXTENDED_SERVICES__nativeBinaryPath_macOS: {
       default: "./node_modules/@kie-tools/jitexecutor-native/dist/darwin/jitexecutor",

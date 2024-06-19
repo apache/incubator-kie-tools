@@ -27,7 +27,7 @@ import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 
 describe("Serverless workflow editor - syntax highlighting test", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("e2e-tests-tmp", "resources", "syntax-highlight");
-  const DIST_E2E_TESTS_FOLDER: string = path.resolve("dist-e2e-tests");
+  const DIST_E2E_TESTS_FOLDER: string = path.resolve("dist-tests-e2e");
 
   let testHelper: VSCodeTestHelper;
   let driver: WebDriver;

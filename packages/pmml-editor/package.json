@@ -27,7 +27,7 @@
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "test:e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm rimraf ./dist-e2e-tests\" \"pnpm start-server-and-test start http-get://0.0.0.0:$(build-env pmmlEditor.dev.port) cy:run\"",
+    "test-e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm rimraf ./dist-tests-e2e\" \"pnpm start-server-and-test start http-get://0.0.0.0:$(build-env pmmlEditor.dev.port) cy:run\"",
     "test:watch": "jest --watch"
   },
   "dependencies": {

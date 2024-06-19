@@ -29,7 +29,7 @@ module.exports = {
       "jest-junit",
       {
         suiteName: "Chrome Extension for BPMN and DMN",
-        outputFile: "./dist-e2e-tests/junit-report.xml",
+        outputFile: "./dist-tests-e2e/junit-report.xml",
         classNameTemplate: "Chrome Extension for BPMN and DMN ::",
         titleTemplate: "{title}",
         ancestorSeparator: " :: ",

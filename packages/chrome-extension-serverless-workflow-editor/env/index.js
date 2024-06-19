@@ -23,19 +23,19 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     SWF_CHROME_EXTENSION__routerTargetOrigin: {
       default: "https://localhost:9000",
-      description: "",
+      description: "Route of resources such as Editors and other static assets.",
     },
     SWF_CHROME_EXTENSION__routerRelativePath: {
       default: "",
-      description: "",
+      description: "Relative path to applied to CHROME_EXTENSION__routerTargetOrigin when finding resources.",
     },
     SWF_CHROME_EXTENSION__manifestFile: {
       default: "manifest.dev.json",
-      description: "",
+      description: "Chrome Extension manifest file path relative to this package's root dir.",
     },
     SWF_CHROME_EXTENSION__e2eTestingToken: {
       default: "",
-      description: "",
+      description: "GitHub token used to 'log-in' during E2E tests. 'Log-in' will be skipeed if it is empty.",
     },
   }),
   get env() {
