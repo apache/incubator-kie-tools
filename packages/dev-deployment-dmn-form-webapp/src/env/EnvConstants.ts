@@ -17,31 +17,4 @@
  * under the License.
  */
 
-.showcase {
-  display: flex;
-  flex-direction: column;
-}
-
-.showcase .boxed-expression {
-  overflow-y: auto;
-  height: calc(70vh - 8px);
-}
-
-.showcase .updated-json {
-  border-style: inset;
-  padding: 1em;
-  height: calc(30vh - 8px - 2em - 4px);
-  overflow-y: auto;
-}
-
-.showcase .updated-json .buttons button,
-.expression-definition-editor-modal button {
-  cursor: pointer;
-}
-
-.expression-definition-editor-modal .typed-expression {
-  height: 20em;
-  width: 100%;
-  overflow: auto;
-  resize: none;
-}
+export const ENV_FILE_PATH = "env.json";

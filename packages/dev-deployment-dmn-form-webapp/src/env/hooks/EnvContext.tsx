@@ -17,18 +17,16 @@
  * under the License.
  */
 
-import { createContext, useContext } from "react";
-import { AppData } from "./DmnDevDeploymentFormWebAppDataApi";
+import * as React from "react";
+import { useContext } from "react";
+import { EnvJson } from "../EnvJson";
 
-export interface AppContextType {
-  fetchDone: boolean;
-  data?: AppData;
-  quarkusAppOrigin: string;
-  quarkusAppPath: string;
+export interface EnvContextType {
+  env: EnvJson;
 }
 
-export const AppContext = createContext<AppContextType>({} as any);
+export const EnvContext = React.createContext<EnvContextType>({} as any);
 
-export function useApp() {
-  return useContext(AppContext);
+export function useEnv() {
+  return useContext(EnvContext);
 }

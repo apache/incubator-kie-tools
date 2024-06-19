@@ -17,16 +17,16 @@
  * under the License.
  */
 
-const CopyPlugin = require("copy-webpack-plugin");
-const patternflyBase = require("@kie-tools-core/patternfly-base");
-const { merge } = require("webpack-merge");
-const common = require("@kie-tools-core/webpack-base/webpack.common.config");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { ProvidePlugin } = require("webpack");
-const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
-const { env } = require("./env");
+import CopyPlugin from "copy-webpack-plugin";
+import patternflyBase from "@kie-tools-core/patternfly-base";
+import { merge } from "webpack-merge";
+import common from "@kie-tools-core/webpack-base/webpack.common.config";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import { ProvidePlugin } from "webpack";
+import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
+import { defaultEnvJson } from "./build/defaultEnvJson";
 
-module.exports = async (env) => {
+export default async (env: any, argv: any) => {
   return merge(common(env), {
     entry: {
       index: "./src/index.tsx",
@@ -42,6 +42,11 @@ module.exports = async (env) => {
           { from: "./static/resources", to: "./resources" },
           { from: "./static/images", to: "./images" },
           { from: "./static/favicon.svg", to: "./favicon.svg" },
+          {
+            from: "./static/env.json",
+            to: "./env.json",
+            transform: () => JSON.stringify(defaultEnvJson, null, 2),
+          },
         ],
       }),
       new ProvidePlugin({
@@ -50,7 +55,16 @@ module.exports = async (env) => {
       }),
       new NodePolyfillPlugin(),
     ],
-
+    ignoreWarnings: [
+      {
+        // The @apidevtools sub-packages source maps are not published, so we need to ignore their warnings for now.
+        module: /@apidevtools/,
+      },
+      {
+        // The @jsdevtools sub-packages source maps are not published, so we need to ignore their warnings for now.
+        module: /@jsdevtools/,
+      },
+    ],
     module: {
       rules: [...patternflyBase.webpackModuleRules],
     },

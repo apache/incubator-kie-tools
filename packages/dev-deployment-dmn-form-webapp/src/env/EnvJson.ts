@@ -17,18 +17,7 @@
  * under the License.
  */
 
-import { createContext, useContext } from "react";
-import { AppData } from "./DmnDevDeploymentFormWebAppDataApi";
-
-export interface AppContextType {
-  fetchDone: boolean;
-  data?: AppData;
-  quarkusAppOrigin: string;
-  quarkusAppPath: string;
-}
-
-export const AppContext = createContext<AppContextType>({} as any);
-
-export function useApp() {
-  return useContext(AppContext);
+export interface EnvJson {
+  DEV_DEPLOYMENT_DMN_FORM_WEBAPP_QUARKUS_APP_ORIGIN: string;
+  DEV_DEPLOYMENT_DMN_FORM_WEBAPP_QUARKUS_APP_PATH: string;
 }

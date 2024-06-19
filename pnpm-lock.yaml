@@ -3299,25 +3299,25 @@ importers:
         version: 9.1.3
       copy-webpack-plugin:
         specifier: ^11.0.0
-        version: 11.0.0(webpack@5.88.2(webpack-cli@4.10.0))
+        version: 11.0.0(webpack@5.88.2(@swc/core@1.3.92)(webpack-cli@4.10.0))
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
       html-webpack-plugin:
         specifier: ^5.3.2
-        version: 5.5.3(webpack@5.88.2(webpack-cli@4.10.0))
+        version: 5.5.3(webpack@5.88.2(@swc/core@1.3.92)(webpack-cli@4.10.0))
       jest:
         specifier: ^26.6.3
-        version: 26.6.3(ts-node@10.9.1(@types/node@20.14.2)(typescript@4.8.4))
+        version: 26.6.3(ts-node@10.9.1(@swc/core@1.3.92)(@types/node@20.14.2)(typescript@4.8.4))
       jest-junit:
         specifier: ^14.0.0
         version: 14.0.0
       jest-when:
         specifier: ^3.5.0
-        version: 3.5.0(jest@26.6.3(ts-node@10.9.1(@types/node@20.14.2)(typescript@4.8.4)))
+        version: 3.5.0(jest@26.6.3(ts-node@10.9.1(@swc/core@1.3.92)(@types/node@20.14.2)(typescript@4.8.4)))
       node-polyfill-webpack-plugin:
         specifier: ^2.0.1
-        version: 2.0.1(webpack@5.88.2(webpack-cli@4.10.0))
+        version: 2.0.1(webpack@5.88.2(@swc/core@1.3.92)(webpack-cli@4.10.0))
       process:
         specifier: ^0.11.10
         version: 0.11.10
@@ -3326,13 +3326,16 @@ importers:
         version: 3.0.2
       ts-jest:
         specifier: ^26.5.6
-        version: 26.5.6(jest@26.6.3(ts-node@10.9.1(@types/node@20.14.2)(typescript@4.8.4)))(typescript@4.8.4)
+        version: 26.5.6(jest@26.6.3(ts-node@10.9.1(@swc/core@1.3.92)(@types/node@20.14.2)(typescript@4.8.4)))(typescript@4.8.4)
+      ts-node:
+        specifier: ^10.9.1
+        version: 10.9.1(@swc/core@1.3.92)(@types/node@20.14.2)(typescript@4.8.4)
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
       webpack:
         specifier: ^5.88.2
-        version: 5.88.2(webpack-cli@4.10.0)
+        version: 5.88.2(@swc/core@1.3.92)(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
         version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
@@ -3348,6 +3351,9 @@ importers:
       '@kie-tools/dev-deployment-dmn-form-webapp':
         specifier: workspace:*
         version: link:../dev-deployment-dmn-form-webapp
+      '@kie-tools/image-env-to-json':
+        specifier: workspace:*
+        version: link:../image-env-to-json
     devDependencies:
       '@kie-tools/image-builder':
         specifier: workspace:*
@@ -3361,6 +3367,9 @@ importers:
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6
+      ts-json-schema-generator:
+        specifier: ^1.1.2
+        version: 1.1.2
 
   packages/dev-deployment-kogito-quarkus-blank-app:
     devDependencies:

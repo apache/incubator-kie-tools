@@ -43,7 +43,7 @@ export function usingTestingDmnFormI18nContext(
   };
 }
 
-export function usingTestingAppContext(children: React.ReactElement, ctx?: Partial<AppContextType>) {
+export function usingTestingAppContext(children: React.ReactElement, ctx: Omit<AppContextType, "fetchDone">) {
   const usedCtx: AppContextType = {
     fetchDone: true,
     ...ctx,
