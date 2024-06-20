@@ -66,8 +66,8 @@ void checkoutRepo(String repoName = '', String directory = '') {
 void loginRegistry(String paramsPrefix = defaultImageParamsPrefix) {
     if (isImageInOpenshiftRegistry(paramsPrefix)) {
         container.loginOpenshiftRegistry()
-    } else if (getImageRegistryCredentials(paramsPrefix)) {
-        container.loginContainerRegistry(getImageRegistry(paramsPrefix), getImageRegistryCredentials(paramsPrefix))
+    } else if (getImageRegistryUserCredentialsId(paramsPrefix) && getImageRegistryTokenCredentialsId(paramsPrefix)) {
+        container.loginContainerRegistry(getImageRegistry(paramsPrefix), getImageRegistryUserCredentialsId(paramsPrefix), getImageRegistryTokenCredentialsId(paramsPrefix))
     }
 }
 
@@ -124,6 +124,14 @@ String contructImageProperty(String suffix) {
 
 boolean isImageInOpenshiftRegistry(String paramsPrefix = defaultImageParamsPrefix) {
     return params[constructKey(paramsPrefix, 'USE_OPENSHIFT_REGISTRY')]
+}
+
+String getImageRegistryUserCredentialsId(String paramsPrefix = defaultImageParamsPrefix) {
+    return params[constructKey(paramsPrefix, 'IMAGE_REGISTRY_USER_CREDENTIALS_ID')]
+}
+
+String getImageRegistryTokenCredentialsId(String paramsPrefix = defaultImageParamsPrefix) {
+    return params[constructKey(paramsPrefix, 'IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID')]
 }
 
 String getImageRegistryCredentials(String paramsPrefix = defaultImageParamsPrefix) {

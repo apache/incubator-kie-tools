@@ -112,7 +112,8 @@ void setupDeployJob(JobType jobType) {
             booleanParam('SKIP_TESTS', false, 'Skip tests')
 
             // Deploy information
-            stringParam('IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
+            stringParam('IMAGE_REGISTRY_USER_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_USER_CREDENTIALS_ID}", 'Image registry user credentials id to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
+            stringParam('IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID}", 'Image registry token credentials id to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
             stringParam('IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images')
             stringParam('IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Image namespace to use to deploy images')
             stringParam('IMAGE_NAME_SUFFIX', '', 'Image name suffix to use to deploy images. In case you need to change the final image name, you can add a suffix to it.')
@@ -153,14 +154,16 @@ void setupPromoteJob(JobType jobType) {
             stringParam('DEPLOY_BUILD_URL', '', 'URL to jenkins deploy build to retrieve the `deployment.properties` file. If base parameters are defined, they will override the `deployment.properties` information')
 
             // Base information which can override `deployment.properties`
-            stringParam('BASE_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Override `deployment.properties`. Base Image registry credentials to use to deploy images. Will be ignored if no BASE_IMAGE_REGISTRY is given')
+            stringParam('BASE_IMAGE_REGISTRY_USER_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_USER_CREDENTIALS_ID}", 'Override `deployment.properties`. Base Image registry user credentials id to use to deploy images. Will be ignored if no BASE_IMAGE_REGISTRY is given')
+            stringParam('BASE_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID}", 'Override `deployment.properties`. Base Image registry token credentials id to use to deploy images. Will be ignored if no BASE_IMAGE_REGISTRY is given')
             stringParam('BASE_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Override `deployment.properties`. Base image registry')
             stringParam('BASE_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Override `deployment.properties`. Base image namespace')
             stringParam('BASE_IMAGE_NAME_SUFFIX', '', 'Override `deployment.properties`. Base image name suffix')
             stringParam('BASE_IMAGE_TAG', '', 'Override `deployment.properties`. Base image tag')
 
             // Promote information
-            stringParam('PROMOTE_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Promote Image registry credentials to use to deploy images. Will be ignored if no PROMOTE_IMAGE_REGISTRY is given')
+            stringParam('PROMOTE_IMAGE_REGISTRY_USER_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_USER_CREDENTIALS_ID}", 'Promote Image registry user credentials id to use to deploy images. Will be ignored if no PROMOTE_IMAGE_REGISTRY is given')
+            stringParam('PROMOTE_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID}", 'Promote Image registry token credentials id to use to deploy images. Will be ignored if no PROMOTE_IMAGE_REGISTRY is given')
             stringParam('PROMOTE_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Promote image registry')
             stringParam('PROMOTE_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Promote image namespace')
             stringParam('PROMOTE_IMAGE_NAME_SUFFIX', '', 'Promote image name suffix')
@@ -227,7 +230,8 @@ void setupWeeklyDeployJob(JobType jobType) {
             booleanParam('SKIP_TESTS', false, 'Skip tests')
 
             // Deploy information
-            stringParam('IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
+            stringParam('IMAGE_REGISTRY_USER_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_USER_CREDENTIALS_ID}", 'Image registry user credentials id to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
+            stringParam('IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID}", 'Image registry token credentials id to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
             stringParam('IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images')
             stringParam('IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Image namespace to use to deploy images')
             booleanParam('DEPLOY_WITH_LATEST_TAG', false, 'Set to true if you want the deployed images to also be with the `weekly-latest` tag')
