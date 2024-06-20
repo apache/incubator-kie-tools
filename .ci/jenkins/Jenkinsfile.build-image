@@ -16,11 +16,9 @@
  */
 @Library('jenkins-pipeline-shared-libraries')_
 
-QUAY_REGISTRY = 'quay.io'
-
 pipeline {
     agent {
-        docker { 
+        docker {
             image env.AGENT_DOCKER_BUILDER_IMAGE
             args env.AGENT_DOCKER_BUILDER_ARGS
             label util.avoidFaultyNodes()
@@ -68,8 +66,8 @@ pipeline {
                         if (isDeployImageInOpenshiftRegistry()) {
                             cloud.loginOpenShift(getOpenShiftAPI(), env.OPENSHIFT_CREDS_KEY)
                             cloud.loginOpenshiftRegistry(env.CONTAINER_ENGINE, env.CONTAINER_ENGINE_TLS_OPTIONS ?: '')
-                        } else if (getDeployImageRegistryCredentials()) {
-                            cloud.loginContainerRegistry(getDeployImageRegistry(), getDeployImageRegistryCredentials(), env.CONTAINER_ENGINE, env.CONTAINER_ENGINE_TLS_OPTIONS ?: '')
+                        } else if (getDeployImageRegistryUserCredentialsId() && getDeployImageRegistryTokenCredentialsId()) {
+                            cloud.loginContainerRegistry(getDeployImageRegistry(), getDeployImageRegistryUserCredentialsId(), getDeployImageRegistryTokenCredentialsId(), env.CONTAINER_ENGINE, env.CONTAINER_ENGINE_TLS_OPTIONS ?: '')
                         }
                     }
                 }
@@ -149,18 +147,6 @@ pipeline {
             }
             steps {
                 script {
-                    // Make public if quay registry
-                    if (getDeployImageRegistry() == QUAY_REGISTRY) {
-                        String namespace = getDeployImageNamespace()
-                        String repository = getFinalImageName()
-                        echo "Check and set public if needed Quay repository ${namespace}/${repository}"
-                        try {
-                            cloud.makeQuayImagePublic(namespace, repository, [ usernamePassword: getDeployImageRegistryCredentials()])
-                        } catch (err) {
-                            echo "[ERROR] Cannot set image quay.io/${namespace}/${repository} as visible"
-                        }
-                    }
-
                     int retries = Integer.parseInt(env.MAX_REGISTRY_RETRIES)
                     String imageTag = getBuiltImageTag()
                     if (isDeployLatestTag()) {
@@ -228,7 +214,7 @@ pipeline {
             }
             steps {
                 script {
-                    def resultingFileName = "${getFinalImageName()}.tar.gz"
+                    def resultingFileName = "incubator-kie-${getImageArtifactReleaseVersion()}-${getBuildImageName()}.tar.gz"
                     def signatureFileName = "${resultingFileName}.asc"
                     sh """
                         docker pull ${getBuiltImageTag()}
@@ -236,7 +222,7 @@ pipeline {
                     """
                     release.gpgImportKeyFromFileWithPassword(getReleaseGpgSignKeyCredsId(), getReleaseGpgSignPassphraseCredsId())
                     release.gpgSignFileDetachedSignatureWithPassword(resultingFileName, signatureFileName, getReleaseGpgSignPassphraseCredsId())
-                    release.svnUploadFileToRepository(getReleaseSvnRepository(), getReleaseSvnCredsId(), getReleaseVersion(), resultingFileName, signatureFileName)
+                    release.svnUploadFileToRepository(getReleaseSvnRepository(), getReleaseSvnCredsId(), getImageArtifactReleaseVersion(), resultingFileName, signatureFileName)
                 }
             }
             post {
@@ -309,8 +295,12 @@ boolean isDeployImageInOpenshiftRegistry() {
     return params.DEPLOY_IMAGE_USE_OPENSHIFT_REGISTRY
 }
 
-String getDeployImageRegistryCredentials() {
-    return params.DEPLOY_IMAGE_REGISTRY_CREDENTIALS
+String getDeployImageRegistryUserCredentialsId() {
+    return params.DEPLOY_IMAGE_REGISTRY_USER_CREDENTIALS_ID
+}
+
+String getDeployImageRegistryTokenCredentialsId() {
+    return params.DEPLOY_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID
 }
 
 String getDeployImageRegistry() {
@@ -328,9 +318,8 @@ String getDeployImageNameSuffix() {
 String getDeployImageTag() {
     if (params.DEPLOY_IMAGE_TAG != '') {
         return params.DEPLOY_IMAGE_TAG
-    } else {
-        return sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
     }
+    return sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
 }
 
 String getFinalImageName() {
@@ -470,4 +459,8 @@ String getReleaseSvnRepository() {
 
 String getReleaseSvnCredsId() {
     return env.RELEASE_SVN_CREDS_ID
+}
+
+String getImageArtifactReleaseVersion() {
+    return env.IMAGE_ARTIFACT_RELEASE_VERSION
 }

@@ -206,7 +206,8 @@ void createBuildAndTestStageClosure(String image) {
 
             buildParams.add(booleanParam(name: 'DEPLOY_IMAGE', value: true))
             buildParams.add(booleanParam(name: 'DEPLOY_IMAGE_USE_OPENSHIFT_REGISTRY', value: isDeployImageInOpenshiftRegistry()))
-            buildParams.add(string(name: 'DEPLOY_IMAGE_REGISTRY_CREDENTIALS', value: getDeployImageRegistryCredentials()))
+            buildParams.add(string(name: 'DEPLOY_IMAGE_REGISTRY_USER_CREDENTIALS_ID', value: getDeployImageRegistryUserCredentialsId()))
+            buildParams.add(string(name: 'DEPLOY_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID', value: getDeployImageRegistryTokenCredentialsId()))
             buildParams.add(string(name: 'DEPLOY_IMAGE_REGISTRY', value: getDeployImageRegistry()))
             buildParams.add(string(name: 'DEPLOY_IMAGE_NAMESPACE', value: getDeployImageNamespace()))
             buildParams.add(string(name: 'DEPLOY_IMAGE_NAME_SUFFIX', value: getDeployImageNameSuffix()))
@@ -262,8 +263,12 @@ boolean isDeployImageInOpenshiftRegistry() {
     return params.IMAGE_USE_OPENSHIFT_REGISTRY
 }
 
-String getDeployImageRegistryCredentials() {
-    return params.IMAGE_REGISTRY_CREDENTIALS
+String getDeployImageRegistryUserCredentialsId() {
+    return params.IMAGE_REGISTRY_USER_CREDENTIALS_ID
+}
+
+String getDeployImageRegistryTokenCredentialsId() {
+    return params.IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID
 }
 
 String getDeployImageRegistry() {

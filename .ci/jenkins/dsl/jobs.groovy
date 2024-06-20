@@ -136,8 +136,9 @@ void setupDeployJob(JobType jobType) {
             stringParam('EXAMPLES_REF', '', 'Git reference (branch/tag) to the kogito-examples repository to use for tests.')
 
             // Deploy information
-            booleanParam('IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Set to true if image should be deployed in Openshift registry.In this case, IMAGE_REGISTRY_CREDENTIALS, IMAGE_REGISTRY and IMAGE_NAMESPACE parameters will be ignored')
-            stringParam('IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
+            booleanParam('IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Set to true if image should be deployed in Openshift registry.In this case, IMAGE_REGISTRY_USER_CREDENTIALS_ID, IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID, IMAGE_REGISTRY and IMAGE_NAMESPACE parameters will be ignored')
+            stringParam('IMAGE_REGISTRY_USER_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_USER_CREDENTIALS_ID}", 'Image registry user credentials id to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
+            stringParam('IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID}", 'Image registry token credentials id to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
             stringParam('IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images')
             stringParam('IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Image namespace to use to deploy images')
             stringParam('IMAGE_NAME_SUFFIX', '', 'Image name suffix to use to deploy images. In case you need to change the final image name, you can add a suffix to it.')
@@ -149,6 +150,7 @@ void setupDeployJob(JobType jobType) {
             stringParam('KOGITO_ARTIFACTS_VERSION', '', 'Optional. If artifacts\' version is different from PROJECT_VERSION.')
             if (jobType == JobType.RELEASE) {
                 stringParam('QUARKUS_PLATFORM_VERSION', '', 'Allow to override the Quarkus Platform version')
+                stringParam('GIT_TAG_NAME', '', 'Git tag to be created')
             }
 
             stringParam('KOGITO_PR_BRANCH', '', 'PR branch name')
@@ -202,14 +204,16 @@ void setupBuildImageJob(JobType jobType) {
 
             // Deploy information
             booleanParam('DEPLOY_IMAGE', false, 'Should we deploy image to given deploy registry ?')
-            booleanParam('DEPLOY_IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Set to true if image should be deployed in Openshift registry.In this case, IMAGE_REGISTRY_CREDENTIALS, IMAGE_REGISTRY and IMAGE_NAMESPACE parameters will be ignored')
-            stringParam('DEPLOY_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
+            booleanParam('DEPLOY_IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Set to true if image should be deployed in Openshift registry.In this case, DEPLOY_IMAGE_REGISTRY_USER_CREDENTIALS_ID, DEPLOY_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID, DEPLOY_IMAGE_REGISTRY and DEPLOY_IMAGE_NAMESPACE parameters will be ignored')
+            stringParam('DEPLOY_IMAGE_REGISTRY_USER_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_USER_CREDENTIALS_ID}", 'Image registry user credentials id to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
+            stringParam('DEPLOY_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID}", 'Image registry token credentials id to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
             stringParam('DEPLOY_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images')
             stringParam('DEPLOY_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Image namespace to use to deploy images')
             stringParam('DEPLOY_IMAGE_NAME_SUFFIX', '', 'Image name suffix to use to deploy images. In case you need to change the final image name, you can add a suffix to it.')
             stringParam('DEPLOY_IMAGE_TAG', '', 'Image tag to use to deploy images')
             booleanParam('DEPLOY_WITH_LATEST_TAG', false, 'Set to true if you want the deployed images to also be with the `latest` tag')
             booleanParam('EXPORT_AND_GPG_SIGN_IMAGE', jobType == JobType.RELEASE, 'Set to true if should images be exported and signed.')
+            stringParam('IMAGE_ARTIFACT_RELEASE_VERSION', '', 'Set the release version to be attached to the images artifacts names')
         }
     }
 }
@@ -258,8 +262,9 @@ void setupBuildAndTestJob(JobType jobType) {
 
             // Deploy information
             booleanParam('DEPLOY_IMAGE', false, 'Should we deploy image to given deploy registry ?')
-            booleanParam('DEPLOY_IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Set to true if image should be deployed in Openshift registry.In this case, IMAGE_REGISTRY_CREDENTIALS, IMAGE_REGISTRY and IMAGE_NAMESPACE parameters will be ignored')
-            stringParam('DEPLOY_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
+            booleanParam('DEPLOY_IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Set to true if image should be deployed in Openshift registry.In this case, DEPLOY_IMAGE_REGISTRY_USER_CREDENTIALS_ID, DEPLOY_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID, DEPLOY_IMAGE_REGISTRY and DEPLOY_IMAGE_NAMESPACE parameters will be ignored')
+            stringParam('DEPLOY_IMAGE_REGISTRY_USER_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_USER_CREDENTIALS_ID}", 'Image registry user credentials id to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
+            stringParam('DEPLOY_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID}", 'Image registry token credentials id to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
             stringParam('DEPLOY_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images')
             stringParam('DEPLOY_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Image namespace to use to deploy images')
             stringParam('DEPLOY_IMAGE_NAME_SUFFIX', '', 'Image name suffix to use to deploy images. In case you need to change the final image name, you can add a suffix to it.')
@@ -300,8 +305,9 @@ void setupPromoteJob(JobType jobType) {
             stringParam('DEPLOY_BUILD_URL', '', 'URL to jenkins deploy build to retrieve the `deployment.properties` file. If base parameters are defined, they will override the `deployment.properties` information')
 
             // Base images information which can override `deployment.properties`
-            booleanParam('BASE_IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Override `deployment.properties`. Set to true if base image should be retrieved from Openshift registry.In this case, BASE_IMAGE_REGISTRY_CREDENTIALS, BASE_IMAGE_REGISTRY and BASE_IMAGE_NAMESPACE parameters will be ignored')
-            stringParam('BASE_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Override `deployment.properties`. Base Image registry credentials to use to deploy images. Will be ignored if no BASE_IMAGE_REGISTRY is given')
+            booleanParam('BASE_IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Override `deployment.properties`. Set to true if base image should be retrieved from Openshift registry.In this case, BASE_IMAGE_REGISTRY_USER_CREDENTIALS_ID, BASE_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID, BASE_IMAGE_REGISTRY and BASE_IMAGE_NAMESPACE parameters will be ignored')
+            stringParam('BASE_IMAGE_REGISTRY_USER_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_USER_CREDENTIALS_ID}", 'Override `deployment.properties`. Base Image registry user credentials id to use to deploy images. Will be ignored if no BASE_IMAGE_REGISTRY is given')
+            stringParam('BASE_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID}", 'Override `deployment.properties`. Base Image registry token credentials id to use to deploy images. Will be ignored if no BASE_IMAGE_REGISTRY is given')
             stringParam('BASE_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Override `deployment.properties`. Base image registry')
             stringParam('BASE_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Override `deployment.properties`. Base image namespace')
             stringParam('BASE_IMAGE_NAMES', '', 'Override `deployment.properties`. Comma separated list of images')
@@ -309,8 +315,9 @@ void setupPromoteJob(JobType jobType) {
             stringParam('BASE_IMAGE_TAG', '', 'Override `deployment.properties`. Base image tag')
 
             // Promote images information
-            booleanParam('PROMOTE_IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Set to true if base image should be deployed in Openshift registry.In this case, PROMOTE_IMAGE_REGISTRY_CREDENTIALS, PROMOTE_IMAGE_REGISTRY and PROMOTE_IMAGE_NAMESPACE parameters will be ignored')
-            stringParam('PROMOTE_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Promote Image registry credentials to use to deploy images. Will be ignored if no PROMOTE_IMAGE_REGISTRY is given')
+            booleanParam('PROMOTE_IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Set to true if base image should be deployed in Openshift registry.In this case, PROMOTE_IMAGE_REGISTRY_USER_CREDENTIALS_ID, PROMOTE_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID, PROMOTE_IMAGE_REGISTRY and PROMOTE_IMAGE_NAMESPACE parameters will be ignored')
+            stringParam('PROMOTE_IMAGE_REGISTRY_USER_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_USER_CREDENTIALS_ID}", 'Promote Image registry user credentials id to use to deploy images. Will be ignored if no PROMOTE_IMAGE_REGISTRY is given')
+            stringParam('PROMOTE_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID}", 'Promote Image registry token credentials id to use to deploy images. Will be ignored if no PROMOTE_IMAGE_REGISTRY is given')
             stringParam('PROMOTE_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Promote image registry')
             stringParam('PROMOTE_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Promote image namespace')
             stringParam('PROMOTE_IMAGE_NAME_SUFFIX', '', 'Promote image name suffix')
@@ -373,8 +380,9 @@ void setupWeeklyDeployJob(JobType jobType) {
             stringParam('EXAMPLES_REF', '', 'Git reference (branch/tag) to the kogito-examples repository to use for tests.')
 
             // Deploy information
-            booleanParam('IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Set to true if image should be deployed in Openshift registry.In this case, IMAGE_REGISTRY_CREDENTIALS, IMAGE_REGISTRY and IMAGE_NAMESPACE parameters will be ignored')
-            stringParam('IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
+            booleanParam('IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Set to true if image should be deployed in Openshift registry.In this case, IMAGE_REGISTRY_USER_CREDENTIALS_ID, IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID, IMAGE_REGISTRY and IMAGE_NAMESPACE parameters will be ignored')
+            stringParam('IMAGE_REGISTRY_USER_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_USER_CREDENTIALS_ID}", 'Image registry user credentials id to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
+            stringParam('IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID}", 'Image registry token credentials id to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
             stringParam('IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images')
             stringParam('IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Image namespace to use to deploy images')
             stringParam('IMAGE_NAME_SUFFIX', '', 'Image name suffix to use to deploy images. In case you need to change the final image name, you can add a suffix to it.')

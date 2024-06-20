@@ -64,15 +64,15 @@ pipeline {
                     // Login old registry
                     if (isOldImageInOpenshiftRegistry()) {
                         loginOpenshiftRegistry()
-                    } else if (getOldImageRegistryCredentials() != '') {
-                        loginContainerRegistry(getOldImageRegistry(), getOldImageRegistryCredentials())
+                    } else if (getOldImageRegistryUserCredentialsId() != '' && getOldImageRegistryTokenCredentialsId() != '') {
+                        loginContainerRegistry(getOldImageRegistry(), getOldImageRegistryUserCredentialsId(), getOldImageRegistryTokenCredentialsId())
                     }
 
                     // Login new registry
                     if (isNewImageInOpenshiftRegistry()) {
                         loginOpenshiftRegistry()
-                    } else if (getNewImageRegistryCredentials() != '') {
-                        loginContainerRegistry(getNewImageRegistry(), getNewImageRegistryCredentials())
+                    } else if (getNewImageRegistryUserCredentialsId() != '' && getNewImageRegistryTokenCredentialsId() != '') {
+                        loginContainerRegistry(getNewImageRegistry(), getNewImageRegistryUserCredentialsId(), getNewImageRegistryTokenCredentialsId())
                     }
 
                     dir(getRepoName()) {
@@ -173,20 +173,6 @@ void promoteImage(String oldImageName, String newImageName) {
     cloud.skopeoCopyRegistryImages(oldImageName, newImageName, Integer.parseInt(env.MAX_REGISTRY_RETRIES))
 }
 
-// Set images public on quay. Useful when new images are introduced.
-void makeQuayNewImagesPublic() {
-    String namespace = getNewImageNamespace()
-    for (String imageName : getImages()) {
-        String repository = getFinalImageName(imageName, getNewImageNameSuffix())
-        echo "Check and set public if needed Quay repository ${namespace}/${repository}"
-        try {
-            cloud.makeQuayImagePublic(namespace, repository, [ usernamePassword: getNewImageRegistryCredentials()])
-        } catch (err) {
-            echo "[ERROR] Cannot set image quay.io/${namespace}/${repository} as visible"
-        }
-    }
-}
-
 String getOldImageFullTag(String imageName) {
     return "${getOldImageRegistry()}/${getOldImageNamespace()}/${getFinalImageName(imageName, getOldImageNameSuffix())}:${getOldImageTag()}"
 }
@@ -226,9 +212,11 @@ void loginOpenshiftRegistry() {
     sh "set +x && ${env.CONTAINER_ENGINE} login -u anything -p \$(oc whoami -t) ${env.CONTAINER_ENGINE_TLS_OPTIONS ?: ''} ${env.OPENSHIFT_REGISTRY}"
 }
 
-void loginContainerRegistry(String registry, String credsId) {
-    withCredentials([usernamePassword(credentialsId: credsId, usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PWD')]) {
-        sh "${env.CONTAINER_ENGINE} login -u ${REGISTRY_USER} -p ${REGISTRY_PWD} ${env.CONTAINER_ENGINE_TLS_OPTIONS ?: ''} ${registry}"
+void loginContainerRegistry(String registry, String userCredsId, String tokenCredsId) {
+    withCredentials([string(credentialsId: userCredsId, variable: 'DOCKER_USER')]) {
+        withCredentials([string(credentialsId: tokenCredsId, variable: 'DOCKER_TOKEN')]) {
+            sh "${env.CONTAINER_ENGINE} login -u ${DOCKER_USER} -p ${DOCKER_TOKEN} ${env.CONTAINER_ENGINE_TLS_OPTIONS ?: ''} ${registry}"
+        }
     }
 }
 
@@ -296,10 +284,6 @@ String getGitAuthorPushCredsId() {
     return env.GIT_AUTHOR_PUSH_CREDS_ID
 }
 
-boolean isQuayRegistry(String registry) {
-    return registry == 'quay.io'
-}
-
 ////////////////////////////////////////////////////////////////////////
 // Old image information
 ////////////////////////////////////////////////////////////////////////
@@ -312,8 +296,12 @@ boolean isOldImageInOpenshiftRegistry() {
     return params.BASE_IMAGE_USE_OPENSHIFT_REGISTRY
 }
 
-String getOldImageRegistryCredentials() {
-    return params.BASE_IMAGE_REGISTRY_CREDENTIALS
+String getOldImageRegistryUserCredentialsId() {
+    return params.BASE_IMAGE_REGISTRY_USER_CREDENTIALS_ID
+}
+
+String getOldImageRegistryTokenCredentialsId() {
+    return params.BASE_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID
 }
 
 String getOldImageRegistry() {
@@ -344,8 +332,12 @@ boolean isNewImageInOpenshiftRegistry() {
     return params.PROMOTE_IMAGE_USE_OPENSHIFT_REGISTRY
 }
 
-String getNewImageRegistryCredentials() {
-    return params.PROMOTE_IMAGE_REGISTRY_CREDENTIALS
+String getNewImageRegistryUserCredentialsId() {
+    return params.PROMOTE_IMAGE_REGISTRY_USER_CREDENTIALS_ID
+}
+
+String getNewImageRegistryTokenCredentialsId() {
+    return params.PROMOTE_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID
 }
 
 String getNewImageRegistry() {

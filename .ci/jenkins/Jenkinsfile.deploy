@@ -213,6 +213,11 @@ pipeline {
                         }
                         String prLink = githubscm.createPR(commitMsg, prBody, getBuildBranch(), getGitAuthorPushCredsId())
                         deployProperties["${getRepoName()}.pr.link"] = prLink
+
+                        // Create a new tag
+                        githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
+                        githubscm.tagRepository(getGitTagName())
+                        githubscm.pushRemoteTag('origin', getGitTagName(), getGitAuthorPushCredsId())
                     }
                 }
             }
@@ -223,10 +228,12 @@ pipeline {
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.source.ref", getPRBranch())
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.target.uri", "https://github.com/${getGitAuthor()}/${getRepoName()}")
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.target.ref", getBuildBranch())
+                        setDeployPropertyIfNeeded("${getRepoName()}.tag.name", getGitTagName())
                     }
                 }
             }
         }
+
         stage('Finalize') {
             steps {
                 script {
@@ -302,12 +309,14 @@ void createBuildAndTestStageClosure(String image) {
 
             buildParams.add(booleanParam(name: 'DEPLOY_IMAGE', value: isDeployImage()))
             buildParams.add(booleanParam(name: 'DEPLOY_IMAGE_USE_OPENSHIFT_REGISTRY', value: isDeployImageInOpenshiftRegistry()))
-            buildParams.add(string(name: 'DEPLOY_IMAGE_REGISTRY_CREDENTIALS', value: getDeployImageRegistryCredentials()))
+            buildParams.add(string(name: 'DEPLOY_IMAGE_REGISTRY_USER_CREDENTIALS_ID', value: getDeployImageRegistryUserCredentialsId()))
+            buildParams.add(string(name: 'DEPLOY_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID', value: getDeployImageRegistryTokenCredentialsId()))
             buildParams.add(string(name: 'DEPLOY_IMAGE_REGISTRY', value: getDeployImageRegistry()))
             buildParams.add(string(name: 'DEPLOY_IMAGE_NAMESPACE', value: getDeployImageNamespace()))
             buildParams.add(string(name: 'DEPLOY_IMAGE_NAME_SUFFIX', value: getDeployImageNameSuffix()))
             buildParams.add(string(name: 'DEPLOY_IMAGE_TAG', value: getDeployImageTag()))
             buildParams.add(booleanParam(name: 'DEPLOY_WITH_LATEST_TAG', value: isDeployLatestTag()))
+            buildParams.add(string(name: 'IMAGE_ARTIFACT_RELEASE_VERSION', value: getGitTagName()))
 
             def job = build(job: 'kogito-images.build-image', wait: true, parameters: buildParams, propagate: false)
             if (job.result != 'SUCCESS') {
@@ -362,8 +371,12 @@ boolean isDeployImageInOpenshiftRegistry() {
     return params.IMAGE_USE_OPENSHIFT_REGISTRY
 }
 
-String getDeployImageRegistryCredentials() {
-    return params.IMAGE_REGISTRY_CREDENTIALS
+String getDeployImageRegistryUserCredentialsId() {
+    return params.IMAGE_REGISTRY_USER_CREDENTIALS_ID
+}
+
+String getDeployImageRegistryTokenCredentialsId() {
+    return params.IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID
 }
 
 String getDeployImageRegistry() {
@@ -450,4 +463,8 @@ String[] getImages() {
 
 String getQuarkusPlatformVersion() {
     return params.QUARKUS_PLATFORM_VERSION
+}
+
+String getGitTagName() {
+    return params.GIT_TAG_NAME
 }
