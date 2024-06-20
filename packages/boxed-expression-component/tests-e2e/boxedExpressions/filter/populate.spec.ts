@@ -19,7 +19,7 @@
 
 import { test, expect } from "../../__fixtures__/base";
 
-test.describe.only("Populate Boxed Filter", () => {
+test.describe("Populate Boxed Filter", () => {
   test("should rename a filter", async ({ page, stories }) => {
     await stories.openBoxedFilter("base");
 
