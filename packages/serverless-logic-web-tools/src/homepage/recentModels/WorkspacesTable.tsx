@@ -165,8 +165,8 @@ function getSortableRowValues(tableData: WorkspacesTableRowData): (string | numb
   const workspaceType = !editableFiles.length
     ? ""
     : isWsFolder
-    ? "d_" + descriptor.origin.toString()
-    : "f_" + editableFiles[0].extension;
+      ? "d_" + descriptor.origin.toString()
+      : "f_" + editableFiles[0].extension;
   return [
     descriptor.name,
     workspaceType,

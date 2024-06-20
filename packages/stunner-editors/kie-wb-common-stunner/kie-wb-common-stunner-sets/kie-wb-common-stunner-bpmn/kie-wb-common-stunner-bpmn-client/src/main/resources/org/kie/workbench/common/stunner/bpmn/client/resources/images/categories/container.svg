@@ -1,5 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 420 420" style="enable-background:new 0 0 420 420;" xml:space="preserve">
+<?xml version="1.0" encoding="utf-8" ?>
+<svg
+  version="1.1"
+  id="Layer_1"
+  xmlns="http://www.w3.org/2000/svg"
+  x="0px"
+  y="0px"
+  viewBox="0 0 420 420"
+  style="enable-background:new 0 0 420 420;"
+  xml:space="preserve"
+>
 	<!--
 	- Licensed to the Apache Software Foundation (ASF) under one
 	- or more contributor license agreements.  See the NOTICE file
@@ -19,9 +28,15 @@
 	- under the License.
 	-->
 	<style type="text/css">
-		.container-svg-css {fill:#4D5258;}
-	</style>
-	<path id="Icon" class="container-svg-css" d="M380,60H40C17.9,60,0,77.9,0,100v240c0,22.1,17.9,40,40,40h340c22.1,0,40-17.9,40-40V100
+.container-svg-css {
+  fill: #4d5258;
+}
+  </style>
+	<path
+    id="Icon"
+    class="container-svg-css"
+    d="M380,60H40C17.9,60,0,77.9,0,100v240c0,22.1,17.9,40,40,40h340c22.1,0,40-17.9,40-40V100
 	C420,77.9,402.1,60,380,60z M60,340V100h320v240H60z M100,140h60v60h-60V140z M100,240h60v60h-60V240z M200,140h140v60H200V140z
-	 M200,240h140v60H200V240z" />
+	 M200,240h140v60H200V240z"
+  />
 </svg>

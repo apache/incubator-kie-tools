@@ -31,5 +31,4 @@
   <inherits name="org.dashbuilder.DatasetShared" />
 
   <source path='dataset' />
-
 </module>

@@ -332,10 +332,10 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                   activeMenu === ROOT_MENU_ID
                     ? "400px"
                     : filesDropdownMode === FilesDropdownMode.LIST_MODELS
-                    ? `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px`
-                    : filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS
-                    ? `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX * 2}px`
-                    : "",
+                      ? `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px`
+                      : filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS
+                        ? `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX * 2}px`
+                        : "",
               }}
               id={ROOT_MENU_ID}
               containsDrilldown={true}

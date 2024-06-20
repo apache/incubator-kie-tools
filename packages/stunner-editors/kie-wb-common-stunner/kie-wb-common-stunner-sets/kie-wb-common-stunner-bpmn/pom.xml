@@ -41,5 +41,4 @@
     <module>kie-wb-common-stunner-bpmn-client</module>
     <module>kie-wb-common-stunner-bpmn-kogito-runtime</module>
   </modules>
-
 </project>

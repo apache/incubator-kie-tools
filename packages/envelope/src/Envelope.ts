@@ -35,7 +35,7 @@ export class Envelope<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>,
   ViewType,
-  ContextType
+  ContextType,
 > {
   constructor(
     bus: EnvelopeBus,

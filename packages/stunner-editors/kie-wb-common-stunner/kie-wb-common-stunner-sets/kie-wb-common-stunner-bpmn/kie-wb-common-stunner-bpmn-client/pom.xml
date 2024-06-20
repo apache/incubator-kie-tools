@@ -304,6 +304,5 @@
       <artifactId>powermock-module-junit4</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 </project>

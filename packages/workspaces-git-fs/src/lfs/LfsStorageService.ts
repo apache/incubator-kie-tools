@@ -175,14 +175,14 @@ export class LfsStorageService {
         return !(await args.fs.promises.stat(absolutePath)).isDirectory()
           ? args.onVisit({ absolutePath, relativePath })
           : args.shouldExcludeDir(absolutePath)
-          ? []
-          : this.walk({
-              fs: args.fs,
-              startFromDirPath: absolutePath,
-              shouldExcludeDir: args.shouldExcludeDir,
-              onVisit: args.onVisit,
-              originalStartingDirPath: args.originalStartingDirPath ?? args.startFromDirPath,
-            });
+            ? []
+            : this.walk({
+                fs: args.fs,
+                startFromDirPath: absolutePath,
+                shouldExcludeDir: args.shouldExcludeDir,
+                onVisit: args.onVisit,
+                originalStartingDirPath: args.originalStartingDirPath ?? args.startFromDirPath,
+              });
       })
     );
 

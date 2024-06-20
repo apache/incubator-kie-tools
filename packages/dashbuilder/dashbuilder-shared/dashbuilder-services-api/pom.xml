@@ -36,7 +36,6 @@
   <description>Dashbuilder Services API shared between client and server.</description>
 
   <dependencies>
-
     <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-dataset-api</artifactId>
@@ -46,7 +45,5 @@
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-bus</artifactId>
     </dependency>
-
   </dependencies>
-  
 </project>

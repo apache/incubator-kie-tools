@@ -56,7 +56,7 @@
     <jacoco.destFile>${project.build.directory}/jacoco.exec</jacoco.destFile>
     <sonar.jacoco.reportPath>${jacoco.destFile}</sonar.jacoco.reportPath>
   </properties>
-  
+
   <repositories>
     <repository>
       <id>jdt.ls.p2</id>

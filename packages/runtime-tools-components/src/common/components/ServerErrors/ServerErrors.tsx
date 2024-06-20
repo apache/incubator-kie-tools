@@ -67,10 +67,10 @@ export const ServerErrors: React.FC<IOwnProps & OUIAProps> = ({ ouiaId, ouiaSafe
       return errorObject.networkError && errorObject.networkError.name
         ? JSON.stringify(errorObject.networkError)
         : errorObject.graphQLErrors && errorObject.graphQLErrors.size > 0
-        ? JSON.stringify(errorObject.graphQLErrors)
-        : errorObject.message
-        ? errorObject.message
-        : JSON.stringify(props.error);
+          ? JSON.stringify(errorObject.graphQLErrors)
+          : errorObject.message
+            ? errorObject.message
+            : JSON.stringify(props.error);
     } catch (error) {
       return props.error;
     }

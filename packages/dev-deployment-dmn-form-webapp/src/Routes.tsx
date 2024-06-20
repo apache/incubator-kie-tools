@@ -33,7 +33,7 @@ export class Route<
   T extends {
     pathParams?: any;
     queryParams?: any;
-  }
+  },
 > {
   constructor(
     private readonly pathDelegate: (

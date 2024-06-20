@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Licensed to the Apache Software Foundation (ASF) under one
   ~ or more contributor license agreements.  See the NOTICE file
@@ -17,8 +17,20 @@
   ~ specific language governing permissions and limitations
   ~ under the License.      
 -->
-<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kie.apache.org/dmn/_9E2FBDAC-5207-48D3-AD5B-CF838E308264" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="https://kie.apache.org/dmn/extensions/1.0" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_8260676F-9320-4E8E-AEF8-67B7FCAF3E0F" name="Recursive" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kie.apache.org/dmn/_9E2FBDAC-5207-48D3-AD5B-CF838E308264">
-  <dmn:extensionElements/>
+<dmn:definitions
+  xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  xmlns="https://kie.apache.org/dmn/_9E2FBDAC-5207-48D3-AD5B-CF838E308264"
+  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  xmlns:kie="https://kie.apache.org/dmn/extensions/1.0"
+  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+  id="_8260676F-9320-4E8E-AEF8-67B7FCAF3E0F"
+  name="Recursive"
+  typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  namespace="https://kie.apache.org/dmn/_9E2FBDAC-5207-48D3-AD5B-CF838E308264"
+>
+  <dmn:extensionElements />
   <dmn:itemDefinition id="_4CC3F7CA-A7B2-44CD-8230-25FB10DFBB87" name="tRecursive" isCollection="false">
     <dmn:itemComponent id="_7C499B79-FC8C-4672-A461-473C85CD7123" name="name" isCollection="false">
       <dmn:typeRef>string</dmn:typeRef>
@@ -35,14 +47,14 @@
     </dmn:itemComponent>
   </dmn:itemDefinition>
   <dmn:inputData id="_E981455C-487C-4C58-B231-35CDFE38D3B8" name="MyInput">
-    <dmn:extensionElements/>
-    <dmn:variable id="_535600DB-7AA8-46E6-9526-63043FC05DB0" name="MyInput" typeRef="tTest"/>
+    <dmn:extensionElements />
+    <dmn:variable id="_535600DB-7AA8-46E6-9526-63043FC05DB0" name="MyInput" typeRef="tTest" />
   </dmn:inputData>
   <dmn:decision id="_01EEA799-92C2-4B05-9266-C9156F3D77CB" name="myRecursiveOutput">
-    <dmn:extensionElements/>
-    <dmn:variable id="_E1AE502C-4501-4EA4-8F45-84494968686B" name="myRecursiveOutput" typeRef="tRecursive"/>
+    <dmn:extensionElements />
+    <dmn:variable id="_E1AE502C-4501-4EA4-8F45-84494968686B" name="myRecursiveOutput" typeRef="tRecursive" />
     <dmn:informationRequirement id="_43B1FDAB-9502-4A80-83F6-C619D6A2E098">
-      <dmn:requiredInput href="#_E981455C-487C-4C58-B231-35CDFE38D3B8"/>
+      <dmn:requiredInput href="#_E981455C-487C-4C58-B231-35CDFE38D3B8" />
     </dmn:informationRequirement>
     <dmn:literalExpression id="_B394F715-C2B5-479A-B3E8-C0B4822584EC">
       <dmn:text>MyInput</dmn:text>
@@ -57,27 +69,38 @@
           </kie:ComponentWidths>
         </kie:ComponentsWidthsExtension>
       </di:extension>
-      <dmndi:DMNShape id="dmnshape-drg-_E981455C-487C-4C58-B231-35CDFE38D3B8" dmnElementRef="_E981455C-487C-4C58-B231-35CDFE38D3B8" isCollapsed="false">
+      <dmndi:DMNShape
+        id="dmnshape-drg-_E981455C-487C-4C58-B231-35CDFE38D3B8"
+        dmnElementRef="_E981455C-487C-4C58-B231-35CDFE38D3B8"
+        isCollapsed="false"
+      >
         <dmndi:DMNStyle>
-          <dmndi:FillColor red="255" green="255" blue="255"/>
-          <dmndi:StrokeColor red="0" green="0" blue="0"/>
-          <dmndi:FontColor red="0" green="0" blue="0"/>
+          <dmndi:FillColor red="255" green="255" blue="255" />
+          <dmndi:StrokeColor red="0" green="0" blue="0" />
+          <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
-        <dc:Bounds x="230" y="327" width="100" height="50"/>
-        <dmndi:DMNLabel/>
+        <dc:Bounds x="230" y="327" width="100" height="50" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
-      <dmndi:DMNShape id="dmnshape-drg-_01EEA799-92C2-4B05-9266-C9156F3D77CB" dmnElementRef="_01EEA799-92C2-4B05-9266-C9156F3D77CB" isCollapsed="false">
+      <dmndi:DMNShape
+        id="dmnshape-drg-_01EEA799-92C2-4B05-9266-C9156F3D77CB"
+        dmnElementRef="_01EEA799-92C2-4B05-9266-C9156F3D77CB"
+        isCollapsed="false"
+      >
         <dmndi:DMNStyle>
-          <dmndi:FillColor red="255" green="255" blue="255"/>
-          <dmndi:StrokeColor red="0" green="0" blue="0"/>
-          <dmndi:FontColor red="0" green="0" blue="0"/>
+          <dmndi:FillColor red="255" green="255" blue="255" />
+          <dmndi:StrokeColor red="0" green="0" blue="0" />
+          <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
-        <dc:Bounds x="191" y="468" width="167" height="51"/>
-        <dmndi:DMNLabel/>
+        <dc:Bounds x="191" y="468" width="167" height="51" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
-      <dmndi:DMNEdge id="dmnedge-drg-_43B1FDAB-9502-4A80-83F6-C619D6A2E098-AUTO-SOURCE-AUTO-TARGET" dmnElementRef="_43B1FDAB-9502-4A80-83F6-C619D6A2E098">
-        <di:waypoint x="280" y="327"/>
-        <di:waypoint x="274.5" y="519"/>
+      <dmndi:DMNEdge
+        id="dmnedge-drg-_43B1FDAB-9502-4A80-83F6-C619D6A2E098-AUTO-SOURCE-AUTO-TARGET"
+        dmnElementRef="_43B1FDAB-9502-4A80-83F6-C619D6A2E098"
+      >
+        <di:waypoint x="280" y="327" />
+        <di:waypoint x="274.5" y="519" />
       </dmndi:DMNEdge>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>

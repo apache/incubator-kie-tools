@@ -20,12 +20,10 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.5.1//EN"
   "http://google-web-toolkit.googlecode.com/svn/tags/2.5.1/distro-source/core/src/gwt-module.dtd">
 <module>
-
   <inherits name="org.eclipse.EclipseEmfJBpm" />
   <inherits name="org.jboss.drools.EclipseEmfDrools" />
   <inherits name="EclipseEmfBPSim" />
   <inherits name="org.omg.spec.bpmn.non.normative.EclipseEmfColor" />
 
   <source path="client/emf" />
-
 </module>

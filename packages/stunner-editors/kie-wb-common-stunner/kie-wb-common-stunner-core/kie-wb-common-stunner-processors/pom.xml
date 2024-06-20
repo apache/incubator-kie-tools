@@ -39,7 +39,6 @@
   </properties>
 
   <dependencies>
-
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-stunner-core-api</artifactId>
@@ -66,12 +65,10 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
-
   </dependencies>
 
   <build>
     <plugins>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -79,8 +76,6 @@
           <proc>none</proc>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
-
 </project>

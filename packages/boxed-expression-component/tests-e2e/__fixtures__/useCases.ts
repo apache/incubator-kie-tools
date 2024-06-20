@@ -35,7 +35,10 @@ interface LoanOriginationsPaths {
 }
 
 export class UseCases {
-  constructor(public page: Page, public baseURL?: string) {
+  constructor(
+    public page: Page,
+    public baseURL?: string
+  ) {
     this.page = page;
     this.baseURL = baseURL;
   }

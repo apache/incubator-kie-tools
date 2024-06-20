@@ -26,7 +26,10 @@ type BaseFixtures = {
 };
 
 class KieSandbox {
-  constructor(public page: Page, public baseURL?: string) {
+  constructor(
+    public page: Page,
+    public baseURL?: string
+  ) {
     this.page = page;
   }
 

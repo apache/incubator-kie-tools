@@ -17,16 +17,18 @@
  * under the License.
  */
 
-module.exports = {
+export default {
   printWidth: 120,
-  plugins: [require("@nice-move/prettier-plugin-package-json"), require("@prettier/plugin-xml")],
+  trailingComma: "es5",
+  plugins: ["@nice-move/prettier-plugin-package-json", "@prettier/plugin-xml"],
+  xmlWhitespaceSensitivity: "preserve",
   overrides: [
     {
       files: "package.json",
       options: { parser: "package-json" },
     },
     {
-      files: "**/*.xml",
+      files: ["**/*.dmn", "**/*.bpmn", "**/*.bpmn2", "**/*.scesim"],
       options: { parser: "xml" },
     },
   ],

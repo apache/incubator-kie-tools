@@ -214,59 +214,55 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     [textEditor]
   );
 
-  useImperativeHandle(
-    forwardedRef,
-    () => {
-      return {
-        setContent: async (normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string) => {
-          try {
-            const match = /\.sw\.(json|yml|yaml)$/.exec(normalizedPosixPathRelativeToTheWorkspaceRoot.toLowerCase());
-            const dotExtension = match ? match[0] : extname(normalizedPosixPathRelativeToTheWorkspaceRoot);
-            const extension = dotExtension.slice(1);
-            const fileName = basename(normalizedPosixPathRelativeToTheWorkspaceRoot);
-            const getFileContentsFn = async () => content;
+  useImperativeHandle(forwardedRef, () => {
+    return {
+      setContent: async (normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string) => {
+        try {
+          const match = /\.sw\.(json|yml|yaml)$/.exec(normalizedPosixPathRelativeToTheWorkspaceRoot.toLowerCase());
+          const dotExtension = match ? match[0] : extname(normalizedPosixPathRelativeToTheWorkspaceRoot);
+          const extension = dotExtension.slice(1);
+          const fileName = basename(normalizedPosixPathRelativeToTheWorkspaceRoot);
+          const getFileContentsFn = async () => content;
 
-            setFile({ content, path: normalizedPosixPathRelativeToTheWorkspaceRoot });
-            setEmbeddedTextEditorFile({
-              normalizedPosixPathRelativeToTheWorkspaceRoot,
-              getFileContents: getFileContentsFn,
-              isReadOnly: props.isReadOnly,
-              fileExtension: extension,
-              fileName: fileName,
-            });
+          setFile({ content, path: normalizedPosixPathRelativeToTheWorkspaceRoot });
+          setEmbeddedTextEditorFile({
+            normalizedPosixPathRelativeToTheWorkspaceRoot,
+            getFileContents: getFileContentsFn,
+            isReadOnly: props.isReadOnly,
+            fileExtension: extension,
+            fileName: fileName,
+          });
 
-            setEmbeddedDiagramEditorFile({
-              normalizedPosixPathRelativeToTheWorkspaceRoot,
-              getFileContents: getFileContentsFn,
-              isReadOnly: true,
-              fileExtension: extension,
-              fileName: fileName,
-            });
-          } catch (e) {
-            console.error(e);
-            throw e;
-          }
-        },
-        getContent: async () => file?.content ?? "",
-        getPreview: async () => diagramEditor?.getPreview() ?? "",
-        undo: async () => {
-          await Promise.all([textEditor?.undo(), diagramEditor?.undo()]);
-        },
-        redo: async () => {
-          await Promise.all([textEditor?.redo(), diagramEditor?.redo()]);
-        },
-        validate: async (): Promise<Notification[]> => textEditor?.validate() ?? [],
-        setTheme: async (theme: EditorTheme) => applyEditorTheme(theme),
-        colorNodes: (nodeNames: string[], color: string, colorConnectedEnds: boolean) => {
-          colorNodes(nodeNames, color, colorConnectedEnds);
-        },
-        moveCursorToPosition: (position: Position) => {
-          textEditorEnvelopeApi?.notifications.kogitoSwfTextEditor__moveCursorToPosition.send(position);
-        },
-      };
-    },
-    [diagramEditor, file, props.isReadOnly, textEditor, textEditorEnvelopeApi, applyEditorTheme]
-  );
+          setEmbeddedDiagramEditorFile({
+            normalizedPosixPathRelativeToTheWorkspaceRoot,
+            getFileContents: getFileContentsFn,
+            isReadOnly: true,
+            fileExtension: extension,
+            fileName: fileName,
+          });
+        } catch (e) {
+          console.error(e);
+          throw e;
+        }
+      },
+      getContent: async () => file?.content ?? "",
+      getPreview: async () => diagramEditor?.getPreview() ?? "",
+      undo: async () => {
+        await Promise.all([textEditor?.undo(), diagramEditor?.undo()]);
+      },
+      redo: async () => {
+        await Promise.all([textEditor?.redo(), diagramEditor?.redo()]);
+      },
+      validate: async (): Promise<Notification[]> => textEditor?.validate() ?? [],
+      setTheme: async (theme: EditorTheme) => applyEditorTheme(theme),
+      colorNodes: (nodeNames: string[], color: string, colorConnectedEnds: boolean) => {
+        colorNodes(nodeNames, color, colorConnectedEnds);
+      },
+      moveCursorToPosition: (position: Position) => {
+        textEditorEnvelopeApi?.notifications.kogitoSwfTextEditor__moveCursorToPosition.send(position);
+      },
+    };
+  }, [diagramEditor, file, props.isReadOnly, textEditor, textEditorEnvelopeApi, applyEditorTheme]);
 
   useStateControlSubscription(
     textEditor,

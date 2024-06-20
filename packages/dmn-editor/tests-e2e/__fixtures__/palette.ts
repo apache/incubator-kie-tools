@@ -22,7 +22,11 @@ import { Diagram } from "./diagram";
 import { DefaultNodeName, Nodes, NodeType } from "./nodes";
 
 export class Palette {
-  constructor(public page: Page, public diagram: Diagram, public nodes: Nodes) {}
+  constructor(
+    public page: Page,
+    public diagram: Diagram,
+    public nodes: Nodes
+  ) {}
 
   public async dragNewNode(args: { type: NodeType; targetPosition: { x: number; y: number }; thenRenameTo?: string }) {
     const { nodeTitle, nodeName } = this.getNewNodeProperties(args.type);

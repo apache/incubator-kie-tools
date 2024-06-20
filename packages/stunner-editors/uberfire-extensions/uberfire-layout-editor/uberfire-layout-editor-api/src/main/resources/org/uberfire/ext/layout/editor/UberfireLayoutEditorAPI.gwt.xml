@@ -21,5 +21,4 @@
   "http://google-web-toolkit.googlecode.com/svn/tags/2.5.1/distro-source/core/src/gwt-module.dtd">
 <module>
   <source path='api' />
-
 </module>

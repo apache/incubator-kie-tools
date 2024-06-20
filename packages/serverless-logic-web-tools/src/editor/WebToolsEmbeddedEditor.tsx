@@ -121,17 +121,13 @@ const RefForwardingWebToolsEmbeddedEditor: ForwardRefRenderFunction<
     return { ...loadedComponent };
   }, [availableComponents]);
 
-  useImperativeHandle(
-    fowardedRef,
-    () => {
-      return {
-        editor,
-        ...channelComponent,
-        isReady: isReady && !!channelComponent.isReady,
-      };
-    },
-    [channelComponent, editor, isReady]
-  );
+  useImperativeHandle(fowardedRef, () => {
+    return {
+      editor,
+      ...channelComponent,
+      isReady: isReady && !!channelComponent.isReady,
+    };
+  }, [channelComponent, editor, isReady]);
 
   useEffect(() => {
     if (!channelComponent.kogitoEditorChannelApi && file && !isReady) {

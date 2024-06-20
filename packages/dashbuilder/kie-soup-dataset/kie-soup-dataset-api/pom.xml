@@ -36,7 +36,6 @@
   <description>KIE Soup Dataset API shared between client and server.</description>
 
   <dependencies>
-
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
@@ -64,7 +63,5 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
-  
 </project>

@@ -37,44 +37,40 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
     const [diagramPreviewSize, setDiagramPreviewSize] = React.useState<DiagramPreviewSize>();
     const [isStunnerEnabled, setIsStunnerEnabled] = React.useState<boolean>(false);
 
-    useImperativeHandle(
-      forwardingRef,
-      () => {
-        return {
-          setDataIndexUrl: (dataIndexUrl) => {
-            setDataIndexUrl(dataIndexUrl);
-          },
-          navigateTo: (page) => {
-            setNavigate(page);
-          },
-          setDevUIUrl: (url) => {
-            setDevUIUrl(url);
-          },
-          setOpenApiBaseUrl: (baseUrl) => {
-            setOpenApiBaseUrl(baseUrl);
-          },
-          setOpenApiPath: (path) => {
-            setOpenApiPath(path);
-          },
-          setWorkflowEnabled: (isWorkflowEnabled) => {
-            setWorkflowEnabled(isWorkflowEnabled);
-          },
-          setAvailablePages: (availablePages) => {
-            setAvailablePages(availablePages);
-          },
-          setOmittedWorkflowTimelineEvents: (omittedWorkflowTimelineEvents) => {
-            setOmittedWorkflowTimelineEvents(omittedWorkflowTimelineEvents);
-          },
-          setDiagramPreviewSize: (diagramPreviewSize) => {
-            setDiagramPreviewSize(diagramPreviewSize);
-          },
-          setIsStunnerEnabled: (isStunnerEnabled) => {
-            setIsStunnerEnabled(isStunnerEnabled);
-          },
-        };
-      },
-      []
-    );
+    useImperativeHandle(forwardingRef, () => {
+      return {
+        setDataIndexUrl: (dataIndexUrl) => {
+          setDataIndexUrl(dataIndexUrl);
+        },
+        navigateTo: (page) => {
+          setNavigate(page);
+        },
+        setDevUIUrl: (url) => {
+          setDevUIUrl(url);
+        },
+        setOpenApiBaseUrl: (baseUrl) => {
+          setOpenApiBaseUrl(baseUrl);
+        },
+        setOpenApiPath: (path) => {
+          setOpenApiPath(path);
+        },
+        setWorkflowEnabled: (isWorkflowEnabled) => {
+          setWorkflowEnabled(isWorkflowEnabled);
+        },
+        setAvailablePages: (availablePages) => {
+          setAvailablePages(availablePages);
+        },
+        setOmittedWorkflowTimelineEvents: (omittedWorkflowTimelineEvents) => {
+          setOmittedWorkflowTimelineEvents(omittedWorkflowTimelineEvents);
+        },
+        setDiagramPreviewSize: (diagramPreviewSize) => {
+          setDiagramPreviewSize(diagramPreviewSize);
+        },
+        setIsStunnerEnabled: (isStunnerEnabled) => {
+          setIsStunnerEnabled(isStunnerEnabled);
+        },
+      };
+    }, []);
     return (
       <>
         {isWorkflowEnabled && navigate.length > 0 && (

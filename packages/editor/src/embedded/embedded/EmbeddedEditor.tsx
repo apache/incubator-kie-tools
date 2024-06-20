@@ -171,34 +171,30 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
   );
 
   //Forward reference methods
-  useImperativeHandle(
-    forwardedRef,
-    () => {
-      if (!iframeRef.current) {
-        return undefined;
-      }
+  useImperativeHandle(forwardedRef, () => {
+    if (!iframeRef.current) {
+      return undefined;
+    }
 
-      return {
-        iframeRef,
-        isReady: props.isReady ?? isReady,
-        getStateControl: () => stateControl,
-        getEnvelopeServer: () => envelopeServer,
-        undo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorUndo.send()),
-        redo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorRedo.send()),
-        getContent: () => envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content),
-        getPreview: () => envelopeServer.envelopeApi.requests.kogitoEditor_previewRequest(),
-        setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot, content) =>
-          envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
-            { normalizedPosixPathRelativeToTheWorkspaceRoot, content },
-            { showLoadingOverlay: false }
-          ),
-        validate: () => envelopeServer.envelopeApi.requests.kogitoEditor_validate(),
-        setTheme: (theme) => Promise.resolve(envelopeServer.shared.kogitoEditor_theme.set(theme)),
-        onKeyDown: (ke: React.KeyboardEvent) => onKeyDown(envelopeServer, ke),
-      };
-    },
-    [props.isReady, isReady, stateControl, envelopeServer, onKeyDown]
-  );
+    return {
+      iframeRef,
+      isReady: props.isReady ?? isReady,
+      getStateControl: () => stateControl,
+      getEnvelopeServer: () => envelopeServer,
+      undo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorUndo.send()),
+      redo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorRedo.send()),
+      getContent: () => envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content),
+      getPreview: () => envelopeServer.envelopeApi.requests.kogitoEditor_previewRequest(),
+      setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot, content) =>
+        envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
+          { normalizedPosixPathRelativeToTheWorkspaceRoot, content },
+          { showLoadingOverlay: false }
+        ),
+      validate: () => envelopeServer.envelopeApi.requests.kogitoEditor_validate(),
+      setTheme: (theme) => Promise.resolve(envelopeServer.shared.kogitoEditor_theme.set(theme)),
+      onKeyDown: (ke: React.KeyboardEvent) => onKeyDown(envelopeServer, ke),
+    };
+  }, [props.isReady, isReady, stateControl, envelopeServer, onKeyDown]);
 
   return (
     <>

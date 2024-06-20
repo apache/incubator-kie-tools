@@ -152,60 +152,60 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
           expression.functionKind === FunctionExpressionDefinitionKind.Feel
             ? gwtToBee(expression.expression, __widths)
             : expression.functionKind === FunctionExpressionDefinitionKind.Java
-            ? (() => {
-                __widths.set(expression.id, [
-                  BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
-                  expression.classAndMethodNamesWidth ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
-                ]);
-                return {
-                  __$$element: "context",
-                  contextEntry: [
-                    {
-                      "@_id": expression.classFieldId,
-                      expression: {
-                        __$$element: "literalExpression",
-                        text: { __$$text: expression.className ?? "" },
+              ? (() => {
+                  __widths.set(expression.id, [
+                    BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
+                    expression.classAndMethodNamesWidth ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
+                  ]);
+                  return {
+                    __$$element: "context",
+                    contextEntry: [
+                      {
+                        "@_id": expression.classFieldId,
+                        expression: {
+                          __$$element: "literalExpression",
+                          text: { __$$text: expression.className ?? "" },
+                        },
+                        variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.classFieldName },
                       },
-                      variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.classFieldName },
-                    },
-                    {
-                      "@_id": expression.methodFieldId,
-                      expression: {
-                        __$$element: "literalExpression",
-                        text: { __$$text: expression.methodName ?? "" },
+                      {
+                        "@_id": expression.methodFieldId,
+                        expression: {
+                          __$$element: "literalExpression",
+                          text: { __$$text: expression.methodName ?? "" },
+                        },
+                        variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.methodSignatureFieldName },
                       },
-                      variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.methodSignatureFieldName },
-                    },
-                  ],
-                };
-              })()
-            : expression.functionKind === FunctionExpressionDefinitionKind.Pmml
-            ? (() => {
-                return {
-                  __$$element: "context",
-                  contextEntry: [
-                    {
-                      "@_id": expression.documentFieldId,
-                      expression: {
-                        __$$element: "literalExpression",
-                        text: { __$$text: expression.document ?? "" },
-                      },
-                      variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.documentFieldName },
-                    },
-                    {
-                      "@_id": expression.modelFieldId,
-                      expression: {
-                        __$$element: "literalExpression",
-                        text: { __$$text: expression.model ?? "" },
-                      },
-                      variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.modelFieldName },
-                    },
-                  ],
-                };
-              })()
-            : (() => {
-                throw new Error(`Unknown Function kind '${(expression as any).functionKind}'.`);
-              })(),
+                    ],
+                  };
+                })()
+              : expression.functionKind === FunctionExpressionDefinitionKind.Pmml
+                ? (() => {
+                    return {
+                      __$$element: "context",
+                      contextEntry: [
+                        {
+                          "@_id": expression.documentFieldId,
+                          expression: {
+                            __$$element: "literalExpression",
+                            text: { __$$text: expression.document ?? "" },
+                          },
+                          variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.documentFieldName },
+                        },
+                        {
+                          "@_id": expression.modelFieldId,
+                          expression: {
+                            __$$element: "literalExpression",
+                            text: { __$$text: expression.model ?? "" },
+                          },
+                          variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.modelFieldName },
+                        },
+                      ],
+                    };
+                  })()
+                : (() => {
+                    throw new Error(`Unknown Function kind '${(expression as any).functionKind}'.`);
+                  })(),
       };
     case GwtExpressionDefinitionLogicType.Invocation:
       return {

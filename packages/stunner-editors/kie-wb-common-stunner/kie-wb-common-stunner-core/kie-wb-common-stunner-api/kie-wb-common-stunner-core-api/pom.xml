@@ -39,7 +39,6 @@
   </properties>
 
   <dependencies>
-
     <!-- GWT. -->
 
     <dependency>
@@ -59,7 +58,6 @@
     </dependency>
 
     <!-- Uberfire & Errai. -->
-
 
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
@@ -88,5 +86,4 @@
       <artifactId>uberfire-api</artifactId>
     </dependency>
   </dependencies>
-
 </project>

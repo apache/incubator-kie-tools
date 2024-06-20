@@ -1,6 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_0DCC505E-71B4-4C29-8848-4006623FE51A" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_14645A68-5630-4A6F-899F-4FF825252CCD" name="New Hiring Offer" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_0DCC505E-71B4-4C29-8848-4006623FE51A">
-  <dmn:extensionElements/>
+<?xml version="1.0" encoding="UTF-8" ?>
+<dmn:definitions
+  xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  xmlns="https://kiegroup.org/dmn/_0DCC505E-71B4-4C29-8848-4006623FE51A"
+  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  xmlns:kie="http://www.drools.org/kie/dmn/1.2"
+  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+  id="_14645A68-5630-4A6F-899F-4FF825252CCD"
+  name="New Hiring Offer"
+  typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  namespace="https://kiegroup.org/dmn/_0DCC505E-71B4-4C29-8848-4006623FE51A"
+>
+  <dmn:extensionElements />
   <dmn:itemDefinition id="_91B22404-81DF-44E7-9084-6416BF211BCC" name="tCandidateData" isCollection="false">
     <dmn:itemComponent id="_657BB44B-D8B2-490A-B383-F63EF31E781E" name="name" isCollection="false">
       <dmn:typeRef>string</dmn:typeRef>
@@ -30,25 +42,29 @@
     </dmn:itemComponent>
   </dmn:itemDefinition>
   <dmn:inputData id="_59F676A7-D122-4FAB-8ABB-F1E0CC997C08" name="CandidateData">
-    <dmn:extensionElements/>
-    <dmn:variable id="_EF5D30F7-00BF-47E2-9655-D1D21B799F5C" name="CandidateData" typeRef="tCandidateData"/>
+    <dmn:extensionElements />
+    <dmn:variable id="_EF5D30F7-00BF-47E2-9655-D1D21B799F5C" name="CandidateData" typeRef="tCandidateData" />
   </dmn:inputData>
   <dmn:decision id="_26299D78-4931-4077-A636-1364B97AB94F" name="Offer">
-    <dmn:extensionElements/>
-    <dmn:variable id="_1C79A32D-6535-4209-9840-D4FF6FF52CA9" name="Offer" typeRef="tOffer"/>
+    <dmn:extensionElements />
+    <dmn:variable id="_1C79A32D-6535-4209-9840-D4FF6FF52CA9" name="Offer" typeRef="tOffer" />
     <dmn:informationRequirement id="_87BE8DEF-9B4D-45EC-8E59-6CD9D0613DCF">
-      <dmn:requiredInput href="#_59F676A7-D122-4FAB-8ABB-F1E0CC997C08"/>
+      <dmn:requiredInput href="#_59F676A7-D122-4FAB-8ABB-F1E0CC997C08" />
     </dmn:informationRequirement>
     <dmn:context id="_6CF8329F-A45C-4FC8-AEDD-F2DA34BCD9CC">
       <dmn:contextEntry>
-        <dmn:variable id="_F97FBBC2-9B78-4280-8053-B5089E422B35" name="SalaryBonus" typeRef="number"/>
+        <dmn:variable id="_F97FBBC2-9B78-4280-8053-B5089E422B35" name="SalaryBonus" typeRef="number" />
         <dmn:literalExpression id="_DE5ECE12-3B62-497F-9A5F-8DFE8D5B440B">
           <dmn:text>count(CandidateData.skills) * 150</dmn:text>
         </dmn:literalExpression>
       </dmn:contextEntry>
       <dmn:contextEntry>
-        <dmn:variable id="_CE19A7DC-A559-482A-93A8-38786291B11C" name="Offer" typeRef="tOffer"/>
-        <dmn:decisionTable id="_839000A0-8C02-4FD7-A079-9DCA9C2D9C67" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+        <dmn:variable id="_CE19A7DC-A559-482A-93A8-38786291B11C" name="Offer" typeRef="tOffer" />
+        <dmn:decisionTable
+          id="_839000A0-8C02-4FD7-A079-9DCA9C2D9C67"
+          hitPolicy="UNIQUE"
+          preferredOrientation="Rule-as-Row"
+        >
           <dmn:input id="_2003EFC0-4A87-43FA-80B1-25C14F0AB2FF">
             <dmn:inputExpression id="_663F281B-8A30-44DC-9DA5-B141831D552B" typeRef="number">
               <dmn:text>CandidateData.experience</dmn:text>
@@ -59,8 +75,8 @@
               <dmn:text>"Software Engineer", "Senior Software Engineer", "Software Architect"</dmn:text>
             </dmn:outputValues>
           </dmn:output>
-          <dmn:output id="_FF119A4B-E564-438A-99D9-4D1B26E519F1" name="salary" typeRef="number"/>
-          <dmn:annotation name="annotation-1"/>
+          <dmn:output id="_FF119A4B-E564-438A-99D9-4D1B26E519F1" name="salary" typeRef="number" />
+          <dmn:annotation name="annotation-1" />
           <dmn:rule id="_2E67A292-D088-4ED7-AC9D-A7D85C3B6188">
             <dmn:inputEntry id="_5082A566-8E83-4441-B446-A69E5BE4D81E">
               <dmn:text>[0..5)</dmn:text>
@@ -72,7 +88,7 @@
               <dmn:text>30000 + SalaryBonus </dmn:text>
             </dmn:outputEntry>
             <dmn:annotationEntry>
-              <dmn:text/>
+              <dmn:text />
             </dmn:annotationEntry>
           </dmn:rule>
           <dmn:rule id="_1322663C-FAD9-48BA-A893-8076ED7D2D55">
@@ -86,7 +102,7 @@
               <dmn:text>40000 + SalaryBonus</dmn:text>
             </dmn:outputEntry>
             <dmn:annotationEntry>
-              <dmn:text/>
+              <dmn:text />
             </dmn:annotationEntry>
           </dmn:rule>
           <dmn:rule id="_1104ED9E-0910-40F9-A0C3-911BF018C545">
@@ -100,7 +116,7 @@
               <dmn:text>50000 + SalaryBonus</dmn:text>
             </dmn:outputEntry>
             <dmn:annotationEntry>
-              <dmn:text/>
+              <dmn:text />
             </dmn:annotationEntry>
           </dmn:rule>
         </dmn:decisionTable>
@@ -136,27 +152,38 @@
           </kie:ComponentWidths>
         </kie:ComponentsWidthsExtension>
       </di:extension>
-      <dmndi:DMNShape id="dmnshape-drg-_59F676A7-D122-4FAB-8ABB-F1E0CC997C08" dmnElementRef="_59F676A7-D122-4FAB-8ABB-F1E0CC997C08" isCollapsed="false">
+      <dmndi:DMNShape
+        id="dmnshape-drg-_59F676A7-D122-4FAB-8ABB-F1E0CC997C08"
+        dmnElementRef="_59F676A7-D122-4FAB-8ABB-F1E0CC997C08"
+        isCollapsed="false"
+      >
         <dmndi:DMNStyle>
-          <dmndi:FillColor red="255" green="255" blue="255"/>
-          <dmndi:StrokeColor red="0" green="0" blue="0"/>
-          <dmndi:FontColor red="0" green="0" blue="0"/>
+          <dmndi:FillColor red="255" green="255" blue="255" />
+          <dmndi:StrokeColor red="0" green="0" blue="0" />
+          <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
-        <dc:Bounds x="360" y="378" width="137" height="58"/>
-        <dmndi:DMNLabel/>
+        <dc:Bounds x="360" y="378" width="137" height="58" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
-      <dmndi:DMNShape id="dmnshape-drg-_26299D78-4931-4077-A636-1364B97AB94F" dmnElementRef="_26299D78-4931-4077-A636-1364B97AB94F" isCollapsed="false">
+      <dmndi:DMNShape
+        id="dmnshape-drg-_26299D78-4931-4077-A636-1364B97AB94F"
+        dmnElementRef="_26299D78-4931-4077-A636-1364B97AB94F"
+        isCollapsed="false"
+      >
         <dmndi:DMNStyle>
-          <dmndi:FillColor red="255" green="255" blue="255"/>
-          <dmndi:StrokeColor red="0" green="0" blue="0"/>
-          <dmndi:FontColor red="0" green="0" blue="0"/>
+          <dmndi:FillColor red="255" green="255" blue="255" />
+          <dmndi:StrokeColor red="0" green="0" blue="0" />
+          <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
-        <dc:Bounds x="379" y="165" width="100" height="50"/>
-        <dmndi:DMNLabel/>
+        <dc:Bounds x="379" y="165" width="100" height="50" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
-      <dmndi:DMNEdge id="dmnedge-drg-_87BE8DEF-9B4D-45EC-8E59-6CD9D0613DCF" dmnElementRef="_87BE8DEF-9B4D-45EC-8E59-6CD9D0613DCF">
-        <di:waypoint x="428.5" y="407"/>
-        <di:waypoint x="429" y="215"/>
+      <dmndi:DMNEdge
+        id="dmnedge-drg-_87BE8DEF-9B4D-45EC-8E59-6CD9D0613DCF"
+        dmnElementRef="_87BE8DEF-9B4D-45EC-8E59-6CD9D0613DCF"
+      >
+        <di:waypoint x="428.5" y="407" />
+        <di:waypoint x="429" y="215" />
       </dmndi:DMNEdge>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>
