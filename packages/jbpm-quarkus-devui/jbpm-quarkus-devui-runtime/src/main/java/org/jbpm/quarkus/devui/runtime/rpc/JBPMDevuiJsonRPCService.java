@@ -21,6 +21,7 @@ package org.jbpm.quarkus.devui.runtime.rpc;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Optional;
 
 import io.smallrye.mutiny.Uni;
 import io.vertx.core.Vertx;
@@ -28,7 +29,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 import jakarta.annotation.PostConstruct;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.jbpm.quarkus.devui.runtime.forms.FormsStorage;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -38,6 +39,7 @@ import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class JBPMDevuiJsonRPCService {
+    private static final String DATA_INDEX_URL = "kogito.data-index.url";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JBPMDevuiJsonRPCService.class);
 
@@ -51,32 +53,35 @@ public class JBPMDevuiJsonRPCService {
 
     private WebClient dataIndexWebClient;
 
-    private final String dataIndexURL;
     private final Vertx vertx;
     private final FormsStorage formsStorage;
 
     @Inject
-    public JBPMDevuiJsonRPCService(@ConfigProperty(name = "kogito.data-index.url") String dataIndexURL, Vertx vertx, FormsStorage formsStorage) {
-        this.dataIndexURL = dataIndexURL;
+    public JBPMDevuiJsonRPCService(Vertx vertx, FormsStorage formsStorage) {
         this.vertx = vertx;
         this.formsStorage = formsStorage;
     }
 
     @PostConstruct
     public void init() {
+        Optional<String> dataIndexURL = ConfigProvider.getConfig().getOptionalValue(DATA_INDEX_URL, String.class);
+        dataIndexURL.ifPresent(this::initDataIndexWebClient);
+    }
+
+    private void initDataIndexWebClient(String dataIndexURL) {
         try {
-            this.dataIndexWebClient = WebClient.create(vertx, buildWebClientOptions());
+            this.dataIndexWebClient = WebClient.create(vertx, buildWebClientOptions(dataIndexURL));
         } catch (Exception ex) {
             LOGGER.warn("Cannot configure dataIndexWebClient with 'kogito.data-index.url'='{}':", dataIndexURL, ex);
         }
     }
 
-    protected WebClientOptions buildWebClientOptions() throws MalformedURLException {
-        URL dataIndexURL = new URL(this.dataIndexURL);
+    protected WebClientOptions buildWebClientOptions(String dataIndexURL) throws MalformedURLException {
+        URL url = new URL(dataIndexURL);
         return new WebClientOptions()
-                .setDefaultHost(dataIndexURL.getHost())
-                .setDefaultPort((dataIndexURL.getPort() != -1 ? dataIndexURL.getPort() : dataIndexURL.getDefaultPort()))
-                .setSsl(dataIndexURL.getProtocol().compareToIgnoreCase("https") == 0);
+                .setDefaultHost(url.getHost())
+                .setDefaultPort((url.getPort() != -1 ? url.getPort() : url.getDefaultPort()))
+                .setSsl(url.getProtocol().compareToIgnoreCase("https") == 0);
     }
 
     public Uni<String> queryProcessInstancesCount() {
@@ -93,6 +98,7 @@ public class JBPMDevuiJsonRPCService {
 
     private Uni<String> doQuery(String query, String graphModelName) {
         if(dataIndexWebClient == null) {
+            LOGGER.warn("Cannot perform '{}' query, dataIndexWebClient couldn't be set. Is DataIndex correctly? Please verify '{}' value", graphModelName, DATA_INDEX_URL);
             return Uni.createFrom().item("-");
         }
         return Uni.createFrom().completionStage(this.dataIndexWebClient.post("/graphql")
