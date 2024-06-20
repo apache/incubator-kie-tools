@@ -17,4 +17,4 @@ mkdir -p /tmp/simpleworkflow
 cp ./config/manager/sonataflow_builder_dockerfile.yaml /tmp/simpleworkflow/Dockerfile
 cp ./workflowproj/testdata/workflows/workflow-minimal.sw.json /tmp/simpleworkflow/workflow-minimal.sw.json
 
-docker build -t quay.io/kiegroup/sonataflow-minimal-example:latest /tmp/simpleworkflow/
+docker build -t docker.io/apache/incubator-kie-sonataflow-minimal-example:latest /tmp/simpleworkflow/

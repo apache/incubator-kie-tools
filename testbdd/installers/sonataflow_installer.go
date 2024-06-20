@@ -33,7 +33,7 @@ import (
 	srvframework "github.com/apache/incubator-kie-kogito-serverless-operator/testbdd/framework"
 )
 
-const defaultOperatorImage = "quay.io/kiegroup/kogito-serverless-operator"
+const defaultOperatorImage = "docker.io/apache/incubator-kie-sonataflow-operator"
 
 var (
 	// sonataFlowYamlClusterInstaller installs SonataFlow operator cluster wide using YAMLs

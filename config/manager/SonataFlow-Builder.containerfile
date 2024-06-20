@@ -1,4 +1,4 @@
-FROM quay.io/kiegroup/kogito-swf-builder-nightly:latest AS builder
+FROM docker.io/apache/incubator-kie-sonataflow-builder:main AS builder
 
 # variables that can be overridden by the builder
 # To add a Quarkus extension to your application
@@ -16,7 +16,7 @@ RUN /home/kogito/launch/build-app.sh ./resources
 #=============================
 # Runtime Run
 #=============================
-FROM registry.access.redhat.com/ubi9/openjdk-17:latest
+FROM registry.access.redhat.com/ubi9/openjdk-17-runtime:latest
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
   

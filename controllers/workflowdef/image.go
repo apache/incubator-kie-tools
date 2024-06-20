@@ -20,6 +20,8 @@
 package workflowdef
 
 import (
+	"fmt"
+
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/cfg"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/version"
@@ -27,9 +29,8 @@ import (
 
 const (
 	latestImageTag              = "latest"
-	nightlySuffix               = "nightly"
-	defaultWorkflowDevModeImage = "quay.io/kiegroup/kogito-swf-devmode"
-	defaultWorkflowBuilderImage = "quay.io/kiegroup/kogito-swf-builder"
+	defaultWorkflowDevModeImage = "docker.io/apache/incubator-kie-sonataflow-devmode"
+	defaultWorkflowBuilderImage = "docker.io/apache/incubator-kie-sonataflow-builder"
 )
 
 // GetWorkflowAppImageNameTag returns the image name with tag to use for the image to be produced for a given workflow.
@@ -63,14 +64,5 @@ func GetDefaultWorkflowBuilderImageTag() string {
 }
 
 func GetDefaultImageTag(imgTag string) string {
-	if version.IsSnapshot() {
-		imgTag += "-" + nightlySuffix
-	}
-	imgTag += ":"
-	if version.IsLatestVersion() {
-		imgTag += latestImageTag
-	} else {
-		imgTag += version.GetMajorMinor()
-	}
-	return imgTag
+	return fmt.Sprintf("%s:%s", imgTag, version.GetTagVersion())
 }

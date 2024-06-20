@@ -20,10 +20,9 @@ set -e
 script_dir_path=$(dirname "${BASH_SOURCE[0]}")
 source "${script_dir_path}"/env.sh
 
-imageTag='quay.io/kiegroup/kogito-serverless-operator'
+imageTag='docker.io/apache/incubator-kie-sonataflow-operator'
 # shellcheck disable=SC2034
-old_version=$(getOperatorVersion)
-latest_version=$(getOperatorLatestVersion)
+old_version=$(getImageTagVersion)
 new_version=$1
 
 if [ -z "${new_version}" ]; then
@@ -31,18 +30,10 @@ if [ -z "${new_version}" ]; then
   exit 1
 fi
 
-imageSuffix=$(if [[ "${new_version}" == *snapshot ]]; then echo '-nightly'; else echo ''; fi)
-
 oldMajorMinorVersion=${old_version%.*}
 newMajorMinorVersion=${new_version%.*}
-if [ "${old_version}" = "${latest_version}" ]; then
-  oldMajorMinorVersion='latest'
-fi
-if [ "${new_version}" = "${latest_version}" ]; then
-  newMajorMinorVersion='latest'
-fi
 
-echo "Set new version to ${new_version} (img_suffix = '${imageSuffix}', majorMinor = ${newMajorMinorVersion})"
+echo "Set new version to ${new_version} (majorMinor = ${newMajorMinorVersion})"
 
 sed -i "s|version: ${old_version}|version: ${new_version}|g" image.yaml
 
@@ -50,19 +41,19 @@ sed -i "s|^VERSION ?=.*|VERSION ?= ${new_version}|g" Makefile
 sed -i "s|^REDUCED_VERSION ?=.*|REDUCED_VERSION ?= ${newMajorMinorVersion}|g" Makefile
 sed -i "s|newTag:.*|newTag: ${new_version}|g" config/manager/kustomization.yaml
 
-sed -i "s|IMAGE_TAG_BASE ?=.*|IMAGE_TAG_BASE ?= ${imageTag}${imageSuffix}|g" Makefile
-sed -i "s|newName:.*|newName: ${imageTag}${imageSuffix}|g" config/manager/kustomization.yaml
+sed -i "s|IMAGE_TAG_BASE ?=.*|IMAGE_TAG_BASE ?= ${imageTag}|g" Makefile
+sed -i "s|newName:.*|newName: ${imageTag}|g" config/manager/kustomization.yaml
 
-# Update kogito-swf-* images
-find . -name "*.yaml" -exec sed -i "s|quay.io/kiegroup/kogito-swf-builder.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}|" {} +
-sed -i "s|quay.io/kiegroup/kogito-swf-builder.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}|" Dockerfile
+# Update sonataflow-* images
+find . -name "*.yaml" -exec sed -i "s|docker.io/apache/incubator-kie-sonataflow-builder.*:${oldMajorMinorVersion}|docker.io/apache/incubator-kie-sonataflow-builder:${newMajorMinorVersion}|" {} +
+sed -i "s|docker.io/apache/incubator-kie-sonataflow-builder.*:${oldMajorMinorVersion}|docker.io/apache/incubator-kie-sonataflow-builder:${newMajorMinorVersion}|" Dockerfile
 
-find . -name "*.yaml" -exec sed -i "s|quay.io/kiegroup/kogito-swf-devmode.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${newMajorMinorVersion}|" {} +
-sed -i "s|quay.io/kiegroup/kogito-swf-devmode.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${newMajorMinorVersion}|" Dockerfile
+find . -name "*.yaml" -exec sed -i "s|docker.io/apache/incubator-kie-sonataflow-devmode.*:${oldMajorMinorVersion}|docker.io/apache/incubator-kie-sonataflow-devmode:${newMajorMinorVersion}|" {} +
+sed -i "s|docker.io/apache/incubator-kie-sonataflow-devmode.*:${oldMajorMinorVersion}|docker.io/apache/incubator-kie-sonataflow-devmode:${newMajorMinorVersion}|" Dockerfile
 
-sed -i -r "s|OperatorVersion =.*|OperatorVersion = \"${new_version}\"|g" version/version.go
+sed -i -r "s|operatorVersion =.*|operatorVersion = \"${new_version}\"|g" version/version.go
 
-sed -i "s|containerImage:.*|containerImage: ${imageTag}${imageSuffix}:${newMajorMinorVersion}|g" $(getCsvFile)
+sed -i "s|containerImage:.*|containerImage: ${imageTag}:${newMajorMinorVersion}|g" $(getCsvFile)
 
 make generate-all
 make vet

@@ -170,3 +170,9 @@ func GetFromImageTagDockerfile(dockerfile string) string {
 	res := builderDockerfileFromRE.FindAllStringSubmatch(dockerfile, 1)
 	return strings.Trim(res[0][1], " ")
 }
+
+// ReplaceFromImageTagDockerfile replaces the "FROM" clause from the given dockerfile with the given fromReplacement.
+// For example: "FROM myimage:latest AS builder"
+func ReplaceFromImageTagDockerfile(dockerfile string, fromReplacement string) string {
+	return string(builderDockerfileFromRE.ReplaceAll([]byte(dockerfile), []byte(fromReplacement)))
+}

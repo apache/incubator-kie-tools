@@ -92,11 +92,11 @@ pipeline {
                     def platformCR = readYaml(file: platformCRFilepath)
 
                     platformCR.spec.devMode = platformCR.spec.devMode ?: [:]
-                    platformCR.spec.devMode.baseImage = "quay.io/kiegroup/kogito-swf-devmode-nightly:${majorMinor}"
+                    platformCR.spec.devMode.baseImage = "docker.io/apache/incubator-kie-sonataflow-devmode:${majorMinor}"
 
                     platformCR.spec.build = platformCR.spec.build ?: [:]
                     platformCR.spec.build.config = platformCR.spec.build.config ?: [:]
-                    platformCR.spec.build.config.baseImage = "quay.io/kiegroup/kogito-swf-builder-nightly:${majorMinor}"
+                    platformCR.spec.build.config.baseImage = "docker.io/apache/incubator-kie-sonataflow-builder:${majorMinor}"
                     writeYaml(file: platformCRFilepath, data: platformCR, overwrite: true)
                 }
             }

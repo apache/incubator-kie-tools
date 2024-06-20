@@ -88,9 +88,9 @@ make run-tests 2>&1 | tee log.out
 ```
 $ make
 $ make container-build
-$ podman tag quay.io/kiegroup/kogito-serverless-operator-nightly:latest quay.io/{USERNAME}/kogito-serverless-operator-nightly:latest
-$ podman push quay.io/{USERNAME}/kogito-serverless-operator-nightly:latest
-$ make run-tests cr_deployment_only=true local_cluster=true operator_image_tag=quay.io/{USERNAME}/kogito-serverless-operator-nightly:latest
+$ podman tag docker.io/apache/incubator-kie-sonataflow-operator:main quay.io/{USERNAME}/incubator-kie-sonataflow-operator:latest
+$ podman push quay.io/{USERNAME}/incubator-kie-sonataflow-operator:latest
+$ make run-tests cr_deployment_only=true local_cluster=true operator_image_tag=quay.io/{USERNAME}/incubator-kie-sonataflow-operator:latest
 ```
 
 **NOTE:** Replace {USERNAME} with the username/group you want to push to. Podman needs to be logged in to quay.io and be able to push to your username/group. If you want to use docker, just append `BUILDER=docker` to the `make container-build` command.
@@ -108,7 +108,7 @@ All options from BDD tests do also apply here.
 
 #### Running devMode tests
 ```bash
-make run-tests cr_deployment_only=true local_cluster=true show_scenarios=true tags=devMode  namespace_name=my-namespace operator_image_tag=quay.io/kiegroup/kogito-serverless-operator-nightly:latest
+make run-tests cr_deployment_only=true local_cluster=true show_scenarios=true tags=devMode  namespace_name=my-namespace operator_image_tag=docker.io/apache/incubator-kie-sonataflow-operator:latest
 ```
 
 If you want to have a more readable format, you can specify the `format=pretty` parameter. You can also specify your own operator image. Namespace is always created automatically, however, you can provide its name as in the command above, otherwise it will be automatically generated.
