@@ -483,6 +483,7 @@ digraph G {
   "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/runtime-tools-swf-gateway-api" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-swf-gateway-api" -> "@kie-tools/runtime-tools-shared-gateway-api" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-swf-gateway-api" -> "@kie-tools/jest-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/runtime-tools-swf-webapp-components" -> "@kie-tools/runtime-tools-swf-enveloped-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-task-console-webapp" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-task-console-webapp" -> "@kie-tools/runtime-tools-process-webapp-components" [ style = "solid", color = "blue" ];

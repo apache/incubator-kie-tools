@@ -17,10 +17,10 @@
  * under the License.
  */
 
-const jestBase = require("@kie-tools/jest-base/jest.config");
+const { config } = require("@kie-tools/jest-base/jest.config");
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-  ...jestBase,
+  ...config,
   testEnvironment: "node",
 };

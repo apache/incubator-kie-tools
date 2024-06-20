@@ -17,14 +17,14 @@
  * under the License.
  */
 
-const jestBase = require("@kie-tools/jest-base/jest.config");
+const { config, styleMock, monacoMock } = require("@kie-tools/jest-base/jest.config");
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-  ...jestBase,
+  ...config,
   testEnvironment: "node",
   moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "<rootDir>/tests/__mocks__/styleMocks.js",
-    "@kie-tools-core/monaco-editor": "<rootDir>/tests/__mocks__/monacoMock.js",
+    ...styleMock,
+    ...monacoMock,
   },
 };

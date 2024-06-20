@@ -35,3 +35,14 @@ module.exports = {
     "\\.(css|less|sass|scss)$": "<rootDir>/tests/__mocks__/styleMock.js",
   },
 };
+
+const { config, babelTransform } = require("@kie-tools/jest-base/jest.config");
+
+/** @type {import('ts-jest').JestConfigWithTsJest} */
+module.exports = {
+  ...config,
+  testEnvironment: "node",
+  transform: {
+    ...babelTransform,
+  },
+};

@@ -1980,6 +1980,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/runtime-tools-swf-gateway-api",
+        "target": "@kie-tools/jest-base",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/runtime-tools-swf-webapp-components",
         "target": "@kie-tools/runtime-tools-swf-enveloped-components",
         "weight": 1

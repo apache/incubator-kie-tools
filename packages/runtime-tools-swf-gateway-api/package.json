@@ -50,6 +50,7 @@
     "@graphql-codegen/typescript-operations": "^2.5.13",
     "@graphql-codegen/typescript-react-apollo": "^3.3.7",
     "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/jest-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/jest": "^29.5.12",

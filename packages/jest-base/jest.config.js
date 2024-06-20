@@ -18,10 +18,41 @@
  */
 
 /** @type {import('jest').Config} */
-module.exports = {
-  preset: "ts-jest/presets/js-with-babel-esm",
+const config = {
+  preset: "ts-jest",
   reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
   moduleDirectories: ["node_modules"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
   testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
+};
+
+/**
+ * Jest setup file should be located on `tests/jest.setup.ts`
+ */
+const jestSetupPath = "<rootDir>/tests/jest.setup.ts";
+
+/**
+ * Style mock should be located on `__mocks_/styleMock.js`
+ */
+const styleMock = {
+  "\\.(css|less|sass|scss)$": "<rootDir>/tests/__mocks__/styleMock.js",
+};
+
+/**
+ * Monaco mock should be located on `__mocks_/monacoMock.js`
+ */
+const monacoMock = {
+  "@kie-tools-core/monaco-editor": "<rootDir>/tests/__mocks__/monacoMock.js",
+};
+
+const babelTransform = {
+  "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }]] }],
+};
+
+module.exports = {
+  babelTransform,
+  config,
+  jestSetupPath,
+  monacoMock,
+  styleMock,
 };
