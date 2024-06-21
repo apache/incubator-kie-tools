@@ -4417,10 +4417,6 @@ importers:
         version: 4.6.0(eslint@8.52.0)
 
   packages/extended-services:
-    dependencies:
-      '@kie-tools/jitexecutor-native':
-        specifier: 999.0.0-20240505-SNAPSHOT
-        version: 999.0.0-20240505-SNAPSHOT
     devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
@@ -16500,9 +16496,6 @@ packages:
 
   '@kie-tools/emscripten-fs@0.0.2':
     resolution: {integrity: sha512-dxmfwq2F+yxawuGrVVRGmTeZHTqRHa79Vp4FX2KEXHAA9AgK1aaVz8mxZxXYFs2ycfp30NjWvhZCOIRbIKTjAQ==}
-
-  '@kie-tools/jitexecutor-native@999.0.0-20240505-SNAPSHOT':
-    resolution: {integrity: sha512-swpesoPfMsMPlVBOmgAFp28QAfkN9t0fJOPEimK3ChIS/7u1mDaIOKDtceawfQPjVW9Pe0KK6lLMgHyay/oWfw==}
 
   '@koa/cors@3.4.3':
     resolution: {integrity: sha512-WPXQUaAeAMVaLTEFpoq3T2O1C+FstkjJnDQqy95Ck1UdILajsRhu6mhJ8H2f4NFPRBoCNN+qywTJfq/gGki5mw==}
@@ -34913,8 +34906,6 @@ snapshots:
   '@juggle/resize-observer@3.4.0': {}
 
   '@kie-tools/emscripten-fs@0.0.2': {}
-
-  '@kie-tools/jitexecutor-native@999.0.0-20240505-SNAPSHOT': {}
 
   '@koa/cors@3.4.3':
     dependencies:

@@ -32,15 +32,21 @@
     "copy-jitexecutor-linux-headless": "run-script-os",
     "copy-jitexecutor-linux-headless:linux:darwin": "cp $(build-env extendedServices.jitexecutor.nativeBinaryPath.linux) jitexecutor && chmod +x jitexecutor",
     "copy-jitexecutor-linux-headless:win32": "pnpm powershell \"Copy-Item $(build-env extendedServices.jitexecutor.nativeBinaryPath.linux) jitexecutor\"",
-    "install": "go mod tidy",
+    "install": "go mod tidy && pnpm download:mvn:jitexecutor-native && pnpm unpack:mvn:jitexecutor-native",
+    "download:mvn:jitexecutor-native": "run-script-os",
+    "download:mvn:jitexecutor-native:darwin": "mvn dependency:get -Dartifact=\"org.kie.kogito:jitexecutor-native-darwin:$(build-env kogitoRuntime.version):jar:binaries\"",
+    "download:mvn:jitexecutor-native:linux": "mvn dependency:get -Dartifact=\"org.kie.kogito:jitexecutor-native-linux:$(build-env kogitoRuntime.version):jar:binaries\"",
+    "download:mvn:jitexecutor-native:win32": "pnpm powershell \"mvn dependency:get `-Dartifact=org.kie.kogito:jitexecutor-native-win32:$(build-env kogitoRuntime.version):jar:binaries\"",
+    "unpack:mvn:jitexecutor-native": "run-script-os",
+    "unpack:mvn:jitexecutor-native:darwin": "mvn dependency:unpack -DoutputDirectory=dist-dev -Dartifact=\"org.kie.kogito:jitexecutor-native-darwin:$(build-env kogitoRuntime.version):jar:binaries\"",
+    "unpack:mvn:jitexecutor-native:linux": "mvn dependency:unpack -DoutputDirectory=dist-dev -Dartifact=\"org.kie.kogito:jitexecutor-native-linux:$(build-env kogitoRuntime.version):jar:binaries\"",
+    "unpack:mvn:jitexecutor-native:win32": "pnpm powershell \"mvn dependency:unpack `-DoutputDirectory=dist-dev `-Dartifact=org.kie.kogito:jitexecutor-native-win32:$(build-env kogitoRuntime.version):jar:binaries\"",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "pack-app": "run-script-os",
     "pack-app:darwin": "cd ./scripts/macos && ./build.sh",
     "pack-app:linux": "cd ./dist/linux && tar -pcvzf kie_sandbox_extended_services.tar.gz kie_sandbox_extended_services",
     "pack-app:win32": "echo 'Nothing to do'",
     "start": "cross-env ENV=dev make start"
-  },
-  "dependencies": {
-    "@kie-tools/jitexecutor-native": "999.0.0-20240505-SNAPSHOT"
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",

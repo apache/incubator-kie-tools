@@ -17,9 +17,15 @@
  * under the License.
  */
 
-const { getOrDefault, varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+const {
+  getOrDefault,
+  varsWithName,
+  composeEnv,
+} = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+const rootEnv = require("@kie-tools/root-env/env");
+
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     EXTENDED_SERVICES__kieSandboxUrl: {
       default: "https://localhost:9001",
@@ -27,7 +33,8 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     },
     EXTENDED_SERVICES__version: {
       default: require("../package.json").version,
-      description: "Extended Services version. Used by clients for checking compatibility.",
+      description:
+        "Extended Services version. Used by clients for checking compatibility.",
     },
     EXTENDED_SERVICES__ip: {
       default: "0.0.0.0",
@@ -38,15 +45,15 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "HTTP port",
     },
     EXTENDED_SERVICES__nativeBinaryPath_macOS: {
-      default: "./node_modules/@kie-tools/jitexecutor-native/dist/darwin/jitexecutor",
+      default: `./dist-dev/jitexecutor-native-darwin-${rootEnv.env.kogitoRuntime.version}-runner`,
       description: "",
     },
     EXTENDED_SERVICES__nativeBinaryPath_linux: {
-      default: "./node_modules/@kie-tools/jitexecutor-native/dist/linux/jitexecutor",
+      default: `./dist-dev/jitexecutor-native-linux-${rootEnv.env.kogitoRuntime.version}-runner`,
       description: "",
     },
     EXTENDED_SERVICES__nativeBinaryPath_win32: {
-      default: ".\\node_modules\\@kie-tools\\jitexecutor-native\\dist\\win32\\jitexecutor.exe",
+      default: `.\\dist-dev\\jitexecutor-native-win32-${rootEnv.env.kogitoRuntime.version}-runner.exe`,
       description: "",
     },
   }),
@@ -59,9 +66,15 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         port: getOrDefault(this.vars.EXTENDED_SERVICES__port),
         jitexecutor: {
           nativeBinaryPath: {
-            macOS: getOrDefault(this.vars.EXTENDED_SERVICES__nativeBinaryPath_macOS),
-            linux: getOrDefault(this.vars.EXTENDED_SERVICES__nativeBinaryPath_linux),
-            win32: getOrDefault(this.vars.EXTENDED_SERVICES__nativeBinaryPath_win32),
+            macOS: getOrDefault(
+              this.vars.EXTENDED_SERVICES__nativeBinaryPath_macOS
+            ),
+            linux: getOrDefault(
+              this.vars.EXTENDED_SERVICES__nativeBinaryPath_linux
+            ),
+            win32: getOrDefault(
+              this.vars.EXTENDED_SERVICES__nativeBinaryPath_win32
+            ),
           },
         },
       },
