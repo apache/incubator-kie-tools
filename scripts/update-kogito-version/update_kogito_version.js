@@ -82,6 +82,15 @@ try {
       )
   );
 
+  console.info("[update-kogito-version] Updating 'packages/sonataflow-operator/version/version.go'...");
+  const sonataflowOperatorVersionsGo = path.resolve(__dirname, "../../packages/sonataflow-operator/version/version.go");
+  fs.writeFileSync(
+    sonataflowOperatorVersionsGo,
+    fs
+      .readFileSync(sonataflowOperatorVersionsGo, "utf-8")
+      .replace(/kogitoImagesTagVersion = ".*"/, `kogitoImagesTagVersion = "${newImagesTag}"`)
+  );
+
   console.info(`[update-kogito-version] Bootstrapping with updated Kogito version...`);
   execSync(`pnpm bootstrap`, execOpts);
 

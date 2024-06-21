@@ -110,7 +110,7 @@ func (d DataIndexHandler) GetServiceImageName(persistenceType constants.Persiste
 		return cfg.GetCfg().DataIndexEphemeralImageTag
 	}
 	// returns "docker.io/apache/incubator-kie-kogito-data-index-<persistence_layer>:<tag>"
-	return fmt.Sprintf("%s-%s-%s:%s", constants.KogitoImageNamePrefix, constants.DataIndexName, persistenceType.String(), version.GetKogitoVersion())
+	return fmt.Sprintf("%s-%s-%s:%s", constants.KogitoImageNamePrefix, constants.DataIndexName, persistenceType.String(), version.GetKogitoImagesTagVersion())
 }
 
 func (d DataIndexHandler) GetServiceName() string {
@@ -274,7 +274,7 @@ func (j JobServiceHandler) GetServiceImageName(persistenceType constants.Persist
 		return cfg.GetCfg().JobsServiceEphemeralImageTag
 	}
 	// returns "docker.io/apache/incubator-kie-kogito-jobs-service-<persistece_layer>:<tag>"
-	return fmt.Sprintf("%s-%s-%s:%s", constants.KogitoImageNamePrefix, constants.JobServiceName, persistenceType.String(), version.GetKogitoVersion())
+	return fmt.Sprintf("%s-%s-%s:%s", constants.KogitoImageNamePrefix, constants.JobServiceName, persistenceType.String(), version.GetKogitoImagesTagVersion())
 }
 
 func (j JobServiceHandler) GetServiceName() string {
