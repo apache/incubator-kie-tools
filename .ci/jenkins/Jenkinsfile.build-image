@@ -278,9 +278,8 @@ String getImageVersion() {
 String getBuiltImageTag(String imageTag = '') {
     if (shouldDeployImage()) {
         return "${getDeployImageRegistry()}/${getDeployImageNamespace()}/${getFinalImageName()}:${imageTag ?: getDeployImageTag()}"
-    } else {
-        return "${env.localRegistryUrl}/${getBuildImageName()}:${githubscm.getCommitHash()}"
     }
+    return "${env.localRegistryUrl}/${getBuildImageName()}:${githubscm.getCommitHash()}"
 }
 
 void runPythonCommand(String cmd, boolean stdout = false) {
@@ -323,7 +322,7 @@ String getDeployImageTag() {
 }
 
 String getFinalImageName() {
-    return getBuildImageName() + (getDeployImageNameSuffix() ? "-${getDeployImageNameSuffix()}" : '')
+    return "incubator-kie-" + getBuildImageName() + (getDeployImageNameSuffix() ? "-${getDeployImageNameSuffix()}" : '')
 }
 
 boolean isDeployLatestTag() {
