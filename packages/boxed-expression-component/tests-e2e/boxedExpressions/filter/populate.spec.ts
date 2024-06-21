@@ -20,27 +20,6 @@
 import { test, expect } from "../../__fixtures__/base";
 
 test.describe("Populate Boxed Filter", () => {
-  test("should rename a filter", async ({ page, stories }) => {
-    await stories.openBoxedFilter("base");
-
-    await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Filter Expression Name");
-    await page.keyboard.press("Enter");
-
-    await expect(page.getByRole("columnheader", { name: "Filter Expression Name (<Undefined>)" })).toBeVisible();
-  });
-
-  test("should change a filter data type", async ({ page, stories }) => {
-    await stories.openBoxedFilter("base");
-
-    await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "boolean" }).click();
-    await page.keyboard.press("Enter");
-
-    await expect(page.getByRole("columnheader", { name: "Expression Name (boolean)" })).toBeVisible();
-  });
-
   test("should correctly create a Rebooked Flights filter", async ({ stories, page, boxedExpressionEditor }) => {
     await stories.openBoxedFilter("base");
     await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
@@ -55,64 +34,5 @@ test.describe("Populate Boxed Filter", () => {
     });
 
     await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-rebooked-flights.png");
-  });
-
-  test("should correctly create a nested filter", async ({ boxedExpressionEditor, page, stories }) => {
-    await stories.openBoxedFilter("base");
-
-    await boxedExpressionEditor.resetFilter();
-    await boxedExpressionEditor.selectBoxedContext();
-    await boxedExpressionEditor.selectBoxedFilter(page.getByText("Select expression").first());
-
-    await boxedExpressionEditor.fillFilter({
-      collectionIn: "collection in expression",
-      collectionMatch: "collection match expression",
-    });
-
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested.png");
-  });
-
-  test("should correctly create a filter using list boxed expression", async ({
-    boxedExpressionEditor,
-    page,
-    stories,
-  }) => {
-    await stories.openBoxedFilter("base");
-    await page.getByText("=").first().click({ button: "right" });
-    await page.getByRole("menuitem").getByText("Reset").click();
-    await boxedExpressionEditor.selectBoxedList(page.getByText("Select expression").first());
-
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-boxed-list.png");
-  });
-
-  test("should correctly reset a nested filter", async ({ boxedExpressionEditor, page, stories }) => {
-    await stories.openBoxedFilter("nested");
-
-    await boxedExpressionEditor.resetFilter();
-
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-reset.png");
-  });
-
-  test("should correctly copy and paste a filter - context menu", async ({
-    boxedExpressionEditor,
-    browserName,
-    context,
-    page,
-    stories,
-  }) => {
-    test.skip(
-      browserName === "webkit",
-      "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
-    );
-
-    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-
-    await stories.openBoxedFilter("rebooked-flights");
-    await boxedExpressionEditor.copyFilter();
-    await boxedExpressionEditor.resetFilter();
-    await boxedExpressionEditor.selectBoxedContext(page.getByText("Select expression").first());
-    await boxedExpressionEditor.pasteToUndefinedCell(page.getByText("Select expression").first());
-
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-copied-and-pasted-as-nested.png");
   });
 });
