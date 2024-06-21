@@ -87,7 +87,7 @@ test.describe("Create Boxed Filter", () => {
     await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested.png");
   });
 
-  test("should correctly create a filter using list boxed expression", async ({
+  test.only("should correctly create a filter using list boxed expression", async ({
     boxedExpressionEditor,
     page,
     stories,
@@ -96,7 +96,18 @@ test.describe("Create Boxed Filter", () => {
     await page.getByText("=").first().click({ button: "right" });
     await page.getByRole("menuitem").getByText("Reset").click();
     await boxedExpressionEditor.selectBoxedList(page.getByText("Select expression").first());
+    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
+    await page.getByText("1").first().click({ button: "right" });
+    await page.getByRole("menuitem").getByText("Insert below").click();
+    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
 
+    // TODO 1
+    await boxedExpressionEditor.fillFilter({
+      collectionIn: "Passengers",
+      collectionMatch: "item.Flight Number = Flight.Flight Number",
+    });
+
+    // TODO 2 - dependent on 1
     await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-boxed-list.png");
   });
 });
