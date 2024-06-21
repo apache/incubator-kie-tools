@@ -17,10 +17,12 @@
  * under the License.
  */
 
+import { clearLine } from "readline";
 import { test, expect } from "../../__fixtures__/base";
 import { HeadingType, MenuItem } from "../../__fixtures__/contextMenu";
 import { AssetType } from "../../__fixtures__/editor";
 import { AddColumnPosition, AddRowPosition } from "../../__fixtures__/table";
+import { table } from "console";
 
 test.describe("Test scenario table context menu", () => {
   test.describe("Context menu checks", () => {
@@ -124,6 +126,79 @@ test.describe("Test scenario table context menu", () => {
       await contextMenu.openOnCell({ rowNumber: "3", columnNumber: 0 });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_SCENARIO });
       await expect(table.getCell({ rowNumber: "3", columnNumber: 0 })).not.toBeAttached();
+    });
+
+    test("should not render context menu on the hash header", async ({ table, testScenarioTable, contextMenu }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1342");
+      await table.getColumnHeader({ name: "#" }).click({ button: "right" });
+      await expect(contextMenu.getHeading({ heading: HeadingType.SELECTION })).not.toBeAttached();
+      await expect(contextMenu.getHeading({ heading: HeadingType.SCENARIO })).not.toBeAttached();
+      await expect(contextMenu.getHeading({ heading: HeadingType.FIELD })).not.toBeAttached();
+      await expect(contextMenu.getHeading({ heading: HeadingType.INSTANCE })).not.toBeAttached();
+      await expect(testScenarioTable.get()).toHaveScreenshot("test-scenario-table-hash-no-context-menu.png");
+    });
+
+    test("should not render context menu on the scenario description header", async ({
+      table,
+      testScenarioTable,
+      contextMenu,
+    }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1342");
+      await table.getColumnHeader({ name: "Scenario Description" }).click({ button: "right" });
+      await expect(contextMenu.getHeading({ heading: HeadingType.SELECTION })).not.toBeAttached();
+      await expect(contextMenu.getHeading({ heading: HeadingType.SCENARIO })).not.toBeAttached();
+      await expect(contextMenu.getHeading({ heading: HeadingType.FIELD })).not.toBeAttached();
+      await expect(contextMenu.getHeading({ heading: HeadingType.INSTANCE })).not.toBeAttached();
+      await expect(testScenarioTable.get()).toHaveScreenshot(
+        "test-scenario-table-scenario-description-no-context-menu.png"
+      );
+    });
+
+    test("should not render context menu on the given header", async ({ table, testScenarioTable, contextMenu }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1342");
+      await table.getColumnHeader({ name: "GIVEN" }).click({ button: "right" });
+      await expect(contextMenu.getHeading({ heading: HeadingType.SELECTION })).not.toBeAttached();
+      await expect(contextMenu.getHeading({ heading: HeadingType.SCENARIO })).not.toBeAttached();
+      await expect(contextMenu.getHeading({ heading: HeadingType.FIELD })).not.toBeAttached();
+      await expect(contextMenu.getHeading({ heading: HeadingType.INSTANCE })).not.toBeAttached();
+      await expect(testScenarioTable.get()).toHaveScreenshot("test-scenario-table-given-no-context-menu.png");
+    });
+
+    test("should not render context menu on the expect header", async ({ table, testScenarioTable, contextMenu }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1342");
+      await table.getColumnHeader({ name: "EXPECT" }).click({ button: "right" });
+      await expect(contextMenu.getHeading({ heading: HeadingType.SELECTION })).not.toBeAttached();
+      await expect(contextMenu.getHeading({ heading: HeadingType.SCENARIO })).not.toBeAttached();
+      await expect(contextMenu.getHeading({ heading: HeadingType.FIELD })).not.toBeAttached();
+      await expect(contextMenu.getHeading({ heading: HeadingType.INSTANCE })).not.toBeAttached();
+      await expect(testScenarioTable.get()).toHaveScreenshot("test-scenario-table-expect-no-context-menu.png");
+    });
+
+    test("should not be able to delete instance when only one given column present", async ({ contextMenu }) => {
+      await contextMenu.openOnInstance({ name: "INSTANCE-1 (<Undefined>)" });
+      await expect(contextMenu.getMenuItem({ menuItem: MenuItem.DELETE_INSTANCE })).toBeDisabled();
+    });
+
+    test("should not be able to delete property when only one given column present", async ({ contextMenu }) => {
+      await contextMenu.openOnProperty({ name: "Property (<Undefined>)", columnNumber: 0 });
+      await expect(contextMenu.getMenuItem({ menuItem: MenuItem.DELETE_FIELD })).toBeDisabled();
+    });
+
+    test("should not be able to delete instance when only one expect column present", async ({ contextMenu }) => {
+      await contextMenu.openOnInstance({ name: "INSTANCE-2 (<Undefined>)" });
+      await expect(contextMenu.getMenuItem({ menuItem: MenuItem.DELETE_INSTANCE })).toBeDisabled();
+    });
+
+    test("should not be able to delete property when only one expect column present", async ({ contextMenu }) => {
+      await contextMenu.openOnProperty({ name: "Property (<Undefined>)", columnNumber: 1 });
+      await expect(contextMenu.getMenuItem({ menuItem: MenuItem.DELETE_FIELD })).toBeDisabled();
+    });
+
+    test("should not be able to delete scenario when only one scenario present", async ({ contextMenu, table }) => {
+      await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
+      await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_SCENARIO });
+      await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
+      await expect(contextMenu.getMenuItem({ menuItem: MenuItem.DELETE_SCENARIO })).toBeDisabled();
     });
   });
 });

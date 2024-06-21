@@ -29,4 +29,16 @@ export class SelectorPanel {
   public async close() {
     await this.page.getByLabel("Close drawer panel").click();
   }
+  public getAttribute(args: { name: string }) {
+    return this.page.getByRole("button", { name: args.name, exact: true });
+  }
+
+  public async expandAttribute(args: { name: string }) {
+    await this.page.getByLabel(args.name + args.name).click();
+  }
+
+  public async assign(args: { name: string }) {
+    await this.page.getByRole("button", { name: args.name, exact: true }).click();
+    await this.page.getByRole("button", { name: "Assign" }).click();
+  }
 }

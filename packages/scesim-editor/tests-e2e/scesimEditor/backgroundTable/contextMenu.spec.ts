@@ -112,5 +112,29 @@ test.describe("Background table context menu", () => {
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_FIELD });
       await expect(table.getColumnHeader({ name: "PROPERTY (<Undefined>)" }).nth(2)).not.toBeAttached();
     });
+
+    test("should not render context menu on the given header", async ({ table, backgroundTable, contextMenu }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1342");
+      await table.getColumnHeader({ name: "GIVEN" }).click({ button: "right" });
+      await expect(contextMenu.getHeading({ heading: HeadingType.SELECTION })).not.toBeAttached();
+      await expect(contextMenu.getHeading({ heading: HeadingType.SCENARIO })).not.toBeAttached();
+      await expect(contextMenu.getHeading({ heading: HeadingType.FIELD })).not.toBeAttached();
+      await expect(contextMenu.getHeading({ heading: HeadingType.INSTANCE })).not.toBeAttached();
+      await expect(backgroundTable.get()).toHaveScreenshot("background-table-no-context-menu.png");
+    });
+
+    test("should not be able to delete instance when only one given column present", async ({ contextMenu }) => {
+      await contextMenu.openOnInstance({ name: "INSTANCE-2 (<Undefined>)" });
+      await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_INSTANCE });
+      await contextMenu.openOnInstance({ name: "INSTANCE-1 (<Undefined>)" });
+      await expect(contextMenu.getMenuItem({ menuItem: MenuItem.DELETE_INSTANCE })).toBeDisabled();
+    });
+
+    test("should not be able to delete property when only one given column present", async ({ contextMenu }) => {
+      await contextMenu.openOnProperty({ name: "Property (<Undefined>)", columnNumber: 1 });
+      await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_FIELD });
+      await contextMenu.openOnProperty({ name: "Property (<Undefined>)", columnNumber: 0 });
+      await expect(contextMenu.getMenuItem({ menuItem: MenuItem.DELETE_FIELD })).toBeDisabled();
+    });
   });
 });

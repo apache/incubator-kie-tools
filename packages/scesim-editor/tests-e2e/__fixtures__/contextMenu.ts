@@ -59,6 +59,10 @@ export class ContextMenu {
     await this.page.getByRole("menuitem", { name: `${args.menuItem}` }).click();
   }
 
+  public getMenuItem(args: { menuItem: MenuItem }) {
+    return this.page.getByRole("menuitem", { name: `${args.menuItem}` });
+  }
+
   public getHeading(args: { heading: HeadingType }) {
     return this.page.getByRole("heading", { name: `${args.heading}`, exact: true });
   }

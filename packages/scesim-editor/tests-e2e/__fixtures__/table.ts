@@ -64,13 +64,19 @@ export class Table {
       .nth(args.columnNumber)
       .click();
   }
-  public getColumnHeader(args: { name: string }) {
-    return this.page.getByRole("columnheader", { name: args.name });
+
+  public async selectColumnHeader(args: { name: string }) {
+    await this.page.getByRole("columnheader", { name: args.name }).click();
   }
 
   public getCell(args: { rowNumber: string; columnNumber: number }) {
     return this.page.getByRole("row", { name: args.rowNumber }).nth(args.columnNumber);
   }
+
+  public getColumnHeader(args: { name: string }) {
+    return this.page.getByRole("columnheader", { name: args.name });
+  }
+
   public async deleteCellContent(args: { rowNumber: string; columnNumber: number }) {
     await this.page
       .getByRole("row", { name: args.rowNumber })
