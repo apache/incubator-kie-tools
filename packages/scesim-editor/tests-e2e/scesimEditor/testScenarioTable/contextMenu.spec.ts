@@ -17,12 +17,10 @@
  * under the License.
  */
 
-import { clearLine } from "readline";
 import { test, expect } from "../../__fixtures__/base";
 import { HeadingType, MenuItem } from "../../__fixtures__/contextMenu";
 import { AssetType } from "../../__fixtures__/editor";
 import { AddColumnPosition, AddRowPosition } from "../../__fixtures__/table";
-import { table } from "console";
 
 test.describe("Test scenario table context menu", () => {
   test.describe("Context menu checks", () => {
