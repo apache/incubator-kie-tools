@@ -17,11 +17,7 @@
  * under the License.
  */
 
-const {
-  getOrDefault,
-  varsWithName,
-  composeEnv,
-} = require("@kie-tools-scripts/build-env");
+const { getOrDefault, varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
 const rootEnv = require("@kie-tools/root-env/env");
 
@@ -33,8 +29,7 @@ module.exports = composeEnv([rootEnv], {
     },
     EXTENDED_SERVICES__version: {
       default: require("../package.json").version,
-      description:
-        "Extended Services version. Used by clients for checking compatibility.",
+      description: "Extended Services version. Used by clients for checking compatibility.",
     },
     EXTENDED_SERVICES__ip: {
       default: "0.0.0.0",
@@ -66,15 +61,9 @@ module.exports = composeEnv([rootEnv], {
         port: getOrDefault(this.vars.EXTENDED_SERVICES__port),
         jitexecutor: {
           nativeBinaryPath: {
-            macOS: getOrDefault(
-              this.vars.EXTENDED_SERVICES__nativeBinaryPath_macOS
-            ),
-            linux: getOrDefault(
-              this.vars.EXTENDED_SERVICES__nativeBinaryPath_linux
-            ),
-            win32: getOrDefault(
-              this.vars.EXTENDED_SERVICES__nativeBinaryPath_win32
-            ),
+            macOS: getOrDefault(this.vars.EXTENDED_SERVICES__nativeBinaryPath_macOS),
+            linux: getOrDefault(this.vars.EXTENDED_SERVICES__nativeBinaryPath_linux),
+            win32: getOrDefault(this.vars.EXTENDED_SERVICES__nativeBinaryPath_win32),
           },
         },
       },
