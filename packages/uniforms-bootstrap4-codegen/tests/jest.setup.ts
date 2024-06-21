@@ -18,5 +18,3 @@
  */
 
 import "@testing-library/jest-dom";
-import _ from "underscore";
-global._ = _;

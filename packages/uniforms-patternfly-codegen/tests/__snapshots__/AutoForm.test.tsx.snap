@@ -150,123 +150,16 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 		});
 		setFormApi(api);
 	}, []);
-	const handleSelect = (
-		newSelection: string | SelectOptionObject,
-		isPlaceHolder: boolean,
-		currentSelection: string,
-		setSelection: (val: string) =&gt; void,
-		setExpanded: (expanded: boolean) =&gt; void
-	) =&gt; {
-		if (isPlaceHolder) {
-			setSelection(&#39;&#39;);
-			setExpanded(false);
-		} else {
-			const parsedSelection = newSelection.toString
-				? newSelection.toString()
-				: (newSelection as string);
-			setSelection(parsedSelection || &#39;&#39;);
-			setExpanded(false);
-		}
-	};
-	const handleMultipleSelect = (
-		newSelection: string | SelectOptionObject,
-		isPlaceHolder: boolean,
-		currentValue: string[],
-		setSelection: (val: string[]) =&gt; void
-	) =&gt; {
-		if (isPlaceHolder) {
-			setSelection([]);
-		} else {
-			const parseSelection = (): string[] =&gt; {
-				const selectedValue = newSelection.toString
-					? newSelection.toString()
-					: (newSelection as string);
-				if (currentValue.indexOf(selectedValue) != -1) {
-					return currentValue.filter((s) =&gt; s !== selectedValue);
-				}
-				return [selectedValue, ...currentValue];
-			};
-			setSelection(parseSelection());
-		}
-	};
-	const handleCheckboxGroupChange = (
-		checkboxValue: string,
-		groupValue: string[],
-		setter: (val: string[]) =&gt; void
-	): void =&gt; {
-		const newValues = [...groupValue];
-		const index = newValues.indexOf(checkboxValue);
-		if (index != -1) {
-			newValues.splice(index, 1);
-		} else {
-			newValues.push(checkboxValue);
-		}
-		setter(newValues);
-	};
-	const parseDate = (date?: string): string =&gt; {
-		if (!date) {
-			return &#39;&#39;;
-		}
-		const dateValue: Date = new Date(Date.parse(date));
-		return dateValue.toISOString().slice(0, -14);
-	};
-	const onDateChange = (
-		newValue: string,
-		setter: (newValue: string) =&gt; void,
-		previousValue?: string
-	) =&gt; {
-		if (newValue) {
-			const newDate = new Date(newValue);
-			const time = parseTime(previousValue);
-			if (time !== &#39;&#39;) {
-				newDate.setHours(parseInt(time &amp;&amp; time.split(&#39;:&#39;)[0]));
-				newDate.setMinutes(parseInt(time &amp;&amp; time.split(&#39;:&#39;)[1].split(&#39; &#39;)[0]));
-			}
-			setter(newDate.toISOString());
-		}
-	};
-	const parseTime = (date?: string): string =&gt; {
-		if (!date) {
-			return &#39;&#39;;
-		}
-		const dateValue: Date = new Date(Date.parse(date));
-		let isAm = true;
-		let hours = dateValue.getHours();
-		if (hours &gt; 12) {
-			hours %= 12;
-			isAm = false;
-		}
-		let minutes = dateValue.getMinutes().toString();
-		if (minutes.length == 1) {
-			minutes = &#39;0&#39; + minutes;
-		}
-		return \`\${hours}:\${minutes} \${isAm ? &#39;AM&#39; : &#39;PM&#39;}\`;
-	};
-	const onTimeChange = (
-		time: string,
-		setter: (newValue: string) =&gt; void,
-		previousValue?: string,
-		hours?: number,
-		minutes?: number
-	) =&gt; {
-		if (previousValue) {
-			const newDate = new Date(Date.parse(previousValue));
-			if (hours &amp;&amp; minutes) {
-				newDate.setHours(hours);
-				newDate.setMinutes(minutes);
-			} else if (time !== &#39;&#39;) {
-				const localeHours = parseInt(time &amp;&amp; time.split(&#39;:&#39;)[0]);
-				const localeMinutes = parseInt(
-					time &amp;&amp; time.split(&#39;:&#39;)[1].split(&#39; &#39;)[0]
-				);
-				if (!isNaN(localeHours) &amp;&amp; !isNaN(localeMinutes)) {
-					newDate.setHours(localeHours);
-					newDate.setMinutes(localeMinutes);
-				}
-			}
-			setter(newDate.toISOString());
-		}
-	};
+	{
+	}
+	{
+	}
+	{
+	}
+	{
+	}
+	{
+	}
 	return (
 		&lt;div className={&#39;pf-c-form&#39;}&gt;
 			&lt;Card&gt;
