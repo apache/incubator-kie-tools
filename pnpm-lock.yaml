@@ -12610,8 +12610,8 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.1(@types/node@20.14.2))
       jest-junit:
-        specifier: ^14.0.0
-        version: 14.0.0
+        specifier: ^16.0.0
+        version: 16.0.0
 
   scripts/run-script-if:
     dependencies:
@@ -22336,10 +22336,6 @@ packages:
   jest-haste-map@29.7.0:
     resolution: {integrity: sha512-fP8u2pyfqx0K1rGn1R9pyE0/KTn+G7PxktWidOBTqFPLYX0b9ksaMFkhK5vrS3DVun09pckLdlx90QthlW7AmA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-
-  jest-junit@14.0.0:
-    resolution: {integrity: sha512-kALvBDegstTROfDGXH71UGD7k5g7593Y1wuX1wpWT+QTYcBbmtuGOA8UlAt56zo/B2eMIOcaOVEON3j0VXVa4g==}
-    engines: {node: '>=10.12.0'}
 
   jest-junit@16.0.0:
     resolution: {integrity: sha512-A94mmw6NfJab4Fg/BlvVOUXzXgF0XIH6EmTgJ5NDPp4xoKq0Kr7sErb+4Xs9nZvu58pJojz5RFGpqnZYJTrRfQ==}
@@ -44099,13 +44095,6 @@ snapshots:
       walker: 1.0.8
     optionalDependencies:
       fsevents: 2.3.2
-
-  jest-junit@14.0.0:
-    dependencies:
-      mkdirp: 1.0.4
-      strip-ansi: 6.0.1
-      uuid: 8.3.2
-      xml: 1.0.1
 
   jest-junit@16.0.0:
     dependencies:
