@@ -34,7 +34,6 @@ type LogType = typeof log;
 
 async function main() {
   const argv = yargs(hideBin(process.argv))
-    .locale("en-US")
     .epilog(
       `
 CLI tool to help executing shell scripts conditionally with a friendly syntax on Linux, macOS, and Windows.

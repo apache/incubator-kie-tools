@@ -213,7 +213,6 @@ async function main() {
   }
   try {
     await yargs(hideBin(process.argv))
-      .locale("en-US")
       .version(false)
       .scriptName("")
       .wrap(Math.min(150, terminalWidth()))
