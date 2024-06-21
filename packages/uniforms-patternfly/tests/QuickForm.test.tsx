@@ -17,10 +17,12 @@
  * under the License.
  */
 
-const { config } = require("@kie-tools/jest-base/jest.config");
+import * as React from "react";
+import { QuickForm } from "../src";
+import { usingUniformsContext, createSimpleSchema } from "./test-utils";
+import { render, screen } from "@testing-library/react";
 
-/** @type {import('ts-jest').JestConfigWithTsJest} */
-module.exports = {
-  ...config,
-  testEnvironment: "node",
-};
+test("<QuickForm> - works", () => {
+  render(usingUniformsContext(<QuickForm schema={createSimpleSchema()} />));
+  expect(screen.getByTestId("base-form")).toBeInTheDocument();
+});

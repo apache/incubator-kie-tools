@@ -1,0 +1,12 @@
+{
+  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "src",
+    "rootDir": "src",
+    "target": "es6",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "jsx": "react"
+  },
+  "include": ["src"]
+}

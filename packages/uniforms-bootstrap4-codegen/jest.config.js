@@ -25,11 +25,12 @@ module.exports = {
   testEnvironment: "jsdom",
   moduleNameMapper: {
     ...styleMock,
+    "^!!raw-loader!.*": "<rootDir>/tests/rawJestTransformer.js",
   },
   transform: {
     ...babelTransform,
     "^.+\\.(template|txt)?$": "<rootDir>/tests/rawJestTransformer.js",
   },
-  // transformIgnorePatterns: [],
+  transformIgnorePatterns: [],
   setupFilesAfterEnv: [jestSetupPath],
 };

@@ -17,10 +17,12 @@
  * under the License.
  */
 
-const { config } = require("@kie-tools/jest-base/jest.config");
+import * as React from "react";
+import { AutoForm } from "../src";
+import { createSimpleSchema, usingUniformsContext } from "./test-utils";
+import { render, screen } from "@testing-library/react";
 
-/** @type {import('ts-jest').JestConfigWithTsJest} */
-module.exports = {
-  ...config,
-  testEnvironment: "node",
-};
+test("<AutoForm> - works", () => {
+  render(usingUniformsContext(<AutoForm schema={createSimpleSchema()} />));
+  expect(screen.getByTestId("base-form")).toBeInTheDocument();
+});

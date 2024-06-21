@@ -17,10 +17,12 @@
  * under the License.
  */
 
-const { config } = require("@kie-tools/jest-base/jest.config");
+import * as React from "react";
+import { ValidatedForm } from "../src";
+import { createSimpleSchema, usingUniformsContext } from "./test-utils";
+import { render, screen } from "@testing-library/react";
 
-/** @type {import('ts-jest').JestConfigWithTsJest} */
-module.exports = {
-  ...config,
-  testEnvironment: "node",
-};
+test("<ValidatedForm> - works", () => {
+  render(usingUniformsContext(<ValidatedForm schema={createSimpleSchema()} />));
+  expect(screen.getByTestId("base-form")).toBeInTheDocument();
+});
