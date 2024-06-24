@@ -7,7 +7,8 @@
     "declarationMap": false,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es6"
+    "target": "es6",
+    "types": ["@testing-library/jest-dom"]
   },
   "include": ["src"]
 }

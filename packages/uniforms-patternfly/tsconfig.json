@@ -6,7 +6,8 @@
     "target": "es6",
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "jsx": "react"
+    "jsx": "react",
+    "types": ["node", "@testing-library/jest-dom"]
   },
   "include": ["src"]
 }
