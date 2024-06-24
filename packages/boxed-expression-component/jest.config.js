@@ -17,7 +17,7 @@
  * under the License.
  */
 
-const { config, styleMock, monacoMock } = require("@kie-tools/jest-base/jest.config");
+const { config, styleMock, monacoMock, babelTransform } = require("@kie-tools/jest-base/jest.config");
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
@@ -26,5 +26,8 @@ module.exports = {
   moduleNameMapper: {
     ...styleMock,
     ...monacoMock,
+  },
+  transform: {
+    ...babelTransform,
   },
 };
