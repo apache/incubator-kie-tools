@@ -32,7 +32,7 @@ const (
 	// For example, docker.io/apache/incubator-kie-sonataflow-operator:main -> 10.0
 	tagVersion = "main"
 	// Kogito images tag version. Used for data-index and jobs-service images.
-	kogitoImagesTagVersion = "999-20240620"
+	kogitoImagesTagVersion = "999-20240623"
 )
 
 // GetOperatorVersion gets the current binary version of the operator. Do not use it to compose image tags!
