@@ -25,8 +25,8 @@ For example, if this image is running on `localhost:8080/form-webapp` it will tr
 Unfortunatelly, with this condition, is pratically impossible to run these container and a Quarkus app locally, because it's impossible to run two containers on the same port.
 To solve this issue, two environment variables were created to configure this behavior:
 
-- DEV_DEPLOYMENT_DMN_FORM_WEBAPP_QUARKUS_APP_ORIGIN: Sets the origin of the quarkus app (`http://localhost:8080` for example); Defaults to `""`, in which case it's replaced by `window.location.origin`.
-- DEV_DEPLOYMENT_DMN_FORM_WEBAPP_QUARKUS_APP_PATH: Sets the relative path of the quarkus app in that origin (`/dev-deployment-1234` for example); Defaults to `""`, in which case it's replaced by `..` or `/` depending on the path the webapp is being served from.
+- DEV_DEPLOYMENT_DMN_FORM_WEBAPP_QUARKUS_APP_ORIGIN: Sets the origin of the Quarkus app (`http://localhost:8080` for example); Defaults to `""`, in which case it's replaced by `window.location.origin`.
+- DEV_DEPLOYMENT_DMN_FORM_WEBAPP_QUARKUS_APP_PATH: Sets the relative path of the Quarkus app in that origin (`/dev-deployment-1234` for example); Defaults to `""`, in which case it's replaced by `..` or `/` depending on the path the webapp is being served from.
 
 ## Run
 
@@ -45,9 +45,9 @@ docker run -d -p 8080:8080 -e DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=dev docker.
 docker run -d -p 8081:8081 -e DEV_DEPLOYMENT_DMN_FORM_WEBAPP_QUARKUS_APP_ORIGIN=http://localhost:8080 docker.io/apache/incubator-kie-sandbox-dev-deployment-dmn-form-webapp:main
 ```
 
-The quarkus app will be running on port 8080 and you will have to upload some DMNs to it (check the [dev-deployment-kogito-quarkus-blank-app-image README](../dev-deployment-kogito-quarkus-blank-app-image/README.md));
+The Quarkus app will be running on port 8080 and you will have to upload some DMNs to it (check the [dev-deployment-kogito-quarkus-blank-app-image README](../dev-deployment-kogito-quarkus-blank-app-image/README.md));
 
-The DMN Form Webapp will be running on port 8081 and will be using the quarkus app on port 8080 as it's backend.
+The DMN Form Webapp will be running on port 8081 and will be using the Quarkus app on port 8080 as it's backend.
 
 ---
 
