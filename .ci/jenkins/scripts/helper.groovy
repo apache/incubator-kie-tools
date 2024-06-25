@@ -127,11 +127,11 @@ boolean isImageInOpenshiftRegistry(String paramsPrefix = defaultImageParamsPrefi
 }
 
 String getImageRegistryUserCredentialsId(String paramsPrefix = defaultImageParamsPrefix) {
-    return params[constructKey(paramsPrefix, 'IMAGE_REGISTRY_USER_CREDENTIALS_ID')]
+    return params[constructKey(paramsPrefix, 'REGISTRY_USER_CREDENTIALS_ID')]
 }
 
 String getImageRegistryTokenCredentialsId(String paramsPrefix = defaultImageParamsPrefix) {
-    return params[constructKey(paramsPrefix, 'IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID')]
+    return params[constructKey(paramsPrefix, 'REGISTRY_TOKEN_CREDENTIALS_ID')]
 }
 
 String getImageRegistryCredentials(String paramsPrefix = defaultImageParamsPrefix) {
