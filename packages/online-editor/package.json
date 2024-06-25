@@ -83,7 +83,6 @@
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
-    "@jest/globals": "^29.7.0",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/cors-proxy": "workspace:*",
     "@kie-tools/eslint": "workspace:*",

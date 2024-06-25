@@ -10,7 +10,7 @@
     "target": "es6",
     "types": ["@testing-library/jest-dom"]
   },
-  "include": ["src", "tests", "tests/json"],
+  "include": ["src"],
 
   // Required to make Webpack TS config work. See https://github.com/webpack/webpack-cli/issues/2458#issuecomment-1157987399
   "ts-node": {

@@ -31,7 +31,6 @@
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@testing-library/react": "^12.1.5",
     "@types/react": "^17.0.6",
     "rimraf": "^3.0.2",
     "typescript": "^4.6.2"
