@@ -17,7 +17,7 @@
 
 # KIE Sandbox Dev Deployment DMN Form Webapp Image
 
-This image is ready to be used for Dev deployments that contain Decisions (`.dmn`) on KIE Sandbox.
+This image is ready to be used for Dev Deployments that contain Decisions (`.dmn`) on KIE Sandbox.
 It expects a Quarkus application to be running in the same host, which it will use to fetch information to render a form that let's users interact with a Decision.
 
 For example, if this image is running on `localhost:8080/form-webapp` it will try to fetch the OpenAPI specification from `localhost:8080/q/openapi` and use that to map all other routes and endpoints for the Quarkus application, plus all of the form inputs necessary for each DMN.

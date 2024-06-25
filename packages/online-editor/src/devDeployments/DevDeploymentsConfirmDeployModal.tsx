@@ -309,7 +309,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
       <br />
       {authSession && isCloudAuthSession(authSession) && (
         <>
-          {`This Dev deployment will be created at the`}
+          {`This Dev Deployment will be created at the`}
           &nbsp;
           <b>{`'${authSession.namespace}'`}</b>
           &nbsp;

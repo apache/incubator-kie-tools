@@ -88,13 +88,13 @@ Obs.: _To use different Git providers remember to change the Caddyfile_;
 
 Obs.: _`github.com` and `github.<enterprise_name>.com` use different APIs. If your Caddyfile is proxying `github.com` you'll need to change the `getGithubInstanceApiUrl` function in [github/Hooks.tsx](src/github/Hooks.tsx)_.
 
-# Dev deployments
+# Dev Deployments
 
-KIE Sandbox allows for Dev deployments targeting OpenShift or simple Kubernetes clusters. This is achieved by applying pre-defined [Kubernetes](src/devDeployments/services/resources/kubernetes/index.ts) and [OpenShift](src/devDeployments/services/resources/openshift/index.ts) resources for each provider.
+KIE Sandbox allows for Dev Deployments targeting OpenShift or simple Kubernetes clusters. This is achieved by applying pre-defined [Kubernetes](src/devDeployments/services/resources/kubernetes/index.ts) and [OpenShift](src/devDeployments/services/resources/openshift/index.ts) resources for each provider.
 
 To apply those YAMLs the `k8s-yaml-to-apiserver-requests` library is used. It first maps the cluster API resources and then parses a YAML to make the required requests. This creates the resources at the Kubernetes cluster and return the resources created.
 
-Dev deployments requires some information to be present on the resources metadata so that it can list and manage these resources, including a Dev deployment name, related workspace id and a created by tag with the value `kie-tools`. To make this easier a set of tokens is generated and can be used to interpolate variables inside the resource YAML. Here's an example:
+Dev Deployments requires some information to be present on the resources metadata so that it can list and manage these resources, including a Dev Deployment name, related workspace id and a created by tag with the value `kie-tools`. To make this easier a set of tokens is generated and can be used to interpolate variables inside the resource YAML. Here's an example:
 
 ```yaml
 kind: Deployment
