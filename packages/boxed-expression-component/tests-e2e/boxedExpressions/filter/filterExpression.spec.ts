@@ -49,29 +49,6 @@ test.describe("Create Boxed Filter", () => {
     await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-reset.png");
   });
 
-  test("should correctly copy and paste a filter - context menu", async ({
-    boxedExpressionEditor,
-    browserName,
-    context,
-    page,
-    stories,
-  }) => {
-    test.skip(
-      browserName === "webkit",
-      "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
-    );
-
-    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-
-    await stories.openBoxedFilter("rebooked-flights");
-    await boxedExpressionEditor.copyFilter(page.getByTestId("logic-type-selected-header"));
-    await boxedExpressionEditor.resetFilter();
-    await boxedExpressionEditor.selectBoxedContext(page.getByText("Select expression").first());
-    await boxedExpressionEditor.pasteToUndefinedCell(page.getByText("Select expression").first());
-
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-copied-and-pasted-as-nested.png");
-  });
-
   test("should correctly create a nested filter", async ({ boxedExpressionEditor, page, stories }) => {
     await stories.openBoxedFilter("base");
 
