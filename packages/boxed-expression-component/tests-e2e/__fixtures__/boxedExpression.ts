@@ -104,13 +104,13 @@ export class BoxedExpressionEditor {
   }
 
   public async copyFilter(from: Page | Locator = this.page) {
-    await from.getByRole("button").getByText("Filter").click();
-    await this.page.getByRole("menuitem").getByText("Copy").click();
+    await this.page.getByTestId("logic-type-button-test-id").click();
+    await this.page.getByRole("menuitem", { name: "Copy" }).click();
   }
 
   public async resetFilter(from: Page | Locator = this.page) {
-    await from.getByRole("button").getByText("Filter").click();
-    await this.page.getByRole("menuitem").getByText("Reset").click();
+    await from.getByTestId("logic-type-button-test-id").click();
+    await this.page.getByRole("menuitem", { name: "Reset" }).click();
   }
 
   public async fillFilter(args: { collectionIn: any[]; collectionMatch: any }) {

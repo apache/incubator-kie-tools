@@ -44,7 +44,7 @@ test.describe("Create Boxed Filter", () => {
   test("should correctly reset a nested filter", async ({ boxedExpressionEditor, page, stories }) => {
     await stories.openBoxedFilter("nested");
 
-    await boxedExpressionEditor.resetFilter();
+    await boxedExpressionEditor.resetFilter(page.locator("[data-ouia-component-id=expression-row-0]"));
 
     await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-reset.png");
   });
@@ -64,7 +64,7 @@ test.describe("Create Boxed Filter", () => {
     await context.grantPermissions(["clipboard-read", "clipboard-write"]);
 
     await stories.openBoxedFilter("rebooked-flights");
-    await boxedExpressionEditor.copyFilter();
+    await boxedExpressionEditor.copyFilter(page.getByTestId("logic-type-selected-header"));
     await boxedExpressionEditor.resetFilter();
     await boxedExpressionEditor.selectBoxedContext(page.getByText("Select expression").first());
     await boxedExpressionEditor.pasteToUndefinedCell(page.getByText("Select expression").first());
