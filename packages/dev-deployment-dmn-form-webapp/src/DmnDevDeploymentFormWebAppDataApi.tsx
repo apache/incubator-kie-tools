@@ -39,7 +39,6 @@ export async function fetchAppData(args: { quarkusAppOrigin: string; quarkusAppP
 
   // Append origin to schema $refs
   Object.keys(openApiSpec.paths).forEach((modelPath) => {
-    console.log(modelPath);
     const inputSetSchemaRef = openApiSpec.paths[modelPath]?.post.requestBody.content["application/json"].schema.$ref;
     const outputSetSchemaRef =
       openApiSpec.paths[modelPath]?.post.responses.default?.content["application/json"].schema.$ref;
