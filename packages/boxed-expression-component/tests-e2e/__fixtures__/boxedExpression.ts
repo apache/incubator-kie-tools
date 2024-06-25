@@ -113,15 +113,15 @@ export class BoxedExpressionEditor {
     await this.page.getByRole("menuitem").getByText("Reset").click();
   }
 
-  /**
-   * !!! Warning !!!
-   * For now works only for a single boxed 'Filter' present in whole expression
-   */
-  public async fillFilter(args: { collectionIn: any; collectionMatch: any }) {
-    await this.monaco.fill({
-      monacoParentLocator: this.page.getByTestId("kie-tools--boxed-expression-component---filter-collection-in"),
-      content: args.collectionIn,
-    });
+  public async fillFilter(args: { collectionIn: any[]; collectionMatch: any }) {
+    for (let i = 0; i < args.collectionIn.length; i++) {
+      await this.monaco.fill({
+        monacoParentLocator: this.page.getByTestId("kie-tools--boxed-expression-component---filter-collection-in"),
+        content: args.collectionIn[i],
+        nth: i,
+      });
+    }
+
     await this.monaco.fill({
       monacoParentLocator: this.page.getByTestId("kie-tools--boxed-expression-component---filter-collection-match"),
       content: args.collectionMatch,
