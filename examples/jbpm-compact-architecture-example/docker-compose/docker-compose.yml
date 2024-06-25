@@ -44,7 +44,7 @@ services:
 
   jbpm-compact-architecture-example-service:
     container_name: jbpm-compact-architecture-example-service
-    image: dev.local/${USER}/jppm-compact-architecture-example-service:${PROJECT_VERSION}
+    image: dev.local/${USER}/jbpm-compact-architecture-example-service:${PROJECT_VERSION}
     profiles: ["example", "full"]
     ports:
       - "8080:8080"
