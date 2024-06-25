@@ -134,7 +134,7 @@ RUN microdnf --disableplugin=subscription-manager install -y tar gzip \
   && microdnf --disableplugin=subscription-manager clean all
 
 # Create the user home, tmp, and .m2 paths to be used by our application.
-# Setting the permission to 777 is important so that our user can access and modify these files during runtime.
+# Setting the permission to 777 is important so that our users can access and modify these files during runtime.
 RUN mkdir -p -m 777 $HOME_PATH/app \
   && mkdir -p -m 777 /tmp/app \
   && mkdir -p -m 777 /.m2
@@ -239,7 +239,7 @@ Also, notice the `Command` parameter, it will execute `mvn quarkus:dev` inside o
 
 ![Dev Deployment Flow](./images/dev_deployment_flow.png)
 
-The "magic" that drives Dev Deployments depends on various parts working together in sync: KIE Sandbox, your Kubernetes cluster, the container images, de upload service, etc.
+The "magic" that drives Dev Deployments depends on various parts working together in sync: KIE Sandbox, your Kubernetes cluster, the container images, the upload service, etc.
 
 Before any deployment is made when adding a new Kubernetes or OpenShift cluster connection to KIE Sandbox it will automatically fetch all possible API endpoints and map them to their corresponding Kubernetes resource names, this way it _knows_ how to apply and manage different resources (such as Deployments, Ingresses, Routes, Services, etc).
 
@@ -248,7 +248,7 @@ When you click on "Deploy" a lot has to happen behind the scenes so that your De
 1. KIE Sandbox will zip all the files in the workspace being deployed (ignoring .git directories);
 2. Then it will load the chosen deployment option (Custom Image or Kogito Quarkus Blank app) YAML files and modify them dynamically:
    - Applying the required patches to set KIE Sandbox labels, annotations, and resource names;
-   - Applying patches related to the parameters set in the deployment modal (each parameter correspond to a set of patches and tokens);
+   - Applying patches related to the parameters set in the deployment modal (each parameter corresponds to a set of patches and tokens);
    - Interpolate all tokens with their corresponding values, including parameters;
    - Split the YAML files into multiple YAMLs, making one per resource kind.
 3. Using the Kubernetes resource name and the list of API endpoints saved, requests are made to the cluster to apply each resource YAML, saving the returned resource ID locally to be referenced later.
