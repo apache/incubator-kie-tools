@@ -39,6 +39,7 @@ import {
 } from "@kie-tools/runtime-tools-components/dist/utils/KeycloakClient";
 import { initEnv } from "./env/Env";
 import { ENV_PREFIX } from "./env/EnvConstants";
+import { EnvJson } from "./env/EnvJson";
 
 const onLoadFailure = (): void => {
   ReactDOM.render(<KeycloakUnavailablePage />, document.getElementById("root"));
@@ -46,7 +47,7 @@ const onLoadFailure = (): void => {
 
 const appRender = async (ctx: UserContext) => {
   const httpLink = new HttpLink({
-    uri: window["SONATAFLOW_DATA_INDEX_URL"],
+    uri: (window as any)["DATA_INDEX_ENDPOINT"],
   });
   const fallbackUI = onError(({ networkError }: any) => {
     if (networkError && networkError.stack === "TypeError: Failed to fetch") {
@@ -99,7 +100,7 @@ const appRender = async (ctx: UserContext) => {
 initEnv().then((env) => {
   if (env) {
     Object.keys(env).forEach((key) => {
-      window[key.replace(`${ENV_PREFIX}_`, "")] = env[key];
+      (window as any)[key.replace(`${ENV_PREFIX}_`, "")] = env[key as keyof EnvJson];
     });
   }
   appRenderWithAxiosInterceptorConfig((ctx: UserContext) => appRender(ctx), onLoadFailure);

@@ -183,6 +183,7 @@
       { "id": "@kie-tools/serverless-workflow-jq-expressions" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
       { "id": "swf-vscode-extension" },
+      { "id": "@kie-tools/sonataflow-management-console-image" },
       { "id": "@kie-tools/sonataflow-management-console-webapp" },
       { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
@@ -1181,6 +1182,17 @@
         "weight": 1
       },
       { "source": "swf-vscode-extension", "target": "@kie-tools/vscode-extension-common-test-helpers", "weight": 1 },
+      { "source": "@kie-tools/sonataflow-management-console-image", "target": "@kie-tools/image-builder", "weight": 1 },
+      {
+        "source": "@kie-tools/sonataflow-management-console-image",
+        "target": "@kie-tools/image-env-to-json",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-management-console-image",
+        "target": "@kie-tools/sonataflow-management-console-webapp",
+        "weight": 1
+      },
       {
         "source": "@kie-tools/sonataflow-management-console-webapp",
         "target": "@kie-tools-core/react-hooks",
@@ -1410,6 +1422,7 @@
     ["sonataflow-deployment-webapp", "packages/sonataflow-deployment-webapp"],
     ["@kie-tools/sonataflow-devmode-image", "packages/sonataflow-devmode-image"],
     ["@kie-tools/sonataflow-image-common", "packages/sonataflow-image-common"],
+    ["@kie-tools/sonataflow-management-console-image", "packages/sonataflow-management-console-image"],
     ["@kie-tools/sonataflow-management-console-webapp", "packages/sonataflow-management-console-webapp"],
     ["@kie-tools/sonataflow-mock-server", "packages/sonataflow-mock-server"],
     ["@kie-tools/sonataflow-operator", "packages/sonataflow-operator"],

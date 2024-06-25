@@ -20,7 +20,7 @@
 import { ENV_FILE_PATH } from "./EnvConstants";
 import { EnvJson } from "./EnvJson";
 
-export async function initEnv() {
+export async function initEnv(): Promise<EnvJson | void> {
   return fetch(ENV_FILE_PATH)
     .then(async (response) => {
       if (!response.ok) {

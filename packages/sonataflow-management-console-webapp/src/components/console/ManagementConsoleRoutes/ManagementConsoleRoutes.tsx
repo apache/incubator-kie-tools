@@ -46,7 +46,7 @@ const ManagementConsoleRoutes: React.FC = () => {
         <WorkflowFormPage />
       </Route>
       <Route exact path={routes.monitoring.path({})} component={MonitoringPage}>
-        <MonitoringPage dataIndexUrl={window["SONATAFLOW_DATA_INDEX_URL"]} />
+        <MonitoringPage dataIndexUrl={(window as any)["DATA_INDEX_ENDPOINT"]} />
       </Route>
     </Switch>
   );
