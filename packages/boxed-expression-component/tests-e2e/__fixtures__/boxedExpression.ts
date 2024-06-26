@@ -33,7 +33,7 @@ export class BoxedExpressionEditor {
     await from.getByText("Select expression").click();
   }
 
-  public async pasteToUndefinedCell(from: Page | Locator = this.page) {
+  public async pasteToSelectExpression(from: Page | Locator = this.page) {
     this.select(from);
     await this.page.getByRole("menuitem").getByText("Paste").click();
   }
