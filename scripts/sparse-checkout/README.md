@@ -50,7 +50,7 @@ pnpm -F boxed-expression-component... build:dev
 - Docker
 
 ```
-docker run -it -p 9900:9900 --rm quay.io/kie-tools/kie-tools-ci-build bash -ic '\
+docker run -it -p 9900:9900 --rm docker.io/apache/incubator-kie-tools-ci-build:main bash -ic '\
 cd; \
 ORG="apache"; \
 BRANCH="main"; \

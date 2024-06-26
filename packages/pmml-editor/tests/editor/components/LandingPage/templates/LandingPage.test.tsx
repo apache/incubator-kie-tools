@@ -68,7 +68,7 @@ describe("LandingPage", () => {
     );
     expect(getByTestId("landing-page")).toMatchSnapshot();
     expect(getAllByTestId("landing-page__model-card").length).toBe(1);
-    expect(() => getAllByTestId("landing-page-toolbar__supported-models")).toThrowError(
+    expect(() => getAllByTestId("landing-page-toolbar__supported-models")).toThrow(
       'Unable to find an element by: [data-testid="landing-page-toolbar__supported-models"]'
     );
   });

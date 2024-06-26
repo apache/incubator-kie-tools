@@ -2,7 +2,8 @@
   "extends": "@kie-tools/tsconfig/tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": ["node", "@testing-library/jest-dom"]
   },
   "include": ["src"]
 }

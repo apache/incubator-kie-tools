@@ -82,7 +82,7 @@ describe("event listening", () => {
   });
 
   test("activates when requested", async () => {
-    spyOn(envelopeClient, "receive");
+    jest.spyOn(envelopeClient, "receive");
     envelopeClient.startListening(apiImpl);
 
     await incomingMessage("a-message");
@@ -90,7 +90,7 @@ describe("event listening", () => {
   });
 
   test("deactivates when requested", async () => {
-    spyOn(envelopeClient, "receive");
+    jest.spyOn(envelopeClient, "receive");
     envelopeClient.startListening(apiImpl);
     envelopeClient.stopListening();
 
@@ -99,7 +99,7 @@ describe("event listening", () => {
   });
 
   test("activation is idempotent", async () => {
-    spyOn(envelopeClient, "receive");
+    jest.spyOn(envelopeClient, "receive");
     envelopeClient.startListening(apiImpl);
     envelopeClient.startListening(apiImpl);
 
@@ -108,7 +108,7 @@ describe("event listening", () => {
   });
 
   test("deactivation is idempotent", async () => {
-    spyOn(envelopeClient, "receive");
+    jest.spyOn(envelopeClient, "receive");
     envelopeClient.startListening(apiImpl);
     envelopeClient.stopListening();
     envelopeClient.stopListening();
@@ -118,7 +118,7 @@ describe("event listening", () => {
   });
 
   test("deactivation does not fail when not started", async () => {
-    spyOn(envelopeClient, "receive");
+    jest.spyOn(envelopeClient, "receive");
     envelopeClient.stopListening();
 
     await incomingMessage("a-message");

@@ -31,7 +31,7 @@ export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<D
       includeDmnFormWebapp: {
         id: "includeDmnFormWebapp",
         name: "Include DMN Form Webapp",
-        description: "Wether to deploy the DMN Form Webapp as a sidecar container or not",
+        description: "Whether to deploy the DMN Form Webapp as a sidecar container or not",
         type: "boolean",
         defaultValue: false,
         skipActionsIfFalse: true,

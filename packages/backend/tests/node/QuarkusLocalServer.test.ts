@@ -43,13 +43,13 @@ describe("satisfy requirements of the Quarkus local server", () => {
 
   test("should check if path provided in the constructor exists", async () => {
     await service.satisfyRequirements();
-    expect(mockFs.existsSync).toBeCalledWith(testJarFile);
+    expect(mockFs.existsSync).toHaveBeenCalledWith(testJarFile);
   });
 
   test("should return FALSE when the runner jar file is missing", async () => {
     mockFs.existsSync.mockReturnValueOnce(false);
     await expect(service.satisfyRequirements()).resolves.toBeFalsy();
-    expect(mockIsJavaAvailableFn).not.toBeCalled();
+    expect(mockIsJavaAvailableFn).not.toHaveBeenCalled();
   });
 
   test("should return FALSE when java is missing", async () => {
@@ -97,7 +97,7 @@ describe("start the Quarkus local server", () => {
     } catch (e) {
       expect(e.message).toBe("Could not start the Quarkus local server.");
     }
-  });
+  }, 10000);
 
   test("should reject the promise when there is no stdout", async () => {
     sandbox.stub(cp, "spawn").returns(new events.EventEmitter() as cp.ChildProcess);
@@ -108,7 +108,7 @@ describe("start the Quarkus local server", () => {
     } catch (e) {
       expect(e.message).toBe("Could not start the Quarkus local server.");
     }
-  });
+  }, 10000);
 
   test("should reject the promise when the expected data is not emitted on the stdout (timeout reached)", async () => {
     const process = new events.EventEmitter() as cp.ChildProcess;
@@ -125,7 +125,7 @@ describe("start the Quarkus local server", () => {
     } catch (e) {
       expect(e.message).toBe("Could not start the Quarkus local server.");
     }
-  });
+  }, 10000);
 
   test("should resolve the promise when Quarkus is up", async () => {
     const process = new events.EventEmitter() as cp.ChildProcess;
@@ -155,13 +155,13 @@ describe("stop the Quarkus local server", () => {
 
   test("should do nothing since there is no active process", async () => {
     quarkusServer.stop();
-    expect(mockKillProcessFn).not.toBeCalled();
+    expect(mockKillProcessFn).not.toHaveBeenCalled();
   });
 
   test("should kill the process", async () => {
     await startQuarkusServerTest(quarkusServer);
     quarkusServer.stop();
-    expect(mockKillProcessFn).toBeCalled();
+    expect(mockKillProcessFn).toHaveBeenCalled();
   });
 
   async function startQuarkusServerTest(server: QuarkusLocalServer): Promise<void> {

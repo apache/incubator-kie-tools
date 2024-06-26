@@ -19,7 +19,7 @@
 
 import { Validator } from "../src";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
-import { formI18n } from "../dist";
+import { formI18n } from "@kie-tools/form/dist/i18n/index";
 
 const schema = {
   type: "object",

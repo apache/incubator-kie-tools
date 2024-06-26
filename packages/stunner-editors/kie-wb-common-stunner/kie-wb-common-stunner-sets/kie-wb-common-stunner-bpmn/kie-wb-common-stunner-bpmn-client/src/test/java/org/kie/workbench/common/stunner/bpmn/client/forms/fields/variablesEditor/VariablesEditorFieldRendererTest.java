@@ -62,8 +62,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -117,12 +119,14 @@ public class VariablesEditorFieldRendererTest {
     @Before
     public void setup() {
         when(formGroupsInstanceMock.get()).thenReturn(formGroup);
-        variablesEditor = new VariablesEditorFieldRenderer(variablesEditorWidgetView,
+        variablesEditor = spy(new VariablesEditorFieldRenderer(variablesEditorWidgetView,
                                                            abstractClientSessionManager) {
             {
                 formGroupsInstance = formGroupsInstanceMock;
             }
-        };
+        });
+
+        doNothing().when(variablesEditor).fireDeleteDiagramVariableError();
     }
 
     @Test
@@ -150,6 +154,7 @@ public class VariablesEditorFieldRendererTest {
         variablesEditor.removeVariable(variableRow);
         verify(variablesEditorWidgetView).getVariableRows();
         verify(variablesEditorWidgetView, never()).doSave();
+        verify(variablesEditor).fireDeleteDiagramVariableError();
     }
 
     @Test
@@ -158,6 +163,7 @@ public class VariablesEditorFieldRendererTest {
         variablesEditor.removeVariable(variableRow);
         verify(variablesEditorWidgetView, times(2)).getVariableRows();
         verify(variablesEditorWidgetView).doSave();
+        verify(variablesEditor, never()).fireDeleteDiagramVariableError();
     }
 
     private void prepareRemoveVariableTest(boolean makeVariableBounded) {

@@ -47,6 +47,7 @@
       { "id": "@kie-tools-examples/uniforms-patternfly" },
       { "id": "@kie-tools/uniforms-patternfly" },
       { "id": "@kie-tools/eslint" },
+      { "id": "@kie-tools/jest-base" },
       { "id": "@kie-tools/tsconfig" },
       { "id": "@kie-tools-examples/webapp" },
       { "id": "@kie-tools/kie-editors-standalone" },
@@ -490,7 +491,7 @@
       },
       {
         "source": "@kie-tools-core/envelope-bus",
-        "target": "@kie-tools/root-env",
+        "target": "@kie-tools/jest-base",
         "weight": 1
       },
       {
@@ -575,12 +576,17 @@
       },
       {
         "source": "@kie-tools/uniforms-patternfly",
-        "target": "@kie-tools/root-env",
+        "target": "@kie-tools/jest-base",
         "weight": 1
       },
       {
         "source": "@kie-tools/uniforms-patternfly",
         "target": "@kie-tools/tsconfig",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/jest-base",
+        "target": "@kie-tools/root-env",
         "weight": 1
       },
       {
@@ -680,7 +686,7 @@
       },
       {
         "source": "@kie-tools-core/i18n",
-        "target": "@kie-tools/root-env",
+        "target": "@kie-tools/jest-base",
         "weight": 1
       },
       {
@@ -820,7 +826,7 @@
       },
       {
         "source": "@kie-tools/xml-parser-ts",
-        "target": "@kie-tools/root-env",
+        "target": "@kie-tools/jest-base",
         "weight": 1
       },
       {
@@ -860,7 +866,7 @@
       },
       {
         "source": "@kie-tools/pmml-editor-marshaller",
-        "target": "@kie-tools/root-env",
+        "target": "@kie-tools/jest-base",
         "weight": 1
       },
       {
@@ -951,6 +957,11 @@
       {
         "source": "@kie-tools/cors-proxy",
         "target": "@kie-tools/cors-proxy-api",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/cors-proxy",
+        "target": "@kie-tools/jest-base",
         "weight": 1
       },
       {
@@ -1155,7 +1166,7 @@
       },
       {
         "source": "@kie-tools/dashbuilder-component-api",
-        "target": "@kie-tools/root-env",
+        "target": "@kie-tools/jest-base",
         "weight": 1
       },
       {
@@ -1215,7 +1226,7 @@
       },
       {
         "source": "@kie-tools/yaml-language-server",
-        "target": "@kie-tools/root-env",
+        "target": "@kie-tools/jest-base",
         "weight": 1
       },
       {
@@ -1335,7 +1346,7 @@
       },
       {
         "source": "@kie-tools/dev-deployment-upload-service",
-        "target": "@kie-tools/root-env",
+        "target": "@kie-tools/jest-base",
         "weight": 1
       },
       {
@@ -1485,7 +1496,7 @@
       },
       {
         "source": "@kie-tools-core/switch-expression-ts",
-        "target": "@kie-tools/root-env",
+        "target": "@kie-tools/jest-base",
         "weight": 1
       },
       {
@@ -1585,6 +1596,11 @@
       },
       {
         "source": "@kie-tools/uniforms-bootstrap4-codegen",
+        "target": "@kie-tools/jest-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/uniforms-bootstrap4-codegen",
         "target": "@kie-tools/tsconfig",
         "weight": 1
       },
@@ -1596,6 +1612,11 @@
       {
         "source": "@kie-tools/uniforms-patternfly-codegen",
         "target": "@kie-tools/eslint",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/uniforms-patternfly-codegen",
+        "target": "@kie-tools/jest-base",
         "weight": 1
       },
       {
@@ -1961,6 +1982,11 @@
       {
         "source": "@kie-tools/runtime-tools-swf-gateway-api",
         "target": "@kie-tools/runtime-tools-shared-gateway-api",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-swf-gateway-api",
+        "target": "@kie-tools/jest-base",
         "weight": 1
       },
       {
@@ -2401,6 +2427,7 @@
     ["@kie-tools/image-env-to-json", "packages/image-env-to-json"],
     ["@kie-tools/import-java-classes-component", "packages/import-java-classes-component"],
     ["@kie-tools/jbpm-quarkus-devui", "packages/jbpm-quarkus-devui"],
+    ["@kie-tools/jest-base", "packages/jest-base"],
     ["@kie-tools/json-yaml-language-service", "packages/json-yaml-language-service"],
     ["@kie-tools-core/k8s-yaml-to-apiserver-requests", "packages/k8s-yaml-to-apiserver-requests"],
     ["@kie-tools-core/keyboard-shortcuts", "packages/keyboard-shortcuts"],
