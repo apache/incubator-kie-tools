@@ -4,5 +4,6 @@
   },
   "files.associations": {
     "*.yaml.helm": "helm"
-  }
+  },
+  "prettier.configPath": "prettier.config.mjs"
 }
