@@ -33,9 +33,12 @@ export class BoxedExpressionEditor {
     await from.getByText("Select expression").click();
   }
 
-  public async pasteToSelectExpression(from: Page | Locator = this.page) {
-    this.select(from);
-    await this.page.getByRole("menuitem").getByText("Paste").click();
+  public async pasteToSelectExpression(nth?: number) {
+    await this.page
+      .getByText("Select expression")
+      .nth(nth ?? 0)
+      .click();
+    await this.page.getByRole("menuitem", { name: "Paste" }).click();
   }
 
   public async selectBoxedLiteral(from: Page | Locator = this.page) {

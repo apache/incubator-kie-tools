@@ -147,7 +147,7 @@ test.describe("Selection", () => {
       await boxedExpressionEditor.copyFilter(page.getByTestId("logic-type-selected-header"));
       await boxedExpressionEditor.resetFilter();
       await boxedExpressionEditor.selectBoxedContext(page.getByText("Select expression").first());
-      await boxedExpressionEditor.pasteToSelectExpression(page.getByText("Select expression").first());
+      await boxedExpressionEditor.pasteToSelectExpression();
 
       await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot(
         "boxed-filter-copied-and-pasted-as-nested.png"
