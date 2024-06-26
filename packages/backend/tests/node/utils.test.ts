@@ -188,12 +188,12 @@ describe("Utility to kill a process", () => {
   test("should kill the process through the active process on Linux OS", async () => {
     sandbox.stub(os, "platform").returns("linux");
     utils.killProcess(process);
-    expect(process.kill).toBeCalled();
+    expect(process.kill).toHaveBeenCalled();
   });
 
   test("should kill the process through the active process on Mac OS", async () => {
     sandbox.stub(os, "platform").returns("darwin");
     utils.killProcess(process);
-    expect(process.kill).toBeCalled();
+    expect(process.kill).toHaveBeenCalled();
   });
 });

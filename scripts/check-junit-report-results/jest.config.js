@@ -18,7 +18,6 @@
  */
 
 module.exports = {
-  globals: {},
   reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
   moduleDirectories: ["node_modules"],
   moduleFileExtensions: ["js"],

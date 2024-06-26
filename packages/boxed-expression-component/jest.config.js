@@ -17,22 +17,17 @@
  * under the License.
  */
 
+const { config, styleMock, monacoMock, babelTransform } = require("@kie-tools/jest-base/jest.config");
+
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-  globals: {
-    "ts-jest": {
-      tsconfig: "<rootDir>/tsconfig.json",
-    },
-  },
-  moduleDirectories: ["node_modules"],
-  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
+  ...config,
+  testEnvironment: "node",
   moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "<rootDir>/tests/__mocks__/styleMocks.js",
-    "@kie-tools-core/monaco-editor": "<rootDir>/tests/__mocks__/monacoMock.js",
+    ...styleMock,
+    ...monacoMock,
   },
-  reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/jest-report.xml" }]],
-  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
   transform: {
-    "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
-    "^.+\\.tsx?$": "ts-jest",
+    ...babelTransform,
   },
 };

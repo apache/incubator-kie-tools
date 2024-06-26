@@ -43,10 +43,10 @@ describe("stop the backend manager service", () => {
     await manager.start();
     await manager.getService("Service C");
     manager.stop();
-    expect(serviceA.stop).toBeCalled();
-    expect(serviceB.stop).toBeCalled();
-    expect(serviceC.stop).toBeCalled();
-    expect(localServerStopFn).toBeCalled();
+    expect(serviceA.stop).toHaveBeenCalled();
+    expect(serviceB.stop).toHaveBeenCalled();
+    expect(serviceC.stop).toHaveBeenCalled();
+    expect(localServerStopFn).toHaveBeenCalled();
   });
 });
 
@@ -55,15 +55,15 @@ describe("start the backend manager service", () => {
     const manager = new BackendManagerService({});
     const registerServiceFn = jest.spyOn(manager, "registerService");
     await manager.start();
-    expect(registerServiceFn).not.toBeCalled();
+    expect(registerServiceFn).not.toHaveBeenCalled();
   });
 
   test("should only register the local http server", async () => {
     const manager = new BackendManagerService({ localHttpServer: localHttpServer });
     const registerServiceFn = jest.spyOn(manager, "registerService");
     await manager.start();
-    expect(registerServiceFn).toBeCalledTimes(1);
-    expect(registerServiceFn).toBeCalledWith(localHttpServer);
+    expect(registerServiceFn).toHaveBeenCalledTimes(1);
+    expect(registerServiceFn).toHaveBeenCalledWith(localHttpServer);
   });
 
   test("should only register the bootstrap services", async () => {
@@ -72,9 +72,9 @@ describe("start the backend manager service", () => {
     const manager = new BackendManagerService({ bootstrapServices: [serviceA, serviceB] });
     const registerServiceFn = jest.spyOn(manager, "registerService");
     await manager.start();
-    expect(registerServiceFn).toBeCalledTimes(2);
-    expect(registerServiceFn).toBeCalledWith(serviceA);
-    expect(registerServiceFn).toBeCalledWith(serviceB);
+    expect(registerServiceFn).toHaveBeenCalledTimes(2);
+    expect(registerServiceFn).toHaveBeenCalledWith(serviceA);
+    expect(registerServiceFn).toHaveBeenCalledWith(serviceB);
   });
 
   test("should register both the local http server and the bootstrap services", async () => {
@@ -86,10 +86,10 @@ describe("start the backend manager service", () => {
     });
     const registerServiceFn = jest.spyOn(manager, "registerService");
     await manager.start();
-    expect(registerServiceFn).toBeCalledTimes(3);
-    expect(registerServiceFn).toBeCalledWith(localHttpServer);
-    expect(registerServiceFn).toBeCalledWith(serviceA);
-    expect(registerServiceFn).toBeCalledWith(serviceB);
+    expect(registerServiceFn).toHaveBeenCalledTimes(3);
+    expect(registerServiceFn).toHaveBeenCalledWith(localHttpServer);
+    expect(registerServiceFn).toHaveBeenCalledWith(serviceA);
+    expect(registerServiceFn).toHaveBeenCalledWith(serviceB);
   });
 
   test("should not register the lazy services", async () => {
@@ -98,7 +98,7 @@ describe("start the backend manager service", () => {
     const manager = new BackendManagerService({ lazyServices: [serviceA, serviceB] });
     const registerServiceFn = jest.spyOn(manager, "registerService");
     await manager.start();
-    expect(registerServiceFn).not.toBeCalled();
+    expect(registerServiceFn).not.toHaveBeenCalled();
   });
 });
 
@@ -120,7 +120,7 @@ describe("retrieve a service", () => {
     const registerServiceFn = jest.spyOn(manager, "registerService");
     await manager.start();
     await expect(manager.getService(serviceId)).resolves.toBe(serviceA);
-    expect(registerServiceFn).toBeCalledTimes(1);
+    expect(registerServiceFn).toHaveBeenCalledTimes(1);
   });
 
   test("should register and return the required lazy service", async () => {
@@ -129,7 +129,7 @@ describe("retrieve a service", () => {
     const manager = new BackendManagerService({ lazyServices: [serviceA] });
     const registerServiceFn = jest.spyOn(manager, "registerService");
     await expect(manager.getService(serviceId)).resolves.toBe(serviceA);
-    expect(registerServiceFn).toBeCalled();
+    expect(registerServiceFn).toHaveBeenCalled();
   });
 });
 
@@ -157,7 +157,7 @@ describe("register a new service", () => {
     const serviceA = createMockedService("Service A");
     const manager = new BackendManagerService({});
     await expect(manager.registerService(serviceA)).resolves.toBeTruthy();
-    expect(serviceA.start).toBeCalled();
+    expect(serviceA.start).toHaveBeenCalled();
   });
 
   test("should return FALSE when an error occurs while starting the service up", async () => {
@@ -176,7 +176,7 @@ describe("register a new service", () => {
     const manager = new BackendManagerService({ bridge: httpBridge });
     const registerHttpBridgeFn = jest.spyOn(httpService, "registerHttpBridge");
     await expect(manager.registerService(httpService)).resolves.toBeTruthy();
-    expect(registerHttpBridgeFn).toBeCalled();
+    expect(registerHttpBridgeFn).toHaveBeenCalled();
   });
 
   test("should return FALSE when there is no HTTP bridge for a local HTTP service", async () => {
@@ -194,6 +194,6 @@ describe("register a new service", () => {
     const registerPortFn = jest.spyOn(localHttpService, "registerPort");
     await manager.start();
     await expect(manager.registerService(localHttpService)).resolves.toBeTruthy();
-    expect(registerPortFn).toBeCalled();
+    expect(registerPortFn).toHaveBeenCalled();
   });
 });

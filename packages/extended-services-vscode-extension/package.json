@@ -25,7 +25,6 @@
     "open-in-browser": "vscode-test-web --extensionDevelopmentPath=. .",
     "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/extended_services_vscode_extension_$npm_package_version.vsix",
     "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
-    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "watch": "webpack"
   },
   "dependencies": {
@@ -46,7 +45,6 @@
     "copy-webpack-plugin": "^11.0.0",
     "node-fetch": "^3.3.1",
     "rimraf": "^3.0.2",
-    "ts-jest": "^26.5.6",
     "webpack": "^5.88.2",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1",

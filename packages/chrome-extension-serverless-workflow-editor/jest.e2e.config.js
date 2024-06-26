@@ -17,12 +17,12 @@
  * under the License.
  */
 
+const { config } = require("@kie-tools/jest-base/jest.config");
+
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-  globals: {
-    "ts-jest": {
-      tsconfig: "<rootDir>/tsconfig.json",
-    },
-  },
+  ...config,
+  testEnvironment: "jsdom",
   reporters: [
     "default",
     [
@@ -38,9 +38,6 @@ module.exports = {
       },
     ],
   ],
-  transform: {
-    "^.+\\.(ts)$": "ts-jest",
-  },
   testRegex: ["e2e-tests/tests/.*Test.ts"],
   testTimeout: 100000,
 };

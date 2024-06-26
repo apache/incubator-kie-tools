@@ -17,24 +17,20 @@
  * under the License.
  */
 
+const { config, jestSetupPath, styleMock, babelTransform } = require("@kie-tools/jest-base/jest.config");
+
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-  globals: {
-    "ts-jest": {
-      tsconfig: "<rootDir>/tsconfig.json",
-    },
-  },
-  setupFilesAfterEnv: ["./src/__tests__/jest.setup.ts"],
-  reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
-  moduleDirectories: ["node_modules", "src"],
-  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
-  transform: {
-    "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
-    "^.+\\.tsx?$": "ts-jest",
-    "^.+\\.template?$": "jest-raw-loader",
-    "^.+\\.txt?$": "jest-raw-loader",
-  },
+  ...config,
+  testEnvironment: "jsdom",
   moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
+    ...styleMock,
+    "^!!raw-loader!(.*)$": "$1",
   },
+  transform: {
+    ...babelTransform,
+    "^.+\\.(template|txt)?$": "<rootDir>/tests/rawJestTransformer.js",
+  },
+  transformIgnorePatterns: [],
+  setupFilesAfterEnv: [jestSetupPath],
 };
