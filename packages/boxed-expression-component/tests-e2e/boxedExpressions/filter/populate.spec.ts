@@ -28,8 +28,12 @@ test.describe("Populate Boxed Filter", () => {
     await page.getByRole("option", { name: "Any" }).click();
     await page.keyboard.press("Enter");
 
+    // Prepare empty Filter 'in' and 'match' cells
+    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
+    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
+
     await boxedExpressionEditor.fillFilter({
-      collectionIn: "Passengers",
+      collectionIn: ["Passengers"],
       collectionMatch: "item.Flight Number = Flight.Flight Number",
     });
 

@@ -244,17 +244,11 @@ export function getDefaultBoxedExpressionForStories({
       "@_typeRef": typeRef,
       in: {
         "@_id": generateUuid(),
-        expression: {
-          "@_id": generateUuid(),
-          __$$element: "literalExpression",
-        },
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
       },
       match: {
         "@_id": generateUuid(),
-        expression: {
-          "@_id": generateUuid(),
-          __$$element: "literalExpression",
-        },
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
       },
     };
     widthsById.set(filterExpression["@_id"]!, [FILTER_EXPRESSION_MIN_WIDTH]);

@@ -45,17 +45,11 @@ export const Base: Story = {
       "@_label": "Expression Name",
       in: {
         "@_id": generateUuid(),
-        expression: {
-          __$$element: "literalExpression",
-          "@_id": generateUuid(),
-        },
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
       },
       match: {
         "@_id": generateUuid(),
-        expression: {
-          __$$element: "literalExpression",
-          "@_id": generateUuid(),
-        },
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
       },
     },
   },

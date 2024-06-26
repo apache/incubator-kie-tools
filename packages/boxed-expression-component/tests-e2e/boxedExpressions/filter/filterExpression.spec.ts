@@ -54,7 +54,11 @@ test.describe("Create Boxed Filter", () => {
 
     await boxedExpressionEditor.resetFilter();
     await boxedExpressionEditor.selectBoxedContext();
+
+    // Prepare empty Filter 'in' and 'match' cells
     await boxedExpressionEditor.selectBoxedFilter(page.getByText("Select expression").first());
+    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
+    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
 
     await boxedExpressionEditor.fillFilter({
       collectionIn: ["collection in expression"],
@@ -70,12 +74,13 @@ test.describe("Create Boxed Filter", () => {
     stories,
   }) => {
     await stories.openBoxedFilter("base");
-    await page.getByText("=").first().click({ button: "right" });
-    await page.getByRole("menuitem").getByText("Reset").click();
     await boxedExpressionEditor.selectBoxedList(page.getByText("Select expression").first());
+    // 'in'
     await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
     await page.getByText("1").first().click({ button: "right" });
     await page.getByRole("menuitem").getByText("Insert below").click();
+    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
+    // 'match'
     await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
 
     await boxedExpressionEditor.fillFilter({
