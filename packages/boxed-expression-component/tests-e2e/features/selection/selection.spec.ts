@@ -128,7 +128,7 @@ test.describe("Selection", () => {
     });
   });
 
-  test.describe.only("Filter Expression", () => {
+  test.describe("Filter Expression", () => {
     test("should correctly copy and paste a filter expression from context menu", async ({
       boxedExpressionEditor,
       browserName,
