@@ -116,14 +116,14 @@ export class BoxedExpressionEditor {
   public async fillFilter(args: { collectionIn: any[]; collectionMatch: any }) {
     for (let i = 0; i < args.collectionIn.length; i++) {
       await this.monaco.fill({
-        monacoParentLocator: this.page.getByTestId("kie-tools--boxed-expression-component---filter-collection-in"),
+        monacoParentLocator: this.page.getByTestId("kie-tools--boxed-expression-component--filter-collection-in"),
         content: args.collectionIn[i],
         nth: i,
       });
     }
 
     await this.monaco.fill({
-      monacoParentLocator: this.page.getByTestId("kie-tools--boxed-expression-component---filter-collection-match"),
+      monacoParentLocator: this.page.getByTestId("kie-tools--boxed-expression-component--filter-collection-match"),
       content: args.collectionMatch,
     });
   }

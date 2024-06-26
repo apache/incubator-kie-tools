@@ -889,7 +889,7 @@ test.describe("Resizing", () => {
       await stories.openBoxedFilter("nested");
 
       await resizing.resizeCell(
-        page.getByTestId("kie-tools--boxed-expression-component---filter-collection-in"),
+        page.getByTestId("kie-tools--boxed-expression-component--filter-collection-in"),
         { x: 0, y: 0 },
         { x: 80, y: 0 }
       );
@@ -906,7 +906,7 @@ test.describe("Resizing", () => {
       await stories.openBoxedFilter("nested");
 
       await resizing.resizeCell(
-        page.getByTestId("kie-tools--boxed-expression-component---filter-collection-match"),
+        page.getByTestId("kie-tools--boxed-expression-component--filter-collection-match"),
         { x: 0, y: 0 },
         { x: 80, y: 0 }
       );
