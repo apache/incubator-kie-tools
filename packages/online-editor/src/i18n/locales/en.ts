@@ -103,7 +103,7 @@ export const en: OnlineI18n = {
       deployYourModel: "Deploy",
       deployInstanceInfo: "Deploy instance information",
       disclaimer:
-        "When you set up the required information, you are able to create Dev deployments on your configured instance. All the information you provide is locally stored in the browser and is never shared with anyone.",
+        "When you set up the required information, you are able to create Dev Deployments on your configured instance. All the information you provide is locally stored in the browser and is never shared with anyone.",
       learnMore: "Learn more",
       requiredField: "This field cannot be empty.",
       deploying: "Deploying ...",
@@ -127,7 +127,7 @@ export const en: OnlineI18n = {
     },
     configModal: {
       hostInfo: `The hostname associated with your instance.`,
-      namespaceInfo: `The Namespace (project) you want your Dev deployments to be.`,
+      namespaceInfo: `The Namespace (project) you want your Dev Deployments to be.`,
       tokenInfo: `The token associated with your instance.`,
       insecurelyDisableTlsCertificateValidation: "Insecurely disable TLS certificate validation",
       insecurelyDisableTlsCertificateValidationInfo:
@@ -143,21 +143,21 @@ export const en: OnlineI18n = {
     },
     deployConfirmModal: {
       title: "Deploy",
-      body: "This action can take a few minutes to be completed and you will need to create a new deployment if you update your model, as Dev deployments are immutable.",
+      body: "This action can take a few minutes to be completed and you will need to create a new deployment if you update your model, as Dev Deployments are immutable.",
     },
     deleteConfirmModal: {
-      title: "Delete Dev deployment(s)",
-      body: "Are you sure you want to delete your Dev deployment(s)?",
+      title: "Delete Dev Deployment(s)",
+      body: "Are you sure you want to delete your Dev Deployment(s)?",
     },
     alerts: {
       deployStartedError:
-        "Something went wrong when creating your Dev deployment. Please check your configuration and try again.",
-      deployStartedSuccess: "Your Dev deployment has been successfully started and will be available shortly.",
-      deleteError: "Failed to delete Dev deployment(s). Please try again via OpenShift Console or CLI.",
-      deleteSuccess: "Dev deployment(s) successfully deleted.",
+        "Something went wrong when creating your Dev Deployment. Please check your configuration and try again.",
+      deployStartedSuccess: "Your Dev Deployment has been successfully started and will be available shortly.",
+      deleteError: "Failed to delete Dev Deployment(s). Please try again via OpenShift Console or CLI.",
+      deleteSuccess: "Dev Deployment(s) successfully deleted.",
     },
     introduction: {
-      explanation: `Create Dev deployments in the cloud and share with others.`,
+      explanation: `Create Dev Deployments in the cloud and share with others.`,
       disclaimer: `${
         en_common.names.devDeployments
       } is intended for ${"development".bold()} and should not be used for business-critical workloads.`,
@@ -173,10 +173,10 @@ export const en: OnlineI18n = {
           introduction: `In order to create your ${en_common.names.shortDevSandbox} instance:`,
           goToGetStartedPage: "Go to the Get Started page",
           followSteps: `Follow the steps to launch your instance. You will be asked to log in with your ${en_common.names.redHat} account.`,
-          informNamespace: `Once your instance is up and running, inform the Namespace (project) where you want your Dev deployments created.`,
+          informNamespace: `Once your instance is up and running, inform the Namespace (project) where you want your Dev Deployments created.`,
           inputReason:
-            "This information is necessary for creating your Dev deployments in the right Namespace (project).",
-          namespacePlaceholder: `The Namespace (project) where you want to create your Dev deployments.`,
+            "This information is necessary for creating your Dev Deployments in the right Namespace (project).",
+          namespacePlaceholder: `The Namespace (project) where you want to create your Dev Deployments.`,
         },
         second: {
           name: "Set credentials",
@@ -192,7 +192,7 @@ export const en: OnlineI18n = {
           name: "Connect",
           connectionSuccess: "Connection successfully established.",
           connectionError: "Connection refused.",
-          introduction: "Now you are able to create Dev deployments on this OpenShift instance.",
+          introduction: "Now you are able to create Dev Deployments on this OpenShift instance.",
           configNote: "The token you provide is locally stored in this browser and is never shared with anyone.",
           connectionErrorLong: `A connection with your ${en_common.names.shortDevSandbox} instance could not be established.`,
           checkInfo: "Please check the information provided and try again.",
@@ -212,7 +212,7 @@ export const en: OnlineI18n = {
       },
       fields: {
         namespace: "Namespace",
-        namespaceInfo: "The Namespace in the cluster where your Dev deployments will be created.",
+        namespaceInfo: "The Namespace in the cluster where your Dev Deployments will be created.",
         kubernetesApiServerUrl: "Kubernetes API Server URL",
         kubernetesApiServerUrlInfo: "The hostname associated with the Kubernetes API Server from your cluster.",
         tokenInfo: "The token associated with your Service Account.",
@@ -238,8 +238,8 @@ export const en: OnlineI18n = {
             "Only change the values below if you have a custom Kubernetes installation, but beware that things might not go as expected.",
           hostInputReason: "This information is necessary for establishing a connection with your Kubernetes cluster.",
           namespaceInputReason:
-            "This information is necessary for creating your Dev deployments in the correct Namespace.",
-          namespacePlaceholder: "The Namespace where you want to create your Dev deployments.",
+            "This information is necessary for creating your Dev Deployments in the correct Namespace.",
+          namespacePlaceholder: "The Namespace where you want to create your Dev Deployments.",
           hostPlaceholder: "The Kubernetes API Server URL",
         },
         third: {
@@ -254,7 +254,7 @@ export const en: OnlineI18n = {
           name: "Connect",
           connectionSuccess: "Connection successfully established.",
           connectionError: "Connection refused.",
-          introduction: "Now you are able to create Dev deployments on this Kubernetes instance.",
+          introduction: "Now you are able to create Dev Deployments on this Kubernetes instance.",
           configNote: "The token you provide is locally stored in this browser and is never shared with anyone.",
           connectionErrorLong: `A connection with your Kubernetes cluster could not be established.`,
           checkInfo: "Please check the information provided and try again.",

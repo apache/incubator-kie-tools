@@ -91,6 +91,7 @@ digraph G {
   "@kie-tools/dev-deployment-dmn-form-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/form-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/image-env-to-json" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/maven-config-setup-helper" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -119,7 +120,6 @@ digraph G {
   "@kie-tools/uniforms-bootstrap4-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/uniforms-patternfly-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/i18n" [ color = "purple", fontcolor = "purple", style = "rounded" ];
-  "@kie-tools/image-env-to-json" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/import-java-classes-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/vscode-java-code-completion" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/runtime-tools-process-dev-ui-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -314,6 +314,7 @@ digraph G {
   "@kie-tools/dev-deployment-dmn-form-webapp" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp" -> "@kie-tools/form-dmn" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/dev-deployment-dmn-form-webapp" [ style = "solid", color = "black" ];
+  "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/image-env-to-json" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];

@@ -1386,6 +1386,11 @@
       },
       {
         "source": "@kie-tools/dev-deployment-dmn-form-webapp-image",
+        "target": "@kie-tools/image-env-to-json",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dev-deployment-dmn-form-webapp-image",
         "target": "@kie-tools/image-builder",
         "weight": 1
       },

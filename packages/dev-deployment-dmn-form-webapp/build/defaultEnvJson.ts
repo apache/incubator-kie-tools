@@ -17,13 +17,14 @@
  * under the License.
  */
 
-import "@patternfly/react-core/dist/styles/base.css";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import "./static/resources/style.css";
-import { DmnFormApp } from "../../src/DmnFormApp";
+import { EnvJson } from "../src/env/EnvJson";
 
-ReactDOM.render(
-  <DmnFormApp baseOrigin={`http://localhost:${process.env.WEBPACK_REPLACE__quarkusPort}`} basePath="" />,
-  document.getElementById("root")
-);
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { env } from "../env";
+const buildEnv: any = env; // build-env is not typed
+
+export const defaultEnvJson: EnvJson = {
+  DEV_DEPLOYMENT_DMN_FORM_WEBAPP_QUARKUS_APP_ORIGIN: buildEnv.devDeploymentDmnFormWebapp.quarkusApp.origin,
+  DEV_DEPLOYMENT_DMN_FORM_WEBAPP_QUARKUS_APP_PATH: buildEnv.devDeploymentDmnFormWebapp.quarkusApp.path,
+};

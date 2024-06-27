@@ -17,7 +17,7 @@
 
 ## Extended Services
 
-Powers the DMN Runner and Dev deployments features.
+Powers the DMN Runner and Dev Deployments features.
 
 ## Parameters
 

@@ -79,7 +79,7 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
                   }, 0);
                 }}
                 isPlain={false}
-                title={"Select Cloud provider for this Dev deployment..."}
+                title={"Select Cloud provider for this Dev Deployment..."}
                 filter={cloudAuthSessionSelectFilter()}
                 showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.CLOUD}
               />

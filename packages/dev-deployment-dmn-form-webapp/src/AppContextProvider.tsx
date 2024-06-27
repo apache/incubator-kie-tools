@@ -17,24 +17,44 @@
  * under the License.
  */
 
-import React, { ReactNode, useCallback, useState } from "react";
+import React, { ReactNode, useCallback, useState, useMemo, useEffect } from "react";
+import * as path from "path";
 import { AppContext } from "./AppContext";
 import { AppData, fetchAppData } from "./DmnDevDeploymentFormWebAppDataApi";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
-import { DmnFormAppProps } from "./DmnFormApp";
+import { useEnv } from "./env/hooks/EnvContext";
 
-interface Props extends DmnFormAppProps {
+interface Props {
   children: ReactNode;
 }
+
+// The following regular expression matches everything between the first and last '/'.
+const re = new RegExp("^([^/]*)/|/(?=[^/]*$)", "g");
 
 export function AppContextProvider(props: Props) {
   const [fetchDone, setFetchDone] = useState(false);
   const [data, setData] = useState<AppData>();
+  const { env } = useEnv();
+
+  const quarkusAppOrigin = useMemo(
+    () =>
+      env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_QUARKUS_APP_ORIGIN?.length
+        ? env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_QUARKUS_APP_ORIGIN
+        : window.location.origin,
+    [env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_QUARKUS_APP_ORIGIN]
+  );
+  const quarkusAppPath = useMemo(
+    () =>
+      env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_QUARKUS_APP_PATH?.length
+        ? env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_QUARKUS_APP_PATH
+        : path.join(window.location.pathname, window.location.pathname !== "/" ? ".." : "").replace(re, "$1"),
+    [env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_QUARKUS_APP_PATH]
+  );
 
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        fetchAppData(props)
+        fetchAppData({ quarkusAppOrigin, quarkusAppPath })
           .then((data: AppData) => {
             if (canceled.get()) {
               return;
@@ -44,9 +64,13 @@ export function AppContextProvider(props: Props) {
           .catch((error: any) => console.error(error))
           .finally(() => setFetchDone(true));
       },
-      [props]
+      [quarkusAppOrigin, quarkusAppPath]
     )
   );
 
-  return <AppContext.Provider value={{ fetchDone, data }}>{props.children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider value={{ fetchDone, data, quarkusAppOrigin, quarkusAppPath }}>
+      {props.children}
+    </AppContext.Provider>
+  );
 }

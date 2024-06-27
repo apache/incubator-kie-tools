@@ -22,6 +22,15 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 >
+  <!-- Purposefully not declaring maven-base as parent -->
+  <!-- As this app aims to work as any consumer app would. -->
+
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>32</version>
+  </parent>
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito</groupId>
   <artifactId>dmn-dev-deployment-quarkus-app</artifactId>
@@ -35,8 +44,13 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <surefire-plugin.version>3.2.5</surefire-plugin.version>
+    <maven.site.plugin.version>3.12.1</maven.site.plugin.version>
+    <maven.remote.resources.plugin.version>3.2.0</maven.remote.resources.plugin.version>
+    <maven.jar.plugin.version>3.4.1</maven.jar.plugin.version>
     <version.junit>4.13.2</version.junit>
     <quarkus.analytics.disabled>true</quarkus.analytics.disabled>
+    <version.org.apache.commons.commons-compress>1.26.1</version.org.apache.commons.commons-compress>
+    <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
   </properties>
 
   <dependencyManagement>
@@ -49,23 +63,26 @@
         <scope>import</scope>
       </dependency>
       <dependency>
-        <groupId>io.quarkus.platform</groupId>
-        <artifactId>quarkus-kogito-bom</artifactId>
-        <version>${quarkus.platform.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-kie-bom</artifactId>
         <version>${version.org.kie.kogito}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-with-drools-quarkus</artifactId>
+        <version>${version.org.kie.kogito}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
   <dependencies>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>${version.org.apache.commons.commons-compress}</version>
+    </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy</artifactId>
@@ -91,8 +108,8 @@
       <artifactId>kie-dmn-openapi</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-decisions</artifactId>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-with-drools-quarkus</artifactId>
       <exclusions>
         <exclusion>
           <groupId>org.kie.kogito</groupId>
@@ -124,6 +141,73 @@
         <directory>src/main/resources</directory>
       </resource>
     </resources>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${maven.site.plugin.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.commons</groupId>
+              <artifactId>commons-compress</artifactId>
+              <version>${version.org.apache.commons.commons-compress}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.iq80.snappy</groupId>
+              <artifactId>snappy</artifactId>
+              <version>${version.org.iq80.snappy}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <version>${maven.remote.resources.plugin.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.commons</groupId>
+              <artifactId>commons-compress</artifactId>
+              <version>${version.org.apache.commons.commons-compress}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.iq80.snappy</groupId>
+              <artifactId>snappy</artifactId>
+              <version>${version.org.iq80.snappy}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${maven.jar.plugin.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.iq80.snappy</groupId>
+              <artifactId>snappy</artifactId>
+              <version>${version.org.iq80.snappy}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${surefire-plugin.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.iq80.snappy</groupId>
+              <artifactId>snappy</artifactId>
+              <version>${version.org.iq80.snappy}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.apache.commons</groupId>
+              <artifactId>commons-compress</artifactId>
+              <version>${version.org.apache.commons.commons-compress}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>io.quarkus</groupId>

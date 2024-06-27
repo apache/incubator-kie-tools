@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -17,9 +18,10 @@
 # under the License.
 #
 
-quarkus.swagger-ui.always-include=true
-quarkus.http.cors=true
-quarkus.http.cors.origins=*
-quarkus.http.host=0.0.0.0
-quarkus.dev-ui.cors.enabled=false
-quarkus.devservices.enabled=false
+# Copying the DMN Form Webapp assets here is essential for when the container is running with the readOnlyRootFilesystem flag.
+# But, just like any other directory modified during runtime, the /var/www/html must be a mounted volume in the container in this case.
+cp -R /dmn-form-webapp/app/* /var/www/html
+
+/dmn-form-webapp/image-env-to-json-standalone --directory /var/www/html --json-schema /dmn-form-webapp/EnvJson.schema.json
+
+httpd -D FOREGROUND

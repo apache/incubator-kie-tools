@@ -30,9 +30,9 @@ describe("DmnFormToolbar", () => {
         usingTestingAppContext(<DmnFormToolbar modelName={modelName} />, {
           data: {
             forms: [{ modelName, schema: {} }],
-            baseOrigin: "http://localhost",
-            basePath: "",
           },
+          quarkusAppOrigin: "http://localhost",
+          quarkusAppPath: "",
         }).wrapper
       ).wrapper
     );
@@ -46,9 +46,9 @@ describe("DmnFormToolbar", () => {
         usingTestingAppContext(<DmnFormToolbar modelName={modelName} />, {
           data: {
             forms: [{ modelName, schema: {} }],
-            baseOrigin: "http://localhost",
-            basePath: "",
           },
+          quarkusAppOrigin: "http://localhost",
+          quarkusAppPath: "",
         }).wrapper
       ).wrapper
     );

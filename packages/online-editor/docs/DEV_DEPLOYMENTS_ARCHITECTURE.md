@@ -1,6 +1,6 @@
 # Dev Deployments
 
-KIE Sandbox allows for Dev Deployments targeting OpenShift or simple Kubernetes clusters. This is achieved by applying pre-defined [Kubernetes](src/devDeployments/services/resources/kubernetes/index.ts) and [OpenShift](src/devDeployments/services/resources/openshift/index.ts) resources for each provider.
+KIE Sandbox allows for Dev Deployments targeting OpenShift or simple Kubernetes clusters. This is achieved by applying pre-defined Kubernetes and OpenShift resources for each provider.
 
 To apply those YAMLs the `k8s-yaml-to-apiserver-requests` library is used. It first maps the cluster API resources and then parses a YAML to make the required requests. This creates the resources at the Kubernetes cluster and returns the resources created.
 
@@ -25,7 +25,7 @@ metadata:
     \${{ devDeployment.annotations.workspaceName }}: \${{ devDeployment.workspace.name }}
 ```
 
-As you can see, there are several variables in use here: `devDeployment.uniqueName`, `devDeployment.labels...`, `devDeployment.annotations...`, `devDeployment.workspace...`. These are replaced via an [interpolation implementation](/packages/k8s-yaml-to-apiserver-requests/src/interpolateK8sResourceYamls.ts).
+As you can see, there are several variables in use here: `devDeployment.uniqueName`, `devDeployment.labels...`, `devDeployment.annotations...`, `devDeployment.workspace...`. These are replaced via an [interpolation implementation](../../k8s-yaml-to-apiserver-requests/src/interpolateK8sResourceYaml.ts).
 
 ## Required metadata, labels and annotations
 
@@ -97,11 +97,11 @@ KIE Sandbox expects a few things from your custom image to make sure that it can
 
 ### Requirements:
 
-1. Have the [dev-deployment-upload-service](../dev-deployment-upload-service/) binary installed and available globally, as KIE Sandbox will override the default command from your image with `dev-deployment-upload-service && <CUSTOM_COMMAND>` (`<CUSTOM_COMMAND>` is defined in the UI when deploying the image);
+1. Have the [dev-deployment-upload-service](../../dev-deployment-upload-service/) binary installed and available globally, as KIE Sandbox will override the default command from your image with `dev-deployment-upload-service && <CUSTOM_COMMAND>` (`<CUSTOM_COMMAND>` is defined in the UI when deploying the image);
 2. The image must expose port `8080` and all services running on the container should listen to this port. This includes the `dev-deployment-upload-service`, which can be configured by setting the `DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT` environment variable to `8080`;
 3. After KIE Sandbox uploads the assets to the `dev-deployment-upload-service` listening inside your image, and the service finishes unzipping and placing the files in the configured directory, it's expected that an application starts and provides an endpoint `/q/health` that responds with **`HTTP 200`** so that KIE Sandbox can acknowledge that the application started successfully and is running;
 
-**_Obs.: More info on how to configure the `dev-deployment-upload-service` is available here: [dev-deployment-upload-service/README.md](../dev-deployment-upload-service/README.md)._**
+**_Obs.: More info on how to configure the `dev-deployment-upload-service` is available here: [dev-deployment-upload-service/README.md](../../dev-deployment-upload-service/README.md)._**
 
 ### Example 1:
 
@@ -172,7 +172,7 @@ ENTRYPOINT ["/bin/bash", "-c"]
 # The CMD directive is not necessary since KIE Sandbox will overwrite it.
 ```
 
-As an example of a template Quarkus app, checkout [dev-deployment-kogito-quarkus-blank-app](../dev-deployment-kogito-quarkus-blank-app).
+As an example of a template Quarkus app, checkout [dev-deployment-kogito-quarkus-blank-app](../../dev-deployment-kogito-quarkus-blank-app).
 
 Now all you have to do is build and publish your image.
 

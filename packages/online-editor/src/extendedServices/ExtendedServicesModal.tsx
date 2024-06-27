@@ -745,7 +745,7 @@ export function ExtendedServicesModal() {
                 <img
                   className="pf-u-h-100"
                   src={routes.static.images.dmnDevDeploymentGif.path({})}
-                  alt={"DMN Dev deployments usage"}
+                  alt={"DMN Dev Deployments usage"}
                   width={"100%"}
                 />
               </div>
