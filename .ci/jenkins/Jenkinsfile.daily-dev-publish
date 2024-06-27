@@ -91,7 +91,7 @@ pipeline {
         KIE_SANDBOX_HELM_CHART__registry = 'docker.io'
         KIE_SANDBOX_HELM_CHART__account = 'apache'
         KIE_SANDBOX_HELM_CHART__name = 'incubator-kie-sandbox-helm-chart'
-        KIE_SANDBOX_HELM_CHART__tag = '0.0.0-daily-dev'
+        KIE_SANDBOX_HELM_CHART__tag = "0.0.0-${params.BRANCH_NAME}"
 
         OPENSHIFT_NAMESPACE = 'kie-sandbox'
         OPENSHIFT_PART_OF = 'daily-dev-kie-sandbox-app'
