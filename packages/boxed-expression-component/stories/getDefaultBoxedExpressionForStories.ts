@@ -25,6 +25,7 @@ import {
   BoxedContext,
   BoxedDecisionTable,
   BoxedExpression,
+  BoxedFilter,
   BoxedFunction,
   BoxedInvocation,
   BoxedList,
@@ -43,6 +44,7 @@ import {
   DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
   DECISION_TABLE_INPUT_DEFAULT_WIDTH,
   DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
+  FILTER_EXPRESSION_MIN_WIDTH,
   LITERAL_EXPRESSION_MIN_WIDTH,
   RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
 } from "../src/resizing/WidthConstants";
@@ -235,6 +237,22 @@ export function getDefaultBoxedExpressionForStories({
     ]);
 
     return decisionTableExpression;
+  } else if (logicType === "filter") {
+    const filterExpression: BoxedFilter = {
+      __$$element: "filter",
+      "@_id": generateUuid(),
+      "@_typeRef": typeRef,
+      in: {
+        "@_id": generateUuid(),
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      },
+      match: {
+        "@_id": generateUuid(),
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      },
+    };
+    widthsById.set(filterExpression["@_id"]!, [FILTER_EXPRESSION_MIN_WIDTH]);
+    return filterExpression;
   } else {
     throw new Error(`No default expression available for ${logicType}.`);
   }

@@ -71,7 +71,7 @@ test.describe("Selection", () => {
 
     test("should select multiple cells and copy/paste", async ({ stories, page, clipboard, browserName }) => {
       test.skip(
-        browserName !== "chromium",
+        browserName === "webkit",
         "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
       );
 
@@ -103,7 +103,7 @@ test.describe("Selection", () => {
       browserName,
     }) => {
       test.skip(
-        browserName !== "chromium",
+        browserName === "webkit",
         "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
       );
 
@@ -125,6 +125,33 @@ test.describe("Selection", () => {
       await expect(page.getByRole("cell", { name: "Tiago" })).toBeAttached();
       await expect(page.getByRole("cell", { name: "29" })).toBeAttached();
       await expect(page.getByRole("cell", { name: "USA" })).toBeAttached();
+    });
+  });
+
+  test.describe("Filter Expression", () => {
+    test("should correctly copy and paste a filter expression from context menu", async ({
+      boxedExpressionEditor,
+      browserName,
+      context,
+      page,
+      stories,
+    }) => {
+      test.skip(
+        browserName === "webkit",
+        "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
+      );
+
+      await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+
+      await stories.openBoxedFilter("rebooked-flights");
+      await boxedExpressionEditor.copyFilter(page.getByTestId("logic-type-selected-header"));
+      await boxedExpressionEditor.resetFilter();
+      await boxedExpressionEditor.selectBoxedContext(page.getByText("Select expression").first());
+      await boxedExpressionEditor.pasteToSelectExpression();
+
+      await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot(
+        "boxed-filter-copied-and-pasted-as-nested.png"
+      );
     });
   });
 });
