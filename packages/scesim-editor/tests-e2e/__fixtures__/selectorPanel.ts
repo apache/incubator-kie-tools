@@ -33,8 +33,8 @@ export class SelectorPanel {
     return this.page.getByRole("button", { name: args.name, exact: true });
   }
 
-  public async expandAttribute(args: { name: string }) {
-    await this.page.getByLabel(args.name + args.name).click();
+  public async expandAttribute(args: { name: string; dataType: string }) {
+    await this.page.getByLabel(`${args.name}${args.dataType}`).click();
   }
 
   public async assign(args: { name: string }) {

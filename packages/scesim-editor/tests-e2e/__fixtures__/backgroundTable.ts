@@ -27,8 +27,8 @@ export class BackgroundTable {
     return this.page.getByLabel("Background");
   }
 
-  public async fill(args: { content: string; column: number }) {
-    await this.page.getByLabel("Background").getByTestId("monaco-container").nth(args.column).dblclick();
+  public async fill(args: { content: string; columnNumber: number }) {
+    await this.page.getByLabel("Background").getByTestId("monaco-container").nth(args.columnNumber).dblclick();
     if (this.projectName === ProjectName.GOOGLE_CHROME) {
       // Google Chrome's fill function is not always erasing the input content
       await this.page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").press("Control+A");
@@ -37,5 +37,13 @@ export class BackgroundTable {
     await this.page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill(args.content);
     await this.page.keyboard.press("Home");
     await this.page.keyboard.press("Enter");
+  }
+
+  public async clickPlusIcon() {
+    await this.page.getByLabel("Background").locator("svg").click();
+  }
+
+  public getPlusIcon() {
+    return this.page.getByLabel("Background").locator("svg");
   }
 }

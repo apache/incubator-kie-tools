@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 
 export enum AddRowPosition {
   ABOVE,
@@ -34,6 +34,13 @@ export enum Type {
   KEYBOARD_SHORTCUT,
 }
 
+// export enum Position {
+//   BOTTOM,
+//   LEFT,
+//   RIGHT,
+//   TOP,
+// }
+
 export class Table {
   constructor(public page: Page) {}
 
@@ -44,19 +51,29 @@ export class Table {
       : await this.page.getByRole("menuitem", { name: "Insert Above" }).click();
   }
 
-  public async addPropertyColumn(args: { targetCellName: string; position: AddColumnPosition; nth: number }) {
-    await this.page.getByRole("columnheader", { name: args.targetCellName }).nth(args.nth).click({ button: "right" });
+  public async addPropertyColumn(args: { targetCellName: string; position: AddColumnPosition; columnNumber: number }) {
+    await this.page
+      .getByRole("columnheader", { name: args.targetCellName })
+      .nth(args.columnNumber)
+      .click({ button: "right" });
     args.position === AddColumnPosition.LEFT
       ? await this.page.getByRole("menuitem", { name: "Insert Field Left" }).click()
       : await this.page.getByRole("menuitem", { name: "Insert Field Right" }).click();
   }
 
-  public async addInstanceColumn(args: { targetCellName: string; position: AddColumnPosition }) {
-    await this.page.getByRole("columnheader", { name: args.targetCellName }).click({ button: "right" });
+  public async addInstanceColumn(args: { targetCellName: string; position: AddColumnPosition; columnNumber?: number }) {
+    args.columnNumber === undefined
+      ? await this.page.getByRole("columnheader", { name: args.targetCellName }).click({ button: "right" })
+      : await this.page
+          .getByRole("columnheader", { name: args.targetCellName })
+          .nth(args.columnNumber)
+          .click({ button: "right" });
+
     args.position === AddColumnPosition.LEFT
       ? await this.page.getByRole("menuitem", { name: "Insert Instance Left" }).click()
       : await this.page.getByRole("menuitem", { name: "Insert Instance Right" }).click();
   }
+
   public async selectCell(args: { rowNumber: string; columnNumber: number }) {
     await this.page
       .getByRole("row", { name: args.rowNumber })
@@ -65,16 +82,24 @@ export class Table {
       .click();
   }
 
-  public async selectColumnHeader(args: { name: string }) {
-    await this.page.getByRole("columnheader", { name: args.name }).click();
+  public async selectColumnHeader(args: { name: string; columnNumber?: number }) {
+    args.columnNumber === undefined
+      ? await this.page.getByRole("columnheader", { name: args.name }).click()
+      : await this.page.getByRole("columnheader", { name: args.name }).nth(args.columnNumber).click();
   }
 
   public getCell(args: { rowNumber: string; columnNumber: number }) {
     return this.page.getByRole("row", { name: args.rowNumber }).nth(args.columnNumber);
   }
 
-  public getColumnHeader(args: { name: string }) {
-    return this.page.getByRole("columnheader", { name: args.name });
+  public getNumberedCell(args: { name: string }) {
+    return this.page.getByRole("cell", { name: args.name });
+  }
+
+  public getColumnHeader(args: { name: string; columnNumber?: number }) {
+    return args.columnNumber === undefined
+      ? this.page.getByRole("columnheader", { name: args.name })
+      : this.page.getByRole("columnheader", { name: args.name }).nth(args.columnNumber);
   }
 
   public async deleteCellContent(args: { rowNumber: string; columnNumber: number }) {
@@ -154,4 +179,39 @@ export class Table {
           .nth(args.columnNumber)
           .press("Enter+Enter"));
   }
+
+  // public getPlusIcon() {
+  // this.hover({ name: args.name, position: args.position, columnNumber: args.columnNumber });
+  // return this.page.getByLabel("Test Scenario").locator("svg");
+  // }
+
+  // public async hover(args: { name: string; position?: Position; columnNumber?: number }) {
+  //   const cell =
+  //     args.columnNumber === undefined
+  //       ? this.page.getByRole("columnheader", { name: args.name })
+  //       : this.page.getByRole("columnheader", { name: args.name }).nth(args.columnNumber);
+  //   const position =
+  //     args.position !== undefined ? await this.getPosition({ cell, position: args.position }) : undefined;
+
+  //   await cell.hover({ position });
+  // }
+
+  // private async getPosition(args: { cell: Locator; position: Position }) {
+  //   const toBoundingBox = await args.cell.boundingBox();
+
+  //   if (!toBoundingBox) {
+  //     return undefined;
+  //   }
+
+  //   switch (args.position) {
+  //     case Position.TOP:
+  //       return { x: toBoundingBox.width / 2, y: 0 };
+  //     case Position.BOTTOM:
+  //       return { x: toBoundingBox.width / 2, y: toBoundingBox.height };
+  //     case Position.LEFT:
+  //       return { x: 0, y: toBoundingBox.height / 2 };
+  //     case Position.RIGHT:
+  //       return { x: toBoundingBox.width, y: toBoundingBox.height / 2 };
+  //   }
+  // }
 }

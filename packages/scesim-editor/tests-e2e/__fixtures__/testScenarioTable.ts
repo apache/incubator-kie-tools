@@ -27,11 +27,11 @@ export class TestScenarioTable {
     return this.page.getByLabel("Test Scenario");
   }
 
-  public async fill(args: { content: string; rowLocatorInfo: string; column: number }) {
+  public async fill(args: { content: string; rowLocatorInfo: string; columnNumber: number }) {
     await this.page
       .getByRole("row", { name: args.rowLocatorInfo, exact: true })
       .getByTestId("monaco-container")
-      .nth(args.column)
+      .nth(args.columnNumber)
       .dblclick();
     if (this.projectName === ProjectName.GOOGLE_CHROME) {
       // Google Chrome's fill function is not always erasing the input content
@@ -41,5 +41,13 @@ export class TestScenarioTable {
     await this.page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill(args.content);
     await this.page.keyboard.press("Home");
     await this.page.keyboard.press("Enter");
+  }
+
+  public async clickPlusIcon() {
+    await this.page.getByLabel("Test Scenario").locator("svg").click();
+  }
+
+  public getPlusIcon() {
+    return this.page.getByLabel("Test Scenario").locator("svg");
   }
 }

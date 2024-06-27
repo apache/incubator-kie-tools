@@ -37,6 +37,13 @@ export class UseCases {
     await this.selectorPanel.close();
   }
 
+  public async openUnassignedAreTheyOldEnoughTest() {
+    await this.page.goto(
+      `${this.baseURL}/${this.getIframeURL(`use-cases-unassigned-is-old-enough--unassigned-is-old-enough`)}` ?? ""
+    );
+    await this.selectorPanel.close();
+  }
+
   public async openAreTheyOldEnoughTest() {
     await this.page.goto(`${this.baseURL}/${this.getIframeURL(`use-cases-is-old-enough--is-old-enough`)}` ?? "");
     await this.selectorPanel.close();
