@@ -58,10 +58,6 @@ module.exports = {
           .replace(/\${revision}/g, newVersion)
           .replace(/<\/module>/g, `/${MVN_FLAT_POM_XML}</module>`);
 
-        console.log("ROOT: " + rootPath);
-        console.log("POM " + path.dirname(pomPath));
-        console.log("relative" + pomContent.includes("<relativePath>"));
-
         if (pomContent.includes("<relativePath>")) {
           pomContent = pomContent.replace(
             /.\/node_modules\/@kie-tools\/maven-base\/pom.xml/,
