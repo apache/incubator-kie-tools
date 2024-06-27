@@ -157,38 +157,4 @@ test.describe("Change Properties - Decision Service", () => {
 
     await expect(diagram.get()).toHaveScreenshot("change-decision-service-position.png");
   });
-
-  test("should change the Decision Service Output decisions", async ({
-    palette,
-    nodes,
-    decisionServicePropertiesPanel,
-    page,
-  }) => {
-    await nodes.select({ name: DefaultNodeName.DECISION_SERVICE });
-    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 120, y: 120 } });
-
-    await page.pause();
-
-    expect(await decisionServicePropertiesPanel.getInvokingThisDecisionServiceInFeel()).toEqual(
-      "New Decision Service()"
-    );
-  });
-
-  test("should change the Decision Service Encapsulated decisions", async ({
-    nodes,
-    decisionServicePropertiesPanel,
-  }) => {
-    await nodes.select({ name: DefaultNodeName.DECISION_SERVICE });
-    await decisionServicePropertiesPanel.setPosition({ x: "200", y: "200" });
-  });
-
-  test("should change the Decision Service Input decisions", async ({ nodes, decisionServicePropertiesPanel }) => {
-    await nodes.select({ name: DefaultNodeName.DECISION_SERVICE });
-    await decisionServicePropertiesPanel.setPosition({ x: "200", y: "200" });
-  });
-
-  test("should change the Decision Service Input data", async ({ nodes, decisionServicePropertiesPanel }) => {
-    await nodes.select({ name: DefaultNodeName.DECISION_SERVICE });
-    await decisionServicePropertiesPanel.setPosition({ x: "200", y: "200" });
-  });
 });

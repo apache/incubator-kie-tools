@@ -18,7 +18,8 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
+import { EdgeType } from "../__fixtures__/edges";
+import { DefaultNodeName, NodePosition, NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -26,20 +27,88 @@ test.beforeEach(async ({ editor }) => {
 
 test.describe("Model Decision Service", () => {
   test.describe("Decision Service Signature", () => {
-    test.skip("Decision Service Signature - Output Decisions", async () => {
-      //TODO https://github.com/apache/incubator-kie-issues/issues/663
+    test.beforeEach(async ({ palette, nodes }) => {
+      await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
+      await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
     });
 
-    test.skip("Decision Service Signature - Encapsulated Decisions", async () => {
+    test.only("Decision Service Signature - Output Decisions", async ({
+      decisionServicePropertiesPanel,
+      nodes,
+      palette,
+    }) => {
       //TODO https://github.com/apache/incubator-kie-issues/issues/663
+
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 120, y: 120 } });
+
+      await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+      await decisionServicePropertiesPanel.open();
+      expect(await decisionServicePropertiesPanel.getInvokingThisDecisionServiceInFeel()).toEqual(
+        "New Decision Service()"
+      );
+      expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual("New Decision");
     });
 
-    test.skip("Decision Service Signature - Input Data", async () => {
+    test.only("Decision Service Signature - Encapsulated Decisions", async ({
+      decisionServicePropertiesPanel,
+      nodes,
+      palette,
+    }) => {
       //TODO https://github.com/apache/incubator-kie-issues/issues/663
+
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 200, y: 200 } });
+
+      await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+      await decisionServicePropertiesPanel.open();
+      expect(await decisionServicePropertiesPanel.getInvokingThisDecisionServiceInFeel()).toEqual(
+        "New Decision Service()"
+      );
+      expect(await decisionServicePropertiesPanel.getEncapsulatedDecisions()).toEqual("New Decision");
     });
 
-    test.skip("Decision Service Signature - Input Decisions", async () => {
+    test.only("Decision Service Signature - Input Data", async ({ decisionServicePropertiesPanel, nodes, palette }) => {
       //TODO https://github.com/apache/incubator-kie-issues/issues/663
+
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 200, y: 200 } });
+      await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 200, y: 200 } });
+
+      await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+      await decisionServicePropertiesPanel.open();
+      expect(await decisionServicePropertiesPanel.getInvokingThisDecisionServiceInFeel()).toEqual(
+        "New Decision Service(New Input Data)"
+      );
+      expect(await decisionServicePropertiesPanel.getInputData()).toEqual("New Input Data");
+    });
+
+    test.only("Decision Service Signature - Input Decisions", async ({
+      decisionServicePropertiesPanel,
+      nodes,
+      palette,
+    }) => {
+      //TODO https://github.com/apache/incubator-kie-issues/issues/663
+
+      await palette.dragNewNode({
+        type: NodeType.DECISION,
+        targetPosition: { x: 200, y: 200 },
+        thenRenameTo: "First Decision",
+      });
+      await palette.dragNewNode({
+        type: NodeType.DECISION,
+        targetPosition: { x: 100, y: 100 },
+        thenRenameTo: "Second Decision",
+      });
+      await nodes.dragNewConnectedEdge({
+        type: EdgeType.INFORMATION_REQUIREMENT,
+        from: "Second Decision",
+        to: "Second Decision",
+      });
+
+      await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+      await decisionServicePropertiesPanel.open();
+      expect(await decisionServicePropertiesPanel.getInvokingThisDecisionServiceInFeel()).toEqual(
+        "New Decision Service(New Decision)"
+      );
+      expect(await decisionServicePropertiesPanel.getInputDecisions()).toEqual("Second Decision");
     });
 
     test.skip("Decision Service Inputs Order", async () => {
