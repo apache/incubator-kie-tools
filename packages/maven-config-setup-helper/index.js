@@ -38,6 +38,8 @@ module.exports = {
       process.exit(1);
     }
 
+    const rootPath = path.dirname(MVN_POM_FILE_PATH);
+
     const processPomXML = (pomPath) => {
       if (path.basename(pomPath) === "pom.xml") {
         const newPomPath = path.resolve(path.dirname(pomPath), MVN_FLAT_POM_XML);
@@ -61,7 +63,7 @@ module.exports = {
             /.\/node_modules\/@kie-tools\/maven-base\/pom.xml/,
             `./node_modules/@kie-tools/maven-base/${MVN_FLAT_POM_XML}`
           );
-        } else {
+        } else if (path.dirname(pomPath) !== rootPath) {
           pomContent = pomContent.replace(/<\/parent>/, `${MVN_PARENT_RELATIVE_PATH}</parent>`);
         }
 
@@ -90,7 +92,7 @@ module.exports = {
       }
     };
 
-    processMavenModule(path.dirname(MVN_POM_FILE_PATH));
+    processMavenModule(rootPath);
   },
   setPomProperty: ({ key, value }) => {
     if (!key || !value) {
