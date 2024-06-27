@@ -19,7 +19,11 @@
 
 import * as React from "react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
-import { ImportJavaClasses, GWTLayerService, JavaCodeCompletionService } from "../../components";
+import {
+  ImportJavaClasses,
+  GWTLayerService,
+  JavaCodeCompletionService,
+} from "../../src/components";
 import { JavaCodeCompletionClass } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 
 describe("ImportJavaClasses component tests", () => {
@@ -44,7 +48,9 @@ describe("ImportJavaClasses component tests", () => {
       />
     );
     await testImportJavaClassesButtonEnabled(baseElement);
-    const modalWizardButton = getByText("Import Java classes")! as HTMLButtonElement;
+    const modalWizardButton = getByText(
+      "Import Java classes"
+    )! as HTMLButtonElement;
     modalWizardButton.click();
 
     expect(baseElement).toMatchSnapshot();
@@ -59,25 +65,36 @@ describe("ImportJavaClasses component tests", () => {
     );
     await testImportJavaClassesButtonEnabled(baseElement);
     testSearchInput(baseElement, getByText);
-    const resetButton = baseElement.querySelector('[aria-label="Reset"]')! as HTMLButtonElement;
+    const resetButton = baseElement.querySelector(
+      '[aria-label="Reset"]'
+    )! as HTMLButtonElement;
     expect(resetButton).toBeInTheDocument();
     resetButton.click();
-    expect(baseElement.querySelector('[aria-label="Reset"]')! as HTMLButtonElement).not.toBeInTheDocument();
+    expect(
+      baseElement.querySelector('[aria-label="Reset"]')! as HTMLButtonElement
+    ).not.toBeInTheDocument();
   });
 
   test("Should search box with results works", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
-        javaCodeCompletionService={getJavaCodeCompletionServiceMock([{ fqcn: "com.Book" }, { fqcn: "com.Author" }])}
+        javaCodeCompletionService={getJavaCodeCompletionServiceMock([
+          { fqcn: "com.Book" },
+          { fqcn: "com.Author" },
+        ])}
       />
     );
     await testImportJavaClassesButtonEnabled(baseElement);
     testSearchInput(baseElement, getByText);
     await testJavaClassSelection(baseElement, false);
-    let checkSecondElement = baseElement.querySelector('[aria-labelledby="com.Author"]')! as HTMLInputElement;
+    let checkSecondElement = baseElement.querySelector(
+      '[aria-labelledby="com.Author"]'
+    )! as HTMLInputElement;
     fireEvent.click(checkSecondElement);
-    checkSecondElement = baseElement.querySelector('[aria-labelledby="com.Author"]')! as HTMLInputElement;
+    checkSecondElement = baseElement.querySelector(
+      '[aria-labelledby="com.Author"]'
+    )! as HTMLInputElement;
     expect(checkSecondElement).not.toBeChecked();
 
     expect(baseElement).toMatchSnapshot();
@@ -91,7 +108,9 @@ describe("ImportJavaClasses component tests", () => {
       />
     );
     await testImportJavaClassesButtonEnabled(baseElement);
-    const modalWizardButton = getByText("Import Java classes")! as HTMLButtonElement;
+    const modalWizardButton = getByText(
+      "Import Java classes"
+    )! as HTMLButtonElement;
     modalWizardButton.click();
     const cancelButton = getByText("Cancel") as HTMLButtonElement;
     cancelButton.click();
@@ -163,11 +182,15 @@ describe("ImportJavaClasses component tests", () => {
 
     const backButton = getByText("Back") as HTMLButtonElement;
     fireEvent.click(backButton);
-    let checkThirdElement = baseElement.querySelector('[aria-labelledby="com.Test"]')! as HTMLInputElement;
+    let checkThirdElement = baseElement.querySelector(
+      '[aria-labelledby="com.Test"]'
+    )! as HTMLInputElement;
     expect(checkThirdElement).toBeInTheDocument();
     expect(checkThirdElement).toBeChecked();
     fireEvent.click(checkThirdElement);
-    checkThirdElement = baseElement.querySelector('[aria-labelledby="com.Test"]')! as HTMLInputElement;
+    checkThirdElement = baseElement.querySelector(
+      '[aria-labelledby="com.Test"]'
+    )! as HTMLInputElement;
     expect(checkThirdElement).not.toBeInTheDocument();
 
     const nextButton = getByText("Next") as HTMLButtonElement;
@@ -198,49 +221,81 @@ describe("ImportJavaClasses component tests", () => {
     expect(baseElement).toMatchSnapshot();
   });
 
-  function testSearchInput(baseElement: Element, getByText: (text: string) => HTMLElement) {
-    const modalWizardButton = getByText("Import Java classes")! as HTMLButtonElement;
+  function testSearchInput(
+    baseElement: Element,
+    getByText: (text: string) => HTMLElement
+  ) {
+    const modalWizardButton = getByText(
+      "Import Java classes"
+    )! as HTMLButtonElement;
     modalWizardButton.click();
-    const inputElement = baseElement.querySelector('[aria-label="Search input"]')! as HTMLInputElement;
+    const inputElement = baseElement.querySelector(
+      '[aria-label="Search input"]'
+    )! as HTMLInputElement;
     expect(inputElement).toHaveValue("");
-    expect(baseElement.querySelector('[aria-label="Reset"]')! as HTMLButtonElement).not.toBeInTheDocument();
+    expect(
+      baseElement.querySelector('[aria-label="Reset"]')! as HTMLButtonElement
+    ).not.toBeInTheDocument();
     fireEvent.change(inputElement, { target: { value: "test" } });
     expect(inputElement).toHaveValue("test");
-    expect(baseElement.querySelector('[aria-label="Reset"]')! as HTMLButtonElement).toBeInTheDocument();
+    expect(
+      baseElement.querySelector('[aria-label="Reset"]')! as HTMLButtonElement
+    ).toBeInTheDocument();
   }
 
-  async function testJavaClassSelection(baseElement: Element, hasThirdElement: boolean) {
+  async function testJavaClassSelection(
+    baseElement: Element,
+    hasThirdElement: boolean
+  ) {
     await waitFor(() => {
-      expect(baseElement.querySelector('[aria-label="class-data-list"]')!).toBeInTheDocument();
+      expect(
+        baseElement.querySelector('[aria-label="class-data-list"]')!
+      ).toBeInTheDocument();
     });
-    const firstElement = baseElement.querySelector('[id="com.Book"]')! as HTMLSpanElement;
+    const firstElement = baseElement.querySelector(
+      '[id="com.Book"]'
+    )! as HTMLSpanElement;
     expect(firstElement).toBeInTheDocument();
-    const secondElement = baseElement.querySelector('[id="com.Author"]')! as HTMLSpanElement;
+    const secondElement = baseElement.querySelector(
+      '[id="com.Author"]'
+    )! as HTMLSpanElement;
     expect(secondElement).toBeInTheDocument();
     if (hasThirdElement) {
-      const thirdElement = baseElement.querySelector('[id="com.Test"]')! as HTMLSpanElement;
+      const thirdElement = baseElement.querySelector(
+        '[id="com.Test"]'
+      )! as HTMLSpanElement;
       expect(thirdElement).toBeInTheDocument();
     }
-    let checkFirstElement = baseElement.querySelector('[aria-labelledby="com.Book"]')! as HTMLInputElement;
+    let checkFirstElement = baseElement.querySelector(
+      '[aria-labelledby="com.Book"]'
+    )! as HTMLInputElement;
     expect(checkFirstElement).toBeInTheDocument();
     expect(checkFirstElement).not.toBeChecked();
-    let checkSecondElement = baseElement.querySelector('[aria-labelledby="com.Author"]')! as HTMLInputElement;
+    let checkSecondElement = baseElement.querySelector(
+      '[aria-labelledby="com.Author"]'
+    )! as HTMLInputElement;
     expect(checkSecondElement).toBeInTheDocument();
     expect(checkSecondElement).not.toBeChecked();
-    const checkThirdElement = baseElement.querySelector('[aria-labelledby="com.Test"]')! as HTMLInputElement;
+    const checkThirdElement = baseElement.querySelector(
+      '[aria-labelledby="com.Test"]'
+    )! as HTMLInputElement;
     if (hasThirdElement) {
       expect(checkThirdElement).toBeInTheDocument();
       expect(checkThirdElement).not.toBeChecked();
     }
     fireEvent.click(checkFirstElement);
-    checkFirstElement = baseElement.querySelector('[aria-labelledby="com.Book"]')! as HTMLInputElement;
+    checkFirstElement = baseElement.querySelector(
+      '[aria-labelledby="com.Book"]'
+    )! as HTMLInputElement;
     expect(checkFirstElement).toBeChecked();
     expect(checkSecondElement).not.toBeChecked();
     if (hasThirdElement) {
       expect(checkThirdElement).not.toBeChecked();
     }
     fireEvent.click(checkSecondElement);
-    checkSecondElement = baseElement.querySelector('[aria-labelledby="com.Author"]')! as HTMLInputElement;
+    checkSecondElement = baseElement.querySelector(
+      '[aria-labelledby="com.Author"]'
+    )! as HTMLInputElement;
     expect(checkFirstElement).toBeChecked();
     expect(checkSecondElement).toBeChecked();
     if (hasThirdElement) {
@@ -248,13 +303,20 @@ describe("ImportJavaClasses component tests", () => {
     }
   }
 
-  async function testNextStepFieldsTable(baseElement: Element, getByText: (text: string) => HTMLElement) {
+  async function testNextStepFieldsTable(
+    baseElement: Element,
+    getByText: (text: string) => HTMLElement
+  ) {
     const nextButton = getByText("Next") as HTMLButtonElement;
     fireEvent.click(nextButton);
     await waitFor(() => {
-      expect(baseElement.querySelector('[aria-label="field-table"]')!).toBeInTheDocument();
+      expect(
+        baseElement.querySelector('[aria-label="field-table"]')!
+      ).toBeInTheDocument();
     });
-    const expandToggle = baseElement.querySelector('[id="expand-toggle0"]')! as HTMLButtonElement;
+    const expandToggle = baseElement.querySelector(
+      '[id="expand-toggle0"]'
+    )! as HTMLButtonElement;
     expect(expandToggle).toHaveAttribute("aria-expanded", "true");
     fireEvent.click(expandToggle);
     expect(expandToggle).toHaveAttribute("aria-expanded", "false");
@@ -272,7 +334,9 @@ describe("ImportJavaClasses component tests", () => {
 
   async function testImportJavaClassesButtonEnabled(baseElement: Element) {
     await waitFor(() => {
-      expect(baseElement.querySelector('[aria-disabled="false"][type="button"]')).toBeInTheDocument();
+      expect(
+        baseElement.querySelector('[aria-disabled="false"][type="button"]')
+      ).toBeInTheDocument();
     });
   }
 
@@ -282,7 +346,9 @@ describe("ImportJavaClasses component tests", () => {
     }),
   };
 
-  function getJavaCodeCompletionServiceMock(classMocks: JavaCodeCompletionClass[]) {
+  function getJavaCodeCompletionServiceMock(
+    classMocks: JavaCodeCompletionClass[]
+  ) {
     const javaCodeCompletionServiceMock: JavaCodeCompletionService = {
       getClasses: (value) => Promise.resolve(classMocks),
       getFields: getFieldsMocks,
