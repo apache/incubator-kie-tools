@@ -45,6 +45,7 @@
   </licenses>
 
   <properties>
+    <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
     <java.module.name>org.kie.tools.extended-services</java.module.name>
   </properties>
 

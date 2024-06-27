@@ -22,4 +22,5 @@ const { setup } = require("@kie-tools/maven-config-setup-helper");
 
 setup(`
     -Drevision=${buildEnv.env.sonataflowQuarkusDevuiExtension.version}
+    -Dcheck.plugin-issues=${buildEnv.env.mavenBase.reproducibleBuildIssues}
 `);

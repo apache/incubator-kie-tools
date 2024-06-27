@@ -17,6 +17,7 @@
  * under the License.
  */
 
+const path = require("path");
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
@@ -30,6 +31,9 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     return {
       mavenBase: {
         version: require("../package.json").version,
+        reproducibleBuildIssues: path.resolve(
+          "./node_modules/@kie-tools/maven-base/not-reproducible-plugins.properties"
+        ),
       },
       maven: {
         deploy: {

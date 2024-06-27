@@ -117,6 +117,79 @@ Bootstrapping installs the necessary dependencies for each package.
 
 ---
 
+## Reproducible Builds for _maven-based_ packages
+
+It is mandatory that any _maven-based_ that publishes artifacts runs [Reproducible Builds](https://reproducible-builds.org/)
+to build it's artifacts, in this case in our `build:prod` scripts.
+
+> IMPORTANT: the current version of the `maven-artifact-plugin` (3.4.1) used in `kie-tools` bans the `maven-flatten-plugin` that
+> we use to generate deployable artifacts using the dynamic `${revision}` variable. You can check the full list of banned
+> plugins [here](https://maven.apache.org/plugins-archives/maven-artifact-plugin-3.4.1/plugin-issues.html).
+> The issue that caused the ban [flatten-maven-plugin/issues/256](https://github.com/mojohaus/flatten-maven-plugin/issues/256) was created
+> due to a problem in `maven` (v3.8.1 ~ v3.8.2) and isn't a problem of the `maven-flatten-plugin` itself and did not require
+> any action in the plugin. Actually in later versions of the `maven-artifact-plugin` the ban got revoked.
+> Having this in mind, and due to the fact that `kie-tools` requires newer `maven` versions, our _Reproducible Builds_ require
+> temporarily overriding the list of banned plugins, until we upgrade to a newer `maven-artifact-plugin` version.
+
+To correctly enable _Reproducible Builds_ package follow the steps:
+
+- Make sure the `package.json` depends on `@kie-tools/maven-base`
+- Make the package `pom.xml` has `kie-tools-maven-base` as a parent and declares the `project.build.outputTimestamp` property like:
+
+```xml
+<project>
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-tools-maven-base</artifactId>
+    <version>${revision}</version>
+    <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
+  </parent>
+  ...
+  <properties>
+    <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
+  </properties>
+  ...
+<projec>
+```
+
+- `@kie-tools/maven-base` provides a `reproducible` `maven` profile that can be enabled by using the `-Dreproducible`
+  argument in `build:prod` scripts, like:
+
+```json
+{
+  "scripts": {
+    "build:prod": "pnpm lint && run-script-os",
+    "build:prod:darwin:linux": "mvn clean deploy [...other maven options...] -Dreproducible",
+    "build:prod:win32": "pnpm powershell \"mvn clean deploy [...other maven options...] `-Dreproducible\"",
+    "install": "node install.js"
+  }
+}
+```
+
+- Make your `env/index.js` import the `@kie-tools/maven-base` build env:
+
+```javascript
+const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+
+module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools/maven-base/env")], {
+  vars: varsWithName({}),
+  get env() {},
+});
+```
+
+- Modify the package `install.js` to configure the `mvn.config` file to override the list of `plugin-issues` plugins setting the `check.plugin-issues` flag.
+
+```javascript
+const buildEnv = require("./env");
+const { setup } = require("@kie-tools/maven-config-setup-helper");
+setup(`
+    -Drevision=${buildEnv.env.yourEnv.version}
+    -Dcheck.plugin-issues=${buildEnv.env.mavenBase.reproducibleBuildIssues}
+`);
+```
+
+---
+
 ## Applications
 
 The Apache KIE Tools project contains several applications. To develop each one of them individually, refer to the instructions below.

@@ -19,7 +19,7 @@
 
 const { getOrDefault, varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools/maven-base/env")], {
   vars: varsWithName({
     EXTENDED_SERVICES_JAVA__host: {
       default: "0.0.0.0",
