@@ -44,7 +44,7 @@ test.describe("Create Boxed Filter", () => {
   test("should correctly reset a nested filter", async ({ boxedExpressionEditor, page, stories }) => {
     await stories.openBoxedFilter("nested");
 
-    await boxedExpressionEditor.resetFilter(page.locator("[data-ouia-component-id=expression-row-0]"));
+    await boxedExpressionEditor.resetFilter(page.getByTestId("expression-row-0"));
 
     await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-reset.png");
   });
