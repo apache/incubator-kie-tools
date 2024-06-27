@@ -30,6 +30,10 @@ pipeline {
         timeout(time: 240, unit: 'MINUTES')
     }
 
+    parameters {
+        string(description: 'Branch name', name: 'BRANCH_NAME', defaultValue: 'main')
+    }
+
     environment {
         KIE_SANDBOX_EXTENDED_SERVICES_VERSION = '0.0.0'
 
@@ -41,30 +45,30 @@ pipeline {
         DEV_DEPLOYMENT_BASE_IMAGE__registry = 'docker.io'
         DEV_DEPLOYMENT_BASE_IMAGE__account = 'apache'
         DEV_DEPLOYMENT_BASE_IMAGE__name = 'incubator-kie-sandbox-dev-deployment-base'
-        DEV_DEPLOYMENT_BASE_IMAGE__buildTag = 'daily-dev'
+        DEV_DEPLOYMENT_BASE_IMAGE__buildTag = "${params.BRANCH_NAME}"
 
         DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry = 'docker.io'
         DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account = 'apache'
         DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name = 'incubator-kie-sandbox-dev-deployment-quarkus-blank-app'
-        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag = 'daily-dev'
+        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag = "${params.BRANCH_NAME}"
 
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry = 'docker.io'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account = 'apache'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name = 'incubator-kie-sandbox-dev-deployment-dmn-form-webapp'
-        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTag = 'daily-dev'
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTag = "${params.BRANCH_NAME}"
 
         ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'docker.io'
         ONLINE_EDITOR__devDeploymentBaseImageAccount = 'apache'
         ONLINE_EDITOR__devDeploymentBaseImageName = 'incubator-kie-sandbox-dev-deployment-base'
-        ONLINE_EDITOR__devDeploymentBaseImageTag = 'daily-dev'
+        ONLINE_EDITOR__devDeploymentBaseImageTag = "${params.BRANCH_NAME}"
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry = 'docker.io'
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'apache'
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'incubator-kie-sandbox-dev-deployment-dmn-form-webapp'
-        ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = 'daily-dev'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = "${params.BRANCH_NAME}"
         ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageRegistry = 'docker.io'
         ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageAccount = 'apache'
         ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageName = 'incubator-kie-sandbox-dev-deployment-quarkus-blank-app'
-        ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageTag = 'daily-dev'
+        ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageTag = "${params.BRANCH_NAME}"
         ONLINE_EDITOR__corsProxyUrl = 'https://daily-dev-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
 
         EXTENDED_SERVICES__kieSandboxUrl = 'https://apache.github.io/incubator-kie-kogito-online/dev'
@@ -72,74 +76,74 @@ pipeline {
         KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry = 'docker.io'
         KIE_SANDBOX_WEBAPP_IMAGE__imageAccount = 'apache'
         KIE_SANDBOX_WEBAPP_IMAGE__imageName = 'incubator-kie-sandbox-webapp'
-        KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTag = 'daily-dev'
+        KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTag = "${params.BRANCH_NAME}"
 
         KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry = 'docker.io'
         KIE_SANDBOX_EXTENDED_SERVICES__imageAccount = 'apache'
         KIE_SANDBOX_EXTENDED_SERVICES__imageName = 'incubator-kie-sandbox-extended-services'
-        KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTag = 'daily-dev'
+        KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTag = "${params.BRANCH_NAME}"
 
         CORS_PROXY_IMAGE__imageRegistry = 'docker.io'
         CORS_PROXY_IMAGE__imageAccount = 'apache'
         CORS_PROXY_IMAGE__imageName = 'incubator-kie-cors-proxy'
-        CORS_PROXY_IMAGE__imageBuildTag = 'daily-dev'
+        CORS_PROXY_IMAGE__imageBuildTag = "${params.BRANCH_NAME}"
 
         KIE_SANDBOX_HELM_CHART__registry = 'docker.io'
         KIE_SANDBOX_HELM_CHART__account = 'apache'
         KIE_SANDBOX_HELM_CHART__name = 'incubator-kie-sandbox-helm-chart'
-        KIE_SANDBOX_HELM_CHART__tag = '0.0.0-daily-dev'
+        KIE_SANDBOX_HELM_CHART__tag = "0.0.0-${params.BRANCH_NAME}"
 
         OPENSHIFT_NAMESPACE = 'kie-sandbox'
         OPENSHIFT_PART_OF = 'daily-dev-kie-sandbox-app'
-        DEPLOY_TAG = 'daily-dev'
+        DEPLOY_TAG = "${params.BRANCH_NAME}"
 
         DASHBUILDER__viewerImageRegistry = 'docker.io'
         DASHBUILDER__viewerImageAccount = 'apache'
         DASHBUILDER__viewerImageName = 'incubator-kie-dashbuilder-viewer'
-        DASHBUILDER__viewerImageBuildTag = 'daily-dev'
+        DASHBUILDER__viewerImageBuildTag = "${params.BRANCH_NAME}"
 
-        SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag = 'daily-dev'
+        SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag = "${params.BRANCH_NAME}"
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry = 'docker.io'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount = 'apache'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName = 'incubator-kie-serverless-logic-web-tools-swf-builder'
-        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag = 'daily-dev'
-        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTag = 'daily-dev'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag = "${params.BRANCH_NAME}"
+        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTag = "${params.BRANCH_NAME}"
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry = 'docker.io'
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount = 'apache'
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName = 'incubator-kie-serverless-logic-web-tools-base-builder'
-        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageTag = 'daily-dev'
-        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTag = 'daily-dev'
+        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageTag = "${params.BRANCH_NAME}"
+        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTag = "${params.BRANCH_NAME}"
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry = 'docker.io'
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount = 'apache'
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName = 'incubator-kie-serverless-logic-web-tools-swf-dev-mode'
-        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag = 'daily-dev'
-        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTag = 'daily-dev'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag = "${params.BRANCH_NAME}"
+        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTag = "${params.BRANCH_NAME}"
         SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl = 'https://daily-dev-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
 
         KOGITO_TASK_CONSOLE__registry = 'docker.io'
         KOGITO_TASK_CONSOLE__account = 'apache'
         KOGITO_TASK_CONSOLE__name = 'incubator-kie-kogito-task-console'
-        KOGITO_TASK_CONSOLE__buildTag = 'daily-dev'
+        KOGITO_TASK_CONSOLE__buildTag = "${params.BRANCH_NAME}"
 
         KOGITO_MANAGEMENT_CONSOLE__registry = 'docker.io'
         KOGITO_MANAGEMENT_CONSOLE__account = 'apache'
         KOGITO_MANAGEMENT_CONSOLE__name = 'incubator-kie-kogito-management-console'
-        KOGITO_MANAGEMENT_CONSOLE__buildTag = 'daily-dev'
+        KOGITO_MANAGEMENT_CONSOLE__buildTag = "${params.BRANCH_NAME}"
 
         SONATAFLOW_BUILDER_IMAGE__registry = 'docker.io'
         SONATAFLOW_BUILDER_IMAGE__account = 'apache'
         SONATAFLOW_BUILDER_IMAGE__name = 'incubator-kie-sonataflow-builder'
-        SONATAFLOW_BUILDER_IMAGE__buildTag = 'latest'
+        SONATAFLOW_BUILDER_IMAGE__buildTag = "${params.BRANCH_NAME}"
 
         SONATAFLOW_DEVMODE_IMAGE__registry = 'docker.io'
         SONATAFLOW_DEVMODE_IMAGE__account = 'apache'
         SONATAFLOW_DEVMODE_IMAGE__name = 'incubator-kie-sonataflow-devmode'
-        SONATAFLOW_DEVMODE_IMAGE__buildTag = 'latest'
+        SONATAFLOW_DEVMODE_IMAGE__buildTag = "${params.BRANCH_NAME}"
 
         SONATAFLOW_OPERATOR__registry = 'docker.io'
         SONATAFLOW_OPERATOR__account = 'apache'
         SONATAFLOW_OPERATOR__name = 'incubator-kie-sonataflow-operator'
-        SONATAFLOW_OPERATOR__buildTag = 'latest'
+        SONATAFLOW_OPERATOR__buildTag = "${params.BRANCH_NAME}"
 
         BUILD_DATE = sh(script: "echo `date +'%Y-%m-%d %T'`", returnStdout: true).trim()
 
