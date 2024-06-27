@@ -909,7 +909,7 @@ test.describe("Resizing", () => {
       await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-resized-using-in.png");
     });
 
-    test.only("should correctly resize a nested Filter - match", async ({
+    test("should correctly resize a nested Filter - match", async ({
       boxedExpressionEditor,
       monaco,
       page,
