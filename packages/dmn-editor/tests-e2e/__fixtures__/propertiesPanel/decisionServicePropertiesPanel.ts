@@ -120,4 +120,24 @@ export class DecisionServicePropertiesPanel extends PropertiesPanelBase {
   public async setStrokeColor(args: { color: string }) {
     await this.shapeProperties.setStrokeColor({ ...args });
   }
+
+  public async getOutputDecisions() {
+    // TODO
+  }
+
+  public async getEncapsulatedDecisions() {
+    // TODO
+  }
+
+  public async getInputDecisions() {
+    // TODO
+  }
+
+  public async getInputData() {
+    // TODO
+  }
+
+  public async getInvokingThisDecisionServiceInFeel() {
+    return await this.panel().getByTestId("kie-tools--dmn-editor--decision-service-feel").textContent();
+  }
 }
