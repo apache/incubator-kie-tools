@@ -18,10 +18,12 @@
  */
 
 const buildEnv = require("./env");
-const { setup } = require("@kie-tools/maven-config-setup-helper");
+const { setup, setRevisionVersion } = require("@kie-tools/maven-config-setup-helper");
+
+setRevisionVersion(buildEnv.env.swfDeploymentQuarkusApp.version);
 
 setup(`
-    -Drevision=${buildEnv.env.swfDeploymentQuarkusApp.version}
+    --file=.flat_pom.xml
     -Dquarkus.platform.version=${buildEnv.env.quarkusPlatform.version}
     -Dversion.org.kie.kogito=${buildEnv.env.kogitoRuntime.version}
 `);

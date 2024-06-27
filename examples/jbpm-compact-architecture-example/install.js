@@ -18,11 +18,7 @@
  */
 
 const buildEnv = require("./env");
-const { setup, setPomProperty } = require("@kie-tools/maven-config-setup-helper");
-
-setup(`
-    -Drevision=${buildEnv.env.jbpmCompactArchitectureExample.version}
-`);
+const { setPomProperty, setRevisionVersion, setup } = require("@kie-tools/maven-config-setup-helper");
 
 setPomProperty({
   key: "kogito.management-console.image",
@@ -33,3 +29,7 @@ setPomProperty({
   key: "kogito.task-console.image",
   value: buildEnv.env.jbpmCompactArchitectureExample.kogitoTaskConsoleImage,
 });
+
+setRevisionVersion(buildEnv.env.jbpmCompactArchitectureExample.version);
+
+setup("--file=.flat_pom.xml");

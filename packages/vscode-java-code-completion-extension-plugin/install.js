@@ -18,7 +18,7 @@
  */
 
 const buildEnv = require("./env");
-const { setup } = require("@kie-tools/maven-config-setup-helper");
+const { setRevisionVersion, setup } = require("@kie-tools/maven-config-setup-helper");
 const fs = require("fs");
 const path = require("path");
 
@@ -27,9 +27,8 @@ const MANIFEST_FILE = path.resolve("vscode-java-code-completion-extension-plugin
 console.info("[vscode-java-code-completion-extension-plugin-install] Updating '.mvn/maven.config'...");
 const version = buildEnv.env.vscodeJavaCodeCompletionExtensionPlugin.version;
 
-setup(`
-    -Drevision=${version}
-`);
+setRevisionVersion(version);
+setup("--file=.flat_pom.xml");
 
 console.info("[vscode-java-code-completion-extension-plugin-install] Updating manifest file...");
 const manifestFile = fs.readFileSync(MANIFEST_FILE, "utf-8");

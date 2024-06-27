@@ -18,9 +18,11 @@
  */
 
 const buildEnv = require("./env");
-const { setup } = require("@kie-tools/maven-config-setup-helper");
+const { setRevisionVersion, setup } = require("@kie-tools/maven-config-setup-helper");
+
+setRevisionVersion(buildEnv.env.stunnerEditors.version);
 
 setup(`
-    -Drevision=${buildEnv.env.stunnerEditors.version}
+    --file=.flat_pom.xml
     -Dversion.org.kie.kogito=${buildEnv.env.kogitoRuntime.version}
 `);

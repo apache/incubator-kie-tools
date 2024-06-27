@@ -18,8 +18,8 @@
  */
 
 const buildEnv = require("./env");
-const { setup } = require("@kie-tools/maven-config-setup-helper");
+const { setRevisionVersion, setup } = require("@kie-tools/maven-config-setup-helper");
 
-setup(`
-    -Drevision=${buildEnv.env.dashbuilder.version}
-`);
+setRevisionVersion(buildEnv.env.dashbuilder.version);
+
+setup("--file=.flat_pom.xml");

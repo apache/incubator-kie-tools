@@ -18,10 +18,12 @@
  */
 
 const buildEnv = require("./env");
-const { setup } = require("@kie-tools/maven-config-setup-helper");
+const { setup, setRevisionVersion } = require("@kie-tools/maven-config-setup-helper");
+
+setRevisionVersion(buildEnv.env.extendedServicesJava.version);
 
 setup(`
-    -Drevision=${buildEnv.env.extendedServicesJava.version}
+    --file=.flat_pom.xml 
     -Dquarkus.http.port=${buildEnv.env.extendedServicesJava.port}
     -Dquarkus.http.host=${buildEnv.env.extendedServicesJava.host}
 `);
