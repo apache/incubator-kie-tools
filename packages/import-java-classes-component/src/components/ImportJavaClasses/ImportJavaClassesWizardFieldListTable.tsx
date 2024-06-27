@@ -19,13 +19,7 @@
 
 import * as React from "react";
 import "./ImportJavaClassesWizardFieldListTable.css";
-import {
-  ExpandableRowContent,
-  TableComposable,
-  Tbody,
-  Td,
-  Tr,
-} from "@patternfly/react-table";
+import { ExpandableRowContent, TableComposable, Tbody, Td, Tr } from "@patternfly/react-table";
 import { JavaClass } from "./model/JavaClass";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { JavaField } from "./model/JavaField";
@@ -41,9 +35,7 @@ export interface ImportJavaClassesWizardFieldListTableProps {
   loadJavaClass?: (fullClassName: string) => void;
 }
 
-export const ImportJavaClassesWizardFieldListTable = (
-  props: ImportJavaClassesWizardFieldListTableProps
-) => {
+export const ImportJavaClassesWizardFieldListTable = (props: ImportJavaClassesWizardFieldListTableProps) => {
   return (
     <TableComposable aria-label="field-table">
       {props.selectedJavaClassFields.map((javaClass, index) => {
@@ -73,10 +65,7 @@ const TableJavaClassItem = ({
   const [isExpanded, setExpanded] = useState(true);
 
   const isFetchable = useCallback((field: JavaField) => {
-    return (
-      field.dmnTypeRef === DMNSimpleType.ANY &&
-      !JAVA_TO_DMN_MAP.has(getJavaClassSimpleName(field.type))
-    );
+    return field.dmnTypeRef === DMNSimpleType.ANY && !JAVA_TO_DMN_MAP.has(getJavaClassSimpleName(field.type));
   }, []);
 
   const parentRow = (
@@ -111,9 +100,7 @@ const TableJavaClassItem = ({
               <Td key={`${field.name}_td1`}>
                 <ExpandableRowContent>
                   <span>{field.name}</span>
-                  <span
-                    className={"dmn-type-name"}
-                  >{`(${field.dmnTypeRef})`}</span>
+                  <span className={"dmn-type-name"}>{`(${field.dmnTypeRef})`}</span>
                   {loadJavaClass && isFetchable(field) && (
                     <Button
                       className={"fetch-button"}
@@ -121,9 +108,7 @@ const TableJavaClassItem = ({
                       variant="primary"
                       isSmall
                     >
-                      {`${
-                        i18n.modalWizard.fieldTable.fetchButtonLabel
-                      } "${getJavaClassSimpleName(field.type)}" class`}
+                      {`${i18n.modalWizard.fieldTable.fetchButtonLabel} "${getJavaClassSimpleName(field.type)}" class`}
                     </Button>
                   )}
                 </ExpandableRowContent>
