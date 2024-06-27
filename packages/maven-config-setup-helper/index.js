@@ -25,6 +25,7 @@ const MVN_CONFIG_ORIGINAL_FILE_PATH = path.join(".mvn", "maven.config.original")
 const MVN_CONFIG_FILE_PATH = path.join(".mvn", "maven.config");
 const MVN_POM_FILE_PATH = path.resolve("./pom.xml");
 const MVN_FLAT_POM_XML = ".flat_pom.xml";
+const MVN_PARENT_RELATIVE_PATH = `<relativePath>../${MVN_FLAT_POM_XML}</relativePath>`;
 
 module.exports = {
   setRevisionVersion: (newVersion) => {
@@ -49,17 +50,22 @@ module.exports = {
         }
 
         fs.copyFileSync(pomPath, newPomPath);
-        fs.writeFileSync(
-          newPomPath,
-          fs
-            .readFileSync(newPomPath, "utf-8")
-            .replace(/\${revision}/g, newVersion)
-            .replace(/<\/module>/g, `/${MVN_FLAT_POM_XML}</module>`)
-            .replace(
-              /.\/node_modules\/@kie-tools\/maven-base\/pom.xml/,
-              `./node_modules/@kie-tools/maven-base/${MVN_FLAT_POM_XML}`
-            )
-        );
+
+        let pomContent = fs
+          .readFileSync(newPomPath, "utf-8")
+          .replace(/\${revision}/g, newVersion)
+          .replace(/<\/module>/g, `/${MVN_FLAT_POM_XML}</module>`);
+
+        if (pomContent.includes("<relativePath>")) {
+          pomContent = pomContent.replace(
+            /.\/node_modules\/@kie-tools\/maven-base\/pom.xml/,
+            `./node_modules/@kie-tools/maven-base/${MVN_FLAT_POM_XML}`
+          );
+        } else {
+          pomContent = pomContent.replace(/<\/parent>/, `${MVN_PARENT_RELATIVE_PATH}</parent>`);
+        }
+
+        fs.writeFileSync(newPomPath, pomContent);
       }
     };
 
