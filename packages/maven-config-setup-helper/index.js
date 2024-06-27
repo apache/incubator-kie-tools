@@ -58,6 +58,10 @@ module.exports = {
           .replace(/\${revision}/g, newVersion)
           .replace(/<\/module>/g, `/${MVN_FLAT_POM_XML}</module>`);
 
+        console.log("ROOT: " + rootPath);
+        console.log("POM " + path.dirname(pomPath));
+        console.log("relative" + pomContent.includes("<relativePath>"));
+
         if (pomContent.includes("<relativePath>")) {
           pomContent = pomContent.replace(
             /.\/node_modules\/@kie-tools\/maven-base\/pom.xml/,
@@ -101,14 +105,20 @@ module.exports = {
     }
 
     if (process.platform === "win32") {
-      execSync(`mvn versions:set-property \`-Dproperty=${key} \`-DnewVersion=${value} \`-DgenerateBackupPoms=false`, {
-        stdio: "inherit",
-        shell: "powershell.exe",
-      });
+      execSync(
+        `mvn versions:set-property \`-Dproperty=${key} \`-DnewVersion=${value} \`-DgenerateBackupPoms=false \-f pom.xml`,
+        {
+          stdio: "inherit",
+          shell: "powershell.exe",
+        }
+      );
     } else {
-      execSync(`mvn versions:set-property -Dproperty=${key} -DnewVersion=${value} -DgenerateBackupPoms=false`, {
-        stdio: "inherit",
-      });
+      execSync(
+        `mvn versions:set-property -Dproperty=${key} -DnewVersion=${value} -DgenerateBackupPoms=false -f pom.xml`,
+        {
+          stdio: "inherit",
+        }
+      );
     }
   },
   setup: (mavenConfigString) => {
