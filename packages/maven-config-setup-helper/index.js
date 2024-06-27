@@ -55,6 +55,10 @@ module.exports = {
             .readFileSync(newPomPath, "utf-8")
             .replace(/\${revision}/g, newVersion)
             .replace(/<\/module>/g, `/${MVN_FLAT_POM_XML}</module>`)
+            .replace(
+              /.\/node_modules\/@kie-tools\/maven-base\/pom.xml/,
+              `./node_modules/@kie-tools/maven-base/${MVN_FLAT_POM_XML}`
+            )
         );
       }
     };
