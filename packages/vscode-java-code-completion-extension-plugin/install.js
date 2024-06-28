@@ -29,7 +29,6 @@ const version = buildEnv.env.vscodeJavaCodeCompletionExtensionPlugin.version;
 
 setup(`
     -Drevision=${version}
-    -Dcheck.plugin-issues=${buildEnv.env.mavenBase.reproducibleBuildIssues}
 `);
 
 console.info("[vscode-java-code-completion-extension-plugin-install] Updating manifest file...");

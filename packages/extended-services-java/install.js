@@ -20,11 +20,8 @@
 const buildEnv = require("./env");
 const { setup } = require("@kie-tools/maven-config-setup-helper");
 
-console.log(buildEnv.env.mavenBase);
-
 setup(`
     -Drevision=${buildEnv.env.extendedServicesJava.version}
     -Dquarkus.http.port=${buildEnv.env.extendedServicesJava.port}
     -Dquarkus.http.host=${buildEnv.env.extendedServicesJava.host}
-    -Dcheck.plugin-issues=${buildEnv.env.mavenBase.reproducibleBuildIssues}
 `);

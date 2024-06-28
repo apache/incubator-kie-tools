@@ -169,6 +169,12 @@
           <version>${version.maven.artifact.plugin}</version>
           <configuration>
             <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
+            <!--
+            This configuration overrides the list of issues registered in the plugin to enable the `maven-flatten-plugin
+            TODO: remove as a part of: https://github.com/apache/incubator-kie-issues/issues/1371
+            -->
+            <pluginIssues
+            >${session.executionRootDirectory}/node_modules/@kie-tools/maven-base/not-reproducible-plugins.properties</pluginIssues>
           </configuration>
         </plugin>
       </plugins>
@@ -233,6 +239,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-artifact-plugin</artifactId>
+            <configuration />
             <executions>
               <execution>
                 <id>check-buildplan</id>
