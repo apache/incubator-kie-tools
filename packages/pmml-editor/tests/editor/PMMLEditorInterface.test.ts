@@ -50,23 +50,23 @@ beforeEach(() => {
 
 describe("PMMLEditorInterface", () => {
   test("Mount", () => {
-    expect(channelApi.notifications.kogitoEditor_ready.send).toBeCalled();
+    expect(channelApi.notifications.kogitoEditor_ready.send).toHaveBeenCalled();
   });
 
   test("getContent", async () => {
-    spyOn(editor, "getContent");
+    jest.spyOn(editor, "getContent");
 
     await editorInterface.getContent();
 
-    expect(editor.getContent).toBeCalledTimes(1);
+    expect(editor.getContent).toHaveBeenCalledTimes(1);
   });
 
   test("setContent", async () => {
-    spyOn(editor, "setContent");
+    jest.spyOn(editor, "setContent").mockReturnValue(Promise.resolve());
 
     await editorInterface.setContent("path", "content");
 
-    expect(editor.setContent).toBeCalledTimes(1);
+    expect(editor.setContent).toHaveBeenCalledTimes(1);
   });
 
   test("getPreview", () => {

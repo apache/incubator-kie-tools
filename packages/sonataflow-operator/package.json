@@ -22,17 +22,17 @@
     "bump-version": "run-script-os",
     "bump-version:darwin:linux": "./hack/bump-version.sh",
     "bump-version:win32": "echo 'Bumping version not supported on Windows'",
-    "format": "prettier --write .",
+    "format": "prettier --write . --ignore-path=../../.prettierignore --ignore-path=../../.gitignore",
     "image:build": "run-script-os",
     "image:build:darwin:win32": "echo 'Image build not supported on Windows and macOS'",
     "image:build:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && run-script-if --bool \"$(build-env containerImages.build)\" --then \"make container-build\"",
     "install": "rimraf bin && go mod tidy && node install.js && pnpm bump-version && pnpm format",
     "test": "run-script-os",
+    "test:darwin:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"make test\"",
+    "test:win32": ".\\node_modules\\@kie-tools\\python-venv\\venv\\Scripts\\Activate.bat && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"make test\"",
     "test-e2e": "run-script-os",
     "test-e2e:darwin:win32": "echo 'E2E tests not supported on Windows and macOS'",
-    "test-e2e:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(false)\" --then \"make full-test-e2e\"",
-    "test:darwin:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"make test\"",
-    "test:win32": ".\\node_modules\\@kie-tools\\python-venv\\venv\\Scripts\\Activate.bat && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"make test\""
+    "test-e2e:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(false)\" --then \"make full-test-e2e\""
   },
   "dependencies": {},
   "devDependencies": {

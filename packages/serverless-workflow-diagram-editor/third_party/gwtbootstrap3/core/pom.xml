@@ -22,63 +22,62 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 >
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.kie.kogito.stunner.serverless.editor.third_party.gwtbootstrap3</groupId>
-        <artifactId>parent</artifactId>
-        <version>${revision}</version>
-    </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie.kogito.stunner.serverless.editor.third_party.gwtbootstrap3</groupId>
+    <artifactId>parent</artifactId>
+    <version>${revision}</version>
+  </parent>
 
-    <artifactId>gwtbootstrap3</artifactId>
-    <packaging>jar</packaging>
+  <artifactId>gwtbootstrap3</artifactId>
+  <packaging>jar</packaging>
 
-    <name>GWTBootstrap3 core</name>
-    <description>GWTBootstrap3 core</description>
+  <name>GWTBootstrap3 core</name>
+  <description>GWTBootstrap3 core</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.google.elemental2</groupId>
-            <artifactId>elemental2-dom</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.jsinterop</groupId>
-            <artifactId>base</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
-            <artifactId>gwtproject</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.kie.j2cl.tools.di.ui</groupId>
-            <artifactId>core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.kie.j2cl.tools.processors</groupId>
-            <artifactId>common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.kie.j2cl.tools.processors</groupId>
-            <artifactId>annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.kie.j2cl.tools.processors</groupId>
-            <artifactId>processors</artifactId>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.elemental2</groupId>
+      <artifactId>elemental2-dom</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.jsinterop</groupId>
+      <artifactId>base</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
+      <artifactId>gwtproject</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.j2cl.tools.di.ui</groupId>
+      <artifactId>core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.j2cl.tools.processors</groupId>
+      <artifactId>common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.j2cl.tools.processors</groupId>
+      <artifactId>annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.j2cl.tools.processors</groupId>
+      <artifactId>processors</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**/*.*</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
-    </build>
-
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/*.*</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
+  </build>
 </project>

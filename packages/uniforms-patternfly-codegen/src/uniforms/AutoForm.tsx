@@ -57,7 +57,7 @@ const AutoForm: React.FC<AutoFormProps> = (props) => {
   const formName = `Form${props.sanitizedId ? `${NS_SEPARATOR}${props.sanitizedId}` : ""}`;
   const hooks = inputs.map((input) => input.stateCode).join("\n");
   const elements = inputs.map((input) => input.jsxCode).join("\n");
-  const staticCodeStr: string = staticCodeArray.map((id) => getStaticCodeBlock(id)).join("\n");
+  const staticCodeStr: string = staticCodeArray.map((id) => JSON.stringify(getStaticCodeBlock(id))).join("\n");
 
   const formTemplate = `
 import React, { ${reactImports.join(", ")} }  from "react";

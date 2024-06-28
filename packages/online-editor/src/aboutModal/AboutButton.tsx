@@ -97,15 +97,15 @@ export const AboutButton: React.FunctionComponent = () => {
               <DescriptionListDescription>{quarkusVersion}</DescriptionListDescription>
             </DescriptionListGroup>
             <DescriptionListGroup>
-              <DescriptionListTerm>Dev deployments Base image URL: </DescriptionListTerm>
+              <DescriptionListTerm>Dev Deployments Base image URL: </DescriptionListTerm>
               <DescriptionListDescription>{devDeploymentsBaseImageUrl}</DescriptionListDescription>
             </DescriptionListGroup>
             <DescriptionListGroup>
-              <DescriptionListTerm>Dev deployments Kogito Quarkus Blank App image URL: </DescriptionListTerm>
+              <DescriptionListTerm>Dev Deployments Kogito Quarkus Blank App image URL: </DescriptionListTerm>
               <DescriptionListDescription>{devDeploymentsKogitoQuarkusBlankAppImageUrl}</DescriptionListDescription>
             </DescriptionListGroup>
             <DescriptionListGroup>
-              <DescriptionListTerm>Dev deployments DMN Form webapp image URL: </DescriptionListTerm>
+              <DescriptionListTerm>Dev Deployments DMN Form webapp image URL: </DescriptionListTerm>
               <DescriptionListDescription>{devDeploymentsDmnFormWebappImageUrl}</DescriptionListDescription>
             </DescriptionListGroup>
             <DescriptionListGroup>

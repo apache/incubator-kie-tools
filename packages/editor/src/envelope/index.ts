@@ -61,7 +61,7 @@ export function init(args: {
 export function initCustom<
   E extends Editor,
   EnvelopeApi extends KogitoEditorEnvelopeApi & ApiDefinition<EnvelopeApi>,
-  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>
+  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>,
 >(args: {
   container: HTMLElement;
   bus: EnvelopeBus;

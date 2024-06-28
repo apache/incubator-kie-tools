@@ -21,9 +21,9 @@ Docker image with Java and Maven, as well as the dev-deployment-upload-service b
 
 ## Build arguments
 
-- `BUILDER_IMAGE_ARG`: The base image used for building this image (defaults to `registry.access.redhat.com/ubi9/openjdk-17:1.18`).
+- `BUILDER_IMAGE_ARG`: The base image used for building this image (defaults to `registry.access.redhat.com/ubi9/openjdk-17:1.20`).
   - Tested with:
-    - registry.access.redhat.com/ubi9/openjdk-17:1.18
+    - registry.access.redhat.com/ubi9/openjdk-17:1.20
     - icr.io/appcafe/ibm-semeru-runtimes:open-17-jdk-ubi-minimal
 
 ## Environment variables
@@ -45,7 +45,7 @@ Docker image with Java and Maven, as well as the dev-deployment-upload-service b
 
 Run the image with:
 
-- `docker run -p 8080:8080 -e DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=123 docker.io/apache/incubator-kie-sandbox-dev-deployment-base:daily-dev 'dev-deployment-upload-service && ./mvnw quarkus:dev'`
+- `docker run -p 8080:8080 -e DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=123 docker.io/apache/incubator-kie-sandbox-dev-deployment-base:main 'dev-deployment-upload-service && ./mvnw quarkus:dev'`
 
 Then upload a zip file containing the resources (full Java project)
 

@@ -47,7 +47,7 @@ pipeline {
         KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry = 'docker.io'
         KIE_SANDBOX_EXTENDED_SERVICES__imageAccount = 'apache'
         KIE_SANDBOX_EXTENDED_SERVICES__imageName = 'incubator-kie-sandbox-extended-services'
-        KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags = "latest ${params.RELEASE_VERSION}"
+        KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTag = "${params.RELEASE_VERSION}"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
@@ -148,7 +148,7 @@ pipeline {
                         "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry}",
                         "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount}",
                         "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageName}",
-                        "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags}",
+                        "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )

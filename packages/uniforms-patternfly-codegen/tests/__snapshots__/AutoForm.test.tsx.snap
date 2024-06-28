@@ -1,0 +1,595 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
+<div>
+  import React, { useCallback, useEffect, useState } from &#39;react&#39;;
+import {
+	Card,
+	CardBody,
+	TextInput,
+	FormGroup,
+	SelectOption,
+	SelectOptionObject,
+	Select,
+	SelectVariant,
+	Checkbox,
+	Radio,
+	DatePicker,
+	Flex,
+	FlexItem,
+	InputGroup,
+	TimePicker,
+	Alert,
+} from &#39;@patternfly/react-core&#39;;
+const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
+	const [formApi, setFormApi] = useState&lt;any&gt;();
+	const [personalData__name, set__personalData__name] = useState&lt;string&gt;(&#39;&#39;);
+	const [personalData__email, set__personalData__email] = useState&lt;string&gt;(&#39;&#39;);
+	const [personalData__child__name, set__personalData__child__name] =
+		useState&lt;string&gt;(&#39;&#39;);
+	const [address__street, set__address__street] = useState&lt;string&gt;(&#39;&#39;);
+	const [address__num, set__address__num] = useState&lt;number&gt;();
+	const [address__cp, set__address__cp] = useState&lt;string&gt;(&#39;&#39;);
+	const [address__city, set__address__city] = useState&lt;string&gt;(&#39;&#39;);
+	const [interview__position, set__interview__position] = useState&lt;string&gt;(&#39;&#39;);
+	const [interview__position__expanded, set__interview__position__expanded] =
+		useState&lt;boolean&gt;(false);
+	const [interview__otherPositions, set__interview__otherPositions] = useState&lt;
+		string[]
+	&gt;([]);
+	const [
+		interview__otherPositions__expanded,
+		set__interview__otherPositions__expanded,
+	] = useState&lt;boolean&gt;(false);
+	const [interview__skills, set__interview__skills] = useState&lt;string[]&gt;([]);
+	const [interview__age, set__interview__age] = useState&lt;number&gt;();
+	const [interview__salary, set__interview__salary] = useState&lt;number&gt;();
+	const [interview__rating, set__interview__rating] = useState&lt;string&gt;(&#39;&#39;);
+	const [interview__hire, set__interview__hire] = useState&lt;boolean&gt;(false);
+	const [interview__hiringDate, set__interview__hiringDate] =
+		useState&lt;string&gt;();
+	const [friends, set__friends] = useState&lt;any[]&gt;();
+	/* Utility function that fills the form with the data received from the kogito runtime */
+	const setFormData = (data) =&gt; {
+		if (!data) {
+			return;
+		}
+		set__personalData__name(data?.personalData?.name ?? &#39;&#39;);
+		set__personalData__email(data?.personalData?.email ?? &#39;&#39;);
+		set__personalData__child__name(data?.personalData?.child?.name ?? &#39;&#39;);
+		set__address__street(data?.address?.street ?? &#39;&#39;);
+		set__address__num(data?.address?.num);
+		set__address__cp(data?.address?.cp ?? &#39;&#39;);
+		set__address__city(data?.address?.city ?? &#39;&#39;);
+		set__interview__position(data?.interview?.position ?? &#39;&#39;);
+		set__interview__otherPositions(data?.interview?.otherPositions ?? []);
+		set__interview__skills(data?.interview?.skills ?? []);
+		set__interview__age(data?.interview?.age);
+		set__interview__salary(data?.interview?.salary);
+		set__interview__rating(data?.interview?.rating ?? &#39;&#39;);
+		set__interview__hire(data?.interview?.hire ?? false);
+		set__interview__hiringDate(data?.interview?.hiringDate);
+		set__friends(data?.friends);
+	};
+	/* Utility function to generate the expected form output as a json object */
+	const getFormData = useCallback(() =&gt; {
+		const formData: any = {};
+		formData.personalData = {};
+		formData.personalData.name = personalData__name;
+		formData.personalData.email = personalData__email;
+		formData.personalData.child = {};
+		formData.personalData.child.name = personalData__child__name;
+		formData.address = {};
+		formData.address.street = address__street;
+		formData.address.num = address__num;
+		formData.address.cp = address__cp;
+		formData.address.city = address__city;
+		formData.interview = {};
+		formData.interview.position = interview__position;
+		formData.interview.otherPositions = interview__otherPositions;
+		formData.interview.skills = interview__skills;
+		formData.interview.age = interview__age;
+		formData.interview.salary = interview__salary;
+		formData.interview.rating = interview__rating;
+		formData.interview.hire = interview__hire;
+		formData.interview.hiringDate = interview__hiringDate;
+		formData.friends = friends;
+		return formData;
+	}, [
+		personalData__name,
+		personalData__email,
+		personalData__child__name,
+		address__street,
+		address__num,
+		address__cp,
+		address__city,
+		interview__position,
+		interview__otherPositions,
+		interview__skills,
+		interview__age,
+		interview__salary,
+		interview__rating,
+		interview__hire,
+		interview__hiringDate,
+		friends,
+	]);
+	/* Utility function to validate the form on the &#39;beforeSubmit&#39; Lifecycle Hook */
+	const validateForm = useCallback(() =&gt; {}, []);
+	/* Utility function to perform actions on the on the &#39;afterSubmit&#39; Lifecycle Hook */
+	const afterSubmit = useCallback((result) =&gt; {}, []);
+	useEffect(() =&gt; {
+		if (formApi) {
+			/*
+        Form Lifecycle Hook that will be executed before the form is submitted.
+        Throwing an error will stop the form submit. Usually should be used to validate the form.
+      */
+			formApi.beforeSubmit = () =&gt; validateForm();
+			/*
+        Form Lifecycle Hook that will be executed after the form is submitted.
+        It will receive a response object containing the \`type\` flag indicating if the submit has been successful and \`info\` with extra information about the submit result.
+      */
+			formApi.afterSubmit = (result) =&gt; afterSubmit(result);
+			/* Generates the expected form output object to be posted */
+			formApi.getFormData = () =&gt; getFormData();
+		}
+	}, [getFormData, validateForm, afterSubmit]);
+	useEffect(() =&gt; {
+		/*
+      Call to the Kogito console form engine. It will establish the connection with the console embeding the form
+      and return an instance of FormAPI that will allow hook custom code into the form lifecycle.
+      The \`window.Form.openForm\` call expects an object with the following entries:
+        - onOpen: Callback that will be called after the connection with the console is established. The callback
+        will receive the following arguments:
+          - data: the data to be bound into the form
+          - ctx: info about the context where the form is being displayed. This will contain information such as the form JSON Schema, process/task, user...
+    */
+		const api = window.Form.openForm({
+			onOpen: (data, context) =&gt; {
+				setFormData(data);
+			},
+		});
+		setFormApi(api);
+	}, []);
+	{
+	}
+	{
+	}
+	{
+	}
+	{
+	}
+	{
+	}
+	return (
+		&lt;div className={&#39;pf-c-form&#39;}&gt;
+			&lt;Card&gt;
+				&lt;CardBody className=&#39;pf-c-form&#39;&gt;
+					&lt;label&gt;
+						&lt;b&gt;Personal data&lt;/b&gt;
+					&lt;/label&gt;
+					&lt;FormGroup
+						fieldId={&#39;uniforms-0000-0002&#39;}
+						label={&#39;Name&#39;}
+						isRequired={true}&gt;
+						&lt;TextInput
+							name={&#39;personalData.name&#39;}
+							id={&#39;uniforms-0000-0002&#39;}
+							isDisabled={false}
+							placeholder={&#39;&#39;}
+							type={&#39;text&#39;}
+							value={personalData__name}
+							onChange={set__personalData__name}
+						/&gt;
+					&lt;/FormGroup&gt;
+					&lt;FormGroup
+						fieldId={&#39;uniforms-0000-0003&#39;}
+						label={&#39;Email&#39;}
+						isRequired={true}&gt;
+						&lt;TextInput
+							name={&#39;personalData.email&#39;}
+							id={&#39;uniforms-0000-0003&#39;}
+							isDisabled={false}
+							placeholder={&#39;&#39;}
+							type={&#39;text&#39;}
+							value={personalData__email}
+							onChange={set__personalData__email}
+						/&gt;
+					&lt;/FormGroup&gt;
+					&lt;Card&gt;
+						&lt;CardBody className=&#39;pf-c-form&#39;&gt;
+							&lt;label&gt;
+								&lt;b&gt;Child&lt;/b&gt;
+							&lt;/label&gt;
+							&lt;FormGroup
+								fieldId={&#39;uniforms-0000-0006&#39;}
+								label={&#39;Name&#39;}
+								isRequired={true}&gt;
+								&lt;TextInput
+									name={&#39;personalData.child.name&#39;}
+									id={&#39;uniforms-0000-0006&#39;}
+									isDisabled={false}
+									placeholder={&#39;&#39;}
+									type={&#39;text&#39;}
+									value={personalData__child__name}
+									onChange={set__personalData__child__name}
+								/&gt;
+							&lt;/FormGroup&gt;
+						&lt;/CardBody&gt;
+					&lt;/Card&gt;
+				&lt;/CardBody&gt;
+			&lt;/Card&gt;
+			&lt;Card&gt;
+				&lt;CardBody className=&#39;pf-c-form&#39;&gt;
+					&lt;label&gt;
+						&lt;b&gt;Address&lt;/b&gt;
+					&lt;/label&gt;
+					&lt;FormGroup
+						fieldId={&#39;uniforms-0000-0009&#39;}
+						label={&#39;Street&#39;}
+						isRequired={true}&gt;
+						&lt;TextInput
+							name={&#39;address.street&#39;}
+							id={&#39;uniforms-0000-0009&#39;}
+							isDisabled={false}
+							placeholder={&#39;&#39;}
+							type={&#39;text&#39;}
+							value={address__street}
+							onChange={set__address__street}
+						/&gt;
+					&lt;/FormGroup&gt;
+					&lt;FormGroup
+						fieldId={&#39;uniforms-0000-000b&#39;}
+						label={&#39;Num&#39;}
+						isRequired={true}&gt;
+						&lt;TextInput
+							type={&#39;number&#39;}
+							name={&#39;address.num&#39;}
+							isDisabled={false}
+							id={&#39;uniforms-0000-000b&#39;}
+							placeholder={&#39;&#39;}
+							step={1}
+							value={address__num}
+							onChange={(newValue) =&gt; set__address__num(Number(newValue))}
+						/&gt;
+					&lt;/FormGroup&gt;
+					&lt;FormGroup
+						fieldId={&#39;uniforms-0000-000c&#39;}
+						label={&#39;Cp&#39;}
+						isRequired={true}&gt;
+						&lt;TextInput
+							name={&#39;address.cp&#39;}
+							id={&#39;uniforms-0000-000c&#39;}
+							isDisabled={false}
+							placeholder={&#39;&#39;}
+							type={&#39;text&#39;}
+							value={address__cp}
+							onChange={set__address__cp}
+						/&gt;
+					&lt;/FormGroup&gt;
+					&lt;FormGroup
+						fieldId={&#39;uniforms-0000-000d&#39;}
+						label={&#39;City&#39;}
+						isRequired={true}&gt;
+						&lt;TextInput
+							name={&#39;address.city&#39;}
+							id={&#39;uniforms-0000-000d&#39;}
+							isDisabled={false}
+							placeholder={&#39;&#39;}
+							type={&#39;text&#39;}
+							value={address__city}
+							onChange={set__address__city}
+						/&gt;
+					&lt;/FormGroup&gt;
+				&lt;/CardBody&gt;
+			&lt;/Card&gt;
+			&lt;Card&gt;
+				&lt;CardBody className=&#39;pf-c-form&#39;&gt;
+					&lt;label&gt;
+						&lt;b&gt;Interview&lt;/b&gt;
+					&lt;/label&gt;
+					&lt;FormGroup
+						fieldId={&#39;uniforms-0000-000h&#39;}
+						label={&#39;Position&#39;}
+						isRequired={true}&gt;
+						&lt;Select
+							id={&#39;uniforms-0000-000h&#39;}
+							name={&#39;interview.position&#39;}
+							variant={SelectVariant.single}
+							isDisabled={false}
+							placeholderText={&#39;&#39;}
+							isOpen={interview__position__expanded}
+							selections={interview__position}
+							onToggle={(isOpen) =&gt; set__interview__position__expanded(isOpen)}
+							onSelect={(event, value, isPlaceHolder) =&gt; {
+								handleSelect(
+									value,
+									isPlaceHolder,
+									interview__position,
+									set__interview__position,
+									set__interview__position__expanded
+								);
+							}}
+							value={interview__position}&gt;
+							&lt;SelectOption key={&#39;Developer&#39;} value={&#39;Developer&#39;}&gt;
+								Developer
+							&lt;/SelectOption&gt;
+							&lt;SelectOption key={&#39;HR&#39;} value={&#39;HR&#39;}&gt;
+								HR
+							&lt;/SelectOption&gt;
+							&lt;SelectOption key={&#39;UX&#39;} value={&#39;UX&#39;}&gt;
+								UX
+							&lt;/SelectOption&gt;
+						&lt;/Select&gt;
+					&lt;/FormGroup&gt;
+					&lt;FormGroup
+						fieldId={&#39;uniforms-0000-000j&#39;}
+						label={&#39;Other positions&#39;}
+						isRequired={true}&gt;
+						&lt;Select
+							id={&#39;uniforms-0000-000j&#39;}
+							name={&#39;interview.otherPositions&#39;}
+							variant={SelectVariant.typeaheadMulti}
+							isDisabled={false}
+							placeholderText={&#39;&#39;}
+							isOpen={interview__otherPositions__expanded}
+							selections={interview__otherPositions}
+							onToggle={(isOpen) =&gt;
+								set__interview__otherPositions__expanded(isOpen)
+							}
+							onSelect={(event, value, isPlaceHolder) =&gt; {
+								handleMultipleSelect(
+									value,
+									isPlaceHolder,
+									interview__otherPositions,
+									set__interview__otherPositions
+								);
+							}}
+							value={interview__otherPositions}&gt;
+							&lt;SelectOption key={&#39;Developer&#39;} value={&#39;Developer&#39;}&gt;
+								Developer
+							&lt;/SelectOption&gt;
+							&lt;SelectOption key={&#39;HR&#39;} value={&#39;HR&#39;}&gt;
+								HR
+							&lt;/SelectOption&gt;
+							&lt;SelectOption key={&#39;UX&#39;} value={&#39;UX&#39;}&gt;
+								UX
+							&lt;/SelectOption&gt;
+						&lt;/Select&gt;
+					&lt;/FormGroup&gt;
+					&lt;FormGroup
+						fieldId={&#39;uniforms-0000-000l&#39;}
+						label={&#39;Skills&#39;}
+						isRequired={true}&gt;
+						&lt;Checkbox
+							key={&#39;uniforms-0000-000l-Java&#39;}
+							id={&#39;uniforms-0000-000l-Java&#39;}
+							name={&#39;interview.skills&#39;}
+							aria-label={&#39;interview.skills&#39;}
+							label={&#39;Java&#39;}
+							isDisabled={false}
+							isChecked={interview__skills.indexOf(&#39;Java&#39;) != -1}
+							onChange={() =&gt;
+								handleCheckboxGroupChange(
+									&#39;Java&#39;,
+									interview__skills,
+									set__interview__skills
+								)
+							}
+							value={&#39;Java&#39;}
+						/&gt;
+						&lt;Checkbox
+							key={&#39;uniforms-0000-000l-React&#39;}
+							id={&#39;uniforms-0000-000l-React&#39;}
+							name={&#39;interview.skills&#39;}
+							aria-label={&#39;interview.skills&#39;}
+							label={&#39;React&#39;}
+							isDisabled={false}
+							isChecked={interview__skills.indexOf(&#39;React&#39;) != -1}
+							onChange={() =&gt;
+								handleCheckboxGroupChange(
+									&#39;React&#39;,
+									interview__skills,
+									set__interview__skills
+								)
+							}
+							value={&#39;React&#39;}
+						/&gt;
+						&lt;Checkbox
+							key={&#39;uniforms-0000-000l-TypeScript&#39;}
+							id={&#39;uniforms-0000-000l-TypeScript&#39;}
+							name={&#39;interview.skills&#39;}
+							aria-label={&#39;interview.skills&#39;}
+							label={&#39;TypeScript&#39;}
+							isDisabled={false}
+							isChecked={interview__skills.indexOf(&#39;TypeScript&#39;) != -1}
+							onChange={() =&gt;
+								handleCheckboxGroupChange(
+									&#39;TypeScript&#39;,
+									interview__skills,
+									set__interview__skills
+								)
+							}
+							value={&#39;TypeScript&#39;}
+						/&gt;
+						&lt;Checkbox
+							key={&#39;uniforms-0000-000l-Quarkus&#39;}
+							id={&#39;uniforms-0000-000l-Quarkus&#39;}
+							name={&#39;interview.skills&#39;}
+							aria-label={&#39;interview.skills&#39;}
+							label={&#39;Quarkus&#39;}
+							isDisabled={false}
+							isChecked={interview__skills.indexOf(&#39;Quarkus&#39;) != -1}
+							onChange={() =&gt;
+								handleCheckboxGroupChange(
+									&#39;Quarkus&#39;,
+									interview__skills,
+									set__interview__skills
+								)
+							}
+							value={&#39;Quarkus&#39;}
+						/&gt;
+					&lt;/FormGroup&gt;
+					&lt;FormGroup
+						fieldId={&#39;uniforms-0000-000n&#39;}
+						label={&#39;Age&#39;}
+						isRequired={true}&gt;
+						&lt;TextInput
+							type={&#39;number&#39;}
+							name={&#39;interview.age&#39;}
+							isDisabled={false}
+							id={&#39;uniforms-0000-000n&#39;}
+							placeholder={&#39;&#39;}
+							step={1}
+							max={99}
+							min={18}
+							value={interview__age}
+							onChange={(newValue) =&gt; set__interview__age(Number(newValue))}
+						/&gt;
+					&lt;/FormGroup&gt;
+					&lt;FormGroup
+						fieldId={&#39;uniforms-0000-000p&#39;}
+						label={&#39;Salary&#39;}
+						isRequired={true}&gt;
+						&lt;TextInput
+							type={&#39;number&#39;}
+							name={&#39;interview.salary&#39;}
+							isDisabled={false}
+							id={&#39;uniforms-0000-000p&#39;}
+							placeholder={&#39;&#39;}
+							step={0.01}
+							max={1000.5}
+							value={interview__salary}
+							onChange={(newValue) =&gt; set__interview__salary(Number(newValue))}
+						/&gt;
+					&lt;/FormGroup&gt;
+					&lt;FormGroup
+						fieldId={&#39;uniforms-0000-000r&#39;}
+						label={&#39;Rating&#39;}
+						isRequired={true}&gt;
+						&lt;div&gt;
+							&lt;Radio
+								key={&#39;1&#39;}
+								id={&#39;uniforms-0000-000r-1&#39;}
+								name={&#39;interview.rating&#39;}
+								isChecked={&#39;1&#39; === interview__rating}
+								isDisabled={false}
+								label={&#39;1&#39;}
+								aria-label={&#39;interview.rating&#39;}
+								onChange={() =&gt; set__interview__rating(&#39;1&#39;)}
+							/&gt;
+							&lt;Radio
+								key={&#39;2&#39;}
+								id={&#39;uniforms-0000-000r-2&#39;}
+								name={&#39;interview.rating&#39;}
+								isChecked={&#39;2&#39; === interview__rating}
+								isDisabled={false}
+								label={&#39;2&#39;}
+								aria-label={&#39;interview.rating&#39;}
+								onChange={() =&gt; set__interview__rating(&#39;2&#39;)}
+							/&gt;
+							&lt;Radio
+								key={&#39;3&#39;}
+								id={&#39;uniforms-0000-000r-3&#39;}
+								name={&#39;interview.rating&#39;}
+								isChecked={&#39;3&#39; === interview__rating}
+								isDisabled={false}
+								label={&#39;3&#39;}
+								aria-label={&#39;interview.rating&#39;}
+								onChange={() =&gt; set__interview__rating(&#39;3&#39;)}
+							/&gt;
+							&lt;Radio
+								key={&#39;4&#39;}
+								id={&#39;uniforms-0000-000r-4&#39;}
+								name={&#39;interview.rating&#39;}
+								isChecked={&#39;4&#39; === interview__rating}
+								isDisabled={false}
+								label={&#39;4&#39;}
+								aria-label={&#39;interview.rating&#39;}
+								onChange={() =&gt; set__interview__rating(&#39;4&#39;)}
+							/&gt;
+							&lt;Radio
+								key={&#39;5&#39;}
+								id={&#39;uniforms-0000-000r-5&#39;}
+								name={&#39;interview.rating&#39;}
+								isChecked={&#39;5&#39; === interview__rating}
+								isDisabled={false}
+								label={&#39;5&#39;}
+								aria-label={&#39;interview.rating&#39;}
+								onChange={() =&gt; set__interview__rating(&#39;5&#39;)}
+							/&gt;
+						&lt;/div&gt;
+					&lt;/FormGroup&gt;
+					&lt;FormGroup fieldId=&#39;uniforms-0000-000t&#39;&gt;
+						&lt;Checkbox
+							isChecked={interview__hire}
+							isDisabled={false}
+							id={&#39;uniforms-0000-000t&#39;}
+							name={&#39;interview.hire&#39;}
+							label={&#39;Hire&#39;}
+							onChange={set__interview__hire}
+						/&gt;
+					&lt;/FormGroup&gt;
+					&lt;FormGroup
+						fieldId={&#39;uniforms-0000-000v&#39;}
+						label={&#39;Hiring date&#39;}
+						isRequired={true}&gt;
+						&lt;Flex direction={{ default: &#39;column&#39; }} id={&#39;uniforms-0000-000v&#39;}&gt;
+							&lt;FlexItem&gt;
+								&lt;InputGroup style={{ background: &#39;transparent&#39; }}&gt;
+									&lt;DatePicker
+										id={&#39;date-picker-uniforms-0000-000v&#39;}
+										isDisabled={false}
+										name={&#39;interview.hiringDate&#39;}
+										onChange={(newDate) =&gt;
+											onDateChange(
+												newDate,
+												set__interview__hiringDate,
+												interview__hiringDate
+											)
+										}
+										value={parseDate(interview__hiringDate)}
+									/&gt;
+									&lt;TimePicker
+										id={&#39;time-picker-uniforms-0000-000v&#39;}
+										isDisabled={false}
+										name={&#39;interview.hiringDate&#39;}
+										onChange={(time, hours?, minutes?) =&gt;
+											onTimeChange(
+												time,
+												set__interview__hiringDate,
+												interview__hiringDate,
+												hours,
+												minutes
+											)
+										}
+										style={{ width: &#39;120px&#39; }}
+										time={parseTime(interview__hiringDate)}
+									/&gt;
+								&lt;/InputGroup&gt;
+							&lt;/FlexItem&gt;
+						&lt;/Flex&gt;
+					&lt;/FormGroup&gt;
+				&lt;/CardBody&gt;
+			&lt;/Card&gt;
+			&lt;FormGroup
+				fieldId={&#39;uniforms-0000-000x&#39;}
+				label={&#39;Friends&#39;}
+				isRequired={true}&gt;
+				&lt;Alert variant=&#39;warning&#39; title=&#39;Unsupported field type: Array&#39;&gt;
+					Cannot find form control for property &lt;code&gt;friends&lt;/code&gt; with type{&#39; &#39;}
+					&lt;code&gt;Array&lt;/code&gt;:&lt;br /&gt;
+					Some complex property types, such as &lt;code&gt;
+						Array&amp;lt;object&amp;gt;
+					&lt;/code&gt;{&#39; &#39;}
+					aren&#39;t yet supported, however, you can still write your own component
+					into the form and use the already existing states{&#39; &#39;}
+					&lt;code&gt;const [ friends, set__friends ]&lt;/code&gt;.
+				&lt;/Alert&gt;
+			&lt;/FormGroup&gt;
+		&lt;/div&gt;
+	);
+};
+export default Form__HRInterview;
+
+</div>
+`;

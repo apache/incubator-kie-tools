@@ -99,7 +99,6 @@
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ui</artifactId>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -159,5 +158,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>

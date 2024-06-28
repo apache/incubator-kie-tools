@@ -39,5 +39,4 @@
     <module>kie-wb-common-forms-common-rendering-shared</module>
     <module>kie-wb-common-forms-common-rendering-client</module>
   </modules>
-
 </project>

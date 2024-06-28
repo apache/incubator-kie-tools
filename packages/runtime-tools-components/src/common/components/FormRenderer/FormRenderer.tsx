@@ -42,17 +42,13 @@ export const FormRenderer = React.forwardRef<FormRendererApi, IOwnProps & OUIAPr
     const validator = lookupValidator(formSchema);
     const [formApiRef, setFormApiRef] = useState<HTMLFormElement>();
 
-    useImperativeHandle(
-      forwardedRef,
-      () => {
-        return {
-          doReset() {
-            formApiRef!.reset();
-          },
-        };
-      },
-      [formApiRef]
-    );
+    useImperativeHandle(forwardedRef, () => {
+      return {
+        doReset() {
+          formApiRef!.reset();
+        },
+      };
+    }, [formApiRef]);
 
     const bridge = new JSONSchemaBridge(formSchema, (formModel) => {
       // Converting back all the JS Dates into String before validating the model

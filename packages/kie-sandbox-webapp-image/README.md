@@ -21,7 +21,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
 ## Additional requirements
 
-- docker or podman
+- docker
 
 ## Build
 
@@ -37,7 +37,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
   export KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry=<registry>
   export KIE_SANDBOX_WEBAPP_IMAGE__imageAccount=<account>
   export KIE_SANDBOX_WEBAPP_IMAGE__imageName=<image-name>
-  export KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTags=<image-tags>
+  export KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTag=<image-tag>
   export KIE_SANDBOX_WEBAPP_IMAGE__imagePort=<port>
   ```
 
@@ -55,24 +55,12 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
   docker images
   ```
 
-  or
-
-  ```bash
-  podman images
-  ```
-
 ## Run
 
 - Start up a clean container with:
 
   ```bash
   docker run -t -p 8080:8080 -i --rm docker.io/apache/incubator-kie-sandbox-webapp:latest
-  ```
-
-  or
-
-  ```bash
-  podman run -t -p 8080:8080 -i --rm docker.io/apache/incubator-kie-sandbox-webapp:latest
   ```
 
   KIE Sandbox will be up at http://localhost:8080
@@ -87,10 +75,10 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    | :-------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------: |
    |               `KIE_SANDBOX_EXTENDED_SERVICES_URL`               |                                        The URL that points to the Extended Services.                                        | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
    |                  `KIE_SANDBOX_CORS_PROXY_URL`                   |                        The URL that points to the CORS proxy for interacting with external services.                        | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   |           `KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL`           |                           The URL that points to the Base image that is used on Dev deployments.                            | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   | `KIE_SANDBOX_DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE_URL` |                 The URL that points to the Kogito Quarkus Blank App image that is used on Dev deployments.                  | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   |     `KIE_SANDBOX_DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_URL`      |                          The URL that points to form webapp image that is used on Dev deployments.                          | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   |         `KIE_SANDBOX_DEV_DEPLOYMENT_IMAGE_PULL_POLICY`          |                                          The image pull policy for Dev deployments                                          | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |           `KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL`           |                           The URL that points to the Base image that is used on Dev Deployments.                            | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   | `KIE_SANDBOX_DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE_URL` |                 The URL that points to the Kogito Quarkus Blank App image that is used on Dev Deployments.                  | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |     `KIE_SANDBOX_DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_URL`      |                          The URL that points to form webapp image that is used on Dev Deployments.                          | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |         `KIE_SANDBOX_DEV_DEPLOYMENT_IMAGE_PULL_POLICY`          |                                          The image pull policy for Dev Deployments                                          | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
    |           `KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE`           |                          Require users to type a custom commit message when creating a new commit.                          | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
    |   `KIE_SANDBOX_CUSTOM_COMMIT_MESSAGES_VALIDATION_SERVICE_URL`   |                                          Service URL to validate commit messages.                                           | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
    |                  `KIE_SANDBOX_AUTH_PROVIDERS`                   |    Authentication providers configuration. Used to enable integration with GitHub Enterprise Server instances and more.     | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
@@ -364,9 +352,9 @@ KIE Sandbox can be customized to show your own logo and/or branding by extending
 - **Favicon:** Override `/var/www/html/favicon.svg`
 - **App name:** Use the `KIE_SANDBOX_APP_NAME` environment variable.
 
-## Custom images for DMN Dev deployments
+## Custom images for DMN Dev Deployments
 
-KIE Sandbox allows for the images used on DMN Dev deployments to be customized. For example:
+KIE Sandbox allows for the images used on DMN Dev Deployments to be customized. For example:
 
 ```docker
 ENV KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL="docker.io/apache/incubator-kie-sandbox0dev-deployment-base:latest"

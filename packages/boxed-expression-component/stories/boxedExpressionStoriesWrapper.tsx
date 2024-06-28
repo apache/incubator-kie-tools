@@ -185,10 +185,13 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
 }
 
 function toObject(map?: Map<string, number[]>): StorybookArgWidhtsById {
-  return Array.from((map ?? new Map<string, number[]>()).entries()).reduce((acc, [key, value]) => {
-    acc[`${key}`] = value;
-    return acc;
-  }, {} as Record<string, number[]>);
+  return Array.from((map ?? new Map<string, number[]>()).entries()).reduce(
+    (acc, [key, value]) => {
+      acc[`${key}`] = value;
+      return acc;
+    },
+    {} as Record<string, number[]>
+  );
 }
 
 function toMap(object?: StorybookArgWidhtsById): Map<string, number[]> {

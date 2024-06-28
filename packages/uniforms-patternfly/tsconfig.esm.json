@@ -1,13 +1,7 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "baseUrl": "src",
     "outDir": "dist/esm",
-    "rootDir": "src",
-    "module": "es6",
-    "target": "es6",
-    "esModuleInterop": true,
-    "moduleResolution": "node"
-  },
-  "include": ["src"]
+    "module": "es6"
+  }
 }

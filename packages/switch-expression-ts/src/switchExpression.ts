@@ -31,7 +31,7 @@ export const switchExpression = <
   S extends SwitchExpressionValue,
   ExplicitRet extends R,
   C extends SwitchExpressionCases<S, R> = SwitchExpressionCases<S, ExplicitRet>,
-  R = C extends SwitchExpressionCases<S, infer R> ? R : any
+  R = C extends SwitchExpressionCases<S, infer R> ? R : any,
 >(
   switchValue: S | undefined,
   cases: C

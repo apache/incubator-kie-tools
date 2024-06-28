@@ -63,7 +63,6 @@
   </properties>
 
   <dependencyManagement>
-
     <dependencies>
       <dependency>
         <groupId>org.kie.j2cl.tools</groupId>
@@ -339,5 +338,4 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
 </project>

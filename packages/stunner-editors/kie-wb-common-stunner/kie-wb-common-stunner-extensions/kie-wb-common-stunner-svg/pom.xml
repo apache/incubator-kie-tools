@@ -38,6 +38,4 @@
     <module>kie-wb-common-stunner-svg-client</module>
     <module>kie-wb-common-stunner-svg-gen</module>
   </modules>
-
-
 </project>

@@ -43,5 +43,4 @@
     <module>kie-wb-common-kogito-client</module>
     <module>kie-wb-common-kogito-webapp-base</module>
   </modules>
-
 </project>

@@ -20,12 +20,11 @@
   ],
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
+    "build:prod": "pnpm lint && rimraf dist && webpack",
     "dev": "concurrently 'pnpm start' 'pnpm run dev:server'",
     "dev:server": "pnpm -F @kie-tools/sonataflow-mock-server start",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
-    "start": "webpack serve --host 0.0.0.0 --env dev",
-    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
+    "start": "webpack serve --host 0.0.0.0 --env dev"
   },
   "dependencies": {
     "@kie-tools-core/editor": "workspace:*",
@@ -67,10 +66,7 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/sonataflow-mock-server": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@testing-library/jest-dom": "^5.16.1",
     "@types/history": "^4.7.3",
-    "@types/jest": "^26.0.23",
-    "@types/jest-when": "^2.7.4",
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
     "@types/react-router": "^5.1.20",

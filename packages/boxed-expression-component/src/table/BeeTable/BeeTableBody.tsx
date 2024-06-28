@@ -75,7 +75,7 @@ export function BeeTableBody<R extends object>({
       reactTableInstance.prepareRow(row);
 
       const renderTr = () => (
-        <tr className={rowKey} key={rowKey} data-ouia-component-id={`expression-row-${rowIndex}`}>
+        <tr className={rowKey} key={rowKey} data-testid={`expression-row-${rowIndex}`}>
           {row.cells.map((cell, cellIndex) => {
             const columnKey = getColumnKey(reactTableInstance.allColumns[cellIndex]);
             return (

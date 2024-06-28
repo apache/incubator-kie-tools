@@ -52,7 +52,7 @@ export function FilterExpressionCollectionCell({
   );
 
   return (
-    <div className="filter-expression">
+    <div className="filter-expression" data-testid={"kie-tools--boxed-expression-component--filter-collection-in"}>
       <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
         <ExpressionContainer
           expression={items[rowIndex]?.expression}

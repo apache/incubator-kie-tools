@@ -20,7 +20,6 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.8.2//EN"
   "http://www.gwtproject.org/doctype/2.8.2/gwt-module.dtd">
 <module>
-
   <inherits name="org.uberfire.UberfireAPI" />
 
   <inherits name="org.uberfire.client.views.PatternFlyTheme" />
@@ -63,5 +62,4 @@
   <!-- Temporary workaround for ClassCastExceptions happening on DMN Marshaller models -->
   <set-property name="jre.checks.type" value="DISABLED" />
   <set-property name="jre.checkedMode" value="DISABLED" />
-
 </module>

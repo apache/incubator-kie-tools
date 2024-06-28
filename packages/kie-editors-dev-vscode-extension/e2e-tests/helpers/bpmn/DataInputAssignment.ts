@@ -21,7 +21,11 @@
  * Class to represent dataInputAssignment of a task.
  */
 export default class DataInputAssignment {
-  constructor(private readonly name: string, private readonly dataType: string, private readonly source: string) {}
+  constructor(
+    private readonly name: string,
+    private readonly dataType: string,
+    private readonly source: string
+  ) {}
 
   public getName(): string {
     return this.name;

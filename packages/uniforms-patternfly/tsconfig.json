@@ -1,0 +1,13 @@
+{
+  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "src",
+    "rootDir": "src",
+    "target": "es6",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "jsx": "react",
+    "types": ["node", "@testing-library/jest-dom"]
+  },
+  "include": ["src"]
+}

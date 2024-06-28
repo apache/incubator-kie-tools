@@ -117,21 +117,17 @@ const RefForwardingSwfChannelComponent: ForwardRefRenderFunction<
     [editor]
   );
 
-  useImperativeHandle(
-    fowardedRef,
-    () => {
-      return {
-        kogitoEditorChannelApi: apiImpl,
-        languageService: languageService,
-        isReady,
-        notificationHandler: {
-          isSupported: true,
-          onClick: onNotificationClick,
-        },
-      };
-    },
-    [apiImpl, languageService, isReady, onNotificationClick]
-  );
+  useImperativeHandle(fowardedRef, () => {
+    return {
+      kogitoEditorChannelApi: apiImpl,
+      languageService: languageService,
+      isReady,
+      notificationHandler: {
+        isSupported: true,
+        onClick: onNotificationClick,
+      },
+    };
+  }, [apiImpl, languageService, isReady, onNotificationClick]);
 
   return <></>;
 };

@@ -17,19 +17,19 @@
  * under the License.
  */
 
+const { config } = require("@kie-tools/jest-base/jest.config");
+
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-  globals: {
-    "ts-jest": {
-      tsconfig: "<rootDir>/tsconfig.json",
-    },
-  },
+  ...config,
+  testEnvironment: "jsdom",
   reporters: [
     "default",
     [
       "jest-junit",
       {
         suiteName: "Chrome Extension for BPMN and DMN",
-        outputFile: "./dist-e2e-tests/junit-report.xml",
+        outputFile: "./dist-tests-e2e/junit-report.xml",
         classNameTemplate: "Chrome Extension for BPMN and DMN ::",
         titleTemplate: "{title}",
         ancestorSeparator: " :: ",
@@ -38,9 +38,6 @@ module.exports = {
       },
     ],
   ],
-  transform: {
-    "^.+\\.(ts)$": "ts-jest",
-  },
   testRegex: ["e2e-tests/tests/.*Test.ts"],
   testTimeout: 100000,
 };

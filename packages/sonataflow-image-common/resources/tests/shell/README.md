@@ -26,7 +26,7 @@
 The `run.sh` should be used to run the tests since it must set a few env vars. To run from your terminal, try:
 
 ```shell
-tests/shell/run.sh sonataflow-devmode docker.io/apache/sonataflow-devmode:999-20240509-SNAPSHOT
+tests/shell/run.sh sonataflow-devmode docker.io/apache/sonataflow-devmode:999-20240620-SNAPSHOT
 ```
 
 The first argument is the test case to run and the second, the image.

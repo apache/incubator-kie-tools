@@ -39,7 +39,6 @@
   </properties>
 
   <dependencies>
-
     <!-- Errai -->
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
@@ -91,7 +90,5 @@
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>
     </dependency>
-
   </dependencies>
-
 </project>

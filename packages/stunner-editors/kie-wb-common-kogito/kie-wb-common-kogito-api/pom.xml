@@ -39,7 +39,6 @@
   </properties>
 
   <dependencies>
-
     <!-- Errai -->
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
@@ -49,7 +48,5 @@
       <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-ui</artifactId>
     </dependency>
-
   </dependencies>
-
 </project>

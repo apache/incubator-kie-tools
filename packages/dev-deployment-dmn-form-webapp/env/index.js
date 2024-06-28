@@ -17,13 +17,26 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
+  vars: varsWithName({
+    DEV_DEPLOYMENT_DMN_FORM_WEBAPP__quarkusAppOrigin: {
+      description: "The origin where the quarkus application is running. e.g. localhost:8080",
+      default: "",
+    },
+    DEV_DEPLOYMENT_DMN_FORM_WEBAPP__quarkusAppPath: {
+      description: "The path related to the origin where the quarkus application hosts its API",
+      default: "",
+    },
+  }),
   get env() {
     return {
       devDeploymentDmnFormWebapp: {
+        quarkusApp: {
+          origin: getOrDefault(this.vars.DEV_DEPLOYMENT_DMN_FORM_WEBAPP__quarkusAppOrigin),
+          path: getOrDefault(this.vars.DEV_DEPLOYMENT_DMN_FORM_WEBAPP__quarkusAppPath),
+        },
         dev: {
           webpackPort: 9008,
           quarkusPort: 9009,

@@ -32,11 +32,17 @@
   opacity: 0;
   width: 0;
   height: 0;
-  transition: width 0.5s 0.5s, height 0.5s 0.5s, opacity 0.5s;
+  transition:
+    width 0.5s 0.5s,
+    height 0.5s 0.5s,
+    opacity 0.5s;
 }
 .kogito-process-details--variables__label-fadeIn {
   opacity: 1;
-  transition: width 0.5s, height 0.5s, opacity 0.5s 0.5s;
+  transition:
+    width 0.5s,
+    height 0.5s,
+    opacity 0.5s 0.5s;
 }
 
 .kogito-process-details--milestones__nameText > blockquote {

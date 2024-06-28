@@ -70,7 +70,6 @@
     <url>scm:git:git@github.com:errai/Reflections.git</url>
   </scm>
 
-
   <build>
     <extensions>
       <extension>
@@ -97,7 +96,6 @@
           <skipTests>true</skipTests>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
 </project>

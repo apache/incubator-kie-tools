@@ -35,8 +35,8 @@
   <name>KIE Tools :: SonataFlow Quarkus Dev UI Extension :: Deployment</name>
 
   <properties>
-      <path.to.webapp.app>../node_modules/@kie-tools/serverless-workflow-dev-ui-webapp</path.to.webapp.app>
-      <version.apache.mime4j>0.8.11</version.apache.mime4j>
+    <path.to.webapp.app>../node_modules/@kie-tools/serverless-workflow-dev-ui-webapp</path.to.webapp.app>
+    <version.apache.mime4j>0.8.11</version.apache.mime4j>
   </properties>
 
   <dependencies>

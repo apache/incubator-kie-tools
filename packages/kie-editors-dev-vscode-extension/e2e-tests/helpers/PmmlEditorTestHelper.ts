@@ -21,7 +21,10 @@ import { By, WebElement, WebView } from "vscode-extension-tester";
 import { assertWebElementIsDisplayedEnabled, EditorTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 
 export class Modal {
-  constructor(readonly webview: WebElement, private closeButton: WebElement) {}
+  constructor(
+    readonly webview: WebElement,
+    private closeButton: WebElement
+  ) {}
 
   public close = () => {
     this.closeButton.click();

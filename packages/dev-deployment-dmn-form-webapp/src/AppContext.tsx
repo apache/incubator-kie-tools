@@ -23,6 +23,8 @@ import { AppData } from "./DmnDevDeploymentFormWebAppDataApi";
 export interface AppContextType {
   fetchDone: boolean;
   data?: AppData;
+  quarkusAppOrigin: string;
+  quarkusAppPath: string;
 }
 
 export const AppContext = createContext<AppContextType>({} as any);

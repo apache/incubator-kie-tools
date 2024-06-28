@@ -22,84 +22,82 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
 >
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-tools-maven-base</artifactId>
+    <version>${revision}</version>
+    <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
+  </parent>
 
-    <parent>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-tools-maven-base</artifactId>
-      <version>${revision}</version>
-      <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
-    </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.kie.tools</groupId>
+  <artifactId>dmn-testing-models</artifactId>
 
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kie.tools</groupId>
-    <artifactId>dmn-testing-models</artifactId>
+  <name>DMN Testing Models</name>
+  <description>Testing models for DMN marshaller</description>
 
-    <name>DMN Testing Models</name>
-    <description>Testing models for DMN marshaller</description>
+  <licenses>
+    <license>
+      <name>Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
-    <licenses>
-        <license>
-            <name>Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+  <properties>
+    <dependency-plugin.version>3.6.1</dependency-plugin.version>
+  </properties>
 
-    <properties>
-        <dependency-plugin.version>3.6.1</dependency-plugin.version>
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.kie</groupId>
-                <artifactId>kie-dmn-test-resources</artifactId>
-                <version>${version.org.kie.kogito}</version>
-                <classifier>tests</classifier>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
+  <dependencyManagement>
     <dependencies>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>kie-dmn-test-resources</artifactId>
-            <classifier>tests</classifier>
-        </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-test-resources</artifactId>
+        <version>${version.org.kie.kogito}</version>
+        <classifier>tests</classifier>
+      </dependency>
     </dependencies>
+  </dependencyManagement>
 
-    <build>
-        <plugins>
-            <!-- Unpack DMN resources from org.kie:kie-dmn-test-resources -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>${dependency-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>unpack</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.kie</groupId>
-                                    <artifactId>kie-dmn-test-resources</artifactId>
-                                    <version>${version.org.kie.kogito}</version>
-                                    <classifier>tests</classifier>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>${project.basedir}/dist</outputDirectory>
-                                    <includes>valid_models/**/*.dmn</includes>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-test-resources</artifactId>
+      <classifier>tests</classifier>
+    </dependency>
+  </dependencies>
 
+  <build>
+    <plugins>
+      <!-- Unpack DMN resources from org.kie:kie-dmn-test-resources -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${dependency-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.kie</groupId>
+                  <artifactId>kie-dmn-test-resources</artifactId>
+                  <version>${version.org.kie.kogito}</version>
+                  <classifier>tests</classifier>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.basedir}/dist</outputDirectory>
+                  <includes>valid_models/**/*.dmn</includes>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

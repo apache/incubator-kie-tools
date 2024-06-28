@@ -54,24 +54,20 @@ const RefForwardingSwfDeployOptions: ForwardRefRenderFunction<ConfirmDeployOptio
     setShouldDeployAsProject(canDeployAsProject);
   }, [canDeployAsProject]);
 
-  useImperativeHandle(
-    forwardedRef,
-    () => {
-      return {
-        deploy: async () =>
-          openshift.deploySwf({
-            targetFile: props.workspaceFile,
-            factoryArgs: {
-              kind: shouldDeployAsProject
-                ? DeploymentStrategyKind.KOGITO_PROJECT
-                : DeploymentStrategyKind.KOGITO_SWF_MODEL,
-            },
-            shouldUploadOpenApi,
-          }),
-      };
-    },
-    [openshift, props.workspaceFile, shouldDeployAsProject, shouldUploadOpenApi]
-  );
+  useImperativeHandle(forwardedRef, () => {
+    return {
+      deploy: async () =>
+        openshift.deploySwf({
+          targetFile: props.workspaceFile,
+          factoryArgs: {
+            kind: shouldDeployAsProject
+              ? DeploymentStrategyKind.KOGITO_PROJECT
+              : DeploymentStrategyKind.KOGITO_SWF_MODEL,
+          },
+          shouldUploadOpenApi,
+        }),
+    };
+  }, [openshift, props.workspaceFile, shouldDeployAsProject, shouldUploadOpenApi]);
   return (
     <>
       {i18n.openshift.confirmModal.body}

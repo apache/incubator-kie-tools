@@ -40,7 +40,7 @@
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-codegen</artifactId>
-      <type>test-jar</type>      
+      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -96,5 +96,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>

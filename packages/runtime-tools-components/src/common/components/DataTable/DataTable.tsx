@@ -88,7 +88,7 @@ const getColumns = (data: any[] | undefined, columns: DataTableColumn[]) => {
             transforms: column.isSortable ? [sortable] : undefined,
           } as ICell;
         })
-      : filter(keys(sample(data)), (key) => key !== "__typename").map((key) => ({ title: key, data: key } as ICell));
+      : filter(keys(sample(data)), (key) => key !== "__typename").map((key) => ({ title: key, data: key }) as ICell);
   } else if (columns) {
     return filter(columns, (column) => !isEmpty(column.path)).map((column) => {
       return {
