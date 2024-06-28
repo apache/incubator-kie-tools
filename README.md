@@ -119,10 +119,11 @@ Bootstrapping installs the necessary dependencies for each package.
 
 ## Reproducible Builds for _maven-based_ packages
 
-It is mandatory that any _maven-based_ that releases artifacts runs [Reproducible Builds](https://reproducible-builds.org/)
-to build it's artifacts, in this case in our `build:prod` scripts.
+It is mandatory that any _maven-based_ package that releases artifacts runs [Reproducible Builds](https://reproducible-builds.org/)
+to build it's artifacts, in this case, in our `build:prod` scripts.
 
-`@kie-tools/maven-base` provides a `maven` profile to enable _Reproducible Builds_ in our builds. To do it follow the steps:
+`@kie-tools/maven-base` provides the `reproducible-build` `maven` profile to enable _Reproducible Builds_ in our builds.
+To use it follow the steps:
 
 - Make sure the `package.json` depends on `@kie-tools/maven-base`:
 
@@ -168,10 +169,10 @@ to build it's artifacts, in this case in our `build:prod` scripts.
 > we use to generate deployable artifacts using the dynamic `${revision}` variable. You can check the full list of banned
 > plugins [here](https://maven.apache.org/plugins-archives/maven-artifact-plugin-3.4.1/plugin-issues.html).
 > The issue that caused the ban [flatten-maven-plugin/issues/256](https://github.com/mojohaus/flatten-maven-plugin/issues/256) was a result
-> due to change in `maven` behaviour between `v3.8.1` and `v3.8.2`, and isn't a problem of the `maven-flatten-plugin.
-Actually, in later versions of the `maven-artifact-plugin`the ban got revoked.
-Having this in mind, and due to the fact that`kie-tools`requires newer`maven`versions, our _Reproducible Builds_ require
-temporarily overriding the list of banned plugins, until we upgrade to a newer`maven-artifact-plugin` version.
+> of change in `maven` behaviour between `v3.8.1` and `v3.8.2`, and isn't a problem on the `maven-flatten-plugin`.
+> Actually, in later versions of the `maven-artifact-plugin` the ban got revoked.
+> Having this in mind, and due to the fact that `kie-tools` requires newer `maven` versions, our _Reproducible Builds_ require
+> temporarily overriding the list of banned plugins, until we upgrade to a newer `maven-artifact-plugin` version.
 > This will be addressed by https://github.com/apache/incubator-kie-issues/issues/1371
 
 ---

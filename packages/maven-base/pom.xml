@@ -170,7 +170,7 @@
           <configuration>
             <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
             <!--
-            This configuration overrides the list of issues registered in the plugin to enable the `maven-flatten-plugin
+            This configuration overrides the list of issues registered in the plugin to enable the `maven-flatten-plugin`
             TODO: remove as a part of: https://github.com/apache/incubator-kie-issues/issues/1371
             -->
             <pluginIssues
