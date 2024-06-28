@@ -230,6 +230,7 @@
     <profile>
       <id>reproducible-build</id>
       <activation>
+        <activeByDefault>false</activeByDefault>
         <property>
           <name>reproducible</name>
         </property>
