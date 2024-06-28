@@ -27,19 +27,22 @@ test.beforeEach(async ({ editor }) => {
 
 test.describe("Model Decision Service", () => {
   test.describe("Decision Service Signature", () => {
-    test.beforeEach(async ({ palette, nodes }) => {
-      await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
-      await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+    test.beforeEach(async ({ diagram, palette }) => {
+      await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 300, y: 100 } });
+      await diagram.resetFocus();
     });
 
-    test.only("Decision Service Signature - Output Decisions", async ({
+    test("Decision Service Signature - Output Decisions", async ({
       decisionServicePropertiesPanel,
+      diagram,
       nodes,
       palette,
     }) => {
       //TODO https://github.com/apache/incubator-kie-issues/issues/663
 
-      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 120, y: 120 } });
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+      await diagram.resetFocus();
+      await nodes.move({ name: DefaultNodeName.DECISION, targetPosition: { x: 400, y: 180 } });
 
       await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
       await decisionServicePropertiesPanel.open();
@@ -49,14 +52,17 @@ test.describe("Model Decision Service", () => {
       expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual("New Decision");
     });
 
-    test.only("Decision Service Signature - Encapsulated Decisions", async ({
+    test("Decision Service Signature - Encapsulated Decisions", async ({
       decisionServicePropertiesPanel,
+      diagram,
       nodes,
       palette,
     }) => {
       //TODO https://github.com/apache/incubator-kie-issues/issues/663
 
-      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 200, y: 200 } });
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+      await diagram.resetFocus();
+      await nodes.move({ name: DefaultNodeName.DECISION, targetPosition: { x: 400, y: 350 } });
 
       await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
       await decisionServicePropertiesPanel.open();
@@ -66,11 +72,24 @@ test.describe("Model Decision Service", () => {
       expect(await decisionServicePropertiesPanel.getEncapsulatedDecisions()).toEqual("New Decision");
     });
 
-    test.only("Decision Service Signature - Input Data", async ({ decisionServicePropertiesPanel, nodes, palette }) => {
+    test("Decision Service Signature - Input Data", async ({
+      decisionServicePropertiesPanel,
+      diagram,
+      nodes,
+      palette,
+    }) => {
       //TODO https://github.com/apache/incubator-kie-issues/issues/663
 
-      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 200, y: 200 } });
-      await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 200, y: 200 } });
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+      await diagram.resetFocus();
+      await nodes.move({ name: DefaultNodeName.DECISION, targetPosition: { x: 400, y: 350 } });
+
+      await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
+      await nodes.dragNewConnectedEdge({
+        type: EdgeType.INFORMATION_REQUIREMENT,
+        from: DefaultNodeName.INPUT_DATA,
+        to: DefaultNodeName.DECISION,
+      });
 
       await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
       await decisionServicePropertiesPanel.open();
@@ -80,8 +99,9 @@ test.describe("Model Decision Service", () => {
       expect(await decisionServicePropertiesPanel.getInputData()).toEqual("New Input Data");
     });
 
-    test.only("Decision Service Signature - Input Decisions", async ({
+    test("Decision Service Signature - Input Decisions", async ({
       decisionServicePropertiesPanel,
+      diagram,
       nodes,
       palette,
     }) => {
@@ -89,26 +109,29 @@ test.describe("Model Decision Service", () => {
 
       await palette.dragNewNode({
         type: NodeType.DECISION,
-        targetPosition: { x: 200, y: 200 },
-        thenRenameTo: "First Decision",
+        targetPosition: { x: 100, y: 100 },
+        thenRenameTo: "Decision One",
       });
+      await diagram.resetFocus();
+      await nodes.move({ name: "Decision One", targetPosition: { x: 400, y: 350 } });
+
       await palette.dragNewNode({
         type: NodeType.DECISION,
         targetPosition: { x: 100, y: 100 },
-        thenRenameTo: "Second Decision",
+        thenRenameTo: "Decision Two",
       });
       await nodes.dragNewConnectedEdge({
         type: EdgeType.INFORMATION_REQUIREMENT,
-        from: "Second Decision",
-        to: "Second Decision",
+        from: "Decision Two",
+        to: "Decision One",
       });
 
       await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
       await decisionServicePropertiesPanel.open();
       expect(await decisionServicePropertiesPanel.getInvokingThisDecisionServiceInFeel()).toEqual(
-        "New Decision Service(New Decision)"
+        "New Decision Service(Decision Two)"
       );
-      expect(await decisionServicePropertiesPanel.getInputDecisions()).toEqual("Second Decision");
+      expect(await decisionServicePropertiesPanel.getInputDecisions()).toEqual("Decision Two");
     });
 
     test.skip("Decision Service Inputs Order", async () => {
