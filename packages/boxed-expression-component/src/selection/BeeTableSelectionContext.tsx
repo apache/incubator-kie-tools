@@ -401,18 +401,18 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
                   columnIndex: prev.active.columnIndex,
                 }
               : part === SelectionPart.SelectionEnd
-              ? {
-                  rowIndex: prev.selectionEnd?.rowIndex,
-                  columnIndex: prev.selectionEnd?.columnIndex,
-                }
-              : part === SelectionPart.SelectionStart
-              ? {
-                  rowIndex: prev.selectionStart?.rowIndex,
-                  columnIndex: prev.selectionStart?.columnIndex,
-                }
-              : (() => {
-                  throw new Error("Impossible case for SelectionPart");
-                })();
+                ? {
+                    rowIndex: prev.selectionEnd?.rowIndex,
+                    columnIndex: prev.selectionEnd?.columnIndex,
+                  }
+                : part === SelectionPart.SelectionStart
+                  ? {
+                      rowIndex: prev.selectionStart?.rowIndex,
+                      columnIndex: prev.selectionStart?.columnIndex,
+                    }
+                  : (() => {
+                      throw new Error("Impossible case for SelectionPart");
+                    })();
 
           const newRowIndex =
             (prevCoords.rowIndex ?? 0) < 0

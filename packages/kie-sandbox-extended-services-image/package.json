@@ -20,8 +20,7 @@
     "copy:extended-services-java": "run-script-os",
     "copy:extended-services-java:linux:darwin": "cp -R ./node_modules/@kie-tools/extended-services-java/dist/extended-services-java ./dist-dev/kie_sandbox_extended_services",
     "copy:extended-services-java:win32": "pnpm powershell \"Copy-Item ./node_modules/@kie-tools/extended-services-java/dist/extended-services-java ./dist-dev/kie_sandbox_extended_services\"",
-    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env extendedServicesImage.registry)\" -a \"$(build-env extendedServicesImage.account)\" -n \"$(build-env extendedServicesImage.name)\" -t \"$(build-env extendedServicesImage.buildTags)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env extendedServicesImage.builderImage)\" --build-arg \"EXTENDED_SERVICES_DEFAULT_PORT=$(build-env extendedServicesImage.port)\" ",
-    "image:podman:build": "kie-tools--image-builder build -r \"$(build-env extendedServicesImage.registry)\" -a \"$(build-env extendedServicesImage.account)\" -n \"$(build-env extendedServicesImage.name)\" -t \"$(build-env extendedServicesImage.buildTags)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env extendedServicesImage.builderImage)\" --build-arg \"EXTENDED_SERVICES_DEFAULT_PORT=$(build-env extendedServicesImage.port)\" -e podman"
+    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env extendedServicesImage.registry)\" -a \"$(build-env extendedServicesImage.account)\" -n \"$(build-env extendedServicesImage.name)\" -t \"$(build-env extendedServicesImage.buildTag)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env extendedServicesImage.builderImage)\" --build-arg \"EXTENDED_SERVICES_DEFAULT_PORT=$(build-env extendedServicesImage.port)\""
   },
   "dependencies": {
     "@kie-tools/extended-services-java": "workspace:*"

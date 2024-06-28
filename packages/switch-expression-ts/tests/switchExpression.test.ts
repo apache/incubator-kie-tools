@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { describe, it, expect } from "@jest/globals";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 
 type UnionString3Values = "one" | "two" | "three";
@@ -32,7 +31,7 @@ type SomeKindSubset = (typeof someKindSubsetValues)[number];
 type UnionMixed3Values = 1 | "two" | SomeKind.THREE;
 
 describe("switchExpression tests", () => {
-  it("test default value when key did not match", () => {
+  test("test default value when key did not match", () => {
     const value: { type: UnionString3Values } = { type: "two" };
     expect(
       switchExpression(value.type, {
@@ -41,7 +40,7 @@ describe("switchExpression tests", () => {
       })
     ).toBe("value_default");
   });
-  it("test default value when key matched", () => {
+  test("test default value when key matched", () => {
     const value: { type: UnionString3Values } = { type: "one" };
     expect(
       switchExpression(value.type, {
@@ -50,7 +49,7 @@ describe("switchExpression tests", () => {
       })
     ).toBe("value1");
   });
-  it("test switchStatement varying types", () => {
+  test("test switchStatement varying types", () => {
     const value: { type: UnionMixed3Values } = { type: SomeKind.THREE };
     expect(
       switchExpression(value.type, {
@@ -60,7 +59,7 @@ describe("switchExpression tests", () => {
       })
     ).toBe("value3");
   });
-  it("test restrict case options by explicit cast", () => {
+  test("test restrict case options by explicit cast", () => {
     const value: { type: UnionString3Values } = { type: "three" };
     expect(
       switchExpression(value.type as UnionStringSubset, {
@@ -69,7 +68,7 @@ describe("switchExpression tests", () => {
       })
     ).toBe("value3");
   });
-  it("test restrict case options by explicit binding and cast", () => {
+  test("test restrict case options by explicit binding and cast", () => {
     const value: { type: SomeKind } = { type: SomeKind.THREE };
     expect(
       switchExpression<SomeKindSubset, string>(value.type as SomeKindSubset, {
@@ -78,7 +77,7 @@ describe("switchExpression tests", () => {
       })
     ).toBe("value3");
   });
-  it("test undefined as a valid result", () => {
+  test("test undefined as a valid result", () => {
     const value: "a" | "b" | "c" = "c";
     const res: string | undefined = switchExpression(value, {
       a: "a",

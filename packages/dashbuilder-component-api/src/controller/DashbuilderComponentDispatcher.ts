@@ -29,7 +29,10 @@ import { InternalComponentDispatcher } from "./InternalComponentListener";
 export class DashbuilderComponentDispatcher implements InternalComponentDispatcher {
   private componentId: string;
 
-  constructor(private readonly bus: ComponentBus, public readonly componentController: DashbuilderComponentController) {
+  constructor(
+    private readonly bus: ComponentBus,
+    public readonly componentController: DashbuilderComponentController
+  ) {
     // no op
   }
 

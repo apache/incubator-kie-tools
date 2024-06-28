@@ -21,14 +21,14 @@ import { defineConfig } from "cypress";
 
 export default defineConfig({
   fixturesFolder: "fixtures",
-  screenshotsFolder: "../dist-e2e-tests/screenshots",
-  videosFolder: "../dist-e2e-tests/videos",
+  screenshotsFolder: "../dist-tests-e2e/screenshots",
+  videosFolder: "../dist-tests-e2e/videos",
   chromeWebSecurity: false,
   video: true,
   defaultCommandTimeout: 10000,
   reporter: "junit",
   reporterOptions: {
-    mochaFile: "../dist-e2e-tests/junit-report-[hash].xml",
+    mochaFile: "../dist-tests-e2e/junit-report-[hash].xml",
     testsuitesTitle: "PMML Editor",
     testCaseSwitchClassnameAndName: true,
     suiteTitleSeparatedBy: ".",

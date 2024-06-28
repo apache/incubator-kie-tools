@@ -108,8 +108,8 @@ export function UploadCard(props: { expandWorkspace: (workspaceId: string) => vo
         uploadedRootDirs.size !== 1
           ? undefined
           : [...uploadedRootDirs][0] === localFiles[0].path
-          ? undefined
-          : [...uploadedRootDirs][0];
+            ? undefined
+            : [...uploadedRootDirs][0];
 
       setUploading(type);
 

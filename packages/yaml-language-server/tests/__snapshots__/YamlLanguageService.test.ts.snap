@@ -3,21 +3,21 @@
 exports[`YAMLValidation tests not valid YAML 1`] = `1`;
 
 exports[`YAMLValidation tests not valid YAML 2`] = `
-Array [
-  Object {
+[
+  {
     "code": 0,
-    "data": Object {
-      "schemaUri": Array [
+    "data": {
+      "schemaUri": [
         "https://serverlessworkflow.io/schemas/0.8/workflow.json",
       ],
     },
-    "message": "Incorrect type. Expected \\"array\\".",
-    "range": Object {
-      "end": Object {
+    "message": "Incorrect type. Expected "array".",
+    "range": {
+      "end": {
         "character": 25,
         "line": 2,
       },
-      "start": Object {
+      "start": {
         "character": 8,
         "line": 2,
       },
@@ -30,4 +30,4 @@ Array [
 
 exports[`YAMLValidation tests valid 1`] = `0`;
 
-exports[`YAMLValidation tests valid 2`] = `Array []`;
+exports[`YAMLValidation tests valid 2`] = `[]`;

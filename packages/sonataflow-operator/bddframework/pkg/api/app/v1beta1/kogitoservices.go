@@ -201,7 +201,7 @@ type KogitoServiceSpec struct {
 	Env []corev1.EnvVar `json:"env,omitempty"`
 
 	// +optional
-	// Image definition for the service. Example: "quay.io/kiegroup/kogito-service:latest".
+	// Image definition for the service. Example: "docker.io/repo/kogito-service:latest".
 	//
 	// On OpenShift an ImageStream will be created in the current namespace pointing to the given image.
 	// +operator-sdk:csv:customresourcedefinitions:type=spec

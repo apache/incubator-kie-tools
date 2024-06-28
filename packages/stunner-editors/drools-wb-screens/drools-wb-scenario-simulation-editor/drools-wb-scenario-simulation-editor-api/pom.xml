@@ -54,7 +54,5 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-scenario-simulation-api</artifactId>
     </dependency>
-
   </dependencies>
-
 </project>

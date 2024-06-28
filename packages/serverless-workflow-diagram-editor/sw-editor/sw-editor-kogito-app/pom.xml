@@ -77,7 +77,6 @@
       <artifactId>kie-wb-common-stunner-widgets</artifactId>
     </dependency>
 
-
     <!-- Lienzo -->
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
@@ -236,7 +235,6 @@
       <artifactId>json-unit-assertj</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -297,7 +295,6 @@
         </configuration>
       </plugin>
     </plugins>
-
   </build>
 
   <profiles>
@@ -344,5 +341,4 @@
       </build>
     </profile>
   </profiles>
-
 </project>

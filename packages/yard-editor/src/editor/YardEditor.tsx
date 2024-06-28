@@ -83,48 +83,44 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
   const [yardData, setYardData] = useState<YardModel | undefined>();
   const yardTextEditorRef = useRef<YardTextEditorApi>(null);
 
-  useImperativeHandle(
-    forwardedRef,
-    () => {
-      return {
-        setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot: string, newContent: string): Promise<void> => {
-          try {
-            setFile({
-              content: newContent,
-              normalizedPosixPathRelativeToTheWorkspaceRoot,
-            });
-            setYardData(deserialize(newContent));
-            return Promise.resolve();
-          } catch (e) {
-            console.error(e);
-            return Promise.reject();
-          }
-        },
-        getContent: (): Promise<string> => {
-          return Promise.resolve(yardTextEditorRef.current?.getContent() || "");
-        },
-        getPreview: (): Promise<string> => {
-          return Promise.resolve(""); // Should we define a preview here ?
-        },
-        undo: (): Promise<void> => {
-          return yardTextEditorRef.current?.undo() || Promise.resolve();
-        },
-        redo: (): Promise<void> => {
-          return yardTextEditorRef.current?.redo() || Promise.resolve();
-        },
-        validate: (): Notification[] => {
-          return [];
-        },
-        setTheme: (theme: EditorTheme): Promise<void> => {
-          return yardTextEditorRef.current?.setTheme(theme) || Promise.resolve();
-        },
-        moveCursorToPosition: (position: Position) => {
-          yardTextEditorRef.current?.moveCursorToPosition(position);
-        },
-      };
-    },
-    []
-  );
+  useImperativeHandle(forwardedRef, () => {
+    return {
+      setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot: string, newContent: string): Promise<void> => {
+        try {
+          setFile({
+            content: newContent,
+            normalizedPosixPathRelativeToTheWorkspaceRoot,
+          });
+          setYardData(deserialize(newContent));
+          return Promise.resolve();
+        } catch (e) {
+          console.error(e);
+          return Promise.reject();
+        }
+      },
+      getContent: (): Promise<string> => {
+        return Promise.resolve(yardTextEditorRef.current?.getContent() || "");
+      },
+      getPreview: (): Promise<string> => {
+        return Promise.resolve(""); // Should we define a preview here ?
+      },
+      undo: (): Promise<void> => {
+        return yardTextEditorRef.current?.undo() || Promise.resolve();
+      },
+      redo: (): Promise<void> => {
+        return yardTextEditorRef.current?.redo() || Promise.resolve();
+      },
+      validate: (): Notification[] => {
+        return [];
+      },
+      setTheme: (theme: EditorTheme): Promise<void> => {
+        return yardTextEditorRef.current?.setTheme(theme) || Promise.resolve();
+      },
+      moveCursorToPosition: (position: Position) => {
+        yardTextEditorRef.current?.moveCursorToPosition(position);
+      },
+    };
+  }, []);
 
   const setValidationErrors = useCallback(
     (errors: editor.IMarker[]) => {

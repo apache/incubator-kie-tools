@@ -33,7 +33,6 @@
   <name>KIE Tools :: SonataFlow Quarkus Dev UI Extension :: Runtime</name>
   <description>Runtime development tools for Serverless Workflows</description>
   <dependencies>
-
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-core</artifactId>
@@ -84,6 +83,11 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-web-client</artifactId>
     </dependency>
 
     <dependency>

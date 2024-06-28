@@ -56,21 +56,17 @@ const RefForwardingDashChannelComponent: ForwardRefRenderFunction<
     [editor]
   );
 
-  useImperativeHandle(
-    fowardedRef,
-    () => {
-      return {
-        kogitoEditorChannelApi: apiImpl,
-        languageService: languageService,
-        isReady: true,
-        notificationHandler: {
-          isSupported: true,
-          onClick: onNotificationClick,
-        },
-      };
-    },
-    [apiImpl, languageService, onNotificationClick]
-  );
+  useImperativeHandle(fowardedRef, () => {
+    return {
+      kogitoEditorChannelApi: apiImpl,
+      languageService: languageService,
+      isReady: true,
+      notificationHandler: {
+        isSupported: true,
+        onClick: onNotificationClick,
+      },
+    };
+  }, [apiImpl, languageService, onNotificationClick]);
 
   return <></>;
 };

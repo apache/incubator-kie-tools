@@ -43,7 +43,7 @@ interface StoredPromise {
 
 export class EnvelopeBusMessageManager<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
-  ApiToConsume extends ApiDefinition<ApiToConsume>
+  ApiToConsume extends ApiDefinition<ApiToConsume>,
 > {
   private readonly requestHandlers = new Map<string, StoredPromise>();
 
@@ -124,7 +124,7 @@ export class EnvelopeBusMessageManager<
   }
 
   private setSharedValue<
-    M extends SharedValueProviderPropertyNames<ApiToProvide> | SharedValueProviderPropertyNames<ApiToConsume>
+    M extends SharedValueProviderPropertyNames<ApiToProvide> | SharedValueProviderPropertyNames<ApiToConsume>,
   >(method: M, value: any) {
     this.localSharedValuesStore.set(method, value);
     this.localSharedValueSubscriptions.get(method)?.forEach((callback) => callback(value));
@@ -136,7 +136,7 @@ export class EnvelopeBusMessageManager<
   }
 
   private subscribeToSharedValue<
-    M extends SharedValueProviderPropertyNames<ApiToProvide> | SharedValueProviderPropertyNames<ApiToConsume>
+    M extends SharedValueProviderPropertyNames<ApiToProvide> | SharedValueProviderPropertyNames<ApiToConsume>,
   >(method: M, callback: Func, config: { owned: boolean }) {
     const activeSubscriptions = this.localSharedValueSubscriptions.get(method) ?? [];
     this.localSharedValueSubscriptions.set(method, [...activeSubscriptions, callback]);
@@ -153,7 +153,7 @@ export class EnvelopeBusMessageManager<
   }
 
   private unsubscribeFromSharedValue<
-    M extends SharedValueProviderPropertyNames<ApiToProvide> | SharedValueProviderPropertyNames<ApiToConsume>
+    M extends SharedValueProviderPropertyNames<ApiToProvide> | SharedValueProviderPropertyNames<ApiToConsume>,
   >(name: M, callback: any) {
     const activeSubscriptions = this.localSharedValueSubscriptions.get(name);
     if (!activeSubscriptions) {
@@ -169,7 +169,7 @@ export class EnvelopeBusMessageManager<
   }
 
   private getCurrentStoredSharedValueOrDefault<
-    M extends SharedValueProviderPropertyNames<ApiToProvide> | SharedValueProviderPropertyNames<ApiToConsume>
+    M extends SharedValueProviderPropertyNames<ApiToProvide> | SharedValueProviderPropertyNames<ApiToConsume>,
   >(method: M, apiImpl?: ApiToProvide) {
     const m = method as SharedValueProviderPropertyNames<ApiToProvide>;
     return (

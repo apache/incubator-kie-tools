@@ -39,7 +39,6 @@
   </properties>
 
   <dependencies>
-
     <!-- MANSTIS - EVERYTHING BELOW THIS HAS BEEN _SANITISED_! -->
 
     <!-- Errai -->
@@ -61,7 +60,6 @@
       <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-common</artifactId>
     </dependency>
-
 
     <!-- Stunner -->
     <dependency>
@@ -238,7 +236,6 @@
       <artifactId>powermock-module-junit4</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -256,5 +253,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>

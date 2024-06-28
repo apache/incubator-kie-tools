@@ -32,7 +32,7 @@ describe("useDirtyState", () => {
       iframeRef: React.createRef(),
       isReady: true,
       getStateControl: () => stateControl,
-      getEnvelopeServer: () => ({} as any),
+      getEnvelopeServer: () => ({}) as any,
       undo: jest.fn(),
       redo: jest.fn(),
       getContent: jest.fn(),

@@ -21,7 +21,10 @@ import Element from "./Element";
 import Tools from "../utils/Tools";
 
 export default abstract class PageFragment {
-  public constructor(protected readonly tools: Tools, protected readonly root: Element) {}
+  public constructor(
+    protected readonly tools: Tools,
+    protected readonly root: Element
+  ) {}
 
   public abstract waitUntilLoaded(): Promise<void>;
 

@@ -43,19 +43,15 @@ export const EditorEnvelopeViewRef: React.ForwardRefRenderFunction<EditorEnvelop
   const [editor, setEditor] = useState<Editor | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
-  useImperativeHandle(
-    forwardingRef,
-    () => {
-      return {
-        getEditor: () => editor,
-        setEditor: (newEditor) => setEditor(newEditor),
-        setLoading: () => setLoading(true),
-        setLoadingFinished: () => setLoading(false),
-        setLocale: (locale) => props.setLocale(locale),
-      };
-    },
-    [props, editor]
-  );
+  useImperativeHandle(forwardingRef, () => {
+    return {
+      getEditor: () => editor,
+      setEditor: (newEditor) => setEditor(newEditor),
+      setLoading: () => setLoading(true),
+      setLoadingFinished: () => setLoading(false),
+      setLocale: (locale) => props.setLocale(locale),
+    };
+  }, [props, editor]);
 
   return (
     <>

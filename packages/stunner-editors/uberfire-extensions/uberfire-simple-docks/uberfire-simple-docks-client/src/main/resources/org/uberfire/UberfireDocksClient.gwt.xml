@@ -24,5 +24,4 @@
 
   <inherits name="com.google.gwt.i18n.I18N" />
   <inherits name="org.uberfire.client.views.PatternFly" />
-
 </module>

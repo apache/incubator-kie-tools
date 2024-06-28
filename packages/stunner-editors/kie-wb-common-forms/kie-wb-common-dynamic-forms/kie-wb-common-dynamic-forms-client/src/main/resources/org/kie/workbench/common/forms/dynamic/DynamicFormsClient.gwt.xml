@@ -20,7 +20,6 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.4.0//EN"
   "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
-
   <inherits name="org.hibernate.validator.HibernateValidator" />
   <inherits name="org.jboss.errai.validation.Validation" />
 

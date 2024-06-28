@@ -44,7 +44,10 @@ const HttpErrors = {
 } as const;
 
 export class SampleService {
-  constructor(private readonly octokit: Octokit, private readonly repositoryInfo: SamplesRepositoryInfo) {}
+  constructor(
+    private readonly octokit: Octokit,
+    private readonly repositoryInfo: SamplesRepositoryInfo
+  ) {}
 
   /**
    * Fetch the sample definitions.

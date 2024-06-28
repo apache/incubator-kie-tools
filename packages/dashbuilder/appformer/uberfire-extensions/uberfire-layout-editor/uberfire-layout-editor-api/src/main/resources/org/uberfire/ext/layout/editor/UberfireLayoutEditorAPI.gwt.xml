@@ -23,5 +23,4 @@
   <inherits name="org.jboss.errai.bus.ErraiBus" />
 
   <source path='api' />
-
 </module>

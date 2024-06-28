@@ -36,7 +36,6 @@
   <description>Dashbuilder Displayer API shared between client and server.</description>
 
   <dependencies>
-
     <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-dataset-api</artifactId>
@@ -57,6 +56,5 @@
       <artifactId>gwtmockito</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 </project>

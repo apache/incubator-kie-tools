@@ -25,7 +25,7 @@
 **/dist-dev/
 **/dist-dev-webapp/
 **/dist-tests/
-**/dist-e2e-tests/
+**/dist-tests-e2e/
 **/dist-storybook/
 **/e2e-tests-tmp/
 **/coverage/
@@ -73,6 +73,9 @@ package-lock.json
 
 ## runtime-tools-management-console-webapp
 !packages/runtime-tools-management-console-webapp/build
+
+## dev-deployment-dmn-form-webapp
+!packages/dev-deployment-dmn-form-webapp/build
 
 ## sonataflow-management-console-webapp
 !packages/sonataflow-management-console-webapp/build

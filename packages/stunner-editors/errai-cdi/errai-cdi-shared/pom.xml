@@ -51,7 +51,7 @@
       </testResource>
     </testResources>
   </build>
-  
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>

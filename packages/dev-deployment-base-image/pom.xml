@@ -32,5 +32,4 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito</groupId>
   <artifactId>dev-deployment-base-image</artifactId>
-
 </project>

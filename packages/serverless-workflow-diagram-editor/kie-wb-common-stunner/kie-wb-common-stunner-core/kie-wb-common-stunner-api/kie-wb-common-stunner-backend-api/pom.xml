@@ -50,7 +50,5 @@
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-api</artifactId>
     </dependency>
-
   </dependencies>
-
 </project>

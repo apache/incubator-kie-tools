@@ -20,7 +20,6 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.8.0//EN"
   "http://gwtproject.org/doctype/2.8.0/gwt-module.dtd">
 <module>
-
   <inherits name="org.kie.workbench.common.dmn.webapp.kogito.common.DMNWebappKogitoCommon" />
 
   <!-- We only need Chrome -->
@@ -41,5 +40,4 @@
   <!-- Temporary workaround for ClassCastExceptions happening on DMN Marshaller models -->
   <set-property name="jre.checks.type" value="DISABLED" />
   <set-property name="jre.checkedMode" value="DISABLED" />
-
 </module>

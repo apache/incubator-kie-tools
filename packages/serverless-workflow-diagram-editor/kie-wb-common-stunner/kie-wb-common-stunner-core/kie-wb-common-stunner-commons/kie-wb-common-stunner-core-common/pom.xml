@@ -39,7 +39,6 @@
   </properties>
 
   <dependencies>
-
     <dependency>
       <groupId>org.kie.j2cl.tools.di</groupId>
       <artifactId>core</artifactId>
@@ -90,6 +89,5 @@
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 </project>

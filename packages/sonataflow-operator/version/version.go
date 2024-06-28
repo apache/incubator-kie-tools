@@ -31,9 +31,8 @@ const (
 	// When released, this version should reflect the `major.minor` version in the registry.
 	// For example, docker.io/apache/incubator-kie-sonataflow-operator:main -> 10.0
 	tagVersion = "main"
-	// Kogito version
-	// kogitoVersion = "999-20240509" TODO: Uncomment this and update the value via bump-version.sh
-	kogitoVersion = "latest"
+	// Kogito images tag version. Used for data-index and jobs-service images.
+	kogitoImagesTagVersion = "999-20240623"
 )
 
 // GetOperatorVersion gets the current binary version of the operator. Do not use it to compose image tags!
@@ -46,7 +45,7 @@ func GetTagVersion() string {
 	return tagVersion
 }
 
-// GetKogitoVersion gets the current kogito version for the upstream kogito images.
-func GetKogitoVersion() string {
-	return kogitoVersion
+// GetKogitoImagesTagVersion gets the current kogito version for the upstream kogito images.
+func GetKogitoImagesTagVersion() string {
+	return kogitoImagesTagVersion
 }

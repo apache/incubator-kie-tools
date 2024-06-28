@@ -39,7 +39,6 @@
   </properties>
 
   <dependencies>
-
     <!-- Stunner. -->
 
     <dependency>
@@ -72,7 +71,5 @@
       <artifactId>javax.inject</artifactId>
       <scope>provided</scope>
     </dependency>
-
   </dependencies>
-
 </project>

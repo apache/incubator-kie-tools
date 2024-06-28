@@ -59,14 +59,14 @@
       <groupId>org.webjars.npm</groupId>
       <artifactId>d3-geo-projection</artifactId>
       <exclusions>
-        <exclusion> 
+        <exclusion>
           <groupId>org.webjars.npm</groupId>
           <artifactId>d3-geo</artifactId>
         </exclusion>
-        <exclusion> 
+        <exclusion>
           <groupId>org.webjars.npm</groupId>
           <artifactId>d3-array</artifactId>
-        </exclusion>        
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -168,9 +168,7 @@
       <artifactId>uberfire-testing-utils</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
-
 
   <build>
     <plugins>
@@ -269,5 +267,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>

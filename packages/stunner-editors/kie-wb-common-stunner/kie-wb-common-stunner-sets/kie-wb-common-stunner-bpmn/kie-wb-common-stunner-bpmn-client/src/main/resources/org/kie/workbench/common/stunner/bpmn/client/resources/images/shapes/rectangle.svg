@@ -1,6 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg id="rectangle" version="1.1" xmlns="http://www.w3.org/2000/svg"
-     x="0" y="0" width="448px" height="448px" viewBox="0 0 448 448">
+<?xml version="1.0" encoding="utf-8" ?>
+<svg
+  id="rectangle"
+  version="1.1"
+  xmlns="http://www.w3.org/2000/svg"
+  x="0"
+  y="0"
+  width="448px"
+  height="448px"
+  viewBox="0 0 448 448"
+>
   <!--
 	- Licensed to the Apache Software Foundation (ASF) under one
 	- or more contributor license agreements.  See the NOTICE file
@@ -19,5 +27,5 @@
 	- specific language governing permissions and limitations
 	- under the License.
 	-->
-  <rect x="0" y="0" width="448px" height="448px" rx="15" ry="15" style="fill:none; stroke: black; stroke-width: 5;"/>
+  <rect x="0" y="0" width="448px" height="448px" rx="15" ry="15" style="fill:none; stroke: black; stroke-width: 5;" />
 </svg>

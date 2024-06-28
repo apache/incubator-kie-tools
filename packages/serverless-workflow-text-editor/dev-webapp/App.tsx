@@ -146,7 +146,7 @@ export const App = () => {
             endLineNumber: lsDiagnostic.range.end.line + 1,
             endColumn: lsDiagnostic.range.end.character + 1,
           },
-        } as Notification)
+        }) as Notification
     );
 
     window.alert(JSON.stringify(notifications, undefined, 2));

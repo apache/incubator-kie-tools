@@ -35,7 +35,6 @@
   <packaging>jar</packaging>
 
   <dependencies>
-
     <!-- Stunner. -->
 
     <dependency>
@@ -182,7 +181,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -218,5 +216,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>
