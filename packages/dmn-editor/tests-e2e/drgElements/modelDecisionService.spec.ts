@@ -96,7 +96,7 @@ test.describe("Model Decision Service", () => {
       expect(await decisionServicePropertiesPanel.getInvokingThisDecisionServiceInFeel()).toEqual(
         "New Decision Service(New Input Data)"
       );
-      expect(await decisionServicePropertiesPanel.getInputData()).toEqual("New Input Data");
+      expect(await decisionServicePropertiesPanel.getInputData()).toEqual(["New Input Data"]);
     });
 
     test("Decision Service Signature - Input Decisions", async ({
@@ -131,23 +131,100 @@ test.describe("Model Decision Service", () => {
       expect(await decisionServicePropertiesPanel.getInvokingThisDecisionServiceInFeel()).toEqual(
         "New Decision Service(Decision Two)"
       );
-      expect(await decisionServicePropertiesPanel.getInputDecisions()).toEqual("Decision Two");
+      expect(await decisionServicePropertiesPanel.getInputDecisions()).toEqual(["Decision Two"]);
     });
 
-    test.skip("Decision Service Inputs Order", async () => {
-      //TODO https://github.com/apache/incubator-kie-issues/issues/664
+    test.describe("Decision Service Signatur - Inputs Order", () => {
+      test.beforeEach("Initialize nodes and connections", async ({ diagram, nodes, palette }) => {
+        await palette.dragNewNode({
+          type: NodeType.DECISION,
+          targetPosition: { x: 100, y: 100 },
+        });
+        await diagram.resetFocus();
+        await nodes.move({ name: DefaultNodeName.DECISION, targetPosition: { x: 400, y: 350 } });
+
+        await palette.dragNewNode({
+          type: NodeType.DECISION,
+          targetPosition: { x: 100, y: 100 },
+          thenRenameTo: "B",
+        });
+        await nodes.dragNewConnectedEdge({
+          type: EdgeType.INFORMATION_REQUIREMENT,
+          from: "B",
+          to: DefaultNodeName.DECISION,
+        });
+
+        await palette.dragNewNode({
+          type: NodeType.DECISION,
+          targetPosition: { x: 100, y: 200 },
+          thenRenameTo: "A",
+        });
+        await nodes.dragNewConnectedEdge({
+          type: EdgeType.INFORMATION_REQUIREMENT,
+          from: "A",
+          to: DefaultNodeName.DECISION,
+        });
+
+        await palette.dragNewNode({
+          type: NodeType.INPUT_DATA,
+          targetPosition: { x: 100, y: 300 },
+          thenRenameTo: "BB",
+        });
+        await nodes.dragNewConnectedEdge({
+          type: EdgeType.INFORMATION_REQUIREMENT,
+          from: "BB",
+          to: DefaultNodeName.DECISION,
+        });
+
+        await palette.dragNewNode({
+          type: NodeType.INPUT_DATA,
+          targetPosition: { x: 100, y: 400 },
+          thenRenameTo: "AA",
+        });
+        await nodes.dragNewConnectedEdge({
+          type: EdgeType.INFORMATION_REQUIREMENT,
+          from: "AA",
+          to: DefaultNodeName.DECISION,
+        });
+      });
+
+      test("Decision Service Signature - Inputs Order - default", async ({ decisionServicePropertiesPanel, nodes }) => {
+        //TODO https://github.com/apache/incubator-kie-issues/issues/664
+
+        await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+        await decisionServicePropertiesPanel.open();
+        expect(await decisionServicePropertiesPanel.getInvokingThisDecisionServiceInFeel()).toEqual(
+          "New Decision Service(B, A, BB, AA)"
+        );
+        expect(await decisionServicePropertiesPanel.getInputDecisions()).toEqual(["B", "A"]);
+        expect(await decisionServicePropertiesPanel.getInputData()).toEqual(["BB", "AA"]);
+      });
+
+      test("Decision Service Signature - Inputs Order - reorder", async ({ decisionServicePropertiesPanel, nodes }) => {
+        //TODO https://github.com/apache/incubator-kie-issues/issues/664
+
+        await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+        await decisionServicePropertiesPanel.open();
+        await decisionServicePropertiesPanel.moveInputData({ nth: 0, way: "down" });
+        await decisionServicePropertiesPanel.moveInputDecision({ nth: 0, way: "down" });
+        expect(await decisionServicePropertiesPanel.getInvokingThisDecisionServiceInFeel()).toEqual(
+          "New Decision Service(A, B, AA, BB)"
+        );
+        expect(await decisionServicePropertiesPanel.getInputDecisions()).toEqual(["A", "B"]);
+        expect(await decisionServicePropertiesPanel.getInputData()).toEqual(["AA", "BB"]);
+      });
     });
 
-    test("Delete Decision from the Decision Service upper divider", async () => {
+    test.skip("Delete Decision from the Decision Service upper divider", async () => {
       //TODO https://github.com/apache/incubator-kie-issues/issues/879
     });
 
-    test("Delete Decision from the Decision Service below divider", async () => {
+    test.skip("Delete Decision from the Decision Service below divider", async () => {
       //TODO https://github.com/apache/incubator-kie-issues/issues/879
     });
   });
 
-  test("Resize non empty decision service", async () => {
+  test.skip("Resize non empty decision service", async () => {
     // https://github.com/apache/incubator-kie-issues/issues/881
     // move into `resize` spec file, once is merged https://github.com/ljmotta/kie-tools/pull/27
   });

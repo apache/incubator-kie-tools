@@ -252,24 +252,27 @@ export function Draggable(props: {
       onPointerOver={() => setHoveredItem(props.index)}
     >
       {!props.isDisabled ? (
-        <Icon
-          className={"kie-dmn-editor--draggable-icon"}
-          onPointerEnter={() => setDraggable(true)}
-          onPointerLeave={() => setDraggable(false)}
-          style={props.handlerStyle}
-        >
-          <GripVerticalIcon
-            className={
-              hovered ? "kie-dmn-editor--draggable-icon-handler-hovered" : "kie-dmn-editor--draggable-icon-handler"
-            }
-          />
-        </Icon>
+        <div data-testid={"kie-dmn-editor--draggable-icon"}>
+          <Icon
+            className={"kie-dmn-editor--draggable-icon"}
+            onPointerEnter={() => setDraggable(true)}
+            onPointerLeave={() => setDraggable(false)}
+            style={props.handlerStyle}
+          >
+            <GripVerticalIcon
+              className={
+                hovered ? "kie-dmn-editor--draggable-icon-handler-hovered" : "kie-dmn-editor--draggable-icon-handler"
+              }
+            />
+          </Icon>
+        </div>
       ) : (
         <div style={{ width: "36px" }}></div>
       )}
       <div
         style={props.childrenStyle}
         className={`kie-dmn-editor--draggable-children ${props.childrenClassName ? props.childrenClassName : ""}`}
+        data-testid={"kie-dmn-editor--draggable-children"}
       >
         <DraggableItemContext.Provider value={{ hovered }}>{props.children}</DraggableItemContext.Provider>
       </div>

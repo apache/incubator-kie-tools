@@ -134,13 +134,45 @@ export class DecisionServicePropertiesPanel extends PropertiesPanelBase {
   }
 
   public async getInputDecisions() {
-    return (await this.panel()
-      .getByTestId("kie-tools--dmn-editor--decision-service-input-decisions")
-      .textContent())!.trim();
+    return (
+      await this.panel()
+        .getByTestId("kie-tools--dmn-editor--decision-service-input-decisions")
+        .getByTestId("kie-dmn-editor--draggable-children")
+        .allTextContents()
+    ).map((content) => content.trim());
+  }
+
+  public async moveInputDecision(args: { nth: number; way: "up" | "down" }) {
+    // TODO
   }
 
   public async getInputData() {
-    return (await this.panel().getByTestId("kie-tools--dmn-editor--decision-service-input-data").textContent())!.trim();
+    return (
+      await this.panel()
+        .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
+        .getByTestId("kie-dmn-editor--draggable-children")
+        .allTextContents()
+    ).map((content) => content.trim());
+  }
+
+  public async moveInputData(args: { nth: number; way: "up" | "down" }) {
+    const boundingBox = await this.panel()
+      .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
+      .getByTestId("kie-dmn-editor--draggable-icon")
+      .nth(args.nth)
+      .boundingBox();
+    await this.page.pause();
+    await this.page.mouse.move(
+      boundingBox!["x"] + boundingBox!["width"] / 2,
+      boundingBox!["y"] + boundingBox!["height"] / 2
+    );
+    await this.page.pause();
+    await this.page.mouse.down();
+    await this.page.pause();
+    await this.page.mouse.move(boundingBox!["x"], boundingBox!["y"] + (args.way === "down" ? 10 : -10));
+    await this.page.pause();
+    await this.page.mouse.up();
+    await this.page.pause();
   }
 
   public async getInvokingThisDecisionServiceInFeel() {
