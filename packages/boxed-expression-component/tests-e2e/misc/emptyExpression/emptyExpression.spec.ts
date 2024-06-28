@@ -20,9 +20,9 @@
 import { test, expect } from "../../__fixtures__/base";
 
 test.describe("Empty Expression", () => {
-  test("should render expression correctly", async ({ boxedExpressionEditor, page }) => {
-    await boxedExpressionEditor.goto();
+  test("should render expression correctly", async ({ bee, page }) => {
+    await bee.goto();
     await expect(page.getByText("Select expression")).toHaveCount(1);
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("empty-boxed-expression.png");
+    await expect(bee.getContainer()).toHaveScreenshot("empty-boxed-expression.png");
   });
 });

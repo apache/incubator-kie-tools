@@ -20,13 +20,7 @@
 import { test, expect } from "../../__fixtures__/base";
 
 test.describe("Populate Boxed Literal", () => {
-  test("should correctly create a can drive boxed literal", async ({
-    stories,
-    page,
-    boxedExpressionEditor,
-    resizing,
-    monaco,
-  }) => {
+  test("should correctly create a can drive boxed literal", async ({ stories, page, bee, resizing, monaco }) => {
     await stories.openBoxedLiteral();
     await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
     await page.getByPlaceholder("Expression Name").fill("Can drive?");
@@ -41,6 +35,6 @@ test.describe("Populate Boxed Literal", () => {
       { x: 80, y: 0 }
     );
 
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-literal-can-drive.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-literal-can-drive.png");
   });
 });

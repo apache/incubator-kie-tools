@@ -17,13 +17,32 @@
  * under the License.
  */
 
-import { test, expect } from "../../__fixtures__/base";
+import { Locator, Page } from "@playwright/test";
 
-test.describe("Create Boxed Literal", () => {
-  test("should render expression correctly", async ({ bee, stories, page }) => {
-    await stories.openBoxedLiteral();
-    await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("cell")).toHaveCount(1);
-    await expect(bee.getContainer()).toHaveScreenshot("boxed-literal.png");
-  });
-});
+export class ExpressionHeader {
+  constructor(public page: Locator | Page) {}
+
+  public get() {
+    return this.page.getByTestId("logic-type-button-test-id");
+  }
+
+  public async copy() {
+    await this.get().click();
+    await this.page.getByRole("menuitem", { name: "copy" }).click();
+  }
+
+  public async cut() {
+    await this.get().click();
+    await this.page.getByRole("menuitem", { name: "cut" }).click();
+  }
+
+  public async paste() {
+    await this.get().click();
+    await this.page.getByRole("menuitem", { name: "paste" }).click();
+  }
+
+  public async reset() {
+    await this.get().click();
+    await this.page.getByRole("menuitem", { name: "Reset" }).click();
+  }
+}

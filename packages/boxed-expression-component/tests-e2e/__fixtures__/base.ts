@@ -25,21 +25,25 @@ import { Resizing } from "./resizing";
 import { UseCases } from "./useCases";
 import { Monaco } from "./monaco";
 import { ProjectName } from "@kie-tools/playwright-base/projectNames";
+import { ExpressionHeader } from "../api/expressionHeader";
+import { SelectExpressionMenu } from "../api/selectExpressionMenu";
 
 type BoxedExpressionFixtures = {
-  boxedExpressionEditor: BoxedExpressionEditor;
+  bee: BoxedExpressionEditor;
   stories: Stories;
   clipboard: Clipboard;
   resizing: Resizing;
   useCases: UseCases;
   monaco: Monaco;
+  expressionHeader: ExpressionHeader;
+  selectExpressionMenu: SelectExpressionMenu;
 };
 
 export const test = base.extend<BoxedExpressionFixtures>({
   monaco: async ({ page }, use, testInfo) => {
     await use(new Monaco(page, testInfo.project.name as ProjectName));
   },
-  boxedExpressionEditor: async ({ page, baseURL, monaco }, use) => {
+  bee: async ({ page, baseURL, monaco }, use) => {
     await use(new BoxedExpressionEditor(page, monaco, baseURL));
   },
   stories: async ({ page, baseURL }, use) => {
@@ -55,6 +59,12 @@ export const test = base.extend<BoxedExpressionFixtures>({
   },
   useCases: async ({ page, baseURL }, use) => {
     await use(new UseCases(page, baseURL));
+  },
+  expressionHeader: async ({ page }, use) => {
+    await use(new ExpressionHeader(page));
+  },
+  selectExpressionMenu: async ({ page }, use) => {
+    await use(new SelectExpressionMenu(page));
   },
 });
 

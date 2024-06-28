@@ -22,9 +22,9 @@ import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Boxed List context menu", () => {
   test.describe("Rows control", () => {
-    test.beforeEach(async ({ stories, page, monaco, boxedExpressionEditor }) => {
+    test.beforeEach(async ({ stories, page, monaco, bee }) => {
       await stories.openBoxedList();
-      await boxedExpressionEditor.selectBoxedLiteral();
+      await bee.selectExpressionMenu.selectLiteral();
       await monaco.fill({ monacoParentLocator: page, content: '"test"' });
     });
 
@@ -111,9 +111,9 @@ test.describe("Boxed List context menu", () => {
   });
 
   test.describe("Hovering", () => {
-    test.beforeEach(async ({ stories, page, boxedExpressionEditor, monaco }) => {
+    test.beforeEach(async ({ stories, page, bee, monaco }) => {
       await stories.openBoxedList();
-      await boxedExpressionEditor.selectBoxedLiteral();
+      await bee.selectExpressionMenu.selectLiteral();
       await monaco.fill({ monacoParentLocator: page, content: '"test"' });
     });
 
