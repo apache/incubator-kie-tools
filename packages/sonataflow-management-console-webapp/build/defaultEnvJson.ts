@@ -38,5 +38,5 @@ export const defaultEnvJson: EnvJson = {
   SONATAFLOW_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT: buildEnv.sonataflowManagementConsoleWebapp.sonataflowDataIndexUrl,
   SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_APP_NAME: "SonataFlow Management Console",
   SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_APP_VERSION: version,
-  SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE: buildEnv.sonataflowManagementConsoleWebapp.kogitoEnvMode,
+  SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE: buildEnv.sonataflowManagementConsoleWebapp.sonataflowEnvMode,
 };
