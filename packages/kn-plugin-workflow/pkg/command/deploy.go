@@ -188,6 +188,14 @@ func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, err er
 		return cfg, fmt.Errorf("❌ ERROR: failed to get default dashboards files folder: %w", err)
 	}
 
+	// check if sonataflow operator CRDs are installed
+	crds := []string{"sonataflowbuilds.sonataflow.org", "sonataflowclusterplatforms.sonataflow.org", "sonataflowplatforms.sonataflow.org", "sonataflows.sonataflow.org"}
+	for _, crd := range crds {
+		if !common.CheckKubectlCrdExists(crd) {
+			return cfg, fmt.Errorf("❌ ERROR: the required CRDs are not installed.. Install the SonataFlow Operator CRD first")
+		}
+	}
+
 	//setup manifest path
 	if err := setupConfigManifestPath(&cfg); err != nil {
 		return cfg, err
