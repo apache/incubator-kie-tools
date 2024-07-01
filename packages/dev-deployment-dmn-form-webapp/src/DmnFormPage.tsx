@@ -34,11 +34,11 @@ import { useDmnFormI18n } from "./i18n";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { dereferenceAndCheckForRecursion, getDefaultValues } from "@kie-tools/dmn-runner/dist/jsonSchema";
 import { extractDifferences } from "@kie-tools/dmn-runner/dist/results";
-import { DmnFormAppProps } from "./DmnFormApp";
 import { openapiSchemaToJsonSchema } from "@openapi-contrib/openapi-schema-to-json-schema";
 import type { JSONSchema4 } from "json-schema";
+import { useApp } from "./AppContext";
 
-interface Props extends DmnFormAppProps {
+interface Props {
   formData: FormData;
 }
 
@@ -60,6 +60,7 @@ export function DmnFormPage(props: Props) {
   const [openAlert, setOpenAlert] = useState(AlertTypes.NONE);
   const [pageError, setPageError] = useState<boolean>(false);
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
+  const { quarkusAppOrigin, quarkusAppPath } = useApp();
 
   useCancelableEffect(
     useCallback(
@@ -93,8 +94,8 @@ export function DmnFormPage(props: Props) {
   const onSubmit = useCallback(async () => {
     try {
       const formOutputs = await fetchDmnResult({
-        baseOrigin: props.baseOrigin,
-        basePath: props.basePath,
+        quarkusAppOrigin,
+        quarkusAppPath,
         modelName: props.formData.modelName,
         inputs: formInputs,
       });
@@ -111,7 +112,7 @@ export function DmnFormPage(props: Props) {
       setOpenAlert(AlertTypes.ERROR);
       console.error(error);
     }
-  }, [formInputs, props.formData.modelName, props.baseOrigin, props.basePath]);
+  }, [quarkusAppOrigin, quarkusAppPath, props.formData.modelName, formInputs]);
 
   const pageErrorMessage = useMemo(
     () => (

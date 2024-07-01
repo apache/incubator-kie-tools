@@ -76,51 +76,51 @@ module.exports = composeEnv([rootEnv, extendedServicesEnv, corsProxyEnv], {
     },
     ONLINE_EDITOR__devDeploymentBaseImageRegistry: {
       default: "docker.io",
-      description: "Image registry to be used by Dev deployments when deploying models.",
+      description: "Image registry to be used by Dev Deployments when deploying models.",
     },
     ONLINE_EDITOR__devDeploymentBaseImageAccount: {
       default: "apache",
-      description: "Image account to be used by Dev deployments when deploying models.",
+      description: "Image account to be used by Dev Deployments when deploying models.",
     },
     ONLINE_EDITOR__devDeploymentBaseImageName: {
       default: "incubator-kie-sandbox-dev-deployment-base",
-      description: "Image name to be used by Dev deployments when deploying models.",
+      description: "Image name to be used by Dev Deployments when deploying models.",
     },
     ONLINE_EDITOR__devDeploymentBaseImageTag: {
       default: rootEnv.env.root.streamName,
-      description: "Image tag to be used by Dev deployments when deploying models.",
+      description: "Image tag to be used by Dev Deployments when deploying models.",
     },
     ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageRegistry: {
       default: "docker.io",
-      description: "Image registry to be used by Dev deployments when deploying models.",
+      description: "Image registry to be used by Dev Deployments when deploying models.",
     },
     ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageAccount: {
       default: "apache",
-      description: "Image account to be used by Dev deployments when deploying models.",
+      description: "Image account to be used by Dev Deployments when deploying models.",
     },
     ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageName: {
       default: "incubator-kie-sandbox-dev-deployment-kogito-quarkus-blank-app",
-      description: "Image name to be used by Dev deployments when deploying models.",
+      description: "Image name to be used by Dev Deployments when deploying models.",
     },
     ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageTag: {
       default: rootEnv.env.root.streamName,
-      description: "Image tag to be used by Dev deployments when deploying models.",
+      description: "Image tag to be used by Dev Deployments when deploying models.",
     },
     ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry: {
       default: "docker.io",
-      description: "Image registry to be used by Dev deployments to display a form for deployed DMN models.",
+      description: "Image registry to be used by Dev Deployments to display a form for deployed DMN models.",
     },
     ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount: {
       default: "apache",
-      description: "Image account to be used by Dev deployments to display a form for deployed DMN models.",
+      description: "Image account to be used by Dev Deployments to display a form for deployed DMN models.",
     },
     ONLINE_EDITOR__devDeploymentDmnFormWebappImageName: {
       default: "incubator-kie-sandbox-dev-deployment-dmn-form-webapp",
-      description: "Image name to be used by Dev deployments to display a form for deployed DMN models.",
+      description: "Image name to be used by Dev Deployments to display a form for deployed DMN models.",
     },
     ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag: {
       default: rootEnv.env.root.streamName,
-      description: "Image tag to be used by Dev deployments to display a form for deployed DMN models.",
+      description: "Image tag to be used by Dev Deployments to display a form for deployed DMN models.",
     },
     ONLINE_EDITOR__devDeploymentImagePullPolicy: {
       default: "IfNotPresent",

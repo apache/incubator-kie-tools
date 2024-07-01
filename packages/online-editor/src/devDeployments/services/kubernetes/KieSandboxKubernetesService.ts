@@ -160,7 +160,7 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
           };
         });
     } catch (error) {
-      throw new Error("Error: Failed to load Dev deployments from Kubernetes provider.", error);
+      throw new Error("Error: Failed to load Dev Deployments from Kubernetes provider.", error);
     }
   }
 

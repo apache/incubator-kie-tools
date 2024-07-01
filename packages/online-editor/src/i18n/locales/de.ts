@@ -150,8 +150,8 @@ export const de: OnlineI18n = {
       body: "Dieser Vorgang kann einige Minuten in Anspruch nehmen, und Sie müssen eine neue Bereitstellung erstellen, wenn Sie Ihr Modell aktualisieren, da Dev-Deployments unveränderbar sind.",
     },
     deleteConfirmModal: {
-      title: "Dev deployment(s) löschen",
-      body: "Sind Sie sicher, dass Sie Ihre Dev deployment(s) löschen möchten?",
+      title: "Dev Deployment(s) löschen",
+      body: "Sind Sie sicher, dass Sie Ihre Dev Deployment(s) löschen möchten?",
     },
     alerts: {
       deployStartedError:
@@ -159,7 +159,7 @@ export const de: OnlineI18n = {
       deployStartedSuccess: "Ihre Dev Deployment wurde erfolgreich gestartet und wird in Kürze verfügbar sein.",
       deleteError:
         "Dev Deployment(s) konnte(n) nicht gelöscht werden. Bitte versuchen Sie es erneut über die OpenShift-Konsole oder CLI.",
-      deleteSuccess: "Dev deployment(s) erfolgreich gelöscht.",
+      deleteSuccess: "Dev Deployment(s) erfolgreich gelöscht.",
     },
     introduction: {
       explanation: `Erstellen Sie Dev Deployments in der Cloud und teilen Sie sie mit anderen.`,

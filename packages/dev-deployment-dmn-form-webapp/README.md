@@ -15,7 +15,22 @@
    under the License.
 -->
 
-## @kie-tools/dev-deployment-dmn-form-webapp
+# KIE Sandbox Dev Deployment DMN Form Webapp Image
+
+Form Webapp to fill and submit decisions inputs. Requires a kogito quarkus app as it's backend.
+
+## Environment Variables
+
+- DEV_DEPLOYMENT_DMN_FORM_WEBAPP_QUARKUS_APP_ORIGIN: Sets the origin of the quarkus app (`http://localhost:8080` for example); Defaults to `""`, in which case it's replaced by `window.location.origin`.
+- DEV_DEPLOYMENT_DMN_FORM_WEBAPP_QUARKUS_APP_PATH: Sets the relative path of the quarkus app in that origin (`/dev-deployment-1234` for example); Defaults to `""`, in which case it's replaced by `..` or `/` depending on the path the webapp is being served from.
+
+## Running
+
+Use the dev-webapp and dev quarkus-app to run and test the form webapp:
+
+```bash
+pnpm start
+```
 
 ---
 

@@ -49,6 +49,7 @@ export class Route<
     queryParams?: Partial<{ [k in T["queryParams"]]: string }>;
     baseOrigin?: string;
     basePath?: string;
+    modelName?: string;
   }) {
     const SEP = args.base?.endsWith("/") ? "" : "/";
     const HASH = IS_HASH_ROUTER ? "#" : "";
@@ -124,9 +125,9 @@ export const routes = {
   error: new Route<{}>(() => "/error"),
 
   quarkusApp: {
-    dmnDefinitionsJson: new Route<{}>((_, baseOrigin, basePath) =>
-      urlFromBasePath(baseOrigin, basePath, "/dmnDefinitions.json")
-    ),
+    modelDefinitionsJson: new Route<{
+      pathParams: PathParams.MODEL_NAME;
+    }>(({ modelName }, baseOrigin, basePath) => urlFromBasePath(baseOrigin, basePath, `/${modelName}.json`)),
     openApiJson: new Route<{}>((_, baseOrigin, basePath) =>
       urlFromBasePath(baseOrigin, basePath, "/q/openapi?format=json")
     ),
