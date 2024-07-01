@@ -25,23 +25,23 @@ module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     SONATAFLOW_MANAGEMENT_CONSOLE__registry: {
       default: "docker.io",
-      description: "The image registry.",
+      description: "E.g., `docker.io` or `quay.io`.",
     },
     SONATAFLOW_MANAGEMENT_CONSOLE__account: {
       default: "apache",
-      description: "The image registry account.",
+      description: "E.g,. `apache` or `kie-tools-bot`",
     },
     SONATAFLOW_MANAGEMENT_CONSOLE__name: {
       default: "incubator-kie-sonataflow-management-console",
-      description: "The image name.",
+      description: "Name of the image itself.",
     },
     SONATAFLOW_MANAGEMENT_CONSOLE__buildTag: {
       default: rootEnv.env.root.streamName,
-      description: "The image tag.",
+      description: "Tag version of this image. E.g., `main` or `10.0.x` or `10.0.0",
     },
     SONATAFLOW_MANAGEMENT_CONSOLE__port: {
       default: 8080,
-      description: "The default container port.",
+      description: "The internal container port.",
     },
   }),
   get env() {
