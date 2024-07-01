@@ -39,6 +39,7 @@
   <packaging>pom</packaging>
 
   <properties>
+    <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
     <java.module.name>org.jbpm.quarkus.dev.ui</java.module.name>
   </properties>
 
