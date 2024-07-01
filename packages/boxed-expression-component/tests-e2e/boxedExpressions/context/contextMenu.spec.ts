@@ -22,9 +22,9 @@ import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Boxed Context context menu", () => {
   test.describe("context entry control", () => {
-    test.beforeEach(async ({ stories, page, monaco, boxedExpressionEditor }) => {
+    test.beforeEach(async ({ stories, page, monaco, bee }) => {
       await stories.openBoxedContext();
-      await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "ContextEntry-1 (<Undefined>)" }));
+      await bee.selectExpressionMenu.selectLiteral(page.getByRole("row", { name: "ContextEntry-1 (<Undefined>)" }));
       await monaco.fill({ monacoParentLocator: page, content: '"test"' });
     });
 
@@ -114,9 +114,9 @@ test.describe("Boxed Context context menu", () => {
   });
 
   test.describe("Hovering", () => {
-    test.beforeEach(async ({ stories, page, boxedExpressionEditor, monaco }) => {
+    test.beforeEach(async ({ stories, page, bee, monaco }) => {
       await stories.openBoxedContext();
-      await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "ContextEntry-1 (<Undefined>)" }));
+      await bee.selectExpressionMenu.selectLiteral(page.getByRole("row", { name: "ContextEntry-1 (<Undefined>)" }));
       await monaco.fill({ monacoParentLocator: page, content: '"test"' });
     });
 

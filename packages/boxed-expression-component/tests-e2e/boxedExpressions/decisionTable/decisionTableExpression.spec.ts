@@ -24,14 +24,14 @@ test.describe("Create Decision table", () => {
     await stories.openDecisionTable();
   });
 
-  test("should render expression correctly", async ({ boxedExpressionEditor, page }) => {
+  test("should render expression correctly", async ({ bee, page }) => {
     await expect(page.getByRole("columnheader", { name: "input-1 (<Undefined>)" })).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "Annotations", exact: true })).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "U", exact: true })).toBeAttached();
     await expect(page.getByRole("columnheader")).toHaveCount(4);
     await expect(page.getByRole("cell")).toHaveCount(4);
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("decision-table.png");
+    await expect(bee.getContainer()).toHaveScreenshot("decision-table.png");
   });
 
   test.describe("Hit policy", () => {

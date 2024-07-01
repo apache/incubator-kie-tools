@@ -41,53 +41,51 @@ test.describe("Create Boxed Filter", () => {
     await expect(page.getByRole("columnheader", { name: "Expression Name (boolean)" })).toBeVisible();
   });
 
-  test("should correctly reset a nested filter", async ({ boxedExpressionEditor, page, stories }) => {
+  test("should correctly reset a nested filter", async ({ bee, page, stories }) => {
     await stories.openBoxedFilter("nested");
 
-    await boxedExpressionEditor.resetFilter(page.getByTestId("expression-row-0"));
+    await bee.expression.asContext().entry(0).expression.header.reset();
 
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-reset.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested-reset.png");
   });
 
-  test("should correctly create a nested filter", async ({ boxedExpressionEditor, page, stories }) => {
+  test("should correctly create a nested filter", async ({ bee, page, stories }) => {
     await stories.openBoxedFilter("base");
 
-    await boxedExpressionEditor.resetFilter();
-    await boxedExpressionEditor.selectBoxedContext();
+    await bee.selectExpressionMenu.selectContext();
 
     // Prepare empty Filter 'in' and 'match' cells
-    await boxedExpressionEditor.selectBoxedFilter(page.getByText("Select expression").first());
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
+    await bee.expression.asContext().entry(0).selectExpressionMenu.selectFilter();
+    await bee.expression.asContext().entry(0).expression.asFilter().in.selectExpressionMenu.selectLiteral();
+    await bee.expression.asContext().entry(0).expression.asFilter().match.selectExpressionMenu.selectLiteral();
+    await bee.expression
+      .asContext()
+      .entry(0)
+      .expression.asFilter()
+      .in.expression.asLiteral()
+      .fill("collection in expression");
+    await bee.expression
+      .asContext()
+      .entry(0)
+      .expression.asFilter()
+      .match.expression.asLiteral()
+      .fill("collection match expression");
 
-    await boxedExpressionEditor.fillFilter({
-      collectionIn: ["collection in expression"],
-      collectionMatch: "collection match expression",
-    });
-
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested.png");
   });
 
-  test("should correctly create a filter using list boxed expression", async ({
-    boxedExpressionEditor,
-    page,
-    stories,
-  }) => {
+  test("should correctly create a filter using list boxed expression", async ({ bee, page, stories }) => {
     await stories.openBoxedFilter("base");
-    await boxedExpressionEditor.selectBoxedList(page.getByText("Select expression").first());
-    // 'in'
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
-    await page.getByText("1").first().click({ button: "right" });
-    await page.getByRole("menuitem").getByText("Insert below").click();
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
-    // 'match'
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
+    await bee.expression.asFilter().in.selectExpressionMenu.selectList();
+    await bee.expression.asFilter().in.expression.asList().addEntry();
+    await bee.expression.asFilter().in.expression.asList().entry(0).selectExpressionMenu.selectLiteral();
+    await bee.expression.asFilter().in.expression.asList().entry(1).selectExpressionMenu.selectLiteral();
+    await bee.expression.asFilter().in.expression.asList().entry(0).expression.asLiteral().fill("Passenger One");
+    await bee.expression.asFilter().in.expression.asList().entry(1).expression.asLiteral().fill("Passenger Two");
 
-    await boxedExpressionEditor.fillFilter({
-      collectionIn: ["Passenger One", "Passenger Two"],
-      collectionMatch: "item.Flight Number = Flight.Flight Number",
-    });
+    await bee.expression.asFilter().match.selectExpressionMenu.selectLiteral();
+    await bee.expression.asFilter().match.expression.asLiteral().fill("item.Flight Number = Flight.Flight Number");
 
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-boxed-list.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested-boxed-list.png");
   });
 });

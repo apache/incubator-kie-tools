@@ -43,5 +43,8 @@ export class Clipboard {
     }
   }
 
-  public use() {}
+  public use() {
+    // We're just making sure that in the tests that uses clipboard we have permission to use it.
+    // The clipboard fixture is initialized in setup method.
+  }
 }

@@ -24,20 +24,20 @@ test.describe("Create Boxed Function", () => {
     await stories.openBoxedFunction();
   });
 
-  test("should render FEEL function expression correctly", async ({ boxedExpressionEditor, page }) => {
+  test("should render FEEL function expression correctly", async ({ bee, page }) => {
     await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "F", exact: true })).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "Edit parameters" })).toBeAttached();
     await expect(page.getByText("Select expression")).toHaveCount(1);
     await expect(page.getByRole("columnheader")).toHaveCount(3);
     await expect(page.getByRole("cell")).toHaveCount(2);
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-feel-function.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-feel-function.png");
   });
 
-  test("should render Java function expression correctly", async ({ boxedExpressionEditor, page }) => {
+  test("should render Java function expression correctly", async ({ bee, page }) => {
     await page.getByRole("columnheader", { name: "F", exact: true }).click();
     await page.getByRole("menuitem", { name: "Java" }).click();
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-java-function.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-java-function.png");
 
     await expect(page.getByRole("columnheader", { name: "J", exact: true })).toBeAttached();
     // the "onmouseenter" events triggers if the mouse was outside of the element before it appears on screen.
@@ -52,10 +52,10 @@ test.describe("Create Boxed Function", () => {
     await expect(page.getByRole("cell")).toHaveCount(6);
   });
 
-  test("should render PMML function expression correctly", async ({ boxedExpressionEditor, page }) => {
+  test("should render PMML function expression correctly", async ({ bee, page }) => {
     await page.getByRole("columnheader", { name: "F", exact: true }).click();
     await page.getByRole("menuitem", { name: "PMML" }).click();
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-pmml-function.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-pmml-function.png");
 
     await expect(page.getByRole("columnheader", { name: "P", exact: true })).toBeAttached();
     await expect(page.getByText("Document(string)")).toBeAttached();

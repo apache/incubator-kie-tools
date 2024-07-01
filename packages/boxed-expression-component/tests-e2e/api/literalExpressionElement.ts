@@ -17,13 +17,20 @@
  * under the License.
  */
 
-import { test, expect } from "../../__fixtures__/base";
+import { Locator, Page } from "@playwright/test";
+import { Monaco } from "../__fixtures__/monaco";
 
-test.describe("Create Boxed Literal", () => {
-  test("should render expression correctly", async ({ bee, stories, page }) => {
-    await stories.openBoxedLiteral();
-    await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("cell")).toHaveCount(1);
-    await expect(bee.getContainer()).toHaveScreenshot("boxed-literal.png");
-  });
-});
+export class LiteralExpressionElement {
+  constructor(
+    public element: Locator | Page,
+    public monaco: Monaco
+  ) {}
+
+  public async fill(expression: string) {
+    await this.monaco.fill({ monacoParentLocator: this.element, nth: 0, content: expression });
+  }
+
+  get content() {
+    return this.element.getByRole("cell").nth(0);
+  }
+}

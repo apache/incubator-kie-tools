@@ -21,13 +21,7 @@ import { test, expect } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Populate Boxed Function", () => {
-  test("should correctly populate boxed function", async ({
-    stories,
-    page,
-    boxedExpressionEditor,
-    resizing,
-    monaco,
-  }) => {
+  test("should correctly populate boxed function", async ({ stories, page, bee, resizing, monaco }) => {
     await stories.openBoxedFunction();
 
     await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
@@ -73,7 +67,7 @@ test.describe("Populate Boxed Function", () => {
     await page.getByRole("option", { name: "number" }).click();
     await page.keyboard.press("Escape");
 
-    await boxedExpressionEditor.selectBoxedContext(page.getByRole("row", { name: "1" }));
+    await bee.selectExpressionMenu.selectContext(page.getByRole("row", { name: "1" }));
     await page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)", exact: true }).hover();
     await page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)", exact: true }).locator("svg").click();
 
@@ -91,13 +85,13 @@ test.describe("Populate Boxed Function", () => {
 
     await resizing.reset(page.getByRole("cell", { name: "Credit contingency factor (number)", exact: true }));
 
-    await boxedExpressionEditor.selectBoxedLiteral(
+    await bee.selectExpressionMenu.selectLiteral(
       page.getByRole("cell", { name: "Select expression", exact: true }).nth(0)
     );
-    await boxedExpressionEditor.selectDecisionTable(
+    await bee.selectExpressionMenu.selectDecisionTable(
       page.getByRole("cell", { name: "Select expression", exact: true }).nth(0)
     );
-    await boxedExpressionEditor.selectBoxedLiteral(
+    await bee.selectExpressionMenu.selectLiteral(
       page.getByRole("cell", { name: "Select expression", exact: true }).nth(0)
     );
 
@@ -114,7 +108,7 @@ test.describe("Populate Boxed Function", () => {
     await page.getByPlaceholder("Expression Name").fill("Risk category");
     await page.keyboard.press("Enter");
 
-    await boxedExpressionEditor.fillDecisionTable({
+    await bee.expression.asDecisionTable().fill({
       startAtCell: 1,
       tableData: [
         [`"High", "Decline"`, "0.6"],
@@ -145,6 +139,6 @@ else false`,
     //   page.getByRole("columnheader", { name: "Credit contingency factor (number)" }).nth(1)
     // );
 
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-function-affordability-calculation.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-function-affordability-calculation.png");
   });
 });
