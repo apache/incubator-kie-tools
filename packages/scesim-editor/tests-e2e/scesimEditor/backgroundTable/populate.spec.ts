@@ -30,39 +30,39 @@ test.describe("Populate decision background table", () => {
   }) => {
     await editor.createTestScenario(AssetType.DECISION);
     await editor.switchToBackgroundTable();
-    await backgroundTable.fill({ content: "{foo}", column: 0 });
+    await backgroundTable.fill({ content: "{foo}", columnNumber: 0 });
 
     await table.addPropertyColumn({
       targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
-      nth: 0,
+      columnNumber: 0,
     });
     await table.addPropertyColumn({
       targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
-      nth: 0,
+      columnNumber: 0,
     });
     await table.addPropertyColumn({
       targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
-      nth: 0,
+      columnNumber: 0,
     });
     await table.addPropertyColumn({
       targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
-      nth: 0,
+      columnNumber: 0,
     });
     await table.addPropertyColumn({
       targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
-      nth: 0,
+      columnNumber: 0,
     });
 
-    await backgroundTable.fill({ content: "[foo]", column: 1 });
-    await backgroundTable.fill({ content: '"foo"', column: 2 });
-    await backgroundTable.fill({ content: ",./123981275980172957129517", column: 3 });
-    await backgroundTable.fill({ content: "{foo}{foo}f", column: 4 });
-    await backgroundTable.fill({ content: "=1-205=-1205=-0125-0215215", column: 5 });
+    await backgroundTable.fill({ content: "[foo]", columnNumber: 1 });
+    await backgroundTable.fill({ content: '"foo"', columnNumber: 2 });
+    await backgroundTable.fill({ content: ",./123981275980172957129517", columnNumber: 3 });
+    await backgroundTable.fill({ content: "{foo}{foo}f", columnNumber: 4 });
+    await backgroundTable.fill({ content: "=1-205=-1205=-0125-0215215", columnNumber: 5 });
 
     await resizing.reset(table.getColumnHeader({ name: "INSTANCE-1 (<Undefined>)" }));
     await expect(backgroundTable.get()).toHaveScreenshot("background-table-decision.png");
@@ -78,39 +78,39 @@ test.describe("Populate rule background table", () => {
   }) => {
     await editor.createTestScenario(AssetType.RULE);
     await editor.switchToBackgroundTable();
-    await backgroundTable.fill({ content: "{foo}", column: 0 });
+    await backgroundTable.fill({ content: "{foo}", columnNumber: 0 });
 
     await table.addPropertyColumn({
       targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
-      nth: 0,
+      columnNumber: 0,
     });
     await table.addPropertyColumn({
       targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
-      nth: 0,
+      columnNumber: 0,
     });
     await table.addPropertyColumn({
       targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
-      nth: 0,
+      columnNumber: 0,
     });
     await table.addPropertyColumn({
       targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
-      nth: 0,
+      columnNumber: 0,
     });
     await table.addPropertyColumn({
       targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
-      nth: 0,
+      columnNumber: 0,
     });
 
-    await backgroundTable.fill({ content: "[foo]", column: 1 });
-    await backgroundTable.fill({ content: '"foo"', column: 2 });
-    await backgroundTable.fill({ content: ",./123981275980172957129517", column: 3 });
-    await backgroundTable.fill({ content: "{foo}{foo}f", column: 4 });
-    await backgroundTable.fill({ content: "=1-205=-1205=-0125-0215215", column: 5 });
+    await backgroundTable.fill({ content: "[foo]", columnNumber: 1 });
+    await backgroundTable.fill({ content: '"foo"', columnNumber: 2 });
+    await backgroundTable.fill({ content: ",./123981275980172957129517", columnNumber: 3 });
+    await backgroundTable.fill({ content: "{foo}{foo}f", columnNumber: 4 });
+    await backgroundTable.fill({ content: "=1-205=-1205=-0125-0215215", columnNumber: 5 });
 
     await resizing.reset(table.getColumnHeader({ name: "INSTANCE-1 (<Undefined>)" }));
     await expect(backgroundTable.get()).toHaveScreenshot("background-table-rule.png");
