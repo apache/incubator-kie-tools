@@ -20,7 +20,7 @@
 import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { PrEditorsApp } from "./PrEditorsApp";
-import { createAndGetMainContainer, openRepoInExternalEditorContainer, removeAllChildren } from "../../utils";
+import { createAndGetMainContainer, openRepoInExternalEditorContainer } from "../../utils";
 import { Globals, Main } from "../common/Main";
 import {
   KOGITO_IFRAME_CONTAINER_PR_CLASS,
@@ -32,6 +32,7 @@ import { Dependencies } from "../../Dependencies";
 import { PrInfo } from "./IsolatedPrEditor";
 import { OpenInExternalEditorButton } from "../openRepoInExternalEditor/OpenInExternalEditorButton";
 import { GitHubPageType } from "../../github/GitHubPageType";
+import { cleanupDuplicateElements } from "../../utils";
 
 export function renderPrEditorsApp(
   args: Globals & {
@@ -40,10 +41,13 @@ export function renderPrEditorsApp(
     container: () => HTMLElement;
   }
 ) {
-  // Necessary because GitHub apparently "caches" DOM structures between changes on History.
-  // Without this method you can observe duplicated elements when using back/forward browser buttons.
-  cleanup(args.id);
-
+  const prEditorSelectorsArray = [
+    KOGITO_IFRAME_CONTAINER_PR_CLASS,
+    KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS,
+    KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
+    KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS,
+  ];
+  cleanupDuplicateElements(args.id, prEditorSelectorsArray);
   ReactDOM.render(
     <Main
       id={args.id}
@@ -90,25 +94,4 @@ export function parsePrInfo(dependencies: Dependencies): PrInfo {
     org: prInfos[4],
     gitRef: prInfos[5],
   };
-}
-
-function cleanup(id: string) {
-  Array.from(document.querySelectorAll(`.${KOGITO_IFRAME_CONTAINER_PR_CLASS}.${id}`)).forEach((e) => {
-    removeAllChildren(e);
-  });
-
-  Array.from(document.querySelectorAll(`.${KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS}.${id}`)).forEach((e) => {
-    removeAllChildren(e);
-  });
-
-  Array.from(document.querySelectorAll(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}.${id}`)).forEach((e) => {
-    removeAllChildren(e);
-  });
-
-  Array.from(document.querySelectorAll(`.${KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS}.${id}`)).forEach(
-    (e) => {
-      removeAllChildren(e);
-      e.remove();
-    }
-  );
 }
