@@ -19,11 +19,22 @@
 
 package org.kogito.core.internal.api;
 
+/**
+ *  Must be synchronized with JavaCodeCompletionAccessor.ts 
+ */
 public class GetPublicResult {
 
+    /**
+     * The Java Class that cointans the below accessor in FQCN format (eg. `org.Author`)
+     */
     private String fqcn;
+    /**
+     * Accessor's name (eg. `getName()` if a method, `name` if a field
+     */
     private String accessor;
-
+    /**
+     * Accessor's type in FQCN format (eg. `java.lang.String`)
+     */
     private String type;
 
     public String getFqcn() {
