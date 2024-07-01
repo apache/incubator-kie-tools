@@ -22,8 +22,8 @@
   "scripts": {
     "build:dev": "mvn clean install -DskipTests",
     "build:prod": "pnpm lint && run-script-os",
-    "build:prod:darwin:linux": "mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
-    "build:prod:win32": "pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
+    "build:prod:darwin:linux": "mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -Dreproducible",
+    "build:prod:win32": "pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-Dreproducible\"",
     "install": "node install.js && pnpm install:mvnw",
     "install:mvnw": "mvn -e org.apache.maven.plugins:maven-wrapper-plugin:3.3.0:wrapper -f ./",
     "lint": "echo 'Linting'",

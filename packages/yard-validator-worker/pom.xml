@@ -42,6 +42,7 @@
   </licenses>
 
   <properties>
+    <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
     <yaml.mapper>0.4</yaml.mapper>
     <org.jresearch.gwt.time>2.0.10</org.jresearch.gwt.time>
     <compiler-plugin.version>3.13.0</compiler-plugin.version>

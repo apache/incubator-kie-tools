@@ -42,6 +42,7 @@
   </licenses>
 
   <properties>
+    <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
     <yaml.mapper>0.4</yaml.mapper>
     <helper.maven.plugin>3.2.0</helper.maven.plugin>
     <maven.compiler.source>11</maven.compiler.source>
