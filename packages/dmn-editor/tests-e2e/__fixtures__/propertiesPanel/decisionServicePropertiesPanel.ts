@@ -120,4 +120,71 @@ export class DecisionServicePropertiesPanel extends PropertiesPanelBase {
   public async setStrokeColor(args: { color: string }) {
     await this.shapeProperties.setStrokeColor({ ...args });
   }
+
+  public async getOutputDecisions() {
+    return (await this.panel()
+      .getByTestId("kie-tools--dmn-editor--decision-service-output-decisions")
+      .textContent())!.trim();
+  }
+
+  public async getEncapsulatedDecisions() {
+    return (await this.panel()
+      .getByTestId("kie-tools--dmn-editor--decision-service-encapsulated-decisions")
+      .textContent())!.trim();
+  }
+
+  public async getInputDecisions() {
+    return (
+      await this.panel()
+        .getByTestId("kie-tools--dmn-editor--decision-service-input-decisions")
+        .getByTestId("kie-dmn-editor--draggable-children")
+        .allTextContents()
+    ).map((content) => content.trim());
+  }
+
+  public async moveInputDecision(args: { nth: number; way: "up" | "down" }) {
+    // TODO
+  }
+
+  public async getInputData() {
+    return (
+      await this.panel()
+        .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
+        .getByTestId("kie-dmn-editor--draggable-children")
+        .allTextContents()
+    ).map((content) => content.trim());
+  }
+
+  public async moveInputData(args: { nth: number; way: "up" | "down" }) {
+    await this.panel()
+      .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
+      .getByTestId("kie-dmn-editor--draggable-icon")
+      .nth(args.nth)
+      .hover();
+
+    await this.panel()
+      .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
+      .getByTestId("kie-dmn-editor--draggable-icon")
+      .nth(args.nth)
+      .dispatchEvent("mousedown");
+
+    await this.panel()
+      .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
+      .getByTestId("kie-dmn-editor--draggable-icon")
+      .nth(args.nth)
+      .dragTo(this.panel().getByTestId("kie-tools--dmn-editor--decision-service-input-data"), {
+        sourcePosition: { x: 5, y: 10 },
+        targetPosition: { x: 5, y: 60 },
+      });
+
+    await this.panel()
+      .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
+      .getByTestId("kie-dmn-editor--draggable-icon")
+      .nth(args.nth)
+      .dispatchEvent("mouseup");
+  }
+
+  public async getInvokingThisDecisionServiceInFeel() {
+    return await this.panel().getByTestId("kie-tools--dmn-editor--decision-service-feel").textContent();
+  }
 }
