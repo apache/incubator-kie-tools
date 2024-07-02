@@ -52,11 +52,11 @@ pipeline {
                     if (getTargetBranch()) {
                         echo 'Got a target branch ... Trying to merge the source with the target'
                         githubscm.checkoutIfExists(getRepoName(), getSourceAuthor(), getSourceBranch(), getTargetAuthor(), getTargetBranch(), true, [ token: getGitAuthorTokenCredentialsId(), usernamePassword: getGitAuthorCredentialsId() ])
-                        githubscm.prepareCommitStatusInformationForPullRequest(getRepoName(), getSourceAuthor(), getSourceBranch(), getTargetAuthor(), getGitAuthorCredentialsId())
+                        githubscm.prepareCommitStatusInformationForPullRequest(getSourceRepository(), getSourceAuthor(), getSourceBranch(), getTargetAuthor(), getGitAuthorCredentialsId())
                     } else {
                         echo 'No target branch ... Checking out simply'
-                        checkout(githubscm.resolveRepository(getRepoName(), getSourceAuthor(), getSourceBranch(), false, getGitAuthorCredentialsId()))
-                        githubscm.prepareCommitStatusInformation(getRepoName(), getSourceAuthor(), getSourceBranch(), getGitAuthorCredentialsId())
+                        checkout(githubscm.resolveRepository(getSourceRepository(), getSourceAuthor(), getSourceBranch(), false, getGitAuthorCredentialsId()))
+                        githubscm.prepareCommitStatusInformation(getSourceRepository(), getSourceAuthor(), getSourceBranch(), getGitAuthorCredentialsId())
                     }
                     githubscm.setUserConfig('robot', 'kie.apache.org', true)
                     updateGithubCommitStatus('PENDING', 'Started')
@@ -359,6 +359,10 @@ String getBuildImageName() {
 
 String getSourceAuthor() {
     return params.SOURCE_AUTHOR
+}
+
+String getSourceRepository() {
+    return params.SOURCE_REPOSITORY
 }
 
 String getSourceBranch() {

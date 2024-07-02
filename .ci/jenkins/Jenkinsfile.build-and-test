@@ -38,7 +38,15 @@ pipeline {
                     dir(getRepoName()) {
                         // TODO Test pupose
                         deleteDir()
-                        githubscm.checkoutIfExists(getRepoName(), getChangeAuthor(), getChangeBranch(), 'apache', getChangeTarget(), true, credentials = [token: getGitAuthorTokenCredentialsId(), usernamePassword: getGitAuthorCredentialsId()])
+                        if (getTargetBranch()) {
+                            echo 'Got a target branch ... Trying to merge the source with the target'
+                            githubscm.checkoutIfExists(getRepoName(), getSourceAuthor(), getSourceBranch(), getTargetAuthor(), getTargetBranch(), true, [ token: getGitAuthorTokenCredentialsId(), usernamePassword: getGitAuthorCredentialsId() ])
+                            githubscm.prepareCommitStatusInformationForPullRequest(getSourceRepository(), getSourceAuthor(), getSourceBranch(), getTargetAuthor(), getGitAuthorCredentialsId())
+                        } else {
+                            echo 'No target branch ... Checking out simply'
+                            githubscm.checkout(githubscm.resolveRepository(getSourceRepository(), getSourceAuthor(), getSourceBranch(), false, getGitAuthorCredentialsId()))
+                            githubscm.prepareCommitStatusInformation(getSourceRepository(), getSourceAuthor(), getSourceBranch(), getGitAuthorCredentialsId())
+                        }
                     }
                 }
             }
@@ -62,7 +70,6 @@ pipeline {
             steps {
                 script {
                     dir(getRepoName()) {
-                        githubscm.prepareCommitStatusInformationForPullRequest(getRepoName(), getChangeAuthor(), getChangeBranch(), 'apache', getGitAuthorCredentialsId())
                         parallelStages = [:]
                         for(String image : getImages()){
                             parallelStages[image] = createBuildAndTestStageClosure(image)
@@ -88,8 +95,9 @@ Closure createBuildAndTestStageClosure(String image) {
             List buildParams = []
             buildParams.add(string(name: "DISPLAY_NAME", value: "PR #${getChangeId()} - ${image}: ${getChangeUrl()}"))
             buildParams.add(string(name: 'BUILD_IMAGE_NAME', value: image))
-            buildParams.add(string(name: 'SOURCE_AUTHOR', value: getChangeAuthor()))
-            buildParams.add(string(name: 'SOURCE_BRANCH', value: getChangeBranch()))
+            buildParams.add(string(name: 'SOURCE_AUTHOR', value: getSourceAuthor()))
+            buildParams.add(string(name: 'SOURCE_REPOSITORY', value: getSourceRepository()))
+            buildParams.add(string(name: 'SOURCE_BRANCH', value: getSourceBranch()))
             buildParams.add(string(name: 'TARGET_BRANCH', value: getChangeTarget()))
             buildParams.add(string(name: 'BUILD_KOGITO_APPS_REF', value: getChangeTarget()))
 
@@ -115,28 +123,40 @@ String[] getImages() {
     return sh(returnStdout: true, script: "make list | tr '\\n' ','").trim().split(',')
 }
 
-String getChangeAuthor() {
-    return SOURCE_AUTHOR
+String getSourceAuthor() {
+    return params.SOURCE_AUTHOR
 }
 
-String getChangeBranch() {
-    return SOURCE_BRANCH
+String getSourceBranch() {
+    return params.SOURCE_BRANCH
+}
+
+String getSourceRepository() {
+    return params.SOURCE_REPOSITORY
 }
 
 String getChangeTarget() {
-    return TARGET_BRANCH
+    return params.TARGET_BRANCH
 }
 
 String getChangeId() {
-    return CHANGE_ID
+    return params.CHANGE_ID
 }
 
 String getChangeUrl() {
-    return CHANGE_URL
+    return params.CHANGE_URL
 }
 
 String getRepoName() {
     return env.REPO_NAME
+}
+
+String getTargetAuthor() {
+    return env.TARGET_AUTHOR
+}
+
+String getTargetBranch() {
+    return params.TARGET_BRANCH
 }
 
 String getGitAuthorCredentialsId() {

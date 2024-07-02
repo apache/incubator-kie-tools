@@ -187,6 +187,7 @@ void setupBuildImageJob(JobType jobType) {
             stringParam('BUILD_IMAGE_NAME', '', 'Image name to build. Mandatory parameter.')
 
             stringParam('SOURCE_AUTHOR', Utils.getGitAuthor(this), 'Build author')
+            stringParam('SOURCE_REPOSITORY', Utils.getRepoName(this), 'Build repository name')
             stringParam('SOURCE_BRANCH', Utils.getGitBranch(this), 'Build branch name')
             stringParam('TARGET_BRANCH', '', '(Optional) In case of a PR to merge with target branch, please provide the target branch')
 
