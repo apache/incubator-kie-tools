@@ -209,6 +209,9 @@ test.describe("Model Decision Service", () => {
 
         await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
         await decisionServicePropertiesPanel.open();
+        // !!! THIS IS NOT WORKING !!!
+        // !!! NO LUCK IN IMPLEMENTATION FOR TWO DAYS
+        // !!! CURRENTLY PUSHED ONE OF MANY ATTEMPTS
         await decisionServicePropertiesPanel.moveInputData({ nth: 0, way: "down" });
         await decisionServicePropertiesPanel.moveInputDecision({ nth: 0, way: "down" });
         expect(await decisionServicePropertiesPanel.getInvokingThisDecisionServiceInFeel()).toEqual(
