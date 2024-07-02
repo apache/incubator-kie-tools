@@ -304,5 +304,20 @@ test.describe("Resize node - Decision Service", () => {
       expect(height).toEqual("280");
       expect(width).toEqual("280");
     });
+
+    test("Resize non empty Decision Service", async ({ decisionServicePropertiesPanel, diagram, nodes, palette }) => {
+      // https://github.com/apache/incubator-kie-issues/issues/881
+      await diagram.resetFocus();
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 400, y: 100 } });
+      await diagram.resetFocus();
+      // move into Decision Service
+      await nodes.move({ name: DefaultNodeName.DECISION, targetPosition: { x: 200, y: 200 } });
+
+      await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+      await decisionServicePropertiesPanel.open();
+      await decisionServicePropertiesPanel.setShape({ width: "250", height: "500" });
+
+      await expect(diagram.get()).toHaveScreenshot("resize-non-empty-decision-service.png");
+    });
   });
 });

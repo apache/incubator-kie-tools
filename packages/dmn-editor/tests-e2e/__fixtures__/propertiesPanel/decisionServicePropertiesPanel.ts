@@ -156,23 +156,32 @@ export class DecisionServicePropertiesPanel extends PropertiesPanelBase {
   }
 
   public async moveInputData(args: { nth: number; way: "up" | "down" }) {
-    const boundingBox = await this.panel()
+    await this.panel()
       .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
       .getByTestId("kie-dmn-editor--draggable-icon")
       .nth(args.nth)
-      .boundingBox();
-    await this.page.pause();
-    await this.page.mouse.move(
-      boundingBox!["x"] + boundingBox!["width"] / 2,
-      boundingBox!["y"] + boundingBox!["height"] / 2
-    );
-    await this.page.pause();
-    await this.page.mouse.down();
-    await this.page.pause();
-    await this.page.mouse.move(boundingBox!["x"], boundingBox!["y"] + (args.way === "down" ? 10 : -10));
-    await this.page.pause();
-    await this.page.mouse.up();
-    await this.page.pause();
+      .hover();
+
+    await this.panel()
+      .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
+      .getByTestId("kie-dmn-editor--draggable-icon")
+      .nth(args.nth)
+      .dispatchEvent("mousedown");
+
+    await this.panel()
+      .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
+      .getByTestId("kie-dmn-editor--draggable-icon")
+      .nth(args.nth)
+      .dragTo(this.panel().getByTestId("kie-tools--dmn-editor--decision-service-input-data"), {
+        sourcePosition: { x: 5, y: 10 },
+        targetPosition: { x: 5, y: 60 },
+      });
+
+    await this.panel()
+      .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
+      .getByTestId("kie-dmn-editor--draggable-icon")
+      .nth(args.nth)
+      .dispatchEvent("mouseup");
   }
 
   public async getInvokingThisDecisionServiceInFeel() {
