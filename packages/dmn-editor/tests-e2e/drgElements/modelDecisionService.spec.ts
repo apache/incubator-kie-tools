@@ -39,7 +39,7 @@ test.describe("Model Decision Service", () => {
       nodes,
       palette,
     }) => {
-      //TODO https://github.com/apache/incubator-kie-issues/issues/663
+      // https://github.com/apache/incubator-kie-issues/issues/663
 
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
       await diagram.resetFocus();
@@ -59,7 +59,7 @@ test.describe("Model Decision Service", () => {
       nodes,
       palette,
     }) => {
-      //TODO https://github.com/apache/incubator-kie-issues/issues/663
+      // https://github.com/apache/incubator-kie-issues/issues/663
 
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
       await diagram.resetFocus();
@@ -79,7 +79,7 @@ test.describe("Model Decision Service", () => {
       nodes,
       palette,
     }) => {
-      //TODO https://github.com/apache/incubator-kie-issues/issues/663
+      // https://github.com/apache/incubator-kie-issues/issues/663
 
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
       await diagram.resetFocus();
@@ -106,7 +106,7 @@ test.describe("Model Decision Service", () => {
       nodes,
       palette,
     }) => {
-      //TODO https://github.com/apache/incubator-kie-issues/issues/663
+      // https://github.com/apache/incubator-kie-issues/issues/663
 
       await palette.dragNewNode({
         type: NodeType.DECISION,
@@ -299,20 +299,39 @@ test.describe("Model Decision Service", () => {
         yOffset: 0,
       });
 
-      await nodes.dragNewConnectedNode({ type: NodeType.DECISION, from: "A", targetPosition: { x: 500, y: 180 } });
+      await nodes.dragNewConnectedNode({ type: NodeType.DECISION, from: "A", targetPosition: { x: 500, y: 160 } });
 
       await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
       await decisionServicePropertiesPanel.open();
 
       expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual("A, New Decision");
     });
-  });
 
-  test("Move Decision inside Decision Service by a keyboard", async () => {
-    //TODO https://github.com/apache/incubator-kie-issues/issues/876
-  });
+    test("Move Decision inside Decision Service by a keyboard without crossing sections", async ({
+      decisionServicePropertiesPanel,
+      diagram,
+      nodes,
+      page,
+      palette,
+    }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/876");
+      test.info().annotations.push({
+        type: TestAnnotations.AFFECTED_BY,
+        description: "https://github.com/apache/incubator-kie-issues/issues/876",
+      });
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+      await diagram.resetFocus();
+      await nodes.move({ name: DefaultNodeName.DECISION, targetPosition: { x: 400, y: 180 } });
 
-  test.skip("Move Decision inside Decision Service by a keyboard without crossing sections", async () => {
-    //TODO https://github.com/apache/incubator-kie-issues/issues/876
+      for (let index = 0; index < 10; index++) {
+        await page.keyboard.press("ArrowDown");
+      }
+
+      await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+      await decisionServicePropertiesPanel.open();
+      expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual("New Decision");
+
+      await expect(diagram.get()).toHaveScreenshot("move-decision-in-decision-service-by-keyboard.png");
+    });
   });
 });
