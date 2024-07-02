@@ -35,7 +35,7 @@ class GetAccessorsHandlerTest {
 
     @BeforeEach
     public void setUp() {
-        this.getAccessorHandler = new GetAccessorsHandler(null, null, null);
+        this.getAccessorHandler = new GetAccessorsHandler(null, null, null, null);
     }
 
     @Test
