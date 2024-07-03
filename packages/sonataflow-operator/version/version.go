@@ -38,7 +38,7 @@ const (
 )
 
 // GetOpenJDKImageVersion gets the current OpenJDK image version.
-func GetOpenJDKImageVersion() string {
+func GetOpenJDKImageTagVersion() string {
 	return openJDKImageVersion
 }
 
