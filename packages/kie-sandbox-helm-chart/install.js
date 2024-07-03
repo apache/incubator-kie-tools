@@ -31,6 +31,9 @@ const chartFiles = [
 ];
 chartFiles.forEach((file) => {
   const doc = yaml.parseDocument(fs.readFileSync(file, "utf8"));
+  if (file == "src/Chart.yaml") {
+    doc.setIn(["name"], env.kieSandboxHelmChart.name);
+  }
   doc.setIn(["version"], env.kieSandboxHelmChart.tag);
   doc.setIn(["appVersion"], env.kieSandboxHelmChart.tag);
   if (doc.getIn(["dependencies"])) {
@@ -43,7 +46,9 @@ chartFiles.forEach((file) => {
 });
 
 // Set tags used for images
-console.log("[kie-sandbox-helm-chart install.js] Updating values.yaml files...");
+console.log(
+  "[kie-sandbox-helm-chart install.js] Updating values.yaml files..."
+);
 const valuesFiles = [
   "src/charts/extended_services/values.yaml",
   "src/charts/cors_proxy/values.yaml",
