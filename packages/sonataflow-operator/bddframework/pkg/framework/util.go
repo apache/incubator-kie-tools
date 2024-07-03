@@ -293,7 +293,7 @@ func AppendImageDefaultValues(image *api.Image) {
 
 	if len(image.Tag) == 0 {
 		if image.Name == defaultRuntimeJVM {
-			image.Tag = GetKogitoImageVersion(version.GetOpenJDKImageVersion())
+			image.Tag = GetKogitoImageVersion(version.GetOpenJDKImageTagVersion())
 		} else {
 			image.Tag = GetKogitoImageVersion(version.GetTagVersion())
 		}
