@@ -201,17 +201,11 @@ test.describe("Model Decision Service", () => {
         expect(await decisionServicePropertiesPanel.getInputData()).toEqual(["BB", "AA"]);
       });
 
-      test.skip("Decision Service Signature - Inputs Order - reorder", async ({
-        decisionServicePropertiesPanel,
-        nodes,
-      }) => {
+      test("Decision Service Signature - Inputs Order - reorder", async ({ decisionServicePropertiesPanel, nodes }) => {
         // https://github.com/apache/incubator-kie-issues/issues/664
 
         await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
         await decisionServicePropertiesPanel.open();
-        // !!! THIS IS NOT WORKING !!!
-        // !!! NO LUCK IN IMPLEMENTATION FOR TWO DAYS
-        // !!! CURRENTLY PUSHED ONE OF MANY ATTEMPTS
         await decisionServicePropertiesPanel.moveInputData({ nth: 0, way: "down" });
         await decisionServicePropertiesPanel.moveInputDecision({ nth: 0, way: "down" });
         expect(await decisionServicePropertiesPanel.getInvokingThisDecisionServiceInFeel()).toEqual(

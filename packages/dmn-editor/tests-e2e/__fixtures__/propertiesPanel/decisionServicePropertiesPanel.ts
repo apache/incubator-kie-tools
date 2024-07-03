@@ -143,7 +143,19 @@ export class DecisionServicePropertiesPanel extends PropertiesPanelBase {
   }
 
   public async moveInputDecision(args: { nth: number; way: "up" | "down" }) {
-    // TODO
+    const target = this.panel()
+      .getByTestId("kie-tools--dmn-editor--decision-service-input-decisions")
+      .getByTestId("kie-dmn-editor--draggable-icon")
+      .nth(args.nth + args.way === "down" ? 1 : -1);
+
+    const source = this.panel()
+      .getByTestId("kie-tools--dmn-editor--decision-service-input-decisions")
+      .getByTestId("kie-dmn-editor--draggable-icon")
+      .nth(args.nth);
+
+    await source.hover();
+    await source.dispatchEvent("dragstart");
+    await source.dragTo(target);
   }
 
   public async getInputData() {
@@ -156,32 +168,19 @@ export class DecisionServicePropertiesPanel extends PropertiesPanelBase {
   }
 
   public async moveInputData(args: { nth: number; way: "up" | "down" }) {
-    await this.panel()
+    const target = this.panel()
       .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
       .getByTestId("kie-dmn-editor--draggable-icon")
-      .nth(args.nth)
-      .hover();
+      .nth(args.nth + args.way === "down" ? 1 : -1);
 
-    await this.panel()
+    const source = this.panel()
       .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
       .getByTestId("kie-dmn-editor--draggable-icon")
-      .nth(args.nth)
-      .dispatchEvent("mousedown");
+      .nth(args.nth);
 
-    await this.panel()
-      .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
-      .getByTestId("kie-dmn-editor--draggable-icon")
-      .nth(args.nth)
-      .dragTo(this.panel().getByTestId("kie-tools--dmn-editor--decision-service-input-data"), {
-        sourcePosition: { x: 5, y: 10 },
-        targetPosition: { x: 5, y: 60 },
-      });
-
-    await this.panel()
-      .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
-      .getByTestId("kie-dmn-editor--draggable-icon")
-      .nth(args.nth)
-      .dispatchEvent("mouseup");
+    await source.hover();
+    await source.dispatchEvent("dragstart");
+    await source.dragTo(target);
   }
 
   public async getInvokingThisDecisionServiceInFeel() {
