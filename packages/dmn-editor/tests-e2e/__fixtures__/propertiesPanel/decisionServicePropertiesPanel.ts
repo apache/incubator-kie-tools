@@ -142,16 +142,16 @@ export class DecisionServicePropertiesPanel extends PropertiesPanelBase {
     ).map((content) => content.trim());
   }
 
-  public async moveInputDecision(args: { nth: number; way: "up" | "down" }) {
+  public async moveInputDecision(args: { fromIndex: number; toIndex: number }) {
     const target = this.panel()
       .getByTestId("kie-tools--dmn-editor--decision-service-input-decisions")
       .getByTestId("kie-tools--dmn-editor--draggable-icon")
-      .nth(args.nth + args.way === "down" ? 1 : -1);
+      .nth(args.toIndex);
 
     const source = this.panel()
       .getByTestId("kie-tools--dmn-editor--decision-service-input-decisions")
       .getByTestId("kie-tools--dmn-editor--draggable-icon")
-      .nth(args.nth);
+      .nth(args.fromIndex);
 
     await source.hover();
     await source.dispatchEvent("dragstart");
@@ -167,16 +167,16 @@ export class DecisionServicePropertiesPanel extends PropertiesPanelBase {
     ).map((content) => content.trim());
   }
 
-  public async moveInputData(args: { nth: number; way: "up" | "down" }) {
+  public async moveInputData(args: { fromIndex: number; toIndex: number }) {
     const target = this.panel()
       .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
       .getByTestId("kie-tools--dmn-editor--draggable-icon")
-      .nth(args.nth + args.way === "down" ? 1 : -1);
+      .nth(args.toIndex);
 
     const source = this.panel()
       .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
       .getByTestId("kie-tools--dmn-editor--draggable-icon")
-      .nth(args.nth);
+      .nth(args.fromIndex);
 
     await source.hover();
     await source.dispatchEvent("dragstart");

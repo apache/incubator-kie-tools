@@ -224,8 +224,8 @@ test.describe("Model Decision Service", () => {
 
         await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
         await decisionServicePropertiesPanel.open();
-        await decisionServicePropertiesPanel.moveInputData({ nth: 0, way: "down" });
-        await decisionServicePropertiesPanel.moveInputDecision({ nth: 0, way: "down" });
+        await decisionServicePropertiesPanel.moveInputData({ fromIndex: 0, toIndex: 1 });
+        await decisionServicePropertiesPanel.moveInputDecision({ fromIndex: 0, toIndex: 1 });
         expect(await decisionServicePropertiesPanel.getInvokingThisDecisionServiceInFeel()).toEqual(
           "New Decision Service(A, B, AA, BB)"
         );
