@@ -163,6 +163,7 @@ void setupBuildImageJob(JobType jobType) {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images.build-image', jobType, "${jenkins_path}/Jenkinsfile.build-image", 'Kogito Images Build single image')
     // Use jenkinsfile from the build branch
     jobParams.git.author = '${SOURCE_AUTHOR}'
+    jobParams.git.repository = '${SOURCE_REPOSITORY}'
     jobParams.git.branch = '${SOURCE_BRANCH}'
     JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
