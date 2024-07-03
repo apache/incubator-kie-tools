@@ -46,9 +46,7 @@ chartFiles.forEach((file) => {
 });
 
 // Set tags used for images
-console.log(
-  "[kie-sandbox-helm-chart install.js] Updating values.yaml files..."
-);
+console.log("[kie-sandbox-helm-chart install.js] Updating values.yaml files...");
 const valuesFiles = [
   "src/charts/extended_services/values.yaml",
   "src/charts/cors_proxy/values.yaml",
