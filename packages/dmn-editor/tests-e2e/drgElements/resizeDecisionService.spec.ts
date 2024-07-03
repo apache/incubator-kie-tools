@@ -306,7 +306,10 @@ test.describe("Resize node - Decision Service", () => {
     });
 
     test("Resize non empty Decision Service", async ({ decisionServicePropertiesPanel, diagram, nodes, palette }) => {
-      // https://github.com/apache/incubator-kie-issues/issues/881
+      test.info().annotations.push({
+        type: TestAnnotations.AFFECTED_BY,
+        description: "https://github.com/apache/incubator-kie-issues/issues/881",
+      });
       await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 400, y: 100 } });
       await diagram.resetFocus();

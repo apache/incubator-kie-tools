@@ -39,7 +39,10 @@ test.describe("Model Decision Service", () => {
       nodes,
       palette,
     }) => {
-      // https://github.com/apache/incubator-kie-issues/issues/663
+      test.info().annotations.push({
+        type: TestAnnotations.AFFECTED_BY,
+        description: "https://github.com/apache/incubator-kie-issues/issues/663",
+      });
 
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
       await diagram.resetFocus();
@@ -59,7 +62,10 @@ test.describe("Model Decision Service", () => {
       nodes,
       palette,
     }) => {
-      // https://github.com/apache/incubator-kie-issues/issues/663
+      test.info().annotations.push({
+        type: TestAnnotations.AFFECTED_BY,
+        description: "https://github.com/apache/incubator-kie-issues/issues/663",
+      });
 
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
       await diagram.resetFocus();
@@ -79,7 +85,10 @@ test.describe("Model Decision Service", () => {
       nodes,
       palette,
     }) => {
-      // https://github.com/apache/incubator-kie-issues/issues/663
+      test.info().annotations.push({
+        type: TestAnnotations.AFFECTED_BY,
+        description: "https://github.com/apache/incubator-kie-issues/issues/663",
+      });
 
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
       await diagram.resetFocus();
@@ -106,7 +115,10 @@ test.describe("Model Decision Service", () => {
       nodes,
       palette,
     }) => {
-      // https://github.com/apache/incubator-kie-issues/issues/663
+      test.info().annotations.push({
+        type: TestAnnotations.AFFECTED_BY,
+        description: "https://github.com/apache/incubator-kie-issues/issues/663",
+      });
 
       await palette.dragNewNode({
         type: NodeType.DECISION,
@@ -190,7 +202,10 @@ test.describe("Model Decision Service", () => {
       });
 
       test("Decision Service Signature - Inputs Order - default", async ({ decisionServicePropertiesPanel, nodes }) => {
-        // https://github.com/apache/incubator-kie-issues/issues/664
+        test.info().annotations.push({
+          type: TestAnnotations.AFFECTED_BY,
+          description: "https://github.com/apache/incubator-kie-issues/issues/664",
+        });
 
         await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
         await decisionServicePropertiesPanel.open();
@@ -202,7 +217,10 @@ test.describe("Model Decision Service", () => {
       });
 
       test("Decision Service Signature - Inputs Order - reorder", async ({ decisionServicePropertiesPanel, nodes }) => {
-        // https://github.com/apache/incubator-kie-issues/issues/664
+        test.info().annotations.push({
+          type: TestAnnotations.AFFECTED_BY,
+          description: "https://github.com/apache/incubator-kie-issues/issues/664",
+        });
 
         await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
         await decisionServicePropertiesPanel.open();
@@ -236,7 +254,10 @@ test.describe("Model Decision Service", () => {
         decisionServicePropertiesPanel,
         nodes,
       }) => {
-        // https://github.com/apache/incubator-kie-issues/issues/879
+        test.info().annotations.push({
+          type: TestAnnotations.AFFECTED_BY,
+          description: "https://github.com/apache/incubator-kie-issues/issues/879",
+        });
         await nodes.delete({ name: "A" });
         await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
         expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual("(Empty)");
@@ -246,7 +267,10 @@ test.describe("Model Decision Service", () => {
         decisionServicePropertiesPanel,
         nodes,
       }) => {
-        // https://github.com/apache/incubator-kie-issues/issues/879
+        test.info().annotations.push({
+          type: TestAnnotations.AFFECTED_BY,
+          description: "https://github.com/apache/incubator-kie-issues/issues/879",
+        });
         await nodes.delete({ name: "B" });
         await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
         expect(await decisionServicePropertiesPanel.getEncapsulatedDecisions()).toEqual("(Empty)");
