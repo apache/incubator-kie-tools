@@ -34,7 +34,7 @@ const (
 	// Kogito images tag version. Used for data-index and jobs-service images.
 	kogitoImagesTagVersion = "999-20240623"
 	// OpenJDK image version
-	openJDKImageVersion = "1.20"
+	openJDKImageTagVersion = "1.20"
 )
 
 // GetOpenJDKImageVersion gets the current OpenJDK image version.
