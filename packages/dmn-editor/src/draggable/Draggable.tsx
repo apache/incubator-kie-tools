@@ -252,7 +252,7 @@ export function Draggable(props: {
       onPointerOver={() => setHoveredItem(props.index)}
     >
       {!props.isDisabled ? (
-        <div data-testid={"kie-dmn-editor--draggable-icon"}>
+        <div data-testid={"kie-tools--dmn-editor--draggable-icon"}>
           <Icon
             className={"kie-dmn-editor--draggable-icon"}
             onPointerEnter={() => setDraggable(true)}
@@ -272,7 +272,7 @@ export function Draggable(props: {
       <div
         style={props.childrenStyle}
         className={`kie-dmn-editor--draggable-children ${props.childrenClassName ? props.childrenClassName : ""}`}
-        data-testid={"kie-dmn-editor--draggable-children"}
+        data-testid={"kie-tools--dmn-editor--draggable-children"}
       >
         <DraggableItemContext.Provider value={{ hovered }}>{props.children}</DraggableItemContext.Provider>
       </div>

@@ -137,7 +137,7 @@ export class DecisionServicePropertiesPanel extends PropertiesPanelBase {
     return (
       await this.panel()
         .getByTestId("kie-tools--dmn-editor--decision-service-input-decisions")
-        .getByTestId("kie-dmn-editor--draggable-children")
+        .getByTestId("kie-tools--dmn-editor--draggable-children")
         .allTextContents()
     ).map((content) => content.trim());
   }
@@ -145,12 +145,12 @@ export class DecisionServicePropertiesPanel extends PropertiesPanelBase {
   public async moveInputDecision(args: { nth: number; way: "up" | "down" }) {
     const target = this.panel()
       .getByTestId("kie-tools--dmn-editor--decision-service-input-decisions")
-      .getByTestId("kie-dmn-editor--draggable-icon")
+      .getByTestId("kie-tools--dmn-editor--draggable-icon")
       .nth(args.nth + args.way === "down" ? 1 : -1);
 
     const source = this.panel()
       .getByTestId("kie-tools--dmn-editor--decision-service-input-decisions")
-      .getByTestId("kie-dmn-editor--draggable-icon")
+      .getByTestId("kie-tools--dmn-editor--draggable-icon")
       .nth(args.nth);
 
     await source.hover();
@@ -162,7 +162,7 @@ export class DecisionServicePropertiesPanel extends PropertiesPanelBase {
     return (
       await this.panel()
         .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
-        .getByTestId("kie-dmn-editor--draggable-children")
+        .getByTestId("kie-tools--dmn-editor--draggable-children")
         .allTextContents()
     ).map((content) => content.trim());
   }
@@ -170,12 +170,12 @@ export class DecisionServicePropertiesPanel extends PropertiesPanelBase {
   public async moveInputData(args: { nth: number; way: "up" | "down" }) {
     const target = this.panel()
       .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
-      .getByTestId("kie-dmn-editor--draggable-icon")
+      .getByTestId("kie-tools--dmn-editor--draggable-icon")
       .nth(args.nth + args.way === "down" ? 1 : -1);
 
     const source = this.panel()
       .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
-      .getByTestId("kie-dmn-editor--draggable-icon")
+      .getByTestId("kie-tools--dmn-editor--draggable-icon")
       .nth(args.nth);
 
     await source.hover();
