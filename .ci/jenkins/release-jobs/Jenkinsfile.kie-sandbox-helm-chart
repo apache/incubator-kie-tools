@@ -141,7 +141,8 @@ pipeline {
                 dir('kie-tools') {
                     script {
                         helmUtils.pushChartToRegistry(
-                            "${env.KIE_SANDBOX_HELM_CHART__registry}/${env.KIE_SANDBOX_HELM_CHART__account}",
+                            "${env.KIE_SANDBOX_HELM_CHART__registry}",
+                            "${env.KIE_SANDBOX_HELM_CHART__account}",
                             "packages/kie-sandbox-helm-chart/dist/${env.KIE_SANDBOX_HELM_CHART__name}-${env.KIE_SANDBOX_HELM_CHART__tag}.tgz",
                             "${pipelineVars.dockerHubUserCredentialsId}",
                             "${pipelineVars.dockerHubTokenCredentialsId}"

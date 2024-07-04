@@ -31,6 +31,9 @@ const chartFiles = [
 ];
 chartFiles.forEach((file) => {
   const doc = yaml.parseDocument(fs.readFileSync(file, "utf8"));
+  if (file == "src/Chart.yaml") {
+    doc.setIn(["name"], env.kieSandboxHelmChart.name);
+  }
   doc.setIn(["version"], env.kieSandboxHelmChart.tag);
   doc.setIn(["appVersion"], env.kieSandboxHelmChart.tag);
   if (doc.getIn(["dependencies"])) {

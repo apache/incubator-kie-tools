@@ -168,27 +168,27 @@ Very similar to the way you install the chart from source code, you can also ins
 ### Default install
 
 ```console
-$ helm install kie-sandbox oci://docker.io/apache/incubator-kie-sandbox-helm-chart --version=0.0.0
+$ helm install kie-sandbox oci://docker.io/apache/incubator-kie-sandbox-helm-chart --version=0.0.0-main
 ```
 
 ### Minikube install
 
 ```console
-$ helm pull oci://docker.io/apache/incubator-kie-sandbox-helm-chart --version=0.0.0 --untar
+$ helm pull oci://docker.io/apache/incubator-kie-sandbox-helm-chart --version=0.0.0-main --untar
 $ helm install kie-sandbox ./kie-sandbox-helm-chart --values ./kie-sandbox-helm-chart/values-minikube-nginx.yaml
 ```
 
 ### Kubernetes install
 
 ```console
-$ helm pull oci://docker.io/apache/incubator-kie-sandbox-helm-chart --version=0.0.0 --untar
+$ helm pull oci://docker.io/apache/incubator-kie-sandbox-helm-chart --version=0.0.0-main --untar
 $ helm install kie-sandbox ./kie-sandbox-helm-chart --values ./kie-sandbox-helm-chart/values-kubernetes.yaml --set global.kubernetesClusterDomain="<YOUR_KUBERNETES_CLUSTER_DOMAIN>" --set global.kubernetesIngressClass="<YOUR_KUBERNETES_INGRESS_CLASS>"
 ```
 
 ### OpenShift install
 
 ```console
-$ helm pull oci://docker.io/apache/incubator-kie-sandbox-helm-chart --version=0.0.0 --untar
+$ helm pull oci://docker.io/apache/incubator-kie-sandbox-helm-chart --version=0.0.0-main --untar
 $ helm install kie-sandbox ./kie-sandbox-helm-chart --values ./kie-sandbox-helm-chart/values-openshift.yaml --set global.openshiftRouteDomain="<YOUR_OCP_ROUTE_DOMAIN>"
 ```
 
