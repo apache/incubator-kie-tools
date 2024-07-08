@@ -117,7 +117,7 @@ function UnitablesListField({
                     {
                       key: `${itemIndex}`,
                       name: children.props.name
-                        ?.split(/\$(.*)/s)
+                        ?.split(/\$([\s\S]*)/)
                         .slice(0, -1)
                         .join(`${itemIndex}`),
                       ...itemProps,

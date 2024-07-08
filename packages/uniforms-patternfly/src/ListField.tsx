@@ -92,7 +92,7 @@ function ListField({
               ? cloneElement(child as React.ReactElement<{ name: string }, string>, {
                   key: `${itemIndex}-${childIndex}`,
                   name: child.props.name
-                    ?.split(/\$(.*)/s)
+                    ?.split(/\$([\s\S]*)/)
                     .slice(0, -1)
                     .join(`${itemIndex}`),
                   ...itemProps,
