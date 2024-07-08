@@ -2,6 +2,7 @@
   "extends": "@kie-tools/tsconfig/tsconfig.browser.json",
   "compilerOptions": {
     "declaration": false,
-    "declarationMap": false
+    "declarationMap": false,
+    "jsx": "react-jsx"
   }
 }

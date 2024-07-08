@@ -1,6 +1,7 @@
 {
   "extends": "@kie-tools/tsconfig/tsconfig.browser.json",
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "jsx": "react-jsx"
   }
 }
