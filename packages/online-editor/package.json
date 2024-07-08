@@ -15,7 +15,7 @@
   "types": "./dist/index.d.ts",
   "main": "dist/index.js",
   "scripts": {
-    "build:dev": "rimraf dist && webpack --env dev",
+    "build:dev": "rimraf dist && webpack --config webpack.config.ts --env dev",
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack && pnpm test-e2e",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "webpack serve --host 0.0.0.0 --env dev",

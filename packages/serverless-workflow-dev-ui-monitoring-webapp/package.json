@@ -25,7 +25,6 @@
     "@kie-tools/dashbuilder-client": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools/tsconfig": "workspace:*",
     "copyfiles": "^2.4.1",
     "rimraf": "^3.0.2"
   }

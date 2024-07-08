@@ -15,7 +15,7 @@
   "types": "./dist/index.d.ts",
   "main": "dist/index.js",
   "scripts": {
-    "build:dev": "rimraf dist && webpack --env dev",
+    "build:dev": "rimraf dist && webpack --config webpack.config.ts --env dev",
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack && pnpm test-e2e",
     "cy:open": "cypress open --project e2e-tests --config baseUrl=$(build-env serverlessLogicWebTools.dev.cypressUrl)",
     "cy:run": "cypress run --headed -b chrome --project e2e-tests --config baseUrl=$(build-env serverlessLogicWebTools.dev.cypressUrl)",

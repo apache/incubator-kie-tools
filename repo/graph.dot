@@ -620,4 +620,6 @@ digraph G {
   "yard-vscode-extension" -> "@kie-tools/yard-editor" [ style = "solid", color = "blue" ];
   "yard-vscode-extension" -> "@kie-tools/vscode-extension-common-test-helpers" [ style = "dashed", color = "blue" ];
   "@kie-tools-scripts/bootstrap" -> "@kie-tools-scripts/build-env" [ style = "dashed", color = "black" ];
+  "@kie-tools-scripts/build-env" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
+  "@kie-tools-scripts/run-script-if" -> "@kie-tools/tsconfig" [ style = "dashed", color = "black" ];
 }
