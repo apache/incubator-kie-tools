@@ -38,6 +38,6 @@
     "react-router": "^5.3.4",
     "rimraf": "^3.0.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.2"
+    "typescript": "^5.5.3"
   }
 }

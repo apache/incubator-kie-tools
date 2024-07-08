@@ -58,7 +58,7 @@
     "rimraf": "^3.0.2",
     "simpl-schema": "^1.12.0",
     "ts-jest": "^29.1.5",
-    "typescript": "^5.5.2",
+    "typescript": "^5.5.3",
     "webpack": "^5.88.2",
     "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.9.0",

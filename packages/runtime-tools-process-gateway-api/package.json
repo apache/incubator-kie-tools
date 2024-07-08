@@ -60,6 +60,6 @@
     "openapi-types": "^7.0.1",
     "react-dom": "^17.0.2",
     "rimraf": "^3.0.2",
-    "typescript": "^5.5.2"
+    "typescript": "^5.5.3"
   }
 }
