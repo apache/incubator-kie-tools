@@ -69,7 +69,7 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/babel__standalone": "^7.1.7",
-    "@types/json-schema": "^7.0.15",
+    "@types/json-schema": "^7.0.11",
     "@types/lodash": "^4.14.168",
     "@types/react": "^17.0.6",
     "@types/react-datetime-picker": "^3.4.1",

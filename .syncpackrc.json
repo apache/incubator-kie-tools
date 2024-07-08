@@ -10,7 +10,7 @@
     },
     {
       "dependencies": ["typescript"],
-      "packages": ["@kie-tools-example/ping-pong-view-angular"]
+      "packages": ["@kie-tools-examples/ping-pong-view-angular"]
     }
   ]
 }
