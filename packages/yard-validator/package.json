@@ -13,6 +13,8 @@
   "bugs": {
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
+  "types": "dist/index.d.ts",
+  "main": "dist/index.js",
   "scripts": {
     "build:dev": "rimraf dist && tsc -p tsconfig.json && pnpm copy:webworker",
     "build:prod": "pnpm lint && tsc -p tsconfig.json && pnpm copy:webworker",

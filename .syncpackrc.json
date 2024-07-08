@@ -7,6 +7,10 @@
         "@kie-tools/uniforms-patternfly-codegen",
         "@kie-tools/yaml-language-server"
       ]
+    },
+    {
+      "dependencies": ["typescript"],
+      "packages": ["@kie-tools-example/ping-pong-view-angular"]
     }
   ]
 }

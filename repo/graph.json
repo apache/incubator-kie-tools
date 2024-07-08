@@ -1646,6 +1646,16 @@
       },
       {
         "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools-core/monaco-editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools-core/patternfly-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/import-java-classes-component",
         "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
@@ -2101,12 +2111,12 @@
       },
       {
         "source": "@kie-tools/yard-editor",
-        "target": "@kie-tools/yard-validator",
+        "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
       {
         "source": "@kie-tools/yard-editor",
-        "target": "@kie-tools-core/webpack-base",
+        "target": "@kie-tools/yard-validator",
         "weight": 1
       },
       {

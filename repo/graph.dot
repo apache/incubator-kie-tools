@@ -379,6 +379,8 @@ digraph G {
   "@kie-tools/image-env-to-json" -> "@kie-tools/tsconfig" [ style = "dashed", color = "black" ];
   "@kie-tools/import-java-classes-component" -> "@kie-tools-core/vscode-java-code-completion" [ style = "solid", color = "blue" ];
   "@kie-tools/import-java-classes-component" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
+  "@kie-tools/import-java-classes-component" -> "@kie-tools-core/monaco-editor" [ style = "dashed", color = "blue" ];
+  "@kie-tools/import-java-classes-component" -> "@kie-tools-core/patternfly-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/import-java-classes-component" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/jbpm-quarkus-devui" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
   "@kie-tools/jbpm-quarkus-devui" -> "@kie-tools/runtime-tools-process-dev-ui-webapp" [ style = "dashed", color = "black" ];
@@ -608,8 +610,8 @@ digraph G {
   "@kie-tools/yard-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools/yard-language-service" [ style = "solid", color = "blue" ];
-  "@kie-tools/yard-editor" -> "@kie-tools/yard-validator" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
+  "@kie-tools/yard-editor" -> "@kie-tools/yard-validator" [ style = "dashed", color = "blue" ];
   "@kie-tools/yard-language-service" -> "@kie-tools/json-yaml-language-service" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-model" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
   "@kie-tools/yard-validator" -> "@kie-tools-core/notifications" [ style = "solid", color = "blue" ];
