@@ -1,13 +1,9 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "extends": "@kie-tools/tsconfig/tsconfig.browser.json",
   "compilerOptions": {
-    "module": "esnext",
-    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
     "declaration": false,
     "declarationMap": false,
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "es6"
-  },
-  "include": ["src"]
+    "jsx": "react-jsx"
+  }
 }

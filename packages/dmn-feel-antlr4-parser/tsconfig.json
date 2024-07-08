@@ -1,7 +1,6 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "extends": "@kie-tools/tsconfig/tsconfig.browser.json",
   "compilerOptions": {
-    "outDir": "dist"
-  },
-  "include": ["src"]
+    "moduleResolution": "node"
+  }
 }

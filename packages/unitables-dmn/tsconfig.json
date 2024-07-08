@@ -1,12 +1,6 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "extends": "@kie-tools/tsconfig/tsconfig.browser.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "target": "es6",
-    "moduleResolution": "node",
-    "skipLibCheck": true
-  },
-  "include": ["src"]
+    "jsx": "react-jsx"
+  }
 }

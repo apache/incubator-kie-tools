@@ -1,8 +1,7 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "extends": "@kie-tools/tsconfig/tsconfig.browser.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "types": ["@testing-library/jest-dom"]
-  },
-  "include": ["src"]
+    "jsx": "react-jsx",
+    "types": ["node", "@testing-library/jest-dom"]
+  }
 }

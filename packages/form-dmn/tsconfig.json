@@ -1,13 +1,7 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "extends": "@kie-tools/tsconfig/tsconfig.browser.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "jsx": "react",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "target": "es6",
-    "moduleResolution": "node",
+    "jsx": "react-jsx",
     "types": ["@testing-library/jest-dom"]
-  },
-  "include": ["src"]
+  }
 }
