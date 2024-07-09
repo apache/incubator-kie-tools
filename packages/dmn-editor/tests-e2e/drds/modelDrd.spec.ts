@@ -24,7 +24,44 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Model - DRD", () => {
-  test("Create", async () => {});
-  test("Rename", async () => {});
-  test("Delete", async () => {});
+  test.describe("Create DRD", () => {
+    test("Create DRD in empty diagram", async ({ drds }) => {
+      await drds.open();
+      await drds.create({ name: "second drd" });
+    });
+
+    test("Create DRD in diagram containing DRGs", async ({ drds }) => {
+      // TODO
+    });
+  });
+
+  test.describe("Rename DRD", () => {
+    test("DRD names should be updated in correct places", async ({ drds }) => {
+      // TODO
+      // have 2 DRDs, at least one non default name
+      // navigate between them and check the name is updated in tvo places
+    });
+
+    test("rename using special character", async ({ drds }) => {
+      // TODO
+    });
+
+    test("remove DRG element - its removed from all DRDs", async ({ drds }) => {
+      // TODO
+    });
+  });
+
+  test.describe("Delete DRD", async () => {});
+
+  test.describe("Navigate DRDs", () => {
+    // before create drds that will be switched in the tests
+
+    test("switch to second", async ({ drds }) => {
+      // TODO
+    });
+
+    test("switch to second and return back", async ({ drds }) => {
+      // TODO
+    });
+  });
 });

@@ -34,9 +34,11 @@ import { GroupPropertiesPanel } from "./propertiesPanel/groupPropertiesPanel";
 import { DiagramPropertiesPanel } from "./propertiesPanel/diagramPropertiesPanel";
 import { MultipleNodesPropertiesPanel } from "./propertiesPanel/multipleNodesPropertiesPanel";
 import { Overlays } from "./overlays";
+import { Drds } from "./drds";
 
 type DmnEditorFixtures = {
   diagram: Diagram;
+  drds: Drds;
   edges: Edges;
   editor: Editor;
   jsonModel: JsonModel;
@@ -55,6 +57,9 @@ type DmnEditorFixtures = {
 };
 
 export const test = base.extend<DmnEditorFixtures>({
+  drds: async ({ page }, use) => {
+    await use(new Drds(page));
+  },
   editor: async ({ page, baseURL }, use) => {
     await use(new Editor(page, baseURL));
   },

@@ -72,7 +72,7 @@ export function DrdSelectorPanel() {
           columnGap: "40px",
         }}
       >
-        <div style={{ gridArea: "header-list" }}>
+        <div style={{ gridArea: "header-list" }} data-testid={"kie-tools--kie-dmn-editor--drd-selector-panel"}>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <TextContent>
               <Text component="h3">DRDs</Text>
