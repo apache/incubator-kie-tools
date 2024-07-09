@@ -1,3 +1,6 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.browser.json"
+  "extends": "@kie-tools/tsconfig/tsconfig.browser.json",
+  "compilerOptions": {
+    "esModuleInterop": true
+  }
 }
