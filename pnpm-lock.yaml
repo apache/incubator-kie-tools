@@ -11589,8 +11589,8 @@ importers:
         specifier: ^11.0.1
         version: 11.0.1
       '@types/mocha':
-        specifier: ^8.2.2
-        version: 8.2.3
+        specifier: ^10.0.7
+        version: 10.0.7
       '@types/react':
         specifier: ^17.0.6
         version: 17.0.21
@@ -11619,11 +11619,11 @@ importers:
         specifier: ^10.6.0
         version: 10.6.0
       mocha-jenkins-reporter:
-        specifier: ^0.4.5
-        version: 0.4.5(mocha@10.6.0)
+        specifier: ^0.4.8
+        version: 0.4.8(mocha@10.6.0)
       mocha-junit-reporter:
-        specifier: ^2.0.2
-        version: 2.0.2(mocha@10.6.0)
+        specifier: ^2.2.1
+        version: 2.2.1(mocha@10.6.0)
       mocha-multi-reporters:
         specifier: ^1.5.1
         version: 1.5.1(mocha@10.6.0)
@@ -17614,9 +17614,6 @@ packages:
   '@types/mocha@10.0.7':
     resolution: {integrity: sha512-GN8yJ1mNTcFcah/wKEFIJckJx9iJLoMSzWcfRRuxz/Jk+U6KQNnml+etbtxFK8lPjzOw3zp4Ha/kjSst9fsHYw==}
 
-  '@types/mocha@8.2.3':
-    resolution: {integrity: sha512-ekGvFhFgrc2zYQoX4JeZPmVzZxw6Dtllga7iGHzfbYIYkAMUx/sAFP2GdFpLff+vdHXu5fl7WX9AT+TtqYcsyw==}
-
   '@types/mongodb@3.6.17':
     resolution: {integrity: sha512-9hhgvYPdC5iHyyksPcKCu45gfaAIPQHKHGdvNXu4582DmOZX3wrUJIJPT40o4G1oTKPgpMMFqZglOTjhnYoF+A==}
 
@@ -23506,20 +23503,10 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  mocha-jenkins-reporter@0.4.5:
-    resolution: {integrity: sha512-QoKXaxWz3gpzCBgfaqu2OZKVyibAwRTD/BF7ApMfNgafzzch9s8hMNVPTxRom9smmUAfaDfzARWKvrQMK7XACA==}
-    peerDependencies:
-      mocha: ^5.2.0 || ^6.0 || ^7.0 || ^8.0
-
   mocha-jenkins-reporter@0.4.8:
     resolution: {integrity: sha512-1nz1Q+YgREUlh2kgFR+lrp+ufEFbdhCdtlEVEJR/5LhgqNLIg52+KG3X94hHpwWnf5SwYLS7udxgBbkWOUbyeQ==}
     peerDependencies:
       mocha: ^5.2.0 || ^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0
-
-  mocha-junit-reporter@2.0.2:
-    resolution: {integrity: sha512-vYwWq5hh3v1lG0gdQCBxwNipBfvDiAM1PHroQRNp96+2l72e9wEUTw+mzoK+O0SudgfQ7WvTQZ9Nh3qkAYAjfg==}
-    peerDependencies:
-      mocha: '>=2.2.5'
 
   mocha-junit-reporter@2.2.1:
     resolution: {integrity: sha512-iDn2tlKHn8Vh8o4nCzcUVW4q7iXp7cC4EB78N0cDHIobLymyHNwe0XG8HEHHjc3hJlXm0Vy6zcrxaIhnI2fWmw==}
@@ -37820,8 +37807,6 @@ snapshots:
 
   '@types/mocha@10.0.7': {}
 
-  '@types/mocha@8.2.3': {}
-
   '@types/mongodb@3.6.17':
     dependencies:
       '@types/bson': 4.0.3
@@ -45928,30 +45913,12 @@ snapshots:
 
   mkdirp@3.0.1: {}
 
-  mocha-jenkins-reporter@0.4.5(mocha@10.6.0):
-    dependencies:
-      diff: 4.0.1
-      mkdirp: 0.5.6
-      mocha: 10.6.0
-      xml: 1.0.1
-
   mocha-jenkins-reporter@0.4.8(mocha@10.6.0):
     dependencies:
       diff: 4.0.1
       mkdirp: 1.0.4
       mocha: 10.6.0
       xml: 1.0.1
-
-  mocha-junit-reporter@2.0.2(mocha@10.6.0):
-    dependencies:
-      debug: 2.6.9
-      md5: 2.3.0
-      mkdirp: 0.5.6
-      mocha: 10.6.0
-      strip-ansi: 6.0.1
-      xml: 1.0.1
-    transitivePeerDependencies:
-      - supports-color
 
   mocha-junit-reporter@2.2.1(mocha@10.6.0):
     dependencies:
