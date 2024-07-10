@@ -27,8 +27,12 @@ export class Drds {
   }
 
   public async create(args: { name: string }) {
-    await this.page.getByTestId("kie-tools--kie-dmn-editor--drd-selector-panel").getByTitle("New DRD").click();
-    await this.page.getByTestId("kie-tools--kie-dmn-editor--drd-selector").locator("input").fill(args.name);
-    await this.page.getByTestId("kie-tools--kie-dmn-editor--drd-selector").locator("input").press("Tab");
+    await this.page.getByTestId("kie-tools--dmn-editor--drd-selector-popover").getByTitle("New DRD").click();
+    await this.page.getByTestId("kie-tools--dmn-editor--drd-selector").locator("input").fill(args.name);
+    await this.page.getByTestId("kie-tools--dmn-editor--drd-selector").locator("input").press("Tab");
+  }
+
+  public async getCurrent() {
+    return await this.page.getByTestId("kie-tools--dmn-editor--drd-selector").locator("input").inputValue();
   }
 }

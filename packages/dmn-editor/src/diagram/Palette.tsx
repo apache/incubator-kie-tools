@@ -223,7 +223,10 @@ export function Palette({ pulse }: { pulse: boolean }) {
           </div>
         </aside>
         <br />
-        <aside className={"kie-dmn-editor--drg-panel-toggle"}>
+        <aside
+          className={"kie-dmn-editor--drg-panel-toggle"}
+          data-testid={"kie-tools--dmn-editor--palette-nodes-popover"}
+        >
           {diagram.openLhsPanel === DiagramLhsPanel.DRG_NODES && (
             <div className={"kie-dmn-editor--palette-nodes-popover"} style={{ maxHeight }}>
               <DrgNodesPanel />

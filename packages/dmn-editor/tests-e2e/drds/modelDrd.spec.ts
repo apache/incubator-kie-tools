@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import { test } from "../__fixtures__/base";
+import { expect, test } from "../__fixtures__/base";
+import { NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -25,13 +26,25 @@ test.beforeEach(async ({ editor }) => {
 
 test.describe("Model - DRD", () => {
   test.describe("Create DRD", () => {
-    test("Create DRD in empty diagram", async ({ drds }) => {
+    test("Create DRD in empty model", async ({ drds, page }) => {
       await drds.open();
       await drds.create({ name: "second drd" });
+
+      await expect(page.getByTestId("kie-tools--dmn-editor--palette-nodes-popover")).toBeVisible();
+      await expect(page.getByTestId("kie-tools--dmn-editor--palette-nodes-popover")).toContainText("No DRG nodes yet");
+      expect(await drds.getCurrent()).toEqual("second drd");
     });
 
-    test("Create DRD in diagram containing DRGs", async ({ drds }) => {
-      // TODO
+    test("Create DRD in non empty model", async ({ drds, page, palette }) => {
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+      await drds.open();
+      await drds.create({ name: "second drd" });
+
+      await expect(page.getByTestId("kie-tools--dmn-editor--palette-nodes-popover")).toBeVisible();
+      await expect(page.getByTestId("kie-tools--dmn-editor--palette-nodes-popover")).not.toContainText(
+        "No DRG nodes yet"
+      );
+      expect(await drds.getCurrent()).toEqual("second drd");
     });
   });
 
