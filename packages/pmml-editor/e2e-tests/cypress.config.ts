@@ -42,4 +42,5 @@ export default defineConfig({
     runMode: 1,
     openMode: 0,
   },
+  experimentalMemoryManagement: true,
 });

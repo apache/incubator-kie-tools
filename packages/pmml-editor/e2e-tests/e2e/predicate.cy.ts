@@ -17,12 +17,9 @@
  * under the License.
  */
 
-import { env } from "../../env";
-const buildEnv = env;
-
 describe("Predicate Test", () => {
   beforeEach(() => {
-    cy.visit(`http://localhost:${buildEnv.pmmlEditor.dev.port}/`);
+    cy.visit(`http://localhost:9005/`);
   });
 
   it("Create simple predicate - same pmml as in fixture: simple-predicate.pmml", () => {
@@ -194,7 +191,10 @@ describe("Predicate Test", () => {
       });
 
       cy.ouiaId("edit-attribute").within(() => {
-        cy.ouiaId("predicate").find("div:first").should("have.text", "1test·>·3").type("<{selectall}{del}wrong > 0");
+        cy.ouiaId("predicate")
+          .find("div:first")
+          .should("have.text", "1test\u00a0>\u00a03")
+          .type("<{selectall}{del}wrong > 0");
         cy.ouiaId("attribute-partial-score").type("{selectall}{del}-5");
       });
       cy.get("span.attribute-editor__validation-message").should(
@@ -230,7 +230,10 @@ describe("Predicate Test", () => {
       });
 
       cy.ouiaId("edit-attribute").within(() => {
-        cy.ouiaId("predicate").find("div:first").should("have.text", "1test·>·3").type(" or test<0");
+        // cy.ouiaId("predicate").find("div:first").invoke("text").then((text) => {
+        //   expect(text.replace(/\u00a0/g, ' ')).equal()
+        // })
+        cy.ouiaId("predicate").find("div:first").should("have.text", "1test\u00a0>\u00a03").type(" or test<0");
         cy.ouiaId("attribute-partial-score").type("{selectall}{del}-5");
       });
       cy.ouiaId("attribute-done").click();

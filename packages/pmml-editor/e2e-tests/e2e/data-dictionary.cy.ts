@@ -17,12 +17,9 @@
  * under the License.
  */
 
-import { env } from "../../env";
-const buildEnv = env;
-
 describe("Data Dictionary Test", () => {
   beforeEach(() => {
-    cy.visit(`http://localhost:${buildEnv.pmmlEditor.dev.port}/`);
+    cy.visit(`http://localhost:9005/`);
   });
 
   it("Empty DD", () => {
