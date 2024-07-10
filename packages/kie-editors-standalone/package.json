@@ -33,9 +33,9 @@
     "postreport": "jrm ./dist-tests-e2e/junit-transformed.xml \"./dist-tests-e2e/junit-report*.xml\"",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "start": "webpack serve --host 0.0.0.0 --config webpack.package-resources.config.js",
-    "start:it": "webpack serve --host 0.0.0.0 --config ./e2e-tests/webpack.config.js",
+    "start-e2e": "webpack serve --host 0.0.0.0 --config ./e2e-tests/webpack.config.js",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "test-e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm rimraf ./dist-tests-e2e\" \"pnpm start-server-and-test start:it http-get://0.0.0.0:$(build-env standaloneEditors.dev.port) cy:run\" \"pnpm postreport\""
+    "test-e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm rimraf ./dist-tests-e2e\" \"pnpm start-server-and-test start-e2e http-get://0.0.0.0:$(build-env standaloneEditors.dev.port) cy:run\" \"pnpm postreport\""
   },
   "dependencies": {
     "@kie-tools/kie-bc-editors": "workspace:*"
@@ -65,7 +65,7 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/underscore": "^1.11.2",
     "copy-webpack-plugin": "^11.0.0",
-    "cypress": "^13.5.1",
+    "cypress": "^13.13.0",
     "cypress-file-upload": "^5.0.8",
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",

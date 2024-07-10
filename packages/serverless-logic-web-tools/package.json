@@ -120,7 +120,7 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/uuid": "^8.3.0",
     "copy-webpack-plugin": "^11.0.0",
-    "cypress": "^13.5.1",
+    "cypress": "^13.13.0",
     "cypress-file-upload": "^5.0.8",
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",
