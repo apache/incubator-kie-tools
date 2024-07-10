@@ -1,14 +1,11 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "extends": "@kie-tools/tsconfig/tsconfig.browser.json",
   "compilerOptions": {
-    "module": "CommonJS",
-    "target": "es6",
-    "moduleResolution": "node",
     "declaration": false,
     "declarationMap": false,
-    "outDir": "out",
-    "skipLibCheck": true,
-    "sourceMap": true
+    "esModuleInterop": true,
+    "module": "CommonJS",
+    "outDir": "out"
   },
   "include": ["e2e-tests"],
   "exclude": ["test-resources"]

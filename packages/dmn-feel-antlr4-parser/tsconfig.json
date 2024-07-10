@@ -1,6 +1,3 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.browser.json",
-  "compilerOptions": {
-    "moduleResolution": "node"
-  }
+  "extends": "@kie-tools/tsconfig/tsconfig.browser.json"
 }
