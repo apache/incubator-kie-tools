@@ -32,7 +32,25 @@ export class Drds {
     await this.page.getByTestId("kie-tools--dmn-editor--drd-selector").locator("input").press("Tab");
   }
 
+  public async rename(args: { newName: string }) {
+    await this.page.getByTestId("kie-tools--dmn-editor--drd-selector").locator("input").fill(args.newName);
+    await this.page.getByTestId("kie-tools--dmn-editor--drd-selector").locator("input").press("Tab");
+  }
+
+  public async remove(args: { name: string }) {
+    await this.navigateTo({ name: args.name });
+    await this.page.getByTestId("kie-tools--dmn-editor--drd-remove-button").click();
+  }
+
+  public async navigateTo(args: { name: string }) {
+    await this.page.getByTestId("kie-tools--dmn-editor--drd-list").getByText(args.name).click({ force: true });
+  }
+
   public async getCurrent() {
     return await this.page.getByTestId("kie-tools--dmn-editor--drd-selector").locator("input").inputValue();
+  }
+
+  public async getAll() {
+    return await this.page.getByTestId("kie-tools--dmn-editor--drd-list").locator("button").allInnerTexts();
   }
 }

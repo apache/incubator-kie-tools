@@ -115,7 +115,11 @@ export function DrdSelectorPanel() {
             </EmptyState>
           </>
         )) || (
-          <div style={{ gridArea: "content-list" }} className={"kie-dmn-editor--drd-list"}>
+          <div
+            style={{ gridArea: "content-list" }}
+            className={"kie-dmn-editor--drd-list"}
+            data-testid={"kie-tools--dmn-editor--drd-list"}
+          >
             {drds.map((drd, i) => (
               <React.Fragment key={drd["@_id"]!}>
                 <button
@@ -140,9 +144,11 @@ export function DrdSelectorPanel() {
               {drdName}
             </Title>
             {drds.length > 0 && (
-              <Button variant={ButtonVariant.link} onClick={removeDrd} style={{ padding: 0 }}>
-                Remove
-              </Button>
+              <div data-testid={"kie-tools--dmn-editor--drd-remove-button"}>
+                <Button variant={ButtonVariant.link} onClick={removeDrd} style={{ padding: 0 }}>
+                  Remove
+                </Button>
+              </div>
             )}
           </Flex>
         </div>

@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { expect, test } from "../__fixtures__/base";
 import { NodeType } from "../__fixtures__/nodes";
 
@@ -49,31 +50,82 @@ test.describe("Model - DRD", () => {
   });
 
   test.describe("Rename DRD", () => {
-    test("DRD names should be updated in correct places", async ({ drds }) => {
-      // TODO
-      // have 2 DRDs, at least one non default name
-      // navigate between them and check the name is updated in tvo places
+    test.beforeEach("Create DRDs", async ({ drds }) => {
+      await drds.open();
+      await drds.create({ name: "First DRD" });
+
+      await drds.open();
+      await drds.create({ name: "Second DRD" });
     });
 
-    test("rename using special character", async ({ drds }) => {
-      // TODO
+    test("Rename DRD and navigate away", async ({ drds }) => {
+      await drds.open();
+      await drds.navigateTo({ name: "Second DRD" });
+      await drds.rename({ newName: "SECOND DRD" });
+
+      expect(await drds.getAll()).toEqual(["1. First DRD", "2. SECOND DRD"]);
     });
 
-    test("remove DRG element - its removed from all DRDs", async ({ drds }) => {
-      // TODO
+    test("Rename DRD using special character", async ({ drds }) => {
+      await drds.open();
+      await drds.navigateTo({ name: "Second DRD" });
+      await drds.rename({ newName: "SECOND%20DRD" });
+
+      expect(await drds.getAll()).toEqual(["1. First DRD", "2. SECOND%20DRD"]);
     });
   });
 
-  test.describe("Delete DRD", async () => {});
+  test.describe("Delete DRD", async () => {
+    test.beforeEach("Create DRDs", async ({ drds }) => {
+      await drds.open();
+      await drds.create({ name: "First DRD" });
 
-  test.describe("Navigate DRDs", () => {
-    // before create drds that will be switched in the tests
+      await drds.open();
+      await drds.create({ name: "Second DRD" });
 
-    test("switch to second", async ({ drds }) => {
-      // TODO
+      await drds.open();
+      await drds.create({ name: "Third DRD" });
     });
 
-    test("switch to second and return back", async ({ drds }) => {
+    test("Remove DRD and check the indexes", async ({ drds }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.AFFECTED_BY,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1174",
+      });
+      await drds.open();
+      await drds.remove({ name: "Second DRD" });
+
+      expect(await drds.getAll()).toEqual(["1. First DRD", "2. Third DRD"]);
+    });
+  });
+
+  test.describe("Navigate DRD", () => {
+    test.beforeEach("Create DRDs", async ({ drds }) => {
+      await drds.open();
+      await drds.create({ name: "First DRD" });
+
+      await drds.open();
+      await drds.create({ name: "Second DRD" });
+    });
+
+    test("Navigate to first", async ({ drds }) => {
+      await drds.open();
+      await drds.navigateTo({ name: "First DRD" });
+
+      expect(await drds.getCurrent()).toEqual("First DRD");
+    });
+
+    test("Navigate to multiple DRDs", async ({ drds }) => {
+      await drds.open();
+      await drds.navigateTo({ name: "First DRD" });
+      await drds.navigateTo({ name: "Second DRD" });
+
+      expect(await drds.getCurrent()).toEqual("Second DRD");
+    });
+  });
+
+  test.describe("Use DRD", async () => {
+    test("remove DRG element - its removed from all DRDs", async ({ drds }) => {
       // TODO
     });
   });
