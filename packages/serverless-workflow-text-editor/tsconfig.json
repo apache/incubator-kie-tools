@@ -1,5 +1,5 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.node.json",
+  "extends": "@kie-tools/tsconfig/tsconfig.cjs.json",
   "compilerOptions": {
     "jsx": "react-jsx"
   }
