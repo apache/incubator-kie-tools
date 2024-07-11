@@ -8,11 +8,18 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "target": "es6",
-    "allowJs": true,
     "noImplicitAny": false,
     "noImplicitThis": true,
     "strictNullChecks": false
   },
   "include": ["src"],
-  "preserveSymlinks": true
+  "preserveSymlinks": true,
+
+  "ts-node": {
+    "esm": true,
+    "compilerOptions": {
+      "esModuleInterop": true,
+      "module": "CommonJS"
+    }
+  }
 }
