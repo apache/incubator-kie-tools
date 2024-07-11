@@ -616,7 +616,6 @@ digraph G {
   "@kie-tools/yard-model" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
   "@kie-tools/yard-validator" -> "@kie-tools-core/notifications" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-validator" -> "@kie-tools/yard-validator-worker" [ style = "dashed", color = "blue" ];
-  "@kie-tools/yard-validator-worker" -> "@kie-tools/tsconfig" [ style = "dashed", color = "black" ];
   "@kie-tools/yard-validator-worker" -> "@kie-tools/yard-model" [ style = "dashed", color = "black" ];
   "yard-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "yard-vscode-extension" -> "@kie-tools/yard-editor" [ style = "solid", color = "blue" ];

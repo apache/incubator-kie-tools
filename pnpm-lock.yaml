@@ -1779,6 +1779,9 @@ importers:
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
+      typescript:
+        specifier: ^5.5.3
+        version: 5.5.3
       webpack:
         specifier: ^5.88.2
         version: 5.88.2(webpack-cli@4.10.0)
@@ -5562,7 +5565,7 @@ importers:
         version: 29.5.12
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3))
+        version: 29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2))
       jest-junit:
         specifier: ^16.0.0
         version: 16.0.0
@@ -5575,12 +5578,6 @@ importers:
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6
-      ts-jest:
-        specifier: ^29.1.5
-        version: 29.1.5(@babel/core@7.23.9)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.23.9))(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3)))(typescript@5.5.3)
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
       wait-on:
         specifier: ^7.2.0
         version: 7.2.0
@@ -5673,9 +5670,6 @@ importers:
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
 
   packages/kie-sandbox-helm-chart:
     dependencies:
@@ -12328,9 +12322,6 @@ importers:
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
       webpack:
         specifier: ^5.88.2
         version: 5.88.2
@@ -12378,9 +12369,6 @@ importers:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
       '@kie-tools/yard-model':
         specifier: workspace:*
         version: link:../yard-model
@@ -12393,9 +12381,6 @@ importers:
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
 
   packages/yard-vscode-extension:
     dependencies:

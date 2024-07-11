@@ -2331,11 +2331,6 @@
       },
       {
         "source": "@kie-tools/yard-validator-worker",
-        "target": "@kie-tools/tsconfig",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/yard-validator-worker",
         "target": "@kie-tools/yard-model",
         "weight": 1
       },
