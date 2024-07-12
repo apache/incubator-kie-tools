@@ -21,6 +21,7 @@ import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { expect, test } from "../__fixtures__/base";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 import { EdgeType } from "../__fixtures__/edges";
+import { Diagram } from "../__fixtures__/diagram";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -213,6 +214,40 @@ test.describe("Model - DRD", () => {
       await drds.navigateTo({ name: "First DRD" });
       await drds.toggle();
       await expect(nodes.get({ name: DefaultNodeName.DECISION })).not.toBeAttached();
+    });
+
+    test("Rename DRG node - it is renamed in all DRDs", async ({ drds, drgNodes, diagram, nodes, palette }) => {
+      await drds.toggle();
+      await drds.navigateTo({ name: "First DRD" });
+      await drds.toggle();
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 300, y: 300 } });
+
+      await drds.toggle();
+      await drds.navigateTo({ name: "Second DRD" });
+      await drds.toggle();
+      await drgNodes.open();
+      await drgNodes.dragNode({ name: DefaultNodeName.DECISION, targetPosition: { x: 300, y: 300 } });
+
+      await drds.toggle();
+      await drds.navigateTo({ name: "Third DRD" });
+      await drds.toggle();
+      await drgNodes.open();
+      await drgNodes.dragNode({ name: DefaultNodeName.DECISION, targetPosition: { x: 300, y: 300 } });
+
+      await diagram.resetFocus();
+
+      // TODO not working due to multiple same divs in multiple DRDs
+      await nodes.rename({ current: DefaultNodeName.DECISION, new: "Renamed Decision" });
+
+      await drds.toggle();
+      await drds.navigateTo({ name: "Second DRD" });
+      await drds.toggle();
+      await expect(nodes.get({ name: "Renamed Decision" })).toBeAttached();
+
+      await drds.toggle();
+      await drds.navigateTo({ name: "First DRD" });
+      await drds.toggle();
+      await expect(nodes.get({ name: "Renamed Decision" })).toBeAttached();
     });
 
     test("Connection is added to other DRD", async ({ drds, drgNodes, diagram, edges, nodes, palette }) => {
