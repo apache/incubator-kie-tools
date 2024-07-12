@@ -22,7 +22,7 @@ import { Page } from "@playwright/test";
 export class Drds {
   constructor(public page: Page) {}
 
-  public async open() {
+  public async toggle() {
     await this.page.getByTestId("kie-tools--dmn-editor--drd-selector").getByTitle("Select or edit DRD").click();
   }
 
