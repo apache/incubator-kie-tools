@@ -287,5 +287,65 @@ test.describe("Model - DRD", () => {
 
       await expect(await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION })).toBeAttached();
     });
+
+    test("Original node depiction is not moved", async ({
+      decisionPropertiesPanel,
+      drds,
+      drgNodes,
+      nodes,
+      palette,
+    }) => {
+      await drds.toggle();
+      await drds.navigateTo({ name: "First DRD" });
+      await drds.toggle();
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 300, y: 300 } });
+
+      await drds.toggle();
+      await drds.navigateTo({ name: "Second DRD" });
+      await drds.toggle();
+      await drgNodes.open();
+      await drgNodes.dragNode({ name: DefaultNodeName.DECISION, targetPosition: { x: 500, y: 500 } });
+
+      await nodes.move({ name: DefaultNodeName.DECISION, targetPosition: { x: 400, y: 400 } });
+
+      await drds.toggle();
+      await drds.navigateTo({ name: "First DRD" });
+      await drds.toggle();
+      await nodes.select({ name: DefaultNodeName.DECISION });
+      await decisionPropertiesPanel.open();
+      const { x, y } = await decisionPropertiesPanel.getShape();
+      expect(x).toEqual("200");
+      expect(y).toEqual("200");
+    });
+
+    test("Original node depiction is not resized", async ({
+      decisionPropertiesPanel,
+      drds,
+      drgNodes,
+      nodes,
+      palette,
+    }) => {
+      await drds.toggle();
+      await drds.navigateTo({ name: "First DRD" });
+      await drds.toggle();
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 300, y: 300 } });
+
+      await drds.toggle();
+      await drds.navigateTo({ name: "Second DRD" });
+      await drds.toggle();
+      await drgNodes.open();
+      await drgNodes.dragNode({ name: DefaultNodeName.DECISION, targetPosition: { x: 500, y: 500 } });
+
+      await nodes.resize({ nodeName: DefaultNodeName.DECISION, xOffset: 100, yOffset: 100 });
+
+      await drds.toggle();
+      await drds.navigateTo({ name: "First DRD" });
+      await drds.toggle();
+      await nodes.select({ name: DefaultNodeName.DECISION });
+      await decisionPropertiesPanel.open();
+      const { width, height } = await decisionPropertiesPanel.getShape();
+      expect(width).toEqual("160");
+      expect(height).toEqual("80");
+    });
   });
 });
