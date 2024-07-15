@@ -1,8 +1,7 @@
 {
   "extends": "@kie-tools/tsconfig/tsconfig.cjs.json",
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "types": ["node", "@testing-library/jest-dom"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "jsx": "react-jsx"
   }
 }

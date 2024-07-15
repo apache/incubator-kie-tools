@@ -1,7 +1,6 @@
 {
   "extends": "@kie-tools/tsconfig/tsconfig.cjs.json",
   "compilerOptions": {
-    "esModuleInterop": true,
-    "types": ["@testing-library/jest-dom"]
+    "esModuleInterop": true
   }
 }

@@ -2,7 +2,6 @@
   "extends": "@kie-tools/tsconfig/tsconfig.esm.json",
   "compilerOptions": {
     "esModuleInterop": true,
-    "jsx": "react-jsx",
-    "types": ["node", "@testing-library/jest-dom"]
+    "jsx": "react-jsx"
   }
 }

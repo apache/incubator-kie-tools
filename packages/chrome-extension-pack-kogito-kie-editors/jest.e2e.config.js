@@ -17,7 +17,7 @@
  * under the License.
  */
 
-const { config, babelTransform } = require("@kie-tools/jest-base/jest.config");
+const { config, babelTransform, typescriptTransform } = require("@kie-tools/jest-base/jest.config");
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
@@ -40,6 +40,7 @@ module.exports = {
   ],
   transform: {
     ...babelTransform,
+    ...typescriptTransform,
   },
   testRegex: ["e2e-tests/tests/.*Test.ts"],
   testTimeout: 100000,

@@ -4,8 +4,7 @@
     "declaration": false,
     "declarationMap": false,
     "esModuleInterop": true,
-    "jsx": "react-jsx",
-    "types": ["@testing-library/jest-dom"]
+    "jsx": "react-jsx"
   },
 
   // Required to make Webpack TS config work. See https://github.com/webpack/webpack-cli/issues/2458#issuecomment-1157987399
