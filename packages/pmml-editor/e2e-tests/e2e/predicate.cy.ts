@@ -230,9 +230,6 @@ describe("Predicate Test", () => {
       });
 
       cy.ouiaId("edit-attribute").within(() => {
-        // cy.ouiaId("predicate").find("div:first").invoke("text").then((text) => {
-        //   expect(text.replace(/\u00a0/g, ' ')).equal()
-        // })
         cy.ouiaId("predicate").find("div:first").should("have.text", "1test\u00a0>\u00a03").type(" or test<0");
         cy.ouiaId("attribute-partial-score").type("{selectall}{del}-5");
       });

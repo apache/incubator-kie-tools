@@ -92,6 +92,8 @@ function ListField({
               ? cloneElement(child as React.ReactElement<{ name: string }, string>, {
                   key: `${itemIndex}-${childIndex}`,
                   name: child.props.name
+                    // The /\$(.*)/s RegExp has the same behavior, but it's only available targeting es2018.
+                    // `uniforms-patternfly` targets both es5 and es2018 meaning the RegExp should be compatible with es5 the older implementation (es5).
                     ?.split(/\$([\s\S]*)/)
                     .slice(0, -1)
                     .join(`${itemIndex}`),
