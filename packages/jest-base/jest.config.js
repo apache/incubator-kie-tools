@@ -50,7 +50,7 @@ const babelTransform = {
 };
 
 const typescriptTransform = {
-  "^.+\\.tsx?$": ["ts-jest", { tsconfig: "./tsconfig.test.json" }],
+  "^.+\\.tsx?$": ["ts-jest", { tsconfig: "./tsconfig.tests.json" }],
 };
 
 module.exports = {
