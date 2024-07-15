@@ -216,7 +216,7 @@ test.describe("Model - DRD", () => {
       await expect(nodes.get({ name: DefaultNodeName.DECISION })).not.toBeAttached();
     });
 
-    test("Rename DRG node - it is renamed in all DRDs", async ({ drds, drgNodes, diagram, nodes, palette }) => {
+    test("Rename DRG node - it is renamed in all DRDs", async ({ drds, drgNodes, nodes, palette }) => {
       await drds.toggle();
       await drds.navigateTo({ name: "First DRD" });
       await drds.toggle();
@@ -234,9 +234,7 @@ test.describe("Model - DRD", () => {
       await drgNodes.open();
       await drgNodes.dragNode({ name: DefaultNodeName.DECISION, targetPosition: { x: 300, y: 300 } });
 
-      await diagram.resetFocus();
-
-      // TODO not working due to multiple same divs in multiple DRDs
+      await nodes.select({ name: DefaultNodeName.DECISION, dblClick: true });
       await nodes.rename({ current: DefaultNodeName.DECISION, new: "Renamed Decision" });
 
       await drds.toggle();
