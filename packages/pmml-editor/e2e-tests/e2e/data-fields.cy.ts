@@ -19,7 +19,7 @@
 
 describe("Data Fields Test", () => {
   beforeEach(() => {
-    cy.visit(`http://localhost:9005/`);
+    cy.visit("/");
     cy.newButtonPMML().click();
   });
 

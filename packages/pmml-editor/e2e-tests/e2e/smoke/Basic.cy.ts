@@ -19,7 +19,7 @@
 
 describe("Basic user's interaction", () => {
   beforeEach(() => {
-    cy.visit(`http://localhost:9005/`);
+    cy.visit("/");
   });
 
   it("new button exists", () => {

@@ -19,7 +19,7 @@
 
 describe("Mining Schema Test", () => {
   beforeEach(() => {
-    cy.visit(`http://localhost:9005/`);
+    cy.visit("/");
   });
 
   /**

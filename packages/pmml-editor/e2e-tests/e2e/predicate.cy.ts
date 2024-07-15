@@ -19,7 +19,7 @@
 
 describe("Predicate Test", () => {
   beforeEach(() => {
-    cy.visit(`http://localhost:9005/`);
+    cy.visit("/");
   });
 
   it("Create simple predicate - same pmml as in fixture: simple-predicate.pmml", () => {

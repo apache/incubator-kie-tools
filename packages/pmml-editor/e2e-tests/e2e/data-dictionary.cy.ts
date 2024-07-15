@@ -19,7 +19,7 @@
 
 describe("Data Dictionary Test", () => {
   beforeEach(() => {
-    cy.visit(`http://localhost:9005/`);
+    cy.visit("/");
   });
 
   it("Empty DD", () => {
