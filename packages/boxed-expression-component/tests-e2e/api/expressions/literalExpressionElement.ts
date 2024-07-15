@@ -17,17 +17,30 @@
  * under the License.
  */
 
-import { expect, test } from "../../__fixtures__/base";
+import { Locator, Page } from "@playwright/test";
+import { Monaco } from "../../__fixtures__/monaco";
+import { NameAndDataTypeCell } from "../nameAndDataTypeCell";
+import { ExpressionCell } from "../expressionContainer";
 
-test.describe("Create Boxed Context", () => {
-  test("should render expression correctly", async ({ bee, stories, page }) => {
-    await stories.openBoxedContext();
-    await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("cell", { name: "<result>" })).toBeAttached();
-    await expect(page.getByText("Select expression")).toHaveCount(2);
-    await expect(page.getByRole("columnheader")).toHaveCount(1);
-    await expect(page.getByRole("cell")).toHaveCount(4);
-    await expect(bee.getContainer()).toHaveScreenshot("boxed-context.png");
-  });
-});
+export class LiteralExpressionElement {
+  constructor(
+    public locator: Locator | Page,
+    public monaco: Monaco
+  ) {}
+
+  public async fill(expression: string) {
+    await this.monaco.fill({ monacoParentLocator: this.locator, nth: 0, content: expression });
+  }
+
+  get content() {
+    return this.locator.getByRole("cell").nth(0);
+  }
+
+  get cell() {
+    return new ExpressionCell(this.locator.getByRole("cell").nth(0), this.monaco);
+  }
+
+  get nameAndDataTypeCell() {
+    return new NameAndDataTypeCell(this.locator.getByRole("columnheader"));
+  }
+}

@@ -130,7 +130,7 @@ test.describe("Selection", () => {
 
   test.describe("Filter Expression", () => {
     test("should correctly copy and paste a filter expression from context menu", async ({
-      boxedExpressionEditor,
+      bee,
       browserName,
       context,
       page,
@@ -144,14 +144,11 @@ test.describe("Selection", () => {
       await context.grantPermissions(["clipboard-read", "clipboard-write"]);
 
       await stories.openBoxedFilter("rebooked-flights");
-      await boxedExpressionEditor.copyFilter(page.getByTestId("logic-type-selected-header"));
-      await boxedExpressionEditor.resetFilter();
-      await boxedExpressionEditor.selectBoxedContext(page.getByText("Select expression").first());
-      await boxedExpressionEditor.pasteToSelectExpression();
+      await bee.expression.header.copy();
+      await bee.expression.header.reset();
+      await bee.expression.header.paste();
 
-      await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot(
-        "boxed-filter-copied-and-pasted-as-nested.png"
-      );
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-copied-and-pasted-as-nested.png");
     });
   });
 });

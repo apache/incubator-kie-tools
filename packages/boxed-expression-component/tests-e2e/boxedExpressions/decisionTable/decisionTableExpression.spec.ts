@@ -17,28 +17,24 @@
  * under the License.
  */
 
-import { test, expect } from "../../__fixtures__/base";
+import { expect, test } from "../../__fixtures__/base";
 
 test.describe("Create Decision table", () => {
   test.beforeEach(async ({ stories }) => {
     await stories.openDecisionTable();
   });
 
-  test("should render expression correctly", async ({ boxedExpressionEditor, page }) => {
+  test("should render expression correctly", async ({ bee, page }) => {
     await expect(page.getByRole("columnheader", { name: "input-1 (<Undefined>)" })).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "Annotations", exact: true })).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "U", exact: true })).toBeAttached();
     await expect(page.getByRole("columnheader")).toHaveCount(4);
     await expect(page.getByRole("cell")).toHaveCount(4);
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("decision-table.png");
+    await expect(bee.getContainer()).toHaveScreenshot("decision-table.png");
   });
 
   test.describe("Hit policy", () => {
-    test.beforeEach(async ({ page }) => {
-      await page.getByRole("columnheader", { name: "U", exact: true }).click();
-    });
-
     const hitPolicies = [
       ["UNIQUE", "U"],
       ["FIRST", "F"],
@@ -49,36 +45,42 @@ test.describe("Create Decision table", () => {
       ["OUTPUT ORDER", "O"],
     ];
 
-    for (const [policy, abreviation] of hitPolicies) {
-      test(`should change hit policy to ${policy}`, async ({ page }) => {
-        await page.getByRole("menuitem", { name: policy }).hover();
-        await expect(page.getByLabel(`${policy}-help`)).toBeAttached();
-        await page.getByRole("menuitem", { name: policy }).click();
-        await expect(page.getByRole("columnheader", { name: abreviation, exact: true })).toBeAttached();
+    for (const [policy, abbreviation] of hitPolicies) {
+      test(`should change hit policy to ${policy}`, async ({ bee }) => {
+        const hitTableSelector = bee.expression.asDecisionTable().hitTableSelector;
+        await hitTableSelector.cell.click();
+        await hitTableSelector.menu.option(policy).hover();
+        await expect(hitTableSelector.menu.button(`${policy}-help`)).toBeAttached();
+        await hitTableSelector.menu.option(policy).click();
+
+        expect(await hitTableSelector.selectedHitTable.nth(0).innerText()).toBe(abbreviation);
       });
     }
 
-    test("should change between hit policies", async ({ page }) => {
-      await page.getByRole("menuitem", { name: "FIRST" }).click();
-      await expect(page.getByRole("columnheader", { name: "F", exact: true })).toBeAttached();
+    test("should change between hit policies", async ({ bee }) => {
+      const hitTableSelector = bee.expression.asDecisionTable().hitTableSelector;
+      await hitTableSelector.cell.click();
 
-      await page.getByRole("menuitem", { name: "PRIORITY" }).click();
-      await expect(page.getByRole("columnheader", { name: "P", exact: true })).toBeAttached();
+      await hitTableSelector.menu.option("FIRST").click();
+      expect(await hitTableSelector.selectedHitTable.nth(0).innerText()).toBe("F");
 
-      await page.getByRole("menuitem", { name: "ANY" }).click();
-      await expect(page.getByRole("columnheader", { name: "A", exact: true })).toBeAttached();
+      await hitTableSelector.menu.option("PRIORITY").click();
+      expect(await hitTableSelector.selectedHitTable.nth(0).innerText()).toBe("P");
 
-      await page.getByRole("menuitem", { name: "COLLECT" }).click();
-      await expect(page.getByRole("columnheader", { name: "C?", exact: true })).toBeAttached();
+      await hitTableSelector.menu.option("ANY").click();
+      expect(await hitTableSelector.selectedHitTable.nth(0).innerText()).toBe("A");
 
-      await page.getByRole("menuitem", { name: "RULE ORDER" }).click();
-      await expect(page.getByRole("columnheader", { name: "R", exact: true })).toBeAttached();
+      await hitTableSelector.menu.option("COLLECT").click();
+      expect(await hitTableSelector.selectedHitTable.nth(0).innerText()).toBe("C?");
 
-      await page.getByRole("menuitem", { name: "OUTPUT ORDER" }).click();
-      await expect(page.getByRole("columnheader", { name: "O", exact: true })).toBeAttached();
+      await hitTableSelector.menu.option("RULE ORDER").click();
+      expect(await hitTableSelector.selectedHitTable.nth(0).innerText()).toBe("R");
 
-      await page.getByRole("menuitem", { name: "UNIQUE" }).click();
-      await expect(page.getByRole("columnheader", { name: "U", exact: true })).toBeAttached();
+      await hitTableSelector.menu.option("OUTPUT ORDER").click();
+      expect(await hitTableSelector.selectedHitTable.nth(0).innerText()).toBe("O");
+
+      await hitTableSelector.menu.option("UNIQUE").click();
+      expect(await hitTableSelector.selectedHitTable.nth(0).innerText()).toBe("U");
     });
 
     test.describe("should change collect aggregator function", () => {
@@ -90,13 +92,21 @@ test.describe("Create Decision table", () => {
         ["MAX", ">"],
       ];
 
-      for (const [aggregator, abreviation] of aggregatorFunction) {
-        test(`should change aggregator to ${aggregator}`, async ({ page }) => {
+      for (const [aggregator, abbreviation] of aggregatorFunction) {
+        test(`should change aggregator to ${aggregator}`, async ({ page, bee }) => {
+          const hitTableSelector = bee.expression.asDecisionTable().hitTableSelector;
+          await hitTableSelector.cell.click();
+
           await page.getByRole("menuitem", { name: "COLLECT" }).click();
           await page.getByRole("menuitem", { name: aggregator }).hover();
-          await expect(page.getByLabel(`${abreviation}-help`)).toBeAttached();
-          await page.getByRole("menuitem", { name: aggregator }).click();
-          await expect(page.getByRole("columnheader", { name: `C${abreviation}`, exact: true })).toBeAttached();
+
+          await hitTableSelector.menu.option("COLLECT").hover();
+          await hitTableSelector.menu.option(aggregator).hover();
+          await expect(hitTableSelector.menu.button(`${abbreviation}-help`)).toBeAttached();
+
+          await hitTableSelector.menu.option(aggregator).click();
+
+          expect(await hitTableSelector.selectedHitTable.nth(0).innerText()).toBe(`C${abbreviation}`);
         });
       }
     });

@@ -26,22 +26,26 @@ import { UseCases } from "./useCases";
 import { Monaco } from "./monaco";
 import { ProjectName } from "@kie-tools/playwright-base/projectNames";
 import { JsonModel } from "./jsonModel";
+import { ExpressionHeader } from "../api/expressionHeader";
+import { SelectExpressionMenu } from "../api/expressions/selectExpressionMenu";
 
 type BoxedExpressionFixtures = {
-  boxedExpressionEditor: BoxedExpressionEditor;
+  bee: BoxedExpressionEditor;
   stories: Stories;
   clipboard: Clipboard;
   resizing: Resizing;
   useCases: UseCases;
   monaco: Monaco;
   jsonModel: JsonModel;
+  expressionHeader: ExpressionHeader;
+  selectExpressionMenu: SelectExpressionMenu;
 };
 
 export const test = base.extend<BoxedExpressionFixtures>({
   monaco: async ({ page }, use, testInfo) => {
     await use(new Monaco(page, testInfo.project.name as ProjectName));
   },
-  boxedExpressionEditor: async ({ page, baseURL, monaco }, use) => {
+  bee: async ({ page, baseURL, monaco }, use) => {
     await use(new BoxedExpressionEditor(page, monaco, baseURL));
   },
   stories: async ({ page, baseURL }, use) => {
@@ -49,7 +53,7 @@ export const test = base.extend<BoxedExpressionFixtures>({
   },
   clipboard: async ({ browserName, context, page }, use) => {
     const clipboard = new Clipboard(page);
-    clipboard.setup(context, browserName);
+    await clipboard.setup(context, browserName);
     await use(clipboard);
   },
   resizing: async ({ page }, use) => {
@@ -60,6 +64,12 @@ export const test = base.extend<BoxedExpressionFixtures>({
   },
   jsonModel: async ({ page, baseURL }, use) => {
     await use(new JsonModel(page));
+  },
+  expressionHeader: async ({ page }, use) => {
+    await use(new ExpressionHeader(page));
+  },
+  selectExpressionMenu: async ({ page }, use) => {
+    await use(new SelectExpressionMenu(page));
   },
 });
 

@@ -17,122 +17,130 @@
  * under the License.
  */
 
-import { test, expect } from "../../__fixtures__/base";
-import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
+import { expect, test } from "../../__fixtures__/base";
 
 test.describe("Boxed Context context menu", () => {
   test.describe("context entry control", () => {
-    test.beforeEach(async ({ stories, page, monaco, boxedExpressionEditor }) => {
+    test.beforeEach(async ({ stories }) => {
       await stories.openBoxedContext();
-      await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "ContextEntry-1 (<Undefined>)" }));
-      await monaco.fill({ monacoParentLocator: page, content: '"test"' });
     });
 
-    test("should't render selection context menu", async ({ page }) => {
-      await page.getByRole("cell", { name: "ContextEntry-1" }).click({ button: "right" });
-      await expect(page.getByRole("heading", { name: "CONTEXT ENTRY" })).toBeAttached();
-      await expect(page.getByRole("heading", { name: "SELECTION" })).toBeAttached();
+    test("shouldn't render selection context menu", async ({ bee }) => {
+      const entry = bee.expression.asContext().entry(0);
+      await entry.selectExpressionMenu.selectLiteral();
+      await entry.expression.asLiteral().fill("test");
+
+      await entry.descriptionCell.contextMenu.open();
+
+      await expect(entry.descriptionCell.contextMenu.heading("CONTEXT ENTRY")).toBeAttached();
+      await expect(entry.descriptionCell.contextMenu.heading("SELECTION")).toBeAttached();
     });
 
-    test("shouldn't render context entry context menu", async ({ page }) => {
-      await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click({ button: "right" });
-      await expect(page.getByRole("heading", { name: "CONTEXT ENTRY" })).not.toBeAttached();
-      await expect(page.getByRole("heading", { name: "SELECTION" })).toBeAttached();
-      await expect(page.getByRole("heading", { name: "COLUMNS" })).not.toBeAttached();
+    test("shouldn't render context entry context menu", async ({ page, bee }) => {
+      const expressionHeaderCell = bee.expression.asContext().expressionHeaderCell;
+      await bee.expression.asContext().entry(0).selectExpressionMenu.selectLiteral();
+      await expressionHeaderCell.contextMenu.open();
+
+      await expect(expressionHeaderCell.contextMenu.heading("CONTEXT ENTRY")).not.toBeAttached();
+      await expect(expressionHeaderCell.contextMenu.heading("SELECTION")).toBeAttached();
+      await expect(expressionHeaderCell.contextMenu.heading("COLUMNS")).not.toBeAttached();
+
+      const entry = bee.expression.asContext().entry(0);
       await page.keyboard.press("Escape");
+      await entry.expression.asLiteral().cell.contextMenu.open();
 
-      await page.getByTestId("monaco-container").click({ button: "right" });
-      await expect(page.getByRole("heading", { name: "CONTEXT ENTRY" })).not.toBeAttached();
-      await expect(page.getByRole("heading", { name: "SELECTION" })).toBeAttached();
-      await expect(page.getByRole("heading", { name: "COLUMNS" })).not.toBeAttached();
-      await page.keyboard.press("Escape");
+      await expect(entry.expression.asLiteral().cell.contextMenu.heading("CONTEXT ENTRY")).not.toBeAttached();
+      await expect(entry.expression.asLiteral().cell.contextMenu.heading("SELECTION")).toBeAttached();
+      await expect(entry.expression.asLiteral().cell.contextMenu.heading("COLUMNS")).not.toBeAttached();
     });
 
-    test("should open context entry context menu and insert context entry above", async ({ page }) => {
-      await page.getByRole("cell", { name: "ContextEntry-1" }).click({ button: "right" });
-      await page.getByRole("menuitem", { name: "Insert above" }).click();
-      await expect(page.getByRole("row", { name: "ContextEntry-" })).toHaveCount(2);
-      await expect(page.getByRole("row", { name: "ContextEntry-" }).nth(1)).toContainText("test");
+    test("should open context entry context menu and insert context entry above", async ({ bee }) => {
+      const entry = bee.expression.asContext().entry(0);
+
+      await entry.descriptionCell.contextMenu.open();
+      await entry.descriptionCell.contextMenu.option("Insert above").click();
+
+      await expect(bee.expression.asContext().entry(0).descriptionCell.content).toContainText("ContextEntry-2");
+      await expect(bee.expression.asContext().entry(1).descriptionCell.content).toContainText("ContextEntry-1");
     });
 
-    test("should open context entry context menu and insert context entry below", async ({ page }) => {
-      await page.getByRole("cell", { name: "ContextEntry-1" }).click({ button: "right" });
-      await page.getByRole("menuitem", { name: "Insert below" }).click();
-      await expect(page.getByRole("row", { name: "ContextEntry-" })).toHaveCount(2);
-      await expect(page.getByRole("row", { name: "ContextEntry-" }).nth(0)).toContainText("test");
+    test("should open context entry context menu and insert context entry below", async ({ bee }) => {
+      const entry = bee.expression.asContext().entry(0);
+
+      await entry.descriptionCell.contextMenu.open();
+      await entry.descriptionCell.contextMenu.option("Insert below").click();
+
+      await expect(bee.expression.asContext().entry(0).descriptionCell.content).toContainText("ContextEntry-1");
+      await expect(bee.expression.asContext().entry(1).descriptionCell.content).toContainText("ContextEntry-2");
     });
 
-    test("should open context entry context menu and insert multiples context entry above", async ({ page }) => {
-      await page.getByRole("cell", { name: "ContextEntry-1" }).click({ button: "right" });
-      await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
-      await page.getByRole("button", { name: "plus" }).click();
-      await page.getByRole("button", { name: "Insert" }).click();
-      await expect(page.getByRole("row", { name: "ContextEntry-" })).toHaveCount(4);
-      await expect(page.getByRole("row", { name: "ContextEntry-" }).nth(3)).toContainText("test");
+    test("should open context entry context menu and insert multiples context entry above", async ({ bee }) => {
+      const entry = bee.expression.asContext().entry(0);
+
+      await entry.descriptionCell.contextMenu.open();
+      await entry.descriptionCell.contextMenu.option("Insert").click();
+      await entry.descriptionCell.contextMenu.button("plus").click();
+      await entry.descriptionCell.contextMenu.button("Insert").click();
+
+      await expect(bee.expression.asContext().entry(0).descriptionCell.content).toContainText("ContextEntry-4");
+      await expect(bee.expression.asContext().entry(1).descriptionCell.content).toContainText("ContextEntry-3");
+      await expect(bee.expression.asContext().entry(2).descriptionCell.content).toContainText("ContextEntry-2");
+      await expect(bee.expression.asContext().entry(3).descriptionCell.content).toContainText("ContextEntry-1");
     });
 
-    test("should open context entry context menu and insert multiples context entry below", async ({ page }) => {
-      await page.getByRole("cell", { name: "ContextEntry-1" }).click({ button: "right" });
-      await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
-      await page.getByRole("button", { name: "minus" }).click();
-      await page.getByLabel("Below").click();
-      await page.getByRole("button", { name: "Insert" }).click();
-      await expect(page.getByRole("row", { name: "ContextEntry-" })).toHaveCount(2);
-      await expect(page.getByRole("row", { name: "ContextEntry-" }).nth(0)).toContainText("test");
+    test("should open context entry context menu and insert multiples context entry below", async ({ bee }) => {
+      const entry = bee.expression.asContext().entry(0);
+
+      await entry.descriptionCell.contextMenu.open();
+      await entry.descriptionCell.contextMenu.option("Insert").click();
+      await entry.descriptionCell.contextMenu.button("plus").click();
+      await entry.descriptionCell.contextMenu.radio("Below").click();
+      await entry.descriptionCell.contextMenu.button("Insert").click();
+
+      await expect(bee.expression.asContext().entry(0).descriptionCell.content).toContainText("ContextEntry-1");
+      await expect(bee.expression.asContext().entry(1).descriptionCell.content).toContainText("ContextEntry-4");
+      await expect(bee.expression.asContext().entry(2).descriptionCell.content).toContainText("ContextEntry-3");
+      await expect(bee.expression.asContext().entry(3).descriptionCell.content).toContainText("ContextEntry-2");
     });
 
-    test("should open context entry context menu and delete row", async ({ page }) => {
-      await page.getByRole("cell", { name: "ContextEntry-1" }).click({ button: "right" });
-      await page.getByRole("menuitem", { name: "Insert above" }).click();
-      await expect(page.getByRole("row", { name: "ContextEntry-" })).toHaveCount(2);
-      await expect(page.getByRole("row", { name: "ContextEntry-" }).nth(1)).toContainText("test");
-      await page.getByRole("cell", { name: "ContextEntry-2" }).click({ button: "right" });
-      await page.getByRole("menuitem", { name: "Delete" }).click();
-      await expect(page.getByRole("row", { name: "ContextEntry-" })).toHaveCount(1);
-      await expect(page.getByRole("row", { name: "ContextEntry-" }).nth(0)).toContainText("test");
-    });
-  });
+    test("should open context entry context menu and delete row", async ({ bee }) => {
+      await bee.expression.asContext().entry(0).descriptionCell.contextMenu.open();
+      await bee.expression.asContext().entry(0).descriptionCell.contextMenu.option("Insert above").click();
 
-  test("should reset insert multiples menu when opening another cell context menu", async ({
-    stories,
-    page,
-    monaco,
-  }) => {
-    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/421");
-    test.info().annotations.push({
-      type: TestAnnotations.REGRESSION,
-      description: "https://github.com/apache/incubator-kie-issues/issues/421",
-    });
+      await expect(bee.expression.asContext().entry(0).descriptionCell.content).toContainText("ContextEntry-2");
+      await expect(bee.expression.asContext().entry(1).descriptionCell.content).toContainText("ContextEntry-1");
 
-    await stories.openRelation();
-    await monaco.fill({ monacoParentLocator: page, content: '"test"' });
-    await page.getByTestId("monaco-container").click({ button: "right" });
-    await page.getByRole("menuitem", { name: "Insert", exact: true }).first().click();
-    await page.getByRole("cell", { name: "ContextEntry-1" }).click({ button: "right" });
-    await expect(page.getByRole("heading", { name: "CONTEXT ENTRY" })).toBeAttached();
-    await expect(page.getByRole("heading", { name: "SELECTION" })).toBeAttached();
+      await bee.expression.asContext().entry(0).descriptionCell.contextMenu.open();
+      await bee.expression.asContext().entry(0).descriptionCell.contextMenu.option("Delete").click();
+
+      await expect(bee.expression.asContext().entry(0).descriptionCell.content).toContainText("ContextEntry-1");
+
+      expect(await bee.expression.asContext().entriesCount()).toEqual(1);
+    });
   });
 
   test.describe("Hovering", () => {
-    test.beforeEach(async ({ stories, page, boxedExpressionEditor, monaco }) => {
+    test.beforeEach(async ({ stories }) => {
       await stories.openBoxedContext();
-      await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "ContextEntry-1 (<Undefined>)" }));
-      await monaco.fill({ monacoParentLocator: page, content: '"test"' });
     });
 
     test.describe("Add context entry", () => {
-      test("should add context entry above by positioning mouse on the index cell upper section", async ({ page }) => {
-        await page.getByRole("cell", { name: "ContextEntry-1" }).hover({ position: { x: 0, y: 0 } });
-        await page.getByRole("cell", { name: "ContextEntry-1" }).locator("svg").click();
-        await expect(page.getByRole("row", { name: "ContextEntry-" })).toHaveCount(2);
-        await expect(page.getByRole("row", { name: "ContextEntry-" }).nth(1)).toContainText("test");
+      test("should add context entry above by positioning mouse on the index cell upper section", async ({ bee }) => {
+        await bee.expression.asContext().addEntryAboveOfEntryAtIndex(0);
+
+        expect(await bee.expression.asContext().entriesCount()).toEqual(2);
+
+        await expect(bee.expression.asContext().entry(1).descriptionCell.content).toContainText("ContextEntry-1");
+        await expect(bee.expression.asContext().entry(0).descriptionCell.content).toContainText("ContextEntry-2");
       });
 
-      test("should add context entry below by positioning mouse on the index cell lower section", async ({ page }) => {
-        await page.getByRole("cell", { name: "ContextEntry-1" }).hover();
-        await page.getByRole("cell", { name: "ContextEntry-1" }).locator("svg").click();
-        await expect(page.getByRole("row", { name: "ContextEntry-" })).toHaveCount(2);
-        await expect(page.getByRole("row", { name: "ContextEntry-" }).nth(0)).toContainText("test");
+      test("should add context entry below by positioning mouse on the index cell lower section", async ({ bee }) => {
+        await bee.expression.asContext().addEntryBelowOfEntryAtIndex(0);
+
+        expect(await bee.expression.asContext().entriesCount()).toEqual(2);
+
+        await expect(bee.expression.asContext().entry(0).descriptionCell.content).toContainText("ContextEntry-1");
+        await expect(bee.expression.asContext().entry(1).descriptionCell.content).toContainText("ContextEntry-2");
       });
     });
   });

@@ -17,17 +17,22 @@
  * under the License.
  */
 
-import { expect, test } from "../../__fixtures__/base";
+import { Locator } from "@playwright/test";
+import { Monaco } from "../../__fixtures__/monaco";
+import { ExpressionElementEntry } from "../expressionContainer";
 
-test.describe("Create Boxed Context", () => {
-  test("should render expression correctly", async ({ bee, stories, page }) => {
-    await stories.openBoxedContext();
-    await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("cell", { name: "<result>" })).toBeAttached();
-    await expect(page.getByText("Select expression")).toHaveCount(2);
-    await expect(page.getByRole("columnheader")).toHaveCount(1);
-    await expect(page.getByRole("cell")).toHaveCount(4);
-    await expect(bee.getContainer()).toHaveScreenshot("boxed-context.png");
-  });
-});
+export class FunctionExpressionElement {
+  constructor(
+    private locator: Locator,
+    private monaco: Monaco
+  ) {}
+
+  async addEntry() {
+    await this.locator.getByRole("cell", { name: "1" }).nth(0).hover();
+    await this.locator.getByRole("cell", { name: "1" }).nth(0).locator("svg").click();
+  }
+
+  public entry(index: number) {
+    return new ExpressionElementEntry(this.locator.getByTestId(`expression-row-${index}`).nth(0), this.monaco);
+  }
+}

@@ -22,15 +22,19 @@ import {
   DMN15__tOutputClause,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import {
+  BoxedConditional,
   BoxedContext,
   BoxedDecisionTable,
+  BoxedEvery,
   BoxedExpression,
   BoxedFilter,
+  BoxedFor,
   BoxedFunction,
   BoxedInvocation,
   BoxedList,
   BoxedLiteral,
   BoxedRelation,
+  BoxedSome,
   generateUuid,
 } from "../src/api";
 import {
@@ -253,6 +257,66 @@ export function getDefaultBoxedExpressionForStories({
     };
     widthsById.set(filterExpression["@_id"]!, [FILTER_EXPRESSION_MIN_WIDTH]);
     return filterExpression;
+  } else if (logicType === "conditional") {
+    const conditionalExpression: BoxedConditional = {
+      __$$element: "conditional",
+      "@_id": generateUuid(),
+      if: {
+        "@_id": generateUuid(),
+        expression: undefined as any,
+      },
+      then: {
+        "@_id": generateUuid(),
+        expression: undefined as any,
+      },
+      else: {
+        "@_id": generateUuid(),
+        expression: undefined as any,
+      },
+    };
+    return conditionalExpression;
+  } else if (logicType === "for") {
+    const forExpression: BoxedFor = {
+      __$$element: "for",
+      "@_id": generateUuid(),
+      return: {
+        "@_id": generateUuid(),
+        expression: undefined as any,
+      },
+      in: {
+        "@_id": generateUuid(),
+        expression: undefined as any,
+      },
+    };
+    return forExpression;
+  } else if (logicType == "some") {
+    const someExpression: BoxedSome = {
+      __$$element: "some",
+      "@_id": generateUuid(),
+      satisfies: {
+        "@_id": generateUuid(),
+        expression: undefined as any,
+      },
+      in: {
+        "@_id": generateUuid(),
+        expression: undefined as any,
+      },
+    };
+    return someExpression;
+  } else if (logicType === "every") {
+    const everyExpression: BoxedEvery = {
+      __$$element: "every",
+      "@_id": generateUuid(),
+      satisfies: {
+        "@_id": generateUuid(),
+        expression: undefined as any,
+      },
+      in: {
+        "@_id": generateUuid(),
+        expression: undefined as any,
+      },
+    };
+    return everyExpression;
   } else {
     throw new Error(`No default expression available for ${logicType}.`);
   }

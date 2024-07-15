@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { test, expect } from "../../__fixtures__/base";
+import { expect, test } from "../../__fixtures__/base";
 
 test.describe("Create Boxed Filter", () => {
   test("should rename a filter", async ({ page, stories }) => {
@@ -41,31 +41,37 @@ test.describe("Create Boxed Filter", () => {
     await expect(page.getByRole("columnheader", { name: "Expression Name (boolean)" })).toBeVisible();
   });
 
-  test("should correctly reset a nested filter", async ({ boxedExpressionEditor, page, stories }) => {
+  test("should correctly reset a nested filter", async ({ bee, stories }) => {
     await stories.openBoxedFilter("nested");
 
-    await boxedExpressionEditor.resetFilter(page.getByTestId("expression-row-0"));
+    await bee.expression.asContext().entry(0).expression.header.reset();
 
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-reset.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested-reset.png");
   });
 
-  test("should correctly create a nested filter", async ({ boxedExpressionEditor, page, stories }) => {
-    await stories.openBoxedFilter("base");
+  test("should correctly create a nested filter", async ({ bee, stories }) => {
+    await bee.goto();
 
-    await boxedExpressionEditor.resetFilter();
-    await boxedExpressionEditor.selectBoxedContext();
+    await bee.selectExpressionMenu.selectContext();
 
     // Prepare empty Filter 'in' and 'match' cells
-    await boxedExpressionEditor.selectBoxedFilter(page.getByText("Select expression").first());
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
+    await bee.expression.asContext().entry(0).selectExpressionMenu.selectFilter();
+    await bee.expression.asContext().entry(0).expression.asFilter().in.selectExpressionMenu.selectLiteral();
+    await bee.expression.asContext().entry(0).expression.asFilter().match.selectExpressionMenu.selectLiteral();
+    await bee.expression
+      .asContext()
+      .entry(0)
+      .expression.asFilter()
+      .in.expression.asLiteral()
+      .fill("collection in expression");
+    await bee.expression
+      .asContext()
+      .entry(0)
+      .expression.asFilter()
+      .match.expression.asLiteral()
+      .fill("collection match expression");
 
-    await boxedExpressionEditor.fillFilter({
-      collectionIn: ["collection in expression"],
-      collectionMatch: "collection match expression",
-    });
-
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested.png");
   });
 
   test("should correctly create a filter using list boxed expression", async ({

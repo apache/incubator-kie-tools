@@ -17,17 +17,32 @@
  * under the License.
  */
 
-import { expect, test } from "../../__fixtures__/base";
+import { Locator, Page } from "@playwright/test";
 
-test.describe("Create Boxed Context", () => {
-  test("should render expression correctly", async ({ bee, stories, page }) => {
-    await stories.openBoxedContext();
-    await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("cell", { name: "<result>" })).toBeAttached();
-    await expect(page.getByText("Select expression")).toHaveCount(2);
-    await expect(page.getByRole("columnheader")).toHaveCount(1);
-    await expect(page.getByRole("cell")).toHaveCount(4);
-    await expect(bee.getContainer()).toHaveScreenshot("boxed-context.png");
-  });
-});
+export class ExpressionHeader {
+  constructor(public page: Locator | Page) {}
+
+  public get() {
+    return this.page.getByTestId("logic-type-button-test-id");
+  }
+
+  public async copy() {
+    await this.get().click();
+    await this.page.getByRole("menuitem", { name: "copy" }).click();
+  }
+
+  public async cut() {
+    await this.get().click();
+    await this.page.getByRole("menuitem", { name: "cut" }).click();
+  }
+
+  public async paste() {
+    await this.get().click();
+    await this.page.getByRole("menuitem", { name: "paste" }).click();
+  }
+
+  public async reset() {
+    await this.get().click();
+    await this.page.getByRole("menuitem", { name: "Reset" }).click();
+  }
+}
