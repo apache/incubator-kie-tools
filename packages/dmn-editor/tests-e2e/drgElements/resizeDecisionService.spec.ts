@@ -305,7 +305,12 @@ test.describe("Resize node - Decision Service", () => {
       expect(width).toEqual("280");
     });
 
-    test("Resize non empty Decision Service", async ({ decisionServicePropertiesPanel, diagram, nodes, palette }) => {
+    test("should resize non empty Decision Service", async ({
+      decisionServicePropertiesPanel,
+      diagram,
+      nodes,
+      palette,
+    }) => {
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
         description: "https://github.com/apache/incubator-kie-issues/issues/881",

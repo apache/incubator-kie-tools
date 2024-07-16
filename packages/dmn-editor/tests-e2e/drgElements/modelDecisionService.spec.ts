@@ -27,13 +27,13 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Model Decision Service", () => {
-  test.describe("Decision Service Signature", () => {
+  test.describe("Model Decision Service - Signature", () => {
     test.beforeEach(async ({ diagram, palette }) => {
       await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 300, y: 100 } });
       await diagram.resetFocus();
     });
 
-    test("Decision Service Signature - Output Decisions", async ({
+    test("Decision Service Output Decisions Signature should be not empty", async ({
       decisionServicePropertiesPanel,
       diagram,
       nodes,
@@ -56,7 +56,7 @@ test.describe("Model Decision Service", () => {
       expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual("New Decision");
     });
 
-    test("Decision Service Signature - Encapsulated Decisions", async ({
+    test("Decision Service Encapsulated Decisions Signature should be not empty", async ({
       decisionServicePropertiesPanel,
       diagram,
       nodes,
@@ -79,7 +79,7 @@ test.describe("Model Decision Service", () => {
       expect(await decisionServicePropertiesPanel.getEncapsulatedDecisions()).toEqual("New Decision");
     });
 
-    test("Decision Service Signature - Input Data", async ({
+    test("Decision Service Input Data Signature should be not empty", async ({
       decisionServicePropertiesPanel,
       diagram,
       nodes,
@@ -109,7 +109,7 @@ test.describe("Model Decision Service", () => {
       expect(await decisionServicePropertiesPanel.getInputData()).toEqual(["New Input Data"]);
     });
 
-    test("Decision Service Signature - Input Decisions", async ({
+    test("Decision Service Input Decisions Signature should be not empty", async ({
       decisionServicePropertiesPanel,
       diagram,
       nodes,
@@ -147,7 +147,7 @@ test.describe("Model Decision Service", () => {
       expect(await decisionServicePropertiesPanel.getInputDecisions()).toEqual(["Decision Two"]);
     });
 
-    test.describe("Decision Service Signature - Inputs Order", () => {
+    test.describe("Model Decision Service - Signature - Inputs Order", () => {
       test.beforeEach("Initialize nodes and connections", async ({ diagram, nodes, palette }) => {
         await palette.dragNewNode({
           type: NodeType.DECISION,
@@ -201,7 +201,10 @@ test.describe("Model Decision Service", () => {
         });
       });
 
-      test("Decision Service Signature - Inputs Order - default", async ({ decisionServicePropertiesPanel, nodes }) => {
+      test("Decision Service Inputs Signature should have a default order", async ({
+        decisionServicePropertiesPanel,
+        nodes,
+      }) => {
         test.info().annotations.push({
           type: TestAnnotations.REGRESSION,
           description: "https://github.com/apache/incubator-kie-issues/issues/664",
@@ -216,7 +219,10 @@ test.describe("Model Decision Service", () => {
         expect(await decisionServicePropertiesPanel.getInputData()).toEqual(["BB", "AA"]);
       });
 
-      test("Decision Service Signature - Inputs Order - reorder", async ({ decisionServicePropertiesPanel, nodes }) => {
+      test("Decision Service Inputs Signature should be reordered", async ({
+        decisionServicePropertiesPanel,
+        nodes,
+      }) => {
         test.info().annotations.push({
           type: TestAnnotations.REGRESSION,
           description: "https://github.com/apache/incubator-kie-issues/issues/664",
@@ -234,7 +240,7 @@ test.describe("Model Decision Service", () => {
       });
     });
 
-    test.describe("Decision Service Signature - Decision Deletion", () => {
+    test.describe("Model Decision Service - Signature - Decisions", () => {
       test.beforeEach(async ({ decisionServicePropertiesPanel, diagram, nodes, palette }) => {
         await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 }, thenRenameTo: "A" });
         await diagram.resetFocus();
@@ -250,7 +256,7 @@ test.describe("Model Decision Service", () => {
         expect(await decisionServicePropertiesPanel.getEncapsulatedDecisions()).toEqual("B");
       });
 
-      test("Delete Decision from the Decision Service upper divider", async ({
+      test("Decision Service Decision Signature should not contain deleted Output Decision", async ({
         decisionServicePropertiesPanel,
         nodes,
       }) => {
@@ -263,7 +269,7 @@ test.describe("Model Decision Service", () => {
         expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual("(Empty)");
       });
 
-      test("Delete Decision from the Decision Service below divider", async ({
+      test("Decision Service Decision Signature should not contain deleted Encapsulated Decision", async ({
         decisionServicePropertiesPanel,
         nodes,
       }) => {
@@ -277,82 +283,84 @@ test.describe("Model Decision Service", () => {
       });
     });
 
-    test("Drag Decision directly into Decision Service", async ({
-      decisionServicePropertiesPanel,
-      diagram,
-      nodes,
-      palette,
-    }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/896");
-      test.info().annotations.push({
-        type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/896",
+    test.describe("Model Decision Service - Add Content", () => {
+      test("Decision Service should allow to drag Decision into it from palette", async ({
+        decisionServicePropertiesPanel,
+        diagram,
+        nodes,
+        palette,
+      }) => {
+        test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/896");
+        test.info().annotations.push({
+          type: TestAnnotations.AFFECTED_BY,
+          description: "https://github.com/apache/incubator-kie-issues/issues/896",
+        });
+
+        await diagram.resetFocus();
+        await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 400, y: 300 } });
+
+        await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+        await decisionServicePropertiesPanel.open();
+        expect(await decisionServicePropertiesPanel.getEncapsulatedDecisions()).toEqual(DefaultNodeName.DECISION);
       });
 
-      await diagram.resetFocus();
-      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 400, y: 300 } });
+      test("Decision Service should allow to add connected Decision from a contained Decision", async ({
+        decisionServicePropertiesPanel,
+        diagram,
+        nodes,
+        palette,
+      }) => {
+        test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/897");
+        test.info().annotations.push({
+          type: TestAnnotations.AFFECTED_BY,
+          description: "https://github.com/apache/incubator-kie-issues/issues/897",
+        });
 
-      await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
-      await decisionServicePropertiesPanel.open();
-      expect(await decisionServicePropertiesPanel.getEncapsulatedDecisions()).toEqual(DefaultNodeName.DECISION);
-    });
+        await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 }, thenRenameTo: "A" });
+        await diagram.resetFocus();
+        await nodes.move({ name: "A", targetPosition: { x: 400, y: 180 } });
 
-    test("Add connected Decision from Decision that is already part of Decision Service", async ({
-      decisionServicePropertiesPanel,
-      diagram,
-      nodes,
-      palette,
-    }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/897");
-      test.info().annotations.push({
-        type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/897",
+        await nodes.resize({
+          nodeName: DefaultNodeName.DECISION_SERVICE,
+          position: NodePosition.TOP,
+          xOffset: 350,
+          yOffset: 0,
+        });
+
+        await nodes.dragNewConnectedNode({ type: NodeType.DECISION, from: "A", targetPosition: { x: 500, y: 160 } });
+
+        await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+        await decisionServicePropertiesPanel.open();
+
+        expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual("A, New Decision");
       });
 
-      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 }, thenRenameTo: "A" });
-      await diagram.resetFocus();
-      await nodes.move({ name: "A", targetPosition: { x: 400, y: 180 } });
+      test("Decision Service should allow to move contained Decision by a keyboard without crossing sections", async ({
+        decisionServicePropertiesPanel,
+        diagram,
+        nodes,
+        page,
+        palette,
+      }) => {
+        test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/876");
+        test.info().annotations.push({
+          type: TestAnnotations.AFFECTED_BY,
+          description: "https://github.com/apache/incubator-kie-issues/issues/876",
+        });
+        await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+        await diagram.resetFocus();
+        await nodes.move({ name: DefaultNodeName.DECISION, targetPosition: { x: 400, y: 180 } });
 
-      await nodes.resize({
-        nodeName: DefaultNodeName.DECISION_SERVICE,
-        position: NodePosition.TOP,
-        xOffset: 350,
-        yOffset: 0,
+        for (let index = 0; index < 10; index++) {
+          await page.keyboard.press("ArrowDown");
+        }
+
+        await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+        await decisionServicePropertiesPanel.open();
+        expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual("New Decision");
+
+        await expect(diagram.get()).toHaveScreenshot("move-decision-in-decision-service-by-keyboard.png");
       });
-
-      await nodes.dragNewConnectedNode({ type: NodeType.DECISION, from: "A", targetPosition: { x: 500, y: 160 } });
-
-      await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
-      await decisionServicePropertiesPanel.open();
-
-      expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual("A, New Decision");
-    });
-
-    test("Move Decision inside Decision Service by a keyboard without crossing sections", async ({
-      decisionServicePropertiesPanel,
-      diagram,
-      nodes,
-      page,
-      palette,
-    }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/876");
-      test.info().annotations.push({
-        type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/876",
-      });
-      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
-      await diagram.resetFocus();
-      await nodes.move({ name: DefaultNodeName.DECISION, targetPosition: { x: 400, y: 180 } });
-
-      for (let index = 0; index < 10; index++) {
-        await page.keyboard.press("ArrowDown");
-      }
-
-      await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
-      await decisionServicePropertiesPanel.open();
-      expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual("New Decision");
-
-      await expect(diagram.get()).toHaveScreenshot("move-decision-in-decision-service-by-keyboard.png");
     });
   });
 });
