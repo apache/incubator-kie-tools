@@ -40,7 +40,7 @@ test.describe("Model Decision Service", () => {
       palette,
     }) => {
       test.info().annotations.push({
-        type: TestAnnotations.AFFECTED_BY,
+        type: TestAnnotations.REGRESSION,
         description: "https://github.com/apache/incubator-kie-issues/issues/663",
       });
 
@@ -63,7 +63,7 @@ test.describe("Model Decision Service", () => {
       palette,
     }) => {
       test.info().annotations.push({
-        type: TestAnnotations.AFFECTED_BY,
+        type: TestAnnotations.REGRESSION,
         description: "https://github.com/apache/incubator-kie-issues/issues/663",
       });
 
@@ -86,7 +86,7 @@ test.describe("Model Decision Service", () => {
       palette,
     }) => {
       test.info().annotations.push({
-        type: TestAnnotations.AFFECTED_BY,
+        type: TestAnnotations.REGRESSION,
         description: "https://github.com/apache/incubator-kie-issues/issues/663",
       });
 
@@ -116,7 +116,7 @@ test.describe("Model Decision Service", () => {
       palette,
     }) => {
       test.info().annotations.push({
-        type: TestAnnotations.AFFECTED_BY,
+        type: TestAnnotations.REGRESSION,
         description: "https://github.com/apache/incubator-kie-issues/issues/663",
       });
 
@@ -203,7 +203,7 @@ test.describe("Model Decision Service", () => {
 
       test("Decision Service Signature - Inputs Order - default", async ({ decisionServicePropertiesPanel, nodes }) => {
         test.info().annotations.push({
-          type: TestAnnotations.AFFECTED_BY,
+          type: TestAnnotations.REGRESSION,
           description: "https://github.com/apache/incubator-kie-issues/issues/664",
         });
 
@@ -218,7 +218,7 @@ test.describe("Model Decision Service", () => {
 
       test("Decision Service Signature - Inputs Order - reorder", async ({ decisionServicePropertiesPanel, nodes }) => {
         test.info().annotations.push({
-          type: TestAnnotations.AFFECTED_BY,
+          type: TestAnnotations.REGRESSION,
           description: "https://github.com/apache/incubator-kie-issues/issues/664",
         });
 
@@ -255,7 +255,7 @@ test.describe("Model Decision Service", () => {
         nodes,
       }) => {
         test.info().annotations.push({
-          type: TestAnnotations.AFFECTED_BY,
+          type: TestAnnotations.REGRESSION,
           description: "https://github.com/apache/incubator-kie-issues/issues/879",
         });
         await nodes.delete({ name: "A" });
@@ -268,7 +268,7 @@ test.describe("Model Decision Service", () => {
         nodes,
       }) => {
         test.info().annotations.push({
-          type: TestAnnotations.AFFECTED_BY,
+          type: TestAnnotations.REGRESSION,
           description: "https://github.com/apache/incubator-kie-issues/issues/879",
         });
         await nodes.delete({ name: "B" });
@@ -285,7 +285,7 @@ test.describe("Model Decision Service", () => {
     }) => {
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/896");
       test.info().annotations.push({
-        type: TestAnnotations.AFFECTED_BY,
+        type: TestAnnotations.REGRESSION,
         description: "https://github.com/apache/incubator-kie-issues/issues/896",
       });
 
@@ -305,7 +305,7 @@ test.describe("Model Decision Service", () => {
     }) => {
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/897");
       test.info().annotations.push({
-        type: TestAnnotations.AFFECTED_BY,
+        type: TestAnnotations.REGRESSION,
         description: "https://github.com/apache/incubator-kie-issues/issues/897",
       });
 
@@ -337,7 +337,7 @@ test.describe("Model Decision Service", () => {
     }) => {
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/876");
       test.info().annotations.push({
-        type: TestAnnotations.AFFECTED_BY,
+        type: TestAnnotations.REGRESSION,
         description: "https://github.com/apache/incubator-kie-issues/issues/876",
       });
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });

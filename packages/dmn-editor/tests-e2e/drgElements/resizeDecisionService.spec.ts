@@ -307,7 +307,7 @@ test.describe("Resize node - Decision Service", () => {
 
     test("Resize non empty Decision Service", async ({ decisionServicePropertiesPanel, diagram, nodes, palette }) => {
       test.info().annotations.push({
-        type: TestAnnotations.AFFECTED_BY,
+        type: TestAnnotations.REGRESSION,
         description: "https://github.com/apache/incubator-kie-issues/issues/881",
       });
       await diagram.resetFocus();
