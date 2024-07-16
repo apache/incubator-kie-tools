@@ -211,7 +211,7 @@ export function HitPolicySelector({
         </div>
       }
     >
-      <div className="selected-hit-policy">
+      <div className="selected-hit-policy" data-testid="kie-tools--bee--selected-hit-policy">
         {!builtInAggregatorEnabled && `${_.first(selectedHitPolicy)}`}
         {builtInAggregatorEnabled && `${_.first(selectedHitPolicy)}${selectedBuiltInAggregator}`}
       </div>

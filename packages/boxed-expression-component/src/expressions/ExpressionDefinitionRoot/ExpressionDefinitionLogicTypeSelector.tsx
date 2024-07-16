@@ -529,7 +529,7 @@ export function ExpressionDefinitionLogicTypeSelector({
               }}
               toggle={
                 <DropdownToggle
-                  data-testid={"logic-type-button-test-id"}
+                  data-testid={"kie-tools--bee--expression-header-dropdown"}
                   icon={<>{logicTypeIcon(expression.__$$element)}</>}
                   style={{ padding: 0 }}
                   onToggle={setDropdownOpen}

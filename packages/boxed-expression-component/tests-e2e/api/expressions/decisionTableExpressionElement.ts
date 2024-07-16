@@ -51,8 +51,8 @@ export class DecisionTableExpressionElement {
   cellAt(coordinate: { row: number; column: number }) {
     return new ExpressionCell(
       this.locator
-        .getByTestId(`expression-row-${coordinate.row - 1}`)
-        .getByTestId(`expression-column-${coordinate.column}`),
+        .getByTestId(`kie-tools--bee--expression-row-${coordinate.row - 1}`)
+        .getByTestId(`kie-tools--bee--expression-column-${coordinate.column}`),
       this.monaco
     );
   }
@@ -300,7 +300,7 @@ export class HitTableSelector {
   }
 
   get selectedHitTable() {
-    return this.locator.locator(".selected-hit-policy").nth(0);
+    return this.locator.getByTestId("kie-tools--bee--selected-hit-policy").nth(0);
   }
 
   get menu() {
@@ -311,16 +311,16 @@ export class HitTableSelector {
 export class HitTableMenu {
   constructor(private locator: Locator) {}
 
-  option(option: string) {
+  option(optionName: string) {
     return this.locator.page().locator(".hit-policy-flex-container").getByRole("menuitem", {
-      name: option,
+      name: optionName,
       exact: true,
     });
   }
 
-  button(option: string) {
+  button(buttonName: string) {
     return this.locator.page().locator(".hit-policy-flex-container").getByRole("button", {
-      name: option,
+      name: buttonName,
       exact: true,
     });
   }

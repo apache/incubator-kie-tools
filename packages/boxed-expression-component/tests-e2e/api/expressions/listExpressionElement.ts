@@ -19,7 +19,7 @@
 
 import { Locator } from "@playwright/test";
 import { Monaco } from "../../__fixtures__/monaco";
-import { ExpressionElementEntry } from "../expressionContainer";
+import { ChildExpression } from "../expressionContainer";
 import { NameAndDataTypeCell } from "../nameAndDataTypeCell";
 
 export class ListExpressionElement {
@@ -54,7 +54,7 @@ export class ListExpressionElement {
   }
 
   public entry(index: number) {
-    return new ExpressionElementEntry(this.locator.getByTestId(`expression-row-${index}`).nth(0), this.monaco);
+    return new ChildExpression(this.locator.getByTestId(`kie-tools--bee--expression-row-${index}`).nth(0), this.monaco);
   }
 
   get nameAndDataTypeCell() {

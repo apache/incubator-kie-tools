@@ -148,7 +148,7 @@ export class ContextMenu {
   }
 }
 
-export class ExpressionElementEntry {
+export class ChildExpression {
   private readonly _expression: ExpressionContainer;
 
   public constructor(
@@ -171,7 +171,7 @@ export class ExpressionElementEntry {
   }
 }
 
-export class ExpressionVariable {
+export class IteratorVariable {
   constructor(private locator: Locator) {}
 
   async fill(content: string) {

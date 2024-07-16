@@ -19,7 +19,7 @@
 
 import { Locator } from "@playwright/test";
 import { Monaco } from "../../__fixtures__/monaco";
-import { ExpressionElementEntry, ExpressionVariable } from "../expressionContainer";
+import { ChildExpression, IteratorVariable } from "../expressionContainer";
 import { NameAndDataTypeCell } from "../nameAndDataTypeCell";
 
 export class ForExpressionElement {
@@ -29,21 +29,30 @@ export class ForExpressionElement {
   ) {}
 
   get variable() {
-    return new ExpressionVariable(
-      this.locator.getByTestId("expression-row-0").getByTestId("expression-column-2").nth(0)
+    return new IteratorVariable(
+      this.locator
+        .getByTestId("kie-tools--bee--expression-row-0")
+        .getByTestId("kie-tools--bee--expression-column-2")
+        .nth(0)
     );
   }
 
   get in() {
-    return new ExpressionElementEntry(
-      this.locator.getByTestId("expression-row-1").getByTestId("expression-column-2").nth(0),
+    return new ChildExpression(
+      this.locator
+        .getByTestId("kie-tools--bee--expression-row-1")
+        .getByTestId("kie-tools--bee--expression-column-2")
+        .nth(0),
       this.monaco
     );
   }
 
   get return() {
-    return new ExpressionElementEntry(
-      this.locator.getByTestId("expression-row-2").getByTestId("expression-column-2").nth(0),
+    return new ChildExpression(
+      this.locator
+        .getByTestId("kie-tools--bee--expression-row-2")
+        .getByTestId("kie-tools--bee--expression-column-2")
+        .nth(0),
       this.monaco
     );
   }

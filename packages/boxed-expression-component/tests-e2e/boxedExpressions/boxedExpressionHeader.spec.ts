@@ -31,22 +31,22 @@ test.describe("Boxed expression header", () => {
   });
 
   test("should reset expression", async ({ page }) => {
-    await page.getByTestId("logic-type-button-test-id").click();
+    await page.getByTestId("kie-tools--bee--expression-header-dropdown").click();
     await page.getByRole("menuitem", { name: "Reset" }).click();
     await expect(page.getByText("Select expression")).toBeAttached();
   });
 
   test("should copy, reset and paste expression", async ({ bee, page, clipboard }) => {
-    await page.getByTestId("logic-type-button-test-id").click();
+    await page.getByTestId("kie-tools--bee--expression-header-dropdown").click();
     clipboard.use();
     await page.getByRole("menuitem", { name: "copy" }).click();
-    await page.getByTestId("logic-type-button-test-id").click();
+    await page.getByTestId("kie-tools--bee--expression-header-dropdown").click();
     await page.getByRole("menuitem", { name: "Reset" }).click();
     await bee.pasteToSelectExpression();
   });
 
   test("should cut and paste expression", async ({ bee, page, clipboard }) => {
-    await page.getByTestId("logic-type-button-test-id").click();
+    await page.getByTestId("kie-tools--bee--expression-header-dropdown").click();
     clipboard.use();
     await page.getByRole("menuitem", { name: "cut" }).click();
     await bee.pasteToSelectExpression();

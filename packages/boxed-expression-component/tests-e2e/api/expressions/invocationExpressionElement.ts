@@ -19,7 +19,7 @@
 
 import { Locator } from "@playwright/test";
 import { Monaco } from "../../__fixtures__/monaco";
-import { ExpressionElementEntry } from "../expressionContainer";
+import { ChildExpression } from "../expressionContainer";
 import { NameAndDataTypeCell } from "../nameAndDataTypeCell";
 
 export class InvocationExpressionElement {
@@ -29,7 +29,7 @@ export class InvocationExpressionElement {
   ) {}
 
   public parameter(index: number) {
-    return new InvocationParameter(this.locator.getByTestId(`expression-row-${index}`), this.monaco);
+    return new InvocationParameter(this.locator.getByTestId(`kie-tools--bee--expression-row-${index}`), this.monaco);
   }
 
   get nameAndDataTypeCell() {
@@ -42,8 +42,8 @@ export class InvocationExpressionElement {
 
   async addParameterAboveOfEntryAtIndex(index: number) {
     await this.locator
-      .getByTestId(`expression-row-${index}`)
-      .getByTestId("expression-column-1")
+      .getByTestId(`kie-tools--bee--expression-row-${index}`)
+      .getByTestId("kie-tools--bee--expression-column-1")
       .nth(0)
       .hover({
         position: {
@@ -53,19 +53,23 @@ export class InvocationExpressionElement {
       });
 
     await this.locator
-      .getByTestId(`expression-row-${index}`)
-      .getByTestId("expression-column-1")
+      .getByTestId(`kie-tools--bee--expression-row-${index}`)
+      .getByTestId("kie-tools--bee--expression-column-1")
       .nth(0)
       .locator("svg")
       .click();
   }
 
   async addParameterBelowOfEntryAtIndex(index: number) {
-    await this.locator.getByTestId(`expression-row-${index}`).getByTestId("expression-column-1").nth(0).hover();
+    await this.locator
+      .getByTestId(`kie-tools--bee--expression-row-${index}`)
+      .getByTestId("kie-tools--bee--expression-column-1")
+      .nth(0)
+      .hover();
 
     await this.locator
-      .getByTestId(`expression-row-${index}`)
-      .getByTestId("expression-column-1")
+      .getByTestId(`kie-tools--bee--expression-row-${index}`)
+      .getByTestId("kie-tools--bee--expression-column-1")
       .nth(0)
       .locator("svg")
       .click();
@@ -73,13 +77,16 @@ export class InvocationExpressionElement {
 }
 
 class InvocationParameter {
-  private readonly expressionElement: ExpressionElementEntry;
+  private readonly expressionElement: ChildExpression;
 
   constructor(
     private locator: Locator,
     monaco: Monaco
   ) {
-    this.expressionElement = new ExpressionElementEntry(locator.getByTestId(`expression-column-2`).nth(0), monaco);
+    this.expressionElement = new ChildExpression(
+      locator.getByTestId(`kie-tools--bee--expression-column-2`).nth(0),
+      monaco
+    );
   }
 
   get expression() {
@@ -91,6 +98,6 @@ class InvocationParameter {
   }
 
   get descriptionCell() {
-    return new NameAndDataTypeCell(this.locator.getByTestId(`expression-column-1`).nth(0));
+    return new NameAndDataTypeCell(this.locator.getByTestId(`kie-tools--bee--expression-column-1`).nth(0));
   }
 }

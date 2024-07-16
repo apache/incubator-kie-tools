@@ -19,7 +19,7 @@
 
 import { Locator } from "@playwright/test";
 import { Monaco } from "../../__fixtures__/monaco";
-import { ExpressionElementEntry } from "../expressionContainer";
+import { ChildExpression } from "../expressionContainer";
 import { NameAndDataTypeCell } from "../nameAndDataTypeCell";
 
 export class FilterExpressionElement {
@@ -29,14 +29,14 @@ export class FilterExpressionElement {
   ) {}
 
   get in() {
-    return new ExpressionElementEntry(
+    return new ChildExpression(
       this.locator.getByTestId("kie-tools--boxed-expression-component--filter-collection-in").nth(0),
       this.monaco
     );
   }
 
   get match() {
-    return new ExpressionElementEntry(
+    return new ChildExpression(
       this.locator.getByTestId("kie-tools--boxed-expression-component--filter-collection-match").nth(0),
       this.monaco
     );

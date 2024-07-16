@@ -30,7 +30,9 @@ export class RelationExpressionElement {
 
   cellAt(param: { column: number; row: number }) {
     return new ExpressionCell(
-      this.locator.getByTestId(`expression-row-${param.row - 1}`).getByTestId(`expression-column-${param.column}`),
+      this.locator
+        .getByTestId(`kie-tools--bee--expression-row-${param.row - 1}`)
+        .getByTestId(`kie-tools--bee--expression-column-${param.column}`),
       this.monaco
     );
   }

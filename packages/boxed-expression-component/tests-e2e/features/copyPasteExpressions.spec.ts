@@ -253,19 +253,14 @@ test.describe("Copy, Cut and Paste expressions", () => {
     await expect(bee.expression.asConditional().then.expression.asLiteral().content).toContainText("then ORIGINAL");
     await expect(bee.expression.asConditional().else.expression.asLiteral().content).toContainText("else ORIGINAL");
     await bee.expression.header.copy();
-    await bee.expression.asConditional().if.expression.asLiteral().fill("new1");
-    await bee.expression.asConditional().then.expression.asLiteral().fill("new2");
-    await bee.expression.asConditional().else.expression.asLiteral().fill("new3");
-    await expect(bee.expression.asConditional().if.expression.asLiteral().content).toContainText("new1");
-    await expect(bee.expression.asConditional().then.expression.asLiteral().content).toContainText("new2");
-    await expect(bee.expression.asConditional().else.expression.asLiteral().content).toContainText("new3");
+    await bee.expression.header.reset();
+    await bee.selectExpressionMenu.selectLiteral();
+    await bee.expression.asLiteral().fill("old");
+    await expect(bee.expression.asLiteral().content).toContainText("old");
     await bee.expression.header.paste();
     await expect(bee.expression.asConditional().if.expression.asLiteral().content).toContainText("if ORIGINAL");
     await expect(bee.expression.asConditional().then.expression.asLiteral().content).toContainText("then ORIGINAL");
     await expect(bee.expression.asConditional().else.expression.asLiteral().content).toContainText("else ORIGINAL");
-    await expect(bee.expression.asConditional().if.expression.asLiteral().content).not.toContainText("new1");
-    await expect(bee.expression.asConditional().then.expression.asLiteral().content).not.toContainText("new2");
-    await expect(bee.expression.asConditional().else.expression.asLiteral().content).not.toContainText("new3");
   });
 
   test("should cut and paste top-level - Conditional Expression", async ({ bee }) => {
@@ -297,8 +292,8 @@ test.describe("Copy, Cut and Paste expressions", () => {
     await returnExpression.fill("ORIGINAL2");
     await bee.expression.header.copy();
     await forExpression.variable.fill("not");
-    await forExpression.in.expression.asLiteral().fill("new1");
-    await forExpression.return.expression.asLiteral().fill("new2");
+    await inExpression.fill("new1");
+    await returnExpression.fill("new2");
     await bee.expression.header.paste();
     await expect(inExpression.content).toContainText("ORIGINAL1");
     await expect(returnExpression.content).toContainText("ORIGINAL2");

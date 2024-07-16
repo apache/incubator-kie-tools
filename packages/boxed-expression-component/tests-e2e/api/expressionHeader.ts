@@ -23,7 +23,7 @@ export class ExpressionHeader {
   constructor(public page: Locator | Page) {}
 
   public get() {
-    return this.page.getByTestId("logic-type-button-test-id");
+    return this.page.getByTestId("kie-tools--bee--expression-header-dropdown").nth(0);
   }
 
   public async copy() {

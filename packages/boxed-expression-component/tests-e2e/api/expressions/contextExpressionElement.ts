@@ -20,7 +20,7 @@
 import { Locator } from "@playwright/test";
 import { Monaco } from "../../__fixtures__/monaco";
 
-import { ExpressionElementEntry } from "../expressionContainer";
+import { ChildExpression } from "../expressionContainer";
 import { NameAndDataTypeCell } from "../nameAndDataTypeCell";
 
 export class ContextExpressionElement {
@@ -30,11 +30,11 @@ export class ContextExpressionElement {
   ) {}
 
   public entry(index: number) {
-    return new ExpressionElementEntry(this.locator.getByTestId(`expression-row-${index}`).nth(0), this.monaco);
+    return new ChildExpression(this.locator.getByTestId(`kie-tools--bee--expression-row-${index}`).nth(0), this.monaco);
   }
 
   get resultEntry() {
-    return new ExpressionElementEntry(this.locator.locator(`.additional-row`).nth(0), this.monaco);
+    return new ChildExpression(this.locator.locator(`.additional-row`).nth(0), this.monaco);
   }
 
   async entriesCount() {
@@ -43,8 +43,8 @@ export class ContextExpressionElement {
 
   async addEntryAboveOfEntryAtIndex(index: number) {
     await this.locator
-      .getByTestId(`expression-row-${index}`)
-      .getByTestId("expression-column-1")
+      .getByTestId(`kie-tools--bee--expression-row-${index}`)
+      .getByTestId("kie-tools--bee--expression-column-1")
       .nth(0)
       .hover({
         position: {
@@ -54,19 +54,23 @@ export class ContextExpressionElement {
       });
 
     await this.locator
-      .getByTestId(`expression-row-${index}`)
-      .getByTestId("expression-column-1")
+      .getByTestId(`kie-tools--bee--expression-row-${index}`)
+      .getByTestId("kie-tools--bee--expression-column-1")
       .nth(0)
       .locator("svg")
       .click();
   }
 
   async addEntryBelowOfEntryAtIndex(index: number) {
-    await this.locator.getByTestId(`expression-row-${index}`).getByTestId("expression-column-1").nth(0).hover();
+    await this.locator
+      .getByTestId(`kie-tools--bee--expression-row-${index}`)
+      .getByTestId("kie-tools--bee--expression-column-1")
+      .nth(0)
+      .hover();
 
     await this.locator
-      .getByTestId(`expression-row-${index}`)
-      .getByTestId("expression-column-1")
+      .getByTestId(`kie-tools--bee--expression-row-${index}`)
+      .getByTestId("kie-tools--bee--expression-column-1")
       .nth(0)
       .locator("svg")
       .click();
