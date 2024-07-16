@@ -74,29 +74,18 @@ test.describe("Create Boxed Filter", () => {
     await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested.png");
   });
 
-  test("should correctly create a filter using list boxed expression", async ({
-    boxedExpressionEditor,
-    page,
-    stories,
-  }) => {
+  test("should correctly create a filter using list boxed expression", async ({ bee, stories }) => {
     await stories.openBoxedFilter("base");
-    await boxedExpressionEditor.selectBoxedList(page.getByText("Select expression").first());
-    // 'in'
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
-    await page
-      .getByTestId("kie-tools--boxed-expression-component--filter-collection-in")
-      .getByRole("cell", { name: "1" })
-      .click({ button: "right" });
-    await page.getByRole("menuitem").getByText("Insert below").click();
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
-    // 'match'
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
+    await bee.expression.asFilter().in.selectExpressionMenu.selectList();
+    await bee.expression.asFilter().in.expression.asList().addEntryAtTop();
+    await bee.expression.asFilter().in.expression.asList().row(0).selectExpressionMenu.selectLiteral();
+    await bee.expression.asFilter().in.expression.asList().row(1).selectExpressionMenu.selectLiteral();
+    await bee.expression.asFilter().in.expression.asList().row(0).expression.asLiteral().fill("Passenger One");
+    await bee.expression.asFilter().in.expression.asList().row(1).expression.asLiteral().fill("Passenger Two");
 
-    await boxedExpressionEditor.fillFilter({
-      collectionIn: ["Passenger One", "Passenger Two"],
-      collectionMatch: "item.Flight Number = Flight.Flight Number",
-    });
+    await bee.expression.asFilter().match.selectExpressionMenu.selectLiteral();
+    await bee.expression.asFilter().match.expression.asLiteral().fill("item.Flight Number = Flight.Flight Number");
 
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-boxed-list.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested-boxed-list.png");
   });
 });

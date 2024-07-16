@@ -20,7 +20,7 @@
 import { expect, test } from "../__fixtures__/base";
 
 test.describe("Change Expression Name and Data Type", () => {
-  test.beforeEach(async ({ bee, browserName, clipboard }) => {
+  test.beforeEach(async ({ bee }) => {
     await bee.goto();
   });
 

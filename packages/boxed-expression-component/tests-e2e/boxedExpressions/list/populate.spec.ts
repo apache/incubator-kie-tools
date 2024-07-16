@@ -28,11 +28,11 @@ test.describe("Populate Boxed List", () => {
     await page.getByRole("cell", { name: "1" }).locator("svg").click();
     await page.getByRole("cell", { name: "1" }).locator("svg").click();
 
-    await bee.expression.asList().entry(0).selectExpressionMenu.selectLiteral();
-    await bee.expression.asList().entry(1).selectExpressionMenu.selectLiteral();
-    await bee.expression.asList().entry(2).selectExpressionMenu.selectLiteral();
-    await bee.expression.asList().entry(3).selectExpressionMenu.selectLiteral();
-    await bee.expression.asList().entry(4).selectExpressionMenu.selectLiteral();
+    await bee.expression.asList().row(0).selectExpressionMenu.selectLiteral();
+    await bee.expression.asList().row(1).selectExpressionMenu.selectLiteral();
+    await bee.expression.asList().row(2).selectExpressionMenu.selectLiteral();
+    await bee.expression.asList().row(3).selectExpressionMenu.selectLiteral();
+    await bee.expression.asList().row(4).selectExpressionMenu.selectLiteral();
 
     await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
     await page.getByPlaceholder("Expression Name").fill("Age groups");

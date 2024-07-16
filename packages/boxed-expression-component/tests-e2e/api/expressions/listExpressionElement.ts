@@ -53,11 +53,34 @@ export class ListExpressionElement {
       .click();
   }
 
-  public entry(index: number) {
-    return new ChildExpression(this.locator.getByTestId(`kie-tools--bee--expression-row-${index}`).nth(0), this.monaco);
+  public row(index: number) {
+    return new Row(this.locator.getByTestId(`kie-tools--bee--expression-row-${index}`).nth(0), this.monaco);
   }
 
   get nameAndDataTypeCell() {
     return new NameAndDataTypeCell(this.locator.getByRole("columnheader").nth(1));
+  }
+}
+
+export class Row {
+  private readonly childExpression: ChildExpression;
+
+  constructor(
+    private locator: Locator,
+    monaco: Monaco
+  ) {
+    this.childExpression = new ChildExpression(locator, monaco);
+  }
+
+  get expression() {
+    return this.childExpression.expression;
+  }
+
+  get selectExpressionMenu() {
+    return this.childExpression.selectExpressionMenu;
+  }
+
+  get cell() {
+    return new NameAndDataTypeCell(this.locator.getByRole("cell").nth(0));
   }
 }

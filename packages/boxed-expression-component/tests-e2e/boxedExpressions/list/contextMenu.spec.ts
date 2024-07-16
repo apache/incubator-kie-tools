@@ -26,7 +26,7 @@ test.describe("Boxed List context menu", () => {
     });
 
     test("shouldn't render column context menu", async ({ bee }) => {
-      const descriptionCell = bee.expression.asList().entry(0).descriptionCell;
+      const descriptionCell = bee.expression.asList().row(0).cell;
       await descriptionCell.contextMenu.open();
       await expect(descriptionCell.contextMenu.heading("ROWS")).toBeAttached();
       await expect(descriptionCell.contextMenu.heading("SELECTION")).toBeAttached();
@@ -41,7 +41,7 @@ test.describe("Boxed List context menu", () => {
       await expect(nameAndDataTypeCell.contextMenu.heading("COLUMNS")).not.toBeAttached();
       await page.keyboard.press("Escape");
 
-      const entryContextMenu = bee.expression.asList().entry(0).expression.contextMenu;
+      const entryContextMenu = bee.expression.asList().row(0).expression.contextMenu;
       await entryContextMenu.open();
       await expect(entryContextMenu.heading("ROWS")).toBeAttached();
       await expect(entryContextMenu.heading("SELECTION")).toBeAttached();
@@ -49,77 +49,77 @@ test.describe("Boxed List context menu", () => {
     });
 
     test("should open row context menu and insert row above", async ({ bee }) => {
-      const entry0 = bee.expression.asList().entry(0);
+      const entry0 = bee.expression.asList().row(0);
       await entry0.selectExpressionMenu.selectLiteral();
       await entry0.expression.asLiteral().fill("test");
-      await entry0.descriptionCell.contextMenu.open();
-      await entry0.descriptionCell.contextMenu.option("Insert above").click();
-      await expect(bee.expression.asList().entry(1).expression.asLiteral().content).toContainText("test");
+      await entry0.cell.contextMenu.open();
+      await entry0.cell.contextMenu.option("Insert above").click();
+      await expect(bee.expression.asList().row(1).expression.asLiteral().content).toContainText("test");
     });
 
     test("should open row context menu and insert row below", async ({ bee }) => {
-      const entry0 = bee.expression.asList().entry(0);
+      const entry0 = bee.expression.asList().row(0);
       await entry0.selectExpressionMenu.selectLiteral();
       await entry0.expression.asLiteral().fill("test");
-      await entry0.descriptionCell.contextMenu.open();
-      await entry0.descriptionCell.contextMenu.option("Insert below").click();
+      await entry0.cell.contextMenu.open();
+      await entry0.cell.contextMenu.option("Insert below").click();
       await expect(entry0.expression.asLiteral().content).toContainText("test");
-      await expect(bee.expression.asList().entry(1).descriptionCell.content).toBeAttached();
+      await expect(bee.expression.asList().row(1).cell.content).toBeAttached();
     });
 
     test("should open row context menu and insert multiples rows above", async ({ bee }) => {
-      const entry0 = bee.expression.asList().entry(0);
+      const entry0 = bee.expression.asList().row(0);
       await entry0.selectExpressionMenu.selectLiteral();
       await entry0.expression.asLiteral().fill("test");
-      await entry0.descriptionCell.contextMenu.open();
-      await entry0.descriptionCell.contextMenu.option("Insert").click();
-      await entry0.descriptionCell.contextMenu.button("plus").click();
-      await entry0.descriptionCell.contextMenu.button("Insert").click();
+      await entry0.cell.contextMenu.open();
+      await entry0.cell.contextMenu.option("Insert").click();
+      await entry0.cell.contextMenu.button("plus").click();
+      await entry0.cell.contextMenu.button("Insert").click();
 
-      await expect(bee.expression.asList().entry(0).descriptionCell.content).toBeAttached();
-      await expect(bee.expression.asList().entry(1).descriptionCell.content).toBeAttached();
-      await expect(bee.expression.asList().entry(2).descriptionCell.content).toBeAttached();
-      await expect(bee.expression.asList().entry(3).expression.asLiteral().content).toContainText("test");
+      await expect(bee.expression.asList().row(0).cell.content).toBeAttached();
+      await expect(bee.expression.asList().row(1).cell.content).toBeAttached();
+      await expect(bee.expression.asList().row(2).cell.content).toBeAttached();
+      await expect(bee.expression.asList().row(3).expression.asLiteral().content).toContainText("test");
     });
 
     test("should open row context menu and insert multiples rows below", async ({ bee }) => {
-      const entry0 = bee.expression.asList().entry(0);
+      const entry0 = bee.expression.asList().row(0);
       await entry0.selectExpressionMenu.selectLiteral();
       await entry0.expression.asLiteral().fill("test");
-      await entry0.descriptionCell.contextMenu.open();
-      await entry0.descriptionCell.contextMenu.option("Insert").click();
-      await entry0.descriptionCell.contextMenu.button("minus").click();
-      await entry0.descriptionCell.contextMenu.radio("Below").click();
-      await entry0.descriptionCell.contextMenu.button("Insert").click();
+      await entry0.cell.contextMenu.open();
+      await entry0.cell.contextMenu.option("Insert").click();
+      await entry0.cell.contextMenu.button("minus").click();
+      await entry0.cell.contextMenu.radio("Below").click();
+      await entry0.cell.contextMenu.button("Insert").click();
 
-      await expect(entry0.descriptionCell.content).toBeAttached();
-      await expect(bee.expression.asList().entry(1).descriptionCell.content).toBeAttached();
+      await expect(entry0.cell.content).toBeAttached();
+      await expect(bee.expression.asList().row(1).cell.content).toBeAttached();
       await expect(entry0.expression.asLiteral().content).toContainText("test");
     });
 
     test("should open row context menu and delete row", async ({ bee }) => {
-      const entry0 = bee.expression.asList().entry(0);
+      const entry0 = bee.expression.asList().row(0);
       await entry0.selectExpressionMenu.selectLiteral();
       await entry0.expression.asLiteral().fill("test");
-      await entry0.descriptionCell.contextMenu.open();
-      await entry0.descriptionCell.contextMenu.option("Insert above").click();
+      await entry0.cell.contextMenu.open();
+      await entry0.cell.contextMenu.option("Insert above").click();
 
-      await expect(bee.expression.asList().entry(1).expression.asLiteral().content).toContainText("test");
-      await entry0.descriptionCell.contextMenu.open();
-      await entry0.descriptionCell.contextMenu.option("Delete").click();
+      await expect(bee.expression.asList().row(1).expression.asLiteral().content).toContainText("test");
+      await entry0.cell.contextMenu.open();
+      await entry0.cell.contextMenu.option("Delete").click();
       await expect(entry0.expression.asLiteral().content).toContainText("test");
     });
   });
 
   test("should reset insert multiples menu when opening another cell context menu", async ({ stories, bee }) => {
     await stories.openBoxedList();
-    const entry0 = bee.expression.asList().entry(0);
+    const entry0 = bee.expression.asList().row(0);
     await entry0.expression.contextMenu.open();
     await entry0.expression.contextMenu.option("Insert").first().click();
-    await entry0.descriptionCell.contextMenu.open();
+    await entry0.cell.contextMenu.open();
 
-    await expect(entry0.descriptionCell.contextMenu.heading("ROWS")).toBeAttached();
-    await expect(entry0.descriptionCell.contextMenu.heading("SELECTION")).toBeAttached();
+    await expect(entry0.cell.contextMenu.heading("ROWS")).toBeAttached();
+    await expect(entry0.cell.contextMenu.heading("SELECTION")).toBeAttached();
   });
 
   test.describe("Hovering", () => {
@@ -129,21 +129,21 @@ test.describe("Boxed List context menu", () => {
 
     test.describe("Add rows", () => {
       test("should add row above by positioning mouse on the index cell upper section", async ({ bee }) => {
-        const entry0 = bee.expression.asList().entry(0);
+        const entry0 = bee.expression.asList().row(0);
         await entry0.selectExpressionMenu.selectLiteral();
         await entry0.expression.asLiteral().fill("test");
         await bee.expression.asList().addEntryAtTop();
 
-        await expect(bee.expression.asList().entry(1).expression.asLiteral().content).toContainText("test");
+        await expect(bee.expression.asList().row(1).expression.asLiteral().content).toContainText("test");
       });
 
       test("should add row below by positioning mouse on the index cell lower section", async ({ bee }) => {
-        const entry0 = bee.expression.asList().entry(0);
+        const entry0 = bee.expression.asList().row(0);
         await entry0.selectExpressionMenu.selectLiteral();
         await entry0.expression.asLiteral().fill("test");
         await bee.expression.asList().addEntryBelowOfEntryAtIndex(0);
 
-        await expect(bee.expression.asList().entry(0).expression.asLiteral().content).toContainText("test");
+        await expect(bee.expression.asList().row(0).expression.asLiteral().content).toContainText("test");
       });
     });
   });

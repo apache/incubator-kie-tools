@@ -189,28 +189,28 @@ test.describe("Copy, Cut and Paste expressions", () => {
 
   test("should copy and paste top-level - List Expression", async ({ bee }) => {
     await bee.selectExpressionMenu.selectList();
-    await bee.expression.asList().entry(0).selectExpressionMenu.selectLiteral();
-    await bee.expression.asList().entry(0).expression.asLiteral().fill("ORIGINAL");
-    await expect(bee.expression.asList().entry(0).expression.asLiteral().content).toContainText("ORIGINAL");
+    await bee.expression.asList().row(0).selectExpressionMenu.selectLiteral();
+    await bee.expression.asList().row(0).expression.asLiteral().fill("ORIGINAL");
+    await expect(bee.expression.asList().row(0).expression.asLiteral().content).toContainText("ORIGINAL");
     await bee.expression.header.copy();
-    await bee.expression.asList().entry(0).expression.asLiteral().fill("test");
-    await expect(bee.expression.asList().entry(0).expression.asLiteral().content).toContainText("test");
-    await expect(bee.expression.asList().entry(0).expression.asLiteral().content).not.toContainText("ORIGINAL");
+    await bee.expression.asList().row(0).expression.asLiteral().fill("test");
+    await expect(bee.expression.asList().row(0).expression.asLiteral().content).toContainText("test");
+    await expect(bee.expression.asList().row(0).expression.asLiteral().content).not.toContainText("ORIGINAL");
     await bee.expression.header.paste();
-    await expect(bee.expression.asList().entry(0).expression.asLiteral().content).not.toContainText("test");
-    await expect(bee.expression.asList().entry(0).expression.asLiteral().content).toContainText("ORIGINAL");
+    await expect(bee.expression.asList().row(0).expression.asLiteral().content).not.toContainText("test");
+    await expect(bee.expression.asList().row(0).expression.asLiteral().content).toContainText("ORIGINAL");
   });
 
   test("should cut and paste top-level - List Expression", async ({ bee }) => {
     await bee.selectExpressionMenu.selectList();
-    await bee.expression.asList().entry(0).selectExpressionMenu.selectLiteral();
-    await bee.expression.asList().entry(0).expression.asLiteral().fill("ORIGINAL");
-    await expect(bee.expression.asList().entry(0).expression.asLiteral().content).toContainText("ORIGINAL");
+    await bee.expression.asList().row(0).selectExpressionMenu.selectLiteral();
+    await bee.expression.asList().row(0).expression.asLiteral().fill("ORIGINAL");
+    await expect(bee.expression.asList().row(0).expression.asLiteral().content).toContainText("ORIGINAL");
     await bee.expression.header.cut();
     expect(await bee.expression.isEmpty()).toBeTruthy();
     await bee.selectExpressionMenu.paste();
     expect(await bee.expression.isEmpty()).toBeFalsy();
-    await expect(bee.expression.asList().entry(0).expression.asLiteral().content).toContainText("ORIGINAL");
+    await expect(bee.expression.asList().row(0).expression.asLiteral().content).toContainText("ORIGINAL");
   });
 
   test("should copy and paste top-level - Invocation Expression", async ({ bee }) => {
