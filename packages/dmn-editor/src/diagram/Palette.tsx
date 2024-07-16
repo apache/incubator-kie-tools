@@ -234,7 +234,6 @@ export function Palette({ pulse }: { pulse: boolean }) {
             </div>
           )}
           <button
-            data-testid={"kie-tools--dmn-editor--drg-panel-toggle-button"}
             title={"DRG nodes"}
             className={`kie-dmn-editor--drg-panel-toggle-button ${
               diagram.openLhsPanel === DiagramLhsPanel.DRG_NODES ? "active" : ""

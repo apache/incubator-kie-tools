@@ -21,15 +21,14 @@ import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { expect, test } from "../__fixtures__/base";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 import { EdgeType } from "../__fixtures__/edges";
-import { Diagram } from "../__fixtures__/diagram";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
 });
 
-test.describe("Model - DRD", () => {
+test.describe("Model DRD", () => {
   test.describe("Create DRD", () => {
-    test("Create DRD in empty model", async ({ drds, drgNodes, page }) => {
+    test("Create DRD in empty model", async ({ drds, drgNodes }) => {
       await drds.toggle();
       await drds.create({ name: "second drd" });
 

@@ -39,7 +39,7 @@ export class Drds {
 
   public async remove(args: { name: string }) {
     await this.navigateTo({ name: args.name });
-    await this.page.getByTestId("kie-tools--dmn-editor--drd-remove-button").click();
+    await this.page.getByTitle("Remove DRD").click();
   }
 
   public async navigateTo(args: { name: string }) {

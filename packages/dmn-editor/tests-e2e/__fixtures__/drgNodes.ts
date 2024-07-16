@@ -19,7 +19,6 @@
 
 import { Page } from "@playwright/test";
 import { Diagram } from "./diagram";
-import { Nodes } from "./nodes";
 
 export class DrgNodes {
   constructor(
@@ -28,7 +27,7 @@ export class DrgNodes {
   ) {}
 
   public async open() {
-    await this.page.getByTestId("kie-tools--dmn-editor--drg-panel-toggle-button").click();
+    await this.page.getByTitle("DRG Nodes").click();
   }
 
   public popover() {

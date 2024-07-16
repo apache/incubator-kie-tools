@@ -144,11 +144,9 @@ export function DrdSelectorPanel() {
               {drdName}
             </Title>
             {drds.length > 0 && (
-              <div data-testid={"kie-tools--dmn-editor--drd-remove-button"}>
-                <Button variant={ButtonVariant.link} onClick={removeDrd} style={{ padding: 0 }}>
-                  Remove
-                </Button>
-              </div>
+              <Button variant={ButtonVariant.link} onClick={removeDrd} style={{ padding: 0 }} title="Remove DRD">
+                Remove
+              </Button>
             )}
           </Flex>
         </div>
