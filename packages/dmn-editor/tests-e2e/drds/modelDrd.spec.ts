@@ -88,7 +88,7 @@ test.describe("Model DRD", () => {
 
     test("Remove DRD and check the indexes", async ({ drds }) => {
       test.info().annotations.push({
-        type: TestAnnotations.AFFECTED_BY,
+        type: TestAnnotations.REGRESSION,
         description: "https://github.com/apache/incubator-kie-issues/issues/1174",
       });
       await drds.toggle();
