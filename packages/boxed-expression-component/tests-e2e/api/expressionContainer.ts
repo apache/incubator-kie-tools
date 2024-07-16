@@ -162,10 +162,6 @@ export class ChildExpression {
     return this._expression;
   }
 
-  get descriptionCell() {
-    return new NameAndDataTypeCell(this.locator.getByRole("cell").nth(0));
-  }
-
   get selectExpressionMenu() {
     return new SelectExpressionMenu(this.locator.getByTestId("expression-container").nth(0));
   }

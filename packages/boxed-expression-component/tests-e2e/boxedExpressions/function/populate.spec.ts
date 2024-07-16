@@ -92,7 +92,7 @@ test.describe("Populate Boxed Function", () => {
       .expression.asContext()
       .entry(1)
       .selectExpressionMenu.selectDecisionTable();
-    await bee.expression.asFunction().entry(0).expression.asContext().resultEntry.selectExpressionMenu.selectLiteral();
+    await bee.expression.asFunction().entry(0).expression.asContext().result.selectExpressionMenu.selectLiteral();
 
     await monaco.fill({
       monacoParentLocator: page.getByRole("cell", { name: "=" }).nth(1),

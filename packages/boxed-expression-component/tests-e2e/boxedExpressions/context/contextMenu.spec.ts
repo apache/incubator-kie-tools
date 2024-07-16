@@ -30,10 +30,10 @@ test.describe("Boxed Context context menu", () => {
       await entry.selectExpressionMenu.selectLiteral();
       await entry.expression.asLiteral().fill("test");
 
-      await entry.descriptionCell.contextMenu.open();
+      await entry.variable.contextMenu.open();
 
-      await expect(entry.descriptionCell.contextMenu.heading("CONTEXT ENTRY")).toBeAttached();
-      await expect(entry.descriptionCell.contextMenu.heading("SELECTION")).toBeAttached();
+      await expect(entry.variable.contextMenu.heading("CONTEXT ENTRY")).toBeAttached();
+      await expect(entry.variable.contextMenu.heading("SELECTION")).toBeAttached();
     });
 
     test("shouldn't render context entry context menu", async ({ page, bee }) => {
@@ -57,63 +57,63 @@ test.describe("Boxed Context context menu", () => {
     test("should open context entry context menu and insert context entry above", async ({ bee }) => {
       const entry = bee.expression.asContext().entry(0);
 
-      await entry.descriptionCell.contextMenu.open();
-      await entry.descriptionCell.contextMenu.option("Insert above").click();
+      await entry.variable.contextMenu.open();
+      await entry.variable.contextMenu.option("Insert above").click();
 
-      await expect(bee.expression.asContext().entry(0).descriptionCell.content).toContainText("ContextEntry-2");
-      await expect(bee.expression.asContext().entry(1).descriptionCell.content).toContainText("ContextEntry-1");
+      await expect(bee.expression.asContext().entry(0).variable.content).toContainText("ContextEntry-2");
+      await expect(bee.expression.asContext().entry(1).variable.content).toContainText("ContextEntry-1");
     });
 
     test("should open context entry context menu and insert context entry below", async ({ bee }) => {
       const entry = bee.expression.asContext().entry(0);
 
-      await entry.descriptionCell.contextMenu.open();
-      await entry.descriptionCell.contextMenu.option("Insert below").click();
+      await entry.variable.contextMenu.open();
+      await entry.variable.contextMenu.option("Insert below").click();
 
-      await expect(bee.expression.asContext().entry(0).descriptionCell.content).toContainText("ContextEntry-1");
-      await expect(bee.expression.asContext().entry(1).descriptionCell.content).toContainText("ContextEntry-2");
+      await expect(bee.expression.asContext().entry(0).variable.content).toContainText("ContextEntry-1");
+      await expect(bee.expression.asContext().entry(1).variable.content).toContainText("ContextEntry-2");
     });
 
     test("should open context entry context menu and insert multiples context entry above", async ({ bee }) => {
       const entry = bee.expression.asContext().entry(0);
 
-      await entry.descriptionCell.contextMenu.open();
-      await entry.descriptionCell.contextMenu.option("Insert").click();
-      await entry.descriptionCell.contextMenu.button("plus").click();
-      await entry.descriptionCell.contextMenu.button("Insert").click();
+      await entry.variable.contextMenu.open();
+      await entry.variable.contextMenu.option("Insert").click();
+      await entry.variable.contextMenu.button("plus").click();
+      await entry.variable.contextMenu.button("Insert").click();
 
-      await expect(bee.expression.asContext().entry(0).descriptionCell.content).toContainText("ContextEntry-4");
-      await expect(bee.expression.asContext().entry(1).descriptionCell.content).toContainText("ContextEntry-3");
-      await expect(bee.expression.asContext().entry(2).descriptionCell.content).toContainText("ContextEntry-2");
-      await expect(bee.expression.asContext().entry(3).descriptionCell.content).toContainText("ContextEntry-1");
+      await expect(bee.expression.asContext().entry(0).variable.content).toContainText("ContextEntry-4");
+      await expect(bee.expression.asContext().entry(1).variable.content).toContainText("ContextEntry-3");
+      await expect(bee.expression.asContext().entry(2).variable.content).toContainText("ContextEntry-2");
+      await expect(bee.expression.asContext().entry(3).variable.content).toContainText("ContextEntry-1");
     });
 
     test("should open context entry context menu and insert multiples context entry below", async ({ bee }) => {
       const entry = bee.expression.asContext().entry(0);
 
-      await entry.descriptionCell.contextMenu.open();
-      await entry.descriptionCell.contextMenu.option("Insert").click();
-      await entry.descriptionCell.contextMenu.button("plus").click();
-      await entry.descriptionCell.contextMenu.radio("Below").click();
-      await entry.descriptionCell.contextMenu.button("Insert").click();
+      await entry.variable.contextMenu.open();
+      await entry.variable.contextMenu.option("Insert").click();
+      await entry.variable.contextMenu.button("plus").click();
+      await entry.variable.contextMenu.radio("Below").click();
+      await entry.variable.contextMenu.button("Insert").click();
 
-      await expect(bee.expression.asContext().entry(0).descriptionCell.content).toContainText("ContextEntry-1");
-      await expect(bee.expression.asContext().entry(1).descriptionCell.content).toContainText("ContextEntry-4");
-      await expect(bee.expression.asContext().entry(2).descriptionCell.content).toContainText("ContextEntry-3");
-      await expect(bee.expression.asContext().entry(3).descriptionCell.content).toContainText("ContextEntry-2");
+      await expect(bee.expression.asContext().entry(0).variable.content).toContainText("ContextEntry-1");
+      await expect(bee.expression.asContext().entry(1).variable.content).toContainText("ContextEntry-4");
+      await expect(bee.expression.asContext().entry(2).variable.content).toContainText("ContextEntry-3");
+      await expect(bee.expression.asContext().entry(3).variable.content).toContainText("ContextEntry-2");
     });
 
     test("should open context entry context menu and delete row", async ({ bee }) => {
-      await bee.expression.asContext().entry(0).descriptionCell.contextMenu.open();
-      await bee.expression.asContext().entry(0).descriptionCell.contextMenu.option("Insert above").click();
+      await bee.expression.asContext().entry(0).variable.contextMenu.open();
+      await bee.expression.asContext().entry(0).variable.contextMenu.option("Insert above").click();
 
-      await expect(bee.expression.asContext().entry(0).descriptionCell.content).toContainText("ContextEntry-2");
-      await expect(bee.expression.asContext().entry(1).descriptionCell.content).toContainText("ContextEntry-1");
+      await expect(bee.expression.asContext().entry(0).variable.content).toContainText("ContextEntry-2");
+      await expect(bee.expression.asContext().entry(1).variable.content).toContainText("ContextEntry-1");
 
-      await bee.expression.asContext().entry(0).descriptionCell.contextMenu.open();
-      await bee.expression.asContext().entry(0).descriptionCell.contextMenu.option("Delete").click();
+      await bee.expression.asContext().entry(0).variable.contextMenu.open();
+      await bee.expression.asContext().entry(0).variable.contextMenu.option("Delete").click();
 
-      await expect(bee.expression.asContext().entry(0).descriptionCell.content).toContainText("ContextEntry-1");
+      await expect(bee.expression.asContext().entry(0).variable.content).toContainText("ContextEntry-1");
 
       expect(await bee.expression.asContext().entriesCount()).toEqual(1);
     });
@@ -130,8 +130,8 @@ test.describe("Boxed Context context menu", () => {
 
         expect(await bee.expression.asContext().entriesCount()).toEqual(2);
 
-        await expect(bee.expression.asContext().entry(1).descriptionCell.content).toContainText("ContextEntry-1");
-        await expect(bee.expression.asContext().entry(0).descriptionCell.content).toContainText("ContextEntry-2");
+        await expect(bee.expression.asContext().entry(1).variable.content).toContainText("ContextEntry-1");
+        await expect(bee.expression.asContext().entry(0).variable.content).toContainText("ContextEntry-2");
       });
 
       test("should add context entry below by positioning mouse on the index cell lower section", async ({ bee }) => {
@@ -139,8 +139,8 @@ test.describe("Boxed Context context menu", () => {
 
         expect(await bee.expression.asContext().entriesCount()).toEqual(2);
 
-        await expect(bee.expression.asContext().entry(0).descriptionCell.content).toContainText("ContextEntry-1");
-        await expect(bee.expression.asContext().entry(1).descriptionCell.content).toContainText("ContextEntry-2");
+        await expect(bee.expression.asContext().entry(0).variable.content).toContainText("ContextEntry-1");
+        await expect(bee.expression.asContext().entry(1).variable.content).toContainText("ContextEntry-2");
       });
     });
   });

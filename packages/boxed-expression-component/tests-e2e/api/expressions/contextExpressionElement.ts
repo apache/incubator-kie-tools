@@ -19,7 +19,6 @@
 
 import { Locator } from "@playwright/test";
 import { Monaco } from "../../__fixtures__/monaco";
-
 import { ChildExpression } from "../expressionContainer";
 import { NameAndDataTypeCell } from "../nameAndDataTypeCell";
 
@@ -30,10 +29,13 @@ export class ContextExpressionElement {
   ) {}
 
   public entry(index: number) {
-    return new ChildExpression(this.locator.getByTestId(`kie-tools--bee--expression-row-${index}`).nth(0), this.monaco);
+    return new ContextExpressionEntry(
+      this.locator.getByTestId(`kie-tools--bee--expression-row-${index}`).nth(0),
+      this.monaco
+    );
   }
 
-  get resultEntry() {
+  get result() {
     return new ChildExpression(this.locator.locator(`.additional-row`).nth(0), this.monaco);
   }
 
@@ -78,5 +80,28 @@ export class ContextExpressionElement {
 
   get expressionHeaderCell() {
     return new NameAndDataTypeCell(this.locator.getByRole("columnheader").nth(0));
+  }
+}
+
+export class ContextExpressionEntry {
+  private readonly childExpression: ChildExpression;
+
+  constructor(
+    private locator: Locator,
+    monaco: Monaco
+  ) {
+    this.childExpression = new ChildExpression(locator, monaco);
+  }
+
+  get expression() {
+    return this.childExpression.expression;
+  }
+
+  get selectExpressionMenu() {
+    return this.childExpression.selectExpressionMenu;
+  }
+
+  get variable() {
+    return new NameAndDataTypeCell(this.locator.getByRole("cell").nth(0));
   }
 }

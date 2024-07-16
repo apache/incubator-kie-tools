@@ -44,7 +44,7 @@ test.describe("Populate Boxed Context", () => {
     await page.keyboard.press("Enter");
     await monaco.fill({ monacoParentLocator: page, content: "Applicant data.ExistingCustomer" });
 
-    await bee.expression.asContext().resultEntry.selectExpressionMenu.selectDecisionTable();
+    await bee.expression.asContext().result.selectExpressionMenu.selectDecisionTable();
     await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).hover({ position: { x: 0, y: 0 } });
     await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).locator("svg").click();
     await page.getByRole("cell", { name: "1", exact: true }).hover();
