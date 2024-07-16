@@ -287,28 +287,25 @@ test.describe("Copy, Cut and Paste expressions", () => {
 
   test("should copy and paste top-level - For Expression", async ({ bee }) => {
     await bee.selectExpressionMenu.selectFor();
-    await bee.expression.asFor().in.selectExpressionMenu.selectLiteral();
-    await bee.expression.asFor().return.selectExpressionMenu.selectLiteral();
-    await bee.expression.asFor().variable.fill("my variable");
-    await bee.expression.asFor().in.expression.asLiteral().fill("ORIGINAL1");
-    await bee.expression.asFor().return.expression.asLiteral().fill("ORIGINAL2");
-    await expect(bee.expression.asFor().in.expression.asLiteral().content).toContainText("ORIGINAL1");
-    await expect(bee.expression.asFor().return.expression.asLiteral().content).toContainText("ORIGINAL2");
-    await expect(bee.expression.asFor().variable.content).toContainText("my variable");
+    const forExpression = bee.expression.asFor();
+    await forExpression.in.selectExpressionMenu.selectLiteral();
+    await forExpression.return.selectExpressionMenu.selectLiteral();
+    const inExpression = forExpression.in.expression.asLiteral();
+    const returnExpression = forExpression.return.expression.asLiteral();
+    await forExpression.variable.fill("my variable");
+    await inExpression.fill("ORIGINAL1");
+    await returnExpression.fill("ORIGINAL2");
     await bee.expression.header.copy();
-    await bee.expression.asFor().variable.fill("not");
-    await bee.expression.asFor().in.expression.asLiteral().fill("new1");
-    await bee.expression.asFor().return.expression.asLiteral().fill("new2");
-    await expect(bee.expression.asFor().in.expression.asLiteral().content).toContainText("new1");
-    await expect(bee.expression.asFor().return.expression.asLiteral().content).toContainText("new2");
-    await expect(bee.expression.asFor().variable.content).toContainText("not");
+    await forExpression.variable.fill("not");
+    await forExpression.in.expression.asLiteral().fill("new1");
+    await forExpression.return.expression.asLiteral().fill("new2");
     await bee.expression.header.paste();
-    await expect(bee.expression.asFor().in.expression.asLiteral().content).toContainText("ORIGINAL1");
-    await expect(bee.expression.asFor().return.expression.asLiteral().content).toContainText("ORIGINAL2");
-    await expect(bee.expression.asFor().variable.content).toContainText("my variable");
-    await expect(bee.expression.asFor().in.expression.asLiteral().content).not.toContainText("new1");
-    await expect(bee.expression.asFor().return.expression.asLiteral().content).not.toContainText("new2");
-    await expect(bee.expression.asFor().variable.content).not.toContainText("not");
+    await expect(inExpression.content).toContainText("ORIGINAL1");
+    await expect(returnExpression.content).toContainText("ORIGINAL2");
+    await expect(forExpression.variable.content).toContainText("my variable");
+    await expect(inExpression.content).not.toContainText("new1");
+    await expect(returnExpression.content).not.toContainText("new2");
+    await expect(forExpression.variable.content).not.toContainText("not");
   });
 
   test("should cut and paste top-level - For Expression", async ({ bee }) => {
