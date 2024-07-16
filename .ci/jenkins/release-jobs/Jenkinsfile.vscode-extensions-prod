@@ -105,7 +105,7 @@ pipeline {
                     -F swf-vscode-extension... \
                     -F vscode-extension-kie-ba-bundle... \
                     -F vscode-extension-dashbuilder-editor... \
-                    -F yard-vscode-extension...
+                    -F yard-vscode-extension... \
                     -F extended-services-vscode-extension...
                     '''.trim()
                 }
