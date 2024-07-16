@@ -94,6 +94,8 @@ func manipulatePomToKogito(filename string, cfg CreateQuarkusProjectConfig) erro
 	}
 	versionElement.SetText(cfg.DependenciesVersion.QuarkusVersion)
 
+	properties.CreateElement("sonataflow.quarkus.devui.version").SetText(metadata.PluginVersion)
+
 	//Add kogito bom dependency
 	depManagement := doc.FindElement("//dependencyManagement")
 	if depManagement == nil {
@@ -126,6 +128,23 @@ func manipulatePomToKogito(filename string, cfg CreateQuarkusProjectConfig) erro
 			dependencyElement.CreateElement("version").SetText(dep.Version)
 		}
 	}
+
+	//add apache repository after profiles declaration
+	var project = doc.FindElement("//project")
+
+	var repositories = doc.CreateElement("repositories")
+
+	var repository = repositories.CreateElement("repository")
+	repository.CreateElement("id").SetText("apache-public-repository-group")
+	repository.CreateElement("name").SetText("Apache Public Repository Group")
+	repository.CreateElement("url").SetText("https://repository.apache.org/content/groups/public/")
+
+	var snapshotRepository = repositories.CreateElement("repository")
+	snapshotRepository.CreateElement("id").SetText("apache-snapshot-repository-group")
+	snapshotRepository.CreateElement("name").SetText("Apache Snapshot Repository Group")
+	snapshotRepository.CreateElement("url").SetText("https://repository.apache.org/content/groups/snapshots/")
+
+	project.AddChild(repositories)
 
 	doc.Indent(4)
 
