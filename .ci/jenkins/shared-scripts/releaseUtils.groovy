@@ -18,29 +18,25 @@
 /**
 * Setup the GPG Key to sign release artifacts
 */
-def setupSigningKey(String gpgKeyCredentialsId, String gpgKeyPasswordCredentialsId) {
-    withCredentials([file(credentialsId: gpgKeyCredentialsId, variable: 'SIGNING_KEY')]) {
-        withCredentials([string(credentialsId: gpgKeyPasswordCredentialsId, variable: 'SIGNING_KEY_PASSWORD')]) {
-            sh """#!/bin/bash -el
-            cat ${SIGNING_KEY} > ${WORKSPACE}/signkey.gpg
-            gpg --list-keys
-            gpg --batch --pinentry-mode loopback --passphrase "${SIGNING_KEY_PASSWORD}" --import ${WORKSPACE}/signkey.gpg
-            rm ${WORKSPACE}/signkey.gpg
-            """.trim()
-        }
+def setupSigningKey(String gpgKeyCredentialsId) {
+    withCredentials([string(credentialsId: gpgKeyCredentialsId, variable: 'SIGNING_KEY')]) {
+        sh """#!/bin/bash -el
+        echo "${SIGNING_KEY}" > ${WORKSPACE}/signkey.gpg
+        gpg --list-keys
+        gpg --batch --pinentry-mode loopback --import ${WORKSPACE}/signkey.gpg
+        rm ${WORKSPACE}/signkey.gpg
+        """.trim()
     }
 }
 
 /**
 * Sign an artifact using GPG
 */
-def signArtifact(String artifactFileName, String gpgKeyPasswordCredentialsId) {
-    withCredentials([string(credentialsId: gpgKeyPasswordCredentialsId, variable: 'SIGNING_KEY_PASSWORD')]) {
-        sh """#!/bin/bash -el
-        echo ${SIGNING_KEY_PASSWORD} | gpg --no-tty --batch --sign --pinentry-mode loopback --passphrase-fd 0 --output ${artifactFileName}.asc --detach-sig ${artifactFileName}
-        shasum -a 512 ${artifactFileName} > ${artifactFileName}.sha512
-        """.trim()
-    }
+def signArtifact(String artifactFileName) {
+    sh """#!/bin/bash -el
+    gpg --no-tty --batch --sign --pinentry-mode loopback --output ${artifactFileName}.asc --detach-sig ${artifactFileName}
+    shasum -a 512 ${artifactFileName} > ${artifactFileName}.sha512
+    """.trim()
 }
 
 /**

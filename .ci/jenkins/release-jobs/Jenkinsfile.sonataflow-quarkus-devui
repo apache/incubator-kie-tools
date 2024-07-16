@@ -107,7 +107,7 @@ pipeline {
         stage('Setup signing key') {
             steps {
                 script {
-                    releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
                 }
             }
         }
@@ -120,17 +120,14 @@ pipeline {
                             env.KIE_TOOLS_BUILD__mavenDeploySkip = 'true'
                         }
                         withCredentials([usernamePassword(credentialsId: "${pipelineVars.mavenDeployRepositoryCredentialsId}", usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
-                            withCredentials([string(credentialsId: "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}", variable: 'SIGNING_KEY_PASSWORD')]) {
-                                configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
-                                    sh """#!/bin/bash -el
-                                    pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
-                                    pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dapache.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
-                                    pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dapache.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
-                                    pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dgpg.passphrase=${SIGNING_KEY_PASSWORD} >> .mvn/maven.config'
-                                    pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Papache-release >> .mvn/maven.config'
-                                    pnpm ${env.PNPM_FILTER_STRING} build:prod
-                                    """.trim()
-                                }
+                            configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
+                                sh """#!/bin/bash -el
+                                pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
+                                pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dapache.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
+                                pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dapache.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
+                                pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Papache-release >> .mvn/maven.config'
+                                pnpm ${env.PNPM_FILTER_STRING} build:prod
+                                """.trim()
                             }
                         }
                     }
