@@ -17,11 +17,11 @@
  * under the License.
  */
 
-import * as webpack from "webpack";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
+import { DmnEditorFactory } from "@kie-tools/dmn-editor-envelope/dist/DmnEditorFactory";
 
-declare const def: {
-  webpackModuleRules: webpack.RuleSetRule[];
-  individualRules: Record<string, webpack.RuleSetRule>;
-};
-
-export default def;
+EditorEnvelope.init({
+  container: document.getElementById("envelope-app")!,
+  bus: { postMessage: (message, targetOrigin, transfer) => window.parent.postMessage(message, "*", transfer) },
+  editorFactory: new DmnEditorFactory(),
+});

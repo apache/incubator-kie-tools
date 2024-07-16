@@ -17,11 +17,17 @@
  * under the License.
  */
 
-import * as webpack from "webpack";
+const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
-declare const def: {
-  webpackModuleRules: webpack.RuleSetRule[];
-  individualRules: Record<string, webpack.RuleSetRule>;
-};
-
-export default def;
+module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+  vars: varsWithName({}),
+  get env() {
+    return {
+      dmnStandaloneEditor: {
+        dev: {
+          port: 9006,
+        },
+      },
+    };
+  },
+});

@@ -670,6 +670,15 @@ importers:
       '@kie-tools-examples/todo-list-view':
         specifier: workspace:*
         version: link:../todo-list-view
+      '@kie-tools/dmn-editor':
+        specifier: workspace:*
+        version: link:../../packages/dmn-editor
+      '@kie-tools/dmn-editor-envelope':
+        specifier: workspace:*
+        version: link:../../packages/dmn-editor-envelope
+      '@kie-tools/dmn-editor-standalone':
+        specifier: workspace:*
+        version: link:../../packages/dmn-editor-standalone
       '@kie-tools/kie-bc-editors':
         specifier: workspace:*
         version: link:../../packages/kie-bc-editors
@@ -3460,6 +3469,106 @@ importers:
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
+
+  packages/dmn-editor-standalone:
+    dependencies:
+      '@kie-tools/dmn-editor':
+        specifier: workspace:*
+        version: link:../dmn-editor
+      '@kie-tools/dmn-editor-envelope':
+        specifier: workspace:*
+        version: link:../dmn-editor-envelope
+    devDependencies:
+      '@babel/core':
+        specifier: ^7.16.0
+        version: 7.23.9
+      '@babel/preset-env':
+        specifier: ^7.16.0
+        version: 7.23.9(@babel/core@7.23.9)
+      '@babel/preset-react':
+        specifier: ^7.16.0
+        version: 7.22.15(@babel/core@7.23.9)
+      '@kie-tools-core/backend':
+        specifier: workspace:*
+        version: link:../backend
+      '@kie-tools-core/editor':
+        specifier: workspace:*
+        version: link:../editor
+      '@kie-tools-core/envelope-bus':
+        specifier: workspace:*
+        version: link:../envelope-bus
+      '@kie-tools-core/i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      '@kie-tools-core/notifications':
+        specifier: workspace:*
+        version: link:../notifications
+      '@kie-tools-core/patternfly-base':
+        specifier: workspace:*
+        version: link:../patternfly-base
+      '@kie-tools-core/webpack-base':
+        specifier: workspace:*
+        version: link:../webpack-base
+      '@kie-tools-core/workspace':
+        specifier: workspace:*
+        version: link:../workspace
+      '@kie-tools/eslint':
+        specifier: workspace:*
+        version: link:../eslint
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      '@kie-tools/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/jest-when':
+        specifier: ^3.5.5
+        version: 3.5.5
+      '@types/minimatch':
+        specifier: ^3.0.5
+        version: 3.0.5
+      buffer:
+        specifier: ^6.0.3
+        version: 6.0.3
+      html-webpack-plugin:
+        specifier: ^5.3.2
+        version: 5.5.3(webpack@5.88.2(webpack-cli@4.10.0))
+      junit-report-merger:
+        specifier: ^4.0.0
+        version: 4.0.0
+      minimatch:
+        specifier: ^3.0.5
+        version: 3.1.2
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
+      raw-loader:
+        specifier: ^4.0.2
+        version: 4.0.2(webpack@5.88.2(webpack-cli@4.10.0))
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+      ts-loader:
+        specifier: ^9.4.2
+        version: 9.4.2(typescript@4.8.4)(webpack@5.88.2(webpack-cli@4.10.0))
+      typescript:
+        specifier: ^4.6.2
+        version: 4.8.4
+      webpack:
+        specifier: ^5.88.2
+        version: 5.88.2(webpack-cli@4.10.0)
+      webpack-cli:
+        specifier: ^4.10.0
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
+      webpack-dev-server:
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
+      webpack-merge:
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/dmn-feel-antlr4-parser:
     dependencies:
@@ -20352,10 +20461,6 @@ packages:
     resolution: {integrity: sha512-LXYT42KJ7lpIKECr2mAXIaMldcNCh/7E0KBKOu4KSfkHmP+mZmSs+8V5gBAqisWBy0OO4W5Oyys0GO1Y8KtdKg==}
     engines: {node: '>=10.13.0'}
 
-  enhanced-resolve@5.9.3:
-    resolution: {integrity: sha512-Bq9VSor+kjvW3f9/MiiR4eE3XYgOl7/rS8lnSxbRbF3kS0B2r+Y9w5krBWxZgDxASVZbdYrn5wT4j/Wb0J9qow==}
-    engines: {node: '>=10.13.0'}
-
   enquirer@2.3.6:
     resolution: {integrity: sha512-yjNnPr315/FjS4zIsUxYguYUPP2e1NK4d7E7ZOLiyYCcbFBiTMyID+2wvm2w6+pZ/odMA7cRkjhsPbltwBOrLg==}
     engines: {node: '>=8.6'}
@@ -25466,10 +25571,12 @@ packages:
 
   rimraf@2.5.4:
     resolution: {integrity: sha512-Lw7SHMjssciQb/rRz7JyPIy9+bbUshEucPoLRvWqy09vC5zQixl8Uet+Zl+SROBB/JMWHJRdCk1qdxNWHNMvlQ==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rimraf@2.6.3:
     resolution: {integrity: sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rimraf@2.7.1:
@@ -41459,11 +41566,6 @@ snapshots:
       graceful-fs: 4.2.11
       tapable: 2.2.1
 
-  enhanced-resolve@5.9.3:
-    dependencies:
-      graceful-fs: 4.2.11
-      tapable: 2.2.1
-
   enquirer@2.3.6:
     dependencies:
       ansi-colors: 4.1.3
@@ -44663,7 +44765,7 @@ snapshots:
   karma-webpack@5.0.0(webpack@5.88.2):
     dependencies:
       glob: 7.2.0
-      minimatch: 3.0.5
+      minimatch: 3.1.2
       webpack: 5.88.2
       webpack-merge: 4.2.2
 
@@ -49555,7 +49657,7 @@ snapshots:
   ts-loader@9.4.2(typescript@4.8.4)(webpack@5.88.2(@swc/core@1.3.92)(webpack-cli@4.10.0)):
     dependencies:
       chalk: 4.1.2
-      enhanced-resolve: 5.9.3
+      enhanced-resolve: 5.15.0
       micromatch: 4.0.5
       semver: 7.5.4
       typescript: 4.8.4
@@ -49564,7 +49666,7 @@ snapshots:
   ts-loader@9.4.2(typescript@4.8.4)(webpack@5.88.2(webpack-cli@4.10.0)):
     dependencies:
       chalk: 4.1.2
-      enhanced-resolve: 5.9.3
+      enhanced-resolve: 5.15.0
       micromatch: 4.0.5
       semver: 7.5.4
       typescript: 4.8.4
@@ -49573,7 +49675,7 @@ snapshots:
   ts-loader@9.4.2(typescript@4.8.4)(webpack@5.88.2):
     dependencies:
       chalk: 4.1.2
-      enhanced-resolve: 5.9.3
+      enhanced-resolve: 5.15.0
       micromatch: 4.0.5
       semver: 7.5.4
       typescript: 4.8.4
