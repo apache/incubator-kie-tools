@@ -295,13 +295,13 @@ export function ExpressionDefinitionLogicTypeSelector({
     }
   }, []);
 
-  const copyExpression = useCallback(() => {
-    navigator.clipboard.writeText(JSON.stringify(buildClipboardFromExpression(expression!, widthsById)));
+  const copyExpression = useCallback(async () => {
+    await navigator.clipboard.writeText(JSON.stringify(buildClipboardFromExpression(expression!, widthsById)));
     setDropdownOpen(false);
   }, [expression, widthsById]);
 
-  const cutExpression = useCallback(() => {
-    navigator.clipboard.writeText(JSON.stringify(buildClipboardFromExpression(expression!, widthsById)));
+  const cutExpression = useCallback(async () => {
+    await navigator.clipboard.writeText(JSON.stringify(buildClipboardFromExpression(expression!, widthsById)));
     onLogicTypeReset();
     setDropdownOpen(false);
   }, [expression, onLogicTypeReset, widthsById]);
