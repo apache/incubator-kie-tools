@@ -54,11 +54,4 @@ test.describe("Test Scenario table misc", () => {
     await table.getNumberedCell({ name: "1" }).hover();
     await expect(testScenarioTable.getPlusIcon()).toBeAttached();
   });
-
-  test("should not render plus symbol between Scenario and Hash headers", async ({ table, testScenarioTable }) => {
-    //wip
-    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1355");
-    await table.getColumnHeader({ name: "Scenario description" }).hover();
-    await expect(testScenarioTable.getPlusIcon()).not.toBeAttached();
-  });
 });

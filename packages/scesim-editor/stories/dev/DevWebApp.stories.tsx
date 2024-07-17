@@ -27,7 +27,6 @@ import { SceSimModel, getMarshaller } from "@kie-tools/scesim-marshaller";
 import { emptySceSim } from "../misc/empty/Empty.stories";
 import { isOldEnoughDrl } from "../useCases/IsOldEnoughRule.stories";
 import { trafficViolationDmn } from "../useCases/TrafficViolationDmn.stories";
-import { unassignedIsOldEnoughDrl } from "../useCases/unassignedIsOldEnoughRule.stories";
 import { useArgs } from "@storybook/preview-api";
 
 import "./DevWebApp.css";
@@ -116,58 +115,52 @@ function DevWebApp(props: DevWebAppProps) {
 
   return (
     <>
-      {currentModel && (
-        <div>
-          <Page onDragOver={onDragOver} onDrop={onDrop}>
-            <PageSection
-              aria-label={"dev-app-header"}
-              variant={"light"}
-              isFilled={false}
-              padding={{ default: "padding" }}
-            >
-              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-                <FlexItem shrink={{ default: "shrink" }}>
-                  <h3>Test Scenario Editor :: Dev WebApp</h3>
-                </FlexItem>
-                <FlexItem>
-                  <h5>(Drag & drop a file anywhere to open it)</h5>
-                </FlexItem>
-                <FlexItem shrink={{ default: "shrink" }}>
-                  <Button onClick={() => onSelectModel(emptySceSim)}>Empty</Button>
-                  &nbsp; &nbsp;
-                  <Button onClick={() => onSelectModel(isOldEnoughDrl)}>Are They Old Enough?</Button>
-                  &nbsp; &nbsp;
-                  <Button onClick={() => onSelectModel(trafficViolationDmn)}>Traffic Violation</Button>
-                  &nbsp; &nbsp;
-                  <Button onClick={() => onSelectModel(unassignedIsOldEnoughDrl)}>
-                    Unassigned Are They Old Enough
-                  </Button>
-                  &nbsp; &nbsp; | &nbsp; &nbsp;
-                  <button onClick={reset}>Reset</button>
-                  &nbsp; &nbsp;
-                  <button onClick={copyAsXml}>Copy as XML</button>
-                  &nbsp; &nbsp;
-                  <button onClick={downloadAsXml}>Download as XML</button>
-                </FlexItem>
-              </Flex>
-              <a ref={downloadRef} />
-            </PageSection>
-            <hr />
-            <PageSection
-              aria-label={"dev-app-body"}
-              className={"section-body"}
-              isFilled={true}
-              hasOverflowScroll={true}
-              variant={"light"}
-            >
-              {SceSimEditorWrapper({
-                pathRelativeToTheWorkspaceRoot: "dev.scesim",
-                content: state.marshaller.builder.build(state.stack[state.stack.length - 1]),
-              })}
-            </PageSection>
-          </Page>
-        </div>
-      )}
+      <div>
+        <Page onDragOver={onDragOver} onDrop={onDrop}>
+          <PageSection
+            aria-label={"dev-app-header"}
+            variant={"light"}
+            isFilled={false}
+            padding={{ default: "padding" }}
+          >
+            <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+              <FlexItem shrink={{ default: "shrink" }}>
+                <h3>Test Scenario Editor :: Dev WebApp</h3>
+              </FlexItem>
+              <FlexItem>
+                <h5>(Drag & drop a file anywhere to open it)</h5>
+              </FlexItem>
+              <FlexItem shrink={{ default: "shrink" }}>
+                <Button onClick={() => onSelectModel(emptySceSim)}>Empty</Button>
+                &nbsp; &nbsp;
+                <Button onClick={() => onSelectModel(isOldEnoughDrl)}>Are They Old Enough?</Button>
+                &nbsp; &nbsp;
+                <Button onClick={() => onSelectModel(trafficViolationDmn)}>Traffic Violation</Button>
+                &nbsp; &nbsp; | &nbsp; &nbsp;
+                <button onClick={reset}>Reset</button>
+                &nbsp; &nbsp;
+                <button onClick={copyAsXml}>Copy as XML</button>
+                &nbsp; &nbsp;
+                <button onClick={downloadAsXml}>Download as XML</button>
+              </FlexItem>
+            </Flex>
+            <a ref={downloadRef} />
+          </PageSection>
+          <hr />
+          <PageSection
+            aria-label={"dev-app-body"}
+            className={"section-body"}
+            isFilled={true}
+            hasOverflowScroll={true}
+            variant={"light"}
+          >
+            {SceSimEditorWrapper({
+              pathRelativeToTheWorkspaceRoot: "dev.scesim",
+              content: state.marshaller.builder.build(state.stack[state.stack.length - 1]),
+            })}
+          </PageSection>
+        </Page>
+      </div>
     </>
   );
 }

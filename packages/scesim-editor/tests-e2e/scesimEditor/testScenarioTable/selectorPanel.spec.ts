@@ -58,56 +58,6 @@ test.describe("Use Selector Panel on Test Scenario table based on are they old e
     await selectorPanel.open();
   });
 
-  test("should correctly remove instance from selector panel once assigned in given group", async ({
-    table,
-    selectorPanel,
-    contextMenu,
-  }) => {
-    //Behaviour is still being determined
-    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1363");
-    // await contextMenu.openOnColumnHeader({ name: "LoanApplication", columnNumber: 0 });
-    // await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_INSTANCE });
-    // await table.addInstanceColumn({
-    //   targetCellName: "Applicant (Applicant)",
-    //   position: AddColumnPosition.RIGHT,
-    // });
-    // await table.addInstanceColumn({
-    //   targetCellName: "Applicant (Applicant)",
-    //   position: AddColumnPosition.RIGHT,
-    // });
-    // await selectorPanel.open();
-    // await table.selectColumnHeader({ name: "INSTANCE-1 (<Undefined>)" });
-    // await expect(selectorPanel.getAttribute({ name: "LoanApplication" })).toBeAttached();
-    // await selectorPanel.assign({ name: "LoanApplication" });
-    // await table.selectColumnHeader({ name: "INSTANCE-2 (<Undefined>)" });
-    // await expect(selectorPanel.getAttribute({ name: "LoanApplication" })).not.toBeAttached();
-  });
-
-  test("should correctly remove instance from selector panel once assigned in expect group", async ({
-    table,
-    selectorPanel,
-    contextMenu,
-  }) => {
-    //Behaviour is still being determined
-    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1363");
-    // await table.addInstanceColumn({
-    //   targetCellName: "LoanApplication",
-    //   position: AddColumnPosition.RIGHT,
-    //   columnNumber: 1
-    // });
-    // await table.addInstanceColumn({
-    //   targetCellName: "LoanApplication",
-    //   position: AddColumnPosition.RIGHT,
-    //   columnNumber: 1
-    // });
-    // await selectorPanel.open();
-    // await table.selectColumnHeader({ name: "INSTANCE-1 (<Undefined>)" });
-    // await expect(selectorPanel.getAttribute({ name: "LoanApplication" })).toBeAttached();
-    // await selectorPanel.assign({ name: "LoanApplication" });
-    // await table.selectColumnHeader({ name: "INSTANCE-2 (<Undefined>)" });
-    // await expect(selectorPanel.getAttribute({ name: "LoanApplication" })).not.toBeAttached();
-  });
-
   test("should correctly remove property from selector panel once assigned", async ({ table, selectorPanel }) => {
     await table.selectColumnHeader({ name: "PROPERTY (<Undefined>)", columnNumber: 0 });
     await selectorPanel.expandAttribute({ name: "IncomeSource", dataType: "mortgages.mortgages.IncomeSource" });
