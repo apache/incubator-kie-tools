@@ -17,87 +17,13 @@
  * under the License.
  */
 
-import dmnEnvelopeIndex from "!!raw-loader!../dist/envelope.html";
-import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import {
-  ChannelType,
-  DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
-  KogitoEditorChannelApi,
-  KogitoEditorEnvelopeApi,
-  EditorApi,
-} from "@kie-tools-core/editor/dist/api";
+import * as dmnEnvelopeJs from "../dist/envelope.js";
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
 import { ContentType } from "@kie-tools-core/workspace/dist/api";
 import { StandaloneDmnEditorChannelApiImpl } from "./StandaloneDmnEditorChannelApiImpl";
-import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-
-export interface StandaloneEditorApi extends EditorApi {
-  subscribeToContentChanges: StateControl["subscribe"];
-  unsubscribeToContentChanges: StateControl["unsubscribe"];
-  markAsSaved: StateControl["setSavedCommand"];
-  envelopeApi: MessageBusClientApi<KogitoEditorEnvelopeApi>;
-  close: () => void;
-}
-
-export const createEditor = (
-  envelopeApi: MessageBusClientApi<KogitoEditorEnvelopeApi>,
-  stateControl: StateControl,
-  listener: (message: MessageEvent) => void,
-  iframe: HTMLIFrameElement
-): StandaloneEditorApi => {
-  return {
-    undo: () => {
-      stateControl.undo();
-      return Promise.resolve(envelopeApi.notifications.kogitoEditor_editorUndo.send());
-    },
-    redo: () => {
-      stateControl.redo();
-      return Promise.resolve(envelopeApi.notifications.kogitoEditor_editorRedo.send());
-    },
-    close: () => {
-      window.removeEventListener("message", listener);
-      iframe.remove();
-    },
-    getContent: () => envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content),
-    getPreview: () => envelopeApi.requests.kogitoEditor_previewRequest(),
-    setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot, content) =>
-      envelopeApi.requests.kogitoEditor_contentChanged(
-        { normalizedPosixPathRelativeToTheWorkspaceRoot, content },
-        { showLoadingOverlay: true }
-      ),
-    subscribeToContentChanges: (callback) => stateControl.subscribe(callback),
-    unsubscribeToContentChanges: (callback) => stateControl.unsubscribe(callback),
-    markAsSaved: () => stateControl.setSavedCommand(),
-    validate: () => envelopeApi.requests.kogitoEditor_validate(),
-    setTheme: (theme) => Promise.resolve(),
-    envelopeApi,
-  };
-};
-
-const createEnvelopeServer = (iframe: HTMLIFrameElement, readOnly?: boolean, origin?: string) => {
-  const defaultOrigin = window.location.protocol === "file:" ? "*" : window.location.origin;
-
-  return new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
-    { postMessage: (message) => iframe.contentWindow?.postMessage(message, "*") },
-    origin ?? defaultOrigin,
-    (self) => {
-      return self.envelopeApi.requests.kogitoEditor_initRequest(
-        {
-          origin: self.origin,
-          envelopeServerId: self.id,
-        },
-        {
-          resourcesPathPrefix: "",
-          fileExtension: "dmn",
-          initialLocale: "en-US",
-          isReadOnly: readOnly ?? true,
-          channel: ChannelType.EMBEDDED,
-          workspaceRootAbsolutePosixPath: DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
-        }
-      );
-    }
-  );
-};
+import { StandaloneDmnEditorApi } from "./StandaloneDmnEditorApi";
+import { createEnvelopeServer } from "./StandaloneDmnEditorEnvelopeServer";
+import { createEditor } from "./StandaloneDmnEditorApiImpl";
 
 export function open(args: {
   container: Element;
@@ -106,9 +32,41 @@ export function open(args: {
   origin?: string;
   onError?: () => any;
   resources?: Map<string, { contentType: ContentType; content: Promise<string> }>;
-}): StandaloneEditorApi {
+}): StandaloneDmnEditorApi {
   const iframe = document.createElement("iframe");
-  iframe.srcdoc = dmnEnvelopeIndex;
+  iframe.srcdoc = `
+<!doctype html>
+<html lang="en">
+  <head>
+    <style>
+      html,
+      body,
+      div#envelope-app {
+        margin: 0;
+        border: 0;
+        padding: 0;
+        overflow: hidden;
+        height: 100%;
+        width: 100%;
+      }
+      body {
+        background-color: #fff !important;
+      }
+    </style>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <script type="text/javascript">
+      ${dmnEnvelopeJs}
+    </script>
+  </head>
+  <body>
+    <div id="envelope-app" />
+  </body>
+</html>
+  `;
   iframe.style.width = "100%";
   iframe.style.height = "100%";
   iframe.style.border = "none";
@@ -122,8 +80,8 @@ export function open(args: {
   const channelApiImpl = new StandaloneDmnEditorChannelApiImpl(
     stateControl,
     {
-      normalizedPosixPathRelativeToTheWorkspaceRoot: "", // FIXME: https://github.com/apache/incubator-kie-issues/issues/811
-      fileName: "file.dmn", // FIXME: https://github.com/apache/incubator-kie-issues/issues/811
+      normalizedPosixPathRelativeToTheWorkspaceRoot: "path1/model.dmn", // FIXME: https://github.com/apache/incubator-kie-issues/issues/811
+      fileName: "model.dmn", // FIXME: https://github.com/apache/incubator-kie-issues/issues/811
       fileExtension: "dmn",
       getFileContents: () => Promise.resolve(args.initialContent),
       isReadOnly: args.readOnly ?? false,

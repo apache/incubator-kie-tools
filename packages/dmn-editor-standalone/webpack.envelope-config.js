@@ -20,7 +20,6 @@
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { ProvidePlugin } = require("webpack");
 
@@ -32,15 +31,9 @@ module.exports = (env) =>
       publicPath: "/",
     },
     entry: {
-      envelope: "./src/envelope.ts",
+      envelope: "./src/envelope/StandaloneDmnEditorEnvelopeInit.ts",
     },
     plugins: [
-      new HtmlWebpackPlugin({
-        filename: "envelope.html",
-        template: "./resources/envelope.tpl.html",
-        chunks: ["envelope"],
-        inject: false,
-      }),
       new ProvidePlugin({
         process: require.resolve("process/browser.js"),
         Buffer: ["buffer", "Buffer"],

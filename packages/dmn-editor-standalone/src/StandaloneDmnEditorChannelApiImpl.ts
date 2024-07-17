@@ -104,6 +104,7 @@ export class StandaloneDmnEditorChannelApiImpl implements KogitoEditorChannelApi
   }
 
   public async kogitoWorkspace_resourceListRequest(request: ResourceListRequest) {
+    // console.log({ request, resources: this.resources });
     if (!this.resources) {
       return new ResourcesList(request.pattern, []);
     }

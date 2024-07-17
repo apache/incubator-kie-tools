@@ -49,7 +49,6 @@ const initEnvelope = () => {
     container: container,
     bus: {
       postMessage: (message, targetOrigin, _) => {
-        console.trace();
         window.parent.postMessage(message, targetOrigin!, _);
       },
     },

@@ -17,4 +17,14 @@
  * under the License.
  */
 
-declare module "*.js";
+import { KogitoEditorEnvelopeApi, EditorApi } from "@kie-tools-core/editor/dist/api";
+import { StateControl } from "@kie-tools-core/editor/dist/channel";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+
+export interface StandaloneDmnEditorApi extends EditorApi {
+  subscribeToContentChanges: StateControl["subscribe"];
+  unsubscribeToContentChanges: StateControl["unsubscribe"];
+  markAsSaved: StateControl["setSavedCommand"];
+  envelopeApi: MessageBusClientApi<KogitoEditorEnvelopeApi>;
+  close: () => void;
+}

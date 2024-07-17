@@ -40,12 +40,26 @@ module.exports = (env) =>
       new HtmlWebpackPlugin({
         filename: "index.html",
         template: "./resources/index.html",
+        chunks: ["index"],
+        inject: false,
+        minify: false,
       }),
       new ProvidePlugin({
         process: require.resolve("process/browser.js"),
         Buffer: ["buffer", "Buffer"],
       }),
     ],
+    module: {
+      rules: [
+        {
+          test: /envelope\.js$/,
+          type: "asset/source",
+        },
+      ],
+    },
+    optimization: {
+      removeAvailableModules: true,
+    },
     devServer: {
       historyApiFallback: false,
       static: [{ directory: path.join(__dirname, "./dist") }],
