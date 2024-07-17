@@ -19,6 +19,14 @@
 
 import { test, expect } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
+import {
+  CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
+  DECISION_TABLE_ANNOTATION_MIN_WIDTH,
+  DECISION_TABLE_INPUT_MIN_WIDTH,
+  DECISION_TABLE_OUTPUT_MIN_WIDTH,
+  INVOCATION_PARAMETER_MIN_WIDTH,
+  RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+} from "../../../src/resizing/WidthConstants.ts";
 
 test.describe("Resizing", () => {
   test.describe("Literal expression", () => {
@@ -238,6 +246,21 @@ test.describe("Resizing", () => {
       expect(await nestedEntry.boundingBox()).toHaveProperty("width", 120);
       expect(await nestedLiteralExpresison.boundingBox()).toHaveProperty("width", 212);
     });
+
+    test("should assign width values to all columns when no width defined", async ({
+      stories,
+      page,
+      resizing,
+      jsonModel,
+    }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1374");
+      await stories.openBoxedContext("installment-calculation");
+      const firstEntry = page.getByRole("cell", { name: "Fee (number)" });
+      await resizing.resizeCell(firstEntry, { x: 0, y: 0 }, { x: 50, y: 0 });
+
+      const widths = await jsonModel.getWidthsById();
+      expect(await widths[0]).toEqual(CONTEXT_ENTRY_VARIABLE_MIN_WIDTH + 50);
+    });
   });
 
   test.describe("Decision Table expression", () => {
@@ -453,6 +476,24 @@ test.describe("Resizing", () => {
         expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 158);
       }
     });
+
+    test("should assign width values to all columns when no width defined", async ({
+      stories,
+      page,
+      resizing,
+      jsonModel,
+    }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1374");
+      await stories.openDecisionTable("undefined-widths");
+      const annotationsHeader = page.getByRole("columnheader", { name: "Annotations", exact: true });
+      await resizing.resizeCell(annotationsHeader, { x: 0, y: 0 }, { x: 50, y: 0 });
+
+      const widths = await jsonModel.getWidthsById();
+      expect(await widths[0]).toEqual(DECISION_TABLE_INPUT_MIN_WIDTH);
+      expect(await widths[1]).toEqual(DECISION_TABLE_INPUT_MIN_WIDTH);
+      expect(await widths[2]).toEqual(DECISION_TABLE_OUTPUT_MIN_WIDTH);
+      expect(await widths[3]).toEqual(DECISION_TABLE_ANNOTATION_MIN_WIDTH + 50);
+    });
   });
 
   test.describe("Relation expression", () => {
@@ -534,6 +575,25 @@ test.describe("Resizing", () => {
         expect(await column1.boundingBox()).toHaveProperty("width", 173);
       }
       expect(await column2.boundingBox()).toHaveProperty("width", 100);
+    });
+
+    test("should assign width values to all columns when no width defined", async ({
+      stories,
+      page,
+      resizing,
+      jsonModel,
+    }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1374");
+      await stories.openRelation("bigger");
+      const columnsHeader = page.getByRole("columnheader", { name: "column-3 (<Undefined>)" });
+      await resizing.resizeCell(columnsHeader, { x: 0, y: 0 }, { x: 200, y: 0 });
+
+      const widths = await jsonModel.getWidthsById();
+      expect(await widths[0]).toEqual(RELATION_EXPRESSION_COLUMN_MIN_WIDTH);
+      expect(await widths[1]).toEqual(RELATION_EXPRESSION_COLUMN_MIN_WIDTH);
+      expect(await widths[2]).toEqual(RELATION_EXPRESSION_COLUMN_MIN_WIDTH);
+      expect(await widths[3]).toEqual(RELATION_EXPRESSION_COLUMN_MIN_WIDTH + 200);
+      expect(await widths[4]).toBeUndefined();
     });
   });
 
@@ -804,6 +864,22 @@ test.describe("Resizing", () => {
       expect(await functionName.boundingBox()).toHaveProperty("width", 365);
       expect(await params.boundingBox()).toHaveProperty("width", 153);
       expect(await literal.boundingBox()).toHaveProperty("width", 212);
+    });
+
+    test("should assign width values to all columns when no width defined", async ({
+      stories,
+      page,
+      resizing,
+      jsonModel,
+    }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1374");
+      await stories.openBoxedInvocation("monthly-installment");
+      const termCell = page.getByRole("cell", { name: "Term (number)" });
+      await resizing.resizeCell(termCell, { x: 0, y: 0 }, { x: 70, y: 0 });
+
+      const widths = await jsonModel.getWidthsById();
+      expect(await widths[0]).toEqual(INVOCATION_PARAMETER_MIN_WIDTH + 70);
+      expect(await widths[1]).toBeUndefined();
     });
   });
 

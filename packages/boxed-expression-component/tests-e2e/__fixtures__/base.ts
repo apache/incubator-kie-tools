@@ -25,6 +25,7 @@ import { Resizing } from "./resizing";
 import { UseCases } from "./useCases";
 import { Monaco } from "./monaco";
 import { ProjectName } from "@kie-tools/playwright-base/projectNames";
+import { JsonModel } from "./jsonModel";
 
 type BoxedExpressionFixtures = {
   boxedExpressionEditor: BoxedExpressionEditor;
@@ -33,6 +34,7 @@ type BoxedExpressionFixtures = {
   resizing: Resizing;
   useCases: UseCases;
   monaco: Monaco;
+  jsonModel: JsonModel;
 };
 
 export const test = base.extend<BoxedExpressionFixtures>({
@@ -55,6 +57,9 @@ export const test = base.extend<BoxedExpressionFixtures>({
   },
   useCases: async ({ page, baseURL }, use) => {
     await use(new UseCases(page, baseURL));
+  },
+  jsonModel: async ({ page, baseURL }, use) => {
+    await use(new JsonModel(page));
   },
 });
 
