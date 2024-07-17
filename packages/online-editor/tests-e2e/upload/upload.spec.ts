@@ -31,23 +31,23 @@ test.describe("Upload", () => {
 
     test("should upload file by drag and drop", async ({ page, upload, kieSandbox }) => {
       await upload.dragAndDropFile(page.getByText("Drag & drop files and folders here..."), "testProcess.bpmn");
-      await expect(page.getByRole("button", { name: "Workflow Edit file name" })).toBeAttached();
-      await expect(page.getByRole("button", { name: "Workflow Edit file name" })).toContainText("testProcess");
+      await expect(page.getByRole("button", { name: "Workflow testProcess" })).toBeAttached();
+      await expect(page.getByRole("button", { name: "Workflow testProcess" })).toContainText("testProcess");
       await expect(kieSandbox.getEditor().getByRole("button", { name: "Start Events" })).toBeAttached();
     });
 
     test("should upload file by 'Select files'", async ({ page, upload, kieSandbox }) => {
       await upload.fileSelector(page.getByRole("button", { name: "Select files..." }), "testModel.dmn");
-      await expect(page.getByRole("button", { name: "Decision Edit file name" })).toBeAttached();
-      await expect(page.getByRole("button", { name: "Decision Edit file name" })).toContainText("testModel");
+      await expect(page.getByRole("button", { name: "Decision testModel" })).toBeAttached();
+      await expect(page.getByRole("button", { name: "Decision testModel" })).toContainText("testModel");
       await expect(kieSandbox.getEditor().getByText("Test input data")).toBeAttached();
     });
 
     test("should upload file by 'Select folders'", async ({ page, upload }) => {
       test.skip(true, "https://github.com/microsoft/playwright/issues/6854");
       await upload.fileSelector(page.getByRole("button", { name: "Select folder..." }), "testFolder");
-      await expect(page.getByRole("button", { name: "Scorecard Edit file name" })).toBeAttached();
-      await expect(page.getByRole("button", { name: "Scorecard Edit file name" })).toContainText("testScoreCard");
+      await expect(page.getByRole("button", { name: "Scorecard testScoreCard" })).toBeAttached();
+      await expect(page.getByRole("button", { name: "Scorecard testScoreCard" })).toContainText("testScoreCard");
     });
   });
 
