@@ -33,6 +33,12 @@ type CreateQuarkusProjectConfig struct {
 	DependenciesVersion metadata.DependenciesVersion
 }
 
+type Repository struct {
+	Id   string
+	Name string
+	Url  string
+}
+
 func CreateQuarkusProject(cfg CreateQuarkusProjectConfig) error {
 	if err := common.CheckProjectName(cfg.ProjectName); err != nil {
 		return err
@@ -130,21 +136,24 @@ func manipulatePomToKogito(filename string, cfg CreateQuarkusProjectConfig) erro
 	}
 
 	//add apache repository after profiles declaration
+	var repositories = []Repository{
+		{Id: "maven-central-repository-group", Name: "Maven Central Repository", Url: "https://repo.maven.apache.org/maven2/"},
+		{Id: "apache-public-repository-group", Name: "Apache Public Repository Group", Url: "https://repository.apache.org/content/groups/public/"},
+		{Id: "apache-snapshot-repository-group", Name: "Apache Snapshot Repository Group", Url: "https://repository.apache.org/content/groups/snapshots/"},
+	}
+
 	var project = doc.FindElement("//project")
+	repositoriesElement := project.FindElement("//repositories")
+	if repositoriesElement == nil {
+		repositoriesElement = project.CreateElement("repositories")
+	}
 
-	var repositories = doc.CreateElement("repositories")
-
-	var repository = repositories.CreateElement("repository")
-	repository.CreateElement("id").SetText("apache-public-repository-group")
-	repository.CreateElement("name").SetText("Apache Public Repository Group")
-	repository.CreateElement("url").SetText("https://repository.apache.org/content/groups/public/")
-
-	var snapshotRepository = repositories.CreateElement("repository")
-	snapshotRepository.CreateElement("id").SetText("apache-snapshot-repository-group")
-	snapshotRepository.CreateElement("name").SetText("Apache Snapshot Repository Group")
-	snapshotRepository.CreateElement("url").SetText("https://repository.apache.org/content/groups/snapshots/")
-
-	project.AddChild(repositories)
+	for _, repo := range repositories {
+		var repository = repositoriesElement.CreateElement("repository")
+		repository.CreateElement("id").SetText(repo.Id)
+		repository.CreateElement("name").SetText(repo.Name)
+		repository.CreateElement("url").SetText(repo.Url)
+	}
 
 	doc.Indent(4)
 
