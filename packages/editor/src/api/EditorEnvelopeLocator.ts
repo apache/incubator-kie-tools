@@ -66,7 +66,10 @@ export class EnvelopeMapping {
 }
 
 export class EditorEnvelopeLocator {
-  constructor(public readonly targetOrigin: string, public readonly envelopeMappings: EnvelopeMapping[]) {}
+  constructor(
+    public readonly targetOrigin: string,
+    public readonly envelopeMappings: EnvelopeMapping[]
+  ) {}
 
   public getEnvelopeMapping(path: string) {
     return this.envelopeMappings.find((mapping) => {

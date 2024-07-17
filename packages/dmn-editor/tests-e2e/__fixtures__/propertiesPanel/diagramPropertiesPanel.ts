@@ -27,7 +27,10 @@ export class DiagramPropertiesPanel extends PropertiesPanelBase {
   private nameProperties: NameProperties;
   private descriptionProperties: DescriptionProperties;
 
-  constructor(public diagram: Diagram, public page: Page) {
+  constructor(
+    public diagram: Diagram,
+    public page: Page
+  ) {
     super(diagram, page);
     this.nameProperties = new NameProperties(this.panel(), page);
     this.descriptionProperties = new DescriptionProperties(this.panel());

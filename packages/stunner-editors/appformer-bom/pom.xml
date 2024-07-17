@@ -495,7 +495,6 @@
         <scope>test</scope>
       </dependency>
 
-
       <!-- ARQUILLIAN -->
 
       <dependency>
@@ -550,5 +549,4 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
 </project>

@@ -1,9 +1,9 @@
-package com.redhat;
+package org.apache.kie;
 
-public class ${ className }{
+public class ${ className } {
 
-    public ${ className }(){
-        new ${ fqcn }().${ query }
+    public ${ className }() {
+        var field = new ${ fqcn }().${ query }
     }
 
 }

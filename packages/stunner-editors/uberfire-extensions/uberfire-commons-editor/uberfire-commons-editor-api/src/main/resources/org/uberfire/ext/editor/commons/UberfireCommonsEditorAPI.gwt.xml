@@ -18,7 +18,6 @@
   ~ under the License.      
 -->
 <module>
-
   <inherits name="org.jboss.errai.common.ErraiCommon" />
   <inherits name="org.uberfire.UberfireAPI" />
 
@@ -27,5 +26,4 @@
   <source path='version' />
   <source path='service' />
   <source path='template' />
-
 </module>

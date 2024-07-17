@@ -17,51 +17,49 @@
  * under the License.
  */
 
-import { env } from "process";
-import { flattenObj, parseVars } from "./lib";
+import { flattenObj, parseVarsForDotEnvPrint } from "./lib";
 import { EnvAndVarsWithName } from "./types";
 
 export function treatSpecialPrintCases({
   opt,
   vars,
   self,
+  env,
 }: {
   opt: string;
   vars: EnvAndVarsWithName<any>["vars"];
   self: EnvAndVarsWithName<any>["self"];
+  env: EnvAndVarsWithName<any>["env"];
 }) {
+  // vars
   if (opt === "--print-vars") {
-    console.log(JSON.stringify(flattenObj(parseVars(vars)), undefined, 2));
+    console.log(Object.keys(vars ?? {}).join("\n"));
+    process.exit(0);
+  } else if (opt === "--print-vars:self") {
+    console.log(Object.keys(self.vars ?? {}).join("\n"));
     process.exit(0);
   }
 
-  if (opt === "--print-env") {
+  // env json
+  if (opt === "--print-env-json") {
     console.log(JSON.stringify(flattenObj(env), undefined, 2));
     process.exit(0);
+  } else if (opt === "--print-env-json:self") {
+    console.log(JSON.stringify(flattenObj(self.env), undefined, 2));
+    process.exit(0);
   }
 
-  if (opt === "--print-env-file") {
-    const flattenedParsedVars = flattenObj(parseVars(vars));
+  // dotenv
+  if (opt === "--print-dotenv") {
+    const flattenedParsedVars = parseVarsForDotEnvPrint(vars);
     let envFile = "";
     for (const key of Object.keys(flattenedParsedVars)) {
       envFile += `${key}=${flattenedParsedVars[key]}\n`;
     }
     console.log(envFile);
     process.exit(0);
-  }
-
-  if (opt === "--print-vars:self") {
-    console.log(JSON.stringify(flattenObj(parseVars(self.vars)), undefined, 2));
-    process.exit(0);
-  }
-
-  if (opt === "--print-env:self") {
-    console.log(JSON.stringify(flattenObj(self.env), undefined, 2));
-    process.exit(0);
-  }
-
-  if (opt === "--print-env-file:self") {
-    const flattenedParsedVars = flattenObj(parseVars(self.vars));
+  } else if (opt === "--print-dotenv:self") {
+    const flattenedParsedVars = parseVarsForDotEnvPrint(self.vars);
     let envFile = "";
     for (const key of Object.keys(flattenedParsedVars)) {
       envFile += `${key}=${flattenedParsedVars[key]}\n`;

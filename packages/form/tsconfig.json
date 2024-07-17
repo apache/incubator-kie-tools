@@ -6,7 +6,8 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "target": "es6",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "types": ["@testing-library/jest-dom"]
   },
   "include": ["src"]
 }

@@ -38,47 +38,43 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
     const [omittedProcessTimelineEvents, setOmittedProcessTimelineEvents] = React.useState<string[]>([]);
     const [diagramPreviewSize, setDiagramPreviewSize] = React.useState<DiagramPreviewSize>();
 
-    useImperativeHandle(
-      forwardingRef,
-      () => {
-        return {
-          setDataIndexUrl: (dataIndexUrl) => {
-            setDataIndexUrl(dataIndexUrl);
-          },
-          setRemoteKogitoAppUrl: (remoteKogitoAppUrl) => {
-            setRemoteKogitoAppUrl(remoteKogitoAppUrl);
-          },
-          setUsers: (users) => {
-            setDevUiUsers(users);
-          },
-          navigateTo: (page) => {
-            setNavigate(page);
-          },
-          setDevUIUrl: (url) => {
-            setDevUIUrl(url);
-          },
-          setOpenApiPath: (path) => {
-            setOpenApiPath(path);
-          },
-          setProcessEnabled: (isProcessEnabled) => {
-            setProcessEnabled(isProcessEnabled);
-          },
-          setAvailablePages: (availablePages) => {
-            setAvailablePages(availablePages);
-          },
-          setCustomLabels: (customLabels) => {
-            setCustomLabels(customLabels);
-          },
-          setOmittedProcessTimelineEvents: (omittedProcessTimelineEvents) => {
-            setOmittedProcessTimelineEvents(omittedProcessTimelineEvents);
-          },
-          setDiagramPreviewSize: (diagramPreviewSize) => {
-            setDiagramPreviewSize(diagramPreviewSize);
-          },
-        };
-      },
-      []
-    );
+    useImperativeHandle(forwardingRef, () => {
+      return {
+        setDataIndexUrl: (dataIndexUrl) => {
+          setDataIndexUrl(dataIndexUrl);
+        },
+        setRemoteKogitoAppUrl: (remoteKogitoAppUrl) => {
+          setRemoteKogitoAppUrl(remoteKogitoAppUrl);
+        },
+        setUsers: (users) => {
+          setDevUiUsers(users);
+        },
+        navigateTo: (page) => {
+          setNavigate(page);
+        },
+        setDevUIUrl: (url) => {
+          setDevUIUrl(url);
+        },
+        setOpenApiPath: (path) => {
+          setOpenApiPath(path);
+        },
+        setProcessEnabled: (isProcessEnabled) => {
+          setProcessEnabled(isProcessEnabled);
+        },
+        setAvailablePages: (availablePages) => {
+          setAvailablePages(availablePages);
+        },
+        setCustomLabels: (customLabels) => {
+          setCustomLabels(customLabels);
+        },
+        setOmittedProcessTimelineEvents: (omittedProcessTimelineEvents) => {
+          setOmittedProcessTimelineEvents(omittedProcessTimelineEvents);
+        },
+        setDiagramPreviewSize: (diagramPreviewSize) => {
+          setDiagramPreviewSize(diagramPreviewSize);
+        },
+      };
+    }, []);
     return (
       <>
         {isProcessEnabled && navigate.length > 0 && (

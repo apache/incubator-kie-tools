@@ -3,8 +3,8 @@
   elementFormDefault="qualified"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   xmlns="https://kie.org/scesim/1.8"
-  targetNamespace="https://kie.org/scesim/1.8">
-
+  targetNamespace="https://kie.org/scesim/1.8"
+>
   <xsd:element name="ScenarioSimulationModel" type="ScenarioSimulationModelType" />
 
   <xsd:complexType name="ExpressionElementType">
@@ -14,8 +14,7 @@
   </xsd:complexType>
   <xsd:complexType name="expressionElementsType">
     <xsd:sequence>
-      <xsd:element type="ExpressionElementType" name="ExpressionElement" minOccurs="0"
-        maxOccurs="unbounded" />
+      <xsd:element type="ExpressionElementType" name="ExpressionElement" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>
   </xsd:complexType>
   <xsd:complexType name="expressionIdentifierType">
@@ -38,8 +37,7 @@
   </xsd:complexType>
   <xsd:complexType name="FactMappingType">
     <xsd:sequence>
-      <xsd:element type="expressionElementsType" name="expressionElements" maxOccurs="1"
-        minOccurs="0" />
+      <xsd:element type="expressionElementsType" name="expressionElements" maxOccurs="1" minOccurs="0" />
       <xsd:element type="expressionIdentifierType" name="expressionIdentifier" />
       <xsd:element type="factIdentifierType" name="factIdentifier" />
       <xsd:element type="xsd:string" name="className" />
@@ -88,8 +86,7 @@
   </xsd:complexType>
   <xsd:complexType name="factMappingValuesType">
     <xsd:sequence>
-      <xsd:element type="FactMappingValueType" name="FactMappingValue" maxOccurs="unbounded"
-        minOccurs="0" />
+      <xsd:element type="FactMappingValueType" name="FactMappingValue" maxOccurs="unbounded" minOccurs="0" />
     </xsd:sequence>
   </xsd:complexType>
   <xsd:complexType name="FactMappingValuesTypes">
@@ -104,8 +101,7 @@
   </xsd:complexType>
   <xsd:complexType name="backgroundDatasType">
     <xsd:sequence>
-      <xsd:element type="FactMappingValuesTypes" name="BackgroundData" maxOccurs="unbounded"
-        minOccurs="0" />
+      <xsd:element type="FactMappingValuesTypes" name="BackgroundData" maxOccurs="unbounded" minOccurs="0" />
     </xsd:sequence>
   </xsd:complexType>
   <xsd:complexType name="simulationType">
@@ -144,6 +140,4 @@
     </xsd:sequence>
     <xsd:attribute type="xsd:string" name="version" />
   </xsd:complexType>
-
-
 </xsd:schema>

@@ -21,7 +21,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
 ## Additional requirements
 
-- docker or podman
+- docker
 
 ## Build
 
@@ -54,24 +54,12 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
   docker images
   ```
 
-  or
-
-  ```bash
-  podman images
-  ```
-
 ## Run
 
 - Start up a clean container with:
 
   ```bash
-  docker run -t -p 8080:8080 -i --rm docker.io/apache/incubator-kie-kogito-managment-console:daily-dev
-  ```
-
-  or
-
-  ```bash
-  podman run -t -p 8080:8080 -i --rm docker.io/apache/incubator-kie-kogito-managment-console:daily-dev
+  docker run -t -p 8080:8080 -i --rm docker.io/apache/incubator-kie-kogito-managment-console:main
   ```
 
   Management Console will be up at http://localhost:8080
@@ -100,7 +88,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    1. Using a different Data Index Service.
 
       ```bash
-      docker run -t -p 8080:8080 -e RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT=<my_value> -i --rm docker.io/apache/incubator-kie-kogito-managment-console:daily-dev
+      docker run -t -p 8080:8080 -e RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT=<my_value> -i --rm docker.io/apache/incubator-kie-kogito-managment-console:main
       ```
 
       _NOTE: Replace `docker` with `podman` if necessary._
@@ -108,7 +96,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 2. Write a custom `Containerfile/Dockerfile` from the image:
 
    ```docker
-   FROM docker.io/apache/incubator-kie-kogito-managment-console:daily-dev
+   FROM docker.io/apache/incubator-kie-kogito-managment-console:main
 
    ENV RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT=<my_value>
    ```

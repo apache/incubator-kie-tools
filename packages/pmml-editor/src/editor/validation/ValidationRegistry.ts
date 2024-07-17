@@ -22,7 +22,10 @@ import { Path } from "../paths";
 import { ValidationLevel } from "./ValidationLevel";
 
 export class ValidationEntry {
-  constructor(public level: ValidationLevel, public message?: string) {}
+  constructor(
+    public level: ValidationLevel,
+    public message?: string
+  ) {}
 }
 
 export class ValidationRegistry {

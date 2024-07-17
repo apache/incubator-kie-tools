@@ -21,12 +21,24 @@ import { Locator, Page } from "@playwright/test";
 import { Monaco } from "./monaco";
 
 export class BoxedExpressionEditor {
-  constructor(public page: Page, private monaco: Monaco, public baseURL?: string) {
+  constructor(
+    public page: Page,
+    private monaco: Monaco,
+    public baseURL?: string
+  ) {
     this.page = page;
   }
 
   public async select(from: Page | Locator = this.page) {
     await from.getByText("Select expression").click();
+  }
+
+  public async pasteToSelectExpression(nth?: number) {
+    await this.page
+      .getByText("Select expression")
+      .nth(nth ?? 0)
+      .click();
+    await this.page.getByRole("menuitem", { name: "Paste" }).click();
   }
 
   public async selectBoxedLiteral(from: Page | Locator = this.page) {
@@ -87,6 +99,36 @@ export class BoxedExpressionEditor {
   public async selectBoxedFunction(from: Page | Locator = this.page) {
     this.select(from);
     await this.page.getByRole("menuitem", { name: "Function" }).click();
+  }
+
+  public async selectBoxedFilter(from: Page | Locator = this.page) {
+    this.select(from);
+    await this.page.getByRole("menuitem", { name: "Filter" }).click();
+  }
+
+  public async copyFilter(from: Page | Locator = this.page) {
+    await this.page.getByTestId("logic-type-button-test-id").click();
+    await this.page.getByRole("menuitem", { name: "Copy" }).click();
+  }
+
+  public async resetFilter(from: Page | Locator = this.page) {
+    await from.getByTestId("logic-type-button-test-id").click();
+    await this.page.getByRole("menuitem", { name: "Reset" }).click();
+  }
+
+  public async fillFilter(args: { collectionIn: any[]; collectionMatch: any }) {
+    for (let i = 0; i < args.collectionIn.length; i++) {
+      await this.monaco.fill({
+        monacoParentLocator: this.page.getByTestId("kie-tools--boxed-expression-component--filter-collection-in"),
+        content: args.collectionIn[i],
+        nth: i,
+      });
+    }
+
+    await this.monaco.fill({
+      monacoParentLocator: this.page.getByTestId("kie-tools--boxed-expression-component--filter-collection-match"),
+      content: args.collectionMatch,
+    });
   }
 
   public async goto() {

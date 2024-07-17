@@ -23,5 +23,4 @@
   <inherits name="org.jboss.errai.ui.test.common.UITestCommon" />
   <inherits name="org.jboss.errai.enterprise.CDI" />
   <inherits name="org.jboss.errai.ioc.Container" />
-
 </module>

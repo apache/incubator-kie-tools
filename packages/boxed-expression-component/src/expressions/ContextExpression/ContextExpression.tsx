@@ -501,8 +501,8 @@ export function solveResultAndEntriesIndex({
     resultIndex === -1
       ? rowIndex //
       : resultIndex < rowIndex
-      ? rowIndex + 1
-      : rowIndex
+        ? rowIndex + 1
+        : rowIndex
   );
 
   return { isResultOperation, hasResultEntry, resultIndex, entryIndex };

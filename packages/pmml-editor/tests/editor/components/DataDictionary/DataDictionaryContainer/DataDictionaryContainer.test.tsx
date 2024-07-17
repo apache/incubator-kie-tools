@@ -130,7 +130,7 @@ describe("DataDictionaryContainer", () => {
     expect(dataField0deleteIcon).not.toBeUndefined();
     fireEvent.click(dataField0deleteIcon, {});
 
-    expect(onDeleteImpl).toBeCalledWith(0);
+    expect(onDeleteImpl).toHaveBeenCalledWith(0);
 
     rerender(
       <ValidationContext.Provider
@@ -204,7 +204,7 @@ describe("DataDictionaryContainer", () => {
     expect(dataField0deleteIcon).not.toBeUndefined();
     fireEvent.keyDown(dataField0deleteIcon, { key: "Enter" });
 
-    expect(onDeleteImpl).toBeCalledWith(0);
+    expect(onDeleteImpl).toHaveBeenCalledWith(0);
 
     rerender(
       <ValidationContext.Provider

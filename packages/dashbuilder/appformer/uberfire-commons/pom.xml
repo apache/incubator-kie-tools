@@ -56,5 +56,4 @@
       <artifactId>errai-marshalling</artifactId>
     </dependency>
   </dependencies>
-
 </project>

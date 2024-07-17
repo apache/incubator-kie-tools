@@ -34,7 +34,10 @@ export type CreateDescriptorArgs = Partial<Pick<WorkspaceDescriptor, "workspaceI
 export class LfsWorkspaceDescriptorService {
   private readonly descriptorFs: KieSandboxFs;
 
-  constructor(databaseName: string, private readonly storageService: LfsStorageService) {
+  constructor(
+    databaseName: string,
+    private readonly storageService: LfsStorageService
+  ) {
     this.descriptorFs = new KieSandboxFs(databaseName, {
       backend: new DefaultBackend({
         idbBackendDelegate: (fileDbName, fileStoreName) => new DexieBackend(fileDbName, fileStoreName),

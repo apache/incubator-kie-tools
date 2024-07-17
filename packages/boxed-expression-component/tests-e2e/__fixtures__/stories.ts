@@ -22,7 +22,10 @@ import { Page } from "@playwright/test";
 type BoxedExpressionTypes = "base" | "nested";
 
 export class Stories {
-  constructor(public page: Page, public baseURL?: string) {
+  constructor(
+    public page: Page,
+    public baseURL?: string
+  ) {
     this.page = page;
     this.baseURL = baseURL;
   }
@@ -57,5 +60,9 @@ export class Stories {
 
   public async openRelation(type: BoxedExpressionTypes | "bigger" | "people" = "base") {
     await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-relation--${type}`)}` ?? "");
+  }
+
+  public async openBoxedFilter(type: BoxedExpressionTypes | "rebooked-flights" = "base") {
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-filter--${type}`)}` ?? "");
   }
 }

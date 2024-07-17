@@ -19,32 +19,28 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-const rootEnv = require("@kie-tools/root-env/env");
-
-module.exports = composeEnv([rootEnv, require("@kie-tools/serverless-logic-web-tools-base-builder-image-env/env")], {
-  vars: varsWithName({
-    SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags: {
-      default: rootEnv.env.root.streamName,
-      description: "",
-    },
-    SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKubectlVersion: {
-      default: "v1.27.3",
-      description: "",
-    },
-    /* (begin) This part of the file is referenced in `scripts/update-kogito-version` */
-    SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag: {
-      default: "999-20240509",
-      description: "",
-    },
-    /* end */
-  }),
-  get env() {
-    return {
-      baseBuilderImage: {
-        buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags),
-        kubectlVersion: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKubectlVersion),
-        kogitoImageTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag),
+module.exports = composeEnv(
+  [require("@kie-tools/root-env/env"), require("@kie-tools/serverless-logic-web-tools-base-builder-image-env/env")],
+  {
+    vars: varsWithName({
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKubectlVersion: {
+        default: "v1.27.3",
+        description: "",
       },
-    };
-  },
-});
+      /* (begin) This part of the file is referenced in `scripts/update-kogito-version` */
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag: {
+        default: "999-20240623",
+        description: "",
+      },
+      /* end */
+    }),
+    get env() {
+      return {
+        baseBuilderImage: {
+          kubectlVersion: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKubectlVersion),
+          kogitoImageTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag),
+        },
+      };
+    },
+  }
+);

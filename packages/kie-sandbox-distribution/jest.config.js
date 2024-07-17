@@ -17,11 +17,10 @@
  * under the License.
  */
 
+const { config } = require("@kie-tools/jest-base/jest.config");
+
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-  reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
-  moduleDirectories: ["node_modules"],
-  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
-  transform: {},
-  globals: { fetch, Response, Request },
+  ...config,
+  testEnvironment: "node",
 };

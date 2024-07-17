@@ -21,7 +21,10 @@
  * Class to represent process variable
  */
 export default class ProcessVariable {
-  constructor(private readonly name: string, private readonly dataType: string) {}
+  constructor(
+    private readonly name: string,
+    private readonly dataType: string
+  ) {}
 
   public getName(): string {
     return this.name;

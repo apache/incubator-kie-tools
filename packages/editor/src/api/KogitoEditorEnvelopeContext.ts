@@ -27,7 +27,7 @@ import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dis
 import { EditorTheme } from "./EditorTheme";
 
 export interface KogitoEditorEnvelopeContextType<
-  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>
+  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>,
 > {
   channelApi: MessageBusClientApi<ChannelApi>;
   operatingSystem?: OperatingSystem;
@@ -41,7 +41,7 @@ export interface KogitoEditorEnvelopeContextType<
 export const KogitoEditorEnvelopeContext = React.createContext<KogitoEditorEnvelopeContextType<any>>({} as any);
 
 export function useKogitoEditorEnvelopeContext<
-  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi> = KogitoEditorChannelApi
+  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi> = KogitoEditorChannelApi,
 >() {
   return useContext(KogitoEditorEnvelopeContext) as KogitoEditorEnvelopeContextType<ChannelApi>;
 }

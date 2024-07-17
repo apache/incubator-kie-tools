@@ -166,7 +166,7 @@
 
     <dependency>
       <groupId>org.jsoup</groupId>
-      <artifactId>jsoup</artifactId>      
+      <artifactId>jsoup</artifactId>
     </dependency>
 
     <dependency>
@@ -179,7 +179,7 @@
         </exclusion>
       </exclusions>
     </dependency>
-    
+
     <!-- Replacement for commons-logging-api excluded from the above org.apache.stanbol.enhancer.engines.htmlextractor -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -255,8 +255,8 @@
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
-<!--               <forkMode>always</forkMode> -->
-<!-- http://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html#Migrating_the_Deprecated_forkMode_Parameter_to_forkCount_and_reuseForks -->
+              <!--               <forkMode>always</forkMode> -->
+              <!-- http://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html#Migrating_the_Deprecated_forkMode_Parameter_to_forkCount_and_reuseForks -->
               <forkCount>1</forkCount>
               <reuseForks>false</reuseForks>
               <argLine>-Xmx1500m ${argLine}</argLine>
@@ -307,5 +307,4 @@
       </dependencies>
     </profile>
   </profiles>
-
 </project>

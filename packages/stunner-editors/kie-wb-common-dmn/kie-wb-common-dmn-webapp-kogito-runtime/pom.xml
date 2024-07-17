@@ -49,7 +49,6 @@
   </properties>
 
   <dependencies>
-
     <!--Logs-->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -729,7 +728,6 @@
         </executions>
       </plugin>
     </plugins>
-
   </build>
 
   <profiles>
@@ -786,10 +784,10 @@
                   <goal>add-source</goal>
                 </goals>
                 <configuration>
-                  <excludes
-                  >${gwt.helper.excludes}</excludes> <!-- will exclude all GWT module whose configuration file name match that pattern -->
-                  <rootDirectories
-                  >${gwt.helper.rootDirectories}</rootDirectories> <!-- will search inside those directories -->
+                  <excludes>${gwt.helper.excludes}</excludes>
+                  <!-- will exclude all GWT module whose configuration file name match that pattern -->
+                  <rootDirectories>${gwt.helper.rootDirectories}</rootDirectories>
+                  <!-- will search inside those directories -->
                 </configuration>
               </execution>
             </executions>
@@ -798,5 +796,4 @@
       </build>
     </profile>
   </profiles>
-
 </project>

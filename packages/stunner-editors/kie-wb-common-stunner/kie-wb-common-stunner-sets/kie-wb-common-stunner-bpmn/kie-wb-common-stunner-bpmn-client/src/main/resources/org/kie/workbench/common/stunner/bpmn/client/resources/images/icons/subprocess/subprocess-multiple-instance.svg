@@ -1,5 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg version="1.1" id="subProcessMultipleInstance" xmlns="http://www.w3.org/2000/svg" x="0" y="0" width="352px" height="448px" viewBox="0 0 352 448" style="enable-background:new 0 0 352 448;" xml:space="preserve">
+<?xml version="1.0" encoding="utf-8" ?>
+<svg
+  version="1.1"
+  id="subProcessMultipleInstance"
+  xmlns="http://www.w3.org/2000/svg"
+  x="0"
+  y="0"
+  width="352px"
+  height="448px"
+  viewBox="0 0 352 448"
+  style="enable-background:new 0 0 352 448;"
+  xml:space="preserve"
+>
 	<!--
 	- Licensed to the Apache Software Foundation (ASF) under one
 	- or more contributor license agreements.  See the NOTICE file
@@ -19,9 +30,13 @@
 	- under the License.
 	-->
 	<style type="text/css">
-		.st0{display:none;}
-	</style>
-	<path d="M92,44v424c0,6.6-5.4,12-12,12H48c-6.6,0-12-5.4-12-12V44c0-6.6,5.4-12,12-12h32C86.6,32,92,37.4,92,44z M252,44v424
+.st0 {
+  display: none;
+}
+  </style>
+	<path
+    d="M92,44v424c0,6.6-5.4,12-12,12H48c-6.6,0-12-5.4-12-12V44c0-6.6,5.4-12,12-12h32C86.6,32,92,37.4,92,44z M252,44v424
   	c0,6.6-5.4,12-12,12h-32c-6.6,0-12-5.4-12-12V44c0-6.6,5.4-12,12-12h32C246.6,32,252,37.4,252,44z M412,44v424c0,6.6-5.4,12-12,12
-  	h-32c-6.6,0-12-5.4-12-12V44c0-6.6,5.4-12,12-12h32C406.6,32,412,37.4,412,44z" />
+  	h-32c-6.6,0-12-5.4-12-12V44c0-6.6,5.4-12,12-12h32C406.6,32,412,37.4,412,44z"
+  />
 </svg>

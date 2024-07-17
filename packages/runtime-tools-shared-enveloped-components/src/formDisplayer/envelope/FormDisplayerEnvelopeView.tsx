@@ -52,36 +52,32 @@ export const FormDisplayerEnvelopeView = React.forwardRef<FormDisplayerEnvelopeV
 
     const formDisplayerApiRef = useRef<EmbeddedFormApi>({} as EmbeddedFormApi);
 
-    useImperativeHandle(
-      forwardedRef,
-      () => {
-        return {
-          startSubmit: (context: FormSubmitContext): Promise<any> => {
-            return new Promise<any>((resolve, reject) => {
-              try {
-                formDisplayerApiRef.current.beforeSubmit?.(context);
-                resolve(formDisplayerApiRef.current.getFormData?.());
-              } catch (err) {
-                reject(err.message);
-              }
-            });
-          },
-          notifySubmitResponse: (response: FormSubmitResponse) => {
-            formDisplayerApiRef.current.afterSubmit?.(response);
-          },
-          initForm: (args: FormDisplayerInitArgs) => {
-            if (!isEmpty(args.form)) {
-              setEnvelopeConnectedToChannel(false);
-              setContent(args.form);
-              setData(args.data ?? {});
-              setContext(args.context ?? {});
-              setEnvelopeConnectedToChannel(true);
+    useImperativeHandle(forwardedRef, () => {
+      return {
+        startSubmit: (context: FormSubmitContext): Promise<any> => {
+          return new Promise<any>((resolve, reject) => {
+            try {
+              formDisplayerApiRef.current.beforeSubmit?.(context);
+              resolve(formDisplayerApiRef.current.getFormData?.());
+            } catch (err) {
+              reject(err.message);
             }
-          },
-        };
-      },
-      []
-    );
+          });
+        },
+        notifySubmitResponse: (response: FormSubmitResponse) => {
+          formDisplayerApiRef.current.afterSubmit?.(response);
+        },
+        initForm: (args: FormDisplayerInitArgs) => {
+          if (!isEmpty(args.form)) {
+            setEnvelopeConnectedToChannel(false);
+            setContent(args.form);
+            setData(args.data ?? {});
+            setContext(args.context ?? {});
+            setEnvelopeConnectedToChannel(true);
+          }
+        },
+      };
+    }, []);
 
     const onOpen = (opened: FormOpened) => {
       props.channelApi.notifications.notifyOnOpenForm.send(opened);

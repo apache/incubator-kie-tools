@@ -36,7 +36,6 @@
   <description>Dashbuilder Navigation API shared between client and server</description>
 
   <dependencies>
-
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-common</artifactId>
@@ -56,7 +55,5 @@
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-json</artifactId>
     </dependency>
-
   </dependencies>
-
 </project>

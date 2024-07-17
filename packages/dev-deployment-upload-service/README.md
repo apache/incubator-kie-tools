@@ -17,7 +17,7 @@
 
 # Dev Deployment Upload Service
 
-This package is used on the KIE Sandbox's Dev deployments feature and should be the first command to run when a deployed container spins up.
+This package is used on the KIE Sandbox's Dev Deployments feature and should be the first command to run when a deployed container spins up.
 
 The Dev Deployment Upload Service runs an HTTP server that accepts ZIP file uploads to the `/upload` endpoint. You can check that the service is ready to accept uploads via the `/upload-status` endpoint.
 
@@ -63,7 +63,7 @@ USAGE: `dev-deployment-upload-service`. Arguments are passed using env vars:
 
 ### Example:
 
-For a Dev deployment that runs a Quarkus application, the intended use is:
+For a Dev Deployment that runs a Quarkus application, the intended use is:
 
 ```Dockerfile
 ...
@@ -83,7 +83,7 @@ ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=[api key]
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH=[subpath]
 ```
 
-On KIE Sandbox Dev deployments Kubernetes/OpenShift YAMLs, you can pass them like:
+On KIE Sandbox Dev Deployments Kubernetes/OpenShift YAMLs, you can pass them like:
 
 ```yaml
 ...

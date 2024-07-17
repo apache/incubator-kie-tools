@@ -74,6 +74,9 @@ package-lock.json
 ## runtime-tools-management-console-webapp
 !packages/runtime-tools-management-console-webapp/build
 
+## dev-deployment-dmn-form-webapp
+!packages/dev-deployment-dmn-form-webapp/build
+
 ## vscode-*
 **/.vscode-test/
 **/.vscode-test-web/

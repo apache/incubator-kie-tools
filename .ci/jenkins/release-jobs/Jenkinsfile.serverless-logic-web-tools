@@ -43,7 +43,7 @@ pipeline {
         SERVERLESS_LOGIC_WEB_TOOLS__buildInfo = ''
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry = 'docker.io'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount = 'apache'
-        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName = 'incubator-serverless-logic-web-tools-swf-builder'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName = 'incubator-kie-serverless-logic-web-tools-swf-builder'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag = "${params.RELEASE_VERSION}"
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry = 'docker.io'
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount = 'apache'

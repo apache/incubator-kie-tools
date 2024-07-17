@@ -22,10 +22,8 @@ package org.kogito.core.internal.engine;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -77,9 +75,30 @@ public class JavaEngine {
         return new BuildInformation(filePath, getContent(filePath), content, 5, getEndOfLinePosition(content, 5));
     }
 
+    public BuildInformation buildVarTypePublicContent(Path filePath, String fqcn, String completeText) {
+
+        TemplateParameters item = new TemplateParameters();
+        item.setClassName(getClassName(filePath));
+        item.setQuery(completeText);
+        item.setFqcn(fqcn);
+
+        String content = this.evaluate(Templates.TEMPLATE_ACCESSORS, item);
+        int varLine = 5;
+        int varMiddleChar = 2;
+
+        return new BuildInformation(filePath, getContent(filePath), content, varLine, getFirstCharInLinePosition(content, varLine) + varMiddleChar);
+    }
+
+    protected int getFirstCharInLinePosition(String content, int lineNumber) {
+        String[] split = content.split("\n");
+        String line = split[lineNumber];
+        int index = line.indexOf(line.trim());
+
+        return index + 1;
+    }
+
     protected int getEndOfLinePosition(String content, int lineNumber) {
         String[] split = content.split("\n");
-        JavaLanguageServerPlugin.logInfo(split[lineNumber]);
         return split[lineNumber].length();
     }
 

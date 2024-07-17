@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Licensed to the Apache Software Foundation (ASF) under one
   ~ or more contributor license agreements.  See the NOTICE file
@@ -17,29 +17,31 @@
   ~ specific language governing permissions and limitations
   ~ under the License.      
 -->
-<semantic:definitions xmlns="https://kie.apache.org/kie-dmn/itemdef"
-                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
-                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
-                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
-                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
-                      xmlns:kie="https://kie.apache.org/kie-dmn/itemdef"
-                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
-                      id="_simple-item-def"
-                      name="simple-item-def"
-                      namespace="https://kie.apache.org/kie-dmn/itemdef">
-   <semantic:itemDefinition name="tSalary" id="_tSalary">
-      <semantic:typeRef>number</semantic:typeRef>
-   </semantic:itemDefinition>
-   <semantic:decision name="Yearly Salary" id="d_YearlySalary">
-      <semantic:variable name="Yearly Salary" typeRef="tSalary"/>
-      <semantic:informationRequirement>
-         <semantic:requiredInput href="#i_MonthlySalary"/>
-      </semantic:informationRequirement>
-      <semantic:literalExpression>
-         <semantic:text>12 * Monthly Salary</semantic:text>
-      </semantic:literalExpression>
-   </semantic:decision>
-   <semantic:inputData name="Monthly Salary" id="i_MonthlySalary">
-      <semantic:variable name="Monthly Salary" typeRef="tSalary"/>
-   </semantic:inputData>
+<semantic:definitions
+  xmlns="https://kie.apache.org/kie-dmn/itemdef"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  xmlns:kie="https://kie.apache.org/kie-dmn/itemdef"
+  xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  id="_simple-item-def"
+  name="simple-item-def"
+  namespace="https://kie.apache.org/kie-dmn/itemdef"
+>
+  <semantic:itemDefinition name="tSalary" id="_tSalary">
+    <semantic:typeRef>number</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:decision name="Yearly Salary" id="d_YearlySalary">
+    <semantic:variable name="Yearly Salary" typeRef="tSalary" />
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#i_MonthlySalary" />
+    </semantic:informationRequirement>
+    <semantic:literalExpression>
+      <semantic:text>12 * Monthly Salary</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:inputData name="Monthly Salary" id="i_MonthlySalary">
+    <semantic:variable name="Monthly Salary" typeRef="tSalary" />
+  </semantic:inputData>
 </semantic:definitions>

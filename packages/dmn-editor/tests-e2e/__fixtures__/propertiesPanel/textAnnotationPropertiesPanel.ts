@@ -29,7 +29,10 @@ export class TextAnnotationProperties extends PropertiesPanelBase {
   private fontProperties: FontProperties;
   private shapeProperties: ShapeProperties;
 
-  constructor(public diagram: Diagram, public page: Page) {
+  constructor(
+    public diagram: Diagram,
+    public page: Page
+  ) {
     super(diagram, page);
     this.descriptionProperties = new DescriptionProperties(this.panel());
     this.fontProperties = new FontProperties(this.panel());

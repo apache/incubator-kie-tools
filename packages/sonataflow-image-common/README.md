@@ -32,7 +32,7 @@ The contents of this package are:
   - `behave` `lxml` `docker` `docker-squash` `elementPath` `pyyaml` `ruamel.yaml` `python-dateutil` `Jinja2` `pykwalify` `colorlog` `click`
 - **cekit 4.11.0**: [docs.cekit.io](https://docs.cekit.io/en/latest/index.html)
 - **make**
-- **docker** or **podman**
+- **docker**
 
 ## Using the Makefile
 

@@ -23,7 +23,10 @@ import { Page } from "@playwright/test";
 import { DrgElement } from "./drgElement";
 
 export class Drd {
-  constructor(public page: Page, public drgElement: DrgElement) {}
+  constructor(
+    public page: Page,
+    public drgElement: DrgElement
+  ) {}
 
   public async getDrgElementBoundsOnDrd(args: { drgElementIndex: number; drdIndex: number }) {
     const drd = await this.getDrd({ drdIndex: args.drdIndex });

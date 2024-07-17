@@ -35,7 +35,6 @@
   <packaging>jar</packaging>
 
   <dependencies>
-
     <dependency>
       <groupId>org.eclipselabs</groupId>
       <artifactId>org.eclipse.emf.gwt.ecore</artifactId>
@@ -190,5 +189,4 @@
       </build>
     </profile>
   </profiles>
-
 </project>

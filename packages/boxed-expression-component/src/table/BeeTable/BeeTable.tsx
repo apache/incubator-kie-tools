@@ -687,20 +687,16 @@ export const BeeTable = <R extends object>({
   const beeTableResizingRef = useRef<BeeTableResizingRef>(null);
   const beeTableSelectionRef = useRef<BeeTableSelectionRef>(null);
 
-  useImperativeHandle(
-    forwardRef,
-    () => {
-      if (!beeTableResizingRef.current || !beeTableSelectionRef.current) {
-        return null;
-      }
+  useImperativeHandle(forwardRef, () => {
+    if (!beeTableResizingRef.current || !beeTableSelectionRef.current) {
+      return null;
+    }
 
-      return {
-        ...beeTableSelectionRef.current!,
-        ...beeTableResizingRef.current!,
-      };
-    },
-    []
-  );
+    return {
+      ...beeTableSelectionRef.current!,
+      ...beeTableResizingRef.current!,
+    };
+  }, []);
   return (
     <BeeTableSelectionContextProvider>
       <BeeTableResizableColumnsContextProvider resizingRef={beeTableResizingRef} onChange={onColumnResizingWidthChange}>

@@ -64,8 +64,26 @@ if (process.argv.indexOf("--env") !== -1 && process.argv[process.argv.indexOf("-
 
 const webpack = spawn(
   "npx",
-  ["webpack", "serve", "-c", path.join(__dirname, "./webapp/webpack.config.js"), "--host", "0.0.0.0", "--env", mode],
-  { shell: true }
+  [
+    "webpack",
+    "serve",
+    "-c",
+    path.join(__dirname, "../webpack.config.ts"),
+    "--host",
+    "0.0.0.0",
+    "--env",
+    mode,
+    "--port",
+    buildEnv.devDeploymentDmnFormWebapp.dev.webpackPort,
+  ],
+  {
+    shell: true,
+    env: {
+      ...process.env, // contains PATH which is needed to find the commands
+      DEV_DEPLOYMENT_DMN_FORM_WEBAPP__quarkusAppOrigin: `http://localhost:${buildEnv.devDeploymentDmnFormWebapp.dev.quarkusPort}`,
+      DEV_DEPLOYMENT_DMN_FORM_WEBAPP__quarkusAppPath: "",
+    },
+  }
 );
 
 webpack.stdout.on("data", (data) => {

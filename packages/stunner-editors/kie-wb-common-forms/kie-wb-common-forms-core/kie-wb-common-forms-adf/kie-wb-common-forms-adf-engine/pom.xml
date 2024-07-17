@@ -39,5 +39,4 @@
     <module>kie-wb-common-forms-adf-engine-api</module>
     <module>kie-wb-common-forms-adf-engine-client</module>
   </modules>
-
 </project>

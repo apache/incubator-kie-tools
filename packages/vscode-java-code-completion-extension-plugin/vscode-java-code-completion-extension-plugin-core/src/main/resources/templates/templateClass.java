@@ -1,7 +1,7 @@
-package com.redhat;
+package org.apache.kie;
 
 import ${ query }
 
-public class ${ className }{
+public class ${ className } {
 
 }

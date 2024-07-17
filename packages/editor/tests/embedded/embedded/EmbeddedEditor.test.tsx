@@ -92,7 +92,7 @@ describe("EmbeddedEditor::ONLINE", () => {
 
     editorRef.current?.setContent("test-path-relative-to-the-workspace-root", "content");
 
-    expect(spyOnContentChangedNotification).toBeCalledWith(
+    expect(spyOnContentChangedNotification).toHaveBeenCalledWith(
       { content: "content", normalizedPosixPathRelativeToTheWorkspaceRoot: "test-path-relative-to-the-workspace-root" },
       { showLoadingOverlay: false }
     );
@@ -115,7 +115,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
     editorRef.current?.getContent();
 
-    expect(spyRequest_contentResponse).toBeCalled();
+    expect(spyRequest_contentResponse).toHaveBeenCalled();
   });
 
   test("EmbeddedEditor::requestPreview", () => {
@@ -135,7 +135,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
     editorRef.current?.getPreview();
 
-    expect(spyRequest_previewResponse).toBeCalled();
+    expect(spyRequest_previewResponse).toHaveBeenCalled();
   });
 
   test("EmbeddedEditor::onSetContentError", async () => {
@@ -159,7 +159,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       data: [],
     });
 
-    expect(onSetContentError).toBeCalled();
+    expect(onSetContentError).toHaveBeenCalled();
     expect(container.firstChild).toMatchSnapshot();
   });
 
@@ -184,7 +184,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       data: [],
     });
 
-    expect(onReady).toBeCalled();
+    expect(onReady).toHaveBeenCalled();
     expect(container.firstChild).toMatchSnapshot();
   });
 
@@ -210,7 +210,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       data: [{ normalizedPosixPathRelativeToTheWorkspaceRoot: "" } as ResourceContent],
     });
 
-    expect(onResourceContentRequest).toBeCalled();
+    expect(onResourceContentRequest).toHaveBeenCalled();
     expect(container.firstChild).toMatchSnapshot();
   });
 
@@ -236,7 +236,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       data: [{ pattern: "", normalizedPosixPathsRelativeToTheWorkspaceRoot: [] } as ResourcesList],
     });
 
-    expect(onResourceListRequest).toBeCalled();
+    expect(onResourceListRequest).toHaveBeenCalled();
     expect(container.firstChild).toMatchSnapshot();
   });
 
@@ -262,7 +262,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     });
 
     expect(editorRef.current?.getStateControl().getCommandStack()).toEqual([{ id: "1" }]);
-    expect(onNewEdit).toBeCalled();
+    expect(onNewEdit).toHaveBeenCalled();
     expect(container.firstChild).toMatchSnapshot();
   });
 });

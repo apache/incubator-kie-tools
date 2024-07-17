@@ -73,58 +73,54 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
   const [initialContent, setInitialContent] = useState<ServerlessWorkflowEditorContent | undefined>(undefined);
   const swfTextEditorRef = useRef<SwfTextEditorApi>(null);
 
-  useImperativeHandle(
-    forwardedRef,
-    () => {
-      return {
-        setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot: string, newContent: string): Promise<void> => {
-          try {
-            setInitialContent({
-              originalContent: newContent,
-              normalizedPosixPathRelativeToTheWorkspaceRoot,
-            });
-            return Promise.resolve();
-          } catch (e) {
-            console.error(e);
-            return Promise.reject();
-          }
-        },
-        getContent: (): Promise<string> => {
-          return Promise.resolve(swfTextEditorRef.current?.getContent() || "");
-        },
-        getPreview: (): Promise<string> => {
-          return Promise.resolve("");
-        },
-        undo: async (): Promise<void> => {
-          if (!swfTextEditorRef.current) {
-            return;
-          }
-          swfTextEditorRef.current.undo();
-          onStateControlCommandUpdate(StateControlCommand.UNDO);
-        },
-        redo: async (): Promise<void> => {
-          if (!swfTextEditorRef.current) {
-            return;
-          }
-          swfTextEditorRef.current.redo();
-          onStateControlCommandUpdate(StateControlCommand.REDO);
-        },
-        validate: (): Promise<Notification[]> => {
-          return Promise.resolve([]);
-        },
-        setTheme: (theme: EditorTheme): Promise<void> => {
-          return swfTextEditorRef.current?.setTheme(theme) || Promise.resolve();
-        },
-        moveCursorToNode: (nodeName: string): void => {
-          swfTextEditorRef.current?.moveCursorToNode(nodeName);
-        },
-        moveCursorToPosition: (position: Position): void => {
-          swfTextEditorRef.current?.moveCursorToPosition(position);
-        },
-      };
-    },
-    [onStateControlCommandUpdate]
-  );
+  useImperativeHandle(forwardedRef, () => {
+    return {
+      setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot: string, newContent: string): Promise<void> => {
+        try {
+          setInitialContent({
+            originalContent: newContent,
+            normalizedPosixPathRelativeToTheWorkspaceRoot,
+          });
+          return Promise.resolve();
+        } catch (e) {
+          console.error(e);
+          return Promise.reject();
+        }
+      },
+      getContent: (): Promise<string> => {
+        return Promise.resolve(swfTextEditorRef.current?.getContent() || "");
+      },
+      getPreview: (): Promise<string> => {
+        return Promise.resolve("");
+      },
+      undo: async (): Promise<void> => {
+        if (!swfTextEditorRef.current) {
+          return;
+        }
+        swfTextEditorRef.current.undo();
+        onStateControlCommandUpdate(StateControlCommand.UNDO);
+      },
+      redo: async (): Promise<void> => {
+        if (!swfTextEditorRef.current) {
+          return;
+        }
+        swfTextEditorRef.current.redo();
+        onStateControlCommandUpdate(StateControlCommand.REDO);
+      },
+      validate: (): Promise<Notification[]> => {
+        return Promise.resolve([]);
+      },
+      setTheme: (theme: EditorTheme): Promise<void> => {
+        return swfTextEditorRef.current?.setTheme(theme) || Promise.resolve();
+      },
+      moveCursorToNode: (nodeName: string): void => {
+        swfTextEditorRef.current?.moveCursorToNode(nodeName);
+      },
+      moveCursorToPosition: (position: Position): void => {
+        swfTextEditorRef.current?.moveCursorToPosition(position);
+      },
+    };
+  }, [onStateControlCommandUpdate]);
 
   const setValidationErrors = useCallback(
     (errors: editor.IMarker[]) => {

@@ -37,7 +37,7 @@ export interface FormElementTemplateProps<Type> {
 
 export interface FormElementTemplate<
   Element extends FormElement<any>,
-  Properties extends FormElementTemplateProps<any>
+  Properties extends FormElementTemplateProps<any>,
 > {
   render: (props: Properties) => Element;
 }

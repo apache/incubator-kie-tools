@@ -17,11 +17,10 @@
  * under the License.
  */
 
-import { describe, it, expect } from "@jest/globals";
 import { jsonParseWithDate } from "../../src/json/JsonParse";
 
 describe("utils::jsonParseWithDate", () => {
-  it("should parse JSON strings with dates properly", () => {
+  test("should parse JSON strings with dates properly", () => {
     const myObject = {
       myNumber: 1,
       myString: "myValue",

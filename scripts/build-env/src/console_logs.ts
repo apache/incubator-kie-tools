@@ -65,7 +65,7 @@ export const LOGS = {
   },
   info: {
     seeAllEnvProperties() {
-      return `[build-env] See all env properties with 'build-env --print-env'`;
+      return `[build-env] See all env properties with 'build-env --print-env-json'`;
     },
     wroteAccessErrorLog(args: { logFilePath: string }) {
       return `[build-env] Wrote access error to: '${args.logFilePath}'.`;

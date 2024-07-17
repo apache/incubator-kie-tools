@@ -18,7 +18,6 @@
   ~ under the License.      
 -->
 <configuration>
-
   <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <!-- %l lowers performance -->
@@ -32,5 +31,4 @@
   <root level="warn">
     <appender-ref ref="consoleAppender" />
   </root>
-
 </configuration>

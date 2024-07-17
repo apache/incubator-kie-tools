@@ -87,18 +87,18 @@ export type DmnMarshaller<V extends DmnMarshallerVersions = "latest"> = Internal
 export type InternalDmnMarshaller<V extends DmnMarshallerVersions = "latest"> = V extends "1.0"
   ? DmnMarshaller10
   : V extends "1.1"
-  ? DmnMarshaller11
-  : V extends "1.2"
-  ? DmnMarshaller12
-  : V extends "1.3"
-  ? DmnMarshaller13
-  : V extends "1.4"
-  ? DmnMarshaller14
-  : V extends "1.5"
-  ? DmnMarshaller15
-  : V extends "latest"
-  ? DmnLatestMarshaller
-  : never;
+    ? DmnMarshaller11
+    : V extends "1.2"
+      ? DmnMarshaller12
+      : V extends "1.3"
+        ? DmnMarshaller13
+        : V extends "1.4"
+          ? DmnMarshaller14
+          : V extends "1.5"
+            ? DmnMarshaller15
+            : V extends "latest"
+              ? DmnLatestMarshaller
+              : never;
 
 export type DmnMarshallerBase = {
   instanceNs: Map<string, string>;

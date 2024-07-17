@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Licensed to the Apache Software Foundation (ASF) under one
   ~ or more contributor license agreements.  See the NOTICE file
@@ -17,27 +17,57 @@
   ~ specific language governing permissions and limitations
   ~ under the License.      
 -->
-<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kie.apache.org/dmn/_3FC31AA3-F0BA-4A0C-AEA5-7C0B5E4E6DB7" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="https://kie.apache.org/dmn/extensions/1.0" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:included1="https://kie.apache.org/dmn/_92BDAC3A-440F-490F-A673-9F5E18007A7E" xmlns:included2="https://kie.apache.org/dmn/_235F665F-D019-40F9-8350-566FBDE21490" id="_012F01E4-62A3-41C0-9301-4B074C232D39" name="model" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kie.apache.org/dmn/_3FC31AA3-F0BA-4A0C-AEA5-7C0B5E4E6DB7">
-  <dmn:extensionElements/>
-  <dmn:import id="_737AB6A6-3393-4760-A13B-9C71CADAB88E" name="re" namespace="https://kie.apache.org/dmn/_92BDAC3A-440F-490F-A673-9F5E18007A7E" locationURI="a.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
-  <dmn:import id="_7719EBFD-6E29-4B96-A28E-F5B903CA3E57" name="ne" namespace="https://kie.apache.org/dmn/_235F665F-D019-40F9-8350-566FBDE21490" locationURI="bImportsA.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
+<dmn:definitions
+  xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  xmlns="https://kie.apache.org/dmn/_3FC31AA3-F0BA-4A0C-AEA5-7C0B5E4E6DB7"
+  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  xmlns:kie="https://kie.apache.org/dmn/extensions/1.0"
+  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+  xmlns:included1="https://kie.apache.org/dmn/_92BDAC3A-440F-490F-A673-9F5E18007A7E"
+  xmlns:included2="https://kie.apache.org/dmn/_235F665F-D019-40F9-8350-566FBDE21490"
+  id="_012F01E4-62A3-41C0-9301-4B074C232D39"
+  name="model"
+  typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  namespace="https://kie.apache.org/dmn/_3FC31AA3-F0BA-4A0C-AEA5-7C0B5E4E6DB7"
+>
+  <dmn:extensionElements />
+  <dmn:import
+    id="_737AB6A6-3393-4760-A13B-9C71CADAB88E"
+    name="re"
+    namespace="https://kie.apache.org/dmn/_92BDAC3A-440F-490F-A673-9F5E18007A7E"
+    locationURI="a.dmn"
+    importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  />
+  <dmn:import
+    id="_7719EBFD-6E29-4B96-A28E-F5B903CA3E57"
+    name="ne"
+    namespace="https://kie.apache.org/dmn/_235F665F-D019-40F9-8350-566FBDE21490"
+    locationURI="bImportsA.dmn"
+    importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  />
   <dmn:inputData id="_7EDE8C61-D569-4270-AD4A-6E5633F92E97" name="test">
-    <dmn:extensionElements/>
-    <dmn:variable id="_EF760EAA-7663-4000-BB0B-1712F6B19BD5" name="test"/>
+    <dmn:extensionElements />
+    <dmn:variable id="_EF760EAA-7663-4000-BB0B-1712F6B19BD5" name="test" />
   </dmn:inputData>
   <dmndi:DMNDI>
     <dmndi:DMNDiagram id="_1F3941B2-1EEC-4A09-8A05-B832EF868B0A" name="DRG">
       <di:extension>
-        <kie:ComponentsWidthsExtension/>
+        <kie:ComponentsWidthsExtension />
       </di:extension>
-      <dmndi:DMNShape id="dmnshape-drg-_7EDE8C61-D569-4270-AD4A-6E5633F92E97" dmnElementRef="_7EDE8C61-D569-4270-AD4A-6E5633F92E97" isCollapsed="false">
+      <dmndi:DMNShape
+        id="dmnshape-drg-_7EDE8C61-D569-4270-AD4A-6E5633F92E97"
+        dmnElementRef="_7EDE8C61-D569-4270-AD4A-6E5633F92E97"
+        isCollapsed="false"
+      >
         <dmndi:DMNStyle>
-          <dmndi:FillColor red="255" green="255" blue="255"/>
-          <dmndi:StrokeColor red="0" green="0" blue="0"/>
-          <dmndi:FontColor red="0" green="0" blue="0"/>
+          <dmndi:FillColor red="255" green="255" blue="255" />
+          <dmndi:StrokeColor red="0" green="0" blue="0" />
+          <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
-        <dc:Bounds x="164" y="219" width="100" height="50"/>
-        <dmndi:DMNLabel/>
+        <dc:Bounds x="164" y="219" width="100" height="50" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>

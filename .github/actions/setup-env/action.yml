@@ -75,7 +75,7 @@ runs:
       uses: actions/setup-java@v4
       with:
         java-version: 17
-        distribution: "zulu"
+        distribution: "temurin"
 
     - name: "Set up GOLANG 1.21.9"
       uses: actions/setup-go@v5
