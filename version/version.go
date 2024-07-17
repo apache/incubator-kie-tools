@@ -30,7 +30,8 @@ const (
 	// This tag must reflect an existing tag in the registry. In development, must follow the git branch naming.
 	// When released, this version should reflect the `major.minor` version in the registry.
 	// For example, docker.io/apache/incubator-kie-sonataflow-operator:10.0
-	tagVersion = "main"
+	tagVersion        = "main"
+	serviceTagVersion = "weekly-latest"
 )
 
 // GetOperatorVersion gets the current binary version of the operator. Do not use it to compose image tags!
@@ -41,4 +42,11 @@ func GetOperatorVersion() string {
 // GetTagVersion gets the current tag version for the operator and platform images.
 func GetTagVersion() string {
 	return tagVersion
+}
+
+// GetServiceTagVersion gets the current tag version for the service images.
+// TODO, unify all with tagVersion="main", when "main" tag is produced for DI and JS.
+// Right now, Apache community only produces "weekly-latest", and "timestamped tags" for these services.
+func GetServiceTagVersion() string {
+	return serviceTagVersion
 }

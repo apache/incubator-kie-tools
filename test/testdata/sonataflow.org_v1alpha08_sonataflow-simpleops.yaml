@@ -25,7 +25,9 @@ metadata:
 spec:
   podTemplate:
     container:
-      image: docker.io/apache/incubator-kie-sonataflow-minimal-example:latest
+      # TODO use docker.io/apache/incubator-kie-sonataflow-minimal-example:latest
+      # when we complete https://github.com/apache/incubator-kie-kogito-serverless-operator/issues/504
+      image: quay.io/kiegroup/sonataflow-minimal-example:latest
   flow:
     start: HelloWorld
     states:
