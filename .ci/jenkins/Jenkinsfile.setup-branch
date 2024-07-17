@@ -160,7 +160,7 @@ pipeline {
                 dir('kie-tools/.ci/jenkins') {
                     script {
                         sh """#!/bin/bash -el
-                        find . -type f -name 'Jenkinsfile.*' -exec sed -E -i "s%(incubator-kie-tools-ci-build:).*%\1${params.KIE_TOOLS_VERSION}% {} \;"
+                        find . -type f -name 'Jenkinsfile.*' -exec sed -E -i "s%(kie-tools-ci-build:).*%\\1${params.KIE_TOOLS_VERSION}'%" {} \\;
                         """.trim()
                     }
                 }
