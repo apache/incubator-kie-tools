@@ -21,12 +21,11 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 
 const rootEnv = require("@kie-tools/root-env/env");
 const serverlessLogicWebToolsSwfBuilderImageEnv = require("@kie-tools/serverless-logic-web-tools-swf-builder-image-env/env");
-const sonataflowBuilderImageEnv = require("@kie-tools/sonataflow-builder-image/env");
 
-module.exports = composeEnv([rootEnv, serverlessLogicWebToolsSwfBuilderImageEnv, sonataflowBuilderImageEnv], {
+module.exports = composeEnv([rootEnv, serverlessLogicWebToolsSwfBuilderImageEnv], {
   vars: varsWithName({
     SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE__baseImageUrl: {
-      default: `${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.registry}/${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.account}/${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.name}:${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.tag}`,
+      default: `quay.io/kiegroup/kogito-swf-builder:9.99.1.CR1`, // TODO: Replace with v10.0.0 release from kogito-images
       description: "The image used in the FROM import.",
     },
   }),

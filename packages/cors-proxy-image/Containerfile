@@ -21,9 +21,9 @@ ARG CORS_PROXY_DEFAULT_PORT=8080
 ARG CORS_PROXY_DEFAULT_ORIGIN=*
 ARG CORS_PROXY_DEFAULT_VERBOSE=false
 
-ENV HOME          /home/kie-sandbox
-ENV NVM_DIR       $HOME/.nvm
-ENV NODE_VERSION  v20.14.0
+ENV HOME=/home/kie-sandbox
+ENV NVM_DIR=$HOME/.nvm
+ENV NODE_VERSION=v20.14.0
 
 RUN mkdir $HOME \
   && chgrp -R 0 $HOME \
@@ -38,8 +38,8 @@ RUN mkdir $HOME \
   && export CORS_PROXY_VERBOSE=CORS_PROXY_DEFAULT_VERBOSE
 
 
-ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/bin
-ENV PATH $NODE_PATH:$PATH
+ENV NODE_PATH=$NVM_DIR/versions/node/$NODE_VERSION/bin
+ENV PATH=$NODE_PATH:$PATH
 
 COPY --chown=1000:0 dist-dev/cors-proxy $HOME/cors-proxy
 

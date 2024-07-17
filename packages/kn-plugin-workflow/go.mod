@@ -4,13 +4,14 @@ go 1.21
 
 toolchain go1.21.6
 
-replace github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api v0.0.0 => ./node_modules/@kie-tools/sonataflow-operator/api
+// TODO: Remove and require directly from v10.0.x release branches
+replace github.com/apache/incubator-kie-kogito-serverless-operator/api v0.0.0 => github.com/apache/incubator-kie-kogito-serverless-operator/api v0.0.0-20240122.0.20240717124954-5c00933758d0
 
-replace github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj v0.0.0 => ./node_modules/@kie-tools/sonataflow-operator/workflowproj
+replace github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj v0.0.0 => github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj v0.0.0-20240122.0.20240717124954-5c00933758d0
 
 require (
-	github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api v0.0.0
-	github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj v0.0.0
+	github.com/apache/incubator-kie-kogito-serverless-operator/api v0.0.0
+	github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj v0.0.0
 	github.com/beevik/etree v1.2.0
 	github.com/docker/docker v24.0.9+incompatible
 	github.com/docker/go-connections v0.4.0

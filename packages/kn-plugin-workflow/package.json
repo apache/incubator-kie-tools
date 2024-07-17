@@ -51,8 +51,6 @@
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
-    "@kie-tools/sonataflow-devmode-image": "workspace:*",
-    "@kie-tools/sonataflow-operator": "workspace:*",
     "cross-env": "^7.0.3",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6"

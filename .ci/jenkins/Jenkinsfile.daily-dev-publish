@@ -130,21 +130,6 @@ pipeline {
         KOGITO_MANAGEMENT_CONSOLE__name = 'incubator-kie-kogito-management-console'
         KOGITO_MANAGEMENT_CONSOLE__buildTag = "${params.BRANCH_NAME}"
 
-        SONATAFLOW_BUILDER_IMAGE__registry = 'docker.io'
-        SONATAFLOW_BUILDER_IMAGE__account = 'apache'
-        SONATAFLOW_BUILDER_IMAGE__name = 'incubator-kie-sonataflow-builder'
-        SONATAFLOW_BUILDER_IMAGE__buildTag = "${params.BRANCH_NAME}"
-
-        SONATAFLOW_DEVMODE_IMAGE__registry = 'docker.io'
-        SONATAFLOW_DEVMODE_IMAGE__account = 'apache'
-        SONATAFLOW_DEVMODE_IMAGE__name = 'incubator-kie-sonataflow-devmode'
-        SONATAFLOW_DEVMODE_IMAGE__buildTag = "${params.BRANCH_NAME}"
-
-        SONATAFLOW_OPERATOR__registry = 'docker.io'
-        SONATAFLOW_OPERATOR__account = 'apache'
-        SONATAFLOW_OPERATOR__name = 'incubator-kie-sonataflow-operator'
-        SONATAFLOW_OPERATOR__buildTag = "${params.BRANCH_NAME}"
-
         BUILD_DATE = sh(script: "echo `date +'%Y-%m-%d %T'`", returnStdout: true).trim()
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
@@ -234,51 +219,6 @@ pipeline {
                     export SERVERLESS_LOGIC_WEB_TOOLS__buildInfo="${env.VERSION} (daily-dev) @ ${env.GIT_COMMIT} (${env.BUILD_DATE})"
                     pnpm -r --workspace-concurrency=1 build:prod
                     """.trim()
-                }
-            }
-        }
-
-        stage('Push sonataflow-builder to Docker Hub') {
-            steps {
-                script {
-                    dockerUtils.pushImageToRegistry(
-                        "${env.SONATAFLOW_BUILDER_IMAGE__registry}",
-                        "${env.SONATAFLOW_BUILDER_IMAGE__account}",
-                        "${env.SONATAFLOW_BUILDER_IMAGE__name}",
-                        "${env.SONATAFLOW_BUILDER_IMAGE__buildTag}",
-                        "${pipelineVars.dockerHubUserCredentialsId}",
-                        "${pipelineVars.dockerHubTokenCredentialsId}"
-                    )
-                }
-            }
-        }
-
-        stage('Push sonataflow-devmode to Docker Hub') {
-            steps {
-                script {
-                    dockerUtils.pushImageToRegistry(
-                        "${env.SONATAFLOW_DEVMODE_IMAGE__registry}",
-                        "${env.SONATAFLOW_DEVMODE_IMAGE__account}",
-                        "${env.SONATAFLOW_DEVMODE_IMAGE__name}",
-                        "${env.SONATAFLOW_DEVMODE_IMAGE__buildTag}",
-                        "${pipelineVars.dockerHubUserCredentialsId}",
-                        "${pipelineVars.dockerHubTokenCredentialsId}"
-                    )
-                }
-            }
-        }
-
-        stage('Push sonataflow-operator to Docker Hub') {
-            steps {
-                script {
-                    dockerUtils.pushImageToRegistry(
-                        "${env.SONATAFLOW_OPERATOR__registry}",
-                        "${env.SONATAFLOW_OPERATOR__account}",
-                        "${env.SONATAFLOW_OPERATOR__name}",
-                        "${env.SONATAFLOW_OPERATOR__buildTag}",
-                        "${pipelineVars.dockerHubUserCredentialsId}",
-                        "${pipelineVars.dockerHubTokenCredentialsId}"
-                    )
                 }
             }
         }
