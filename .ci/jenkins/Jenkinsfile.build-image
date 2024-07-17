@@ -153,12 +153,6 @@ pipeline {
                         latestTag = getTriggeringProjectName().contains('weekly') ? 'weekly-latest' : 'latest'
                         cloud.skopeoCopyRegistryImages(imageTag, getBuiltImageTag(latestTag), retries)
                     }
-                    try {
-                        String reducedTag = cloud.getReducedTag(getDeployImageTag())
-                        cloud.skopeoCopyRegistryImages(imageTag, getBuiltImageTag(reducedTag), retries)
-                    } catch (err) {
-                        echo "Reduced tag cannot be applied: ${err}"
-                    }
                 }
             }
         }
