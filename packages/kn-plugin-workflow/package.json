@@ -49,6 +49,9 @@
     "test-e2e:quarkus": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm go:test-e2e:quarkus\" \"pnpm go:test-e2e:report\"",
     "test-e2e:quarkus:logs": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm go:test-e2e:quarkus:logs\" \"pnpm go:test-e2e:report\""
   },
+  "dependencies": {
+    "@kie-tools/sonataflow-quarkus-devui": "workspace:*"
+  },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
     "cross-env": "^7.0.3",

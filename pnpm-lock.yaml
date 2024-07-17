@@ -5722,6 +5722,10 @@ importers:
         version: 1.1.2
 
   packages/kn-plugin-workflow:
+    dependencies:
+      '@kie-tools/sonataflow-quarkus-devui':
+        specifier: workspace:*
+        version: link:../sonataflow-quarkus-devui
     devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
@@ -25259,11 +25263,6 @@ packages:
 
   renderkid@3.0.0:
     resolution: {integrity: sha512-q/7VIQA8lmM1hF+jn+sFSPWGlMkSAeNYcPLmDQx2zzuiDfaLrOmumR8iaUKlenFgh0XRPIUeSPlH3A+AW3Z5pg==}
-
-  replace-in-file@7.1.0:
-    resolution: {integrity: sha512-1uZmJ78WtqNYCSuPC9IWbweXkGxPOtk2rKuar8diTw7naVIQZiE3Tm8ACx2PCMXDtVH6N+XxwaRY2qZ2xHPqXw==}
-    engines: {node: '>=10'}
-    hasBin: true
 
   replace-string@3.1.0:
     resolution: {integrity: sha512-yPpxc4ZR2makceA9hy/jHNqc7QVkd4Je/N0WRHm6bs3PtivPuPynxE5ejU/mp5EhnCv8+uZL7vhz8rkluSlx+Q==}
@@ -47832,12 +47831,6 @@ snapshots:
       htmlparser2: 6.1.0
       lodash: 4.17.21
       strip-ansi: 6.0.1
-
-  replace-in-file@7.1.0:
-    dependencies:
-      chalk: 4.1.2
-      glob: 8.1.0
-      yargs: 17.7.2
 
   replace-string@3.1.0: {}
 

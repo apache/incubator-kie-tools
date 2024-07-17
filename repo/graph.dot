@@ -410,7 +410,7 @@ digraph G {
   "@kie-tools/kie-sandbox-webapp-image" -> "@kie-tools/image-env-to-json" [ style = "solid", color = "black" ];
   "@kie-tools/kie-sandbox-webapp-image" -> "@kie-tools/online-editor" [ style = "solid", color = "black" ];
   "@kie-tools/kie-sandbox-webapp-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
-  "@kie-tools/kn-plugin-workflow" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/kn-plugin-workflow" -> "@kie-tools/sonataflow-quarkus-devui" [ style = "solid", color = "black" ];
   "@kie-tools/kogito-management-console" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-management-console" -> "@kie-tools/image-env-to-json" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-management-console" -> "@kie-tools/runtime-tools-management-console-webapp" [ style = "dashed", color = "black" ];

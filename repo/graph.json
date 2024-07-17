@@ -1837,7 +1837,7 @@
       },
       {
         "source": "@kie-tools/kn-plugin-workflow",
-        "target": "@kie-tools/root-env",
+        "target": "@kie-tools/sonataflow-quarkus-devui",
         "weight": 1
       },
       {
