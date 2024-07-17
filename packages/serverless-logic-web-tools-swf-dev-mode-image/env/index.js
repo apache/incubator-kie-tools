@@ -25,7 +25,7 @@ module.exports = composeEnv([rootEnv, require("@kie-tools/serverless-logic-web-t
   vars: varsWithName({
     /* (begin) This part of the file is referenced in `scripts/update-kogito-version` */
     SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__kogitoBaseBuilderImageTag: {
-      default: "999-20240623",
+      default: "10.0.999-20240717",
       description: "",
     },
     /* end */

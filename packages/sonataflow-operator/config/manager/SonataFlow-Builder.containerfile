@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM docker.io/apache/incubator-kie-sonataflow-builder:main AS builder
+FROM docker.io/apache/incubator-kie-sonataflow-builder:10.0.x AS builder
 # This image name and tag is auto-replaced using environment variables during install, don't touch.
 
 # variables that can be overridden by the builder

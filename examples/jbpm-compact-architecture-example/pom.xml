@@ -35,8 +35,8 @@
 
   <properties>
     <kogito.management-console.image
-    >docker.io/apache/incubator-kie-kogito-management-console:main</kogito.management-console.image>
-    <kogito.task-console.image>docker.io/apache/incubator-kie-kogito-task-console:main</kogito.task-console.image>
+    >docker.io/apache/incubator-kie-kogito-management-console:10.0.x</kogito.management-console.image>
+    <kogito.task-console.image>docker.io/apache/incubator-kie-kogito-task-console:10.0.x</kogito.task-console.image>
   </properties>
 
   <dependencies>
