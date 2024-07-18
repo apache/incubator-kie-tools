@@ -43,7 +43,7 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/storybook-base": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@playwright/test": "^1.38.1",
+    "@playwright/test": "^1.45.2",
     "@storybook/addon-links": "^7.3.2",
     "@storybook/blocks": "^7.3.2",
     "@storybook/preview-api": "^7.3.2",

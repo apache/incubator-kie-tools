@@ -92,7 +92,7 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@playwright/test": "^1.38.1",
+    "@playwright/test": "^1.45.2",
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/react": "^12.1.5",
     "@types/history": "^4.7.3",
