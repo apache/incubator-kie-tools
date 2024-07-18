@@ -23,6 +23,16 @@ interface BoxedExpressionComponent {
   expression: string;
   widthsById: Record<string, number[]>;
 }
+
+export enum WidthConstants {
+  CONTEXT_ENTRY_VARIABLE_MIN_WIDTH = 120,
+  DECISION_TABLE_ANNOTATION_MIN_WIDTH = 100,
+  DECISION_TABLE_INPUT_MIN_WIDTH = 100,
+  DECISION_TABLE_OUTPUT_MIN_WIDTH = 100,
+  INVOCATION_PARAMETER_MIN_WIDTH = 120,
+  RELATION_EXPRESSION_COLUMN_MIN_WIDTH = 100,
+}
+
 export class JsonModel {
   constructor(public page: Page) {}
 

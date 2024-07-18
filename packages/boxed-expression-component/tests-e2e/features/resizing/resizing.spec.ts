@@ -19,14 +19,7 @@
 
 import { test, expect } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
-import {
-  CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
-  DECISION_TABLE_ANNOTATION_MIN_WIDTH,
-  DECISION_TABLE_INPUT_MIN_WIDTH,
-  DECISION_TABLE_OUTPUT_MIN_WIDTH,
-  INVOCATION_PARAMETER_MIN_WIDTH,
-  RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
-} from "../../../src/resizing/WidthConstants.ts";
+import { WidthConstants } from "../../__fixtures__/jsonModel";
 
 test.describe("Resizing", () => {
   test.describe("Literal expression", () => {
@@ -253,13 +246,16 @@ test.describe("Resizing", () => {
       resizing,
       jsonModel,
     }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1374");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1374",
+      });
+
       await stories.openBoxedContext("installment-calculation");
       const firstEntry = page.getByRole("cell", { name: "Fee (number)" });
       await resizing.resizeCell(firstEntry, { x: 0, y: 0 }, { x: 50, y: 0 });
 
-      const widths = await jsonModel.getWidthsById();
-      expect(await widths[0]).toEqual(CONTEXT_ENTRY_VARIABLE_MIN_WIDTH + 50);
+      expect(await jsonModel.getWidthsById()).toEqual([WidthConstants.CONTEXT_ENTRY_VARIABLE_MIN_WIDTH + 50]);
     });
   });
 
@@ -483,16 +479,21 @@ test.describe("Resizing", () => {
       resizing,
       jsonModel,
     }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1374");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1374",
+      });
+
       await stories.openDecisionTable("undefined-widths");
       const annotationsHeader = page.getByRole("columnheader", { name: "Annotations", exact: true });
       await resizing.resizeCell(annotationsHeader, { x: 0, y: 0 }, { x: 50, y: 0 });
 
-      const widths = await jsonModel.getWidthsById();
-      expect(await widths[0]).toEqual(DECISION_TABLE_INPUT_MIN_WIDTH);
-      expect(await widths[1]).toEqual(DECISION_TABLE_INPUT_MIN_WIDTH);
-      expect(await widths[2]).toEqual(DECISION_TABLE_OUTPUT_MIN_WIDTH);
-      expect(await widths[3]).toEqual(DECISION_TABLE_ANNOTATION_MIN_WIDTH + 50);
+      expect(await jsonModel.getWidthsById()).toEqual([
+        WidthConstants.DECISION_TABLE_INPUT_MIN_WIDTH,
+        WidthConstants.DECISION_TABLE_INPUT_MIN_WIDTH,
+        WidthConstants.DECISION_TABLE_OUTPUT_MIN_WIDTH,
+        WidthConstants.DECISION_TABLE_ANNOTATION_MIN_WIDTH + 50,
+      ]);
     });
   });
 
@@ -583,17 +584,22 @@ test.describe("Resizing", () => {
       resizing,
       jsonModel,
     }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1374");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1374",
+      });
+
       await stories.openRelation("bigger");
       const columnsHeader = page.getByRole("columnheader", { name: "column-3 (<Undefined>)" });
       await resizing.resizeCell(columnsHeader, { x: 0, y: 0 }, { x: 200, y: 0 });
 
-      const widths = await jsonModel.getWidthsById();
-      expect(await widths[0]).toEqual(RELATION_EXPRESSION_COLUMN_MIN_WIDTH);
-      expect(await widths[1]).toEqual(RELATION_EXPRESSION_COLUMN_MIN_WIDTH);
-      expect(await widths[2]).toEqual(RELATION_EXPRESSION_COLUMN_MIN_WIDTH);
-      expect(await widths[3]).toEqual(RELATION_EXPRESSION_COLUMN_MIN_WIDTH + 200);
-      expect(await widths[4]).toBeUndefined();
+      expect(await jsonModel.getWidthsById()).toEqual([
+        WidthConstants.RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        WidthConstants.RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        WidthConstants.RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        WidthConstants.RELATION_EXPRESSION_COLUMN_MIN_WIDTH + 200,
+        undefined,
+      ]);
     });
   });
 
@@ -872,14 +878,16 @@ test.describe("Resizing", () => {
       resizing,
       jsonModel,
     }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1374");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1374",
+      });
+
       await stories.openBoxedInvocation("monthly-installment");
       const termCell = page.getByRole("cell", { name: "Term (number)" });
       await resizing.resizeCell(termCell, { x: 0, y: 0 }, { x: 70, y: 0 });
 
-      const widths = await jsonModel.getWidthsById();
-      expect(await widths[0]).toEqual(INVOCATION_PARAMETER_MIN_WIDTH + 70);
-      expect(await widths[1]).toBeUndefined();
+      expect(await jsonModel.getWidthsById()).toEqual([WidthConstants.INVOCATION_PARAMETER_MIN_WIDTH + 70, undefined]);
     });
   });
 
