@@ -14,6 +14,7 @@
     "@kie-tools-core/envelope-bus": "workspace:*",
     "@kie-tools-core/monaco-editor": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools-core/react-hooks": "workspace:*",
     "@kie-tools-examples/base64png-editor": "workspace:*",
     "@kie-tools-examples/ping-pong-view": "workspace:*",
     "@kie-tools-examples/ping-pong-view-angular": "workspace:*",
