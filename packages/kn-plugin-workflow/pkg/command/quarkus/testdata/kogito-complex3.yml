@@ -1,0 +1,66 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: example-job
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+        - name: example-job-container
+          image: busybox
+          command: ["echo", "Hello, Kubernetes!"]
+      restartPolicy: Never
+  backoffLimit: 4
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: example-cronjob
+  namespace: default
+spec:
+  schedule: "*/5 * * * *" # Запуск каждые 5 минут
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: example-cronjob-container
+              image: busybox
+              command: ["echo", "Hello from CronJob!"]
+          restartPolicy: Never
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+---
+apiVersion: sonataflow.org/v1alpha08
+kind: SonataFlow
+metadata:
+  annotations:
+    sonataflow.org/description: Description
+    sonataflow.org/expressionLang: jq
+    sonataflow.org/profile: dev
+    sonataflow.org/version: "1.0"
+  creationTimestamp: null
+  labels:
+    app: hello
+    sonataflow.org/workflow-app: hello
+  name: hello
+  namespace: default
+spec:
+  flow:
+    start:
+      stateName: HelloWorld
+    states:
+      - data:
+          message: Hello World
+        end:
+          terminate: true
+        name: HelloWorld
+        type: inject
+  podTemplate:
+    container:
+      resources: {}
+  resources: {}
+status:
+  address: {}
+  lastTimeRecoverAttempt: null
