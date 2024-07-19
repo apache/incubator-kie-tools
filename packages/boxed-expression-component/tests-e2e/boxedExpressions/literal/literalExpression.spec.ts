@@ -36,7 +36,7 @@ test.describe("Boxed Literal", () => {
     await bee.selectExpressionMenu.selectLiteral();
     await bee.expression.asLiteral().fill("test content");
     await expect(bee.expression.asLiteral().content).toContainText("test content");
-    await bee.expression.asLiteral().fill("");
+    await bee.expression.asLiteral().fill("another thing");
     await expect(bee.expression.asLiteral().content).not.toContainText("test content");
   });
 });

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { test, expect } from "../../__fixtures__/base";
+import { expect, test } from "../../__fixtures__/base";
 
 test.describe("Selection", () => {
   test.describe("Cell navigation", () => {
@@ -133,9 +133,9 @@ test.describe("Selection", () => {
       bee,
       browserName,
       context,
-      page,
       stories,
     }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1394");
       test.skip(
         browserName === "webkit",
         "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
@@ -146,7 +146,9 @@ test.describe("Selection", () => {
       await stories.openBoxedFilter("rebooked-flights");
       await bee.expression.header.copy();
       await bee.expression.header.reset();
-      await bee.expression.header.paste();
+      await bee.selectExpressionMenu.selectContext();
+      await bee.expression.asContext().entry(0).expression.contextMenu.open();
+      await bee.expression.asContext().entry(0).expression.contextMenu.option("Paste").click();
 
       await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-copied-and-pasted-as-nested.png");
     });

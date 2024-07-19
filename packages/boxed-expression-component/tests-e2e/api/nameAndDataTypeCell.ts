@@ -37,7 +37,7 @@ export class NameAndDataTypeCell {
   async setDataType(params: { dataType: string; close: boolean }) {
     await this.locator.locator(".pf-c-select").click();
     await this.locator.locator(".pf-m-search").nth(0).fill(params.dataType);
-    await this.locator.getByRole("listbox").nth(0).getByRole("listitem").nth(0).click();
+    await this.locator.getByRole("group").nth(0).getByRole("option").nth(0).click();
     if (params.close) {
       await this.locator.page().keyboard.press("Enter");
     }
