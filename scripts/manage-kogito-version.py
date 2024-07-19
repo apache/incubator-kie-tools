@@ -51,8 +51,8 @@ if __name__ == "__main__":
 
     if args.bump_to:
         # validate if the provided version is valid.
-        # e.g. 1.10.0, 1.0.0-rc1, 999-snapshot or 999-20240101-snapshot
-        pattern = r'(\d+.\d+.)?(\d+$|\d+-rc\d+$|\d+(-\d{8})?-snapshot$)'
+        # e.g. 1.10.0, 10.0.x, 1.0.0-rc1, 999-snapshot or 999-20240101-snapshot
+        pattern = r'(\d+.\d+.)?(x$|\d+$|\d+-rc\d+$|\d+(-\d{8})?-snapshot$)'
         regex = re.compile(pattern, re.IGNORECASE)
         valid = regex.match(args.bump_to)
         examples_ref = ""

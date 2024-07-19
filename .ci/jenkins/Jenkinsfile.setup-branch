@@ -53,7 +53,7 @@ pipeline {
             steps {
                 script {
                     dir(getRepoName()) {
-                        versionCmd = "python scripts/manage-kogito-version.py --bump-to ${getKogitoVersion()} --confirm"
+                        versionCmd = "python scripts/manage-kogito-version.py --bump-to ${getBuildBranch()} --confirm"
                         versionCmd += " --examples-ref nightly-${getBuildBranch()}"
                         if (getKogitoArtifactsVersion()) {
                             versionCmd += " --artifacts-version ${getKogitoArtifactsVersion()}"
