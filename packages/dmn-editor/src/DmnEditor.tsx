@@ -386,7 +386,9 @@ export const DmnEditorInternal = ({
         </Tab>
 
         <Tab eventKey={DmnEditorTab.DATA_TYPES} title={tabTitle.dataTypes}>
-          {navigationTab === DmnEditorTab.DATA_TYPES && <DataTypes />}
+          <div data-testid={"kie-dmn-editor--data-types-container"}>
+            {navigationTab === DmnEditorTab.DATA_TYPES && <DataTypes />}
+          </div>
         </Tab>
 
         <Tab eventKey={DmnEditorTab.INCLUDED_MODELS} title={tabTitle.includedModels}>

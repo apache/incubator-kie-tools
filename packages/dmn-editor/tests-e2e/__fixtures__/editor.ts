@@ -19,6 +19,12 @@
 
 import { Page } from "@playwright/test";
 
+export enum TabName {
+  EDITOR = "Editor",
+  DATA_TYPES = "Data types",
+  INCLUDED_MODELS = "Included models",
+}
+
 export class Editor {
   constructor(
     public page: Page,
@@ -27,5 +33,9 @@ export class Editor {
 
   public async openEmpty() {
     await this.page.goto(`${this.baseURL}/iframe.html?args=&id=misc-empty--empty&viewMode=story`);
+  }
+
+  public async changeTab(args: { tab: TabName }) {
+    await this.page.getByRole("tab", { name: args.tab }).click();
   }
 }
