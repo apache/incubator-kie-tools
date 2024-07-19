@@ -19,7 +19,6 @@
 
 import { test, expect } from "../__fixtures__/base";
 import { EdgeType } from "../__fixtures__/edges";
-import { DataType } from "../__fixtures__/jsonModel";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {

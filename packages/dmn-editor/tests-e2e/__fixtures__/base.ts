@@ -34,14 +34,18 @@ import { GroupPropertiesPanel } from "./propertiesPanel/groupPropertiesPanel";
 import { DiagramPropertiesPanel } from "./propertiesPanel/diagramPropertiesPanel";
 import { MultipleNodesPropertiesPanel } from "./propertiesPanel/multipleNodesPropertiesPanel";
 import { Overlays } from "./overlays";
+import { DataTypes } from "./dataTypes";
+import { PropertiesPanelBase } from "./propertiesPanel/propertiesPanelBase";
 
 type DmnEditorFixtures = {
+  dataTypes: DataTypes;
   diagram: Diagram;
   edges: Edges;
   editor: Editor;
   jsonModel: JsonModel;
   nodes: Nodes;
   palette: Palette;
+  propertiesPanel: PropertiesPanelBase;
   overlays: Overlays;
   bkmPropertiesPanel: BkmPropertiesPanel;
   decisionPropertiesPanel: DecisionPropertiesPanel;
@@ -55,23 +59,29 @@ type DmnEditorFixtures = {
 };
 
 export const test = base.extend<DmnEditorFixtures>({
+  dataTypes: async ({ page }, use) => {
+    await use(new DataTypes(page));
+  },
+  diagram: async ({ page }, use) => {
+    await use(new Diagram(page));
+  },
+  edges: async ({ page, nodes, diagram }, use) => {
+    await use(new Edges(page, nodes, diagram));
+  },
   editor: async ({ page, baseURL }, use) => {
     await use(new Editor(page, baseURL));
   },
   jsonModel: async ({ page, baseURL }, use) => {
     await use(new JsonModel(page, baseURL));
   },
-  diagram: async ({ page }, use) => {
-    await use(new Diagram(page));
-  },
   nodes: async ({ page, diagram, browserName }, use) => {
     await use(new Nodes(page, diagram, browserName));
   },
-  edges: async ({ page, nodes, diagram }, use) => {
-    await use(new Edges(page, nodes, diagram));
-  },
   palette: async ({ page, diagram, nodes }, use) => {
     await use(new Palette(page, diagram, nodes));
+  },
+  propertiesPanel: async ({ page, diagram }, use) => {
+    await use(new PropertiesPanelBase(diagram, page));
   },
   overlays: async ({ page }, use) => {
     await use(new Overlays(page));

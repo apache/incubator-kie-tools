@@ -19,7 +19,7 @@
 
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
-import { DataType } from "../__fixtures__/jsonModel";
+import { DataType } from "../__fixtures__/dataTypes";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {

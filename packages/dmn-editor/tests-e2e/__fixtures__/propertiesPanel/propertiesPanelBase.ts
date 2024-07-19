@@ -20,7 +20,7 @@
 import { Page } from "@playwright/test";
 import { Diagram } from "../diagram";
 
-export abstract class PropertiesPanelBase {
+export class PropertiesPanelBase {
   constructor(
     public diagram: Diagram,
     public page: Page
