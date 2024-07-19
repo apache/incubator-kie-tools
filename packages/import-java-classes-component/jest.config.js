@@ -17,7 +17,7 @@
  * under the License.
  */
 
-const { config, jestSetupPath } = require("@kie-tools/jest-base/jest.config");
+const { config, jestSetupPath, typescriptTransform } = require("@kie-tools/jest-base/jest.config");
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
@@ -28,4 +28,7 @@ module.exports = {
     "\\.(css|less|sass|scss)$": "identity-obj-proxy",
   },
   setupFilesAfterEnv: [jestSetupPath],
+  transform: {
+    ...typescriptTransform,
+  },
 };
