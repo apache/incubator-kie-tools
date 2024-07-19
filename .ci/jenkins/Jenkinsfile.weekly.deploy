@@ -212,7 +212,7 @@ void createBuildAndTestStageClosure(String image) {
             buildParams.add(string(name: 'DEPLOY_IMAGE_NAMESPACE', value: getDeployImageNamespace()))
             buildParams.add(string(name: 'DEPLOY_IMAGE_NAME_SUFFIX', value: getDeployImageNameSuffix()))
             buildParams.add(string(name: 'DEPLOY_IMAGE_TAG', value: getDeployImageTag()))
-            buildParams.add(booleanParam(name: 'DEPLOY_WITH_LATEST_TAG', value: isDeployLatestTag()))
+            buildParams.add(booleanParam(name: 'DEPLOY_WITH_LATEST_TAG', value: false))
 
             def job = build(job: 'kogito-images.build-image', wait: true, parameters: buildParams, propagate: false)
             if (job.result != 'SUCCESS') {
@@ -281,7 +281,7 @@ String getDeployImageNameSuffix() {
     return params.IMAGE_NAME_SUFFIX
 }
 String getDeployImageTag() {
-    return getProjectVersion(false)
+    return getBuildBranch() + "-" + getProjectVersionDate()
 }
 
 boolean isDeployLatestTag() {
