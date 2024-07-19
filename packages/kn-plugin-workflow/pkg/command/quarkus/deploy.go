@@ -74,10 +74,6 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("initializing deploy config: %w", err)
 	}
 
-	if err = common.CheckKubectl(); err != nil {
-		return err
-	}
-
 	if _, err = deployKnativeServiceAndEventingBindings(cfg); err != nil {
 		return err
 	}
@@ -89,23 +85,16 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 
 func deployKnativeServiceAndEventingBindings(cfg DeployCmdConfig) (bool, error) {
 	isKnativeEventingBindingsCreated := false
-	createService := common.ExecCommand("kubectl", "apply", "-f", fmt.Sprintf("%s/knative.yml", cfg.Path))
-	if err := common.RunCommand(
-		createService,
-		"deploy",
-	); err != nil {
+
+	err := common.ExecuteKubectlApply(fmt.Sprintf("%s/knative.yml", cfg.Path), "")
+	if err != nil {
 		fmt.Println("❌ ERROR: Deploy failed, Knative service was not created.")
 		return isKnativeEventingBindingsCreated, err
 	}
 	fmt.Println("🎉 Knative service successfully created")
 
-	// Check if kogito.yml file exists
 	if exists, err := checkIfKogitoFileExists(cfg); exists && err == nil {
-		deploy := common.ExecCommand("kubectl", "apply", "-f", fmt.Sprintf("%s/kogito.yml", cfg.Path))
-		if err := common.RunCommand(
-			deploy,
-			"deploy",
-		); err != nil {
+		if err := common.ExecuteKubectlApply(fmt.Sprintf("%s/kogito.yml", cfg.Path), ""); err != nil {
 			fmt.Println("❌ ERROR:Deploy failed, Knative Eventing binding was not created.")
 			return isKnativeEventingBindingsCreated, err
 		}
