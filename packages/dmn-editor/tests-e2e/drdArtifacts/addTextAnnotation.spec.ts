@@ -23,7 +23,7 @@ import { EdgeType } from "../__fixtures__/edges";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
-  await editor.open();
+  await editor.openEmpty();
 });
 
 test.describe("Add node - Text Annotation", () => {

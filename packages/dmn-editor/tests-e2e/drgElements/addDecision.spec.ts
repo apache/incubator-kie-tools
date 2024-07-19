@@ -23,7 +23,7 @@ import { DataType } from "../__fixtures__/jsonModel";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
-  await editor.open();
+  await editor.openEmpty();
 });
 
 test.describe("Add node - Decision", () => {

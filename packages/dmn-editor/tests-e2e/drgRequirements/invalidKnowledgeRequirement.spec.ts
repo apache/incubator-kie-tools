@@ -22,7 +22,7 @@ import { DefaultNodeName, NodePosition, NodeType } from "../__fixtures__/nodes";
 import { EdgeType } from "../__fixtures__/edges";
 
 test.beforeEach(async ({ editor }) => {
-  await editor.open();
+  await editor.openEmpty();
 });
 
 test.describe("Invalid edge - Knowledge Requirement", () => {

@@ -25,7 +25,7 @@ export class Editor {
     public baseURL?: string
   ) {}
 
-  public async open() {
+  public async openEmpty() {
     await this.page.goto(`${this.baseURL}/iframe.html?args=&id=misc-empty--empty&viewMode=story`);
   }
 }

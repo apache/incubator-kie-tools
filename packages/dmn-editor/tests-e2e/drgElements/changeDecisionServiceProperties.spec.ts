@@ -23,7 +23,7 @@ import { DataType } from "../__fixtures__/jsonModel";
 import { DefaultNodeName, NodePosition, NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
-  await editor.open();
+  await editor.openEmpty();
 });
 
 test.describe("Change Properties - Decision Service", () => {

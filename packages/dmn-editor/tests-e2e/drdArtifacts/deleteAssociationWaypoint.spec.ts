@@ -23,7 +23,7 @@ import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.beforeEach(async ({ editor }) => {
-  await editor.open();
+  await editor.openEmpty();
 });
 
 test.describe("Delete edge waypoint - Association", () => {

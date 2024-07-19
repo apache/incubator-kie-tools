@@ -20,7 +20,7 @@
 import { test, expect } from "./__fixtures__/base";
 
 test.beforeEach(async ({ editor }) => {
-  await editor.open();
+  await editor.openEmpty();
 });
 
 test.describe("Change Properties - Diagram", () => {

@@ -23,7 +23,7 @@ import { EdgeType } from "../__fixtures__/edges";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.beforeEach(async ({ editor }) => {
-  await editor.open();
+  await editor.openEmpty();
 });
 
 test.describe("Add edge - Information Requirement", () => {
