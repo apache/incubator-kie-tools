@@ -27,7 +27,7 @@ export class TestScenarioTable {
   ) {}
 
   public get() {
-    return this.page.getByLabel("Test Scenario");
+    return this.page.getByLabel("Test Scenario").getByTestId("standalone-bee-table").locator("div").first();
   }
 
   public async fill(args: { content: string; rowLocatorInfo: string; columnNumber: number }) {

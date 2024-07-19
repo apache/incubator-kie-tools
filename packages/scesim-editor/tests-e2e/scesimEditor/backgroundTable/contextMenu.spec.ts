@@ -21,6 +21,7 @@ import { test, expect } from "../../__fixtures__/base";
 import { HeadingType, MenuItem } from "../../__fixtures__/contextMenu";
 import { AssetType } from "../../__fixtures__/editor";
 import { AddColumnPosition } from "../../__fixtures__/table";
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Background table context menu", () => {
   test.describe("Context menu checks", () => {
@@ -115,6 +116,11 @@ test.describe("Background table context menu", () => {
 
     test("should not render context menu on the given header", async ({ table, backgroundTable, contextMenu }) => {
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1342");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1342",
+      });
+
       await table.getColumnHeader({ name: "GIVEN" }).click({ button: "right" });
       await expect(contextMenu.getHeading({ heading: HeadingType.SELECTION })).not.toBeAttached();
       await expect(contextMenu.getHeading({ heading: HeadingType.SCENARIO })).not.toBeAttached();
@@ -128,6 +134,11 @@ test.describe("Background table context menu", () => {
       table,
     }) => {
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1353");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1353",
+      });
+
       await contextMenu.openOnColumnHeader({ name: "INSTANCE-1 (<Undefined>)" });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_INSTANCE });
       await expect(table.getColumnHeader({ name: "INSTANCE-1 (<Undefined>)" })).not.toBeAttached();
@@ -143,6 +154,11 @@ test.describe("Background table context menu", () => {
       table,
     }) => {
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1353");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1353",
+      });
+
       await contextMenu.openOnColumnHeader({ name: "Property (<Undefined>)", columnNumber: 0 });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_FIELD });
       await expect(table.getColumnHeader({ name: "INSTANCE-1 (<Undefined>)" })).not.toBeAttached();

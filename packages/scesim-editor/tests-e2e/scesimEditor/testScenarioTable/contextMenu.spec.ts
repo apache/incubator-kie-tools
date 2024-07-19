@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../../__fixtures__/base";
 import { HeadingType, MenuItem } from "../../__fixtures__/contextMenu";
 import { AssetType } from "../../__fixtures__/editor";
@@ -128,6 +129,11 @@ test.describe("Test scenario table context menu", () => {
 
     test("should not render context menu on the hash header", async ({ table, testScenarioTable, contextMenu }) => {
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1342");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1342",
+      });
+
       await table.getColumnHeader({ name: "#" }).click({ button: "right" });
       await expect(contextMenu.getHeading({ heading: HeadingType.SELECTION })).not.toBeAttached();
       await expect(contextMenu.getHeading({ heading: HeadingType.SCENARIO })).not.toBeAttached();
@@ -142,6 +148,11 @@ test.describe("Test scenario table context menu", () => {
       contextMenu,
     }) => {
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1342");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1342",
+      });
+
       await table.getColumnHeader({ name: "Scenario Description" }).click({ button: "right" });
       await expect(contextMenu.getHeading({ heading: HeadingType.SELECTION })).not.toBeAttached();
       await expect(contextMenu.getHeading({ heading: HeadingType.SCENARIO })).not.toBeAttached();
@@ -154,6 +165,11 @@ test.describe("Test scenario table context menu", () => {
 
     test("should not render context menu on the given header", async ({ table, testScenarioTable, contextMenu }) => {
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1342");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1342",
+      });
+
       await table.getColumnHeader({ name: "GIVEN" }).click({ button: "right" });
       await expect(contextMenu.getHeading({ heading: HeadingType.SELECTION })).not.toBeAttached();
       await expect(contextMenu.getHeading({ heading: HeadingType.SCENARIO })).not.toBeAttached();
@@ -164,6 +180,11 @@ test.describe("Test scenario table context menu", () => {
 
     test("should not render context menu on the expect header", async ({ table, testScenarioTable, contextMenu }) => {
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1342");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1342",
+      });
+
       await table.getColumnHeader({ name: "EXPECT" }).click({ button: "right" });
       await expect(contextMenu.getHeading({ heading: HeadingType.SELECTION })).not.toBeAttached();
       await expect(contextMenu.getHeading({ heading: HeadingType.SCENARIO })).not.toBeAttached();
@@ -177,6 +198,11 @@ test.describe("Test scenario table context menu", () => {
       table,
     }) => {
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1353");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1353",
+      });
+
       await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
       await contextMenu.openOnColumnHeader({ name: "INSTANCE-1 (<Undefined>)" });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_INSTANCE });
@@ -188,6 +214,11 @@ test.describe("Test scenario table context menu", () => {
       table,
     }) => {
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1353");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1353",
+      });
+
       await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
       await contextMenu.openOnColumnHeader({ name: "Property (<Undefined>)", columnNumber: 0 });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_FIELD });
@@ -200,6 +231,11 @@ test.describe("Test scenario table context menu", () => {
       testScenarioTable,
     }) => {
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1353");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1353",
+      });
+
       await testScenarioTable.fill({ content: "test", rowLocatorInfo: "1 test test", columnNumber: 2 });
       await contextMenu.openOnColumnHeader({ name: "INSTANCE-2 (<Undefined>)" });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_INSTANCE });
@@ -212,6 +248,11 @@ test.describe("Test scenario table context menu", () => {
       testScenarioTable,
     }) => {
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1353");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1353",
+      });
+
       await testScenarioTable.fill({ content: "test", rowLocatorInfo: "1 test test", columnNumber: 2 });
       await contextMenu.openOnColumnHeader({ name: "Property (<Undefined>)", columnNumber: 1 });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_FIELD });
@@ -223,6 +264,11 @@ test.describe("Test scenario table context menu", () => {
       table,
     }) => {
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1353");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1353",
+      });
+
       await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
       await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_SCENARIO });

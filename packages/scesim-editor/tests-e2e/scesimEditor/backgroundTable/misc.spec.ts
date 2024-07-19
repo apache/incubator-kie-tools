@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../../__fixtures__/base";
 import { AssetType } from "../../__fixtures__/editor";
 
@@ -28,6 +29,11 @@ test.describe("Background table misc", () => {
 
   test("should render add column plus symbols on Instance headers", async ({ table, backgroundTable }) => {
     test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1354");
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/1354",
+    });
+
     await expect(table.getColumnHeader({ name: "INSTANCE-2 (<Undefined>)" })).not.toBeAttached();
     await table.getColumnHeader({ name: "INSTANCE-1 (<Undefined>)" }).hover();
     await backgroundTable.clickPlusIcon();

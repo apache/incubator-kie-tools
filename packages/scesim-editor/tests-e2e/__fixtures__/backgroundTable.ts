@@ -27,7 +27,7 @@ export class BackgroundTable {
   ) {}
 
   public get() {
-    return this.page.getByLabel("Background");
+    return this.page.getByLabel("Background").getByTestId("standalone-bee-table").locator("div").first();
   }
 
   public async fill(args: { content: string; columnNumber: number }) {

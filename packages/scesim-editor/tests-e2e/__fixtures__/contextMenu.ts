@@ -48,12 +48,10 @@ export class ContextMenu {
   }
 
   public async openOnColumnHeader(args: { name: string; columnNumber?: number }) {
-    args.columnNumber === undefined
-      ? await this.page.getByRole("columnheader", { name: args.name }).click({ button: "right" })
-      : await this.page
-          .getByRole("columnheader", { name: args.name })
-          .nth(args.columnNumber)
-          .click({ button: "right" });
+    await this.page
+      .getByRole("columnheader", { name: args.name })
+      .nth(args.columnNumber ?? 0)
+      .click({ button: "right" });
   }
 
   public async clickMenuItem(args: { menuItem: MenuItem }) {

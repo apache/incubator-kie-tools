@@ -55,12 +55,10 @@ export class Table {
   }
 
   public async addInstanceColumn(args: { targetCellName: string; position: AddColumnPosition; columnNumber?: number }) {
-    args.columnNumber === undefined
-      ? await this.page.getByRole("columnheader", { name: args.targetCellName }).click({ button: "right" })
-      : await this.page
-          .getByRole("columnheader", { name: args.targetCellName })
-          .nth(args.columnNumber)
-          .click({ button: "right" });
+    await this.page
+      .getByRole("columnheader", { name: args.targetCellName })
+      .nth(args.columnNumber ?? 0)
+      .click({ button: "right" });
 
     args.position === AddColumnPosition.LEFT
       ? await this.page.getByRole("menuitem", { name: "Insert Instance Left" }).click()
@@ -76,9 +74,7 @@ export class Table {
   }
 
   public async selectColumnHeader(args: { name: string; columnNumber?: number }) {
-    args.columnNumber === undefined
-      ? await this.page.getByRole("columnheader", { name: args.name }).click()
-      : await this.page.getByRole("columnheader", { name: args.name }).nth(args.columnNumber).click();
+    await this.page.getByRole("columnheader", { name: args.name }).nth(args.columnNumber ?? 0);
   }
 
   public getCell(args: { rowNumber: string; columnNumber: number }) {
@@ -90,9 +86,7 @@ export class Table {
   }
 
   public getColumnHeader(args: { name: string; columnNumber?: number }) {
-    return args.columnNumber === undefined
-      ? this.page.getByRole("columnheader", { name: args.name })
-      : this.page.getByRole("columnheader", { name: args.name }).nth(args.columnNumber);
+    return this.page.getByRole("columnheader", { name: args.name }).nth(args.columnNumber ?? 0);
   }
 
   public async deleteCellContent(args: { rowNumber: string; columnNumber: number }) {
