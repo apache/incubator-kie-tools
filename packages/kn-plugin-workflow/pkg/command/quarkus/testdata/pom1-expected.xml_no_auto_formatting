@@ -14,7 +14,8 @@
         <quarkus.platform.version>0.0.1</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.2.5</surefire-plugin.version>
-        <sonataflow.quarkus.devui.version>0.0.0</sonataflow.quarkus.devui.version>
+        <kogito.version>0.0.0</kogito.version>
+        <kogito.tooling.version>0.0.0</kogito.tooling.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -35,7 +36,7 @@
             <dependency>
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>kogito-bom</artifactId>
-                <version/>
+                <version>${kogito.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -86,20 +87,28 @@
         </dependency>
         <dependency>
             <groupId>org.kie</groupId>
-            <artifactId>kie-addons-quarkus-source-files</artifactId>
+            <artifactId>kie-addons-quarkus-process-management</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.kie.sonataflow</groupId>
-            <artifactId>sonataflow-quarkus-devui</artifactId>
-            <version>${sonataflow.quarkus.devui.version}</version>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-addons-quarkus-source-files</artifactId>
         </dependency>
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kogito-addons-quarkus-data-index-inmemory</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kogito-addons-quarkus-jobs-service-embedded</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.kie.sonataflow</groupId>
             <artifactId>sonataflow-quarkus</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kie.sonataflow</groupId>
+            <artifactId>sonataflow-quarkus-devui</artifactId>
+            <version>${kogito.tooling.version}</version>
         </dependency>
     </dependencies>
     <build>
@@ -175,11 +184,6 @@
         </profile>
     </profiles>
     <repositories>
-        <repository>
-            <id>maven-central-repository-group</id>
-            <name>Maven Central Repository</name>
-            <url>https://repo.maven.apache.org/maven2/</url>
-        </repository>
         <repository>
             <id>apache-public-repository-group</id>
             <name>Apache Public Repository Group</name>

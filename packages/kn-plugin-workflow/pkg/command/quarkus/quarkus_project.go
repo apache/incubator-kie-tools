@@ -100,7 +100,8 @@ func manipulatePomToKogito(filename string, cfg CreateQuarkusProjectConfig) erro
 	}
 	versionElement.SetText(cfg.DependenciesVersion.QuarkusVersion)
 
-	properties.CreateElement("sonataflow.quarkus.devui.version").SetText(metadata.PluginVersion)
+	properties.CreateElement("kogito.version").SetText(metadata.KogitoBomDependency.Version)
+	properties.CreateElement("kogito.tooling.version").SetText(metadata.PluginVersion)
 
 	//Add kogito bom dependency
 	depManagement := doc.FindElement("//dependencyManagement")
@@ -116,7 +117,7 @@ func manipulatePomToKogito(filename string, cfg CreateQuarkusProjectConfig) erro
 	dependencyElement := dependenciesManagendChild.CreateElement("dependency")
 	dependencyElement.CreateElement("groupId").SetText(metadata.KogitoBomDependency.GroupId)
 	dependencyElement.CreateElement("artifactId").SetText(metadata.KogitoBomDependency.ArtifactId)
-	dependencyElement.CreateElement("version").SetText(metadata.KogitoBomDependency.Version)
+	dependencyElement.CreateElement("version").SetText("${kogito.version}")
 	dependencyElement.CreateElement("type").SetText(metadata.KogitoBomDependency.Type)
 	dependencyElement.CreateElement("scope").SetText(metadata.KogitoBomDependency.Scope)
 
@@ -137,7 +138,6 @@ func manipulatePomToKogito(filename string, cfg CreateQuarkusProjectConfig) erro
 
 	//add apache repository after profiles declaration
 	var repositories = []Repository{
-		{Id: "maven-central-repository-group", Name: "Maven Central Repository", Url: "https://repo.maven.apache.org/maven2/"},
 		{Id: "apache-public-repository-group", Name: "Apache Public Repository Group", Url: "https://repository.apache.org/content/groups/public/"},
 		{Id: "apache-snapshot-repository-group", Name: "Apache Snapshot Repository Group", Url: "https://repository.apache.org/content/groups/snapshots/"},
 	}
