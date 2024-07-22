@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## BPMN and DMN Standalone Editors
+## BPMN and Legacy DMN Standalone Editors
 
 ### Description
 

@@ -34,6 +34,9 @@ import {
 import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/channel";
 import { Minimatch } from "minimatch";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
+import { dirname, normalize } from "path";
+
+export type StandaloneDmnEditorResource = { contentType: ContentType; content: Promise<string>; readOnly: boolean };
 
 export class StandaloneDmnEditorChannelApiImpl implements KogitoEditorChannelApi {
   constructor(
@@ -41,9 +44,9 @@ export class StandaloneDmnEditorChannelApiImpl implements KogitoEditorChannelApi
     private readonly file: EmbeddedEditorFile,
     private readonly locale: string,
     private readonly overrides: Partial<KogitoEditorChannelApi>,
-    private readonly resources?: Map<
+    private readonly resources: Map<
       string /** normalized posix path relative to the "workspace" root */,
-      { contentType: ContentType; content: Promise<string> }
+      StandaloneDmnEditorResource
     >
   ) {}
 
@@ -69,6 +72,7 @@ export class StandaloneDmnEditorChannelApiImpl implements KogitoEditorChannelApi
 
   public async kogitoEditor_contentRequest() {
     const content = await this.file.getFileContents();
+    console.log("kogitoEditor_contentRequest", { content, file: this.file });
     return {
       content: content ?? "",
       normalizedPosixPathRelativeToTheWorkspaceRoot: this.file.normalizedPosixPathRelativeToTheWorkspaceRoot,
@@ -78,6 +82,7 @@ export class StandaloneDmnEditorChannelApiImpl implements KogitoEditorChannelApi
   public async kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest) {
     const resource = this.resources?.get(request.normalizedPosixPathRelativeToTheWorkspaceRoot);
 
+    console.log("kogitoWorkspace_resourceContentRequest", { resource, resources: this.resources });
     if (!resource) {
       console.warn(
         "The editor requested an unspecified resource: " + request.normalizedPosixPathRelativeToTheWorkspaceRoot
@@ -104,17 +109,24 @@ export class StandaloneDmnEditorChannelApiImpl implements KogitoEditorChannelApi
   }
 
   public async kogitoWorkspace_resourceListRequest(request: ResourceListRequest) {
-    // console.log({ request, resources: this.resources });
+    console.log("kogitoWorkspace_resourceListRequest", { request, resources: this.resources });
     if (!this.resources) {
       return new ResourcesList(request.pattern, []);
     }
 
     const matcher = new Minimatch(request.pattern);
-    const matches = Array.from(this.resources.keys()).filter((path) => matcher.match(path));
+
+    // Match the generic glob pattern for DMN files, then filter out files that are not on the same parent path as the current file.
+    const matches = Array.from(this.resources.keys())
+      .filter((path) => matcher.match(path))
+      .filter((path) => dirname(normalize(path)) == dirname(this.file.normalizedPosixPathRelativeToTheWorkspaceRoot));
+
+    console.log({ matcher, matches });
     return new ResourcesList(request.pattern, matches);
   }
 
   public kogitoWorkspace_openFile(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
+    console.log("kogitoWorkspace_openFile", { normalizedPosixPathRelativeToTheWorkspaceRoot });
     this.overrides.kogitoWorkspace_openFile?.(normalizedPosixPathRelativeToTheWorkspaceRoot);
   }
 

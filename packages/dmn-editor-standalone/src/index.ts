@@ -19,19 +19,22 @@
 
 import * as dmnEnvelopeJs from "../dist/envelope.js";
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
-import { ContentType } from "@kie-tools-core/workspace/dist/api";
-import { StandaloneDmnEditorChannelApiImpl } from "./StandaloneDmnEditorChannelApiImpl";
+import { StandaloneDmnEditorResource, StandaloneDmnEditorChannelApiImpl } from "./StandaloneDmnEditorChannelApiImpl";
 import { StandaloneDmnEditorApi } from "./StandaloneDmnEditorApi";
 import { createEnvelopeServer } from "./StandaloneDmnEditorEnvelopeServer";
 import { createEditor } from "./StandaloneDmnEditorApiImpl";
+import { basename } from "path";
+
+export const DEFAULT_DMN_MODEL_POSIX_FILE_PATH_RELATIVE_TO_WORKSPACE_ROOT = "model.dmn";
 
 export function open(args: {
   container: Element;
   initialContent: Promise<string>;
+  initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot?: string;
   readOnly?: boolean;
   origin?: string;
   onError?: () => any;
-  resources?: Map<string, { contentType: ContentType; content: Promise<string> }>;
+  resources: Map<string, StandaloneDmnEditorResource>;
 }): StandaloneDmnEditorApi {
   const iframe = document.createElement("iframe");
   iframe.srcdoc = `
@@ -77,12 +80,16 @@ export function open(args: {
 
   let receivedSetContentError = false;
 
+  const initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot =
+    args.initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot ??
+    DEFAULT_DMN_MODEL_POSIX_FILE_PATH_RELATIVE_TO_WORKSPACE_ROOT;
+
   const channelApiImpl = new StandaloneDmnEditorChannelApiImpl(
     stateControl,
     {
-      normalizedPosixPathRelativeToTheWorkspaceRoot: "path1/model.dmn", // FIXME: https://github.com/apache/incubator-kie-issues/issues/811
-      fileName: "model.dmn", // FIXME: https://github.com/apache/incubator-kie-issues/issues/811
-      fileExtension: "dmn",
+      normalizedPosixPathRelativeToTheWorkspaceRoot: initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
+      fileName: basename(initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot),
+      fileExtension: initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot.split(".").at(-1) as string,
       getFileContents: () => Promise.resolve(args.initialContent),
       isReadOnly: args.readOnly ?? false,
     },
@@ -97,6 +104,9 @@ export function open(args: {
     },
     args.resources
   );
+
+  console.log({ resources: args.resources });
+  console.log({ channelApiImpl });
 
   const listener = (message: MessageEvent) => {
     envelopeServer.receive(message.data, channelApiImpl);

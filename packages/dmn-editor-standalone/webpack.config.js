@@ -66,4 +66,7 @@ module.exports = (env) =>
       compress: true,
       port: buildEnv.dmnStandaloneEditor.dev.port,
     },
+    performance: {
+      hints: false,
+    },
   });

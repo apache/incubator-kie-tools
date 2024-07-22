@@ -56,9 +56,17 @@
     <script>
       const editor = DmnEditor.open({
         container: document.getElementById("dmn-editor-container"),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "path1/subpath/newModel1.dmn",
         initialContent: Promise.resolve(""),
         readOnly: false,
         resources: new Map([
+          [
+            "path1/newModel2.dmn",
+            {
+              contentType: "text",
+              content: Promise.resolve(""),
+            },
+          ],
           [
             "path2/model.dmn",
             {
@@ -85,7 +93,7 @@
             },
           ],
           [
-            "path1/importedModel.dmn",
+            "path1/subpath/importedModel.dmn",
             {
               contentType: "text",
               content: Promise.resolve(`<?xml version="1.0" encoding="UTF-8" ?>

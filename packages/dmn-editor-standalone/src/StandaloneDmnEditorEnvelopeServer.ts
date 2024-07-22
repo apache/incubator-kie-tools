@@ -42,7 +42,7 @@ export const createEnvelopeServer = (iframe: HTMLIFrameElement, readOnly?: boole
           fileExtension: "dmn",
           initialLocale: "en-US",
           isReadOnly: readOnly ?? true,
-          channel: ChannelType.EMBEDDED,
+          channel: ChannelType.STANDALONE,
           workspaceRootAbsolutePosixPath: DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
         }
       );
