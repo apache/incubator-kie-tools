@@ -30,7 +30,7 @@ const (
 	// This tag must reflect an existing tag in the registry. In development, must follow the git branch naming.
 	// When released, this version should reflect the `major.minor` version in the registry.
 	// For example, docker.io/apache/incubator-kie-sonataflow-operator:10.0.x -> 10.0
-	tagVersion = "main"
+	tagVersion = "10.0.x"
 	// Kogito images tag version. Used for data-index and jobs-service images.
 	kogitoImagesTagVersion = "10.0.999-20240717"
 	// OpenJDK image tag version
