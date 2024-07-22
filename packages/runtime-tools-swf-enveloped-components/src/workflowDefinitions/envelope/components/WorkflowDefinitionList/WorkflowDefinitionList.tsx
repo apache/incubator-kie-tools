@@ -44,6 +44,31 @@ const WorkflowDefinitionList: React.FC<WorkflowDefinitionListProps & OUIAProps> 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [filterWorkflowNames, setFilterWorkflowNames] = useState<string[]>([]);
   const [error, setError] = useState<string>();
+  const [defaultPageSize] = useState<number>(10);
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+  const [selectableInstances, setSelectableInstances] = useState<number>(0);
+  const [limit, setLimit] = useState<number>(defaultPageSize);
+
+  const doQuery = async (
+    _offset: number,
+    _limit: number,
+    _resetWorkflows: boolean,
+    _resetPagination: boolean = false,
+    _loadMore: boolean = false
+  ): Promise<void> => {
+    setIsLoadingMore(_loadMore);
+    setSelectableInstances(0);
+    try {
+      const response: WorkflowDefinition[] = await driver.getWorkflowDefinitionsQuery();
+      setWorkflowDefinitionList(response);
+      setLimit(response.length);
+    } catch (err) {
+      setError(err.errorMessage);
+    } finally {
+      setIsLoading(false);
+      setIsLoadingMore(false);
+    }
+  };
 
   useEffect(() => {
     if (!isEnvelopeConnectedToChannel) {
@@ -84,6 +109,12 @@ const WorkflowDefinitionList: React.FC<WorkflowDefinitionListProps & OUIAProps> 
     await driver.setWorkflowDefinitionFilter(filterWorkflowNames);
   };
 
+  const doRefresh = async (): Promise<void> => {
+    setIsLoading(true);
+    setFilterWorkflowNames([...filterWorkflowNames]);
+    doQuery(0, defaultPageSize, true, true);
+  };
+
   const filterWorkflowDefinition = (): WorkflowDefinition[] => {
     if (filterWorkflowNames.length === 0) {
       return workflowDefinitionList;
@@ -109,6 +140,7 @@ const WorkflowDefinitionList: React.FC<WorkflowDefinitionListProps & OUIAProps> 
         filterWorkflowNames={filterWorkflowNames}
         setFilterWorkflowNames={setFilterWorkflowNames}
         applyFilter={applyFilter}
+        doRefresh={doRefresh}
       />
       <Divider />
       <DataTable

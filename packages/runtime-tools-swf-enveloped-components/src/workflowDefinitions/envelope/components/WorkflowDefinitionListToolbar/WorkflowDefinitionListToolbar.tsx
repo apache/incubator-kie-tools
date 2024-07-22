@@ -39,6 +39,7 @@ interface WorkflowDefinitionListToolbarProps {
   setFilterWorkflowNames: React.Dispatch<React.SetStateAction<string[]>>;
   applyFilter: () => void;
   onOpenTriggerCloudEvent?: () => void;
+  doRefresh: () => void;
 }
 
 enum Category {
@@ -52,6 +53,7 @@ const WorkflowDefinitionListToolbar: React.FC<WorkflowDefinitionListToolbarProps
   onOpenTriggerCloudEvent,
   ouiaSafe,
   ouiaId,
+  doRefresh,
 }) => {
   const [workflowNameInput, setWorkflowNameInput] = useState<string>("");
 
@@ -60,9 +62,9 @@ const WorkflowDefinitionListToolbar: React.FC<WorkflowDefinitionListToolbarProps
     setFilterWorkflowNames([]);
   };
 
-  const doRefresh = (): void => {
-    setFilterWorkflowNames([...filterWorkflowNames]);
-    applyFilter();
+  const refresh = (): void => {
+    // applyFilter();
+    doRefresh();
   };
 
   const onEnterClicked = (event: React.KeyboardEvent<EventTarget>): void => {
@@ -132,7 +134,7 @@ const WorkflowDefinitionListToolbar: React.FC<WorkflowDefinitionListToolbarProps
       <ToolbarGroup variant="icon-button-group">
         <ToolbarItem>
           <Tooltip content={"Refresh"}>
-            <Button variant="plain" onClick={doRefresh} id="refresh" data-testid="refresh">
+            <Button variant="plain" onClick={refresh} id="refresh" data-testid="refresh">
               <SyncIcon />
             </Button>
           </Tooltip>
