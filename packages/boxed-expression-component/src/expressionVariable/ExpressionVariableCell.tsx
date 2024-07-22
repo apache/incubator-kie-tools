@@ -20,7 +20,7 @@
 import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import * as React from "react";
 import { useCallback, useEffect, useMemo } from "react";
-import { BeeTableCellProps, BoxedExpression, DmnBuiltInDataType } from "../api";
+import { BeeTableCellProps, BoxedExpression, DmnBuiltInDataType, Normalized } from "../api";
 import { useCellWidthToFitDataRef } from "../resizing/BeeTableCellWidthToFitDataContext";
 import { getCanvasFont, getTextWidth } from "../resizing/WidthsToFitData";
 import { useBeeTableSelectableCellRef } from "../selection/BeeTableSelectionContext";
@@ -33,8 +33,8 @@ import {
 import "./ExpressionVariableCell.css";
 
 export interface ExpressionWithVariable {
-  expression: BoxedExpression | undefined;
-  variable: DMN15__tInformationItem;
+  expression: Normalized<BoxedExpression> | undefined;
+  variable: Normalized<DMN15__tInformationItem>;
 }
 
 export type OnExpressionWithVariableUpdated = (index: number, { expression, variable }: ExpressionWithVariable) => void;

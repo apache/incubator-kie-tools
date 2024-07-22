@@ -31,6 +31,7 @@ import {
   DmnBuiltInDataType,
   generateUuid,
   getNextAvailablePrefixedName,
+  Normalized,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
@@ -63,7 +64,7 @@ export function InvocationExpression({
   parentElementId,
   expression: invocationExpression,
 }: {
-  expression: BoxedInvocation;
+  expression: Normalized<BoxedInvocation>;
   isNested: boolean;
   parentElementId: string;
 }) {
@@ -228,32 +229,33 @@ export function InvocationExpression({
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
       for (const u of columnUpdates) {
         if (u.column.originalId === id) {
-          setExpression((prev: BoxedInvocation) => ({
+          setExpression((prev: Normalized<BoxedInvocation>) => ({
             ...prev,
             "@_id": prev["@_id"],
             name: u.name,
           }));
         } else if (u.column.originalId === invocationId) {
-          setExpression((prev: BoxedInvocation) => {
+          setExpression((prev: Normalized<BoxedInvocation>) => {
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-            const ret: BoxedInvocation = {
+            const ret: Normalized<BoxedInvocation> = {
               ...prev,
               expression: {
                 ...prev.expression,
+                "@_id": prev.expression?.["@_id"] ?? generateUuid(),
                 __$$element: "literalExpression",
                 text: {
                   __$$text: u.name,
                 },
               },
             };
-
             return ret;
           });
         } else {
-          setExpression((prev: BoxedInvocation) => {
+          setExpression((prev: Normalized<BoxedInvocation>) => {
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-            const ret: BoxedInvocation = {
+            const ret: Normalized<BoxedInvocation> = {
               ...prev,
+              "@_id": prev["@_id"] ?? generateUuid(),
               "@_typeRef": u.typeRef,
               "@_label": u.name,
             };
@@ -277,14 +279,14 @@ export function InvocationExpression({
 
   const updateParameter = useCallback(
     (index: number, { expression, variable }: ExpressionWithVariable) => {
-      setExpression((prev: BoxedInvocation) => {
+      setExpression((prev: Normalized<BoxedInvocation>) => {
         const newArgumentEntries = [...(prev.binding ?? [])];
         newArgumentEntries[index] = {
           parameter: variable,
           expression: expression,
         };
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedInvocation = {
+        const ret: Normalized<BoxedInvocation> = {
           ...prev,
           binding: newArgumentEntries,
         };
@@ -328,7 +330,7 @@ export function InvocationExpression({
   }, [i18n]);
 
   const getDefaultArgumentEntry = useCallback(
-    (name?: string): DMN15__tBinding => {
+    (name?: string): Normalized<DMN15__tBinding> => {
       return {
         parameter: {
           "@_id": generateUuid(),
@@ -348,14 +350,14 @@ export function InvocationExpression({
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number }) => {
-      const newEntries: DMN15__tBinding[] = [];
+      const newEntries: Normalized<DMN15__tBinding>[] = [];
       const names = (invocationExpression.binding ?? []).map((e) => e.parameter["@_name"]);
       for (let i = 0; i < args.rowsCount; i++) {
         const name = getNextAvailablePrefixedName(names, "p");
         names.push(name);
         newEntries.push(getDefaultArgumentEntry(name));
       }
-      setExpression((prev: BoxedInvocation) => {
+      setExpression((prev: Normalized<BoxedInvocation>) => {
         const newArgumentEntries = [...(prev.binding ?? [])];
 
         for (const newEntry of newEntries) {
@@ -363,7 +365,7 @@ export function InvocationExpression({
         }
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedInvocation = {
+        const ret: Normalized<BoxedInvocation> = {
           ...prev,
           binding: newArgumentEntries,
         };
@@ -376,13 +378,13 @@ export function InvocationExpression({
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
-      let oldExpression: BoxedExpression | undefined;
-      setExpression((prev: BoxedInvocation) => {
+      let oldExpression: Normalized<BoxedExpression> | undefined;
+      setExpression((prev: Normalized<BoxedInvocation>) => {
         const newArgumentEntries = [...(prev.binding ?? [])];
         oldExpression = newArgumentEntries[args.rowIndex].expression;
         newArgumentEntries.splice(args.rowIndex, 1);
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedInvocation = {
+        const ret: Normalized<BoxedInvocation> = {
           ...prev,
           binding: newArgumentEntries,
         };
@@ -401,14 +403,14 @@ export function InvocationExpression({
 
   const onRowReset = useCallback(
     (args: { rowIndex: number }) => {
-      let oldExpression: BoxedExpression | undefined;
-      setExpression((prev: BoxedInvocation) => {
+      let oldExpression: Normalized<BoxedExpression> | undefined;
+      setExpression((prev: Normalized<BoxedInvocation>) => {
         const newArgumentEntries = [...(prev.binding ?? [])];
         oldExpression = newArgumentEntries[args.rowIndex].expression;
         const defaultArgumentEntry = getDefaultArgumentEntry(newArgumentEntries[args.rowIndex].parameter["@_name"]);
         newArgumentEntries.splice(args.rowIndex, 1, defaultArgumentEntry);
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedInvocation = {
+        const ret: Normalized<BoxedInvocation> = {
           ...prev,
           binding: newArgumentEntries,
         };

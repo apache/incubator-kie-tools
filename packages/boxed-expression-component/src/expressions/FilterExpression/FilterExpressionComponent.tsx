@@ -25,6 +25,7 @@ import {
   BeeTableProps,
   BoxedFilter,
   DmnBuiltInDataType,
+  Normalized,
 } from "../../api";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
@@ -45,14 +46,14 @@ import { FilterExpressionCollectionCell } from "./FilterExpressionCollectionCell
 import { FilterExpressionMatchCell } from "./FilterExpressionMatchCell";
 import "./FilterExpression.css";
 
-export type ROWTYPE = DMN15__tChildExpression;
+export type ROWTYPE = Normalized<DMN15__tChildExpression>;
 
 export function FilterExpressionComponent({
   isNested,
   parentElementId,
   expression: filterExpression,
 }: {
-  expression: BoxedFilter;
+  expression: Normalized<BoxedFilter>;
   isNested: boolean;
   parentElementId: string;
 }) {
@@ -149,9 +150,9 @@ export function FilterExpressionComponent({
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev: BoxedFilter) => {
+      setExpression((prev: Normalized<BoxedFilter>) => {
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedFilter = {
+        const ret: Normalized<BoxedFilter> = {
           ...prev,
           "@_label": name,
           "@_typeRef": typeRef,

@@ -24,6 +24,7 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { renameDrgElement } from "./renameNode";
 import { Normalized } from "../normalization/normalize";
+import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 
 export function updateExpression({
   definitions,
@@ -64,4 +65,12 @@ export function updateExpression({
   } else {
     throw new Error("DMN MUTATION: Can't update expression for drgElement that is not a Decision or a BKM.");
   }
+
+  getNewDmnIdRandomizer()
+    .ack({
+      json: definitions.drgElement,
+      type: "DMN15__tDefinitions",
+      attr: "drgElement",
+    })
+    .randomize();
 }
