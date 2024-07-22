@@ -17,20 +17,12 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import { addons } from "@storybook/manager-api";
+import { KieToolsTheme } from "@kie-tools/storybook-base/dist/config/theme";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools-core/webpack-base/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      dmnStandaloneEditor: {
-        dev: {
-          port: 9006,
-        },
-        storybook: {
-          port: 9903,
-        },
-      },
-    };
-  },
+addons.setConfig({
+  theme: KieToolsTheme,
+  // Disable Storybook keyboard shortcuts.
+  // ReactFlow adds listeners to the document level
+  enableShortcuts: false,
 });

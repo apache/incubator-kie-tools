@@ -17,20 +17,16 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import { baseConfig } from "@kie-tools/storybook-base/dist/config/baseConfig";
+import common from "@kie-tools-core/webpack-base/webpack.common.config";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools-core/webpack-base/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      dmnStandaloneEditor: {
-        dev: {
-          port: 9006,
-        },
-        storybook: {
-          port: 9903,
-        },
-      },
-    };
-  },
-});
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { env } from "../env";
+const buildEnv: any = env; // build-env is not typed
+
+const config = {
+  ...baseConfig(buildEnv.webpack.dev, common(buildEnv.webpack)),
+};
+
+export default config;

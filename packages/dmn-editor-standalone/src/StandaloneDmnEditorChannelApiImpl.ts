@@ -36,7 +36,7 @@ import { Minimatch } from "minimatch";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { dirname, normalize } from "path";
 
-export type StandaloneDmnEditorResource = { contentType: ContentType; content: Promise<string>; readOnly: boolean };
+export type StandaloneDmnEditorResource = { contentType: ContentType; content: Promise<string> };
 
 export class StandaloneDmnEditorChannelApiImpl implements KogitoEditorChannelApi {
   constructor(
@@ -72,7 +72,6 @@ export class StandaloneDmnEditorChannelApiImpl implements KogitoEditorChannelApi
 
   public async kogitoEditor_contentRequest() {
     const content = await this.file.getFileContents();
-    console.log("kogitoEditor_contentRequest", { content, file: this.file });
     return {
       content: content ?? "",
       normalizedPosixPathRelativeToTheWorkspaceRoot: this.file.normalizedPosixPathRelativeToTheWorkspaceRoot,
@@ -82,7 +81,6 @@ export class StandaloneDmnEditorChannelApiImpl implements KogitoEditorChannelApi
   public async kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest) {
     const resource = this.resources?.get(request.normalizedPosixPathRelativeToTheWorkspaceRoot);
 
-    console.log("kogitoWorkspace_resourceContentRequest", { resource, resources: this.resources });
     if (!resource) {
       console.warn(
         "The editor requested an unspecified resource: " + request.normalizedPosixPathRelativeToTheWorkspaceRoot
@@ -109,7 +107,6 @@ export class StandaloneDmnEditorChannelApiImpl implements KogitoEditorChannelApi
   }
 
   public async kogitoWorkspace_resourceListRequest(request: ResourceListRequest) {
-    console.log("kogitoWorkspace_resourceListRequest", { request, resources: this.resources });
     if (!this.resources) {
       return new ResourcesList(request.pattern, []);
     }
@@ -121,12 +118,10 @@ export class StandaloneDmnEditorChannelApiImpl implements KogitoEditorChannelApi
       .filter((path) => matcher.match(path))
       .filter((path) => dirname(normalize(path)) == dirname(this.file.normalizedPosixPathRelativeToTheWorkspaceRoot));
 
-    console.log({ matcher, matches });
     return new ResourcesList(request.pattern, matches);
   }
 
   public kogitoWorkspace_openFile(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
-    console.log("kogitoWorkspace_openFile", { normalizedPosixPathRelativeToTheWorkspaceRoot });
     this.overrides.kogitoWorkspace_openFile?.(normalizedPosixPathRelativeToTheWorkspaceRoot);
   }
 

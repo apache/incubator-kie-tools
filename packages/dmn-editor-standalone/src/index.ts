@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import * as dmnEnvelopeJs from "../dist/envelope.js";
+import dmnEnvelopeJs from "../dist/envelope.js";
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
 import { StandaloneDmnEditorResource, StandaloneDmnEditorChannelApiImpl } from "./StandaloneDmnEditorChannelApiImpl";
 import { StandaloneDmnEditorApi } from "./StandaloneDmnEditorApi";
@@ -104,9 +104,6 @@ export function open(args: {
     },
     args.resources
   );
-
-  console.log({ resources: args.resources });
-  console.log({ channelApiImpl });
 
   const listener = (message: MessageEvent) => {
     envelopeServer.receive(message.data, channelApiImpl);

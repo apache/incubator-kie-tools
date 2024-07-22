@@ -17,20 +17,36 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import * as React from "react";
+import { Preview } from "@storybook/react";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools-core/webpack-base/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      dmnStandaloneEditor: {
-        dev: {
-          port: 9006,
-        },
-        storybook: {
-          port: 9903,
-        },
+const preview: Preview = {
+  parameters: {
+    actions: { argTypesRegex: "^on[A-Z].*" },
+    controls: {
+      matchers: {
+        color: /(background|color)$/i,
+        date: /Date$/,
       },
-    };
+    },
+    options: {
+      storySort: {
+        order: [
+          "Dev",
+          "Misc",
+          ["Overview", "*", ["Overview", "*", ["Overview", "*"]]],
+          "Use cases",
+          ["Overview", "*", ["Overview", "*", ["Overview", "*"]]],
+        ],
+      },
+    },
   },
-});
+
+  decorators: [
+    (Story) => (
+      <div style={{ position: "absolute", width: "100vw", height: "100vh", top: "0px", left: "0px" }}>{Story()}</div>
+    ),
+  ],
+};
+
+export default preview;
