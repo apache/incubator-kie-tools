@@ -64,7 +64,8 @@ void setupPrJob() {
     setupBuildAndTestJob(JobType.PULL_REQUEST)
 
     // Branch Source Plugin multibranchPipelineJob
-    Utils.isMainBranch(this) && KogitoJobTemplate.createPullRequestMultibranchPipelineJob(this, "${jenkins_path}/Jenkinsfile", JobType.PULL_REQUEST.getName())
+    def triggeringJenkinsfileName = Utils.isMainBranch(this) ? "Jenkinsfile" : "Jenkinsfile.pr.${Utils.getGitBranch(this)}"
+    KogitoJobTemplate.createPullRequestMultibranchPipelineJob(this, "${jenkins_path}/${triggeringJenkinsfileName}", JobType.PULL_REQUEST.getName())
 }
 
 void createSetupBranchJob() {

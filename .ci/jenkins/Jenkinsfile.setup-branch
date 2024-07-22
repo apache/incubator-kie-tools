@@ -103,8 +103,14 @@ pipeline {
             steps {
                 script {
                     dir(getRepoName()) {
+                        githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
+                        def mainBranchPrCheckJenkinsfile = '.ci/jenkins/Jenkinsfile'
+                        def newBranchPrCheckJenkinsfile = ".ci/jenkins/Jenkinsfile.pr.${getBuildBranch()}"
+                        if (!isMainBranch() && fileExists(mainBranchPrCheckJenkinsfile)) {
+                            sh "mv ${mainBranchPrCheckJenkinsfile} ${newBranchPrCheckJenkinsfile}"
+                            sh "git add ${newBranchPrCheckJenkinsfile}"
+                        }
                         if (githubscm.isThereAnyChanges()) {
-                            githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
                             githubscm.commitChanges("[${getBuildBranch()}] Update version to ${getKogitoVersion()}")
                             githubscm.pushObject('origin', getBuildBranch(), getGitAuthorPushCredsId())
                         } else {
