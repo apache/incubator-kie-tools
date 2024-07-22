@@ -71,7 +71,7 @@ module.exports = (env) => {
       rules: [
         ...sourceMapsLoader,
         {
-          test: /\.m?js/,
+          test: /\.m?js$/,
           resolve: {
             fullySpecified: false,
           },

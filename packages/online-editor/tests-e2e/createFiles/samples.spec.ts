@@ -31,8 +31,8 @@ test.describe("Sample", () => {
 
     test("should create a BPMN sample file", async ({ page, kieSandbox }) => {
       await page.getByRole("button", { name: "Try sample" }).nth(0).click();
-      await expect(page.getByRole("button", { name: "Workflow Edit file name" })).toBeAttached();
-      await expect(page.getByRole("button", { name: "Workflow Edit file name" })).toContainText("Sample");
+      await expect(page.getByRole("button", { name: "Workflow Sample" })).toBeAttached();
+      await expect(page.getByRole("button", { name: "Workflow Sample" })).toContainText("Sample");
       await kieSandbox.isEditorLoaded();
       await expect(kieSandbox.getEditor().getByRole("button", { name: "Start Events" })).toBeAttached();
       await expect(page).toHaveScreenshot("sample-bpmn.png");
@@ -40,16 +40,16 @@ test.describe("Sample", () => {
 
     test("should create a DMN sample file", async ({ page, kieSandbox }) => {
       await page.getByRole("button", { name: "Try sample" }).nth(1).click();
-      await expect(page.getByRole("button", { name: "Decision Edit file name" })).toBeAttached();
-      await expect(page.getByRole("button", { name: "Decision Edit file name" })).toContainText("Sample");
+      await expect(page.getByRole("button", { name: "Decision Sample" })).toBeAttached();
+      await expect(page.getByRole("button", { name: "Decision Sample" })).toContainText("Sample");
       await expect(kieSandbox.getEditor().getByText("Loan Pre-Qualification")).toBeAttached();
       await expect(page).toHaveScreenshot("sample-dmn.png");
     });
 
     test("should create a PMML sample file", async ({ page, kieSandbox }) => {
       await page.getByRole("button", { name: "Try sample" }).nth(2).click();
-      await expect(page.getByRole("button", { name: "Scorecard Edit file name" })).toBeAttached();
-      await expect(page.getByRole("button", { name: "Scorecard Edit file name" })).toContainText("Sample");
+      await expect(page.getByRole("button", { name: "Scorecard Sample" })).toBeAttached();
+      await expect(page.getByRole("button", { name: "Scorecard Sample" })).toContainText("Sample");
       await expect(kieSandbox.getEditor().getByRole("button", { name: "Set Data Dictionary" })).toBeAttached();
       await expect(page).toHaveScreenshot("sample-pmml.png");
     });

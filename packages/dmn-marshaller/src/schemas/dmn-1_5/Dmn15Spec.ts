@@ -26,10 +26,10 @@ import { ns as dmn15ns } from "./ts-gen/meta";
 
 // Those two below are defined by the spec. See S-FEEL grammar. Rule 22: "name".
 const feelNameStart =
-  /^[?A-Z_a-z\uC0-\uD6\uD8-\uF6\uF8-\u2FF\u370-\u37D\u37F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\u10000-\uEFFFF].*$/;
+  /^[?A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\u10000-\uEFFFF].*$/;
 const feelNamePart =
   // ------------------------------------------------------------------------------------------------------ same as nameStart ------------------------------- ----------name part------------ --extra--
-  /^.[?A-Z_a-z\uC0-\uD6\uD8-\uF6\uF8-\u2FF\u370-\u37D\u37F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\u10000-\uEFFFF\uB7\d\u0300-\u036F\u203F-\u2040.+-/*’\s^]*$/;
+  /^.[?A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\u10000-\uEFFFF\u00B7\d\u0300-\u036F\u203F-\u2040.+-/*’\s^]*$/;
 
 // This is not part of the spec.
 const forbiddenEndingChars = /^.*[.:+-/*\s^]$/; // Although they're fine by the Spec, they can seriously complicate FEEL expressions readability.
