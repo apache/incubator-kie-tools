@@ -23,42 +23,154 @@ import { TabName } from "./__fixtures__/editor";
 import { DefaultNodeName, NodeType } from "./__fixtures__/nodes";
 
 test.describe("Decision Table - Type Constraints", () => {
-  test.beforeEach(async ({ editor, page, dataTypes }) => {
+  test.beforeEach(async ({ editor, palette, nodes }) => {
     await editor.openEmpty();
 
-    // create string data type with enum constraint;
-    await editor.changeTab({ tab: TabName.DATA_TYPES });
-    await dataTypes.createFirstCustonDataType();
-    await dataTypes.changeDataTypeName({ newName: "enumType" });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.String });
-    await dataTypes.addEnumConstraint({ values: ["foo", "bar", "baz"] });
-
-    // create number data type with range constraint;
-    await dataTypes.createNewDataType();
-    await dataTypes.changeDataTypeName({ newName: "rangeType" });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Number });
-    await dataTypes.addRangeConstraint({ values: ["10", "200"] });
-
-    await page.getByRole("tab", { name: "Editor" }).click();
-  });
-
-  test("should check decision table input header constraint", async ({
-    page,
-    palette,
-    nodes,
-    decisionPropertiesPanel,
-    propertiesPanel,
-  }) => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
     await nodes.edit({ name: DefaultNodeName.DECISION });
-    await decisionPropertiesPanel.open();
+  });
 
-    // TODO: use new API
-    await page.getByText("Select expression").click();
-    await page.getByRole("menuitem", { name: "Decision table" }).click();
-    await page.getByRole("columnheader", { name: "Input-1 (<Undefined>)" }).click();
+  test.describe("Decision Table - Type Constraints - built-in data type", () => {
+    const dataTypes: DataType[] = [
+      DataType.Any,
+      DataType.Boolean,
+      DataType.Context,
+      DataType.Date,
+      DataType.DateTime,
+      DataType.DateTimeDuration,
+      DataType.Number,
+      DataType.String,
+      DataType.Time,
+      DataType.Undefined,
+      DataType.YearsMonthsDuration,
+    ];
 
-    expect(propertiesPanel.panel().getByText("Constraint")).not.toBeAttached();
+    for (const dataType of dataTypes) {
+      test(`Decision Table input header properties panel shouldn't contain constraint - '${dataType}' data type`, async ({
+        page,
+        beePropertiesPanel,
+      }) => {
+        await beePropertiesPanel.open();
+        // TODO: use new API
+        await page.getByText("Select expression").click();
+        await page.getByRole("menuitem", { name: "Decision table" }).click();
+        await page.getByRole("columnheader", { name: "Input-1 (<Undefined>)" }).click();
+        await beePropertiesPanel.decisionTableInputHeader.setDataType({ newDataType: dataType });
+
+        expect(beePropertiesPanel.decisionTableInputHeader.getDataType()).toHaveValue(`${dataType}`);
+        expect(beePropertiesPanel.decisionTableInputHeader.panel().getByText("Constraint")).not.toBeAttached();
+      });
+
+      test(`Decision Table input rule properties panel shouldn't contain constraint - '${dataType}' data type`, async ({
+        page,
+        beePropertiesPanel,
+      }) => {
+        await beePropertiesPanel.open();
+        // TODO: use new API
+        await page.getByText("Select expression").click();
+        await page.getByRole("menuitem", { name: "Decision table" }).click();
+        await page.getByRole("columnheader", { name: "Input-1 (<Undefined>)" }).click();
+        await beePropertiesPanel.decisionTableInputHeader.setDataType({ newDataType: dataType });
+        await page.getByTestId("monaco-container").nth(0).click();
+
+        expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toHaveValue(`${dataType}`);
+        expect(beePropertiesPanel.decisionTableInputRule.panel().getByText("Constraint")).not.toBeAttached();
+      });
+
+      test(`Decision Table output header properties panel shouldn't contain constraint - '${dataType}' data type`, async ({
+        page,
+        beePropertiesPanel,
+      }) => {
+        await beePropertiesPanel.open();
+        // TODO: use new API
+        await page.getByText("Select expression").click();
+        await page.getByRole("menuitem", { name: "Decision table" }).click();
+        await page.getByRole("columnheader", { name: "New Decision (<Undefined>)" }).click();
+        await beePropertiesPanel.decisionTableOutputHeader.setDecisionDataType({ newDataType: dataType });
+
+        expect(beePropertiesPanel.decisionTableOutputHeader.getDecisionDataType()).toHaveValue(`${dataType}`);
+        expect(beePropertiesPanel.decisionTableOutputHeader.getColumnDataType()).toHaveValue(`${dataType}`);
+        expect(beePropertiesPanel.decisionTableOutputHeader.getColumnDataType()).toBeDisabled();
+        expect(beePropertiesPanel.decisionTableOutputHeader.panel().getByText("Constraint")).not.toBeAttached();
+      });
+
+      test(`Decision Table nested output header properties panel shouldn't contain constraint - '${dataType}' data type`, async ({
+        page,
+        beePropertiesPanel,
+      }) => {
+        await beePropertiesPanel.open();
+        // TODO: use new API
+        await page.getByText("Select expression").click();
+        await page.getByRole("menuitem", { name: "Decision table" }).click();
+        await page.getByRole("columnheader", { name: "New Decision (<Undefined>)" }).hover();
+        await page.getByRole("row", { name: "U Input-1 (<Undefined>) New" }).locator("path").click();
+
+        await page.getByRole("columnheader", { name: "New Decision (<Undefined>)" }).click();
+        await beePropertiesPanel.decisionTableOutputHeader.setDataType({ newDataType: dataType });
+        await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(`${dataType}`);
+        await expect(beePropertiesPanel.decisionTableOutputHeader.panel().getByText("Constraint")).not.toBeAttached();
+
+        await page.getByRole("columnheader", { name: "Output-1 (<Undefined>)" }).click();
+        await beePropertiesPanel.decisionTableOutputHeader.setDataType({ newDataType: dataType });
+        await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(`${dataType}`);
+        await expect(beePropertiesPanel.decisionTableOutputHeader.panel().getByText("Constraint")).not.toBeAttached();
+
+        await page.getByRole("columnheader", { name: "Output-2 (<Undefined>)" }).click();
+        await beePropertiesPanel.decisionTableOutputHeader.setDataType({ newDataType: dataType });
+        await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(`${dataType}`);
+        await expect(beePropertiesPanel.decisionTableOutputHeader.panel().getByText("Constraint")).not.toBeAttached();
+      });
+
+      test(`Decision Table output rule properties panel shouldn't contain constraint - '${dataType}' data type`, async ({
+        page,
+        beePropertiesPanel,
+      }) => {
+        await beePropertiesPanel.open();
+        // TODO: use new API
+        await page.getByText("Select expression").click();
+        await page.getByRole("menuitem", { name: "Decision table" }).click();
+        await page.getByRole("columnheader", { name: "New Decision (<Undefined>)" }).click();
+        await beePropertiesPanel.decisionTableOutputHeader.setDecisionDataType({ newDataType: dataType });
+        await page.getByTestId("monaco-container").nth(1).click();
+
+        expect(beePropertiesPanel.decisionTableOutputRule.getDataType()).toHaveValue(`${dataType}`);
+        expect(beePropertiesPanel.decisionTableOutputRule.panel().getByText("Constraint")).not.toBeAttached();
+      });
+    }
+  });
+
+  test.describe.skip("Decision Table - Type Constraints - With custom data types", () => {
+    test.beforeEach("create custom data types", async ({ editor, page, dataTypes }) => {
+      // create string data type with enum constraint;
+      await editor.changeTab({ tab: TabName.DATA_TYPES });
+      await dataTypes.createFirstCustonDataType();
+      await dataTypes.changeDataTypeName({ newName: "enumType" });
+      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.String });
+      await dataTypes.addEnumConstraint({ values: ["foo", "bar", "baz"] });
+
+      // create number data type with range constraint;
+      await dataTypes.createNewDataType();
+      await dataTypes.changeDataTypeName({ newName: "rangeType" });
+      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Number });
+      await dataTypes.addRangeConstraint({ values: ["10", "200"] });
+
+      // create number data type with expression constraint;
+      await dataTypes.createNewDataType();
+      await dataTypes.changeDataTypeName({ newName: "expressionType" });
+      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Number });
+      await dataTypes.addExpressionConstraint({ value: "> 20" });
+
+      // create date data type without constraint;
+      await dataTypes.createNewDataType();
+      await dataTypes.changeDataTypeName({ newName: "noneType" });
+      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Date });
+
+      await page.getByRole("tab", { name: "Editor" }).click();
+    });
+
+    test("", async ({ decisionPropertiesPanel }) => {
+      await decisionPropertiesPanel.open();
+    });
   });
 });
 

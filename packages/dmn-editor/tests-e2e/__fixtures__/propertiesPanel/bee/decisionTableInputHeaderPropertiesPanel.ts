@@ -17,21 +17,35 @@
  * under the License.
  */
 
-import { Locator, Page } from "@playwright/test";
+import { Page } from "@playwright/test";
+import { Diagram } from "../../diagram";
+import { DataTypeProperties } from "../parts/dataTypeProperties";
 import { DataType } from "../../dataTypes";
+import { NameProperties } from "../parts/nameProperties";
+import { BeePropertiesPanelBase } from "./beePropertiesPanelBase";
 
-export class DataTypeProperties {
+export class DecisionTableInputHeaderPropertiesPanel extends BeePropertiesPanelBase {
+  private nameProperties: NameProperties;
+  private dataTypeProperties: DataTypeProperties;
+
   constructor(
-    public panel: Locator,
+    public diagram: Diagram,
     public page: Page
-  ) {}
+  ) {
+    super(diagram, page);
+    this.nameProperties = new NameProperties(this.panel(), page);
+    this.dataTypeProperties = new DataTypeProperties(this.panel(), page);
+  }
+
+  public async setName(args: { newName: string }) {
+    await this.nameProperties.setName({ ...args });
+  }
 
   public async setDataType(args: { newDataType: DataType }) {
-    await this.panel.getByPlaceholder("Select a data type...").click();
-    await this.page.getByRole("option").getByText(args.newDataType, { exact: true }).click();
+    await this.dataTypeProperties.setDataType({ ...args });
   }
 
   public getDataType() {
-    return this.panel.getByPlaceholder("Select a data type...");
+    return this.dataTypeProperties.getDataType();
   }
 }

@@ -18,19 +18,18 @@
  */
 
 import { Page } from "@playwright/test";
-import { Diagram } from "../diagram";
+import { Diagram } from "../../diagram";
+import { PropertiesPanelBase } from "../propertiesPanelBase";
 
-export abstract class PropertiesPanelBase {
+export class BeePropertiesPanelBase extends PropertiesPanelBase {
   constructor(
     public diagram: Diagram,
     public page: Page
-  ) {}
-
-  public panel() {
-    return this.page.getByTestId("kie-tools--dmn-editor--properties-panel-container");
+  ) {
+    super(diagram, page);
   }
 
-  public async open() {
-    await this.page.getByTitle("Properties panel").click();
+  public panel() {
+    return this.page.getByTestId("kie-tools--dmn-editor--bee-properties-panel-container");
   }
 }

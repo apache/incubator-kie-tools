@@ -36,6 +36,7 @@ import { MultipleNodesPropertiesPanel } from "./propertiesPanel/multipleNodesPro
 import { Overlays } from "./overlays";
 import { DataTypes } from "./dataTypes";
 import { PropertiesPanelBase } from "./propertiesPanel/propertiesPanelBase";
+import { BeePropertiesPanel } from "./propertiesPanel/beePropertiesPanel";
 
 type DmnEditorFixtures = {
   dataTypes: DataTypes;
@@ -45,8 +46,8 @@ type DmnEditorFixtures = {
   jsonModel: JsonModel;
   nodes: Nodes;
   palette: Palette;
-  propertiesPanel: PropertiesPanelBase;
   overlays: Overlays;
+  beePropertiesPanel: BeePropertiesPanel;
   bkmPropertiesPanel: BkmPropertiesPanel;
   decisionPropertiesPanel: DecisionPropertiesPanel;
   decisionServicePropertiesPanel: DecisionServicePropertiesPanel;
@@ -80,11 +81,11 @@ export const test = base.extend<DmnEditorFixtures>({
   palette: async ({ page, diagram, nodes }, use) => {
     await use(new Palette(page, diagram, nodes));
   },
-  propertiesPanel: async ({ page, diagram }, use) => {
-    await use(new PropertiesPanelBase(diagram, page));
-  },
   overlays: async ({ page }, use) => {
     await use(new Overlays(page));
+  },
+  beePropertiesPanel: async ({ diagram, page }, use) => {
+    await use(new BeePropertiesPanel(diagram, page));
   },
   bkmPropertiesPanel: async ({ diagram, page }, use) => {
     await use(new BkmPropertiesPanel(diagram, page));

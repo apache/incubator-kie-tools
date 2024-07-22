@@ -29,7 +29,7 @@ import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constraints";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { BoxedDecisionTable, DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
@@ -48,10 +48,17 @@ export function DecisionTableOutputRuleCell(props: {
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
+  const root = useMemo(
+    () =>
+      props.boxedExpressionIndex?.get(
+        selectedObjectInfos?.expressionPath[selectedObjectInfos?.expressionPath.length - 1]?.root ?? ""
+      ),
+    [props.boxedExpressionIndex, selectedObjectInfos?.expressionPath]
+  );
+
   const headerType = useMemo(() => {
     const cellPath = selectedObjectInfos?.expressionPath[selectedObjectInfos?.expressionPath.length - 1];
     if (cellPath && cellPath.root) {
-      const root = props.boxedExpressionIndex?.get(cellPath.root);
       const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = dmnEditorStoreApi
         .getState()
         .computed(dmnEditorStoreApi.getState())
@@ -67,7 +74,13 @@ export function DecisionTableOutputRuleCell(props: {
         return { typeRef, itemDefinition: allDataTypesById.get(typeRef)?.itemDefinition };
       }
     }
-  }, [dmnEditorStoreApi, externalModelsByNamespace, props.boxedExpressionIndex, selectedObjectInfos?.expressionPath]);
+  }, [
+    dmnEditorStoreApi,
+    externalModelsByNamespace,
+    root?.cell,
+    root?.expressionPath,
+    selectedObjectInfos?.expressionPath,
+  ]);
 
   const updater = useBoxedExpressionUpdater<Normalized<DMN15__tLiteralExpression>>(
     selectedObjectInfos?.expressionPath ?? []
@@ -91,7 +104,13 @@ export function DecisionTableOutputRuleCell(props: {
             alternativeFieldName={"Output header type"}
             isReadonly={true}
             dmnEditorRootElementRef={dmnEditorRootElementRef}
-            typeRef={headerType.itemDefinition?.["@_name"] ?? headerType.typeRef}
+            typeRef={
+              (root?.cell as Normalized<BoxedDecisionTable> | undefined)?.output.length === 1 &&
+              ((root?.cell as Normalized<BoxedDecisionTable> | undefined)?.["@_typeRef"] === cell?.["@_typeRef"] ||
+                cell?.["@_typeRef"] === undefined)
+                ? (root?.cell as Normalized<BoxedDecisionTable> | undefined)?.["@_typeRef"]
+                : headerType.itemDefinition?.["@_name"] ?? headerType.typeRef
+            }
           />
         </>
       )}

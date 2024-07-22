@@ -85,4 +85,13 @@ export class DataTypes {
     await this.get().locator("#end-value").click();
     await this.get().locator("#end-value").fill(args.values[1]);
   }
+
+  public async addExpressionConstraint(args: { value: string }) {
+    await this.get().getByRole("button", { name: ConstraintType.EXPRESSION }).click();
+    await this.get().getByLabel("Editor content;Press Alt+F1").fill(args.value);
+  }
+
+  public async deleteConstraint(args: { value: string }) {
+    await this.get().getByRole("button", { name: ConstraintType.NONE }).click();
+  }
 }

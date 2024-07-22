@@ -18,19 +18,26 @@
  */
 
 import { Page } from "@playwright/test";
-import { Diagram } from "../diagram";
+import { Diagram } from "../../diagram";
+import { DataTypeProperties } from "../parts/dataTypeProperties";
+import { DataType } from "../../dataTypes";
+import { NameProperties } from "../parts/nameProperties";
+import { BeePropertiesPanelBase } from "./beePropertiesPanelBase";
 
-export abstract class PropertiesPanelBase {
+export class DecisionTableInputRulePropertiesPanel extends BeePropertiesPanelBase {
+  private nameProperties: NameProperties;
+  private dataTypeProperties: DataTypeProperties;
+
   constructor(
     public diagram: Diagram,
     public page: Page
-  ) {}
-
-  public panel() {
-    return this.page.getByTestId("kie-tools--dmn-editor--properties-panel-container");
+  ) {
+    super(diagram, page);
+    this.nameProperties = new NameProperties(this.panel(), page);
+    this.dataTypeProperties = new DataTypeProperties(this.panel(), page);
   }
 
-  public async open() {
-    await this.page.getByTitle("Properties panel").click();
+  public getDataType() {
+    return this.dataTypeProperties.getDataType();
   }
 }
