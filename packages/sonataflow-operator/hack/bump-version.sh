@@ -59,6 +59,7 @@ node -p "require('replace-in-file').sync({ from: /docker\.io\/apache\/incubator-
 node -p "require('replace-in-file').sync({ from: /sonataflow-operator-system\/sonataflow-operator:[\w\.]*/g, to: 'sonataflow-operator-system/sonataflow-operator:${imageTag}', files: ['**/*.yaml'] });"
 
 node -p "require('replace-in-file').sync({ from: /\bOperatorVersion = .*/g, to: 'OperatorVersion = \"${version}\"', files: ['version/version.go'] });"
+node -p "require('replace-in-file').sync({ from: /\btagVersion = .*/g, to: 'tagVersion = \"${imageTag}\"', files: ['version/version.go'] });"
 node -p "require('replace-in-file').sync({ from: /\bcontainerImage:.*\b/g, to: 'containerImage: ${targetSonataflowOperatorImage}', files: ['$(getCsvFile)'] });"
 
 make generate-all
