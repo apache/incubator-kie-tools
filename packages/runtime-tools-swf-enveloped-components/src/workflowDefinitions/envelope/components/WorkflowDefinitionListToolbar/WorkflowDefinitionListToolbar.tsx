@@ -62,10 +62,6 @@ const WorkflowDefinitionListToolbar: React.FC<WorkflowDefinitionListToolbarProps
     setFilterWorkflowNames([]);
   };
 
-  const refresh = (): void => {
-    doRefresh();
-  };
-
   const onEnterClicked = (event: React.KeyboardEvent<EventTarget>): void => {
     /* istanbul ignore else */
     if (event.key === "Enter") {
@@ -133,7 +129,7 @@ const WorkflowDefinitionListToolbar: React.FC<WorkflowDefinitionListToolbarProps
       <ToolbarGroup variant="icon-button-group">
         <ToolbarItem>
           <Tooltip content={"Refresh"}>
-            <Button variant="plain" onClick={refresh} id="refresh" data-testid="refresh">
+            <Button variant="plain" onClick={doRefresh} id="refresh" data-testid="refresh">
               <SyncIcon />
             </Button>
           </Tooltip>

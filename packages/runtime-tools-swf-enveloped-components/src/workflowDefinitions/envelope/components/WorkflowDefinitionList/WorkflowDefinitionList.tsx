@@ -48,17 +48,14 @@ const WorkflowDefinitionList: React.FC<WorkflowDefinitionListProps & OUIAProps> 
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [limit, setLimit] = useState<number>(defaultPageSize);
 
-  const doQuery = async (
-    _offset: number,
-    _limit: number,
-    _resetWorkflows: boolean,
-    _resetPagination: boolean = false,
-    _loadMore: boolean = false
-  ): Promise<void> => {
+  const doQuery = async (_limit: number, _loadMore: boolean = false): Promise<void> => {
     setIsLoadingMore(_loadMore);
     try {
       const response: WorkflowDefinition[] = await driver.getWorkflowDefinitionsQuery();
+      const workflowDefinitionFilter = await driver.getWorkflowDefinitionFilter();
+      setFilterWorkflowNames(workflowDefinitionFilter);
       setWorkflowDefinitionList(response);
+      setIsLoading(false);
       setLimit(response.length);
     } catch (err) {
       setError(err.errorMessage);
@@ -80,15 +77,7 @@ const WorkflowDefinitionList: React.FC<WorkflowDefinitionListProps & OUIAProps> 
   }, [isEnvelopeConnectedToChannel]);
 
   const init = async (): Promise<void> => {
-    try {
-      const response = await driver.getWorkflowDefinitionsQuery();
-      const workflowDefinitionFilter = await driver.getWorkflowDefinitionFilter();
-      setFilterWorkflowNames(workflowDefinitionFilter);
-      setWorkflowDefinitionList(response);
-      setIsLoading(false);
-    } catch (errorContent) {
-      setError(errorContent);
-    }
+    doQuery(0);
   };
   const columns: DataTableColumn[] = [
     getColumn("workflowName", `Workflow Name`),
@@ -110,7 +99,7 @@ const WorkflowDefinitionList: React.FC<WorkflowDefinitionListProps & OUIAProps> 
   const doRefresh = async (): Promise<void> => {
     setIsLoading(true);
     setFilterWorkflowNames([...filterWorkflowNames]);
-    doQuery(0, defaultPageSize, true, true);
+    doQuery(0);
   };
 
   const filterWorkflowDefinition = (): WorkflowDefinition[] => {
