@@ -364,7 +364,7 @@ List getTestFailedImages() {
 ////////////////////////////////////////////////////////////////////////
 
 boolean isDeployImage() {
-    return !env.DISABLE_IMAGES_DEPLOY
+    return !Boolean.valueOf(env.DISABLE_IMAGES_DEPLOY)
 }
 
 boolean isDeployImageInOpenshiftRegistry() {
