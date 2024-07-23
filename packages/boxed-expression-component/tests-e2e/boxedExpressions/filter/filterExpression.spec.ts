@@ -53,38 +53,30 @@ test.describe("Create Boxed Filter", () => {
     await bee.goto();
 
     await bee.selectExpressionMenu.selectContext();
+    const contextExpression = bee.expression.asContext();
+    const entry0 = contextExpression.entry(0);
 
     // Prepare empty Filter 'in' and 'match' cells
-    await bee.expression.asContext().entry(0).selectExpressionMenu.selectFilter();
-    await bee.expression.asContext().entry(0).expression.asFilter().in.selectExpressionMenu.selectLiteral();
-    await bee.expression.asContext().entry(0).expression.asFilter().match.selectExpressionMenu.selectLiteral();
-    await bee.expression
-      .asContext()
-      .entry(0)
-      .expression.asFilter()
-      .in.expression.asLiteral()
-      .fill("collection in expression");
-    await bee.expression
-      .asContext()
-      .entry(0)
-      .expression.asFilter()
-      .match.expression.asLiteral()
-      .fill("collection match expression");
+    await entry0.selectExpressionMenu.selectFilter();
+    await entry0.expression.asFilter().in.selectExpressionMenu.selectLiteral();
+    await entry0.expression.asFilter().match.selectExpressionMenu.selectLiteral();
+    await entry0.expression.asFilter().in.expression.asLiteral().fill("collection in expression");
+    await entry0.expression.asFilter().match.expression.asLiteral().fill("collection match expression");
 
     await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested.png");
   });
 
   test("should correctly create a filter using list boxed expression", async ({ bee, stories }) => {
     await stories.openBoxedFilter("base");
-    await bee.expression.asFilter().in.selectExpressionMenu.selectList();
-    await bee.expression.asFilter().in.expression.asList().addEntryAtTop();
-    await bee.expression.asFilter().in.expression.asList().row(0).selectExpressionMenu.selectLiteral();
-    await bee.expression.asFilter().in.expression.asList().row(1).selectExpressionMenu.selectLiteral();
-    await bee.expression.asFilter().in.expression.asList().row(0).expression.asLiteral().fill("Passenger One");
-    await bee.expression.asFilter().in.expression.asList().row(1).expression.asLiteral().fill("Passenger Two");
-
-    await bee.expression.asFilter().match.selectExpressionMenu.selectLiteral();
-    await bee.expression.asFilter().match.expression.asLiteral().fill("item.Flight Number = Flight.Flight Number");
+    const filterExpression = bee.expression.asFilter();
+    await filterExpression.in.selectExpressionMenu.selectList();
+    await filterExpression.in.expression.asList().addEntryAtTop();
+    await filterExpression.in.expression.asList().row(0).selectExpressionMenu.selectLiteral();
+    await filterExpression.in.expression.asList().row(1).selectExpressionMenu.selectLiteral();
+    await filterExpression.in.expression.asList().row(0).expression.asLiteral().fill("Passenger One");
+    await filterExpression.in.expression.asList().row(1).expression.asLiteral().fill("Passenger Two");
+    await filterExpression.match.selectExpressionMenu.selectLiteral();
+    await filterExpression.match.expression.asLiteral().fill("item.Flight Number = Flight.Flight Number");
 
     await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested-boxed-list.png");
   });

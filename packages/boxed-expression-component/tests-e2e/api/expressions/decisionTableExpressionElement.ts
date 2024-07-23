@@ -70,7 +70,7 @@ export class DecisionTableExpressionElement {
   }
 
   async addInputAtIndex(index: number) {
-    if (index === (await this.locator.locator(".input").count())) {
+    if (index === (await this.locator.getByTestId("kie-tools--bee--table-header-input").count())) {
       const bb = await this.locator
         .locator(".input")
         .nth(index - 1)
@@ -85,13 +85,13 @@ export class DecisionTableExpressionElement {
           },
         });
       await this.locator
-        .locator(".input")
+        .getByTestId("kie-tools--bee--table-header-input")
         .nth(index - 1)
         .locator("svg")
         .click();
     } else {
       await this.locator
-        .locator(".input")
+        .getByTestId("kie-tools--bee--table-header-input")
         .nth(index)
         .hover({
           position: {
@@ -99,7 +99,7 @@ export class DecisionTableExpressionElement {
             y: 0,
           },
         });
-      await this.locator.locator(".input").nth(index).locator("svg").click();
+      await this.locator.getByTestId("kie-tools--bee--table-header-input").nth(index).locator("svg").click();
     }
   }
 
@@ -133,17 +133,17 @@ export class DecisionTableExpressionElement {
   }
 
   async addAnnotationAtEnd() {
-    await this.addAnnotationAtIndex(await this.locator.locator(".annotation").count());
+    await this.addAnnotationAtIndex(await this.locator.getByTestId("kie-tools--bee--table-header-annotation").count());
   }
 
   async addAnnotationAtIndex(index: number) {
-    if (index === (await this.locator.locator(".annotation").count())) {
+    if (index === (await this.locator.getByTestId("kie-tools--bee--table-header-annotation").count())) {
       const bb = await this.locator
-        .locator(".annotation")
+        .getByTestId("kie-tools--bee--table-header-annotation")
         .nth(index - 1)
         .boundingBox();
       await this.locator
-        .locator(".annotation")
+        .getByTestId("kie-tools--bee--table-header-annotation")
         .nth(index - 1)
         .hover({
           position: {
@@ -152,13 +152,13 @@ export class DecisionTableExpressionElement {
           },
         });
       await this.locator
-        .locator(".annotation")
+        .getByTestId("kie-tools--bee--table-header-annotation")
         .nth(index - 1)
         .locator("svg")
         .click();
     } else {
       await this.locator
-        .locator(".annotation")
+        .getByTestId("kie-tools--bee--table-header-annotation")
         .nth(index)
         .hover({
           position: {
@@ -166,7 +166,7 @@ export class DecisionTableExpressionElement {
             y: 0,
           },
         });
-      await this.locator.locator(".annotation").nth(index).locator("svg").click();
+      await this.locator.getByTestId("kie-tools--bee--table-header-annotation").nth(index).locator("svg").click();
     }
   }
 
@@ -175,7 +175,7 @@ export class DecisionTableExpressionElement {
   }
 
   async addOutputAtEnd() {
-    await this.addOutputAtIndex(await this.locator.locator(".output").count());
+    await this.addOutputAtIndex(await this.locator.getByTestId("kie-tools--bee--table-header-output").count());
   }
 
   // Consider the following scenario:
@@ -195,15 +195,15 @@ export class DecisionTableExpressionElement {
   // that's why we need to do the calculations bellow to find the right place where user really
   // wants to add the output element.
   async addOutputAtIndex(index: number) {
-    if ((await this.locator.locator(".output").count()) === 1) {
+    if ((await this.locator.getByTestId("kie-tools--bee--table-header-output").count()) === 1) {
       await this.addOutputFromHeaderGroupElementAtIndex(index);
-    } else if (index === (await this.locator.locator(".output").count())) {
+    } else if (index === (await this.locator.getByTestId("kie-tools--bee--table-header-output").count())) {
       // output-1 | output-2 | output-3
       // index = 3
       // user wants:
       // output-1 | output-2 | output-3 | NEW-OUTPUT
       await this.addOutputAtRightOfIndex(index - 1);
-    } else if (index + 1 === (await this.locator.locator(".output").count())) {
+    } else if (index + 1 === (await this.locator.getByTestId("kie-tools--bee--table-header-output").count())) {
       // output-1 | output-2 | output-3
       // index = 2
       // user wants:
@@ -222,9 +222,9 @@ export class DecisionTableExpressionElement {
   }
 
   async addOutputAtRightOfIndex(index: number) {
-    const bb = await this.locator.locator(".output").nth(index).boundingBox();
+    const bb = await this.locator.getByTestId("kie-tools--bee--table-header-output").nth(index).boundingBox();
     await this.locator
-      .locator(".output")
+      .getByTestId("kie-tools--bee--table-header-output")
       .nth(index)
       .hover({
         position: {
@@ -232,12 +232,12 @@ export class DecisionTableExpressionElement {
           y: 0,
         },
       });
-    await this.locator.locator(".output").nth(index).locator("svg").click();
+    await this.locator.getByTestId("kie-tools--bee--table-header-output").nth(index).locator("svg").click();
   }
 
   private async addOutputAtLeftOfIndex(index: number) {
     await this.locator
-      .locator(".output")
+      .getByTestId("kie-tools--bee--table-header-output")
       .nth(index)
       .hover({
         position: {
@@ -245,14 +245,14 @@ export class DecisionTableExpressionElement {
           y: 0,
         },
       });
-    await this.locator.locator(".output").nth(index).locator("svg").click();
+    await this.locator.getByTestId("kie-tools--bee--table-header-output").nth(index).locator("svg").click();
   }
 
   private async addOutputFromHeaderGroupElementAtIndex(index: number) {
     if (index > 0) {
-      const bb = await this.locator.locator(".output").nth(0).boundingBox();
+      const bb = await this.locator.getByTestId("kie-tools--bee--table-header-output").nth(0).boundingBox();
       await this.locator
-        .locator(".output")
+        .getByTestId("kie-tools--bee--table-header-output")
         .nth(0)
         .hover({
           position: {
@@ -260,10 +260,10 @@ export class DecisionTableExpressionElement {
             y: 0,
           },
         });
-      await this.locator.locator(".output").nth(0).locator("svg").click();
+      await this.locator.getByTestId("kie-tools--bee--table-header-output").nth(0).locator("svg").click();
     } else {
       await this.locator
-        .locator(".output")
+        .getByTestId("kie-tools--bee--table-header-output")
         .nth(0)
         .hover({
           position: {
@@ -271,24 +271,24 @@ export class DecisionTableExpressionElement {
             y: 0,
           },
         });
-      await this.locator.locator(".output").nth(0).locator("svg").click();
+      await this.locator.getByTestId("kie-tools--bee--table-header-output").nth(0).locator("svg").click();
     }
   }
 
   inputHeaderAt(index: number) {
-    return new NameAndDataTypeCell(this.locator.locator(".input").nth(index));
+    return new NameAndDataTypeCell(this.locator.getByTestId("kie-tools--bee--table-header-input").nth(index));
   }
 
   outputHeaderAt(index: number) {
-    return new NameAndDataTypeCell(this.locator.locator(".output").nth(index));
+    return new NameAndDataTypeCell(this.locator.getByTestId("kie-tools--bee--table-header-output").nth(index));
   }
 
   annotationHeaderAt(index: number) {
-    return new NameAndDataTypeCell(this.locator.locator(".annotation").nth(index));
+    return new NameAndDataTypeCell(this.locator.getByTestId("kie-tools--bee--table-header-annotation").nth(index));
   }
 
-  get nameAndDataTypeCell() {
-    return new NameAndDataTypeCell(this.locator.locator(".output").nth(0));
+  get expressionHeaderCell() {
+    return new NameAndDataTypeCell(this.locator.getByTestId("kie-tools--bee--table-header-output").nth(0));
   }
 }
 
@@ -312,14 +312,14 @@ export class HitTableMenu {
   constructor(private locator: Locator) {}
 
   option(optionName: string) {
-    return this.locator.page().locator(".hit-policy-flex-container").getByRole("menuitem", {
+    return this.locator.page().getByTestId("kie-tools--bee--hit-policy-header").getByRole("menuitem", {
       name: optionName,
       exact: true,
     });
   }
 
   button(buttonName: string) {
-    return this.locator.page().locator(".hit-policy-flex-container").getByRole("button", {
+    return this.locator.page().getByTestId("kie-tools--bee--hit-policy-header").getByRole("button", {
       name: buttonName,
       exact: true,
     });

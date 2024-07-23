@@ -152,7 +152,7 @@ export function HitPolicySelector({
       position={PopoverPosition.left}
       distance={25}
       body={
-        <div className="hit-policy-flex-container">
+        <div className="hit-policy-flex-container" data-testid={"kie-tools--bee--hit-policy-header"}>
           <div className="hit-policy-section">
             <Menu onSelect={hitPolicySelectionCallback} selected={selectedHitPolicy}>
               <MenuGroup className="menu-with-help" label="Hit policy">

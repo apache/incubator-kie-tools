@@ -34,7 +34,7 @@ test.describe("Boxed Invocation context menu", () => {
     });
 
     test("shouldn't render parameters context menu", async ({ page, bee }) => {
-      const nameAndDataTypeCell = bee.expression.asInvocation().nameAndDataTypeCell;
+      const nameAndDataTypeCell = bee.expression.asInvocation().expressionHeaderCell;
       await nameAndDataTypeCell.contextMenu.open();
 
       await expect(nameAndDataTypeCell.contextMenu.heading("PARAMETERS")).not.toBeAttached();

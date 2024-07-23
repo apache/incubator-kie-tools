@@ -57,7 +57,7 @@ export class ListExpressionElement {
     return new Row(this.locator.getByTestId(`kie-tools--bee--expression-row-${index}`).nth(0), this.monaco);
   }
 
-  get nameAndDataTypeCell() {
+  get expressionHeaderCell() {
     return new NameAndDataTypeCell(this.locator.getByRole("columnheader").nth(1));
   }
 }

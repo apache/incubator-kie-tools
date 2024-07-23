@@ -983,7 +983,7 @@ test.describe("Resizing", () => {
       });
 
       await resizing.resizeCell(
-        page.getByTestId("kie-tools--boxed-expression-component--filter-collection-in"),
+        page.getByTestId("kie-tools--bee--filter-collection-in"),
         { x: 0, y: 0 },
         { x: 200, y: 0 }
       );
@@ -1001,7 +1001,7 @@ test.describe("Resizing", () => {
       });
 
       await resizing.resizeCell(
-        page.getByTestId("kie-tools--boxed-expression-component--filter-collection-match"),
+        page.getByTestId("kie-tools--bee--filter-collection-match"),
         { x: 0, y: 0 },
         { x: 250, y: 0 }
       );

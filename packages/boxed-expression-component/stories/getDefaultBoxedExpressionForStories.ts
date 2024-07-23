@@ -263,15 +263,15 @@ export function getDefaultBoxedExpressionForStories({
       "@_id": generateUuid(),
       if: {
         "@_id": generateUuid(),
-        expression: undefined as any,
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
       },
       then: {
         "@_id": generateUuid(),
-        expression: undefined as any,
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.,
       },
       else: {
         "@_id": generateUuid(),
-        expression: undefined as any,
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
       },
     };
     return conditionalExpression;
@@ -281,11 +281,11 @@ export function getDefaultBoxedExpressionForStories({
       "@_id": generateUuid(),
       return: {
         "@_id": generateUuid(),
-        expression: undefined as any,
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
       },
       in: {
         "@_id": generateUuid(),
-        expression: undefined as any,
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
       },
     };
     return forExpression;
@@ -295,11 +295,11 @@ export function getDefaultBoxedExpressionForStories({
       "@_id": generateUuid(),
       satisfies: {
         "@_id": generateUuid(),
-        expression: undefined as any,
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
       },
       in: {
         "@_id": generateUuid(),
-        expression: undefined as any,
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
       },
     };
     return someExpression;
@@ -309,11 +309,11 @@ export function getDefaultBoxedExpressionForStories({
       "@_id": generateUuid(),
       satisfies: {
         "@_id": generateUuid(),
-        expression: undefined as any,
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
       },
       in: {
         "@_id": generateUuid(),
-        expression: undefined as any,
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
       },
     };
     return everyExpression;

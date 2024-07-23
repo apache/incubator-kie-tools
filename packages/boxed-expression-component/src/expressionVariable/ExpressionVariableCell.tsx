@@ -123,6 +123,7 @@ export const ExpressionVariableCell: React.FunctionComponent<
               className="expression-info-name pf-u-text-truncate"
               title={variable["@_name"]}
               data-ouia-component-id={"expression-info-name"}
+              data-testid={"kie-tools--bee--expression-info-name"}
             >
               {variable["@_name"]}
             </p>
@@ -130,6 +131,7 @@ export const ExpressionVariableCell: React.FunctionComponent<
               className="expression-info-data-type pf-u-text-truncate"
               title={variable["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
               data-ouia-component-id={"expression-info-data-type"}
+              data-testid={"kie-tools--bee--expression-info-data-type"}
             >
               ({variable["@_typeRef"] ?? DmnBuiltInDataType.Undefined})
             </p>

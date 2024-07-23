@@ -58,7 +58,7 @@ export class ConditionalExpressionElement {
     );
   }
 
-  get nameAndDataTypeCell() {
+  get expressionHeaderCell() {
     return new NameAndDataTypeCell(this.locator.getByRole("columnheader"));
   }
 }

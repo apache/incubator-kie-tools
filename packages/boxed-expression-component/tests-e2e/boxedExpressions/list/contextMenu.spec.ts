@@ -34,7 +34,7 @@ test.describe("Boxed List context menu", () => {
     });
 
     test("shouldn't render row context menu", async ({ page, bee }) => {
-      const nameAndDataTypeCell = bee.expression.asList().nameAndDataTypeCell;
+      const nameAndDataTypeCell = bee.expression.asList().expressionHeaderCell;
       await nameAndDataTypeCell.contextMenu.open();
       await expect(nameAndDataTypeCell.contextMenu.heading("ROWS")).not.toBeAttached();
       await expect(nameAndDataTypeCell.contextMenu.heading("SELECTION")).toBeAttached();

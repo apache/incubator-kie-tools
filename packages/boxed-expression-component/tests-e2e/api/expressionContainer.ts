@@ -33,7 +33,6 @@ import { SomeExpressionElement } from "./expressions/someExpressionElement";
 import { ConditionalExpressionElement } from "./expressions/conditionalExpressionElement";
 import { FunctionExpressionElement } from "./expressions/functionExpressionElement";
 import { InvocationExpressionElement } from "./expressions/invocationExpressionElement";
-import { NameAndDataTypeCell } from "./nameAndDataTypeCell";
 
 export class ExpressionContainer {
   constructor(
@@ -98,7 +97,7 @@ export class ExpressionContainer {
   }
 
   async isEmpty() {
-    return (await this.locator.nth(0).locator(">.logic-type-not-present").count()) === 1;
+    return (await this.locator.nth(0).getByTestId("kie-tools--bee--logic-type-selected-header").count()) === 0;
   }
 }
 
@@ -133,18 +132,24 @@ export class ContextMenu {
   }
 
   option(option: string) {
-    return this.locator.page().locator(".context-menu-container").getByRole("menuitem", {
+    return this.locator.page().getByTestId("kie-tools--bee--context-menu-container").getByRole("menuitem", {
       name: option,
       exact: true,
     });
   }
 
   button(option: string) {
-    return this.locator.page().locator(".context-menu-container").getByRole("button", { name: option, exact: true });
+    return this.locator.page().getByTestId("kie-tools--bee--context-menu-container").getByRole("button", {
+      name: option,
+      exact: true,
+    });
   }
 
   radio(option: string) {
-    return this.locator.page().locator(".context-menu-container").getByRole("radio", { name: option, exact: true });
+    return this.locator.page().getByTestId("kie-tools--bee--context-menu-container").getByRole("radio", {
+      name: option,
+      exact: true,
+    });
   }
 }
 
@@ -155,7 +160,10 @@ export class ChildExpression {
     private locator: Locator,
     monaco: Monaco
   ) {
-    this._expression = new ExpressionContainer(this.locator.getByTestId("expression-container").nth(0), monaco);
+    this._expression = new ExpressionContainer(
+      this.locator.getByTestId("kie-tools--bee--expression-container").nth(0),
+      monaco
+    );
   }
 
   get expression() {
@@ -163,7 +171,7 @@ export class ChildExpression {
   }
 
   get selectExpressionMenu() {
-    return new SelectExpressionMenu(this.locator.getByTestId("expression-container").nth(0));
+    return new SelectExpressionMenu(this.locator.getByTestId("kie-tools--bee--expression-container").nth(0));
   }
 }
 

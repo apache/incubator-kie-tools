@@ -44,11 +44,11 @@ export class NameAndDataTypeCell {
   }
 
   async getName() {
-    return await this.locator.locator(".expression-info-name").nth(0).innerText();
+    return await this.locator.getByTestId("kie-tools--bee--expression-info-name").nth(0).innerText();
   }
 
   async getDataType() {
-    return await this.locator.locator(".expression-info-data-type").nth(0).innerText();
+    return await this.locator.getByTestId("kie-tools--bee--expression-info-data-type").nth(0).innerText();
   }
 
   get content() {

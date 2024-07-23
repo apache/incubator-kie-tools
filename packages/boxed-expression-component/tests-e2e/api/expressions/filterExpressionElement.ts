@@ -29,34 +29,28 @@ export class FilterExpressionElement {
   ) {}
 
   get in() {
-    return new ChildExpression(
-      this.locator.getByTestId("kie-tools--boxed-expression-component--filter-collection-in").nth(0),
-      this.monaco
-    );
+    return new ChildExpression(this.locator.getByTestId("kie-tools--bee--filter-collection-in").nth(0), this.monaco);
   }
 
   get match() {
-    return new ChildExpression(
-      this.locator.getByTestId("kie-tools--boxed-expression-component--filter-collection-match").nth(0),
-      this.monaco
-    );
+    return new ChildExpression(this.locator.getByTestId("kie-tools--bee--filter-collection-match").nth(0), this.monaco);
   }
 
-  get nameAndDataTypeCell() {
+  get expressionHeaderCell() {
     return new NameAndDataTypeCell(this.locator.getByRole("columnheader"));
   }
 
   public async fill(args: { collectionIn: any[]; collectionMatch: any }) {
     for (let i = 0; i < args.collectionIn.length; i++) {
       await this.monaco.fill({
-        monacoParentLocator: this.locator.getByTestId("kie-tools--boxed-expression-component--filter-collection-in"),
+        monacoParentLocator: this.locator.getByTestId("kie-tools--bee--filter-collection-in"),
         content: args.collectionIn[i],
         nth: i,
       });
     }
 
     await this.monaco.fill({
-      monacoParentLocator: this.locator.getByTestId("kie-tools--boxed-expression-component--filter-collection-match"),
+      monacoParentLocator: this.locator.getByTestId("kie-tools--bee--filter-collection-match"),
       content: args.collectionMatch,
     });
   }

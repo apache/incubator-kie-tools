@@ -36,64 +36,70 @@ test.describe("Relation context menu", () => {
     });
 
     test("should open row context menu and insert row above", async ({ bee }) => {
-      await bee.expression.asRelation().cellAt({ row: 1, column: 1 }).fill("test");
-      await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.open();
-      await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.option("Insert above").click();
-      await bee.expression.asRelation().cellAt({ row: 1, column: 1 }).fill("new cell");
-      await expect(bee.expression.asRelation().cellAt({ row: 1, column: 1 }).content).toContainText("new cell");
-      await expect(bee.expression.asRelation().cellAt({ row: 2, column: 1 }).content).toContainText("test");
+      const relationExpression = bee.expression.asRelation();
+      await relationExpression.cellAt({ row: 1, column: 1 }).fill("test");
+      await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.open();
+      await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.option("Insert above").click();
+      await relationExpression.cellAt({ row: 1, column: 1 }).fill("new cell");
+      await expect(relationExpression.cellAt({ row: 1, column: 1 }).content).toContainText("new cell");
+      await expect(relationExpression.cellAt({ row: 2, column: 1 }).content).toContainText("test");
     });
 
     test("should open row context menu and insert row below", async ({ bee }) => {
-      await bee.expression.asRelation().cellAt({ row: 1, column: 1 }).fill("test");
-      await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.open();
-      await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.option("Insert below").click();
-      await bee.expression.asRelation().cellAt({ row: 2, column: 1 }).fill("new cell");
-      await expect(bee.expression.asRelation().cellAt({ row: 1, column: 1 }).content).toContainText("test");
-      await expect(bee.expression.asRelation().cellAt({ row: 2, column: 1 }).content).toContainText("new cell");
+      const relationExpression = bee.expression.asRelation();
+      await relationExpression.cellAt({ row: 1, column: 1 }).fill("test");
+      await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.open();
+      await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.option("Insert below").click();
+      await relationExpression.cellAt({ row: 2, column: 1 }).fill("new cell");
+      await expect(relationExpression.cellAt({ row: 1, column: 1 }).content).toContainText("test");
+      await expect(relationExpression.cellAt({ row: 2, column: 1 }).content).toContainText("new cell");
     });
 
     test("should open row context menu and insert multiples rows above", async ({ bee }) => {
-      await bee.expression.asRelation().cellAt({ row: 1, column: 1 }).fill("test");
-      await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.open();
-      await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.option("Insert").click();
-      await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.button("plus").click();
-      await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.button("Insert").click();
-      await expect(bee.expression.asRelation().cellAt({ row: 4, column: 1 }).content).toContainText("test");
+      const relationExpression = bee.expression.asRelation();
+      await relationExpression.cellAt({ row: 1, column: 1 }).fill("test");
+      await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.open();
+      await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.option("Insert").click();
+      await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.button("plus").click();
+      await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.button("Insert").click();
+      await expect(relationExpression.cellAt({ row: 4, column: 1 }).content).toContainText("test");
     });
 
     test("should open row context menu and insert multiples rows below", async ({ bee }) => {
-      await bee.expression.asRelation().cellAt({ row: 1, column: 1 }).fill("test");
-      await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.open();
-      await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.option("Insert").click();
-      await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.button("minus").click();
-      await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.radio("Below").click();
-      await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.button("Insert").click();
+      const relationExpression = bee.expression.asRelation();
+      await relationExpression.cellAt({ row: 1, column: 1 }).fill("test");
+      await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.open();
+      await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.option("Insert").click();
+      await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.button("minus").click();
+      await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.radio("Below").click();
+      await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.button("Insert").click();
 
-      await expect(bee.expression.asRelation().cellAt({ row: 1, column: 1 }).content).toContainText("test");
-      await expect(bee.expression.asRelation().cellAt({ row: 2, column: 1 }).content).not.toContainText("test");
+      await expect(relationExpression.cellAt({ row: 1, column: 1 }).content).toContainText("test");
+      await expect(relationExpression.cellAt({ row: 2, column: 1 }).content).not.toContainText("test");
     });
 
     test("should open row context menu and delete row", async ({ bee }) => {
-      await bee.expression.asRelation().cellAt({ row: 1, column: 1 }).fill("test");
-      await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.open();
-      await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.option("Insert above").click();
+      const relationExpression = bee.expression.asRelation();
+      await relationExpression.cellAt({ row: 1, column: 1 }).fill("test");
+      await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.open();
+      await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.option("Insert above").click();
 
-      await expect(bee.expression.asRelation().cellAt({ row: 2, column: 1 }).content).toContainText("test");
+      await expect(relationExpression.cellAt({ row: 2, column: 1 }).content).toContainText("test");
 
-      await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.open();
-      await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.option("Delete").click();
+      await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.open();
+      await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.option("Delete").click();
 
-      await expect(bee.expression.asRelation().cellAt({ row: 1, column: 1 }).content).toContainText("test");
+      await expect(relationExpression.cellAt({ row: 1, column: 1 }).content).toContainText("test");
     });
 
     test("should open row context menu and duplicate row", async ({ bee }) => {
-      await bee.expression.asRelation().cellAt({ row: 1, column: 1 }).fill("test");
-      await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.open();
-      await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.option("Duplicate").click();
+      const relationExpression = bee.expression.asRelation();
+      await relationExpression.cellAt({ row: 1, column: 1 }).fill("test");
+      await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.open();
+      await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.option("Duplicate").click();
 
-      await expect(bee.expression.asRelation().cellAt({ row: 2, column: 1 }).content).toContainText("test");
-      await expect(bee.expression.asRelation().cellAt({ row: 1, column: 1 }).content).toContainText("test");
+      await expect(relationExpression.cellAt({ row: 2, column: 1 }).content).toContainText("test");
+      await expect(relationExpression.cellAt({ row: 1, column: 1 }).content).toContainText("test");
     });
   });
 
@@ -103,92 +109,83 @@ test.describe("Relation context menu", () => {
     });
 
     test("shouldn't render row context menu", async ({ bee }) => {
-      await bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.open();
-      await expect(bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.heading("COLUMNS")).toBeAttached();
-      await expect(bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.heading("SELECTION")).toBeAttached();
-      await expect(bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.heading("ROWS")).not.toBeAttached();
+      const relationExpression = bee.expression.asRelation();
+      await relationExpression.columnHeaderAtIndex(1).contextMenu.open();
+      await expect(relationExpression.columnHeaderAtIndex(1).contextMenu.heading("COLUMNS")).toBeAttached();
+      await expect(relationExpression.columnHeaderAtIndex(1).contextMenu.heading("SELECTION")).toBeAttached();
+      await expect(relationExpression.columnHeaderAtIndex(1).contextMenu.heading("ROWS")).not.toBeAttached();
     });
 
     test("should open column context menu and insert column right", async ({ bee }) => {
-      await bee.expression.asRelation().cellAt({ row: 1, column: 1 }).fill("test");
-      await bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.open();
-      await bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.option("Insert right").click();
-      await expect(bee.expression.asRelation().cellAt({ row: 1, column: 1 }).content).toContainText("test");
+      const relationExpression = bee.expression.asRelation();
+      await relationExpression.cellAt({ row: 1, column: 1 }).fill("test");
+      await relationExpression.columnHeaderAtIndex(1).contextMenu.open();
+      await relationExpression.columnHeaderAtIndex(1).contextMenu.option("Insert right").click();
+      await expect(relationExpression.cellAt({ row: 1, column: 1 }).content).toContainText("test");
     });
 
     test("should open column context menu and insert column left", async ({ bee }) => {
-      await bee.expression.asRelation().cellAt({ row: 1, column: 1 }).fill("test");
-      await bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.open();
-      await bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.option("Insert left").click();
-      await expect(bee.expression.asRelation().cellAt({ row: 1, column: 2 }).content).toContainText("test");
+      const relationExpression = bee.expression.asRelation();
+      await relationExpression.cellAt({ row: 1, column: 1 }).fill("test");
+      await relationExpression.columnHeaderAtIndex(1).contextMenu.open();
+      await relationExpression.columnHeaderAtIndex(1).contextMenu.option("Insert left").click();
+      await expect(relationExpression.cellAt({ row: 1, column: 2 }).content).toContainText("test");
     });
 
     test("should open column context menu and insert multiples columns on right", async ({ bee }) => {
-      await bee.expression.asRelation().cellAt({ row: 1, column: 1 }).fill("test-1");
-      await bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.open();
-      await bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.option("Insert").click();
-      await bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.button("plus").click();
-      await bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.button("Insert").click();
-      await bee.expression.asRelation().cellAt({ row: 1, column: 2 }).fill("test-2");
-      await bee.expression.asRelation().cellAt({ row: 1, column: 3 }).fill("test-3");
-      await bee.expression.asRelation().cellAt({ row: 1, column: 4 }).fill("test-4");
+      const relationExpression = bee.expression.asRelation();
+      await relationExpression.cellAt({ row: 1, column: 1 }).fill("test-1");
+      await relationExpression.columnHeaderAtIndex(1).contextMenu.open();
+      await relationExpression.columnHeaderAtIndex(1).contextMenu.option("Insert").click();
+      await relationExpression.columnHeaderAtIndex(1).contextMenu.button("plus").click();
+      await relationExpression.columnHeaderAtIndex(1).contextMenu.button("Insert").click();
+      await relationExpression.cellAt({ row: 1, column: 2 }).fill("test-2");
+      await relationExpression.cellAt({ row: 1, column: 3 }).fill("test-3");
+      await relationExpression.cellAt({ row: 1, column: 4 }).fill("test-4");
 
-      await expect(bee.expression.asRelation().cellAt({ row: 1, column: 1 }).content).toContainText("test-1");
-      await expect(bee.expression.asRelation().cellAt({ row: 1, column: 2 }).content).toContainText("test-2");
-      await expect(bee.expression.asRelation().cellAt({ row: 1, column: 3 }).content).toContainText("test-3");
-      await expect(bee.expression.asRelation().cellAt({ row: 1, column: 4 }).content).toContainText("test-4");
+      await expect(relationExpression.cellAt({ row: 1, column: 1 }).content).toContainText("test-1");
+      await expect(relationExpression.cellAt({ row: 1, column: 2 }).content).toContainText("test-2");
+      await expect(relationExpression.cellAt({ row: 1, column: 3 }).content).toContainText("test-3");
+      await expect(relationExpression.cellAt({ row: 1, column: 4 }).content).toContainText("test-4");
     });
 
     test("should open column context menu and insert multiples columns on left", async ({ bee }) => {
-      await bee.expression.asRelation().cellAt({ row: 1, column: 1 }).fill("test-1");
-      await bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.open();
-      await bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.option("Insert").click();
-      await bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.button("minus").click();
-      await bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.radio("To the left").click();
-      await bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.button("Insert").click();
-      await bee.expression.asRelation().cellAt({ row: 1, column: 1 }).fill("test-2");
+      const relationExpression = bee.expression.asRelation();
+      await relationExpression.cellAt({ row: 1, column: 1 }).fill("test-1");
+      await relationExpression.columnHeaderAtIndex(1).contextMenu.open();
+      await relationExpression.columnHeaderAtIndex(1).contextMenu.option("Insert").click();
+      await relationExpression.columnHeaderAtIndex(1).contextMenu.button("minus").click();
+      await relationExpression.columnHeaderAtIndex(1).contextMenu.radio("To the left").click();
+      await relationExpression.columnHeaderAtIndex(1).contextMenu.button("Insert").click();
+      await relationExpression.cellAt({ row: 1, column: 1 }).fill("test-2");
 
-      await expect(bee.expression.asRelation().cellAt({ row: 1, column: 1 }).content).toContainText("test-2");
-      await expect(bee.expression.asRelation().cellAt({ row: 1, column: 2 }).content).toContainText("test-1");
+      await expect(relationExpression.cellAt({ row: 1, column: 1 }).content).toContainText("test-2");
+      await expect(relationExpression.cellAt({ row: 1, column: 2 }).content).toContainText("test-1");
     });
 
     test("should open column context menu and delete column", async ({ bee }) => {
-      await bee.expression.asRelation().cellAt({ row: 1, column: 1 }).fill("test");
-      await bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.open();
-      await bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.option("Insert left").click();
-      await expect(bee.expression.asRelation().cellAt({ row: 1, column: 2 }).content).toContainText("test");
-      await bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.open();
-      await bee.expression.asRelation().columnHeaderAtIndex(1).contextMenu.option("Delete").click();
-      await expect(bee.expression.asRelation().cellAt({ row: 1, column: 1 }).content).toContainText("test");
+      const relationExpression = bee.expression.asRelation();
+      await relationExpression.cellAt({ row: 1, column: 1 }).fill("test");
+      await relationExpression.columnHeaderAtIndex(1).contextMenu.open();
+      await relationExpression.columnHeaderAtIndex(1).contextMenu.option("Insert left").click();
+      await expect(relationExpression.cellAt({ row: 1, column: 2 }).content).toContainText("test");
+      await relationExpression.columnHeaderAtIndex(1).contextMenu.open();
+      await relationExpression.columnHeaderAtIndex(1).contextMenu.option("Delete").click();
+      await expect(relationExpression.cellAt({ row: 1, column: 1 }).content).toContainText("test");
     });
   });
 
   test("should reset insert multiples menu when opening another cell context menu", async ({ bee, stories }) => {
     await stories.openRelation();
-    await bee.expression.asRelation().cellAt({ row: 1, column: 1 }).fill("test");
-    await bee.expression.asRelation().cellAt({ row: 1, column: 1 }).contextMenu.open();
-    await bee.expression.asRelation().cellAt({ row: 1, column: 1 }).contextMenu.option("Insert").first().click();
+    const relationExpression = bee.expression.asRelation();
+    const cellAt1_1 = relationExpression.cellAt({ row: 1, column: 1 });
+    const cellAt1_0 = relationExpression.cellAt({ row: 1, column: 0 });
+    await cellAt1_1.fill("test");
+    await cellAt1_1.contextMenu.open();
+    await cellAt1_1.contextMenu.option("Insert").first().click();
+    await cellAt1_0.contextMenu.open();
 
-    await bee.expression.asRelation().cellAt({ row: 1, column: 0 }).contextMenu.open();
-
-    await expect(
-      bee.expression
-        .asRelation()
-        .cellAt({
-          row: 1,
-          column: 0,
-        })
-        .contextMenu.heading("ROWS")
-    ).toBeAttached();
-
-    await expect(
-      bee.expression
-        .asRelation()
-        .cellAt({
-          row: 1,
-          column: 0,
-        })
-        .contextMenu.heading("SELECTION")
-    ).toBeAttached();
+    await expect(cellAt1_0.contextMenu.heading("ROWS")).toBeAttached();
+    await expect(cellAt1_0.contextMenu.heading("SELECTION")).toBeAttached();
   });
 });

@@ -36,7 +36,7 @@ export class ContextExpressionElement {
   }
 
   get result() {
-    return new ChildExpression(this.locator.locator(`.additional-row`).nth(0), this.monaco);
+    return new ChildExpression(this.locator.getByTestId(`kie-tools--bee--additional-row`).nth(0), this.monaco);
   }
 
   async entriesCount() {

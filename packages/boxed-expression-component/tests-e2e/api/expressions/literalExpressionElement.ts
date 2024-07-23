@@ -40,7 +40,7 @@ export class LiteralExpressionElement {
     return new ExpressionCell(this.locator.getByRole("cell").nth(0), this.monaco);
   }
 
-  get nameAndDataTypeCell() {
+  get expressionHeaderCell() {
     return new NameAndDataTypeCell(this.locator.getByRole("columnheader"));
   }
 }

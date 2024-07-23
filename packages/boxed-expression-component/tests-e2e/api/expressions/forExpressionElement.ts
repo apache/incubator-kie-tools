@@ -57,7 +57,7 @@ export class ForExpressionElement {
     );
   }
 
-  get nameAndDataTypeCell() {
+  get expressionHeaderCell() {
     return new NameAndDataTypeCell(this.locator.getByRole("columnheader"));
   }
 }

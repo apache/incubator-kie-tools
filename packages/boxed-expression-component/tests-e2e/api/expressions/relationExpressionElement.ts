@@ -47,7 +47,7 @@ export class RelationExpressionElement {
     }
   }
 
-  get nameAndDataTypeCell() {
+  get expressionHeaderCell() {
     return new NameAndDataTypeCell(this.locator.getByRole("columnheader").nth(1));
   }
 

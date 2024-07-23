@@ -63,21 +63,21 @@ test.describe("Create Boxed Function", () => {
 
     await expect(page.getByRole("row", { name: "2 Model (string) Options menu" }).locator("div").nth(3)).toBeAttached();
     await page.getByLabel("-- None selected --").click();
-    await page.getByTestId("pmml-document").click();
+    await page.getByTestId("kie-tools--bee--pmml-document").click();
     await expect(page.getByLabel("document")).toBeAttached();
     await page.getByLabel("-- None selected --").click();
-    await page.getByTestId("pmml-model").click();
+    await page.getByTestId("kie-tools--bee--pmml-model").click();
     await expect(page.getByLabel("model")).toBeAttached();
 
     await page.getByLabel("document").click();
-    await page.getByTestId("pmml-mining pmml").click();
+    await page.getByTestId("kie-tools--bee--pmml-mining pmml").click();
     await expect(page.getByLabel("mining pmml")).toBeAttached();
     await page.getByLabel("-- None selected --").click();
-    await page.getByTestId("pmml-MiningModelSum").click();
+    await page.getByTestId("kie-tools--bee--pmml-MiningModelSum").click();
     await expect(page.getByLabel("MiningModelSum")).toBeAttached();
 
     await page.getByLabel("mining pmml").click();
-    await page.getByTestId("pmml-regression pmml").click();
+    await page.getByTestId("kie-tools--bee--pmml-regression pmml").click();
     await expect(page.getByLabel("regression pmml")).toBeAttached();
     await page.getByLabel("-- None selected --").click();
     await page.getByTestId("pmml-RegressionLinear").click();

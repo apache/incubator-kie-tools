@@ -120,27 +120,29 @@ test.describe("Decision table context menu", () => {
       });
 
       test("should open input column context menu and insert column right", async ({ page, bee }) => {
-        const cellAt1_1 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 1 });
+        const decisionTable = bee.expression.asDecisionTable();
+        const cellAt1_1 = decisionTable.cellAt({ row: 1, column: 1 });
         await cellAt1_1.fill("test");
-        await bee.expression.asDecisionTable().inputHeaderAt(0).contextMenu.open();
-        await bee.expression.asDecisionTable().inputHeaderAt(0).contextMenu.option("Insert right").click();
+        await decisionTable.inputHeaderAt(0).contextMenu.open();
+        await decisionTable.inputHeaderAt(0).contextMenu.option("Insert right").click();
 
-        await expect(bee.expression.asDecisionTable().inputHeaderAt(0).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().inputHeaderAt(1).content).toBeAttached();
+        await expect(decisionTable.inputHeaderAt(0).content).toBeAttached();
+        await expect(decisionTable.inputHeaderAt(1).content).toBeAttached();
         await expect(cellAt1_1.content).toContainText("test");
 
         await expect(page.getByRole("cell")).toHaveCount(5);
       });
 
       test("should open input column context menu and insert column left", async ({ page, bee }) => {
-        const cellAt1_1 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 1 });
-        const cellAt1_2 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 2 });
+        const decisionTable = bee.expression.asDecisionTable();
+        const cellAt1_1 = decisionTable.cellAt({ row: 1, column: 1 });
+        const cellAt1_2 = decisionTable.cellAt({ row: 1, column: 2 });
         await cellAt1_1.fill("test");
-        await bee.expression.asDecisionTable().inputHeaderAt(0).contextMenu.open();
-        await bee.expression.asDecisionTable().inputHeaderAt(0).contextMenu.option("Insert left").click();
+        await decisionTable.inputHeaderAt(0).contextMenu.open();
+        await decisionTable.inputHeaderAt(0).contextMenu.option("Insert left").click();
 
-        await expect(bee.expression.asDecisionTable().inputHeaderAt(1).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().inputHeaderAt(0).content).toBeAttached();
+        await expect(decisionTable.inputHeaderAt(1).content).toBeAttached();
+        await expect(decisionTable.inputHeaderAt(0).content).toBeAttached();
         await expect(cellAt1_1.content).not.toContainText("test");
         await expect(cellAt1_2.content).toContainText("test");
 
@@ -148,10 +150,11 @@ test.describe("Decision table context menu", () => {
       });
 
       test("should open input column context menu and insert multiples columns on right", async ({ page, bee }) => {
-        const cellAt1_1 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 1 });
+        const decisionTable = bee.expression.asDecisionTable();
+        const cellAt1_1 = decisionTable.cellAt({ row: 1, column: 1 });
         await cellAt1_1.fill("test");
 
-        const inputHeader = bee.expression.asDecisionTable().inputHeaderAt(0);
+        const inputHeader = decisionTable.inputHeaderAt(0);
         await inputHeader.contextMenu.open();
 
         await inputHeader.contextMenu.option("Insert").click();
@@ -159,10 +162,10 @@ test.describe("Decision table context menu", () => {
         await inputHeader.contextMenu.radio("To the right").click();
         await inputHeader.contextMenu.button("Insert").click();
 
-        await expect(bee.expression.asDecisionTable().inputHeaderAt(0).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().inputHeaderAt(1).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().inputHeaderAt(2).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().inputHeaderAt(3).content).toBeAttached();
+        await expect(decisionTable.inputHeaderAt(0).content).toBeAttached();
+        await expect(decisionTable.inputHeaderAt(1).content).toBeAttached();
+        await expect(decisionTable.inputHeaderAt(2).content).toBeAttached();
+        await expect(decisionTable.inputHeaderAt(3).content).toBeAttached();
 
         await expect(cellAt1_1.content).toContainText("test");
 
@@ -170,11 +173,12 @@ test.describe("Decision table context menu", () => {
       });
 
       test("should open input column context menu and insert multiples columns on left", async ({ page, bee }) => {
-        const cellAt1_1 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 1 });
-        const cellAt1_2 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 2 });
+        const decisionTable = bee.expression.asDecisionTable();
+        const cellAt1_1 = decisionTable.cellAt({ row: 1, column: 1 });
+        const cellAt1_2 = decisionTable.cellAt({ row: 1, column: 2 });
         await cellAt1_1.fill("test");
 
-        const inputHeader = bee.expression.asDecisionTable().inputHeaderAt(0);
+        const inputHeader = decisionTable.inputHeaderAt(0);
         await inputHeader.contextMenu.open();
 
         await inputHeader.contextMenu.option("Insert").click();
@@ -182,8 +186,8 @@ test.describe("Decision table context menu", () => {
         await inputHeader.contextMenu.radio("To the left").click();
         await inputHeader.contextMenu.button("Insert").click();
 
-        await expect(bee.expression.asDecisionTable().inputHeaderAt(0).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().inputHeaderAt(1).content).toBeAttached();
+        await expect(decisionTable.inputHeaderAt(0).content).toBeAttached();
+        await expect(decisionTable.inputHeaderAt(1).content).toBeAttached();
 
         await expect(cellAt1_2.content).toContainText("test");
         await expect(cellAt1_1.content).not.toContainText("test");
@@ -192,22 +196,23 @@ test.describe("Decision table context menu", () => {
       });
 
       test("should open input column context menu and delete column", async ({ page, bee }) => {
-        const cellAt1_1 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 1 });
-        const cellAt1_2 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 2 });
+        const decisionTable = bee.expression.asDecisionTable();
+        const cellAt1_1 = decisionTable.cellAt({ row: 1, column: 1 });
+        const cellAt1_2 = decisionTable.cellAt({ row: 1, column: 2 });
         await cellAt1_1.fill("test");
 
-        const inputHeader = bee.expression.asDecisionTable().inputHeaderAt(0);
+        const inputHeader = decisionTable.inputHeaderAt(0);
         await inputHeader.contextMenu.open();
         await inputHeader.contextMenu.option("Insert left").click();
-        await expect(bee.expression.asDecisionTable().inputHeaderAt(0).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().inputHeaderAt(1).content).toBeAttached();
+        await expect(decisionTable.inputHeaderAt(0).content).toBeAttached();
+        await expect(decisionTable.inputHeaderAt(1).content).toBeAttached();
 
         await expect(cellAt1_2.content).toContainText("test");
         await expect(cellAt1_1.content).not.toContainText("test");
 
         await inputHeader.contextMenu.open();
         await inputHeader.contextMenu.option("Delete").click();
-        await expect(bee.expression.asDecisionTable().inputHeaderAt(0).content).toBeAttached();
+        await expect(decisionTable.inputHeaderAt(0).content).toBeAttached();
         await expect(cellAt1_1.content).toContainText("test");
 
         await expect(page.getByRole("cell")).toHaveCount(4);
@@ -231,28 +236,30 @@ test.describe("Decision table context menu", () => {
       });
 
       test("should open output column context menu and insert column right", async ({ page, bee }) => {
-        const cellAt1_2 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 2 });
+        const decisionTable = bee.expression.asDecisionTable();
+        const cellAt1_2 = decisionTable.cellAt({ row: 1, column: 2 });
         await cellAt1_2.fill("test");
-        await bee.expression.asDecisionTable().outputHeaderAt(0).contextMenu.open();
-        await bee.expression.asDecisionTable().outputHeaderAt(0).contextMenu.option("Insert right").click();
+        await decisionTable.outputHeaderAt(0).contextMenu.open();
+        await decisionTable.outputHeaderAt(0).contextMenu.option("Insert right").click();
 
-        await expect(bee.expression.asDecisionTable().nameAndDataTypeCell.content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().outputHeaderAt(0).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().outputHeaderAt(1).content).toBeAttached();
+        await expect(decisionTable.expressionHeaderCell.content).toBeAttached();
+        await expect(decisionTable.outputHeaderAt(0).content).toBeAttached();
+        await expect(decisionTable.outputHeaderAt(1).content).toBeAttached();
         await expect(cellAt1_2.content).toContainText("test");
         await expect(page.getByRole("cell")).toHaveCount(5);
       });
 
       test("should open output column context menu and insert column left", async ({ page, bee }) => {
-        const cellAt1_2 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 2 });
-        const cellAt1_3 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 3 });
+        const decisionTable = bee.expression.asDecisionTable();
+        const cellAt1_2 = decisionTable.cellAt({ row: 1, column: 2 });
+        const cellAt1_3 = decisionTable.cellAt({ row: 1, column: 3 });
         await cellAt1_2.fill("test");
-        await bee.expression.asDecisionTable().outputHeaderAt(0).contextMenu.open();
-        await bee.expression.asDecisionTable().outputHeaderAt(0).contextMenu.option("Insert left").click();
+        await decisionTable.outputHeaderAt(0).contextMenu.open();
+        await decisionTable.outputHeaderAt(0).contextMenu.option("Insert left").click();
 
-        await expect(bee.expression.asDecisionTable().nameAndDataTypeCell.content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().outputHeaderAt(0).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().outputHeaderAt(1).content).toBeAttached();
+        await expect(decisionTable.expressionHeaderCell.content).toBeAttached();
+        await expect(decisionTable.outputHeaderAt(0).content).toBeAttached();
+        await expect(decisionTable.outputHeaderAt(1).content).toBeAttached();
         await expect(cellAt1_2.content).not.toContainText("test");
         await expect(cellAt1_3.content).toContainText("test");
 
@@ -260,21 +267,22 @@ test.describe("Decision table context menu", () => {
       });
 
       test("should open output column context menu and insert multiples columns on right", async ({ page, bee }) => {
-        const cellAt1_2 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 2 });
+        const decisionTable = bee.expression.asDecisionTable();
+        const cellAt1_2 = decisionTable.cellAt({ row: 1, column: 2 });
         await cellAt1_2.fill("test");
 
-        const outputHeader = bee.expression.asDecisionTable().outputHeaderAt(0);
+        const outputHeader = decisionTable.outputHeaderAt(0);
         await outputHeader.contextMenu.open();
 
         await outputHeader.contextMenu.option("Insert").click();
         await outputHeader.contextMenu.button("plus").click();
         await outputHeader.contextMenu.button("Insert").click();
 
-        await expect(bee.expression.asDecisionTable().nameAndDataTypeCell.content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().outputHeaderAt(0).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().outputHeaderAt(1).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().outputHeaderAt(2).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().outputHeaderAt(3).content).toBeAttached();
+        await expect(decisionTable.expressionHeaderCell.content).toBeAttached();
+        await expect(decisionTable.outputHeaderAt(0).content).toBeAttached();
+        await expect(decisionTable.outputHeaderAt(1).content).toBeAttached();
+        await expect(decisionTable.outputHeaderAt(2).content).toBeAttached();
+        await expect(decisionTable.outputHeaderAt(3).content).toBeAttached();
 
         await expect(cellAt1_2.content).toContainText("test");
 
@@ -282,11 +290,12 @@ test.describe("Decision table context menu", () => {
       });
 
       test("should open output column context menu and insert multiples columns on left", async ({ page, bee }) => {
-        const cellAt1_2 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 2 });
-        const cellAt1_3 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 3 });
+        const decisionTable = bee.expression.asDecisionTable();
+        const cellAt1_2 = decisionTable.cellAt({ row: 1, column: 2 });
+        const cellAt1_3 = decisionTable.cellAt({ row: 1, column: 3 });
         await cellAt1_2.fill("test");
 
-        const outputHeader = bee.expression.asDecisionTable().outputHeaderAt(0);
+        const outputHeader = decisionTable.outputHeaderAt(0);
         await outputHeader.contextMenu.open();
 
         await outputHeader.contextMenu.option("Insert").click();
@@ -294,9 +303,9 @@ test.describe("Decision table context menu", () => {
         await outputHeader.contextMenu.radio("To the left").click();
         await outputHeader.contextMenu.button("Insert").click();
 
-        await expect(bee.expression.asDecisionTable().nameAndDataTypeCell.content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().outputHeaderAt(0).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().outputHeaderAt(1).content).toBeAttached();
+        await expect(decisionTable.expressionHeaderCell.content).toBeAttached();
+        await expect(decisionTable.outputHeaderAt(0).content).toBeAttached();
+        await expect(decisionTable.outputHeaderAt(1).content).toBeAttached();
 
         await expect(cellAt1_2.content).not.toContainText("test");
         await expect(cellAt1_3.content).toContainText("test");
@@ -305,29 +314,28 @@ test.describe("Decision table context menu", () => {
       });
 
       test("should open output column context menu and delete column", async ({ page, bee }) => {
-        const cellAt1_2 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 2 });
-        const cellAt1_3 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 3 });
+        const decisionTable = bee.expression.asDecisionTable();
+        const cellAt1_2 = decisionTable.cellAt({ row: 1, column: 2 });
+        const cellAt1_3 = decisionTable.cellAt({ row: 1, column: 3 });
         await cellAt1_2.fill("test");
 
-        const outputHeader = bee.expression.asDecisionTable().outputHeaderAt(0);
+        const outputHeader = decisionTable.outputHeaderAt(0);
         await outputHeader.contextMenu.open();
         await outputHeader.contextMenu.option("Insert left").click();
 
-        await expect(bee.expression.asDecisionTable().nameAndDataTypeCell.content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().outputHeaderAt(0).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().outputHeaderAt(1).content).toBeAttached();
+        await expect(decisionTable.expressionHeaderCell.content).toBeAttached();
+        await expect(decisionTable.outputHeaderAt(0).content).toBeAttached();
+        await expect(decisionTable.outputHeaderAt(1).content).toBeAttached();
 
         await expect(cellAt1_3.content).toContainText("test");
         await expect(cellAt1_2.content).not.toContainText("test");
 
-        await bee.expression.asDecisionTable().outputHeaderAt(1).contextMenu.open();
-        await bee.expression.asDecisionTable().outputHeaderAt(1).contextMenu.option("Delete").click();
+        await decisionTable.outputHeaderAt(1).contextMenu.open();
+        await decisionTable.outputHeaderAt(1).contextMenu.option("Delete").click();
 
-        await expect(bee.expression.asDecisionTable().nameAndDataTypeCell.content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().outputHeaderAt(1).content).not.toBeAttached();
-
+        await expect(decisionTable.expressionHeaderCell.content).toBeAttached();
+        await expect(decisionTable.outputHeaderAt(1).content).not.toBeAttached();
         await expect(cellAt1_2.content).toContainText("test");
-
         await expect(page.getByRole("cell")).toHaveCount(4);
       });
     });
@@ -348,30 +356,32 @@ test.describe("Decision table context menu", () => {
       });
 
       test("should open annotation column context menu and insert column right", async ({ page, bee }) => {
-        const cellAt1_3 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 3 });
+        const decisionTable = bee.expression.asDecisionTable();
+        const cellAt1_3 = decisionTable.cellAt({ row: 1, column: 3 });
         await cellAt1_3.fill("test");
 
-        const annotationHeader = bee.expression.asDecisionTable().annotationHeaderAt(0);
+        const annotationHeader = decisionTable.annotationHeaderAt(0);
         await annotationHeader.contextMenu.open();
         await annotationHeader.contextMenu.option("Insert right").click();
 
-        await expect(bee.expression.asDecisionTable().annotationHeaderAt(0).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().annotationHeaderAt(1).content).toBeAttached();
+        await expect(decisionTable.annotationHeaderAt(0).content).toBeAttached();
+        await expect(decisionTable.annotationHeaderAt(1).content).toBeAttached();
         await expect(cellAt1_3.content).toContainText("test");
         await expect(page.getByRole("cell")).toHaveCount(5);
       });
 
       test("should open annotation column context menu and insert column left", async ({ page, bee }) => {
-        const cellAt1_3 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 3 });
-        const cellAt1_4 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 4 });
+        const decisionTable = bee.expression.asDecisionTable();
+        const cellAt1_3 = decisionTable.cellAt({ row: 1, column: 3 });
+        const cellAt1_4 = decisionTable.cellAt({ row: 1, column: 4 });
         await cellAt1_3.fill("test");
 
-        const annotationHeader = bee.expression.asDecisionTable().annotationHeaderAt(0);
+        const annotationHeader = decisionTable.annotationHeaderAt(0);
         await annotationHeader.contextMenu.open();
         await annotationHeader.contextMenu.option("Insert left").click();
 
-        await expect(bee.expression.asDecisionTable().annotationHeaderAt(0).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().annotationHeaderAt(1).content).toBeAttached();
+        await expect(decisionTable.annotationHeaderAt(0).content).toBeAttached();
+        await expect(decisionTable.annotationHeaderAt(1).content).toBeAttached();
         await expect(cellAt1_4.content).toContainText("test");
         await expect(cellAt1_3.content).not.toContainText("test");
 
@@ -382,67 +392,64 @@ test.describe("Decision table context menu", () => {
         page,
         bee,
       }) => {
-        const cellAt1_3 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 3 });
+        const decisionTable = bee.expression.asDecisionTable();
+        const cellAt1_3 = decisionTable.cellAt({ row: 1, column: 3 });
         await cellAt1_3.fill("test");
 
-        const annotationHeader = bee.expression.asDecisionTable().annotationHeaderAt(0);
+        const annotationHeader = decisionTable.annotationHeaderAt(0);
         await annotationHeader.contextMenu.open();
-
         await annotationHeader.contextMenu.option("Insert").click();
         await annotationHeader.contextMenu.button("plus").click();
         await annotationHeader.contextMenu.radio("To the right").click();
         await annotationHeader.contextMenu.button("Insert").click();
 
-        await expect(bee.expression.asDecisionTable().annotationHeaderAt(0).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().annotationHeaderAt(1).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().annotationHeaderAt(2).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().annotationHeaderAt(3).content).toBeAttached();
-
+        await expect(decisionTable.annotationHeaderAt(0).content).toBeAttached();
+        await expect(decisionTable.annotationHeaderAt(1).content).toBeAttached();
+        await expect(decisionTable.annotationHeaderAt(2).content).toBeAttached();
+        await expect(decisionTable.annotationHeaderAt(3).content).toBeAttached();
         await expect(cellAt1_3.content).toContainText("test");
-
         await expect(page.getByRole("cell")).toHaveCount(7);
       });
 
       test("should open annotation column context menu and insert multiples columns on left", async ({ page, bee }) => {
-        const cellAt1_3 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 3 });
-        const cellAt1_4 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 4 });
+        const decisionTable = bee.expression.asDecisionTable();
+        const cellAt1_3 = decisionTable.cellAt({ row: 1, column: 3 });
+        const cellAt1_4 = decisionTable.cellAt({ row: 1, column: 4 });
         await cellAt1_3.fill("test");
 
-        const annotationHeader = bee.expression.asDecisionTable().annotationHeaderAt(0);
+        const annotationHeader = decisionTable.annotationHeaderAt(0);
         await annotationHeader.contextMenu.open();
-
         await annotationHeader.contextMenu.option("Insert").click();
         await annotationHeader.contextMenu.button("minus").click();
         await annotationHeader.contextMenu.radio("To the left").click();
         await annotationHeader.contextMenu.button("Insert").click();
 
-        await expect(bee.expression.asDecisionTable().annotationHeaderAt(0).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().annotationHeaderAt(1).content).toBeAttached();
-
+        await expect(decisionTable.annotationHeaderAt(0).content).toBeAttached();
+        await expect(decisionTable.annotationHeaderAt(1).content).toBeAttached();
         await expect(cellAt1_4.content).toContainText("test");
         await expect(cellAt1_3.content).not.toContainText("test");
-
         await expect(page.getByRole("cell")).toHaveCount(5);
       });
 
       test("should open annotation column context menu and delete column", async ({ page, bee }) => {
-        const cellAt1_3 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 3 });
-        const cellAt1_4 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 4 });
+        const decisionTable = bee.expression.asDecisionTable();
+        const cellAt1_3 = decisionTable.cellAt({ row: 1, column: 3 });
+        const cellAt1_4 = decisionTable.cellAt({ row: 1, column: 4 });
         await cellAt1_3.fill("test");
 
-        const annotationHeader = bee.expression.asDecisionTable().annotationHeaderAt(0);
+        const annotationHeader = decisionTable.annotationHeaderAt(0);
         await annotationHeader.contextMenu.open();
         await annotationHeader.contextMenu.option("Insert left").click();
-        await expect(bee.expression.asDecisionTable().annotationHeaderAt(0).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().annotationHeaderAt(1).content).toBeAttached();
+        await expect(decisionTable.annotationHeaderAt(0).content).toBeAttached();
+        await expect(decisionTable.annotationHeaderAt(1).content).toBeAttached();
 
         await expect(cellAt1_4.content).toContainText("test");
         await expect(cellAt1_3.content).not.toContainText("test");
 
         await annotationHeader.contextMenu.open();
         await annotationHeader.contextMenu.option("Delete").click();
-        await expect(bee.expression.asDecisionTable().annotationHeaderAt(0).content).toBeAttached();
-        await expect(bee.expression.asDecisionTable().annotationHeaderAt(1).content).not.toBeAttached();
+        await expect(decisionTable.annotationHeaderAt(0).content).toBeAttached();
+        await expect(decisionTable.annotationHeaderAt(1).content).not.toBeAttached();
         await expect(cellAt1_3.content).toContainText("test");
 
         await expect(page.getByRole("cell")).toHaveCount(4);
@@ -471,19 +478,21 @@ test.describe("Decision table context menu", () => {
 
     test.describe("Add decision rules", () => {
       test("should add row above by positioning mouse on the index cell upper section", async ({ bee }) => {
-        const cellAt1_1 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 1 });
-        const cellAt2_1 = bee.expression.asDecisionTable().cellAt({ row: 2, column: 1 });
+        const decisionTable = bee.expression.asDecisionTable();
+        const cellAt1_1 = decisionTable.cellAt({ row: 1, column: 1 });
+        const cellAt2_1 = decisionTable.cellAt({ row: 2, column: 1 });
         await cellAt1_1.fill("test");
-        await bee.expression.asDecisionTable().addRowAtTop();
+        await decisionTable.addRowAtTop();
         await expect(cellAt2_1.content).toContainText("test");
         await expect(cellAt1_1.content).not.toContainText("test");
       });
 
       test("should add row below by positioning mouse on the index cell lower section", async ({ bee }) => {
-        const cellAt1_1 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 1 });
-        const cellAt2_1 = bee.expression.asDecisionTable().cellAt({ row: 2, column: 1 });
+        const decisionTable = bee.expression.asDecisionTable();
+        const cellAt1_1 = decisionTable.cellAt({ row: 1, column: 1 });
+        const cellAt2_1 = decisionTable.cellAt({ row: 2, column: 1 });
         await cellAt1_1.fill("test");
-        await bee.expression.asDecisionTable().addRowAtBottomOfIndex(1);
+        await decisionTable.addRowAtBottomOfIndex(1);
         await expect(cellAt1_1.content).toContainText("test");
         await expect(cellAt2_1.content).toContainText("-");
       });
@@ -492,28 +501,30 @@ test.describe("Decision table context menu", () => {
     test.describe("Add columns", () => {
       test.describe("Input columns", () => {
         test("should add column left by positioning mouse on the header cell left section", async ({ page, bee }) => {
-          const cellAt1_1 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 1 });
-          const cellAt1_2 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 2 });
+          const decisionTable = bee.expression.asDecisionTable();
+          const cellAt1_1 = decisionTable.cellAt({ row: 1, column: 1 });
+          const cellAt1_2 = decisionTable.cellAt({ row: 1, column: 2 });
           await cellAt1_1.fill("test");
 
-          await bee.expression.asDecisionTable().addInputAtStart();
+          await decisionTable.addInputAtStart();
 
-          await expect(bee.expression.asDecisionTable().inputHeaderAt(0).content).toBeAttached();
-          await expect(bee.expression.asDecisionTable().inputHeaderAt(1).content).toBeAttached();
+          await expect(decisionTable.inputHeaderAt(0).content).toBeAttached();
+          await expect(decisionTable.inputHeaderAt(1).content).toBeAttached();
           await expect(cellAt1_1.content).not.toContainText("test");
           await expect(cellAt1_2.content).toContainText("test");
           await expect(page.getByRole("cell")).toHaveCount(5);
         });
 
         test("should add column right by positioning mouse on the header cell right section", async ({ page, bee }) => {
-          const cellAt1_1 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 1 });
-          const cellAt1_2 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 2 });
+          const decisionTable = bee.expression.asDecisionTable();
+          const cellAt1_1 = decisionTable.cellAt({ row: 1, column: 1 });
+          const cellAt1_2 = decisionTable.cellAt({ row: 1, column: 2 });
           await cellAt1_1.fill("test");
 
-          await bee.expression.asDecisionTable().addInputAtIndex(1);
+          await decisionTable.addInputAtIndex(1);
 
-          await expect(bee.expression.asDecisionTable().inputHeaderAt(0).content).toBeAttached();
-          await expect(bee.expression.asDecisionTable().inputHeaderAt(1).content).toBeAttached();
+          await expect(decisionTable.inputHeaderAt(0).content).toBeAttached();
+          await expect(decisionTable.inputHeaderAt(1).content).toBeAttached();
           await expect(cellAt1_1.content).toContainText("test");
           await expect(cellAt1_2.content).not.toContainText("test");
           await expect(page.getByRole("cell")).toHaveCount(5);
@@ -522,30 +533,32 @@ test.describe("Decision table context menu", () => {
 
       test.describe("Output columns", () => {
         test("should add column left by positioning mouse on the header cell left section", async ({ page, bee }) => {
-          const cellAt1_2 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 2 });
-          const cellAt1_3 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 3 });
+          const decisionTable = bee.expression.asDecisionTable();
+          const cellAt1_2 = decisionTable.cellAt({ row: 1, column: 2 });
+          const cellAt1_3 = decisionTable.cellAt({ row: 1, column: 3 });
           await cellAt1_2.fill("test");
 
-          await bee.expression.asDecisionTable().addOutputAtStart();
+          await decisionTable.addOutputAtStart();
 
-          await expect(bee.expression.asDecisionTable().outputHeaderAt(0).content).toBeAttached();
-          await expect(bee.expression.asDecisionTable().outputHeaderAt(1).content).toBeAttached();
-          await expect(bee.expression.asDecisionTable().outputHeaderAt(2).content).toBeAttached();
+          await expect(decisionTable.outputHeaderAt(0).content).toBeAttached();
+          await expect(decisionTable.outputHeaderAt(1).content).toBeAttached();
+          await expect(decisionTable.outputHeaderAt(2).content).toBeAttached();
           await expect(cellAt1_2.content).not.toContainText("test");
           await expect(cellAt1_3.content).toContainText("test");
           await expect(page.getByRole("cell")).toHaveCount(5);
         });
 
         test("should add column right by positioning mouse on the header cell right section", async ({ page, bee }) => {
-          const cellAt1_2 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 2 });
-          const cellAt1_3 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 3 });
+          const decisionTable = bee.expression.asDecisionTable();
+          const cellAt1_2 = decisionTable.cellAt({ row: 1, column: 2 });
+          const cellAt1_3 = decisionTable.cellAt({ row: 1, column: 3 });
           await cellAt1_2.fill("test");
 
           await bee.expression.asDecisionTable().addOutputAtRightOfIndex(0);
 
-          await expect(bee.expression.asDecisionTable().outputHeaderAt(0).content).toBeAttached();
-          await expect(bee.expression.asDecisionTable().outputHeaderAt(1).content).toBeAttached();
-          await expect(bee.expression.asDecisionTable().outputHeaderAt(2).content).toBeAttached();
+          await expect(decisionTable.outputHeaderAt(0).content).toBeAttached();
+          await expect(decisionTable.outputHeaderAt(1).content).toBeAttached();
+          await expect(decisionTable.outputHeaderAt(2).content).toBeAttached();
           await expect(cellAt1_2.content).toContainText("test");
           await expect(cellAt1_3.content).not.toContainText("test");
           await expect(page.getByRole("cell")).toHaveCount(5);
@@ -554,11 +567,12 @@ test.describe("Decision table context menu", () => {
 
       test.describe("Rule annotation columns", () => {
         test("should add column left by positioning mouse on the header cell left section", async ({ page, bee }) => {
-          const cellAt1_3 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 3 });
-          const cellAt1_4 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 4 });
+          const decisionTable = bee.expression.asDecisionTable();
+          const cellAt1_3 = decisionTable.cellAt({ row: 1, column: 3 });
+          const cellAt1_4 = decisionTable.cellAt({ row: 1, column: 4 });
           await cellAt1_3.fill("test");
 
-          await bee.expression.asDecisionTable().addAnnotationAtStart();
+          await decisionTable.addAnnotationAtStart();
 
           await expect(bee.expression.asDecisionTable().annotationHeaderAt(0).content).toBeAttached();
           await expect(bee.expression.asDecisionTable().annotationHeaderAt(1).content).toBeAttached();
@@ -568,14 +582,15 @@ test.describe("Decision table context menu", () => {
         });
 
         test("should add column right by positioning mouse on the header cell right section", async ({ page, bee }) => {
-          const cellAt1_3 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 3 });
-          const cellAt1_4 = bee.expression.asDecisionTable().cellAt({ row: 1, column: 4 });
+          const decisionTable = bee.expression.asDecisionTable();
+          const cellAt1_3 = decisionTable.cellAt({ row: 1, column: 3 });
+          const cellAt1_4 = decisionTable.cellAt({ row: 1, column: 4 });
           await cellAt1_3.fill("test");
 
-          await bee.expression.asDecisionTable().addAnnotationAtEnd();
+          await decisionTable.addAnnotationAtEnd();
 
-          await expect(bee.expression.asDecisionTable().annotationHeaderAt(0).content).toBeAttached();
-          await expect(bee.expression.asDecisionTable().annotationHeaderAt(1).content).toBeAttached();
+          await expect(decisionTable.annotationHeaderAt(0).content).toBeAttached();
+          await expect(decisionTable.annotationHeaderAt(1).content).toBeAttached();
           await expect(cellAt1_3.content).toContainText("test");
           await expect(cellAt1_4.content).not.toContainText("test");
           await expect(page.getByRole("cell")).toHaveCount(5);

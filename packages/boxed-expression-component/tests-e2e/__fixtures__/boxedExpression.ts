@@ -40,7 +40,7 @@ export class BoxedExpressionEditor {
   }
 
   get expression() {
-    return new ExpressionContainer(this.page.getByTestId("expression-container").nth(0), this.monaco);
+    return new ExpressionContainer(this.page.getByTestId("kie-tools--bee--expression-container").nth(0), this.monaco);
   }
 
   public async pasteToSelectExpression(nth?: number) {
