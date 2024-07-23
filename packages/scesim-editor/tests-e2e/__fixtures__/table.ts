@@ -74,7 +74,10 @@ export class Table {
   }
 
   public async selectColumnHeader(args: { name: string; columnNumber?: number }) {
-    await this.page.getByRole("columnheader", { name: args.name }).nth(args.columnNumber ?? 0);
+    await this.page
+      .getByRole("columnheader", { name: args.name })
+      .nth(args.columnNumber ?? 0)
+      .click();
   }
 
   public getCell(args: { rowNumber: string; columnNumber: number }) {
