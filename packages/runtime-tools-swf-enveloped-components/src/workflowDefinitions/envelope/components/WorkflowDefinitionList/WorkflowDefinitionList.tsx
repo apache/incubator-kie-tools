@@ -46,7 +46,6 @@ const WorkflowDefinitionList: React.FC<WorkflowDefinitionListProps & OUIAProps> 
   const [error, setError] = useState<string>();
   const [defaultPageSize] = useState<number>(10);
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
-  // const [selectableInstances, setSelectableInstances] = useState<number>(0);
   const [limit, setLimit] = useState<number>(defaultPageSize);
 
   const doQuery = async (
@@ -57,7 +56,6 @@ const WorkflowDefinitionList: React.FC<WorkflowDefinitionListProps & OUIAProps> 
     _loadMore: boolean = false
   ): Promise<void> => {
     setIsLoadingMore(_loadMore);
-    // setSelectableInstances(0);
     try {
       const response: WorkflowDefinition[] = await driver.getWorkflowDefinitionsQuery();
       setWorkflowDefinitionList(response);
