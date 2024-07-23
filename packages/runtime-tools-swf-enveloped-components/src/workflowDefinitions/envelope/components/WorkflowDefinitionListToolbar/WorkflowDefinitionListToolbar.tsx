@@ -63,7 +63,6 @@ const WorkflowDefinitionListToolbar: React.FC<WorkflowDefinitionListToolbarProps
   };
 
   const refresh = (): void => {
-    // applyFilter();
     doRefresh();
   };
 
