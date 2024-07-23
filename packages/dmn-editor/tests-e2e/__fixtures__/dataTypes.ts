@@ -47,6 +47,22 @@ export class DataTypes {
     return this.page.getByTestId("kie-dmn-editor--data-types-container");
   }
 
+  public getNoneConstraintButton() {
+    return this.get().getByRole("button", { name: ConstraintType.NONE, exact: true });
+  }
+
+  public getEnumerationConstraintButton() {
+    return this.get().getByRole("button", { name: ConstraintType.ENUMERATION, exact: true });
+  }
+
+  public getExpressionConstraintButton() {
+    return this.get().getByRole("button", { name: ConstraintType.EXPRESSION, exact: true });
+  }
+
+  public getRangeConstraintButton() {
+    return this.get().getByRole("button", { name: ConstraintType.RANGE, exact: true });
+  }
+
   public async createFirstCustonDataType() {
     await this.get().getByRole("button", { name: "Create a custom data type" }).click();
   }
@@ -63,12 +79,19 @@ export class DataTypes {
     await this.get().getByPlaceholder("Select a data type...").click();
     await this.get().getByPlaceholder("Select a data type...").press("ControlOrMeta+a");
     await this.get().getByPlaceholder("Select a data type...").fill(args.newBaseType);
-    await this.page.getByRole("option", { name: args.newBaseType }).click();
+    await this.page.getByRole("option", { name: args.newBaseType, exact: true }).click();
+  }
+
+  public async changeDataTypeBaseCustomType(args: { newBaseType: string }) {
+    await this.get().getByPlaceholder("Select a data type...").click();
+    await this.get().getByPlaceholder("Select a data type...").press("ControlOrMeta+a");
+    await this.get().getByPlaceholder("Select a data type...").fill(args.newBaseType);
+    await this.page.getByRole("option", { name: `${args.newBaseType} `, exact: false }).click();
   }
 
   // TODO: Add other types of values, date, date-time, etc
-  public async addEnumConstraint(args: { values: string[] }) {
-    await this.get().getByRole("button", { name: ConstraintType.ENUMERATION }).click();
+  public async addEnumerationConstraint(args: { values: string[] }) {
+    await this.getEnumerationConstraintButton().click();
 
     for (let index = 0; index < args.values.length; index++) {
       await this.get().locator(`#enum-element-${index}`).fill(args.values[index]);
@@ -78,20 +101,20 @@ export class DataTypes {
     }
   }
 
+  public async addExpressionConstraint(args: { value: string }) {
+    await this.getExpressionConstraintButton().click();
+    await this.get().getByLabel("Editor content;Press Alt+F1").fill(args.value);
+  }
+
   // TODO: Add other types of values, date, date-time, etc
   public async addRangeConstraint(args: { values: [string, string] }) {
-    await this.get().getByRole("button", { name: ConstraintType.RANGE }).click();
+    await this.getRangeConstraintButton().click();
     await this.get().locator("#start-value").fill(args.values[0]);
     await this.get().locator("#end-value").click();
     await this.get().locator("#end-value").fill(args.values[1]);
   }
 
-  public async addExpressionConstraint(args: { value: string }) {
-    await this.get().getByRole("button", { name: ConstraintType.EXPRESSION }).click();
-    await this.get().getByLabel("Editor content;Press Alt+F1").fill(args.value);
-  }
-
-  public async deleteConstraint(args: { value: string }) {
-    await this.get().getByRole("button", { name: ConstraintType.NONE }).click();
+  public async deleteConstraint() {
+    await this.getNoneConstraintButton().click();
   }
 }

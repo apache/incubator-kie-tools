@@ -71,4 +71,8 @@ export class DecisionTableOutputHeaderPropertiesPanel extends BeePropertiesPanel
   public getDataType() {
     return this.page.getByPlaceholder("Select a data type...");
   }
+
+  public getConstraintSection() {
+    return this.dataTypeProperties.getConstraintSection();
+  }
 }

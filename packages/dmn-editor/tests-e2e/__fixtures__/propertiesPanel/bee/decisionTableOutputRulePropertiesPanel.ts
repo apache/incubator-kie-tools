@@ -40,4 +40,8 @@ export class DecisionTableOutputRulePropertiesPanel extends BeePropertiesPanelBa
   public getDataType() {
     return this.dataTypeProperties.getDataType();
   }
+
+  public getConstraintSection() {
+    return this.dataTypeProperties.getConstraintSection();
+  }
 }

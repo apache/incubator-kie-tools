@@ -18,7 +18,7 @@
  */
 
 import { Locator, Page } from "@playwright/test";
-import { DataType } from "../../dataTypes";
+import { ConstraintType, DataType } from "../../dataTypes";
 
 export class DataTypeProperties {
   constructor(
@@ -28,10 +28,43 @@ export class DataTypeProperties {
 
   public async setDataType(args: { newDataType: DataType }) {
     await this.panel.getByPlaceholder("Select a data type...").click();
+    await this.panel.getByPlaceholder("Select a data type...").press("ControlOrMeta+a");
+    await this.panel.getByPlaceholder("Select a data type...").fill(args.newDataType);
     await this.page.getByRole("option").getByText(args.newDataType, { exact: true }).click();
+  }
+
+  public async setCustomDataType(args: { newDataType: string }) {
+    await this.panel.getByPlaceholder("Select a data type...").click();
+    await this.panel.getByPlaceholder("Select a data type...").press("ControlOrMeta+a");
+    await this.panel.getByPlaceholder("Select a data type...").fill(args.newDataType);
+    await this.page.getByRole("option").getByText(`${args.newDataType} `, { exact: false }).click();
   }
 
   public getDataType() {
     return this.panel.getByPlaceholder("Select a data type...");
+  }
+
+  public getConstraintSection() {
+    return this.panel.getByText("Constraint");
+  }
+
+  public getNoneConstraintButton() {
+    return this.panel.getByRole("button", { name: ConstraintType.NONE, exact: true });
+  }
+
+  public getEnumerationConstraintButton() {
+    return this.panel.getByRole("button", { name: ConstraintType.ENUMERATION, exact: true });
+  }
+
+  public getEnumerationElementAt(element: number) {
+    return this.panel.locator(".kie-dmn-editor--draggable-row").nth(element).locator("input");
+  }
+
+  public getExpressionConstraintButton() {
+    return this.panel.getByRole("button", { name: ConstraintType.EXPRESSION, exact: true });
+  }
+
+  public getRangeConstraintButton() {
+    return this.panel.getByRole("button", { name: ConstraintType.RANGE, exact: true });
   }
 }

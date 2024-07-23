@@ -45,7 +45,35 @@ export class DecisionTableInputHeaderPropertiesPanel extends BeePropertiesPanelB
     await this.dataTypeProperties.setDataType({ ...args });
   }
 
+  public async setCustomDataType(args: { newDataType: string }) {
+    await this.dataTypeProperties.setCustomDataType({ ...args });
+  }
+
   public getDataType() {
     return this.dataTypeProperties.getDataType();
+  }
+
+  public getConstraintSection() {
+    return this.dataTypeProperties.getConstraintSection();
+  }
+
+  public getNoneConstraintButton() {
+    return this.dataTypeProperties.getNoneConstraintButton();
+  }
+
+  public getEnumerationConstraintButton() {
+    return this.dataTypeProperties.getEnumerationConstraintButton();
+  }
+
+  public getEnumerationElementAt(element: number) {
+    return this.dataTypeProperties.getEnumerationElementAt(element);
+  }
+
+  public getExpressionConstraintButton() {
+    return this.dataTypeProperties.getExpressionConstraintButton();
+  }
+
+  public getRangeConstraintButton() {
+    return this.dataTypeProperties.getRangeConstraintButton();
   }
 }
