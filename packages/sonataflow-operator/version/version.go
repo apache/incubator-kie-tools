@@ -33,7 +33,14 @@ const (
 	tagVersion = "main"
 	// Kogito images tag version. Used for data-index and jobs-service images.
 	kogitoImagesTagVersion = "999-20240623"
+	// OpenJDK image tag version
+	openJDKImageTagVersion = "1.20"
 )
+
+// GetOpenJDKImageTagVersion gets the current OpenJDK image version.
+func GetOpenJDKImageTagVersion() string {
+	return openJDKImageTagVersion
+}
 
 // GetOperatorVersion gets the current binary version of the operator. Do not use it to compose image tags!
 func GetOperatorVersion() string {

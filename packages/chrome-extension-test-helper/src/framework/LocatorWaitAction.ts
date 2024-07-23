@@ -27,7 +27,7 @@ export default class LocatorWaitAction {
   public constructor(
     private readonly driver: WebDriver,
     private readonly by: By,
-    private readonly timeout: number = timeout ?? LocatorWaitAction.DEFAULT_TIMEOUT
+    private readonly timeout: number = LocatorWaitAction.DEFAULT_TIMEOUT
   ) {}
 
   private async absent(): Promise<void> {

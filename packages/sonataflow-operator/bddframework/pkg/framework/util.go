@@ -51,7 +51,7 @@ const (
 	// defaultBuilderImage Builder Image for Kogito
 	defaultBuilderImage = "kogito-s2i-builder"
 	// defaultRuntimeJVM Runtime Image for Kogito with  JRE
-	defaultRuntimeJVM = "kogito-runtime-jvm"
+	defaultRuntimeJVM = "registry.access.redhat.com/ubi9/openjdk-17"
 	//defaultRuntimeNative Runtime Image for Kogito for Native Quarkus Application
 	defaultRuntimeNative = "kogito-runtime-native"
 	// imageRegistryEnvVar ...
@@ -292,7 +292,11 @@ func AppendImageDefaultValues(image *api.Image) {
 	}
 
 	if len(image.Tag) == 0 {
-		image.Tag = GetKogitoImageVersion(version.GetTagVersion())
+		if image.Name == defaultRuntimeJVM {
+			image.Tag = GetKogitoImageVersion(version.GetOpenJDKImageTagVersion())
+		} else {
+			image.Tag = GetKogitoImageVersion(version.GetTagVersion())
+		}
 	}
 }
 

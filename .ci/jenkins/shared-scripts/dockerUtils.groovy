@@ -19,10 +19,10 @@
 * Push an image to a given registry
 */
 def pushImageToRegistry(String registry, String account, String image, String tags, String userCredentialsId, String tokenCredentialsId) {
-    withCredentials([string(credentialsId: userCredentialsId, variable: 'DOCKER_USER')]) {
-        withCredentials([string(credentialsId: tokenCredentialsId, variable: 'DOCKER_TOKEN')]) {
+    withCredentials([string(credentialsId: userCredentialsId, variable: 'REGISTRY_USER')]) {
+        withCredentials([string(credentialsId: tokenCredentialsId, variable: 'REGISTRY_TOKEN')]) {
             sh """
-            echo "${DOCKER_TOKEN}" | docker login -u "${DOCKER_USER}" --password-stdin $registry
+            echo "${REGISTRY_TOKEN}" | docker login -u "${REGISTRY_USER}" --password-stdin $registry
             """.trim()
             tagList = tags.split(' ')
             for (tag in tagList) {

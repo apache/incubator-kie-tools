@@ -17,12 +17,9 @@
  * under the License.
  */
 
-import { env } from "../../../env";
-const buildEnv = env;
-
 describe("Basic user's interaction", () => {
   beforeEach(() => {
-    cy.visit(`http://localhost:${buildEnv.pmmlEditor.dev.port}/`);
+    cy.visit("/");
   });
 
   it("new button exists", () => {

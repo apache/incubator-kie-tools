@@ -141,7 +141,8 @@ pipeline {
                 dir('kie-tools') {
                     script {
                         helmUtils.pushChartToRegistry(
-                            "${env.KIE_SANDBOX_HELM_CHART__registry}/${env.KIE_SANDBOX_HELM_CHART__account}",
+                            "${env.KIE_SANDBOX_HELM_CHART__registry}",
+                            "${env.KIE_SANDBOX_HELM_CHART__account}",
                             "packages/kie-sandbox-helm-chart/dist/${env.KIE_SANDBOX_HELM_CHART__name}-${env.KIE_SANDBOX_HELM_CHART__tag}.tgz",
                             "${pipelineVars.dockerHubUserCredentialsId}",
                             "${pipelineVars.dockerHubTokenCredentialsId}"
@@ -173,8 +174,8 @@ pipeline {
             }
             steps {
                 script {
-                    releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${RELEASE_TAR_FILE}", "${pipelineVars.asfReleaseGPGKeyPasswordCredentialsId}")
+                    releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
+                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${RELEASE_TAR_FILE}")
                 }
             }
         }
