@@ -77,7 +77,10 @@ test.describe("Create Boxed Filter", () => {
     await boxedExpressionEditor.selectBoxedList(page.getByText("Select expression").first());
     // 'in'
     await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
-    await page.getByText("1").first().click({ button: "right" });
+    await page
+      .getByTestId("kie-tools--boxed-expression-component--filter-collection-in")
+      .getByRole("cell", { name: "1" })
+      .click({ button: "right" });
     await page.getByRole("menuitem").getByText("Insert below").click();
     await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
     // 'match'

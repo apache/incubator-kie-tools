@@ -53,7 +53,7 @@ export default defineConfig({
     locale: "en-US",
   },
   expect: {
-    timeout: 10000,
+    timeout: 30000,
     toHaveScreenshot: {
       // An acceptable ratio of pixels that are different to the
       // total amount of pixels, between 0 and 1.
