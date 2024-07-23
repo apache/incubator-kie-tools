@@ -17,10 +17,11 @@
  * under the License.
  */
 
+import { ThemeVars } from "@storybook/theming";
 import { create } from "@storybook/theming/create";
 import brandImage from "../../static/logo.svg";
 
-export const KieToolsTheme = create({
+export const KieToolsTheme: ThemeVars = create({
   base: "light",
   brandTitle: "Apache KIE Tools",
   brandImage,

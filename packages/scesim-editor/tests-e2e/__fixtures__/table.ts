@@ -155,15 +155,10 @@ export class Table {
           .getByTestId("monaco-container")
           .nth(args.columnNumber)
           .press("ArrowDown")
-      : (await this.page
+      : await this.page
           .getByRole("row", { name: args.rowNumber, exact: true })
           .getByTestId("monaco-container")
           .nth(args.columnNumber)
-          .press("Enter+Enter"),
-        await this.page
-          .getByRole("row", { name: args.rowNumber, exact: true })
-          .getByTestId("monaco-container")
-          .nth(args.columnNumber)
-          .press("Enter+Enter"));
+          .press("Enter+Enter");
   }
 }

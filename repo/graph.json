@@ -10,6 +10,7 @@
       { "id": "@kie-tools-scripts/update-stream-name" },
       { "id": "@kie-tools-scripts/update-version" },
       { "id": "@kie-tools-scripts/build-env" },
+      { "id": "@kie-tools/tsconfig" },
       { "id": "@kie-tools-examples/base64png-editor" },
       { "id": "@kie-tools-core/editor" },
       { "id": "@kie-tools-core/backend" },
@@ -48,7 +49,6 @@
       { "id": "@kie-tools/uniforms-patternfly" },
       { "id": "@kie-tools/eslint" },
       { "id": "@kie-tools/jest-base" },
-      { "id": "@kie-tools/tsconfig" },
       { "id": "@kie-tools-examples/webapp" },
       { "id": "@kie-tools/kie-editors-standalone" },
       { "id": "@kie-tools/serverless-workflow-standalone-editor" },
@@ -232,6 +232,16 @@
       {
         "source": "@kie-tools-scripts/bootstrap",
         "target": "@kie-tools-scripts/build-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-scripts/run-script-if",
+        "target": "@kie-tools/tsconfig",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-scripts/build-env",
+        "target": "@kie-tools/tsconfig",
         "weight": 1
       },
       {
@@ -1636,6 +1646,16 @@
       },
       {
         "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools-core/monaco-editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools-core/patternfly-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/import-java-classes-component",
         "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
@@ -2091,12 +2111,12 @@
       },
       {
         "source": "@kie-tools/yard-editor",
-        "target": "@kie-tools/yard-validator",
+        "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
       {
         "source": "@kie-tools/yard-editor",
-        "target": "@kie-tools-core/webpack-base",
+        "target": "@kie-tools/yard-validator",
         "weight": 1
       },
       {
@@ -2306,11 +2326,6 @@
       },
       {
         "source": "vscode-extension-kogito-bundle",
-        "target": "@kie-tools/tsconfig",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/yard-validator-worker",
         "target": "@kie-tools/tsconfig",
         "weight": 1
       },
