@@ -252,8 +252,7 @@ test.describe("Resizing", () => {
       });
 
       await stories.openBoxedContext("installment-calculation");
-      const firstEntry = page.getByRole("cell", { name: "Fee (number)" });
-      await resizing.resizeCell(firstEntry, { x: 0, y: 0 }, { x: 50, y: 0 });
+      await resizing.resizeCell(page.getByRole("cell", { name: "Fee (number)" }), { x: 0, y: 0 }, { x: 50, y: 0 });
 
       expect(await jsonModel.getWidthsById()).toEqual([WidthConstants.CONTEXT_ENTRY_VARIABLE_MIN_WIDTH + 50]);
     });
@@ -485,8 +484,11 @@ test.describe("Resizing", () => {
       });
 
       await stories.openDecisionTable("undefined-widths");
-      const annotationsHeader = page.getByRole("columnheader", { name: "Annotations", exact: true });
-      await resizing.resizeCell(annotationsHeader, { x: 0, y: 0 }, { x: 50, y: 0 });
+      await resizing.resizeCell(
+        page.getByRole("columnheader", { name: "Annotations", exact: true }),
+        { x: 0, y: 0 },
+        { x: 50, y: 0 }
+      );
 
       expect(await jsonModel.getWidthsById()).toEqual([
         WidthConstants.DECISION_TABLE_INPUT_MIN_WIDTH,
@@ -590,8 +592,11 @@ test.describe("Resizing", () => {
       });
 
       await stories.openRelation("bigger");
-      const columnsHeader = page.getByRole("columnheader", { name: "column-3 (<Undefined>)" });
-      await resizing.resizeCell(columnsHeader, { x: 0, y: 0 }, { x: 200, y: 0 });
+      await resizing.resizeCell(
+        page.getByRole("columnheader", { name: "column-3 (<Undefined>)" }),
+        { x: 0, y: 0 },
+        { x: 200, y: 0 }
+      );
 
       expect(await jsonModel.getWidthsById()).toEqual([
         WidthConstants.RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
@@ -884,8 +889,7 @@ test.describe("Resizing", () => {
       });
 
       await stories.openBoxedInvocation("monthly-installment");
-      const termCell = page.getByRole("cell", { name: "Term (number)" });
-      await resizing.resizeCell(termCell, { x: 0, y: 0 }, { x: 70, y: 0 });
+      await resizing.resizeCell(page.getByRole("cell", { name: "Term (number)" }), { x: 0, y: 0 }, { x: 70, y: 0 });
 
       expect(await jsonModel.getWidthsById()).toEqual([WidthConstants.INVOCATION_PARAMETER_MIN_WIDTH + 70, undefined]);
     });
