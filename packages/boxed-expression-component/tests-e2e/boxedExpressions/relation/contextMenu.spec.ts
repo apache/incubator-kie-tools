@@ -26,13 +26,21 @@ test.describe("Relation context menu", () => {
     });
 
     test("shouldn't render column context menu", async ({ bee }) => {
-      const cell = bee.expression.asRelation().cellAt({ row: 1, column: 1 });
-      await cell.fill('"test"');
-      await cell.contextMenu.open();
+      const relationExpression = bee.expression.asRelation();
 
-      await expect(cell.contextMenu.heading("ROWS")).toBeAttached();
-      await expect(cell.contextMenu.heading("SELECTION")).toBeAttached();
-      await expect(cell.contextMenu.heading("COLUMNS")).toBeAttached();
+      await relationExpression.cellAt({ row: 1, column: 1 }).fill('"test"');
+      await relationExpression.cellAt({ row: 1, column: 1 }).contextMenu.open();
+
+      await expect(relationExpression.cellAt({ row: 1, column: 1 }).contextMenu.heading("ROWS")).toBeAttached();
+      await expect(
+        relationExpression
+          .cellAt({
+            row: 1,
+            column: 1,
+          })
+          .contextMenu.heading("SELECTION")
+      ).toBeAttached();
+      await expect(relationExpression.cellAt({ row: 1, column: 1 }).contextMenu.heading("COLUMNS")).toBeAttached();
     });
 
     test("should open row context menu and insert row above", async ({ bee }) => {
@@ -178,14 +186,13 @@ test.describe("Relation context menu", () => {
   test("should reset insert multiples menu when opening another cell context menu", async ({ bee, stories }) => {
     await stories.openRelation();
     const relationExpression = bee.expression.asRelation();
-    const cellAt1_1 = relationExpression.cellAt({ row: 1, column: 1 });
-    const cellAt1_0 = relationExpression.cellAt({ row: 1, column: 0 });
-    await cellAt1_1.fill("test");
-    await cellAt1_1.contextMenu.open();
-    await cellAt1_1.contextMenu.option("Insert").first().click();
-    await cellAt1_0.contextMenu.open();
 
-    await expect(cellAt1_0.contextMenu.heading("ROWS")).toBeAttached();
-    await expect(cellAt1_0.contextMenu.heading("SELECTION")).toBeAttached();
+    await relationExpression.cellAt({ row: 1, column: 1 }).fill("test");
+    await relationExpression.cellAt({ row: 1, column: 1 }).contextMenu.open();
+    await relationExpression.cellAt({ row: 1, column: 1 }).contextMenu.option("Insert").first().click();
+    await relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.open();
+
+    await expect(relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.heading("ROWS")).toBeAttached();
+    await expect(relationExpression.cellAt({ row: 1, column: 0 }).contextMenu.heading("SELECTION")).toBeAttached();
   });
 });

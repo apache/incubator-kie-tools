@@ -44,51 +44,51 @@ export class ExpressionContainer {
     return new ExpressionHeader(this.locator);
   }
 
-  asLiteral() {
+  public asLiteral() {
     return new LiteralExpressionElement(this.locator, this.monaco);
   }
 
-  asRelation() {
+  public asRelation() {
     return new RelationExpressionElement(this.locator, this.monaco);
   }
 
-  asContext() {
+  public asContext() {
     return new ContextExpressionElement(this.locator, this.monaco);
   }
 
-  asDecisionTable() {
+  public asDecisionTable() {
     return new DecisionTableExpressionElement(this.locator, this.monaco);
   }
 
-  asList() {
+  public asList() {
     return new ListExpressionElement(this.locator, this.monaco);
   }
 
-  asInvocation() {
+  public asInvocation() {
     return new InvocationExpressionElement(this.locator, this.monaco);
   }
 
-  asFunction() {
+  public asFunction() {
     return new FunctionExpressionElement(this.locator, this.monaco);
   }
 
-  asConditional() {
+  public asConditional() {
     return new ConditionalExpressionElement(this.locator, this.monaco);
   }
 
-  asFor() {
+  public asFor() {
     return new ForExpressionElement(this.locator, this.monaco);
   }
 
-  asEvery() {
+  public asEvery() {
     return new EveryExpressionElement(this.locator, this.monaco);
   }
 
-  asSome() {
+  public asSome() {
     return new SomeExpressionElement(this.locator, this.monaco);
   }
 
-  asFilter() {
+  public asFilter() {
     return new FilterExpressionElement(this.locator, this.monaco);
   }
 
@@ -96,7 +96,7 @@ export class ExpressionContainer {
     return new ContextMenu(this.locator.nth(0));
   }
 
-  async isEmpty() {
+  public async isEmpty() {
     return (await this.locator.nth(0).getByTestId("kie-tools--bee--logic-type-selected-header").count()) === 0;
   }
 }
@@ -107,15 +107,15 @@ export class ExpressionCell {
     private monaco: Monaco
   ) {}
 
-  async fill(content: string) {
+  public async fill(content: string) {
     return await this.monaco.fill({ monacoParentLocator: this.locator, content: content });
   }
 
-  get content() {
+  public get content() {
     return this.locator.nth(0);
   }
 
-  get contextMenu() {
+  public get contextMenu() {
     return new ContextMenu(this.locator);
   }
 }
@@ -127,25 +127,25 @@ export class ContextMenu {
     await this.locator.nth(0).click({ button: "right" });
   }
 
-  heading(sectionName: string) {
+  public heading(sectionName: string) {
     return this.locator.page().getByRole("heading", { name: sectionName });
   }
 
-  option(option: string) {
+  public option(option: string) {
     return this.locator.page().getByTestId("kie-tools--bee--context-menu-container").getByRole("menuitem", {
       name: option,
       exact: true,
     });
   }
 
-  button(option: string) {
+  public button(option: string) {
     return this.locator.page().getByTestId("kie-tools--bee--context-menu-container").getByRole("button", {
       name: option,
       exact: true,
     });
   }
 
-  radio(option: string) {
+  public radio(option: string) {
     return this.locator.page().getByTestId("kie-tools--bee--context-menu-container").getByRole("radio", {
       name: option,
       exact: true,
@@ -178,7 +178,7 @@ export class ChildExpression {
 export class IteratorVariable {
   constructor(private locator: Locator) {}
 
-  async fill(content: string) {
+  public async fill(content: string) {
     await this.locator.click();
     await this.locator.getByRole("textbox").fill(content);
     await this.locator.getByRole("textbox").press("Enter");

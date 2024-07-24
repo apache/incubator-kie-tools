@@ -48,7 +48,7 @@ export class DecisionTableExpressionElement {
    * The first index is 1, like seen in the screen, NOT zero.
    * @param coordinate The coordinate (row x column). The first index is 1.
    */
-  cellAt(coordinate: { row: number; column: number }) {
+  public cellAt(coordinate: { row: number; column: number }) {
     return new ExpressionCell(
       this.locator
         .getByTestId(`kie-tools--bee--expression-row-${coordinate.row - 1}`)
@@ -61,22 +61,22 @@ export class DecisionTableExpressionElement {
     return new HitTableSelector(this.locator.getByRole("columnheader").nth(0));
   }
 
-  async addInputAtStart() {
+  public async addInputAtStart() {
     await this.addInputAtIndex(0);
   }
 
-  async addInputAtEnd() {
-    await this.addInputAtIndex(await this.locator.locator(".input").count());
+  public async addInputAtEnd() {
+    await this.addInputAtIndex(await this.locator.getByTestId("kie-tools--bee--table-header-input").count());
   }
 
-  async addInputAtIndex(index: number) {
+  public async addInputAtIndex(index: number) {
     if (index === (await this.locator.getByTestId("kie-tools--bee--table-header-input").count())) {
       const bb = await this.locator
-        .locator(".input")
+        .getByTestId("kie-tools--bee--table-header-input")
         .nth(index - 1)
         .boundingBox();
       await this.locator
-        .locator(".input")
+        .getByTestId("kie-tools--bee--table-header-input")
         .nth(index - 1)
         .hover({
           position: {
@@ -103,7 +103,7 @@ export class DecisionTableExpressionElement {
     }
   }
 
-  async addRowAtTop() {
+  public async addRowAtTop() {
     await this.locator
       .getByRole("cell", { name: "1", exact: true })
       .nth(0)
@@ -116,7 +116,7 @@ export class DecisionTableExpressionElement {
     await this.locator.getByRole("cell", { name: "1", exact: true }).nth(0).locator("svg").click();
   }
 
-  async addRowAtBottomOfIndex(index: number) {
+  public async addRowAtBottomOfIndex(index: number) {
     await this.locator
       .getByRole("cell", { name: `${index}`, exact: true })
       .nth(0)
@@ -128,15 +128,15 @@ export class DecisionTableExpressionElement {
       .click();
   }
 
-  async addAnnotationAtStart() {
+  public async addAnnotationAtStart() {
     await this.addAnnotationAtIndex(0);
   }
 
-  async addAnnotationAtEnd() {
+  public async addAnnotationAtEnd() {
     await this.addAnnotationAtIndex(await this.locator.getByTestId("kie-tools--bee--table-header-annotation").count());
   }
 
-  async addAnnotationAtIndex(index: number) {
+  public async addAnnotationAtIndex(index: number) {
     if (index === (await this.locator.getByTestId("kie-tools--bee--table-header-annotation").count())) {
       const bb = await this.locator
         .getByTestId("kie-tools--bee--table-header-annotation")
@@ -170,11 +170,11 @@ export class DecisionTableExpressionElement {
     }
   }
 
-  async addOutputAtStart() {
+  public async addOutputAtStart() {
     await this.addOutputAtIndex(0);
   }
 
-  async addOutputAtEnd() {
+  public async addOutputAtEnd() {
     await this.addOutputAtIndex(await this.locator.getByTestId("kie-tools--bee--table-header-output").count());
   }
 
@@ -194,7 +194,7 @@ export class DecisionTableExpressionElement {
   // So the header of group (Expression Name) is not considered from the user perspective,
   // that's why we need to do the calculations bellow to find the right place where user really
   // wants to add the output element.
-  async addOutputAtIndex(index: number) {
+  public async addOutputAtIndex(index: number) {
     if ((await this.locator.getByTestId("kie-tools--bee--table-header-output").count()) === 1) {
       await this.addOutputFromHeaderGroupElementAtIndex(index);
     } else if (index === (await this.locator.getByTestId("kie-tools--bee--table-header-output").count())) {
@@ -221,7 +221,7 @@ export class DecisionTableExpressionElement {
     }
   }
 
-  async addOutputAtRightOfIndex(index: number) {
+  public async addOutputAtRightOfIndex(index: number) {
     const bb = await this.locator.getByTestId("kie-tools--bee--table-header-output").nth(index).boundingBox();
     await this.locator
       .getByTestId("kie-tools--bee--table-header-output")
@@ -275,15 +275,15 @@ export class DecisionTableExpressionElement {
     }
   }
 
-  inputHeaderAt(index: number) {
+  public inputHeaderAt(index: number) {
     return new NameAndDataTypeCell(this.locator.getByTestId("kie-tools--bee--table-header-input").nth(index));
   }
 
-  outputHeaderAt(index: number) {
+  public outputHeaderAt(index: number) {
     return new NameAndDataTypeCell(this.locator.getByTestId("kie-tools--bee--table-header-output").nth(index));
   }
 
-  annotationHeaderAt(index: number) {
+  public annotationHeaderAt(index: number) {
     return new NameAndDataTypeCell(this.locator.getByTestId("kie-tools--bee--table-header-annotation").nth(index));
   }
 
@@ -311,14 +311,14 @@ export class HitTableSelector {
 export class HitTableMenu {
   constructor(private locator: Locator) {}
 
-  option(optionName: string) {
+  public option(optionName: string) {
     return this.locator.page().getByTestId("kie-tools--bee--hit-policy-header").getByRole("menuitem", {
       name: optionName,
       exact: true,
     });
   }
 
-  button(buttonName: string) {
+  public button(buttonName: string) {
     return this.locator.page().getByTestId("kie-tools--bee--hit-policy-header").getByRole("button", {
       name: buttonName,
       exact: true,

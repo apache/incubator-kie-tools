@@ -54,14 +54,17 @@ test.describe("Create Boxed Filter", () => {
 
     await bee.selectExpressionMenu.selectContext();
     const contextExpression = bee.expression.asContext();
-    const entry0 = contextExpression.entry(0);
 
     // Prepare empty Filter 'in' and 'match' cells
-    await entry0.selectExpressionMenu.selectFilter();
-    await entry0.expression.asFilter().in.selectExpressionMenu.selectLiteral();
-    await entry0.expression.asFilter().match.selectExpressionMenu.selectLiteral();
-    await entry0.expression.asFilter().in.expression.asLiteral().fill("collection in expression");
-    await entry0.expression.asFilter().match.expression.asLiteral().fill("collection match expression");
+    await contextExpression.entry(0).selectExpressionMenu.selectFilter();
+    await contextExpression.entry(0).expression.asFilter().in.selectExpressionMenu.selectLiteral();
+    await contextExpression.entry(0).expression.asFilter().match.selectExpressionMenu.selectLiteral();
+    await contextExpression.entry(0).expression.asFilter().in.expression.asLiteral().fill("collection in expression");
+    await contextExpression
+      .entry(0)
+      .expression.asFilter()
+      .match.expression.asLiteral()
+      .fill("collection match expression");
 
     await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested.png");
   });

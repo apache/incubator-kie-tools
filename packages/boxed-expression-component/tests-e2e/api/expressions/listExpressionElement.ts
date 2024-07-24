@@ -28,7 +28,7 @@ export class ListExpressionElement {
     private monaco: Monaco
   ) {}
 
-  async addEntryAtTop() {
+  public async addEntryAtTop() {
     await this.locator
       .getByRole("cell", { name: "1" })
       .nth(0)
@@ -41,7 +41,7 @@ export class ListExpressionElement {
     await this.locator.getByRole("cell", { name: "1" }).nth(0).locator("svg").click();
   }
 
-  async addEntryBelowOfEntryAtIndex(index: number) {
+  public async addEntryBelowOfEntryAtIndex(index: number) {
     await this.locator
       .getByRole("cell", { name: `${index + 1}` })
       .nth(0)

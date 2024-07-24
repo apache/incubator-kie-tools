@@ -39,11 +39,11 @@ export class ContextExpressionElement {
     return new ChildExpression(this.locator.getByTestId(`kie-tools--bee--additional-row`).nth(0), this.monaco);
   }
 
-  async entriesCount() {
+  public async entriesCount() {
     return (await this.locator.getByRole("row").count()) - 2;
   }
 
-  async addEntryAboveOfEntryAtIndex(index: number) {
+  public async addEntryAboveOfEntryAtIndex(index: number) {
     await this.locator
       .getByTestId(`kie-tools--bee--expression-row-${index}`)
       .getByTestId("kie-tools--bee--expression-column-1")
@@ -63,7 +63,7 @@ export class ContextExpressionElement {
       .click();
   }
 
-  async addEntryBelowOfEntryAtIndex(index: number) {
+  public async addEntryBelowOfEntryAtIndex(index: number) {
     await this.locator
       .getByTestId(`kie-tools--bee--expression-row-${index}`)
       .getByTestId("kie-tools--bee--expression-column-1")

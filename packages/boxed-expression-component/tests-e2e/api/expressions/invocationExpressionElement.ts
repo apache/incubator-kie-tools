@@ -36,11 +36,11 @@ export class InvocationExpressionElement {
     return new NameAndDataTypeCell(this.locator.getByRole("columnheader"));
   }
 
-  async parametersCount() {
+  public async parametersCount() {
     return (await this.locator.getByRole("row").count()) - 2; // -2 because of the 2 header rows
   }
 
-  async addParameterAboveOfEntryAtIndex(index: number) {
+  public async addParameterAboveOfEntryAtIndex(index: number) {
     await this.locator
       .getByTestId(`kie-tools--bee--expression-row-${index}`)
       .getByTestId("kie-tools--bee--expression-column-1")
@@ -60,7 +60,7 @@ export class InvocationExpressionElement {
       .click();
   }
 
-  async addParameterBelowOfEntryAtIndex(index: number) {
+  public async addParameterBelowOfEntryAtIndex(index: number) {
     await this.locator
       .getByTestId(`kie-tools--bee--expression-row-${index}`)
       .getByTestId("kie-tools--bee--expression-column-1")

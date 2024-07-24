@@ -37,51 +37,57 @@ test.describe("Boxed Context context menu", () => {
     });
 
     test("shouldn't render context entry context menu", async ({ page, bee }) => {
-      const expressionHeaderCell = bee.expression.asContext().expressionHeaderCell;
-      await bee.expression.asContext().entry(0).selectExpressionMenu.selectLiteral();
-      await expressionHeaderCell.contextMenu.open();
+      const contextExpression = bee.expression.asContext();
 
-      await expect(expressionHeaderCell.contextMenu.heading("CONTEXT ENTRY")).not.toBeAttached();
-      await expect(expressionHeaderCell.contextMenu.heading("SELECTION")).toBeAttached();
-      await expect(expressionHeaderCell.contextMenu.heading("COLUMNS")).not.toBeAttached();
+      await contextExpression.entry(0).selectExpressionMenu.selectLiteral();
+      await contextExpression.expressionHeaderCell.contextMenu.open();
 
-      const entry = bee.expression.asContext().entry(0);
+      await expect(contextExpression.expressionHeaderCell.contextMenu.heading("CONTEXT ENTRY")).not.toBeAttached();
+      await expect(contextExpression.expressionHeaderCell.contextMenu.heading("SELECTION")).toBeAttached();
+      await expect(contextExpression.expressionHeaderCell.contextMenu.heading("COLUMNS")).not.toBeAttached();
+
       await page.keyboard.press("Escape");
-      await entry.expression.asLiteral().cell.contextMenu.open();
 
-      await expect(entry.expression.asLiteral().cell.contextMenu.heading("CONTEXT ENTRY")).not.toBeAttached();
-      await expect(entry.expression.asLiteral().cell.contextMenu.heading("SELECTION")).toBeAttached();
-      await expect(entry.expression.asLiteral().cell.contextMenu.heading("COLUMNS")).not.toBeAttached();
+      await contextExpression.entry(0).expression.asLiteral().cell.contextMenu.open();
+
+      await expect(
+        contextExpression.entry(0).expression.asLiteral().cell.contextMenu.heading("CONTEXT ENTRY")
+      ).not.toBeAttached();
+      await expect(
+        contextExpression.entry(0).expression.asLiteral().cell.contextMenu.heading("SELECTION")
+      ).toBeAttached();
+      await expect(
+        contextExpression.entry(0).expression.asLiteral().cell.contextMenu.heading("COLUMNS")
+      ).not.toBeAttached();
     });
 
     test("should open context entry context menu and insert context entry above", async ({ bee }) => {
-      const entry = bee.expression.asContext().entry(0);
+      const contextExpression = bee.expression.asContext();
 
-      await entry.variable.contextMenu.open();
-      await entry.variable.contextMenu.option("Insert above").click();
+      await contextExpression.entry(0).variable.contextMenu.open();
+      await contextExpression.entry(0).variable.contextMenu.option("Insert above").click();
 
-      await expect(bee.expression.asContext().entry(0).variable.content).toContainText("ContextEntry-2");
-      await expect(bee.expression.asContext().entry(1).variable.content).toContainText("ContextEntry-1");
+      await expect(contextExpression.entry(0).variable.content).toContainText("ContextEntry-2");
+      await expect(contextExpression.entry(1).variable.content).toContainText("ContextEntry-1");
     });
 
     test("should open context entry context menu and insert context entry below", async ({ bee }) => {
-      const entry = bee.expression.asContext().entry(0);
+      const contextExpression = bee.expression.asContext();
 
-      await entry.variable.contextMenu.open();
-      await entry.variable.contextMenu.option("Insert below").click();
+      await bee.expression.asContext().entry(0).variable.contextMenu.open();
+      await bee.expression.asContext().entry(0).variable.contextMenu.option("Insert below").click();
 
-      await expect(bee.expression.asContext().entry(0).variable.content).toContainText("ContextEntry-1");
-      await expect(bee.expression.asContext().entry(1).variable.content).toContainText("ContextEntry-2");
+      await expect(contextExpression.entry(0).variable.content).toContainText("ContextEntry-1");
+      await expect(contextExpression.entry(1).variable.content).toContainText("ContextEntry-2");
     });
 
     test("should open context entry context menu and insert multiples context entry above", async ({ bee }) => {
       const contextExpression = bee.expression.asContext();
-      const entry = contextExpression.entry(0);
 
-      await entry.variable.contextMenu.open();
-      await entry.variable.contextMenu.option("Insert").click();
-      await entry.variable.contextMenu.button("plus").click();
-      await entry.variable.contextMenu.button("Insert").click();
+      await contextExpression.entry(0).variable.contextMenu.open();
+      await contextExpression.entry(0).variable.contextMenu.option("Insert").click();
+      await contextExpression.entry(0).variable.contextMenu.button("plus").click();
+      await contextExpression.entry(0).variable.contextMenu.button("Insert").click();
 
       await expect(contextExpression.entry(0).variable.content).toContainText("ContextEntry-4");
       await expect(contextExpression.entry(1).variable.content).toContainText("ContextEntry-3");
@@ -91,13 +97,12 @@ test.describe("Boxed Context context menu", () => {
 
     test("should open context entry context menu and insert multiples context entry below", async ({ bee }) => {
       const contextExpression = bee.expression.asContext();
-      const entry = contextExpression.entry(0);
 
-      await entry.variable.contextMenu.open();
-      await entry.variable.contextMenu.option("Insert").click();
-      await entry.variable.contextMenu.button("plus").click();
-      await entry.variable.contextMenu.radio("Below").click();
-      await entry.variable.contextMenu.button("Insert").click();
+      await contextExpression.entry(0).variable.contextMenu.open();
+      await contextExpression.entry(0).variable.contextMenu.option("Insert").click();
+      await contextExpression.entry(0).variable.contextMenu.button("plus").click();
+      await contextExpression.entry(0).variable.contextMenu.radio("Below").click();
+      await contextExpression.entry(0).variable.contextMenu.button("Insert").click();
 
       await expect(contextExpression.entry(0).variable.content).toContainText("ContextEntry-1");
       await expect(contextExpression.entry(1).variable.content).toContainText("ContextEntry-4");

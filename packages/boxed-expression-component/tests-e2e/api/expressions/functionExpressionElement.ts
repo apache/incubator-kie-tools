@@ -27,7 +27,7 @@ export class FunctionExpressionElement {
     private monaco: Monaco
   ) {}
 
-  async addEntry() {
+  public async addEntry() {
     await this.locator.getByRole("cell", { name: "1" }).nth(0).hover();
     await this.locator.getByRole("cell", { name: "1" }).nth(0).locator("svg").click();
   }

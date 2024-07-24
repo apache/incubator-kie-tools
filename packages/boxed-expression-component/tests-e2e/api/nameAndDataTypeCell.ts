@@ -23,31 +23,31 @@ import { ContextMenu } from "./expressionContainer";
 export class NameAndDataTypeCell {
   constructor(private locator: Locator) {}
 
-  async open() {
+  public async open() {
     await this.locator.nth(0).click();
   }
 
-  async setName(params: { name: string; close: boolean }) {
+  public async setName(params: { name: string; close: boolean }) {
     await this.locator.getByRole("textbox").fill(params.name);
     if (params.close) {
       await this.locator.getByRole("textbox").press("Enter");
     }
   }
 
-  async setDataType(params: { dataType: string; close: boolean }) {
-    await this.locator.locator(".pf-c-select").click();
-    await this.locator.locator(".pf-m-search").nth(0).fill(params.dataType);
+  public async setDataType(params: { dataType: string; close: boolean }) {
+    await this.locator.getByTestId("kie-tools--bee--edit-expression-data-type").click();
+    await this.locator.getByPlaceholder("Choose...").nth(0).fill(params.dataType);
     await this.locator.getByRole("group").nth(0).getByRole("option").nth(0).click();
     if (params.close) {
       await this.locator.page().keyboard.press("Enter");
     }
   }
 
-  async getName() {
+  public async getName() {
     return await this.locator.getByTestId("kie-tools--bee--expression-info-name").nth(0).innerText();
   }
 
-  async getDataType() {
+  public async getDataType() {
     return await this.locator.getByTestId("kie-tools--bee--expression-info-data-type").nth(0).innerText();
   }
 

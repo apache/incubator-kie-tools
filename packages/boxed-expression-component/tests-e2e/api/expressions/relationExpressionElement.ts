@@ -28,7 +28,7 @@ export class RelationExpressionElement {
     private monaco: Monaco
   ) {}
 
-  cellAt(param: { column: number; row: number }) {
+  public cellAt(param: { column: number; row: number }) {
     return new ExpressionCell(
       this.locator
         .getByTestId(`kie-tools--bee--expression-row-${param.row - 1}`)
@@ -51,11 +51,11 @@ export class RelationExpressionElement {
     return new NameAndDataTypeCell(this.locator.getByRole("columnheader").nth(1));
   }
 
-  columnHeaderAtIndex(number: number) {
+  public columnHeaderAtIndex(number: number) {
     return new NameAndDataTypeCell(this.locator.getByRole("columnheader").nth(1 + number));
   }
 
-  async addRowAboveOfRowAtIndex(index: number) {
+  public async addRowAboveOfRowAtIndex(index: number) {
     await this.locator
       .getByRole("cell", { name: `${index}`, exact: true })
       .nth(0)
@@ -72,7 +72,7 @@ export class RelationExpressionElement {
       .click();
   }
 
-  async addRowAtBellowOfRowAtIndex(index: number) {
+  public async addRowAtBellowOfRowAtIndex(index: number) {
     await this.locator
       .getByRole("cell", { name: `${index}`, exact: true })
       .nth(0)
@@ -84,7 +84,7 @@ export class RelationExpressionElement {
       .click();
   }
 
-  async addColumnAtRightOfIndex(index: number) {
+  public async addColumnAtRightOfIndex(index: number) {
     const bb = await this.locator.getByRole("columnheader").nth(index).boundingBox();
     await this.locator
       .getByRole("columnheader")
@@ -102,7 +102,7 @@ export class RelationExpressionElement {
       .click();
   }
 
-  async addColumnAtLeftOfIndex(index: number) {
+  public async addColumnAtLeftOfIndex(index: number) {
     // index+1 because we're ignoring the expression header cell
     await this.locator
       .getByRole("columnheader")
