@@ -20,21 +20,21 @@
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 
-function SimpleEditorContainer() {
+function EditorContainer() {
   return <div data-test-id="dmn-editor-container" id="dmn-editor-container" style={{ height: "100%" }} />;
 }
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
-const meta: Meta<typeof SimpleEditorContainer> = {
-  title: "Simple Editor Container",
-  component: SimpleEditorContainer,
+const meta: Meta<typeof EditorContainer> = {
+  title: "Editor Container",
+  component: EditorContainer,
 };
 
 export default meta;
-type Story = StoryObj<typeof SimpleEditorContainer>;
+type Story = StoryObj<typeof EditorContainer>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const WebApp: Story = {
-  render: (args) => SimpleEditorContainer(),
+  render: (args) => EditorContainer(),
   args: {},
 };

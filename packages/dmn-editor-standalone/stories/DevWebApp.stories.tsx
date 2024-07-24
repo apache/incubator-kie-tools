@@ -27,7 +27,6 @@ import { DmnEditorStandaloneApi } from "../dist/DmnEditorStandaloneApi";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex/Flex";
 import { FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex/FlexItem";
 import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { emptyDmn } from "./externalModels";
 
 const droppingFileStyle = {
   position: "absolute",
@@ -93,7 +92,7 @@ function DevWebApp() {
   }, []);
 
   const onReset = useCallback(() => {
-    editorRef.current?.setContent("empty.dmn", emptyDmn);
+    editorRef.current?.setContent("empty.dmn", "");
     setEditCount(0);
   }, []);
 
