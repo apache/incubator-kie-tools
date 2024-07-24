@@ -48,8 +48,6 @@ const WorkflowDefinitionList: React.FC<WorkflowDefinitionListProps & OUIAProps> 
   const doQuery = async (): Promise<void> => {
     try {
       const response: WorkflowDefinition[] = await driver.getWorkflowDefinitionsQuery();
-      const workflowDefinitionFilter = await driver.getWorkflowDefinitionFilter();
-      setFilterWorkflowNames(workflowDefinitionFilter);
       setWorkflowDefinitionList(response);
       setIsLoading(false);
     } catch (err) {
