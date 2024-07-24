@@ -221,7 +221,9 @@ export function DecisionTableExpression({
         if (newWidth && inputWidth) {
           const minSize = inputWidth.index + 1;
           const newValues = [...prev];
-          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.push(
+            ...Array<number>(Math.max(0, minSize - newValues.length)).fill(DECISION_TABLE_INPUT_MIN_WIDTH)
+          );
           newValues.splice(inputWidth.index, 1, newWidth);
           newMap.set(id, newValues);
         }
@@ -240,7 +242,9 @@ export function DecisionTableExpression({
         if (newWidth && outputWidth) {
           const minSize = outputWidth.index + 1;
           const newValues = [...prev];
-          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.push(
+            ...Array<number>(Math.max(0, minSize - newValues.length)).fill(DECISION_TABLE_OUTPUT_MIN_WIDTH)
+          );
           newValues.splice(outputWidth.index, 1, newWidth);
           newMap.set(id, newValues);
         }
@@ -259,7 +263,9 @@ export function DecisionTableExpression({
         if (newWidth && annotationWidth) {
           const minSize = annotationWidth.index + 1;
           const newValues = [...prev];
-          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.push(
+            ...Array<number>(Math.max(0, minSize - newValues.length)).fill(DECISION_TABLE_ANNOTATION_MIN_WIDTH)
+          );
           newValues.splice(annotationWidth.index, 1, newWidth);
           newMap.set(id, newValues);
         }

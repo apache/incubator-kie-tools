@@ -19,6 +19,7 @@
 
 import { test, expect } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
+import { WidthConstants } from "../../__fixtures__/jsonModel";
 
 test.describe("Resizing", () => {
   test.describe("Literal expression", () => {
@@ -238,6 +239,23 @@ test.describe("Resizing", () => {
       expect(await nestedEntry.boundingBox()).toHaveProperty("width", 120);
       expect(await nestedLiteralExpresison.boundingBox()).toHaveProperty("width", 212);
     });
+
+    test("should assign width values to all columns when no width defined", async ({
+      stories,
+      page,
+      resizing,
+      jsonModel,
+    }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1374",
+      });
+
+      await stories.openBoxedContext("installment-calculation");
+      await resizing.resizeCell(page.getByRole("cell", { name: "Fee (number)" }), { x: 0, y: 0 }, { x: 50, y: 0 });
+
+      expect(await jsonModel.getWidthsById()).toEqual([WidthConstants.CONTEXT_ENTRY_VARIABLE_MIN_WIDTH + 50]);
+    });
   });
 
   test.describe("Decision Table expression", () => {
@@ -453,6 +471,32 @@ test.describe("Resizing", () => {
         expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 158);
       }
     });
+
+    test("should assign width values to all columns when no width defined", async ({
+      stories,
+      page,
+      resizing,
+      jsonModel,
+    }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1374",
+      });
+
+      await stories.openDecisionTable("undefined-widths");
+      await resizing.resizeCell(
+        page.getByRole("columnheader", { name: "Annotations", exact: true }),
+        { x: 0, y: 0 },
+        { x: 50, y: 0 }
+      );
+
+      expect(await jsonModel.getWidthsById()).toEqual([
+        WidthConstants.DECISION_TABLE_INPUT_MIN_WIDTH,
+        WidthConstants.DECISION_TABLE_INPUT_MIN_WIDTH,
+        WidthConstants.DECISION_TABLE_OUTPUT_MIN_WIDTH,
+        WidthConstants.DECISION_TABLE_ANNOTATION_MIN_WIDTH + 50,
+      ]);
+    });
   });
 
   test.describe("Relation expression", () => {
@@ -534,6 +578,33 @@ test.describe("Resizing", () => {
         expect(await column1.boundingBox()).toHaveProperty("width", 173);
       }
       expect(await column2.boundingBox()).toHaveProperty("width", 100);
+    });
+
+    test("should assign width values to all columns when no width defined", async ({
+      stories,
+      page,
+      resizing,
+      jsonModel,
+    }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1374",
+      });
+
+      await stories.openRelation("bigger");
+      await resizing.resizeCell(
+        page.getByRole("columnheader", { name: "column-3 (<Undefined>)" }),
+        { x: 0, y: 0 },
+        { x: 200, y: 0 }
+      );
+
+      expect(await jsonModel.getWidthsById()).toEqual([
+        WidthConstants.RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        WidthConstants.RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        WidthConstants.RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        WidthConstants.RELATION_EXPRESSION_COLUMN_MIN_WIDTH + 200,
+        undefined,
+      ]);
     });
   });
 
@@ -804,6 +875,23 @@ test.describe("Resizing", () => {
       expect(await functionName.boundingBox()).toHaveProperty("width", 365);
       expect(await params.boundingBox()).toHaveProperty("width", 153);
       expect(await literal.boundingBox()).toHaveProperty("width", 212);
+    });
+
+    test("should assign width values to all columns when no width defined", async ({
+      stories,
+      page,
+      resizing,
+      jsonModel,
+    }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1374",
+      });
+
+      await stories.openBoxedInvocation("monthly-installment");
+      await resizing.resizeCell(page.getByRole("cell", { name: "Term (number)" }), { x: 0, y: 0 }, { x: 70, y: 0 });
+
+      expect(await jsonModel.getWidthsById()).toEqual([WidthConstants.INVOCATION_PARAMETER_MIN_WIDTH + 70, undefined]);
     });
   });
 
