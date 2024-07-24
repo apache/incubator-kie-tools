@@ -80,7 +80,7 @@ test.describe("Create Boxed Function", () => {
     await page.getByTestId("kie-tools--bee--pmml-regression pmml").click();
     await expect(page.getByLabel("regression pmml")).toBeAttached();
     await page.getByLabel("-- None selected --").click();
-    await page.getByTestId("pmml-RegressionLinear").click();
+    await page.getByTestId("kie-tools--bee--pmml-RegressionLinear").click();
     await expect(page.getByLabel("RegressionLinear")).toBeAttached();
 
     await expect(page.getByRole("columnheader")).toHaveCount(3);
