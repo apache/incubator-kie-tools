@@ -26,14 +26,14 @@ test.describe("Boxed Context context menu", () => {
     });
 
     test("shouldn't render selection context menu", async ({ bee }) => {
-      const entry = bee.expression.asContext().entry(0);
+      const contextExpression = bee.expression.asContext();
 
-      await entry.selectExpressionMenu.selectLiteral();
-      await entry.expression.asLiteral().fill("test");
-      await entry.variable.contextMenu.open();
+      await contextExpression.entry(0).selectExpressionMenu.selectLiteral();
+      await contextExpression.entry(0).expression.asLiteral().fill("test");
+      await contextExpression.entry(0).variable.contextMenu.open();
 
-      await expect(entry.variable.contextMenu.heading("CONTEXT ENTRY")).toBeAttached();
-      await expect(entry.variable.contextMenu.heading("SELECTION")).toBeAttached();
+      await expect(contextExpression.entry(0).variable.contextMenu.heading("CONTEXT ENTRY")).toBeAttached();
+      await expect(contextExpression.entry(0).variable.contextMenu.heading("SELECTION")).toBeAttached();
     });
 
     test("shouldn't render context entry context menu", async ({ page, bee }) => {
@@ -112,6 +112,7 @@ test.describe("Boxed Context context menu", () => {
 
     test("should open context entry context menu and delete row", async ({ bee }) => {
       const contextExpression = bee.expression.asContext();
+
       await contextExpression.entry(0).variable.contextMenu.open();
       await contextExpression.entry(0).variable.contextMenu.option("Insert above").click();
 

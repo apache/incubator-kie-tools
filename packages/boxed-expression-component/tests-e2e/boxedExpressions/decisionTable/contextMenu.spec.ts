@@ -26,30 +26,38 @@ test.describe("Decision table context menu", () => {
     });
 
     test("shouldn't render columns context menu", async ({ bee }) => {
-      const rowHeading = bee.expression.asDecisionTable().cellAt({ row: 1, column: 0 });
-      await rowHeading.contextMenu.open();
-      await expect(rowHeading.contextMenu.heading("DECISION RULE")).toBeAttached();
-      await expect(rowHeading.contextMenu.heading("SELECTION")).toBeAttached();
-      await expect(rowHeading.contextMenu.heading("INPUT CLAUSE")).not.toBeAttached();
-      await expect(rowHeading.contextMenu.heading("OUTPUT CLAUSE")).not.toBeAttached();
-      await expect(rowHeading.contextMenu.heading("RULE ANNOTATION")).not.toBeAttached();
+      const decisionTable = bee.expression.asDecisionTable();
+
+      await decisionTable.cellAt({ row: 1, column: 0 }).contextMenu.open();
+
+      await expect(decisionTable.cellAt({ row: 1, column: 0 }).contextMenu.heading("DECISION RULE")).toBeAttached();
+      await expect(decisionTable.cellAt({ row: 1, column: 0 }).contextMenu.heading("SELECTION")).toBeAttached();
+      await expect(decisionTable.cellAt({ row: 1, column: 0 }).contextMenu.heading("INPUT CLAUSE")).not.toBeAttached();
+      await expect(decisionTable.cellAt({ row: 1, column: 0 }).contextMenu.heading("OUTPUT CLAUSE")).not.toBeAttached();
+      await expect(
+        decisionTable.cellAt({ row: 1, column: 0 }).contextMenu.heading("RULE ANNOTATION")
+      ).not.toBeAttached();
     });
 
     test("should open decision rules context menu and insert row above", async ({ bee }) => {
-      const cell = bee.expression.asDecisionTable().cellAt({ row: 1, column: 1 });
-      await cell.fill("test");
-      await cell.contextMenu.open();
-      await cell.contextMenu.option("Insert above").click();
+      const decisionTable = bee.expression.asDecisionTable();
+
+      await decisionTable.cellAt({ row: 1, column: 1 }).fill("test");
+      await decisionTable.cellAt({ row: 1, column: 1 }).contextMenu.open();
+      await decisionTable.cellAt({ row: 1, column: 1 }).contextMenu.option("Insert above").click();
+
       await expect(bee.expression.asDecisionTable().cellAt({ row: 2, column: 1 }).content).toContainText("test");
     });
 
     test("should open decision rules context menu and insert row below", async ({ bee }) => {
-      const cell = bee.expression.asDecisionTable().cellAt({ row: 1, column: 1 });
-      await cell.fill("test");
-      await cell.contextMenu.open();
-      await cell.contextMenu.option("Insert below").click();
-      await expect(bee.expression.asDecisionTable().cellAt({ row: 1, column: 1 }).content).toContainText("test");
-      await expect(bee.expression.asDecisionTable().cellAt({ row: 2, column: 1 }).content).toContainText("");
+      const decisionTable = bee.expression.asDecisionTable();
+
+      await decisionTable.cellAt({ row: 1, column: 1 }).fill("test");
+      await decisionTable.cellAt({ row: 1, column: 1 }).contextMenu.open();
+      await decisionTable.cellAt({ row: 1, column: 1 }).contextMenu.option("Insert below").click();
+
+      await expect(decisionTable.cellAt({ row: 1, column: 1 }).content).toContainText("test");
+      await expect(decisionTable.cellAt({ row: 2, column: 1 }).content).toContainText("");
     });
 
     test("should open decision rules context menu and insert multiples rows above", async ({ bee }) => {
@@ -218,18 +226,20 @@ test.describe("Decision table context menu", () => {
       });
 
       test("shouldn't render decision rules context menu", async ({ bee }) => {
-        const outputHeader = bee.expression.asDecisionTable().outputHeaderAt(0);
-        await outputHeader.contextMenu.open();
+        const decisonTable = bee.expression.asDecisionTable();
 
-        await expect(outputHeader.contextMenu.heading("DECISION RULES")).not.toBeAttached();
-        await expect(outputHeader.contextMenu.heading("SELECTION")).toBeAttached();
-        await expect(outputHeader.contextMenu.heading("INPUT CLAUSE")).not.toBeAttached();
-        await expect(outputHeader.contextMenu.heading("OUTPUT CLAUSE")).toBeAttached();
-        await expect(outputHeader.contextMenu.heading("RULE ANNOTATION")).not.toBeAttached();
+        await decisonTable.outputHeaderAt(0).contextMenu.open();
+
+        await expect(decisonTable.outputHeaderAt(0).contextMenu.heading("DECISION RULES")).not.toBeAttached();
+        await expect(decisonTable.outputHeaderAt(0).contextMenu.heading("SELECTION")).toBeAttached();
+        await expect(decisonTable.outputHeaderAt(0).contextMenu.heading("INPUT CLAUSE")).not.toBeAttached();
+        await expect(decisonTable.outputHeaderAt(0).contextMenu.heading("OUTPUT CLAUSE")).toBeAttached();
+        await expect(decisonTable.outputHeaderAt(0).contextMenu.heading("RULE ANNOTATION")).not.toBeAttached();
       });
 
       test("should open output column context menu and insert column right", async ({ page, bee }) => {
         const decisionTable = bee.expression.asDecisionTable();
+
         await decisionTable.cellAt({ row: 1, column: 2 }).fill("test");
         await decisionTable.outputHeaderAt(0).contextMenu.open();
         await decisionTable.outputHeaderAt(0).contextMenu.option("Insert right").click();
@@ -323,13 +333,15 @@ test.describe("Decision table context menu", () => {
       });
 
       test("shouldn't render decision rules context menu", async ({ bee }) => {
-        const annotationHeader = bee.expression.asDecisionTable().annotationHeaderAt(0);
-        await annotationHeader.contextMenu.open();
-        await expect(annotationHeader.contextMenu.heading("DECISION RULES")).not.toBeAttached();
-        await expect(annotationHeader.contextMenu.heading("SELECTION")).toBeAttached();
-        await expect(annotationHeader.contextMenu.heading("INPUT CLAUSE")).not.toBeAttached();
-        await expect(annotationHeader.contextMenu.heading("OUTPUT CLAUSE")).not.toBeAttached();
-        await expect(annotationHeader.contextMenu.heading("RULE ANNOTATION")).toBeAttached();
+        const decisionTable = bee.expression.asDecisionTable();
+
+        await decisionTable.annotationHeaderAt(0).contextMenu.open();
+
+        await expect(decisionTable.annotationHeaderAt(0).contextMenu.heading("DECISION RULES")).not.toBeAttached();
+        await expect(decisionTable.annotationHeaderAt(0).contextMenu.heading("SELECTION")).toBeAttached();
+        await expect(decisionTable.annotationHeaderAt(0).contextMenu.heading("INPUT CLAUSE")).not.toBeAttached();
+        await expect(decisionTable.annotationHeaderAt(0).contextMenu.heading("OUTPUT CLAUSE")).not.toBeAttached();
+        await expect(decisionTable.annotationHeaderAt(0).contextMenu.heading("RULE ANNOTATION")).toBeAttached();
       });
 
       test("should open annotation column context menu and insert column right", async ({ page, bee }) => {
