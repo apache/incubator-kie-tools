@@ -68,15 +68,6 @@ export function DecisionTableOutputHeaderCell(props: {
   const defaultOutputEntry = useMemo(() => cell.defaultOutputEntry, [cell.defaultOutputEntry]);
   const outputValues = useMemo(() => cell.outputValues, [cell.outputValues]);
 
-  const itemDefinition = useMemo(() => {
-    const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = dmnEditorStoreApi
-      .getState()
-      .computed(dmnEditorStoreApi.getState())
-      .getDataTypes(externalModelsByNamespace);
-    return allDataTypesById.get(allTopLevelItemDefinitionUniqueNames.get(cell?.["@_typeRef"] ?? "") ?? "")
-      ?.itemDefinition;
-  }, [cell, dmnEditorStoreApi, externalModelsByNamespace]);
-
   const root = useMemo(
     () =>
       props.boxedExpressionIndex?.get(
@@ -84,6 +75,24 @@ export function DecisionTableOutputHeaderCell(props: {
       )?.cell as Normalized<BoxedDecisionTable> | undefined,
     [props.boxedExpressionIndex, selectedObjectInfos?.expressionPath]
   );
+
+  const cellMustHaveSameTypeAsRoot = useMemo(
+    () =>
+      root?.output.length === 1 && (root?.["@_typeRef"] === cell?.["@_typeRef"] || cell?.["@_typeRef"] === undefined),
+    [cell, root]
+  );
+
+  const itemDefinition = useMemo(() => {
+    const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = dmnEditorStoreApi
+      .getState()
+      .computed(dmnEditorStoreApi.getState())
+      .getDataTypes(externalModelsByNamespace);
+    return allDataTypesById.get(
+      allTopLevelItemDefinitionUniqueNames.get(
+        cellMustHaveSameTypeAsRoot ? root?.["@_typeRef"] ?? "" : cell?.["@_typeRef"] ?? ""
+      ) ?? ""
+    )?.itemDefinition;
+  }, [cell, cellMustHaveSameTypeAsRoot, dmnEditorStoreApi, externalModelsByNamespace, root]);
 
   const [isDefaultOutputEntryExpanded, setDefaultOutputEntryExpanded] = useState(false);
   const [isOutputValuesExpanded, setOutputValuesExpanded] = useState(false);
@@ -176,18 +185,10 @@ export function DecisionTableOutputHeaderCell(props: {
         isReadonly={
           // In case the the output column is merged, the output column should have the same type as the Decision Node
           // It can happen to output column and Decision Node have different types, for this case, the user will be able to fix it.
-          root?.output.length === 1 &&
-          (root?.["@_typeRef"] === cell?.["@_typeRef"] || cell?.["@_typeRef"] === undefined)
-            ? true
-            : props.isReadonly
+          cellMustHaveSameTypeAsRoot ? true : props.isReadonly
         }
         dmnEditorRootElementRef={dmnEditorRootElementRef}
-        typeRef={
-          root?.output.length === 1 &&
-          (root?.["@_typeRef"] === cell?.["@_typeRef"] || cell?.["@_typeRef"] === undefined)
-            ? root?.["@_typeRef"]
-            : cell?.["@_typeRef"]
-        }
+        typeRef={cellMustHaveSameTypeAsRoot ? root?.["@_typeRef"] : cell?.["@_typeRef"]}
         onChange={(newTypeRef) =>
           updater((dmnObject) => {
             dmnObject["@_typeRef"] = newTypeRef;

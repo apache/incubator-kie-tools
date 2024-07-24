@@ -20,7 +20,7 @@
 import { Page } from "@playwright/test";
 import { Diagram } from "../../diagram";
 import { DataTypeProperties } from "../parts/dataTypeProperties";
-import { DataType } from "../../dataTypes";
+import { ConstraintType, DataType, RangeConstraintPosition } from "../../dataTypes";
 import { NameProperties } from "../parts/nameProperties";
 import { BeePropertiesPanelBase } from "./beePropertiesPanelBase";
 
@@ -53,11 +53,24 @@ export class DecisionTableOutputHeaderPropertiesPanel extends BeePropertiesPanel
 
   public async setDecisionDataType(args: { newDataType: DataType }) {
     await this.panel().getByPlaceholder("Select a data type...").nth(0).click();
+    await this.panel().getByPlaceholder("Select a data type...").nth(0).press("ControlOrMeta+a");
+    await this.panel().getByPlaceholder("Select a data type...").nth(0).fill(args.newDataType);
     await this.page.getByRole("option").getByText(args.newDataType, { exact: true }).click();
+  }
+
+  public async setDecisionCustomDataType(args: { newDataType: string }) {
+    await this.panel().getByPlaceholder("Select a data type...").nth(0).click();
+    await this.panel().getByPlaceholder("Select a data type...").nth(0).press("ControlOrMeta+a");
+    await this.panel().getByPlaceholder("Select a data type...").nth(0).fill(args.newDataType);
+    await this.page.getByRole("option").getByText(args.newDataType).click();
   }
 
   public async setDataType(args: { newDataType: DataType }) {
     await this.dataTypeProperties.setDataType({ ...args });
+  }
+
+  public async setCustomDataType(args: { newDataType: string }) {
+    await this.dataTypeProperties.setCustomDataType({ ...args });
   }
 
   public getDecisionDataType() {
@@ -74,5 +87,25 @@ export class DecisionTableOutputHeaderPropertiesPanel extends BeePropertiesPanel
 
   public getConstraintSection() {
     return this.dataTypeProperties.getConstraintSection();
+  }
+
+  public getConstraintButton(args: { type: ConstraintType }) {
+    return this.dataTypeProperties.getConstraintButton({ ...args });
+  }
+
+  public getEnumerationValueAt(element: number) {
+    return this.dataTypeProperties.getEnumerationElementAt(element);
+  }
+
+  public getExpressionConstraintValue() {
+    return this.dataTypeProperties.getExpressionConstraintValue();
+  }
+
+  public getNoneConstraint() {
+    return this.dataTypeProperties.getNoneConstraint();
+  }
+
+  public getRangeConstraintValueAt(position: RangeConstraintPosition) {
+    return this.dataTypeProperties.getRangeConstraintValue(position);
   }
 }
