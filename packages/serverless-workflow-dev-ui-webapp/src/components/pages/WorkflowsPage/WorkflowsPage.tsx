@@ -39,6 +39,7 @@ import {
   useWorkflowListGatewayApi,
   WorkflowListGatewayApi,
 } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowList";
+import { changeBaseURLToCurrentLocation } from "../../../url";
 
 interface MatchProps {
   instanceID: string;
@@ -82,13 +83,15 @@ const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
         state: {
           workflowDefinition: {
             workflowName: workflowDefinition.workflowName,
-            endpoint: workflowDefinition.endpoint,
+            endpoint: apiContext.isLocalCluster
+              ? changeBaseURLToCurrentLocation(workflowDefinition.endpoint)
+              : workflowDefinition.endpoint,
             serviceUrl: workflowDefinition.serviceUrl,
           },
         },
       });
     },
-    [history]
+    [history, apiContext.isLocalCluster]
   );
 
   const onOpenTriggerCloudEvent = useCallback(
@@ -98,13 +101,15 @@ const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
         state: {
           workflowDefinition: {
             workflowName: workflowDefinition.workflowName,
-            endpoint: workflowDefinition.endpoint,
+            endpoint: apiContext.isLocalCluster
+              ? changeBaseURLToCurrentLocation(workflowDefinition.endpoint)
+              : workflowDefinition.endpoint,
             serviceUrl: workflowDefinition.serviceUrl,
           },
         },
       });
     },
-    [history]
+    [history, apiContext.isLocalCluster]
   );
 
   return (

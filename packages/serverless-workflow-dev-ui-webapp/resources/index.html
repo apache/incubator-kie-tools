@@ -40,14 +40,15 @@
 
     <script>
       const devUI = RuntimeToolsDevUI.open({
+        availablePages: ["Workflows", "Forms", "Monitoring", "CustomDashboard"],
         container: document.getElementById("webapp"),
-        isDataIndexAvailable: true,
         dataIndexUrl: "http://localhost:4000/graphql",
-        page: "Workflows",
         devUIUrl: "http://localhost:9024",
+        isDataIndexAvailable: true,
+        isLocalCluster: true,
         openApiBaseUrl: "http://localhost:4000",
         openApiPath: "q/openapi.json",
-        availablePages: ["Workflows", "Forms", "Monitoring", "CustomDashboard"],
+        page: "Workflows",
       });
     </script>
   </body>

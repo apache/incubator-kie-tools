@@ -17,28 +17,15 @@
  * under the License.
  */
 
-import { CustomLabels } from "./CustomLabels";
-import { DiagramPreviewSize } from "@kie-tools/runtime-tools-swf-enveloped-components/dist/workflowDetails/api";
+/**
+ * Change the base URL to using the window.location from a given URL
+ *
+ * @param {string} url - The URL string to modify
+ * @returns {string} The new URL.
+ */
+export function changeBaseURLToCurrentLocation(url: string): string {
+  const { protocol, hostname, port } = window.parent.location ?? window.location;
+  const parsedUrl = new URL(url, window.parent.location.href ?? window.location.href);
 
-export interface RuntimeToolsDevUIEnvelopeApi {
-  runtimeToolsDevUI_initRequest(association: Association, initArgs: RuntimeToolsDevUIInitArgs): Promise<void>;
-}
-
-export interface Association {
-  origin: string;
-  envelopeServerId: string;
-}
-
-export interface RuntimeToolsDevUIInitArgs {
-  availablePages?: string[];
-  dataIndexUrl: string;
-  devUIUrl: string;
-  diagramPreviewSize?: DiagramPreviewSize;
-  isDataIndexAvailable: boolean;
-  isLocalCluster?: boolean;
-  isStunnerEnabled: boolean;
-  omittedWorkflowTimelineEvents?: string[];
-  openApiBaseUrl: string;
-  openApiPath: string;
-  page: string;
+  return `${protocol}//${hostname}${port ? `:${port}` : ""}${parsedUrl.pathname}`;
 }

@@ -55,7 +55,7 @@ module.exports = async (env) =>
       },
       proxy: [
         {
-          context: ["/svg", "/forms", "/customDashboard"],
+          context: ["/svg", "/forms", "/customDashboard", "/graphql"],
           target: "http://localhost:4000",
           secure: false,
           changeOrigin: true,
