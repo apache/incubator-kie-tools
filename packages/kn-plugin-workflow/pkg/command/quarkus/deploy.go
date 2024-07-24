@@ -27,7 +27,8 @@ import (
 )
 
 type DeployCmdConfig struct {
-	Path string // service name
+	Path      string // service name
+	Namespace string
 }
 
 func NewDeployCommand() *cobra.Command {
@@ -47,12 +48,15 @@ func NewDeployCommand() *cobra.Command {
 	# Deploy the workflow from the current directory's project. 
 	# Deploy as Knative service.
 	{{.Name}} deploy
+
+	# You can provide target namespace or use default
+	{{.Name}} deploy --namespace <your_namespace>
 	
 	# Specify the path of the directory containing the "knative.yml" 
 	{{.Name}} deploy --path ./kubernetes
 		`,
 		SuggestFor: []string{"delpoy", "deplyo"},
-		PreRunE:    common.BindEnv("path"),
+		PreRunE:    common.BindEnv("namespace", "path"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -60,6 +64,7 @@ func NewDeployCommand() *cobra.Command {
 	}
 
 	cmd.Flags().StringP("path", "p", "./target/kubernetes", fmt.Sprintf("%s path to knative deployment files", cmd.Name()))
+	cmd.Flags().StringP("namespace", "n", "default", "Target namespace of your deployment.")
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
@@ -77,7 +82,7 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 	if err = common.CheckKubectl(); err != nil {
 		return err
 	}
-
+	
 	if _, err = deployKnativeServiceAndEventingBindings(cfg); err != nil {
 		return err
 	}
@@ -89,7 +94,7 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 
 func deployKnativeServiceAndEventingBindings(cfg DeployCmdConfig) (bool, error) {
 	isKnativeEventingBindingsCreated := false
-	createService := common.ExecCommand("kubectl", "apply", "-f", fmt.Sprintf("%s/knative.yml", cfg.Path))
+	createService := common.ExecCommand("kubectl", "apply", "-f", fmt.Sprintf("%s/knative.yml", cfg.Path), fmt.Sprintf("--namespace=%s", cfg.Namespace))
 	if err := common.RunCommand(
 		createService,
 		"deploy",
@@ -101,7 +106,7 @@ func deployKnativeServiceAndEventingBindings(cfg DeployCmdConfig) (bool, error) 
 
 	// Check if kogito.yml file exists
 	if exists, err := checkIfKogitoFileExists(cfg); exists && err == nil {
-		deploy := common.ExecCommand("kubectl", "apply", "-f", fmt.Sprintf("%s/kogito.yml", cfg.Path))
+		deploy := common.ExecCommand("kubectl", "apply", "-f", fmt.Sprintf("%s/kogito.yml", cfg.Path), fmt.Sprintf("--namespace=%s", cfg.Namespace))
 		if err := common.RunCommand(
 			deploy,
 			"deploy",
@@ -117,7 +122,8 @@ func deployKnativeServiceAndEventingBindings(cfg DeployCmdConfig) (bool, error) 
 
 func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployCmdConfig, err error) {
 	cfg = DeployCmdConfig{
-		Path: viper.GetString("path"),
+		Path:      viper.GetString("path"),
+		Namespace: viper.GetString("namespace"),
 	}
 	return
 }
