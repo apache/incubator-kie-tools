@@ -48,5 +48,8 @@ module.exports = (env) => [
       port: buildEnv.exampleUniformsPatternflyPort.port,
     },
     ignoreWarnings: [/Failed to parse source map/],
+    optimization: {
+      sideEffects: true,
+    },
   }),
 ];

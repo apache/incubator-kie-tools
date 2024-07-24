@@ -21,7 +21,7 @@ import { KogitoEditorEnvelopeApi, EditorApi } from "@kie-tools-core/editor/dist/
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
-export interface StandaloneDmnEditorApi extends EditorApi {
+export interface DmnEditorStandaloneApi extends EditorApi {
   subscribeToContentChanges: StateControl["subscribe"];
   unsubscribeToContentChanges: StateControl["unsubscribe"];
   markAsSaved: StateControl["setSavedCommand"];

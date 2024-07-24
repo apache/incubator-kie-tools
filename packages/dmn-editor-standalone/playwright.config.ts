@@ -20,21 +20,12 @@
 import { defineConfig } from "@playwright/test";
 import playwirghtBaseConfig from "@kie-tools/playwright-base/playwright.config";
 import merge from "lodash/merge";
-import { env } from "./env";
-
-const buildEnv: any = env;
+import path from "path";
 
 const customConfig = defineConfig({
   use: {
-    baseURL: `http://localhost:${buildEnv.dmnStandaloneEditor.storybook.port}`,
-  },
-  /* Run your local storybook server before starting the tests */
-  webServer: {
-    command: "pnpm storybook-start",
-    url: `http://localhost:${buildEnv.dmnStandaloneEditor.storybook.port}/iframe.html?args=&id=use-cases-empty--empty&viewMode=story`,
-    reuseExistingServer: !process.env.CI || true,
-    stdout: "pipe",
-    timeout: 180000,
+    viewport: { width: 1600, height: 1200 },
+    baseURL: `file://${path.join(__dirname, `./tests-e2e/__fixtures__/blank.html`)}`,
   },
 });
 

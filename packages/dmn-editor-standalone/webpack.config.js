@@ -59,12 +59,13 @@ module.exports = (env) =>
     },
     optimization: {
       removeAvailableModules: true,
+      sideEffects: true,
     },
     devServer: {
       historyApiFallback: false,
       static: [{ directory: path.join(__dirname, "./dist") }],
       compress: true,
-      port: buildEnv.dmnStandaloneEditor.dev.port,
+      port: buildEnv.dmnEditorStandalone.dev.port,
     },
     performance: {
       hints: false,

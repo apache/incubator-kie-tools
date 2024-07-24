@@ -19,10 +19,10 @@
 
 import dmnEnvelopeJs from "../dist/envelope.js";
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
-import { StandaloneDmnEditorResource, StandaloneDmnEditorChannelApiImpl } from "./StandaloneDmnEditorChannelApiImpl";
-import { StandaloneDmnEditorApi } from "./StandaloneDmnEditorApi";
-import { createEnvelopeServer } from "./StandaloneDmnEditorEnvelopeServer";
-import { createEditor } from "./StandaloneDmnEditorApiImpl";
+import { DmnEditorStandaloneChannelApiImpl, DmnEditorStandaloneResource } from "./DmnEditorStandaloneChannelApiImpl";
+import { DmnEditorStandaloneApi } from "./DmnEditorStandaloneApi";
+import { createEnvelopeServer } from "./DmnEditorStandaloneEnvelopeServer";
+import { createEditor } from "./DmnEditorStandaloneApiImpl";
 import { basename } from "path";
 
 export const DEFAULT_DMN_MODEL_POSIX_FILE_PATH_RELATIVE_TO_WORKSPACE_ROOT = "model.dmn";
@@ -34,8 +34,8 @@ export function open(args: {
   readOnly?: boolean;
   origin?: string;
   onError?: () => any;
-  resources: Map<string, StandaloneDmnEditorResource>;
-}): StandaloneDmnEditorApi {
+  resources?: Map<string, DmnEditorStandaloneResource>;
+}): DmnEditorStandaloneApi {
   const iframe = document.createElement("iframe");
   iframe.srcdoc = `
 <!doctype html>
@@ -70,6 +70,7 @@ export function open(args: {
   </body>
 </html>
   `;
+  iframe.id = "dmn-editor-standalone";
   iframe.style.width = "100%";
   iframe.style.height = "100%";
   iframe.style.border = "none";
@@ -84,7 +85,7 @@ export function open(args: {
     args.initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot ??
     DEFAULT_DMN_MODEL_POSIX_FILE_PATH_RELATIVE_TO_WORKSPACE_ROOT;
 
-  const channelApiImpl = new StandaloneDmnEditorChannelApiImpl(
+  const channelApiImpl = new DmnEditorStandaloneChannelApiImpl(
     stateControl,
     {
       normalizedPosixPathRelativeToTheWorkspaceRoot: initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot,

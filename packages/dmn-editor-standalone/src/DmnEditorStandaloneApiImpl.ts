@@ -20,14 +20,14 @@
 import { KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { StandaloneDmnEditorApi } from "./StandaloneDmnEditorApi";
+import { DmnEditorStandaloneApi } from "./DmnEditorStandaloneApi";
 
 export const createEditor = (
   envelopeApi: MessageBusClientApi<KogitoEditorEnvelopeApi>,
   stateControl: StateControl,
   listener: (message: MessageEvent) => void,
   iframe: HTMLIFrameElement
-): StandaloneDmnEditorApi => {
+): DmnEditorStandaloneApi => {
   return {
     undo: () => {
       stateControl.undo();

@@ -36,17 +36,17 @@ import { Minimatch } from "minimatch";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { dirname, normalize } from "path";
 
-export type StandaloneDmnEditorResource = { contentType: ContentType; content: Promise<string> };
+export type DmnEditorStandaloneResource = { contentType: ContentType; content: Promise<string> };
 
-export class StandaloneDmnEditorChannelApiImpl implements KogitoEditorChannelApi {
+export class DmnEditorStandaloneChannelApiImpl implements KogitoEditorChannelApi {
   constructor(
     private readonly stateControl: StateControl,
     private readonly file: EmbeddedEditorFile,
     private readonly locale: string,
     private readonly overrides: Partial<KogitoEditorChannelApi>,
-    private readonly resources: Map<
+    private readonly resources?: Map<
       string /** normalized posix path relative to the "workspace" root */,
-      StandaloneDmnEditorResource
+      DmnEditorStandaloneResource
     >
   ) {}
 

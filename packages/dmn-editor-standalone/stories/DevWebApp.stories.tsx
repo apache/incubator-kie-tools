@@ -22,12 +22,12 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { useRef, useState, useEffect, useCallback } from "react";
 import "@patternfly/react-core/dist/styles/base.css";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import * as DmnEditor from "../../dist/index";
-import { StandaloneDmnEditorApi } from "../../dist/StandaloneDmnEditorApi";
+import * as DmnEditor from "../dist/index";
+import { DmnEditorStandaloneApi } from "../dist/DmnEditorStandaloneApi";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex/Flex";
 import { FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex/FlexItem";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { emptyDmn, emptyDrd, loanPreQualificationDmn } from "./externalModels";
+import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { emptyDmn } from "./externalModels";
 
 const droppingFileStyle = {
   position: "absolute",
@@ -49,8 +49,8 @@ const droppingFileStyle = {
 } as React.CSSProperties;
 
 function DevWebApp() {
-  const [isDirty, setDirty] = useState(false);
-  const editorRef = useRef<StandaloneDmnEditorApi>(null);
+  const [editCount, setEditCount] = useState(0);
+  const editorRef = useRef<DmnEditorStandaloneApi>(null);
   const editorContainerRef = useRef<HTMLDivElement>(null);
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const [isDroppingFile, setIsDroppingFile] = useState(false);
@@ -65,13 +65,36 @@ function DevWebApp() {
       origin: "*",
     });
 
-    editor.subscribeToContentChanges(setDirty);
+    editor.subscribeToContentChanges(() => setEditCount((currentCount) => currentCount + 1));
 
     (editorRef as any).current = editor;
 
+    console.log(editor);
+
     return () => {
       editor.close();
+      setEditCount(0);
     };
+  }, []);
+
+  const onUndo = useCallback(() => {
+    setEditCount((currentCount) => {
+      if (currentCount > 0) {
+        editorRef.current?.undo();
+        // -2 because undoing will generateg a contentChange notification.
+        return currentCount - 2;
+      }
+      return currentCount;
+    });
+  }, []);
+
+  const onRedo = useCallback(() => {
+    editorRef.current?.redo();
+  }, []);
+
+  const onReset = useCallback(() => {
+    editorRef.current?.setContent("empty.dmn", emptyDmn);
+    setEditCount(0);
   }, []);
 
   const onDownloadDmn = useCallback(() => {
@@ -163,15 +186,12 @@ function DevWebApp() {
                 <h5>(Drag & drop a file here to open it)</h5>
               </FlexItem>
               <FlexItem shrink={{ default: "shrink" }}>
-                <button onClick={() => editorRef.current?.setContent("empty.dmn", emptyDmn)}>Reset</button>
-                &nbsp; &nbsp; | &nbsp; &nbsp;
-                {/* <button onClick={() => editorRef.current?.setContent("loan_pre_qualification.dmn", loanPreQualificationDmn)}>Loan Pre Qualification</button>
+                <button onClick={onReset}>Reset</button>
+                &nbsp; &nbsp; | &nbsp; &nbsp; Edit count: {editCount}
                 &nbsp; &nbsp;
-                <button onClick={() => editorRef.current?.setContent("empty.drd", emptyDrd)}>Empty DRD</button>
-                &nbsp; &nbsp; | &nbsp; &nbsp; */}
-                <button onClick={() => editorRef.current?.undo()}>Undo</button>
+                <button onClick={onUndo}>Undo</button>
                 &nbsp; &nbsp;
-                <button onClick={() => editorRef.current?.redo()}>Redo</button>
+                <button onClick={onRedo}>Redo</button>
                 &nbsp; &nbsp; | &nbsp; &nbsp;
                 <button onClick={onDownloadDmn}>Download</button>
                 &nbsp; &nbsp;

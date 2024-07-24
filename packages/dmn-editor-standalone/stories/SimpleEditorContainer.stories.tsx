@@ -17,20 +17,24 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import * as React from "react";
+import type { Meta, StoryObj } from "@storybook/react";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools-core/webpack-base/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      dmnEditorStandalone: {
-        dev: {
-          port: "9006",
-        },
-        storybook: {
-          port: "9903",
-        },
-      },
-    };
-  },
-});
+function SimpleEditorContainer() {
+  return <div data-test-id="dmn-editor-container" id="dmn-editor-container" style={{ height: "100%" }} />;
+}
+
+// More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
+const meta: Meta<typeof SimpleEditorContainer> = {
+  title: "Simple Editor Container",
+  component: SimpleEditorContainer,
+};
+
+export default meta;
+type Story = StoryObj<typeof SimpleEditorContainer>;
+
+// More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
+export const WebApp: Story = {
+  render: (args) => SimpleEditorContainer(),
+  args: {},
+};

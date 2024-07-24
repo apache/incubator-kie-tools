@@ -18,7 +18,7 @@
  */
 
 import { DmnEditorEnvelopeApiImpl } from "@kie-tools/dmn-editor-envelope/dist/DmnEditorEnvelopeApiFactory";
-import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
+import { initCustom as envelopeInitCustom } from "@kie-tools-core/editor/dist/envelope";
 import { Editor, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 
 const initEnvelope = () => {
@@ -45,7 +45,7 @@ const initEnvelope = () => {
   });
   mutationObserver.observe(document.body, { childList: true, subtree: true });
 
-  EditorEnvelope.initCustom<Editor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi>({
+  envelopeInitCustom<Editor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi>({
     container: container,
     bus: {
       postMessage: (message, targetOrigin, _) => {
