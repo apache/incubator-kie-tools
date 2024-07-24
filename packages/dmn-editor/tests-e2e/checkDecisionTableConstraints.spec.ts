@@ -171,8 +171,8 @@ test.describe("Decision Table - Type Constraints", () => {
       await editor.changeTab({ tab: TabName.EDITOR });
     });
 
-    test.describe("Decision Table input header", () => {
-      test(`Decision Table input header properties panel should contain constraint - enum`, async ({
+    test.describe("Decision Table input column", () => {
+      test(`Decision Table input header and rule properties panel should contain constraint - enum`, async ({
         page,
         beePropertiesPanel,
       }) => {
@@ -186,24 +186,22 @@ test.describe("Decision Table - Type Constraints", () => {
         // Using RegExp matcher as it will check for &nbsp; characters as well.
         await expect(beePropertiesPanel.decisionTableInputHeader.getDataType()).toHaveValue(/^\s*enumType\s$/i);
         await expect(beePropertiesPanel.decisionTableInputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableInputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableInputHeader.getEnumerationValueAt(0)).toHaveValue("foo");
         await expect(beePropertiesPanel.decisionTableInputHeader.getEnumerationValueAt(1)).toHaveValue("bar");
         await expect(beePropertiesPanel.decisionTableInputHeader.getEnumerationValueAt(2)).toHaveValue("baz");
+
+        await page.getByTestId("monaco-container").nth(0).click();
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toHaveValue(/^\s*enumType\s$/i);
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toBeDisabled();
+        await expect(beePropertiesPanel.decisionTableInputRule.getConstraintSection()).toBeAttached();
+        await beePropertiesPanel.decisionTableInputRule.expectConstraintButtonsToBeDisabled();
+        await expect(beePropertiesPanel.decisionTableInputRule.getEnumerationValueAt(0)).toHaveValue("foo");
+        await expect(beePropertiesPanel.decisionTableInputRule.getEnumerationValueAt(1)).toHaveValue("bar");
+        await expect(beePropertiesPanel.decisionTableInputRule.getEnumerationValueAt(2)).toHaveValue("baz");
       });
 
-      test(`Decision Table input header properties panel should contain constraint - enum edited`, async ({
+      test(`Decision Table input header and rule properties panel should contain constraint - enum edited`, async ({
         page,
         beePropertiesPanel,
         editor,
@@ -219,18 +217,7 @@ test.describe("Decision Table - Type Constraints", () => {
         // Using RegExp matcher as it will check for &nbsp; characters as well.
         await expect(beePropertiesPanel.decisionTableInputHeader.getDataType()).toHaveValue(/^\s*enumType\s$/i);
         await expect(beePropertiesPanel.decisionTableInputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableInputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableInputHeader.getEnumerationValueAt(0)).toHaveValue("foo");
         await expect(beePropertiesPanel.decisionTableInputHeader.getEnumerationValueAt(1)).toHaveValue("bar");
         await expect(beePropertiesPanel.decisionTableInputHeader.getEnumerationValueAt(2)).toHaveValue("baz");
@@ -243,25 +230,24 @@ test.describe("Decision Table - Type Constraints", () => {
         await page.getByRole("columnheader", { name: "Input-1 (enumType)" }).click();
         await expect(beePropertiesPanel.decisionTableInputHeader.getDataType()).toHaveValue(/^\s*enumType\s$/i);
         await expect(beePropertiesPanel.decisionTableInputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableInputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableInputHeader.getEnumerationValueAt(0)).toHaveValue("foo");
         await expect(beePropertiesPanel.decisionTableInputHeader.getEnumerationValueAt(1)).toHaveValue("bar");
         await expect(beePropertiesPanel.decisionTableInputHeader.getEnumerationValueAt(2)).toHaveValue("baz");
         await expect(beePropertiesPanel.decisionTableInputHeader.getEnumerationValueAt(3)).toHaveValue("qux");
+
+        await page.getByTestId("monaco-container").nth(0).click();
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toHaveValue(/^\s*enumType\s$/i);
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toBeDisabled();
+        await expect(beePropertiesPanel.decisionTableInputRule.getConstraintSection()).toBeAttached();
+        await beePropertiesPanel.decisionTableInputRule.expectConstraintButtonsToBeDisabled();
+        await expect(beePropertiesPanel.decisionTableInputRule.getEnumerationValueAt(0)).toHaveValue("foo");
+        await expect(beePropertiesPanel.decisionTableInputRule.getEnumerationValueAt(1)).toHaveValue("bar");
+        await expect(beePropertiesPanel.decisionTableInputRule.getEnumerationValueAt(2)).toHaveValue("baz");
+        await expect(beePropertiesPanel.decisionTableInputRule.getEnumerationValueAt(3)).toHaveValue("qux");
       });
 
-      test(`Decision Table input header properties panel should contain constraint - range`, async ({
+      test(`Decision Table input header and rule properties panel should contain constraint - range`, async ({
         page,
         beePropertiesPanel,
       }) => {
@@ -275,18 +261,7 @@ test.describe("Decision Table - Type Constraints", () => {
         // Using RegExp matcher as it will check for &nbsp; characters as well.
         await expect(beePropertiesPanel.decisionTableInputHeader.getDataType()).toHaveValue(/^\s*rangeType\s$/i);
         await expect(beePropertiesPanel.decisionTableInputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableInputHeader.expectConstraintButtonsToBeDisabled();
 
         await expect(
           beePropertiesPanel.decisionTableInputHeader.getRangeConstraintValueAt(RangeConstraintPosition.START)
@@ -294,9 +269,21 @@ test.describe("Decision Table - Type Constraints", () => {
         await expect(
           beePropertiesPanel.decisionTableInputHeader.getRangeConstraintValueAt(RangeConstraintPosition.END)
         ).toHaveValue("200");
+
+        await page.getByTestId("monaco-container").nth(0).click();
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toHaveValue(/^\s*rangeType\s$/i);
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toBeDisabled();
+        await expect(beePropertiesPanel.decisionTableInputRule.getConstraintSection()).toBeAttached();
+        await beePropertiesPanel.decisionTableInputRule.expectConstraintButtonsToBeDisabled();
+        await expect(
+          beePropertiesPanel.decisionTableInputRule.getRangeConstraintValueAt(RangeConstraintPosition.START)
+        ).toHaveValue("10");
+        await expect(
+          beePropertiesPanel.decisionTableInputRule.getRangeConstraintValueAt(RangeConstraintPosition.END)
+        ).toHaveValue("200");
       });
 
-      test(`Decision Table input header properties panel should contain constraint - range edited`, async ({
+      test(`Decision Table input header and rule properties panel should contain constraint - range edited`, async ({
         page,
         beePropertiesPanel,
         editor,
@@ -312,18 +299,7 @@ test.describe("Decision Table - Type Constraints", () => {
         // Using RegExp matcher as it will check for &nbsp; characters as well.
         await expect(beePropertiesPanel.decisionTableInputHeader.getDataType()).toHaveValue(/^\s*rangeType\s$/i);
         await expect(beePropertiesPanel.decisionTableInputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableInputHeader.expectConstraintButtonsToBeDisabled();
         await expect(
           beePropertiesPanel.decisionTableInputHeader.getRangeConstraintValueAt(RangeConstraintPosition.START)
         ).toHaveValue("10");
@@ -339,27 +315,28 @@ test.describe("Decision Table - Type Constraints", () => {
         await page.getByRole("columnheader", { name: "Input-1 (rangeType)" }).click();
         await expect(beePropertiesPanel.decisionTableInputHeader.getDataType()).toHaveValue(/^\s*rangeType\s$/i);
         await expect(beePropertiesPanel.decisionTableInputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableInputHeader.expectConstraintButtonsToBeDisabled();
         await expect(
           beePropertiesPanel.decisionTableInputHeader.getRangeConstraintValueAt(RangeConstraintPosition.START)
         ).toHaveValue("20");
         await expect(
           beePropertiesPanel.decisionTableInputHeader.getRangeConstraintValueAt(RangeConstraintPosition.END)
         ).toHaveValue("200");
+
+        await page.getByTestId("monaco-container").nth(0).click();
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toHaveValue(/^\s*rangeType\s$/i);
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toBeDisabled();
+        await expect(beePropertiesPanel.decisionTableInputRule.getConstraintSection()).toBeAttached();
+        await beePropertiesPanel.decisionTableInputRule.expectConstraintButtonsToBeDisabled();
+        await expect(
+          beePropertiesPanel.decisionTableInputRule.getRangeConstraintValueAt(RangeConstraintPosition.START)
+        ).toHaveValue("20");
+        await expect(
+          beePropertiesPanel.decisionTableInputRule.getRangeConstraintValueAt(RangeConstraintPosition.END)
+        ).toHaveValue("200");
       });
 
-      test(`Decision Table input header properties panel should contain constraint - expression`, async ({
+      test(`Decision Table input header and rule properties panel should contain constraint - expression`, async ({
         page,
         beePropertiesPanel,
       }) => {
@@ -373,22 +350,18 @@ test.describe("Decision Table - Type Constraints", () => {
         // Using RegExp matcher as it will check for &nbsp; characters as well.
         await expect(beePropertiesPanel.decisionTableInputHeader.getDataType()).toHaveValue(/^\s*expressionType\s$/i);
         await expect(beePropertiesPanel.decisionTableInputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableInputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableInputHeader.getExpressionConstraintValue()).toHaveText("> 20");
+
+        await page.getByTestId("monaco-container").nth(0).click();
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toHaveValue(/^\s*expressionType\s$/i);
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toBeDisabled();
+        await expect(beePropertiesPanel.decisionTableInputRule.getConstraintSection()).toBeAttached();
+        await beePropertiesPanel.decisionTableInputRule.expectConstraintButtonsToBeDisabled();
+        await expect(beePropertiesPanel.decisionTableInputRule.getExpressionConstraintValue()).toHaveText("> 20");
       });
 
-      test(`Decision Table input header properties panel should contain constraint - expression edited`, async ({
+      test(`Decision Table input header and rule properties panel should contain constraint - expression edited`, async ({
         page,
         beePropertiesPanel,
         editor,
@@ -404,18 +377,7 @@ test.describe("Decision Table - Type Constraints", () => {
         // Using RegExp matcher as it will check for &nbsp; characters as well.
         await expect(beePropertiesPanel.decisionTableInputHeader.getDataType()).toHaveValue(/^\s*expressionType\s$/i);
         await expect(beePropertiesPanel.decisionTableInputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableInputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableInputHeader.getExpressionConstraintValue()).toHaveText("> 20");
 
         await editor.changeTab({ tab: TabName.DATA_TYPES });
@@ -426,22 +388,18 @@ test.describe("Decision Table - Type Constraints", () => {
         await page.getByRole("columnheader", { name: "Input-1 (expressionType)" }).click();
         await expect(beePropertiesPanel.decisionTableInputHeader.getDataType()).toHaveValue(/^\s*expressionType\s$/i);
         await expect(beePropertiesPanel.decisionTableInputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableInputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableInputHeader.getExpressionConstraintValue()).toHaveText("< 30");
+
+        await page.getByTestId("monaco-container").nth(0).click();
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toHaveValue(/^\s*expressionType\s$/i);
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toBeDisabled();
+        await expect(beePropertiesPanel.decisionTableInputRule.getConstraintSection()).toBeAttached();
+        await beePropertiesPanel.decisionTableInputRule.expectConstraintButtonsToBeDisabled();
+        await expect(beePropertiesPanel.decisionTableInputRule.getExpressionConstraintValue()).toHaveText("< 30");
       });
 
-      test(`Decision Table input header properties panel shouldn't contain constraint`, async ({
+      test(`Decision Table input header and rule properties panel shouldn't contain constraint`, async ({
         page,
         beePropertiesPanel,
       }) => {
@@ -455,22 +413,18 @@ test.describe("Decision Table - Type Constraints", () => {
         // Using RegExp matcher as it will check for &nbsp; characters as well.
         await expect(beePropertiesPanel.decisionTableInputHeader.getDataType()).toHaveValue(/^\s*noneType\s$/i);
         await expect(beePropertiesPanel.decisionTableInputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableInputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableInputHeader.getNoneConstraint()).toBeAttached();
+
+        await page.getByTestId("monaco-container").nth(0).click();
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toHaveValue(/^\s*noneType\s$/i);
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toBeDisabled();
+        await expect(beePropertiesPanel.decisionTableInputRule.getConstraintSection()).toBeAttached();
+        await beePropertiesPanel.decisionTableInputRule.expectConstraintButtonsToBeDisabled();
+        await expect(beePropertiesPanel.decisionTableInputRule.getNoneConstraint()).toBeAttached();
       });
 
-      test(`Decision Table input header properties panel should contain constraint - change between types`, async ({
+      test(`Decision Table input header and rule properties panel should contain constraint - change between types`, async ({
         page,
         beePropertiesPanel,
       }) => {
@@ -484,38 +438,25 @@ test.describe("Decision Table - Type Constraints", () => {
         // Using RegExp matcher as it will check for &nbsp; characters as well.
         await expect(beePropertiesPanel.decisionTableInputHeader.getDataType()).toHaveValue(/^\s*enumType\s$/i);
         await expect(beePropertiesPanel.decisionTableInputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableInputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableInputHeader.getEnumerationValueAt(0)).toHaveValue("foo");
         await expect(beePropertiesPanel.decisionTableInputHeader.getEnumerationValueAt(1)).toHaveValue("bar");
         await expect(beePropertiesPanel.decisionTableInputHeader.getEnumerationValueAt(2)).toHaveValue("baz");
+
+        await page.getByTestId("monaco-container").nth(0).click();
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toHaveValue(/^\s*enumType\s$/i);
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toBeDisabled();
+        await expect(beePropertiesPanel.decisionTableInputRule.getConstraintSection()).toBeAttached();
+        await beePropertiesPanel.decisionTableInputRule.expectConstraintButtonsToBeDisabled();
+        await expect(beePropertiesPanel.decisionTableInputRule.getEnumerationValueAt(0)).toHaveValue("foo");
+        await expect(beePropertiesPanel.decisionTableInputRule.getEnumerationValueAt(1)).toHaveValue("bar");
+        await expect(beePropertiesPanel.decisionTableInputRule.getEnumerationValueAt(2)).toHaveValue("baz");
 
         await page.getByRole("columnheader", { name: "Input-1 (enumType)" }).click();
         await beePropertiesPanel.decisionTableInputHeader.setCustomDataType({ newDataType: "rangeType" });
         await expect(beePropertiesPanel.decisionTableInputHeader.getDataType()).toHaveValue(/^\s*rangeType\s$/i);
         await expect(beePropertiesPanel.decisionTableInputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableInputHeader.expectConstraintButtonsToBeDisabled();
         await expect(
           beePropertiesPanel.decisionTableInputHeader.getRangeConstraintValueAt(RangeConstraintPosition.START)
         ).toHaveValue("10");
@@ -523,48 +464,50 @@ test.describe("Decision Table - Type Constraints", () => {
           beePropertiesPanel.decisionTableInputHeader.getRangeConstraintValueAt(RangeConstraintPosition.END)
         ).toHaveValue("200");
 
+        await page.getByTestId("monaco-container").nth(0).click();
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toHaveValue(/^\s*rangeType\s$/i);
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toBeDisabled();
+        await expect(beePropertiesPanel.decisionTableInputRule.getConstraintSection()).toBeAttached();
+        await beePropertiesPanel.decisionTableInputRule.expectConstraintButtonsToBeDisabled();
+        await expect(
+          beePropertiesPanel.decisionTableInputRule.getRangeConstraintValueAt(RangeConstraintPosition.START)
+        ).toHaveValue("10");
+        await expect(
+          beePropertiesPanel.decisionTableInputRule.getRangeConstraintValueAt(RangeConstraintPosition.END)
+        ).toHaveValue("200");
+
         await page.getByRole("columnheader", { name: "Input-1 (rangeType)" }).click();
         await beePropertiesPanel.decisionTableInputHeader.setCustomDataType({ newDataType: "expressionType" });
         await expect(beePropertiesPanel.decisionTableInputHeader.getDataType()).toHaveValue(/^\s*expressionType\s$/i);
         await expect(beePropertiesPanel.decisionTableInputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableInputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableInputHeader.getExpressionConstraintValue()).toHaveText("> 20");
+
+        await page.getByTestId("monaco-container").nth(0).click();
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toHaveValue(/^\s*expressionType\s$/i);
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toBeDisabled();
+        await expect(beePropertiesPanel.decisionTableInputRule.getConstraintSection()).toBeAttached();
+        await beePropertiesPanel.decisionTableInputRule.expectConstraintButtonsToBeDisabled();
+        await expect(beePropertiesPanel.decisionTableInputRule.getExpressionConstraintValue()).toHaveText("> 20");
 
         await page.getByRole("columnheader", { name: "Input-1 (expressionType)" }).click();
         await beePropertiesPanel.decisionTableInputHeader.setCustomDataType({ newDataType: "noneType" });
         await expect(beePropertiesPanel.decisionTableInputHeader.getDataType()).toHaveValue(/^\s*noneType\s$/i);
         await expect(beePropertiesPanel.decisionTableInputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableInputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableInputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableInputHeader.getNoneConstraint()).toBeAttached();
+
+        await page.getByTestId("monaco-container").nth(0).click();
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toHaveValue(/^\s*noneType\s$/i);
+        await expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toBeDisabled();
+        await expect(beePropertiesPanel.decisionTableInputRule.getConstraintSection()).toBeAttached();
+        await beePropertiesPanel.decisionTableInputRule.expectConstraintButtonsToBeDisabled();
+        await expect(beePropertiesPanel.decisionTableInputRule.getNoneConstraint()).toBeAttached();
       });
     });
 
-    test.describe.skip("Decision Table input rule", () => {});
-
-    test.describe("Decision Table output header", () => {
-      test(`Decision Table output header properties panel should contain constraint - enum`, async ({
+    test.describe("Decision Table output column", () => {
+      test(`Decision Table output header and rule properties panel should contain constraint - enum`, async ({
         page,
         beePropertiesPanel,
       }) => {
@@ -581,21 +524,13 @@ test.describe("Decision Table - Type Constraints", () => {
         );
         await expect(beePropertiesPanel.decisionTableOutputHeader.getColumnDataType()).toHaveValue(/^\s*enumType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getEnumerationValueAt(0)).toHaveValue("foo");
         await expect(beePropertiesPanel.decisionTableOutputHeader.getEnumerationValueAt(1)).toHaveValue("bar");
         await expect(beePropertiesPanel.decisionTableOutputHeader.getEnumerationValueAt(2)).toHaveValue("baz");
+
+        // TODO: add rule!
+        await page.getByTestId("monaco-container").nth(1).click();
       });
 
       test(`Decision Table output header properties panel should contain constraint - enum edited`, async ({
@@ -617,18 +552,7 @@ test.describe("Decision Table - Type Constraints", () => {
         );
         await expect(beePropertiesPanel.decisionTableOutputHeader.getColumnDataType()).toHaveValue(/^\s*enumType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getEnumerationValueAt(0)).toHaveValue("foo");
         await expect(beePropertiesPanel.decisionTableOutputHeader.getEnumerationValueAt(1)).toHaveValue("bar");
         await expect(beePropertiesPanel.decisionTableOutputHeader.getEnumerationValueAt(2)).toHaveValue("baz");
@@ -644,18 +568,7 @@ test.describe("Decision Table - Type Constraints", () => {
         );
         await expect(beePropertiesPanel.decisionTableOutputHeader.getColumnDataType()).toHaveValue(/^\s*enumType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getEnumerationValueAt(0)).toHaveValue("foo");
         await expect(beePropertiesPanel.decisionTableOutputHeader.getEnumerationValueAt(1)).toHaveValue("bar");
         await expect(beePropertiesPanel.decisionTableOutputHeader.getEnumerationValueAt(2)).toHaveValue("baz");
@@ -679,18 +592,7 @@ test.describe("Decision Table - Type Constraints", () => {
         );
         await expect(beePropertiesPanel.decisionTableOutputHeader.getColumnDataType()).toHaveValue(/^\s*rangeType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
 
         await expect(
           beePropertiesPanel.decisionTableOutputHeader.getRangeConstraintValueAt(RangeConstraintPosition.START)
@@ -719,18 +621,7 @@ test.describe("Decision Table - Type Constraints", () => {
         );
         await expect(beePropertiesPanel.decisionTableOutputHeader.getColumnDataType()).toHaveValue(/^\s*rangeType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(
           beePropertiesPanel.decisionTableOutputHeader.getRangeConstraintValueAt(RangeConstraintPosition.START)
         ).toHaveValue("10");
@@ -749,18 +640,7 @@ test.describe("Decision Table - Type Constraints", () => {
         );
         await expect(beePropertiesPanel.decisionTableOutputHeader.getColumnDataType()).toHaveValue(/^\s*rangeType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(
           beePropertiesPanel.decisionTableOutputHeader.getRangeConstraintValueAt(RangeConstraintPosition.START)
         ).toHaveValue("20");
@@ -788,18 +668,7 @@ test.describe("Decision Table - Type Constraints", () => {
           /^\s*expressionType\s$/i
         );
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionConstraintValue()).toHaveText("> 20");
       });
 
@@ -824,18 +693,7 @@ test.describe("Decision Table - Type Constraints", () => {
           /^\s*expressionType\s$/i
         );
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionConstraintValue()).toHaveText("> 20");
 
         await editor.changeTab({ tab: TabName.DATA_TYPES });
@@ -851,18 +709,7 @@ test.describe("Decision Table - Type Constraints", () => {
           /^\s*expressionType\s$/i
         );
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionConstraintValue()).toHaveText("< 30");
       });
 
@@ -883,18 +730,7 @@ test.describe("Decision Table - Type Constraints", () => {
         );
         await expect(beePropertiesPanel.decisionTableOutputHeader.getColumnDataType()).toHaveValue(/^\s*noneType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getNoneConstraint()).toBeAttached();
       });
 
@@ -915,18 +751,7 @@ test.describe("Decision Table - Type Constraints", () => {
         );
         await expect(beePropertiesPanel.decisionTableOutputHeader.getColumnDataType()).toHaveValue(/^\s*enumType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getEnumerationValueAt(0)).toHaveValue("foo");
         await expect(beePropertiesPanel.decisionTableOutputHeader.getEnumerationValueAt(1)).toHaveValue("bar");
         await expect(beePropertiesPanel.decisionTableOutputHeader.getEnumerationValueAt(2)).toHaveValue("baz");
@@ -938,18 +763,7 @@ test.describe("Decision Table - Type Constraints", () => {
         );
         await expect(beePropertiesPanel.decisionTableOutputHeader.getColumnDataType()).toHaveValue(/^\s*rangeType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(
           beePropertiesPanel.decisionTableOutputHeader.getRangeConstraintValueAt(RangeConstraintPosition.START)
         ).toHaveValue("10");
@@ -966,18 +780,7 @@ test.describe("Decision Table - Type Constraints", () => {
           /^\s*expressionType\s$/i
         );
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionConstraintValue()).toHaveText("> 20");
 
         await page.getByRole("columnheader", { name: "New Decision (expressionType)" }).click();
@@ -987,18 +790,7 @@ test.describe("Decision Table - Type Constraints", () => {
         );
         await expect(beePropertiesPanel.decisionTableOutputHeader.getColumnDataType()).toHaveValue(/^\s*noneType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getNoneConstraint()).toBeAttached();
       });
     });
@@ -1026,18 +818,7 @@ test.describe("Decision Table - Type Constraints", () => {
         await beePropertiesPanel.decisionTableOutputHeader.setCustomDataType({ newDataType: "enumType" });
         await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(/^\s*enumType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getEnumerationValueAt(0)).toHaveValue("foo");
         await expect(beePropertiesPanel.decisionTableOutputHeader.getEnumerationValueAt(1)).toHaveValue("bar");
         await expect(beePropertiesPanel.decisionTableOutputHeader.getEnumerationValueAt(2)).toHaveValue("baz");
@@ -1046,18 +827,7 @@ test.describe("Decision Table - Type Constraints", () => {
         await beePropertiesPanel.decisionTableOutputHeader.setCustomDataType({ newDataType: "rangeType" });
         await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(/^\s*rangeType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(
           beePropertiesPanel.decisionTableOutputHeader.getRangeConstraintValueAt(RangeConstraintPosition.START)
         ).toHaveValue("10");
@@ -1069,40 +839,16 @@ test.describe("Decision Table - Type Constraints", () => {
         await beePropertiesPanel.decisionTableOutputHeader.setCustomDataType({ newDataType: "expressionType" });
         await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(/^\s*expressionType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionConstraintValue()).toHaveText("> 20");
 
         await page.getByRole("columnheader", { name: "Output-4 (<Undefined>)" }).click();
         await beePropertiesPanel.decisionTableOutputHeader.setCustomDataType({ newDataType: "noneType" });
         await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(/^\s*noneType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.NONE })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.ENUMERATION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.EXPRESSION })
-        ).toBeDisabled();
-        await expect(
-          beePropertiesPanel.decisionTableOutputHeader.getConstraintButton({ type: ConstraintType.RANGE })
-        ).toBeDisabled();
+        await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getNoneConstraint()).toBeAttached();
       });
     });
-
-    test.describe.skip("Decision Table output rule", () => {});
   });
 });

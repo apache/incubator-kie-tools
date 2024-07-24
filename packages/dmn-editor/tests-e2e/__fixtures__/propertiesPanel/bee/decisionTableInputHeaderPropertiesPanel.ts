@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 import { Diagram } from "../../diagram";
 import { DataTypeProperties } from "../parts/dataTypeProperties";
 import { ConstraintType, DataType, RangeConstraintPosition } from "../../dataTypes";
@@ -59,6 +59,13 @@ export class DecisionTableInputHeaderPropertiesPanel extends BeePropertiesPanelB
 
   public getConstraintButton(args: { type: ConstraintType }) {
     return this.dataTypeProperties.getConstraintButton({ ...args });
+  }
+
+  public async expectConstraintButtonsToBeDisabled() {
+    await expect(this.getConstraintButton({ type: ConstraintType.NONE })).toBeDisabled();
+    await expect(this.getConstraintButton({ type: ConstraintType.ENUMERATION })).toBeDisabled();
+    await expect(this.getConstraintButton({ type: ConstraintType.EXPRESSION })).toBeDisabled();
+    await expect(this.getConstraintButton({ type: ConstraintType.RANGE })).toBeDisabled();
   }
 
   public getEnumerationValueAt(element: number) {

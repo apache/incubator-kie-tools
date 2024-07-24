@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import { Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 import { Diagram } from "../../diagram";
 import { DataTypeProperties } from "../parts/dataTypeProperties";
-import { DataType } from "../../dataTypes";
+import { ConstraintType, RangeConstraintPosition } from "../../dataTypes";
 import { NameProperties } from "../parts/nameProperties";
 import { BeePropertiesPanelBase } from "./beePropertiesPanelBase";
 
@@ -43,5 +43,32 @@ export class DecisionTableInputRulePropertiesPanel extends BeePropertiesPanelBas
 
   public getConstraintSection() {
     return this.dataTypeProperties.getConstraintSection();
+  }
+
+  public getConstraintButton(args: { type: ConstraintType }) {
+    return this.dataTypeProperties.getConstraintButton({ ...args });
+  }
+
+  public async expectConstraintButtonsToBeDisabled() {
+    await expect(this.getConstraintButton({ type: ConstraintType.NONE })).toBeDisabled();
+    await expect(this.getConstraintButton({ type: ConstraintType.ENUMERATION })).toBeDisabled();
+    await expect(this.getConstraintButton({ type: ConstraintType.EXPRESSION })).toBeDisabled();
+    await expect(this.getConstraintButton({ type: ConstraintType.RANGE })).toBeDisabled();
+  }
+
+  public getEnumerationValueAt(element: number) {
+    return this.dataTypeProperties.getEnumerationElementAt(element);
+  }
+
+  public getExpressionConstraintValue() {
+    return this.dataTypeProperties.getExpressionConstraintValue();
+  }
+
+  public getNoneConstraint() {
+    return this.dataTypeProperties.getNoneConstraint();
+  }
+
+  public getRangeConstraintValueAt(position: RangeConstraintPosition) {
+    return this.dataTypeProperties.getRangeConstraintValue(position);
   }
 }
