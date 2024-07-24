@@ -415,17 +415,16 @@ test.describe("Decision table context menu", () => {
 
         await decisionTable.cellAt({ row: 1, column: 3 }).fill("test");
 
-        const annotationHeader = decisionTable.annotationHeaderAt(0);
-        await annotationHeader.contextMenu.open();
-        await annotationHeader.contextMenu.option("Insert left").click();
+        await decisionTable.annotationHeaderAt(0).contextMenu.open();
+        await decisionTable.annotationHeaderAt(0).contextMenu.option("Insert left").click();
 
         await expect(decisionTable.annotationHeaderAt(0).content).toBeAttached();
         await expect(decisionTable.annotationHeaderAt(1).content).toBeAttached();
         await expect(decisionTable.cellAt({ row: 1, column: 4 }).content).toContainText("test");
         await expect(decisionTable.cellAt({ row: 1, column: 3 }).content).not.toContainText("test");
 
-        await annotationHeader.contextMenu.open();
-        await annotationHeader.contextMenu.option("Delete").click();
+        await decisionTable.annotationHeaderAt(0).contextMenu.open();
+        await decisionTable.annotationHeaderAt(0).contextMenu.option("Delete").click();
 
         await expect(decisionTable.annotationHeaderAt(0).content).toBeAttached();
         await expect(decisionTable.annotationHeaderAt(1).content).not.toBeAttached();
