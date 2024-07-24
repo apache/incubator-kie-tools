@@ -18,7 +18,7 @@
  */
 
 import { Locator, Page } from "@playwright/test";
-import { ConstraintType, DataType } from "../../dataTypes";
+import { ConstraintType, DataType, RangeConstraintPosition } from "../../dataTypes";
 
 export class DataTypeProperties {
   constructor(
@@ -48,23 +48,36 @@ export class DataTypeProperties {
     return this.panel.getByText("Constraint");
   }
 
-  public getNoneConstraintButton() {
-    return this.panel.getByRole("button", { name: ConstraintType.NONE, exact: true });
+  public getConstraintButton(args: { type: ConstraintType }) {
+    switch (args.type) {
+      case ConstraintType.ENUMERATION:
+        return this.panel.getByRole("button", { name: ConstraintType.ENUMERATION, exact: true });
+      case ConstraintType.EXPRESSION:
+        return this.panel.getByRole("button", { name: ConstraintType.EXPRESSION, exact: true });
+      case ConstraintType.NONE:
+        return this.panel.getByRole("button", { name: ConstraintType.NONE, exact: true });
+      case ConstraintType.RANGE:
+        return this.panel.getByRole("button", { name: ConstraintType.RANGE, exact: true });
+    }
   }
 
-  public getEnumerationConstraintButton() {
-    return this.panel.getByRole("button", { name: ConstraintType.ENUMERATION, exact: true });
+  public getNoneConstraint() {
+    return this.panel.getByText("All values are allowed");
   }
 
   public getEnumerationElementAt(element: number) {
-    return this.panel.locator(".kie-dmn-editor--draggable-row").nth(element).locator("input");
+    return this.panel.getByTestId(`kie-tools--dmn-editor--draggable-row-${element}`).locator("input");
   }
 
-  public getExpressionConstraintButton() {
-    return this.panel.getByRole("button", { name: ConstraintType.EXPRESSION, exact: true });
+  public getExpressionConstraintValue() {
+    return this.panel.getByTestId("kie-tools--dmn-editor--readonly-expression-constraint-with-value");
   }
 
-  public getRangeConstraintButton() {
-    return this.panel.getByRole("button", { name: ConstraintType.RANGE, exact: true });
+  public getRangeConstraintValue(position: RangeConstraintPosition) {
+    if (position === RangeConstraintPosition.START) {
+      return this.panel.getByTestId("kie-tools--dmn-editor--range-constraint-start-value").locator("input");
+    } else {
+      return this.panel.getByTestId("kie-tools--dmn-editor--range-constraint-end-value").locator("input");
+    }
   }
 }

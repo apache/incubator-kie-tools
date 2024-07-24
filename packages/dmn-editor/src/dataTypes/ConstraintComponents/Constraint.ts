@@ -22,7 +22,6 @@ import React from "react";
 export interface ConstraintProps {
   id: string;
   placeholder?: string;
-  type: "text" | "number";
   value: string;
   onChange: (newValue: string) => void;
   onBlur?: () => void;
@@ -32,5 +31,5 @@ export interface ConstraintProps {
   setFocusOwner?: (id: string) => void;
   style?: React.CSSProperties;
   isValid: boolean;
-  onKeyDown: (e: React.KeyboardEvent) => void;
+  onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => void;
 }

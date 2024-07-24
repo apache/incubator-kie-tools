@@ -20,7 +20,7 @@
 import { Page } from "@playwright/test";
 import { Diagram } from "../../diagram";
 import { DataTypeProperties } from "../parts/dataTypeProperties";
-import { DataType } from "../../dataTypes";
+import { ConstraintType, DataType, RangeConstraintPosition } from "../../dataTypes";
 import { NameProperties } from "../parts/nameProperties";
 import { BeePropertiesPanelBase } from "./beePropertiesPanelBase";
 
@@ -57,23 +57,23 @@ export class DecisionTableInputHeaderPropertiesPanel extends BeePropertiesPanelB
     return this.dataTypeProperties.getConstraintSection();
   }
 
-  public getNoneConstraintButton() {
-    return this.dataTypeProperties.getNoneConstraintButton();
+  public getConstraintButton(args: { type: ConstraintType }) {
+    return this.dataTypeProperties.getConstraintButton({ ...args });
   }
 
-  public getEnumerationConstraintButton() {
-    return this.dataTypeProperties.getEnumerationConstraintButton();
-  }
-
-  public getEnumerationElementAt(element: number) {
+  public getEnumerationValueAt(element: number) {
     return this.dataTypeProperties.getEnumerationElementAt(element);
   }
 
-  public getExpressionConstraintButton() {
-    return this.dataTypeProperties.getExpressionConstraintButton();
+  public getExpressionConstraintValue() {
+    return this.dataTypeProperties.getExpressionConstraintValue();
   }
 
-  public getRangeConstraintButton() {
-    return this.dataTypeProperties.getRangeConstraintButton();
+  public getNoneConstraint() {
+    return this.dataTypeProperties.getNoneConstraint();
+  }
+
+  public getRangeConstraintValueAt(position: RangeConstraintPosition) {
+    return this.dataTypeProperties.getRangeConstraintValue(position);
   }
 }

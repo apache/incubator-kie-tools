@@ -40,11 +40,16 @@ export enum ConstraintType {
   RANGE = "Range",
 }
 
+export enum RangeConstraintPosition {
+  START = "start",
+  END = "end",
+}
+
 export class DataTypes {
   constructor(public page: Page) {}
 
   public get() {
-    return this.page.getByTestId("kie-dmn-editor--data-types-container");
+    return this.page.getByTestId("kie-tools--dmn-editor--data-types-container");
   }
 
   public getNoneConstraintButton() {
@@ -71,6 +76,10 @@ export class DataTypes {
     await this.get().getByLabel("Add Data Type").click();
   }
 
+  public async selectDataType(args: { name: string }) {
+    await this.get().getByTestId("kie-tools--dmn-editor--data-types-list").getByText(args.name).click();
+  }
+
   public async changeDataTypeName(args: { newName: string }) {
     await this.get().getByPlaceholder("Enter a name...").fill(args.newName);
   }
@@ -91,27 +100,62 @@ export class DataTypes {
 
   // TODO: Add other types of values, date, date-time, etc
   public async addEnumerationConstraint(args: { values: string[] }) {
-    await this.getEnumerationConstraintButton().click();
+    const enumerationList = this.get().getByTestId("kie-tools--dmn-editor--enumeration-constraint-list");
+    const firstElementValue = await enumerationList
+      .getByTestId("kie-tools--dmn-editor--draggable-row-0")
+      .locator("input")
+      .getAttribute("value");
+    let append = false;
+    if (firstElementValue !== "" || firstElementValue === null) {
+      append = true;
+    }
 
-    for (let index = 0; index < args.values.length; index++) {
-      await this.get().locator(`#enum-element-${index}`).fill(args.values[index]);
-      if (index !== args.values.length - 1) {
+    if (append) {
+      // add at the end of a list;
+      const listCount = await enumerationList.getByRole("listitem").count();
+      await this.get().getByRole("button", { name: "Add value" }).click();
+      await this.addEnumerationValue({
+        values: args.values,
+        initial: listCount,
+        total: args.values.length + listCount,
+      });
+    } else {
+      // initialize a new list of values;
+      await this.addEnumerationValue({ values: args.values, initial: 0, total: args.values.length });
+    }
+  }
+
+  private async addEnumerationValue(args: { values: string[]; initial: number; total: number }) {
+    let valueIndex = 0;
+    for (let index = args.initial; index < args.total; index++) {
+      await this.get()
+        .getByTestId(`kie-tools--dmn-editor--draggable-row-${index}`)
+        .locator("input")
+        .fill(args.values[valueIndex]);
+      if (index !== args.total - 1) {
         await this.get().getByRole("button", { name: "Add value" }).click();
       }
+      valueIndex++;
     }
   }
 
   public async addExpressionConstraint(args: { value: string }) {
-    await this.getExpressionConstraintButton().click();
     await this.get().getByLabel("Editor content;Press Alt+F1").fill(args.value);
   }
 
   // TODO: Add other types of values, date, date-time, etc
   public async addRangeConstraint(args: { values: [string, string] }) {
-    await this.getRangeConstraintButton().click();
-    await this.get().locator("#start-value").fill(args.values[0]);
-    await this.get().locator("#end-value").click();
-    await this.get().locator("#end-value").fill(args.values[1]);
+    await this.changeRangeStartConstraint(args.values[0]);
+    await this.get().getByTestId("kie-tools--dmn-editor--range-constraint-end-value").click();
+    await this.changeRangeEndConstraint(args.values[1]);
+  }
+
+  public async changeRangeStartConstraint(value: string) {
+    await this.get().getByTestId("kie-tools--dmn-editor--range-constraint-start-value").locator("input").fill(value);
+  }
+
+  public async changeRangeEndConstraint(value: string) {
+    await this.get().getByTestId("kie-tools--dmn-editor--range-constraint-end-value").locator("input").fill(value);
   }
 
   public async deleteConstraint() {
