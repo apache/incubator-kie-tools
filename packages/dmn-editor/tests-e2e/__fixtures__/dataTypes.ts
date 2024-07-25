@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { Monaco } from "@kie-tools/boxed-expression-component/tests-e2e/__fixtures__/monaco";
 import { Page } from "@playwright/test";
 
 export enum DataType {
@@ -46,7 +47,10 @@ export enum RangeConstraintPosition {
 }
 
 export class DataTypes {
-  constructor(public page: Page) {}
+  constructor(
+    public page: Page,
+    public monaco: Monaco
+  ) {}
 
   public get() {
     return this.page.getByTestId("kie-tools--dmn-editor--data-types-container");
@@ -140,7 +144,7 @@ export class DataTypes {
   }
 
   public async addExpressionConstraint(args: { value: string }) {
-    await this.get().getByLabel("Editor content;Press Alt+F1").fill(args.value);
+    await this.monaco.fill({ monacoParentLocator: this.get(), content: args.value });
   }
 
   // TODO: Add other types of values, date, date-time, etc

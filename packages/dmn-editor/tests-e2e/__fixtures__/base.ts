@@ -67,8 +67,8 @@ export const test = base.extend<DmnEditorFixtures>({
   bee: async ({ page, baseURL, monaco }, use) => {
     await use(new BoxedExpressionEditor(page, monaco, baseURL));
   },
-  dataTypes: async ({ page }, use) => {
-    await use(new DataTypes(page));
+  dataTypes: async ({ page, monaco }, use) => {
+    await use(new DataTypes(page, monaco));
   },
   diagram: async ({ page }, use) => {
     await use(new Diagram(page));

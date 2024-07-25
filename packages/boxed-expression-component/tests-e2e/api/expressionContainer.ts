@@ -111,6 +111,10 @@ export class ExpressionCell {
     return await this.monaco.fill({ monacoParentLocator: this.locator, content: content });
   }
 
+  public async select() {
+    await this.content.click({ position: { x: 1, y: 1 } });
+  }
+
   public get content() {
     return this.locator.nth(0);
   }
