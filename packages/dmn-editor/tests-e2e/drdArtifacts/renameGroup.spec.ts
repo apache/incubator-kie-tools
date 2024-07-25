@@ -21,7 +21,7 @@ import { test, expect } from "../__fixtures__/base";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
-  await editor.openEmpty();
+  await editor.open();
 });
 
 test.describe("Rename - Group", () => {

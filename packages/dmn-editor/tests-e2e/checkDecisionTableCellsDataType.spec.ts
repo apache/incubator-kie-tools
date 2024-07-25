@@ -25,7 +25,7 @@ import { DefaultNodeName, NodeType } from "./__fixtures__/nodes";
 test.describe("Decision Table - Cells Data Type", () => {
   test.describe("Decision Table - Cells Data Type - Merged expression header and output column", () => {
     test.beforeEach(async ({ editor, palette, nodes }) => {
-      await editor.openEmpty();
+      await editor.open();
 
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
       await nodes.edit({ name: DefaultNodeName.DECISION });
@@ -124,7 +124,7 @@ test.describe("Decision Table - Cells Data Type", () => {
 });
 test.describe("Decision Table - Cells Data Type - Constraint", () => {
   test.beforeEach(async ({ editor, palette, nodes }) => {
-    await editor.openEmpty();
+    await editor.open();
 
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
     await nodes.edit({ name: DefaultNodeName.DECISION });
