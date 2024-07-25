@@ -21,7 +21,7 @@ import { test, expect } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Populate Relation", () => {
-  test("should correctly create a people relation", async ({ stories, page, boxedExpressionEditor, resizing }) => {
+  test("should correctly create a people relation", async ({ stories, page, bee, resizing }) => {
     await stories.openRelation();
 
     await page.getByRole("columnheader", { name: "column-1 (<Undefined>)" }).click();
@@ -77,7 +77,7 @@ test.describe("Populate Relation", () => {
     await page.getByRole("cell", { name: "1" }).locator("svg").click();
     await page.getByRole("cell", { name: "1" }).locator("svg").click();
 
-    await boxedExpressionEditor.fillRelation({
+    await bee.expression.asRelation().fill({
       startAtCell: 0,
       relationData: [
         [`"John Doe"`, "30", `"US"`, `"S"`],
@@ -86,6 +86,6 @@ test.describe("Populate Relation", () => {
       ],
     });
 
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("relation-people.png");
+    await expect(bee.getContainer()).toHaveScreenshot("relation-people.png");
   });
 });

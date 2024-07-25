@@ -961,7 +961,7 @@ test.describe("Resizing", () => {
   });
 
   test.describe("Filter expression", async () => {
-    test("should correctly resize a Filter", async ({ boxedExpressionEditor, page, resizing, stories }) => {
+    test("should correctly resize a Filter", async ({ bee, page, resizing, stories }) => {
       await stories.openBoxedFilter("base");
 
       await resizing.resizeCell(
@@ -970,16 +970,10 @@ test.describe("Resizing", () => {
         { x: 80, y: 0 }
       );
 
-      await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-resized.png");
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-resized.png");
     });
 
-    test("should correctly resize a nested Filter - in", async ({
-      boxedExpressionEditor,
-      monaco,
-      page,
-      resizing,
-      stories,
-    }) => {
+    test("should correctly resize a nested Filter - in", async ({ bee, monaco, page, resizing, stories }) => {
       await stories.openBoxedFilter("nested");
 
       await monaco.fill({
@@ -989,21 +983,15 @@ test.describe("Resizing", () => {
       });
 
       await resizing.resizeCell(
-        page.getByTestId("kie-tools--boxed-expression-component--filter-collection-in"),
+        page.getByTestId("kie-tools--bee--filter-collection-in"),
         { x: 0, y: 0 },
         { x: 200, y: 0 }
       );
 
-      await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-resized-using-in.png");
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested-resized-using-in.png");
     });
 
-    test("should correctly resize a nested Filter - match", async ({
-      boxedExpressionEditor,
-      monaco,
-      page,
-      resizing,
-      stories,
-    }) => {
+    test("should correctly resize a nested Filter - match", async ({ bee, monaco, page, resizing, stories }) => {
       await stories.openBoxedFilter("nested");
 
       await monaco.fill({
@@ -1013,14 +1001,12 @@ test.describe("Resizing", () => {
       });
 
       await resizing.resizeCell(
-        page.getByTestId("kie-tools--boxed-expression-component--filter-collection-match"),
+        page.getByTestId("kie-tools--bee--filter-collection-match"),
         { x: 0, y: 0 },
         { x: 250, y: 0 }
       );
 
-      await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot(
-        "boxed-filter-nested-resized-using-match.png"
-      );
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested-resized-using-match.png");
     });
   });
 });
