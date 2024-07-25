@@ -18,6 +18,7 @@
  */
 
 import { Page } from "@playwright/test";
+import { BoxedContext, BoxedEvery, BoxedFilter, BoxedFor, BoxedSome, Normalized } from "../../src/api";
 
 interface BoxedExpressionComponent {
   expression: string;
@@ -53,6 +54,31 @@ export class JsonModel {
     }
     const widthsById = jsonObject.widthsById || {};
     return widthsById[decisionTableId] || [];
+  }
+
+  public async getContextExpression(): Promise<Normalized<BoxedContext>> {
+    const content = await this.getBoxedExpressionContent();
+    return (content?.expression || {}) as Normalized<BoxedContext>;
+  }
+
+  public async getFilterExpression(): Promise<Normalized<BoxedFilter>> {
+    const content = await this.getBoxedExpressionContent();
+    return (content?.expression || {}) as Normalized<BoxedFilter>;
+  }
+
+  public async getEveryExpression(): Promise<Normalized<BoxedEvery>> {
+    const content = await this.getBoxedExpressionContent();
+    return (content?.expression || {}) as Normalized<BoxedEvery>;
+  }
+
+  public async getForExpression(): Promise<Normalized<BoxedFor>> {
+    const content = await this.getBoxedExpressionContent();
+    return (content?.expression || {}) as Normalized<BoxedFor>;
+  }
+
+  public async getSomeExpression(): Promise<Normalized<BoxedSome>> {
+    const content = await this.getBoxedExpressionContent();
+    return (content?.expression || {}) as Normalized<BoxedSome>;
   }
 
   private async getBoxedExpressionContent(): Promise<BoxedExpressionComponent | undefined> {

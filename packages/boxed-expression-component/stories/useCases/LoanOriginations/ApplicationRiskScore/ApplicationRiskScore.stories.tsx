@@ -18,7 +18,7 @@
  */
 
 import { loanOriginationsDataTypes } from "../boxedExpressionEditorBase";
-import { BoxedContext, DmnBuiltInDataType } from "../../../../src/api";
+import { BoxedContext, DmnBuiltInDataType, generateUuid, Normalized } from "../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   beeGwtService,
@@ -38,13 +38,14 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
-export const applicationRiskScoreExpression: BoxedContext = {
+export const applicationRiskScoreExpression: Normalized<BoxedContext> = {
   __$$element: "context",
   "@_id": "_36398C55-5ED1-41C6-B643-98DBDD52D143",
   "@_label": "Application risk score",
   "@_typeRef": DmnBuiltInDataType.Number,
   contextEntry: [
     {
+      "@_id": generateUuid(),
       variable: {
         "@_id": "_BB4F357E-80D8-4E5A-955F-387B5DBB2EC5",
         "@_name": "Age",
@@ -59,6 +60,7 @@ export const applicationRiskScoreExpression: BoxedContext = {
       },
     },
     {
+      "@_id": generateUuid(),
       variable: {
         "@_id": "_A3E35C5D-A643-40AA-A490-772105D00738",
         "@_name": "Marital Status",
@@ -74,6 +76,7 @@ export const applicationRiskScoreExpression: BoxedContext = {
       },
     },
     {
+      "@_id": generateUuid(),
       variable: {
         "@_id": "_4509453F-BB4B-46F2-915C-FA90D90A4DFB",
         "@_name": "Employment Status",
@@ -89,6 +92,7 @@ export const applicationRiskScoreExpression: BoxedContext = {
     },
 
     {
+      "@_id": generateUuid(),
       expression: {
         __$$element: "decisionTable",
         "@_id": "_40CCF542-F80F-4C14-AAE5-AAAFA3304648",

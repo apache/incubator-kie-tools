@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DmnBuiltInDataType, BoxedInvocation } from "../../../../src/api";
+import { DmnBuiltInDataType, BoxedInvocation, Normalized } from "../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   beeGwtService,
@@ -37,7 +37,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
-export const requiredMonthlyInstallmentExpression: BoxedInvocation = {
+export const requiredMonthlyInstallmentExpression: Normalized<BoxedInvocation> = {
   __$$element: "invocation",
   "@_id": "_EF51A747-D5E1-414E-9DD5-964362FB2AEC",
   "@_label": "Required monthly installment",

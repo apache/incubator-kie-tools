@@ -17,18 +17,19 @@
  * under the License.
  */
 
-import type { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/BoxedExpressionEditor";
 import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../../boxedExpressionStoriesWrapper";
+import { generateUuid } from "../../../src/api";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
-import { DmnBuiltInDataType, generateUuid } from "../../../src/api";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
-  title: "Boxed Expressions/Literal",
+  title: "Boxed Expressions/For",
   component: BoxedExpressionEditor,
   includeStories: /^[A-Z]/,
 };
+
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
@@ -39,58 +40,17 @@ export const Base: Story = {
   args: {
     ...EmptyExpression.args,
     expression: {
-      __$$element: "literalExpression",
+      __$$element: "for",
       "@_id": generateUuid(),
       "@_label": "Expression Name",
+      in: {
+        "@_id": generateUuid(),
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      },
+      return: {
+        "@_id": generateUuid(),
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      },
     },
-    isResetSupportedOnRootExpression: true,
-  },
-};
-
-export const CanDrive: Story = {
-  render: (args) => BoxedExpressionEditorStory(),
-  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
-  args: {
-    ...EmptyExpression.args,
-    expression: {
-      __$$element: "literalExpression",
-      "@_id": "_D98FB35A-C6A5-4BA7-AD38-176D56A31872",
-      "@_label": "Can Drive?",
-      "@_typeRef": DmnBuiltInDataType.Boolean,
-      text: { __$$text: "Age >= 18 then true else false" },
-    },
-    widthsById: {
-      "_D98FB35A-C6A5-4BA7-AD38-176D56A31872": [500],
-    },
-    isResetSupportedOnRootExpression: false,
-  },
-};
-
-// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-export const Nested: Story = {
-  render: (args) => BoxedExpressionEditorStory(),
-  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
-  args: {
-    ...EmptyExpression.args,
-    expression: {
-      __$$element: "context",
-      "@_id": generateUuid(),
-      "@_label": "Expression Name",
-      contextEntry: [
-        {
-          "@_id": generateUuid(),
-          variable: {
-            "@_id": generateUuid(),
-            "@_name": "ContextEntry-1",
-          },
-          expression: {
-            __$$element: "literalExpression",
-            "@_id": generateUuid(),
-            "@_label": "Expression Name",
-          },
-        },
-      ],
-    },
-    isResetSupportedOnRootExpression: false,
   },
 };

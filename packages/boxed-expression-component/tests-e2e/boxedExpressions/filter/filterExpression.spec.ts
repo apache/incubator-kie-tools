@@ -18,6 +18,7 @@
  */
 
 import { expect, test } from "../../__fixtures__/base";
+import { TestAnnotations } from "../../../../playwright-base/annotations";
 
 test.describe("Create Boxed Filter", () => {
   test("should rename a filter", async ({ page, stories }) => {
@@ -82,5 +83,29 @@ test.describe("Create Boxed Filter", () => {
     await filterExpression.match.expression.asLiteral().fill("item.Flight Number = Flight.Flight Number");
 
     await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested-boxed-list.png");
+  });
+
+  test("should keep IDs after resetting entries", async ({ bee, jsonModel, stories }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/1182",
+    });
+
+    await stories.openBoxedFilter("base");
+
+    const filterExpression = bee.expression.asFilter();
+    await filterExpression.in.selectExpressionMenu.selectLiteral();
+    await filterExpression.match.selectExpressionMenu.selectLiteral();
+    await filterExpression.in.expression.asLiteral().fill("test");
+    await filterExpression.match.expression.asLiteral().fill("test");
+    await filterExpression.in.contextMenu.open();
+    await filterExpression.in.contextMenu.option("Reset").nth(0).click();
+    await filterExpression.match.contextMenu.open();
+    await filterExpression.match.contextMenu.option("Reset").nth(0).click();
+
+    expect((await jsonModel.getFilterExpression()).in).not.toBeUndefined();
+    expect((await jsonModel.getFilterExpression()).match).not.toBeUndefined();
+    expect((await jsonModel.getFilterExpression()).in["@_id"]).not.toBeUndefined();
+    expect((await jsonModel.getFilterExpression()).match["@_id"]).not.toBeUndefined();
   });
 });

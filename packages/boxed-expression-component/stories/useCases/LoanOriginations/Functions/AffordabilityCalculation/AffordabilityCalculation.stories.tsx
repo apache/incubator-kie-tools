@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DmnBuiltInDataType, BoxedFunction, BoxedFunctionKind } from "../../../../../src/api";
+import { DmnBuiltInDataType, BoxedFunction, BoxedFunctionKind, Normalized, generateUuid } from "../../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   beeGwtService,
@@ -38,7 +38,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
-export const affordabilityCalculationExpression: BoxedFunction = {
+export const affordabilityCalculationExpression: Normalized<BoxedFunction> = {
   __$$element: "functionDefinition",
   "@_id": "_72FC1D95-7AB8-4459-9815-D2EC186DD40A",
   "@_label": "Affordability calculation",
@@ -77,6 +77,7 @@ export const affordabilityCalculationExpression: BoxedFunction = {
     "@_label": "Feel Expression",
     contextEntry: [
       {
+        "@_id": generateUuid(),
         variable: {
           "@_id": "_AC69745A-2636-4D69-9402-5B5DBBEB789F",
           "@_name": "Disposable Income",
@@ -91,6 +92,7 @@ export const affordabilityCalculationExpression: BoxedFunction = {
         },
       },
       {
+        "@_id": generateUuid(),
         variable: {
           "@_id": "_D7DDD7CE-91AD-451D-8F23-1F38C336B4F4",
           "@_name": "Credit Contigency Factor",
@@ -171,6 +173,7 @@ export const affordabilityCalculationExpression: BoxedFunction = {
         },
       },
       {
+        "@_id": generateUuid(),
         expression: {
           __$$element: "literalExpression",
           "@_id": "_B325C569-762E-408B-AAB5-D55AF7FF01C4",
