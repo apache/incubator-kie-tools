@@ -56,6 +56,19 @@ export function DecisionTableOutputRuleCell(props: {
     [props.boxedExpressionIndex, selectedObjectInfos?.expressionPath]
   );
 
+  const cell = useMemo(
+    () => selectedObjectInfos?.cell as Normalized<DMN15__tLiteralExpression>,
+    [selectedObjectInfos?.cell]
+  );
+
+  const cellMustHaveSameTypeAsRoot = useMemo(
+    () =>
+      (root?.cell as Normalized<BoxedDecisionTable> | undefined)?.output.length === 1 &&
+      ((root?.cell as Normalized<BoxedDecisionTable> | undefined)?.["@_typeRef"] === cell?.["@_typeRef"] ||
+        cell?.["@_typeRef"] === undefined),
+    [cell, root?.cell]
+  );
+
   const headerType = useMemo(() => {
     const cellPath = selectedObjectInfos?.expressionPath[selectedObjectInfos?.expressionPath.length - 1];
     if (cellPath && cellPath.root) {
@@ -69,12 +82,15 @@ export function DecisionTableOutputRuleCell(props: {
       ) {
         const typeRef =
           allTopLevelItemDefinitionUniqueNames.get(
-            (root?.cell as Normalized<DMN15__tDecisionTable>)?.output?.[cellPath.column ?? 0]["@_typeRef"] ?? ""
+            cellMustHaveSameTypeAsRoot
+              ? (root?.cell as Normalized<DMN15__tDecisionTable> | undefined)?.["@_typeRef"] ?? ""
+              : (root?.cell as Normalized<DMN15__tDecisionTable>)?.output?.[cellPath.column ?? 0]["@_typeRef"] ?? ""
           ) ?? DmnBuiltInDataType.Undefined;
         return { typeRef, itemDefinition: allDataTypesById.get(typeRef)?.itemDefinition };
       }
     }
   }, [
+    cellMustHaveSameTypeAsRoot,
     dmnEditorStoreApi,
     externalModelsByNamespace,
     root?.cell,
@@ -84,11 +100,6 @@ export function DecisionTableOutputRuleCell(props: {
 
   const updater = useBoxedExpressionUpdater<Normalized<DMN15__tLiteralExpression>>(
     selectedObjectInfos?.expressionPath ?? []
-  );
-
-  const cell = useMemo(
-    () => selectedObjectInfos?.cell as Normalized<DMN15__tLiteralExpression>,
-    [selectedObjectInfos?.cell]
   );
 
   return (
@@ -105,9 +116,7 @@ export function DecisionTableOutputRuleCell(props: {
             isReadonly={true}
             dmnEditorRootElementRef={dmnEditorRootElementRef}
             typeRef={
-              (root?.cell as Normalized<BoxedDecisionTable> | undefined)?.output.length === 1 &&
-              ((root?.cell as Normalized<BoxedDecisionTable> | undefined)?.["@_typeRef"] === cell?.["@_typeRef"] ||
-                cell?.["@_typeRef"] === undefined)
+              cellMustHaveSameTypeAsRoot
                 ? (root?.cell as Normalized<BoxedDecisionTable> | undefined)?.["@_typeRef"]
                 : headerType.itemDefinition?.["@_name"] ?? headerType.typeRef
             }

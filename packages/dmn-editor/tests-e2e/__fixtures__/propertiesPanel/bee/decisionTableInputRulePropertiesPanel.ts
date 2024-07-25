@@ -25,7 +25,6 @@ import { NameProperties } from "../parts/nameProperties";
 import { BeePropertiesPanelBase } from "./beePropertiesPanelBase";
 
 export class DecisionTableInputRulePropertiesPanel extends BeePropertiesPanelBase {
-  private nameProperties: NameProperties;
   private dataTypeProperties: DataTypeProperties;
 
   constructor(
@@ -33,7 +32,6 @@ export class DecisionTableInputRulePropertiesPanel extends BeePropertiesPanelBas
     public page: Page
   ) {
     super(diagram, page);
-    this.nameProperties = new NameProperties(this.panel(), page);
     this.dataTypeProperties = new DataTypeProperties(this.panel(), page);
   }
 
