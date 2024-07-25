@@ -17,19 +17,32 @@
  * under the License.
  */
 
-module.exports = {
-  globals: {
-    "ts-jest": {
-      tsconfig: "<rootDir>/tsconfig.json",
-    },
-  },
-  reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
-  moduleDirectories: ["node_modules"],
-  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
-  transform: {
-    "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }]] }],
-    "^.+\\.tsx?$": "ts-jest",
-  },
-  setupFiles: ["./setupTests.ts"],
-};
+import { Locator, Page } from "@playwright/test";
+
+export class ExpressionHeader {
+  constructor(public page: Locator | Page) {}
+
+  public get() {
+    return this.page.getByTestId("kie-tools--bee--expression-header-dropdown").nth(0);
+  }
+
+  public async copy() {
+    await this.get().click();
+    await this.page.getByRole("menuitem", { name: "copy" }).click();
+  }
+
+  public async cut() {
+    await this.get().click();
+    await this.page.getByRole("menuitem", { name: "cut" }).click();
+  }
+
+  public async paste() {
+    await this.get().click();
+    await this.page.getByRole("menuitem", { name: "paste" }).click();
+  }
+
+  public async reset() {
+    await this.get().click();
+    await this.page.getByRole("menuitem", { name: "Reset" }).click();
+  }
+}

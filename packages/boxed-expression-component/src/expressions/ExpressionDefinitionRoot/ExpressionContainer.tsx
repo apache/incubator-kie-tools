@@ -100,7 +100,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   const getPlacementRef = useCallback(() => containerRef.current!, []);
 
   return (
-    <div ref={containerRef} className={"expression-container-box"} data-testid="expression-container">
+    <div ref={containerRef} className={"expression-container-box"} data-testid="kie-tools--bee--expression-container">
       <ExpressionDefinitionLogicTypeSelector
         expression={expression}
         onLogicTypeSelected={onLogicTypeSelected}

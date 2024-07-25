@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import { test, expect } from "../../__fixtures__/base";
+import { expect, test } from "../../__fixtures__/base";
 
 test.describe("Create Boxed Context", () => {
-  test("should render expression correctly", async ({ boxedExpressionEditor, stories, page }) => {
+  test("should render expression correctly", async ({ bee, stories, page }) => {
     await stories.openBoxedContext();
     await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
     await expect(page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" })).toBeAttached();
@@ -28,6 +28,6 @@ test.describe("Create Boxed Context", () => {
     await expect(page.getByText("Select expression")).toHaveCount(2);
     await expect(page.getByRole("columnheader")).toHaveCount(1);
     await expect(page.getByRole("cell")).toHaveCount(4);
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-context.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-context.png");
   });
 });

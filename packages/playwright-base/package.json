@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
-    "@playwright/test": "^1.38.1",
+    "@playwright/test": "^1.45.2",
     "rimraf": "^3.0.2"
   }
 }

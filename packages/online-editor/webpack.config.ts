@@ -21,12 +21,9 @@ import * as path from "path";
 import CopyPlugin from "copy-webpack-plugin";
 import { merge } from "webpack-merge";
 import * as stunnerEditors from "@kie-tools/stunner-editors";
-import { EnvironmentPlugin } from "webpack";
-
 import HtmlWebpackPlugin from "html-webpack-plugin";
-import { ProvidePlugin } from "webpack";
+import { ProvidePlugin, EnvironmentPlugin } from "webpack";
 import { defaultEnvJson } from "./build/defaultEnvJson";
-
 import common from "@kie-tools-core/webpack-base/webpack.common.config";
 import patternflyBase from "@kie-tools-core/patternfly-base";
 import childProcess from "child_process";

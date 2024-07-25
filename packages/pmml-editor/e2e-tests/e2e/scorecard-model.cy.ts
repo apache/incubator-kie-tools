@@ -17,9 +17,6 @@
  * under the License.
  */
 
-import { env } from "../../env";
-const buildEnv = env;
-
 /**
  * This test suite work with attributes in Scorecard element
  * which are defined by PMML standard (see http://dmg.org/pmml/v4-1/Scorecard.html).
@@ -31,7 +28,7 @@ const buildEnv = env;
  */
 describe("Scorecard Model Test", () => {
   beforeEach(() => {
-    cy.visit(`http://localhost:${buildEnv.pmmlEditor.dev.port}/`);
+    cy.visit("/");
     cy.newButtonPMML().click();
   });
 

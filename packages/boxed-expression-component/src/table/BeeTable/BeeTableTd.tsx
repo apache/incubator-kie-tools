@@ -233,6 +233,7 @@ export function BeeTableTd<R extends object>({
         ref={tdRef}
         tabIndex={-1}
         className={`${cssClass} ${cssClasses}`}
+        data-testid={`kie-tools--bee--expression-column-${columnIndex}`}
         data-ouia-component-id={`expression-column-${columnIndex}`}
         style={{
           outline: "none",

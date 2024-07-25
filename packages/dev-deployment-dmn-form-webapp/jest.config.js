@@ -17,7 +17,7 @@
  * under the License.
  */
 
-const { config, jestSetupPath, styleMock } = require("@kie-tools/jest-base/jest.config");
+const { config, jestSetupPath, styleMock, typescriptTransform } = require("@kie-tools/jest-base/jest.config");
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
@@ -26,5 +26,8 @@ module.exports = {
   setupFilesAfterEnv: [jestSetupPath],
   moduleNameMapper: {
     ...styleMock,
+  },
+  transform: {
+    ...typescriptTransform,
   },
 };

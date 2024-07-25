@@ -24,7 +24,7 @@ test.describe("Boxed expression header menu popover", () => {
     await stories.openBoxedLiteral();
 
     await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
-    await expect(page.getByTestId("expression-container")).toBeAttached();
+    await expect(page.getByTestId("kie-tools--bee--expression-container")).toBeAttached();
 
     await page.getByPlaceholder("Expression Name").fill("Test");
     await expect(page.getByPlaceholder("Expression Name")).toHaveValue("Test");
@@ -42,7 +42,7 @@ test.describe("Boxed expression header menu popover", () => {
     await stories.openBoxedLiteral();
 
     await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
-    await expect(page.getByTestId("expression-container")).toBeAttached();
+    await expect(page.getByTestId("kie-tools--bee--expression-container")).toBeAttached();
 
     await page.getByPlaceholder("Expression Name").fill("Test");
     await expect(page.getByPlaceholder("Expression Name")).toHaveValue("Test");
