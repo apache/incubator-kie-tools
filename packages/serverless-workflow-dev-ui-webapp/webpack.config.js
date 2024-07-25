@@ -55,7 +55,13 @@ module.exports = async (env) =>
       },
       proxy: [
         {
-          context: ["/svg", "/forms", "/customDashboard", "/graphql"],
+          context: (pathname, req) => {
+            // redirect all POST request to test the local cluster environment
+            return (
+              req.method === "POST" ||
+              ["/svg", "/forms", "/customDashboard", "/q/openapi.json"].some((path) => pathname === path)
+            );
+          },
           target: "http://localhost:4000",
           secure: false,
           changeOrigin: true,

@@ -36,9 +36,10 @@ describe("changeBaseURLToCurrentLocation", () => {
   it.each([
     ["https://greeting.sonataflow-operator-system/graphql", "http://localhost:8080/graphql"],
     ["https://greeting.sonataflow-operator-system/openapi.json", "http://localhost:8080/openapi.json"],
+    ["https://greeting.sonataflow-operator-system", "http://localhost:8080"],
     ["http://localhost:8080/some/page", "http://localhost:8080/some/page"],
     ["https://example.com/path/to/resource", "http://localhost:8080/path/to/resource"],
-    ["http://www.test.com/", "http://localhost:8080/"],
+    ["http://www.test.com/", "http://localhost:8080"],
     ["/relative/path", "http://localhost:8080/relative/path"],
     ["relative/path", "http://localhost:8080/relative/path"],
   ])("should extract the pathname from URL %s", (url, expected) => {

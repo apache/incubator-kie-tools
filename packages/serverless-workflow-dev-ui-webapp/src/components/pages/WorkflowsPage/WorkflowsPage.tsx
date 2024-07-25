@@ -76,6 +76,16 @@ const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
     [history]
   );
 
+  const getFinalEndpoint = useCallback(
+    (endpoint: string) => (apiContext.isLocalCluster ? changeBaseURLToCurrentLocation(endpoint) : endpoint),
+    [apiContext.isLocalCluster]
+  );
+
+  const getFinalServiceUrl = useCallback(
+    (serviceUrl: string) => (apiContext.isLocalCluster ? changeBaseURLToCurrentLocation(serviceUrl) : serviceUrl),
+    [apiContext.isLocalCluster]
+  );
+
   const onOpenWorkflowForm = useCallback(
     (workflowDefinition: WorkflowDefinition) => {
       history.push({
@@ -83,15 +93,13 @@ const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
         state: {
           workflowDefinition: {
             workflowName: workflowDefinition.workflowName,
-            endpoint: apiContext.isLocalCluster
-              ? changeBaseURLToCurrentLocation(workflowDefinition.endpoint)
-              : workflowDefinition.endpoint,
-            serviceUrl: workflowDefinition.serviceUrl,
+            endpoint: getFinalEndpoint(workflowDefinition.endpoint),
+            serviceUrl: getFinalServiceUrl(workflowDefinition.serviceUrl),
           },
         },
       });
     },
-    [history, apiContext.isLocalCluster]
+    [history, getFinalEndpoint, getFinalServiceUrl]
   );
 
   const onOpenTriggerCloudEvent = useCallback(
@@ -101,15 +109,13 @@ const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
         state: {
           workflowDefinition: {
             workflowName: workflowDefinition.workflowName,
-            endpoint: apiContext.isLocalCluster
-              ? changeBaseURLToCurrentLocation(workflowDefinition.endpoint)
-              : workflowDefinition.endpoint,
-            serviceUrl: workflowDefinition.serviceUrl,
+            endpoint: getFinalEndpoint(workflowDefinition.endpoint),
+            serviceUrl: getFinalServiceUrl(workflowDefinition.serviceUrl),
           },
         },
       });
     },
-    [history, apiContext.isLocalCluster]
+    [history, getFinalEndpoint, getFinalServiceUrl]
   );
 
   return (

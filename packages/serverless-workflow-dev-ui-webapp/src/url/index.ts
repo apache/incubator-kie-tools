@@ -27,5 +27,5 @@ export function changeBaseURLToCurrentLocation(url: string): string {
   const { protocol, hostname, port } = window.parent.location ?? window.location;
   const parsedUrl = new URL(url, window.parent.location.href ?? window.location.href);
 
-  return `${protocol}//${hostname}${port ? `:${port}` : ""}${parsedUrl.pathname}`;
+  return `${protocol}//${hostname}${port ? `:${port}` : ""}${parsedUrl.pathname === "/" ? "" : parsedUrl.pathname}`;
 }
