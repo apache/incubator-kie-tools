@@ -112,6 +112,7 @@ export class ExpressionCell {
   }
 
   public async select() {
+    // Uses the 1,1 to avoid problems by clicking on the element corner
     await this.content.click({ position: { x: 1, y: 1 } });
   }
 

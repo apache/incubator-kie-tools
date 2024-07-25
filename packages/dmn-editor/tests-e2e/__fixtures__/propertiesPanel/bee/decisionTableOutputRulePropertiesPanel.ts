@@ -20,7 +20,6 @@
 import { expect, Page } from "@playwright/test";
 import { Diagram } from "../../diagram";
 import { DataTypeProperties } from "../parts/dataTypeProperties";
-import { NameProperties } from "../parts/nameProperties";
 import { BeePropertiesPanelBase } from "./beePropertiesPanelBase";
 import { ConstraintType, RangeConstraintPosition } from "../../dataTypes";
 

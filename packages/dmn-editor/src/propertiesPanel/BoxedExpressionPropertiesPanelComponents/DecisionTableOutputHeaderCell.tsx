@@ -77,6 +77,9 @@ export function DecisionTableOutputHeaderCell(props: {
     [props.boxedExpressionIndex, selectedObjectInfos?.expressionPath]
   );
 
+  // In case the the output column is merged, the output column should have the same type as the Decision Node
+  // It can happen to output column and Decision Node have different types, e.g. broken model.
+  // For this case, the user will be able to fix it.
   const cellMustHaveSameTypeAsRoot = useMemo(
     () =>
       root?.output.length === 1 && (root?.["@_typeRef"] === cell?.["@_typeRef"] || cell?.["@_typeRef"] === undefined),
@@ -183,11 +186,7 @@ export function DecisionTableOutputHeaderCell(props: {
       />
       <TypeRefField
         alternativeFieldName={root?.output.length === 1 ? "Column Type" : undefined}
-        isReadonly={
-          // In case the the output column is merged, the output column should have the same type as the Decision Node
-          // It can happen to output column and Decision Node have different types, for this case, the user will be able to fix it.
-          cellMustHaveSameTypeAsRoot ? true : props.isReadonly
-        }
+        isReadonly={cellMustHaveSameTypeAsRoot ? true : props.isReadonly}
         dmnEditorRootElementRef={dmnEditorRootElementRef}
         typeRef={cellMustHaveSameTypeAsRoot ? root?.["@_typeRef"] : cell?.["@_typeRef"]}
         onChange={(newTypeRef) =>

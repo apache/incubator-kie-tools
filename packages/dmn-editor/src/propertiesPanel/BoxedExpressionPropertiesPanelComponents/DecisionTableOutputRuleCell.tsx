@@ -61,6 +61,9 @@ export function DecisionTableOutputRuleCell(props: {
     [selectedObjectInfos?.cell]
   );
 
+  // In case the the output column is merged, the output column should have the same type as the Decision Node
+  // It can happen to output column and Decision Node have different types, e.g. broken model.
+  // For this case, the cell should have the column type.
   const cellMustHaveSameTypeAsRoot = useMemo(
     () =>
       (root?.cell as Normalized<BoxedDecisionTable> | undefined)?.output.length === 1 &&

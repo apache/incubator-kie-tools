@@ -102,7 +102,7 @@ export class DataTypes {
     await this.page.getByRole("option", { name: `${args.newBaseType} `, exact: false }).click();
   }
 
-  // TODO: Add other types of values, date, date-time, etc
+  // The current method only supports "string", "number"
   public async addEnumerationConstraint(args: { values: string[] }) {
     const enumerationList = this.get().getByTestId("kie-tools--dmn-editor--enumeration-constraint-list");
     const firstElementValue = await enumerationList
@@ -147,7 +147,7 @@ export class DataTypes {
     await this.monaco.fill({ monacoParentLocator: this.get(), content: args.value });
   }
 
-  // TODO: Add other types of values, date, date-time, etc
+  // The current method only supports "string", "number"
   public async addRangeConstraint(args: { values: [string, string] }) {
     await this.changeRangeStartConstraint(args.values[0]);
     await this.get().getByTestId("kie-tools--dmn-editor--range-constraint-end-value").click();
