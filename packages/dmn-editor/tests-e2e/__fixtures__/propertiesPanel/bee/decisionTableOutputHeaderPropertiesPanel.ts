@@ -37,7 +37,7 @@ export class DecisionTableOutputHeaderPropertiesPanel extends BeePropertiesPanel
     this.dataTypeProperties = new DataTypeProperties(this.panel(), page);
   }
 
-  public async setDecisionName(args: { newName: string }) {
+  public async setExpressionName(args: { newName: string }) {
     await this.panel().getByPlaceholder("Enter a name...").nth(0).fill(args.newName);
     await this.page.keyboard.press("Enter");
   }
@@ -51,18 +51,25 @@ export class DecisionTableOutputHeaderPropertiesPanel extends BeePropertiesPanel
     await this.nameProperties.setName({ ...args });
   }
 
-  public async setDecisionDataType(args: { newDataType: DataType }) {
+  public async setExpressionDataType(args: { newDataType: DataType }) {
     await this.panel().getByPlaceholder("Select a data type...").nth(0).click();
     await this.panel().getByPlaceholder("Select a data type...").nth(0).press("ControlOrMeta+a");
     await this.panel().getByPlaceholder("Select a data type...").nth(0).fill(args.newDataType);
     await this.page.getByRole("option").getByText(args.newDataType, { exact: true }).click();
   }
 
-  public async setDecisionCustomDataType(args: { newDataType: string }) {
+  public async setExpressionCustomDataType(args: { newDataType: string }) {
     await this.panel().getByPlaceholder("Select a data type...").nth(0).click();
     await this.panel().getByPlaceholder("Select a data type...").nth(0).press("ControlOrMeta+a");
     await this.panel().getByPlaceholder("Select a data type...").nth(0).fill(args.newDataType);
     await this.page.getByRole("option").getByText(args.newDataType).click();
+  }
+
+  public async setColumnDataType(args: { newDataType: DataType }) {
+    await this.panel().getByPlaceholder("Select a data type...").nth(1).click();
+    await this.panel().getByPlaceholder("Select a data type...").nth(1).press("ControlOrMeta+a");
+    await this.panel().getByPlaceholder("Select a data type...").nth(1).fill(args.newDataType);
+    await this.page.getByRole("option").getByText(args.newDataType, { exact: true }).click();
   }
 
   public async setDataType(args: { newDataType: DataType }) {
@@ -73,7 +80,7 @@ export class DecisionTableOutputHeaderPropertiesPanel extends BeePropertiesPanel
     await this.dataTypeProperties.setCustomDataType({ ...args });
   }
 
-  public getDecisionDataType() {
+  public getExpressionDataType() {
     return this.page.getByPlaceholder("Select a data type...").nth(0);
   }
 
