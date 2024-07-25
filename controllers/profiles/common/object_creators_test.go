@@ -39,6 +39,8 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
 )
 
+const platformName = "test-platform"
+
 func Test_ensureWorkflowPropertiesConfigMapMutator(t *testing.T) {
 	workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 	platform := test.GetBasePlatform()
@@ -192,7 +194,12 @@ func Test_ensureWorkflowSinkBindingIsCreated(t *testing.T) {
 	assert.NotEmpty(t, reflectSinkBinding.Spec.Sink)
 	assert.Equal(t, reflectSinkBinding.Spec.Sink.Ref.Kind, "Broker")
 	assert.NotNil(t, reflectSinkBinding.GetLabels())
-	assert.Equal(t, reflectSinkBinding.ObjectMeta.Labels, map[string]string{"app": "vet", "sonataflow.org/workflow-app": "vet"})
+	assert.Equal(t, reflectSinkBinding.ObjectMeta.Labels, map[string]string{
+		"sonataflow.org/workflow-app":  "vet",
+		"app.kubernetes.io/name":       "vet",
+		"app.kubernetes.io/component":  "serverless-workflow",
+		"app.kubernetes.io/managed-by": "sonataflow-operator",
+	})
 }
 
 func Test_ensureWorkflowTriggersAreCreated(t *testing.T) {
@@ -206,7 +213,12 @@ func Test_ensureWorkflowTriggersAreCreated(t *testing.T) {
 	for _, trigger := range triggers {
 		assert.Contains(t, []string{"vet-vetappointmentrequestreceived-trigger", "vet-vetappointmentinfo-trigger"}, trigger.GetName())
 		assert.NotNil(t, trigger.GetLabels())
-		assert.Equal(t, trigger.GetLabels(), map[string]string{"app": "vet", "sonataflow.org/workflow-app": "vet"})
+		assert.Equal(t, trigger.GetLabels(), map[string]string{
+			"sonataflow.org/workflow-app":  "vet",
+			"app.kubernetes.io/name":       "vet",
+			"app.kubernetes.io/component":  "serverless-workflow",
+			"app.kubernetes.io/managed-by": "sonataflow-operator",
+		})
 	}
 }
 

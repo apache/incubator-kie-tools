@@ -64,5 +64,12 @@ func Test_Reconciler_ProdOps(t *testing.T) {
 
 	assert.NotNil(t, deployment.ObjectMeta)
 	assert.NotNil(t, deployment.ObjectMeta.Labels)
-	assert.Equal(t, deployment.ObjectMeta.Labels, map[string]string{"test": "test", "app": "simple", "sonataflow.org/workflow-app": "simple"})
+	assert.Equal(t, deployment.ObjectMeta.Labels, map[string]string{
+		"test":                         "test",
+		"sonataflow.org/workflow-app":  "simple",
+		"app.kubernetes.io/name":       "simple",
+		"app.kubernetes.io/component":  "serverless-workflow",
+		"app.kubernetes.io/managed-by": "sonataflow-operator",
+		"app.kubernetes.io/part-of":    "sonataflow-platform",
+	})
 }

@@ -78,7 +78,12 @@ func Test_Handler_WorkflowMinimalAndPropsAndSpec(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, proj.Workflow)
 	assert.NotNil(t, proj.Workflow.ObjectMeta)
-	assert.Equal(t, proj.Workflow.ObjectMeta.Labels, map[string]string{"app": "hello", "sonataflow.org/workflow-app": "hello"})
+	assert.Equal(t, proj.Workflow.ObjectMeta.Labels, map[string]string{
+		"sonataflow.org/workflow-app":  "hello",
+		"app.kubernetes.io/name":       "hello",
+		"app.kubernetes.io/component":  "serverless-workflow",
+		"app.kubernetes.io/managed-by": "sonataflow-operator",
+	})
 	assert.NotNil(t, proj.Properties)
 	assert.NotEmpty(t, proj.Resources)
 	assert.Equal(t, "hello", proj.Workflow.Name)

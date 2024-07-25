@@ -63,7 +63,13 @@ func Test_Reconciler_ProdCustomPod(t *testing.T) {
 	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].VolumeMounts, 1)
 	assert.NotNil(t, deployment.ObjectMeta)
 	assert.NotNil(t, deployment.ObjectMeta.Labels)
-	assert.Equal(t, deployment.ObjectMeta.Labels, map[string]string{"test": "test", "app": "greeting", "sonataflow.org/workflow-app": "greeting"})
+	assert.Equal(t, deployment.ObjectMeta.Labels, map[string]string{
+		"test":                         "test",
+		"sonataflow.org/workflow-app":  "greeting",
+		"app.kubernetes.io/name":       "greeting",
+		"app.kubernetes.io/component":  "serverless-workflow",
+		"app.kubernetes.io/managed-by": "sonataflow-operator",
+	})
 }
 
 func Test_reconcilerProdBuildConditions(t *testing.T) {

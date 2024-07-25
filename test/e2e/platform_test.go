@@ -84,12 +84,12 @@ var _ = Describe("Validate the persistence", Ordered, func() {
 			By("Wait for SonataFlowPlatform CR to complete deployment")
 			// wait for service deployments to be ready
 			EventuallyWithOffset(1, func() error {
-				cmd = exec.Command("kubectl", "wait", "pod", "-n", targetNamespace, "-l", "app=sonataflow-platform", "--for", "condition=Ready", "--timeout=5s")
+				cmd = exec.Command("kubectl", "wait", "pod", "-n", targetNamespace, "-l", "app.kubernetes.io/name in (jobs-service,data-index-service)", "--for", "condition=Ready", "--timeout=5s")
 				_, err = utils.Run(cmd)
 				return err
 			}, 20*time.Minute, 5).Should(Succeed())
 			By("Evaluate status of service's health endpoint")
-			cmd = exec.Command("kubectl", "get", "pod", "-l", "app=sonataflow-platform", "-n", targetNamespace, "-ojsonpath={.items[*].metadata.name}")
+			cmd = exec.Command("kubectl", "get", "pod", "-l", "app.kubernetes.io/name in (jobs-service,data-index-service)", "-n", targetNamespace, "-ojsonpath={.items[*].metadata.name}")
 			output, err := utils.Run(cmd)
 			Expect(err).NotTo(HaveOccurred())
 			// remove the last CR that is added by default as the last character of the string.
@@ -140,12 +140,12 @@ var _ = Describe("Validate the persistence", Ordered, func() {
 		By("Wait for SonatatFlowPlatform CR to complete deployment")
 		// wait for service deployments to be ready
 		EventuallyWithOffset(1, func() error {
-			cmd = exec.Command("kubectl", "wait", "pod", "-n", targetNamespace, "-l", "app=sonataflow-platform", "--for", "condition=Ready", "--timeout=5s")
+			cmd = exec.Command("kubectl", "wait", "pod", "-n", targetNamespace, "-l", "app.kubernetes.io/name in (jobs-service,data-index-service)", "--for", "condition=Ready", "--timeout=5s")
 			_, err = utils.Run(cmd)
 			return err
 		}, 10*time.Minute, 5).Should(Succeed())
 		By("Evaluate status of all service's health endpoint")
-		cmd = exec.Command("kubectl", "get", "pod", "-l", "app=sonataflow-platform", "-n", targetNamespace, "-ojsonpath={.items[*].metadata.name}")
+		cmd = exec.Command("kubectl", "get", "pod", "-l", "app.kubernetes.io/name in (jobs-service,data-index-service)", "-n", targetNamespace, "-ojsonpath={.items[*].metadata.name}")
 		output, err := utils.Run(cmd)
 		Expect(err).NotTo(HaveOccurred())
 		for _, pn := range strings.Split(string(output), " ") {

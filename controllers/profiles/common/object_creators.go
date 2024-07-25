@@ -86,7 +86,7 @@ func DeploymentCreator(workflow *operatorapi.SonataFlow, plf *operatorapi.Sonata
 		Spec: appsv1.DeploymentSpec{
 			Replicas: getReplicasOrDefault(workflow),
 			Selector: &metav1.LabelSelector{
-				MatchLabels: lbl,
+				MatchLabels: workflowproj.GetSelectorLabels(workflow),
 			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{

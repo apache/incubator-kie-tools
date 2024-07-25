@@ -55,7 +55,7 @@ func statusEnricher(ctx context.Context, c client.Client, workflow *operatorapi.
 			podList := &v1.PodList{}
 			opts := []client.ListOption{
 				client.InNamespace(workflow.Namespace),
-				client.MatchingLabels{workflowproj.LabelApp: labels[workflowproj.LabelApp]},
+				client.MatchingLabels{workflowproj.LabelK8SName: labels[workflowproj.LabelK8SName]},
 			}
 			err := c.List(ctx, podList, opts...)
 			if err != nil {

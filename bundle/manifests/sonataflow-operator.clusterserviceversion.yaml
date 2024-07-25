@@ -733,6 +733,7 @@ spec:
         serviceAccountName: sonataflow-operator-controller-manager
       deployments:
       - label:
+          app.kubernetes.io/name: sonataflow-operator
           control-plane: sonataflow-operator
         name: sonataflow-operator-controller-manager
         spec:

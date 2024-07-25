@@ -233,8 +233,11 @@ func createOrUpdateService(ctx context.Context, client client.Client, platform *
 
 func getLabels(platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) (map[string]string, map[string]string) {
 	lbl := map[string]string{
-		workflowproj.LabelApp:     platform.Name,
-		workflowproj.LabelService: psh.GetServiceName(),
+		workflowproj.LabelService:      psh.GetServiceName(),
+		workflowproj.LabelK8SName:      psh.GetContainerName(),
+		workflowproj.LabelK8SComponent: psh.GetServiceName(),
+		workflowproj.LabelK8SPartOF:    platform.Name,
+		workflowproj.LabelK8SManagedBy: "sonataflow-operator",
 	}
 	selectorLbl := map[string]string{
 		workflowproj.LabelService: psh.GetServiceName(),

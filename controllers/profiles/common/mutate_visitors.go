@@ -21,12 +21,17 @@ package common
 
 import (
 	"context"
+	"maps"
+	"reflect"
+	"slices"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/properties"
 	"github.com/imdario/mergo"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -86,7 +91,28 @@ func DeploymentMutateVisitor(workflow *operatorapi.SonataFlow, plf *operatorapi.
 			if err != nil {
 				return err
 			}
-			return EnsureDeployment(original.(*appsv1.Deployment), object.(*appsv1.Deployment))
+			src := original.(*appsv1.Deployment)
+			dst := object.(*appsv1.Deployment)
+			// merge new and old labels, but prevent overriding to keep exiting immutable selector working.
+			mergo.Merge(&dst.ObjectMeta.Labels, src.ObjectMeta.Labels, mergo.WithAppendSlice)
+			// to prevent furhter merge conflcts set the same lables on both src and dst
+			src.ObjectMeta.Labels = dst.ObjectMeta.Labels
+			if !maps.Equal(dst.Spec.Selector.MatchLabels, src.Spec.Selector.MatchLabels) {
+				// mutating selector labels is not supported so to prevent merge conflicts we set src and dst
+				// values to be identical
+				src.Spec.Selector.MatchLabels = dst.Spec.Selector.MatchLabels
+			}
+			if !slices.EqualFunc(
+				dst.Spec.Selector.MatchExpressions,
+				src.Spec.Selector.MatchExpressions,
+				func(lsr1, lsr2 metav1.LabelSelectorRequirement) bool {
+					return reflect.DeepEqual(lsr1, lsr2)
+				}) {
+				// mutating selector matchExpressions is not supported so to prevent merge conflicts we set src and dst
+				// values to be identical
+				src.Spec.Selector.MatchExpressions = dst.Spec.Selector.MatchExpressions
+			}
+			return EnsureDeployment(src, dst)
 		}
 	}
 }

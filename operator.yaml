@@ -27076,6 +27076,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/name: sonataflow-operator
     control-plane: sonataflow-operator
   name: sonataflow-operator-controller-manager
   namespace: sonataflow-operator-system
