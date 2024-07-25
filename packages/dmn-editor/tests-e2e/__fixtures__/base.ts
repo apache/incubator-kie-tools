@@ -35,15 +35,19 @@ import { DiagramPropertiesPanel } from "./propertiesPanel/diagramPropertiesPanel
 import { MultipleNodesPropertiesPanel } from "./propertiesPanel/multipleNodesPropertiesPanel";
 import { Overlays } from "./overlays";
 import { DataTypes } from "./dataTypes";
-import { PropertiesPanelBase } from "./propertiesPanel/propertiesPanelBase";
 import { BeePropertiesPanel } from "./propertiesPanel/beePropertiesPanel";
+import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/tests-e2e/__fixtures__/boxedExpression";
+import { Monaco } from "@kie-tools/boxed-expression-component/tests-e2e/__fixtures__/monaco";
+import { ProjectName } from "../../../playwright-base/projectNames";
 
 type DmnEditorFixtures = {
+  bee: BoxedExpressionEditor;
   dataTypes: DataTypes;
   diagram: Diagram;
   edges: Edges;
   editor: Editor;
   jsonModel: JsonModel;
+  monaco: Monaco;
   nodes: Nodes;
   palette: Palette;
   overlays: Overlays;
@@ -60,6 +64,9 @@ type DmnEditorFixtures = {
 };
 
 export const test = base.extend<DmnEditorFixtures>({
+  bee: async ({ page, baseURL, monaco }, use) => {
+    await use(new BoxedExpressionEditor(page, monaco, baseURL));
+  },
   dataTypes: async ({ page }, use) => {
     await use(new DataTypes(page));
   },
@@ -74,6 +81,9 @@ export const test = base.extend<DmnEditorFixtures>({
   },
   jsonModel: async ({ page, baseURL }, use) => {
     await use(new JsonModel(page, baseURL));
+  },
+  monaco: async ({ page }, use, testInfo) => {
+    await use(new Monaco(page, testInfo.project.name as ProjectName));
   },
   nodes: async ({ page, diagram, browserName }, use) => {
     await use(new Nodes(page, diagram, browserName));

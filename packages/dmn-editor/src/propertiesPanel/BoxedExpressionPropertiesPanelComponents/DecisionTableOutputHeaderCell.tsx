@@ -43,14 +43,15 @@ export function DecisionTableOutputHeaderCell(props: {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const activeDrgElementId = useDmnEditorStore((s) => s.boxedExpressionEditor.activeDrgElementId);
+  const { dmnEditorRootElementRef } = useDmnEditor();
+  const { externalModelsByNamespace } = useExternalModels();
+
   const node = useDmnEditorStore((s) =>
     s
       .computed(s)
       .getDiagramData(externalModelsByNamespace)
       .nodesById.get(buildXmlHref({ id: activeDrgElementId ?? "" }))
   );
-  const { dmnEditorRootElementRef } = useDmnEditor();
-  const { externalModelsByNamespace } = useExternalModels();
 
   const selectedObjectInfos = useMemo(
     () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),

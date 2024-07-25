@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "./__fixtures__/base";
-import { ConstraintType, DataType, RangeConstraintPosition } from "./__fixtures__/dataTypes";
+import { DataType, RangeConstraintPosition } from "./__fixtures__/dataTypes";
 import { TabName } from "./__fixtures__/editor";
 import { DefaultNodeName, NodeType } from "./__fixtures__/nodes";
 
@@ -47,14 +47,12 @@ test.describe("Decision Table - Type Constraints", () => {
 
     for (const dataType of dataTypes) {
       test(`Decision Table input header properties panel shouldn't contain constraint - '${dataType}' data type`, async ({
-        page,
         beePropertiesPanel,
+        bee,
       }) => {
         await beePropertiesPanel.open();
-        // TODO: use new API
-        await page.getByText("Select expression").click();
-        await page.getByRole("menuitem", { name: "Decision table" }).click();
-        await page.getByRole("columnheader", { name: "Input-1 (<Undefined>)" }).click();
+        await bee.selectExpressionMenu.selectDecisionTable();
+        await bee.expression.asDecisionTable().inputHeaderAt(0).content.click();
         await beePropertiesPanel.decisionTableInputHeader.setDataType({ newDataType: dataType });
 
         expect(beePropertiesPanel.decisionTableInputHeader.getDataType()).toHaveValue(`${dataType}`);
@@ -62,30 +60,26 @@ test.describe("Decision Table - Type Constraints", () => {
       });
 
       test(`Decision Table input rule properties panel shouldn't contain constraint - '${dataType}' data type`, async ({
-        page,
         beePropertiesPanel,
+        bee,
       }) => {
         await beePropertiesPanel.open();
-        // TODO: use new API
-        await page.getByText("Select expression").click();
-        await page.getByRole("menuitem", { name: "Decision table" }).click();
-        await page.getByRole("columnheader", { name: "Input-1 (<Undefined>)" }).click();
+        await bee.selectExpressionMenu.selectDecisionTable();
+        await bee.expression.asDecisionTable().inputHeaderAt(0).content.click();
         await beePropertiesPanel.decisionTableInputHeader.setDataType({ newDataType: dataType });
-        await page.getByTestId("monaco-container").nth(0).click();
+        await bee.expression.asDecisionTable().cellAt({ row: 1, column: 1 }).content.click();
 
         expect(beePropertiesPanel.decisionTableInputRule.getDataType()).toHaveValue(`${dataType}`);
         expect(beePropertiesPanel.decisionTableInputRule.getConstraintSection()).not.toBeAttached();
       });
 
       test(`Decision Table output header properties panel shouldn't contain constraint - '${dataType}' data type`, async ({
-        page,
         beePropertiesPanel,
+        bee,
       }) => {
         await beePropertiesPanel.open();
-        // TODO: use new API
-        await page.getByText("Select expression").click();
-        await page.getByRole("menuitem", { name: "Decision table" }).click();
-        await page.getByRole("columnheader", { name: "New Decision (<Undefined>)" }).click();
+        await bee.selectExpressionMenu.selectDecisionTable();
+        await bee.expression.asDecisionTable().outputHeaderAt(0).content.click();
         await beePropertiesPanel.decisionTableOutputHeader.setDecisionDataType({ newDataType: dataType });
 
         expect(beePropertiesPanel.decisionTableOutputHeader.getDecisionDataType()).toHaveValue(`${dataType}`);
@@ -95,43 +89,39 @@ test.describe("Decision Table - Type Constraints", () => {
       });
 
       test(`Decision Table output header with nested columns properties panel shouldn't contain constraint - '${dataType}' data type`, async ({
-        page,
         beePropertiesPanel,
+        bee,
       }) => {
         await beePropertiesPanel.open();
-        // TODO: use new API
-        await page.getByText("Select expression").click();
-        await page.getByRole("menuitem", { name: "Decision table" }).click();
-        await page.getByRole("columnheader", { name: "New Decision (<Undefined>)" }).hover();
-        await page.getByRole("row", { name: "U Input-1 (<Undefined>) New" }).locator("path").click();
+        await bee.selectExpressionMenu.selectDecisionTable();
+        await bee.expression.asDecisionTable().addOutputAtStart();
 
-        await page.getByRole("columnheader", { name: "New Decision (<Undefined>)" }).click();
+        await bee.expression.asDecisionTable().expressionHeaderCell.content.click();
         await beePropertiesPanel.decisionTableOutputHeader.setDataType({ newDataType: dataType });
         await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(`${dataType}`);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).not.toBeAttached();
 
-        await page.getByRole("columnheader", { name: "Output-1 (<Undefined>)" }).click();
+        await bee.expression.asDecisionTable().outputHeaderAt(0).content.click();
         await beePropertiesPanel.decisionTableOutputHeader.setDataType({ newDataType: dataType });
         await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(`${dataType}`);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).not.toBeAttached();
 
-        await page.getByRole("columnheader", { name: "Output-2 (<Undefined>)" }).click();
+        await bee.expression.asDecisionTable().outputHeaderAt(1).content.click();
         await beePropertiesPanel.decisionTableOutputHeader.setDataType({ newDataType: dataType });
         await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(`${dataType}`);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).not.toBeAttached();
       });
 
       test(`Decision Table output rule properties panel shouldn't contain constraint - '${dataType}' data type`, async ({
-        page,
         beePropertiesPanel,
+        bee,
       }) => {
         await beePropertiesPanel.open();
         // TODO: use new API
-        await page.getByText("Select expression").click();
-        await page.getByRole("menuitem", { name: "Decision table" }).click();
-        await page.getByRole("columnheader", { name: "New Decision (<Undefined>)" }).click();
+        await bee.selectExpressionMenu.selectDecisionTable();
+        await bee.expression.asDecisionTable().outputHeaderAt(0).content.click();
         await beePropertiesPanel.decisionTableOutputHeader.setDecisionDataType({ newDataType: dataType });
-        await page.getByTestId("monaco-container").nth(1).click();
+        await bee.expression.asDecisionTable().cellAt({ row: 1, column: 2 }).content.click();
 
         expect(beePropertiesPanel.decisionTableOutputRule.getDataType()).toHaveValue(`${dataType}`);
         expect(beePropertiesPanel.decisionTableOutputRule.getConstraintSection()).not.toBeAttached();
