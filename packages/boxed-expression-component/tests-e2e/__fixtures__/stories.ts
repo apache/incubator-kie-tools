@@ -38,7 +38,7 @@ export class Stories {
     await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-context--${type}`)}` ?? "");
   }
 
-  public async openDecisionTable(type: BoxedExpressionTypes | "discount" = "base") {
+  public async openDecisionTable(type: BoxedExpressionTypes | "discount" | "undefined-widths" = "base") {
     await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-decision-table--${type}`)}` ?? "");
   }
 

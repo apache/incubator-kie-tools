@@ -154,33 +154,41 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
   }, [updateArgs, expressionState]);
 
   return (
-    <div
-      ref={emptyRef}
-      onKeyDown={(e) => {
-        // Prevent keys from propagating to Storybook
-        console.log("wrapper stopped");
-        // return e.stopPropagation();
-      }}
-    >
-      <BoxedExpressionEditor
-        expressionHolderId={props?.expressionHolderId ?? args?.expressionHolderId ?? generateUuid()}
-        expressionHolderName={
-          props?.expressionHolderName ?? args?.expressionHolderName ?? DEFAULT_EXPRESSION_VARIABLE_NAME
-        }
-        expressionHolderTypeRef={props?.expressionHolderTypeRef ?? args?.expressionHolderTypeRef}
-        expression={expressionState}
-        onExpressionChange={setExpressionState}
-        onWidthsChange={onWidthsChange}
-        dataTypes={props?.dataTypes ?? args?.dataTypes ?? dataTypes}
-        scrollableParentRef={props?.scrollableParentRef ?? args?.scrollableParentRef ?? emptyRef}
-        beeGwtService={props?.beeGwtService ?? args?.beeGwtService ?? beeGwtService}
-        pmmlDocuments={props?.pmmlDocuments ?? args?.pmmlDocuments ?? pmmlDocuments}
-        isResetSupportedOnRootExpression={
-          props?.isResetSupportedOnRootExpression ?? args?.isResetSupportedOnRootExpression ?? false
-        }
-        widthsById={widthsByIdMap}
-      />
-    </div>
+    <>
+      {args && (
+        <div data-testid={"storybook--boxed-expression-component"} style={{ display: "none" }}>
+          {JSON.stringify(args)}
+        </div>
+      )}
+
+      <div
+        ref={emptyRef}
+        onKeyDown={(e) => {
+          // Prevent keys from propagating to Storybook
+          console.log("wrapper stopped");
+          // return e.stopPropagation();
+        }}
+      >
+        <BoxedExpressionEditor
+          expressionHolderId={props?.expressionHolderId ?? args?.expressionHolderId ?? generateUuid()}
+          expressionHolderName={
+            props?.expressionHolderName ?? args?.expressionHolderName ?? DEFAULT_EXPRESSION_VARIABLE_NAME
+          }
+          expressionHolderTypeRef={props?.expressionHolderTypeRef ?? args?.expressionHolderTypeRef}
+          expression={expressionState}
+          onExpressionChange={setExpressionState}
+          onWidthsChange={onWidthsChange}
+          dataTypes={props?.dataTypes ?? args?.dataTypes ?? dataTypes}
+          scrollableParentRef={props?.scrollableParentRef ?? args?.scrollableParentRef ?? emptyRef}
+          beeGwtService={props?.beeGwtService ?? args?.beeGwtService ?? beeGwtService}
+          pmmlDocuments={props?.pmmlDocuments ?? args?.pmmlDocuments ?? pmmlDocuments}
+          isResetSupportedOnRootExpression={
+            props?.isResetSupportedOnRootExpression ?? args?.isResetSupportedOnRootExpression ?? false
+          }
+          widthsById={widthsByIdMap}
+        />
+      </div>
+    </>
   );
 }
 

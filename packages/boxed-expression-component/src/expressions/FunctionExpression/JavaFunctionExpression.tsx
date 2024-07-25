@@ -109,7 +109,9 @@ export function JavaFunctionExpression({
         if (newWidth) {
           const minSize = JAVA_FUNCTION_EXPRESSION_VALUES_COLUMN_WIDTH_INDEX + 1;
           const newValues = [...prev];
-          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.push(
+            ...Array<number>(Math.max(0, minSize - newValues.length)).fill(JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH)
+          );
           newValues.splice(JAVA_FUNCTION_EXPRESSION_VALUES_COLUMN_WIDTH_INDEX, 1, newWidth);
           newMap.set(id, newValues);
         }

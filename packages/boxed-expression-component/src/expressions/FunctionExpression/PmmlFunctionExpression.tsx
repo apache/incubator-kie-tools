@@ -457,7 +457,7 @@ function PmmlFunctionExpressionDocumentCell(props: React.PropsWithChildren<BeeTa
     >
       {(pmmlDocuments ?? []).map(({ document }) => (
         <SelectOption
-          data-testid={`pmml-${document}`}
+          data-testid={`kie-tools--bee--pmml-${document}`}
           key={document}
           value={document}
           data-ouia-component-id={document}
@@ -550,7 +550,12 @@ function PmmlFunctionExpressionModelCell(props: React.PropsWithChildren<BeeTable
       selections={[model]}
     >
       {models.map(({ model }) => (
-        <SelectOption data-testid={`pmml-${model}`} key={model} value={model} data-ouia-component-id={model}>
+        <SelectOption
+          data-testid={`kie-tools--bee--pmml-${model}`}
+          key={model}
+          value={model}
+          data-ouia-component-id={model}
+        >
           {model}
         </SelectOption>
       ))}

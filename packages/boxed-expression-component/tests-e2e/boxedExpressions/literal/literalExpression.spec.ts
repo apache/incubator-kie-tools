@@ -17,13 +17,26 @@
  * under the License.
  */
 
-import { test, expect } from "../../__fixtures__/base";
+import { expect, test } from "../../__fixtures__/base";
 
 test.describe("Create Boxed Literal", () => {
-  test("should render expression correctly", async ({ boxedExpressionEditor, stories, page }) => {
+  test("should render expression correctly", async ({ bee, stories, page }) => {
     await stories.openBoxedLiteral();
     await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
     await expect(page.getByRole("cell")).toHaveCount(1);
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-literal.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-literal.png");
+  });
+});
+
+test.describe("Boxed Literal", () => {
+  test.beforeEach(async ({ bee }) => {
+    await bee.goto();
+  });
+  test("should fill and change content", async ({ bee }) => {
+    await bee.selectExpressionMenu.selectLiteral();
+    await bee.expression.asLiteral().fill("test content");
+    await expect(bee.expression.asLiteral().content).toContainText("test content");
+    await bee.expression.asLiteral().fill("another thing");
+    await expect(bee.expression.asLiteral().content).not.toContainText("test content");
   });
 });

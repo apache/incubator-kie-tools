@@ -251,3 +251,57 @@ export const Nested: Story = {
     isResetSupportedOnRootExpression: false,
   },
 };
+
+export const UndefinedWidths: Story = {
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
+  args: {
+    ...EmptyExpression.args,
+    expression: {
+      __$$element: "decisionTable",
+      "@_id": "_92929AE6-3BB5-4217-B66E-07614680971D",
+      "@_label": "Expression Name",
+      "@_hitPolicy": "UNIQUE",
+      input: [
+        {
+          "@_id": generateUuid(),
+          inputExpression: {
+            "@_id": generateUuid(),
+            text: { __$$text: "input-1" },
+            "@_typeRef": undefined,
+          },
+        },
+      ],
+      output: [
+        {
+          "@_id": generateUuid(),
+          "@_label": "output-1",
+          "@_typeRef": undefined,
+        },
+      ],
+      annotation: [
+        {
+          "@_name": "Annotations",
+        },
+      ],
+      rule: [
+        {
+          "@_id": generateUuid(),
+          inputEntry: [{ "@_id": generateUuid(), text: { __$$text: DECISION_TABLE_INPUT_DEFAULT_VALUE } }],
+          outputEntry: [
+            {
+              "@_id": generateUuid(),
+              text: { __$$text: DECISION_TABLE_OUTPUT_DEFAULT_VALUE },
+            },
+          ],
+          annotationEntry: [{ text: { __$$text: "// Your annotations here" } }],
+        },
+      ],
+    },
+    widthsById: {
+      "_92929AE6-3BB5-4217-B66E-07614680971D": [],
+    },
+
+    isResetSupportedOnRootExpression: true,
+  },
+};

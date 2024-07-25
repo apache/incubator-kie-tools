@@ -91,7 +91,9 @@ export function ContextExpression({
         if (newWidth) {
           const minSize = CONTEXT_ENTRY_VARIABLE_COLUMN_WIDTH_INDEX + 1;
           const newValues = [...prev];
-          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.push(
+            ...Array<number>(Math.max(0, minSize - newValues.length)).fill(CONTEXT_ENTRY_VARIABLE_MIN_WIDTH)
+          );
           newValues.splice(CONTEXT_ENTRY_VARIABLE_COLUMN_WIDTH_INDEX, 1, newWidth);
           newMap.set(id, newValues);
         }

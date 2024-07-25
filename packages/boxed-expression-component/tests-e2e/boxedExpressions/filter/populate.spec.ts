@@ -20,7 +20,7 @@
 import { test, expect } from "../../__fixtures__/base";
 
 test.describe("Populate Boxed Filter", () => {
-  test("should correctly create a Rebooked Flights filter", async ({ stories, page, boxedExpressionEditor }) => {
+  test("should correctly create a Rebooked Flights filter", async ({ stories, page, bee }) => {
     await stories.openBoxedFilter("base");
     await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
     await page.getByPlaceholder("Expression Name").fill("Rebooked Flights");
@@ -29,14 +29,14 @@ test.describe("Populate Boxed Filter", () => {
     await page.keyboard.press("Enter");
 
     // Prepare empty Filter 'in' and 'match' cells
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
+    await bee.expression.asFilter().in.selectExpressionMenu.selectLiteral();
+    await bee.expression.asFilter().match.selectExpressionMenu.selectLiteral();
 
-    await boxedExpressionEditor.fillFilter({
+    await bee.expression.asFilter().fill({
       collectionIn: ["Passengers"],
       collectionMatch: "item.Flight Number = Flight.Flight Number",
     });
 
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-rebooked-flights.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-rebooked-flights.png");
   });
 });

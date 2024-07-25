@@ -92,7 +92,9 @@ export function InvocationExpression({
         if (newWidth) {
           const minSize = INVOCATION_PARAMETER_INFO_COLUMN_WIDTH_INDEX + 1;
           const newValues = [...prev];
-          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.push(
+            ...Array<number>(Math.max(0, minSize - newValues.length)).fill(INVOCATION_PARAMETER_MIN_WIDTH)
+          );
           newValues.splice(INVOCATION_PARAMETER_INFO_COLUMN_WIDTH_INDEX, 1, newWidth);
           newMap.set(id, newValues);
         }

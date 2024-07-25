@@ -127,7 +127,9 @@ export function RelationExpression({
         if (newWidth && prevColumnWidth) {
           const minSize = columnIndex + 1;
           const newValues = [...prev];
-          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.push(
+            ...Array<number>(Math.max(0, minSize - newValues.length)).fill(RELATION_EXPRESSION_COLUMN_MIN_WIDTH)
+          );
           newValues.splice(columnIndex, 1, newWidth);
           newMap.set(id, newValues);
         }
