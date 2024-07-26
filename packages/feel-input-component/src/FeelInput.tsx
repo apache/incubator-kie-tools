@@ -299,57 +299,92 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
             if (feelVariables) {
               const text = model.getValue();
               const contentByLines = model.getLinesContent();
-              let startOfPreviousToken = 0;
+              let startOfPreviousVariable = 0;
               let previousLine = 0;
-              let lineOffset = 0;
-              let currentLine = 0;
+
               const parsedExpression = feelVariables.parser.parse(expressionId ?? "", text);
+
+              // This is to autocomplete, so we don't need to parse it again.
               setCurrentParsedExpression(parsedExpression);
 
+              // The startIndex is set by parse relative to the ENTIRE EXPRESSION.
+              // But, here, we need a startIndex relative to LINE, because that's how Monaco works.
+              //
+              // For example, consider the expression:
+              // "a" +
+              // "b" + someVar
+              //
+              // To the parser, the index of "someVar" is 13, because it reads the expression in this format:
+              // "a" + "b" + someVar
+              //
+              // But, here, the real index of "someVar" is 7.
+              //
+              // The code bellow does this calculation fixing the startIndex solved by the parser to the
+              // startIndex we need here, relative to the LINE where the variable is, not to the full expression.
               for (const variable of parsedExpression.feelVariables) {
-                if (variable.startLine != currentLine) {
-                  lineOffset += contentByLines[currentLine].length + 1; // +1 = the line break
-                  currentLine = variable.startLine;
+                let lineOffset = 0;
+                for (let i = 0; i < variable.startLine; i++) {
+                  lineOffset += contentByLines[i].length + 1; // +1 = is the line break
                 }
                 variable.startIndex -= lineOffset;
               }
 
               for (const variable of parsedExpression.feelVariables) {
                 if (previousLine != variable.startLine) {
-                  startOfPreviousToken = 0;
+                  startOfPreviousVariable = 0;
                 }
+
+                // It is a variable that it is NOT split in multiple-lines
                 if (variable.startLine === variable.endLine) {
                   tokenTypes.push(
                     variable.startLine - previousLine, // lineIndex = relative to the PREVIOUS line
-                    variable.startIndex - startOfPreviousToken, // columnIndex = relative to the start of the PREVIOUS token NOT to the start of the line
+                    variable.startIndex - startOfPreviousVariable, // columnIndex = relative to the start of the PREVIOUS token NOT to the start of the line
                     variable.length,
                     getTokenTypeIndex(variable.feelSymbolNature),
                     0 // token modifier = not used so we keep it 0
                   );
 
                   previousLine = variable.startLine;
-                  startOfPreviousToken = variable.startIndex;
+                  startOfPreviousVariable = variable.startIndex;
                 } else {
+                  // It is a MULTILINE variable.
+                  // We colorize the first line of the variable and then other lines.
                   tokenTypes.push(
                     variable.startLine - previousLine,
-                    variable.startIndex - startOfPreviousToken,
-                    variable.length,
+                    variable.startIndex - startOfPreviousVariable,
+                    contentByLines[variable.startLine - previousLine].length - variable.startIndex,
                     getTokenTypeIndex(variable.feelSymbolNature),
                     0
                   );
 
-                  const length =
-                    variable.length - (contentByLines[variable.startLine].length - variable.startIndex + 1); // +1 = the line break
+                  let remainingChars =
+                    variable.length -
+                    1 -
+                    (contentByLines[variable.startLine - previousLine].length - variable.startIndex); // -1 = line break
+                  const remainingLines = variable.endLine - variable.startLine;
+                  let currentLine = variable.startLine + 1;
 
-                  tokenTypes.push(
-                    variable.endLine - variable.startLine,
-                    0,
-                    length,
-                    getTokenTypeIndex(variable.feelSymbolNature),
-                    0
-                  );
+                  // We colorize the remaining lines here. It can be one of the following cases:
+                  // 1. The entire line is part of the variable, colorize the entire line;
+                  // 2. Only a few chars at the start of the currentLine is part of the variable.
+                  for (let i = 0; i < remainingLines; i++) {
+                    // We try to colorize everything but, if it overflows the line, it means that the variable does not end here.
+                    let toColorize = remainingChars;
+                    if (toColorize > contentByLines[currentLine].length) {
+                      toColorize = contentByLines[currentLine].length;
+                    }
 
-                  startOfPreviousToken = 0;
+                    tokenTypes.push(1, 0, toColorize, getTokenTypeIndex(variable.feelSymbolNature), 0);
+
+                    remainingChars -= toColorize + 1;
+                    currentLine++;
+                  }
+
+                  // We need to track where is the start to previous colorized variable, because it is used to calculate
+                  // where we're going to paint the next variable. Monaco utilizes that as the index NOT the start of
+                  // the line. So, here, we're setting it to 0 because the last painted "part of the variable"
+                  // was painted at position 0 of the line.
+                  startOfPreviousVariable = 0;
                   previousLine = variable.endLine;
                 }
               }
