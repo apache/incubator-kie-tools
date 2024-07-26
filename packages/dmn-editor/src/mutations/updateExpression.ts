@@ -24,7 +24,6 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { renameDrgElement } from "./renameNode";
 import { Normalized } from "../normalization/normalize";
-import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 
 export function updateExpression({
   definitions,
