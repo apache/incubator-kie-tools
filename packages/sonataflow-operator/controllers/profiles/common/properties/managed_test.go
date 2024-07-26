@@ -477,6 +477,7 @@ func generateJobServiceWorkflowDevProperties() *properties.Properties {
 		jobServiceDevProperties.Set("kogito.events.processdefinitions.enabled", "false")
 		jobServiceDevProperties.Set("kogito.events.processinstances.enabled", "false")
 		jobServiceDevProperties.Set("kogito.events.usertasks.enabled", "false")
+		jobServiceDevProperties.Set("%dev.quarkus.dev-ui.cors.enabled", "false")
 		jobServiceDevProperties.Sort()
 	}
 	return jobServiceDevProperties
@@ -497,6 +498,7 @@ func generateJobServiceWorkflowProductionProperties() *properties.Properties {
 		jobServiceProdProperties.Set("kogito.events.processdefinitions.enabled", "false")
 		jobServiceProdProperties.Set("kogito.events.processinstances.enabled", "false")
 		jobServiceProdProperties.Set("kogito.events.usertasks.enabled", "false")
+		jobServiceProdProperties.Set("%dev.quarkus.dev-ui.cors.enabled", "false")
 		jobServiceProdProperties.Sort()
 	}
 	return jobServiceProdProperties
@@ -516,6 +518,7 @@ func generateDataIndexWorkflowDevProperties() *properties.Properties {
 		dataIndexDevProperties.Set("kogito.events.processdefinitions.enabled", "false")
 		dataIndexDevProperties.Set("kogito.events.processinstances.enabled", "false")
 		dataIndexDevProperties.Set("kogito.events.usertasks.enabled", "false")
+		dataIndexDevProperties.Set("%dev.quarkus.dev-ui.cors.enabled", "false")
 		dataIndexDevProperties.Sort()
 	}
 	return dataIndexDevProperties
@@ -540,6 +543,7 @@ func generateDataIndexWorkflowProductionProperties() *properties.Properties {
 		dataIndexProdProperties.Set("kogito.events.processdefinitions.errors.propagate", "true")
 		dataIndexProdProperties.Set("kogito.events.processinstances.enabled", "true")
 		dataIndexProdProperties.Set("kogito.events.usertasks.enabled", "false")
+		dataIndexProdProperties.Set("%dev.quarkus.dev-ui.cors.enabled", "false")
 		dataIndexProdProperties.Sort()
 	}
 	return dataIndexProdProperties
@@ -559,6 +563,7 @@ func generateDataIndexAndJobServiceWorkflowDevProperties() *properties.Propertie
 		dataIndexJobServiceDevProperties.Set("kogito.events.processdefinitions.enabled", "false")
 		dataIndexJobServiceDevProperties.Set("kogito.events.processinstances.enabled", "false")
 		dataIndexJobServiceDevProperties.Set("kogito.events.usertasks.enabled", "false")
+		dataIndexJobServiceDevProperties.Set("%dev.quarkus.dev-ui.cors.enabled", "false")
 		dataIndexJobServiceDevProperties.Sort()
 	}
 	return dataIndexJobServiceDevProperties
@@ -584,6 +589,7 @@ func generateDataIndexAndJobServiceWorkflowProductionProperties() *properties.Pr
 		dataIndexJobServiceProdProperties.Set("kogito.events.usertasks.enabled", "false")
 		dataIndexJobServiceProdProperties.Set("mp.messaging.outgoing.kogito-processdefinitions-events.url", "http://foo-data-index-service.default/definitions")
 		dataIndexJobServiceProdProperties.Set("mp.messaging.outgoing.kogito-processinstances-events.url", "http://foo-data-index-service.default/processes")
+		dataIndexJobServiceProdProperties.Set("%dev.quarkus.dev-ui.cors.enabled", "false")
 		dataIndexJobServiceProdProperties.Sort()
 	}
 	return dataIndexJobServiceProdProperties
