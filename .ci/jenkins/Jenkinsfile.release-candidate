@@ -31,7 +31,7 @@ pipeline {
     }
 
     parameters {
-        string(name: 'BRANCH_NAME', description: 'Set the Git branch to checkout (0.0.X)', trim: true)
+        string(name: 'BRANCH_NAME', description: 'Set the Git branch to checkout (0.0.x)', trim: true)
         string(name: 'RELEASE_VERSION', description: 'Release version', trim: true)
         string(name: 'TAG_NAME', description: 'Tag name to be created', trim: true)
     }
@@ -139,7 +139,6 @@ pipeline {
                         git add .
                         git commit --allow-empty -am "Apache KIE ${params.RELEASE_VERSION} release"
                         """.trim()
-                        githubUtils.pushObject('origin', "${params.NEW_BRANCH_NAME}", "${pipelineVars.asfGithubPushCredentialsId}")
                     }
                 }
             }
