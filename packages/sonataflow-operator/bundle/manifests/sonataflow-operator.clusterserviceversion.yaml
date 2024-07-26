@@ -126,7 +126,7 @@ metadata:
     operators.operatorframework.io/internal-objects: '["sonataflowbuilds.sonataflow.org"]'
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
     repository: https://github.com/apache/incubator-kie-tools/packages/sonataflow-operator
-    support: Red Hat
+    support: Apache Software Foundation
   name: sonataflow-operator.v10.0.999
   namespace: placeholder
 spec:
@@ -854,12 +854,12 @@ spec:
     - serverlessworkflow
   links:
     - name: Product Page
-      url: https://sonataflow.org/serverlessworkflow/latest/index.html
+      url: https://github.com/apache/incubator-kie-tools
   maintainers:
-    - email: bsig-cloud@redhat.com
-      name: Red Hat
+    - email: dev@kie.apache.org
+      name: Apache Software Foundation
   maturity: alpha
   minKubeVersion: 1.23.0
   provider:
-    name: Red Hat
+    name: Apache Software Foundation
   version: 10.0.999
