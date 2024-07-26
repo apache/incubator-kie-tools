@@ -63,11 +63,15 @@ Available parameters:
   - `Promise.resolve("")`
   - `Promise.resolve("<DIAGRAM_CONTENT_DIRECTLY_HERE>")`
   - `fetch("MyDmnModel.dmn").then(content => content.text())`
+- `initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot`: The POSIX path relative to the workspace root (`/` by default), including the file name. The path is useful to locate the file in the workspace, espcially in relation to other resources (defined by the `resources` parameters). Examples:
+  - `model.dmn`
+  - `myPath/model.dmn`
+  - `parent/child/filename.dmn`
 - `readOnly` (optional, defaults to `false`): Use `false` to allow content edition, and `true` for read-only mode, in which the Editor will not allow changes.
 - `origin` (optional, defaults to `*` when accessing the application with the `file` protocol, `window.location.origin` otherwise): If for some reason your application needs to change this parameter, you can use it.
 - `onError` (optional, defaults to `() => {}`): If there's an error opening the Editor, this function will be called.
 
-* `resources` (optional, defaults to `[]`): Map of resources that will be provided for the Editor. This can be used, for instance, to provide included models for the DMN Editor or Work Item Definitions for the BPMN Editor. Each entry in the map has the resource name as its key and an object containing the `content-type` (`text` or `binary`) and the resource `content` (Promise similar to the `initialContent` parameter) as its value.
+* `resources` (optional, defaults to `[]`): Map of resources that will be provided for the Editor. This can be used, for instance, to provide included models for the DMN Editor. Each entry in the map has the resource POSIX path (similar to the `initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot` parameter) as its key and an object containing the `content-type` (`text` or `binary`) and the resource `content` (Promise similar to the `initialContent` parameter) as its value. Resources located in a parent directory (in relation to the current content path, defined by the `initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot`) won't be listed to be used as an Included Model.
 
 The returned object will contain the methods needed to manipulate the Editor:
 

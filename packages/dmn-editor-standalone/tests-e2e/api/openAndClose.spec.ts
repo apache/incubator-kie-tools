@@ -17,11 +17,21 @@
  * under the License.
  */
 
-import path from "path";
-import { readFileSync } from "fs";
+import { test, expect } from "../__fixtures__/base";
 
-export const emptyDrd = readFileSync(path.join(__dirname, "files/empty-drd.dmn"), "utf8");
+test.describe("Dmn Editor - API", () => {
+  test.describe("Open editor", () => {
+    test.beforeEach(async ({ editor }) => {
+      await editor.open();
+    });
 
-export const emptyDmn = readFileSync(path.join(__dirname, "files/empty.dmn"), "utf8");
+    test("should open and close the editor with a blank DMN", async ({ page, editor }) => {
+      await expect(page).toHaveScreenshot("open-editor.png");
 
-export const loanPreQualificationDmn = readFileSync(path.join(__dirname, "files/loan-pre-qualification.dmn"), "utf8");
+      await editor.close();
+
+      await expect(editor.getEditorIframe().getByText("This DMN's Diagram is empty")).not.toBeAttached();
+      await expect(page).toHaveScreenshot("close-editor.png");
+    });
+  });
+});

@@ -17,11 +17,17 @@
  * under the License.
  */
 
-import path from "path";
-import { readFileSync } from "fs";
+import { test as base } from "@playwright/test";
+import { Editor } from "./editor";
 
-export const emptyDrd = readFileSync(path.join(__dirname, "files/empty-drd.dmn"), "utf8");
+type DmnEditorFixtures = {
+  editor: Editor;
+};
 
-export const emptyDmn = readFileSync(path.join(__dirname, "files/empty.dmn"), "utf8");
+export const test = base.extend<DmnEditorFixtures>({
+  editor: async ({ page, baseURL }, use) => {
+    await use(new Editor(page, baseURL));
+  },
+});
 
-export const loanPreQualificationDmn = readFileSync(path.join(__dirname, "files/loan-pre-qualification.dmn"), "utf8");
+export { expect } from "@playwright/test";
