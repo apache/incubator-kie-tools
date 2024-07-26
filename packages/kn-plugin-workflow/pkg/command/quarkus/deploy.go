@@ -64,7 +64,7 @@ func NewDeployCommand() *cobra.Command {
 	}
 
 	cmd.Flags().StringP("path", "p", "./target/kubernetes", fmt.Sprintf("%s path to knative deployment files", cmd.Name()))
-	cmd.Flags().StringP("namespace", "n", "default", "Target namespace of your deployment.")
+	cmd.Flags().StringP("namespace", "n", "", "Target namespace of your deployment.")
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
@@ -82,7 +82,7 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 	if err = common.CheckKubectl(); err != nil {
 		return err
 	}
-	
+
 	if _, err = deployKnativeServiceAndEventingBindings(cfg); err != nil {
 		return err
 	}
@@ -106,6 +106,14 @@ func deployKnativeServiceAndEventingBindings(cfg DeployCmdConfig) (bool, error) 
 
 	// Check if kogito.yml file exists
 	if exists, err := checkIfKogitoFileExists(cfg); exists && err == nil {
+		if cfg.Namespace == "" {
+			if namespace, err := common.GetKubectlNamespace(); err == nil {
+				cfg.Namespace = namespace
+			} else {
+				fmt.Println("❌ ERROR: Failed to get current kubectl namespace")
+				return isKnativeEventingBindingsCreated, err
+			}
+		}
 		deploy := common.ExecCommand("kubectl", "apply", "-f", fmt.Sprintf("%s/kogito.yml", cfg.Path), fmt.Sprintf("--namespace=%s", cfg.Namespace))
 		if err := common.RunCommand(
 			deploy,
