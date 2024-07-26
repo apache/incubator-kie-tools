@@ -21,8 +21,7 @@ import { useArgs } from "@storybook/preview-api";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../src/BoxedExpressionEditor";
-import { BeeGwtService, BoxedExpression, DmnBuiltInDataType, generateUuid } from "../src/api";
-import { getDefaultBoxedExpressionForDevWebapp } from "./dev/getDefaultBoxedExpressionForDevWebapp";
+import { BeeGwtService, BoxedExpression, DmnBuiltInDataType, generateUuid, Normalized } from "../src/api";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../src/expressionVariable/ExpressionVariableMenu";
 import { getDefaultBoxedExpressionForStories } from "./getDefaultBoxedExpressionForStories";
 
@@ -93,7 +92,7 @@ export type BoxedExpressionEditorStoryArgs = Omit<BoxedExpressionEditorProps, "w
 export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditorStoryArgs>) {
   const emptyRef = useRef<HTMLDivElement>(null);
   const [args, updateArgs] = useArgs<BoxedExpressionEditorStoryArgs>();
-  const [expressionState, setExpressionState] = useState<BoxedExpression | undefined>(
+  const [expressionState, setExpressionState] = useState<Normalized<BoxedExpression> | undefined>(
     args?.expression ?? props?.expression
   );
 

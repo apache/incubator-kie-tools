@@ -173,6 +173,10 @@ export class ChildExpression {
   get selectExpressionMenu() {
     return new SelectExpressionMenu(this.locator.getByTestId("kie-tools--bee--expression-container").nth(0));
   }
+
+  get contextMenu() {
+    return new ContextMenu(this.locator.getByRole("cell").nth(0));
+  }
 }
 
 export class IteratorVariable {

@@ -26,6 +26,7 @@ import {
   BeeTableOperation,
   BoxedLiteral,
   DmnBuiltInDataType,
+  Normalized,
 } from "../../api";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
 import {
@@ -48,7 +49,7 @@ export function LiteralExpression({
   isNested,
   expression: literalExpression,
 }: {
-  expression: BoxedLiteral;
+  expression: Normalized<BoxedLiteral>;
   isNested: boolean;
 }) {
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
@@ -62,9 +63,9 @@ export function LiteralExpression({
 
   const setValue = useCallback(
     (value: string) => {
-      setExpression((prev: BoxedLiteral) => {
+      setExpression((prev: Normalized<BoxedLiteral>) => {
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedLiteral = { ...literalExpression, text: { __$$text: value } };
+        const ret: Normalized<BoxedLiteral> = { ...literalExpression, text: { __$$text: value } };
         return ret;
       });
     },
@@ -86,7 +87,7 @@ export function LiteralExpression({
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
       setExpression(
-        (): BoxedLiteral => ({
+        (): Normalized<BoxedLiteral> => ({
           ...literalExpression,
           "@_label": name,
           "@_typeRef": typeRef,

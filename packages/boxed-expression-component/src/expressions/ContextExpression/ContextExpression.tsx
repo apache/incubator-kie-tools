@@ -31,6 +31,7 @@ import {
   DmnBuiltInDataType,
   generateUuid,
   getNextAvailablePrefixedName,
+  Normalized,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
@@ -61,7 +62,7 @@ export function ContextExpression({
   parentElementId,
   expression: contextExpression,
 }: {
-  expression: BoxedContext;
+  expression: Normalized<BoxedContext>;
   isNested: boolean;
   parentElementId: string;
 }) {
@@ -184,9 +185,9 @@ export function ContextExpression({
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev: BoxedContext) => {
+      setExpression((prev: Normalized<BoxedContext>) => {
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedContext = {
+        const ret: Normalized<BoxedContext> = {
           ...prev,
           "@_label": name,
           "@_typeRef": typeRef,
@@ -204,7 +205,7 @@ export function ContextExpression({
 
   const updateVariable = useCallback(
     (index: number, { expression, variable }: ExpressionWithVariable) => {
-      setExpression((prev: BoxedContext) => {
+      setExpression((prev: Normalized<BoxedContext>) => {
         const contextEntries = [...(prev.contextEntry ?? [])];
 
         contextEntries[index] = {
@@ -214,7 +215,7 @@ export function ContextExpression({
         };
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedContext = {
+        const ret: Normalized<BoxedContext> = {
           ...prev,
           contextEntry: contextEntries,
         };
@@ -273,7 +274,7 @@ export function ContextExpression({
   }, [contextExpression, parentElementId]);
 
   const getDefaultContextEntry = useCallback(
-    (name?: string): DMN15__tContextEntry => {
+    (name?: string): Normalized<DMN15__tContextEntry> => {
       const variableName =
         name ||
         getNextAvailablePrefixedName(
@@ -296,7 +297,7 @@ export function ContextExpression({
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number }) => {
-      setExpression((prev: BoxedContext) => {
+      setExpression((prev: Normalized<BoxedContext>) => {
         const newContextEntries = [...(prev.contextEntry ?? [])];
 
         const newEntries = [];
@@ -312,7 +313,7 @@ export function ContextExpression({
         }
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedContext = {
+        const ret: Normalized<BoxedContext> = {
           ...prev,
           contextEntry: newContextEntries,
         };
@@ -325,9 +326,9 @@ export function ContextExpression({
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
-      let oldExpression: BoxedExpression | undefined;
+      let oldExpression: Normalized<BoxedExpression> | undefined;
 
-      setExpression((prev: BoxedContext) => {
+      setExpression((prev: Normalized<BoxedContext>) => {
         const newContextEntries = [...(prev.contextEntry ?? [])];
 
         const { isResultOperation: isDeletingResult, entryIndex } = solveResultAndEntriesIndex({
@@ -343,7 +344,7 @@ export function ContextExpression({
         }
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedContext = {
+        const ret: Normalized<BoxedContext> = {
           ...prev,
           contextEntry: newContextEntries,
         };
@@ -362,9 +363,9 @@ export function ContextExpression({
 
   const onRowReset = useCallback(
     (args: { rowIndex: number }) => {
-      let oldExpression: BoxedExpression | undefined;
+      let oldExpression: Normalized<BoxedExpression> | undefined;
 
-      setExpression((prev: BoxedContext) => {
+      setExpression((prev: Normalized<BoxedContext>) => {
         const newContextEntries = [...(prev.contextEntry ?? [])];
 
         const {
@@ -391,7 +392,7 @@ export function ContextExpression({
         }
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedContext = {
+        const ret: Normalized<BoxedContext> = {
           ...prev,
           contextEntry: newContextEntries,
         };

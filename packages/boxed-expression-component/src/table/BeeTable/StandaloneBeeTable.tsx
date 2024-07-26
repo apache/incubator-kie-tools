@@ -20,11 +20,11 @@
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { BeeTableProps, BoxedExpression } from "../../api";
+import { BeeTableProps, BoxedExpression, Normalized } from "../../api";
 import { BoxedExpressionEditorContextProvider } from "../../BoxedExpressionEditorContext";
 import {
-  BoxedExpressionEditorI18nContext,
   boxedExpressionEditorDictionaries,
+  BoxedExpressionEditorI18nContext,
   boxedExpressionEditorI18nDefaults,
 } from "../../i18n";
 import { ResizingWidthsContextProvider } from "../../resizing/ResizingWidthsContext";
@@ -46,7 +46,7 @@ export function StandaloneBeeTable<R extends object>(
     // Empty on purpose.
   }, []);
 
-  const expression = useMemo<BoxedExpression>(() => {
+  const expression = useMemo<Normalized<BoxedExpression>>(() => {
     return undefined!;
   }, []);
 
