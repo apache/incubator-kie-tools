@@ -20,7 +20,6 @@
 import {
   BeeGwtService,
   BoxedExpression,
-  DmnBuiltInDataType,
   DmnDataType,
   generateUuid,
   PmmlDocument,
@@ -81,7 +80,6 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { getDefaultColumnWidth } from "./getDefaultColumnWidth";
 import { getDefaultBoxedExpression } from "./getDefaultBoxedExpression";
 import { Normalized } from "../normalization/normalize";
-import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 
 export function BoxedExpressionScreen({ container }: { container: React.RefObject<HTMLElement> }) {
   const { externalModelsByNamespace } = useExternalModels();

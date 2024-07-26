@@ -18,13 +18,13 @@
  */
 
 import { expect, test } from "../../__fixtures__/base";
-import { TestAnnotations } from "../../../../playwright-base/annotations";
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Create Boxed For", () => {
   test.beforeEach(async ({ stories }) => {
-    await stories.openBoxedFor("base");
+    await stories.openBoxedFor();
   });
-  test("should keep IDs after resetting entries", async ({ bee, jsonModel, page }) => {
+  test("should have IDs after resetting 'in' and 'return' and setting it again", async ({ bee, jsonModel }) => {
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
       description: "https://github.com/apache/incubator-kie-issues/issues/1182",

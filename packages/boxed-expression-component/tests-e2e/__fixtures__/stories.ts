@@ -66,15 +66,15 @@ export class Stories {
     await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-filter--${type}`)}` ?? "");
   }
 
-  public async openBoxedEvery(type: BoxedExpressionTypes) {
+  public async openBoxedEvery(type: BoxedExpressionTypes = "base") {
     await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-every--${type}`)}` ?? "");
   }
 
-  public async openBoxedSome(type: BoxedExpressionTypes) {
+  public async openBoxedSome(type: BoxedExpressionTypes = "base") {
     await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-some--${type}`)}` ?? "");
   }
 
-  public async openBoxedFor(type: BoxedExpressionTypes) {
+  public async openBoxedFor(type: BoxedExpressionTypes = "base") {
     await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-for--${type}`)}` ?? "");
   }
 }

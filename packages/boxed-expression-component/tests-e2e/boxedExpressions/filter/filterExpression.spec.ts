@@ -18,7 +18,7 @@
  */
 
 import { expect, test } from "../../__fixtures__/base";
-import { TestAnnotations } from "../../../../playwright-base/annotations";
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Create Boxed Filter", () => {
   test("should rename a filter", async ({ page, stories }) => {
@@ -50,7 +50,7 @@ test.describe("Create Boxed Filter", () => {
     await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested-reset.png");
   });
 
-  test("should correctly create a nested filter", async ({ bee, stories }) => {
+  test("should correctly create a nested filter", async ({ bee }) => {
     await bee.goto();
 
     await bee.selectExpressionMenu.selectContext();
@@ -85,7 +85,7 @@ test.describe("Create Boxed Filter", () => {
     await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested-boxed-list.png");
   });
 
-  test("should keep IDs after resetting entries", async ({ bee, jsonModel, stories }) => {
+  test("should have IDs after resetting 'in' and 'match' and setting it again", async ({ bee, jsonModel, stories }) => {
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
       description: "https://github.com/apache/incubator-kie-issues/issues/1182",

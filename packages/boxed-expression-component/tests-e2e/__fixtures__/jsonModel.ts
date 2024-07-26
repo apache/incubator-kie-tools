@@ -18,7 +18,7 @@
  */
 
 import { Page } from "@playwright/test";
-import { BoxedContext, BoxedEvery, BoxedFilter, BoxedFor, BoxedSome, Normalized } from "../../src/api";
+import { BoxedContext, BoxedEvery, BoxedFilter, BoxedFor, BoxedSome, Normalized } from "../api/types";
 
 interface BoxedExpressionComponent {
   expression: string;

@@ -65,12 +65,4 @@ export function updateExpression({
   } else {
     throw new Error("DMN MUTATION: Can't update expression for drgElement that is not a Decision or a BKM.");
   }
-
-  getNewDmnIdRandomizer()
-    .ack({
-      json: definitions.drgElement,
-      type: "DMN15__tDefinitions",
-      attr: "drgElement",
-    })
-    .randomize();
 }

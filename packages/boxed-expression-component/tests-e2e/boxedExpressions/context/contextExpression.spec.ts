@@ -18,14 +18,14 @@
  */
 
 import { expect, test } from "../../__fixtures__/base";
-import { TestAnnotations } from "../../../../playwright-base/annotations";
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Create Boxed Context", () => {
   test.beforeEach(async ({ stories }) => {
     await stories.openBoxedContext();
   });
 
-  test("should render expression correctly", async ({ bee, stories, page }) => {
+  test("should render expression correctly", async ({ bee, page }) => {
     await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
     await expect(page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" })).toBeAttached();
     await expect(page.getByRole("cell", { name: "<result>" })).toBeAttached();
@@ -35,7 +35,7 @@ test.describe("Create Boxed Context", () => {
     await expect(bee.getContainer()).toHaveScreenshot("boxed-context.png");
   });
 
-  test("should keep IDs after resetting entries", async ({ bee, jsonModel, page }) => {
+  test("should have IDs after resetting entries and setting it again", async ({ bee, jsonModel }) => {
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
       description: "https://github.com/apache/incubator-kie-issues/issues/1182",
