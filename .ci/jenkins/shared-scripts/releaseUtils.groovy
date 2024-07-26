@@ -69,12 +69,12 @@ def downloadReleaseArtifacts(String artifactsDir, String releaseVersion) {
 */
 def getUpstreamImagesArtifactsList(String artifactsDir, String releaseVersion) {
     return [
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-base-builder-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-data-index-ephemeral-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-data-index-postgresql-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jit-runner-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jobs-service-allinone-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jobs-service-ephemeral-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jobs-service-postgresql-image.tar.gz"
+        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-base-builder.tar.gz",
+        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-data-index-ephemeral.tar.gz",
+        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-data-index-postgresql.tar.gz",
+        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jit-runner.tar.gz",
+        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jobs-service-allinone.tar.gz",
+        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jobs-service-ephemeral.tar.gz",
+        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jobs-service-postgresql.tar.gz"
     ]
 }
