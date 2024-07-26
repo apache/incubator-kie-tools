@@ -49,16 +49,7 @@ export class DataTypeProperties {
   }
 
   public getConstraintButton(args: { type: ConstraintType }) {
-    switch (args.type) {
-      case ConstraintType.ENUMERATION:
-        return this.panel.getByRole("button", { name: ConstraintType.ENUMERATION, exact: true });
-      case ConstraintType.EXPRESSION:
-        return this.panel.getByRole("button", { name: ConstraintType.EXPRESSION, exact: true });
-      case ConstraintType.NONE:
-        return this.panel.getByRole("button", { name: ConstraintType.NONE, exact: true });
-      case ConstraintType.RANGE:
-        return this.panel.getByRole("button", { name: ConstraintType.RANGE, exact: true });
-    }
+    return this.panel.getByRole("button", { name: args.type, exact: true });
   }
 
   public getNoneConstraint() {
