@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { BeeTableCellProps, BoxedConditional } from "../../api";
+import { BeeTableCellProps, BoxedConditional, Normalized } from "../../api";
 
 import {
   NestedExpressionDispatchContextProvider,
@@ -27,14 +27,7 @@ import {
 import * as React from "react";
 import { useCallback } from "react";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
-import { ConditionalClause, ROWTYPE } from "./ConditionalExpression";
-
-export interface ConditionalExpressionCellProps {
-  conditionalClause: ConditionalClause;
-  rowIndex: number;
-  columnIndex: number;
-  columnId: string;
-}
+import { ROWTYPE } from "./ConditionalExpression";
 
 export function ConditionalExpressionCell({
   data,
@@ -46,24 +39,24 @@ export function ConditionalExpressionCell({
 
   const onSetExpression = useCallback<OnSetExpression>(
     ({ getNewExpression }) => {
-      setExpression((prev: BoxedConditional) => {
+      setExpression((prev: Normalized<BoxedConditional>) => {
         if (rowIndex === 0) {
           // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const ret: BoxedConditional = {
+          const ret: Normalized<BoxedConditional> = {
             ...prev,
             if: { ...prev.if, expression: getNewExpression(prev.if.expression)! },
           };
           return ret;
         } else if (rowIndex === 1) {
           // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const ret: BoxedConditional = {
+          const ret: Normalized<BoxedConditional> = {
             ...prev,
             then: { ...prev.then, expression: getNewExpression(prev.then.expression)! },
           };
           return ret;
         } else if (rowIndex === 2) {
           // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const ret: BoxedConditional = {
+          const ret: Normalized<BoxedConditional> = {
             ...prev,
             else: { ...prev.else, expression: getNewExpression(prev.else.expression)! },
           };

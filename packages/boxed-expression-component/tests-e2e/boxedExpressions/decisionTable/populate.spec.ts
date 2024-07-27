@@ -21,12 +21,7 @@ import { test, expect } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Populate Decision table", () => {
-  test("should correctly create a routing decision table", async ({
-    stories,
-    page,
-    boxedExpressionEditor,
-    resizing,
-  }) => {
+  test("should correctly create a routing decision table", async ({ stories, page, bee, resizing }) => {
     await stories.openDecisionTable();
 
     await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).click();
@@ -92,7 +87,7 @@ test.describe("Populate Decision table", () => {
     await page.getByRole("cell", { name: "1" }).locator("svg").click();
     await page.getByRole("cell", { name: "1" }).locator("svg").click();
 
-    await boxedExpressionEditor.fillDecisionTable({
+    await bee.expression.asDecisionTable().fill({
       startAtCell: 0,
       tableData: [
         ["true", "-", "-", "-", `"Decline"`],
@@ -107,6 +102,6 @@ test.describe("Populate Decision table", () => {
     await page.getByRole("menuitem", { name: "PRIORITY" }).click();
     await page.keyboard.press("Escape");
 
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("decision-table-routing.png");
+    await expect(bee.getContainer()).toHaveScreenshot("decision-table-routing.png");
   });
 });

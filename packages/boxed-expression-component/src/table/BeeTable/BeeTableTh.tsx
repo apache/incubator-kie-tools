@@ -198,6 +198,7 @@ export function BeeTableTh<R extends object>({
         onKeyUp={onHeaderKeyUp}
         className={`${className} ${cssClasses}`}
         tabIndex={-1}
+        data-testid={`kie-tools--bee--table-header-${column.groupType ?? "undefined"}`}
       >
         {children}
         {hoverInfo.isHovered && onColumnAdded && isLastLevelColumn && shouldShowRowsInlineControls && (

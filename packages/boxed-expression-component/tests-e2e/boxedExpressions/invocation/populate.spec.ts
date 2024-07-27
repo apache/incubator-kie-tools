@@ -17,13 +17,13 @@
  * under the License.
  */
 
-import { test, expect } from "../../__fixtures__/base";
+import { expect, test } from "../../__fixtures__/base";
 
 test.describe("Populate Boxed Invocation", () => {
   test("should correctly create pre-bureau-affordability boxed invocation", async ({
     stories,
     page,
-    boxedExpressionEditor,
+    bee,
     resizing,
     monaco,
   }) => {
@@ -41,35 +41,35 @@ test.describe("Populate Boxed Invocation", () => {
     await page.getByRole("cell", { name: "p-1 (<Undefined>)" }).locator("svg").click();
     await page.getByRole("cell", { name: "p-1 (<Undefined>)" }).locator("svg").click();
 
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "p-1" }));
+    await bee.expression.asInvocation().parameter(0).selectExpressionMenu.selectLiteral();
     await page.getByRole("cell", { name: "p-1 (<Undefined>)" }).click();
     await page.getByPlaceholder("Expression Name").fill("Monthly income");
     await page.getByLabel("<Undefined>").click();
     await page.getByRole("option", { name: "number" }).click();
     await page.keyboard.press("Enter");
 
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "p-5" }));
+    await bee.expression.asInvocation().parameter(4).selectExpressionMenu.selectLiteral();
     await page.getByRole("cell", { name: "p-5 (<Undefined>)" }).click();
     await page.getByPlaceholder("Expression Name").fill("Monthly repayments");
     await page.getByLabel("<Undefined>").click();
     await page.getByRole("option", { name: "number" }).click();
     await page.keyboard.press("Enter");
 
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "p-4" }));
+    await bee.expression.asInvocation().parameter(3).selectExpressionMenu.selectLiteral();
     await page.getByRole("cell", { name: "p-4 (<Undefined>)" }).click();
     await page.getByPlaceholder("Expression Name").fill("Monthly expenses");
     await page.getByLabel("<Undefined>").click();
     await page.getByRole("option", { name: "number" }).click();
     await page.keyboard.press("Enter");
 
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "p-3" }));
+    await bee.expression.asInvocation().parameter(2).selectExpressionMenu.selectLiteral();
     await page.getByRole("cell", { name: "p-3 (<Undefined>)" }).click();
     await page.getByPlaceholder("Expression Name").fill("Risk category");
     await page.getByLabel("<Undefined>").click();
     await page.getByRole("option", { name: "number" }).click();
     await page.keyboard.press("Enter");
 
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "p-2" }));
+    await bee.expression.asInvocation().parameter(1).selectExpressionMenu.selectLiteral();
     await page.getByRole("cell", { name: "p-2 (<Undefined>)" }).click();
     await page.getByPlaceholder("Expression Name").fill("Required monthly installment");
     await page.getByLabel("<Undefined>").click();
@@ -78,7 +78,7 @@ test.describe("Populate Boxed Invocation", () => {
 
     await resizing.reset(page.getByRole("cell", { name: "Required monthly installment" }));
 
-    await page.getByText("FUNCTION").click();
+    await page.getByRole("columnheader", { name: "FUNCTION NAME" }).click();
     await page.keyboard.type(`Affordability calculation`);
     await page.keyboard.press("Enter");
 
@@ -94,8 +94,6 @@ test.describe("Populate Boxed Invocation", () => {
       { x: 100, y: 0 }
     );
 
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot(
-      "boxed-invocation-affordability-calculation.png"
-    );
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-invocation-affordability-calculation.png");
   });
 });

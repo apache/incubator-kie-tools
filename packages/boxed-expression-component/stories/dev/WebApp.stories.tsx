@@ -18,8 +18,8 @@
  */
 
 import * as React from "react";
-import { useEffect, useState, useCallback } from "react";
-import { BeeGwtService, DmnBuiltInDataType, BoxedExpression } from "../../src/api";
+import { useCallback, useEffect, useState } from "react";
+import { BeeGwtService, BoxedExpression, DmnBuiltInDataType, Normalized } from "../../src/api";
 import { getDefaultBoxedExpressionForDevWebapp } from "./getDefaultBoxedExpressionForDevWebapp";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../boxedExpressionStoriesWrapper";
@@ -90,12 +90,12 @@ const pmmlDocuments = [
   },
 ];
 
-const INITIAL_EXPRESSION: BoxedExpression | undefined = undefined;
+const INITIAL_EXPRESSION: Normalized<BoxedExpression> | undefined = undefined;
 const INITIAL_WIDTHS_BY_ID: Record<string, number[]> = {};
 
 function App() {
   const [version, setVersion] = useState(-1);
-  const [boxedExpression, setBoxedExpression] = useState<BoxedExpression | undefined>(INITIAL_EXPRESSION);
+  const [boxedExpression, setBoxedExpression] = useState<Normalized<BoxedExpression> | undefined>(INITIAL_EXPRESSION);
   const [widthsById, setWidthsById] = useState<Record<string, number[]>>(INITIAL_WIDTHS_BY_ID);
   const [selectedObjectId, setSelectedObjectId] = useState<string>();
 
@@ -103,10 +103,13 @@ function App() {
     setVersion((prev) => prev + 1);
   }, [boxedExpression]);
 
-  const setSample = useCallback((sample: BoxedExpression | undefined, widthsById: Record<string, number[]>) => {
-    setBoxedExpression(sample);
-    setWidthsById(widthsById);
-  }, []);
+  const setSample = useCallback(
+    (sample: Normalized<BoxedExpression> | undefined, widthsById: Record<string, number[]>) => {
+      setBoxedExpression(sample);
+      setWidthsById(widthsById);
+    },
+    []
+  );
 
   const beeGwtService: BeeGwtService = {
     getDefaultExpressionDefinition(logicType, typeRef) {

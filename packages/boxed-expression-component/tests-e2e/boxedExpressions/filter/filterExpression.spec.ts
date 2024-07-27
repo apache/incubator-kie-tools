@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import { test, expect } from "../../__fixtures__/base";
+import { expect, test } from "../../__fixtures__/base";
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Create Boxed Filter", () => {
   test("should rename a filter", async ({ page, stories }) => {
@@ -41,53 +42,70 @@ test.describe("Create Boxed Filter", () => {
     await expect(page.getByRole("columnheader", { name: "Expression Name (boolean)" })).toBeVisible();
   });
 
-  test("should correctly reset a nested filter", async ({ boxedExpressionEditor, page, stories }) => {
+  test("should correctly reset a nested filter", async ({ bee, stories }) => {
     await stories.openBoxedFilter("nested");
 
-    await boxedExpressionEditor.resetFilter(page.getByTestId("expression-row-0"));
+    await bee.expression.asContext().entry(0).expression.header.reset();
 
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-reset.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested-reset.png");
   });
 
-  test("should correctly create a nested filter", async ({ boxedExpressionEditor, page, stories }) => {
-    await stories.openBoxedFilter("base");
+  test("should correctly create a nested filter", async ({ bee }) => {
+    await bee.goto();
 
-    await boxedExpressionEditor.resetFilter();
-    await boxedExpressionEditor.selectBoxedContext();
+    await bee.selectExpressionMenu.selectContext();
+    const contextExpression = bee.expression.asContext();
 
     // Prepare empty Filter 'in' and 'match' cells
-    await boxedExpressionEditor.selectBoxedFilter(page.getByText("Select expression").first());
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
+    await contextExpression.entry(0).selectExpressionMenu.selectFilter();
+    await contextExpression.entry(0).expression.asFilter().in.selectExpressionMenu.selectLiteral();
+    await contextExpression.entry(0).expression.asFilter().match.selectExpressionMenu.selectLiteral();
+    await contextExpression.entry(0).expression.asFilter().in.expression.asLiteral().fill("collection in expression");
+    await contextExpression
+      .entry(0)
+      .expression.asFilter()
+      .match.expression.asLiteral()
+      .fill("collection match expression");
 
-    await boxedExpressionEditor.fillFilter({
-      collectionIn: ["collection in expression"],
-      collectionMatch: "collection match expression",
-    });
-
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested.png");
   });
 
-  test("should correctly create a filter using list boxed expression", async ({
-    boxedExpressionEditor,
-    page,
-    stories,
-  }) => {
+  test("should correctly create a filter using list boxed expression", async ({ bee, stories }) => {
     await stories.openBoxedFilter("base");
-    await boxedExpressionEditor.selectBoxedList(page.getByText("Select expression").first());
-    // 'in'
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
-    await page.getByText("1").first().click({ button: "right" });
-    await page.getByRole("menuitem").getByText("Insert below").click();
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
-    // 'match'
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByText("Select expression").first());
+    const filterExpression = bee.expression.asFilter();
+    await filterExpression.in.selectExpressionMenu.selectList();
+    await filterExpression.in.expression.asList().addEntryAtTop();
+    await filterExpression.in.expression.asList().row(0).selectExpressionMenu.selectLiteral();
+    await filterExpression.in.expression.asList().row(1).selectExpressionMenu.selectLiteral();
+    await filterExpression.in.expression.asList().row(0).expression.asLiteral().fill("Passenger One");
+    await filterExpression.in.expression.asList().row(1).expression.asLiteral().fill("Passenger Two");
+    await filterExpression.match.selectExpressionMenu.selectLiteral();
+    await filterExpression.match.expression.asLiteral().fill("item.Flight Number = Flight.Flight Number");
 
-    await boxedExpressionEditor.fillFilter({
-      collectionIn: ["Passenger One", "Passenger Two"],
-      collectionMatch: "item.Flight Number = Flight.Flight Number",
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested-boxed-list.png");
+  });
+
+  test("should have IDs after resetting 'in' and 'match' and setting it again", async ({ bee, jsonModel, stories }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/1182",
     });
 
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-boxed-list.png");
+    await stories.openBoxedFilter("base");
+
+    const filterExpression = bee.expression.asFilter();
+    await filterExpression.in.selectExpressionMenu.selectLiteral();
+    await filterExpression.match.selectExpressionMenu.selectLiteral();
+    await filterExpression.in.expression.asLiteral().fill("test");
+    await filterExpression.match.expression.asLiteral().fill("test");
+    await filterExpression.in.contextMenu.open();
+    await filterExpression.in.contextMenu.option("Reset").nth(0).click();
+    await filterExpression.match.contextMenu.open();
+    await filterExpression.match.contextMenu.option("Reset").nth(0).click();
+
+    expect((await jsonModel.getFilterExpression()).in).not.toBeUndefined();
+    expect((await jsonModel.getFilterExpression()).match).not.toBeUndefined();
+    expect((await jsonModel.getFilterExpression()).in["@_id"]).not.toBeUndefined();
+    expect((await jsonModel.getFilterExpression()).match["@_id"]).not.toBeUndefined();
   });
 });
