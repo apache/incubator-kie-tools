@@ -37,8 +37,6 @@ module.exports = (env) => [
       "envelope/todo-list-view": "./src/envelope/todo-list-view.ts",
     },
     output: {
-      filename: "[name].js",
-      path: path.resolve(__dirname, "dist"),
       publicPath: "/",
     },
     module: {

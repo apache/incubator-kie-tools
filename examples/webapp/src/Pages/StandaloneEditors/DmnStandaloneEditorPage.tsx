@@ -18,9 +18,9 @@
  */
 
 import * as React from "react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Page } from "@patternfly/react-core/dist/js/components/Page";
-import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import * as DmnEditor from "@kie-tools/kie-editors-standalone/dist/dmn";
 
 export function DmnStandaloneEditorPage() {
   const dmnEditorContainer = useRef<HTMLDivElement>(null);
@@ -30,61 +30,52 @@ export function DmnStandaloneEditorPage() {
   const download = useRef<HTMLButtonElement>(null);
   const downloadSvg = useRef<HTMLButtonElement>(null);
 
-  useCancelableEffect(
-    React.useCallback(({ canceled }) => {
-      import("@kie-tools/kie-editors-standalone/dist/dmn")
-        .then((dmnEditor) => {
-          if (canceled.get()) {
-            return;
-          }
-          const editor = dmnEditor.open({
-            container: dmnEditorContainer.current!,
-            initialContent: Promise.resolve(""),
-            readOnly: false,
-          });
+  useEffect(() => {
+    const editor = DmnEditor.open({
+      container: dmnEditorContainer.current!,
+      initialContent: Promise.resolve(""),
+      readOnly: false,
+    });
 
-          undo.current?.addEventListener("click", () => {
-            editor.undo();
-          });
+    undo.current?.addEventListener("click", () => {
+      editor.undo();
+    });
 
-          redo.current?.addEventListener("click", () => {
-            editor.redo();
-          });
+    redo.current?.addEventListener("click", () => {
+      editor.redo();
+    });
 
-          download.current?.addEventListener("click", () => {
-            editor.getContent().then((content) => {
-              const elem = window.document.createElement("a");
-              elem.href = "data:text/plain;charset=utf-8," + encodeURIComponent(content);
-              elem.download = "model.dmn";
-              document.body.appendChild(elem);
-              elem.click();
-              document.body.removeChild(elem);
-              editor.markAsSaved();
-            });
-          });
+    download.current?.addEventListener("click", () => {
+      editor.getContent().then((content) => {
+        const elem = window.document.createElement("a");
+        elem.href = "data:text/plain;charset=utf-8," + encodeURIComponent(content);
+        elem.download = "model.dmn";
+        document.body.appendChild(elem);
+        elem.click();
+        document.body.removeChild(elem);
+        editor.markAsSaved();
+      });
+    });
 
-          downloadSvg.current?.addEventListener("click", () => {
-            editor.getPreview().then((svgContent) => {
-              const elem = window.document.createElement("a");
-              elem.href = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgContent!);
-              elem.download = "model.svg";
-              document.body.appendChild(elem);
-              elem.click();
-              document.body.removeChild(elem);
-            });
-          });
+    downloadSvg.current?.addEventListener("click", () => {
+      editor.getPreview().then((svgContent) => {
+        const elem = window.document.createElement("a");
+        elem.href = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgContent!);
+        elem.download = "model.svg";
+        document.body.appendChild(elem);
+        elem.click();
+        document.body.removeChild(elem);
+      });
+    });
 
-          editor.subscribeToContentChanges((isDirty) => {
-            if (isDirty) {
-              unsavedChanges.current!.style.display = "";
-            } else {
-              unsavedChanges.current!.style.display = "none";
-            }
-          });
-        })
-        .catch((error: any) => console.error(error));
-    }, [])
-  );
+    editor.subscribeToContentChanges((isDirty) => {
+      if (isDirty) {
+        unsavedChanges.current!.style.display = "";
+      } else {
+        unsavedChanges.current!.style.display = "none";
+      }
+    });
+  }, []);
 
   return (
     <Page>

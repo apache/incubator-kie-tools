@@ -1,10 +1,7 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.esm.json",
+  "extends": "@kie-tools/tsconfig/tsconfig.json",
   "compilerOptions": {
     "declaration": false,
-    "declarationMap": false,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "jsx": "react-jsx"
+    "declarationMap": false
   }
 }

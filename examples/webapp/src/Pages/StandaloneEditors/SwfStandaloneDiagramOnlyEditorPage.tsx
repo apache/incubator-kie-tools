@@ -20,6 +20,7 @@
 import * as React from "react";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import * as SwfEditor from "@kie-tools/serverless-workflow-standalone-editor/dist/swf";
 import { ServerlessWorkflowEmptyState } from "./SwfEditorEmptyState";
 import { StandaloneEditorApi } from "@kie-tools/serverless-workflow-standalone-editor/dist/common/Editor";
 import { extname } from "path";
@@ -36,33 +37,30 @@ export const SwfStandaloneDiagramOnlyEditorPage = () => {
   const [editor, setEditor] = useState<StandaloneEditorApi>();
 
   const onSetContent = useCallback((normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string) => {
-    const match = /\.sw\.(json|yaml|yml)$/.exec(normalizedPosixPathRelativeToTheWorkspaceRoot.toLowerCase());
-    const extension = match ? match[1] : extname(normalizedPosixPathRelativeToTheWorkspaceRoot);
+    const match = /\.sw\.(json|yaml)$/.exec(normalizedPosixPathRelativeToTheWorkspaceRoot.toLowerCase());
+    const dotExtension = match ? match[0] : extname(normalizedPosixPathRelativeToTheWorkspaceRoot);
+    const extension = dotExtension.slice(1);
 
-    import("@kie-tools/serverless-workflow-standalone-editor/dist/swf").then((swfEditor) => {
-      const editorApi = swfEditor.open({
-        container: swfEditorContainer.current!,
-        initialContent: Promise.resolve(content),
-        readOnly: false,
-        languageType: extension as ServerlessWorkflowType,
-        swfPreviewOptions: { editorMode: "diagram", defaultWidth: "100%" },
-      });
-      setWorkflowType(extension as ServerlessWorkflowType);
-      setEditor(editorApi);
+    const editorApi = SwfEditor.open({
+      container: swfEditorContainer.current!,
+      initialContent: Promise.resolve(content),
+      readOnly: false,
+      languageType: extension as ServerlessWorkflowType,
+      swfPreviewOptions: { editorMode: "diagram", defaultWidth: "100%" },
     });
+    setWorkflowType(extension as ServerlessWorkflowType);
+    setEditor(editorApi);
   }, []);
 
   const onNewContent = useCallback((serverlessWorkflowType: ServerlessWorkflowType) => {
-    import("@kie-tools/serverless-workflow-standalone-editor/dist/swf").then((swfEditor) => {
-      const editorApi = swfEditor.open({
-        container: swfEditorContainer.current!,
-        initialContent: Promise.resolve(""),
-        readOnly: false,
-        languageType: serverlessWorkflowType,
-      });
-      setWorkflowType(serverlessWorkflowType as ServerlessWorkflowType);
-      setEditor(editorApi);
+    const editorApi = SwfEditor.open({
+      container: swfEditorContainer.current!,
+      initialContent: Promise.resolve(""),
+      readOnly: false,
+      languageType: serverlessWorkflowType,
     });
+    setWorkflowType(serverlessWorkflowType as ServerlessWorkflowType);
+    setEditor(editorApi);
   }, []);
 
   useEffect(() => {
@@ -93,7 +91,7 @@ export const SwfStandaloneDiagramOnlyEditorPage = () => {
         unsavedChanges.current!.style.display = "none";
       }
     });
-  }, [editor, workflowType]);
+  }, [editor]);
 
   return (
     <Page>
