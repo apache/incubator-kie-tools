@@ -23,6 +23,8 @@ This library provides standalone DMN and BPMN Editors (one all-in-one JavaScript
 
 A comprehensive API is also provided for setup and interaction with the Editor.
 
+For the updated DMN Editor, check the [`@kie-tools/dmn-editor-standalone`](../dmn-editor-standalone/) package.
+
 ### Installation
 
 - To add it to your `package.json` file:

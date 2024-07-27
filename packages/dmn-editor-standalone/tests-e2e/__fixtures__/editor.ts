@@ -1,4 +1,3 @@
-import { DmnEditorStandaloneApi } from "./../../src/DmnEditorStandaloneApi";
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -21,6 +20,7 @@ import { DmnEditorStandaloneApi } from "./../../src/DmnEditorStandaloneApi";
 import { Page, expect } from "@playwright/test";
 import type { open } from "../../src/index";
 import { ContentType } from "@kie-tools-core/workspace/dist/api";
+import { DmnEditorStandaloneApi } from "../../src/DmnEditorStandaloneApi";
 
 declare global {
   interface Window {
@@ -105,13 +105,11 @@ export class Editor {
 
   public async subscribeToContentChanges() {
     return this.page.evaluate(() => {
-      window.contentChangesCallback = (isDirty: boolean) => {
+      window.contentChangesCallback = window.currentEditor.subscribeToContentChanges((isDirty: boolean) => {
         window.editCounter += 1;
         document.getElementById("edit-counter")!.innerHTML = window.editCounter.toString();
         document.getElementById("is-dirty")!.innerHTML = isDirty.toString();
-      };
-
-      window.currentEditor.subscribeToContentChanges(window.contentChangesCallback);
+      });
     });
   }
 

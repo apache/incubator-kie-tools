@@ -27,22 +27,21 @@ A comprehensive API is also provided for setup and interaction with the Editor.
 
 - To add it to your `package.json` file:
 
-  - `npm install @kie-tools/kie-editors-standalone`
+  - `npm install @kie-tools/dmn-editor-standalone`
 
-- To import each Editor library:
+- To import the library:
 
-  - `import * as DmnEditor from "@kie-tools/kie-editors-standalone/dist/dmn"`
-
-  - `import * as BpmnEditor from "@kie-tools/kie-editors-standalone/dist/bpmn"`
+  - `import * as DmnEditor from "@kie-tools/dmn-editor-standalone/dist"`
 
 ### Usage
 
-The API is the same for both editors. Here is an example on how to open the DMN Editor:
+Here is an example on how to open the DMN Editor:
 
 ```
 const editor = DmnEditor.open({
   container: document.getElementById("dmn-editor-container"),
   initialContent: Promise.resolve(""),
+  initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot: "model.dmn",
   readOnly: false,
   resources: new Map([
     [

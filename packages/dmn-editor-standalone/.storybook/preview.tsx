@@ -31,13 +31,7 @@ const preview: Preview = {
     },
     options: {
       storySort: {
-        order: [
-          "Dev",
-          "Misc",
-          ["Overview", "*", ["Overview", "*", ["Overview", "*"]]],
-          "Use cases",
-          ["Overview", "*", ["Overview", "*", ["Overview", "*"]]],
-        ],
+        order: ["Dev", "EditorContainer"],
       },
     },
   },
