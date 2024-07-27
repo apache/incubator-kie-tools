@@ -34,7 +34,7 @@ import {
 import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/channel";
 import { Minimatch } from "minimatch";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { dirname, normalize } from "path";
+import { dirname, isAbsolute, normalize, relative } from "path";
 
 export type DmnEditorStandaloneResource = { contentType: ContentType; content: Promise<string> };
 
@@ -114,9 +114,16 @@ export class DmnEditorStandaloneChannelApiImpl implements KogitoEditorChannelApi
     const matcher = new Minimatch(request.pattern);
 
     // Match the generic glob pattern for DMN files, then filter out files that are not on the same parent path as the current file.
+    console.log(dirname(this.file.normalizedPosixPathRelativeToTheWorkspaceRoot));
     const matches = Array.from(this.resources.keys())
       .filter((path) => matcher.match(path))
-      .filter((path) => dirname(normalize(path)) == dirname(this.file.normalizedPosixPathRelativeToTheWorkspaceRoot));
+      .filter((path) => {
+        const initialContentDirname = dirname(this.file.normalizedPosixPathRelativeToTheWorkspaceRoot);
+        const resourceDirname = dirname(normalize(path));
+        const posixPathRelation = relative(initialContentDirname, resourceDirname);
+
+        return !posixPathRelation.startsWith("..") && !isAbsolute(posixPathRelation);
+      });
 
     return new ResourcesList(request.pattern, matches);
   }

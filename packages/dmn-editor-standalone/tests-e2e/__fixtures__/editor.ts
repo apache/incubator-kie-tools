@@ -1,3 +1,4 @@
+import { DmnEditorStandaloneApi } from "./../../src/DmnEditorStandaloneApi";
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,7 +20,7 @@
 
 import { Page, expect } from "@playwright/test";
 import type { open } from "../../src/index";
-import type { DmnEditorStandaloneApi } from "../../src/DmnEditorStandaloneApi";
+import { ContentType } from "@kie-tools-core/workspace/dist/api";
 
 declare global {
   interface Window {
@@ -36,20 +37,32 @@ export class Editor {
     public baseURL?: string
   ) {}
 
-  public async open() {
+  public async open(args?: {
+    resources?: Array<[string, { contentType: ContentType; content: string }]>;
+    initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot?: string;
+  }) {
     await this.page.goto("");
-    await this.page.evaluate(() => {
+    await this.page.evaluate((args) => {
       window.currentEditor = window.DmnEditor.open({
         container: document.getElementById("dmn-editor-container")!,
         initialContent: Promise.resolve(""),
-        initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot: "model.dmn",
+        initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot:
+          args?.initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot ?? "model.dmn",
+        resources: args?.resources
+          ? new Map(
+              args.resources.map(([key, value]) => [
+                key,
+                { contentType: value.contentType, content: Promise.resolve(value.content) },
+              ])
+            )
+          : undefined,
       });
 
       window.editCounter = 0;
 
       document.getElementById("edit-counter")!.innerHTML = "0";
       document.getElementById("is-dirty")!.innerHTML = "false";
-    });
+    }, args);
     this.subscribeToContentChanges();
     const dmnEditorIFrame = this.page.frameLocator("#dmn-editor-standalone");
     await expect(dmnEditorIFrame.getByText("This DMN's Diagram is empty")).toBeAttached();

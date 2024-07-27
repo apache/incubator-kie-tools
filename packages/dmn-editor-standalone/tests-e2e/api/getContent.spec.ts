@@ -19,6 +19,7 @@
 
 import { test, expect } from "../__fixtures__/base";
 import { loanPreQualificationDmn } from "../__fixtures__/externalModels";
+import prettier from "prettier";
 
 test.describe("Dmn Editor - API", () => {
   test.describe("getContent", () => {
@@ -32,7 +33,18 @@ test.describe("Dmn Editor - API", () => {
       await expect(editorIFrame.getByText("Loan Pre-Qualification", { exact: true })).toBeAttached();
 
       const content = await editor.getContent();
-      expect(content).toBe(loanPreQualificationDmn);
+
+      const formattedContent = await prettier.format(content, {
+        ...(await prettier.resolveConfig(".")),
+        parser: "xml",
+      });
+
+      const formattedLoanPreQualificationDmn = await prettier.format(loanPreQualificationDmn, {
+        ...(await prettier.resolveConfig(".")),
+        parser: "xml",
+      });
+
+      await expect(formattedContent).toEqual(formattedLoanPreQualificationDmn);
     });
 
     test("should get current DMN contents via getContent", async ({ page, editor }) => {

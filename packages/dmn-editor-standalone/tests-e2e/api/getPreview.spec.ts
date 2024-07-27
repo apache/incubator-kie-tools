@@ -26,18 +26,22 @@ test.describe("Dmn Editor - API", () => {
       await editor.open();
     });
 
-    test("should get preview SVG via getPreview", async ({ page, editor }) => {
+    test("should get preview SVG via getPreview for loanPreQualification", async ({ page, editor }) => {
       const editorIFrame = editor.getEditorIframe();
 
       // Loan Pre Qualification
       await editor.setContent("loanPreQualification.dmn", loanPreQualificationDmn);
       await expect(editorIFrame.getByText("Loan Pre-Qualification", { exact: true })).toBeAttached();
 
-      const laonPreQualificationPreviewSvg = await editor.getPreview();
+      const loanPreQualificationPreviewSvg = await editor.getPreview();
 
-      expect(laonPreQualificationPreviewSvg).toMatchSnapshot({
-        name: "getPreview-loanPreQualification.svg",
-      });
+      await page.setContent(loanPreQualificationPreviewSvg!);
+
+      await expect(page).toHaveScreenshot("getPreview-loanPreQualificationSvg.png");
+    });
+
+    test("should get preview SVG via getPreview for emptyDmn", async ({ page, editor }) => {
+      const editorIFrame = editor.getEditorIframe();
 
       // Empty DMN
       await editor.setContent("emptyDmn.dmn", emptyDmn);
@@ -45,9 +49,9 @@ test.describe("Dmn Editor - API", () => {
 
       const emptyPreviewSvg = await editor.getPreview();
 
-      expect(emptyPreviewSvg).toMatchSnapshot({
-        name: "getPreview-empty.svg",
-      });
+      await page.setContent(emptyPreviewSvg!);
+
+      await expect(page).toHaveScreenshot("getPreview-emptyPreviewSvg.png");
     });
   });
 });

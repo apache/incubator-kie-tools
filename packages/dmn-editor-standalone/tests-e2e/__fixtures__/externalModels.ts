@@ -25,3 +25,11 @@ export const emptyDrd = readFileSync(path.join(__dirname, "files/empty-drd.dmn")
 export const emptyDmn = readFileSync(path.join(__dirname, "files/empty.dmn"), "utf8");
 
 export const loanPreQualificationDmn = readFileSync(path.join(__dirname, "files/loan-pre-qualification.dmn"), "utf8");
+
+export const canDriveDmn = readFileSync(path.join(__dirname, "files/can-drive.dmn"), "utf8");
+
+export const findEmployeesDmn = readFileSync(path.join(__dirname, "files/find-employees.dmn"), "utf8");
+
+export const typesDmn = readFileSync(path.join(__dirname, "files/types.dmn"), "utf8");
+
+export const scorecardPmml = readFileSync(path.join(__dirname, "files/scorecard.pmml"), "utf8");
