@@ -19,10 +19,15 @@
 
 import { Component, Input } from "@angular/core";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
+import { PingPongComponent } from "../ping-pong/ping-pong.component";
+import { PingPongApiService } from "../ping-pong/ping-pong-api.service";
 
 @Component({
+  standalone: true,
   selector: "ping-pong-wc",
   template: `<app-ping-pong [containerType]="containerType" [envelopeId]="envelopeId"></app-ping-pong>`,
+  providers: [PingPongApiService],
+  imports: [PingPongComponent],
 })
 export class PingPongWcComponent {
   @Input("containertype") containerType: ContainerType;

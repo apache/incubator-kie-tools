@@ -26,9 +26,6 @@ import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedd
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { Sidebar } from "./Sidebar";
 
-/**
- * @constructor
- */
 export function BpmnPage() {
   /**
    * The reference of the Editor. It allows us to access/modify the Editor properties imperatively.
@@ -56,11 +53,8 @@ export function BpmnPage() {
       new EnvelopeMapping({
         type: "bpmn",
         filePathGlob: "**/*.bpmn?(2)",
-        resourcesPathPrefix: "https://apache.github.io/incubator-kie-kogito-online/editors/latest/bpmn",
-        envelopeContent: {
-          type: EnvelopeContentType.PATH,
-          path: "https://apache.github.io/incubator-kie-kogito-online/bpmn-envelope.html",
-        },
+        resourcesPathPrefix: "../bpmn-editor/bpmn/",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "envelope/bpmn-editor.html" },
       }),
     ]);
   }, []);
