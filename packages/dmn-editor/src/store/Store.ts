@@ -117,6 +117,11 @@ export interface State {
     draggingWaypoints: Array<string>;
     movingDividerLines: Array<string>;
     isEditingStyle: boolean;
+    viewport: {
+      x: number;
+      y: number;
+      zoom: number;
+    };
   };
 }
 
@@ -223,6 +228,11 @@ export const defaultStaticState = (): Omit<State, "dmn" | "dispatch" | "computed
     draggingWaypoints: [],
     movingDividerLines: [],
     isEditingStyle: false,
+    viewport: {
+      x: 100,
+      y: 100,
+      zoom: 1,
+    },
   },
 });
 

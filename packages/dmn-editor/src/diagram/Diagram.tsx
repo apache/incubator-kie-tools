@@ -20,13 +20,12 @@
 import * as RF from "reactflow";
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import {
   DC__Bounds,
   DC__Dimension,
   DMN15__tDecisionService,
   DMN15__tDefinitions,
-  DMNDI15__DMNDiagram,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -72,7 +71,6 @@ import { DiagramLhsPanel, SnapGrid, State } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { Unpacked } from "../tsExt/tsExt";
 import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
-import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 import { DiagramContainerContextProvider } from "./DiagramContainerContext";
 import { MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE } from "./DrgNodesPanel";
 import { MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE, Palette } from "./Palette";
@@ -161,6 +159,7 @@ const edgeTypes: Record<EdgeType, any> = {
 export type DiagramRef = {
   getReactFlowInstance: () => RF.ReactFlowInstance | undefined;
 };
+import { useOnViewportChange, Viewport } from "reactflow";
 
 export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject<HTMLElement> }>(
   ({ container }, ref) => {
@@ -177,6 +176,10 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     const [reactFlowInstance, setReactFlowInstance] = useState<
       RF.ReactFlowInstance<DmnDiagramNodeData, DmnDiagramEdgeData> | undefined
     >(undefined);
+
+    const viewportSettings = useMemo(() => {
+      return dmnEditorStoreApi.getState().diagram.viewport;
+    }, [dmnEditorStoreApi]);
 
     // Refs
     React.useImperativeHandle(
@@ -1296,7 +1299,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             edgeTypes={edgeTypes}
             snapToGrid={true}
             snapGrid={rfSnapGrid}
-            defaultViewport={DEFAULT_VIEWPORT}
+            defaultViewport={viewportSettings}
             fitView={false}
             fitViewOptions={FIT_VIEW_OPTIONS}
             attributionPosition={"bottom-right"}
@@ -1315,6 +1318,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             {!isFirefox && <RF.Background />}
             <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />
             <SetConnectionToReactFlowStore />
+            <ViewportWatcher />
           </RF.ReactFlow>
         </DiagramContainerContextProvider>
       </>
@@ -1608,6 +1612,22 @@ function DmnDiagramEmptyState({
       </div>
     </Bullseye>
   );
+}
+
+export function ViewportWatcher() {
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
+  useOnViewportChange({
+    onChange: (viewport: Viewport) => {
+      dmnEditorStoreApi.setState((state) => {
+        state.diagram.viewport = {
+          x: viewport.x,
+          y: viewport.y,
+          zoom: viewport.zoom,
+        };
+      });
+    },
+  });
+  return <></>;
 }
 
 export function SetConnectionToReactFlowStore(props: {}) {
