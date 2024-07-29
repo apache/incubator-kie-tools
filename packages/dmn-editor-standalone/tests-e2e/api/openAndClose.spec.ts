@@ -19,7 +19,7 @@
 
 import { test, expect } from "../__fixtures__/base";
 
-test.describe("Dmn Editor - API", () => {
+test.describe("DMN Editor - Standalone - API", () => {
   test.describe("Open editor", () => {
     test.beforeEach(async ({ editor }) => {
       await editor.open();

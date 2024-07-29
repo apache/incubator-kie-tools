@@ -80,7 +80,7 @@ function DevWebApp() {
     setEditCount((currentCount) => {
       if (currentCount > 0) {
         editorRef.current?.undo();
-        // -2 because undoing will generateg a contentChange notification.
+        // -2 because undoing will generate a contentChange notification.
         return currentCount - 2;
       }
       return currentCount;

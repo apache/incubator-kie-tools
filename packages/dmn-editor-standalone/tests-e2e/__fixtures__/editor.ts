@@ -22,6 +22,11 @@ import type { open } from "../../src/index";
 import { ContentType } from "@kie-tools-core/workspace/dist/api";
 import { DmnEditorStandaloneApi } from "../../src/DmnEditorStandaloneApi";
 
+export enum DefaultNodeName {
+  INPUT_DATA = "New Input Data",
+  DECISION = "New Decision",
+}
+
 declare global {
   interface Window {
     DmnEditor: { open: typeof open };

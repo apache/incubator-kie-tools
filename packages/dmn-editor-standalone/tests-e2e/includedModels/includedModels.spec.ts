@@ -27,7 +27,7 @@ import {
 } from "../__fixtures__/externalModels";
 import { ContentType } from "@kie-tools-core/workspace/dist/api";
 
-test.describe("Dmn Editor - API", () => {
+test.describe("DMN Editor - Standalone - Resources", () => {
   test.describe("includedModels/resources", () => {
     test("should list all resources", async ({ editor }) => {
       const resources: Array<[string, { contentType: ContentType; content: string }]> = [
@@ -48,13 +48,13 @@ test.describe("Dmn Editor - API", () => {
       await editorIFrame.getByText("Include model").click();
       await editorIFrame.getByPlaceholder("Select a model to include...").click();
 
-      const dropdownList = editorIFrame.locator(".pf-c-select.pf-m-expanded");
-
-      await expect(dropdownList.getByText("loan-pre-qualification.dmn")).toBeAttached();
-      await expect(dropdownList.getByText("can-drive.dmn")).toBeAttached();
-      await expect(dropdownList.getByText("find-employees.dmn")).toBeAttached();
-      await expect(dropdownList.getByText("types.dmn")).toBeAttached();
-      await expect(dropdownList.getByText("scorecard.pmml")).toBeAttached();
+      await expect(editorIFrame.getByText("DMN", { exact: true })).toBeAttached();
+      await expect(editorIFrame.getByText("loan-pre-qualification.dmn")).toBeAttached();
+      await expect(editorIFrame.getByText("can-drive.dmn")).toBeAttached();
+      await expect(editorIFrame.getByText("find-employees.dmn")).toBeAttached();
+      await expect(editorIFrame.getByText("types.dmn")).toBeAttached();
+      await expect(editorIFrame.getByText("PMML", { exact: true })).toBeAttached();
+      await expect(editorIFrame.getByText("scorecard.pmml")).toBeAttached();
     });
 
     test("should not list any models to be included", async ({ editor }) => {
@@ -97,20 +97,18 @@ test.describe("Dmn Editor - API", () => {
       await editorIFrame.getByText("Include model").click();
       await editorIFrame.getByPlaceholder("Select a model to include...").click();
 
-      const dropdownList = editorIFrame.locator(".pf-c-select.pf-m-expanded");
+      await expect(editorIFrame.getByText("DMN", { exact: true })).toBeAttached();
+      await expect(editorIFrame.getByText("loan-pre-qualification.dmn")).not.toBeAttached();
+      await expect(editorIFrame.getByText("can-drive.dmn")).toBeAttached();
+      await expect(editorIFrame.getByText("find-employees.dmn")).not.toBeAttached();
+      await expect(editorIFrame.getByText("types.dmn")).not.toBeAttached();
+      await expect(editorIFrame.getByText("PMML", { exact: true })).toBeAttached();
+      await expect(editorIFrame.getByText("scorecard.pmml")).toBeAttached();
 
-      await expect(dropdownList.getByText("loan-pre-qualification.dmn")).not.toBeAttached();
-      await expect(dropdownList.getByText("can-drive.dmn")).toBeAttached();
-      await expect(dropdownList.getByText("find-employees.dmn")).not.toBeAttached();
-      await expect(dropdownList.getByText("types.dmn")).not.toBeAttached();
-      await expect(dropdownList.getByText("scorecard.pmml")).toBeAttached();
-
-      await expect(dropdownList.locator(".pf-c-select__menu-item span")).toHaveText([
-        "can-drive.dmn",
-        "path1",
-        "scorecard.pmml",
-        "path1/pmml",
-      ]);
+      await expect(editorIFrame.getByText("path1", { exact: true })).toBeAttached();
+      await expect(editorIFrame.getByText("path2", { exact: true })).not.toBeAttached();
+      await expect(editorIFrame.getByText("path3/types", { exact: true })).not.toBeAttached();
+      await expect(editorIFrame.getByText("path1/pmml", { exact: true })).toBeAttached();
     });
   });
 });

@@ -18,16 +18,17 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
+import { DefaultNodeName } from "../__fixtures__/editor";
 import { loanPreQualificationDmn } from "../__fixtures__/externalModels";
 import prettier from "prettier";
 
-test.describe("Dmn Editor - API", () => {
+test.describe("DMN Editor - Standalone - API", () => {
   test.describe("getContent", () => {
     test.beforeEach(async ({ editor }) => {
       await editor.open();
     });
 
-    test("should get DMN contents of inputted DMN file", async ({ page, editor }) => {
+    test("should get DMN contents of input DMN file", async ({ page, editor }) => {
       const editorIFrame = editor.getEditorIframe();
       await editor.setContent("loanPreQualification.dmn", loanPreQualificationDmn);
       await expect(editorIFrame.getByText("Loan Pre-Qualification", { exact: true })).toBeAttached();
@@ -58,14 +59,16 @@ test.describe("Dmn Editor - API", () => {
         await inputSelector.dragTo(editorDiagram, { targetPosition: { x: 100 + i * 200, y: 100 } });
         await editor.resetFocus();
       }
-      await expect((await editorIFrame.locator(".react-flow__node-node_inputData").all()).length).toBe(4);
+      await expect(
+        (await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.INPUT_DATA}"]`).all()).length
+      ).toBe(4);
 
       // Add 2 Decision nodes
       for (let i = 0; i < 2; i++) {
         await decisionSelector.dragTo(editorDiagram, { targetPosition: { x: 100 + i * 200, y: 300 } });
         await editor.resetFocus();
       }
-      await expect(await editorIFrame.locator(".react-flow__node-node_decision")).toHaveCount(2);
+      await expect(await editorIFrame.locator(`div[data-nodelabel='${DefaultNodeName.DECISION}']`)).toHaveCount(2);
 
       await expect(async () => {
         const dmnContentWith4Inputs2Decisions = await editor.getContent();
@@ -77,11 +80,13 @@ test.describe("Dmn Editor - API", () => {
       });
 
       // Delete 1 Input Data node
-      await editorIFrame.locator(".react-flow__node-node_inputData").first().click();
+      await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.INPUT_DATA}"]`).first().click();
       await page.keyboard.press("Delete");
       await editor.resetFocus();
 
-      await expect((await editorIFrame.locator(".react-flow__node-node_inputData").all()).length).toBe(3);
+      await expect(
+        (await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.INPUT_DATA}"]`).all()).length
+      ).toBe(3);
 
       await expect(async () => {
         const dmnContentWith4Inputs2Decisions = await editor.getContent();

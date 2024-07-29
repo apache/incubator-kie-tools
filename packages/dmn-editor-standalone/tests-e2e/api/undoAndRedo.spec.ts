@@ -18,8 +18,9 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
+import { DefaultNodeName } from "../__fixtures__/editor";
 
-test.describe("Dmn Editor - API", () => {
+test.describe("DMN Editor - Standalone - API", () => {
   test.describe("undo and redo", () => {
     test.beforeEach(async ({ editor }) => {
       await editor.open();
@@ -36,7 +37,7 @@ test.describe("Dmn Editor - API", () => {
         await editor.resetFocus();
       }
 
-      await expect(await editorIFrame.locator(".react-flow__node-node_decision")).toHaveCount(4);
+      await expect(await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.DECISION}"]`)).toHaveCount(4);
 
       // The checks for the edit counter are here to make sure that we wait for the debounce time.
       // Each action on the editor (such as adding a node) has a debounce time to count as an edit,
@@ -52,13 +53,13 @@ test.describe("Dmn Editor - API", () => {
 
       await expect(await page.locator("#edit-counter")).toHaveText("5");
 
-      await expect(await editorIFrame.locator(".react-flow__node-node_decision")).toHaveCount(3);
+      await expect(await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.DECISION}"]`)).toHaveCount(3);
 
       await editor.undo();
       await editor.undo();
       await editor.undo();
 
-      await expect(await editorIFrame.locator(".react-flow__node-node_decision")).toHaveCount(0);
+      await expect(await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.DECISION}"]`)).toHaveCount(0);
       await expect(await page.locator("#edit-counter")).toHaveText("8");
 
       // Should show initial modal for an empty DMN
@@ -67,7 +68,7 @@ test.describe("Dmn Editor - API", () => {
       await editor.redo();
       await editor.redo();
 
-      await expect(await editorIFrame.locator(".react-flow__node-node_decision")).toHaveCount(2);
+      await expect(await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.DECISION}"]`)).toHaveCount(2);
       await expect(await page.locator("#edit-counter")).toHaveText("10");
     });
   });

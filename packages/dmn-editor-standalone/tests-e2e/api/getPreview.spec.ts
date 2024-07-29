@@ -20,7 +20,7 @@
 import { test, expect } from "../__fixtures__/base";
 import { emptyDmn, loanPreQualificationDmn } from "../__fixtures__/externalModels";
 
-test.describe("Dmn Editor - API", () => {
+test.describe("DMN Editor - Standalone - API", () => {
   test.describe("getPreview", () => {
     test.beforeEach(async ({ editor }) => {
       await editor.open();

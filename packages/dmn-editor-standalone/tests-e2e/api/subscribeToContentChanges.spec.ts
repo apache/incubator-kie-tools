@@ -18,8 +18,9 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
+import { DefaultNodeName } from "../__fixtures__/editor";
 
-test.describe("Dmn Editor - API", () => {
+test.describe("DMN Editor - Standalone - API", () => {
   test.describe("subscribeToContentChanges and unsubscribeToContentChanges", () => {
     test.beforeEach(async ({ editor }) => {
       await editor.open();
@@ -34,7 +35,9 @@ test.describe("Dmn Editor - API", () => {
       for (let i = 0; i < 4; i++) {
         await inputSelector.dragTo(editorDiagram, { targetPosition: { x: 100 + i * 200, y: 100 } });
         await editor.resetFocus();
-        await expect((await editorIFrame.locator(".react-flow__node-node_inputData").all()).length).toBe(i + 1);
+        await expect(
+          (await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.INPUT_DATA}"]`).all()).length
+        ).toBe(i + 1);
         await expect(await page.locator("#edit-counter")).toHaveText((i + 1).toString());
       }
     });
@@ -49,7 +52,9 @@ test.describe("Dmn Editor - API", () => {
         await inputSelector.dragTo(editorDiagram, { targetPosition: { x: 100 + i * 200, y: 100 } });
         await editor.resetFocus();
       }
-      await expect((await editorIFrame.locator(".react-flow__node-node_inputData").all()).length).toBe(4);
+      await expect(
+        (await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.INPUT_DATA}"]`).all()).length
+      ).toBe(4);
 
       await expect(await page.locator("#edit-counter")).toHaveText("4");
 
@@ -60,7 +65,9 @@ test.describe("Dmn Editor - API", () => {
         await inputSelector.dragTo(editorDiagram, { targetPosition: { x: 100 + i * 200, y: 300 } });
         await editor.resetFocus();
       }
-      await expect((await editorIFrame.locator(".react-flow__node-node_inputData").all()).length).toBe(6);
+      await expect(
+        (await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.INPUT_DATA}"]`).all()).length
+      ).toBe(6);
 
       await expect(await page.locator("#edit-counter")).toHaveText("4");
     });

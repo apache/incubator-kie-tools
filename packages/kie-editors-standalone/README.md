@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## BPMN and Legacy DMN Standalone Editors
+## BPMN and DMN Standalone Editors (classic)
 
 ### Description
 
@@ -23,7 +23,7 @@ This library provides standalone DMN and BPMN Editors (one all-in-one JavaScript
 
 A comprehensive API is also provided for setup and interaction with the Editor.
 
-For the updated DMN Editor, check the [`@kie-tools/dmn-editor-standalone`](../dmn-editor-standalone/) package.
+For the new DMN Editor, check the [`@kie-tools/dmn-editor-standalone`](../dmn-editor-standalone/) package.
 
 ### Installation
 
