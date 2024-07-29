@@ -15,29 +15,18 @@
  */
 
 import { SemanticTokensProvider } from "../src/semanticTokensProvider";
-import {
-  FeelSyntacticSymbolNature,
-  FeelVariable,
-  FeelVariables,
-  FeelVariablesParser,
-} from "@kie-tools/dmn-feel-antlr4-parser";
+import { FeelVariables, DmnDefinitions } from "@kie-tools/dmn-feel-antlr4-parser";
 
 import * as Monaco from "@kie-tools-core/monaco-editor";
 
 describe("Semantic Tokens Provider", () => {
-  const tokensFoundByParser: FeelVariable[] = [];
-  const mockedParser = FeelVariablesParser as jest.Mocked<typeof FeelVariablesParser>;
-  jest
-    .spyOn(mockedParser.prototype, "parse")
-    .mockReturnValue({ availableSymbols: [], feelVariables: tokensFoundByParser });
-
-  const mockedFeelVariables: jest.Mocked<typeof FeelVariables> = FeelVariables as jest.Mocked<typeof FeelVariables>;
-  jest.spyOn(mockedFeelVariables.prototype, "parser", "get").mockReturnValue(mockedParser.prototype);
-
   const cancellationTokenMock = {
     isCancellationRequested: false,
     onCancellationRequested: jest.fn().mockImplementation(),
   };
+
+  const knownVariable =
+    "This is a variable with a very long name to reproduce the issue thousand one hundred and seventy-eight";
 
   /**
    * The 'parsedTokens' are the tokens that parser should found in the provided 'expression'.
@@ -52,15 +41,14 @@ describe("Semantic Tokens Provider", () => {
    */
   test.each([
     {
-      expression: 'this is a very long expression + "bar"',
-      parsedTokens: [new FeelVariable(0, 30, 0, 0, FeelSyntacticSymbolNature.GlobalVariable, "")],
-      expected: [[0, 0, 30, 5, 0]],
+      expression:
+        'This is a variable with a very long name to reproduce the issue thousand one hundred and seventy-eight + "bar"',
+      expected: [[0, 0, 102, 5, 0]],
     },
     {
       expression: `This is a variable with a very long 
 name to reproduce the issue thousand 
 one hundred and seventy-eight + "bar"`,
-      parsedTokens: [new FeelVariable(0, 104, 0, 2, FeelSyntacticSymbolNature.GlobalVariable, "")],
       expected: [
         [0, 0, 36, 5, 0],
         [1, 0, 37, 5, 0],
@@ -73,10 +61,6 @@ This is a variable with a very
 long name to
  reproduce the issue thousand 
  one hundred and seventy-eight + "bar" + "NICE" + This is a variable with a very long name to reproduce the issue thousand one hundred and seventy-eight`,
-      parsedTokens: [
-        new FeelVariable(12, 106, 1, 4, FeelSyntacticSymbolNature.GlobalVariable, ""),
-        new FeelVariable(138, 102, 4, 4, FeelSyntacticSymbolNature.GlobalVariable, ""),
-      ],
       expected: [
         [1, 0, 31, 5, 0],
         [1, 0, 12, 5, 0],
@@ -93,7 +77,6 @@ thousand
 one hundred 
 and 
 seventy-eight + "bar`,
-      parsedTokens: [new FeelVariable(0, 108, 0, 6, FeelSyntacticSymbolNature.GlobalVariable, "")],
       expected: [
         [0, 0, 44, 5, 0],
         [1, 0, 10, 5, 0],
@@ -107,7 +90,6 @@ seventy-eight + "bar`,
     {
       expression: `"My " + This is a variable with a                         very long name to             reproduce
  the issue             thousand             one hundred               and                  seventy-eight + "bar"`,
-      parsedTokens: [new FeelVariable(8, 194, 0, 1, FeelSyntacticSymbolNature.GlobalVariable, "")],
       expected: [
         [0, 8, 89, 5, 0],
         [1, 0, 104, 5, 0],
@@ -116,7 +98,6 @@ seventy-eight + "bar`,
     {
       expression: `This is a variable with a very long name to
 reproduce the issue thousand one hundred and seventy-eight + "bar"`,
-      parsedTokens: [new FeelVariable(0, 102, 0, 1, FeelSyntacticSymbolNature.GlobalVariable, "")],
       expected: [
         [0, 0, 43, 5, 0],
         [1, 0, 58, 5, 0],
@@ -125,24 +106,22 @@ reproduce the issue thousand one hundred and seventy-eight + "bar"`,
     {
       expression: `VeryLongVariableWithoutSpaces
 ThatShouldFailWhenBreakLine`,
-      parsedTokens: [
-        new FeelVariable(0, 57, 0, 1, FeelSyntacticSymbolNature.Unknown, "this is a very long expression"),
-      ],
       expected: [
         [0, 0, 29, 7, 0],
         [1, 0, 27, 7, 0],
       ],
     },
-  ])("multiline variables", async ({ expression, parsedTokens, expected }) => {
-    tokensFoundByParser.splice(0, tokensFoundByParser.length);
-    tokensFoundByParser.push(...parsedTokens);
-
+  ])("multiline variables", async ({ expression, expected }) => {
     const modelMock = {
       getValue: jest.fn().mockReturnValue(expression),
       getLinesContent: jest.fn().mockReturnValue(expression.split("\n")),
     };
 
-    const semanticTokensProvider = new SemanticTokensProvider(mockedFeelVariables.prototype, "someId", () => {});
+    const id = "expressionId";
+    const dmnDefinitions = getDmnModel({ knownVariable: knownVariable, expressionId: id, expression: expression });
+
+    const feelVariables = new FeelVariables(dmnDefinitions, new Map());
+    const semanticTokensProvider = new SemanticTokensProvider(feelVariables, id, () => {});
 
     const semanticMonacoTokens = await semanticTokensProvider.provideDocumentSemanticTokens(
       modelMock as unknown as Monaco.editor.ITextModel,
@@ -157,3 +136,57 @@ ThatShouldFailWhenBreakLine`,
     }
   });
 });
+
+function getDmnModel({
+  knownVariable,
+  expressionId,
+  expression,
+}: {
+  knownVariable: string;
+  expressionId: string;
+  expression: string;
+}) {
+  const dmnDefinitions: DmnDefinitions = {
+    "@_name": "DMN_3DB2E0BB-1A3A-4F52-A1F3-A0A5EBCB2C4E",
+    "@_namespace": "dmn",
+    drgElement: [
+      {
+        "@_id": "_5532AD11-7084-4A64-8838-239FBCF9BAF6",
+        __$$element: "decision",
+        "@_name": "Some Decision",
+        expression: {
+          "@_id": "_E15A1DB2-4621-45ED-825C-EBB8669095B2",
+          __$$element: "context",
+          contextEntry: [
+            {
+              "@_id": "_DD2E6BE8-B2AF-452C-A980-8937527FC3F2",
+              variable: {
+                "@_id": "_401F4E2D-442A-4A29-B6B9-906A121C6FC0",
+                "@_name": knownVariable,
+              },
+              expression: {
+                __$$element: "literalExpression",
+                "@_id": "_785F4412-9BD3-4D5A-9A39-E113780390D7",
+                text: { __$$text: "foo" },
+              },
+            },
+            {
+              "@_id": "_4AD499F5-BB34-4BD8-9B9D-DDA3D031AD97",
+              variable: {
+                "@_id": "_4C262520-1AD4-495F-A1BB-9BEB7BDD3841",
+                "@_name": "Test var",
+              },
+              expression: {
+                __$$element: "literalExpression",
+                "@_id": expressionId,
+                text: { __$$text: expression },
+              },
+            },
+          ],
+        },
+      },
+    ],
+  };
+
+  return dmnDefinitions;
+}
