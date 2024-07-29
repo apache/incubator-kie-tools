@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "build:dev": "rimraf dist && webpack --config webpack.envelope-config.js --env dev && webpack --env dev",
-    "build:prod": "pnpm lint && rimraf dist && webpack --config webpack.envelope-config.js --env prod && webpack --env prod",
+    "build:prod": "pnpm lint && rimraf dist && webpack --config webpack.envelope-config.js --env prod && webpack --env prod && pnpm test-e2e",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "run-script-os",
     "start:linux:darwin": "cross-env STORYBOOK_PORT=$(build-env dmnEditorStandalone.storybook.port) pnpm kie-tools--storybook --storybookArgs=\"dev --no-open\"",
