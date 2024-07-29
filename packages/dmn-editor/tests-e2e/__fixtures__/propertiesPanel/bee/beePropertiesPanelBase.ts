@@ -17,19 +17,19 @@
  * under the License.
  */
 
-import React from "react";
+import { Page } from "@playwright/test";
+import { Diagram } from "../../diagram";
+import { PropertiesPanelBase } from "../propertiesPanelBase";
 
-export interface ConstraintProps {
-  id: string;
-  placeholder?: string;
-  value: string;
-  onChange: (newValue: string) => void;
-  onBlur?: () => void;
-  isDisabled?: boolean;
-  autoFocus?: boolean;
-  focusOwner?: string;
-  setFocusOwner?: (id: string) => void;
-  style?: React.CSSProperties;
-  isValid: boolean;
-  onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => void;
+export class BeePropertiesPanelBase extends PropertiesPanelBase {
+  constructor(
+    public diagram: Diagram,
+    public page: Page
+  ) {
+    super(diagram, page);
+  }
+
+  public panel() {
+    return this.page.getByTestId("kie-tools--dmn-editor--bee-properties-panel-container");
+  }
 }

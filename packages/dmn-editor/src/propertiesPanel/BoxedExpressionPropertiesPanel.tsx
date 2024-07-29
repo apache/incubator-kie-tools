@@ -103,6 +103,7 @@ export function BoxedExpressionPropertiesPanel() {
     <>
       {node && (
         <DrawerPanelContent
+          data-testid={"kie-tools--dmn-editor--bee-properties-panel-container"}
           isResizable={true}
           minSize={"300px"}
           defaultSize={"500px"}

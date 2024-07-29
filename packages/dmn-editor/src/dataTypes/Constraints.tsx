@@ -57,7 +57,7 @@ export type TypeHelper = {
   parse: (value: string) => any;
   transform: (value: string) => string;
   recover: (value?: string) => string | undefined;
-  component: (props: any) => React.ReactNode | undefined;
+  component: (props: ConstraintProps) => React.ReactNode | undefined;
 };
 
 export interface ConstraintComponentProps {
