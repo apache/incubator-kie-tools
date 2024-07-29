@@ -8,12 +8,13 @@
   "main": "dist/index.js",
   "scripts": {
     "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.json",
-    "build:prod": "rimraf dist && pnpm copy:css && pnpm lint && tsc -p tsconfig.json",
+    "build:prod": "rimraf dist && pnpm copy:css && pnpm lint && tsc -p tsconfig.json && pnpm test",
     "build:showcase": "rimraf ./dist-dev && webpack -c ./showcase/webpack.config.js --env prod",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
     "deploy": "gh-pages -d dist-dev",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
-    "start": "webpack serve -c ./showcase/webpack.config.js --host 0.0.0.0 --env dev"
+    "start": "webpack serve -c ./showcase/webpack.config.js --host 0.0.0.0 --env dev",
+    "test": "rimraf dist-tests && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
     "@kie-tools-core/i18n": "workspace:*",
