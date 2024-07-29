@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 
 export enum AddRowPosition {
   ABOVE,
@@ -44,19 +44,27 @@ export class Table {
       : await this.page.getByRole("menuitem", { name: "Insert Above" }).click();
   }
 
-  public async addPropertyColumn(args: { targetCellName: string; position: AddColumnPosition; nth: number }) {
-    await this.page.getByRole("columnheader", { name: args.targetCellName }).nth(args.nth).click({ button: "right" });
+  public async addPropertyColumn(args: { targetCellName: string; position: AddColumnPosition; columnNumber: number }) {
+    await this.page
+      .getByRole("columnheader", { name: args.targetCellName })
+      .nth(args.columnNumber)
+      .click({ button: "right" });
     args.position === AddColumnPosition.LEFT
       ? await this.page.getByRole("menuitem", { name: "Insert Field Left" }).click()
       : await this.page.getByRole("menuitem", { name: "Insert Field Right" }).click();
   }
 
-  public async addInstanceColumn(args: { targetCellName: string; position: AddColumnPosition }) {
-    await this.page.getByRole("columnheader", { name: args.targetCellName }).click({ button: "right" });
+  public async addInstanceColumn(args: { targetCellName: string; position: AddColumnPosition; columnNumber?: number }) {
+    await this.page
+      .getByRole("columnheader", { name: args.targetCellName })
+      .nth(args.columnNumber ?? 0)
+      .click({ button: "right" });
+
     args.position === AddColumnPosition.LEFT
       ? await this.page.getByRole("menuitem", { name: "Insert Instance Left" }).click()
       : await this.page.getByRole("menuitem", { name: "Insert Instance Right" }).click();
   }
+
   public async selectCell(args: { rowNumber: string; columnNumber: number }) {
     await this.page
       .getByRole("row", { name: args.rowNumber })
@@ -64,13 +72,26 @@ export class Table {
       .nth(args.columnNumber)
       .click();
   }
-  public getColumnHeader(args: { name: string }) {
-    return this.page.getByRole("columnheader", { name: args.name });
+
+  public async selectColumnHeader(args: { name: string; columnNumber?: number }) {
+    await this.page
+      .getByRole("columnheader", { name: args.name })
+      .nth(args.columnNumber ?? 0)
+      .click();
   }
 
   public getCell(args: { rowNumber: string; columnNumber: number }) {
     return this.page.getByRole("row", { name: args.rowNumber }).nth(args.columnNumber);
   }
+
+  public getNumberedCell(args: { name: string }) {
+    return this.page.getByRole("cell", { name: args.name });
+  }
+
+  public getColumnHeader(args: { name: string; columnNumber?: number }) {
+    return this.page.getByRole("columnheader", { name: args.name }).nth(args.columnNumber ?? 0);
+  }
+
   public async deleteCellContent(args: { rowNumber: string; columnNumber: number }) {
     await this.page
       .getByRole("row", { name: args.rowNumber })
