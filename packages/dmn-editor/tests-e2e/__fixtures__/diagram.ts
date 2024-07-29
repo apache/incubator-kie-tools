@@ -51,4 +51,16 @@ export class Diagram {
     await this.page.getByLabel("Tweak the shape of the input data node").getByText("Alternative").click();
     await this.get().getByTitle("Select or edit DRD").click();
   }
+
+  public async zoomIn(clicks: { clicks: number }) {
+    await this.get().getByTestId("rf__controls").getByTitle("zoom in").click({ clickCount: clicks.clicks });
+  }
+
+  public async zoomOut(clicks: { clicks: number }) {
+    await this.get().getByTestId("rf__controls").getByLabel("zoom out").click({ clickCount: clicks.clicks });
+  }
+
+  public async fitView() {
+    await this.get().getByTestId("rf__controls").getByLabel("fit view").click();
+  }
 }
