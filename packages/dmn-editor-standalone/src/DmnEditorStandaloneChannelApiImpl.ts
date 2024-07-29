@@ -114,7 +114,6 @@ export class DmnEditorStandaloneChannelApiImpl implements KogitoEditorChannelApi
     const matcher = new Minimatch(request.pattern);
 
     // Match the generic glob pattern for DMN files, then filter out files that are not on the same parent path as the current file.
-    console.log(dirname(this.file.normalizedPosixPathRelativeToTheWorkspaceRoot));
     const matches = Array.from(this.resources.keys())
       .filter((path) => matcher.match(path))
       .filter((path) => {

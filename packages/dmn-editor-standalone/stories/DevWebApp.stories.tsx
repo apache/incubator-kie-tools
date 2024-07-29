@@ -27,6 +27,7 @@ import { DmnEditorStandaloneApi } from "../dist/DmnEditorStandaloneApi";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex/Flex";
 import { FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex/FlexItem";
 import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { ContentType } from "@kie-tools-core/workspace/dist/api";
 
 const droppingFileStyle = {
   position: "absolute",
@@ -47,7 +48,15 @@ const droppingFileStyle = {
   zIndex: 999,
 } as React.CSSProperties;
 
-function DevWebApp() {
+export type DevWebAppProps = {
+  initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot: string;
+  initialContent: string;
+  readOnly: boolean;
+  resources: Array<[string, { contentType: ContentType; content: string }]>;
+  origin: string;
+};
+
+function DevWebApp(props: DevWebAppProps) {
   const [editCount, setEditCount] = useState(0);
   const editorRef = useRef<DmnEditorStandaloneApi>(null);
   const editorContainerRef = useRef<HTMLDivElement>(null);
@@ -57,24 +66,38 @@ function DevWebApp() {
   useEffect(() => {
     const editor = DmnEditor.open({
       container: editorContainerRef.current!,
-      initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot: "path1/subpath/newModel1.dmn",
-      initialContent: Promise.resolve(""),
-      readOnly: false,
-      resources: new Map(),
-      origin: "*",
+      initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot:
+        props.initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
+      initialContent: Promise.resolve(props.initialContent),
+      readOnly: props.readOnly,
+      resources: props.resources
+        ? new Map(
+            props.resources.map(([key, value]) => [
+              key,
+              { contentType: value.contentType, content: Promise.resolve(value.content) },
+            ])
+          )
+        : undefined,
+      origin: props.origin ?? "*",
     });
 
     editor.subscribeToContentChanges(() => setEditCount((currentCount) => currentCount + 1));
 
     (editorRef as any).current = editor;
 
+    console.info(
+      "Access the 'editor' variable by right clicking the following object and selecting 'Store as temp object'. With this you will be able to interact with the editor API."
+    );
+    console.info(
+      "Remember to select the 'storybook-preview-iframe' in the context selector above, to left of the filter input."
+    );
     console.log(editor);
 
     return () => {
       editor.close();
       setEditCount(0);
     };
-  }, []);
+  }, [props]);
 
   const onUndo = useCallback(() => {
     setEditCount((currentCount) => {
@@ -226,6 +249,12 @@ type Story = StoryObj<typeof DevWebApp>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const WebApp: Story = {
-  render: (args) => DevWebApp(),
-  args: {},
+  render: (args) => DevWebApp(args),
+  args: {
+    initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot: "path1/subpath/newModel1.dmn",
+    initialContent: "",
+    readOnly: false,
+    resources: [],
+    origin: "*",
+  },
 };
