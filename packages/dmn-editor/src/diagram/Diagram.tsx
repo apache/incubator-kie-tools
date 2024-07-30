@@ -177,9 +177,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
       RF.ReactFlowInstance<DmnDiagramNodeData, DmnDiagramEdgeData> | undefined
     >(undefined);
 
-    const viewportSettings = useMemo(() => {
-      return dmnEditorStoreApi.getState().diagram.viewport;
-    }, [dmnEditorStoreApi]);
+    const viewport = useDmnEditorStore((s) => s.diagram.viewport);
 
     // Refs
     React.useImperativeHandle(
