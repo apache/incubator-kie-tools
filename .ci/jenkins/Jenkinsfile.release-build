@@ -418,69 +418,6 @@ pipeline {
                     }
                 }
 
-                stage('Kogito SWF Builder Image') {
-                    when {
-                        expression { env.KOGITO_SWF_BUILDER == 'true' }
-                    }
-                    steps {
-                        script {
-                            env.KOGITO_SWF_BUILDER_JOB_RESULT = build(
-                                wait: true,
-                                job: 'KIE/kie-tools/kie-tools-release-jobs/sonataflow-builder',
-                                parameters: [
-                                    booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                                    string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-                                    booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
-                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
-                                ]
-                            ).result
-                        }
-                    }
-                }
-
-                stage('Kogito SWF Devmode Image') {
-                    when {
-                        expression { env.KOGITO_SWF_DEVMODE == 'true' }
-                    }
-                    steps {
-                        script {
-                            env.KOGITO_SWF_DEVMODE_JOB_RESULT = build(
-                                wait: true,
-                                job: 'KIE/kie-tools/kie-tools-release-jobs/sonataflow-devmode',
-                                parameters: [
-                                    booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                                    string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-                                    booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
-                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
-                                ]
-                            ).result
-                        }
-                    }
-                }
-
-                stage('Kogito Serverless Operator Image') {
-                    when {
-                        expression { env.KOGITO_SERVERLESS_OPERATOR == 'true' }
-                    }
-                    steps {
-                        script {
-                            env.KOGITO_SERVERLESS_OPERATOR_JOB_RESULT = build(
-                                wait: true,
-                                job: 'KIE/kie-tools/kie-tools-release-jobs/sonataflow-operator',
-                                parameters: [
-                                    booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                                    string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-                                    booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
-                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
-                                ]
-                            ).result
-                        }
-                    }
-                }
-
                 stage('JBPM Quarkus Dev UI') {
                     when {
                         expression { env.JBPM_QUARKUS_DEVUI == 'true' }

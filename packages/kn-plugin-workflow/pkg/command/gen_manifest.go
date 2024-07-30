@@ -25,9 +25,9 @@ import (
 	"path/filepath"
 	"strings"
 
+	apiMetadata "github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
-	apiMetadata "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )
@@ -140,7 +140,7 @@ func runGenManifestCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, e
 
 	if cmd.Flags().Changed("profile") && len(cfg.Profile) == 0 {
 		profile, _ := cmd.Flags().GetString("profile")
-		if err := isValidProfile(profile); err != nil{
+		if err := isValidProfile(profile); err != nil {
 			return cfg, err
 		}
 		cfg.Profile = profile

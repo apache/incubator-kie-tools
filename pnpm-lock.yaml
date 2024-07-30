@@ -5731,16 +5731,14 @@ importers:
         version: 1.1.2
 
   packages/kn-plugin-workflow:
+    dependencies:
+      '@kie-tools/sonataflow-quarkus-devui':
+        specifier: workspace:*
+        version: link:../sonataflow-quarkus-devui
     devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
-      '@kie-tools/sonataflow-devmode-image':
-        specifier: workspace:*
-        version: link:../sonataflow-devmode-image
-      '@kie-tools/sonataflow-operator':
-        specifier: workspace:*
-        version: link:../sonataflow-operator
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -9062,9 +9060,6 @@ importers:
       '@kie-tools/serverless-logic-web-tools-swf-builder-image-env':
         specifier: workspace:*
         version: link:../serverless-logic-web-tools-swf-builder-image-env
-      '@kie-tools/sonataflow-builder-image':
-        specifier: workspace:*
-        version: link:../sonataflow-builder-image
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -10276,30 +10271,6 @@ importers:
         specifier: ^5.9.0
         version: 5.9.0
 
-  packages/sonataflow-builder-image:
-    devDependencies:
-      '@kie-tools/python-venv':
-        specifier: workspace:*
-        version: link:../python-venv
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../root-env
-      '@kie-tools/sonataflow-image-common':
-        specifier: workspace:*
-        version: link:../sonataflow-image-common
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
-      replace-in-file:
-        specifier: ^7.1.0
-        version: 7.1.0
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6
-
   packages/sonataflow-deployment-webapp:
     dependencies:
       '@apidevtools/swagger-parser':
@@ -10477,66 +10448,6 @@ importers:
       webpack-merge:
         specifier: ^5.9.0
         version: 5.9.0
-
-  packages/sonataflow-devmode-image:
-    devDependencies:
-      '@kie-tools/python-venv':
-        specifier: workspace:*
-        version: link:../python-venv
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../root-env
-      '@kie-tools/sonataflow-image-common':
-        specifier: workspace:*
-        version: link:../sonataflow-image-common
-      '@kie-tools/sonataflow-quarkus-devui':
-        specifier: workspace:*
-        version: link:../sonataflow-quarkus-devui
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
-      replace-in-file:
-        specifier: ^7.1.0
-        version: 7.1.0
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6
-
-  packages/sonataflow-image-common:
-    devDependencies:
-      '@kie-tools/python-venv':
-        specifier: workspace:*
-        version: link:../python-venv
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../root-env
-
-  packages/sonataflow-operator:
-    devDependencies:
-      '@kie-tools/python-venv':
-        specifier: workspace:*
-        version: link:../python-venv
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../root-env
-      '@kie-tools/sonataflow-builder-image':
-        specifier: workspace:*
-        version: link:../sonataflow-builder-image
-      '@kie-tools/sonataflow-devmode-image':
-        specifier: workspace:*
-        version: link:../sonataflow-devmode-image
-      replace-in-file:
-        specifier: ^7.1.0
-        version: 7.1.0
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6
 
   packages/sonataflow-quarkus-devui:
     dependencies:
@@ -25566,11 +25477,6 @@ packages:
 
   renderkid@3.0.0:
     resolution: {integrity: sha512-q/7VIQA8lmM1hF+jn+sFSPWGlMkSAeNYcPLmDQx2zzuiDfaLrOmumR8iaUKlenFgh0XRPIUeSPlH3A+AW3Z5pg==}
-
-  replace-in-file@7.1.0:
-    resolution: {integrity: sha512-1uZmJ78WtqNYCSuPC9IWbweXkGxPOtk2rKuar8diTw7naVIQZiE3Tm8ACx2PCMXDtVH6N+XxwaRY2qZ2xHPqXw==}
-    engines: {node: '>=10'}
-    hasBin: true
 
   replace-string@3.1.0:
     resolution: {integrity: sha512-yPpxc4ZR2makceA9hy/jHNqc7QVkd4Je/N0WRHm6bs3PtivPuPynxE5ejU/mp5EhnCv8+uZL7vhz8rkluSlx+Q==}
@@ -48456,12 +48362,6 @@ snapshots:
       htmlparser2: 6.1.0
       lodash: 4.17.21
       strip-ansi: 6.0.1
-
-  replace-in-file@7.1.0:
-    dependencies:
-      chalk: 4.1.2
-      glob: 8.1.0
-      yargs: 17.7.2
 
   replace-string@3.1.0: {}
 

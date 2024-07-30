@@ -6,7 +6,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     sudo bash wget gpg locales uidmap apt-transport-https ca-certificates curl software-properties-common \
     && rm -rf /var/lib/apt/lists/* \
 	&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
-ENV LANG en_US.utf8
+ENV LANG=en_US.utf8
 
 # Google Chrome repository setup
 RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmour -o /usr/share/keyrings/chrome-keyring.gpg

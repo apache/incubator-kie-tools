@@ -24,10 +24,10 @@ import (
 	"os"
 	"path/filepath"
 
+	apimetadata "github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
-	apimetadata "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 )
 
 type DeployUndeployCmdConfig struct {
@@ -216,7 +216,7 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 	}
 
 	if cfg.Image != "" {
-		 handler.Image(cfg.Image)
+		handler.Image(cfg.Image)
 	}
 
 	err = handler.SaveAsKubernetesManifests(cfg.CustomGeneratedManifestDir)
