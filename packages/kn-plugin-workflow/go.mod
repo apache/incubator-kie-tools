@@ -12,7 +12,7 @@ require (
 	github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api v0.0.0
 	github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj v0.0.0
 	github.com/beevik/etree v1.2.0
-	github.com/docker/docker v24.0.9+incompatible
+	github.com/docker/docker v26.1.4+incompatible
 	github.com/docker/go-connections v0.4.0
 	github.com/jstemmer/go-junit-report/v2 v2.0.0
 	github.com/ory/viper v1.7.5
