@@ -1,21 +1,24 @@
 /*
- * Copyright 2024 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
-import { SemanticTokensProvider } from "../src/semanticTokensProvider";
-import { FeelVariables, DmnDefinitions } from "@kie-tools/dmn-feel-antlr4-parser";
+import { SemanticTokensProvider } from "@kie-tools/feel-input-component/dist/semanticTokensProvider";
+import { DmnDefinitions, FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 
 import * as Monaco from "@kie-tools-core/monaco-editor";
 
@@ -24,116 +27,121 @@ describe("Semantic Tokens Provider", () => {
     isCancellationRequested: false,
     onCancellationRequested: jest.fn().mockImplementation(),
   };
+  describe("long variables with and without line breaks", () => {
+    const knownVariable =
+      "This is a variable with a very long name to reproduce the issue thousand one hundred and seventy-eight";
 
-  const knownVariable =
-    "This is a variable with a very long name to reproduce the issue thousand one hundred and seventy-eight";
-
-  /**
-   * The 'parsedTokens' are the tokens that parser should found in the provided 'expression'.
-   * The 'expected' are the Monaco Semantic Tokens that we are expecting to pass to Monaco to paint it on the screen.
-   *
-   * Each Monaco Semantic Tokens is an array of 5 positions
-   * 0 = The start line of the token RELATIVE TO THE PREVIOUS LINE
-   * 1 = The start index of the token relative to the START of the previous token
-   * 2 = The length of the token
-   * 3 = The type of the token (GlobalVariable, Unknown, Function Parameter, etc.). It determines the color of the token
-   * 4 = Token modifier. It's always zero since we don't have this feature.
-   */
-  test.each([
-    {
-      expression:
-        'This is a variable with a very long name to reproduce the issue thousand one hundred and seventy-eight + "bar"',
-      expected: [[0, 0, 102, 5, 0]],
-    },
-    {
-      expression: `This is a variable with a very long 
+    /**
+     * The 'parsedTokens' are the tokens that parser should found in the provided 'expression'.
+     * The 'expected' are the Monaco Semantic Tokens that we are expecting to pass to Monaco to paint it on the screen.
+     *
+     * Each Monaco Semantic Tokens is an array of 5 positions
+     * 0 = The start line of the token RELATIVE TO THE PREVIOUS LINE
+     * 1 = The start index of the token relative to the START of the previous token
+     * 2 = The length of the token
+     * 3 = The type of the token (GlobalVariable, Unknown, Function Parameter, etc.). It determines the color of the token
+     * 4 = Token modifier. It's always zero since we don't have this feature.
+     */
+    test.each([
+      {
+        expression:
+          'This is a variable with a very long name to reproduce the issue thousand one hundred and seventy-eight + "bar"',
+        expected: [[0, 0, 102, 5, 0]],
+      },
+      {
+        expression: `This is a variable with a very long 
 name to reproduce the issue thousand 
 one hundred and seventy-eight + "bar"`,
-      expected: [
-        [0, 0, 36, 5, 0],
-        [1, 0, 37, 5, 0],
-        [1, 0, 29, 5, 0],
-      ],
-    },
-    {
-      expression: `"aaaaaa" + 
+        expected: [
+          [0, 0, 36, 5, 0],
+          [1, 0, 37, 5, 0],
+          [1, 0, 29, 5, 0],
+        ],
+      },
+      {
+        expression: `"aaaaaa" + 
 This is a variable with a very 
 long name to
  reproduce the issue thousand 
  one hundred and seventy-eight + "bar" + "NICE" + This is a variable with a very long name to reproduce the issue thousand one hundred and seventy-eight`,
-      expected: [
-        [1, 0, 31, 5, 0],
-        [1, 0, 12, 5, 0],
-        [1, 0, 30, 5, 0],
-        [1, 0, 30, 5, 0],
-        [0, 50, 102, 5, 0],
-      ],
-    },
-    {
-      expression: `This is a variable with a very long name to 
+        expected: [
+          [1, 0, 31, 5, 0],
+          [1, 0, 12, 5, 0],
+          [1, 0, 30, 5, 0],
+          [1, 0, 30, 5, 0],
+          [0, 50, 102, 5, 0],
+        ],
+      },
+      {
+        expression: `This is a variable with a very long name to 
 reproduce 
 the issue 
 thousand 
 one hundred 
 and 
 seventy-eight + "bar`,
-      expected: [
-        [0, 0, 44, 5, 0],
-        [1, 0, 10, 5, 0],
-        [1, 0, 10, 5, 0],
-        [1, 0, 9, 5, 0],
-        [1, 0, 12, 5, 0],
-        [1, 0, 4, 5, 0],
-        [1, 0, 13, 5, 0],
-      ],
-    },
-    {
-      expression: `"My " + This is a variable with a                         very long name to             reproduce
+        expected: [
+          [0, 0, 44, 5, 0],
+          [1, 0, 10, 5, 0],
+          [1, 0, 10, 5, 0],
+          [1, 0, 9, 5, 0],
+          [1, 0, 12, 5, 0],
+          [1, 0, 4, 5, 0],
+          [1, 0, 13, 5, 0],
+        ],
+      },
+      {
+        expression: `"My " + This is a variable with a                         very long name to             reproduce
  the issue             thousand             one hundred               and                  seventy-eight + "bar"`,
-      expected: [
-        [0, 8, 89, 5, 0],
-        [1, 0, 104, 5, 0],
-      ],
-    },
-    {
-      expression: `This is a variable with a very long name to
+        expected: [
+          [0, 8, 89, 5, 0],
+          [1, 0, 104, 5, 0],
+        ],
+      },
+      {
+        expression: `This is a variable with a very long name to
 reproduce the issue thousand one hundred and seventy-eight + "bar"`,
-      expected: [
-        [0, 0, 43, 5, 0],
-        [1, 0, 58, 5, 0],
-      ],
-    },
-    {
-      expression: `VeryLongVariableWithoutSpaces
+        expected: [
+          [0, 0, 43, 5, 0],
+          [1, 0, 58, 5, 0],
+        ],
+      },
+      {
+        expression: `VeryLongVariableWithoutSpaces
 ThatShouldFailWhenBreakLine`,
-      expected: [
-        [0, 0, 29, 7, 0],
-        [1, 0, 27, 7, 0],
-      ],
-    },
-  ])("multiline variables", async ({ expression, expected }) => {
-    const modelMock = {
-      getValue: jest.fn().mockReturnValue(expression),
-      getLinesContent: jest.fn().mockReturnValue(expression.split("\n")),
-    };
+        expected: [
+          [0, 0, 29, 7, 0],
+          [1, 0, 27, 7, 0],
+        ],
+      },
+    ])("multiline variables", async ({ expression, expected }) => {
+      const modelMock = {
+        getValue: jest.fn().mockReturnValue(expression),
+        getLinesContent: jest.fn().mockReturnValue(expression.split("\n")),
+      };
 
-    const id = "expressionId";
-    const dmnDefinitions = getDmnModel({ knownVariable: knownVariable, expressionId: id, expression: expression });
+      const id = "expressionId";
+      const dmnDefinitions = getDmnModel({
+        knownVariable: knownVariable,
+        expressionId: id,
+        expression: expression,
+      });
 
-    const feelVariables = new FeelVariables(dmnDefinitions, new Map());
-    const semanticTokensProvider = new SemanticTokensProvider(feelVariables, id, () => {});
+      const feelVariables = new FeelVariables(dmnDefinitions, new Map());
+      const semanticTokensProvider = new SemanticTokensProvider(feelVariables, id, () => {});
 
-    const semanticMonacoTokens = await semanticTokensProvider.provideDocumentSemanticTokens(
-      modelMock as unknown as Monaco.editor.ITextModel,
-      null,
-      cancellationTokenMock
-    );
+      const semanticMonacoTokens = await semanticTokensProvider.provideDocumentSemanticTokens(
+        modelMock as unknown as Monaco.editor.ITextModel,
+        null,
+        cancellationTokenMock
+      );
 
-    const expectedSemanticMonacoTokens = expected.reduce((accumulator, value) => accumulator.concat(value), []);
+      const expectedSemanticMonacoTokens = expected.flat();
 
-    for (let i = 0; i < expectedSemanticMonacoTokens.length; i++) {
-      expect(semanticMonacoTokens?.data[i]).toEqual(expectedSemanticMonacoTokens[i]);
-    }
+      for (let i = 0; i < expectedSemanticMonacoTokens.length; i++) {
+        expect(semanticMonacoTokens?.data[i]).toEqual(expectedSemanticMonacoTokens[i]);
+      }
+    });
   });
 });
 
@@ -146,6 +154,7 @@ function getDmnModel({
   expressionId: string;
   expression: string;
 }) {
+  // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
   const dmnDefinitions: DmnDefinitions = {
     "@_name": "DMN_3DB2E0BB-1A3A-4F52-A1F3-A0A5EBCB2C4E",
     "@_namespace": "dmn",
