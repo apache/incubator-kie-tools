@@ -121,10 +121,14 @@ ThatShouldFailWhenBreakLine`,
       };
 
       const id = "expressionId";
-      const dmnDefinitions = getDmnModel({
-        knownVariable: knownVariable,
-        expressionId: id,
-        expression: expression,
+      const dmnDefinitions = getDmnModelWithContextEntry({
+        entry: {
+          variable: knownVariable,
+          expression: {
+            id: id,
+            value: expression,
+          },
+        },
       });
 
       const feelVariables = new FeelVariables(dmnDefinitions, new Map());
@@ -145,14 +149,16 @@ ThatShouldFailWhenBreakLine`,
   });
 });
 
-function getDmnModel({
-  knownVariable,
-  expressionId,
-  expression,
+function getDmnModelWithContextEntry({
+  entry,
 }: {
-  knownVariable: string;
-  expressionId: string;
-  expression: string;
+  entry: {
+    variable: string;
+    expression: {
+      value: string;
+      id: string;
+    };
+  };
 }) {
   // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
   const dmnDefinitions: DmnDefinitions = {
@@ -171,7 +177,7 @@ function getDmnModel({
               "@_id": "_DD2E6BE8-B2AF-452C-A980-8937527FC3F2",
               variable: {
                 "@_id": "_401F4E2D-442A-4A29-B6B9-906A121C6FC0",
-                "@_name": knownVariable,
+                "@_name": entry.variable,
               },
               expression: {
                 __$$element: "literalExpression",
@@ -187,8 +193,8 @@ function getDmnModel({
               },
               expression: {
                 __$$element: "literalExpression",
-                "@_id": expressionId,
-                text: { __$$text: expression },
+                "@_id": entry.expression.id,
+                text: { __$$text: entry.expression.value },
               },
             },
           ],
