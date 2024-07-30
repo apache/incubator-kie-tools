@@ -65,9 +65,9 @@ test.describe("Zoom and Panning Diagram", () => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 200, y: 300 } });
     await diagram.zoomOut({ clicks: 3 });
     await page.mouse.move(500, 500);
-    await page.mouse.down();
+    await page.mouse.down({ button: "middle" });
     await page.mouse.move(300, 300);
-    await page.mouse.up();
+    await page.mouse.up({ button: "middle" });
 
     await tabs.goToTab(Tab.DataTypes);
     await tabs.goToTab(Tab.Editor);
