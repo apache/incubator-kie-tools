@@ -125,7 +125,7 @@ func Test_appPropertyHandler_WithUserPropertiesWithNoUserOverrides(t *testing.T)
 	assert.NoError(t, err)
 	generatedProps, propsErr := properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 7, len(generatedProps.Keys()))
+	assert.Equal(t, 8, len(generatedProps.Keys()))
 	assert.NotContains(t, "property1", generatedProps.Keys())
 	assert.NotContains(t, "property2", generatedProps.Keys())
 	assert.Equal(t, "http://greeting.default", generatedProps.GetString("kogito.service.url", ""))
@@ -134,6 +134,7 @@ func Test_appPropertyHandler_WithUserPropertiesWithNoUserOverrides(t *testing.T)
 	assert.Equal(t, "false", generatedProps.GetString("quarkus.devservices.enabled", ""))
 	assert.Equal(t, "false", generatedProps.GetString("quarkus.kogito.devservices.enabled", ""))
 	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoUserTasksEventsEnabled, ""))
+	assert.Equal(t, "false", generatedProps.GetString("%dev.quarkus.dev-ui.cors.enabled", ""))
 }
 
 func Test_appPropertyHandler_WithUserPropertiesWithServiceDiscovery(t *testing.T) {
@@ -157,7 +158,7 @@ func Test_appPropertyHandler_WithUserPropertiesWithServiceDiscovery(t *testing.T
 		Build())
 	generatedProps.DisableExpansion = true
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 21, len(generatedProps.Keys()))
+	assert.Equal(t, 22, len(generatedProps.Keys()))
 	assert.NotContains(t, "property1", generatedProps.Keys())
 	assert.NotContains(t, "property2", generatedProps.Keys())
 	assertHasProperty(t, generatedProps, "service1", myService1Address)
@@ -183,6 +184,8 @@ func Test_appPropertyHandler_WithUserPropertiesWithServiceDiscovery(t *testing.T
 	assertHasProperty(t, generatedProps, "quarkus.http.host", "0.0.0.0")
 	assertHasProperty(t, generatedProps, "quarkus.devservices.enabled", "false")
 	assertHasProperty(t, generatedProps, "quarkus.kogito.devservices.enabled", "false")
+	assertHasProperty(t, generatedProps, "quarkus.kogito.devservices.enabled", "false")
+	assertHasProperty(t, generatedProps, "%dev.quarkus.dev-ui.cors.enabled", "false")
 	assertHasProperty(t, generatedProps, constants.KogitoUserTasksEventsEnabled, "false")
 }
 
@@ -212,7 +215,7 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.NoError(t, err)
 	generatedProps, propsErr := properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 11, len(generatedProps.Keys()))
+	assert.Equal(t, 12, len(generatedProps.Keys()))
 	assert.NotContains(t, "property1", generatedProps.Keys())
 	assert.NotContains(t, "property2", generatedProps.Keys())
 
@@ -230,6 +233,7 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.Equal(t, "", generatedProps.GetString(constants.KogitoProcessInstancesEventsURL, ""))
 	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoProcessInstancesEventsEnabled, ""))
 	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoUserTasksEventsEnabled, ""))
+	assert.Equal(t, "false", generatedProps.GetString("%dev.quarkus.dev-ui.cors.enabled", ""))
 
 	// prod profile enables config of outgoing events url
 	workflow.SetAnnotations(map[string]string{metadata.Profile: string(metadata.PreviewProfile)})
@@ -241,7 +245,7 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.NoError(t, err)
 	generatedProps, propsErr = properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 17, len(generatedProps.Keys()))
+	assert.Equal(t, 18, len(generatedProps.Keys()))
 	assert.NotContains(t, "property1", generatedProps.Keys())
 	assert.NotContains(t, "property2", generatedProps.Keys())
 	assert.Equal(t, "http://"+platform.Name+"-"+constants.DataIndexServiceName+"."+platform.Namespace+"/definitions", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsURL, ""))
@@ -257,6 +261,7 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.Equal(t, "true", generatedProps.GetString(constants.KogitoDataIndexHealthCheckEnabled, ""))
 	assert.Equal(t, "http://"+platform.Name+"-"+constants.DataIndexServiceName+"."+platform.Namespace, generatedProps.GetString(constants.KogitoDataIndexURL, ""))
 	assert.Equal(t, "http://"+platform.Name+"-"+constants.JobServiceName+"."+platform.Namespace, generatedProps.GetString(constants.KogitoJobServiceURL, ""))
+	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoDataIndexQuarkusDevUICors, ""))
 
 	// disabling data index bypasses config of outgoing events url
 	platform.Spec.Services.DataIndex.Enabled = nil
@@ -264,6 +269,27 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.NotNil(t, workflow.Status.Services)
 	assert.NotNil(t, workflow.Status.Services.JobServiceRef)
 	assert.Nil(t, workflow.Status.Services.DataIndexRef)
+	props, err = NewManagedPropertyHandler(workflow, platform)
+	assert.NoError(t, err)
+	generatedProps, propsErr = properties.LoadString(props.WithUserProperties(userProperties).Build())
+	assert.NoError(t, propsErr)
+	assert.Equal(t, 13, len(generatedProps.Keys()))
+	assert.NotContains(t, "property1", generatedProps.Keys())
+	assert.NotContains(t, "property2", generatedProps.Keys())
+	assert.Equal(t, "", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsURL, ""))
+	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsEnabled, ""))
+	assert.Equal(t, "", generatedProps.GetString(constants.KogitoProcessInstancesEventsURL, ""))
+	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoProcessInstancesEventsEnabled, ""))
+	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoUserTasksEventsEnabled, ""))
+	assert.Equal(t, "http://"+platform.Name+"-"+constants.JobServiceName+"."+platform.Namespace+"/v2/jobs/events", generatedProps.GetString(constants.JobServiceRequestEventsURL, ""))
+	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceStatusChangeEvents, ""))
+	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceStatusChangeEventsURL, ""))
+	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoDataIndexQuarkusDevUICors, ""))
+
+	// disabling job service bypasses config of outgoing events url
+	platform.Spec.Services.JobService.Enabled = nil
+	services.SetServiceUrlsInWorkflowStatus(platform, workflow)
+	assert.Nil(t, workflow.Status.Services)
 	props, err = NewManagedPropertyHandler(workflow, platform)
 	assert.NoError(t, err)
 	generatedProps, propsErr = properties.LoadString(props.WithUserProperties(userProperties).Build())
@@ -276,30 +302,11 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.Equal(t, "", generatedProps.GetString(constants.KogitoProcessInstancesEventsURL, ""))
 	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoProcessInstancesEventsEnabled, ""))
 	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoUserTasksEventsEnabled, ""))
-	assert.Equal(t, "http://"+platform.Name+"-"+constants.JobServiceName+"."+platform.Namespace+"/v2/jobs/events", generatedProps.GetString(constants.JobServiceRequestEventsURL, ""))
-	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceStatusChangeEvents, ""))
-	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceStatusChangeEventsURL, ""))
-
-	// disabling job service bypasses config of outgoing events url
-	platform.Spec.Services.JobService.Enabled = nil
-	services.SetServiceUrlsInWorkflowStatus(platform, workflow)
-	assert.Nil(t, workflow.Status.Services)
-	props, err = NewManagedPropertyHandler(workflow, platform)
-	assert.NoError(t, err)
-	generatedProps, propsErr = properties.LoadString(props.WithUserProperties(userProperties).Build())
-	assert.NoError(t, propsErr)
-	assert.Equal(t, 11, len(generatedProps.Keys()))
-	assert.NotContains(t, "property1", generatedProps.Keys())
-	assert.NotContains(t, "property2", generatedProps.Keys())
-	assert.Equal(t, "", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsURL, ""))
-	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsEnabled, ""))
-	assert.Equal(t, "", generatedProps.GetString(constants.KogitoProcessInstancesEventsURL, ""))
-	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoProcessInstancesEventsEnabled, ""))
-	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoUserTasksEventsEnabled, ""))
 	assert.Equal(t, "http://localhost/v2/jobs/events", generatedProps.GetString(constants.JobServiceRequestEventsURL, ""))
 	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceDataSourceReactiveURL, ""))
 	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceStatusChangeEvents, ""))
 	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceStatusChangeEventsURL, ""))
+	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoDataIndexQuarkusDevUICors, ""))
 }
 
 var _ = Describe("Platform properties", func() {
@@ -477,6 +484,7 @@ func generateJobServiceWorkflowDevProperties() *properties.Properties {
 		jobServiceDevProperties.Set("kogito.events.processdefinitions.enabled", "false")
 		jobServiceDevProperties.Set("kogito.events.processinstances.enabled", "false")
 		jobServiceDevProperties.Set("kogito.events.usertasks.enabled", "false")
+		jobServiceDevProperties.Set("%dev.quarkus.dev-ui.cors.enabled", "false")
 		jobServiceDevProperties.Sort()
 	}
 	return jobServiceDevProperties
@@ -497,6 +505,7 @@ func generateJobServiceWorkflowProductionProperties() *properties.Properties {
 		jobServiceProdProperties.Set("kogito.events.processdefinitions.enabled", "false")
 		jobServiceProdProperties.Set("kogito.events.processinstances.enabled", "false")
 		jobServiceProdProperties.Set("kogito.events.usertasks.enabled", "false")
+		jobServiceProdProperties.Set("%dev.quarkus.dev-ui.cors.enabled", "false")
 		jobServiceProdProperties.Sort()
 	}
 	return jobServiceProdProperties
@@ -516,6 +525,7 @@ func generateDataIndexWorkflowDevProperties() *properties.Properties {
 		dataIndexDevProperties.Set("kogito.events.processdefinitions.enabled", "false")
 		dataIndexDevProperties.Set("kogito.events.processinstances.enabled", "false")
 		dataIndexDevProperties.Set("kogito.events.usertasks.enabled", "false")
+		dataIndexDevProperties.Set("%dev.quarkus.dev-ui.cors.enabled", "false")
 		dataIndexDevProperties.Sort()
 	}
 	return dataIndexDevProperties
@@ -540,6 +550,7 @@ func generateDataIndexWorkflowProductionProperties() *properties.Properties {
 		dataIndexProdProperties.Set("kogito.events.processdefinitions.errors.propagate", "true")
 		dataIndexProdProperties.Set("kogito.events.processinstances.enabled", "true")
 		dataIndexProdProperties.Set("kogito.events.usertasks.enabled", "false")
+		dataIndexProdProperties.Set("%dev.quarkus.dev-ui.cors.enabled", "false")
 		dataIndexProdProperties.Sort()
 	}
 	return dataIndexProdProperties
@@ -559,6 +570,7 @@ func generateDataIndexAndJobServiceWorkflowDevProperties() *properties.Propertie
 		dataIndexJobServiceDevProperties.Set("kogito.events.processdefinitions.enabled", "false")
 		dataIndexJobServiceDevProperties.Set("kogito.events.processinstances.enabled", "false")
 		dataIndexJobServiceDevProperties.Set("kogito.events.usertasks.enabled", "false")
+		dataIndexJobServiceDevProperties.Set("%dev.quarkus.dev-ui.cors.enabled", "false")
 		dataIndexJobServiceDevProperties.Sort()
 	}
 	return dataIndexJobServiceDevProperties
@@ -584,6 +596,7 @@ func generateDataIndexAndJobServiceWorkflowProductionProperties() *properties.Pr
 		dataIndexJobServiceProdProperties.Set("kogito.events.usertasks.enabled", "false")
 		dataIndexJobServiceProdProperties.Set("mp.messaging.outgoing.kogito-processdefinitions-events.url", "http://foo-data-index-service.default/definitions")
 		dataIndexJobServiceProdProperties.Set("mp.messaging.outgoing.kogito-processinstances-events.url", "http://foo-data-index-service.default/processes")
+		dataIndexJobServiceProdProperties.Set("%dev.quarkus.dev-ui.cors.enabled", "false")
 		dataIndexJobServiceProdProperties.Sort()
 	}
 	return dataIndexJobServiceProdProperties

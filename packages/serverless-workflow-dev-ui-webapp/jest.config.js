@@ -17,28 +17,14 @@
  * under the License.
  */
 
-import { CustomLabels } from "./CustomLabels";
-import { DiagramPreviewSize } from "@kie-tools/runtime-tools-swf-enveloped-components/dist/workflowDetails/api";
+const { config, styleMock, typescriptTransform } = require("@kie-tools/jest-base/jest.config");
 
-export interface RuntimeToolsDevUIEnvelopeApi {
-  runtimeToolsDevUI_initRequest(association: Association, initArgs: RuntimeToolsDevUIInitArgs): Promise<void>;
-}
-
-export interface Association {
-  origin: string;
-  envelopeServerId: string;
-}
-
-export interface RuntimeToolsDevUIInitArgs {
-  availablePages?: string[];
-  dataIndexUrl: string;
-  devUIUrl: string;
-  diagramPreviewSize?: DiagramPreviewSize;
-  isDataIndexAvailable: boolean;
-  isLocalCluster?: boolean;
-  isStunnerEnabled: boolean;
-  omittedWorkflowTimelineEvents?: string[];
-  openApiBaseUrl: string;
-  openApiPath: string;
-  page: string;
-}
+/** @type {import('ts-jest').JestConfigWithTsJest} */
+module.exports = {
+  ...config,
+  testEnvironment: "jsdom",
+  moduleNameMapper: {
+    ...styleMock,
+    ...typescriptTransform,
+  },
+};
