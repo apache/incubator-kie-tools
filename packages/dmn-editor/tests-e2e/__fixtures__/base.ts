@@ -34,7 +34,6 @@ import { GroupPropertiesPanel } from "./propertiesPanel/groupPropertiesPanel";
 import { DiagramPropertiesPanel } from "./propertiesPanel/diagramPropertiesPanel";
 import { MultipleNodesPropertiesPanel } from "./propertiesPanel/multipleNodesPropertiesPanel";
 import { Overlays } from "./overlays";
-import { Tabs } from "./tabs";
 import { DataTypes } from "./dataTypes";
 import { BeePropertiesPanel } from "./propertiesPanel/beePropertiesPanel";
 import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/tests-e2e/__fixtures__/boxedExpression";
@@ -62,7 +61,6 @@ type DmnEditorFixtures = {
   knowledgeSourcePropertiesPanel: KnowledgeSourcePropertiesPanel;
   multipleNodesPropertiesPanel: MultipleNodesPropertiesPanel;
   textAnnotationPropertiesPanel: TextAnnotationPropertiesPanel;
-  tabs: Tabs;
 };
 
 export const test = base.extend<DmnEditorFixtures>({
@@ -125,9 +123,6 @@ export const test = base.extend<DmnEditorFixtures>({
   },
   textAnnotationPropertiesPanel: async ({ diagram, page }, use) => {
     await use(new TextAnnotationPropertiesPanel(diagram, page));
-  },
-  tabs: async ({ diagram, page }, use) => {
-    await use(new Tabs(page));
   },
 });
 

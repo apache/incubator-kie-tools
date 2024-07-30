@@ -52,15 +52,15 @@ export class Diagram {
     await this.get().getByTitle("Select or edit DRD").click();
   }
 
-  public async zoomIn(clicks: { clicks: number }) {
-    await this.get().getByTestId("rf__controls").getByTitle("zoom in").click({ clickCount: clicks.clicks });
+  public async zoomIn(args: { clicks: number }) {
+    await this.get().getByTitle("zoom in").click({ clickCount: args.clicks });
   }
 
-  public async zoomOut(clicks: { clicks: number }) {
-    await this.get().getByTestId("rf__controls").getByLabel("zoom out").click({ clickCount: clicks.clicks });
+  public async zoomOut(args: { clicks: number }) {
+    await this.get().getByLabel("zoom out").click({ clickCount: args.clicks });
   }
 
   public async fitView() {
-    await this.get().getByTestId("rf__controls").getByLabel("fit view").click();
+    await this.get().getByLabel("fit view").click();
   }
 }

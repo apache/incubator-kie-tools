@@ -19,7 +19,7 @@
 
 import { expect, test } from "./__fixtures__/base";
 import { NodeType } from "./__fixtures__/nodes";
-import { Tab } from "./__fixtures__/tabs";
+import { TabName } from "./__fixtures__/editor";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -57,20 +57,23 @@ test.describe("Zoom and Panning Diagram", () => {
     await expect(diagram.get()).toHaveScreenshot("fit-to-view-diagram.png");
   });
 
-  test("should keep view settings after swap tabs", async ({ palette, diagram, tabs, page }) => {
+  test("should keep view settings after swap tabs", async ({ palette, diagram, page, editor }) => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
     await diagram.resetFocus();
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 200, y: 200 } });
     await diagram.resetFocus();
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 200, y: 300 } });
     await diagram.zoomOut({ clicks: 3 });
+
+    // This is to pan the viewport, to make more changes on it despite the zoom to
+    // make sure that they are kept after swapping between tabs.
     await page.mouse.move(500, 500);
     await page.mouse.down({ button: "middle" });
     await page.mouse.move(300, 300);
     await page.mouse.up({ button: "middle" });
 
-    await tabs.goToTab(Tab.DataTypes);
-    await tabs.goToTab(Tab.Editor);
+    await editor.changeTab({ tab: TabName.DATA_TYPES });
+    await editor.changeTab({ tab: TabName.EDITOR });
 
     await expect(diagram.get()).toHaveScreenshot("keep-view-settings-after-swap-tabs.png");
   });
