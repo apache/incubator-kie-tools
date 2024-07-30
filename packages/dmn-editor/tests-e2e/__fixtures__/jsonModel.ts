@@ -22,20 +22,6 @@ import { Page } from "@playwright/test";
 import { DrgElement } from "./jsonModel/drgElement";
 import { Drd } from "./jsonModel/drd";
 
-export enum DataType {
-  Undefined = "<Undefined>",
-  Any = "Any",
-  Boolean = "boolean",
-  Context = "context",
-  Date = "date",
-  DateTime = "date and time",
-  DateTimeDuration = "days and time duration",
-  Number = "number",
-  String = "string",
-  Time = "time",
-  YearsMonthsDuration = "years and months duration",
-}
-
 export const STORYBOOK__DMN_EDITOR_MODEL = "div[data-testid='storybook--dmn-editor-model']";
 
 export class JsonModel {
