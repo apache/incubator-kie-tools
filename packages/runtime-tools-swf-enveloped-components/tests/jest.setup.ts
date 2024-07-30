@@ -17,18 +17,4 @@
  * under the License.
  */
 
-const { config, jestSetupPath, styleMock, babelTransform } = require("@kie-tools/jest-base/jest.config");
-
-/** @type {import('ts-jest').JestConfigWithTsJest} */
-module.exports = {
-  ...config,
-  testEnvironment: "jsdom",
-  transform: {
-    ...babelTransform,
-  },
-  moduleNameMapper: {
-    ...styleMock,
-  },
-  transformIgnorePatterns: [],
-  setupFilesAfterEnv: [jestSetupPath],
-};
+import "@testing-library/jest-dom";
