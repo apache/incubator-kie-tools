@@ -15,7 +15,7 @@
  */
 
 import { html, LitElement } from "lit";
-import { dataIndexUrl, devUIUrl, extensionBasePath, openapiPath } from "build-time-data";
+import { dataIndexUrl, devUIUrl, extensionBasePath, openapiPath, isLocalCluster } from "build-time-data";
 import { RouterController } from "router-controller";
 
 export class QwcSonataflowQuarkusDevui extends LitElement {
@@ -58,6 +58,7 @@ export class QwcSonataflowQuarkusDevui extends LitElement {
       openApiBaseUrl: `${devUIUrl ?? window.location.origin}`,
       openApiPath: `${openapiPath ?? "q/openapi.json"}`,
       availablePages: ["Workflows", "Monitoring", "CustomDashboard"],
+      isLocalCluster: isLocalCluster ?? false,
     });
   }
 }
