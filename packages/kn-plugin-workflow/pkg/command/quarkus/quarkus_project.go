@@ -100,8 +100,8 @@ func manipulatePomToKogito(filename string, cfg CreateQuarkusProjectConfig) erro
 	}
 	versionElement.SetText(cfg.DependenciesVersion.QuarkusVersion)
 
-	properties.CreateElement("kogito.version").SetText(metadata.KogitoBomDependency.Version)
-	properties.CreateElement("kogito.tooling.version").SetText(metadata.PluginVersion)
+	properties.CreateElement("kie.version").SetText(metadata.KogitoBomDependency.Version)
+	properties.CreateElement("kie.tooling.version").SetText(metadata.PluginVersion)
 
 	//Add kogito bom dependency
 	depManagement := doc.FindElement("//dependencyManagement")
@@ -117,7 +117,7 @@ func manipulatePomToKogito(filename string, cfg CreateQuarkusProjectConfig) erro
 	dependencyElement := dependenciesManagendChild.CreateElement("dependency")
 	dependencyElement.CreateElement("groupId").SetText(metadata.KogitoBomDependency.GroupId)
 	dependencyElement.CreateElement("artifactId").SetText(metadata.KogitoBomDependency.ArtifactId)
-	dependencyElement.CreateElement("version").SetText("${kogito.version}")
+	dependencyElement.CreateElement("version").SetText("${kie.version}")
 	dependencyElement.CreateElement("type").SetText(metadata.KogitoBomDependency.Type)
 	dependencyElement.CreateElement("scope").SetText(metadata.KogitoBomDependency.Scope)
 

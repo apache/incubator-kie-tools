@@ -14,8 +14,8 @@
         <quarkus.platform.version>0.0.1</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.2.5</surefire-plugin.version>
-        <kogito.version>0.0.0</kogito.version>
-        <kogito.tooling.version>0.0.0</kogito.tooling.version>
+        <kie.version>0.0.0</kie.version>
+        <kie.tooling.version>0.0.0</kie.tooling.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -36,7 +36,7 @@
             <dependency>
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>kogito-bom</artifactId>
-                <version>${kogito.version}</version>
+                <version>${kie.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -108,7 +108,7 @@
         <dependency>
             <groupId>org.apache.kie.sonataflow</groupId>
             <artifactId>sonataflow-quarkus-devui</artifactId>
-            <version>${kogito.tooling.version}</version>
+            <version>${kie.tooling.version}</version>
         </dependency>
     </dependencies>
     <build>
