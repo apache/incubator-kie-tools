@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { BoxedDecisionTable } from "../../../../../src/api";
+import { BoxedDecisionTable, Normalized } from "../../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   beeGwtService,
@@ -38,7 +38,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
-export const bureauCallTypeExpression: BoxedDecisionTable = {
+export const bureauCallTypeExpression: Normalized<BoxedDecisionTable> = {
   __$$element: "decisionTable",
   "@_id": "_7FB4A019-EC04-4153-86C1-C90A8BA8E6C3",
   "@_label": "Bureau call type",

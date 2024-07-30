@@ -24,6 +24,6 @@ export class Resizing {
 
   public async reset(target: Locator) {
     await target.hover();
-    await target.getByTestId("resizer-handle").dblclick();
+    await target.getByTestId("kie-tools--bee--resizer-handle").dblclick();
   }
 }

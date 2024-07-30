@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { BoxedContext, DmnBuiltInDataType } from "../../../../../src/api";
+import { BoxedContext, DmnBuiltInDataType, generateUuid, Normalized } from "../../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   beeGwtService,
@@ -38,13 +38,14 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
-const routingExpression: BoxedContext = {
+const routingExpression: Normalized<BoxedContext> = {
   __$$element: "context",
   "@_id": "_336E0FC5-5548-4720-A6B2-A8FA4834DB7B",
   "@_label": "Routing",
   "@_typeRef": "t.Routing",
   contextEntry: [
     {
+      "@_id": generateUuid(),
       variable: {
         "@_id": "_6626CBDF-A422-42A1-89B3-4491EB069A3E",
         "@_name": "Bankrupt",
@@ -59,6 +60,7 @@ const routingExpression: BoxedContext = {
       },
     },
     {
+      "@_id": generateUuid(),
       variable: {
         "@_id": "_66A38FAC-3D28-4590-AAE8-A0EB17191B5A",
         "@_name": "Credit Score",
@@ -73,6 +75,7 @@ const routingExpression: BoxedContext = {
       },
     },
     {
+      "@_id": generateUuid(),
       expression: {
         __$$element: "decisionTable",
         "@_id": "_1FB1191F-F05C-4609-8BA4-77BE0D25570D",

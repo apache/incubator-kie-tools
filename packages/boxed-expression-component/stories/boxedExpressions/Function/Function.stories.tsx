@@ -21,8 +21,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/BoxedExpressionEditor";
 import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../../boxedExpressionStoriesWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
-import { DmnBuiltInDataType, BoxedFunctionKind, generateUuid } from "../../../src/api";
-import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../../src/resizing/WidthConstants";
+import { BoxedFunctionKind, DmnBuiltInDataType, generateUuid } from "../../../src/api";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
@@ -100,6 +99,7 @@ export const Nested: Story = {
       "@_label": "Expression Name",
       contextEntry: [
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "ContextEntry-1",

@@ -19,7 +19,7 @@
 
 import { Page } from "@playwright/test";
 import { Diagram } from "../diagram";
-import { DataType } from "../jsonModel";
+import { DataType } from "../dataTypes";
 import { ShapeProperties } from "./parts/shapeProperties";
 import { PropertiesPanelBase } from "./propertiesPanelBase";
 import { FontProperties } from "./parts/fontProperties";

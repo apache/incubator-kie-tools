@@ -25,7 +25,7 @@ test.describe("Selection", () => {
   test.describe("Context menu", () => {
     test.beforeEach(async ({ editor, testScenarioTable }) => {
       await editor.createTestScenario(AssetType.RULE);
-      await testScenarioTable.fill({ content: '"test"', rowLocatorInfo: "1", column: 1 });
+      await testScenarioTable.fill({ content: '"test"', rowLocatorInfo: "1", columnNumber: 1 });
     });
 
     test.describe(() => {

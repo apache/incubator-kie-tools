@@ -23,7 +23,7 @@ import * as Empty from "../../misc/Empty/EmptyExpression.stories";
 import * as Literal from "../../boxedExpressions/Literal/Literal.stories";
 import * as Relation from "../../boxedExpressions/Relation/Relation.stories";
 import * as DecisionTable from "../../boxedExpressions/DecisionTable/DecisionTable.stories";
-import { BoxedDecisionTable, generateUuid } from "../../../src/api";
+import { BoxedDecisionTable, generateUuid, Normalized } from "../../../src/api";
 import { BoxedExpressionEditorStoryArgs } from "../../boxedExpressionStoriesWrapper";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -64,7 +64,7 @@ export const Discount: Story = {
   args: {
     ...DecisionTable.Discount.args!,
     expression: {
-      ...(DecisionTable.Discount.args!.expression! as BoxedDecisionTable),
+      ...(DecisionTable.Discount.args!.expression! as Normalized<BoxedDecisionTable>),
       rule: [
         {
           "@_id": generateUuid(),

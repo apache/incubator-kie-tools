@@ -20,7 +20,6 @@
 import {
   BeeGwtService,
   BoxedExpression,
-  DmnBuiltInDataType,
   DmnDataType,
   generateUuid,
   PmmlDocument,

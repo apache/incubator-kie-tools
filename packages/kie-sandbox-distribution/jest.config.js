@@ -17,10 +17,13 @@
  * under the License.
  */
 
-const { config } = require("@kie-tools/jest-base/jest.config");
+const { config, typescriptTransform } = require("@kie-tools/jest-base/jest.config");
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
   ...config,
   testEnvironment: "node",
+  transform: {
+    ...typescriptTransform,
+  },
 };

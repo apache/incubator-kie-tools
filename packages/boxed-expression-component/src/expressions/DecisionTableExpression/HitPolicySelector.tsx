@@ -152,7 +152,7 @@ export function HitPolicySelector({
       position={PopoverPosition.left}
       distance={25}
       body={
-        <div className="hit-policy-flex-container">
+        <div className="hit-policy-flex-container" data-testid={"kie-tools--bee--hit-policy-header"}>
           <div className="hit-policy-section">
             <Menu onSelect={hitPolicySelectionCallback} selected={selectedHitPolicy}>
               <MenuGroup className="menu-with-help" label="Hit policy">
@@ -211,7 +211,7 @@ export function HitPolicySelector({
         </div>
       }
     >
-      <div className="selected-hit-policy">
+      <div className="selected-hit-policy" data-testid="kie-tools--bee--selected-hit-policy">
         {!builtInAggregatorEnabled && `${_.first(selectedHitPolicy)}`}
         {builtInAggregatorEnabled && `${_.first(selectedHitPolicy)}${selectedBuiltInAggregator}`}
       </div>

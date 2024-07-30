@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DmnBuiltInDataType, BoxedFunction, BoxedFunctionKind } from "../../../../../src/api";
+import { DmnBuiltInDataType, BoxedFunction, BoxedFunctionKind, Normalized, generateUuid } from "../../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   beeGwtService,
@@ -37,7 +37,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
-export const installmentCalculationExpression: BoxedFunction = {
+export const installmentCalculationExpression: Normalized<BoxedFunction> = {
   __$$element: "functionDefinition",
   "@_id": "_1E31E836-0609-4B4C-8FAF-389F774B1FE3",
   "@_label": "Installment calculation",
@@ -59,6 +59,7 @@ export const installmentCalculationExpression: BoxedFunction = {
     "@_label": "Feel Expression",
     contextEntry: [
       {
+        "@_id": generateUuid(),
         variable: {
           "@_id": "_4AAFD507-11D2-4C6A-82E0-CBEEFA26FCE9",
           "@_name": "Monthly Fee",
@@ -76,6 +77,7 @@ export const installmentCalculationExpression: BoxedFunction = {
         },
       },
       {
+        "@_id": generateUuid(),
         variable: {
           "@_id": "_1852E1E0-A49C-49D8-BB83-18D395672ECB",
           "@_name": "Monthly Repayments",
@@ -90,6 +92,7 @@ export const installmentCalculationExpression: BoxedFunction = {
         },
       },
       {
+        "@_id": generateUuid(),
         expression: {
           __$$element: "literalExpression",
           "@_id": "_94444797-708D-418A-A22A-5CE6CAB35F6F",

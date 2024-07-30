@@ -17,20 +17,30 @@
  * under the License.
  */
 
-import { Locator, Page } from "@playwright/test";
+import { Page } from "@playwright/test";
 import { Monaco } from "./monaco";
 
+import { ExpressionContainer } from "../api/expressionContainer";
+import { SelectExpressionMenu } from "../api/expressions/selectExpressionMenu";
+
 export class BoxedExpressionEditor {
+  private readonly _selectExpressionMenu: SelectExpressionMenu;
+
   constructor(
     public page: Page,
     private monaco: Monaco,
     public baseURL?: string
   ) {
     this.page = page;
+    this._selectExpressionMenu = new SelectExpressionMenu(page);
   }
 
-  public async select(from: Page | Locator = this.page) {
-    await from.getByText("Select expression").click();
+  get selectExpressionMenu(): SelectExpressionMenu {
+    return this._selectExpressionMenu;
+  }
+
+  get expression() {
+    return new ExpressionContainer(this.page.getByTestId("kie-tools--bee--expression-container").nth(0), this.monaco);
   }
 
   public async pasteToSelectExpression(nth?: number) {
@@ -39,96 +49,6 @@ export class BoxedExpressionEditor {
       .nth(nth ?? 0)
       .click();
     await this.page.getByRole("menuitem", { name: "Paste" }).click();
-  }
-
-  public async selectBoxedLiteral(from: Page | Locator = this.page) {
-    this.select(from);
-    await this.page.getByRole("menuitem", { name: "Literal" }).click();
-  }
-
-  public async selectBoxedContext(from: Page | Locator = this.page) {
-    this.select(from);
-    await this.page.getByRole("menuitem", { name: "Context" }).click();
-  }
-
-  public async selectDecisionTable(from: Page | Locator = this.page) {
-    this.select(from);
-    await this.page.getByRole("menuitem", { name: "Decision" }).click();
-  }
-
-  public async fillDecisionTable(args: { startAtCell: number; tableData: any[][] }) {
-    let cellNumber = args.startAtCell;
-    for (const row of args.tableData) {
-      for (const cellData of row) {
-        if (cellData === "-") {
-          cellNumber++;
-          continue;
-        }
-        await this.monaco.fill({ monacoParentLocator: this.page, content: cellData, nth: cellNumber });
-        cellNumber++;
-      }
-      cellNumber++;
-    }
-  }
-
-  public async selectRelation(from: Page | Locator = this.page) {
-    this.select(from);
-    await this.page.getByRole("menuitem", { name: "Relation" }).click();
-  }
-
-  public async fillRelation(args: { startAtCell: number; relationData: any[][] }) {
-    let cellNumber = args.startAtCell;
-    for (const row of args.relationData) {
-      for (const cellData of row) {
-        await this.monaco.fill({ monacoParentLocator: this.page, content: cellData, nth: cellNumber });
-        cellNumber++;
-      }
-    }
-  }
-
-  public async selectBoxedInvocation(from: Page | Locator = this.page) {
-    this.select(from);
-    await this.page.getByRole("menuitem", { name: "Invocation" }).click();
-  }
-
-  public async selectBoxedList(from: Page | Locator = this.page) {
-    this.select(from);
-    await this.page.getByRole("menuitem", { name: "List" }).click();
-  }
-
-  public async selectBoxedFunction(from: Page | Locator = this.page) {
-    this.select(from);
-    await this.page.getByRole("menuitem", { name: "Function" }).click();
-  }
-
-  public async selectBoxedFilter(from: Page | Locator = this.page) {
-    this.select(from);
-    await this.page.getByRole("menuitem", { name: "Filter" }).click();
-  }
-
-  public async copyFilter(from: Page | Locator = this.page) {
-    await this.page.getByTestId("logic-type-button-test-id").click();
-    await this.page.getByRole("menuitem", { name: "Copy" }).click();
-  }
-
-  public async resetFilter(from: Page | Locator = this.page) {
-    await from.getByTestId("logic-type-button-test-id").click();
-    await this.page.getByRole("menuitem", { name: "Reset" }).click();
-  }
-
-  public async fillFilter(args: { collectionIn: any[]; collectionMatch: any }) {
-    for (let i = 0; i < args.collectionIn.length; i++) {
-      await this.monaco.fill({
-        monacoParentLocator: this.page.getByTestId("kie-tools--boxed-expression-component--filter-collection-in"),
-        content: args.collectionIn[i],
-        nth: i,
-      });
-    }
-
-    await this.monaco.fill({
-      monacoParentLocator: this.page.getByTestId("kie-tools--boxed-expression-component--filter-collection-match"),
-      content: args.collectionMatch,
-    });
   }
 
   public async goto() {

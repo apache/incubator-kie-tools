@@ -19,6 +19,7 @@
 
 import { test, expect } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
+import { WidthConstants } from "../../__fixtures__/jsonModel";
 
 test.describe("Resizing", () => {
   test.describe("Literal expression", () => {
@@ -238,6 +239,23 @@ test.describe("Resizing", () => {
       expect(await nestedEntry.boundingBox()).toHaveProperty("width", 120);
       expect(await nestedLiteralExpresison.boundingBox()).toHaveProperty("width", 212);
     });
+
+    test("should assign width values to all columns when no width defined", async ({
+      stories,
+      page,
+      resizing,
+      jsonModel,
+    }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1374",
+      });
+
+      await stories.openBoxedContext("installment-calculation");
+      await resizing.resizeCell(page.getByRole("cell", { name: "Fee (number)" }), { x: 0, y: 0 }, { x: 50, y: 0 });
+
+      expect(await jsonModel.getWidthsById()).toEqual([WidthConstants.CONTEXT_ENTRY_VARIABLE_MIN_WIDTH + 50]);
+    });
   });
 
   test.describe("Decision Table expression", () => {
@@ -453,6 +471,32 @@ test.describe("Resizing", () => {
         expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 158);
       }
     });
+
+    test("should assign width values to all columns when no width defined", async ({
+      stories,
+      page,
+      resizing,
+      jsonModel,
+    }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1374",
+      });
+
+      await stories.openDecisionTable("undefined-widths");
+      await resizing.resizeCell(
+        page.getByRole("columnheader", { name: "Annotations", exact: true }),
+        { x: 0, y: 0 },
+        { x: 50, y: 0 }
+      );
+
+      expect(await jsonModel.getWidthsById()).toEqual([
+        WidthConstants.DECISION_TABLE_INPUT_MIN_WIDTH,
+        WidthConstants.DECISION_TABLE_INPUT_MIN_WIDTH,
+        WidthConstants.DECISION_TABLE_OUTPUT_MIN_WIDTH,
+        WidthConstants.DECISION_TABLE_ANNOTATION_MIN_WIDTH + 50,
+      ]);
+    });
   });
 
   test.describe("Relation expression", () => {
@@ -534,6 +578,33 @@ test.describe("Resizing", () => {
         expect(await column1.boundingBox()).toHaveProperty("width", 173);
       }
       expect(await column2.boundingBox()).toHaveProperty("width", 100);
+    });
+
+    test("should assign width values to all columns when no width defined", async ({
+      stories,
+      page,
+      resizing,
+      jsonModel,
+    }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1374",
+      });
+
+      await stories.openRelation("bigger");
+      await resizing.resizeCell(
+        page.getByRole("columnheader", { name: "column-3 (<Undefined>)" }),
+        { x: 0, y: 0 },
+        { x: 200, y: 0 }
+      );
+
+      expect(await jsonModel.getWidthsById()).toEqual([
+        WidthConstants.RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        WidthConstants.RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        WidthConstants.RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+        WidthConstants.RELATION_EXPRESSION_COLUMN_MIN_WIDTH + 200,
+        undefined,
+      ]);
     });
   });
 
@@ -805,6 +876,23 @@ test.describe("Resizing", () => {
       expect(await params.boundingBox()).toHaveProperty("width", 153);
       expect(await literal.boundingBox()).toHaveProperty("width", 212);
     });
+
+    test("should assign width values to all columns when no width defined", async ({
+      stories,
+      page,
+      resizing,
+      jsonModel,
+    }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1374",
+      });
+
+      await stories.openBoxedInvocation("monthly-installment");
+      await resizing.resizeCell(page.getByRole("cell", { name: "Term (number)" }), { x: 0, y: 0 }, { x: 70, y: 0 });
+
+      expect(await jsonModel.getWidthsById()).toEqual([WidthConstants.INVOCATION_PARAMETER_MIN_WIDTH + 70, undefined]);
+    });
   });
 
   test.describe("List expression", () => {
@@ -873,7 +961,7 @@ test.describe("Resizing", () => {
   });
 
   test.describe("Filter expression", async () => {
-    test("should correctly resize a Filter", async ({ boxedExpressionEditor, page, resizing, stories }) => {
+    test("should correctly resize a Filter", async ({ bee, page, resizing, stories }) => {
       await stories.openBoxedFilter("base");
 
       await resizing.resizeCell(
@@ -882,16 +970,10 @@ test.describe("Resizing", () => {
         { x: 80, y: 0 }
       );
 
-      await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-resized.png");
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-resized.png");
     });
 
-    test("should correctly resize a nested Filter - in", async ({
-      boxedExpressionEditor,
-      monaco,
-      page,
-      resizing,
-      stories,
-    }) => {
+    test("should correctly resize a nested Filter - in", async ({ bee, monaco, page, resizing, stories }) => {
       await stories.openBoxedFilter("nested");
 
       await monaco.fill({
@@ -901,21 +983,15 @@ test.describe("Resizing", () => {
       });
 
       await resizing.resizeCell(
-        page.getByTestId("kie-tools--boxed-expression-component--filter-collection-in"),
+        page.getByTestId("kie-tools--bee--filter-collection-in"),
         { x: 0, y: 0 },
         { x: 200, y: 0 }
       );
 
-      await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-filter-nested-resized-using-in.png");
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested-resized-using-in.png");
     });
 
-    test("should correctly resize a nested Filter - match", async ({
-      boxedExpressionEditor,
-      monaco,
-      page,
-      resizing,
-      stories,
-    }) => {
+    test("should correctly resize a nested Filter - match", async ({ bee, monaco, page, resizing, stories }) => {
       await stories.openBoxedFilter("nested");
 
       await monaco.fill({
@@ -925,14 +1001,12 @@ test.describe("Resizing", () => {
       });
 
       await resizing.resizeCell(
-        page.getByTestId("kie-tools--boxed-expression-component--filter-collection-match"),
+        page.getByTestId("kie-tools--bee--filter-collection-match"),
         { x: 0, y: 0 },
         { x: 250, y: 0 }
       );
 
-      await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot(
-        "boxed-filter-nested-resized-using-match.png"
-      );
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested-resized-using-match.png");
     });
   });
 });

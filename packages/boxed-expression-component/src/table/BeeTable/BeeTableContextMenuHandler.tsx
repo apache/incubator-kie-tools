@@ -672,6 +672,7 @@ export function BeeTableContextMenuHandler({
           style={style}
           onMouseDown={(e) => e.stopPropagation()}
           ref={contextMenuContainer}
+          data-testid={"kie-tools--bee--context-menu-container"}
         >
           <Menu
             ouiaId="expression-table-context-menu"

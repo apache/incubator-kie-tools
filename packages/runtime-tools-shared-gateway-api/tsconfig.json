@@ -1,12 +1,3 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.json",
-  "compilerOptions": {
-    "outDir": "dist",
-    "jsx": "react",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "target": "es6",
-    "moduleResolution": "node"
-  },
-  "include": ["src"]
+  "extends": "@kie-tools/tsconfig/tsconfig.esm.json"
 }

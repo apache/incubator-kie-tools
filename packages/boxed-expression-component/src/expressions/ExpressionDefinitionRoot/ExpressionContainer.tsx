@@ -20,14 +20,14 @@
 import * as React from "react";
 import { useCallback, useEffect, useRef } from "react";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
-import { BoxedExpression, generateUuid } from "../../api";
+import { BoxedExpression, generateUuid, Normalized } from "../../api";
 import { findAllIdsDeep } from "../../ids/ids";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { ExpressionDefinitionLogicTypeSelector } from "./ExpressionDefinitionLogicTypeSelector";
 
 export interface ExpressionContainerProps {
-  expression?: BoxedExpression;
+  expression?: Normalized<BoxedExpression>;
   isNested: boolean;
   isResetSupported: boolean;
   rowIndex: number;
@@ -67,9 +67,9 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
       const { expression: defaultExpression, widthsById: defaultWidthsById } =
         beeGwtService!.getDefaultExpressionDefinition(logicType, parentElementTypeRef ?? expressionTypeRef, !isNested);
 
-      setExpression((prev: BoxedExpression) => {
+      setExpression((prev: Normalized<BoxedExpression>) => {
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedExpression = {
+        const ret: Normalized<BoxedExpression> = {
           ...defaultExpression,
           "@_id": defaultExpression["@_id"] ?? generateUuid(),
           "@_label": defaultExpression["@_label"] ?? parentElementName ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
@@ -100,7 +100,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   const getPlacementRef = useCallback(() => containerRef.current!, []);
 
   return (
-    <div ref={containerRef} className={"expression-container-box"} data-testid="expression-container">
+    <div ref={containerRef} className={"expression-container-box"} data-testid="kie-tools--bee--expression-container">
       <ExpressionDefinitionLogicTypeSelector
         expression={expression}
         onLogicTypeSelected={onLogicTypeSelected}

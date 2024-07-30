@@ -34,7 +34,7 @@ import { ResourcesAlmostEmptyIcon } from "@patternfly/react-icons/dist/js/icons/
 import { ResourcesFullIcon } from "@patternfly/react-icons/dist/js/icons/resources-full-icon";
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { BoxedExpression } from "../../api";
+import { BoxedExpression, Normalized } from "../../api";
 import { useCustomContextMenuHandler } from "../../contextMenu";
 import { MenuItemWithHelp } from "../../contextMenu/MenuWithHelp";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -62,7 +62,7 @@ import FilterIcon from "@patternfly/react-icons/dist/esm/icons/filter-icon";
 
 export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Expression properties */
-  expression?: BoxedExpression;
+  expression?: Normalized<BoxedExpression>;
   /** Function to be invoked when logic type changes */
   onLogicTypeSelected: (logicType: BoxedExpression["__$$element"] | undefined) => void;
   /** Function to be invoked when logic type is reset */
@@ -147,9 +147,7 @@ export function ExpressionDefinitionLogicTypeSelector({
       case "context":
         return <ContextExpression expression={expression} isNested={isNested} parentElementId={parentElementId} />;
       case "decisionTable":
-        return (
-          <DecisionTableExpression expression={expression} isNested={isNested} parentElementId={parentElementId} />
-        );
+        return <DecisionTableExpression expression={expression} isNested={isNested} />;
       case "list":
         return <ListExpression expression={expression} isNested={isNested} parentElementId={parentElementId} />;
       case "invocation":
@@ -295,13 +293,13 @@ export function ExpressionDefinitionLogicTypeSelector({
     }
   }, []);
 
-  const copyExpression = useCallback(() => {
-    navigator.clipboard.writeText(JSON.stringify(buildClipboardFromExpression(expression!, widthsById)));
+  const copyExpression = useCallback(async () => {
+    await navigator.clipboard.writeText(JSON.stringify(buildClipboardFromExpression(expression!, widthsById)));
     setDropdownOpen(false);
   }, [expression, widthsById]);
 
-  const cutExpression = useCallback(() => {
-    navigator.clipboard.writeText(JSON.stringify(buildClipboardFromExpression(expression!, widthsById)));
+  const cutExpression = useCallback(async () => {
+    await navigator.clipboard.writeText(JSON.stringify(buildClipboardFromExpression(expression!, widthsById)));
     onLogicTypeReset();
     setDropdownOpen(false);
   }, [expression, onLogicTypeReset, widthsById]);
@@ -321,8 +319,8 @@ export function ExpressionDefinitionLogicTypeSelector({
 
       const newIdsByOriginalId = mutateExpressionRandomizingIds(clipboard.expression);
 
-      let oldExpression: BoxedExpression | undefined;
-      setExpression((prev: BoxedExpression) => {
+      let oldExpression: Normalized<BoxedExpression> | undefined;
+      setExpression((prev: Normalized<BoxedExpression>) => {
         oldExpression = prev;
         return clipboard.expression;
       }); // This is mutated to have new IDs by the ID randomizer above.
@@ -517,9 +515,8 @@ export function ExpressionDefinitionLogicTypeSelector({
     return (
       <>
         {showExpressionHeader && expression && (
-          <div className={"logic-type-selected-header"}>
+          <div className={"logic-type-selected-header"} data-testid={"kie-tools--bee--logic-type-selected-header"}>
             <Dropdown
-              data-testid={"logic-type-selected-header"}
               isPlain={true}
               isOpen={isDropdownOpen}
               onKeyDown={(e) => {
@@ -529,7 +526,7 @@ export function ExpressionDefinitionLogicTypeSelector({
               }}
               toggle={
                 <DropdownToggle
-                  data-testid={"logic-type-button-test-id"}
+                  data-testid={"kie-tools--bee--expression-header-dropdown"}
                   icon={<>{logicTypeIcon(expression.__$$element)}</>}
                   style={{ padding: 0 }}
                   onToggle={setDropdownOpen}
@@ -561,6 +558,7 @@ export function ExpressionDefinitionLogicTypeSelector({
           opacity: 1,
           width: "200px",
         }}
+        data-testid={"kie-tools--bee--context-menu-container"}
         ref={selectLogicTypeContainer}
       >
         <Menu onSelect={selectLogicType}>
@@ -625,6 +623,7 @@ export function ExpressionDefinitionLogicTypeSelector({
           opacity: 1,
           minWidth: "150px",
         }}
+        data-testid={"kie-tools--bee--context-menu-container"}
         onKeyDown={(e) => {
           if (NavigationKeysUtils.isEsc(e.key)) {
             setDropdownOpen(false);
@@ -646,6 +645,7 @@ export function ExpressionDefinitionLogicTypeSelector({
           className={cssClass}
           ref={selectExpressionMenuContainerRef}
           onClick={showSelectExpression}
+          data-testid={"kie-tools--bee--select-expression"}
           style={
             !expression && nestedExpressionContainer.resizingWidth
               ? { width: `${nestedExpressionContainer.resizingWidth?.value}px` }

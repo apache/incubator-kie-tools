@@ -17,47 +17,47 @@
  * under the License.
  */
 
-import { test, expect } from "../__fixtures__/base";
+import { expect, test } from "../__fixtures__/base";
 
 test.describe("Logic type selector", () => {
-  test.beforeEach(async ({ boxedExpressionEditor }) => {
-    await boxedExpressionEditor.goto();
+  test.beforeEach(async ({ bee }) => {
+    await bee.goto();
   });
 
-  test("should select literal expression", async ({ page, boxedExpressionEditor }) => {
+  test("should select literal expression", async ({ page, bee }) => {
     await page.getByText("Select expression").click();
     await page.getByRole("menuitem", { name: "Literal" }).click();
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot(["literal", "boxed-literal.png"]);
+    await expect(bee.getContainer()).toHaveScreenshot(["literal", "boxed-literal.png"]);
   });
 
-  test("should select context expression", async ({ page, boxedExpressionEditor }) => {
+  test("should select context expression", async ({ page, bee }) => {
     await page.getByText("Select expression").click();
     await page.getByRole("menuitem", { name: "Context" }).click();
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot(["context", "boxed-context.png"]);
+    await expect(bee.getContainer()).toHaveScreenshot(["context", "boxed-context.png"]);
   });
 
-  test("should select decision table expression", async ({ page, boxedExpressionEditor }) => {
+  test("should select decision table expression", async ({ page, bee }) => {
     await page.getByText("Select expression").click();
     await page.getByRole("menuitem", { name: "Decision Table" }).click();
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot(["decisionTable", "decision-table.png"]);
+    await expect(bee.getContainer()).toHaveScreenshot(["decisionTable", "decision-table.png"]);
   });
 
-  test("should select relation expression", async ({ page, boxedExpressionEditor }) => {
+  test("should select relation expression", async ({ page, bee }) => {
     await page.getByText("Select expression").click();
     await page.getByRole("menuitem", { name: "Relation" }).click();
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot(["relation", "relation.png"]);
+    await expect(bee.getContainer()).toHaveScreenshot(["relation", "relation.png"]);
   });
 
-  test("should select invocation expression", async ({ page, boxedExpressionEditor }) => {
+  test("should select invocation expression", async ({ page, bee }) => {
     await page.getByText("Select expression").click();
     await page.getByRole("menuitem", { name: "Invocation" }).click();
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot(["invocation", "boxed-invocation.png"]);
+    await expect(bee.getContainer()).toHaveScreenshot(["invocation", "boxed-invocation.png"]);
   });
 
-  test("should select list expression", async ({ page, boxedExpressionEditor }) => {
+  test("should select list expression", async ({ page, bee }) => {
     await page.getByText("Select expression").click();
     await page.getByRole("menuitem", { name: "List" }).click();
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot(["list", "boxed-list.png"]);
+    await expect(bee.getContainer()).toHaveScreenshot(["list", "boxed-list.png"]);
   });
 
   test("shouldn't have function expression on root", async ({ page }) => {
@@ -65,12 +65,12 @@ test.describe("Logic type selector", () => {
     await expect(page.getByRole("menuitem", { name: "Function" })).not.toBeAttached();
   });
 
-  test("should select a nested function expression", async ({ page, boxedExpressionEditor }) => {
+  test("should select a nested function expression", async ({ page, bee }) => {
     await page.getByText("Select expression").click();
     await page.getByRole("menuitem", { name: "List" }).click();
 
     await page.getByText("Select expression").click();
     await page.getByRole("menuitem", { name: "Function" }).click();
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot(["function", "nested-boxed-function.png"]);
+    await expect(bee.getContainer()).toHaveScreenshot(["function", "nested-boxed-function.png"]);
   });
 });
