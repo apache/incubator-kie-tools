@@ -44,7 +44,8 @@ const (
 	// of its start health check.
 	KogitoDataIndexHealthCheckEnabled = "kogito.data-index.health-enabled"
 	// KogitoDataIndexURL configures the data index url, this value can be used internally by the workflow.
-	KogitoDataIndexURL = "kogito.data-index.url"
+	KogitoDataIndexURL              = "kogito.data-index.url"
+	KogitoDataIndexQuarkusDevUICors = "%dev.quarkus.dev-ui.cors.enabled"
 	// KogitoJobServiceHealthCheckEnabled configures if a workflow must check for the job service availability as part
 	// of its start health check.
 	KogitoJobServiceHealthCheckEnabled = "kogito.jobs-service.health-enabled"
