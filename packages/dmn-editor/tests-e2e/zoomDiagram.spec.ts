@@ -65,12 +65,7 @@ test.describe("Zoom and Panning Diagram", () => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 200, y: 300 } });
     await diagram.zoomOut({ clicks: 3 });
 
-    // This is to pan the viewport, to make more changes on it despite the zoom to
-    // make sure that they are kept after swapping between tabs.
-    await page.mouse.move(500, 500);
-    await page.mouse.down({ button: "middle" });
-    await page.mouse.move(300, 300);
-    await page.mouse.up({ button: "middle" });
+    await diagram.pan({ startPosition: { x: 500, y: 500 }, endPosition: { x: 300, y: 300 } });
 
     await editor.changeTab({ tab: TabName.DATA_TYPES });
     await editor.changeTab({ tab: TabName.EDITOR });

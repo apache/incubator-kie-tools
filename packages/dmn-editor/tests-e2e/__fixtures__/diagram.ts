@@ -63,4 +63,11 @@ export class Diagram {
   public async fitView() {
     await this.get().getByLabel("fit view").click();
   }
+
+  public async pan(args: { startPosition: { x: number; y: number }; endPosition: { x: number; y: number } }) {
+    await this.page.mouse.move(args.startPosition.x, args.startPosition.y);
+    await this.page.mouse.down({ button: "middle" });
+    await this.page.mouse.move(args.endPosition.x, args.endPosition.y);
+    await this.page.mouse.up({ button: "middle" });
+  }
 }
