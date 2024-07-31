@@ -25,25 +25,42 @@ import { SnapGrid } from "../store/Store";
 import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { Normalized } from "../normalization/normalize";
+import {
+  DMN15__tBusinessKnowledgeModel,
+  DMN15__tDecision,
+  DMN15__tDecisionService,
+  DMN15__tInputData,
+  DMN15__tKnowledgeSource,
+} from "@kie-tools/dmn-marshaller/src/schemas/dmn-1_5/ts-gen/types";
+
+export type DrgElement =
+  | Normalized<{ __$$element: "decision" } & DMN15__tDecision>
+  | Normalized<{ __$$element: "businessKnowledgeModel" } & DMN15__tBusinessKnowledgeModel>
+  | Normalized<{ __$$element: "decisionService" } & DMN15__tDecisionService>
+  | Normalized<{ __$$element: "inputData" } & DMN15__tInputData>
+  | Normalized<{ __$$element: "knowledgeSource" } & DMN15__tKnowledgeSource>;
 
 export function addDecisionToDecisionService({
   definitions,
-  decisionId,
+  drgElement,
   decisionServiceId,
   drdIndex,
   snapGrid,
+  decisionShape,
+  elementId,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
-  decisionId: string;
+  drgElement: DrgElement;
   decisionServiceId: string;
   drdIndex: number;
   snapGrid: SnapGrid;
+  decisionShape: Normalized<DMNDI15__DMNShape>;
+  elementId: string;
 }) {
-  console.debug(`DMN MUTATION: Adding Decision '${decisionId}' to Decision Service '${decisionServiceId}'`);
+  console.debug(`DMN MUTATION: Adding Decision '${elementId}' to Decision Service '${decisionServiceId}'`);
 
-  const decision = definitions.drgElement?.find((s) => s["@_id"] === decisionId);
-  if (decision?.__$$element !== "decision") {
-    throw new Error(`DMN MUTATION: DRG Element with id '${decisionId}' is either not a Decision or doesn't exist.`);
+  if (drgElement?.__$$element !== "decision") {
+    throw new Error(`DMN MUTATION: DRG Element with id '${elementId}' is either not a Decision or doesn't exist.`);
   }
 
   const decisionService = definitions.drgElement?.find((s) => s["@_id"] === decisionServiceId);
@@ -54,9 +71,6 @@ export function addDecisionToDecisionService({
   }
 
   const diagram = addOrGetDrd({ definitions, drdIndex });
-  const decisionShape = diagram.diagramElements.find(
-    (s) => s["@_dmnElementRef"] === decisionId && s.__$$element === "dmndi:DMNShape"
-  ) as Normalized<DMNDI15__DMNShape>;
 
   const decisionServiceShape = diagram.diagramElements.find(
     (s) => s["@_dmnElementRef"] === decisionServiceId && s.__$$element === "dmndi:DMNShape"
@@ -65,10 +79,10 @@ export function addDecisionToDecisionService({
   const section = getSectionForDecisionInsideDecisionService({ decisionShape, decisionServiceShape, snapGrid });
   if (section === "encapsulated") {
     decisionService.encapsulatedDecision ??= [];
-    decisionService.encapsulatedDecision.push({ "@_href": `#${decisionId}` });
+    decisionService.encapsulatedDecision.push({ "@_href": `${elementId}` });
   } else if (section === "output") {
     decisionService.outputDecision ??= [];
-    decisionService.outputDecision.push({ "@_href": `#${decisionId}` });
+    decisionService.outputDecision.push({ "@_href": `${elementId}` });
   } else {
     throw new Error(`DMN MUTATION: Invalid section to add decision to: '${section}' `);
   }

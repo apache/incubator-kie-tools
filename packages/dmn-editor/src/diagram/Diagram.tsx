@@ -57,7 +57,7 @@ import {
 } from "../externalNodes/ExternalNodesPanel";
 import { nodeNatures } from "../mutations/NodeNature";
 import { addConnectedNode } from "../mutations/addConnectedNode";
-import { addDecisionToDecisionService } from "../mutations/addDecisionToDecisionService";
+import { addDecisionToDecisionService, DrgElement } from "../mutations/addDecisionToDecisionService";
 import { addEdge } from "../mutations/addEdge";
 import { addShape } from "../mutations/addShape";
 import { addStandaloneNode } from "../mutations/addStandaloneNode";
@@ -1009,12 +1009,14 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 addDecisionToDecisionService({
                   definitions: state.dmn.model.definitions,
                   drdIndex: state.computed(state).getDrdIndex(),
-                  decisionId: selectedNodes[i].data.dmnObject!["@_id"]!, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
+                  drgElement: selectedNodes[i].data.dmnObject as DrgElement,
                   decisionServiceId: state
                     .computed(state)
                     .getDiagramData(externalModelsByNamespace)
                     .nodesById.get(dropTargetNode.id)!.data.dmnObject!["@_id"]!,
                   snapGrid: state.diagram.snapGrid,
+                  decisionShape: selectedNodes[i].data.shape,
+                  elementId: selectedNodes[i].id, // The "real" id is here, which can be the local id or an imported node id (uri + external element id).
                 });
               }
             } else {
