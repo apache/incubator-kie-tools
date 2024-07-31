@@ -7,7 +7,7 @@
     "install": "jest --silent --verbose --passWithNoTests"
   },
   "dependencies": {
-    "fast-xml-parser": "^4.3.1"
+    "fast-xml-parser": "^4.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
