@@ -19,7 +19,12 @@
 
 const { execSync, execFileSync } = require("child_process");
 const path = require("path");
+const os = require("os");
 const buildEnv = require("../env");
+const version = require("../package.json").version;
+
+const platform = os.platform();
+const arch = os.arch();
 
 const filePath = path.join(process.cwd(), "tests/test.zip");
 
@@ -64,7 +69,9 @@ describe("Test built images individually", () => {
     ]).toString();
     const dockerLogs = execSync(`docker logs ddus-runtime-install`)
       .toString()
-      .replace(/http:\/\/.*:/, "<ddus-fileserver-ip>:");
+      .replace(/http:\/\/.*:/, "<ddus-fileserver-ip>:")
+      .replaceAll(version, "<ddus-version>")
+      .replaceAll(`${platform}-${arch}`, "<platform-arch>");
     expect(response).toMatchSnapshot();
     expect(dockerLogs).toMatchSnapshot();
   });
