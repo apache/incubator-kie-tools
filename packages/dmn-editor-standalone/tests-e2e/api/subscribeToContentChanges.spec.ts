@@ -18,58 +18,86 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName } from "../__fixtures__/editor";
+import { NodeType } from "../__fixtures__/nodes";
 
 test.describe("DMN Editor - Standalone - API", () => {
   test.describe("subscribeToContentChanges and unsubscribeToContentChanges", () => {
     test.beforeEach(async ({ editor }) => {
       await editor.open();
+      test.slow();
     });
 
-    test("should count edits via subscribeToContentChanges", async ({ page, editor }) => {
-      const editorIFrame = editor.getEditorIframe();
-      const inputSelector = editorIFrame.getByTitle("Input Data", { exact: true });
-      const editorDiagram = editor.getEditorDiagram();
+    // Obs.: Draging a new node then renaming it counts as 2 edits
+    test("should count edits via subscribeToContentChanges", async ({ editor, palette, nodes }) => {
+      await palette.dragNewNode({
+        type: NodeType.INPUT_DATA,
+        targetPosition: { x: 100, y: 100 },
+        thenRenameTo: "Input-A",
+      });
+      await expect(nodes.get({ name: "Input-A" })).toBeAttached();
+      await expect(await editor.getEditCount()).toHaveText("2");
 
-      // Add 4 Input Data nodes and check if edit count increases to 4
-      for (let i = 0; i < 4; i++) {
-        await inputSelector.dragTo(editorDiagram, { targetPosition: { x: 100 + i * 200, y: 100 } });
-        await editor.resetFocus();
-        await expect(
-          (await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.INPUT_DATA}"]`).all()).length
-        ).toBe(i + 1);
-        await expect(await page.locator("#edit-counter")).toHaveText((i + 1).toString());
-      }
+      await palette.dragNewNode({
+        type: NodeType.INPUT_DATA,
+        targetPosition: { x: 300, y: 100 },
+        thenRenameTo: "Input-B",
+      });
+      await expect(nodes.get({ name: "Input-B" })).toBeAttached();
+      await expect(await editor.getEditCount()).toHaveText("4");
+
+      await palette.dragNewNode({
+        type: NodeType.INPUT_DATA,
+        targetPosition: { x: 500, y: 100 },
+        thenRenameTo: "Input-C",
+      });
+      await expect(nodes.get({ name: "Input-C" })).toBeAttached();
+      await expect(await editor.getEditCount()).toHaveText("6");
+
+      await palette.dragNewNode({
+        type: NodeType.INPUT_DATA,
+        targetPosition: { x: 700, y: 100 },
+        thenRenameTo: "Input-D",
+      });
+      await expect(nodes.get({ name: "Input-D" })).toBeAttached();
+      await expect(await editor.getEditCount()).toHaveText("8");
     });
 
-    test("should stop counting edits after unsubscribeToContentChanges", async ({ page, editor }) => {
-      const editorIFrame = editor.getEditorIframe();
-      const inputSelector = editorIFrame.getByTitle("Input Data", { exact: true });
-      const editorDiagram = editor.getEditorDiagram();
+    test("should stop counting edits after unsubscribeToContentChanges", async ({ editor, palette, nodes }) => {
+      await palette.dragNewNode({
+        type: NodeType.INPUT_DATA,
+        targetPosition: { x: 100, y: 100 },
+        thenRenameTo: "Input-A",
+      });
+      await expect(nodes.get({ name: "Input-A" })).toBeAttached();
+      await expect(await editor.getEditCount()).toHaveText("2");
 
-      // Add 4 Input Data nodes and check if edit count increases to 4
-      for (let i = 0; i < 4; i++) {
-        await inputSelector.dragTo(editorDiagram, { targetPosition: { x: 100 + i * 200, y: 100 } });
-        await editor.resetFocus();
-      }
-      await expect(
-        (await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.INPUT_DATA}"]`).all()).length
-      ).toBe(4);
-
-      await expect(await page.locator("#edit-counter")).toHaveText("4");
+      await palette.dragNewNode({
+        type: NodeType.INPUT_DATA,
+        targetPosition: { x: 300, y: 100 },
+        thenRenameTo: "Input-B",
+      });
+      await expect(nodes.get({ name: "Input-B" })).toBeAttached();
+      await expect(await editor.getEditCount()).toHaveText("4");
 
       await editor.unsubscribeToContentChanges();
 
-      // Add 2 more Input Data nodes and check if edit count remains the same
-      for (let i = 0; i < 2; i++) {
-        await inputSelector.dragTo(editorDiagram, { targetPosition: { x: 100 + i * 200, y: 300 } });
-        await editor.resetFocus();
-      }
-      await expect(
-        (await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.INPUT_DATA}"]`).all()).length
-      ).toBe(6);
+      await palette.dragNewNode({
+        type: NodeType.INPUT_DATA,
+        targetPosition: { x: 500, y: 100 },
+        thenRenameTo: "Input-C",
+        dontWaitForEditCount: true,
+      });
+      await expect(nodes.get({ name: "Input-C" })).toBeAttached();
+      await expect(await editor.getEditCount()).toHaveText("4");
 
-      await expect(await page.locator("#edit-counter")).toHaveText("4");
+      await palette.dragNewNode({
+        type: NodeType.INPUT_DATA,
+        targetPosition: { x: 700, y: 100 },
+        thenRenameTo: "Input-D",
+        dontWaitForEditCount: true,
+      });
+      await expect(nodes.get({ name: "Input-D" })).toBeAttached();
+      await expect(await editor.getEditCount()).toHaveText("4");
     });
   });
 });

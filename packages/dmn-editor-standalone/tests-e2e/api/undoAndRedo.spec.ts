@@ -18,58 +18,98 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName } from "../__fixtures__/editor";
+import { NodeType } from "../__fixtures__/nodes";
 
 test.describe("DMN Editor - Standalone - API", () => {
   test.describe("undo and redo", () => {
     test.beforeEach(async ({ editor }) => {
       await editor.open();
+      test.slow();
     });
 
-    test("should undo and redo edits when undo or redo are called", async ({ page, editor }) => {
-      const editorIFrame = editor.getEditorIframe();
-      const decisionSelector = editorIFrame.getByTitle("Decision", { exact: true });
-      const editorDiagram = editor.getEditorDiagram();
-
-      // Add 4 Decision nodes
-      for (let i = 0; i < 4; i++) {
-        await decisionSelector.dragTo(editorDiagram, { targetPosition: { x: 100 + i * 200, y: 100 } });
-        await editor.resetFocus();
-      }
-
-      await expect(await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.DECISION}"]`)).toHaveCount(4);
-
+    // Obs.: Draging a new node then renaming it counts as 2 edits, that's why we need to undo/redo twice for each node.
+    test("should undo and redo edits when undo or redo are called", async ({ page, editor, palette, nodes }) => {
       // The checks for the edit counter are here to make sure that we wait for the debounce time.
-      // Each action on the editor (such as adding a node) has a debounce time to count as an edit,
-      // meaning that dragging 4 new Decision nodes in quick succession may be counted as 1 or 2 edits
-      // instead of 4.
+      // Each action on the editor (such as adding a node or renaming) has a debounce time to count as an edit,
+      // meaning that dragging and renaming 4 new Decision nodes in quick succession may be counted as
+      // less than 8 edits.
       // If we wait for the content changes event (via subscribeToContentChanges) to have the edit counter
       // updated, that means that the debounce time has already passed and we can undo/redo single edits.
-      // Edit counts are incremental in this example (regardless of undo/redo), that's why it is 4 after
-      // adding 4 nodes and 5 after undoing one of them.
-      await expect(await page.locator("#edit-counter")).toHaveText("4");
+      // Edit counts are incremental in this example (regardless of undo/redo), that's why it is 8 after
+      // adding and ranaming 4 nodes and 10 after undoing one of them.
+      await palette.dragNewNode({
+        type: NodeType.INPUT_DATA,
+        targetPosition: { x: 100, y: 100 },
+        thenRenameTo: "Input-A",
+      });
+      await expect(await editor.getEditCount()).toHaveText("2");
+      await palette.dragNewNode({
+        type: NodeType.INPUT_DATA,
+        targetPosition: { x: 300, y: 100 },
+        thenRenameTo: "Input-B",
+      });
+      await expect(await editor.getEditCount()).toHaveText("4");
+      await palette.dragNewNode({
+        type: NodeType.INPUT_DATA,
+        targetPosition: { x: 500, y: 100 },
+        thenRenameTo: "Input-C",
+      });
+      await expect(await editor.getEditCount()).toHaveText("6");
+      await palette.dragNewNode({
+        type: NodeType.INPUT_DATA,
+        targetPosition: { x: 700, y: 100 },
+        thenRenameTo: "Input-D",
+      });
+      await expect(await editor.getEditCount()).toHaveText("8");
+      await expect(nodes.get({ name: "Input-A" })).toBeAttached();
+      await expect(nodes.get({ name: "Input-B" })).toBeAttached();
+      await expect(nodes.get({ name: "Input-C" })).toBeAttached();
+      await expect(nodes.get({ name: "Input-D" })).toBeAttached();
 
       await editor.undo();
+      await expect(await editor.getEditCount()).toHaveText("9");
+      await editor.undo();
+      await expect(await editor.getEditCount()).toHaveText("10");
 
-      await expect(await page.locator("#edit-counter")).toHaveText("5");
-
-      await expect(await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.DECISION}"]`)).toHaveCount(3);
+      await expect(nodes.get({ name: "Input-A" })).toBeAttached();
+      await expect(nodes.get({ name: "Input-B" })).toBeAttached();
+      await expect(nodes.get({ name: "Input-C" })).toBeAttached();
+      await expect(nodes.get({ name: "Input-D" })).not.toBeAttached();
 
       await editor.undo();
+      await expect(await editor.getEditCount()).toHaveText("11");
       await editor.undo();
+      await expect(await editor.getEditCount()).toHaveText("12");
       await editor.undo();
+      await expect(await editor.getEditCount()).toHaveText("13");
+      await editor.undo();
+      await expect(await editor.getEditCount()).toHaveText("14");
+      await editor.undo();
+      await expect(await editor.getEditCount()).toHaveText("15");
+      await editor.undo();
+      await expect(await editor.getEditCount()).toHaveText("16");
 
-      await expect(await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.DECISION}"]`)).toHaveCount(0);
-      await expect(await page.locator("#edit-counter")).toHaveText("8");
+      await expect(nodes.get({ name: "Input-A" })).not.toBeAttached();
+      await expect(nodes.get({ name: "Input-B" })).not.toBeAttached();
+      await expect(nodes.get({ name: "Input-C" })).not.toBeAttached();
+      await expect(nodes.get({ name: "Input-D" })).not.toBeAttached();
 
       // Should show initial modal for an empty DMN
-      await expect(editor.getEditorIframe().getByText("This DMN's Diagram is empty")).toBeAttached();
+      await expect(editor.get().getByText("This DMN's Diagram is empty")).toBeAttached();
 
       await editor.redo();
+      await expect(await editor.getEditCount()).toHaveText("17");
       await editor.redo();
+      await expect(await editor.getEditCount()).toHaveText("18");
+      await editor.redo();
+      await expect(await editor.getEditCount()).toHaveText("19");
+      await editor.redo();
+      await expect(await editor.getEditCount()).toHaveText("20");
 
-      await expect(await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.DECISION}"]`)).toHaveCount(2);
-      await expect(await page.locator("#edit-counter")).toHaveText("10");
+      await expect(nodes.get({ name: "Input-A" })).toBeAttached();
+      await expect(nodes.get({ name: "Input-B" })).toBeAttached();
+      await expect(nodes.get({ name: "Input-C" })).not.toBeAttached();
+      await expect(nodes.get({ name: "Input-D" })).not.toBeAttached();
     });
   });
 });

@@ -18,97 +18,127 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import {
-  loanPreQualificationDmn,
-  canDriveDmn,
-  findEmployeesDmn,
-  typesDmn,
-  scorecardPmml,
-} from "../__fixtures__/externalModels";
 import { ContentType } from "@kie-tools-core/workspace/dist/api";
+import { ExternalFile } from "../__fixtures__/files";
 
 test.describe("DMN Editor - Standalone - Resources", () => {
   test.describe("includedModels/resources", () => {
-    test("should list all resources", async ({ editor }) => {
+    test("should list all resources", async ({ editor, files }) => {
       const resources: Array<[string, { contentType: ContentType; content: string }]> = [
-        ["loan-pre-qualification.dmn", { content: loanPreQualificationDmn, contentType: ContentType.TEXT }],
-        ["can-drive.dmn", { content: canDriveDmn, contentType: ContentType.TEXT }],
-        ["find-employees.dmn", { content: findEmployeesDmn, contentType: ContentType.TEXT }],
-        ["types.dmn", { content: typesDmn, contentType: ContentType.TEXT }],
-        ["scorecard.pmml", { content: scorecardPmml, contentType: ContentType.TEXT }],
+        [
+          "loan-pre-qualification.dmn",
+          { content: await files.getFile(ExternalFile.LOAN_PRE_QUALIFICATION_DMN), contentType: ContentType.TEXT },
+        ],
+        ["can-drive.dmn", { content: await files.getFile(ExternalFile.CAN_DRIVE_DMN), contentType: ContentType.TEXT }],
+        [
+          "find-employees.dmn",
+          { content: await files.getFile(ExternalFile.FIND_EMPLOYEES_DMN), contentType: ContentType.TEXT },
+        ],
+        ["types.dmn", { content: await files.getFile(ExternalFile.TYPES_DMN), contentType: ContentType.TEXT }],
+        [
+          "scorecard.pmml",
+          { content: await files.getFile(ExternalFile.SCORECARD_PMML), contentType: ContentType.TEXT },
+        ],
       ];
 
+      // Open the editor
       await editor.open({ resources });
-      const editorIFrame = editor.getEditorIframe();
 
       // Switch to Included Models tab
-      await editorIFrame.getByRole("tab").getByText("Included models").click();
+      await editor.get().getByRole("tab").getByText("Included models").click();
 
       // Include models modal
-      await editorIFrame.getByText("Include model").click();
-      await editorIFrame.getByPlaceholder("Select a model to include...").click();
+      await editor.get().getByText("Include model").click();
+      await editor.get().getByPlaceholder("Select a model to include...").click();
 
-      await expect(editorIFrame.getByText("DMN", { exact: true })).toBeAttached();
-      await expect(editorIFrame.getByText("loan-pre-qualification.dmn")).toBeAttached();
-      await expect(editorIFrame.getByText("can-drive.dmn")).toBeAttached();
-      await expect(editorIFrame.getByText("find-employees.dmn")).toBeAttached();
-      await expect(editorIFrame.getByText("types.dmn")).toBeAttached();
-      await expect(editorIFrame.getByText("PMML", { exact: true })).toBeAttached();
-      await expect(editorIFrame.getByText("scorecard.pmml")).toBeAttached();
+      await expect(editor.get().getByText("DMN", { exact: true })).toBeAttached();
+      await expect(editor.get().getByText("loan-pre-qualification.dmn")).toBeAttached();
+      await expect(editor.get().getByText("can-drive.dmn")).toBeAttached();
+      await expect(editor.get().getByText("find-employees.dmn")).toBeAttached();
+      await expect(editor.get().getByText("types.dmn")).toBeAttached();
+      await expect(editor.get().getByText("PMML", { exact: true })).toBeAttached();
+      await expect(editor.get().getByText("scorecard.pmml")).toBeAttached();
     });
 
-    test("should not list any models to be included", async ({ editor }) => {
+    test("should not list any models to be included", async ({ editor, files }) => {
       const resources: Array<[string, { contentType: ContentType; content: string }]> = [
-        ["loan-pre-qualification.dmn", { content: loanPreQualificationDmn, contentType: ContentType.TEXT }],
-        ["path1/can-drive.dmn", { content: canDriveDmn, contentType: ContentType.TEXT }],
-        ["path2/find-employees.dmn", { content: findEmployeesDmn, contentType: ContentType.TEXT }],
-        ["path3/types.dmn", { content: typesDmn, contentType: ContentType.TEXT }],
-        ["path1/pmml/scorecard.pmml", { content: scorecardPmml, contentType: ContentType.TEXT }],
+        [
+          "loan-pre-qualification.dmn",
+          { content: await files.getFile(ExternalFile.LOAN_PRE_QUALIFICATION_DMN), contentType: ContentType.TEXT },
+        ],
+        [
+          "path1/can-drive.dmn",
+          { content: await files.getFile(ExternalFile.CAN_DRIVE_DMN), contentType: ContentType.TEXT },
+        ],
+        [
+          "path2/find-employees.dmn",
+          { content: await files.getFile(ExternalFile.FIND_EMPLOYEES_DMN), contentType: ContentType.TEXT },
+        ],
+        ["path3/types.dmn", { content: await files.getFile(ExternalFile.TYPES_DMN), contentType: ContentType.TEXT }],
+        [
+          "path1/pmml/scorecard.pmml",
+          { content: await files.getFile(ExternalFile.SCORECARD_PMML), contentType: ContentType.TEXT },
+        ],
       ];
 
+      // Open the editor
       await editor.open({ resources, initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot: "path1/dmn/model.dmn" });
-      const editorIFrame = editor.getEditorIframe();
 
       // Switch to Included Models tab
-      await editorIFrame.getByRole("tab").getByText("Included models").click();
+      await editor.get().getByRole("tab").getByText("Included models").click();
 
       // Include models modal
-      await editorIFrame.getByText("Include model").click();
+      await editor.get().getByText("Include model").click();
 
-      await expect(editorIFrame.getByText("There's no available models to be included.")).toBeAttached();
+      await expect(editor.get().getByText("There's no available models to be included.")).toBeAttached();
     });
 
-    test("should list all resources on same parent path", async ({ editor }) => {
+    test("should list all resources on same parent path", async ({ editor, files }) => {
       const resources: Array<[string, { contentType: ContentType; content: string }]> = [
-        ["loan-pre-qualification.dmn", { content: loanPreQualificationDmn, contentType: ContentType.TEXT }],
-        ["path1/can-drive.dmn", { content: canDriveDmn, contentType: ContentType.TEXT }],
-        ["path2/find-employees.dmn", { content: findEmployeesDmn, contentType: ContentType.TEXT }],
-        ["path3/types/types.dmn", { content: typesDmn, contentType: ContentType.TEXT }],
-        ["path1/pmml/scorecard.pmml", { content: scorecardPmml, contentType: ContentType.TEXT }],
+        [
+          "loan-pre-qualification.dmn",
+          { content: await files.getFile(ExternalFile.LOAN_PRE_QUALIFICATION_DMN), contentType: ContentType.TEXT },
+        ],
+        [
+          "path1/can-drive.dmn",
+          { content: await files.getFile(ExternalFile.CAN_DRIVE_DMN), contentType: ContentType.TEXT },
+        ],
+        [
+          "path2/find-employees.dmn",
+          { content: await files.getFile(ExternalFile.FIND_EMPLOYEES_DMN), contentType: ContentType.TEXT },
+        ],
+        [
+          "path3/types/types.dmn",
+          { content: await files.getFile(ExternalFile.TYPES_DMN), contentType: ContentType.TEXT },
+        ],
+        [
+          "path1/pmml/scorecard.pmml",
+          { content: await files.getFile(ExternalFile.SCORECARD_PMML), contentType: ContentType.TEXT },
+        ],
       ];
 
+      // Open the editor
       await editor.open({ resources, initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot: "path1/model.dmn" });
-      const editorIFrame = editor.getEditorIframe();
 
       // Switch to Included Models tab
-      await editorIFrame.getByRole("tab").getByText("Included models").click();
+      await editor.get().getByRole("tab").getByText("Included models").click();
 
       // Include models modal
-      await editorIFrame.getByText("Include model").click();
-      await editorIFrame.getByPlaceholder("Select a model to include...").click();
+      await editor.get().getByText("Include model").click();
+      await editor.get().getByPlaceholder("Select a model to include...").click();
 
-      await expect(editorIFrame.getByText("DMN", { exact: true })).toBeAttached();
-      await expect(editorIFrame.getByText("loan-pre-qualification.dmn")).not.toBeAttached();
-      await expect(editorIFrame.getByText("can-drive.dmn")).toBeAttached();
-      await expect(editorIFrame.getByText("find-employees.dmn")).not.toBeAttached();
-      await expect(editorIFrame.getByText("types.dmn")).not.toBeAttached();
-      await expect(editorIFrame.getByText("PMML", { exact: true })).toBeAttached();
-      await expect(editorIFrame.getByText("scorecard.pmml")).toBeAttached();
+      await expect(editor.get().getByText("DMN", { exact: true })).toBeAttached();
+      await expect(editor.get().getByText("loan-pre-qualification.dmn")).not.toBeAttached();
+      await expect(editor.get().getByText("can-drive.dmn")).toBeAttached();
+      await expect(editor.get().getByText("find-employees.dmn")).not.toBeAttached();
+      await expect(editor.get().getByText("types.dmn")).not.toBeAttached();
+      await expect(editor.get().getByText("PMML", { exact: true })).toBeAttached();
+      await expect(editor.get().getByText("scorecard.pmml")).toBeAttached();
 
-      await expect(editorIFrame.getByText("path1", { exact: true })).toBeAttached();
-      await expect(editorIFrame.getByText("path2", { exact: true })).not.toBeAttached();
-      await expect(editorIFrame.getByText("path3/types", { exact: true })).not.toBeAttached();
-      await expect(editorIFrame.getByText("path1/pmml", { exact: true })).toBeAttached();
+      await expect(editor.get().getByText("path1", { exact: true })).toBeAttached();
+      await expect(editor.get().getByText("path2", { exact: true })).not.toBeAttached();
+      await expect(editor.get().getByText("path3/types", { exact: true })).not.toBeAttached();
+      await expect(editor.get().getByText("path1/pmml", { exact: true })).toBeAttached();
     });
   });
 });

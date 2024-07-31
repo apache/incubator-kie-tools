@@ -18,9 +18,10 @@
  */
 
 import { Page, expect } from "@playwright/test";
-import type { open } from "../../src/index";
 import { ContentType } from "@kie-tools-core/workspace/dist/api";
-import { DmnEditorStandaloneApi } from "../../src/DmnEditorStandaloneApi";
+import type { DmnEditorStandaloneApi } from "@kie-tools/dmn-editor-standalone/dist/DmnEditorStandaloneApi";
+import type { open } from "@kie-tools/dmn-editor-standalone/dist";
+import * as prettier from "prettier";
 
 export enum DefaultNodeName {
   INPUT_DATA = "New Input Data",
@@ -37,10 +38,7 @@ declare global {
 }
 
 export class Editor {
-  constructor(
-    public page: Page,
-    public baseURL?: string
-  ) {}
+  constructor(public page: Page) {}
 
   public async open(args?: {
     resources?: Array<[string, { contentType: ContentType; content: string }]>;
@@ -69,8 +67,7 @@ export class Editor {
       document.getElementById("is-dirty")!.innerHTML = "false";
     }, args);
     this.subscribeToContentChanges();
-    const dmnEditorIFrame = this.page.frameLocator("#dmn-editor-standalone");
-    await expect(dmnEditorIFrame.getByText("This DMN's Diagram is empty")).toBeAttached();
+    await expect(this.get().getByText("This DMN's Diagram is empty")).toBeAttached();
   }
 
   public async close() {
@@ -79,16 +76,8 @@ export class Editor {
     });
   }
 
-  public getEditorIframe() {
+  public get() {
     return this.page.frameLocator("#dmn-editor-standalone");
-  }
-
-  public getEditorDiagram() {
-    return this.getEditorIframe().getByTestId("kie-dmn-editor--diagram-container");
-  }
-
-  public async resetFocus() {
-    return this.getEditorDiagram().click({ position: { x: 0, y: 0 } });
   }
 
   public async setContent(contentName: string, content: string) {
@@ -102,6 +91,21 @@ export class Editor {
 
   public async getContent() {
     return this.page.evaluate(async () => await window.currentEditor.getContent());
+  }
+
+  public async getFormattedContent() {
+    return prettier.format(await this.getContent(), {
+      ...(await prettier.resolveConfig(".")),
+      parser: "xml",
+    });
+  }
+
+  public async getContentStats() {
+    const dmnContentWith4Inputs2Decisions = await this.getContent();
+    return {
+      inputDataNodeQtt: (dmnContentWith4Inputs2Decisions.match(/<inputData/gm) || []).length,
+      decisionNodeQtt: (dmnContentWith4Inputs2Decisions.match(/<decision/gm) || []).length,
+    };
   }
 
   public async getPreview() {
@@ -134,5 +138,13 @@ export class Editor {
 
   public async markAsSaved() {
     return this.page.evaluate(async () => await window.currentEditor.markAsSaved());
+  }
+
+  public getEditCount() {
+    return this.page.locator("#edit-counter");
+  }
+
+  public getIsDirty() {
+    return this.page.locator("#is-dirty");
   }
 }

@@ -17,19 +17,27 @@
  * under the License.
  */
 
-import path from "path";
-import { readFileSync } from "fs";
+import { Page } from "@playwright/test";
+import { Editor } from "./editor";
 
-export const emptyDrd = readFileSync(path.join(__dirname, "files/empty-drd.dmn"), "utf8");
+export class Diagram {
+  constructor(
+    public page: Page,
+    public editor: Editor
+  ) {}
 
-export const emptyDmn = readFileSync(path.join(__dirname, "files/empty.dmn"), "utf8");
+  public get() {
+    return this.editor.get().getByTestId("kie-tools--dmn-editor--diagram-container");
+  }
 
-export const loanPreQualificationDmn = readFileSync(path.join(__dirname, "files/loan-pre-qualification.dmn"), "utf8");
+  public async resetFocus() {
+    return this.get().click({ position: { x: 0, y: 0 } });
+  }
 
-export const canDriveDmn = readFileSync(path.join(__dirname, "files/can-drive.dmn"), "utf8");
-
-export const findEmployeesDmn = readFileSync(path.join(__dirname, "files/find-employees.dmn"), "utf8");
-
-export const typesDmn = readFileSync(path.join(__dirname, "files/types.dmn"), "utf8");
-
-export const scorecardPmml = readFileSync(path.join(__dirname, "files/scorecard.pmml"), "utf8");
+  public async select(args: { startPosition: { x: number; y: number }; endPosition: { x: number; y: number } }) {
+    await this.page.mouse.move(args.startPosition.x, args.startPosition.y);
+    await this.page.mouse.down();
+    await this.page.mouse.move(args.endPosition.x, args.endPosition.y);
+    await this.page.mouse.up();
+  }
+}

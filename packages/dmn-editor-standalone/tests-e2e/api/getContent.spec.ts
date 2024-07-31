@@ -18,84 +18,71 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName } from "../__fixtures__/editor";
-import { loanPreQualificationDmn } from "../__fixtures__/externalModels";
-import prettier from "prettier";
+import { ExternalFile } from "../__fixtures__/files";
+import { NodeType } from "../__fixtures__/nodes";
 
 test.describe("DMN Editor - Standalone - API", () => {
   test.describe("getContent", () => {
     test.beforeEach(async ({ editor }) => {
       await editor.open();
+      test.slow();
     });
 
-    test("should get DMN contents of input DMN file", async ({ page, editor }) => {
-      const editorIFrame = editor.getEditorIframe();
-      await editor.setContent("loanPreQualification.dmn", loanPreQualificationDmn);
-      await expect(editorIFrame.getByText("Loan Pre-Qualification", { exact: true })).toBeAttached();
-
-      const content = await editor.getContent();
-
-      const formattedContent = await prettier.format(content, {
-        ...(await prettier.resolveConfig(".")),
-        parser: "xml",
-      });
-
-      const formattedLoanPreQualificationDmn = await prettier.format(loanPreQualificationDmn, {
-        ...(await prettier.resolveConfig(".")),
-        parser: "xml",
-      });
-
-      await expect(formattedContent).toEqual(formattedLoanPreQualificationDmn);
+    test("should get DMN contents of input DMN file", async ({ editor, files }) => {
+      await editor.setContent("loanPreQualification.dmn", await files.getFile(ExternalFile.LOAN_PRE_QUALIFICATION_DMN));
+      await expect(editor.get().getByText("Loan Pre-Qualification", { exact: true })).toBeAttached();
+      await expect(await editor.getFormattedContent()).toEqual(
+        await files.getFormattedFile(ExternalFile.LOAN_PRE_QUALIFICATION_DMN)
+      );
     });
 
-    test("should get current DMN contents via getContent", async ({ page, editor }) => {
-      const editorIFrame = editor.getEditorIframe();
-      const inputSelector = editorIFrame.getByTitle("Input Data", { exact: true });
-      const decisionSelector = editorIFrame.getByTitle("Decision", { exact: true });
-      const editorDiagram = editor.getEditorDiagram();
-
-      // Add 4 Input Data nodes
-      for (let i = 0; i < 4; i++) {
-        await inputSelector.dragTo(editorDiagram, { targetPosition: { x: 100 + i * 200, y: 100 } });
-        await editor.resetFocus();
-      }
-      await expect(
-        (await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.INPUT_DATA}"]`).all()).length
-      ).toBe(4);
-
-      // Add 2 Decision nodes
-      for (let i = 0; i < 2; i++) {
-        await decisionSelector.dragTo(editorDiagram, { targetPosition: { x: 100 + i * 200, y: 300 } });
-        await editor.resetFocus();
-      }
-      await expect(await editorIFrame.locator(`div[data-nodelabel='${DefaultNodeName.DECISION}']`)).toHaveCount(2);
+    test("should get current DMN contents via getContent", async ({ editor, palette, nodes }) => {
+      await palette.dragNewNode({
+        type: NodeType.INPUT_DATA,
+        targetPosition: { x: 100, y: 100 },
+        thenRenameTo: "Input-A",
+      });
+      await palette.dragNewNode({
+        type: NodeType.INPUT_DATA,
+        targetPosition: { x: 300, y: 100 },
+        thenRenameTo: "Input-B",
+      });
+      await palette.dragNewNode({
+        type: NodeType.INPUT_DATA,
+        targetPosition: { x: 500, y: 100 },
+        thenRenameTo: "Input-C",
+      });
+      await palette.dragNewNode({
+        type: NodeType.INPUT_DATA,
+        targetPosition: { x: 700, y: 100 },
+        thenRenameTo: "Input-D",
+      });
+      await palette.dragNewNode({
+        type: NodeType.DECISION,
+        targetPosition: { x: 100, y: 300 },
+        thenRenameTo: "Decision-A",
+      });
+      await palette.dragNewNode({
+        type: NodeType.DECISION,
+        targetPosition: { x: 300, y: 300 },
+        thenRenameTo: "Decision-B",
+      });
 
       await expect(async () => {
-        const dmnContentWith4Inputs2Decisions = await editor.getContent();
-        await expect((dmnContentWith4Inputs2Decisions.match(/<inputData/gm) || []).length).toBe(4);
-        await expect((dmnContentWith4Inputs2Decisions.match(/<decision/gm) || []).length).toBe(2);
-      }).toPass({
-        intervals: [100, 250, 500, 1000],
-        timeout: 10_000,
-      });
+        const { decisionNodeQtt, inputDataNodeQtt } = await editor.getContentStats();
+        await expect(inputDataNodeQtt).toBe(4);
+        await expect(decisionNodeQtt).toBe(2);
+      }).toPass();
 
       // Delete 1 Input Data node
-      await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.INPUT_DATA}"]`).first().click();
-      await page.keyboard.press("Delete");
-      await editor.resetFocus();
-
-      await expect(
-        (await editorIFrame.locator(`div[data-nodelabel="${DefaultNodeName.INPUT_DATA}"]`).all()).length
-      ).toBe(3);
+      await nodes.delete({ name: "Input-A" });
+      await expect(nodes.get({ name: "Input-A" })).not.toBeAttached();
 
       await expect(async () => {
-        const dmnContentWith4Inputs2Decisions = await editor.getContent();
-        await expect((dmnContentWith4Inputs2Decisions.match(/<inputData/gm) || []).length).toBe(3);
-        await expect((dmnContentWith4Inputs2Decisions.match(/<decision/gm) || []).length).toBe(2);
-      }).toPass({
-        intervals: [100, 250, 500, 1000],
-        timeout: 10_000,
-      });
+        const { decisionNodeQtt, inputDataNodeQtt } = await editor.getContentStats();
+        await expect(inputDataNodeQtt).toBe(3);
+        await expect(decisionNodeQtt).toBe(2);
+      }).toPass();
     });
   });
 });

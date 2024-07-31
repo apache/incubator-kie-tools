@@ -18,31 +18,29 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
+import { NodeType } from "../__fixtures__/nodes";
 
 test.describe("DMN Editor - Standalone - API", () => {
   test.describe("markAsSaved", () => {
     test.beforeEach(async ({ editor }) => {
       await editor.open();
+      test.slow();
     });
 
-    test("should reset edit count edits when markAsSaved is called", async ({ page, editor }) => {
-      const editorIFrame = editor.getEditorIframe();
-      const inputSelector = editorIFrame.getByTitle("Input Data", { exact: true });
-      const editorDiagram = editor.getEditorDiagram();
+    test("should reset edit count edits when markAsSaved is called", async ({ page, editor, palette }) => {
+      await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
+      await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 300, y: 100 } });
+      await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 500, y: 100 } });
+      await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 700, y: 100 } });
 
-      // Add 4 Input Data nodes and check if dirty count increases to 4
-      for (let i = 0; i < 4; i++) {
-        await inputSelector.dragTo(editorDiagram, { targetPosition: { x: 100 + i * 200, y: 100 } });
-        await editor.resetFocus();
-      }
-      await expect(await page.locator("#edit-counter")).toHaveText("4");
-      await expect(await page.locator("#is-dirty")).toHaveText("true");
+      await expect(await editor.getEditCount()).toHaveText("4");
+      await expect(await editor.getIsDirty()).toHaveText("true");
 
       await editor.markAsSaved();
 
       // Marking as saved generates a new content change event, causing the counter to increase.
-      await expect(await page.locator("#edit-counter")).toHaveText("5");
-      await expect(await page.locator("#is-dirty")).toHaveText("false");
+      await expect(await editor.getEditCount()).toHaveText("5");
+      await expect(await editor.getIsDirty()).toHaveText("false");
     });
   });
 });

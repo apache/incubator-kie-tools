@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { emptyDmn, loanPreQualificationDmn } from "../__fixtures__/externalModels";
+import { ExternalFile } from "../__fixtures__/files";
 
 test.describe("DMN Editor - Standalone - API", () => {
   test.describe("getPreview", () => {
@@ -26,31 +26,19 @@ test.describe("DMN Editor - Standalone - API", () => {
       await editor.open();
     });
 
-    test("should get preview SVG via getPreview for loanPreQualification", async ({ page, editor }) => {
-      const editorIFrame = editor.getEditorIframe();
-
+    test("should get preview SVG via getPreview for loanPreQualification", async ({ page, editor, files }) => {
       // Loan Pre Qualification
-      await editor.setContent("loanPreQualification.dmn", loanPreQualificationDmn);
-      await expect(editorIFrame.getByText("Loan Pre-Qualification", { exact: true })).toBeAttached();
-
-      const loanPreQualificationPreviewSvg = await editor.getPreview();
-
-      await page.setContent(loanPreQualificationPreviewSvg!);
-
+      await editor.setContent("loanPreQualification.dmn", await files.getFile(ExternalFile.LOAN_PRE_QUALIFICATION_DMN));
+      await expect(editor.get().getByText("Loan Pre-Qualification", { exact: true })).toBeAttached();
+      await page.setContent((await editor.getPreview())!);
       await expect(page).toHaveScreenshot("getPreview-loanPreQualificationSvg.png");
     });
 
-    test("should get preview SVG via getPreview for emptyDmn", async ({ page, editor }) => {
-      const editorIFrame = editor.getEditorIframe();
-
+    test("should get preview SVG via getPreview for emptyDmn", async ({ page, editor, files }) => {
       // Empty DMN
-      await editor.setContent("emptyDmn.dmn", emptyDmn);
-      await expect(editorIFrame.getByText("This DMN's Diagram is empty")).toBeAttached();
-
-      const emptyPreviewSvg = await editor.getPreview();
-
-      await page.setContent(emptyPreviewSvg!);
-
+      await editor.setContent("emptyDmn.dmn", await files.getFile(ExternalFile.EMPTY_DMN));
+      await expect(editor.get().getByText("This DMN's Diagram is empty")).toBeAttached();
+      await page.setContent((await editor.getPreview())!);
       await expect(page).toHaveScreenshot("getPreview-emptyPreviewSvg.png");
     });
   });

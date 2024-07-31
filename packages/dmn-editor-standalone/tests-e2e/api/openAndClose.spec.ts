@@ -27,11 +27,9 @@ test.describe("DMN Editor - Standalone - API", () => {
 
     test("should open and close the editor with a blank DMN", async ({ page, editor }) => {
       await expect(page).toHaveScreenshot("open-editor.png");
-
       await editor.close();
-
-      await expect(editor.getEditorIframe().getByText("This DMN's Diagram is empty")).not.toBeAttached();
-      await expect(page).toHaveScreenshot("close-editor.png");
+      await expect(editor.get().getByText("This DMN's Diagram is empty")).not.toBeAttached();
+      await expect(editor.get().locator("body")).not.toBeAttached();
     });
   });
 });
