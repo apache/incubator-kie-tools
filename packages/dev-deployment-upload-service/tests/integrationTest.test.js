@@ -19,12 +19,8 @@
 
 const { execSync, execFileSync } = require("child_process");
 const path = require("path");
-const os = require("os");
 const buildEnv = require("../env");
 const version = require("../package.json").version;
-
-const platform = os.platform();
-const arch = os.arch();
 
 const filePath = path.join(process.cwd(), "tests/test.zip");
 
@@ -33,6 +29,10 @@ const containersPorts = {
   buildtimeInstall: buildEnv.env.devDeploymentUploadService.dev.buildTimePort,
   runTimeInstall: buildEnv.env.devDeploymentUploadService.dev.runtTimePort,
 };
+
+const dockerInfo = JSON.parse(execSync(`docker info --format '{{ json . }}'`).toString().trim());
+const platform = dockerInfo["OSType"];
+const arch = dockerInfo["Architecture"] === "aarch64" ? "arm64" : "amd64";
 
 describe("Test built images individually", () => {
   beforeAll(() => {
