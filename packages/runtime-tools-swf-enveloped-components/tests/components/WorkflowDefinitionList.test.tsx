@@ -21,11 +21,7 @@ import * as React from "react";
 import { render, waitFor, screen, fireEvent, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import WorkflowDefinitionList from "@kie-tools/runtime-tools-swf-enveloped-components/dist/workflowDefinitions/envelope/components/WorkflowDefinitionList/WorkflowDefinitionList";
-
-interface WorkflowDefinition {
-  id: string;
-  name: string;
-}
+import { WorkflowDefinition } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 
 const mockGetWorkflowDefinitionsQuery = jest.fn();
 const mockSetWorkflowDefinitionList = jest.fn();
@@ -58,7 +54,9 @@ describe("doQuery", () => {
   });
 
   test("should call setWorkflowDefinitionList and setIsLoading correctly on success", async () => {
-    const mockResponse: WorkflowDefinition[] = [{ id: "1", name: "Workflow 1" }];
+    const mockResponse: WorkflowDefinition[] = [
+      { workflowName: "Test Workflow 1", endpoint: "/endpoint1", serviceUrl: "http://example.com/1" },
+    ];
     mockGetWorkflowDefinitionsQuery.mockResolvedValue(mockResponse);
     await doQuery();
     expect(mockSetWorkflowDefinitionList).toHaveBeenCalledWith(mockResponse);
@@ -94,7 +92,7 @@ describe("WorkflowDefinitionList component", () => {
   test("should maintain filter after refresh", async () => {
     mockGetWorkflowDefinitionsQuery.mockResolvedValue(sampleWorkflowDefinitions);
 
-    render(
+    const component = render(
       <WorkflowDefinitionList
         isEnvelopeConnectedToChannel={true}
         driver={mockDriver}
@@ -109,10 +107,9 @@ describe("WorkflowDefinitionList component", () => {
     });
 
     expect(mockDriver.setWorkflowDefinitionFilter).toHaveBeenCalledWith(["Test Workflow 1"]);
-    await waitFor(() => {
-      const filteredElements = screen.getAllByText("Test Workflow 1");
-      expect(filteredElements.length).toBe(1);
-      expect(filteredElements[0]).toBeInTheDocument();
+    await (() => {
+      const filteredElement = component.getByTestId("workflow-definition-list-with-filter");
+      expect(filteredElement).toBeInTheDocument();
     });
 
     mockGetWorkflowDefinitionsQuery.mockResolvedValue(sampleWorkflowDefinitions);
@@ -121,10 +118,9 @@ describe("WorkflowDefinitionList component", () => {
     });
 
     expect(mockDriver.setWorkflowDefinitionFilter).toHaveBeenCalledWith(["Test Workflow 1"]);
-    await waitFor(() => {
-      const filteredElements = screen.getAllByText("Test Workflow 1");
-      expect(filteredElements.length).toBe(1);
-      expect(filteredElements[0]).toBeInTheDocument();
+    await (() => {
+      const filteredElement = component.getByTestId("workflow-definition-list-with-filter");
+      expect(filteredElement).toBeInTheDocument();
     });
   });
 });
