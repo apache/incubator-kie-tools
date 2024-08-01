@@ -33,16 +33,19 @@ import { PingPongReactDivViewsPage } from "./Pages/PingPong/React/PingPongReactD
 import { Home } from "./Home";
 import "../static/resources/styles.css";
 import { DmnStandaloneEditorPage } from "./Pages/StandaloneEditors/DmnStandaloneEditorPage";
+import { NewDmnStandaloneEditorPage } from "./Pages/StandaloneEditors/NewDmnStandaloneEditorPage";
 import { SwfStandaloneEditorPage } from "./Pages/StandaloneEditors/SwfStandaloneEditorPage";
 import { PingPongAngularIFrameViewsPage } from "./Pages/PingPong/Angular/PingPongAngularIFrameViewsPage";
 import { PingPongMixedViewsPage } from "./Pages/PingPong/Mixed/PingPongMixedViewsPage";
 import { PingPongAngularDivViewsPage } from "./Pages/PingPong/Angular/PingPongAngularDivViewsPage";
 import { SwfStandaloneDiagramOnlyEditorPage } from "./Pages/StandaloneEditors/SwfStandaloneDiagramOnlyEditorPage";
 import { SwfStandaloneTextOnlyEditorPage } from "./Pages/StandaloneEditors/SwfStandaloneTextOnlyEditorPage";
+import { NewDmnPage } from "./Pages/KogitoEditors/NewDmnPage";
 
 enum Location {
   BPMN = "/editor/bpmn",
   DMN = "/editor/dmn",
+  NEW_DMN = "/editor/new-dmn",
   BASE46PNG = "/editor/base64png",
   TODO_LIST = "/page/todo-list",
   PING_PONG_REACT_IFRAME_PAGES = "/page/ping-pong-react/iframe-pages",
@@ -51,6 +54,7 @@ enum Location {
   PING_PONG_ANGULAR_DIV_PAGES = "/page/ping-pong-angular/div-pages",
   PING_PONG_MIXED_PAGES = "/page/ping-pong-mixed",
   DMN_STANDALONE_EDITOR = "/page/dmn-standalone-editor",
+  NEW_DMN_STANDALONE_EDITOR = "/page/new-dmn-standalone-editor",
   SWF_STANDALONE_EDITOR = "/page/swf-standalone-editor",
   SWF_STANDALONE_EDITOR_DIAGRAM_ONLY = "/page/swf-standalone-editor-diagram-only",
   SWF_STANDALONE_EDITOR_TEXT_ONLY = "/page/swf-standalone-editor-text-only",
@@ -90,6 +94,9 @@ export function App() {
                   </NavItem>
                   <NavItem itemId={Location.DMN} isActive={location === Location.DMN}>
                     <Link to={Location.DMN}>DMN Editor</Link>
+                  </NavItem>
+                  <NavItem itemId={Location.NEW_DMN} isActive={location === Location.NEW_DMN}>
+                    <Link to={Location.NEW_DMN}>New DMN Editor</Link>
                   </NavItem>
                   <NavItem itemId={Location.TODO_LIST} isActive={location === Location.TODO_LIST}>
                     <Link to={Location.TODO_LIST}>'To do' list View</Link>
@@ -131,6 +138,12 @@ export function App() {
                     <Link to={Location.DMN_STANDALONE_EDITOR}>DMN Standalone Editor</Link>
                   </NavItem>
                   <NavItem
+                    itemId={Location.NEW_DMN_STANDALONE_EDITOR}
+                    isActive={location === Location.NEW_DMN_STANDALONE_EDITOR}
+                  >
+                    <Link to={Location.NEW_DMN_STANDALONE_EDITOR}>New DMN Standalone Editor</Link>
+                  </NavItem>
+                  <NavItem
                     itemId={Location.SWF_STANDALONE_EDITOR}
                     isActive={location === Location.SWF_STANDALONE_EDITOR}
                   >
@@ -167,6 +180,9 @@ export function App() {
           <Route path={Location.DMN}>
             <DmnPage />
           </Route>
+          <Route path={Location.NEW_DMN}>
+            <NewDmnPage />
+          </Route>
           <Route path={Location.TODO_LIST}>
             <TodoListViewPage />
           </Route>
@@ -187,6 +203,9 @@ export function App() {
           </Route>
           <Route path={Location.DMN_STANDALONE_EDITOR}>
             <DmnStandaloneEditorPage />
+          </Route>
+          <Route path={Location.NEW_DMN_STANDALONE_EDITOR}>
+            <NewDmnStandaloneEditorPage />
           </Route>
           <Route path={Location.SWF_STANDALONE_EDITOR}>
             <SwfStandaloneEditorPage />

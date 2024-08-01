@@ -21,6 +21,7 @@ import * as webpack from "webpack";
 
 declare const def: {
   webpackModuleRules: webpack.RuleSetRule[];
+  individualRules: Record<string, webpack.RuleSetRule>;
 };
 
 export default def;

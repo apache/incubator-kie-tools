@@ -28,7 +28,7 @@ export class Diagram {
   constructor(public page: Page) {}
 
   public get() {
-    return this.page.getByTestId("kie-dmn-editor--diagram-container");
+    return this.page.getByTestId("kie-tools--dmn-editor--diagram-container");
   }
 
   public async dblclick(position: { x: number; y: number }) {
