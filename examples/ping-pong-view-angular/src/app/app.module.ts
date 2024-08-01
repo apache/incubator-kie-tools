@@ -18,14 +18,14 @@
  */
 
 import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
 
 import { AppComponent } from "./app.component";
-import { PingPongModule } from "./ping-pong/ping-pong.module";
+import { PingPongComponent } from "./ping-pong/ping-pong.component";
+import { BrowserModule } from "@angular/platform-browser";
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, PingPongModule],
+  imports: [BrowserModule, PingPongComponent],
   providers: [],
   bootstrap: [AppComponent],
 })

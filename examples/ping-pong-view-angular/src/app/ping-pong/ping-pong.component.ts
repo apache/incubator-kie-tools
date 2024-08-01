@@ -22,12 +22,15 @@ import { Component, Input, OnInit } from "@angular/core";
 import * as PingPongViewEnvelope from "@kie-tools-examples/ping-pong-view/dist/envelope";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 import { Observable, scan } from "rxjs";
+import { CommonModule } from "@angular/common";
 
 @Component({
+  standalone: true,
   selector: "app-ping-pong",
   templateUrl: "./ping-pong.component.html",
   styleUrls: ["./ping-pong.component.css"],
   providers: [PingPongApiService],
+  imports: [CommonModule],
 })
 export class PingPongComponent implements OnInit {
   @Input() containerType: ContainerType;
@@ -50,10 +53,10 @@ export class PingPongComponent implements OnInit {
       config: { containerType: this.containerType, envelopeId: this.envelopeId! },
       bus: { postMessage: (message, _targetOrigin, transfer) => window.parent.postMessage(message, "*", transfer) },
       pingPongViewFactory: this.pingPongApiService,
+    }).then(() => {
+      // Create an observable variable with the 10 latest values of the log.
+      this.subscribeToLogUpdates();
+      this.pingPongApiService.logCleared.subscribe(() => this.subscribeToLogUpdates());
     });
-
-    // Create an observable variable with the 10 latest values of the log.
-    this.subscribeToLogUpdates();
-    this.pingPongApiService.logCleared.subscribe(() => this.subscribeToLogUpdates());
   }
 }

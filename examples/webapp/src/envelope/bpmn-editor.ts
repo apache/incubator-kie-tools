@@ -17,23 +17,12 @@
  * under the License.
  */
 
-import { NgModule, Injector, DoBootstrap } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
-import { createCustomElement } from "@angular/elements";
-import { PingPongModule } from "../ping-pong/ping-pong.module";
-import { PingPongWcComponent } from "./web-component.component";
+import { BpmnEditorChannelApi, BpmnEditorEnvelopeApi } from "@kie-tools/kie-bc-editors/dist/bpmn/api";
+import { BpmnEditor, BpmnEditorEnvelopeApiImpl } from "@kie-tools/kie-bc-editors/dist/bpmn/envelope";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 
-@NgModule({
-  declarations: [PingPongWcComponent],
-  imports: [BrowserModule, PingPongModule],
-  entryComponents: [PingPongWcComponent],
-  providers: [],
-})
-export class WebComponentModule implements DoBootstrap {
-  constructor(private injector: Injector) {}
-
-  ngDoBootstrap() {
-    const element = createCustomElement(PingPongWcComponent, { injector: this.injector });
-    customElements.define("ping-pong-angular", element);
-  }
-}
+EditorEnvelope.initCustom<BpmnEditor, BpmnEditorEnvelopeApi, BpmnEditorChannelApi>({
+  container: document.getElementById("envelope-app")!,
+  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
+  apiImplFactory: { create: (args) => new BpmnEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: true }) },
+});
