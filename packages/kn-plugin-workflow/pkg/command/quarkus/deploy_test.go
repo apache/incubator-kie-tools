@@ -21,6 +21,7 @@ package quarkus
 
 import (
 	"fmt"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common/k8sclient"
 	"os"
 	"os/exec"
 	"strconv"
@@ -71,9 +72,11 @@ func TestHelperRunDeploy(t *testing.T) {
 
 func TestRunDeploy(t *testing.T) {
 	common.FS = afero.NewMemMapFs()
-	for testIndex, test := range testRunDeploy {
-		common.ExecCommand = fakeRunDeploy(testIndex)
-		defer func() { common.ExecCommand = exec.Command }()
+	for _, test := range testRunDeploy {
+		common.Current = k8sclient.Fake{}
+		defer func() {
+			common.Current = k8sclient.GoAPI{}
+		}()
 
 		if test.createFile != "" {
 			if test.input.Path == "" {

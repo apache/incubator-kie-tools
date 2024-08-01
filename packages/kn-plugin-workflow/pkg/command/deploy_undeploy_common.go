@@ -54,10 +54,6 @@ type DeployUndeployCmdConfig struct {
 func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
 	fmt.Println("\n🔎 Checking your environment...")
 
-	if err := common.CheckKubectl(); err != nil {
-		return err
-	}
-
 	if ctx, err := common.CheckKubectlContext(); err != nil {
 		return err
 	} else {
