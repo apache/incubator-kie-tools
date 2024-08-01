@@ -359,9 +359,9 @@ export const DmnEditorInternal = ({
                   <DrawerContent panelContent={diagramPropertiesPanel}>
                     <DrawerContentBody>
                       <div
-                        className={"kie-dmn-editor--diagram-container"}
+                        className={"kie-tools--dmn-editor--diagram-container"}
                         ref={diagramContainerRef}
-                        data-testid={"kie-dmn-editor--diagram-container"}
+                        data-testid={"kie-tools--dmn-editor--diagram-container"}
                       >
                         {originalVersion && <DmnVersionLabel version={originalVersion} />}
                         <Diagram ref={diagramRef} container={diagramContainerRef} />

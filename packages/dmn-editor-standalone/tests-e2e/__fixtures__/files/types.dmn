@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~ 
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~ 
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.      
+-->
+<dmn:definitions
+  xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  xmlns="https://kie.apache.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB22"
+  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  xmlns:kie="https://kie.apache.org/dmn/extensions/1.0"
+  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+  id="_21EF524B-4FD7-4684-AE46-6BC2E3C772E0"
+  name="Types"
+  typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  namespace="https://kie.apache.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB22"
+>
+  <dmn:extensionElements />
+  <dmn:itemDefinition id="_AD4D357E-7002-4B05-83FA-F596CFE31ACC" name="ApplicantData" isCollection="false">
+    <dmn:itemComponent id="_E756ACB2-CC7D-46A2-94DD-0BC407DC7EC5" name="EmploymentStatus" isCollection="false">
+      <dmn:typeRef>EmploymentStatus</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_118071C6-F1FF-4491-8A05-EB66CA213287" name="MaritialStatus" isCollection="false">
+      <dmn:typeRef>MaritalStatus</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_D70FD77D-089D-42CD-9A9A-60B422DD8FB3" name="Monthly" isCollection="false">
+      <dmn:itemComponent id="_64962462-5424-4A91-B079-1212C432D8FF" name="Expenses" isCollection="false">
+        <dmn:typeRef>number</dmn:typeRef>
+      </dmn:itemComponent>
+      <dmn:itemComponent id="_FF39C609-986B-487D-B30D-3AC1D9C41E10" name="Income" isCollection="false">
+        <dmn:typeRef>number</dmn:typeRef>
+      </dmn:itemComponent>
+      <dmn:itemComponent id="_CFA08579-F78A-4721-8B37-2F46E8ABDD08" name="Repayments" isCollection="false">
+        <dmn:typeRef>number</dmn:typeRef>
+      </dmn:itemComponent>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_2FA345BF-A721-40F9-AFE3-E6714F52A7B4" name="ExistingCustomer" isCollection="false">
+      <dmn:typeRef>boolean</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_AE1C0201-E0D8-4B5E-9E9E-32233A16DF62" name="Age" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+      <dmn:allowedValues kie:constraintType="range" id="_00EAFBFC-D0F7-46AE-9E31-01069A13B1B0">
+        <dmn:text>[18..120]</dmn:text>
+      </dmn:allowedValues>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_07E13613-DFFA-430E-A8CA-58D5BEE24711" name="EmploymentStatus" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_F6CF4C43-34ED-4945-8F10-26C482B3A51F">
+      <dmn:text>"Unemployed", "Student", "Employed", "Self Employed"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_222D0C04-B5B5-4741-983F-047016B9765A" name="MaritalStatus" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_75247624-5380-4824-8875-2410AB1927E8">
+      <dmn:text>"M", "S"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_132035CB-20A8-4726-9518-B6E15CAF522B" name="BureauCallType" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_023E185A-3270-4636-B3E8-75678C9E494F">
+      <dmn:text>"Full", "Mini", "None"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_932BC956-0FAE-4B34-B9B3-1E9540D02E1C" name="RequestedProduct" isCollection="false">
+    <dmn:itemComponent id="_394053CE-4736-4618-8D31-67AA1D87ACBE" name="Amount" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_72D2D288-90BA-4A4B-9C14-41C9B2714970" name="Rate" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_1DCC1D5A-85AC-4DE0-8D69-58BE07B6DB58" name="Term" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_7A4D2AB2-65F0-4522-8819-D4636722B286" name="ProductType" isCollection="false">
+      <dmn:typeRef>ProductType</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_7A5FA927-9118-4270-8F95-5A5604D0E0E2" name="ProductType" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_D50F7275-BF84-4C5F-A7F4-0A3579335752">
+      <dmn:text>"Standard Loan", "Special Loan"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_ACF3811B-A069-4C59-A5B8-79C72CEEE5D6" name="BureauRiskCategory" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_EB052AB0-CF0D-4CDA-B592-340FB9288D42">
+      <dmn:text>"High", "Medium", "Low", "Very Low", "Decline"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_8900D951-CF7A-4FC2-A8E6-46109A600089" name="Eligibility" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_8066D45B-E9E2-43ED-BDB3-71A145C628CC">
+      <dmn:text>"Eligible", "Ineligible"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_A02D18B2-DFD2-440D-ACBB-D7BE1985DD41" name="Strategy" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_273E3106-E759-4B55-992C-655192DB0949">
+      <dmn:text>"Decline", "Bureau", "Through"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_165DF3C8-C9A4-49E3-8B93-5F5492D1BDAC" name="BureauData" isCollection="false">
+    <dmn:itemComponent id="_B7FE2821-FDBC-4137-9740-75E2D5BFE78D" name="CreditScore" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_55DA022D-14A8-4510-A813-DC9B5B19D774" name="Bankrupt" isCollection="false">
+      <dmn:typeRef>boolean</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_DB7A27F1-DE11-40E4-BB9D-571846B3E04E" name="Routing" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_4030B782-6999-4B8F-B8F7-FC5AD6F31C0D">
+      <dmn:text>"Decline", "Refer", "Accept"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_589C84B9-AE89-473C-AAAC-91828FAFCEAB" name="Adjudication" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_87A844A0-CAD6-44B9-AA59-6ED4B56D1C83">
+      <dmn:text>"Accept", "Decline"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_4994071D-BC33-470B-A130-8296B7FEA606" name="tPerson" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_023D3B23-6CE3-49E5-B25C-D65DD9CA5B67" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension />
+      </di:extension>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

@@ -34,6 +34,7 @@ module.exports = (env) => [
       "envelope/base64-editor": "./src/envelope/base64-editor.ts",
       "envelope/dmn-editor": "./src/envelope/dmn-editor.ts",
       "envelope/bpmn-editor": "./src/envelope/bpmn-editor.ts",
+      "envelope/new-dmn-editor": "./src/envelope/new-dmn-editor.ts",
       "envelope/ping-pong-view-react-impl": "./src/envelope/ping-pong-view-react-impl.ts",
       "envelope/todo-list-view": "./src/envelope/todo-list-view.ts",
     },
@@ -53,6 +54,11 @@ module.exports = (env) => [
           {
             from: stunnerEditors.bpmnEditorPath(),
             to: "./bpmn-editor/bpmn",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+          {
+            from: `${path.dirname(require.resolve("@kie-tools/dmn-editor/package.json"))}/dist`,
+            to: "./new-dmn-editor/dmn",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
         ],
