@@ -169,6 +169,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     const { externalModelsByNamespace } = useExternalModels();
     const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
     const thisDmn = useDmnEditorStore((s) => s.dmn);
+    const readOnly = useDmnEditorStore((s) => s.settings.readOnly);
     const { dmnModelBeforeEditingRef } = useDmnEditor();
 
     // State
@@ -1310,7 +1311,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             // (end)
           >
             <SelectionStatus />
-            <Palette pulse={isEmptyStateShowing} />
+            {!readOnly && <Palette pulse={isEmptyStateShowing} />}
             <TopRightCornerPanels availableHeight={container.current?.offsetHeight} />
             <DiagramCommands />
             {!isFirefox && <RF.Background />}

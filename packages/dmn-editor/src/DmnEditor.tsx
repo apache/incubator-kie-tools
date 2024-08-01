@@ -149,6 +149,12 @@ export type DmnEditorProps = {
    */
   issueTrackerHref?: string;
   /**
+   * A flag to enable read-only mode on the DMN Editor.
+   * When enabled navigation is still possible (e.g. entering the Boxed Expression Editor, Data Types and Included Models),
+   * but no changes can be made and the model itself is unaltered.
+   */
+  readOnly?: boolean;
+  /**
    * When users want to jump to another file, this method is called, allowing the controller of this component decide what to do.
    * Links are only rendered if this is provided. Otherwise, paths will be rendered as text.
    */
