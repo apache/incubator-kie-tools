@@ -49,7 +49,7 @@ export const generateEmptyDmn15 = () => `<?xml version="1.0" encoding="UTF-8"?>
 
 const initialModel = generateEmptyDmn15();
 
-function GoCrazy(args: DmnEditorProps) {
+function EmptyStoryWithIncludedModels(args: DmnEditorProps) {
   const [state, setState] = useState<{
     marshaller: DmnMarshaller;
     stack: Normalized<DmnLatestModel>[];
@@ -117,10 +117,10 @@ const meta: Meta<DmnEditorProps> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof GoCrazy>;
+type Story = StoryObj<typeof EmptyStoryWithIncludedModels>;
 
 export const EmptyWithAvailableExternalModels: Story = {
-  render: (args) => GoCrazy(args),
+  render: (args) => EmptyStoryWithIncludedModels(args),
   args: {
     model: getMarshaller(initialModel, { upgradeTo: "latest" }).parser.parse(),
     originalVersion: "1.5",
