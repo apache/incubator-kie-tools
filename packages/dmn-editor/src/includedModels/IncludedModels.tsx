@@ -249,6 +249,7 @@ export function IncludedModels() {
   return (
     <>
       <Modal
+        data-testid={"kie-tools--dmn-editor--included-models-modal"}
         isOpen={isModalOpen}
         onClose={() => cancel()}
         title={"Include model"}
@@ -553,7 +554,10 @@ function IncludedModelCard({
                           ev.preventDefault();
                         }}
                         variant={"link"}
-                        style={{ color: "var(--pf-global--danger-color--200)", fontWeight: "bold" }}
+                        style={{
+                          color: "var(--pf-global--danger-color--200)",
+                          fontWeight: "bold",
+                        }}
                       >
                         {`Yes, remove included ${extension.toUpperCase()}`}
                       </AlertActionLink>

@@ -392,7 +392,9 @@ export const DmnEditorInternal = ({
         </Tab>
 
         <Tab eventKey={DmnEditorTab.INCLUDED_MODELS} title={tabTitle.includedModels}>
-          {navigationTab === DmnEditorTab.INCLUDED_MODELS && <IncludedModels />}
+          <div data-testid={"kie-tools--dmn-editor--included-models-container"}>
+            {navigationTab === DmnEditorTab.INCLUDED_MODELS && <IncludedModels />}
+          </div>
         </Tab>
       </Tabs>
     </div>

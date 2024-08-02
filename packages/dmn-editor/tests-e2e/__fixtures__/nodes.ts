@@ -140,9 +140,19 @@ export class Nodes {
   }
 
   public async move(args: { name: string; targetPosition: { x: number; y: number } }) {
-    await this.get({ name: args.name }).dragTo(this.diagram.get(), {
-      targetPosition: args.targetPosition,
-    });
+    if (DefaultNodeName.DECISION_SERVICE === args.name) {
+      // Decision Services only have some draggable areas near the borders.
+      // If you drag it to the center, you'll drag the divide line.
+      // Also, neither the entire upper area nor the entire downer area is draggable.
+      await this.get({ name: args.name }).dragTo(this.diagram.get(), {
+        targetPosition: args.targetPosition,
+        sourcePosition: { x: 20, y: 20 },
+      });
+    } else {
+      await this.get({ name: args.name }).dragTo(this.diagram.get(), {
+        targetPosition: args.targetPosition,
+      });
+    }
   }
 
   public async rename(args: { current: string; new: string }) {

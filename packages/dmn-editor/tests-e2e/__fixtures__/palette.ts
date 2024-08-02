@@ -40,6 +40,21 @@ export class Palette {
     }
   }
 
+  public async dragExternalNode(args: {
+    includedModelName: string;
+    nodeName: string;
+    targetPosition: { x: number; y: number };
+  }) {
+    await this.page
+      .getByTestId("kie-tools--dmn-editor--external-nodes-container")
+      .getByTestId(`kie-tools--dmn-editor--external-node-${args.includedModelName}-${args.nodeName}`)
+      .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+  }
+
+  public getExternalNodesButton() {
+    return this.page.getByRole("button", { name: "External nodes" });
+  }
+
   private getNewNodeProperties(type: NodeType) {
     switch (type) {
       case NodeType.INPUT_DATA:

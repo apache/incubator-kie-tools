@@ -245,7 +245,11 @@ export function Palette({ pulse }: { pulse: boolean }) {
         <br />
         <aside className={"kie-dmn-editor--external-nodes-panel-toggle"}>
           {diagram.openLhsPanel === DiagramLhsPanel.EXTERNAL_NODES && (
-            <div className={"kie-dmn-editor--palette-nodes-popover"} style={{ maxHeight }}>
+            <div
+              className={"kie-dmn-editor--palette-nodes-popover"}
+              style={{ maxHeight }}
+              data-testid={"kie-tools--dmn-editor--external-nodes-container"}
+            >
               <ExternalNodesPanel />
             </div>
           )}
