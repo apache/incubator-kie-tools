@@ -75,9 +75,6 @@ export interface State {
   focus: {
     consumableId: string | undefined;
   };
-  settings: {
-    readOnly: boolean;
-  };
   boxedExpressionEditor: {
     activeDrgElementId: string | undefined;
     selectedObjectId: string | undefined;
@@ -194,9 +191,6 @@ export const defaultStaticState = (): Omit<State, "dmn" | "dispatch" | "computed
   },
   focus: {
     consumableId: undefined,
-  },
-  settings: {
-    readOnly: false,
   },
   dataTypesEditor: {
     activeItemDefinitionId: undefined,

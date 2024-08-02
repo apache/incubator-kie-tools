@@ -48,6 +48,7 @@ import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useDmnEditor } from "../DmnEditorContext";
 import { getDrdId } from "./drd/drdId";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE = "application/kie-dmn-editor--new-node-from-palette";
 
@@ -64,6 +65,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
   const rfStoreApi = RF.useStoreApi();
   const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
   const drdIndex = useDmnEditorStore((s) => s.computed(s).getDrdIndex());
+  const { readOnly } = useSettings();
 
   const groupNodes = useCallback(() => {
     dmnEditorStoreApi.setState((state) => {
@@ -120,7 +122,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
               });
             }}
             placeholder={getDefaultDrdName({ drdIndex: drdIndex })}
-            isReadonly={false}
+            isReadonly={readOnly}
             isPlain={true}
             shouldCommitOnBlur={true}
           />
@@ -154,120 +156,122 @@ export function Palette({ pulse }: { pulse: boolean }) {
           </button>
         </aside>
       </RF.Panel>
-      <RF.Panel position={"top-left"} style={{ marginTop: "78px" }}>
-        <div ref={nodesPalletePopoverRef} style={{ position: "absolute", left: 0, height: 0, zIndex: -1 }} />
-        <aside className={`kie-dmn-editor--palette ${pulse ? "pulse" : ""}`}>
-          <div
-            title={"Input Data"}
-            className={"kie-dmn-editor--palette-button dndnode input-data"}
-            onDragStart={(event) => onDragStart(event, NODE_TYPES.inputData)}
-            draggable={true}
-          >
-            {isAlternativeInputDataShape ? <AlternativeInputDataIcon /> : <InputDataIcon />}
-          </div>
-          <div
-            title={"Decision"}
-            className={"kie-dmn-editor--palette-button dndnode decision"}
-            onDragStart={(event) => onDragStart(event, NODE_TYPES.decision)}
-            draggable={true}
-          >
-            <DecisionIcon />
-          </div>
-          <div
-            title={"Business Knowledge Model"}
-            className={"kie-dmn-editor--palette-button dndnode bkm"}
-            onDragStart={(event) => onDragStart(event, NODE_TYPES.bkm)}
-            draggable={true}
-          >
-            <BkmIcon />
-          </div>
-          <div
-            title={"Knowledge Source"}
-            className={"kie-dmn-editor--palette-button dndnode knowledge-source"}
-            onDragStart={(event) => onDragStart(event, NODE_TYPES.knowledgeSource)}
-            draggable={true}
-          >
-            <KnowledgeSourceIcon />
-          </div>
-          <div
-            title={"Decision Service"}
-            className={"kie-dmn-editor--palette-button dndnode decision-service"}
-            onDragStart={(event) => onDragStart(event, NODE_TYPES.decisionService)}
-            draggable={true}
-          >
-            <DecisionServiceIcon />
-          </div>
-        </aside>
-        <br />
-        <aside className={`kie-dmn-editor--palette ${pulse ? "pulse" : ""}`}>
-          <div
-            title={"Group"}
-            className={"kie-dmn-editor--palette-button dndnode group"}
-            onDragStart={(event) => onDragStart(event, NODE_TYPES.group)}
-            draggable={true}
-            onClick={groupNodes}
-          >
-            <GroupIcon />
-          </div>
-          <div
-            title={"Text Annotation"}
-            className={"kie-dmn-editor--palette-button dndnode text-annotation"}
-            onDragStart={(event) => onDragStart(event, NODE_TYPES.textAnnotation)}
-            draggable={true}
-          >
-            <TextAnnotationIcon />
-          </div>
-        </aside>
-        <br />
-        <aside className={"kie-dmn-editor--drg-panel-toggle"}>
-          {diagram.openLhsPanel === DiagramLhsPanel.DRG_NODES && (
-            <div className={"kie-dmn-editor--palette-nodes-popover"} style={{ maxHeight }}>
-              <DrgNodesPanel />
+      {!readOnly && (
+        <RF.Panel position={"top-left"} style={{ marginTop: "78px" }}>
+          <div ref={nodesPalletePopoverRef} style={{ position: "absolute", left: 0, height: 0, zIndex: -1 }} />
+          <aside className={`kie-dmn-editor--palette ${pulse ? "pulse" : ""}`}>
+            <div
+              title={"Input Data"}
+              className={"kie-dmn-editor--palette-button dndnode input-data"}
+              onDragStart={(event) => onDragStart(event, NODE_TYPES.inputData)}
+              draggable={true}
+            >
+              {isAlternativeInputDataShape ? <AlternativeInputDataIcon /> : <InputDataIcon />}
             </div>
-          )}
-          <button
-            title={"DRG nodes"}
-            className={`kie-dmn-editor--drg-panel-toggle-button ${
-              diagram.openLhsPanel === DiagramLhsPanel.DRG_NODES ? "active" : ""
-            }`}
-            onClick={() => {
-              dmnEditorStoreApi.setState((state) => {
-                state.diagram.openLhsPanel =
-                  state.diagram.openLhsPanel === DiagramLhsPanel.DRG_NODES
-                    ? DiagramLhsPanel.NONE
-                    : DiagramLhsPanel.DRG_NODES;
-              });
-            }}
-          >
-            <BarsIcon size={"sm"} />
-          </button>
-        </aside>
-        <br />
-        <aside className={"kie-dmn-editor--external-nodes-panel-toggle"}>
-          {diagram.openLhsPanel === DiagramLhsPanel.EXTERNAL_NODES && (
-            <div className={"kie-dmn-editor--palette-nodes-popover"} style={{ maxHeight }}>
-              <ExternalNodesPanel />
+            <div
+              title={"Decision"}
+              className={"kie-dmn-editor--palette-button dndnode decision"}
+              onDragStart={(event) => onDragStart(event, NODE_TYPES.decision)}
+              draggable={true}
+            >
+              <DecisionIcon />
             </div>
-          )}
+            <div
+              title={"Business Knowledge Model"}
+              className={"kie-dmn-editor--palette-button dndnode bkm"}
+              onDragStart={(event) => onDragStart(event, NODE_TYPES.bkm)}
+              draggable={true}
+            >
+              <BkmIcon />
+            </div>
+            <div
+              title={"Knowledge Source"}
+              className={"kie-dmn-editor--palette-button dndnode knowledge-source"}
+              onDragStart={(event) => onDragStart(event, NODE_TYPES.knowledgeSource)}
+              draggable={true}
+            >
+              <KnowledgeSourceIcon />
+            </div>
+            <div
+              title={"Decision Service"}
+              className={"kie-dmn-editor--palette-button dndnode decision-service"}
+              onDragStart={(event) => onDragStart(event, NODE_TYPES.decisionService)}
+              draggable={true}
+            >
+              <DecisionServiceIcon />
+            </div>
+          </aside>
+          <br />
+          <aside className={`kie-dmn-editor--palette ${pulse ? "pulse" : ""}`}>
+            <div
+              title={"Group"}
+              className={"kie-dmn-editor--palette-button dndnode group"}
+              onDragStart={(event) => onDragStart(event, NODE_TYPES.group)}
+              draggable={true}
+              onClick={groupNodes}
+            >
+              <GroupIcon />
+            </div>
+            <div
+              title={"Text Annotation"}
+              className={"kie-dmn-editor--palette-button dndnode text-annotation"}
+              onDragStart={(event) => onDragStart(event, NODE_TYPES.textAnnotation)}
+              draggable={true}
+            >
+              <TextAnnotationIcon />
+            </div>
+          </aside>
+          <br />
+          <aside className={"kie-dmn-editor--drg-panel-toggle"}>
+            {diagram.openLhsPanel === DiagramLhsPanel.DRG_NODES && (
+              <div className={"kie-dmn-editor--palette-nodes-popover"} style={{ maxHeight }}>
+                <DrgNodesPanel />
+              </div>
+            )}
+            <button
+              title={"DRG nodes"}
+              className={`kie-dmn-editor--drg-panel-toggle-button ${
+                diagram.openLhsPanel === DiagramLhsPanel.DRG_NODES ? "active" : ""
+              }`}
+              onClick={() => {
+                dmnEditorStoreApi.setState((state) => {
+                  state.diagram.openLhsPanel =
+                    state.diagram.openLhsPanel === DiagramLhsPanel.DRG_NODES
+                      ? DiagramLhsPanel.NONE
+                      : DiagramLhsPanel.DRG_NODES;
+                });
+              }}
+            >
+              <BarsIcon size={"sm"} />
+            </button>
+          </aside>
+          <br />
+          <aside className={"kie-dmn-editor--external-nodes-panel-toggle"}>
+            {diagram.openLhsPanel === DiagramLhsPanel.EXTERNAL_NODES && (
+              <div className={"kie-dmn-editor--palette-nodes-popover"} style={{ maxHeight }}>
+                <ExternalNodesPanel />
+              </div>
+            )}
 
-          <button
-            title={"External nodes"}
-            className={`kie-dmn-editor--external-nodes-panel-toggle-button ${
-              diagram.openLhsPanel === DiagramLhsPanel.EXTERNAL_NODES ? "active" : ""
-            }`}
-            onClick={() => {
-              dmnEditorStoreApi.setState((state) => {
-                state.diagram.openLhsPanel =
-                  state.diagram.openLhsPanel === DiagramLhsPanel.EXTERNAL_NODES
-                    ? DiagramLhsPanel.NONE
-                    : DiagramLhsPanel.EXTERNAL_NODES;
-              });
-            }}
-          >
-            <MigrationIcon size={"sm"} />
-          </button>
-        </aside>
-      </RF.Panel>
+            <button
+              title={"External nodes"}
+              className={`kie-dmn-editor--external-nodes-panel-toggle-button ${
+                diagram.openLhsPanel === DiagramLhsPanel.EXTERNAL_NODES ? "active" : ""
+              }`}
+              onClick={() => {
+                dmnEditorStoreApi.setState((state) => {
+                  state.diagram.openLhsPanel =
+                    state.diagram.openLhsPanel === DiagramLhsPanel.EXTERNAL_NODES
+                      ? DiagramLhsPanel.NONE
+                      : DiagramLhsPanel.EXTERNAL_NODES;
+                });
+              }}
+            >
+              <MigrationIcon size={"sm"} />
+            </button>
+          </aside>
+        </RF.Panel>
+      )}
     </>
   );
 }

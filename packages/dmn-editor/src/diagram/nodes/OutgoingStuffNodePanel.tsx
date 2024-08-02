@@ -38,6 +38,7 @@ import {
 } from "./NodeSvgs";
 import { NODE_TYPES } from "./NodeTypes";
 import { EDGE_TYPES } from "../edges/EdgeTypes";
+import { useSettings } from "../../settings/DmnEditorSettingsContext";
 
 const handleButtonSize = 34; // That's the size of the button. This is a "magic number", as it was obtained from the rendered page.
 const svgViewboxPadding = Math.sqrt(Math.pow(handleButtonSize, 2) / 2) - handleButtonSize / 2; // This lets us create a square that will perfectly fit inside the button circle.
@@ -59,11 +60,12 @@ export function OutgoingStuffNodePanel(props: {
   edgeTypes: EdgeType[];
   nodeHref: string;
 }) {
+  const { readOnly } = useSettings();
   const style: React.CSSProperties = React.useMemo(
     () => ({
-      visibility: props.isVisible ? undefined : "hidden",
+      visibility: !readOnly && props.isVisible ? undefined : "hidden",
     }),
-    [props.isVisible]
+    [props.isVisible, readOnly]
   );
 
   const getEdgeActionTitle = React.useCallback((edgeType: string): string => {

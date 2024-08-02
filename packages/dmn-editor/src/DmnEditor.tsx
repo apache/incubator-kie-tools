@@ -58,6 +58,7 @@ import { INITIAL_COMPUTED_CACHE } from "./store/computed/initial";
 import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
 import { Commands, CommandsContextProvider, useCommands } from "./commands/CommandsContextProvider";
+import { DmnEditorSettingsContextProvider } from "./settings/DmnEditorSettingsContext";
 
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
@@ -424,13 +425,15 @@ export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref
   return (
     <DmnEditorContextProvider {...props}>
       <ErrorBoundary FallbackComponent={DmnEditorErrorFallback} onReset={resetState}>
-        <DmnEditorExternalModelsContextProvider {...props}>
-          <DmnEditorStoreApiContext.Provider value={storeRef.current}>
-            <CommandsContextProvider>
-              <DmnEditorInternal forwardRef={ref} {...props} />
-            </CommandsContextProvider>
-          </DmnEditorStoreApiContext.Provider>
-        </DmnEditorExternalModelsContextProvider>
+        <DmnEditorSettingsContextProvider {...props}>
+          <DmnEditorExternalModelsContextProvider {...props}>
+            <DmnEditorStoreApiContext.Provider value={storeRef.current}>
+              <CommandsContextProvider>
+                <DmnEditorInternal forwardRef={ref} {...props} />
+              </CommandsContextProvider>
+            </DmnEditorStoreApiContext.Provider>
+          </DmnEditorExternalModelsContextProvider>
+        </DmnEditorSettingsContextProvider>
       </ErrorBoundary>
     </DmnEditorContextProvider>
   );

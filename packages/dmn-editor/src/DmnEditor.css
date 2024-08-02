@@ -274,9 +274,6 @@
   color: #0067cc;
   filter: brightness(95%);
 }
-.kie-dmn-editor--drd-list button:hover {
-  filter: brightness(95%);
-}
 .kie-dmn-editor--drd-list button:active {
   filter: brightness(90%);
 }
