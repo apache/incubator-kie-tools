@@ -69,6 +69,7 @@ export class RuntimeToolsDevUIEnvelopeApiImpl implements RuntimeToolsDevUIEnvelo
       this.view().setOmittedWorkflowTimelineEvents(initArgs.omittedWorkflowTimelineEvents!);
     this.view().setDiagramPreviewSize && this.view().setDiagramPreviewSize(initArgs.diagramPreviewSize);
     this.view().setIsStunnerEnabled && this.view().setIsStunnerEnabled(initArgs.isStunnerEnabled);
+    this.view().setIsLocalCluster && this.view().setIsLocalCluster(initArgs.isLocalCluster!);
     // Ensure these are set last. This is a workaround to ensure views are corrected configured with other properties
     // from the DevUIAppContext before they are rendered. i.e. use of DevUIAppContext is not responsive to updates.
     this.view().setWorkflowEnabled(initArgs.isDataIndexAvailable);

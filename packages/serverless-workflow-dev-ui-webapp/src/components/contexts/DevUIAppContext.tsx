@@ -22,14 +22,15 @@ import { CustomLabels } from "../../api/CustomLabels";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-swf-enveloped-components/dist/workflowDetails/api";
 
 export interface DevUIAppContext {
-  isWorkflowEnabled: boolean;
-  getDevUIUrl(): string;
-  getOpenApiPath(): string;
   availablePages?: string[];
-  omittedWorkflowTimelineEvents: string[];
   diagramPreviewSize?: DiagramPreviewSize;
-  isStunnerEnabled: boolean;
+  getDevUIUrl(): string;
   getIsStunnerEnabled(): boolean;
+  getOpenApiPath(): string;
+  isLocalCluster?: boolean;
+  isStunnerEnabled: boolean;
+  isWorkflowEnabled: boolean;
+  omittedWorkflowTimelineEvents: string[];
 }
 
 export interface UnSubscribeHandler {
@@ -37,14 +38,15 @@ export interface UnSubscribeHandler {
 }
 
 export type DevUIAppContextArgs = {
+  availablePages?: string[];
   devUIUrl: string;
+  diagramPreviewSize?: DiagramPreviewSize;
+  isLocalCluster?: boolean;
+  isStunnerEnabled: boolean;
+  isWorkflowEnabled: boolean;
+  omittedWorkflowTimelineEvents: string[];
   openApiBaseUrl: string;
   openApiPath: string;
-  isWorkflowEnabled: boolean;
-  availablePages?: string[];
-  omittedWorkflowTimelineEvents: string[];
-  diagramPreviewSize?: DiagramPreviewSize;
-  isStunnerEnabled: boolean;
 };
 
 export class DevUIAppContextImpl implements DevUIAppContext {
@@ -84,6 +86,10 @@ export class DevUIAppContextImpl implements DevUIAppContext {
 
   get diagramPreviewSize(): DiagramPreviewSize | undefined {
     return this.args.diagramPreviewSize;
+  }
+
+  get isLocalCluster(): boolean {
+    return this.args.isLocalCluster || false;
   }
 }
 

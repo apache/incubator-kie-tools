@@ -29,17 +29,18 @@ export interface StandaloneDevUIApi {
 
 export interface Consoles {
   open: (args: {
+    availablePages?: string[];
     container: Element;
     dataIndexUrl: string;
-    page: string;
     devUIUrl: string;
+    diagramPreviewSize?: DiagramPreviewSize;
+    isLocalCluster?: boolean;
+    isStunnerEnabled: boolean;
+    omittedWorkflowTimelineEvents?: string[];
     openApiBaseUrl: string;
     openApiPath: string;
     origin?: string;
-    availablePages?: string[];
-    omittedWorkflowTimelineEvents?: string[];
-    diagramPreviewSize?: DiagramPreviewSize;
-    isStunnerEnabled: boolean;
+    page: string;
   }) => StandaloneDevUIApi;
 }
 
@@ -55,7 +56,8 @@ const createEnvelopeServer = (
   diagramPreviewSize?: DiagramPreviewSize,
   origin?: string,
   availablePages?: string[],
-  omittedWorkflowTimelineEvents?: string[]
+  omittedWorkflowTimelineEvents?: string[],
+  isLocalCluster?: boolean
 ) => {
   const defaultOrigin = window.location.protocol === "file:" ? "*" : window.location.origin;
   return new EnvelopeServer<RuntimeToolsDevUIChannelApi, RuntimeToolsDevUIEnvelopeApi>(
@@ -70,16 +72,17 @@ const createEnvelopeServer = (
           envelopeServerId: self.id,
         },
         {
-          isDataIndexAvailable,
+          availablePages,
           dataIndexUrl,
-          page,
           devUIUrl,
+          diagramPreviewSize,
+          isDataIndexAvailable,
+          isLocalCluster,
+          isStunnerEnabled,
+          omittedWorkflowTimelineEvents,
           openApiBaseUrl,
           openApiPath,
-          availablePages,
-          omittedWorkflowTimelineEvents,
-          isStunnerEnabled,
-          diagramPreviewSize,
+          page,
         }
       );
     }
@@ -107,18 +110,19 @@ export const createDevUI = (
 };
 
 export function open(args: {
+  availablePages?: string[];
   container: Element;
-  isDataIndexAvailable: boolean;
   dataIndexUrl: string;
-  page: string;
   devUIUrl: string;
+  diagramPreviewSize?: DiagramPreviewSize;
+  isDataIndexAvailable: boolean;
+  isLocalCluster?: boolean;
+  isStunnerEnabled: boolean;
+  omittedWorkflowTimelineEvents?: string[];
   openApiBaseUrl: string;
   openApiPath: string;
   origin?: string;
-  availablePages?: string[];
-  omittedWorkflowTimelineEvents?: string[];
-  isStunnerEnabled: boolean;
-  diagramPreviewSize?: DiagramPreviewSize;
+  page: string;
 }): StandaloneDevUIApi {
   const iframe = document.createElement("iframe");
   iframe.srcdoc = devUIEnvelopeIndex; // index coming from webapp
@@ -139,7 +143,8 @@ export function open(args: {
     args.diagramPreviewSize,
     args.origin,
     args.availablePages,
-    args.omittedWorkflowTimelineEvents ?? []
+    args.omittedWorkflowTimelineEvents ?? [],
+    args.isLocalCluster ?? false
   );
   const channelApi = new RuntimeToolsDevUIChannelApiImpl();
   const listener = (message: MessageEvent) => {
