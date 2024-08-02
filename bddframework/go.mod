@@ -5,7 +5,7 @@ go 1.21
 toolchain go1.21.6
 
 // Internal dependencies
-replace github.com/apache/incubator-kie-kogito-serverless-operator v0.0.0 => ../
+replace github.com/apache/incubator-kie-kogito-serverless-operator => ../
 
 require (
 	github.com/cucumber/gherkin-go/v19 v19.0.3
