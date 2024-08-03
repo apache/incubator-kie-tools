@@ -58,7 +58,8 @@ public class SonataFlowQuarkusExtensionJsonRPCService {
 
     @PostConstruct
     public void init() {
-        isLocalCluster = ConfigProvider.getConfig().getOptionalValue(IS_LOCAL_CLUSTER, Boolean.class).orElse(false);
+        //temporary, set isLocalCluster always true since sonataflow-dev-ui works in k8s cluster.
+        isLocalCluster = ConfigProvider.getConfig().getOptionalValue(IS_LOCAL_CLUSTER, Boolean.class).orElse(true);
         if (!isLocalCluster) {
             Optional<String> dataIndexURL = ConfigProvider.getConfig().getOptionalValue(DATA_INDEX_URL, String.class);
             dataIndexURL.ifPresent(this::initDataIndexWebClient);

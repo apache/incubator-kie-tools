@@ -108,14 +108,15 @@ public class DevConsoleProcessor {
 
         String openapiPath = getProperty(configurationBuildItem, systemPropertyBuildItems, "quarkus.smallrye-openapi.path");
         String devUIUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.dev-ui.url");
-        String dataIndexUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.data-index.url");
+        //String dataIndexUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.data-index.url");
 
         cardPageBuildItem.addBuildTimeData("extensionBasePath", uiPath);
         cardPageBuildItem.addBuildTimeData("openapiPath", openapiPath);
         cardPageBuildItem.addBuildTimeData("devUIUrl", devUIUrl);
-        cardPageBuildItem.addBuildTimeData("dataIndexUrl", dataIndexUrl);
-
-        boolean isLocalCluster = ConfigProvider.getConfig().getOptionalValue(IS_LOCAL_CLUSTER, Boolean.class).orElse(false);
+        //temporary, set dataIndexUrl always null, since sonataflow-dev-ui works in k8s cluster and we want window.location instead.
+        cardPageBuildItem.addBuildTimeData("dataIndexUrl", null);
+        //temporary, set isLocalCluster always true since sonataflow-dev-ui works in k8s cluster.
+        boolean isLocalCluster = ConfigProvider.getConfig().getOptionalValue(IS_LOCAL_CLUSTER, Boolean.class).orElse(true);
         cardPageBuildItem.addBuildTimeData("isLocalCluster", isLocalCluster);
 
         cardPageBuildItem.addPage(Page.webComponentPageBuilder()
