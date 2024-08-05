@@ -32,7 +32,7 @@
     "graphql": "14.3.1",
     "jest": "^29.7.0",
     "lodash": "^4.17.21",
-    "nodemon": "^2.0.22",
+    "nodemon": "^3.1.4",
     "swagger-ui-express": "^5.0.0",
     "uuid": "^8.3.2"
   }
