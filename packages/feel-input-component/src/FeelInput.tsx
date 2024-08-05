@@ -30,7 +30,7 @@ import {
 } from "./FeelConfigs";
 
 import { FeelSyntacticSymbolNature, FeelVariables, ParsedExpression } from "@kie-tools/dmn-feel-antlr4-parser";
-import { Element } from "./themes/Element";
+import { SemanticTokensProvider } from "./semanticTokensProvider";
 
 export const EXPRESSION_PROPERTIES_SEPARATOR = ".";
 
@@ -76,23 +76,6 @@ Monaco.editor.defineTheme(MONACO_FEEL_THEME, feelTheme());
 // Don't remove this mechanism. It's necessary for Monaco to initialize correctly and display correct colors for FEEL.
 let __firstTimeInitializingMonacoToEnableColorizingCorrectly = true;
 
-function getTokenTypeIndex(symbolType: FeelSyntacticSymbolNature) {
-  switch (symbolType) {
-    default:
-    case FeelSyntacticSymbolNature.LocalVariable:
-    case FeelSyntacticSymbolNature.GlobalVariable:
-      return Element.Variable;
-    case FeelSyntacticSymbolNature.DynamicVariable:
-      return Element.DynamicVariable;
-    case FeelSyntacticSymbolNature.Unknown:
-      return Element.UnknownVariable;
-    case FeelSyntacticSymbolNature.Invocable:
-      return Element.FunctionCall;
-    case FeelSyntacticSymbolNature.Parameter:
-      return Element.FunctionParameterVariable;
-  }
-}
-
 export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
   (
     {
@@ -114,6 +97,11 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
     const monacoRef = useRef<Monaco.editor.IStandaloneCodeEditor>();
 
     const [currentParsedExpression, setCurrentParsedExpression] = useState<ParsedExpression>();
+
+    const semanticTokensProvider = useMemo(
+      () => new SemanticTokensProvider(feelVariables, expressionId, setCurrentParsedExpression),
+      [expressionId, feelVariables]
+    );
 
     const getLastValidSymbolAtPosition = useCallback((currentParsedExpression: ParsedExpression, position: number) => {
       let lastValidSymbol;
@@ -292,84 +280,7 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
 
       const disposable = Monaco.languages.registerDocumentSemanticTokensProvider(
         { language: MONACO_FEEL_LANGUAGE },
-        {
-          provideDocumentSemanticTokens: function (model) {
-            const tokenTypes = new Array<number>();
-
-            if (feelVariables) {
-              const text = model.getValue();
-              const contentByLines = model.getLinesContent();
-              let startOfPreviousToken = 0;
-              let previousLine = 0;
-              let lineOffset = 0;
-              let currentLine = 0;
-              const parsedExpression = feelVariables.parser.parse(expressionId ?? "", text);
-              setCurrentParsedExpression(parsedExpression);
-
-              for (const variable of parsedExpression.feelVariables) {
-                if (variable.startLine != currentLine) {
-                  lineOffset += contentByLines[currentLine].length + 1; // +1 = the line break
-                  currentLine = variable.startLine;
-                }
-                variable.startIndex -= lineOffset;
-              }
-
-              for (const variable of parsedExpression.feelVariables) {
-                if (previousLine != variable.startLine) {
-                  startOfPreviousToken = 0;
-                }
-                if (variable.startLine === variable.endLine) {
-                  tokenTypes.push(
-                    variable.startLine - previousLine, // lineIndex = relative to the PREVIOUS line
-                    variable.startIndex - startOfPreviousToken, // columnIndex = relative to the start of the PREVIOUS token NOT to the start of the line
-                    variable.length,
-                    getTokenTypeIndex(variable.feelSymbolNature),
-                    0 // token modifier = not used so we keep it 0
-                  );
-
-                  previousLine = variable.startLine;
-                  startOfPreviousToken = variable.startIndex;
-                } else {
-                  tokenTypes.push(
-                    variable.startLine - previousLine,
-                    variable.startIndex - startOfPreviousToken,
-                    variable.length,
-                    getTokenTypeIndex(variable.feelSymbolNature),
-                    0
-                  );
-
-                  const length =
-                    variable.length - (contentByLines[variable.startLine].length - variable.startIndex + 1); // +1 = the line break
-
-                  tokenTypes.push(
-                    variable.endLine - variable.startLine,
-                    0,
-                    length,
-                    getTokenTypeIndex(variable.feelSymbolNature),
-                    0
-                  );
-
-                  startOfPreviousToken = 0;
-                  previousLine = variable.endLine;
-                }
-              }
-            }
-
-            return {
-              data: new Uint32Array(tokenTypes),
-              resultId: undefined,
-            };
-          },
-          getLegend: function (): Monaco.languages.SemanticTokensLegend {
-            return {
-              tokenTypes: Object.values(Element).filter((x) => typeof x === "string") as string[],
-              tokenModifiers: [],
-            };
-          },
-          releaseDocumentSemanticTokens: function (resultId: string | undefined): void {
-            // do nothing
-          },
-        }
+        semanticTokensProvider
       );
       return () => {
         disposable.dispose();

@@ -19,8 +19,8 @@
 
 import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/BoxedExpressionEditor";
 import {
-  ImportJavaClasses,
   GWTLayerService,
+  ImportJavaClasses,
   JavaClass,
   JavaCodeCompletionService,
 } from "@kie-tools/import-java-classes-component";
@@ -29,15 +29,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as ReactDOM from "react-dom";
 import {
   BeeGwtService,
-  DmnDataType,
   BoxedExpression,
-  PmmlDocument,
   DmnBuiltInDataType,
+  DmnDataType,
+  Normalized,
+  PmmlDocument,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 import { GwtExpressionDefinition } from "./types";
-import { dmnExpressionToGwtExpression, gwtLogicType } from "./mapping";
-import { gwtExpressionToDmnExpression } from "./mapping";
+import { dmnExpressionToGwtExpression, gwtExpressionToDmnExpression, gwtLogicType } from "./mapping";
 import { DmnLatestModel, getMarshaller } from "@kie-tools/dmn-marshaller";
 import { updateExpression } from "./tmpDuplicateCode__updateExpression";
 
@@ -75,7 +75,7 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
 }) => {
   const [expressionWrapper, setExpressionWrapper] = useState<{
     source: "gwt" | "react";
-    expression: BoxedExpression | undefined;
+    expression: Normalized<BoxedExpression> | undefined;
     widthsById: Map<string, number[]>;
   }>({ source: "gwt", ...gwtExpressionToDmnExpression(gwtExpression) });
 
@@ -113,18 +113,21 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
     },
   };
 
-  const setExpressionNotifyingUserAction = useCallback((newExpressionAction: React.SetStateAction<BoxedExpression>) => {
-    setExpressionWrapper((prevState) => {
-      return {
-        source: "react",
-        expression:
-          typeof newExpressionAction === "function"
-            ? newExpressionAction(prevState.expression as any)
-            : newExpressionAction,
-        widthsById: prevState.widthsById,
-      };
-    });
-  }, []);
+  const setExpressionNotifyingUserAction = useCallback(
+    (newExpressionAction: React.SetStateAction<Normalized<BoxedExpression>>) => {
+      setExpressionWrapper((prevState) => {
+        return {
+          source: "react",
+          expression:
+            typeof newExpressionAction === "function"
+              ? newExpressionAction(prevState.expression as any)
+              : newExpressionAction,
+          widthsById: prevState.widthsById,
+        };
+      });
+    },
+    []
+  );
 
   const setWidthsByIdNotifyingUserAction = useCallback(
     (newWidthsByIdAction: React.SetStateAction<Map<string, number[]>>) => {

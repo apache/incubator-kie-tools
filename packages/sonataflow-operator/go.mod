@@ -4,9 +4,9 @@ go 1.21
 
 // Internal dependencies
 replace (
-	github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api v0.0.0 => ./api
-	github.com/apache/incubator-kie-tools/packages/sonataflow-operator/container-builder v0.0.0 => ./container-builder
-	github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj v0.0.0 => ./workflowproj
+	github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api => ./api
+	github.com/apache/incubator-kie-tools/packages/sonataflow-operator/container-builder => ./container-builder
+	github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj => ./workflowproj
 )
 
 // Direct dependencies (please keep organized, no indirects)

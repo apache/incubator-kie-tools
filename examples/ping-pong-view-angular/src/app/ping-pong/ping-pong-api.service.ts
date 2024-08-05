@@ -41,8 +41,8 @@ function getCurrentTime() {
 
 @Injectable()
 export class PingPongApiService implements PingPongFactory {
-  channelApi: MessageBusClientApi<PingPongChannelApi>;
-  initArgs: PingPongInitArgs;
+  channelApi?: MessageBusClientApi<PingPongChannelApi>;
+  initArgs?: PingPongInitArgs;
   log = new ReplaySubject<LogEntry>(10);
   logCleared = new Subject();
   lastPingTimestamp = new BehaviorSubject<number>(0);
@@ -64,7 +64,7 @@ export class PingPongApiService implements PingPongFactory {
     // Subscribe to ping notifications.
     this.pingSubscription = this.channelApi.notifications.pingPongView__ping.subscribe((pingSource) => {
       // If this instance sent the PING, we ignore it.
-      if (pingSource === this.initArgs.name) {
+      if (pingSource === initArgs.name) {
         return;
       }
 
@@ -72,14 +72,14 @@ export class PingPongApiService implements PingPongFactory {
       this.log.next({ line: `PING from '${pingSource}'.`, time: getCurrentTime() });
 
       // Acknowledges the PING message by sending back a PONG message.
-      this.channelApi.notifications.pingPongView__pong.send(this.initArgs.name, pingSource);
+      channelApi.notifications.pingPongView__pong.send(initArgs.name, pingSource);
     });
 
     // Subscribe to pong notifications.
     this.pongSubscription = this.channelApi.notifications.pingPongView__pong.subscribe(
       (pongSource: string, replyingTo: string) => {
         // If this instance sent the PONG, or if this PONG was not meant to this instance, we ignore it.
-        if (pongSource === this.initArgs.name || replyingTo !== this.initArgs.name) {
+        if (pongSource === initArgs.name || replyingTo !== initArgs.name) {
           return;
         }
 
@@ -109,13 +109,17 @@ export class PingPongApiService implements PingPongFactory {
 
   // Send a ping to the channel.
   ping() {
-    this.channelApi.notifications.pingPongView__ping.send(this.initArgs.name);
-    this.lastPingTimestamp.next(getCurrentTime());
+    if (this.initArgs && this.channelApi) {
+      this.channelApi.notifications.pingPongView__ping.send(this.initArgs.name);
+      this.lastPingTimestamp.next(getCurrentTime());
+    }
   }
 
   clearSubscriptions() {
-    this.pingSubscription && this.channelApi.notifications.pingPongView__ping.unsubscribe(this.pingSubscription);
-    this.pongSubscription && this.channelApi.notifications.pingPongView__pong.unsubscribe(this.pongSubscription);
+    if (this.channelApi) {
+      this.pingSubscription && this.channelApi.notifications.pingPongView__ping.unsubscribe(this.pingSubscription);
+      this.pongSubscription && this.channelApi.notifications.pingPongView__pong.unsubscribe(this.pongSubscription);
+    }
   }
 
   clearInterval() {

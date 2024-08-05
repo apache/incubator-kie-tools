@@ -20,7 +20,7 @@
 import { test, expect } from "../../__fixtures__/base";
 
 test.describe("Populate Boxed List", () => {
-  test("should correctly create an age group boxed list", async ({ stories, boxedExpressionEditor, page, monaco }) => {
+  test("should correctly create an age group boxed list", async ({ stories, bee, page, monaco }) => {
     await stories.openBoxedList();
     await page.getByRole("cell", { name: "1" }).hover();
     await page.getByRole("cell", { name: "1" }).locator("svg").click();
@@ -28,11 +28,11 @@ test.describe("Populate Boxed List", () => {
     await page.getByRole("cell", { name: "1" }).locator("svg").click();
     await page.getByRole("cell", { name: "1" }).locator("svg").click();
 
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "1 " }));
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "2 " }));
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "3 " }));
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "4 " }));
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "5 " }));
+    await bee.expression.asList().row(0).selectExpressionMenu.selectLiteral();
+    await bee.expression.asList().row(1).selectExpressionMenu.selectLiteral();
+    await bee.expression.asList().row(2).selectExpressionMenu.selectLiteral();
+    await bee.expression.asList().row(3).selectExpressionMenu.selectLiteral();
+    await bee.expression.asList().row(4).selectExpressionMenu.selectLiteral();
 
     await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
     await page.getByPlaceholder("Expression Name").fill("Age groups");
@@ -46,6 +46,6 @@ test.describe("Populate Boxed List", () => {
     await monaco.fill({ monacoParentLocator: page, nth: 3, content: "[50..70)" });
     await monaco.fill({ monacoParentLocator: page, nth: 4, content: ">=70" });
 
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-list-age-group.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-list-age-group.png");
   });
 });

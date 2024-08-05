@@ -25,7 +25,7 @@ import { FontProperties } from "./parts/fontProperties";
 import { DocumentationProperties } from "./parts/documentationProperties";
 import { DescriptionProperties } from "./parts/descriptionProperties";
 import { DataTypeProperties } from "./parts/dataTypeProperties";
-import { DataType } from "../jsonModel";
+import { DataType } from "../dataTypes";
 import { NameProperties } from "./parts/nameProperties";
 
 export class DecisionPropertiesPanel extends PropertiesPanelBase {

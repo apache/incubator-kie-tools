@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback } from "react";
-import { BoxedContext } from "../../api";
+import { BoxedContext, generateUuid, Normalized } from "../../api";
 import {
   NestedExpressionDispatchContextProvider,
   OnSetExpression,
@@ -29,7 +29,7 @@ import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionConta
 import { solveResultAndEntriesIndex } from "./ContextExpression";
 
 export function ContextResultExpressionCell(props: {
-  contextExpression: BoxedContext;
+  contextExpression: Normalized<BoxedContext>;
   rowIndex: number;
   columnIndex: number;
 }) {
@@ -42,13 +42,14 @@ export function ContextResultExpressionCell(props: {
 
   const onSetExpression = useCallback<OnSetExpression>(
     ({ getNewExpression }) => {
-      setExpression((prev: BoxedContext) => {
+      setExpression((prev: Normalized<BoxedContext>) => {
         const newContextEntries = [...(prev.contextEntry ?? [])];
 
         const newExpression = getNewExpression(newContextEntries[resultIndex]?.expression);
 
         if (resultIndex <= -1) {
           newContextEntries.push({
+            "@_id": generateUuid(),
             expression: newExpression!, // SPEC DISCREPANCY:
           });
         } else if (newExpression) {
@@ -61,7 +62,7 @@ export function ContextResultExpressionCell(props: {
         }
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedContext = {
+        const ret: Normalized<BoxedContext> = {
           ...prev,
           contextEntry: newContextEntries,
           "@_label": newExpression?.["@_label"] ?? prev["@_label"],

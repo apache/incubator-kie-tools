@@ -147,6 +147,7 @@ func NewManagedPropertyHandler(workflow *operatorapi.SonataFlow, platform *opera
 	}
 	props := properties.NewProperties()
 	props.Set(constants.KogitoUserTasksEventsEnabled, "false")
+	props.Set(constants.KogitoDataIndexQuarkusDevUICors, "false")
 	if platform != nil {
 		p, err := resolvePlatformWorkflowProperties(platform)
 		if err != nil {

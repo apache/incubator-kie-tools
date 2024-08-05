@@ -35,19 +35,19 @@ test.describe("Keyboard", () => {
       await table.selectCell({ rowNumber: "1", columnNumber: 0 });
 
       await table.navigateRight({ rowNumber: "1", columnNumber: 0, type: Type.KEYBOARD_SHORTCUT });
-      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-right.png");
+      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-right.png");
 
       await table.navigateDown({ rowNumber: "1", columnNumber: 1, type: Type.KEYBOARD_SHORTCUT });
-      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-down.png");
+      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-down.png");
 
       await table.navigateLeft({ rowNumber: "2", columnNumber: 1, type: Type.KEYBOARD_SHORTCUT });
-      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-left.png");
+      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-left.png");
 
       await table.navigateUp({ rowNumber: "2", columnNumber: 0, type: Type.KEYBOARD_SHORTCUT });
-      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-up.png");
+      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-up.png");
 
       await table.deselectCell({ rowNumber: "2", columnNumber: 0 });
-      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-escaped-screenshot.png");
+      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-escaped.png");
     });
   });
 
@@ -60,19 +60,19 @@ test.describe("Keyboard", () => {
       await table.selectCell({ rowNumber: "1", columnNumber: 0 });
 
       await table.navigateRight({ rowNumber: "1", columnNumber: 0, type: Type.ARROW });
-      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-right.png");
+      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-right.png");
 
       await table.navigateDown({ rowNumber: "1", columnNumber: 1, type: Type.ARROW });
-      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-down.png");
+      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-down.png");
 
       await table.navigateLeft({ rowNumber: "2", columnNumber: 1, type: Type.ARROW });
-      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-left.png");
+      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-left.png");
 
       await table.navigateUp({ rowNumber: "2", columnNumber: 0, type: Type.ARROW });
-      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-up.png");
+      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-up.png");
 
       await table.deselectCell({ rowNumber: "2", columnNumber: 0 });
-      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-escaped-screenshot.png");
+      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-escaped.png");
     });
   });
 });

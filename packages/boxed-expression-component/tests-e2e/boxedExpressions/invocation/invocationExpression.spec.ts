@@ -20,7 +20,7 @@
 import { test, expect } from "../../__fixtures__/base";
 
 test.describe("Create Boxed Invocation", () => {
-  test("should render expression correctly", async ({ boxedExpressionEditor, stories, page }) => {
+  test("should render expression correctly", async ({ bee, stories, page }) => {
     await stories.openBoxedInvocation();
     await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "FUNCTION" })).toBeAttached();
@@ -28,6 +28,6 @@ test.describe("Create Boxed Invocation", () => {
     await expect(page.getByText("Select expression")).toHaveCount(1);
     await expect(page.getByRole("columnheader")).toHaveCount(2);
     await expect(page.getByRole("cell")).toHaveCount(2);
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-invocation.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-invocation.png");
   });
 });

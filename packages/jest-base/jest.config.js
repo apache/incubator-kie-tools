@@ -49,10 +49,15 @@ const babelTransform = {
   "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }]] }],
 };
 
+const typescriptTransform = {
+  "^.+\\.tsx?$": ["ts-jest", { tsconfig: "./tsconfig.tests.json" }],
+};
+
 module.exports = {
   babelTransform,
   config,
   jestSetupPath,
   monacoMock,
   styleMock,
+  typescriptTransform,
 };

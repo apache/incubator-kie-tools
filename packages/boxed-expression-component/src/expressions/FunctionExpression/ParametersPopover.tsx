@@ -24,7 +24,7 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { OutlinedTrashAltIcon } from "@patternfly/react-icons/dist/js/icons/outlined-trash-alt-icon";
 import * as React from "react";
 import { ChangeEvent, useCallback } from "react";
-import { BoxedFunction, DmnBuiltInDataType, generateUuid, getNextAvailablePrefixedName } from "../../api";
+import { BoxedFunction, generateUuid, getNextAvailablePrefixedName, Normalized } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
 import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
@@ -32,7 +32,7 @@ import { DataTypeSelector } from "../../expressionVariable/DataTypeSelector";
 import "./ParametersPopover.css";
 
 export interface ParametersPopoverProps {
-  parameters: DMN15__tInformationItem[];
+  parameters: Normalized<DMN15__tInformationItem>[];
 }
 
 export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> = ({ parameters }) => {
@@ -42,7 +42,7 @@ export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> 
   const addParameter = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      setExpression((prev: BoxedFunction) => {
+      setExpression((prev: Normalized<BoxedFunction>) => {
         const newParameters = [
           ...(prev.formalParameter ?? []),
           {
@@ -56,7 +56,7 @@ export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> 
         ];
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedFunction = {
+        const ret: Normalized<BoxedFunction> = {
           ...prev,
           formalParameter: newParameters,
         };
@@ -101,14 +101,14 @@ function ParameterEntry({ parameter, index }: { parameter: DMN15__tInformationIt
   const onNameChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       e.stopPropagation();
-      setExpression((prev: BoxedFunction) => {
+      setExpression((prev: Normalized<BoxedFunction>) => {
         const newParameters = [...(prev.formalParameter ?? [])];
         newParameters[index] = {
           ...newParameters[index],
           "@_name": e.target.value,
         };
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedFunction = {
+        const ret: Normalized<BoxedFunction> = {
           ...prev,
           formalParameter: newParameters,
         };
@@ -121,14 +121,14 @@ function ParameterEntry({ parameter, index }: { parameter: DMN15__tInformationIt
 
   const onDataTypeChange = useCallback(
     (typeRef: string | undefined) => {
-      setExpression((prev: BoxedFunction) => {
+      setExpression((prev: Normalized<BoxedFunction>) => {
         const newParameters = [...(prev.formalParameter ?? [])];
         newParameters[index] = {
           ...newParameters[index],
           "@_typeRef": typeRef,
         };
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedFunction = {
+        const ret: Normalized<BoxedFunction> = {
           ...prev,
           formalParameter: newParameters,
         };
@@ -142,11 +142,11 @@ function ParameterEntry({ parameter, index }: { parameter: DMN15__tInformationIt
   const onParameterRemove = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      setExpression((prev: BoxedFunction) => {
+      setExpression((prev: Normalized<BoxedFunction>) => {
         const newParameters = [...(prev.formalParameter ?? [])];
         newParameters.splice(index, 1);
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedFunction = {
+        const ret: Normalized<BoxedFunction> = {
           ...prev,
           formalParameter: newParameters,
         };

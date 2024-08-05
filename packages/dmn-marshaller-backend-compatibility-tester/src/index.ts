@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 import * as path from "path";
 const buildEnv = require("../env");
 const jbang = require("@jbangdev/jbang");

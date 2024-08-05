@@ -17,14 +17,14 @@
  * under the License.
  */
 
-import { test, expect } from "../../__fixtures__/base";
+import { expect, test } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Populate Boxed Context", () => {
   test("should correctly create pre-bureau risk category boxed context", async ({
     page,
     stories,
-    boxedExpressionEditor,
+    bee,
     resizing,
     monaco,
   }) => {
@@ -36,7 +36,7 @@ test.describe("Populate Boxed Context", () => {
     await page.getByRole("option", { name: "number" }).click();
     await page.keyboard.press("Enter");
 
-    await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "ContextEntry-1" }));
+    await bee.expression.asContext().entry(0).selectExpressionMenu.selectLiteral();
     await page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" }).click();
     await page.getByPlaceholder("Expression Name").fill("Existing Customer");
     await page.getByLabel("<Undefined>").click();
@@ -44,7 +44,7 @@ test.describe("Populate Boxed Context", () => {
     await page.keyboard.press("Enter");
     await monaco.fill({ monacoParentLocator: page, content: "Applicant data.ExistingCustomer" });
 
-    await boxedExpressionEditor.selectDecisionTable(page.getByRole("row", { name: "result" }));
+    await bee.expression.asContext().result.selectExpressionMenu.selectDecisionTable();
     await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).hover({ position: { x: 0, y: 0 } });
     await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).locator("svg").click();
     await page.getByRole("cell", { name: "1", exact: true }).hover();
@@ -67,7 +67,7 @@ test.describe("Populate Boxed Context", () => {
     await page.getByRole("option", { name: "number" }).click();
     await page.keyboard.press("Enter");
 
-    await boxedExpressionEditor.fillDecisionTable({
+    await bee.expression.asDecisionTable().fill({
       startAtCell: 1,
       tableData: [
         ["false", "<100", `"High"`],
@@ -93,6 +93,6 @@ test.describe("Populate Boxed Context", () => {
     //   page.getByRole("columnheader", { name: "Pre-bureau risk category calculation (number)" }).nth(1)
     // );
 
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-context-pre-bureau-risk-category.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-context-pre-bureau-risk-category.png");
   });
 });

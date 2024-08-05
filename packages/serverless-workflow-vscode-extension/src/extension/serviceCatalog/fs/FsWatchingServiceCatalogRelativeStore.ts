@@ -25,7 +25,7 @@ import {
   SwfCatalogSourceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../../configuration";
-import path = require("path");
+import path from "path";
 
 const EXTENSIONS_REGEX = new RegExp("^.*\\.(yaml|yml|json)$");
 

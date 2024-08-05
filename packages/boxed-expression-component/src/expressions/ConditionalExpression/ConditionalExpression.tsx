@@ -24,6 +24,8 @@ import {
   BeeTableProps,
   BoxedConditional,
   DmnBuiltInDataType,
+  generateUuid,
+  Normalized,
 } from "../../api";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
@@ -43,7 +45,7 @@ import {
   CONDITIONAL_EXPRESSION_LABEL_COLUMN_WIDTH,
 } from "../../resizing/WidthConstants";
 
-export type ROWTYPE = ConditionalClause;
+export type ROWTYPE = Normalized<ConditionalClause>;
 
 export type ConditionalClause = {
   part: DMN15__tChildExpression;
@@ -55,7 +57,7 @@ export function ConditionalExpression({
   parentElementId,
   expression: conditionalExpression,
 }: {
-  expression: BoxedConditional;
+  expression: Normalized<BoxedConditional>;
   isNested: boolean;
   parentElementId: string;
 }) {
@@ -169,26 +171,35 @@ export function ConditionalExpression({
 
   const onRowReset = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: BoxedConditional) => {
+      setExpression((prev: Normalized<BoxedConditional>) => {
         if (args.rowIndex === 0) {
           // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const ret: BoxedConditional = {
+          const ret: Normalized<BoxedConditional> = {
             ...prev,
-            if: { expression: undefined! }, // SPEC DISCREPANCY
+            if: {
+              "@_id": generateUuid(),
+              expression: undefined!,
+            }, // SPEC DISCREPANCY
           };
           return ret;
         } else if (args.rowIndex === 1) {
           // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const ret: BoxedConditional = {
+          const ret: Normalized<BoxedConditional> = {
             ...prev,
-            then: { expression: undefined! }, // SPEC DISCREPANCY
+            then: {
+              "@_id": generateUuid(),
+              expression: undefined!,
+            }, // SPEC DISCREPANCY
           };
           return ret;
         } else if (args.rowIndex === 2) {
           // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const ret: BoxedConditional = {
+          const ret: Normalized<BoxedConditional> = {
             ...prev,
-            else: { expression: undefined! }, // SPEC DISCREPANCY
+            else: {
+              "@_id": generateUuid(),
+              expression: undefined!,
+            }, // SPEC DISCREPANCY
           };
           return ret;
         } else {
@@ -201,9 +212,9 @@ export function ConditionalExpression({
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev: BoxedConditional) => {
+      setExpression((prev: Normalized<BoxedConditional>) => {
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedConditional = {
+        const ret: Normalized<BoxedConditional> = {
           ...prev,
           "@_label": name,
           "@_typeRef": typeRef,

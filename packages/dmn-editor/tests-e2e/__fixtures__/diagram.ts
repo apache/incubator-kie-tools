@@ -28,7 +28,7 @@ export class Diagram {
   constructor(public page: Page) {}
 
   public get() {
-    return this.page.getByTestId("kie-dmn-editor--diagram-container");
+    return this.page.getByTestId("kie-tools--dmn-editor--diagram-container");
   }
 
   public async dblclick(position: { x: number; y: number }) {
@@ -50,5 +50,24 @@ export class Diagram {
     await this.get().getByTitle("Select or edit DRD").click();
     await this.page.getByLabel("Tweak the shape of the input data node").getByText("Alternative").click();
     await this.get().getByTitle("Select or edit DRD").click();
+  }
+
+  public async zoomIn(args: { clicks: number }) {
+    await this.get().getByTitle("zoom in").click({ clickCount: args.clicks });
+  }
+
+  public async zoomOut(args: { clicks: number }) {
+    await this.get().getByLabel("zoom out").click({ clickCount: args.clicks });
+  }
+
+  public async fitView() {
+    await this.get().getByLabel("fit view").click();
+  }
+
+  public async pan(args: { startPosition: { x: number; y: number }; endPosition: { x: number; y: number } }) {
+    await this.page.mouse.move(args.startPosition.x, args.startPosition.y);
+    await this.page.mouse.down({ button: "middle" });
+    await this.page.mouse.move(args.endPosition.x, args.endPosition.y);
+    await this.page.mouse.up({ button: "middle" });
   }
 }
