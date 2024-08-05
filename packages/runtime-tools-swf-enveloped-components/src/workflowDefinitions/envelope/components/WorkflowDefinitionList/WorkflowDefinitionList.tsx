@@ -91,7 +91,6 @@ const WorkflowDefinitionList: React.FC<WorkflowDefinitionListProps & OUIAProps> 
 
   const doRefresh = async (): Promise<void> => {
     setIsLoading(true);
-    setFilterWorkflowNames([...filterWorkflowNames]);
     doQuery();
   };
 
