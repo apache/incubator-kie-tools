@@ -244,15 +244,12 @@ export const InputDataNode = React.memo(
         >
           <div className={`kie-dmn-editor--node `}>
             <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
-
-            {!readOnly && (
-              <OutgoingStuffNodePanel
-                nodeHref={id}
-                isVisible={!isTargeted && shouldActLikeHovered}
-                nodeTypes={outgoingStructure[NODE_TYPES.inputData].nodes}
-                edgeTypes={outgoingStructure[NODE_TYPES.inputData].edges}
-              />
-            )}
+            <OutgoingStuffNodePanel
+              nodeHref={id}
+              isVisible={!readOnly && !isTargeted && shouldActLikeHovered}
+              nodeTypes={outgoingStructure[NODE_TYPES.inputData].nodes}
+              edgeTypes={outgoingStructure[NODE_TYPES.inputData].edges}
+            />
             {!isAlternativeInputDataShape && (
               <EditableNodeLabel
                 id={id}
@@ -434,14 +431,12 @@ export const DecisionNode = React.memo(
           {!isExternal && (
             <EditExpressionNodePanel isVisible={!isTargeted && shouldActLikeHovered} id={decision["@_id"]!} />
           )}
-          {!readOnly && (
-            <OutgoingStuffNodePanel
-              nodeHref={id}
-              isVisible={!isTargeted && shouldActLikeHovered}
-              nodeTypes={outgoingStructure[NODE_TYPES.decision].nodes}
-              edgeTypes={outgoingStructure[NODE_TYPES.decision].edges}
-            />
-          )}
+          <OutgoingStuffNodePanel
+            nodeHref={id}
+            isVisible={!readOnly && !isTargeted && shouldActLikeHovered}
+            nodeTypes={outgoingStructure[NODE_TYPES.decision].nodes}
+            edgeTypes={outgoingStructure[NODE_TYPES.decision].edges}
+          />
           <EditableNodeLabel
             id={id}
             namedElement={decision}
@@ -573,14 +568,12 @@ export const BkmNode = React.memo(
         >
           <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
           {!isExternal && <EditExpressionNodePanel isVisible={!isTargeted && shouldActLikeHovered} id={bkm["@_id"]!} />}
-          {!readOnly && (
-            <OutgoingStuffNodePanel
-              nodeHref={id}
-              isVisible={!isTargeted && shouldActLikeHovered}
-              nodeTypes={outgoingStructure[NODE_TYPES.bkm].nodes}
-              edgeTypes={outgoingStructure[NODE_TYPES.bkm].edges}
-            />
-          )}
+          <OutgoingStuffNodePanel
+            nodeHref={id}
+            isVisible={!readOnly && !isTargeted && shouldActLikeHovered}
+            nodeTypes={outgoingStructure[NODE_TYPES.bkm].nodes}
+            edgeTypes={outgoingStructure[NODE_TYPES.bkm].edges}
+          />
           <EditableNodeLabel
             id={id}
             namedElement={bkm}
@@ -694,14 +687,12 @@ export const KnowledgeSourceNode = React.memo(
           data-nodelabel={knowledgeSource["@_name"]}
         >
           <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
-          {!readOnly && (
-            <OutgoingStuffNodePanel
-              nodeHref={id}
-              isVisible={!isTargeted && shouldActLikeHovered}
-              nodeTypes={outgoingStructure[NODE_TYPES.knowledgeSource].nodes}
-              edgeTypes={outgoingStructure[NODE_TYPES.knowledgeSource].edges}
-            />
-          )}
+          <OutgoingStuffNodePanel
+            nodeHref={id}
+            isVisible={!readOnly && !isTargeted && shouldActLikeHovered}
+            nodeTypes={outgoingStructure[NODE_TYPES.knowledgeSource].nodes}
+            edgeTypes={outgoingStructure[NODE_TYPES.knowledgeSource].edges}
+          />
           <EditableNodeLabel
             id={id}
             namedElement={knowledgeSource}
@@ -805,14 +796,12 @@ export const TextAnnotationNode = React.memo(
           data-nodelabel={textAnnotation["@_label"] ?? textAnnotation.text?.__$$text}
         >
           <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
-          {!readOnly && (
-            <OutgoingStuffNodePanel
-              nodeHref={id}
-              isVisible={!isTargeted && shouldActLikeHovered}
-              nodeTypes={outgoingStructure[NODE_TYPES.textAnnotation].nodes}
-              edgeTypes={outgoingStructure[NODE_TYPES.textAnnotation].edges}
-            />
-          )}
+          <OutgoingStuffNodePanel
+            nodeHref={id}
+            isVisible={!readOnly && !isTargeted && shouldActLikeHovered}
+            nodeTypes={outgoingStructure[NODE_TYPES.textAnnotation].nodes}
+            edgeTypes={outgoingStructure[NODE_TYPES.textAnnotation].edges}
+          />
           <EditableNodeLabel
             id={id}
             namedElement={undefined}
@@ -1002,14 +991,12 @@ export const DecisionServiceNode = React.memo(
           data-nodelabel={decisionService["@_name"]}
         >
           <InfoNodePanel isVisible={!isTargeted && selected && !dragging} />
-          {!readOnly && (
-            <OutgoingStuffNodePanel
-              nodeHref={id}
-              isVisible={!isTargeted && selected && !dragging}
-              nodeTypes={outgoingStructure[NODE_TYPES.decisionService].nodes}
-              edgeTypes={outgoingStructure[NODE_TYPES.decisionService].edges}
-            />
-          )}
+          <OutgoingStuffNodePanel
+            nodeHref={id}
+            isVisible={!readOnly && !isTargeted && selected && !dragging}
+            nodeTypes={outgoingStructure[NODE_TYPES.decisionService].nodes}
+            edgeTypes={outgoingStructure[NODE_TYPES.decisionService].edges}
+          />
           <EditableNodeLabel
             id={id}
             namedElement={decisionService}
@@ -1142,14 +1129,12 @@ export const GroupNode = React.memo(
           data-nodehref={id}
           data-nodelabel={group["@_name"]}
         >
-          {!readOnly && (
-            <OutgoingStuffNodePanel
-              nodeHref={id}
-              isVisible={!isTargeted && selected && !dragging}
-              nodeTypes={outgoingStructure[NODE_TYPES.group].nodes}
-              edgeTypes={outgoingStructure[NODE_TYPES.group].edges}
-            />
-          )}
+          <OutgoingStuffNodePanel
+            nodeHref={id}
+            isVisible={!readOnly && !isTargeted && selected && !dragging}
+            nodeTypes={outgoingStructure[NODE_TYPES.group].nodes}
+            edgeTypes={outgoingStructure[NODE_TYPES.group].edges}
+          />
           <EditableNodeLabel
             id={id}
             namedElement={undefined}

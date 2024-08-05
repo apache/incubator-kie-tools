@@ -716,7 +716,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
     const onNodesChange = useCallback<RF.OnNodesChange>(
       (changes) => {
-        if (!reactFlowInstance) {
+        if (!reactFlowInstance || readOnly) {
           return;
         }
 
@@ -901,7 +901,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           }
         });
       },
-      [reactFlowInstance, dmnEditorStoreApi, externalModelsByNamespace]
+      [reactFlowInstance, dmnEditorStoreApi, externalModelsByNamespace, readOnly]
     );
 
     const resetToBeforeEditingBegan = useCallback(() => {
@@ -946,6 +946,9 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
     const onNodeDragStop = useCallback<RF.NodeDragHandler>(
       (e, node: RF.Node<DmnDiagramNodeData>) => {
+        if (readOnly) {
+          return;
+        }
         try {
           dmnEditorStoreApi.setState((state) => {
             console.debug("DMN DIAGRAM: `onNodeDragStop`");
@@ -1030,11 +1033,14 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           resetToBeforeEditingBegan();
         }
       },
-      [dmnEditorStoreApi, externalModelsByNamespace, resetToBeforeEditingBegan]
+      [dmnEditorStoreApi, externalModelsByNamespace, resetToBeforeEditingBegan, readOnly]
     );
 
     const onEdgesChange = useCallback<RF.OnEdgesChange>(
       (changes) => {
+        if (readOnly) {
+          return;
+        }
         dmnEditorStoreApi.setState((state) => {
           for (const change of changes) {
             switch (change.type) {
@@ -1065,11 +1071,14 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           }
         });
       },
-      [dmnEditorStoreApi, externalModelsByNamespace]
+      [dmnEditorStoreApi, externalModelsByNamespace, readOnly]
     );
 
     const onEdgeUpdate = useCallback<RF.OnEdgeUpdateFunc<DmnDiagramEdgeData>>(
       (oldEdge, newConnection) => {
+        if (readOnly) {
+          return;
+        }
         console.debug("DMN DIAGRAM: `onEdgeUpdate`", oldEdge, newConnection);
 
         dmnEditorStoreApi.setState((state) => {
@@ -1162,7 +1171,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           state.diagram.edgeIdBeingUpdated = undefined;
         });
       },
-      [dmnEditorStoreApi, externalModelsByNamespace]
+      [dmnEditorStoreApi, externalModelsByNamespace, readOnly]
     );
 
     const onEdgeUpdateStart = useCallback(
