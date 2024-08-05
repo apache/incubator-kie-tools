@@ -208,7 +208,7 @@ test.describe("Model DRD", () => {
         await drgNodes.open();
         await drgNodes.dragNode({ name: DefaultNodeName.DECISION, targetPosition: { x: 300, y: 300 } });
 
-        await nodes.select({ name: DefaultNodeName.DECISION, dblClick: true });
+        await nodes.selectLabel({ name: DefaultNodeName.DECISION });
         await nodes.rename({ current: DefaultNodeName.DECISION, new: "Renamed Decision" });
 
         await drds.toggle();

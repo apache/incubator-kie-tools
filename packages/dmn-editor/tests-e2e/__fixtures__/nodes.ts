@@ -163,7 +163,7 @@ export class Nodes {
     await this.page.mouse.up();
   }
 
-  public async select(args: { name: string; position?: NodePosition; dblClick?: boolean }) {
+  public async select(args: { name: string; position?: NodePosition }) {
     const node = this.get({ name: args.name });
 
     const position =
@@ -171,7 +171,7 @@ export class Nodes {
         ? await this.getPositionalNodeHandleCoordinates({ node, position: args.position })
         : undefined;
 
-    args.dblClick ? await node.dblclick({ position }) : await node.click({ position });
+    await node.click({ position });
   }
 
   public async selectMultiple(args: { names: string[]; position?: NodePosition }) {
