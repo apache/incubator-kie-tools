@@ -17,11 +17,14 @@
  * under the License.
  */
 
-const { config, jestSetupPath } = require("@kie-tools/jest-base/jest.config");
+const { config, jestSetupPath, typescriptTransform } = require("@kie-tools/jest-base/jest.config");
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
   ...config,
   testEnvironment: "jsdom",
   setupFilesAfterEnv: [jestSetupPath],
+  transform: {
+    ...typescriptTransform,
+  },
 };

@@ -61,7 +61,7 @@ export enum UrlType {
   INVALID,
 }
 
-export function isCertainlyGit(urlType: UrlType) {
+export function isCertainlyGit(urlType: UrlType): boolean {
   return (
     urlType === UrlType.GIT ||
     urlType === UrlType.GITHUB_DOT_COM ||
@@ -71,7 +71,7 @@ export function isCertainlyGit(urlType: UrlType) {
   );
 }
 
-export function isPotentiallyGit(urlType: UrlType) {
+export function isPotentiallyGit(urlType: UrlType): boolean {
   return isCertainlyGit(urlType) || urlType === UrlType.UNKNOWN;
 }
 

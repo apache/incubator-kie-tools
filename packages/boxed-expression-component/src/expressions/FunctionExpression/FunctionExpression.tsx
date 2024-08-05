@@ -20,7 +20,7 @@
 import _ from "lodash";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { BoxedFunction, BoxedFunctionKind, DmnBuiltInDataType, generateUuid } from "../../api";
+import { BoxedFunction, BoxedFunctionKind, DmnBuiltInDataType, generateUuid, Normalized } from "../../api";
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
@@ -40,7 +40,7 @@ export function FunctionExpression({
   parentElementId,
   expression: boxedFunction,
 }: {
-  expression: BoxedFunction;
+  expression: Normalized<BoxedFunction>;
   isNested: boolean;
   parentElementId: string;
 }) {
@@ -48,24 +48,22 @@ export function FunctionExpression({
     case "Java":
       return (
         <JavaFunctionExpression
-          functionExpression={boxedFunction as BoxedFunctionJava}
+          functionExpression={boxedFunction as Normalized<BoxedFunctionJava>}
           isNested={isNested}
-          parentElementId={parentElementId}
         />
       );
     case "PMML":
       return (
         <PmmlFunctionExpression
-          functionExpression={boxedFunction as BoxedFunctionPmml}
+          functionExpression={boxedFunction as Normalized<BoxedFunctionPmml>}
           isNested={isNested}
-          parentElementId={parentElementId}
         />
       );
     case "FEEL":
     default:
       return (
         <FeelFunctionExpression
-          functionExpression={boxedFunction as BoxedFunctionFeel}
+          functionExpression={boxedFunction as Normalized<BoxedFunctionFeel>}
           isNested={isNested}
           parentElementId={parentElementId}
         />
@@ -73,15 +71,15 @@ export function FunctionExpression({
   }
 }
 
-export function useFunctionExpressionControllerCell(functionKind: DMN15__tFunctionKind) {
+export function useFunctionExpressionControllerCell(functionKind: Normalized<DMN15__tFunctionKind>) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onFunctionKindSelect = useCallback(
-    (kind: DMN15__tFunctionKind) => {
-      setExpression((prev: BoxedFunction) => {
+    (kind: Normalized<DMN15__tFunctionKind>) => {
+      setExpression((prev: Normalized<BoxedFunction>) => {
         if (kind === BoxedFunctionKind.Feel) {
           // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const retFeel: BoxedFunction = {
+          const retFeel: Normalized<BoxedFunction> = {
             __$$element: "functionDefinition",
             "@_label": prev["@_label"],
             "@_id": generateUuid(),
@@ -99,7 +97,7 @@ export function useFunctionExpressionControllerCell(functionKind: DMN15__tFuncti
           const expressionId = generateUuid();
 
           // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const retJava: BoxedFunction = {
+          const retJava: Normalized<BoxedFunction> = {
             __$$element: "functionDefinition",
             "@_label": prev["@_label"],
             "@_id": expressionId,
@@ -114,7 +112,7 @@ export function useFunctionExpressionControllerCell(functionKind: DMN15__tFuncti
           return retJava;
         } else if (kind === BoxedFunctionKind.Pmml) {
           // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const retPmml: BoxedFunction = {
+          const retPmml: Normalized<BoxedFunction> = {
             __$$element: "functionDefinition",
             "@_label": prev["@_label"],
             "@_id": generateUuid(),
@@ -142,7 +140,7 @@ export function useFunctionExpressionControllerCell(functionKind: DMN15__tFuncti
 }
 
 export function useFunctionExpressionParametersColumnHeader(
-  formalParameters: DMN15__tFunctionDefinition["formalParameter"]
+  formalParameters: Normalized<DMN15__tFunctionDefinition["formalParameter"]>
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
 

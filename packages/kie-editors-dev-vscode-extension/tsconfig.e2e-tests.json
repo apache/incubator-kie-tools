@@ -1,12 +1,9 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "extends": "@kie-tools/tsconfig/tsconfig.esm.json",
   "compilerOptions": {
     "declaration": false,
     "declarationMap": false,
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "target": "es6",
+    "module": "CommonJS",
     "outDir": "out"
   },
   "include": ["e2e-tests"],

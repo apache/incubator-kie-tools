@@ -30,6 +30,7 @@ import {
   DmnBuiltInDataType,
   generateUuid,
   getNextAvailablePrefixedName,
+  Normalized,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";
@@ -52,7 +53,6 @@ export const RELATION_EXPRESSION_DEFAULT_VALUE = "";
 
 export function RelationExpression({
   isNested,
-  parentElementId,
   expression: relationExpression,
 }: {
   expression: BoxedRelation;
@@ -127,7 +127,9 @@ export function RelationExpression({
         if (newWidth && prevColumnWidth) {
           const minSize = columnIndex + 1;
           const newValues = [...prev];
-          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.push(
+            ...Array<number>(Math.max(0, minSize - newValues.length)).fill(RELATION_EXPRESSION_COLUMN_MIN_WIDTH)
+          );
           newValues.splice(columnIndex, 1, newWidth);
           newMap.set(id, newValues);
         }
@@ -203,8 +205,8 @@ export function RelationExpression({
 
   const onCellUpdates = useCallback(
     (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
-      setExpression((prev: BoxedRelation) => {
-        let previousExpression: BoxedRelation = { ...prev };
+      setExpression((prev: Normalized<BoxedRelation>) => {
+        let previousExpression: Normalized<BoxedRelation> = { ...prev };
 
         cellUpdates.forEach((cellUpdate) => {
           const newRows = [...(previousExpression.row ?? [])];
@@ -235,7 +237,7 @@ export function RelationExpression({
 
   const onColumnUpdates = useCallback(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev: BoxedRelation) => {
+      setExpression((prev: Normalized<BoxedRelation>) => {
         const n = { ...prev };
         const newColumns = [...(prev.column ?? [])];
 
@@ -253,7 +255,7 @@ export function RelationExpression({
         }
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedRelation = {
+        const ret: Normalized<BoxedRelation> = {
           ...n,
           column: newColumns,
         };
@@ -281,7 +283,7 @@ export function RelationExpression({
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number }) => {
-      setExpression((prev: BoxedRelation) => {
+      setExpression((prev: Normalized<BoxedRelation>) => {
         const newRows = [...(prev.row ?? [])];
         const newItems = [];
 
@@ -299,7 +301,7 @@ export function RelationExpression({
         }
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedRelation = {
+        const ret: Normalized<BoxedRelation> = {
           ...prev,
           row: newRows,
         };
@@ -312,7 +314,7 @@ export function RelationExpression({
 
   const onColumnAdded = useCallback(
     (args: { beforeIndex: number; columnsCount: number }) => {
-      setExpression((prev: BoxedRelation) => {
+      setExpression((prev: Normalized<BoxedRelation>) => {
         const newColumns = [...(prev.column ?? [])];
 
         const newItems = [];
@@ -343,7 +345,7 @@ export function RelationExpression({
         });
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedRelation = {
+        const ret: Normalized<BoxedRelation> = {
           ...prev,
           column: newColumns,
           row: newRows,
@@ -368,7 +370,7 @@ export function RelationExpression({
 
   const onColumnDeleted = useCallback(
     (args: { columnIndex: number }) => {
-      setExpression((prev: BoxedRelation) => {
+      setExpression((prev: Normalized<BoxedRelation>) => {
         const newColumns = [...(prev.column ?? [])];
         newColumns.splice(args.columnIndex, 1);
 
@@ -382,7 +384,7 @@ export function RelationExpression({
         });
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedRelation = {
+        const ret: Normalized<BoxedRelation> = {
           ...prev,
           column: newColumns,
           row: newRows,
@@ -403,12 +405,12 @@ export function RelationExpression({
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: BoxedRelation) => {
+      setExpression((prev: Normalized<BoxedRelation>) => {
         const newRows = [...(prev.row ?? [])];
         newRows.splice(args.rowIndex, 1);
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedRelation = {
+        const ret: Normalized<BoxedRelation> = {
           ...prev,
           row: newRows,
         };
@@ -421,7 +423,7 @@ export function RelationExpression({
 
   const onRowDuplicated = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: BoxedRelation) => {
+      setExpression((prev: Normalized<BoxedRelation>) => {
         const duplicatedRow = {
           "@_id": generateUuid(),
           expression: prev.row![args.rowIndex].expression?.map((cell) => ({
@@ -434,7 +436,7 @@ export function RelationExpression({
         newRows.splice(args.rowIndex, 0, duplicatedRow);
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedRelation = {
+        const ret: Normalized<BoxedRelation> = {
           ...prev,
           row: newRows,
         };

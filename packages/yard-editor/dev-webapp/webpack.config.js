@@ -47,10 +47,7 @@ module.exports = (env) =>
             to: "./yard-editor-envelope.html",
           },
           {
-            from: path.join(
-              path.dirname(require.resolve("@kie-tools/yard-validator")),
-              "/dist/yard-validator-worker.js"
-            ),
+            from: path.join(path.dirname(require.resolve("@kie-tools/yard-validator")), "./yard-validator-worker.js"),
             to: "./yard-validator-worker.js",
           },
         ],

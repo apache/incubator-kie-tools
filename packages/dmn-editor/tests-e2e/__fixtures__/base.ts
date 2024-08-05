@@ -36,17 +36,26 @@ import { MultipleNodesPropertiesPanel } from "./propertiesPanel/multipleNodesPro
 import { Overlays } from "./overlays";
 import { Drds } from "./drds";
 import { DrgNodes } from "./drgNodes";
+import { DataTypes } from "./dataTypes";
+import { BeePropertiesPanel } from "./propertiesPanel/beePropertiesPanel";
+import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/tests-e2e/__fixtures__/boxedExpression";
+import { Monaco } from "@kie-tools/boxed-expression-component/tests-e2e/__fixtures__/monaco";
+import { ProjectName } from "@kie-tools/playwright-base/projectNames";
 
 type DmnEditorFixtures = {
+  bee: BoxedExpressionEditor;
+  dataTypes: DataTypes;
   diagram: Diagram;
   drds: Drds;
   drgNodes: DrgNodes;
   edges: Edges;
   editor: Editor;
   jsonModel: JsonModel;
+  monaco: Monaco;
   nodes: Nodes;
   palette: Palette;
   overlays: Overlays;
+  beePropertiesPanel: BeePropertiesPanel;
   bkmPropertiesPanel: BkmPropertiesPanel;
   decisionPropertiesPanel: DecisionPropertiesPanel;
   decisionServicePropertiesPanel: DecisionServicePropertiesPanel;
@@ -59,11 +68,23 @@ type DmnEditorFixtures = {
 };
 
 export const test = base.extend<DmnEditorFixtures>({
+  bee: async ({ page, baseURL, monaco }, use) => {
+    await use(new BoxedExpressionEditor(page, monaco, baseURL));
+  },
+  dataTypes: async ({ page, monaco }, use) => {
+    await use(new DataTypes(page, monaco));
+  },
   drds: async ({ page }, use) => {
     await use(new Drds(page));
   },
   drgNodes: async ({ diagram, page }, use) => {
     await use(new DrgNodes(diagram, page));
+  },
+  diagram: async ({ page }, use) => {
+    await use(new Diagram(page));
+  },
+  edges: async ({ page, nodes, diagram }, use) => {
+    await use(new Edges(page, nodes, diagram));
   },
   editor: async ({ page, baseURL }, use) => {
     await use(new Editor(page, baseURL));
@@ -71,20 +92,20 @@ export const test = base.extend<DmnEditorFixtures>({
   jsonModel: async ({ page, baseURL }, use) => {
     await use(new JsonModel(page, baseURL));
   },
-  diagram: async ({ page }, use) => {
-    await use(new Diagram(page));
+  monaco: async ({ page }, use, testInfo) => {
+    await use(new Monaco(page, testInfo.project.name as ProjectName));
   },
   nodes: async ({ page, diagram, browserName }, use) => {
     await use(new Nodes(page, diagram, browserName));
-  },
-  edges: async ({ page, nodes, diagram }, use) => {
-    await use(new Edges(page, nodes, diagram));
   },
   palette: async ({ page, diagram, nodes }, use) => {
     await use(new Palette(page, diagram, nodes));
   },
   overlays: async ({ page }, use) => {
     await use(new Overlays(page));
+  },
+  beePropertiesPanel: async ({ diagram, page }, use) => {
+    await use(new BeePropertiesPanel(diagram, page));
   },
   bkmPropertiesPanel: async ({ diagram, page }, use) => {
     await use(new BkmPropertiesPanel(diagram, page));

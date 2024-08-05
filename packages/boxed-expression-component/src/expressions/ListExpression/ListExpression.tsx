@@ -30,6 +30,8 @@ import {
   BoxedExpression,
   BoxedList,
   DmnBuiltInDataType,
+  generateUuid,
+  Normalized,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
@@ -44,14 +46,14 @@ import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn
 import { findAllIdsDeep } from "../../ids/ids";
 import "./ListExpression.css";
 
-export type ROWTYPE = DMN15__tContextEntry;
+export type ROWTYPE = Normalized<DMN15__tContextEntry>;
 
 export function ListExpression({
   isNested,
   parentElementId,
   expression: listExpression,
 }: {
-  expression: BoxedList;
+  expression: Normalized<BoxedList>;
   isNested: boolean;
   parentElementId: string;
 }) {
@@ -111,11 +113,13 @@ export function ListExpression({
 
   const beeTableRows = useMemo(() => {
     const rows = (listExpression.expression ?? []).map((item) => ({
+      "@_id": generateUuid(),
       expression: item,
     }));
 
     if (rows.length === 0) {
       rows.push({
+        "@_id": generateUuid(),
         expression: undefined!,
       });
     }
@@ -152,9 +156,9 @@ export function ListExpression({
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number }) => {
-      setExpression((prev: BoxedList) => {
+      setExpression((prev: Normalized<BoxedList>) => {
         const newItems = [...(prev.expression ?? [])];
-        const newListItems: BoxedExpression[] = [];
+        const newListItems: Normalized<BoxedExpression>[] = [];
 
         for (let i = 0; i < args.rowsCount; i++) {
           newListItems.push(undefined!); // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
@@ -165,7 +169,7 @@ export function ListExpression({
         }
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedList = {
+        const ret: Normalized<BoxedList> = {
           ...prev,
           expression: newItems,
         };
@@ -178,14 +182,14 @@ export function ListExpression({
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
-      let oldExpression: BoxedExpression | undefined;
-      setExpression((prev: BoxedList) => {
+      let oldExpression: Normalized<BoxedExpression> | undefined;
+      setExpression((prev: Normalized<BoxedList>) => {
         const newItems = [...(prev.expression ?? [])];
         oldExpression = newItems[args.rowIndex];
         newItems.splice(args.rowIndex, 1);
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedList = {
+        const ret: Normalized<BoxedList> = {
           ...prev,
           expression: newItems,
         };
@@ -204,14 +208,14 @@ export function ListExpression({
 
   const onRowReset = useCallback(
     (args: { rowIndex: number }) => {
-      let oldExpression: BoxedExpression | undefined;
-      setExpression((prev: BoxedList) => {
+      let oldExpression: Normalized<BoxedExpression> | undefined;
+      setExpression((prev: Normalized<BoxedList>) => {
         const newItems = [...(prev.expression ?? [])];
         oldExpression = newItems[args.rowIndex];
         newItems.splice(args.rowIndex, 1, undefined!); // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedList = {
+        const ret: Normalized<BoxedList> = {
           ...prev,
           expression: newItems,
         };
@@ -234,9 +238,9 @@ export function ListExpression({
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev: BoxedList) => {
+      setExpression((prev: Normalized<BoxedList>) => {
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedList = {
+        const ret: Normalized<BoxedList> = {
           ...prev,
           "@_label": name,
           "@_typeRef": typeRef,

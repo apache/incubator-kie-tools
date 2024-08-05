@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback } from "react";
-import { BeeTableCellProps, BoxedList } from "../../api";
+import { BeeTableCellProps, BoxedList, Normalized } from "../../api";
 import {
   useBoxedExpressionEditorDispatch,
   NestedExpressionDispatchContextProvider,
@@ -35,17 +35,17 @@ export function ListItemCell({
   columnIndex,
   parentElementId,
   listExpression,
-}: BeeTableCellProps<ROWTYPE> & { parentElementId: string; listExpression: DMN15__tList }) {
+}: BeeTableCellProps<ROWTYPE> & { parentElementId: string; listExpression: Normalized<DMN15__tList> }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onSetExpression = useCallback<OnSetExpression>(
     ({ getNewExpression }) => {
-      setExpression((prev: BoxedList) => {
+      setExpression((prev: Normalized<BoxedList>) => {
         const newItems = [...(prev.expression ?? [])];
         newItems[rowIndex] = getNewExpression(newItems[rowIndex])!; // SPEC DISCREPANCY: Allowing undefined expression
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedList = {
+        const ret: Normalized<BoxedList> = {
           ...prev,
           expression: newItems,
         };

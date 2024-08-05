@@ -1,9 +1,8 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "extends": "@kie-tools/tsconfig/tsconfig.cjs.json",
   "compilerOptions": {
     "declaration": false,
     "declarationMap": false,
-    "allowJs": true
-  },
-  "include": ["src"]
+    "esModuleInterop": true
+  }
 }

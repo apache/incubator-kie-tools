@@ -17,8 +17,16 @@
  * under the License.
  */
 
-import { WebComponentModule } from "./web-component.module";
-import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
+import { createApplication } from "@angular/platform-browser";
+import { ApplicationRef } from "@angular/core";
+import { createCustomElement } from "@angular/elements";
+import { PingPongWcComponent } from "./web-component.component";
+import { PingPongApiService } from "../ping-pong/ping-pong-api.service";
 
-const bootstrap = () => platformBrowserDynamic().bootstrapModule(WebComponentModule);
-bootstrap().catch((err) => console.error(err));
+(async () => {
+  const app: ApplicationRef = await createApplication({ providers: [PingPongApiService] });
+
+  // Define Web Components
+  const pingPongWcComponent = createCustomElement(PingPongWcComponent, { injector: app.injector });
+  customElements.define("ping-pong-angular", pingPongWcComponent);
+})();

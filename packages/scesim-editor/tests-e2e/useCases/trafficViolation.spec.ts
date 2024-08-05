@@ -20,8 +20,9 @@
 import { test, expect } from "../__fixtures__/base";
 
 test.describe("Check traffic violation test case", () => {
-  test("should render traffic violation test correctly", async ({ useCases, testScenarioTable }) => {
+  test("should render traffic violation test correctly", async ({ useCases, testScenarioTable, resizing, table }) => {
     await useCases.openTrafficViolationTest();
+    await resizing.reset(table.getColumnHeader({ name: "GIVEN" }));
     await expect(testScenarioTable.get()).toHaveScreenshot("traffic-violation-test.png");
   });
 });

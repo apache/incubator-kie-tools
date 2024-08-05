@@ -183,7 +183,12 @@ export function DataTypes() {
         <Drawer isExpanded={true} isInline={true} position={"left"} className={"kie-dmn-editor--data-types-container"}>
           <DrawerContent
             panelContent={
-              <DrawerPanelContent isResizable={true} minSize={"300px"} defaultSize={"400px"}>
+              <DrawerPanelContent
+                isResizable={true}
+                minSize={"300px"}
+                defaultSize={"400px"}
+                data-testid={"kie-tools--dmn-editor--data-types-list"}
+              >
                 <Flex
                   justifyContent={{ default: "justifyContentSpaceBetween" }}
                   alignItems={{ default: "alignItemsCenter" }}

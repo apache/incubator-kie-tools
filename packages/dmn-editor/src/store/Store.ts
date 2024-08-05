@@ -25,7 +25,7 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { ExternalModelsIndex } from "../DmnEditor";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
-import { Normalized, normalize } from "../normalization/normalize";
+import { normalize, Normalized } from "../normalization/normalize";
 import { ComputedStateCache } from "./ComputedStateCache";
 import { computeAllFeelVariableUniqueNames } from "./computed/computeAllFeelVariableUniqueNames";
 import { computeDataTypes } from "./computed/computeDataTypes";
@@ -34,6 +34,7 @@ import { computeExternalModelsByType } from "./computed/computeExternalModelsByT
 import { computeImportsByNamespace } from "./computed/computeImportsByNamespace";
 import { computeIndexedDrd } from "./computed/computeIndexes";
 import { computeIsDropTargetNodeValidForSelection } from "./computed/computeIsDropTargetNodeValidForSelection";
+import { DEFAULT_VIEWPORT } from "../diagram/Diagram";
 
 enableMapSet(); // Necessary because `Computed` has a lot of Maps and Sets.
 
@@ -42,6 +43,7 @@ export interface DmnEditorDiagramNodeStatus {
   dragging: boolean;
   resizing: boolean;
 }
+
 export interface DmnEditorDiagramEdgeStatus {
   selected: boolean;
   draggingWaypoint: boolean;
@@ -117,6 +119,11 @@ export interface State {
     draggingWaypoints: Array<string>;
     movingDividerLines: Array<string>;
     isEditingStyle: boolean;
+    viewport: {
+      x: number;
+      y: number;
+      zoom: number;
+    };
   };
 }
 
@@ -223,6 +230,7 @@ export const defaultStaticState = (): Omit<State, "dmn" | "dispatch" | "computed
     draggingWaypoints: [],
     movingDividerLines: [],
     isEditingStyle: false,
+    viewport: DEFAULT_VIEWPORT,
   },
 });
 

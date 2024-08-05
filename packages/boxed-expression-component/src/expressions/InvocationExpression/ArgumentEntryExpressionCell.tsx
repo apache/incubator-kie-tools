@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect } from "react";
-import { BoxedInvocation, BeeTableCellProps } from "../../api";
+import { BeeTableCellProps, BoxedInvocation, Normalized } from "../../api";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 import {
   NestedExpressionDispatchContextProvider,
@@ -47,7 +47,7 @@ export const ArgumentEntryExpressionCell: React.FunctionComponent<
 
   const onSetExpression = useCallback<OnSetExpression>(
     ({ getNewExpression }) => {
-      setExpression((prev: BoxedInvocation) => {
+      setExpression((prev: Normalized<BoxedInvocation>) => {
         const newBindings = [...(prev.binding ?? [])];
         newBindings[index] = {
           ...newBindings[index],
@@ -55,7 +55,7 @@ export const ArgumentEntryExpressionCell: React.FunctionComponent<
         };
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedInvocation = {
+        const ret: Normalized<BoxedInvocation> = {
           ...prev,
           binding: newBindings,
         };
