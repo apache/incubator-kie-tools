@@ -51,8 +51,8 @@ export class Palette {
       .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
   }
 
-  public getExternalNodesButton() {
-    return this.page.getByRole("button", { name: "External nodes" });
+  public async toggleExternalNodesPanel() {
+    await this.page.getByRole("button", { name: "External nodes" }).click();
   }
 
   private getNewNodeProperties(type: NodeType) {

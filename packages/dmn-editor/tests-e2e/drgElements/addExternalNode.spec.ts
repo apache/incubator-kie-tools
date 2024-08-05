@@ -25,7 +25,7 @@ test.beforeEach(async ({ stories }) => {
   await stories.openEmptyWithAvailableExternalModels();
 });
 
-test.describe("Add included node - Decision", () => {
+test.describe("Add external node - Decision", () => {
   test("add to a Decision Service", async ({ editor, page, palette, diagram, nodes, includedModels }) => {
     await editor.changeTab({ tab: TabName.INCLUDED_MODELS });
 
@@ -38,7 +38,7 @@ test.describe("Add included node - Decision", () => {
     await editor.changeTab({ tab: TabName.EDITOR });
     await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 400, y: 200 } });
 
-    await palette.getExternalNodesButton().click();
+    await palette.toggleExternalNodesPanel();
 
     await palette.dragExternalNode({
       includedModelName: "MY_MODEL",
@@ -58,8 +58,8 @@ test.describe("Add included node - Decision", () => {
       },
     });
 
-    // We click on the button again to close the external nodes panel.
-    await palette.getExternalNodesButton().click();
+    // We're hiding the panel now.
+    await palette.toggleExternalNodesPanel();
 
     await diagram.resetFocus();
     await nodes.move({ name: "Sum", targetPosition: { x: 500, y: 300 } });
@@ -71,6 +71,6 @@ test.describe("Add included node - Decision", () => {
     // and are really attached to it, not only "visually over it".
     await nodes.move({ name: DefaultNodeName.DECISION_SERVICE, targetPosition: { x: 120, y: 120 } });
 
-    await expect(diagram.get()).toHaveScreenshot("add-included-node-inside-decision-service.png");
+    await expect(diagram.get()).toHaveScreenshot("add-external-node-inside-decision-service.png");
   });
 });

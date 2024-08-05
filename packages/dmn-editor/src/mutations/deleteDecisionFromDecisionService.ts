@@ -20,6 +20,7 @@
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { Normalized } from "../normalization/normalize";
+import { DrgElement } from "./addDecisionToDecisionService";
 
 export function deleteDecisionFromDecisionService({
   definitions,
@@ -32,11 +33,6 @@ export function deleteDecisionFromDecisionService({
 }) {
   console.debug(`DMN MUTATION: Deleting Decision '${decisionId}' from Decision Service '${decisionServiceId}'`);
 
-  const decision = definitions.drgElement?.find((s) => s["@_id"] === decisionId);
-  if (decision?.__$$element !== "decision") {
-    throw new Error(`DMN MUTATION: DRG Element with id '${decisionId}' is either not a Decision or doesn't exist.`);
-  }
-
   const decisionService = definitions.drgElement?.find((s) => s["@_id"] === decisionServiceId);
   if (decisionService?.__$$element !== "decisionService") {
     throw new Error(
@@ -45,10 +41,10 @@ export function deleteDecisionFromDecisionService({
   }
 
   decisionService.outputDecision = (decisionService.outputDecision ?? []).filter(
-    (s) => s["@_href"] !== `#${decisionId}`
+    (s) => s["@_href"] !== `${decisionId}`
   );
   decisionService.encapsulatedDecision = (decisionService.encapsulatedDecision ?? []).filter(
-    (s) => s["@_href"] !== `#${decisionId}`
+    (s) => s["@_href"] !== `${decisionId}`
   );
 
   repopulateInputDataAndDecisionsOnDecisionService({ definitions, decisionService });

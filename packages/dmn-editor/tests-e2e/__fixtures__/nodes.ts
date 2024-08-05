@@ -140,7 +140,7 @@ export class Nodes {
   }
 
   public async move(args: { name: string; targetPosition: { x: number; y: number } }) {
-    if (DefaultNodeName.DECISION_SERVICE === args.name) {
+    if (args.name.includes(DefaultNodeName.DECISION_SERVICE)) {
       // Decision Services only have some draggable areas near the borders.
       // If you drag it to the center, you'll drag the divide line.
       // Also, neither the entire upper area nor the entire downer area is draggable.
