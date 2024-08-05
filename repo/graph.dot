@@ -36,6 +36,7 @@ digraph G {
   "@kie-tools-core/patternfly-base" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/uniforms-patternfly" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-examples/webapp" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "@kie-tools/dmn-editor-standalone" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/kie-editors-standalone" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-standalone-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/backend" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -225,6 +226,7 @@ digraph G {
   "@kie-tools-examples/webapp" -> "@kie-tools-examples/ping-pong-view-angular" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools-examples/ping-pong-view-react" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools-examples/todo-list-view" [ style = "solid", color = "orange" ];
+  "@kie-tools-examples/webapp" -> "@kie-tools/dmn-editor-standalone" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools/kie-editors-standalone" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools/serverless-workflow-standalone-editor" [ style = "solid", color = "orange" ];
   "@kie-tools-core/backend" -> "@kie-tools-core/notifications" [ style = "solid", color = "purple" ];
@@ -327,6 +329,7 @@ digraph G {
   "@kie-tools/dmn-editor" -> "@kie-tools/pmml-editor-marshaller" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-editor-envelope" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-editor-envelope" -> "@kie-tools/dmn-editor" [ style = "solid", color = "blue" ];
+  "@kie-tools/dmn-editor-standalone" -> "@kie-tools/dmn-editor-envelope" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-feel-antlr4-parser" -> "@kie-tools/dmn-marshaller" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-language-service" -> "@kie-tools/dmn-feel-antlr4-parser" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-language-service" -> "@kie-tools-core/switch-expression-ts" [ style = "dashed", color = "blue" ];
@@ -379,6 +382,8 @@ digraph G {
   "@kie-tools/image-env-to-json" -> "@kie-tools/tsconfig" [ style = "dashed", color = "black" ];
   "@kie-tools/import-java-classes-component" -> "@kie-tools-core/vscode-java-code-completion" [ style = "solid", color = "blue" ];
   "@kie-tools/import-java-classes-component" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
+  "@kie-tools/import-java-classes-component" -> "@kie-tools-core/monaco-editor" [ style = "dashed", color = "blue" ];
+  "@kie-tools/import-java-classes-component" -> "@kie-tools-core/patternfly-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/import-java-classes-component" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/jbpm-quarkus-devui" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
   "@kie-tools/jbpm-quarkus-devui" -> "@kie-tools/runtime-tools-process-dev-ui-webapp" [ style = "dashed", color = "black" ];
@@ -608,16 +613,17 @@ digraph G {
   "@kie-tools/yard-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools/yard-language-service" [ style = "solid", color = "blue" ];
-  "@kie-tools/yard-editor" -> "@kie-tools/yard-validator" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
+  "@kie-tools/yard-editor" -> "@kie-tools/yard-validator" [ style = "dashed", color = "blue" ];
   "@kie-tools/yard-language-service" -> "@kie-tools/json-yaml-language-service" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-model" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
   "@kie-tools/yard-validator" -> "@kie-tools-core/notifications" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-validator" -> "@kie-tools/yard-validator-worker" [ style = "dashed", color = "blue" ];
-  "@kie-tools/yard-validator-worker" -> "@kie-tools/tsconfig" [ style = "dashed", color = "black" ];
   "@kie-tools/yard-validator-worker" -> "@kie-tools/yard-model" [ style = "dashed", color = "black" ];
   "yard-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "yard-vscode-extension" -> "@kie-tools/yard-editor" [ style = "solid", color = "blue" ];
   "yard-vscode-extension" -> "@kie-tools/vscode-extension-common-test-helpers" [ style = "dashed", color = "blue" ];
   "@kie-tools-scripts/bootstrap" -> "@kie-tools-scripts/build-env" [ style = "dashed", color = "black" ];
+  "@kie-tools-scripts/build-env" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
+  "@kie-tools-scripts/run-script-if" -> "@kie-tools/tsconfig" [ style = "dashed", color = "black" ];
 }

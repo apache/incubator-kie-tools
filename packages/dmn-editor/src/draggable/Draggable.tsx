@@ -250,6 +250,7 @@ export function Draggable(props: {
       onPointerEnter={() => setHoveredItem(props.index)}
       onPointerLeave={() => setHoveredItem(-1)}
       onPointerOver={() => setHoveredItem(props.index)}
+      data-testid={`kie-tools--dmn-editor--draggable-row-${props.index}`}
     >
       {!props.isDisabled ? (
         <div data-testid={"kie-tools--dmn-editor--draggable-icon"}>

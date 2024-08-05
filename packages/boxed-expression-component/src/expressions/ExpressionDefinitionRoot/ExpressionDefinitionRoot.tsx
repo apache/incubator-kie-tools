@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { BoxedExpression } from "../../api";
+import { BoxedExpression, Normalized } from "../../api";
 import { ResizingWidthsContextProvider } from "../../resizing/ResizingWidthsContext";
 import { ExpressionContainer } from "./ExpressionContainer";
 import "./ExpressionDefinitionRoot.css";
@@ -26,7 +26,7 @@ import "./ExpressionDefinitionRoot.css";
 export interface ExpressionDefinitionRootProps {
   expressionHolderId: string;
   expressionHolderTypeRef: string | undefined;
-  expression?: BoxedExpression;
+  expression?: Normalized<BoxedExpression>;
   isResetSupported: boolean | undefined;
   expressionHolderName?: string;
 }

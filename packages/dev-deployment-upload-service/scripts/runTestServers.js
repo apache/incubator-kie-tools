@@ -31,25 +31,42 @@ const containersNames = {
   runTimeInstall: "ddus-runtime-install",
 };
 
+const imagesNames = {
+  fileserver: `${containersNames.fileserver}-image`,
+  buildtimeInstall: `${containersNames.buildtimeInstall}-image`,
+  runTimeInstall: `${containersNames.runTimeInstall}-image`,
+};
+
 const containersPorts = {
   fileserver: buildEnv.env.devDeploymentUploadService.dev.fileServerPort,
   buildtimeInstall: buildEnv.env.devDeploymentUploadService.dev.buildTimePort,
   runTimeInstall: buildEnv.env.devDeploymentUploadService.dev.runtTimePort,
 };
 
+function runCommand(command, returnResult = false) {
+  console.log(`> ${command}`);
+  return execSync(command, returnResult ? {} : { stdio: "inherit" });
+}
+
 function cleanup() {
   try {
-    execSync(`docker stop ${containersNames.fileserver} && docker rm ${containersNames.fileserver}`);
+    execSync(
+      `docker stop ${containersNames.fileserver} && docker rm ${containersNames.fileserver} && docker image rm ${imagesNames.fileserver}`
+    );
   } catch (e) {
     // nothing to do
   }
   try {
-    execSync(`docker stop ${containersNames.buildtimeInstall} && docker rm ${containersNames.buildtimeInstall}`);
+    execSync(
+      `docker stop ${containersNames.buildtimeInstall} && docker rm ${containersNames.buildtimeInstall} && docker image rm ${imagesNames.buildtimeInstall}`
+    );
   } catch (e) {
     // nothing to do
   }
   try {
-    execSync(`docker stop ${containersNames.runTimeInstall} && docker rm ${containersNames.runTimeInstall}`);
+    execSync(
+      `docker stop ${containersNames.runTimeInstall} && docker rm ${containersNames.runTimeInstall} && docker image rm ${imagesNames.runTimeInstall}`
+    );
   } catch (e) {
     // nothing to do
   }
@@ -72,21 +89,27 @@ if (argv[2] === "--cleanup") {
 
 try {
   console.info(`Checking existing ${network}...`);
-  execSync(`docker network inspect ${network}`);
+  runCommand(`docker network inspect ${network}`);
   console.info("Netowork found!");
 } catch (e) {
   console.info("Network not found. Creating it!");
-  execSync(`docker network create --ipv6=false ${network}`, { stdio: "inherit" });
+  runCommand(`docker network create --ipv6=false ${network}`);
 }
 
 let fileServerIp;
 try {
   console.info(`Starting File Server container: ${containersNames.fileserver}`);
-  execSync(
-    `docker run -d --name ${containersNames.fileserver} --network ${network} -p ${containersPorts.fileserver}:8090 $(docker buildx build -q --build-arg DDUS_VERSION=${version} --build-arg DDUS_FILESERVER_PORT=${containersPorts.fileserver} . -f ./dev/Containerfile.${containersNames.fileserver} --load)`,
+  runCommand(
+    `docker buildx build -t ${imagesNames.fileserver} --build-arg DDUS_VERSION=${version} --build-arg DDUS_FILESERVER_PORT=${containersPorts.fileserver} . -f ./dev/Containerfile.${containersNames.fileserver} --load`,
     { stdio: "inherit" }
   );
-  fileServerIp = execSync(`docker exec ${containersNames.fileserver} awk 'END{print $1}' /etc/hosts`).toString().trim();
+  runCommand(
+    `docker run -d --name ${containersNames.fileserver} --network ${network} -p ${containersPorts.fileserver}:8090 ${imagesNames.fileserver}`,
+    { stdio: "inherit" }
+  );
+  fileServerIp = runCommand(`docker exec ${containersNames.fileserver} awk 'END{print $1}' /etc/hosts`, true)
+    .toString()
+    .trim();
 } catch (e) {
   cleanup();
   throw new Error(`Failed to build and start ${containersNames.fileserver}. Exiting!`);
@@ -94,10 +117,10 @@ try {
 
 try {
   console.info(`Creating docker builder: ${builder}`);
-  execSync(`docker buildx create --name ${builder} --driver docker-container --driver-opt network=${network}`, {
+  runCommand(`docker buildx create --name ${builder} --driver docker-container --driver-opt network=${network}`, {
     stdio: "inherit",
   });
-  execSync("docker buildx ls", { stdio: "inherit" });
+  runCommand("docker buildx ls", { stdio: "inherit" });
 } catch (e) {
   cleanup();
   throw new Error(`Failed to create builder ${builder}. Exiting!`);
@@ -105,8 +128,12 @@ try {
 
 try {
   console.info(`Starting BuildTime Install container: ${containersNames.buildtimeInstall}`);
-  execSync(
-    `docker run -d --name ${containersNames.buildtimeInstall} --network ${network} -p ${containersPorts.buildtimeInstall}:8091 $(docker buildx --builder ${builder} build -q --build-arg DDUS_VERSION=${version} --build-arg DDUS_FILESERVER_PORT=8090 --build-arg DDUS_FILESERVER_IP=${fileServerIp} . -f ./dev/Containerfile.${containersNames.buildtimeInstall} --load)`,
+  runCommand(
+    `docker buildx --builder ${builder} build -t ${imagesNames.buildtimeInstall} --build-arg DDUS_VERSION=${version} --build-arg DDUS_FILESERVER_PORT=8090 --build-arg DDUS_FILESERVER_IP=${fileServerIp} . -f ./dev/Containerfile.${containersNames.buildtimeInstall} --load`,
+    { stdio: "inherit" }
+  );
+  runCommand(
+    `docker run -d --name ${containersNames.buildtimeInstall} --network ${network} -p ${containersPorts.buildtimeInstall}:8091 ${imagesNames.buildtimeInstall}`,
     { stdio: "inherit" }
   );
 } catch (e) {
@@ -116,8 +143,12 @@ try {
 
 try {
   console.info(`Starting RunTime Install container: ${containersNames.runTimeInstall}`);
-  execSync(
-    `docker run -d --name ${containersNames.runTimeInstall} --network ${network} -p ${containersPorts.runTimeInstall}:8092 -e DDUS_FILESERVER_IP=${fileServerIp} -e DDUS_VERSION=${version} -e DDUS_FILESERVER_PORT=8090 $(docker buildx --builder ${builder} build -q . -f ./dev/Containerfile.${containersNames.runTimeInstall} --load)`,
+  runCommand(
+    `docker buildx --builder ${builder} build -t ${imagesNames.runTimeInstall} . -f ./dev/Containerfile.${containersNames.runTimeInstall} --load`,
+    { stdio: "inherit" }
+  );
+  runCommand(
+    `docker run -d --name ${containersNames.runTimeInstall} --network ${network} -p ${containersPorts.runTimeInstall}:8092 -e DDUS_FILESERVER_IP=${fileServerIp} -e DDUS_VERSION=${version} -e DDUS_FILESERVER_PORT=8090 ${imagesNames.runTimeInstall}`,
     { stdio: "inherit" }
   );
 } catch (e) {
@@ -125,12 +156,12 @@ try {
   throw new Error(`Failed to build and start ${containersNames.runTimeInstall}. Exiting!`);
 }
 
-execSync("docker ps -f name=ddus", { stdio: "inherit" });
+runCommand("docker ps -f name=ddus", { stdio: "inherit" });
 
-execSync("sleep 10");
+runCommand("sleep 10");
 
 Object.values(containersNames).forEach((name) => {
-  const logs = execSync(`docker logs ${name}`).toString();
+  const logs = runCommand(`docker logs ${name}`, true).toString();
   console.info(`Checking logs for ${name}:`);
   console.info("--------------------------");
   console.info(logs);

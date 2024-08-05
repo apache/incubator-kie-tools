@@ -17,38 +17,38 @@
  * under the License.
  */
 
-import { test, expect } from "../__fixtures__/base";
+import { expect, test } from "../__fixtures__/base";
 
 test.describe("Boxed expression header", () => {
-  test.beforeEach(async ({ boxedExpressionEditor, browserName }) => {
+  test.beforeEach(async ({ bee, browserName }) => {
     test.skip(
       browserName === "webkit",
       "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
     );
 
-    await boxedExpressionEditor.goto();
-    await boxedExpressionEditor.selectBoxedLiteral();
+    await bee.goto();
+    await bee.selectExpressionMenu.selectLiteral();
   });
 
   test("should reset expression", async ({ page }) => {
-    await page.getByTestId("logic-type-button-test-id").click();
+    await page.getByTestId("kie-tools--bee--expression-header-dropdown").click();
     await page.getByRole("menuitem", { name: "Reset" }).click();
     await expect(page.getByText("Select expression")).toBeAttached();
   });
 
-  test("should copy, reset and paste expression", async ({ boxedExpressionEditor, page, clipboard }) => {
-    await page.getByTestId("logic-type-button-test-id").click();
+  test("should copy, reset and paste expression", async ({ bee, page, clipboard }) => {
+    await page.getByTestId("kie-tools--bee--expression-header-dropdown").click();
     clipboard.use();
     await page.getByRole("menuitem", { name: "copy" }).click();
-    await page.getByTestId("logic-type-button-test-id").click();
+    await page.getByTestId("kie-tools--bee--expression-header-dropdown").click();
     await page.getByRole("menuitem", { name: "Reset" }).click();
-    await boxedExpressionEditor.pasteToSelectExpression();
+    await bee.pasteToSelectExpression();
   });
 
-  test("should cut and paste expression", async ({ boxedExpressionEditor, page, clipboard }) => {
-    await page.getByTestId("logic-type-button-test-id").click();
+  test("should cut and paste expression", async ({ bee, page, clipboard }) => {
+    await page.getByTestId("kie-tools--bee--expression-header-dropdown").click();
     clipboard.use();
     await page.getByRole("menuitem", { name: "cut" }).click();
-    await boxedExpressionEditor.pasteToSelectExpression();
+    await bee.pasteToSelectExpression();
   });
 });

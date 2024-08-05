@@ -17,13 +17,13 @@
  * under the License.
  */
 
-import { BoxedExpression } from "@kie-tools/boxed-expression-component/dist/api";
+import { BoxedExpression, Normalized } from "@kie-tools/boxed-expression-component/dist/api";
 import { GwtExpressionDefinition, GwtExpressionDefinitionLogicType } from "./types";
 import { gwtToBee } from "./gwtToBee";
 import { beeToGwt } from "./beeToGwt";
 
 export function gwtExpressionToDmnExpression(gwtExpression: GwtExpressionDefinition): {
-  expression: BoxedExpression;
+  expression: Normalized<BoxedExpression>;
   widthsById: Map<string, number[]>;
 } {
   const widthsById = new Map<string, number[]>();

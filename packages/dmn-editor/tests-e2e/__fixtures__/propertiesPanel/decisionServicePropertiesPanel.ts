@@ -24,7 +24,7 @@ import { PropertiesPanelBase } from "./propertiesPanelBase";
 import { FontProperties } from "./parts/fontProperties";
 import { DocumentationProperties } from "./parts/documentationProperties";
 import { DescriptionProperties } from "./parts/descriptionProperties";
-import { DataType } from "../jsonModel";
+import { DataType } from "../dataTypes";
 import { DataTypeProperties } from "./parts/dataTypeProperties";
 import { NameProperties } from "./parts/nameProperties";
 

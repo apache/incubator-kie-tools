@@ -31,12 +31,20 @@ import {
   GwtExpressionDefinitionLogicType,
 } from "./types";
 import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
-import { BoxedExpression, DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  BoxedExpression,
+  DmnBuiltInDataType,
+  generateUuid,
+  Normalized,
+} from "@kie-tools/boxed-expression-component/dist/api";
 
 /** Converts a GwtExpressionDefinition to a BoxedExpression. This convertion is
  *  necessary for historical reasons, as the Boxed Expression Editor was
  *  created prior to the DMN Editor, needing to declare its own model. */
-export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<string, number[]>): BoxedExpression {
+export function gwtToBee(
+  expression: GwtExpressionDefinition,
+  __widths: Map<string, number[]>
+): Normalized<BoxedExpression> {
   if (!expression) {
     return undefined!; // SPEC DISCREPANCY
   }
@@ -56,6 +64,7 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
               "@_id": e.entryInfo.id,
               expression: gwtToBee(e.entryExpression, __widths)!,
               variable: {
+                "@_id": generateUuid(),
                 "@_name": e.entryInfo.name,
                 "@_typeRef": normalizeTypeRef(e.entryInfo.dataType),
               },
@@ -158,23 +167,32 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
                     expression.classAndMethodNamesWidth ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
                   ]);
                   return {
+                    "@_id": generateUuid(),
                     __$$element: "context",
                     contextEntry: [
                       {
-                        "@_id": expression.classFieldId,
+                        "@_id": expression.classFieldId ?? generateUuid(),
                         expression: {
+                          "@_id": generateUuid(),
                           __$$element: "literalExpression",
                           text: { __$$text: expression.className ?? "" },
                         },
-                        variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.classFieldName },
+                        variable: {
+                          "@_id": generateUuid(),
+                          "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.classFieldName,
+                        },
                       },
                       {
-                        "@_id": expression.methodFieldId,
+                        "@_id": expression.methodFieldId ?? generateUuid(),
                         expression: {
+                          "@_id": generateUuid(),
                           __$$element: "literalExpression",
                           text: { __$$text: expression.methodName ?? "" },
                         },
-                        variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.methodSignatureFieldName },
+                        variable: {
+                          "@_id": generateUuid(),
+                          "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.methodSignatureFieldName,
+                        },
                       },
                     ],
                   };
@@ -182,23 +200,32 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
               : expression.functionKind === FunctionExpressionDefinitionKind.Pmml
                 ? (() => {
                     return {
+                      "@_id": generateUuid(),
                       __$$element: "context",
                       contextEntry: [
                         {
-                          "@_id": expression.documentFieldId,
+                          "@_id": expression.documentFieldId ?? generateUuid(),
                           expression: {
+                            "@_id": generateUuid(),
                             __$$element: "literalExpression",
                             text: { __$$text: expression.document ?? "" },
                           },
-                          variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.documentFieldName },
+                          variable: {
+                            "@_id": generateUuid(),
+                            "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.documentFieldName,
+                          },
                         },
                         {
-                          "@_id": expression.modelFieldId,
+                          "@_id": expression.modelFieldId ?? generateUuid(),
                           expression: {
+                            "@_id": generateUuid(),
                             __$$element: "literalExpression",
                             text: { __$$text: expression.model ?? "" },
                           },
-                          variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.modelFieldName },
+                          variable: {
+                            "@_id": generateUuid(),
+                            "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.modelFieldName,
+                          },
                         },
                       ],
                     };

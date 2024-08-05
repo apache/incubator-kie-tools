@@ -1,11 +1,8 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "extends": "@kie-tools/tsconfig/tsconfig.cjs.json",
   "compilerOptions": {
-    "outDir": "dist",
     "declaration": false,
     "declarationMap": false,
-    "moduleResolution": "node",
     "resolveJsonModule": true
-  },
-  "include": ["src"]
+  }
 }

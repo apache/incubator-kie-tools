@@ -31,6 +31,7 @@ import {
   BoxedFunction,
   BoxedFunctionKind,
   DmnBuiltInDataType,
+  Normalized,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
@@ -53,7 +54,7 @@ import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionConta
 import { DMN15__tFunctionDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { findAllIdsDeep } from "../../ids/ids";
 
-export type FEEL_ROWTYPE = { functionExpression: BoxedFunction };
+export type FEEL_ROWTYPE = { functionExpression: Normalized<BoxedFunction> };
 
 export type BoxedFunctionFeel = DMN15__tFunctionDefinition & {
   "@_kind": "FEEL";
@@ -65,7 +66,7 @@ export function FeelFunctionExpression({
   parentElementId,
   functionExpression,
 }: {
-  functionExpression: BoxedFunctionFeel;
+  functionExpression: Normalized<BoxedFunctionFeel>;
   isNested: boolean;
   parentElementId: string;
 }) {
@@ -107,9 +108,9 @@ export function FeelFunctionExpression({
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<FEEL_ROWTYPE>[]) => {
-      setExpression((prev: BoxedFunctionFeel) => {
+      setExpression((prev: Normalized<BoxedFunctionFeel>) => {
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedFunctionFeel = {
+        const ret: Normalized<BoxedFunctionFeel> = {
           ...prev,
           "@_label": name,
           "@_typeRef": typeRef,
@@ -151,8 +152,8 @@ export function FeelFunctionExpression({
   }, []);
 
   const onRowReset = useCallback(() => {
-    let oldExpression: BoxedExpression | undefined;
-    setExpression((prev: BoxedFunctionFeel) => {
+    let oldExpression: Normalized<BoxedExpression> | undefined;
+    setExpression((prev: Normalized<BoxedFunctionFeel>) => {
       oldExpression = prev.expression;
       return undefined!; // SPEC DISCREPANCY
     });
@@ -236,10 +237,14 @@ export function FeelFunctionImplementationCell({
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onSetExpression = useCallback<OnSetExpression>(
-    ({ getNewExpression }: { getNewExpression: (prev: BoxedExpression) => BoxedExpression }) => {
-      setExpression((prev: BoxedFunctionFeel) => {
+    ({
+      getNewExpression,
+    }: {
+      getNewExpression: (prev: Normalized<BoxedExpression>) => Normalized<BoxedExpression>;
+    }) => {
+      setExpression((prev: Normalized<BoxedFunctionFeel>) => {
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedFunctionFeel = {
+        const ret: Normalized<BoxedFunctionFeel> = {
           ...prev,
           expression: getNewExpression(prev.expression ?? undefined!),
         };
