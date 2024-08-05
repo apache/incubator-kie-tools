@@ -296,7 +296,6 @@ test.describe("Model Decision Service", () => {
           description: "https://github.com/apache/incubator-kie-issues/issues/896",
         });
 
-        await diagram.resetFocus();
         await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 400, y: 300 } });
 
         await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
