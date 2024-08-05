@@ -315,7 +315,6 @@ test.describe("Resize node - Decision Service", () => {
         type: TestAnnotations.REGRESSION,
         description: "https://github.com/apache/incubator-kie-issues/issues/881",
       });
-      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 400, y: 100 } });
       await diagram.resetFocus();
       // move into Decision Service
