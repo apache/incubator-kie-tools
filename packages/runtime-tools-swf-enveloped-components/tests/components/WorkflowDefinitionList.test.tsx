@@ -53,6 +53,7 @@ describe("WorkflowDefinitionList component", () => {
 
     await waitFor(() => {
       expect(mockDriver.getWorkflowDefinitionsQuery).toHaveBeenCalled();
+      expect(component.queryByText("Test Workflow 1")).toBeInTheDocument();
       expect(component.queryByText("Test Workflow 2")).toBeInTheDocument();
     });
   });
@@ -76,7 +77,7 @@ describe("WorkflowDefinitionList component", () => {
     expect(component.queryByText("Test Workflow 1")).toBeInTheDocument();
     expect(component.queryByText("Test Workflow 2")).toBeInTheDocument();
 
-    fireEvent.change(component.getByPlaceholderText("Filter by workflow name"), {
+    fireEvent.change(component.getByTestId("workflowFilterInput"), {
       target: { value: "Test Workflow 1" },
     });
 
