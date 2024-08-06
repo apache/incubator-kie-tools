@@ -112,12 +112,12 @@ test.describe("Move external node - Decision", () => {
     await editor.changeTab({ tab: TabName.EDITOR });
     await palette.dragNewNode({
       type: NodeType.DECISION_SERVICE,
-      targetPosition: { x: 200, y: 10 },
+      targetPosition: { x: 250, y: 50 },
       thenRenameTo: DefaultNodeName.DECISION_SERVICE + " 1",
     });
     await palette.dragNewNode({
       type: NodeType.DECISION_SERVICE,
-      targetPosition: { x: 600, y: 10 },
+      targetPosition: { x: 650, y: 50 },
       thenRenameTo: DefaultNodeName.DECISION_SERVICE + " 2",
     });
 
@@ -128,7 +128,7 @@ test.describe("Move external node - Decision", () => {
       nodeName: "Sum",
       targetPosition: {
         x: 600,
-        y: 350,
+        y: 400,
       },
     });
 
@@ -137,7 +137,7 @@ test.describe("Move external node - Decision", () => {
       nodeName: "Diff",
       targetPosition: {
         x: 200,
-        y: 350,
+        y: 400,
       },
     });
 
@@ -145,8 +145,8 @@ test.describe("Move external node - Decision", () => {
     await palette.toggleExternalNodesPanel();
 
     await diagram.resetFocus();
-    await nodes.move({ name: "Sum", targetPosition: { x: 300, y: 110 } });
-    await nodes.move({ name: "Diff", targetPosition: { x: 300, y: 250 } });
+    await nodes.move({ name: "Sum", targetPosition: { x: 350, y: 150 } });
+    await nodes.move({ name: "Diff", targetPosition: { x: 350, y: 250 } });
     await nodes.move({ name: DefaultNodeName.DECISION_SERVICE + " 1", targetPosition: { x: 200, y: 300 } });
     await nodes.move({ name: DefaultNodeName.DECISION_SERVICE + " 2", targetPosition: { x: 600, y: 300 } });
 
@@ -154,8 +154,8 @@ test.describe("Move external node - Decision", () => {
 
     await diagram.resetFocus();
 
-    await nodes.move({ name: "Sum", targetPosition: { x: 650, y: 350 } });
-    await nodes.move({ name: "Diff", targetPosition: { x: 650, y: 500 } });
+    await nodes.move({ name: "Sum", targetPosition: { x: 680, y: 350 } });
+    await nodes.move({ name: "Diff", targetPosition: { x: 680, y: 500 } });
 
     // We move it to make it sure that the nodes are added inside the Decision Services
     // and are really attached to it, not only "visually over it".
