@@ -66,9 +66,9 @@ export class BuiltInTypes {
     ]),
   };
 
-  public static readonly YearsAndMonthDuration: DataType = {
-    name: "years and month duration",
-    typeRef: "years and month duration",
+  public static readonly YearsAndMonthsDuration: DataType = {
+    name: "years and months duration",
+    typeRef: "years and months duration",
     properties: new Map([
       ["years", BuiltInTypes.Number],
       ["months", BuiltInTypes.Number],

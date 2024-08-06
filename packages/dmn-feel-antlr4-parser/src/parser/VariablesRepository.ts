@@ -82,7 +82,7 @@ export class VariablesRepository {
       [BuiltInTypes.String.name, BuiltInTypes.String],
       [BuiltInTypes.DaysAndTimeDuration.name, BuiltInTypes.DaysAndTimeDuration],
       [BuiltInTypes.DateAndTime.name, BuiltInTypes.DateAndTime],
-      [BuiltInTypes.YearsAndMonthDuration.name, BuiltInTypes.YearsAndMonthDuration],
+      [BuiltInTypes.YearsAndMonthsDuration.name, BuiltInTypes.YearsAndMonthsDuration],
       [BuiltInTypes.Time.name, BuiltInTypes.Time],
       [BuiltInTypes.Date.name, BuiltInTypes.Date],
     ]);
