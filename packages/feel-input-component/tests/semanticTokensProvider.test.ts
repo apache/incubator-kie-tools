@@ -236,7 +236,7 @@ ThatShouldFailWhenBreakLine`,
       { type: BuiltInTypes.String },
       { type: BuiltInTypes.DaysAndTimeDuration },
       { type: BuiltInTypes.DateAndTime },
-      { type: BuiltInTypes.YearsAndMonthDuration },
+      { type: BuiltInTypes.YearsAndMonthsDuration },
       { type: BuiltInTypes.Time },
       { type: BuiltInTypes.Date },
     ])("should recognize built-in type '$type.name' properties as valid", async ({ type }) => {
