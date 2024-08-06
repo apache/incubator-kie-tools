@@ -114,7 +114,7 @@ func (r *SonataFlowPlatformReconciler) Reconcile(ctx context.Context, req reconc
 
 	target := instance.DeepCopy()
 
-	if err = r.SonataFlowPlatformUpdateStatus(ctx, req, target); err != nil {
+	if err = r.updateSonataFlowPlatformStatus(ctx, req, target); err != nil {
 		return reconcile.Result{}, err
 	}
 
@@ -170,10 +170,10 @@ func (r *SonataFlowPlatformReconciler) Reconcile(ctx context.Context, req reconc
 
 }
 
-// If an active cluster platform exists, update platform.Status accordingly
-func (r *SonataFlowPlatformReconciler) SonataFlowPlatformUpdateStatus(ctx context.Context, req reconcile.Request, target *operatorapi.SonataFlowPlatform) error {
+// sonataFlowPlatformUpdateStatus If an active cluster platform exists, update platform.Status accordingly
+func (r *SonataFlowPlatformReconciler) updateSonataFlowPlatformStatus(ctx context.Context, req reconcile.Request, target *operatorapi.SonataFlowPlatform) error {
 	// Fetch the active SonataFlowClusterPlatform instance
-	sfcPlatform, err := clusterplatform.GetActiveClusterPlatform(ctx, r.Client)
+	sfcPlatform, err := clusterplatform.GetActiveClusterPlatform(ctx)
 	if err != nil && !errors.IsNotFound(err) {
 		klog.V(log.E).ErrorS(err, "Failed to get active SonataFlowClusterPlatform")
 		return err
@@ -241,7 +241,7 @@ func (r *SonataFlowPlatformReconciler) mapClusterPlatformToPlatformRequests(ctx 
 // if actively referenced sonataflowplatform is changed, reconcile other SonataFlowPlatforms in the cluster.
 func (r *SonataFlowPlatformReconciler) mapPlatformToPlatformRequests(ctx context.Context, object client.Object) []reconcile.Request {
 	platform := object.(*operatorapi.SonataFlowPlatform)
-	sfcPlatform, err := clusterplatform.GetActiveClusterPlatform(ctx, r.Client)
+	sfcPlatform, err := clusterplatform.GetActiveClusterPlatform(ctx)
 	if err != nil && !errors.IsNotFound(err) {
 		klog.V(log.E).ErrorS(err, "Failed to get active SonataFlowClusterPlatform")
 		return nil

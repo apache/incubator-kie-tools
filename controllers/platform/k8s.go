@@ -57,7 +57,7 @@ func (action *serviceAction) CanHandle(platform *operatorapi.SonataFlowPlatform)
 
 func (action *serviceAction) Handle(ctx context.Context, platform *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, error) {
 	// Refresh applied configuration
-	if err := ConfigureDefaults(ctx, action.client, platform, false); err != nil {
+	if err := CreateOrUpdateWithDefaults(ctx, platform, false); err != nil {
 		return nil, err
 	}
 

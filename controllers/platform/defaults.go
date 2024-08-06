@@ -23,11 +23,9 @@ import (
 	"context"
 
 	"k8s.io/apimachinery/pkg/api/errors"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 
@@ -36,7 +34,7 @@ import (
 
 const defaultSonataFlowPlatformName = "sonataflow-platform"
 
-func ConfigureDefaults(ctx context.Context, c client.Client, p *operatorapi.SonataFlowPlatform, verbose bool) error {
+func CreateOrUpdateWithDefaults(ctx context.Context, p *operatorapi.SonataFlowPlatform, verbose bool) error {
 	// update missing fields in the resource
 	if p.Status.Cluster == "" || utils.IsOpenShift() {
 		p.Status.Cluster = operatorapi.PlatformClusterOpenShift
@@ -52,7 +50,7 @@ func ConfigureDefaults(ctx context.Context, c client.Client, p *operatorapi.Sona
 		return err
 	}
 
-	err = configureRegistry(ctx, c, p, verbose)
+	err = configureRegistry(ctx, p, verbose)
 	if err != nil {
 		return err
 	}
@@ -61,15 +59,15 @@ func ConfigureDefaults(ctx context.Context, c client.Client, p *operatorapi.Sona
 		klog.V(log.I).InfoS("Maven Timeout set", "timeout", p.Spec.Build.Config.Timeout.Duration)
 	}
 
-	return createOrUpdatePlatform(ctx, c, p)
+	return createOrUpdatePlatform(ctx, p)
 }
 
-func createOrUpdatePlatform(ctx context.Context, c client.Client, p *operatorapi.SonataFlowPlatform) error {
+func createOrUpdatePlatform(ctx context.Context, p *operatorapi.SonataFlowPlatform) error {
 	config := operatorapi.SonataFlowPlatform{}
-	err := c.Get(ctx, ctrl.ObjectKey{Namespace: p.Namespace, Name: p.Name}, &config)
+	err := utils.GetClient().Get(ctx, ctrl.ObjectKey{Namespace: p.Namespace, Name: p.Name}, &config)
 	if errors.IsNotFound(err) {
 		klog.V(log.D).ErrorS(err, "Platform not found, creating it")
-		return c.Create(ctx, p)
+		return utils.GetClient().Create(ctx, p)
 	} else if err != nil {
 		klog.V(log.E).ErrorS(err, "Error reading the Platform")
 		return err
@@ -77,37 +75,9 @@ func createOrUpdatePlatform(ctx context.Context, c client.Client, p *operatorapi
 
 	config.Spec = p.Spec
 	config.Status.Cluster = p.Status.Cluster
-	err = c.Update(ctx, &config)
+	err = utils.GetClient().Update(ctx, &config)
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "Error updating the BuildPlatform")
 	}
 	return err
-}
-
-func newDefaultSonataFlowPlatform(namespace string) *operatorapi.SonataFlowPlatform {
-	if utils.IsOpenShift() {
-		return &operatorapi.SonataFlowPlatform{
-			ObjectMeta: metav1.ObjectMeta{Name: defaultSonataFlowPlatformName, Namespace: namespace},
-			Spec: operatorapi.SonataFlowPlatformSpec{
-				Build: operatorapi.BuildPlatformSpec{
-					Config: operatorapi.BuildPlatformConfig{
-						BuildStrategy: operatorapi.PlatformBuildStrategy,
-					},
-				},
-			},
-		}
-	}
-
-	return &operatorapi.SonataFlowPlatform{
-		ObjectMeta: metav1.ObjectMeta{Name: defaultSonataFlowPlatformName, Namespace: namespace},
-		Spec: operatorapi.SonataFlowPlatformSpec{
-			Build: operatorapi.BuildPlatformSpec{
-				Config: operatorapi.BuildPlatformConfig{
-					BuildStrategyOptions: map[string]string{
-						kanikoBuildCacheEnabled: "true",
-					},
-				},
-			},
-		},
-	}
 }

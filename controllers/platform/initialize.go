@@ -77,7 +77,7 @@ func (action *initializeAction) Handle(ctx context.Context, platform *operatorap
 		return nil, nil
 	}
 
-	if err = ConfigureDefaults(ctx, action.client, platform, true); err != nil {
+	if err = CreateOrUpdateWithDefaults(ctx, platform, true); err != nil {
 		return nil, err
 	}
 	// nolint: staticcheck

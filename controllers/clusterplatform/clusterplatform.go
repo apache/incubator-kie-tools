@@ -25,9 +25,9 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/klog/v2"
-	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const (
@@ -35,15 +35,15 @@ const (
 )
 
 // GetActiveClusterPlatform returns the currently installed active cluster platform.
-func GetActiveClusterPlatform(ctx context.Context, c ctrl.Client) (*operatorapi.SonataFlowClusterPlatform, error) {
-	return getClusterPlatform(ctx, c, true)
+func GetActiveClusterPlatform(ctx context.Context) (*operatorapi.SonataFlowClusterPlatform, error) {
+	return getClusterPlatform(ctx, true)
 }
 
 // getClusterPlatform returns the currently active cluster platform or any cluster platform existing in the cluster.
-func getClusterPlatform(ctx context.Context, c ctrl.Client, active bool) (*operatorapi.SonataFlowClusterPlatform, error) {
+func getClusterPlatform(ctx context.Context, active bool) (*operatorapi.SonataFlowClusterPlatform, error) {
 	klog.V(log.D).InfoS("Finding available cluster platforms")
 
-	lst, err := listPrimaryClusterPlatforms(ctx, c)
+	lst, err := listPrimaryClusterPlatforms(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -66,8 +66,8 @@ func getClusterPlatform(ctx context.Context, c ctrl.Client, active bool) (*opera
 }
 
 // listPrimaryClusterPlatforms returns all non-secondary cluster platforms installed (only one will be active).
-func listPrimaryClusterPlatforms(ctx context.Context, c ctrl.Reader) (*operatorapi.SonataFlowClusterPlatformList, error) {
-	lst, err := listAllClusterPlatforms(ctx, c)
+func listPrimaryClusterPlatforms(ctx context.Context) (*operatorapi.SonataFlowClusterPlatformList, error) {
+	lst, err := listAllClusterPlatforms(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -83,8 +83,8 @@ func listPrimaryClusterPlatforms(ctx context.Context, c ctrl.Reader) (*operatora
 }
 
 // allDuplicatedClusterPlatforms returns true if every cluster platform has a "Duplicated" status set
-func allDuplicatedClusterPlatforms(ctx context.Context, c ctrl.Reader) bool {
-	lst, err := listAllClusterPlatforms(ctx, c)
+func allDuplicatedClusterPlatforms(ctx context.Context) bool {
+	lst, err := listAllClusterPlatforms(ctx)
 	if err != nil {
 		return false
 	}
@@ -99,9 +99,9 @@ func allDuplicatedClusterPlatforms(ctx context.Context, c ctrl.Reader) bool {
 }
 
 // listAllClusterPlatforms returns all clusterplatforms installed.
-func listAllClusterPlatforms(ctx context.Context, c ctrl.Reader) (*operatorapi.SonataFlowClusterPlatformList, error) {
+func listAllClusterPlatforms(ctx context.Context) (*operatorapi.SonataFlowClusterPlatformList, error) {
 	lst := operatorapi.NewSonataFlowClusterPlatformList()
-	if err := c.List(ctx, &lst); err != nil {
+	if err := utils.GetClient().List(ctx, &lst); err != nil {
 		return nil, err
 	}
 	return &lst, nil

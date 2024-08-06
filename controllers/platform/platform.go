@@ -25,6 +25,7 @@ import (
 	"os"
 	"strings"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
 
 	coordination "k8s.io/api/coordination/v1"
@@ -147,11 +148,39 @@ func getLocalPlatform(ctx context.Context, c ctrl.Client, namespace string, acti
 	}
 	klog.V(log.I).InfoS("Not found a local build platform", "Namespace", namespace)
 	klog.V(log.I).InfoS("Creating a default SonataFlowPlatform", "Namespace", namespace)
-	sfp := newDefaultSonataFlowPlatform(namespace)
-	if err = c.Create(ctx, sfp); err != nil {
+	sfp := newEmptySonataFlowPlatform(namespace)
+	if err = CreateOrUpdateWithDefaults(ctx, sfp, false); err != nil {
 		return nil, err
 	}
 	return sfp, nil
+}
+
+func newEmptySonataFlowPlatform(namespace string) *operatorapi.SonataFlowPlatform {
+	if utils.IsOpenShift() {
+		return &operatorapi.SonataFlowPlatform{
+			ObjectMeta: metav1.ObjectMeta{Name: defaultSonataFlowPlatformName, Namespace: namespace},
+			Spec: operatorapi.SonataFlowPlatformSpec{
+				Build: operatorapi.BuildPlatformSpec{
+					Config: operatorapi.BuildPlatformConfig{
+						BuildStrategy: operatorapi.PlatformBuildStrategy,
+					},
+				},
+			},
+		}
+	}
+
+	return &operatorapi.SonataFlowPlatform{
+		ObjectMeta: metav1.ObjectMeta{Name: defaultSonataFlowPlatformName, Namespace: namespace},
+		Spec: operatorapi.SonataFlowPlatformSpec{
+			Build: operatorapi.BuildPlatformSpec{
+				Config: operatorapi.BuildPlatformConfig{
+					BuildStrategyOptions: map[string]string{
+						kanikoBuildCacheEnabled: "true",
+					},
+				},
+			},
+		},
+	}
 }
 
 // listPrimaryPlatforms returns all non-secondary platforms installed in a given namespace (only one will be active).

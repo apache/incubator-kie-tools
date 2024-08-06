@@ -26,6 +26,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -35,7 +36,6 @@ import (
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/workflowdef"
 
-	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
@@ -46,7 +46,7 @@ var builderDockerfileFromRE = regexp.MustCompile(`FROM (.*) AS builder`)
 // ResourceCustomizer can be used to inject code that changes the objects before they are created.
 type ResourceCustomizer func(object ctrl.Object) ctrl.Object
 
-func configureRegistry(ctx context.Context, c client.Client, p *operatorapi.SonataFlowPlatform, verbose bool) error {
+func configureRegistry(ctx context.Context, p *operatorapi.SonataFlowPlatform, verbose bool) error {
 	if p.Spec.Build.Config.BuildStrategy == operatorapi.PlatformBuildStrategy && p.Status.Cluster == operatorapi.PlatformClusterOpenShift {
 		p.Spec.Build.Config.Registry = operatorapi.RegistrySpec{}
 		klog.V(log.D).InfoS("Platform registry not set and ignored on openshift cluster")
@@ -55,7 +55,7 @@ func configureRegistry(ctx context.Context, c client.Client, p *operatorapi.Sona
 
 	if p.Spec.Build.Config.Registry.Address == "" && p.Status.Cluster == operatorapi.PlatformClusterKubernetes {
 		// try KEP-1755
-		address, err := GetRegistryAddress(ctx, c)
+		address, err := GetRegistryAddress(ctx)
 		if err != nil && verbose {
 			klog.V(log.E).ErrorS(err, "Cannot find a registry where to push images via KEP-1755")
 		} else if err == nil && address != nil {
@@ -139,9 +139,9 @@ func setStatusAdditionalInfo(platform *operatorapi.SonataFlowPlatform) {
 
 // GetRegistryAddress KEP-1755
 // https://github.com/kubernetes/enhancements/tree/master/keps/sig-cluster-lifecycle/generic/1755-communicating-a-local-registry
-func GetRegistryAddress(ctx context.Context, c client.Client) (*string, error) {
+func GetRegistryAddress(ctx context.Context) (*string, error) {
 	config := corev1.ConfigMap{}
-	err := c.Get(ctx, ctrl.ObjectKey{Namespace: "kube-public", Name: "local-registry-hosting"}, &config)
+	err := utils.GetClient().Get(ctx, ctrl.ObjectKey{Namespace: "kube-public", Name: "local-registry-hosting"}, &config)
 	if err != nil {
 		if k8serrors.IsNotFound(err) {
 			return nil, nil

@@ -134,7 +134,7 @@ func (r *SonataFlowClusterPlatformReconciler) SetupWithManager(mgr ctrlrun.Manag
 
 // if actively referenced sonataflowplatform object is changed, reconcile the active SonataFlowClusterPlatform.
 func (r *SonataFlowClusterPlatformReconciler) mapPlatformToClusterPlatformRequests(ctx context.Context, object client.Object) []reconcile.Request {
-	sfcPlatform, err := clusterplatform.GetActiveClusterPlatform(ctx, r.Client)
+	sfcPlatform, err := clusterplatform.GetActiveClusterPlatform(ctx)
 	if err != nil && !errors.IsNotFound(err) {
 		klog.V(log.E).ErrorS(err, "Failed to get active SonataFlowClusterPlatform")
 		return nil

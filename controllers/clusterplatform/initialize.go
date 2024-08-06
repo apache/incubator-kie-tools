@@ -46,7 +46,7 @@ func (action *initializeAction) Name() string {
 }
 
 func (action *initializeAction) CanHandle(ctx context.Context, cPlatform *operatorapi.SonataFlowClusterPlatform) bool {
-	return !cPlatform.Status.IsDuplicated() || allDuplicatedClusterPlatforms(ctx, action.client)
+	return !cPlatform.Status.IsDuplicated() || allDuplicatedClusterPlatforms(ctx)
 }
 
 func (action *initializeAction) Handle(ctx context.Context, cPlatform *operatorapi.SonataFlowClusterPlatform) error {
@@ -107,7 +107,7 @@ func (action *initializeAction) isPrimaryDuplicate(ctx context.Context, cPlatfor
 		// Always reconcile secondary cluster platforms
 		return false, nil
 	}
-	platforms, err := listPrimaryClusterPlatforms(ctx, action.client)
+	platforms, err := listPrimaryClusterPlatforms(ctx)
 	if err != nil {
 		return false, err
 	}
