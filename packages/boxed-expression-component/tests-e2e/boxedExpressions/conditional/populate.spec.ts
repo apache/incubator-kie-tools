@@ -65,23 +65,41 @@ test.describe("Populate Boxed Conditional", () => {
     await bee.expression.asContext().entry(0).expression.asConditional().else.selectExpressionMenu.selectLiteral();
     await bee.expression.asContext().entry(0).expression.asConditional().else.expression.asLiteral().fill("never");
 
-    await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested.png");
+    await expect(bee.getContainer()).toHaveScreenshot("nested-boxed-conditional.png");
   });
 
-  test("should combine other expressions with the Conditional", async ({ stories }) => {
+  test("should combine other expressions with the Conditional", async ({ bee, stories }) => {
     await stories.openBoxedConditional();
+
+    await bee.expression.asConditional().if.expression.asLiteral().equalsSignCell.open();
+    await bee.expression.asConditional().if.expression.asLiteral().equalsSignCell.reset();
+    await bee.expression.asConditional().if.selectExpressionMenu.selectContext();
+
+    await bee.expression.asConditional().then.expression.asLiteral().equalsSignCell.open();
+    await bee.expression.asConditional().then.expression.asLiteral().equalsSignCell.reset();
+    await bee.expression.asConditional().then.selectExpressionMenu.selectDecisionTable();
+
+    await bee.expression.asConditional().else.expression.asLiteral().equalsSignCell.open();
+    await bee.expression.asConditional().else.expression.asLiteral().equalsSignCell.reset();
+    await bee.expression.asConditional().else.selectExpressionMenu.selectSome();
+
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-conditional-with-nested-other-expressions.png");
   });
 
   test("should reset a Conditional", async ({ bee, stories }) => {
     await stories.openBoxedConditional();
 
     await bee.expression.header.reset();
+
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-conditional--reset-state.png");
   });
 
   test("should reset a nested Conditional", async ({ bee, stories }) => {
     await stories.openBoxedConditional("nested");
 
     await bee.expression.asContext().entry(0).expression.header.reset();
+
+    await expect(bee.getContainer()).toHaveScreenshot("nested-boxed-conditional--reset-state.png");
   });
 
   test("should copy and paste Conditional", async ({ browserName, context, stories }) => {
