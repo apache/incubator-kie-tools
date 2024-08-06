@@ -57,7 +57,7 @@ import {
 } from "../externalNodes/ExternalNodesPanel";
 import { nodeNatures } from "../mutations/NodeNature";
 import { addConnectedNode } from "../mutations/addConnectedNode";
-import { addDecisionToDecisionService, DrgElement } from "../mutations/addDecisionToDecisionService";
+import { addDecisionToDecisionService } from "../mutations/addDecisionToDecisionService";
 import { addEdge } from "../mutations/addEdge";
 import { addShape } from "../mutations/addShape";
 import { addStandaloneNode } from "../mutations/addStandaloneNode";
@@ -994,6 +994,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                     definitions: state.dmn.model.definitions,
                     decisionId: selectedNodes[i].id, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
                     decisionServiceId: p.data.dmnObject!["@_id"]!,
+                    externalModelsByNamespace,
                   });
                 }
               } else {
@@ -1009,14 +1010,13 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 addDecisionToDecisionService({
                   definitions: state.dmn.model.definitions,
                   drdIndex: state.computed(state).getDrdIndex(),
-                  drgElement: selectedNodes[i].data.dmnObject as DrgElement,
+                  decisionId: selectedNodes[i].id, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
                   decisionServiceId: state
                     .computed(state)
                     .getDiagramData(externalModelsByNamespace)
                     .nodesById.get(dropTargetNode.id)!.data.dmnObject!["@_id"]!,
                   snapGrid: state.diagram.snapGrid,
-                  decisionShape: selectedNodes[i].data.shape,
-                  elementId: selectedNodes[i].id, // The "real" id is here, which can be the local id or an imported node id (uri + external element id).
+                  externalModelsByNamespace: externalModelsByNamespace,
                 });
               }
             } else {

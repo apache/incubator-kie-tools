@@ -20,18 +20,44 @@
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { Normalized } from "../normalization/normalize";
-import { DrgElement } from "./addDecisionToDecisionService";
+import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller/dist";
+import { ExternalModelsIndex } from "../DmnEditor";
 
 export function deleteDecisionFromDecisionService({
   definitions,
   decisionId,
   decisionServiceId,
+  externalModelsByNamespace,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   decisionId: string;
   decisionServiceId: string;
+  externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
   console.debug(`DMN MUTATION: Deleting Decision '${decisionId}' from Decision Service '${decisionServiceId}'`);
+
+  const href = parseXmlHref(decisionId);
+
+  const externalModel = externalModelsByNamespace?.[href.namespace ?? ""];
+  if (href.namespace && !externalModel) {
+    throw new Error(`DMN MUTATION: Namespace '${href.namespace}' not found.`);
+  }
+
+  if (externalModel && (externalModel.model as Normalized<DmnLatestModel>).definitions) {
+    const externalDrgs = (externalModel.model as Normalized<DmnLatestModel>).definitions.drgElement;
+    const decision = externalDrgs?.find((drgElement) => drgElement["@_id"] === href.id);
+    if (decision?.__$$element !== "decision") {
+      throw new Error(
+        `DMN MUTATION: DRG Element with id '${href.id}' is either not a Decision or doesn't exist in the external model '${href.namespace}'`
+      );
+    }
+  } else {
+    const decision = definitions.drgElement?.find((s) => s["@_id"] === href.id);
+    if (decision?.__$$element !== "decision") {
+      throw new Error(`DMN MUTATION: DRG Element with id '${href.id}' is either not a Decision or doesn't exist.`);
+    }
+  }
 
   const decisionService = definitions.drgElement?.find((s) => s["@_id"] === decisionServiceId);
   if (decisionService?.__$$element !== "decisionService") {
@@ -40,11 +66,10 @@ export function deleteDecisionFromDecisionService({
     );
   }
 
-  decisionService.outputDecision = (decisionService.outputDecision ?? []).filter(
-    (s) => s["@_href"] !== `${decisionId}`
-  );
+  const xmlHref = buildXmlHref({ namespace: href.namespace, id: href.id });
+  decisionService.outputDecision = (decisionService.outputDecision ?? []).filter((s) => s["@_href"] !== `${xmlHref}`);
   decisionService.encapsulatedDecision = (decisionService.encapsulatedDecision ?? []).filter(
-    (s) => s["@_href"] !== `${decisionId}`
+    (s) => s["@_href"] !== `${xmlHref}`
   );
 
   repopulateInputDataAndDecisionsOnDecisionService({ definitions, decisionService });

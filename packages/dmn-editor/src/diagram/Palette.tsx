@@ -248,7 +248,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
             <div
               className={"kie-dmn-editor--palette-nodes-popover"}
               style={{ maxHeight }}
-              data-testid={"kie-tools--dmn-editor--external-nodes-container"}
+              data-testid={"kie-tools--dmn-editor--external-nodes-popover"}
             >
               <ExternalNodesPanel />
             </div>

@@ -136,7 +136,7 @@ export function ExternalNodesPanel() {
               const _import = importsByNamespace.get(namespace);
               if (!_import) {
                 console.debug(
-                  `DMN EDITOR: Couldn't find import for namespace '${namespace}', although there's an external DMN referncing it.`
+                  `DMN EDITOR: Couldn't find import for namespace '${namespace}', although there's an external DMN referencing it.`
                 );
                 return [];
               }
@@ -159,7 +159,7 @@ export function ExternalNodesPanel() {
                           externalDrgElementId: drgElement["@_id"]!,
                         })
                       }
-                      data-testid={`kie-tools--dmn-editor--external-node-${_import["@_name"]}-${drgElement["@_name"]}`}
+                      data-testid={`kie-tools--dmn-editor--external-node-${namespace}-${drgElement["@_name"]}`}
                     >
                       <Flex
                         alignItems={{ default: "alignItemsCenter" }}

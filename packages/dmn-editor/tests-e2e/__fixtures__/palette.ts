@@ -46,7 +46,7 @@ export class Palette {
     targetPosition: { x: number; y: number };
   }) {
     await this.page
-      .getByTestId("kie-tools--dmn-editor--external-nodes-container")
+      .getByTestId("kie-tools--dmn-editor--external-nodes-popover")
       .getByTestId(`kie-tools--dmn-editor--external-node-${args.includedModelName}-${args.nodeName}`)
       .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
   }
