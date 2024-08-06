@@ -33,6 +33,12 @@ type CreateQuarkusProjectConfig struct {
 	DependenciesVersion metadata.DependenciesVersion
 }
 
+type Repository struct {
+	Id   string
+	Name string
+	Url  string
+}
+
 func CreateQuarkusProject(cfg CreateQuarkusProjectConfig) error {
 	if err := common.CheckProjectName(cfg.ProjectName); err != nil {
 		return err
@@ -94,6 +100,9 @@ func manipulatePomToKogito(filename string, cfg CreateQuarkusProjectConfig) erro
 	}
 	versionElement.SetText(cfg.DependenciesVersion.QuarkusVersion)
 
+	properties.CreateElement("kie.version").SetText(metadata.KogitoBomDependency.Version)
+	properties.CreateElement("kie.tooling.version").SetText(metadata.PluginVersion)
+
 	//Add kogito bom dependency
 	depManagement := doc.FindElement("//dependencyManagement")
 	if depManagement == nil {
@@ -108,7 +117,7 @@ func manipulatePomToKogito(filename string, cfg CreateQuarkusProjectConfig) erro
 	dependencyElement := dependenciesManagendChild.CreateElement("dependency")
 	dependencyElement.CreateElement("groupId").SetText(metadata.KogitoBomDependency.GroupId)
 	dependencyElement.CreateElement("artifactId").SetText(metadata.KogitoBomDependency.ArtifactId)
-	dependencyElement.CreateElement("version").SetText(metadata.KogitoBomDependency.Version)
+	dependencyElement.CreateElement("version").SetText("${kie.version}")
 	dependencyElement.CreateElement("type").SetText(metadata.KogitoBomDependency.Type)
 	dependencyElement.CreateElement("scope").SetText(metadata.KogitoBomDependency.Scope)
 
@@ -125,6 +134,25 @@ func manipulatePomToKogito(filename string, cfg CreateQuarkusProjectConfig) erro
 		if dep.Version != "" {
 			dependencyElement.CreateElement("version").SetText(dep.Version)
 		}
+	}
+
+	//add apache repository after profiles declaration
+	var repositories = []Repository{
+		{Id: "apache-public-repository-group", Name: "Apache Public Repository Group", Url: "https://repository.apache.org/content/groups/public/"},
+		{Id: "apache-snapshot-repository-group", Name: "Apache Snapshot Repository Group", Url: "https://repository.apache.org/content/groups/snapshots/"},
+	}
+
+	var project = doc.FindElement("//project")
+	repositoriesElement := project.FindElement("//repositories")
+	if repositoriesElement == nil {
+		repositoriesElement = project.CreateElement("repositories")
+	}
+
+	for _, repo := range repositories {
+		var repository = repositoriesElement.CreateElement("repository")
+		repository.CreateElement("id").SetText(repo.Id)
+		repository.CreateElement("name").SetText(repo.Name)
+		repository.CreateElement("url").SetText(repo.Url)
 	}
 
 	doc.Indent(4)
