@@ -77,7 +77,7 @@ describe("WorkflowDefinitionList component", () => {
     expect(component.queryByText("Test Workflow 1")).toBeInTheDocument();
     expect(component.queryByText("Test Workflow 2")).toBeInTheDocument();
 
-    fireEvent.change(component.getByTestId("workflowFilterInput"), {
+    fireEvent.change(component.getByTestId("workflow-filter-input"), {
       target: { value: "Test Workflow 1" },
     });
 

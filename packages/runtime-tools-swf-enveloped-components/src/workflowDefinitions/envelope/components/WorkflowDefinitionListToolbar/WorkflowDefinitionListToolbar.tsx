@@ -109,7 +109,7 @@ const WorkflowDefinitionListToolbar: React.FC<WorkflowDefinitionListToolbarProps
               onKeyPress={onEnterClicked}
               placeholder={`Filter by workflow name`}
               value={workflowNameInput}
-              data-testid="workflowFilterInput"
+              data-testid="workflow-filter-input"
             />
           </InputGroup>
         </ToolbarFilter>
