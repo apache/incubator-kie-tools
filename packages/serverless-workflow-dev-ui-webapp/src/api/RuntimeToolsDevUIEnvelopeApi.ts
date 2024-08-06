@@ -30,14 +30,15 @@ export interface Association {
 }
 
 export interface RuntimeToolsDevUIInitArgs {
+  availablePages?: string[];
   dataIndexUrl: string;
-  page: string;
   devUIUrl: string;
+  diagramPreviewSize?: DiagramPreviewSize;
+  isDataIndexAvailable: boolean;
+  isLocalCluster?: boolean;
+  isStunnerEnabled: boolean;
+  omittedWorkflowTimelineEvents?: string[];
   openApiBaseUrl: string;
   openApiPath: string;
-  isDataIndexAvailable: boolean;
-  availablePages?: string[];
-  omittedWorkflowTimelineEvents?: string[];
-  diagramPreviewSize?: DiagramPreviewSize;
-  isStunnerEnabled: boolean;
+  page: string;
 }

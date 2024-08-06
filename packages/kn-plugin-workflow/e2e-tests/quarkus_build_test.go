@@ -123,8 +123,7 @@ func RunQuarkusBuildTest(t *testing.T, cfgTestInputQuarkusCreate CfgTestInputQua
 	require.NoErrorf(t, err, "Expected nil error, got %v", err)
 
 	// Run `quarkus build` command
-	args := transformQuarkusBuildCmdCfgToArgs(test.input);
-	AddSnapshotRepositoryDeclarationToPom(t, projectDir)
+	args := transformQuarkusBuildCmdCfgToArgs(test.input)
 	_, err = ExecuteKnWorkflowQuarkus(args...)
 	require.NoErrorf(t, err, "Expected nil error, got %v", err)
 

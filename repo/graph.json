@@ -50,8 +50,10 @@
       { "id": "@kie-tools/eslint" },
       { "id": "@kie-tools/jest-base" },
       { "id": "@kie-tools-examples/webapp" },
+      { "id": "@kie-tools/dmn-editor-standalone" },
       { "id": "@kie-tools/kie-editors-standalone" },
       { "id": "@kie-tools/serverless-workflow-standalone-editor" },
+      { "id": "@kie-tools/dmn-editor-envelope" },
       { "id": "@kie-tools/kie-bc-editors" },
       { "id": "@kie-tools/stunner-editors" },
       { "id": "@kie-tools/serverless-workflow-combined-editor" },
@@ -117,7 +119,6 @@
       { "id": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" },
       { "id": "@kie-tools/maven-m2-repo-via-http-image" },
       { "id": "@kie-tools/dmn-editor" },
-      { "id": "@kie-tools/dmn-editor-envelope" },
       { "id": "@kie-tools/dmn-feel-antlr4-parser" },
       { "id": "@kie-tools/dmn-marshaller" },
       { "id": "@kie-tools/dmn-marshaller-backend-compatibility-tester" },
@@ -621,12 +622,22 @@
       },
       {
         "source": "@kie-tools-examples/webapp",
+        "target": "@kie-tools/dmn-editor-standalone",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/webapp",
         "target": "@kie-tools/kie-editors-standalone",
         "weight": 1
       },
       {
         "source": "@kie-tools-examples/webapp",
         "target": "@kie-tools/serverless-workflow-standalone-editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-editor-standalone",
+        "target": "@kie-tools/dmn-editor-envelope",
         "weight": 1
       },
       {
@@ -642,6 +653,16 @@
       {
         "source": "@kie-tools/serverless-workflow-standalone-editor",
         "target": "@kie-tools/serverless-workflow-combined-editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-editor-envelope",
+        "target": "@kie-tools-core/editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-editor-envelope",
+        "target": "@kie-tools/dmn-editor",
         "weight": 1
       },
       {
@@ -1452,16 +1473,6 @@
       {
         "source": "@kie-tools/dmn-editor",
         "target": "@kie-tools/pmml-editor-marshaller",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/dmn-editor-envelope",
-        "target": "@kie-tools-core/editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/dmn-editor-envelope",
-        "target": "@kie-tools/dmn-editor",
         "weight": 1
       },
       {
@@ -2417,6 +2428,7 @@
     ["@kie-tools/dev-deployment-upload-service", "packages/dev-deployment-upload-service"],
     ["@kie-tools/dmn-editor", "packages/dmn-editor"],
     ["@kie-tools/dmn-editor-envelope", "packages/dmn-editor-envelope"],
+    ["@kie-tools/dmn-editor-standalone", "packages/dmn-editor-standalone"],
     ["@kie-tools/dmn-feel-antlr4-parser", "packages/dmn-feel-antlr4-parser"],
     ["@kie-tools/dmn-language-service", "packages/dmn-language-service"],
     ["@kie-tools/dmn-marshaller", "packages/dmn-marshaller"],

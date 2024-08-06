@@ -31,4 +31,5 @@ export interface RuntimeToolsDevUIEnvelopeViewApi {
   setOmittedWorkflowTimelineEvents: (omittedWorkflowTimelineEvents: string[]) => void;
   setDiagramPreviewSize: (diagramPreviewSize?: DiagramPreviewSize) => void;
   setIsStunnerEnabled: (isStunnerEnabled: boolean) => void;
+  setIsLocalCluster: (isLocalCluster: boolean) => void;
 }

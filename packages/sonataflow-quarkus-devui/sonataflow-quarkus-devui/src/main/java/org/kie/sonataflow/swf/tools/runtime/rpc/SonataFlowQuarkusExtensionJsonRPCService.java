@@ -43,9 +43,13 @@ public class SonataFlowQuarkusExtensionJsonRPCService {
 
     public static final String ALL_WORKFLOWS_IDS_QUERY = "{ \"operationName\": \"getAllProcessesIds\", \"query\": \"query getAllProcessesIds{  ProcessInstances{ id } }\" }";
 
+    public static final String IS_LOCAL_CLUSTER = "sonataflow.devui.isLocalCluster";
+
     private WebClient dataIndexWebClient;
 
     private final Vertx vertx;
+
+    private boolean isLocalCluster;
 
     @Inject
     public SonataFlowQuarkusExtensionJsonRPCService(Vertx vertx) {
@@ -54,8 +58,11 @@ public class SonataFlowQuarkusExtensionJsonRPCService {
 
     @PostConstruct
     public void init() {
-        Optional<String> dataIndexURL = ConfigProvider.getConfig().getOptionalValue(DATA_INDEX_URL, String.class);
-        dataIndexURL.ifPresent(this::initDataIndexWebClient);
+        isLocalCluster = ConfigProvider.getConfig().getOptionalValue(IS_LOCAL_CLUSTER, Boolean.class).orElse(false);
+        if (!isLocalCluster) {
+            Optional<String> dataIndexURL = ConfigProvider.getConfig().getOptionalValue(DATA_INDEX_URL, String.class);
+            dataIndexURL.ifPresent(this::initDataIndexWebClient);
+        }
     }
 
     private void initDataIndexWebClient(String dataIndexURL) {
@@ -79,6 +86,10 @@ public class SonataFlowQuarkusExtensionJsonRPCService {
     }
 
     private Uni<String> doQuery(String query, String graphModelName) {
+        if (isLocalCluster) {
+            LOGGER.info("Workflows count in the Workflows card is disabled for local cluster mode");
+            return Uni.createFrom().item("-");
+        }
         if(dataIndexWebClient == null) {
             LOGGER.warn("Cannot perform '{}' query, dataIndexWebClient couldn't be set. Is DataIndex correctly? Please verify '{}' value", graphModelName, DATA_INDEX_URL);
             return Uni.createFrom().item("-");
