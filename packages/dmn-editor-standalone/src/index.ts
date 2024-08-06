@@ -17,6 +17,9 @@
  * under the License.
  */
 
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference path="./global.d.ts" /> // Required for bundling types
+
 import dmnEnvelopeJs from "../dist/envelope.js";
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
 import { DmnEditorStandaloneChannelApiImpl, DmnEditorStandaloneResource } from "./DmnEditorStandaloneChannelApiImpl";
