@@ -62,7 +62,7 @@ export class BuiltInTypes {
       ["minute", BuiltInTypes.Number],
       ["second", BuiltInTypes.Number],
       ["time offset", BuiltInTypes.DaysAndTimeDuration],
-      ["timezone", BuiltInTypes.Number],
+      ["timezone", BuiltInTypes.String],
     ]),
   };
 
