@@ -133,7 +133,7 @@ Feature: Serverless Workflow devmode images
     Then check that page is served
       | property             | value                                                              |
       | port                 | 8080                                                               |
-      | path                 | /q/dev-v1/org.kie.kogito-addons-quarkus-data-index-inmemory/dataindex |
+      | path                 | /q/dev-ui/org.kie.kogito-addons-quarkus-data-index-inmemory/data-index-graphql-ui |
       | request_method       | GET                                                                |
       | wait                 | 480                                                                |
       | expected_status_code | 200                                                                |
