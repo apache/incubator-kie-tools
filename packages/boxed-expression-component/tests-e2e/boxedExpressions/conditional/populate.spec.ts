@@ -21,25 +21,28 @@ import _ from "lodash";
 import { test, expect } from "../../__fixtures__/base";
 
 test.describe("Populate Boxed Conditional", () => {
-  test("should rename a Conditional", async ({ page, stories }) => {
+  test("should rename a Conditional", async ({ bee, stories }) => {
     await stories.openBoxedConditional();
 
-    await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Conditional Expression Name");
-    await page.keyboard.press("Enter");
+    await bee.expression.asConditional().expressionHeaderCell.open();
+    await bee.expression
+      .asConditional()
+      .expressionHeaderCell.setName({ name: "Conditional Expression Name", close: true });
 
-    await expect(page.getByRole("columnheader", { name: "Conditional Expression Name (<Undefined>)" })).toBeVisible();
+    expect(await bee.expression.asConditional().expressionHeaderCell.content.textContent()).toEqual(
+      "Conditional Expression Name(<Undefined>)"
+    );
   });
 
-  test("should change a Conditional data type", async ({ page, stories }) => {
+  test("should change a Conditional data type", async ({ bee, stories }) => {
     await stories.openBoxedConditional();
 
-    await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "boolean" }).click();
-    await page.keyboard.press("Enter");
+    await bee.expression.asConditional().expressionHeaderCell.open();
+    await bee.expression.asConditional().expressionHeaderCell.setDataType({ dataType: "boolean", close: true });
 
-    await expect(page.getByRole("columnheader", { name: "Expression Name (boolean)" })).toBeVisible();
+    expect(await bee.expression.asConditional().expressionHeaderCell.content.textContent()).toEqual(
+      "Expression Name(boolean)"
+    );
   });
 
   test("should create the Monthly Fee Conditional", async ({ stories }) => {
