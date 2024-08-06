@@ -47,10 +47,18 @@ export class ShapeProperties {
     const height = await this.panel
       .getByTestId("kie-tools--dmn-editor--properties-panel-node-shape-height-input")
       .inputValue();
+    const x = await this.panel
+      .getByTestId("kie-tools--dmn-editor--properties-panel-node-shape-x-input")
+      .locator("input")
+      .inputValue();
+    const y = await this.panel
+      .getByTestId("kie-tools--dmn-editor--properties-panel-node-shape-y-input")
+      .locator("input")
+      .inputValue();
 
     await this.panel.getByTitle("Expand / collapse Shape").click();
 
-    return { width: width, height: height };
+    return { width: width, height: height, x: x, y: y };
   }
 
   public async resetShape() {

@@ -102,7 +102,11 @@ export function Palette({ pulse }: { pulse: boolean }) {
   return (
     <>
       <RF.Panel position={"top-left"}>
-        <aside className={"kie-dmn-editor--drd-selector"} style={{ position: "relative" }}>
+        <aside
+          data-testid={"kie-tools--dmn-editor--drd-selector"}
+          className={"kie-dmn-editor--drd-selector"}
+          style={{ position: "relative" }}
+        >
           <div ref={drdSelectorPopoverRef} style={{ position: "absolute", left: "56px", height: "100%", zIndex: -1 }} />
           <InlineFeelNameInput
             validate={() => true}
@@ -221,7 +225,11 @@ export function Palette({ pulse }: { pulse: boolean }) {
         <br />
         <aside className={"kie-dmn-editor--drg-panel-toggle"}>
           {diagram.openLhsPanel === DiagramLhsPanel.DRG_NODES && (
-            <div className={"kie-dmn-editor--palette-nodes-popover"} style={{ maxHeight }}>
+            <div
+              data-testid={"kie-tools--dmn-editor--palette-nodes-popover"}
+              className={"kie-dmn-editor--palette-nodes-popover"}
+              style={{ maxHeight }}
+            >
               <DrgNodesPanel />
             </div>
           )}
