@@ -35,7 +35,6 @@
   <name>KIE Soup Dataset Core</name>
 
   <dependencies>
-
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
@@ -92,7 +91,5 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
-
 </project>

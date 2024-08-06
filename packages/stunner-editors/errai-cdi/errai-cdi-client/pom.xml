@@ -180,7 +180,5 @@
       <artifactId>junit</artifactId>
       <scope>provided</scope>
     </dependency>
-
   </dependencies>
-
 </project>

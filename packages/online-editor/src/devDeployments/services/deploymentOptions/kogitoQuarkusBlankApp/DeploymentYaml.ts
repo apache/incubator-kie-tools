@@ -50,6 +50,9 @@ spec:
         - name: \${{ devDeployment.uniqueName }}
           image: ${args.kogitoQuarkusBlankAppImageUrl}
           imagePullPolicy: ${args.imagePullPolicy}
+          resources:
+            limits:
+              memory: "2048Mi"
           ports:
             - containerPort: 8080
               protocol: TCP

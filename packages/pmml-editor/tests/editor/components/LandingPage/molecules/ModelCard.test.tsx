@@ -48,9 +48,9 @@ describe("ModelCard", () => {
     expect(element).toBeInstanceOf(HTMLButtonElement);
 
     (element as HTMLButtonElement).click();
-    expect(onDelete).toBeCalledTimes(1);
-    expect(onDelete).toBeCalledWith(0);
-    expect(onClick).not.toBeCalled();
+    expect(onDelete).toHaveBeenCalledTimes(1);
+    expect(onDelete).toHaveBeenCalledWith(0);
+    expect(onClick).not.toHaveBeenCalled();
   });
 
   test("Click::click", () => {
@@ -65,8 +65,8 @@ describe("ModelCard", () => {
     expect(element).toBeInstanceOf(HTMLElement);
 
     (element as HTMLElement).click();
-    expect(onClick).toBeCalledTimes(1);
-    expect(onClick).toBeCalledWith(0);
-    expect(onDelete).not.toBeCalled();
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(onClick).toHaveBeenCalledWith(0);
+    expect(onDelete).not.toHaveBeenCalled();
   });
 });

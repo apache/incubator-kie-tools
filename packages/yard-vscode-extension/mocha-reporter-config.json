@@ -2,12 +2,12 @@
   "reporterEnabled": "mocha-jenkins-reporter, mocha-junit-reporter",
   "mochaJenkinsReporterReporterOptions": {
     "junit_report_name": "@kie-tools/yard-vscode-extension",
-    "junit_report_path": "./dist-e2e-tests/junit-vscode-yard-tooling-e2e-tests.xml",
+    "junit_report_path": "./dist-tests-e2e/junit-vscode-yard-tooling-e2e-tests.xml",
     "junit_report_stack": 0
   },
   "mochaJunitReporterReporterOptions": {
     "testsuitesTitle": "YARD :: VS Code Extension",
-    "mochaFile": "./dist-e2e-tests/junit-report-[hash].xml",
+    "mochaFile": "./dist-tests-e2e/junit-report-[hash].xml",
     "testCaseSwitchClassnameAndName": true,
     "suiteTitleSeparatedBy": ".",
     "useFullSuiteTitle": true

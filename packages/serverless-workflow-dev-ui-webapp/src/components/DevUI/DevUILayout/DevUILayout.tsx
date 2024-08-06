@@ -34,32 +34,34 @@ import { WorkflowFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp
 import CustomDashboardListContextProvider from "../../../channel/CustomDashboardList/CustomDashboardListContextProvider";
 import { CustomDashboardViewContextProvider } from "../../../channel/CustomDashboardView";
 import { CloudEventFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventForm";
-import { WorkflowDefinitionListContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionList";
+import { WorkflowDefinitionListContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionList";
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
-  isWorkflowEnabled: boolean;
+  availablePages?: string[];
   children: React.ReactElement;
   devUIUrl: string;
+  diagramPreviewSize?: DiagramPreviewSize;
+  isLocalCluster?: boolean;
+  isStunnerEnabled: boolean;
+  isWorkflowEnabled: boolean;
+  omittedWorkflowTimelineEvents?: string[];
   openApiBaseUrl: string;
   openApiPath: string;
-  availablePages?: string[];
-  omittedWorkflowTimelineEvents?: string[];
-  diagramPreviewSize?: DiagramPreviewSize;
-  isStunnerEnabled: boolean;
 }
 
 const DevUILayout: React.FC<IOwnProps> = ({
   apolloClient,
-  isWorkflowEnabled: isWorkflowEnabled,
+  availablePages,
+  children,
   devUIUrl,
+  diagramPreviewSize,
+  isLocalCluster,
+  isStunnerEnabled,
+  isWorkflowEnabled: isWorkflowEnabled,
+  omittedWorkflowTimelineEvents,
   openApiBaseUrl,
   openApiPath,
-  availablePages,
-  omittedWorkflowTimelineEvents,
-  diagramPreviewSize,
-  isStunnerEnabled,
-  children,
 }) => {
   const renderPage = (routeProps: { location: { pathname: string } }) => {
     return (
@@ -72,24 +74,25 @@ const DevUILayout: React.FC<IOwnProps> = ({
   return (
     <ApolloProvider client={apolloClient}>
       <DevUIAppContextProvider
+        availablePages={availablePages!}
         devUIUrl={devUIUrl}
+        diagramPreviewSize={diagramPreviewSize!}
+        isLocalCluster={isLocalCluster}
+        isStunnerEnabled={isStunnerEnabled}
+        isWorkflowEnabled={isWorkflowEnabled}
+        omittedWorkflowTimelineEvents={omittedWorkflowTimelineEvents!}
         openApiBaseUrl={openApiBaseUrl}
         openApiPath={openApiPath}
-        isWorkflowEnabled={isWorkflowEnabled}
-        availablePages={availablePages!}
-        omittedWorkflowTimelineEvents={omittedWorkflowTimelineEvents!}
-        diagramPreviewSize={diagramPreviewSize!}
-        isStunnerEnabled={isStunnerEnabled}
       >
         <WorkflowListContextProviderWithApolloClient apolloClient={apolloClient}>
           <WorkflowDetailsContextProviderWithApolloClient apolloClient={apolloClient}>
-            <WorkflowDefinitionListContextProvider kogitoServiceUrl={`${openApiBaseUrl}`}>
+            <WorkflowDefinitionListContextProviderWithApolloClient apolloClient={apolloClient}>
               <FormsListContextProvider>
                 <CustomDashboardListContextProvider>
                   <CustomDashboardViewContextProvider>
                     <FormDetailsContextProvider>
-                      <WorkflowFormContextProvider kogitoServiceUrl={`${openApiBaseUrl}`}>
-                        <CloudEventFormContextProvider kogitoServiceUrl={`${openApiBaseUrl}`}>
+                      <WorkflowFormContextProvider>
+                        <CloudEventFormContextProvider>
                           <MemoryRouter>
                             <Switch>
                               <Route path="/" render={renderPage} />
@@ -101,7 +104,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
                   </CustomDashboardViewContextProvider>
                 </CustomDashboardListContextProvider>
               </FormsListContextProvider>
-            </WorkflowDefinitionListContextProvider>
+            </WorkflowDefinitionListContextProviderWithApolloClient>
           </WorkflowDetailsContextProviderWithApolloClient>
         </WorkflowListContextProviderWithApolloClient>
       </DevUIAppContextProvider>

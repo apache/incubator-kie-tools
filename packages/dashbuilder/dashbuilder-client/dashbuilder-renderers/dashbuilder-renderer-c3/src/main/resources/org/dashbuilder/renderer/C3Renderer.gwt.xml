@@ -29,5 +29,4 @@
   <inherits name="org.gwtbootstrap3.GwtBootstrap3NoTheme" />
 
   <source path='c3' />
-
 </module>

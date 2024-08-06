@@ -152,30 +152,22 @@ def pushObject(String remote, String object, String credentialsId) {
 */
 def getRepoSlug(String url) {
     tokens = url.tokenize('/')
-    org = tokens[tokens.size()-4]
-    repo = tokens[tokens.size()-3]
+    org = tokens[tokens.size() - 4]
+    repo = tokens[tokens.size() - 3]
 
     return "${org}/${repo}"
 }
 
 /**
-* @return the files changed in the last commit
-*/
-def getChangesetLastCommit() {
-    changeset = sh returnStdout: true, script: '''
-    git diff --name-only HEAD HEAD~1
-    '''.trim()
-
-    return changeset
-}
-
-/**
 * @return if a given file is in the changeset of the last commit
 */
-def fileIsInChangeset(String file) {
-    changeset = getChangesetLastCommit()
+def fileIsInChangeset(String branch, String file) {
+    changeset = sh returnStdout: true, script: """
+    git checkout ${branch}
+    git diff --name-only HEAD HEAD~1
+    """.trim()
 
     return changeset.contains(file)
 }
 
-return this;
+return this

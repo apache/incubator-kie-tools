@@ -40,6 +40,7 @@ import { AuthSessionsContextProvider } from "./authSessions/AuthSessionsContext"
 import { AccountsContextProvider } from "./accounts/AccountsContext";
 import { GlobalAlertsContextProvider } from "./alerts";
 import { WorkspacesContextProviderWithCustomCommitMessagesModal } from "./workspace/components/WorkspacesContextProviderWithCustomCommitMessagesModal";
+import { StartupBlockerProvider } from "./workspace/startupBlockers/StartupBlockerProvider";
 
 export function App() {
   return (
@@ -47,6 +48,7 @@ export function App() {
       {nest(
         [OnlineI18nContextProvider, {}],
         [EnvContextProvider, {}],
+        [StartupBlockerProvider, {}],
         [EditorEnvelopeLocatorContextProvider, {}],
         [SettingsContextProvider, {}],
         [ExtendedServicesContextProvider, {}],
@@ -102,7 +104,10 @@ function RoutesSwitch() {
 }
 
 function nest(...components: Array<[(...args: any[]) => any, object]>) {
-  return components.reduceRight((acc, [Component, props]) => {
-    return <Component {...props}>{acc}</Component>;
-  }, <></>);
+  return components.reduceRight(
+    (acc, [Component, props]) => {
+      return <Component {...props}>{acc}</Component>;
+    },
+    <></>
+  );
 }

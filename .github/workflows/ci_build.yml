@@ -60,12 +60,12 @@ jobs:
       - name: "Setup pnpm"
         uses: pnpm/action-setup@v3
         with:
-          version: 8.7.0
+          version: 9.3.0
 
       - name: "Setup Node"
         uses: actions/setup-node@v4
         with:
-          node-version: 18.20.2
+          node-version: 20.14.0
 
       - name: "Setup CI patterns"
         id: ci_patterns
@@ -87,7 +87,7 @@ jobs:
             --partition='./.github/supporting-files/ci/partitions/partition0.txt' \
             --partition='./.github/supporting-files/ci/partitions/partition1.txt'
 
-          npm -g uninstall bun 
+          npm -g uninstall bun
 
           echo "mode=$(jq --raw-output '.[${{ matrix.partition }}].mode' /tmp/partitions.json)" >> $GITHUB_OUTPUT
           echo "bootstrapPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].bootstrapPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT

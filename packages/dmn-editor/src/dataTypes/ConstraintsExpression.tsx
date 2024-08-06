@@ -112,7 +112,11 @@ export function ConstraintsExpression({
       >
         {isReadonly &&
           (value ? (
-            <span className="editable-cell-value pf-u-text-break-word" dangerouslySetInnerHTML={{ __html: preview }} />
+            <span
+              data-testid={"kie-tools--dmn-editor--readonly-expression-constraint-with-value"}
+              className="editable-cell-value pf-u-text-break-word"
+              dangerouslySetInnerHTML={{ __html: preview }}
+            />
           ) : (
             <p style={{ fontStyle: "italic" }}>{`<None>`}</p>
           ))}

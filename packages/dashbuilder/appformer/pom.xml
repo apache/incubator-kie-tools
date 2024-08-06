@@ -22,7 +22,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 >
-
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.dashbuilder</groupId>
@@ -30,7 +29,6 @@
     <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-
 
   <groupId>org.uberfire</groupId>
   <artifactId>uberfire-parent</artifactId>
@@ -120,22 +118,6 @@
       with dashbuilder-validator module -->
     <version.javax.validation>1.0.0.GA</version.javax.validation>
   </properties>
-
-  <repositories>
-    <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
 
   <build>
     <pluginManagement>
@@ -379,7 +361,6 @@
           </configuration>
         </plugin>
       </plugins>
-
     </pluginManagement>
 
     <plugins>
@@ -778,7 +759,6 @@
         <scope>test</scope>
       </dependency>
 
-
       <!-- INDEXING -->
       <dependency>
         <groupId>io.netty</groupId>
@@ -1011,7 +991,6 @@
         <scope>test</scope>
       </dependency>
 
-
       <!-- ARQUILLIAN -->
 
       <dependency>
@@ -1057,7 +1036,6 @@
         <artifactId>assertj-core</artifactId>
         <version>${version.org.assertj}</version>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
 
@@ -1090,11 +1068,8 @@
         </exclusion>
       </exclusions>
     </dependency>
-
-
   </dependencies>
 
   <!-- DistributionManagement is inherited from org.jboss:jboss-parent -->
   <!-- <distributionManagement/> -->
-
 </project>

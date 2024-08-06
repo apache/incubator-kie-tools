@@ -57,9 +57,10 @@ import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 import { addTopLevelItemDefinition as _addTopLevelItemDefinition } from "../mutations/addTopLevelItemDefinition";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { Normalized } from "../normalization/normalize";
 
 export type DataType = {
-  itemDefinition: DMN15__tItemDefinition;
+  itemDefinition: Normalized<DMN15__tItemDefinition>;
   parentId: string | undefined;
   parents: Set<string>;
   index: number;
@@ -70,16 +71,20 @@ export type DataType = {
 export type DataTypeTreeViewDataItem = {};
 export type DataTypeIndex = Map<string, DataType>;
 
-export type AddItemComponent = (id: string, how: "unshift" | "push", partial?: Partial<DMN15__tItemDefinition>) => void;
-export type AddTopLevelItemDefinition = (partial: Partial<DMN15__tItemDefinition>) => void;
+export type AddItemComponent = (
+  id: string,
+  how: "unshift" | "push",
+  partial?: Partial<Normalized<DMN15__tItemDefinition>>
+) => void;
+export type AddTopLevelItemDefinition = (partial: Partial<Normalized<DMN15__tItemDefinition>>) => void;
 
 export type EditItemDefinition = (
   id: string,
   consumer: (
-    itemDefinition: DMN15__tItemDefinition,
-    items: DMN15__tItemDefinition[],
+    itemDefinition: Normalized<DMN15__tItemDefinition>,
+    items: Normalized<DMN15__tItemDefinition>[],
     index: number,
-    all: DMN15__tItemDefinition[],
+    all: Normalized<DMN15__tItemDefinition>[],
     state: State
   ) => void
 ) => void;
@@ -178,7 +183,12 @@ export function DataTypes() {
         <Drawer isExpanded={true} isInline={true} position={"left"} className={"kie-dmn-editor--data-types-container"}>
           <DrawerContent
             panelContent={
-              <DrawerPanelContent isResizable={true} minSize={"300px"} defaultSize={"400px"}>
+              <DrawerPanelContent
+                isResizable={true}
+                minSize={"300px"}
+                defaultSize={"400px"}
+                data-testid={"kie-tools--dmn-editor--data-types-list"}
+              >
                 <Flex
                   justifyContent={{ default: "justifyContentSpaceBetween" }}
                   alignItems={{ default: "alignItemsCenter" }}

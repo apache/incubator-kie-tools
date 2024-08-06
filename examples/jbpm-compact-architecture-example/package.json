@@ -1,0 +1,55 @@
+{
+  "private": true,
+  "name": "@kie-tools-examples/jbpm-compact-architecture-example",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "scripts": {
+    "build": "run-script-os",
+    "build:darwin:linux": "mvn clean install -P container",
+    "build:dev": "run-script-if --bool \"$(build-env examples.build)\" --then run-script-os",
+    "build:dev:darwin:linux": "mvn clean compile -DskipTests",
+    "build:dev:win32": "pnpm powershell \"mvn clean compile `-DskipTests \"",
+    "build:prod": "pnpm lint && run-script-if --bool \"$(build-env examples.build)\" --then run-script-os",
+    "build:prod:darwin:linux": "mvn clean compile -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -Pcontainer",
+    "build:prod:win32": "pnpm powershell \"mvn clean compile `-DskipTests `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-Pcontainer \"",
+    "install": "node install.js",
+    "lint": "echo 'Linting'",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "quarkus:dev": "run-script-os",
+    "quarkus:dev:darwin:linux": "mvn clean package quarkus:dev -DskipTests -Pdevelopment",
+    "quarkus:dev:win32": "mvn clean package quarkus:dev `-DskipTests `-Pdevelopment",
+    "run": "run-script-os",
+    "run:darwin:linux": "cd ./docker-compose && sh startServices.sh",
+    "start": "run-script-os",
+    "start:darwin:linux": "pnpm run build && pnpm run run",
+    "start:win32": "echo Running full example ot supported in windows",
+    "stop": "run-script-os",
+    "stop:darwin:linux": "cd ./docker-compose && docker compose down"
+  },
+  "dependencies": {
+    "@kie-tools/jbpm-quarkus-devui": "workspace:*",
+    "@kie-tools/maven-base": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/kogito-management-console": "workspace:*",
+    "@kie-tools/kogito-task-console": "workspace:*",
+    "@kie-tools/maven-config-setup-helper": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "run-script-os": "^1.1.6"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "java",
+      "mvn"
+    ]
+  }
+}

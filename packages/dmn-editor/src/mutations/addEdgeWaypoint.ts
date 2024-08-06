@@ -19,6 +19,7 @@
 
 import { DC__Point, DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { addOrGetDrd } from "./addOrGetDrd";
+import { Normalized } from "../normalization/normalize";
 
 export function addEdgeWaypoint({
   definitions,
@@ -27,7 +28,7 @@ export function addEdgeWaypoint({
   beforeIndex,
   waypoint,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   edgeIndex: number;
   beforeIndex: number;

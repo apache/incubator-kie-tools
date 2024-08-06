@@ -35,6 +35,7 @@ import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/c
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { Normalized } from "../normalization/normalize";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE = "kie-dmn-editor--drg-node";
 
@@ -49,10 +50,13 @@ export function DrgNodesPanel() {
 
   const namespaceForHref = ""; // That's the default namespace.
 
-  const onDragStart = useCallback((event: React.DragEvent, drgElement: Unpacked<DMN15__tDefinitions["drgElement"]>) => {
-    event.dataTransfer.setData(MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE, JSON.stringify(drgElement));
-    event.dataTransfer.effectAllowed = "move";
-  }, []);
+  const onDragStart = useCallback(
+    (event: React.DragEvent, drgElement: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]>) => {
+      event.dataTransfer.setData(MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE, JSON.stringify(drgElement));
+      event.dataTransfer.effectAllowed = "move";
+    },
+    []
+  );
 
   const containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn = useMemo(
     () =>

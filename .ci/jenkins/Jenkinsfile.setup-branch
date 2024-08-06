@@ -20,7 +20,7 @@
 pipeline {
     agent {
         docker {
-            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
             label util.avoidFaultyNodes()
         }
@@ -31,7 +31,7 @@ pipeline {
     }
 
     parameters {
-        string(name: 'CHECKOUT_BRANCH_NAME', defaultValue: 'main' description: 'Set the Git branch to checkout', trim: true)
+        string(name: 'CHECKOUT_BRANCH_NAME', defaultValue: 'main', description: 'Set the Git branch to checkout', trim: true)
         string(name: 'NEW_BRANCH_NAME', description: 'Set the Git branch to be created', trim: true)
         string(name: 'KIE_TOOLS_VERSION', description: 'KIE Tools version to set', trim: true)
         string(name: 'KOGITO_MAVEN_VERSION', description: 'Kogito maven version to set', trim: true)
@@ -145,12 +145,22 @@ pipeline {
             }
         }
 
+        stage('Update stream name') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmUpdateStreamName(params.NEW_BRANCH_NAME)
+                    }
+                }
+            }
+        }
+
         stage('Replace CI image tag') {
             steps {
                 dir('kie-tools/.ci/jenkins') {
                     script {
                         sh """#!/bin/bash -el
-                        find . -type f -name 'Jenkinsfile.*' -exec sed -E -i "s%(kie-tools-ci-build:).*%\1${params.KIE_TOOLS_VERSION}% {} \;"
+                        find . -type f -name 'Jenkinsfile.*' -exec sed -E -i "s%(incubator-kie-tools-ci-build:).*%\\1${params.KIE_TOOLS_VERSION}'%" {} \\;
                         """.trim()
                     }
                 }

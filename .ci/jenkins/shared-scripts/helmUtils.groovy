@@ -18,12 +18,16 @@
 /**
 * Push a Helm Chart to a given registry
 */
-def pushChartToRegistry(String registry, String chart, String credentialsId) {
-    withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PWD')]) {
-        sh "set +x && helm registry login -u $REGISTRY_USER -p $REGISTRY_PWD $registry"
-        sh "helm push ${chart} oci://${registry}"
-        sh "helm registry logout ${registry}"
+def pushChartToRegistry(String registry, String account, String chart, String userCredentialsId, String tokenCredentialsId) {
+    withCredentials([string(credentialsId: userCredentialsId, variable: 'REGISTRY_USER')]) {
+        withCredentials([string(credentialsId: tokenCredentialsId, variable: 'REGISTRY_TOKEN')]) {
+            sh """
+            echo "${REGISTRY_TOKEN}" | helm registry login -u "${REGISTRY_USER}" --password-stdin $registry
+            helm push ${chart} oci://${registry}/${account}
+            helm registry logout ${registry}
+            """.trim()
+        }
     }
 }
 
-return this;
+return this

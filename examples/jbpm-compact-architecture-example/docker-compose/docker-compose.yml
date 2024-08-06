@@ -1,0 +1,123 @@
+version: "3"
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:16.1-alpine3.19
+    profiles: ["infra", "example", "full"]
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d:Z
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "kogito", "-U", "kogito-user"]
+      timeout: 45s
+      interval: 10s
+      retries: 50
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:8.2
+    profiles: ["infra", "example", "full"]
+    ports:
+      - 8055:80
+    depends_on:
+      - postgres
+    volumes:
+      - ./pgadmin/servers.json:/pgadmin4/servers.json
+      - ./pgadmin/pgpass:/pgadmin4/pgpass
+    entrypoint: >
+      /bin/sh -c "
+      cp -f /pgadmin4/pgpass /var/lib/pgadmin/;
+      chmod 600 /var/lib/pgadmin/pgpass;
+      /entrypoint.sh
+      "
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@kogito.org
+      PGADMIN_DEFAULT_PASSWORD: pass
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+      GUNICORN_ACCESS_LOGFILE: "/dev/null"
+
+  jbpm-compact-architecture-example-service:
+    container_name: jbpm-compact-architecture-example-service
+    image: dev.local/${USER}/jbpm-compact-architecture-example-service:${PROJECT_VERSION}
+    profiles: ["example", "full"]
+    ports:
+      - "8080:8080"
+    environment:
+      QUARKUS_HTTP_CORS_ORIGINS: "/.*/"
+      QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://postgres:5432/kogito"
+      QUARKUS_DATASOURCE_REACTIVE_URL: "postgresql://postgres:5432/kogito"
+      QUARKUS_DATASOURCE_USERNAME: kogito-user
+      QUARKUS_DATASOURCE_PASSWORD: kogito-pass
+      QUARKUS_DATASOURCE_DB_KIND: postgresql
+      KOGITO_JOBS_SERVICE_URL: http://${DOCKER_GATEWAY_HOST}:8080
+      KOGITO_SERVICE_URL: http://${DOCKER_GATEWAY_HOST}:8080
+      KOGITO_DATAINDEX_HTTP_URL: http://${DOCKER_GATEWAY_HOST}:8080
+    extra_hosts:
+      - "${DOCKER_GATEWAY_HOST}:host-gateway"
+
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:legacy
+    profiles: ["full"]
+    ports:
+      - "8480:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./keycloak/kogito-realm.json:/tmp/kogito-realm.json
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/auth/realms/kogito"]
+      interval: 2s
+      timeout: 1s
+      retries: 50
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: kogito-user
+      DB_SCHEMA: public
+      DB_PASSWORD: kogito-pass
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_IMPORT: /tmp/kogito-realm.json
+
+  management-console:
+    container_name: management-console
+    image: ${KOGITO_MANAGEMENT_CONSOLE_IMAGE}
+    profiles: ["full"]
+    ports:
+      - 8280:8080
+    depends_on:
+      jbpm-compact-architecture-example-service:
+        condition: service_started
+    volumes:
+      - ./svg/:/home/kogito/data/svg/
+    environment:
+      RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE: "DEV"
+      RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT: http://${DOCKER_GATEWAY_HOST:-host.docker.internal}:8080/graphql
+
+  task-console:
+    container_name: task-console
+    image: ${KOGITO_TASK_CONSOLE_IMAGE}
+    profiles: ["full"]
+    ports:
+      - 8380:8080
+    depends_on:
+      jbpm-compact-architecture-example-service:
+        condition: service_started
+      keycloak:
+        condition: service_healthy
+    environment:
+      RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_ENV_MODE: "PROD"
+      RUNTIME_TOOLS_TASK_CONSOLE_DATA_INDEX_ENDPOINT: http://${DOCKER_GATEWAY_HOST:-host.docker.internal}:8080/graphql
+      KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL: http://localhost:8480/auth/realms/kogito/.well-known/openid-configuration
+      KOGITO_CONSOLES_KEYCLOAK_URL: http://localhost:8480/auth
+      KOGITO_CONSOLES_KEYCLOAK_REALM: kogito
+      KOGITO_CONSOLES_KEYCLOAK_CLIENT_ID: kogito-console-quarkus

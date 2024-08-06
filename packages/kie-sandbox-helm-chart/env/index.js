@@ -19,23 +19,25 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+const rootEnv = require("@kie-tools/root-env/env");
+
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     KIE_SANDBOX_HELM_CHART__registry: {
-      default: "quay.io",
-      description: "",
+      default: "docker.io",
+      description: "E.g., `docker.io` or `quay.io`.",
     },
     KIE_SANDBOX_HELM_CHART__account: {
-      default: "kie-tools",
-      description: "",
+      default: "apache",
+      description: "E.g,. `apache` or `kie-tools-bot`",
     },
     KIE_SANDBOX_HELM_CHART__name: {
-      default: "kie-sandbox",
-      description: "",
+      default: "incubator-kie-sandbox-helm-chart",
+      description: "Name of the chart itself.",
     },
     KIE_SANDBOX_HELM_CHART__tag: {
-      default: require("../package.json").version,
-      description: "",
+      default: require("../package.json").version, // Needs to be SemVer, so we can't use rootEnv.env.root.streamName.
+      description: "Version of the Helm Chart. Needs to be SemVer-compatible.",
     },
   }),
   get env() {

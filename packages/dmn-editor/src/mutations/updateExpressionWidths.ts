@@ -19,13 +19,14 @@
 
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { addOrGetDrd } from "./addOrGetDrd";
+import { Normalized } from "../normalization/normalize";
 
 export function updateExpressionWidths({
   definitions,
   drdIndex,
   widthsById,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   widthsById: Map<string, number[]>;
 }): void {

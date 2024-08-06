@@ -17,7 +17,7 @@
 # under the License.
 
 debug/
-kogito-serverless-operator/
+sonataflow-operator/
 TODO.txt
 e2e-tests/temp-tests/
 dist-it-tests/

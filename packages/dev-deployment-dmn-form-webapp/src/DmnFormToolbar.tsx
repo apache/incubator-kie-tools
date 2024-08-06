@@ -64,8 +64,8 @@ export function DmnFormToolbar(props: Props) {
   const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
 
   const onOpenSwaggerUI = useCallback(() => {
-    window.open(routes.quarkusApp.swaggerUi.path({}, app.data?.baseOrigin, app.data?.basePath), "_blank");
-  }, [app.data?.baseOrigin, app.data?.basePath]);
+    window.open(routes.quarkusApp.swaggerUi.path({}, app.quarkusAppOrigin, app.quarkusAppPath), "_blank");
+  }, [app.quarkusAppOrigin, app.quarkusAppPath]);
 
   const openForm = useCallback(
     (modelName: string) => {
@@ -150,7 +150,7 @@ export function DmnFormToolbar(props: Props) {
             <TextContent>
               &nbsp;&nbsp;
               <Text component={TextVariants.small} style={{ display: "inline" }}>
-                <i>Dev deployments</i>
+                <i>Dev Deployments</i>
               </Text>
             </TextContent>
           </FlexItem>

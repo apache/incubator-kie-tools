@@ -1,8 +1,8 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "extends": "@kie-tools/tsconfig/tsconfig.esm.json",
   "compilerOptions": {
     "declaration": false,
-    "declarationMap": false
-  },
-  "include": ["src"]
+    "declarationMap": false,
+    "jsx": "react-jsx"
+  }
 }

@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { BoxedIterator } from "../../api";
+import { BoxedIterator, generateUuid, Normalized } from "../../api";
 import {
   NestedExpressionDispatchContextProvider,
   useBoxedExpressionEditorDispatch,
@@ -28,7 +28,7 @@ import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionConta
 import { IteratorClause } from "./IteratorExpressionComponent";
 
 export interface IteratorExpressionCellExpressionCellProps {
-  iteratorClause: IteratorClause;
+  iteratorClause: Normalized<IteratorClause>;
   rowIndex: number;
   columnIndex: number;
   columnId: string;
@@ -44,12 +44,13 @@ export function IteratorExpressionCell({
 
   const onSetExpression = useCallback(
     ({ getNewExpression }) => {
-      setExpression((prev: BoxedIterator) => {
+      setExpression((prev: Normalized<BoxedIterator>) => {
         switch (rowIndex) {
           case 1:
             return {
               ...prev,
               in: {
+                "@_id": generateUuid(),
                 expression: getNewExpression(prev.in.expression),
               },
             };
@@ -59,6 +60,7 @@ export function IteratorExpressionCell({
               return {
                 ...prev,
                 return: {
+                  "@_id": generateUuid(),
                   expression: getNewExpression(prev.return.expression),
                 },
               };
@@ -66,6 +68,7 @@ export function IteratorExpressionCell({
               return {
                 ...prev,
                 satisfies: {
+                  "@_id": generateUuid(),
                   expression: getNewExpression(prev.satisfies.expression),
                 },
               };

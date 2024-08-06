@@ -49,6 +49,6 @@ describe("AppFormerGwtApi", () => {
   });
 
   test("get non existing editor", () => {
-    expect(() => appFormerGwtApi.getEditor("X")).toThrowError();
+    expect(() => appFormerGwtApi.getEditor("X")).toThrow();
   });
 });

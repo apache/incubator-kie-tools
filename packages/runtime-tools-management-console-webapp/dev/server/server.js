@@ -109,23 +109,23 @@ data.ProcessInstanceData.forEach((datum) => {
     datum.diagram = null;
   }
   if (datum.processId !== null || datum.processId !== undefined) {
-    datum.nodeDefinitions = [
+    datum.nodes = [
       {
-        nodeDefinitionId: "_BDA56801-1155-4AF2-94D4-7DAADED2E3C0",
+        definitionId: "_BDA56801-1155-4AF2-94D4-7DAADED2E3C0",
         name: "Send visa application",
         id: 1,
         type: "ActionNode",
         uniqueId: "1",
       },
       {
-        nodeDefinitionId: "_175DC79D-C2F1-4B28-BE2D-B583DFABF70D",
+        definitionId: "_175DC79D-C2F1-4B28-BE2D-B583DFABF70D",
         name: "Book",
         id: 2,
         type: "Split",
         uniqueId: "2",
       },
       {
-        nodeDefinitionId: "_E611283E-30B0-46B9-8305-768A002C7518",
+        definitionId: "_E611283E-30B0-46B9-8305-768A002C7518",
         name: "visasrejected",
         id: 3,
         type: "EventNode",

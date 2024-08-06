@@ -28,51 +28,63 @@ pipeline {
     }
 
     environment {
-        BUILD_IMAGE_TAG = 'latest'
         BUILD_IMAGE_JOB_STATUS = 'SKIPPED'
+        DOCKER_CONFIG = "${WORKSPACE}/.docker"
     }
 
     stages {
         stage('Load local shared scripts') {
             steps {
                 script {
+                    dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
                     pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
                     githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
                 }
             }
         }
 
-        stage('Checkout Apache KIE Tools (Simulated squashed merge)') {
+        stage('Clean workspace before build') {
+            steps {
+                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Checkout kie-tools') {
+            steps {
+                dir('kie-tools') {
+                    checkout scm
+                }
+            }
+        }
+
+        stage('Check KIE Tools CI Image build is required') {
             steps {
                 dir('kie-tools') {
                     script {
-                        githubUtils.checkoutRepoSquashedMerge(
-                            env.CHANGE_AUTHOR,
-                            env.CHANGE_BRANCH,
-                            "https://github.com/${env.CHANGE_AUTHOR}/${pipelineVars.githubRepositoryName}.git",
-                            env.CHANGE_TARGET ?: env.BRANCH_NAME,
-                            "https://github.com/${pipelineVars.githubRepositoryOrg}/${pipelineVars.githubRepositoryName}.git",
-                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        BUILD_IMAGE_REQUIRED = (
+                            githubUtils.fileIsInChangeset("${env.BRANCH_NAME}", 'incubator-kie-tools-ci-build.Dockerfile')
+                            || !dockerUtils.checkImageExistsInRegistry(
+                                "${pipelineVars.kieToolsCiBuildImageRegistry}",
+                                "${pipelineVars.kieToolsCiBuildImageAccount}",
+                                "${pipelineVars.kieToolsCiBuildImageName}",
+                                "${env.BRANCH_NAME}",
+                                "${pipelineVars.dockerHubUserCredentialsId}",
+                                "${pipelineVars.dockerHubTokenCredentialsId}"
+                            )
                         )
-
-                        BUILD_IMAGE_REQUIRED = githubUtils.fileIsInChangeset('kie-tools-ci-build.Dockerfile')
                     }
                 }
             }
         }
 
-        stage('Image Build') {
+        stage('Trigger KIE Tools CI image build job') {
             when {
                 expression { BUILD_IMAGE_REQUIRED }
             }
             steps {
                 script {
-                    BUILD_IMAGE_TAG = "${env.GIT_COMMIT}"
                     BUILD_IMAGE_JOB_STATUS = build(
-                        job: "KIE/kie-tools/kie-tools-ci-jobs/kie-tools-ci-image-build/${BRANCH_NAME}",
-                        parameters: [
-                            string(name: 'IMAGE_TAG', value: "${env.GIT_COMMIT}")
-                        ]
+                        job: "KIE/kie-tools/kie-tools-ci-jobs/kie-tools-ci-image-build/${BRANCH_NAME}"
                     ).result
                 }
             }
@@ -87,10 +99,7 @@ pipeline {
                     steps {
                         script {
                             build(
-                                job: "KIE/kie-tools/kie-tools-ci-jobs/kie-tools-ci-build/${BRANCH_NAME}",
-                                parameters: [
-                                    string(name: 'IMAGE_TAG', value: "${BUILD_IMAGE_TAG}")
-                                ]
+                                job: "KIE/kie-tools/kie-tools-ci-jobs/kie-tools-ci-build/${BRANCH_NAME}"
                             )
                         }
                     }
@@ -100,10 +109,7 @@ pipeline {
                     steps {
                         script {
                             build(
-                                job: "KIE/kie-tools/kie-tools-ci-jobs/kie-tools-ci-check-dependencies/${BRANCH_NAME}",
-                                parameters: [
-                                    string(name: 'IMAGE_TAG', value: "${BUILD_IMAGE_TAG}")
-                                ]
+                                job: "KIE/kie-tools/kie-tools-ci-jobs/kie-tools-ci-check-dependencies/${BRANCH_NAME}"
                             )
                         }
                     }
@@ -113,10 +119,7 @@ pipeline {
                     steps {
                         script {
                             build(
-                                job: "KIE/kie-tools/kie-tools-ci-jobs/kie-tools-ci-check-code-formatting/${BRANCH_NAME}",
-                                parameters: [
-                                    string(name: 'IMAGE_TAG', value: "${BUILD_IMAGE_TAG}")
-                                ]
+                                job: "KIE/kie-tools/kie-tools-ci-jobs/kie-tools-ci-check-code-formatting/${BRANCH_NAME}"
                             )
                         }
                     }
@@ -126,10 +129,7 @@ pipeline {
                     steps {
                         script {
                             build(
-                                job: "KIE/kie-tools/kie-tools-ci-jobs/kie-tools-ci-check-code-quality/${BRANCH_NAME}",
-                                parameters: [
-                                    string(name: 'IMAGE_TAG', value: "${BUILD_IMAGE_TAG}")
-                                ]
+                                job: "KIE/kie-tools/kie-tools-ci-jobs/kie-tools-ci-check-code-quality/${BRANCH_NAME}"
                             )
                         }
                     }

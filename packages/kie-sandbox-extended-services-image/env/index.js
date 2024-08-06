@@ -19,33 +19,37 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-const extendedServicesJavaEnv = require("@kie-tools/extended-services-java/env");
+const rootEnv = require("@kie-tools/root-env/env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+const {
+  env: { extendedServicesJava: extendedServicesJavaEnv },
+} = require("@kie-tools/extended-services-java/env");
+
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     KIE_SANDBOX_EXTENDED_SERVICES__builderImage: {
-      default: "registry.access.redhat.com/ubi9/openjdk-17:1.18",
+      default: "registry.access.redhat.com/ubi9/openjdk-17:1.20",
       description: "The image used in the FROM import.",
     },
     KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry: {
-      default: "quay.io",
-      description: "",
+      default: "docker.io",
+      description: "E.g., `docker.io` or `quay.io`.",
     },
     KIE_SANDBOX_EXTENDED_SERVICES__imageAccount: {
-      default: "kie-tools",
-      description: "",
+      default: "apache",
+      description: "E.g,. `apache` or `kie-tools-bot`",
     },
     KIE_SANDBOX_EXTENDED_SERVICES__imageName: {
-      default: "kie-sandbox-extended-services-image",
-      description: "",
+      default: "incubator-kie-sandbox-extended-services",
+      description: "Name of the image itself.",
     },
-    KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags: {
-      default: "latest",
-      description: "",
+    KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTag: {
+      default: rootEnv.env.root.streamName,
+      description: "Tag version of this image. E.g., `main` or `10.0.x` or `10.0.0",
     },
     KIE_SANDBOX_EXTENDED_SERVICES__imagePort: {
-      default: extendedServicesJavaEnv.env.extendedServicesJava.port,
-      description: "",
+      default: extendedServicesJavaEnv.port,
+      description: "Internal HTTP port of the Extended Services app.",
     },
   }),
   get env() {
@@ -55,7 +59,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         registry: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry),
         account: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount),
         name: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageName),
-        buildTags: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags),
+        buildTag: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTag),
         port: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imagePort),
       },
     };

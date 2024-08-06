@@ -80,7 +80,7 @@ export function useDelayedPromiseState<T>(ms: number): [PromiseState<T>, (newSta
 
 export function usePromiseState<T>(): [
   PromiseState<T>,
-  (newState: NewStateArgs<T> | ((prevState: T | undefined) => NewStateArgs<T>)) => void
+  (newState: NewStateArgs<T> | ((prevState: T | undefined) => NewStateArgs<T>)) => void,
 ] {
   const [state, setState] = useState<PromiseState<T>>({ status: PromiseStateStatus.PENDING });
 

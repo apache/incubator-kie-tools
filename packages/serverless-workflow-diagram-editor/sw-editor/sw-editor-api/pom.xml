@@ -41,7 +41,6 @@
   </properties>
 
   <dependencies>
-
     <!-- Stunner. -->
 
     <dependency>
@@ -217,7 +216,5 @@
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>lienzo-core</artifactId>
     </dependency>
-
   </dependencies>
-
 </project>

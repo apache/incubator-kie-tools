@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { BoxedDecisionTable, DmnBuiltInDataType } from "../../../../../src/api";
+import { BoxedDecisionTable, DmnBuiltInDataType, Normalized } from "../../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   beeGwtService,
@@ -38,7 +38,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
-export const eligibilityExpression: BoxedDecisionTable = {
+export const eligibilityExpression: Normalized<BoxedDecisionTable> = {
   __$$element: "decisionTable",
   "@_id": "_830C9FEF-FA57-4245-8FFF-1E7F305F4536",
   "@_label": "Eligibility",

@@ -38,7 +38,10 @@ export const App = () => (
 );
 
 function nest(...components: Array<[(...args: any[]) => any, object]>) {
-  return components.reduceRight((acc, [Component, props]) => {
-    return <Component {...props}>{acc}</Component>;
-  }, <></>);
+  return components.reduceRight(
+    (acc, [Component, props]) => {
+      return <Component {...props}>{acc}</Component>;
+    },
+    <></>
+  );
 }

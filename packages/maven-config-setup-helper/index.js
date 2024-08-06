@@ -17,6 +17,7 @@
  * under the License.
  */
 
+const { execSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
@@ -24,6 +25,23 @@ const MVN_CONFIG_ORIGINAL_FILE_PATH = path.join(".mvn", "maven.config.original")
 const MVN_CONFIG_FILE_PATH = path.join(".mvn", "maven.config");
 
 module.exports = {
+  setPomProperty: ({ key, value }) => {
+    if (!key || !value) {
+      console.error("[maven-config-setup-helper] Wrong values provided");
+      process.exit(1);
+    }
+
+    if (process.platform === "win32") {
+      execSync(`mvn versions:set-property \`-Dproperty=${key} \`-DnewVersion=${value} \`-DgenerateBackupPoms=false`, {
+        stdio: "inherit",
+        shell: "powershell.exe",
+      });
+    } else {
+      execSync(`mvn versions:set-property -Dproperty=${key} -DnewVersion=${value} -DgenerateBackupPoms=false`, {
+        stdio: "inherit",
+      });
+    }
+  },
   setup: (mavenConfigString) => {
     let originalMvnConfigString;
     if (fs.existsSync(MVN_CONFIG_ORIGINAL_FILE_PATH)) {

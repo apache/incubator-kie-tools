@@ -26,7 +26,8 @@ import (
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
-	"github.com/apache/incubator-kie-tools/packages/kogito-serverless-operator/workflowproj"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
+	apimetadata "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 )
 
 type DeployUndeployCmdConfig struct {
@@ -42,6 +43,8 @@ type DeployUndeployCmdConfig struct {
 	SchemasDir                 string
 	CustomManifestsFileDir     string
 	DefaultDashboardsFolder    string
+	Profile                    string
+	Image                      string
 	SchemasFilesPath           []string
 	SpecsFilesPath             []string
 	SubFlowsFilesPath          []string
@@ -203,9 +206,17 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 		handler.AddResourceAt(filepath.Base(dashboardFile), metadata.DashboardsDefaultDirName, specIO)
 	}
 
+	if len(cfg.Profile) > 0 {
+		handler.Profile(apimetadata.ProfileType(cfg.Profile))
+	}
+
 	_, err = handler.AsObjects()
 	if err != nil {
 		return err
+	}
+
+	if cfg.Image != "" {
+		 handler.Image(cfg.Image)
 	}
 
 	err = handler.SaveAsKubernetesManifests(cfg.CustomGeneratedManifestDir)

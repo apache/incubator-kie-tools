@@ -19,90 +19,90 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-const buildEnv = require("@kie-tools/root-env/env");
+const rootEnv = require("@kie-tools/root-env/env");
 const extendedServicesImageEnv = require("@kie-tools/kie-sandbox-extended-services-image/env");
 const corsProxyImageEnv = require("@kie-tools/cors-proxy-image/env");
-const kieSandboxImageEnv = require("@kie-tools/kie-sandbox-image/env");
+const kieSandboxWebappImageEnv = require("@kie-tools/kie-sandbox-webapp-image/env");
 
-module.exports = composeEnv([buildEnv, extendedServicesImageEnv, corsProxyImageEnv, kieSandboxImageEnv], {
+module.exports = composeEnv([rootEnv, extendedServicesImageEnv, corsProxyImageEnv, kieSandboxWebappImageEnv], {
   vars: varsWithName({
     KIE_SANDBOX_DISTRIBUTION__kieSandboxImageRegistry: {
-      default: kieSandboxImageEnv.env.kieSandbox.image.registry,
-      description: "",
+      default: kieSandboxWebappImageEnv.env.kieSandboxWebappImage.registry,
+      description: "For the KIE Sandbox webapp image. E.g., `docker.io` or `quay.io`.",
     },
     KIE_SANDBOX_DISTRIBUTION__kieSandboxImageAccount: {
-      default: kieSandboxImageEnv.env.kieSandbox.image.account,
-      description: "",
+      default: kieSandboxWebappImageEnv.env.kieSandboxWebappImage.account,
+      description: "For the KIE Sandbox webapp image. E.g,. `apache` or `kie-tools-bot`",
     },
     KIE_SANDBOX_DISTRIBUTION__kieSandboxImageName: {
-      default: kieSandboxImageEnv.env.kieSandbox.image.name,
-      description: "",
+      default: kieSandboxWebappImageEnv.env.kieSandboxWebappImage.name,
+      description: "Name of the KIE Sandbox webapp image.",
     },
     KIE_SANDBOX_DISTRIBUTION__kieSandboxImageTag: {
-      default: kieSandboxImageEnv.env.kieSandbox.image.buildTags.split(" ")[0],
-      description: "",
+      default: kieSandboxWebappImageEnv.env.kieSandboxWebappImage.buildTag,
+      description: "Tag version of the KIE Sandbox webapp image. E.g., `main` or `10.0.x` or `10.0.0",
     },
     KIE_SANDBOX_DISTRIBUTION__kieSandboxContainerPort: {
-      default: kieSandboxImageEnv.env.kieSandbox.image.port,
-      description: "",
+      default: kieSandboxWebappImageEnv.env.kieSandboxWebappImage.port,
+      description: "Internal port in the KIE Sandbox webapp container.",
     },
     KIE_SANDBOX_DISTRIBUTION__kieSandboxExposedPort: {
       default: "9090",
-      description: "",
+      description: "Exposed port of the KIE Sandbox webapp container.",
     },
     KIE_SANDBOX_DISTRIBUTION__extendedServicesImageRegistry: {
       default: extendedServicesImageEnv.env.extendedServicesImage.registry,
-      description: "",
+      description: "For the Extended Services image. E.g., `docker.io` or `quay.io`.",
     },
     KIE_SANDBOX_DISTRIBUTION__extendedServicesImageAccount: {
       default: extendedServicesImageEnv.env.extendedServicesImage.account,
-      description: "",
+      description: "For the Extended Services image. E.g,. `apache` or `kie-tools-bot`",
     },
     KIE_SANDBOX_DISTRIBUTION__extendedServicesImageName: {
       default: extendedServicesImageEnv.env.extendedServicesImage.name,
-      description: "",
+      description: "Name of the of the Extended Services image.",
     },
     KIE_SANDBOX_DISTRIBUTION__extendedServicesImageTag: {
-      default: extendedServicesImageEnv.env.extendedServicesImage.buildTags.split(" ")[0],
-      description: "",
+      default: extendedServicesImageEnv.env.extendedServicesImage.buildTag,
+      description: "Tag version of the Extended Services image. E.g., `main` or `10.0.x` or `10.0.0",
     },
     KIE_SANDBOX_DISTRIBUTION__extendedServicesContainerPort: {
       default: "21345",
-      description: "",
+      description: "Internal HTTP port in the Extended Services container.",
     },
     KIE_SANDBOX_DISTRIBUTION__extendedServicesExposedPort: {
       default: "21345",
-      description: "",
+      description: "Exposed HTTP port of the Extended Services container.",
     },
     KIE_SANDBOX_DISTRIBUTION__corsProxyImageRegistry: {
       default: corsProxyImageEnv.env.corsProxyImage.image.registry,
-      description: "",
+      description: "For the CORS proxy image. E.g., `docker.io` or `quay.io`.",
     },
     KIE_SANDBOX_DISTRIBUTION__corsProxyImageAccount: {
       default: corsProxyImageEnv.env.corsProxyImage.image.account,
-      description: "",
+      description: "For the CORS proxy image. E.g,. `apache` or `kie-tools-bot`",
     },
     KIE_SANDBOX_DISTRIBUTION__corsProxyImageName: {
       default: corsProxyImageEnv.env.corsProxyImage.image.name,
-      description: "",
+      description: "Name of the CORS proxy image.",
     },
     KIE_SANDBOX_DISTRIBUTION__corsProxyImageTag: {
-      default: corsProxyImageEnv.env.corsProxyImage.image.buildTags.split(" ")[0],
-      description: "",
+      default: corsProxyImageEnv.env.corsProxyImage.image.buildTag,
+      description: "Tag version of the CORS proxy image. E.g., `main` or `10.0.x` or `10.0.0",
     },
     KIE_SANDBOX_DISTRIBUTION__corsProxyContainerPort: {
       default: corsProxyImageEnv.env.corsProxyImage.image.port,
-      description: "",
+      description: "Internal HTTP port in the CORS proxy container.",
     },
     KIE_SANDBOX_DISTRIBUTION__corsProxyExposedPort: {
       default: "7081",
-      description: "",
+      description: "Exposed HTTP port of the CORS proxy container.",
     },
   }),
   get env() {
     return {
       kieSandboxDistribution: {
-        kieSandbox: {
+        kieSandboxWebapp: {
           imageRegistry: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__kieSandboxImageRegistry),
           imageAccount: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__kieSandboxImageAccount),
           imageName: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__kieSandboxImageName),

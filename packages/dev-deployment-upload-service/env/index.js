@@ -19,11 +19,11 @@
 
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
-const buildEnv = require("@kie-tools/root-env/env");
+const rootEnv = require("@kie-tools/root-env/env");
 
 const version = require("../package.json").version;
 
-module.exports = composeEnv([buildEnv], {
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     DEV_DEPLOYMENT_UPLOAD_SERVICE__downloadPath: {
       default: `apache/incubator-kie-tools/releases/download/${version}`,
@@ -35,15 +35,15 @@ module.exports = composeEnv([buildEnv], {
     },
     DEV_DEPLOYMENT_UPLOAD_SERVICE__devFileServerPort: {
       default: 2340,
-      description: "",
+      description: "The host port for the fileserver container used during tests",
     },
     DEV_DEPLOYMENT_UPLOAD_SERVICE__devBuildTimeInstallPort: {
       default: 2341,
-      description: "",
+      description: "The host port for buildtime install test container",
     },
     DEV_DEPLOYMENT_UPLOAD_SERVICE__devRunTimeInstallPort: {
       default: 2342,
-      description: "",
+      description: "The host port for the runtime install test container",
     },
   }),
   get env() {

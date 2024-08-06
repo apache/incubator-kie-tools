@@ -46,6 +46,7 @@ export const Base: Story = {
       "@_typeRef": undefined,
       contextEntry: [
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "ContextEntry-1",
@@ -72,6 +73,7 @@ export const InstallmentCalculation: Story = {
       "@_typeRef": DmnBuiltInDataType.Number,
       contextEntry: [
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "Fee",
@@ -86,6 +88,7 @@ export const InstallmentCalculation: Story = {
           },
         },
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "Repayments",
@@ -100,6 +103,7 @@ export const InstallmentCalculation: Story = {
           },
         },
         {
+          "@_id": generateUuid(),
           // The result expression is a ContextEntry without variable
           expression: {
             __$$element: "literalExpression",
@@ -127,6 +131,7 @@ export const Customer: Story = {
       "@_typeRef": "tCustomer",
       contextEntry: [
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "Name",
@@ -141,6 +146,7 @@ export const Customer: Story = {
           },
         },
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "Age",
@@ -171,6 +177,7 @@ export const Nested: Story = {
       "@_label": "Expression Name",
       contextEntry: [
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "ContextEntry-1",
@@ -181,6 +188,7 @@ export const Nested: Story = {
             "@_label": "Expression Name",
             contextEntry: [
               {
+                "@_id": generateUuid(),
                 variable: {
                   "@_id": generateUuid(),
                   "@_name": "ContextEntry-1",

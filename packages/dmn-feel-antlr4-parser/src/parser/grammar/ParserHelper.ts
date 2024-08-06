@@ -186,7 +186,11 @@ export class ParserHelper {
     const startLine = _n1.start.line - 1;
     const endLine = _n1.stop?.line !== undefined ? _n1.stop.line - 1 : startLine;
 
-    const variableName = name.replaceAll("\n", "");
+    // Replace line-breaks and multiple blank-spaces, since it is considered valid in variables names.
+    // Notice that line-brakes behave exactly like blank-spaces, that's why we're replacing them to blank-spaces.
+    // The Regex is to replace all concatenated blank-spaces to a single one. For example:
+    // "a           b"  becomes "a b", because that's how it is handled in the DMN runner.
+    const variableName = name.replaceAll("\r\n", " ").replaceAll("\n", " ").replace(/\s\s+/g, " ");
     if (this.currentScope?.getChildScopes().has(variableName)) {
       this.variables.push(
         new FeelVariable(start, length, startLine, endLine, FeelSyntacticSymbolNature.GlobalVariable, variableName)

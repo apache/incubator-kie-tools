@@ -40,7 +40,7 @@ import { ApiDefinition } from "@kie-tools-core/envelope-bus/dist/api";
 export class KogitoEditorEnvelopeApiImpl<
   E extends Editor,
   EnvelopeApi extends KogitoEditorEnvelopeApi & ApiDefinition<EnvelopeApi> = KogitoEditorEnvelopeApi,
-  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi> = KogitoEditorChannelApi
+  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi> = KogitoEditorChannelApi,
 > implements KogitoEditorEnvelopeApi
 {
   protected view: () => EditorEnvelopeViewApi<E>;
@@ -219,6 +219,8 @@ export class KogitoEditorEnvelopeApiImpl<
   }
 }
 
+// Not using the `u` flag as it's not trying to match a unicode character outside the BMP (Basic Multilingual Plane)
+// The BMP are the unicodes from U+0000 to U+FFFF. Also, the `u` flag requires target `es6`+
 function sanitize(str: string): string {
-  return str.replace(/[\u202a\u202b\u202c\u202d\u202e\u2066\u2067\u2068\u2069]/gu, "");
+  return str.replace(/[\u202a\u202b\u202c\u202d\u202e\u2066\u2067\u2068\u2069]/g, "");
 }

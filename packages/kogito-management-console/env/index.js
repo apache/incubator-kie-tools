@@ -19,27 +19,29 @@
 
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+const rootEnv = require("@kie-tools/root-env/env");
+
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     KOGITO_MANAGEMENT_CONSOLE__registry: {
-      default: "quay.io",
-      description: "The image registry.",
+      default: "docker.io",
+      description: "E.g., `docker.io` or `quay.io`.",
     },
     KOGITO_MANAGEMENT_CONSOLE__account: {
-      default: "kie-tools",
-      description: "The image registry account.",
+      default: "apache",
+      description: "E.g,. `apache` or `kie-tools-bot`",
     },
     KOGITO_MANAGEMENT_CONSOLE__name: {
-      default: "kogito-management-console",
-      description: "The image name.",
+      default: "incubator-kie-kogito-management-console",
+      description: "Name of the image itself.",
     },
-    KOGITO_MANAGEMENT_CONSOLE__buildTags: {
-      default: "daily-dev",
-      description: "The image tag.",
+    KOGITO_MANAGEMENT_CONSOLE__buildTag: {
+      default: rootEnv.env.root.streamName,
+      description: "Tag version of this image. E.g., `main` or `10.0.x` or `10.0.0",
     },
     KOGITO_MANAGEMENT_CONSOLE__port: {
       default: 8080,
-      description: "The default container port.",
+      description: "The internal container port.",
     },
   }),
   get env() {
@@ -48,7 +50,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         registry: getOrDefault(this.vars.KOGITO_MANAGEMENT_CONSOLE__registry),
         account: getOrDefault(this.vars.KOGITO_MANAGEMENT_CONSOLE__account),
         name: getOrDefault(this.vars.KOGITO_MANAGEMENT_CONSOLE__name),
-        tags: getOrDefault(this.vars.KOGITO_MANAGEMENT_CONSOLE__buildTags),
+        buildTag: getOrDefault(this.vars.KOGITO_MANAGEMENT_CONSOLE__buildTag),
         port: getOrDefault(this.vars.KOGITO_MANAGEMENT_CONSOLE__port),
         version: require("../package.json").version,
       },

@@ -39,5 +39,4 @@
     <module>kie-wb-common-stunner-backend-api</module>
     <module>kie-wb-common-stunner-client-api</module>
   </modules>
-
 </project>

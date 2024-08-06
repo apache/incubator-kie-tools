@@ -125,7 +125,7 @@ describe("CorePropertiesTable", () => {
     const isScorable = getByTestId("core-properties-table-isScorable");
     isScorable.click();
 
-    expect(commit).toBeCalledTimes(1);
+    expect(commit).toHaveBeenCalledTimes(1);
     const args: CoreProperties[] = commit.mock.calls[0];
     expect(args.length).toEqual(1);
     expect(args[0].isScorable).toBeFalsy();
@@ -166,7 +166,7 @@ describe("CorePropertiesTable", () => {
     const useReasonCodes = getByTestId("core-properties-table-useReasonCodes");
     useReasonCodes.click();
 
-    expect(commit).toBeCalledTimes(1);
+    expect(commit).toHaveBeenCalledTimes(1);
     const args: CoreProperties[] = commit.mock.calls[0];
     expect(args.length).toEqual(1);
     expect(args[0].areReasonCodesUsed).toBeFalsy();
@@ -208,7 +208,7 @@ describe("CorePropertiesTable", () => {
     fireEvent.change(algorithmName, { target: { value: "" } });
     fireEvent.blur(algorithmName);
 
-    expect(commit).toBeCalledTimes(1);
+    expect(commit).toHaveBeenCalledTimes(1);
     const args: CoreProperties[] = commit.mock.calls[0];
     expect(args.length).toEqual(1);
     expect(args[0].algorithmName).toBeUndefined();

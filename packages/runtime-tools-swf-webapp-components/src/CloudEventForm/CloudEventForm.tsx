@@ -36,6 +36,7 @@ interface CloudEventFormProps {
   onStartWorkflowError: (error: any) => void;
   onTriggerCloudEventSuccess: () => void;
   onTriggerStartCloudEventSuccess: (businessKey: string) => void;
+  serviceUrl: string;
 }
 
 export enum CloudEventPageSource {
@@ -50,6 +51,7 @@ export const CloudEventForm: React.FC<CloudEventFormProps & OUIAProps> = ({
   onStartWorkflowError,
   onTriggerCloudEventSuccess,
   onTriggerStartCloudEventSuccess,
+  serviceUrl,
   ouiaId,
   ouiaSafe,
 }) => {
@@ -86,6 +88,7 @@ export const CloudEventForm: React.FC<CloudEventFormProps & OUIAProps> = ({
               onStartWorkflowError={onStartWorkflowError}
               onTriggerCloudEventSuccess={onTriggerCloudEventSuccess}
               onTriggerStartCloudEventSuccess={onTriggerStartCloudEventSuccess}
+              serviceUrl={serviceUrl}
             />
           </CardBody>
         </Card>

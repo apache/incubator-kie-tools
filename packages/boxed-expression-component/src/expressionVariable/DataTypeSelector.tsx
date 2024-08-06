@@ -41,6 +41,7 @@ export interface DataTypeSelectorProps {
 
 /** This is the optimal height for the dropdown menu for the "Data Type" */
 const DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT = 500;
+const MININAL_SELECT_DATA_TYPE_MENU_HEIGHT = 70;
 
 /** This margin is the height of the status bar in the on-line editor because it can't be overlaped */
 const POPUP_BOTTOM_MARGIN = 46;
@@ -140,13 +141,16 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
         DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT + yPos > availableHeight
       ) {
         const offset = DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT + yPos - availableHeight;
-        return DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT - offset - POPUP_BOTTOM_MARGIN;
+        const calculatedHeight = DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT - offset - POPUP_BOTTOM_MARGIN;
+        return calculatedHeight < MININAL_SELECT_DATA_TYPE_MENU_HEIGHT
+          ? MININAL_SELECT_DATA_TYPE_MENU_HEIGHT
+          : calculatedHeight;
       }
     }
     return DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT;
   }, [boundingClientRect]);
   return (
-    <div ref={selectContainerRef} onKeyDown={onKeyDown}>
+    <div ref={selectContainerRef} onKeyDown={onKeyDown} data-testid={"kie-tools--bee--edit-expression-data-type"}>
       <Select
         onKeyDown={(e) => e.stopPropagation()}
         menuAppendTo={menuAppendTo}

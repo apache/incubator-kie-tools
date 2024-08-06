@@ -49,8 +49,12 @@
 
   // Ensure the border transition does not flicker with default black borders
   border: 1px solid #ffffff !important;
-  transition: margin-bottom 0.15s var(--sizeEasing), border-left 0.12s ease-in, border-right 0.12s ease-in,
-    border-top 0.12s ease-in, border-bottom 0.12s ease-in !important;
+  transition:
+    margin-bottom 0.15s var(--sizeEasing),
+    border-left 0.12s ease-in,
+    border-right 0.12s ease-in,
+    border-top 0.12s ease-in,
+    border-bottom 0.12s ease-in !important;
 
   &:not(.modelTitle--editing):hover {
     border: 1px solid var(--pf-global--BorderColor--100) !important;

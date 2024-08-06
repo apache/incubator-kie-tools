@@ -36,20 +36,6 @@
   <name>Kogito SW Editor - Kogito App</name>
   <description>Kogito SW Editor - Kogito App</description>
 
-  <!-- CNCF SW Repos. -->
-  <repositories>
-    <repository>
-    <id>oss.sonatype.org-snapshot</id>
-    <url>http://oss.sonatype.org/content/repositories/snapshots</url>
-    <releases>
-      <enabled>false</enabled>
-    </releases>
-    <snapshots>
-      <enabled>true</enabled>
-    </snapshots>
-  </repository>
-  </repositories>
-
   <properties>
     <skipITs>false</skipITs>
     <org.kie.sw.editor.browser.headless>true</org.kie.sw.editor.browser.headless>
@@ -90,7 +76,6 @@
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-widgets</artifactId>
     </dependency>
-
 
     <!-- Lienzo -->
     <dependency>
@@ -250,7 +235,6 @@
       <artifactId>json-unit-assertj</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -311,7 +295,6 @@
         </configuration>
       </plugin>
     </plugins>
-
   </build>
 
   <profiles>
@@ -358,5 +341,4 @@
       </build>
     </profile>
   </profiles>
-
 </project>

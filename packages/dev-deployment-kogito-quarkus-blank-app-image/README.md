@@ -17,7 +17,7 @@
 
 # Dev Deployment Kogito Quarkus Blank App Image
 
-This image is ready to be used for Dev deployments on KIE Sandbox.
+This image is ready to be used for Dev Deployments on KIE Sandbox.
 It starts the dev-deployment-upload-service and then places the uploaded files inside a blank Kogito Quarkus app.
 These files can decisions or processes, all of them will be used as resources for the app.
 
@@ -45,11 +45,11 @@ These files can decisions or processes, all of them will be used as resources fo
 
 Run the image with:
 
-- `docker run -p 8080:8080 -e DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=123 quay.io/kie-tools/dev-deployment-kogito-quarkus-blank-app-image:daily-dev`
+- `docker run -p 8080:8080 -e DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=dev docker.io/apache/incubator-kie-sandbox-dev-deployment-kogito-quarkus-blank-app:main`
 
 Then upload a zip file containing the resources (DMN, BPMN, etc)
 
-- `curl -X POST -H "Content-Type: multipart/form-data" -F "myFile=@<ABSOLUTE_PATH_TO_YOUR_FILE>" 'http://localhost:8080/upload?apiKey=123'`
+- `curl -X POST -H "Content-Type: multipart/form-data" -F "myFile=@<ABSOLUTE_PATH_TO_YOUR_FILE>" 'http://localhost:8080/upload?apiKey=dev'`
 
 ---
 

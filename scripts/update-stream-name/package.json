@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "name": "@kie-tools-scripts/update-stream-name",
+  "version": "0.0.0",
+  "keywords": [],
+  "bin": {
+    "kie-tools--update-stream-name-to": "update_stream_name.js"
+  }
+}

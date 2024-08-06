@@ -25,7 +25,7 @@ def dateDefaultValue = sdf.format(new Date())
 pipeline {
     agent {
         docker {
-            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
             label util.avoidFaultyNodes()
         }
@@ -119,10 +119,10 @@ pipeline {
                             configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
                                 timestampedSnapshotVersion = getTimestampedSnapshotVersion()
                                 sh """#!/bin/bash -el
-                                pnpm update-version-to ${timestampedSnapshotVersion} ${env.PNPM_FILTER_STRING}
                                 pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
                                 pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dapache.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
                                 pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dapache.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
+                                pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Drevision=${timestampedSnapshotVersion} >> .mvn/maven.config'
                                 pnpm ${env.PNPM_FILTER_STRING} build:prod
                                 """.trim()
                             }
@@ -167,7 +167,7 @@ String getTagName() {
 
 String getTimestampedSnapshotVersion() {
     if (env.PACKAGE_VERSION == '0.0.0') {
-        return "999.0.0-${getDateFromCheckoutDateTime()}-SNAPSHOT"
+        return "999-${getDateFromCheckoutDateTime()}-SNAPSHOT"
     }
     return "${env.PACKAGE_VERSION}-${getDateFromCheckoutDateTime()}-SNAPSHOT"
 }

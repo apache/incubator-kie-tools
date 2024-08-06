@@ -118,8 +118,9 @@ const WorkflowDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({ data, j
   };
 
   const handleJobReschedule = async (
-    repeatInterval: number | string,
-    repeatLimit: number | string,
+    _job: Job,
+    repeatInterval: string | number,
+    repeatLimit: string | number,
     scheduleDate: Date
   ): Promise<void> => {
     await handleJobRescheduleUtil(

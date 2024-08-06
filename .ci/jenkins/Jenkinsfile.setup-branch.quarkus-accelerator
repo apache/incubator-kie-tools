@@ -1,0 +1,115 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@Library('jenkins-pipeline-shared-libraries')_
+
+pipeline {
+    agent {
+        docker {
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            args '--shm-size=2g --privileged --group-add docker'
+            label util.avoidFaultyNodes()
+        }
+    }
+
+    options {
+        timeout(time: 60, unit: 'MINUTES')
+    }
+
+    parameters {
+        string(name: 'CHECKOUT_BRANCH_NAME', defaultValue: '0.0.0', description: 'Set the Git branch to checkout', trim: true)
+        string(name: 'NEW_BRANCH_NAME', description: 'Set the Git branch to be created. (x.x.999)', trim: true)
+        string(name: 'KOGITO_VERSION', description: 'Kogito version to set', trim: true)
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                }
+            }
+        }
+
+        stage('Clean workspace') {
+            steps {
+                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Checkout kie-sandbox-quarkus-accelerator') {
+            steps {
+                dir('kie-sandbox-quarkus-accelerator') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            "http://github.com/apache/incubator-kie-sandbox-quarkus-accelerator.git",
+                            "${params.CHECKOUT_BRANCH_NAME}",
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Setup new branch') {
+            steps {
+                dir('kie-sandbox-quarkus-accelerator') {
+                    script {
+                        sh """#!/bin/bash -el
+                        git config user.email asf-ci-kie@jenkins.kie.apache.org
+                        git config user.name asf-ci-kie
+                        git checkout -b ${params.NEW_BRANCH_NAME}
+                        """.trim()
+                    }
+                }
+            }
+        }
+
+        stage('Update kogito BOM version') {
+            steps {
+                dir('kie-sandbox-quarkus-accelerator') {
+                    script {
+                        sh """#!/bin/bash -el
+                        mvn versions:set-property -Dproperty=kogito.bom.version -DnewVersion=${params.KOGITO_VERSION}
+                        """.trim()
+                    }
+                }
+            }
+        }
+
+        stage('Commit and Push changes') {
+            steps {
+                dir('kie-sandbox-quarkus-accelerator') {
+                    script {
+                        sh """#!/bin/bash -el
+                        git add .
+                        git commit --allow-empty -am "Update kogito version to ${params.KOGITO_VERSION}"
+                        """.trim()
+                        githubUtils.pushObject('origin', "${params.NEW_BRANCH_NAME}", "${pipelineVars.asfCIGithubCredentialsId}")
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+        }
+    }
+}

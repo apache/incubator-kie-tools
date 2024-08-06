@@ -26,7 +26,7 @@ import { VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helper
 
 describe("Serverless workflow editor - Basic operations tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("e2e-tests-tmp", "resources", "basic-operations");
-  const DIST_E2E_TESTS_FOLDER: string = path.resolve("dist-e2e-tests");
+  const DIST_E2E_TESTS_FOLDER: string = path.resolve("dist-tests-e2e");
 
   let testHelper: VSCodeTestHelper;
 

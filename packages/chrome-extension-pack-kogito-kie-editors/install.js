@@ -23,13 +23,11 @@ const fs = require("fs");
 const prettier = require("prettier");
 
 async function updateChromeExtensionManifest(version, manifestFilePath) {
-  fs.writeFileSync(
-    manifestFilePath,
-    prettier.format(JSON.stringify({ ...require(manifestFilePath), version }), {
-      ...(await prettier.resolveConfig(".")),
-      parser: "json",
-    })
-  );
+  const formattedManifest = await prettier.format(JSON.stringify({ ...require(manifestFilePath), version }), {
+    ...(await prettier.resolveConfig(".")),
+    parser: "json",
+  });
+  fs.writeFileSync(manifestFilePath, formattedManifest);
 }
 
 async function main() {

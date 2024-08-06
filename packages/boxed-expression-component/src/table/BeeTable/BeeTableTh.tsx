@@ -169,10 +169,12 @@ export function BeeTableTh<R extends object>({
     useCallback(() => {
       if (column.dataType) {
         return `${column.label} (${column.dataType})`;
-      } else {
+      } else if (!column.isInlineEditable) {
         return column.label;
+      } else {
+        return "";
       }
-    }, [column.dataType, column.label])
+    }, [column.dataType, column.isInlineEditable, column.label])
   );
 
   const coordinates = useMemo<BeeTableCellCoordinates>(
@@ -196,6 +198,7 @@ export function BeeTableTh<R extends object>({
         onKeyUp={onHeaderKeyUp}
         className={`${className} ${cssClasses}`}
         tabIndex={-1}
+        data-testid={`kie-tools--bee--table-header-${column.groupType ?? "undefined"}`}
       >
         {children}
         {hoverInfo.isHovered && onColumnAdded && isLastLevelColumn && shouldShowRowsInlineControls && (

@@ -70,7 +70,6 @@
     <url>scm:git:git@github.com:errai/Reflections.git</url>
   </scm>
 
-
   <build>
     <extensions>
       <extension>
@@ -89,17 +88,6 @@
           <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -108,7 +96,6 @@
           <skipTests>true</skipTests>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
 </project>

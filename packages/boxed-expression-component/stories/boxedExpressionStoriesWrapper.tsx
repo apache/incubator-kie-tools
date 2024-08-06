@@ -21,8 +21,7 @@ import { useArgs } from "@storybook/preview-api";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../src/BoxedExpressionEditor";
-import { BeeGwtService, BoxedExpression, DmnBuiltInDataType, generateUuid } from "../src/api";
-import { getDefaultBoxedExpressionForDevWebapp } from "./dev/getDefaultBoxedExpressionForDevWebapp";
+import { BeeGwtService, BoxedExpression, DmnBuiltInDataType, generateUuid, Normalized } from "../src/api";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../src/expressionVariable/ExpressionVariableMenu";
 import { getDefaultBoxedExpressionForStories } from "./getDefaultBoxedExpressionForStories";
 
@@ -93,7 +92,7 @@ export type BoxedExpressionEditorStoryArgs = Omit<BoxedExpressionEditorProps, "w
 export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditorStoryArgs>) {
   const emptyRef = useRef<HTMLDivElement>(null);
   const [args, updateArgs] = useArgs<BoxedExpressionEditorStoryArgs>();
-  const [expressionState, setExpressionState] = useState<BoxedExpression | undefined>(
+  const [expressionState, setExpressionState] = useState<Normalized<BoxedExpression> | undefined>(
     args?.expression ?? props?.expression
   );
 
@@ -154,41 +153,52 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
   }, [updateArgs, expressionState]);
 
   return (
-    <div
-      ref={emptyRef}
-      onKeyDown={(e) => {
-        // Prevent keys from propagating to Storybook
-        console.log("wrapper stopped");
-        // return e.stopPropagation();
-      }}
-    >
-      <BoxedExpressionEditor
-        expressionHolderId={props?.expressionHolderId ?? args?.expressionHolderId ?? generateUuid()}
-        expressionHolderName={
-          props?.expressionHolderName ?? args?.expressionHolderName ?? DEFAULT_EXPRESSION_VARIABLE_NAME
-        }
-        expressionHolderTypeRef={props?.expressionHolderTypeRef ?? args?.expressionHolderTypeRef}
-        expression={expressionState}
-        onExpressionChange={setExpressionState}
-        onWidthsChange={onWidthsChange}
-        dataTypes={props?.dataTypes ?? args?.dataTypes ?? dataTypes}
-        scrollableParentRef={props?.scrollableParentRef ?? args?.scrollableParentRef ?? emptyRef}
-        beeGwtService={props?.beeGwtService ?? args?.beeGwtService ?? beeGwtService}
-        pmmlDocuments={props?.pmmlDocuments ?? args?.pmmlDocuments ?? pmmlDocuments}
-        isResetSupportedOnRootExpression={
-          props?.isResetSupportedOnRootExpression ?? args?.isResetSupportedOnRootExpression ?? false
-        }
-        widthsById={widthsByIdMap}
-      />
-    </div>
+    <>
+      {args && (
+        <div data-testid={"storybook--boxed-expression-component"} style={{ display: "none" }}>
+          {JSON.stringify(args)}
+        </div>
+      )}
+
+      <div
+        ref={emptyRef}
+        onKeyDown={(e) => {
+          // Prevent keys from propagating to Storybook
+          console.log("wrapper stopped");
+          // return e.stopPropagation();
+        }}
+      >
+        <BoxedExpressionEditor
+          expressionHolderId={props?.expressionHolderId ?? args?.expressionHolderId ?? generateUuid()}
+          expressionHolderName={
+            props?.expressionHolderName ?? args?.expressionHolderName ?? DEFAULT_EXPRESSION_VARIABLE_NAME
+          }
+          expressionHolderTypeRef={props?.expressionHolderTypeRef ?? args?.expressionHolderTypeRef}
+          expression={expressionState}
+          onExpressionChange={setExpressionState}
+          onWidthsChange={onWidthsChange}
+          dataTypes={props?.dataTypes ?? args?.dataTypes ?? dataTypes}
+          scrollableParentRef={props?.scrollableParentRef ?? args?.scrollableParentRef ?? emptyRef}
+          beeGwtService={props?.beeGwtService ?? args?.beeGwtService ?? beeGwtService}
+          pmmlDocuments={props?.pmmlDocuments ?? args?.pmmlDocuments ?? pmmlDocuments}
+          isResetSupportedOnRootExpression={
+            props?.isResetSupportedOnRootExpression ?? args?.isResetSupportedOnRootExpression ?? false
+          }
+          widthsById={widthsByIdMap}
+        />
+      </div>
+    </>
   );
 }
 
 function toObject(map?: Map<string, number[]>): StorybookArgWidhtsById {
-  return Array.from((map ?? new Map<string, number[]>()).entries()).reduce((acc, [key, value]) => {
-    acc[`${key}`] = value;
-    return acc;
-  }, {} as Record<string, number[]>);
+  return Array.from((map ?? new Map<string, number[]>()).entries()).reduce(
+    (acc, [key, value]) => {
+      acc[`${key}`] = value;
+      return acc;
+    },
+    {} as Record<string, number[]>
+  );
 }
 
 function toMap(object?: StorybookArgWidhtsById): Map<string, number[]> {

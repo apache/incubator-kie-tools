@@ -386,7 +386,7 @@ describe("receive", () => {
         },
         apiImpl
       );
-    }).toThrowError();
+    }).toThrow();
   });
 
   test("response with no corresponding request", () => {
@@ -400,7 +400,7 @@ describe("receive", () => {
         },
         apiImpl
       );
-    }).toThrowError();
+    }).toThrow();
   });
 
   test("simple notification", () => {

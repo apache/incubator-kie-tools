@@ -77,7 +77,7 @@ export function DevDeploymentsDropdown() {
   const [deployments, refresh] = useLivePromiseState<KieSandboxDeployment[]>(
     useMemo(() => {
       if (!authSession || (authSession.type !== "openshift" && authSession.type !== "kubernetes")) {
-        return { error: "Can't load Dev deployments with this AuthSession." };
+        return { error: "Can't load Dev Deployments with this AuthSession." };
       }
 
       return () => {
@@ -143,7 +143,7 @@ export function DevDeploymentsDropdown() {
               <EmptyState>
                 <EmptyStateIcon icon={PficonSatelliteIcon} />
                 <Title headingLevel="h4" size="md">
-                  {`Error fetching Dev deployments.`}
+                  {`Error fetching Dev Deployments.`}
                 </Title>
               </EmptyState>
             </Bullseye>
@@ -156,7 +156,7 @@ export function DevDeploymentsDropdown() {
               <EmptyState>
                 <EmptyStateIcon icon={PficonSatelliteIcon} />
                 <Title headingLevel="h4" size="md">
-                  {`No Dev deployments found`}
+                  {`No Dev Deployments found`}
                 </Title>
               </EmptyState>
             </Bullseye>
@@ -197,7 +197,7 @@ export function DevDeploymentsDropdown() {
           <EmptyState>
             <EmptyStateIcon icon={PficonSatelliteIcon} />
             <Title headingLevel="h4" size="md" style={{ color: "darkgray" }}>
-              {`Choose a Cloud provider to see your Dev deployments.`}
+              {`Choose a Cloud provider to see your Dev Deployments.`}
             </Title>
           </EmptyState>
         </div>,
@@ -218,14 +218,14 @@ export function DevDeploymentsDropdown() {
             className={"kie-tools--masthead-hoverable-dark"}
           >
             <PficonSatelliteIcon color={undefined} />
-            &nbsp;&nbsp; Dev deployments &nbsp;&nbsp;
+            &nbsp;&nbsp; Dev Deployments &nbsp;&nbsp;
             <CaretDownIcon color={undefined} />
           </ResponsiveDropdownToggle>
         }
         isOpen={devDeployments.isDeploymentsDropdownOpen}
         isPlain={true}
         className="kogito--editor__dev-deployments-dropdown"
-        title="Dev deployments"
+        title="Dev Deployments"
         dropdownItems={[
           <div style={{ padding: "8px 16px", minWidth: "400px" }} key={"cloud-auth-session-select"}>
             <AuthSessionSelect

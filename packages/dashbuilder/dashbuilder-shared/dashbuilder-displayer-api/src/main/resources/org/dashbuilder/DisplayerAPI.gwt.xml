@@ -23,5 +23,4 @@
   <inherits name="org.dashbuilder.JSON" />
 
   <source path='displayer' />
-
 </module>

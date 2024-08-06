@@ -30,6 +30,8 @@ import { EdgeDeletionMode, deleteEdge } from "./deleteEdge";
 import { Computed } from "../store/Store";
 import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeContainingDecisionServiceHrefsByDecisionHrefs.ts";
 import { xmlHrefToQName } from "../xml/xmlHrefToQName";
+import { Normalized } from "../normalization/normalize";
+import { NodeDmnObjects } from "../diagram/nodes/Nodes";
 
 export enum NodeDeletionMode {
   FROM_DRG_AND_ALL_DRDS,
@@ -38,36 +40,36 @@ export enum NodeDeletionMode {
 
 export function deleteNode({
   definitions,
-  drgEdges,
-  drdIndex,
-  nodeNature,
-  dmnObjectId,
-  dmnObjectQName,
-  dmnObjectNamespace,
-  externalDmnsIndex,
+  __readonly_drgEdges,
+  __readonly_drdIndex,
+  __readonly_nodeNature,
+  __readonly_dmnObjectId,
+  __readonly_dmnObjectNamespace,
+  __readonly_dmnObjectQName,
+  __readonly_externalModelTypesByNamespace,
   mode,
 }: {
-  definitions: DMN15__tDefinitions;
-  drgEdges: DrgEdge[];
-  drdIndex: number;
-  nodeNature: NodeNature;
-  externalDmnsIndex: ReturnType<Computed["getExternalModelTypesByNamespace"]>["dmns"];
-  dmnObjectNamespace: string;
-  dmnObjectId: string | undefined;
-  dmnObjectQName: XmlQName;
+  definitions: Normalized<DMN15__tDefinitions>;
+  __readonly_drgEdges: DrgEdge[];
+  __readonly_drdIndex: number;
+  __readonly_nodeNature: NodeNature;
+  __readonly_externalModelTypesByNamespace: ReturnType<Computed["getExternalModelTypesByNamespace"]>;
+  __readonly_dmnObjectId: string | undefined;
+  __readonly_dmnObjectNamespace: string;
+  __readonly_dmnObjectQName: XmlQName;
   mode: NodeDeletionMode;
 }): {
-  deletedDmnObject: Unpacked<DMN15__tDefinitions["drgElement" | "artifact"]> | undefined;
-  deletedDmnShapeOnCurrentDrd: DMNDI15__DMNShape | undefined;
+  deletedDmnObject: Unpacked<Normalized<DMN15__tDefinitions>["drgElement" | "artifact"]> | undefined;
+  deletedDmnShapeOnCurrentDrd: Normalized<DMNDI15__DMNShape> | undefined;
 } {
   if (
     mode === NodeDeletionMode.FROM_CURRENT_DRD_ONLY &&
     !canRemoveNodeFromDrdOnly({
       definitions,
-      drdIndex,
-      dmnObjectNamespace,
-      dmnObjectId,
-      externalDmnsIndex,
+      __readonly_drdIndex,
+      __readonly_dmnObjectNamespace,
+      __readonly_dmnObjectId,
+      __readonly_externalDmnsIndex: __readonly_externalModelTypesByNamespace.dmns,
     })
   ) {
     console.warn("DMN MUTATION: Cannot hide a Decision that's contained by a Decision Service from a DRD.");
@@ -77,14 +79,18 @@ export function deleteNode({
   if (mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
     // Delete Edges
     // A DRD doesn't necessarily renders all edges of the DRG, so we need to look for what DRG edges to delete when deleting a node from any DRD.
-    const nodeId = buildXmlHref({ namespace: dmnObjectNamespace, id: dmnObjectId! });
-    for (let i = 0; i < drgEdges.length; i++) {
-      const drgEdge = drgEdges[i];
+    const nodeId = buildXmlHref({
+      namespace:
+        __readonly_dmnObjectNamespace === definitions["@_namespace"] ? undefined : __readonly_dmnObjectNamespace,
+      id: __readonly_dmnObjectId!,
+    });
+    for (let i = 0; i < __readonly_drgEdges.length; i++) {
+      const drgEdge = __readonly_drgEdges[i];
       // Only delete edges that end at or start from the node being deleted.
       if (drgEdge.sourceId === nodeId || drgEdge.targetId === nodeId) {
         deleteEdge({
           definitions,
-          drdIndex,
+          drdIndex: __readonly_drdIndex,
           mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
           edge: {
             id: drgEdge.id,
@@ -107,61 +113,61 @@ export function deleteNode({
     }
   }
 
-  let dmnObject: Unpacked<DMN15__tDefinitions["drgElement" | "artifact"]> | undefined;
+  let deletedDmnObject: Unpacked<Normalized<DMN15__tDefinitions>["drgElement" | "artifact"]> | undefined;
 
   // External or unknown nodes don't have a dmnObject associated with it, just the shape..
-  if (!dmnObjectQName.prefix) {
+  if (!__readonly_dmnObjectQName.prefix) {
     // Delete the dmnObject itself
-    if (nodeNature === NodeNature.ARTIFACT) {
+    if (__readonly_nodeNature === NodeNature.ARTIFACT) {
       if (mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
-        const nodeIndex = (definitions.artifact ?? []).findIndex((a) => a["@_id"] === dmnObjectId);
-        dmnObject = definitions.artifact?.splice(nodeIndex, 1)?.[0];
+        const nodeIndex = (definitions.artifact ?? []).findIndex((a) => a["@_id"] === __readonly_dmnObjectId);
+        deletedDmnObject = definitions.artifact?.splice(nodeIndex, 1)?.[0];
       } else {
         throw new Error(`DMN MUTATION: Can't hide an artifact node.`);
       }
-    } else if (nodeNature === NodeNature.DRG_ELEMENT) {
-      const nodeIndex = (definitions.drgElement ?? []).findIndex((d) => d["@_id"] === dmnObjectId);
-      dmnObject =
+    } else if (__readonly_nodeNature === NodeNature.DRG_ELEMENT) {
+      const nodeIndex = (definitions.drgElement ?? []).findIndex((d) => d["@_id"] === __readonly_dmnObjectId);
+      deletedDmnObject =
         mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS
           ? definitions.drgElement?.splice(nodeIndex, 1)?.[0]
           : definitions.drgElement?.[nodeIndex];
-    } else if (nodeNature === NodeNature.UNKNOWN) {
+    } else if (__readonly_nodeNature === NodeNature.UNKNOWN) {
       // Ignore. There's no dmnObject here.
     } else {
-      throw new Error(`DMN MUTATION: Unknown node nature '${nodeNature}'.`);
+      throw new Error(`DMN MUTATION: Unknown node nature '${__readonly_nodeNature}'.`);
     }
 
-    if (!dmnObject && nodeNature !== NodeNature.UNKNOWN) {
+    if (!deletedDmnObject && __readonly_nodeNature !== NodeNature.UNKNOWN) {
       /**
        * We do not want to throw error in case of `nodeNature` equals to `NodeNature.UNKNOWN`.
        * In such scenario it is expected `dmnObject` is undefined as we can not pair `dmnObject` with the `DMNShape`.
        * However we are still able to delete at least the selected `DMNShape` from the diagram.
        */
-      throw new Error(`DMN MUTATION: Can't delete DMN object that doesn't exist: ID=${dmnObjectId}`);
+      throw new Error(`DMN MUTATION: Can't delete DMN object that doesn't exist: ID=${__readonly_dmnObjectId}`);
     }
   }
 
-  const shapeDmnElementRef = buildXmlQName(dmnObjectQName);
+  const shapeDmnElementRef = buildXmlQName(__readonly_dmnObjectQName);
 
   // Deleting the DMNShape's
-  let deletedDmnShapeOnCurrentDrd: DMNDI15__DMNShape | undefined;
+  let deletedDmnShapeOnCurrentDrd: Normalized<DMNDI15__DMNShape> | undefined;
 
-  const deletedIdsOnDmnObjectTree = dmnObject
+  const deletedIdsOnDmnObjectTree = deletedDmnObject
     ? getNewDmnIdRandomizer()
-        .ack({ json: [dmnObject], type: "DMN15__tDefinitions", attr: "drgElement" })
+        .ack({ json: [deletedDmnObject], type: "DMN15__tDefinitions", attr: "drgElement" })
         .getOriginalIds()
     : new Set<string>();
 
   const drdCount = (definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? []).length;
   for (let i = 0; i < drdCount; i++) {
-    if (mode === NodeDeletionMode.FROM_CURRENT_DRD_ONLY && i !== drdIndex) {
+    if (mode === NodeDeletionMode.FROM_CURRENT_DRD_ONLY && i !== __readonly_drdIndex) {
       continue;
     }
 
     const { diagramElements, widthsExtension } = addOrGetDrd({ definitions, drdIndex: i });
     const dmnShapeIndex = (diagramElements ?? []).findIndex((d) => d["@_dmnElementRef"] === shapeDmnElementRef);
     if (dmnShapeIndex >= 0) {
-      if (i === drdIndex) {
+      if (i === __readonly_drdIndex) {
         deletedDmnShapeOnCurrentDrd = diagramElements[dmnShapeIndex];
       }
 
@@ -177,40 +183,40 @@ export function deleteNode({
   repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
 
   return {
-    deletedDmnObject: mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS ? dmnObject : undefined,
+    deletedDmnObject: mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS ? deletedDmnObject : undefined,
     deletedDmnShapeOnCurrentDrd,
   };
 }
 
 export function canRemoveNodeFromDrdOnly({
   definitions,
-  drdIndex,
-  dmnObjectNamespace,
-  dmnObjectId,
-  externalDmnsIndex,
+  __readonly_drdIndex,
+  __readonly_dmnObjectNamespace,
+  __readonly_dmnObjectId,
+  __readonly_externalDmnsIndex,
 }: {
-  dmnObjectNamespace: string;
-  dmnObjectId: string | undefined;
-  definitions: DMN15__tDefinitions;
-  drdIndex: number;
-  externalDmnsIndex: ReturnType<Computed["getExternalModelTypesByNamespace"]>["dmns"];
+  definitions: Normalized<DMN15__tDefinitions>;
+  __readonly_dmnObjectNamespace: string;
+  __readonly_dmnObjectId: string | undefined;
+  __readonly_drdIndex: number;
+  __readonly_externalDmnsIndex: ReturnType<Computed["getExternalModelTypesByNamespace"]>["dmns"];
 }) {
-  const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
+  const { diagramElements } = addOrGetDrd({ definitions, drdIndex: __readonly_drdIndex });
 
   const dmnObjectHref = buildXmlHref({
-    namespace: dmnObjectNamespace === definitions["@_namespace"] ? "" : dmnObjectNamespace,
-    id: dmnObjectId!,
+    namespace: __readonly_dmnObjectNamespace === definitions["@_namespace"] ? undefined : __readonly_dmnObjectNamespace,
+    id: __readonly_dmnObjectId!,
   });
 
   const drgElements =
-    definitions["@_namespace"] === dmnObjectNamespace
+    definitions["@_namespace"] === __readonly_dmnObjectNamespace
       ? definitions.drgElement ?? []
-      : externalDmnsIndex.get(dmnObjectNamespace)?.model.definitions.drgElement ?? [];
+      : __readonly_externalDmnsIndex.get(__readonly_dmnObjectNamespace)?.model.definitions.drgElement ?? [];
 
   const containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn =
     computeContainingDecisionServiceHrefsByDecisionHrefs({
       thisDmnsNamespace: definitions["@_namespace"],
-      drgElementsNamespace: dmnObjectNamespace,
+      drgElementsNamespace: __readonly_dmnObjectNamespace,
       drgElements,
     });
 

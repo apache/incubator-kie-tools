@@ -30,6 +30,7 @@ import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-co
 import { useDmnEditorStore } from "../store/StoreContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { Normalized } from "../normalization/normalize";
 
 export function DmnObjectListItem({
   dmnObject,
@@ -37,7 +38,7 @@ export function DmnObjectListItem({
   namespace,
   relativeToNamespace,
 }: {
-  dmnObject: Unpacked<DMN15__tDefinitions["drgElement"]> | undefined;
+  dmnObject: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]> | undefined;
   dmnObjectHref: string;
   namespace: string;
   relativeToNamespace: string;

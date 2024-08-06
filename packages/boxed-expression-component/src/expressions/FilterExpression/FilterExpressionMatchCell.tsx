@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { BeeTableCellProps, BoxedFilter } from "../../api";
+import { BeeTableCellProps, BoxedFilter, Normalized } from "../../api";
 import {
   NestedExpressionDispatchContextProvider,
   OnSetExpression,
@@ -57,11 +57,11 @@ export function FilterExpressionMatchCell({
 
   const onSetExpression = useCallback<OnSetExpression>(
     ({ getNewExpression }) => {
-      setExpression((prev: BoxedFilter) => {
+      setExpression((prev: Normalized<BoxedFilter>) => {
         const newExpression = getNewExpression(prev.match.expression);
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedFilter = {
+        const ret: Normalized<BoxedFilter> = {
           ...prev,
           match: {
             ...prev.match,
@@ -101,7 +101,7 @@ export function FilterExpressionMatchCell({
       >
         <div className={"bracket-sign"}>[</div>
       </div>
-      <div>
+      <div data-testid={"kie-tools--bee--filter-collection-match"}>
         <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
           <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
             <ExpressionContainer

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { BoxedContext, DmnBuiltInDataType } from "../../../../../src/api";
+import { BoxedContext, DmnBuiltInDataType, generateUuid, Normalized } from "../../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   beeGwtService,
@@ -38,13 +38,14 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
-export const preBureauRiskCategoryExpression: BoxedContext = {
+export const preBureauRiskCategoryExpression: Normalized<BoxedContext> = {
   __$$element: "context",
   "@_id": "_21BA0CB9-F15E-482F-BCBB-F6694EF9B1FC",
   "@_label": "Pre-bureau risk category",
   "@_typeRef": "t.BureauRiskCategory",
   contextEntry: [
     {
+      "@_id": generateUuid(),
       variable: {
         "@_id": "_E0D6DEC1-A390-4AA7-86A0-42CFCE32C41E",
         "@_name": "Existing Customer",
@@ -59,6 +60,7 @@ export const preBureauRiskCategoryExpression: BoxedContext = {
       },
     },
     {
+      "@_id": generateUuid(),
       expression: {
         __$$element: "decisionTable",
         "@_id": "_DD3AABF1-9E83-4F71-A769-D9CC01231580",

@@ -24,7 +24,7 @@ export interface EnvelopeApiFactoryArgs<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>,
   ViewType,
-  ContextType
+  ContextType,
 > {
   viewDelegate: () => Promise<() => ViewType>;
   envelopeContext: ContextType;
@@ -35,7 +35,7 @@ export interface EnvelopeApiFactory<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>,
   ViewType,
-  ContextType
+  ContextType,
 > {
   create(args: EnvelopeApiFactoryArgs<ApiToProvide, ApiToConsume, ViewType, ContextType>): ApiToProvide;
 }

@@ -155,7 +155,7 @@ export function ConstraintsEnum({
             borderRadius: "4px",
           }}
         >
-          <ul>
+          <ul data-testid={"kie-tools--dmn-editor--enumeration-constraint-list"}>
             <DragAndDrop
               reorder={reorder}
               onDragEnd={onDragEnd}
@@ -208,10 +208,10 @@ function EnumElement({
   isValid: boolean;
   typeHelper: TypeHelper;
   focusOwner: string;
-  setFocusOwner: React.SetStateAction<React.Dispatch<string>>;
+  setFocusOwner: (id: string) => void;
   onChange: (newValue: string) => void;
   onRemove: () => void;
-  onKeyDown?: (e: React.KeyboardEvent<HTMLElement>) => void;
+  onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => void;
 }) {
   const value = useMemo<string>(() => initialValue, [initialValue]);
   const removeButtonRef = useRef(null);

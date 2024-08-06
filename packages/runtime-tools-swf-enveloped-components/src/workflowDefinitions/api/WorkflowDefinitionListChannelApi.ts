@@ -27,5 +27,5 @@ export interface WorkflowDefinitionListChannelApi {
   workflowDefinitionList__setWorkflowDefinitionFilter(filter: string[]): Promise<void>;
   workflowDefinitionList__getWorkflowDefinitionFilter(): Promise<string[]>;
   workflowDefinitionList__openWorkflowForm(workflowDefinition: WorkflowDefinition): Promise<void>;
-  workflowDefinitionsList__openTriggerCloudEvent(): void;
+  workflowDefinitionsList__openTriggerCloudEvent(workflowDefinition: WorkflowDefinition): Promise<void>;
 }

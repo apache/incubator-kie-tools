@@ -33,7 +33,10 @@ interface FunctionCallbacks {
 export class DashbuilderComponentController implements ComponentController {
   private callbacks: Map<string, FunctionCallbacks> = new Map();
 
-  constructor(private bus: ComponentBus, private componentId?: string) {
+  constructor(
+    private bus: ComponentBus,
+    private componentId?: string
+  ) {
     // no op
   }
 

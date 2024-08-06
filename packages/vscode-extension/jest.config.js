@@ -17,22 +17,24 @@
  * under the License.
  */
 
+const {
+  config,
+  jestSetupPath,
+  styleMock,
+  babelTransform,
+  typescriptTransform,
+} = require("@kie-tools/jest-base/jest.config");
+
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-  globals: {
-    "ts-jest": {
-      tsconfig: "<rootDir>/tsconfig.json",
-    },
-  },
-  reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
-  moduleDirectories: ["node_modules"],
-  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
-  transform: {
-    "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }]] }],
-    "^.+\\.tsx?$": "ts-jest",
-  },
+  ...config,
+  testEnvironment: "node",
   moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "<rootDir>/tests/__mocks__/styleMock.js",
+    ...styleMock,
   },
-  setupFiles: ["./setupTests.ts"],
+  transform: {
+    ...babelTransform,
+    ...typescriptTransform,
+  },
+  setupFilesAfterEnv: [jestSetupPath],
 };

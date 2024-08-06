@@ -28,5 +28,4 @@
   <groupId>org.kie.example</groupId>
   <artifactId>DataModelBackendExtendJavaTypeTest2</artifactId>
   <version>1.0</version>
-
 </project>

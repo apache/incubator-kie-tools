@@ -37,8 +37,8 @@ export function AuthSessionLabel(props: { authSession: AuthSession }) {
             {props.authSession.type === "git"
               ? props.authSession.login
               : props.authSession.type === "openshift" || props.authSession.type === "kubernetes"
-              ? props.authSession.namespace
-              : props.authSession.login}
+                ? props.authSession.namespace
+                : props.authSession.login}
           </Text>
         </TextContent>
         {authProvider && (

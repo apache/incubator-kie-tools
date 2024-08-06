@@ -29,9 +29,7 @@ import { DmnFormI18nContext, dmnFormI18nDefaults, dmnFormI18nDictionaries } from
 import { NoMatchPage } from "./NoMatchPage";
 import { routes } from "./Routes";
 
-export type DmnFormAppProps = { baseOrigin: string; basePath: string };
-
-export function DmnFormApp(props: DmnFormAppProps) {
+export function DmnFormApp() {
   return (
     <I18nDictionariesProvider
       defaults={dmnFormI18nDefaults}
@@ -39,7 +37,7 @@ export function DmnFormApp(props: DmnFormAppProps) {
       initialLocale={navigator.language}
       ctx={DmnFormI18nContext}
     >
-      <AppContextProvider {...props}>
+      <AppContextProvider>
         <AppContext.Consumer>
           {(app) =>
             app.fetchDone && (
@@ -49,11 +47,7 @@ export function DmnFormApp(props: DmnFormAppProps) {
                     <Route path={routes.form.path({ modelName: ":modelName*" })}>
                       {({ match }) => {
                         const formData = app.data!.forms.find((form) => form.modelName === match?.params.modelName);
-                        return formData ? (
-                          <DmnFormPage formData={formData} {...props} />
-                        ) : (
-                          <Redirect to={routes.error.path({})} />
-                        );
+                        return formData ? <DmnFormPage formData={formData} /> : <Redirect to={routes.error.path({})} />;
                       }}
                     </Route>
                   )}

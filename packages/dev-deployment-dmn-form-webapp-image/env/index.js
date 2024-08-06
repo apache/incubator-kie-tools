@@ -19,23 +19,25 @@
 
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+const rootEnv = require("@kie-tools/root-env/env");
+
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry: {
-      default: "quay.io",
-      description: "The image registry.",
+      default: "docker.io",
+      description: "E.g., `docker.io` or `quay.io`.",
     },
     DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account: {
-      default: "kie-tools",
-      description: "The image registry account.",
+      default: "apache",
+      description: "E.g,. `apache` or `kie-tools-bot`",
     },
     DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name: {
-      default: "dev-deployment-dmn-form-webapp-image",
-      description: "The image name.",
+      default: "incubator-kie-sandbox-dev-deployment-dmn-form-webapp",
+      description: "Name of the image itself.",
     },
-    DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags: {
-      default: "daily-dev",
-      description: "The image tag.",
+    DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTag: {
+      default: rootEnv.env.root.streamName,
+      description: "Tag version of this image. E.g., `main` or `10.0.x` or `10.0.0",
     },
   }),
   get env() {
@@ -44,7 +46,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         registry: getOrDefault(this.vars.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry),
         account: getOrDefault(this.vars.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account),
         name: getOrDefault(this.vars.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name),
-        tags: getOrDefault(this.vars.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags),
+        buildTag: getOrDefault(this.vars.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTag),
         version: require("../package.json").version,
       },
     };

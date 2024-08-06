@@ -21,7 +21,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
 ## Additional requirements
 
-- docker or podman
+- docker
 
 ## Build
 
@@ -37,7 +37,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
   export KOGITO_MANAGEMENT_CONSOLE__registry=<registry>
   export KOGITO_MANAGEMENT_CONSOLE__account=<account>
   export KOGITO_MANAGEMENT_CONSOLE__name=<image-name>
-  export KOGITO_MANAGEMENT_CONSOLE__buildTags=<image-tags>
+  export KOGITO_MANAGEMENT_CONSOLE__buildTag=<image-tags>
   ```
 
   > Default values can be found [here](./env/index.js).
@@ -54,24 +54,12 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
   docker images
   ```
 
-  or
-
-  ```bash
-  podman images
-  ```
-
 ## Run
 
 - Start up a clean container with:
 
   ```bash
-  docker run -t -p 8080:8080 -i --rm quay.io/kie-tools/runtime-tools-managment-console-image:daily-dev
-  ```
-
-  or
-
-  ```bash
-  podman run -t -p 8080:8080 -i --rm quay.io/kie-tools/runtime-tools-managment-console-image:daily-dev
+  docker run -t -p 8080:8080 -i --rm docker.io/apache/incubator-kie-kogito-managment-console:main
   ```
 
   Management Console will be up at http://localhost:8080
@@ -100,7 +88,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    1. Using a different Data Index Service.
 
       ```bash
-      docker run -t -p 8080:8080 -e RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT=<my_value> -i --rm quay.io/kie-tools/runtime-tools-managment-console-webapp-image:daily-dev
+      docker run -t -p 8080:8080 -e RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT=<my_value> -i --rm docker.io/apache/incubator-kie-kogito-managment-console:main
       ```
 
       _NOTE: Replace `docker` with `podman` if necessary._
@@ -108,7 +96,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 2. Write a custom `Containerfile/Dockerfile` from the image:
 
    ```docker
-   FROM quay.io/kie-tools/runtime-tools-managment-console-webapp-image:daily-dev
+   FROM docker.io/apache/incubator-kie-kogito-managment-console:main
 
    ENV RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT=<my_value>
    ```

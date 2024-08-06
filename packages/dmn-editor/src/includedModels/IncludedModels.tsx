@@ -50,11 +50,15 @@ import { allPmmlImportNamespaces, getPmmlNamespace } from "../pmml/pmml";
 import { allDmnImportNamespaces } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { getNamespaceOfDmnImport } from "./importNamespaces";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert/Alert";
-import { Dropdown, DropdownItem, KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { State } from "../store/Store";
+import "./IncludedModels.css";
+import { Normalized } from "../normalization/normalize";
+import { Popover, PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
+import { AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 
 export const EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER = "<Default>";
 
@@ -79,6 +83,7 @@ export function IncludedModels() {
   const [importName, setImportName] = useState("");
 
   const [selectedModel, setSelectedModel] = useState<ExternalModel | undefined>(undefined);
+  const [selectedModelError, setSelectedModelError] = useState<string | undefined>(undefined);
 
   useCancelableEffect(
     useCallback(
@@ -101,9 +106,13 @@ export function IncludedModels() {
               return;
             }
 
+            setSelectedModelError(undefined);
             setSelectedModel(externalModel);
           })
           .catch((err) => {
+            setSelectedModelError(
+              `An error occurred when parsing the selected model '${selectedPathRelativeToThisDmn}'. Please double-check it is a non-empty valid model.`
+            );
             console.error(err);
             return;
           });
@@ -121,6 +130,7 @@ export function IncludedModels() {
     setModelSelectOpen(false);
     setSelectedPathRelativeToThisDmn(undefined);
     setImportName("");
+    setSelectedModelError(undefined);
   }, []);
 
   const add = useCallback(() => {
@@ -142,10 +152,10 @@ export function IncludedModels() {
       selectedModel.type === "dmn"
         ? selectedModel.model.definitions["@_namespace"]!
         : selectedModel.type === "pmml"
-        ? getPmmlNamespace({
-            normalizedPosixPathRelativeToTheOpenFile: selectedModel.normalizedPosixPathRelativeToTheOpenFile,
-          })
-        : KIE_UNKNOWN_NAMESPACE;
+          ? getPmmlNamespace({
+              normalizedPosixPathRelativeToTheOpenFile: selectedModel.normalizedPosixPathRelativeToTheOpenFile,
+            })
+          : KIE_UNKNOWN_NAMESPACE;
 
     setModalOpen(false);
     dmnEditorStoreApi.setState((state) => {
@@ -161,6 +171,7 @@ export function IncludedModels() {
     });
 
     setTimeout(() => {
+      setSelectedModelError(undefined);
       setSelectedModel(undefined);
     }, 5000); // Give it time for the `externalModelsByNamespace` object to be reassembled externally.
 
@@ -239,11 +250,11 @@ export function IncludedModels() {
     <>
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => cancel()}
         title={"Include model"}
         variant={ModalVariant.large}
         actions={
-          (modelPathsRelativeToThisDmnNotYetIncluded?.length ?? 0) > 0
+          (modelPathsRelativeToThisDmnNotYetIncluded?.length ?? 0) > 0 && selectedModelError === undefined
             ? [
                 <Button key="confirm" variant="primary" onClick={add}>
                   Include model
@@ -348,6 +359,9 @@ export function IncludedModels() {
                     />
                   </FormGroup>
                   <br />
+                  {selectedModelError !== undefined && (
+                    <span className={"kie-dmn-editor--selected-model-to-include-error"}>{selectedModelError}</span>
+                  )}
                 </Form>
               </>
             )) || (
@@ -382,10 +396,11 @@ export function IncludedModels() {
                   (!isModalOpen && index === thisDmnsImports.length - 1 ? selectedModel : undefined); // Use the selected model to avoid showing the "unknown included model" card.
 
                 return !externalModel ? (
-                  <UnknownIncludedModelCard
+                  <IncludedModelCard
                     key={dmnImport["@_id"]}
                     _import={dmnImport}
                     index={index}
+                    externalModel={undefined}
                     isReadonly={false}
                   />
                 ) : (
@@ -431,25 +446,32 @@ function IncludedModelCard({
   externalModel,
   isReadonly,
 }: {
-  _import: DMN15__tImport;
-  externalModel: ExternalModel;
+  _import: Normalized<DMN15__tImport>;
+  externalModel: ExternalModel | undefined;
   index: number;
   isReadonly: boolean;
 }) {
+  const { externalModelsByNamespace } = useExternalModels();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const { onRequestToJumpToPath, onRequestToResolvePath } = useDmnEditor();
 
   const remove = useCallback(
     (index: number) => {
+      setRemovePopoverOpen(false);
       dmnEditorStoreApi.setState((state) => {
-        deleteImport({ definitions: state.dmn.model.definitions, index });
+        const externalModelTypesByNamespace = state
+          .computed(state)
+          .getExternalModelTypesByNamespace(externalModelsByNamespace);
+        deleteImport({
+          definitions: state.dmn.model.definitions,
+          __readonly_index: index,
+          __readonly_externalModelTypesByNamespace: externalModelTypesByNamespace,
+        });
       });
     },
-    [dmnEditorStoreApi]
+    [dmnEditorStoreApi, externalModelsByNamespace]
   );
-
-  const { externalModelsByNamespace } = useExternalModels();
 
   const rename = useCallback<OnInlineFeelNameRenamed>(
     (newName) => {
@@ -477,173 +499,121 @@ function IncludedModelCard({
   }, [_import]);
 
   const title = useMemo(() => {
+    if (externalModel === undefined) {
+      return "";
+    }
     if (externalModel.type === "dmn") {
       return externalModel.model.definitions["@_name"];
     } else if (externalModel.type === "pmml") {
       return "";
     }
-  }, [externalModel.model, externalModel.type]);
+  }, [externalModel]);
 
-  const pathDisplayed = useMemo(
-    () =>
-      onRequestToResolvePath?.(externalModel.normalizedPosixPathRelativeToTheOpenFile) ??
-      externalModel.normalizedPosixPathRelativeToTheOpenFile,
-    [onRequestToResolvePath, externalModel.normalizedPosixPathRelativeToTheOpenFile]
-  );
-
-  const [isCardActionsOpen, setCardActionsOpen] = useState(false);
-
-  return (
-    <Card isHoverable={true} isCompact={false}>
-      <CardHeader>
-        <CardActions>
-          <Dropdown
-            toggle={<KebabToggle id={"toggle-kebab-top-level"} onToggle={setCardActionsOpen} />}
-            onSelect={() => setCardActionsOpen(false)}
-            isOpen={isCardActionsOpen}
-            menuAppendTo={document.body}
-            isPlain={true}
-            position={"right"}
-            dropdownItems={[
-              <React.Fragment key={"remove-fragment"}>
-                {!isReadonly && (
-                  <DropdownItem
-                    style={{ minWidth: "240px" }}
-                    icon={<TrashIcon />}
-                    onClick={() => {
-                      if (isReadonly) {
-                        return;
-                      }
-
-                      remove(index);
-                    }}
-                  >
-                    Remove
-                  </DropdownItem>
-                )}
-              </React.Fragment>,
-            ]}
-          />
-        </CardActions>
-        <CardTitle>
-          <InlineFeelNameInput
-            placeholder={EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER}
-            isPlain={true}
-            allUniqueNames={useCallback((s) => s.computed(s).getAllFeelVariableUniqueNames(), [])}
-            id={_import["@_id"]!}
-            name={_import["@_name"]}
-            isReadonly={false}
-            shouldCommitOnBlur={true}
-            onRenamed={rename}
-            validate={DMN15_SPEC.IMPORT.name.isValid}
-          />
-          <br />
-          <br />
-          <ExternalModelLabel extension={extension} />
-          <br />
-          <br />
-        </CardTitle>
-      </CardHeader>
-      <CardBody>
-        {`${title}`}
-        <br />
-        <br />
-        <small>
-          <Button
-            variant={ButtonVariant.link}
-            style={{ paddingLeft: 0, whiteSpace: "break-spaces", textAlign: "left" }}
-            onClick={() => {
-              onRequestToJumpToPath?.(externalModel.normalizedPosixPathRelativeToTheOpenFile);
-            }}
-          >
-            <i>{pathDisplayed}</i>
-          </Button>
-        </small>
-      </CardBody>
-    </Card>
-  );
-}
-
-function UnknownIncludedModelCard({
-  _import,
-  index,
-  isReadonly,
-}: {
-  _import: DMN15__tImport;
-  index: number;
-  isReadonly: boolean;
-}) {
-  const dmnEditorStoreApi = useDmnEditorStoreApi();
-
-  const remove = useCallback(
-    (index: number) => {
-      dmnEditorStoreApi.setState((state) => {
-        deleteImport({ definitions: state.dmn.model.definitions, index });
-      });
-    },
-    [dmnEditorStoreApi]
-  );
-
-  const { externalModelsByNamespace } = useExternalModels();
-
-  const rename = useCallback<OnInlineFeelNameRenamed>(
-    (newName) => {
-      dmnEditorStoreApi.setState((state) => {
-        renameImport({
-          definitions: state.dmn.model.definitions,
-          index,
-          newName,
-          allTopLevelDataTypesByFeelName: state.computed(state).getDataTypes(externalModelsByNamespace)
-            .allTopLevelDataTypesByFeelName,
-        });
-      });
-    },
-    [dmnEditorStoreApi, externalModelsByNamespace, index]
-  );
-
-  const extension = useMemo(() => {
-    if (allDmnImportNamespaces.has(_import["@_importType"])) {
-      return "dmn";
-    } else if (allPmmlImportNamespaces.has(_import["@_importType"])) {
-      return "pmml";
-    } else {
-      return "Unknwon";
+  const pathDisplayed = useMemo(() => {
+    if (externalModel !== undefined) {
+      return (
+        onRequestToResolvePath?.(externalModel.normalizedPosixPathRelativeToTheOpenFile) ??
+        externalModel.normalizedPosixPathRelativeToTheOpenFile
+      );
     }
-  }, [_import]);
+  }, [onRequestToResolvePath, externalModel]);
 
-  const [isCardActionsOpen, setCardActionsOpen] = useState(false);
+  const [isRemovePopoverOpen, setRemovePopoverOpen] = useState(false);
+  const [isConfirmationPopoverOpen, setConfirmationPopoverOpen] = useState(false);
+  const shouldRenderConfirmationMessage = useMemo(
+    () => isRemovePopoverOpen && isConfirmationPopoverOpen,
+    [isConfirmationPopoverOpen, isRemovePopoverOpen]
+  );
 
   return (
     <Card isHoverable={true} isCompact={false}>
       <CardHeader>
         <CardActions>
-          <Dropdown
-            toggle={<KebabToggle id={"toggle-kebab-top-level"} onToggle={setCardActionsOpen} />}
-            onSelect={() => setCardActionsOpen(false)}
-            isOpen={isCardActionsOpen}
-            menuAppendTo={document.body}
-            isPlain={true}
-            position={"right"}
-            dropdownItems={[
-              <React.Fragment key={"remove-fragment"}>
-                {!isReadonly && (
-                  <DropdownItem
-                    style={{ minWidth: "240px" }}
-                    icon={<TrashIcon />}
-                    onClick={() => {
-                      if (isReadonly) {
-                        return;
-                      }
-
-                      remove(index);
-                    }}
-                  >
-                    Remove
-                  </DropdownItem>
-                )}
-              </React.Fragment>,
-            ]}
-          />
+          <Popover
+            bodyContent={
+              shouldRenderConfirmationMessage ? (
+                <Alert
+                  isInline
+                  variant={AlertVariant.warning}
+                  title={"This action have major impact to your model"}
+                  actionClose={
+                    <AlertActionCloseButton
+                      onClose={() => {
+                        setRemovePopoverOpen(false);
+                        setConfirmationPopoverOpen(false);
+                      }}
+                    />
+                  }
+                  actionLinks={
+                    <>
+                      <AlertActionLink
+                        onClick={(ev) => {
+                          remove(index);
+                          ev.stopPropagation();
+                          ev.preventDefault();
+                        }}
+                        variant={"link"}
+                        style={{ color: "var(--pf-global--danger-color--200)", fontWeight: "bold" }}
+                      >
+                        {`Yes, remove included ${extension.toUpperCase()}`}
+                      </AlertActionLink>
+                    </>
+                  }
+                >
+                  {extension === "dmn" && (
+                    <>
+                      Removing an included DMN will erase all its imported nodes and connected edges from your model.
+                      The references to item definitions, Business Knowledge Model functions, and Decision expressions
+                      will remain, requiring to be manually removed.
+                    </>
+                  )}
+                  {extension === "pmml" && (
+                    <>
+                      Removing an included PMML will not erase references on Boxed Function expressions, requiring it to
+                      be manually removed.
+                    </>
+                  )}
+                </Alert>
+              ) : (
+                <Button
+                  variant={"plain"}
+                  onClick={(ev) => {
+                    ev.stopPropagation();
+                    ev.preventDefault();
+                    if (isReadonly) {
+                      return;
+                    }
+                    setConfirmationPopoverOpen(true);
+                  }}
+                >
+                  <TrashIcon />
+                  {"  "}
+                  Remove
+                </Button>
+              )
+            }
+            hasNoPadding={shouldRenderConfirmationMessage}
+            maxWidth={shouldRenderConfirmationMessage ? "300px" : "150px"}
+            minWidth={shouldRenderConfirmationMessage ? "300px" : "150px"}
+            isVisible={isRemovePopoverOpen}
+            showClose={false}
+            shouldClose={() => {
+              setRemovePopoverOpen(false);
+              setConfirmationPopoverOpen(false);
+            }}
+            position={PopoverPosition.bottom}
+            shouldOpen={() => setRemovePopoverOpen(true)}
+          >
+            <Button
+              variant={"plain"}
+              onClick={(ev) => {
+                ev.stopPropagation();
+                ev.preventDefault();
+              }}
+            >
+              <KebabToggle />
+            </Button>
+          </Popover>
         </CardActions>
         <CardTitle>
           <InlineFeelNameInput
@@ -664,18 +634,38 @@ function UnknownIncludedModelCard({
           <br />
         </CardTitle>
       </CardHeader>
-      <CardBody>
-        <Alert title={"External model not found."} isInline={true} variant={AlertVariant.danger}>
-          <Divider style={{ marginTop: "16px" }} />
+      {externalModel ? (
+        <CardBody>
+          {`${title}`}
           <br />
-          <p>
-            <b>Namespace:</b>&nbsp;{_import["@_namespace"]}
-          </p>
-          <p>
-            <b>URI:</b>&nbsp;{_import["@_locationURI"] ?? <i>None</i>}
-          </p>
-        </Alert>
-      </CardBody>
+          <br />
+          <small>
+            <Button
+              variant={ButtonVariant.link}
+              style={{ paddingLeft: 0, whiteSpace: "break-spaces", textAlign: "left" }}
+              onClick={() => {
+                onRequestToJumpToPath?.(externalModel.normalizedPosixPathRelativeToTheOpenFile);
+              }}
+            >
+              <i>{pathDisplayed}</i>
+            </Button>
+          </small>
+        </CardBody>
+      ) : (
+        // unknown
+        <CardBody>
+          <Alert title={"External model not found."} isInline={true} variant={AlertVariant.danger}>
+            <Divider style={{ marginTop: "16px" }} />
+            <br />
+            <p>
+              <b>Namespace:</b>&nbsp;{_import["@_namespace"]}
+            </p>
+            <p>
+              <b>URI:</b>&nbsp;{_import["@_locationURI"] ?? <i>None</i>}
+            </p>
+          </Alert>
+        </CardBody>
+      )}
     </Card>
   );
 }

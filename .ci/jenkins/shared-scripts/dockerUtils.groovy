@@ -18,28 +18,36 @@
 /**
 * Push an image to a given registry
 */
-def pushImageToRegistry(String registry, String image, String tags, String credentialsId) {
-    withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PWD')]) {
-        sh "set +x && docker login -u $REGISTRY_USER -p $REGISTRY_PWD $registry"
-        tagList = tags.split(' ')
-        for (tag in tagList) {
-            sh "docker push $registry/$image:$tag"
+def pushImageToRegistry(String registry, String account, String image, String tags, String userCredentialsId, String tokenCredentialsId) {
+    withCredentials([string(credentialsId: userCredentialsId, variable: 'REGISTRY_USER')]) {
+        withCredentials([string(credentialsId: tokenCredentialsId, variable: 'REGISTRY_TOKEN')]) {
+            sh """
+            echo "${REGISTRY_TOKEN}" | docker login -u "${REGISTRY_USER}" --password-stdin $registry
+            """.trim()
+            tagList = tags.split(' ')
+            for (tag in tagList) {
+                sh "docker push $registry/$account/$image:$tag"
+            }
+            sh 'docker logout'
         }
-        sh 'docker logout'
     }
 }
 
 /**
 * @return bool image exists in a given registry
 */
-def checkImageExistsInRegistry(String registry, String image, String tag, String credentialsId) {
-    withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PWD')]) {
-        sh "set +x && docker login -u $REGISTRY_USER -p $REGISTRY_PWD $registry"
-        result = sh returnStatus: true, script: """
-        docker manifest inspect $registry/$image:$tag > /dev/null 2>&1
-        """.trim()
-        sh 'docker logout'
-        return result == 0
+def checkImageExistsInRegistry(String registry, String account, String image, String tag, String userCredentialsId, String tokenCredentialsId) {
+    withCredentials([string(credentialsId: userCredentialsId, variable: 'DOCKER_USER')]) {
+        withCredentials([string(credentialsId: tokenCredentialsId, variable: 'DOCKER_TOKEN')]) {
+            sh """
+            echo "${DOCKER_TOKEN}" | docker login -u "${DOCKER_USER}" --password-stdin $registry
+            """.trim()
+            result = sh returnStatus: true, script: """
+            docker manifest inspect $registry/$account/$image:$tag > /dev/null
+            """.trim()
+            sh 'docker logout'
+            return result == 0
+        }
     }
 }
 
@@ -50,4 +58,20 @@ def tagImage(String registry, String image, String oldTag, String newTag) {
     sh "docker tag ${registry}/${image}:${oldTag} ${registry}/${image}:${newTag}"
 }
 
-return this;
+/**
+* Load an image
+*/
+def loadImage(String imageFile) {
+    sh "docker load < ${imageFile}"
+}
+
+/**
+* Load multiple images
+*/
+def loadImages(String... imagesFiles) {
+    for (imageFile in imagesFiles) {
+        loadImage(imageFile)
+    }
+}
+
+return this

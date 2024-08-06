@@ -194,9 +194,7 @@ export function DragAndDrop({
           onDragLeave: onInternalDragLeave,
         }}
       >
-        {valuesCopy?.map((value, index) => (
-          <div key={valuesKeys[index]}>{draggableItem?.(value, index)}</div>
-        ))}
+        {valuesCopy?.map((value, index) => <div key={valuesKeys[index]}>{draggableItem?.(value, index)}</div>)}
       </DraggableDispatchContext.Provider>
     </DraggableStateContext.Provider>
   );
@@ -252,6 +250,7 @@ export function Draggable(props: {
       onPointerEnter={() => setHoveredItem(props.index)}
       onPointerLeave={() => setHoveredItem(-1)}
       onPointerOver={() => setHoveredItem(props.index)}
+      data-testid={`kie-tools--dmn-editor--draggable-row-${props.index}`}
     >
       {!props.isDisabled ? (
         <Icon

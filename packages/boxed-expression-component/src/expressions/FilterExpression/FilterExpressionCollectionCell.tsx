@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback } from "react";
-import { BeeTableCellProps, BoxedFilter } from "../../api";
+import { BeeTableCellProps, BoxedFilter, Normalized } from "../../api";
 import {
   NestedExpressionDispatchContextProvider,
   useBoxedExpressionEditorDispatch,
@@ -38,7 +38,7 @@ export function FilterExpressionCollectionCell({
 
   const onSetExpression = useCallback(
     ({ getNewExpression }) => {
-      setExpression((prev: BoxedFilter) => {
+      setExpression((prev: Normalized<BoxedFilter>) => {
         return {
           ...prev,
           in: {
@@ -52,7 +52,7 @@ export function FilterExpressionCollectionCell({
   );
 
   return (
-    <div className="filter-expression">
+    <div className="filter-expression" data-testid={"kie-tools--bee--filter-collection-in"}>
       <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
         <ExpressionContainer
           expression={items[rowIndex]?.expression}

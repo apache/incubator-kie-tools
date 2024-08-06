@@ -485,7 +485,7 @@ export function BeeTableContextMenuHandler({
     );
   }, [insertMultipleRowColumnsValue, onMinus, onChange, onPlus]);
 
-  const contextMenuContainerDiv = React.createRef<HTMLDivElement>();
+  const contextMenuContainer = React.createRef<HTMLDivElement>();
 
   const { xPos, yPos, isOpen } = useCustomContextMenuHandler(tableRef);
 
@@ -511,21 +511,30 @@ export function BeeTableContextMenuHandler({
   }, [xPos, yPos]);
 
   useLayoutEffect(() => {
-    if (contextMenuContainerDiv.current) {
-      const bounds = contextMenuContainerDiv.current.getBoundingClientRect();
-      const contextMenuHeight = menuHeights[activeMenuId];
+    if (contextMenuContainer.current) {
+      const bounds = contextMenuContainer.current.getBoundingClientRect();
+      let contextMenuHeight = menuHeights[activeMenuId];
       const availableHeight = document.documentElement.clientHeight;
+      if (contextMenuHeight + yPos >= availableHeight) {
+        const offset = contextMenuHeight + yPos - availableHeight;
+        contextMenuHeight = contextMenuHeight - offset;
+        contextMenuContainer.current.style.height = contextMenuHeight + "px";
+        contextMenuContainer.current.style.overflowY = "scroll";
+      } else {
+        contextMenuContainer.current.style.overflowY = "visible";
+      }
+
       if (contextMenuHeight <= availableHeight && contextMenuHeight + yPos > availableHeight) {
         const offset = contextMenuHeight + yPos - availableHeight;
-        contextMenuContainerDiv.current.style.top = yPos - offset + "px";
-        contextMenuContainerDiv.current.style.left = xPos + 2 + "px";
+        contextMenuContainer.current.style.top = yPos - offset + "px";
+        contextMenuContainer.current.style.left = xPos + 2 + "px";
       }
 
       const contextMenuWidth = bounds.width;
       const availableWidth = document.documentElement.clientWidth;
       if (contextMenuWidth <= availableWidth && contextMenuWidth + xPos > availableWidth) {
         const offset = contextMenuWidth + xPos - availableWidth;
-        contextMenuContainerDiv.current.style.left = xPos - offset - 2 + "px";
+        contextMenuContainer.current.style.left = xPos - offset - 2 + "px";
       }
     }
   });
@@ -662,7 +671,8 @@ export function BeeTableContextMenuHandler({
           className="context-menu-container"
           style={style}
           onMouseDown={(e) => e.stopPropagation()}
-          ref={contextMenuContainerDiv}
+          ref={contextMenuContainer}
+          data-testid={"kie-tools--bee--context-menu-container"}
         >
           <Menu
             ouiaId="expression-table-context-menu"

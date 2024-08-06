@@ -25,13 +25,18 @@ import {
   BoxedConditional,
   BoxedContext,
   BoxedDecisionTable,
+  BoxedEvery,
   BoxedExpression,
+  BoxedFilter,
+  BoxedFor,
   BoxedFunction,
   BoxedInvocation,
   BoxedList,
   BoxedLiteral,
   BoxedRelation,
+  BoxedSome,
   generateUuid,
+  Normalized,
 } from "../src/api";
 import {
   DECISION_TABLE_INPUT_DEFAULT_VALUE,
@@ -44,6 +49,7 @@ import {
   DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
   DECISION_TABLE_INPUT_DEFAULT_WIDTH,
   DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
+  FILTER_EXPRESSION_MIN_WIDTH,
   LITERAL_EXPRESSION_MIN_WIDTH,
   RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
 } from "../src/resizing/WidthConstants";
@@ -61,9 +67,9 @@ export function getDefaultBoxedExpressionForStories({
   logicType: BoxedExpression["__$$element"] | undefined;
   typeRef: string | undefined;
   widthsById: Map<string, number[]>;
-}): BoxedExpression {
+}): Normalized<BoxedExpression> {
   if (logicType === "literalExpression") {
-    const literalExpression: BoxedLiteral = {
+    const literalExpression: Normalized<BoxedLiteral> = {
       __$$element: "literalExpression",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
@@ -74,7 +80,7 @@ export function getDefaultBoxedExpressionForStories({
   }
   //
   else if (logicType === "functionDefinition") {
-    const functionExpression: BoxedFunction = {
+    const functionExpression: Normalized<BoxedFunction> = {
       __$$element: "functionDefinition",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
@@ -85,12 +91,13 @@ export function getDefaultBoxedExpressionForStories({
   }
   //
   else if (logicType === "context") {
-    const contextExpression: BoxedContext = {
+    const contextExpression: Normalized<BoxedContext> = {
       __$$element: "context",
       "@_typeRef": typeRef,
       "@_id": generateUuid(),
       contextEntry: [
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "ContextEntry-1",
@@ -108,7 +115,7 @@ export function getDefaultBoxedExpressionForStories({
     widthsById.set(contextExpression["@_id"]!, [CONTEXT_ENTRY_VARIABLE_MIN_WIDTH]);
     return contextExpression;
   } else if (logicType === "list") {
-    const listExpression: BoxedList = {
+    const listExpression: Normalized<BoxedList> = {
       __$$element: "list",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
@@ -118,7 +125,7 @@ export function getDefaultBoxedExpressionForStories({
     };
     return listExpression;
   } else if (logicType === "invocation") {
-    const invocationExpression: BoxedInvocation = {
+    const invocationExpression: Normalized<BoxedInvocation> = {
       __$$element: "invocation",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
@@ -141,7 +148,7 @@ export function getDefaultBoxedExpressionForStories({
     widthsById.set(invocationExpression["@_id"]!, [CONTEXT_ENTRY_VARIABLE_MIN_WIDTH]);
     return invocationExpression;
   } else if (logicType === "relation") {
-    const relationExpression: BoxedRelation = {
+    const relationExpression: Normalized<BoxedRelation> = {
       __$$element: "relation",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
@@ -192,7 +199,7 @@ export function getDefaultBoxedExpressionForStories({
       },
     ];
 
-    const output: DMN15__tOutputClause[] = [
+    const output: Normalized<DMN15__tOutputClause>[] = [
       {
         "@_id": generateUuid(),
         "@_name": singleOutputColumn.name,
@@ -200,7 +207,7 @@ export function getDefaultBoxedExpressionForStories({
       },
     ];
 
-    const decisionTableExpression: BoxedDecisionTable = {
+    const decisionTableExpression: Normalized<BoxedDecisionTable> = {
       __$$element: "decisionTable",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
@@ -236,35 +243,82 @@ export function getDefaultBoxedExpressionForStories({
     ]);
 
     return decisionTableExpression;
+  } else if (logicType === "filter") {
+    const filterExpression: Normalized<BoxedFilter> = {
+      __$$element: "filter",
+      "@_id": generateUuid(),
+      "@_typeRef": typeRef,
+      in: {
+        "@_id": generateUuid(),
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      },
+      match: {
+        "@_id": generateUuid(),
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      },
+    };
+    widthsById.set(filterExpression["@_id"]!, [FILTER_EXPRESSION_MIN_WIDTH]);
+    return filterExpression;
   } else if (logicType === "conditional") {
-    const conditionalExpression: BoxedConditional = {
+    const conditionalExpression: Normalized<BoxedConditional> = {
       __$$element: "conditional",
       "@_id": generateUuid(),
-      "@_label": "Expression Name",
       if: {
         "@_id": generateUuid(),
-        expression: {
-          __$$element: "literalExpression",
-          "@_id": generateUuid(),
-        },
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
       },
       then: {
         "@_id": generateUuid(),
-        expression: {
-          __$$element: "literalExpression",
-          "@_id": generateUuid(),
-        },
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.,
       },
       else: {
         "@_id": generateUuid(),
-        expression: {
-          __$$element: "literalExpression",
-          "@_id": generateUuid(),
-        },
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
       },
     };
-
     return conditionalExpression;
+  } else if (logicType === "for") {
+    const forExpression: Normalized<BoxedFor> = {
+      __$$element: "for",
+      "@_id": generateUuid(),
+      return: {
+        "@_id": generateUuid(),
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      },
+      in: {
+        "@_id": generateUuid(),
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      },
+    };
+    return forExpression;
+  } else if (logicType == "some") {
+    const someExpression: Normalized<BoxedSome> = {
+      __$$element: "some",
+      "@_id": generateUuid(),
+      satisfies: {
+        "@_id": generateUuid(),
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      },
+      in: {
+        "@_id": generateUuid(),
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      },
+    };
+    return someExpression;
+  } else if (logicType === "every") {
+    const everyExpression: Normalized<BoxedEvery> = {
+      __$$element: "every",
+      "@_id": generateUuid(),
+      satisfies: {
+        "@_id": generateUuid(),
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      },
+      in: {
+        "@_id": generateUuid(),
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      },
+    };
+    return everyExpression;
   } else {
     throw new Error(`No default expression available for ${logicType}.`);
   }

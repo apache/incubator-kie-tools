@@ -1,7 +1,6 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "extends": "@kie-tools/tsconfig/tsconfig.esm.json",
   "compilerOptions": {
-    "outDir": "dist"
-  },
-  "include": ["src"]
+    "esModuleInterop": true
+  }
 }

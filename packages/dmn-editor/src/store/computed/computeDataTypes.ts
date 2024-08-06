@@ -24,6 +24,7 @@ import { DataType, DataTypeIndex } from "../../dataTypes/DataTypes";
 import { buildFeelQNameFromNamespace } from "../../feel/buildFeelQName";
 import { TypeOrReturnType } from "../ComputedStateCache";
 import { Computed, State } from "../Store";
+import { Normalized } from "../../normalization/normalize";
 
 export function computeDataTypes(
   namespace: State["dmn"]["model"]["definitions"]["@_namespace"],
@@ -79,7 +80,7 @@ export function computeDataTypes(
 }
 
 export function buildDataTypesTree(
-  items: DMN15__tItemDefinition[],
+  items: Normalized<DMN15__tItemDefinition>[],
   importsByNamespace: Map<string, DMN15__tImport>,
   allDataTypesById: DataTypeIndex,
   allTopLevelDataTypesByFeelName: DataTypeIndex,

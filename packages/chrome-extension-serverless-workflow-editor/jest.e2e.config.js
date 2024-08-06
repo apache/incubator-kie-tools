@@ -17,19 +17,19 @@
  * under the License.
  */
 
+const { config, babelTransform, typescriptTransform } = require("@kie-tools/jest-base/jest.config");
+
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-  globals: {
-    "ts-jest": {
-      tsconfig: "<rootDir>/tsconfig.json",
-    },
-  },
+  ...config,
+  testEnvironment: "jsdom",
   reporters: [
     "default",
     [
       "jest-junit",
       {
         suiteName: "Chrome Extension end-to-end tests for SWF",
-        outputFile: "./dist-e2e-tests/junit-report.xml",
+        outputFile: "./dist-tests-e2e/junit-report.xml",
         classNameTemplate: "Chrome Extension for SWF",
         titleTemplate: "{title}",
         ancestorSeparator: " :: ",
@@ -39,7 +39,8 @@ module.exports = {
     ],
   ],
   transform: {
-    "^.+\\.(ts)$": "ts-jest",
+    ...babelTransform,
+    ...typescriptTransform,
   },
   testRegex: ["e2e-tests/tests/.*Test.ts"],
   testTimeout: 100000,

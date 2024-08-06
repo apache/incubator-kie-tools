@@ -161,7 +161,7 @@ function AuthProviderGroupDescription(props: { group: AuthProviderGroup }) {
   const group = props.group;
   switch (group) {
     case AuthProviderGroup.CLOUD:
-      return <>{"Allows Dev deployments to be created in your Cloud infrastructure."}</>;
+      return <>{"Allows Dev Deployments to be created in your Cloud infrastructure."}</>;
     case AuthProviderGroup.GIT:
       return <>{"Allows integration with private repositories and provider-specific features, like GitHub Gists."}</>;
     default:

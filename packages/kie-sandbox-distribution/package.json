@@ -14,9 +14,9 @@
   },
   "scripts": {
     "build:dev": "pnpm docker:build",
-    "build:prod": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm docker:build\" \"pnpm test\"",
+    "build:prod": "run-script-if --then \"pnpm docker:build\" \"pnpm test\"",
     "docker:build": "docker compose build",
-    "docker:create-env-file": "rimraf .env && pnpm build-env --print-env-file:self > .env",
+    "docker:create-env-file": "rimraf .env && pnpm build-env --print-dotenv:self > .env",
     "docker:down": "docker compose down",
     "docker:start": "docker compose up -d --wait",
     "docker:start-no-pull": "docker compose up -d --wait --pull=never",
@@ -24,22 +24,24 @@
     "install": "pnpm docker:create-env-file",
     "test": "run-script-os",
     "test:darwin:win32": "echo 'Testing kie-sandbox-distribution not supported'",
-    "test:linux": "run-script-if --bool \"$(build-env containerImages.build)\" --bool \"$(build-env tests.run)\" --ignore-errors \"$(build-env tests.ignoreFailures)\" --then \"jest --verbose\""
+    "test:linux": "run-script-if --bool \"$(build-env tests.run)\" --ignore-errors \"$(build-env tests.ignoreFailures)\" --then \"jest --verbose\""
   },
   "dependencies": {
     "@kie-tools/cors-proxy-image": "workspace:*",
     "@kie-tools/kie-sandbox-extended-services-image": "workspace:*",
-    "@kie-tools/kie-sandbox-image": "workspace:*"
+    "@kie-tools/kie-sandbox-webapp-image": "workspace:*"
   },
   "devDependencies": {
+    "@kie-tools/jest-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
-    "@types/jest": "^26.0.23",
-    "jest": "^26.6.3",
-    "jest-junit": "^14.0.0",
+    "@types/jest": "^29.5.12",
+    "jest": "^29.7.0",
+    "jest-junit": "^16.0.0",
     "node-fetch": "^3.3.1",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
-    "typescript": "^4.6.2",
+    "ts-jest": "^29.1.5",
+    "typescript": "^5.5.3",
     "wait-on": "^7.2.0"
   }
 }

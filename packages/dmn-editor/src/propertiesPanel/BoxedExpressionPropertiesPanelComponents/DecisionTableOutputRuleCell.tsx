@@ -29,10 +29,11 @@ import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constraints";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { BoxedDecisionTable, DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
+import { Normalized } from "../../normalization/normalize";
 
 export function DecisionTableOutputRuleCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
@@ -47,10 +48,33 @@ export function DecisionTableOutputRuleCell(props: {
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
+  const root = useMemo(
+    () =>
+      props.boxedExpressionIndex?.get(
+        selectedObjectInfos?.expressionPath[selectedObjectInfos?.expressionPath.length - 1]?.root ?? ""
+      ),
+    [props.boxedExpressionIndex, selectedObjectInfos?.expressionPath]
+  );
+
+  const cell = useMemo(
+    () => selectedObjectInfos?.cell as Normalized<DMN15__tLiteralExpression>,
+    [selectedObjectInfos?.cell]
+  );
+
+  // In case the the output column is merged, the output column should have the same type as the Decision Node
+  // It can happen to output column and Decision Node have different types, e.g. broken model.
+  // For this case, the cell should have the column type.
+  const cellMustHaveSameTypeAsRoot = useMemo(
+    () =>
+      (root?.cell as Normalized<BoxedDecisionTable> | undefined)?.output.length === 1 &&
+      ((root?.cell as Normalized<BoxedDecisionTable> | undefined)?.["@_typeRef"] === cell?.["@_typeRef"] ||
+        cell?.["@_typeRef"] === undefined),
+    [cell, root?.cell]
+  );
+
   const headerType = useMemo(() => {
     const cellPath = selectedObjectInfos?.expressionPath[selectedObjectInfos?.expressionPath.length - 1];
     if (cellPath && cellPath.root) {
-      const root = props.boxedExpressionIndex?.get(cellPath.root);
       const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = dmnEditorStoreApi
         .getState()
         .computed(dmnEditorStoreApi.getState())
@@ -61,16 +85,25 @@ export function DecisionTableOutputRuleCell(props: {
       ) {
         const typeRef =
           allTopLevelItemDefinitionUniqueNames.get(
-            (root?.cell as DMN15__tDecisionTable)?.output?.[cellPath.column ?? 0]["@_typeRef"] ?? ""
+            cellMustHaveSameTypeAsRoot
+              ? (root?.cell as Normalized<DMN15__tDecisionTable> | undefined)?.["@_typeRef"] ?? ""
+              : (root?.cell as Normalized<DMN15__tDecisionTable>)?.output?.[cellPath.column ?? 0]["@_typeRef"] ?? ""
           ) ?? DmnBuiltInDataType.Undefined;
         return { typeRef, itemDefinition: allDataTypesById.get(typeRef)?.itemDefinition };
       }
     }
-  }, [dmnEditorStoreApi, externalModelsByNamespace, props.boxedExpressionIndex, selectedObjectInfos?.expressionPath]);
+  }, [
+    cellMustHaveSameTypeAsRoot,
+    dmnEditorStoreApi,
+    externalModelsByNamespace,
+    root?.cell,
+    root?.expressionPath,
+    selectedObjectInfos?.expressionPath,
+  ]);
 
-  const updater = useBoxedExpressionUpdater<DMN15__tLiteralExpression>(selectedObjectInfos?.expressionPath ?? []);
-
-  const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tLiteralExpression, [selectedObjectInfos?.cell]);
+  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tLiteralExpression>>(
+    selectedObjectInfos?.expressionPath ?? []
+  );
 
   return (
     <>
@@ -85,7 +118,11 @@ export function DecisionTableOutputRuleCell(props: {
             alternativeFieldName={"Output header type"}
             isReadonly={true}
             dmnEditorRootElementRef={dmnEditorRootElementRef}
-            typeRef={headerType.itemDefinition?.["@_name"] ?? headerType.typeRef}
+            typeRef={
+              cellMustHaveSameTypeAsRoot
+                ? (root?.cell as Normalized<BoxedDecisionTable> | undefined)?.["@_typeRef"]
+                : headerType.itemDefinition?.["@_name"] ?? headerType.typeRef
+            }
           />
         </>
       )}

@@ -39,7 +39,6 @@
   </properties>
 
   <dependencies>
-
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
@@ -97,7 +96,6 @@
     </dependency>
 
     <!-- Errai -->
-
 
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
@@ -165,7 +163,5 @@
       <artifactId>gwt-user</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
-
 </project>

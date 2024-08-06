@@ -45,8 +45,8 @@ This repository contains tooling applications and libraries for KIE projects.
 
 To build and test all packages of the Apache KIE Tools project, you're going to need:
 
-- Node `18` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
-- pnpm `8.7.0` _(To install, follow these instructions: https://pnpm.io/installation#using-npm)_
+- Node `20` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
+- pnpm `9.3.0` _(To install, follow these instructions: https://pnpm.io/installation#using-npm)_
 - Maven `3.9.6`
 - Java `17`
 - Go `1.21.9` _(To install, follow these instructions: https://go.dev/doc/install)_
@@ -114,6 +114,66 @@ Bootstrapping installs the necessary dependencies for each package.
 > **ℹ️ NOTE**
 >
 > Final artifacts will be in `{packages,examples}/*/dist` directories.
+
+---
+
+## Reproducible Builds for _maven-based_ packages
+
+It is mandatory that any _maven-based_ package that releases artifacts runs [Reproducible Builds](https://reproducible-builds.org/)
+to build it's artifacts, in this case, in our `build:prod` scripts.
+
+`@kie-tools/maven-base` provides the `reproducible-build` `maven` profile to enable _Reproducible Builds_ in our builds.
+To use it follow the steps:
+
+- Make sure the `package.json` depends on `@kie-tools/maven-base`:
+
+```json
+{
+  "dependencies": {
+    "@kie-tools/maven-base": "workspace:*"
+  }
+}
+```
+
+- Make the package `pom.xml` has `kie-tools-maven-base` as a parent and declares the `project.build.outputTimestamp` property like:
+
+```xml
+<project>
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-tools-maven-base</artifactId>
+    <version>${revision}</version>
+    <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
+  </parent>
+  ...
+  <properties>
+    <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
+  </properties>
+  ...
+<projec>
+```
+
+- In your `package.json` scripts, enable the _Reproducible Build_ profile adding the `-Dreproducible` argument in `build:prod` scripts, like:
+
+```json
+{
+  "scripts": {
+    "build:prod": "pnpm lint && run-script-os",
+    "build:prod:darwin:linux": "mvn clean deploy [...other maven options...] -Dreproducible",
+    "build:prod:win32": "pnpm powershell \"mvn clean deploy [...other maven options...] `-Dreproducible\""
+  }
+}
+```
+
+> IMPORTANT: the current version of the `maven-artifact-plugin` (3.4.1) used in `kie-tools` bans the `maven-flatten-plugin` that
+> we use to generate deployable artifacts using the dynamic `${revision}` variable. You can check the full list of banned
+> plugins [here](https://maven.apache.org/plugins-archives/maven-artifact-plugin-3.4.1/plugin-issues.html).
+> The issue that caused the ban [flatten-maven-plugin/issues/256](https://github.com/mojohaus/flatten-maven-plugin/issues/256) was a result
+> of change in `maven` behaviour between `v3.8.1` and `v3.8.2`, and isn't a problem on the `maven-flatten-plugin`.
+> Actually, in later versions of the `maven-artifact-plugin` the ban got revoked.
+> Having this in mind, and due to the fact that `kie-tools` requires newer `maven` versions, our _Reproducible Builds_ require
+> temporarily overriding the list of banned plugins, until we upgrade to a newer `maven-artifact-plugin` version.
+> This will be addressed by https://github.com/apache/incubator-kie-issues/issues/1371
 
 ---
 

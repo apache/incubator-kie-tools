@@ -1,22 +1,19 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "extends": "@kie-tools/tsconfig/tsconfig.esm.json",
   "compilerOptions": {
-    "module": "esnext",
-    "moduleResolution": "node",
     "declaration": false,
     "declarationMap": false,
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "es6"
+    "esModuleInterop": true,
+    "jsx": "react-jsx"
   },
-  "include": ["src"],
 
   // Required to make Webpack TS config work. See https://github.com/webpack/webpack-cli/issues/2458#issuecomment-1157987399
   "ts-node": {
     "esm": true,
     "compilerOptions": {
       "esModuleInterop": true,
-      "module": "CommonJS"
+      "module": "CommonJS",
+      "moduleResolution": "node"
     }
   }
 }

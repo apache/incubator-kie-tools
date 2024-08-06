@@ -23,17 +23,13 @@ module.exports = composeEnv(
   [require("@kie-tools/root-env/env"), require("@kie-tools/serverless-logic-web-tools-base-builder-image-env/env")],
   {
     vars: varsWithName({
-      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags: {
-        default: "latest",
-        description: "",
-      },
       SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKubectlVersion: {
         default: "v1.27.3",
         description: "",
       },
       /* (begin) This part of the file is referenced in `scripts/update-kogito-version` */
       SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag: {
-        default: "999-20240509",
+        default: "999-20240623",
         description: "",
       },
       /* end */
@@ -41,7 +37,6 @@ module.exports = composeEnv(
     get env() {
       return {
         baseBuilderImage: {
-          buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags),
           kubectlVersion: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKubectlVersion),
           kogitoImageTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag),
         },

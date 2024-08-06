@@ -18,7 +18,7 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react";
-import { BoxedDecisionTable, DmnBuiltInDataType } from "../../../src/api";
+import { BoxedDecisionTable, DmnBuiltInDataType, Normalized } from "../../../src/api";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/BoxedExpressionEditor";
 import {
   beeGwtService,
@@ -40,7 +40,7 @@ type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
 export const findEmployeesDataTypes = [...dataTypes, { name: "tPerson", isCustom: true }];
 
-export const canDriveExpressionDefinition: BoxedDecisionTable = {
+export const canDriveExpressionDefinition: Normalized<BoxedDecisionTable> = {
   __$$element: "decisionTable",
   "@_id": "_21608B6A-1D9E-426D-86CF-B0CA7AB20D31",
   "@_label": "Can drive?",

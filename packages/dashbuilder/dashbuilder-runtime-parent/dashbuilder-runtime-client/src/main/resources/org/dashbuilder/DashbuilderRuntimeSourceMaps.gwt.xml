@@ -20,11 +20,8 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.4.0//EN"
   "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module rename-to="org.dashbuilder.DashbuilderRuntime">
-
   <inherits name="org.dashbuilder.DashbuilderRuntime" />
 
   <set-property name="compiler.useSourceMaps" value="true" />
   <set-configuration-property name="includeSourceMapUrl" value="sourcemaps/__HASH___sourceMap__FRAGMENT__.json" />
-
-
 </module>

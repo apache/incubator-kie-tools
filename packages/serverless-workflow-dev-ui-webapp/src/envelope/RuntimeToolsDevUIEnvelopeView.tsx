@@ -36,59 +36,60 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
     const [omittedWorkflowTimelineEvents, setOmittedWorkflowTimelineEvents] = React.useState<string[]>([]);
     const [diagramPreviewSize, setDiagramPreviewSize] = React.useState<DiagramPreviewSize>();
     const [isStunnerEnabled, setIsStunnerEnabled] = React.useState<boolean>(false);
+    const [isLocalCluster, setIsLocalCluster] = React.useState<boolean>(false);
 
-    useImperativeHandle(
-      forwardingRef,
-      () => {
-        return {
-          setDataIndexUrl: (dataIndexUrl) => {
-            setDataIndexUrl(dataIndexUrl);
-          },
-          navigateTo: (page) => {
-            setNavigate(page);
-          },
-          setDevUIUrl: (url) => {
-            setDevUIUrl(url);
-          },
-          setOpenApiBaseUrl: (baseUrl) => {
-            setOpenApiBaseUrl(baseUrl);
-          },
-          setOpenApiPath: (path) => {
-            setOpenApiPath(path);
-          },
-          setWorkflowEnabled: (isWorkflowEnabled) => {
-            setWorkflowEnabled(isWorkflowEnabled);
-          },
-          setAvailablePages: (availablePages) => {
-            setAvailablePages(availablePages);
-          },
-          setOmittedWorkflowTimelineEvents: (omittedWorkflowTimelineEvents) => {
-            setOmittedWorkflowTimelineEvents(omittedWorkflowTimelineEvents);
-          },
-          setDiagramPreviewSize: (diagramPreviewSize) => {
-            setDiagramPreviewSize(diagramPreviewSize);
-          },
-          setIsStunnerEnabled: (isStunnerEnabled) => {
-            setIsStunnerEnabled(isStunnerEnabled);
-          },
-        };
-      },
-      []
-    );
+    useImperativeHandle(forwardingRef, () => {
+      return {
+        setDataIndexUrl: (dataIndexUrl) => {
+          setDataIndexUrl(dataIndexUrl);
+        },
+        navigateTo: (page) => {
+          setNavigate(page);
+        },
+        setDevUIUrl: (url) => {
+          setDevUIUrl(url);
+        },
+        setOpenApiBaseUrl: (baseUrl) => {
+          setOpenApiBaseUrl(baseUrl);
+        },
+        setOpenApiPath: (path) => {
+          setOpenApiPath(path);
+        },
+        setWorkflowEnabled: (isWorkflowEnabled) => {
+          setWorkflowEnabled(isWorkflowEnabled);
+        },
+        setAvailablePages: (availablePages) => {
+          setAvailablePages(availablePages);
+        },
+        setOmittedWorkflowTimelineEvents: (omittedWorkflowTimelineEvents) => {
+          setOmittedWorkflowTimelineEvents(omittedWorkflowTimelineEvents);
+        },
+        setDiagramPreviewSize: (diagramPreviewSize) => {
+          setDiagramPreviewSize(diagramPreviewSize);
+        },
+        setIsStunnerEnabled: (isStunnerEnabled) => {
+          setIsStunnerEnabled(isStunnerEnabled);
+        },
+        setIsLocalCluster: (isLocalCluster) => {
+          setIsLocalCluster(isLocalCluster);
+        },
+      };
+    }, []);
     return (
       <>
         {isWorkflowEnabled && navigate.length > 0 && (
           <RuntimeTools
+            availablePages={availablePages}
             dataIndexUrl={dataIndexUrl}
+            devUIUrl={devUIUrl}
+            diagramPreviewSize={diagramPreviewSize}
+            isLocalCluster={isLocalCluster}
+            isStunnerEnabled={isStunnerEnabled}
+            isWorkflowEnabled={isWorkflowEnabled}
             navigate={navigate}
+            omittedWorkflowTimelineEvents={omittedWorkflowTimelineEvents}
             openApiBaseUrl={openApiBaseUrl}
             openApiPath={openApiPath}
-            devUIUrl={devUIUrl}
-            isWorkflowEnabled={isWorkflowEnabled}
-            availablePages={availablePages}
-            omittedWorkflowTimelineEvents={omittedWorkflowTimelineEvents}
-            diagramPreviewSize={diagramPreviewSize}
-            isStunnerEnabled={isStunnerEnabled}
           />
         )}
       </>

@@ -21,10 +21,6 @@ pipeline {
         timeout(time: 240, unit: 'MINUTES')
     }
 
-    parameters {
-        string(description: 'Image tag', name: 'IMAGE_TAG', defaultValue: 'latest')
-    }
-
     stages {
         stage('Load local shared scripts') {
             steps {
@@ -38,7 +34,7 @@ pipeline {
         stage('Check dependencies consistency') {
             agent {
                 docker {
-                    image "quay.io/kie-tools/kie-tools-ci-build:${params.IMAGE_TAG}"
+                    image "docker.io/apache/incubator-kie-tools-ci-build:${env.BRANCH_NAME}"
                 }
             }
 
@@ -49,19 +45,10 @@ pipeline {
                     }
                 }
 
-                stage('Checkout Apache KIE Tools (Simulated squashed merge)') {
+                stage('Checkout kie-tools') {
                     steps {
                         dir('kie-tools') {
-                            script {
-                                githubUtils.checkoutRepoSquashedMerge(
-                                    env.CHANGE_AUTHOR,
-                                    env.CHANGE_BRANCH,
-                                    "https://github.com/${env.CHANGE_AUTHOR}/${pipelineVars.githubRepositoryName}.git",
-                                    env.CHANGE_TARGET ?: env.BRANCH_NAME,
-                                    "https://github.com/${pipelineVars.githubRepositoryOrg}/${pipelineVars.githubRepositoryName}.git",
-                                    "${pipelineVars.kieToolsBotGithubCredentialsId}"
-                                )
-                            }
+                            checkout scm
                         }
                     }
                 }
