@@ -217,9 +217,11 @@ test.describe("Move external node - Decision", () => {
 
     await expect(diagram.get()).toHaveScreenshot("move-external-decision-out-from-decision-service-before.png");
 
-    await nodes.move({ name: "Sum", targetPosition: { x: 400, y: 10 } });
-    await nodes.move({ name: "Diff", targetPosition: { x: 400, y: 200 } });
+    await nodes.move({ name: "Sum", targetPosition: { x: 530, y: 100 } });
+    await nodes.move({ name: "Diff", targetPosition: { x: 530, y: 200 } });
     await nodes.move({ name: DefaultNodeName.DECISION_SERVICE, targetPosition: { x: 120, y: 200 } });
+
+    await diagram.resetFocus();
 
     await expect(diagram.get()).toHaveScreenshot("move-external-decision-out-from-decision-service-after.png");
   });
