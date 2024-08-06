@@ -1009,4 +1009,14 @@ test.describe("Resizing", () => {
       await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested-resized-using-match.png");
     });
   });
+
+  test.describe("Conditional expression", async () => {
+    test("should resize a Conditional", async ({ bee, page, resizing, stories }) => {});
+
+    test("should resize a Conditional - if", async ({ bee, page, resizing, stories }) => {});
+
+    test("should resize a Conditional - then", async ({ bee, page, resizing, stories }) => {});
+
+    test("should resize a Conditional - else", async ({ bee, page, resizing, stories }) => {});
+  });
 });
