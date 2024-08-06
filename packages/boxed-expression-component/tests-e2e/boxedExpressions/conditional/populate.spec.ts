@@ -45,8 +45,36 @@ test.describe("Populate Boxed Conditional", () => {
     );
   });
 
-  test("should create the Monthly Fee Conditional", async ({ stories }) => {
+  test("should create the Monthly Fee Conditional", async ({ bee, stories }) => {
     await stories.openBoxedConditional();
+
+    // HEADER
+    await bee.expression.asConditional().expressionHeaderCell.open();
+    await bee.expression.asConditional().expressionHeaderCell.setName({ name: "MonthlyFee", close: false });
+    await bee.expression.asConditional().expressionHeaderCell.setDataType({ dataType: "number", close: true });
+
+    // IF
+    await bee.expression.asConditional().if.expression.asLiteral().fill('ProdctType = "STANDARD LOAN"');
+
+    // THEN
+    await bee.expression.asConditional().then.expression.asLiteral().fill("20");
+
+    // ELSE
+    await bee.expression.asConditional().else.expression.asLiteral().equalsSignCell.open();
+    await bee.expression.asConditional().else.expression.asLiteral().equalsSignCell.reset();
+    await bee.expression.asConditional().else.selectExpressionMenu.selectConditional();
+    await bee.expression.asConditional().else.expression.asConditional().if.selectExpressionMenu.selectLiteral();
+    await bee.expression
+      .asConditional()
+      .else.expression.asConditional()
+      .if.expression.asLiteral()
+      .fill('ProdctType = "SPECIAL OFFERING"');
+    await bee.expression.asConditional().else.expression.asConditional().then.selectExpressionMenu.selectLiteral();
+    await bee.expression.asConditional().else.expression.asConditional().then.expression.asLiteral().fill("25");
+    await bee.expression.asConditional().else.expression.asConditional().else.selectExpressionMenu.selectLiteral();
+    await bee.expression.asConditional().else.expression.asConditional().else.expression.asLiteral().fill("null");
+
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-conditional-monthly-fee.png");
   });
 
   test("should create a nested Conditional", async ({ bee, stories }) => {
