@@ -32,22 +32,22 @@ import { xmlHrefToQName } from "../xml/xmlHrefToQName";
 
 export function addDecisionToDecisionService({
   definitions,
-  decisionId,
+  decisionHref,
   decisionServiceId,
   drdIndex,
   snapGrid,
   externalModelsByNamespace,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
-  decisionId: string;
+  decisionHref: string;
   decisionServiceId: string;
   drdIndex: number;
   snapGrid: SnapGrid;
   externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
-  console.debug(`DMN MUTATION: Adding Decision '${decisionId}' to Decision Service '${decisionServiceId}'`);
+  console.debug(`DMN MUTATION: Adding Decision '${decisionHref}' to Decision Service '${decisionServiceId}'`);
 
-  const href = parseXmlHref(decisionId);
+  const href = parseXmlHref(decisionHref);
 
   const externalModel = externalModelsByNamespace?.[href.namespace ?? ""];
   if (href.namespace && !externalModel) {

@@ -159,7 +159,7 @@ export function ExternalNodesPanel() {
                           externalDrgElementId: drgElement["@_id"]!,
                         })
                       }
-                      data-testid={`kie-tools--dmn-editor--external-node-${namespace}-${drgElement["@_name"]}`}
+                      data-testid={`kie-tools--dmn-editor--external-node-${_import["@_name"] === "" ? _import["@_id"] : _import["@_name"]}-${drgElement["@_name"]}`}
                     >
                       <Flex
                         alignItems={{ default: "alignItemsCenter" }}

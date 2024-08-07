@@ -26,18 +26,18 @@ import { ExternalModelsIndex } from "../DmnEditor";
 
 export function deleteDecisionFromDecisionService({
   definitions,
-  decisionId,
+  decisionHref,
   decisionServiceId,
   externalModelsByNamespace,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
-  decisionId: string;
+  decisionHref: string;
   decisionServiceId: string;
   externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
-  console.debug(`DMN MUTATION: Deleting Decision '${decisionId}' from Decision Service '${decisionServiceId}'`);
+  console.debug(`DMN MUTATION: Deleting Decision '${decisionHref}' from Decision Service '${decisionServiceId}'`);
 
-  const href = parseXmlHref(decisionId);
+  const href = parseXmlHref(decisionHref);
 
   const externalModel = externalModelsByNamespace?.[href.namespace ?? ""];
   if (href.namespace && !externalModel) {
