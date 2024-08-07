@@ -54,7 +54,7 @@ export function addDecisionToDecisionService({
     throw new Error(`DMN MUTATION: Namespace '${href.namespace}' not found.`);
   }
 
-  if (externalModel && (externalModel.model as Normalized<DmnLatestModel>).definitions) {
+  if (href.namespace) {
     const externalDrgs = (externalModel.model as Normalized<DmnLatestModel>).definitions.drgElement;
     const decision = externalDrgs?.find((drgElement) => drgElement["@_id"] === href.id);
     if (decision?.__$$element !== "decision") {
