@@ -1016,7 +1016,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                     .getDiagramData(externalModelsByNamespace)
                     .nodesById.get(dropTargetNode.id)!.data.dmnObject!["@_id"]!,
                   snapGrid: state.diagram.snapGrid,
-                  externalModelsByNamespace: externalModelsByNamespace,
+                  externalModelsByNamespace,
                 });
               }
             } else {
