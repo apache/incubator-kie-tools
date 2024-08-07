@@ -11,6 +11,14 @@
     {
       "filePath": "./src/bpmn/index.ts",
       "outFile": "./dist/bpmn/index.d.ts"
+    },
+    {
+      "filePath": "./src/common/Editor.ts",
+      "outFile": "./dist/common/Editor.d.ts"
+    },
+    {
+      "filePath": "./src/common/EditorResources.ts",
+      "outFile": "./dist/common/EditorResources.d.ts"
     }
   ]
 }
