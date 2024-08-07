@@ -130,7 +130,7 @@ test.describe("Populate Boxed Conditional", () => {
     await expect(bee.getContainer()).toHaveScreenshot("nested-boxed-conditional--reset-state.png");
   });
 
-  test("should copy and paste Conditional", async ({ browserName, context, stories }) => {
+  test("should copy and paste Conditional", async ({ bee, browserName, context, stories }) => {
     test.skip(
       browserName === "webkit",
       "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
@@ -139,5 +139,14 @@ test.describe("Populate Boxed Conditional", () => {
     await context.grantPermissions(["clipboard-read", "clipboard-write"]);
 
     await stories.openBoxedConditional();
+
+    // Copy the root of the expression
+    await bee.expression.header.copy();
+
+    // Paste it recursively as 'if' expression
+    await bee.expression.asConditional().if.expression.asLiteral().equalsSignCell.open();
+    await bee.expression.asConditional().if.expression.asLiteral().equalsSignCell.paste();
+
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-conditional-copy-and-paste-recursively.png");
   });
 });

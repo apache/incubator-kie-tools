@@ -26,6 +26,10 @@ export class EqualsSignCell {
     await this.locator.nth(0).click({ button: "right" });
   }
 
+  public async paste() {
+    await this.locator.page().getByTestId("kie-tools--bee--context-menu-container").getByText("Paste").click();
+  }
+
   public async reset() {
     await this.locator.page().getByTestId("kie-tools--bee--context-menu-container").getByText("Reset").click();
   }
