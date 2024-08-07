@@ -52,7 +52,3 @@ Please see the module's [README file](workflowproj/README.md).
 ## Development and Contributions
 
 Contributing is easy, just take a look at our [contributors](docs/CONTRIBUTING.md)'guide.
-
-## Productization notes
-
-In order to productize the Red Hat OpenShift Serverless Logic Operator read the notes into the [productization](docs/PRODUCTIZATION.md)'section.
