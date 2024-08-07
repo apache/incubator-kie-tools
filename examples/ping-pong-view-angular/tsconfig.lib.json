@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist/wc/lib",
+    "outDir": "./dist/wc",
     "types": []
   },
   "files": ["lib/index.ts"]
