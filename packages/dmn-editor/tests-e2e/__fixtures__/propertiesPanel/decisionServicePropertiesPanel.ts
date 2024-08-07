@@ -122,15 +122,21 @@ export class DecisionServicePropertiesPanel extends PropertiesPanelBase {
   }
 
   public async getOutputDecisions() {
-    return (await this.panel()
-      .getByTestId("kie-tools--dmn-editor--decision-service-output-decisions")
-      .textContent())!.trim();
+    return (
+      await this.panel()
+        .getByTestId("kie-tools--dmn-editor--decision-service-output-decisions")
+        .getByRole("listitem")
+        .allTextContents()
+    ).map((content) => content.trim());
   }
 
   public async getEncapsulatedDecisions() {
-    return (await this.panel()
-      .getByTestId("kie-tools--dmn-editor--decision-service-encapsulated-decisions")
-      .textContent())!.trim();
+    return (
+      await this.panel()
+        .getByTestId("kie-tools--dmn-editor--decision-service-encapsulated-decisions")
+        .getByRole("listitem")
+        .allTextContents()
+    ).map((content) => content.trim());
   }
 
   public async getInputDecisions() {

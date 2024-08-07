@@ -161,17 +161,18 @@ export function DecisionServiceProperties({
         </ClipboardCopy>
       </FormGroup>
 
-      <FormGroup label="Output decisions">
+      <FormGroup label="Output decisions" data-testid={"kie-tools--dmn-editor--decision-service-output-decisions"}>
         <DecisionServiceElementList
-          elementListDataTestId={"kie-tools--dmn-editor--decision-service-output-decisions"}
           decisionServiceNamespace={namespace}
           elements={decisionService.outputDecision}
           allDrgElementsByHref={allDrgElementsByHref}
         />
       </FormGroup>
-      <FormGroup label="Encapsulated decisions">
+      <FormGroup
+        label="Encapsulated decisions"
+        data-testid={"kie-tools--dmn-editor--decision-service-encapsulated-decisions"}
+      >
         <DecisionServiceElementList
-          elementListDataTestId={"kie-tools--dmn-editor--decision-service-encapsulated-decisions"}
           decisionServiceNamespace={namespace}
           elements={decisionService.encapsulatedDecision}
           allDrgElementsByHref={allDrgElementsByHref}
@@ -179,9 +180,8 @@ export function DecisionServiceProperties({
       </FormGroup>
 
       <Divider />
-      <FormGroup label="Input decisions">
+      <FormGroup label="Input decisions" data-testid={"kie-tools--dmn-editor--decision-service-input-decisions"}>
         <DraggableDecisionServiceElementList
-          elementListDataTestId={"kie-tools--dmn-editor--decision-service-input-decisions"}
           decisionServiceNamespace={namespace}
           elements={decisionService.inputDecision}
           allDrgElementsByHref={allDrgElementsByHref}
@@ -194,9 +194,8 @@ export function DecisionServiceProperties({
           isDisabled={isReadonly}
         />
       </FormGroup>
-      <FormGroup label="Input data">
+      <FormGroup label="Input data" data-testid={"kie-tools--dmn-editor--decision-service-input-data"}>
         <DraggableDecisionServiceElementList
-          elementListDataTestId={"kie-tools--dmn-editor--decision-service-input-data"}
           decisionServiceNamespace={namespace}
           elements={decisionService.inputData}
           allDrgElementsByHref={allDrgElementsByHref}
@@ -236,17 +235,15 @@ export function DecisionServiceElementList({
   decisionServiceNamespace,
   elements,
   allDrgElementsByHref,
-  elementListDataTestId,
 }: {
   decisionServiceNamespace: string | undefined;
   elements: Normalized<DMN15__tDecisionService>["outputDecision"];
   allDrgElementsByHref: AllKnownDrgElementsByHref;
-  elementListDataTestId: string;
 }) {
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
 
   return (
-    <ul data-testid={elementListDataTestId}>
+    <ul>
       {(elements ?? []).length <= 0 && (
         <li style={{ paddingLeft: "32px" }}>
           <small>
@@ -291,14 +288,12 @@ export function DraggableDecisionServiceElementList({
   allDrgElementsByHref,
   onChange,
   isDisabled,
-  elementListDataTestId,
 }: {
   decisionServiceNamespace: string | undefined;
   elements: Normalized<DMN15__tDecisionService>["outputDecision"];
   allDrgElementsByHref: AllKnownDrgElementsByHref;
   onChange: (hrefs: Normalized<DMN15__tDMNElementReference>[] | undefined) => void;
   isDisabled: boolean;
-  elementListDataTestId: string;
 }) {
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const [keys, setKeys] = React.useState(() => elements?.map((e) => e["@_href"]) ?? []);
@@ -363,7 +358,7 @@ export function DraggableDecisionServiceElementList({
   );
 
   return (
-    <ul data-testid={elementListDataTestId}>
+    <ul>
       {(elements ?? []).length <= 0 && (
         <li style={{ paddingLeft: "32px" }}>
           <small>

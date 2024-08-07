@@ -53,7 +53,7 @@ test.describe("Model Decision Service", () => {
       expect(await decisionServicePropertiesPanel.getInvokingThisDecisionServiceInFeel()).toEqual(
         "New Decision Service()"
       );
-      expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual("New Decision");
+      expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual(["New Decision"]);
     });
 
     test("Decision Service Encapsulated Decisions Signature should be not empty", async ({
@@ -76,7 +76,7 @@ test.describe("Model Decision Service", () => {
       expect(await decisionServicePropertiesPanel.getInvokingThisDecisionServiceInFeel()).toEqual(
         "New Decision Service()"
       );
-      expect(await decisionServicePropertiesPanel.getEncapsulatedDecisions()).toEqual("New Decision");
+      expect(await decisionServicePropertiesPanel.getEncapsulatedDecisions()).toEqual(["New Decision"]);
     });
 
     test("Decision Service Input Data Signature should be not empty", async ({
@@ -252,8 +252,8 @@ test.describe("Model Decision Service", () => {
 
         await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
         await decisionServicePropertiesPanel.open();
-        expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual("A");
-        expect(await decisionServicePropertiesPanel.getEncapsulatedDecisions()).toEqual("B");
+        expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual(["A"]);
+        expect(await decisionServicePropertiesPanel.getEncapsulatedDecisions()).toEqual(["B"]);
       });
 
       test("Decision Service Decision Signature should not contain deleted Output Decision", async ({
@@ -266,7 +266,7 @@ test.describe("Model Decision Service", () => {
         });
         await nodes.delete({ name: "A" });
         await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
-        expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual("(Empty)");
+        expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual(["(Empty)"]);
       });
 
       test("Decision Service Decision Signature should not contain deleted Encapsulated Decision", async ({
@@ -279,7 +279,7 @@ test.describe("Model Decision Service", () => {
         });
         await nodes.delete({ name: "B" });
         await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
-        expect(await decisionServicePropertiesPanel.getEncapsulatedDecisions()).toEqual("(Empty)");
+        expect(await decisionServicePropertiesPanel.getEncapsulatedDecisions()).toEqual(["(Empty)"]);
       });
     });
 
@@ -300,7 +300,7 @@ test.describe("Model Decision Service", () => {
 
         await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
         await decisionServicePropertiesPanel.open();
-        expect(await decisionServicePropertiesPanel.getEncapsulatedDecisions()).toEqual(DefaultNodeName.DECISION);
+        expect(await decisionServicePropertiesPanel.getEncapsulatedDecisions()).toEqual([DefaultNodeName.DECISION]);
       });
 
       test("Decision Service should allow to add connected Decision from a contained Decision", async ({
@@ -331,7 +331,7 @@ test.describe("Model Decision Service", () => {
         await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
         await decisionServicePropertiesPanel.open();
 
-        expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual("A, New Decision");
+        expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual(["A, New Decision"]);
       });
 
       test("Decision Service should allow to move contained Decision by a keyboard without crossing sections", async ({
@@ -356,7 +356,7 @@ test.describe("Model Decision Service", () => {
 
         await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
         await decisionServicePropertiesPanel.open();
-        expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual("New Decision");
+        expect(await decisionServicePropertiesPanel.getOutputDecisions()).toEqual(["New Decision"]);
 
         await expect(diagram.get()).toHaveScreenshot("move-decision-in-decision-service-by-keyboard.png");
       });
