@@ -55,7 +55,7 @@ export function addDecisionToDecisionService({
   }
 
   if (href.namespace) {
-    const externalDrgs = (externalModel.model as Normalized<DmnLatestModel>).definitions.drgElement;
+    const externalDrgs = (externalModel?.model as Normalized<DmnLatestModel>).definitions.drgElement;
     const decision = externalDrgs?.find((drgElement) => drgElement["@_id"] === href.id);
     if (decision?.__$$element !== "decision") {
       throw new Error(
