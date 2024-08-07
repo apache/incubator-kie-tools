@@ -33,9 +33,11 @@ export class Monaco {
       await args.monacoParentLocator.getByTestId("monaco-container").dblclick();
     }
 
-    if (this.projectName === ProjectName.GOOGLE_CHROME) {
-      // Google chromes fill function is not always erasing the input content
+    if (this.projectName !== ProjectName.WEBKIT) {
       await this.page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").press("Control+A");
+    }
+    if (this.projectName === ProjectName.WEBKIT) {
+      await this.page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").press("Meta+A");
     }
     // FEEL text input selector when the monaco editor is selected.
     await this.page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill(args.content);

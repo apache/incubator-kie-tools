@@ -3,7 +3,8 @@
   "version": 1,
   "newProjectRoot": "projects",
   "cli": {
-    "packageManager": "pnpm"
+    "packageManager": "pnpm",
+    "analytics": false
   },
   "projects": {
     "ping-pong-view-angular": {
@@ -65,21 +66,10 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "configurations": {
-            "production": {
-              "browserTarget": "ping-pong-view-angular:build:production"
-            },
-            "development": {
-              "browserTarget": "ping-pong-view-angular:build:development"
-            }
-          },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "ping-pong-view-angular:build"
-          }
+          "builder": "@angular-devkit/build-angular:extract-i18n"
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
@@ -145,6 +135,5 @@
         }
       }
     }
-  },
-  "defaultProject": "ping-pong-view-angular"
+  }
 }

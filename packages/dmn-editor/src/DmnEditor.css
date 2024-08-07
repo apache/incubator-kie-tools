@@ -22,7 +22,7 @@
   height: 100%;
 }
 
-.kie-dmn-editor--diagram-container {
+.kie-tools--dmn-editor--diagram-container {
   height: 100%;
   position: relative;
 }
@@ -533,8 +533,8 @@
 }
 
 /* (begin) node handles */
-/*  To make sure connection lines are steadly glued to the 
-handles, we make their indicators be ::before elements. The handle 
+/*  To make sure connection lines are steadly glued to the
+handles, we make their indicators be ::before elements. The handle
 itself is a 0px by 0px div, as connection lines can move freely when
 the cursor is inside it. By making it adimensional, that never happens.  */
 .kie-dmn-editor--node-handle.connecting::before {

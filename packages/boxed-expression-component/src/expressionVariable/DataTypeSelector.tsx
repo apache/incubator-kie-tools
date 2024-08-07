@@ -150,7 +150,7 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
     return DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT;
   }, [boundingClientRect]);
   return (
-    <div ref={selectContainerRef} onKeyDown={onKeyDown}>
+    <div ref={selectContainerRef} onKeyDown={onKeyDown} data-testid={"kie-tools--bee--edit-expression-data-type"}>
       <Select
         onKeyDown={(e) => e.stopPropagation()}
         menuAppendTo={menuAppendTo}

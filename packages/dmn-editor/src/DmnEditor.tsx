@@ -359,9 +359,9 @@ export const DmnEditorInternal = ({
                   <DrawerContent panelContent={diagramPropertiesPanel}>
                     <DrawerContentBody>
                       <div
-                        className={"kie-dmn-editor--diagram-container"}
+                        className={"kie-tools--dmn-editor--diagram-container"}
                         ref={diagramContainerRef}
-                        data-testid={"kie-dmn-editor--diagram-container"}
+                        data-testid={"kie-tools--dmn-editor--diagram-container"}
                       >
                         {originalVersion && <DmnVersionLabel version={originalVersion} />}
                         <Diagram ref={diagramRef} container={diagramContainerRef} />
@@ -386,7 +386,9 @@ export const DmnEditorInternal = ({
         </Tab>
 
         <Tab eventKey={DmnEditorTab.DATA_TYPES} title={tabTitle.dataTypes}>
-          {navigationTab === DmnEditorTab.DATA_TYPES && <DataTypes />}
+          <div data-testid={"kie-tools--dmn-editor--data-types-container"}>
+            {navigationTab === DmnEditorTab.DATA_TYPES && <DataTypes />}
+          </div>
         </Tab>
 
         <Tab eventKey={DmnEditorTab.INCLUDED_MODELS} title={tabTitle.includedModels}>

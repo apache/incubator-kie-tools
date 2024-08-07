@@ -199,6 +199,11 @@ export class Nodes {
     }
   }
 
+  public async edit(args: { name: string }) {
+    await this.get({ name: args.name }).hover();
+    await this.get({ name: args.name }).getByText("Edit").click();
+  }
+
   public async selectLabel(args: { name: string }) {
     return this.get({ name: args.name }).locator("span", { hasText: args.name }).dblclick();
   }

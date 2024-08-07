@@ -47,16 +47,19 @@ export class ContextMenu {
       .click({ button: "right" });
   }
 
-  public async openOnInstance(args: { name: string }) {
-    await this.page.getByRole("columnheader", { name: args.name }).click({ button: "right" });
-  }
-
-  public async openOnProperty(args: { name: string; columnNumber: number }) {
-    await this.page.getByRole("columnheader", { name: args.name }).nth(args.columnNumber).click({ button: "right" });
+  public async openOnColumnHeader(args: { name: string; columnNumber?: number }) {
+    await this.page
+      .getByRole("columnheader", { name: args.name })
+      .nth(args.columnNumber ?? 0)
+      .click({ button: "right" });
   }
 
   public async clickMenuItem(args: { menuItem: MenuItem }) {
     await this.page.getByRole("menuitem", { name: `${args.menuItem}` }).click();
+  }
+
+  public getMenuItem(args: { menuItem: MenuItem }) {
+    return this.page.getByRole("menuitem", { name: `${args.menuItem}` });
   }
 
   public getHeading(args: { heading: HeadingType }) {

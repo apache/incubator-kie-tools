@@ -23,26 +23,28 @@ import { CustomLabels } from "../../api/CustomLabels";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-swf-enveloped-components/dist/workflowDetails/api";
 
 interface IOwnProps {
+  availablePages: string[];
   devUIUrl: string;
+  diagramPreviewSize: DiagramPreviewSize;
+  isLocalCluster?: boolean;
+  isStunnerEnabled: boolean;
+  isWorkflowEnabled: boolean;
+  omittedWorkflowTimelineEvents: string[];
   openApiBaseUrl: string;
   openApiPath: string;
-  isWorkflowEnabled: boolean;
-  availablePages: string[];
-  omittedWorkflowTimelineEvents: string[];
-  diagramPreviewSize: DiagramPreviewSize;
-  isStunnerEnabled: boolean;
 }
 
 const DevUIAppContextProvider: React.FC<IOwnProps> = ({
+  availablePages,
+  children,
   devUIUrl,
+  diagramPreviewSize,
+  isLocalCluster,
+  isStunnerEnabled,
+  isWorkflowEnabled: isWorkflowEnabled,
+  omittedWorkflowTimelineEvents,
   openApiBaseUrl,
   openApiPath,
-  isWorkflowEnabled: isWorkflowEnabled,
-  availablePages,
-  omittedWorkflowTimelineEvents,
-  diagramPreviewSize,
-  isStunnerEnabled,
-  children,
 }) => {
   return (
     <RuntimeToolsDevUIAppContext.Provider
@@ -56,6 +58,7 @@ const DevUIAppContextProvider: React.FC<IOwnProps> = ({
           omittedWorkflowTimelineEvents,
           diagramPreviewSize,
           isStunnerEnabled,
+          isLocalCluster,
         })
       }
     >

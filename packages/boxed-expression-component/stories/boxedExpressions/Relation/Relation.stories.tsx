@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/BoxedExpressionEditor";
 import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../../boxedExpressionStoriesWrapper";
@@ -260,6 +259,7 @@ export const Nested: Story = {
       "@_label": "Expression Name",
       contextEntry: [
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "ContextEntry-1",

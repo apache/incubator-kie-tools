@@ -1,17 +1,20 @@
 /*
- * Copyright 2024 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 package org.kie.sonataflow.swf.tools.runtime.rpc;
@@ -43,9 +46,16 @@ public class SonataFlowQuarkusExtensionJsonRPCService {
 
     public static final String ALL_WORKFLOWS_IDS_QUERY = "{ \"operationName\": \"getAllProcessesIds\", \"query\": \"query getAllProcessesIds{  ProcessInstances{ id } }\" }";
 
+    /**
+     * Configures if the sonataflow-quarkus-devui will execute deployed in a k8s.
+     */
+    public static final String IS_LOCAL_CLUSTER = "sonataflow.devui.isLocalCluster";
+
     private WebClient dataIndexWebClient;
 
     private final Vertx vertx;
+
+    private boolean isLocalCluster;
 
     @Inject
     public SonataFlowQuarkusExtensionJsonRPCService(Vertx vertx) {
@@ -54,8 +64,11 @@ public class SonataFlowQuarkusExtensionJsonRPCService {
 
     @PostConstruct
     public void init() {
-        Optional<String> dataIndexURL = ConfigProvider.getConfig().getOptionalValue(DATA_INDEX_URL, String.class);
-        dataIndexURL.ifPresent(this::initDataIndexWebClient);
+        isLocalCluster = ConfigProvider.getConfig().getOptionalValue(IS_LOCAL_CLUSTER, Boolean.class).orElse(true);
+        if (!isLocalCluster) {
+            Optional<String> dataIndexURL = ConfigProvider.getConfig().getOptionalValue(DATA_INDEX_URL, String.class);
+            dataIndexURL.ifPresent(this::initDataIndexWebClient);
+        }
     }
 
     private void initDataIndexWebClient(String dataIndexURL) {
@@ -79,6 +92,10 @@ public class SonataFlowQuarkusExtensionJsonRPCService {
     }
 
     private Uni<String> doQuery(String query, String graphModelName) {
+        if (isLocalCluster) {
+            LOGGER.info("Workflows count in the Workflows card is disabled for local cluster mode");
+            return Uni.createFrom().item("-");
+        }
         if(dataIndexWebClient == null) {
             LOGGER.warn("Cannot perform '{}' query, dataIndexWebClient couldn't be set. Is DataIndex correctly? Please verify '{}' value", graphModelName, DATA_INDEX_URL);
             return Uni.createFrom().item("-");

@@ -15,13 +15,15 @@
    under the License.
 -->
 
-## BPMN and DMN Standalone Editors
+## BPMN and DMN Standalone Editors (classic)
 
 ### Description
 
 This library provides standalone DMN and BPMN Editors (one all-in-one JavaScript file each) that can be embedded into any web application.
 
 A comprehensive API is also provided for setup and interaction with the Editor.
+
+For the new DMN Editor, check the [`@kie-tools/dmn-editor-standalone`](../dmn-editor-standalone/) package.
 
 ### Installation
 
@@ -107,10 +109,6 @@ Some of the incubating project’s releases may not be fully compliant with ASF
 policy. For example, releases may have incomplete or un-reviewed licensing
 conditions. What follows is a list of known issues the project is currently
 aware of (note that this list, by definition, is likely to be incomplete):
-
-- Hibernate, an LGPL project, is being used. Hibernate is in the process of relicensing to ASL v2
-- Some files, particularly test files, and those not supporting comments, may be missing the ASF Licensing Header
--
 
 - Hibernate, an LGPL project, is being used. Hibernate is in the process of
   relicensing to ASL v2

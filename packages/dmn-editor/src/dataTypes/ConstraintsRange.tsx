@@ -224,7 +224,7 @@ export function ConstraintsRange({
             />
           </Tooltip>
         </div>
-        <div style={{ gridArea: "startField" }}>
+        <div style={{ gridArea: "startField" }} data-testid={"kie-tools--dmn-editor--range-constraint-start-value"}>
           {typeHelper.component({
             autoFocus: start === "",
             onBlur: () => onInternalChange(),
@@ -286,7 +286,7 @@ export function ConstraintsRange({
             />
           </Tooltip>
         </div>
-        <div style={{ gridArea: "endField" }}>
+        <div style={{ gridArea: "endField" }} data-testid={"kie-tools--dmn-editor--range-constraint-end-value"}>
           {typeHelper.component({
             autoFocus: start !== "",
             onBlur: () => onInternalChange(),

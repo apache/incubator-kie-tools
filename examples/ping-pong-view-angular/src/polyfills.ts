@@ -66,6 +66,11 @@
  */
 import "zone.js"; // Included with Angular CLI.
 
+// Zone JS messes a different class for promises called __zone_symbol__Promise,
+// making `instanceof Promise` conditions fail.
+// This makes it so that __zone_symbol__Promise has the same prototype as the native Promise.
+Object.setPrototypeOf((window as any).__zone_symbol__Promise.prototype, Promise.prototype);
+
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */

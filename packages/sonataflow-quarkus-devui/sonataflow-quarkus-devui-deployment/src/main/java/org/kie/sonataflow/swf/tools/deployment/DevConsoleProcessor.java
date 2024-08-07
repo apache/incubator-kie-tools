@@ -19,14 +19,12 @@
 package org.kie.sonataflow.swf.tools.deployment;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 
 import io.quarkus.deployment.Capabilities;
 import io.quarkus.devui.spi.JsonRPCProvidersBuildItem;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.kie.sonataflow.swf.tools.runtime.config.DevUIStaticArtifactsRecorder;
 
 import io.quarkus.deployment.IsDevelopment;
@@ -48,6 +46,8 @@ import io.quarkus.vertx.http.deployment.NonApplicationRootPathBuildItem;
 import io.quarkus.vertx.http.deployment.RouteBuildItem;
 import io.quarkus.vertx.http.runtime.management.ManagementInterfaceBuildTimeConfig;
 import org.kie.sonataflow.swf.tools.runtime.rpc.SonataFlowQuarkusExtensionJsonRPCService;
+
+import static org.kie.sonataflow.swf.tools.runtime.rpc.SonataFlowQuarkusExtensionJsonRPCService.IS_LOCAL_CLUSTER;
 
 public class DevConsoleProcessor {
 
@@ -108,11 +108,17 @@ public class DevConsoleProcessor {
 
         String openapiPath = getProperty(configurationBuildItem, systemPropertyBuildItems, "quarkus.smallrye-openapi.path");
         String devUIUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.dev-ui.url");
-        String dataIndexUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.data-index.url");
+        String dataIndexUrl = null;
 
         cardPageBuildItem.addBuildTimeData("extensionBasePath", uiPath);
         cardPageBuildItem.addBuildTimeData("openapiPath", openapiPath);
         cardPageBuildItem.addBuildTimeData("devUIUrl", devUIUrl);
+
+        boolean isLocalCluster = ConfigProvider.getConfig().getOptionalValue(IS_LOCAL_CLUSTER, Boolean.class).orElse(true);
+        cardPageBuildItem.addBuildTimeData("isLocalCluster", isLocalCluster);
+        if (!isLocalCluster) {
+            dataIndexUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.data-index.url");
+        }
         cardPageBuildItem.addBuildTimeData("dataIndexUrl", dataIndexUrl);
 
         cardPageBuildItem.addPage(Page.webComponentPageBuilder()
