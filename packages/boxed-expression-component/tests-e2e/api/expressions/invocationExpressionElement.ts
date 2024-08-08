@@ -100,4 +100,8 @@ class InvocationParameter {
   get descriptionCell() {
     return new NameAndDataTypeCell(this.locator.getByTestId(`kie-tools--bee--expression-column-1`).nth(0));
   }
+
+  get expressionContainerElement() {
+    return this.expressionElement.getContainerElement();
+  }
 }
