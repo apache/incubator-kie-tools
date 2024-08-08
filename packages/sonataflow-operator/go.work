@@ -3,9 +3,7 @@ go 1.21
 use (
 	.
 	./api
-	./bddframework
 	./container-builder
-	./testbdd
 	./workflowproj
 )
 

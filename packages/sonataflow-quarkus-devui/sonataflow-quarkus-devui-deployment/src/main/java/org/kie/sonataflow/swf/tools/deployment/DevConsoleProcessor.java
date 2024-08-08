@@ -108,15 +108,18 @@ public class DevConsoleProcessor {
 
         String openapiPath = getProperty(configurationBuildItem, systemPropertyBuildItems, "quarkus.smallrye-openapi.path");
         String devUIUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.dev-ui.url");
-        String dataIndexUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.data-index.url");
+        String dataIndexUrl = null;
 
         cardPageBuildItem.addBuildTimeData("extensionBasePath", uiPath);
         cardPageBuildItem.addBuildTimeData("openapiPath", openapiPath);
         cardPageBuildItem.addBuildTimeData("devUIUrl", devUIUrl);
-        cardPageBuildItem.addBuildTimeData("dataIndexUrl", dataIndexUrl);
 
-        boolean isLocalCluster = ConfigProvider.getConfig().getOptionalValue(IS_LOCAL_CLUSTER, Boolean.class).orElse(false);
+        boolean isLocalCluster = ConfigProvider.getConfig().getOptionalValue(IS_LOCAL_CLUSTER, Boolean.class).orElse(true);
         cardPageBuildItem.addBuildTimeData("isLocalCluster", isLocalCluster);
+        if (!isLocalCluster) {
+            dataIndexUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.data-index.url");
+        }
+        cardPageBuildItem.addBuildTimeData("dataIndexUrl", dataIndexUrl);
 
         cardPageBuildItem.addPage(Page.webComponentPageBuilder()
                                           .componentLink("qwc-sonataflow-quarkus-devui.js")
