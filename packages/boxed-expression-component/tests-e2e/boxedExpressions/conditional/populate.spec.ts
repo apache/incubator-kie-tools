@@ -60,8 +60,13 @@ test.describe("Populate Boxed Conditional", () => {
     await bee.expression.asConditional().then.expression.asLiteral().fill("20");
 
     // ELSE
-    await bee.expression.asConditional().else.expression.asLiteral().equalsSignCell.open();
-    await bee.expression.asConditional().else.expression.asLiteral().equalsSignCell.reset();
+    await bee.expression.asConditional().else.expression.asLiteral().equalsSignContextMenu.open();
+    await bee.expression
+      .asConditional()
+      .else.expression.asLiteral()
+      .equalsSignContextMenu.option("Reset")
+      .nth(0)
+      .click();
     await bee.expression.asConditional().else.selectExpressionMenu.selectConditional();
     await bee.expression.asConditional().else.expression.asConditional().if.selectExpressionMenu.selectLiteral();
     await bee.expression
@@ -99,16 +104,26 @@ test.describe("Populate Boxed Conditional", () => {
   test("should combine other expressions with the Conditional", async ({ bee, stories }) => {
     await stories.openBoxedConditional();
 
-    await bee.expression.asConditional().if.expression.asLiteral().equalsSignCell.open();
-    await bee.expression.asConditional().if.expression.asLiteral().equalsSignCell.reset();
+    await bee.expression.asConditional().if.expression.asLiteral().equalsSignContextMenu.open();
+    await bee.expression.asConditional().if.expression.asLiteral().equalsSignContextMenu.option("Reset").nth(0).click();
     await bee.expression.asConditional().if.selectExpressionMenu.selectContext();
 
-    await bee.expression.asConditional().then.expression.asLiteral().equalsSignCell.open();
-    await bee.expression.asConditional().then.expression.asLiteral().equalsSignCell.reset();
+    await bee.expression.asConditional().then.expression.asLiteral().equalsSignContextMenu.open();
+    await bee.expression
+      .asConditional()
+      .then.expression.asLiteral()
+      .equalsSignContextMenu.option("Reset")
+      .nth(0)
+      .click();
     await bee.expression.asConditional().then.selectExpressionMenu.selectDecisionTable();
 
-    await bee.expression.asConditional().else.expression.asLiteral().equalsSignCell.open();
-    await bee.expression.asConditional().else.expression.asLiteral().equalsSignCell.reset();
+    await bee.expression.asConditional().else.expression.asLiteral().equalsSignContextMenu.open();
+    await bee.expression
+      .asConditional()
+      .else.expression.asLiteral()
+      .equalsSignContextMenu.option("Reset")
+      .nth(0)
+      .click();
     await bee.expression.asConditional().else.selectExpressionMenu.selectSome();
 
     await expect(bee.getContainer()).toHaveScreenshot("boxed-conditional-with-nested-other-expressions.png");
@@ -144,8 +159,8 @@ test.describe("Populate Boxed Conditional", () => {
     await bee.expression.header.copy();
 
     // Paste it recursively as 'if' expression
-    await bee.expression.asConditional().if.expression.asLiteral().equalsSignCell.open();
-    await bee.expression.asConditional().if.expression.asLiteral().equalsSignCell.paste();
+    await bee.expression.asConditional().if.expression.asLiteral().equalsSignContextMenu.open();
+    await bee.expression.asConditional().if.expression.asLiteral().equalsSignContextMenu.option("Paste").nth(0).click();
 
     await expect(bee.getContainer()).toHaveScreenshot("boxed-conditional-copy-and-paste-recursively.png");
   });
