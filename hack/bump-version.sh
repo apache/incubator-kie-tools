@@ -35,7 +35,7 @@ newMajorMinorVersion=${new_version%.*}
 
 echo "Set new version to ${new_version} (majorMinor = ${newMajorMinorVersion})"
 
-sed -i "s|version: ${old_version}|version: ${new_version}|g" image.yaml
+sed -i "s|version: ${old_version}|version: ${new_version}|g" images/manager.yaml
 
 sed -i "s|^VERSION ?=.*|VERSION ?= ${new_version}|g" Makefile
 sed -i "s|^REDUCED_VERSION ?=.*|REDUCED_VERSION ?= ${newMajorMinorVersion}|g" Makefile
@@ -43,13 +43,6 @@ sed -i "s|newTag:.*|newTag: ${new_version}|g" config/manager/kustomization.yaml
 
 sed -i "s|IMAGE_TAG_BASE ?=.*|IMAGE_TAG_BASE ?= ${imageTag}|g" Makefile
 sed -i "s|newName:.*|newName: ${imageTag}|g" config/manager/kustomization.yaml
-
-# Update sonataflow-* images
-find . -name "*.yaml" -exec sed -i "s|docker.io/apache/incubator-kie-sonataflow-builder.*:${oldMajorMinorVersion}|docker.io/apache/incubator-kie-sonataflow-builder:${newMajorMinorVersion}|" {} +
-sed -i "s|docker.io/apache/incubator-kie-sonataflow-builder.*:${oldMajorMinorVersion}|docker.io/apache/incubator-kie-sonataflow-builder:${newMajorMinorVersion}|" Dockerfile
-
-find . -name "*.yaml" -exec sed -i "s|docker.io/apache/incubator-kie-sonataflow-devmode.*:${oldMajorMinorVersion}|docker.io/apache/incubator-kie-sonataflow-devmode:${newMajorMinorVersion}|" {} +
-sed -i "s|docker.io/apache/incubator-kie-sonataflow-devmode.*:${oldMajorMinorVersion}|docker.io/apache/incubator-kie-sonataflow-devmode:${newMajorMinorVersion}|" Dockerfile
 
 sed -i -r "s|operatorVersion =.*|operatorVersion = \"${new_version}\"|g" version/version.go
 

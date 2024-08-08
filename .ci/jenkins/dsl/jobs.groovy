@@ -92,7 +92,7 @@ void setupDeployJob(JobType jobType) {
         GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
         GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
 
-        OPERATOR_IMAGE_NAME: 'kogito-serverless-operator',
+        OPERATOR_IMAGE_NAME: 'incubator-kie-sonataflow-operator',
         MAX_REGISTRY_RETRIES: 3,
         OPENSHIFT_API_KEY: 'OPENSHIFT_API',
         OPENSHIFT_CREDS_KEY: 'OPENSHIFT_CREDS',
@@ -190,7 +190,7 @@ void setupE2EJob(JobType jobType, String clusterName, Map extraEnv = [:]) {
 
         GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
 
-        OPERATOR_IMAGE_NAME: 'kogito-serverless-operator',
+        OPERATOR_IMAGE_NAME: 'incubator-kie-sonataflow-operator',
         MAX_REGISTRY_RETRIES: 3,
         PROPERTIES_FILE_NAME: 'deployment.properties',
     ])
@@ -214,7 +214,7 @@ void setupWeeklyDeployJob(JobType jobType) {
         GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
         GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
 
-        OPERATOR_IMAGE_NAME: 'kogito-serverless-operator',
+        OPERATOR_IMAGE_NAME: 'incubator-kie-sonataflow-operator',
         MAX_REGISTRY_RETRIES: 3,
         PROPERTIES_FILE_NAME: 'deployment.properties',
 
