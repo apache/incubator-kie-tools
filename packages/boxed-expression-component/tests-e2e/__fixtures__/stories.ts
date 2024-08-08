@@ -66,6 +66,10 @@ export class Stories {
     await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-filter--${type}`)}` ?? "");
   }
 
+  public async openBoxedConditional(type: BoxedExpressionTypes = "base") {
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-conditional--${type}`)}` ?? "");
+  }
+
   public async openBoxedEvery(type: BoxedExpressionTypes = "base") {
     await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-every--${type}`)}` ?? "");
   }
