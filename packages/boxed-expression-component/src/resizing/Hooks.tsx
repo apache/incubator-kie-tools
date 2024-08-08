@@ -68,7 +68,11 @@ export function useNestedExpressionResizingWidthValue(
 
     return Math.max(
       nestedExpressionContainerResizingWidthValue - fixedColumnResizingWidth.value - extraWidth,
-      ...nestedExpressions.map((e) => getExpressionResizingWidth(e, new Map(), widthsById)),
+      ...nestedExpressions.map(
+        (e) =>
+          getExpressionResizingWidth(e, new Map(), widthsById) +
+          (nestedExpressionsExtraWidths?.get(e?.["@_id"] ?? "") ?? 0)
+      ),
       nestedExpressionMinWidth
     );
   }, [
