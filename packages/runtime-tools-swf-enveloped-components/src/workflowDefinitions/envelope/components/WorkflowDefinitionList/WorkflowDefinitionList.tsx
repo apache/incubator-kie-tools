@@ -45,6 +45,18 @@ const WorkflowDefinitionList: React.FC<WorkflowDefinitionListProps & OUIAProps> 
   const [filterWorkflowNames, setFilterWorkflowNames] = useState<string[]>([]);
   const [error, setError] = useState<string>();
 
+  const doQuery = async (): Promise<void> => {
+    try {
+      const response: WorkflowDefinition[] = await driver.getWorkflowDefinitionsQuery();
+      setWorkflowDefinitionList(response);
+      setIsLoading(false);
+    } catch (err) {
+      setError(err.errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!isEnvelopeConnectedToChannel) {
       setIsLoading(true);
@@ -57,16 +69,9 @@ const WorkflowDefinitionList: React.FC<WorkflowDefinitionListProps & OUIAProps> 
   }, [isEnvelopeConnectedToChannel]);
 
   const init = async (): Promise<void> => {
-    try {
-      const response = await driver.getWorkflowDefinitionsQuery();
-      const workflowDefinitionFilter = await driver.getWorkflowDefinitionFilter();
-      setFilterWorkflowNames(workflowDefinitionFilter);
-      setWorkflowDefinitionList(response);
-      setIsLoading(false);
-    } catch (errorContent) {
-      setError(errorContent);
-    }
+    doQuery();
   };
+
   const columns: DataTableColumn[] = [
     getColumn("workflowName", `Workflow Name`),
     getColumn("endpoint", "Endpoint"),
@@ -82,6 +87,11 @@ const WorkflowDefinitionList: React.FC<WorkflowDefinitionListProps & OUIAProps> 
 
   const applyFilter = async (): Promise<void> => {
     await driver.setWorkflowDefinitionFilter(filterWorkflowNames);
+  };
+
+  const doRefresh = async (): Promise<void> => {
+    setIsLoading(true);
+    doQuery();
   };
 
   const filterWorkflowDefinition = (): WorkflowDefinition[] => {
@@ -109,6 +119,7 @@ const WorkflowDefinitionList: React.FC<WorkflowDefinitionListProps & OUIAProps> 
         filterWorkflowNames={filterWorkflowNames}
         setFilterWorkflowNames={setFilterWorkflowNames}
         applyFilter={applyFilter}
+        doRefresh={doRefresh}
       />
       <Divider />
       <DataTable
