@@ -76,6 +76,10 @@ export class Row {
     return this.childExpression.expression;
   }
 
+  get expressionContainerElement() {
+    return this.childExpression.containerElement;
+  }
+
   get selectExpressionMenu() {
     return this.childExpression.selectExpressionMenu;
   }

@@ -108,4 +108,171 @@ test.describe("Create Boxed Filter", () => {
     expect((await jsonModel.getFilterExpression()).in["@_id"]).not.toBeUndefined();
     expect((await jsonModel.getFilterExpression()).match["@_id"]).not.toBeUndefined();
   });
+
+  test.describe("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell", () => {
+    // We're testing the expressions known to be wider than the default Filter Expression width, not all expressions
+    test.beforeEach(async ({ stories, browserName, clipboard }) => {
+      await stories.openBoxedFilter("base");
+    });
+
+    test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - Context Expression", async ({
+      bee,
+      page,
+      stories,
+    }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1147",
+      });
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectContext();
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.containerElement.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-context.png");
+    });
+
+    test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - Decision Table", async ({
+      bee,
+      jsonModel,
+      stories,
+    }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1147",
+      });
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectDecisionTable();
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.containerElement.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-decision-table.png");
+    });
+
+    test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - List", async ({
+      bee,
+      jsonModel,
+      stories,
+    }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1147",
+      });
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectList();
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.containerElement.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-list.png");
+    });
+
+    test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - Invocation", async ({
+      bee,
+      jsonModel,
+      stories,
+    }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1147",
+      });
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectInvocation();
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.containerElement.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-invocation.png");
+    });
+
+    test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - Function", async ({
+      bee,
+      jsonModel,
+      stories,
+    }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1147",
+      });
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectFunction();
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.containerElement.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-function.png");
+    });
+
+    test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - Conditional", async ({
+      bee,
+      jsonModel,
+      stories,
+    }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1147",
+      });
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectConditional();
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.containerElement.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-conditional.png");
+    });
+
+    test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - For", async ({
+      bee,
+      jsonModel,
+      stories,
+    }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1147",
+      });
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectFor();
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.containerElement.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-for.png");
+    });
+
+    test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - Every", async ({
+      bee,
+      jsonModel,
+      stories,
+    }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1147",
+      });
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectEvery();
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.containerElement.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-every.png");
+    });
+
+    test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - Some", async ({
+      bee,
+      jsonModel,
+      stories,
+    }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1147",
+      });
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectSome();
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.containerElement.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-some.png");
+    });
+
+    test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - Filter", async ({
+      bee,
+      jsonModel,
+      stories,
+    }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1147",
+      });
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectFilter();
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.containerElement.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-filter.png");
+    });
+  });
 });

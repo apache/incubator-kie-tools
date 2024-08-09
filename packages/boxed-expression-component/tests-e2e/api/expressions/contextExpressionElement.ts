@@ -104,4 +104,8 @@ export class ContextExpressionEntry {
   get variable() {
     return new NameAndDataTypeCell(this.locator.getByRole("cell").nth(0));
   }
+
+  get containerElement() {
+    return this.childExpression.containerElement;
+  }
 }
