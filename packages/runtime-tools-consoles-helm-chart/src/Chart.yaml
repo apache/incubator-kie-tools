@@ -1,0 +1,13 @@
+apiVersion: v2
+name: incubator-kie-runtime-tools-consoles-helm-chart
+description: A Helm chart to deploy Runtime Tools Consoles on Kubernetes
+type: application
+version: 0.0.0
+appVersion: 0.0.0
+dependencies:
+  - name: management-console
+    version: 0.0.0
+    condition: management-console.enabled
+  - name: task-console
+    version: 0.0.0
+    condition: task-console.enabled

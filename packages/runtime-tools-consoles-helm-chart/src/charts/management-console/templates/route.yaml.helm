@@ -1,0 +1,25 @@
+{{- if and (.Capabilities.APIVersions.Has "route.openshift.io/v1/Route") (.Values.openshiftRoute.enabled) -}}
+{{- $fullName := include "managementConsole.fullname" . -}}
+{{- $svcPort := .Values.service.targetPort -}}
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "managementConsole.labels" . | nindent 4 }}
+  {{- with .Values.openshiftRoute.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  host: {{ tpl .Values.openshiftRoute.host . | quote }}
+  to:
+    name: {{ $fullName }}
+    kind: Service
+  port:
+    targetPort: {{ $svcPort }}
+  {{- with .Values.openshiftRoute.tls }}
+  tls:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}

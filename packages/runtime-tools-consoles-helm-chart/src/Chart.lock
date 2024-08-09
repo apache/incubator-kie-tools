@@ -1,0 +1,9 @@
+dependencies:
+- name: management-console
+  repository: ""
+  version: 0.0.0
+- name: task-console
+  repository: ""
+  version: 0.0.0
+digest: sha256:bd9701735749abd6ed320a0f90d3b9b6dae4ac27b5c7e3b5d72de1037016a3d3
+generated: "2024-08-09T11:12:50.052943-03:00"
