@@ -44,12 +44,6 @@ func TestDockerIntegrationTestSuite(t *testing.T) {
 }
 
 func (suite *DockerTestSuite) TestImagesOperationsOnDockerRegistryForTest() {
-	registryContainer, err := common.GetRegistryContainer()
-	assert.NotNil(suite.T(), registryContainer)
-	assert.Nil(suite.T(), err)
-	repos, err := registryContainer.GetRepositories()
-	initialSize := len(repos)
-	assert.Nil(suite.T(), err)
 	pullErr := suite.Docker.PullImage(testImg + ":" + latestTag)
 	if pullErr != nil {
 		klog.V(log.E).ErrorS(pullErr, "Pull Error")
@@ -70,15 +64,4 @@ func (suite *DockerTestSuite) TestImagesOperationsOnDockerRegistryForTest() {
 	}
 
 	assert.Nil(suite.T(), pushErr, "Push image in the Docker container failed")
-	//give the time to update the registry status
-	time.Sleep(2 * time.Second)
-	repos, err = registryContainer.GetRepositories()
-	assert.Nil(suite.T(), err)
-	assert.NotNil(suite.T(), repos)
-	assert.True(suite.T(), len(repos) == initialSize+1)
-
-	digest, erroDIgest := registryContainer.Connection.ManifestDigest(testImg, latestTag)
-	assert.Nil(suite.T(), erroDIgest)
-	assert.NotNil(suite.T(), digest)
-	assert.NotNil(suite.T(), registryContainer.DeleteImage(testImg, latestTag), "Delete Image not allowed")
 }

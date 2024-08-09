@@ -30,7 +30,6 @@ import (
 	"github.com/stretchr/testify/suite"
 	"k8s.io/klog/v2"
 
-	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/common"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/log"
 )
 
@@ -66,23 +65,4 @@ func (suite *KanikoDockerTestSuite) TestKanikoBuild() {
 	assert.NotNil(suite.T(), imageID, err, "ContainerBuild failed")
 	//@TODO investigate when the code will be in the mono repo
 	//checkImageOnDockerRegistry(suite, imageName, repos, registry)
-}
-
-func checkImageOnDockerRegistry(suite *KanikoDockerTestSuite, imageName string, repos []string, registry common.RegistryContainer) {
-	pushErr := suite.Docker.PushImage(imageName, imageName, "", "")
-	assert.Nil(suite.T(), pushErr)
-	repos, _ = registry.GetRepositories()
-	assert.True(suite.T(), len(repos) == 1)
-}
-
-func checkEmptyDockerRegistry(suite *KanikoDockerTestSuite) (common.RegistryContainer, error, []string) {
-	assert.Truef(suite.T(), suite.RegistryID != "", "Registry not started")
-	registry, err := common.GetRegistryContainer()
-	if err != nil {
-		klog.V(log.E).ErrorS(err, "registry not found")
-	}
-	repos, _ := registry.GetRepositories()
-	assert.True(suite.T(), len(repos) == 0)
-	assert.Nil(suite.T(), err)
-	return registry, err, repos
 }
