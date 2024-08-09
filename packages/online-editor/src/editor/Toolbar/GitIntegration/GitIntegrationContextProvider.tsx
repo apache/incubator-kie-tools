@@ -451,14 +451,13 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
         authInfo,
         insecurelyDisableTlsCertificateValidation,
       });
+      alerts.successfullyUpdatedGistOrSnippetAlert.show();
     } catch (e) {
       alerts.errorAlert.show();
     } finally {
       setGistOrSnippetLoading(false);
       setSyncGistOrSnippetDropdownOpen(false);
     }
-
-    alerts.successfullyUpdatedGistOrSnippetAlert.show();
   }, [
     alerts.errorAlert,
     alerts.successfullyUpdatedGistOrSnippetAlert,
