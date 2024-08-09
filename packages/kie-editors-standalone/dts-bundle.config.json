@@ -1,0 +1,24 @@
+{
+  "compilationOptions": {
+    "preferredConfigPath": "./tsconfig.json"
+  },
+
+  "entries": [
+    {
+      "filePath": "./src/dmn/index.ts",
+      "outFile": "./dist/dmn/index.d.ts"
+    },
+    {
+      "filePath": "./src/bpmn/index.ts",
+      "outFile": "./dist/bpmn/index.d.ts"
+    },
+    {
+      "filePath": "./src/common/Editor.ts",
+      "outFile": "./dist/common/Editor.d.ts"
+    },
+    {
+      "filePath": "./src/common/EditorResources.ts",
+      "outFile": "./dist/common/EditorResources.d.ts"
+    }
+  ]
+}

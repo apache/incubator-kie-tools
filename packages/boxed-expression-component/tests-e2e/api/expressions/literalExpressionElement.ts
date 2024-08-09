@@ -20,7 +20,7 @@
 import { Locator, Page } from "@playwright/test";
 import { Monaco } from "../../__fixtures__/monaco";
 import { NameAndDataTypeCell } from "../nameAndDataTypeCell";
-import { ExpressionCell } from "../expressionContainer";
+import { ContextMenu, ExpressionCell } from "../expressionContainer";
 
 export class LiteralExpressionElement {
   constructor(
@@ -38,6 +38,10 @@ export class LiteralExpressionElement {
 
   get cell() {
     return new ExpressionCell(this.locator.getByRole("cell").nth(0), this.monaco);
+  }
+
+  get equalsSignContextMenu() {
+    return new ContextMenu(this.locator.getByTestId("kie-tools--equals-sign"));
   }
 
   get expressionHeaderCell() {

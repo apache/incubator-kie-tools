@@ -3471,25 +3471,6 @@ importers:
         version: 5.5.3
 
   packages/dmn-editor-standalone:
-    dependencies:
-      '@kie-tools-core/editor':
-        specifier: workspace:*
-        version: link:../editor
-      '@kie-tools-core/envelope-bus':
-        specifier: workspace:*
-        version: link:../envelope-bus
-      '@kie-tools-core/notifications':
-        specifier: workspace:*
-        version: link:../notifications
-      '@kie-tools-core/workspace':
-        specifier: workspace:*
-        version: link:../workspace
-      '@kie-tools/dmn-editor-envelope':
-        specifier: workspace:*
-        version: link:../dmn-editor-envelope
-      minimatch:
-        specifier: ^3.0.5
-        version: 3.1.2
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -3506,21 +3487,36 @@ importers:
       '@kie-tools-core/backend':
         specifier: workspace:*
         version: link:../backend
+      '@kie-tools-core/editor':
+        specifier: workspace:*
+        version: link:../editor
+      '@kie-tools-core/envelope-bus':
+        specifier: workspace:*
+        version: link:../envelope-bus
       '@kie-tools-core/i18n':
         specifier: workspace:*
         version: link:../i18n
+      '@kie-tools-core/notifications':
+        specifier: workspace:*
+        version: link:../notifications
       '@kie-tools-core/patternfly-base':
         specifier: workspace:*
         version: link:../patternfly-base
       '@kie-tools-core/webpack-base':
         specifier: workspace:*
         version: link:../webpack-base
+      '@kie-tools-core/workspace':
+        specifier: workspace:*
+        version: link:../workspace
       '@kie-tools/boxed-expression-component':
         specifier: workspace:*
         version: link:../boxed-expression-component
       '@kie-tools/dmn-editor':
         specifier: workspace:*
         version: link:../dmn-editor
+      '@kie-tools/dmn-editor-envelope':
+        specifier: workspace:*
+        version: link:../dmn-editor-envelope
       '@kie-tools/dmn-marshaller':
         specifier: workspace:*
         version: link:../dmn-marshaller
@@ -3596,6 +3592,9 @@ importers:
       deep-object-diff:
         specifier: ^1.1.9
         version: 1.1.9
+      dts-bundle-generator:
+        specifier: ^9.5.1
+        version: 9.5.1
       html-webpack-plugin:
         specifier: ^5.3.2
         version: 5.5.3(webpack@5.88.2(webpack-cli@4.10.0))
@@ -3605,6 +3604,9 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
+      minimatch:
+        specifier: ^3.0.5
+        version: 3.1.2
       nodemon:
         specifier: ^3.1.4
         version: 3.1.4
@@ -5594,10 +5596,6 @@ importers:
         version: 5.9.0
 
   packages/kie-editors-standalone:
-    dependencies:
-      '@kie-tools/kie-bc-editors':
-        specifier: workspace:*
-        version: link:../kie-bc-editors
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -5638,6 +5636,9 @@ importers:
       '@kie-tools/jest-base':
         specifier: workspace:*
         version: link:../jest-base
+      '@kie-tools/kie-bc-editors':
+        specifier: workspace:*
+        version: link:../kie-bc-editors
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -5683,6 +5684,9 @@ importers:
       cypress-log-to-output:
         specifier: ^1.1.2
         version: 1.1.2
+      dts-bundle-generator:
+        specifier: ^9.5.1
+        version: 9.5.1
       html-webpack-plugin:
         specifier: ^5.3.2
         version: 5.3.2(webpack@5.88.2(webpack-cli@4.10.0))
@@ -8217,6 +8221,9 @@ importers:
       '@testing-library/jest-dom':
         specifier: ^6.4.6
         version: 6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@22.0.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.0.2)(typescript@5.5.3)))
+      '@testing-library/react':
+        specifier: ^12.1.5
+        version: 12.1.5(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@types/babel__standalone':
         specifier: ^7.1.7
         version: 7.1.7
@@ -21583,6 +21590,11 @@ packages:
     resolution: {integrity: sha512-g/M9sqy3oHe477Ar4voQxWtaPIFw1jTdKZuomOjhCcBx9nHUNn0pu6NopuFFrTh/TRZIKEj+76vLWFu9BNKk+Q==}
     engines: {node: '>=4'}
 
+  dts-bundle-generator@9.5.1:
+    resolution: {integrity: sha512-DxpJOb2FNnEyOzMkG11sxO2dmxPjthoVWxfKqWYJ/bI/rT1rvTMktF5EKjAYrRZu6Z6t3NhOUZ0sZ5ZXevOfbA==}
+    engines: {node: '>=14.0.0'}
+    hasBin: true
+
   duplexer@0.1.2:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}
 
@@ -29136,7 +29148,7 @@ snapshots:
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular-devkit/architect': 0.1801.3(chokidar@3.6.0)
-      '@angular-devkit/build-webpack': 0.1801.3(chokidar@3.6.0)(webpack-dev-server@5.0.4(webpack@5.92.1))(webpack@5.92.1(esbuild@0.21.5))
+      '@angular-devkit/build-webpack': 0.1801.3(chokidar@3.6.0)(webpack-dev-server@5.0.4(webpack@5.92.1))(webpack@5.92.1)
       '@angular-devkit/core': 18.1.3(chokidar@3.6.0)
       '@angular/build': 18.1.3(@angular/compiler-cli@18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3))(@types/node@22.0.2)(chokidar@3.6.0)(less@4.2.0)(postcss@8.4.38)(stylus@0.59.0)(terser@5.29.2)(typescript@5.5.3)
       '@angular/compiler-cli': 18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3)
@@ -29150,15 +29162,15 @@ snapshots:
       '@babel/preset-env': 7.24.7(@babel/core@7.24.7)
       '@babel/runtime': 7.24.7
       '@discoveryjs/json-ext': 0.5.7
-      '@ngtools/webpack': 18.1.3(@angular/compiler-cli@18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3))(typescript@5.5.3)(webpack@5.92.1(esbuild@0.21.5))
+      '@ngtools/webpack': 18.1.3(@angular/compiler-cli@18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3))(typescript@5.5.3)(webpack@5.92.1)
       '@vitejs/plugin-basic-ssl': 1.1.0(vite@5.3.2(@types/node@22.0.2)(less@4.2.0)(sass@1.77.6)(stylus@0.59.0)(terser@5.29.2))
       ansi-colors: 4.1.3
       autoprefixer: 10.4.19(postcss@8.4.38)
-      babel-loader: 9.1.3(@babel/core@7.24.7)(webpack@5.92.1(esbuild@0.21.5))
+      babel-loader: 9.1.3(@babel/core@7.24.7)(webpack@5.92.1)
       browserslist: 4.23.0
-      copy-webpack-plugin: 12.0.2(webpack@5.92.1(esbuild@0.21.5))
+      copy-webpack-plugin: 12.0.2(webpack@5.92.1)
       critters: 0.0.24
-      css-loader: 7.1.2(webpack@5.92.1(esbuild@0.21.5))
+      css-loader: 7.1.2(webpack@5.92.1)
       esbuild-wasm: 0.21.5
       fast-glob: 3.3.2
       http-proxy-middleware: 3.0.0
@@ -29167,11 +29179,11 @@ snapshots:
       jsonc-parser: 3.3.1
       karma-source-map-support: 1.4.0
       less: 4.2.0
-      less-loader: 12.2.0(less@4.2.0)(webpack@5.92.1(esbuild@0.21.5))
-      license-webpack-plugin: 4.0.2(webpack@5.92.1(esbuild@0.21.5))
+      less-loader: 12.2.0(less@4.2.0)(webpack@5.92.1)
+      license-webpack-plugin: 4.0.2(webpack@5.92.1)
       loader-utils: 3.3.1
       magic-string: 0.30.10
-      mini-css-extract-plugin: 2.9.0(webpack@5.92.1(esbuild@0.21.5))
+      mini-css-extract-plugin: 2.9.0(webpack@5.92.1)
       mrmime: 2.0.0
       open: 10.1.0
       ora: 5.4.1
@@ -29179,13 +29191,13 @@ snapshots:
       picomatch: 4.0.2
       piscina: 4.6.1
       postcss: 8.4.38
-      postcss-loader: 8.1.1(postcss@8.4.38)(typescript@5.5.3)(webpack@5.92.1(esbuild@0.21.5))
+      postcss-loader: 8.1.1(postcss@8.4.38)(typescript@5.5.3)(webpack@5.92.1)
       resolve-url-loader: 5.0.0
       rxjs: 7.8.1
       sass: 1.77.6
-      sass-loader: 14.2.1(sass@1.77.6)(webpack@5.92.1(esbuild@0.21.5))
+      sass-loader: 14.2.1(sass@1.77.6)(webpack@5.92.1)
       semver: 7.6.2
-      source-map-loader: 5.0.0(webpack@5.92.1(esbuild@0.21.5))
+      source-map-loader: 5.0.0(webpack@5.92.1)
       source-map-support: 0.5.21
       terser: 5.29.2
       tree-kill: 1.2.2
@@ -29198,7 +29210,7 @@ snapshots:
       webpack-dev-middleware: 7.2.1(webpack@5.92.1)
       webpack-dev-server: 5.0.4(webpack@5.92.1)
       webpack-merge: 5.10.0
-      webpack-subresource-integrity: 5.1.0(html-webpack-plugin@5.5.3(webpack@5.92.1))(webpack@5.92.1(esbuild@0.21.5))
+      webpack-subresource-integrity: 5.1.0(html-webpack-plugin@5.5.3(webpack@5.92.1))(webpack@5.92.1)
     optionalDependencies:
       esbuild: 0.21.5
       jest: 29.7.0(@types/node@22.0.2)
@@ -29222,7 +29234,7 @@ snapshots:
       - utf-8-validate
       - webpack-cli
 
-  '@angular-devkit/build-webpack@0.1801.3(chokidar@3.6.0)(webpack-dev-server@5.0.4(webpack@5.92.1))(webpack@5.92.1(esbuild@0.21.5))':
+  '@angular-devkit/build-webpack@0.1801.3(chokidar@3.6.0)(webpack-dev-server@5.0.4(webpack@5.92.1))(webpack@5.92.1)':
     dependencies:
       '@angular-devkit/architect': 0.1801.3(chokidar@3.6.0)
       rxjs: 7.8.1
@@ -36235,7 +36247,7 @@ snapshots:
       pump: 3.0.0
       tar-fs: 2.1.1
 
-  '@ngtools/webpack@18.1.3(@angular/compiler-cli@18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3))(typescript@5.5.3)(webpack@5.92.1(esbuild@0.21.5))':
+  '@ngtools/webpack@18.1.3(@angular/compiler-cli@18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3))(typescript@5.5.3)(webpack@5.92.1)':
     dependencies:
       '@angular/compiler-cli': 18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3)
       typescript: 5.5.3
@@ -42281,7 +42293,7 @@ snapshots:
       schema-utils: 4.2.0
       webpack: 5.88.2(webpack-cli@4.10.0)
 
-  babel-loader@9.1.3(@babel/core@7.24.7)(webpack@5.92.1(esbuild@0.21.5)):
+  babel-loader@9.1.3(@babel/core@7.24.7)(webpack@5.92.1):
     dependencies:
       '@babel/core': 7.24.7
       find-cache-dir: 4.0.0
@@ -43629,7 +43641,7 @@ snapshots:
       serialize-javascript: 6.0.1
       webpack: 5.88.2
 
-  copy-webpack-plugin@12.0.2(webpack@5.92.1(esbuild@0.21.5)):
+  copy-webpack-plugin@12.0.2(webpack@5.92.1):
     dependencies:
       fast-glob: 3.3.2
       glob-parent: 6.0.2
@@ -44010,7 +44022,7 @@ snapshots:
       semver: 7.5.4
       webpack: 5.88.2(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2))
 
-  css-loader@7.1.2(webpack@5.92.1(esbuild@0.21.5)):
+  css-loader@7.1.2(webpack@5.92.1):
     dependencies:
       icss-utils: 5.1.0(postcss@8.4.38)
       postcss: 8.4.38
@@ -44768,6 +44780,11 @@ snapshots:
       minimatch: 3.1.2
 
   dset@3.1.2: {}
+
+  dts-bundle-generator@9.5.1:
+    dependencies:
+      typescript: 5.5.3
+      yargs: 17.7.2
 
   duplexer@0.1.2: {}
 
@@ -48733,7 +48750,7 @@ snapshots:
     dependencies:
       readable-stream: 2.3.7
 
-  less-loader@12.2.0(less@4.2.0)(webpack@5.92.1(esbuild@0.21.5)):
+  less-loader@12.2.0(less@4.2.0)(webpack@5.92.1):
     dependencies:
       less: 4.2.0
     optionalDependencies:
@@ -48762,7 +48779,7 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
-  license-webpack-plugin@4.0.2(webpack@5.92.1(esbuild@0.21.5)):
+  license-webpack-plugin@4.0.2(webpack@5.92.1):
     dependencies:
       webpack-sources: 3.2.3
     optionalDependencies:
@@ -49221,7 +49238,7 @@ snapshots:
       tapable: 2.2.1
       webpack: 5.88.2(@swc/core@1.3.92)(webpack-cli@4.10.0)
 
-  mini-css-extract-plugin@2.9.0(webpack@5.92.1(esbuild@0.21.5)):
+  mini-css-extract-plugin@2.9.0(webpack@5.92.1):
     dependencies:
       schema-utils: 4.2.0
       tapable: 2.2.1
@@ -49624,7 +49641,7 @@ snapshots:
     dependencies:
       growly: 1.3.0
       is-wsl: 2.2.0
-      semver: 7.5.4
+      semver: 7.6.2
       shellwords: 0.1.1
       uuid: 8.3.2
       which: 2.0.2
@@ -50463,7 +50480,7 @@ snapshots:
     dependencies:
       postcss: 8.4.38
 
-  postcss-loader@8.1.1(postcss@8.4.38)(typescript@5.5.3)(webpack@5.92.1(esbuild@0.21.5)):
+  postcss-loader@8.1.1(postcss@8.4.38)(typescript@5.5.3)(webpack@5.92.1):
     dependencies:
       cosmiconfig: 9.0.0(typescript@5.5.3)
       jiti: 1.21.6
@@ -51990,7 +52007,7 @@ snapshots:
     optionalDependencies:
       sass: 1.77.6
 
-  sass-loader@14.2.1(sass@1.77.6)(webpack@5.92.1(esbuild@0.21.5)):
+  sass-loader@14.2.1(sass@1.77.6)(webpack@5.92.1):
     dependencies:
       neo-async: 2.6.2
     optionalDependencies:
@@ -52412,7 +52429,7 @@ snapshots:
       source-map-js: 0.6.2
       webpack: 5.88.2
 
-  source-map-loader@5.0.0(webpack@5.92.1(esbuild@0.21.5)):
+  source-map-loader@5.0.0(webpack@5.92.1):
     dependencies:
       iconv-lite: 0.6.3
       source-map-js: 1.2.0
@@ -54768,7 +54785,7 @@ snapshots:
 
   webpack-sources@3.2.3: {}
 
-  webpack-subresource-integrity@5.1.0(html-webpack-plugin@5.5.3(webpack@5.92.1))(webpack@5.92.1(esbuild@0.21.5)):
+  webpack-subresource-integrity@5.1.0(html-webpack-plugin@5.5.3(webpack@5.92.1))(webpack@5.92.1):
     dependencies:
       typed-assert: 1.0.8
       webpack: 5.92.1(esbuild@0.21.5)
@@ -55392,7 +55409,7 @@ snapshots:
   yargs@17.7.2:
     dependencies:
       cliui: 8.0.1
-      escalade: 3.1.1
+      escalade: 3.1.2
       get-caller-file: 2.0.5
       require-directory: 2.1.1
       string-width: 4.2.3
