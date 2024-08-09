@@ -1124,7 +1124,7 @@ test.describe("Resizing", () => {
 
       // We're hovering the 'in' to make the width difference to the 'match' more clear
       await filterExpression.in.containerElement.hover();
-      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-resized-match-invocation.png");
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-resized-match-function.png");
     });
 
     test("should correct resize the 'in' cell when the 'match' is resized - For", async ({
