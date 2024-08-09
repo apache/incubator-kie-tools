@@ -102,6 +102,6 @@ class InvocationParameter {
   }
 
   get expressionContainerElement() {
-    return this.expressionElement.getContainerElement();
+    return this.expressionElement.containerElement;
   }
 }
