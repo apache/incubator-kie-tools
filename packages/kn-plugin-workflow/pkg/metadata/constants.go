@@ -48,6 +48,9 @@ var KogitoDependencies = []Dependency{
 	{GroupId: "org.apache.kie.sonataflow", ArtifactId: "sonataflow-quarkus-devui", Version: "${kie.tooling.version}"},
 }
 
+// requared crds for sonataflow
+var SonataflowCRDs = []string{"sonataflowbuilds.sonataflow.org", "sonataflowclusterplatforms.sonataflow.org", "sonataflowplatforms.sonataflow.org", "sonataflows.sonataflow.org"}
+
 const (
 	QuarkusMavenPlugin                          = "quarkus-maven-plugin"
 	QuarkusKubernetesExtension                  = "quarkus-kubernetes"
