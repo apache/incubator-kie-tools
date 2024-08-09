@@ -25,25 +25,48 @@ import { SnapGrid } from "../store/Store";
 import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { Normalized } from "../normalization/normalize";
+import { ExternalModelsIndex } from "../DmnEditor";
+import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller/dist";
+import { xmlHrefToQName } from "../xml/xmlHrefToQName";
 
 export function addDecisionToDecisionService({
   definitions,
-  decisionId,
+  decisionHref,
   decisionServiceId,
   drdIndex,
   snapGrid,
+  externalModelsByNamespace,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
-  decisionId: string;
+  decisionHref: string;
   decisionServiceId: string;
   drdIndex: number;
   snapGrid: SnapGrid;
+  externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
-  console.debug(`DMN MUTATION: Adding Decision '${decisionId}' to Decision Service '${decisionServiceId}'`);
+  console.debug(`DMN MUTATION: Adding Decision '${decisionHref}' to Decision Service '${decisionServiceId}'`);
 
-  const decision = definitions.drgElement?.find((s) => s["@_id"] === decisionId);
-  if (decision?.__$$element !== "decision") {
-    throw new Error(`DMN MUTATION: DRG Element with id '${decisionId}' is either not a Decision or doesn't exist.`);
+  const href = parseXmlHref(decisionHref);
+
+  const externalModel = externalModelsByNamespace?.[href.namespace ?? ""];
+  if (href.namespace && !externalModel) {
+    throw new Error(`DMN MUTATION: Namespace '${href.namespace}' not found.`);
+  }
+
+  if (href.namespace) {
+    const externalDrgs = (externalModel?.model as Normalized<DmnLatestModel>).definitions.drgElement;
+    const decision = externalDrgs?.find((drgElement) => drgElement["@_id"] === href.id);
+    if (decision?.__$$element !== "decision") {
+      throw new Error(
+        `DMN MUTATION: DRG Element with id '${href.id}' is either not a Decision or doesn't exist in the external model '${href.namespace}'`
+      );
+    }
+  } else {
+    const decision = definitions.drgElement?.find((s) => s["@_id"] === href.id);
+    if (decision?.__$$element !== "decision") {
+      throw new Error(`DMN MUTATION: DRG Element with id '${href.id}' is either not a Decision or doesn't exist.`);
+    }
   }
 
   const decisionService = definitions.drgElement?.find((s) => s["@_id"] === decisionServiceId);
@@ -54,8 +77,11 @@ export function addDecisionToDecisionService({
   }
 
   const diagram = addOrGetDrd({ definitions, drdIndex });
+  const hrefString = buildXmlHref({ namespace: href.namespace, id: href.id });
+  const dmnElementRef = xmlHrefToQName(hrefString, definitions);
+
   const decisionShape = diagram.diagramElements.find(
-    (s) => s["@_dmnElementRef"] === decisionId && s.__$$element === "dmndi:DMNShape"
+    (s) => s["@_dmnElementRef"] === dmnElementRef && s.__$$element === "dmndi:DMNShape"
   ) as Normalized<DMNDI15__DMNShape>;
 
   const decisionServiceShape = diagram.diagramElements.find(
@@ -65,10 +91,10 @@ export function addDecisionToDecisionService({
   const section = getSectionForDecisionInsideDecisionService({ decisionShape, decisionServiceShape, snapGrid });
   if (section === "encapsulated") {
     decisionService.encapsulatedDecision ??= [];
-    decisionService.encapsulatedDecision.push({ "@_href": `#${decisionId}` });
+    decisionService.encapsulatedDecision.push({ "@_href": `${hrefString}` });
   } else if (section === "output") {
     decisionService.outputDecision ??= [];
-    decisionService.outputDecision.push({ "@_href": `#${decisionId}` });
+    decisionService.outputDecision.push({ "@_href": `${hrefString}` });
   } else {
     throw new Error(`DMN MUTATION: Invalid section to add decision to: '${section}' `);
   }

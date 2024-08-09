@@ -992,8 +992,9 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 for (let i = 0; i < selectedNodes.length; i++) {
                   deleteDecisionFromDecisionService({
                     definitions: state.dmn.model.definitions,
-                    decisionId: selectedNodes[i].data.dmnObject!["@_id"]!, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
+                    decisionHref: selectedNodes[i].id, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
                     decisionServiceId: p.data.dmnObject!["@_id"]!,
+                    externalModelsByNamespace,
                   });
                 }
               } else {
@@ -1009,12 +1010,13 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 addDecisionToDecisionService({
                   definitions: state.dmn.model.definitions,
                   drdIndex: state.computed(state).getDrdIndex(),
-                  decisionId: selectedNodes[i].data.dmnObject!["@_id"]!, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
+                  decisionHref: selectedNodes[i].id, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
                   decisionServiceId: state
                     .computed(state)
                     .getDiagramData(externalModelsByNamespace)
                     .nodesById.get(dropTargetNode.id)!.data.dmnObject!["@_id"]!,
                   snapGrid: state.diagram.snapGrid,
+                  externalModelsByNamespace,
                 });
               }
             } else {
