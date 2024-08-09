@@ -23,7 +23,7 @@ import { useRef, useState, useEffect, useCallback } from "react";
 import "@patternfly/react-core/dist/styles/base.css";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import * as DmnEditor from "../dist/index";
-import { DmnEditorStandaloneApi } from "../dist/DmnEditorStandaloneApi";
+import { DmnEditorStandaloneApi } from "../dist/index";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex/Flex";
 import { FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex/FlexItem";
 import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";

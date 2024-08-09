@@ -2,6 +2,9 @@
   "extends": "@kie-tools/tsconfig/tsconfig.esm.json",
   "compilerOptions": {
     "esModuleInterop": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    // Skip declarations, they are bundled manually in another step
+    "declarationMap": false,
+    "declaration": false
   }
 }

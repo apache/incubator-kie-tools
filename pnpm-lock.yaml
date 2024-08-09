@@ -3471,25 +3471,6 @@ importers:
         version: 5.5.3
 
   packages/dmn-editor-standalone:
-    dependencies:
-      '@kie-tools-core/editor':
-        specifier: workspace:*
-        version: link:../editor
-      '@kie-tools-core/envelope-bus':
-        specifier: workspace:*
-        version: link:../envelope-bus
-      '@kie-tools-core/notifications':
-        specifier: workspace:*
-        version: link:../notifications
-      '@kie-tools-core/workspace':
-        specifier: workspace:*
-        version: link:../workspace
-      '@kie-tools/dmn-editor-envelope':
-        specifier: workspace:*
-        version: link:../dmn-editor-envelope
-      minimatch:
-        specifier: ^3.0.5
-        version: 3.1.2
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -3506,21 +3487,36 @@ importers:
       '@kie-tools-core/backend':
         specifier: workspace:*
         version: link:../backend
+      '@kie-tools-core/editor':
+        specifier: workspace:*
+        version: link:../editor
+      '@kie-tools-core/envelope-bus':
+        specifier: workspace:*
+        version: link:../envelope-bus
       '@kie-tools-core/i18n':
         specifier: workspace:*
         version: link:../i18n
+      '@kie-tools-core/notifications':
+        specifier: workspace:*
+        version: link:../notifications
       '@kie-tools-core/patternfly-base':
         specifier: workspace:*
         version: link:../patternfly-base
       '@kie-tools-core/webpack-base':
         specifier: workspace:*
         version: link:../webpack-base
+      '@kie-tools-core/workspace':
+        specifier: workspace:*
+        version: link:../workspace
       '@kie-tools/boxed-expression-component':
         specifier: workspace:*
         version: link:../boxed-expression-component
       '@kie-tools/dmn-editor':
         specifier: workspace:*
         version: link:../dmn-editor
+      '@kie-tools/dmn-editor-envelope':
+        specifier: workspace:*
+        version: link:../dmn-editor-envelope
       '@kie-tools/dmn-marshaller':
         specifier: workspace:*
         version: link:../dmn-marshaller
@@ -3596,6 +3592,9 @@ importers:
       deep-object-diff:
         specifier: ^1.1.9
         version: 1.1.9
+      dts-bundle-generator:
+        specifier: ^9.5.1
+        version: 9.5.1
       html-webpack-plugin:
         specifier: ^5.3.2
         version: 5.5.3(webpack@5.88.2(webpack-cli@4.10.0))
@@ -3605,6 +3604,9 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
+      minimatch:
+        specifier: ^3.0.5
+        version: 3.1.2
       nodemon:
         specifier: ^3.1.4
         version: 3.1.4
@@ -5594,10 +5596,6 @@ importers:
         version: 5.9.0
 
   packages/kie-editors-standalone:
-    dependencies:
-      '@kie-tools/kie-bc-editors':
-        specifier: workspace:*
-        version: link:../kie-bc-editors
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -5638,6 +5636,9 @@ importers:
       '@kie-tools/jest-base':
         specifier: workspace:*
         version: link:../jest-base
+      '@kie-tools/kie-bc-editors':
+        specifier: workspace:*
+        version: link:../kie-bc-editors
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -5683,6 +5684,9 @@ importers:
       cypress-log-to-output:
         specifier: ^1.1.2
         version: 1.1.2
+      dts-bundle-generator:
+        specifier: ^9.5.1
+        version: 9.5.1
       html-webpack-plugin:
         specifier: ^5.3.2
         version: 5.3.2(webpack@5.88.2(webpack-cli@4.10.0))
@@ -21585,6 +21589,11 @@ packages:
   dset@3.1.2:
     resolution: {integrity: sha512-g/M9sqy3oHe477Ar4voQxWtaPIFw1jTdKZuomOjhCcBx9nHUNn0pu6NopuFFrTh/TRZIKEj+76vLWFu9BNKk+Q==}
     engines: {node: '>=4'}
+
+  dts-bundle-generator@9.5.1:
+    resolution: {integrity: sha512-DxpJOb2FNnEyOzMkG11sxO2dmxPjthoVWxfKqWYJ/bI/rT1rvTMktF5EKjAYrRZu6Z6t3NhOUZ0sZ5ZXevOfbA==}
+    engines: {node: '>=14.0.0'}
+    hasBin: true
 
   duplexer@0.1.2:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}
@@ -44772,6 +44781,11 @@ snapshots:
 
   dset@3.1.2: {}
 
+  dts-bundle-generator@9.5.1:
+    dependencies:
+      typescript: 5.5.3
+      yargs: 17.7.2
+
   duplexer@0.1.2: {}
 
   duplexify@3.7.1:
@@ -55395,7 +55409,7 @@ snapshots:
   yargs@17.7.2:
     dependencies:
       cliui: 8.0.1
-      escalade: 3.1.1
+      escalade: 3.1.2
       get-caller-file: 2.0.5
       require-directory: 2.1.1
       string-width: 4.2.3
