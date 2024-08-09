@@ -127,7 +127,6 @@ test.describe("Add node - Text Annotation", () => {
       nodes,
       edges,
     }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/981");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
         description: "https://github.com/apache/incubator-kie-issues/issues/981",
