@@ -93,6 +93,11 @@ pipeline {
         KIE_SANDBOX_HELM_CHART__name = 'incubator-kie-sandbox-helm-chart'
         KIE_SANDBOX_HELM_CHART__tag = "0.0.0-${params.BRANCH_NAME}"
 
+        RUNTIME_TOOLS_CONSOLES_HELM_CHART__registry = 'docker.io'
+        RUNTIME_TOOLS_CONSOLES_HELM_CHART__account = 'apache'
+        RUNTIME_TOOLS_CONSOLES_HELM_CHART__name = 'incubator-kie-runtime-tools-consoles-helm-chart'
+        RUNTIME_TOOLS_CONSOLES_HELM_CHART__tag = "0.0.0-${params.BRANCH_NAME}"
+
         OPENSHIFT_NAMESPACE = 'kie-sandbox'
         OPENSHIFT_PART_OF = 'daily-dev-kie-sandbox-app'
         DEPLOY_TAG = "${params.BRANCH_NAME}"
@@ -533,6 +538,22 @@ pipeline {
                             "${env.KIE_SANDBOX_HELM_CHART__registry}",
                             "${env.KIE_SANDBOX_HELM_CHART__account}",
                             "packages/kie-sandbox-helm-chart/dist/${env.KIE_SANDBOX_HELM_CHART__name}-${env.KIE_SANDBOX_HELM_CHART__tag}.tgz",
+                            "${pipelineVars.dockerHubUserCredentialsId}",
+                            "${pipelineVars.dockerHubTokenCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Push runtime-tools-consoles-helm-chart to Docker Hub') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        helmUtils.pushChartToRegistry(
+                            "${env.RUNTIME_TOOLS_CONSOLES_HELM_CHART__registry}",
+                            "${env.RUNTIME_TOOLS_CONSOLES_HELM_CHART__account}",
+                            "packages/runtime-tools-consoles-helm-chart/dist/${env.RUNTIME_TOOLS_CONSOLES_HELM_CHART__name}-${env.RUNTIME_TOOLS_CONSOLES_HELM_CHART__tag}.tgz",
                             "${pipelineVars.dockerHubUserCredentialsId}",
                             "${pipelineVars.dockerHubTokenCredentialsId}"
                         )

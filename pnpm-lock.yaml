@@ -7034,6 +7034,31 @@ importers:
         specifier: ^5.5.3
         version: 5.5.3
 
+  packages/runtime-tools-consoles-helm-chart:
+    dependencies:
+      '@kie-tools/kogito-management-console':
+        specifier: workspace:*
+        version: link:../kogito-management-console
+      '@kie-tools/kogito-task-console':
+        specifier: workspace:*
+        version: link:../kogito-task-console
+    devDependencies:
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      prettier:
+        specifier: ^3.3.2
+        version: 3.3.2
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+      yaml:
+        specifier: ^2.3.2
+        version: 2.3.2
+
   packages/runtime-tools-management-console-webapp:
     dependencies:
       '@kie-tools/runtime-tools-components':
@@ -49624,7 +49649,7 @@ snapshots:
     dependencies:
       growly: 1.3.0
       is-wsl: 2.2.0
-      semver: 7.5.4
+      semver: 7.6.2
       shellwords: 0.1.1
       uuid: 8.3.2
       which: 2.0.2
