@@ -78,7 +78,7 @@
     "terser-webpack-plugin": "^5.3.9",
     "ts-jest": "^29.1.5",
     "url": "^0.11.3",
-    "webpack": "^5.88.2",
+    "webpack": "^5.92.1",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.9.0"

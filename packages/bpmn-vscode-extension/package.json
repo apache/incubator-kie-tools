@@ -45,7 +45,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "process": "^0.11.10",
     "rimraf": "^3.0.2",
-    "webpack": "^5.88.2",
+    "webpack": "^5.92.1",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.9.0"
