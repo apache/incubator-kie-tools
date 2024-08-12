@@ -130,22 +130,22 @@ jobs:
         shell: bash
         env:
           GPG_KEY: ${{ secrets.GPG_KEY }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           ARTIFACT_ZIP_FILE: ${{ steps.macos_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
         run: |
-          echo $GPG_KEY > ./signkey.gpg
+          rm ${WORKSPACE}/signkey.gpg
+          echo $GPG_KEY > ${WORKSPACE}/signkey.gpg
           gpg --list-keys
-          gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --import ./signkey.gpg
-          rm ./signkey.gpg
-          echo $GPG_PASSPHRASE | gpg --no-tty --batch --sign --pinentry-mode loopback --passphrase-fd 0 --output $ARTIFACT_ZIP_FILE.asc --detach-sig $ARTIFACT_ZIP_FILE
+          gpg --batch --pinentry-mode loopback --import ${WORKSPACE}/signkey.gpg
+          rm ${WORKSPACE}/signkey.gpg
+          gpg --no-tty --batch --sign --pinentry-mode loopback --output $ARTIFACT_ZIP_FILE.asc --detach-sig $ARTIFACT_ZIP_FILE
           shasum -a 512 $ARTIFACT_ZIP_FILE > $ARTIFACT_ZIP_FILE.sha512
 
       - name: "Upload Extended Services for macOS artifact"
         if: ${{ runner.os == 'macOS' && !inputs.dry_run && inputs.release_candidate }}
         shell: bash
         env:
-          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SVN_USERNAME: svn_dist_kie
+          SVN_PASSWORD: ${{ secrets.svc-dist-kie-pass }}
           PROJECT_VERSION: ${{ inputs.release_candidate_version }}
           ARTIFACT_ZIP_FILE: ${{ steps.macos_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
         run: |
@@ -173,22 +173,22 @@ jobs:
         shell: pwsh
         env:
           GPG_KEY: ${{ secrets.GPG_KEY }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           ARTIFACT_ZIP_FILE: ${{ steps.windows_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
         run: |
-          echo $GPG_KEY > ./signkey.gpg
+          rm ${WORKSPACE}/signkey.gpg
+          echo $GPG_KEY > ${WORKSPACE}/signkey.gpg
           gpg --list-keys
-          gpg --batch --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --import ./signkey.gpg
-          rm ./signkey.gpg
-          echo $GPG_PASSPHRASE | gpg --no-tty --batch --sign --pinentry-mode loopback --passphrase-fd 0 --output $ARTIFACT_ZIP_FILE.asc --detach-sig $ARTIFACT_ZIP_FILE
+          gpg --batch --pinentry-mode loopback --import ${WORKSPACE}/signkey.gpg
+          rm ${WORKSPACE}/signkey.gpg
+          gpg --no-tty --batch --sign --pinentry-mode loopback --output $ARTIFACT_ZIP_FILE.asc --detach-sig $ARTIFACT_ZIP_FILE
           shasum -a 512 $ARTIFACT_ZIP_FILE > $ARTIFACT_ZIP_FILE.sha512
 
       - name: "Upload Extended Services for Windows artifact"
         if: ${{ runner.os == 'Windows' && !inputs.dry_run && inputs.release_candidate }}
         shell: pwsh
         env:
-          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SVN_USERNAME: svn_dist_kie
+          SVN_PASSWORD: ${{ secrets.svc-dist-kie-pass }}
           PROJECT_VERSION: ${{ inputs.release_candidate_version }}
           ARTIFACT_ZIP_FILE: ${{ steps.windows_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
         run: |
