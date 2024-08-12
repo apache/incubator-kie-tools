@@ -51,6 +51,7 @@ func CreateQuarkusProject(cfg CreateQuarkusProjectConfig) error {
 		"mvn",
 		fmt.Sprintf("%s:%s:%s:create", cfg.DependenciesVersion.QuarkusPlatformGroupId, metadata.QuarkusMavenPlugin, cfg.DependenciesVersion.QuarkusVersion),
 		"-DprojectGroupId=org.acme",
+		"--no-wrapper",
 		fmt.Sprintf("-DprojectArtifactId=%s", cfg.ProjectName),
 		fmt.Sprintf("-Dextensions=%s", cfg.Extensions))
 
