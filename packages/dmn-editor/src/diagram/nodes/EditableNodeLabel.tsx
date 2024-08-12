@@ -265,25 +265,22 @@ export function EditableNodeLabel({
 
 export function useEditableNodeLabel(id: string | undefined) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { readOnly } = useSettings();
+  const settings = useSettings();
 
   const [isEditingLabel, setEditingLabel] = useState(
-    !readOnly &&
-      !!id &&
-      !!dmnEditorStoreApi.getState().focus.consumableId &&
-      dmnEditorStoreApi.getState().focus.consumableId === id
+    !!id && !!dmnEditorStoreApi.getState().focus.consumableId && dmnEditorStoreApi.getState().focus.consumableId === id
   );
 
   const triggerEditing = useCallback<React.EventHandler<React.SyntheticEvent>>(
     (e) => {
-      if (readOnly) {
+      if (settings.readOnly) {
         return;
       }
       e.stopPropagation();
       e.preventDefault();
       setEditingLabel(true);
     },
-    [readOnly]
+    [settings.readOnly]
   );
 
   // Trigger editing on `Enter` pressed.

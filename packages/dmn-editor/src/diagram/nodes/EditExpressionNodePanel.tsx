@@ -24,7 +24,7 @@ import { useSettings } from "../../settings/DmnEditorSettingsContext";
 
 export function EditExpressionNodePanel(props: { isVisible: boolean; id: string }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { readOnly } = useSettings();
+  const settings = useSettings();
 
   return (
     <>
@@ -37,7 +37,7 @@ export function EditExpressionNodePanel(props: { isVisible: boolean; id: string 
           }
           className={"kie-dmn-editor--edit-expression-node-panel"}
         >
-          {readOnly ? "View" : "Edit"}
+          {settings.readOnly ? "View" : "Edit"}
         </Label>
       )}
     </>

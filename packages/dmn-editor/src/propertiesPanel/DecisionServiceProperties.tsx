@@ -44,6 +44,7 @@ import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert/Alert";
 import { Normalized } from "../normalization/normalize";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export type AllKnownDrgElementsByHref = Map<
   string,
@@ -61,6 +62,7 @@ export function DecisionServiceProperties({
   index: number;
 }) {
   const { setState } = useDmnEditorStoreApi();
+  const settings = useSettings();
 
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const { externalModelsByNamespace } = useExternalModels();
@@ -91,7 +93,7 @@ export function DecisionServiceProperties({
   }, [externalDmnsByNamespace, thisDmn]);
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
-  const isReadonly = !!namespace && namespace !== thisDmnsNamespace;
+  const isReadonly = settings.readOnly || (!!namespace && namespace !== thisDmnsNamespace);
 
   const { dmnEditorRootElementRef } = useDmnEditor();
 

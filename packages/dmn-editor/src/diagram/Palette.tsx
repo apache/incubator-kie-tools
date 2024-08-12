@@ -65,7 +65,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
   const rfStoreApi = RF.useStoreApi();
   const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
   const drdIndex = useDmnEditorStore((s) => s.computed(s).getDrdIndex());
-  const { readOnly } = useSettings();
+  const settings = useSettings();
 
   const groupNodes = useCallback(() => {
     dmnEditorStoreApi.setState((state) => {
@@ -126,7 +126,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
               });
             }}
             placeholder={getDefaultDrdName({ drdIndex: drdIndex })}
-            isReadonly={readOnly}
+            isReadonly={settings.readOnly}
             isPlain={true}
             shouldCommitOnBlur={true}
           />
@@ -160,7 +160,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
           </button>
         </aside>
       </RF.Panel>
-      {!readOnly && (
+      {!settings.readOnly && (
         <RF.Panel position={"top-left"} style={{ marginTop: "78px" }}>
           <div ref={nodesPalletePopoverRef} style={{ position: "absolute", left: 0, height: 0, zIndex: -1 }} />
           <aside className={`kie-dmn-editor--palette ${pulse ? "pulse" : ""}`}>

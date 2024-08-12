@@ -37,6 +37,7 @@ import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import "./FontOptions.css";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { Normalized } from "../normalization/normalize";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 // https://www.w3schools.com/cssref/css_websafe_fonts.php
 // Array of [name, family]
@@ -67,6 +68,7 @@ enum FontStyleToggleOptions {
 
 export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean; nodeIds: string[] }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const settings = useSettings();
 
   const shapeStyles = useDmnEditorStore((s) =>
     nodeIds.map((nodeId) => s.computed(s).indexedDrd().dmnShapesByHref.get(nodeId)?.["di:Style"])
@@ -278,6 +280,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
         action={
           <Button
             variant={ButtonVariant.plain}
+            isDisabled={settings.readOnly}
             onClick={() => onReset()}
             style={{ paddingBottom: 0, paddingTop: 0 }}
             title={"Reset font"}
@@ -294,7 +297,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                 aria-label={"Font size"}
                 className={"kie-dmn-editor--font-options-toggle-group-item-number-input"}
                 value={fontSize}
-                isDisabled={false}
+                isDisabled={settings.readOnly}
                 widthChars={2}
                 onMinus={onMinus}
                 onChange={onChange}
@@ -313,6 +316,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                       <b>B</b>
                     </div>
                   }
+                  isDisabled={settings.readOnly}
                   key={FontStyleToggleOptions.BOLD}
                   buttonId={FontStyleToggleOptions.BOLD}
                   isSelected={isFontBold}
@@ -326,6 +330,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                       <i style={{ fontFamily: "serif" }}>I</i>
                     </div>
                   }
+                  isDisabled={settings.readOnly}
                   key={FontStyleToggleOptions.ITALIC}
                   buttonId={FontStyleToggleOptions.ITALIC}
                   isSelected={isFontItalic}
@@ -339,6 +344,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                       <u>U</u>
                     </div>
                   }
+                  isDisabled={settings.readOnly}
                   aria-label={"Toggle font underline"}
                   buttonId={FontStyleToggleOptions.UNDERLINE}
                   isSelected={isFontUnderline}
@@ -352,6 +358,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                       <p style={{ textDecoration: "line-through" }}>S</p>
                     </div>
                   }
+                  isDisabled={settings.readOnly}
                   aria-label={"Toggle font strike through"}
                   buttonId={FontStyleToggleOptions.STRIKE_THROUGH}
                   isSelected={isFontStrikeThrough}
@@ -372,6 +379,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                       onChange={onChangeColor}
                     />
                   }
+                  isDisabled={settings.readOnly}
                 />
               </ToggleGroup>
             </div>
@@ -385,7 +393,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                 onSelect={onSelectFont}
                 onToggle={() => setFontFamilySelectOpen((prev) => !prev)}
                 selections={fontFamily ?? ""}
-                isDisabled={false}
+                isDisabled={settings.readOnly}
                 maxHeight={inViewTimezoneSelect.maxHeight}
                 direction={inViewTimezoneSelect.direction}
               >

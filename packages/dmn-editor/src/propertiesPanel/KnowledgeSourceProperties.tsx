@@ -29,6 +29,7 @@ import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useCallback } from "react";
 import { Normalized } from "../normalization/normalize";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export function KnowledgeSourceProperties({
   knowledgeSource,
@@ -40,9 +41,10 @@ export function KnowledgeSourceProperties({
   index: number;
 }) {
   const { setState } = useDmnEditorStoreApi();
+  const settings = useSettings();
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
-  const isReadonly = !!namespace && namespace !== thisDmnsNamespace;
+  const isReadonly = settings.readOnly || (!!namespace && namespace !== thisDmnsNamespace);
 
   return (
     <>

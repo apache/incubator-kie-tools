@@ -26,9 +26,11 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { useDmnEditorStoreApi } from "../store/StoreContext";
 import { renameGroupNode } from "../mutations/renameNode";
 import { Normalized } from "../normalization/normalize";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export function GroupProperties({ group, index }: { group: Normalized<DMN15__tGroup>; index: number }) {
   const { setState } = useDmnEditorStoreApi();
+  const settings = useSettings();
 
   return (
     <>
@@ -36,7 +38,7 @@ export function GroupProperties({ group, index }: { group: Normalized<DMN15__tGr
         <TextInput
           aria-label={"Name"}
           type={"text"}
-          isDisabled={false}
+          isDisabled={settings.readOnly}
           onChange={(newName) => {
             setState((state) => {
               renameGroupNode({
@@ -55,7 +57,7 @@ export function GroupProperties({ group, index }: { group: Normalized<DMN15__tGr
         <TextArea
           aria-label={"Description"}
           type={"text"}
-          isDisabled={false}
+          isDisabled={settings.readOnly}
           value={group.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {

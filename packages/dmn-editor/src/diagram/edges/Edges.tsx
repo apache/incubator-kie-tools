@@ -136,7 +136,7 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnDia
 
   const interactionPathRef = React.useRef<SVGPathElement>(null);
   const isHovered = useIsHovered(interactionPathRef);
-  const { readOnly } = useSettings();
+  const settings = useSettings();
 
   const { onMouseMove, onDoubleClick, potentialWaypoint, isDraggingWaypoint } = usePotentialWaypointControls(
     waypoints,
@@ -162,11 +162,11 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnDia
         onMouseMove={onMouseMove}
         onDoubleClick={onDoubleClick}
         data-edgetype={"information-requirement"}
-        visibility={readOnly ? "hidden" : undefined}
+        visibility={settings.readOnly ? "hidden" : undefined}
       />
       <InformationRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
 
-      {!readOnly && props.selected && !isConnecting && props.data?.dmnEdge && (
+      {!settings.readOnly && props.selected && !isConnecting && props.data?.dmnEdge && (
         <Waypoints
           edgeId={props.id}
           edgeIndex={props.data.dmnEdge.index}
@@ -174,7 +174,7 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnDia
           onDragStop={onMouseMove}
         />
       )}
-      {!readOnly && isHovered && potentialWaypoint && <PotentialWaypoint point={potentialWaypoint.point} />}
+      {!settings.readOnly && isHovered && potentialWaypoint && <PotentialWaypoint point={potentialWaypoint.point} />}
     </>
   );
 }, propsHaveSameValuesDeep);
@@ -187,7 +187,7 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
 
   const interactionPathRef = React.useRef<SVGPathElement>(null);
   const isHovered = useIsHovered(interactionPathRef);
-  const { readOnly } = useSettings();
+  const settings = useSettings();
 
   const { onMouseMove, onDoubleClick, potentialWaypoint, isDraggingWaypoint } = usePotentialWaypointControls(
     waypoints,
@@ -213,11 +213,11 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
         onMouseMove={onMouseMove}
         onDoubleClick={onDoubleClick}
         data-edgetype={"knowledge-requirement"}
-        visibility={readOnly ? "hidden" : undefined}
+        visibility={settings.readOnly ? "hidden" : undefined}
       />
       <KnowledgeRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
 
-      {!readOnly && props.selected && !isConnecting && props.data?.dmnEdge && (
+      {!settings.readOnly && props.selected && !isConnecting && props.data?.dmnEdge && (
         <Waypoints
           edgeId={props.id}
           edgeIndex={props.data.dmnEdge.index}
@@ -225,7 +225,7 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
           onDragStop={onMouseMove}
         />
       )}
-      {!readOnly && isHovered && potentialWaypoint && <PotentialWaypoint point={potentialWaypoint.point} />}
+      {!settings.readOnly && isHovered && potentialWaypoint && <PotentialWaypoint point={potentialWaypoint.point} />}
     </>
   );
 }, propsHaveSameValuesDeep);
@@ -238,7 +238,7 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
 
   const interactionPathRef = React.useRef<SVGPathElement>(null);
   const isHovered = useIsHovered(interactionPathRef);
-  const { readOnly } = useSettings();
+  const settings = useSettings();
 
   const { onMouseMove, onDoubleClick, potentialWaypoint, isDraggingWaypoint } = usePotentialWaypointControls(
     waypoints,
@@ -265,7 +265,7 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
         onMouseMove={onMouseMove}
         onDoubleClick={onDoubleClick}
         data-edgetype={"authority-requirement"}
-        visibility={readOnly ? "hidden" : undefined}
+        visibility={settings.readOnly ? "hidden" : undefined}
       />
       <AuthorityRequirementPath
         d={path}
@@ -273,7 +273,7 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
         centerToConnectionPoint={false}
       />
 
-      {!readOnly && props.selected && !isConnecting && props.data?.dmnEdge && (
+      {!settings.readOnly && props.selected && !isConnecting && props.data?.dmnEdge && (
         <Waypoints
           edgeId={props.id}
           edgeIndex={props.data.dmnEdge.index}
@@ -281,7 +281,7 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
           onDragStop={onMouseMove}
         />
       )}
-      {!readOnly && isHovered && potentialWaypoint && <PotentialWaypoint point={potentialWaypoint.point} />}
+      {!settings.readOnly && isHovered && potentialWaypoint && <PotentialWaypoint point={potentialWaypoint.point} />}
     </>
   );
 }, propsHaveSameValuesDeep);
@@ -294,7 +294,7 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeDat
 
   const interactionPathRef = React.useRef<SVGPathElement>(null);
   const isHovered = useIsHovered(interactionPathRef);
-  const { readOnly } = useSettings();
+  const settings = useSettings();
 
   const { onMouseMove, onDoubleClick, potentialWaypoint, isDraggingWaypoint } = usePotentialWaypointControls(
     waypoints,
@@ -320,11 +320,11 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeDat
         onMouseMove={onMouseMove}
         onDoubleClick={onDoubleClick}
         data-edgetype={"association"}
-        visibility={readOnly ? "hidden" : undefined}
+        visibility={settings.readOnly ? "hidden" : undefined}
       />
       <AssociationPath d={path} className={`kie-dmn-editor--edge ${className}`} />
 
-      {!readOnly && props.selected && !isConnecting && props.data?.dmnEdge && (
+      {!settings.readOnly && props.selected && !isConnecting && props.data?.dmnEdge && (
         <Waypoints
           edgeId={props.id}
           edgeIndex={props.data.dmnEdge.index}
@@ -332,7 +332,7 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeDat
           onDragStop={onMouseMove}
         />
       )}
-      {!readOnly && isHovered && potentialWaypoint && <PotentialWaypoint point={potentialWaypoint.point} />}
+      {!settings.readOnly && isHovered && potentialWaypoint && <PotentialWaypoint point={potentialWaypoint.point} />}
     </>
   );
 }, propsHaveSameValuesDeep);

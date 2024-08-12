@@ -27,7 +27,7 @@ export function useFocusableElement(
 ) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
-  const shoudFocus = useDmnEditorStore((s) => s.focus.consumableId === id);
+  const shouldFocus = useDmnEditorStore((s) => s.focus.consumableId === id);
 
   useEffect(() => {
     if (!id) {
@@ -42,8 +42,8 @@ export function useFocusableElement(
       });
     };
 
-    if (shoudFocus && ref.current) {
+    if (shouldFocus && ref.current) {
       before?.(cb) ?? cb();
     }
-  }, [before, dmnEditorStoreApi, id, ref, shoudFocus]);
+  }, [before, dmnEditorStoreApi, id, ref, shouldFocus]);
 }

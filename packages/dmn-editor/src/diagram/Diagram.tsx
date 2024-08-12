@@ -170,7 +170,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     const { externalModelsByNamespace } = useExternalModels();
     const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
     const thisDmn = useDmnEditorStore((s) => s.dmn);
-    const { readOnly } = useSettings();
+    const settings = useSettings();
     const { dmnModelBeforeEditingRef } = useDmnEditor();
 
     // State
@@ -716,10 +716,6 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
     const onNodesChange = useCallback<RF.OnNodesChange>(
       (changes) => {
-        if (!reactFlowInstance || readOnly) {
-          return;
-        }
-
         dmnEditorStoreApi.setState((state) => {
           const controlWaypointsByEdge = new Map<number, Set<number>>();
 
@@ -901,7 +897,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           }
         });
       },
-      [reactFlowInstance, dmnEditorStoreApi, externalModelsByNamespace, readOnly]
+      [reactFlowInstance, dmnEditorStoreApi, externalModelsByNamespace]
     );
 
     const resetToBeforeEditingBegan = useCallback(() => {
@@ -946,9 +942,6 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
     const onNodeDragStop = useCallback<RF.NodeDragHandler>(
       (e, node: RF.Node<DmnDiagramNodeData>) => {
-        if (readOnly) {
-          return;
-        }
         try {
           dmnEditorStoreApi.setState((state) => {
             console.debug("DMN DIAGRAM: `onNodeDragStop`");
@@ -1033,14 +1026,11 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           resetToBeforeEditingBegan();
         }
       },
-      [dmnEditorStoreApi, externalModelsByNamespace, resetToBeforeEditingBegan, readOnly]
+      [dmnEditorStoreApi, externalModelsByNamespace, resetToBeforeEditingBegan]
     );
 
     const onEdgesChange = useCallback<RF.OnEdgesChange>(
       (changes) => {
-        if (readOnly) {
-          return;
-        }
         dmnEditorStoreApi.setState((state) => {
           for (const change of changes) {
             switch (change.type) {
@@ -1071,14 +1061,11 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           }
         });
       },
-      [dmnEditorStoreApi, externalModelsByNamespace, readOnly]
+      [dmnEditorStoreApi, externalModelsByNamespace]
     );
 
     const onEdgeUpdate = useCallback<RF.OnEdgeUpdateFunc<DmnDiagramEdgeData>>(
       (oldEdge, newConnection) => {
-        if (readOnly) {
-          return;
-        }
         console.debug("DMN DIAGRAM: `onEdgeUpdate`", oldEdge, newConnection);
 
         dmnEditorStoreApi.setState((state) => {
@@ -1171,7 +1158,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           state.diagram.edgeIdBeingUpdated = undefined;
         });
       },
-      [dmnEditorStoreApi, externalModelsByNamespace, readOnly]
+      [dmnEditorStoreApi, externalModelsByNamespace]
     );
 
     const onEdgeUpdateStart = useCallback(
@@ -1221,6 +1208,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 console.debug("DMN DIAGRAM: Esc pressed. Desselecting everything.");
                 state.diagram._selectedNodes = [];
                 state.diagram._selectedEdges = [];
+                e.stopPropagation();
                 e.preventDefault();
               } else if (
                 state.computed(s).getDiagramData(externalModelsByNamespace).selectedNodesById.size <= 0 &&
@@ -1230,6 +1218,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 state.diagram.propertiesPanel.isOpen = false;
                 state.diagram.overlaysPanel.isOpen = false;
                 state.diagram.openLhsPanel = DiagramLhsPanel.NONE;
+                e.stopPropagation();
                 e.preventDefault();
               } else {
                 // Let the
@@ -1304,7 +1293,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             onNodeDrag={onNodeDrag}
             // (end)
             onNodeDragStop={onNodeDragStop}
-            nodesDraggable={!readOnly}
+            nodesDraggable={!settings.readOnly}
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
             snapToGrid={true}
@@ -1661,7 +1650,7 @@ interface TopRightCornerPanelsProps {
 export function TopRightCornerPanels({ availableHeight }: TopRightCornerPanelsProps) {
   const diagram = useDmnEditorStore((s) => s.diagram);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { readOnly } = useSettings();
+  const settings = useSettings();
 
   const togglePropertiesPanel = useCallback(() => {
     dmnEditorStoreApi.setState((state) => {
@@ -1692,13 +1681,14 @@ export function TopRightCornerPanels({ availableHeight }: TopRightCornerPanelsPr
   return (
     <>
       <RF.Panel position={"top-right"} style={{ display: "flex" }}>
-        {!readOnly && (
+        {!settings.readOnly && (
           <aside className={"kie-dmn-editor--autolayout-panel-toggle"}>
             <AutolayoutButton />
           </aside>
         )}
         <aside className={"kie-dmn-editor--overlays-panel-toggle"}>
           <Popover
+            // showClose={false}
             className={"kie-dmn-editor--overlay-panel-popover"}
             key={`${diagram.overlaysPanel.isOpen}`}
             aria-label="Overlays Panel"

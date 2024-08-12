@@ -32,6 +32,7 @@ import { useResolvedTypeRef } from "../dataTypes/useResolvedTypeRef";
 import { useCallback } from "react";
 import { Normalized } from "../normalization/normalize";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export function BkmProperties({
   bkm,
@@ -43,9 +44,10 @@ export function BkmProperties({
   index: number;
 }) {
   const { setState } = useDmnEditorStoreApi();
+  const settings = useSettings();
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
-  const isReadonly = !!namespace && namespace !== thisDmnsNamespace;
+  const isReadonly = settings.readOnly || (!!namespace && namespace !== thisDmnsNamespace);
 
   const { dmnEditorRootElementRef } = useDmnEditor();
 

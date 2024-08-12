@@ -45,7 +45,7 @@ export function DrdSelectorPanel() {
       s.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[s.computed(s).getDrdIndex()]?.["@_name"] ||
       getDefaultDrdName({ drdIndex: s.computed(s).getDrdIndex() })
   );
-  const { readOnly } = useSettings();
+  const settings = useSettings();
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
@@ -79,7 +79,7 @@ export function DrdSelectorPanel() {
             <TextContent>
               <Text component="h3">DRDs</Text>
             </TextContent>
-            {!readOnly && (
+            {!settings.readOnly && (
               <Button
                 title={"New DRD"}
                 variant={ButtonVariant.link}
@@ -147,7 +147,7 @@ export function DrdSelectorPanel() {
             <Title headingLevel="h3" style={{ height: "36px" }}>
               {drdName}
             </Title>
-            {drds.length > 0 && !readOnly && (
+            {drds.length > 0 && !settings.readOnly && (
               <Button variant={ButtonVariant.link} onClick={removeDrd} style={{ padding: 0 }} title="Remove DRD">
                 Remove
               </Button>

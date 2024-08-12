@@ -428,6 +428,7 @@ function DocumentationLinksInput({
               className={"kie-dmn-editor--documentation-link--row-remove"}
               variant={"plain"}
               icon={<TimesIcon />}
+              isDisabled={isReadonly}
               onClick={() => onRemove()}
             />
           </Tooltip>
