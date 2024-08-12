@@ -228,7 +228,7 @@ export function ConditionalExpression({
 
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
-      <div>
+      <div data-testid={"kie-tools--boxed-expression-component---conditional"}>
         <BeeTable<ROWTYPE>
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={id}

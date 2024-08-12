@@ -17,20 +17,22 @@
  * under the License.
  */
 
-import bpmnEnvelopeIndex from "!!raw-loader!../../dist/resources/dmn/dmnEnvelopeIndex.html";
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference path="../global.d.ts" /> // Required for bundling types
+
+import dmnEnvelopeIndex from "../../dist/resources/dmn/dmnEnvelopeIndex.html";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import {
   ChannelType,
   DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
   KogitoEditorChannelApi,
-  KogitoEditorEnvelopeApi,
 } from "@kie-tools-core/editor/dist/api";
 import { StandaloneEditorsEditorChannelApiImpl } from "../envelope/StandaloneEditorsEditorChannelApiImpl";
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
 import { ContentType } from "@kie-tools-core/workspace/dist/api";
 import { createEditor, Editor, StandaloneEditorApi } from "../common/Editor";
-import { DmnEditorEnvelopeApi } from "../../../kie-bc-editors/dist/dmn/api/DmnEditorEnvelopeApi";
 import { DmnEditorDiagramApi } from "../jsdiagram/DmnEditorDiagramApi";
+import { DmnEditorEnvelopeApi } from "@kie-tools/kie-bc-editors/dist/dmn/api";
 
 declare global {
   interface Window {
@@ -72,7 +74,7 @@ export function open(args: {
   resources?: Map<string, { contentType: ContentType; content: Promise<string> }>;
 }): StandaloneEditorApi & DmnEditorDiagramApi {
   const iframe = document.createElement("iframe");
-  iframe.srcdoc = bpmnEnvelopeIndex;
+  iframe.srcdoc = dmnEnvelopeIndex;
   iframe.style.width = "100%";
   iframe.style.height = "100%";
   iframe.style.border = "none";

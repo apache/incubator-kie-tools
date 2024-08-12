@@ -35,6 +35,18 @@ module.exports = (env) =>
       dmn: "./src/dmn/index.ts",
       bpmn: "./src/bpmn/index.ts",
     },
+    module: {
+      rules: [
+        {
+          test: /dmnEnvelopeIndex\.html$/,
+          type: "asset/source",
+        },
+        {
+          test: /bpmnEnvelopeIndex\.html$/,
+          type: "asset/source",
+        },
+      ],
+    },
     devServer: {
       historyApiFallback: false,
       static: [{ directory: path.join(__dirname, "./dist") }],

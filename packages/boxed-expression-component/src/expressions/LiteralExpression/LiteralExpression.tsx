@@ -212,7 +212,7 @@ export function LiteralExpression({
   return (
     <div className={`literal-expression`} data-testid={`kie-tools--bee--literal-expression-${id}`}>
       <div className={"literal-expression-body-container"}>
-        <div className={"equals-sign"}>{`=`}</div>
+        <div className={"equals-sign"} data-testid={"kie-tools--equals-sign"}>{`=`}</div>
         <BeeTable<ROWTYPE>
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           forwardRef={beeTableRef}

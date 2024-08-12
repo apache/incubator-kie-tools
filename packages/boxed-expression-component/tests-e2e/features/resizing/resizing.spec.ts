@@ -1009,4 +1009,72 @@ test.describe("Resizing", () => {
       await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested-resized-using-match.png");
     });
   });
+
+  test.describe("Conditional expression", async () => {
+    test("should resize a Conditional", async ({ bee, resizing, stories }) => {
+      await stories.openBoxedConditional();
+
+      await resizing.resizeCell(
+        bee.expression.asConditional().expressionHeaderCell.content,
+        { x: 0, y: 0 },
+        { x: 250, y: 0 }
+      );
+
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-conditionald-resized-using-root.png");
+    });
+
+    test("should resize a Conditional - if", async ({ bee, monaco, page, resizing, stories }) => {
+      await stories.openBoxedConditional();
+
+      await monaco.fill({
+        monacoParentLocator: page,
+        nth: 0,
+        content: "some pretty long text that will not fit the 'if' box",
+      });
+
+      await resizing.resizeCell(
+        bee.expression.asConditional().if.expression.asLiteral().content,
+        { x: 0, y: 0 },
+        { x: 250, y: 0 }
+      );
+
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-conditionald-resized-using-if.png");
+    });
+
+    test("should resize a Conditional - then", async ({ bee, monaco, page, resizing, stories }) => {
+      await stories.openBoxedConditional();
+
+      await monaco.fill({
+        monacoParentLocator: page,
+        nth: 1,
+        content: "some pretty long text that will not fit the 'then' box",
+      });
+
+      await resizing.resizeCell(
+        bee.expression.asConditional().then.expression.asLiteral().content,
+        { x: 0, y: 0 },
+        { x: 250, y: 0 }
+      );
+
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-conditionald-resized-using-then.png");
+    });
+
+    test("should resize a Conditional - else", async ({ bee, monaco, page, resizing, stories }) => {
+      await stories.openBoxedConditional();
+
+      await monaco.fill({
+        monacoParentLocator: page,
+        nth: 2,
+        content: "some pretty long text that will not fit the 'else' box",
+      });
+
+      await resizing.resizeCell(
+        bee.expression.asConditional().else.expression.asLiteral().content,
+        { x: 0, y: 0 },
+        { x: 250, y: 0 }
+      );
+
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-conditionald-resized-using-else.png");
+    });
+  });
 });

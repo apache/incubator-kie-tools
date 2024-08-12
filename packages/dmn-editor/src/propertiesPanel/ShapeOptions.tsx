@@ -502,7 +502,10 @@ export function ShapeOptions({
                   alignItems: "center",
                 }}
               >
-                <div style={{ gridArea: "position-x-value" }}>
+                <div
+                  style={{ gridArea: "position-x-value" }}
+                  data-testid={"kie-tools--dmn-editor--properties-panel-node-shape-x-input"}
+                >
                   <TextInput
                     aria-label={"X"}
                     type={"number"}
@@ -516,7 +519,10 @@ export function ShapeOptions({
                   <p>X</p>
                 </div>
 
-                <div style={{ gridArea: "position-y-value" }}>
+                <div
+                  style={{ gridArea: "position-y-value" }}
+                  data-testid={"kie-tools--dmn-editor--properties-panel-node-shape-y-input"}
+                >
                   <TextInput
                     aria-label={"Y"}
                     type={"number"}

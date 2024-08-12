@@ -14,6 +14,8 @@
         <quarkus.platform.version>0.0.1</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.2.5</surefire-plugin.version>
+        <kie.version>0.0.0</kie.version>
+        <kie.tooling.version>0.0.0</kie.tooling.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -34,7 +36,7 @@
             <dependency>
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>kogito-bom</artifactId>
-                <version/>
+                <version>${kie.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -85,19 +87,28 @@
         </dependency>
         <dependency>
             <groupId>org.kie</groupId>
-            <artifactId>kie-addons-quarkus-source-files</artifactId>
+            <artifactId>kie-addons-quarkus-process-management</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.kie.sonataflow</groupId>
-            <artifactId>sonataflow-quarkus-devui</artifactId>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-addons-quarkus-source-files</artifactId>
         </dependency>
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kogito-addons-quarkus-data-index-inmemory</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kogito-addons-quarkus-jobs-service-embedded</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.kie.sonataflow</groupId>
             <artifactId>sonataflow-quarkus</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kie.sonataflow</groupId>
+            <artifactId>sonataflow-quarkus-devui</artifactId>
+            <version>${kie.tooling.version}</version>
         </dependency>
     </dependencies>
     <build>
@@ -172,4 +183,16 @@
             </properties>
         </profile>
     </profiles>
+    <repositories>
+        <repository>
+            <id>apache-public-repository-group</id>
+            <name>Apache Public Repository Group</name>
+            <url>https://repository.apache.org/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>apache-snapshot-repository-group</id>
+            <name>Apache Snapshot Repository Group</name>
+            <url>https://repository.apache.org/content/groups/snapshots/</url>
+        </repository>
+    </repositories>
 </project>

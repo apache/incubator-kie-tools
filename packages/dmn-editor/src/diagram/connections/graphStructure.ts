@@ -72,6 +72,7 @@ export const graphStructure: Map<NodeType, Map<EdgeType, Set<NodeType>>> = new M
           NODE_TYPES.decision,
           NODE_TYPES.bkm,
           NODE_TYPES.decisionService,
+          NODE_TYPES.group,
           NODE_TYPES.knowledgeSource,
         ]),
       ],

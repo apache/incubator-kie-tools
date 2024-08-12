@@ -332,7 +332,7 @@ digraph G {
   "@kie-tools/dmn-editor" -> "@kie-tools/pmml-editor-marshaller" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-editor-envelope" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-editor-envelope" -> "@kie-tools/dmn-editor" [ style = "solid", color = "blue" ];
-  "@kie-tools/dmn-editor-standalone" -> "@kie-tools/dmn-editor-envelope" [ style = "solid", color = "blue" ];
+  "@kie-tools/dmn-editor-standalone" -> "@kie-tools/dmn-editor-envelope" [ style = "dashed", color = "blue" ];
   "@kie-tools/dmn-feel-antlr4-parser" -> "@kie-tools/dmn-marshaller" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-language-service" -> "@kie-tools/dmn-feel-antlr4-parser" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-language-service" -> "@kie-tools-core/switch-expression-ts" [ style = "dashed", color = "blue" ];
@@ -407,7 +407,7 @@ digraph G {
   "kie-editors-dev-vscode-extension" -> "@kie-tools/vscode-java-code-completion-extension-plugin" [ style = "solid", color = "black" ];
   "kie-editors-dev-vscode-extension" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
   "kie-editors-dev-vscode-extension" -> "@kie-tools/vscode-extension-common-test-helpers" [ style = "dashed", color = "black" ];
-  "@kie-tools/kie-editors-standalone" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
+  "@kie-tools/kie-editors-standalone" -> "@kie-tools/kie-bc-editors" [ style = "dashed", color = "blue" ];
   "@kie-tools/kie-editors-standalone" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "blue" ];
   "@kie-tools/kie-sandbox-distribution" -> "@kie-tools/cors-proxy-image" [ style = "solid", color = "black" ];
   "@kie-tools/kie-sandbox-distribution" -> "@kie-tools/kie-sandbox-extended-services-image" [ style = "solid", color = "black" ];
