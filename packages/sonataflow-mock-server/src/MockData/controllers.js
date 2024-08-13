@@ -24,6 +24,20 @@ const { v4: uuidv4 } = require("uuid");
 
 const formsUnableToSave = ["html_hiring_ITInterview", "react_hiring_ITInterview"];
 
+/**
+ * Check if the formName is one of the accepted ones
+ *
+ * @param {string} formName
+ */
+function validateFormName(formName) {
+  return [
+    "html_hiring_HRInterview",
+    "html_hiring_ITInterview",
+    "react_hiring_HRInterview",
+    "react_hiring_ITInterview",
+  ].includes(formName);
+}
+
 module.exports = controller = {
   getCustomDashboards: (req, res) => {
     const filterNames = req.query.names.split(";");
@@ -76,7 +90,7 @@ module.exports = controller = {
     const formName = req.params.formName;
     const formInfo = formData.filter((datum) => datum.name === formName);
 
-    if (formInfo.length === 0) {
+    if (formInfo.length === 0 || !validateFormName(formName)) {
       res.status(500).send("Cannot find form");
       return;
     }
