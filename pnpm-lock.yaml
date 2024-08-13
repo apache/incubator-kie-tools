@@ -11065,12 +11065,15 @@ importers:
       express:
         specifier: ^4.19.2
         version: 4.19.2
+      express-rate-limit:
+        specifier: ^7.4.0
+        version: 7.4.0(express@4.19.2)
       graphql:
         specifier: 14.3.1
         version: 14.3.1
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.0.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.0.2))
+        version: 29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2))
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -22674,6 +22677,12 @@ packages:
 
   exponential-backoff@3.1.1:
     resolution: {integrity: sha512-dX7e/LHVJ6W3DE1MHWi9S1EYzDESENfLrYohG2G++ovZrYOkm4Knwa0mc1cn84xJOR4KEU0WSchhLbd0UklbHw==}
+
+  express-rate-limit@7.4.0:
+    resolution: {integrity: sha512-v1204w3cXu5gCDmAvgvzI6qjzZzoMWKnyVDk3ACgfswTQLYiGen+r8w0VnXnGMmzEN/g8fwIQ4JrFFd4ZP6ssg==}
+    engines: {node: '>= 16'}
+    peerDependencies:
+      express: 4 || 5 || ^5.0.0-beta.1
 
   express@4.19.2:
     resolution: {integrity: sha512-5T6nhjsT+EOMzuck8JjBHARTHfMht0POzlA60WV2pMD3gyXw2LZnZ+ueGdNxG+0calOJcWKbpFcuzLZ91YWq9Q==}
@@ -46735,6 +46744,10 @@ snapshots:
       jest-util: 29.7.0
 
   exponential-backoff@3.1.1: {}
+
+  express-rate-limit@7.4.0(express@4.19.2):
+    dependencies:
+      express: 4.19.2
 
   express@4.19.2:
     dependencies:

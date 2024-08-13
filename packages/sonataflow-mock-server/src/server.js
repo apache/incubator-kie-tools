@@ -18,6 +18,7 @@
  */
 // HTTP SERVER
 const express = require("express");
+const rateLimit = require("express-rate-limit");
 const swaggerUi = require("swagger-ui-express");
 const swaggerApiDoc = require("./MockData/openAPI/openapi.json");
 var cors = require("cors");
@@ -42,6 +43,12 @@ const swaggerOptions = {
     url: "/q/openapi.json",
   },
 };
+
+// set up rate limiter: maximum of 100 requests per minute to fix error "Missing rate limiting"
+var limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+});
 
 function setPort(port = 4000) {
   app.set("port", parseInt(port, 10));
@@ -72,6 +79,8 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+app.use(limiter);
 
 app.post("/", controller.triggerCloudEvent);
 app.put("/", controller.triggerCloudEvent);
