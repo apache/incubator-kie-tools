@@ -24,7 +24,8 @@
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "quarkus:dev": "run-script-os",
     "quarkus:dev:darwin:linux": "mvn clean package quarkus:dev -DskipTests",
-    "quarkus:dev:win32": "mvn clean package quarkus:dev -DskipTests"
+    "quarkus:dev:win32": "mvn clean package quarkus:dev -DskipTests",
+    "start": "pnpm build:dev && mvn -f ./dev/pom.xml quarkus:dev"
   },
   "dependencies": {
     "@kie-tools/maven-base": "workspace:*"

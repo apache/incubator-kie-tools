@@ -52,7 +52,8 @@ import io.quarkus.vertx.http.runtime.management.ManagementInterfaceBuildTimeConf
 public class DevConsoleProcessor {
 
     private static final String STATIC_RESOURCES_PATH = "dev-static/";
-    private static final String BASE_RELATIVE_URL = "/q/dev-ui/org.jbpm.jbpm-quarkus-devui";
+    private static final String BASE_RELATIVE_URL = "dev-ui/org.jbpm.jbpm-quarkus-devui";
+    private static final String NON_APPLICATION_BASE_RELATIVE_URL = "/q/" + BASE_RELATIVE_URL;
     private static final String DATA_INDEX_CAPABILITY = "org.kie.kogito.data-index";
 
     @SuppressWarnings("unused")
@@ -77,13 +78,13 @@ public class DevConsoleProcessor {
                 true);
 
         routeBuildItemBuildProducer.produce(new RouteBuildItem.Builder()
-                .route(BASE_RELATIVE_URL + "/resources/*")
+                .route(NON_APPLICATION_BASE_RELATIVE_URL + "/resources/*")
                 .handler(devUIStaticArtifactsRecorder.handler(devConsoleStaticResourcesDeploymentPath.toString(),
                         shutdownContext))
                 .build());
 
         routeBuildItemBuildProducer.produce(new RouteBuildItem.Builder()
-                .route(BASE_RELATIVE_URL + "/*")
+                .route(NON_APPLICATION_BASE_RELATIVE_URL + "/*")
                 .handler(devUIStaticArtifactsRecorder.handler(devConsoleStaticResourcesDeploymentPath.toString(),
                         shutdownContext))
                 .build());
@@ -119,6 +120,7 @@ public class DevConsoleProcessor {
 
         CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
 
+        cardPageBuildItem.addBuildTimeData("normalizedHttpRootPath", nonApplicationRootPathBuildItem.getNormalizedHttpRootPath());
         cardPageBuildItem.addBuildTimeData("extensionBasePath", uiPath);
         cardPageBuildItem.addBuildTimeData("openapiPath", openapiPath);
         cardPageBuildItem.addBuildTimeData("devUIUrl", devUIUrl);

@@ -26,8 +26,15 @@ import {
   openapiPath,
   trustyServiceUrl,
   userData,
+  normalizedHttpRootPath,
 } from "build-time-data";
 import { RouterController } from "router-controller";
+
+function parseLocalHostname(url) {
+  return typeof url === "string"
+    ? url.replace(/http:\/\/(0\.0\.0\.0(:\d+)?|localhost(:\d+))/g, window.location.origin)
+    : url;
+}
 
 export class QwcJbpmQuarkusDevui extends LitElement {
   _routerController = new RouterController(this);
@@ -43,6 +50,18 @@ export class QwcJbpmQuarkusDevui extends LitElement {
   async connectedCallback() {
     super.connectedCallback();
     await this.updateComplete;
+
+    console.log({
+      dataIndexUrl,
+      devUIUrl,
+      extensionBasePath,
+      isTracingEnabled,
+      openapiPath,
+      trustyServiceUrl,
+      userData,
+      normalizedHttpRootPath,
+    });
+
     if (!document.querySelector("#jbpm-devui-script")) {
       const script = document.createElement("script");
       script.setAttribute("async", "");
@@ -60,15 +79,16 @@ export class QwcJbpmQuarkusDevui extends LitElement {
   initUI() {
     const metadata = this._routerController.getCurrentMetaData();
     const container = this.renderRoot.querySelector("#envelope-app");
+
     RuntimeToolsDevUI.open({
       container: container,
       isDataIndexAvailable: true,
       isTracingEnabled: isTracingEnabled,
-      dataIndexUrl: `${dataIndexUrl ?? "http://localhost:8180"}/graphql`,
-      trustyServiceUrl: `${trustyServiceUrl ?? "http://localhost:1336"}`,
+      dataIndexUrl: `${parseLocalHostname(dataIndexUrl) ?? normalizedHttpRootPath}/graphql`,
+      trustyServiceUrl: parseLocalHostname(trustyServiceUrl) ?? "http://localhost:1336",
       page: metadata.page ?? "Processes",
-      devUIUrl: `${devUIUrl ?? window.location.origin}`,
-      openApiPath: `${openapiPath ?? "q/openapi.json"}`,
+      devUIUrl: parseLocalHostname(devUIUrl) ?? window.location.origin,
+      openApiPath: parseLocalHostname(openapiPath) ?? `${normalizedHttpRootPath}/q/openapi.json`,
       availablePages: ["Processes", "Jobs", "Tasks", "Forms"],
       users: userData ?? [],
     });
