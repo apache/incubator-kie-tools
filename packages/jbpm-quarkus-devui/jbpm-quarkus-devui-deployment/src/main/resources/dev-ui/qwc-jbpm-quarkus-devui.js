@@ -85,6 +85,7 @@ export class QwcJbpmQuarkusDevui extends LitElement {
       isDataIndexAvailable: true,
       isTracingEnabled: isTracingEnabled,
       dataIndexUrl: `${parseLocalHostname(dataIndexUrl) ?? normalizedHttpRootPath}/graphql`,
+      remoteKogitoAppUrl: parseLocalHostname(dataIndexUrl) ?? normalizedHttpRootPath,
       trustyServiceUrl: parseLocalHostname(trustyServiceUrl) ?? "http://localhost:1336",
       page: metadata.page ?? "Processes",
       devUIUrl: parseLocalHostname(devUIUrl) ?? window.location.origin,

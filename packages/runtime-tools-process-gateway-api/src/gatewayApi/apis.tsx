@@ -474,6 +474,7 @@ export const getJobsWithFilters = async (
   }
 };
 
+// TODO: Parameterize the URL for the Forms API
 export const getForms = (formFilter: string[]): Promise<FormInfo[]> => {
   return new Promise((resolve, reject) => {
     axios
@@ -489,6 +490,7 @@ export const getForms = (formFilter: string[]): Promise<FormInfo[]> => {
   });
 };
 
+// TODO: Parameterize the URL for the Forms API
 export const getFormContent = (formName: string): Promise<Form> => {
   return new Promise((resolve, reject) => {
     axios
@@ -500,6 +502,7 @@ export const getFormContent = (formName: string): Promise<Form> => {
   });
 };
 
+// TODO: Parameterize the URL for the Forms API
 export const saveFormContent = (formName: string, content: FormContent): Promise<void> => {
   return new Promise((resolve, reject) => {
     axios
