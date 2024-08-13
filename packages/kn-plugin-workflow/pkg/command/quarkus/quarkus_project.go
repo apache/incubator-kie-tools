@@ -21,6 +21,7 @@ package quarkus
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
@@ -38,6 +39,8 @@ type Repository struct {
 	Name string
 	Url  string
 }
+
+var filesToRemove = []string{"mvnw", "mvnw.cmd"}
 
 func CreateQuarkusProject(cfg CreateQuarkusProjectConfig) error {
 	if err := common.CheckProjectName(cfg.ProjectName); err != nil {
@@ -61,10 +64,24 @@ func CreateQuarkusProject(cfg CreateQuarkusProjectConfig) error {
 		return err
 	}
 
+	if err := PostMavenCleanup(cfg); err != nil {
+		return err
+	}
+
 	//Until we are part of Quarkus 3.x bom we need to manipulate the pom.xml to use the right kogito dependencies
 	pomPath := cfg.ProjectName + "/pom.xml"
 	if err := manipulatePomToKogito(pomPath, cfg); err != nil {
 		return err
+	}
+	return nil
+}
+
+func PostMavenCleanup(cfg CreateQuarkusProjectConfig) error {
+	for _, file := range filesToRemove {
+		var fqdn = cfg.ProjectName + "/" + file
+		if err := os.RemoveAll(fqdn); err != nil {
+			return fmt.Errorf("error removing %s: %w", fqdn, err)
+		}
 	}
 	return nil
 }

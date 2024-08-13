@@ -117,7 +117,6 @@ func RunQuarkusCreateTest(t *testing.T, test CfgTestInputQuarkusCreate) string {
 	expectedDirectories := []string{
 		"src/main/java",
 		"src/main/resources",
-		"src/main/docker",
 		"src/main",
 		"src",
 		".mvn/wrapper",
@@ -127,10 +126,6 @@ func RunQuarkusCreateTest(t *testing.T, test CfgTestInputQuarkusCreate) string {
 	expectedFiles := []string{
 		"src/main/resources/application.properties",
 		"src/main/resources/workflow.sw.json",
-		"src/main/docker/Dockerfile.legacy-jar",
-		"src/main/docker/Dockerfile.jvm",
-		"src/main/docker/Dockerfile.native",
-		"src/main/docker/Dockerfile.native-micro",
 		".mvn/wrapper/.gitignore",
 		".mvn/wrapper/MavenWrapperDownloader.java",
 		".mvn/wrapper/maven-wrapper.properties",
@@ -138,8 +133,6 @@ func RunQuarkusCreateTest(t *testing.T, test CfgTestInputQuarkusCreate) string {
 		"pom.xml",
 		"README.md",
 		".dockerignore",
-		"mvnw.cmd",
-		"mvnw",
 	}
 	VerifyFilesExist(t, projectDir, expectedFiles)
 

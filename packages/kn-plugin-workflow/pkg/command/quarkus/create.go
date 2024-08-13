@@ -126,6 +126,11 @@ func runCreateProject(cfg CreateQuarkusProjectConfig) (err error) {
 	); err != nil {
 		return err
 	}
+
+	if err := PostMavenCleanup(cfg); err != nil {
+		return err
+	}
+
 	return
 }
 
