@@ -184,7 +184,7 @@ export default async (env: any, argv: any) => {
         host: buildEnv.sonataflowManagementConsoleWebapp.host,
         port: buildEnv.sonataflowManagementConsoleWebapp.port,
         compress: true,
-        historyApiFallback: true,
+        historyApiFallback: false,
         hot: true,
         client: {
           overlay: {

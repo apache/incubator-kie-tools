@@ -10737,6 +10737,9 @@ importers:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
+      '@kie-tools/sonataflow-management-console-image-env':
+        specifier: workspace:*
+        version: link:../sonataflow-management-console-image-env
       '@kie-tools/sonataflow-management-console-webapp':
         specifier: workspace:*
         version: link:../sonataflow-management-console-webapp
@@ -10749,6 +10752,12 @@ importers:
       ts-json-schema-generator:
         specifier: ^1.1.2
         version: 1.1.2
+
+  packages/sonataflow-management-console-image-env:
+    devDependencies:
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
 
   packages/sonataflow-management-console-webapp:
     dependencies:

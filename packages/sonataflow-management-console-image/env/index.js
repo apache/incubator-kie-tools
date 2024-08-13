@@ -21,37 +21,11 @@ const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/b
 
 const rootEnv = require("@kie-tools/root-env/env");
 
-module.exports = composeEnv([rootEnv], {
-  vars: varsWithName({
-    SONATAFLOW_MANAGEMENT_CONSOLE__registry: {
-      default: "docker.io",
-      description: "E.g., `docker.io` or `quay.io`.",
-    },
-    SONATAFLOW_MANAGEMENT_CONSOLE__account: {
-      default: "apache",
-      description: "E.g,. `apache` or `kie-tools-bot`",
-    },
-    SONATAFLOW_MANAGEMENT_CONSOLE__name: {
-      default: "incubator-kie-sonataflow-management-console",
-      description: "Name of the image itself.",
-    },
-    SONATAFLOW_MANAGEMENT_CONSOLE__buildTag: {
-      default: rootEnv.env.root.streamName,
-      description: "Tag version of this image. E.g., `main` or `10.0.x` or `10.0.0",
-    },
-    SONATAFLOW_MANAGEMENT_CONSOLE__port: {
-      default: 8080,
-      description: "The internal container port.",
-    },
-  }),
+module.exports = composeEnv([rootEnv, require("@kie-tools/sonataflow-management-console-image-env/env")], {
+  vars: varsWithName({}),
   get env() {
     return {
       sonataflowManagementConsoleImage: {
-        registry: getOrDefault(this.vars.SONATAFLOW_MANAGEMENT_CONSOLE__registry),
-        account: getOrDefault(this.vars.SONATAFLOW_MANAGEMENT_CONSOLE__account),
-        name: getOrDefault(this.vars.SONATAFLOW_MANAGEMENT_CONSOLE__name),
-        buildTag: getOrDefault(this.vars.SONATAFLOW_MANAGEMENT_CONSOLE__buildTag),
-        port: getOrDefault(this.vars.SONATAFLOW_MANAGEMENT_CONSOLE__port),
         version: require("../package.json").version,
       },
     };

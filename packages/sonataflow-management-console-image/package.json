@@ -24,12 +24,13 @@
     "copy:webapp-assets:linux:darwin": "cp -R ./node_modules/@kie-tools/sonataflow-management-console-webapp/dist/ ./dist-dev/sonataflow-management-console-webapp",
     "copy:webapp-assets:win32": "pnpm powershell \"Copy-Item -R ./node_modules/@kie-tools/sonataflow-management-console-webapp/dist/ ./dist-dev/sonataflow-management-console-webapp\"",
     "env-json:schema:generate": "ts-json-schema-generator --tsconfig ./node_modules/@kie-tools/sonataflow-management-console-webapp/tsconfig.json --path ./node_modules/@kie-tools/sonataflow-management-console-webapp/src/env/EnvJson.ts --type EnvJson --id EnvJson --out ./dist-dev/EnvJson.schema.json",
-    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env sonataflowManagementConsoleImage.registry)\" -a \"$(build-env sonataflowManagementConsoleImage.account)\" -n \"$(build-env sonataflowManagementConsoleImage.name)\" -t \"$(build-env sonataflowManagementConsoleImage.buildTag)\" --build-arg SONATAFLOW_MANAGEMENT_CONSOLE_PORT=\"$(build-env sonataflowManagementConsoleImage.port)\""
+    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env sonataflowManagementConsoleImageEnv.registry)\" -a \"$(build-env sonataflowManagementConsoleImageEnv.account)\" -n \"$(build-env sonataflowManagementConsoleImageEnv.name)\" -t \"$(build-env sonataflowManagementConsoleImageEnv.buildTag)\" --build-arg SONATAFLOW_MANAGEMENT_CONSOLE_PORT=\"$(build-env sonataflowManagementConsoleImageEnv.port)\""
   },
   "devDependencies": {
     "@kie-tools/image-builder": "workspace:*",
     "@kie-tools/image-env-to-json": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/sonataflow-management-console-image-env": "workspace:*",
     "@kie-tools/sonataflow-management-console-webapp": "workspace:*",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",

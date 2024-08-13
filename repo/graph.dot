@@ -182,6 +182,7 @@ digraph G {
   "@kie-tools/sonataflow-image-common" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/sonataflow-devmode-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/sonataflow-management-console-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/sonataflow-management-console-image-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/sonataflow-management-console-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/stunner-editors-dmn-loader" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -560,7 +561,9 @@ digraph G {
   "@kie-tools/sonataflow-image-common" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-management-console-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-management-console-image" -> "@kie-tools/image-env-to-json" [ style = "dashed", color = "black" ];
+  "@kie-tools/sonataflow-management-console-image" -> "@kie-tools/sonataflow-management-console-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-management-console-image" -> "@kie-tools/sonataflow-management-console-webapp" [ style = "dashed", color = "black" ];
+  "@kie-tools/sonataflow-management-console-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
   "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/runtime-tools-process-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
