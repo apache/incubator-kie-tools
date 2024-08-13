@@ -127,7 +127,7 @@ test.describe("Create Boxed Filter", () => {
       const filterExpression = bee.expression.asFilter();
       await filterExpression.match.selectExpressionMenu.selectContext();
       // We're hovering the 'in' to make the width difference to the 'match' more clear
-      await filterExpression.in.containerElement.hover();
+      await filterExpression.in.hover();
       await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-context.png");
     });
 
@@ -143,7 +143,7 @@ test.describe("Create Boxed Filter", () => {
       const filterExpression = bee.expression.asFilter();
       await filterExpression.match.selectExpressionMenu.selectDecisionTable();
       // We're hovering the 'in' to make the width difference to the 'match' more clear
-      await filterExpression.in.containerElement.hover();
+      await filterExpression.in.hover();
       await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-decision-table.png");
     });
 
@@ -159,7 +159,7 @@ test.describe("Create Boxed Filter", () => {
       const filterExpression = bee.expression.asFilter();
       await filterExpression.match.selectExpressionMenu.selectList();
       // We're hovering the 'in' to make the width difference to the 'match' more clear
-      await filterExpression.in.containerElement.hover();
+      await filterExpression.in.hover();
       await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-list.png");
     });
 
@@ -175,7 +175,7 @@ test.describe("Create Boxed Filter", () => {
       const filterExpression = bee.expression.asFilter();
       await filterExpression.match.selectExpressionMenu.selectInvocation();
       // We're hovering the 'in' to make the width difference to the 'match' more clear
-      await filterExpression.in.containerElement.hover();
+      await filterExpression.in.hover();
       await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-invocation.png");
     });
 
@@ -191,7 +191,7 @@ test.describe("Create Boxed Filter", () => {
       const filterExpression = bee.expression.asFilter();
       await filterExpression.match.selectExpressionMenu.selectFunction();
       // We're hovering the 'in' to make the width difference to the 'match' more clear
-      await filterExpression.in.containerElement.hover();
+      await filterExpression.in.hover();
       await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-function.png");
     });
 
@@ -207,7 +207,7 @@ test.describe("Create Boxed Filter", () => {
       const filterExpression = bee.expression.asFilter();
       await filterExpression.match.selectExpressionMenu.selectConditional();
       // We're hovering the 'in' to make the width difference to the 'match' more clear
-      await filterExpression.in.containerElement.hover();
+      await filterExpression.in.hover();
       await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-conditional.png");
     });
 
@@ -223,7 +223,7 @@ test.describe("Create Boxed Filter", () => {
       const filterExpression = bee.expression.asFilter();
       await filterExpression.match.selectExpressionMenu.selectFor();
       // We're hovering the 'in' to make the width difference to the 'match' more clear
-      await filterExpression.in.containerElement.hover();
+      await filterExpression.in.hover();
       await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-for.png");
     });
 
@@ -239,7 +239,7 @@ test.describe("Create Boxed Filter", () => {
       const filterExpression = bee.expression.asFilter();
       await filterExpression.match.selectExpressionMenu.selectEvery();
       // We're hovering the 'in' to make the width difference to the 'match' more clear
-      await filterExpression.in.containerElement.hover();
+      await filterExpression.in.hover();
       await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-every.png");
     });
 
@@ -255,7 +255,7 @@ test.describe("Create Boxed Filter", () => {
       const filterExpression = bee.expression.asFilter();
       await filterExpression.match.selectExpressionMenu.selectSome();
       // We're hovering the 'in' to make the width difference to the 'match' more clear
-      await filterExpression.in.containerElement.hover();
+      await filterExpression.in.hover();
       await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-some.png");
     });
 
@@ -271,7 +271,7 @@ test.describe("Create Boxed Filter", () => {
       const filterExpression = bee.expression.asFilter();
       await filterExpression.match.selectExpressionMenu.selectFilter();
       // We're hovering the 'in' to make the width difference to the 'match' more clear
-      await filterExpression.in.containerElement.hover();
+      await filterExpression.in.hover();
       await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-aligned-match-filter.png");
     });
   });

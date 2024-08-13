@@ -76,8 +76,8 @@ export class Row {
     return this.childExpression.expression;
   }
 
-  get expressionContainerElement() {
-    return this.childExpression.containerElement;
+  get elementCell() {
+    return this.childExpression.elementCell;
   }
 
   get selectExpressionMenu() {

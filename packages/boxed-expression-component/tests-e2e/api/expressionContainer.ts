@@ -165,10 +165,14 @@ export class ChildExpression {
     private locator: Locator,
     monaco: Monaco
   ) {
-    this._expression = new ExpressionContainer(this.containerElement, monaco);
+    this._expression = new ExpressionContainer(this.elementCell, monaco);
   }
 
-  get containerElement() {
+  public async hover() {
+    await this.elementCell.hover();
+  }
+
+  get elementCell() {
     return this.locator.getByTestId("kie-tools--bee--expression-container").nth(0);
   }
 
@@ -177,7 +181,7 @@ export class ChildExpression {
   }
 
   get selectExpressionMenu() {
-    return new SelectExpressionMenu(this.containerElement);
+    return new SelectExpressionMenu(this.elementCell);
   }
 
   get contextMenu() {

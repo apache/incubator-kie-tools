@@ -105,7 +105,7 @@ export class ContextExpressionEntry {
     return new NameAndDataTypeCell(this.locator.getByRole("cell").nth(0));
   }
 
-  get containerElement() {
-    return this.childExpression.containerElement;
+  get elementCell() {
+    return this.childExpression.elementCell;
   }
 }
