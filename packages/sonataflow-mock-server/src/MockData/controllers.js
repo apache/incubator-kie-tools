@@ -136,10 +136,10 @@ module.exports = controller = {
     }
     if (req.body.kogitobusinesskey) {
       console.log(`Starting Serverless workflow with business key: ${req.body.kogitobusinesskey}`);
-      return res.status(200).send(req.body.kogitobusinesskey);
+      return res.status(200).send(encodeURIComponent(req.body.kogitobusinesskey));
     } else if (req.body.kogitoprocrefid) {
       console.log(`Serverless Workflow with id ${req.body.kogitoprocrefid} successfully completed`);
-      return res.status(200).send(req.body.kogitoprocrefid);
+      return res.status(200).send(encodeURIComponent(req.body.kogitoprocrefid));
     }
 
     return res.status(200).send("Cloud Event successfully triggered");
