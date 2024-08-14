@@ -469,6 +469,12 @@ export const de: OnlineI18n = {
           title: `${de_common.names.extendedServices} wurde angehalten!`,
           message: `Es sieht so aus, als ob ${de_common.names.extendedServices} plötzlich beendet wurde, bitte folgen Sie diesen Anweisungen, um es wieder zu starten.`,
         },
+        packaged: {
+          title: `${de_common.names.dmnRunner}`,
+          alert: `Sie sind nicht mit ${de_common.names.extendedServices} verbunden.`,
+          message: `Beachten Sie, dass einige Funktionen wie der ${de_common.names.dmnRunner}, ohne ${de_common.names.extendedServices} nicht verfügbar sind.`,
+          helper: `Eine Anleitung zur Bereitstellung von ${de_common.names.extendedServices} als Image finden Sie in der Dokumentation.`,
+        },
         macos: {
           install: {
             download: ` ${de_common.names.extendedServices}.`,

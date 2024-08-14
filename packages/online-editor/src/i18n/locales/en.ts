@@ -457,6 +457,12 @@ export const en: OnlineI18n = {
           title: `${en_common.names.extendedServices} has stopped!`,
           message: `It looks like the ${en_common.names.extendedServices} has suddenly stopped, please follow these instructions to start it again.`,
         },
+        packaged: {
+          title: `${en_common.names.dmnRunner}`,
+          alert: `You are not connected to ${en_common.names.extendedServices}.`,
+          message: `Note that some features, such as the ${en_common.names.dmnRunner}, are unavailable without ${en_common.names.extendedServices}.`,
+          helper: `Refer to the documentation for guidance on deploying ${en_common.names.extendedServices} as an image.`,
+        },
         macos: {
           install: {
             download: ` ${en_common.names.extendedServices}.`,
