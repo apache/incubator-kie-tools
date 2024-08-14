@@ -41,6 +41,7 @@ import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopula
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { AutoPositionedEdgeMarker } from "../diagram/edges/AutoPositionedEdgeMarker";
 import { Normalized } from "../normalization/normalize";
+import { ExternalModelsIndex } from "../DmnEditor";
 
 export function addEdge({
   definitions,
@@ -74,6 +75,7 @@ export function addEdge({
     autoPositionedEdgeMarker: AutoPositionedEdgeMarker | undefined;
   };
   keepWaypoints: boolean;
+  externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
   if (!_checkIsValidConnection(sourceNode, targetNode, edge.type)) {
     throw new Error(`DMN MUTATION: Invalid structure: (${sourceNode.type}) --${edge.type}--> (${targetNode.type}) `);
@@ -188,7 +190,7 @@ export function addEdge({
   // Replace with the new one.
   diagramElements.push(newDmnEdge);
 
-  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
+  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions, externalModelsByNamespace: undefined });
 
   return { newDmnEdge };
 }

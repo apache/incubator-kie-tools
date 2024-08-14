@@ -32,6 +32,7 @@ import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/c
 import { xmlHrefToQName } from "../xml/xmlHrefToQName";
 import { Normalized } from "../normalization/normalize";
 import { NodeDmnObjects } from "../diagram/nodes/Nodes";
+import { ExternalModelsIndex } from "../DmnEditor";
 
 export enum NodeDeletionMode {
   FROM_DRG_AND_ALL_DRDS,
@@ -48,6 +49,7 @@ export function deleteNode({
   __readonly_dmnObjectQName,
   __readonly_externalModelTypesByNamespace,
   mode,
+  externalModelsByNamespace,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   __readonly_drgEdges: DrgEdge[];
@@ -58,6 +60,7 @@ export function deleteNode({
   __readonly_dmnObjectNamespace: string;
   __readonly_dmnObjectQName: XmlQName;
   mode: NodeDeletionMode;
+  externalModelsByNamespace: ExternalModelsIndex | undefined;
 }): {
   deletedDmnObject: Unpacked<Normalized<DMN15__tDefinitions>["drgElement" | "artifact"]> | undefined;
   deletedDmnShapeOnCurrentDrd: Normalized<DMNDI15__DMNShape> | undefined;
@@ -96,6 +99,7 @@ export function deleteNode({
             id: drgEdge.id,
             dmnObject: drgEdge.dmnObject,
           },
+          externalModelsByNamespace,
         });
       }
     }
@@ -180,7 +184,7 @@ export function deleteNode({
     );
   }
 
-  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
+  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions, externalModelsByNamespace });
 
   return {
     deletedDmnObject: mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS ? deletedDmnObject : undefined,

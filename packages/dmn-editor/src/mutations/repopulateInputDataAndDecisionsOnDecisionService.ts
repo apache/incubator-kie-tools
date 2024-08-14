@@ -18,15 +18,21 @@
  */
 
 import {
+  DMN15__tDecision,
   DMN15__tDecisionService,
   DMN15__tDefinitions,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Normalized } from "../normalization/normalize";
+import { ExternalModelsIndex } from "../DmnEditor";
+import { parseXmlHref } from "../xml/xmlHrefs";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller/dist";
 
 export function repopulateInputDataAndDecisionsOnAllDecisionServices({
   definitions,
+  externalModelsByNamespace,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
+  externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
   for (let i = 0; i < (definitions.drgElement ?? []).length; i++) {
     const drgElement = definitions.drgElement![i];
@@ -34,6 +40,7 @@ export function repopulateInputDataAndDecisionsOnAllDecisionServices({
       repopulateInputDataAndDecisionsOnDecisionService({
         definitions,
         decisionService: drgElement,
+        externalModelsByNamespace,
       });
     }
   }
@@ -42,9 +49,11 @@ export function repopulateInputDataAndDecisionsOnAllDecisionServices({
 export function repopulateInputDataAndDecisionsOnDecisionService({
   definitions,
   decisionService,
+  externalModelsByNamespace,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   decisionService: Normalized<DMN15__tDecisionService>;
+  externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
   // Save previous values to preserve order
   const inputDatas = new Set<string>([...(decisionService.inputData ?? [])].map((e) => e["@_href"])); // Using Set for uniqueness
@@ -74,6 +83,27 @@ export function repopulateInputDataAndDecisionsOnDecisionService({
         requirements.set(ir.requiredInput["@_href"], "inputDataIr");
       }
     });
+  }
+
+  for (const hrefString of hrefsToDecisionsInsideDecisionService) {
+    const href = parseXmlHref(hrefString);
+    const externalModel = externalModelsByNamespace?.[href.namespace ?? ""];
+    if (externalModel) {
+      const externalDecision = (externalModel?.model as Normalized<DmnLatestModel>).definitions.drgElement?.find(
+        (drgElement) => drgElement["@_id"] === href.id
+      ) as Normalized<DMN15__tDecision>;
+
+      if (externalDecision) {
+        (externalDecision.informationRequirement ?? []).flatMap((ir) => {
+          // We need to add the reference to the external model
+          if (ir.requiredDecision) {
+            requirements.set(`${href.namespace}${ir.requiredDecision["@_href"]}`, "decisionIr");
+          } else if (ir.requiredInput) {
+            requirements.set(`${href.namespace}${ir.requiredInput["@_href"]}`, "inputDataIr");
+          }
+        });
+      }
+    }
   }
 
   // START - Remove outdated requirements

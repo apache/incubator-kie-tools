@@ -244,6 +244,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               shapeId: targetNode.data.shape["@_id"],
             },
             keepWaypoints: false,
+            externalModelsByNamespace,
           });
         });
       },
@@ -335,6 +336,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   })["@_height"],
                 },
               },
+              externalModelsByNamespace,
             });
             state.diagram._selectedNodes = [newNodeId];
             state.focus.consumableId = newNodeId;
@@ -668,6 +670,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 })["@_height"],
               },
             },
+            externalModelsByNamespace,
           });
 
           state.diagram._selectedNodes = [newDmnObejctHref];
@@ -878,6 +881,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   __readonly_externalModelTypesByNamespace: state
                     .computed(state)
                     .getExternalModelTypesByNamespace(externalModelsByNamespace),
+                  externalModelsByNamespace,
                 });
                 state.dispatch(state).diagram.setNodeStatus(node.id, {
                   selected: false,
@@ -1051,6 +1055,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                     drdIndex: state.computed(state).getDrdIndex(),
                     edge: { id: change.id, dmnObject: edge.data.dmnObject },
                     mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
+                    externalModelsByNamespace,
                   });
                   state.dispatch(state).diagram.setEdgeStatus(change.id, {
                     selected: false,
@@ -1129,6 +1134,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               shapeId: targetNode.data.shape["@_id"],
             },
             keepWaypoints: true,
+            externalModelsByNamespace: externalModelsByNamespace,
           });
 
           // The DMN Edge changed nodes, so we need to delete the old one, but keep the waypoints on the same DRD.
@@ -1138,6 +1144,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               drdIndex: state.computed(state).getDrdIndex(),
               edge: { id: oldEdge.id, dmnObject: oldEdge.data!.dmnObject },
               mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
+              externalModelsByNamespace,
             });
 
             const deletedWaypoints = deletedDmnEdgeOnCurrentDrd?.["di:waypoint"];
@@ -1432,6 +1439,7 @@ function DmnDiagramWithoutDrd() {
                     __readonly_externalDmnsIndex: dereferencedState
                       .computed(dereferencedState)
                       .getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
+                    __readonly_externalModelsByNamespace: externalModelsByNamespace,
                   });
                   s.dmn.model = dereferencedState.dmn.model;
                 });
@@ -1458,6 +1466,7 @@ function DmnDiagramEmptyState({
   setShowEmptyState: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const { externalModelsByNamespace } = useExternalModels();
 
   return (
     <Bullseye
@@ -1513,6 +1522,7 @@ function DmnDiagramEmptyState({
                         })["@_height"],
                       },
                     },
+                    externalModelsByNamespace,
                   });
 
                   const drgElementIndex = (state.dmn.model.definitions.drgElement ?? []).length - 1;
@@ -1573,6 +1583,7 @@ function DmnDiagramEmptyState({
                       type: NODE_TYPES.inputData,
                       bounds: inputDataNodeBounds,
                     },
+                    externalModelsByNamespace,
                   });
 
                   const { href: decisionNodeHref } = addConnectedNode({
@@ -1598,6 +1609,7 @@ function DmnDiagramEmptyState({
                         })["@_height"],
                       },
                     },
+                    externalModelsByNamespace: externalModelsByNamespace,
                   });
 
                   state.diagram._selectedNodes = [decisionNodeHref];

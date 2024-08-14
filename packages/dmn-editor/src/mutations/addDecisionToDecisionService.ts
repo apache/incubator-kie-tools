@@ -99,7 +99,7 @@ export function addDecisionToDecisionService({
     throw new Error(`DMN MUTATION: Invalid section to add decision to: '${section}' `);
   }
 
-  repopulateInputDataAndDecisionsOnDecisionService({ definitions, decisionService });
+  repopulateInputDataAndDecisionsOnDecisionService({ definitions, decisionService, externalModelsByNamespace });
 }
 
 export function getSectionForDecisionInsideDecisionService({

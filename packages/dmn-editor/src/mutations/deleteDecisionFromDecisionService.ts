@@ -72,5 +72,5 @@ export function deleteDecisionFromDecisionService({
     (s) => s["@_href"] !== `${xmlHref}`
   );
 
-  repopulateInputDataAndDecisionsOnDecisionService({ definitions, decisionService });
+  repopulateInputDataAndDecisionsOnDecisionService({ definitions, decisionService, externalModelsByNamespace });
 }

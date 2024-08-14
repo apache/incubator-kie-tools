@@ -468,6 +468,7 @@ function IncludedModelCard({
           definitions: state.dmn.model.definitions,
           __readonly_index: index,
           __readonly_externalModelTypesByNamespace: externalModelTypesByNamespace,
+          externalModelsByNamespace,
         });
       });
     },

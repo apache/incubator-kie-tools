@@ -58,6 +58,7 @@ export function AutolayoutButton() {
         __readonly_drdIndex: s.computed(s).getDrdIndex(),
         __readonly_dmnObjectNamespace: s.dmn.model.definitions["@_namespace"],
         __readonly_externalDmnsIndex: s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
+        __readonly_externalModelsByNamespace: externalModelsByNamespace,
       });
     });
   }, [dmnEditorStoreApi, externalModelsByNamespace]);

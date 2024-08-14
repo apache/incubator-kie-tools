@@ -48,6 +48,7 @@ import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useDmnEditor } from "../DmnEditorContext";
 import { getDrdId } from "./drd/drdId";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE = "application/kie-dmn-editor--new-node-from-palette";
 
@@ -64,6 +65,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
   const rfStoreApi = RF.useStoreApi();
   const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
   const drdIndex = useDmnEditorStore((s) => s.computed(s).getDrdIndex());
+  const { externalModelsByNamespace } = useExternalModels();
 
   const groupNodes = useCallback(() => {
     dmnEditorStoreApi.setState((state) => {
@@ -86,6 +88,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
             padding: CONTAINER_NODES_DESIRABLE_PADDING,
           }),
         },
+        externalModelsByNamespace,
       });
 
       state.dispatch(state).diagram.setNodeStatus(newNodeId, { selected: true });
