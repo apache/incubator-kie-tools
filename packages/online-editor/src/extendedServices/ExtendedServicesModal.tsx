@@ -638,7 +638,7 @@ export function ExtendedServicesModal() {
       case ModalPage.WIZARD:
         return i18n.dmnRunner.modal.wizard.title;
       case ModalPage.DISABLED:
-        return i18n.dmnRunner.modal.wizard.packaged.title;
+        return i18n.dmnRunner.modal.wizard.disabled.title;
     }
   }, [modalPage, i18n]);
 
@@ -781,16 +781,16 @@ export function ExtendedServicesModal() {
       )}
       {modalPage === ModalPage.DISABLED && (
         <div>
-          <Alert variant="danger" title={i18n.dmnRunner.modal.wizard.packaged.alert} aria-live="polite" isInline />
+          <Alert variant="danger" title={i18n.dmnRunner.modal.wizard.disabled.alert} aria-live="polite" isInline />
           <br />
           <List>
             <ListItem>
               <TextContent>
-                <Text>{i18n.dmnRunner.modal.wizard.packaged.message}</Text>
+                <Text>{i18n.dmnRunner.modal.wizard.disabled.message}</Text>
               </TextContent>
             </ListItem>
             <ListItem>
-              <Text>{i18n.dmnRunner.modal.wizard.packaged.helper}</Text>
+              <Text>{i18n.dmnRunner.modal.wizard.disabled.helper}</Text>
             </ListItem>
           </List>
         </div>

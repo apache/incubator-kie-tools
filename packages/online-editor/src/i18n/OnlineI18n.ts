@@ -399,7 +399,7 @@ interface OnlineDictionary extends ReferenceDictionary {
           title: string;
           message: string;
         };
-        packaged: {
+        disabled: {
           title: string;
           alert: string;
           message: string;
