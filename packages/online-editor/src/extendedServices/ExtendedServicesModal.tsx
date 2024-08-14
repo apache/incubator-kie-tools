@@ -785,9 +785,7 @@ export function ExtendedServicesModal() {
           <br />
           <List>
             <ListItem>
-              <TextContent>
-                <Text>{i18n.dmnRunner.modal.wizard.disabled.message}</Text>
-              </TextContent>
+              <Text>{i18n.dmnRunner.modal.wizard.disabled.message}</Text>
             </ListItem>
             <ListItem>
               <Text>{i18n.dmnRunner.modal.wizard.disabled.helper}</Text>
