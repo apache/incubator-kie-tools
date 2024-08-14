@@ -11,7 +11,7 @@ TODO
 To start a Keycloak Server you can use Docker and just run the following command:
 
 ```
-docker run -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -e KEYCLOAK_IMPORT=/tmp/sonataflow-realm.json -v ./dev/config/sonataflow-realm.json:/tmp/sonataflow-realm.json -p 8280:8080 quay.io/keycloak/keycloak:legacy
+docker run -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin -v ./dev/config/sonataflow-realm.json:/opt/keycloak/data/import/realm.json -p 8280:8080 quay.io/keycloak/keycloak:23.0.7 start-dev --import-realm
 ```
 
 You should be able to access your Keycloak Server at [localhost:8280/auth](http://localhost:8280)

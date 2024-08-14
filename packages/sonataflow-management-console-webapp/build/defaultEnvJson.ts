@@ -30,11 +30,10 @@ const version = require("../package.json").version;
 export const defaultEnvJson: EnvJson = {
   KOGITO_CONSOLES_KEYCLOAK_CLIENT_ID: "kogito-console-react",
   KOGITO_CONSOLES_KEYCLOAK_DISABLE_HEALTH_CHECK: false,
-  KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL:
-    "http://localhost:8280/auth/realms/kogito/.well-known/openid-configuration",
+  KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL: "http://localhost:8280/realms/kogito/.well-known/openid-configuration",
   KOGITO_CONSOLES_KEYCLOAK_REALM: "kogito",
   KOGITO_CONSOLES_KEYCLOAK_UPDATE_TOKEN_VALIDITY: 30,
-  KOGITO_CONSOLES_KEYCLOAK_URL: "http://localhost:8280/auth",
+  KOGITO_CONSOLES_KEYCLOAK_URL: "http://localhost:8280",
   SONATAFLOW_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT: buildEnv.sonataflowManagementConsoleWebapp.sonataflowDataIndexUrl,
   SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_APP_NAME: "SonataFlow Management Console",
   SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_APP_VERSION: version,
