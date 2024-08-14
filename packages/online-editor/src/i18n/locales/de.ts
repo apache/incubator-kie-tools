@@ -473,7 +473,7 @@ export const de: OnlineI18n = {
           title: `${de_common.names.dmnRunner}`,
           alert: `Sie sind nicht mit ${de_common.names.extendedServices} verbunden.`,
           message: `Beachten Sie, dass einige Funktionen wie der ${de_common.names.dmnRunner}, ohne ${de_common.names.extendedServices} nicht verfügbar sind.`,
-          helper: `Stellen Sie sicher, dass Extended Services ausgeführt wird, und überprüfen Sie dann die Host- und Porteinstellungen.`,
+          helper: `Stellen Sie sicher, dass ${de_common.names.extendedServices} ausgeführt wird, und überprüfen Sie dann die Host- und Porteinstellungen.`,
         },
         macos: {
           install: {
