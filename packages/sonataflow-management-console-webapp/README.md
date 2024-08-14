@@ -1,9 +1,5 @@
 # sonataflow-management-console-webapp
 
-## Working with Management Console features
-
-TODO
-
 ## Enabling Keycloak security
 
 ### Starting and Configuring the Keycloak Server
