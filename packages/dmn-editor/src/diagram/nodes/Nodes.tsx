@@ -1151,7 +1151,7 @@ export const GroupNode = React.memo(
             strokeColor={shapeStyle.strokeColor}
           />
         </svg>
-
+        <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
           className={`kie-dmn-editor--node kie-dmn-editor--group-node ${className}`}
           tabIndex={-1}

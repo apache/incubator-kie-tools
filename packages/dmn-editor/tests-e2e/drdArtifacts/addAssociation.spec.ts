@@ -305,16 +305,16 @@ test.describe("Add edge - Association", () => {
       nodes,
       edges,
     }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/982");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
         description: "https://github.com/apache/incubator-kie-issues/issues/982",
       });
-      await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 300, y: 300 } });
+      await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 400, y: 400 } });
       await nodes.dragNewConnectedEdge({
         type: EdgeType.ASSOCIATION,
         from: DefaultNodeName.TEXT_ANNOTATION,
         to: DefaultNodeName.GROUP,
+        position: NodePosition.TOP,
       });
 
       expect(await edges.get({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.GROUP })).toBeAttached();
