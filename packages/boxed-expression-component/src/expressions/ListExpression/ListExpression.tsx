@@ -278,6 +278,8 @@ export function ListExpression({
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`${listExpression["@_id"]} list-expression`}>
         <BeeTable<ROWTYPE>
+          isReadOnly={true}
+          isEditableHeader={false}
           onColumnResizingWidthChange={onColumnResizingWidthChange}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={listExpression["@_id"]}

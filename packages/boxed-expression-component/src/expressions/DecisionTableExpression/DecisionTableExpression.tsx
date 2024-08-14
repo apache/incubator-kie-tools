@@ -1047,6 +1047,8 @@ export function DecisionTableExpression({
   return (
     <div className={`decision-table-expression ${decisionTableExpression["@_id"]}`}>
       <BeeTable<ROWTYPE>
+        isReadOnly={true}
+        isEditableHeader={false}
         resizerStopBehavior={
           isPivoting ? ResizerStopBehavior.SET_WIDTH_ALWAYS : ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER
         }

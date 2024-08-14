@@ -58,6 +58,7 @@ import { addTopLevelItemDefinition as _addTopLevelItemDefinition } from "../muta
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { Normalized } from "../normalization/normalize";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export type DataType = {
   itemDefinition: Normalized<DMN15__tItemDefinition>;
@@ -93,6 +94,7 @@ export function DataTypes() {
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const activeItemDefinitionId = useDmnEditorStore((s) => s.dataTypesEditor.activeItemDefinitionId);
+  const settings = useSettings();
 
   const [filter, setFilter] = useState("");
   const { externalModelsByNamespace } = useExternalModels();
@@ -147,6 +149,9 @@ export function DataTypes() {
   );
 
   const pasteTopLevelItemDefinition = useCallback(() => {
+    if (settings.readOnly) {
+      return;
+    }
     navigator.clipboard.readText().then((text) => {
       const clipboard = getClipboard<DmnEditorDataTypesClipboard>(text, DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE);
       if (!clipboard) {
@@ -165,7 +170,7 @@ export function DataTypes() {
         addTopLevelItemDefinition(itemDefinition);
       }
     });
-  }, [addTopLevelItemDefinition]);
+  }, [addTopLevelItemDefinition, settings.readOnly]);
 
   const [isAddDataTypeDropdownOpen, setAddDataTypeDropdownOpen] = useState(false);
 
@@ -202,39 +207,41 @@ export function DataTypes() {
                       onClear={() => setFilter("")}
                     />
 
-                    <Dropdown
-                      onSelect={() => setAddDataTypeDropdownOpen(false)}
-                      menuAppendTo={document.body}
-                      toggle={
-                        <DropdownToggle
-                          id="add-data-type-toggle"
-                          splitButtonItems={[
-                            <DropdownToggleAction
-                              {...extraPropsForDropdownToggleAction}
-                              key="add-data-type-action"
-                              aria-label="Add Data Type"
-                              onClick={() => addTopLevelItemDefinition({ typeRef: undefined })}
-                            >
-                              <PlusCircleIcon />
-                            </DropdownToggleAction>,
-                          ]}
-                          splitButtonVariant="action"
-                          onToggle={setAddDataTypeDropdownOpen}
-                        />
-                      }
-                      position={DropdownPosition.right}
-                      isOpen={isAddDataTypeDropdownOpen}
-                      dropdownItems={[
-                        <DropdownItem
-                          key={"paste"}
-                          onClick={() => pasteTopLevelItemDefinition()}
-                          style={{ minWidth: "240px" }}
-                          icon={<PasteIcon />}
-                        >
-                          Paste
-                        </DropdownItem>,
-                      ]}
-                    />
+                    {!settings.readOnly && (
+                      <Dropdown
+                        onSelect={() => setAddDataTypeDropdownOpen(false)}
+                        menuAppendTo={document.body}
+                        toggle={
+                          <DropdownToggle
+                            id="add-data-type-toggle"
+                            splitButtonItems={[
+                              <DropdownToggleAction
+                                {...extraPropsForDropdownToggleAction}
+                                key="add-data-type-action"
+                                aria-label="Add Data Type"
+                                onClick={() => addTopLevelItemDefinition({ typeRef: undefined })}
+                              >
+                                <PlusCircleIcon />
+                              </DropdownToggleAction>,
+                            ]}
+                            splitButtonVariant="action"
+                            onToggle={setAddDataTypeDropdownOpen}
+                          />
+                        }
+                        position={DropdownPosition.right}
+                        isOpen={isAddDataTypeDropdownOpen}
+                        dropdownItems={[
+                          <DropdownItem
+                            key={"paste"}
+                            onClick={() => pasteTopLevelItemDefinition()}
+                            style={{ minWidth: "240px" }}
+                            icon={<PasteIcon />}
+                          >
+                            Paste
+                          </DropdownItem>,
+                        ]}
+                      />
+                    )}
                   </InputGroup>
                 </Flex>
                 <div className={`kie-dmn-editor--data-types-nav`}>
@@ -299,7 +306,7 @@ export function DataTypes() {
             <DrawerContentBody>
               {activeDataType && (
                 <DataTypePanel
-                  isReadonly={activeDataType.namespace !== thisDmnsNamespace}
+                  isReadonly={settings.readOnly || activeDataType.namespace !== thisDmnsNamespace}
                   dataType={activeDataType}
                   allDataTypesById={allDataTypesById}
                   editItemDefinition={editItemDefinition}

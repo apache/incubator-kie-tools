@@ -918,6 +918,11 @@ th {
   text-decoration: red dotted underline;
   text-underline-position: under;
 }
+
+.kie-dmn-editor--data-types-container .pf-c-switch__input:disabled:checked ~ .pf-c-switch__toggle {
+  background-color: var(--pf-global--primary-color--100);
+  opacity: 50%;
+}
 /* (end) data types */
 
 /* ******************************* */

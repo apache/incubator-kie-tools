@@ -296,28 +296,30 @@ export function DataTypePanel({
               >
                 Copy
               </DropdownItem>,
-              <DropdownSeparator key="separator-2" />,
               <React.Fragment key={"remove-fragment"}>
                 {!isReadonly && (
-                  <DropdownItem
-                    style={{ minWidth: "240px" }}
-                    icon={<TrashIcon />}
-                    onClick={() => {
-                      if (isReadonly) {
-                        return;
-                      }
+                  <>
+                    <DropdownSeparator key="separator-2" />
+                    <DropdownItem
+                      style={{ minWidth: "240px" }}
+                      icon={<TrashIcon />}
+                      onClick={() => {
+                        if (isReadonly) {
+                          return;
+                        }
 
-                      editItemDefinition(dataType.itemDefinition["@_id"]!, (_, items) => {
-                        items?.splice(dataType.index, 1);
-                      });
-                      dmnEditorStoreApi.setState((state) => {
-                        state.dataTypesEditor.activeItemDefinitionId =
-                          dataType.parentId ?? state.dmn.model.definitions.itemDefinition?.[0]?.["@_id"];
-                      });
-                    }}
-                  >
-                    Remove
-                  </DropdownItem>
+                        editItemDefinition(dataType.itemDefinition["@_id"]!, (_, items) => {
+                          items?.splice(dataType.index, 1);
+                        });
+                        dmnEditorStoreApi.setState((state) => {
+                          state.dataTypesEditor.activeItemDefinitionId =
+                            dataType.parentId ?? state.dmn.model.definitions.itemDefinition?.[0]?.["@_id"];
+                        });
+                      }}
+                    >
+                      Remove
+                    </DropdownItem>
+                  </>
                 )}
               </React.Fragment>,
             ]}
@@ -343,10 +345,16 @@ export function DataTypePanel({
           label={"Is collection?"}
           isChecked={!!dataType.itemDefinition["@_isCollection"]}
           onChange={toggleCollection}
+          isDisabled={isReadonly}
         />
         <br />
         <br />
-        <Switch label={"Is struct?"} isChecked={isStruct(dataType.itemDefinition)} onChange={toggleStruct}></Switch>
+        <Switch
+          label={"Is struct?"}
+          isChecked={isStruct(dataType.itemDefinition)}
+          onChange={toggleStruct}
+          isDisabled={isReadonly}
+        ></Switch>
         <br />
         <br />
         <Divider inset={{ default: "insetMd" }} />

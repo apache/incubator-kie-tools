@@ -240,6 +240,7 @@ function EnumElement({
         title={"Remove enum value"}
         ref={removeButtonRef}
         style={{ opacity: hovered ? "100%" : "0" }}
+        isDisabled={isDisabled}
         className={"kie-dmn-editor--documentation-link--row-remove"}
         variant={"plain"}
         icon={<TimesIcon />}

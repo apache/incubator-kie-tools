@@ -53,6 +53,7 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { drgElementToBoxedExpression } from "../boxedExpressions/BoxedExpressionScreen";
 import { IteratorVariableCell } from "./BoxedExpressionPropertiesPanelComponents/IteratorVariableCell";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export function BoxedExpressionPropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -60,6 +61,7 @@ export function BoxedExpressionPropertiesPanel() {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const activeDrgElementId = useDmnEditorStore((s) => s.boxedExpressionEditor.activeDrgElementId);
   const { externalModelsByNamespace } = useExternalModels();
+  const settings = useSettings();
 
   const shouldDisplayDecisionOrBkmProps = useMemo(
     () => selectedObjectId === undefined || (selectedObjectId && selectedObjectId === activeDrgElementId),
@@ -73,7 +75,8 @@ export function BoxedExpressionPropertiesPanel() {
       .nodesById.get(buildXmlHref({ id: activeDrgElementId ?? "" }))
   );
 
-  const isReadonly = !!node?.data.dmnObjectNamespace && node.data.dmnObjectNamespace !== thisDmnsNamespace;
+  const isReadonly =
+    settings.readOnly || (!!node?.data.dmnObjectNamespace && node.data.dmnObjectNamespace !== thisDmnsNamespace);
 
   const boxedExpressionIndex = useMemo(() => {
     if (node?.data.dmnObject === undefined) {

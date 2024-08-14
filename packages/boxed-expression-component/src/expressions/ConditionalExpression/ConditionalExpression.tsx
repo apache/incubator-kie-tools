@@ -230,6 +230,8 @@ export function ConditionalExpression({
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div>
         <BeeTable<ROWTYPE>
+          isReadOnly={true}
+          isEditableHeader={false}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={id}
           headerLevelCountForAppendingRowIndexColumn={1}

@@ -310,6 +310,8 @@ export function IteratorExpressionComponent({
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div>
         <BeeTable<ROWTYPE>
+          isReadOnly={true}
+          isEditableHeader={false}
           forwardRef={beeTableRef}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={id}

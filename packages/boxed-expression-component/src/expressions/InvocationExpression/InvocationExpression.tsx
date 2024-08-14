@@ -455,6 +455,8 @@ export function InvocationExpression({
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`invocation-expression ${id}`}>
         <BeeTable<ROWTYPE>
+          isReadOnly={true}
+          isEditableHeader={false}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={id}
           headerLevelCountForAppendingRowIndexColumn={2}
