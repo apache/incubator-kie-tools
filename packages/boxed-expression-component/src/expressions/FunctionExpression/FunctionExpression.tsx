@@ -73,6 +73,7 @@ export function FunctionExpression({
 
 export function useFunctionExpressionControllerCell(functionKind: Normalized<DMN15__tFunctionKind>) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
+  const { isReadOnly } = useBoxedExpressionEditor();
 
   const onFunctionKindSelect = useCallback(
     (kind: Normalized<DMN15__tFunctionKind>) => {
@@ -134,8 +135,14 @@ export function useFunctionExpressionControllerCell(functionKind: Normalized<DMN
   );
 
   return useMemo(
-    () => <FunctionKindSelector selectedFunctionKind={functionKind} onFunctionKindSelect={onFunctionKindSelect} />,
-    [functionKind, onFunctionKindSelect]
+    () => (
+      <FunctionKindSelector
+        isReadOnly={isReadOnly}
+        selectedFunctionKind={functionKind}
+        onFunctionKindSelect={onFunctionKindSelect}
+      />
+    ),
+    [functionKind, isReadOnly, onFunctionKindSelect]
   );
 }
 

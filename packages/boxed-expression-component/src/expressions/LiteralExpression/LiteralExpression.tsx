@@ -215,7 +215,7 @@ export function LiteralExpression({
         <div className={"equals-sign"}>{`=`}</div>
         <BeeTable<ROWTYPE>
           isReadOnly={isReadOnly}
-          isEditableHeader={false}
+          isEditableHeader={!isReadOnly}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           forwardRef={beeTableRef}
           getRowKey={getRowKey}
