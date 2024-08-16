@@ -69,7 +69,7 @@ export function InvocationExpression({
   parentElementId: string;
 }) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
+  const { expressionHolderId, widthsById, isReadOnly } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
 
   const id = invocationExpression["@_id"]!;
@@ -455,7 +455,7 @@ export function InvocationExpression({
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`invocation-expression ${id}`}>
         <BeeTable<ROWTYPE>
-          isReadOnly={true}
+          isReadOnly={isReadOnly}
           isEditableHeader={false}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={id}

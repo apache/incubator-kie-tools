@@ -44,7 +44,7 @@ export function KnowledgeSourceProperties({
   const settings = useSettings();
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
-  const isReadonly = settings.readOnly || (!!namespace && namespace !== thisDmnsNamespace);
+  const isReadonly = settings.isReadOnly || (!!namespace && namespace !== thisDmnsNamespace);
 
   return (
     <>

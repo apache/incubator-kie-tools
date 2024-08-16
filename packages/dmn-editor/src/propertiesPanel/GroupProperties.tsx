@@ -38,7 +38,7 @@ export function GroupProperties({ group, index }: { group: Normalized<DMN15__tGr
         <TextInput
           aria-label={"Name"}
           type={"text"}
-          isDisabled={settings.readOnly}
+          isDisabled={settings.isReadOnly}
           onChange={(newName) => {
             setState((state) => {
               renameGroupNode({
@@ -57,7 +57,7 @@ export function GroupProperties({ group, index }: { group: Normalized<DMN15__tGr
         <TextArea
           aria-label={"Description"}
           type={"text"}
-          isDisabled={settings.readOnly}
+          isDisabled={settings.isReadOnly}
           value={group.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {

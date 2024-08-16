@@ -59,7 +59,7 @@ export function ListExpression({
 }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
-  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
+  const { expressionHolderId, widthsById, isReadOnly } = useBoxedExpressionEditor();
 
   /// //////////////////////////////////////////////////////
   /// ///////////// RESIZING WIDTHS ////////////////////////
@@ -278,7 +278,7 @@ export function ListExpression({
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`${listExpression["@_id"]} list-expression`}>
         <BeeTable<ROWTYPE>
-          isReadOnly={true}
+          isReadOnly={isReadOnly}
           isEditableHeader={false}
           onColumnResizingWidthChange={onColumnResizingWidthChange}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}

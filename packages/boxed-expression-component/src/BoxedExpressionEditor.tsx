@@ -56,7 +56,7 @@ export interface BoxedExpressionEditorProps {
   /** The Data Types available */
   dataTypes: DmnDataType[];
   /** ReadOnly mode flag */
-  readOnly?: boolean;
+  isReadOnly?: boolean;
   /** PMML models available to use on Boxed PMML Function */
   pmmlDocuments?: PmmlDocument[];
   /** The containing HTMLElement which is scrollable */
@@ -69,7 +69,7 @@ export interface BoxedExpressionEditorProps {
 
 export function BoxedExpressionEditor({
   dataTypes,
-  readOnly,
+  isReadOnly,
   expressionHolderId,
   expressionHolderName,
   expressionHolderTypeRef,
@@ -100,7 +100,7 @@ export function BoxedExpressionEditor({
         expression={expression}
         onExpressionChange={onExpressionChange}
         onWidthsChange={onWidthsChange}
-        readOnly={readOnly}
+        isReadOnly={isReadOnly}
         dataTypes={dataTypes}
         pmmlDocuments={pmmlDocuments}
         onRequestFeelVariables={onRequestFeelVariables}

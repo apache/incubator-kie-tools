@@ -80,10 +80,12 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { getDefaultColumnWidth } from "./getDefaultColumnWidth";
 import { getDefaultBoxedExpression } from "./getDefaultBoxedExpression";
 import { Normalized } from "../normalization/normalize";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export function BoxedExpressionScreen({ container }: { container: React.RefObject<HTMLElement> }) {
   const { externalModelsByNamespace } = useExternalModels();
 
+  const settings = useSettings();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const thisDmn = useDmnEditorStore((s) => s.dmn);
@@ -393,6 +395,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
             onRequestFeelVariables={onRequestFeelVariables}
             widthsById={widthsById}
             onWidthsChange={onWidthsChange}
+            isReadOnly={settings.isReadOnly}
           />
         </div>
       </>

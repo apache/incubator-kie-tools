@@ -63,9 +63,9 @@ export function OutgoingStuffNodePanel(props: {
   const settings = useSettings();
   const style: React.CSSProperties = React.useMemo(
     () => ({
-      visibility: !settings.readOnly && props.isVisible ? undefined : "hidden",
+      visibility: !settings.isReadOnly && props.isVisible ? undefined : "hidden",
     }),
-    [props.isVisible, settings.readOnly]
+    [props.isVisible, settings.isReadOnly]
   );
 
   const getEdgeActionTitle = React.useCallback((edgeType: string): string => {

@@ -79,7 +79,7 @@ export function DrdSelectorPanel() {
             <TextContent>
               <Text component="h3">DRDs</Text>
             </TextContent>
-            {!settings.readOnly && (
+            {!settings.isReadOnly && (
               <Button
                 title={"New DRD"}
                 variant={ButtonVariant.link}
@@ -147,7 +147,7 @@ export function DrdSelectorPanel() {
             <Title headingLevel="h3" style={{ height: "36px" }}>
               {drdName}
             </Title>
-            {drds.length > 0 && !settings.readOnly && (
+            {drds.length > 0 && !settings.isReadOnly && (
               <Button variant={ButtonVariant.link} onClick={removeDrd} style={{ padding: 0 }} title="Remove DRD">
                 Remove
               </Button>

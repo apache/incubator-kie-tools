@@ -44,7 +44,7 @@ export function TextAnnotationProperties({
         <TextInput
           aria-label={"Format"}
           type={"text"}
-          isDisabled={settings.readOnly}
+          isDisabled={settings.isReadOnly}
           value={textAnnotation["@_textFormat"]}
           placeholder={"Enter a text format..."}
           onChange={(newTextFormat) => {
@@ -60,7 +60,7 @@ export function TextAnnotationProperties({
         <TextArea
           aria-label={"Text"}
           type={"text"}
-          isDisabled={settings.readOnly}
+          isDisabled={settings.isReadOnly}
           value={textAnnotation.text?.__$$text}
           onChange={(newText) => {
             setState((state) => {
@@ -81,7 +81,7 @@ export function TextAnnotationProperties({
         <TextArea
           aria-label={"Description"}
           type={"text"}
-          isDisabled={settings.readOnly}
+          isDisabled={settings.isReadOnly}
           value={textAnnotation.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {

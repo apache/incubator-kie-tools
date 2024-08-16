@@ -80,7 +80,7 @@ export function GlobalDiagramProperties() {
                   isPlain={false}
                   id={thisDmn.model.definitions["@_id"]!}
                   name={thisDmn.model.definitions["@_name"]}
-                  isReadonly={settings.readOnly}
+                  isReadonly={settings.isReadOnly}
                   shouldCommitOnBlur={true}
                   className={"pf-c-form-control"}
                   onRenamed={(newName) => {
@@ -95,7 +95,7 @@ export function GlobalDiagramProperties() {
                 <TextArea
                   aria-label={"Description"}
                   type={"text"}
-                  isDisabled={settings.readOnly}
+                  isDisabled={settings.isReadOnly}
                   style={{ resize: "vertical", minHeight: "40px" }}
                   rows={6}
                   placeholder={"Enter a description..."}
@@ -112,7 +112,7 @@ export function GlobalDiagramProperties() {
                 <TextInput
                   aria-label={"Expression language"}
                   type={"text"}
-                  isDisabled={settings.readOnly}
+                  isDisabled={settings.isReadOnly}
                   placeholder={"Enter an expression language..."}
                   value={thisDmn.model.definitions["@_expressionLanguage"]}
                   onChange={(newExprLang) =>
@@ -139,7 +139,7 @@ export function GlobalDiagramProperties() {
               <Button
                 title={"Re-generate ID & Namespace"}
                 variant={ButtonVariant.plain}
-                isDisabled={settings.readOnly}
+                isDisabled={settings.isReadOnly}
                 onClick={() => setRegenerateIdConfirmationModal(true)}
                 style={{ paddingBottom: 0, paddingTop: 0 }}
               >
@@ -155,7 +155,7 @@ export function GlobalDiagramProperties() {
               <FormGroup label="ID">
                 <ClipboardCopy
                   placeholder="Enter a diagram ID..."
-                  isReadOnly={settings.readOnly}
+                  isReadOnly={settings.isReadOnly}
                   hoverTip="Copy"
                   clickTip="Copied"
                   onChange={(newId) => {
@@ -171,7 +171,7 @@ export function GlobalDiagramProperties() {
               <FormGroup label="Namespace">
                 <ClipboardCopy
                   placeholder="Enter a diagram Namespace..."
-                  isReadOnly={settings.readOnly}
+                  isReadOnly={settings.isReadOnly}
                   hoverTip="Copy"
                   clickTip="Copied"
                   onChange={(newNamespace) => {
@@ -196,7 +196,7 @@ export function GlobalDiagramProperties() {
           <Button
             key="confirm"
             variant={ButtonVariant.primary}
-            isDisabled={settings.readOnly}
+            isDisabled={settings.isReadOnly}
             onClick={() => {
               setRegenerateIdConfirmationModal(false);
               dmnEditorStoreApi.setState((state) => {

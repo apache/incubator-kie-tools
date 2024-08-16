@@ -93,7 +93,7 @@ export function ExpressionDefinitionLogicTypeSelector({
     [isNested]
   );
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { setCurrentlyOpenContextMenu, widthsById, scrollableParentRef } = useBoxedExpressionEditor();
+  const { setCurrentlyOpenContextMenu, widthsById, scrollableParentRef, isReadOnly } = useBoxedExpressionEditor();
   const [isOpen, setOpen] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
@@ -212,8 +212,8 @@ export function ExpressionDefinitionLogicTypeSelector({
   const selectExpressionMenuContainerRef = React.useRef<HTMLDivElement>(null);
 
   const shouldRenderSelectExpressionContextMenu = useMemo(() => {
-    return isOpen && !expression;
-  }, [isOpen, expression]);
+    return !isReadOnly && isOpen && !expression;
+  }, [isReadOnly, isOpen, expression]);
 
   const hide = useCallback((e: MouseEvent) => {
     if (e.target != selectExpressionMenuContainerRef.current) {
@@ -412,7 +412,7 @@ export function ExpressionDefinitionLogicTypeSelector({
   const contextMenuItems = useMemo(() => {
     return (
       <MenuList>
-        {isResetSupported && (
+        {!isReadOnly && isResetSupported && (
           <>
             <MenuItem
               onClick={resetLogicType}
@@ -437,7 +437,7 @@ export function ExpressionDefinitionLogicTypeSelector({
         >
           {i18n.terms.copy}
         </MenuItem>
-        {isResetSupported && (
+        {!isReadOnly && isResetSupported && (
           <MenuItem
             onClick={cutExpression}
             icon={
@@ -449,18 +449,21 @@ export function ExpressionDefinitionLogicTypeSelector({
             {i18n.terms.cut}
           </MenuItem>
         )}
-        <MenuItem
-          className={pasteExpressionError ? "paste-from-clipboard-error" : ""}
-          description={pasteExpressionError ? "Paste operation was not successful" : ""}
-          onClick={pasteExpression}
-          icon={
-            <div style={menuIconContainerStyle}>
-              <PasteIcon />
-            </div>
-          }
-        >
-          {i18n.terms.paste}
-        </MenuItem>
+
+        {!isReadOnly && (
+          <MenuItem
+            className={pasteExpressionError ? "paste-from-clipboard-error" : ""}
+            description={pasteExpressionError ? "Paste operation was not successful" : ""}
+            onClick={pasteExpression}
+            icon={
+              <div style={menuIconContainerStyle}>
+                <PasteIcon />
+              </div>
+            }
+          >
+            {i18n.terms.paste}
+          </MenuItem>
+        )}
       </MenuList>
     );
   }, [
@@ -472,6 +475,7 @@ export function ExpressionDefinitionLogicTypeSelector({
     pasteExpression,
     resetLogicType,
     isResetSupported,
+    isReadOnly,
   ]);
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);

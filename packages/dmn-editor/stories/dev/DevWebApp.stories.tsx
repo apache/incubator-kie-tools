@@ -234,7 +234,7 @@ function DevWebApp(args: DmnEditorProps) {
                 evaluationResults: args.evaluationResults,
                 issueTrackerHref: args.issueTrackerHref,
                 onRequestToJumpToPath,
-                readOnly: args.readOnly,
+                isReadOnly: args.isReadOnly,
               })}
             </PageSection>
           </Page>
@@ -278,6 +278,6 @@ export const WebApp: Story = {
     externalModelsByNamespace: {},
     issueTrackerHref: "https://github.com/apache/incubator-kie-issues/issues/new",
     validationMessages: {},
-    readOnly: false,
+    isReadOnly: true,
   },
 };

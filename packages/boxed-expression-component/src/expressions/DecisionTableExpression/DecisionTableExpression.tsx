@@ -109,7 +109,7 @@ export function DecisionTableExpression({
   isNested: boolean;
 }) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
+  const { expressionHolderId, widthsById, isReadOnly } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
 
   const id = decisionTableExpression["@_id"]!;
@@ -1047,7 +1047,7 @@ export function DecisionTableExpression({
   return (
     <div className={`decision-table-expression ${decisionTableExpression["@_id"]}`}>
       <BeeTable<ROWTYPE>
-        isReadOnly={true}
+        isReadOnly={isReadOnly}
         isEditableHeader={false}
         resizerStopBehavior={
           isPivoting ? ResizerStopBehavior.SET_WIDTH_ALWAYS : ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER
