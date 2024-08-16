@@ -114,7 +114,6 @@ public class DevConsoleProcessor {
         String uiPath = nonApplicationRootPathBuildItem.resolveManagementPath(BASE_RELATIVE_URL,
                 managementInterfaceBuildTimeConfig, launchModeBuildItem, true);
 
-        String openapiPath = getProperty(configurationBuildItem, systemPropertyBuildItems, "quarkus.smallrye-openapi.path");
         String devUIUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.dev-ui.url");
         String dataIndexUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.dataindex.http.url");
         String trustyServiceUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.trusty.http.url");
@@ -127,7 +126,6 @@ public class DevConsoleProcessor {
         cardPageBuildItem.addBuildTimeData("quarkusHttpPort", quarkusHttpPort);
         cardPageBuildItem.addBuildTimeData("quarkusAppRootPath", nonApplicationRootPathBuildItem.getNormalizedHttpRootPath());
         cardPageBuildItem.addBuildTimeData("extensionBasePath", uiPath);
-        cardPageBuildItem.addBuildTimeData("openapiPath", openapiPath);
         cardPageBuildItem.addBuildTimeData("devUIUrl", devUIUrl);
         cardPageBuildItem.addBuildTimeData("dataIndexUrl", dataIndexUrl);
         cardPageBuildItem.addBuildTimeData("isTracingEnabled", false);

@@ -20,7 +20,6 @@ import React from "react";
 import { useDevUIAppContext } from "../../components/contexts/DevUIAppContext";
 import {
   TaskFormContext,
-  TaskFormGatewayApi,
   TaskFormGatewayApiImpl,
 } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskForms";
 

@@ -38,7 +38,6 @@ export type StandaloneDevUIArgs = {
   page: string;
   devUIOrigin: string;
   devUIUrl: string;
-  openApiPath?: string;
   origin?: string;
   availablePages?: string[];
   customLabels?: CustomLabels;
@@ -48,7 +47,6 @@ export type StandaloneDevUIArgs = {
 
 export type StandAloneDevUIEnvelopeServerArgs = Omit<StandaloneDevUIArgs, "container"> & {
   dataIndexUrl: string;
-  openApiPath: string;
   customLabels: CustomLabels;
 };
 
@@ -102,7 +100,6 @@ export function open(args: StandaloneDevUIArgs): StandaloneDevUIApi {
   const envelopeServer = createEnvelopeServer(iframe, {
     ...envelopeArgs,
     dataIndexUrl: args.dataIndexUrl ?? process.env.KOGITO_DATAINDEX_HTTP_URL,
-    openApiPath: args.openApiPath ?? process.env.KOGITO_OPENAPI_PATH,
     customLabels: args.customLabels ?? {
       singularProcessLabel: "Process",
       pluralProcessLabel: "Processes",

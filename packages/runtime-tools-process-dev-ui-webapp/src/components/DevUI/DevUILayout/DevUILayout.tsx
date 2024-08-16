@@ -45,7 +45,6 @@ interface IOwnProps {
   children: React.ReactElement;
   devUIOrigin: string;
   devUIUrl: string;
-  openApiPath: string;
   quarkusAppOrigin: string;
   quarkusAppRootPath: string;
   shouldReplaceQuarkusAppOriginWithWebappOrigin: boolean;
@@ -61,7 +60,6 @@ const DevUILayout: React.FC<IOwnProps> = ({
   users,
   devUIOrigin,
   devUIUrl,
-  openApiPath,
   quarkusAppOrigin,
   quarkusAppRootPath,
   shouldReplaceQuarkusAppOriginWithWebappOrigin,
@@ -85,7 +83,6 @@ const DevUILayout: React.FC<IOwnProps> = ({
         users={users}
         devUIOrigin={devUIOrigin}
         devUIUrl={devUIUrl}
-        openApiPath={openApiPath}
         quarkusAppOrigin={quarkusAppOrigin}
         quarkusAppRootPath={quarkusAppRootPath}
         shouldReplaceQuarkusAppOriginWithWebappOrigin={shouldReplaceQuarkusAppOriginWithWebappOrigin}

@@ -26,21 +26,17 @@ import { GraphQLProcessDefinitionListQueries } from "./ProcessDefinitionListQuer
 interface ProcessDefinitionListContextProviderProps {
   apolloClient: ApolloClient<any>;
   children;
+  options?: { transformUrls?: (url?: string) => string };
 }
 
 const ProcessDefinitionListContextProvider: React.FC<ProcessDefinitionListContextProviderProps> = ({
   apolloClient,
   children,
+  options,
 }) => {
-  const appContext = useDevUIAppContext();
-
   const gatewayApiImpl = useMemo(() => {
-    return new ProcessDefinitionListGatewayApiImpl(
-      new GraphQLProcessDefinitionListQueries(apolloClient, {
-        transformUrls: (url) => appContext.transformQuarkusUrl(url),
-      })
-    );
-  }, [apolloClient, appContext]);
+    return new ProcessDefinitionListGatewayApiImpl(new GraphQLProcessDefinitionListQueries(apolloClient, options));
+  }, [apolloClient, options]);
 
   return (
     <ProcessDefinitionListContext.Provider value={gatewayApiImpl}>{children}</ProcessDefinitionListContext.Provider>

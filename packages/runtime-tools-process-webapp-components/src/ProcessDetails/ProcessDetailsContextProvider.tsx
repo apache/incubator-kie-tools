@@ -25,7 +25,7 @@ import { GraphQLProcessDetailsQueries } from "./ProcessDetailsQueries";
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
   children: React.ReactElement;
-  options?: { transformUrls?: (url: string) => string };
+  options?: { transformUrls?: (url?: string) => string };
 }
 
 export const ProcessDetailsContextProvider: React.FC<IOwnProps> = ({ apolloClient, children, options }) => {

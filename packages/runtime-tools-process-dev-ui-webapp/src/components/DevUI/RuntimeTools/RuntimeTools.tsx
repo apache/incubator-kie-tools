@@ -39,7 +39,6 @@ interface IOwnProps {
   navigate: string;
   devUIOrigin: string;
   devUIUrl: string;
-  openApiPath: string;
   availablePages: string[];
   customLabels: CustomLabels;
   omittedProcessTimelineEvents: string[];
@@ -52,7 +51,6 @@ const RuntimeTools: React.FC<IOwnProps> = ({
   navigate,
   devUIOrigin,
   devUIUrl,
-  openApiPath,
   quarkusAppOrigin,
   quarkusAppRootPath,
   shouldReplaceQuarkusAppOriginWithWebappOrigin,
@@ -79,7 +77,6 @@ const RuntimeTools: React.FC<IOwnProps> = ({
           users={users}
           devUIOrigin={devUIOrigin}
           devUIUrl={devUIUrl}
-          openApiPath={openApiPath}
           quarkusAppOrigin={quarkusAppOrigin}
           quarkusAppRootPath={quarkusAppRootPath}
           shouldReplaceQuarkusAppOriginWithWebappOrigin={shouldReplaceQuarkusAppOriginWithWebappOrigin}
@@ -108,7 +105,6 @@ const RuntimeTools: React.FC<IOwnProps> = ({
       users={users}
       devUIOrigin={devUIOrigin}
       devUIUrl={devUIUrl}
-      openApiPath={openApiPath}
       quarkusAppOrigin={quarkusAppOrigin}
       quarkusAppRootPath={quarkusAppRootPath}
       shouldReplaceQuarkusAppOriginWithWebappOrigin={shouldReplaceQuarkusAppOriginWithWebappOrigin}

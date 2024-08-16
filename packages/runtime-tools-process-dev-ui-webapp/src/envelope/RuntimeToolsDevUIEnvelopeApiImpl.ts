@@ -63,7 +63,6 @@ export class RuntimeToolsDevUIEnvelopeApiImpl implements RuntimeToolsDevUIEnvelo
     this.view().navigateTo(initArgs.page);
     this.view().setDevUIOrigin && this.view().setDevUIOrigin(initArgs.devUIOrigin);
     this.view().setDevUIUrl && this.view().setDevUIUrl(initArgs.devUIUrl);
-    this.view().setOpenApiPath && this.view().setOpenApiPath(initArgs.openApiPath);
     this.view().setQuarkusAppOrigin && this.view().setQuarkusAppOrigin(initArgs.quarkusAppOrigin);
     this.view().setQuarkusAppRootPath && this.view().setQuarkusAppRootPath(initArgs.quarkusAppRootPath);
     this.view().setShouldReplaceQuarkusAppOriginWithWebappOrigin &&

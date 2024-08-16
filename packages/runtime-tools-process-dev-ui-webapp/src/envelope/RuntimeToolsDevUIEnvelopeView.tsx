@@ -35,7 +35,6 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
     const [navigate, setNavigate] = React.useState<string>("");
     const [devUIOrigin, setDevUIOrigin] = React.useState<string>("");
     const [devUIUrl, setDevUIUrl] = React.useState<string>("");
-    const [openApiPath, setOpenApiPath] = React.useState<string>("");
     const [isProcessEnabled, setProcessEnabled] = React.useState(false);
     const [availablePages, setAvailablePages] = React.useState<string[]>([]);
     const [customLabels, setCustomLabels] = React.useState(undefined);
@@ -68,9 +67,6 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
         setDevUIOrigin: (url) => {
           setDevUIOrigin(url);
         },
-        setOpenApiPath: (path) => {
-          setOpenApiPath(path);
-        },
         setProcessEnabled: (isProcessEnabled) => {
           setProcessEnabled(isProcessEnabled);
         },
@@ -95,7 +91,6 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
             users={DevUiUsers}
             dataIndexUrl={dataIndexUrl}
             navigate={navigate}
-            openApiPath={openApiPath}
             devUIOrigin={devUIOrigin}
             devUIUrl={devUIUrl}
             isProcessEnabled={isProcessEnabled}

@@ -23,7 +23,6 @@ import {
   devUIUrl,
   extensionBasePath,
   isTracingEnabled,
-  openapiPath,
   userData,
   quarkusAppRootPath,
   quarkusHttpHost,
@@ -75,7 +74,6 @@ export class QwcJbpmQuarkusDevui extends LitElement {
       page: metadata.page ?? "Processes",
       devUIUrl: devUIUrl ?? window.location.origin,
       devUIOrigin: window.location.origin,
-      openApiPath: openapiPath ?? `${quarkusAppRootPath}/q/openapi.json`,
       availablePages: ["Processes", "Jobs", "Tasks", "Forms"],
       users: userData ?? [],
     });

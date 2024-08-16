@@ -27,7 +27,7 @@ export interface ProcessDefinitionListQueries {
 export class GraphQLProcessDefinitionListQueries implements ProcessDefinitionListQueries {
   constructor(
     private readonly client: ApolloClient<any>,
-    private readonly options?: { transformUrls?: (url: string) => string }
+    private readonly options?: { transformUrls?: (url?: string) => string }
   ) {
     this.client = client;
   }

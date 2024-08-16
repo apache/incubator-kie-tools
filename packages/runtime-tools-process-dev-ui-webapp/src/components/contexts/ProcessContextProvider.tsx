@@ -32,12 +32,18 @@ export const ProcessContextProvider: React.FC<IOwnProps> = ({ apolloClient, chil
   const appContext = useDevUIAppContext();
 
   return (
-    <ProcessListContextProvider apolloClient={apolloClient}>
+    <ProcessListContextProvider
+      apolloClient={apolloClient}
+      options={{ transformUrls: (url) => appContext.transformQuarkusUrl(url) }}
+    >
       <ProcessDetailsContextProvider
         apolloClient={apolloClient}
         options={{ transformUrls: (url) => appContext.transformQuarkusUrl(url) }}
       >
-        <ProcessDefinitionListContextProvider apolloClient={apolloClient}>
+        <ProcessDefinitionListContextProvider
+          apolloClient={apolloClient}
+          options={{ transformUrls: (url) => appContext.transformQuarkusUrl(url) }}
+        >
           {children}
         </ProcessDefinitionListContextProvider>
       </ProcessDetailsContextProvider>

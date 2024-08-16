@@ -28,11 +28,10 @@ export interface DevUIAppContext {
   switchUser(userId: string): void;
   onUserChange(listener: UserChangeListener): UnSubscribeHandler;
   getDevUIUrl(): string;
-  getOpenApiPath(): string;
   getQuarkusAppOrigin(): string;
   getQuarkusAppRootPath(): string;
   getShouldReplaceQuarkusAppOriginWithWebappOrigin(): boolean;
-  transformQuarkusUrl(url: string): string;
+  transformQuarkusUrl(url?: string): string;
   availablePages?: string[];
   customLabels: CustomLabels;
   omittedProcessTimelineEvents: string[];
@@ -51,7 +50,6 @@ export type DevUIAppContextArgs = {
   users?: User[];
   devUIOrigin: string;
   devUIUrl: string;
-  openApiPath: string;
   quarkusAppOrigin: string;
   quarkusAppRootPath: string;
   shouldReplaceQuarkusAppOriginWithWebappOrigin: boolean;
@@ -78,10 +76,6 @@ export class DevUIAppContextImpl implements DevUIAppContext {
 
   getDevUIOrigin(): string {
     return this.args.devUIOrigin;
-  }
-
-  getOpenApiPath(): string {
-    return this.args.openApiPath;
   }
 
   getQuarkusAppOrigin(): string {
@@ -125,7 +119,10 @@ export class DevUIAppContextImpl implements DevUIAppContext {
     };
   }
 
-  transformQuarkusUrl(url: string): string {
+  transformQuarkusUrl(url?: string): string | undefined {
+    if (!url) {
+      return undefined;
+    }
     return this.getShouldReplaceQuarkusAppOriginWithWebappOrigin()
       ? url.replace(this.getQuarkusAppOrigin(), this.getDevUIOrigin())
       : url;

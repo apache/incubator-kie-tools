@@ -42,7 +42,6 @@ export interface RuntimeToolsDevUIInitArgs {
   page: string;
   devUIOrigin: string;
   devUIUrl: string;
-  openApiPath: string;
   isDataIndexAvailable: boolean;
   availablePages?: string[];
   customLabels: CustomLabels;

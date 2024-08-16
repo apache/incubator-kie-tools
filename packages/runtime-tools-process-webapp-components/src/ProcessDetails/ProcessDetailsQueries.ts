@@ -67,7 +67,7 @@ export interface ProcessDetailsQueries {
 export class GraphQLProcessDetailsQueries implements ProcessDetailsQueries {
   constructor(
     private readonly client: ApolloClient<any>,
-    private readonly options?: { transformUrls?: (url: string) => string }
+    private readonly options?: { transformUrls?: (url?: string) => string }
   ) {}
 
   async getProcessDetails(id: string): Promise<ProcessInstance> {
