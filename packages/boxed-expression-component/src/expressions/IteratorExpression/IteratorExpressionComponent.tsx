@@ -68,7 +68,7 @@ export function IteratorExpressionComponent({
   parentElementId: string;
 }) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
+  const { expressionHolderId, widthsById, isReadOnly } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const id = expression["@_id"]!;
@@ -310,7 +310,7 @@ export function IteratorExpressionComponent({
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div>
         <BeeTable<ROWTYPE>
-          isReadOnly={true}
+          isReadOnly={isReadOnly}
           isEditableHeader={false}
           forwardRef={beeTableRef}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}

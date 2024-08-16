@@ -46,7 +46,7 @@ export function DataTypesEmptyState({ onAdd, onPaste }: { onAdd: () => void; onP
           {`Data types are referenced in the input and output values for decision tables. Custom data types allow you to reference more complex data types, beyond the simple "default" types.`}
         </EmptyStateBody>
         <br />
-        {!settings.readOnly && (
+        {!settings.isReadOnly && (
           <>
             <EmptyStatePrimary>
               <Button variant={ButtonVariant.primary} onClick={onAdd}>

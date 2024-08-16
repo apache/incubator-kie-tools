@@ -81,7 +81,7 @@ export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
           ref={ref}
           model={model}
           originalVersion={props?.originalVersion ?? args.originalVersion}
-          readOnly={props?.readOnly ?? args.readOnly}
+          isReadOnly={props?.isReadOnly ?? args.isReadOnly}
           onModelChange={onModelChange}
           onRequestExternalModelByPath={props?.onRequestExternalModelByPath ?? args.onRequestExternalModelByPath}
           onRequestExternalModelsAvailableToInclude={

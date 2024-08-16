@@ -21,7 +21,7 @@ import * as React from "react";
 import { useContext, useMemo } from "react";
 
 export interface DmnEditorSettingsContextType {
-  readOnly: boolean;
+  isReadOnly: boolean;
 }
 
 const DmnEditorSettingsContext = React.createContext<DmnEditorSettingsContextType>({} as any);
@@ -30,14 +30,14 @@ export function useSettings() {
   return useContext(DmnEditorSettingsContext);
 }
 
-export function DmnEditorSettingsContextProvider(_props: React.PropsWithChildren<{ readOnly?: boolean }>) {
+export function DmnEditorSettingsContextProvider(_props: React.PropsWithChildren<{ isReadOnly?: boolean }>) {
   const { children, ...props } = _props;
 
   const value = useMemo<DmnEditorSettingsContextType>(
     () => ({
-      readOnly: props.readOnly ?? false,
+      isReadOnly: props.isReadOnly ?? false,
     }),
-    [props.readOnly]
+    [props.isReadOnly]
   );
 
   return <DmnEditorSettingsContext.Provider value={value}>{children}</DmnEditorSettingsContext.Provider>;

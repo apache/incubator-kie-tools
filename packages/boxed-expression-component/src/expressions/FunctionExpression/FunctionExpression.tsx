@@ -140,44 +140,53 @@ export function useFunctionExpressionControllerCell(functionKind: Normalized<DMN
 }
 
 export function useFunctionExpressionParametersColumnHeader(
-  formalParameters: Normalized<DMN15__tFunctionDefinition["formalParameter"]>
+  formalParameters: Normalized<DMN15__tFunctionDefinition["formalParameter"]>,
+  isReadOnly: boolean
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
 
   const { editorRef } = useBoxedExpressionEditor();
 
-  return useMemo(
+  const expressionParametersContent = useMemo(
     () => (
+      <div className={`parameters-list ${_.isEmpty(formalParameters) ? "empty-parameters" : ""}`}>
+        <p className="pf-u-text-truncate">
+          {_.isEmpty(formalParameters) ? (
+            i18n.editParameters
+          ) : (
+            <>
+              <span>{"("}</span>
+              {(formalParameters ?? []).map((parameter, i) => (
+                <React.Fragment key={i}>
+                  <span>{parameter["@_name"]}</span>
+                  <span>{": "}</span>
+                  <span className={"expression-info-data-type"}>
+                    ({parameter["@_typeRef"] ?? DmnBuiltInDataType.Undefined})
+                  </span>
+                  {i < (formalParameters ?? []).length - 1 && <span>{", "}</span>}
+                </React.Fragment>
+              ))}
+              <span>{")"}</span>
+            </>
+          )}
+        </p>
+      </div>
+    ),
+    [formalParameters, i18n.editParameters]
+  );
+
+  return useMemo(() => {
+    return isReadOnly ? (
+      expressionParametersContent
+    ) : (
       <PopoverMenu
         appendTo={() => editorRef.current!}
         className="parameters-editor-popover"
         minWidth="400px"
         body={<ParametersPopover parameters={formalParameters ?? []} />}
       >
-        <div className={`parameters-list ${_.isEmpty(formalParameters) ? "empty-parameters" : ""}`}>
-          <p className="pf-u-text-truncate">
-            {_.isEmpty(formalParameters) ? (
-              i18n.editParameters
-            ) : (
-              <>
-                <span>{"("}</span>
-                {(formalParameters ?? []).map((parameter, i) => (
-                  <React.Fragment key={i}>
-                    <span>{parameter["@_name"]}</span>
-                    <span>{": "}</span>
-                    <span className={"expression-info-data-type"}>
-                      ({parameter["@_typeRef"] ?? DmnBuiltInDataType.Undefined})
-                    </span>
-                    {i < (formalParameters ?? []).length - 1 && <span>{", "}</span>}
-                  </React.Fragment>
-                ))}
-                <span>{")"}</span>
-              </>
-            )}
-          </p>
-        </div>
+        {expressionParametersContent}
       </PopoverMenu>
-    ),
-    [formalParameters, i18n.editParameters, editorRef]
-  );
+    );
+  }, [isReadOnly, expressionParametersContent, formalParameters, editorRef]);
 }

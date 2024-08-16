@@ -76,7 +76,7 @@ export function BoxedExpressionPropertiesPanel() {
   );
 
   const isReadonly =
-    settings.readOnly || (!!node?.data.dmnObjectNamespace && node.data.dmnObjectNamespace !== thisDmnsNamespace);
+    settings.isReadOnly || (!!node?.data.dmnObjectNamespace && node.data.dmnObjectNamespace !== thisDmnsNamespace);
 
   const boxedExpressionIndex = useMemo(() => {
     if (node?.data.dmnObject === undefined) {

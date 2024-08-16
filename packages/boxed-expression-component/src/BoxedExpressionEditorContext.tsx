@@ -33,7 +33,7 @@ export interface BoxedExpressionEditorContextType {
   expressionHolderId: string;
   pmmlDocuments?: PmmlDocument[];
   dataTypes: DmnDataType[];
-  readOnly?: boolean;
+  isReadOnly?: boolean;
 
   // State
   currentlyOpenContextMenu: string | undefined;
@@ -69,7 +69,7 @@ export function BoxedExpressionEditorContextProvider({
   onExpressionChange,
   onWidthsChange,
   dataTypes,
-  readOnly,
+  isReadOnly,
   expressionHolderId,
   beeGwtService,
   children,
@@ -112,7 +112,7 @@ export function BoxedExpressionEditorContextProvider({
         // props
         expressionHolderId,
         dataTypes,
-        readOnly,
+        isReadOnly,
         pmmlDocuments,
 
         //state // FIXME: Move to a separate context (https://github.com/apache/incubator-kie-issues/issues/168)

@@ -384,7 +384,7 @@ export function IncludedModels() {
         <>
           {/* This padding was necessary because PF4 has a @media query that doesn't run inside iframes, for some reason. */}
           <PageSection style={{ padding: "24px" }}>
-            <Button isDisabled={settings.readOnly} onClick={openModal} variant={ButtonVariant.primary}>
+            <Button isDisabled={settings.isReadOnly} onClick={openModal} variant={ButtonVariant.primary}>
               Include model
             </Button>
             <br />
@@ -403,7 +403,7 @@ export function IncludedModels() {
                     _import={dmnImport}
                     index={index}
                     externalModel={undefined}
-                    isReadonly={settings.readOnly}
+                    isReadonly={settings.isReadOnly}
                   />
                 ) : (
                   <IncludedModelCard
@@ -411,7 +411,7 @@ export function IncludedModels() {
                     _import={dmnImport}
                     index={index}
                     externalModel={externalModel}
-                    isReadonly={settings.readOnly}
+                    isReadonly={settings.isReadOnly}
                   />
                 );
               })}
@@ -432,7 +432,7 @@ export function IncludedModels() {
               in this DMN file. Included PMML models can be invoked through DMN Boxed Functions, usually inside Business
               Knowledge Model nodes (BKMs)
             </EmptyStateBody>
-            {!settings.readOnly && (
+            {!settings.isReadOnly && (
               <Button onClick={openModal} variant={ButtonVariant.primary}>
                 Include model
               </Button>

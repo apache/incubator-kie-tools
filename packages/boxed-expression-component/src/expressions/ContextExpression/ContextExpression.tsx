@@ -68,7 +68,7 @@ export function ContextExpression({
 }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
-  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
+  const { expressionHolderId, widthsById, isReadOnly } = useBoxedExpressionEditor();
 
   const id = contextExpression["@_id"]!;
 
@@ -460,7 +460,7 @@ export function ContextExpression({
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`context-expression ${id}`}>
         <BeeTable<ROWTYPE>
-          isReadOnly={true}
+          isReadOnly={isReadOnly}
           isEditableHeader={false}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={id}

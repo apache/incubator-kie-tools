@@ -359,7 +359,7 @@ export function ShapeOptions({
             onClick={onReset}
             style={{ paddingBottom: 0, paddingTop: 0 }}
             title={"Reset shape"}
-            isDisabled={settings.readOnly}
+            isDisabled={settings.isReadOnly}
           >
             <UndoAltIcon />
           </Button>
@@ -391,7 +391,7 @@ export function ShapeOptions({
                       colorPickerRef={fillColorPickerRef}
                     />
                   }
-                  isDisabled={settings.readOnly}
+                  isDisabled={settings.isReadOnly}
                   key={"fill-color"}
                   buttonId={"shape-style-toggle-group-fill-color"}
                   onClick={() => {
@@ -423,7 +423,7 @@ export function ShapeOptions({
                       colorPickerRef={strokeColorPickerRef}
                     />
                   }
-                  isDisabled={settings.readOnly}
+                  isDisabled={settings.isReadOnly}
                   key={"stroke-color"}
                   buttonId={"shape-style-toggle-group-stroke-color"}
                   onClick={() => {
@@ -460,7 +460,7 @@ export function ShapeOptions({
                       </div>
                     </div>
                   }
-                  isDisabled={settings.readOnly}
+                  isDisabled={settings.isReadOnly}
                   key={"bound-width"}
                   buttonId={"shape-style-toggle-group-bound-width"}
                 />
@@ -488,7 +488,7 @@ export function ShapeOptions({
                       </div>
                     </div>
                   }
-                  isDisabled={settings.readOnly}
+                  isDisabled={settings.isReadOnly}
                   key={"bound-height"}
                   buttonId={"shape-style-toggle-group-bound-height"}
                 />
@@ -516,7 +516,7 @@ export function ShapeOptions({
                   <TextInput
                     aria-label={"X"}
                     type={"number"}
-                    isDisabled={settings.readOnly}
+                    isDisabled={settings.isReadOnly}
                     value={boundPositionX}
                     onChange={onChangePositionX}
                     placeholder={"Enter X value..."}
@@ -533,7 +533,7 @@ export function ShapeOptions({
                   <TextInput
                     aria-label={"Y"}
                     type={"number"}
-                    isDisabled={settings.readOnly}
+                    isDisabled={settings.isReadOnly}
                     value={boundPositionY}
                     onChange={onChangePositionY}
                     placeholder={"Enter Y value..."}

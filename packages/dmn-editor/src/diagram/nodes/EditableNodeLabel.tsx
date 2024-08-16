@@ -273,14 +273,14 @@ export function useEditableNodeLabel(id: string | undefined) {
 
   const triggerEditing = useCallback<React.EventHandler<React.SyntheticEvent>>(
     (e) => {
-      if (settings.readOnly) {
+      if (settings.isReadOnly) {
         return;
       }
       e.stopPropagation();
       e.preventDefault();
       setEditingLabel(true);
     },
-    [settings.readOnly]
+    [settings.isReadOnly]
   );
 
   // Trigger editing on `Enter` pressed.

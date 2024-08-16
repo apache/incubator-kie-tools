@@ -60,7 +60,7 @@ export function RelationExpression({
   parentElementId: string;
 }) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { widthsById, expressionHolderId } = useBoxedExpressionEditor();
+  const { widthsById, expressionHolderId, isReadOnly } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
 
   const id = relationExpression["@_id"]!;
@@ -495,7 +495,7 @@ export function RelationExpression({
   return (
     <div className={`relation-expression`}>
       <BeeTable<ROWTYPE>
-        isReadOnly={true}
+        isReadOnly={isReadOnly}
         isEditableHeader={false}
         resizerStopBehavior={
           isPivoting ? ResizerStopBehavior.SET_WIDTH_ALWAYS : ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER

@@ -149,7 +149,7 @@ export function DataTypes() {
   );
 
   const pasteTopLevelItemDefinition = useCallback(() => {
-    if (settings.readOnly) {
+    if (settings.isReadOnly) {
       return;
     }
     navigator.clipboard.readText().then((text) => {
@@ -170,7 +170,7 @@ export function DataTypes() {
         addTopLevelItemDefinition(itemDefinition);
       }
     });
-  }, [addTopLevelItemDefinition, settings.readOnly]);
+  }, [addTopLevelItemDefinition, settings.isReadOnly]);
 
   const [isAddDataTypeDropdownOpen, setAddDataTypeDropdownOpen] = useState(false);
 
@@ -207,7 +207,7 @@ export function DataTypes() {
                       onClear={() => setFilter("")}
                     />
 
-                    {!settings.readOnly && (
+                    {!settings.isReadOnly && (
                       <Dropdown
                         onSelect={() => setAddDataTypeDropdownOpen(false)}
                         menuAppendTo={document.body}
@@ -306,7 +306,7 @@ export function DataTypes() {
             <DrawerContentBody>
               {activeDataType && (
                 <DataTypePanel
-                  isReadonly={settings.readOnly || activeDataType.namespace !== thisDmnsNamespace}
+                  isReadonly={settings.isReadOnly || activeDataType.namespace !== thisDmnsNamespace}
                   dataType={activeDataType}
                   allDataTypesById={allDataTypesById}
                   editItemDefinition={editItemDefinition}

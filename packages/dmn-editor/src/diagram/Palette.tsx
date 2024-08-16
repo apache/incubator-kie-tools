@@ -126,7 +126,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
               });
             }}
             placeholder={getDefaultDrdName({ drdIndex: drdIndex })}
-            isReadonly={settings.readOnly}
+            isReadonly={settings.isReadOnly}
             isPlain={true}
             shouldCommitOnBlur={true}
           />
@@ -160,7 +160,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
           </button>
         </aside>
       </RF.Panel>
-      {!settings.readOnly && (
+      {!settings.isReadOnly && (
         <RF.Panel position={"top-left"} style={{ marginTop: "78px" }}>
           <div ref={nodesPalletePopoverRef} style={{ position: "absolute", left: 0, height: 0, zIndex: -1 }} />
           <aside className={`kie-dmn-editor--palette ${pulse ? "pulse" : ""}`}>

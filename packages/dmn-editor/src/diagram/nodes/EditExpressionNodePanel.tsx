@@ -37,7 +37,7 @@ export function EditExpressionNodePanel(props: { isVisible: boolean; id: string 
           }
           className={"kie-dmn-editor--edit-expression-node-panel"}
         >
-          {settings.readOnly ? "View" : "Edit"}
+          {settings.isReadOnly ? "View" : "Edit"}
         </Label>
       )}
     </>
