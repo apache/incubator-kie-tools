@@ -33,10 +33,13 @@ interface IOwnProps {
   isProcessEnabled: boolean;
   users: User[];
   dataIndexUrl: string;
+  quarkusOrigin: string;
+  quarkusRootPath: string;
+  shouldReplaceQuarkusOriginWithWebappOrigin: boolean;
   navigate: string;
+  devUIOrigin: string;
   devUIUrl: string;
   openApiPath: string;
-  remoteKogitoAppUrl: string;
   availablePages: string[];
   customLabels: CustomLabels;
   omittedProcessTimelineEvents: string[];
@@ -47,20 +50,31 @@ const RuntimeTools: React.FC<IOwnProps> = ({
   users,
   dataIndexUrl,
   navigate,
+  devUIOrigin,
   devUIUrl,
   openApiPath,
-  remoteKogitoAppUrl,
+  quarkusOrigin,
+  quarkusRootPath,
+  shouldReplaceQuarkusOriginWithWebappOrigin,
   isProcessEnabled,
   availablePages,
   customLabels,
   omittedProcessTimelineEvents,
   diagramPreviewSize,
 }) => {
+  console.log({ shouldReplaceQuarkusOriginWithWebappOrigin, quarkusOrigin, quarkusRootPath, dataIndexUrl });
+
+  console.log(
+    shouldReplaceQuarkusOriginWithWebappOrigin ? dataIndexUrl.replace(quarkusOrigin, devUIOrigin) : dataIndexUrl
+  );
+
   const httpLink = new HttpLink({
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    uri: dataIndexUrl,
+    uri: shouldReplaceQuarkusOriginWithWebappOrigin ? dataIndexUrl.replace(quarkusOrigin, devUIOrigin) : dataIndexUrl,
   });
+
+  console.log({ httpLink });
 
   const fallbackUI = onError(({ networkError }: any) => {
     if (networkError && networkError.stack === "TypeError: Failed to fetch") {
@@ -69,9 +83,12 @@ const RuntimeTools: React.FC<IOwnProps> = ({
         <DevUILayout
           apolloClient={client}
           users={users}
+          devUIOrigin={devUIOrigin}
           devUIUrl={devUIUrl}
           openApiPath={openApiPath}
-          remoteKogitoAppUrl={remoteKogitoAppUrl}
+          quarkusOrigin={quarkusOrigin}
+          quarkusRootPath={quarkusRootPath}
+          shouldReplaceQuarkusOriginWithWebappOrigin={shouldReplaceQuarkusOriginWithWebappOrigin}
           isProcessEnabled={isProcessEnabled}
           availablePages={availablePages}
           customLabels={customLabels}
@@ -95,9 +112,12 @@ const RuntimeTools: React.FC<IOwnProps> = ({
     <DevUILayout
       apolloClient={client}
       users={users}
+      devUIOrigin={devUIOrigin}
       devUIUrl={devUIUrl}
       openApiPath={openApiPath}
-      remoteKogitoAppUrl={remoteKogitoAppUrl}
+      quarkusOrigin={quarkusOrigin}
+      quarkusRootPath={quarkusRootPath}
+      shouldReplaceQuarkusOriginWithWebappOrigin={shouldReplaceQuarkusOriginWithWebappOrigin}
       isProcessEnabled={isProcessEnabled}
       availablePages={availablePages}
       customLabels={customLabels}

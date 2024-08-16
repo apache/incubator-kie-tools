@@ -32,9 +32,15 @@ const ProcessDefinitionListContextProvider: React.FC<ProcessDefinitionListContex
   apolloClient,
   children,
 }) => {
+  const appContext = useDevUIAppContext();
+
   const gatewayApiImpl = useMemo(() => {
-    return new ProcessDefinitionListGatewayApiImpl(new GraphQLProcessDefinitionListQueries(apolloClient));
-  }, []);
+    return new ProcessDefinitionListGatewayApiImpl(
+      new GraphQLProcessDefinitionListQueries(apolloClient, {
+        transformUrls: (url) => appContext.transformQuarkusUrl(url),
+      })
+    );
+  }, [apolloClient, appContext]);
 
   return (
     <ProcessDefinitionListContext.Provider value={gatewayApiImpl}>{children}</ProcessDefinitionListContext.Provider>

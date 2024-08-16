@@ -61,9 +61,13 @@ export class RuntimeToolsDevUIEnvelopeApiImpl implements RuntimeToolsDevUIEnvelo
     this.view().setDataIndexUrl(initArgs.dataIndexUrl);
     this.view().setUsers(initArgs.users);
     this.view().navigateTo(initArgs.page);
+    this.view().setDevUIOrigin && this.view().setDevUIOrigin(initArgs.devUIOrigin);
     this.view().setDevUIUrl && this.view().setDevUIUrl(initArgs.devUIUrl);
     this.view().setOpenApiPath && this.view().setOpenApiPath(initArgs.openApiPath);
-    this.view().setRemoteKogitoAppUrl && this.view().setRemoteKogitoAppUrl(initArgs.remoteKogitoAppUrl);
+    this.view().setQuarkusOrigin && this.view().setQuarkusOrigin(initArgs.quarkusOrigin);
+    this.view().setQuarkusRootPath && this.view().setQuarkusRootPath(initArgs.quarkusRootPath);
+    this.view().setShouldReplaceQuarkusOriginWithWebappOrigin &&
+      this.view().setShouldReplaceQuarkusOriginWithWebappOrigin(initArgs.shouldReplaceQuarkusOriginWithWebappOrigin);
     this.view().setAvailablePages && this.view().setAvailablePages(initArgs.availablePages);
     this.view().setCustomLabels && this.view().setCustomLabels(initArgs.customLabels);
     this.view().setOmittedProcessTimelineEvents &&

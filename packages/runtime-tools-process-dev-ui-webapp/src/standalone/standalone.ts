@@ -27,74 +27,50 @@ export interface StandaloneDevUIApi {
   close: () => void;
 }
 
-export interface Consoles {
-  open: (args: {
-    container: Element;
-    users: User[];
-    dataIndexUrl?: string;
-    page: string;
-    devUIUrl: string;
-    remoteKogitoAppUrl?: string;
-    openApiPath?: string;
-    origin?: string;
-    availablePages?: string[];
-    customLabels?: CustomLabels;
-    omittedProcessTimelineEvents?: string[];
-    diagramPreviewSize?: DiagramPreviewSize;
-  }) => StandaloneDevUIApi;
-}
+export type StandaloneDevUIArgs = {
+  container: Element;
+  isDataIndexAvailable: boolean;
+  users: User[];
+  dataIndexUrl?: string;
+  quarkusOrigin: string;
+  quarkusRootPath?: string;
+  shouldReplaceQuarkusOriginWithWebappOrigin?: boolean;
+  page: string;
+  devUIOrigin: string;
+  devUIUrl: string;
+  openApiPath?: string;
+  origin?: string;
+  availablePages?: string[];
+  customLabels?: CustomLabels;
+  omittedProcessTimelineEvents?: string[];
+  diagramPreviewSize?: DiagramPreviewSize;
+};
 
-const createEnvelopeServer = (
-  iframe: HTMLIFrameElement,
-  isDataIndexAvailable: boolean,
-  users: User[],
-  dataIndexUrl: string,
-  page: string,
-  devUIUrl: string,
-  openApiPath: string,
-  remoteKogitoAppUrl: string,
-  customLabels: CustomLabels,
-  diagramPreviewSize?: DiagramPreviewSize,
-  origin?: string,
-  availablePages?: string[],
-  omittedProcessTimelineEvents?: string[]
-) => {
+export type StandAloneDevUIEnvelopeServerArgs = Omit<StandaloneDevUIArgs, "container"> & {
+  dataIndexUrl: string;
+  openApiPath: string;
+  customLabels: CustomLabels;
+};
+
+const createEnvelopeServer = (iframe: HTMLIFrameElement, args: StandAloneDevUIEnvelopeServerArgs) => {
   const defaultOrigin = window.location.protocol === "file:" ? "*" : window.location.origin;
 
   return new EnvelopeServer<RuntimeToolsDevUIChannelApi, RuntimeToolsDevUIEnvelopeApi>(
     {
-      postMessage: (message) => iframe.contentWindow?.postMessage(message, origin ?? defaultOrigin),
+      postMessage: (message) => iframe.contentWindow?.postMessage(message, args.origin ?? defaultOrigin),
     },
-    origin ?? defaultOrigin,
+    args.origin ?? defaultOrigin,
     (self) => {
       return self.envelopeApi.requests.runtimeToolsDevUI_initRequest(
         {
           origin: self.origin,
           envelopeServerId: self.id,
         },
-        {
-          isDataIndexAvailable,
-          users,
-          dataIndexUrl,
-          page,
-          devUIUrl,
-          openApiPath,
-          customLabels,
-          availablePages,
-          omittedProcessTimelineEvents,
-          diagramPreviewSize,
-          remoteKogitoAppUrl,
-        }
+        args
       );
     }
   );
 };
-
-declare global {
-  interface Window {
-    RuntimeToolsDevUI: Consoles;
-  }
-}
 
 export const createDevUI = (
   envelopeServer: EnvelopeServer<RuntimeToolsDevUIChannelApi, RuntimeToolsDevUIEnvelopeApi>,
@@ -110,21 +86,7 @@ export const createDevUI = (
   };
 };
 
-export function open(args: {
-  container: Element;
-  isDataIndexAvailable: boolean;
-  users: User[];
-  dataIndexUrl?: string;
-  remoteKogitoAppUrl?: string;
-  page: string;
-  devUIUrl: string;
-  openApiPath?: string;
-  origin?: string;
-  availablePages?: string[];
-  customLabels?: CustomLabels;
-  omittedProcessTimelineEvents?: string[];
-  diagramPreviewSize?: DiagramPreviewSize;
-}): StandaloneDevUIApi {
+export function open(args: StandaloneDevUIArgs): StandaloneDevUIApi {
   const iframe = document.createElement("iframe");
   iframe.srcdoc = devUIEnvelopeIndex; // index coming from webapp
   iframe.id = "iframe";
@@ -132,24 +94,22 @@ export function open(args: {
   iframe.style.height = "100%";
   iframe.style.border = "none";
 
-  const envelopeServer = createEnvelopeServer(
-    iframe,
-    args.isDataIndexAvailable,
-    args.users,
-    args.dataIndexUrl ?? process.env.KOGITO_DATAINDEX_HTTP_URL,
-    args.page,
-    args.devUIUrl,
-    args.openApiPath ?? process.env.KOGITO_OPENAPI_PATH,
-    args.remoteKogitoAppUrl ?? process.env.KOGITO_REMOTE_KOGITO_APP_URL,
-    args.customLabels ?? {
+  const envelopeArgs = {
+    ...args,
+    container: undefined,
+  };
+
+  const envelopeServer = createEnvelopeServer(iframe, {
+    ...envelopeArgs,
+    dataIndexUrl: args.dataIndexUrl ?? process.env.KOGITO_DATAINDEX_HTTP_URL,
+    openApiPath: args.openApiPath ?? process.env.KOGITO_OPENAPI_PATH,
+    customLabels: args.customLabels ?? {
       singularProcessLabel: "Process",
       pluralProcessLabel: "Processes",
     },
-    args.diagramPreviewSize,
-    args.origin,
-    args.availablePages,
-    args.omittedProcessTimelineEvents ?? []
-  );
+    omittedProcessTimelineEvents: args.omittedProcessTimelineEvents ?? [],
+  });
+
   const channelApi = new RuntimeToolsDevUIChannelApiImpl();
   const listener = (message: MessageEvent) => {
     envelopeServer.receive(message.data, channelApi);
@@ -163,3 +123,11 @@ export function open(args: {
 }
 
 window.RuntimeToolsDevUI = { open };
+
+declare global {
+  interface Window {
+    RuntimeToolsDevUI: {
+      open: typeof open;
+    };
+  }
+}

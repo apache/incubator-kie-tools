@@ -65,14 +65,19 @@ export interface ProcessDetailsQueries {
 }
 
 export class GraphQLProcessDetailsQueries implements ProcessDetailsQueries {
-  private readonly client: ApolloClient<any>;
-
-  constructor(client: ApolloClient<any>) {
-    this.client = client;
-  }
+  constructor(
+    private readonly client: ApolloClient<any>,
+    private readonly options?: { transformUrls?: (url: string) => string }
+  ) {}
 
   async getProcessDetails(id: string): Promise<ProcessInstance> {
-    return getProcessDetails(id, this.client);
+    return getProcessDetails(id, this.client).then((details) => {
+      return {
+        ...details,
+        endpoint: this.options?.transformUrls?.(details.endpoint) ?? details.endpoint,
+        serviceUrl: this.options?.transformUrls?.(details.serviceUrl) ?? details.serviceUrl,
+      };
+    });
   }
 
   async getJobs(id: string): Promise<Job[]> {

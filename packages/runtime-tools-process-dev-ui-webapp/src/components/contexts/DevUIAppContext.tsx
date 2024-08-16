@@ -29,7 +29,10 @@ export interface DevUIAppContext {
   onUserChange(listener: UserChangeListener): UnSubscribeHandler;
   getDevUIUrl(): string;
   getOpenApiPath(): string;
-  getRemoteKogitoAppUrl(): string;
+  getQuarkusOrigin(): string;
+  getQuarkusRootPath(): string;
+  getShouldReplaceQuarkusOriginWithWebappOrigin(): boolean;
+  transformQuarkusUrl(url: string): string;
   availablePages?: string[];
   customLabels: CustomLabels;
   omittedProcessTimelineEvents: string[];
@@ -46,9 +49,12 @@ export interface UnSubscribeHandler {
 
 export type DevUIAppContextArgs = {
   users?: User[];
+  devUIOrigin: string;
   devUIUrl: string;
   openApiPath: string;
-  remoteKogitoAppUrl: string;
+  quarkusOrigin: string;
+  quarkusRootPath: string;
+  shouldReplaceQuarkusOriginWithWebappOrigin: boolean;
   isProcessEnabled: boolean;
   availablePages?: string[];
   customLabels?: CustomLabels;
@@ -70,12 +76,24 @@ export class DevUIAppContextImpl implements DevUIAppContext {
     return this.args.devUIUrl;
   }
 
+  getDevUIOrigin(): string {
+    return this.args.devUIOrigin;
+  }
+
   getOpenApiPath(): string {
     return this.args.openApiPath;
   }
 
-  getRemoteKogitoAppUrl(): string {
-    return this.args.remoteKogitoAppUrl;
+  getQuarkusOrigin(): string {
+    return this.args.quarkusOrigin;
+  }
+
+  getQuarkusRootPath(): string {
+    return this.args.quarkusRootPath;
+  }
+
+  getShouldReplaceQuarkusOriginWithWebappOrigin(): boolean {
+    return this.args.shouldReplaceQuarkusOriginWithWebappOrigin;
   }
 
   getCurrentUser(): User {
@@ -105,6 +123,12 @@ export class DevUIAppContextImpl implements DevUIAppContext {
         }
       },
     };
+  }
+
+  transformQuarkusUrl(url: string): string {
+    return this.getShouldReplaceQuarkusOriginWithWebappOrigin()
+      ? url.replace(this.getQuarkusOrigin(), this.getDevUIOrigin())
+      : url;
   }
 
   get isProcessEnabled(): boolean {

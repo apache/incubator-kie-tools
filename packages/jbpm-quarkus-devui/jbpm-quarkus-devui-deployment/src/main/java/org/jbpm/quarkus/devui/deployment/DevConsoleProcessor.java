@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoDataIndexServiceAvailableBuildItem;
 import org.jbpm.quarkus.devui.deployment.data.UserInfo;
 import org.jbpm.quarkus.devui.runtime.config.DevConsoleRuntimeConfig;
@@ -115,18 +116,21 @@ public class DevConsoleProcessor {
 
         String openapiPath = getProperty(configurationBuildItem, systemPropertyBuildItems, "quarkus.smallrye-openapi.path");
         String devUIUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.dev-ui.url");
-        String dataIndexUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.data-index.url");
+        String dataIndexUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.dataindex.http.url");
         String trustyServiceUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.trusty.http.url");
+        String quarkusHttpHost = ConfigProvider.getConfig().getValue("quarkus.http.host", String.class);
+        String quarkusHttpPort = ConfigProvider.getConfig().getValue("quarkus.http.port", String.class);
 
         CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
 
-        cardPageBuildItem.addBuildTimeData("normalizedHttpRootPath", nonApplicationRootPathBuildItem.getNormalizedHttpRootPath());
+        cardPageBuildItem.addBuildTimeData("quarkusHttpHost", quarkusHttpHost);
+        cardPageBuildItem.addBuildTimeData("quarkusHttpPort", quarkusHttpPort);
+        cardPageBuildItem.addBuildTimeData("quarkusRootPath", nonApplicationRootPathBuildItem.getNormalizedHttpRootPath());
         cardPageBuildItem.addBuildTimeData("extensionBasePath", uiPath);
         cardPageBuildItem.addBuildTimeData("openapiPath", openapiPath);
         cardPageBuildItem.addBuildTimeData("devUIUrl", devUIUrl);
         cardPageBuildItem.addBuildTimeData("dataIndexUrl", dataIndexUrl);
         cardPageBuildItem.addBuildTimeData("isTracingEnabled", false);
-        cardPageBuildItem.addBuildTimeData("trustyServiceUrl", trustyServiceUrl);
         cardPageBuildItem.addBuildTimeData("userData", readUsersInfo(devConsoleRuntimeConfig));
 
         cardPageBuildItem.addPage(Page.webComponentPageBuilder()

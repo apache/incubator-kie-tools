@@ -19,20 +19,25 @@
 import { ApolloClient } from "apollo-client";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { getProcessDefinitions } from "@kie-tools/runtime-tools-process-gateway-api/dist/gatewayApi";
-import { OperationType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface ProcessDefinitionListQueries {
   getProcessDefinitions(): Promise<ProcessDefinition[]>;
 }
 
 export class GraphQLProcessDefinitionListQueries implements ProcessDefinitionListQueries {
-  private readonly client: ApolloClient<any>;
-
-  constructor(client: ApolloClient<any>) {
+  constructor(
+    private readonly client: ApolloClient<any>,
+    private readonly options?: { transformUrls?: (url: string) => string }
+  ) {
     this.client = client;
   }
 
   getProcessDefinitions(): Promise<ProcessDefinition[]> {
-    return getProcessDefinitions(this.client);
+    return getProcessDefinitions(this.client).then((processDefinitions) =>
+      processDefinitions.map((definition) => ({
+        ...definition,
+        endpoint: this.options?.transformUrls?.(definition.endpoint) ?? definition.endpoint,
+      }))
+    );
   }
 }

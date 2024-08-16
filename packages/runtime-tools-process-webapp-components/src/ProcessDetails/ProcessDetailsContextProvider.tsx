@@ -25,12 +25,13 @@ import { GraphQLProcessDetailsQueries } from "./ProcessDetailsQueries";
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
   children: React.ReactElement;
+  options?: { transformUrls?: (url: string) => string };
 }
 
-export const ProcessDetailsContextProvider: React.FC<IOwnProps> = ({ apolloClient, children }) => {
+export const ProcessDetailsContextProvider: React.FC<IOwnProps> = ({ apolloClient, children, options }) => {
   return (
     <ProcessDetailsContext.Provider
-      value={new ProcessDetailsGatewayApiImpl(new GraphQLProcessDetailsQueries(apolloClient))}
+      value={new ProcessDetailsGatewayApiImpl(new GraphQLProcessDetailsQueries(apolloClient, options))}
     >
       {children}
     </ProcessDetailsContext.Provider>

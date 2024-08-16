@@ -27,9 +27,13 @@ import { DiagramPreviewSize } from "@kie-tools/runtime-tools-process-enveloped-c
 export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIEnvelopeViewApi>(
   (props, forwardingRef) => {
     const [dataIndexUrl, setDataIndexUrl] = React.useState("");
-    const [remoteKogitoAppUrl, setRemoteKogitoAppUrl] = React.useState("");
+    const [quarkusOrigin, setQuarkusOrigin] = React.useState("");
+    const [quarkusRootPath, setQuarkusRootPath] = React.useState("");
+    const [shouldReplaceQuarkusOriginWithWebappOrigin, setShouldReplaceQuarkusOriginWithWebappOrigin] =
+      React.useState<boolean>(false);
     const [DevUiUsers, setDevUiUsers] = React.useState<User[]>([]);
     const [navigate, setNavigate] = React.useState<string>("");
+    const [devUIOrigin, setDevUIOrigin] = React.useState<string>("");
     const [devUIUrl, setDevUIUrl] = React.useState<string>("");
     const [openApiPath, setOpenApiPath] = React.useState<string>("");
     const [isProcessEnabled, setProcessEnabled] = React.useState(false);
@@ -43,8 +47,14 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
         setDataIndexUrl: (dataIndexUrl) => {
           setDataIndexUrl(dataIndexUrl);
         },
-        setRemoteKogitoAppUrl: (remoteKogitoAppUrl) => {
-          setRemoteKogitoAppUrl(remoteKogitoAppUrl);
+        setQuarkusOrigin: (quarkusOrigin: string) => {
+          setQuarkusOrigin(quarkusOrigin);
+        },
+        setQuarkusRootPath: (quarkusRootPath: string) => {
+          setQuarkusRootPath(quarkusRootPath);
+        },
+        setShouldReplaceQuarkusOriginWithWebappOrigin: (shouldReplaceQuarkusOriginWithWebappOrigin: boolean) => {
+          setShouldReplaceQuarkusOriginWithWebappOrigin(shouldReplaceQuarkusOriginWithWebappOrigin);
         },
         setUsers: (users) => {
           setDevUiUsers(users);
@@ -54,6 +64,9 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
         },
         setDevUIUrl: (url) => {
           setDevUIUrl(url);
+        },
+        setDevUIOrigin: (url) => {
+          setDevUIOrigin(url);
         },
         setOpenApiPath: (path) => {
           setOpenApiPath(path);
@@ -83,13 +96,16 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
             dataIndexUrl={dataIndexUrl}
             navigate={navigate}
             openApiPath={openApiPath}
+            devUIOrigin={devUIOrigin}
             devUIUrl={devUIUrl}
             isProcessEnabled={isProcessEnabled}
             availablePages={availablePages}
             customLabels={customLabels}
             omittedProcessTimelineEvents={omittedProcessTimelineEvents}
             diagramPreviewSize={diagramPreviewSize}
-            remoteKogitoAppUrl={remoteKogitoAppUrl}
+            quarkusOrigin={quarkusOrigin}
+            quarkusRootPath={quarkusRootPath}
+            shouldReplaceQuarkusOriginWithWebappOrigin={shouldReplaceQuarkusOriginWithWebappOrigin}
           />
         )}
       </>

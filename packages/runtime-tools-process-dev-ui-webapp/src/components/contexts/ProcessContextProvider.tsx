@@ -17,20 +17,32 @@
  * under the License.
  */
 import React from "react";
-import FormDetailsContext from "./FormDetailsContext";
-import { FormDetailsGatewayApiImpl } from "./FormDetailsGatewayApi";
+import { ApolloClient } from "apollo-client";
 import { useDevUIAppContext } from "../../components/contexts/DevUIAppContext";
+import { ProcessListContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessList";
+import { ProcessDetailsContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
+import { ProcessDefinitionListContextProvider } from "../../channel/ProcessDefinitionList";
 
 interface IOwnProps {
+  apolloClient: ApolloClient<any>;
   children;
 }
 
-const FormDetailsContextProvider: React.FC<IOwnProps> = ({ children }) => {
+export const ProcessContextProvider: React.FC<IOwnProps> = ({ apolloClient, children }) => {
   const appContext = useDevUIAppContext();
-  const baseUrl = `${appContext.getQuarkusOrigin()}${appContext.getQuarkusRootPath()}`;
+
   return (
-    <FormDetailsContext.Provider value={new FormDetailsGatewayApiImpl(baseUrl)}>{children}</FormDetailsContext.Provider>
+    <ProcessListContextProvider apolloClient={apolloClient}>
+      <ProcessDetailsContextProvider
+        apolloClient={apolloClient}
+        options={{ transformUrls: (url) => appContext.transformQuarkusUrl(url) }}
+      >
+        <ProcessDefinitionListContextProvider apolloClient={apolloClient}>
+          {children}
+        </ProcessDefinitionListContextProvider>
+      </ProcessDetailsContextProvider>
+    </ProcessListContextProvider>
   );
 };
 
-export default FormDetailsContextProvider;
+export default ProcessContextProvider;

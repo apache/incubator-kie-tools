@@ -36,8 +36,11 @@ export interface User {
 export interface RuntimeToolsDevUIInitArgs {
   users?: User[];
   dataIndexUrl: string;
-  remoteKogitoAppUrl?: string;
+  quarkusOrigin: string;
+  quarkusRootPath?: string;
+  shouldReplaceQuarkusOriginWithWebappOrigin?: boolean;
   page: string;
+  devUIOrigin: string;
   devUIUrl: string;
   openApiPath: string;
   isDataIndexAvailable: boolean;

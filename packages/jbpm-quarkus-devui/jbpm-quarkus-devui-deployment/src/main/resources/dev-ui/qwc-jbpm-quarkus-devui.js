@@ -24,17 +24,12 @@ import {
   extensionBasePath,
   isTracingEnabled,
   openapiPath,
-  trustyServiceUrl,
   userData,
-  normalizedHttpRootPath,
+  quarkusRootPath,
+  quarkusHttpHost,
+  quarkusHttpPort,
 } from "build-time-data";
 import { RouterController } from "router-controller";
-
-function parseLocalHostname(url) {
-  return typeof url === "string"
-    ? url.replace(/http:\/\/(0\.0\.0\.0(:\d+)?|localhost(:\d+))/g, window.location.origin)
-    : url;
-}
 
 export class QwcJbpmQuarkusDevui extends LitElement {
   _routerController = new RouterController(this);
@@ -57,9 +52,8 @@ export class QwcJbpmQuarkusDevui extends LitElement {
       extensionBasePath,
       isTracingEnabled,
       openapiPath,
-      trustyServiceUrl,
       userData,
-      normalizedHttpRootPath,
+      quarkusRootPath,
     });
 
     if (!document.querySelector("#jbpm-devui-script")) {
@@ -84,12 +78,14 @@ export class QwcJbpmQuarkusDevui extends LitElement {
       container: container,
       isDataIndexAvailable: true,
       isTracingEnabled: isTracingEnabled,
-      dataIndexUrl: `${parseLocalHostname(dataIndexUrl) ?? normalizedHttpRootPath}/graphql`,
-      remoteKogitoAppUrl: parseLocalHostname(dataIndexUrl) ?? normalizedHttpRootPath,
-      trustyServiceUrl: parseLocalHostname(trustyServiceUrl) ?? "http://localhost:1336",
+      quarkusOrigin: `http://${quarkusHttpHost}:${quarkusHttpPort}`,
+      quarkusRootPath: quarkusRootPath,
+      shouldReplaceQuarkusOriginWithWebappOrigin: true,
+      dataIndexUrl: `${dataIndexUrl}/graphql`,
       page: metadata.page ?? "Processes",
-      devUIUrl: parseLocalHostname(devUIUrl) ?? window.location.origin,
-      openApiPath: parseLocalHostname(openapiPath) ?? `${normalizedHttpRootPath}/q/openapi.json`,
+      devUIUrl: devUIUrl ?? window.location.origin,
+      devUIOrigin: window.location.origin,
+      openApiPath: openapiPath ?? `${quarkusRootPath}/q/openapi.json`,
       availablePages: ["Processes", "Jobs", "Tasks", "Forms"],
       users: userData ?? [],
     });

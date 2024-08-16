@@ -37,6 +37,8 @@ import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.lang.Integer.parseInt;
+
 @ApplicationScoped
 public class JBPMDevuiJsonRPCService {
     private static final String DATA_INDEX_URL = "kogito.data-index.url";

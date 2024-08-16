@@ -22,9 +22,12 @@ import { CustomLabels } from "../api/CustomLabels";
 
 export interface RuntimeToolsDevUIEnvelopeViewApi {
   setDataIndexUrl: (dataIndexUrl: string) => void;
-  setRemoteKogitoAppUrl: (remoteKogitoAppUrl: string) => void;
+  setQuarkusOrigin: (quarkusOrigin: string) => void;
+  setQuarkusRootPath: (quarkusRootPath: string) => void;
+  setShouldReplaceQuarkusOriginWithWebappOrigin: (shouldReplaceQuarkusOriginWithWebappOrigin: boolean) => void;
   setUsers: (users: User[]) => void;
   navigateTo: (page: string) => void;
+  setDevUIOrigin: (url: string) => void;
   setDevUIUrl: (url: string) => void;
   setOpenApiPath: (path: string) => void;
   setProcessEnabled: (isProcessEnabled: boolean) => void;
