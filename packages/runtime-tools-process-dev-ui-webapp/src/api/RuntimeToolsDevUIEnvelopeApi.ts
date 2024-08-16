@@ -36,9 +36,9 @@ export interface User {
 export interface RuntimeToolsDevUIInitArgs {
   users?: User[];
   dataIndexUrl: string;
-  quarkusOrigin: string;
-  quarkusRootPath?: string;
-  shouldReplaceQuarkusOriginWithWebappOrigin?: boolean;
+  quarkusAppOrigin: string;
+  quarkusAppRootPath?: string;
+  shouldReplaceQuarkusAppOriginWithWebappOrigin?: boolean;
   page: string;
   devUIOrigin: string;
   devUIUrl: string;

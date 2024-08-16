@@ -29,9 +29,9 @@ export interface DevUIAppContext {
   onUserChange(listener: UserChangeListener): UnSubscribeHandler;
   getDevUIUrl(): string;
   getOpenApiPath(): string;
-  getQuarkusOrigin(): string;
-  getQuarkusRootPath(): string;
-  getShouldReplaceQuarkusOriginWithWebappOrigin(): boolean;
+  getQuarkusAppOrigin(): string;
+  getQuarkusAppRootPath(): string;
+  getShouldReplaceQuarkusAppOriginWithWebappOrigin(): boolean;
   transformQuarkusUrl(url: string): string;
   availablePages?: string[];
   customLabels: CustomLabels;
@@ -52,9 +52,9 @@ export type DevUIAppContextArgs = {
   devUIOrigin: string;
   devUIUrl: string;
   openApiPath: string;
-  quarkusOrigin: string;
-  quarkusRootPath: string;
-  shouldReplaceQuarkusOriginWithWebappOrigin: boolean;
+  quarkusAppOrigin: string;
+  quarkusAppRootPath: string;
+  shouldReplaceQuarkusAppOriginWithWebappOrigin: boolean;
   isProcessEnabled: boolean;
   availablePages?: string[];
   customLabels?: CustomLabels;
@@ -84,16 +84,16 @@ export class DevUIAppContextImpl implements DevUIAppContext {
     return this.args.openApiPath;
   }
 
-  getQuarkusOrigin(): string {
-    return this.args.quarkusOrigin;
+  getQuarkusAppOrigin(): string {
+    return this.args.quarkusAppOrigin;
   }
 
-  getQuarkusRootPath(): string {
-    return this.args.quarkusRootPath;
+  getQuarkusAppRootPath(): string {
+    return this.args.quarkusAppRootPath;
   }
 
-  getShouldReplaceQuarkusOriginWithWebappOrigin(): boolean {
-    return this.args.shouldReplaceQuarkusOriginWithWebappOrigin;
+  getShouldReplaceQuarkusAppOriginWithWebappOrigin(): boolean {
+    return this.args.shouldReplaceQuarkusAppOriginWithWebappOrigin;
   }
 
   getCurrentUser(): User {
@@ -126,8 +126,8 @@ export class DevUIAppContextImpl implements DevUIAppContext {
   }
 
   transformQuarkusUrl(url: string): string {
-    return this.getShouldReplaceQuarkusOriginWithWebappOrigin()
-      ? url.replace(this.getQuarkusOrigin(), this.getDevUIOrigin())
+    return this.getShouldReplaceQuarkusAppOriginWithWebappOrigin()
+      ? url.replace(this.getQuarkusAppOrigin(), this.getDevUIOrigin())
       : url;
   }
 

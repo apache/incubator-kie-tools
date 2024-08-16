@@ -46,9 +46,9 @@ interface IOwnProps {
   devUIOrigin: string;
   devUIUrl: string;
   openApiPath: string;
-  quarkusOrigin: string;
-  quarkusRootPath: string;
-  shouldReplaceQuarkusOriginWithWebappOrigin: boolean;
+  quarkusAppOrigin: string;
+  quarkusAppRootPath: string;
+  shouldReplaceQuarkusAppOriginWithWebappOrigin: boolean;
   availablePages?: string[];
   customLabels: CustomLabels;
   omittedProcessTimelineEvents?: string[];
@@ -62,9 +62,9 @@ const DevUILayout: React.FC<IOwnProps> = ({
   devUIOrigin,
   devUIUrl,
   openApiPath,
-  quarkusOrigin,
-  quarkusRootPath,
-  shouldReplaceQuarkusOriginWithWebappOrigin,
+  quarkusAppOrigin,
+  quarkusAppRootPath,
+  shouldReplaceQuarkusAppOriginWithWebappOrigin,
   availablePages,
   customLabels,
   omittedProcessTimelineEvents,
@@ -86,9 +86,9 @@ const DevUILayout: React.FC<IOwnProps> = ({
         devUIOrigin={devUIOrigin}
         devUIUrl={devUIUrl}
         openApiPath={openApiPath}
-        quarkusOrigin={quarkusOrigin}
-        quarkusRootPath={quarkusRootPath}
-        shouldReplaceQuarkusOriginWithWebappOrigin={shouldReplaceQuarkusOriginWithWebappOrigin}
+        quarkusAppOrigin={quarkusAppOrigin}
+        quarkusAppRootPath={quarkusAppRootPath}
+        shouldReplaceQuarkusAppOriginWithWebappOrigin={shouldReplaceQuarkusAppOriginWithWebappOrigin}
         isProcessEnabled={isProcessEnabled}
         availablePages={availablePages}
         customLabels={customLabels}

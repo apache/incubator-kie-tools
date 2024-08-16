@@ -55,7 +55,6 @@ export class FormsListGatewayApiImpl implements FormsListGatewayApi {
   };
 
   getFormsQuery(): Promise<FormInfo[]> {
-    console.log({ baseUrl: this.baseUrl });
     return getForms(this.baseUrl, this._FormFilter.formNames);
   }
 

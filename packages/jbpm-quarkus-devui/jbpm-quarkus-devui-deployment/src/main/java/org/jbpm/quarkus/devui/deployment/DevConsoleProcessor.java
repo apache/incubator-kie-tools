@@ -125,7 +125,7 @@ public class DevConsoleProcessor {
 
         cardPageBuildItem.addBuildTimeData("quarkusHttpHost", quarkusHttpHost);
         cardPageBuildItem.addBuildTimeData("quarkusHttpPort", quarkusHttpPort);
-        cardPageBuildItem.addBuildTimeData("quarkusRootPath", nonApplicationRootPathBuildItem.getNormalizedHttpRootPath());
+        cardPageBuildItem.addBuildTimeData("quarkusAppRootPath", nonApplicationRootPathBuildItem.getNormalizedHttpRootPath());
         cardPageBuildItem.addBuildTimeData("extensionBasePath", uiPath);
         cardPageBuildItem.addBuildTimeData("openapiPath", openapiPath);
         cardPageBuildItem.addBuildTimeData("devUIUrl", devUIUrl);

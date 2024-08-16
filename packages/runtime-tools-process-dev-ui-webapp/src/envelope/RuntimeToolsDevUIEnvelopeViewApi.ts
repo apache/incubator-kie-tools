@@ -22,9 +22,9 @@ import { CustomLabels } from "../api/CustomLabels";
 
 export interface RuntimeToolsDevUIEnvelopeViewApi {
   setDataIndexUrl: (dataIndexUrl: string) => void;
-  setQuarkusOrigin: (quarkusOrigin: string) => void;
-  setQuarkusRootPath: (quarkusRootPath: string) => void;
-  setShouldReplaceQuarkusOriginWithWebappOrigin: (shouldReplaceQuarkusOriginWithWebappOrigin: boolean) => void;
+  setQuarkusAppOrigin: (quarkusAppOrigin: string) => void;
+  setQuarkusAppRootPath: (quarkusAppRootPath: string) => void;
+  setShouldReplaceQuarkusAppOriginWithWebappOrigin: (shouldReplaceQuarkusAppOriginWithWebappOrigin: boolean) => void;
   setUsers: (users: User[]) => void;
   navigateTo: (page: string) => void;
   setDevUIOrigin: (url: string) => void;

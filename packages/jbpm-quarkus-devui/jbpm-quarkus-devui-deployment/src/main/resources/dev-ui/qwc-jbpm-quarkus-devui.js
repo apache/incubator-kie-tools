@@ -25,7 +25,7 @@ import {
   isTracingEnabled,
   openapiPath,
   userData,
-  quarkusRootPath,
+  quarkusAppRootPath,
   quarkusHttpHost,
   quarkusHttpPort,
 } from "build-time-data";
@@ -45,16 +45,6 @@ export class QwcJbpmQuarkusDevui extends LitElement {
   async connectedCallback() {
     super.connectedCallback();
     await this.updateComplete;
-
-    console.log({
-      dataIndexUrl,
-      devUIUrl,
-      extensionBasePath,
-      isTracingEnabled,
-      openapiPath,
-      userData,
-      quarkusRootPath,
-    });
 
     if (!document.querySelector("#jbpm-devui-script")) {
       const script = document.createElement("script");
@@ -78,14 +68,14 @@ export class QwcJbpmQuarkusDevui extends LitElement {
       container: container,
       isDataIndexAvailable: true,
       isTracingEnabled: isTracingEnabled,
-      quarkusOrigin: `http://${quarkusHttpHost}:${quarkusHttpPort}`,
-      quarkusRootPath: quarkusRootPath,
-      shouldReplaceQuarkusOriginWithWebappOrigin: true,
+      quarkusAppOrigin: `http://${quarkusHttpHost}:${quarkusHttpPort}`,
+      quarkusAppRootPath: quarkusAppRootPath,
+      shouldReplaceQuarkusAppOriginWithWebappOrigin: true,
       dataIndexUrl: `${dataIndexUrl}/graphql`,
       page: metadata.page ?? "Processes",
       devUIUrl: devUIUrl ?? window.location.origin,
       devUIOrigin: window.location.origin,
-      openApiPath: openapiPath ?? `${quarkusRootPath}/q/openapi.json`,
+      openApiPath: openapiPath ?? `${quarkusAppRootPath}/q/openapi.json`,
       availablePages: ["Processes", "Jobs", "Tasks", "Forms"],
       users: userData ?? [],
     });

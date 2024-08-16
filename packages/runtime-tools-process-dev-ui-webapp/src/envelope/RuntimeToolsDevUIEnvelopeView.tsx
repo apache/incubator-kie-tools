@@ -27,9 +27,9 @@ import { DiagramPreviewSize } from "@kie-tools/runtime-tools-process-enveloped-c
 export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIEnvelopeViewApi>(
   (props, forwardingRef) => {
     const [dataIndexUrl, setDataIndexUrl] = React.useState("");
-    const [quarkusOrigin, setQuarkusOrigin] = React.useState("");
-    const [quarkusRootPath, setQuarkusRootPath] = React.useState("");
-    const [shouldReplaceQuarkusOriginWithWebappOrigin, setShouldReplaceQuarkusOriginWithWebappOrigin] =
+    const [quarkusAppOrigin, setQuarkusAppOrigin] = React.useState("");
+    const [quarkusAppRootPath, setQuarkusAppRootPath] = React.useState("");
+    const [shouldReplaceQuarkusAppOriginWithWebappOrigin, setShouldReplaceQuarkusAppOriginWithWebappOrigin] =
       React.useState<boolean>(false);
     const [DevUiUsers, setDevUiUsers] = React.useState<User[]>([]);
     const [navigate, setNavigate] = React.useState<string>("");
@@ -47,14 +47,14 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
         setDataIndexUrl: (dataIndexUrl) => {
           setDataIndexUrl(dataIndexUrl);
         },
-        setQuarkusOrigin: (quarkusOrigin: string) => {
-          setQuarkusOrigin(quarkusOrigin);
+        setQuarkusAppOrigin: (quarkusAppOrigin: string) => {
+          setQuarkusAppOrigin(quarkusAppOrigin);
         },
-        setQuarkusRootPath: (quarkusRootPath: string) => {
-          setQuarkusRootPath(quarkusRootPath);
+        setQuarkusAppRootPath: (quarkusAppRootPath: string) => {
+          setQuarkusAppRootPath(quarkusAppRootPath);
         },
-        setShouldReplaceQuarkusOriginWithWebappOrigin: (shouldReplaceQuarkusOriginWithWebappOrigin: boolean) => {
-          setShouldReplaceQuarkusOriginWithWebappOrigin(shouldReplaceQuarkusOriginWithWebappOrigin);
+        setShouldReplaceQuarkusAppOriginWithWebappOrigin: (shouldReplaceQuarkusAppOriginWithWebappOrigin: boolean) => {
+          setShouldReplaceQuarkusAppOriginWithWebappOrigin(shouldReplaceQuarkusAppOriginWithWebappOrigin);
         },
         setUsers: (users) => {
           setDevUiUsers(users);
@@ -103,9 +103,9 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
             customLabels={customLabels}
             omittedProcessTimelineEvents={omittedProcessTimelineEvents}
             diagramPreviewSize={diagramPreviewSize}
-            quarkusOrigin={quarkusOrigin}
-            quarkusRootPath={quarkusRootPath}
-            shouldReplaceQuarkusOriginWithWebappOrigin={shouldReplaceQuarkusOriginWithWebappOrigin}
+            quarkusAppOrigin={quarkusAppOrigin}
+            quarkusAppRootPath={quarkusAppRootPath}
+            shouldReplaceQuarkusAppOriginWithWebappOrigin={shouldReplaceQuarkusAppOriginWithWebappOrigin}
           />
         )}
       </>

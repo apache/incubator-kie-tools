@@ -64,10 +64,12 @@ export class RuntimeToolsDevUIEnvelopeApiImpl implements RuntimeToolsDevUIEnvelo
     this.view().setDevUIOrigin && this.view().setDevUIOrigin(initArgs.devUIOrigin);
     this.view().setDevUIUrl && this.view().setDevUIUrl(initArgs.devUIUrl);
     this.view().setOpenApiPath && this.view().setOpenApiPath(initArgs.openApiPath);
-    this.view().setQuarkusOrigin && this.view().setQuarkusOrigin(initArgs.quarkusOrigin);
-    this.view().setQuarkusRootPath && this.view().setQuarkusRootPath(initArgs.quarkusRootPath);
-    this.view().setShouldReplaceQuarkusOriginWithWebappOrigin &&
-      this.view().setShouldReplaceQuarkusOriginWithWebappOrigin(initArgs.shouldReplaceQuarkusOriginWithWebappOrigin);
+    this.view().setQuarkusAppOrigin && this.view().setQuarkusAppOrigin(initArgs.quarkusAppOrigin);
+    this.view().setQuarkusAppRootPath && this.view().setQuarkusAppRootPath(initArgs.quarkusAppRootPath);
+    this.view().setShouldReplaceQuarkusAppOriginWithWebappOrigin &&
+      this.view().setShouldReplaceQuarkusAppOriginWithWebappOrigin(
+        initArgs.shouldReplaceQuarkusAppOriginWithWebappOrigin
+      );
     this.view().setAvailablePages && this.view().setAvailablePages(initArgs.availablePages);
     this.view().setCustomLabels && this.view().setCustomLabels(initArgs.customLabels);
     this.view().setOmittedProcessTimelineEvents &&

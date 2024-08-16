@@ -33,9 +33,9 @@ interface IOwnProps {
   isProcessEnabled: boolean;
   users: User[];
   dataIndexUrl: string;
-  quarkusOrigin: string;
-  quarkusRootPath: string;
-  shouldReplaceQuarkusOriginWithWebappOrigin: boolean;
+  quarkusAppOrigin: string;
+  quarkusAppRootPath: string;
+  shouldReplaceQuarkusAppOriginWithWebappOrigin: boolean;
   navigate: string;
   devUIOrigin: string;
   devUIUrl: string;
@@ -53,28 +53,22 @@ const RuntimeTools: React.FC<IOwnProps> = ({
   devUIOrigin,
   devUIUrl,
   openApiPath,
-  quarkusOrigin,
-  quarkusRootPath,
-  shouldReplaceQuarkusOriginWithWebappOrigin,
+  quarkusAppOrigin,
+  quarkusAppRootPath,
+  shouldReplaceQuarkusAppOriginWithWebappOrigin,
   isProcessEnabled,
   availablePages,
   customLabels,
   omittedProcessTimelineEvents,
   diagramPreviewSize,
 }) => {
-  console.log({ shouldReplaceQuarkusOriginWithWebappOrigin, quarkusOrigin, quarkusRootPath, dataIndexUrl });
-
-  console.log(
-    shouldReplaceQuarkusOriginWithWebappOrigin ? dataIndexUrl.replace(quarkusOrigin, devUIOrigin) : dataIndexUrl
-  );
-
   const httpLink = new HttpLink({
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    uri: shouldReplaceQuarkusOriginWithWebappOrigin ? dataIndexUrl.replace(quarkusOrigin, devUIOrigin) : dataIndexUrl,
+    uri: shouldReplaceQuarkusAppOriginWithWebappOrigin
+      ? dataIndexUrl.replace(quarkusAppOrigin, devUIOrigin)
+      : dataIndexUrl,
   });
-
-  console.log({ httpLink });
 
   const fallbackUI = onError(({ networkError }: any) => {
     if (networkError && networkError.stack === "TypeError: Failed to fetch") {
@@ -86,9 +80,9 @@ const RuntimeTools: React.FC<IOwnProps> = ({
           devUIOrigin={devUIOrigin}
           devUIUrl={devUIUrl}
           openApiPath={openApiPath}
-          quarkusOrigin={quarkusOrigin}
-          quarkusRootPath={quarkusRootPath}
-          shouldReplaceQuarkusOriginWithWebappOrigin={shouldReplaceQuarkusOriginWithWebappOrigin}
+          quarkusAppOrigin={quarkusAppOrigin}
+          quarkusAppRootPath={quarkusAppRootPath}
+          shouldReplaceQuarkusAppOriginWithWebappOrigin={shouldReplaceQuarkusAppOriginWithWebappOrigin}
           isProcessEnabled={isProcessEnabled}
           availablePages={availablePages}
           customLabels={customLabels}
@@ -115,9 +109,9 @@ const RuntimeTools: React.FC<IOwnProps> = ({
       devUIOrigin={devUIOrigin}
       devUIUrl={devUIUrl}
       openApiPath={openApiPath}
-      quarkusOrigin={quarkusOrigin}
-      quarkusRootPath={quarkusRootPath}
-      shouldReplaceQuarkusOriginWithWebappOrigin={shouldReplaceQuarkusOriginWithWebappOrigin}
+      quarkusAppOrigin={quarkusAppOrigin}
+      quarkusAppRootPath={quarkusAppRootPath}
+      shouldReplaceQuarkusAppOriginWithWebappOrigin={shouldReplaceQuarkusAppOriginWithWebappOrigin}
       isProcessEnabled={isProcessEnabled}
       availablePages={availablePages}
       customLabels={customLabels}
