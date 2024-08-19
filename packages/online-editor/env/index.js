@@ -58,6 +58,10 @@ module.exports = composeEnv([rootEnv, extendedServicesEnv, corsProxyEnv], {
       default: `http://${extendedServicesEnv.env.extendedServices.ip}:${extendedServicesEnv.env.extendedServices.port}`,
       description: "Extended Services URL.",
     },
+    ONLINE_EDITOR__disableExtendedServicesWizard: {
+      default: `${false}`,
+      description: "Disables the Extended Services Wizard.",
+    },
     ONLINE_EDITOR__feedbackUrl: {
       default: "https://github.com/apache/incubator-kie-issues/issues/439#issuecomment-1821845917",
       description: "URL where users can give feedback, currently present in the New DMN Editor dropdown.",
@@ -154,6 +158,7 @@ module.exports = composeEnv([rootEnv, extendedServicesEnv, corsProxyEnv], {
         },
         appName: getOrDefault(this.vars.ONLINE_EDITOR__appName),
         extendedServicesUrl: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesUrl),
+        disableExtendedServicesWizard: str2bool(getOrDefault(this.vars.ONLINE_EDITOR__disableExtendedServicesWizard)),
         corsProxyUrl: getOrDefault(this.vars.ONLINE_EDITOR__corsProxyUrl),
         feedbackUrl: getOrDefault(this.vars.ONLINE_EDITOR__feedbackUrl),
         requireCustomCommitMessage: str2bool(getOrDefault(this.vars.ONLINE_EDITOR__requireCustomCommitMessage)),
