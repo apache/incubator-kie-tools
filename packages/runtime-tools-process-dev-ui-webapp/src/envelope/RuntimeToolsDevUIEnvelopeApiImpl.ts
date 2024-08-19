@@ -61,19 +61,19 @@ export class RuntimeToolsDevUIEnvelopeApiImpl implements RuntimeToolsDevUIEnvelo
     this.view().setDataIndexUrl(initArgs.dataIndexUrl);
     this.view().setUsers(initArgs.users);
     this.view().navigateTo(initArgs.page);
-    this.view().setDevUIOrigin && this.view().setDevUIOrigin(initArgs.devUIOrigin);
-    this.view().setDevUIUrl && this.view().setDevUIUrl(initArgs.devUIUrl);
-    this.view().setQuarkusAppOrigin && this.view().setQuarkusAppOrigin(initArgs.quarkusAppOrigin);
-    this.view().setQuarkusAppRootPath && this.view().setQuarkusAppRootPath(initArgs.quarkusAppRootPath);
+    this.view().setDevUIOrigin?.(initArgs.devUIOrigin);
+    this.view().setDevUIUrl?.(initArgs.devUIUrl);
+    this.view().setQuarkusAppOrigin?.(initArgs.quarkusAppOrigin);
+    this.view().setQuarkusAppRootPath?.(initArgs.quarkusAppRootPath);
     this.view().setShouldReplaceQuarkusAppOriginWithWebappOrigin &&
       this.view().setShouldReplaceQuarkusAppOriginWithWebappOrigin(
         initArgs.shouldReplaceQuarkusAppOriginWithWebappOrigin
       );
-    this.view().setAvailablePages && this.view().setAvailablePages(initArgs.availablePages);
-    this.view().setCustomLabels && this.view().setCustomLabels(initArgs.customLabels);
+    this.view().setAvailablePages?.(initArgs.availablePages);
+    this.view().setCustomLabels?.(initArgs.customLabels);
     this.view().setOmittedProcessTimelineEvents &&
       this.view().setOmittedProcessTimelineEvents(initArgs.omittedProcessTimelineEvents);
-    this.view().setDiagramPreviewSize && this.view().setDiagramPreviewSize(initArgs.diagramPreviewSize);
+    this.view().setDiagramPreviewSize?.(initArgs.diagramPreviewSize);
     // Ensure these are set last. This is a workaround to ensure views are corrected configured with other properties
     // from the DevUIAppContext before they are rendered. i.e. use of DevUIAppContext is not responsive to updates.
     this.view().setProcessEnabled(initArgs.isDataIndexAvailable);

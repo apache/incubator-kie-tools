@@ -30,7 +30,7 @@ export interface DevUIAppContext {
   getDevUIUrl(): string;
   getQuarkusAppOrigin(): string;
   getQuarkusAppRootPath(): string;
-  getShouldReplaceQuarkusAppOriginWithWebappOrigin(): boolean;
+  shouldReplaceQuarkusAppOriginWithWebappOrigin(): boolean;
   transformQuarkusUrl(url?: string): string;
   availablePages?: string[];
   customLabels: CustomLabels;
@@ -86,7 +86,7 @@ export class DevUIAppContextImpl implements DevUIAppContext {
     return this.args.quarkusAppRootPath;
   }
 
-  getShouldReplaceQuarkusAppOriginWithWebappOrigin(): boolean {
+  shouldReplaceQuarkusAppOriginWithWebappOrigin(): boolean {
     return this.args.shouldReplaceQuarkusAppOriginWithWebappOrigin;
   }
 
@@ -123,7 +123,7 @@ export class DevUIAppContextImpl implements DevUIAppContext {
     if (!url) {
       return undefined;
     }
-    return this.getShouldReplaceQuarkusAppOriginWithWebappOrigin()
+    return this.shouldReplaceQuarkusAppOriginWithWebappOrigin()
       ? url.replace(this.getQuarkusAppOrigin(), this.getDevUIOrigin())
       : url;
   }

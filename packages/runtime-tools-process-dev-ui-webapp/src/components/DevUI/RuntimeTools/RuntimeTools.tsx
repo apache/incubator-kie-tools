@@ -61,8 +61,6 @@ const RuntimeTools: React.FC<IOwnProps> = ({
   diagramPreviewSize,
 }) => {
   const httpLink = new HttpLink({
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     uri: shouldReplaceQuarkusAppOriginWithWebappOrigin
       ? dataIndexUrl.replace(quarkusAppOrigin, devUIOrigin)
       : dataIndexUrl,
