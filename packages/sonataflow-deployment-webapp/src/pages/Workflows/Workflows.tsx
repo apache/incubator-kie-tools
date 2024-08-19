@@ -36,6 +36,7 @@ import { BasePage } from "../BasePage";
 import { Link } from "react-router-dom";
 import { routes } from "../../routes";
 import { ErrorKind, ErrorPage } from "../ErrorPage";
+import { RuntimeToolsWorkflowDefinitions } from "../../runtimeTools/pages/RuntimeToolsWorkflowDefinitions";
 
 export function Workflows() {
   const openApi = useOpenApi();
@@ -46,13 +47,13 @@ export function Workflows() {
 
   return (
     <BasePage>
-      <PageSection variant={"light"}>
+      {/* <PageSection variant={"light"}>
         <TextContent>
           <Text component={TextVariants.h1}>Workflows</Text>
         </TextContent>
-      </PageSection>
-
-      <PageSection>
+      </PageSection> */}
+      <RuntimeToolsWorkflowDefinitions />
+      {/* <PageSection>
         <Toolbar>
           <ToolbarContent style={{ paddingLeft: "10px", paddingRight: "10px" }}>
             <ToolbarItem alignment={{ default: "alignLeft" }}>
@@ -123,7 +124,7 @@ export function Workflows() {
             />
           </Tbody>
         </Table>
-      </PageSection>
+      </PageSection> */}
     </BasePage>
   );
 }
