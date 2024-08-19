@@ -271,7 +271,7 @@ export function DiagramCommands(props: {}) {
         });
       });
     };
-  }, [dmnEditorStoreApi, commandsRef]);
+  }, [dmnEditorStoreApi, commandsRef, externalModelsByNamespace]);
 
   // Select/deselect all nodes
   useEffect(() => {
@@ -338,7 +338,7 @@ export function DiagramCommands(props: {}) {
         state.dispatch(state).diagram.setNodeStatus(newNodeId, { selected: true });
       });
     };
-  }, [dmnEditorStoreApi, commandsRef, rf]);
+  }, [dmnEditorStoreApi, commandsRef, rf, externalModelsByNamespace]);
 
   // Toggle hierarchy highlights
   useEffect(() => {

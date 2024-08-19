@@ -93,7 +93,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
 
       state.dispatch(state).diagram.setNodeStatus(newNodeId, { selected: true });
     });
-  }, [dmnEditorStoreApi, rfStoreApi]);
+  }, [dmnEditorStoreApi, externalModelsByNamespace, rfStoreApi]);
 
   const drd = thisDmn.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[drdIndex];
 
