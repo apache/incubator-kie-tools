@@ -28,7 +28,6 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.custompr
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomInput;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.Scripts;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.DecisionName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.DmnModelName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.FileName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Namespace;
@@ -81,10 +80,6 @@ public class BusinessRuleTaskPropertyWriter extends ActivityPropertyWriter {
 
     public void setDmnModelName(DmnModelName dmnModelName) {
         this.dmnModelName.set(dmnModelName.getValue());
-    }
-
-    public void setDecisionName(DecisionName decisionName) {
-        this.decisionName.set(decisionName.getValue());
     }
 
     public void setOnEntryAction(OnEntryAction onEntryAction) {
