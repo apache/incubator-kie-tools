@@ -456,7 +456,6 @@ export function InvocationExpression({
       <div className={`invocation-expression ${id}`}>
         <BeeTable<ROWTYPE>
           isReadOnly={isReadOnly}
-          isEditableHeader={false}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={id}
           headerLevelCountForAppendingRowIndexColumn={2}

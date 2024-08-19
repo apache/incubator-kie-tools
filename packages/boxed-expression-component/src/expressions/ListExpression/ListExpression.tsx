@@ -279,7 +279,6 @@ export function ListExpression({
       <div className={`${listExpression["@_id"]} list-expression`}>
         <BeeTable<ROWTYPE>
           isReadOnly={isReadOnly}
-          isEditableHeader={false}
           onColumnResizingWidthChange={onColumnResizingWidthChange}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={listExpression["@_id"]}

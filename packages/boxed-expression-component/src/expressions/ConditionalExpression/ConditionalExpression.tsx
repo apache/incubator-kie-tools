@@ -231,7 +231,6 @@ export function ConditionalExpression({
       <div>
         <BeeTable<ROWTYPE>
           isReadOnly={isReadOnly}
-          isEditableHeader={false}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={id}
           headerLevelCountForAppendingRowIndexColumn={1}

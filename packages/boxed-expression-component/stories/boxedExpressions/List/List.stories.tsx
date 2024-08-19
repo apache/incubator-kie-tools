@@ -48,6 +48,22 @@ export const Base: Story = {
   },
 };
 
+export const Readonly: Story = {
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
+  args: {
+    ...EmptyExpression.args,
+    expression: {
+      __$$element: "list",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+      expression: [undefined!],
+    },
+    isResetSupportedOnRootExpression: true,
+    isReadOnly: true,
+  },
+};
+
 export const AgeGroups: Story = {
   render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },

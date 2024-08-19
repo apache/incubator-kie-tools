@@ -54,3 +54,25 @@ export const Base: Story = {
     },
   },
 };
+
+export const Readonly: Story = {
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
+  args: {
+    ...EmptyExpression.args,
+    expression: {
+      __$$element: "for",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+      in: {
+        "@_id": generateUuid(),
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      },
+      return: {
+        "@_id": generateUuid(),
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      },
+    },
+    isReadOnly: true,
+  },
+};

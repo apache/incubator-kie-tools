@@ -61,6 +61,34 @@ export const Base: Story = {
   },
 };
 
+export const Readonly: Story = {
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
+  args: {
+    ...EmptyExpression.args,
+    expression: {
+      __$$element: "context",
+      "@_id": "_35255561-88FA-4A78-9C3F-61855213EE0F",
+      "@_label": "Expression Name",
+      "@_typeRef": undefined,
+      contextEntry: [
+        {
+          "@_id": generateUuid(),
+          variable: {
+            "@_id": generateUuid(),
+            "@_name": "ContextEntry-1",
+            "@_typeRef": undefined,
+          },
+          expression: undefined!,
+        },
+      ],
+    },
+    isResetSupportedOnRootExpression: true,
+    widthsById: { "_35255561-88FA-4A78-9C3F-61855213EE0F": [CONTEXT_ENTRY_VARIABLE_MIN_WIDTH] },
+    isReadOnly: true,
+  },
+};
+
 export const InstallmentCalculation: Story = {
   render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },

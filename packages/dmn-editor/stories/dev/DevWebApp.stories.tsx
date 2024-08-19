@@ -278,6 +278,6 @@ export const WebApp: Story = {
     externalModelsByNamespace: {},
     issueTrackerHref: "https://github.com/apache/incubator-kie-issues/issues/new",
     validationMessages: {},
-    isReadOnly: true,
+    isReadOnly: false,
   },
 };

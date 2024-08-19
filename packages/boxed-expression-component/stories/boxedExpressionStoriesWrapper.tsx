@@ -185,6 +185,7 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
             props?.isResetSupportedOnRootExpression ?? args?.isResetSupportedOnRootExpression ?? false
           }
           widthsById={widthsByIdMap}
+          isReadOnly={args.isReadOnly}
         />
       </div>
     </>

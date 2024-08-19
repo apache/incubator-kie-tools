@@ -25,7 +25,7 @@ import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.storie
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
-  title: "Boxed Expressions/Every",
+  title: "Boxed Expressions/Conditional",
   component: BoxedExpressionEditor,
   includeStories: /^[A-Z]/,
 };
@@ -40,14 +40,18 @@ export const Base: Story = {
   args: {
     ...EmptyExpression.args,
     expression: {
-      __$$element: "every",
+      __$$element: "conditional",
       "@_id": generateUuid(),
       "@_label": "Expression Name",
-      in: {
+      if: {
         "@_id": generateUuid(),
         expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
       },
-      satisfies: {
+      then: {
+        "@_id": generateUuid(),
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      },
+      else: {
         "@_id": generateUuid(),
         expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
       },
@@ -61,14 +65,18 @@ export const Readonly: Story = {
   args: {
     ...EmptyExpression.args,
     expression: {
-      __$$element: "every",
+      __$$element: "conditional",
       "@_id": generateUuid(),
       "@_label": "Expression Name",
-      in: {
+      if: {
         "@_id": generateUuid(),
         expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
       },
-      satisfies: {
+      then: {
+        "@_id": generateUuid(),
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      },
+      else: {
         "@_id": generateUuid(),
         expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
       },
