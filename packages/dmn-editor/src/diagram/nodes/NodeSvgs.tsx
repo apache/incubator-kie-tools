@@ -331,7 +331,7 @@ export const DecisionServiceNodeSvg = React.forwardRef<
     dividerLineLocalY?: number;
     showSectionLabels: boolean;
     isCollapsed?: boolean;
-    isReadonly: boolean;
+    isReadOnly: boolean;
   }
 >((__props, ref) => {
   const { strokeWidth, x, y, width, height, fillColor, strokeColor, props: _props } = normalize(__props);
@@ -344,7 +344,7 @@ export const DecisionServiceNodeSvg = React.forwardRef<
     props: _interactionRectProps,
   } = normalize({ ...__props, strokeWidth: DEFAULT_INTRACTION_WIDTH / 2 });
 
-  const { dividerLineLocalY, showSectionLabels, dividerLineRef, isCollapsed, isReadonly, ...props } = _props;
+  const { dividerLineLocalY, showSectionLabels, dividerLineRef, isCollapsed, isReadOnly, ...props } = _props;
   const dividerLineCoords = {
     x: x + strokeWidth / 2,
     y: y + (dividerLineLocalY ? dividerLineLocalY : height / 2),
@@ -355,7 +355,7 @@ export const DecisionServiceNodeSvg = React.forwardRef<
     showSectionLabels: interactionRectShowSectionLabels,
     dividerLineRef: interactionRectDividerLineRef,
     isCollapsed: interactionRectIsCollapsed,
-    isReadonly: interactionRectIsReadonly,
+    isReadOnly: interactionRectIsReadonly,
     ...interactionRectProps
   } = _interactionRectProps;
 
@@ -365,7 +365,7 @@ export const DecisionServiceNodeSvg = React.forwardRef<
         <>
           <path
             ref={dividerLineRef}
-            className={`kie-dmn-editor--node-decisionService-interactionDividerLine ${isReadonly ? "readonly" : ""}`}
+            className={`kie-dmn-editor--node-decisionService-interactionDividerLine ${isReadOnly ? "readonly" : ""}`}
             d={`M0,0 L${width},0`}
             strokeWidth={DEFAULT_INTRACTION_WIDTH / 2}
             style={{ stroke: "transparent !important" }}

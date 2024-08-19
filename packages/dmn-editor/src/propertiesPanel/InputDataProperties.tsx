@@ -47,7 +47,7 @@ export function InputDataProperties({
   const settings = useSettings();
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
-  const isReadonly = settings.isReadOnly || (!!namespace && namespace !== thisDmnsNamespace);
+  const isReadOnly = settings.isReadOnly || (!!namespace && namespace !== thisDmnsNamespace);
 
   const { dmnEditorRootElementRef } = useDmnEditor();
 
@@ -61,7 +61,7 @@ export function InputDataProperties({
           isPlain={false}
           id={inputData["@_id"]!}
           name={inputData["@_name"]}
-          isReadonly={isReadonly}
+          isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
           className={"pf-c-form-control"}
           onRenamed={(newName) => {
@@ -80,7 +80,7 @@ export function InputDataProperties({
         <TypeRefSelector
           heightRef={dmnEditorRootElementRef}
           typeRef={resolvedTypeRef}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
           onChange={(newTypeRef) => {
             setState((state) => {
               const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tInputData>;
@@ -94,7 +94,7 @@ export function InputDataProperties({
         <TextArea
           aria-label={"Description"}
           type={"text"}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
           value={inputData.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
@@ -116,7 +116,7 @@ export function InputDataProperties({
       </FormGroup>
 
       <DocumentationLinksFormGroup
-        isReadonly={isReadonly}
+        isReadOnly={isReadOnly}
         values={inputData.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {

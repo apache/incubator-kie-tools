@@ -93,7 +93,7 @@ export function DecisionServiceProperties({
   }, [externalDmnsByNamespace, thisDmn]);
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
-  const isReadonly = settings.isReadOnly || (!!namespace && namespace !== thisDmnsNamespace);
+  const isReadOnly = settings.isReadOnly || (!!namespace && namespace !== thisDmnsNamespace);
 
   const { dmnEditorRootElementRef } = useDmnEditor();
 
@@ -107,7 +107,7 @@ export function DecisionServiceProperties({
           isPlain={false}
           id={decisionService["@_id"]!}
           name={decisionService["@_name"]}
-          isReadonly={isReadonly}
+          isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
           className={"pf-c-form-control"}
           onRenamed={(newName) => {
@@ -127,7 +127,7 @@ export function DecisionServiceProperties({
         <TypeRefSelector
           heightRef={dmnEditorRootElementRef}
           typeRef={resolvedTypeRef}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
           onChange={(newTypeRef) => {
             setState((state) => {
               const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecisionService>;
@@ -142,7 +142,7 @@ export function DecisionServiceProperties({
         <TextArea
           aria-label={"Description"}
           type={"text"}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
           value={decisionService.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
@@ -190,7 +190,7 @@ export function DecisionServiceProperties({
                 newInputDecisions;
             });
           }}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
         />
       </FormGroup>
       <FormGroup label="Input data">
@@ -204,7 +204,7 @@ export function DecisionServiceProperties({
                 newInputData;
             });
           }}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
         />
       </FormGroup>
 
@@ -215,7 +215,7 @@ export function DecisionServiceProperties({
       />
 
       <DocumentationLinksFormGroup
-        isReadonly={isReadonly}
+        isReadOnly={isReadOnly}
         values={decisionService.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {

@@ -26,7 +26,7 @@ import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { DMN15__tIterator } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Normalized } from "../../normalization/normalize";
 
-export function IteratorVariableCell(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadonly: boolean }) {
+export function IteratorVariableCell(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadOnly: boolean }) {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const selectedObjectInfos = useMemo(
     () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
@@ -43,7 +43,7 @@ export function IteratorVariableCell(props: { boxedExpressionIndex?: BoxedExpres
         type={TextFieldType.TEXT_INPUT}
         title={"Variable to interate over"}
         placeholder="Enter the variable name..."
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         initialValue={cell["@_iteratorVariable"] ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         onChange={(newVariable: string) =>

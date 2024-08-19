@@ -38,7 +38,7 @@ import { buildXmlHref } from "../../xml/xmlHrefs";
 
 export function DecisionTableOutputHeaderCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
-  isReadonly: boolean;
+  isReadOnly: boolean;
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
@@ -138,7 +138,7 @@ export function DecisionTableOutputHeaderCell(props: {
         <>
           <NameField
             alternativeFieldName={`${alternativeFieldName} Name`}
-            isReadonly={false}
+            isReadOnly={false}
             id={root["@_id"]!}
             name={root?.["@_label"] ?? ""}
             getAllUniqueNames={getAllUniqueNames}
@@ -154,7 +154,7 @@ export function DecisionTableOutputHeaderCell(props: {
           />
           <TypeRefField
             alternativeFieldName={`${alternativeFieldName} Type`}
-            isReadonly={false}
+            isReadOnly={false}
             dmnEditorRootElementRef={dmnEditorRootElementRef}
             typeRef={root?.["@_typeRef"]}
             onChange={(newTypeRef) => {
@@ -174,7 +174,7 @@ export function DecisionTableOutputHeaderCell(props: {
       )}
       <NameField
         alternativeFieldName={root?.output.length === 1 ? "Column Name" : undefined}
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         id={cell["@_id"]!}
         name={cell?.["@_name"] ?? ""}
         getAllUniqueNames={getAllUniqueNames}
@@ -186,7 +186,7 @@ export function DecisionTableOutputHeaderCell(props: {
       />
       <TypeRefField
         alternativeFieldName={root?.output.length === 1 ? "Column Type" : undefined}
-        isReadonly={cellMustHaveSameTypeAsRoot ? true : props.isReadonly}
+        isReadOnly={cellMustHaveSameTypeAsRoot ? true : props.isReadOnly}
         dmnEditorRootElementRef={dmnEditorRootElementRef}
         typeRef={cellMustHaveSameTypeAsRoot ? root?.["@_typeRef"] : cell?.["@_typeRef"]}
         onChange={(newTypeRef) =>
@@ -198,7 +198,7 @@ export function DecisionTableOutputHeaderCell(props: {
       {itemDefinition && (
         <FormGroup label="Constraint">
           <ConstraintsFromTypeConstraintAttribute
-            isReadonly={true}
+            isReadOnly={true}
             itemDefinition={itemDefinition}
             editItemDefinition={() => {}}
             renderOnPropertiesPanel={true}
@@ -207,7 +207,7 @@ export function DecisionTableOutputHeaderCell(props: {
         </FormGroup>
       )}
       <DescriptionField
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         initialValue={cell?.description?.__$$text ?? ""}
         onChange={(newDescription: string) =>
@@ -228,7 +228,7 @@ export function DecisionTableOutputHeaderCell(props: {
         {isDefaultOutputEntryExpanded && (
           <>
             <ExpressionLanguageField
-              isReadonly={props.isReadonly}
+              isReadOnly={props.isReadOnly}
               initialValue={defaultOutputEntry?.["@_expressionLanguage"] ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newExpressionLanguage) =>
@@ -239,7 +239,7 @@ export function DecisionTableOutputHeaderCell(props: {
               }
             />
             <ContentField
-              isReadonly={props.isReadonly}
+              isReadOnly={props.isReadOnly}
               initialValue={defaultOutputEntry?.text?.__$$text ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newText) =>
@@ -251,7 +251,7 @@ export function DecisionTableOutputHeaderCell(props: {
               }
             />
             <DescriptionField
-              isReadonly={props.isReadonly}
+              isReadOnly={props.isReadOnly}
               initialValue={defaultOutputEntry?.description?.__$$text ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newDescription) =>
@@ -276,7 +276,7 @@ export function DecisionTableOutputHeaderCell(props: {
         {isOutputValuesExpanded && (
           <>
             <ExpressionLanguageField
-              isReadonly={props.isReadonly}
+              isReadOnly={props.isReadOnly}
               initialValue={outputValues?.["@_expressionLanguage"] ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newExpressionLanguage) =>
@@ -287,7 +287,7 @@ export function DecisionTableOutputHeaderCell(props: {
               }
             />
             <ContentField
-              isReadonly={props.isReadonly}
+              isReadOnly={props.isReadOnly}
               initialValue={outputValues?.text?.__$$text ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newText) =>
@@ -298,7 +298,7 @@ export function DecisionTableOutputHeaderCell(props: {
               }
             />
             <DescriptionField
-              isReadonly={props.isReadonly}
+              isReadOnly={props.isReadOnly}
               initialValue={outputValues?.description?.__$$text ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newDescription: string) =>

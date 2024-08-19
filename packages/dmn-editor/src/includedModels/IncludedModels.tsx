@@ -353,7 +353,7 @@ export function IncludedModels() {
                       isPlain={false}
                       id={generateUuid()}
                       name={importName}
-                      isReadonly={false}
+                      isReadOnly={false}
                       shouldCommitOnBlur={true}
                       className={"pf-c-form-control"}
                       onRenamed={setImportName}
@@ -403,7 +403,7 @@ export function IncludedModels() {
                     _import={dmnImport}
                     index={index}
                     externalModel={undefined}
-                    isReadonly={settings.isReadOnly}
+                    isReadOnly={settings.isReadOnly}
                   />
                 ) : (
                   <IncludedModelCard
@@ -411,7 +411,7 @@ export function IncludedModels() {
                     _import={dmnImport}
                     index={index}
                     externalModel={externalModel}
-                    isReadonly={settings.isReadOnly}
+                    isReadOnly={settings.isReadOnly}
                   />
                 );
               })}
@@ -448,12 +448,12 @@ function IncludedModelCard({
   _import,
   index,
   externalModel,
-  isReadonly,
+  isReadOnly,
 }: {
   _import: Normalized<DMN15__tImport>;
   externalModel: ExternalModel | undefined;
   index: number;
-  isReadonly: boolean;
+  isReadOnly: boolean;
 }) {
   const { externalModelsByNamespace } = useExternalModels();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -532,7 +532,7 @@ function IncludedModelCard({
   return (
     <Card isHoverable={true} isCompact={false}>
       <CardHeader>
-        {!isReadonly && (
+        {!isReadOnly && (
           <CardActions>
             <Popover
               bodyContent={
@@ -585,7 +585,7 @@ function IncludedModelCard({
                     onClick={(ev) => {
                       ev.stopPropagation();
                       ev.preventDefault();
-                      if (isReadonly) {
+                      if (isReadOnly) {
                         return;
                       }
                       setConfirmationPopoverOpen(true);
@@ -628,7 +628,7 @@ function IncludedModelCard({
             allUniqueNames={useCallback((s) => s.computed(s).getAllFeelVariableUniqueNames(), [])}
             id={_import["@_id"]!}
             name={_import["@_name"]}
-            isReadonly={isReadonly}
+            isReadOnly={isReadOnly}
             shouldCommitOnBlur={true}
             onRenamed={rename}
             validate={DMN15_SPEC.IMPORT.name.isValid}

@@ -57,6 +57,7 @@ export const Empty: Story = {
     externalModelsByNamespace: {},
     issueTrackerHref: "",
     validationMessages: {},
+    isReadOnly: false,
     xml: marshaller.builder.build(model),
   },
 };

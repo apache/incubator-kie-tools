@@ -126,7 +126,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
               });
             }}
             placeholder={getDefaultDrdName({ drdIndex: drdIndex })}
-            isReadonly={settings.isReadOnly}
+            isReadOnly={settings.isReadOnly}
             isPlain={true}
             shouldCommitOnBlur={true}
           />

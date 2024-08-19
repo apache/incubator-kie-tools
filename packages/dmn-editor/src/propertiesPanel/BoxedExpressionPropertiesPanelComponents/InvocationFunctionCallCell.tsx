@@ -28,7 +28,7 @@ import { Normalized } from "../../normalization/normalize";
 
 export function InvocationFunctionCallCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
-  isReadonly: boolean;
+  isReadOnly: boolean;
 }) {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const selectedObjectInfos = useMemo(
@@ -51,7 +51,7 @@ export function InvocationFunctionCallCell(props: {
         type={TextFieldType.TEXT_INPUT}
         title={"Function to be called"}
         placeholder="Enter the function name..."
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         initialValue={cell.text?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         onChange={(newDescription: string) =>

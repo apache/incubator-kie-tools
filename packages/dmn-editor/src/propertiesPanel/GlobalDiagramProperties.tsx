@@ -80,7 +80,7 @@ export function GlobalDiagramProperties() {
                   isPlain={false}
                   id={thisDmn.model.definitions["@_id"]!}
                   name={thisDmn.model.definitions["@_name"]}
-                  isReadonly={settings.isReadOnly}
+                  isReadOnly={settings.isReadOnly}
                   shouldCommitOnBlur={true}
                   className={"pf-c-form-control"}
                   onRenamed={(newName) => {
