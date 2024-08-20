@@ -270,7 +270,7 @@ export function DataTypes() {
                         {(namespace === thisDmnsNamespace && (
                           <DataTypeName
                             relativeToNamespace={thisDmnsNamespace}
-                            isReadonly={namespace !== thisDmnsNamespace}
+                            isReadOnly={settings.isReadOnly || namespace !== thisDmnsNamespace}
                             itemDefinition={itemDefinition}
                             isActive={isActive}
                             editMode={"double-click"}
@@ -306,7 +306,7 @@ export function DataTypes() {
             <DrawerContentBody>
               {activeDataType && (
                 <DataTypePanel
-                  isReadonly={settings.isReadOnly || activeDataType.namespace !== thisDmnsNamespace}
+                  isReadOnly={settings.isReadOnly || activeDataType.namespace !== thisDmnsNamespace}
                   dataType={activeDataType}
                   allDataTypesById={allDataTypesById}
                   editItemDefinition={editItemDefinition}

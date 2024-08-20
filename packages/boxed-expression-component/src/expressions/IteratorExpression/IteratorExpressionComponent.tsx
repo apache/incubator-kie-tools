@@ -311,6 +311,7 @@ export function IteratorExpressionComponent({
       <div>
         <BeeTable<ROWTYPE>
           isReadOnly={isReadOnly}
+          isEditableHeader={!isReadOnly}
           forwardRef={beeTableRef}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={id}

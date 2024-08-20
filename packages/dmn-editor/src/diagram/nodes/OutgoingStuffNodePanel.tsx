@@ -179,7 +179,7 @@ export function OutgoingStuffNodePanel(props: {
                       y={0}
                       height={nodeSvgProps.width}
                       showSectionLabels={true}
-                      isReadonly={true}
+                      isReadOnly={true}
                     />
                   )}
                   {nodeType === NODE_TYPES.knowledgeSource && (

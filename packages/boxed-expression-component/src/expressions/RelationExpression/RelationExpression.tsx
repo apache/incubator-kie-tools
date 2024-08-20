@@ -496,6 +496,7 @@ export function RelationExpression({
     <div className={`relation-expression`}>
       <BeeTable<ROWTYPE>
         isReadOnly={isReadOnly}
+        isEditableHeader={!isReadOnly}
         resizerStopBehavior={
           isPivoting ? ResizerStopBehavior.SET_WIDTH_ALWAYS : ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER
         }

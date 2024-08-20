@@ -75,7 +75,7 @@ export function BoxedExpressionPropertiesPanel() {
       .nodesById.get(buildXmlHref({ id: activeDrgElementId ?? "" }))
   );
 
-  const isReadonly =
+  const isReadOnly =
     settings.isReadOnly || (!!node?.data.dmnObjectNamespace && node.data.dmnObjectNamespace !== thisDmnsNamespace);
 
   const boxedExpressionIndex = useMemo(() => {
@@ -135,68 +135,68 @@ export function BoxedExpressionPropertiesPanel() {
                   )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.CONTEXT_INFORMATION_ITEM_CELL && (
-                    <ContextInformationItemCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
+                    <ContextInformationItemCell boxedExpressionIndex={boxedExpressionIndex} isReadOnly={isReadOnly} />
                   )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_INPUT_HEADER && (
-                    <DecisionTableInputHeaderCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
+                    <DecisionTableInputHeaderCell boxedExpressionIndex={boxedExpressionIndex} isReadOnly={isReadOnly} />
                   )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_INPUT_RULE && (
-                    <DecisionTableInputRule boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
+                    <DecisionTableInputRule boxedExpressionIndex={boxedExpressionIndex} isReadOnly={isReadOnly} />
                   )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_OUTPUT_HEADER && (
                     <DecisionTableOutputHeaderCell
                       boxedExpressionIndex={boxedExpressionIndex}
-                      isReadonly={isReadonly}
+                      isReadOnly={isReadOnly}
                     />
                   )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_OUTPUT_RULE && (
-                    <DecisionTableOutputRuleCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
+                    <DecisionTableOutputRuleCell boxedExpressionIndex={boxedExpressionIndex} isReadOnly={isReadOnly} />
                   )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_ROOT && (
-                    <DecisionTableRootCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
+                    <DecisionTableRootCell boxedExpressionIndex={boxedExpressionIndex} isReadOnly={isReadOnly} />
                   )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT && (
-                    <ExpressionRootCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
+                    <ExpressionRootCell boxedExpressionIndex={boxedExpressionIndex} isReadOnly={isReadOnly} />
                   )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.FUNCTION_DEFINITION_PARAMETERS && (
                     <FunctionDefinitionParameterCell
                       boxedExpressionIndex={boxedExpressionIndex}
-                      isReadonly={isReadonly}
+                      isReadOnly={isReadOnly}
                     />
                   )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.FUNCTION_DEFINITION_ROOT && (
-                    <FunctionDefinitionRootCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
+                    <FunctionDefinitionRootCell boxedExpressionIndex={boxedExpressionIndex} isReadOnly={isReadOnly} />
                   )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.INVOCATION_FUNCTION_CALL && (
-                    <InvocationFunctionCallCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
+                    <InvocationFunctionCallCell boxedExpressionIndex={boxedExpressionIndex} isReadOnly={isReadOnly} />
                   )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.INVOCATION_INFORMATION_ITEM_CELL && (
                     <InvocationInformationItemCell
                       boxedExpressionIndex={boxedExpressionIndex}
-                      isReadonly={isReadonly}
+                      isReadOnly={isReadOnly}
                     />
                   )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.ITERATOR_VARIABLE_CELL && (
-                    <IteratorVariableCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
+                    <IteratorVariableCell boxedExpressionIndex={boxedExpressionIndex} isReadOnly={isReadOnly} />
                   )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT && (
-                    <LiteralExpressionContentCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
+                    <LiteralExpressionContentCell boxedExpressionIndex={boxedExpressionIndex} isReadOnly={isReadOnly} />
                   )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.RELATION_INFORMATION_ITEM_CELL && (
-                    <RelationInformationItemCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
+                    <RelationInformationItemCell boxedExpressionIndex={boxedExpressionIndex} isReadOnly={isReadOnly} />
                   )}
                 </FormSection>
               </Form>

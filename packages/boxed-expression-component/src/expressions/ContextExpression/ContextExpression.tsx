@@ -461,6 +461,7 @@ export function ContextExpression({
       <div className={`context-expression ${id}`}>
         <BeeTable<ROWTYPE>
           isReadOnly={isReadOnly}
+          isEditableHeader={!isReadOnly}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={id}
           headerLevelCountForAppendingRowIndexColumn={1}

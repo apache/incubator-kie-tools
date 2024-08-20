@@ -21,7 +21,7 @@ import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 import _ from "lodash";
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 import { MenuItemWithHelp } from "../../contextMenu/MenuWithHelp";
 import { Menu } from "@patternfly/react-core/dist/js/components/Menu/Menu";
@@ -35,11 +35,14 @@ export interface FunctionKindSelectorProps {
   selectedFunctionKind: DMN15__tFunctionKind;
   /** Callback invoked when function kind selection changes */
   onFunctionKindSelect: (functionKind: DMN15__tFunctionKind) => void;
+  /** If should only display function kind */
+  isReadOnly?: boolean;
 }
 
 export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorProps> = ({
   selectedFunctionKind,
   onFunctionKindSelect,
+  isReadOnly,
 }) => {
   const { editorRef } = useBoxedExpressionEditor();
 
@@ -70,6 +73,15 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
     setVisibleHelp((previousHelp) => (previousHelp !== help ? help : ""));
   }, []);
 
+  const displaySelectedFunctionKind = useMemo(
+    () => <div className="selected-function-kind">{_.first(selectedFunctionKind)}</div>,
+    [selectedFunctionKind]
+  );
+
+  if (isReadOnly) {
+    return displaySelectedFunctionKind;
+  }
+
   return (
     <PopoverMenu
       onHide={() => setVisibleHelp("")}
@@ -95,7 +107,7 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
         </Menu>
       )}
     >
-      <div className="selected-function-kind">{_.first(selectedFunctionKind)}</div>
+      {displaySelectedFunctionKind}
     </PopoverMenu>
   );
 };

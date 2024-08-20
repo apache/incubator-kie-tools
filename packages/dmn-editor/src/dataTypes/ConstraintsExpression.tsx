@@ -29,12 +29,12 @@ import { TypeHelper } from "./Constraints";
 
 export function ConstraintsExpression({
   id,
-  isReadonly,
+  isReadOnly,
   value,
   onSave,
 }: {
   id: string;
-  isReadonly: boolean;
+  isReadOnly: boolean;
   value?: string;
   savedValue?: string;
   type: DmnBuiltInDataType;
@@ -68,16 +68,16 @@ export function ConstraintsExpression({
     (e) => {
       // When inside FEEL Input, all keyboard events should be kept inside it.
       // Exceptions to this strategy are handled on `onFeelKeyDown`.
-      if (!isReadonly && isEditing) {
+      if (!isReadOnly && isEditing) {
         e.stopPropagation();
       }
 
       // This is used to start editing a cell without being in edit mode.
-      if (!isReadonly && !isEditing) {
+      if (!isReadOnly && !isEditing) {
         setEditing(true);
       }
     },
-    [isEditing, isReadonly]
+    [isEditing, isReadOnly]
   );
 
   const monacoOptions = useMemo(
@@ -97,7 +97,7 @@ export function ConstraintsExpression({
     // FeelInput doens't react to `onFeelChange` updates
     // making it necessary to add a key to force a re-render;
     <div key={id} style={{ display: "flex", flexDirection: "column", width: "100%" }} onKeyDown={onKeyDown}>
-      {isReadonly && (
+      {isReadOnly && (
         <Title size={"md"} headingLevel="h5" style={{ paddingBottom: "10px" }}>
           Equivalent FEEL expression:
         </Title>
@@ -105,12 +105,12 @@ export function ConstraintsExpression({
 
       <div
         style={
-          !isReadonly
+          !isReadOnly
             ? { flexGrow: 1, flexShrink: 0, border: "solid 1px lightgray", borderRadius: "4px" }
             : { flexGrow: 1, flexShrink: 0, height: "22px" }
         }
       >
-        {isReadonly &&
+        {isReadOnly &&
           (value ? (
             <span
               data-testid={"kie-tools--dmn-editor--readonly-expression-constraint-with-value"}
@@ -125,12 +125,12 @@ export function ConstraintsExpression({
           onChange={onFeelChange}
           onBlur={onFeelBlur}
           onPreviewChanged={onPreviewChanged}
-          enabled={!isReadonly}
+          enabled={!isReadOnly}
           options={monacoOptions as any}
         />
       </div>
       <HelperText>
-        {!isReadonly && (
+        {!isReadOnly && (
           <HelperTextItem variant="indeterminate" icon={<InfoIcon />}>
             Check the{" "}
             <a target={"_blank"} href={"https://kiegroup.github.io/dmn-feel-handbook/#feel-values"}>

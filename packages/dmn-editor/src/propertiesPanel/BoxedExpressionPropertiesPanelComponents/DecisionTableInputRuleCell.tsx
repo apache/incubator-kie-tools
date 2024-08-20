@@ -32,7 +32,7 @@ import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/a
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { Normalized } from "../../normalization/normalize";
 
-export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadonly: boolean }) {
+export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadOnly: boolean }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const { externalModelsByNamespace } = useExternalModels();
@@ -81,7 +81,7 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
         <>
           <TypeRefField
             alternativeFieldName={"Input header type"}
-            isReadonly={true}
+            isReadOnly={true}
             dmnEditorRootElementRef={dmnEditorRootElementRef}
             typeRef={headerType.itemDefinition?.["@_name"] ?? headerType.typeRef}
           />
@@ -91,7 +91,7 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
         <>
           <FormGroup label="Constraint">
             <ConstraintsFromTypeConstraintAttribute
-              isReadonly={true}
+              isReadOnly={true}
               itemDefinition={headerType.itemDefinition}
               editItemDefinition={() => {}}
               renderOnPropertiesPanel={true}
@@ -101,7 +101,7 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
         </>
       )}
       <ExpressionLanguageField
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         initialValue={cell["@_expressionLanguage"] ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         onChange={(newExpressionLanguage: string) =>
@@ -111,7 +111,7 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
         }
       />
       <DescriptionField
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         initialValue={cell.description?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         onChange={(newDescription: string) =>

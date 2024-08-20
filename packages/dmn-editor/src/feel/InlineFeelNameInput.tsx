@@ -35,7 +35,7 @@ export const invalidInlineFeelNameStyle = {
 export function InlineFeelNameInput({
   id,
   onRenamed,
-  isReadonly,
+  isReadOnly,
   name,
   shouldCommitOnBlur,
   isPlain,
@@ -50,7 +50,7 @@ export function InlineFeelNameInput({
   id: string;
   onRenamed: OnInlineFeelNameRenamed;
   name: string;
-  isReadonly: boolean;
+  isReadOnly: boolean;
   isPlain: boolean;
   shouldCommitOnBlur: boolean;
   allUniqueNames: (s: State) => UniqueNameIndex;
@@ -118,7 +118,7 @@ export function InlineFeelNameInput({
       onInput={(e) => {
         (e.target as any).size = 2 + Math.max(0, _placeholder?.length ?? 0, (e.target as any).value.length ?? 0);
       }}
-      disabled={isReadonly}
+      disabled={isReadOnly}
       placeholder={_placeholder}
       onChange={(e) => updateIsValidFlag(e.currentTarget.value)}
       defaultValue={name}

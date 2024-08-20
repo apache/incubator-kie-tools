@@ -33,7 +33,7 @@ type DecisionTableRoot = Pick<
   "@_label" | "description" | "@_typeRef" | "@_outputLabel" | "@_aggregation" | "@_hitPolicy" | "@_id"
 >;
 
-export function DecisionTableRootCell(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadonly: boolean }) {
+export function DecisionTableRootCell(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadOnly: boolean }) {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const selectedObjectInfos = useMemo(
     () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
@@ -54,14 +54,14 @@ export function DecisionTableRootCell(props: { boxedExpressionIndex?: BoxedExpre
       <TextField
         type={TextFieldType.TEXT_INPUT}
         title={"Hit Policy"}
-        isReadonly={true}
+        isReadOnly={true}
         initialValue={cell["@_hitPolicy"] ?? ""}
       />
       {cell["@_hitPolicy"] === "COLLECT" && (
         <TextField
           type={TextFieldType.TEXT_INPUT}
           title={"Aggregation"}
-          isReadonly={true}
+          isReadOnly={true}
           initialValue={cell["@_aggregation"] ?? "<None>"}
         />
       )}
@@ -69,7 +69,7 @@ export function DecisionTableRootCell(props: { boxedExpressionIndex?: BoxedExpre
         type={TextFieldType.TEXT_INPUT}
         title={"Output Label"}
         placeholder={"Enter a output label..."}
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         initialValue={cell["@_outputLabel"] ?? ""}
         onChange={(newOutputLabel: string) =>
           updater((dmnObject) => {
@@ -79,7 +79,7 @@ export function DecisionTableRootCell(props: { boxedExpressionIndex?: BoxedExpre
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
       />
       <DescriptionField
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         initialValue={cell.description?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         onChange={(newDescription: string) =>

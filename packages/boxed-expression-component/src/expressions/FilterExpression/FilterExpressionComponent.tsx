@@ -168,6 +168,7 @@ export function FilterExpressionComponent({
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <BeeTable<ROWTYPE>
         isReadOnly={isReadOnly}
+        isEditableHeader={!isReadOnly}
         onColumnResizingWidthChange={onColumnResizingWidthChange}
         resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
         tableId={filterExpression["@_id"]}

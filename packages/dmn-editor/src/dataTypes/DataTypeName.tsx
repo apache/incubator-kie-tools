@@ -34,7 +34,7 @@ import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/a
 import { Normalized } from "../normalization/normalize";
 
 export function DataTypeName({
-  isReadonly,
+  isReadOnly,
   itemDefinition,
   isActive,
   editMode,
@@ -43,7 +43,7 @@ export function DataTypeName({
   onGetAllUniqueNames,
   enableAutoFocusing,
 }: {
-  isReadonly: boolean;
+  isReadOnly: boolean;
   editMode: "hover" | "double-click";
   itemDefinition: Normalized<DMN15__tItemDefinition>;
   isActive: boolean;
@@ -72,7 +72,7 @@ export function DataTypeName({
 
   const onRenamed = useCallback<OnInlineFeelNameRenamed>(
     (newName) => {
-      if (isReadonly) {
+      if (isReadOnly) {
         return;
       }
 
@@ -85,7 +85,7 @@ export function DataTypeName({
         });
       });
     },
-    [dmnEditorStoreApi, externalModelsByNamespace, isReadonly, itemDefinition]
+    [dmnEditorStoreApi, externalModelsByNamespace, isReadOnly, itemDefinition]
   );
 
   const _shouldCommitOnBlur = shouldCommitOnBlur ?? true; // Defaults to true
@@ -95,7 +95,7 @@ export function DataTypeName({
       {editMode === "hover" && (
         <InlineFeelNameInput
           isPlain={true}
-          isReadonly={isReadonly}
+          isReadOnly={isReadOnly}
           id={itemDefinition["@_id"]!}
           shouldCommitOnBlur={_shouldCommitOnBlur}
           name={feelQNameToDisplay.full}

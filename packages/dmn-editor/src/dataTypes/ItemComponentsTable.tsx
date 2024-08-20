@@ -74,7 +74,7 @@ const leftGutterForStructsInPxs =
 const rowPaddingRight = 16;
 
 export function ItemComponentsTable({
-  isReadonly,
+  isReadOnly,
   parent,
   editItemDefinition,
   addItemComponent,
@@ -82,7 +82,7 @@ export function ItemComponentsTable({
   allDataTypesById,
   setDropdownOpenFor,
 }: {
-  isReadonly: boolean;
+  isReadOnly: boolean;
   parent: DataType;
   editItemDefinition: EditItemDefinition;
   addItemComponent: AddItemComponent;
@@ -91,7 +91,6 @@ export function ItemComponentsTable({
   setDropdownOpenFor: React.Dispatch<React.SetStateAction<string | undefined>>;
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const settings = useSettings();
 
   const { externalModelsByNamespace } = useExternalModels();
   const expandedItemComponentIds = useDmnEditorStore((s) => s.dataTypesEditor.expandedItemComponentIds);
@@ -159,7 +158,7 @@ export function ItemComponentsTable({
         <FlexItem>
           <Title size={"md"} headingLevel={"h4"}>
             {`Properties in '${parent.itemDefinition["@_name"]}'`}
-            {!isReadonly && (
+            {!isReadOnly && (
               <Button
                 title={"Add item component (at the top)"}
                 variant={ButtonVariant.link}
@@ -182,7 +181,7 @@ export function ItemComponentsTable({
           <Button variant={ButtonVariant.link} onClick={collapseAll}>
             Collapse all
           </Button>
-          {!isReadonly && (
+          {!isReadOnly && (
             <Dropdown
               toggle={
                 <KebabToggle
@@ -233,7 +232,7 @@ export function ItemComponentsTable({
       </Flex>
       {flatTree.length <= 0 && (
         <div className={"kie-dmn-editor--data-type-properties-table--empty-state"}>
-          {isReadonly ? "None" : "None yet"}
+          {isReadOnly ? "None" : "None yet"}
         </div>
       )}
       {flatTree.length > 0 && (
@@ -372,7 +371,7 @@ export function ItemComponentsTable({
                             )}
                           </div>
                           <div style={{ width: `${addItemComponentButtonWidthInPxs}px` }}>
-                            {!isReadonly && isStruct(dt.itemDefinition) && (
+                            {!isReadOnly && isStruct(dt.itemDefinition) && (
                               <Button
                                 title={"Add item component"}
                                 variant={ButtonVariant.link}
@@ -397,7 +396,7 @@ export function ItemComponentsTable({
                               editMode={"hover"}
                               isActive={false}
                               itemDefinition={dt.itemDefinition}
-                              isReadonly={dt.namespace !== thisDmnsNamespace}
+                              isReadOnly={isReadOnly || dt.namespace !== thisDmnsNamespace}
                               onGetAllUniqueNames={() => allUniqueNamesAtLevel}
                             />
                           </div>
@@ -406,7 +405,7 @@ export function ItemComponentsTable({
                       <td>
                         <Switch
                           aria-label={"Is struct?"}
-                          isDisabled={isReadonly}
+                          isDisabled={isReadOnly}
                           isChecked={isStruct(dt.itemDefinition)}
                           onChange={(isChecked) => {
                             editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
@@ -428,7 +427,7 @@ export function ItemComponentsTable({
                         {!isStruct(dt.itemDefinition) && (
                           <TypeRefSelector
                             heightRef={dmnEditorRootElementRef}
-                            isDisabled={isReadonly}
+                            isDisabled={isReadOnly}
                             typeRef={resolveTypeRef({
                               typeRef: dt.itemDefinition.typeRef?.__$$text,
                               namespace: parent.namespace,
@@ -452,7 +451,7 @@ export function ItemComponentsTable({
                       <td>
                         <Switch
                           aria-label={"Is collection?"}
-                          isDisabled={isReadonly}
+                          isDisabled={isReadOnly}
                           isChecked={dt.itemDefinition["@_isCollection"] ?? false}
                           onChange={(isChecked) => {
                             editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
@@ -507,7 +506,7 @@ export function ItemComponentsTable({
                             </DropdownItem>,
                             <DropdownSeparator key="view-separator" />,
                             <React.Fragment key={"extract-to-top-level-fragment"}>
-                              {!isReadonly && (
+                              {!isReadOnly && (
                                 <>
                                   <DropdownItem
                                     key={"extract-to-top-level"}
@@ -539,7 +538,7 @@ export function ItemComponentsTable({
                                           itemDefinitions.unshift(newItemDefinitionCopy);
 
                                           // Creating a new type is fine, but only update the current type if it is not readOnly
-                                          if (!isReadonly) {
+                                          if (!isReadOnly) {
                                             itemDefinition["@_id"] = generateUuid();
                                             itemDefinition.typeRef = { __$$text: newItemDefinitionCopy["@_name"] };
                                             itemDefinition.itemComponent = undefined;
@@ -565,7 +564,7 @@ export function ItemComponentsTable({
                               Copy
                             </DropdownItem>,
                             <React.Fragment key={"cut-fragment"}>
-                              {!isReadonly && (
+                              {!isReadOnly && (
                                 <DropdownItem
                                   key={"cut-item"}
                                   icon={<CutIcon />}
@@ -583,7 +582,7 @@ export function ItemComponentsTable({
                               )}
                             </React.Fragment>,
                             <React.Fragment key={"remove-fragment"}>
-                              {!isReadonly && (
+                              {!isReadOnly && (
                                 <DropdownItem
                                   key={"remove-item"}
                                   icon={<TrashIcon />}
@@ -597,7 +596,7 @@ export function ItemComponentsTable({
                                 </DropdownItem>
                               )}
                             </React.Fragment>,
-                            !isReadonly && isStruct(dt.itemDefinition) ? (
+                            !isReadOnly && isStruct(dt.itemDefinition) ? (
                               <React.Fragment key="paste-property-fragment">
                                 <DropdownSeparator />
                                 <React.Fragment>
@@ -643,7 +642,7 @@ export function ItemComponentsTable({
               );
             })}
           </tbody>
-          {!isReadonly && (
+          {!isReadOnly && (
             <tfoot>
               <tr>
                 <td colSpan={5}>
