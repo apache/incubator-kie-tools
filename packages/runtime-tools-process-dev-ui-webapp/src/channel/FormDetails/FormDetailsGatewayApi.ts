@@ -26,11 +26,13 @@ export interface FormDetailsGatewayApi {
 }
 
 export class FormDetailsGatewayApiImpl implements FormDetailsGatewayApi {
+  constructor(private baseUrl: string) {}
+
   getFormContent(formName: string): Promise<Form> {
-    return getFormContent(formName);
+    return getFormContent(this.baseUrl, formName);
   }
 
   saveFormContent(formName: string, content: FormContent): Promise<void> {
-    return saveFormContent(formName, content);
+    return saveFormContent(this.baseUrl, formName, content);
   }
 }

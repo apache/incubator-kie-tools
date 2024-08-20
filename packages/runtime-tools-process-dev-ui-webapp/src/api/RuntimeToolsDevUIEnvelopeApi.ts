@@ -36,10 +36,12 @@ export interface User {
 export interface RuntimeToolsDevUIInitArgs {
   users?: User[];
   dataIndexUrl: string;
-  remoteKogitoAppUrl?: string;
+  quarkusAppOrigin: string;
+  quarkusAppRootPath?: string;
+  shouldReplaceQuarkusAppOriginWithWebappOrigin?: boolean;
   page: string;
+  devUIOrigin: string;
   devUIUrl: string;
-  openApiPath: string;
   isDataIndexAvailable: boolean;
   availablePages?: string[];
   customLabels: CustomLabels;
