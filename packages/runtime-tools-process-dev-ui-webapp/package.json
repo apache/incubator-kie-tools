@@ -78,7 +78,6 @@
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
     "@types/uuid": "^8.3.0",
-    "@types/webpack": "^4.41.33",
     "apollo-server-express": "^3.13.0",
     "body-parser": "^1.20.2",
     "concurrently": "^8.2.2",
@@ -113,7 +112,7 @@
     "url": "^0.11.3",
     "url-loader": "^4.1.1",
     "waait": "^1.0.5",
-    "webpack": "^5.88.2",
+    "webpack": "^5.92.1",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.9.0"
