@@ -26,28 +26,15 @@ import { CloudEventFormPage } from "../pages/Workflows/CloudEventFormPage";
 import { WorkflowFormPage } from "../pages/Workflows/WorkflowFormPage";
 import { routes } from "../routes";
 import { RuntimeToolsRoutesSwitch } from "./RuntimeToolsRoutesSwitch";
-import { RuntimeToolsWorkflowInstances } from "../runtimeTools/pages/RuntimeToolsWorkflowInstances";
-import { RuntimeToolsWorkflowDetails } from "../runtimeTools/pages/RuntimeToolsWorkflowDetails";
-import { RuntimeToolsWorkflowDefinitions } from "../runtimeTools/pages/RuntimeToolsWorkflowDefinitions";
 
 export function RoutesSwitch() {
   return (
     <Switch>
-      <Route path={routes.runtimeTools.workflowInstances.path({})}>
-        <RuntimeToolsWorkflowInstances />
-      </Route>
-      <Route path={routes.runtimeTools.workflowDetails.path({ workflowId: ":workflowId" })}>
-        {({ match }) => <RuntimeToolsWorkflowDetails workflowId={match!.params.workflowId!} />}
-      </Route>
       <Route path={routes.workflows.form.path({ workflowId: ":workflowId" })}>
         {({ match }) => <WorkflowFormPage workflowId={match!.params.workflowId!} />}
       </Route>
       <Route path={routes.workflows.cloudEvent.path({})}>
         <CloudEventFormPage />
-      </Route>
-      <Route path={routes.workflows.home.path({})}>
-        <Workflows />
-        {/* <RuntimeToolsWorkflowDefinitions /> */}
       </Route>
       <Route path={routes.runtimeTools.home.path({})}>
         <RuntimeToolsRoutesSwitch />
@@ -56,7 +43,7 @@ export function RoutesSwitch() {
         <ErrorPage kind={ErrorKind.APPDATA_JSON} errors={[`There was an error with the ${APPDATA_JSON_FILENAME}`]} />
       </Route>
       <Route path={routes.home.path({})}>
-        <Redirect to={routes.workflows.home.path({})} />
+        <Redirect to={routes.runtimeTools.runtimeToolsWorkflowDefinitions.path({})} />
       </Route>
       <Route component={NoMatchPage} />
     </Switch>

@@ -47,13 +47,13 @@ export function Workflows() {
 
   return (
     <BasePage>
-      {/* <PageSection variant={"light"}>
+      <PageSection variant={"light"}>
         <TextContent>
           <Text component={TextVariants.h1}>Workflows</Text>
         </TextContent>
-      </PageSection> */}
+      </PageSection>
       <RuntimeToolsWorkflowDefinitions />
-      {/* <PageSection>
+      <PageSection>
         <Toolbar>
           <ToolbarContent style={{ paddingLeft: "10px", paddingRight: "10px" }}>
             <ToolbarItem alignment={{ default: "alignLeft" }}>
@@ -124,7 +124,7 @@ export function Workflows() {
             />
           </Tbody>
         </Table>
-      </PageSection> */}
+      </PageSection>
     </BasePage>
   );
 }

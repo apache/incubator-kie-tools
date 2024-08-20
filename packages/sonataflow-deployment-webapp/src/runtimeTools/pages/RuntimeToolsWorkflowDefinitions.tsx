@@ -26,6 +26,7 @@ import { useHistory } from "react-router";
 import { routes } from "../../routes";
 import { WorkflowDefinition } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { CloudEventPageSource } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventForm";
+import { BasePage } from "../../pages/BasePage";
 
 const PAGE_TITLE = "Workflow Definitions";
 
@@ -68,24 +69,26 @@ export function RuntimeToolsWorkflowDefinitions() {
   );
 
   return (
-    <Page>
-      <PageSection variant={"light"}>
-        <TextContent>
-          <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
-          <Text component={TextVariants.p}>
-            Start new workflow instances from the SonataFlow service linked in your Runtime Tools settings.
-          </Text>
-        </TextContent>
-      </PageSection>
+    <BasePage>
+      <Page>
+        <PageSection variant={"light"}>
+          <TextContent>
+            <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
+            <Text component={TextVariants.p}>
+              Start new workflow instances from the SonataFlow service linked in your Runtime Tools settings.
+            </Text>
+          </TextContent>
+        </PageSection>
 
-      <PageSection isFilled aria-label="workflow-definitions-section">
-        <Card>
-          <WorkflowDefinitionListContainer
-            onOpenWorkflowForm={onOpenWorkflowForm}
-            onOpenTriggerCloudEventForWorkflow={onOpenTriggerCloudEventForWorkflow}
-          />
-        </Card>
-      </PageSection>
-    </Page>
+        <PageSection isFilled aria-label="workflow-definitions-section">
+          <Card>
+            <WorkflowDefinitionListContainer
+              onOpenWorkflowForm={onOpenWorkflowForm}
+              onOpenTriggerCloudEventForWorkflow={onOpenTriggerCloudEventForWorkflow}
+            />
+          </Card>
+        </PageSection>
+      </Page>
+    </BasePage>
   );
 }
