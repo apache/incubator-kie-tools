@@ -57,7 +57,7 @@ export const Readonly: Story = {
       __$$element: "list",
       "@_id": generateUuid(),
       "@_label": "Expression Name",
-      expression: [undefined!],
+      expression: [{ __$$element: "literalExpression", "@_id": generateUuid(), text: { __$$text: "read only" } }],
     },
     isResetSupportedOnRootExpression: true,
     isReadOnly: true,

@@ -77,6 +77,11 @@ export const Readonly: Story = {
             "@_id": generateUuid(),
             "@_name": INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
           },
+          expression: {
+            "@_id": generateUuid(),
+            __$$element: "literalExpression",
+            text: { __$$text: "read only" },
+          },
         },
       ],
       expression: {

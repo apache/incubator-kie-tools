@@ -104,4 +104,8 @@ export class ContextExpressionEntry {
   get variable() {
     return new NameAndDataTypeCell(this.locator.getByRole("cell").nth(0));
   }
+
+  public async getPopoverMenu() {
+    return this.locator.page().getByTestId("kie-tools--bee--expression-popover-menu");
+  }
 }

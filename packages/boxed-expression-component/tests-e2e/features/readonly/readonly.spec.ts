@@ -31,8 +31,9 @@ test.describe("Readonly", () => {
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Reset");
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Cut");
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Paste");
-
     await page.keyboard.press("Escape");
+
+    // Can change name/data type?
     await literalExpression.expressionHeaderCell.open();
     await expect(await literalExpression.expressionHeaderCell.getPopoverMenu()).not.toBeAttached();
   });
@@ -48,6 +49,8 @@ test.describe("Readonly", () => {
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Cut");
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Paste");
     await page.keyboard.press("Escape");
+
+    // Can change name/data type?
     await relationExpression.expressionHeaderCell.open();
     await expect(await relationExpression.expressionHeaderCell.getPopoverMenu()).not.toBeAttached();
 
@@ -71,8 +74,25 @@ test.describe("Readonly", () => {
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Cut");
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Paste");
     await page.keyboard.press("Escape");
+
+    // Can change name/data type?
     await contextExpression.expressionHeaderCell.open();
     await expect(await contextExpression.expressionHeaderCell.getPopoverMenu()).not.toBeAttached();
+
+    // Can add entry?
+    await contextExpression.entry(0).variable.content.hover();
+    await expect(contextExpression.entry(0).variable.content.locator("svg")).not.toBeAttached();
+
+    // Can change entry name/datatype?
+    await contextExpression.entry(0).variable.open();
+    await expect(await contextExpression.entry(0).getPopoverMenu()).not.toBeAttached();
+
+    // Can change entry expression?
+    expect(await contextExpression.entry(0).expression.asLiteral().canFill()).toBeFalsy();
+
+    // Can reset, cut, paste in entry expression?
+    await contextExpression.entry(0).expression.contextMenu.open();
+    await expect(await contextExpression.entry(0).expression.contextMenu.availableOptions()).toHaveCount(0);
   });
 
   test("Decision Table expression", async ({ stories, bee, page }) => {
@@ -86,8 +106,38 @@ test.describe("Readonly", () => {
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Cut");
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Paste");
     await page.keyboard.press("Escape");
+
+    // Hit table menu
+    await decisionTableExpression.hitTableSelector.cell.click();
+    await expect(await decisionTableExpression.hitTableSelector.menu.availableOptions()).not.toBeAttached();
+
+    // Can add input?
+    await decisionTableExpression.inputHeaderAt(0).content.hover();
+    await expect(decisionTableExpression.inputHeaderAt(0).content.locator("svg")).not.toBeAttached();
+
+    // Can add output?
+    await decisionTableExpression.outputHeaderAt(0).content.hover();
+    await expect(decisionTableExpression.outputHeaderAt(0).content.locator("svg")).not.toBeAttached();
+
+    // Can add annotation?
+    await decisionTableExpression.annotationHeaderAt(0).content.hover();
+    await expect(decisionTableExpression.annotationHeaderAt(0).content.locator("svg")).not.toBeAttached();
+
+    // Can change input?
+    await decisionTableExpression.inputHeaderAt(0).open();
+    await expect(await decisionTableExpression.inputHeaderAt(0).getPopoverMenu()).not.toBeAttached();
+
+    // Can change output?
+    await decisionTableExpression.outputHeaderAt(0).open();
+    await expect(await decisionTableExpression.outputHeaderAt(0).getPopoverMenu()).not.toBeAttached();
+
+    // Can change name/data type?
     await decisionTableExpression.expressionHeaderCell.open();
     await expect(await decisionTableExpression.expressionHeaderCell.getPopoverMenu()).not.toBeAttached();
+
+    // Can add rows?
+    await decisionTableExpression.cellAt({ row: 1, column: 1 }).content.hover();
+    await expect(decisionTableExpression.cellAt({ row: 1, column: 1 }).content.locator("svg")).not.toBeAttached();
   });
 
   test("List expression", async ({ stories, bee, page }) => {
@@ -101,8 +151,16 @@ test.describe("Readonly", () => {
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Cut");
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Paste");
     await page.keyboard.press("Escape");
+
     await listExpression.expressionHeaderCell.open();
     await expect(await listExpression.expressionHeaderCell.getPopoverMenu()).not.toBeAttached();
+
+    // Can add rows?
+    await listExpression.row(0).cell.content.hover();
+    await expect(listExpression.row(0).cell.content.locator("svg")).not.toBeAttached();
+
+    // Can change list expression?
+    expect(await listExpression.row(0).expression.asLiteral().canFill()).toBeFalsy();
   });
 
   test("Invocation expression", async ({ stories, bee, page }) => {
@@ -116,8 +174,24 @@ test.describe("Readonly", () => {
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Cut");
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Paste");
     await page.keyboard.press("Escape");
+
     await invocationExpression.expressionHeaderCell.open();
     await expect(await invocationExpression.expressionHeaderCell.getPopoverMenu()).not.toBeAttached();
+
+    // Can add rows?
+    await invocationExpression.parameter(0).descriptionCell.content.hover();
+    await expect(invocationExpression.parameter(0).descriptionCell.content.locator("svg")).not.toBeAttached();
+
+    // Can change invocation name?
+    await invocationExpression.invokedFunctionNameCell.click();
+    await expect(invocationExpression.invokedFunctionNameCell.getByRole("textbox")).not.toBeAttached();
+
+    // Can change list expression?
+    expect(await invocationExpression.parameter(0).expression.asLiteral().canFill()).toBeFalsy();
+
+    // Can reset, cut, paste in entry expression?
+    await invocationExpression.parameter(0).expression.contextMenu.open();
+    await expect(await invocationExpression.parameter(0).expression.contextMenu.availableOptions()).toHaveCount(0);
   });
 
   test("Conditional expression", async ({ stories, bee, page }) => {
@@ -131,8 +205,13 @@ test.describe("Readonly", () => {
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Cut");
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Paste");
     await page.keyboard.press("Escape");
+
     await conditionalExpression.expressionHeaderCell.open();
     await expect(await conditionalExpression.expressionHeaderCell.getPopoverMenu()).not.toBeAttached();
+
+    expect(await conditionalExpression.if.expression.asLiteral().canFill()).toBeFalsy();
+    expect(await conditionalExpression.then.expression.asLiteral().canFill()).toBeFalsy();
+    expect(await conditionalExpression.else.expression.asLiteral().canFill()).toBeFalsy();
   });
 
   test("For expression", async ({ stories, bee, page }) => {
@@ -146,8 +225,14 @@ test.describe("Readonly", () => {
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Cut");
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Paste");
     await page.keyboard.press("Escape");
+
     await forExpression.expressionHeaderCell.open();
     await expect(await forExpression.expressionHeaderCell.getPopoverMenu()).not.toBeAttached();
+
+    await forExpression.variable.content.click();
+    await expect(forExpression.variable.content.getByRole("textbox")).not.toBeAttached();
+    expect(await forExpression.in.expression.asLiteral().canFill()).toBeFalsy();
+    expect(await forExpression.return.expression.asLiteral().canFill()).toBeFalsy();
   });
 
   test("Every expression", async ({ stories, bee, page }) => {
@@ -161,8 +246,14 @@ test.describe("Readonly", () => {
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Cut");
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Paste");
     await page.keyboard.press("Escape");
+
     await everyExpression.expressionHeaderCell.open();
     await expect(await everyExpression.expressionHeaderCell.getPopoverMenu()).not.toBeAttached();
+
+    await everyExpression.variable.content.click();
+    await expect(everyExpression.variable.content.getByRole("textbox")).not.toBeAttached();
+    expect(await everyExpression.in.expression.asLiteral().canFill()).toBeFalsy();
+    expect(await everyExpression.satisfies.expression.asLiteral().canFill()).toBeFalsy();
   });
 
   test("Some expression", async ({ stories, bee, page }) => {
@@ -176,8 +267,14 @@ test.describe("Readonly", () => {
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Cut");
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Paste");
     await page.keyboard.press("Escape");
+
     await someExpression.expressionHeaderCell.open();
     await expect(await someExpression.expressionHeaderCell.getPopoverMenu()).not.toBeAttached();
+
+    await someExpression.variable.content.click();
+    await expect(someExpression.variable.content.getByRole("textbox")).not.toBeAttached();
+    expect(await someExpression.in.expression.asLiteral().canFill()).toBeFalsy();
+    expect(await someExpression.satisfies.expression.asLiteral().canFill()).toBeFalsy();
   });
 
   test("Filter expression", async ({ stories, bee, page }) => {
@@ -191,7 +288,11 @@ test.describe("Readonly", () => {
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Cut");
     await expect(await bee.expression.header.availableOptions()).not.toContainText("Paste");
     await page.keyboard.press("Escape");
+
     await filterExpression.expressionHeaderCell.open();
     await expect(await filterExpression.expressionHeaderCell.getPopoverMenu()).not.toBeAttached();
+
+    expect(await filterExpression.in.expression.asLiteral().canFill()).toBeFalsy();
+    expect(await filterExpression.match.expression.asLiteral().canFill()).toBeFalsy();
   });
 });

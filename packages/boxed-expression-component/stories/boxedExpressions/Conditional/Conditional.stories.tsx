@@ -70,15 +70,27 @@ export const Readonly: Story = {
       "@_label": "Expression Name",
       if: {
         "@_id": generateUuid(),
-        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+        expression: {
+          "@_id": generateUuid(),
+          __$$element: "literalExpression",
+          text: { __$$text: "readonly" },
+        },
       },
       then: {
         "@_id": generateUuid(),
-        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+        expression: {
+          "@_id": generateUuid(),
+          __$$element: "literalExpression",
+          text: { __$$text: '"true-readonly"' },
+        },
       },
       else: {
         "@_id": generateUuid(),
-        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+        expression: {
+          "@_id": generateUuid(),
+          __$$element: "literalExpression",
+          text: { __$$text: '"false-readonly"' },
+        },
       },
     },
     isReadOnly: true,

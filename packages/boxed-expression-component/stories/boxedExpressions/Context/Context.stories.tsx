@@ -79,7 +79,11 @@ export const Readonly: Story = {
             "@_name": "ContextEntry-1",
             "@_typeRef": undefined,
           },
-          expression: undefined!,
+          expression: {
+            "@_id": generateUuid(),
+            __$$element: "literalExpression",
+            text: { __$$text: "readonly text" },
+          },
         },
       ],
     },
