@@ -108,7 +108,7 @@ export class ContextExpressionEntry {
   public async getPopoverMenu() {
     return this.locator.page().getByTestId("kie-tools--bee--expression-popover-menu");
   }
-  
+
   get elementCell() {
     return this.childExpression.elementCell;
   }
