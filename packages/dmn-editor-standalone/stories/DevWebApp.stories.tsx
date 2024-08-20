@@ -19,7 +19,8 @@
 
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useArgs } from "@storybook/preview-api";
+import { useRef, useState, useEffect, useCallback, useMemo } from "react";
 import "@patternfly/react-core/dist/styles/base.css";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import * as DmnEditor from "../dist/index";
@@ -56,29 +57,37 @@ export type DevWebAppProps = {
   origin: string;
 };
 
-function DevWebApp(props: DevWebAppProps) {
+function DevWebApp(props?: Partial<DevWebAppProps>) {
   const [editCount, setEditCount] = useState(0);
+  const [args, updateArgs] = useArgs<DevWebAppProps>();
   const editorRef = useRef<DmnEditorStandaloneApi>(null);
   const editorContainerRef = useRef<HTMLDivElement>(null);
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const [isDroppingFile, setIsDroppingFile] = useState(false);
 
+  const resources = useMemo(() => {
+    const inputResources = props?.resources ?? args.resources;
+
+    return inputResources
+      ? new Map(
+          inputResources.map(([key, value]) => [
+            key,
+            { contentType: value.contentType, content: Promise.resolve(value.content) },
+          ])
+        )
+      : undefined;
+  }, [args.resources, props?.resources]);
+
   useEffect(() => {
     const editor = DmnEditor.open({
       container: editorContainerRef.current!,
       initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot:
-        props.initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
-      initialContent: Promise.resolve(props.initialContent),
-      readOnly: props.readOnly,
-      resources: props.resources
-        ? new Map(
-            props.resources.map(([key, value]) => [
-              key,
-              { contentType: value.contentType, content: Promise.resolve(value.content) },
-            ])
-          )
-        : undefined,
-      origin: props.origin ?? "*",
+        props?.initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot ??
+        args.initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
+      initialContent: Promise.resolve(props?.initialContent ?? args.initialContent),
+      readOnly: props?.readOnly ?? args.readOnly,
+      resources: resources,
+      origin: props?.origin ?? args.origin ?? "*",
     });
 
     editor.subscribeToContentChanges(() => setEditCount((currentCount) => currentCount + 1));
@@ -97,7 +106,7 @@ function DevWebApp(props: DevWebAppProps) {
       editor.close();
       setEditCount(0);
     };
-  }, [props]);
+  }, [args, props, resources]);
 
   const onUndo = useCallback(() => {
     setEditCount((currentCount) => {
@@ -249,7 +258,7 @@ type Story = StoryObj<typeof DevWebApp>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const WebApp: Story = {
-  render: (args) => DevWebApp(args),
+  render: (args) => DevWebApp(),
   args: {
     initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot: "path1/subpath/newModel1.dmn",
     initialContent: "",
