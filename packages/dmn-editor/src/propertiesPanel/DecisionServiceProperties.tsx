@@ -163,14 +163,17 @@ export function DecisionServiceProperties({
         </ClipboardCopy>
       </FormGroup>
 
-      <FormGroup label="Output decisions">
+      <FormGroup label="Output decisions" data-testid={"kie-tools--dmn-editor--decision-service-output-decisions"}>
         <DecisionServiceElementList
           decisionServiceNamespace={namespace}
           elements={decisionService.outputDecision}
           allDrgElementsByHref={allDrgElementsByHref}
         />
       </FormGroup>
-      <FormGroup label="Encapsulated decisions">
+      <FormGroup
+        label="Encapsulated decisions"
+        data-testid={"kie-tools--dmn-editor--decision-service-encapsulated-decisions"}
+      >
         <DecisionServiceElementList
           decisionServiceNamespace={namespace}
           elements={decisionService.encapsulatedDecision}
@@ -179,7 +182,7 @@ export function DecisionServiceProperties({
       </FormGroup>
 
       <Divider />
-      <FormGroup label="Input decisions">
+      <FormGroup label="Input decisions" data-testid={"kie-tools--dmn-editor--decision-service-input-decisions"}>
         <DraggableDecisionServiceElementList
           decisionServiceNamespace={namespace}
           elements={decisionService.inputDecision}
@@ -193,7 +196,7 @@ export function DecisionServiceProperties({
           isDisabled={isReadOnly}
         />
       </FormGroup>
-      <FormGroup label="Input data">
+      <FormGroup label="Input data" data-testid={"kie-tools--dmn-editor--decision-service-input-data"}>
         <DraggableDecisionServiceElementList
           decisionServiceNamespace={namespace}
           elements={decisionService.inputData}
@@ -437,7 +440,7 @@ function DecisionServiceEquivalentFunction({
 
   return (
     <Alert variant={AlertVariant.info} isInline title="Invoking this Decision Service in FEEL">
-      <p style={{ fontFamily: "monospace" }}>
+      <p data-testid={"kie-tools--dmn-editor--decision-service-feel"} style={{ fontFamily: "monospace" }}>
         {`${decisionService["@_name"]}(${buildFunctionArgList(
           decisionService.inputDecision,
           decisionService.inputData

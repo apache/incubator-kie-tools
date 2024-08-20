@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { test, expect } from "../../__fixtures__/base";
+import { expect, test } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { WidthConstants } from "../../__fixtures__/jsonModel";
 
@@ -1007,6 +1007,312 @@ test.describe("Resizing", () => {
       );
 
       await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-nested-resized-using-match.png");
+    });
+
+    test("should correct resize the 'in' cell when the 'match' is resized - Context", async ({
+      bee,
+      monaco,
+      page,
+      resizing,
+      stories,
+    }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1147",
+      });
+      await stories.openBoxedFilter();
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectContext();
+      await filterExpression.match.expression.asContext().entry(0).selectExpressionMenu.selectLiteral();
+      await resizing.resizeCell(
+        filterExpression.match.expression.asContext().entry(0).elementCell,
+        { x: 0, y: 0 },
+        { x: 150, y: 0 }
+      );
+
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-resized-match-context.png");
+    });
+
+    test("should correct resize the 'in' cell when the 'match' is resized - Decision Table", async ({
+      bee,
+      monaco,
+      page,
+      resizing,
+      stories,
+    }) => {
+      await stories.openBoxedFilter();
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectDecisionTable();
+
+      await resizing.resizeCell(
+        filterExpression.match.expression.asDecisionTable().cellAt({ row: 1, column: 1 }).content,
+        { x: 0, y: 0 },
+        { x: 150, y: 0 }
+      );
+
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-resized-match-decision-table.png");
+    });
+
+    test("should correct resize the 'in' cell when the 'match' is resized - List", async ({
+      bee,
+      monaco,
+      page,
+      resizing,
+      stories,
+    }) => {
+      await stories.openBoxedFilter();
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectList();
+      await filterExpression.match.expression.asList().row(0).selectExpressionMenu.selectLiteral();
+      await resizing.resizeCell(
+        filterExpression.match.expression.asList().row(0).elementCell,
+        { x: 0, y: 0 },
+        { x: 150, y: 0 }
+      );
+
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-resized-match-list.png");
+    });
+
+    test("should correct resize the 'in' cell when the 'match' is resized - Invocation", async ({
+      bee,
+      monaco,
+      page,
+      resizing,
+      stories,
+    }) => {
+      await stories.openBoxedFilter();
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectInvocation();
+
+      await filterExpression.match.expression.asInvocation().parameter(0).selectExpressionMenu.selectLiteral();
+
+      await resizing.resizeCell(
+        filterExpression.match.expression.asInvocation().parameter(0).elementCell,
+        { x: 0, y: 0 },
+        { x: 150, y: 0 }
+      );
+
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-resized-match-invocation.png");
+    });
+
+    test("should correct resize the 'in' cell when the 'match' is resized - Function", async ({
+      bee,
+      monaco,
+      page,
+      resizing,
+      stories,
+    }) => {
+      await stories.openBoxedFilter();
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectFunction();
+
+      await filterExpression.match.expression.asFunction().entry(0).selectExpressionMenu.selectLiteral();
+
+      await resizing.resizeCell(
+        filterExpression.match.expression.asFunction().entry(0).elementCell,
+        { x: 0, y: 0 },
+        { x: 150, y: 0 }
+      );
+
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-resized-match-function.png");
+    });
+
+    test("should correct resize the 'in' cell when the 'match' is resized - For", async ({
+      bee,
+      monaco,
+      page,
+      resizing,
+      stories,
+    }) => {
+      await stories.openBoxedFilter();
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectFor();
+
+      await filterExpression.match.expression.asFor().in.selectExpressionMenu.selectLiteral();
+
+      await resizing.resizeCell(
+        filterExpression.match.expression.asFor().in.elementCell,
+        { x: 0, y: 0 },
+        { x: 150, y: 0 }
+      );
+
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-resized-match-for.png");
+    });
+
+    test("should correct resize the 'in' cell when the 'match' is resized - Conditional", async ({
+      bee,
+      monaco,
+      page,
+      resizing,
+      stories,
+    }) => {
+      await stories.openBoxedFilter();
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectConditional();
+
+      await filterExpression.match.expression.asConditional().if.selectExpressionMenu.selectLiteral();
+
+      await resizing.resizeCell(
+        filterExpression.match.expression.asConditional().if.elementCell,
+        { x: 0, y: 0 },
+        { x: 150, y: 0 }
+      );
+
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-resized-match-conditional.png");
+    });
+
+    test("should correct resize the 'in' cell when the 'match' is resized - Every", async ({
+      bee,
+      monaco,
+      page,
+      resizing,
+      stories,
+    }) => {
+      await stories.openBoxedFilter();
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectEvery();
+
+      await filterExpression.match.expression.asEvery().in.selectExpressionMenu.selectLiteral();
+
+      await resizing.resizeCell(
+        filterExpression.match.expression.asEvery().in.elementCell,
+        { x: 0, y: 0 },
+        { x: 150, y: 0 }
+      );
+
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-resized-match-every.png");
+    });
+
+    test("should correct resize the 'in' cell when the 'match' is resized - Some", async ({
+      bee,
+      monaco,
+      page,
+      resizing,
+      stories,
+    }) => {
+      await stories.openBoxedFilter();
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectSome();
+
+      await filterExpression.match.expression.asSome().in.selectExpressionMenu.selectLiteral();
+
+      await resizing.resizeCell(
+        filterExpression.match.expression.asSome().in.elementCell,
+        { x: 0, y: 0 },
+        { x: 150, y: 0 }
+      );
+
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-resized-match-some.png");
+    });
+
+    test("should correct resize the 'in' cell when the 'match' is resized - Filter", async ({
+      bee,
+      monaco,
+      page,
+      resizing,
+      stories,
+    }) => {
+      await stories.openBoxedFilter();
+      const filterExpression = bee.expression.asFilter();
+      await filterExpression.match.selectExpressionMenu.selectFilter();
+
+      await filterExpression.match.expression.asFilter().match.selectExpressionMenu.selectLiteral();
+
+      await resizing.resizeCell(
+        filterExpression.match.expression.asFilter().match.elementCell,
+        { x: 0, y: 0 },
+        { x: 150, y: 0 }
+      );
+
+      // We're hovering the 'in' to make the width difference to the 'match' more clear
+      await filterExpression.in.hover();
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-filter-resized-match-filter.png");
+    });
+  });
+
+  test.describe("Conditional expression", async () => {
+    test("should resize a Conditional", async ({ bee, resizing, stories }) => {
+      await stories.openBoxedConditional();
+
+      await resizing.resizeCell(
+        bee.expression.asConditional().expressionHeaderCell.content,
+        { x: 0, y: 0 },
+        { x: 250, y: 0 }
+      );
+
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-conditionald-resized-using-root.png");
+    });
+
+    test("should resize a Conditional - if", async ({ bee, monaco, page, resizing, stories }) => {
+      await stories.openBoxedConditional();
+
+      await monaco.fill({
+        monacoParentLocator: page,
+        nth: 0,
+        content: "some pretty long text that will not fit the 'if' box",
+      });
+
+      await resizing.resizeCell(
+        bee.expression.asConditional().if.expression.asLiteral().content,
+        { x: 0, y: 0 },
+        { x: 250, y: 0 }
+      );
+
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-conditionald-resized-using-if.png");
+    });
+
+    test("should resize a Conditional - then", async ({ bee, monaco, page, resizing, stories }) => {
+      await stories.openBoxedConditional();
+
+      await monaco.fill({
+        monacoParentLocator: page,
+        nth: 1,
+        content: "some pretty long text that will not fit the 'then' box",
+      });
+
+      await resizing.resizeCell(
+        bee.expression.asConditional().then.expression.asLiteral().content,
+        { x: 0, y: 0 },
+        { x: 250, y: 0 }
+      );
+
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-conditionald-resized-using-then.png");
+    });
+
+    test("should resize a Conditional - else", async ({ bee, monaco, page, resizing, stories }) => {
+      await stories.openBoxedConditional();
+
+      await monaco.fill({
+        monacoParentLocator: page,
+        nth: 2,
+        content: "some pretty long text that will not fit the 'else' box",
+      });
+
+      await resizing.resizeCell(
+        bee.expression.asConditional().else.expression.asLiteral().content,
+        { x: 0, y: 0 },
+        { x: 250, y: 0 }
+      );
+
+      await expect(bee.getContainer()).toHaveScreenshot("boxed-conditionald-resized-using-else.png");
     });
   });
 });

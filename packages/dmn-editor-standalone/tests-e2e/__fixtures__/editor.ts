@@ -19,8 +19,7 @@
 
 import { Page, expect } from "@playwright/test";
 import { ContentType } from "@kie-tools-core/workspace/dist/api";
-import type { DmnEditorStandaloneApi } from "@kie-tools/dmn-editor-standalone/dist/DmnEditorStandaloneApi";
-import type { open } from "@kie-tools/dmn-editor-standalone/dist";
+import type { open, DmnEditorStandaloneApi } from "@kie-tools/dmn-editor-standalone/dist";
 import * as prettier from "prettier";
 
 export enum DefaultNodeName {

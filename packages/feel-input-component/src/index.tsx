@@ -19,3 +19,4 @@
 
 export * from "./FeelInput";
 export * from "./FeelConfigs";
+export * from "./themes/Element";

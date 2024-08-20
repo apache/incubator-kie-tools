@@ -25,3 +25,5 @@ export * from "./parser/FeelVariablesParser";
 export * from "./parser/VariablesRepository";
 export * from "./parser/ParsedExpression";
 export * from "./parser/FeelSymbol";
+export * from "./parser/BuiltInTypes";
+export * from "./parser/DataType";

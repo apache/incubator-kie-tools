@@ -399,6 +399,12 @@ interface OnlineDictionary extends ReferenceDictionary {
           title: string;
           message: string;
         };
+        disabled: {
+          title: string;
+          alert: string;
+          message: string;
+          helper: string;
+        };
         macos: {
           install: {
             download: string;

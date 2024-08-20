@@ -44,6 +44,7 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Expression } from "./VariableOccurrence";
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import { BuiltInTypes } from "./BuiltInTypes";
 
 type DmnLiteralExpression = { __$$element: "literalExpression" } & DMN15__tLiteralExpression;
 type DmnInvocation = { __$$element: "invocation" } & DMN15__tInvocation;
@@ -75,7 +76,17 @@ export class VariablesRepository {
   private currentUuidPrefix: string;
 
   constructor(dmnDefinitions: DmnDefinitions, externalDefinitions: Map<string, DmnLatestModel>) {
-    this.dataTypes = new Map<string, DataType>();
+    this.dataTypes = new Map([
+      [BuiltInTypes.Number.name, BuiltInTypes.Number],
+      [BuiltInTypes.Boolean.name, BuiltInTypes.Boolean],
+      [BuiltInTypes.String.name, BuiltInTypes.String],
+      [BuiltInTypes.DaysAndTimeDuration.name, BuiltInTypes.DaysAndTimeDuration],
+      [BuiltInTypes.DateAndTime.name, BuiltInTypes.DateAndTime],
+      [BuiltInTypes.YearsAndMonthsDuration.name, BuiltInTypes.YearsAndMonthsDuration],
+      [BuiltInTypes.Time.name, BuiltInTypes.Time],
+      [BuiltInTypes.Date.name, BuiltInTypes.Date],
+    ]);
+
     this.variablesIndexedByUuid = new Map<string, VariableContext>();
     this.expressionsIndexedByUuid = new Map<string, Expression>();
     this.loadImportedVariables(dmnDefinitions, externalDefinitions);
