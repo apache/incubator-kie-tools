@@ -47,7 +47,6 @@
     "apollo-link-context": "^1.0.20",
     "apollo-link-error": "1.1.13",
     "apollo-link-http": "1.5.17",
-    "axios": "^1.6.8",
     "graphql": "14.3.1",
     "history": "^4.9.0",
     "monaco-editor": "^0.39.0",
@@ -112,7 +111,7 @@
     "typescript": "^5.5.3",
     "url": "^0.11.3",
     "url-loader": "^4.1.1",
-    "webpack": "^5.88.2",
+    "webpack": "^5.92.1",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.9.0"
