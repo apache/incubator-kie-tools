@@ -380,6 +380,7 @@ export function DataTypePanel({
                     Collection constraint
                   </Title>
                   <Popover
+                    showClose={false}
                     isVisible={isCollectionConstraintPopoverOpen}
                     shouldClose={() => setIsCollectionConstraintPopoverOpen(false)}
                     headerContent="Collection Constraints (Type Constraint)"
@@ -412,6 +413,7 @@ export function DataTypePanel({
                     Collection item constraint
                   </Title>
                   <Popover
+                    showClose={false}
                     isVisible={isCollectionItemConstraintPopoverOpen}
                     shouldClose={() => setIsCollectionItemConstraintPopoverOpen(false)}
                     headerContent="Collection Item Constraints (Allowed Values)"

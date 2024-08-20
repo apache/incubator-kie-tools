@@ -1702,7 +1702,6 @@ export function TopRightCornerPanels({ availableHeight }: TopRightCornerPanelsPr
         )}
         <aside className={"kie-dmn-editor--overlays-panel-toggle"}>
           <Popover
-            // showClose={false}
             className={"kie-dmn-editor--overlay-panel-popover"}
             key={`${diagram.overlaysPanel.isOpen}`}
             aria-label="Overlays Panel"
@@ -1710,6 +1709,7 @@ export function TopRightCornerPanels({ availableHeight }: TopRightCornerPanelsPr
             enableFlip={false}
             flipBehavior={["bottom-end"]}
             hideOnOutsideClick={false}
+            showClose={false}
             isVisible={diagram.overlaysPanel.isOpen}
             bodyContent={<OverlaysPanel availableHeight={(availableHeight ?? 0) - AREA_ABOVE_OVERLAYS_PANEL} />}
           >

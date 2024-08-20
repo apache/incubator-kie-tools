@@ -170,6 +170,7 @@ export function DrdSelectorPanel() {
                     icon={<InputDataIcon padding={"2px 0 0 0"} height={22} />}
                     buttonId="classic-input-node-shape"
                     isSelected={isAlternativeInputDataShape === false}
+                    isDisabled={settings.isReadOnly}
                     onChange={() =>
                       dmnEditorStoreApi.setState((s) => {
                         const { diagram: drd } = addOrGetDrd({
@@ -192,6 +193,7 @@ export function DrdSelectorPanel() {
                     }
                     buttonId="alternative-input-node-shape"
                     isSelected={isAlternativeInputDataShape === true}
+                    isDisabled={settings.isReadOnly}
                     onChange={() =>
                       dmnEditorStoreApi.setState((s) => {
                         const { diagram: drd } = addOrGetDrd({

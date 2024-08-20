@@ -363,14 +363,16 @@ export const DecisionServiceNodeSvg = React.forwardRef<
     <>
       {!isCollapsed && (
         <>
-          <path
-            ref={dividerLineRef}
-            className={`kie-dmn-editor--node-decisionService-interactionDividerLine ${isReadOnly ? "readonly" : ""}`}
-            d={`M0,0 L${width},0`}
-            strokeWidth={DEFAULT_INTRACTION_WIDTH / 2}
-            style={{ stroke: "transparent !important" }}
-            transform={`translate(${dividerLineCoords.x},${dividerLineCoords.y})`}
-          />
+          {!isReadOnly && (
+            <path
+              ref={dividerLineRef}
+              className={`kie-dmn-editor--node-decisionService-interactionDividerLine`}
+              d={`M0,0 L${width},0`}
+              strokeWidth={DEFAULT_INTRACTION_WIDTH / 2}
+              style={{ stroke: "transparent !important" }}
+              transform={`translate(${dividerLineCoords.x},${dividerLineCoords.y})`}
+            />
+          )}
           <path
             d={`M0,0 L${width},0`}
             strokeLinejoin={"round"}

@@ -141,6 +141,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
                 state.diagram.openLhsPanel = DiagramLhsPanel.NONE;
               });
             }}
+            showClose={false}
             position={"bottom-start"}
             hideOnOutsideClick={false}
             bodyContent={<DrdSelectorPanel />}
