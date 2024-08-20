@@ -45,54 +45,137 @@ export const Base: Story = {
       "@_label": "Expression Name",
       if: {
         "@_id": generateUuid(),
-        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+        expression: {
+          __$$element: "literalExpression",
+          "@_id": generateUuid(),
+        },
       },
       then: {
         "@_id": generateUuid(),
-        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+        expression: {
+          __$$element: "literalExpression",
+          "@_id": generateUuid(),
+        },
       },
       else: {
         "@_id": generateUuid(),
-        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+        expression: {
+          __$$element: "literalExpression",
+          "@_id": generateUuid(),
+        },
       },
     },
   },
 };
 
-export const Readonly: Story = {
+export const MonthlyFee: Story = {
   render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
     expression: {
       __$$element: "conditional",
-      "@_id": generateUuid(),
-      "@_label": "Expression Name",
+      "@_id": "_D98FB35A-C6A5-4BA7-AD38-176D56A31983",
+      "@_label": "MonthlyFee",
+      "@_typeRef": "number",
       if: {
         "@_id": generateUuid(),
         expression: {
-          "@_id": generateUuid(),
           __$$element: "literalExpression",
-          text: { __$$text: "readonly" },
+          "@_id": generateUuid(),
+          text: { __$$text: 'ProductType = "STANDARD LOAN"' },
         },
       },
       then: {
         "@_id": generateUuid(),
         expression: {
-          "@_id": generateUuid(),
           __$$element: "literalExpression",
-          text: { __$$text: '"true-readonly"' },
+          "@_id": generateUuid(),
+          text: { __$$text: "20" },
         },
       },
       else: {
         "@_id": generateUuid(),
         expression: {
+          __$$element: "conditional",
           "@_id": generateUuid(),
-          __$$element: "literalExpression",
-          text: { __$$text: '"false-readonly"' },
+          if: {
+            "@_id": generateUuid(),
+            expression: {
+              __$$element: "literalExpression",
+              "@_id": "_D98FB35A-C6A5-4BA7-AD38-176D56A31983",
+              text: { __$$text: 'ProductType = "SPECIAL OFFERING"' },
+            },
+          },
+          then: {
+            "@_id": generateUuid(),
+            expression: {
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: "25" },
+            },
+          },
+          else: {
+            "@_id": generateUuid(),
+            expression: {
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: "null" },
+            },
+          },
         },
       },
     },
-    isReadOnly: true,
+    widthsById: {
+      "_D98FB35A-C6A5-4BA7-AD38-176D56A31983": [300],
+    },
+  },
+};
+
+export const Nested: Story = {
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
+  args: {
+    ...EmptyExpression.args,
+    expression: {
+      __$$element: "context",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+      contextEntry: [
+        {
+          "@_id": generateUuid(),
+          variable: {
+            "@_id": generateUuid(),
+            "@_name": "ContextEntry-1",
+          },
+          expression: {
+            __$$element: "conditional",
+            "@_id": generateUuid(),
+            "@_label": "Expression Name",
+            if: {
+              "@_id": generateUuid(),
+              expression: {
+                __$$element: "literalExpression",
+                "@_id": generateUuid(),
+              },
+            },
+            then: {
+              "@_id": generateUuid(),
+              expression: {
+                __$$element: "literalExpression",
+                "@_id": generateUuid(),
+              },
+            },
+            else: {
+              "@_id": generateUuid(),
+              expression: {
+                __$$element: "literalExpression",
+                "@_id": generateUuid(),
+              },
+            },
+          },
+        },
+      ],
+    },
   },
 };

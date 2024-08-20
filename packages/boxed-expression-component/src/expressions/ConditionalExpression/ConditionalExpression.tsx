@@ -228,7 +228,7 @@ export function ConditionalExpression({
 
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
-      <div>
+      <div data-testid={"kie-tools--boxed-expression-component---conditional"}>
         <BeeTable<ROWTYPE>
           isReadOnly={isReadOnly}
           isEditableHeader={!isReadOnly}

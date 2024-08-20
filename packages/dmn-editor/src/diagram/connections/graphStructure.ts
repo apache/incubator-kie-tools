@@ -60,6 +60,7 @@ export const graphStructure: Map<NodeType, Map<EdgeType, Set<NodeType>>> = new M
     NODE_TYPES.knowledgeSource,
     new Map<EdgeType, Set<NodeType>>([
       [EDGE_TYPES.authorityRequirement, new Set([NODE_TYPES.decision, NODE_TYPES.bkm, NODE_TYPES.knowledgeSource])],
+      [EDGE_TYPES.association, new Set([NODE_TYPES.textAnnotation])],
     ]),
   ],
   [
@@ -72,6 +73,7 @@ export const graphStructure: Map<NodeType, Map<EdgeType, Set<NodeType>>> = new M
           NODE_TYPES.decision,
           NODE_TYPES.bkm,
           NODE_TYPES.decisionService,
+          NODE_TYPES.group,
           NODE_TYPES.knowledgeSource,
         ]),
       ],

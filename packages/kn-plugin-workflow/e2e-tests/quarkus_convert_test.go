@@ -118,8 +118,6 @@ func RunQuarkusConvertTest(t *testing.T, cfgTestInputCreateConvert CfgTestInputC
 		"src/main/docker",
 		"src/main",
 		"src",
-		".mvn/wrapper",
-		".mvn",
 	}
 	VerifyDirectoriesExist(t, projectDir, expectedDirectories)
 	expectedFiles := []string{
@@ -129,15 +127,10 @@ func RunQuarkusConvertTest(t *testing.T, cfgTestInputCreateConvert CfgTestInputC
 		"src/main/docker/Dockerfile.jvm",
 		"src/main/docker/Dockerfile.native",
 		"src/main/docker/Dockerfile.native-micro",
-		".mvn/wrapper/.gitignore",
-		".mvn/wrapper/MavenWrapperDownloader.java",
-		".mvn/wrapper/maven-wrapper.properties",
 		".gitignore",
 		"pom.xml",
 		"README.md",
 		".dockerignore",
-		"mvnw.cmd",
-		"mvnw",
 	}
 	VerifyFilesExist(t, projectDir, expectedFiles)
 

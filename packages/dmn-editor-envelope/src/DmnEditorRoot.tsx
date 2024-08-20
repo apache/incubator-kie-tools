@@ -65,6 +65,7 @@ export type DmnEditorRootProps = {
   onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot: WorkspaceChannelApi["kogitoWorkspace_openFile"];
   workspaceRootAbsolutePosixPath: string;
   keyboardShortcutsService: KeyboardShortcutsService | undefined;
+  isReadOnly: boolean;
 };
 
 export type DmnEditorRootState = {
@@ -73,7 +74,7 @@ export type DmnEditorRootState = {
   pointer: number;
   openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
   externalModelsByNamespace: DmnEditor.ExternalModelsIndex;
-  readonly: boolean;
+  isReadOnly: boolean;
   externalModelsManagerDoneBootstraping: boolean;
   keyboardShortcutsRegisterIds: number[];
   keyboardShortcutsRegistred: boolean;
@@ -95,7 +96,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       stack: [],
       pointer: -1,
       openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: undefined,
-      readonly: true,
+      isReadOnly: props.isReadOnly,
       externalModelsManagerDoneBootstraping: false,
       keyboardShortcutsRegisterIds: [],
       keyboardShortcutsRegistred: false,
@@ -161,7 +162,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
           marshaller,
           openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
           stack: [...newStack, normalize(marshaller.parser.parse())],
-          readonly: false,
+          isReadOnly: prev.isReadOnly,
           pointer: newStack.length,
           externalModelsManagerDoneBootstraping: true,
         };
@@ -173,7 +174,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
           marshaller,
           openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
           stack: [normalize(marshaller.parser.parse())],
-          readonly: false,
+          isReadOnly: prev.isReadOnly,
           pointer: 0,
           externalModelsManagerDoneBootstraping: true,
         };
@@ -484,6 +485,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
               externalContextName={""}
               externalContextDescription={""}
               issueTrackerHref={""}
+              isReadOnly={this.state.isReadOnly}
               onModelChange={this.onModelChange}
               onRequestExternalModelsAvailableToInclude={this.onRequestExternalModelsAvailableToInclude}
               // (begin) All paths coming from inside the DmnEditor component are paths relative to the open file.

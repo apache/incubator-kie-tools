@@ -17,7 +17,10 @@
  * under the License.
  */
 
-import bpmnEnvelopeIndex from "!!raw-loader!../../dist/resources/bpmn/bpmnEnvelopeIndex.html";
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference path="../global.d.ts" /> // Required for bundling types
+
+import bpmnEnvelopeIndex from "../../dist/resources/bpmn/bpmnEnvelopeIndex.html";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import {
   ChannelType,
@@ -28,8 +31,8 @@ import { StandaloneEditorsEditorChannelApiImpl } from "../envelope/StandaloneEdi
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
 import { ContentType } from "@kie-tools-core/workspace/dist/api";
 import { createEditor, Editor, StandaloneEditorApi } from "../common/Editor";
-import { BpmnEditorEnvelopeApi } from "../../../kie-bc-editors/dist/bpmn/api";
 import { BpmnEditorDiagramApi } from "../jsdiagram/BpmnEditorDiagramApi";
+import { BpmnEditorEnvelopeApi } from "@kie-tools/kie-bc-editors/dist/bpmn/api";
 
 declare global {
   interface Window {

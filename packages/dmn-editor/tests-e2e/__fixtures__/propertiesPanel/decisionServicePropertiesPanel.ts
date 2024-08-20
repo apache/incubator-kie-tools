@@ -120,4 +120,76 @@ export class DecisionServicePropertiesPanel extends PropertiesPanelBase {
   public async setStrokeColor(args: { color: string }) {
     await this.shapeProperties.setStrokeColor({ ...args });
   }
+
+  public async getOutputDecisions() {
+    return (
+      await this.panel()
+        .getByTestId("kie-tools--dmn-editor--decision-service-output-decisions")
+        .getByRole("listitem")
+        .allTextContents()
+    ).map((content) => content.trim());
+  }
+
+  public async getEncapsulatedDecisions() {
+    return (
+      await this.panel()
+        .getByTestId("kie-tools--dmn-editor--decision-service-encapsulated-decisions")
+        .getByRole("listitem")
+        .allTextContents()
+    ).map((content) => content.trim());
+  }
+
+  public async getInputDecisions() {
+    return (
+      await this.panel()
+        .getByTestId("kie-tools--dmn-editor--decision-service-input-decisions")
+        .getByTestId("kie-tools--dmn-editor--draggable-children")
+        .allTextContents()
+    ).map((content) => content.trim());
+  }
+
+  public async moveInputDecision(args: { fromIndex: number; toIndex: number }) {
+    const target = this.panel()
+      .getByTestId("kie-tools--dmn-editor--decision-service-input-decisions")
+      .getByTestId("kie-tools--dmn-editor--draggable-icon")
+      .nth(args.toIndex);
+
+    const source = this.panel()
+      .getByTestId("kie-tools--dmn-editor--decision-service-input-decisions")
+      .getByTestId("kie-tools--dmn-editor--draggable-icon")
+      .nth(args.fromIndex);
+
+    await source.hover();
+    await source.dispatchEvent("dragstart");
+    await source.dragTo(target);
+  }
+
+  public async getInputData() {
+    return (
+      await this.panel()
+        .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
+        .getByTestId("kie-tools--dmn-editor--draggable-children")
+        .allTextContents()
+    ).map((content) => content.trim());
+  }
+
+  public async moveInputData(args: { fromIndex: number; toIndex: number }) {
+    const target = this.panel()
+      .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
+      .getByTestId("kie-tools--dmn-editor--draggable-icon")
+      .nth(args.toIndex);
+
+    const source = this.panel()
+      .getByTestId("kie-tools--dmn-editor--decision-service-input-data")
+      .getByTestId("kie-tools--dmn-editor--draggable-icon")
+      .nth(args.fromIndex);
+
+    await source.hover();
+    await source.dispatchEvent("dragstart");
+    await source.dragTo(target);
+  }
+
+  public async getInvokingThisDecisionServiceInFeel() {
+    return await this.panel().getByTestId("kie-tools--dmn-editor--decision-service-feel").textContent();
+  }
 }

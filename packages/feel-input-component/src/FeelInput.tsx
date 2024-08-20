@@ -285,7 +285,7 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
       return () => {
         disposable.dispose();
       };
-    }, [enabled, expressionId, feelVariables]);
+    }, [enabled, expressionId, feelVariables, semanticTokensProvider]);
 
     const config = useMemo(() => {
       return feelDefaultConfig(options);
