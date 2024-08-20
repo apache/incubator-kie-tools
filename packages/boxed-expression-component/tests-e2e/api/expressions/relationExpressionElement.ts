@@ -119,4 +119,9 @@ export class RelationExpressionElement {
       .locator("svg")
       .click();
   }
+
+  public getColumnHeaderAtIndex(index: number) {
+    // index+1 because we're ignoring the expression header cell
+    return this.locator.getByRole("columnheader").nth(index + 1);
+  }
 }

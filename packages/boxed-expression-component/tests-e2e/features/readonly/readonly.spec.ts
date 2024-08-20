@@ -50,6 +50,14 @@ test.describe("Readonly", () => {
     await page.keyboard.press("Escape");
     await relationExpression.expressionHeaderCell.open();
     await expect(await relationExpression.expressionHeaderCell.getPopoverMenu()).not.toBeAttached();
+
+    // Can add rows?
+    await relationExpression.cellAt({ column: 0, row: 1 }).content.hover();
+    await expect(relationExpression.cellAt({ column: 0, row: 1 }).content.locator("svg")).not.toBeAttached();
+
+    // Can add columns?
+    await relationExpression.getColumnHeaderAtIndex(0).hover();
+    await expect(relationExpression.getColumnHeaderAtIndex(0).locator("svg")).not.toBeAttached();
   });
 
   test("Context expression", async ({ stories, bee, page }) => {
