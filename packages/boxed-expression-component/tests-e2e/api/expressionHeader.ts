@@ -45,4 +45,8 @@ export class ExpressionHeader {
     await this.get().click();
     await this.page.getByRole("menuitem", { name: "Reset" }).click();
   }
+
+  public async availableOptions() {
+    return this.page.getByRole("menuitem");
+  }
 }

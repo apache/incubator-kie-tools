@@ -132,6 +132,10 @@ export class ContextMenu {
     await this.locator.nth(0).click({ button: "right" });
   }
 
+  public async availableOptions() {
+    return this.locator.page().getByTestId("kie-tools--bee--context-menu-container").getByRole("menuitem");
+  }
+
   public heading(sectionName: string) {
     return this.locator.page().getByRole("heading", { name: sectionName });
   }

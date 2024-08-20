@@ -647,9 +647,10 @@ export function DecisionTableExpression({
         selectedBuiltInAggregator={getAggregationKey(decisionTableExpression["@_aggregation"])}
         onHitPolicySelected={onHitPolicySelect}
         onBuiltInAggregatorSelected={onBuiltInAggregatorSelect}
+        isReadOnly={isReadOnly ?? false}
       />
     ),
-    [decisionTableExpression, getAggregationKey, onBuiltInAggregatorSelect, onHitPolicySelect]
+    [decisionTableExpression, getAggregationKey, isReadOnly, onBuiltInAggregatorSelect, onHitPolicySelect]
   );
 
   const onRowAdded = useCallback(

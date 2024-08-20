@@ -44,4 +44,24 @@ export class Monaco {
     await this.page.keyboard.press("Home");
     await this.page.keyboard.press("Enter");
   }
+
+  public async canFill(args: { monacoParentLocator: Locator | Page; nth?: number }) {
+    if (args.nth !== undefined) {
+      await args.monacoParentLocator.getByTestId("monaco-container").nth(args.nth).dblclick();
+    } else {
+      await args.monacoParentLocator.getByTestId("monaco-container").dblclick();
+    }
+
+    if (await this.page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").isVisible()) {
+      return true;
+    }
+
+    // Try to fill by typing instead of double-click
+    if (args.nth !== undefined) {
+      await args.monacoParentLocator.getByTestId("monaco-container").nth(args.nth).press("KeyA");
+    } else {
+      await args.monacoParentLocator.getByTestId("monaco-container").press("KeyA");
+    }
+    return await this.page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").isVisible();
+  }
 }

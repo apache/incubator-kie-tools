@@ -311,6 +311,10 @@ export class HitTableSelector {
 export class HitTableMenu {
   constructor(private locator: Locator) {}
 
+  public async availableOptions() {
+    return this.locator.page().getByTestId("kie-tools--bee--hit-policy-header").getByRole("menuitem");
+  }
+
   public option(optionName: string) {
     return this.locator.page().getByTestId("kie-tools--bee--hit-policy-header").getByRole("menuitem", {
       name: optionName,

@@ -152,6 +152,7 @@ export const PopoverMenu = React.forwardRef(
       <Popover
         id={"menu-selector"}
         data-ouia-component-id={"expression-popover-menu"}
+        data-testid={"kie-tools--bee--expression-popover-menu"}
         className={`popover-menu-selector ${className ?? ""}`}
         hasAutoWidth={hasAutoWidth}
         minWidth={minWidth}

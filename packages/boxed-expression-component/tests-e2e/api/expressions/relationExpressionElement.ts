@@ -28,11 +28,11 @@ export class RelationExpressionElement {
     private monaco: Monaco
   ) {}
 
-  public cellAt(param: { column: number; row: number }) {
+  public cellAt(coordinate: { column: number; row: number }) {
     return new ExpressionCell(
       this.locator
-        .getByTestId(`kie-tools--bee--expression-row-${param.row - 1}`)
-        .getByTestId(`kie-tools--bee--expression-column-${param.column}`),
+        .getByTestId(`kie-tools--bee--expression-row-${coordinate.row - 1}`)
+        .getByTestId(`kie-tools--bee--expression-column-${coordinate.column}`),
       this.monaco
     );
   }
@@ -118,5 +118,10 @@ export class RelationExpressionElement {
       .nth(index + 1)
       .locator("svg")
       .click();
+  }
+
+  public getColumnHeaderAtIndex(index: number) {
+    // index+1 because we're ignoring the expression header cell
+    return this.locator.getByRole("columnheader").nth(index + 1);
   }
 }
