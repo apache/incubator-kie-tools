@@ -39,7 +39,6 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const overlayPanelContainer = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
-    console.log({ availableHeight });
     if (overlayPanelContainer.current && availableHeight) {
       const bounds = overlayPanelContainer.current.getBoundingClientRect();
       const currentHeight = bounds.height;
