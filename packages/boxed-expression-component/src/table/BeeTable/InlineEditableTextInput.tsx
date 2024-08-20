@@ -30,6 +30,7 @@ export interface InlineEditableTextInputProps {
   setActiveCellEditing: (isEditing: boolean) => void;
   rowIndex: number;
   columnIndex: number;
+  isReadOnly: boolean;
 }
 
 export const InlineEditableTextInput: React.FunctionComponent<InlineEditableTextInputProps> = ({
@@ -38,6 +39,7 @@ export const InlineEditableTextInput: React.FunctionComponent<InlineEditableText
   value,
   setActiveCellEditing,
   onChange,
+  isReadOnly,
 }) => {
   const { i18n } = useBoxedExpressionEditorI18n();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -91,11 +93,11 @@ export const InlineEditableTextInput: React.FunctionComponent<InlineEditableText
     }
   });
 
-  return !isEditing ? (
+  return !isEditing || isReadOnly ? (
     <p
       className={"inline-editable-preview pf-u-text-truncate"}
       style={{ ...textStyle, width: "100%" }}
-      onClick={onLabelClick}
+      onClick={isReadOnly ? undefined : onLabelClick}
     >
       {value || i18n.enterText}
     </p>

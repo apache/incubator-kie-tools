@@ -188,12 +188,12 @@ export function BeeTableEditableCellContent({
       }
 
       // This is used to start editing a cell without being in edit mode.
-      if (isActive && !isEditing && isEditModeTriggeringKey(e)) {
+      if (!isReadOnly && isActive && !isEditing && isEditModeTriggeringKey(e)) {
         setEditingValue("");
         setEditing(true);
       }
     },
-    [isActive, isEditing, setEditing]
+    [isActive, isEditing, isReadOnly, setEditing]
   );
 
   return (

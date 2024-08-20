@@ -228,9 +228,9 @@ export function BeeTableTd<R extends object>({
   return (
     <BeeTableCoordinatesContextProvider coordinates={coordinates}>
       <td
-        onMouseDown={isReadOnly ? undefined : onMouseDown}
+        onMouseDown={onMouseDown}
         onDoubleClick={isReadOnly ? undefined : onDoubleClick}
-        onClick={isReadOnly ? undefined : onClick}
+        onClick={onClick}
         onKeyUp={isReadOnly ? undefined : onKeyUp}
         ref={tdRef}
         tabIndex={-1}

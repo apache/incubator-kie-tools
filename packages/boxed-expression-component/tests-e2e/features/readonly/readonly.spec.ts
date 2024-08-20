@@ -92,7 +92,11 @@ test.describe("Readonly", () => {
 
     // Can reset, cut, paste in entry expression?
     await contextExpression.entry(0).expression.contextMenu.open();
-    await expect(await contextExpression.entry(0).expression.contextMenu.availableOptions()).toHaveCount(0);
+    await expect(await contextExpression.entry(0).expression.contextMenu.availableOptions()).toHaveCount(1);
+    await expect(await contextExpression.entry(0).expression.contextMenu.availableOptions()).toContainText("Copy");
+    await expect(await contextExpression.entry(0).expression.contextMenu.availableOptions()).not.toContainText("Reset");
+    await expect(await contextExpression.entry(0).expression.contextMenu.availableOptions()).not.toContainText("Cut");
+    await expect(await contextExpression.entry(0).expression.contextMenu.availableOptions()).not.toContainText("Paste");
   });
 
   test("Decision Table expression", async ({ stories, bee, page }) => {
@@ -191,7 +195,19 @@ test.describe("Readonly", () => {
 
     // Can reset, cut, paste in entry expression?
     await invocationExpression.parameter(0).expression.contextMenu.open();
-    await expect(await invocationExpression.parameter(0).expression.contextMenu.availableOptions()).toHaveCount(0);
+    await expect(await invocationExpression.parameter(0).expression.contextMenu.availableOptions()).toHaveCount(1);
+    await expect(await invocationExpression.parameter(0).expression.contextMenu.availableOptions()).toContainText(
+      "Copy"
+    );
+    await expect(await invocationExpression.parameter(0).expression.contextMenu.availableOptions()).not.toContainText(
+      "Reset"
+    );
+    await expect(await invocationExpression.parameter(0).expression.contextMenu.availableOptions()).not.toContainText(
+      "Cut"
+    );
+    await expect(await invocationExpression.parameter(0).expression.contextMenu.availableOptions()).not.toContainText(
+      "Paste"
+    );
   });
 
   test("Conditional expression", async ({ stories, bee, page }) => {
