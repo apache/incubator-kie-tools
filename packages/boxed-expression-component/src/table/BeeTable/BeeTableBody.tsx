@@ -173,6 +173,7 @@ export function BeeTableBody<R extends object>({
                 isLastColumn={false}
                 isEmptyCell={true}
                 resizerStopBehavior={resizerStopBehavior}
+                isReadOnly={isReadOnly}
               />
             </BeeTableCoordinatesContextProvider>
           )}
@@ -193,6 +194,7 @@ export function BeeTableBody<R extends object>({
                   isEmptyCell={false}
                   resizerStopBehavior={resizerStopBehavior}
                   lastColumnMinWidth={columnIndex === additionalRow.length - 1 ? lastColumnMinWidth : undefined}
+                  isReadOnly={isReadOnly}
                 >
                   {elem}
                 </BeeTableTdForAdditionalRow>

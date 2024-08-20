@@ -247,6 +247,7 @@ export function BeeTableHeader<R extends object>({
                           columnIndex
                         )({ "@_label": value, "@_typeRef": column.dataType });
                       }}
+                      isReadOnly={isReadOnly}
                     />
                   ) : (
                     <p

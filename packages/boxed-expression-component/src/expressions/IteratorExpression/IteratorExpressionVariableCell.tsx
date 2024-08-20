@@ -43,7 +43,7 @@ export function IteratorExpressionVariableCell({
 }: IteratorExpressionVariableCellProps) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
   const { isActive } = useBeeTableSelectableCellRef(rowIndex ?? 0, columnIndex ?? 0, undefined);
-  const { beeGwtService } = useBoxedExpressionEditor();
+  const { beeGwtService, isReadOnly } = useBoxedExpressionEditor();
 
   // Selecting the context result cell should be the parent data type
   useEffect(() => {
@@ -78,6 +78,7 @@ export function IteratorExpressionVariableCell({
         setActiveCellEditing={(value) => {
           beeTableRef.current?.setActiveCellEditing(value);
         }}
+        isReadOnly={isReadOnly ?? false}
       />
     </div>
   );

@@ -240,7 +240,8 @@ export function BeeTableThResizable<R extends object>({
       {/* fillingResizingWidth. I.e., Flexible or parent columns. */}
       {getFlatListOfSubColumns(column).some((c) => !(c.isWidthConstant ?? false)) &&
         (isFlexbileColumn(column) || isParentColumn(column)) &&
-        (hoverInfo.isHovered || (fillingResizingWidth?.isPivoting && isResizing)) && (
+        (hoverInfo.isHovered || (fillingResizingWidth?.isPivoting && isResizing)) &&
+        !isReadOnly && (
           <Resizer
             minWidth={minFillingWidth}
             width={fillingWidth}

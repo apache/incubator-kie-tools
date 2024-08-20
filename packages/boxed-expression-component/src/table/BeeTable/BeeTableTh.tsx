@@ -194,9 +194,9 @@ export function BeeTableTh<R extends object>({
         {...thProps}
         style={{ ...thProps.style, display: "table-cell" }}
         ref={thRef}
-        onMouseDown={isReadOnly ? undefined : onMouseDown}
+        onMouseDown={onMouseDown}
         onDoubleClick={isReadOnly ? undefined : onDoubleClick}
-        onClick={isReadOnly ? undefined : onClick}
+        onClick={onClick}
         onKeyUp={isReadOnly ? undefined : onHeaderKeyUp}
         className={`${className} ${cssClasses}`}
         tabIndex={-1}
