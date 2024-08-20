@@ -90,13 +90,7 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
 
     @Property
     @FormField(
-            afterElement = "namespace",
-            type = ComboBoxFieldType.class
-    )
-
-    @Property
-    @FormField(
-            afterElement = "decisionName"
+            afterElement = "namespace"
     )
     @Valid
     private DmnModelName dmnModelName;
@@ -157,7 +151,6 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
         this.ruleFlowGroup = ruleFlowGroup;
         this.fileName = fileName;
         this.namespace = namespace;
-        this.decisionName = decisionName;
         this.dmnModelName = dmnModelName;
         this.onEntryAction = onEntryAction;
         this.onExitAction = onExitAction;

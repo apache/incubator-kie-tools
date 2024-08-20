@@ -237,7 +237,6 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
                 ruleFlowGroup,
                 fileName,
                 namespace,
-                decisionName,
                 dmnModelName,
                 new OnEntryAction(p.getOnEntryAction()),
                 new OnExitAction(p.getOnExitAction()),
