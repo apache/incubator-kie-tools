@@ -84,15 +84,11 @@ public class RuleLanguageFilterProvider implements StunnerFormElementFilterProvi
                 new FormElementFilter(BusinessRuleTask.EXECUTION_SET + "."
                                               + BusinessRuleTaskExecutionSet.NAMESPACE, dmnPredicate);
 
-        final FormElementFilter decisionNameFilter =
-                new FormElementFilter(BusinessRuleTask.EXECUTION_SET + "." +
-                                              BusinessRuleTaskExecutionSet.DECISON_NAME, dmnPredicate);
-
         final FormElementFilter dmnModelNameFilter =
                 new FormElementFilter(BusinessRuleTask.EXECUTION_SET + "." +
                                               BusinessRuleTaskExecutionSet.DMN_MODEL_NAME, dmnPredicate);
 
-        return Arrays.asList(ruleFlowGroupFilter, fileNameFilter, namespaceFilter, decisionNameFilter, dmnModelNameFilter);
+        return Arrays.asList(ruleFlowGroupFilter, fileNameFilter, namespaceFilter, dmnModelNameFilter);
     }
 
     void onFormFieldChanged(@Observes FormFieldChanged formFieldChanged) {
