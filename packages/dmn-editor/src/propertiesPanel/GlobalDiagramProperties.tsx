@@ -32,6 +32,7 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export function GlobalDiagramProperties() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
@@ -39,6 +40,7 @@ export function GlobalDiagramProperties() {
   const [isIdNamespaceSectionExpanded, setIdNamespaceSectionExpanded] = useState<boolean>(true);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const settings = useSettings();
 
   const [regenerateIdConfirmationModal, setRegenerateIdConfirmationModal] = useState(false);
 
@@ -78,7 +80,7 @@ export function GlobalDiagramProperties() {
                   isPlain={false}
                   id={thisDmn.model.definitions["@_id"]!}
                   name={thisDmn.model.definitions["@_name"]}
-                  isReadonly={false}
+                  isReadOnly={settings.isReadOnly}
                   shouldCommitOnBlur={true}
                   className={"pf-c-form-control"}
                   onRenamed={(newName) => {
@@ -93,7 +95,7 @@ export function GlobalDiagramProperties() {
                 <TextArea
                   aria-label={"Description"}
                   type={"text"}
-                  isDisabled={false}
+                  isDisabled={settings.isReadOnly}
                   style={{ resize: "vertical", minHeight: "40px" }}
                   rows={6}
                   placeholder={"Enter a description..."}
@@ -110,7 +112,7 @@ export function GlobalDiagramProperties() {
                 <TextInput
                   aria-label={"Expression language"}
                   type={"text"}
-                  isDisabled={false}
+                  isDisabled={settings.isReadOnly}
                   placeholder={"Enter an expression language..."}
                   value={thisDmn.model.definitions["@_expressionLanguage"]}
                   onChange={(newExprLang) =>
@@ -137,6 +139,7 @@ export function GlobalDiagramProperties() {
               <Button
                 title={"Re-generate ID & Namespace"}
                 variant={ButtonVariant.plain}
+                isDisabled={settings.isReadOnly}
                 onClick={() => setRegenerateIdConfirmationModal(true)}
                 style={{ paddingBottom: 0, paddingTop: 0 }}
               >
@@ -152,7 +155,7 @@ export function GlobalDiagramProperties() {
               <FormGroup label="ID">
                 <ClipboardCopy
                   placeholder="Enter a diagram ID..."
-                  isReadOnly={false}
+                  isReadOnly={settings.isReadOnly}
                   hoverTip="Copy"
                   clickTip="Copied"
                   onChange={(newId) => {
@@ -168,7 +171,7 @@ export function GlobalDiagramProperties() {
               <FormGroup label="Namespace">
                 <ClipboardCopy
                   placeholder="Enter a diagram Namespace..."
-                  isReadOnly={false}
+                  isReadOnly={settings.isReadOnly}
                   hoverTip="Copy"
                   clickTip="Copied"
                   onChange={(newNamespace) => {
@@ -193,6 +196,7 @@ export function GlobalDiagramProperties() {
           <Button
             key="confirm"
             variant={ButtonVariant.primary}
+            isDisabled={settings.isReadOnly}
             onClick={() => {
               setRegenerateIdConfirmationModal(false);
               dmnEditorStoreApi.setState((state) => {

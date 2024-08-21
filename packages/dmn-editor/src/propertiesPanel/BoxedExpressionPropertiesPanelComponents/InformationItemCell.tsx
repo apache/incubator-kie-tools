@@ -34,7 +34,7 @@ import { Normalized } from "../../normalization/normalize";
 
 export function InformationItemCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
-  isReadonly: boolean;
+  isReadOnly: boolean;
   onNameChange: (newName: string) => void;
   onTypeRefChange: (newTypeRef: string) => void;
   onDescriptionChange: (newDescription: string) => void;
@@ -72,14 +72,14 @@ export function InformationItemCell(props: {
         </ClipboardCopy>
       </FormGroup>
       <NameField
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         id={cell["@_id"]!}
         name={cell["@_name"] ?? ""}
         getAllUniqueNames={getAllUniqueNames}
         onChange={props.onNameChange}
       />
       <TypeRefField
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         typeRef={cell["@_typeRef"]}
         dmnEditorRootElementRef={dmnEditorRootElementRef}
         onChange={props.onTypeRefChange}
@@ -87,7 +87,7 @@ export function InformationItemCell(props: {
       {itemDefinition && (
         <FormGroup label="Constraint">
           <ConstraintsFromTypeConstraintAttribute
-            isReadonly={true}
+            isReadOnly={true}
             itemDefinition={itemDefinition}
             editItemDefinition={() => {}}
             renderOnPropertiesPanel={true}
@@ -96,7 +96,7 @@ export function InformationItemCell(props: {
         </FormGroup>
       )}
       <DescriptionField
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         initialValue={cell.description?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         onChange={props.onDescriptionChange}

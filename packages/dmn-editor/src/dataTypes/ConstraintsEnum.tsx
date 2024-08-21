@@ -32,7 +32,7 @@ export const ENUM_SEPARATOR = ",";
 
 export function ConstraintsEnum({
   id,
-  isReadonly,
+  isReadOnly,
   value,
   expressionValue,
   type,
@@ -114,12 +114,12 @@ export function ConstraintsEnum({
           index={index}
           style={{ alignItems: "center" }}
           handlerStyle={{ margin: "0px 10px" }}
-          isDisabled={isReadonly || isDisabled}
+          isDisabled={isReadOnly || isDisabled}
         >
           <li style={{ marginLeft: "20px", listStyleType: "initial" }}>
             <EnumElement
               id={`enum-element-${index}`}
-              isDisabled={isReadonly || isDisabled}
+              isDisabled={isReadOnly || isDisabled}
               initialValue={typeHelper.recover(value) ?? ""}
               onChange={(newValue) => onChangeItem(newValue, index)}
               onRemove={() => onRemove(index)}
@@ -140,7 +140,7 @@ export function ConstraintsEnum({
         </Draggable>
       );
     },
-    [focusOwner, isDisabled, isItemValid, isReadonly, onAdd, onChangeItem, onRemove, typeHelper, valuesUuid]
+    [focusOwner, isDisabled, isItemValid, isReadOnly, onAdd, onChangeItem, onRemove, typeHelper, valuesUuid]
   );
 
   return (
@@ -161,12 +161,12 @@ export function ConstraintsEnum({
               onDragEnd={onDragEnd}
               values={enumValues}
               draggableItem={draggableItem}
-              isDisabled={isDisabled || isReadonly}
+              isDisabled={isDisabled || isReadOnly}
             />
           </ul>
         </div>
       </div>
-      {!(isDisabled || isReadonly) && (
+      {!(isDisabled || isReadOnly) && (
         <>
           <Button
             title={"Add enum value"}
@@ -183,7 +183,7 @@ export function ConstraintsEnum({
         <>
           <br />
           <br />
-          <ConstraintsExpression id={id} isReadonly={true} value={expressionValue ?? ""} type={type} />
+          <ConstraintsExpression id={id} isReadOnly={true} value={expressionValue ?? ""} type={type} />
         </>
       )}
     </div>
@@ -240,6 +240,7 @@ function EnumElement({
         title={"Remove enum value"}
         ref={removeButtonRef}
         style={{ opacity: hovered ? "100%" : "0" }}
+        isDisabled={isDisabled}
         className={"kie-dmn-editor--documentation-link--row-remove"}
         variant={"plain"}
         icon={<TimesIcon />}

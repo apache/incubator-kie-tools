@@ -55,6 +55,7 @@ export interface BeeTableThResizableProps<R extends object> {
   onGetWidthToFitData: () => number;
   forwardRef?: React.RefObject<HTMLTableCellElement>;
   shouldRenderRowIndexColumn: boolean;
+  isReadOnly: boolean;
 }
 
 export function BeeTableThResizable<R extends object>({
@@ -76,6 +77,7 @@ export function BeeTableThResizable<R extends object>({
   lastColumnMinWidth,
   onGetWidthToFitData,
   forwardRef,
+  isReadOnly,
 }: BeeTableThResizableProps<R>) {
   const columnKey = useMemo(() => getColumnKey(column), [column, getColumnKey]);
 
@@ -178,6 +180,7 @@ export function BeeTableThResizable<R extends object>({
     <BeeTableTh<R>
       forwardRef={forwardRef}
       className={cssClasses}
+      isReadOnly={isReadOnly}
       thProps={{
         ...column.getHeaderProps(),
         style: {
@@ -204,7 +207,7 @@ export function BeeTableThResizable<R extends object>({
       column={column}
     >
       <div className="header-cell" data-ouia-component-type="expression-column-header" ref={headerCellRef}>
-        {column.dataType && isEditableHeader ? (
+        {!isReadOnly && column.dataType && isEditableHeader ? (
           <ExpressionVariableMenu
             position={PopoverPosition.bottom}
             selectedExpressionName={column.label}
@@ -219,7 +222,8 @@ export function BeeTableThResizable<R extends object>({
         )}
       </div>
       {/* resizingWidth. I.e., Exact-sized columns. */}
-      {!column.isWidthConstant &&
+      {!isReadOnly &&
+        !column.isWidthConstant &&
         column.width &&
         resizingWidth &&
         (hoverInfo.isHovered || (resizingWidth?.isPivoting && isResizing)) && (
@@ -236,7 +240,8 @@ export function BeeTableThResizable<R extends object>({
       {/* fillingResizingWidth. I.e., Flexible or parent columns. */}
       {getFlatListOfSubColumns(column).some((c) => !(c.isWidthConstant ?? false)) &&
         (isFlexbileColumn(column) || isParentColumn(column)) &&
-        (hoverInfo.isHovered || (fillingResizingWidth?.isPivoting && isResizing)) && (
+        (hoverInfo.isHovered || (fillingResizingWidth?.isPivoting && isResizing)) &&
+        !isReadOnly && (
           <Resizer
             minWidth={minFillingWidth}
             width={fillingWidth}

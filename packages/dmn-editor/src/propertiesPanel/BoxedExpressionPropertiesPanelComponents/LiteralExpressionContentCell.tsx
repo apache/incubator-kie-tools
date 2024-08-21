@@ -30,7 +30,7 @@ import { Normalized } from "../../normalization/normalize";
 
 export function LiteralExpressionContentCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
-  isReadonly: boolean;
+  isReadOnly: boolean;
 }) {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const selectedObjectInfos = useMemo(
@@ -55,7 +55,7 @@ export function LiteralExpressionContentCell(props: {
         </ClipboardCopy>
       </FormGroup>
       <ExpressionLanguageField
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         initialValue={cell["@_expressionLanguage"] ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         onChange={(newExpressionLanguage: string) =>
@@ -65,7 +65,7 @@ export function LiteralExpressionContentCell(props: {
         }
       />
       <DescriptionField
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         initialValue={cell.description?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         onChange={(newDescription: string) =>

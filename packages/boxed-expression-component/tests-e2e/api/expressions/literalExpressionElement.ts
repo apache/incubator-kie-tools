@@ -32,6 +32,10 @@ export class LiteralExpressionElement {
     await this.monaco.fill({ monacoParentLocator: this.locator, nth: 0, content: expression });
   }
 
+  public async canFill() {
+    return await this.monaco.canFill({ monacoParentLocator: this.locator, nth: 0 });
+  }
+
   get content() {
     return this.locator.getByRole("cell").nth(0);
   }

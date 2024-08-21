@@ -41,6 +41,7 @@ export function DmnVersionLabel(props: { version: string }) {
 
   return (
     <Popover
+      showClose={false}
       className={"kie-dmn-editor--version-popover"}
       aria-label="DMN version popover"
       position={PopoverPosition.top}

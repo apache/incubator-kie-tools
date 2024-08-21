@@ -32,6 +32,10 @@ export class InvocationExpressionElement {
     return new InvocationParameter(this.locator.getByTestId(`kie-tools--bee--expression-row-${index}`), this.monaco);
   }
 
+  get invokedFunctionNameCell() {
+    return this.locator.getByTestId(`kie-tools--bee--table-header-invokedFunctionName`);
+  }
+
   get expressionHeaderCell() {
     return new NameAndDataTypeCell(this.locator.getByRole("columnheader"));
   }

@@ -181,6 +181,7 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
           scrollableParentRef={props?.scrollableParentRef ?? args?.scrollableParentRef ?? emptyRef}
           beeGwtService={props?.beeGwtService ?? args?.beeGwtService ?? beeGwtService}
           pmmlDocuments={props?.pmmlDocuments ?? args?.pmmlDocuments ?? pmmlDocuments}
+          isReadOnly={props?.isReadOnly ?? args?.isReadOnly ?? false}
           isResetSupportedOnRootExpression={
             props?.isResetSupportedOnRootExpression ?? args?.isResetSupportedOnRootExpression ?? false
           }

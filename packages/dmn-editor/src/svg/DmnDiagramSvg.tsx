@@ -187,7 +187,7 @@ export function DmnDiagramSvg({
               x={node.positionAbsolute!.x}
               y={node.positionAbsolute!.y}
               showSectionLabels={false}
-              isReadonly={true}
+              isReadOnly={true}
               {...style}
               {...shapeStyle}
             />

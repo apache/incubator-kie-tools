@@ -29,6 +29,7 @@ import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useCallback } from "react";
 import { Normalized } from "../normalization/normalize";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export function KnowledgeSourceProperties({
   knowledgeSource,
@@ -40,9 +41,10 @@ export function KnowledgeSourceProperties({
   index: number;
 }) {
   const { setState } = useDmnEditorStoreApi();
+  const settings = useSettings();
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
-  const isReadonly = !!namespace && namespace !== thisDmnsNamespace;
+  const isReadOnly = settings.isReadOnly || (!!namespace && namespace !== thisDmnsNamespace);
 
   return (
     <>
@@ -52,7 +54,7 @@ export function KnowledgeSourceProperties({
           isPlain={false}
           id={knowledgeSource["@_id"]!}
           name={knowledgeSource["@_name"]}
-          isReadonly={isReadonly}
+          isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
           className={"pf-c-form-control"}
           onRenamed={(newName) => {
@@ -72,7 +74,7 @@ export function KnowledgeSourceProperties({
         <TextArea
           aria-label={"Description"}
           type={"text"}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
           value={knowledgeSource.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
@@ -97,7 +99,7 @@ export function KnowledgeSourceProperties({
         <TextInput
           aria-label={"Source type"}
           type={"text"}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
           value={knowledgeSource.type?.__$$text}
           onChange={(newType) => {
             setState((state) => {
@@ -114,7 +116,7 @@ export function KnowledgeSourceProperties({
         <TextInput
           aria-label={"Location URI"}
           type={"text"}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
           value={knowledgeSource["@_locationURI"]}
           onChange={(newLocationUri) => {
             setState((state) => {
@@ -127,7 +129,7 @@ export function KnowledgeSourceProperties({
       </FormGroup>
 
       <DocumentationLinksFormGroup
-        isReadonly={isReadonly}
+        isReadOnly={isReadOnly}
         values={knowledgeSource.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
