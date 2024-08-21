@@ -21,9 +21,10 @@ const { merge } = require("webpack-merge");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const path = require("path");
-// const { env } = require("./env");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ProvidePlugin } = require("webpack");
+const { env } = require("./env");
+const buildEnv = env;
 
 module.exports = (env) =>
   merge(common(env), {
@@ -67,7 +68,7 @@ module.exports = (env) =>
       static: [{ directory: path.join(__dirname, "./dist") }],
       compress: true,
       https: false,
-      port: 8080,
+      port: buildEnv.dmnEditorStandaloneExamples.port,
       client: {
         overlay: false,
       },
