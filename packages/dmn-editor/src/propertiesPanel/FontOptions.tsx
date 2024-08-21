@@ -377,6 +377,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                       colorPickerRef={colorPickerRef}
                       color={fontColor}
                       onChange={onChangeColor}
+                      isDisabled={settings.isReadOnly}
                     />
                   }
                   isDisabled={settings.isReadOnly}

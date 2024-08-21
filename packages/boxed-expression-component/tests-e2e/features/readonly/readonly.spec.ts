@@ -18,7 +18,7 @@
  */
 import { test, expect } from "../../__fixtures__/base";
 
-test.describe("Readonly", () => {
+test.describe("Read Only Mode", () => {
   test("Literal expression", async ({ stories, bee, page }) => {
     await stories.openBoxedLiteral("readonly");
     const literalExpression = bee.expression.asLiteral();

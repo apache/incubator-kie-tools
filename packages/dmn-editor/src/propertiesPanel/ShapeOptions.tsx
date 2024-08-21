@@ -389,6 +389,7 @@ export function ShapeOptions({
                       color={fillColor}
                       onChange={(newColor) => onChangeFillColor(newColor)}
                       colorPickerRef={fillColorPickerRef}
+                      isDisabled={settings.isReadOnly}
                     />
                   }
                   isDisabled={settings.isReadOnly}
@@ -421,6 +422,7 @@ export function ShapeOptions({
                       color={strokeColor}
                       onChange={(newColor) => onChangeStrokeColor(newColor)}
                       colorPickerRef={strokeColorPickerRef}
+                      isDisabled={settings.isReadOnly}
                     />
                   }
                   isDisabled={settings.isReadOnly}
