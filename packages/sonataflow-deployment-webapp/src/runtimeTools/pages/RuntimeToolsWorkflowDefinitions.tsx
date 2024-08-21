@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { WorkflowDefinitionListContainer } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionListContainer";
 import { Card } from "@patternfly/react-core/dist/esm/components/Card";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -36,7 +36,7 @@ export function RuntimeToolsWorkflowDefinitions() {
   const onOpenWorkflowForm = useCallback(
     (workflowDefinition: WorkflowDefinition) => {
       history.push({
-        pathname: routes.runtimeTools.runtimeToolsWorkflowForm.path({ workflowName: workflowDefinition.workflowName }),
+        pathname: routes.workflows.form.path({ workflowId: workflowDefinition.workflowName }),
         state: {
           workflowDefinition: {
             workflowName: workflowDefinition.workflowName,
@@ -52,8 +52,8 @@ export function RuntimeToolsWorkflowDefinitions() {
   const onOpenTriggerCloudEventForWorkflow = useCallback(
     (workflowDefinition: WorkflowDefinition) => {
       history.push({
-        pathname: routes.runtimeTools.runtimeToolsTriggerCloudEventForWorkflowDefinition.path({
-          workflowName: workflowDefinition.workflowName,
+        pathname: routes.workflows.cloudEvent.path({
+          workflowId: workflowDefinition.workflowName,
         }),
         state: {
           workflowDefinition: {

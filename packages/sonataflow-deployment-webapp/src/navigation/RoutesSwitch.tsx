@@ -21,7 +21,6 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import { APPDATA_JSON_FILENAME } from "../AppConstants";
 import { ErrorKind, ErrorPage } from "../pages/ErrorPage";
 import { NoMatchPage } from "../pages/NoMatchPage";
-import { Workflows } from "../pages/Workflows/";
 import { CloudEventFormPage } from "../pages/Workflows/CloudEventFormPage";
 import { WorkflowFormPage } from "../pages/Workflows/WorkflowFormPage";
 import { routes } from "../routes";

@@ -107,12 +107,6 @@ export const routes = {
       pathParams: PathParams.WORKFLOW_ID;
     }>(({ workflowId }) => RUNTIME_TOOLS_ROUTE + `/workflow-details/${workflowId}`),
     runtimeToolsWorkflowDefinitions: new Route<{}>(() => RUNTIME_TOOLS_ROUTE + `/workflow-definitions`),
-    runtimeToolsWorkflowForm: new Route<{
-      pathParams: PathParams.WORKFLOW_NAME;
-    }>(({ workflowName }) => RUNTIME_TOOLS_ROUTE + `/workflow-definition/${workflowName}`),
-    runtimeToolsTriggerCloudEventForWorkflowDefinition: new Route<{
-      pathParams: PathParams.WORKFLOW_NAME;
-    }>(({ workflowName }) => RUNTIME_TOOLS_ROUTE + `/workflow-definition/${workflowName}/trigger-cloud-event`),
   },
   dataJson: new Route<{}>(() => "/" + APPDATA_JSON_FILENAME),
   openApiJson: new Route<{}>(() => "/q/openapi.json"),
