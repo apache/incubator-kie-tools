@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definitions
+  xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
+  xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:kie="https://kie.org/dmn/extensions/1.0"
+  xmlns:included0="https://kie.org/dmn/_125A5475-65CE-4574-822C-9CB2268F1393"
+  expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+  namespace="https://kie.org/dmn/_2B849D68-E816-42F9-898A-1938B5D6B297"
+  id="_A06623F7-6F03-49B9-9215-B9F99817C3ED"
+  name="DMN_48A8D068-DBF3-4AE6-94E2-496DFC4B3E46"
+>
+  <import
+    id="_8079D96B-F569-4F4E-830B-7462B6AFE492"
+    name="u"
+    importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
+    namespace="https://kie.org/dmn/_125A5475-65CE-4574-822C-9CB2268F1393"
+    locationURI="./Untitled-4.dmn"
+  />
+  <inputData name="My Input" id="_9392B01E-8C6B-4E29-9CC4-21C16EFB2F6B">
+    <variable name="My Input" id="_9483BABF-708A-4357-AD78-18C7A770E292" typeRef="&lt;Undefined&gt;" />
+  </inputData>
+  <decision name="My Decision" id="_83A0C6FA-0951-4E1E-9DF1-74A9D2A95E98">
+    <variable id="_01C70F45-2955-474A-9FAC-14967ABAF475" typeRef="&lt;Undefined&gt;" name="My Decision" />
+    <informationRequirement id="_A7EAFD5D-BDF7-4D09-81A9-9C22711847C0">
+      <requiredInput
+        href="https://kie.org/dmn/_125A5475-65CE-4574-822C-9CB2268F1393#_D9138F6E-E9DA-47AB-8DEF-5CD531B94ABE"
+      />
+    </informationRequirement>
+    <informationRequirement id="_E4FE78BB-996B-46C4-9F9B-018163E9017A">
+      <requiredInput href="#_9392B01E-8C6B-4E29-9CC4-21C16EFB2F6B" />
+    </informationRequirement>
+    <informationRequirement id="_E52D5C34-172E-4E33-B2FE-7B2A7AFDF52C">
+      <requiredInput href="#_4072ADC3-E7CF-4D22-8179-7494EE22157C" />
+    </informationRequirement>
+  </decision>
+  <inputData name="Another Input" id="_4072ADC3-E7CF-4D22-8179-7494EE22157C">
+    <variable name="Another Input" id="_7490876B-8FA9-4FEC-B078-7563EF04F52B" typeRef="&lt;Undefined&gt;" />
+  </inputData>
+</definitions>

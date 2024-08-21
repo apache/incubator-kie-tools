@@ -40,6 +40,8 @@ test.describe("Populate Boxed Conditional", () => {
     await bee.expression.asConditional().expressionHeaderCell.open();
     await bee.expression.asConditional().expressionHeaderCell.setDataType({ dataType: "boolean", close: true });
 
+    await expect(await bee.expression.asConditional().expressionHeaderCell.getPopoverMenu()).not.toBeAttached();
+
     expect(await bee.expression.asConditional().expressionHeaderCell.content.textContent()).toEqual(
       "Expression Name(boolean)"
     );

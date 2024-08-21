@@ -25,6 +25,9 @@
       { "id": "@kie-tools-core/vscode-extension" },
       { "id": "@kie-tools-core/vscode-java-code-completion" },
       { "id": "@kie-tools-examples/commit-message-validation-service" },
+      { "id": "@kie-tools-examples/dmn-editor-standalone-examples" },
+      { "id": "@kie-tools/dmn-editor-standalone" },
+      { "id": "@kie-tools/dmn-editor-envelope" },
       { "id": "@kie-tools-examples/drools-process-usertasks-quarkus-example" },
       { "id": "@kie-tools/jbpm-quarkus-devui" },
       { "id": "@kie-tools/maven-base" },
@@ -50,10 +53,8 @@
       { "id": "@kie-tools/eslint" },
       { "id": "@kie-tools/jest-base" },
       { "id": "@kie-tools-examples/webapp" },
-      { "id": "@kie-tools/dmn-editor-standalone" },
       { "id": "@kie-tools/kie-editors-standalone" },
       { "id": "@kie-tools/serverless-workflow-standalone-editor" },
-      { "id": "@kie-tools/dmn-editor-envelope" },
       { "id": "@kie-tools/kie-bc-editors" },
       { "id": "@kie-tools/stunner-editors" },
       { "id": "@kie-tools/serverless-workflow-combined-editor" },
@@ -367,6 +368,26 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools-examples/dmn-editor-standalone-examples",
+        "target": "@kie-tools/dmn-editor-standalone",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-editor-standalone",
+        "target": "@kie-tools/dmn-editor-envelope",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-editor-envelope",
+        "target": "@kie-tools-core/editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-editor-envelope",
+        "target": "@kie-tools/dmn-editor",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools-examples/drools-process-usertasks-quarkus-example",
         "target": "@kie-tools/jbpm-quarkus-devui",
         "weight": 1
@@ -637,11 +658,6 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/dmn-editor-standalone",
-        "target": "@kie-tools/dmn-editor-envelope",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools/kie-editors-standalone",
         "target": "@kie-tools/kie-bc-editors",
         "weight": 1
@@ -654,16 +670,6 @@
       {
         "source": "@kie-tools/serverless-workflow-standalone-editor",
         "target": "@kie-tools/serverless-workflow-combined-editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/dmn-editor-envelope",
-        "target": "@kie-tools-core/editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/dmn-editor-envelope",
-        "target": "@kie-tools/dmn-editor",
         "weight": 1
       },
       {
@@ -2384,6 +2390,7 @@
     ["@kie-tools-examples/base64png-editor-chrome-extension", "examples/base64png-editor-chrome-extension"],
     ["kie-tools-examples-base64png-editor-vscode-extension", "examples/base64png-editor-vscode-extension"],
     ["@kie-tools-examples/commit-message-validation-service", "examples/commit-message-validation-service"],
+    ["@kie-tools-examples/dmn-editor-standalone-examples", "examples/dmn-editor-standalone-examples"],
     [
       "@kie-tools-examples/drools-process-usertasks-quarkus-example",
       "examples/drools-process-usertasks-quarkus-example"
