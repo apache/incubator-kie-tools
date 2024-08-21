@@ -42,7 +42,7 @@ export function RoutesSwitch() {
         <ErrorPage kind={ErrorKind.APPDATA_JSON} errors={[`There was an error with the ${APPDATA_JSON_FILENAME}`]} />
       </Route>
       <Route path={routes.home.path({})}>
-        <Redirect to={routes.runtimeTools.runtimeToolsWorkflowDefinitions.path({})} />
+        <Redirect to={routes.runtimeTools.workflowDefinitions.path({})} />
       </Route>
       <Route component={NoMatchPage} />
     </Switch>

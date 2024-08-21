@@ -106,7 +106,7 @@ export const routes = {
       queryParams: QueryParams.FILTERS | QueryParams.SORT_BY;
       pathParams: PathParams.WORKFLOW_ID;
     }>(({ workflowId }) => RUNTIME_TOOLS_ROUTE + `/workflow-details/${workflowId}`),
-    runtimeToolsWorkflowDefinitions: new Route<{}>(() => RUNTIME_TOOLS_ROUTE + `/workflow-definitions`),
+    workflowDefinitions: new Route<{}>(() => RUNTIME_TOOLS_ROUTE + `/workflow-definitions`),
   },
   dataJson: new Route<{}>(() => "/" + APPDATA_JSON_FILENAME),
   openApiJson: new Route<{}>(() => "/q/openapi.json"),

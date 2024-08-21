@@ -26,7 +26,7 @@ import { RuntimeToolsWorkflowDefinitions } from "../runtimeTools/pages/RuntimeTo
 export function RuntimeToolsRoutesSwitch() {
   return (
     <Switch>
-      <Route path={routes.runtimeTools.runtimeToolsWorkflowDefinitions.path({})}>
+      <Route path={routes.runtimeTools.workflowDefinitions.path({})}>
         <RuntimeToolsWorkflowDefinitions />
       </Route>
       <Route path={routes.runtimeTools.workflowInstances.path({})}>
