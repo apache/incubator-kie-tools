@@ -1,4 +1,6 @@
-# sonataflow-management-console-webapp
+# SonataFlow Management Console Webapp
+
+The Sonataflow Management Console Webapp is a production-ready web application designed for managing and monitoring serverless workflows. It includes security features such as user authentication integrating with Keycloak Server.
 
 ## Enabling Keycloak security
 
