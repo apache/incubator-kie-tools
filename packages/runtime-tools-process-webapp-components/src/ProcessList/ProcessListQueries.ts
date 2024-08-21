@@ -53,11 +53,10 @@ export interface ProcessListQueries {
 }
 
 export class GraphQLProcessListQueries implements ProcessListQueries {
-  private readonly client: ApolloClient<any>;
-
-  constructor(client: ApolloClient<any>) {
-    this.client = client;
-  }
+  constructor(
+    private readonly client: ApolloClient<any>,
+    private readonly options?: { transformUrls?: (url?: string) => string }
+  ) {}
 
   getProcessInstances(
     offset: number,
@@ -65,7 +64,13 @@ export class GraphQLProcessListQueries implements ProcessListQueries {
     filters: ProcessInstanceFilter,
     sortBy: ProcessListSortBy
   ): Promise<ProcessInstance[]> {
-    return getProcessInstances(offset, limit, filters, sortBy, this.client);
+    return getProcessInstances(offset, limit, filters, sortBy, this.client).then((processInstances) => {
+      return processInstances.map((process) => ({
+        ...process,
+        endpoint: this.options?.transformUrls?.(process.endpoint) ?? process.endpoint,
+        serviceUrl: this.options?.transformUrls?.(process.serviceUrl) ?? process.serviceUrl,
+      }));
+    });
   }
 
   getChildProcessInstances(rootProcessInstanceId: string): Promise<ProcessInstance[]> {

@@ -28,8 +28,10 @@ export interface DevUIAppContext {
   switchUser(userId: string): void;
   onUserChange(listener: UserChangeListener): UnSubscribeHandler;
   getDevUIUrl(): string;
-  getOpenApiPath(): string;
-  getRemoteKogitoAppUrl(): string;
+  getQuarkusAppOrigin(): string;
+  getQuarkusAppRootPath(): string;
+  shouldReplaceQuarkusAppOriginWithWebappOrigin(): boolean;
+  transformQuarkusUrl(url?: string): string;
   availablePages?: string[];
   customLabels: CustomLabels;
   omittedProcessTimelineEvents: string[];
@@ -46,9 +48,11 @@ export interface UnSubscribeHandler {
 
 export type DevUIAppContextArgs = {
   users?: User[];
+  devUIOrigin: string;
   devUIUrl: string;
-  openApiPath: string;
-  remoteKogitoAppUrl: string;
+  quarkusAppOrigin: string;
+  quarkusAppRootPath: string;
+  shouldReplaceQuarkusAppOriginWithWebappOrigin: boolean;
   isProcessEnabled: boolean;
   availablePages?: string[];
   customLabels?: CustomLabels;
@@ -70,12 +74,20 @@ export class DevUIAppContextImpl implements DevUIAppContext {
     return this.args.devUIUrl;
   }
 
-  getOpenApiPath(): string {
-    return this.args.openApiPath;
+  getDevUIOrigin(): string {
+    return this.args.devUIOrigin;
   }
 
-  getRemoteKogitoAppUrl(): string {
-    return this.args.remoteKogitoAppUrl;
+  getQuarkusAppOrigin(): string {
+    return this.args.quarkusAppOrigin;
+  }
+
+  getQuarkusAppRootPath(): string {
+    return this.args.quarkusAppRootPath;
+  }
+
+  shouldReplaceQuarkusAppOriginWithWebappOrigin(): boolean {
+    return this.args.shouldReplaceQuarkusAppOriginWithWebappOrigin;
   }
 
   getCurrentUser(): User {
@@ -105,6 +117,15 @@ export class DevUIAppContextImpl implements DevUIAppContext {
         }
       },
     };
+  }
+
+  transformQuarkusUrl(url?: string): string | undefined {
+    if (!url) {
+      return undefined;
+    }
+    return this.shouldReplaceQuarkusAppOriginWithWebappOrigin()
+      ? url.replace(this.getQuarkusAppOrigin(), this.getDevUIOrigin())
+      : url;
   }
 
   get isProcessEnabled(): boolean {

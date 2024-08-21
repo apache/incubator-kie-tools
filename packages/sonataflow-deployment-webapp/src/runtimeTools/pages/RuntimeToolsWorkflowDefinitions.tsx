@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { WorkflowDefinitionListContainer } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionListContainer";
 import { Card } from "@patternfly/react-core/dist/esm/components/Card";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";

@@ -45,10 +45,12 @@ import { DependentFeature, useExtendedServices } from "./ExtendedServicesContext
 import { ExtendedServicesStatus } from "./ExtendedServicesStatus";
 import { useRoutes } from "../navigation/Hooks";
 import { useSettingsDispatch } from "../settings/SettingsContext";
+import { useEnv } from "../env/hooks/EnvContext";
 
 enum ModalPage {
   INITIAL,
   WIZARD,
+  DISABLED,
 }
 
 const UBUNTU_APP_INDICATOR_LIB = "apt install libayatana-appindicator3-1";
@@ -60,6 +62,7 @@ export function ExtendedServicesModal() {
   const [operatingSystem, setOperatingSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
   const [modalPage, setModalPage] = useState<ModalPage>(ModalPage.INITIAL);
   const extendedServices = useExtendedServices();
+  const { env } = useEnv();
 
   const KIE_SANDBOX_EXTENDED_SERVICES_MACOS_DMG = useMemo(
     () => `kie_sandbox_extended_services_macos_${extendedServices.version}.dmg`,
@@ -634,6 +637,8 @@ export function ExtendedServicesModal() {
         return "";
       case ModalPage.WIZARD:
         return i18n.dmnRunner.modal.wizard.title;
+      case ModalPage.DISABLED:
+        return i18n.dmnRunner.modal.wizard.disabled.title;
     }
   }, [modalPage, i18n]);
 
@@ -643,6 +648,8 @@ export function ExtendedServicesModal() {
         return ModalVariant.medium;
       case ModalPage.WIZARD:
         return ModalVariant.large;
+      case ModalPage.DISABLED:
+        return ModalVariant.medium;
     }
   }, [modalPage]);
 
@@ -660,7 +667,11 @@ export function ExtendedServicesModal() {
           {modalPage === ModalPage.INITIAL && (
             <Button
               className="pf-u-mt-xl kogito--editor__extended-services-modal-initial-center"
-              onClick={() => setModalPage(ModalPage.WIZARD)}
+              onClick={() =>
+                env.KIE_SANDBOX_DISABLE_EXTENDED_SERVICES_WIZARD === false
+                  ? setModalPage(ModalPage.WIZARD)
+                  : setModalPage(ModalPage.DISABLED)
+              }
             >
               {i18n.terms.setup}
             </Button>
@@ -766,6 +777,20 @@ export function ExtendedServicesModal() {
             height={400}
             footer={<ExtendedServicesWizardFooter onClose={onClose} steps={wizardSteps} setModalPage={setModalPage} />}
           />
+        </div>
+      )}
+      {modalPage === ModalPage.DISABLED && (
+        <div>
+          <Alert variant="danger" title={i18n.dmnRunner.modal.wizard.disabled.alert} aria-live="polite" isInline />
+          <br />
+          <List>
+            <ListItem>
+              <Text>{i18n.dmnRunner.modal.wizard.disabled.message}</Text>
+            </ListItem>
+            <ListItem>
+              <Text>{i18n.dmnRunner.modal.wizard.disabled.helper}</Text>
+            </ListItem>
+          </List>
         </div>
       )}
     </Modal>

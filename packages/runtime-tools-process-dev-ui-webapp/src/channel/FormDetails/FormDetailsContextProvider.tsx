@@ -19,13 +19,20 @@
 import React from "react";
 import FormDetailsContext from "./FormDetailsContext";
 import { FormDetailsGatewayApiImpl } from "./FormDetailsGatewayApi";
+import { useDevUIAppContext } from "../../components/contexts/DevUIAppContext";
 
 interface IOwnProps {
   children;
 }
 
 const FormDetailsContextProvider: React.FC<IOwnProps> = ({ children }) => {
-  return <FormDetailsContext.Provider value={new FormDetailsGatewayApiImpl()}>{children}</FormDetailsContext.Provider>;
+  const appContext = useDevUIAppContext();
+  const baseUrl = appContext.transformQuarkusUrl(
+    `${appContext.getQuarkusAppOrigin()}${appContext.getQuarkusAppRootPath()}`
+  );
+  return (
+    <FormDetailsContext.Provider value={new FormDetailsGatewayApiImpl(baseUrl)}>{children}</FormDetailsContext.Provider>
+  );
 };
 
 export default FormDetailsContextProvider;
