@@ -20,7 +20,9 @@ metadata:
     sonataflow.org/description: Callback State Timeouts Example k8s
     sonataflow.org/version: 0.0.1
 spec:
-  persistence: {}
+  persistence: {
+    migrateDBOnStartUp: true
+  }
   podTemplate:
     container:
       env:

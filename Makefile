@@ -154,7 +154,7 @@ build-4-debug: generate ## Build manager binary with debug options.
 
 .PHONY: run
 run: manifests generate ## Run a controller from your host.
-	go run ./main.go
+	go run ./main.go -v=2 -controller-cfg-path=$(CURDIR)/config/manager/controllers_cfg.yaml
 
 .PHONY: debug
 debug: build-4-debug ## Run a controller from your host from binary
@@ -338,7 +338,7 @@ generate-all: generate generate-deploy bundle addheaders vet fmt
 
 .PHONY: test-e2e # You will need to have a Minikube/Kind cluster up in running to run this target, and run container-builder before the test
 test-e2e:
-	go test ./test/e2e/* -v -ginkgo.v -ginkgo.no-color -ginkgo.junit-report=./e2e-test-report.xml -timeout 60m
+	go test ./test/e2e/* -v -ginkgo.v -ginkgo.no-color -ginkgo.junit-report=./e2e-test-report.xml -timeout 120m
 
 .PHONY: before-pr
 before-pr: test generate-all

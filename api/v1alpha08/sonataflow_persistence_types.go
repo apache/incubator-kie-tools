@@ -45,11 +45,14 @@ type PlatformPersistencePostgreSQL struct {
 // the operator will add the necessary JDBC properties to in the workflow's application.properties so that it can communicate
 // with the persistence service based on the spec provided here.
 // +optional
-// +kubebuilder:validation:MaxProperties=1
+// +kubebuilder:validation:MaxProperties=2
 type PersistenceOptionsSpec struct {
 	// Connect configured services to a postgresql database.
 	// +optional
 	PostgreSQL *PersistencePostgreSQL `json:"postgresql,omitempty"`
+
+	// Whether to migrate database on service startup?
+	MigrateDBOnStartUp bool `json:"migrateDBOnStartUp"`
 }
 
 // PersistencePostgreSQL configure postgresql connection for service(s).

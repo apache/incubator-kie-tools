@@ -567,8 +567,11 @@ spec:
                       persistence:
                         description: Persists service to a datasource of choice. Ephemeral
                           by default.
-                        maxProperties: 1
+                        maxProperties: 2
                         properties:
+                          migrateDBOnStartUp:
+                            description: Whether to migrate database on service startup?
+                            type: boolean
                           postgresql:
                             description: Connect configured services to a postgresql
                               database.
@@ -625,6 +628,8 @@ spec:
                             required:
                             - secretRef
                             type: object
+                        required:
+                        - migrateDBOnStartUp
                         type: object
                       podTemplate:
                         description: PodTemplate describes the deployment details
@@ -8439,8 +8444,11 @@ spec:
                       persistence:
                         description: Persists service to a datasource of choice. Ephemeral
                           by default.
-                        maxProperties: 1
+                        maxProperties: 2
                         properties:
+                          migrateDBOnStartUp:
+                            description: Whether to migrate database on service startup?
+                            type: boolean
                           postgresql:
                             description: Connect configured services to a postgresql
                               database.
@@ -8497,6 +8505,8 @@ spec:
                             required:
                             - secretRef
                             type: object
+                        required:
+                        - migrateDBOnStartUp
                         type: object
                       podTemplate:
                         description: PodTemplate describes the deployment details

@@ -260,8 +260,16 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		// Check with persistence set
 		ksp.Spec = v1alpha08.SonataFlowPlatformSpec{
 			Services: &v1alpha08.ServicesPlatformSpec{
-				DataIndex:  &v1alpha08.ServiceSpec{},
-				JobService: &v1alpha08.ServiceSpec{},
+				DataIndex: &v1alpha08.ServiceSpec{
+					Persistence: &v1alpha08.PersistenceOptionsSpec{
+						MigrateDBOnStartUp: false,
+					},
+				},
+				JobService: &v1alpha08.ServiceSpec{
+					Persistence: &v1alpha08.PersistenceOptionsSpec{
+						MigrateDBOnStartUp: false,
+					},
+				},
 			},
 			Persistence: &v1alpha08.PlatformPersistenceOptionsSpec{
 				PostgreSQL: &v1alpha08.PlatformPersistencePostgreSQL{

@@ -34,6 +34,8 @@ spec:
   services:
     dataIndex:
       enabled: true
+      persistence:
+        migrateDBOnStartUp: true
       podTemplate:
         initContainers:
           - name: init-postgres
@@ -42,6 +44,8 @@ spec:
             command: [ 'sh', '-c', 'until (echo 1 > /dev/tcp/postgres.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local/5432) >/dev/null 2>&1; do echo "Waiting for postgres server"; sleep 3; done;' ]
     jobService:
       enabled: true
+      persistence:
+        migrateDBOnStartUp: true
       podTemplate:
         initContainers:
           - name: init-postgres
