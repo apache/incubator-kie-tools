@@ -1,0 +1,112 @@
+{{- $dataIndexUrl := .Values.global.dataIndexUrl | required ".Values.global.dataIndexUrl is required." -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "taskConsole.fullname" . }}
+  labels:
+    {{- include "taskConsole.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "taskConsole.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "taskConsole.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "taskConsole.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Values.name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.registry }}/{{ .Values.image.account }}/{{ .Values.image.name }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- with .Values.env }}
+          env:
+            {{- tpl (toYaml .) $ | nindent 12 }}
+          {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_ENV_MODE
+              value: {{ .Values.global.environment }}
+            - name: RUNTIME_TOOLS_TASK_CONSOLE_DATA_INDEX_ENDPOINT
+              value: {{ $dataIndexUrl }}
+            {{- if .Values.appNameOverride }}
+            - name: RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_APP_NAME
+              value: {{ .Values.appNameOverride }}
+            {{- end }}
+            {{- if .Values.appVersionOverride }}
+            - name: RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_APP_VERSION
+              value: {{ .Values.appVersionOverride }}
+            {{- end }}
+            {{- if .Values.appTaskStatesListOverride }}
+            - name: RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_TASK_STATES_LIST
+              value: {{ .Values.appTaskStatesListOverride }}
+            {{- end }}
+            {{- if .Values.appTaskActiveStatesListOverride }}
+            - name: RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_TASK_ACTIVE_STATES_LIST
+              value: {{ .Values.appTaskActiveStatesListOverride }}
+            {{- end }}
+            {{- if .Values.global.keycloakHealthCheck }}
+            - name: KOGITO_CONSOLES_KEYCLOAK_DISABLE_HEALTH_CHECK
+              value: true
+            {{- end }}
+            {{- if .Values.global.keycloakTokenValidity }}
+            - name: KOGITO_CONSOLES_KEYCLOAK_UPDATE_TOKEN_VALIDITY
+              value: {{ .Values.global.keycloakTokenValidity }}
+            {{- end }}
+            {{- if .Values.global.keycloakHealthCheckUrl }}
+            - name: KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL
+              value: {{ .Values.global.keycloakHealthCheckUrl }}
+            {{- end }}
+            {{- if .Values.global.keycloakRealm }}
+            - name: KOGITO_CONSOLES_KEYCLOAK_REALM
+              value: {{ .Values.global.keycloakRealm }}
+            {{- end }}
+            {{- if .Values.global.keycloakUrl }}
+            - name: KOGITO_CONSOLES_KEYCLOAK_URL
+              value: {{ .Values.global.keycloakUrl }}
+            {{- end }}
+            {{- if .Values.global.keycloakClientId }}
+            - name: KOGITO_CONSOLES_KEYCLOAK_CLIENT_ID
+              value: {{ .Values.global.keycloakClientId }}
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
