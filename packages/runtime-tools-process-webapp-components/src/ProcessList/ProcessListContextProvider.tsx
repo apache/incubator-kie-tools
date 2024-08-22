@@ -25,11 +25,16 @@ import { GraphQLProcessListQueries } from "./ProcessListQueries";
 interface ProcessListContextProviderProps {
   apolloClient: ApolloClient<any>;
   children: ReactElement;
+  options?: { transformUrls?: (url?: string) => string };
 }
 
-export const ProcessListContextProvider: FC<ProcessListContextProviderProps> = ({ apolloClient, children }) => {
+export const ProcessListContextProvider: FC<ProcessListContextProviderProps> = ({
+  apolloClient,
+  children,
+  options,
+}) => {
   const gatewayApiImpl = useMemo(() => {
-    return new ProcessListGatewayApiImpl(new GraphQLProcessListQueries(apolloClient));
+    return new ProcessListGatewayApiImpl(new GraphQLProcessListQueries(apolloClient, options));
   }, []);
   return <ProcessListContext.Provider value={gatewayApiImpl}>{children}</ProcessListContext.Provider>;
 };

@@ -17,28 +17,15 @@
  * under the License.
  */
 import React from "react";
-import RuntimeToolsDevUIAppContext, { DevUIAppContextImpl } from "./DevUIAppContext";
-import { CustomLabels } from "../../api/CustomLabels";
-import { User } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskForm";
-import { DiagramPreviewSize } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
+import RuntimeToolsDevUIAppContext, { DevUIAppContextArgs, DevUIAppContextImpl } from "./DevUIAppContext";
 
-interface IOwnProps {
-  users: User[];
-  devUIUrl: string;
-  openApiPath: string;
-  remoteKogitoAppUrl: string;
-  isProcessEnabled: boolean;
-  availablePages: string[];
-  customLabels: CustomLabels;
-  omittedProcessTimelineEvents: string[];
-  diagramPreviewSize: DiagramPreviewSize;
-}
-
-const DevUIAppContextProvider: React.FC<IOwnProps> = ({
+const DevUIAppContextProvider: React.FC<DevUIAppContextArgs> = ({
   users,
+  devUIOrigin,
   devUIUrl,
-  openApiPath,
-  remoteKogitoAppUrl,
+  quarkusAppOrigin,
+  quarkusAppRootPath,
+  shouldReplaceQuarkusAppOriginWithWebappOrigin,
   isProcessEnabled,
   availablePages,
   customLabels,
@@ -51,9 +38,11 @@ const DevUIAppContextProvider: React.FC<IOwnProps> = ({
       value={
         new DevUIAppContextImpl({
           users,
+          devUIOrigin,
           devUIUrl,
-          openApiPath,
-          remoteKogitoAppUrl,
+          quarkusAppOrigin,
+          quarkusAppRootPath,
+          shouldReplaceQuarkusAppOriginWithWebappOrigin,
           isProcessEnabled,
           availablePages,
           customLabels,

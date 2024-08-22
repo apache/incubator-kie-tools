@@ -24,6 +24,7 @@ import { EditorConfig } from "../envelopeLocator/EditorEnvelopeLocatorApi";
 export interface EnvJson {
   KIE_SANDBOX_VERSION: string;
   KIE_SANDBOX_EXTENDED_SERVICES_URL: string;
+  KIE_SANDBOX_DISABLE_EXTENDED_SERVICES_WIZARD: boolean;
   KIE_SANDBOX_CORS_PROXY_URL: string;
   KIE_SANDBOX_FEEDBACK_URL: string;
   KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL: string;
