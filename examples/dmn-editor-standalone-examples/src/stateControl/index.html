@@ -1,0 +1,86 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+-->
+
+<!-- This file is used for test purposes only -->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <style>
+      * {
+        margin: 0;
+      }
+
+      #dmn-editor-container {
+        height: calc(100vh - 36px);
+      }
+
+      .toolbar {
+        height: 30px;
+        display: flex;
+        font-size: 16px;
+        border-bottom: 1px solid #d2d2d2;
+        box-sizing: border-box;
+        align-items: center;
+      }
+
+      .toolbar button {
+        font-size: 16px;
+      }
+
+      .toolbar .toolbar-items {
+        flex: 1 1;
+      }
+
+      .toolbar .load-files {
+        text-align: right;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+
+    <title></title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  </head>
+
+  <body>
+    <div class="toolbar">
+      <div class="toolbar-items actions">
+        <button id="undo">Undo</button>
+        <button id="redo">Redo</button>
+        <button id="download">Download</button>
+        <button id="downloadSvg">Download SVG</button>
+        <span id="unsavedChanges" class="hidden">File contains unsaved changes.</span>
+      </div>
+      <br />
+      <div class="toolbar-items load-files">
+        Load DMN:
+        <button id="empty.dmn">Empty</button>
+        <button id="empty-drd.dmn">Empty DRD</button>
+        <button id="find-employees.dmn">Find Employees</button>
+        <button id="loan-pre-qualification.dmn">Loan Pre Qualification</button>
+      </div>
+    </div>
+    <div id="dmn-editor-container" />
+  </body>
+</html>
