@@ -32,7 +32,7 @@ const CONSTRAINT_END_ID = "end";
 
 export function ConstraintsRange({
   id,
-  isReadonly,
+  isReadOnly,
   value,
   expressionValue,
   type,
@@ -210,7 +210,7 @@ export function ConstraintsRange({
           >
             <button
               id={CONSTRAINT_START_ID}
-              disabled={isReadonly || isDisabled}
+              disabled={isReadOnly || isDisabled}
               onClick={() => onIncludeStartToogle()}
               style={{
                 borderRadius: "100%",
@@ -230,7 +230,7 @@ export function ConstraintsRange({
             onBlur: () => onInternalChange(),
             onChange: onStartChange,
             id: "start-value",
-            isDisabled: isReadonly || isDisabled,
+            isDisabled: isReadOnly || isDisabled,
             placeholder: "Starts with",
             style: {
               outline: "none",
@@ -272,7 +272,7 @@ export function ConstraintsRange({
           >
             <button
               id={CONSTRAINT_END_ID}
-              disabled={isReadonly || isDisabled}
+              disabled={isReadOnly || isDisabled}
               onClick={() => onIncludeEndToogle()}
               style={{
                 borderRadius: "100%",
@@ -292,7 +292,7 @@ export function ConstraintsRange({
             onBlur: () => onInternalChange(),
             onChange: onEndChange,
             id: "end-value",
-            isDisabled: isReadonly || isDisabled,
+            isDisabled: isReadOnly || isDisabled,
             placeholder: "Ends with",
             style: { outline: "none" },
             value: end,
@@ -313,7 +313,7 @@ export function ConstraintsRange({
       {!renderOnPropertiesPanel && (
         <>
           <br />
-          <ConstraintsExpression id={id} isReadonly={true} value={expressionValue ?? ""} type={type} />
+          <ConstraintsExpression id={id} isReadOnly={true} value={expressionValue ?? ""} type={type} />
         </>
       )}
     </div>

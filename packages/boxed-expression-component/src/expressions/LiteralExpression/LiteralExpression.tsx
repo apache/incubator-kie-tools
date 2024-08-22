@@ -53,7 +53,7 @@ export function LiteralExpression({
   isNested: boolean;
 }) {
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
-  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
+  const { expressionHolderId, widthsById, isReadOnly } = useBoxedExpressionEditor();
 
   const id = literalExpression["@_id"]!;
 
@@ -214,6 +214,8 @@ export function LiteralExpression({
       <div className={"literal-expression-body-container"}>
         <div className={"equals-sign"} data-testid={"kie-tools--equals-sign"}>{`=`}</div>
         <BeeTable<ROWTYPE>
+          isReadOnly={isReadOnly}
+          isEditableHeader={!isReadOnly}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           forwardRef={beeTableRef}
           getRowKey={getRowKey}

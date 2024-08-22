@@ -68,7 +68,6 @@ module.exports = async (env) => {
         KOGITO_APP_NAME: "Runtime tools dev-ui",
         KOGITO_DATAINDEX_HTTP_URL: dataIndexURL,
         KOGITO_REMOTE_KOGITO_APP_URL: buildEnv.runtimeToolsProcessDevUIWebapp.kogitoAppUrl,
-        KOGITO_OPENAPI_PATH: buildEnv.runtimeToolsProcessDevUIWebapp.openApiPath,
       }),
       new CopyPlugin({
         patterns: [

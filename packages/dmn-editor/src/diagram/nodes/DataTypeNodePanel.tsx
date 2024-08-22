@@ -35,6 +35,7 @@ function stopPropagation(e: React.MouseEvent | React.KeyboardEvent) {
 
 export function DataTypeNodePanel(props: {
   isVisible: boolean;
+  isReadOnly?: boolean;
   variable: Normalized<DMN15__tInformationItem> | undefined;
   shape: Normalized<DMNDI15__DMNShape> | undefined;
   onChange: OnTypeRefChange;
@@ -54,7 +55,7 @@ export function DataTypeNodePanel(props: {
     <>
       {props.isVisible && enableDataTypesToolbarOnNodes && (
         <div
-          className={"kie-dmn-editor--data-type-node-panel"}
+          className={`kie-dmn-editor--data-type-node-panel ${props.isReadOnly ? "kie-dmn-editor--data-type-node-panel-readonly" : ""}`}
           // Do not allow any events to go to the node itself...
           onMouseDownCapture={stopPropagation}
           onKeyDownCapture={stopPropagation}
@@ -71,7 +72,7 @@ export function DataTypeNodePanel(props: {
               onCreate={props.onCreate}
               onToggle={props.onToggle}
               menuAppendTo={"parent"}
-              isDisabled={isExternalNode}
+              isDisabled={isExternalNode || props.isReadOnly}
             />
           </div>
         </div>

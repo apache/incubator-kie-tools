@@ -474,10 +474,10 @@ export const getJobsWithFilters = async (
   }
 };
 
-export const getForms = (formFilter: string[]): Promise<FormInfo[]> => {
+export const getForms = (baseUrl: string, formFilter: string[]): Promise<FormInfo[]> => {
   return new Promise((resolve, reject) => {
     axios
-      .get("/forms/list", {
+      .get(new URL(`forms/list`, baseUrl).toString(), {
         params: {
           names: formFilter.join(";"),
         },
@@ -489,10 +489,10 @@ export const getForms = (formFilter: string[]): Promise<FormInfo[]> => {
   });
 };
 
-export const getFormContent = (formName: string): Promise<Form> => {
+export const getFormContent = (baseUrl: string, formName: string): Promise<Form> => {
   return new Promise((resolve, reject) => {
     axios
-      .get(`/forms/${formName}`)
+      .get(new URL(`forms/${formName}`, baseUrl).toString())
       .then((result) => {
         resolve(result.data);
       })
@@ -500,10 +500,10 @@ export const getFormContent = (formName: string): Promise<Form> => {
   });
 };
 
-export const saveFormContent = (formName: string, content: FormContent): Promise<void> => {
+export const saveFormContent = (baseUrl: string, formName: string, content: FormContent): Promise<void> => {
   return new Promise((resolve, reject) => {
     axios
-      .post(`/forms/${formName}`, content)
+      .post(new URL(`forms/${formName}`, baseUrl).toString(), content)
       .then((result) => {
         resolve();
       })
@@ -520,7 +520,6 @@ export const getProcessDefinitions = (client: ApolloClient<any>): Promise<Proces
         errorPolicy: "all",
       })
       .then((value) => {
-        const processDefinitions = value.data.ProcessDefinitions;
         resolve(
           value.data.ProcessDefinitions.map((item: { id: string; endpoint: string }) => {
             return {

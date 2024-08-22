@@ -27,6 +27,7 @@ export function ColorPicker(props: {
   icon?: React.ReactNode;
   colorDisplay?: React.ReactNode;
   name: string;
+  isDisabled?: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -61,7 +62,7 @@ export function ColorPicker(props: {
           data-testid={`kie-tools--dmn-editor--color-picker-${props.name}`}
           aria-label={"Color picker"}
           type={"color"}
-          disabled={false}
+          disabled={props.isDisabled}
           value={props.color}
           style={{ opacity: 0, width: 0, height: 0 }}
           onChange={(e) => props.onChange(e.currentTarget.value)}

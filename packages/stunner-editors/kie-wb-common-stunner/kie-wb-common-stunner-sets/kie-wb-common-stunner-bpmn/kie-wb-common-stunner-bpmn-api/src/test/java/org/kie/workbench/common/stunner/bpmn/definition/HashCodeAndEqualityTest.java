@@ -89,7 +89,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRu
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CalledElement;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Content;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CreatedBy;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.DecisionName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Description;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.DmnModelName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.FileName;
@@ -1537,7 +1536,6 @@ public class HashCodeAndEqualityTest {
                                                               new RuleFlowGroup(),
                                                               new FileName(),
                                                               new Namespace(),
-                                                              new DecisionName(),
                                                               new DmnModelName(),
                                                               new OnEntryAction(),
                                                               new OnExitAction(),
@@ -1548,7 +1546,6 @@ public class HashCodeAndEqualityTest {
                                                               new RuleFlowGroup(),
                                                               new FileName(),
                                                               new Namespace(),
-                                                              new DecisionName(),
                                                               new DmnModelName(),
                                                               new OnEntryAction(),
                                                               new OnExitAction(),

@@ -222,7 +222,6 @@ public class TaskConverter {
         } else if (ruleLanguage.getValue().equals(RuleLanguage.DMN)) {
             p.setFileName(executionSet.getFileName());
             p.setNamespace(executionSet.getNamespace());
-            p.setDecisionName(executionSet.getDecisionName());
             p.setDmnModelName(executionSet.getDmnModelName());
         }
 

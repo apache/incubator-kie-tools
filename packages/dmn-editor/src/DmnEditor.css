@@ -274,9 +274,6 @@
   color: #0067cc;
   filter: brightness(95%);
 }
-.kie-dmn-editor--drd-list button:hover {
-  filter: brightness(95%);
-}
 .kie-dmn-editor--drd-list button:active {
   filter: brightness(90%);
 }
@@ -606,9 +603,17 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   transform: scale(0.8);
 }
 .kie-dmn-editor--data-type-node-panel .kie-dmn-editor--data-type-jump-to-definition {
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-right: 0px;
+  background: none;
+  border: none;
+  height: auto;
+  padding-top: 0;
+  padding-bottom: 0;
 }
+.kie-dmn-editor--data-type-node-panel-readonly .kie-dmn-editor--data-type-jump-to-definition {
+  padding-right: 6px;
+}
+
 /* Customizing some patternfly components is hard... */
 .kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type > button,
 .kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type input,
@@ -620,8 +625,13 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   border-radius: 99999px;
   outline: none;
 }
+.kie-dmn-editor--data-type-node-panel .pf-c-select__toggle.pf-m-typeahead {
+  padding-left: 10px;
+}
+.kie-dmn-editor--data-type-node-panel .pf-c-select__toggle-wrapper {
+  padding-left: 10px;
+}
 .kie-dmn-editor--data-type-node-panel > div {
-  padding-left: 12px;
   border: 1.25px solid black;
   background: white;
   box-shadow: 5px 5px 2px 0px rgb(127 127 127);
@@ -907,6 +917,11 @@ th {
   color: red;
   text-decoration: red dotted underline;
   text-underline-position: under;
+}
+
+.kie-dmn-editor--data-types-container .pf-c-switch__input:disabled:checked ~ .pf-c-switch__toggle {
+  background-color: var(--pf-global--primary-color--100);
+  opacity: 50%;
 }
 /* (end) data types */
 

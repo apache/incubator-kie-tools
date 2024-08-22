@@ -33,6 +33,7 @@ import { AlternativeInputDataIcon, InputDataIcon } from "../icons/Icons";
 import { EmptyState, EmptyStateBody } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useCallback } from "react";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export function DrdSelectorPanel() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
@@ -44,6 +45,7 @@ export function DrdSelectorPanel() {
       s.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[s.computed(s).getDrdIndex()]?.["@_name"] ||
       getDefaultDrdName({ drdIndex: s.computed(s).getDrdIndex() })
   );
+  const settings = useSettings();
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
@@ -77,27 +79,29 @@ export function DrdSelectorPanel() {
             <TextContent>
               <Text component="h3">DRDs</Text>
             </TextContent>
-            <Button
-              title={"New DRD"}
-              variant={ButtonVariant.link}
-              onClick={() => {
-                dmnEditorStoreApi.setState((state) => {
-                  const allDrds = state.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
-                  const newIndex = allDrds.length;
+            {!settings.isReadOnly && (
+              <Button
+                title={"New DRD"}
+                variant={ButtonVariant.link}
+                onClick={() => {
+                  dmnEditorStoreApi.setState((state) => {
+                    const allDrds = state.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
+                    const newIndex = allDrds.length;
 
-                  addOrGetDrd({
-                    definitions: state.dmn.model.definitions,
-                    drdIndex: newIndex,
+                    addOrGetDrd({
+                      definitions: state.dmn.model.definitions,
+                      drdIndex: newIndex,
+                    });
+
+                    state.diagram.__unsafeDrdIndex = newIndex;
+                    state.diagram.openLhsPanel = DiagramLhsPanel.DRG_NODES;
+                    state.focus.consumableId = getDrdId({ drdIndex: newIndex });
                   });
-
-                  state.diagram.__unsafeDrdIndex = newIndex;
-                  state.diagram.openLhsPanel = DiagramLhsPanel.DRG_NODES;
-                  state.focus.consumableId = getDrdId({ drdIndex: newIndex });
-                });
-              }}
-            >
-              <PlusCircleIcon />
-            </Button>
+                }}
+              >
+                <PlusCircleIcon />
+              </Button>
+            )}
           </div>
         </div>
         <div style={{ gridArea: "divider-list" }}>
@@ -143,7 +147,7 @@ export function DrdSelectorPanel() {
             <Title headingLevel="h3" style={{ height: "36px" }}>
               {drdName}
             </Title>
-            {drds.length > 0 && (
+            {drds.length > 0 && !settings.isReadOnly && (
               <Button variant={ButtonVariant.link} onClick={removeDrd} style={{ padding: 0 }} title="Remove DRD">
                 Remove
               </Button>
@@ -166,6 +170,7 @@ export function DrdSelectorPanel() {
                     icon={<InputDataIcon padding={"2px 0 0 0"} height={22} />}
                     buttonId="classic-input-node-shape"
                     isSelected={isAlternativeInputDataShape === false}
+                    isDisabled={settings.isReadOnly}
                     onChange={() =>
                       dmnEditorStoreApi.setState((s) => {
                         const { diagram: drd } = addOrGetDrd({
@@ -188,6 +193,7 @@ export function DrdSelectorPanel() {
                     }
                     buttonId="alternative-input-node-shape"
                     isSelected={isAlternativeInputDataShape === true}
+                    isDisabled={settings.isReadOnly}
                     onChange={() =>
                       dmnEditorStoreApi.setState((s) => {
                         const { diagram: drd } = addOrGetDrd({

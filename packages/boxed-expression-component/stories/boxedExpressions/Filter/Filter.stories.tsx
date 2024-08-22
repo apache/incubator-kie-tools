@@ -55,6 +55,36 @@ export const Base: Story = {
   },
 };
 
+export const Readonly: Story = {
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
+  args: {
+    ...EmptyExpression.args,
+    expression: {
+      __$$element: "filter",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+      in: {
+        "@_id": generateUuid(),
+        expression: {
+          "@_id": generateUuid(),
+          __$$element: "literalExpression",
+          text: { __$$text: "['read', 'only']" },
+        },
+      },
+      match: {
+        "@_id": generateUuid(),
+        expression: {
+          "@_id": generateUuid(),
+          __$$element: "literalExpression",
+          text: { __$$text: "readOnlyTest(itemReadOnly)" },
+        },
+      },
+    },
+    isReadOnly: true,
+  },
+};
+
 export const RebookedFlights: Story = {
   render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },

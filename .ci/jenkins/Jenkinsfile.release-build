@@ -35,7 +35,7 @@ pipeline {
         string(description: 'Base Ref', name: 'BASE_REF')
         string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Upload asset url', name: 'UPLOAD_ASSET_URL', defaultValue: '')
-        string(description: 'Runners', name: 'RUNNERS', defaultValue: '{"dev_deployment_base_image":"false","dev_deployment_kogito_quakus_blank_app_image":"false","dev_deployment_dmn_form_webapp_image":"false","dev_deployment_upload_service":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false", "chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","serverless_logic_web_tools":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","dashbuilder_viewer_image":"false","kn_plugin_workflow":"false","kie_sandbox_helm_chart":"false","kogito_task_console":"false","kogito_management_console":"false","kogito_swf_builder":"false","kogito_swf_devmode":"false","kogito_serverless_operator":"false","jbpm_quarkus_devui":"false","sonataflow_quarkus_devui":"false"}')
+        string(description: 'Runners', name: 'RUNNERS', defaultValue: '{"dev_deployment_base_image":"false","dev_deployment_kogito_quakus_blank_app_image":"false","dev_deployment_dmn_form_webapp_image":"false","dev_deployment_upload_service":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false", "chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","serverless_logic_web_tools":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","dashbuilder_viewer_image":"false","kn_plugin_workflow":"false","kie_sandbox_helm_chart":"false","kogito_task_console":"false","kogito_management_console":"false","kogito_swf_builder":"false","kogito_swf_devmode":"false","kogito_serverless_operator":"false","jbpm_quarkus_devui":"false","sonataflow_quarkus_devui":"false","runtime_tools_consoles_helm_chart":"false"}')
         booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
         string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
@@ -103,6 +103,7 @@ pipeline {
                     env.KOGITO_SERVERLESS_OPERATOR = runners.kogito_serverless_operator
                     env.JBPM_QUARKUS_DEVUI = runners.jbpm_quarkus_devui
                     env.SONATAFLOW_QUARKUS_DEVUI = runners.sonataflow_quarkus_devui
+                    env.RUNTIME_TOOLS_CONSOLES_HELM_CHART = runners.runtime_tools_consoles_helm_chart
                 }
             }
         }
@@ -138,6 +139,7 @@ pipeline {
                 echo "kogito_serverless_operator: ${env.KOGITO_SERVERLESS_OPERATOR}"
                 echo "jbpm_quarkus_devui: ${env.JBPM_QUARKUS_DEVUI}"
                 echo "sonataflow_quarkus_devui: ${env.SONATAFLOW_QUARKUS_DEVUI}"
+                echo "runtime_tools_consoles_helm_chart: ${env.RUNTIME_TOOLS_CONSOLES_HELM_CHART}"
                 """.trim()
             }
         }
@@ -574,7 +576,7 @@ pipeline {
                                             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
                                             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
                                             booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
-                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+                                            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
                                 }
@@ -595,7 +597,7 @@ pipeline {
                                             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
                                             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
                                             booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
-                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+                                            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
                                 }
@@ -617,7 +619,7 @@ pipeline {
                                             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
                                             string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
                                             booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
-                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+                                            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
                                 }
@@ -638,7 +640,7 @@ pipeline {
                                             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
                                             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
                                             booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
-                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+                                            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
                                 }
@@ -660,7 +662,7 @@ pipeline {
                                             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
                                             string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
                                             booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
-                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+                                            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
                                 }
@@ -681,7 +683,7 @@ pipeline {
                                             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
                                             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
                                             booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
-                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+                                            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
                                 }
@@ -706,7 +708,7 @@ pipeline {
                                             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
                                             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
                                             booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
-                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+                                            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
 
@@ -729,7 +731,7 @@ pipeline {
                                             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
                                             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
                                             booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
-                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+                                            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
 
@@ -754,7 +756,7 @@ pipeline {
                                             string(name: 'KIE_SANDBOX_EXTENDED_SERVICES_URL', value: "${env.KIE_SANDBOX_EXTENDED_SERVICES_URL}"),
                                             string(name: 'KIE_SANDBOX_CORS_PROXY_URL', value: "${env.KIE_SANDBOX_CORS_PROXY_URL}"),
                                             booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
-                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+                                            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
 
@@ -777,7 +779,28 @@ pipeline {
                                             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
                                             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
                                             booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
-                                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+                                            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+                                        ]
+                                    ).result
+                                }
+                            }
+                        }
+
+                        stage('Runtime Tools Consoles Helm Chart') {
+                            when {
+                                expression { env.RUNTIME_TOOLS_CONSOLES_HELM_CHART == 'true' }
+                            }
+                            steps {
+                                script {
+                                    env.RUNTIME_TOOLS_CONSOLES_HELM_CHART_JOB_RESULT = build(
+                                        wait: true,
+                                        job: 'KIE/kie-tools/kie-tools-release-jobs/runtime-tools-consoles-helm-chart',
+                                        parameters: [
+                                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+                                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+                                            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                                            booleanParam(name: 'RELEASE_CANDIDATE', value: "${params.RELEASE_CANDIDATE}"),
+                                            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
                                         ]
                                     ).result
                                 }

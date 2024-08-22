@@ -48,6 +48,7 @@ export interface BeeTableTdProps<R extends object> {
   lastColumnMinWidth?: number;
   onDataCellClick?: (columnID: string) => void;
   onDataCellKeyUp?: (columnID: string) => void;
+  isReadOnly: boolean;
 }
 
 export type HoverInfo =
@@ -71,6 +72,7 @@ export function BeeTableTd<R extends object>({
   lastColumnMinWidth,
   onDataCellClick,
   onDataCellKeyUp,
+  isReadOnly,
 }: BeeTableTdProps<R>) {
   const [isResizing, setResizing] = useState(false);
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
@@ -227,9 +229,9 @@ export function BeeTableTd<R extends object>({
     <BeeTableCoordinatesContextProvider coordinates={coordinates}>
       <td
         onMouseDown={onMouseDown}
-        onDoubleClick={onDoubleClick}
+        onDoubleClick={isReadOnly ? undefined : onDoubleClick}
         onClick={onClick}
-        onKeyUp={onKeyUp}
+        onKeyUp={isReadOnly ? undefined : onKeyUp}
         ref={tdRef}
         tabIndex={-1}
         className={`${cssClass} ${cssClasses}`}
@@ -249,7 +251,7 @@ export function BeeTableTd<R extends object>({
           <>
             {tdContent}
 
-            {shouldRenderResizer && (
+            {!isReadOnly && shouldRenderResizer && (
               <Resizer
                 getWidthToFitData={cellWidthToFitDataRef?.getWidthToFitData}
                 minWidth={lastColumnMinWidth ?? cell.column.minWidth}
@@ -263,24 +265,28 @@ export function BeeTableTd<R extends object>({
           </>
         )}
 
-        {hoverInfo.isHovered && shouldRenderInlineButtons && onRowAdded && shouldShowRowsInlineControls && (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
+        {!isReadOnly &&
+          hoverInfo.isHovered &&
+          shouldRenderInlineButtons &&
+          onRowAdded &&
+          shouldShowRowsInlineControls && (
             <div
-              onMouseDown={(e) => e.stopPropagation()}
-              onDoubleClick={(e) => e.stopPropagation()}
-              onClick={onAddRowButtonClick}
-              className={"add-row-button"}
-              style={addRowButtonStyle}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+              }}
             >
-              <PlusIcon size="sm" />
+              <div
+                onMouseDown={(e) => e.stopPropagation()}
+                onDoubleClick={(e) => e.stopPropagation()}
+                onClick={onAddRowButtonClick}
+                className={"add-row-button"}
+                style={addRowButtonStyle}
+              >
+                <PlusIcon size="sm" />
+              </div>
             </div>
-          </div>
-        )}
+          )}
       </td>
     </BeeTableCoordinatesContextProvider>
   );

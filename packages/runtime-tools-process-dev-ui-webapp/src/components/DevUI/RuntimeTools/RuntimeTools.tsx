@@ -33,10 +33,12 @@ interface IOwnProps {
   isProcessEnabled: boolean;
   users: User[];
   dataIndexUrl: string;
+  quarkusAppOrigin: string;
+  quarkusAppRootPath: string;
+  shouldReplaceQuarkusAppOriginWithWebappOrigin: boolean;
   navigate: string;
+  devUIOrigin: string;
   devUIUrl: string;
-  openApiPath: string;
-  remoteKogitoAppUrl: string;
   availablePages: string[];
   customLabels: CustomLabels;
   omittedProcessTimelineEvents: string[];
@@ -47,9 +49,11 @@ const RuntimeTools: React.FC<IOwnProps> = ({
   users,
   dataIndexUrl,
   navigate,
+  devUIOrigin,
   devUIUrl,
-  openApiPath,
-  remoteKogitoAppUrl,
+  quarkusAppOrigin,
+  quarkusAppRootPath,
+  shouldReplaceQuarkusAppOriginWithWebappOrigin,
   isProcessEnabled,
   availablePages,
   customLabels,
@@ -57,9 +61,9 @@ const RuntimeTools: React.FC<IOwnProps> = ({
   diagramPreviewSize,
 }) => {
   const httpLink = new HttpLink({
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    uri: dataIndexUrl,
+    uri: shouldReplaceQuarkusAppOriginWithWebappOrigin
+      ? dataIndexUrl.replace(quarkusAppOrigin, devUIOrigin)
+      : dataIndexUrl,
   });
 
   const fallbackUI = onError(({ networkError }: any) => {
@@ -69,9 +73,11 @@ const RuntimeTools: React.FC<IOwnProps> = ({
         <DevUILayout
           apolloClient={client}
           users={users}
+          devUIOrigin={devUIOrigin}
           devUIUrl={devUIUrl}
-          openApiPath={openApiPath}
-          remoteKogitoAppUrl={remoteKogitoAppUrl}
+          quarkusAppOrigin={quarkusAppOrigin}
+          quarkusAppRootPath={quarkusAppRootPath}
+          shouldReplaceQuarkusAppOriginWithWebappOrigin={shouldReplaceQuarkusAppOriginWithWebappOrigin}
           isProcessEnabled={isProcessEnabled}
           availablePages={availablePages}
           customLabels={customLabels}
@@ -95,9 +101,11 @@ const RuntimeTools: React.FC<IOwnProps> = ({
     <DevUILayout
       apolloClient={client}
       users={users}
+      devUIOrigin={devUIOrigin}
       devUIUrl={devUIUrl}
-      openApiPath={openApiPath}
-      remoteKogitoAppUrl={remoteKogitoAppUrl}
+      quarkusAppOrigin={quarkusAppOrigin}
+      quarkusAppRootPath={quarkusAppRootPath}
+      shouldReplaceQuarkusAppOriginWithWebappOrigin={shouldReplaceQuarkusAppOriginWithWebappOrigin}
       isProcessEnabled={isProcessEnabled}
       availablePages={availablePages}
       customLabels={customLabels}

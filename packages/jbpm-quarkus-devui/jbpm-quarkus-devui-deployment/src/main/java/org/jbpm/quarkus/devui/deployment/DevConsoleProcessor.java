@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoDataIndexServiceAvailableBuildItem;
 import org.jbpm.quarkus.devui.deployment.data.UserInfo;
 import org.jbpm.quarkus.devui.runtime.config.DevConsoleRuntimeConfig;
@@ -52,7 +53,8 @@ import io.quarkus.vertx.http.runtime.management.ManagementInterfaceBuildTimeConf
 public class DevConsoleProcessor {
 
     private static final String STATIC_RESOURCES_PATH = "dev-static/";
-    private static final String BASE_RELATIVE_URL = "/q/dev-ui/org.jbpm.jbpm-quarkus-devui";
+    private static final String BASE_RELATIVE_URL = "dev-ui/org.jbpm.jbpm-quarkus-devui";
+    private static final String NON_APPLICATION_BASE_RELATIVE_URL = "/q/" + BASE_RELATIVE_URL;
     private static final String DATA_INDEX_CAPABILITY = "org.kie.kogito.data-index";
 
     @SuppressWarnings("unused")
@@ -77,13 +79,13 @@ public class DevConsoleProcessor {
                 true);
 
         routeBuildItemBuildProducer.produce(new RouteBuildItem.Builder()
-                .route(BASE_RELATIVE_URL + "/resources/*")
+                .route(NON_APPLICATION_BASE_RELATIVE_URL + "/resources/*")
                 .handler(devUIStaticArtifactsRecorder.handler(devConsoleStaticResourcesDeploymentPath.toString(),
                         shutdownContext))
                 .build());
 
         routeBuildItemBuildProducer.produce(new RouteBuildItem.Builder()
-                .route(BASE_RELATIVE_URL + "/*")
+                .route(NON_APPLICATION_BASE_RELATIVE_URL + "/*")
                 .handler(devUIStaticArtifactsRecorder.handler(devConsoleStaticResourcesDeploymentPath.toString(),
                         shutdownContext))
                 .build());
@@ -112,19 +114,21 @@ public class DevConsoleProcessor {
         String uiPath = nonApplicationRootPathBuildItem.resolveManagementPath(BASE_RELATIVE_URL,
                 managementInterfaceBuildTimeConfig, launchModeBuildItem, true);
 
-        String openapiPath = getProperty(configurationBuildItem, systemPropertyBuildItems, "quarkus.smallrye-openapi.path");
         String devUIUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.dev-ui.url");
-        String dataIndexUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.data-index.url");
+        String dataIndexUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.dataindex.http.url");
         String trustyServiceUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.trusty.http.url");
+        String quarkusHttpHost = ConfigProvider.getConfig().getValue("quarkus.http.host", String.class);
+        String quarkusHttpPort = ConfigProvider.getConfig().getValue("quarkus.http.port", String.class);
 
         CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
 
+        cardPageBuildItem.addBuildTimeData("quarkusHttpHost", quarkusHttpHost);
+        cardPageBuildItem.addBuildTimeData("quarkusHttpPort", quarkusHttpPort);
+        cardPageBuildItem.addBuildTimeData("quarkusAppRootPath", nonApplicationRootPathBuildItem.getNormalizedHttpRootPath());
         cardPageBuildItem.addBuildTimeData("extensionBasePath", uiPath);
-        cardPageBuildItem.addBuildTimeData("openapiPath", openapiPath);
         cardPageBuildItem.addBuildTimeData("devUIUrl", devUIUrl);
         cardPageBuildItem.addBuildTimeData("dataIndexUrl", dataIndexUrl);
         cardPageBuildItem.addBuildTimeData("isTracingEnabled", false);
-        cardPageBuildItem.addBuildTimeData("trustyServiceUrl", trustyServiceUrl);
         cardPageBuildItem.addBuildTimeData("userData", readUsersInfo(devConsoleRuntimeConfig));
 
         cardPageBuildItem.addPage(Page.webComponentPageBuilder()

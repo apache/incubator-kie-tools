@@ -27,6 +27,10 @@ export class NameAndDataTypeCell {
     await this.locator.nth(0).click();
   }
 
+  public async getPopoverMenu() {
+    return this.locator.page().getByTestId("kie-tools--bee--expression-popover-menu");
+  }
+
   public async setName(params: { name: string; close: boolean }) {
     await this.locator.getByRole("textbox").fill(params.name);
     if (params.close) {

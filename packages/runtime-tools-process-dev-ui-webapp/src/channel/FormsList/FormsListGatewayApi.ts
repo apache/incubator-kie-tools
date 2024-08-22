@@ -20,6 +20,7 @@
 import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { FormFilter } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/formsList";
 import { getForms } from "@kie-tools/runtime-tools-process-gateway-api/dist/gatewayApi";
+
 export interface FormsListGatewayApi {
   getFormFilter(): Promise<FormFilter>;
   applyFilter(formList: FormFilter): Promise<void>;
@@ -37,6 +38,8 @@ export interface UnSubscribeHandler {
 }
 
 export class FormsListGatewayApiImpl implements FormsListGatewayApi {
+  constructor(private baseUrl: string) {}
+
   private _FormFilter: FormFilter = {
     formNames: [],
   };
@@ -52,7 +55,7 @@ export class FormsListGatewayApiImpl implements FormsListGatewayApi {
   };
 
   getFormsQuery(): Promise<FormInfo[]> {
-    return getForms(this._FormFilter.formNames);
+    return getForms(this.baseUrl, this._FormFilter.formNames);
   }
 
   openForm = (formData: FormInfo): Promise<void> => {

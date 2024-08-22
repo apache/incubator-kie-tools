@@ -58,7 +58,7 @@ export function FilterExpressionComponent({
   parentElementId: string;
 }) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
+  const { expressionHolderId, widthsById, isReadOnly } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
@@ -167,6 +167,8 @@ export function FilterExpressionComponent({
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <BeeTable<ROWTYPE>
+        isReadOnly={isReadOnly}
+        isEditableHeader={!isReadOnly}
         onColumnResizingWidthChange={onColumnResizingWidthChange}
         resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
         tableId={filterExpression["@_id"]}

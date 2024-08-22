@@ -83,7 +83,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.Stan
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.TimeUnit;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.UnitCost;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.WorkingHours;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.DecisionName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.DmnModelName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsMultipleInstance;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Namespace;
@@ -462,7 +461,6 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                          BindableAdapterUtils.getPropertyId(Width.class),
                          BindableAdapterUtils.getPropertyId(ProcessVariables.class),
                          BindableAdapterUtils.getPropertyId(DmnModelName.class),
-                         BindableAdapterUtils.getPropertyId(DecisionName.class),
                          BindableAdapterUtils.getPropertyId(Namespace.class),
                          BindableAdapterUtils.getPropertyId(IsMultipleInstance.class),
                          BindableAdapterUtils.getPropertyId(Min.class),

@@ -35,6 +35,7 @@ export interface BeeTableTdForAdditionalRowProps<R extends object> {
   resizerStopBehavior: ResizerStopBehavior;
   column: ReactTable.ColumnInstance<R>;
   lastColumnMinWidth?: number;
+  isReadOnly: boolean;
 }
 
 export function BeeTableTdForAdditionalRow<R extends object>({
@@ -46,6 +47,7 @@ export function BeeTableTdForAdditionalRow<R extends object>({
   isLastColumn,
   resizerStopBehavior,
   lastColumnMinWidth,
+  isReadOnly,
 }: BeeTableTdForAdditionalRowProps<R>) {
   const tdRef = useRef<HTMLTableCellElement>(null);
 
@@ -81,7 +83,7 @@ export function BeeTableTdForAdditionalRow<R extends object>({
     >
       {children}
 
-      {!column.isWidthConstant && (
+      {!column.isWidthConstant && !isReadOnly && (
         <Resizer
           minWidth={lastColumnMinWidth ?? column.minWidth}
           width={column.width}

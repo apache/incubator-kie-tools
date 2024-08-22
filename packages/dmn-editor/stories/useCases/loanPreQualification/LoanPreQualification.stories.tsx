@@ -25,18 +25,18 @@ import { DmnEditor, DmnEditorProps } from "../../../src/DmnEditor";
 import { StorybookDmnEditorProps } from "../../dmnEditorStoriesWrapper";
 
 export const loanPreQualificationDmn = `<?xml version="1.0" encoding="UTF-8" ?>
-<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" 
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
     xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
     xmlns:kie="https://kie.apache.org/dmn/extensions/1.0"
-    xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" 
-    xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" 
-    xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" 
-    xmlns:included0="https://kie.apache.org/dmn/_923784BD-CD31-488A-9C31-C1A83C5483C0" 
+    xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+    xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+    xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+    xmlns:included0="https://kie.apache.org/dmn/_923784BD-CD31-488A-9C31-C1A83C5483C0"
     xmlns:included1="https://kie.apache.org/dmn/_D19B0015-2CBD-4BA8-84A9-5F554D84A9E1"
-    expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" 
+    expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
     typeLanguage="http://www.omg.org/spec/DMN/20211108/FEEL/"
-    namespace="https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB" 
-    id="_C6CBECEB-2BBC-4E14-80B0-17F576B2CF92" 
+    namespace="https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB"
+    id="_C6CBECEB-2BBC-4E14-80B0-17F576B2CF92"
     name="loan_pre_qualification">
   <dmn:extensionElements />
   <dmn:itemDefinition id="_D40B0106-62E8-4AC0-A39A-C6C9506194A9" name="Requested_Product" isCollection="false">
@@ -790,7 +790,7 @@ const marshaller = getMarshaller(loanPreQualificationDmn, { upgradeTo: "latest" 
 const model = marshaller.parser.parse();
 
 export const LoanPreQualification: Story = {
-  ...Empty.render,
+  render: Empty.render,
   args: {
     ...Empty.args,
     model: model,

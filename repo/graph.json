@@ -156,6 +156,7 @@
       { "id": "@kie-tools/python-venv" },
       { "id": "@kie-tools/runtime-tools-components" },
       { "id": "@kie-tools/runtime-tools-shared-gateway-api" },
+      { "id": "@kie-tools/runtime-tools-consoles-helm-chart" },
       { "id": "@kie-tools/runtime-tools-process-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-process-gateway-api" },
       { "id": "@kie-tools/runtime-tools-shared-enveloped-components" },
@@ -1965,6 +1966,16 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/runtime-tools-consoles-helm-chart",
+        "target": "@kie-tools/kogito-management-console",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-consoles-helm-chart",
+        "target": "@kie-tools/kogito-task-console",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/runtime-tools-process-enveloped-components",
         "target": "@kie-tools/runtime-tools-process-gateway-api",
         "weight": 1
@@ -2565,6 +2576,7 @@
     ["@kie-tools-core/react-hooks", "packages/react-hooks"],
     ["@kie-tools/root-env", "packages/root-env"],
     ["@kie-tools/runtime-tools-components", "packages/runtime-tools-components"],
+    ["@kie-tools/runtime-tools-consoles-helm-chart", "packages/runtime-tools-consoles-helm-chart"],
     ["@kie-tools/runtime-tools-management-console-webapp", "packages/runtime-tools-management-console-webapp"],
     ["@kie-tools/runtime-tools-process-dev-ui-webapp", "packages/runtime-tools-process-dev-ui-webapp"],
     ["@kie-tools/runtime-tools-process-enveloped-components", "packages/runtime-tools-process-enveloped-components"],

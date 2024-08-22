@@ -36,7 +36,7 @@ import { Normalized } from "../../normalization/normalize";
 
 export function DecisionTableInputHeaderCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
-  isReadonly: boolean;
+  isReadOnly: boolean;
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
@@ -75,7 +75,7 @@ export function DecisionTableInputHeaderCell(props: {
         </ClipboardCopy>
       </FormGroup>
       <DescriptionField
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         initialValue={cell?.description?.__$$text ?? ""}
         onChange={(newDescription: string) =>
@@ -97,7 +97,7 @@ export function DecisionTableInputHeaderCell(props: {
           <>
             <NameField
               id={inputExpression["@_id"]!}
-              isReadonly={props.isReadonly}
+              isReadOnly={props.isReadOnly}
               name={inputExpression?.text?.__$$text ?? ""}
               getAllUniqueNames={getAllUniqueNames}
               onChange={(newName) =>
@@ -109,7 +109,7 @@ export function DecisionTableInputHeaderCell(props: {
               }
             />
             <TypeRefField
-              isReadonly={props.isReadonly}
+              isReadOnly={props.isReadOnly}
               dmnEditorRootElementRef={dmnEditorRootElementRef}
               typeRef={inputExpression?.["@_typeRef"]}
               onChange={(newTypeRef) =>
@@ -124,7 +124,7 @@ export function DecisionTableInputHeaderCell(props: {
             {inputExpressionItemDefinition && (
               <FormGroup label="Constraint">
                 <ConstraintsFromTypeConstraintAttribute
-                  isReadonly={true}
+                  isReadOnly={true}
                   itemDefinition={inputExpressionItemDefinition}
                   editItemDefinition={() => {}}
                   renderOnPropertiesPanel={true}
@@ -133,7 +133,7 @@ export function DecisionTableInputHeaderCell(props: {
               </FormGroup>
             )}
             <ExpressionLanguageField
-              isReadonly={props.isReadonly}
+              isReadOnly={props.isReadOnly}
               initialValue={inputExpression?.["@_expressionLanguage"] ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newExpressionLanguage) =>
@@ -144,7 +144,7 @@ export function DecisionTableInputHeaderCell(props: {
               }
             />
             <DescriptionField
-              isReadonly={props.isReadonly}
+              isReadOnly={props.isReadOnly}
               initialValue={inputExpression?.description?.__$$text ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newDescription) =>
@@ -169,7 +169,7 @@ export function DecisionTableInputHeaderCell(props: {
         {isInputValuesExpanded && (
           <>
             <ExpressionLanguageField
-              isReadonly={props.isReadonly}
+              isReadOnly={props.isReadOnly}
               initialValue={inputValues?.["@_expressionLanguage"] ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newExpressionLanguage) =>
@@ -180,7 +180,7 @@ export function DecisionTableInputHeaderCell(props: {
               }
             />
             <ContentField
-              isReadonly={props.isReadonly}
+              isReadOnly={props.isReadOnly}
               initialValue={inputValues?.text?.__$$text ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newText) =>
@@ -192,7 +192,7 @@ export function DecisionTableInputHeaderCell(props: {
               }
             />
             <DescriptionField
-              isReadonly={props.isReadonly}
+              isReadOnly={props.isReadOnly}
               initialValue={inputValues?.description?.__$$text ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newDescription: string) =>

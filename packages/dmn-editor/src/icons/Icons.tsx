@@ -144,7 +144,7 @@ export function DecisionServiceIcon() {
         y={12}
         height={nodeSvgProps.width}
         showSectionLabels={false}
-        isReadonly={true}
+        isReadOnly={true}
       />
     </RoundSvg>
   );
