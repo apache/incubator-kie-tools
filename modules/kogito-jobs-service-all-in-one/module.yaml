@@ -18,7 +18,7 @@
 #
 schema_version: 1
 name: org.kie.kogito.jobs.service.allinone
-version: "999-SNAPSHOT"
+version: "main"
 
 artifacts:
   - path: /tmp/build/jobs-service-inmemory-all-in-one

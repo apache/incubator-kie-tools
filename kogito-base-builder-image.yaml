@@ -19,7 +19,7 @@
 schema_version: 1
 
 name: "docker.io/apache/incubator-kie-kogito-base-builder"
-version: "999-SNAPSHOT"
+version: "main"
 from: "registry.access.redhat.com/ubi8/openjdk-17:1.19"
 description: "Image with JDK and Maven, used as a base image. It is used by Web Tools !"
 

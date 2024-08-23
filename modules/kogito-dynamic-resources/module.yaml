@@ -18,7 +18,7 @@
 #
 schema_version: 1
 name: org.kie.kogito.dynamic.resources
-version: "999-SNAPSHOT"
+version: "main"
 
 description: -| Module retrieved from https://github.com/jboss-openshift/cct_module/blob/master/jboss/container/java/jvm/bash However it contains a few customizations to fit Kogito needs.
 

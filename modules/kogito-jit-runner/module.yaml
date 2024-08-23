@@ -18,7 +18,7 @@
 #
 schema_version: 1
 name: org.kie.kogito.jit-runner
-version: "999-SNAPSHOT"
+version: "main"
 
 # see build-kogito-apps-components.sh script, responsible for build it.
 # called by the Makefile before builds

@@ -18,7 +18,7 @@
 #
 schema_version: 1
 name: org.kie.kogito.swf.common.build
-version: "999-SNAPSHOT"
+version: "main"
 description: "Kogito Serverless Workflow image build process"
 
 execute:

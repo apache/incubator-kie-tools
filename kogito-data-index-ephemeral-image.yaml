@@ -19,7 +19,7 @@
 schema_version: 1
 
 name: "docker.io/apache/incubator-kie-kogito-data-index-ephemeral"
-version: "999-SNAPSHOT"
+version: "main"
 from: "registry.access.redhat.com/ubi8/openjdk-17-runtime:1.19"
 description: "Runtime image for Kogito Data Index Service for ephemeral PostgreSQL persistence provider"
 

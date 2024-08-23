@@ -18,7 +18,7 @@
 #
 schema_version: 1
 name: org.kie.kogito.jobs.service.common
-version: "999-SNAPSHOT"
+version: "main"
 description: "This module needs to be run last, if adding it, add in the last position."
 
 execute:
