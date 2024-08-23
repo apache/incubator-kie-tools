@@ -568,6 +568,58 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   },
                 },
               });
+
+              const nodesById = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById;
+              state
+                .computed(state)
+                .getDiagramData(externalModelsByNamespace)
+                .edgesById.forEach((edge, key) => {
+                  const sourceData = nodesById.get(edge.source)?.data;
+                  const sourceType = nodesById.get(edge.source)?.type;
+                  const targetData = nodesById.get(edge.target)?.data;
+                  const targetType = nodesById.get(edge.target)?.type;
+
+                  // We want to add Edge only if both Source and Target are already present in DRD
+                  if (
+                    edge.data?.dmnShapeSource !== undefined &&
+                    edge.data?.dmnShapeSource["dc:Bounds"] !== undefined &&
+                    edge.data?.dmnShapeSource["@_id"] !== undefined &&
+                    edge.data?.dmnShapeTarget &&
+                    edge.data?.dmnShapeTarget["dc:Bounds"] !== undefined &&
+                    edge.data?.dmnShapeTarget["@_id"] !== undefined &&
+                    sourceData !== undefined &&
+                    sourceType !== undefined &&
+                    targetData !== undefined &&
+                    targetType !== undefined
+                  ) {
+                    addEdge({
+                      definitions: state.dmn.model.definitions,
+                      drdIndex: state.computed(state).getDrdIndex(),
+                      edge: {
+                        type: edge.type as EdgeType,
+                        targetHandle: PositionalNodeHandleId.Center,
+                        sourceHandle: PositionalNodeHandleId.Center,
+                        autoPositionedEdgeMarker: undefined,
+                      },
+                      sourceNode: {
+                        type: sourceType as NodeType,
+                        data: sourceData,
+                        href: edge.source.replace("#", ""),
+                        bounds: edge.data?.dmnShapeSource["dc:Bounds"],
+                        shapeId: edge.data?.dmnShapeSource["@_id"],
+                      },
+                      targetNode: {
+                        type: targetType as NodeType,
+                        href: edge.target.replace("#", ""),
+                        data: targetData,
+                        bounds: edge.data?.dmnShapeTarget["dc:Bounds"],
+                        index: nodesById.get(edge.target)?.data.index ?? 0,
+                        shapeId: edge.data?.dmnShapeTarget["@_id"],
+                      },
+                      keepWaypoints: false,
+                    });
+                  }
+                });
             });
           }
           console.debug(`DMN DIAGRAM: Adding DRG node`, JSON.stringify(drgElement));
