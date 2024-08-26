@@ -172,7 +172,7 @@
       { "id": "@kie-tools/serverless-logic-web-tools-base-builder-image-env" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env" },
-      { "id": "@kie-tools/sonataflow-mock-server" },
+      { "id": "@kie-tools/sonataflow-dev-app" },
       { "id": "@kie-tools/yard-language-service" },
       { "id": "@kie-tools/yard-validator" },
       { "id": "@kie-tools/serverless-logic-web-tools-base-builder-image" },
@@ -573,7 +573,7 @@
       },
       {
         "source": "@kie-tools/serverless-workflow-dev-ui-webapp",
-        "target": "@kie-tools/sonataflow-mock-server",
+        "target": "@kie-tools/sonataflow-dev-app",
         "weight": 1
       },
       {
@@ -2128,7 +2128,7 @@
       },
       {
         "source": "@kie-tools/serverless-logic-web-tools",
-        "target": "@kie-tools/sonataflow-mock-server",
+        "target": "@kie-tools/sonataflow-dev-app",
         "weight": 1
       },
       {
@@ -2177,12 +2177,12 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/sonataflow-mock-server",
+        "source": "@kie-tools/sonataflow-dev-app",
         "target": "@kie-tools/eslint",
         "weight": 1
       },
       {
-        "source": "@kie-tools/sonataflow-mock-server",
+        "source": "@kie-tools/sonataflow-dev-app",
         "target": "@kie-tools/root-env",
         "weight": 1
       },
@@ -2238,7 +2238,7 @@
       },
       {
         "source": "sonataflow-deployment-webapp",
-        "target": "@kie-tools/sonataflow-mock-server",
+        "target": "@kie-tools/sonataflow-dev-app",
         "weight": 1
       },
       {
@@ -2383,7 +2383,7 @@
       },
       {
         "source": "@kie-tools/sonataflow-management-console-webapp",
-        "target": "@kie-tools/sonataflow-mock-server",
+        "target": "@kie-tools/sonataflow-dev-app",
         "weight": 1
       },
       {
@@ -2644,12 +2644,12 @@
     ["swf-vscode-extension", "packages/serverless-workflow-vscode-extension"],
     ["@kie-tools/sonataflow-builder-image", "packages/sonataflow-builder-image"],
     ["sonataflow-deployment-webapp", "packages/sonataflow-deployment-webapp"],
+    ["@kie-tools/sonataflow-dev-app", "packages/sonataflow-dev-app"],
     ["@kie-tools/sonataflow-devmode-image", "packages/sonataflow-devmode-image"],
     ["@kie-tools/sonataflow-image-common", "packages/sonataflow-image-common"],
     ["@kie-tools/sonataflow-management-console-image", "packages/sonataflow-management-console-image"],
     ["@kie-tools/sonataflow-management-console-image-env", "packages/sonataflow-management-console-image-env"],
     ["@kie-tools/sonataflow-management-console-webapp", "packages/sonataflow-management-console-webapp"],
-    ["@kie-tools/sonataflow-mock-server", "packages/sonataflow-mock-server"],
     ["@kie-tools/sonataflow-operator", "packages/sonataflow-operator"],
     ["@kie-tools/sonataflow-quarkus-devui", "packages/sonataflow-quarkus-devui"],
     ["@kie-tools/storybook-base", "packages/storybook-base"],

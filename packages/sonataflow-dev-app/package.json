@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@kie-tools/sonataflow-mock-server",
+  "name": "@kie-tools/sonataflow-dev-app",
   "version": "0.0.0",
   "license": "Apache-2.0",
   "author": "",

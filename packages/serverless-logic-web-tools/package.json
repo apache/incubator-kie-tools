@@ -107,7 +107,7 @@
     "@kie-tools/serverless-logic-web-tools-base-builder-image-env": "workspace:*",
     "@kie-tools/serverless-logic-web-tools-swf-builder-image-env": "workspace:*",
     "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env": "workspace:*",
-    "@kie-tools/sonataflow-mock-server": "workspace:*",
+    "@kie-tools/sonataflow-dev-app": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@svgr/webpack": "6.2.1",
     "@testing-library/jest-dom": "^6.4.6",

@@ -1,8 +1,8 @@
-# SonataFlow Mock Server
+# SonataFlow Dev App
 
 ### Description
 
-The SonataFlow Mock Server provides the SonataFlow GraphQL and OpenAPI endpoints.
+The SonataFlow Dev App provides the SonataFlow GraphQL and OpenAPI endpoints.
 
 ### Usage
 

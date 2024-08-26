@@ -18,7 +18,7 @@
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
     "dev": "concurrently 'pnpm  start' 'pnpm run dev:server'",
-    "dev:server": "pnpm -F @kie-tools/sonataflow-mock-server start",
+    "dev:server": "pnpm -F @kie-tools/sonataflow-dev-app start",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "webpack serve --host 0.0.0.0 --env dev",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
@@ -63,7 +63,7 @@
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/jest-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
-    "@kie-tools/sonataflow-mock-server": "workspace:*",
+    "@kie-tools/sonataflow-dev-app": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/jest": "^29.5.12",
     "@types/react": "^17.0.6",
