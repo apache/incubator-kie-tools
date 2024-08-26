@@ -382,7 +382,7 @@ test.describe("Model DRD", () => {
          *      |
          *      I
          */
-        test.only("should add waypoint to secondary edge depiction - information requirement", async ({
+        test("should add waypoint to secondary edge depiction - information requirement", async ({
           diagram,
           drds,
           drgNodes,
@@ -413,7 +413,7 @@ test.describe("Model DRD", () => {
           await drds.toggle();
           await drds.navigateTo({ name: "Second DRD" });
           await drds.toggle();
-          await drgNodes.open();
+          await drgNodes.open(); // TODO toggle()
           await drgNodes.dragNode({ name: "A", targetPosition: { x: 400, y: 300 } });
           await drgNodes.dragNode({ name: "B", targetPosition: { x: 100, y: 300 } });
           await drgNodes.dragNode({ name: "C", targetPosition: { x: 400, y: 100 } });
@@ -429,7 +429,8 @@ test.describe("Model DRD", () => {
           await expect(diagram.get()).toHaveScreenshot("drds-ir-edge-depiction-waypoint.png");
         });
 
-        test("should add waypoint to secondary edge depiction - knowledge requirement", async ({
+        // TODO remove only
+        test.only("should add waypoint to secondary edge depiction - knowledge requirement", async ({
           decisionPropertiesPanel,
           drds,
           drgNodes,
@@ -437,7 +438,8 @@ test.describe("Model DRD", () => {
           palette,
         }) => {});
 
-        test("should add waypoint to secondary edge depiction - authority requirement", async ({
+        // TODO remove only
+        test.only("should add waypoint to secondary edge depiction - authority requirement", async ({
           decisionPropertiesPanel,
           drds,
           drgNodes,
