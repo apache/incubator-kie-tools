@@ -117,7 +117,7 @@ void setupDeployJob(JobType jobType) {
 
         QUARKUS_PLATFORM_NEXUS_URL: Utils.getMavenQuarkusPlatformRepositoryUrl(this),
 
-        DISABLE_IMAGES_DEPLOY: (jobType==JobType.NIGHTLY) ? true : Utils.isImagesDeployDisabled(this)
+        DISABLE_IMAGES_DEPLOY: (jobType == JobType.RELEASE) ? true : Utils.isImagesDeployDisabled(this)
     ])
     if (Utils.hasBindingValue(this, 'CLOUD_IMAGES')) {
         jobParams.env.put('IMAGES_LIST', Utils.getBindingValue(this, 'CLOUD_IMAGES'))
