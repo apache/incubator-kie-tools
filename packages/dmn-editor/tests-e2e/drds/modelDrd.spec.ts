@@ -371,6 +371,80 @@ test.describe("Model DRD", () => {
         expect(width).toEqual("160");
         expect(height).toEqual("80");
       });
+
+      test.describe("Model DRD - Add Content - Edge Depiction Waypoint", async () => {
+        /**
+         *      C
+         *      ^
+         *      |
+         * B -> A
+         *      ^
+         *      |
+         *      I
+         */
+        test.only("should add waypoint to secondary edge depiction - information requirement", async ({
+          diagram,
+          drds,
+          drgNodes,
+          edges,
+          nodes,
+          palette,
+        }) => {
+          test.info().annotations.push({
+            type: TestAnnotations.REGRESSION,
+            description: "https://github.com/apache/incubator-kie-issues/issues/886",
+          });
+
+          await drds.toggle();
+          await drds.navigateTo({ name: "First DRD" });
+          await drds.toggle();
+          await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 400, y: 300 }, thenRenameTo: "A" });
+          await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 300 }, thenRenameTo: "B" });
+          await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 400, y: 100 }, thenRenameTo: "C" });
+          await palette.dragNewNode({
+            type: NodeType.INPUT_DATA,
+            targetPosition: { x: 400, y: 500 },
+            thenRenameTo: "I",
+          });
+          await nodes.dragNewConnectedEdge({ type: EdgeType.INFORMATION_REQUIREMENT, from: "B", to: "A" });
+          await nodes.dragNewConnectedEdge({ type: EdgeType.INFORMATION_REQUIREMENT, from: "A", to: "C" });
+          await nodes.dragNewConnectedEdge({ type: EdgeType.INFORMATION_REQUIREMENT, from: "I", to: "A" });
+
+          await drds.toggle();
+          await drds.navigateTo({ name: "Second DRD" });
+          await drds.toggle();
+          await drgNodes.open();
+          await drgNodes.dragNode({ name: "A", targetPosition: { x: 400, y: 300 } });
+          await drgNodes.dragNode({ name: "B", targetPosition: { x: 100, y: 300 } });
+          await drgNodes.dragNode({ name: "C", targetPosition: { x: 400, y: 100 } });
+          await drgNodes.dragNode({ name: "I", targetPosition: { x: 400, y: 500 } });
+          await drgNodes.open();
+
+          await edges.addWaypoint({ from: "B", to: "A" });
+          await edges.addWaypoint({ from: "A", to: "C" });
+          await edges.addWaypoint({ from: "I", to: "A" });
+
+          await nodes.move({ name: "A", targetPosition: { x: 600, y: 400 } });
+
+          await expect(diagram.get()).toHaveScreenshot("drds-ir-edge-depiction-waypoint.png");
+        });
+
+        test("should add waypoint to secondary edge depiction - knowledge requirement", async ({
+          decisionPropertiesPanel,
+          drds,
+          drgNodes,
+          nodes,
+          palette,
+        }) => {});
+
+        test("should add waypoint to secondary edge depiction - authority requirement", async ({
+          decisionPropertiesPanel,
+          drds,
+          drgNodes,
+          nodes,
+          palette,
+        }) => {});
+      });
     });
   });
 });
