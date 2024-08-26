@@ -150,7 +150,7 @@ pipeline {
                     int retries = Integer.parseInt(env.MAX_REGISTRY_RETRIES)
                     String imageTag = getBuiltImageTag()
                     if (isDeployLatestTag()) {
-                        latestTag = getTriggeringProjectName().contains('weekly') ? 'weekly-latest' : 'latest'
+                        latestTag = 'latest'
                         cloud.skopeoCopyRegistryImages(imageTag, getBuiltImageTag(latestTag), retries)
                     }
                 }

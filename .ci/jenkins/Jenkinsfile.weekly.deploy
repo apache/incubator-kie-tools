@@ -126,7 +126,7 @@ pipeline {
         stage('Create and push a new tag') {
             steps {
                 script {
-                    projectVersion = getProjectVersion(false)
+                    projectVersion = getProjectVersion()
                     dir(getRepoName()) {
                         githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
                         githubscm.tagRepository(projectVersion)
@@ -281,11 +281,7 @@ String getDeployImageNameSuffix() {
     return params.IMAGE_NAME_SUFFIX
 }
 String getDeployImageTag() {
-    return getBuildBranch() + "-" + getProjectVersionDate()
-}
-
-boolean isDeployLatestTag() {
-    return params.DEPLOY_WITH_LATEST_TAG
+    return getProjectVersion()
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -346,10 +342,6 @@ String getProjectVersionDate() {
     return projectVersionDate.replace('-', '')
 }
 
-String getProjectVersion(boolean keepSnapshotSuffix = true) {
-    def projectVersion = env.PROJECT_VERSION
-    if (keepSnapshotSuffix) {
-        return projectVersion.replace("-SNAPSHOT", "-${getProjectVersionDate()}-SNAPSHOT")
-    }
-    return projectVersion.replace("-SNAPSHOT", "-${getProjectVersionDate()}")
+String getProjectVersion() {
+    return env.PROJECT_VERSION + '-' + getProjectVersionDate()
 }
