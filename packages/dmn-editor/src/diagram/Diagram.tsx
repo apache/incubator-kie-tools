@@ -604,13 +604,13 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                       sourceNode: {
                         type: sourceType as NodeType,
                         data: sourceData,
-                        href: edge.source.replace("#", ""),
+                        href: edge.source,
                         bounds: edge.data?.dmnShapeSource["dc:Bounds"],
                         shapeId: edge.data?.dmnShapeSource["@_id"],
                       },
                       targetNode: {
                         type: targetType as NodeType,
-                        href: edge.target.replace("#", ""),
+                        href: edge.target,
                         data: targetData,
                         bounds: edge.data?.dmnShapeTarget["dc:Bounds"],
                         index: nodesById.get(edge.target)?.data.index ?? 0,

@@ -194,22 +194,20 @@ export function addEdge({
 
 function doesInformationRequirementsPointTo(a: Normalized<DMN15__tInformationRequirement>, nodeId: string) {
   return (
-    // use endsWith because @_href is sometimes prefixed with '#' and sometimes it is not
-    a.requiredInput?.["@_href"].endsWith(`${nodeId}`) || a.requiredDecision?.["@_href"].endsWith(`${nodeId}`)
+    a.requiredInput?.["@_href"] === `${nodeId}` || //
+    a.requiredDecision?.["@_href"] === `${nodeId}`
   );
 }
 
 function doesKnowledgeRequirementsPointTo(a: Normalized<DMN15__tKnowledgeRequirement>, nodeId: string) {
-  // use endsWith because @_href is sometimes prefixed with '#' and sometimes it is not
-  return a.requiredKnowledge?.["@_href"].endsWith(`${nodeId}`);
+  return a.requiredKnowledge?.["@_href"] === `${nodeId}`;
 }
 
 function doesAuthorityRequirementsPointTo(a: Normalized<DMN15__tAuthorityRequirement>, nodeId: string) {
-  // use endsWith because @_href is sometimes prefixed with '#' and sometimes it is not
   return (
-    a.requiredInput?.["@_href"].endsWith(`${nodeId}`) ||
-    a.requiredDecision?.["@_href"].endsWith(`${nodeId}`) ||
-    a.requiredAuthority?.["@_href"].endsWith(`${nodeId}`)
+    a.requiredInput?.["@_href"] === `${nodeId}` ||
+    a.requiredDecision?.["@_href"] === `${nodeId}` ||
+    a.requiredAuthority?.["@_href"] === `${nodeId}`
   );
 }
 
