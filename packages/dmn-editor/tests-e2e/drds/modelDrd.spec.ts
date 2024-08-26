@@ -136,13 +136,13 @@ test.describe("Model DRD", () => {
         await drds.toggle();
         await drds.navigateTo({ name: "Second DRD" });
         await drds.toggle();
-        await drgNodes.open();
+        await drgNodes.toggle();
         await drgNodes.dragNode({ name: DefaultNodeName.DECISION, targetPosition: { x: 300, y: 300 } });
 
         await drds.toggle();
         await drds.navigateTo({ name: "Third DRD" });
         await drds.toggle();
-        await drgNodes.open();
+        await drgNodes.toggle();
         await drgNodes.dragNode({ name: DefaultNodeName.DECISION, targetPosition: { x: 300, y: 300 } });
         await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
 
@@ -166,13 +166,13 @@ test.describe("Model DRD", () => {
         await drds.toggle();
         await drds.navigateTo({ name: "Second DRD" });
         await drds.toggle();
-        await drgNodes.open();
+        await drgNodes.toggle();
         await drgNodes.dragNode({ name: DefaultNodeName.DECISION, targetPosition: { x: 300, y: 300 } });
 
         await drds.toggle();
         await drds.navigateTo({ name: "Third DRD" });
         await drds.toggle();
-        await drgNodes.open();
+        await drgNodes.toggle();
         await drgNodes.dragNode({ name: DefaultNodeName.DECISION, targetPosition: { x: 300, y: 300 } });
 
         await nodes.delete({ name: DefaultNodeName.DECISION });
@@ -199,13 +199,13 @@ test.describe("Model DRD", () => {
         await drds.toggle();
         await drds.navigateTo({ name: "Second DRD" });
         await drds.toggle();
-        await drgNodes.open();
+        await drgNodes.toggle();
         await drgNodes.dragNode({ name: DefaultNodeName.DECISION, targetPosition: { x: 300, y: 300 } });
 
         await drds.toggle();
         await drds.navigateTo({ name: "Third DRD" });
         await drds.toggle();
-        await drgNodes.open();
+        await drgNodes.toggle();
         await drgNodes.dragNode({ name: DefaultNodeName.DECISION, targetPosition: { x: 300, y: 300 } });
 
         await nodes.selectLabel({ name: DefaultNodeName.DECISION });
@@ -233,7 +233,7 @@ test.describe("Model DRD", () => {
         await drds.toggle();
         await drds.navigateTo({ name: "Second DRD" });
         await drds.toggle();
-        await drgNodes.open();
+        await drgNodes.toggle();
         await drgNodes.dragNode({ name: DefaultNodeName.DECISION, targetPosition: { x: 300, y: 300 } });
         await drgNodes.dragNode({ name: DefaultNodeName.INPUT_DATA, targetPosition: { x: 300, y: 500 } });
         await nodes.dragNewConnectedEdge({
@@ -272,7 +272,7 @@ test.describe("Model DRD", () => {
         await drds.toggle();
         await drds.navigateTo({ name: "Second DRD" });
         await drds.toggle();
-        await drgNodes.open();
+        await drgNodes.toggle();
         await drgNodes.dragNode({ name: DefaultNodeName.DECISION, targetPosition: { x: 300, y: 300 } });
 
         await expect(diagram.get()).toHaveScreenshot("drds-decision-missing-dependency.png");
@@ -301,7 +301,7 @@ test.describe("Model DRD", () => {
         await drds.toggle();
         await drds.navigateTo({ name: "Second DRD" });
         await drds.toggle();
-        await drgNodes.open();
+        await drgNodes.toggle();
         await drgNodes.dragNode({ name: DefaultNodeName.DECISION, targetPosition: { x: 300, y: 300 } });
         await drgNodes.dragNode({ name: DefaultNodeName.INPUT_DATA, targetPosition: { x: 300, y: 500 } });
 
@@ -327,7 +327,7 @@ test.describe("Model DRD", () => {
         await drds.toggle();
         await drds.navigateTo({ name: "Second DRD" });
         await drds.toggle();
-        await drgNodes.open();
+        await drgNodes.toggle();
         await drgNodes.dragNode({ name: DefaultNodeName.DECISION, targetPosition: { x: 500, y: 500 } });
 
         await nodes.move({ name: DefaultNodeName.DECISION, targetPosition: { x: 400, y: 400 } });
@@ -357,7 +357,7 @@ test.describe("Model DRD", () => {
         await drds.toggle();
         await drds.navigateTo({ name: "Second DRD" });
         await drds.toggle();
-        await drgNodes.open();
+        await drgNodes.toggle();
         await drgNodes.dragNode({ name: DefaultNodeName.DECISION, targetPosition: { x: 500, y: 500 } });
 
         await nodes.resize({ nodeName: DefaultNodeName.DECISION, xOffset: 100, yOffset: 100 });
@@ -413,12 +413,12 @@ test.describe("Model DRD", () => {
           await drds.toggle();
           await drds.navigateTo({ name: "Second DRD" });
           await drds.toggle();
-          await drgNodes.open(); // TODO toggle()
+          await drgNodes.toggle();
           await drgNodes.dragNode({ name: "A", targetPosition: { x: 400, y: 300 } });
           await drgNodes.dragNode({ name: "B", targetPosition: { x: 100, y: 300 } });
           await drgNodes.dragNode({ name: "C", targetPosition: { x: 400, y: 100 } });
           await drgNodes.dragNode({ name: "I", targetPosition: { x: 400, y: 500 } });
-          await drgNodes.open();
+          await drgNodes.toggle();
 
           await edges.addWaypoint({ from: "B", to: "A" });
           await edges.addWaypoint({ from: "A", to: "C" });
