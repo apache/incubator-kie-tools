@@ -19,6 +19,8 @@ digraph G {
   "@kie-tools-core/vscode-extension" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-examples/commit-message-validation-service" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/root-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools-examples/dmn-editor-standalone-examples" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "@kie-tools/dmn-editor-standalone" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-examples/drools-process-usertasks-quarkus-example" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/jbpm-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/jbpm-compact-architecture-example" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
@@ -36,7 +38,6 @@ digraph G {
   "@kie-tools-core/patternfly-base" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/uniforms-patternfly" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-examples/webapp" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
-  "@kie-tools/dmn-editor-standalone" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/kie-editors-standalone" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-standalone-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/backend" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -212,6 +213,7 @@ digraph G {
   "kie-tools-examples-base64png-editor-vscode-extension" -> "@kie-tools-examples/base64png-editor" [ style = "solid", color = "orange" ];
   "kie-tools-examples-base64png-editor-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/commit-message-validation-service" -> "@kie-tools/root-env" [ style = "dashed", color = "orange" ];
+  "@kie-tools-examples/dmn-editor-standalone-examples" -> "@kie-tools/dmn-editor-standalone" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/drools-process-usertasks-quarkus-example" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/jbpm-compact-architecture-example" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/jbpm-compact-architecture-example" -> "@kie-tools/kogito-management-console" [ style = "dashed", color = "orange" ];
