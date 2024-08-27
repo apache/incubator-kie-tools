@@ -25,7 +25,7 @@ The SonataFlow Dev App is intended for development purposes only. It provides mo
 
 ### Usage
 
-To run the development server, use the following command:
+To run the development app, use the following command:
 
 `pnpm start`
 
