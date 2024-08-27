@@ -17,6 +17,8 @@
 
 ## @kie-tools/sonataflow-management-console-image-env
 
+This package provides the environment variables used to configure, run and deploy the `sonataflow-management-console-image`.
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software
