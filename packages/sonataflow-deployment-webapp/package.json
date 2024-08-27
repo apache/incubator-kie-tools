@@ -17,10 +17,10 @@
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
-    "dev": "concurrently 'pnpm  start' 'pnpm run dev:server'",
-    "dev:server": "pnpm -F @kie-tools/sonataflow-dev-app start",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
-    "start": "webpack serve --host 0.0.0.0 --env dev",
+    "start": "concurrently 'pnpm start:dev-webapp' 'pnpm start:sonataflow-dev-app'",
+    "start:dev-webapp": "webpack serve --host 0.0.0.0 --env dev",
+    "start:sonataflow-dev-app": "pnpm -F @kie-tools/sonataflow-dev-app start",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
