@@ -47,7 +47,7 @@ To change any of this client configuration access to http://localhost:8280/auth/
 
 Enable `PROD` env mode by running the app with:
 
-`SONATAFLOW_MANAGEMENT_CONSOLE_WEBAPP__sonataflowEnvMode=PROD pnpm dev`
+`SONATAFLOW_MANAGEMENT_CONSOLE_WEBAPP__sonataflowEnvMode=PROD pnpm start`
 
 ---
 
