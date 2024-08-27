@@ -19,7 +19,7 @@
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "concurrently 'pnpm start:dev-webapp' 'pnpm start:sonataflow-dev-app'",
     "start:dev-webapp": "webpack serve --host 0.0.0.0 --env dev",
-    "start:sonataflow-dev-app": "pnpm -F @kie-tools/sonataflow-dev-app start",
+    "start:sonataflow-dev-app": "npm --prefix ./node_modules/@kie-tools/sonataflow-dev-app run start",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {

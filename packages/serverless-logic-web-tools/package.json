@@ -23,7 +23,7 @@
     "postreport": "jrm ./dist-tests-e2e/junit-transformed.xml \"./dist-tests-e2e/junit-report*.xml\"",
     "start": "concurrently 'pnpm start:dev-webapp' 'pnpm start:sonataflow-dev-app'",
     "start:dev-webapp": "webpack serve --host 0.0.0.0 --env dev",
-    "start:sonataflow-dev-app": "pnpm -F @kie-tools/sonataflow-dev-app start",
+    "start:sonataflow-dev-app": "npm --prefix ./node_modules/@kie-tools/sonataflow-dev-app run start",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "test-e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then  \"pnpm rimraf ./dist-tests-e2e\" \"pnpm start-server-and-test start https-get://0.0.0.0:$(build-env serverlessLogicWebTools.dev.port) cy:run\" \"pnpm postreport\""
   },
