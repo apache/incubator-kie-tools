@@ -25,6 +25,11 @@ import { snapPoint } from "../SnapGrid";
 import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DmnDiagramNodeData } from "../nodes/Nodes";
 import { DmnDiagramEdgeData } from "./Edges";
+import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
+import { addEdge } from "../../mutations/addEdge";
+import { EdgeType, NodeType } from "../connections/graphStructure";
+import { PositionalNodeHandleId } from "../connections/PositionalNodeHandles";
+import { getHandlePosition } from "../maths/DmnMaths";
 
 export function usePotentialWaypointControls(
   waypoints: DC__Point[],
@@ -38,6 +43,7 @@ export function usePotentialWaypointControls(
   const isDraggingWaypoint = useDmnEditorStore((s) => !!s.diagram.draggingWaypoints.find((e) => e === edgeId));
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const reactFlowInstance = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();
+  const { externalModelsByNamespace } = useExternalModels();
 
   const [potentialWaypoint, setPotentialWaypoint] = useState<ReturnType<typeof approximateClosestPoint> | undefined>(
     undefined
@@ -74,8 +80,73 @@ export function usePotentialWaypointControls(
   }, [snapGrid, potentialWaypoint]);
 
   const onDoubleClick = useCallback(() => {
-    if (!potentialWaypoint || !snappedPotentialWaypoint || edgeIndex === undefined) {
+    if (!potentialWaypoint || !snappedPotentialWaypoint) {
       return;
+    }
+
+    if (edgeIndex === undefined) {
+      dmnEditorStoreApi.setState((state) => {
+        const nodesById = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById;
+        const edge = state.computed(state).getDiagramData(externalModelsByNamespace).edgesById.get(edgeId);
+        if (
+          edge === undefined ||
+          edge.type === undefined ||
+          edge.data === undefined ||
+          edge.data?.dmnShapeSource === undefined ||
+          edge.data?.dmnShapeTarget === undefined
+        ) {
+          return;
+        }
+        const edgeSourceBounds = edge.data?.dmnShapeSource["dc:Bounds"];
+        const edgeTargetBounds = edge.data?.dmnShapeTarget["dc:Bounds"];
+
+        if (edgeSourceBounds === undefined || edgeTargetBounds === undefined) {
+          return;
+        }
+
+        const sourceData = nodesById.get(edge.source)?.data;
+        const sourceType = nodesById.get(edge.source)?.type;
+        const targetData = nodesById.get(edge.target)?.data;
+        const targetType = nodesById.get(edge.target)?.type;
+
+        if (
+          sourceData === undefined ||
+          sourceType === undefined ||
+          targetData === undefined ||
+          targetType === undefined
+        ) {
+          return;
+        }
+
+        addEdge({
+          definitions: state.dmn.model.definitions,
+          drdIndex: state.computed(state).getDrdIndex(),
+          edge: {
+            type: edge.type as EdgeType,
+            targetHandle: getHandlePosition({ shapeBounds: edgeTargetBounds, waypoint: snappedPotentialWaypoint })
+              .handlePosition as PositionalNodeHandleId,
+            sourceHandle: getHandlePosition({ shapeBounds: edgeSourceBounds, waypoint: snappedPotentialWaypoint })
+              .handlePosition as PositionalNodeHandleId,
+            autoPositionedEdgeMarker: undefined,
+          },
+          sourceNode: {
+            type: sourceType as NodeType,
+            data: sourceData,
+            href: edge.source,
+            bounds: edgeSourceBounds,
+            shapeId: edge.data?.dmnShapeSource["@_id"],
+          },
+          targetNode: {
+            type: targetType as NodeType,
+            href: edge.target,
+            data: targetData,
+            bounds: edgeTargetBounds,
+            index: nodesById.get(edge.target)?.data.index ?? 0,
+            shapeId: edge.data?.dmnShapeTarget["@_id"],
+          },
+          keepWaypoints: false,
+        });
+      });
     }
 
     if (isExistingWaypoint(snappedPotentialWaypoint)) {
@@ -96,18 +167,24 @@ export function usePotentialWaypointControls(
     }
 
     dmnEditorStoreApi.setState((state) => {
+      const dmnEdgeIndex = state.computed(state).indexedDrd().dmnEdgesByDmnElementRef.get(edgeId)?.index;
+      if (dmnEdgeIndex === undefined) {
+        return;
+      }
       addEdgeWaypoint({
         definitions: state.dmn.model.definitions,
         drdIndex,
         beforeIndex: i - 1,
-        edgeIndex,
+        edgeIndex: dmnEdgeIndex,
         waypoint: snappedPotentialWaypoint,
       });
     });
   }, [
     drdIndex,
     dmnEditorStoreApi,
+    edgeId,
     edgeIndex,
+    externalModelsByNamespace,
     isExistingWaypoint,
     potentialWaypoint,
     snappedPotentialWaypoint,
