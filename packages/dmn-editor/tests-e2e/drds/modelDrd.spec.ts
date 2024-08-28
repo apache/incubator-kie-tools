@@ -372,15 +372,12 @@ test.describe("Model DRD", () => {
         expect(height).toEqual("80");
       });
 
-      // TODO the order makes a difference
-      // 1. add all dependencies and the dependent
-      // vs 2. add the dependent then in steps all dependencies
       test.describe("Model DRD - Add Content - Edge Depiction Waypoint", async () => {
         /**
-         *      C
-         *      ^
-         *      |
-         * B -> A
+         *      C       A: Decision
+         *      ^       B: Decision
+         *      |       C: Decision
+         * B -> A       I: InputData
          *      ^
          *      |
          *      I
@@ -433,9 +430,9 @@ test.describe("Model DRD", () => {
         });
 
         /**
-         *
-         * B -> A <- C
-         *
+         *                   A: Decision
+         * B -> A <- C       B: BusinessKnowledgeModel
+         *                   C: DecisionService
          */
         test("should add waypoint to secondary edge depiction - knowledge requirement", async ({
           diagram,
@@ -481,9 +478,9 @@ test.describe("Model DRD", () => {
         });
 
         /**
-         *
-         * B -> A -> C
-         *
+         *                  A: Decision
+         * B -> A -> C      B: KnowledgeSource
+         *                  C: KnowledgeSource
          */
         test("should add waypoint to secondary edge depiction - authority requirement", async ({
           diagram,
