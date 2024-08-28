@@ -95,12 +95,14 @@ export function usePotentialWaypointControls(
           edge.data?.dmnShapeSource === undefined ||
           edge.data?.dmnShapeTarget === undefined
         ) {
+          console.debug(`DMN MUTATION: We can not add DMNEdge for '${edgeId}' edge into diagram.`);
           return;
         }
         const edgeSourceBounds = edge.data?.dmnShapeSource["dc:Bounds"];
         const edgeTargetBounds = edge.data?.dmnShapeTarget["dc:Bounds"];
 
         if (edgeSourceBounds === undefined || edgeTargetBounds === undefined) {
+          console.debug(`DMN MUTATION: We can not add DMNEdge for '${edgeId}' edge into diagram.`);
           return;
         }
 
@@ -115,6 +117,7 @@ export function usePotentialWaypointControls(
           targetData === undefined ||
           targetType === undefined
         ) {
+          console.debug(`DMN MUTATION: We can not add DMNEdge for '${edgeId}' edge into diagram.`);
           return;
         }
 
@@ -146,6 +149,8 @@ export function usePotentialWaypointControls(
           },
           keepWaypoints: false,
         });
+
+        console.debug(`DMN MUTATION: DMNEdge for '${edgeId}' edge was added into diagram.`);
       });
     }
 
@@ -169,6 +174,7 @@ export function usePotentialWaypointControls(
     dmnEditorStoreApi.setState((state) => {
       const dmnEdgeIndex = state.computed(state).indexedDrd().dmnEdgesByDmnElementRef.get(edgeId)?.index;
       if (dmnEdgeIndex === undefined) {
+        console.debug(`DMN MUTATION: DMNEdge for '${edgeId}' edge has missing index.`);
         return;
       }
       addEdgeWaypoint({
@@ -178,6 +184,8 @@ export function usePotentialWaypointControls(
         edgeIndex: dmnEdgeIndex,
         waypoint: snappedPotentialWaypoint,
       });
+
+      console.debug(`DMN MUTATION: Waypoint on the DMNEdge for '${edgeId}' edge was added.`);
     });
   }, [
     drdIndex,
