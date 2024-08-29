@@ -44,6 +44,16 @@ type check struct {
 	Data   map[string]string `json:"data"`
 }
 
+const (
+	ephemeral            = "ephemeral"
+	postgreSQL           = "postgreSQL"
+	clusterWideEphemeral = "cluster-wide-ephemeral"
+	ephemeralDataIndex   = "ephemeral-data-index"
+	ephemeralJobService  = "ephemeral-job-service"
+)
+
+const randomIntRange = 16384 //Set to large number to avoid cluster namespace name collisions
+
 var (
 	upStatus string = "UP"
 )

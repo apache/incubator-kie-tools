@@ -29,4 +29,5 @@ Dockerfile
 /target/
 
 database/index.db
-e2e-test-report.xml
+e2e-test-report*.xml
+*.tar

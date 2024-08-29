@@ -338,7 +338,9 @@ generate-all: generate generate-deploy bundle addheaders vet fmt
 
 .PHONY: test-e2e # You will need to have a Minikube/Kind cluster up in running to run this target, and run container-builder before the test
 test-e2e:
-	go test ./test/e2e/* -v -ginkgo.v -ginkgo.no-color -ginkgo.junit-report=./e2e-test-report.xml -timeout 120m
+	go test ./test/e2e/e2e_suite_test.go ./test/e2e/helpers.go ./test/e2e/clusterplatform_test.go  -v -ginkgo.v -ginkgo.no-color -ginkgo.junit-report=./e2e-test-report-clusterplatform_test.xml -timeout 60m;
+	go test ./test/e2e/e2e_suite_test.go ./test/e2e/helpers.go ./test/e2e/platform_test.go  -v -ginkgo.v -ginkgo.no-color -ginkgo.junit-report=./e2e-test-report-platform_test.xml -timeout 60m;
+	go test ./test/e2e/e2e_suite_test.go ./test/e2e/helpers.go ./test/e2e/workflow_test.go  -v -ginkgo.v -ginkgo.no-color -ginkgo.junit-report=./e2e-test-report-workflow_test.xml -timeout 60m;
 
 .PHONY: before-pr
 before-pr: test generate-all

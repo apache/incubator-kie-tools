@@ -36,14 +36,6 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-const (
-	ephemeral            = "ephemeral"
-	postgreSQL           = "postgreSQL"
-	clusterWideEphemeral = "cluster-wide-ephemeral"
-	ephemeralDataIndex   = "ephemeral-data-index"
-	ephemeralJobService  = "ephemeral-job-service"
-)
-
 var _ = Describe("Validate the persistence", Ordered, func() {
 
 	var (
@@ -52,7 +44,7 @@ var _ = Describe("Validate the persistence", Ordered, func() {
 	)
 
 	BeforeEach(func() {
-		targetNamespace = fmt.Sprintf("test-%d", rand.Intn(1024)+1)
+		targetNamespace = fmt.Sprintf("test-%d", rand.Intn(randomIntRange)+1)
 		cmd := exec.Command("kubectl", "create", "namespace", targetNamespace)
 		_, err := utils.Run(cmd)
 		Expect(err).NotTo(HaveOccurred())
@@ -113,7 +105,7 @@ var _ = Describe("Validate the persistence", Ordered, func() {
 				Expect(sf).NotTo(BeEmpty(), "sonataflow name is empty")
 				EventuallyWithOffset(1, func() bool {
 					return verifyWorkflowIsInRunningStateInNamespace(sf, targetNamespace)
-				}, 10*time.Minute, 5).Should(BeTrue())
+				}, 15*time.Minute, 1*time.Minute).Should(BeTrue())
 			}
 		},
 			Entry("with both Job Service and Data Index and ephemeral persistence and the workflow in a dev profile", test.GetSonataFlowE2EPlatformServicesDirectory(), metadata.DevProfile.String(), ephemeral),

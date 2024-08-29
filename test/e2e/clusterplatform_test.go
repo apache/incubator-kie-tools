@@ -49,12 +49,12 @@ var _ = Describe("Validate a clusterplatform", Ordered, func() {
 	)
 
 	BeforeEach(func() {
-		targetNamespace = fmt.Sprintf("test-%d", rand.Intn(1024)+1)
+		targetNamespace = fmt.Sprintf("test-%d", rand.Intn(randomIntRange)+1)
 		cmd := exec.Command("kubectl", "create", "namespace", targetNamespace)
 		_, err := utils.Run(cmd)
 		Expect(err).NotTo(HaveOccurred())
 
-		targetNamespace2 = fmt.Sprintf("test-%d", rand.Intn(1024)+1)
+		targetNamespace2 = fmt.Sprintf("test-%d", rand.Intn(randomIntRange)+1)
 		cmd = exec.Command("kubectl", "create", "namespace", targetNamespace2)
 		_, err = utils.Run(cmd)
 		Expect(err).NotTo(HaveOccurred())

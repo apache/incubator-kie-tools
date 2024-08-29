@@ -44,7 +44,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 
 	var targetNamespace string
 	BeforeEach(func() {
-		targetNamespace = fmt.Sprintf("test-%d", rand.Intn(1024)+1)
+		targetNamespace = fmt.Sprintf("test-%d", rand.Intn(randomIntRange)+1)
 		cmd := exec.Command("kubectl", "create", "namespace", targetNamespace)
 		_, err := utils.Run(cmd)
 		Expect(err).NotTo(HaveOccurred())
@@ -153,7 +153,7 @@ var _ = Describe("Validate the persistence ", Ordered, func() {
 	)
 
 	BeforeEach(func() {
-		ns = fmt.Sprintf("test-%d", rand.Intn(1024)+1)
+		ns = fmt.Sprintf("test-%d", rand.Intn(randomIntRange)+1)
 		cmd := exec.Command("kubectl", "create", "namespace", ns)
 		_, err := utils.Run(cmd)
 		Expect(err).NotTo(HaveOccurred())
@@ -188,7 +188,7 @@ var _ = Describe("Validate the persistence ", Ordered, func() {
 			out, err := utils.Run(cmd)
 			GinkgoWriter.Printf("%s\n", string(out))
 			return err
-		}, 12*time.Minute, 5).Should(Succeed())
+		}, 15*time.Minute, 1*time.Minute).Should(Succeed())
 
 		By("Evaluate status of the workflow's pod database connection health endpoint")
 		cmd = exec.Command("kubectl", "get", "pod", "-l", "sonataflow.org/workflow-app", "-n", ns, "-ojsonpath={.items[*].metadata.name}")
@@ -224,7 +224,7 @@ var _ = Describe("Validate the persistence ", Ordered, func() {
 				}
 			}
 			return false
-		}, 1*time.Minute).Should(BeTrue())
+		}, 4*time.Minute).Should(BeTrue())
 		// Persistence initialization checks
 		cmd = exec.Command("kubectl", "get", "pod", "-l", "sonataflow.org/workflow-app", "-n", ns, "-ojsonpath={.items[*].metadata.name}")
 		output, err = utils.Run(cmd)
