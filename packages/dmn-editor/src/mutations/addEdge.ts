@@ -192,6 +192,85 @@ export function addEdge({
   return { newDmnEdge };
 }
 
+export function addEdgeTargetingExternalNode({
+  definitions,
+  drdIndex,
+  sourceNode,
+  targetNode,
+  edge,
+  keepWaypoints,
+  existingEdgeId,
+}: {
+  definitions: Normalized<DMN15__tDefinitions>;
+  drdIndex: number;
+  sourceNode: {
+    type: NodeType;
+    data: DmnDiagramNodeData;
+    href: string;
+    bounds: DC__Bounds;
+    shapeId: string | undefined;
+  };
+  targetNode: {
+    type: NodeType;
+    data: DmnDiagramNodeData;
+    href: string;
+    bounds: DC__Bounds;
+    shapeId: string | undefined;
+    index: number;
+  };
+  edge: {
+    type: EdgeType;
+    targetHandle: PositionalNodeHandleId;
+    sourceHandle: PositionalNodeHandleId;
+    autoPositionedEdgeMarker: AutoPositionedEdgeMarker | undefined;
+  };
+  keepWaypoints: boolean;
+  existingEdgeId?: string;
+}) {
+  if (!_checkIsValidConnection(sourceNode, targetNode, edge.type, true)) {
+    throw new Error(`DMN MUTATION: Invalid structure: (${sourceNode.type}) --${edge.type}--> (${targetNode.type}) `);
+  }
+
+  const newEdgeId = generateUuid();
+
+  const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
+
+  // Remove existing
+  const removedDmnEdge = removeFirstMatchIfPresent(
+    diagramElements,
+    (e) => e.__$$element === "dmndi:DMNEdge" && e["@_dmnElementRef"] === existingEdgeId
+  ) as Normalized<DMNDI15__DMNEdge> | undefined;
+
+  const newWaypoints = keepWaypoints
+    ? [
+        getPointForHandle({ bounds: sourceNode.bounds, handle: edge.sourceHandle }),
+        ...(removedDmnEdge?.["di:waypoint"] ?? []).slice(1, -1), // Slicing an empty array will always return an empty array, so it's ok.
+        getPointForHandle({ bounds: targetNode.bounds, handle: edge.targetHandle }),
+      ]
+    : [
+        getPointForHandle({ bounds: sourceNode.bounds, handle: edge.sourceHandle }),
+        getPointForHandle({ bounds: targetNode.bounds, handle: edge.targetHandle }),
+      ];
+
+  const newDmnEdge: Unpacked<typeof diagramElements> = {
+    __$$element: "dmndi:DMNEdge",
+    "@_id":
+      withoutDiscreteAutoPosinitioningMarker(removedDmnEdge?.["@_id"] ?? generateUuid()) +
+      (edge.autoPositionedEdgeMarker ?? ""),
+    "@_dmnElementRef": existingEdgeId ?? newEdgeId,
+    "@_sourceElement": sourceNode.shapeId,
+    "@_targetElement": targetNode.shapeId,
+    "di:waypoint": newWaypoints,
+  };
+
+  // Replace with the new one.
+  diagramElements.push(newDmnEdge);
+
+  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
+
+  return { newDmnEdge };
+}
+
 function doesInformationRequirementsPointTo(a: Normalized<DMN15__tInformationRequirement>, nodeId: string) {
   return (
     a.requiredInput?.["@_href"] === `${nodeId}` || //

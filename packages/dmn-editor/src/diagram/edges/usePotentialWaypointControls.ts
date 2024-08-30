@@ -26,7 +26,7 @@ import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen
 import { DmnDiagramNodeData } from "../nodes/Nodes";
 import { DmnDiagramEdgeData } from "./Edges";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
-import { addEdge } from "../../mutations/addEdge";
+import { addEdge, addEdgeTargetingExternalNode } from "../../mutations/addEdge";
 import { EdgeType, NodeType } from "../connections/graphStructure";
 import { PositionalNodeHandleId } from "../connections/PositionalNodeHandles";
 import { getHandlePosition } from "../maths/DmnMaths";
@@ -84,6 +84,7 @@ export function usePotentialWaypointControls(
       return;
     }
 
+    // TODO doc comment
     if (edgeIndex === undefined) {
       dmnEditorStoreApi.setState((state) => {
         const nodesById = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById;
@@ -121,34 +122,66 @@ export function usePotentialWaypointControls(
           return;
         }
 
-        addEdge({
-          definitions: state.dmn.model.definitions,
-          drdIndex: state.computed(state).getDrdIndex(),
-          edge: {
-            type: edge.type as EdgeType,
-            targetHandle: getHandlePosition({ shapeBounds: edgeTargetBounds, waypoint: snappedPotentialWaypoint })
-              .handlePosition as PositionalNodeHandleId,
-            sourceHandle: getHandlePosition({ shapeBounds: edgeSourceBounds, waypoint: snappedPotentialWaypoint })
-              .handlePosition as PositionalNodeHandleId,
-            autoPositionedEdgeMarker: undefined,
-          },
-          sourceNode: {
-            type: sourceType as NodeType,
-            data: sourceData,
-            href: edge.source,
-            bounds: edgeSourceBounds,
-            shapeId: edge.data?.dmnShapeSource["@_id"],
-          },
-          targetNode: {
-            type: targetType as NodeType,
-            href: edge.target,
-            data: targetData,
-            bounds: edgeTargetBounds,
-            index: nodesById.get(edge.target)?.data.index ?? 0,
-            shapeId: edge.data?.dmnShapeTarget["@_id"],
-          },
-          keepWaypoints: false,
-        });
+        if (targetData.dmnObjectQName.prefix) {
+          addEdgeTargetingExternalNode({
+            definitions: state.dmn.model.definitions,
+            drdIndex: state.computed(state).getDrdIndex(),
+            edge: {
+              type: edge.type as EdgeType,
+              targetHandle: getHandlePosition({ shapeBounds: edgeTargetBounds, waypoint: snappedPotentialWaypoint })
+                .handlePosition as PositionalNodeHandleId,
+              sourceHandle: getHandlePosition({ shapeBounds: edgeSourceBounds, waypoint: snappedPotentialWaypoint })
+                .handlePosition as PositionalNodeHandleId,
+              autoPositionedEdgeMarker: undefined,
+            },
+            sourceNode: {
+              type: sourceType as NodeType,
+              data: sourceData,
+              href: edge.source,
+              bounds: edgeSourceBounds,
+              shapeId: edge.data?.dmnShapeSource["@_id"],
+            },
+            targetNode: {
+              type: targetType as NodeType,
+              href: edge.target,
+              data: targetData,
+              bounds: edgeTargetBounds,
+              index: nodesById.get(edge.target)?.data.index ?? 0,
+              shapeId: edge.data?.dmnShapeTarget["@_id"],
+            },
+            keepWaypoints: false,
+            existingEdgeId: edgeId, // TODO include external edge namespace
+          });
+        } else {
+          addEdge({
+            definitions: state.dmn.model.definitions,
+            drdIndex: state.computed(state).getDrdIndex(),
+            edge: {
+              type: edge.type as EdgeType,
+              targetHandle: getHandlePosition({ shapeBounds: edgeTargetBounds, waypoint: snappedPotentialWaypoint })
+                .handlePosition as PositionalNodeHandleId,
+              sourceHandle: getHandlePosition({ shapeBounds: edgeSourceBounds, waypoint: snappedPotentialWaypoint })
+                .handlePosition as PositionalNodeHandleId,
+              autoPositionedEdgeMarker: undefined,
+            },
+            sourceNode: {
+              type: sourceType as NodeType,
+              data: sourceData,
+              href: edge.source,
+              bounds: edgeSourceBounds,
+              shapeId: edge.data?.dmnShapeSource["@_id"],
+            },
+            targetNode: {
+              type: targetType as NodeType,
+              href: edge.target,
+              data: targetData,
+              bounds: edgeTargetBounds,
+              index: nodesById.get(edge.target)?.data.index ?? 0,
+              shapeId: edge.data?.dmnShapeTarget["@_id"],
+            },
+            keepWaypoints: false,
+          });
+        }
 
         console.debug(`DMN MUTATION: DMNEdge for '${edgeId}' edge was added into diagram.`);
       });
