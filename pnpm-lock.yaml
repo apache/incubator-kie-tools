@@ -98,10 +98,10 @@ importers:
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@kie-tools/root-env':
@@ -362,10 +362,10 @@ importers:
         specifier: workspace:*
         version: link:../../packages/envelope-bus
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@kie-tools/root-env':
@@ -460,10 +460,10 @@ importers:
         specifier: workspace:*
         version: link:../ping-pong-view
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@kie-tools/root-env':
@@ -516,10 +516,10 @@ importers:
         specifier: workspace:*
         version: link:../../packages/envelope-bus
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@kie-tools/root-env':
@@ -935,10 +935,10 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-resizable:
         specifier: ^1.11.0
@@ -1223,10 +1223,10 @@ importers:
         specifier: ^3.0.5
         version: 3.0.5
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -1731,10 +1731,10 @@ importers:
   packages/dashbuilder-component-api:
     dependencies:
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -1908,10 +1908,10 @@ importers:
         specifier: workspace:*
         version: link:../dashbuilder-component-echarts-base
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -1978,10 +1978,10 @@ importers:
         specifier: ^5.3.2
         version: 5.3.2
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -2030,10 +2030,10 @@ importers:
         specifier: ^4.0.2
         version: 4.0.2
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-simple-maps:
         specifier: ^3.0.0
@@ -2115,10 +2115,10 @@ importers:
         specifier: ^2.0.5
         version: 2.0.5
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -2194,10 +2194,10 @@ importers:
         specifier: ^4.112.39
         version: 4.112.39(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -2267,10 +2267,10 @@ importers:
         specifier: workspace:*
         version: link:../dashbuilder-component-echarts-base
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -2355,10 +2355,10 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       uniforms:
         specifier: ^3.10.2
@@ -2443,10 +2443,10 @@ importers:
         specifier: ^2.0.6
         version: 2.0.6
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       victory-zoom-container:
         specifier: ^35.11.4
@@ -2558,10 +2558,10 @@ importers:
         specifier: ^4.0.4
         version: 4.0.4(monaco-editor@0.39.0)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       vscode-languageserver-types:
         specifier: ^3.16.0
@@ -2746,10 +2746,10 @@ importers:
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -3016,10 +3016,10 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-router:
         specifier: ^5.3.4
@@ -3304,10 +3304,10 @@ importers:
         specifier: ^2.29.4
         version: 2.29.4
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-error-boundary:
         specifier: ^4.0.11
@@ -3485,10 +3485,10 @@ importers:
         specifier: ^4.276.6
         version: 4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -3913,10 +3913,10 @@ importers:
         specifier: ^2.29.4
         version: 2.29.4
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       uniforms:
         specifier: ^3.10.2
@@ -4105,10 +4105,10 @@ importers:
         specifier: ^3.0.5
         version: 3.0.5
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -4190,10 +4190,10 @@ importers:
         specifier: ^3.0.11
         version: 3.0.11
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -4230,10 +4230,10 @@ importers:
   packages/envelope-bus:
     dependencies:
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -4465,10 +4465,10 @@ importers:
         specifier: ^0.39.0
         version: 0.39.0
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -4583,10 +4583,10 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       uniforms:
         specifier: ^3.10.2
@@ -4695,10 +4695,10 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       uniforms:
         specifier: ^3.10.2
@@ -4886,10 +4886,10 @@ importers:
   packages/i18n:
     dependencies:
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -5076,10 +5076,10 @@ importers:
         specifier: ^4.112.39
         version: 4.112.39(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -5335,7 +5335,7 @@ importers:
         specifier: workspace:*
         version: link:../operating-system
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
     devDependencies:
       '@babel/core':
@@ -5435,10 +5435,10 @@ importers:
         specifier: ^4.276.6
         version: 4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -6356,10 +6356,10 @@ importers:
         specifier: ^2.29.4
         version: 2.29.4
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-dropzone:
         specifier: ^11.4.2
@@ -6627,13 +6627,13 @@ importers:
         specifier: ^0.39.0
         version: 0.39.0
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-cool-onclickoutside:
         specifier: ^1.6.1
         version: 1.6.2(react@17.0.2)
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-monaco-editor:
         specifier: ^0.49.0
@@ -6936,7 +6936,7 @@ importers:
   packages/react-hooks:
     dependencies:
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
     devDependencies:
       '@babel/core':
@@ -7023,13 +7023,13 @@ importers:
         specifier: ^0.39.0
         version: 0.39.0
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-datetime-picker:
         specifier: ^3.5.0
         version: 3.5.0(@types/react-dom@17.0.8)(@types/react@17.0.21)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-moment:
         specifier: 0.9.7
@@ -7687,13 +7687,13 @@ importers:
         specifier: ^0.39.0
         version: 0.39.0
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-datetime-picker:
         specifier: ^3.5.0
         version: 3.5.0(@types/react-dom@17.0.8)(@types/react@17.0.21)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-helmet:
         specifier: ^6.1.0
@@ -7902,7 +7902,7 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
     devDependencies:
       '@babel/core':
@@ -8005,10 +8005,10 @@ importers:
         specifier: ^0.39.0
         version: 0.39.0
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-helmet:
         specifier: ^6.1.0
@@ -8123,7 +8123,7 @@ importers:
         specifier: ^4.9.0
         version: 4.10.1
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-router:
         specifier: ^5.3.4
@@ -8241,13 +8241,13 @@ importers:
         specifier: ^0.39.0
         version: 0.39.0
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-datetime-picker:
         specifier: ^3.5.0
         version: 3.5.0(@types/react-dom@17.0.8)(@types/react@17.0.21)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-helmet:
         specifier: ^6.1.0
@@ -8495,7 +8495,7 @@ importers:
         specifier: ^4.9.0
         version: 4.10.1
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-router:
         specifier: ^5.3.4
@@ -9470,10 +9470,10 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       vscode-languageserver-types:
         specifier: ^3.16.0
@@ -10347,10 +10347,10 @@ importers:
         specifier: ^4.0.4
         version: 4.0.4(monaco-editor@0.39.0)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       vscode-languageserver-types:
         specifier: ^3.16.0
@@ -11117,10 +11117,10 @@ importers:
         specifier: ^4.0.4
         version: 4.0.4(monaco-editor@0.39.0)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -11165,10 +11165,10 @@ importers:
         specifier: ^2.8.8
         version: 2.8.8
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       underscore:
         specifier: ^1.13.1
@@ -11289,10 +11289,10 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       uniforms:
         specifier: ^3.10.2
@@ -11395,10 +11395,10 @@ importers:
         specifier: ^2.8.8
         version: 2.8.8
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       uniforms:
         specifier: ^3.10.2
@@ -11558,10 +11558,10 @@ importers:
         specifier: ^2.29.4
         version: 2.29.4
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-id-generator:
         specifier: ^3.0.1
@@ -11649,10 +11649,10 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-id-generator:
         specifier: ^3.0.1
@@ -12180,7 +12180,7 @@ importers:
         specifier: ^3.0.5
         version: 3.0.5
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-router:
         specifier: ^5.3.4
@@ -12483,10 +12483,10 @@ importers:
         specifier: ^4.0.4
         version: 4.0.4(monaco-editor@0.39.0)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-zoom-pan-pinch:
         specifier: ^3.1.0
@@ -18470,9 +18470,6 @@ packages:
   '@types/body-parser@1.19.2':
     resolution: {integrity: sha512-ALYone6pm6QmwZoAgeyNksccT9Q4AWZQ6PvfwR37GT6r6FWUPguq6sUmNGSMV2Wr761oQoBxwGGa6DR5o1DC9g==}
 
-  '@types/bonjour@3.5.10':
-    resolution: {integrity: sha512-p7ienRMiS41Nu2/igbJxxLDWrSZ0WxM8UQgCeO9KhoVF7cOVFkrKsiDr1EsJIla8vV3oEEjGcz11jc5yimhzZw==}
-
   '@types/bonjour@3.5.13':
     resolution: {integrity: sha512-z9fJ5Im06zvUL548KvYNecEVlA7cVDkGUi6kZusb04mpyEFKCIZJvloCcmpmLaIahDpOQGHaHmG6imtPMmPXGQ==}
 
@@ -18490,9 +18487,6 @@ packages:
 
   '@types/component-emitter@1.2.11':
     resolution: {integrity: sha512-SRXjM+tfsSlA9VuG8hGO2nft2p8zjXCK1VcC6N4NXbBbYbSia9kzCChYQajIjzIqOOOuh5Ock6MmV2oux4jDZQ==}
-
-  '@types/connect-history-api-fallback@1.3.5':
-    resolution: {integrity: sha512-h8QJa8xSb1WD4fpKBDcATDNGXghFj6/3GRWG6dhmRcu0RX1Ubasur2Uvx5aeEwlf0MwblEC2bMzzMQntxnw/Cw==}
 
   '@types/connect-history-api-fallback@1.5.4':
     resolution: {integrity: sha512-n6Cr2xS1h4uAulPRdlw6Jl6s1oG8KrVilPN2yUITEs+K48EzMJJ3W1xy8K5eWuFvjp3R74AOIGSmp2UfBJ8HFw==}
@@ -18723,9 +18717,6 @@ packages:
   '@types/http-proxy@1.17.14':
     resolution: {integrity: sha512-SSrD0c1OQzlFX7pGu1eXxSEjemej64aaNPRhhVYUGqXh0BtldAAx37MG8btcumvpgKyZp1F5Gn3JkktdxiFv6w==}
 
-  '@types/http-proxy@1.17.8':
-    resolution: {integrity: sha512-5kPLG5BKpWYkw/LVOGWpiq3nEVqxiN32rTgI53Sk12/xHFQ2rG3ehI9IO+O3W2QoKeyB92dJkoka8SUm6BX1pA==}
-
   '@types/inquirer@7.3.3':
     resolution: {integrity: sha512-HhxyLejTHMfohAuhRun4csWigAMjXTmRyiJTU1Y/I1xmggikFMkOUoMQRlFm+zQcPEGHSs3io/0FAmNZf8EymQ==}
 
@@ -18939,9 +18930,6 @@ packages:
   '@types/send@0.17.1':
     resolution: {integrity: sha512-Cwo8LE/0rnvX7kIIa3QHCkcuF21c05Ayb0ZfxPiv0W8VRiZiNW/WuRupHKpqqGVGf7SUA44QSOUKaEd9lIrd/Q==}
 
-  '@types/serve-index@1.9.1':
-    resolution: {integrity: sha512-d/Hs3nWDxNL2xAczmOVZNj92YZCS6RGxfBPjKzuu/XirCgXdpKEb88dYNbrYGint6IVWLNP+yonwVAuRC0T2Dg==}
-
   '@types/serve-index@1.9.4':
     resolution: {integrity: sha512-qLpGZ/c2fhSs5gnYsQxtDEq3Oy8SXPClIXkW5ghvAvsNuVSA8k+gCONcUCS/UjLEYvYps+e8uBtfgXgvhwfNug==}
 
@@ -18965,9 +18953,6 @@ packages:
 
   '@types/sizzle@2.3.2':
     resolution: {integrity: sha512-7EJYyKTL7tFR8+gDbB6Wwz/arpGa0Mywk1TJbNzKzHtzbwVmY4HR9WqS5VV7dsBUKQmPNr192jHr/VpBluj/hg==}
-
-  '@types/sockjs@0.3.33':
-    resolution: {integrity: sha512-f0KEEe05NvUnat+boPTZ0dgaLZ4SfSouXUgv5noUiefG2ajgKjmETo9ZJyuqsl7dfl2aHlLJUiki6B4ZYldiiw==}
 
   '@types/sockjs@0.3.36':
     resolution: {integrity: sha512-MK9V6NzAS1+Ud7JV9lJLFqW85VbC9dq3LmwZCuBe4wBDgKC0Kj/jd8Xl+nSviU+Qc3+m7umHHyHg//2KSa0a0Q==}
@@ -19731,9 +19716,6 @@ packages:
   array-flatten@1.1.1:
     resolution: {integrity: sha512-PCVAQswWemu6UdxsDFFX/+gVeYqKAod3D3UVm91jHwynguOwAvYPhx8nNlM++NqRcK6CxxpUafjmhIdKiHibqg==}
 
-  array-flatten@2.1.2:
-    resolution: {integrity: sha512-hNfzcOV8W4NdualtqBFPyVO+54DSJuZGY9qT4pRroB6S9e3iiido2ISIC5h9R2sPJ8H3FHCIiEnsv1lPXO3KtQ==}
-
   array-includes@3.1.6:
     resolution: {integrity: sha512-sgTbLvL6cNnw24FnbaDyjmvddQ2ML8arZsgaJhoABMoplz/4QRhtrYS+alr1BUM1Bwp6dhx8vVCBSLG+StwOFw==}
     engines: {node: '>= 0.4'}
@@ -20097,9 +20079,6 @@ packages:
 
   bole@4.0.0:
     resolution: {integrity: sha512-Bk/2qoyOSlwU1dnDFk/oPM2FCNKAlYlBHfpAgwGX+K9HUtxSvmIAQCmMWMOvE6BlHHRCwsH1MxJe/r1ieodxqQ==}
-
-  bonjour-service@1.1.1:
-    resolution: {integrity: sha512-Z/5lQRMOG9k7W+FkeGTNjh7htqn/2LMnfOvBZ8pynNZCM9MwkQkI3zeI4oz09uWdcgmgHugVvBqxGg4VQJ5PCg==}
 
   bonjour-service@1.2.1:
     resolution: {integrity: sha512-oSzCS2zV14bh2kji6vNe7vrpJYCHGvcZnlffFQ1MEoX/WOeQ/teD8SYWKR942OI3INjq8OMNJlbPK5LLLUxFDw==}
@@ -21515,9 +21494,6 @@ packages:
   dir-glob@3.0.1:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
     engines: {node: '>=8'}
-
-  dns-equal@1.0.0:
-    resolution: {integrity: sha512-z+paD6YUQsk+AbGCEM4PrOXSss5gd66QfcVBFTKR/HpFL9jCqikS94HYwKww6fQyO7IxrIIyUu+g0Ka9tUS2Cg==}
 
   dns-packet@5.6.0:
     resolution: {integrity: sha512-rza3UH1LwdHh9qyPXp8lkwpjSNk/AMD3dPytUoRoqnypDUhY0xvbdmVhWOfxO68frEfV9BU8V12Ez7ZsHGZpCQ==}
@@ -23222,10 +23198,6 @@ packages:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
     engines: {node: '>= 0.10'}
 
-  ipaddr.js@2.0.1:
-    resolution: {integrity: sha512-1qTgH9NG+IIJ4yfKs2e6Pp1bZg8wbDbKHT21HrLIeYBTRLgMYKnMTPAuI3Lcs61nfx5h1xlXnbJtH1kX5/d/ng==}
-    engines: {node: '>= 10'}
-
   ipaddr.js@2.2.0:
     resolution: {integrity: sha512-Ag3wB2o37wslZS19hZqorUnrnzSkpOVy+IiiDEiTqNubEYpYuHWIf6K4psgN2ZWKExS4xhVCrRVfb/wfW8fWJA==}
     engines: {node: '>= 10'}
@@ -24108,9 +24080,6 @@ packages:
   kubernetes-models@4.1.0:
     resolution: {integrity: sha512-OlT0qgHj0W7hJQdc0HzbdYUpK3LcMaKg43yqeEsUsq1gCAldfzEaMyhifNylMud3dWglPQ+5Jt6sFyIr3XTdvg==}
     engines: {node: '>=14'}
-
-  launch-editor@2.6.0:
-    resolution: {integrity: sha512-JpDCcQnyAAzZZaZ7vEiSqL690w7dAEyLao+KC96zBplnYbJS7TYNjvM3M7y3dGz+v7aIsJk3hllWuc0kWAjyRQ==}
 
   launch-editor@2.8.0:
     resolution: {integrity: sha512-vJranOAJrI/llyWGRQqiDM+adrw+k83fvmmx3+nV47g3+36xM15jE+zyZ6Ffel02+xSvuM0b2GDRosXZkbb6wA==}
@@ -26946,10 +26915,6 @@ packages:
   selenium-webdriver@4.22.0:
     resolution: {integrity: sha512-GNbrkCHmy249ai885wgXqTfqL2lZnclUH/P8pwTDIqzyFxU3YhDiN7p/c9tMFA4NhgRdEBO2QCG+CWmG7xr/Mw==}
     engines: {node: '>= 14.21.0'}
-
-  selfsigned@2.1.1:
-    resolution: {integrity: sha512-GSL3aowiF7wa/WtSFwnUrludWFoNhftq8bUkH9pkzjpN2XSPOAYEgg6e0sS9s0rZwgJzJiQRPU18A6clnoW5wQ==}
-    engines: {node: '>=10'}
 
   selfsigned@2.4.1:
     resolution: {integrity: sha512-th5B4L2U+eGLq1TVh7zNRGBapioSORUeymIydxgFpwww9d2qyKvtuPU2jJuHvYAwwqi2Y596QBL3eEqcPEYL8Q==}
@@ -40852,10 +40817,6 @@ snapshots:
       '@types/connect': 3.4.34
       '@types/node': 20.14.13
 
-  '@types/bonjour@3.5.10':
-    dependencies:
-      '@types/node': 20.14.2
-
   '@types/bonjour@3.5.13':
     dependencies:
       '@types/node': 20.14.13
@@ -40879,11 +40840,6 @@ snapshots:
       '@types/har-format': 1.2.5
 
   '@types/component-emitter@1.2.11': {}
-
-  '@types/connect-history-api-fallback@1.3.5':
-    dependencies:
-      '@types/express-serve-static-core': 4.17.35
-      '@types/node': 20.14.2
 
   '@types/connect-history-api-fallback@1.5.4':
     dependencies:
@@ -41159,10 +41115,6 @@ snapshots:
     dependencies:
       '@types/node': 20.14.13
 
-  '@types/http-proxy@1.17.8':
-    dependencies:
-      '@types/node': 20.14.2
-
   '@types/inquirer@7.3.3':
     dependencies:
       '@types/through': 0.0.30
@@ -41403,10 +41355,6 @@ snapshots:
       '@types/mime': 1.3.2
       '@types/node': 20.14.13
 
-  '@types/serve-index@1.9.1':
-    dependencies:
-      '@types/express': 4.17.17
-
   '@types/serve-index@1.9.4':
     dependencies:
       '@types/express': 4.17.21
@@ -41437,10 +41385,6 @@ snapshots:
   '@types/sinonjs__fake-timers@8.1.1': {}
 
   '@types/sizzle@2.3.2': {}
-
-  '@types/sockjs@0.3.33':
-    dependencies:
-      '@types/node': 20.14.2
 
   '@types/sockjs@0.3.36':
     dependencies:
@@ -42553,8 +42497,6 @@ snapshots:
 
   array-flatten@1.1.1: {}
 
-  array-flatten@2.1.2: {}
-
   array-includes@3.1.6:
     dependencies:
       call-bind: 1.0.7
@@ -43376,13 +43318,6 @@ snapshots:
       fast-safe-stringify: 2.1.1
       individual: 3.0.0
 
-  bonjour-service@1.1.1:
-    dependencies:
-      array-flatten: 2.1.2
-      dns-equal: 1.0.0
-      fast-deep-equal: 3.1.3
-      multicast-dns: 7.2.5
-
   bonjour-service@1.2.1:
     dependencies:
       fast-deep-equal: 3.1.3
@@ -44192,22 +44127,22 @@ snapshots:
 
   copy-webpack-plugin@11.0.0(webpack@5.92.1(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0)):
     dependencies:
-      fast-glob: 3.2.11
+      fast-glob: 3.3.2
       glob-parent: 6.0.2
       globby: 13.1.2
       normalize-path: 3.0.0
-      schema-utils: 4.0.0
-      serialize-javascript: 6.0.1
+      schema-utils: 4.2.0
+      serialize-javascript: 6.0.2
       webpack: 5.92.1(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0)
 
   copy-webpack-plugin@11.0.0(webpack@5.92.1(@swc/core@1.3.92)(webpack-cli@4.10.0)):
     dependencies:
-      fast-glob: 3.2.11
+      fast-glob: 3.3.2
       glob-parent: 6.0.2
       globby: 13.1.2
       normalize-path: 3.0.0
-      schema-utils: 4.0.0
-      serialize-javascript: 6.0.1
+      schema-utils: 4.2.0
+      serialize-javascript: 6.0.2
       webpack: 5.92.1(@swc/core@1.3.92)(webpack-cli@4.10.0)
 
   copy-webpack-plugin@11.0.0(webpack@5.92.1(webpack-cli@4.10.0)):
@@ -44222,12 +44157,12 @@ snapshots:
 
   copy-webpack-plugin@11.0.0(webpack@5.92.1):
     dependencies:
-      fast-glob: 3.2.11
+      fast-glob: 3.3.2
       glob-parent: 6.0.2
       globby: 13.1.2
       normalize-path: 3.0.0
-      schema-utils: 4.0.0
-      serialize-javascript: 6.0.1
+      schema-utils: 4.2.0
+      serialize-javascript: 6.0.2
       webpack: 5.92.1
 
   copy-webpack-plugin@12.0.2(webpack@5.92.1(esbuild@0.21.5)):
@@ -45278,8 +45213,6 @@ snapshots:
   dir-glob@3.0.1:
     dependencies:
       path-type: 4.0.0
-
-  dns-equal@1.0.0: {}
 
   dns-packet@5.6.0:
     dependencies:
@@ -47318,18 +47251,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  http-proxy-middleware@2.0.6(@types/express@4.17.17):
-    dependencies:
-      '@types/http-proxy': 1.17.8
-      http-proxy: 1.18.1
-      is-glob: 4.0.3
-      is-plain-obj: 3.0.0
-      micromatch: 4.0.5
-    optionalDependencies:
-      '@types/express': 4.17.17
-    transitivePeerDependencies:
-      - debug
-
   http-proxy-middleware@2.0.6(@types/express@4.17.21):
     dependencies:
       '@types/http-proxy': 1.17.14
@@ -47596,8 +47517,6 @@ snapshots:
   ip@2.0.0: {}
 
   ipaddr.js@1.9.1: {}
-
-  ipaddr.js@2.0.1: {}
 
   ipaddr.js@2.2.0: {}
 
@@ -49306,11 +49225,6 @@ snapshots:
       '@kubernetes-models/base': 4.0.0
       '@kubernetes-models/validate': 3.0.0
       tslib: 2.5.0
-
-  launch-editor@2.6.0:
-    dependencies:
-      picocolors: 1.0.0
-      shell-quote: 1.8.1
 
   launch-editor@2.8.0:
     dependencies:
@@ -52622,10 +52536,6 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  selfsigned@2.1.1:
-    dependencies:
-      node-forge: 1.3.1
-
   selfsigned@2.4.1:
     dependencies:
       '@types/node-forge': 1.3.11
@@ -55195,7 +55105,7 @@ snapshots:
       ws: 8.18.0
     optionalDependencies:
       webpack: 5.92.1(webpack-cli@4.10.0)
-      webpack-cli: 4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.92.1)
+      webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.92.1)
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -55204,36 +55114,36 @@ snapshots:
 
   webpack-dev-server@4.15.1(webpack@5.92.1):
     dependencies:
-      '@types/bonjour': 3.5.10
-      '@types/connect-history-api-fallback': 1.3.5
-      '@types/express': 4.17.17
-      '@types/serve-index': 1.9.1
-      '@types/serve-static': 1.13.10
-      '@types/sockjs': 0.3.33
-      '@types/ws': 8.5.5
+      '@types/bonjour': 3.5.13
+      '@types/connect-history-api-fallback': 1.5.4
+      '@types/express': 4.17.21
+      '@types/serve-index': 1.9.4
+      '@types/serve-static': 1.15.7
+      '@types/sockjs': 0.3.36
+      '@types/ws': 8.5.12
       ansi-html-community: 0.0.8
-      bonjour-service: 1.1.1
-      chokidar: 3.5.3
-      colorette: 2.0.16
+      bonjour-service: 1.2.1
+      chokidar: 3.6.0
+      colorette: 2.0.20
       compression: 1.7.4
       connect-history-api-fallback: 2.0.0
       default-gateway: 6.0.3
       express: 4.19.2
       graceful-fs: 4.2.11
-      html-entities: 2.3.2
-      http-proxy-middleware: 2.0.6(@types/express@4.17.17)
-      ipaddr.js: 2.0.1
-      launch-editor: 2.6.0
+      html-entities: 2.5.2
+      http-proxy-middleware: 2.0.6(@types/express@4.17.21)
+      ipaddr.js: 2.2.0
+      launch-editor: 2.8.0
       open: 8.4.0
       p-retry: 4.6.1
       rimraf: 3.0.2
-      schema-utils: 4.0.0
-      selfsigned: 2.1.1
+      schema-utils: 4.2.0
+      selfsigned: 2.4.1
       serve-index: 1.9.1
       sockjs: 0.3.24
       spdy: 4.0.2
       webpack-dev-middleware: 5.3.3(webpack@5.92.1)
-      ws: 8.13.0
+      ws: 8.18.0
     optionalDependencies:
       webpack: 5.92.1
     transitivePeerDependencies:
@@ -55599,7 +55509,7 @@ snapshots:
       watchpack: 2.4.1
       webpack-sources: 3.2.3
     optionalDependencies:
-      webpack-cli: 4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.92.1)
+      webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.92.1)
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild

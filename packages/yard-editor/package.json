@@ -43,8 +43,6 @@
     "json-schema": "^0.4.0",
     "monaco-editor": "^0.39.0",
     "monaco-yaml": "^4.0.4",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
     "react-zoom-pan-pinch": "^3.1.0",
     "reaflow": "5.1.2",
     "vscode-languageserver-types": "^3.16.0"
@@ -71,5 +69,9 @@
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.9.0"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0",
+    "react-dom": ">=17.0.2 <19.0.0"
   }
 }
