@@ -125,6 +125,20 @@ export function computeDiagramData(
       selectedEdgesById.set(edge.id, edge);
     }
 
+    if (!edge.data?.dmnEdge) {
+      // it may be an DMNEdge targetting external node
+      // in such case we need to search using edge source and target shapes
+      // https://github.com/apache/incubator-kie-issues/issues/886
+      const shapeSourceId = edgesById.get(edge.id)?.data?.dmnShapeSource?.["@_id"];
+      const shapeTargetId = edgesById.get(edge.id)?.data?.dmnShapeTarget?.["@_id"];
+      indexedDrd.dmnEdgesByDmnElementRef.forEach((e, key) => {
+        if (edge.data && e["@_sourceElement"] === shapeSourceId && e["@_targetElement"] === shapeTargetId) {
+          edge.data.dmnEdge = e;
+          return;
+        }
+      });
+    }
+
     edges.push(edge);
 
     drgEdges.push({ id, sourceId: source, targetId: target, dmnObject });
