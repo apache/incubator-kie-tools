@@ -67,7 +67,7 @@ export class QwcJbpmQuarkusDevui extends LitElement {
       container: container,
       isDataIndexAvailable: true,
       isTracingEnabled: isTracingEnabled,
-      quarkusAppOrigin: `http://${quarkusHttpHost}:${quarkusHttpPort}`,
+      quarkusAppOrigin: `http://${quarkusHttpHost ?? "0.0.0.0"}:${quarkusHttpPort ?? "8080"}`,
       quarkusAppRootPath: quarkusAppRootPath,
       shouldReplaceQuarkusAppOriginWithWebappOrigin: true,
       dataIndexUrl: `${dataIndexUrl}/graphql`,
