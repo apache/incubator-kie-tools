@@ -109,7 +109,7 @@ export function DecisionTableExpression({
   isNested: boolean;
 }) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
+  const { expressionHolderId, widthsById, isReadOnly } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
 
   const id = decisionTableExpression["@_id"]!;
@@ -647,9 +647,10 @@ export function DecisionTableExpression({
         selectedBuiltInAggregator={getAggregationKey(decisionTableExpression["@_aggregation"])}
         onHitPolicySelected={onHitPolicySelect}
         onBuiltInAggregatorSelected={onBuiltInAggregatorSelect}
+        isReadOnly={isReadOnly ?? false}
       />
     ),
-    [decisionTableExpression, getAggregationKey, onBuiltInAggregatorSelect, onHitPolicySelect]
+    [decisionTableExpression, getAggregationKey, isReadOnly, onBuiltInAggregatorSelect, onHitPolicySelect]
   );
 
   const onRowAdded = useCallback(
@@ -1047,6 +1048,8 @@ export function DecisionTableExpression({
   return (
     <div className={`decision-table-expression ${decisionTableExpression["@_id"]}`}>
       <BeeTable<ROWTYPE>
+        isReadOnly={isReadOnly}
+        isEditableHeader={!isReadOnly}
         resizerStopBehavior={
           isPivoting ? ResizerStopBehavior.SET_WIDTH_ALWAYS : ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER
         }

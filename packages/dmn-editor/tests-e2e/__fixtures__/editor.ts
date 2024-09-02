@@ -17,13 +17,15 @@
  * under the License.
  */
 
-import { Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 
 export enum TabName {
   EDITOR = "Editor",
   DATA_TYPES = "Data types",
   INCLUDED_MODELS = "Included models",
 }
+
+export const STORYBOOK__DMN_EDITOR_TOGGLE_READ_ONLY = "storybook--dmn-editor-toggle-read-only";
 
 export class Editor {
   constructor(
@@ -33,6 +35,24 @@ export class Editor {
 
   public async open() {
     await this.page.goto(`${this.baseURL}/iframe.html?args=&id=misc-empty--empty&viewMode=story`);
+  }
+
+  public async openLoanPreQualification() {
+    await this.page.goto(
+      `${this.baseURL}/iframe.html?args=&id=use-cases-loan-pre-qualification--loan-pre-qualification&viewMode=story`
+    );
+  }
+
+  public async setIsReadOnly(newState: boolean) {
+    const currentState = (await this.page.getByTestId(STORYBOOK__DMN_EDITOR_TOGGLE_READ_ONLY).textContent()) === "true";
+    if (currentState !== newState) {
+      await this.page.evaluate((toogleSelector: string) => {
+        document.querySelector<HTMLButtonElement>(`button[data-testid='${toogleSelector}']`)?.click();
+      }, STORYBOOK__DMN_EDITOR_TOGGLE_READ_ONLY);
+    }
+    await expect(await this.page.getByTestId(STORYBOOK__DMN_EDITOR_TOGGLE_READ_ONLY).textContent()).toBe(
+      newState.toString()
+    );
   }
 
   public async changeTab(args: { tab: TabName }) {

@@ -25,6 +25,9 @@
       { "id": "@kie-tools-core/vscode-extension" },
       { "id": "@kie-tools-core/vscode-java-code-completion" },
       { "id": "@kie-tools-examples/commit-message-validation-service" },
+      { "id": "@kie-tools-examples/dmn-editor-standalone-examples" },
+      { "id": "@kie-tools/dmn-editor-standalone" },
+      { "id": "@kie-tools/dmn-editor-envelope" },
       { "id": "@kie-tools-examples/drools-process-usertasks-quarkus-example" },
       { "id": "@kie-tools/jbpm-quarkus-devui" },
       { "id": "@kie-tools/maven-base" },
@@ -50,10 +53,8 @@
       { "id": "@kie-tools/eslint" },
       { "id": "@kie-tools/jest-base" },
       { "id": "@kie-tools-examples/webapp" },
-      { "id": "@kie-tools/dmn-editor-standalone" },
       { "id": "@kie-tools/kie-editors-standalone" },
       { "id": "@kie-tools/serverless-workflow-standalone-editor" },
-      { "id": "@kie-tools/dmn-editor-envelope" },
       { "id": "@kie-tools/kie-bc-editors" },
       { "id": "@kie-tools/stunner-editors" },
       { "id": "@kie-tools/serverless-workflow-combined-editor" },
@@ -156,6 +157,7 @@
       { "id": "@kie-tools/python-venv" },
       { "id": "@kie-tools/runtime-tools-components" },
       { "id": "@kie-tools/runtime-tools-shared-gateway-api" },
+      { "id": "@kie-tools/runtime-tools-consoles-helm-chart" },
       { "id": "@kie-tools/runtime-tools-process-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-process-gateway-api" },
       { "id": "@kie-tools/runtime-tools-shared-enveloped-components" },
@@ -363,6 +365,26 @@
       {
         "source": "@kie-tools-examples/commit-message-validation-service",
         "target": "@kie-tools/root-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/dmn-editor-standalone-examples",
+        "target": "@kie-tools/dmn-editor-standalone",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-editor-standalone",
+        "target": "@kie-tools/dmn-editor-envelope",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-editor-envelope",
+        "target": "@kie-tools-core/editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-editor-envelope",
+        "target": "@kie-tools/dmn-editor",
         "weight": 1
       },
       {
@@ -636,11 +658,6 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/dmn-editor-standalone",
-        "target": "@kie-tools/dmn-editor-envelope",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools/kie-editors-standalone",
         "target": "@kie-tools/kie-bc-editors",
         "weight": 1
@@ -653,16 +670,6 @@
       {
         "source": "@kie-tools/serverless-workflow-standalone-editor",
         "target": "@kie-tools/serverless-workflow-combined-editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/dmn-editor-envelope",
-        "target": "@kie-tools-core/editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/dmn-editor-envelope",
-        "target": "@kie-tools/dmn-editor",
         "weight": 1
       },
       {
@@ -1956,6 +1963,16 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/runtime-tools-consoles-helm-chart",
+        "target": "@kie-tools/kogito-management-console",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-consoles-helm-chart",
+        "target": "@kie-tools/kogito-task-console",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/runtime-tools-process-enveloped-components",
         "target": "@kie-tools/runtime-tools-process-gateway-api",
         "weight": 1
@@ -2373,6 +2390,7 @@
     ["@kie-tools-examples/base64png-editor-chrome-extension", "examples/base64png-editor-chrome-extension"],
     ["kie-tools-examples-base64png-editor-vscode-extension", "examples/base64png-editor-vscode-extension"],
     ["@kie-tools-examples/commit-message-validation-service", "examples/commit-message-validation-service"],
+    ["@kie-tools-examples/dmn-editor-standalone-examples", "examples/dmn-editor-standalone-examples"],
     [
       "@kie-tools-examples/drools-process-usertasks-quarkus-example",
       "examples/drools-process-usertasks-quarkus-example"
@@ -2486,6 +2504,7 @@
     ["@kie-tools-core/react-hooks", "packages/react-hooks"],
     ["@kie-tools/root-env", "packages/root-env"],
     ["@kie-tools/runtime-tools-components", "packages/runtime-tools-components"],
+    ["@kie-tools/runtime-tools-consoles-helm-chart", "packages/runtime-tools-consoles-helm-chart"],
     ["@kie-tools/runtime-tools-management-console-webapp", "packages/runtime-tools-management-console-webapp"],
     ["@kie-tools/runtime-tools-process-dev-ui-webapp", "packages/runtime-tools-process-dev-ui-webapp"],
     ["@kie-tools/runtime-tools-process-enveloped-components", "packages/runtime-tools-process-enveloped-components"],

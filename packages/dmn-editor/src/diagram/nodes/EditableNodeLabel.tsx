@@ -35,6 +35,7 @@ import { NodeLabelPosition } from "./NodeSvgs";
 import { State } from "../../store/Store";
 import "./EditableNodeLabel.css";
 import { Normalized } from "../../normalization/normalize";
+import { useSettings } from "../../settings/DmnEditorSettingsContext";
 
 export type OnEditableNodeLabelChange = (value: string | undefined) => void;
 
@@ -264,16 +265,23 @@ export function EditableNodeLabel({
 
 export function useEditableNodeLabel(id: string | undefined) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const settings = useSettings();
 
   const [isEditingLabel, setEditingLabel] = useState(
     !!id && !!dmnEditorStoreApi.getState().focus.consumableId && dmnEditorStoreApi.getState().focus.consumableId === id
   );
 
-  const triggerEditing = useCallback<React.EventHandler<React.SyntheticEvent>>((e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setEditingLabel(true);
-  }, []);
+  const triggerEditing = useCallback<React.EventHandler<React.SyntheticEvent>>(
+    (e) => {
+      if (settings.isReadOnly) {
+        return;
+      }
+      e.stopPropagation();
+      e.preventDefault();
+      setEditingLabel(true);
+    },
+    [settings.isReadOnly]
+  );
 
   // Trigger editing on `Enter` pressed.
   const triggerEditingIfEnter = useCallback<React.KeyboardEventHandler>(

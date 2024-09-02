@@ -59,6 +59,7 @@ import "./IncludedModels.css";
 import { Normalized } from "../normalization/normalize";
 import { Popover, PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 import { AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export const EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER = "<Default>";
 
@@ -70,6 +71,7 @@ const namespaceForNewImportsByFileExtension: Record<string, string> = {
 export function IncludedModels() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const thisDmnsImports = useDmnEditorStore((s) => s.dmn.model.definitions.import ?? []);
+  const settings = useSettings();
 
   const { externalContextDescription, externalContextName, dmnEditorRootElementRef, onRequestToResolvePath } =
     useDmnEditor();
@@ -352,7 +354,7 @@ export function IncludedModels() {
                       isPlain={false}
                       id={generateUuid()}
                       name={importName}
-                      isReadonly={false}
+                      isReadOnly={false}
                       shouldCommitOnBlur={true}
                       className={"pf-c-form-control"}
                       onRenamed={setImportName}
@@ -383,7 +385,7 @@ export function IncludedModels() {
         <>
           {/* This padding was necessary because PF4 has a @media query that doesn't run inside iframes, for some reason. */}
           <PageSection style={{ padding: "24px" }}>
-            <Button onClick={openModal} variant={ButtonVariant.primary}>
+            <Button isDisabled={settings.isReadOnly} onClick={openModal} variant={ButtonVariant.primary}>
               Include model
             </Button>
             <br />
@@ -402,7 +404,7 @@ export function IncludedModels() {
                     _import={dmnImport}
                     index={index}
                     externalModel={undefined}
-                    isReadonly={false}
+                    isReadOnly={settings.isReadOnly}
                   />
                 ) : (
                   <IncludedModelCard
@@ -410,7 +412,7 @@ export function IncludedModels() {
                     _import={dmnImport}
                     index={index}
                     externalModel={externalModel}
-                    isReadonly={false}
+                    isReadOnly={settings.isReadOnly}
                   />
                 );
               })}
@@ -431,9 +433,11 @@ export function IncludedModels() {
               in this DMN file. Included PMML models can be invoked through DMN Boxed Functions, usually inside Business
               Knowledge Model nodes (BKMs)
             </EmptyStateBody>
-            <Button onClick={openModal} variant={ButtonVariant.primary}>
-              Include model
-            </Button>
+            {!settings.isReadOnly && (
+              <Button onClick={openModal} variant={ButtonVariant.primary}>
+                Include model
+              </Button>
+            )}
           </EmptyState>
         </Flex>
       )}
@@ -445,12 +449,12 @@ function IncludedModelCard({
   _import,
   index,
   externalModel,
-  isReadonly,
+  isReadOnly,
 }: {
   _import: Normalized<DMN15__tImport>;
   externalModel: ExternalModel | undefined;
   index: number;
-  isReadonly: boolean;
+  isReadOnly: boolean;
 }) {
   const { externalModelsByNamespace } = useExternalModels();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -530,96 +534,95 @@ function IncludedModelCard({
   return (
     <Card isHoverable={true} isCompact={false}>
       <CardHeader>
-        <CardActions>
-          <Popover
-            bodyContent={
-              shouldRenderConfirmationMessage ? (
-                <Alert
-                  isInline
-                  variant={AlertVariant.warning}
-                  title={"This action have major impact to your model"}
-                  actionClose={
-                    <AlertActionCloseButton
-                      onClose={() => {
-                        setRemovePopoverOpen(false);
-                        setConfirmationPopoverOpen(false);
-                      }}
-                    />
-                  }
-                  actionLinks={
-                    <>
-                      <AlertActionLink
-                        onClick={(ev) => {
-                          remove(index);
-                          ev.stopPropagation();
-                          ev.preventDefault();
+        {!isReadOnly && (
+          <CardActions>
+            <Popover
+              bodyContent={
+                shouldRenderConfirmationMessage ? (
+                  <Alert
+                    isInline
+                    variant={AlertVariant.warning}
+                    title={"This action have major impact to your model"}
+                    actionClose={
+                      <AlertActionCloseButton
+                        onClose={() => {
+                          setRemovePopoverOpen(false);
+                          setConfirmationPopoverOpen(false);
                         }}
-                        variant={"link"}
-                        style={{
-                          color: "var(--pf-global--danger-color--200)",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {`Yes, remove included ${extension.toUpperCase()}`}
-                      </AlertActionLink>
-                    </>
-                  }
-                >
-                  {extension === "dmn" && (
-                    <>
-                      Removing an included DMN will erase all its imported nodes and connected edges from your model.
-                      The references to item definitions, Business Knowledge Model functions, and Decision expressions
-                      will remain, requiring to be manually removed.
-                    </>
-                  )}
-                  {extension === "pmml" && (
-                    <>
-                      Removing an included PMML will not erase references on Boxed Function expressions, requiring it to
-                      be manually removed.
-                    </>
-                  )}
-                </Alert>
-              ) : (
-                <Button
-                  variant={"plain"}
-                  onClick={(ev) => {
-                    ev.stopPropagation();
-                    ev.preventDefault();
-                    if (isReadonly) {
-                      return;
+                      />
                     }
-                    setConfirmationPopoverOpen(true);
-                  }}
-                >
-                  <TrashIcon />
-                  {"  "}
-                  Remove
-                </Button>
-              )
-            }
-            hasNoPadding={shouldRenderConfirmationMessage}
-            maxWidth={shouldRenderConfirmationMessage ? "300px" : "150px"}
-            minWidth={shouldRenderConfirmationMessage ? "300px" : "150px"}
-            isVisible={isRemovePopoverOpen}
-            showClose={false}
-            shouldClose={() => {
-              setRemovePopoverOpen(false);
-              setConfirmationPopoverOpen(false);
-            }}
-            position={PopoverPosition.bottom}
-            shouldOpen={() => setRemovePopoverOpen(true)}
-          >
-            <Button
-              variant={"plain"}
-              onClick={(ev) => {
-                ev.stopPropagation();
-                ev.preventDefault();
+                    actionLinks={
+                      <>
+                        <AlertActionLink
+                          onClick={(ev) => {
+                            remove(index);
+                            ev.stopPropagation();
+                            ev.preventDefault();
+                          }}
+                          variant={"link"}
+                          style={{ color: "var(--pf-global--danger-color--200)", fontWeight: "bold" }}
+                        >
+                          {`Yes, remove included ${extension.toUpperCase()}`}
+                        </AlertActionLink>
+                      </>
+                    }
+                  >
+                    {extension === "dmn" && (
+                      <>
+                        Removing an included DMN will erase all its imported nodes and connected edges from your model.
+                        The references to item definitions, Business Knowledge Model functions, and Decision expressions
+                        will remain, requiring to be manually removed.
+                      </>
+                    )}
+                    {extension === "pmml" && (
+                      <>
+                        Removing an included PMML will not erase references on Boxed Function expressions, requiring it
+                        to be manually removed.
+                      </>
+                    )}
+                  </Alert>
+                ) : (
+                  <Button
+                    variant={"plain"}
+                    onClick={(ev) => {
+                      ev.stopPropagation();
+                      ev.preventDefault();
+                      if (isReadOnly) {
+                        return;
+                      }
+                      setConfirmationPopoverOpen(true);
+                    }}
+                  >
+                    <TrashIcon />
+                    {"  "}
+                    Remove
+                  </Button>
+                )
+              }
+              hasNoPadding={shouldRenderConfirmationMessage}
+              maxWidth={shouldRenderConfirmationMessage ? "300px" : "150px"}
+              minWidth={shouldRenderConfirmationMessage ? "300px" : "150px"}
+              isVisible={isRemovePopoverOpen}
+              showClose={false}
+              shouldClose={() => {
+                setRemovePopoverOpen(false);
+                setConfirmationPopoverOpen(false);
               }}
+              position={PopoverPosition.bottom}
+              shouldOpen={() => setRemovePopoverOpen(true)}
             >
-              <KebabToggle />
-            </Button>
-          </Popover>
-        </CardActions>
+              <Button
+                variant={"plain"}
+                onClick={(ev) => {
+                  ev.stopPropagation();
+                  ev.preventDefault();
+                }}
+              >
+                <KebabToggle />
+              </Button>
+            </Popover>
+          </CardActions>
+        )}
         <CardTitle>
           <InlineFeelNameInput
             placeholder={EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER}
@@ -627,7 +630,7 @@ function IncludedModelCard({
             allUniqueNames={useCallback((s) => s.computed(s).getAllFeelVariableUniqueNames(), [])}
             id={_import["@_id"]!}
             name={_import["@_name"]}
-            isReadonly={false}
+            isReadOnly={isReadOnly}
             shouldCommitOnBlur={true}
             onRenamed={rename}
             validate={DMN15_SPEC.IMPORT.name.isValid}

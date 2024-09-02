@@ -248,6 +248,55 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
+  examples/dmn-editor-standalone-examples:
+    dependencies:
+      '@kie-tools/dmn-editor-standalone':
+        specifier: workspace:*
+        version: link:../../packages/dmn-editor-standalone
+    devDependencies:
+      '@kie-tools-core/webpack-base':
+        specifier: workspace:*
+        version: link:../../packages/webpack-base
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../../packages/root-env
+      '@kie-tools/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
+      copy-webpack-plugin:
+        specifier: ^11.0.0
+        version: 11.0.0(webpack@5.92.1(webpack-cli@4.10.0))
+      html-webpack-plugin:
+        specifier: ^5.3.2
+        version: 5.5.3(webpack@5.92.1(webpack-cli@4.10.0))
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
+      raw-loader:
+        specifier: ^4.0.2
+        version: 4.0.2(webpack@5.92.1(webpack-cli@4.10.0))
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      typescript:
+        specifier: ^5.5.3
+        version: 5.5.3
+      webpack:
+        specifier: ^5.92.1
+        version: 5.92.1(webpack-cli@4.10.0)
+      webpack-bundle-analyzer:
+        specifier: ^4.10.2
+        version: 4.10.2
+      webpack-cli:
+        specifier: ^4.10.0
+        version: 4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.92.1)
+      webpack-dev-server:
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.92.1)
+      webpack-merge:
+        specifier: ^5.9.0
+        version: 5.10.0
+
   examples/dmn-quarkus-example:
     devDependencies:
       '@kie-tools/maven-config-setup-helper':
@@ -7040,6 +7089,31 @@ importers:
       typescript:
         specifier: ^5.5.3
         version: 5.5.3
+
+  packages/runtime-tools-consoles-helm-chart:
+    dependencies:
+      '@kie-tools/kogito-management-console':
+        specifier: workspace:*
+        version: link:../kogito-management-console
+      '@kie-tools/kogito-task-console':
+        specifier: workspace:*
+        version: link:../kogito-task-console
+    devDependencies:
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      prettier:
+        specifier: ^3.3.2
+        version: 3.3.2
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+      yaml:
+        specifier: ^2.3.2
+        version: 2.3.2
 
   packages/runtime-tools-management-console-webapp:
     dependencies:
@@ -18844,9 +18918,6 @@ packages:
   '@types/responselike@1.0.0':
     resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
 
-  '@types/retry@0.12.1':
-    resolution: {integrity: sha512-xoDlM2S4ortawSWORYqsdU+2rxdh4LRW9ytc3zmT37RIKQh6IHyKwwtKhKis9ah8ol07DCkZxPt8BBvPjC6v4g==}
-
   '@types/retry@0.12.2':
     resolution: {integrity: sha512-XISRgDJ2Tc5q4TRqvgJtzsRkFYNJzZrhTdtMoGVBttwzzQJkPnS3WWTFc7kuDRoPtPakl+T+OfdEUjYJj7Jbow==}
 
@@ -22595,6 +22666,7 @@ packages:
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
+    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@8.1.0:
     resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
@@ -22833,9 +22905,6 @@ packages:
 
   html-entities@2.5.2:
     resolution: {integrity: sha512-K//PSRMQk4FZ78Kyau+mZurHn3FH0Vwr+H36eE0rPbeYkRRi9YxceYPhuN60UwWorxyKHhqoAJl2OFKa4BVtaA==}
-
-  html-escaper@2.0.1:
-    resolution: {integrity: sha512-hNX23TjWwD3q56HpWjUHOKj1+4KKlnjv9PcmBUYKVpga+2cnb9nDx/B1o0yO4n+RZXZdiNxzx6B24C9aNMTkkQ==}
 
   html-escaper@2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
@@ -23086,6 +23155,7 @@ packages:
 
   inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
+    deprecated: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
 
   inherits@2.0.3:
     resolution: {integrity: sha512-x00IRNXNy63jwGkJmzPigoySHbaqpNuzKbBOmzK+g2OdZpQ9w+sxCN+VSB3ja7IAge2OP2qpfxTjeNcyjmW1uw==}
@@ -26700,6 +26770,7 @@ packages:
 
   rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rimraf@5.0.10:
@@ -40779,7 +40850,7 @@ snapshots:
   '@types/body-parser@1.19.2':
     dependencies:
       '@types/connect': 3.4.34
-      '@types/node': 20.14.2
+      '@types/node': 20.14.13
 
   '@types/bonjour@3.5.10':
     dependencies:
@@ -40787,7 +40858,7 @@ snapshots:
 
   '@types/bonjour@3.5.13':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.13
 
   '@types/bson@4.0.3':
     dependencies:
@@ -40817,11 +40888,11 @@ snapshots:
   '@types/connect-history-api-fallback@1.5.4':
     dependencies:
       '@types/express-serve-static-core': 4.17.35
-      '@types/node': 20.14.2
+      '@types/node': 20.14.13
 
   '@types/connect@3.4.34':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.13
 
   '@types/cookie@0.4.1': {}
 
@@ -41011,7 +41082,7 @@ snapshots:
 
   '@types/express-serve-static-core@4.17.35':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.13
       '@types/qs': 6.9.7
       '@types/range-parser': 1.2.4
       '@types/send': 0.17.1
@@ -41086,7 +41157,7 @@ snapshots:
 
   '@types/http-proxy@1.17.14':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.13
 
   '@types/http-proxy@1.17.8':
     dependencies:
@@ -41193,7 +41264,7 @@ snapshots:
 
   '@types/node-forge@1.3.11':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.13
 
   '@types/node@10.17.60': {}
 
@@ -41310,8 +41381,6 @@ snapshots:
     dependencies:
       '@types/node': 20.14.2
 
-  '@types/retry@0.12.1': {}
-
   '@types/retry@0.12.2': {}
 
   '@types/scheduler@0.16.1': {}
@@ -41332,7 +41401,7 @@ snapshots:
   '@types/send@0.17.1':
     dependencies:
       '@types/mime': 1.3.2
-      '@types/node': 20.14.2
+      '@types/node': 20.14.13
 
   '@types/serve-index@1.9.1':
     dependencies:
@@ -41350,7 +41419,7 @@ snapshots:
   '@types/serve-static@1.15.7':
     dependencies:
       '@types/http-errors': 2.0.4
-      '@types/node': 20.14.2
+      '@types/node': 20.14.13
       '@types/send': 0.17.1
 
   '@types/simpl-schema@1.12.0':
@@ -41375,7 +41444,7 @@ snapshots:
 
   '@types/sockjs@0.3.36':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.13
 
   '@types/ssri@7.1.1':
     dependencies:
@@ -41403,7 +41472,7 @@ snapshots:
 
   '@types/ws@8.5.12':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.13
 
   '@types/ws@8.5.5':
     dependencies:
@@ -42156,6 +42225,10 @@ snapshots:
     optionalDependencies:
       ajv: 8.12.0
 
+  ajv-formats@2.1.1(ajv@8.16.0):
+    optionalDependencies:
+      ajv: 8.16.0
+
   ajv-formats@3.0.1(ajv@8.16.0):
     optionalDependencies:
       ajv: 8.16.0
@@ -42167,6 +42240,11 @@ snapshots:
   ajv-keywords@5.1.0(ajv@8.12.0):
     dependencies:
       ajv: 8.12.0
+      fast-deep-equal: 3.1.3
+
+  ajv-keywords@5.1.0(ajv@8.16.0):
+    dependencies:
+      ajv: 8.16.0
       fast-deep-equal: 3.1.3
 
   ajv@6.12.6:
@@ -43778,7 +43856,7 @@ snapshots:
       normalize-path: 3.0.0
       readdirp: 3.6.0
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
 
   chownr@1.1.4: {}
 
@@ -44134,12 +44212,12 @@ snapshots:
 
   copy-webpack-plugin@11.0.0(webpack@5.92.1(webpack-cli@4.10.0)):
     dependencies:
-      fast-glob: 3.2.11
+      fast-glob: 3.3.2
       glob-parent: 6.0.2
       globby: 13.1.2
       normalize-path: 3.0.0
-      schema-utils: 4.0.0
-      serialize-javascript: 6.0.1
+      schema-utils: 4.2.0
+      serialize-javascript: 6.0.2
       webpack: 5.92.1(webpack-cli@4.10.0)
 
   copy-webpack-plugin@11.0.0(webpack@5.92.1):
@@ -46806,8 +46884,8 @@ snapshots:
   globby@13.1.2:
     dependencies:
       dir-glob: 3.0.1
-      fast-glob: 3.2.11
-      ignore: 5.2.0
+      fast-glob: 3.3.2
+      ignore: 5.3.1
       merge2: 1.4.1
       slash: 4.0.0
 
@@ -47054,8 +47132,6 @@ snapshots:
 
   html-entities@2.5.2: {}
 
-  html-escaper@2.0.1: {}
-
   html-escaper@2.0.2: {}
 
   html-minifier-terser@5.1.1:
@@ -47256,7 +47332,7 @@ snapshots:
 
   http-proxy-middleware@2.0.6(@types/express@4.17.21):
     dependencies:
-      '@types/http-proxy': 1.17.8
+      '@types/http-proxy': 1.17.14
       http-proxy: 1.18.1
       is-glob: 4.0.3
       is-plain-obj: 3.0.0
@@ -47833,7 +47909,7 @@ snapshots:
 
   istanbul-reports@3.1.6:
     dependencies:
-      html-escaper: 2.0.1
+      html-escaper: 2.0.2
       istanbul-lib-report: 3.0.1
 
   iterall@1.3.0: {}
@@ -49238,7 +49314,7 @@ snapshots:
 
   launch-editor@2.8.0:
     dependencies:
-      picocolors: 1.0.0
+      picocolors: 1.0.1
       shell-quote: 1.8.1
 
   lazy-ass@1.6.0: {}
@@ -50605,7 +50681,7 @@ snapshots:
 
   p-retry@4.6.1:
     dependencies:
-      '@types/retry': 0.12.1
+      '@types/retry': 0.12.2
       retry: 0.13.1
 
   p-retry@6.2.0:
@@ -51425,20 +51501,20 @@ snapshots:
 
   raw-loader@4.0.2(webpack@5.92.1(@swc/core@1.3.92)(webpack-cli@4.10.0)):
     dependencies:
-      loader-utils: 2.0.2
-      schema-utils: 3.1.1
+      loader-utils: 2.0.4
+      schema-utils: 3.3.0
       webpack: 5.92.1(@swc/core@1.3.92)(webpack-cli@4.10.0)
 
   raw-loader@4.0.2(webpack@5.92.1(webpack-cli@4.10.0)):
     dependencies:
-      loader-utils: 2.0.2
-      schema-utils: 3.1.1
+      loader-utils: 2.0.4
+      schema-utils: 3.3.0
       webpack: 5.92.1(webpack-cli@4.10.0)
 
   raw-loader@4.0.2(webpack@5.92.1):
     dependencies:
-      loader-utils: 2.0.2
-      schema-utils: 3.1.1
+      loader-utils: 2.0.4
+      schema-utils: 3.3.0
       webpack: 5.92.1
 
   rc@1.2.8:
@@ -52516,9 +52592,9 @@ snapshots:
   schema-utils@4.2.0:
     dependencies:
       '@types/json-schema': 7.0.15
-      ajv: 8.12.0
-      ajv-formats: 2.1.1(ajv@8.12.0)
-      ajv-keywords: 5.1.0(ajv@8.12.0)
+      ajv: 8.16.0
+      ajv-formats: 2.1.1(ajv@8.16.0)
+      ajv-keywords: 5.1.0(ajv@8.16.0)
 
   scuid@1.1.0: {}
 
@@ -52939,7 +53015,7 @@ snapshots:
 
   spdy@4.0.2:
     dependencies:
-      debug: 4.3.4
+      debug: 4.3.5
       handle-thing: 2.0.1
       http-deceiver: 1.2.7
       select-hose: 2.0.0
@@ -54432,7 +54508,7 @@ snapshots:
     dependencies:
       browserslist: 4.23.0
       escalade: 3.1.1
-      picocolors: 1.0.0
+      picocolors: 1.0.1
 
   update-browserslist-db@1.1.0(browserslist@4.23.2):
     dependencies:
@@ -54956,7 +55032,7 @@ snapshots:
       gzip-size: 6.0.0
       html-escaper: 2.0.2
       opener: 1.5.2
-      picocolors: 1.0.0
+      picocolors: 1.0.1
       sirv: 2.0.4
       ws: 7.5.10
     transitivePeerDependencies:
@@ -55087,39 +55163,39 @@ snapshots:
 
   webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.92.1):
     dependencies:
-      '@types/bonjour': 3.5.10
-      '@types/connect-history-api-fallback': 1.3.5
-      '@types/express': 4.17.17
-      '@types/serve-index': 1.9.1
-      '@types/serve-static': 1.13.10
-      '@types/sockjs': 0.3.33
-      '@types/ws': 8.5.5
+      '@types/bonjour': 3.5.13
+      '@types/connect-history-api-fallback': 1.5.4
+      '@types/express': 4.17.21
+      '@types/serve-index': 1.9.4
+      '@types/serve-static': 1.15.7
+      '@types/sockjs': 0.3.36
+      '@types/ws': 8.5.12
       ansi-html-community: 0.0.8
-      bonjour-service: 1.1.1
-      chokidar: 3.5.3
-      colorette: 2.0.16
+      bonjour-service: 1.2.1
+      chokidar: 3.6.0
+      colorette: 2.0.20
       compression: 1.7.4
       connect-history-api-fallback: 2.0.0
       default-gateway: 6.0.3
       express: 4.19.2
       graceful-fs: 4.2.11
-      html-entities: 2.3.2
-      http-proxy-middleware: 2.0.6(@types/express@4.17.17)
-      ipaddr.js: 2.0.1
-      launch-editor: 2.6.0
+      html-entities: 2.5.2
+      http-proxy-middleware: 2.0.6(@types/express@4.17.21)
+      ipaddr.js: 2.2.0
+      launch-editor: 2.8.0
       open: 8.4.0
       p-retry: 4.6.1
       rimraf: 3.0.2
-      schema-utils: 4.0.0
-      selfsigned: 2.1.1
+      schema-utils: 4.2.0
+      selfsigned: 2.4.1
       serve-index: 1.9.1
       sockjs: 0.3.24
       spdy: 4.0.2
       webpack-dev-middleware: 5.3.3(webpack@5.92.1(webpack-cli@4.10.0))
-      ws: 8.13.0
+      ws: 8.18.0
     optionalDependencies:
       webpack: 5.92.1(webpack-cli@4.10.0)
-      webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.92.1)
+      webpack-cli: 4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.92.1)
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -55523,7 +55599,7 @@ snapshots:
       watchpack: 2.4.1
       webpack-sources: 3.2.3
     optionalDependencies:
-      webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.92.1)
+      webpack-cli: 4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.92.1)
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild

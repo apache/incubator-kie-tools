@@ -29,7 +29,7 @@ import { useDmnEditorStore } from "../../store/StoreContext";
 
 type ExpressionRoot = Pick<AllExpressionsWithoutTypes, "description" | "@_typeRef" | "@_id">;
 
-export function ExpressionRootCell(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadonly: boolean }) {
+export function ExpressionRootCell(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadOnly: boolean }) {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const selectedObjectInfos = useMemo(
     () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
@@ -48,7 +48,7 @@ export function ExpressionRootCell(props: { boxedExpressionIndex?: BoxedExpressi
         </ClipboardCopy>
       </FormGroup>
       <DescriptionField
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         initialValue={cell.description?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         onChange={(newDescription: string) =>

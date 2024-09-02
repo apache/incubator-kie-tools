@@ -71,10 +71,13 @@ export function FeelFunctionExpression({
   parentElementId: string;
 }) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
+  const { expressionHolderId, widthsById, isReadOnly } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
 
-  const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(functionExpression.formalParameter);
+  const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(
+    functionExpression.formalParameter,
+    isReadOnly ?? false
+  );
   const parametersId = useMemo(
     () => (functionExpression["@_id"] ? `${functionExpression["@_id"]}-parameters` : "parameters"),
     [functionExpression]
@@ -204,6 +207,7 @@ export function FeelFunctionExpression({
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`function-expression ${functionExpression["@_id"]}`}>
         <BeeTable<FEEL_ROWTYPE>
+          isReadOnly={isReadOnly}
           onColumnResizingWidthChange={onColumnResizingWidthChange}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           operationConfig={beeTableOperationConfig}

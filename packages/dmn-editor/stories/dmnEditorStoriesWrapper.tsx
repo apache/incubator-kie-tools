@@ -38,11 +38,18 @@ export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
   const [modelArgs, setModelArgs] = useState<DmnLatestModel>(args.model);
   const model = useMemo(() => props?.model ?? modelArgs, [modelArgs, props?.model]);
   const [modelChanged, setModelChange] = useState<boolean>(false);
+  const [isReadOnly, setIsReadOnly] = useState(props?.isReadOnly ?? args.isReadOnly ?? false);
 
   const onModelChange = useMemo(
     () => (props?.onModelChange ? props.onModelChange : setModelArgs),
     [props?.onModelChange]
   );
+
+  useEffect(() => {
+    if (args.isReadOnly !== undefined) {
+      setIsReadOnly(args.isReadOnly);
+    }
+  }, [args.isReadOnly]);
 
   useEffect(() => {
     if (Object.keys(diff(argsCopy.current.model, model)).length !== 0) {
@@ -76,11 +83,19 @@ export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
           {JSON.stringify(model)}
         </div>
       )}
+      <button
+        data-testid={"storybook--dmn-editor-toggle-read-only"}
+        style={{ display: "none" }}
+        onClick={() => setIsReadOnly((currentValue) => !currentValue)}
+      >
+        {isReadOnly.toString()}
+      </button>
       <div style={{ position: "absolute", width: "100%", height: "100%", top: "0px", left: "0px" }}>
         <DmnEditor
           ref={ref}
           model={model}
           originalVersion={props?.originalVersion ?? args.originalVersion}
+          isReadOnly={isReadOnly}
           onModelChange={onModelChange}
           onRequestExternalModelByPath={props?.onRequestExternalModelByPath ?? args.onRequestExternalModelByPath}
           onRequestExternalModelsAvailableToInclude={

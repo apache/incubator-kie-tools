@@ -54,3 +54,34 @@ export const Base: Story = {
     },
   },
 };
+
+export const Readonly: Story = {
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
+  args: {
+    ...EmptyExpression.args,
+    expression: {
+      __$$element: "some",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+      in: {
+        "@_id": generateUuid(),
+        expression: {
+          "@_id": generateUuid(),
+          __$$element: "literalExpression",
+          text: { __$$text: "['read', 'only']" },
+        },
+      },
+      satisfies: {
+        "@_id": generateUuid(),
+        expression: {
+          "@_id": generateUuid(),
+          __$$element: "literalExpression",
+          text: { __$$text: "readOnlyTest(itemReadOnly)" },
+        },
+      },
+      "@_iteratorVariable": "itemReadOnly",
+    },
+    isReadOnly: true,
+  },
+};

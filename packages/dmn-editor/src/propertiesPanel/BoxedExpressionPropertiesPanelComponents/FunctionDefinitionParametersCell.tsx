@@ -40,7 +40,7 @@ import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 export function FunctionDefinitionParameterCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
-  isReadonly: boolean;
+  isReadOnly: boolean;
 }) {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
 
@@ -95,7 +95,7 @@ export function FunctionDefinitionParameterCell(props: {
           {isParameterExpanded[i] && (
             <>
               <NameField
-                isReadonly={props.isReadonly}
+                isReadOnly={props.isReadOnly}
                 id={parameter["@_id"]!}
                 name={parameter["@_name"] ?? ""}
                 getAllUniqueNames={getAllUniqueNames}
@@ -109,7 +109,7 @@ export function FunctionDefinitionParameterCell(props: {
               />
               <FunctionDefinitionParameterTypeRef
                 parameter={parameter}
-                isReadonly={props.isReadonly}
+                isReadOnly={props.isReadOnly}
                 onTypeRefChange={(newTypeRef) =>
                   updater((dmnObject) => {
                     dmnObject.formalParameter ??= [];
@@ -119,7 +119,7 @@ export function FunctionDefinitionParameterCell(props: {
                 }
               />
               <DescriptionField
-                isReadonly={props.isReadonly}
+                isReadOnly={props.isReadOnly}
                 initialValue={parameter.description?.__$$text ?? ""}
                 expressionPath={selectedObjectInfos?.expressionPath ?? []}
                 onChange={(newDescription: string) => {
@@ -145,7 +145,7 @@ export function FunctionDefinitionParameterCell(props: {
 
 function FunctionDefinitionParameterTypeRef(props: {
   parameter: Normalized<DMN15__tInformationItem>;
-  isReadonly: boolean;
+  isReadOnly: boolean;
   onTypeRefChange: (newTypeRef: string) => void;
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -164,7 +164,7 @@ function FunctionDefinitionParameterTypeRef(props: {
   return (
     <>
       <TypeRefField
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         dmnEditorRootElementRef={dmnEditorRootElementRef}
         typeRef={props.parameter["@_typeRef"]}
         onChange={props.onTypeRefChange}
@@ -172,7 +172,7 @@ function FunctionDefinitionParameterTypeRef(props: {
       {itemDefinition && (
         <FormGroup label="Constraint">
           <ConstraintsFromTypeConstraintAttribute
-            isReadonly={true}
+            isReadOnly={true}
             itemDefinition={itemDefinition}
             editItemDefinition={() => {}}
             renderOnPropertiesPanel={true}

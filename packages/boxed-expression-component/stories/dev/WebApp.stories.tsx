@@ -197,6 +197,7 @@ export const WebApp: Story = {
     widthsById: { control: "object" },
   },
   args: {
+    isReadOnly: false,
     expressionHolderId: undefined, // Needs to be here to be displayed.
     expression: undefined, // Needs to be here to be displayed.
     widthsById: {}, // Needs to be here to be displayed.

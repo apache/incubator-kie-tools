@@ -66,7 +66,6 @@ public class BusinessRuleTaskChangeHandler implements DomainObjectFieldChangeHan
     public void reset() {
         businessRuleTask.getExecutionSet().getNamespace().setValue("");
         businessRuleTask.getExecutionSet().getDmnModelName().setValue("");
-        businessRuleTask.getExecutionSet().getDecisionName().setValue("");
         dmnResourceContentFetcher.getDecisions().clear();
         dmnResourceContentFetcher.refreshForms();
     }
@@ -74,7 +73,6 @@ public class BusinessRuleTaskChangeHandler implements DomainObjectFieldChangeHan
     protected void setData(DmnDocumentData dmnDocumentData) {
         businessRuleTask.getExecutionSet().getNamespace().setValue(dmnDocumentData.getNamespace());
         businessRuleTask.getExecutionSet().getDmnModelName().setValue(dmnDocumentData.getName());
-        businessRuleTask.getExecutionSet().getDecisionName().setValue(""); // Clear the value
         dmnResourceContentFetcher.setDecisions(dmnDocumentData.getDecisions().stream()
                 .map(DmnDecision::getName)
                 .collect(Collectors.toList()));

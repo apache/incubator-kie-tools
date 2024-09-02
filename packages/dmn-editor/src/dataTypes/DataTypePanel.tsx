@@ -56,12 +56,12 @@ import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { InfoAltIcon } from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
 
 export function DataTypePanel({
-  isReadonly,
+  isReadOnly,
   dataType,
   allDataTypesById,
   editItemDefinition,
 }: {
-  isReadonly: boolean;
+  isReadOnly: boolean;
   dataType: DataType;
   allDataTypesById: DataTypeIndex;
   editItemDefinition: EditItemDefinition;
@@ -70,7 +70,7 @@ export function DataTypePanel({
 
   const toggleStruct = useCallback(
     (isChecked: boolean) => {
-      if (isReadonly) {
+      if (isReadOnly) {
         return;
       }
 
@@ -86,12 +86,12 @@ export function DataTypePanel({
         }
       });
     },
-    [dataType.itemDefinition, editItemDefinition, isReadonly]
+    [dataType.itemDefinition, editItemDefinition, isReadOnly]
   );
 
   const toggleCollection = useCallback(
     (isChecked: boolean) => {
-      if (isReadonly) {
+      if (isReadOnly) {
         return;
       }
 
@@ -115,12 +115,12 @@ export function DataTypePanel({
         }
       });
     },
-    [dataType.itemDefinition, editItemDefinition, isReadonly]
+    [dataType.itemDefinition, editItemDefinition, isReadOnly]
   );
 
   const changeTypeRef = useCallback(
     (typeRef: DmnBuiltInDataType) => {
-      if (isReadonly) {
+      if (isReadOnly) {
         return;
       }
 
@@ -133,12 +133,12 @@ export function DataTypePanel({
         }
       });
     },
-    [dataType.itemDefinition, editItemDefinition, isReadonly]
+    [dataType.itemDefinition, editItemDefinition, isReadOnly]
   );
 
   const changeDescription = useCallback(
     (newDescription: string) => {
-      if (isReadonly) {
+      if (isReadOnly) {
         return;
       }
 
@@ -146,7 +146,7 @@ export function DataTypePanel({
         itemDefinition.description = { __$$text: newDescription };
       });
     },
-    [dataType.itemDefinition, editItemDefinition, isReadonly]
+    [dataType.itemDefinition, editItemDefinition, isReadOnly]
   );
 
   const parents = useMemo(() => {
@@ -164,7 +164,7 @@ export function DataTypePanel({
 
   const addItemComponent = useCallback<AddItemComponent>(
     (id, how, partial) => {
-      if (isReadonly) {
+      if (isReadOnly) {
         return;
       }
 
@@ -175,7 +175,7 @@ export function DataTypePanel({
         state.focus.consumableId = newItemDefinition["@_id"];
       });
     },
-    [editItemDefinition, isReadonly]
+    [editItemDefinition, isReadOnly]
   );
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -259,7 +259,7 @@ export function DataTypePanel({
                   itemDefinition={dataType.itemDefinition}
                   isActive={false}
                   editMode={"hover"}
-                  isReadonly={dataType.namespace !== thisDmnsNamespace}
+                  isReadOnly={isReadOnly || dataType.namespace !== thisDmnsNamespace}
                   onGetAllUniqueNames={() => allUniqueNames}
                 />
               </div>
@@ -296,28 +296,30 @@ export function DataTypePanel({
               >
                 Copy
               </DropdownItem>,
-              <DropdownSeparator key="separator-2" />,
               <React.Fragment key={"remove-fragment"}>
-                {!isReadonly && (
-                  <DropdownItem
-                    style={{ minWidth: "240px" }}
-                    icon={<TrashIcon />}
-                    onClick={() => {
-                      if (isReadonly) {
-                        return;
-                      }
+                {!isReadOnly && (
+                  <>
+                    <DropdownSeparator key="separator-2" />
+                    <DropdownItem
+                      style={{ minWidth: "240px" }}
+                      icon={<TrashIcon />}
+                      onClick={() => {
+                        if (isReadOnly) {
+                          return;
+                        }
 
-                      editItemDefinition(dataType.itemDefinition["@_id"]!, (_, items) => {
-                        items?.splice(dataType.index, 1);
-                      });
-                      dmnEditorStoreApi.setState((state) => {
-                        state.dataTypesEditor.activeItemDefinitionId =
-                          dataType.parentId ?? state.dmn.model.definitions.itemDefinition?.[0]?.["@_id"];
-                      });
-                    }}
-                  >
-                    Remove
-                  </DropdownItem>
+                        editItemDefinition(dataType.itemDefinition["@_id"]!, (_, items) => {
+                          items?.splice(dataType.index, 1);
+                        });
+                        dmnEditorStoreApi.setState((state) => {
+                          state.dataTypesEditor.activeItemDefinitionId =
+                            dataType.parentId ?? state.dmn.model.definitions.itemDefinition?.[0]?.["@_id"];
+                        });
+                      }}
+                    >
+                      Remove
+                    </DropdownItem>
+                  </>
                 )}
               </React.Fragment>,
             ]}
@@ -327,7 +329,7 @@ export function DataTypePanel({
       {/* This padding was necessary because PF4 has a @media query that doesn't run inside iframes, for some reason. */}
       <PageSection style={{ padding: "24px" }}>
         <TextArea
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
           key={dataType.itemDefinition["@_id"]}
           value={dataType.itemDefinition.description?.__$$text}
           onChange={changeDescription}
@@ -343,10 +345,16 @@ export function DataTypePanel({
           label={"Is collection?"}
           isChecked={!!dataType.itemDefinition["@_isCollection"]}
           onChange={toggleCollection}
+          isDisabled={isReadOnly}
         />
         <br />
         <br />
-        <Switch label={"Is struct?"} isChecked={isStruct(dataType.itemDefinition)} onChange={toggleStruct}></Switch>
+        <Switch
+          label={"Is struct?"}
+          isChecked={isStruct(dataType.itemDefinition)}
+          onChange={toggleStruct}
+          isDisabled={isReadOnly}
+        ></Switch>
         <br />
         <br />
         <Divider inset={{ default: "insetMd" }} />
@@ -358,7 +366,7 @@ export function DataTypePanel({
             </Title>
             <TypeRefSelector
               heightRef={dmnEditorRootElementRef}
-              isDisabled={isReadonly}
+              isDisabled={isReadOnly}
               typeRef={resolvedTypeRef}
               onChange={changeTypeRef}
               removeDataTypes={[dataType]}
@@ -372,6 +380,7 @@ export function DataTypePanel({
                     Collection constraint
                   </Title>
                   <Popover
+                    showClose={false}
                     isVisible={isCollectionConstraintPopoverOpen}
                     shouldClose={() => setIsCollectionConstraintPopoverOpen(false)}
                     headerContent="Collection Constraints (Type Constraint)"
@@ -392,7 +401,7 @@ export function DataTypePanel({
                   </Popover>
                 </Flex>
                 <ConstraintsFromTypeConstraintAttribute
-                  isReadonly={isReadonly}
+                  isReadOnly={isReadOnly}
                   itemDefinition={dataType.itemDefinition}
                   editItemDefinition={editItemDefinition}
                   defaultsToAllowedValues={false}
@@ -404,6 +413,7 @@ export function DataTypePanel({
                     Collection item constraint
                   </Title>
                   <Popover
+                    showClose={false}
                     isVisible={isCollectionItemConstraintPopoverOpen}
                     shouldClose={() => setIsCollectionItemConstraintPopoverOpen(false)}
                     headerContent="Collection Item Constraints (Allowed Values)"
@@ -433,7 +443,7 @@ export function DataTypePanel({
                 <br />
 
                 <ConstraintsFromAllowedValuesAttribute
-                  isReadonly={isReadonly}
+                  isReadOnly={isReadOnly}
                   itemDefinition={dataType.itemDefinition}
                   editItemDefinition={editItemDefinition}
                 />
@@ -444,7 +454,7 @@ export function DataTypePanel({
                   Constraints
                 </Title>
                 <ConstraintsFromTypeConstraintAttribute
-                  isReadonly={isReadonly}
+                  isReadOnly={isReadOnly}
                   itemDefinition={dataType.itemDefinition}
                   editItemDefinition={editItemDefinition}
                   defaultsToAllowedValues={true}
@@ -455,7 +465,7 @@ export function DataTypePanel({
         )}
         {isStruct(dataType.itemDefinition) && (
           <ItemComponentsTable
-            isReadonly={isReadonly}
+            isReadOnly={isReadOnly}
             addItemComponent={addItemComponent}
             allDataTypesById={allDataTypesById}
             parent={dataType}

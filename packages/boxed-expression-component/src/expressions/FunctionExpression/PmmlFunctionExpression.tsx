@@ -75,10 +75,13 @@ export function PmmlFunctionExpression({
   isNested: boolean;
 }) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { expressionHolderId } = useBoxedExpressionEditor();
+  const { expressionHolderId, isReadOnly } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(functionExpression.formalParameter);
+  const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(
+    functionExpression.formalParameter,
+    isReadOnly ?? false
+  );
   const parametersId = useMemo(
     () => (functionExpression["@_id"] ? `${functionExpression["@_id"]}-parameters` : "parameters"),
     [functionExpression]
@@ -264,6 +267,7 @@ export function PmmlFunctionExpression({
     <div className={`function-expression ${functionExpression["@_id"]}`}>
       <BeeTable<PMML_ROWTYPE>
         forwardRef={beeTableRef}
+        isReadOnly={isReadOnly}
         onColumnResizingWidthChange={onColumnResizingWidthChange}
         resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
         operationConfig={beeTableOperationConfig}

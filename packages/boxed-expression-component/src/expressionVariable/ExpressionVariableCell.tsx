@@ -45,7 +45,7 @@ export const ExpressionVariableCell: React.FunctionComponent<
   }
 > = ({ data, rowIndex, columnIndex, onExpressionWithVariableUpdated }) => {
   const ref = React.useRef<HTMLDivElement>(null);
-
+  const { isReadOnly } = useBoxedExpressionEditor();
   const { expression, variable, index } = data[rowIndex];
 
   const onVariableUpdated = useCallback<OnExpressionVariableUpdated>(
@@ -110,33 +110,44 @@ export const ExpressionVariableCell: React.FunctionComponent<
     }
   }, [beeGwtService, variable, isActive]);
 
+  const cellContent = useMemo(
+    () => (
+      <div className={`expression-info with-popover-menu`} ref={ref}>
+        <p
+          className="expression-info-name pf-u-text-truncate"
+          title={variable["@_name"]}
+          data-ouia-component-id={"expression-info-name"}
+          data-testid={"kie-tools--bee--expression-info-name"}
+        >
+          {variable["@_name"]}
+        </p>
+        <p
+          className="expression-info-data-type pf-u-text-truncate"
+          title={variable["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+          data-ouia-component-id={"expression-info-data-type"}
+          data-testid={"kie-tools--bee--expression-info-data-type"}
+        >
+          ({variable["@_typeRef"] ?? DmnBuiltInDataType.Undefined})
+        </p>
+      </div>
+    ),
+    [variable]
+  );
+
   return (
     <div className="expression-variable-cell">
       <div className={`${variable["@_id"]} expression-variable`}>
-        <ExpressionVariableMenu
-          selectedExpressionName={variable["@_name"]}
-          selectedDataType={variable["@_typeRef"]}
-          onVariableUpdated={onVariableUpdated}
-        >
-          <div className={`expression-info with-popover-menu`} ref={ref}>
-            <p
-              className="expression-info-name pf-u-text-truncate"
-              title={variable["@_name"]}
-              data-ouia-component-id={"expression-info-name"}
-              data-testid={"kie-tools--bee--expression-info-name"}
-            >
-              {variable["@_name"]}
-            </p>
-            <p
-              className="expression-info-data-type pf-u-text-truncate"
-              title={variable["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
-              data-ouia-component-id={"expression-info-data-type"}
-              data-testid={"kie-tools--bee--expression-info-data-type"}
-            >
-              ({variable["@_typeRef"] ?? DmnBuiltInDataType.Undefined})
-            </p>
-          </div>
-        </ExpressionVariableMenu>
+        {isReadOnly ? (
+          cellContent
+        ) : (
+          <ExpressionVariableMenu
+            selectedExpressionName={variable["@_name"]}
+            selectedDataType={variable["@_typeRef"]}
+            onVariableUpdated={onVariableUpdated}
+          >
+            {cellContent}
+          </ExpressionVariableMenu>
+        )}
       </div>
     </div>
   );

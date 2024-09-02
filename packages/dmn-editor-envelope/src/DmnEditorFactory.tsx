@@ -93,6 +93,7 @@ export class DmnEditorInterface implements Editor {
         workspaceRootAbsolutePosixPath={
           this.initArgs.workspaceRootAbsolutePosixPath ?? DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH
         }
+        isReadOnly={this.initArgs.isReadOnly}
       />
     );
   }
@@ -103,10 +104,12 @@ function DmnEditorRootWrapper({
   envelopeContext,
   exposing,
   workspaceRootAbsolutePosixPath,
+  isReadOnly,
 }: {
   envelopeContext?: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>;
   exposing: (s: DmnEditorRoot) => void;
   workspaceRootAbsolutePosixPath: string;
+  isReadOnly: boolean;
 }) {
   const onNewEdit = useCallback(
     (workspaceEdit: WorkspaceEdit) => {
@@ -151,6 +154,7 @@ function DmnEditorRootWrapper({
       }
       workspaceRootAbsolutePosixPath={workspaceRootAbsolutePosixPath}
       keyboardShortcutsService={envelopeContext?.services.keyboardShortcuts}
+      isReadOnly={isReadOnly}
     />
   );
 }

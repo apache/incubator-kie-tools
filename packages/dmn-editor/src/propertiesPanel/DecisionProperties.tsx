@@ -32,6 +32,7 @@ import { useResolvedTypeRef } from "../dataTypes/useResolvedTypeRef";
 import { useCallback } from "react";
 import { Normalized } from "../normalization/normalize";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export function DecisionProperties({
   decision,
@@ -43,9 +44,10 @@ export function DecisionProperties({
   index: number;
 }) {
   const { setState } = useDmnEditorStoreApi();
+  const settings = useSettings();
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
-  const isReadonly = !!namespace && namespace !== thisDmnsNamespace;
+  const isReadOnly = settings.isReadOnly || (!!namespace && namespace !== thisDmnsNamespace);
 
   const { dmnEditorRootElementRef } = useDmnEditor();
 
@@ -59,7 +61,7 @@ export function DecisionProperties({
           isPlain={false}
           id={decision["@_id"]!}
           name={decision["@_name"]}
-          isReadonly={isReadonly}
+          isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
           className={"pf-c-form-control"}
           onRenamed={(newName) => {
@@ -79,7 +81,7 @@ export function DecisionProperties({
         <TypeRefSelector
           heightRef={dmnEditorRootElementRef}
           typeRef={resolvedTypeRef}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
           onChange={(newTypeRef) => {
             setState((state) => {
               const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>;
@@ -94,7 +96,7 @@ export function DecisionProperties({
         <TextArea
           aria-label={"Description"}
           type={"text"}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
           value={decision.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
@@ -119,7 +121,7 @@ export function DecisionProperties({
         <TextArea
           aria-label={"Question"}
           type={"text"}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
           value={decision.question?.__$$text}
           onChange={(newQuestion) => {
             setState((state) => {
@@ -138,7 +140,7 @@ export function DecisionProperties({
         <TextArea
           aria-label={"Allowed answers"}
           type={"text"}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
           value={decision.allowedAnswers?.__$$text}
           onChange={(newAllowedAnswers) => {
             setState((state) => {
@@ -154,7 +156,7 @@ export function DecisionProperties({
       </FormGroup>
 
       <DocumentationLinksFormGroup
-        isReadonly={isReadonly}
+        isReadOnly={isReadOnly}
         values={decision.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
@@ -165,16 +167,16 @@ export function DecisionProperties({
         }}
       />
 
-      {/* 
-      
+      {/*
+
       What about:
-      
+
       - supportedObjective
       - impactedPerformanceIndicator
       - decisionMaker
       - decisionOwner
       - usingProcess
-      - usingTask 
+      - usingTask
 
       ?
       */}
