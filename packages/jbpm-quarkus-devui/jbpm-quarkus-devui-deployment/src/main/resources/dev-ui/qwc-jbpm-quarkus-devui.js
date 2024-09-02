@@ -63,11 +63,13 @@ export class QwcJbpmQuarkusDevui extends LitElement {
     const metadata = this._routerController.getCurrentMetaData();
     const container = this.renderRoot.querySelector("#envelope-app");
 
+    console.log({ quarkusHttpHost, quarkusHttpPort });
+
     RuntimeToolsDevUI.open({
       container: container,
       isDataIndexAvailable: true,
       isTracingEnabled: isTracingEnabled,
-      quarkusAppOrigin: `http://${quarkusHttpHost ?? "0.0.0.0"}:${quarkusHttpPort ?? "8080"}`,
+      quarkusAppOrigin: `http://${quarkusHttpHost}:${quarkusHttpPort}`,
       quarkusAppRootPath: quarkusAppRootPath,
       shouldReplaceQuarkusAppOriginWithWebappOrigin: true,
       dataIndexUrl: `${dataIndexUrl}/graphql`,

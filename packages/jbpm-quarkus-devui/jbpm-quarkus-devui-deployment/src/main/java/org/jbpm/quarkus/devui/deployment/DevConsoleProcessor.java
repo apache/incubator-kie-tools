@@ -116,8 +116,8 @@ public class DevConsoleProcessor {
 
         String devUIUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.dev-ui.url");
         String dataIndexUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.dataindex.http.url");
-        String quarkusHttpHost = getProperty(configurationBuildItem, systemPropertyBuildItems, "quarkus.http.host");
-        String quarkusHttpPort = getProperty(configurationBuildItem, systemPropertyBuildItems, "quarkus.http.port");
+        String quarkusHttpHost = ConfigProvider.getConfig().getOptionalValue("quarkus.http.host", String.class).orElse("0.0.0.0");
+        String quarkusHttpPort = ConfigProvider.getConfig().getOptionalValue("quarkus.http.port", String.class).orElse("8080");
 
         CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
 
