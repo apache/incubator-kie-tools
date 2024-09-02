@@ -110,6 +110,7 @@
       { "id": "@kie-tools/kie-sandbox-fs" },
       { "id": "@kie-tools/dashbuilder-viewer-image" },
       { "id": "@kie-tools/dashbuilder-viewer-image-env" },
+      { "id": "@kie-tools/data-index-webapp" },
       { "id": "@kie-tools/dev-deployment-base-image" },
       { "id": "@kie-tools/dev-deployment-upload-service" },
       { "id": "@kie-tools/dev-deployment-dmn-form-webapp" },
@@ -1368,6 +1369,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/data-index-webapp",
+        "target": "@kie-tools-core/webpack-base",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/dev-deployment-base-image",
         "target": "@kie-tools/maven-base",
         "weight": 1
@@ -2435,6 +2441,7 @@
     ["@kie-tools/dashbuilder-viewer-deployment-webapp", "packages/dashbuilder-viewer-deployment-webapp"],
     ["@kie-tools/dashbuilder-viewer-image", "packages/dashbuilder-viewer-image"],
     ["@kie-tools/dashbuilder-viewer-image-env", "packages/dashbuilder-viewer-image-env"],
+    ["@kie-tools/data-index-webapp", "packages/data-index-webapp"],
     ["@kie-tools/dev-deployment-base-image", "packages/dev-deployment-base-image"],
     ["@kie-tools/dev-deployment-dmn-form-webapp", "packages/dev-deployment-dmn-form-webapp"],
     ["@kie-tools/dev-deployment-dmn-form-webapp-image", "packages/dev-deployment-dmn-form-webapp-image"],

@@ -297,18 +297,6 @@ importers:
         specifier: ^5.9.0
         version: 5.10.0
 
-  examples/dmn-quarkus-example:
-    devDependencies:
-      '@kie-tools/maven-config-setup-helper':
-        specifier: workspace:*
-        version: link:../../packages/maven-config-setup-helper
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6
-
   examples/drools-process-usertasks-quarkus-example:
     dependencies:
       '@kie-tools/jbpm-quarkus-devui':
@@ -2948,6 +2936,39 @@ importers:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
+
+  packages/data-index-webapp:
+    devDependencies:
+      '@kie-tools-core/webpack-base':
+        specifier: workspace:*
+        version: link:../webpack-base
+      copy-webpack-plugin:
+        specifier: ^11.0.0
+        version: 11.0.0(webpack@5.92.1(@swc/core@1.3.92)(webpack-cli@4.10.0))
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      stream-http:
+        specifier: ^3.2.0
+        version: 3.2.0
+      terser-webpack-plugin:
+        specifier: ^5.3.9
+        version: 5.3.10(@swc/core@1.3.92)(webpack@5.92.1(@swc/core@1.3.92)(webpack-cli@4.10.0))
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@swc/core@1.3.92)(@types/node@22.0.2)(typescript@5.5.3)
+      webpack:
+        specifier: ^5.92.1
+        version: 5.92.1(@swc/core@1.3.92)(webpack-cli@4.10.0)
+      webpack-cli:
+        specifier: ^4.10.0
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.92.1)
+      webpack-dev-server:
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.92.1)
+      webpack-merge:
+        specifier: ^5.9.0
+        version: 5.10.0
 
   packages/dev-deployment-base-image:
     dependencies:
@@ -12890,7 +12911,7 @@ importers:
         version: 7.16.11(@babel/core@7.16.12)
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2))
+        version: 29.7.0(@types/node@22.0.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.0.2))
       jest-junit:
         specifier: ^16.0.0
         version: 16.0.0
@@ -18470,9 +18491,6 @@ packages:
   '@types/body-parser@1.19.2':
     resolution: {integrity: sha512-ALYone6pm6QmwZoAgeyNksccT9Q4AWZQ6PvfwR37GT6r6FWUPguq6sUmNGSMV2Wr761oQoBxwGGa6DR5o1DC9g==}
 
-  '@types/bonjour@3.5.10':
-    resolution: {integrity: sha512-p7ienRMiS41Nu2/igbJxxLDWrSZ0WxM8UQgCeO9KhoVF7cOVFkrKsiDr1EsJIla8vV3oEEjGcz11jc5yimhzZw==}
-
   '@types/bonjour@3.5.13':
     resolution: {integrity: sha512-z9fJ5Im06zvUL548KvYNecEVlA7cVDkGUi6kZusb04mpyEFKCIZJvloCcmpmLaIahDpOQGHaHmG6imtPMmPXGQ==}
 
@@ -18490,9 +18508,6 @@ packages:
 
   '@types/component-emitter@1.2.11':
     resolution: {integrity: sha512-SRXjM+tfsSlA9VuG8hGO2nft2p8zjXCK1VcC6N4NXbBbYbSia9kzCChYQajIjzIqOOOuh5Ock6MmV2oux4jDZQ==}
-
-  '@types/connect-history-api-fallback@1.3.5':
-    resolution: {integrity: sha512-h8QJa8xSb1WD4fpKBDcATDNGXghFj6/3GRWG6dhmRcu0RX1Ubasur2Uvx5aeEwlf0MwblEC2bMzzMQntxnw/Cw==}
 
   '@types/connect-history-api-fallback@1.5.4':
     resolution: {integrity: sha512-n6Cr2xS1h4uAulPRdlw6Jl6s1oG8KrVilPN2yUITEs+K48EzMJJ3W1xy8K5eWuFvjp3R74AOIGSmp2UfBJ8HFw==}
@@ -18723,9 +18738,6 @@ packages:
   '@types/http-proxy@1.17.14':
     resolution: {integrity: sha512-SSrD0c1OQzlFX7pGu1eXxSEjemej64aaNPRhhVYUGqXh0BtldAAx37MG8btcumvpgKyZp1F5Gn3JkktdxiFv6w==}
 
-  '@types/http-proxy@1.17.8':
-    resolution: {integrity: sha512-5kPLG5BKpWYkw/LVOGWpiq3nEVqxiN32rTgI53Sk12/xHFQ2rG3ehI9IO+O3W2QoKeyB92dJkoka8SUm6BX1pA==}
-
   '@types/inquirer@7.3.3':
     resolution: {integrity: sha512-HhxyLejTHMfohAuhRun4csWigAMjXTmRyiJTU1Y/I1xmggikFMkOUoMQRlFm+zQcPEGHSs3io/0FAmNZf8EymQ==}
 
@@ -18939,9 +18951,6 @@ packages:
   '@types/send@0.17.1':
     resolution: {integrity: sha512-Cwo8LE/0rnvX7kIIa3QHCkcuF21c05Ayb0ZfxPiv0W8VRiZiNW/WuRupHKpqqGVGf7SUA44QSOUKaEd9lIrd/Q==}
 
-  '@types/serve-index@1.9.1':
-    resolution: {integrity: sha512-d/Hs3nWDxNL2xAczmOVZNj92YZCS6RGxfBPjKzuu/XirCgXdpKEb88dYNbrYGint6IVWLNP+yonwVAuRC0T2Dg==}
-
   '@types/serve-index@1.9.4':
     resolution: {integrity: sha512-qLpGZ/c2fhSs5gnYsQxtDEq3Oy8SXPClIXkW5ghvAvsNuVSA8k+gCONcUCS/UjLEYvYps+e8uBtfgXgvhwfNug==}
 
@@ -18965,9 +18974,6 @@ packages:
 
   '@types/sizzle@2.3.2':
     resolution: {integrity: sha512-7EJYyKTL7tFR8+gDbB6Wwz/arpGa0Mywk1TJbNzKzHtzbwVmY4HR9WqS5VV7dsBUKQmPNr192jHr/VpBluj/hg==}
-
-  '@types/sockjs@0.3.33':
-    resolution: {integrity: sha512-f0KEEe05NvUnat+boPTZ0dgaLZ4SfSouXUgv5noUiefG2ajgKjmETo9ZJyuqsl7dfl2aHlLJUiki6B4ZYldiiw==}
 
   '@types/sockjs@0.3.36':
     resolution: {integrity: sha512-MK9V6NzAS1+Ud7JV9lJLFqW85VbC9dq3LmwZCuBe4wBDgKC0Kj/jd8Xl+nSviU+Qc3+m7umHHyHg//2KSa0a0Q==}
@@ -19731,9 +19737,6 @@ packages:
   array-flatten@1.1.1:
     resolution: {integrity: sha512-PCVAQswWemu6UdxsDFFX/+gVeYqKAod3D3UVm91jHwynguOwAvYPhx8nNlM++NqRcK6CxxpUafjmhIdKiHibqg==}
 
-  array-flatten@2.1.2:
-    resolution: {integrity: sha512-hNfzcOV8W4NdualtqBFPyVO+54DSJuZGY9qT4pRroB6S9e3iiido2ISIC5h9R2sPJ8H3FHCIiEnsv1lPXO3KtQ==}
-
   array-includes@3.1.6:
     resolution: {integrity: sha512-sgTbLvL6cNnw24FnbaDyjmvddQ2ML8arZsgaJhoABMoplz/4QRhtrYS+alr1BUM1Bwp6dhx8vVCBSLG+StwOFw==}
     engines: {node: '>= 0.4'}
@@ -20097,9 +20100,6 @@ packages:
 
   bole@4.0.0:
     resolution: {integrity: sha512-Bk/2qoyOSlwU1dnDFk/oPM2FCNKAlYlBHfpAgwGX+K9HUtxSvmIAQCmMWMOvE6BlHHRCwsH1MxJe/r1ieodxqQ==}
-
-  bonjour-service@1.1.1:
-    resolution: {integrity: sha512-Z/5lQRMOG9k7W+FkeGTNjh7htqn/2LMnfOvBZ8pynNZCM9MwkQkI3zeI4oz09uWdcgmgHugVvBqxGg4VQJ5PCg==}
 
   bonjour-service@1.2.1:
     resolution: {integrity: sha512-oSzCS2zV14bh2kji6vNe7vrpJYCHGvcZnlffFQ1MEoX/WOeQ/teD8SYWKR942OI3INjq8OMNJlbPK5LLLUxFDw==}
@@ -21515,9 +21515,6 @@ packages:
   dir-glob@3.0.1:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
     engines: {node: '>=8'}
-
-  dns-equal@1.0.0:
-    resolution: {integrity: sha512-z+paD6YUQsk+AbGCEM4PrOXSss5gd66QfcVBFTKR/HpFL9jCqikS94HYwKww6fQyO7IxrIIyUu+g0Ka9tUS2Cg==}
 
   dns-packet@5.6.0:
     resolution: {integrity: sha512-rza3UH1LwdHh9qyPXp8lkwpjSNk/AMD3dPytUoRoqnypDUhY0xvbdmVhWOfxO68frEfV9BU8V12Ez7ZsHGZpCQ==}
@@ -23222,10 +23219,6 @@ packages:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
     engines: {node: '>= 0.10'}
 
-  ipaddr.js@2.0.1:
-    resolution: {integrity: sha512-1qTgH9NG+IIJ4yfKs2e6Pp1bZg8wbDbKHT21HrLIeYBTRLgMYKnMTPAuI3Lcs61nfx5h1xlXnbJtH1kX5/d/ng==}
-    engines: {node: '>= 10'}
-
   ipaddr.js@2.2.0:
     resolution: {integrity: sha512-Ag3wB2o37wslZS19hZqorUnrnzSkpOVy+IiiDEiTqNubEYpYuHWIf6K4psgN2ZWKExS4xhVCrRVfb/wfW8fWJA==}
     engines: {node: '>= 10'}
@@ -24108,9 +24101,6 @@ packages:
   kubernetes-models@4.1.0:
     resolution: {integrity: sha512-OlT0qgHj0W7hJQdc0HzbdYUpK3LcMaKg43yqeEsUsq1gCAldfzEaMyhifNylMud3dWglPQ+5Jt6sFyIr3XTdvg==}
     engines: {node: '>=14'}
-
-  launch-editor@2.6.0:
-    resolution: {integrity: sha512-JpDCcQnyAAzZZaZ7vEiSqL690w7dAEyLao+KC96zBplnYbJS7TYNjvM3M7y3dGz+v7aIsJk3hllWuc0kWAjyRQ==}
 
   launch-editor@2.8.0:
     resolution: {integrity: sha512-vJranOAJrI/llyWGRQqiDM+adrw+k83fvmmx3+nV47g3+36xM15jE+zyZ6Ffel02+xSvuM0b2GDRosXZkbb6wA==}
@@ -26946,10 +26936,6 @@ packages:
   selenium-webdriver@4.22.0:
     resolution: {integrity: sha512-GNbrkCHmy249ai885wgXqTfqL2lZnclUH/P8pwTDIqzyFxU3YhDiN7p/c9tMFA4NhgRdEBO2QCG+CWmG7xr/Mw==}
     engines: {node: '>= 14.21.0'}
-
-  selfsigned@2.1.1:
-    resolution: {integrity: sha512-GSL3aowiF7wa/WtSFwnUrludWFoNhftq8bUkH9pkzjpN2XSPOAYEgg6e0sS9s0rZwgJzJiQRPU18A6clnoW5wQ==}
-    engines: {node: '>=10'}
 
   selfsigned@2.4.1:
     resolution: {integrity: sha512-th5B4L2U+eGLq1TVh7zNRGBapioSORUeymIydxgFpwww9d2qyKvtuPU2jJuHvYAwwqi2Y596QBL3eEqcPEYL8Q==}
@@ -31208,6 +31194,7 @@ snapshots:
     dependencies:
       '@babel/core': 7.23.9
       '@babel/helper-plugin-utils': 7.24.8
+    optional: true
 
   '@babel/plugin-syntax-bigint@7.8.3(@babel/core@7.24.9)':
     dependencies:
@@ -36400,43 +36387,6 @@ snapshots:
       - supports-color
       - ts-node
 
-  '@jest/core@29.7.0(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2))':
-    dependencies:
-      '@jest/console': 29.7.0
-      '@jest/reporters': 29.7.0(node-notifier@8.0.2)
-      '@jest/test-result': 29.7.0
-      '@jest/transform': 29.7.0
-      '@jest/types': 29.6.3
-      '@types/node': 20.14.2
-      ansi-escapes: 4.3.2
-      chalk: 4.1.2
-      ci-info: 3.3.2
-      exit: 0.1.2
-      graceful-fs: 4.2.11
-      jest-changed-files: 29.7.0
-      jest-config: 29.7.0(@types/node@20.14.2)(ts-node@10.9.2(@types/node@20.14.2))
-      jest-haste-map: 29.7.0
-      jest-message-util: 29.7.0
-      jest-regex-util: 29.6.3
-      jest-resolve: 29.7.0
-      jest-resolve-dependencies: 29.7.0
-      jest-runner: 29.7.0
-      jest-runtime: 29.7.0
-      jest-snapshot: 29.7.0
-      jest-util: 29.7.0
-      jest-validate: 29.7.0
-      jest-watcher: 29.7.0
-      micromatch: 4.0.5
-      pretty-format: 29.7.0
-      slash: 3.0.0
-      strip-ansi: 6.0.1
-    optionalDependencies:
-      node-notifier: 8.0.2
-    transitivePeerDependencies:
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-
   '@jest/core@29.7.0(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.0.2)(typescript@5.5.3))':
     dependencies:
       '@jest/console': 29.7.0
@@ -40852,10 +40802,6 @@ snapshots:
       '@types/connect': 3.4.34
       '@types/node': 20.14.13
 
-  '@types/bonjour@3.5.10':
-    dependencies:
-      '@types/node': 20.14.2
-
   '@types/bonjour@3.5.13':
     dependencies:
       '@types/node': 20.14.13
@@ -40879,11 +40825,6 @@ snapshots:
       '@types/har-format': 1.2.5
 
   '@types/component-emitter@1.2.11': {}
-
-  '@types/connect-history-api-fallback@1.3.5':
-    dependencies:
-      '@types/express-serve-static-core': 4.17.35
-      '@types/node': 20.14.2
 
   '@types/connect-history-api-fallback@1.5.4':
     dependencies:
@@ -41159,10 +41100,6 @@ snapshots:
     dependencies:
       '@types/node': 20.14.13
 
-  '@types/http-proxy@1.17.8':
-    dependencies:
-      '@types/node': 20.14.2
-
   '@types/inquirer@7.3.3':
     dependencies:
       '@types/through': 0.0.30
@@ -41403,10 +41340,6 @@ snapshots:
       '@types/mime': 1.3.2
       '@types/node': 20.14.13
 
-  '@types/serve-index@1.9.1':
-    dependencies:
-      '@types/express': 4.17.17
-
   '@types/serve-index@1.9.4':
     dependencies:
       '@types/express': 4.17.21
@@ -41437,10 +41370,6 @@ snapshots:
   '@types/sinonjs__fake-timers@8.1.1': {}
 
   '@types/sizzle@2.3.2': {}
-
-  '@types/sockjs@0.3.33':
-    dependencies:
-      '@types/node': 20.14.2
 
   '@types/sockjs@0.3.36':
     dependencies:
@@ -42553,8 +42482,6 @@ snapshots:
 
   array-flatten@1.1.1: {}
 
-  array-flatten@2.1.2: {}
-
   array-includes@3.1.6:
     dependencies:
       call-bind: 1.0.7
@@ -42804,6 +42731,7 @@ snapshots:
       slash: 3.0.0
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   babel-jest@29.7.0(@babel/core@7.24.9):
     dependencies:
@@ -43188,6 +43116,7 @@ snapshots:
       '@babel/plugin-syntax-optional-catch-binding': 7.8.3(@babel/core@7.23.9)
       '@babel/plugin-syntax-optional-chaining': 7.8.3(@babel/core@7.23.9)
       '@babel/plugin-syntax-top-level-await': 7.14.5(@babel/core@7.23.9)
+    optional: true
 
   babel-preset-current-node-syntax@1.0.1(@babel/core@7.24.9):
     dependencies:
@@ -43264,6 +43193,7 @@ snapshots:
       '@babel/core': 7.23.9
       babel-plugin-jest-hoist: 29.6.3
       babel-preset-current-node-syntax: 1.0.1(@babel/core@7.23.9)
+    optional: true
 
   babel-preset-jest@29.6.3(@babel/core@7.24.9):
     dependencies:
@@ -43375,13 +43305,6 @@ snapshots:
     dependencies:
       fast-safe-stringify: 2.1.1
       individual: 3.0.0
-
-  bonjour-service@1.1.1:
-    dependencies:
-      array-flatten: 2.1.2
-      dns-equal: 1.0.0
-      fast-deep-equal: 3.1.3
-      multicast-dns: 7.2.5
 
   bonjour-service@1.2.1:
     dependencies:
@@ -44192,22 +44115,22 @@ snapshots:
 
   copy-webpack-plugin@11.0.0(webpack@5.92.1(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0)):
     dependencies:
-      fast-glob: 3.2.11
+      fast-glob: 3.3.2
       glob-parent: 6.0.2
       globby: 13.1.2
       normalize-path: 3.0.0
-      schema-utils: 4.0.0
-      serialize-javascript: 6.0.1
+      schema-utils: 4.2.0
+      serialize-javascript: 6.0.2
       webpack: 5.92.1(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0)
 
   copy-webpack-plugin@11.0.0(webpack@5.92.1(@swc/core@1.3.92)(webpack-cli@4.10.0)):
     dependencies:
-      fast-glob: 3.2.11
+      fast-glob: 3.3.2
       glob-parent: 6.0.2
       globby: 13.1.2
       normalize-path: 3.0.0
-      schema-utils: 4.0.0
-      serialize-javascript: 6.0.1
+      schema-utils: 4.2.0
+      serialize-javascript: 6.0.2
       webpack: 5.92.1(@swc/core@1.3.92)(webpack-cli@4.10.0)
 
   copy-webpack-plugin@11.0.0(webpack@5.92.1(webpack-cli@4.10.0)):
@@ -44222,12 +44145,12 @@ snapshots:
 
   copy-webpack-plugin@11.0.0(webpack@5.92.1):
     dependencies:
-      fast-glob: 3.2.11
+      fast-glob: 3.3.2
       glob-parent: 6.0.2
       globby: 13.1.2
       normalize-path: 3.0.0
-      schema-utils: 4.0.0
-      serialize-javascript: 6.0.1
+      schema-utils: 4.2.0
+      serialize-javascript: 6.0.2
       webpack: 5.92.1
 
   copy-webpack-plugin@12.0.2(webpack@5.92.1(esbuild@0.21.5)):
@@ -44367,21 +44290,6 @@ snapshots:
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-config: 29.7.0(@types/node@20.14.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3))
-      jest-util: 29.7.0
-      prompts: 2.4.2
-    transitivePeerDependencies:
-      - '@types/node'
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-
-  create-jest@29.7.0(@types/node@20.14.2)(ts-node@10.9.2(@types/node@20.14.2)):
-    dependencies:
-      '@jest/types': 29.6.3
-      chalk: 4.1.2
-      exit: 0.1.2
-      graceful-fs: 4.2.11
-      jest-config: 29.7.0(@types/node@20.14.2)(ts-node@10.9.2(@types/node@20.14.2))
       jest-util: 29.7.0
       prompts: 2.4.2
     transitivePeerDependencies:
@@ -45278,8 +45186,6 @@ snapshots:
   dir-glob@3.0.1:
     dependencies:
       path-type: 4.0.0
-
-  dns-equal@1.0.0: {}
 
   dns-packet@5.6.0:
     dependencies:
@@ -47318,18 +47224,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  http-proxy-middleware@2.0.6(@types/express@4.17.17):
-    dependencies:
-      '@types/http-proxy': 1.17.8
-      http-proxy: 1.18.1
-      is-glob: 4.0.3
-      is-plain-obj: 3.0.0
-      micromatch: 4.0.5
-    optionalDependencies:
-      '@types/express': 4.17.17
-    transitivePeerDependencies:
-      - debug
-
   http-proxy-middleware@2.0.6(@types/express@4.17.21):
     dependencies:
       '@types/http-proxy': 1.17.14
@@ -47596,8 +47490,6 @@ snapshots:
   ip@2.0.0: {}
 
   ipaddr.js@1.9.1: {}
-
-  ipaddr.js@2.0.1: {}
 
   ipaddr.js@2.2.0: {}
 
@@ -47996,27 +47888,6 @@ snapshots:
       - supports-color
       - ts-node
 
-  jest-cli@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)):
-    dependencies:
-      '@jest/core': 29.7.0(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2))
-      '@jest/test-result': 29.7.0
-      '@jest/types': 29.6.3
-      chalk: 4.1.2
-      create-jest: 29.7.0(@types/node@20.14.2)(ts-node@10.9.2(@types/node@20.14.2))
-      exit: 0.1.2
-      import-local: 3.0.2
-      jest-config: 29.7.0(@types/node@20.14.2)(ts-node@10.9.2(@types/node@20.14.2))
-      jest-util: 29.7.0
-      jest-validate: 29.7.0
-      yargs: 17.7.2
-    optionalDependencies:
-      node-notifier: 8.0.2
-    transitivePeerDependencies:
-      - '@types/node'
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-
   jest-cli@29.7.0(@types/node@22.0.2):
     dependencies:
       '@jest/core': 29.7.0
@@ -48208,37 +48079,6 @@ snapshots:
     optionalDependencies:
       '@types/node': 20.14.2
       ts-node: 10.9.2(@types/node@20.14.2)(typescript@5.5.3)
-    transitivePeerDependencies:
-      - babel-plugin-macros
-      - supports-color
-
-  jest-config@29.7.0(@types/node@20.14.2)(ts-node@10.9.2(@types/node@20.14.2)):
-    dependencies:
-      '@babel/core': 7.23.9
-      '@jest/test-sequencer': 29.7.0
-      '@jest/types': 29.6.3
-      babel-jest: 29.7.0(@babel/core@7.23.9)
-      chalk: 4.1.2
-      ci-info: 3.3.2
-      deepmerge: 4.2.2
-      glob: 7.2.3
-      graceful-fs: 4.2.11
-      jest-circus: 29.7.0
-      jest-environment-node: 29.7.0
-      jest-get-type: 29.6.3
-      jest-regex-util: 29.6.3
-      jest-resolve: 29.7.0
-      jest-runner: 29.7.0
-      jest-util: 29.7.0
-      jest-validate: 29.7.0
-      micromatch: 4.0.5
-      parse-json: 5.2.0
-      pretty-format: 29.7.0
-      slash: 3.0.0
-      strip-json-comments: 3.1.1
-    optionalDependencies:
-      '@types/node': 20.14.2
-      ts-node: 10.9.2(@types/node@20.14.2)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -48703,20 +48543,6 @@ snapshots:
       '@jest/types': 29.6.3
       import-local: 3.0.2
       jest-cli: 29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3))
-    optionalDependencies:
-      node-notifier: 8.0.2
-    transitivePeerDependencies:
-      - '@types/node'
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-
-  jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)):
-    dependencies:
-      '@jest/core': 29.7.0(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2))
-      '@jest/types': 29.6.3
-      import-local: 3.0.2
-      jest-cli: 29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2))
     optionalDependencies:
       node-notifier: 8.0.2
     transitivePeerDependencies:
@@ -49306,11 +49132,6 @@ snapshots:
       '@kubernetes-models/base': 4.0.0
       '@kubernetes-models/validate': 3.0.0
       tslib: 2.5.0
-
-  launch-editor@2.6.0:
-    dependencies:
-      picocolors: 1.0.0
-      shell-quote: 1.8.1
 
   launch-editor@2.8.0:
     dependencies:
@@ -52622,10 +52443,6 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  selfsigned@2.1.1:
-    dependencies:
-      node-forge: 1.3.1
-
   selfsigned@2.4.1:
     dependencies:
       '@types/node-forge': 1.3.11
@@ -54157,24 +53974,6 @@ snapshots:
     optionalDependencies:
       '@swc/core': 1.3.92
 
-  ts-node@10.9.2(@types/node@20.14.2):
-    dependencies:
-      '@cspotcode/source-map-support': 0.8.1
-      '@tsconfig/node10': 1.0.9
-      '@tsconfig/node12': 1.0.11
-      '@tsconfig/node14': 1.0.3
-      '@tsconfig/node16': 1.0.3
-      '@types/node': 20.14.2
-      acorn: 8.10.0
-      acorn-walk: 8.2.0
-      arg: 4.1.0
-      create-require: 1.1.1
-      diff: 4.0.1
-      make-error: 1.3.6
-      v8-compile-cache-lib: 3.0.1
-      yn: 3.1.1
-    optional: true
-
   ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
@@ -55195,7 +54994,7 @@ snapshots:
       ws: 8.18.0
     optionalDependencies:
       webpack: 5.92.1(webpack-cli@4.10.0)
-      webpack-cli: 4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.92.1)
+      webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.92.1)
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -55204,36 +55003,36 @@ snapshots:
 
   webpack-dev-server@4.15.1(webpack@5.92.1):
     dependencies:
-      '@types/bonjour': 3.5.10
-      '@types/connect-history-api-fallback': 1.3.5
-      '@types/express': 4.17.17
-      '@types/serve-index': 1.9.1
-      '@types/serve-static': 1.13.10
-      '@types/sockjs': 0.3.33
-      '@types/ws': 8.5.5
+      '@types/bonjour': 3.5.13
+      '@types/connect-history-api-fallback': 1.5.4
+      '@types/express': 4.17.21
+      '@types/serve-index': 1.9.4
+      '@types/serve-static': 1.15.7
+      '@types/sockjs': 0.3.36
+      '@types/ws': 8.5.12
       ansi-html-community: 0.0.8
-      bonjour-service: 1.1.1
-      chokidar: 3.5.3
-      colorette: 2.0.16
+      bonjour-service: 1.2.1
+      chokidar: 3.6.0
+      colorette: 2.0.20
       compression: 1.7.4
       connect-history-api-fallback: 2.0.0
       default-gateway: 6.0.3
       express: 4.19.2
       graceful-fs: 4.2.11
-      html-entities: 2.3.2
-      http-proxy-middleware: 2.0.6(@types/express@4.17.17)
-      ipaddr.js: 2.0.1
-      launch-editor: 2.6.0
+      html-entities: 2.5.2
+      http-proxy-middleware: 2.0.6(@types/express@4.17.21)
+      ipaddr.js: 2.2.0
+      launch-editor: 2.8.0
       open: 8.4.0
       p-retry: 4.6.1
       rimraf: 3.0.2
-      schema-utils: 4.0.0
-      selfsigned: 2.1.1
+      schema-utils: 4.2.0
+      selfsigned: 2.4.1
       serve-index: 1.9.1
       sockjs: 0.3.24
       spdy: 4.0.2
       webpack-dev-middleware: 5.3.3(webpack@5.92.1)
-      ws: 8.13.0
+      ws: 8.18.0
     optionalDependencies:
       webpack: 5.92.1
     transitivePeerDependencies:
@@ -55599,7 +55398,7 @@ snapshots:
       watchpack: 2.4.1
       webpack-sources: 3.2.3
     optionalDependencies:
-      webpack-cli: 4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.92.1)
+      webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.92.1)
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild
