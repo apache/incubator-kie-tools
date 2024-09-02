@@ -92,11 +92,15 @@ export function getStrategyToAddExistingDecisionServiceToDrd({
     id: __readonly_drgElement["@_id"]!,
   });
 
+  const drgElementsByNamespace = new Map([[__readonly_namespace, __readonly_definitions.drgElement]]);
+  __readonly_externalDmnsIndex.forEach((value, key) => {
+    drgElementsByNamespace.set(key, value.model.definitions.drgElement);
+  });
+
   const containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn =
     computeContainingDecisionServiceHrefsByDecisionHrefs({
       thisDmnsNamespace: __readonly_namespace,
-      drgElementsNamespace: __readonly_decisionServiceNamespace,
-      drgElements: decisionServiceDmnDefinitions.drgElement,
+      drgElementsNamespaceByNamespace: drgElementsByNamespace,
     });
 
   const doesThisDrdHaveConflictingDecisionService = containedDecisionHrefsRelativeToThisDmn.some((decisionHref) =>

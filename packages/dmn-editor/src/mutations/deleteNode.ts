@@ -212,16 +212,15 @@ export function canRemoveNodeFromDrdOnly({
     id: __readonly_dmnObjectId!,
   });
 
-  const drgElements =
-    definitions["@_namespace"] === __readonly_dmnObjectNamespace
-      ? definitions.drgElement ?? []
-      : __readonly_externalDmnsIndex.get(__readonly_dmnObjectNamespace)?.model.definitions.drgElement ?? [];
+  const drgElementsByNamespace = new Map([[__readonly_dmnObjectNamespace, definitions.drgElement]]);
+  __readonly_externalDmnsIndex.forEach((value, key) => {
+    drgElementsByNamespace.set(key, value.model.definitions.drgElement);
+  });
 
   const containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn =
     computeContainingDecisionServiceHrefsByDecisionHrefs({
       thisDmnsNamespace: definitions["@_namespace"],
-      drgElementsNamespace: __readonly_dmnObjectNamespace,
-      drgElements,
+      drgElementsNamespaceByNamespace: drgElementsByNamespace,
     });
 
   const containingDecisionServiceHrefs =
