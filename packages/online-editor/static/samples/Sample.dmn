@@ -18,17 +18,17 @@
   ~ under the License.
 -->
 <dmn:definitions
-  xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/"
+  xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
   xmlns="https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB"
   xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
-  xmlns:kie="https://kie.org/dmn/extensions/1.0"
-  xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+  xmlns:kie="http://www.drools.org/kie/dmn/1.2"
+  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
   xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
   xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
   id="_C6CBECEB-2BBC-4E14-80B0-17F576B2CF92"
   name="loan_pre_qualification"
-  expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
-  typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+  expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
   namespace="https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB"
 >
   <dmn:extensionElements />
