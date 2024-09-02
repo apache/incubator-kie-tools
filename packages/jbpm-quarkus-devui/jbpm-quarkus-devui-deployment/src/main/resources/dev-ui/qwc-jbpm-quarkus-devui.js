@@ -63,8 +63,6 @@ export class QwcJbpmQuarkusDevui extends LitElement {
     const metadata = this._routerController.getCurrentMetaData();
     const container = this.renderRoot.querySelector("#envelope-app");
 
-    console.log({ quarkusHttpHost, quarkusHttpPort });
-
     RuntimeToolsDevUI.open({
       container: container,
       isDataIndexAvailable: true,
