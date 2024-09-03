@@ -427,7 +427,7 @@ function DecisionServiceEquivalentFunction({
 
       const dmnObject = allDrgElementsByHref.get(potentialExternalHref);
 
-      return dmnObject && importsByNamespace.has(resolvedNamespace)
+      return dmnObject && (importsByNamespace.has(resolvedNamespace) || resolvedNamespace === thisDmnsNamespace)
         ? buildFeelQNameFromNamespace({
             namedElement: dmnObject,
             importsByNamespace,
