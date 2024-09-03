@@ -91,6 +91,11 @@ jobs:
         run: |
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@111c56156bcc6918c056dbef52164cfa583dc549
+        with:
+          gpg_private_key: ${{ secrets.GPG_KEY }}
+
       - name: "Upload Extended Services for macOS"
         if: ${{ runner.os == 'macOS' && !inputs.dry_run && !inputs.release_candidate }}
         uses: actions/upload-release-asset@v1.0.2
@@ -129,14 +134,8 @@ jobs:
         if: ${{ runner.os == 'macOS' && !inputs.dry_run && inputs.release_candidate }}
         shell: bash
         env:
-          GPG_KEY: ${{ secrets.GPG_KEY }}
           ARTIFACT_ZIP_FILE: ${{ steps.macos_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
         run: |
-          rm ${WORKSPACE}/signkey.gpg
-          echo $GPG_KEY > ${WORKSPACE}/signkey.gpg
-          gpg --list-keys
-          gpg --batch --pinentry-mode loopback --import ${WORKSPACE}/signkey.gpg
-          rm ${WORKSPACE}/signkey.gpg
           gpg --no-tty --batch --sign --pinentry-mode loopback --output $ARTIFACT_ZIP_FILE.asc --detach-sig $ARTIFACT_ZIP_FILE
           shasum -a 512 $ARTIFACT_ZIP_FILE > $ARTIFACT_ZIP_FILE.sha512
 
@@ -149,10 +148,10 @@ jobs:
           PROJECT_VERSION: ${{ inputs.release_candidate_version }}
           ARTIFACT_ZIP_FILE: ${{ steps.macos_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
         run: |
-          svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie svn-kie
-          cp ./extended-services-release-artifacts/* svn-kie/$PROJECT_VERSION/
-          svn add "svn-kie/$PROJECT_VERSION"
+          svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie/$PROJECT_VERSION/ svn-kie
+          cp ./extended-services-release-artifacts/* svn-kie
           cd svn-kie
+          svn add . --force
           svn ci --non-interactive --no-auth-cache --username "$SVN_USERNAME" --password "$SVN_PASSWORD" -m "Apache KIE $PROJECT_VERSION Extended Services for macOS artifact"
           rm -rf svn-kie
 
@@ -172,14 +171,8 @@ jobs:
         if: ${{ runner.os == 'Windows' && !inputs.dry_run && inputs.release_candidate }}
         shell: pwsh
         env:
-          GPG_KEY: ${{ secrets.GPG_KEY }}
           ARTIFACT_ZIP_FILE: ${{ steps.windows_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
         run: |
-          rm ${WORKSPACE}/signkey.gpg
-          echo $GPG_KEY > ${WORKSPACE}/signkey.gpg
-          gpg --list-keys
-          gpg --batch --pinentry-mode loopback --import ${WORKSPACE}/signkey.gpg
-          rm ${WORKSPACE}/signkey.gpg
           gpg --no-tty --batch --sign --pinentry-mode loopback --output $ARTIFACT_ZIP_FILE.asc --detach-sig $ARTIFACT_ZIP_FILE
           shasum -a 512 $ARTIFACT_ZIP_FILE > $ARTIFACT_ZIP_FILE.sha512
 
@@ -192,9 +185,9 @@ jobs:
           PROJECT_VERSION: ${{ inputs.release_candidate_version }}
           ARTIFACT_ZIP_FILE: ${{ steps.windows_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
         run: |
-          svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie svn-kie
-          cp ./extended-services-release-artifacts/* svn-kie/$PROJECT_VERSION/
-          svn add "svn-kie/$PROJECT_VERSION"
+          svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie/$PROJECT_VERSION/ svn-kie
+          cp ./extended-services-release-artifacts/* svn-kie
           cd svn-kie
+          svn add . --force
           svn ci --non-interactive --no-auth-cache --username "$SVN_USERNAME" --password "$SVN_PASSWORD" -m "Apache KIE $PROJECT_VERSION Extended Services for Windows artifact"
           rm -rf svn-kie
