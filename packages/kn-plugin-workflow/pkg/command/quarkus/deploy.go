@@ -95,6 +95,7 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 	}
 
 	if _, err = deployKnativeServiceAndEventingBindings(cfg); err != nil {
+		fmt.Println("❌ ERROR:Deploy failed, Knative Eventing binding was not created.")
 		return err
 	}
 

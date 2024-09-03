@@ -19,7 +19,7 @@ metadata:
   name: example-cronjob
   namespace: default
 spec:
-  schedule: "*/5 * * * *" # Запуск каждые 5 минут
+  schedule: "*/5 * * * *"
   jobTemplate:
     spec:
       template:
