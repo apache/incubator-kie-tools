@@ -17,13 +17,14 @@
  * under the License.
  */
 
-const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const { env } = require("./env");
+const buildEnv = env;
 
-module.exports = async (env = {}) =>
+module.exports = async (env) =>
   merge(common(env), {
     entry: {},
     optimization: {
@@ -49,9 +50,13 @@ module.exports = async (env = {}) =>
     ],
     module: {},
     resolve: {
-      fallback: {
-        http: require.resolve("stream-http"),
-      },
+      fallback: {},
     },
     ignoreWarnings: [/Failed to parse source map/],
+    devServer: {
+      static: {
+        directory: "./dist",
+      },
+      port: buildEnv.dataIndexWebapp.dev.port,
+    },
   });

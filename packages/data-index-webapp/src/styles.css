@@ -1,11 +1,11 @@
 /* Default light mode */
-.body {
+/* .body {
   margin: 0px;
   padding: 0px;
-}
+} */
 
 .maindiv {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "RedHatText", "Overpass", overpass, helvetica, arial, sans-serif;
   background-color: #fff;
   color: #fff;
   display: flex;
@@ -86,19 +86,19 @@ p {
   }
 
   h1 {
-    font-size: 48px;
+    /* font-size: 48px; */
     color: #e44c3b;
     padding-left: 15px;
   }
 
   h4 {
-    font-size: 30px;
+    /* font-size: 30px; */
     color: #fefefe;
     margin-top: 10px;
   }
 
   p {
-    font-size: 16px;
+    /* font-size: 16px; */
     color: #fefefe;
     margin-top: 5px;
     margin-bottom: 40px;
@@ -110,7 +110,7 @@ p {
     color: #fff;
     text-decoration: none;
     border-radius: 5px;
-    font-size: 16px;
+    /* font-size: 16px; */
     transition: background-color 0.3s;
   }
 

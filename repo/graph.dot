@@ -88,7 +88,7 @@ digraph G {
   "@kie-tools/i18n-common-dictionary" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-viewer-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-viewer-image-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/data-index-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/data-index-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dev-deployment-base-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dev-deployment-upload-service" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dev-deployment-dmn-form-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -314,7 +314,7 @@ digraph G {
   "@kie-tools/dashbuilder-viewer-image" -> "@kie-tools/dashbuilder-viewer-deployment-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-viewer-image" -> "@kie-tools/dashbuilder-viewer-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-viewer-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
-  "@kie-tools/data-index-webapp" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "black" ];
+  "@kie-tools/data-index-webapp" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/dev-deployment-base-image" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-base-image" -> "@kie-tools/dev-deployment-upload-service" [ style = "dashed", color = "black" ];
   "@kie-tools/dev-deployment-base-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
