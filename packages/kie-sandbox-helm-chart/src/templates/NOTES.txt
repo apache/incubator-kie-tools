@@ -112,7 +112,7 @@ Run the following commands:
 {{- else if eq .Values.global.ingressSource "openshift" }}
 
 1. CORS Proxy available at:
-  http{{ if .Values.cors_proxy.openshiftRoute.tls }}s{{ end }}://{{ tpl .Values.cors_proxy.openshiftRoute.host . }}
+  http{{ if $.Values.cors_proxy.openshiftRoute.tls }}s{{ end }}://{{ tpl .Values.cors_proxy.openshiftRoute.host . }}
 2. Extended Services available at:
   http{{ if $.Values.extended_services.openshiftRoute.tls }}s{{ end }}://{{ tpl .Values.extended_services.openshiftRoute.host . }}
 3. KIE Sandbox available at:
