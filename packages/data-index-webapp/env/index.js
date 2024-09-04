@@ -25,7 +25,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     return {
       dataIndexWebapp: {
         dev: {
-          port: 9025,
+          port: 9026,
         },
       },
     };

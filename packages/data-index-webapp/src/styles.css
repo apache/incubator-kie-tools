@@ -1,3 +1,8 @@
+body {
+  margin: 0px;
+  padding: 0px;
+}
+
 .maindiv {
   font-family: "RedHatText", "Overpass", overpass, helvetica, arial, sans-serif;
   background-color: #fff;
@@ -53,15 +58,7 @@ p {
 }
 
 @media (prefers-color-scheme: dark) {
-  body {
-    margin: 0px;
-    padding: 0px;
-  }
-  .maindiv {
-    background-color: #232121;
-    color: #fff;
-  }
-
+  .maindiv,
   .container {
     background-color: #232121;
   }
@@ -70,10 +67,7 @@ p {
     color: #e44c3b;
   }
 
-  h4 {
-    color: #fefefe;
-  }
-
+  h4,
   p {
     color: #fefefe;
   }
