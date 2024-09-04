@@ -18,7 +18,6 @@
  */
 
 const CopyPlugin = require("copy-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { env } = require("./env");
@@ -27,18 +26,6 @@ const buildEnv = env;
 module.exports = async (env) =>
   merge(common(env), {
     entry: {},
-    optimization: {
-      minimizer: [
-        new TerserPlugin({
-          terserOptions: {
-            format: {
-              comments: false,
-            },
-          },
-          extractComments: false,
-        }),
-      ],
-    },
     plugins: [
       new CopyPlugin({
         patterns: [
@@ -48,10 +35,6 @@ module.exports = async (env) =>
         ],
       }),
     ],
-    module: {},
-    resolve: {
-      fallback: {},
-    },
     ignoreWarnings: [/Failed to parse source map/],
     devServer: {
       static: {
