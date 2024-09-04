@@ -177,10 +177,10 @@ This will set the default artifacts version.
 ##### Update quarkus version
 
 ```bash
-$ python update-repository.py --quarkus-platform-version 3.8.4
+$ python update-repository.py --quarkus-platform-version 3.8.6
 ```
 
-This will set the image quarkus version to 3.8.4.
+This will set the image quarkus version to 3.8.6.
 
 ##### Update Examples URI and Ref
 

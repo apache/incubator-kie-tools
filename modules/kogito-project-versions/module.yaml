@@ -26,5 +26,5 @@ envs:
     value: "999-SNAPSHOT"
     description: Defines the Kogito version to be used by the builder images. Not intended to be changed by end user.
   - name: "QUARKUS_PLATFORM_VERSION"
-    value: "3.8.4"
+    value: "3.8.6"
     description: Defines the Quarkus Platform version to be used by the builder images. Not intended to be changed by end user.

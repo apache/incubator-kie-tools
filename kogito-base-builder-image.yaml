@@ -31,7 +31,7 @@ labels:
   - name: "io.openshift.expose-services"
     value: "8080:http"
   - name: "io.quarkus.platform.version"
-    value: "3.8.4"
+    value: "3.8.6"
   - name: "org.kie.kogito.version"
     value: "999-SNAPSHOT"
   - name: "maintainer"

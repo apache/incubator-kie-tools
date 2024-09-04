@@ -23,7 +23,7 @@ Feature: Serverless Workflow images common
 
   Scenario: Verify if the swf and quarkus files are under /home/kogito/.m2/repository
     When container is started with command bash
-    Then file /home/kogito/.m2/repository/io/quarkus/platform/quarkus-bom/3.8.4/quarkus-bom-3.8.4.pom should exist
+    Then file /home/kogito/.m2/repository/io/quarkus/platform/quarkus-bom/3.8.6/quarkus-bom-3.8.6.pom should exist
       And file /home/kogito/.m2/repository/org/apache/kie/sonataflow/sonataflow-quarkus/ should exist and be a directory
 
   # This check should be enabled again once a similar check is done on runtimes
