@@ -26,7 +26,7 @@ The Sonataflow Management Console Webapp is a production-ready web application d
 To start a Keycloak Server you can use Docker and just run the following command:
 
 ```
-docker run -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin -v ./dev/config/sonataflow-realm.json:/opt/keycloak/data/import/realm.json -p 8280:8080 quay.io/keycloak/keycloak:25.0.3 start-dev --import-realm
+docker run -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin -v ./dev/config/sonataflow-realm.json:/opt/keycloak/data/import/realm.json -p 8280:8080 registry.redhat.io/rhbk/keycloak-rhel9:24 start-dev --import-realm
 ```
 
 You should be able to access your Keycloak Server at [localhost:8280/auth](http://localhost:8280)
@@ -41,7 +41,7 @@ The following are the users available in keycloak
 | alice | alice    | _user_              |
 | jdoe  | jdoe     | _managers_          |
 
-To change any of this client configuration access to http://localhost:8280/auth/admin/master/console/#/realms/sonataflow.
+To change any of this client configuration access to http://localhost:8280/admin/master/console/#/kogito.
 
 ### Changing configs
 
