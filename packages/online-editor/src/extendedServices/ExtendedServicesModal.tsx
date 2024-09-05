@@ -612,6 +612,11 @@ export function ExtendedServicesModal() {
   useEffect(() => {
     if (extendedServices.status === ExtendedServicesStatus.NOT_RUNNING) {
       setModalPage(ModalPage.INITIAL);
+    } else if (
+      extendedServices.status === ExtendedServicesStatus.STOPPED &&
+      env.KIE_SANDBOX_DISABLE_EXTENDED_SERVICES_WIZARD === true
+    ) {
+      setModalPage(ModalPage.DISABLED);
     } else if (extendedServices.status === ExtendedServicesStatus.STOPPED) {
       setModalPage(ModalPage.WIZARD);
     } else if (extendedServices.status === ExtendedServicesStatus.RUNNING) {
@@ -621,7 +626,12 @@ export function ExtendedServicesModal() {
     if (extendedServices.outdated) {
       setModalPage(ModalPage.WIZARD);
     }
-  }, [extendedServices.status, extendedServices.outdated, extendedServices]);
+  }, [
+    extendedServices.status,
+    extendedServices.outdated,
+    extendedServices,
+    env.KIE_SANDBOX_DISABLE_EXTENDED_SERVICES_WIZARD,
+  ]);
 
   const onClose = useCallback(() => {
     setModalPage(ModalPage.INITIAL);
