@@ -20,29 +20,43 @@
 package quarkus
 
 import (
+	"context"
 	"fmt"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common/k8sclient"
+	"github.com/spf13/afero"
+	"github.com/stretchr/testify/assert"
+	"k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/api/meta"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"testing"
-
-	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
-	"github.com/spf13/afero"
 )
 
 type testDeploy struct {
-	input      DeployCmdConfig
-	expected   bool
-	createFile string
+	input          DeployCmdConfig
+	expected       bool
+	knative        string
+	kogito         string
+	resourcesCount int
 }
 
 const defaultPath = "./target/kubernetes"
 
 var testRunDeploy = []testDeploy{
-	{input: DeployCmdConfig{Path: defaultPath}, expected: true, createFile: "kogito.yml"},
-	{input: DeployCmdConfig{Path: "./different/folders"}, expected: true, createFile: "kogito.yml"},
-	{input: DeployCmdConfig{Path: "different/folders"}, expected: true, createFile: "kogito.yml"},
-	{input: DeployCmdConfig{}, expected: false, createFile: "test"},
+	{input: DeployCmdConfig{Path: defaultPath}, expected: true, knative: "knative.yml", kogito: "kogito-default.yml"},
+	{input: DeployCmdConfig{Path: "./different/folders"}, expected: true, knative: "knative.yml", kogito: "kogito-default.yml"},
+	{input: DeployCmdConfig{Path: "different/folders"}, expected: true, knative: "knative.yml", kogito: "kogito-complex.yml"},
+	{input: DeployCmdConfig{Path: "different/folders"}, expected: true, knative: "knative.yml", kogito: "kogito-complex2.yml"},
+	{input: DeployCmdConfig{Path: "./different/folders", Namespace: "mycustom"}, expected: true, knative: "knative.yml", kogito: "kogito-default-custom-namespace.yml"},
+	{input: DeployCmdConfig{Path: "different/folders", Namespace: "mycustom"}, expected: true, knative: "knative.yml", kogito: "kogito-complex-custom-namespace.yml"},
+	{input: DeployCmdConfig{Path: "different/folders", Namespace: "mycustom"}, expected: true, knative: "knative.yml", kogito: "kogito-complex2-custom-namespace.yml"},
+	{input: DeployCmdConfig{Path: "different/folders", Namespace: "mycustom"}, expected: true, knative: "knative.yml", kogito: "kogito-complex3-custom-namespace.yml"},
+	{input: DeployCmdConfig{}, expected: false, kogito: ""},
 	{input: DeployCmdConfig{}, expected: false},
 }
 
@@ -62,8 +76,8 @@ func TestHelperRunDeploy(t *testing.T) {
 		return
 	}
 	out := []string{"Test", strconv.Itoa(testIndex)}
-	if testRunDeploy[testIndex].createFile != "" {
-		out = append(out, "with creating", testRunDeploy[testIndex].createFile, "file")
+	if testRunDeploy[testIndex].kogito != "" {
+		out = append(out, "with creating", testRunDeploy[testIndex].kogito, "file")
 	}
 	fmt.Fprintf(os.Stdout, "%v", out)
 	os.Exit(0)
@@ -71,29 +85,142 @@ func TestHelperRunDeploy(t *testing.T) {
 
 func TestRunDeploy(t *testing.T) {
 	common.FS = afero.NewMemMapFs()
-	for testIndex, test := range testRunDeploy {
-		common.ExecCommand = fakeRunDeploy(testIndex)
-		defer func() { common.ExecCommand = exec.Command }()
+	originalParseYamlFile := k8sclient.ParseYamlFile
+	originalDynamicClient := k8sclient.DynamicClient
+	originalGetNamespace := k8sclient.GetNamespace
 
-		if test.createFile != "" {
-			if test.input.Path == "" {
-				test.input.Path = defaultPath
-			}
-			common.CreateFolderStructure(t, test.input.Path)
-			common.CreateFileInFolderStructure(t, test.input.Path, test.createFile)
+	fakeClient := k8sclient.Fake{FS: common.FS}
+
+	defer func() {
+		k8sclient.ParseYamlFile = originalParseYamlFile
+		k8sclient.DynamicClient = originalDynamicClient
+		k8sclient.GetNamespace = originalGetNamespace
+	}()
+
+	k8sclient.ParseYamlFile = fakeClient.FakeParseYamlFile
+	k8sclient.DynamicClient = fakeClient.FakeDynamicClient
+	k8sclient.GetNamespace = fakeClient.GetNamespace
+
+	for _, test := range testRunDeploy {
+		checkDeploy(t, test)
+	}
+}
+
+func checkDeploy(t *testing.T, test testDeploy) {
+
+	expectedResources := []unstructured.Unstructured{}
+
+	prepareFolderAndFiles(t, test)
+	populateExpectedResources(t, &expectedResources, test)
+
+	out, err := deployKnativeServiceAndEventingBindings(test.input)
+	if err != nil && test.expected {
+		assert.True(t, false, "Expected no error, got %v", err)
+	}
+
+	assert.Equal(t, out, test.expected, "Expected %v, got %v", test.expected, out)
+
+	checkResourcesCreated(t, &expectedResources, test)
+
+	if test.kogito != "" || test.knative != "" {
+		undeploy(t, test, test.input.Namespace)
+		checkResourcesDeleted(t, &expectedResources, test)
+		common.DeleteFolderStructure(t, test.input.Path)
+	}
+}
+
+func checkResourcesCreated(t *testing.T, expectedResources *[]unstructured.Unstructured, test testDeploy) {
+	for _, resource := range *expectedResources {
+		if result, err := checkObjectCreated(resource, test.input.Namespace); err != nil {
+			t.Errorf("Error checking if resource was deleted: %v", err)
+		} else {
+			assert.True(t, result, "Expected resource to be created: %s", resource.GetName())
 		}
+	}
+}
 
-		out, err := deployKnativeServiceAndEventingBindings(test.input)
+func checkResourcesDeleted(t *testing.T, expectedResources *[]unstructured.Unstructured, test testDeploy) {
+	for _, r := range *expectedResources {
+		if result, err := checkObjectCreated(r, test.input.Namespace); err != nil {
+			t.Errorf("Error checking if resource was deleted: %v", err)
+		} else {
+			assert.False(t, result, "Expected resource to be deleted: %s", r.GetName())
+		}
+	}
+}
+
+func populateExpectedResources(t *testing.T, resources *[]unstructured.Unstructured, test testDeploy) {
+	if test.knative != "" {
+		if knativeResources, err := k8sclient.ParseYamlFile(filepath.Join(test.input.Path, "knative.yml")); err == nil {
+			*resources = append(*resources, knativeResources...)
+		} else {
+			t.Errorf("❌ ERROR: Failed to parse Knative resources: %v", err)
+		}
+	} else {
+		fmt.Printf("❌ ERROR: Failed to parse Knative resources: %v", test.knative)
+	}
+	if test.kogito != "" {
+		if kogitoResources, err := k8sclient.ParseYamlFile(filepath.Join(test.input.Path, "kogito.yml")); err == nil {
+			*resources = append(*resources, kogitoResources...)
+		} else {
+			t.Errorf("❌ ERROR: Failed to parse Kogito resources: %v", err)
+		}
+	} else {
+		fmt.Printf("❌ ERROR: Failed to parse Kogito resources: %v", test.kogito)
+	}
+}
+
+func prepareFolderAndFiles(t *testing.T, test testDeploy) {
+	if test.input.Path == "" {
+		test.input.Path = defaultPath
+	}
+	common.CreateFolderStructure(t, test.input.Path)
+	common.CopyFileInFolderStructure(t, test.input.Path, test.knative, "knative.yml")
+	common.CopyFileInFolderStructure(t, test.input.Path, test.kogito, "kogito.yml")
+}
+
+func checkObjectCreated(obj unstructured.Unstructured, namespace string) (bool, error) {
+	if namespace == "" {
+		currentNamespace, err := common.GetNamespace()
 		if err != nil {
-			t.Errorf("Expected nil error, got %#v", err)
+			return false, fmt.Errorf("❌ ERROR: Failed to get current namespace: %v", err)
 		}
+		namespace = currentNamespace
+	}
 
-		if out != test.expected {
-			t.Errorf("Expected %v, got %v", test.expected, out)
+	client, err := k8sclient.DynamicClient()
+	if err != nil {
+		return false, fmt.Errorf("❌ ERROR: Failed to create dynamic Kubernetes client: %v", err)
+	}
+
+	gvk := obj.GroupVersionKind()
+	gvr, _ := meta.UnsafeGuessKindToResource(gvk)
+
+	applyNamespace := namespace
+	if obj.GetNamespace() != "" {
+		applyNamespace = obj.GetNamespace()
+	}
+
+	_, err = client.Resource(gvr).Namespace(applyNamespace).Get(context.Background(), obj.GetName(), metav1.GetOptions{})
+	if err != nil {
+		if errors.IsNotFound(err) {
+			return false, nil
 		}
+		return false, fmt.Errorf("❌ ERROR: Failed to get resource: %v", err)
+	}
+	return true, nil
+}
 
-		if test.createFile != "" {
-			common.DeleteFolderStructure(t, test.input.Path)
+func undeploy(t *testing.T, test testDeploy, namespace string) {
+	if _, err := common.FS.Stat(filepath.Join(test.input.Path, "knative.yml")); err == nil {
+		if err := common.ExecuteDelete(filepath.Join(test.input.Path, "knative.yml"), namespace); err != nil {
+			t.Errorf("❌ ERROR: Undeploy failed, Knative service was not created. %v", err)
+		}
+	}
+
+	if _, err := common.FS.Stat(filepath.Join(test.input.Path, "kogito.yml")); err == nil {
+		if err := common.ExecuteDelete(filepath.Join(test.input.Path, "kogito.yml"), namespace); err != nil {
+			t.Errorf("❌ ERROR: Undeploy failed, Kogito service was not created. %v", err)
 		}
 	}
 }

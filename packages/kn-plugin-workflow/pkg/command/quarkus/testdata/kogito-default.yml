@@ -1,0 +1,32 @@
+apiVersion: sonataflow.org/v1alpha08
+kind: SonataFlow
+metadata:
+  annotations:
+    sonataflow.org/description: Description
+    sonataflow.org/expressionLang: jq
+    sonataflow.org/profile: dev
+    sonataflow.org/version: "1.0"
+  creationTimestamp: null
+  labels:
+    app: hello
+    sonataflow.org/workflow-app: hello
+  name: hello
+  namespace: default
+spec:
+  flow:
+    start:
+      stateName: HelloWorld
+    states:
+      - data:
+          message: Hello World
+        end:
+          terminate: true
+        name: HelloWorld
+        type: inject
+  podTemplate:
+    container:
+      resources: {}
+  resources: {}
+status:
+  address: {}
+  lastTimeRecoverAttempt: null

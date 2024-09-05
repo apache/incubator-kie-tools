@@ -140,7 +140,7 @@ func runGenManifestCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, e
 
 	if cmd.Flags().Changed("profile") && len(cfg.Profile) == 0 {
 		profile, _ := cmd.Flags().GetString("profile")
-		if err := isValidProfile(profile); err != nil{
+		if err := isValidProfile(profile); err != nil {
 			return cfg, err
 		}
 		cfg.Profile = profile
@@ -198,7 +198,7 @@ func setupEnvironment(cfg *DeployUndeployCmdConfig) error {
 
 	//setup namespace
 	if len(cfg.NameSpace) == 0 && !cfg.EmptyNameSpace {
-		if defaultNamespace, err := common.GetKubectlNamespace(); err == nil {
+		if defaultNamespace, err := common.GetNamespace(); err == nil {
 			cfg.NameSpace = defaultNamespace
 			fmt.Printf(" - ✅  resolved namespace: %s\n", cfg.NameSpace)
 		} else {

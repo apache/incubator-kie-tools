@@ -20,7 +20,10 @@
 package command
 
 import (
+	"errors"
 	"fmt"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"os"
 	"path"
 
@@ -138,7 +141,7 @@ func deploy(cfg *DeployUndeployCmdConfig) error {
 		return fmt.Errorf("❌ ERROR: failed to get manifest directory and files: %w", err)
 	}
 	for _, file := range files {
-		if err = common.ExecuteKubectlApply(file, cfg.NameSpace); err != nil {
+		if err = common.ExecuteApply(file, cfg.NameSpace); err != nil {
 			return fmt.Errorf("❌ ERROR: failed to deploy manifest %s,  %w", file, err)
 		}
 		fmt.Printf(" - ✅ Manifest %s successfully deployed in namespace %s\n", path.Base(file), cfg.NameSpace)
@@ -188,11 +191,9 @@ func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, err er
 		return cfg, fmt.Errorf("❌ ERROR: failed to get default dashboards files folder: %w", err)
 	}
 
-	// check if sonataflow operator CRDs are installed
-	for _, crd := range metadata.SonataflowCRDs {
-		if !common.CheckKubectlCrdExists(crd) {
-			return cfg, fmt.Errorf("❌ ERROR: the required CRDs are not installed.. Install the SonataFlow Operator CRD first")
-		}
+	// check if sonataflow operator and knative CRDs are installed
+	if err := CheckCRDs(metadata.SonataflowCRDs, "SonataFlow Operator"); err != nil {
+		return cfg, err
 	}
 
 	//setup manifest path
@@ -201,4 +202,19 @@ func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, err er
 	}
 
 	return cfg, nil
+}
+
+func CheckCRDs(crds []string, typeName string) error {
+	for _, crd := range crds {
+		err := common.CheckCrdExists(crd)
+		if err != nil {
+			var statusErr *apierrors.StatusError
+			if errors.As(err, &statusErr) && statusErr.ErrStatus.Reason == metav1.StatusReasonNotFound {
+				return fmt.Errorf("❌ ERROR: the required CRDs are not installed.. Install the %s CRD first", typeName)
+			} else {
+				return fmt.Errorf("❌ ERROR: failed to check if CRD %s exists: %w", crd, err)
+			}
+		}
+	}
+	return nil
 }
