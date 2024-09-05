@@ -78,13 +78,13 @@ export function DecisionServiceProperties({
     if (!externalModel) {
       console.warn(`DMN EDITOR: Could not find model with namespace '${namespace}'. Ignoring.`);
       return acc;
-    } else {
-      if (externalModel.type === "dmn") {
-        acc.push(externalModel);
-      }
-
-      return acc;
     }
+    
+    if (externalModel.type === "dmn") {
+      acc.push(externalModel);
+    }
+
+    return acc;
   }, new Array<Normalized<ExternalDmn>>());
 
   const allDrgElementsByHref = useMemo(() => {
