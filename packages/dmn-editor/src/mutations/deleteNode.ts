@@ -220,7 +220,7 @@ export function canRemoveNodeFromDrdOnly({
   const containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn =
     computeContainingDecisionServiceHrefsByDecisionHrefs({
       thisDmnsNamespace: definitions["@_namespace"],
-      drgElementsNamespaceByNamespace: drgElementsByNamespace,
+      drgElementsByNamespace: drgElementsByNamespace,
     });
 
   const containingDecisionServiceHrefs =

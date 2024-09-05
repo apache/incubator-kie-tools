@@ -901,7 +901,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           }
         });
       },
-      [reactFlowInstance, dmnEditorStoreApi, externalModelsByNamespace]
+      [dmnEditorStoreApi, externalModelsByNamespace]
     );
 
     const resetToBeforeEditingBegan = useCallback(() => {

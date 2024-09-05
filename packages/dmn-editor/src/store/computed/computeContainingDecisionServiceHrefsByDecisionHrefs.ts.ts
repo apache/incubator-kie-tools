@@ -23,15 +23,14 @@ import { State } from "../Store";
 
 export function computeContainingDecisionServiceHrefsByDecisionHrefs({
   thisDmnsNamespace,
-  drgElementsNamespaceByNamespace,
+  drgElementsByNamespace,
 }: {
   thisDmnsNamespace: string;
-  drgElementsNamespaceByNamespace: Map<string, State["dmn"]["model"]["definitions"]["drgElement"]>;
+  drgElementsByNamespace: Map<string, State["dmn"]["model"]["definitions"]["drgElement"]>;
 }) {
-  drgElementsNamespaceByNamespace ??= new Map();
   const decisionServiceHrefsByDecisionHrefs = new Map<string, string[]>();
 
-  for (const [drgElementsNamespace, drgElements] of drgElementsNamespaceByNamespace) {
+  for (const [drgElementsNamespace, drgElements] of drgElementsByNamespace) {
     for (const drgElement of drgElements ?? []) {
       const drgElementHref = buildXmlHref({
         namespace: drgElementsNamespace === thisDmnsNamespace ? "" : drgElementsNamespace,

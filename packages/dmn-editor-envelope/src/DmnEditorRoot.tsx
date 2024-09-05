@@ -765,6 +765,8 @@ function ExternalModelsManager({
     externalUpdatesCount,
     workspaceRootAbsolutePosixPath,
     externalModelsManagerDoneBootstraping,
+    getDmnsByNamespace,
+    loadDependentModels,
   ]);
 
   return <></>;

@@ -50,6 +50,7 @@ export function addEdge({
   targetNode,
   edge,
   keepWaypoints,
+  externalModelsByNamespace,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
@@ -190,7 +191,10 @@ export function addEdge({
   // Replace with the new one.
   diagramElements.push(newDmnEdge);
 
-  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions, externalModelsByNamespace: undefined });
+  repopulateInputDataAndDecisionsOnAllDecisionServices({
+    definitions,
+    externalModelsByNamespace: externalModelsByNamespace,
+  });
 
   return { newDmnEdge };
 }
@@ -231,6 +235,7 @@ function removeFirstMatchIfPresent<T>(arr: T[], predicate: Parameters<Array<T>["
 function tryKeepingEdgeId(existingEdgeId: string | undefined, newEdgeId: string) {
   return existingEdgeId ?? newEdgeId;
 }
+
 function withoutDiscreteAutoPosinitioningMarker(edgeId: string) {
   const marker = getDiscreteAutoPositioningEdgeIdMarker(edgeId);
   return marker ? edgeId.replace(`${marker}`, "") : edgeId;

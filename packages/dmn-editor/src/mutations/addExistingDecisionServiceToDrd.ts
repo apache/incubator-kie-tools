@@ -100,7 +100,7 @@ export function getStrategyToAddExistingDecisionServiceToDrd({
   const containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn =
     computeContainingDecisionServiceHrefsByDecisionHrefs({
       thisDmnsNamespace: __readonly_namespace,
-      drgElementsNamespaceByNamespace: drgElementsByNamespace,
+      drgElementsByNamespace: drgElementsByNamespace,
     });
 
   const doesThisDrdHaveConflictingDecisionService = containedDecisionHrefsRelativeToThisDmn.some((decisionHref) =>

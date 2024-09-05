@@ -45,8 +45,7 @@ import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert/Alert";
 import { Normalized } from "../normalization/normalize";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { ExternalDmn, ExternalModel } from "../DmnEditor";
-import { DmnLatestModel } from "../../../dmn-marshaller";
+import { ExternalDmn } from "../DmnEditor";
 import { Unpacked } from "../tsExt/tsExt";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 
@@ -70,16 +69,13 @@ export function DecisionServiceProperties({
 
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const { externalModelsByNamespace } = useExternalModels();
-  const externalDmnsByNamespace = useDmnEditorStore(
-    (s) => s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns
-  );
 
   const allExternalDmns = Object.entries(externalModelsByNamespace ?? {}).reduce((acc, [namespace, externalModel]) => {
     if (!externalModel) {
       console.warn(`DMN EDITOR: Could not find model with namespace '${namespace}'. Ignoring.`);
       return acc;
     }
-    
+
     if (externalModel.type === "dmn") {
       acc.push(externalModel);
     }
@@ -107,7 +103,7 @@ export function DecisionServiceProperties({
     }
 
     return ret;
-  }, [externalDmnsByNamespace, thisDmn]);
+  }, [allExternalDmns, thisDmn]);
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const isReadOnly = settings.isReadOnly || (!!namespace && namespace !== thisDmnsNamespace);
