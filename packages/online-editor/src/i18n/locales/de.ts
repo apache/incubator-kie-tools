@@ -470,7 +470,7 @@ export const de: OnlineI18n = {
           message: `Es sieht so aus, als ob ${de_common.names.extendedServices} plötzlich beendet wurde, bitte folgen Sie diesen Anweisungen, um es wieder zu starten.`,
         },
         disabled: {
-          title: `${de_common.names.dmnRunner}`,
+          title: `${de_common.names.extendedServices}`,
           alert: `Sie sind nicht mit ${de_common.names.extendedServices} verbunden.`,
           message: `Beachten Sie, dass einige Funktionen wie der ${de_common.names.dmnRunner}, ohne ${de_common.names.extendedServices} nicht verfügbar sind.`,
           helper: `Stellen Sie sicher, dass ${de_common.names.extendedServices} ausgeführt wird, und überprüfen Sie dann die Host- und Porteinstellungen.`,
