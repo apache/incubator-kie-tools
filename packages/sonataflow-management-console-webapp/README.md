@@ -29,7 +29,7 @@ To start a Keycloak Server you can use Docker and just run the following command
 docker run -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin -v ./dev/config/sonataflow-realm.json:/opt/keycloak/data/import/realm.json -p 8280:8080 registry.redhat.io/rhbk/keycloak-rhel9:24 start-dev --import-realm
 ```
 
-You should be able to access your Keycloak Server at [localhost:8280/auth](http://localhost:8280)
+You should be able to access your Keycloak Server at [localhost:8280/admin](http://localhost:8280/admin)
 and verify keycloak server is running properly: log in as the admin user to access the Keycloak Administration Console.
 Username should be admin and password admin.
 
