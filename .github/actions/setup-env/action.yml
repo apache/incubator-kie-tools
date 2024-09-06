@@ -98,10 +98,10 @@ runs:
         HOMEBREW_NO_INSTALL_FROM_API:
       run: |
         echo "STEP: Setup docker (macOS only)"
-        brew update --preinstall
-        LIMA_VERSION=v0.20.1
+
+        LIMA_VERSION=v0.23.2
         curl -fsSL "https://github.com/lima-vm/lima/releases/download/${LIMA_VERSION}/lima-${LIMA_VERSION:1}-$(uname -s)-$(uname -m).tar.gz" | tar Cxzvm /usr/local
-        COLIMA_VERSION=v0.6.8
+        COLIMA_VERSION=v0.7.5
         curl -LO https://github.com/abiosoft/colima/releases/download/${COLIMA_VERSION}/colima-$(uname)-$(uname -m)
         install colima-$(uname)-$(uname -m) /usr/local/bin/colima
         brew install docker docker-compose docker-Buildx qemu 2>&1 | tee install.log

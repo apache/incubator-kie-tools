@@ -32,7 +32,7 @@ const (
 	// For example, docker.io/apache/incubator-kie-sonataflow-operator:main -> 10.0
 	tagVersion = "main"
 	// Kogito images tag version. Used for data-index and jobs-service images.
-	kogitoImagesTagVersion = "999-20240623"
+	kogitoImagesTagVersion = "main-20240905"
 	// OpenJDK image tag version
 	openJDKImageTagVersion = "1.20"
 )
