@@ -37,13 +37,13 @@ func TestInitializeControllersCfgAt_ValidFile(t *testing.T) {
 	assert.Equal(t, GAV{
 		GroupId:    "io.quarkus",
 		ArtifactId: "quarkus-jdbc-postgresql",
-		Version:    "3.8.4",
+		Version:    "3.8.6",
 	}, postgresExtensions[0])
 
 	assert.Equal(t, GAV{
 		GroupId:    "io.quarkus",
 		ArtifactId: "quarkus-agroal",
-		Version:    "3.8.4",
+		Version:    "3.8.6",
 	}, postgresExtensions[1])
 
 	assert.Equal(t, GAV{
