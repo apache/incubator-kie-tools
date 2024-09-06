@@ -21,7 +21,6 @@ package services
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/cfg"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
@@ -225,10 +224,12 @@ func (d DataIndexHandler) ConfigurePersistence(containerSpec *corev1.Container) 
 		c := containerSpec.DeepCopy()
 		c.Image = d.GetServiceImageName(constants.PersistenceTypePostgreSQL)
 		c.Env = append(c.Env, persistence.ConfigurePostgreSQLEnv(p.PostgreSQL, d.GetServiceName(), d.platform.Namespace)...)
-		migrateDBOnStart := strconv.FormatBool(d.platform.Spec.Services.DataIndex.Persistence.MigrateDBOnStartUp)
-		// specific to DataIndex
-		c.Env = append(c.Env, corev1.EnvVar{Name: quarkusHibernateORMDatabaseGeneration, Value: "update"}, corev1.EnvVar{Name: quarkusFlywayMigrateAtStart, Value: migrateDBOnStart})
+		// TODO upcoming work as part of the DB Migrator incorporation should continue where
+		// assignments like -> migrateDBOnStart := strconv.FormatBool(d.platform.Spec.Services.DataIndex.Persistence.MigrateDBOnStartUp) introduces nil pointer references,
+		// since Services, and services Persistence are optional references.
 
+		// specific to DataIndex
+		c.Env = append(c.Env, corev1.EnvVar{Name: quarkusHibernateORMDatabaseGeneration, Value: "update"}, corev1.EnvVar{Name: quarkusFlywayMigrateAtStart, Value: "true"})
 		return c
 	}
 	return containerSpec
@@ -391,9 +392,12 @@ func (j JobServiceHandler) ConfigurePersistence(containerSpec *corev1.Container)
 		c.Image = j.GetServiceImageName(constants.PersistenceTypePostgreSQL)
 		p := persistence.RetrievePostgreSQLConfiguration(j.platform.Spec.Services.JobService.Persistence, j.platform.Spec.Persistence, j.GetServiceName())
 		c.Env = append(c.Env, persistence.ConfigurePostgreSQLEnv(p.PostgreSQL, j.GetServiceName(), j.platform.Namespace)...)
+		// TODO upcoming work as part of the DB Migrator incorporation should continue where
+		// assignments like -> migrateDBOnStart := strconv.FormatBool(j.platform.Spec.Services.JobService.Persistence.MigrateDBOnStartUp) introduces nil pointer references,
+		// since Services, and services Persistence are optional references.
+
 		// Specific to Job Service
-		migrateDBOnStart := strconv.FormatBool(j.platform.Spec.Services.JobService.Persistence.MigrateDBOnStartUp)
-		c.Env = append(c.Env, corev1.EnvVar{Name: "QUARKUS_FLYWAY_MIGRATE_AT_START", Value: migrateDBOnStart})
+		c.Env = append(c.Env, corev1.EnvVar{Name: "QUARKUS_FLYWAY_MIGRATE_AT_START", Value: "true"})
 		c.Env = append(c.Env, corev1.EnvVar{Name: "KOGITO_JOBS_SERVICE_LOADJOBERRORSTRATEGY", Value: "FAIL_SERVICE"})
 		return c
 	}
