@@ -105,8 +105,6 @@ runs:
         curl -LO https://github.com/abiosoft/colima/releases/download/${COLIMA_VERSION}/colima-$(uname)-$(uname -m)
         install colima-$(uname)-$(uname -m) /usr/local/bin/colima
 
-        brew remove --ignore-dependencies qemu
-
         brew install docker docker-compose docker-Buildx qemu 2>&1 | tee install.log
         mkdir -p ~/.docker/cli-plugins
         ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" ~/.docker/cli-plugins/docker-compose
