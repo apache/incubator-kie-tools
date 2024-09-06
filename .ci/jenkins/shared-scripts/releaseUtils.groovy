@@ -21,10 +21,8 @@
 def setupSigningKey(String gpgKeyCredentialsId) {
     withCredentials([file(credentialsId: gpgKeyCredentialsId, variable: 'SIGNING_KEY')]) {
         sh """#!/bin/bash -el
-        echo "${SIGNING_KEY}" > ${WORKSPACE}/signkey.gpg
         gpg --list-keys
-        gpg --batch --pinentry-mode loopback --import ${WORKSPACE}/signkey.gpg
-        rm ${WORKSPACE}/signkey.gpg
+        gpg --batch --pinentry-mode=loopback --import $SIGNING_KEY
         """.trim()
     }
 }
@@ -45,10 +43,10 @@ def signArtifact(String artifactFileName) {
 def publishArtifacts(String artifactsDir, String releaseRepository, String releaseVersion, String credentialsId) {
     withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'ASF_USERNAME', passwordVariable: 'ASF_PASSWORD')]) {
         sh """#!/bin/bash -el
-        svn co --depth=empty ${releaseRepository} svn-kie
-        cp ${artifactsDir}/* svn-kie/${releaseVersion}/
-        svn add "svn-kie/${releaseVersion}"
+        svn co --depth=empty ${releaseRepository}/${releaseVersion} svn-kie
+        cp ${artifactsDir}/* svn-kie
         cd svn-kie
+        svn add . --force
         svn ci --non-interactive --no-auth-cache --username ${ASF_USERNAME} --password '${ASF_PASSWORD}' -m "Apache KIE ${releaseVersion} artifacts"
         rm -rf svn-kie
         """.trim()
