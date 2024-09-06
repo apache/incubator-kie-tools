@@ -103,6 +103,8 @@ func generateJobServiceDeploymentDevProperties() *properties.Properties {
 	p.Set("quarkus.http.port", "8080")
 	p.Set("quarkus.kogito.devservices.enabled", "false")
 	p.Set(`quarkus.smallrye-health.check."org.kie.kogito.jobs.service.messaging.http.health.knative.KSinkInjectionHealthCheck".enabled`, "false")
+	p.Set(`quarkus.smallrye-health.check."org.kie.kogito.jobs.service.management.JobServiceLeaderLivenessHealthCheck".enabled`, "true")
+	p.Set("kogito.jobs-service.management.leader-check.expiration-in-seconds", "60")
 	p.Sort()
 	return p
 }
@@ -128,6 +130,8 @@ func generateJobServiceDeploymentWithPostgreSQLProperties() *properties.Properti
 	p.Set("quarkus.kogito.devservices.enabled", "false")
 	p.Set(`quarkus.smallrye-health.check."org.kie.kogito.jobs.service.messaging.http.health.knative.KSinkInjectionHealthCheck".enabled`, "false")
 	p.Set("quarkus.datasource.reactive.url", "postgresql://postgres:5432/sonataflow?search_path=myschema")
+	p.Set(`quarkus.smallrye-health.check."org.kie.kogito.jobs.service.management.JobServiceLeaderLivenessHealthCheck".enabled`, "true")
+	p.Set("kogito.jobs-service.management.leader-check.expiration-in-seconds", "60")
 	p.Sort()
 	return p
 }
@@ -142,6 +146,8 @@ func generateJobServiceDeploymentWithDataIndexAndEphemeralProperties() *properti
 	p.Set("quarkus.http.port", "8080")
 	p.Set("quarkus.kogito.devservices.enabled", "false")
 	p.Set(`quarkus.smallrye-health.check."org.kie.kogito.jobs.service.messaging.http.health.knative.KSinkInjectionHealthCheck".enabled`, "false")
+	p.Set(`quarkus.smallrye-health.check."org.kie.kogito.jobs.service.management.JobServiceLeaderLivenessHealthCheck".enabled`, "true")
+	p.Set("kogito.jobs-service.management.leader-check.expiration-in-seconds", "60")
 	p.Sort()
 	return p
 }
@@ -157,6 +163,8 @@ func generateJobServiceDeploymentWithDataIndexAndPostgreSQLProperties() *propert
 	p.Set("quarkus.kogito.devservices.enabled", "false")
 	p.Set(`quarkus.smallrye-health.check."org.kie.kogito.jobs.service.messaging.http.health.knative.KSinkInjectionHealthCheck".enabled`, "false")
 	p.Set("quarkus.datasource.reactive.url", "postgresql://postgres:5432/sonataflow?search_path=myschema")
+	p.Set(`quarkus.smallrye-health.check."org.kie.kogito.jobs.service.management.JobServiceLeaderLivenessHealthCheck".enabled`, "true")
+	p.Set("kogito.jobs-service.management.leader-check.expiration-in-seconds", "60")
 	p.Sort()
 	return p
 }

@@ -410,6 +410,8 @@ func (j JobServiceHandler) GenerateServiceProperties() (*properties.Properties, 
 	props := properties.NewProperties()
 	props.Set(constants.KogitoServiceURLProperty, GenerateServiceURL(constants.KogitoServiceURLProtocol, j.platform.Namespace, j.GetServiceName()))
 	props.Set(constants.JobServiceKafkaSmallRyeHealthProperty, "false")
+	props.Set(constants.JobServiceLeaderLivenessSmallRyeHealthProperty, "true")
+	props.Set(constants.JobServiceLeaderCheckExpirationInSeconds, constants.DefaultJobServiceLeaderCheckExpirationInSeconds)
 	// add data source reactive URL
 	if j.hasPostgreSQLConfigured() {
 		p := persistence.RetrievePostgreSQLConfiguration(j.platform.Spec.Services.JobService.Persistence, j.platform.Spec.Persistence, j.GetServiceName())

@@ -24,13 +24,15 @@ const (
 
 	ConfigMapWorkflowPropsVolumeName = "workflow-properties"
 
-	JobServiceRequestEventsURL       = "mp.messaging.outgoing.kogito-job-service-job-request-events.url"
-	JobServiceRequestEventsConnector = "mp.messaging.outgoing.kogito-job-service-job-request-events.connector"
-	JobServiceStatusChangeEvents     = "kogito.jobs-service.http.job-status-change-events"
-	JobServiceStatusChangeEventsURL  = "mp.messaging.outgoing.kogito-job-service-job-status-events-http.url"
-	JobServiceURLProtocol            = "http"
-	JobServiceDataSourceReactiveURL  = "quarkus.datasource.reactive.url"
-	JobServiceJobEventsPath          = "/v2/jobs/events"
+	JobServiceRequestEventsURL                      = "mp.messaging.outgoing.kogito-job-service-job-request-events.url"
+	JobServiceRequestEventsConnector                = "mp.messaging.outgoing.kogito-job-service-job-request-events.connector"
+	JobServiceStatusChangeEvents                    = "kogito.jobs-service.http.job-status-change-events"
+	JobServiceStatusChangeEventsURL                 = "mp.messaging.outgoing.kogito-job-service-job-status-events-http.url"
+	JobServiceURLProtocol                           = "http"
+	JobServiceDataSourceReactiveURL                 = "quarkus.datasource.reactive.url"
+	JobServiceJobEventsPath                         = "/v2/jobs/events"
+	JobServiceLeaderCheckExpirationInSeconds        = "kogito.jobs-service.management.leader-check.expiration-in-seconds"
+	DefaultJobServiceLeaderCheckExpirationInSeconds = "60"
 
 	KogitoProcessInstancesEventsURL             = "mp.messaging.outgoing.kogito-processinstances-events.url"
 	KogitoProcessInstancesEventsEnabled         = "kogito.events.processinstances.enabled"
@@ -49,11 +51,12 @@ const (
 	// of its start health check.
 	KogitoJobServiceHealthCheckEnabled = "kogito.jobs-service.health-enabled"
 	// KogitoJobServiceURL configures the jobs service, this value can be used internally by the workflow.
-	KogitoJobServiceURL                   = "kogito.jobs-service.url"
-	KogitoServiceURLProperty              = "kogito.service.url"
-	KogitoServiceURLProtocol              = "http"
-	DataIndexKafkaSmallRyeHealthProperty  = `quarkus.smallrye-health.check."io.quarkus.kafka.client.health.KafkaHealthCheck".enabled`
-	JobServiceKafkaSmallRyeHealthProperty = `quarkus.smallrye-health.check."org.kie.kogito.jobs.service.messaging.http.health.knative.KSinkInjectionHealthCheck".enabled`
+	KogitoJobServiceURL                            = "kogito.jobs-service.url"
+	KogitoServiceURLProperty                       = "kogito.service.url"
+	KogitoServiceURLProtocol                       = "http"
+	DataIndexKafkaSmallRyeHealthProperty           = `quarkus.smallrye-health.check."io.quarkus.kafka.client.health.KafkaHealthCheck".enabled`
+	JobServiceKafkaSmallRyeHealthProperty          = `quarkus.smallrye-health.check."org.kie.kogito.jobs.service.messaging.http.health.knative.KSinkInjectionHealthCheck".enabled`
+	JobServiceLeaderLivenessSmallRyeHealthProperty = `quarkus.smallrye-health.check."org.kie.kogito.jobs.service.management.JobServiceLeaderLivenessHealthCheck".enabled`
 
 	DataIndexServiceName = "data-index-service"
 	JobServiceName       = "jobs-service"
