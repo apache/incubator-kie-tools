@@ -26,8 +26,8 @@ import (
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
 	apimetadata "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
 )
 
 type DeployUndeployCmdConfig struct {
@@ -54,11 +54,7 @@ type DeployUndeployCmdConfig struct {
 func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
 	fmt.Println("\n🔎 Checking your environment...")
 
-	if err := common.CheckKubectl(); err != nil {
-		return err
-	}
-
-	if ctx, err := common.CheckKubectlContext(); err != nil {
+	if ctx, err := common.CheckContext(); err != nil {
 		return err
 	} else {
 		cfg.KubectlContext = ctx
@@ -66,7 +62,7 @@ func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
 
 	//setup namespace
 	if len(cfg.NameSpace) == 0 {
-		if defaultNamespace, err := common.GetKubectlNamespace(); err == nil {
+		if defaultNamespace, err := common.GetNamespace(); err == nil {
 			cfg.NameSpace = defaultNamespace
 		} else {
 			return err
@@ -216,7 +212,7 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 	}
 
 	if cfg.Image != "" {
-		 handler.Image(cfg.Image)
+		handler.Image(cfg.Image)
 	}
 
 	err = handler.SaveAsKubernetesManifests(cfg.CustomGeneratedManifestDir)

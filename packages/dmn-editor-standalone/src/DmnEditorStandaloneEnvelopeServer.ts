@@ -41,7 +41,7 @@ export const createEnvelopeServer = (iframe: HTMLIFrameElement, readOnly?: boole
           resourcesPathPrefix: "",
           fileExtension: "dmn",
           initialLocale: "en-US",
-          isReadOnly: readOnly ?? true,
+          isReadOnly: readOnly ?? false,
           channel: ChannelType.STANDALONE,
           workspaceRootAbsolutePosixPath: DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
         }

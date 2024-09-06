@@ -37,7 +37,7 @@ import { Normalized } from "../../normalization/normalize";
 
 export function DecisionTableOutputRuleCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
-  isReadonly: boolean;
+  isReadOnly: boolean;
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
@@ -116,7 +116,7 @@ export function DecisionTableOutputRuleCell(props: {
         <>
           <TypeRefField
             alternativeFieldName={"Output header type"}
-            isReadonly={true}
+            isReadOnly={true}
             dmnEditorRootElementRef={dmnEditorRootElementRef}
             typeRef={
               cellMustHaveSameTypeAsRoot
@@ -130,7 +130,7 @@ export function DecisionTableOutputRuleCell(props: {
         <>
           <FormGroup label="Constraint">
             <ConstraintsFromTypeConstraintAttribute
-              isReadonly={true}
+              isReadOnly={true}
               itemDefinition={headerType.itemDefinition}
               editItemDefinition={() => {}}
               renderOnPropertiesPanel={true}
@@ -140,7 +140,7 @@ export function DecisionTableOutputRuleCell(props: {
         </>
       )}
       <ExpressionLanguageField
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         initialValue={cell["@_expressionLanguage"] ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         onChange={(newExpressionLanguage: string) =>
@@ -150,7 +150,7 @@ export function DecisionTableOutputRuleCell(props: {
         }
       />
       <DescriptionField
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         initialValue={cell.description?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         onChange={(newDescription: string) =>

@@ -60,10 +60,6 @@ public class BusinessRuleTaskPropertyReader extends TaskPropertyReader {
         return CustomInput.namespace.of(task).get();
     }
 
-    public String getDecisionName() {
-        return CustomInput.decisionName.of(task).get();
-    }
-
     public String getDmnModelName() {
         return CustomInput.dmnModelName.of(task).get();
     }

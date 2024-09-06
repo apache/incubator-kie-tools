@@ -36,7 +36,7 @@ import { Minimatch } from "minimatch";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { dirname, isAbsolute, normalize, relative } from "path";
 
-export type DmnEditorStandaloneResource = { contentType: ContentType; content: Promise<string> };
+export type DmnEditorStandaloneResource = { contentType: "text" | "binary"; content: Promise<string> };
 
 export class DmnEditorStandaloneChannelApiImpl implements KogitoEditorChannelApi {
   constructor(
@@ -102,7 +102,9 @@ export class DmnEditorStandaloneChannelApiImpl implements KogitoEditorChannelApi
     return new ResourceContent(
       request.normalizedPosixPathRelativeToTheWorkspaceRoot,
       await resource.content,
-      resource.contentType
+      // We need to typecast because ContentType is not exported
+      // and TS complains when trying to match strings with enums
+      resource.contentType as ContentType
     );
   }
 

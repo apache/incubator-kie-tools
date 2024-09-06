@@ -20,9 +20,11 @@
 import * as React from "react";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { useDmnEditorStoreApi } from "../../store/StoreContext";
+import { useSettings } from "../../settings/DmnEditorSettingsContext";
 
 export function EditExpressionNodePanel(props: { isVisible: boolean; id: string }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const settings = useSettings();
 
   return (
     <>
@@ -35,7 +37,7 @@ export function EditExpressionNodePanel(props: { isVisible: boolean; id: string 
           }
           className={"kie-dmn-editor--edit-expression-node-panel"}
         >
-          Edit
+          {settings.isReadOnly ? "View" : "Edit"}
         </Label>
       )}
     </>

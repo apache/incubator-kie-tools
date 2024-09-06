@@ -41,6 +41,7 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { DC__Dimension } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_2/ts-gen/types";
 import { Normalized } from "../normalization/normalize";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 const DEFAULT_FILL_COLOR = { "@_blue": 255, "@_green": 255, "@_red": 255 };
 const DEFAULT_STROKE_COLOR = { "@_blue": 0, "@_green": 0, "@_red": 0 };
@@ -58,6 +59,7 @@ export function ShapeOptions({
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { externalModelsByNamespace } = useExternalModels();
+  const settings = useSettings();
 
   const shapes = useDmnEditorStore((s) =>
     nodeIds.map((nodeId) => s.computed(s).indexedDrd().dmnShapesByHref.get(nodeId))
@@ -357,6 +359,7 @@ export function ShapeOptions({
             onClick={onReset}
             style={{ paddingBottom: 0, paddingTop: 0 }}
             title={"Reset shape"}
+            isDisabled={settings.isReadOnly}
           >
             <UndoAltIcon />
           </Button>
@@ -386,8 +389,10 @@ export function ShapeOptions({
                       color={fillColor}
                       onChange={(newColor) => onChangeFillColor(newColor)}
                       colorPickerRef={fillColorPickerRef}
+                      isDisabled={settings.isReadOnly}
                     />
                   }
+                  isDisabled={settings.isReadOnly}
                   key={"fill-color"}
                   buttonId={"shape-style-toggle-group-fill-color"}
                   onClick={() => {
@@ -417,8 +422,10 @@ export function ShapeOptions({
                       color={strokeColor}
                       onChange={(newColor) => onChangeStrokeColor(newColor)}
                       colorPickerRef={strokeColorPickerRef}
+                      isDisabled={settings.isReadOnly}
                     />
                   }
+                  isDisabled={settings.isReadOnly}
                   key={"stroke-color"}
                   buttonId={"shape-style-toggle-group-stroke-color"}
                   onClick={() => {
@@ -455,6 +462,7 @@ export function ShapeOptions({
                       </div>
                     </div>
                   }
+                  isDisabled={settings.isReadOnly}
                   key={"bound-width"}
                   buttonId={"shape-style-toggle-group-bound-width"}
                 />
@@ -482,6 +490,7 @@ export function ShapeOptions({
                       </div>
                     </div>
                   }
+                  isDisabled={settings.isReadOnly}
                   key={"bound-height"}
                   buttonId={"shape-style-toggle-group-bound-height"}
                 />
@@ -509,7 +518,7 @@ export function ShapeOptions({
                   <TextInput
                     aria-label={"X"}
                     type={"number"}
-                    isDisabled={false}
+                    isDisabled={settings.isReadOnly}
                     value={boundPositionX}
                     onChange={onChangePositionX}
                     placeholder={"Enter X value..."}
@@ -526,7 +535,7 @@ export function ShapeOptions({
                   <TextInput
                     aria-label={"Y"}
                     type={"number"}
-                    isDisabled={false}
+                    isDisabled={settings.isReadOnly}
                     value={boundPositionY}
                     onChange={onChangePositionY}
                     placeholder={"Enter Y value..."}

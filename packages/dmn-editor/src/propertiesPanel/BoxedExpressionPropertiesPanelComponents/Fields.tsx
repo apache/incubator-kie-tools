@@ -32,7 +32,7 @@ export function ContentField(props: {
   initialValue: string;
   onChange: (newTextValue: string, expressionPath: ExpressionPath[]) => void;
   expressionPath: ExpressionPath[];
-  isReadonly: boolean;
+  isReadOnly: boolean;
 }) {
   return <TextField {...props} type={TextFieldType.TEXT_AREA} title="Content" placeholder="Enter the content..." />;
 }
@@ -41,7 +41,7 @@ export function DescriptionField(props: {
   initialValue: string;
   onChange: (newTextValue: string, expressionPath: ExpressionPath[]) => void;
   expressionPath: ExpressionPath[];
-  isReadonly: boolean;
+  isReadOnly: boolean;
 }) {
   return (
     <TextField {...props} type={TextFieldType.TEXT_AREA} title="Description" placeholder="Enter a description..." />
@@ -52,7 +52,7 @@ export function ExpressionLanguageField(props: {
   initialValue: string;
   onChange?: (newTextValue: string, expressionPath?: ExpressionPath[]) => void;
   expressionPath?: ExpressionPath[];
-  isReadonly: boolean;
+  isReadOnly: boolean;
 }) {
   return (
     <TextField
@@ -68,7 +68,7 @@ export function NameField(props: {
   alternativeFieldName?: string;
   id: string;
   name: string;
-  isReadonly: boolean;
+  isReadOnly: boolean;
   getAllUniqueNames: (s: State) => UniqueNameIndex;
   onChange?: (newName: string) => void;
 }) {
@@ -79,7 +79,7 @@ export function NameField(props: {
         isPlain={false}
         id={props.id}
         name={props.name}
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         shouldCommitOnBlur={true}
         className={"pf-c-form-control"}
         onRenamed={(newName) => props.onChange?.(newName)}
@@ -92,7 +92,7 @@ export function NameField(props: {
 export function TypeRefField(props: {
   alternativeFieldName?: string;
   typeRef?: string;
-  isReadonly: boolean;
+  isReadOnly: boolean;
   dmnEditorRootElementRef: React.RefObject<HTMLElement>;
   onChange?: (newTypeRef: string) => void;
 }) {
@@ -101,7 +101,7 @@ export function TypeRefField(props: {
       <TypeRefSelector
         heightRef={props.dmnEditorRootElementRef}
         typeRef={props.typeRef}
-        isDisabled={props.isReadonly}
+        isDisabled={props.isReadOnly}
         onChange={(newValue: string) => props.onChange?.(newValue)}
       />
     </FormGroup>
@@ -120,7 +120,7 @@ export function TextField({
   initialValue: string;
   onChange?: (newTextValue: string, expressionPath?: ExpressionPath[]) => void;
   expressionPath?: ExpressionPath[];
-  isReadonly: boolean;
+  isReadOnly: boolean;
   title: string;
   placeholder?: string;
   type: TextFieldType;
@@ -161,7 +161,7 @@ export function TextField({
         <TextArea
           aria-label={"Content"}
           type={"text"}
-          isDisabled={props.isReadonly}
+          isDisabled={props.isReadOnly}
           value={value}
           onChange={(newContent) => {
             setValue(newContent);
@@ -184,7 +184,7 @@ export function TextField({
         <TextInput
           aria-label={"Content"}
           type={"text"}
-          isDisabled={props.isReadonly}
+          isDisabled={props.isReadOnly}
           value={value}
           onChange={(newContent) => {
             setValue(newContent);

@@ -53,6 +53,8 @@ export interface BeeTableBodyProps<R extends object> {
   lastColumnMinWidth?: number;
 
   rowWrapper?: React.FunctionComponent<React.PropsWithChildren<{ row: R; rowIndex: number }>>;
+
+  isReadOnly: boolean;
 }
 
 export function BeeTableBody<R extends object>({
@@ -69,6 +71,7 @@ export function BeeTableBody<R extends object>({
   resizerStopBehavior,
   lastColumnMinWidth,
   rowWrapper,
+  isReadOnly,
 }: BeeTableBodyProps<R>) {
   const renderRow = useCallback(
     (row: ReactTable.Row<R>, rowIndex: number) => {
@@ -100,6 +103,7 @@ export function BeeTableBody<R extends object>({
                     lastColumnMinWidth={
                       cellIndex === reactTableInstance.allColumns.length - 1 ? lastColumnMinWidth : undefined
                     }
+                    isReadOnly={isReadOnly}
                   />
                 )}
               </React.Fragment>
@@ -136,6 +140,7 @@ export function BeeTableBody<R extends object>({
       onDataCellKeyUp,
       onRowAdded,
       lastColumnMinWidth,
+      isReadOnly,
     ]
   );
 
@@ -168,6 +173,7 @@ export function BeeTableBody<R extends object>({
                 isLastColumn={false}
                 isEmptyCell={true}
                 resizerStopBehavior={resizerStopBehavior}
+                isReadOnly={isReadOnly}
               />
             </BeeTableCoordinatesContextProvider>
           )}
@@ -188,6 +194,7 @@ export function BeeTableBody<R extends object>({
                   isEmptyCell={false}
                   resizerStopBehavior={resizerStopBehavior}
                   lastColumnMinWidth={columnIndex === additionalRow.length - 1 ? lastColumnMinWidth : undefined}
+                  isReadOnly={isReadOnly}
                 >
                   {elem}
                 </BeeTableTdForAdditionalRow>

@@ -68,6 +68,41 @@ export const Base: Story = {
   },
 };
 
+export const Readonly: Story = {
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
+  args: {
+    ...EmptyExpression.args,
+    expression: {
+      __$$element: "conditional",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+      if: {
+        "@_id": generateUuid(),
+        expression: {
+          __$$element: "literalExpression",
+          "@_id": generateUuid(),
+        },
+      },
+      then: {
+        "@_id": generateUuid(),
+        expression: {
+          __$$element: "literalExpression",
+          "@_id": generateUuid(),
+        },
+      },
+      else: {
+        "@_id": generateUuid(),
+        expression: {
+          __$$element: "literalExpression",
+          "@_id": generateUuid(),
+        },
+      },
+    },
+    isReadOnly: true,
+  },
+};
+
 export const MonthlyFee: Story = {
   render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },

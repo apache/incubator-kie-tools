@@ -61,6 +61,7 @@ import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/d
 import { resolveTypeRef } from "./resolveTypeRef";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { Normalized } from "../normalization/normalize";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export const BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL = 5;
 export const STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE = 95;
@@ -73,7 +74,7 @@ const leftGutterForStructsInPxs =
 const rowPaddingRight = 16;
 
 export function ItemComponentsTable({
-  isReadonly,
+  isReadOnly,
   parent,
   editItemDefinition,
   addItemComponent,
@@ -81,7 +82,7 @@ export function ItemComponentsTable({
   allDataTypesById,
   setDropdownOpenFor,
 }: {
-  isReadonly: boolean;
+  isReadOnly: boolean;
   parent: DataType;
   editItemDefinition: EditItemDefinition;
   addItemComponent: AddItemComponent;
@@ -157,7 +158,7 @@ export function ItemComponentsTable({
         <FlexItem>
           <Title size={"md"} headingLevel={"h4"}>
             {`Properties in '${parent.itemDefinition["@_name"]}'`}
-            {!isReadonly && (
+            {!isReadOnly && (
               <Button
                 title={"Add item component (at the top)"}
                 variant={ButtonVariant.link}
@@ -180,7 +181,7 @@ export function ItemComponentsTable({
           <Button variant={ButtonVariant.link} onClick={collapseAll}>
             Collapse all
           </Button>
-          {!isReadonly && (
+          {!isReadOnly && (
             <Dropdown
               toggle={
                 <KebabToggle
@@ -231,7 +232,7 @@ export function ItemComponentsTable({
       </Flex>
       {flatTree.length <= 0 && (
         <div className={"kie-dmn-editor--data-type-properties-table--empty-state"}>
-          {isReadonly ? "None" : "None yet"}
+          {isReadOnly ? "None" : "None yet"}
         </div>
       )}
       {flatTree.length > 0 && (
@@ -370,7 +371,7 @@ export function ItemComponentsTable({
                             )}
                           </div>
                           <div style={{ width: `${addItemComponentButtonWidthInPxs}px` }}>
-                            {!isReadonly && isStruct(dt.itemDefinition) && (
+                            {!isReadOnly && isStruct(dt.itemDefinition) && (
                               <Button
                                 title={"Add item component"}
                                 variant={ButtonVariant.link}
@@ -395,7 +396,7 @@ export function ItemComponentsTable({
                               editMode={"hover"}
                               isActive={false}
                               itemDefinition={dt.itemDefinition}
-                              isReadonly={dt.namespace !== thisDmnsNamespace}
+                              isReadOnly={isReadOnly || dt.namespace !== thisDmnsNamespace}
                               onGetAllUniqueNames={() => allUniqueNamesAtLevel}
                             />
                           </div>
@@ -404,6 +405,7 @@ export function ItemComponentsTable({
                       <td>
                         <Switch
                           aria-label={"Is struct?"}
+                          isDisabled={isReadOnly}
                           isChecked={isStruct(dt.itemDefinition)}
                           onChange={(isChecked) => {
                             editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
@@ -425,7 +427,7 @@ export function ItemComponentsTable({
                         {!isStruct(dt.itemDefinition) && (
                           <TypeRefSelector
                             heightRef={dmnEditorRootElementRef}
-                            isDisabled={isReadonly}
+                            isDisabled={isReadOnly}
                             typeRef={resolveTypeRef({
                               typeRef: dt.itemDefinition.typeRef?.__$$text,
                               namespace: parent.namespace,
@@ -449,6 +451,7 @@ export function ItemComponentsTable({
                       <td>
                         <Switch
                           aria-label={"Is collection?"}
+                          isDisabled={isReadOnly}
                           isChecked={dt.itemDefinition["@_isCollection"] ?? false}
                           onChange={(isChecked) => {
                             editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
@@ -502,48 +505,54 @@ export function ItemComponentsTable({
                               View
                             </DropdownItem>,
                             <DropdownSeparator key="view-separator" />,
-                            <DropdownItem
-                              key={"extract-to-top-level"}
-                              icon={<ImportIcon style={{ transform: "scale(-1, -1)" }} />}
-                              style={{ minWidth: "240px" }}
-                              onClick={() => {
-                                editItemDefinition(
-                                  dt.itemDefinition["@_id"]!,
-                                  (itemDefinition, _, __, itemDefinitions) => {
-                                    const newItemDefinition = getNewItemDefinition({
-                                      ...dt.itemDefinition,
-                                      typeRef: dt.itemDefinition.typeRef,
-                                      "@_name": `t${dt.itemDefinition["@_name"]}`,
-                                      "@_isCollection": false,
-                                    });
+                            <React.Fragment key={"extract-to-top-level-fragment"}>
+                              {!isReadOnly && (
+                                <>
+                                  <DropdownItem
+                                    key={"extract-to-top-level"}
+                                    icon={<ImportIcon style={{ transform: "scale(-1, -1)" }} />}
+                                    style={{ minWidth: "240px" }}
+                                    onClick={() => {
+                                      editItemDefinition(
+                                        dt.itemDefinition["@_id"]!,
+                                        (itemDefinition, _, __, itemDefinitions) => {
+                                          const newItemDefinition = getNewItemDefinition({
+                                            ...dt.itemDefinition,
+                                            typeRef: dt.itemDefinition.typeRef,
+                                            "@_name": `t${dt.itemDefinition["@_name"]}`,
+                                            "@_isCollection": false,
+                                          });
 
-                                    const newItemDefinitionCopy: Normalized<DMN15__tItemDefinition> = JSON.parse(
-                                      JSON.stringify(newItemDefinition)
-                                    ); // Necessary because idRandomizer will mutate this object.
+                                          const newItemDefinitionCopy: Normalized<DMN15__tItemDefinition> = JSON.parse(
+                                            JSON.stringify(newItemDefinition)
+                                          ); // Necessary because idRandomizer will mutate this object.
 
-                                    getNewDmnIdRandomizer()
-                                      .ack({
-                                        json: [newItemDefinitionCopy],
-                                        type: "DMN15__tDefinitions",
-                                        attr: "itemDefinition",
-                                      })
-                                      .randomize();
+                                          getNewDmnIdRandomizer()
+                                            .ack({
+                                              json: [newItemDefinitionCopy],
+                                              type: "DMN15__tDefinitions",
+                                              attr: "itemDefinition",
+                                            })
+                                            .randomize();
 
-                                    itemDefinitions.unshift(newItemDefinitionCopy);
+                                          itemDefinitions.unshift(newItemDefinitionCopy);
 
-                                    // Creating a new type is fine, but only update the current type if it is not readOnly
-                                    if (!isReadonly) {
-                                      itemDefinition["@_id"] = generateUuid();
-                                      itemDefinition.typeRef = { __$$text: newItemDefinitionCopy["@_name"] };
-                                      itemDefinition.itemComponent = undefined;
-                                    }
-                                  }
-                                );
-                              }}
-                            >
-                              Extract data type
-                            </DropdownItem>,
-                            <DropdownSeparator key="extract-data-type-separator" />,
+                                          // Creating a new type is fine, but only update the current type if it is not readOnly
+                                          if (!isReadOnly) {
+                                            itemDefinition["@_id"] = generateUuid();
+                                            itemDefinition.typeRef = { __$$text: newItemDefinitionCopy["@_name"] };
+                                            itemDefinition.itemComponent = undefined;
+                                          }
+                                        }
+                                      );
+                                    }}
+                                  >
+                                    Extract data type
+                                  </DropdownItem>
+                                  <DropdownSeparator key="extract-data-type-separator" />
+                                </>
+                              )}
+                            </React.Fragment>,
                             <DropdownItem
                               key={"copy-item"}
                               icon={<CopyIcon />}
@@ -555,7 +564,7 @@ export function ItemComponentsTable({
                               Copy
                             </DropdownItem>,
                             <React.Fragment key={"cut-fragment"}>
-                              {!isReadonly && (
+                              {!isReadOnly && (
                                 <DropdownItem
                                   key={"cut-item"}
                                   icon={<CutIcon />}
@@ -573,7 +582,7 @@ export function ItemComponentsTable({
                               )}
                             </React.Fragment>,
                             <React.Fragment key={"remove-fragment"}>
-                              {!isReadonly && (
+                              {!isReadOnly && (
                                 <DropdownItem
                                   key={"remove-item"}
                                   icon={<TrashIcon />}
@@ -587,7 +596,7 @@ export function ItemComponentsTable({
                                 </DropdownItem>
                               )}
                             </React.Fragment>,
-                            !isReadonly && isStruct(dt.itemDefinition) ? (
+                            !isReadOnly && isStruct(dt.itemDefinition) ? (
                               <React.Fragment key="paste-property-fragment">
                                 <DropdownSeparator />
                                 <React.Fragment>
@@ -633,7 +642,7 @@ export function ItemComponentsTable({
               );
             })}
           </tbody>
-          {!isReadonly && (
+          {!isReadOnly && (
             <tfoot>
               <tr>
                 <td colSpan={5}>

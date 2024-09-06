@@ -82,6 +82,8 @@ export interface BeeTableHeaderProps<R extends object> {
   resizerStopBehavior: ResizerStopBehavior;
   lastColumnMinWidth?: number;
   setActiveCellEditing: (isEditing: boolean) => void;
+
+  isReadOnly: boolean;
 }
 
 export function BeeTableHeader<R extends object>({
@@ -100,6 +102,7 @@ export function BeeTableHeader<R extends object>({
   resizerStopBehavior,
   lastColumnMinWidth,
   setActiveCellEditing,
+  isReadOnly,
 }: BeeTableHeaderProps<R>) {
   const getColumnLabel: (groupType: string) => string | undefined = useCallback(
     (groupType) => {
@@ -154,7 +157,8 @@ export function BeeTableHeader<R extends object>({
           className={classNames}
           groupType={column.groupType}
           isLastLevelColumn={(column.columns?.length ?? 0) <= 0}
-          shouldShowColumnsInlineControls={shouldShowRowsInlineControls}
+          shouldShowColumnsInlineControls={!isReadOnly && shouldShowRowsInlineControls}
+          isReadOnly={isReadOnly}
         >
           <div className="header-cell" data-ouia-component-type="expression-column-header">
             {column.label}
@@ -162,7 +166,7 @@ export function BeeTableHeader<R extends object>({
         </BeeTableTh>
       );
     },
-    [getColumnKey, shouldShowRowsInlineControls]
+    [getColumnKey, isReadOnly, shouldShowRowsInlineControls]
   );
 
   const renderColumn = useCallback<
@@ -192,6 +196,7 @@ export function BeeTableHeader<R extends object>({
               rowSpan={rowSpan}
               shouldRenderRowIndexColumn={shouldRenderRowIndexColumn}
               isEditableHeader={isEditableHeader}
+              isReadOnly={isReadOnly}
               shouldShowColumnsInlineControls={shouldShowRowsInlineControls}
               getColumnKey={getColumnKey}
               getColumnLabel={getColumnLabel}
@@ -230,7 +235,7 @@ export function BeeTableHeader<R extends object>({
                 >
                   {column.headerCellElement ? (
                     column.headerCellElement
-                  ) : column.isInlineEditable ? (
+                  ) : column.isInlineEditable && !isReadOnly ? (
                     <InlineEditableTextInput
                       setActiveCellEditing={setActiveCellEditing}
                       columnIndex={columnIndex}
@@ -242,6 +247,7 @@ export function BeeTableHeader<R extends object>({
                           columnIndex
                         )({ "@_label": value, "@_typeRef": column.dataType });
                       }}
+                      isReadOnly={isReadOnly}
                     />
                   ) : (
                     <p
@@ -284,6 +290,7 @@ export function BeeTableHeader<R extends object>({
       lastColumnMinWidth,
       setActiveCellEditing,
       onExpressionHeaderUpdated,
+      isReadOnly,
     ]
   );
 

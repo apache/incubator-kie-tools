@@ -445,7 +445,7 @@ export function BeeTableInternal<R extends object>({
 
       // DELETE
 
-      if (NavigationKeysUtils.isDelete(e.key) || NavigationKeysUtils.isBackspace(e.key)) {
+      if (!isReadOnly && (NavigationKeysUtils.isDelete(e.key) || NavigationKeysUtils.isBackspace(e.key))) {
         e.stopPropagation();
         e.preventDefault();
         erase();
@@ -466,17 +466,18 @@ export function BeeTableInternal<R extends object>({
         e.preventDefault();
         copy();
       }
-      if (!e.shiftKey && complementaryKey && e.key.toLowerCase() === "x") {
-        e.stopPropagation();
-        e.preventDefault();
-        cut();
+      if (!isReadOnly) {
+        if (!e.shiftKey && complementaryKey && e.key.toLowerCase() === "x") {
+          e.stopPropagation();
+          e.preventDefault();
+          cut();
+        }
+        if (!e.shiftKey && complementaryKey && e.key.toLowerCase() === "v") {
+          e.stopPropagation();
+          e.preventDefault();
+          paste();
+        }
       }
-      if (!e.shiftKey && complementaryKey && e.key.toLowerCase() === "v") {
-        e.stopPropagation();
-        e.preventDefault();
-        paste();
-      }
-
       // SELECT ALL
       if (!e.shiftKey && complementaryKey && e.key.toLowerCase() === "a") {
         e.stopPropagation();
@@ -516,6 +517,7 @@ export function BeeTableInternal<R extends object>({
       copy,
       cut,
       paste,
+      isReadOnly,
     ]
   );
 
@@ -638,12 +640,13 @@ export function BeeTableInternal<R extends object>({
           onHeaderKeyUp={onHeaderKeyUp}
           lastColumnMinWidth={lastColumnMinWidth}
           setActiveCellEditing={setActiveCellEditing}
+          isReadOnly={isReadOnly}
         />
         <BeeTableBody<R>
           rowWrapper={rowWrapper}
           resizerStopBehavior={resizerStopBehavior}
           shouldRenderRowIndexColumn={shouldRenderRowIndexColumn}
-          shouldShowRowsInlineControls={shouldShowRowsInlineControls}
+          shouldShowRowsInlineControls={!isReadOnly && shouldShowRowsInlineControls}
           getColumnKey={onGetColumnKey}
           getRowKey={onGetRowKey}
           headerVisibility={headerVisibility}
@@ -653,6 +656,7 @@ export function BeeTableInternal<R extends object>({
           onDataCellClick={onDataCellClick}
           onDataCellKeyUp={onDataCellKeyUp}
           lastColumnMinWidth={lastColumnMinWidth}
+          isReadOnly={isReadOnly}
         />
       </table>
       <BeeTableContextMenuHandler
@@ -666,6 +670,7 @@ export function BeeTableInternal<R extends object>({
         onColumnAdded={onColumnAdded2}
         onColumnDeleted={onColumnDeleted2}
         onRowReset={onRowReset}
+        isReadOnly={isReadOnly}
       />
     </div>
   );

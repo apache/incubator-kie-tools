@@ -62,7 +62,7 @@ export type TypeHelper = {
 
 export interface ConstraintComponentProps {
   id: string;
-  isReadonly: boolean;
+  isReadOnly: boolean;
   value?: string;
   expressionValue?: string;
   type: DmnBuiltInDataType;
@@ -406,12 +406,12 @@ export function useConstraint({
 }
 
 export function ConstraintsFromAllowedValuesAttribute({
-  isReadonly,
+  isReadOnly,
   itemDefinition,
   editItemDefinition,
   renderOnPropertiesPanel,
 }: {
-  isReadonly: boolean;
+  isReadOnly: boolean;
   itemDefinition: Normalized<DMN15__tItemDefinition>;
   editItemDefinition: EditItemDefinition;
   renderOnPropertiesPanel?: boolean;
@@ -530,7 +530,7 @@ export function ConstraintsFromAllowedValuesAttribute({
 
   return (
     <Constraints
-      isReadonly={isReadonly}
+      isReadOnly={isReadOnly}
       itemDefinitionId={itemDefinitionId}
       constraintValue={constraintValue}
       typeHelper={typeRefConstraintTypeHelper}
@@ -547,13 +547,13 @@ export function ConstraintsFromAllowedValuesAttribute({
 }
 
 export function ConstraintsFromTypeConstraintAttribute({
-  isReadonly,
+  isReadOnly,
   itemDefinition,
   editItemDefinition,
   renderOnPropertiesPanel,
   defaultsToAllowedValues,
 }: {
-  isReadonly: boolean;
+  isReadOnly: boolean;
   itemDefinition: Normalized<DMN15__tItemDefinition>;
   editItemDefinition: EditItemDefinition;
   renderOnPropertiesPanel?: boolean;
@@ -674,7 +674,7 @@ export function ConstraintsFromTypeConstraintAttribute({
 
   return (
     <Constraints
-      isReadonly={isReadonly}
+      isReadOnly={isReadOnly}
       itemDefinitionId={itemDefinitionId}
       constraintValue={constraintValue}
       typeHelper={typeRefConstraintTypeHelper}
@@ -691,7 +691,7 @@ export function ConstraintsFromTypeConstraintAttribute({
 }
 
 export function Constraints({
-  isReadonly,
+  isReadOnly,
   itemDefinitionId,
   constraintValue,
   typeHelper,
@@ -704,7 +704,7 @@ export function Constraints({
   onConstraintChange,
   renderOnPropertiesPanel,
 }: {
-  isReadonly: boolean;
+  isReadOnly: boolean;
   itemDefinitionId: string;
   constraintValue: string | undefined;
   typeHelper: TypeHelper;
@@ -779,7 +779,7 @@ export function Constraints({
                 buttonId={ConstraintsType.NONE}
                 isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.NONE}
                 onChange={onToggleGroupChangeInternal}
-                isDisabled={isReadonly}
+                isDisabled={isReadOnly}
               />
               <ToggleGroupItem
                 // The default ToggleGroupItem zIndex is bigger than the
@@ -791,21 +791,21 @@ export function Constraints({
                 buttonId={ConstraintsType.EXPRESSION}
                 isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.EXPRESSION}
                 onChange={onToggleGroupChangeInternal}
-                isDisabled={isReadonly || !isConstraintEnabled.expression}
+                isDisabled={isReadOnly || !isConstraintEnabled.expression}
               />
               <ToggleGroupItem
                 text={ConstraintsType.ENUMERATION}
                 buttonId={ConstraintsType.ENUMERATION}
                 isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.ENUMERATION}
                 onChange={onToggleGroupChangeInternal}
-                isDisabled={isReadonly || !isConstraintEnabled.enumeration}
+                isDisabled={isReadOnly || !isConstraintEnabled.enumeration}
               />
               <ToggleGroupItem
                 text={ConstraintsType.RANGE}
                 buttonId={ConstraintsType.RANGE}
                 isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.RANGE}
                 onChange={onToggleGroupChangeInternal}
-                isDisabled={isReadonly || !isConstraintEnabled.range}
+                isDisabled={isReadOnly || !isConstraintEnabled.range}
               />
             </ToggleGroup>
           </div>
@@ -814,7 +814,7 @@ export function Constraints({
             {internalSelectedConstraint.selectedConstraint === ConstraintsType.ENUMERATION && (
               <ConstraintsEnum
                 id={itemDefinitionId}
-                isReadonly={isReadonly}
+                isReadOnly={isReadOnly}
                 type={typeRef}
                 typeHelper={typeHelper}
                 value={isConstraintEnum ? constraintValue : undefined}
@@ -827,7 +827,7 @@ export function Constraints({
             {internalSelectedConstraint.selectedConstraint === ConstraintsType.RANGE && (
               <ConstraintsRange
                 id={itemDefinitionId}
-                isReadonly={isReadonly}
+                isReadOnly={isReadOnly}
                 expressionValue={constraintValue}
                 type={typeRef}
                 typeHelper={typeHelper}
@@ -840,7 +840,7 @@ export function Constraints({
             {internalSelectedConstraint.selectedConstraint === ConstraintsType.EXPRESSION && (
               <ConstraintsExpression
                 id={itemDefinitionId}
-                isReadonly={isReadonly}
+                isReadOnly={isReadOnly}
                 type={typeRef}
                 value={constraintValue}
                 savedValue={constraintValue}

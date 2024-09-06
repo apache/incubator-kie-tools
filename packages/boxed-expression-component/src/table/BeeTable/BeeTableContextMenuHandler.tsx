@@ -36,6 +36,7 @@ import {
   BeeTableContextMenuAllowedOperationsConditions,
   BeeTableOperation,
   BeeTableOperationConfig,
+  BeeTableOperationGroup,
   InsertRowColumnsDirection,
 } from "../../api";
 import { useCustomContextMenuHandler } from "../../contextMenu";
@@ -75,6 +76,7 @@ export interface BeeTableContextMenuHandlerProps {
     insertDirection: InsertRowColumnsDirection;
   }) => void;
   onColumnDeleted?: (args: { columnIndex: number; groupType: string | undefined }) => void;
+  isReadOnly: boolean;
 }
 
 /** The maximum numbers of rows or columns that can be inserted from the Insert menu. */
@@ -94,6 +96,7 @@ export function BeeTableContextMenuHandler({
   onRowReset,
   onColumnAdded,
   onColumnDeleted,
+  isReadOnly,
 }: BeeTableContextMenuHandlerProps) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setCurrentlyOpenContextMenu } = useBoxedExpressionEditor();
@@ -209,20 +212,6 @@ export function BeeTableContextMenuHandler({
     }
   }, [activeCell, columns]);
 
-  const operationGroups = useMemo(() => {
-    if (!activeCell) {
-      return [];
-    }
-    if (_.isArray(operationConfig)) {
-      return operationConfig;
-    }
-    return (operationConfig ?? {})[column?.groupType || ""];
-  }, [activeCell, column?.groupType, operationConfig]);
-
-  const allOperations = useMemo(() => {
-    return operationGroups.flatMap(({ items }) => items);
-  }, [operationGroups]);
-
   const operationLabel = useCallback(
     (operation: BeeTableOperation) => {
       switch (operation) {
@@ -260,6 +249,33 @@ export function BeeTableContextMenuHandler({
     },
     [i18n]
   );
+
+  const operationGroups = useMemo(() => {
+    if (!activeCell) {
+      return [];
+    }
+    if (isReadOnly) {
+      const operationGroup: BeeTableOperationGroup = {
+        group: "",
+        items: [
+          {
+            name: operationLabel(BeeTableOperation.SelectionCopy),
+            type: BeeTableOperation.SelectionCopy,
+          },
+        ],
+      };
+
+      return [operationGroup];
+    }
+    if (_.isArray(operationConfig)) {
+      return operationConfig;
+    }
+    return (operationConfig ?? {})[column?.groupType || ""];
+  }, [activeCell, column?.groupType, isReadOnly, operationConfig, operationLabel]);
+
+  const allOperations = useMemo(() => {
+    return operationGroups.flatMap(({ items }) => items);
+  }, [operationGroups]);
 
   const operationIcon = useCallback((operation: BeeTableOperation) => {
     switch (operation) {

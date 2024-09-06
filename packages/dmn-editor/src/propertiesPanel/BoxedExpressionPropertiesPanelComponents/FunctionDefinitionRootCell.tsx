@@ -35,7 +35,7 @@ type FunctionDefinitionRoot = Pick<
 
 export function FunctionDefinitionRootCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
-  isReadonly: boolean;
+  isReadOnly: boolean;
 }) {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const selectedObjectInfos = useMemo(
@@ -54,9 +54,9 @@ export function FunctionDefinitionRootCell(props: {
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
-      <TextField type={TextFieldType.TEXT_INPUT} title={"Kind"} isReadonly={true} initialValue={cell["@_kind"] ?? ""} />
+      <TextField type={TextFieldType.TEXT_INPUT} title={"Kind"} isReadOnly={true} initialValue={cell["@_kind"] ?? ""} />
       <DescriptionField
-        isReadonly={props.isReadonly}
+        isReadOnly={props.isReadOnly}
         initialValue={cell.description?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         onChange={(newDescription: string) =>

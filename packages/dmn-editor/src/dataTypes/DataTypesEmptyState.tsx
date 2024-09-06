@@ -30,8 +30,11 @@ import {
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export function DataTypesEmptyState({ onAdd, onPaste }: { onAdd: () => void; onPaste: () => void }) {
+  const settings = useSettings();
+
   return (
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
       <EmptyState style={{ maxWidth: "1280px" }}>
@@ -43,20 +46,24 @@ export function DataTypesEmptyState({ onAdd, onPaste }: { onAdd: () => void; onP
           {`Data types are referenced in the input and output values for decision tables. Custom data types allow you to reference more complex data types, beyond the simple "default" types.`}
         </EmptyStateBody>
         <br />
-        <EmptyStatePrimary>
-          <Button variant={ButtonVariant.primary} onClick={onAdd}>
-            Create a custom data type
-          </Button>
-        </EmptyStatePrimary>
-        <br />
-        <br />
-        or
-        <br />
-        <EmptyStateSecondaryActions>
-          <Button variant={ButtonVariant.link} onClick={onPaste} icon={<PasteIcon />}>
-            Paste data type
-          </Button>
-        </EmptyStateSecondaryActions>
+        {!settings.isReadOnly && (
+          <>
+            <EmptyStatePrimary>
+              <Button variant={ButtonVariant.primary} onClick={onAdd}>
+                Create a custom data type
+              </Button>
+            </EmptyStatePrimary>
+            <br />
+            <br />
+            or
+            <br />
+            <EmptyStateSecondaryActions>
+              <Button variant={ButtonVariant.link} onClick={onPaste} icon={<PasteIcon />}>
+                Paste data type
+              </Button>
+            </EmptyStateSecondaryActions>
+          </>
+        )}
       </EmptyState>
     </Flex>
   );
