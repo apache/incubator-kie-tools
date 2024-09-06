@@ -21,7 +21,6 @@ metadata:
     sonataflow.org/version: 0.0.1
 spec:
   persistence:
-    migrateDBOnStartUp: false
     postgresql:
       secretRef:
         name: postgres-secrets
