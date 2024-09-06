@@ -17,4 +17,16 @@
  * under the License.
  */
 
-export * from "./WorkflowFormPage";
+import * as React from "react";
+import { WorkflowDefinitionListContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionList";
+import { useApp } from "../../context/AppContext";
+
+export function DeploymentWorkflowDefinitionListContextProvider(props: React.PropsWithChildren<{}>) {
+  const app = useApp();
+
+  return (
+    <WorkflowDefinitionListContextProvider dataIndexUrl={app.data.dataIndexUrl}>
+      {props.children}
+    </WorkflowDefinitionListContextProvider>
+  );
+}

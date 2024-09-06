@@ -21,10 +21,14 @@ import { Route, Switch } from "react-router-dom";
 import { RuntimeToolsWorkflowInstances } from "../runtimeTools/pages/RuntimeToolsWorkflowInstances";
 import { routes } from "../routes";
 import { RuntimeToolsWorkflowDetails } from "../runtimeTools/pages/RuntimeToolsWorkflowDetails";
+import { RuntimeToolsWorkflowDefinitions } from "../runtimeTools/pages/RuntimeToolsWorkflowDefinitions";
 
 export function RuntimeToolsRoutesSwitch() {
   return (
     <Switch>
+      <Route path={routes.runtimeTools.workflowDefinitions.path({})}>
+        <RuntimeToolsWorkflowDefinitions />
+      </Route>
       <Route path={routes.runtimeTools.workflowInstances.path({})}>
         <RuntimeToolsWorkflowInstances />
       </Route>

@@ -21,7 +21,6 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import { APPDATA_JSON_FILENAME } from "../AppConstants";
 import { ErrorKind, ErrorPage } from "../pages/ErrorPage";
 import { NoMatchPage } from "../pages/NoMatchPage";
-import { Workflows } from "../pages/Workflows/";
 import { CloudEventFormPage } from "../pages/Workflows/CloudEventFormPage";
 import { WorkflowFormPage } from "../pages/Workflows/WorkflowFormPage";
 import { routes } from "../routes";
@@ -36,9 +35,6 @@ export function RoutesSwitch() {
       <Route path={routes.workflows.cloudEvent.path({})}>
         <CloudEventFormPage />
       </Route>
-      <Route path={routes.workflows.home.path({})}>
-        <Workflows />
-      </Route>
       <Route path={routes.runtimeTools.home.path({})}>
         <RuntimeToolsRoutesSwitch />
       </Route>
@@ -46,7 +42,7 @@ export function RoutesSwitch() {
         <ErrorPage kind={ErrorKind.APPDATA_JSON} errors={[`There was an error with the ${APPDATA_JSON_FILENAME}`]} />
       </Route>
       <Route path={routes.home.path({})}>
-        <Redirect to={routes.workflows.home.path({})} />
+        <Redirect to={routes.runtimeTools.workflowDefinitions.path({})} />
       </Route>
       <Route component={NoMatchPage} />
     </Switch>
