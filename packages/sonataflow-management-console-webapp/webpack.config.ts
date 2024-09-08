@@ -55,6 +55,7 @@ export default async (env: any, argv: any) => {
           new CopyPlugin({
             patterns: [
               { from: "./resources", to: "./resources" },
+              { from: "./src/static/favicon.svg", to: "./favicon.svg" },
               {
                 from: "./resources/serverless-workflow-combined-editor-envelope.html",
                 to: "./serverless-workflow-combined-editor-envelope.html",
