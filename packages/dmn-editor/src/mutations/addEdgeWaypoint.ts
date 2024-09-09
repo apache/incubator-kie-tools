@@ -38,7 +38,7 @@ export function addEdgeWaypoint({
 
   const diagramElement = diagramElements[edgeIndex];
   if (diagramElement.__$$element !== "dmndi:DMNEdge") {
-    throw new Error("DMN MUTATION: Can't remove a waypoint from an element that is not a DMNEdge.");
+    throw new Error("DMN MUTATION: Can't add a waypoint for an element that is not a DMNEdge.");
   }
 
   if (beforeIndex > (diagramElement["di:waypoint"]?.length ?? 0) - 1) {

@@ -127,6 +127,9 @@ export function usePotentialWaypointControls(
         }
 
         if (targetData.dmnObjectQName.prefix) {
+          /**
+           * This means we are adding a first wayipoint to an edge targeting an external node
+           */
           addEdgeTargetingExternalNode({
             definitions: state.dmn.model.definitions,
             drdIndex: state.computed(state).getDrdIndex(),
@@ -157,6 +160,9 @@ export function usePotentialWaypointControls(
             existingEdgeId: targetData.dmnObjectQName.prefix + ":" + edgeId, // produces value like: included0:_2081EEE3-7B1B-48B3-B3B9-944F0A013CF1
           });
         } else {
+          /**
+           * This means we are adding a first wayipoint to an edge in a non default DRD
+           */
           addEdge({
             definitions: state.dmn.model.definitions,
             drdIndex: state.computed(state).getDrdIndex(),
