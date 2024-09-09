@@ -16,6 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+.sonataflow-management-console-common--brand {
+  vertical-align: top;
+  height: 28.6px;
+}
+
+.brand-name {
+  color: #fff;
+  padding: 0 var(--pf-global--spacer--sm) 0 var(--pf-global--spacer--sm);
+}
+
 .kogito-management-console__card-size {
   height: 100%;
   position: relative;

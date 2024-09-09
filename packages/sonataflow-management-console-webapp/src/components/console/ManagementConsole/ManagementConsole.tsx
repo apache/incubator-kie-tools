@@ -25,15 +25,13 @@ import {
   KogitoAppContextProvider,
   UserContext,
 } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
-import { PageLayout } from "@kie-tools/runtime-tools-components/dist/components/PageLayout";
 import { WorkflowListContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowList";
 import { WorkflowDefinitionListContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionList";
 import { WorkflowFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowForm";
 import { WorkflowDetailsContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDetails";
 import { CloudEventFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventForm";
-import ManagementConsoleNav from "../ManagementConsoleNav/ManagementConsoleNav";
-import managementConsoleLogo from "../../../static/sonataflowManagementConsoleLogo.svg";
 import { GlobalAlertsContextProvider } from "../../../alerts/GlobalAlertsContext";
+import { BasePage } from "../../pages/BasePage";
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
@@ -42,24 +40,9 @@ interface IOwnProps {
 }
 
 const ManagementConsole: React.FC<IOwnProps> = ({ apolloClient, userContext, children }) => {
-  const renderPage = useCallback(
-    (routeProps) => {
-      return (
-        <PageLayout
-          BrandSrc={managementConsoleLogo}
-          pageNavOpen={true}
-          BrandAltText={"SonataFlow Management Console Logo"}
-          BrandClick={() => routeProps.history.push("/")}
-          withHeader={true}
-          PageNav={<ManagementConsoleNav pathname={routeProps.location.pathname} />}
-          ouiaId="management-console"
-        >
-          {children}
-        </PageLayout>
-      );
-    },
-    [children]
-  );
+  const renderPage = useCallback(() => {
+    return <BasePage>{children}</BasePage>;
+  }, [children]);
 
   return (
     <ApolloProvider client={apolloClient}>
