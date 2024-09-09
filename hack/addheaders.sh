@@ -21,4 +21,4 @@ if ! hash addlicense 2>/dev/null; then
 fi
 
 # shellcheck disable=SC2035
-addlicense -c "Apache Software Foundation (ASF)" -l=apache -ignore=test/samples/*.yaml -ignore=container-builder/examples/**/*.yaml hack api bddframework controllers utils test testbdd container-builder workflowproj
+addlicense -c "Apache Software Foundation (ASF)" -l=apache -ignore=test/samples/*.yaml -ignore=container-builder/examples/**/*.yaml images hack api bddframework controllers utils test testbdd container-builder workflowproj
