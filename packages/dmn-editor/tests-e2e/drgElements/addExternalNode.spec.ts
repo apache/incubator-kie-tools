@@ -26,7 +26,7 @@ test.beforeEach(async ({ stories }) => {
 });
 
 test.describe("Add external node - Decision", () => {
-  test("add to a Decision Service", async ({ editor, page, palette, diagram, nodes, includedModels }) => {
+  test("add to a Decision Service", async ({ editor, palette, diagram, nodes, includedModels }) => {
     await editor.changeTab({ tab: TabName.INCLUDED_MODELS });
 
     await includedModels.getIncludeModelButton().click();

@@ -141,7 +141,7 @@ export const test = base.extend<DmnEditorFixtures>({
   stories: async ({ baseURL, page }, use) => {
     await use(new Stories(page, baseURL));
   },
-  includedModels: async ({ baseURL, page }, use) => {
+  includedModels: async ({ page }, use) => {
     await use(new IncludedModels(page));
   },
 });

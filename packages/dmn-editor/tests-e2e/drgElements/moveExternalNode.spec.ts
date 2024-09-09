@@ -28,7 +28,6 @@ test.beforeEach(async ({ stories }) => {
 test.describe("Move external node - Decision", () => {
   test("move an external node from Decision Service to out", async ({
     editor,
-    page,
     palette,
     diagram,
     nodes,

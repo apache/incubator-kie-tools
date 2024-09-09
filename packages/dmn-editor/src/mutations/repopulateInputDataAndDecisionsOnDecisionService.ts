@@ -88,39 +88,42 @@ export function repopulateInputDataAndDecisionsOnDecisionService({
   for (const hrefString of hrefsToDecisionsInsideDecisionService) {
     const href = parseXmlHref(hrefString);
     const externalModel = externalModelsByNamespace?.[href.namespace ?? ""];
-    if (externalModel) {
-      const externalDecision = (externalModel?.model as Normalized<DmnLatestModel>).definitions.drgElement?.find(
-        (drgElement) => drgElement["@_id"] === href.id
-      ) as Normalized<DMN15__tDecision>;
-
-      if (externalDecision) {
-        (externalDecision.informationRequirement ?? []).flatMap((ir) => {
-          if (ir.requiredDecision) {
-            const externalHref = parseXmlHref(ir.requiredDecision["@_href"]);
-            // If the requiredDecision has namespace, it means that it is pointing to a node in a 3rd model,
-            // not this one (the local model) neither the model in the `href.namespace`.
-            if (externalHref.namespace) {
-              requirements.set(`${ir.requiredDecision["@_href"]}`, "decisionIr");
-            } else {
-              requirements.set(`${href.namespace}${ir.requiredDecision["@_href"]}`, "decisionIr");
-            }
-          } else if (ir.requiredInput) {
-            // If the requiredInput has namespace, it means that it is pointing to a node in a 3rd model,
-            // not this one (the local model) neither the model in the `href.namespace`.
-            const externalHref = parseXmlHref(ir.requiredInput["@_href"]);
-            if (externalHref.namespace) {
-              requirements.set(`${ir.requiredInput["@_href"]}`, "inputDataIr");
-            } else {
-              requirements.set(`${href.namespace}${ir.requiredInput["@_href"]}`, "inputDataIr");
-            }
-          } else {
-            throw new Error(
-              `DMN MUTATION: Invalid information requirement referenced by external DecisionService: '${externalDecision["@_id"]}'`
-            );
-          }
-        });
-      }
+    if (!externalModel) {
+      continue;
     }
+
+    const externalDecision = (externalModel?.model as Normalized<DmnLatestModel>).definitions.drgElement?.find(
+      (drgElement) => drgElement["@_id"] === href.id
+    ) as Normalized<DMN15__tDecision>;
+    if (!externalDecision) {
+      continue;
+    }
+
+    (externalDecision.informationRequirement ?? []).flatMap((ir) => {
+      if (ir.requiredDecision) {
+        const externalHref = parseXmlHref(ir.requiredDecision["@_href"]);
+        // If the requiredDecision has namespace, it means that it is pointing to a node in a 3rd model,
+        // not this one (the local model) neither the model in the `href.namespace`.
+        if (externalHref.namespace) {
+          requirements.set(`${ir.requiredDecision["@_href"]}`, "decisionIr");
+        } else {
+          requirements.set(`${href.namespace}${ir.requiredDecision["@_href"]}`, "decisionIr");
+        }
+      } else if (ir.requiredInput) {
+        // If the requiredInput has namespace, it means that it is pointing to a node in a 3rd model,
+        // not this one (the local model) neither the model in the `href.namespace`.
+        const externalHref = parseXmlHref(ir.requiredInput["@_href"]);
+        if (externalHref.namespace) {
+          requirements.set(`${ir.requiredInput["@_href"]}`, "inputDataIr");
+        } else {
+          requirements.set(`${href.namespace}${ir.requiredInput["@_href"]}`, "inputDataIr");
+        }
+      } else {
+        throw new Error(
+          `DMN MUTATION: Invalid information requirement referenced by external DecisionService: '${externalDecision["@_id"]}'`
+        );
+      }
+    });
   }
 
   // START - Remove outdated requirements

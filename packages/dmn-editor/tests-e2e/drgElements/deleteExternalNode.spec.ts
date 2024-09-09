@@ -26,14 +26,7 @@ test.beforeEach(async ({ stories }) => {
 });
 
 test.describe("Delete external node - Decision", () => {
-  test("delete an external node from Decision Service", async ({
-    editor,
-    page,
-    palette,
-    diagram,
-    nodes,
-    includedModels,
-  }) => {
+  test("delete an external node from Decision Service", async ({ editor, palette, diagram, nodes, includedModels }) => {
     await editor.changeTab({ tab: TabName.INCLUDED_MODELS });
 
     await includedModels.getIncludeModelButton().click();

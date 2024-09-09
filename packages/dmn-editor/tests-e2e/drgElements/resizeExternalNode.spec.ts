@@ -28,7 +28,6 @@ test.beforeEach(async ({ stories }) => {
 test.describe("Resize external node - Decision", () => {
   test("resize an external node inside Decision Service", async ({
     editor,
-    page,
     palette,
     diagram,
     nodes,
