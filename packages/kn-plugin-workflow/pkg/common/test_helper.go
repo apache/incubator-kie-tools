@@ -6,20 +6,22 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 package common
 
 import (
+	"github.com/spf13/afero"
+	"os"
 	"path/filepath"
 	"testing"
 )
@@ -43,5 +45,22 @@ func CreateFileInFolderStructure(t *testing.T, path string, fileName string) {
 	//defer file.Close()
 	if err != nil {
 		t.Error("Unable to create" + fileName + "file in" + path)
+	}
+}
+
+func CopyFileInFolderStructure(t *testing.T, path, src, dist string) {
+	if src == "" || dist == "" {
+		return
+	}
+
+	r, err := os.Open(filepath.Join("testdata", src))
+	if err != nil {
+		t.Errorf("Unable to open %s", filepath.Join("testdata", src))
+
+	}
+	defer r.Close()
+
+	if err := afero.WriteReader(FS, filepath.Join(path, dist), r); err != nil {
+		t.Errorf("Error writing to file: %s", filepath.Join(path, dist))
 	}
 }
