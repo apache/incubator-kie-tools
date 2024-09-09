@@ -98,10 +98,10 @@ importers:
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@kie-tools/root-env':
@@ -350,10 +350,10 @@ importers:
         specifier: workspace:*
         version: link:../../packages/envelope-bus
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@kie-tools/root-env':
@@ -448,10 +448,10 @@ importers:
         specifier: workspace:*
         version: link:../ping-pong-view
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@kie-tools/root-env':
@@ -504,10 +504,10 @@ importers:
         specifier: workspace:*
         version: link:../../packages/envelope-bus
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@kie-tools/root-env':
@@ -923,10 +923,10 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-resizable:
         specifier: ^1.11.0
@@ -1211,10 +1211,10 @@ importers:
         specifier: ^3.0.5
         version: 3.0.5
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -1719,10 +1719,10 @@ importers:
   packages/dashbuilder-component-api:
     dependencies:
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -1896,10 +1896,10 @@ importers:
         specifier: workspace:*
         version: link:../dashbuilder-component-echarts-base
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -1966,10 +1966,10 @@ importers:
         specifier: ^5.3.2
         version: 5.3.2
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -2018,10 +2018,10 @@ importers:
         specifier: ^4.0.2
         version: 4.0.2
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-simple-maps:
         specifier: ^3.0.0
@@ -2103,10 +2103,10 @@ importers:
         specifier: ^2.0.5
         version: 2.0.5
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -2182,10 +2182,10 @@ importers:
         specifier: ^4.112.39
         version: 4.112.39(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -2255,10 +2255,10 @@ importers:
         specifier: workspace:*
         version: link:../dashbuilder-component-echarts-base
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -2343,10 +2343,10 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       uniforms:
         specifier: ^3.10.2
@@ -2431,10 +2431,10 @@ importers:
         specifier: ^2.0.6
         version: 2.0.6
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       victory-zoom-container:
         specifier: ^35.11.4
@@ -2546,10 +2546,10 @@ importers:
         specifier: ^4.0.4
         version: 4.0.4(monaco-editor@0.39.0)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       vscode-languageserver-types:
         specifier: ^3.16.0
@@ -2734,10 +2734,10 @@ importers:
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -3004,10 +3004,10 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-router:
         specifier: ^5.3.4
@@ -3292,10 +3292,10 @@ importers:
         specifier: ^2.29.4
         version: 2.29.4
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-error-boundary:
         specifier: ^4.0.11
@@ -3473,10 +3473,10 @@ importers:
         specifier: ^4.276.6
         version: 4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -3901,10 +3901,10 @@ importers:
         specifier: ^2.29.4
         version: 2.29.4
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       uniforms:
         specifier: ^3.10.2
@@ -4093,10 +4093,10 @@ importers:
         specifier: ^3.0.5
         version: 3.0.5
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -4178,10 +4178,10 @@ importers:
         specifier: ^3.0.11
         version: 3.0.11
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -4218,10 +4218,10 @@ importers:
   packages/envelope-bus:
     dependencies:
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -4453,10 +4453,10 @@ importers:
         specifier: ^0.39.0
         version: 0.39.0
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -4571,10 +4571,10 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       uniforms:
         specifier: ^3.10.2
@@ -4683,10 +4683,10 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       uniforms:
         specifier: ^3.10.2
@@ -4874,10 +4874,10 @@ importers:
   packages/i18n:
     dependencies:
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -5064,10 +5064,10 @@ importers:
         specifier: ^4.112.39
         version: 4.112.39(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -5323,7 +5323,7 @@ importers:
         specifier: workspace:*
         version: link:../operating-system
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
     devDependencies:
       '@babel/core':
@@ -5423,10 +5423,10 @@ importers:
         specifier: ^4.276.6
         version: 4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -6615,13 +6615,13 @@ importers:
         specifier: ^0.39.0
         version: 0.39.0
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-cool-onclickoutside:
         specifier: ^1.6.1
         version: 1.6.2(react@17.0.2)
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-monaco-editor:
         specifier: ^0.49.0
@@ -6924,7 +6924,7 @@ importers:
   packages/react-hooks:
     dependencies:
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
     devDependencies:
       '@babel/core':
@@ -7011,13 +7011,13 @@ importers:
         specifier: ^0.39.0
         version: 0.39.0
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-datetime-picker:
         specifier: ^3.5.0
         version: 3.5.0(@types/react-dom@17.0.8)(@types/react@17.0.21)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-moment:
         specifier: 0.9.7
@@ -7675,13 +7675,13 @@ importers:
         specifier: ^0.39.0
         version: 0.39.0
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-datetime-picker:
         specifier: ^3.5.0
         version: 3.5.0(@types/react-dom@17.0.8)(@types/react@17.0.21)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-helmet:
         specifier: ^6.1.0
@@ -7890,7 +7890,7 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
     devDependencies:
       '@babel/core':
@@ -7993,10 +7993,10 @@ importers:
         specifier: ^0.39.0
         version: 0.39.0
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-helmet:
         specifier: ^6.1.0
@@ -8111,7 +8111,7 @@ importers:
         specifier: ^4.9.0
         version: 4.10.1
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-router:
         specifier: ^5.3.4
@@ -8229,13 +8229,13 @@ importers:
         specifier: ^0.39.0
         version: 0.39.0
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-datetime-picker:
         specifier: ^3.5.0
         version: 3.5.0(@types/react-dom@17.0.8)(@types/react@17.0.21)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-helmet:
         specifier: ^6.1.0
@@ -8483,7 +8483,7 @@ importers:
         specifier: ^4.9.0
         version: 4.10.1
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-router:
         specifier: ^5.3.4
@@ -9464,10 +9464,10 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       vscode-languageserver-types:
         specifier: ^3.16.0
@@ -10320,10 +10320,10 @@ importers:
         specifier: ^4.0.4
         version: 4.0.4(monaco-editor@0.39.0)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       vscode-languageserver-types:
         specifier: ^3.16.0
@@ -11442,10 +11442,10 @@ importers:
         specifier: ^4.0.4
         version: 4.0.4(monaco-editor@0.39.0)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
     devDependencies:
       '@babel/core':
@@ -11490,10 +11490,10 @@ importers:
         specifier: ^2.8.8
         version: 2.8.8
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       underscore:
         specifier: ^1.13.1
@@ -11614,10 +11614,10 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       uniforms:
         specifier: ^3.10.2
@@ -11720,10 +11720,10 @@ importers:
         specifier: ^2.8.8
         version: 2.8.8
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       uniforms:
         specifier: ^3.10.2
@@ -11883,10 +11883,10 @@ importers:
         specifier: ^2.29.4
         version: 2.29.4
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-id-generator:
         specifier: ^3.0.1
@@ -11974,10 +11974,10 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-id-generator:
         specifier: ^3.0.1
@@ -12505,7 +12505,7 @@ importers:
         specifier: ^3.0.5
         version: 3.0.5
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-router:
         specifier: ^5.3.4
@@ -12808,10 +12808,10 @@ importers:
         specifier: ^4.0.4
         version: 4.0.4(monaco-editor@0.39.0)
       react:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
       react-dom:
-        specifier: ^17.0.2
+        specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
       react-zoom-pan-pinch:
         specifier: ^3.1.0

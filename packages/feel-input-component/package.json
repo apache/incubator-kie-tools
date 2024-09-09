@@ -23,9 +23,7 @@
     "@kie-tools/dmn-feel-antlr4-parser": "workspace:*",
     "@kie-tools/dmn-language-service": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
-    "monaco-editor": "^0.39.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "monaco-editor": "^0.39.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -53,5 +51,9 @@
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.9.0"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0",
+    "react-dom": ">=17.0.2 <19.0.0"
   }
 }
