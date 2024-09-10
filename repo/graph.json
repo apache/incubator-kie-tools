@@ -2348,6 +2348,11 @@
       },
       {
         "source": "@kie-tools/sonataflow-management-console-image",
+        "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-management-console-image",
         "target": "@kie-tools/sonataflow-management-console-image-env",
         "weight": 1
       },

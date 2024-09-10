@@ -568,6 +568,7 @@ digraph G {
   "@kie-tools/sonataflow-image-common" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-management-console-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-management-console-image" -> "@kie-tools/image-env-to-json" [ style = "dashed", color = "black" ];
+  "@kie-tools/sonataflow-management-console-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-management-console-image" -> "@kie-tools/sonataflow-management-console-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-management-console-image" -> "@kie-tools/sonataflow-management-console-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-management-console-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
