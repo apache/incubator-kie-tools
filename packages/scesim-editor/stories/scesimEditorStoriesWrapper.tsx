@@ -18,22 +18,30 @@
  */
 
 import * as React from "react";
-import { useEffect, useRef } from "react";
-import { TestScenarioEditor, TestScenarioEditorRef } from "../src/TestScenarioEditor";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useArgs } from "@storybook/preview-api";
 
-export interface SceSimEditorWrapperProps {
-  pathRelativeToTheWorkspaceRoot: string;
-  content: string;
-}
+import { TestScenarioEditor, TestScenarioEditorProps, TestScenarioEditorRef } from "../src/TestScenarioEditor";
+import { SceSimModel } from "@kie-tools/scesim-marshaller";
 
-export function SceSimEditorWrapper(props: SceSimEditorWrapperProps) {
+export type StorybookSceSimEditorProps = TestScenarioEditorProps & { xml: string };
+
+export function SceSimEditorWrapper(props: Partial<StorybookSceSimEditorProps>) {
+  const [args, updateArgs] = useArgs<StorybookSceSimEditorProps>();
+  const argsCopy = useRef(args);
   const ref = useRef<TestScenarioEditorRef>(null);
+  const [modelArgs, setModelArgs] = useState<SceSimModel>(args.model);
+  const model = useMemo(() => props?.model ?? modelArgs, [modelArgs, props?.model]);
+  const [modelChanged, setModelChange] = useState<boolean>(false);
+  const [isReadOnly, setIsReadOnly] = useState(props?.isReadOnly ?? args.isReadOnly ?? false);
+
+  /*
 
   useEffect(() => {
-    /* Simulating a call from "Foundation" code */
-    ref.current?.setContent(props.pathRelativeToTheWorkspaceRoot, props.content);
-  }, [ref, props.content, props.pathRelativeToTheWorkspaceRoot]);
 
+    ref.current?.setContent(props.pathRelativeToTheWorkspaceRoot, props.content);
+  }, [ref, props.content, props.pathRelativeToTheWorkspaceRoot]); 
+*/
   return (
     <div>
       <TestScenarioEditor ref={ref} />

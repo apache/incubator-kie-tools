@@ -89,6 +89,78 @@ export enum TestScenarioType {
 
 /* Types */
 
+export type TestScenarioEditorProps = {
+  /**
+   * The Test Scenario itself.
+   */
+  model: SceSimModel;
+  /**
+   * The original version of `model` before upgrading to `latest`.
+   */
+  //originalVersion?: AllDmnMarshallers["version"];
+  /**
+   * Called when a change occurs on `model`, so the controlled flow of the component can be done.
+   */
+  //onModelChange?: OnDmnModelChange;
+  /**
+   * Called when the contents of a specific available model is necessary. Used by the "Included models" tab.
+   */
+  //onRequestExternalModelByPath?: OnRequestExternalModelByPath;
+  /**
+   * Called when the list of paths of available models to be included is needed. Used by the "Included models" tab.
+   */
+  //onRequestExternalModelsAvailableToInclude?: OnRequestExternalModelsAvailableToInclude;
+  /**
+   * When the DMN represented by `model` ("This DMN") contains `import`ed models, this prop needs to map their contents by namespace.
+   * The DMN model won't be correctly rendered if an included model is not found on this object.
+   */
+  //externalModelsByNamespace?: ExternalModelsIndex;
+  /**
+   * To show information about execution results directly on the DMN diagram and/or Boxed Expression Editor, use this prop.
+   */
+  //evaluationResults?: EvaluationResults;
+  /**
+   * To show information about validation messages directly on the DMN diagram and/or Boxed Expression Editor, use this prop.
+   */
+  //validationMessages?: ValidationMessages;
+  /**
+   * The name of context in which this instance of DMN Editor is running. For example, if this DMN Editor instance
+   * is displaying a model from a project called "My project", you could use `externalContextName={"My project"}`
+   */
+  //externalContextName?: string;
+  /**
+   * Describe the context in which this instance of DMN Editor is running. For example, if this DMN Editor instance
+   * is displaying a model from a project called "My project", you could use
+   * `externalContextDescription={'All models (DMN and PMML) of "My project" are available.'}`
+   */
+  //externalContextDescription?: string;
+  /**
+   * A link that will take users to an issue tracker so they can report problems they find on the DMN Editor.
+   * This is shown on the ErrorBoundary fallback component, when an uncaught error happens.
+   */
+  //issueTrackerHref?: string;
+  /**
+   * A flag to enable read-only mode on the DMN Editor.
+   * When enabled navigation is still possible (e.g. entering the Boxed Expression Editor, Data Types and Included Models),
+   * but no changes can be made and the model itself is unaltered.
+   */
+  isReadOnly?: boolean;
+  /**
+   * When users want to jump to another file, this method is called, allowing the controller of this component decide what to do.
+   * Links are only rendered if this is provided. Otherwise, paths will be rendered as text.
+   */
+  //onRequestToJumpToPath?: OnRequestToJumpToPath;
+  /**
+   * All paths inside the DMN Editor are relative. To be able to resolve them and display them as absolute paths, this function is called.
+   * If undefined, the relative paths will be displayed.
+   */
+  //onRequestToResolvePath?: OnRequestToResolvePath;
+  /**
+   * Notifies the caller when the DMN Editor performs a new edit after the debounce time.
+   */
+  onModelDebounceStateChanged?: (changed: boolean) => void;
+};
+
 export type TestScenarioAlert = {
   enabled: boolean;
   message?: string;
@@ -229,7 +301,10 @@ function TestScenarioMainPanel({
     }
 
     setDataObjects(dataObjects);
-  }, [scesimModel.ScenarioSimulationModel.settings.type]);
+  }, [
+    scesimModel.ScenarioSimulationModel.settings.type,
+    scesimModel.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping,
+  ]);
 
   /** It determines the Alert State */
   useEffect(() => {

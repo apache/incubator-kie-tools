@@ -19,8 +19,9 @@
 
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
+import { getMarshaller } from "@kie-tools/scesim-marshaller";
 import { TestScenarioEditor } from "../../src/TestScenarioEditor";
-import { SceSimEditorWrapper, SceSimEditorWrapperProps } from "../scesimEditorStoriesWrapper";
+import { SceSimEditorWrapper, StorybookSceSimEditorProps } from "../scesimEditorStoriesWrapper";
 
 export const isOldEnoughDrl = `<ScenarioSimulationModel version="1.8" xmlns="https://kie.org/scesim/1.8">
 <simulation>
@@ -394,12 +395,15 @@ const meta: Meta<{}> = {
 };
 
 export default meta;
-type Story = StoryObj<SceSimEditorWrapperProps>;
+type Story = StoryObj<StorybookSceSimEditorProps>;
+
+const marshaller = getMarshaller(isOldEnoughDrl);
+const model = marshaller.parser.parse();
 
 export const IsOldEnough: Story = {
   render: (args) => SceSimEditorWrapper(args),
   args: {
-    pathRelativeToTheWorkspaceRoot: "isOldEnough.scesim",
-    content: isOldEnoughDrl,
+    model: marshaller.parser.parse(),
+    xml: marshaller.builder.build(model),
   },
 };
