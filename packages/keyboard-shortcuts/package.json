@@ -24,8 +24,7 @@
   },
   "dependencies": {
     "@kie-tools-core/envelope-bus": "workspace:*",
-    "@kie-tools-core/operating-system": "workspace:*",
-    "react": "^17.0.2"
+    "@kie-tools-core/operating-system": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -48,5 +47,8 @@
     "rimraf": "^3.0.2",
     "ts-jest": "^29.1.5",
     "typescript": "^5.5.3"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0"
   }
 }

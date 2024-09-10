@@ -37,8 +37,6 @@
     "@types/lodash": "^4.14.168",
     "@types/react-table": "^7.0.25",
     "lodash": "^4.17.21",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
     "react-id-generator": "^3.0.1",
     "react-table": "^7.6.2",
     "uniforms": "^3.10.2",
@@ -56,5 +54,9 @@
     "copyfiles": "^2.4.1",
     "rimraf": "^3.0.2",
     "typescript": "^5.5.3"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0",
+    "react-dom": ">=17.0.2 <19.0.0"
   }
 }

@@ -48,9 +48,7 @@
     "json-schema": "^0.4.0",
     "lodash": "^4.17.21",
     "monaco-editor": "^0.39.0",
-    "react": "^17.0.2",
     "react-datetime-picker": "^3.5.0",
-    "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
     "react-inlinesvg": "^2.3.0",
     "react-json-view": "^1.21.3",
@@ -79,5 +77,9 @@
     "@types/uuid": "^8.3.0",
     "rimraf": "^3.0.2",
     "typescript": "^5.5.3"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0",
+    "react-dom": ">=17.0.2 <19.0.0"
   }
 }

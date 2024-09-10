@@ -31,9 +31,7 @@
     "@kie-tools-core/workspace": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
     "monaco-editor": "^0.39.0",
-    "monaco-yaml": "^4.0.4",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "monaco-yaml": "^4.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -46,5 +44,9 @@
     "rimraf": "^3.0.2",
     "start-server-and-test": "^2.0.3",
     "typescript": "^5.5.3"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0",
+    "react-dom": ">=17.0.2 <19.0.0"
   }
 }
