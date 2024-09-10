@@ -21,9 +21,6 @@
     "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.json",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\""
   },
-  "dependencies": {
-    "react": "^17.0.2"
-  },
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
@@ -34,5 +31,8 @@
     "@types/react": "^17.0.6",
     "rimraf": "^3.0.2",
     "typescript": "^5.5.3"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0"
   }
 }

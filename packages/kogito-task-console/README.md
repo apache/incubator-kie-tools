@@ -73,17 +73,17 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    |                            Name                             |                          Description                          |                                         Default                                         |
    | :---------------------------------------------------------: | :-----------------------------------------------------------: | :-------------------------------------------------------------------------------------: |
    |        `RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_ENV_MODE`         | Env Mode: "PROD" or "DEV". PROD enables Keycloak integration. |                                         "PROD"                                          |
-   |        `RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_APP_NAME`         |                    Task Console app name.                     | See [ defaultEnvJson.ts ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
-   |       `RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_APP_VERSION`       |                   Task Console app version.                   | See [ defaultEnvJson.ts ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
-   |    `RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_TASK_STATES_LIST`     |                   Pre-selected task states.                   | See [ defaultEnvJson.ts ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
-   | `RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_TASK_ACTIVE_STATES_LIST` |               Pre-selected task active states.                | See [ defaultEnvJson.ts ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
-   |      `RUNTIME_TOOLS_TASK_CONSOLE_DATA_INDEX_ENDPOINT`       |        The URL that points to the Data Index service.         | See [ defaultEnvJson.ts ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
-   |       `KOGITO_CONSOLES_KEYCLOAK_DISABLE_HEALTH_CHECK`       |                Disables Keycloak health-check.                | See [ defaultEnvJson.ts ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
-   |      `KOGITO_CONSOLES_KEYCLOAK_UPDATE_TOKEN_VALIDITY`       |               Update token validity in minutes.               | See [ defaultEnvJson.ts ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
-   |         `KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL`         |                  Keycloak health-check URL.                   | See [ defaultEnvJson.ts ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
-   |              `KOGITO_CONSOLES_KEYCLOAK_REALM`               |                     Keycloak realm name.                      | See [ defaultEnvJson.ts ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
-   |               `KOGITO_CONSOLES_KEYCLOAK_URL`                |                      Keycloak auth URL.                       | See [ defaultEnvJson.ts ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
-   |            `KOGITO_CONSOLES_KEYCLOAK_CLIENT_ID`             |                      Keycloak Client ID.                      | See [ defaultEnvJson.ts ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
+   |        `RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_APP_NAME`         |                    Task Console app name.                     | See [ defaultEnvJson.js ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
+   |       `RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_APP_VERSION`       |                   Task Console app version.                   | See [ defaultEnvJson.js ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
+   |    `RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_TASK_STATES_LIST`     |                   Pre-selected task states.                   | See [ defaultEnvJson.js ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
+   | `RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_TASK_ACTIVE_STATES_LIST` |               Pre-selected task active states.                | See [ defaultEnvJson.js ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
+   |      `RUNTIME_TOOLS_TASK_CONSOLE_DATA_INDEX_ENDPOINT`       |        The URL that points to the Data Index service.         | See [ defaultEnvJson.js ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
+   |       `KOGITO_CONSOLES_KEYCLOAK_DISABLE_HEALTH_CHECK`       |                Disables Keycloak health-check.                | See [ defaultEnvJson.js ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
+   |      `KOGITO_CONSOLES_KEYCLOAK_UPDATE_TOKEN_VALIDITY`       |               Update token validity in minutes.               | See [ defaultEnvJson.js ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
+   |         `KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL`         |                  Keycloak health-check URL.                   | See [ defaultEnvJson.js ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
+   |              `KOGITO_CONSOLES_KEYCLOAK_REALM`               |                     Keycloak realm name.                      | See [ defaultEnvJson.js ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
+   |               `KOGITO_CONSOLES_KEYCLOAK_URL`                |                      Keycloak auth URL.                       | See [ defaultEnvJson.js ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
+   |            `KOGITO_CONSOLES_KEYCLOAK_CLIENT_ID`             |                      Keycloak Client ID.                      | See [ defaultEnvJson.js ](../runtime-tools-task-console-webapp/build/defaultEnvJson.js) |
 
    ### Examples
 

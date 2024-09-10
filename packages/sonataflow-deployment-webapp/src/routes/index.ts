@@ -30,6 +30,7 @@ export enum QueryParams {
 
 export enum PathParams {
   WORKFLOW_ID = "workflowId",
+  WORKFLOW_NAME = "workflowName",
 }
 
 export class Route<
@@ -105,8 +106,8 @@ export const routes = {
       queryParams: QueryParams.FILTERS | QueryParams.SORT_BY;
       pathParams: PathParams.WORKFLOW_ID;
     }>(({ workflowId }) => RUNTIME_TOOLS_ROUTE + `/workflow-details/${workflowId}`),
+    workflowDefinitions: new Route<{}>(() => RUNTIME_TOOLS_ROUTE + `/workflow-definitions`),
   },
-
   dataJson: new Route<{}>(() => "/" + APPDATA_JSON_FILENAME),
   openApiJson: new Route<{}>(() => "/q/openapi.json"),
 };

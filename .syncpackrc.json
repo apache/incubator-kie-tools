@@ -7,6 +7,16 @@
         "@kie-tools/uniforms-patternfly-codegen",
         "@kie-tools/yaml-language-server"
       ]
+    },
+    {
+      "dependencies": ["react", "react-dom"],
+      "policy": "sameRange"
+    },
+    {
+      "label": "Use workspace protocol when developing local packages",
+      "dependencies": ["$LOCAL"],
+      "dependencyTypes": ["prod", "dev"],
+      "pinVersion": "workspace:*"
     }
   ]
 }

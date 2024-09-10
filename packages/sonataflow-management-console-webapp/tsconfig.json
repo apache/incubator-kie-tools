@@ -1,0 +1,22 @@
+{
+  "extends": "@kie-tools/tsconfig/tsconfig.esm.json",
+  "compilerOptions": {
+    "declaration": false,
+    "declarationMap": false,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "noImplicitAny": false,
+    "noImplicitThis": true,
+    "strictNullChecks": false
+  },
+  "include": ["src"],
+  "preserveSymlinks": true,
+
+  "ts-node": {
+    "esm": true,
+    "compilerOptions": {
+      "esModuleInterop": true,
+      "module": "CommonJS"
+    }
+  }
+}

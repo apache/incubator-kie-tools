@@ -41,9 +41,7 @@
     "keycloak-js": "^23.0.5",
     "lodash": "^4.17.21",
     "monaco-editor": "^0.39.0",
-    "react": "^17.0.2",
     "react-datetime-picker": "^3.5.0",
-    "react-dom": "^17.0.2",
     "react-moment": "0.9.7",
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
@@ -65,5 +63,9 @@
     "@types/uuid": "^8.3.0",
     "rimraf": "^3.0.2",
     "typescript": "^5.5.3"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0",
+    "react-dom": ">=17.0.2 <19.0.0"
   }
 }

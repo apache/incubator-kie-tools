@@ -458,7 +458,7 @@ export const en: OnlineI18n = {
           message: `It looks like the ${en_common.names.extendedServices} has suddenly stopped, please follow these instructions to start it again.`,
         },
         disabled: {
-          title: `${en_common.names.dmnRunner}`,
+          title: `${en_common.names.extendedServices}`,
           alert: `You are not connected to ${en_common.names.extendedServices}.`,
           message: `Note that some features, such as the ${en_common.names.dmnRunner}, are unavailable without ${en_common.names.extendedServices}.`,
           helper: `Ensure ${en_common.names.extendedServices} is running, then review the host and port settings.`,
