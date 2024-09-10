@@ -21,7 +21,7 @@ import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { getMarshaller } from "@kie-tools/scesim-marshaller";
 import { TestScenarioEditor } from "../../src/TestScenarioEditor";
-import { SceSimEditorWrapper, StorybookSceSimEditorProps } from "../scesimEditorStoriesWrapper";
+import { SceSimEditorWrapper, StorybookTestScenarioEditorProps } from "../scesimEditorStoriesWrapper";
 
 export const isOldEnoughDrl = `<ScenarioSimulationModel version="1.8" xmlns="https://kie.org/scesim/1.8">
 <simulation>
@@ -395,7 +395,7 @@ const meta: Meta<{}> = {
 };
 
 export default meta;
-type Story = StoryObj<StorybookSceSimEditorProps>;
+type Story = StoryObj<StorybookTestScenarioEditorProps>;
 
 const marshaller = getMarshaller(isOldEnoughDrl);
 const model = marshaller.parser.parse();

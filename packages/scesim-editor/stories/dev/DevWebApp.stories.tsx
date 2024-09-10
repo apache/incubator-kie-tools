@@ -21,7 +21,7 @@ import React, { useCallback, useRef, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Button, Flex, FlexItem, Page, PageSection, Stack, StackItem } from "@patternfly/react-core/dist/js";
 import { SceSimMarshaller, SceSimModel, getMarshaller } from "@kie-tools/scesim-marshaller";
-import { TestScenarioEditorProps } from "../../src/TestScenarioEditor";
+import { OnSceSimModelChange, TestScenarioEditorProps } from "../../src/TestScenarioEditor";
 import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
 import { emptySceSim } from "../misc/empty/Empty.stories";
 import { isOldEnoughDrl } from "../useCases/IsOldEnoughRule.stories";
@@ -81,20 +81,7 @@ function DevWebApp(props: TestScenarioEditorProps) {
     }
   }, []);
 
-  /*
-  const onModelChange = useCallback<OnDmnModelChange>((model) => {
-    setState((prev) => {
-      const newStack = prev.stack.slice(0, prev.pointer + 1);
-      return {
-        ...prev,
-        stack: [...newStack, model],
-        pointer: newStack.length,
-      };
-    });
-  }, []); */
-
-  const onSelectModel = useCallback((newModel) => {
-    const model = getMarshaller(newModel).parser.parse();
+  const onModelChange = useCallback<OnSceSimModelChange>((model) => {
     setState((prev) => {
       const newStack = prev.stack.slice(0, prev.pointer + 1);
       return {
@@ -104,6 +91,13 @@ function DevWebApp(props: TestScenarioEditorProps) {
       };
     });
   }, []);
+
+  const onSelectModel = useCallback(
+    (newModel) => {
+      onModelChange(getMarshaller(newModel).parser.parse());
+    },
+    [onModelChange]
+  );
 
   const redo = useCallback(() => {
     setState((prev) => ({ ...prev, pointer: Math.min(prev.stack.length - 1, prev.pointer + 1) }));
@@ -123,7 +117,6 @@ function DevWebApp(props: TestScenarioEditorProps) {
   }, []);
 
   /*
-
   const externalModelsByNamespace = useMemo<ExternalModelsIndex>(() => {
     return (currentModel.definitions.import ?? []).reduce((acc, i) => {
       acc[i["@_namespace"]] = modelsByNamespace[i["@_namespace"]];
@@ -133,92 +126,80 @@ function DevWebApp(props: TestScenarioEditorProps) {
 
   const onRequestExternalModelByPath = useCallback<OnRequestExternalModelByPath>(async (path) => {
     return availableModelsByPath[path] ?? null;
-  }, []);
-
-  const onRequestExternalModelsAvailableToInclude = useCallback<OnRequestExternalModelsAvailableToInclude>(async () => {
-    return Object.keys(availableModelsByPath);
-  }, []); */
+  }, []);*/
 
   return (
-    <>
-      <div>
-        <Page onDragOver={onDragOver} onDrop={onDrop}>
-          <PageSection
-            aria-label={"dev-app-header"}
-            variant={"light"}
-            isFilled={false}
-            padding={{ default: "padding" }}
-          >
-            <Stack hasGutter>
-              <StackItem>
-                <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-                  <FlexItem shrink={{ default: "shrink" }}>
-                    <h3>Test Scenario Editor :: Dev WebApp</h3>
-                  </FlexItem>
-                  <FlexItem>
-                    <h5>(Drag & drop a file anywhere to open it)</h5>
-                  </FlexItem>
-                </Flex>
-              </StackItem>
-              <StackItem>
-                <Flex>
-                  <FlexItem shrink={{ default: "shrink" }}>
-                    <Button onClick={() => onSelectModel(emptySceSim)}>Empty</Button>
-                    &nbsp; &nbsp;
-                    <Button onClick={() => onSelectModel(isOldEnoughDrl)}>Are They Old Enough?</Button>
-                    &nbsp; &nbsp;
-                    <Button onClick={() => onSelectModel(trafficViolationDmn)}>Traffic Violation</Button>
-                    &nbsp; &nbsp; | &nbsp; &nbsp;
-                    <Button
-                      onClick={undo}
-                      disabled={!isUndoEnabled}
-                      style={{ opacity: isUndoEnabled ? 1 : 0.5 }}
-                      variant="secondary"
-                    >
-                      {`Undo (${state.pointer})`}
-                    </Button>
-                    &nbsp; &nbsp;
-                    <Button
-                      onClick={redo}
-                      disabled={!isRedoEnabled}
-                      style={{ opacity: isRedoEnabled ? 1 : 0.5 }}
-                      variant="secondary"
-                    >
-                      {`Redo (${state.stack.length - 1 - state.pointer})`}
-                    </Button>
-                    &nbsp; &nbsp; | &nbsp; &nbsp;
-                    <Button onClick={reset} variant="tertiary">
-                      Reset
-                    </Button>
-                    &nbsp; &nbsp;
-                    <Button onClick={copyAsXml} variant="tertiary">
-                      Copy as XML
-                    </Button>
-                    &nbsp; &nbsp;
-                    <Button onClick={downloadAsXml} variant="tertiary">
-                      Download as XML
-                    </Button>
-                  </FlexItem>
-                </Flex>
-              </StackItem>
-            </Stack>
-            <a ref={downloadRef} />
-          </PageSection>
-          <hr />
-          <PageSection
-            aria-label={"dev-app-body"}
-            className={"section-body"}
-            isFilled={true}
-            hasOverflowScroll={true}
-            variant={"light"}
-          >
-            {SceSimEditorWrapper({
-              model: currentModel,
-            })}
-          </PageSection>
-        </Page>
-      </div>
-    </>
+    <Page onDragOver={onDragOver} onDrop={onDrop}>
+      <PageSection aria-label={"dev-app-header"} variant={"light"} isFilled={false}>
+        <Stack hasGutter>
+          <StackItem>
+            <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+              <FlexItem shrink={{ default: "shrink" }}>
+                <h3>Test Scenario Editor :: Dev WebApp</h3>
+              </FlexItem>
+              <FlexItem>
+                <h5>(Drag & drop a file anywhere to open it)</h5>
+              </FlexItem>
+            </Flex>
+          </StackItem>
+          <StackItem>
+            <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+              <FlexItem shrink={{ default: "shrink" }}>
+                <Button onClick={() => onSelectModel(emptySceSim)}>Empty</Button>
+                &nbsp; &nbsp;
+                <Button onClick={() => onSelectModel(isOldEnoughDrl)}>Are They Old Enough?</Button>
+                &nbsp; &nbsp;
+                <Button onClick={() => onSelectModel(trafficViolationDmn)}>Traffic Violation</Button>
+                &nbsp; &nbsp; | &nbsp; &nbsp;
+                <Button
+                  onClick={undo}
+                  disabled={!isUndoEnabled}
+                  style={{ opacity: isUndoEnabled ? 1 : 0.5 }}
+                  variant="secondary"
+                >
+                  {`Undo (${state.pointer})`}
+                </Button>
+                &nbsp; &nbsp;
+                <Button
+                  onClick={redo}
+                  disabled={!isRedoEnabled}
+                  style={{ opacity: isRedoEnabled ? 1 : 0.5 }}
+                  variant="secondary"
+                >
+                  {`Redo (${state.stack.length - 1 - state.pointer})`}
+                </Button>
+                &nbsp; &nbsp; | &nbsp; &nbsp;
+                <Button onClick={reset} variant="tertiary">
+                  Reset
+                </Button>
+                &nbsp; &nbsp;
+                <Button onClick={copyAsXml} variant="tertiary">
+                  Copy as XML
+                </Button>
+                &nbsp; &nbsp;
+                <Button onClick={downloadAsXml} variant="tertiary">
+                  Download as XML
+                </Button>
+              </FlexItem>
+            </Flex>
+          </StackItem>
+        </Stack>
+        <a ref={downloadRef} />
+      </PageSection>
+      <hr />
+      <PageSection
+        aria-label={"dev-app-body"}
+        className={"section-body"}
+        isFilled={true}
+        hasOverflowScroll={true}
+        variant={"light"}
+      >
+        {SceSimEditorWrapper({
+          model: currentModel,
+          onModelChange: onModelChange,
+        })}
+      </PageSection>
+    </Page>
   );
 }
 
@@ -245,6 +226,7 @@ type Story = StoryObj<typeof DevWebApp>;
 export const WebApp: Story = {
   render: (args) => DevWebApp(args),
   args: {
+    isReadOnly: false,
     model: getMarshaller(emptySceSim).parser.parse(),
   },
 };

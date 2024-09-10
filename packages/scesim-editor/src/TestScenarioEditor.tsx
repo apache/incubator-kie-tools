@@ -89,6 +89,8 @@ export enum TestScenarioType {
 
 /* Types */
 
+export type OnSceSimModelChange = (model: SceSimModel) => void;
+
 export type TestScenarioEditorProps = {
   /**
    * The Test Scenario itself.
@@ -101,7 +103,7 @@ export type TestScenarioEditorProps = {
   /**
    * Called when a change occurs on `model`, so the controlled flow of the component can be done.
    */
-  //onModelChange?: OnDmnModelChange;
+  onModelChange?: OnSceSimModelChange;
   /**
    * Called when the contents of a specific available model is necessary. Used by the "Included models" tab.
    */
@@ -158,7 +160,7 @@ export type TestScenarioEditorProps = {
   /**
    * Notifies the caller when the DMN Editor performs a new edit after the debounce time.
    */
-  onModelDebounceStateChanged?: (changed: boolean) => void;
+  //onModelDebounceStateChanged?: (changed: boolean) => void;
 };
 
 export type TestScenarioAlert = {
@@ -614,29 +616,31 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
   );
 };
 
-export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<TestScenarioEditorRef>) => {
-  const [scesimFileParsingError, setScesimFileParsingError] = useState<Error | null>(null);
+export const TestScenarioEditor = React.forwardRef(
+  (props: TestScenarioEditorProps, ref: React.Ref<TestScenarioEditorRef>) => {
+    const [scesimFileParsingError, setScesimFileParsingError] = useState<Error | null>(null);
 
-  return (
-    <I18nDictionariesProvider
-      defaults={testScenarioEditorI18nDefaults}
-      dictionaries={testScenarioEditorDictionaries}
-      initialLocale={navigator.language}
-      ctx={TestScenarioEditorI18nContext}
-    >
-      <ErrorBoundary
-        error={
-          <TestScenarioParserErrorPanel
-            parserErrorTitle={"File parsing error"}
-            parserErrorMessage={
-              "Impossibile to correctly parse the provided scesim file. Cause: " + scesimFileParsingError?.message
-            }
-          />
-        }
-        setError={setScesimFileParsingError}
+    return (
+      <I18nDictionariesProvider
+        defaults={testScenarioEditorI18nDefaults}
+        dictionaries={testScenarioEditorDictionaries}
+        initialLocale={navigator.language}
+        ctx={TestScenarioEditorI18nContext}
       >
-        <TestScenarioEditorInternal forwardRef={ref} {...props} />
-      </ErrorBoundary>
-    </I18nDictionariesProvider>
-  );
-});
+        <ErrorBoundary
+          error={
+            <TestScenarioParserErrorPanel
+              parserErrorTitle={"File parsing error"}
+              parserErrorMessage={
+                "Impossibile to correctly parse the provided scesim file. Cause: " + scesimFileParsingError?.message
+              }
+            />
+          }
+          setError={setScesimFileParsingError}
+        >
+          <TestScenarioEditorInternal forwardRef={ref} {...props} />
+        </ErrorBoundary>
+      </I18nDictionariesProvider>
+    );
+  }
+);

@@ -57,6 +57,7 @@
     "@types/uuid": "^8.3.0",
     "copy-webpack-plugin": "^11.0.0",
     "cross-env": "^7.0.3",
+    "deep-object-diff": "^1.1.9",
     "file-loader": "^6.2.0",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",

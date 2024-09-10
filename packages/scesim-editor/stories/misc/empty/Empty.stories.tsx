@@ -20,7 +20,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { getMarshaller } from "@kie-tools/scesim-marshaller";
 import { TestScenarioEditor } from "../../../src/TestScenarioEditor";
-import { SceSimEditorWrapper, StorybookSceSimEditorProps } from "../../scesimEditorStoriesWrapper";
+import { SceSimEditorWrapper, StorybookTestScenarioEditorProps } from "../../scesimEditorStoriesWrapper";
 
 export const emptySceSim = `<?xml version="1.0" encoding="UTF-8"?>
 <ScenarioSimulationModel version="1.8">
@@ -181,7 +181,7 @@ const meta: Meta<{}> = {
 };
 
 export default meta;
-type Story = StoryObj<StorybookSceSimEditorProps>;
+type Story = StoryObj<StorybookTestScenarioEditorProps>;
 
 const marshaller = getMarshaller(emptySceSim);
 const model = marshaller.parser.parse();

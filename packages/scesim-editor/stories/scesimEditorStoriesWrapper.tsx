@@ -20,14 +20,15 @@
 import * as React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useArgs } from "@storybook/preview-api";
-
+import { diff } from "deep-object-diff";
+import { SceSimModel, getMarshaller } from "@kie-tools/scesim-marshaller";
 import { TestScenarioEditor, TestScenarioEditorProps, TestScenarioEditorRef } from "../src/TestScenarioEditor";
-import { SceSimModel } from "@kie-tools/scesim-marshaller";
+import { EMPTY_ONE_EIGHT } from "../src/resources/EmptyScesimFile";
 
-export type StorybookSceSimEditorProps = TestScenarioEditorProps & { xml: string };
+export type StorybookTestScenarioEditorProps = TestScenarioEditorProps & { xml: string };
 
-export function SceSimEditorWrapper(props: Partial<StorybookSceSimEditorProps>) {
-  const [args, updateArgs] = useArgs<StorybookSceSimEditorProps>();
+export function SceSimEditorWrapper(props: Partial<StorybookTestScenarioEditorProps>) {
+  const [args, updateArgs] = useArgs<StorybookTestScenarioEditorProps>();
   const argsCopy = useRef(args);
   const ref = useRef<TestScenarioEditorRef>(null);
   const [modelArgs, setModelArgs] = useState<SceSimModel>(args.model);
@@ -35,16 +36,46 @@ export function SceSimEditorWrapper(props: Partial<StorybookSceSimEditorProps>) 
   const [modelChanged, setModelChange] = useState<boolean>(false);
   const [isReadOnly, setIsReadOnly] = useState(props?.isReadOnly ?? args.isReadOnly ?? false);
 
-  /*
+  const onModelChange = useMemo(
+    () => (props?.onModelChange ? props.onModelChange : setModelArgs),
+    [props?.onModelChange]
+  );
 
   useEffect(() => {
+    if (args.isReadOnly !== undefined) {
+      setIsReadOnly(args.isReadOnly);
+    }
+  }, [args.isReadOnly]);
 
-    ref.current?.setContent(props.pathRelativeToTheWorkspaceRoot, props.content);
-  }, [ref, props.content, props.pathRelativeToTheWorkspaceRoot]); 
-*/
+  useEffect(() => {
+    if (Object.keys(diff(argsCopy.current.model, model)).length !== 0) {
+      updateArgs({
+        ...argsCopy.current,
+        model: model,
+        xml: getMarshaller(EMPTY_ONE_EIGHT).builder.build(model),
+      });
+    }
+  }, [updateArgs, model]);
+
+  useEffect(() => {
+    if (Object.keys(diff(argsCopy.current, args)).length === 0) {
+      return;
+    }
+    argsCopy.current = args;
+    if (Object.keys(diff(args.model, model)).length === 0) {
+      return;
+    }
+    onModelChange(args.model);
+  }, [args, model, onModelChange]);
+
+  /*
+  const onModelDebounceStateChanged = useCallback((changed: boolean) => {
+    setModelChange(changed);
+  }, []); */
+
   return (
-    <div>
-      <TestScenarioEditor ref={ref} />
+    <div style={{ position: "absolute", width: "100%", height: "100%", top: "0px", left: "0px" }}>
+      <TestScenarioEditor ref={ref} isReadOnly={isReadOnly} model={model} onModelChange={onModelChange} />
     </div>
   );
 }
