@@ -105,6 +105,7 @@ runs:
         curl -LO https://github.com/abiosoft/colima/releases/download/${COLIMA_VERSION}/colima-$(uname)-$(uname -m)
         install colima-$(uname)-$(uname -m) /usr/local/bin/colima
 
+        brew update --preinstall
         brew install docker docker-compose docker-Buildx qemu 2>&1 | tee install.log
         mkdir -p ~/.docker/cli-plugins
         ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" ~/.docker/cli-plugins/docker-compose
@@ -114,7 +115,11 @@ runs:
             echo "Detected broken QEMU bottle installed by brew, removing and reinstalling."
             brew reinstall qemu
         fi
-        colima start --memory 4 --network-address --verbose
+
+        CPU_COUNT=$(sysctl -n hw.ncpu)
+        MEMORY=$(sysctl hw.memsize | awk '{print $2/1024/1024/1024}')
+        COLIMA_ARGS="--cpu $CPU_COUNT --memory $MEMORY"
+        colima start $COLIMA_ARGS --network-address --verbose
 
         EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
         echo "version<<$EOF" >> "$GITHUB_OUTPUT"
