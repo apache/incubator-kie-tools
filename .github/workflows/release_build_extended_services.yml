@@ -196,7 +196,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          pnpm -r exec Add-Content .\mvn\maven.config '--settings=${{ github.workspace }}\.m2\settings.xml'
+          pnpm -r powershell "Add-Content .\mvn\maven.config '--settings=${{ github.workspace }}\.m2\settings.xml'"
 
       - name: "Bootstrap"
         id: bootstrap
@@ -217,7 +217,7 @@ jobs:
 
       - name: "Setup Extended Services for macOS x86 artifacts"
         id: macos_setup_artifact
-        if: ${{ runner.os == 'macOS' && runner.arch != 'arm64' && !inputs.dry_run }}
+        if: ${{ runner.os == 'macOS' && !inputs.dry_run }}
         shell: bash
         env:
           RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
@@ -228,7 +228,7 @@ jobs:
           zip $ARTIFACT_ZIP_FILE ./packages/extended-services/dist/darwin/Kogito.dmg
 
       - name: "Sign Extended Services for macOS x86 artifact"
-        if: ${{ runner.os == 'macOS' && runner.arch != 'arm64' && !inputs.dry_run }}
+        if: ${{ runner.os == 'macOS' && !inputs.dry_run }}
         shell: bash
         env:
           ARTIFACT_ZIP_FILE: ${{ steps.macos_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
@@ -237,7 +237,7 @@ jobs:
           shasum -a 512 $ARTIFACT_ZIP_FILE > $ARTIFACT_ZIP_FILE.sha512
 
       - name: "Upload Extended Services for macOS x86 artifact"
-        if: ${{ runner.os == 'macOS' && runner.arch != 'arm64' && !inputs.dry_run }}
+        if: ${{ runner.os == 'macOS' && !inputs.dry_run }}
         shell: bash
         env:
           SVN_USERNAME: svn_dist_kie
@@ -255,7 +255,7 @@ jobs:
       - name: "Setup Extended Services for Windows artifacts"
         id: windows_setup_artifact
         if: ${{ runner.os == 'Windows' && !inputs.dry_run }}
-        shell: pwsh
+        shell: bash
         env:
           RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
         run: |
@@ -266,7 +266,7 @@ jobs:
 
       - name: "Sign Extended Services for Windows artifact"
         if: ${{ runner.os == 'Windows' && !inputs.dry_run }}
-        shell: pwsh
+        shell: bash
         env:
           ARTIFACT_ZIP_FILE: ${{ steps.windows_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
         run: |
@@ -275,7 +275,7 @@ jobs:
 
       - name: "Upload Extended Services for Windows artifact"
         if: ${{ runner.os == 'Windows' && !inputs.dry_run }}
-        shell: pwsh
+        shell: bash
         env:
           SVN_USERNAME: svn_dist_kie
           SVN_PASSWORD: ${{ secrets.svc-dist-kie-pass }}
