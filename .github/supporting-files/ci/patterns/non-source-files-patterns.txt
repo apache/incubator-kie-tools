@@ -4,7 +4,6 @@
 *.gif
 *.jpg
 *.jpeg
-*.png
 *.svg
 docs
 gifs

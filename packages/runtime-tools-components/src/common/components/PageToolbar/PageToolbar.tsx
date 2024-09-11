@@ -95,7 +95,7 @@ const PageToolbar: React.FunctionComponent<OUIAProps> = ({ ouiaId, ouiaSafe }) =
     <React.Fragment>
       <AboutModalBox isOpenProp={modalToggle} handleModalToggleProp={handleAboutModalToggle} />
       <Toolbar {...componentOuiaProps(ouiaId, "page-toolbar", ouiaSafe)}>
-        <ToolbarGroup>
+        <ToolbarGroup alignment={{ default: "alignRight" }}>
           <ToolbarItem className={css(accessibleStyles.screenReader, accessibleStyles.visibleOnMd)}>
             <Dropdown
               isPlain

@@ -65,7 +65,7 @@ Available parameters:
   - `Promise.resolve("")`
   - `Promise.resolve("<DIAGRAM_CONTENT_DIRECTLY_HERE>")`
   - `fetch("MyDmnModel.dmn").then(content => content.text())`
-- `readOnly` (optional, defaults to `false`): Use `false` to allow content edition, and `true` for read-only mode, in which the Editor will not allow changes.
+- `readOnly` (optional, defaults to `true`): Use `false` to allow content edition, and `true` for read-only mode, in which the Editor will not allow changes.
 - `origin` (optional, defaults to `*` when accessing the application with the `file` protocol, `window.location.origin` otherwise): If for some reason your application needs to change this parameter, you can use it.
 - `onError` (optional, defaults to `() => {}`): If there's an error opening the Editor, this function will be called.
 

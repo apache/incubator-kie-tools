@@ -34,7 +34,6 @@
     "apollo-client": "2.6.10",
     "apollo-link-http": "1.5.17",
     "history": "^4.9.0",
-    "react": "^17.0.2",
     "react-router": "^5.3.4"
   },
   "devDependencies": {
@@ -49,5 +48,8 @@
     "@types/react-router": "^5.1.20",
     "rimraf": "^3.0.2",
     "typescript": "^5.5.3"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0"
   }
 }

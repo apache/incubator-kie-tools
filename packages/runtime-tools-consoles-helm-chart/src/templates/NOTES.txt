@@ -6,7 +6,7 @@ In order to get {{ .Release.Name }} running you need to run these commands:
 1. Management Console available at:
 {{- range $host := index .Values "management-console" "ingress" "hosts" }}
   {{- range .paths }}
-  http{{ if index .Values "management-console" "ingress" "tls" }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
+  http{{ if index $.Values "management-console" "ingress" "tls" }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
   {{- end }}
 {{- end }}
 {{- else }}
@@ -33,7 +33,7 @@ In order to get {{ .Release.Name }} running you need to run these commands:
 2. Task Console available at:
 {{- range $host := index .Values "task-console" "ingress" "hosts" }}
   {{- range .paths }}
-  http{{ if index .Values "task-console" "ingress" "tls" }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
+  http{{ if index $.Values "task-console" "ingress" "tls" }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
   {{- end }}
 {{- end }}
 {{- else }}
@@ -70,7 +70,7 @@ Run the following commands:
   {{- end }}
 {{- end }}
 {{- end }}
-{{- if .Values "task-console" "enabled" }}
+{{- if index .Values "task-console" "enabled" }}
 {{- range $host := index .Values "task-console" "ingress" "hosts" }}
   {{- range .paths }}
   echo "$MINIKUBE_IP {{ tpl $host.host $ }}" | sudo tee -a /etc/hosts
@@ -82,11 +82,11 @@ Run the following commands:
 
 {{- if index .Values "management-console" "enabled" }}
 1. Management Console available at:
-  http{{ if index .Values "management-console" "openshiftRoute" "tls" }}s{{ end }}://{{ tpl (index .Values "management-console" "openshiftRoute" "host") . }}
+  http{{ if index $.Values "management-console" "openshiftRoute" "tls" }}s{{ end }}://{{ tpl (index .Values "management-console" "openshiftRoute" "host") . }}
 {{- end }}
 {{- if index .Values "task-console" "enabled"  }}
 2. Task Console available at:
-  http{{ if index .Values "task-console" "openshiftRoute" "tls" }}s{{ end }}://{{ tpl (index .Values "task-console" "openshiftRoute" "host") . }}
+  http{{ if index $.Values "task-console" "openshiftRoute" "tls" }}s{{ end }}://{{ tpl (index .Values "task-console" "openshiftRoute" "host") . }}
 {{- end }}
 
 {{- else }}
@@ -94,7 +94,7 @@ Run the following commands:
 1. Management Console available at:
 {{- range $host := index .Values "management-console" "ingress" "hosts" }}
   {{- range .paths }}
-  http{{ if index .Values "management-console" "ingress" "tls" }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
+  http{{ if index $.Values "management-console" "ingress" "tls" }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
   {{- end }}
 {{- end }}
 {{- end }}
@@ -102,7 +102,7 @@ Run the following commands:
 2. Task Console available at:
 {{- range $host := index .Values "task-console" "ingress" "hosts" }}
   {{- range .paths }}
-  http{{ if index .Values "task-console" "ingress" "tls" }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
+  http{{ if index $.Values "task-console" "ingress" "tls" }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
   {{- end }}
 {{- end }}
 {{- end }}
