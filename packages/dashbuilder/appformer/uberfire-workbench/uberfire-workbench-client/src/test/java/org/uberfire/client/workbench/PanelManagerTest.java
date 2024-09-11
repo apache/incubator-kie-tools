@@ -112,7 +112,7 @@ public class PanelManagerTest {
     private PerspectiveDefinition testPerspectiveDef;
 
     /**
-     * This is the Panel Presenter returned by the mock BeanFactory when asked for <tt>newWorkbenchPanel( testPerspectiveDef.getRoot() ) )</tt>.
+     * This is the Panel Presenter returned by the mock BeanFactory when asked for <code>newWorkbenchPanel( testPerspectiveDef.getRoot() ) )</code>.
      */
     private WorkbenchPanelPresenter testPerspectiveRootPanelPresenter;
 

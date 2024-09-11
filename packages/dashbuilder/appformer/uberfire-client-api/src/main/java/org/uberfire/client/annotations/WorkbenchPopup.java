@@ -42,11 +42,10 @@ import java.lang.annotation.Target;
  * In this latter case the {@code @WorkbenchPopup} need not extend
  * {@code com.google.gwt.user.client.ui.PopupPanel}.
  * </p>
- * <p>
  * WorkbechPopups can receive the following life-cycle calls:
  * <ul>
  * <li>{@code @OnOpen}</li>
- * </p>
+ * </ul>
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

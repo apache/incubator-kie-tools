@@ -25,12 +25,11 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.uberfire.mvp.PlaceRequest;
 
 /**
  * A custom {@link PanelDefinition} that is associated with a HasWidgets
- * or HTMLElement container. See {@link PlaceManager#goTo(PlaceRequest, HasWidgets)}
- * and {@link PlaceManager#goTo(PlaceRequest, HTMLElement)}
+ * or HTMLElement container. See PlaceManager#goTo(PlaceRequest, HasWidgets)
+ * and PlaceManager#goTo(PlaceRequest, HTMLElement)
  */
 @JsType
 public interface CustomPanelDefinition extends PanelDefinition {
