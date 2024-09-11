@@ -34,6 +34,9 @@ on:
         type: string
         required: true
         description: "Release candidate version"
+      drools_repository:
+        required: true
+        description: "Drools artifacts repository"
       kogito_runtimes_repository:
         required: true
         description: "Kogito runtimes artifacts repository"
@@ -80,6 +83,7 @@ jobs:
         if: runner.os == 'macOS'
         env:
           WORKDIR_PATH: ${{ github.workspace }}
+          DROOLS_REPO: ${{ github.event.inputs.drools_repository }}
           KOGITO_RUNTIMES_REPO: ${{ github.event.inputs.kogito_runtimes_repository }}
           KOGITO_APPS_REPO: ${{ github.event.inputs.kogito_apps_repository }}
           JITEXECUTOR_NATIVE_REPO: ${{ github.event.inputs.jitexecutor_native_macos_repository }}
@@ -97,6 +101,20 @@ jobs:
             <profile>
               <id>additional_repos</id>
               <repositories>
+                <repository>
+                  <id>apache-kie-drools-staging-repository</id>
+                  <name>Apache KIE Drools Staging Repository</name>
+                  <url>${DROOLS_REPO}</url>
+                  <layout>default</layout>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </repository>
                 <repository>
                   <id>apache-kie-kogito-runtimes-staging-repository</id>
                   <name>Apache KIE Kogito Runtimes Staging Repository</name>
@@ -141,6 +159,19 @@ jobs:
                 </repository>
               </repositories>
               <pluginRepositories>
+                <pluginRepository>
+                  <id>apache-kie-drools-staging-repository</id>
+                  <name>Apache KIE Drools Staging Repository</name>
+                  <url>${DROOLS_REPO}</url>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </pluginRepository>
                 <pluginRepository>
                   <id>apache-kie-kogito-runtimes-staging-repository</id>
                   <name>Apache KIE Kogito Runtimes Staging Repository</name>
@@ -192,6 +223,7 @@ jobs:
         if: runner.os == 'Windows'
         env:
           WORKDIR_PATH: ${{ github.workspace }}
+          DROOLS_REPO: ${{ github.event.inputs.drools_repository }}
           KOGITO_RUNTIMES_REPO: ${{ github.event.inputs.kogito_runtimes_repository }}
           KOGITO_APPS_REPO: ${{ github.event.inputs.kogito_apps_repository }}
           JITEXECUTOR_NATIVE_REPO: ${{ github.event.inputs.jitexecutor_native_windows_repository }}
@@ -211,6 +243,20 @@ jobs:
             <profile>
               <id>additional_repos</id>
               <repositories>
+                <repository>
+                  <id>apache-kie-drools-staging-repository</id>
+                  <name>Apache KIE Drools Staging Repository</name>
+                  <url>$env:DROOLS_REPO</url>
+                  <layout>default</layout>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </repository>
                 <repository>
                   <id>apache-kie-kogito-runtimes-staging-repository</id>
                   <name>Apache KIE Kogito Runtimes Staging Repository</name>
@@ -255,6 +301,19 @@ jobs:
                 </repository>
               </repositories>
               <pluginRepositories>
+                <pluginRepository>
+                  <id>apache-kie-drools-staging-repository</id>
+                  <name>Apache KIE Drools Staging Repository</name>
+                  <url>$env:DROOLS_REPO</url>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </pluginRepository>
                 <pluginRepository>
                   <id>apache-kie-kogito-runtimes-staging-repository</id>
                   <name>Apache KIE Kogito Runtimes Staging Repository</name>
