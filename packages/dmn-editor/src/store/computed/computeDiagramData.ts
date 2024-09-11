@@ -64,7 +64,7 @@ type AckNode = (
 export function computeDiagramData(
   diagram: State["diagram"],
   definitions: State["dmn"]["model"]["definitions"],
-  externalModelTypesByNamespace: TypeOrReturnType<Computed["getExternalModelTypesByNamespace"]>,
+  externalModelTypesByNamespace: TypeOrReturnType<Computed["getDirectlyIncludedExternalModelsByNamespace"]>,
   indexedDrd: TypeOrReturnType<Computed["indexedDrd"]>,
   isAlternativeInputDataShape: boolean
 ) {

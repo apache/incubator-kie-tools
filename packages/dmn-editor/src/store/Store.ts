@@ -30,7 +30,7 @@ import { ComputedStateCache } from "./ComputedStateCache";
 import { computeAllFeelVariableUniqueNames } from "./computed/computeAllFeelVariableUniqueNames";
 import { computeDataTypes } from "./computed/computeDataTypes";
 import { computeDiagramData } from "./computed/computeDiagramData";
-import { computeExternalModelsByType } from "./computed/computeExternalModelsByType";
+import { computeDirectlyIncludedExternalModelsByNamespace } from "./computed/computeDirectlyIncludedExternalModelsByNamespace";
 import { computeImportsByNamespace } from "./computed/computeImportsByNamespace";
 import { computeIndexedDrd } from "./computed/computeIndexes";
 import { computeIsDropTargetNodeValidForSelection } from "./computed/computeIsDropTargetNodeValidForSelection";
@@ -142,9 +142,9 @@ export type Computed = {
 
   isDropTargetNodeValidForSelection(e: ExternalModelsIndex | undefined): boolean;
 
-  getExternalModelTypesByNamespace: (
+  getDirectlyIncludedExternalModelsByNamespace: (
     e: ExternalModelsIndex | undefined
-  ) => ReturnType<typeof computeExternalModelsByType>;
+  ) => ReturnType<typeof computeDirectlyIncludedExternalModelsByNamespace>;
 
   /**
    * Get a valid DRD index.
@@ -401,7 +401,7 @@ export function createDmnEditorStore(model: DmnLatestModel, computedCache: Compu
             computedCache.cached("getDataTypes", computeDataTypes, [
               s.dmn.model.definitions["@_namespace"],
               s.dmn.model.definitions.itemDefinition,
-              s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace),
+              s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace),
               s.computed(s).importsByNamespace(),
             ]),
 
@@ -411,17 +411,18 @@ export function createDmnEditorStore(model: DmnLatestModel, computedCache: Compu
               s.dmn.model.definitions.import,
             ]),
 
-          getExternalModelTypesByNamespace: (externalModelsByNamespace: ExternalModelsIndex | undefined) =>
-            computedCache.cached("getExternalModelTypesByNamespace", computeExternalModelsByType, [
-              s.dmn.model.definitions.import,
-              externalModelsByNamespace,
-            ]),
+          getDirectlyIncludedExternalModelsByNamespace: (externalModelsByNamespace: ExternalModelsIndex | undefined) =>
+            computedCache.cached(
+              "getDirectlyIncludedExternalModelsByNamespace",
+              computeDirectlyIncludedExternalModelsByNamespace,
+              [s.dmn.model.definitions.import, externalModelsByNamespace]
+            ),
 
           getDiagramData: (externalModelsByNamespace: ExternalModelsIndex | undefined) =>
             computedCache.cached("getDiagramData", computeDiagramData, [
               s.diagram,
               s.dmn.model.definitions,
-              s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace),
+              s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace),
               s.computed(s).indexedDrd(),
               s.computed(s).isAlternativeInputDataShape(),
             ]),

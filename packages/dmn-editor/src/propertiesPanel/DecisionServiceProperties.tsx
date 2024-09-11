@@ -423,14 +423,17 @@ function DecisionServiceEquivalentFunction({
 
       const dmnObject = allDrgElementsByHref.get(potentialExternalHref);
 
-      return dmnObject && (importsByNamespace.has(resolvedNamespace) || resolvedNamespace === thisDmnsNamespace)
+      const isNamespaceDirectlyIncluded =
+        importsByNamespace.has(resolvedNamespace) || resolvedNamespace === thisDmnsNamespace;
+
+      return dmnObject && isNamespaceDirectlyIncluded
         ? buildFeelQNameFromNamespace({
             namedElement: dmnObject,
             importsByNamespace,
             namespace: resolvedNamespace,
             relativeToNamespace: thisDmnsNamespace,
           }).full
-        : buildDisplayName(dmnObject, resolvedNamespace);
+        : buildDisplayNameForDmnObject(dmnObject, resolvedNamespace);
     },
     [allDrgElementsByHref, decisionServiceNamespace, importsByNamespace, thisDmnsNamespace]
   );
@@ -463,7 +466,7 @@ function DecisionServiceEquivalentFunction({
   );
 }
 
-function buildDisplayName(
+function buildDisplayNameForDmnObject(
   dmnObject: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]> | undefined,
   namespace: string
 ) {

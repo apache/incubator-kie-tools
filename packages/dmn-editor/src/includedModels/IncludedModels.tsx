@@ -467,12 +467,12 @@ function IncludedModelCard({
       dmnEditorStoreApi.setState((state) => {
         const externalModelTypesByNamespace = state
           .computed(state)
-          .getExternalModelTypesByNamespace(externalModelsByNamespace);
+          .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace);
         deleteImport({
           definitions: state.dmn.model.definitions,
           __readonly_index: index,
           __readonly_externalModelTypesByNamespace: externalModelTypesByNamespace,
-          externalModelsByNamespace,
+          __readonly_externalModelsByNamespace: externalModelsByNamespace,
         });
       });
     },

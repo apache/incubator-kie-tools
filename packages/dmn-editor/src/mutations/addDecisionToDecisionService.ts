@@ -49,13 +49,17 @@ export function addDecisionToDecisionService({
 
   const href = parseXmlHref(decisionHref);
 
-  const externalModel = externalModelsByNamespace?.[href.namespace ?? ""];
-  if (href.namespace && !externalModel) {
-    throw new Error(`DMN MUTATION: Namespace '${href.namespace}' not found.`);
-  }
-
   if (href.namespace) {
-    const externalDrgs = (externalModel?.model as Normalized<DmnLatestModel>).definitions.drgElement;
+    const externalModel = externalModelsByNamespace?.[href.namespace];
+    if (!externalModel) {
+      throw new Error(`DMN MUTATION: Namespace '${href.namespace}' not found.`);
+    }
+
+    if (externalModel?.type !== "dmn") {
+      throw new Error(`DMN MUTATION: External model with namespace ${href.namespace} is not a DMN.`);
+    }
+
+    const externalDrgs = externalModel.model.definitions.drgElement;
     const decision = externalDrgs?.find((drgElement) => drgElement["@_id"] === href.id);
     if (decision?.__$$element !== "decision") {
       throw new Error(

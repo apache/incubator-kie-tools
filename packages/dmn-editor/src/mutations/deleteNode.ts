@@ -31,8 +31,7 @@ import { Computed } from "../store/Store";
 import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeContainingDecisionServiceHrefsByDecisionHrefs.ts";
 import { xmlHrefToQName } from "../xml/xmlHrefToQName";
 import { Normalized } from "../normalization/normalize";
-import { NodeDmnObjects } from "../diagram/nodes/Nodes";
-import { ExternalModelsIndex } from "../DmnEditor";
+import { ExternalDmnsIndex, ExternalModelsIndex } from "../DmnEditor";
 
 export enum NodeDeletionMode {
   FROM_DRG_AND_ALL_DRDS,
@@ -47,39 +46,39 @@ export function deleteNode({
   __readonly_dmnObjectId,
   __readonly_dmnObjectNamespace,
   __readonly_dmnObjectQName,
-  __readonly_externalModelTypesByNamespace,
-  mode,
-  externalModelsByNamespace,
+  __readonly_externalDmnsIndex,
+  __readonly_mode,
+  __readonly_externalModelsByNamespace,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   __readonly_drgEdges: DrgEdge[];
   __readonly_drdIndex: number;
   __readonly_nodeNature: NodeNature;
-  __readonly_externalModelTypesByNamespace: ReturnType<Computed["getExternalModelTypesByNamespace"]>;
+  __readonly_externalDmnsIndex: ExternalDmnsIndex;
   __readonly_dmnObjectId: string | undefined;
   __readonly_dmnObjectNamespace: string;
   __readonly_dmnObjectQName: XmlQName;
-  mode: NodeDeletionMode;
-  externalModelsByNamespace: ExternalModelsIndex | undefined;
+  __readonly_mode: NodeDeletionMode;
+  __readonly_externalModelsByNamespace: ExternalModelsIndex | undefined;
 }): {
   deletedDmnObject: Unpacked<Normalized<DMN15__tDefinitions>["drgElement" | "artifact"]> | undefined;
   deletedDmnShapeOnCurrentDrd: Normalized<DMNDI15__DMNShape> | undefined;
 } {
   if (
-    mode === NodeDeletionMode.FROM_CURRENT_DRD_ONLY &&
+    __readonly_mode === NodeDeletionMode.FROM_CURRENT_DRD_ONLY &&
     !canRemoveNodeFromDrdOnly({
       definitions,
       __readonly_drdIndex,
       __readonly_dmnObjectNamespace,
       __readonly_dmnObjectId,
-      __readonly_externalDmnsIndex: __readonly_externalModelTypesByNamespace.dmns,
+      __readonly_externalDmnsIndex,
     })
   ) {
     console.warn("DMN MUTATION: Cannot hide a Decision that's contained by a Decision Service from a DRD.");
     return { deletedDmnObject: undefined, deletedDmnShapeOnCurrentDrd: undefined };
   }
 
-  if (mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
+  if (__readonly_mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
     // Delete Edges
     // A DRD doesn't necessarily renders all edges of the DRG, so we need to look for what DRG edges to delete when deleting a node from any DRD.
     const nodeId = buildXmlHref({
@@ -99,7 +98,7 @@ export function deleteNode({
             id: drgEdge.id,
             dmnObject: drgEdge.dmnObject,
           },
-          externalModelsByNamespace,
+          externalModelsByNamespace: __readonly_externalModelsByNamespace,
         });
       }
     }
@@ -123,7 +122,7 @@ export function deleteNode({
   if (!__readonly_dmnObjectQName.prefix) {
     // Delete the dmnObject itself
     if (__readonly_nodeNature === NodeNature.ARTIFACT) {
-      if (mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
+      if (__readonly_mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
         const nodeIndex = (definitions.artifact ?? []).findIndex((a) => a["@_id"] === __readonly_dmnObjectId);
         deletedDmnObject = definitions.artifact?.splice(nodeIndex, 1)?.[0];
       } else {
@@ -132,7 +131,7 @@ export function deleteNode({
     } else if (__readonly_nodeNature === NodeNature.DRG_ELEMENT) {
       const nodeIndex = (definitions.drgElement ?? []).findIndex((d) => d["@_id"] === __readonly_dmnObjectId);
       deletedDmnObject =
-        mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS
+        __readonly_mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS
           ? definitions.drgElement?.splice(nodeIndex, 1)?.[0]
           : definitions.drgElement?.[nodeIndex];
     } else if (__readonly_nodeNature === NodeNature.UNKNOWN) {
@@ -164,7 +163,7 @@ export function deleteNode({
 
   const drdCount = (definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? []).length;
   for (let i = 0; i < drdCount; i++) {
-    if (mode === NodeDeletionMode.FROM_CURRENT_DRD_ONLY && i !== __readonly_drdIndex) {
+    if (__readonly_mode === NodeDeletionMode.FROM_CURRENT_DRD_ONLY && i !== __readonly_drdIndex) {
       continue;
     }
 
@@ -184,10 +183,13 @@ export function deleteNode({
     );
   }
 
-  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions, externalModelsByNamespace });
+  repopulateInputDataAndDecisionsOnAllDecisionServices({
+    definitions,
+    externalModelsByNamespace: __readonly_externalModelsByNamespace,
+  });
 
   return {
-    deletedDmnObject: mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS ? deletedDmnObject : undefined,
+    deletedDmnObject: __readonly_mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS ? deletedDmnObject : undefined,
     deletedDmnShapeOnCurrentDrd,
   };
 }
@@ -203,7 +205,7 @@ export function canRemoveNodeFromDrdOnly({
   __readonly_dmnObjectNamespace: string;
   __readonly_dmnObjectId: string | undefined;
   __readonly_drdIndex: number;
-  __readonly_externalDmnsIndex: ReturnType<Computed["getExternalModelTypesByNamespace"]>["dmns"];
+  __readonly_externalDmnsIndex: ReturnType<Computed["getDirectlyIncludedExternalModelsByNamespace"]>["dmns"];
 }) {
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex: __readonly_drdIndex });
 
@@ -220,7 +222,7 @@ export function canRemoveNodeFromDrdOnly({
   const containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn =
     computeContainingDecisionServiceHrefsByDecisionHrefs({
       thisDmnsNamespace: definitions["@_namespace"],
-      drgElementsByNamespace: drgElementsByNamespace,
+      drgElementsByNamespace,
     });
 
   const containingDecisionServiceHrefs =

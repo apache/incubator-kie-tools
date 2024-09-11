@@ -354,7 +354,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           const state = dmnEditorStoreApi.getState();
           const externalDmnsIndex = state
             .computed(state)
-            .getExternalModelTypesByNamespace(externalModelsByNamespace).dmns;
+            .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns;
 
           const externalNodeDmn = externalDmnsIndex.get(externalNode.externalDrgElementNamespace);
           const externalDrgElement = (externalNodeDmn?.model.definitions.drgElement ?? []).find(
@@ -431,7 +431,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 __readonly_drdIndex: drdIndex,
                 __readonly_externalDmnsIndex: dereferencedState
                   .computed(dereferencedState)
-                  .getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
+                  .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
                 __readonly_indexedDrd: dereferencedState.computed(dereferencedState).indexedDrd(),
                 __readonly_indexedDrdContainingDecisionServiceDepiction: indexedDrdContainingDecisionServiceDepiction!,
                 __readonly_containedDecisionHrefsRelativeToThisDmn: containedDecisionHrefsRelativeToThisDmn,
@@ -483,7 +483,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             const drdIndex = dereferencedState.computed(dereferencedState).getDrdIndex();
             const externalDmnsIndex = dereferencedState
               .computed(dereferencedState)
-              .getExternalModelTypesByNamespace(externalModelsByNamespace).dmns;
+              .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns;
 
             const {
               strategyForAddingDecisionServiceToDrd,
@@ -530,7 +530,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 __readonly_drdIndex: drdIndex,
                 __readonly_externalDmnsIndex: dereferencedState
                   .computed(dereferencedState)
-                  .getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
+                  .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
                 __readonly_indexedDrd: dereferencedState.computed(dereferencedState).indexedDrd(),
                 __readonly_indexedDrdContainingDecisionServiceDepiction: indexedDrdContainingDecisionServiceDepiction!,
                 __readonly_containedDecisionHrefsRelativeToThisDmn: containedDecisionHrefsRelativeToThisDmn,
@@ -757,7 +757,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                       __readonly_dmnObjectNamespace: node.data.dmnObjectNamespace,
                       __readonly_externalDmnsIndex: state
                         .computed(state)
-                        .getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
+                        .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
                       change: {
                         isExternal: !!node.data.dmnObjectQName.prefix,
                         nodeType: node.type as NodeType,
@@ -875,11 +875,11 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   __readonly_dmnObjectQName: node.data.dmnObjectQName,
                   __readonly_dmnObjectId: node.data.dmnObject?.["@_id"],
                   __readonly_nodeNature: nodeNatures[node.type as NodeType],
-                  mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
-                  __readonly_externalModelTypesByNamespace: state
+                  __readonly_mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
+                  __readonly_externalDmnsIndex: state
                     .computed(state)
-                    .getExternalModelTypesByNamespace(externalModelsByNamespace),
-                  externalModelsByNamespace,
+                    .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
+                  __readonly_externalModelsByNamespace: externalModelsByNamespace,
                 });
                 state.dispatch(state).diagram.setNodeStatus(node.id, {
                   selected: false,
@@ -1132,7 +1132,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               shapeId: targetNode.data.shape["@_id"],
             },
             keepWaypoints: true,
-            externalModelsByNamespace: externalModelsByNamespace,
+            externalModelsByNamespace,
           });
 
           // The DMN Edge changed nodes, so we need to delete the old one, but keep the waypoints on the same DRD.
@@ -1389,7 +1389,7 @@ function DmnDiagramWithoutDrd() {
 
                 const externalModelTypesByNamespace = dereferencedState
                   .computed(dereferencedState)
-                  .getExternalModelTypesByNamespace(externalModelsByNamespace);
+                  .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace);
 
                 autoGenerateDrd({
                   model: dereferencedState.dmn.model,
@@ -1443,7 +1443,7 @@ function DmnDiagramWithoutDrd() {
                     __readonly_dmnObjectNamespace: dereferencedState.dmn.model.definitions["@_namespace"],
                     __readonly_externalDmnsIndex: dereferencedState
                       .computed(dereferencedState)
-                      .getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
+                      .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
                     __readonly_externalModelsByNamespace: externalModelsByNamespace,
                   });
                   s.dmn.model = dereferencedState.dmn.model;
@@ -1622,7 +1622,7 @@ function DmnDiagramEmptyState({
                             })["@_height"],
                           },
                         },
-                        externalModelsByNamespace: externalModelsByNamespace,
+                        externalModelsByNamespace,
                       });
 
                       state.diagram._selectedNodes = [decisionNodeHref];

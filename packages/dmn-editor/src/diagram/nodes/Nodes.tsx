@@ -939,7 +939,7 @@ export const DecisionServiceNode = React.memo(
               __readonly_dmnObjectNamespace: dmnObjectNamespace,
               __readonly_externalDmnsIndex: state
                 .computed(state)
-                .getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
+                .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
               shapeIndex: shape.index,
               localYPosition: e.y,
               snapGrid: state.diagram.snapGrid,
