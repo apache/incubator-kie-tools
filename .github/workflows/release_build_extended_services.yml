@@ -186,10 +186,17 @@ jobs:
           "@
           Add-Content "$env:WORKDIR_PATH\.m2\settings.xml" $contentToAdd
 
-      - name: "Setup PNPM Maven Settings"
+      - name: "Setup PNPM Maven Settings (MacOS)"
+        if: runner.os == 'macOS'
         shell: bash
         run: |
           pnpm -r exec 'bash' '-c' 'echo --settings=${{ github.workspace }}/.m2/settings.xml >> .mvn/maven.config'
+
+      - name: "Setup PNPM Maven Settings (Windows)"
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          pnpm powershell "Add-Content -Path .\mvn\maven.config -Value '--settings=${{ github.workspace }}\.m2\settings.xml'"
 
       - name: "Bootstrap"
         id: bootstrap
