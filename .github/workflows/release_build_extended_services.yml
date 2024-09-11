@@ -189,12 +189,13 @@ jobs:
       - name: "Setup Maven settings file"
         shell: bash
         run: |
-          if [[ ${{ runner.os == 'Windows' }} ]]; then
+          if [ ${{ runner.os == 'Windows' }} ]; then
             SETTINGS_FILE_PATH=${{ github.workspace }}\.m2\settings.xml
           else
             SETTINGS_FILE_PATH=${{ github.workspace }}/.m2/settings.xml
           fi
-          pnpm -r exec 'bash' '-c' 'echo --settings=$SETTINGS_FILE_PATH >> .mvn/maven.config'
+          echo $SETTINGS_FILE_PATH
+          pnpm -r exec 'bash' '-c' 'echo --settings=test.xml >> .mvn/maven.config'
 
       - name: "Bootstrap"
         id: bootstrap
