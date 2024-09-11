@@ -187,7 +187,6 @@ jobs:
           Add-Content "$env:WORKDIR_PATH\.m2\settings.xml" $contentToAdd
 
       - name: "Setup Maven settings file"
-        if: runner.os == 'macOS'
         shell: bash
         run: |
           if [[ ${{ runner.os == 'Windows' }} ]]; then
