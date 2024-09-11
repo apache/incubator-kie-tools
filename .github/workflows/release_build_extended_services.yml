@@ -34,6 +34,9 @@ on:
         type: string
         required: true
         description: "Release candidate version"
+      kogito_runtimes_repository:
+        required: true
+        description: "Kogito runtimes artifacts repository"
       jitexecutor_native_macos_repository:
         required: true
         description: "JITExecutor native macOS artifacts repository"
@@ -74,6 +77,7 @@ jobs:
         if: runner.os == 'macOS'
         env:
           WORKDIR_PATH: ${{ github.workspace }}
+          KOGITO_RUNTIMES_REPO: ${{ github.event.inputs.kogito_runtimes_repository }}
           JITEXECUTOR_NATIVE_REPO: ${{ github.event.inputs.jitexecutor_native_macos_repository }}
         run: |
           mkdir -p ${WORKDIR_PATH}/.m2
@@ -90,6 +94,20 @@ jobs:
               <id>additional_repos</id>
               <repositories>
                 <repository>
+                  <id>apache-kie-kogito-runtimes-staging-repository</id>
+                  <name>Apache KIE Kogito Runtimes Staging Repository</name>
+                  <url>${KOGITO_RUNTIMES_REPO}</url>
+                  <layout>default</layout>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </repository>
+                <repository>
                   <id>apache-kie-jitexecutor-native-staging-repository</id>
                   <name>Apache KIE JITExecutor Native Staging Repository</name>
                   <url>${JITEXECUTOR_NATIVE_REPO}</url>
@@ -105,6 +123,19 @@ jobs:
                 </repository>
               </repositories>
               <pluginRepositories>
+                <pluginRepository>
+                  <id>apache-kie-kogito-runtimes-staging-repository</id>
+                  <name>Apache KIE Kogito Runtimes Staging Repository</name>
+                  <url>${KOGITO_RUNTIMES_REPO}</url>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </pluginRepository>
                 <pluginRepository>
                   <id>apache-kie-jitexecutor-native-staging-repository</id>
                   <name>Apache KIE JITExecutor Native Staging Repository</name>
@@ -130,6 +161,7 @@ jobs:
         if: runner.os == 'Windows'
         env:
           WORKDIR_PATH: ${{ github.workspace }}
+          KOGITO_RUNTIMES_REPO: ${{ github.event.inputs.kogito_runtimes_repository }}
           JITEXECUTOR_NATIVE_REPO: ${{ github.event.inputs.jitexecutor_native_windows_repository }}
         shell: pwsh
         run: |
@@ -148,6 +180,20 @@ jobs:
               <id>additional_repos</id>
               <repositories>
                 <repository>
+                  <id>apache-kie-kogito-runtimes-staging-repository</id>
+                  <name>Apache KIE Kogito Runtimes Staging Repository</name>
+                  <url>$env:KOGITO_RUNTIMES_REPO</url>
+                  <layout>default</layout>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </repository>
+                <repository>
                   <id>apache-kie-jitexecutor-native-staging-repository</id>
                   <name>Apache KIE JITExecutor Native Staging Repository</name>
                   <url>$env:JITEXECUTOR_NATIVE_REPO</url>
@@ -163,6 +209,19 @@ jobs:
                 </repository>
               </repositories>
               <pluginRepositories>
+                <pluginRepository>
+                  <id>apache-kie-kogito-runtimes-staging-repository</id>
+                  <name>Apache KIE Kogito Runtimes Staging Repository</name>
+                  <url>$env:KOGITO_RUNTIMES_REPO</url>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </pluginRepository>
                 <pluginRepository>
                   <id>apache-kie-jitexecutor-native-staging-repository</id>
                   <name>Apache KIE JITExecutor Native Staging Repository</name>
