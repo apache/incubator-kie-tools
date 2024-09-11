@@ -23,6 +23,9 @@ import (
 	"context"
 	"testing"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
+	"k8s.io/apimachinery/pkg/util/intstr"
+
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 
 	"github.com/magiconair/properties"
@@ -608,4 +611,182 @@ func TestMergePodSpec_WithServicedPostgreSQL_In_Platform_But_Workflow_CR_Not_Req
 	assert.Empty(t, flowContainer.Image)
 	assert.Equal(t, int32(8080), flowContainer.Ports[0].ContainerPort)
 	assert.Nil(t, flowContainer.Env)
+}
+
+func TestDefaultContainer_WithPlatformPersistenceWorkflowWithDefaultProfile(t *testing.T) {
+	workflow := test.GetBaseSonataFlow(t.Name())
+	doTestDefaultContainer_WithPlatformPersistence(t, workflow, true)
+}
+
+func TestDefaultContainer_WithPlatformPersistenceWorkflowWithPreviewProfile(t *testing.T) {
+	workflow := test.GetBaseSonataFlow(t.Name())
+	workflowproj.SetWorkflowProfile(workflow, metadata.PreviewProfile)
+	doTestDefaultContainer_WithPlatformPersistence(t, workflow, true)
+}
+
+func TestDefaultContainer_WithPlatformPersistenceWorkflowWithGitOpsProfile(t *testing.T) {
+	workflow := test.GetBaseSonataFlow(t.Name())
+	workflowproj.SetWorkflowProfile(workflow, metadata.GitOpsProfile)
+	doTestDefaultContainer_WithPlatformPersistence(t, workflow, true)
+}
+
+func TestDefaultContainer_WithPlatformPersistenceWorkflowWithDevProfile(t *testing.T) {
+	workflow := test.GetBaseSonataFlow(t.Name())
+	workflowproj.SetWorkflowProfile(workflow, metadata.DevProfile)
+	doTestDefaultContainer_WithPlatformPersistence(t, workflow, false)
+}
+
+func doTestDefaultContainer_WithPlatformPersistence(t *testing.T, workflow *v1alpha08.SonataFlow, checkPersistence bool) {
+	platform := &v1alpha08.SonataFlowPlatform{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "foo",
+			Namespace: "default",
+		},
+		Spec: v1alpha08.SonataFlowPlatformSpec{
+			Persistence: &v1alpha08.PlatformPersistenceOptionsSpec{
+				PostgreSQL: &v1alpha08.PlatformPersistencePostgreSQL{
+					SecretRef: v1alpha08.PostgreSQLSecretOptions{
+						Name:        "foo_secret",
+						UserKey:     "username",
+						PasswordKey: "password",
+					},
+					ServiceRef: &v1alpha08.SQLServiceOptions{
+						Name:         "service_name",
+						Namespace:    "service_namespace",
+						Port:         &postgreSQLPort,
+						DatabaseName: "foo",
+					},
+				},
+			},
+		},
+	}
+
+	container, err := defaultContainer(workflow, platform)
+	assert.Nil(t, err)
+	assert.NotNil(t, container)
+	assert.Equal(t, "workflow", container.Name)
+
+	//verify default container port.
+	assert.Equal(t, 1, len(container.Ports))
+	assert.Equal(t, "h2c", container.Ports[0].Name)
+	assert.Equal(t, int32(0), container.Ports[0].HostPort)
+	assert.Equal(t, int32(8080), container.Ports[0].ContainerPort)
+	assert.Equal(t, corev1.Protocol("TCP"), container.Ports[0].Protocol)
+	assert.Equal(t, "", container.Ports[0].HostIP)
+
+	//verify default container health checks
+	assert.Equal(t, &corev1.Probe{
+		ProbeHandler: corev1.ProbeHandler{
+			Exec: nil,
+			HTTPGet: &corev1.HTTPGetAction{
+				Path: "/q/health/live",
+				Port: intstr.IntOrString{
+					Type:   0,
+					IntVal: 8080,
+					StrVal: "",
+				},
+				Host:        "",
+				Scheme:      "",
+				HTTPHeaders: nil,
+			},
+			TCPSocket: nil,
+			GRPC:      nil,
+		},
+		InitialDelaySeconds:           0,
+		TimeoutSeconds:                3,
+		PeriodSeconds:                 15,
+		SuccessThreshold:              0,
+		FailureThreshold:              0,
+		TerminationGracePeriodSeconds: nil,
+	}, container.LivenessProbe)
+
+	assert.Equal(t, &corev1.Probe{
+		ProbeHandler: corev1.ProbeHandler{
+			Exec: nil,
+			HTTPGet: &corev1.HTTPGetAction{
+				Path: "/q/health/ready",
+				Port: intstr.IntOrString{
+					Type:   0,
+					IntVal: 8080,
+					StrVal: "",
+				},
+				Host:        "",
+				Scheme:      "",
+				HTTPHeaders: nil,
+			},
+			TCPSocket: nil,
+			GRPC:      nil,
+		},
+		InitialDelaySeconds:           0,
+		TimeoutSeconds:                3,
+		PeriodSeconds:                 15,
+		SuccessThreshold:              0,
+		FailureThreshold:              0,
+		TerminationGracePeriodSeconds: nil,
+	}, container.ReadinessProbe)
+
+	assert.Equal(t, &corev1.Probe{
+		ProbeHandler: corev1.ProbeHandler{
+			Exec: nil,
+			HTTPGet: &corev1.HTTPGetAction{
+				Path: "/q/health/started",
+				Port: intstr.IntOrString{
+					Type:   0,
+					IntVal: 8080,
+					StrVal: "",
+				},
+				Host:        "",
+				Scheme:      "",
+				HTTPHeaders: nil,
+			},
+			TCPSocket: nil,
+			GRPC:      nil,
+		},
+		InitialDelaySeconds:           10,
+		TimeoutSeconds:                3,
+		PeriodSeconds:                 15,
+		SuccessThreshold:              0,
+		FailureThreshold:              5,
+		TerminationGracePeriodSeconds: nil,
+	}, container.StartupProbe)
+
+	//verify the persistence configuration is present if requested.
+	if checkPersistence {
+		expectedEnvVars := []corev1.EnvVar{
+			{
+				Name:  "QUARKUS_DATASOURCE_USERNAME",
+				Value: "",
+				ValueFrom: &corev1.EnvVarSource{
+					SecretKeyRef: &corev1.SecretKeySelector{
+						LocalObjectReference: corev1.LocalObjectReference{Name: "foo_secret"}, Key: "username",
+					},
+				},
+			},
+			{
+				Name:  "QUARKUS_DATASOURCE_PASSWORD",
+				Value: "",
+				ValueFrom: &corev1.EnvVarSource{
+					SecretKeyRef: &corev1.SecretKeySelector{
+						LocalObjectReference: corev1.LocalObjectReference{Name: "foo_secret"}, Key: "password",
+					},
+				},
+			},
+			{
+				Name:  "QUARKUS_DATASOURCE_DB_KIND",
+				Value: "postgresql",
+			},
+			{
+				Name:  "QUARKUS_DATASOURCE_JDBC_URL",
+				Value: "jdbc:postgresql://service_name.service_namespace:5432/foo?currentSchema=greeting",
+			},
+			{
+				Name:  "KOGITO_PERSISTENCE_TYPE",
+				Value: "jdbc",
+			},
+		}
+		assert.Equal(t, expectedEnvVars, container.Env)
+	} else {
+		//no persistence
+		assert.Nil(t, container.Env)
+	}
 }

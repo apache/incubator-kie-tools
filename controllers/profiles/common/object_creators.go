@@ -23,6 +23,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles"
+
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/workflowdef"
 	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 
@@ -200,12 +202,14 @@ func defaultContainer(workflow *operatorapi.SonataFlow, plf *operatorapi.SonataF
 	if err := mergo.Merge(defaultFlowContainer, workflow.Spec.PodTemplate.Container.ToContainer(), mergo.WithOverride); err != nil {
 		return nil, err
 	}
-	var pper *operatorapi.PlatformPersistenceOptionsSpec
-	if plf != nil && plf.Spec.Persistence != nil {
-		pper = plf.Spec.Persistence
-	}
-	if p := persistence.RetrieveConfiguration(workflow.Spec.Persistence, pper, workflow.Name); p != nil {
-		defaultFlowContainer = persistence.ConfigurePersistence(defaultFlowContainer, p, workflow.Name, workflow.Namespace)
+	if !profiles.IsDevProfile(workflow) {
+		var pper *operatorapi.PlatformPersistenceOptionsSpec
+		if plf != nil && plf.Spec.Persistence != nil {
+			pper = plf.Spec.Persistence
+		}
+		if p := persistence.RetrieveConfiguration(workflow.Spec.Persistence, pper, workflow.Name); p != nil {
+			defaultFlowContainer = persistence.ConfigurePersistence(defaultFlowContainer, p, workflow.Name, workflow.Namespace)
+		}
 	}
 	// immutable
 	defaultFlowContainer.Name = operatorapi.DefaultContainerName
