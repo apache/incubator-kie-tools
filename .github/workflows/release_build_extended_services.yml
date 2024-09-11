@@ -186,16 +186,17 @@ jobs:
           "@
           Add-Content "$env:WORKDIR_PATH\.m2\settings.xml" $contentToAdd
 
-      - name: "Setup Maven settings file"
+      - name: "Setup Maven settings file (MacOS)"
+        if: runner.os == 'macOS'
         shell: bash
         run: |
-          if [ ${{ runner.os == 'Windows' }} ]; then
-            SETTINGS_FILE_PATH=${{ github.workspace }}\.m2\settings.xml
-          else
-            SETTINGS_FILE_PATH=${{ github.workspace }}/.m2/settings.xml
-          fi
-          echo $SETTINGS_FILE_PATH
-          pnpm -r exec 'bash' '-c' 'echo --settings=test.xml >> .mvn/maven.config'
+          pnpm -r exec 'bash' '-c' 'echo --settings=${{ github.workspace }}/.m2/settings.xml >> .mvn/maven.config'
+
+      - name: "Setup Maven settings file (Windows)"
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          pnpm -r exec Add-Content .\mvn\maven.config '--settings=${{ github.workspace }}\.m2\settings.xml'
 
       - name: "Bootstrap"
         id: bootstrap
