@@ -193,7 +193,7 @@ export function addEdge({
 
   repopulateInputDataAndDecisionsOnAllDecisionServices({
     definitions,
-    externalModelsByNamespace: externalModelsByNamespace,
+    externalModelsByNamespace,
   });
 
   return { newDmnEdge };

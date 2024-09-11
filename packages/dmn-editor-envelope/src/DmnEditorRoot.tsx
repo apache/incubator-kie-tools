@@ -532,10 +532,7 @@ function ExternalModelsManager({
   externalModelsManagerDoneBootstraping: PromiseImperativeHandle<void>;
 }) {
   const namespaces = useMemo(
-    () =>
-      (model.definitions.import ?? [])
-        .map((i) => getNamespaceOfDmnImport({ dmnImport: i }))
-        .join(NAMESPACES_EFFECT_SEPARATOR),
+    () => getIncludedNamespacesFromModel(model.definitions.import),
     [model.definitions.import]
   );
 
@@ -562,12 +559,6 @@ function ExternalModelsManager({
       bc.close();
     };
   }, [thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot]);
-
-  const getIncludedNamespacesFromModel = useCallback((model: Normalized<DmnLatestModel>) => {
-    return (model.definitions.import ?? [])
-      .map((i) => getNamespaceOfDmnImport({ dmnImport: i }))
-      .join(NAMESPACES_EFFECT_SEPARATOR);
-  }, []);
 
   const getDmnsByNamespace = useCallback((resources: (ResourceContent | undefined)[]) => {
     const ret = new Map<string, ResourceContent>();
@@ -610,7 +601,9 @@ function ExternalModelsManager({
       loadedDmnsByPathRelativeToTheWorkspaceRoot: Set<string>,
       thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot: string
     ) => {
-      const includedNamespaces = new Set(getIncludedNamespacesFromModel(model).split(NAMESPACES_EFFECT_SEPARATOR));
+      const includedNamespaces = new Set(
+        getIncludedNamespacesFromModel(model.definitions.import).split(NAMESPACES_EFFECT_SEPARATOR)
+      );
 
       for (const includedNamespace of includedNamespaces) {
         if (!resourcesByNamespace.has(includedNamespace)) {
@@ -648,7 +641,7 @@ function ExternalModelsManager({
         }
       }
     },
-    [getIncludedNamespacesFromModel]
+    []
   );
 
   // This effect actually populates `externalModelsByNamespace` through the `onChange` call.
@@ -785,4 +778,8 @@ function DmnMarshallerFallbackError({ error }: { error: Error }) {
       </EmptyState>
     </Flex>
   );
+}
+
+function getIncludedNamespacesFromModel(imports: Normalized<DmnLatestModel["definitions"]["import"]>) {
+  return (imports ?? []).map((i) => getNamespaceOfDmnImport({ dmnImport: i })).join(NAMESPACES_EFFECT_SEPARATOR);
 }

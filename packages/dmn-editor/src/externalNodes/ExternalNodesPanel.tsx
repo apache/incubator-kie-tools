@@ -54,7 +54,7 @@ export function ExternalNodesPanel() {
   const importsByNamespace = useDmnEditorStore((s) => s.computed(s).importsByNamespace());
   const { externalModelsByNamespace } = useExternalModels();
   const externalDmnsByNamespace = useDmnEditorStore(
-    (s) => s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns
+    (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
   );
   const dmnShapesByHref = useDmnEditorStore((s) => s.computed(s).indexedDrd().dmnShapesByHref);
   const { onRequestToResolvePath } = useDmnEditor();

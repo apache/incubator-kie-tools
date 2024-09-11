@@ -21,7 +21,7 @@ import { ExternalDmnsIndex, ExternalModelsIndex, ExternalPmmlsIndex } from "../.
 import { getNamespaceOfDmnImport } from "../../includedModels/importNamespaces";
 import { State } from "../Store";
 
-export function computeExternalModelsByType(
+export function computeDirectlyIncludedExternalModelsByNamespace(
   imports: State["dmn"]["model"]["definitions"]["import"],
   externalModelsByNamespace: ExternalModelsIndex | undefined
 ) {

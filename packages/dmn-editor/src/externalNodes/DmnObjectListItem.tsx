@@ -70,18 +70,18 @@ export function DmnObjectListItem({
   //
   // So, the "Local Model" only "knows" the nodes from "Model-A" and NOT from "Model-B".
   // That's why we have different logic to build description for "known dmnObjects" and "unknown dmnObjects".
-  const isNamespaceIncluded = useMemo(
+  const isNamespaceDirectlyIncluded = useMemo(
     () => namespace === relativeToNamespace || importsByNamespace.has(namespace),
     [importsByNamespace, namespace, relativeToNamespace]
   );
 
-  const notIncludedNamespaceDescription = useMemo(() => {
+  const transitivelyIncludedNamespaceDescription = useMemo(() => {
     return `${namespace.substring(0, 11)}...${namespace.substring(namespace.length - 4)}`;
   }, [namespace]);
 
   const displayName = useMemo(
     () =>
-      dmnObject && isNamespaceIncluded
+      dmnObject && isNamespaceDirectlyIncluded
         ? buildFeelQNameFromNamespace({
             namedElement: dmnObject,
             importsByNamespace,
@@ -89,7 +89,7 @@ export function DmnObjectListItem({
             relativeToNamespace,
           }).full
         : dmnObject?.["@_name"],
-    [dmnObject, importsByNamespace, isNamespaceIncluded, namespace, relativeToNamespace]
+    [dmnObject, importsByNamespace, isNamespaceDirectlyIncluded, namespace, relativeToNamespace]
   );
 
   const nodeTypeTooltipDescription = useMemo(() => {
@@ -110,12 +110,12 @@ export function DmnObjectListItem({
   }, [dmnObject]);
 
   const toolTip = useMemo(() => {
-    return dmnObject && isNamespaceIncluded ? (
+    return dmnObject && isNamespaceDirectlyIncluded ? (
       <p>{displayName}</p>
     ) : (
       <div>{`This ${nodeTypeTooltipDescription} node is from an external model that is not included in this one. Namespace: ${namespace}`}</div>
     );
-  }, [displayName, dmnObject, isNamespaceIncluded, namespace, nodeTypeTooltipDescription]);
+  }, [displayName, dmnObject, isNamespaceDirectlyIncluded, namespace, nodeTypeTooltipDescription]);
 
   const isValid = useDmnEditorStore((s) =>
     DMN15_SPEC.namedElement.isValidName(
@@ -148,13 +148,13 @@ export function DmnObjectListItem({
         <div style={{ width: "40px", height: "40px", marginRight: 0 }}>
           <Icon />
         </div>
-        {!isNamespaceIncluded && (
+        {!isNamespaceDirectlyIncluded && (
           <div
             style={{
               backgroundColor: "#f0f0f0",
               color: "#6a6e72",
             }}
-          >{`${notIncludedNamespaceDescription}.`}</div>
+          >{`${transitivelyIncludedNamespaceDescription}.`}</div>
         )}
         <div style={{ color: isValid ? undefined : "red" }}>{`${displayName}`}</div>
         <div>
