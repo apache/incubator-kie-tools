@@ -20,33 +20,20 @@
 name: "Release :: Build (Extended Services)"
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       dry_run:
         type: boolean
         required: true
+        description: "Dry run mode"
       base_ref:
         type: string
         required: true
-      tag:
-        type: string
-        required: false
-        default: "0.0.0"
-      upload_asset_url:
-        type: string
-        required: false
-        default: ""
-      release_candidate:
-        type: boolean
-        required: false
-        default: false
+        description: "Tag associated with the release"
       release_candidate_version:
         type: string
-        required: false
-        default: ""
-    secrets:
-      gh_token:
-        required: false
+        required: true
+        description: "Tag associated with the release"
 
 env:
   KIE_TOOLS_BUILD__runLinters: "false"
@@ -56,13 +43,10 @@ env:
 
 jobs:
   extended_services:
-    env:
-      EXTENDED_SERVICES__kieSandboxUrl: "https://apache.github.io/incubator-kie-kogito-online"
-
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-13, windows-latest]
+        os: [macos-13, macos-14, windows-latest]
     steps:
       - name: "Support longpaths (Windows only)"
         if: runner.os == 'Windows'
@@ -97,42 +81,20 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_KEY }}
 
-      - name: "Upload Extended Services for macOS"
-        if: ${{ runner.os == 'macOS' && !inputs.dry_run && !inputs.release_candidate }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ./packages/extended-services/dist/darwin/Kogito.dmg
-          asset_name: kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg
-          asset_content_type: application/octet-stream
-
-      - name: "Upload Extended Services for Windows"
-        if: ${{ runner.os == 'Windows' && !inputs.dry_run && !inputs.release_candidate }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: "./packages/extended-services/dist/win32/kie_sandbox_extended_services.exe"
-          asset_name: "kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
-          asset_content_type: application/octet-stream
-
-      - name: "Setup Extended Services for macOS artifacts"
+      - name: "Setup Extended Services for macOS x86 artifacts"
         id: macos_setup_artifact
-        if: ${{ runner.os == 'macOS' && !inputs.dry_run && inputs.release_candidate }}
+        if: ${{ runner.os == 'macOS' && runner.arch != 'arm64' && !inputs.dry_run }}
         shell: bash
         env:
-          PROJECT_VERSION: ${{ inputs.release_candidate_version }}
+          RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
         run: |
-          ARTIFACT_ZIP_FILE="./extended-services-release-artifacts/incubator-kie-$PROJECT_VERSION-sandbox-extended-services-macOS.zip"
+          ARTIFACT_ZIP_FILE="./extended-services-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-macOS-x86.zip"
           echo "ARTIFACT_ZIP_FILE=$ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
           mkdir ./extended-services-release-artifacts
           zip $ARTIFACT_ZIP_FILE ./packages/extended-services/dist/darwin/Kogito.dmg
 
-      - name: "Sign Extended Services for macOS artifact"
-        if: ${{ runner.os == 'macOS' && !inputs.dry_run && inputs.release_candidate }}
+      - name: "Sign Extended Services for macOS x86 artifact"
+        if: ${{ runner.os == 'macOS' && runner.arch != 'arm64' && !inputs.dry_run }}
         shell: bash
         env:
           ARTIFACT_ZIP_FILE: ${{ steps.macos_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
@@ -140,36 +102,73 @@ jobs:
           gpg --no-tty --batch --sign --pinentry-mode loopback --output $ARTIFACT_ZIP_FILE.asc --detach-sig $ARTIFACT_ZIP_FILE
           shasum -a 512 $ARTIFACT_ZIP_FILE > $ARTIFACT_ZIP_FILE.sha512
 
-      - name: "Upload Extended Services for macOS artifact"
-        if: ${{ runner.os == 'macOS' && !inputs.dry_run && inputs.release_candidate }}
+      - name: "Upload Extended Services for macOS x86 artifact"
+        if: ${{ runner.os == 'macOS' && runner.arch != 'arm64' && !inputs.dry_run }}
         shell: bash
         env:
           SVN_USERNAME: svn_dist_kie
           SVN_PASSWORD: ${{ secrets.svc-dist-kie-pass }}
-          PROJECT_VERSION: ${{ inputs.release_candidate_version }}
+          RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
           ARTIFACT_ZIP_FILE: ${{ steps.macos_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
         run: |
-          svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie/$PROJECT_VERSION/ svn-kie
+          svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie/$RELEASE_CANDIDATE_VERSION/ svn-kie
           cp ./extended-services-release-artifacts/* svn-kie
           cd svn-kie
           svn add . --force
-          svn ci --non-interactive --no-auth-cache --username "$SVN_USERNAME" --password "$SVN_PASSWORD" -m "Apache KIE $PROJECT_VERSION Extended Services for macOS artifact"
+          svn ci --non-interactive --no-auth-cache --username "$SVN_USERNAME" --password "$SVN_PASSWORD" -m "Apache KIE $RELEASE_CANDIDATE_VERSION Extended Services for macOS x86 artifact"
+          rm -rf svn-kie
+
+      - name: "Setup Extended Services for macOS arm64 artifacts"
+        id: macos_arm64_setup_artifact
+        if: ${{ runner.os == 'macOS' && runner.arch == 'arm64' && !inputs.dry_run }}
+        shell: bash
+        env:
+          RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
+        run: |
+          ARTIFACT_ZIP_FILE="./extended-services-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-macOS-arm64.zip"
+          echo "ARTIFACT_ZIP_FILE=$ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
+          mkdir ./extended-services-release-artifacts
+          zip $ARTIFACT_ZIP_FILE ./packages/extended-services/dist/darwin/Kogito.dmg
+
+      - name: "Sign Extended Services for macOS arm64 artifact"
+        if: ${{ runner.os == 'macOS' && runner.arch == 'arm64' && !inputs.dry_run }}
+        shell: bash
+        env:
+          ARTIFACT_ZIP_FILE: ${{ steps.macos_arm64_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
+        run: |
+          gpg --no-tty --batch --sign --pinentry-mode loopback --output $ARTIFACT_ZIP_FILE.asc --detach-sig $ARTIFACT_ZIP_FILE
+          shasum -a 512 $ARTIFACT_ZIP_FILE > $ARTIFACT_ZIP_FILE.sha512
+
+      - name: "Upload Extended Services for macOS arm64 artifact"
+        if: ${{ runner.os == 'macOS' && runner.arch == 'arm64' && !inputs.dry_run }}
+        shell: bash
+        env:
+          SVN_USERNAME: svn_dist_kie
+          SVN_PASSWORD: ${{ secrets.svc-dist-kie-pass }}
+          RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
+          ARTIFACT_ZIP_FILE: ${{ steps.macos_arm64_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
+        run: |
+          svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie/$RELEASE_CANDIDATE_VERSION/ svn-kie
+          cp ./extended-services-release-artifacts/* svn-kie
+          cd svn-kie
+          svn add . --force
+          svn ci --non-interactive --no-auth-cache --username "$SVN_USERNAME" --password "$SVN_PASSWORD" -m "Apache KIE $RELEASE_CANDIDATE_VERSION Extended Services for macOS arm64 artifact"
           rm -rf svn-kie
 
       - name: "Setup Extended Services for Windows artifacts"
         id: windows_setup_artifact
-        if: ${{ runner.os == 'macOS' && !inputs.dry_run && inputs.release_candidate }}
+        if: ${{ runner.os == 'Windows' && !inputs.dry_run }}
         shell: pwsh
         env:
-          PROJECT_VERSION: ${{ inputs.release_candidate_version }}
+          RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
         run: |
-          ARTIFACT_ZIP_FILE="./extended-services-release-artifacts/incubator-kie-$PROJECT_VERSION-sandbox-extended-services-macOS.zip"
+          ARTIFACT_ZIP_FILE="./extended-services-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-windows-x86.zip"
           echo "ARTIFACT_ZIP_FILE=$ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
           mkdir ./extended-services-release-artifacts
           zip $ARTIFACT_ZIP_FILE ./packages/extended-services/dist/win32/kie_sandbox_extended_services.exe
 
       - name: "Sign Extended Services for Windows artifact"
-        if: ${{ runner.os == 'Windows' && !inputs.dry_run && inputs.release_candidate }}
+        if: ${{ runner.os == 'Windows' && !inputs.dry_run }}
         shell: pwsh
         env:
           ARTIFACT_ZIP_FILE: ${{ steps.windows_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
@@ -178,17 +177,17 @@ jobs:
           shasum -a 512 $ARTIFACT_ZIP_FILE > $ARTIFACT_ZIP_FILE.sha512
 
       - name: "Upload Extended Services for Windows artifact"
-        if: ${{ runner.os == 'Windows' && !inputs.dry_run && inputs.release_candidate }}
+        if: ${{ runner.os == 'Windows' && !inputs.dry_run }}
         shell: pwsh
         env:
           SVN_USERNAME: svn_dist_kie
           SVN_PASSWORD: ${{ secrets.svc-dist-kie-pass }}
-          PROJECT_VERSION: ${{ inputs.release_candidate_version }}
+          RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
           ARTIFACT_ZIP_FILE: ${{ steps.windows_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
         run: |
-          svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie/$PROJECT_VERSION/ svn-kie
+          svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie/$RELEASE_CANDIDATE_VERSION/ svn-kie
           cp ./extended-services-release-artifacts/* svn-kie
           cd svn-kie
           svn add . --force
-          svn ci --non-interactive --no-auth-cache --username "$SVN_USERNAME" --password "$SVN_PASSWORD" -m "Apache KIE $PROJECT_VERSION Extended Services for Windows artifact"
+          svn ci --non-interactive --no-auth-cache --username "$SVN_USERNAME" --password "$SVN_PASSWORD" -m "Apache KIE $RELEASE_CANDIDATE_VERSION Extended Services for Windows artifact"
           rm -rf svn-kie
