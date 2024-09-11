@@ -17,7 +17,4 @@
  * under the License.
  */
 
-export enum ContentType {
-  TEXT = "text",
-  BINARY = "binary",
-}
+export type ContentType = "text" | "binary";

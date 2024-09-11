@@ -29,8 +29,7 @@ import {
 } from "@kie-tools-core/editor/dist/api";
 import { StandaloneEditorsEditorChannelApiImpl } from "../envelope/StandaloneEditorsEditorChannelApiImpl";
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
-import { ContentType } from "@kie-tools-core/workspace/dist/api";
-import { createEditor, Editor, StandaloneEditorApi } from "../common/Editor";
+import { createEditor, Editor, EditorStandaloneResource, StandaloneEditorApi } from "../common/Editor";
 import { DmnEditorDiagramApi } from "../jsdiagram/DmnEditorDiagramApi";
 import { DmnEditorEnvelopeApi } from "@kie-tools/kie-bc-editors/dist/dmn/api";
 
@@ -71,7 +70,7 @@ export function open(args: {
   readOnly?: boolean;
   origin?: string;
   onError?: () => any;
-  resources?: Map<string, { contentType: ContentType; content: Promise<string> }>;
+  resources?: Map<string, EditorStandaloneResource>;
 }): StandaloneEditorApi & DmnEditorDiagramApi {
   const iframe = document.createElement("iframe");
   iframe.srcdoc = dmnEnvelopeIndex;

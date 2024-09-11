@@ -44,7 +44,7 @@ class ChromeResourceContentService implements ResourceContentService {
     normalizedPosixPathRelativeToTheWorkspaceRoot: string,
     opts?: ResourceContentOptions
   ): Promise<ResourceContent | undefined> {
-    opts = opts ?? { type: ContentType.TEXT };
+    opts = opts ?? { type: "text" };
     return fetchFile(
       this.octokit,
       this.repoInfo.owner,

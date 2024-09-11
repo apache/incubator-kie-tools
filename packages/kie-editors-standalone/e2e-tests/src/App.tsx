@@ -105,7 +105,7 @@ export function App() {
                     [
                       "custom-workitem.wid",
                       {
-                        contentType: ContentType.TEXT,
+                        contentType: "text",
                         content: Promise.resolve(customWorkItemWid),
                       },
                     ],
