@@ -24,7 +24,18 @@ description: "SonataFlow Management Console Launch Scripts and Configurations"
 execute:
   - script: configure-httpd.sh
 
+envs:
+  - name: SONATAFLOW_MANAGEMENT_CONSOLE_PORT
+    value: 8080
+
 artifacts:
-  - name: management-console-app
-    path: ./dist-dev/sonataflow-management-console-webapp
-    target: management-console
+  - name: sonataflow-management-console-webapp
+    path: "../../../../../sonataflow-management-console-webapp/"
+    dest: /home/kogito/management-console/app
+    target: app
+  - name: image-env-to-json-standalone
+    path: "../../../../../image-env-to-json-standalone"
+    dest: /home/kogito/management-console
+  - name: EnvJson.schema.json
+    path: "../../../../../EnvJson.schema.json"
+    dest: /home/kogito/management-console

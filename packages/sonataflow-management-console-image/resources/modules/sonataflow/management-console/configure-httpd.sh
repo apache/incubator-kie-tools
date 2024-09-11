@@ -27,23 +27,21 @@ MGMT_CONSOLE_HOME="${KOGITO_HOME}/management-console"
 echo "Mutex posixsem" >> "${HTTPD_MAIN_CONF_PATH}/httpd.conf"
 sed -i -e "/#ServerName www.example.com:80/aHeader set Content-Security-Policy \"frame-ancestors 'self';\"" "${HTTPD_MAIN_CONF_PATH}/httpd.conf"
 sed -i -e 's/Options Indexes FollowSymLinks/Options -Indexes +FollowSymLinks/' "${HTTPD_MAIN_CONF_PATH}/httpd.conf"
-sed -i "s/Listen 80/Listen ${KOGITO_MANAGEMENT_CONSOLE_PORT}/g" "${HTTPD_MAIN_CONF_PATH}/httpd.conf"
-sed -i "s/#ServerName www.example.com:80/ServerName 127.0.0.1:${KOGITO_MANAGEMENT_CONSOLE_PORT}/g" "${HTTPD_MAIN_CONF_PATH}/httpd.conf"
+sed -i "s/Listen 80/Listen ${SONATAFLOW_MANAGEMENT_CONSOLE_PORT}/g" "${HTTPD_MAIN_CONF_PATH}/httpd.conf"
+sed -i "s/#ServerName www.example.com:80/ServerName 127.0.0.1:${SONATAFLOW_MANAGEMENT_CONSOLE_PORT}/g" "${HTTPD_MAIN_CONF_PATH}/httpd.conf"
 sed -i '$ a ServerTokens Prod' "${HTTPD_MAIN_CONF_PATH}/httpd.conf"
 sed -i '$ a ServerSignature Off' "${HTTPD_MAIN_CONF_PATH}/httpd.conf"
-sed -i -e "/<Directory '${HTTPD_DATA_PATH}/html'>/a    RewriteEngine on\n    RewriteCond %{REQUEST_FILENAME} -f [OR]\n    RewriteCond %{REQUEST_FILENAME} -d\n    RewriteRule ^ - [L]\n    RewriteRule ^ index.html [L]" "${HTTPD_MAIN_CONF_PATH}/httpd.conf"
+sed -i -e '/<Directory "\/var\/www\/html">/a    RewriteEngine on\n    RewriteCond %{REQUEST_FILENAME} -f [OR]\n    RewriteCond %{REQUEST_FILENAME} -d\n    RewriteRule ^ - [L]\n    RewriteRule ^ index.html [L]' "${HTTPD_MAIN_CONF_PATH}/httpd.conf"
+
 
 # Set the required paths
-mkdir -p "${MGMT_CONSOLE_HOME}"
+mkdir -p "${MGMT_CONSOLE_HOME}/launch"
 
 # Copy the entrypoint and other init scripts
 cp -v "${SCRIPT_DIR}"/added/* "${MGMT_CONSOLE_HOME}"/launch
 
-# Copy the application
-cp -vr "${SOURCES_DIR}/management-console/"* "${MGMT_CONSOLE_HOME}/"
-
 # Fixing permissions
 chmod +x "${MGMT_CONSOLE_HOME}/launch/entrypoint.sh" "${MGMT_CONSOLE_HOME}/image-env-to-json-standalone"
-chown -R "${KOGITO_USER}" "${MGMT_CONSOLE_HOME}"
+chown -R "${USER_ID}" "${MGMT_CONSOLE_HOME}"
 
  if [ -f "${MGMT_CONSOLE_HOME}/app/env.json" ]; then chmod a+w "${MGMT_CONSOLE_HOME}/app/env.json"; fi

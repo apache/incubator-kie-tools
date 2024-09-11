@@ -35,7 +35,7 @@
     - name: "io.openshift.tags"
       value: "sonataflow,serverless,workflow"
     - name: "io.openshift.expose-services"
-      value: "$KOGITO_MANAGEMENT_CONSOLE_PORT:http"
+      value: "8080:http"
 
   modules:
     repositories:
@@ -47,7 +47,13 @@
       - name: org.kie.sonataflow.management.console
 
   ports:
-    - value: $KOGITO_MANAGEMENT_CONSOLE_PORT
+    - value: 8080
+
+  envs:
+    - name: SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE
+      value: PROD
+    - name: SUMMARY
+      value: "SonataFlow Management Console Image"
 
   run:
     workdir: "/home/kogito/management-console"
