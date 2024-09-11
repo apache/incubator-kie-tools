@@ -196,7 +196,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          pnpm -r powershell "Add-Content .\mvn\maven.config '--settings=${{ github.workspace }}\.m2\settings.xml'"
+          pnpm -r powershell "Add-Content .\.mvn\maven.config '--settings=${{ github.workspace }}\.m2\settings.xml'"
 
       - name: "Bootstrap"
         id: bootstrap
