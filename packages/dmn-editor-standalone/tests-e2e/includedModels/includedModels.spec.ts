@@ -18,27 +18,20 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { ContentType } from "@kie-tools-core/workspace/dist/api";
 import { ExternalFile } from "../__fixtures__/files";
 
 test.describe("DMN Editor - Standalone - Resources", () => {
   test.describe("includedModels/resources", () => {
     test("should list all resources", async ({ editor, files }) => {
-      const resources: Array<[string, { contentType: ContentType; content: string }]> = [
+      const resources: Array<[string, { contentType: "text" | "binary"; content: string }]> = [
         [
           "loan-pre-qualification.dmn",
-          { content: await files.getFile(ExternalFile.LOAN_PRE_QUALIFICATION_DMN), contentType: ContentType.TEXT },
+          { content: await files.getFile(ExternalFile.LOAN_PRE_QUALIFICATION_DMN), contentType: "text" },
         ],
-        ["can-drive.dmn", { content: await files.getFile(ExternalFile.CAN_DRIVE_DMN), contentType: ContentType.TEXT }],
-        [
-          "find-employees.dmn",
-          { content: await files.getFile(ExternalFile.FIND_EMPLOYEES_DMN), contentType: ContentType.TEXT },
-        ],
-        ["types.dmn", { content: await files.getFile(ExternalFile.TYPES_DMN), contentType: ContentType.TEXT }],
-        [
-          "scorecard.pmml",
-          { content: await files.getFile(ExternalFile.SCORECARD_PMML), contentType: ContentType.TEXT },
-        ],
+        ["can-drive.dmn", { content: await files.getFile(ExternalFile.CAN_DRIVE_DMN), contentType: "text" }],
+        ["find-employees.dmn", { content: await files.getFile(ExternalFile.FIND_EMPLOYEES_DMN), contentType: "text" }],
+        ["types.dmn", { content: await files.getFile(ExternalFile.TYPES_DMN), contentType: "text" }],
+        ["scorecard.pmml", { content: await files.getFile(ExternalFile.SCORECARD_PMML), contentType: "text" }],
       ];
 
       // Open the editor
@@ -61,23 +54,20 @@ test.describe("DMN Editor - Standalone - Resources", () => {
     });
 
     test("should not list any models to be included", async ({ editor, files }) => {
-      const resources: Array<[string, { contentType: ContentType; content: string }]> = [
+      const resources: Array<[string, { contentType: "text" | "binary"; content: string }]> = [
         [
           "loan-pre-qualification.dmn",
-          { content: await files.getFile(ExternalFile.LOAN_PRE_QUALIFICATION_DMN), contentType: ContentType.TEXT },
+          { content: await files.getFile(ExternalFile.LOAN_PRE_QUALIFICATION_DMN), contentType: "text" },
         ],
-        [
-          "path1/can-drive.dmn",
-          { content: await files.getFile(ExternalFile.CAN_DRIVE_DMN), contentType: ContentType.TEXT },
-        ],
+        ["path1/can-drive.dmn", { content: await files.getFile(ExternalFile.CAN_DRIVE_DMN), contentType: "text" }],
         [
           "path2/find-employees.dmn",
-          { content: await files.getFile(ExternalFile.FIND_EMPLOYEES_DMN), contentType: ContentType.TEXT },
+          { content: await files.getFile(ExternalFile.FIND_EMPLOYEES_DMN), contentType: "text" },
         ],
-        ["path3/types.dmn", { content: await files.getFile(ExternalFile.TYPES_DMN), contentType: ContentType.TEXT }],
+        ["path3/types.dmn", { content: await files.getFile(ExternalFile.TYPES_DMN), contentType: "text" }],
         [
           "path1/pmml/scorecard.pmml",
-          { content: await files.getFile(ExternalFile.SCORECARD_PMML), contentType: ContentType.TEXT },
+          { content: await files.getFile(ExternalFile.SCORECARD_PMML), contentType: "text" },
         ],
       ];
 
@@ -94,26 +84,20 @@ test.describe("DMN Editor - Standalone - Resources", () => {
     });
 
     test("should list all resources on same parent path", async ({ editor, files }) => {
-      const resources: Array<[string, { contentType: ContentType; content: string }]> = [
+      const resources: Array<[string, { contentType: "text" | "binary"; content: string }]> = [
         [
           "loan-pre-qualification.dmn",
-          { content: await files.getFile(ExternalFile.LOAN_PRE_QUALIFICATION_DMN), contentType: ContentType.TEXT },
+          { content: await files.getFile(ExternalFile.LOAN_PRE_QUALIFICATION_DMN), contentType: "text" },
         ],
-        [
-          "path1/can-drive.dmn",
-          { content: await files.getFile(ExternalFile.CAN_DRIVE_DMN), contentType: ContentType.TEXT },
-        ],
+        ["path1/can-drive.dmn", { content: await files.getFile(ExternalFile.CAN_DRIVE_DMN), contentType: "text" }],
         [
           "path2/find-employees.dmn",
-          { content: await files.getFile(ExternalFile.FIND_EMPLOYEES_DMN), contentType: ContentType.TEXT },
+          { content: await files.getFile(ExternalFile.FIND_EMPLOYEES_DMN), contentType: "text" },
         ],
-        [
-          "path3/types/types.dmn",
-          { content: await files.getFile(ExternalFile.TYPES_DMN), contentType: ContentType.TEXT },
-        ],
+        ["path3/types/types.dmn", { content: await files.getFile(ExternalFile.TYPES_DMN), contentType: "text" }],
         [
           "path1/pmml/scorecard.pmml",
-          { content: await files.getFile(ExternalFile.SCORECARD_PMML), contentType: ContentType.TEXT },
+          { content: await files.getFile(ExternalFile.SCORECARD_PMML), contentType: "text" },
         ],
       ];
 
