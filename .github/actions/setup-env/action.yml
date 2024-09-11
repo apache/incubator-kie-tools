@@ -91,50 +91,53 @@ runs:
       with:
         python-version: 3.12
 
-    - name: Setup docker (macOS only)
-      if: runner.os == 'macOS'
-      shell: bash
-      env:
-        HOMEBREW_NO_INSTALL_FROM_API:
-      run: |
-        echo "STEP: Setup docker (macOS only)"
+    - name: Setup Docker on macOS
+      uses: douglascamata/setup-docker-macos-action@v1-alpha
 
-        LIMA_VERSION=v0.23.2
-        curl -fsSL "https://github.com/lima-vm/lima/releases/download/${LIMA_VERSION}/lima-${LIMA_VERSION:1}-$(uname -s)-$(uname -m).tar.gz" | tar Cxzvm /usr/local
-        COLIMA_VERSION=v0.7.5
-        curl -LO https://github.com/abiosoft/colima/releases/download/${COLIMA_VERSION}/colima-$(uname)-$(uname -m)
-        install colima-$(uname)-$(uname -m) /usr/local/bin/colima
+    # - name: Setup docker (macOS only)
+    #   if: runner.os == 'macOS'
+    #   shell: bash
+    #   env:
+    #     HOMEBREW_NO_INSTALL_FROM_API:
+    #   run: |
+    #     echo "STEP: Setup docker (macOS only)"
 
-        brew update --preinstall
-        brew install docker docker-compose docker-Buildx qemu 2>&1 | tee install.log
-        mkdir -p ~/.docker/cli-plugins
-        ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" ~/.docker/cli-plugins/docker-compose
-        ln -sfn $(brew --prefix)/opt/docker-buildx/bin/docker-buildx ~/.docker/cli-plugins/docker-buildx
-        if grep -q "qemu 8.1.0 is already installed" install.log
-        then
-            echo "Detected broken QEMU bottle installed by brew, removing and reinstalling."
-            brew reinstall qemu
-        fi
+    #     LIMA_VERSION=v0.23.2
+    #     curl -fsSL "https://github.com/lima-vm/lima/releases/download/${LIMA_VERSION}/lima-${LIMA_VERSION:1}-$(uname -s)-$(uname -m).tar.gz" | tar Cxzvm /usr/local
+    #     COLIMA_VERSION=v0.7.5
+    #     curl -LO https://github.com/abiosoft/colima/releases/download/${COLIMA_VERSION}/colima-$(uname)-$(uname -m)
+    #     install colima-$(uname)-$(uname -m) /usr/local/bin/colima
 
-        CPU_COUNT=$(sysctl -n hw.ncpu)
-        MEMORY=$(sysctl hw.memsize | awk '{print $2/1024/1024/1024}')
-        COLIMA_ARGS="--cpu $CPU_COUNT --memory $MEMORY"
-        colima start $COLIMA_ARGS --network-address --verbose
+    #     brew update --preinstall
+    #     brew install docker docker-compose docker-Buildx qemu 2>&1 | tee install.log
+    #     mkdir -p ~/.docker/cli-plugins
+    #     ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" ~/.docker/cli-plugins/docker-compose
+    #     ln -sfn $(brew --prefix)/opt/docker-buildx/bin/docker-buildx ~/.docker/cli-plugins/docker-buildx
+    #     if grep -q "qemu 8.1.0 is already installed" install.log
+    #     then
+    #         echo "Detected broken QEMU bottle installed by brew, removing and reinstalling."
+    #         brew reinstall qemu
+    #     fi
 
-        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-        echo "version<<$EOF" >> "$GITHUB_OUTPUT"
-        docker version >> "$GITHUB_OUTPUT"
-        echo "$EOF" >> "$GITHUB_OUTPUT"
+    #     CPU_COUNT=$(sysctl -n hw.ncpu)
+    #     MEMORY=$(sysctl hw.memsize | awk '{print $2/1024/1024/1024}')
+    #     COLIMA_ARGS="--cpu $CPU_COUNT --memory $MEMORY"
+    #     colima start $COLIMA_ARGS --network-address --verbose
 
-        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-        echo "version<<$EOF" >> "$GITHUB_OUTPUT"
-        docker compose version >> "$GITHUB_OUTPUT"
-        echo "$EOF" >> "$GITHUB_OUTPUT"
+    #     EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+    #     echo "version<<$EOF" >> "$GITHUB_OUTPUT"
+    #     docker version >> "$GITHUB_OUTPUT"
+    #     echo "$EOF" >> "$GITHUB_OUTPUT"
 
-        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-        echo "version<<$EOF" >> "$GITHUB_OUTPUT"
-        colima version >> "$GITHUB_OUTPUT"
-        echo "$EOF" >> "$GITHUB_OUTPUT"
+    #     EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+    #     echo "version<<$EOF" >> "$GITHUB_OUTPUT"
+    #     docker compose version >> "$GITHUB_OUTPUT"
+    #     echo "$EOF" >> "$GITHUB_OUTPUT"
+
+    #     EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+    #     echo "version<<$EOF" >> "$GITHUB_OUTPUT"
+    #     colima version >> "$GITHUB_OUTPUT"
+    #     echo "$EOF" >> "$GITHUB_OUTPUT"
 
     - name: "Setup Helm (Ubuntu)"
       if: runner.os == 'Linux'
