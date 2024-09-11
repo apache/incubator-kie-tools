@@ -99,6 +99,14 @@ module.exports = async (env) =>
       client: {
         overlay: false,
       },
+      proxy: [
+        {
+          context: (path, req) => req.method === "POST" || path === "/q/openapi.json",
+          target: "http://localhost:4000",
+          secure: false,
+          changeOrigin: true,
+        },
+      ],
     },
     resolve: {
       fallback: {

@@ -25,9 +25,7 @@
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools/dashbuilder-component-api": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
-    "@patternfly/react-table": "^4.112.39",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "@patternfly/react-table": "^4.112.39"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -49,5 +47,9 @@
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.9.0"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0",
+    "react-dom": ">=17.0.2 <19.0.0"
   }
 }

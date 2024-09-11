@@ -51,9 +51,7 @@
     "dangerously-set-html-content": "^1.0.13",
     "lodash": "^4.17.21",
     "monaco-editor": "^0.39.0",
-    "react": "^17.0.2",
     "react-datetime-picker": "^3.5.0",
-    "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
     "react-json-view": "^1.21.3",
     "react-moment": "0.9.7",
@@ -87,5 +85,9 @@
     "rimraf": "^3.0.2",
     "ts-jest": "^29.1.5",
     "typescript": "^5.5.3"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0",
+    "react-dom": ">=17.0.2 <19.0.0"
   }
 }
