@@ -29,11 +29,17 @@ on:
       base_ref:
         type: string
         required: true
-        description: "Tag associated with the release"
+        description: "Base reference for the checkout"
       release_candidate_version:
         type: string
         required: true
-        description: "Tag associated with the release"
+        description: "Release candidate version"
+      jitexecutor_native_macos_repository:
+        required: true
+        description: "JITExecutor native macOS artifacts repository"
+      jitexecutor_native_windows_repository:
+        required: true
+        description: "JITExecutor native windows artifacts repository"
 
 env:
   KIE_TOOLS_BUILD__runLinters: "false"
@@ -63,6 +69,127 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
+
+      - name: Setup maven settings (MacOS)
+        if: runner.os == 'macOS'
+        env:
+          WORKDIR_PATH: ${{ github.workspace }}
+          JITEXECUTOR_NATIVE_REPO: ${{ github.event.inputs.jitexecutor_native_macos_repository }}
+        run: |
+          mkdir -p ${WORKDIR_PATH}/.m2
+          echo "<settings>
+           <servers>
+             <server>
+               <id>apache.snapshots.https</id>
+               <username>${{ secrets.NEXUS_USER }}</username>
+               <password>${{ secrets.NEXUS_PW }}</password>
+             </server>
+           </servers>
+           <profiles>
+            <profile>
+              <id>additional_repos</id>
+              <repositories>
+                <repository>
+                  <id>apache-kie-jitexecutor-native-staging-repository</id>
+                  <name>Apache KIE JITExecutor Native Staging Repository</name>
+                  <url>${JITEXECUTOR_NATIVE_REPO}</url>
+                  <layout>default</layout>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </repository>
+              </repositories>
+              <pluginRepositories>
+                <pluginRepository>
+                  <id>apache-kie-jitexecutor-native-staging-repository</id>
+                  <name>Apache KIE JITExecutor Native Staging Repository</name>
+                  <url>${JITEXECUTOR_NATIVE_REPO}</url>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </pluginRepository>
+              </pluginRepositories>
+            </profile>
+          </profiles>
+          <activeProfiles>
+            <activeProfile>additional_repos</activeProfile>
+          </activeProfiles>
+          </settings>" > ${WORKDIR_PATH}/.m2/settings.xml
+
+      - name: Setup maven settings (Windows)
+        if: runner.os == 'Windows'
+        env:
+          WORKDIR_PATH: ${{ github.workspace }}
+          JITEXECUTOR_NATIVE_REPO: ${{ github.event.inputs.jitexecutor_native_windows_repository }}
+        shell: pwsh
+        run: |
+          New-Item -Name ".m2" -Path "$env:WORKDIR_PATH" -ItemType Directory
+          $contentToAdd = @"
+          <settings>
+           <servers>
+             <server>
+               <id>apache.snapshots.https</id>
+               <username>${{ secrets.NEXUS_USER }}</username>
+               <password>${{ secrets.NEXUS_PW }}</password>
+             </server>
+           </servers>
+           <profiles>
+            <profile>
+              <id>additional_repos</id>
+              <repositories>
+                <repository>
+                  <id>apache-kie-jitexecutor-native-staging-repository</id>
+                  <name>Apache KIE JITExecutor Native Staging Repository</name>
+                  <url>$env:JITEXECUTOR_NATIVE_REPO</url>
+                  <layout>default</layout>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </repository>
+              </repositories>
+              <pluginRepositories>
+                <pluginRepository>
+                  <id>apache-kie-jitexecutor-native-staging-repository</id>
+                  <name>Apache KIE JITExecutor Native Staging Repository</name>
+                  <url>$env:JITEXECUTOR_NATIVE_REPO</url>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </pluginRepository>
+              </pluginRepositories>
+            </profile>
+          </profiles>
+          <activeProfiles>
+            <activeProfile>additional_repos</activeProfile>
+          </activeProfiles>
+          </settings>
+          "@
+          Add-Content "$env:WORKDIR_PATH\.m2\settings.xml" $contentToAdd
+
+      - name: "Setup PNPM Maven Settings"
+        shell: bash
+        run: |
+          pnpm -r exec 'bash' '-c' 'echo --settings=${{ github.workspace }}/.m2/settings.xml >> .mvn/maven.config'
 
       - name: "Bootstrap"
         id: bootstrap
