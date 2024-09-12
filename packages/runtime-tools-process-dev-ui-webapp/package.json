@@ -79,7 +79,7 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/uuid": "^8.3.0",
     "apollo-server-express": "^3.13.0",
-    "body-parser": "^1.20.2",
+    "body-parser": "^1.20.3",
     "concurrently": "^8.2.2",
     "copy-webpack-plugin": "^11.0.0",
     "core-js": "3.6.5",
