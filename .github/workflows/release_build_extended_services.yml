@@ -386,13 +386,13 @@ jobs:
         run: |
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
-      - name: Temporary MacOS artifacts
-        if: runner.os == 'macOS'
-        uses: actions/upload-artifact@v4
-        with:
-          name: extended-services-macos-artifacts
-          path: ./packages/extended-services/dist/darwin/Kogito.dmg
-          retention-days: 1
+      # - name: Temporary MacOS artifacts
+      #   if: runner.os == 'macOS'
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: extended-services-macos-artifacts
+      #     path: ./packages/extended-services/dist/darwin/Kogito.dmg
+      #     retention-days: 1
 
       - name: Temporary Windows artifacts
         if: runner.os == 'Windows'
@@ -418,11 +418,11 @@ jobs:
           mkdir ./extended-services-release-artifacts
           mkdir ./extended-services-final-release-artifacts
 
-      - name: Retrieve MacOS artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: extended-services-macos-artifacts
-          path: ./extended-services-release-artifacts
+      # - name: Retrieve MacOS artifacts
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: extended-services-macos-artifacts
+      #     path: ./extended-services-release-artifacts
 
       - name: Retrieve Windows artifacts
         uses: actions/download-artifact@v4
@@ -437,22 +437,22 @@ jobs:
         env:
           RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
         run: |
-          MACOS_ARTIFACT_ZIP_FILE="./extended-services-final-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-macOS-x86.zip"
+          #MACOS_ARTIFACT_ZIP_FILE="./extended-services-final-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-macOS-x86.zip"
           WINDOWS_ARTIFACT_ZIP_FILE="./extended-services-final-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-windows-x86.zip"
-          echo "MACOS_ARTIFACT_ZIP_FILE=$MACOS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
+          #echo "MACOS_ARTIFACT_ZIP_FILE=$MACOS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
           echo "WINDOWS_ARTIFACT_ZIP_FILE=$WINDOWS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
-          mv ./extended-services-release-artifacts/extended-services-macos-artifacts.zip $MACOS_ARTIFACT_ZIP_FILE
+          #mv ./extended-services-release-artifacts/extended-services-macos-artifacts.zip $MACOS_ARTIFACT_ZIP_FILE
           mv ./extended-services-release-artifacts/extended-services-windows-artifacts.zip $WINDOWS_ARTIFACT_ZIP_FILE
 
       - name: "Sign artifacts"
         if: ${{ !inputs.dry_run }}
         shell: bash
         env:
-          MACOS_ARTIFACT_ZIP_FILE: ${{ steps.zip_artifacts.outputs.MACOS_ARTIFACT_ZIP_FILE }}
+          #MACOS_ARTIFACT_ZIP_FILE: ${{ steps.zip_artifacts.outputs.MACOS_ARTIFACT_ZIP_FILE }}
           WINDOWS_ARTIFACT_ZIP_FILE: ${{ steps.zip_artifacts.outputs.WINDOWS_ARTIFACT_ZIP_FILE }}
         run: |
-          gpg --no-tty --batch --sign --pinentry-mode loopback --output $MACOS_ARTIFACT_ZIP_FILE.asc --detach-sig $MACOS_ARTIFACT_ZIP_FILE
-          shasum -a 512 $MACOS_ARTIFACT_ZIP_FILE > $MACOS_ARTIFACT_ZIP_FILE.sha512
+          #gpg --no-tty --batch --sign --pinentry-mode loopback --output $MACOS_ARTIFACT_ZIP_FILE.asc --detach-sig $MACOS_ARTIFACT_ZIP_FILE
+          #shasum -a 512 $MACOS_ARTIFACT_ZIP_FILE > $MACOS_ARTIFACT_ZIP_FILE.sha512
           gpg --no-tty --batch --sign --pinentry-mode loopback --output $WINDOWS_ARTIFACT_ZIP_FILE.asc --detach-sig $WINDOWS_ARTIFACT_ZIP_FILE
           shasum -a 512 $WINDOWS_ARTIFACT_ZIP_FILE > $WINDOWS_ARTIFACT_ZIP_FILE.sha512
 
