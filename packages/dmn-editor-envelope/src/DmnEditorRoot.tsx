@@ -137,7 +137,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     // Save stack
     let savedStackPointer: Normalized<DmnLatestModel>[] = [];
 
-    // Set the model and path for external model's manager.
+    // Set the model and path for external models manager.
     this.setState((prev) => {
       savedStackPointer = [...prev.stack];
       return {
@@ -160,7 +160,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
         const newStack = savedStackPointer.slice(0, prev.pointer + 1);
         return {
           marshaller,
-          openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
+          openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
           stack: [...newStack, normalize(marshaller.parser.parse())],
           isReadOnly: prev.isReadOnly,
           pointer: newStack.length,
@@ -172,7 +172,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       else {
         return {
           marshaller,
-          openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
+          openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
           stack: [normalize(marshaller.parser.parse())],
           isReadOnly: prev.isReadOnly,
           pointer: 0,
@@ -647,16 +647,16 @@ function ExternalModelsManager({
               .documentElement.getAttribute("namespace");
 
             if (namespaceOfTheResourceFile && namespacesSet.has(namespaceOfTheResourceFile)) {
-              checkIfNamespaceIsAlreadyLoaded(
+              checkIfNamespaceIsAlreadyLoaded({
                 externalModelsIndex,
                 namespaceOfTheResourceFile,
-                resource.normalizedPosixPathRelativeToTheWorkspaceRoot
-              );
+                normalizedPosixPathRelativeToTheWorkspaceRoot: resource.normalizedPosixPathRelativeToTheWorkspaceRoot,
+              });
 
               loadModel({
                 includedModelContent: resourceContent,
-                includedNamespace: namespaceOfTheResourceFile,
-                externalModelsIndex: externalModelsIndex,
+                includedModelNamespace: namespaceOfTheResourceFile,
+                externalModelsIndex,
                 thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot,
                 loadedDmnsByPathRelativeToTheWorkspaceRoot,
                 normalizedPosixPathRelativeToTheWorkspaceRoot: resource.normalizedPosixPathRelativeToTheWorkspaceRoot,
@@ -730,10 +730,10 @@ function getIncludedNamespacesFromModel(imports: Normalized<DmnLatestModel["defi
 function loadModel(args: {
   thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot: string;
   resourcesByNamespace: Map<string, ResourceContent>;
-  normalizedPosixPathRelativeToTheWorkspaceRoot: any;
-  includedNamespace: any;
+  normalizedPosixPathRelativeToTheWorkspaceRoot: string;
+  includedModelNamespace: string;
   loadedDmnsByPathRelativeToTheWorkspaceRoot: Set<string>;
-  includedModelContent: any;
+  includedModelContent: string;
   externalModelsIndex: DmnEditor.ExternalModelsIndex;
 }) {
   const normalizedPosixPathRelativeToTheOpenFile = __path.relative(
@@ -742,7 +742,7 @@ function loadModel(args: {
   );
 
   const includedModel = normalize(getMarshaller(args.includedModelContent, { upgradeTo: "latest" }).parser.parse());
-  args.externalModelsIndex[args.includedNamespace] = {
+  args.externalModelsIndex[args.includedModelNamespace] = {
     normalizedPosixPathRelativeToTheOpenFile,
     model: includedModel,
     type: "dmn",
@@ -751,69 +751,63 @@ function loadModel(args: {
 
   args.loadedDmnsByPathRelativeToTheWorkspaceRoot.add(args.normalizedPosixPathRelativeToTheWorkspaceRoot);
 
-  loadDependentModels(
-    includedModel,
-    args.externalModelsIndex,
-    args.resourcesByNamespace,
-    args.loadedDmnsByPathRelativeToTheWorkspaceRoot,
-    args.thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot
-  );
+  loadDependentModels({
+    ...args,
+    model: includedModel,
+  });
 }
 
 // Load all included models from the model and the included models of those models, recursively.
-function loadDependentModels(
-  model: Normalized<DmnLatestModel>,
-  externalModelsIndex: DmnEditor.ExternalModelsIndex,
-  resourcesByNamespace: Map<string, ResourceContent>,
-  loadedDmnsByPathRelativeToTheWorkspaceRoot: Set<string>,
-  thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot: string
-) {
+function loadDependentModels(args: {
+  model: Normalized<DmnLatestModel>;
+  externalModelsIndex: DmnEditor.ExternalModelsIndex;
+  resourcesByNamespace: Map<string, ResourceContent>;
+  loadedDmnsByPathRelativeToTheWorkspaceRoot: Set<string>;
+  thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot: string;
+}) {
   const includedNamespaces = new Set(
-    getIncludedNamespacesFromModel(model.definitions.import).split(NAMESPACES_EFFECT_SEPARATOR)
+    getIncludedNamespacesFromModel(args.model.definitions.import).split(NAMESPACES_EFFECT_SEPARATOR)
   );
 
   for (const includedNamespace of includedNamespaces) {
-    if (!resourcesByNamespace.has(includedNamespace)) {
+    if (!args.resourcesByNamespace.has(includedNamespace)) {
       console.warn(
-        `DMN EDITOR ROOT: The included namespace '${includedNamespace}' for the model '${model.definitions["@_id"]}' can not be found.`
+        `DMN EDITOR ROOT: The included namespace '${includedNamespace}' for the model '${args.model.definitions["@_id"]}' can not be found.`
       );
       continue;
     }
 
-    const resource = resourcesByNamespace.get(includedNamespace)!;
-    if (loadedDmnsByPathRelativeToTheWorkspaceRoot.has(resource.normalizedPosixPathRelativeToTheWorkspaceRoot)) {
+    const resource = args.resourcesByNamespace.get(includedNamespace)!;
+    if (args.loadedDmnsByPathRelativeToTheWorkspaceRoot.has(resource.normalizedPosixPathRelativeToTheWorkspaceRoot)) {
       continue;
     }
 
-    checkIfNamespaceIsAlreadyLoaded(
-      externalModelsIndex,
-      includedNamespace,
-      resource.normalizedPosixPathRelativeToTheWorkspaceRoot
-    );
+    checkIfNamespaceIsAlreadyLoaded({
+      externalModelsIndex: args.externalModelsIndex,
+      namespaceOfTheResourceFile: includedNamespace,
+      normalizedPosixPathRelativeToTheWorkspaceRoot: resource.normalizedPosixPathRelativeToTheWorkspaceRoot,
+    });
 
     loadModel({
-      thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot,
+      ...args,
       includedModelContent: resource.content ?? "",
       normalizedPosixPathRelativeToTheWorkspaceRoot: resource.normalizedPosixPathRelativeToTheWorkspaceRoot,
-      externalModelsIndex,
-      includedNamespace,
-      loadedDmnsByPathRelativeToTheWorkspaceRoot,
-      resourcesByNamespace,
+      includedModelNamespace: includedNamespace,
     });
   }
 }
 
-function checkIfNamespaceIsAlreadyLoaded(
-  externalModelsIndex: DmnEditor.ExternalModelsIndex,
-  namespaceOfTheResourceFile: string,
-  normalizedPosixPathRelativeToTheWorkspaceRoot: string
-) {
-  if (externalModelsIndex[namespaceOfTheResourceFile]) {
+function checkIfNamespaceIsAlreadyLoaded(args: {
+  externalModelsIndex: DmnEditor.ExternalModelsIndex;
+  namespaceOfTheResourceFile: string;
+  normalizedPosixPathRelativeToTheWorkspaceRoot: string;
+}) {
+  if (args.externalModelsIndex[args.namespaceOfTheResourceFile]) {
     console.warn(
-      `DMN EDITOR ROOT: Multiple DMN models encountered with the same namespace '${namespaceOfTheResourceFile}': '${
-        normalizedPosixPathRelativeToTheWorkspaceRoot
+      `DMN EDITOR ROOT: Multiple DMN models encountered with the same namespace '${args.namespaceOfTheResourceFile}': '${
+        args.normalizedPosixPathRelativeToTheWorkspaceRoot
       }' and '${
-        externalModelsIndex[namespaceOfTheResourceFile]!.normalizedPosixPathRelativeToTheOpenFile
+        args.externalModelsIndex[args.namespaceOfTheResourceFile]!.normalizedPosixPathRelativeToTheOpenFile
       }'. The latter will be considered.`
     );
   }
