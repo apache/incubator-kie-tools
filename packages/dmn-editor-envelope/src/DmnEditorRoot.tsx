@@ -142,7 +142,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       savedStackPointer = [...prev.stack];
       return {
         stack: [normalize(marshaller.parser.parse())],
-        openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
+        openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
         pointer: 0,
       };
     });
