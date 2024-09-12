@@ -388,7 +388,7 @@ jobs:
 
       - name: Temporary MacOS artifacts
         if: runner.os == 'macOS'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: extended-services-macos-artifacts
           path: ./packages/extended-services/dist/darwin/Kogito.dmg
@@ -396,7 +396,7 @@ jobs:
 
       - name: Temporary Windows artifacts
         if: runner.os == 'Windows'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: extended-services-windows-artifacts
           path: .\packages\extended-services\dist\win32\kie_sandbox_extended_services.exe
@@ -418,13 +418,13 @@ jobs:
           mkdir ./extended-services-zipped-release-artifacts
 
       - name: Retrieve MacOS artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: extended-services-macos-artifacts
           path: ./extended-services-release-artifacts
 
       - name: Retrieve Windows artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: extended-services-windows-artifacts
           path: ./extended-services-release-artifacts
