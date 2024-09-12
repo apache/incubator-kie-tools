@@ -432,18 +432,18 @@ jobs:
       - name: "Setup Extended Services for Windows artifacts"
         id: windows_setup_artifact
         if: ${{ runner.os == 'Windows' && !inputs.dry_run }}
-        shell: bash
+        shell: pwsh
         env:
           RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
         run: |
-          ARTIFACT_ZIP_FILE="./extended-services-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-windows-x86.zip"
-          echo "ARTIFACT_ZIP_FILE=$ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
-          mkdir ./extended-services-release-artifacts
-          zip $ARTIFACT_ZIP_FILE ./packages/extended-services/dist/win32/kie_sandbox_extended_services.exe
+          ARTIFACT_ZIP_FILE=".\extended-services-release-artifacts\incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-windows-x86.zip"
+          echo "ARTIFACT_ZIP_FILE=$ARTIFACT_ZIP_FILE" >> $env:GITHUB_OUTPUT
+          mkdir .\extended-services-release-artifacts
+          Compress-Archive -Path .\packages\extended-services\dist\win32\kie_sandbox_extended_services.exe -DestinationPath $ARTIFACT_ZIP_FILE
 
       - name: "Sign Extended Services for Windows artifact"
         if: ${{ runner.os == 'Windows' && !inputs.dry_run }}
-        shell: bash
+        shell: pwsh
         env:
           ARTIFACT_ZIP_FILE: ${{ steps.windows_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
         run: |
@@ -452,7 +452,7 @@ jobs:
 
       - name: "Upload Extended Services for Windows artifact"
         if: ${{ runner.os == 'Windows' && !inputs.dry_run }}
-        shell: bash
+        shell: pwsh
         env:
           SVN_USERNAME: svn_dist_kie
           SVN_PASSWORD: ${{ secrets.svc-dist-kie-pass }}
@@ -460,8 +460,8 @@ jobs:
           ARTIFACT_ZIP_FILE: ${{ steps.windows_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
         run: |
           svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie/$RELEASE_CANDIDATE_VERSION/ svn-kie
-          cp ./extended-services-release-artifacts/* svn-kie
-          cd svn-kie
+          Copy-Item -Path .\extended-services-release-artifacts\* -Destination .\svn-kie
+          Set-Location -Path .\svn-kie
           svn add . --force
           svn ci --non-interactive --no-auth-cache --username "$SVN_USERNAME" --password "$SVN_PASSWORD" -m "Apache KIE $RELEASE_CANDIDATE_VERSION Extended Services for Windows artifact"
-          rm -rf svn-kie
+          rm .\svn-kie -r -force
