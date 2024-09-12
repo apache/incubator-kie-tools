@@ -441,7 +441,6 @@ jobs:
           WINDOWS_ARTIFACT_ZIP_FILE="./extended-services-final-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-windows-x86.zip"
           #echo "MACOS_ARTIFACT_ZIP_FILE=$MACOS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
           echo "WINDOWS_ARTIFACT_ZIP_FILE=$WINDOWS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
-          ls -la ./extended-services-release-artifacts
           #zip $MACOS_ARTIFACT_ZIP_FILE ./extended-services-release-artifacts/Kogito.dmg
           zip $WINDOWS_ARTIFACT_ZIP_FILE ./extended-services-release-artifacts/kie_sandbox_extended_services.exe
 
@@ -469,5 +468,5 @@ jobs:
           cp ./extended-services-final-release-artifacts/* svn-kie
           cd svn-kie
           svn add . --force
-          svn ci --non-interactive --no-auth-cache --username "$SVN_USERNAME" --password "$SVN_PASSWORD" -m "Apache KIE $RELEASE_CANDIDATE_VERSION Extended Services artifacts"
+          svn ci --non-interactive --no-auth-cache --username $SVN_USERNAME --password '$SVN_PASSWORD' -m "Apache KIE $RELEASE_CANDIDATE_VERSION Extended Services artifacts"
           rm -rf svn-kie
