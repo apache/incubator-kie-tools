@@ -39,3 +39,9 @@ jobs:
     with:
       dry_run: true
       base_ref: ${{ github.event.pull_request && github.base_ref || github.ref }}
+      release_candidate_version: ""
+      drools_repository: ""
+      kogito_runtimes_repository: ""
+      kogito_apps_repository: ""
+      jitexecutor_native_macos_repository: ""
+      jitexecutor_native_windows_repository: ""
