@@ -461,8 +461,8 @@ jobs:
         if: ${{ !inputs.dry_run }}
         shell: bash
         env:
-          SVN_USERNAME: svn_dist_kie
-          SVN_PASSWORD: ${{ secrets.svc-dist-kie-pass }}
+          SVN_USERNAME: ${{ secrets.INCUBATOR_SVN_DEV_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.INCUBATOR_SVN_DEV_PASSWORD }}
           RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
         run: |
           svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie/$RELEASE_CANDIDATE_VERSION/ svn-kie
