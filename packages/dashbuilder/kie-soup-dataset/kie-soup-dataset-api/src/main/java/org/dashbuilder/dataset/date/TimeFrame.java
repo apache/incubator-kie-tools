@@ -21,7 +21,7 @@ package org.dashbuilder.dataset.date;
 
 /**
  * A time frame defines a time period between two time instants where these two instants depends on the current time.
- * <p>Some examples of time frame expressions are:
+ * <p>Some examples of time frame expressions are:</p>
  * <ul>
  * <li>&quot;<i>now till 10second</i>&quot; => next 10 seconds</li>
  * <li>&quot;<i>begin[minute] till 10second</i>&quot; => first 10 seconds of current minute</li>
@@ -34,7 +34,6 @@ package org.dashbuilder.dataset.date;
  * <li>&quot;<i>end[year March] +2quarter till 1quarter</i>&quot; => 3rd quarter of next year</li>
  * <li>&quot;<i>begin[year March] -7day till begin[year March]</i>&quot; => Last week of last year</li>
  * </ul>
- * </p>
  */
 public class TimeFrame {
 

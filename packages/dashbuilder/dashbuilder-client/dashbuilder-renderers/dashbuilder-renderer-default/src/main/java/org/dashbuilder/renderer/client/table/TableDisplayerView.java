@@ -300,7 +300,7 @@ public class TableDisplayerView extends AbstractGwtDisplayerView<TableDisplayer>
         }
 
         /**
-         * Both filter & sort invoke this method from redraw()
+         * Both filter and sort invoke this method from redraw()
          */
         public void gotoFirstPage() {
             // Avoid fetching the data set again

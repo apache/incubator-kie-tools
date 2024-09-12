@@ -43,7 +43,7 @@ public interface Chronometer {
     /**
      * Return the time specified in human readable format.
      * @param millis The time to format in milliseconds.
-     * @return Examples: <i>2d 3h 44m 2s<i>  or  <i>20 weeks 3h 3s</i>
+     * @return Examples: <i>2d 3h 44m 2s</i>  or  <i>20 weeks 3h 3s</i>
      */
     String formatElapsedTime(long millis);
 }
