@@ -416,7 +416,7 @@ jobs:
         shell: bash
         run: |
           mkdir ./extended-services-release-artifacts
-          mkdir ./extended-services-zipped-release-artifacts
+          mkdir ./extended-services-final-release-artifacts
 
       - name: Retrieve MacOS artifacts
         uses: actions/download-artifact@v4
@@ -437,12 +437,12 @@ jobs:
         env:
           RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
         run: |
-          MACOS_ARTIFACT_ZIP_FILE="./extended-services-zipped-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-macOS-x86.zip"
-          WINDOWS_ARTIFACT_ZIP_FILE="./extended-services-zipped-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-windows-x86.zip"
+          MACOS_ARTIFACT_ZIP_FILE="./extended-services-final-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-macOS-x86.zip"
+          WINDOWS_ARTIFACT_ZIP_FILE="./extended-services-final-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-windows-x86.zip"
           echo "MACOS_ARTIFACT_ZIP_FILE=$MACOS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
           echo "WINDOWS_ARTIFACT_ZIP_FILE=$WINDOWS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
-          zip $MACOS_ARTIFACT_ZIP_FILE ./extendend-services-release-raw-artifacts/Kogito.dmg
-          zip $WINDOWS_ARTIFACT_ZIP_FILE ./extendend-services-release-raw-artifacts/kie_sandbox_extended_services.exe
+          mv ./extended-services-release-artifacts/extended-services-macos-artifacts.zip $MACOS_ARTIFACT_ZIP_FILE
+          mv ./extended-services-release-artifacts/extended-services-windows-artifacts.zip $WINDOWS_ARTIFACT_ZIP_FILE
 
       - name: "Sign artifacts"
         if: ${{ !inputs.dry_run }}
