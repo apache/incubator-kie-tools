@@ -403,6 +403,7 @@ jobs:
           retention-days: 1
 
   extended_services_sign_and_deploy:
+    needs: [extended_services_build]
     runs-on: ubuntu-latest
     steps:
       - name: Import GPG key
