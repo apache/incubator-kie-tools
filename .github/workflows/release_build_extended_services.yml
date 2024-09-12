@@ -465,7 +465,7 @@ jobs:
           RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
         run: |
           svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie/$RELEASE_CANDIDATE_VERSION/ svn-kie
-          cp ./extended-services-zipped-release-artifacts/* svn-kie
+          cp ./extended-services-final-release-artifacts/* svn-kie
           cd svn-kie
           svn add . --force
           svn ci --non-interactive --no-auth-cache --username "$SVN_USERNAME" --password "$SVN_PASSWORD" -m "Apache KIE $RELEASE_CANDIDATE_VERSION Extended Services artifacts"
