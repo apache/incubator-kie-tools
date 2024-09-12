@@ -25,7 +25,7 @@ import org.dashbuilder.dataset.group.DateIntervalType;
 
 /**
  * This class is used to represent a given time instant relative to the current time.
- * <p>Some examples of time instants are:
+ * <p>Some examples of time instants are:</p>
  * <ul>
  * <li><i>now</i></li>
  * <li><i>now -10second</i> or just <i>-10second</i></li>
@@ -34,7 +34,6 @@ import org.dashbuilder.dataset.group.DateIntervalType;
  * <li><i>end[year March] +1year</i> => end of next year (year starting on March)</li>
  * <li><i>begin[year March] -7day</i> => last year's last week start</li>
  * </ul>
- * </p>
  */
 public class TimeInstant {
 

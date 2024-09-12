@@ -35,11 +35,9 @@ public interface BeanFactory {
 
     /**
      * Creates a new part presenter/view pair with the given properties.
-     * @param menus The menus to associate with the new part. Null means no menus.
      * @param title The title to associate with the new part that the containing panel may display
      * @param titleDecoration The title decoration that a panel may choose to display beside the part's title. Null is permitted,
      * and means no title decoration.
-     * <p>
      * NOTE: presently, none of the built-in panel types display a part's title decoration.
      * @param definition Defines all other aspects of the part to create. Must not be null.
      * @param partType The new part type.
@@ -72,10 +70,10 @@ public interface BeanFactory {
     public CompassDropController newDropController(final WorkbenchPanelView<?> view);
 
     /**
-     * Destroys the entire graph of beans that were created and returned via a call to any of the <tt>newXXX()</tt>
+     * Destroys the entire graph of beans that were created and returned via a call to any of the <code>newXXX()</code>
      * methods in this class. For example, passing a {@link WorkbenchPartPresenter} instance in will result in the
      * destruction of that presenter, its view, and all other dependent beans injected into that graph of objects.
-     * @param o a bean which was returned from one of the <tt>newXXX()</tt> methods in this class and which has not
+     * @param o a bean which was returned from one of the <code>newXXX()</code> methods in this class and which has not
      * been destroyed yet.
      */
     public void destroy(final Object o);

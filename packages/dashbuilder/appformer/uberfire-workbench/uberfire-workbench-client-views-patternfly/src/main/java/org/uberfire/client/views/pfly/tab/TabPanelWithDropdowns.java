@@ -273,7 +273,7 @@ public class TabPanelWithDropdowns extends Composite {
      * Adds a new tab to this panel that doesn't have any contents itself, but can contain multiple items that appear in
      * a dropdown menu when the tab is clicked. This dropdown menu is initially empty. Items can be added and removed
      * using the {@link DropDownTab#addItem(String, Widget)} and
-     * {@link DropDownTab#removeItem(String, Widget)} methods.
+     * DropDownTab#removeItem(String, Widget) methods.
      * @param label The text that should appear on the dropdown tab.
      * @return the container for the items that appear when the tab is clicked.
      */
@@ -298,7 +298,7 @@ public class TabPanelWithDropdowns extends Composite {
     /**
      * Adds a pre-made dropdown tab to this tab panel. This can be used for re-attaching a dropdown tab that was
      * previously added with {@link #addDropdownTab(String)} and then removed.
-     * @param tab the tab to add back
+     * @param contents contents
      */
     public void addDropdownTab(DropDownTab contents) {
         AnchorListItem tab = contents.owningTab;

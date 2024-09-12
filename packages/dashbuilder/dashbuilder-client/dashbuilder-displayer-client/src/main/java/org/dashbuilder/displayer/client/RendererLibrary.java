@@ -31,7 +31,7 @@ import org.dashbuilder.displayer.DisplayerType;
  * <p>A renderer library must:</p>
  * <ul>
  *     <li>Perform all the required initializations before any displayer can be drawn</li>
- *     <li>Declare the displayer types & subtypes supported</li>
+ *     <li>Declare the displayer types and subtypes supported</li>
  *     <li>Take care of the initialization of displayer instances</li>
  * </ul>
  */

@@ -30,7 +30,6 @@ import org.dashbuilder.dataset.group.DateIntervalType;
  * <li><i>-1year</i></li>
  * <li><i>+2quarter</i></li>
  * </ul>
- * </p>
  */
 public class TimeAmount {
 

@@ -49,7 +49,7 @@ public interface PartDefinition {
     void setContextDisplayMode(final ContextDisplayMode contextDisplayMode);
 
     /**
-     * Invokes {@link #toString()} but exported to JavaScript so it can be invoked from different scripts.
+     * Invokes toString() but exported to JavaScript so it can be invoked from different scripts.
      */
     default String asString() {
         return this.toString();

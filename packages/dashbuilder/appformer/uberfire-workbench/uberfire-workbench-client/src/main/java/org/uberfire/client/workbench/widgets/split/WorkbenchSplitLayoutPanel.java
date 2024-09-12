@@ -42,12 +42,10 @@ import org.uberfire.workbench.model.CompassPosition;
 /**
  * A panel that adds user-positioned splitters between each of its child
  * widgets.
- * <p>
  * This is a fork of the standard SplitLayoutPanel with the following changes:-
  * <ol>
  * <li>http://code.google.com/p/google-web-toolkit/issues/detail?id=7135</li>
  * </ol>
- * </p>
  * <p>
  * This panel is used in the same way as {@link DockLayoutPanel}, except that
  * its children's sizes are always specified in {@link Unit#PX} units, and each
@@ -58,7 +56,7 @@ import org.uberfire.workbench.model.CompassPosition;
  * the HTML page in which it is run have an explicit &lt;!DOCTYPE&gt;
  * declaration.
  * </p>
- * <h3>CSS Style Rules</h3>
+ * <strong>CSS Style Rules</strong>
  * <ul class='css'>
  * <li>.gwt-SplitLayoutPanel { the panel itself }</li>
  * <li>.gwt-SplitLayoutPanel .gwt-SplitLayoutPanel-HDragger { horizontal dragger
@@ -67,7 +65,7 @@ import org.uberfire.workbench.model.CompassPosition;
  * </li>
  * </ul>
  * <p>
- * <h3>Example</h3> {@example com.google.gwt.examples.SplitLayoutPanelExample}
+ * <strong>Example</strong> com.google.gwt.examples.SplitLayoutPanelExample
  * </p>
  */
 public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {

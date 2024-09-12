@@ -53,7 +53,7 @@ public interface ActivityManager {
      * certain path, the returned set can contain any number of activities.
      * @param placeRequest the PlaceRequest to resolve activities for. Although null is permitted for convenience, it always
      * resolves to the empty set.
-     * @param secure flag indicating if calls to the {@link AuthorizationManager} service are required in order to
+     * @param secure flag indicating if calls to the AuthorizationManager service are required in order to
      * determine which activities are available.
      * @return an unmodifiable set of activities that can handle the given PlaceRequest. Never null, but can be empty.
      * To prevent memory leaks, pass Activity in the returned set to {@link #destroyActivity(Activity)} when you
@@ -81,7 +81,7 @@ public interface ActivityManager {
     /**
      * Finds an activity that can handle the given PlaceRequest, creating and starting a new one if necessary.
      * @param placeRequest the place the resolved activity should handle
-     * @param secure flag indicating if calls to the {@link AuthorizationManager} service are required in order to
+     * @param secure flag indicating if calls to the AuthorizationManager service are required in order to
      * determine if the resulting activity is available.
      * @return an activity that can handle the request, or null if no known activity can handle it. If the return value
      * is non-null, it will be an activity in the <i>started</i> or <i>open</i> state.
@@ -102,7 +102,7 @@ public interface ActivityManager {
      * to use {@link #getActivities(PlaceRequest, boolean)} and cast its return value explicitly.
      * @param clazz the type of activity that you expect to find.
      * @param placeRequest the place the resolved activity should handle
-     * @param secure flag indicating if calls to the {@link AuthorizationManager} service are required in order to
+     * @param secure flag indicating if calls to the AuthorizationManager service are required in order to
      * determine if the resulting activity is available.
      * @return an activity that can handle the request, or null if no known activity can handle it. If the return value
      * is non-null, it will be an activity in the <i>started</i> or <i>open</i> state.

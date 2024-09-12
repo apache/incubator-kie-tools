@@ -50,7 +50,7 @@ public interface DisplayerSettingsBuilder<T> extends DataSetLookupBuilder<T> {
 
     /**
      * Set a direct reference to the source data set that will be used by the Displayer that is being assembled.
-     * <p>When using this <i>dataset provided mode</i> the data set lookup operations set (if any): filter, group & sort  will not be taking into account).
+     * <p>When using this <i>dataset provided mode</i> the data set lookup operations set (if any): filter, group and sort  will not be taking into account).
      *
      * @return The DisplayerSettingsBuilder instance that is being used to configure a DisplayerSettings.
      * @see org.dashbuilder.dataset.DataSet
@@ -127,7 +127,7 @@ public interface DisplayerSettingsBuilder<T> extends DataSetLookupBuilder<T> {
     /**
      * Force the displayer to redraw every time interval.
      *
-     * @param seconds The refresh time frame in seconds. If < 0 then periodic refresh is disabled.
+     * @param seconds The refresh time frame in seconds. <code>if &lt; 0</code> then periodic refresh is disabled.
      * @param onStale Refresh when the data becomes stale.
      *
      * @return The DisplayerSettingsBuilder instance that is being used to configure a DisplayerSettings.
