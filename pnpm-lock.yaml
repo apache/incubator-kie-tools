@@ -10835,9 +10835,6 @@ importers:
 
   packages/sonataflow-management-console-image:
     devDependencies:
-      '@kie-tools/image-builder':
-        specifier: workspace:*
-        version: link:../image-builder
       '@kie-tools/image-env-to-json':
         specifier: workspace:*
         version: link:../image-env-to-json
