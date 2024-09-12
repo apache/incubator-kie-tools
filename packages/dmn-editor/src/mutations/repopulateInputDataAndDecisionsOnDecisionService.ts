@@ -18,14 +18,12 @@
  */
 
 import {
-  DMN15__tDecision,
   DMN15__tDecisionService,
   DMN15__tDefinitions,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Normalized } from "../normalization/normalize";
 import { ExternalModelsIndex } from "../DmnEditor";
 import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
-import { DmnLatestModel } from "@kie-tools/dmn-marshaller/dist";
 
 export function repopulateInputDataAndDecisionsOnAllDecisionServices({
   definitions,
