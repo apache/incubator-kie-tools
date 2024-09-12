@@ -468,5 +468,5 @@ jobs:
           cp ./extended-services-final-release-artifacts/* svn-kie
           cd svn-kie
           svn add . --force
-          svn ci --non-interactive --no-auth-cache --username $SVN_USERNAME --password '$SVN_PASSWORD' -m "Apache KIE $RELEASE_CANDIDATE_VERSION Extended Services artifacts"
+          svn ci --non-interactive --no-auth-cache --username $SVN_USERNAME --password "$SVN_PASSWORD" -m "Apache KIE $RELEASE_CANDIDATE_VERSION Extended Services artifacts"
           rm -rf svn-kie
