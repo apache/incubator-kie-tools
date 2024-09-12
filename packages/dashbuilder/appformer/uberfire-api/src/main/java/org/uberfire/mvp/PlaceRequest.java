@@ -65,7 +65,7 @@ public interface PlaceRequest {
     void setUpdateLocationBar(boolean updateLocationBar);
 
     /**
-     * Invokes {@link #toString()} but exported to JavaScript so it can be invoked from different scripts.
+     * Invokes toString() but exported to JavaScript so it can be invoked from different scripts.
      */
     default String asString() {
         return this.toString();

@@ -30,13 +30,12 @@ import org.dashbuilder.dataset.filter.DataSetFilter;
 
 /**
  * DataSetProvider implementation for static (in-memory) data sets.
- * <p>It's been designed with several goals in mind:
+ * <p>It's been designed with several goals in mind:</p>
  * <ul>
  *     <li>To provide a highly reusable data set cache.</li>
  *     <li>To index almost every operation performed over a data set.</li>
  *     <li>Multiple clients requesting the same data set operations will benefit from the indexing/caching services provided.</li>
  * </ul>
- * </p>
  */
 public class StaticDataSetProvider implements DataSetProvider {
 

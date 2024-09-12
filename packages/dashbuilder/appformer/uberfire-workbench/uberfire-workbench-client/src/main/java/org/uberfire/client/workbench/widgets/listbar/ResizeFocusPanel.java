@@ -29,7 +29,7 @@ import org.uberfire.client.util.Layouts;
 
 /**
  * A FocusPanel that can exist in a hierarchy of {@link LayoutPanel}s. Behaves exactly like FocusPanel, but also
- * propagates <tt>onResize</tt> events to the child widget.
+ * propagates <code>>onResize</code> events to the child widget.
  */
 public class ResizeFocusPanel extends FocusPanel implements RequiresResize,
                                                             ProvidesResize {

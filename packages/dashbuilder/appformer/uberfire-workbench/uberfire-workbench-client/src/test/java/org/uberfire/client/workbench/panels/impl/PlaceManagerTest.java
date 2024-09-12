@@ -994,7 +994,7 @@ public class PlaceManagerTest {
     /**
      * Verifies that all the expected side effects of a screen or editor activity launch have happened.
      * @param placeRequest The place request that was passed to some variant of PlaceManager.goTo().
-     * @param activity <b>A Mockito mock<b> of the activity that was resolved for <tt>placeRequest</tt>.
+     * @param activity <b>A Mockito mock<b> of the activity that was resolved for <code>placeRequest</code>.
      */
     private void verifyActivityLaunchSideEffects(PlaceRequest placeRequest,
                                                  WorkbenchActivity activity,
@@ -1065,7 +1065,7 @@ public class PlaceManagerTest {
     /**
      * Verifies that the "place change" side effects have not happened, and that the given activity is still current.
      * @param expectedCurrentPlace The place request that placeManager should still consider "current."
-     * @param activity <b>A Mockito mock<b> of the activity tied to <tt>expectedCurrentPlace</tt>.
+     * @param activity <b>A Mockito mock<b> of the activity tied to <code>expectedCurrentPlace</code>.
      */
     private void verifyNoActivityLaunchSideEffects(PlaceRequest expectedCurrentPlace,
                                                    WorkbenchScreenActivity activity) {

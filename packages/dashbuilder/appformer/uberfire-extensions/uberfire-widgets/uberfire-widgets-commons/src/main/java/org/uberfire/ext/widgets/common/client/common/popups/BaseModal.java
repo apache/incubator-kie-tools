@@ -44,7 +44,7 @@ import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 /**
  * Base class for modal popup implementations. Setting the following properties by default:
  * <ul>
- * <li>setBackdrop( {@link BackdropType#STATIC} );</li>
+ * <li>setBackdrop( BackdropType#STATIC );</li>
  * <li>setKeyboard( true );</li>
  * <li>setAnimation( true );</li>
  * <li>setDynamicSafe( true );</li>

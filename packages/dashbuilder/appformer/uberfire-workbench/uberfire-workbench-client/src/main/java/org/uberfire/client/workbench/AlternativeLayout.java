@@ -32,7 +32,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Part of the worbench layout SPI. Used to declare {@link org.uberfire.client.workbench.WorkbenchLayout}
- * implementations, that should be used as an alternative to the default {@link org.uberfire.client.workbench.WorkbenchLayoutImpl}.<p/>
+ * implementations, that should be used as an alternative to the default {@link org.uberfire.client.workbench.WorkbenchLayoutImpl}.
  * The actual discovery mechenism resides with {@link org.uberfire.client.workbench.LayoutSelection}
  */
 @Qualifier

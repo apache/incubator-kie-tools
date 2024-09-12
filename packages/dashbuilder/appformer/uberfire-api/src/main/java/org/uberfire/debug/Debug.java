@@ -87,8 +87,7 @@ public class Debug {
      * <li>the first letter of each component of the package name
      * <li>a dot
      * <li>the class name. If the class is an inner class, the name is of the form Outer$Inner
-     * <ol>
-     * <p>
+     * </ol>
      * For classes in the default package, items 1 and 2 are omitted.
      * @param c the class whose name to abbreviate. Can be null, but will result in a null return value.
      * @return the abbreviated FQCN as described, or null if the input is null.
