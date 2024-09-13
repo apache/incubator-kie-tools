@@ -441,8 +441,9 @@ jobs:
           WINDOWS_ARTIFACT_ZIP_FILE="./extended-services-final-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-windows-x86.zip"
           #echo "MACOS_ARTIFACT_ZIP_FILE=$MACOS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
           echo "WINDOWS_ARTIFACT_ZIP_FILE=$WINDOWS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
-          #zip $MACOS_ARTIFACT_ZIP_FILE ./extended-services-release-artifacts/Kogito.dmg
-          zip $WINDOWS_ARTIFACT_ZIP_FILE ./extended-services-release-artifacts/kie_sandbox_extended_services.exe
+          cd ./extended-services-release-artifacts
+          #zip $MACOS_ARTIFACT_ZIP_FILE ./Kogito.dmg
+          zip $WINDOWS_ARTIFACT_ZIP_FILE ./kie_sandbox_extended_services.exe
 
       - name: "Sign artifacts"
         if: ${{ !inputs.dry_run }}
