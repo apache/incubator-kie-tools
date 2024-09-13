@@ -13,8 +13,8 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
-    "build:dev": "pnpm docker:build",
-    "build:prod": "run-script-if --then \"pnpm docker:build\" \"pnpm test\"",
+    "build:dev": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm docker:build\"",
+    "build:prod": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm docker:build\" \"pnpm test\"",
     "docker:build": "docker compose build",
     "docker:create-env-file": "rimraf .env && pnpm build-env --print-dotenv:self > .env",
     "docker:down": "docker compose down",
