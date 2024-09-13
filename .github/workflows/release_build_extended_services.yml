@@ -437,9 +437,9 @@ jobs:
         env:
           RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
         run: |
-          #MACOS_ARTIFACT_ZIP_FILE="${{ github.workspace }}/extended-services-final-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-macOS-x86.zip"
+          MACOS_ARTIFACT_ZIP_FILE="${{ github.workspace }}/extended-services-final-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-macOS-x86.zip"
           WINDOWS_ARTIFACT_ZIP_FILE="${{ github.workspace }}/extended-services-final-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-windows-x86.zip"
-          #echo "MACOS_ARTIFACT_ZIP_FILE=$MACOS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
+          echo "MACOS_ARTIFACT_ZIP_FILE=$MACOS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
           echo "WINDOWS_ARTIFACT_ZIP_FILE=$WINDOWS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
           cd ./extended-services-release-artifacts
           zip $MACOS_ARTIFACT_ZIP_FILE ./Kogito.dmg
@@ -452,8 +452,8 @@ jobs:
           MACOS_ARTIFACT_ZIP_FILE: ${{ steps.zip_artifacts.outputs.MACOS_ARTIFACT_ZIP_FILE }}
           WINDOWS_ARTIFACT_ZIP_FILE: ${{ steps.zip_artifacts.outputs.WINDOWS_ARTIFACT_ZIP_FILE }}
         run: |
-          #gpg --no-tty --batch --sign --pinentry-mode loopback --output $MACOS_ARTIFACT_ZIP_FILE.asc --detach-sig $MACOS_ARTIFACT_ZIP_FILE
-          #shasum -a 512 $MACOS_ARTIFACT_ZIP_FILE > $MACOS_ARTIFACT_ZIP_FILE.sha512
+          gpg --no-tty --batch --sign --pinentry-mode loopback --output $MACOS_ARTIFACT_ZIP_FILE.asc --detach-sig $MACOS_ARTIFACT_ZIP_FILE
+          shasum -a 512 $MACOS_ARTIFACT_ZIP_FILE > $MACOS_ARTIFACT_ZIP_FILE.sha512
           gpg --no-tty --batch --sign --pinentry-mode loopback --output $WINDOWS_ARTIFACT_ZIP_FILE.asc --detach-sig $WINDOWS_ARTIFACT_ZIP_FILE
           shasum -a 512 $WINDOWS_ARTIFACT_ZIP_FILE > $WINDOWS_ARTIFACT_ZIP_FILE.sha512
 
