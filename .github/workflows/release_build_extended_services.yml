@@ -386,13 +386,13 @@ jobs:
         run: |
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
-      # - name: Temporary MacOS artifacts
-      #   if: runner.os == 'macOS'
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: extended-services-macos-artifacts
-      #     path: ./packages/extended-services/dist/darwin/Kogito.dmg
-      #     retention-days: 1
+      - name: Temporary MacOS artifacts
+        if: runner.os == 'macOS'
+        uses: actions/upload-artifact@v4
+        with:
+          name: extended-services-macos-artifacts
+          path: ./packages/extended-services/dist/darwin/Kogito.dmg
+          retention-days: 1
 
       - name: Temporary Windows artifacts
         if: runner.os == 'Windows'
@@ -418,11 +418,11 @@ jobs:
           mkdir ./extended-services-release-artifacts
           mkdir ./extended-services-final-release-artifacts
 
-      # - name: Retrieve MacOS artifacts
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: extended-services-macos-artifacts
-      #     path: ./extended-services-release-artifacts
+      - name: Retrieve MacOS artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: extended-services-macos-artifacts
+          path: ./extended-services-release-artifacts
 
       - name: Retrieve Windows artifacts
         uses: actions/download-artifact@v4
@@ -442,14 +442,14 @@ jobs:
           #echo "MACOS_ARTIFACT_ZIP_FILE=$MACOS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
           echo "WINDOWS_ARTIFACT_ZIP_FILE=$WINDOWS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
           cd ./extended-services-release-artifacts
-          #zip $MACOS_ARTIFACT_ZIP_FILE ./Kogito.dmg
+          zip $MACOS_ARTIFACT_ZIP_FILE ./Kogito.dmg
           zip $WINDOWS_ARTIFACT_ZIP_FILE ./kie_sandbox_extended_services.exe
 
       - name: "Sign artifacts"
         if: ${{ !inputs.dry_run }}
         shell: bash
         env:
-          #MACOS_ARTIFACT_ZIP_FILE: ${{ steps.zip_artifacts.outputs.MACOS_ARTIFACT_ZIP_FILE }}
+          MACOS_ARTIFACT_ZIP_FILE: ${{ steps.zip_artifacts.outputs.MACOS_ARTIFACT_ZIP_FILE }}
           WINDOWS_ARTIFACT_ZIP_FILE: ${{ steps.zip_artifacts.outputs.WINDOWS_ARTIFACT_ZIP_FILE }}
         run: |
           #gpg --no-tty --batch --sign --pinentry-mode loopback --output $MACOS_ARTIFACT_ZIP_FILE.asc --detach-sig $MACOS_ARTIFACT_ZIP_FILE
