@@ -91,9 +91,8 @@ runs:
       with:
         python-version: 3.12
 
-    - name: Setup Docker on macOS
-      uses: douglascamata/setup-docker-macos-action@v1-alpha
-
+    # TODO: Fix Colima/QEMU installation to build container images again
+    #
     # - name: Setup docker (macOS only)
     #   if: runner.os == 'macOS'
     #   shell: bash
