@@ -13,7 +13,7 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
-    "build": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm m2-repo-via-http:container:run\" \"pnpm copy:assets\" \"pnpm image:docker:build\" --finally \"pnpm m2-repo-via-http:container:kill\"",
+    "build": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm m2-repo-via-http:container:run\" \"pnpm copy:assets\" \"pnpm image:docker:build\" \"pnpm image:docker:squash\" --finally \"pnpm m2-repo-via-http:container:kill\"",
     "build:dev": "pnpm build",
     "build:prod": "pnpm build",
     "copy:assets": "rimraf dist-dev && mkdir -p ./dist-dev && pnpm copy:quarkus-app && pnpm copy:sonataflow-deployment-webapp && pnpm copy:maven-m2-repo-via-http-image--settings-xml",
@@ -27,15 +27,18 @@
     "copy:sonataflow-deployment-webapp:linux:darwin": "cp -R ./node_modules/sonataflow-deployment-webapp/dist/* ./dist-dev/quarkus-app/src/main/resources/META-INF/resources",
     "copy:sonataflow-deployment-webapp:win32": "pnpm powershell \"Copy-Item -R ./node_modules/sonataflow-deployment-webapp/dist/* ./dist-dev/quarkus-app/src/main/resources/META-INF/resources\"",
     "image:docker:build": "kie-tools--image-builder build --allowHostNetworkAccess -r \"$(build-env swfDevModeImageEnv.registry)\" -a \"$(build-env swfDevModeImageEnv.account)\" -n \"$(build-env swfDevModeImageEnv.name)\" -t \"$(build-env swfDevModeImageEnv.buildTag)\" --build-arg KOGITO_IMAGE_TAG=\"$(build-env swfDevModeImage.kogitoImageTag)\"",
+    "image:docker:squash": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && DOCKER_HOST=$(docker context inspect | jq '.[].Endpoints.docker.Host' | tr -d '\"') docker-squash -t $(build-env swfDevModeImageEnv.registry)/$(build-env swfDevModeImageEnv.account)/$(build-env swfDevModeImageEnv.name):$(build-env swfDevModeImageEnv.buildTag) $(build-env swfDevModeImageEnv.registry)/$(build-env swfDevModeImageEnv.account)/$(build-env swfDevModeImageEnv.name):$(build-env swfDevModeImageEnv.buildTag)",
     "install": "node install.js",
     "m2-repo-via-http:container:kill": "(docker container kill m2-repo-via-http || true) && (docker container rm m2-repo-via-http || true)",
     "m2-repo-via-http:container:run": "(pnpm m2-repo-via-http:container:kill || true) && docker run --name m2-repo-via-http -v \"$(mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout):/var/www/html\" -dit $(build-env swfDevModeImage.dev.mavenM2RepoViaHttpImage)",
-    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "python": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && docker-squash -h"
   },
   "devDependencies": {
     "@kie-tools/image-builder": "workspace:*",
     "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/maven-m2-repo-via-http-image": "workspace:*",
+    "@kie-tools/python-venv": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app": "workspace:*",
     "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env": "workspace:*",
