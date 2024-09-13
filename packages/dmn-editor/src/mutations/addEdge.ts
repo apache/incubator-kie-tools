@@ -48,6 +48,7 @@ export function addEdge({
   targetNode,
   edge,
   keepWaypoints,
+  extraArg,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
@@ -73,14 +74,21 @@ export function addEdge({
     autoPositionedEdgeMarker: AutoPositionedEdgeMarker | undefined;
   };
   keepWaypoints: boolean;
+  extraArg?: {
+    requirementEdgeTargetingExternalNodeId: string | undefined;
+  };
 }) {
-  if (!_checkIsValidConnection(sourceNode, targetNode, edge.type)) {
+  if (
+    !_checkIsValidConnection(sourceNode, targetNode, edge.type, {
+      allowExternalTarget: !!extraArg!.requirementEdgeTargetingExternalNodeId,
+    })
+  ) {
     throw new Error(`DMN MUTATION: Invalid structure: (${sourceNode.type}) --${edge.type}--> (${targetNode.type}) `);
   }
 
   const newEdgeId = generateUuid();
 
-  let existingEdgeId: string | undefined = undefined;
+  let existingEdgeId: string | undefined = extraArg!.requirementEdgeTargetingExternalNodeId ?? undefined;
 
   // Associations
   if (edge.type === EDGE_TYPES.association) {
@@ -108,7 +116,7 @@ export function addEdge({
     });
   }
   // Requirements
-  else {
+  else if (!extraArg!.requirementEdgeTargetingExternalNodeId) {
     const requirements = getRequirementsFromEdge(sourceNode, newEdgeId, edge.type);
     const drgElement = definitions.drgElement![targetNode.index] as Normalized<DMN15__tDecision>; // We cast to tDecision here because it has all three types of requirement.
     if (requirements?.informationRequirement) {
@@ -153,85 +161,6 @@ export function addEdge({
       );
     }
   }
-
-  const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
-
-  // Remove existing
-  const removedDmnEdge = removeFirstMatchIfPresent(
-    diagramElements,
-    (e) => e.__$$element === "dmndi:DMNEdge" && e["@_dmnElementRef"] === existingEdgeId
-  ) as Normalized<DMNDI15__DMNEdge> | undefined;
-
-  const newWaypoints = keepWaypoints
-    ? [
-        getPointForHandle({ bounds: sourceNode.bounds, handle: edge.sourceHandle }),
-        ...(removedDmnEdge?.["di:waypoint"] ?? []).slice(1, -1), // Slicing an empty array will always return an empty array, so it's ok.
-        getPointForHandle({ bounds: targetNode.bounds, handle: edge.targetHandle }),
-      ]
-    : [
-        getPointForHandle({ bounds: sourceNode.bounds, handle: edge.sourceHandle }),
-        getPointForHandle({ bounds: targetNode.bounds, handle: edge.targetHandle }),
-      ];
-
-  const newDmnEdge: Unpacked<typeof diagramElements> = {
-    __$$element: "dmndi:DMNEdge",
-    "@_id":
-      withoutDiscreteAutoPosinitioningMarker(removedDmnEdge?.["@_id"] ?? generateUuid()) +
-      (edge.autoPositionedEdgeMarker ?? ""),
-    "@_dmnElementRef": existingEdgeId ?? newEdgeId,
-    "@_sourceElement": sourceNode.shapeId,
-    "@_targetElement": targetNode.shapeId,
-    "di:waypoint": newWaypoints,
-  };
-
-  // Replace with the new one.
-  diagramElements.push(newDmnEdge);
-
-  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
-
-  return { newDmnEdge };
-}
-
-export function addEdgeTargetingExternalNode({
-  definitions,
-  drdIndex,
-  sourceNode,
-  targetNode,
-  edge,
-  keepWaypoints,
-  existingEdgeId,
-}: {
-  definitions: Normalized<DMN15__tDefinitions>;
-  drdIndex: number;
-  sourceNode: {
-    type: NodeType;
-    data: DmnDiagramNodeData;
-    href: string;
-    bounds: DC__Bounds;
-    shapeId: string | undefined;
-  };
-  targetNode: {
-    type: NodeType;
-    data: DmnDiagramNodeData;
-    href: string;
-    bounds: DC__Bounds;
-    shapeId: string | undefined;
-    index: number;
-  };
-  edge: {
-    type: EdgeType;
-    targetHandle: PositionalNodeHandleId;
-    sourceHandle: PositionalNodeHandleId;
-    autoPositionedEdgeMarker: AutoPositionedEdgeMarker | undefined;
-  };
-  keepWaypoints: boolean;
-  existingEdgeId?: string;
-}) {
-  if (!_checkIsValidConnection(sourceNode, targetNode, edge.type, { allowExternalTarget: true })) {
-    throw new Error(`DMN MUTATION: Invalid structure: (${sourceNode.type}) --${edge.type}--> (${targetNode.type}) `);
-  }
-
-  const newEdgeId = generateUuid();
 
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
