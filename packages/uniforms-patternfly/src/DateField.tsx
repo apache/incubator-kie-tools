@@ -24,13 +24,13 @@ import { TextInput, TextInputProps } from "@patternfly/react-core/dist/js/compon
 import wrapField from "./wrapField";
 
 export type DateFieldProps = FieldProps<
-  Date,
+  string,
   TextInputProps,
   {
     inputRef?: React.RefObject<HTMLInputElement>;
     labelProps?: object;
-    max?: Date;
-    min?: Date;
+    max?: string;
+    min?: string;
     type?: "date" | "datetime-local";
   }
 >;
@@ -54,39 +54,40 @@ const dateParse = (value: string, onChange: DateFieldProps["onChange"]) => {
     if (splitedValue.length > 1) {
       // A year can't be bigger than 9999;
       splitedValue[0] = parseInt(splitedValue[0]) > 9999 ? "9999" : splitedValue[0];
-      onChange(new DateConstructor(`${splitedValue.join("-")}Z`));
+      onChange(new DateConstructor(`${splitedValue.join("-")}Z`).toISOString());
       return;
     }
     onChange(undefined);
   } else {
     const date = new DateConstructor(`${value}Z`);
     if (date.getFullYear() < 10000) {
-      onChange(date);
+      onChange(date.toISOString());
     } else {
-      onChange(date);
+      onChange(date.toISOString());
     }
   }
 };
 
 function DateField({ onChange, ...props }: DateFieldProps) {
   const isInvalid = useMemo(() => {
-    if (!props.value) {
+    if (props.value === undefined) {
       return false;
     }
 
+    const dateValue = new DateConstructor(props.value);
     if (props.min) {
-      const minDate = new Date(props.min);
+      const minDate = new DateConstructor(props.min);
       if (minDate.toString() === "Invalid Date") {
         return false;
-      } else if (props.value < minDate) {
+      } else if (dateValue < minDate) {
         return `Should be after ${minDate.toISOString()}`;
       }
     }
     if (props.max) {
-      const maxDate = new Date(props.max);
+      const maxDate = new DateConstructor(props.max);
       if (maxDate.toString() === "Invalid Date") {
         return false;
-      } else if (props.value > maxDate) {
+      } else if (dateValue > maxDate) {
         return `Should be before ${maxDate.toISOString()}`;
       }
     }
