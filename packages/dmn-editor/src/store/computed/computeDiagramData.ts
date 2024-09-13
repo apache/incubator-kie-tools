@@ -154,7 +154,13 @@ export function computeDiagramData(
   };
 
   // requirements
-  ackRequirementEdges(definitions["@_namespace"], definitions["@_namespace"], definitions.drgElement, ackEdge);
+  ackRequirementEdges(
+    definitions,
+    definitions["@_namespace"],
+    definitions["@_namespace"],
+    definitions.drgElement,
+    ackEdge
+  );
 
   // associations
   (definitions.artifact ?? []).forEach((dmnObject, index) => {
@@ -284,6 +290,7 @@ export function computeDiagramData(
     (acc, [namespace, externalDmn]) => {
       // Taking advantage of the loop to add the edges here...
       ackRequirementEdges(
+        definitions,
         definitions["@_namespace"],
         externalDmn.model.definitions["@_namespace"],
         externalDmn.model.definitions.drgElement,
@@ -404,6 +411,7 @@ export function computeDiagramData(
 }
 
 function ackRequirementEdges(
+  definitions: State["dmn"]["model"]["definitions"],
   thisDmnsNamespace: string,
   drgElementsNamespace: string,
   drgElements: Normalized<DMN15__tDefinitions>["drgElement"],
@@ -416,8 +424,17 @@ function ackRequirementEdges(
     if (dmnObject.__$$element === "decision") {
       (dmnObject.informationRequirement ?? []).forEach((ir, index) => {
         const irHref = parseXmlHref((ir.requiredDecision ?? ir.requiredInput)!["@_href"]);
+        let finalIncludedIndex = -1;
+        let includedIndex = 0;
+        while (definitions[`@_xmlns:included${includedIndex}`]) {
+          if (definitions[`@_xmlns:included${includedIndex}`] === namespace) {
+            finalIncludedIndex = includedIndex;
+            break;
+          }
+          includedIndex++;
+        }
         ackEdge({
-          id: ir["@_id"]!,
+          id: (finalIncludedIndex > -1 ? `included${finalIncludedIndex}:` : "") + ir["@_id"]!,
           dmnObject: {
             namespace: drgElementsNamespace,
             type: dmnObject.__$$element,

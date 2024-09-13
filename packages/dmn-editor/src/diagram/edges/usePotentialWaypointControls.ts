@@ -157,7 +157,7 @@ export function usePotentialWaypointControls(
               shapeId: edge.data?.dmnShapeTarget["@_id"],
             },
             keepWaypoints: false,
-            existingEdgeId: targetData.dmnObjectQName.prefix + ":" + edgeId, // produces value like: included0:_2081EEE3-7B1B-48B3-B3B9-944F0A013CF1
+            existingEdgeId: edgeId,
           });
         } else {
           /**
@@ -215,17 +215,7 @@ export function usePotentialWaypointControls(
     }
 
     dmnEditorStoreApi.setState((state) => {
-      const edge = state.computed(state).getDiagramData(externalModelsByNamespace).edgesById.get(edgeId);
-      const targetData = state
-        .computed(state)
-        .getDiagramData(externalModelsByNamespace)
-        .nodesById.get(edge!.target)?.data;
-      const dmnEdgeIndex = state
-        .computed(state)
-        .indexedDrd()
-        .dmnEdgesByDmnElementRef.get(
-          (targetData?.dmnObjectQName.prefix ? targetData?.dmnObjectQName.prefix + ":" : "") + edgeId
-        )?.index;
+      const dmnEdgeIndex = state.computed(state).indexedDrd().dmnEdgesByDmnElementRef.get(edgeId)?.index;
       if (dmnEdgeIndex === undefined) {
         console.debug(`DMN MUTATION: DMNEdge for '${edgeId}' edge has missing index.`);
         return;
