@@ -35,16 +35,16 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
  * programmatically build a {@link PerspectiveDefinition} object, or declare panel structure and content using Errai UI
  * templates. Note that you cannot mix the two approaches.
  * <p>
- * <h3>Programmatic Perspective Definition</h3>
+ * <strong>Programmatic Perspective Definition</strong>
  * To define the perspective layout programmatically, create a zero-argument method annotated with {@code @Perspective}
  * that returns a {@link PerspectiveDefinition}.
  * <p>
- * <h3>Templated Perspective Definition</h3>
+ * <strong>Templated Perspective Definition</strong>
  * To declare perspective layout using templates, make the class an Errai UI templated component, and then add the
  * {@link WorkbenchPanel} annotation to one or more of its {@code @DataField} widgets. This designates them as panel
  * containers and allows you to specify which parts should be added to them when the perspective launches.
  * <p>
- * <h3>Perspective Lifecycle</h3>
+ * <strong>Perspective Lifecycle</strong>
  * WorkbenchPerspectives receive the standard set of lifecycle calls for a Workbench component:
  * <ul>
  * <li>{@code @OnStartup}</li>

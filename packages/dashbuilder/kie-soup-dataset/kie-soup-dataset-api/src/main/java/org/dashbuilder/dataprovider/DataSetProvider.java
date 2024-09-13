@@ -26,7 +26,7 @@ import org.dashbuilder.dataset.def.DataSetDef;
 
 /**
  * This service provider interface is designed to provide access to different data set storage implementations with
- * the main goal of providing a unified interface for the data set fetch & lookup operations.
+ * the main goal of providing a unified interface for the data set fetch and lookup operations.
  */
 public interface DataSetProvider {
 

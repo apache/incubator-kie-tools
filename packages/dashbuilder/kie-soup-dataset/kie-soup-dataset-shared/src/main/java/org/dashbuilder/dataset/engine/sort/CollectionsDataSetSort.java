@@ -28,7 +28,7 @@ import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.sort.ColumnSort;
 
 /**
- * A basic sort algorithm takes relies on the default <tt>Collections.sort()</tt> implementation.
+ * A basic sort algorithm takes relies on the default <code>Collections.sort()</code> implementation.
  */
 public class CollectionsDataSetSort implements DataSetSortAlgorithm {
 

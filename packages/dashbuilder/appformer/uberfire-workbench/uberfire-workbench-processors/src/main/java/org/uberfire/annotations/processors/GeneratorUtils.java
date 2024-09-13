@@ -76,7 +76,6 @@ public class GeneratorUtils {
      * Finds the {@code @OnStartup} method suitable for workbench classes that are not {@code @WorkbenchEditor}.
      * The method must be public, non-static, have a return-type of void and either take zero parameters or one
      * parameter of type {@code PlaceRequest}.
-     * <p/>
      * If no such method is found, returns null. If methods annotated with {@code @OnStartup} are found but they do not
      * satisfy all the requirements, they are marked with errors explaining the problem.
      */
@@ -171,7 +170,6 @@ public class GeneratorUtils {
      * Finds the {@code @OnStartup} method suitable for {@code @WorkbenchEditor} classes.
      * The method must be public, non-static, have a return-type of void and either take one parameter
      * of type {@code Path} or two parameters of type {@code (Path, PlaceRequest)}.
-     * <p/>
      * If no such method is found, returns null. If methods annotated with {@code @OnStartup} are found but they do not
      * satisfy all the requirements, they are marked with errors explaining the problem.
      */

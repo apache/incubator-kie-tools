@@ -18,7 +18,6 @@
  */
 
 import { Page, expect } from "@playwright/test";
-import { ContentType } from "@kie-tools-core/workspace/dist/api";
 import type { open, DmnEditorStandaloneApi } from "@kie-tools/dmn-editor-standalone/dist";
 import * as prettier from "prettier";
 
@@ -40,7 +39,7 @@ export class Editor {
   constructor(public page: Page) {}
 
   public async open(args?: {
-    resources?: Array<[string, { contentType: ContentType; content: string }]>;
+    resources?: Array<[string, { contentType: "text" | "binary"; content: string }]>;
     initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot?: string;
   }) {
     await this.page.goto("");
