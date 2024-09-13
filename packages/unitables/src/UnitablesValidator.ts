@@ -17,14 +17,14 @@
  * under the License.
  */
 
-import Ajv from "ajv";
+import AjvDraft04 from "ajv-draft-04";
 import { UnitablesJsonSchemaBridge } from "./uniforms";
 import { UnitablesI18n } from "./i18n";
 
 export class UnitablesValidator {
   constructor(public i18n: UnitablesI18n) {}
 
-  protected readonly ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true });
+  protected readonly ajv = new AjvDraft04({ allErrors: true, useDefaults: true });
 
   public createValidator(formSchema: object) {
     const validator = this.ajv.compile(formSchema);

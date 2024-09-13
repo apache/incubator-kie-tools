@@ -18,11 +18,11 @@
  */
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
 import { AutoForm } from "@kie-tools/uniforms-patternfly/dist/esm";
-import * as Ajv from "ajv";
+import AjvDraft04 from "ajv-draft-04";
 import * as React from "react";
 import { useCallback } from "react";
 
-const ajv = new Ajv({ allErrors: true, useDefaults: true });
+const ajv = new AjvDraft04({ allErrors: true, useDefaults: true });
 const createValidator = (schema: any) => {
   const validator = ajv.compile(schema);
   return (model: any) => {
