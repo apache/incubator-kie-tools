@@ -178,12 +178,12 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
           return new ResourceContent(
             args.relativePath,
             file.content ? Buffer.from(file.content).toString("base64") : "",
-            ContentType.BINARY
+            "binary"
           );
         }
 
         // "text" is the default
-        return new ResourceContent(args.relativePath, decoder.decode(file.content), ContentType.TEXT);
+        return new ResourceContent(args.relativePath, decoder.decode(file.content), "text");
       } catch (e) {
         console.error(e);
         throw e;

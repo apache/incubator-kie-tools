@@ -283,7 +283,7 @@ public class PlaceManagerImpl implements PlaceManager {
     /**
      * Resolves the given place request into an Activity instance, if one can be found. If not, this method substitutes
      * special "not found" or "too many" place requests when the resolution doesn't work.
-     * <p/>
+     * </p>
      * The behaviour of this method is affected by the boolean-valued
      * {@code org.uberfire.client.mvp.PlaceManagerImpl.ignoreUnkownPlaces} property in {@link UberfirePreferences}.
      * @param place A non-null place request that could have originated from within application code, from within the

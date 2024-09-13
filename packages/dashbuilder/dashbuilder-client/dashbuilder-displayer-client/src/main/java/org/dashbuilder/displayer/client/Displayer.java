@@ -70,7 +70,7 @@ public interface Displayer extends DisplayerListener, IsWidget {
 
     /**
      * Same as draw but does not necessary implies to repaint everything again.
-     * It's just a matter of update & display the latest data set changes.
+     * It's just a matter of update and display the latest data set changes.
      */
     void redraw();
 

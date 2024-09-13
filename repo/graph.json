@@ -2338,12 +2338,12 @@
       },
       {
         "source": "@kie-tools/sonataflow-management-console-image",
-        "target": "@kie-tools/image-builder",
+        "target": "@kie-tools/image-env-to-json",
         "weight": 1
       },
       {
         "source": "@kie-tools/sonataflow-management-console-image",
-        "target": "@kie-tools/image-env-to-json",
+        "target": "@kie-tools/sonataflow-image-common",
         "weight": 1
       },
       {

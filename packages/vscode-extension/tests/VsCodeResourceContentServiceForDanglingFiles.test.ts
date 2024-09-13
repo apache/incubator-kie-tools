@@ -68,7 +68,7 @@ describe("VsCodeResourceContentServiceForDanglingFiles", () => {
 
     expect(resource1Content).not.toBeNull();
     expect(resource1Content?.normalizedPosixPathRelativeToTheWorkspaceRoot).toBe(resource1Path);
-    expect(resource1Content?.type).toBe(ContentType.TEXT);
+    expect(resource1Content?.type).toBe("text");
     expect(resource1Content?.content).toBe("content for resource 1");
 
     const resource2Path = "resource2.txt";
@@ -76,15 +76,15 @@ describe("VsCodeResourceContentServiceForDanglingFiles", () => {
 
     expect(resource2Content).not.toBeNull();
     expect(resource2Content?.normalizedPosixPathRelativeToTheWorkspaceRoot).toBe(resource2Path);
-    expect(resource2Content?.type).toBe(ContentType.TEXT);
+    expect(resource2Content?.type).toBe("text");
     expect(resource2Content?.content).toBe("content for resource 2");
 
     const iconPath = "icon.png";
-    const iconContent = await resourceContentService.get(iconPath, { type: ContentType.BINARY });
+    const iconContent = await resourceContentService.get(iconPath, { type: "binary" });
 
     expect(iconContent).not.toBeNull();
     expect(iconContent?.normalizedPosixPathRelativeToTheWorkspaceRoot).toBe(iconPath);
-    expect(iconContent?.type).toBe(ContentType.BINARY);
+    expect(iconContent?.type).toBe("binary");
     expect(iconContent?.content).not.toBeNull();
   });
 
@@ -98,15 +98,15 @@ describe("VsCodeResourceContentServiceForDanglingFiles", () => {
 
     expect(txtResourceContent).not.toBeNull();
     expect(txtResourceContent?.normalizedPosixPathRelativeToTheWorkspaceRoot).toBe(txtResourcePath);
-    expect(txtResourceContent?.type).toBe(ContentType.TEXT);
+    expect(txtResourceContent?.type).toBe("text");
     expect(txtResourceContent?.content).toBe(undefined);
 
     const binaryPath = "icon.png";
-    const binaryContent = await resourceContentService.get(binaryPath, { type: ContentType.BINARY });
+    const binaryContent = await resourceContentService.get(binaryPath, { type: "binary" });
 
     expect(binaryContent).not.toBeNull();
     expect(binaryContent?.normalizedPosixPathRelativeToTheWorkspaceRoot).toBe(binaryPath);
-    expect(binaryContent?.type).toBe(ContentType.BINARY);
+    expect(binaryContent?.type).toBe("binary");
     expect(binaryContent?.content).toBe(undefined);
   });
 });

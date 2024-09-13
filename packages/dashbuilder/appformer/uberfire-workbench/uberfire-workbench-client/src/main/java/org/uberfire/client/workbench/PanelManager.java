@@ -58,7 +58,6 @@ public interface PanelManager {
      * @param part The description of the part to add. Not null.
      * @param panel definition of the panel to add the part to (must describe a panel that is already present in the
      * layout). Not null.
-     * @param menus The menus to display for the given part. Null means no menus.
      * @param uiPart The part's title and physical view. Not null.
      * @param contextId part of a removed framework feature (TODO: remove this?)
      * @param minInitialWidth minimum pixel width of the part's activity, or null if there is no known minimum width. The target
@@ -108,7 +107,7 @@ public interface PanelManager {
     /**
      * Creates an UberFire panel and installs its view in the given widget container.
      * <p>
-     * <h3>Custom Panel Lifecycle</h3>
+     * <strong>Custom Panel Lifecycle</strong>
      * <p>
      * Custom panels can be disposed like any other panel: by calling {@link #removeWorkbenchPanel(PanelDefinition)}.
      * Additionally, custom panels are monitored for DOM detachment. When a custom panel's view is removed from the DOM
@@ -124,7 +123,7 @@ public interface PanelManager {
     /**
      * Creates an UberFire panel and installs its view in the given html element container.
      * <p>
-     * <h3>Custom Panel Lifecycle</h3>
+     * <strong>Custom Panel Lifecycle</strong>
      * <p>
      * Custom panels can be disposed like any other panel: by calling {@link #removeWorkbenchPanel(PanelDefinition)}.
      * Additionally, custom panels are monitored for DOM detachment. When a custom panel's view is removed from the DOM
@@ -140,7 +139,7 @@ public interface PanelManager {
     /**
      * Creates an UberFire panel and installs its view in the given html element container.
      * <p>
-     * <h3>Custom Panel Lifecycle</h3>
+     * <strong>Custom Panel Lifecycle</strong>
      * <p>
      * Custom panels can be disposed like any other panel: by calling {@link #removeWorkbenchPanel(PanelDefinition)}.
      * Additionally, custom panels are monitored for DOM detachment. When a custom panel's view is removed from the DOM
@@ -184,7 +183,7 @@ public interface PanelManager {
     void onPanelFocus(final PanelDefinition panel);
 
     /**
-     * Closes the given part. This is a convenience method for <tt>placeManager.closePlace(part.getPlace())</tt>.
+     * Closes the given part. This is a convenience method for <code>placeManager.closePlace(part.getPlace())</code>.
      * @param part the part to close (remove from the GUI). Must not be null.
      */
     void closePart(final PartDefinition part);
