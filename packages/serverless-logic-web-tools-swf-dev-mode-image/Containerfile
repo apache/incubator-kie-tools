@@ -22,8 +22,6 @@ FROM --platform=linux/amd64 docker.io/apache/incubator-kie-kogito-base-builder:$
 ENV PATH="${PATH}:/usr/share/maven/bin"
 
 USER root
-RUN chown kogito /home/kogito/.m2
-USER kogito
 
 COPY --chown=kogito:root dist-dev/quarkus-app/ /home/kogito/serverless-logic-web-tools-swf-deployment-quarkus-app/
 COPY --chown=kogito:root dist-dev/settings.xml /home/kogito/.m2/settings.xml
@@ -31,7 +29,8 @@ COPY --chown=kogito:root entrypoint.sh /home/kogito/entrypoint.sh
 
 WORKDIR /home/kogito/serverless-logic-web-tools-swf-deployment-quarkus-app/
 
-RUN rm -rf src/test/ && \
+RUN chown kogito /home/kogito/.m2 && \
+  rm -rf src/test/ && \
   mvn clean package \
   quarkus:go-offline \
   -B \
@@ -39,10 +38,10 @@ RUN rm -rf src/test/ && \
   -s /home/kogito/.m2/settings.xml \
   -Dmaven.test.skip \
   -Dmaven.repo.local=/home/kogito/.m2/repository \
-  -Dquarkus-profiles=build,dev
+  -Dquarkus-profiles=build,dev && \
+  chmod -R 775 /home/kogito && \
+  mkdir -p -m 777 /tmp/app
 
-USER root
-RUN chmod -R 775 /home/kogito && mkdir -p -m 777 /tmp/app
 USER kogito
 
 EXPOSE 8080
