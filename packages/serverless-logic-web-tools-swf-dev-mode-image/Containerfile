@@ -26,7 +26,8 @@ RUN chown kogito /home/kogito/.m2
 USER kogito
 
 COPY --chown=kogito:root dist-dev/quarkus-app/ /home/kogito/serverless-logic-web-tools-swf-deployment-quarkus-app/
-COPY --chown=kogito:root dist-dev/quarkus-app-m2/ /home/kogito/.m2/repository
+COPY --chown=kogito:root dist-dev/settings.xml /home/kogito/.m2/settings.xml
+COPY --chown=kogito:root entrypoint.sh /home/kogito/entrypoint.sh
 
 WORKDIR /home/kogito/serverless-logic-web-tools-swf-deployment-quarkus-app/
 
@@ -35,16 +36,15 @@ RUN rm -rf src/test/ && \
   quarkus:go-offline \
   -B \
   -ntp \
+  -s /home/kogito/.m2/settings.xml \
   -Dmaven.test.skip \
+  -Dmaven.repo.local=/home/kogito/.m2/repository \
   -Dquarkus-profiles=build,dev
 
 USER root
-RUN chmod -R 775 /home/kogito
+RUN chmod -R 775 /home/kogito && mkdir -p -m 777 /tmp/app
 USER kogito
 
-ENTRYPOINT mvn quarkus:dev \
-  quarkus:go-offline \
-  -nsu \
-  -Ddebug=false \
-  -Dmaven.repo.local=/home/kogito/.m2/repository \
-  -Dquarkus.http.port=8080
+EXPOSE 8080
+
+ENTRYPOINT [ "/home/kogito/entrypoint.sh" ]
