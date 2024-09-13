@@ -227,7 +227,7 @@ export function addEdgeTargetingExternalNode({
   keepWaypoints: boolean;
   existingEdgeId?: string;
 }) {
-  if (!_checkIsValidConnection(sourceNode, targetNode, edge.type, true)) {
+  if (!_checkIsValidConnection(sourceNode, targetNode, edge.type, { allowExternalTarget: true })) {
     throw new Error(`DMN MUTATION: Invalid structure: (${sourceNode.type}) --${edge.type}--> (${targetNode.type}) `);
   }
 
