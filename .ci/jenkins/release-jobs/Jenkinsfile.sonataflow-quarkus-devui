@@ -30,7 +30,6 @@ pipeline {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
         string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
-        booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
     }
 
     environment {
@@ -88,7 +87,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm()
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsConfigFileId}")
                     }
                 }
             }

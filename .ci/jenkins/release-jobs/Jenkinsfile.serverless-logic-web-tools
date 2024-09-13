@@ -105,7 +105,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm()
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsConfigFileId}")
                     }
                 }
             }

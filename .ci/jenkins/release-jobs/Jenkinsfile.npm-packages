@@ -30,7 +30,6 @@ pipeline {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
         string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
-        booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
         string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
@@ -88,7 +87,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm()
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsConfigFileId}")
                     }
                 }
             }
@@ -130,7 +129,7 @@ pipeline {
 
         stage('Publish packages to the NPM registry') {
             when {
-                expression { !params.DRY_RUN && !params.RELEASE_CANDIDATE }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
             }
             steps {
                 dir('kie-tools') {
@@ -148,7 +147,7 @@ pipeline {
 
         stage('Setup release candidate artifacts') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
             }
             steps {
                 dir('kie-tools') {
@@ -161,8 +160,8 @@ pipeline {
                         PNPM_FILTER_STRING_FOR_PUBLISHING=\$(pnpm -r exec 'bash' '-c' 'PKG_NAME=\$(jq -r ".name" package.json) PKG_IS_PVT=\$(jq -r ".private" package.json); if [[ "\$PKG_IS_PVT" != "true" ]]; then echo "-F \$PKG_NAME"; fi')
                         echo \$PNPM_FILTER_STRING_FOR_PUBLISHING
                         pnpm \$PNPM_FILTER_STRING_FOR_PUBLISHING exec 'bash' '-c' 'pnpm pack --pack-destination ${env.TMP_RELEASE_ARTIFACTS_DIR}'
+                        cd "${env.TMP_RELEASE_ARTIFACTS_DIR}" && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_ZIP_FILE}" .
                         """.trim()
-                        zipUtils.zipArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_ZIP_FILE}", "${env.TMP_RELEASE_ARTIFACTS_DIR}")
                     }
                 }
             }
@@ -170,7 +169,7 @@ pipeline {
 
         stage('Sign artifact for Apache release') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
             }
             steps {
                 script {
@@ -182,7 +181,7 @@ pipeline {
 
         stage('Publish Release Candidate artifacts') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
             }
             steps {
                 script {

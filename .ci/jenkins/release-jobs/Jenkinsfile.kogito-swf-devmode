@@ -23,14 +23,13 @@ pipeline {
     }
 
     options {
-        timeout(time: 180, unit: 'MINUTES')
+        timeout(time: 240, unit: 'MINUTES')
     }
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
         string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
-        booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
         string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
@@ -44,6 +43,8 @@ pipeline {
         SONATAFLOW_DEVMODE_IMAGE__account = 'apache'
         SONATAFLOW_DEVMODE_IMAGE__name = 'incubator-kie-sonataflow-devmode'
         SONATAFLOW_DEVMODE_IMAGE__buildTag = "${params.RELEASE_VERSION}"
+
+        MAVEN_SETTINGS_PATH = "${WORKSPACE}/kie-settings.xml"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
@@ -80,11 +81,15 @@ pipeline {
         }
 
         stage('Load upstream images') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+            }
             steps {
                 script {
                     upstreamReleaseArtifactsDir = "${WORKSPACE}/upstream-release-artifacts"
-                    releaseUtils.downloadReleaseArtifacts("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}")
-                    dockerUtils.loadImages(releaseUtils.getUpstreamImagesArtifactsList("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}"))
+                    releaseUtils.downloadReleaseArtifacts("${pipelineVars.asfReleaseStagingRepository}", "${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}")
+                    upstreamImagesArtifacts = releaseUtils.getUpstreamImagesArtifactsList("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}")
+                    dockerUtils.loadImages(upstreamImagesArtifacts as String[])
                 }
             }
         }
@@ -107,7 +112,21 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm()
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsConfigFileId}")
+                    }
+                }
+            }
+        }
+
+        stage('Setup maven') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        defaultSettingsFile = 'packages/sonataflow-image-common/resources/modules/kogito-maven/common/maven/settings.xml'
+                        sh """#!/bin/bash -el
+                        rm -rf "${defaultSettingsFile}"
+                        cp "${env.MAVEN_SETTINGS_PATH}" "${defaultSettingsFile}"
+                        """.trim()
                     }
                 }
             }
@@ -148,7 +167,7 @@ pipeline {
 
         stage('Push sonataflow-devmode to Docker Hub') {
             when {
-                expression { !params.DRY_RUN && !params.RELEASE_CANDIDATE }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
             }
             steps {
                 script {
@@ -166,7 +185,7 @@ pipeline {
 
         stage('Setup release candidate artifacts') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
             }
             steps {
                 script {
@@ -182,7 +201,7 @@ pipeline {
 
         stage('Sign artifact for Apache release') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
             }
             steps {
                 script {
@@ -194,7 +213,7 @@ pipeline {
 
         stage('Publish Release Candidate artifacts') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
             }
             steps {
                 script {

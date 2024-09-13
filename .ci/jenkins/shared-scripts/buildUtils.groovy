@@ -46,7 +46,7 @@ def startFluxbox() {
 /**
 * Setup PNPM parameters for building KIE-Tools
 */
-def setupPnpm() {
+def setupPnpm(String mavenSettingsFileId = '') {
     sh """#!/bin/bash -el
     pnpm config set network-timeout 1000000
     pnpm -r exec 'bash' '-c' 'mkdir .mvn'
@@ -54,6 +54,15 @@ def setupPnpm() {
     pnpm -r exec 'bash' '-c' 'echo -ntp >> .mvn/maven.config'
     pnpm -r exec 'bash' '-c' 'echo -Xmx2g > .mvn/jvm.config'
     """.trim()
+
+    if (mavenSettingsFileId) {
+        configFileProvider([configFile(fileId: mavenSettingsFileId, variable: 'MAVEN_SETTINGS_FILE')]) {
+            sh """#!/bin/bash -el
+            cp ${MAVEN_SETTINGS_FILE} ${WORKSPACE}/kie-settings.xml
+            pnpm -r exec 'bash' '-c' 'echo --settings=${WORKSPACE}/kie-settings.xml >> .mvn/maven.config'
+            """.trim()
+        }
+    }
 }
 
 /**
