@@ -3,6 +3,7 @@ cekit==4.11.0
 behave==1.2.6
 lxml==5.2.1
 docker==7.0.0
+docker-squash==1.2.1
 elementpath==4.4.0
 pyyaml==6.0.1
 ruamel.yaml==0.18.6
@@ -11,4 +12,3 @@ Jinja2==3.1.4
 pykwalify==1.8.0
 colorlog==6.8.2
 click==8.1.7
-docker-squash==1.2.1
