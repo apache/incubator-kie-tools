@@ -78,17 +78,16 @@ export function addEdge({
     requirementEdgeTargetingExternalNodeId: string | undefined;
   };
 }) {
-  if (
-    !_checkIsValidConnection(sourceNode, targetNode, edge.type, {
-      allowExternalTarget: !!extraArg!.requirementEdgeTargetingExternalNodeId,
-    })
-  ) {
+  const externalTargetAllowed = extraArg !== undefined && extraArg.requirementEdgeTargetingExternalNodeId !== undefined;
+  if (!_checkIsValidConnection(sourceNode, targetNode, edge.type, { allowExternalTarget: externalTargetAllowed })) {
     throw new Error(`DMN MUTATION: Invalid structure: (${sourceNode.type}) --${edge.type}--> (${targetNode.type}) `);
   }
 
   const newEdgeId = generateUuid();
 
-  let existingEdgeId: string | undefined = extraArg!.requirementEdgeTargetingExternalNodeId ?? undefined;
+  let existingEdgeId: string | undefined = externalTargetAllowed
+    ? extraArg!.requirementEdgeTargetingExternalNodeId
+    : undefined;
 
   // Associations
   if (edge.type === EDGE_TYPES.association) {
@@ -116,7 +115,7 @@ export function addEdge({
     });
   }
   // Requirements
-  else if (!extraArg!.requirementEdgeTargetingExternalNodeId) {
+  else if (!externalTargetAllowed) {
     const requirements = getRequirementsFromEdge(sourceNode, newEdgeId, edge.type);
     const drgElement = definitions.drgElement![targetNode.index] as Normalized<DMN15__tDecision>; // We cast to tDecision here because it has all three types of requirement.
     if (requirements?.informationRequirement) {
