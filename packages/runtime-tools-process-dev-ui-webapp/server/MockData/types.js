@@ -43,6 +43,7 @@ module.exports = typeDefs = gql`
       orderBy: ProcessInstanceOrderBy
       pagination: Pagination
     ): [ProcessInstance]
+    ProcessDefinitions(where: ProcessDefinitionArgument): [ProcessDefinition]
     UserTaskInstances(
       where: UserTaskInstanceArgument
       orderBy: UserTaskInstanceOrderBy
@@ -82,6 +83,34 @@ module.exports = typeDefs = gql`
     source: String
     lastUpdate: DateTime!
     diagram: String
+  }
+
+  type ProcessDefinition {
+    id: String!
+    endpoint: String!
+    serviceUrl: String
+    nodes: [NodeInstance!]
+  }
+
+  input ProcessDefinitionArgument {
+    and: [ProcessDefinitionArgument!]
+    or: [ProcessDefinitionArgument!]
+    id: IdArgument
+    processId: StringArgument
+    processName: StringArgument
+    parentProcessInstanceId: IdArgument
+    rootProcessInstanceId: IdArgument
+    rootProcessId: StringArgument
+    state: ProcessInstanceStateArgument
+    error: ProcessInstanceErrorArgument
+    nodes: NodeInstanceArgument
+    endpoint: StringArgument
+    roles: StringArrayArgument
+    start: DateArgument
+    end: DateArgument
+    addons: StringArrayArgument
+    lastUpdate: DateArgument
+    businessKey: StringArgument
   }
 
   type KogitoMetadata {

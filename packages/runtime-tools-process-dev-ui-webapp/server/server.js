@@ -22,7 +22,7 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerApiDoc = require("./MockData/openAPI/openapi.json");
 var cors = require("cors");
 const app = express();
-const { ApolloServer, gql } = require("apollo-server-express");
+const { ApolloServer } = require("apollo-server-express");
 var bodyParser = require("body-parser");
 // GraphQL - Apollo
 const { GraphQLScalarType } = require("graphql");
@@ -360,7 +360,7 @@ const resolvers = {
   Query: {
     ProcessInstances: async (parent, args) => {
       let result = data.ProcessInstanceData.filter((datum) => {
-        console.log("args", args["where"]);
+        // console.log("args", args["where"]);
         if (args["where"].id && args["where"].id.equal) {
           return datum.id == args["where"].id.equal;
         } else if (args["where"].rootProcessInstanceId && args["where"].rootProcessInstanceId.equal) {
@@ -392,7 +392,7 @@ const resolvers = {
         }
       });
       if (args["orderBy"]) {
-        console.log("orderBy args: ", args["orderBy"]);
+        // console.log("orderBy args: ", args["orderBy"]);
         result = _.orderBy(
           result,
           _.keys(args["orderBy"]).map((key) => key),
@@ -403,8 +403,18 @@ const resolvers = {
       if (args["pagination"]) {
         result = paginatedResult(result, args["pagination"].offset, args["pagination"].limit);
       }
-      console.log("result length: " + result.length);
+      // console.log("result length: " + result.length);
       return result;
+    },
+    ProcessDefinitions: async (parent, args) => {
+      await timeout();
+      return data.ProcessDefinitionData.filter((proccessDefinition) => {
+        if (args["where"] !== undefined) {
+          return proccessDefinition.id === args["where"].id.equal;
+        } else {
+          return proccessDefinition;
+        }
+      });
     },
     Jobs: async (parent, args) => {
       if (Object.keys(args).length > 0) {
@@ -515,7 +525,7 @@ const resolvers = {
     serialize(value) {
       return value;
     },
-    parseLiteral(ast) {
+    parseLiteral() {
       return null;
     },
   }),
