@@ -137,6 +137,7 @@
       { "id": "@kie-tools/import-java-classes-component" },
       { "id": "@kie-tools/runtime-tools-process-webapp-components" },
       { "id": "@kie-tools/runtime-tools-shared-webapp-components" },
+      { "id": "@kie-tools/jobs-service-webapp" },
       { "id": "@kie-tools-core/k8s-yaml-to-apiserver-requests" },
       { "id": "kie-editors-dev-vscode-extension" },
       { "id": "@kie-tools/pmml-editor" },
@@ -1697,6 +1698,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/jobs-service-webapp",
+        "target": "@kie-tools-core/webpack-base",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools-core/k8s-yaml-to-apiserver-requests",
         "target": "@kie-tools/eslint",
         "weight": 1
@@ -2562,6 +2568,7 @@
     ["@kie-tools/import-java-classes-component", "packages/import-java-classes-component"],
     ["@kie-tools/jbpm-quarkus-devui", "packages/jbpm-quarkus-devui"],
     ["@kie-tools/jest-base", "packages/jest-base"],
+    ["@kie-tools/jobs-service-webapp", "packages/jobs-service-webapp"],
     ["@kie-tools/json-yaml-language-service", "packages/json-yaml-language-service"],
     ["@kie-tools-core/k8s-yaml-to-apiserver-requests", "packages/k8s-yaml-to-apiserver-requests"],
     ["@kie-tools-core/keyboard-shortcuts", "packages/keyboard-shortcuts"],
