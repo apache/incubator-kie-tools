@@ -23,14 +23,13 @@ pipeline {
     }
 
     options {
-        timeout(time: 180, unit: 'MINUTES')
+        timeout(time: 360, unit: 'MINUTES')
     }
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
         string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
-        booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
         string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
@@ -44,6 +43,8 @@ pipeline {
         SONATAFLOW_OPERATOR__account = 'apache'
         SONATAFLOW_OPERATOR__name = 'incubator-kie-sonataflow-operator'
         SONATAFLOW_OPERATOR__buildTag = "${params.RELEASE_VERSION}"
+
+        MAVEN_SETTINGS_PATH = "${WORKSPACE}/kie-settings.xml"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
@@ -81,11 +82,15 @@ pipeline {
         }
 
         stage('Load upstream images') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+            }
             steps {
                 script {
                     upstreamReleaseArtifactsDir = "${WORKSPACE}/upstream-release-artifacts"
-                    releaseUtils.downloadReleaseArtifacts("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}")
-                    dockerUtils.loadImages(releaseUtils.getUpstreamImagesArtifactsList("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}"))
+                    releaseUtils.downloadReleaseArtifacts("${pipelineVars.asfReleaseStagingRepository}", "${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}")
+                    upstreamImagesArtifacts = releaseUtils.getUpstreamImagesArtifactsList("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}")
+                    dockerUtils.loadImages(upstreamImagesArtifacts as String[])
                 }
             }
         }
@@ -108,7 +113,21 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm()
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsConfigFileId}")
+                    }
+                }
+            }
+        }
+
+        stage('Setup maven') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        defaultSettingsFile = 'packages/sonataflow-image-common/resources/modules/kogito-maven/common/maven/settings.xml'
+                        sh """#!/bin/bash -el
+                        rm -rf "${defaultSettingsFile}"
+                        cp "${env.MAVEN_SETTINGS_PATH}" "${defaultSettingsFile}"
+                        """.trim()
                     }
                 }
             }
@@ -136,7 +155,7 @@ pipeline {
 
         stage('Upload Kogito Serverless Operator YAML file') {
             when {
-                expression { !params.DRY_RUN }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
             }
             steps {
                 script {
@@ -166,7 +185,7 @@ pipeline {
 
         stage('Push sonataflow-operator to Docker Hub') {
             when {
-                expression { !params.DRY_RUN && !params.RELEASE_CANDIDATE  }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == ''  }
             }
             steps {
                 script {
@@ -184,7 +203,7 @@ pipeline {
 
         stage('Setup release candidate artifacts') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
             }
             steps {
                 script {
@@ -194,16 +213,15 @@ pipeline {
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
                     docker save "${env.SONATAFLOW_OPERATOR__registry}/${env.SONATAFLOW_OPERATOR__account}/${env.SONATAFLOW_OPERATOR__name}:${params.RELEASE_VERSION}" | gzip > "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}"
+                    cd kie-tools/packages/sonataflow-operator && zip "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_ZIP_FILE}" ./operator.yaml
                     """.trim()
-
-                    zipUtils.zipArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_ZIP_FILE}", 'kie-tools/packages/kogito-serverless-operator/operator.yaml')
                 }
             }
         }
 
         stage('Sign artifact for Apache release') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
             }
             steps {
                 script {
@@ -216,7 +234,7 @@ pipeline {
 
         stage('Publish Release Candidate artifacts') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
             }
             steps {
                 script {
