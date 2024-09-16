@@ -131,7 +131,7 @@ pipeline {
                         if (githubscm.isThereAnyChanges()) {
                             def commitMsg = "[${getBuildBranch()}] Update version to ${projectVersion}"
                             githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
-                            githubscm.commitChanges(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') })
+                            githubscm.commitChanges(commitMsg)
                         } else {
                             println '[WARN] no changes to commit'
                         }
