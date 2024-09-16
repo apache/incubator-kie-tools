@@ -110,7 +110,7 @@ pipeline {
                 dir('kie-sandbox-quarkus-accelerator') {
                     script {
                         githubUtils.createTag("${params.TAG_NAME}")
-                        githubUtils.pushObject('origin', "${params.TAG_NAME}", "${pipelineVars.asfGithubPushCredentialsId}")
+                        githubUtils.pushObject('origin', "${params.TAG_NAME}", "${pipelineVars.asfCIGithubCredentialsId}")
                     }
                 }
             }
