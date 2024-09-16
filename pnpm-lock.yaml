@@ -9376,9 +9376,18 @@ importers:
 
   packages/serverless-logic-web-tools-swf-dev-mode-image:
     devDependencies:
+      '@kie-tools/image-builder':
+        specifier: workspace:*
+        version: link:../image-builder
       '@kie-tools/maven-config-setup-helper':
         specifier: workspace:*
         version: link:../maven-config-setup-helper
+      '@kie-tools/maven-m2-repo-via-http-image':
+        specifier: workspace:*
+        version: link:../maven-m2-repo-via-http-image
+      '@kie-tools/python-venv':
+        specifier: workspace:*
+        version: link:../python-venv
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env

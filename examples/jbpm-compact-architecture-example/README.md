@@ -321,7 +321,8 @@ Candidate Jon Snow don't meet the requirements for the position but we'll keep i
 
 ### Using Keycloak as Authentication Server
 
-In this Quickstart we'll be using [Keycloak](https://www.keycloak.org/) as _Authentication Server_. It will be started as a part of the project _Infrastructure Services_, you can check the configuration on the project [docker-compose.yml](docker-compose/docker-compose.yml) in [docker-compose](docker-compose) folder.
+In this Quickstart we'll be using [Keycloak](https://www.keycloak.org/) as _Authentication Server_ for _Kogito Task Console_. It will be started
+as a part of the project _Infrastructure Services_, you can check the configuration on the project [docker-compose.yml](docker-compose/docker-compose.yml) in [docker-compose](docker-compose) folder.
 
 It will install the _Kogito Realm_ that comes with a predefined set of users:
 
@@ -333,7 +334,7 @@ It will install the _Kogito Realm_ that comes with a predefined set of users:
 
 Once Keycloak is started, you should be able to access your _Keycloak Server_ at [localhost:8480/auth](http://localhost:8480/auth) with _admin_ user.
 
-> **_NOTE:_** This example uses keycloak authentication to enable security only in the consoles not in runtime.
+> **_NOTE:_** This example uses keycloak authentication to enable security only in the _Kogito Task Console_ not for the Kogito Runtime.
 
 ### Using the Kogito Runtime Consoles to interact with the Hiring Process
 
@@ -370,10 +371,8 @@ In this guide we'll see how to use the _Kogito Management Console_ to view the s
    Which indicates that a new process instance with id **064a6372-b5bb-4eff-a059-d7b24d4ac64a** has been started.
 
 2. Now let's check the process instance state with the _Kogito Management Console_. To do so, in your browser navigate
-   to http://localhost:8280 and log in using any of the users specified in the [Using Keycloak as Authentication Server](#using-keycloak-as-authentication-server).
-
-   Once you are logged in, you should be redirected to the **Process Instances** page where you should be able to see
-   the started process instance in active state.
+   to http://localhost:8280 and you'll be redirected to the **Process Instances** page in the _Kogito Management Console_.
+   There where you should be able to see the started process instance in active state.
 
    <div style="text-align:center;">
       <figure>
@@ -382,7 +381,8 @@ In this guide we'll see how to use the _Kogito Management Console_ to view the s
       </figure>
    </div>
 
-3. Click on the instance **id** to navigate into the _Process Details_ page. In there you'll be able to see different panels displaying relevant information about the instance state, such as the _Diagram_, _Timeline_, _Details_, _Variables_, _Jobs_...
+3. Click on the instance **id** to navigate into the _Process Details_ page. In there you'll be able to see different panels
+   displaying relevant information about the instance state, such as the _Diagram_, _Timeline_, _Details_, _Variables_, _Jobs_...
 
    <div style="text-align:center">
       <figure>
