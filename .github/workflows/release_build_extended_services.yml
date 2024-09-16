@@ -20,33 +20,35 @@
 name: "Release :: Build (Extended Services)"
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       dry_run:
         type: boolean
         required: true
+        description: "Dry run mode"
       base_ref:
         type: string
         required: true
-      tag:
-        type: string
-        required: false
-        default: "0.0.0"
-      upload_asset_url:
-        type: string
-        required: false
-        default: ""
-      release_candidate:
-        type: boolean
-        required: false
-        default: false
+        description: "Base reference for the checkout"
       release_candidate_version:
         type: string
-        required: false
-        default: ""
-    secrets:
-      gh_token:
-        required: false
+        required: true
+        description: "Release candidate version"
+      drools_repository:
+        required: true
+        description: "Drools artifacts repository"
+      kogito_runtimes_repository:
+        required: true
+        description: "Kogito runtimes artifacts repository"
+      kogito_apps_repository:
+        required: true
+        description: "Kogito apps artifacts repository"
+      jitexecutor_native_macos_repository:
+        required: true
+        description: "JITExecutor native macOS artifacts repository"
+      jitexecutor_native_windows_repository:
+        required: true
+        description: "JITExecutor native windows artifacts repository"
 
 env:
   KIE_TOOLS_BUILD__runLinters: "false"
@@ -55,10 +57,7 @@ env:
   KIE_TOOLS_BUILD__buildContainerImages: "true"
 
 jobs:
-  extended_services:
-    env:
-      EXTENDED_SERVICES__kieSandboxUrl: "https://apache.github.io/incubator-kie-kogito-online"
-
+  extended_services_build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -80,6 +79,302 @@ jobs:
         id: setup_env
         uses: ./.github/actions/setup-env
 
+      - name: Setup maven settings (MacOS)
+        if: runner.os == 'macOS'
+        env:
+          WORKDIR_PATH: ${{ github.workspace }}
+          DROOLS_REPO: ${{ github.event.inputs.drools_repository }}
+          KOGITO_RUNTIMES_REPO: ${{ github.event.inputs.kogito_runtimes_repository }}
+          KOGITO_APPS_REPO: ${{ github.event.inputs.kogito_apps_repository }}
+          JITEXECUTOR_NATIVE_REPO: ${{ github.event.inputs.jitexecutor_native_macos_repository }}
+        run: |
+          mkdir -p ${WORKDIR_PATH}/.m2
+          echo "<settings>
+           <servers>
+             <server>
+               <id>apache.snapshots.https</id>
+               <username>${{ secrets.NEXUS_USER }}</username>
+               <password>${{ secrets.NEXUS_PW }}</password>
+             </server>
+           </servers>
+           <profiles>
+            <profile>
+              <id>additional_repos</id>
+              <repositories>
+                <repository>
+                  <id>apache-kie-drools-staging-repository</id>
+                  <name>Apache KIE Drools Staging Repository</name>
+                  <url>${DROOLS_REPO}</url>
+                  <layout>default</layout>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </repository>
+                <repository>
+                  <id>apache-kie-kogito-runtimes-staging-repository</id>
+                  <name>Apache KIE Kogito Runtimes Staging Repository</name>
+                  <url>${KOGITO_RUNTIMES_REPO}</url>
+                  <layout>default</layout>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </repository>
+                <repository>
+                  <id>apache-kie-kogito-apps-staging-repository</id>
+                  <name>Apache KIE Kogito Apps Staging Repository</name>
+                  <url>${KOGITO_APPS_REPO}</url>
+                  <layout>default</layout>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </repository>
+                <repository>
+                  <id>apache-kie-jitexecutor-native-staging-repository</id>
+                  <name>Apache KIE JITExecutor Native Staging Repository</name>
+                  <url>${JITEXECUTOR_NATIVE_REPO}</url>
+                  <layout>default</layout>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </repository>
+              </repositories>
+              <pluginRepositories>
+                <pluginRepository>
+                  <id>apache-kie-drools-staging-repository</id>
+                  <name>Apache KIE Drools Staging Repository</name>
+                  <url>${DROOLS_REPO}</url>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                  <id>apache-kie-kogito-runtimes-staging-repository</id>
+                  <name>Apache KIE Kogito Runtimes Staging Repository</name>
+                  <url>${KOGITO_RUNTIMES_REPO}</url>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                  <id>apache-kie-kogito-apps-staging-repository</id>
+                  <name>Apache KIE Kogito Apps Staging Repository</name>
+                  <url>${KOGITO_APPS_REPO}</url>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                  <id>apache-kie-jitexecutor-native-staging-repository</id>
+                  <name>Apache KIE JITExecutor Native Staging Repository</name>
+                  <url>${JITEXECUTOR_NATIVE_REPO}</url>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </pluginRepository>
+              </pluginRepositories>
+            </profile>
+          </profiles>
+          <activeProfiles>
+            <activeProfile>additional_repos</activeProfile>
+          </activeProfiles>
+          </settings>" > ${WORKDIR_PATH}/.m2/settings.xml
+
+      - name: Setup maven settings (Windows)
+        if: runner.os == 'Windows'
+        env:
+          WORKDIR_PATH: ${{ github.workspace }}
+          DROOLS_REPO: ${{ github.event.inputs.drools_repository }}
+          KOGITO_RUNTIMES_REPO: ${{ github.event.inputs.kogito_runtimes_repository }}
+          KOGITO_APPS_REPO: ${{ github.event.inputs.kogito_apps_repository }}
+          JITEXECUTOR_NATIVE_REPO: ${{ github.event.inputs.jitexecutor_native_windows_repository }}
+        shell: pwsh
+        run: |
+          New-Item -Name ".m2" -Path "$env:WORKDIR_PATH" -ItemType Directory
+          $contentToAdd = @"
+          <settings>
+           <servers>
+             <server>
+               <id>apache.snapshots.https</id>
+               <username>${{ secrets.NEXUS_USER }}</username>
+               <password>${{ secrets.NEXUS_PW }}</password>
+             </server>
+           </servers>
+           <profiles>
+            <profile>
+              <id>additional_repos</id>
+              <repositories>
+                <repository>
+                  <id>apache-kie-drools-staging-repository</id>
+                  <name>Apache KIE Drools Staging Repository</name>
+                  <url>$env:DROOLS_REPO</url>
+                  <layout>default</layout>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </repository>
+                <repository>
+                  <id>apache-kie-kogito-runtimes-staging-repository</id>
+                  <name>Apache KIE Kogito Runtimes Staging Repository</name>
+                  <url>$env:KOGITO_RUNTIMES_REPO</url>
+                  <layout>default</layout>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </repository>
+                <repository>
+                  <id>apache-kie-kogito-apps-staging-repository</id>
+                  <name>Apache KIE Kogito Apps Staging Repository</name>
+                  <url>$env:KOGITO_APPS_REPO</url>
+                  <layout>default</layout>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </repository>
+                <repository>
+                  <id>apache-kie-jitexecutor-native-staging-repository</id>
+                  <name>Apache KIE JITExecutor Native Staging Repository</name>
+                  <url>$env:JITEXECUTOR_NATIVE_REPO</url>
+                  <layout>default</layout>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </repository>
+              </repositories>
+              <pluginRepositories>
+                <pluginRepository>
+                  <id>apache-kie-drools-staging-repository</id>
+                  <name>Apache KIE Drools Staging Repository</name>
+                  <url>$env:DROOLS_REPO</url>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                  <id>apache-kie-kogito-runtimes-staging-repository</id>
+                  <name>Apache KIE Kogito Runtimes Staging Repository</name>
+                  <url>$env:KOGITO_RUNTIMES_REPO</url>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                  <id>apache-kie-kogito-apps-staging-repository</id>
+                  <name>Apache KIE Kogito Apps Staging Repository</name>
+                  <url>$env:KOGITO_APPS_REPO</url>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                  <id>apache-kie-jitexecutor-native-staging-repository</id>
+                  <name>Apache KIE JITExecutor Native Staging Repository</name>
+                  <url>$env:JITEXECUTOR_NATIVE_REPO</url>
+                  <releases>
+                    <enabled>true</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </releases>
+                  <snapshots>
+                    <enabled>false</enabled>
+                    <updatePolicy>never</updatePolicy>
+                  </snapshots>
+                </pluginRepository>
+              </pluginRepositories>
+            </profile>
+          </profiles>
+          <activeProfiles>
+            <activeProfile>additional_repos</activeProfile>
+          </activeProfiles>
+          </settings>
+          "@
+          Add-Content "$env:WORKDIR_PATH\.m2\settings.xml" $contentToAdd
+
+      - name: "Setup Maven settings file (MacOS)"
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          pnpm -r exec 'bash' '-c' 'echo --settings=${{ github.workspace }}/.m2/settings.xml >> .mvn/maven.config'
+
+      - name: "Setup Maven settings file (Windows)"
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          pnpm -r powershell "Add-Content .\.mvn\maven.config '--settings=${{ github.workspace }}\.m2\settings.xml'"
+
       - name: "Bootstrap"
         id: bootstrap
         uses: ./.github/actions/bootstrap
@@ -91,110 +386,88 @@ jobs:
         run: |
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
-      - name: "Upload Extended Services for macOS"
-        if: ${{ runner.os == 'macOS' && !inputs.dry_run && !inputs.release_candidate }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
+      - name: Temporary MacOS artifacts
+        if: runner.os == 'macOS'
+        uses: actions/upload-artifact@v4
         with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ./packages/extended-services/dist/darwin/Kogito.dmg
-          asset_name: kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg
-          asset_content_type: application/octet-stream
+          name: extended-services-macos-artifacts
+          path: ./packages/extended-services/dist/darwin/Kogito.dmg
+          retention-days: 1
 
-      - name: "Upload Extended Services for Windows"
-        if: ${{ runner.os == 'Windows' && !inputs.dry_run && !inputs.release_candidate }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.gh_token }}
+      - name: Temporary Windows artifacts
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
         with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: "./packages/extended-services/dist/win32/kie_sandbox_extended_services.exe"
-          asset_name: "kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
-          asset_content_type: application/octet-stream
+          name: extended-services-windows-artifacts
+          path: .\packages\extended-services\dist\win32\kie_sandbox_extended_services.exe
+          retention-days: 1
 
-      - name: "Setup Extended Services for macOS artifacts"
-        id: macos_setup_artifact
-        if: ${{ runner.os == 'macOS' && !inputs.dry_run && inputs.release_candidate }}
+  extended_services_sign_and_deploy:
+    needs: [extended_services_build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Import GPG key
+        if: github.event_name != 'pull_request'
+        uses: crazy-max/ghaction-import-gpg@111c56156bcc6918c056dbef52164cfa583dc549
+        with:
+          gpg_private_key: ${{ secrets.GPG_KEY }}
+
+      - name: Create release artifacts directories
         shell: bash
-        env:
-          PROJECT_VERSION: ${{ inputs.release_candidate_version }}
         run: |
-          ARTIFACT_ZIP_FILE="./extended-services-release-artifacts/incubator-kie-$PROJECT_VERSION-sandbox-extended-services-macOS.zip"
-          echo "ARTIFACT_ZIP_FILE=$ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
           mkdir ./extended-services-release-artifacts
-          zip $ARTIFACT_ZIP_FILE ./packages/extended-services/dist/darwin/Kogito.dmg
+          mkdir ./extended-services-final-release-artifacts
 
-      - name: "Sign Extended Services for macOS artifact"
-        if: ${{ runner.os == 'macOS' && !inputs.dry_run && inputs.release_candidate }}
+      - name: Retrieve MacOS artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: extended-services-macos-artifacts
+          path: ./extended-services-release-artifacts
+
+      - name: Retrieve Windows artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: extended-services-windows-artifacts
+          path: ./extended-services-release-artifacts
+
+      - name: "Zip artifacts"
+        id: zip_artifacts
+        if: ${{ !inputs.dry_run }}
         shell: bash
         env:
-          GPG_KEY: ${{ secrets.GPG_KEY }}
-          ARTIFACT_ZIP_FILE: ${{ steps.macos_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
+          RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
         run: |
-          rm ${WORKSPACE}/signkey.gpg
-          echo $GPG_KEY > ${WORKSPACE}/signkey.gpg
-          gpg --list-keys
-          gpg --batch --pinentry-mode loopback --import ${WORKSPACE}/signkey.gpg
-          rm ${WORKSPACE}/signkey.gpg
-          gpg --no-tty --batch --sign --pinentry-mode loopback --output $ARTIFACT_ZIP_FILE.asc --detach-sig $ARTIFACT_ZIP_FILE
-          shasum -a 512 $ARTIFACT_ZIP_FILE > $ARTIFACT_ZIP_FILE.sha512
+          MACOS_ARTIFACT_ZIP_FILE="${{ github.workspace }}/extended-services-final-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-macOS-x86.zip"
+          WINDOWS_ARTIFACT_ZIP_FILE="${{ github.workspace }}/extended-services-final-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-windows-x86.zip"
+          echo "MACOS_ARTIFACT_ZIP_FILE=$MACOS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
+          echo "WINDOWS_ARTIFACT_ZIP_FILE=$WINDOWS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
+          cd ./extended-services-release-artifacts
+          zip $MACOS_ARTIFACT_ZIP_FILE ./Kogito.dmg
+          zip $WINDOWS_ARTIFACT_ZIP_FILE ./kie_sandbox_extended_services.exe
 
-      - name: "Upload Extended Services for macOS artifact"
-        if: ${{ runner.os == 'macOS' && !inputs.dry_run && inputs.release_candidate }}
+      - name: "Sign artifacts"
+        if: ${{ !inputs.dry_run }}
         shell: bash
         env:
-          SVN_USERNAME: svn_dist_kie
-          SVN_PASSWORD: ${{ secrets.svc-dist-kie-pass }}
-          PROJECT_VERSION: ${{ inputs.release_candidate_version }}
-          ARTIFACT_ZIP_FILE: ${{ steps.macos_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
+          MACOS_ARTIFACT_ZIP_FILE: ${{ steps.zip_artifacts.outputs.MACOS_ARTIFACT_ZIP_FILE }}
+          WINDOWS_ARTIFACT_ZIP_FILE: ${{ steps.zip_artifacts.outputs.WINDOWS_ARTIFACT_ZIP_FILE }}
         run: |
-          svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie svn-kie
-          cp ./extended-services-release-artifacts/* svn-kie/$PROJECT_VERSION/
-          svn add "svn-kie/$PROJECT_VERSION"
+          gpg --no-tty --batch --sign --pinentry-mode loopback --output $MACOS_ARTIFACT_ZIP_FILE.asc --detach-sig $MACOS_ARTIFACT_ZIP_FILE
+          shasum -a 512 $MACOS_ARTIFACT_ZIP_FILE > $MACOS_ARTIFACT_ZIP_FILE.sha512
+          gpg --no-tty --batch --sign --pinentry-mode loopback --output $WINDOWS_ARTIFACT_ZIP_FILE.asc --detach-sig $WINDOWS_ARTIFACT_ZIP_FILE
+          shasum -a 512 $WINDOWS_ARTIFACT_ZIP_FILE > $WINDOWS_ARTIFACT_ZIP_FILE.sha512
+
+      - name: "Upload artifacts to SVN"
+        if: ${{ !inputs.dry_run }}
+        shell: bash
+        env:
+          SVN_USERNAME: ${{ secrets.INCUBATOR_SVN_DEV_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.INCUBATOR_SVN_DEV_PASSWORD }}
+          RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
+        run: |
+          svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie/$RELEASE_CANDIDATE_VERSION/ svn-kie
+          cp ./extended-services-final-release-artifacts/* svn-kie
           cd svn-kie
-          svn ci --non-interactive --no-auth-cache --username "$SVN_USERNAME" --password "$SVN_PASSWORD" -m "Apache KIE $PROJECT_VERSION Extended Services for macOS artifact"
-          rm -rf svn-kie
-
-      - name: "Setup Extended Services for Windows artifacts"
-        id: windows_setup_artifact
-        if: ${{ runner.os == 'macOS' && !inputs.dry_run && inputs.release_candidate }}
-        shell: pwsh
-        env:
-          PROJECT_VERSION: ${{ inputs.release_candidate_version }}
-        run: |
-          ARTIFACT_ZIP_FILE="./extended-services-release-artifacts/incubator-kie-$PROJECT_VERSION-sandbox-extended-services-macOS.zip"
-          echo "ARTIFACT_ZIP_FILE=$ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
-          mkdir ./extended-services-release-artifacts
-          zip $ARTIFACT_ZIP_FILE ./packages/extended-services/dist/win32/kie_sandbox_extended_services.exe
-
-      - name: "Sign Extended Services for Windows artifact"
-        if: ${{ runner.os == 'Windows' && !inputs.dry_run && inputs.release_candidate }}
-        shell: pwsh
-        env:
-          GPG_KEY: ${{ secrets.GPG_KEY }}
-          ARTIFACT_ZIP_FILE: ${{ steps.windows_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
-        run: |
-          rm ${WORKSPACE}/signkey.gpg
-          echo $GPG_KEY > ${WORKSPACE}/signkey.gpg
-          gpg --list-keys
-          gpg --batch --pinentry-mode loopback --import ${WORKSPACE}/signkey.gpg
-          rm ${WORKSPACE}/signkey.gpg
-          gpg --no-tty --batch --sign --pinentry-mode loopback --output $ARTIFACT_ZIP_FILE.asc --detach-sig $ARTIFACT_ZIP_FILE
-          shasum -a 512 $ARTIFACT_ZIP_FILE > $ARTIFACT_ZIP_FILE.sha512
-
-      - name: "Upload Extended Services for Windows artifact"
-        if: ${{ runner.os == 'Windows' && !inputs.dry_run && inputs.release_candidate }}
-        shell: pwsh
-        env:
-          SVN_USERNAME: svn_dist_kie
-          SVN_PASSWORD: ${{ secrets.svc-dist-kie-pass }}
-          PROJECT_VERSION: ${{ inputs.release_candidate_version }}
-          ARTIFACT_ZIP_FILE: ${{ steps.windows_setup_artifact.outputs.ARTIFACT_ZIP_FILE }}
-        run: |
-          svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie svn-kie
-          cp ./extended-services-release-artifacts/* svn-kie/$PROJECT_VERSION/
-          svn add "svn-kie/$PROJECT_VERSION"
-          cd svn-kie
-          svn ci --non-interactive --no-auth-cache --username "$SVN_USERNAME" --password "$SVN_PASSWORD" -m "Apache KIE $PROJECT_VERSION Extended Services for Windows artifact"
+          svn add . --force
+          svn ci --non-interactive --no-auth-cache --username $SVN_USERNAME --password "$SVN_PASSWORD" -m "Apache KIE $RELEASE_CANDIDATE_VERSION Extended Services artifacts"
           rm -rf svn-kie

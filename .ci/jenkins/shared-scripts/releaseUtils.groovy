@@ -19,7 +19,7 @@
 * Setup the GPG Key to sign release artifacts
 */
 def setupSigningKey(String gpgKeyCredentialsId) {
-    withCredentials([string(credentialsId: gpgKeyCredentialsId, variable: 'SIGNING_KEY')]) {
+    withCredentials([file(credentialsId: gpgKeyCredentialsId, variable: 'SIGNING_KEY')]) {
         sh """#!/bin/bash -el
         echo "${SIGNING_KEY}" > ${WORKSPACE}/signkey.gpg
         gpg --list-keys
@@ -58,9 +58,10 @@ def publishArtifacts(String artifactsDir, String releaseRepository, String relea
 /**
 * Download release artifacts from a specific release
 */
-def downloadReleaseArtifacts(String artifactsDir, String releaseVersion) {
+def downloadReleaseArtifacts(String releaseRepository, String artifactsDir, String releaseVersion) {
     sh """#!/bin/bash -el
-    svn co "${releaseRepository}/${releaseVersion}" "${artifactsDir}/${releaseVersion}"
+    mkdir -p "${artifactsDir}"
+    svn co "${releaseRepository}/${releaseVersion}" "${artifactsDir}"
     """.trim()
 }
 
@@ -78,3 +79,5 @@ def getUpstreamImagesArtifactsList(String artifactsDir, String releaseVersion) {
         "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jobs-service-postgresql-image.tar.gz"
     ]
 }
+
+return this

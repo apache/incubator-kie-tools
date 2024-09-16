@@ -59,18 +59,11 @@ def tagImage(String registry, String image, String oldTag, String newTag) {
 }
 
 /**
-* Load an image
-*/
-def loadImage(String imageFile) {
-    sh "docker load < ${imageFile}"
-}
-
-/**
 * Load multiple images
 */
 def loadImages(String... imagesFiles) {
     for (imageFile in imagesFiles) {
-        loadImage(imageFile)
+        sh "docker load < ${imageFile}"
     }
 }
 
