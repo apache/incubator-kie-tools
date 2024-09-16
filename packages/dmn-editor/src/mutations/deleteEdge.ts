@@ -44,37 +44,34 @@ export function deleteEdge({
   edge: { id: string; dmnObject: DmnDiagramEdgeData["dmnObject"] };
   mode: EdgeDeletionMode;
 }) {
-  if (edge.dmnObject.namespace !== definitions["@_namespace"]) {
-    console.debug("DMN MUTATION: Can't delete an edge that's from an external node.");
-    return { dmnEdge: undefined };
-  }
-
-  const dmnObjects: Normalized<DMN15__tDefinitions>["drgElement" | "artifact"] =
-    switchExpression(edge?.dmnObject.type, {
-      association: definitions.artifact,
-      group: definitions.artifact,
-      default: definitions.drgElement,
-    }) ?? [];
-
-  const dmnObjectIndex = dmnObjects.findIndex((d) => d["@_id"] === edge.dmnObject.id);
-  if (dmnObjectIndex < 0) {
-    throw new Error(`DMN MUTATION: Can't find DMN element with ID ${edge.dmnObject.id}`);
-  }
-
-  if (mode === EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
-    const requirements =
-      switchExpression(edge?.dmnObject.requirementType, {
-        // Casting to DMN15__tDecision because if has all types of requirement, but not necessarily that's true.
-        informationRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN15__tDecision>).informationRequirement,
-        knowledgeRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN15__tDecision>).knowledgeRequirement,
-        authorityRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN15__tDecision>).authorityRequirement,
-        association: dmnObjects,
+  if (edge.dmnObject.namespace === definitions["@_namespace"]) {
+    const dmnObjects: Normalized<DMN15__tDefinitions>["drgElement" | "artifact"] =
+      switchExpression(edge?.dmnObject.type, {
+        association: definitions.artifact,
+        group: definitions.artifact,
+        default: definitions.drgElement,
       }) ?? [];
 
-    // Deleting the requirement
-    const requirementIndex = (requirements ?? []).findIndex((d) => d["@_id"] === edge.id);
-    if (requirementIndex >= 0) {
-      requirements?.splice(requirementIndex, 1);
+    const dmnObjectIndex = dmnObjects.findIndex((d) => d["@_id"] === edge.dmnObject.id);
+    if (dmnObjectIndex < 0) {
+      throw new Error(`DMN MUTATION: Can't find DMN element with ID ${edge.dmnObject.id}`);
+    }
+
+    if (mode === EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
+      const requirements =
+        switchExpression(edge?.dmnObject.requirementType, {
+          // Casting to DMN15__tDecision because if has all types of requirement, but not necessarily that's true.
+          informationRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN15__tDecision>).informationRequirement,
+          knowledgeRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN15__tDecision>).knowledgeRequirement,
+          authorityRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN15__tDecision>).authorityRequirement,
+          association: dmnObjects,
+        }) ?? [];
+
+      // Deleting the requirement
+      const requirementIndex = (requirements ?? []).findIndex((d) => d["@_id"] === edge.id);
+      if (requirementIndex >= 0) {
+        requirements?.splice(requirementIndex, 1);
+      }
     }
   }
 
