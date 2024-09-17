@@ -26,6 +26,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/cfg"
+
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
@@ -158,10 +160,19 @@ func GetRegistryAddress(ctx context.Context) (*string, error) {
 	return nil, nil
 }
 
-// GetCustomizedBuilderDockerfile gets the Dockerfile as defined in the default platform ConfigMap, apply any custom requirements and return.
+// GetCustomizedBuilderDockerfile determines if the default Dockerfile provided by the
+// sonataflow-operator-builder-config_v1_configmap.yaml must be customized to use a different builder base image,
+// before building a workflow.
+// The following ordered criteria are applied:
+// 1) if the current platform has a configured platform.Spec.Build.Config.BaseImage, that base image must be used.
+// 2) if the current sonataflow-operator-controllers-config.yaml has a configured SonataFlowBaseBuilderImageTag, that
+// base image must be used.
+// 3) No customization apply.
 func GetCustomizedBuilderDockerfile(dockerfile string, platform operatorapi.SonataFlowPlatform) string {
 	if len(platform.Spec.Build.Config.BaseImage) > 0 {
 		dockerfile = strings.Replace(dockerfile, GetFromImageTagDockerfile(dockerfile), platform.Spec.Build.Config.BaseImage, 1)
+	} else if len(cfg.GetCfg().SonataFlowBaseBuilderImageTag) > 0 {
+		dockerfile = strings.Replace(dockerfile, GetFromImageTagDockerfile(dockerfile), cfg.GetCfg().SonataFlowBaseBuilderImageTag, 1)
 	}
 	return dockerfile
 }

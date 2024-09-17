@@ -24,10 +24,16 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/cfg"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
 	"github.com/stretchr/testify/assert"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
 )
+
+const dockerFile = "FROM docker.io/apache/default-test-kie-sonataflow-builder:main AS builder\n\n# ETC, \n\n# ETC, \n\n# ETC"
 
 func TestSonataFlowBuildController(t *testing.T) {
 	platform := test.GetBasePlatform()
@@ -48,4 +54,50 @@ func TestSonataFlowBuildController(t *testing.T) {
 	foundProductized, err := regexp.MatchString("FROM registry.access.redhat.com/openshift-serverless-1-tech-preview/logic-swf-builder-rhel8 AS builder", resProductized)
 	assert.NoError(t, err)
 	assert.True(t, foundProductized)
+}
+
+func TestGetCustomizedBuilderDockerfile_NoBaseImageCustomization(t *testing.T) {
+	sfp := v1alpha08.SonataFlowPlatform{
+		TypeMeta:   metav1.TypeMeta{},
+		ObjectMeta: metav1.ObjectMeta{},
+		Spec:       v1alpha08.SonataFlowPlatformSpec{},
+		Status:     v1alpha08.SonataFlowPlatformStatus{},
+	}
+	customizedDockerfile := GetCustomizedBuilderDockerfile(dockerFile, sfp)
+	assert.Equal(t, dockerFile, customizedDockerfile)
+}
+
+func TestGetCustomizedBuilderDockerfile_BaseImageCustomizationFromPlatform(t *testing.T) {
+	sfp := v1alpha08.SonataFlowPlatform{
+		TypeMeta:   metav1.TypeMeta{},
+		ObjectMeta: metav1.ObjectMeta{},
+		Spec: v1alpha08.SonataFlowPlatformSpec{
+			Build: v1alpha08.BuildPlatformSpec{
+				Template: v1alpha08.BuildTemplate{},
+				Config: v1alpha08.BuildPlatformConfig{
+					BaseImage: "docker.io/apache/platfom-sonataflow-builder:main",
+				},
+			},
+		},
+		Status: v1alpha08.SonataFlowPlatformStatus{},
+	}
+
+	expectedDockerFile := "FROM docker.io/apache/platfom-sonataflow-builder:main AS builder\n\n# ETC, \n\n# ETC, \n\n# ETC"
+	customizedDockerfile := GetCustomizedBuilderDockerfile(dockerFile, sfp)
+	assert.Equal(t, expectedDockerFile, customizedDockerfile)
+}
+
+func TestGetCustomizedBuilderDockerfile_BaseImageCustomizationFromControllersConfig(t *testing.T) {
+	sfp := v1alpha08.SonataFlowPlatform{
+		TypeMeta:   metav1.TypeMeta{},
+		ObjectMeta: metav1.ObjectMeta{},
+		Spec:       v1alpha08.SonataFlowPlatformSpec{},
+		Status:     v1alpha08.SonataFlowPlatformStatus{},
+	}
+
+	_, err := cfg.InitializeControllersCfgAt("../cfg/testdata/controllers-cfg-test.yaml")
+	assert.NoError(t, err)
+	expectedDockerFile := "FROM local/sonataflow-builder:1.0.0 AS builder\n\n# ETC, \n\n# ETC, \n\n# ETC"
+	customizedDockerfile := GetCustomizedBuilderDockerfile(dockerFile, sfp)
+	assert.Equal(t, expectedDockerFile, customizedDockerfile)
 }
