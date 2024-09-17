@@ -21,47 +21,40 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import React from "react";
-import kogitoLogo from "../../static/kogito.png";
+import kogitoLogo from "../../static/favicon.svg";
 import { OUIAProps, componentOuiaProps } from "../../ouiaTools";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 export const KeycloakUnavailablePage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   return (
     <div
       style={{
-        display: "flex",
-        justifyContent: "center",
-        paddingTop: "5%",
-        background: "#868686",
+        background: "#d2d2d2",
         height: "100%",
+        textAlign: "center",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        color: "#6a6e73",
+        alignItems: "center",
       }}
       {...componentOuiaProps(ouiaId, "server-unavailable", ouiaSafe)}
     >
-      {" "}
-      <Card
-        style={{
-          maxHeight: "300px",
-        }}
-      >
-        <CardHeader>
-          <CardHeaderMain>
-            <Brand src={kogitoLogo} alt="Kogito keycloak" style={{ height: "30px" }} />
-          </CardHeaderMain>
-        </CardHeader>
-        <CardBody isFilled={false}></CardBody>
-        <CardTitle>Error:503 - Server unavailable</CardTitle>
-        <CardBody isFilled={false}></CardBody>
-        <CardBody>Sorry.. the keycloak server seems to be down</CardBody>
-        <CardBody isFilled={false}></CardBody>
-        <Bullseye>
-          <span>
-            Please contact administrator or{" "}
-            <Button variant="link" onClick={() => window.location.reload()} isInline>
-              click here to retry
-            </Button>
-          </span>
-        </Bullseye>
-        <CardBody isFilled={false}></CardBody>
-      </Card>
+      <Brand src={kogitoLogo} alt="Kogito keycloak" heights={{ default: "100px" }} />
+      <TextContent>
+        <Text component={TextVariants.h1}>Error: 503 - Server unavailable</Text>
+      </TextContent>
+      <Title headingLevel="h6" style={{ marginTop: "10px" }}>
+        Sorry.. the keycloak server seems to be down.
+      </Title>
+      <Title headingLevel="h6">
+        Please contact administrator or{" "}
+        <Button variant="link" onClick={() => window.location.reload()} isInline>
+          {" "}
+          click here to retry
+        </Button>
+      </Title>
     </div>
   );
 };
