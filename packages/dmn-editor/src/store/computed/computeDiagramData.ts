@@ -410,17 +410,13 @@ function ackRequirementEdges(
     if (dmnObject.__$$element === "decision") {
       (dmnObject.informationRequirement ?? []).forEach((ir, index) => {
         const irHref = parseXmlHref((ir.requiredDecision ?? ir.requiredInput)!["@_href"]);
-        let finalIncludedIndex = -1;
-        let includedIndex = 0;
-        while (definitions[`@_xmlns:included${includedIndex}`]) {
-          if (definitions[`@_xmlns:included${includedIndex}`] === namespace) {
-            finalIncludedIndex = includedIndex;
-            break;
-          }
-          includedIndex++;
-        }
+        // Search for definitions[`@_xmlns:included${includedIndex}`] that holds proper namespace
+        // and store the proper prefix: `included${includedIndex}` value
+        const namespaceIncludedPrefix = Object.entries(definitions)
+          .find(([key, val]) => val === namespace)?.[0]
+          ?.replace("@_xmlns:", "");
         ackEdge({
-          id: (finalIncludedIndex > -1 ? `included${finalIncludedIndex}:` : "") + ir["@_id"]!,
+          id: (namespaceIncludedPrefix ? `${namespaceIncludedPrefix}:` : "") + ir["@_id"]!,
           dmnObject: {
             namespace: drgElementsNamespace,
             type: dmnObject.__$$element,

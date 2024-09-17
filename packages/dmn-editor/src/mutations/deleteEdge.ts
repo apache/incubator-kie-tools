@@ -76,6 +76,8 @@ export function deleteEdge({
   }
 
   // Deleting the DMNEdge's
+  // needs to be executed even if edge.dmnObject.namespace !== definitions["@_namespace"]
+  // As they may be DMNEdge depictions for edges targeting external nodes
   let deletedDmnEdgeOnCurrentDrd: Normalized<DMNDI15__DMNEdge> | undefined;
 
   const drdCount = (definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? []).length;
