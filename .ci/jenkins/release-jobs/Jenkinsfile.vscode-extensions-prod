@@ -338,17 +338,19 @@ pipeline {
                 expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
             }
             steps {
-                script {
-                    releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.BPMN_VSCODE_EXTENSION_RELEASE_FILE}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.DMN_VSCODE_EXTENSION_RELEASE_FILE}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.PMML_VSCODE_EXTENSION_RELEASE_FILE}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.YARD_VSCODE_EXTENSION_RELEASE_FILE}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.KOGITO_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.BUSINESS_AUTOMATION_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.EXTENDED_SERVICES_VSCODE_EXTENSION_RELEASE_FILE}")
+                dir("${env.RELEASE_ARTIFACTS_DIR}") {
+                    script {
+                        releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
+                        releaseUtils.signArtifact("${env.BPMN_VSCODE_EXTENSION_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${env.DMN_VSCODE_EXTENSION_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${env.PMML_VSCODE_EXTENSION_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${env.DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${env.SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${env.YARD_VSCODE_EXTENSION_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${env.KOGITO_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${env.BUSINESS_AUTOMATION_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${env.EXTENDED_SERVICES_VSCODE_EXTENSION_RELEASE_FILE}")
+                    }
                 }
             }
         }
