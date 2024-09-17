@@ -89,7 +89,6 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const thisDmn = useDmnEditorStore((s) => s.dmn);
-  const diagram = useDmnEditorStore((s) => s.diagram);
 
   const activeDrgElementId = useDmnEditorStore((s) => s.boxedExpressionEditor.activeDrgElementId);
   const isPropertiesPanelOpen = useDmnEditorStore((s) => s.boxedExpressionEditor.propertiesPanel.isOpen);
