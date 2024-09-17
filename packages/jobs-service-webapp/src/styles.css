@@ -57,6 +57,11 @@ p {
   background-color: #c73828;
 }
 
+.linkbutton {
+  display: flex;
+  justify-content: space-around;
+}
+
 @media (prefers-color-scheme: dark) {
   .maindiv,
   .container {
