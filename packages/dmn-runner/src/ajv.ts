@@ -138,75 +138,80 @@ export class DmnRunnerAjv {
     return [];
   };
 
-  private constraintCompiler(schema: any, parentSchema: AnySchemaObject) {
-    if (!parentSchema.format) {
-      return (data: string) => true;
-    }
-    const { minAllowed, minAllowedIncluded, maxAllowed, maxAllowedIncluded } = this.parseRangeFromConstraints(
-      schema ?? "",
-      parentSchema.format
-    );
-    const enumeratedValues = this.parseEnumerationFromConstraints(schema ?? "", parentSchema.format);
-    const isUnderTheMinBoundary: (value: Date | String | number, minBoundary: Date | String | number) => boolean =
-      minAllowedIncluded ? (value, minBoundary) => value < minBoundary : (value, minBoundary) => value <= minBoundary;
-    const isOverTheMaxBoundary: (value: Date | String | number, maxBoundary: Date | String | number) => boolean =
-      maxAllowedIncluded ? (value, maxBoundary) => value > maxBoundary : (value, maxBoundary) => value >= maxBoundary;
-
-    return (rawData: string | Date) => {
-      let data = rawData instanceof Date ? rawData.toISOString() : rawData;
-      if (data.includes(".") && data.endsWith("Z")) {
-        // adjusting from "2023-06-01T10:42:00.000Z" to "2023-06-01T10:42:00"
-        data = data.substring(0, data.lastIndexOf("."));
+  private constraintCompiler() {
+    return (schema: any, parentSchema: AnySchemaObject) => {
+      if (!parentSchema.format) {
+        return (data: string) => true;
       }
-      if (minAllowed && maxAllowed) {
-        // It is a Range constraint
-        if (parentSchema.format === "time") {
-          if (isUnderTheMinBoundary(data, minAllowed) || isOverTheMaxBoundary(data, maxAllowed)) {
-            return false;
+      const { minAllowed, minAllowedIncluded, maxAllowed, maxAllowedIncluded } = this.parseRangeFromConstraints(
+        schema ?? "",
+        parentSchema.format
+      );
+      const enumeratedValues = this.parseEnumerationFromConstraints(schema ?? "", parentSchema.format);
+      const isUnderTheMinBoundary: (value: Date | String | number, minBoundary: Date | String | number) => boolean =
+        minAllowedIncluded ? (value, minBoundary) => value < minBoundary : (value, minBoundary) => value <= minBoundary;
+      const isOverTheMaxBoundary: (value: Date | String | number, maxBoundary: Date | String | number) => boolean =
+        maxAllowedIncluded ? (value, maxBoundary) => value > maxBoundary : (value, maxBoundary) => value >= maxBoundary;
+
+      return (rawData: string | Date) => {
+        let data = rawData instanceof Date ? rawData.toISOString() : rawData;
+        if (data.includes(".") && data.endsWith("Z")) {
+          // adjusting from "2023-06-01T10:42:00.000Z" to "2023-06-01T10:42:00"
+          data = data.substring(0, data.lastIndexOf("."));
+        }
+        if (minAllowed && maxAllowed) {
+          // It is a Range constraint
+          if (parentSchema.format === "time") {
+            if (isUnderTheMinBoundary(data, minAllowed) || isOverTheMaxBoundary(data, maxAllowed)) {
+              return false;
+            }
+          } else if (parentSchema.format?.includes("duration")) {
+            const actualDuration = duration(data).asMilliseconds();
+            const minDuration = duration(minAllowed).asMilliseconds();
+            const maxDuration = duration(maxAllowed).asMilliseconds();
+            if (
+              isUnderTheMinBoundary(actualDuration, minDuration) ||
+              isOverTheMaxBoundary(actualDuration, maxDuration)
+            ) {
+              return false;
+            }
+          } else if (parentSchema.format?.includes("date")) {
+            const actualDate = new Date(data);
+            if (actualDate.toString() === "Invalid Date") {
+              return false;
+            }
+            const minAllowedDate = new Date(minAllowed);
+            if (minAllowedDate && isUnderTheMinBoundary(actualDate, minAllowedDate)) {
+              return false;
+            }
+            const maxAllowedDate = new Date(maxAllowed);
+            if (maxAllowedDate && isOverTheMaxBoundary(actualDate, maxAllowedDate)) {
+              return false;
+            }
           }
-        } else if (parentSchema.format?.includes("duration")) {
-          const actualDuration = duration(data).asMilliseconds();
-          const minDuration = duration(minAllowed).asMilliseconds();
-          const maxDuration = duration(maxAllowed).asMilliseconds();
-          if (isUnderTheMinBoundary(actualDuration, minDuration) || isOverTheMaxBoundary(actualDuration, maxDuration)) {
-            return false;
-          }
-        } else if (parentSchema.format?.includes("date")) {
-          const actualDate = new Date(data);
-          if (actualDate.toString() === "Invalid Date") {
-            return false;
-          }
-          const minAllowedDate = new Date(minAllowed);
-          if (minAllowedDate && isUnderTheMinBoundary(actualDate, minAllowedDate)) {
-            return false;
-          }
-          const maxAllowedDate = new Date(maxAllowed);
-          if (maxAllowedDate && isOverTheMaxBoundary(actualDate, maxAllowedDate)) {
-            return false;
+        } else if (enumeratedValues) {
+          if (parentSchema.format === "time") {
+            return enumeratedValues.includes(data);
+          } else if (parentSchema.format?.includes("duration")) {
+            const actualDuration = duration(data).asMilliseconds();
+            return enumeratedValues.some((value) => {
+              const enumeratedDurationValue = duration(value).asMilliseconds();
+              return enumeratedDurationValue === actualDuration;
+            });
+          } else if (parentSchema.format?.includes("date")) {
+            const actualDate = new Date(data);
+            if (actualDate.toString() === "Invalid Date") {
+              return false;
+            }
+            return enumeratedValues.some((value) => {
+              const enumeratedDateValue = new Date(value);
+              return !(enumeratedDateValue < actualDate) && !(enumeratedDateValue > actualDate);
+            });
           }
         }
-      } else if (enumeratedValues) {
-        if (parentSchema.format === "time") {
-          return enumeratedValues.includes(data);
-        } else if (parentSchema.format?.includes("duration")) {
-          const actualDuration = duration(data).asMilliseconds();
-          return enumeratedValues.some((value) => {
-            const enumeratedDurationValue = duration(value).asMilliseconds();
-            return enumeratedDurationValue === actualDuration;
-          });
-        } else if (parentSchema.format?.includes("date")) {
-          const actualDate = new Date(data);
-          if (actualDate.toString() === "Invalid Date") {
-            return false;
-          }
-          return enumeratedValues.some((value) => {
-            const enumeratedDateValue = new Date(value);
-            return !(enumeratedDateValue < actualDate) && !(enumeratedDateValue > actualDate);
-          });
-        }
-      }
 
-      return true;
+        return true;
+      };
     };
   }
 
@@ -221,11 +226,11 @@ export class DmnRunnerAjv {
     this.ajv.addKeyword(X_DMN_TYPE_KEYWORD);
     this.ajv.addKeyword({
       keyword: X_DMN_ALLOWED_VALUES_KEYWORD,
-      compile: (schema, parentSchema) => this.constraintCompiler(schema, parentSchema),
+      compile: this.constraintCompiler(),
     });
     this.ajv.addKeyword({
       keyword: X_DMN_TYPE_CONSTRAINTS_KEYWORD,
-      compile: (schema, parentSchema) => this.constraintCompiler(schema, parentSchema),
+      compile: this.constraintCompiler(),
     });
     this.ajv.addKeyword(X_DMN_DESCRIPTIONS_KEYWORD);
     this.ajv.addKeyword(RECURSION_KEYWORD);

@@ -360,7 +360,7 @@ const resolvers = {
   Query: {
     ProcessInstances: async (parent, args) => {
       let result = data.ProcessInstanceData.filter((datum) => {
-        // console.log("args", args["where"]);
+        console.log("args", args["where"]);
         if (args["where"].id && args["where"].id.equal) {
           return datum.id == args["where"].id.equal;
         } else if (args["where"].rootProcessInstanceId && args["where"].rootProcessInstanceId.equal) {
@@ -392,7 +392,7 @@ const resolvers = {
         }
       });
       if (args["orderBy"]) {
-        // console.log("orderBy args: ", args["orderBy"]);
+        console.log("orderBy args: ", args["orderBy"]);
         result = _.orderBy(
           result,
           _.keys(args["orderBy"]).map((key) => key),
@@ -403,7 +403,7 @@ const resolvers = {
       if (args["pagination"]) {
         result = paginatedResult(result, args["pagination"].offset, args["pagination"].limit);
       }
-      // console.log("result length: " + result.length);
+      console.log("result length: " + result.length);
       return result;
     },
     ProcessDefinitions: async (parent, args) => {
