@@ -56,6 +56,9 @@ import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
 
 import "./TestScenarioEditor.css";
 import TestScenarioCreationPanel from "./creation/TestScenarioCreationPanel";
+import { ComputedStateCache } from "./store/ComputedStateCache";
+import { Computed, createTestScenarioEditorStore } from "./store/Store";
+import { StoreApiType, TestScenarioEditorStoreApiContext, useTestScenarioEditorStore } from "./store/StoreContext";
 
 /* Constants */
 
@@ -457,17 +460,25 @@ function TestScenarioParserErrorPanel({
   );
 }
 
-const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<TestScenarioEditorRef> }) => {
+export const TestScenarioEditorInternal = ({
+  model,
+  onModelChange,
+  //onModelDebounceStateChanged,
+  forwardRef,
+}: TestScenarioEditorProps & { forwardRef?: React.Ref<TestScenarioEditorRef> }) => {
   /** Test Scenario File, Model and Marshaller Management  */
 
-  const [scesimFile, setScesimFile] = useState({ content: "", path: "" });
+  //const [scesimFile, setScesimFile] = useState({ content: "", path: "" });
 
-  const marshaller = useMemo(() => getMarshaller(scesimFile.content.trim()), [scesimFile]);
+  //const marshaller = useMemo(() => getMarshaller(scesimFile.content.trim()), [scesimFile]);
 
+  /*
   const scesimLoaded: { ScenarioSimulationModel: SceSim__ScenarioSimulationModelType } = useMemo(
     () => marshaller.parser.parse(),
     [marshaller.parser]
-  );
+  ); */
+
+  const scesimLoaded = useTestScenarioEditorStore((s) => s.scesim.model);
 
   const [scesimModel, setScesimModel] = useState(scesimLoaded);
 
@@ -489,6 +500,8 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
     }
   }, [scesimModel]);
 
+  console.log("STATUS: " + scesimFileStatus);
+
   useEffect(() => {
     console.debug("SCESIM Model updated");
     console.debug(scesimLoaded);
@@ -500,18 +513,18 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
   useImperativeHandle(
     forwardRef,
     () => ({
-      getContent: () => marshaller.builder.build(scesimModel),
+      getContent: () => "",
       getDiagramSvg: async () => undefined,
       setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot, content) => {
-        console.debug("SCESIM setContent called");
+        console.debug("SHOULDN'T LAND HERE!!!!");
         console.debug("=== FILE CONTENT ===");
         console.debug(content ? content : "EMPTY FILE");
         console.debug("=== END FILE CONTENT ===");
 
-        setScesimFile({ content: content || EMPTY_ONE_EIGHT, path: normalizedPosixPathRelativeToTheWorkspaceRoot });
+        //setScesimFile({ content: content || EMPTY_ONE_EIGHT, path: normalizedPosixPathRelativeToTheWorkspaceRoot });
       },
     }),
-    [marshaller.builder, scesimModel]
+    []
   );
 
   /** scesim model update functions */
@@ -568,12 +581,14 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
       {(() => {
         switch (scesimFileStatus) {
           case TestScenarioFileStatus.EMPTY:
+            console.debug("EMPTY");
             return (
               <Bullseye>
                 <Spinner aria-label="SCESIM Data loading .." />
               </Bullseye>
             );
           case TestScenarioFileStatus.ERROR:
+            console.debug("ERROR");
             return (
               <TestScenarioParserErrorPanel
                 parserErrorTitle={"File parsing error"}
@@ -584,8 +599,10 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
               />
             );
           case TestScenarioFileStatus.NEW:
+            console.debug("NEW");
             return <TestScenarioCreationPanel onCreateScesimButtonClicked={setInitialSettings} />;
           case TestScenarioFileStatus.UNSUPPORTED:
+            console.debug("UNSUPPORTED");
             return (
               <TestScenarioParserErrorPanel
                 parserErrorTitle={
@@ -602,9 +619,10 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
               />
             );
           case TestScenarioFileStatus.VALID:
+            console.debug("VALID");
             return (
               <TestScenarioMainPanel
-                fileName={scesimFile.path}
+                fileName={"Test"}
                 scesimModel={scesimModel}
                 updateTestScenarioModel={setScesimModel}
                 updateSettingField={updateSettingsField}
@@ -619,6 +637,41 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
 export const TestScenarioEditor = React.forwardRef(
   (props: TestScenarioEditorProps, ref: React.Ref<TestScenarioEditorRef>) => {
     const [scesimFileParsingError, setScesimFileParsingError] = useState<Error | null>(null);
+    console.debug("SCESIM setContent called");
+    console.debug("=== FILE CONTENT ===");
+    console.debug(props.model);
+
+    const store = useMemo(
+      () => createTestScenarioEditorStore(props.model /*new ComputedStateCache<Computed>(INITIAL_COMPUTED_CACHE)*/),
+      // Purposefully empty. This memoizes the initial value of the store
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      []
+    );
+    const storeRef = React.useRef<StoreApiType>(store);
+
+    /*
+    const resetState: ErrorBoundaryPropsWithFallback["onReset"] = useCallback(({ args }) => {
+      storeRef.current?.setState((state) => {
+        state.diagram = defaultStaticState().diagram;
+        state.dmn.model = args[0];
+      });
+    }, []);
+  
+    return (
+      <DmnEditorContextProvider {...props}>
+        <ErrorBoundary FallbackComponent={DmnEditorErrorFallback} onReset={resetState}>
+          <DmnEditorSettingsContextProvider {...props}>
+            <DmnEditorExternalModelsContextProvider {...props}>
+              <DmnEditorStoreApiContext.Provider value={storeRef.current}>
+                <CommandsContextProvider>
+                  <DmnEditorInternal forwardRef={ref} {...props} />
+                </CommandsContextProvider>
+              </DmnEditorStoreApiContext.Provider>
+            </DmnEditorExternalModelsContextProvider>
+          </DmnEditorSettingsContextProvider>
+        </ErrorBoundary>
+      </DmnEditorContextProvider>
+    );*/
 
     return (
       <I18nDictionariesProvider
@@ -638,7 +691,9 @@ export const TestScenarioEditor = React.forwardRef(
           }
           setError={setScesimFileParsingError}
         >
-          <TestScenarioEditorInternal forwardRef={ref} {...props} />
+          <TestScenarioEditorStoreApiContext.Provider value={storeRef.current}>
+            <TestScenarioEditorInternal forwardRef={ref} {...props} />
+          </TestScenarioEditorStoreApiContext.Provider>
         </ErrorBoundary>
       </I18nDictionariesProvider>
     );

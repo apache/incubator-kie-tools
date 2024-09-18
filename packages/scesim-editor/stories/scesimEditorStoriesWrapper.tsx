@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useArgs } from "@storybook/preview-api";
 import { diff } from "deep-object-diff";
 import { SceSimModel, getMarshaller } from "@kie-tools/scesim-marshaller";
@@ -68,14 +68,10 @@ export function SceSimEditorWrapper(props: Partial<StorybookTestScenarioEditorPr
     onModelChange(args.model);
   }, [args, model, onModelChange]);
 
-  /*
+  /*  
   const onModelDebounceStateChanged = useCallback((changed: boolean) => {
     setModelChange(changed);
   }, []); */
 
-  return (
-    <div style={{ position: "absolute", width: "100%", height: "100%", top: "0px", left: "0px" }}>
-      <TestScenarioEditor ref={ref} isReadOnly={isReadOnly} model={model} onModelChange={onModelChange} />
-    </div>
-  );
+  return <TestScenarioEditor ref={ref} isReadOnly={isReadOnly} model={model} onModelChange={onModelChange} />;
 }

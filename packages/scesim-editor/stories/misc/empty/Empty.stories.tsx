@@ -23,7 +23,7 @@ import { TestScenarioEditor } from "../../../src/TestScenarioEditor";
 import { SceSimEditorWrapper, StorybookTestScenarioEditorProps } from "../../scesimEditorStoriesWrapper";
 
 export const emptySceSim = `<?xml version="1.0" encoding="UTF-8"?>
-<ScenarioSimulationModel version="1.8">
+<ScenarioSimulationModel version="1.8" xmlns="https://kie.org/scesim/1.8">
   <simulation>
     <scesimModelDescriptor>
       <factMappings>

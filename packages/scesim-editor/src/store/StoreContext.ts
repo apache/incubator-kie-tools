@@ -29,7 +29,7 @@ export type StoreApiType = UseBoundStore<WithImmer<StoreApi<State>>>;
 
 export const TestScenarioEditorStoreApiContext = createContext<StoreApiType>({} as any);
 
-export function useDmnEditorStore<StateSlice = ExtractState>(
+export function useTestScenarioEditorStore<StateSlice = ExtractState>(
   selector: (state: State) => StateSlice,
   equalityFn?: (a: StateSlice, b: StateSlice) => boolean
 ) {

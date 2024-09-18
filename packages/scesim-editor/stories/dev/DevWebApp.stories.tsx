@@ -19,6 +19,7 @@
 
 import React, { useCallback, useRef, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
+import "@patternfly/react-core/dist/styles/base.css";
 import { Button, Flex, FlexItem, Page, PageSection, Stack, StackItem } from "@patternfly/react-core/dist/js";
 import { SceSimMarshaller, SceSimModel, getMarshaller } from "@kie-tools/scesim-marshaller";
 import { OnSceSimModelChange, TestScenarioEditorProps } from "../../src/TestScenarioEditor";
@@ -26,7 +27,6 @@ import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
 import { emptySceSim } from "../misc/empty/Empty.stories";
 import { isOldEnoughDrl } from "../useCases/IsOldEnoughRule.stories";
 import { trafficViolationDmn } from "../useCases/TrafficViolationDmn.stories";
-
 import "./DevWebApp.css";
 
 function DevWebApp(props: TestScenarioEditorProps) {
