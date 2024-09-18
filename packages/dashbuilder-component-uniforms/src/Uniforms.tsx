@@ -16,13 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
-import { AutoForm } from "@kie-tools/uniforms-patternfly/dist/esm";
-import AjvDraft04 from "ajv-draft-04";
 import * as React from "react";
 import { useCallback } from "react";
+import { AutoForm } from "@kie-tools/uniforms-patternfly/dist/esm";
+import AjvDraft04 from "ajv-draft-04";
+import addFormats from "ajv-formats";
+import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
 
-const ajv = new AjvDraft04({ allErrors: true, useDefaults: true });
+const ajv = new AjvDraft04({ strict: false, allErrors: true, useDefaults: true });
+addFormats(ajv);
+
 const createValidator = (schema: any) => {
   const validator = ajv.compile(schema);
   return (model: any) => {

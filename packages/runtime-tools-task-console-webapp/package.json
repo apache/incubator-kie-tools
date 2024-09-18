@@ -71,6 +71,7 @@
     "apollo-server-express": "^3.13.0",
     "concurrently": "^8.2.2",
     "copy-webpack-plugin": "^11.0.0",
+    "cors": "^2.8.5",
     "css-loader": "^5.2.6",
     "css-minimizer-webpack-plugin": "^5.0.1",
     "express": "^4.21.0",

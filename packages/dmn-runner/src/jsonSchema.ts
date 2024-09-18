@@ -87,7 +87,7 @@ export function removeChangedPropertiesAndAdditionalProperties<T extends Validat
         return;
       }
 
-      const pathList = error.dataPath
+      const pathList = error.schemaPath
         .replace(/\['([^']+)'\]/g, "$1")
         .replace(/\[(\d+)\]/g, ".$1")
         .split(".")

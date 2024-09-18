@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import AjvDraft04, { KeywordCxt } from "ajv-draft-04";
-export { ValidateFunction } from "ajv";
+import AjvDraft04, { AnySchemaObject } from "ajv-draft-04";
+import addFormats from "ajv-formats";
 import { duration } from "moment";
 import {
   DATE_AND_TIME_ENUM_REGEXP,
@@ -138,8 +138,7 @@ export class DmnRunnerAjv {
     return [];
   };
 
-  private constraintCompiler(ctx: KeywordCxt) {
-    const { schema, parentSchema } = ctx;
+  private constraintCompiler(schema: any, parentSchema: AnySchemaObject) {
     if (!parentSchema.format) {
       return (data: string) => true;
     }
@@ -218,9 +217,16 @@ export class DmnRunnerAjv {
       removeAdditional: "all",
       verbose: true,
     });
+    addFormats(this.ajv);
     this.ajv.addKeyword(X_DMN_TYPE_KEYWORD);
-    this.ajv.addKeyword({ keyword: X_DMN_ALLOWED_VALUES_KEYWORD, code: (ctx) => this.constraintCompiler(ctx) });
-    this.ajv.addKeyword({ keyword: X_DMN_TYPE_CONSTRAINTS_KEYWORD, code: (ctx) => this.constraintCompiler(ctx) });
+    this.ajv.addKeyword({
+      keyword: X_DMN_ALLOWED_VALUES_KEYWORD,
+      compile: (schema, parentSchema) => this.constraintCompiler(schema, parentSchema),
+    });
+    this.ajv.addKeyword({
+      keyword: X_DMN_TYPE_CONSTRAINTS_KEYWORD,
+      compile: (schema, parentSchema) => this.constraintCompiler(schema, parentSchema),
+    });
     this.ajv.addKeyword(X_DMN_DESCRIPTIONS_KEYWORD);
     this.ajv.addKeyword(RECURSION_KEYWORD);
     this.ajv.addKeyword(RECURSION_REF_KEYWORD);

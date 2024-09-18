@@ -18,13 +18,17 @@
  */
 
 import AjvDraft04 from "ajv-draft-04";
+import addFormats from "ajv-formats";
 import { FormJsonSchemaBridge } from "./uniforms/FormJsonSchemaBridge";
 import { FormI18n } from "./i18n";
 
 export class Validator {
-  constructor(public i18n: FormI18n) {}
+  protected readonly ajv: AjvDraft04;
 
-  protected readonly ajv = new AjvDraft04({ allErrors: true, useDefaults: true });
+  constructor(public i18n: FormI18n) {
+    this.ajv = new AjvDraft04({ allErrors: true, useDefaults: true });
+    addFormats(this.ajv);
+  }
 
   public createValidator(formSchema: object) {
     const validator = this.ajv.compile(formSchema);

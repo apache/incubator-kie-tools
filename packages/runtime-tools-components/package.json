@@ -35,6 +35,7 @@
     "@patternfly/react-styles": "^4.92.6",
     "@patternfly/react-table": "^4.112.39",
     "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
     "axios": "^1.7.4",
     "copyfiles": "^2.4.1",
     "history": "^4.9.0",

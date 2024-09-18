@@ -18,9 +18,11 @@
  */
 
 import AjvDraft04 from "ajv-draft-04";
+import addFormats from "ajv-formats";
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
 
 const ajv = new AjvDraft04({ strict: false, allErrors: true, useDefaults: true });
+addFormats(ajv);
 
 function createValidator(schema: any) {
   const validator = ajv.compile(schema);
