@@ -22,10 +22,11 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import React from "react";
 import kieLogo from "../../static/kie.svg";
 import { OUIAProps, componentOuiaProps } from "../../ouiaTools";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Title, TitleSizes } from "@patternfly/react-core/dist/js/components/Title";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { EmptyState } from "@patternfly/react-core/dist/js/components/EmptyState";
+import ExclamationCircleIcon from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 
 export const KeycloakUnavailablePage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   return (
@@ -34,19 +35,17 @@ export const KeycloakUnavailablePage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe 
         <Bullseye>
           <EmptyState {...componentOuiaProps(ouiaId, "server-unavailable", ouiaSafe)}>
             <Brand src={kieLogo} alt="KIE keycloak" heights={{ default: "100px" }} />
-            <TextContent>
-              <Text component={TextVariants.h1}>Error: 503 - Server unavailable</Text>
-            </TextContent>
-            <Title headingLevel="h6" style={{ marginTop: "10px" }}>
-              Sorry.. the keycloak server seems to be down.
+            <Title headingLevel="h1" size={TitleSizes["4xl"]}>
+              503: We couldn&apos;t contact the server
             </Title>
-            <Title headingLevel="h6">
-              Please contact administrator or{" "}
-              <Button variant="link" onClick={() => window.location.reload()} isInline>
-                {" "}
-                click here to retry
-              </Button>
-            </Title>
+            <Text component={TextVariants.blockquote}>
+              We could not reach the server, you can contact the administrator or try to reload the page by clicking on
+              the button below.
+            </Text>
+            <Button variant="primary" onClick={() => window.location.reload()} isInline>
+              {" "}
+              Retry
+            </Button>
           </EmptyState>
         </Bullseye>
       </PageSection>
