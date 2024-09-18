@@ -20,7 +20,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import React from "react";
-import kieLogo from "../../static/kie.svg";
+import kieLogo from "../../static/cluster.svg";
 import { OUIAProps, componentOuiaProps } from "../../ouiaTools";
 import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title, TitleSizes } from "@patternfly/react-core/dist/js/components/Title";
@@ -35,7 +35,7 @@ export const KeycloakUnavailablePage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe 
         <Bullseye>
           <EmptyState {...componentOuiaProps(ouiaId, "server-unavailable", ouiaSafe)}>
             <Brand src={kieLogo} alt="KIE keycloak" heights={{ default: "100px" }} />
-            <Title headingLevel="h1" size={TitleSizes["4xl"]}>
+            <Title headingLevel="h1" size={TitleSizes["2xl"]}>
               503: We couldn&apos;t contact the server
             </Title>
             <Text component={TextVariants.blockquote}>
@@ -43,7 +43,6 @@ export const KeycloakUnavailablePage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe 
               the button below.
             </Text>
             <Button variant="primary" onClick={() => window.location.reload()} isInline>
-              {" "}
               Retry
             </Button>
           </EmptyState>
