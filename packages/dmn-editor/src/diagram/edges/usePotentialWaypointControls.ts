@@ -98,16 +98,20 @@ export function usePotentialWaypointControls(
           edge.type === undefined ||
           edge.data === undefined ||
           edge.data?.dmnShapeSource === undefined ||
-          edge.data?.dmnShapeTarget === undefined
+          edge.data?.dmnShapeTarget == undefined
         ) {
-          console.debug(`DMN MUTATION: We can not add DMNEdge for '${edgeId}' edge into diagram.`);
+          console.debug(
+            `DMN MUTATION: We can not add DMNEdge for '${edgeId}' edge into diagram. There are missing data edge: ${edge}, edge.type: ${edge?.type}, edge.data: ${edge?.data}`
+          );
           return;
         }
         const edgeSourceBounds = edge.data?.dmnShapeSource["dc:Bounds"];
         const edgeTargetBounds = edge.data?.dmnShapeTarget["dc:Bounds"];
 
         if (edgeSourceBounds === undefined || edgeTargetBounds === undefined) {
-          console.debug(`DMN MUTATION: We can not add DMNEdge for '${edgeId}' edge into diagram.`);
+          console.debug(
+            `DMN MUTATION: We can not add DMNEdge for '${edgeId}' edge into diagram. There are missing data edgeSourceBounds: ${edgeSourceBounds}, edgeTargetBounds: ${edgeTargetBounds}`
+          );
           return;
         }
 
@@ -122,7 +126,9 @@ export function usePotentialWaypointControls(
           targetData === undefined ||
           targetType === undefined
         ) {
-          console.debug(`DMN MUTATION: We can not add DMNEdge for '${edgeId}' edge into diagram.`);
+          console.debug(
+            `DMN MUTATION: We can not add DMNEdge for '${edgeId}' edge into diagram. There are missing data sourceData: ${sourceData}, sourceType: ${sourceType}, targetData: ${targetData}, targetType: ${targetType}`
+          );
           return;
         }
 
