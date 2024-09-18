@@ -86,7 +86,7 @@ export function usePotentialWaypointControls(
 
     if (edgeIndex === undefined) {
       /**
-       * This means we are adding a first wayipoint to one of following edges:
+       * This means we are adding a first waypoint to one of following edges:
        * - an edge in a non default DRD
        * - an edge targeting an external node
        */
