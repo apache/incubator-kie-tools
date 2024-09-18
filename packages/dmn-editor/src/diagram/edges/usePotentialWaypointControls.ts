@@ -93,15 +93,9 @@ export function usePotentialWaypointControls(
       dmnEditorStoreApi.setState((state) => {
         const nodesById = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById;
         const edge = state.computed(state).getDiagramData(externalModelsByNamespace).edgesById.get(edgeId);
-        if (
-          edge === undefined ||
-          edge.type === undefined ||
-          edge.data === undefined ||
-          edge.data?.dmnShapeSource === undefined ||
-          edge.data?.dmnShapeTarget == undefined
-        ) {
+        if (edge === undefined || edge.data?.dmnShapeSource === undefined || edge.data?.dmnShapeTarget == undefined) {
           console.debug(
-            `DMN MUTATION: We can not add DMNEdge for '${edgeId}' edge into diagram. There are missing data edge: ${edge}, edge.type: ${edge?.type}, edge.data: ${edge?.data}`
+            `DMN MUTATION: We can not add DMNEdge for '${edgeId}' edge into diagram. There are missing data edge: ${edge}, edge.data: ${edge?.data}`
           );
           return;
         }
@@ -115,19 +109,12 @@ export function usePotentialWaypointControls(
           return;
         }
 
-        const sourceData = nodesById.get(edge.source)?.data;
-        const sourceType = nodesById.get(edge.source)?.type;
-        const targetData = nodesById.get(edge.target)?.data;
-        const targetType = nodesById.get(edge.target)?.type;
+        const sourceNode = nodesById.get(edge.source);
+        const targetNode = nodesById.get(edge.target);
 
-        if (
-          sourceData === undefined ||
-          sourceType === undefined ||
-          targetData === undefined ||
-          targetType === undefined
-        ) {
+        if (sourceNode === undefined || targetNode === undefined) {
           console.debug(
-            `DMN MUTATION: We can not add DMNEdge for '${edgeId}' edge into diagram. There are missing data sourceData: ${sourceData}, sourceType: ${sourceType}, targetData: ${targetData}, targetType: ${targetType}`
+            `DMN MUTATION: We can not add DMNEdge for '${edgeId}' edge into diagram. There are missing data sourceNode: ${sourceNode}, targetNode: ${targetNode}`
           );
           return;
         }
@@ -144,22 +131,24 @@ export function usePotentialWaypointControls(
             autoPositionedEdgeMarker: undefined,
           },
           sourceNode: {
-            type: sourceType as NodeType,
-            data: sourceData,
+            type: sourceNode.type as NodeType,
+            data: sourceNode.data,
             href: edge.source,
             bounds: edgeSourceBounds,
             shapeId: edge.data?.dmnShapeSource["@_id"],
           },
           targetNode: {
-            type: targetType as NodeType,
+            type: targetNode.type as NodeType,
             href: edge.target,
-            data: targetData,
+            data: targetNode.data,
             bounds: edgeTargetBounds,
             index: nodesById.get(edge.target)?.data.index ?? 0,
             shapeId: edge.data?.dmnShapeTarget["@_id"],
           },
           keepWaypoints: false,
-          extraArg: { requirementEdgeTargetingExternalNodeId: targetData.dmnObjectQName.prefix ? edgeId : undefined },
+          extraArg: {
+            requirementEdgeTargetingExternalNodeId: targetNode.data.dmnObjectQName.prefix ? edgeId : undefined,
+          },
         });
 
         console.debug(`DMN MUTATION: DMNEdge for '${edgeId}' edge was added into diagram.`);
