@@ -18,7 +18,8 @@
  */
 
 import { JSON_SCHEMA_INPUT_SET_PATH, RECURSION_KEYWORD, RECURSION_REF_KEYWORD } from "./jsonSchemaConstants";
-import { DmnAjvSchemaFormat, ValidateFunction } from "./ajv";
+import { DmnAjvSchemaFormat } from "./ajv";
+import { ValidateFunction } from "ajv-draft-04";
 import { ExtendedServicesFormSchema, DmnInputFieldProperties } from "@kie-tools/extended-services-api/dist/formSchema";
 import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { resolveRefs, pathFromPtr } from "json-refs";
