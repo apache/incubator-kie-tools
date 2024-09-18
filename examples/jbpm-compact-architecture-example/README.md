@@ -12,7 +12,7 @@ This example also demonstrates how to configure the whole _Kogito_ environment u
 enable simplifying the communication among _Kogito_ services removing the need of events (Kafka/HTTP) between them. This can
 be achieved using the following _Quarkus_ addons:
 
-- `kogito-addons-quarkus-data-index-persistence-postgresql`: enables the _Kogito Runtime_ persisting directly into the
+- `kogito-addons-quarkus-data-index-postgresql`: enables the _Kogito Runtime_ persisting directly into the
   _Data-Index_ database.
 - `kogito-addons-quarkus-jobs`: enables collocating the _Jobs Service_ inside the _Kogito Runtime_.
 
