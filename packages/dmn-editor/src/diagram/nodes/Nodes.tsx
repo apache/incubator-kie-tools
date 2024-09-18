@@ -109,7 +109,7 @@ export const InputDataNode = React.memo(
     type,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN15__tInputData> & { __$$element: "inputData" }>>) => {
-    const ref = useRef<HTMLDivElement>(null);
+    const ref = useRef<SVGRectElement>(null);
 
     const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
     const enableCustomNodeStyles = useDmnEditorStore((s) => s.diagram.overlays.enableCustomNodeStyles);
@@ -218,6 +218,7 @@ export const InputDataNode = React.memo(
               fillColor={shapeStyle.fillColor}
               strokeColor={shapeStyle.strokeColor}
               isIcon={false}
+              ref={ref}
             />
           ) : (
             <InputDataNodeSvg
@@ -228,6 +229,7 @@ export const InputDataNode = React.memo(
               strokeWidth={shapeStyle.strokeWidth}
               fillColor={shapeStyle.fillColor}
               strokeColor={shapeStyle.strokeColor}
+              ref={ref}
             />
           )}
         </svg>
@@ -237,16 +239,15 @@ export const InputDataNode = React.memo(
           onKeyDown={triggerEditingIfEnter}
           style={alternativeSvgStyle}
           className={`kie-dmn-editor--input-data-node ${className} ${selectedAlternativeClass}`}
-          ref={ref}
           tabIndex={-1}
           data-nodehref={id}
           data-nodelabel={inputData["@_name"]}
         >
           <div className={`kie-dmn-editor--node `}>
-            <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
+            <InfoNodePanel isVisible={!isTargeted && selected && !dragging} /> {/* aligned with DecisionServiceNode */}
             <OutgoingStuffNodePanel
               nodeHref={id}
-              isVisible={!settings.isReadOnly && !isTargeted && shouldActLikeHovered}
+              isVisible={!settings.isReadOnly && !isTargeted && selected && !dragging} // aligned with DecisionServiceNode
               nodeTypes={outgoingStructure[NODE_TYPES.inputData].nodes}
               edgeTypes={outgoingStructure[NODE_TYPES.inputData].edges}
             />
@@ -279,7 +280,7 @@ export const InputDataNode = React.memo(
               />
             )}
             <DataTypeNodePanel
-              isVisible={!isTargeted && shouldActLikeHovered}
+              isVisible={!isTargeted && selected && !dragging} // aligned with DecisionServiceNode
               isReadOnly={settings.isReadOnly}
               variable={inputData.variable}
               dmnObjectNamespace={dmnObjectNamespace}
