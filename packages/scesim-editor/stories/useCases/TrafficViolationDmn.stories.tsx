@@ -802,7 +802,7 @@ type Story = StoryObj<StorybookTestScenarioEditorProps>;
 const marshaller = getMarshaller(trafficViolationDmn);
 const model = marshaller.parser.parse();
 
-export const IsOldEnough: Story = {
+export const TrafficViolation: Story = {
   render: (args) => SceSimEditorWrapper(args),
   args: {
     model: marshaller.parser.parse(),

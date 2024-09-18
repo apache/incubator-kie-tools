@@ -186,7 +186,7 @@ type Story = StoryObj<StorybookTestScenarioEditorProps>;
 const marshaller = getMarshaller(emptySceSim);
 const model = marshaller.parser.parse();
 
-export const IsOldEnough: Story = {
+export const Empty: Story = {
   render: (args) => SceSimEditorWrapper(args),
   args: {
     model: marshaller.parser.parse(),
