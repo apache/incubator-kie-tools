@@ -24,13 +24,13 @@ import { TextInput, TextInputProps } from "@patternfly/react-core/dist/js/compon
 import wrapField from "./wrapField";
 
 export type DateFieldProps = FieldProps<
-  string,
+  Date,
   TextInputProps,
   {
     inputRef?: React.RefObject<HTMLInputElement>;
     labelProps?: object;
-    max?: string;
-    min?: string;
+    max?: Date;
+    min?: Date;
     type?: "date" | "datetime-local";
   }
 >;
@@ -54,16 +54,16 @@ const dateParse = (value: string, onChange: DateFieldProps["onChange"]) => {
     if (splitedValue.length > 1) {
       // A year can't be bigger than 9999;
       splitedValue[0] = parseInt(splitedValue[0]) > 9999 ? "9999" : splitedValue[0];
-      onChange(new DateConstructor(`${splitedValue.join("-")}Z`).toISOString());
+      onChange(new DateConstructor(`${splitedValue.join("-")}Z`));
       return;
     }
     onChange(undefined);
   } else {
     const date = new DateConstructor(`${value}Z`);
     if (date.getFullYear() < 10000) {
-      onChange(date.toISOString());
+      onChange(date);
     } else {
-      onChange(date.toISOString());
+      onChange(date);
     }
   }
 };

@@ -98,7 +98,7 @@ test("<DateField> - renders a input which correctly reacts on change", () => {
   const input = screen.getByTestId("date-field") as HTMLInputElement;
   fireEvent.change(input, { target: { value: "2000-04-04T10:20" } });
 
-  expect(onChange).toHaveBeenLastCalledWith("x", "2000-04-04T10:20:00.000Z");
+  expect(onChange).toHaveBeenLastCalledWith("x", new Date("2000-04-04T10:20:00.000Z"));
 });
 
 test("<DateField> - renders a input which correctly reacts on change (empty value)", () => {
@@ -106,7 +106,7 @@ test("<DateField> - renders a input which correctly reacts on change (empty valu
 
   render(
     usingUniformsContext(
-      <DateField name="x" value={"2000-04-04T00:00:00.000Z"} />,
+      <DateField name="x" value={new Date("2000-04-04T00:00:00.000Z")} />,
       { x: { type: "string" } },
       { onChange }
     )
@@ -145,16 +145,16 @@ test("<DateField> - renders a input which correctly reacts on change (valid)", (
 
   render(
     usingUniformsContext(
-      <DateField name="x" value={`2000-04-04T00:00:00.000Z`} />,
+      <DateField name="x" value={new Date("2000-04-04T00:00:00.000Z")} />,
       { x: { type: "string" } },
       { onChange }
     )
   );
 
   const input = screen.getByTestId("date-field") as HTMLInputElement;
-  fireEvent.change(input, { target: { value: `2000-04-04T10:30` } });
+  fireEvent.change(input, { target: { value: "2000-04-04T10:30" } });
 
-  expect(onChange).toHaveBeenLastCalledWith("x", `2000-04-04T10:30:00.000Z`);
+  expect(onChange).toHaveBeenLastCalledWith("x", new Date("2000-04-04T10:30:00.000Z"));
 });
 
 test("<DateField> - renders a input which correctly reacts on change (year bigger than 9999)", () => {
@@ -165,14 +165,17 @@ test("<DateField> - renders a input which correctly reacts on change (year bigge
   const input = screen.getByTestId("date-field") as HTMLInputElement;
   fireEvent.change(input, { target: { value: "121212-12-12T12:12" } });
 
-  expect(onChange).toHaveBeenLastCalledWith("x", "9999-12-12T12:12:00.000Z");
+  expect(onChange).toHaveBeenLastCalledWith("x", new Date("9999-12-12T12:12:00.000Z"));
 });
 
 test("<DateField> - test max property - valid", () => {
   render(
-    usingUniformsContext(<DateField name="x" max={"1999-01-01T00:00:00Z"} value={"1998-12-31T00:00:00Z"} />, {
-      x: { type: "string" },
-    })
+    usingUniformsContext(
+      <DateField name="x" max={new Date("1999-01-01T00:00:00Z")} value={new Date("1998-12-31T00:00:00Z")} />,
+      {
+        x: { type: "string" },
+      }
+    )
   );
 
   expect(screen.queryByTestId("Should be before")).toBeNull();
@@ -180,9 +183,12 @@ test("<DateField> - test max property - valid", () => {
 
 test("<DateField> - test max property - invalid", () => {
   render(
-    usingUniformsContext(<DateField name="x" max={"1999-01-01T00:00:00.000Z"} value={"1999-01-02T00:00:00.000Z"} />, {
-      x: { type: "string" },
-    })
+    usingUniformsContext(
+      <DateField name="x" max={new Date("1999-01-01T00:00:00.000Z")} value={new Date("1999-01-02T00:00:00.000Z")} />,
+      {
+        x: { type: "string" },
+      }
+    )
   );
 
   expect(screen.getByText(`Should be before 1999-01-01T00:00:00.000Z`)).toBeInTheDocument();
@@ -190,9 +196,12 @@ test("<DateField> - test max property - invalid", () => {
 
 test("<DateField> - test min property - valid", () => {
   render(
-    usingUniformsContext(<DateField name="x" min={"1999-01-01T00:00:00Z"} value={"1999-01-02T00:00:00Z"} />, {
-      x: { type: "string" },
-    })
+    usingUniformsContext(
+      <DateField name="x" min={new Date("1999-01-01T00:00:00Z")} value={new Date("1999-01-02T00:00:00Z")} />,
+      {
+        x: { type: "string" },
+      }
+    )
   );
 
   expect(screen.queryByTestId("Should be after")).toBeNull();
@@ -200,9 +209,12 @@ test("<DateField> - test min property - valid", () => {
 
 test("<DateField> - test min property - invalid", () => {
   render(
-    usingUniformsContext(<DateField name="x" min={"1999-01-01T00:00:00.000Z"} value={"1998-12-31T00:00:00.000Z"} />, {
-      x: { type: "string" },
-    })
+    usingUniformsContext(
+      <DateField name="x" min={new Date("1999-01-01T00:00:00.000Z")} value={new Date("1998-12-31T00:00:00.000Z")} />,
+      {
+        x: { type: "string" },
+      }
+    )
   );
 
   expect(screen.getByText(`Should be after 1999-01-01T00:00:00.000Z`)).toBeInTheDocument();
