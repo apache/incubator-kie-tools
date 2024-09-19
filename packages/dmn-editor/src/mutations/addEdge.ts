@@ -48,7 +48,7 @@ export function addEdge({
   targetNode,
   edge,
   keepWaypoints,
-  extraArg,
+  requirementEdgeTargetingExternalNodeId,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
@@ -74,20 +74,16 @@ export function addEdge({
     autoPositionedEdgeMarker: AutoPositionedEdgeMarker | undefined;
   };
   keepWaypoints: boolean;
-  extraArg?: {
-    requirementEdgeTargetingExternalNodeId: string | undefined;
-  };
+  requirementEdgeTargetingExternalNodeId?: string;
 }) {
-  const externalTargetAllowed = extraArg !== undefined && extraArg.requirementEdgeTargetingExternalNodeId !== undefined;
+  const externalTargetAllowed = requirementEdgeTargetingExternalNodeId !== undefined;
   if (!_checkIsValidConnection(sourceNode, targetNode, edge.type, { allowExternalTarget: externalTargetAllowed })) {
     throw new Error(`DMN MUTATION: Invalid structure: (${sourceNode.type}) --${edge.type}--> (${targetNode.type}) `);
   }
 
   const newEdgeId = generateUuid();
 
-  let existingEdgeId: string | undefined = externalTargetAllowed
-    ? extraArg!.requirementEdgeTargetingExternalNodeId
-    : undefined;
+  let existingEdgeId: string | undefined = requirementEdgeTargetingExternalNodeId;
 
   // Associations
   if (edge.type === EDGE_TYPES.association) {

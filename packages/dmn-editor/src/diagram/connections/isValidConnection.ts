@@ -50,8 +50,8 @@ export function _checkIsValidConnection(
 
   // External nodes cannot be targeted by default
   // However there are exceptions, for example adding a waypoint on the edge
-  const isExternalNode = targetNode.data.dmnObjectQName.prefix != undefined;
-  if (!extraArg?.allowExternalTarget && isExternalNode) {
+  const isTargetExternalNode = targetNode.data.dmnObjectQName.prefix != undefined;
+  if (!extraArg?.allowExternalTarget && isTargetExternalNode) {
     return false;
   }
 

@@ -119,7 +119,7 @@ export function usePotentialWaypointControls(
           return;
         }
 
-        const isExternalNode = targetNode.data.dmnObjectQName.prefix !== undefined;
+        const isTargetExternalNode = targetNode.data.dmnObjectQName.prefix !== undefined;
 
         addEdge({
           definitions: state.dmn.model.definitions,
@@ -148,9 +148,7 @@ export function usePotentialWaypointControls(
             shapeId: edge.data?.dmnShapeTarget["@_id"],
           },
           keepWaypoints: false,
-          extraArg: {
-            requirementEdgeTargetingExternalNodeId: isExternalNode ? edgeId : undefined,
-          },
+          requirementEdgeTargetingExternalNodeId: isTargetExternalNode ? edgeId : undefined,
         });
 
         console.debug(`DMN MUTATION: DMNEdge for '${edgeId}' edge was added into diagram.`);
