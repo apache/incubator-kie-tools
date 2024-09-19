@@ -74,12 +74,11 @@ function DateField({ onChange, ...props }: DateFieldProps) {
       return false;
     }
 
-    const dateValue = new DateConstructor(props.value);
     if (props.min) {
       const minDate = new DateConstructor(props.min);
       if (minDate.toString() === "Invalid Date") {
         return false;
-      } else if (dateValue < minDate) {
+      } else if (props.value < minDate) {
         return `Should be after ${minDate.toISOString()}`;
       }
     }
@@ -87,7 +86,7 @@ function DateField({ onChange, ...props }: DateFieldProps) {
       const maxDate = new DateConstructor(props.max);
       if (maxDate.toString() === "Invalid Date") {
         return false;
-      } else if (dateValue > maxDate) {
+      } else if (props.value > maxDate) {
         return `Should be before ${maxDate.toISOString()}`;
       }
     }

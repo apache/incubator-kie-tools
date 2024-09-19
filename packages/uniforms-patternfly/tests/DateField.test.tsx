@@ -23,51 +23,47 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { usingUniformsContext } from "./test-utils";
 
 test("<DateField> - renders an input", () => {
-  render(usingUniformsContext(<DateField name="x" />, { x: { type: "string" } }));
+  render(usingUniformsContext(<DateField name="x" />, { x: { type: Date } }));
 
   expect(screen.getByTestId("date-field")).toBeInTheDocument();
 });
 
 test("<DateField> - renders a input with correct id (inherited)", () => {
-  render(usingUniformsContext(<DateField name="x" />, { x: { type: "string" } }));
+  render(usingUniformsContext(<DateField name="x" />, { x: { type: Date } }));
 
   expect(screen.getByTestId("date-field")).toBeInTheDocument();
 });
 
 test("<DateField> - renders a input with correct id (specified)", () => {
-  render(usingUniformsContext(<DateField name="x" id="y" />, { x: { type: "string" } }));
+  render(usingUniformsContext(<DateField name="x" id="y" />, { x: { type: Date } }));
 
   expect(screen.getByTestId("date-field")).toBeInTheDocument();
   expect(screen.getByTestId("date-field").getAttribute("id")).toBe("y");
 });
 
 test("<DateField> - renders a input with correct name", () => {
-  render(usingUniformsContext(<DateField name="x" />, { x: { type: "string" } }));
+  render(usingUniformsContext(<DateField name="x" />, { x: { type: Date } }));
 
   expect(screen.getByTestId("date-field")).toBeInTheDocument();
   expect(screen.getByTestId("date-field").getAttribute("name")).toBe("x");
 });
 
 test("<DateField> - renders an input with correct disabled state", () => {
-  render(usingUniformsContext(<DateField name="x" disabled />, { x: { type: "string" } }));
+  render(usingUniformsContext(<DateField name="x" disabled />, { x: { type: Date } }));
 
   expect(screen.getByTestId("date-field")).toBeInTheDocument();
   expect(screen.getByTestId("date-field") as HTMLInputElement).toBeDisabled();
 });
 
 test("<DateField> - renders a input with correct label (specified)", () => {
-  render(
-    usingUniformsContext(<DateField required={false} name="x" label="DateFieldLabel" />, { x: { type: "string" } })
-  );
+  render(usingUniformsContext(<DateField required={false} name="x" label="DateFieldLabel" />, { x: { type: Date } }));
 
   expect(screen.getByTestId("date-field")).toBeInTheDocument();
   expect(screen.getByText("DateFieldLabel")).toBeInTheDocument();
 });
 
 test("<DateField> - renders a input with correct label (specified)", () => {
-  render(
-    usingUniformsContext(<DateField required={true} name="x" label="DateFieldLabel" />, { x: { type: "string" } })
-  );
+  render(usingUniformsContext(<DateField required={true} name="x" label="DateFieldLabel" />, { x: { type: Date } }));
 
   expect(screen.getByTestId("date-field")).toBeInTheDocument();
   expect(screen.getByText("DateFieldLabel")).toBeInTheDocument();
@@ -75,7 +71,7 @@ test("<DateField> - renders a input with correct label (specified)", () => {
 });
 
 test("<DateField> - renders a input with correct value (default)", () => {
-  render(usingUniformsContext(<DateField name="x" />, { x: { type: "string" } }));
+  render(usingUniformsContext(<DateField name="x" />, { x: { type: Date } }));
 
   expect(screen.getByTestId("date-field")).toBeInTheDocument();
   expect((screen.getByTestId("date-field") as HTMLInputElement).value).toBe("");
@@ -83,7 +79,7 @@ test("<DateField> - renders a input with correct value (default)", () => {
 
 test("<DateField> - renders a input with correct value (model)", () => {
   const now = new Date();
-  render(usingUniformsContext(<DateField name="x" />, { x: { type: "string" } }, { model: { x: now } }));
+  render(usingUniformsContext(<DateField name="x" />, { x: { type: Date } }, { model: { x: now } }));
 
   const stringfyDate = now.toISOString().split(":").slice(0, 2).join(":");
   expect(screen.getByTestId("date-field")).toBeInTheDocument();
@@ -93,7 +89,7 @@ test("<DateField> - renders a input with correct value (model)", () => {
 test("<DateField> - renders a input which correctly reacts on change", () => {
   const onChange = jest.fn();
 
-  render(usingUniformsContext(<DateField name="x" />, { x: { type: "string" } }, { onChange }));
+  render(usingUniformsContext(<DateField name="x" />, { x: { type: Date } }, { onChange }));
 
   const input = screen.getByTestId("date-field") as HTMLInputElement;
   fireEvent.change(input, { target: { value: "2000-04-04T10:20" } });
@@ -107,7 +103,7 @@ test("<DateField> - renders a input which correctly reacts on change (empty valu
   render(
     usingUniformsContext(
       <DateField name="x" value={new Date("2000-04-04T00:00:00.000Z")} />,
-      { x: { type: "string" } },
+      { x: { type: Date } },
       { onChange }
     )
   );
@@ -121,7 +117,7 @@ test("<DateField> - renders a input which correctly reacts on change (empty valu
 test("<DateField> - renders a input which correctly reacts on change (empty)", () => {
   const onChange = jest.fn();
 
-  render(usingUniformsContext(<DateField name="x" onChange={onChange} />, { x: { type: "string" } }));
+  render(usingUniformsContext(<DateField name="x" onChange={onChange} />, { x: { type: Date } }));
 
   const input = screen.getByTestId("date-field") as HTMLInputElement;
   fireEvent.change(input, { target: { value: "" } });
@@ -132,7 +128,7 @@ test("<DateField> - renders a input which correctly reacts on change (empty)", (
 test("<DateField> - renders a input which correctly reacts on change (invalid)", () => {
   const onChange = jest.fn();
 
-  render(usingUniformsContext(<DateField name="x" />, { x: { type: "string" } }, { onChange }));
+  render(usingUniformsContext(<DateField name="x" />, { x: { type: Date } }, { onChange }));
 
   const input = screen.getByTestId("date-field") as HTMLInputElement;
   fireEvent.change(input, { target: { value: "10:00" } });
@@ -146,7 +142,7 @@ test("<DateField> - renders a input which correctly reacts on change (valid)", (
   render(
     usingUniformsContext(
       <DateField name="x" value={new Date("2000-04-04T00:00:00.000Z")} />,
-      { x: { type: "string" } },
+      { x: { type: Date } },
       { onChange }
     )
   );
@@ -160,7 +156,7 @@ test("<DateField> - renders a input which correctly reacts on change (valid)", (
 test("<DateField> - renders a input which correctly reacts on change (year bigger than 9999)", () => {
   const onChange = jest.fn();
 
-  render(usingUniformsContext(<DateField name="x" />, { x: { type: "string" } }, { onChange }));
+  render(usingUniformsContext(<DateField name="x" />, { x: { type: Date } }, { onChange }));
 
   const input = screen.getByTestId("date-field") as HTMLInputElement;
   fireEvent.change(input, { target: { value: "121212-12-12T12:12" } });
@@ -173,7 +169,7 @@ test("<DateField> - test max property - valid", () => {
     usingUniformsContext(
       <DateField name="x" max={new Date("1999-01-01T00:00:00Z")} value={new Date("1998-12-31T00:00:00Z")} />,
       {
-        x: { type: "string" },
+        x: { type: Date },
       }
     )
   );
@@ -186,7 +182,7 @@ test("<DateField> - test max property - invalid", () => {
     usingUniformsContext(
       <DateField name="x" max={new Date("1999-01-01T00:00:00.000Z")} value={new Date("1999-01-02T00:00:00.000Z")} />,
       {
-        x: { type: "string" },
+        x: { type: Date },
       }
     )
   );
@@ -199,7 +195,7 @@ test("<DateField> - test min property - valid", () => {
     usingUniformsContext(
       <DateField name="x" min={new Date("1999-01-01T00:00:00Z")} value={new Date("1999-01-02T00:00:00Z")} />,
       {
-        x: { type: "string" },
+        x: { type: Date },
       }
     )
   );
@@ -212,7 +208,7 @@ test("<DateField> - test min property - invalid", () => {
     usingUniformsContext(
       <DateField name="x" min={new Date("1999-01-01T00:00:00.000Z")} value={new Date("1998-12-31T00:00:00.000Z")} />,
       {
-        x: { type: "string" },
+        x: { type: Date },
       }
     )
   );
