@@ -119,6 +119,8 @@ export function usePotentialWaypointControls(
           return;
         }
 
+        const isExternalNode = targetNode.data.dmnObjectQName.prefix !== undefined;
+
         addEdge({
           definitions: state.dmn.model.definitions,
           drdIndex: state.computed(state).getDrdIndex(),
@@ -147,7 +149,7 @@ export function usePotentialWaypointControls(
           },
           keepWaypoints: false,
           extraArg: {
-            requirementEdgeTargetingExternalNodeId: targetNode.data.dmnObjectQName.prefix ? edgeId : undefined,
+            requirementEdgeTargetingExternalNodeId: isExternalNode ? edgeId : undefined,
           },
         });
 
