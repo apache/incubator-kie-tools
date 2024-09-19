@@ -161,6 +161,18 @@ type SonataFlowSpec struct {
 	// Sink describes the sinkBinding details of this SonataFlow instance.
 	//+operator-sdk:csv:customresourcedefinitions:type=spec,displayName="sink"
 	Sink *duckv1.Destination `json:"sink,omitempty"`
+	// Sources describes the list of sources used to create triggers for events consumed by this SonataFlow instance.
+	//+operator-sdk:csv:customresourcedefinitions:type=spec,displayName="sources"
+	Sources []SonataFlowSourceSpec `json:"sources,omitempty"`
+}
+
+// SonataFlowSourceSpec defines the desired state of a source used for trigger creation
+// +k8s:openapi-gen=true
+type SonataFlowSourceSpec struct {
+	// Defines the eventType to filter the events
+	EventType string `json:"eventType"`
+	// Defines the broker used
+	duckv1.Destination `json:",inline"`
 }
 
 // SonataFlowStatus defines the observed state of SonataFlow
@@ -185,6 +197,19 @@ type SonataFlowStatus struct {
 	// Platform displays which platform is being used by this workflow
 	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="platform"
 	Platform *SonataFlowPlatformRef `json:"platform,omitempty"`
+	// Triggers list of triggers created for the SonataFlow
+	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="triggers"
+	Triggers []SonataFlowTriggerRef `json:"triggers,omitempty"`
+}
+
+// SonataFlowTriggerRef defines a trigger created for the SonataFlow.
+type SonataFlowTriggerRef struct {
+	// Name of the Trigger
+	//+operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Trigger_Name"
+	Name string `json:"name"`
+	// Namespace of the Trigger
+	//+operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Trigger_NS"
+	Namespace string `json:"namespace"`
 }
 
 func (s *SonataFlowStatus) GetTopLevelConditionType() api.ConditionType {

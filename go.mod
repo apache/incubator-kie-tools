@@ -38,6 +38,7 @@ require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/imdario/mergo v0.3.16
 	k8s.io/klog/v2 v2.100.1
+	k8s.io/utils v0.0.0-20230711102312-30195339c3c7
 	knative.dev/eventing v0.26.0
 )
 
@@ -127,7 +128,6 @@ require (
 	k8s.io/apiextensions-apiserver v0.27.16 // indirect
 	k8s.io/component-base v0.27.16 // indirect
 	k8s.io/kube-openapi v0.0.0-20230525220651-2546d827e515 // indirect
-	k8s.io/utils v0.0.0-20230711102312-30195339c3c7 // indirect
 	knative.dev/networking v0.0.0-20231017124814-2a7676e912b7 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.3.0 // indirect

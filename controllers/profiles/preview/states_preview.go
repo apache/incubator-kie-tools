@@ -21,6 +21,7 @@ package preview
 
 import (
 	"context"
+	"fmt"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -70,7 +71,7 @@ func (h *newBuilderState) Do(ctx context.Context, workflow *operatorapi.SonataFl
 	// available at build time.
 	userPropsCM, _, err := h.ensurers.userPropsConfigMap.Ensure(ctx, workflow)
 	if err != nil {
-		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.ExternalResourcesNotFoundReason, "Unable to retrieve the user properties config map")
+		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.ExternalResourcesNotFoundReason, fmt.Sprintf("Unable to retrieve the user properties config map: %v", err))
 		_, err = h.PerformStatusUpdate(ctx, workflow)
 		return ctrl.Result{}, nil, err
 	}
@@ -78,7 +79,7 @@ func (h *newBuilderState) Do(ctx context.Context, workflow *operatorapi.SonataFl
 	_, _, err = h.ensurers.managedPropsConfigMap.Ensure(ctx, workflow, pl,
 		common.ManagedPropertiesMutateVisitor(ctx, h.StateSupport.Catalog, workflow, pl, userPropsCM.(*corev1.ConfigMap)))
 	if err != nil {
-		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.ExternalResourcesNotFoundReason, "Unable to retrieve the managed properties config map")
+		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.ExternalResourcesNotFoundReason, fmt.Sprintf("Unable to retrieve the managed properties config map: %v", err))
 		_, err = h.PerformStatusUpdate(ctx, workflow)
 		return ctrl.Result{}, nil, err
 	}
@@ -210,7 +211,13 @@ func (h *deployWithBuildWorkflowState) Do(ctx context.Context, workflow *operato
 	}
 
 	// didn't change, business as usual
-	return NewDeploymentReconciler(h.StateSupport, h.ensurers).reconcileWithImage(ctx, workflow, build.Status.ImageTag)
+	result, objs, err := NewDeploymentReconciler(h.StateSupport, h.ensurers).reconcileWithImage(ctx, workflow, build.Status.ImageTag)
+	if err != nil {
+		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentFailureReason, fmt.Sprintf("Error in deploy the workflow:%s", err))
+		_, err = h.PerformStatusUpdate(ctx, workflow)
+		return result, nil, err
+	}
+	return result, objs, err
 }
 
 func (h *deployWithBuildWorkflowState) PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error {

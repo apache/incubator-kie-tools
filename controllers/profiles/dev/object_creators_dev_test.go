@@ -44,10 +44,12 @@ func Test_ensureWorkflowDevServiceIsExposed(t *testing.T) {
 	assert.NotNil(t, reflectService.ObjectMeta)
 	assert.NotNil(t, reflectService.ObjectMeta.Labels)
 	assert.Equal(t, reflectService.ObjectMeta.Labels, map[string]string{
-		"test":                         "test",
-		"sonataflow.org/workflow-app":  "greeting",
-		"app.kubernetes.io/name":       "greeting",
-		"app.kubernetes.io/component":  "serverless-workflow",
-		"app.kubernetes.io/managed-by": "sonataflow-operator",
+		"app":                               "greeting",
+		"test":                              "test",
+		"sonataflow.org/workflow-app":       "greeting",
+		"sonataflow.org/workflow-namespace": workflow.Namespace,
+		"app.kubernetes.io/name":            "greeting",
+		"app.kubernetes.io/component":       "serverless-workflow",
+		"app.kubernetes.io/managed-by":      "sonataflow-operator",
 	})
 }

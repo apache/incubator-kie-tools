@@ -16,6 +16,7 @@ package properties
 
 import (
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/knative"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/workflowdef"
 	"github.com/magiconair/properties"
@@ -25,13 +26,17 @@ import (
 // generateKnativeEventingWorkflowProperties returns the set of application properties required for the workflow to produce or consume
 // Knative Events.
 // Never nil.
-func generateKnativeEventingWorkflowProperties(workflow *operatorapi.SonataFlow) (*properties.Properties, error) {
+func generateKnativeEventingWorkflowProperties(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) (*properties.Properties, error) {
 	props := properties.NewProperties()
-	if workflow == nil || workflow.Spec.Sink == nil {
+	props.Set(constants.KnativeHealthEnabled, "false")
+	sink, err := knative.GetWorkflowSink(workflow, platform)
+	if err != nil {
+		return nil, err
+	}
+	if workflow == nil || sink == nil {
 		props.Set(constants.KnativeHealthEnabled, "false")
 		return props, nil
 	}
-	// verify ${K_SINK}
 	props.Set(constants.KnativeHealthEnabled, "true")
 	if workflowdef.ContainsEventKind(workflow, cncfmodel.EventKindProduced) {
 		props.Set(constants.KogitoOutgoingEventsConnector, constants.QuarkusHTTP)
@@ -39,11 +44,7 @@ func generateKnativeEventingWorkflowProperties(workflow *operatorapi.SonataFlow)
 	}
 	if workflowdef.ContainsEventKind(workflow, cncfmodel.EventKindConsumed) {
 		props.Set(constants.KogitoIncomingEventsConnector, constants.QuarkusHTTP)
-		var path = "/"
-		if workflow.Spec.Sink.URI != nil {
-			path = workflow.Spec.Sink.URI.Path
-		}
-		props.Set(constants.KogitoIncomingEventsPath, path)
+		props.Set(constants.KogitoIncomingEventsPath, "/")
 	}
 	return props, nil
 }

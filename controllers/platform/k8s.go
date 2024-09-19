@@ -21,9 +21,11 @@ package platform
 
 import (
 	"context"
+	"fmt"
 
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/knative"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform/services"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/variables"
@@ -31,10 +33,13 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
+	"github.com/imdario/mergo"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
+	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
+	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
@@ -85,7 +90,10 @@ func createOrUpdateServiceComponents(ctx context.Context, client client.Client, 
 	if err := createOrUpdateDeployment(ctx, client, platform, psh); err != nil {
 		return err
 	}
-	return createOrUpdateService(ctx, client, platform, psh)
+	if err := createOrUpdateService(ctx, client, platform, psh); err != nil {
+		return err
+	}
+	return createOrUpdateKnativeResources(ctx, client, platform, psh)
 }
 
 func createOrUpdateDeployment(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) error {
@@ -137,6 +145,13 @@ func createOrUpdateDeployment(ctx context.Context, client client.Client, platfor
 	serviceContainer.Name = psh.GetContainerName()
 
 	replicas := psh.GetReplicaCount()
+	kSinkInjected, err := psh.CheckKSinkInjected()
+	if err != nil {
+		return nil
+	}
+	if !kSinkInjected {
+		replicas = 0 // Wait for K_SINK injection
+	}
 	lbl, selectorLbl := getLabels(platform, psh)
 	serviceDeploymentSpec := appsv1.DeploymentSpec{
 		Selector: &metav1.LabelSelector{
@@ -182,15 +197,17 @@ func createOrUpdateDeployment(ctx context.Context, client client.Client, platfor
 
 	// Create or Update the deployment
 	if op, err := controllerutil.CreateOrUpdate(ctx, client, serviceDeployment, func() error {
-		serviceDeployment.Spec = serviceDeploymentSpec
-
+		knative.SaveKnativeData(&serviceDeploymentSpec.Template.Spec, &serviceDeployment.Spec.Template.Spec)
+		err := mergo.Merge(&(serviceDeployment.Spec), serviceDeploymentSpec, mergo.WithOverride)
+		if err != nil {
+			return err
+		}
 		return nil
 	}); err != nil {
 		return err
 	} else {
 		klog.V(log.I).InfoS("Deployment successfully reconciled", "operation", op)
 	}
-
 	return nil
 }
 
@@ -233,6 +250,8 @@ func createOrUpdateService(ctx context.Context, client client.Client, platform *
 
 func getLabels(platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) (map[string]string, map[string]string) {
 	lbl := map[string]string{
+		workflowproj.LabelApp:          platform.Name,
+		workflowproj.LabelAppNamespace: platform.Namespace,
 		workflowproj.LabelService:      psh.GetServiceName(),
 		workflowproj.LabelK8SName:      psh.GetContainerName(),
 		workflowproj.LabelK8SComponent: psh.GetServiceName(),
@@ -251,6 +270,7 @@ func createOrUpdateConfigMap(ctx context.Context, client client.Client, platform
 		return err
 	}
 	lbl, _ := getLabels(platform, psh)
+	dataStr := handler.Build()
 	configMap := &corev1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      psh.GetServiceCmName(),
@@ -258,7 +278,7 @@ func createOrUpdateConfigMap(ctx context.Context, client client.Client, platform
 			Labels:    lbl,
 		},
 		Data: map[string]string{
-			workflowproj.ApplicationPropertiesFileName: handler.Build(),
+			workflowproj.ApplicationPropertiesFileName: dataStr,
 		},
 	}
 	if err := controllerutil.SetControllerReference(platform, configMap, client.Scheme()); err != nil {
@@ -267,7 +287,7 @@ func createOrUpdateConfigMap(ctx context.Context, client client.Client, platform
 
 	// Create or Update the service
 	if op, err := controllerutil.CreateOrUpdate(ctx, client, configMap, func() error {
-		configMap.Data[workflowproj.ApplicationPropertiesFileName] = handler.WithUserProperties(configMap.Data[workflowproj.ApplicationPropertiesFileName]).Build()
+		configMap.Data[workflowproj.ApplicationPropertiesFileName] = handler.WithUserProperties(dataStr).Build()
 
 		return nil
 	}); err != nil {
@@ -275,6 +295,88 @@ func createOrUpdateConfigMap(ctx context.Context, client client.Client, platform
 	} else {
 		klog.V(log.I).InfoS("ConfigMap successfully reconciled", "operation", op)
 	}
-
 	return nil
+}
+
+func setSonataFlowPlatformFinalizer(ctx context.Context, c client.Client, platform *operatorapi.SonataFlowPlatform) error {
+	if !controllerutil.ContainsFinalizer(platform, constants.TriggerFinalizer) {
+		controllerutil.AddFinalizer(platform, constants.TriggerFinalizer)
+		return c.Update(ctx, platform)
+	}
+	return nil
+}
+
+func createOrUpdateKnativeResources(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) error {
+	lbl, _ := getLabels(platform, psh)
+	objs, err := psh.GenerateKnativeResources(platform, lbl)
+	if err != nil {
+		return err
+	}
+	// Create or update triggers
+	for _, obj := range objs {
+		if triggerDef, ok := obj.(*eventingv1.Trigger); ok {
+			if platform.Namespace == obj.GetNamespace() {
+				if err := controllerutil.SetControllerReference(platform, obj, client.Scheme()); err != nil {
+					return err
+				}
+			} else {
+				// This is for Knative trigger in a different namespace
+				// Set the finalizer for trigger cleanup when the platform is deleted
+				if err := setSonataFlowPlatformFinalizer(ctx, client, platform); err != nil {
+					return err
+				}
+			}
+			trigger := &eventingv1.Trigger{
+				ObjectMeta: triggerDef.ObjectMeta,
+			}
+			_, err := controllerutil.CreateOrUpdate(ctx, client, trigger, func() error {
+				trigger.Spec = triggerDef.Spec
+				return nil
+			})
+			if err != nil {
+				return err
+			}
+			addToSonataFlowPlatformTriggerList(platform, trigger)
+		}
+	}
+
+	if err := client.Status().Update(ctx, platform); err != nil {
+		return err
+	}
+
+	// Create or update sinkbindings
+	for _, obj := range objs {
+		if sbDef, ok := obj.(*sourcesv1.SinkBinding); ok {
+			if err := controllerutil.SetControllerReference(platform, obj, client.Scheme()); err != nil {
+				return err
+			}
+			sinkBinding := &sourcesv1.SinkBinding{
+				ObjectMeta: sbDef.ObjectMeta,
+			}
+			_, err = controllerutil.CreateOrUpdate(ctx, client, sinkBinding, func() error {
+				sinkBinding.Spec = sbDef.Spec
+				return nil
+			})
+			if err != nil {
+				return err
+			}
+			kSinkInjected, err := psh.CheckKSinkInjected()
+			if err != nil {
+				return err
+			}
+			if !kSinkInjected {
+				return fmt.Errorf("waiting for K_SINK injection for %s to complete", psh.GetServiceName())
+			}
+		}
+	}
+	return nil
+}
+
+func addToSonataFlowPlatformTriggerList(platform *operatorapi.SonataFlowPlatform, trigger *eventingv1.Trigger) {
+	for _, t := range platform.Status.Triggers {
+		if t.Name == trigger.Name && t.Namespace == trigger.Namespace {
+			return // trigger already exists
+		}
+	}
+	platform.Status.Triggers = append(platform.Status.Triggers, operatorapi.SonataFlowPlatformTriggerRef{Name: trigger.Name, Namespace: trigger.Namespace})
 }

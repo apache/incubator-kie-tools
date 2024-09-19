@@ -17,9 +17,8 @@ package common
 import (
 	"context"
 
-	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/knative"
-
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/knative"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 	"k8s.io/klog/v2"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -28,15 +27,17 @@ import (
 var _ KnativeEventingHandler = &knativeObjectManager{}
 
 type knativeObjectManager struct {
-	sinkBinding ObjectEnsurer
-	trigger     ObjectsEnsurer
+	sinkBinding ObjectEnsurerWithPlatform
+	trigger     ObjectsEnsurerWithPlatform
+	platform    *operatorapi.SonataFlowPlatform
 	*StateSupport
 }
 
-func NewKnativeEventingHandler(support *StateSupport) KnativeEventingHandler {
+func NewKnativeEventingHandler(support *StateSupport, pl *operatorapi.SonataFlowPlatform) KnativeEventingHandler {
 	return &knativeObjectManager{
-		sinkBinding:  NewObjectEnsurer(support.C, SinkBindingCreator),
-		trigger:      NewObjectsEnsurer(support.C, TriggersCreator),
+		sinkBinding:  NewObjectEnsurerWithPlatform(support.C, SinkBindingCreator),
+		trigger:      NewObjectsEnsurerWithPlatform(support.C, TriggersCreator),
+		platform:     pl,
 		StateSupport: support,
 	}
 }
@@ -48,23 +49,23 @@ type KnativeEventingHandler interface {
 func (k knativeObjectManager) Ensure(ctx context.Context, workflow *operatorapi.SonataFlow) ([]client.Object, error) {
 	var objs []client.Object
 
-	if workflow.Spec.Flow.Events == nil {
-		// skip if no event is found
-		klog.V(log.I).InfoS("skip knative resource creation as no event is found")
-	} else if workflow.Spec.Sink == nil {
-		klog.V(log.I).InfoS("Spec.Sink is not provided")
-	} else if knativeAvail, err := knative.GetKnativeAvailability(k.Cfg); err != nil || knativeAvail == nil || !knativeAvail.Eventing {
+	knativeAvail, err := knative.GetKnativeAvailability(k.Cfg)
+	if err != nil {
+		klog.V(log.I).InfoS("Error checking Knative Eventing: %v", err)
+		return nil, err
+	}
+	if !knativeAvail.Eventing {
 		klog.V(log.I).InfoS("Knative Eventing is not installed")
 	} else {
 		// create sinkBinding and trigger
-		sinkBinding, _, err := k.sinkBinding.Ensure(ctx, workflow)
+		sinkBinding, _, err := k.sinkBinding.Ensure(ctx, workflow, k.platform)
 		if err != nil {
 			return objs, err
 		} else if sinkBinding != nil {
 			objs = append(objs, sinkBinding)
 		}
 
-		triggers := k.trigger.Ensure(ctx, workflow)
+		triggers := k.trigger.Ensure(ctx, workflow, k.platform)
 		for _, trigger := range triggers {
 			if trigger.Error != nil {
 				return objs, trigger.Error

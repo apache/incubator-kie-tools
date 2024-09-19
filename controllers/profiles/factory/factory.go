@@ -23,6 +23,7 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/gitops"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/preview"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
+
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/record"
 	"k8s.io/klog/v2"

@@ -95,7 +95,7 @@ func mountConfigMapsMutateVisitor(workflow *operatorapi.SonataFlow, userPropsCM 
 			kubeutil.VolumeProjectionAddConfigMap(defaultResourcesVolume.Projected, userPropsCM.Name, v1.KeyToPath{Key: workflowproj.ApplicationPropertiesFileName, Path: workflowproj.ApplicationPropertiesFileName})
 			kubeutil.VolumeProjectionAddConfigMap(defaultResourcesVolume.Projected, managedPropsCM.Name, v1.KeyToPath{Key: workflowproj.GetManagedPropertiesFileName(workflow), Path: workflowproj.GetManagedPropertiesFileName(workflow)})
 			kubeutil.AddOrReplaceVolume(podTemplateSpec, defaultResourcesVolume)
-			kubeutil.AddOrReplaceVolumeMount(idx, podTemplateSpec,
+			kubeutil.AddOrReplaceVolumeMount(&podTemplateSpec.Containers[idx],
 				kubeutil.VolumeMount(constants.ConfigMapWorkflowPropsVolumeName, true, quarkusProdConfigMountPath))
 
 			return nil

@@ -20,6 +20,7 @@
 package common
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -33,14 +34,19 @@ import (
 	"github.com/imdario/mergo"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 	duckv1 "knative.dev/pkg/apis/duck/v1"
+	"knative.dev/pkg/kmeta"
 	"knative.dev/pkg/tracker"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/knative"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform/services"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/persistence"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/properties"
@@ -49,6 +55,15 @@ import (
 	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils/openshift"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
+)
+
+const (
+	knativeServingAPIVersion = "serving.knative.dev/v1"
+	knativeServiceKind       = "Service"
+	deploymentAPIVersion     = "apps/v1"
+	deploymentKind           = "Deployment"
+	k8sServiceAPIVersion     = "v1"
+	k8sServiceKind           = "Service"
 )
 
 // ObjectCreator is the func that creates the initial reference object, if the object doesn't exist in the cluster, this one is created.
@@ -61,6 +76,9 @@ type ObjectCreatorWithPlatform func(workflow *operatorapi.SonataFlow, platform *
 
 // ObjectsCreator creates multiple resources
 type ObjectsCreator func(workflow *operatorapi.SonataFlow) ([]client.Object, error)
+
+// ObjectsCreatorWithPlatform creates multiple resources
+type ObjectsCreatorWithPlatform func(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) ([]client.Object, error)
 
 const (
 	defaultHTTPServicePort = 80
@@ -256,15 +274,30 @@ func ServiceCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
 
 // SinkBindingCreator is an ObjectsCreator for SinkBinding.
 // It will create v1.SinkBinding based on events defined in workflow.
-func SinkBindingCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
+func SinkBindingCreator(workflow *operatorapi.SonataFlow, plf *operatorapi.SonataFlowPlatform) (client.Object, error) {
 	lbl := workflowproj.GetMergedLabels(workflow)
 
-	// skip if no produced event is found
-	if workflow.Spec.Sink == nil || !workflowdef.ContainsEventKind(workflow, cncfmodel.EventKindProduced) {
-		return nil, nil
+	sink, err := knative.GetWorkflowSink(workflow, plf)
+	if err != nil {
+		return nil, err
+	}
+	dataIndexEnabled := services.IsDataIndexEnabled(plf)
+	jobServiceEnabled := services.IsJobServiceEnabled(plf)
+
+	// skip if no produced event is found and there is no DataIndex/JobService enabled
+	if sink == nil {
+		if dataIndexEnabled || jobServiceEnabled || workflowdef.ContainsEventKind(workflow, cncfmodel.EventKindProduced) {
+			return nil, fmt.Errorf("a sink in the SonataFlow %s or broker in the SonataFlowPlatform %s should be configured when DataIndex or JobService is enabled", workflow.Name, plf.Name)
+		}
+		return nil, nil /*nothing to do*/
 	}
 
-	sink := workflow.Spec.Sink
+	apiVersion := deploymentAPIVersion
+	kind := deploymentKind
+	if workflow.Spec.PodTemplate.DeploymentModel == operatorapi.KnativeDeploymentModel {
+		apiVersion = knativeServingAPIVersion // use knative serving API Version
+		kind = knativeServiceKind
+	}
 
 	// subject must be deployment to inject K_SINK, service won't work
 	sinkBinding := &sourcesv1.SinkBinding{
@@ -281,8 +314,8 @@ func SinkBindingCreator(workflow *operatorapi.SonataFlow) (client.Object, error)
 				Subject: tracker.Reference{
 					Name:       workflow.Name,
 					Namespace:  workflow.Namespace,
-					APIVersion: "apps/v1",
-					Kind:       "Deployment",
+					APIVersion: apiVersion,
+					Kind:       kind,
 				},
 			},
 		},
@@ -290,12 +323,57 @@ func SinkBindingCreator(workflow *operatorapi.SonataFlow) (client.Object, error)
 	return sinkBinding, nil
 }
 
+func getBrokerRefFromPlatform(plf *operatorapi.SonataFlowPlatform) (*duckv1.KReference, error) {
+	// check the local platform
+	if plf.Spec.Eventing != nil && plf.Spec.Eventing.Broker != nil && plf.Spec.Eventing.Broker.Ref != nil {
+		ref := plf.Spec.Eventing.Broker.Ref.DeepCopy()
+		if len(ref.Namespace) == 0 {
+			ref.Namespace = plf.Namespace // default to the platform namespace
+		}
+		return ref, nil
+	}
+	// Check the cluster platform
+	if plf.Status.ClusterPlatformRef != nil && len(plf.Status.ClusterPlatformRef.PlatformRef.Name) > 0 {
+		platform := &operatorapi.SonataFlowPlatform{}
+		if err := utils.GetClient().Get(context.TODO(), types.NamespacedName{Namespace: plf.Status.ClusterPlatformRef.PlatformRef.Namespace, Name: plf.Status.ClusterPlatformRef.PlatformRef.Name}, platform); err != nil {
+			if errors.IsNotFound(err) {
+				return nil, nil
+			}
+			return nil, err
+		}
+		return getBrokerRefFromPlatform(platform)
+
+	}
+	return nil, nil
+}
+
+func getBrokerRefForEventType(eventType string, workflow *operatorapi.SonataFlow, plf *operatorapi.SonataFlowPlatform) (*duckv1.KReference, error) {
+	// Check the workflow
+	for _, source := range workflow.Spec.Sources {
+		if source.EventType == eventType {
+			ref := source.Ref.DeepCopy()
+			if len(ref.Namespace) == 0 {
+				ref.Namespace = workflow.Namespace // default to the workflow namespace
+			}
+			return ref, nil
+		}
+	}
+	// get the broker from the local platform or cluster platform
+	return getBrokerRefFromPlatform(plf)
+}
+
 // TriggersCreator is an ObjectsCreator for Triggers.
 // It will create a list of eventingv1.Trigger based on events defined in workflow.
-func TriggersCreator(workflow *operatorapi.SonataFlow) ([]client.Object, error) {
+func TriggersCreator(workflow *operatorapi.SonataFlow, plf *operatorapi.SonataFlowPlatform) ([]client.Object, error) {
 	var resultObjects []client.Object
 	lbl := workflowproj.GetMergedLabels(workflow)
 
+	apiVersion := k8sServiceAPIVersion
+	kind := k8sServiceKind
+	if workflow.Spec.PodTemplate.DeploymentModel == operatorapi.KnativeDeploymentModel {
+		apiVersion = knativeServingAPIVersion // use knative serving API Version
+		kind = knativeServiceKind
+	}
 	//consumed
 	events := workflow.Spec.Flow.Events
 	for _, event := range events {
@@ -303,16 +381,29 @@ func TriggersCreator(workflow *operatorapi.SonataFlow) ([]client.Object, error) 
 		if event.Kind == cncfmodel.EventKindProduced {
 			continue
 		}
-
+		brokerRef, err := getBrokerRefForEventType(event.Type, workflow, plf)
+		if err != nil {
+			return nil, err
+		}
+		if brokerRef == nil {
+			return nil, fmt.Errorf("no broker configured for eventType %s in SonataFlow %s", event.Type, workflow.Name)
+		}
+		if !knative.IsKnativeBroker(brokerRef) {
+			return nil, fmt.Errorf("no valid broker configured for eventType %s in SonataFlow %s", event.Type, workflow.Name)
+		}
+		if err := knative.ValidateBroker(brokerRef.Name, brokerRef.Namespace); err != nil {
+			return nil, err
+		}
 		// construct eventingv1.Trigger
+		// The trigger must be created in the same namespace as the broker
 		trigger := &eventingv1.Trigger{
 			ObjectMeta: metav1.ObjectMeta{
-				Name:      strings.ToLower(fmt.Sprintf("%s-%s-trigger", workflow.Name, event.Name)),
-				Namespace: workflow.Namespace,
+				Name:      kmeta.ChildName(strings.ToLower(fmt.Sprintf("%s-%s-", workflow.Name, event.Name)), string(workflow.GetUID())),
+				Namespace: brokerRef.Namespace,
 				Labels:    lbl,
 			},
 			Spec: eventingv1.TriggerSpec{
-				Broker: constants.KnativeEventingBrokerDefault,
+				Broker: brokerRef.Name,
 				Filter: &eventingv1.TriggerFilter{
 					Attributes: eventingv1.TriggerFilterAttributes{
 						"type": event.Type,
@@ -322,8 +413,8 @@ func TriggersCreator(workflow *operatorapi.SonataFlow) ([]client.Object, error) 
 					Ref: &duckv1.KReference{
 						Name:       workflow.Name,
 						Namespace:  workflow.Namespace,
-						APIVersion: "v1",
-						Kind:       "Service",
+						APIVersion: apiVersion,
+						Kind:       kind,
 					},
 				},
 			},
@@ -348,6 +439,7 @@ func UserPropsConfigMapCreator(workflow *operatorapi.SonataFlow) (client.Object,
 
 // ManagedPropsConfigMapCreator creates an empty ConfigMap to hold the external application properties
 func ManagedPropsConfigMapCreator(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) (client.Object, error) {
+
 	props, err := properties.ApplicationManagedProperties(workflow, platform)
 	if err != nil {
 		return nil, err

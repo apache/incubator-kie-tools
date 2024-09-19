@@ -35,6 +35,10 @@ const (
 	// ApplicationPropertiesFileName is the default application properties file name holding user properties
 	ApplicationPropertiesFileName      = "application.properties"
 	workflowManagedConfigMapNameSuffix = "-managed-props"
+	// LabelApp key to use among object selectors, "app" is used among k8s applications to group objects in some UI consoles
+	LabelApp = "app"
+	// LabelAppNamespace namespace the k8s application is deployed
+	LabelAppNamespace = "app-namespace"
 	// LabelService key to use among object selectors
 	LabelService = metadata.Domain + "/service"
 	// LabelWorkflow specialized label managed by the controller
@@ -43,6 +47,8 @@ const (
 	LabelK8SComponent = "app.kubernetes.io/component"
 	LabelK8SPartOF    = "app.kubernetes.io/part-of"
 	LabelK8SManagedBy = "app.kubernetes.io/managed-by"
+	// LabelWorkflowNamespace specialized label managed by the controller indicating the namespace of the workflow
+	LabelWorkflowNamespace = metadata.Domain + "/workflow-namespace"
 )
 
 // SetTypeToObject sets the Kind and ApiVersion to a given object since the default constructor won't do it.
@@ -87,10 +93,12 @@ func GetManagedPropertiesFileName(workflow *operatorapi.SonataFlow) string {
 // GetDefaultLabels gets the default labels based on the given workflow.
 func GetDefaultLabels(workflow *operatorapi.SonataFlow) map[string]string {
 	labels := map[string]string{
-		LabelWorkflow:     workflow.Name,
-		LabelK8SName:      workflow.Name,
-		LabelK8SComponent: "serverless-workflow",
-		LabelK8SManagedBy: "sonataflow-operator",
+		LabelWorkflow:          workflow.Name,
+		LabelK8SName:           workflow.Name,
+		LabelK8SComponent:      "serverless-workflow",
+		LabelK8SManagedBy:      "sonataflow-operator",
+		LabelApp:               workflow.Name,
+		LabelWorkflowNamespace: workflow.Namespace,
 	}
 	if workflow.Status.Platform != nil {
 		labels[LabelK8SPartOF] = workflow.Status.Platform.Name

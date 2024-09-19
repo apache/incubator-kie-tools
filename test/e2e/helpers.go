@@ -19,9 +19,12 @@ import (
 	"fmt"
 	"net/url"
 	"os/exec"
+	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test/utils"
 
 	//nolint:golint
@@ -149,7 +152,7 @@ func verifyWorkflowIsInRunningState(workflowName string, targetNamespace string)
 }
 
 func verifyWorkflowIsAddressable(workflowName string, targetNamespace string) bool {
-	cmd := exec.Command("kubectl", "get", "workflow", workflowName, "-n", targetNamespace, "-o", "jsonpath={.status.address.url}")
+	cmd := exec.Command("kubectl", "get", "workflow", workflowName, "-n", targetNamespace, "-ojsonpath={.status.address.url}")
 	if response, err := utils.Run(cmd); err != nil {
 		GinkgoWriter.Println(fmt.Errorf("failed to check if greeting workflow is running: %v", err))
 		return false
@@ -166,4 +169,110 @@ func verifyWorkflowIsAddressable(workflowName string, targetNamespace string) bo
 		}
 		return false
 	}
+}
+
+func verifySchemaMigration(data, name string) bool {
+	matched1, err := regexp.MatchString(fmt.Sprintf("Successfully applied \\d migrations to schema \"%s\"", name), data)
+	if err != nil {
+		GinkgoWriter.Println(fmt.Errorf("string match error:%v", err))
+		return false
+	}
+	matched2, err := regexp.MatchString("Successfully validated \\d (migration|migrations)", data)
+	if err != nil {
+		GinkgoWriter.Println(fmt.Errorf("string match error:%v", err))
+		return false
+	}
+	GinkgoWriter.Println(fmt.Sprintf("verifying schemaMigration, logs=%v", data))
+	return (matched1 && strings.Contains(data, fmt.Sprintf("Creating schema \"%s\"", name)) &&
+		strings.Contains(data, fmt.Sprintf("Migrating schema \"%s\" to version", name))) ||
+		(matched2 && strings.Contains(data, fmt.Sprintf("Current version of schema \"%s\"", name)) &&
+			strings.Contains(data, fmt.Sprintf("Schema \"%s\" is up to date. No migration necessary", name))) ||
+		(strings.Contains(data, fmt.Sprintf("Creating schema \"%s\"", name)) &&
+			strings.Contains(data, fmt.Sprintf("Current version of schema \"%s\"", name)) &&
+			strings.Contains(data, fmt.Sprintf("Schema \"%s\" is up to date. No migration necessary", name)))
+}
+
+func verifyKSinkInjection(label, ns string) bool {
+	cmd := exec.Command("kubectl", "get", "pod", "-n", ns, "-l", label, "-o", "jsonpath={.items[*].metadata.name}")
+	out, err := utils.Run(cmd)
+	if err != nil {
+		GinkgoWriter.Println(fmt.Errorf("failed to get pods: %v", err))
+		return false
+	}
+	podNames := strings.Fields(string(out))
+	if len(podNames) == 0 {
+		GinkgoWriter.Println("no pods found to check K_SINK")
+		return false // pods haven't created yet
+	}
+	GinkgoWriter.Println(fmt.Sprintf("pods found: %s", podNames))
+	for _, pod := range podNames {
+		cmd = exec.Command("kubectl", "get", "pod", pod, "-n", ns, "-o", "json")
+		out, err := utils.Run(cmd)
+		if err != nil {
+			GinkgoWriter.Println(fmt.Errorf("failed to get pod: %v", err))
+			return false
+		}
+		GinkgoWriter.Println(string(out))
+		if !strings.Contains(string(out), "K_SINK") { // The pod does not have K_SINK injected
+			GinkgoWriter.Println(fmt.Sprintf("Pod does not have K_SINK injected: %s", string(out)))
+			return false
+		}
+	}
+	return true
+}
+
+func waitForPodRestartCompletion(label, ns string) {
+	EventuallyWithOffset(1, func() bool {
+		cmd := exec.Command("kubectl", "get", "pod", "-n", ns, "-l", label, "-o", "jsonpath={.items[*].metadata.name}")
+		out, err := utils.Run(cmd)
+		if err != nil {
+			GinkgoWriter.Println(fmt.Errorf("failed to get pods: %v", err))
+			return false
+		}
+		podNames := strings.Fields(string(out))
+		if len(podNames) == 0 {
+			GinkgoWriter.Println("no pods found")
+			return false // pods haven't created yet
+		} else if len(podNames) > 1 {
+			GinkgoWriter.Println("multiple pods found")
+			return false // multiple pods found, wait for other pods to terminate
+		}
+		return true
+	}, 1*time.Minute, 5).Should(BeTrue())
+}
+
+func verifyTrigger(triggers []operatorapi.SonataFlowPlatformTriggerRef, namePrefix, path, ns, broker string) error {
+	GinkgoWriter.Println("Triggers from platform status:", triggers)
+	for _, ref := range triggers {
+		if strings.HasPrefix(ref.Name, namePrefix) && ref.Namespace == ns {
+			return verifyTriggerData(ref.Name, ns, path, broker)
+		}
+	}
+	return fmt.Errorf("failed to find trigger to verify with prefix: %v, namespace: %v", namePrefix, ns)
+}
+
+func verifyTriggerData(name, ns, path, broker string) error {
+	cmd := exec.Command("kubectl", "get", "trigger", name, "-n", ns, "-ojsonpath={.spec.broker} {.status.subscriberUri} {.status.conditions[?(@.type=='Ready')].status}")
+	out, err := utils.Run(cmd)
+	if err != nil {
+		return err
+	}
+	data := strings.Fields(string(out))
+	if len(data) == 3 && broker == data[0] && strings.HasSuffix(data[1], path) && data[2] == "True" {
+		return nil
+	}
+	return fmt.Errorf("failed to verify trigger %v, data=%s", name, string(out))
+}
+
+func verifySinkBinding(name, ns, broker string) error {
+	cmd := exec.Command("kubectl", "get", "sinkbinding", name, "-n", ns, "-ojsonpath={.status.sinkUri} {.status.conditions[?(@.type=='Ready')].status}")
+	out, err := utils.Run(cmd)
+	if err != nil {
+		return err
+	}
+	data := strings.Fields(string(out))
+	if len(data) == 2 && strings.HasSuffix(data[0], broker) && data[1] == "True" {
+		return nil
+	}
+	return fmt.Errorf("failed to verify sinkbinding %v, data=%s", name, string(out))
 }

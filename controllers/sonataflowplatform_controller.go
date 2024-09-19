@@ -28,20 +28,26 @@ import (
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	clientr "github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/clusterplatform"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/knative"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform/services"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/record"
 	"k8s.io/klog/v2"
+	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
+	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 	ctrlrun "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 )
@@ -118,6 +124,16 @@ func (r *SonataFlowPlatformReconciler) Reconcile(ctx context.Context, req reconc
 		return reconcile.Result{}, err
 	}
 
+	// If the platform is being deleted, clean up the triggers on a different namespace
+	if instance.DeletionTimestamp != nil && controllerutil.ContainsFinalizer(&instance, constants.TriggerFinalizer) {
+		err := r.cleanupTriggers(ctx, &instance)
+		if err != nil {
+			klog.V(log.E).ErrorS(err, "Failed to clean up triggers for platform %s in namespace %s", instance.Name, instance.Namespace)
+			return reconcile.Result{}, err
+		}
+		return reconcile.Result{}, nil
+	}
+
 	for _, a := range actions {
 		cli, _ := clientr.FromCtrlClientSchemeAndConfig(r.Client, r.Scheme, r.Config)
 		a.InjectClient(cli)
@@ -140,12 +156,10 @@ func (r *SonataFlowPlatformReconciler) Reconcile(ctx context.Context, req reconc
 
 			if target != nil {
 				target.Status.ObservedGeneration = instance.Generation
-
 				if err := r.Client.Status().Patch(ctx, target, ctrl.MergeFrom(&instance)); err != nil {
 					r.Recorder.Event(&instance, corev1.EventTypeNormal, "Status Updated", fmt.Sprintf("Updated platform condition %s", instance.Status.GetTopLevelCondition()))
 					return reconcile.Result{}, err
 				}
-
 				if err := r.Client.Update(ctx, target); err != nil {
 					r.Recorder.Event(&instance, corev1.EventTypeNormal, "Spec Updated", fmt.Sprintf("Updated platform condition to %s", instance.Status.GetTopLevelCondition()))
 					return reconcile.Result{}, err
@@ -168,6 +182,22 @@ func (r *SonataFlowPlatformReconciler) Reconcile(ctx context.Context, req reconc
 		RequeueAfter: 5 * time.Second,
 	}, nil
 
+}
+
+func (r *SonataFlowPlatformReconciler) cleanupTriggers(ctx context.Context, platform *operatorapi.SonataFlowPlatform) error {
+	for _, triggerRef := range platform.Status.Triggers {
+		trigger := &eventingv1.Trigger{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      triggerRef.Name,
+				Namespace: triggerRef.Namespace,
+			},
+		}
+		if err := r.Client.Delete(ctx, trigger); err != nil && !errors.IsNotFound(err) {
+			return err
+		}
+	}
+	controllerutil.RemoveFinalizer(platform, constants.TriggerFinalizer)
+	return r.Client.Update(ctx, platform)
 }
 
 // sonataFlowPlatformUpdateStatus If an active cluster platform exists, update platform.Status accordingly
@@ -224,8 +254,11 @@ func (r *SonataFlowPlatformReconciler) SetupWithManager(mgr ctrlrun.Manager) err
 		Owns(&appsv1.Deployment{}).
 		Owns(&corev1.Service{}).
 		Owns(&corev1.ConfigMap{}).
+		Owns(&eventingv1.Trigger{}).
+		Owns(&sourcesv1.SinkBinding{}).
 		Watches(&operatorapi.SonataFlowPlatform{}, handler.EnqueueRequestsFromMapFunc(r.mapPlatformToPlatformRequests)).
 		Watches(&operatorapi.SonataFlowClusterPlatform{}, handler.EnqueueRequestsFromMapFunc(r.mapClusterPlatformToPlatformRequests)).
+		Watches(&eventingv1.Trigger{}, handler.EnqueueRequestsFromMapFunc(knative.MapTriggerToPlatformRequests)).
 		Complete(r)
 }
 

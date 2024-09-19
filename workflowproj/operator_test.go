@@ -46,11 +46,13 @@ func TestCreateNewManagedPropsConfigMap(t *testing.T) {
 				}}}},
 
 			map[string]string{
-				"app.kubernetes.io/name":       t.Name(),
-				"app.kubernetes.io/component":  "serverless-workflow",
-				"app.kubernetes.io/managed-by": "sonataflow-operator",
-				"app.kubernetes.io/part-of":    "someplatform",
-				"sonataflow.org/workflow-app":  t.Name(),
+				"app":                               t.Name(),
+				"app.kubernetes.io/name":            t.Name(),
+				"app.kubernetes.io/component":       "serverless-workflow",
+				"app.kubernetes.io/managed-by":      "sonataflow-operator",
+				"app.kubernetes.io/part-of":         "someplatform",
+				"sonataflow.org/workflow-app":       t.Name(),
+				"sonataflow.org/workflow-namespace": "",
 			},
 		},
 		{
@@ -60,12 +62,14 @@ func TestCreateNewManagedPropsConfigMap(t *testing.T) {
 				Labels: map[string]string{}}}},
 
 			map[string]string{
+				"app":                          t.Name(),
 				"app.kubernetes.io/name":       t.Name(),
 				"app.kubernetes.io/component":  "serverless-workflow",
 				"app.kubernetes.io/managed-by": "sonataflow-operator",
 				// if the workflow is missing a platform then the managed properties won't have them
 				//"app.kubernetes.io/part-of":   "someplatform",
-				"sonataflow.org/workflow-app": t.Name(),
+				"sonataflow.org/workflow-app":       t.Name(),
+				"sonataflow.org/workflow-namespace": "",
 			},
 		},
 	}
@@ -98,10 +102,12 @@ func TestCreateNewUserPropsConfigMap(t *testing.T) {
 					Name:      t.Name() + "-props",
 					Namespace: "",
 					Labels: map[string]string{
-						"app.kubernetes.io/name":       t.Name(),
-						"app.kubernetes.io/component":  "serverless-workflow",
-						"app.kubernetes.io/managed-by": "sonataflow-operator",
-						"sonataflow.org/workflow-app":  t.Name(),
+						"app":                               t.Name(),
+						"app.kubernetes.io/name":            t.Name(),
+						"app.kubernetes.io/component":       "serverless-workflow",
+						"app.kubernetes.io/managed-by":      "sonataflow-operator",
+						"sonataflow.org/workflow-app":       t.Name(),
+						"sonataflow.org/workflow-namespace": "",
 					},
 				},
 				Data: map[string]string{
@@ -122,11 +128,13 @@ func TestCreateNewUserPropsConfigMap(t *testing.T) {
 					Name:      t.Name() + "-props",
 					Namespace: "",
 					Labels: map[string]string{
-						"older-label":                  t.Name(),
-						"app.kubernetes.io/name":       t.Name(),
-						"app.kubernetes.io/component":  "serverless-workflow",
-						"app.kubernetes.io/managed-by": "sonataflow-operator",
-						"sonataflow.org/workflow-app":  t.Name(),
+						"older-label":                       t.Name(),
+						"app":                               t.Name(),
+						"app.kubernetes.io/name":            t.Name(),
+						"app.kubernetes.io/component":       "serverless-workflow",
+						"app.kubernetes.io/managed-by":      "sonataflow-operator",
+						"sonataflow.org/workflow-app":       t.Name(),
+						"sonataflow.org/workflow-namespace": "",
 					},
 				},
 				Data: map[string]string{
@@ -158,12 +166,14 @@ func TestGetDefaultLabels(t *testing.T) {
 				Labels: map[string]string{}}}},
 
 			map[string]string{
+				"app":                          t.Name(),
 				"app.kubernetes.io/name":       t.Name(),
 				"app.kubernetes.io/component":  "serverless-workflow",
 				"app.kubernetes.io/managed-by": "sonataflow-operator",
 				// if the workflow is missing a platform then the managed properties won't have them
 				//"app.kubernetes.io/part-of":   "someplatform",
-				"sonataflow.org/workflow-app": t.Name(),
+				"sonataflow.org/workflow-app":       t.Name(),
+				"sonataflow.org/workflow-namespace": "",
 			},
 		},
 		{
@@ -175,10 +185,12 @@ func TestGetDefaultLabels(t *testing.T) {
 				}}}},
 
 			map[string]string{
-				"app.kubernetes.io/name":       t.Name(),
-				"app.kubernetes.io/component":  "serverless-workflow",
-				"app.kubernetes.io/managed-by": "sonataflow-operator",
-				"sonataflow.org/workflow-app":  t.Name(),
+				"app":                               t.Name(),
+				"app.kubernetes.io/name":            t.Name(),
+				"app.kubernetes.io/component":       "serverless-workflow",
+				"app.kubernetes.io/managed-by":      "sonataflow-operator",
+				"sonataflow.org/workflow-app":       t.Name(),
+				"sonataflow.org/workflow-namespace": "",
 			},
 		},
 	}
@@ -232,10 +244,12 @@ func TestGetMergedLabels(t *testing.T) {
 				},
 			}},
 			want: map[string]string{
-				"app.kubernetes.io/name":       t.Name(),
-				"app.kubernetes.io/component":  "serverless-workflow",
-				"app.kubernetes.io/managed-by": "sonataflow-operator",
-				"sonataflow.org/workflow-app":  t.Name(),
+				"app":                               t.Name(),
+				"app.kubernetes.io/name":            t.Name(),
+				"app.kubernetes.io/component":       "serverless-workflow",
+				"app.kubernetes.io/managed-by":      "sonataflow-operator",
+				"sonataflow.org/workflow-app":       t.Name(),
+				"sonataflow.org/workflow-namespace": "",
 			},
 		},
 		{
@@ -249,11 +263,13 @@ func TestGetMergedLabels(t *testing.T) {
 				},
 			}},
 			want: map[string]string{
-				"app.kubernetes.io/name":       t.Name(),
-				"app.kubernetes.io/component":  "serverless-workflow",
-				"app.kubernetes.io/managed-by": "sonataflow-operator",
-				"sonataflow.org/workflow-app":  t.Name(),
-				"some-older-label":             t.Name(),
+				"app":                               t.Name(),
+				"app.kubernetes.io/name":            t.Name(),
+				"app.kubernetes.io/component":       "serverless-workflow",
+				"app.kubernetes.io/managed-by":      "sonataflow-operator",
+				"sonataflow.org/workflow-app":       t.Name(),
+				"sonataflow.org/workflow-namespace": "",
+				"some-older-label":                  t.Name(),
 			},
 		},
 	}
@@ -281,10 +297,12 @@ func TestGetSelectorLabels(t *testing.T) {
 				},
 			}},
 			want: map[string]string{
-				"app.kubernetes.io/name":       t.Name(),
-				"app.kubernetes.io/component":  "serverless-workflow",
-				"app.kubernetes.io/managed-by": "sonataflow-operator",
-				"sonataflow.org/workflow-app":  t.Name(),
+				"app":                               t.Name(),
+				"app.kubernetes.io/name":            t.Name(),
+				"app.kubernetes.io/component":       "serverless-workflow",
+				"app.kubernetes.io/managed-by":      "sonataflow-operator",
+				"sonataflow.org/workflow-app":       t.Name(),
+				"sonataflow.org/workflow-namespace": "",
 			},
 		},
 		{
@@ -293,18 +311,22 @@ func TestGetSelectorLabels(t *testing.T) {
 				ObjectMeta: v1.ObjectMeta{
 					Name: t.Name(),
 					Labels: map[string]string{
-						"app.kubernetes.io/name":       t.Name(),
-						"app.kubernetes.io/component":  "serverless-workflow",
-						"app.kubernetes.io/managed-by": "sonataflow-operator",
-						"sonataflow.org/workflow-app":  t.Name(),
+						"app":                               t.Name(),
+						"app.kubernetes.io/name":            t.Name(),
+						"app.kubernetes.io/component":       "serverless-workflow",
+						"app.kubernetes.io/managed-by":      "sonataflow-operator",
+						"sonataflow.org/workflow-app":       t.Name(),
+						"sonataflow.org/workflow-namespace": "",
 					},
 				},
 			}},
 			want: map[string]string{
-				"app.kubernetes.io/name":       t.Name(),
-				"app.kubernetes.io/component":  "serverless-workflow",
-				"app.kubernetes.io/managed-by": "sonataflow-operator",
-				"sonataflow.org/workflow-app":  t.Name(),
+				"app":                               t.Name(),
+				"app.kubernetes.io/name":            t.Name(),
+				"app.kubernetes.io/component":       "serverless-workflow",
+				"app.kubernetes.io/managed-by":      "sonataflow-operator",
+				"sonataflow.org/workflow-app":       t.Name(),
+				"sonataflow.org/workflow-namespace": "",
 			},
 		},
 	}

@@ -148,8 +148,8 @@ var _ = Describe("Validate a clusterplatform", Ordered, func() {
 					return returnedValue
 				}, 20*time.Minute, 5).Should(Equal([]byte("''")))
 
-				dataIndexServiceUrl := services.GenerateServiceURL(constants.KogitoServiceURLProtocol, targetNamespace2, "sonataflow-platform-"+constants.DataIndexServiceName)
-				jobServiceUrl := services.GenerateServiceURL(constants.KogitoServiceURLProtocol, targetNamespace2, "sonataflow-platform-"+constants.JobServiceName)
+				dataIndexServiceUrl := services.GenerateServiceURL(constants.DefaultHTTPProtocol, targetNamespace2, "sonataflow-platform-"+constants.DataIndexServiceName)
+				jobServiceUrl := services.GenerateServiceURL(constants.DefaultHTTPProtocol, targetNamespace2, "sonataflow-platform-"+constants.JobServiceName)
 				EventuallyWithOffset(1, func() []byte {
 					cmd = exec.Command("kubectl", "get", "sf", "-n", targetNamespace2, "callbackstatetimeouts", "-o", "jsonpath='{.status.services.dataIndexRef.url}'")
 					returnedValue, _ := utils.Run(cmd)
@@ -175,8 +175,8 @@ var _ = Describe("Validate a clusterplatform", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				By("Wait for SonatatFlowPlatform CR in " + targetNamespace2 + " to be ready")
-				dataIndexServiceUrl := services.GenerateServiceURL(constants.KogitoServiceURLProtocol, targetNamespace, "sonataflow-platform-"+constants.DataIndexServiceName)
-				jobServiceUrl := services.GenerateServiceURL(constants.KogitoServiceURLProtocol, targetNamespace, "sonataflow-platform-"+constants.JobServiceName)
+				dataIndexServiceUrl := services.GenerateServiceURL(constants.DefaultHTTPProtocol, targetNamespace, "sonataflow-platform-"+constants.DataIndexServiceName)
+				jobServiceUrl := services.GenerateServiceURL(constants.DefaultHTTPProtocol, targetNamespace, "sonataflow-platform-"+constants.JobServiceName)
 				// wait for platform to be ready
 				EventuallyWithOffset(1, func() error {
 					cmd = exec.Command("kubectl", "wait", "sfplatform", "-n", targetNamespace2, "sonataflow-platform", "--for", "condition=Succeed", "--timeout=5s")

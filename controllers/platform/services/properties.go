@@ -29,6 +29,7 @@ import (
 	"k8s.io/klog/v2"
 
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/knative"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/workflowdef"
@@ -161,6 +162,10 @@ func GenerateDataIndexWorkflowProperties(workflow *operatorapi.SonataFlow, platf
 	props := properties.NewProperties()
 	props.Set(constants.KogitoProcessDefinitionsEventsEnabled, "false")
 	props.Set(constants.KogitoProcessInstancesEventsEnabled, "false")
+	sink, err := knative.GetWorkflowSink(workflow, platform)
+	if err != nil {
+		return nil, err
+	}
 	di := NewDataIndexHandler(platform)
 	if !profiles.IsDevProfile(workflow) && workflow != nil && workflow.Status.Services != nil && workflow.Status.Services.DataIndexRef != nil {
 		serviceBaseUrl := workflow.Status.Services.DataIndexRef.Url
@@ -170,8 +175,17 @@ func GenerateDataIndexWorkflowProperties(workflow *operatorapi.SonataFlow, platf
 			props.Set(constants.KogitoProcessDefinitionsEventsErrorsEnabled, "true")
 			props.Set(constants.KogitoDataIndexHealthCheckEnabled, "true")
 			props.Set(constants.KogitoDataIndexURL, serviceBaseUrl)
-			props.Set(constants.KogitoProcessDefinitionsEventsURL, serviceBaseUrl+constants.KogitoProcessDefinitionsEventsPath)
-			props.Set(constants.KogitoProcessInstancesEventsURL, serviceBaseUrl+constants.KogitoProcessInstancesEventsPath)
+			if sink != nil {
+				props.Set(constants.KogitoProcessDefinitionsEventsConnector, constants.QuarkusHTTP)
+				props.Set(constants.KogitoProcessInstancesEventsConnector, constants.QuarkusHTTP)
+				props.Set(constants.KogitoProcessDefinitionsEventsURL, constants.KnativeInjectedEnvVar)
+				props.Set(constants.KogitoProcessInstancesEventsURL, constants.KnativeInjectedEnvVar)
+				props.Set(constants.KogitoProcessDefinitionsEventsMethod, constants.Post)
+				props.Set(constants.KogitoProcessInstancesEventsMethod, constants.Post)
+			} else {
+				props.Set(constants.KogitoProcessDefinitionsEventsURL, serviceBaseUrl+constants.KogitoProcessDefinitionsEventsPath)
+				props.Set(constants.KogitoProcessInstancesEventsURL, serviceBaseUrl+constants.KogitoProcessInstancesEventsPath)
+			}
 		}
 	}
 	props.Sort()
@@ -186,7 +200,11 @@ func GenerateDataIndexWorkflowProperties(workflow *operatorapi.SonataFlow, platf
 func GenerateJobServiceWorkflowProperties(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) (*properties.Properties, error) {
 	props := properties.NewProperties()
 	props.Set(constants.JobServiceRequestEventsConnector, constants.QuarkusHTTP)
-	props.Set(constants.JobServiceRequestEventsURL, fmt.Sprintf("%s://localhost/v2/jobs/events", constants.JobServiceURLProtocol))
+	props.Set(constants.JobServiceRequestEventsURL, fmt.Sprintf("%s://localhost%s", constants.DefaultHTTPProtocol, constants.JobServiceJobEventsPath))
+	sink, err := knative.GetWorkflowSink(workflow, platform)
+	if err != nil {
+		return nil, err
+	}
 	js := NewJobServiceHandler(platform)
 	if !profiles.IsDevProfile(workflow) && workflow != nil && workflow.Status.Services != nil && workflow.Status.Services.JobServiceRef != nil {
 		serviceBaseUrl := workflow.Status.Services.JobServiceRef.Url
@@ -195,7 +213,13 @@ func GenerateJobServiceWorkflowProperties(workflow *operatorapi.SonataFlow, plat
 				props.Set(constants.KogitoJobServiceHealthCheckEnabled, "true")
 			}
 			props.Set(constants.KogitoJobServiceURL, serviceBaseUrl)
-			props.Set(constants.JobServiceRequestEventsURL, serviceBaseUrl+constants.JobServiceJobEventsPath)
+			if sink != nil {
+				props.Set(constants.JobServiceRequestEventsURL, constants.KnativeInjectedEnvVar)
+				props.Set(constants.JobServiceRequestEventsConnector, constants.QuarkusHTTP)
+				props.Set(constants.JobServiceRequestEventsMethod, constants.Post)
+			} else {
+				props.Set(constants.JobServiceRequestEventsURL, serviceBaseUrl+constants.JobServiceJobEventsPath)
+			}
 		}
 	}
 	props.Sort()

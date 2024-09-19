@@ -16,6 +16,7 @@ env:
   GO_VERSION: 1.21
   PYTHON_VERSION: "3.10"
   KIND_VERSION: v0.20.0
+  KNATIVE_VERSION: v1.13.2
   OPERATOR_IMAGE_NAME: "127.0.0.1:5001/kogito-serverless-operator:0.0.1"
 
 jobs:
@@ -60,7 +61,10 @@ jobs:
           cekit --version
 
       - name: Setup Kind cluster
-        run: make KIND_VERSION=${{ env.KIND_VERSION }} create-cluster
+        run: make KIND_VERSION=${{ env.KIND_VERSION }} BUILDER=docker create-cluster
+
+      - name: Deploy Knative Eventing and Serving
+        run: make KNATIVE_VERSION=${{ env.KNATIVE_VERSION }} deploy-knative
 
       - name: Set OPERATOR_IMAGE_NAME to point to Kind's local registry
         run: echo "OPERATOR_IMAGE_NAME=${{ env.OPERATOR_IMAGE_NAME }}" >> $GITHUB_ENV

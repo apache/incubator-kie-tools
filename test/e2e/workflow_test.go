@@ -40,6 +40,10 @@ import (
 	. "github.com/onsi/gomega"
 )
 
+const (
+	workflowAppLabel = "sonataflow.org/workflow-app"
+)
+
 var _ = Describe("SonataFlow Operator", Ordered, func() {
 
 	var targetNamespace string
@@ -52,8 +56,11 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 	AfterEach(func() {
 		// Remove resources in test namespace
 		if !CurrentSpecReport().Failed() && len(targetNamespace) > 0 {
-			cmd := exec.Command("kubectl", "delete", "namespace", targetNamespace, "--wait")
+			cmd := exec.Command("kubectl", "delete", "sonataflow", "--all", "-n", targetNamespace, "--wait")
 			_, err := utils.Run(cmd)
+			Expect(err).NotTo(HaveOccurred())
+			cmd = exec.Command("kubectl", "delete", "namespace", targetNamespace, "--wait")
+			_, err = utils.Run(cmd)
 			Expect(err).NotTo(HaveOccurred())
 		}
 	})
@@ -161,14 +168,17 @@ var _ = Describe("Validate the persistence ", Ordered, func() {
 	AfterEach(func() {
 		// Remove platform CR if it exists
 		if len(ns) > 0 {
-			cmd := exec.Command("kubectl", "delete", "namespace", ns, "--wait")
+			cmd := exec.Command("kubectl", "delete", "sonataflow", "--all", "-n", ns, "--wait")
 			_, err := utils.Run(cmd)
+			Expect(err).NotTo(HaveOccurred())
+			cmd = exec.Command("kubectl", "delete", "namespace", ns, "--wait")
+			_, err = utils.Run(cmd)
 			Expect(err).NotTo(HaveOccurred())
 		}
 
 	})
 
-	DescribeTable("when deploying a SonataFlow CR with PostgreSQL persistence", func(testcaseDir string, withPersistence bool) {
+	DescribeTable("when deploying a SonataFlow CR with PostgreSQL persistence", func(testcaseDir string, withPersistence bool, waitKSinkInjection bool) {
 		By("Deploy the CR")
 		var manifests []byte
 		EventuallyWithOffset(1, func() error {
@@ -183,15 +193,24 @@ var _ = Describe("Validate the persistence ", Ordered, func() {
 		Expect(err).NotTo(HaveOccurred())
 		By("Wait for SonatatFlow CR to complete deployment")
 		// wait for service deployments to be ready
-		EventuallyWithOffset(1, func() error {
-			cmd = exec.Command("kubectl", "wait", "pod", "-n", ns, "-l", "sonataflow.org/workflow-app", "--for", "condition=Ready", "--timeout=5s")
+		EventuallyWithOffset(1, func() bool {
+			cmd = exec.Command("kubectl", "wait", "pod", "-n", ns, "-l", workflowAppLabel, "--for", "condition=Ready", "--timeout=5s")
 			out, err := utils.Run(cmd)
+			if err != nil {
+				return false
+			}
 			GinkgoWriter.Printf("%s\n", string(out))
-			return err
-		}, 15*time.Minute, 1*time.Minute).Should(Succeed())
+			if !waitKSinkInjection {
+				return true
+			}
+			GinkgoWriter.Println("waitForPodRestartCompletion")
+			waitForPodRestartCompletion(workflowAppLabel, ns)
+			GinkgoWriter.Println("waitForPodRestartCompletion done")
+			return true
+		}, 25*time.Minute, 5).Should(BeTrue())
 
 		By("Evaluate status of the workflow's pod database connection health endpoint")
-		cmd = exec.Command("kubectl", "get", "pod", "-l", "sonataflow.org/workflow-app", "-n", ns, "-ojsonpath={.items[*].metadata.name}")
+		cmd = exec.Command("kubectl", "get", "pod", "-l", workflowAppLabel, "-n", ns, "-ojsonpath={.items[*].metadata.name}")
 		output, err := utils.Run(cmd)
 		Expect(err).NotTo(HaveOccurred())
 		EventuallyWithOffset(1, func() bool {
@@ -226,7 +245,7 @@ var _ = Describe("Validate the persistence ", Ordered, func() {
 			return false
 		}, 4*time.Minute).Should(BeTrue())
 		// Persistence initialization checks
-		cmd = exec.Command("kubectl", "get", "pod", "-l", "sonataflow.org/workflow-app", "-n", ns, "-ojsonpath={.items[*].metadata.name}")
+		cmd = exec.Command("kubectl", "get", "pod", "-l", workflowAppLabel, "-n", ns, "-ojsonpath={.items[*].metadata.name}")
 		output, err = utils.Run(cmd)
 		Expect(err).NotTo(HaveOccurred())
 		podName := string(output)
@@ -238,9 +257,9 @@ var _ = Describe("Validate the persistence ", Ordered, func() {
 			By("Validate that the workflow persistence was properly initialized")
 			Expect(logs).Should(ContainSubstring("Flyway Community Edition"))
 			Expect(logs).Should(ContainSubstring("Database: jdbc:postgresql://postgres.%s:5432", ns))
-			Expect(logs).Should(ContainSubstring("Creating schema \"callbackstatetimeouts\""))
-			Expect(logs).Should(ContainSubstring("Migrating schema \"callbackstatetimeouts\" to version"))
-			Expect(logs).Should(MatchRegexp("Successfully applied \\d migrations to schema \"callbackstatetimeouts\""))
+			result := verifySchemaMigration(logs, "callbackstatetimeouts")
+			GinkgoWriter.Println(fmt.Sprintf("verifySchemaMigration: %v", result))
+			Expect(result).Should(BeTrue())
 			Expect(logs).Should(ContainSubstring("Profile prod activated"))
 		} else {
 			By("Validate that the workflow has no persistence")
@@ -249,11 +268,11 @@ var _ = Describe("Validate the persistence ", Ordered, func() {
 			Expect(logs).Should(ContainSubstring("Profile prod activated"))
 		}
 	},
-		Entry("defined in the workflow from an existing kubernetes service as a reference", test.GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory("by_service"), true),
-		Entry("defined in the workflow and from the sonataflow platform", test.GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory("from_platform_overwritten_by_service"), true),
-		Entry("defined from the sonataflow platform as reference and with DI and JS", test.GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory("from_platform_with_di_and_js_services"), true),
-		Entry("defined from the sonataflow platform as reference and without DI and JS", test.GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory("from_platform_without_di_and_js_services"), true),
-		Entry("defined from the sonataflow platform as reference but not required by the workflow", test.GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory("from_platform_with_no_persistence_required"), false),
+		Entry("defined in the workflow from an existing kubernetes service as a reference", test.GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory("by_service"), true, false),
+		Entry("defined in the workflow and from the sonataflow platform", test.GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory("from_platform_overwritten_by_service"), true, false),
+		Entry("defined from the sonataflow platform as reference and with DI and JS", test.GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory("from_platform_with_di_and_js_services"), true, true),
+		Entry("defined from the sonataflow platform as reference and without DI and JS", test.GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory("from_platform_without_di_and_js_services"), true, false),
+		Entry("defined from the sonataflow platform as reference but not required by the workflow", test.GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory("from_platform_with_no_persistence_required"), false, false),
 	)
 
 })

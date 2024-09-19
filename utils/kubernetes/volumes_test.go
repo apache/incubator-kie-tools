@@ -122,7 +122,7 @@ func TestAddOrReplaceVolumeMount(t *testing.T) {
 		{Name: "mount1", MountPath: "/dev"},
 	}
 
-	AddOrReplaceVolumeMount(0, &podSpec, mounts...)
+	AddOrReplaceVolumeMount(&podSpec.Containers[0], mounts...)
 	assert.Len(t, podSpec.Containers[0].VolumeMounts, 2)
 	assert.Equal(t, "/dev", podSpec.Containers[0].VolumeMounts[0].MountPath)
 	assert.Equal(t, "/tmp/any/path", podSpec.Containers[0].VolumeMounts[1].MountPath)

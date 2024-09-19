@@ -26,6 +26,7 @@ import (
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/knative"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
 	"github.com/stretchr/testify/assert"
@@ -49,6 +50,7 @@ func Test_Reconciler_ProdCustomPod(t *testing.T) {
 	client := test.NewSonataFlowClientBuilder().
 		WithRuntimeObjects(workflow, build, platform).
 		WithStatusSubresource(workflow, build, platform).Build()
+	knative.SetDiscoveryClient(test.CreateFakeKnativeDiscoveryClient())
 	_, err := NewProfileReconciler(client, &rest.Config{}, test.NewFakeRecorder()).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 
@@ -64,11 +66,13 @@ func Test_Reconciler_ProdCustomPod(t *testing.T) {
 	assert.NotNil(t, deployment.ObjectMeta)
 	assert.NotNil(t, deployment.ObjectMeta.Labels)
 	assert.Equal(t, deployment.ObjectMeta.Labels, map[string]string{
-		"test":                         "test",
-		"sonataflow.org/workflow-app":  "greeting",
-		"app.kubernetes.io/name":       "greeting",
-		"app.kubernetes.io/component":  "serverless-workflow",
-		"app.kubernetes.io/managed-by": "sonataflow-operator",
+		"app":                               "greeting",
+		"test":                              "test",
+		"sonataflow.org/workflow-app":       "greeting",
+		"sonataflow.org/workflow-namespace": workflow.Namespace,
+		"app.kubernetes.io/name":            "greeting",
+		"app.kubernetes.io/component":       "serverless-workflow",
+		"app.kubernetes.io/managed-by":      "sonataflow-operator",
 	})
 }
 
@@ -78,7 +82,7 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 	client := test.NewSonataFlowClientBuilder().
 		WithRuntimeObjects(workflow, platform).
 		WithStatusSubresource(workflow, platform, &operatorapi.SonataFlowBuild{}).Build()
-
+	knative.SetDiscoveryClient(test.CreateFakeKnativeDiscoveryClient())
 	result, err := NewProfileReconciler(client, &rest.Config{}, test.NewFakeRecorder()).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 
@@ -140,6 +144,7 @@ func Test_deployWorkflowReconciliationHandler_handleObjects(t *testing.T) {
 		WithRuntimeObjects(workflow, platform, build).
 		WithStatusSubresource(workflow, platform, build).
 		Build()
+	knative.SetDiscoveryClient(test.CreateFakeKnativeDiscoveryClient())
 	handler := &deployWithBuildWorkflowState{
 		StateSupport: fakeReconcilerSupport(client),
 		ensurers:     NewObjectEnsurers(&common.StateSupport{C: client}),
@@ -168,7 +173,7 @@ func Test_GenerationAnnotationCheck(t *testing.T) {
 	client := test.NewSonataFlowClientBuilder().
 		WithRuntimeObjects(workflow, platform).
 		WithStatusSubresource(workflow, platform, &operatorapi.SonataFlowBuild{}).Build()
-
+	knative.SetDiscoveryClient(test.CreateFakeKnativeDiscoveryClient())
 	handler := &deployWithBuildWorkflowState{
 		StateSupport: fakeReconcilerSupport(client),
 		ensurers:     NewObjectEnsurers(&common.StateSupport{C: client}),

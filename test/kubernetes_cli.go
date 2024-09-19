@@ -21,9 +21,14 @@ package test
 
 import (
 	"context"
+
 	"testing"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
+	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
+	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
+	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
+
 	buildv1 "github.com/openshift/api/build/v1"
 	imgv1 "github.com/openshift/api/image/v1"
 	routev1 "github.com/openshift/api/route/v1"
@@ -35,7 +40,6 @@ import (
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/tools/record"
-	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
@@ -97,6 +101,8 @@ func NewKogitoClientBuilderWithOpenShift() *SonataFlowClientBuilder {
 	utilruntime.Must(buildv1.Install(s))
 	utilruntime.Must(imgv1.Install(s))
 	utilruntime.Must(operatorapi.AddToScheme(s))
+	utilruntime.Must(eventingv1.AddToScheme(s))
+	utilruntime.Must(sourcesv1.AddToScheme(s))
 	builder := fake.NewClientBuilder().WithScheme(s)
 	return &SonataFlowClientBuilder{
 		innerBuilder: builder,

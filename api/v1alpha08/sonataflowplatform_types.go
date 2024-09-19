@@ -21,6 +21,7 @@ package v1alpha08
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	duckv1 "knative.dev/pkg/apis/duck/v1"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
 )
@@ -47,6 +48,9 @@ type SonataFlowPlatformSpec struct {
 	// +optional
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Services"
 	Services *ServicesPlatformSpec `json:"services,omitempty"`
+	// Eventing describes the information required for Knative Eventing integration in the platform.
+	// +optional
+	Eventing *PlatformEventingSpec `json:"eventing,omitempty"`
 	// Persistence defines the platform persistence configuration. When this field is set,
 	// the configuration is used as the persistence for platform services and SonataFlow instances
 	// that don't provide one of their own.
@@ -59,6 +63,15 @@ type SonataFlowPlatformSpec struct {
 	// These properties MAY NOT be propagated to a SonataFlowClusterPlatform since PropertyVarSource can only refer local context sources.
 	// +optional
 	Properties *PropertyPlatformSpec `json:"properties,omitempty"`
+}
+
+// PlatformEventingSpec specifies the Knative Eventing integration details in the platform.
+// +k8s:openapi-gen=true
+type PlatformEventingSpec struct {
+	// Broker to communicate with workflow deployment.  It can be the default broker when the workflow, Dataindex, or Jobservice does not have a sink or source specified.
+	// +optional
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="broker"
+	Broker *duckv1.Destination `json:"broker,omitempty"`
 }
 
 // PlatformCluster is the kind of orchestration cluster the platform is installed into
@@ -95,6 +108,19 @@ type SonataFlowPlatformStatus struct {
 	// ClusterPlatformRef information related to the (optional) active SonataFlowClusterPlatform
 	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="clusterPlatformRef"
 	ClusterPlatformRef *SonataFlowClusterPlatformRefStatus `json:"clusterPlatformRef,omitempty"`
+	// Triggers list of triggers created for the SonataFlowPlatform
+	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="triggers"
+	Triggers []SonataFlowPlatformTriggerRef `json:"triggers,omitempty"`
+}
+
+// SonataFlowPlatformTriggerRef defines a trigger created for the SonataFlowPlatform.
+type SonataFlowPlatformTriggerRef struct {
+	// Name of the Trigger
+	//+operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Trigger_Name"
+	Name string `json:"name"`
+	// Namespace of the Trigger
+	//+operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Trigger_NS"
+	Namespace string `json:"namespace"`
 }
 
 // SonataFlowClusterPlatformRefStatus information related to the (optional) active SonataFlowClusterPlatform

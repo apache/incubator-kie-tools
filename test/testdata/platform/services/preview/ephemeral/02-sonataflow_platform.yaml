@@ -17,6 +17,12 @@ kind: SonataFlowPlatform
 metadata:
   name: sonataflow-platform
 spec:
+  eventing:
+    broker:
+      ref:
+        apiVersion: eventing.knative.dev/v1
+        kind: Broker
+        name: default
   build:
     config:
       strategyOptions:

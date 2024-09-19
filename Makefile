@@ -233,7 +233,11 @@ ENVTEST ?= $(LOCALBIN)/setup-envtest
 KUSTOMIZE_VERSION ?= v4.5.2
 CONTROLLER_TOOLS_VERSION ?= v0.9.2
 KIND_VERSION ?= v0.20.0
+KNATIVE_VERSION ?= v1.13.2
+TIMEOUT_SECS ?= 180s
 
+KNATIVE_SERVING_PREFIX ?= "https://github.com/knative/serving/releases/download/knative-$(KNATIVE_VERSION)"
+KNATIVE_EVENTING_PREFIX ?= "https://github.com/knative/eventing/releases/download/knative-$(KNATIVE_VERSION)"
 KUSTOMIZE_INSTALL_SCRIPT ?= "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"
 .PHONY: kustomize
 kustomize: $(KUSTOMIZE) ## Download kustomize locally if necessary.
@@ -352,8 +356,16 @@ install-kind:
 
 .PHONY: create-cluster
 create-cluster: install-kind
-	kind get clusters | grep kind >/dev/null || ./hack/ci/create-kind-cluster-with-registry.sh
+	kind get clusters | grep kind >/dev/null || ./hack/ci/create-kind-cluster-with-registry.sh $(BUILDER)
 
+.PHONY: deploy-knative
+deploy-knative: create-cluster
+	kubectl apply -f https://github.com/knative/operator/releases/download/knative-$(KNATIVE_VERSION)/operator.yaml
+	kubectl wait  --for=condition=Available=True deploy/knative-operator -n default --timeout=$(TIMEOUT_SECS)
+	kubectl apply -f ./test/testdata/knative_serving_eventing.yaml
+	kubectl wait  --for=condition=Ready=True KnativeServing/knative-serving -n knative-serving --timeout=$(TIMEOUT_SECS)
+	kubectl wait  --for=condition=Ready=True KnativeEventing/knative-eventing -n knative-eventing --timeout=$(TIMEOUT_SECS)
+	
 .PHONY: delete-cluster
 delete-cluster: install-kind
-	kind delete cluster && docker rm -f kind-registry
+	kind delete cluster && $(BUILDER) rm -f kind-registry

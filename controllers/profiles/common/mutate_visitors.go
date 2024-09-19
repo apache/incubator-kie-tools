@@ -25,8 +25,12 @@ import (
 	"reflect"
 	"slices"
 
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/knative"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/properties"
+	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
 	"github.com/imdario/mergo"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -35,10 +39,6 @@ import (
 	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
-
-	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
-	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
 )
 
 // ImageDeploymentMutateVisitor creates a visitor that mutates a vanilla Kubernetes Deployment to apply the given image in the DefaultContainerName container
@@ -122,8 +122,11 @@ func EnsureDeployment(original *appsv1.Deployment, object *appsv1.Deployment) er
 	object.Spec.Replicas = original.Spec.Replicas
 	object.Spec.Selector = original.Spec.Selector
 	object.Labels = original.GetLabels()
+	object.Finalizers = original.Finalizers
 
 	// Clean up the volumes, they are inherited from original, additional are added by other visitors
+	// However, the knative data (voulmes, volumes mounts) must be preserved
+	knative.SaveKnativeData(&original.Spec.Template.Spec, &object.Spec.Template.Spec)
 	object.Spec.Template.Spec.Volumes = nil
 	for i := range object.Spec.Template.Spec.Containers {
 		object.Spec.Template.Spec.Containers[i].VolumeMounts = nil
@@ -154,6 +157,8 @@ func EnsureKService(original *servingv1.Service, object *servingv1.Service) erro
 	object.Labels = original.GetLabels()
 
 	// Clean up the volumes, they are inherited from original, additional are added by other visitors
+	// However, the knative data (voulmes, volumes mounts) must be preserved
+	knative.SaveKnativeData(&original.Spec.Template.Spec.PodSpec, &object.Spec.Template.Spec.PodSpec)
 	object.Spec.Template.Spec.Volumes = nil
 	for i := range object.Spec.Template.Spec.Containers {
 		object.Spec.Template.Spec.Containers[i].VolumeMounts = nil
@@ -216,8 +221,27 @@ func RolloutDeploymentIfCMChangedMutateVisitor(workflow *operatorapi.SonataFlow,
 	return func(object client.Object) controllerutil.MutateFn {
 		return func() error {
 			deployment := object.(*appsv1.Deployment)
-			err := kubeutil.AnnotateDeploymentConfigChecksum(workflow, deployment, userPropsCM, managedPropsCM)
-			return err
+			return kubeutil.AnnotateDeploymentConfigChecksum(workflow, deployment, userPropsCM, managedPropsCM)
+		}
+	}
+}
+
+func RestoreDeploymentVolumeAndVolumeMountMutateVisitor() MutateVisitor {
+	return func(object client.Object) controllerutil.MutateFn {
+		return func() error {
+			deployment := object.(*appsv1.Deployment)
+			knative.RestoreKnativeVolumeAndVolumeMount(&deployment.Spec.Template.Spec)
+			return nil
+		}
+	}
+}
+
+func RestoreKServiceVolumeAndVolumeMountMutateVisitor() MutateVisitor {
+	return func(object client.Object) controllerutil.MutateFn {
+		return func() error {
+			service := object.(*servingv1.Service)
+			knative.RestoreKnativeVolumeAndVolumeMount(&service.Spec.Template.Spec.PodSpec)
+			return nil
 		}
 	}
 }

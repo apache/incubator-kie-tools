@@ -20,6 +20,7 @@ import (
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/knative"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
 	"github.com/magiconair/properties"
@@ -44,6 +45,7 @@ func Test_CheckDeploymentModelIsKnative(t *testing.T) {
 		WithStatusSubresource(workflow).
 		Build()
 	stateSupport := fakeReconcilerSupport(cli)
+	knative.SetDiscoveryClient(test.CreateFakeKnativeDiscoveryClient())
 	handler := NewDeploymentReconciler(stateSupport, NewObjectEnsurers(stateSupport))
 
 	result, objects, err := handler.ensureObjects(context.TODO(), workflow, "")
@@ -70,6 +72,7 @@ func Test_CheckPodTemplateChangesReflectDeployment(t *testing.T) {
 		WithStatusSubresource(workflow).
 		Build()
 	stateSupport := fakeReconcilerSupport(client)
+	knative.SetDiscoveryClient(test.CreateFakeKnativeDiscoveryClient())
 	handler := NewDeploymentReconciler(stateSupport, NewObjectEnsurers(stateSupport))
 
 	result, objects, err := handler.Reconcile(context.TODO(), workflow)
@@ -105,6 +108,7 @@ func Test_CheckDeploymentRolloutAfterCMChange(t *testing.T) {
 		WithStatusSubresource(workflow).
 		Build()
 	stateSupport := fakeReconcilerSupport(client)
+	knative.SetDiscoveryClient(test.CreateFakeKnativeDiscoveryClient())
 	handler := NewDeploymentReconciler(stateSupport, NewObjectEnsurers(stateSupport))
 
 	result, objects, err := handler.Reconcile(context.TODO(), workflow)
@@ -167,6 +171,7 @@ func Test_CheckDeploymentUnchangedAfterCMChangeOtherKeys(t *testing.T) {
 		WithStatusSubresource(workflow).
 		Build()
 	stateSupport := fakeReconcilerSupport(client)
+	knative.SetDiscoveryClient(test.CreateFakeKnativeDiscoveryClient())
 	handler := NewDeploymentReconciler(stateSupport, NewObjectEnsurers(stateSupport))
 
 	result, objects, err := handler.Reconcile(context.TODO(), workflow)

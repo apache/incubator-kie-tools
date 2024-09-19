@@ -110,9 +110,9 @@ func (a *managedPropertyHandler) Build() string {
 func (a *managedPropertyHandler) withKogitoServiceUrl() ManagedPropertyHandler {
 	var kogitoServiceUrl string
 	if len(a.workflow.Namespace) > 0 {
-		kogitoServiceUrl = fmt.Sprintf("%s://%s.%s", constants.KogitoServiceURLProtocol, a.workflow.Name, a.workflow.Namespace)
+		kogitoServiceUrl = fmt.Sprintf("%s://%s.%s", constants.DefaultHTTPProtocol, a.workflow.Name, a.workflow.Namespace)
 	} else {
-		kogitoServiceUrl = fmt.Sprintf("%s://%s", constants.KogitoServiceURLProtocol, a.workflow.Name)
+		kogitoServiceUrl = fmt.Sprintf("%s://%s", constants.DefaultHTTPProtocol, a.workflow.Name)
 	}
 	return a.addDefaultManagedProperty(constants.KogitoServiceURLProperty, kogitoServiceUrl)
 }
@@ -121,7 +121,7 @@ func (a *managedPropertyHandler) withKogitoServiceUrl() ManagedPropertyHandler {
 // See Service Discovery https://kubernetes.io/docs/concepts/services-networking/service/#dns
 func (a *managedPropertyHandler) withKafkaHealthCheckDisabled() ManagedPropertyHandler {
 	a.addDefaultManagedProperty(
-		constants.DataIndexKafkaSmallRyeHealthProperty,
+		constants.DataIndexKafkaHealthCheck,
 		"false",
 	)
 	return a
@@ -172,7 +172,7 @@ func NewManagedPropertyHandler(workflow *operatorapi.SonataFlow, platform *opera
 		props.Merge(p)
 	}
 
-	p, err := generateKnativeEventingWorkflowProperties(workflow)
+	p, err := generateKnativeEventingWorkflowProperties(workflow, platform)
 	if err != nil {
 		return nil, err
 	}

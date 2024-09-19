@@ -24,15 +24,16 @@ import (
 	"testing"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
-	"k8s.io/apimachinery/pkg/util/intstr"
-
-	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
-
 	"github.com/magiconair/properties"
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/intstr"
+	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
+	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
+	"knative.dev/pkg/kmeta"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
@@ -46,7 +47,7 @@ const platformName = "test-platform"
 
 func Test_ensureWorkflowPropertiesConfigMapMutator(t *testing.T) {
 	workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
-	platform := test.GetBasePlatform()
+	platform := test.GetBasePlatformInReadyPhase(workflow.Namespace)
 	// can't be new
 	managedProps, _ := ManagedPropsConfigMapCreator(workflow, platform)
 	managedProps.SetUID("1")
@@ -55,7 +56,7 @@ func Test_ensureWorkflowPropertiesConfigMapMutator(t *testing.T) {
 
 	userProps, _ := UserPropsConfigMapCreator(workflow)
 	userPropsCM := userProps.(*corev1.ConfigMap)
-	visitor := ManagedPropertiesMutateVisitor(context.TODO(), nil, workflow, nil, userPropsCM)
+	visitor := ManagedPropertiesMutateVisitor(context.TODO(), nil, workflow, platform, userPropsCM)
 	mutateFn := visitor(managedProps)
 
 	assert.NoError(t, mutateFn())
@@ -79,7 +80,8 @@ func Test_ensureWorkflowPropertiesConfigMapMutator(t *testing.T) {
 
 func Test_ensureWorkflowPropertiesConfigMapMutator_DollarReplacement(t *testing.T) {
 	workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
-	platform := test.GetBasePlatform()
+	platform := test.GetBasePlatformInReadyPhase(workflow.Namespace)
+
 	managedProps, _ := ManagedPropsConfigMapCreator(workflow, platform)
 	managedProps.SetName(workflow.Name)
 	managedProps.SetNamespace(workflow.Namespace)
@@ -90,7 +92,7 @@ func Test_ensureWorkflowPropertiesConfigMapMutator_DollarReplacement(t *testing.
 	userPropsCM := userProps.(*corev1.ConfigMap)
 	userPropsCM.Data[workflowproj.ApplicationPropertiesFileName] = "mp.messaging.outgoing.kogito_outgoing_stream.url=${kubernetes:services.v1/event-listener}"
 
-	mutateVisitorFn := ManagedPropertiesMutateVisitor(context.TODO(), nil, workflow, nil, userPropsCM)
+	mutateVisitorFn := ManagedPropertiesMutateVisitor(context.TODO(), nil, workflow, platform, userPropsCM)
 
 	err := mutateVisitorFn(managedPropsCM)()
 	assert.NoError(t, err)
@@ -150,7 +152,7 @@ func TestMergePodSpec(t *testing.T) {
 	assert.Len(t, flowContainer.VolumeMounts, 1)
 }
 
-func TestMergePodSpec_OverrideContainers(t *testing.T) {
+func TestMergePodSpecOverrideContainers(t *testing.T) {
 	workflow := test.GetBaseSonataFlow(t.Name())
 	workflow.Spec.PodTemplate = v1alpha08.FlowPodTemplateSpec{
 		PodSpec: v1alpha08.PodSpec{
@@ -182,11 +184,13 @@ func TestMergePodSpec_OverrideContainers(t *testing.T) {
 	assert.Empty(t, flowContainer.Env)
 }
 
-func Test_ensureWorkflowSinkBindingIsCreated(t *testing.T) {
+func TestEnsureWorkflowSinkBindingWithWorkflowSinkIsCreated(t *testing.T) {
 	workflow := test.GetVetEventSonataFlow(t.Name())
-
+	plf := test.GetBasePlatform()
 	//On Kubernetes we want the service exposed in Dev with NodePort
-	sinkBinding, _ := SinkBindingCreator(workflow)
+	sinkBinding, err := SinkBindingCreator(workflow, plf)
+	assert.NoError(t, err)
+	assert.NotNil(t, sinkBinding)
 	sinkBinding.SetUID("1")
 	sinkBinding.SetResourceVersion("1")
 
@@ -196,33 +200,180 @@ func Test_ensureWorkflowSinkBindingIsCreated(t *testing.T) {
 	assert.NotNil(t, reflectSinkBinding.Spec)
 	assert.NotEmpty(t, reflectSinkBinding.Spec.Sink)
 	assert.Equal(t, reflectSinkBinding.Spec.Sink.Ref.Kind, "Broker")
+	assert.Equal(t, reflectSinkBinding.Spec.Sink.Ref.Name, "default")
 	assert.NotNil(t, reflectSinkBinding.GetLabels())
 	assert.Equal(t, reflectSinkBinding.ObjectMeta.Labels, map[string]string{
-		"sonataflow.org/workflow-app":  "vet",
-		"app.kubernetes.io/name":       "vet",
-		"app.kubernetes.io/component":  "serverless-workflow",
-		"app.kubernetes.io/managed-by": "sonataflow-operator",
-	})
+		"app":                               "vet",
+		"sonataflow.org/workflow-app":       "vet",
+		"sonataflow.org/workflow-namespace": workflow.Namespace,
+		"app.kubernetes.io/name":            "vet",
+		"app.kubernetes.io/component":       "serverless-workflow",
+		"app.kubernetes.io/managed-by":      "sonataflow-operator"})
 }
 
-func Test_ensureWorkflowTriggersAreCreated(t *testing.T) {
+func TestEnsureWorkflowSinkBindingWithPlatformBrokerIsCreated(t *testing.T) {
 	workflow := test.GetVetEventSonataFlow(t.Name())
+	workflow.Spec.Sink = nil
+	workflow.Spec.Sources = nil
+	plf := test.GetBasePlatformWithBroker()
+	sinkBinding, err := SinkBindingCreator(workflow, plf)
+	assert.NoError(t, err)
+	assert.NotNil(t, sinkBinding)
+	sinkBinding.SetUID("1")
+	sinkBinding.SetResourceVersion("1")
 
-	//On Kubernetes we want the service exposed in Dev with NodePort
-	triggers, _ := TriggersCreator(workflow)
+	reflectSinkBinding := sinkBinding.(*sourcesv1.SinkBinding)
 
+	assert.NotNil(t, reflectSinkBinding)
+	assert.NotNil(t, reflectSinkBinding.Spec)
+	assert.NotEmpty(t, reflectSinkBinding.Spec.Sink)
+	assert.Equal(t, reflectSinkBinding.Spec.Sink.Ref.Kind, "Broker")
+	assert.Equal(t, reflectSinkBinding.Spec.Sink.Ref.Name, "default")
+	assert.NotNil(t, reflectSinkBinding.GetLabels())
+	assert.Equal(t, reflectSinkBinding.ObjectMeta.Labels, map[string]string{"app": "vet",
+		"sonataflow.org/workflow-app":       "vet",
+		"sonataflow.org/workflow-namespace": workflow.Namespace,
+		"app.kubernetes.io/name":            "vet",
+		"app.kubernetes.io/component":       "serverless-workflow",
+		"app.kubernetes.io/managed-by":      "sonataflow-operator"})
+}
+
+func TestEnsureWorkflowSinkBindingWithoutBrokerAreNotCreated(t *testing.T) {
+	workflow := test.GetVetEventSonataFlow(t.Name())
+	workflow.Spec.Sink = nil
+	workflow.Spec.Sources = nil
+	plf := test.GetBasePlatformWithBroker()
+	plf.Spec.Eventing = nil // No broker configured in the platform, but data index and jobs service are enabled
+	sinkBinding, err := SinkBindingCreator(workflow, plf)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "a sink in the SonataFlow vet or broker in the SonataFlowPlatform sonataflow-platform should be configured when DataIndex or JobService is enabled")
+	assert.Nil(t, sinkBinding)
+}
+
+func getTrigger(name string, objs []client.Object) *eventingv1.Trigger {
+	for _, obj := range objs {
+		if trigger, ok := obj.(*eventingv1.Trigger); ok {
+			if trigger.Name == name {
+				return trigger
+			}
+		}
+	}
+	return nil
+}
+
+func TestEnsureWorkflowTriggersWithPlatformBrokerAreCreated(t *testing.T) {
+	workflow := test.GetVetEventSonataFlow(t.Name())
+	workflow.Spec.Sink = nil
+	workflow.Spec.Sources = nil
+	plf := test.GetBasePlatformWithBroker()
+	plf.Namespace = "platform-namespace"
+	plf.Spec.Eventing.Broker.Ref.Namespace = plf.Namespace
+	broker := test.GetDefaultBroker(plf.Namespace)
+
+	// Create a fake client to mock API calls.
+	cl := test.NewKogitoClientBuilderWithOpenShift().WithRuntimeObjects(workflow, broker).WithStatusSubresource(workflow, broker).Build()
+	utils.SetClient(cl)
+
+	triggers, err := TriggersCreator(workflow, plf)
+	assert.NoError(t, err)
 	assert.NotEmpty(t, triggers)
 	assert.Len(t, triggers, 2)
-	for _, trigger := range triggers {
-		assert.Contains(t, []string{"vet-vetappointmentrequestreceived-trigger", "vet-vetappointmentinfo-trigger"}, trigger.GetName())
-		assert.NotNil(t, trigger.GetLabels())
-		assert.Equal(t, trigger.GetLabels(), map[string]string{
-			"sonataflow.org/workflow-app":  "vet",
-			"app.kubernetes.io/name":       "vet",
-			"app.kubernetes.io/component":  "serverless-workflow",
-			"app.kubernetes.io/managed-by": "sonataflow-operator",
-		})
-	}
+	//Check the 1st trigger
+	name := kmeta.ChildName("vet-vetappointmentrequestreceived-", string(workflow.GetUID()))
+	trigger := getTrigger(name, triggers)
+	assert.NotNil(t, trigger)
+	assert.NotNil(t, trigger.GetLabels())
+	assert.Equal(t, trigger.GetLabels(), map[string]string{"app": "vet",
+		"sonataflow.org/workflow-app":       "vet",
+		"sonataflow.org/workflow-namespace": workflow.Namespace,
+		"app.kubernetes.io/name":            "vet",
+		"app.kubernetes.io/component":       "serverless-workflow",
+		"app.kubernetes.io/managed-by":      "sonataflow-operator"})
+	assert.Equal(t, trigger.Namespace, plf.Namespace) //trigger should be in the platform namespace
+	assert.Equal(t, trigger.Spec.Broker, "default")
+	assert.NotNil(t, trigger.Spec.Filter)
+	assert.Len(t, trigger.Spec.Filter.Attributes, 1)
+	assert.Equal(t, trigger.Spec.Filter.Attributes["type"], "events.vet.appointments.request")
+	//Check the 2nd trigger
+	name = kmeta.ChildName("vet-vetappointmentinfo-", string(workflow.GetUID()))
+	trigger = getTrigger(name, triggers)
+	assert.NotNil(t, trigger)
+	assert.NotNil(t, trigger.GetLabels())
+	assert.Equal(t, trigger.GetLabels(), map[string]string{"app": "vet",
+		"sonataflow.org/workflow-app":       "vet",
+		"sonataflow.org/workflow-namespace": workflow.Namespace,
+		"app.kubernetes.io/name":            "vet",
+		"app.kubernetes.io/component":       "serverless-workflow",
+		"app.kubernetes.io/managed-by":      "sonataflow-operator"})
+	assert.Equal(t, trigger.Namespace, plf.Namespace) //trigger should be in the platform namespace
+	assert.Equal(t, trigger.Spec.Broker, "default")
+	assert.NotNil(t, trigger.Spec.Filter)
+	assert.Len(t, trigger.Spec.Filter.Attributes, 1)
+	assert.Equal(t, trigger.Spec.Filter.Attributes["type"], "events.vet.appointments")
+}
+
+func TestEnsureWorkflowTriggersWithWorkflowBrokerAreCreated(t *testing.T) {
+	workflow := test.GetVetEventSonataFlow(t.Name())
+	workflow.Spec.Sources[0].Destination.Ref.Namespace = workflow.Namespace
+	workflow.Spec.Sources[1].Destination.Ref.Namespace = workflow.Namespace
+	plf := test.GetBasePlatform() // No broker defined in the platform
+	broker1 := test.GetDefaultBroker(workflow.Namespace)
+	broker1.Name = "broker-appointments-request"
+	broker2 := test.GetDefaultBroker(workflow.Namespace)
+	broker2.Name = "broker-appointments"
+	// Create a fake client to mock API calls.
+	cl := test.NewKogitoClientBuilderWithOpenShift().WithRuntimeObjects(workflow, plf, broker1, broker2).WithStatusSubresource(workflow, plf, broker1, broker2).Build()
+	utils.SetClient(cl)
+
+	triggers, err := TriggersCreator(workflow, plf)
+	assert.NoError(t, err)
+	assert.NotEmpty(t, triggers)
+	assert.Len(t, triggers, 2)
+	//Check the 1st trigger
+	name := kmeta.ChildName("vet-vetappointmentrequestreceived-", string(workflow.GetUID()))
+
+	trigger := getTrigger(name, triggers)
+	assert.NotNil(t, trigger)
+	assert.NotNil(t, trigger.GetLabels())
+	assert.Equal(t, trigger.GetLabels(), map[string]string{"app": "vet",
+		"sonataflow.org/workflow-app":       "vet",
+		"sonataflow.org/workflow-namespace": workflow.Namespace,
+		"app.kubernetes.io/name":            "vet",
+		"app.kubernetes.io/component":       "serverless-workflow",
+		"app.kubernetes.io/managed-by":      "sonataflow-operator"})
+	assert.Equal(t, trigger.Namespace, workflow.Namespace) //trigger should be in the workflow namespace
+	assert.Equal(t, trigger.Spec.Broker, "broker-appointments-request")
+	assert.NotNil(t, trigger.Spec.Filter)
+	assert.Len(t, trigger.Spec.Filter.Attributes, 1)
+	assert.Equal(t, trigger.Spec.Filter.Attributes["type"], "events.vet.appointments.request")
+	//Check the 2nd trigger
+	name = kmeta.ChildName("vet-vetappointmentinfo-", string(workflow.GetUID()))
+	trigger = getTrigger(name, triggers)
+	assert.NotNil(t, trigger)
+	assert.NotNil(t, trigger.GetLabels())
+	assert.Equal(t, trigger.GetLabels(), map[string]string{"app": "vet",
+		"sonataflow.org/workflow-app":       "vet",
+		"sonataflow.org/workflow-namespace": workflow.Namespace,
+		"app.kubernetes.io/name":            "vet",
+		"app.kubernetes.io/component":       "serverless-workflow",
+		"app.kubernetes.io/managed-by":      "sonataflow-operator"})
+	assert.Equal(t, trigger.Namespace, workflow.Namespace) //trigger should be in the workflow namespace
+	assert.Equal(t, trigger.Spec.Broker, "broker-appointments")
+	assert.NotNil(t, trigger.Spec.Filter)
+	assert.Len(t, trigger.Spec.Filter.Attributes, 1)
+	assert.Equal(t, trigger.Spec.Filter.Attributes["type"], "events.vet.appointments")
+}
+
+func TestEnsureWorkflowTriggersWithoutBrokerAreNotCreated(t *testing.T) {
+	workflow := test.GetVetEventSonataFlow(t.Name())
+	workflow.Spec.Sink = nil
+	workflow.Spec.Sources = nil
+	plf := test.GetBasePlatform()
+
+	triggers, err := TriggersCreator(workflow, plf)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "no broker configured for eventType events.vet.appointments in SonataFlow vet")
+	assert.Nil(t, triggers)
 }
 
 func TestMergePodSpec_WithPostgreSQL_and_JDBC_URL_field(t *testing.T) {

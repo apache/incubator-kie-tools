@@ -29,6 +29,19 @@ spec:
       namespace: default
       apiVersion: eventing.knative.dev/v1
       kind: Broker
+  sources:
+    - eventType: events.vet.appointments
+      ref:
+        name: broker-appointments
+        namespace: default
+        apiVersion: eventing.knative.dev/v1
+        kind: Broker
+    - eventType: events.vet.appointments.request
+      ref:
+        name: broker-appointments-request
+        namespace: default
+        apiVersion: eventing.knative.dev/v1
+        kind: Broker
   flow:
     events:
       - name: MakeVetAppointment

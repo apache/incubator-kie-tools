@@ -14,14 +14,41 @@
 
 package v1alpha08
 
+import (
+	duckv1 "knative.dev/pkg/apis/duck/v1"
+)
+
 // ServicesPlatformSpec describes the desired service configuration for workflows without the `sonataflow.org/profile: dev` annotation.
 type ServicesPlatformSpec struct {
 	// Deploys the Data Index service for use by workflows without the `sonataflow.org/profile: dev` annotation.
 	// +optional
-	DataIndex *ServiceSpec `json:"dataIndex,omitempty"`
+	DataIndex *DataIndexServiceSpec `json:"dataIndex,omitempty"`
 	// Deploys the Job service for use by workflows without the `sonataflow.org/profile: dev` annotation.
 	// +optional
-	JobService *ServiceSpec `json:"jobService,omitempty"`
+	JobService *JobServiceServiceSpec `json:"jobService,omitempty"`
+}
+
+// DataIndexServiceSpec defines the desired state of Dataindex service
+// +k8s:openapi-gen=true
+type DataIndexServiceSpec struct {
+	// Defines the common spec of a platform service
+	ServiceSpec `json:",inline"`
+	// Defines the source where the Dataindex receives events from
+	// +optional
+	Source *duckv1.Destination `json:"source,omitempty"`
+}
+
+// JobServiceServiceSpec defines the desired state of Jobservice service
+// +k8s:openapi-gen=true
+type JobServiceServiceSpec struct {
+	// Defines the common spec of a platform service
+	ServiceSpec `json:",inline"`
+	// Defines the sink where the Jobservice sends events to
+	// +optional
+	Sink *duckv1.Destination `json:"sink,omitempty"`
+	// Defines the source where the Jobservice receives events from
+	// +optional
+	Source *duckv1.Destination `json:"source,omitempty"`
 }
 
 // ServiceSpec defines the desired state of a platform service

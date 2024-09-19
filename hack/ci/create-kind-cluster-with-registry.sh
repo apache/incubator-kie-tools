@@ -16,6 +16,7 @@
 
 set -o errexit
 
+container_engine="$1"
 reg_name='kind-registry'
 reg_port='5001'
 
@@ -31,6 +32,21 @@ reg_port='5001'
 cat <<EOF | kind create cluster -n kind --config=-
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        system-reserved: memory=2Gi
+- role: worker
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        system-reserved: memory=4Gi
 containerdConfigPatches:
 - |-
   [plugins."io.containerd.grpc.v1.cri".registry]
@@ -45,15 +61,15 @@ if ! kubectl wait -n kube-system --for=condition=ready pods --all --timeout=120s
 fi
 
 # 3 Create registry container
-docker run \
+${container_engine} run \
   -d --restart=always -p "127.0.0.1:${reg_port}:5000" --network bridge --name "${reg_name}" \
-  -v /tmp/certs:/certs \
+  -v /tmp:/certs \
   registry:2
   
 # 4. Connect the registry to the cluster network if not already connected
 # This allows kind to bootstrap the network but ensures they're on the same network
-if [ "$(docker inspect -f='{{json .NetworkSettings.Networks.kind}}' "${reg_name}")" = 'null' ]; then
-  docker network connect "kind" "${reg_name}"
+if [ "$("${container_engine}" inspect -f='{{json .NetworkSettings.Networks.kind}}' "${reg_name}")" = 'null' ]; then
+  ${container_engine} network connect "kind" "${reg_name}"
 fi
 
 # 5. Add the registry config to the nodes
@@ -66,12 +82,12 @@ fi
 # alias localhost:${reg_port} to the registry container when pulling images
 
 # Retrieve IP address of the container connected to the cluster network
-IP_ADDRESS=$(docker inspect --format='{{(index (index .NetworkSettings.Networks "kind") ).IPAddress}}' ${reg_name})
+IP_ADDRESS=$("${container_engine}" inspect --format='{{(index (index .NetworkSettings.Networks "kind") ).IPAddress}}' ${reg_name})
 
 REGISTRY_DIR="/etc/containerd/certs.d/${IP_ADDRESS}:5000"
 for node in $(kind get nodes); do
-  docker exec "${node}" mkdir -p "${REGISTRY_DIR}"
-  cat <<EOF | docker exec -i "${node}" cp /dev/stdin "${REGISTRY_DIR}/hosts.toml"
+  ${container_engine} exec "${node}" mkdir -p "${REGISTRY_DIR}"
+  cat <<EOF | "${container_engine}" exec -i "${node}" cp /dev/stdin "${REGISTRY_DIR}/hosts.toml"
 [host."http://${IP_ADDRESS}:5000"]
   capabilities = ["pull", "resolve", "push"]
   skip_verify = true

@@ -13,6 +13,7 @@
 # limitations under the License.
 
 resources:
+- 00-broker.yaml
 - 02-sonataflow_platform.yaml
 - sonataflow/03-sonataflow_callbackstatetimeouts.sw.yaml
 

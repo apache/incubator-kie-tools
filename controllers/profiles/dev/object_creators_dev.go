@@ -51,6 +51,7 @@ func serviceCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
 }
 
 func deploymentCreator(workflow *operatorapi.SonataFlow, plf *operatorapi.SonataFlowPlatform) (client.Object, error) {
+
 	obj, err := common.DeploymentCreator(workflow, plf)
 	if err != nil {
 		return nil, err
@@ -154,7 +155,7 @@ func mountDevConfigMapsMutateVisitor(workflow *operatorapi.SonataFlow, flowDefCM
 			if len(deployment.Spec.Template.Spec.Containers[flowContainerIdx].VolumeMounts) == 0 {
 				deployment.Spec.Template.Spec.Containers[flowContainerIdx].VolumeMounts = make([]corev1.VolumeMount, 0, len(volumeMounts))
 			}
-			kubeutil.AddOrReplaceVolumeMount(flowContainerIdx, &deployment.Spec.Template.Spec, volumeMounts...)
+			kubeutil.AddOrReplaceVolumeMount(&deployment.Spec.Template.Spec.Containers[flowContainerIdx], volumeMounts...)
 
 			return nil
 		}
