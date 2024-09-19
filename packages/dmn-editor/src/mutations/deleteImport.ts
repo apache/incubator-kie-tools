@@ -72,7 +72,7 @@ export function deleteImport({
         __readonly_dmnObjectNamespace: node.data.dmnObjectNamespace!,
         __readonly_externalDmnsIndex: __readonly_externalModelTypesByNamespace.dmns,
         __readonly_mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
-        __readonly_externalModelsByNamespace: __readonly_externalModelsByNamespace,
+        __readonly_externalModelsByNamespace,
       });
     });
 
