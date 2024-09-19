@@ -61,7 +61,6 @@ public interface PanelDefinition {
      * Specifies content that should be put in this panel's main display area when it is materialized. The content to
      * add is specified by a PartDefinition, at the core of which is a {@link PlaceRequest} that identifies a
      * WorkbenchActivity (either a screen or an editor).
-     * <p>
      * If the given part already belongs to an existing panel, it will be removed from that panel by a call to
      * removePart(part).
      * @param part The Part to add. Must not be null. The part's place must specify a WorkbenchActivity bean.
@@ -70,9 +69,8 @@ public interface PanelDefinition {
 
     /**
      * Specifies content that should be put in this panel's main display area when it is materialized.
-     * <p>
      * This is a convenience method equivalent to
-     * <tt>addPart(new&nbsp;PartDefinitionImpl(DefaultPlaceRequest.parse(partSpec)))</tt>.
+     * <code>addPart(new&nbsp;PartDefinitionImpl(DefaultPlaceRequest.parse(partSpec)))</code>.
      * @param partSpec An PlaceRequest ID with optional parameters, encoded as specified in
      * {@link DefaultPlaceRequest#parse(CharSequence)}. Must not be null. The place ID must specify a
      * WorkbenchActivity bean (either a screen or an editor).
@@ -183,7 +181,7 @@ public interface PanelDefinition {
 
     /**
      * Set the height of this panel in pixels using a primitive int to make this method exportable to JS.
-     * @param width The width to set.
+     * @param height The height to set.
      */
     default void setHeight(int height) {
         setHeight(Integer.valueOf(height));
@@ -315,7 +313,7 @@ public interface PanelDefinition {
     void setContextDisplayMode(final ContextDisplayMode contextDisplayMode);
 
     /**
-     * Invokes {@link #toString()} but exported to JavaScript so it can be invoked from different scripts.
+     * Invokes toString() but exported to JavaScript so it can be invoked from different scripts.
      */
     default String asString() {
         return this.toString();

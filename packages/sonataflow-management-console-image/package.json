@@ -13,8 +13,8 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
-    "build:dev": "pnpm cleanup && pnpm env-json:schema:generate && pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
-    "build:prod": "pnpm cleanup && pnpm env-json:schema:generate && pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
+    "build:dev": "pnpm cleanup && pnpm env-json:schema:generate && pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:cekit:build\"",
+    "build:prod": "pnpm cleanup && pnpm env-json:schema:generate && pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:cekit:build\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:assets": "pnpm copy:webapp-assets && pnpm copy:image-env-to-json",
     "copy:image-env-to-json": "run-script-os",
@@ -24,14 +24,20 @@
     "copy:webapp-assets:linux:darwin": "cp -R ./node_modules/@kie-tools/sonataflow-management-console-webapp/dist/ ./dist-dev/sonataflow-management-console-webapp",
     "copy:webapp-assets:win32": "pnpm powershell \"Copy-Item -R ./node_modules/@kie-tools/sonataflow-management-console-webapp/dist/ ./dist-dev/sonataflow-management-console-webapp\"",
     "env-json:schema:generate": "ts-json-schema-generator --tsconfig ./node_modules/@kie-tools/sonataflow-management-console-webapp/tsconfig.json --path ./node_modules/@kie-tools/sonataflow-management-console-webapp/src/env/EnvJson.ts --type EnvJson --id EnvJson --out ./dist-dev/EnvJson.schema.json",
-    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env sonataflowManagementConsoleImageEnv.registry)\" -a \"$(build-env sonataflowManagementConsoleImageEnv.account)\" -n \"$(build-env sonataflowManagementConsoleImageEnv.name)\" -t \"$(build-env sonataflowManagementConsoleImageEnv.buildTag)\" --build-arg SONATAFLOW_MANAGEMENT_CONSOLE_PORT=\"$(build-env sonataflowManagementConsoleImageEnv.port)\""
+    "image:cekit:build": "run-script-os",
+    "image:cekit:build:linux": "pnpm image:cekit:copy && pnpm image:cekit:setup:env make -C ./dist-dev build",
+    "image:cekit:build:win32:darwin": "echo \"Build skipped on macOS and Windows\"",
+    "image:cekit:copy": "cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources/* ./dist-dev/ && cp -R resources/* ./dist-dev/",
+    "image:cekit:setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env SWF_IMAGE_REGISTRY=$(build-env sonataflowManagementConsoleImageEnv.registry) SWF_IMAGE_REGISTRY_ACCOUNT=$(build-env sonataflowManagementConsoleImageEnv.account) SWF_IMAGE_NAME=$(build-env sonataflowManagementConsoleImageEnv.name) SWF_IMAGE_TAG=$(build-env sonataflowManagementConsoleImageEnv.buildTag) QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) KOGITO_VERSION=$(build-env kogitoRuntime.version) SONATAFLOW_MANAGEMENT_CONSOLE_PORT=$(build-env sonataflowManagementConsoleImageEnv.port)"
   },
   "devDependencies": {
-    "@kie-tools/image-builder": "workspace:*",
     "@kie-tools/image-env-to-json": "workspace:*",
+    "@kie-tools/python-venv": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/sonataflow-image-common": "workspace:*",
     "@kie-tools/sonataflow-management-console-image-env": "workspace:*",
     "@kie-tools/sonataflow-management-console-webapp": "workspace:*",
+    "cross-env": "^7.0.3",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
     "ts-json-schema-generator": "^1.1.2"

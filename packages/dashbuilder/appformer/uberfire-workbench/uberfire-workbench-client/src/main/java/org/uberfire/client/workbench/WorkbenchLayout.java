@@ -49,7 +49,6 @@ public interface WorkbenchLayout {
     /**
      * Will be invoked by the {@link org.uberfire.client.workbench.Workbench}
      * when the discovery of header and footer elements is completed.
-     * @see {@link #setFooterContents(java.util.List)}
      */
     public void onBootstrap();
 
@@ -71,7 +70,6 @@ public interface WorkbenchLayout {
     /**
      * Makes the given widget fill the entire space normally dedicated to the perspective container. Has no effect if
      * the given widget is already maximized.
-     * <p/>
      * <b>Important:</b> this feature is used by panels to maximize themselves. You should not pass a WorkbenchPanelView
      * to this method yourself; instead, you should use the panel's own API to maximize it. You are free to use this method
      * to maximize your own widgets that are not workbench panels.
@@ -82,7 +80,6 @@ public interface WorkbenchLayout {
     /**
      * Makes the given widget fill the entire space normally dedicated to the perspective container. Has no effect if
      * the given widget is already maximized.
-     * <p/>
      * <b>Important:</b> this feature is used by panels to maximize themselves. You should not pass a WorkbenchPanelView
      * to this method yourself; instead, you should use the panel's own API to maximize it. You are free to use this method
      * to maximize your own widgets that are not workbench panels.
@@ -95,7 +92,6 @@ public interface WorkbenchLayout {
     /**
      * Restores a previously maximized widget to its original size and position. Has no effect if the given widget is
      * not currently in a maximized state set up by {@link #maximize(Widget)}.
-     * <p/>
      * <b>Important:</b> this feature is used by panels to unmaximize themselves. You should not pass a WorkbenchPanelView
      * to this method yourself; instead, you should use the panel's own API to unmaximize it. You are free to use this method
      * to unmaximize your own widgets that have previously been passed to {@link #maximize(Widget)}.
@@ -106,7 +102,6 @@ public interface WorkbenchLayout {
     /**
      * Restores a previously maximized widget to its original size and position. Has no effect if the given widget is
      * not currently in a maximized state set up by {@link #maximize(Widget)}.
-     * <p/>
      * <b>Important:</b> this feature is used by panels to unmaximize themselves. You should not pass a WorkbenchPanelView
      * to this method yourself; instead, you should use the panel's own API to unmaximize it. You are free to use this method
      * to unmaximize your own widgets that have previously been passed to {@link #maximize(Widget)}.
@@ -118,7 +113,6 @@ public interface WorkbenchLayout {
 
     /**
      * Will insert the implementations of Header and Footer in the Workbench
-     * @see {@link #setFooterContents(java.util.List)}
      */
     void setMarginWidgets(boolean isStandaloneMode,
                           Set<String> headersToKeep);

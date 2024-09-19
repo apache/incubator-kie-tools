@@ -17,8 +17,21 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-groupadd -r kogito -g 1001 && useradd -u 1001 -r -g root -G "${USER}" -m -d "${KOGITO_HOME}" -s /sbin/nologin -c "Kogito user" ${USER}
 
-mkdir "${KOGITO_HOME}"/bin
+# Check if group 1001 exists, if not, create it
+if ! getent group kogito >/dev/null; then
+  groupadd -r kogito -g ${USER_ID}
+fi
+
+# Check if user 1001 exists, if not, reuse it for kogito
+if ! id "${USER_ID}" >/dev/null 2>&1; then
+  useradd -u "${USER_ID}" -r -g kogito -G root -m -d "${KOGITO_HOME}" -s /sbin/nologin -c "Kogito user" ${USER}
+else
+  echo "User with UID ${USER_ID} already exists, reusing it."
+  # Change home directory and group for the existing user
+  usermod -d "${KOGITO_HOME}" -g kogito ${USER}
+fi
+
+mkdir -p "${KOGITO_HOME}"/bin
 chmod ug+rwX "${KOGITO_HOME}"
 

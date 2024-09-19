@@ -31,15 +31,15 @@ import org.uberfire.workbench.model.ActivityResourceType;
  * see the subinterfaces for specific activity types that do get implemented.
  * <p>
  * Also, implementations of this interface and its subinterfaces are typically not written by hand; instead, they are
- * generated from classes annotated with {@link WorkbenchScreen}, {@link WorkbenchEditor}, {@link WorkbenchPopup}, and
+ * generated from classes annotated with {@link WorkbenchScreen}, {@link WorkbenchPopup}, and
  * others by an UberFire annotation processor.
- * <p>
+ * </p>
  * Developers of UberFire applications will not typically come into direct contact with things that implement Activity
  * or its subinterfaces; instead, they will work with a {@link PlaceManager} to manipulate activities at arm's length.
  * <p>
  * If you do need to get your hands on a particular {@code Activity} instance, do so using an {@link ActivityManager}.
- * <p>
- * <h3>Activity Lifecycle</h3>
+ * </p>
+ * <strong>Activity Lifecycle</strong>
  * Activities have the following lifecycle, which is normally driven by an {@link ActivityManager}:
  * <ol>
  * <li>The activity starts off in the <i>uninitialized</i> state.
@@ -56,7 +56,7 @@ import org.uberfire.workbench.model.ActivityResourceType;
  * <p>
  * An activity will never receive a call to {@link #onStartup(PlaceRequest)} when it is started or open, but it may be
  * restarted (perhaps with a different PlaceRequest) after a call to {@link #onShutdown()}.
- * <p>
+ * </p>
  * An activity will never receive a call to {@link #onOpen()} when it is uninitialized or open, but it may be reopened after a call
  * to {@link #onClose()}.
  * @see PlaceManager

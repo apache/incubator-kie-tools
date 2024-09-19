@@ -212,7 +212,6 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
      * Creates a brand new data set definition for the provider type specified
      *
      * @param type The provider type
-     * @return A data set definition instance
      */
     public void newDataSet(DataSetProviderType type,
                            RemoteCallback<DataSetDef> callback) throws Exception {

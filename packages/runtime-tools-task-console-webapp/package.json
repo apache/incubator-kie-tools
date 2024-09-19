@@ -73,7 +73,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^5.2.6",
     "css-minimizer-webpack-plugin": "^5.0.1",
-    "express": "^4.19.2",
+    "express": "^4.21.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.2",
     "https-browserify": "^1.0.0",

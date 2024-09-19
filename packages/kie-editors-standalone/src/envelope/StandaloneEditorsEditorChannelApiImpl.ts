@@ -18,12 +18,12 @@
  */
 
 import {
-  ContentType,
   WorkspaceEdit,
   ResourceContent,
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList,
+  ContentType,
 } from "@kie-tools-core/workspace/dist/api";
 import {
   EditorContent,
@@ -34,6 +34,7 @@ import {
 import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/channel";
 import { Minimatch } from "minimatch";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
+import { EditorStandaloneResource } from "../common/Editor";
 
 export class StandaloneEditorsEditorChannelApiImpl implements KogitoEditorChannelApi {
   constructor(
@@ -43,7 +44,7 @@ export class StandaloneEditorsEditorChannelApiImpl implements KogitoEditorChanne
     private readonly overrides: Partial<KogitoEditorChannelApi>,
     private readonly resources?: Map<
       string /** normalized posix path relative to the "workspace" root */,
-      { contentType: ContentType; content: Promise<string> }
+      EditorStandaloneResource
     >
   ) {}
 

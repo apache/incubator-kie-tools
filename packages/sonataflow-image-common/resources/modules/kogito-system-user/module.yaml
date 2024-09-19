@@ -31,3 +31,5 @@ envs:
     value: "/home/kogito"
   - name: "USER"
     value: "kogito"
+  - name: "USER_ID"
+    value: 1001

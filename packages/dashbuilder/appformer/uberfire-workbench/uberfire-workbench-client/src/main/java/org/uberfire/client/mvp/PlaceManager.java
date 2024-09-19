@@ -37,8 +37,8 @@ import org.uberfire.workbench.model.PartDefinition;
 /**
  * A Workbench-centric abstraction over the browser's history mechanism. Allows the application to initiate navigation
  * to any displayable thing: a {@link WorkbenchPerspective}, a {@link WorkbenchScreen}, a {@link WorkbenchPopup}, a
- * a {@link WorkbenchPart} within a screen or editor, or the editor associated with a VFS file
- * located at a particular {@link Path}.
+ * a WorkbenchPart within a screen or editor, or the editor associated with a VFS file
+ * located at a particular Path.
  */
 @JsType
 public interface PlaceManager {
@@ -61,7 +61,7 @@ public interface PlaceManager {
 
     /**
      * Finds the <i>currently open</i> activity that handles the given PlaceRequest by ID. No attempt is made to match
-     * by path, but see {@link ActivityManagerImpl#resolveExistingParts(PlaceRequest)} for a variant that does.
+     * by path, but see ActivityManagerImpl#resolveExistingParts(PlaceRequest) for a variant that does.
      *
      * @param place the PlaceRequest whose activity to search for
      * @return the activity that currently exists in service of the given PlaceRequest's ID. Null if no current activity

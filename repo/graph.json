@@ -110,6 +110,7 @@
       { "id": "@kie-tools/kie-sandbox-fs" },
       { "id": "@kie-tools/dashbuilder-viewer-image" },
       { "id": "@kie-tools/dashbuilder-viewer-image-env" },
+      { "id": "@kie-tools/data-index-webapp" },
       { "id": "@kie-tools/dev-deployment-base-image" },
       { "id": "@kie-tools/dev-deployment-upload-service" },
       { "id": "@kie-tools/dev-deployment-dmn-form-webapp" },
@@ -137,6 +138,7 @@
       { "id": "@kie-tools/import-java-classes-component" },
       { "id": "@kie-tools/runtime-tools-process-webapp-components" },
       { "id": "@kie-tools/runtime-tools-shared-webapp-components" },
+      { "id": "@kie-tools/jobs-service-webapp" },
       { "id": "@kie-tools-core/k8s-yaml-to-apiserver-requests" },
       { "id": "kie-editors-dev-vscode-extension" },
       { "id": "@kie-tools/pmml-editor" },
@@ -1377,6 +1379,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/data-index-webapp",
+        "target": "@kie-tools-core/webpack-base",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/dev-deployment-base-image",
         "target": "@kie-tools/maven-base",
         "weight": 1
@@ -1694,6 +1701,11 @@
       {
         "source": "@kie-tools/runtime-tools-shared-webapp-components",
         "target": "@kie-tools/runtime-tools-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/jobs-service-webapp",
+        "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
       {
@@ -2258,6 +2270,16 @@
       },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image",
+        "target": "@kie-tools/maven-m2-repo-via-http-image",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image",
+        "target": "@kie-tools/python-venv",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image",
         "target": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
         "weight": 1
       },
@@ -2338,12 +2360,12 @@
       },
       {
         "source": "@kie-tools/sonataflow-management-console-image",
-        "target": "@kie-tools/image-builder",
+        "target": "@kie-tools/image-env-to-json",
         "weight": 1
       },
       {
         "source": "@kie-tools/sonataflow-management-console-image",
-        "target": "@kie-tools/image-env-to-json",
+        "target": "@kie-tools/sonataflow-image-common",
         "weight": 1
       },
       {
@@ -2514,6 +2536,7 @@
     ["@kie-tools/dashbuilder-viewer-deployment-webapp", "packages/dashbuilder-viewer-deployment-webapp"],
     ["@kie-tools/dashbuilder-viewer-image", "packages/dashbuilder-viewer-image"],
     ["@kie-tools/dashbuilder-viewer-image-env", "packages/dashbuilder-viewer-image-env"],
+    ["@kie-tools/data-index-webapp", "packages/data-index-webapp"],
     ["@kie-tools/dev-deployment-base-image", "packages/dev-deployment-base-image"],
     ["@kie-tools/dev-deployment-dmn-form-webapp", "packages/dev-deployment-dmn-form-webapp"],
     ["@kie-tools/dev-deployment-dmn-form-webapp-image", "packages/dev-deployment-dmn-form-webapp-image"],
@@ -2552,6 +2575,7 @@
     ["@kie-tools/import-java-classes-component", "packages/import-java-classes-component"],
     ["@kie-tools/jbpm-quarkus-devui", "packages/jbpm-quarkus-devui"],
     ["@kie-tools/jest-base", "packages/jest-base"],
+    ["@kie-tools/jobs-service-webapp", "packages/jobs-service-webapp"],
     ["@kie-tools/json-yaml-language-service", "packages/json-yaml-language-service"],
     ["@kie-tools-core/k8s-yaml-to-apiserver-requests", "packages/k8s-yaml-to-apiserver-requests"],
     ["@kie-tools-core/keyboard-shortcuts", "packages/keyboard-shortcuts"],

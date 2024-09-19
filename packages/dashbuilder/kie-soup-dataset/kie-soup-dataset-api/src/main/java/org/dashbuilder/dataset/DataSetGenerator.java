@@ -29,7 +29,7 @@ public interface DataSetGenerator {
     /**
      * Build and get a DataSet instance.
      *
-     * @params A map of parameters to be passed through the generator.
+     * @param params A map of parameters to be passed through the generator.
      */
     DataSet buildDataSet(Map<String,String> params);
 }

@@ -47,7 +47,7 @@ public class TitledTextCell extends AbstractSafeHtmlCell<TitledTextCell.TitledTe
     /**
      * Constructs a TextCell that uses the provided {@link SafeHtmlRenderer} to
      * render its text.
-     * @param renderer a {@link SafeHtmlRenderer SafeHtmlRenderer<String>} instance
+     * @param renderer a {@link SafeHtmlRenderer} instance
      */
     public TitledTextCell(final SafeHtmlRenderer<TitledText> renderer) {
         super(renderer);
