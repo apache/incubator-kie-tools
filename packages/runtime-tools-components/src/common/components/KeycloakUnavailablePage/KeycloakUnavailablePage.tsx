@@ -17,15 +17,14 @@
  * under the License.
  */
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import React from "react";
-import kieLogo from "../../static/kie.svg";
 import { OUIAProps, componentOuiaProps } from "../../ouiaTools";
 import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title, TitleSizes } from "@patternfly/react-core/dist/js/components/Title";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { EmptyState } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { ClusterIcon } from "@patternfly/react-icons/dist/js/icons/cluster-icon";
 
 export const KeycloakUnavailablePage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   return (
@@ -33,7 +32,7 @@ export const KeycloakUnavailablePage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe 
       <PageSection>
         <Bullseye>
           <EmptyState {...componentOuiaProps(ouiaId, "server-unavailable", ouiaSafe)}>
-            <Brand src={kieLogo} alt="KIE keycloak" heights={{ default: "100px" }} />
+            <EmptyStateIcon icon={ClusterIcon} />
             <Title headingLevel="h1" size={TitleSizes["2xl"]}>
               503: We couldn&apos;t contact the server
             </Title>
