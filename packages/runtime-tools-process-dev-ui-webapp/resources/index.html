@@ -49,10 +49,10 @@
           { id: "saravana", groups: [] },
           { id: "john", groups: [] },
         ],
-        quarkusAppOrigin: "http://localhost:9027",
+        quarkusAppOrigin: "http://${WEBPACK_REPLACEMENT_WEBAPP_HOST}:${WEBPACK_REPLACEMENT_WEBAPP_PORT}",
         quarkusAppRootPath: "",
         page: "Processes",
-        devUIUrl: "http://localhost:9027",
+        devUIUrl: "http://${WEBPACK_REPLACEMENT_WEBAPP_HOST}:${WEBPACK_REPLACEMENT_WEBAPP_PORT}",
         customLabels: {
           singularProcessLabel: "Process",
           pluralProcessLabel: "Process",
