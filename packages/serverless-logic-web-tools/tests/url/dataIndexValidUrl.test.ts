@@ -17,21 +17,15 @@
  * under the License.
  */
 
-/**
- * Remove the trailing slash from an URL if it exists.
- *
- * @param url -
- * @returns
- */
-export function removeTrailingSlashFromUrl(url: string): string {
-  return url.replace(/\/$/, "");
-}
+import { validDataIndexUrl } from "../../src/url";
 
-export function validDataIndexUrl(url: string): boolean {
-  try {
-    new URL(url);
-    return true;
-  } catch (_) {
-    return false;
-  }
-}
+describe("removeTrailingSlash", () => {
+  it.each([
+    ["http://example.com/", true],
+    ["https://example.com/", true],
+    ["loremIpsum", false],
+    ["google.com", false],
+  ])("should validate the data index URL", (inputUrl, isValidUrl) => {
+    expect(validDataIndexUrl(inputUrl)).toBe(isValidUrl);
+  });
+});

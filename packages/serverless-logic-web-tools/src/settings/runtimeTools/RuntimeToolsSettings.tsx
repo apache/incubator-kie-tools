@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { ActionGroup, Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -43,14 +43,28 @@ import {
   saveConfigCookie,
 } from "./RuntimeToolsConfig";
 import { removeTrailingSlashFromUrl } from "../../url";
+import { validDataIndexUrl } from "../../url";
+import { Alert } from "@patternfly/react-core/dist/js";
+import { useAppI18n } from "../../i18n";
 
 const PAGE_TITLE = "Runtime Tools";
 
+enum DataIndexValidation {
+  INITIAL = "INITIAL",
+  INVALID = "INVALID",
+}
+
 export function RuntimeToolsSettings(props: SettingsPageProps) {
+  const { i18n } = useAppI18n();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [config, setConfig] = useState(settings.runtimeTools.config);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDataIndexUrlValidated, setDataIndexUrlValidated] = useState(DataIndexValidation.INVALID);
+
+  useEffect(() => {
+    setDataIndexUrlValidated(DataIndexValidation.INITIAL);
+  }, [config]);
 
   const handleModalToggle = useCallback(() => {
     setIsModalOpen((prevIsModalOpen) => !prevIsModalOpen);
@@ -80,6 +94,11 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
     const newConfig: RuntimeToolsSettingsConfig = {
       dataIndexUrl: removeTrailingSlashFromUrl(config.dataIndexUrl),
     };
+    if (!validDataIndexUrl(config.dataIndexUrl)) {
+      setDataIndexUrlValidated(DataIndexValidation.INVALID);
+      return;
+    }
+
     setConfig(newConfig);
     settingsDispatch.runtimeTools.setConfig(newConfig);
     saveConfigCookie(newConfig);
@@ -144,6 +163,17 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
           appendTo={props.pageContainerRef.current || document.body}
         >
           <Form>
+            {isDataIndexUrlValidated === DataIndexValidation.INVALID && (
+              <FormAlert>
+                <Alert
+                  variant="danger"
+                  title={i18n.openshift.configModal.validDataIndexURLError}
+                  aria-live="polite"
+                  isInline
+                  data-testid="alert-data-index-url-invalid"
+                />
+              </FormAlert>
+            )}
             <FormGroup
               label={"Data Index URL"}
               labelIcon={

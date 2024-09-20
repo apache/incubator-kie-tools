@@ -71,6 +71,7 @@ interface AppDictionary extends ReferenceDictionary {
       validationError: string;
       connectionError: string;
       configExpiredWarning: string;
+      validDataIndexURLError: string;
     };
     confirmModal: {
       title: string;
