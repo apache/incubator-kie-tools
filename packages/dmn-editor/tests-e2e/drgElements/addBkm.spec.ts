@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
 import { EdgeType } from "../__fixtures__/edges";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
@@ -31,7 +32,7 @@ test.describe("Add node - BKM", () => {
       test("should add new BKM node from palette", async ({ jsonModel, palette, nodes, diagram }) => {
         await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
 
-        expect(nodes.get({ name: DefaultNodeName.BKM })).toBeAttached();
+        await expect(nodes.get({ name: DefaultNodeName.BKM })).toBeAttached();
         await expect(diagram.get()).toHaveScreenshot("add-bkm-node-from-palette.png");
 
         // JSON model assertions
@@ -52,6 +53,25 @@ test.describe("Add node - BKM", () => {
           "@_height": 80,
         });
       });
+
+      test("should add two new BKM nodes from palette in a row", async ({ palette, nodes, diagram }) => {
+        test.info().annotations.push({
+          type: TestAnnotations.REGRESSION,
+          description: "https://github.com/apache/incubator-kie-issues/issues/980",
+        });
+        await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
+        await palette.dragNewNode({
+          type: NodeType.BKM,
+          targetPosition: { x: 300, y: 300 },
+          thenRenameTo: "Second BKM",
+        });
+
+        await diagram.resetFocus();
+
+        await expect(nodes.get({ name: DefaultNodeName.BKM })).toBeAttached();
+        await expect(nodes.get({ name: "Second BKM" })).toBeAttached();
+        await expect(diagram.get()).toHaveScreenshot("add-2-bkm-nodes-from-palette.png");
+      });
     });
 
     test.describe("add from nodes", () => {
@@ -67,7 +87,7 @@ test.describe("Add node - BKM", () => {
           targetPosition: { x: 100, y: 300 },
         });
 
-        expect(await edges.get({ from: "BKM - A", to: DefaultNodeName.BKM })).toBeAttached();
+        await expect(await edges.get({ from: "BKM - A", to: DefaultNodeName.BKM })).toBeAttached();
         expect(await edges.getType({ from: "BKM - A", to: DefaultNodeName.BKM })).toEqual(
           EdgeType.KNOWLEDGE_REQUIREMENT
         );
@@ -85,7 +105,9 @@ test.describe("Add node - BKM", () => {
           targetPosition: { x: 500, y: 500 },
         });
 
-        expect(await edges.get({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.BKM })).toBeAttached();
+        await expect(
+          await edges.get({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.BKM })
+        ).toBeAttached();
         expect(await edges.getType({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.BKM })).toEqual(
           EdgeType.KNOWLEDGE_REQUIREMENT
         );
@@ -103,7 +125,9 @@ test.describe("Add node - BKM", () => {
           targetPosition: { x: 100, y: 300 },
         });
 
-        expect(await edges.get({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: DefaultNodeName.BKM })).toBeAttached();
+        await expect(
+          await edges.get({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: DefaultNodeName.BKM })
+        ).toBeAttached();
         expect(await edges.getType({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: DefaultNodeName.BKM })).toEqual(
           EdgeType.AUTHORITY_REQUIREMENT
         );
