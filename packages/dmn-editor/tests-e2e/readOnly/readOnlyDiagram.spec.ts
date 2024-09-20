@@ -31,12 +31,12 @@ test.describe("Read Only mode - Diagram", () => {
   });
   test("should not be able to rename node", async ({ nodes }) => {
     await nodes.selectLabel({ name: "Loan Pre-Qualification" });
-    await expect(await nodes.get({ name: "Loan Pre-Qualification" }).getByRole("textbox").nth(0)).toBeDisabled();
+    await expect(nodes.get({ name: "Loan Pre-Qualification" }).getByRole("textbox").nth(0)).toBeDisabled();
   });
   test("should not be able to change node type", async ({ nodes }) => {
     await nodes.hover({ name: "Loan Pre-Qualification" });
     await expect(
-      await nodes.get({ name: "Loan Pre-Qualification" }).getByPlaceholder("Select a data type...")
+      nodes.get({ name: "Loan Pre-Qualification" }).getByPlaceholder("Select a data type...")
     ).toBeDisabled();
   });
   test("should not be able to drag node", async ({ page, nodes }) => {
@@ -45,8 +45,8 @@ test.describe("Read Only mode - Diagram", () => {
   });
   test("should not be able to edit node", async ({ nodes }) => {
     await nodes.get({ name: "Loan Pre-Qualification" }).hover();
-    expect(await nodes.get({ name: "Loan Pre-Qualification" }).getByText("Edit")).not.toBeAttached();
-    expect(await nodes.get({ name: "Loan Pre-Qualification" }).getByText("View")).toBeAttached();
+    await expect(nodes.get({ name: "Loan Pre-Qualification" }).getByText("Edit")).not.toBeAttached();
+    await expect(nodes.get({ name: "Loan Pre-Qualification" }).getByText("View")).toBeAttached();
   });
   test("should not be able to add edges", async ({ page, nodes }) => {
     await nodes.get({ name: "Loan Pre-Qualification" }).hover();
@@ -54,6 +54,6 @@ test.describe("Read Only mode - Diagram", () => {
   });
   test("should not be able to delete nodes", async ({ nodes }) => {
     await nodes.delete({ name: "Loan Pre-Qualification" });
-    await expect(await nodes.get({ name: "Loan Pre-Qualification" })).toBeAttached();
+    await expect(nodes.get({ name: "Loan Pre-Qualification" })).toBeAttached();
   });
 });

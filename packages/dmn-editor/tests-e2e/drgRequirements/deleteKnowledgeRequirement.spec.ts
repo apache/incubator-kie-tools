@@ -34,14 +34,14 @@ test.describe("Delete edge - Knowledge Requirement", () => {
       targetPosition: { x: 100, y: 300 },
     });
 
-    expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION })).toBeAttached();
+    await expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION })).toBeAttached();
   });
 
   test("should delete a Knowledge Requirement using the delete key", async ({ diagram, edges, nodes }) => {
     await diagram.resetFocus();
     await edges.delete({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION });
 
-    expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION })).not.toBeAttached();
+    await expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION })).not.toBeAttached();
 
     await expect(nodes.get({ name: DefaultNodeName.BKM })).toBeAttached();
     await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
@@ -51,7 +51,7 @@ test.describe("Delete edge - Knowledge Requirement", () => {
     await diagram.resetFocus();
     await edges.delete({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION, isBackspace: true });
 
-    expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION })).not.toBeAttached();
+    await expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION })).not.toBeAttached();
 
     await expect(nodes.get({ name: DefaultNodeName.BKM })).toBeAttached();
     await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();

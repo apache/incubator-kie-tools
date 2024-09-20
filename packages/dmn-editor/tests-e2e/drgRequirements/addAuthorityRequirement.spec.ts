@@ -55,7 +55,7 @@ test.describe("Add edge - Authority Requirement", () => {
         to: DefaultNodeName.DECISION,
       });
 
-      expect(await edges.get({ from: "Knowledge Source - A", to: DefaultNodeName.DECISION })).toBeAttached();
+      await expect(await edges.get({ from: "Knowledge Source - A", to: DefaultNodeName.DECISION })).toBeAttached();
       expect(await edges.getType({ from: "Knowledge Source - A", to: DefaultNodeName.DECISION })).toEqual(
         EdgeType.AUTHORITY_REQUIREMENT
       );
@@ -78,7 +78,7 @@ test.describe("Add edge - Authority Requirement", () => {
         to: DefaultNodeName.BKM,
       });
 
-      expect(await edges.get({ from: "Knowledge Source - A", to: DefaultNodeName.BKM })).toBeAttached();
+      await expect(await edges.get({ from: "Knowledge Source - A", to: DefaultNodeName.BKM })).toBeAttached();
       expect(await edges.getType({ from: "Knowledge Source - A", to: DefaultNodeName.BKM })).toEqual(
         EdgeType.AUTHORITY_REQUIREMENT
       );
@@ -104,7 +104,9 @@ test.describe("Add edge - Authority Requirement", () => {
         to: DefaultNodeName.KNOWLEDGE_SOURCE,
       });
 
-      expect(await edges.get({ from: "Knowledge Source - A", to: DefaultNodeName.KNOWLEDGE_SOURCE })).toBeAttached();
+      await expect(
+        await edges.get({ from: "Knowledge Source - A", to: DefaultNodeName.KNOWLEDGE_SOURCE })
+      ).toBeAttached();
       expect(await edges.getType({ from: "Knowledge Source - A", to: DefaultNodeName.KNOWLEDGE_SOURCE })).toEqual(
         EdgeType.AUTHORITY_REQUIREMENT
       );
@@ -140,7 +142,9 @@ test.describe("Add edge - Authority Requirement", () => {
         to: DefaultNodeName.KNOWLEDGE_SOURCE,
       });
 
-      expect(await edges.get({ from: DefaultNodeName.DECISION, to: DefaultNodeName.KNOWLEDGE_SOURCE })).toBeAttached();
+      await expect(
+        await edges.get({ from: DefaultNodeName.DECISION, to: DefaultNodeName.KNOWLEDGE_SOURCE })
+      ).toBeAttached();
       expect(await edges.getType({ from: DefaultNodeName.DECISION, to: DefaultNodeName.KNOWLEDGE_SOURCE })).toEqual(
         EdgeType.AUTHORITY_REQUIREMENT
       );
@@ -166,7 +170,7 @@ test.describe("Add edge - Authority Requirement", () => {
         to: DefaultNodeName.KNOWLEDGE_SOURCE,
       });
 
-      expect(
+      await expect(
         await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE })
       ).toBeAttached();
       expect(await edges.getType({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE })).toEqual(
