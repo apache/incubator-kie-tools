@@ -65,70 +65,67 @@ export function normalize<T extends NodeSvgProps>(_props: T) {
     props,
   };
 }
-export const InputDataNodeSvg = React.forwardRef<SVGRectElement, NodeSvgProps & { isCollection: boolean }>(
-  (__props, ref) => {
-    const {
-      strokeWidth,
-      x,
-      y,
-      width,
-      height,
-      fillColor,
-      strokeColor,
-      props: { isCollection, ...props },
-    } = normalize(__props);
 
-    const rx =
-      typeof height === "number"
-        ? height / 2
-        : (() => {
-            throw new Error("Can't calculate rx based on a string height.");
-          })();
+export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection: boolean }) {
+  const {
+    strokeWidth,
+    x,
+    y,
+    width,
+    height,
+    fillColor,
+    strokeColor,
+    props: { isCollection, ...props },
+  } = normalize(__props);
 
-    const ry =
-      typeof width === "number"
-        ? width / 2
-        : (() => {
-            throw new Error("Can't calculate ry based on a string width.");
-          })();
+  const rx =
+    typeof height === "number"
+      ? height / 2
+      : (() => {
+          throw new Error("Can't calculate rx based on a string height.");
+        })();
 
-    return (
-      <>
-        <rect
-          {...props}
-          ref={ref}
+  const ry =
+    typeof width === "number"
+      ? width / 2
+      : (() => {
+          throw new Error("Can't calculate ry based on a string width.");
+        })();
+
+  return (
+    <>
+      <rect
+        {...props}
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        fill={fillColor ?? DEFAULT_NODE_FILL}
+        stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+        strokeLinejoin={"round"}
+        strokeWidth={strokeWidth}
+        rx={rx}
+        ry={ry}
+      />
+      {isCollection && (
+        <NodeCollectionMarker
           x={x}
           y={y}
           width={width}
           height={height}
-          fill={fillColor ?? DEFAULT_NODE_FILL}
-          stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
-          strokeLinejoin={"round"}
+          fillColor={fillColor}
+          strokeColor={strokeColor}
           strokeWidth={strokeWidth}
-          rx={rx}
-          ry={ry}
+          anchor={"bottom"}
         />
-        {isCollection && (
-          <NodeCollectionMarker
-            x={x}
-            y={y}
-            width={width}
-            height={height}
-            fillColor={fillColor}
-            strokeColor={strokeColor}
-            strokeWidth={strokeWidth}
-            anchor={"bottom"}
-          />
-        )}
-      </>
-    );
-  }
-);
+      )}
+    </>
+  );
+}
 
-export const AlternativeInputDataNodeSvg = React.forwardRef<
-  SVGRectElement, // This is wrong, just for quick demo
-  NodeSvgProps & { isCollection: boolean; isIcon: boolean; transform?: string }
->((__props, ref) => {
+export function AlternativeInputDataNodeSvg(
+  __props: NodeSvgProps & { isCollection: boolean; isIcon: boolean; transform?: string }
+) {
   const {
     strokeWidth,
     x,
@@ -191,7 +188,7 @@ export const AlternativeInputDataNodeSvg = React.forwardRef<
       )}
     </>
   );
-});
+}
 
 export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection: boolean; hasHiddenRequirements: boolean }) {
   const {
