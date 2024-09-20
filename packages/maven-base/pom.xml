@@ -107,7 +107,7 @@
     <version.resources.plugin>3.2.0</version.resources.plugin>
     <version.flatten.plugin>1.6.0</version.flatten.plugin>
     <version.junit>4.13.2</version.junit>
-    <surefire-plugin.version>3.2.5</surefire-plugin.version>
+    <surefire-plugin.version>3.5.0</surefire-plugin.version>
     <quarkus.platform.version>3.8.6</quarkus.platform.version>
     <version.org.kie.kogito>999-20240905-SNAPSHOT</version.org.kie.kogito>
     <quarkus-plugin.version>${quarkus.platform.version}</quarkus-plugin.version>
