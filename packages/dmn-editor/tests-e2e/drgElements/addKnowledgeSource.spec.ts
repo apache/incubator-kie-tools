@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
 import { EdgeType } from "../__fixtures__/edges";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
@@ -31,7 +32,7 @@ test.describe("Add node - Knowledge Source", () => {
       test("should add Knowledge Source node from palette", async ({ jsonModel, palette, nodes, diagram }) => {
         await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
 
-        expect(nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE })).toBeAttached();
+        await expect(nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE })).toBeAttached();
         await expect(diagram.get()).toHaveScreenshot("add-knowledge-source-node-from-palette.png");
 
         // JSON model assertions
@@ -47,6 +48,26 @@ test.describe("Add node - Knowledge Source", () => {
           "@_width": 160,
           "@_height": 80,
         });
+      });
+
+      test("should add two Knowledge Source nodes from palette in a row", async ({ palette, nodes, diagram }) => {
+        test.info().annotations.push({
+          type: TestAnnotations.REGRESSION,
+          description: "https://github.com/apache/incubator-kie-issues/issues/980",
+        });
+
+        await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
+        await palette.dragNewNode({
+          type: NodeType.KNOWLEDGE_SOURCE,
+          targetPosition: { x: 300, y: 300 },
+          thenRenameTo: "Second Knowledge Source",
+        });
+
+        await diagram.resetFocus();
+
+        await expect(nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE })).toBeAttached();
+        await expect(nodes.get({ name: "Second Knowledge Source" })).toBeAttached();
+        await expect(diagram.get()).toHaveScreenshot("add-2-knowledge-source-nodes-from-palette.png");
       });
     });
 
@@ -67,7 +88,7 @@ test.describe("Add node - Knowledge Source", () => {
           targetPosition: { x: 100, y: 300 },
         });
 
-        expect(
+        await expect(
           await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE })
         ).toBeAttached();
         expect(await edges.getType({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE })).toEqual(
@@ -92,7 +113,7 @@ test.describe("Add node - Knowledge Source", () => {
           targetPosition: { x: 100, y: 300 },
         });
 
-        expect(
+        await expect(
           await edges.get({ from: DefaultNodeName.DECISION, to: DefaultNodeName.KNOWLEDGE_SOURCE })
         ).toBeAttached();
         expect(await edges.getType({ from: DefaultNodeName.DECISION, to: DefaultNodeName.KNOWLEDGE_SOURCE })).toEqual(
@@ -118,7 +139,9 @@ test.describe("Add node - Knowledge Source", () => {
           targetPosition: { x: 500, y: 500 },
         });
 
-        expect(await edges.get({ from: "Knowledge Source - A", to: DefaultNodeName.KNOWLEDGE_SOURCE })).toBeAttached();
+        await expect(
+          await edges.get({ from: "Knowledge Source - A", to: DefaultNodeName.KNOWLEDGE_SOURCE })
+        ).toBeAttached();
         expect(await edges.getType({ from: "Knowledge Source - A", to: DefaultNodeName.KNOWLEDGE_SOURCE })).toEqual(
           EdgeType.AUTHORITY_REQUIREMENT
         );

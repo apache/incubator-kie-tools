@@ -51,7 +51,7 @@ test.describe("Invalid edge - Knowledge Requirement", () => {
         to: DefaultNodeName.INPUT_DATA,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.INPUT_DATA })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.INPUT_DATA })).not.toBeAttached();
     });
 
     test("should dim the target Input Data node", async ({ palette, nodes }) => {
@@ -93,7 +93,7 @@ test.describe("Invalid edge - Knowledge Requirement", () => {
         to: DefaultNodeName.KNOWLEDGE_SOURCE,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.KNOWLEDGE_SOURCE })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.KNOWLEDGE_SOURCE })).not.toBeAttached();
     });
 
     test("should dim the target Knowledge Source node", async ({ palette, nodes }) => {
@@ -124,7 +124,7 @@ test.describe("Invalid edge - Knowledge Requirement", () => {
         position: NodePosition.TOP,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.GROUP })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.GROUP })).not.toBeAttached();
     });
 
     test("should dim the target Group node", async ({ palette, nodes }) => {
@@ -154,7 +154,7 @@ test.describe("Invalid edge - Knowledge Requirement", () => {
         to: DefaultNodeName.TEXT_ANNOTATION,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.TEXT_ANNOTATION })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.TEXT_ANNOTATION })).not.toBeAttached();
     });
 
     test("should dim the target Text Annotation node", async ({ palette, nodes }) => {

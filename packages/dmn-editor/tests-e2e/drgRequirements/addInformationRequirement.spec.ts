@@ -52,7 +52,7 @@ test.describe("Add edge - Information Requirement", () => {
       to: DefaultNodeName.DECISION,
     });
 
-    expect(await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION })).toBeAttached();
+    await expect(await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION })).toBeAttached();
     expect(await edges.getType({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION })).toEqual(
       EdgeType.INFORMATION_REQUIREMENT
     );
@@ -88,7 +88,7 @@ test.describe("Add edge - Information Requirement", () => {
       to: DefaultNodeName.DECISION,
     });
 
-    expect(await edges.get({ from: "Decision - A", to: DefaultNodeName.DECISION })).toBeAttached();
+    await expect(await edges.get({ from: "Decision - A", to: DefaultNodeName.DECISION })).toBeAttached();
     expect(await edges.getType({ from: "Decision - A", to: DefaultNodeName.DECISION })).toEqual(
       EdgeType.INFORMATION_REQUIREMENT
     );

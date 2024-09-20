@@ -51,7 +51,7 @@ test.describe("Invalid edge - Authority Requirement", () => {
         to: DefaultNodeName.INPUT_DATA,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.INPUT_DATA })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.INPUT_DATA })).not.toBeAttached();
     });
 
     test("should dim the target Input Data node", async ({ palette, nodes }) => {
@@ -94,7 +94,7 @@ test.describe("Invalid edge - Authority Requirement", () => {
         position: NodePosition.TOP,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.DECISION_SERVICE })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.DECISION_SERVICE })).not.toBeAttached();
     });
 
     test("should dim the target Decision Service node", async ({ palette, nodes }) => {
@@ -125,7 +125,7 @@ test.describe("Invalid edge - Authority Requirement", () => {
         position: NodePosition.TOP,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.GROUP })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.GROUP })).not.toBeAttached();
     });
 
     test("should dim the target Group node", async ({ palette, nodes }) => {
@@ -155,7 +155,7 @@ test.describe("Invalid edge - Authority Requirement", () => {
         to: DefaultNodeName.TEXT_ANNOTATION,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.TEXT_ANNOTATION })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.TEXT_ANNOTATION })).not.toBeAttached();
     });
 
     test("should dim the target Text Annotation node", async ({ palette, nodes }) => {
