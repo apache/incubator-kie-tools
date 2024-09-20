@@ -3885,8 +3885,8 @@ importers:
   packages/dmn-marshaller-backend-compatibility-tester:
     dependencies:
       '@jbangdev/jbang':
-        specifier: 0.2.0
-        version: 0.2.0
+        specifier: 0.2.3
+        version: 0.2.3
     devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
@@ -16745,8 +16745,8 @@ packages:
     resolution: {integrity: sha512-ZXRY4jNvVgSVQ8DL3LTcakaAtXwTVUxE81hslsyD2AtoXW/wVob10HkOJ1X/pAlcI7D+2YoZKg5do8G/w6RYgA==}
     engines: {node: '>=8'}
 
-  '@jbangdev/jbang@0.2.0':
-    resolution: {integrity: sha512-Ixo6/Y5sXKmNjYlf03xws79siAGEvrZPgNAlSCXK9DZ8xH7hkzdZ0AwE5QDSaMmOwy/yUrLhPhjojwg+WhyBMg==}
+  '@jbangdev/jbang@0.2.3':
+    resolution: {integrity: sha512-fGkNarIf9HmxlbWNFLlNLYgahwz5SKwQ8NEstB7tnLEkoZqLCyjt+Z0Hr/WntWSFGSzJeezgQKJJg4so6OA6YA==}
 
   '@jest/console@29.7.0':
     resolution: {integrity: sha512-5Ni4CU7XHQi32IJ398EEP4RrB8eV09sXP2ROqD4bksHrnTree52PsxvX8tpL8LvTZ3pFzXyPbNQReSN41CAhOg==}
@@ -37818,7 +37818,7 @@ snapshots:
 
   '@istanbuljs/schema@0.1.3': {}
 
-  '@jbangdev/jbang@0.2.0':
+  '@jbangdev/jbang@0.2.3':
     dependencies:
       shelljs: 0.8.5
 
