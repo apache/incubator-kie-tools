@@ -163,7 +163,7 @@ export type TestScenarioEditorProps = {
   /**
    * Notifies the caller when the DMN Editor performs a new edit after the debounce time.
    */
-  //onModelDebounceStateChanged?: (changed: boolean) => void;
+  onModelDebounceStateChanged?: (changed: boolean) => void;
 };
 
 export type TestScenarioAlert = {
@@ -463,7 +463,7 @@ function TestScenarioParserErrorPanel({
 export const TestScenarioEditorInternal = ({
   model,
   onModelChange,
-  //onModelDebounceStateChanged,
+  onModelDebounceStateChanged,
   forwardRef,
 }: TestScenarioEditorProps & { forwardRef?: React.Ref<TestScenarioEditorRef> }) => {
   /** Test Scenario File, Model and Marshaller Management  */
@@ -477,6 +477,7 @@ export const TestScenarioEditorInternal = ({
     () => marshaller.parser.parse(),
     [marshaller.parser]
   ); */
+  const scesim = useTestScenarioEditorStore((s) => s.scesim);
 
   const scesimLoaded = useTestScenarioEditorStore((s) => s.scesim.model);
 
@@ -526,6 +527,28 @@ export const TestScenarioEditorInternal = ({
     }),
     []
   );
+
+  /*
+    // Only notify changes when dragging/resizing operations are not happening.
+    useEffect(() => {
+      onModelDebounceStateChanged?.(false);
+  
+      const timeout = setTimeout(() => {
+        // Ignore changes made outside... If the controller of the component
+        // changed its props, it knows it already, we don't need to call "onModelChange" again.
+        if (model === scesim.model) {
+          return;
+        }
+  
+        onModelDebounceStateChanged?.(true);
+        console.debug("Test Scenario EDITOR: Model changed!");
+        onModelChange?.(scesim.model);
+      }, 500);
+  
+      return () => {
+        clearTimeout(timeout);
+      };
+    }, [onModelChange, scesim.model]);*/
 
   /** scesim model update functions */
 
