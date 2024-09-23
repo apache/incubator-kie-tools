@@ -78,7 +78,7 @@ test.describe("Populate Boxed Invocation", () => {
 
     await resizing.reset(page.getByRole("cell", { name: "Required monthly installment" }));
 
-    await page.getByRole("columnheader", { name: "FUNCTION NAME" }).click();
+    await bee.expression.asInvocation().invokedFunctionNameCell.click();
     await page.keyboard.type(`Affordability calculation`);
     await page.keyboard.press("Enter");
 

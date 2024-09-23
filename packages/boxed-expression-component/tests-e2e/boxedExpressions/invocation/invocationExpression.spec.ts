@@ -23,11 +23,22 @@ test.describe("Create Boxed Invocation", () => {
   test("should render expression correctly", async ({ bee, stories, page }) => {
     await stories.openBoxedInvocation();
     await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "FUNCTION" })).toBeAttached();
+    await expect(bee.expression.asInvocation().invokedFunctionNameCell).toBeAttached();
     await expect(page.getByRole("cell", { name: "p-1" })).toBeAttached();
     await expect(page.getByText("Select expression")).toHaveCount(1);
     await expect(page.getByRole("columnheader")).toHaveCount(2);
     await expect(page.getByRole("cell")).toHaveCount(2);
     await expect(bee.getContainer()).toHaveScreenshot("boxed-invocation.png");
+  });
+
+  test("should commit invoked function name by other cell click", async ({ bee, stories, page }) => {
+    await stories.openBoxedInvocation();
+    await bee.expression.asInvocation().invokedFunctionNameCell.click();
+    await page.keyboard.type("Change Invoked Function Name");
+
+    // commit a change by a click to another cell
+    await bee.expression.asInvocation().parameter(0).descriptionCell.select();
+
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-invocation-function-name-commit-on-cell-click.png");
   });
 });
