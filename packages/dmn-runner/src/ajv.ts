@@ -17,9 +17,8 @@
  * under the License.
  */
 
-import Ajv from "ajv";
-import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
-export { ValidateFunction } from "ajv";
+import AjvDraft04, { AnySchemaObject } from "ajv-draft-04";
+import addFormats from "ajv-formats";
 import { duration } from "moment";
 import {
   DATE_AND_TIME_ENUM_REGEXP,
@@ -140,7 +139,7 @@ export class DmnRunnerAjv {
   };
 
   private constraintCompiler() {
-    return (schema: any, parentSchema: { format?: DmnAjvSchemaFormat }, it: any) => {
+    return (schema: any, parentSchema: AnySchemaObject) => {
       if (!parentSchema.format) {
         return (data: string) => true;
       }
@@ -217,24 +216,25 @@ export class DmnRunnerAjv {
   }
 
   constructor() {
-    this.ajv = new Ajv({
+    this.ajv = new AjvDraft04({
       allErrors: true,
-      schemaId: "auto",
       useDefaults: true,
       removeAdditional: "all",
       verbose: true,
     });
-    this.ajv.addMetaSchema(metaSchemaDraft04);
-    this.ajv.addKeyword(X_DMN_TYPE_KEYWORD, {});
-    this.ajv.addKeyword(X_DMN_ALLOWED_VALUES_KEYWORD, {
+    addFormats(this.ajv);
+    this.ajv.addKeyword(X_DMN_TYPE_KEYWORD);
+    this.ajv.addKeyword({
+      keyword: X_DMN_ALLOWED_VALUES_KEYWORD,
       compile: this.constraintCompiler(),
     });
-    this.ajv.addKeyword(X_DMN_TYPE_CONSTRAINTS_KEYWORD, {
+    this.ajv.addKeyword({
+      keyword: X_DMN_TYPE_CONSTRAINTS_KEYWORD,
       compile: this.constraintCompiler(),
     });
-    this.ajv.addKeyword(X_DMN_DESCRIPTIONS_KEYWORD, {});
-    this.ajv.addKeyword(RECURSION_KEYWORD, {});
-    this.ajv.addKeyword(RECURSION_REF_KEYWORD, {});
+    this.ajv.addKeyword(X_DMN_DESCRIPTIONS_KEYWORD);
+    this.ajv.addKeyword(RECURSION_KEYWORD);
+    this.ajv.addKeyword(RECURSION_REF_KEYWORD);
     this.ajv.addFormat(DAYS_AND_TIME_DURATION_FORMAT, {
       type: "string",
       validate: (data: string) => !!data.match(DAYS_AND_TIME_DURATION_REGEXP),
@@ -246,7 +246,7 @@ export class DmnRunnerAjv {
     });
   }
 
-  public getAjv(): Ajv.Ajv {
+  public getAjv(): AjvDraft04 {
     return this.ajv;
   }
 }

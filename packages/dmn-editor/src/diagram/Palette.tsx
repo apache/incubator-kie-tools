@@ -101,6 +101,10 @@ export function Palette({ pulse }: { pulse: boolean }) {
 
   const { maxHeight } = useInViewSelect(dmnEditorRootElementRef, nodesPalletePopoverRef);
 
+  const clearCurrentFocusToAllowDraggingNewNode = useCallback(() => {
+    (document.activeElement as any)?.blur?.();
+  }, []);
+
   return (
     <>
       <RF.Panel position={"top-left"}>
@@ -162,7 +166,11 @@ export function Palette({ pulse }: { pulse: boolean }) {
         </aside>
       </RF.Panel>
       {!settings.isReadOnly && (
-        <RF.Panel position={"top-left"} style={{ marginTop: "78px" }}>
+        <RF.Panel
+          position={"top-left"}
+          style={{ marginTop: "78px" }}
+          onMouseDownCapture={clearCurrentFocusToAllowDraggingNewNode}
+        >
           <div ref={nodesPalletePopoverRef} style={{ position: "absolute", left: 0, height: 0, zIndex: -1 }} />
           <aside className={`kie-dmn-editor--palette ${pulse ? "pulse" : ""}`}>
             <div

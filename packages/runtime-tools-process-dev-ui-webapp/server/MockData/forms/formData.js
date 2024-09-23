@@ -37,4 +37,9 @@ module.exports = [
     type: "TSX",
     lastModified: new Date("2021-08-23T13:26:02.13Z"),
   },
+  {
+    name: "hiring",
+    type: "TSX",
+    lastModified: new Date("2021-08-23T13:26:02.13Z"),
+  },
 ];

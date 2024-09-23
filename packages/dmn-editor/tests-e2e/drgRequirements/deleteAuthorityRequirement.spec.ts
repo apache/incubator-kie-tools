@@ -34,14 +34,16 @@ test.describe("Delete edge - Authority Requirement", () => {
       targetPosition: { x: 100, y: 300 },
     });
 
-    expect(await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE })).toBeAttached();
+    await expect(
+      await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE })
+    ).toBeAttached();
   });
 
   test("should delete an Authority Requirement using the delete key", async ({ diagram, edges, nodes }) => {
     await diagram.resetFocus();
     await edges.delete({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
 
-    expect(
+    await expect(
       await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE })
     ).not.toBeAttached();
 
@@ -53,7 +55,7 @@ test.describe("Delete edge - Authority Requirement", () => {
     await diagram.resetFocus();
     await edges.delete({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE, isBackspace: true });
 
-    expect(
+    await expect(
       await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE })
     ).not.toBeAttached();
 

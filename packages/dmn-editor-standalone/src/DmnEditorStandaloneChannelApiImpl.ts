@@ -102,9 +102,7 @@ export class DmnEditorStandaloneChannelApiImpl implements KogitoEditorChannelApi
     return new ResourceContent(
       request.normalizedPosixPathRelativeToTheWorkspaceRoot,
       await resource.content,
-      // We need to typecast because ContentType is not exported
-      // and TS complains when trying to match strings with enums
-      resource.contentType as ContentType
+      resource.contentType
     );
   }
 

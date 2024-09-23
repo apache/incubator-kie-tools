@@ -30,7 +30,6 @@ pipeline {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
         string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
-        booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
     }
 
     environment {
@@ -88,7 +87,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm()
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsConfigFileId}")
                     }
                 }
             }
@@ -119,7 +118,7 @@ pipeline {
                         if (params.DRY_RUN) {
                             env.KIE_TOOLS_BUILD__mavenDeploySkip = 'true'
                         }
-                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.mavenDeployRepositoryCredentialsId}", usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.mavenDeployStagingCredentialsId}", usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
                             configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
                                 sh """#!/bin/bash -el
                                 pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'

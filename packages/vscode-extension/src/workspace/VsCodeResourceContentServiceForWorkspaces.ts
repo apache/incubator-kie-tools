@@ -149,17 +149,17 @@ Resolved path: ${__path.resolve(workspaceRootAbsoluteFsPath, normalizedFsPathRel
     try {
       const content = await vscode.workspace.fs.readFile(vscode.Uri.file(absoluteFsPath));
 
-      if (opts?.type === ContentType.BINARY) {
+      if (opts?.type === "binary") {
         return new ResourceContent(
           normalizedPosixPathRelativeToTheWorkspaceRoot, // Always return the relative path.
           Buffer.from(content).toString("base64"),
-          ContentType.BINARY
+          "binary"
         );
       } else {
         return new ResourceContent(
           normalizedPosixPathRelativeToTheWorkspaceRoot, // Always return the relative path.
           Buffer.from(content).toString(),
-          ContentType.TEXT
+          "text"
         );
       }
     } catch (e) {

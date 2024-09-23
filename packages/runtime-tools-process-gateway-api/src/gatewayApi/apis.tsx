@@ -521,7 +521,7 @@ export const getProcessDefinitions = (client: ApolloClient<any>): Promise<Proces
       })
       .then((value) => {
         resolve(
-          value.data.ProcessDefinitions.map((item: { id: string; endpoint: string }) => {
+          (value.data.ProcessDefinitions ?? []).map((item: { id: string; endpoint: string }) => {
             return {
               processName: item.id,
               endpoint: item.endpoint,

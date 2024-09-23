@@ -37,7 +37,7 @@ export const sourceHandler = (
   const patternflyElements = reg.exec(patternflyImport[0])?.[1];
   const trimmedSource = source.split(reactReg).join("").trim().split(patternflyReg).join("").trim();
 
-  const formName = trimmedSource.split(":")[0].split("const ")[1];
+  const formName = trimmedSource.split(": React.FC")[0].split("const ")[1];
 
   return { reactElements: reactElements!, patternflyElements: patternflyElements!, formName, trimmedSource };
 };

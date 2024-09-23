@@ -30,7 +30,6 @@ pipeline {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
         string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
-        booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
         string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
@@ -105,7 +104,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm()
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsConfigFileId}")
                     }
                 }
             }
@@ -133,7 +132,7 @@ pipeline {
 
         stage('Deploy to GitHub Pages (kogito-online)') {
             when {
-                expression { !params.DRY_RUN && !params.RELEASE_CANDIDATE }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
             }
             steps {
                 dir('kogito-online') {
@@ -172,36 +171,40 @@ pipeline {
 
         stage('Setup release candidate artifacts') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
             }
             steps {
                 script {
                     env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-business-automation-standalone-editors.zip"
                     env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-standalone-editors.zip"
 
-                    sh "mkdir ${env.RELEASE_ARTIFACTS_DIR}"
-                    zipUtils.zipArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE}", 'kie-tools/packages/kie-editors-standalone/dist')
-                    zipUtils.zipArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE}", 'kie-tools/packages/serverless-workflow-standalone-editor/dist')
+                    sh """#!/bin/bash -el
+                    mkdir ${env.RELEASE_ARTIFACTS_DIR}
+                    cd ${WORKSPACE}/kie-tools/packages/kie-editors-standalone/dist && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE}" .
+                    cd ${WORKSPACE}/kie-tools/packages/serverless-workflow-standalone-editor/dist && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE}" .
+                    """.trim()
                 }
             }
         }
 
         stage('Sign artifacts for Apache release') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
             }
             steps {
-                script {
-                    releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE}")
+                dir("${env.RELEASE_ARTIFACTS_DIR}") {
+                    script {
+                        releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
+                        releaseUtils.signArtifact("${env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE}")
+                        releaseUtils.signArtifact("${env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE}")
+                    }
                 }
             }
         }
 
         stage('Publish Release Candidate artifacts') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
             }
             steps {
                 script {

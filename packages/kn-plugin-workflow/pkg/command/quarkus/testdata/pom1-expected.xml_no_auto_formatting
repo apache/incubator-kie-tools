@@ -13,7 +13,7 @@
         <quarkus.platform.group-id>org.quarkus.fake</quarkus.platform.group-id>
         <quarkus.platform.version>0.0.1</quarkus.platform.version>
         <skipITs>true</skipITs>
-        <surefire-plugin.version>3.2.5</surefire-plugin.version>
+        <surefire-plugin.version>3.5.0</surefire-plugin.version>
         <kie.version>0.0.0</kie.version>
         <kie.tooling.version>0.0.0</kie.tooling.version>
     </properties>

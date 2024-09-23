@@ -35,7 +35,7 @@ export function fetchFile(
       ref: ref,
       path: path,
     })
-    .then((res) => (contentType === ContentType.BINARY ? (res.data as any).content : atob((res.data as any).content)))
+    .then((res) => (contentType === "binary" ? (res.data as any).content : atob((res.data as any).content)))
     .catch((e) => {
       console.debug(`Error fetching ${path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
       return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${ref}/${path}`).then((res) =>

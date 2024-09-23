@@ -31,8 +31,28 @@ test.describe("Add node - Text Annotation", () => {
     test("should add Text Annotation node from palette", async ({ palette, nodes, diagram }) => {
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
 
-      expect(nodes.get({ name: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
+      await expect(nodes.get({ name: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
       await expect(diagram.get()).toHaveScreenshot("add-text-annotation-node-from-palette.png");
+    });
+
+    test("should add two Text Annotation nodes from palette in a row", async ({ palette, nodes, diagram }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/980",
+      });
+
+      await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
+      await palette.dragNewNode({
+        type: NodeType.TEXT_ANNOTATION,
+        targetPosition: { x: 300, y: 300 },
+        thenRenameTo: "Second Text Annotation",
+      });
+
+      await diagram.resetFocus();
+
+      await expect(nodes.get({ name: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
+      await expect(nodes.get({ name: "Second Text Annotation" })).toBeAttached();
+      await expect(diagram.get()).toHaveScreenshot("add-2-text-annotation-nodes-from-palette.png");
     });
   });
 
@@ -53,7 +73,9 @@ test.describe("Add node - Text Annotation", () => {
         targetPosition: { x: 100, y: 300 },
       });
 
-      expect(await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
+      await expect(
+        await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION })
+      ).toBeAttached();
       expect(await edges.getType({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
         EdgeType.ASSOCIATION
       );
@@ -71,7 +93,9 @@ test.describe("Add node - Text Annotation", () => {
         targetPosition: { x: 100, y: 300 },
       });
 
-      expect(await edges.get({ from: DefaultNodeName.DECISION, to: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
+      await expect(
+        await edges.get({ from: DefaultNodeName.DECISION, to: DefaultNodeName.TEXT_ANNOTATION })
+      ).toBeAttached();
       expect(await edges.getType({ from: DefaultNodeName.DECISION, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
         EdgeType.ASSOCIATION
       );
@@ -89,7 +113,7 @@ test.describe("Add node - Text Annotation", () => {
         targetPosition: { x: 500, y: 500 },
       });
 
-      expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
+      await expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
       expect(await edges.getType({ from: DefaultNodeName.BKM, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
         EdgeType.ASSOCIATION
       );
@@ -112,7 +136,7 @@ test.describe("Add node - Text Annotation", () => {
         targetPosition: { x: 500, y: 500 },
       });
 
-      expect(
+      await expect(
         await edges.get({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.TEXT_ANNOTATION })
       ).toBeAttached();
       expect(
@@ -142,7 +166,7 @@ test.describe("Add node - Text Annotation", () => {
         targetPosition: { x: 100, y: 300 },
       });
 
-      expect(
+      await expect(
         await edges.get({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: DefaultNodeName.TEXT_ANNOTATION })
       ).toBeAttached();
       expect(
@@ -162,7 +186,9 @@ test.describe("Add node - Text Annotation", () => {
         targetPosition: { x: 500, y: 500 },
       });
 
-      expect(await edges.get({ from: DefaultNodeName.GROUP, to: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
+      await expect(
+        await edges.get({ from: DefaultNodeName.GROUP, to: DefaultNodeName.TEXT_ANNOTATION })
+      ).toBeAttached();
       expect(await edges.getType({ from: DefaultNodeName.GROUP, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
         EdgeType.ASSOCIATION
       );

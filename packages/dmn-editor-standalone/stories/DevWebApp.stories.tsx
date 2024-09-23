@@ -24,11 +24,10 @@ import { useRef, useState, useEffect, useCallback, useMemo } from "react";
 import "@patternfly/react-core/dist/styles/base.css";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import * as DmnEditor from "../dist/index";
-import { DmnEditorStandaloneApi } from "../dist/index";
+import { DmnEditorStandaloneApi, DmnEditorStandaloneResource } from "../dist/index";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex/Flex";
 import { FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex/FlexItem";
 import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { ContentType } from "@kie-tools-core/workspace/dist/api";
 
 const droppingFileStyle = {
   position: "absolute",
@@ -53,7 +52,7 @@ export type DevWebAppProps = {
   initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot: string;
   initialContent: string;
   readOnly: boolean;
-  resources: Array<[string, { contentType: ContentType; content: string }]>;
+  resources: Array<[string, DmnEditorStandaloneResource]>;
   origin: string;
 };
 

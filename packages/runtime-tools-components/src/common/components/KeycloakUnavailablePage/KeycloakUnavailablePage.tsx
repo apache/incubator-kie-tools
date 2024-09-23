@@ -16,52 +16,36 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { Card, CardBody, CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import React from "react";
-import kogitoLogo from "../../static/kogito.png";
 import { OUIAProps, componentOuiaProps } from "../../ouiaTools";
+import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Title, TitleSizes } from "@patternfly/react-core/dist/js/components/Title";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { ClusterIcon } from "@patternfly/react-icons/dist/js/icons/cluster-icon";
 
 export const KeycloakUnavailablePage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        paddingTop: "5%",
-        background: "#868686",
-        height: "100%",
-      }}
-      {...componentOuiaProps(ouiaId, "server-unavailable", ouiaSafe)}
-    >
-      {" "}
-      <Card
-        style={{
-          maxHeight: "300px",
-        }}
-      >
-        <CardHeader>
-          <CardHeaderMain>
-            <Brand src={kogitoLogo} alt="Kogito keycloak" style={{ height: "30px" }} />
-          </CardHeaderMain>
-        </CardHeader>
-        <CardBody isFilled={false}></CardBody>
-        <CardTitle>Error:503 - Server unavailable</CardTitle>
-        <CardBody isFilled={false}></CardBody>
-        <CardBody>Sorry.. the keycloak server seems to be down</CardBody>
-        <CardBody isFilled={false}></CardBody>
+    <Page>
+      <PageSection>
         <Bullseye>
-          <span>
-            Please contact administrator or{" "}
-            <Button variant="link" onClick={() => window.location.reload()} isInline>
-              click here to retry
+          <EmptyState {...componentOuiaProps(ouiaId, "server-unavailable", ouiaSafe)}>
+            <EmptyStateIcon icon={ClusterIcon} />
+            <Title headingLevel="h1" size={TitleSizes["2xl"]}>
+              503: We couldn&apos;t contact the server
+            </Title>
+            <Text component={TextVariants.blockquote}>
+              We could not reach the server, you can contact the administrator or try to reload the page by clicking on
+              the button below.
+            </Text>
+            <Button variant="primary" onClick={() => window.location.reload()} isInline>
+              Retry
             </Button>
-          </span>
+          </EmptyState>
         </Bullseye>
-        <CardBody isFilled={false}></CardBody>
-      </Card>
-    </div>
+      </PageSection>
+    </Page>
   );
 };

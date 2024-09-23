@@ -31,9 +31,10 @@ pipeline {
     }
 
     parameters {
-        string(name: 'BRANCH_NAME', description: 'Set the Git branch to checkout (0.0.X)', trim: true)
+        string(name: 'BRANCH_NAME', description: 'Set the Git branch to checkout (0.0.x)', trim: true)
         string(name: 'RELEASE_VERSION', description: 'Release version', trim: true)
         string(name: 'TAG_NAME', description: 'Tag name to be created', trim: true)
+        string(description: 'Runners', name: 'RUNNERS', defaultValue: '{"chrome_extensions":"true","cors_proxy_image":"true","dashbuilder_viewer_image":"true","dev_deployment_base_image":"true","dev_deployment_dmn_form_webapp_image":"true","dev_deployment_kogito_quakus_blank_app_image":"true","dev_deployment_upload_service":"true","extended_services":"true","jbpm_quarkus_devui":"true","kie_sandbox_extended_services_image":"true","kie_sandbox_helm_chart":"true","kie_sandbox_image":"true","kn_plugin_workflow":"true","kogito_task_console":"true","kogito_management_console":"true","kogito_swf_builder":"true","kogito_swf_devmode":"true","kogito_serverless_operator":"true","npm_packages":"true","online_editor":"true","runtime_tools_consoles_helm_chart":"true","serverless_logic_web_tools":"true","serverless_logic_web_tools_base_builder_image":"true","serverless_logic_web_tools_swf_builder_image":"true","serverless_logic_web_tools_swf_dev_mode_image":"true","standalone_editors_cdn":"true","sonataflow_quarkus_devui":"true","vscode_extensions_dev":"true","vscode_extensions_prod":"true"}')
     }
 
     stages {
@@ -71,7 +72,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm()
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsConfigFileId}")
                     }
                 }
             }
@@ -81,7 +82,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBootstrap()
                     }
                 }
             }
@@ -131,7 +132,7 @@ pipeline {
             }
         }
 
-        stage('Commit and Push changes') {
+        stage('Commit changes') {
             steps {
                 dir('kie-tools') {
                     script {
@@ -139,7 +140,6 @@ pipeline {
                         git add .
                         git commit --allow-empty -am "Apache KIE ${params.RELEASE_VERSION} release"
                         """.trim()
-                        githubUtils.pushObject('origin', "${params.NEW_BRANCH_NAME}", "${pipelineVars.asfGithubPushCredentialsId}")
                     }
                 }
             }
@@ -173,11 +173,9 @@ pipeline {
             steps {
                 build job: 'KIE/kie-tools/kie-tools-release-build', parameters: [
                     booleanParam(name: 'DRY_RUN', value: false),
-                    string(name: 'BASE_REF', value: "${env.BRANCH_NAME}"),
+                    string(name: 'BASE_REF', value: "${env.TAG_NAME}"),
                     string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-                    string(name: 'UPLOAD_ASSET_URL', value: "${env.RELEASE_UPLOAD_ASSET_URL}"),
                     string(name: 'RUNNERS', value: "${params.RUNNERS}"),
-                    booleanParam(name: 'RELEASE_CANDIDATE', value: true),
                     string(name: 'RELEASE_CANDIDATE_VERSION', value: "${TAG_NAME}")
                 ]
             }

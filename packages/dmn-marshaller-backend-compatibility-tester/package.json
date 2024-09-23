@@ -25,7 +25,7 @@
     "prefetch": "node dist/dependenciesFetch.js"
   },
   "dependencies": {
-    "@jbangdev/jbang": "0.2.0"
+    "@jbangdev/jbang": "0.2.3"
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",

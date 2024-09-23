@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
@@ -30,10 +31,9 @@ test.describe("Add node - Decision Service", () => {
       test("should add Decision Service node from palette", async ({ jsonModel, palette, nodes, diagram }) => {
         await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
 
-        expect(nodes.get({ name: DefaultNodeName.DECISION_SERVICE })).toBeAttached();
+        await expect(nodes.get({ name: DefaultNodeName.DECISION_SERVICE })).toBeAttached();
         await expect(diagram.get()).toHaveScreenshot("add-decision-service-node-from-palette.png");
 
-        // JSON model assertions
         // JSON model assertions
         const decisionService = await jsonModel.drgElements.getDecisionService({ drgElementIndex: 0, drdIndex: 0 });
         expect(decisionService).toEqual({
@@ -53,6 +53,26 @@ test.describe("Add node - Decision Service", () => {
           "@_width": 320,
           "@_height": 320,
         });
+      });
+
+      test("should add two Decision Service nodes from palette in a row", async ({ palette, nodes, diagram }) => {
+        test.info().annotations.push({
+          type: TestAnnotations.REGRESSION,
+          description: "https://github.com/apache/incubator-kie-issues/issues/980",
+        });
+
+        await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
+        await palette.dragNewNode({
+          type: NodeType.DECISION_SERVICE,
+          targetPosition: { x: 300, y: 300 },
+          thenRenameTo: "Second DS",
+        });
+
+        await diagram.resetFocus();
+
+        await expect(nodes.get({ name: DefaultNodeName.DECISION_SERVICE })).toBeAttached();
+        await expect(nodes.get({ name: "Second DS" })).toBeAttached();
+        await expect(diagram.get()).toHaveScreenshot("add-2-decision-service-nodes-from-palette.png");
       });
     });
   });

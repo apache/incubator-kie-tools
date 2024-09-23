@@ -197,6 +197,12 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<SpinUpDevModePipeli
               },
             },
             spec: {
+              volumes: [
+                {
+                  name: `${resourceArgs.resourceName}-volume`,
+                  emptyDir: {},
+                },
+              ],
               containers: [
                 {
                   name: resourceArgs.resourceName,
@@ -205,6 +211,17 @@ export class SpinUpDevModePipeline extends OpenShiftPipeline<SpinUpDevModePipeli
                     {
                       containerPort: 8080,
                       protocol: "TCP",
+                    },
+                  ],
+                  resources: {
+                    limits: {
+                      memory: "4096Mi",
+                    },
+                  },
+                  volumeMounts: [
+                    {
+                      mountPath: "/tmp/app",
+                      name: `${resourceArgs.resourceName}-volume`,
                     },
                   ],
                   env: [
