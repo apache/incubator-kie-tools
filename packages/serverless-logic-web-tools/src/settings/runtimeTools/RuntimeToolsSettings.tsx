@@ -62,12 +62,11 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
   const settingsDispatch = useSettingsDispatch();
   const [config, setConfig] = useState(settings.runtimeTools.config);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDataIndexUrlValidated, setDataIndexUrlValidated] = useState(FormValiationOptions.INITIAL);
-  const [isDataIndexUrlVerified, setisDataIndexUrlVerified] = useState(FormValiationOptions.INITIAL);
+  const [isConfigValidated, setConfigValidated] = useState(FormValiationOptions.INITIAL);
   const [dataIndexUrlAvailable, setDataIndexUrlAvailable] = useState<boolean>(false);
 
   useEffect(() => {
-    setDataIndexUrlValidated(FormValiationOptions.INITIAL);
+    setConfigValidated(FormValiationOptions.INITIAL);
   }, [config]);
 
   const handleModalToggle = useCallback(() => {
@@ -100,13 +99,13 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
     };
     const isDataIndexUrlVerified = await verifyDataIndex(config.dataIndexUrl);
     if (!isDataIndexUrlValid(config.dataIndexUrl)) {
-      setDataIndexUrlValidated(FormValiationOptions.INVALID);
+      setConfigValidated(FormValiationOptions.INVALID);
       return;
     } else {
       if (isDataIndexUrlVerified == true) {
         setDataIndexUrlAvailable(true);
       } else {
-        setisDataIndexUrlVerified(FormValiationOptions.CONNECTION_ERROR);
+        setConfigValidated(FormValiationOptions.CONNECTION_ERROR);
         return;
       }
     }
@@ -175,7 +174,7 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
           appendTo={props.pageContainerRef.current || document.body}
         >
           <Form>
-            {isDataIndexUrlValidated === FormValiationOptions.INVALID && (
+            {isConfigValidated === FormValiationOptions.INVALID && (
               <FormAlert>
                 <Alert
                   variant="danger"
@@ -186,7 +185,7 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
                 />
               </FormAlert>
             )}
-            {isDataIndexUrlVerified === FormValiationOptions.CONNECTION_ERROR && (
+            {isConfigValidated === FormValiationOptions.CONNECTION_ERROR && (
               <FormAlert>
                 <Alert
                   variant="danger"
