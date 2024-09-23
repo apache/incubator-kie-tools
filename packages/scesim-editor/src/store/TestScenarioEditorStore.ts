@@ -71,8 +71,8 @@ export enum DiagramLhsPanel {
 export type DropTargetNode = undefined | RF.Node<DmnDiagramNodeData>; */
 
 export interface State {
-  dispatch: (s: State) => Dispatch;
   computed: (s: State) => Computed;
+  dispatch: (s: State) => Dispatch;
   scesim: { model: SceSimModel };
   /*
   focus: {
@@ -242,6 +242,10 @@ export const defaultStaticState = (): Omit<State, "dmn" | "dispatch" | "computed
 }); */
 
 export function createTestScenarioEditorStore(model: SceSimModel /*, computedCache: ComputedStateCache<Computed>*/) {
+  console.trace("[TestScenarioEditorStore] Creating store with above model and empty cache ");
+  console.trace("=== MODEL CONTENT ===");
+  console.trace(model);
+
   //const { diagram, ...defaultState } = defaultStaticState();
   return create(
     immer<State>(() => ({

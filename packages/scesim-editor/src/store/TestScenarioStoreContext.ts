@@ -21,7 +21,7 @@ import { createContext, useContext } from "react";
 import { StoreApi, UseBoundStore } from "zustand";
 import { WithImmer } from "zustand/middleware/immer";
 import { useStoreWithEqualityFn } from "zustand/traditional";
-import { State } from "./Store";
+import { State } from "./TestScenarioEditorStore";
 
 type ExtractState = StoreApi<State> extends { getState: () => infer T } ? T : never;
 

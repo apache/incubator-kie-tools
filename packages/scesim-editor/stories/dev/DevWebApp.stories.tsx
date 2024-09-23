@@ -20,7 +20,10 @@
 import React, { useCallback, useRef, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import "@patternfly/react-core/dist/styles/base.css";
-import { Button, Flex, FlexItem, Page, PageSection, Stack, StackItem } from "@patternfly/react-core/dist/js";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js";
 import { SceSimMarshaller, SceSimModel, getMarshaller } from "@kie-tools/scesim-marshaller";
 import { OnSceSimModelChange, TestScenarioEditorProps } from "../../src/TestScenarioEditor";
 import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
@@ -116,7 +119,7 @@ function DevWebApp(props: TestScenarioEditorProps) {
     setState((prev) => ({ ...prev, pointer: Math.max(0, prev.pointer - 1) }));
   }, []);
 
-  /*
+  /* TODO: DMN DATA Retieve
   const externalModelsByNamespace = useMemo<ExternalModelsIndex>(() => {
     return (currentModel.definitions.import ?? []).reduce((acc, i) => {
       acc[i["@_namespace"]] = modelsByNamespace[i["@_namespace"]];
@@ -178,7 +181,7 @@ function DevWebApp(props: TestScenarioEditorProps) {
                 </Button>
                 &nbsp; &nbsp;
                 <Button onClick={downloadAsXml} variant="tertiary">
-                  Download as XML
+                  Download
                 </Button>
               </FlexItem>
             </Flex>
@@ -226,7 +229,6 @@ type Story = StoryObj<typeof DevWebApp>;
 export const WebApp: Story = {
   render: (args) => DevWebApp(args),
   args: {
-    isReadOnly: false,
     model: getMarshaller(emptySceSim).parser.parse(),
   },
 };

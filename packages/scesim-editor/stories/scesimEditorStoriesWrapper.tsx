@@ -33,19 +33,11 @@ export function SceSimEditorWrapper(props: Partial<StorybookTestScenarioEditorPr
   const ref = useRef<TestScenarioEditorRef>(null);
   const [modelArgs, setModelArgs] = useState<SceSimModel>(args.model);
   const model = useMemo(() => props?.model ?? modelArgs, [modelArgs, props?.model]);
-  const [modelChanged, setModelChange] = useState<boolean>(false);
-  const [isReadOnly, setIsReadOnly] = useState(props?.isReadOnly ?? args.isReadOnly ?? false);
 
   const onModelChange = useMemo(
     () => (props?.onModelChange ? props.onModelChange : setModelArgs),
     [props?.onModelChange]
   );
-
-  useEffect(() => {
-    if (args.isReadOnly !== undefined) {
-      setIsReadOnly(args.isReadOnly);
-    }
-  }, [args.isReadOnly]);
 
   useEffect(() => {
     if (Object.keys(diff(argsCopy.current.model, model)).length !== 0) {
@@ -68,10 +60,16 @@ export function SceSimEditorWrapper(props: Partial<StorybookTestScenarioEditorPr
     onModelChange(args.model);
   }, [args, model, onModelChange]);
 
-  /*  
-  const onModelDebounceStateChanged = useCallback((changed: boolean) => {
-    setModelChange(changed);
-  }, []); */
+  const onModelDebounceStateChanged = useCallback(() => {
+    console.debug("[scesimEditorStoriesWrapper] Model Debounce state");
+  }, []);
 
-  return <TestScenarioEditor ref={ref} isReadOnly={isReadOnly} model={model} onModelChange={onModelChange} />;
+  return (
+    <TestScenarioEditor
+      ref={ref}
+      model={model}
+      onModelChange={onModelChange}
+      onModelDebounceStateChanged={onModelDebounceStateChanged}
+    />
+  );
 }

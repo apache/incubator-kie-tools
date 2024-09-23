@@ -61,6 +61,7 @@
     "cross-env": "^7.0.3",
     "deep-object-diff": "^1.1.9",
     "file-loader": "^6.2.0",
+    "react-error-boundary": "^4.0.13",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
     "storybook": "^7.3.2",
