@@ -17,23 +17,23 @@
  * under the License.
  */
 
-import { PatternflyFormGenerationTool } from "./uniforms/patternfly/PatternflyFormGenerationTool";
-import { FormGenerationTool } from "../types";
-import { Bootstrap4FormGenerationTool } from "./uniforms/bootstrap4/Bootstrap4FormGenerationTool";
+import { PatternflyFormGenerator } from "./PatternflyFormGenerator";
+import { FormGenerator } from "../types";
+import { Bootstrap4FormGenerator } from "./Bootstrap4FormGenerator";
 
-const toolsRegistry: Map<string, FormGenerationTool> = new Map<string, FormGenerationTool>();
+const formGeneratorIndex: Map<string, FormGenerator> = new Map<string, FormGenerator>();
 
-export function registerFormGenerationTool(formGenerationTool: FormGenerationTool) {
-  toolsRegistry.set(formGenerationTool.type, formGenerationTool);
+export function registerFormGenerator(formGenerator: FormGenerator) {
+  formGeneratorIndex.set(formGenerator.type, formGenerator);
 }
 
-registerFormGenerationTool(new PatternflyFormGenerationTool());
-registerFormGenerationTool(new Bootstrap4FormGenerationTool());
+registerFormGenerator(new PatternflyFormGenerator());
+registerFormGenerator(new Bootstrap4FormGenerator());
 
-export function lookupFormGenerationTool(type: string): FormGenerationTool {
-  const tool = toolsRegistry.get(type);
-  if (tool) {
-    return tool;
+export function getFormGenerationTool(type: string): FormGenerator {
+  const formGenerator = formGeneratorIndex.get(type);
+  if (formGenerator) {
+    return formGenerator;
   }
-  throw new Error(`Unsupported form type "${type}"`);
+  throw new Error(`Unsupported form generation type: "${type}"`);
 }

@@ -17,4 +17,15 @@
  * under the License.
  */
 
-export { registerFormGenerationTool, lookupFormGenerationTool } from "./formGenerationToolRegistry";
+import { getFormGenerationTool } from "./tools/formGenerationToolRegistry";
+import { FormGenerator, FormSchema, FormAsset } from "./types";
+
+export interface Args {
+  type: string;
+  forms: FormSchema[];
+}
+
+export function generateForms({ type, forms }: Args): FormAsset[] {
+  const tool: FormGenerator = getFormGenerationTool(type);
+  return forms.map((form) => tool.generate(form));
+}

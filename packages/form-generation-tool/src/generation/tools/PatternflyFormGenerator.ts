@@ -18,14 +18,13 @@
  */
 
 import unescape from "lodash/unescape";
-import { FormAssetType, FormAsset, FormStyle, FormConfig, FormGenerationTool, FormSchema } from "../../../types";
-
+import { FormAssetType, FormAsset, FormStyle, FormConfiguration, FormGenerator, FormSchema } from "../types";
 import { renderForm } from "@kie-tools/uniforms-patternfly-codegen/dist";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
-import { getUniformsSchema } from "../utils/UniformsSchemaUtils";
-import { inputSanitizationUtil } from "../utils/InputSanitizationUtil";
+import { getUniformsSchema } from "./getUniformsSchema";
+import { inputSanitizationUtil } from "./InputSanitizationUtil";
 
-export class PatternflyFormConfig implements FormConfig {
+export class PatternflyFormConfig implements FormConfiguration {
   public readonly schema: string;
 
   constructor(formSchema: any) {
@@ -38,7 +37,7 @@ export class PatternflyFormConfig implements FormConfig {
   };
 }
 
-export class PatternflyFormGenerationTool implements FormGenerationTool {
+export class PatternflyFormGenerator implements FormGenerator {
   type: string = FormStyle.PATTERNFLY;
 
   generate(inputSchema: FormSchema): FormAsset {

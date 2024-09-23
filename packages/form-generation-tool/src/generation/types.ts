@@ -37,7 +37,7 @@ export interface FormResources {
   scripts: Record<string, string>;
 }
 
-export interface FormConfig {
+export interface FormConfiguration {
   schema: string;
   resources: FormResources;
 }
@@ -49,10 +49,10 @@ export interface FormAsset {
   sanitizedAssetName: string;
   content: string;
   type: FormAssetType | string;
-  config: FormConfig;
+  config: FormConfiguration;
 }
 
-export interface FormGenerationTool {
+export interface FormGenerator {
   type: string;
   generate: (schema: FormSchema) => FormAsset;
 }

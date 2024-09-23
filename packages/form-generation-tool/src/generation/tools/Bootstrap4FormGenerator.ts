@@ -18,19 +18,18 @@
  */
 
 import unescape from "lodash/unescape";
-import { FormAssetType, FormAsset, FormStyle, FormConfig, FormGenerationTool, FormSchema } from "../../../types";
-
+import { FormAssetType, FormAsset, FormStyle, FormConfiguration, FormGenerator, FormSchema } from "../types";
 import { renderForm } from "@kie-tools/uniforms-bootstrap4-codegen/dist";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
-import { getUniformsSchema } from "../utils/UniformsSchemaUtils";
-import { inputSanitizationUtil } from "../utils/InputSanitizationUtil";
+import { getUniformsSchema } from "./getUniformsSchema";
+import { inputSanitizationUtil } from "./InputSanitizationUtil";
 
 export const BOOTSTRAP4_CSS_URL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css";
 export const BOOTSTRAP4_JS_URL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js";
 
 export const JQUERY_URL = "https://code.jquery.com/jquery-3.2.1.slim.min.js";
 
-export class Bootstrap4FormConfig implements FormConfig {
+export class Bootstrap4FormConfig implements FormConfiguration {
   public readonly schema: string;
 
   constructor(formSchema: any) {
@@ -48,7 +47,7 @@ export class Bootstrap4FormConfig implements FormConfig {
   };
 }
 
-export class Bootstrap4FormGenerationTool implements FormGenerationTool {
+export class Bootstrap4FormGenerator implements FormGenerator {
   type: string = FormStyle.BOOTSTRAP;
 
   generate(inputSchema: FormSchema): FormAsset {

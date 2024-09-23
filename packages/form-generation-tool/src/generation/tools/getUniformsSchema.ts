@@ -17,6 +17,30 @@
  * under the License.
  */
 
-import * as cli from "./cli";
+import cloneDeep from "lodash/cloneDeep";
+import get from "lodash/get";
+import set from "lodash/set";
+import unset from "lodash/unset";
 
-cli.run();
+export function getUniformsSchema(schema: any) {
+  const schemaClone = cloneDeep(schema);
+
+  if (schemaClone.properties) {
+    for (const key of Object.keys(schemaClone.properties)) {
+      const property = schemaClone.properties[key];
+
+      const isInput: boolean = get(property, "input", false);
+      const isOutput: boolean = get(property, "output", false);
+
+      unset(property, "input");
+      unset(property, "output");
+
+      // If it is an input but not output mark it as readonly
+      if (isInput && !isOutput) {
+        set(property, "uniforms.disabled", true);
+      }
+    }
+  }
+
+  return schemaClone;
+}
