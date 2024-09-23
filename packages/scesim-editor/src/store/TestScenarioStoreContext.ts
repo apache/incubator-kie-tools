@@ -42,6 +42,6 @@ export function useTestScenarioEditorStore<StateSlice = ExtractState>(
   return useStoreWithEqualityFn(store, selector, equalityFn);
 }
 
-export function useTestScenarioStoreApi() {
+export function useTestScenarioEditorStoreApi() {
   return useContext(TestScenarioEditorStoreApiContext);
 }

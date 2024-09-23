@@ -243,7 +243,6 @@ export const defaultStaticState = (): Omit<State, "dmn" | "dispatch" | "computed
 
 export function createTestScenarioEditorStore(model: SceSimModel /*, computedCache: ComputedStateCache<Computed>*/) {
   console.trace("[TestScenarioEditorStore] Creating store with above model and empty cache ");
-  console.trace("=== MODEL CONTENT ===");
   console.trace(model);
 
   //const { diagram, ...defaultState } = defaultStaticState();

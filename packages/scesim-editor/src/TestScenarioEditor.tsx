@@ -46,7 +46,9 @@ import ErrorIcon from "@patternfly/react-icons/dist/esm/icons/error-circle-o-ico
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
 
-import ErrorBoundary from "./reactExt/ErrorBoundary";
+import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
+
+import TestScenarioCreationPanel from "./creation/TestScenarioCreationPanel";
 import TestScenarioDrawerPanel from "./drawer/TestScenarioDrawerPanel";
 import TestScenarioSideBarMenu from "./sidebar/TestScenarioSideBarMenu";
 import TestScenarioTable from "./table/TestScenarioTable";
@@ -55,10 +57,17 @@ import { useTestScenarioEditorI18n } from "./i18n";
 import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
 
 import "./TestScenarioEditor.css";
-import TestScenarioCreationPanel from "./creation/TestScenarioCreationPanel";
 import { ComputedStateCache } from "./store/ComputedStateCache";
-import { Computed, createTestScenarioEditorStore } from "./store/Store";
-import { StoreApiType, TestScenarioEditorStoreApiContext, useTestScenarioEditorStore } from "./store/StoreContext";
+import { Computed, createTestScenarioEditorStore } from "./store/TestScenarioEditorStore";
+import {
+  StoreApiType,
+  TestScenarioEditorStoreApiContext,
+  useTestScenarioEditorStore,
+  useTestScenarioEditorStoreApi,
+} from "./store/TestScenarioStoreContext";
+import { TestScenarioEditorErrorFallback } from "./TestScenarioEditorErrorFallback";
+import { TestScenarioEditorContextProvider, useTestScenarioEditor } from "./TestScenarioEditorContext";
+import { useEffectAfterFirstRender } from "./hook/useEffectAfterFirstRender";
 
 /* Constants */
 
@@ -100,56 +109,14 @@ export type TestScenarioEditorProps = {
    */
   model: SceSimModel;
   /**
-   * The original version of `model` before upgrading to `latest`.
-   */
-  //originalVersion?: AllDmnMarshallers["version"];
-  /**
    * Called when a change occurs on `model`, so the controlled flow of the component can be done.
    */
   onModelChange?: OnSceSimModelChange;
   /**
-   * Called when the contents of a specific available model is necessary. Used by the "Included models" tab.
-   */
-  //onRequestExternalModelByPath?: OnRequestExternalModelByPath;
-  /**
-   * Called when the list of paths of available models to be included is needed. Used by the "Included models" tab.
-   */
-  //onRequestExternalModelsAvailableToInclude?: OnRequestExternalModelsAvailableToInclude;
-  /**
-   * When the DMN represented by `model` ("This DMN") contains `import`ed models, this prop needs to map their contents by namespace.
-   * The DMN model won't be correctly rendered if an included model is not found on this object.
-   */
-  //externalModelsByNamespace?: ExternalModelsIndex;
-  /**
-   * To show information about execution results directly on the DMN diagram and/or Boxed Expression Editor, use this prop.
-   */
-  //evaluationResults?: EvaluationResults;
-  /**
-   * To show information about validation messages directly on the DMN diagram and/or Boxed Expression Editor, use this prop.
-   */
-  //validationMessages?: ValidationMessages;
-  /**
-   * The name of context in which this instance of DMN Editor is running. For example, if this DMN Editor instance
-   * is displaying a model from a project called "My project", you could use `externalContextName={"My project"}`
-   */
-  //externalContextName?: string;
-  /**
-   * Describe the context in which this instance of DMN Editor is running. For example, if this DMN Editor instance
-   * is displaying a model from a project called "My project", you could use
-   * `externalContextDescription={'All models (DMN and PMML) of "My project" are available.'}`
-   */
-  //externalContextDescription?: string;
-  /**
-   * A link that will take users to an issue tracker so they can report problems they find on the DMN Editor.
+   * A link that will take users to an issue tracker so they can report problems they find on the Test Scenario Editor.
    * This is shown on the ErrorBoundary fallback component, when an uncaught error happens.
    */
-  //issueTrackerHref?: string;
-  /**
-   * A flag to enable read-only mode on the DMN Editor.
-   * When enabled navigation is still possible (e.g. entering the Boxed Expression Editor, Data Types and Included Models),
-   * but no changes can be made and the model itself is unaltered.
-   */
-  isReadOnly?: boolean;
+  issueTrackerHref?: string;
   /**
    * When users want to jump to another file, this method is called, allowing the controller of this component decide what to do.
    * Links are only rendered if this is provided. Otherwise, paths will be rendered as text.
@@ -161,7 +128,7 @@ export type TestScenarioEditorProps = {
    */
   //onRequestToResolvePath?: OnRequestToResolvePath;
   /**
-   * Notifies the caller when the DMN Editor performs a new edit after the debounce time.
+   * Notifies the caller when the Test Scenario Editor performs a new edit after the debounce time.
    */
   onModelDebounceStateChanged?: (changed: boolean) => void;
 };
@@ -181,10 +148,8 @@ export type TestScenarioDataObject = {
 };
 
 export type TestScenarioEditorRef = {
-  /* TODO Convert these to Promises */
-  getContent(): string;
+  reset: (mode: SceSimModel) => void;
   getDiagramSvg: () => Promise<string | undefined>;
-  setContent(pathRelativeToTheWorkspaceRoot: string, content: string): void;
 };
 
 export type TestScenarioSettings = {
@@ -466,32 +431,75 @@ export const TestScenarioEditorInternal = ({
   onModelDebounceStateChanged,
   forwardRef,
 }: TestScenarioEditorProps & { forwardRef?: React.Ref<TestScenarioEditorRef> }) => {
-  /** Test Scenario File, Model and Marshaller Management  */
+  console.trace("[TestScenarioEditorInternal] Component creation ... ");
 
-  //const [scesimFile, setScesimFile] = useState({ content: "", path: "" });
-
-  //const marshaller = useMemo(() => getMarshaller(scesimFile.content.trim()), [scesimFile]);
-
-  /*
-  const scesimLoaded: { ScenarioSimulationModel: SceSim__ScenarioSimulationModelType } = useMemo(
-    () => marshaller.parser.parse(),
-    [marshaller.parser]
-  ); */
   const scesim = useTestScenarioEditorStore((s) => s.scesim);
+  const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
+  const { testScenarioEditorModelBeforeEditingRef, testScenarioEditorRootElementRef } = useTestScenarioEditor();
 
-  const scesimLoaded = useTestScenarioEditorStore((s) => s.scesim.model);
+  const [scbesimModel, setScesimModel] = useState(scesim.model);
 
-  const [scesimModel, setScesimModel] = useState(scesimLoaded);
+  /** Implementing Editor APIs */
+
+  // Allow imperativelly controlling the Editor.
+  useImperativeHandle(
+    forwardRef,
+    () => ({
+      reset: (model) => {
+        const state = testScenarioEditorStoreApi.getState();
+        return state.dispatch(state).scesim.reset(model);
+      },
+      getDiagramSvg: async () => undefined,
+    }),
+    [testScenarioEditorStoreApi]
+  );
+
+  // Make sure the Test Scenario Editor reacts to props changing.
+  useEffectAfterFirstRender(() => {
+    testScenarioEditorStoreApi.setState((state) => {
+      // Avoid unecessary state updates
+      if (model === state.scesim.model) {
+        return;
+      }
+
+      console.trace("[TestScenarioEditorInternal: model externally updated!");
+
+      state.scesim.model = model;
+      testScenarioEditorModelBeforeEditingRef.current = model;
+    });
+  }, [testScenarioEditorStoreApi, model]);
+
+  // Only notify changes when dragging/resizing operations are not happening.
+  useEffectAfterFirstRender(() => {
+    onModelDebounceStateChanged?.(false);
+
+    const timeout = setTimeout(() => {
+      // Ignore changes made outside... If the controller of the component
+      // changed its props, it knows it already, we don't need to call "onModelChange" again.
+      if (model === scesim.model) {
+        return;
+      }
+
+      onModelDebounceStateChanged?.(true);
+      console.trace("[TestScenarioEditorInternal: Model changed!");
+      console.trace(scesim.model);
+      onModelChange?.(scesim.model);
+    }, 500);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [onModelChange, scesim.model]);
 
   const scesimFileStatus = useMemo(() => {
-    if (scesimModel.ScenarioSimulationModel) {
-      const parserErrorField = "parsererror" as keyof typeof scesimModel.ScenarioSimulationModel;
-      if (scesimModel.ScenarioSimulationModel[parserErrorField]) {
+    if (scesim.model.ScenarioSimulationModel) {
+      const parserErrorField = "parsererror" as keyof typeof scesim.model.ScenarioSimulationModel;
+      if (scesim.model.ScenarioSimulationModel[parserErrorField]) {
         return TestScenarioFileStatus.ERROR;
       }
-      if (scesimModel.ScenarioSimulationModel["@_version"] != CURRENT_SUPPORTED_VERSION) {
+      if (scesim.model.ScenarioSimulationModel["@_version"] != CURRENT_SUPPORTED_VERSION) {
         return TestScenarioFileStatus.UNSUPPORTED;
-      } else if (scesimModel.ScenarioSimulationModel["settings"]?.["type"]) {
+      } else if (scesim.model.ScenarioSimulationModel["settings"]?.["type"]) {
         return TestScenarioFileStatus.VALID;
       } else {
         return TestScenarioFileStatus.NEW;
@@ -499,56 +507,9 @@ export const TestScenarioEditorInternal = ({
     } else {
       return TestScenarioFileStatus.EMPTY;
     }
-  }, [scesimModel]);
+  }, [scesim]);
 
-  console.log("STATUS: " + scesimFileStatus);
-
-  useEffect(() => {
-    console.debug("SCESIM Model updated");
-    console.debug(scesimLoaded);
-    setScesimModel(scesimLoaded);
-  }, [scesimLoaded]);
-
-  /** Implementing Editor APIs */
-
-  useImperativeHandle(
-    forwardRef,
-    () => ({
-      getContent: () => "",
-      getDiagramSvg: async () => undefined,
-      setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot, content) => {
-        console.debug("SHOULDN'T LAND HERE!!!!");
-        console.debug("=== FILE CONTENT ===");
-        console.debug(content ? content : "EMPTY FILE");
-        console.debug("=== END FILE CONTENT ===");
-
-        //setScesimFile({ content: content || EMPTY_ONE_EIGHT, path: normalizedPosixPathRelativeToTheWorkspaceRoot });
-      },
-    }),
-    []
-  );
-
-  /*
-    // Only notify changes when dragging/resizing operations are not happening.
-    useEffect(() => {
-      onModelDebounceStateChanged?.(false);
-  
-      const timeout = setTimeout(() => {
-        // Ignore changes made outside... If the controller of the component
-        // changed its props, it knows it already, we don't need to call "onModelChange" again.
-        if (model === scesim.model) {
-          return;
-        }
-  
-        onModelDebounceStateChanged?.(true);
-        console.debug("Test Scenario EDITOR: Model changed!");
-        onModelChange?.(scesim.model);
-      }, 500);
-  
-      return () => {
-        clearTimeout(timeout);
-      };
-    }, [onModelChange, scesim.model]);*/
+  console.trace("[TestScenarioEditorInternal] File Status: " + TestScenarioFileStatus[scesimFileStatus]);
 
   /** scesim model update functions */
 
@@ -600,18 +561,16 @@ export const TestScenarioEditorInternal = ({
   );
 
   return (
-    <>
+    <div ref={testScenarioEditorRootElementRef}>
       {(() => {
         switch (scesimFileStatus) {
           case TestScenarioFileStatus.EMPTY:
-            console.debug("EMPTY");
             return (
               <Bullseye>
                 <Spinner aria-label="SCESIM Data loading .." />
               </Bullseye>
             );
           case TestScenarioFileStatus.ERROR:
-            console.debug("ERROR");
             return (
               <TestScenarioParserErrorPanel
                 parserErrorTitle={"File parsing error"}
@@ -622,15 +581,13 @@ export const TestScenarioEditorInternal = ({
               />
             );
           case TestScenarioFileStatus.NEW:
-            console.debug("NEW");
             return <TestScenarioCreationPanel onCreateScesimButtonClicked={setInitialSettings} />;
           case TestScenarioFileStatus.UNSUPPORTED:
-            console.debug("UNSUPPORTED");
             return (
               <TestScenarioParserErrorPanel
                 parserErrorTitle={
                   "This file holds a Test Scenario asset version (" +
-                  scesimModel.ScenarioSimulationModel["@_version"] +
+                  scesim.model.ScenarioSimulationModel["@_version"] +
                   ") not supported"
                 }
                 parserErrorMessage={
@@ -642,29 +599,27 @@ export const TestScenarioEditorInternal = ({
               />
             );
           case TestScenarioFileStatus.VALID:
-            console.debug("VALID");
             return (
               <TestScenarioMainPanel
                 fileName={"Test"}
-                scesimModel={scesimModel}
+                scesimModel={scesim.model}
                 updateTestScenarioModel={setScesimModel}
                 updateSettingField={updateSettingsField}
               />
             );
         }
       })()}
-    </>
+    </div>
   );
 };
 
 export const TestScenarioEditor = React.forwardRef(
   (props: TestScenarioEditorProps, ref: React.Ref<TestScenarioEditorRef>) => {
-    const [scesimFileParsingError, setScesimFileParsingError] = useState<Error | null>(null);
-    console.debug("SCESIM setContent called");
-    console.debug("=== FILE CONTENT ===");
-    console.debug(props.model);
+    console.trace("[TestScenarioEditor] Component creation ... ");
+    console.trace(props.model);
 
     const store = useMemo(
+      /* DEFINE EMPTY CACHE */
       () => createTestScenarioEditorStore(props.model /*new ComputedStateCache<Computed>(INITIAL_COMPUTED_CACHE)*/),
       // Purposefully empty. This memoizes the initial value of the store
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -672,29 +627,12 @@ export const TestScenarioEditor = React.forwardRef(
     );
     const storeRef = React.useRef<StoreApiType>(store);
 
-    /*
     const resetState: ErrorBoundaryPropsWithFallback["onReset"] = useCallback(({ args }) => {
       storeRef.current?.setState((state) => {
-        state.diagram = defaultStaticState().diagram;
-        state.dmn.model = args[0];
+        //state.diagram = defaultStaticState().diagram;
+        state.scesim.model = args[0];
       });
     }, []);
-  
-    return (
-      <DmnEditorContextProvider {...props}>
-        <ErrorBoundary FallbackComponent={DmnEditorErrorFallback} onReset={resetState}>
-          <DmnEditorSettingsContextProvider {...props}>
-            <DmnEditorExternalModelsContextProvider {...props}>
-              <DmnEditorStoreApiContext.Provider value={storeRef.current}>
-                <CommandsContextProvider>
-                  <DmnEditorInternal forwardRef={ref} {...props} />
-                </CommandsContextProvider>
-              </DmnEditorStoreApiContext.Provider>
-            </DmnEditorExternalModelsContextProvider>
-          </DmnEditorSettingsContextProvider>
-        </ErrorBoundary>
-      </DmnEditorContextProvider>
-    );*/
 
     return (
       <I18nDictionariesProvider
@@ -703,21 +641,13 @@ export const TestScenarioEditor = React.forwardRef(
         initialLocale={navigator.language}
         ctx={TestScenarioEditorI18nContext}
       >
-        <ErrorBoundary
-          error={
-            <TestScenarioParserErrorPanel
-              parserErrorTitle={"File parsing error"}
-              parserErrorMessage={
-                "Impossibile to correctly parse the provided scesim file. Cause: " + scesimFileParsingError?.message
-              }
-            />
-          }
-          setError={setScesimFileParsingError}
-        >
-          <TestScenarioEditorStoreApiContext.Provider value={storeRef.current}>
-            <TestScenarioEditorInternal forwardRef={ref} {...props} />
-          </TestScenarioEditorStoreApiContext.Provider>
-        </ErrorBoundary>
+        <TestScenarioEditorContextProvider {...props}>
+          <ErrorBoundary FallbackComponent={TestScenarioEditorErrorFallback} onReset={resetState}>
+            <TestScenarioEditorStoreApiContext.Provider value={storeRef.current}>
+              <TestScenarioEditorInternal forwardRef={ref} {...props} />
+            </TestScenarioEditorStoreApiContext.Provider>
+          </ErrorBoundary>
+        </TestScenarioEditorContextProvider>
       </I18nDictionariesProvider>
     );
   }
