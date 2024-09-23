@@ -27,157 +27,157 @@ describe("updateExpressionWidth", () => {
   const drdIndex = 0;
 
   test("when a definition is deleted from widthsFromId map, it should also be deleted from definitions", () => {
-    const widthDefinitionsForElementA = { dmnElementRef: "a", widths: [10, 150, 110] };
-    const widthDefinitionsForElementB = { dmnElementRef: "b", widths: [20, 250, 210] };
-    const widthDefinitionsForElementC = { dmnElementRef: "c", widths: [30, 350, 310] };
-    const widthDefinitionsForElementD = { dmnElementRef: "d", widths: [40, 450, 410] };
+    const widthEntryForElementA = { dmnElementRef: "a", widths: [10, 150, 110] };
+    const widthEntryForElementB = { dmnElementRef: "b", widths: [20, 250, 210] };
+    const widthEntryForElementC = { dmnElementRef: "c", widths: [30, 350, 310] };
+    const widthEntryForElementD = { dmnElementRef: "d", widths: [40, 450, 410] };
 
     const definitions = createDefinitionsWithComponentWidths([
-      widthDefinitionsForElementA,
-      widthDefinitionsForElementB,
-      widthDefinitionsForElementC,
-      widthDefinitionsForElementD,
+      widthEntryForElementA,
+      widthEntryForElementB,
+      widthEntryForElementC,
+      widthEntryForElementD,
     ]);
 
     const widthsById: Map<string, number[]> = new Map([
-      [widthDefinitionsForElementA.dmnElementRef, widthDefinitionsForElementA.widths],
-      [widthDefinitionsForElementB.dmnElementRef, widthDefinitionsForElementB.widths],
-      [widthDefinitionsForElementC.dmnElementRef, widthDefinitionsForElementC.widths],
+      [widthEntryForElementA.dmnElementRef, widthEntryForElementA.widths],
+      [widthEntryForElementB.dmnElementRef, widthEntryForElementB.widths],
+      [widthEntryForElementC.dmnElementRef, widthEntryForElementC.widths],
     ]);
 
     updateExpressionWidths({ definitions, drdIndex, widthsById });
 
     expect(
       definitionContainsWidthExtension({
-        widthDefinition: widthDefinitionsForElementA,
+        widthEntry: widthEntryForElementA,
         definitions: definitions,
       })
     ).toBeTruthy();
 
     expect(
       definitionContainsWidthExtension({
-        widthDefinition: widthDefinitionsForElementB,
+        widthEntry: widthEntryForElementB,
         definitions: definitions,
       })
     ).toBeTruthy();
 
     expect(
       definitionContainsWidthExtension({
-        widthDefinition: widthDefinitionsForElementC,
+        widthEntry: widthEntryForElementC,
         definitions: definitions,
       })
     ).toBeTruthy();
 
     expect(
       definitionContainsWidthExtension({
-        widthDefinition: widthDefinitionsForElementD,
+        widthEntry: widthEntryForElementD,
         definitions: definitions,
       })
     ).toBeFalsy();
   });
 
   test("when a definition is changed in widthsFromId map, it should be changed in definitions", () => {
-    const originalWidthDefinitionsForElementA = { dmnElementRef: "a", widths: [1, 1, 1] };
-    const originalWidthDefinitionsForElementB = { dmnElementRef: "b", widths: [2, 2, 2] };
-    const originalWidthDefinitionsForElementC = { dmnElementRef: "c", widths: [3, 3, 3] };
+    const originalWidthEntryForElementA = { dmnElementRef: "a", widths: [1, 1, 1] };
+    const originalWidthEntryForElementB = { dmnElementRef: "b", widths: [2, 2, 2] };
+    const originalWidthEntryForElementC = { dmnElementRef: "c", widths: [3, 3, 3] };
 
-    const changedWidthDefinitionsForElementA = { dmnElementRef: "a", widths: [11, 11, 11, 11, 11] };
-    const changedWidthDefinitionsForElementB = { dmnElementRef: "b", widths: [20, 20, 20] };
-    const changedWidthDefinitionsForElementC = { dmnElementRef: "c", widths: [3, 3] };
+    const changedWidthEntryForElementA = { dmnElementRef: "a", widths: [11, 11, 11, 11, 11] };
+    const changedWidthEntryForElementB = { dmnElementRef: "b", widths: [20, 20, 20] };
+    const changedWidthEntryForElementC = { dmnElementRef: "c", widths: [3, 3] };
 
     const definitions = createDefinitionsWithComponentWidths([
-      originalWidthDefinitionsForElementA,
-      originalWidthDefinitionsForElementB,
-      originalWidthDefinitionsForElementC,
+      originalWidthEntryForElementA,
+      originalWidthEntryForElementB,
+      originalWidthEntryForElementC,
     ]);
 
     const widthsById: Map<string, number[]> = new Map([
-      [changedWidthDefinitionsForElementA.dmnElementRef, changedWidthDefinitionsForElementA.widths],
-      [changedWidthDefinitionsForElementB.dmnElementRef, changedWidthDefinitionsForElementB.widths],
-      [changedWidthDefinitionsForElementC.dmnElementRef, changedWidthDefinitionsForElementC.widths],
+      [changedWidthEntryForElementA.dmnElementRef, changedWidthEntryForElementA.widths],
+      [changedWidthEntryForElementB.dmnElementRef, changedWidthEntryForElementB.widths],
+      [changedWidthEntryForElementC.dmnElementRef, changedWidthEntryForElementC.widths],
     ]);
 
     updateExpressionWidths({ definitions, drdIndex, widthsById });
 
     expect(
       definitionContainsWidthExtension({
-        widthDefinition: originalWidthDefinitionsForElementA,
+        widthEntry: originalWidthEntryForElementA,
         definitions: definitions,
       })
     ).toBeFalsy();
 
     expect(
       definitionContainsWidthExtension({
-        widthDefinition: originalWidthDefinitionsForElementB,
+        widthEntry: originalWidthEntryForElementB,
         definitions: definitions,
       })
     ).toBeFalsy();
 
     expect(
       definitionContainsWidthExtension({
-        widthDefinition: originalWidthDefinitionsForElementC,
+        widthEntry: originalWidthEntryForElementC,
         definitions: definitions,
       })
     ).toBeFalsy();
 
     expect(
       definitionContainsWidthExtension({
-        widthDefinition: changedWidthDefinitionsForElementA,
+        widthEntry: changedWidthEntryForElementA,
         definitions: definitions,
       })
     ).toBeTruthy();
 
     expect(
       definitionContainsWidthExtension({
-        widthDefinition: changedWidthDefinitionsForElementB,
+        widthEntry: changedWidthEntryForElementB,
         definitions: definitions,
       })
     ).toBeTruthy();
 
     expect(
       definitionContainsWidthExtension({
-        widthDefinition: changedWidthDefinitionsForElementC,
+        widthEntry: changedWidthEntryForElementC,
         definitions: definitions,
       })
     ).toBeTruthy();
   });
 
   test("when a definition is added in widthsFromId map, it should also be added in definitions", () => {
-    const originalWidthDefinitionsForElementA = { dmnElementRef: "a", widths: [1, 1, 1] };
-    const originalWidthDefinitionsForElementB = { dmnElementRef: "b", widths: [2, 2, 2] };
+    const originalWidthEntryForElementA = { dmnElementRef: "a", widths: [1, 1, 1] };
+    const originalWidthEntryForElementB = { dmnElementRef: "b", widths: [2, 2, 2] };
 
-    const newWidthDefinition = { dmnElementRef: "c", widths: [3, 3] };
+    const newWidthEntry = { dmnElementRef: "c", widths: [3, 3] };
 
     const definitions = createDefinitionsWithComponentWidths([
-      originalWidthDefinitionsForElementA,
-      originalWidthDefinitionsForElementB,
+      originalWidthEntryForElementA,
+      originalWidthEntryForElementB,
     ]);
 
     const widthsById: Map<string, number[]> = new Map([
-      [originalWidthDefinitionsForElementA.dmnElementRef, originalWidthDefinitionsForElementA.widths],
-      [originalWidthDefinitionsForElementB.dmnElementRef, originalWidthDefinitionsForElementB.widths],
-      [newWidthDefinition.dmnElementRef, newWidthDefinition.widths],
+      [originalWidthEntryForElementA.dmnElementRef, originalWidthEntryForElementA.widths],
+      [originalWidthEntryForElementB.dmnElementRef, originalWidthEntryForElementB.widths],
+      [newWidthEntry.dmnElementRef, newWidthEntry.widths],
     ]);
 
     updateExpressionWidths({ definitions, drdIndex, widthsById });
 
     expect(
       definitionContainsWidthExtension({
-        widthDefinition: originalWidthDefinitionsForElementA,
+        widthEntry: originalWidthEntryForElementA,
         definitions: definitions,
       })
     ).toBeTruthy();
 
     expect(
       definitionContainsWidthExtension({
-        widthDefinition: originalWidthDefinitionsForElementB,
+        widthEntry: originalWidthEntryForElementB,
         definitions: definitions,
       })
     ).toBeTruthy();
 
     expect(
       definitionContainsWidthExtension({
-        widthDefinition: newWidthDefinition,
+        widthEntry: newWidthEntry,
         definitions: definitions,
       })
     ).toBeTruthy();
@@ -185,15 +185,15 @@ describe("updateExpressionWidth", () => {
 });
 
 function definitionContainsWidthExtension(args: {
-  widthDefinition: { dmnElementRef: string; widths: number[] };
+  widthEntry: { dmnElementRef: string; widths: number[] };
   definitions: Normalized<DMN15__tDefinitions>;
 }) {
   const componentsWidthExtension =
     args.definitions?.["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]["di:extension"]?.["kie:ComponentsWidthsExtension"];
 
   const element = {
-    "@_dmnElementRef": args.widthDefinition.dmnElementRef,
-    "kie:width": args.widthDefinition.widths.map((w) => {
+    "@_dmnElementRef": args.widthEntry.dmnElementRef,
+    "kie:width": args.widthEntry.widths.map((w) => {
       return { __$$text: w };
     }),
   };
