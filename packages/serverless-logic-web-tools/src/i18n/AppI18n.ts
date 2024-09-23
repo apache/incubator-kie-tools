@@ -71,7 +71,6 @@ interface AppDictionary extends ReferenceDictionary {
       validationError: string;
       connectionError: string;
       configExpiredWarning: string;
-      validDataIndexURLError: string;
     };
     confirmModal: {
       title: string;
@@ -104,6 +103,12 @@ interface AppDictionary extends ReferenceDictionary {
     virtualServiceRegistry: {
       dependencyWarning: string;
       dependencyWarningTooltip: string;
+    };
+  };
+  RuntimeToolsSettings: {
+    configModal: {
+      validDataIndexURLError: string;
+      dataIndexConnectionError: string;
     };
   };
 }

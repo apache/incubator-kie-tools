@@ -27,10 +27,10 @@ export function removeTrailingSlashFromUrl(url: string): string {
   return url.replace(/\/$/, "");
 }
 
-export function validDataIndexUrl(url: string): boolean {
+export function isDataIndexUrlValid(url: string): boolean {
   try {
-    new URL(url);
-    return true;
+    const parsedUrl = new URL(url);
+    return parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:";
   } catch (_) {
     return false;
   }

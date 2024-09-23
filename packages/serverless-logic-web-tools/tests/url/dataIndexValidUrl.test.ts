@@ -17,15 +17,15 @@
  * under the License.
  */
 
-import { validDataIndexUrl } from "../../src/url";
+import { isDataIndexUrlValid } from "../../src/url";
 
-describe("removeTrailingSlash", () => {
+describe("isDataIndexUrlValid", () => {
   it.each([
+    ["http://example.com", true],
     ["http://example.com/", true],
     ["https://example.com/", true],
-    ["loremIpsum", false],
-    ["google.com", false],
-  ])("should validate the data index URL", (inputUrl, isValidUrl) => {
-    expect(validDataIndexUrl(inputUrl)).toBe(isValidUrl);
+    ["ftps://example.com/", false],
+  ])("the data index URL %s validation should be %s", (inputUrl, isValidUrl) => {
+    expect(isDataIndexUrlValid(inputUrl)).toBe(isValidUrl);
   });
 });

@@ -71,7 +71,6 @@ export const en: AppI18n = {
       validationError: "You must fill out all required fields before you can proceed.",
       connectionError: "Connection refused. Please check the information provided.",
       configExpiredWarning: "Token or account expired. Please update your configuration.",
-      validDataIndexURLError: "Please enter a valid Data Index URL.",
     },
     confirmModal: {
       title: "Deploy",
@@ -107,6 +106,12 @@ export const en: AppI18n = {
     virtualServiceRegistry: {
       dependencyWarning: "Has foreign workspace dependencies!",
       dependencyWarningTooltip: "Models in this workspace may depend on deployments from other workspaces.",
+    },
+  },
+  RuntimeToolsSettings: {
+    configModal: {
+      validDataIndexURLError: "Please enter a valid Data Index URL.",
+      dataIndexConnectionError: "Connection refused. Please check the information provided.",
     },
   },
 };

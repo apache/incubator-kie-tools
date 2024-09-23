@@ -73,7 +73,6 @@ export const de: AppI18n = {
       validationError: "Sie müssen alle erforderlichen Felder ausfüllen, bevor Sie fortfahren können.",
       connectionError: "Verbindung abgelehnt. Bitte überprüfen Sie die angegebenen Informationen.",
       configExpiredWarning: "Token oder Konto ist abgelaufen. Bitte aktualisieren Sie Ihre Konfiguration.",
-      validDataIndexURLError: "Bitte geben Sie eine gültige Datenindex-URL ein.",
     },
     confirmModal: {
       title: "Bereitstellen",
@@ -111,6 +110,12 @@ export const de: AppI18n = {
       dependencyWarning: "Es gibt Abhängigkeiten von fremden Arbeitsbereichen!",
       dependencyWarningTooltip:
         "Modelle in diesem Arbeitsbereich können von Bereitstellungen aus anderen Arbeitsbereichen abhängen.",
+    },
+  },
+  RuntimeToolsSettings: {
+    configModal: {
+      validDataIndexURLError: "Bitte geben Sie eine gültige Datenindex-URL ein.",
+      dataIndexConnectionError: "Verbindung abgelehnt. Bitte überprüfen Sie die bereitgestellten Informationen.",
     },
   },
 };

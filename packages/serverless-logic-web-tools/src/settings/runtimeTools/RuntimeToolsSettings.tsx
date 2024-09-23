@@ -43,15 +43,17 @@ import {
   saveConfigCookie,
 } from "./RuntimeToolsConfig";
 import { removeTrailingSlashFromUrl } from "../../url";
-import { validDataIndexUrl } from "../../url";
+import { isDataIndexUrlValid } from "../../url";
 import { Alert } from "@patternfly/react-core/dist/js";
 import { useAppI18n } from "../../i18n";
+import { verifyDataIndex } from "@kie-tools/runtime-tools-swf-gateway-api/src/gatewayApi/apis";
 
 const PAGE_TITLE = "Runtime Tools";
 
-enum DataIndexValidation {
+enum FormValiationOptions {
   INITIAL = "INITIAL",
   INVALID = "INVALID",
+  CONNECTION_ERROR = "CONNECTION_ERROR",
 }
 
 export function RuntimeToolsSettings(props: SettingsPageProps) {
@@ -60,10 +62,12 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
   const settingsDispatch = useSettingsDispatch();
   const [config, setConfig] = useState(settings.runtimeTools.config);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDataIndexUrlValidated, setDataIndexUrlValidated] = useState(DataIndexValidation.INVALID);
+  const [isDataIndexUrlValidated, setDataIndexUrlValidated] = useState(FormValiationOptions.INITIAL);
+  const [isDataIndexUrlVerified, setisDataIndexUrlVerified] = useState(FormValiationOptions.INITIAL);
+  const [dataIndexUrlAvailable, setDataIndexUrlAvailable] = useState<boolean>(false);
 
   useEffect(() => {
-    setDataIndexUrlValidated(DataIndexValidation.INITIAL);
+    setDataIndexUrlValidated(FormValiationOptions.INITIAL);
   }, [config]);
 
   const handleModalToggle = useCallback(() => {
@@ -90,13 +94,21 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
     resetConfigCookie();
   }, [settingsDispatch.runtimeTools]);
 
-  const onApply = useCallback(() => {
+  const onApply = useCallback(async () => {
     const newConfig: RuntimeToolsSettingsConfig = {
       dataIndexUrl: removeTrailingSlashFromUrl(config.dataIndexUrl),
     };
-    if (!validDataIndexUrl(config.dataIndexUrl)) {
-      setDataIndexUrlValidated(DataIndexValidation.INVALID);
+    const isDataIndexUrlVerified = await verifyDataIndex(config.dataIndexUrl);
+    if (!isDataIndexUrlValid(config.dataIndexUrl)) {
+      setDataIndexUrlValidated(FormValiationOptions.INVALID);
       return;
+    } else {
+      if (isDataIndexUrlVerified == true) {
+        setDataIndexUrlAvailable(true);
+      } else {
+        setisDataIndexUrlVerified(FormValiationOptions.CONNECTION_ERROR);
+        return;
+      }
     }
 
     setConfig(newConfig);
@@ -163,14 +175,25 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
           appendTo={props.pageContainerRef.current || document.body}
         >
           <Form>
-            {isDataIndexUrlValidated === DataIndexValidation.INVALID && (
+            {isDataIndexUrlValidated === FormValiationOptions.INVALID && (
               <FormAlert>
                 <Alert
                   variant="danger"
-                  title={i18n.openshift.configModal.validDataIndexURLError}
+                  title={i18n.RuntimeToolsSettings.configModal.validDataIndexURLError}
                   aria-live="polite"
                   isInline
                   data-testid="alert-data-index-url-invalid"
+                />
+              </FormAlert>
+            )}
+            {isDataIndexUrlVerified === FormValiationOptions.CONNECTION_ERROR && (
+              <FormAlert>
+                <Alert
+                  variant="danger"
+                  title={i18n.RuntimeToolsSettings.configModal.dataIndexConnectionError}
+                  aria-live="polite"
+                  isInline
+                  data-testid="alert-data-index-url-connection-error"
                 />
               </FormAlert>
             )}
