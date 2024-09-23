@@ -1,3 +1,4 @@
+###
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,37 +15,320 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-/target
-/local
-target/
 
-# bats
-bats/*
+## ci
+!/.ci
+
+## node
+**/node_modules/
+**/dist/
+**/dist-dev/
+**/dist-dev-webapp/
+**/dist-tests/
+**/dist-tests-e2e/
+**/dist-storybook/
+**/e2e-tests-tmp/
+**/coverage/
+**/target/
+**/.dashbuilder/
+**/out/
+**/.DS_Store
+*.log
+.classpath
+.project
+**/.settings/
+package-lock.json
+
+## chrome-extension-pack-kogito-kie-editors
+**/logs/
+**/screenshots/
+
+# builds
+**/build
+**/.rpt2_cache
+
+# misc
+**/.env
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+!packages/kie-sandbox-distribution/.env
+
+## kie-editors-standalone
+**/e2e-tests/**/videos
+**/e2e-tests/**/screenshots
+**/e2e-tests/**/results
+**/e2e-tests/**/downloads
+
+## online-editor
+**/videos/
+!packages/online-editor/build
+
+## serverless-logic-web-tools
+!packages/serverless-logic-web-tools/build
+
+## runtime-tools-task-console-webapp
+!packages/runtime-tools-task-console-webapp/build
+
+## runtime-tools-management-console-webapp
+!packages/runtime-tools-management-console-webapp/build
+
+## dev-deployment-dmn-form-webapp
+!packages/dev-deployment-dmn-form-webapp/build
+
+## vscode-*
+**/.vscode-test/
+**/.vscode-test-web/
+*.vsix
+*.dockerimage
+**/test-resources/
+**/vscode*-tmp
+
 
 # Eclipse, Netbeans and IntelliJ files
-/.*
-!.gitignore
-!.github
-!.ci
-/nbproject
-/*.ipr
-/*.iws
-*.iml
-*/*.iml
-.idea/
+**/nbproject
+**/.classpath
+**/.project
+**/.settings
 
-# Repository wide ignore mac DS_Store files
+**/jitexecutor
+
+# Language Server Extension
+packages/dmn-vscode-extension/server
+packages/bpmn-vscode-extension/server
+packages/kie-editors-dev-vscode-extension/server
+packages/vscode-java-code-completion-extension-plugin/vscode-java-code-completion-extension-plugin-core/lib
+
+# imported from kogito-editors-java
+.settings
+.metadata/*
+.gwt-tmp/
+target/
+bin/
+.errai/
 .DS_Store
+*.releaseBackup
+*.versionsBackup
+release.properties
+.gwt
+/war/WEB-INF/classes/
+packages/stunner-editors/errai-ioc/war/WEB-INF/classes/
+packages/stunner-editors/errai-tools/war/
+*/**/war/WEB-INF/classes
+*/**/war/AsyncDemo/
+*/**/war/ClientService/
+*/**/war/HelloWorld/
+*/**/war/QueryService/
+*/**/war/RPCDemo/
+*/**/war/Serialization/
+*/**/war/StockDemo/
+*.JUnit/
+*/**/gwt-unitCache/
+*/**/class_list.txt
+*.jpage
+packages/stunner-editors/**/.factorypath
+packages/stunner-editors/**/dependency-reduced-pom.xml
+packages/stunner-editors/**/org.kie.workbench.screens
+packages/stunner-editors/**/org.kie.workbench.widgets
+packages/stunner-editors/**/org.kie.workbench.forms
+packages/stunner-editors/**/videos/**
+packages/stunner-editors/**/*.mp4
+packages/stunner-editors/**/.netlify
+packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/java/org/
+packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/resources/org/drools/workbench/scenariosimulation/kogito/marshaller/js/SCESIM.js
+packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/resources/org/drools/workbench/scenariosimulation/kogito/marshaller/js/Jsonix-all.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/kogito-editors-js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/org.kie.workbench.common.dmn.showcase.DMNKogitoRuntimeWebapp/
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/model/DC.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/model/DI.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/model/DMN12.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/model/DMNDI12.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/model/KIE.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/model/Jsonix-all.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/model/MainJs.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/mapper/JSIName.java
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/mapper/JsUtils.java
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/MainJs.java
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/callbacks/
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/dc/
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/di/
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/dmn12/
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/dmndi12/
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/kie/
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/DC.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/DI.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/DMNDI12.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/DMN12.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/KIE.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/Jsonix-all.js
+packages/stunner-editors/**/src/main/webapp/org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoTesting/
+packages/stunner-editors/**/src/main/webapp/org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoRuntime/
+packages/stunner-editors/**/src/main/webapp/org.kie.workbench.common.stunner.kogito.StunnerStandaloneShowcase/
+packages/stunner-editors/**/src/main/webapp/org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor/
+packages/stunner-editors/**/src/main/webapp/org.kie.workbench.common.dmn.showcase.DMNShowcase/
+packages/stunner-editors/**/src/main/webapp/WEB-INF/classes/
+packages/stunner-editors/**/src/main/webapp/WEB-INF/deploy/
+packages/stunner-editors/**/src/main/webapp/WEB-INF/lib/
+packages/stunner-editors/**/src/main/webapp/WEB-INF/model/
+packages/stunner-editors/**/src/main/webapp/model/
+packages/stunner-editors/**/kie-wb-common-dmn-webapp
+packages/stunner-editors/.idea
 
-# Original jbpm ignores
-*~
+# serverless-workflow-diagram-editor
+packages/serverless-workflow-diagram-editor/**/dependency-reduced-pom.xml
+packages/serverless-workflow-diagram-editor/**/src/main/webapp/WEB-INF/classes/
+packages/serverless-workflow-diagram-editor/**/src/main/webapp/WEB-INF/deploy/
+packages/serverless-workflow-diagram-editor/**/src/main/webapp/WEB-INF/lib/
+packages/serverless-workflow-diagram-editor/**/src/main/webapp/WEB-INF/model/
+packages/serverless-workflow-diagram-editor/**/src/main/webapp/model/
+packages/serverless-workflow-diagram-editor/kie-wb-common-stunner/kie-wb-common-stunner-client/kie-wb-common-stunner-lienzo/src/main/resources/org/kie/workbench/common/stunner/client/lienzo/resources/
 
-# Test info
-/settings*.xml
-/lib-jdbc/
-*.db
-*.tlog
 
-# python
-scripts/__pycache__
+# dashbuilder
+packages/dashbuilder/**/org.uberfire
+packages/dashbuilder/**/org.dashbuilder
+packages/dashbuilder/**/WEB-INF/classes/
+packages/dashbuilder/dashboard.zip
+packages/dashbuilder/nbproject
+packages/dashbuilder/uberfire-docs/src/main/asciidoc/*.html
+packages/dashbuilder/**/org.dashbuilder.DashbuilderAuthoring
+packages/dashbuilder/**/gwt-unitCache
+packages/dashbuilder/dashbuilder-authoring/src/main/webapp/WEB-INF/lib/
+packages/dashbuilder/dashbuilder-authoring/src/main/webapp/WEB-INF/classes/
+packages/dashbuilder/**/dependency-reduced-pom.xml
+packages/dashbuilder/dashbuilder-runtime-parent/dashbuilder-runtime-client/src/main/webapp/dashbuilder/component
+**/.apt_generated/
+**/.apt_generated_tests/
 
+#kie-sandbox-fs
+packages/kie-sandbox-fs/dist
+packages/kie-sandbox-fs/coverage
+packages/kie-sandbox-fs/junit
+packages/kie-sandbox-fs/*-0.0.0-development.tgz
+
+# sonataflow-operator
+# These files are generated by Cekit, we can ignore the operator-sdk ones.
+packages/sonataflow-operator/bundle.Dockerfile
+packages/sonataflow-operator/Dockerfile
+# Test binary, built with `go test -c`
+packages/sonataflow-operator/**/*.test
+# Output of the go coverage tool, specifically when used with LiteIDE
+packages/sonataflow-operator/**/*.out
+# Build
+packages/sonataflow-operator/bin/
+packages/sonataflow-operator/target/
+packages/sonataflow-operator/e2e-test-report.xml
+
+#angular
+**/.angular
+
+#maven
+.flattened-pom.xml
+**/mvnw
+**/mvnw.cmd
+**/.mvn
+
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
+# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
+
+# User-specific stuff
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+
+# AWS User-specific
+.idea/**/aws.xml
+
+# Generated files
+.idea/**/contentModel.xml
+
+# Sensitive or high-churn files
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+.idea/**/dbnavigator.xml
+
+# Gradle
+.idea/**/gradle.xml
+.idea/**/libraries
+
+# Gradle and Maven with auto-import
+# When using Gradle or Maven with auto-import, you should exclude module files,
+# since they will be recreated, and may cause churn.  Uncomment if using
+# auto-import.
+.idea/artifacts
+.idea/compiler.xml
+.idea/jarRepositories.xml
+.idea/modules.xml
+.idea/*.iml
+.idea/modules
+*.iml
+*.ipr
+
+# CMake
+cmake-build-*/
+
+# Mongo Explorer plugin
+.idea/**/mongoSettings.xml
+
+# File-based project format
+*.iws
+
+# IntelliJ
+out/
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Cursive Clojure plugin
+.idea/replstate.xml
+
+# SonarLint plugin
+.idea/sonarlint/
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+# Editor-based Rest Client
+.idea/httpRequests
+
+# Android studio 3.1+ serialized cache file
+.idea/caches/build_file_checksums.ser
+
+# xml-parser-ts-codegen on some packages
+packages/bpmn-marshaller/**/ts-gen
+packages/dmn-marshaller/**/ts-gen
+packages/scesim-marshaller/**/ts-gen
+
+# kogito-sf-{builder|devmode}-image: excluding module build folders
+!packages/sonataflow-image-common/resources/**/build
+!packages/sonataflow-builder-image/resources/**/build
+!packages/sonataflow-devmode-image/resources/**/build
+!packages/sonataflow-image-common/test-resources/
+!packages/sonataflow-builder-image/test-resources/
+!packages/sonataflow-devmode-image/test-resources/
+
+!packages/kogito-data-index-ephemeral-image/test-resources/
+!packages/kogito-data-index-postgresql-image/test-resources/
+!packages/kogito-jobs-service-ephemeral-image/test-resources/
+!packages/kogito-jobs-service-postgresql-image/test-resources/
+!packages/kogito-jobs-service-allinone-image/test-resources/
+!packages/kogito-jit-runner-image/test-resources/
+
+__pycache__
+packages/python-venv/venv
+
+# devbox
+.devbox
