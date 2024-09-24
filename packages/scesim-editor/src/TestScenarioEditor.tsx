@@ -59,7 +59,7 @@ import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
 
 import "./TestScenarioEditor.css";
 import { ComputedStateCache } from "./store/ComputedStateCache";
-import { Computed, createTestScenarioEditorStore } from "./store/TestScenarioEditorStore";
+import { Computed, createTestScenarioEditorStore, TestScenarioEditorTab } from "./store/TestScenarioEditorStore";
 import {
   StoreApiType,
   TestScenarioEditorStoreApiContext,
@@ -76,17 +76,6 @@ import { stat } from "fs";
 const CURRENT_SUPPORTED_VERSION = "1.8";
 
 /* Enums */
-
-export enum TestScenarioEditorDock {
-  CHEATSHEET,
-  DATA_OBJECT,
-  SETTINGS,
-}
-
-enum TestScenarioEditorTab {
-  EDITOR,
-  BACKGROUND,
-}
 
 enum TestScenarioFileStatus {
   EMPTY,
@@ -107,6 +96,11 @@ export type OnSceSimModelChange = (model: SceSimModel) => void;
 
 export type TestScenarioEditorProps = {
   /**
+   * A link that will take users to an issue tracker so they can report problems they find on the Test Scenario Editor.
+   * This is shown on the ErrorBoundary fallback component, when an uncaught error happens.
+   */
+  issueTrackerHref?: string;
+  /**
    * The Test Scenario itself.
    */
   model: SceSimModel;
@@ -115,17 +109,12 @@ export type TestScenarioEditorProps = {
    */
   onModelChange?: OnSceSimModelChange;
   /**
-   * A link that will take users to an issue tracker so they can report problems they find on the Test Scenario Editor.
-   * This is shown on the ErrorBoundary fallback component, when an uncaught error happens.
-   */
-  issueTrackerHref?: string;
-  /**
    * When users want to jump to another file, this method is called, allowing the controller of this component decide what to do.
    * Links are only rendered if this is provided. Otherwise, paths will be rendered as text.
    */
   //onRequestToJumpToPath?: OnRequestToJumpToPath;
   /**
-   * All paths inside the DMN Editor are relative. To be able to resolve them and display them as absolute paths, this function is called.
+   * All paths inside the Test Scenario Editor are relative. To be able to resolve them and display them as absolute paths, this function is called.
    * If undefined, the relative paths will be displayed.
    */
   //onRequestToResolvePath?: OnRequestToResolvePath;
@@ -171,34 +160,39 @@ function TestScenarioMainPanel({
 }) {
   const { i18n } = useTestScenarioEditorI18n();
 
+  const navigation = useTestScenarioEditorStore((s) => s.navigation);
+  const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
+
   const [alert, setAlert] = useState<TestScenarioAlert>({ enabled: false, variant: "info" });
   const [dataObjects, setDataObjects] = useState<TestScenarioDataObject[]>([]);
-  const [dockPanel, setDockPanel] = useState({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT });
   const [selectedColumnMetadata, setSelectedColumnMetaData] = useState<TestScenarioSelectedColumnMetaData | null>(null);
-  const [tab, setTab] = useState(TestScenarioEditorTab.EDITOR);
 
   const scenarioTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
   const backgroundTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
 
-  const onTabChanged = useCallback((_event, tab) => {
-    setSelectedColumnMetaData(null);
-    setTab(tab);
-  }, []);
+  const onTabChanged = useCallback(
+    (_event, tab) => {
+      setSelectedColumnMetaData(null);
+      testScenarioEditorStoreApi.setState((state) => {
+        state.navigation.tab = tab;
+      });
+    },
+    [testScenarioEditorStoreApi]
+  );
 
-  const closeDockPanel = useCallback(() => {
-    setDockPanel((prev) => {
-      return { ...prev, isOpen: false };
-    });
-  }, []);
-
-  const openDockPanel = useCallback((selected: TestScenarioEditorDock) => {
-    setDockPanel({ isOpen: true, selected: selected });
-  }, []);
+  const showDockPanel = useCallback(
+    (show: boolean) => {
+      testScenarioEditorStoreApi.setState((state) => {
+        state.navigation.dock.isOpen = show;
+      });
+    },
+    [testScenarioEditorStoreApi]
+  );
 
   useEffect(() => {
-    setDockPanel({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT });
+    //setDockPanel({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT });
     setSelectedColumnMetaData(null);
-    setTab(TestScenarioEditorTab.EDITOR);
+    //setTab(TestScenarioEditorTab.EDITOR);
   }, [fileName]);
 
   /** This is TEMPORARY */
@@ -294,16 +288,14 @@ function TestScenarioMainPanel({
   return (
     <>
       <div className="kie-scesim-editor--content">
-        <Drawer isExpanded={dockPanel.isOpen} isInline={true} position={"right"}>
+        <Drawer isExpanded={navigation.dock.isOpen} isInline={true} position={"right"}>
           <DrawerContent
             panelContent={
               <TestScenarioDrawerPanel
                 dataObjects={dataObjects}
                 fileName={fileName}
-                onDrawerClose={closeDockPanel}
-                scesimModel={scesimModel}
+                onDrawerClose={() => showDockPanel(false)}
                 selectedColumnMetaData={selectedColumnMetadata}
-                selectedDock={dockPanel.selected}
                 updateSelectedColumnMetaData={setSelectedColumnMetaData}
                 updateTestScenarioModel={updateTestScenarioModel}
               />
@@ -316,9 +308,9 @@ function TestScenarioMainPanel({
                 </div>
               )}
               <div className="kie-scesim-editor--content-tabs">
-                <Tabs isFilled={true} activeKey={tab} onSelect={onTabChanged} role="region">
+                <Tabs isFilled={true} activeKey={navigation.tab} onSelect={onTabChanged} role="region">
                   <Tab
-                    eventKey={TestScenarioEditorTab.EDITOR}
+                    eventKey={TestScenarioEditorTab.SCENARIO}
                     title={
                       <>
                         <TabTitleIcon>
@@ -381,7 +373,7 @@ function TestScenarioMainPanel({
           </DrawerContent>
         </Drawer>
       </div>
-      <TestScenarioSideBarMenu selectedSideBarMenuItem={dockPanel} onSideBarButtonClicked={openDockPanel} />
+      <TestScenarioSideBarMenu />
     </>
   );
 }
