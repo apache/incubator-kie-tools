@@ -154,17 +154,6 @@ export type TestScenarioEditorRef = {
   getDiagramSvg: () => Promise<string | undefined>;
 };
 
-export type TestScenarioSettings = {
-  assetType: string;
-  dmnFilePath?: string;
-  dmnName?: string;
-  dmnNamespace?: string;
-  isStatelessSessionRule?: boolean;
-  isTestSkipped: boolean;
-  kieSessionRule?: string;
-  ruleFlowGroup?: string;
-};
-
 export type TestScenarioSelectedColumnMetaData = {
   factMapping: SceSim__FactMappingType;
   index: number;
@@ -315,15 +304,6 @@ function TestScenarioMainPanel({
                 scesimModel={scesimModel}
                 selectedColumnMetaData={selectedColumnMetadata}
                 selectedDock={dockPanel.selected}
-                testScenarioSettings={{
-                  assetType: scesimModel.ScenarioSimulationModel.settings!.type!.__$$text,
-                  dmnName: scesimModel.ScenarioSimulationModel.settings!.dmnName?.__$$text,
-                  dmnNamespace: scesimModel.ScenarioSimulationModel.settings!.dmnNamespace?.__$$text,
-                  isStatelessSessionRule: scesimModel.ScenarioSimulationModel.settings!.stateless?.__$$text ?? false,
-                  isTestSkipped: scesimModel.ScenarioSimulationModel.settings!.skipFromBuild?.__$$text ?? false,
-                  kieSessionRule: scesimModel.ScenarioSimulationModel.settings!.dmoSession?.__$$text,
-                  ruleFlowGroup: scesimModel.ScenarioSimulationModel.settings!.ruleFlowGroup?.__$$text,
-                }}
                 updateSelectedColumnMetaData={setSelectedColumnMetaData}
                 updateTestScenarioModel={updateTestScenarioModel}
               />

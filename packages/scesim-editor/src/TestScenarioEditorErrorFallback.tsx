@@ -35,6 +35,7 @@ import { useTestScenarioEditorI18n } from "./i18n";
 import { useTestScenarioEditor } from "./TestScenarioEditorContext";
 
 export function TestScenarioEditorErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
+  const { i18n } = useTestScenarioEditorI18n();
   const { testScenarioEditorModelBeforeEditingRef, issueTrackerHref } = useTestScenarioEditor();
 
   const resetToLastWorkingState = useCallback(() => {
@@ -50,11 +51,9 @@ export function TestScenarioEditorErrorFallback({ error, resetErrorBoundary }: F
       <EmptyState style={{ maxWidth: "1280px" }}>
         <EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />
         <Title size={"lg"} headingLevel={"h4"}>
-          An unexpected error happened
+          {i18n.errorFallBack.title}
         </Title>
-        <EmptyStateBody>
-          This is a bug. Please consider reporting it so the DMN Editor can continue improving. See the details below.
-        </EmptyStateBody>
+        <EmptyStateBody>{i18n.errorFallBack.body}</EmptyStateBody>
         <br />
         <ClipboardCopy
           isReadOnly={true}
@@ -78,12 +77,12 @@ export function TestScenarioEditorErrorFallback({ error, resetErrorBoundary }: F
         <br />
         <EmptyStatePrimary>
           <Button variant={ButtonVariant.link} onClick={resetToLastWorkingState}>
-            Try undoing last action
+            {i18n.errorFallBack.lastActionButton}
           </Button>
           {issueTrackerHref && (
             <a href={issueTrackerHref} target={"_blank"}>
               <Button variant={ButtonVariant.link} icon={<ExternalLinkAltIcon />}>
-                File an issue...
+                {i18n.errorFallBack.fileIssueHref}...
               </Button>
             </a>
           )}

@@ -38,10 +38,10 @@ import {
   TestScenarioDataObject,
   TestScenarioEditorDock,
   TestScenarioSelectedColumnMetaData,
-  TestScenarioSettings,
   TestScenarioType,
 } from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
+import { useTestScenarioEditorStore } from "../store/TestScenarioStoreContext";
 
 function TestScenarioDrawerPanel({
   dataObjects,
@@ -50,7 +50,6 @@ function TestScenarioDrawerPanel({
   scesimModel,
   selectedColumnMetaData,
   selectedDock,
-  testScenarioSettings,
   updateSelectedColumnMetaData,
   updateTestScenarioModel,
 }: {
@@ -60,11 +59,12 @@ function TestScenarioDrawerPanel({
   scesimModel: SceSimModel;
   selectedColumnMetaData: TestScenarioSelectedColumnMetaData | null;
   selectedDock: TestScenarioEditorDock;
-  testScenarioSettings: TestScenarioSettings;
   updateSelectedColumnMetaData: React.Dispatch<React.SetStateAction<TestScenarioSelectedColumnMetaData | null>>;
   updateTestScenarioModel?: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   const { i18n } = useTestScenarioEditorI18n();
+  const scesim = useTestScenarioEditorStore((state) => state.scesim);
+  const assetType = scesim.model.ScenarioSimulationModel.settings.type!.__$$text;
 
   return (
     <DrawerPanelContent isResizable={true} minSize={"400px"} defaultSize={"500px"}>
@@ -79,7 +79,7 @@ function TestScenarioDrawerPanel({
                 case TestScenarioEditorDock.CHEATSHEET:
                   return i18n.drawer.cheatSheet.title;
                 case TestScenarioEditorDock.DATA_OBJECT:
-                  return testScenarioSettings.assetType === TestScenarioType[TestScenarioType.DMN]
+                  return assetType === TestScenarioType[TestScenarioType.DMN]
                     ? i18n.drawer.dataSelector.titleDMN
                     : i18n.drawer.dataSelector.titleRule;
                 case TestScenarioEditorDock.SETTINGS:
@@ -96,11 +96,11 @@ function TestScenarioDrawerPanel({
         {(() => {
           switch (selectedDock) {
             case TestScenarioEditorDock.CHEATSHEET:
-              return <TestScenarioDrawerCheatSheetPanel assetType={testScenarioSettings.assetType} />;
+              return <TestScenarioDrawerCheatSheetPanel assetType={assetType} />;
             case TestScenarioEditorDock.DATA_OBJECT:
               return (
                 <TestScenarioDrawerDataSelectorPanel
-                  assetType={testScenarioSettings.assetType}
+                  assetType={assetType}
                   dataObjects={dataObjects}
                   scesimModel={scesimModel}
                   selectedColumnMetadata={selectedColumnMetaData}
@@ -109,9 +109,7 @@ function TestScenarioDrawerPanel({
                 />
               );
             case TestScenarioEditorDock.SETTINGS:
-              return (
-                <TestScenarioDrawerSettingsPanel fileName={fileName} testScenarioSettings={testScenarioSettings} />
-              );
+              return <TestScenarioDrawerSettingsPanel fileName={fileName} />;
             default:
               throw new Error("Wrong state, an invalid dock has been selected " + selectedDock);
           }

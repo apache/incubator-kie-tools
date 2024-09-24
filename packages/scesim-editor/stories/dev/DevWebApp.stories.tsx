@@ -32,7 +32,7 @@ import { isOldEnoughDrl } from "../useCases/IsOldEnoughRule.stories";
 import { trafficViolationDmn } from "../useCases/TrafficViolationDmn.stories";
 import "./DevWebApp.css";
 
-function DevWebApp(props: TestScenarioEditorProps) {
+function DevWebApp(args: TestScenarioEditorProps) {
   const [state, setState] = useState<{ marshaller: SceSimMarshaller; stack: SceSimModel[]; pointer: number }>(() => {
     const emptySceSimMarshaller = getMarshaller(emptySceSim);
     return {
@@ -198,6 +198,7 @@ function DevWebApp(props: TestScenarioEditorProps) {
         variant={"light"}
       >
         {SceSimEditorWrapper({
+          issueTrackerHref: args.issueTrackerHref,
           model: currentModel,
           onModelChange: onModelChange,
         })}
@@ -229,6 +230,7 @@ type Story = StoryObj<typeof DevWebApp>;
 export const WebApp: Story = {
   render: (args) => DevWebApp(args),
   args: {
+    issueTrackerHref: "https://github.com/apache/incubator-kie-issues/issues/new",
     model: getMarshaller(emptySceSim).parser.parse(),
   },
 };
