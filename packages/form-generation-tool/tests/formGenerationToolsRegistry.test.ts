@@ -17,12 +17,12 @@
  * under the License.
  */
 
-import { lookupFormGenerationTool, registerFormGenerationTool } from "../../../src/generation/tools";
-import { FormGenerationTool, FormStyle } from "../../../src/generation/types";
+import { getFormGenerationTool, registerFormGenerator } from "../dist/formGenerationToolRegistry";
+import { FormGenerator, FormStyle } from "../dist/types";
 
 describe("formGenerationToolsRegistry tests", () => {
   it("Lookup existing tool - patternfly", () => {
-    const tool = lookupFormGenerationTool(FormStyle.PATTERNFLY);
+    const tool = getFormGenerationTool(FormStyle.PATTERNFLY);
 
     expect(tool).not.toBeUndefined();
 
@@ -31,22 +31,22 @@ describe("formGenerationToolsRegistry tests", () => {
 
   it("Lookup wrong tool", () => {
     const toolType = "wrong tool type";
-    expect(() => lookupFormGenerationTool(toolType)).toThrow(`Unsupported form type "${toolType}"`);
+    expect(() => getFormGenerationTool(toolType)).toThrow(`Unsupported form type "${toolType}"`);
   });
 
   it("Register tool & lookup", () => {
-    const tool: FormGenerationTool = {
+    const tool: FormGenerator = {
       type: "cool new tool",
       generate: jest.fn(),
     };
 
-    registerFormGenerationTool(tool);
+    registerFormGenerator(tool);
 
-    const coolTool = lookupFormGenerationTool(tool.type);
+    const coolTool = getFormGenerationTool(tool.type);
     expect(coolTool).not.toBeUndefined();
     expect(coolTool).toStrictEqual(tool);
 
-    const patternfly = lookupFormGenerationTool(FormStyle.PATTERNFLY);
+    const patternfly = getFormGenerationTool(FormStyle.PATTERNFLY);
     expect(patternfly).not.toBeUndefined();
   });
 });

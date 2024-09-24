@@ -17,14 +17,11 @@
  * under the License.
  */
 
-import { generateForms } from "../../src/generation";
-import * as fs from "../../src/generation/fs";
-import { FormAsset, FormGenerationTool, FormSchema } from "../../src/generation/types";
-import { ApplyForVisaSchema, ConfirmTravelSchema } from "./tools/uniforms/patternfly/mock";
-import { registerFormGenerationTool } from "../../src/generation/tools";
-import { inputSanitizationUtil } from "../../src/generation/tools/uniforms/utils/InputSanitizationUtil";
-
-jest.mock("../../src/generation/fs");
+import { generateForms } from "../dist/generateForms";
+import { FormAsset, FormGenerator, FormSchema } from "../dist/types";
+import { ApplyForVisaSchema, ConfirmTravelSchema } from "./__mocks__/partternfly";
+import { registerFormGenerator } from "../dist/formGenerationToolRegistry";
+import { inputSanitizationUtil } from "../dist/inputSanitizationUtil";
 
 describe("formGenerationCommand tests", () => {
   const loadProjectSchemasMock = jest.spyOn(fs, "loadProjectSchemas");
@@ -38,9 +35,7 @@ describe("formGenerationCommand tests", () => {
 
   it("Generate forms with wrong tool type", () => {
     generateForms({
-      path: sourcePath,
       type: "wrong type",
-      overwrite: true,
     });
 
     expect(loadProjectSchemasMock).not.toHaveBeenCalled();
@@ -51,9 +46,7 @@ describe("formGenerationCommand tests", () => {
     loadProjectSchemasMock.mockReturnValueOnce([]);
 
     generateForms({
-      path: sourcePath,
       type: "patternfly",
-      overwrite: true,
     });
 
     expect(loadProjectSchemasMock).toHaveBeenCalledTimes(1);
@@ -75,9 +68,7 @@ describe("formGenerationCommand tests", () => {
     loadProjectSchemasMock.mockReturnValueOnce(schemas);
 
     generateForms({
-      path: sourcePath,
       type: "patternfly",
-      overwrite: true,
     });
 
     expect(loadProjectSchemasMock).toHaveBeenCalledTimes(1);
@@ -105,7 +96,7 @@ describe("formGenerationCommand tests", () => {
   it("Generate forms project with schemas and one failure", () => {
     const ERROR_MESSAGE = "Unexpected Error!";
 
-    const tool: FormGenerationTool = {
+    const tool: FormGenerator = {
       type: "cool tool",
 
       generate(schema: FormSchema): FormAsset {
@@ -128,7 +119,7 @@ describe("formGenerationCommand tests", () => {
       },
     };
 
-    registerFormGenerationTool(tool);
+    registerFormGenerator(tool);
 
     const schemas: FormSchema[] = [
       {
@@ -144,9 +135,7 @@ describe("formGenerationCommand tests", () => {
     loadProjectSchemasMock.mockReturnValueOnce(schemas);
 
     generateForms({
-      path: sourcePath,
       type: tool.type,
-      overwrite: true,
     });
 
     expect(loadProjectSchemasMock).toHaveBeenCalledTimes(1);

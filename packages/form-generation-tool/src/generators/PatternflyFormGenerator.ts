@@ -21,8 +21,8 @@ import unescape from "lodash/unescape";
 import { FormAssetType, FormAsset, FormStyle, FormConfiguration, FormGenerator, FormSchema } from "../types";
 import { renderForm } from "@kie-tools/uniforms-patternfly-codegen/dist";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
-import { getUniformsSchema } from "./getUniformsSchema";
-import { inputSanitizationUtil } from "./InputSanitizationUtil";
+import { getUniformsSchema } from "../getUniformsSchema";
+import { inputSanitizationUtil } from "../inputSanitizationUtil";
 
 export class PatternflyFormConfig implements FormConfiguration {
   public readonly schema: string;

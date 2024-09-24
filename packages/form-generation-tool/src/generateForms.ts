@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { getFormGenerationTool } from "./tools/formGenerationToolRegistry";
+import { getFormGenerationTool } from "./formGenerationToolRegistry";
 import { FormGenerator, FormSchema, FormAsset } from "./types";
 
 export interface Args {

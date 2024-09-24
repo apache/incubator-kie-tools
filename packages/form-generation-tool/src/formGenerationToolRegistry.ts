@@ -17,20 +17,23 @@
  * under the License.
  */
 
-import { loadProjectSchemas } from "../../../src/generation/fs";
-import { FormSchema } from "../../../src/generation/types";
+import { PatternflyFormGenerator } from "./generators/PatternflyFormGenerator";
+import { FormGenerator } from "./types";
+import { Bootstrap4FormGenerator } from "./generators/Bootstrap4FormGenerator";
 
-describe("loadProjectSchemas tests", () => {
-  it("Load project without schemas", () => {
-    expect(loadProjectSchemas(`${__dirname}/resources/empty`)).toHaveLength(0);
-  });
+const formGeneratorIndex: Map<string, FormGenerator> = new Map<string, FormGenerator>();
 
-  it("Load project with schemas", () => {
-    const schemas: FormSchema[] = loadProjectSchemas(`${__dirname}/resources/full`, "schemas");
+export function registerFormGenerator(formGenerator: FormGenerator) {
+  formGeneratorIndex.set(formGenerator.type, formGenerator);
+}
 
-    expect(schemas).toHaveLength(2);
+registerFormGenerator(new PatternflyFormGenerator());
+registerFormGenerator(new Bootstrap4FormGenerator());
 
-    expect(schemas[0].name).toBe("travels_ApplyForVisa");
-    expect(schemas[1].name).toBe("travels_ConfirmTravel");
-  });
-});
+export function getFormGenerationTool(type: string): FormGenerator {
+  const formGenerator = formGeneratorIndex.get(type);
+  if (formGenerator) {
+    return formGenerator;
+  }
+  throw new Error(`Unsupported form generation type: "${type}"`);
+}

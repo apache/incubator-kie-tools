@@ -17,16 +17,13 @@
  * under the License.
  */
 
-import {
-  PatternflyFormConfig,
-  PatternflyFormGenerationTool,
-} from "../../../../../src/generation/tools/uniforms/patternfly/PatternflyFormGenerationTool";
-import { FormAsset } from "../../../../../src/generation/types";
-import { ApplyForVisaSchema } from "./mock";
+import { FormAsset } from "../../dist/types";
+import { ApplyForVisaSchema } from "../__mocks__/bootstrap";
+import { Bootstrap4FormConfig, Bootstrap4FormGenerator } from "../../dist/generators/Bootstrap4FormGenerator";
 
-describe("PatternflyFormGenerationTool tests", () => {
+describe("Bootstrap4FormGenerator tests", () => {
   it("Generate", () => {
-    const tool = new PatternflyFormGenerationTool();
+    const tool = new Bootstrap4FormGenerator();
 
     const formAsset: FormAsset = tool.generate({
       name: "ApplyFor#Visa",
@@ -36,12 +33,10 @@ describe("PatternflyFormGenerationTool tests", () => {
     expect(formAsset).not.toBeUndefined();
     expect(formAsset.id).toStrictEqual("ApplyFor#Visa");
     expect(formAsset.sanitizedId).toStrictEqual("ApplyFor_Visa");
-    expect(formAsset.assetName).toStrictEqual("ApplyFor#Visa.tsx");
-    expect(formAsset.sanitizedAssetName).toStrictEqual("ApplyFor_Visa.tsx");
+    expect(formAsset.assetName).toStrictEqual("ApplyFor#Visa.html");
+    expect(formAsset.sanitizedAssetName).toStrictEqual("ApplyFor_Visa.html");
     expect(formAsset.content).not.toBeUndefined();
-    expect(formAsset.content).toContain("const Form__ApplyFor_Visa");
-    expect(formAsset.content).toContain("export default Form__ApplyFor_Visa;");
     expect(formAsset.config).not.toBeUndefined();
-    expect(formAsset.config).toMatchObject(new PatternflyFormConfig(ApplyForVisaSchema));
+    expect(formAsset.config).toMatchObject(new Bootstrap4FormConfig(ApplyForVisaSchema));
   });
 });
