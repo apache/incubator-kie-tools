@@ -72,7 +72,7 @@ function TestScenarioDataSelectorPanel({
   scesimModel: SceSimModel;
   selectedColumnMetadata: TestScenarioSelectedColumnMetaData | null;
   updateSelectedColumnMetaData: React.Dispatch<React.SetStateAction<TestScenarioSelectedColumnMetaData | null>>;
-  updateTestScenarioModel: React.Dispatch<React.SetStateAction<SceSimModel>>;
+  updateTestScenarioModel?: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   const { i18n } = useTestScenarioEditorI18n();
 
@@ -394,7 +394,7 @@ function TestScenarioDataSelectorPanel({
     /** TODO 2 : NEED A POPUP ASKING IF WE WANT TO REPLACE VALUES OR NOT */
 
     () => {
-      updateTestScenarioModel((prevState) => {
+      updateTestScenarioModel!((prevState) => {
         const isBackground = selectedColumnMetadata!.isBackground;
         const factMappings = retrieveModelDescriptor(prevState.ScenarioSimulationModel, isBackground).factMappings
           .FactMapping!;

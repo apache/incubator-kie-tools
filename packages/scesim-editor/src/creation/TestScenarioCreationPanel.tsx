@@ -18,6 +18,7 @@
  */
 
 import * as React from "react";
+import { useCallback } from "react";
 
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
@@ -33,22 +34,13 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import AddIcon from "@patternfly/react-icons/dist/esm/icons/add-circle-o-icon";
 import CubesIcon from "@patternfly/react-icons/dist/esm/icons/cubes-icon";
 
+import { useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
 import { TestScenarioType } from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
 
 import "./TestScenarioCreationPanel.css";
 
-function TestScenarioCreationPanel({
-  onCreateScesimButtonClicked,
-}: {
-  onCreateScesimButtonClicked: (
-    assetType: string,
-    isStatelessSessionRule: boolean,
-    isTestSkipped: boolean,
-    kieSessionRule: string,
-    ruleFlowGroup: string
-  ) => void;
-}) {
+function TestScenarioCreationPanel() {
   const { i18n } = useTestScenarioEditorI18n();
 
   const assetsOption = [
@@ -63,6 +55,36 @@ function TestScenarioCreationPanel({
   const [isTestSkipped, setTestSkipped] = React.useState(false);
   const [kieSessionRule, setKieSessionRule] = React.useState("");
   const [ruleFlowGroup, setRuleFlowGroup] = React.useState("");
+  const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
+
+  const createTestScenario = useCallback(
+    (
+      assetType: string,
+      isStatelessSessionRule: boolean,
+      isTestSkipped: boolean,
+      kieSessionRule: string,
+      ruleFlowGroup: string
+    ) =>
+      testScenarioEditorStoreApi.setState((prevState) => {
+        const settings = prevState.scesim.model.ScenarioSimulationModel.settings;
+        settings.dmnFilePath = TestScenarioType[TestScenarioType.DMN] ? { __$$text: "./MockedDMNName.dmn" } : undefined;
+        settings.dmnName = TestScenarioType[TestScenarioType.DMN] ? { __$$text: "MockedDMNName.dmn" } : undefined;
+        settings.dmnNamespace = TestScenarioType[TestScenarioType.DMN] ? { __$$text: "https:\\kiegroup" } : undefined;
+        (settings.dmoSession =
+          assetType === TestScenarioType[TestScenarioType.RULE] && kieSessionRule
+            ? { __$$text: kieSessionRule }
+            : undefined),
+          (settings.ruleFlowGroup =
+            assetType === TestScenarioType[TestScenarioType.RULE] && ruleFlowGroup
+              ? { __$$text: ruleFlowGroup }
+              : undefined),
+          (settings.skipFromBuild = { __$$text: isTestSkipped }),
+          (settings.stateless =
+            assetType === TestScenarioType[TestScenarioType.RULE] ? { __$$text: isStatelessSessionRule } : undefined),
+          (settings.type = { __$$text: assetType });
+      }),
+    [testScenarioEditorStoreApi]
+  );
 
   return (
     <EmptyState>
@@ -174,7 +196,7 @@ function TestScenarioCreationPanel({
         icon={<AddIcon />}
         isDisabled={assetType == ""}
         onClick={() =>
-          onCreateScesimButtonClicked(assetType, isStatelessSessionRule, isTestSkipped, kieSessionRule, ruleFlowGroup)
+          createTestScenario(assetType, isStatelessSessionRule, isTestSkipped, kieSessionRule, ruleFlowGroup)
         }
         variant="primary"
       >

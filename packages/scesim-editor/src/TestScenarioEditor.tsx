@@ -26,10 +26,11 @@ import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-compon
 
 import { testScenarioEditorDictionaries, TestScenarioEditorI18nContext, testScenarioEditorI18nDefaults } from "./i18n";
 
-import { getMarshaller, SceSimModel } from "@kie-tools/scesim-marshaller";
+import { SceSimModel } from "@kie-tools/scesim-marshaller";
 import {
   SceSim__FactMappingType,
   SceSim__ScenarioSimulationModelType,
+  SceSim__settingsType,
 } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
@@ -68,6 +69,7 @@ import {
 import { TestScenarioEditorErrorFallback } from "./TestScenarioEditorErrorFallback";
 import { TestScenarioEditorContextProvider, useTestScenarioEditor } from "./TestScenarioEditorContext";
 import { useEffectAfterFirstRender } from "./hook/useEffectAfterFirstRender";
+import { stat } from "fs";
 
 /* Constants */
 
@@ -172,13 +174,11 @@ export type TestScenarioSelectedColumnMetaData = {
 function TestScenarioMainPanel({
   fileName,
   scesimModel,
-  updateSettingField,
   updateTestScenarioModel,
 }: {
   fileName: string;
   scesimModel: { ScenarioSimulationModel: SceSim__ScenarioSimulationModelType };
-  updateSettingField: (field: string, value: string) => void;
-  updateTestScenarioModel: React.Dispatch<React.SetStateAction<SceSimModel>>;
+  updateTestScenarioModel?: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   const { i18n } = useTestScenarioEditorI18n();
 
@@ -312,7 +312,6 @@ function TestScenarioMainPanel({
                 dataObjects={dataObjects}
                 fileName={fileName}
                 onDrawerClose={closeDockPanel}
-                onUpdateSettingField={updateSettingField}
                 scesimModel={scesimModel}
                 selectedColumnMetaData={selectedColumnMetadata}
                 selectedDock={dockPanel.selected}
@@ -437,8 +436,6 @@ export const TestScenarioEditorInternal = ({
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const { testScenarioEditorModelBeforeEditingRef, testScenarioEditorRootElementRef } = useTestScenarioEditor();
 
-  const [scbesimModel, setScesimModel] = useState(scesim.model);
-
   /** Implementing Editor APIs */
 
   // Allow imperativelly controlling the Editor.
@@ -499,7 +496,7 @@ export const TestScenarioEditorInternal = ({
       }
       if (scesim.model.ScenarioSimulationModel["@_version"] != CURRENT_SUPPORTED_VERSION) {
         return TestScenarioFileStatus.UNSUPPORTED;
-      } else if (scesim.model.ScenarioSimulationModel["settings"]?.["type"]) {
+      } else if (scesim.model.ScenarioSimulationModel.settings?.type) {
         return TestScenarioFileStatus.VALID;
       } else {
         return TestScenarioFileStatus.NEW;
@@ -510,55 +507,6 @@ export const TestScenarioEditorInternal = ({
   }, [scesim]);
 
   console.trace("[TestScenarioEditorInternal] File Status: " + TestScenarioFileStatus[scesimFileStatus]);
-
-  /** scesim model update functions */
-
-  const setInitialSettings = useCallback(
-    (
-      assetType: string,
-      isStatelessSessionRule: boolean,
-      isTestSkipped: boolean,
-      kieSessionRule: string,
-      ruleFlowGroup: string
-    ) =>
-      setScesimModel((prevState) => ({
-        ScenarioSimulationModel: {
-          ...prevState.ScenarioSimulationModel,
-          settings: {
-            ...prevState.ScenarioSimulationModel.settings,
-            dmnFilePath:
-              assetType === TestScenarioType[TestScenarioType.DMN] ? { __$$text: "./MockedDMNName.dmn" } : undefined,
-            dmoSession:
-              assetType === TestScenarioType[TestScenarioType.RULE] && kieSessionRule
-                ? { __$$text: kieSessionRule }
-                : undefined,
-            ruleFlowGroup:
-              assetType === TestScenarioType[TestScenarioType.RULE] && ruleFlowGroup
-                ? { __$$text: ruleFlowGroup }
-                : undefined,
-            skipFromBuild: { __$$text: isTestSkipped },
-            stateless:
-              assetType === TestScenarioType[TestScenarioType.RULE] ? { __$$text: isStatelessSessionRule } : undefined,
-            type: { __$$text: assetType },
-          },
-        },
-      })),
-    [setScesimModel]
-  );
-
-  const updateSettingsField = useCallback(
-    (fieldName: string, value: string) =>
-      setScesimModel((prevState) => ({
-        ScenarioSimulationModel: {
-          ...prevState.ScenarioSimulationModel,
-          ["settings"]: {
-            ...prevState.ScenarioSimulationModel["settings"],
-            [fieldName]: { __$$text: value },
-          },
-        },
-      })),
-    [setScesimModel]
-  );
 
   return (
     <div ref={testScenarioEditorRootElementRef}>
@@ -581,7 +529,7 @@ export const TestScenarioEditorInternal = ({
               />
             );
           case TestScenarioFileStatus.NEW:
-            return <TestScenarioCreationPanel onCreateScesimButtonClicked={setInitialSettings} />;
+            return <TestScenarioCreationPanel />;
           case TestScenarioFileStatus.UNSUPPORTED:
             return (
               <TestScenarioParserErrorPanel
@@ -599,14 +547,7 @@ export const TestScenarioEditorInternal = ({
               />
             );
           case TestScenarioFileStatus.VALID:
-            return (
-              <TestScenarioMainPanel
-                fileName={"Test"}
-                scesimModel={scesim.model}
-                updateTestScenarioModel={setScesimModel}
-                updateSettingField={updateSettingsField}
-              />
-            );
+            return <TestScenarioMainPanel fileName={"Test"} scesimModel={scesim.model} />;
         }
       })()}
     </div>

@@ -70,7 +70,7 @@ function TestScenarioTable({
   tableData: SceSim__simulationType | SceSim__backgroundType;
   scrollableParentRef: React.RefObject<HTMLElement>;
   updateSelectedColumnMetaData: React.Dispatch<React.SetStateAction<TestScenarioSelectedColumnMetaData | null>>;
-  updateTestScenarioModel: React.Dispatch<React.SetStateAction<SceSimModel>>;
+  updateTestScenarioModel?: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   enum TestScenarioTableColumnHeaderGroup {
     EXPECT = "expect-header",
@@ -130,7 +130,7 @@ function TestScenarioTable({
   /* It updates any column width change in the Model */
   const setColumnWidth = useCallback(
     (inputIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {
-      updateTestScenarioModel((prevState) => {
+      updateTestScenarioModel!((prevState) => {
         const oldWidth = retrieveModelDescriptor(prevState.ScenarioSimulationModel, isBackground).factMappings
           .FactMapping![inputIndex].columnWidth?.__$$text;
         const newWidth = typeof newWidthAction === "function" ? newWidthAction(oldWidth) : newWidthAction;
@@ -507,7 +507,7 @@ function TestScenarioTable({
   const onCellUpdates = useCallback(
     (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
       cellUpdates.forEach((update) => {
-        updateTestScenarioModel((prevState) => {
+        updateTestScenarioModel!((prevState) => {
           /* To update the related FactMappingValue, it compares every FactMappingValue associated with the Scenario (Row)
              that contains the cell with the FactMapping (Column) fields factIdentifier and expressionIdentifier */
           const factMapping = retrieveModelDescriptor(prevState.ScenarioSimulationModel, isBackground).factMappings
@@ -695,7 +695,7 @@ function TestScenarioTable({
         args.groupType === TestScenarioTableColumnInstanceGroup.EXPECT ||
         args.groupType === TestScenarioTableColumnInstanceGroup.GIVEN;
 
-      updateTestScenarioModel((prevState) => {
+      updateTestScenarioModel!((prevState) => {
         const factMappingList = retrieveModelDescriptor(prevState.ScenarioSimulationModel, isBackground).factMappings
           .FactMapping!;
         const selectedColumnIndex = determineSelectedColumnIndex(factMappingList, args.currentIndex, isInstance);
@@ -833,7 +833,7 @@ function TestScenarioTable({
    */
   const onColumnDeleted = useCallback(
     (args: { columnIndex: number; groupType: string }) => {
-      updateTestScenarioModel((prevState) => {
+      updateTestScenarioModel!((prevState) => {
         const isInstance =
           args.groupType === TestScenarioTableColumnInstanceGroup.EXPECT ||
           args.groupType === TestScenarioTableColumnInstanceGroup.GIVEN;
@@ -965,7 +965,7 @@ function TestScenarioTable({
       if (isBackground) {
         throw new Error("Impossible state. Background table can have a single row only");
       }
-      updateTestScenarioModel((prevState) => {
+      updateTestScenarioModel!((prevState) => {
         /* Creating a new Scenario (Row) composed by a list of FactMappingValues. The list order is not relevant. */
         const factMappings =
           prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping ?? [];
@@ -1019,7 +1019,7 @@ function TestScenarioTable({
       if (isBackground) {
         throw new Error("Impossible state. Background table can have a single row only");
       }
-      updateTestScenarioModel((prevState) => {
+      updateTestScenarioModel!((prevState) => {
         /* Just updating the Scenario List (Rows) cloning the current List and removing the row at the given rowIndex */
         const deepClonedScenarios = JSON.parse(
           JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimData.Scenario ?? [])
@@ -1051,7 +1051,7 @@ function TestScenarioTable({
       if (isBackground) {
         throw new Error("Impossible state. Background table can have a single row only");
       }
-      updateTestScenarioModel((prevState) => {
+      updateTestScenarioModel!((prevState) => {
         /* It simply clones a Scenario (Row) and adds it in a current-cloned Scenario list */
         const clonedFactMappingValues = JSON.parse(
           JSON.stringify(

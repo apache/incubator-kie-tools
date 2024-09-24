@@ -47,7 +47,6 @@ function TestScenarioDrawerPanel({
   dataObjects,
   fileName,
   onDrawerClose,
-  onUpdateSettingField,
   scesimModel,
   selectedColumnMetaData,
   selectedDock,
@@ -58,13 +57,12 @@ function TestScenarioDrawerPanel({
   dataObjects: TestScenarioDataObject[];
   fileName: string;
   onDrawerClose: () => void;
-  onUpdateSettingField: (field: string, value: boolean | string) => void;
   scesimModel: SceSimModel;
   selectedColumnMetaData: TestScenarioSelectedColumnMetaData | null;
   selectedDock: TestScenarioEditorDock;
   testScenarioSettings: TestScenarioSettings;
   updateSelectedColumnMetaData: React.Dispatch<React.SetStateAction<TestScenarioSelectedColumnMetaData | null>>;
-  updateTestScenarioModel: React.Dispatch<React.SetStateAction<SceSimModel>>;
+  updateTestScenarioModel?: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   const { i18n } = useTestScenarioEditorI18n();
 
@@ -112,11 +110,7 @@ function TestScenarioDrawerPanel({
               );
             case TestScenarioEditorDock.SETTINGS:
               return (
-                <TestScenarioDrawerSettingsPanel
-                  fileName={fileName}
-                  onUpdateSettingField={onUpdateSettingField}
-                  testScenarioSettings={testScenarioSettings}
-                />
+                <TestScenarioDrawerSettingsPanel fileName={fileName} testScenarioSettings={testScenarioSettings} />
               );
             default:
               throw new Error("Wrong state, an invalid dock has been selected " + selectedDock);

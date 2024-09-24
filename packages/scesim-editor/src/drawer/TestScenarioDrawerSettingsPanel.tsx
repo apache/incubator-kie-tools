@@ -17,31 +17,43 @@
  * under the License.
  */
 import * as React from "react";
+import { useCallback } from "react";
 
 import { Checkbox } from "@patternfly/react-core/dist/esm/components/Checkbox";
 import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/esm/components/FormSelect";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
-
-import { TestScenarioSettings, TestScenarioType } from "../TestScenarioEditor";
-import { useTestScenarioEditorI18n } from "../i18n";
-
 import { HelpIcon } from "@patternfly/react-icons/dist/esm/icons/help-icon";
 import { Icon } from "@patternfly/react-core/dist/esm/components/Icon/Icon";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/esm/components/Tooltip";
+
+import { SceSim__settingsType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
+
+import { useTestScenarioEditorI18n } from "../i18n";
+import { useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
+import { TestScenarioSettings, TestScenarioType } from "../TestScenarioEditor";
 
 import "./TestScenarioDrawerSettingsPanel.css";
 
 function TestScenarioDrawerSettingsPanel({
   fileName,
-  onUpdateSettingField,
   testScenarioSettings,
 }: {
   fileName: string;
-  onUpdateSettingField: (field: string, value: boolean | string) => void;
   testScenarioSettings: TestScenarioSettings;
 }) {
   const { i18n } = useTestScenarioEditorI18n();
+  const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
+
+  const updateSettingsField = useCallback(
+    (fieldName: keyof SceSim__settingsType, value: string | boolean) =>
+      testScenarioEditorStoreApi.setState((state) => {
+        (state.scesim.model.ScenarioSimulationModel.settings[fieldName] as { __$$text: string | boolean }) = {
+          __$$text: value,
+        };
+      }),
+    [testScenarioEditorStoreApi]
+  );
 
   return (
     <>
@@ -104,7 +116,7 @@ function TestScenarioDrawerSettingsPanel({
           </Title>
           <TextInput
             className={"kie-scesim-editor-drawer-settings--text-input"}
-            onChange={(value) => onUpdateSettingField("dmoSession", value)}
+            onChange={(value) => updateSettingsField("dmoSession", value)}
             placeholder={i18n.drawer.settings.kieSessionRulePlaceholder}
             type="text"
             value={testScenarioSettings.kieSessionRule}
@@ -119,7 +131,7 @@ function TestScenarioDrawerSettingsPanel({
           </Title>
           <TextInput
             className={"kie-scesim-editor-drawer-settings--text-input"}
-            onChange={(value) => onUpdateSettingField("ruleFlowGroup", value)}
+            onChange={(value) => updateSettingsField("ruleFlowGroup", value)}
             placeholder={i18n.drawer.settings.ruleFlowGroupPlaceholder}
             type="text"
             value={testScenarioSettings.ruleFlowGroup}
@@ -130,7 +142,7 @@ function TestScenarioDrawerSettingsPanel({
                 id="stateless-session"
                 isChecked={testScenarioSettings.isStatelessSessionRule}
                 label={i18n.drawer.settings.statelessSessionRule}
-                onChange={(value) => onUpdateSettingField("stateless", value)}
+                onChange={(value) => updateSettingsField("stateless", value)}
               />
             </div>
             <Tooltip content={i18n.drawer.settings.statelessSessionRuleTooltip}>
@@ -147,7 +159,7 @@ function TestScenarioDrawerSettingsPanel({
             id="skip-test"
             isChecked={testScenarioSettings.isTestSkipped}
             label={i18n.drawer.settings.testSkipped}
-            onChange={(value) => onUpdateSettingField("skipFromBuild", value)}
+            onChange={(value) => updateSettingsField("skipFromBuild", value)}
           />
         </div>
         <Tooltip content={i18n.drawer.settings.testSkippedTooltip}>
