@@ -32,3 +32,6 @@ tar xf "${SOURCES_DIR}"/kogito-swf-maven-repo.tar -C "${KOGITO_HOME}"/.m2/reposi
 
 chown -R 1001:0 "${KOGITO_HOME}"
 chmod -R ug+rwX "${KOGITO_HOME}"
+
+# Cleanup Maven M2 Repo Via HTTP Settings XML
+rm ${MAVEN_CONTAINER_BUILD_SETTINGS_PATH}

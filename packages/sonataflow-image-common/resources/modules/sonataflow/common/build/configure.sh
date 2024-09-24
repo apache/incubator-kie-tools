@@ -33,11 +33,11 @@ chmod -R ug+rwX "${KOGITO_HOME}"
 
 cd "${KOGITO_HOME}"
 
-# Create app
-"${LAUNCH_DIR}"/create-app.sh
+# Create app (settings.xml path is replaced only for these commands and automatically restored when they end)
+env MAVEN_SETTINGS_PATH=${MAVEN_CONTAINER_BUILD_SETTINGS_PATH} "${LAUNCH_DIR}"/create-app.sh
 
-"${BUILD_DIR}"/cleanup_project.sh
-"${BUILD_DIR}"/zip_files.sh
+env MAVEN_SETTINGS_PATH=${MAVEN_CONTAINER_BUILD_SETTINGS_PATH} "${BUILD_DIR}"/cleanup_project.sh
+env MAVEN_SETTINGS_PATH=${MAVEN_CONTAINER_BUILD_SETTINGS_PATH} "${BUILD_DIR}"/zip_files.sh
 
 chown -R 1001:0 "${KOGITO_HOME}"
 chmod -R ug+rwX "${KOGITO_HOME}"

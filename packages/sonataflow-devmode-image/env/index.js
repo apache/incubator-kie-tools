@@ -20,6 +20,10 @@
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 const sonataFlowQuarkusDevUiEnv = require("@kie-tools/sonataflow-quarkus-devui/env");
 
+const {
+  env: { mavenM2RepoViaHttpImage: mavenM2RepoViaHttpImageEnv },
+} = require("@kie-tools/maven-m2-repo-via-http-image/env");
+
 const rootEnv = require("@kie-tools/root-env/env");
 
 module.exports = composeEnv([rootEnv], {
@@ -44,6 +48,10 @@ module.exports = composeEnv([rootEnv], {
       default: sonataFlowQuarkusDevUiEnv.env.sonataflowQuarkusDevuiExtension.version,
       description: "SonataFlow Quarkus Dev UI version",
     },
+    SONATAFLOW_DEVMODE_IMAGE__mavenM2RepoViaHttpImage: {
+      default: `${mavenM2RepoViaHttpImageEnv.registry}/${mavenM2RepoViaHttpImageEnv.account}/${mavenM2RepoViaHttpImageEnv.name}:${mavenM2RepoViaHttpImageEnv.tag}`,
+      description: "The image tag for the Maven M2 Repo via HTTP. Used during the build only.",
+    },
   }),
   get env() {
     return {
@@ -54,6 +62,9 @@ module.exports = composeEnv([rootEnv], {
         tag: getOrDefault(this.vars.SONATAFLOW_DEVMODE_IMAGE__buildTag),
         version: require("../package.json").version,
         sonataflowQuarkusDevUiVersion: getOrDefault(this.vars.SONATAFLOW_DEVMODE_IMAGE__sonataflowQuarkusDevUiVersion),
+        dev: {
+          mavenM2RepoViaHttpImage: getOrDefault(this.vars.SONATAFLOW_DEVMODE_IMAGE__mavenM2RepoViaHttpImage),
+        },
       },
     };
   },
