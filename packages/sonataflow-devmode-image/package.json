@@ -13,10 +13,14 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
-    "build:dev": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm image:build\"",
-    "build:prod": "pnpm build:dev && pnpm image:test",
+    "build": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm m2-repo-via-http:container:run\" \"pnpm copy-assets\" \"pnpm image:build\" --finally \"pnpm m2-repo-via-http:container:kill\"",
+    "build:dev": "pnpm build",
+    "build:prod": "pnpm build && pnpm image:test",
+    "copy:maven-m2-repo-via-http-image--settings-xml": "run-script-os",
+    "copy:maven-m2-repo-via-http-image--settings-xml:linux:darwin": "M2_REPO_VIA_HTTP_URL_WITHOUT_PROTOCOL=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' m2-repo-via-http) envsubst < build/modules/kogito-maven/common/maven/maven-m2-repo-via-http-settings.xml.envsubst > build/modules/kogito-maven/common/maven/maven-m2-repo-via-http-settings.xml && rm build/modules/kogito-maven/common/maven/maven-m2-repo-via-http-settings.xml.envsubst",
+    "copy:maven-m2-repo-via-http-image--settings-xml:win32": "echo \"Build skipped on macOS and Windows\"",
     "copy-assets": "run-script-os",
-    "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources build && cp -R resources/* build && pnpm copy-devui-repo",
+    "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources build && cp -R resources/* build && pnpm copy-devui-repo && pnpm copy:maven-m2-repo-via-http-image--settings-xml",
     "copy-devui-repo": "tar -C ~/.m2/repository/org/apache/kie/ -cvf build/modules/sonataflow/devmode/build-config/sonataflow-quarkus-devui-maven-repo.tar sonataflow && tar -C ~/.m2/repository/org/kie/ -cvf build/modules/sonataflow/devmode/build-config/kie-tools-maven-base-maven-repo.tar kie-tools-maven-base",
     "copy-test-assets": "run-script-os",
     "copy-test-assets:linux:darwin": "cp -R ./node_modules/@kie-tools/sonataflow-image-common/test-resources/* build && cp -R test-resources/* build",
@@ -28,9 +32,13 @@
     "image:test:darwin:win32": "echo \"Tests skipped on macOS and Windows\"",
     "image:test:linux": "pnpm copy-test-assets && pnpm setup:env make -C ./build test-image",
     "install": "node install.js && pnpm format",
+    "m2-repo-via-http:container:kill": "(docker container kill m2-repo-via-http || true) && (docker container rm m2-repo-via-http || true)",
+    "m2-repo-via-http:container:run": "(pnpm m2-repo-via-http:container:kill || true) && docker run --name m2-repo-via-http -v \"$(mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout):/var/www/html\" -dit $(build-env sonataflowDevModeImage.dev.mavenM2RepoViaHttpImage)",
     "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env SWF_IMAGE_REGISTRY=$(build-env sonataflowDevModeImage.registry) SWF_IMAGE_REGISTRY_ACCOUNT=$(build-env sonataflowDevModeImage.account) SWF_IMAGE_NAME=$(build-env sonataflowDevModeImage.name) SWF_IMAGE_TAG=$(build-env sonataflowDevModeImage.tag) QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) KOGITO_VERSION=$(build-env kogitoRuntime.version) SONATAFLOW_QUARKUS_DEVUI_VERSION=$(build-env sonataflowDevModeImage.sonataflowQuarkusDevUiVersion)"
   },
   "devDependencies": {
+    "@kie-tools/image-builder": "workspace:*",
+    "@kie-tools/maven-m2-repo-via-http-image": "workspace:*",
     "@kie-tools/python-venv": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/sonataflow-image-common": "workspace:*",
