@@ -46,12 +46,12 @@ test.describe("Create Boxed Some", () => {
     expect((await jsonModel.getSomeExpression()).satisfies["@_id"]).not.toBeUndefined();
   });
 
-  test("should commit variable name by other cell click", async ({ bee }) => {
-    await bee.expression.asSome().variable.fill("Change Variable Name");
+  test("should commit variable by cell click", async ({ bee }) => {
+    await bee.expression.asSome().variable.fill("Changed Variable Name");
 
     // commit a change by a click to another cell
     await bee.expression.asSome().in.elementCell.click();
 
-    await expect(bee.getContainer()).toHaveScreenshot("boxed-some-variable-commit-on-cell-click.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-some-commit-variable-by-cell-click.png");
   });
 });

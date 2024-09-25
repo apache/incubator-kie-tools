@@ -31,14 +31,14 @@ test.describe("Create Boxed Invocation", () => {
     await expect(bee.getContainer()).toHaveScreenshot("boxed-invocation.png");
   });
 
-  test("should commit invoked function name by other cell click", async ({ bee, stories, page }) => {
+  test("should commit invoked function by cell click", async ({ bee, stories, page }) => {
     await stories.openBoxedInvocation();
     await bee.expression.asInvocation().invokedFunctionNameCell.click();
-    await page.keyboard.type("Change Invoked Function Name");
+    await page.keyboard.type("Changed Invoked Function Name");
 
     // commit a change by a click to another cell
     await bee.expression.asInvocation().parameter(0).descriptionCell.select();
 
-    await expect(bee.getContainer()).toHaveScreenshot("boxed-invocation-function-name-commit-on-cell-click.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-invocation-commit-function-by-cell-click.png");
   });
 });

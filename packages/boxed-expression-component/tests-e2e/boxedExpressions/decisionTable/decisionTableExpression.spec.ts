@@ -113,7 +113,7 @@ test.describe("Create Decision table", () => {
     });
   });
 
-  test("should commit annotation name by other cell click", async ({ bee }) => {
+  test("should commit annotation by cell click", async ({ bee }) => {
     await bee.expression
       .asDecisionTable()
       .annotationHeaderAt(0)
@@ -122,6 +122,6 @@ test.describe("Create Decision table", () => {
     // commit a change by a click to another cell
     await bee.expression.asDecisionTable().cellAt({ row: 1, column: 1 }).content.click();
 
-    await expect(bee.getContainer()).toHaveScreenshot("boxed-decision-table-annotation-commit-on-cell-click.png");
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-decision-table-commit-annotation-by-cell-click.png");
   });
 });
