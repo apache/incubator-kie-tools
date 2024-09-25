@@ -99,9 +99,9 @@ export function usePotentialWaypointControls(
           );
           return;
         }
+        
         const edgeSourceBounds = edge.data?.dmnShapeSource["dc:Bounds"];
         const edgeTargetBounds = edge.data?.dmnShapeTarget["dc:Bounds"];
-
         if (edgeSourceBounds === undefined || edgeTargetBounds === undefined) {
           console.debug(
             `DMN DIAGRAM: We can not add DMNEdge for '${edgeId}' edge into diagram. There are missing data edgeSourceBounds: ${edgeSourceBounds}, edgeTargetBounds: ${edgeTargetBounds}`
