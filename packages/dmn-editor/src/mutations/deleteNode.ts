@@ -214,7 +214,7 @@ export function canRemoveNodeFromDrdOnly({
     id: __readonly_dmnObjectId!,
   });
 
-  const drgElementsByNamespace = new Map([[__readonly_dmnObjectNamespace, definitions.drgElement]]);
+  const drgElementsByNamespace = new Map([[definitions["@_namespace"], definitions.drgElement]]);
   __readonly_externalDmnsIndex.forEach((value, key) => {
     drgElementsByNamespace.set(key, value.model.definitions.drgElement);
   });

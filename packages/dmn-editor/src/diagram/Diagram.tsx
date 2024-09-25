@@ -127,6 +127,7 @@ import { normalize, Normalized } from "../normalization/normalize";
 import OptimizeIcon from "@patternfly/react-icons/dist/js/icons/optimize-icon";
 import { applyAutoLayoutToDrd } from "../mutations/applyAutoLayoutToDrd";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeContainingDecisionServiceHrefsByDecisionHrefs.ts";
 
 const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
 
@@ -991,11 +992,27 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 .getDiagramData(externalModelsByNamespace)
                 .nodesById.get(nodeBeingDragged.data.parentRfNode.id);
               if (p?.type === NODE_TYPES.decisionService && nodeBeingDragged.type === NODE_TYPES.decision) {
+                const drgElementsByNamespace = new Map([
+                  [thisDmn.model.definitions["@_namespace"], thisDmn.model.definitions.drgElement],
+                ]);
+
+                const containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn =
+                  computeContainingDecisionServiceHrefsByDecisionHrefs({
+                    thisDmnsNamespace: thisDmn.model.definitions["@_namespace"],
+                    drgElementsByNamespace,
+                  });
+
                 for (let i = 0; i < selectedNodes.length; i++) {
+                  const containingDecisionServiceHrefs =
+                    containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn.get(selectedNodes[i].id) ?? [];
+
                   deleteDecisionFromDecisionService({
                     definitions: state.dmn.model.definitions,
                     decisionHref: selectedNodes[i].id, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
-                    decisionServiceId: p.data.dmnObject!["@_id"]!,
+                    decisionServiceId:
+                      containingDecisionServiceHrefs.length > 0
+                        ? containingDecisionServiceHrefs[0]
+                        : p.data.dmnObject!["@_id"]!,
                     externalModelsByNamespace,
                   });
                 }
