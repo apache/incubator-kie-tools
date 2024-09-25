@@ -22,7 +22,8 @@ import { test, expect } from "../../__fixtures__/base";
 test.describe("Create Boxed Invocation", () => {
   test("should render expression correctly", async ({ bee, stories, page }) => {
     await stories.openBoxedInvocation();
-    await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
+    expect(await bee.expression.asInvocation().expressionHeaderCell.getName()).toEqual("Expression Name");
+    expect(await bee.expression.asInvocation().expressionHeaderCell.getDataType()).toEqual("(<Undefined>)");
     await expect(bee.expression.asInvocation().invokedFunctionNameCell).toBeAttached();
     await expect(page.getByRole("cell", { name: "p-1" })).toBeAttached();
     await expect(page.getByText("Select expression")).toHaveCount(1);
@@ -33,6 +34,8 @@ test.describe("Create Boxed Invocation", () => {
 
   test("should commit invoked function by cell click", async ({ bee, stories, page }) => {
     await stories.openBoxedInvocation();
+
+    // click to start editing and type new value
     await bee.expression.asInvocation().invokedFunctionNameCell.click();
     await page.keyboard.type("Changed Invoked Function Name");
 
