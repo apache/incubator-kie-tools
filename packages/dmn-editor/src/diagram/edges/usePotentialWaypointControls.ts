@@ -173,8 +173,7 @@ export function usePotentialWaypointControls(
     dmnEditorStoreApi.setState((state) => {
       const dmnEdgeIndex = state.computed(state).indexedDrd().dmnEdgesByDmnElementRef.get(edgeId)?.index;
       if (dmnEdgeIndex === undefined) {
-        console.debug(`DMN DIAGRAM: DMNEdge for '${edgeId}' edge has missing index.`);
-        return;
+        throw new Error(`DMN DIAGRAM: Diagram computed state does not contain DMNEdge for '${edgeId}' edge.`);
       }
       addEdgeWaypoint({
         definitions: state.dmn.model.definitions,
