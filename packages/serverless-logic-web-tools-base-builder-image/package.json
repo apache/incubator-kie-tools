@@ -18,11 +18,12 @@
     "build:prod:linux:darwin": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
     "build:prod:win32": "echo \"Build not supported on Windows\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
-    "image:docker:build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker build --ulimit nofile=5000:5000 $(echo $(build-env baseBuilderImageEnv.buildTag) | xargs printf -- \"-t $(build-env baseBuilderImageEnv.registry)/$(build-env baseBuilderImageEnv.account)/$(build-env baseBuilderImageEnv.name):%s\n\" | xargs echo) --build-arg KOGITO_IMAGE_TAG=$(build-env baseBuilderImage.kogitoImageTag) --build-arg KUBECTL_VERSION=$(build-env baseBuilderImage.kubectlVersion) .\" --else \"echo Docker not found, skipping image build.\""
+    "image:docker:build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker build --ulimit nofile=5000:5000 $(echo $(build-env slwtBaseBuilderImageEnv.buildTag) | xargs printf -- \"-t $(build-env slwtBaseBuilderImageEnv.registry)/$(build-env slwtBaseBuilderImageEnv.account)/$(build-env slwtBaseBuilderImageEnv.name):%s\n\" | xargs echo) --build-arg BASE_IMAGE_TAG=$(build-env slwtBaseBuilderImage.baseImageTag) --build-arg KUBECTL_VERSION=$(build-env slwtBaseBuilderImage.kubectlVersion) .\" --else \"echo Docker not found, skipping image build.\""
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/serverless-logic-web-tools-base-builder-image-env": "workspace:*",
+    "@kie/kogito-base-builder-image": "workspace:*",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6"
   }

@@ -538,6 +538,7 @@ digraph G {
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/sonataflow-dev-app" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-base-builder-image" -> "@kie-tools/serverless-logic-web-tools-base-builder-image-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/serverless-logic-web-tools-base-builder-image" -> "@kie/kogito-base-builder-image" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-base-builder-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-builder-image" -> "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-builder-image" -> "@kie-tools/sonataflow-builder-image" [ style = "dashed", color = "black" ];
@@ -545,9 +546,9 @@ digraph G {
   "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app" -> "@kie-tools/sonataflow-quarkus-devui" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" -> "@kie-tools/maven-m2-repo-via-http-image" [ style = "dashed", color = "black" ];
-  "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" -> "@kie-tools/python-venv" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" -> "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" -> "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" -> "@kie/kogito-base-builder-image" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" -> "sonataflow-deployment-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-diagram-editor-assets" [ style = "solid", color = "blue" ];
@@ -598,6 +599,10 @@ digraph G {
   "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/sonataflow-dev-app" [ style = "dashed", color = "blue" ];
   "@kie-tools/sonataflow-operator" -> "@kie-tools/sonataflow-builder-image" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-operator" -> "@kie-tools/sonataflow-devmode-image" [ style = "dashed", color = "black" ];
+  "@kie-tools/sonataflow-operator" -> "@kie/kogito-data-index-ephemeral-image" [ style = "dashed", color = "black" ];
+  "@kie-tools/sonataflow-operator" -> "@kie/kogito-data-index-postgresql-image" [ style = "dashed", color = "black" ];
+  "@kie-tools/sonataflow-operator" -> "@kie/kogito-jobs-service-ephemeral-image" [ style = "dashed", color = "black" ];
+  "@kie-tools/sonataflow-operator" -> "@kie/kogito-jobs-service-postgresql-image" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-quarkus-devui" -> "@kie-tools/serverless-workflow-dev-ui-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools/storybook-base" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/storybook-base" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];

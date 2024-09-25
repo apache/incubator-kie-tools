@@ -154,15 +154,15 @@
       { "id": "@kie-tools/sonataflow-operator" },
       { "id": "@kie-tools/sonataflow-builder-image" },
       { "id": "@kie-tools/sonataflow-devmode-image" },
+      { "id": "@kie/kogito-data-index-ephemeral-image" },
+      { "id": "@kie/kogito-data-index-postgresql-image" },
+      { "id": "@kie/kogito-jobs-service-ephemeral-image" },
+      { "id": "@kie/kogito-jobs-service-postgresql-image" },
       { "id": "@kie/kogito-base-builder-image" },
       { "id": "@kie-tools/sonataflow-image-common" },
       { "id": "@kie-tools/python-venv" },
-      { "id": "@kie/kogito-data-index-ephemeral-image" },
-      { "id": "@kie/kogito-data-index-postgresql-image" },
       { "id": "@kie/kogito-jit-runner-image" },
       { "id": "@kie/kogito-jobs-service-allinone-image" },
-      { "id": "@kie/kogito-jobs-service-ephemeral-image" },
-      { "id": "@kie/kogito-jobs-service-postgresql-image" },
       { "id": "@kie-tools/unitables" },
       { "id": "pmml-vscode-extension" },
       { "id": "@kie-tools/runtime-tools-components" },
@@ -1921,6 +1921,26 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/sonataflow-operator",
+        "target": "@kie/kogito-data-index-ephemeral-image",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-operator",
+        "target": "@kie/kogito-data-index-postgresql-image",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-operator",
+        "target": "@kie/kogito-jobs-service-ephemeral-image",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-operator",
+        "target": "@kie/kogito-jobs-service-postgresql-image",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/sonataflow-builder-image",
         "target": "@kie-tools/sonataflow-image-common",
         "weight": 1
@@ -1933,6 +1953,26 @@
       {
         "source": "@kie-tools/sonataflow-devmode-image",
         "target": "@kie-tools/sonataflow-quarkus-devui",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-data-index-ephemeral-image",
+        "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-data-index-postgresql-image",
+        "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-jobs-service-ephemeral-image",
+        "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-jobs-service-postgresql-image",
+        "target": "@kie-tools/sonataflow-image-common",
         "weight": 1
       },
       {
@@ -1951,32 +1991,12 @@
         "weight": 1
       },
       {
-        "source": "@kie/kogito-data-index-ephemeral-image",
-        "target": "@kie-tools/sonataflow-image-common",
-        "weight": 1
-      },
-      {
-        "source": "@kie/kogito-data-index-postgresql-image",
-        "target": "@kie-tools/sonataflow-image-common",
-        "weight": 1
-      },
-      {
         "source": "@kie/kogito-jit-runner-image",
         "target": "@kie-tools/sonataflow-image-common",
         "weight": 1
       },
       {
         "source": "@kie/kogito-jobs-service-allinone-image",
-        "target": "@kie-tools/sonataflow-image-common",
-        "weight": 1
-      },
-      {
-        "source": "@kie/kogito-jobs-service-ephemeral-image",
-        "target": "@kie-tools/sonataflow-image-common",
-        "weight": 1
-      },
-      {
-        "source": "@kie/kogito-jobs-service-postgresql-image",
         "target": "@kie-tools/sonataflow-image-common",
         "weight": 1
       },
@@ -2271,6 +2291,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/serverless-logic-web-tools-base-builder-image",
+        "target": "@kie/kogito-base-builder-image",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/serverless-logic-web-tools-swf-builder-image",
         "target": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env",
         "weight": 1
@@ -2317,17 +2342,17 @@
       },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image",
-        "target": "@kie-tools/python-venv",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image",
         "target": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
         "weight": 1
       },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image",
         "target": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image",
+        "target": "@kie/kogito-base-builder-image",
         "weight": 1
       },
       {

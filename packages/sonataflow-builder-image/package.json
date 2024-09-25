@@ -27,7 +27,7 @@
     "image:test:darwin:win32": "echo \"Tests skipped on macOS and Windows\"",
     "image:test:linux": "pnpm copy-test-assets && pnpm setup:env make -C ./build test-image",
     "install": "node install.js && pnpm format",
-    "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env sonataflowBuilderImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env sonataflowBuilderImage.account) KOGITO_IMAGE_NAME=$(build-env sonataflowBuilderImage.name) KOGITO_IMAGE_TAG=$(build-env sonataflowBuilderImage.tag) QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) KOGITO_VERSION=$(build-env kogitoRuntime.version)",
+    "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env sonataflowBuilderImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env sonataflowBuilderImage.account) KOGITO_IMAGE_NAME=$(build-env sonataflowBuilderImage.name) KOGITO_IMAGE_TAG=$(build-env sonataflowBuilderImage.buildTag) QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) KOGITO_VERSION=$(build-env kogitoRuntime.version)",
     "test": "run-script-os",
     "test:cleanup": "mv dist-tests/report.xml dist-tests/junit-report.xml || true",
     "test:linux:darwin": "run-script-if --bool \"$(build-env tests.run)\" --then \"pnpm test:setup\" \"pnpm test:run\" --finally \"pnpm test:cleanup\"",

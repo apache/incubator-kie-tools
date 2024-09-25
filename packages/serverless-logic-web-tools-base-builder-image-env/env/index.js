@@ -42,7 +42,7 @@ module.exports = composeEnv([rootEnv], {
   }),
   get env() {
     return {
-      baseBuilderImageEnv: {
+      slwtBaseBuilderImageEnv: {
         registry: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry),
         account: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount),
         name: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName),

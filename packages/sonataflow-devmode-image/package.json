@@ -28,7 +28,7 @@
     "image:test:linux": "pnpm copy-test-assets && pnpm setup:env make -C ./build test-image",
     "image:test:win32": "echo \"Tests skipped on Windows\"",
     "install": "node install.js && pnpm format",
-    "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env sonataflowDevModeImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env sonataflowDevModeImage.account) KOGITO_IMAGE_NAME=$(build-env sonataflowDevModeImage.name) KOGITO_IMAGE_TAG=$(build-env sonataflowDevModeImage.tag) QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) KOGITO_VERSION=$(build-env kogitoRuntime.version) SONATAFLOW_QUARKUS_DEVUI_VERSION=$(build-env sonataflowDevModeImage.sonataflowQuarkusDevUiVersion)"
+    "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env sonataflowDevModeImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env sonataflowDevModeImage.account) KOGITO_IMAGE_NAME=$(build-env sonataflowDevModeImage.name) KOGITO_IMAGE_TAG=$(build-env sonataflowDevModeImage.buildTag) QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) KOGITO_VERSION=$(build-env kogitoRuntime.version) SONATAFLOW_QUARKUS_DEVUI_VERSION=$(build-env sonataflowDevModeImage.sonataflowQuarkusDevUiVersion)"
   },
   "devDependencies": {
     "@kie-tools/python-venv": "workspace:*",

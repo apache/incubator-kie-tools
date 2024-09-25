@@ -42,11 +42,11 @@ module.exports = composeEnv([rootEnv, sonataflowBuilderImageEnv, sonataflowDevMo
       description: "Tag version of this image. E.g., `main` or `10.0.x` or `10.0.0",
     },
     SONATAFLOW_OPERATOR__sonataflowBuilderImage: {
-      default: `${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.registry}/${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.account}/${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.name}:${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.tag}`,
+      default: `${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.registry}/${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.account}/${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.name}:${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.buildTag}`,
       description: "Sonataflow Builder image",
     },
     SONATAFLOW_OPERATOR__sonataflowDevModeImage: {
-      default: `${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.registry}/${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.account}/${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.name}:${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.tag}`,
+      default: `${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.registry}/${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.account}/${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.name}:${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.buildTag}`,
       description: "Sonataflow DevMode image",
     },
   }),
@@ -56,7 +56,7 @@ module.exports = composeEnv([rootEnv, sonataflowBuilderImageEnv, sonataflowDevMo
         registry: getOrDefault(this.vars.SONATAFLOW_OPERATOR__registry),
         account: getOrDefault(this.vars.SONATAFLOW_OPERATOR__account),
         name: getOrDefault(this.vars.SONATAFLOW_OPERATOR__name),
-        tag: getOrDefault(this.vars.SONATAFLOW_OPERATOR__buildTag),
+        buildTag: getOrDefault(this.vars.SONATAFLOW_OPERATOR__buildTag),
         version: require("../package.json").version,
         sonataflowBuilderImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__sonataflowBuilderImage),
         sonataflowDevModeImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__sonataflowDevModeImage),
