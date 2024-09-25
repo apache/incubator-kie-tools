@@ -23,9 +23,9 @@ import { Bootstrap4FormConfiguration, Bootstrap4FormGenerator } from "../../dist
 
 describe("Bootstrap4FormGenerator tests", () => {
   it("Generate", () => {
-    const tool = new Bootstrap4FormGenerator();
+    const bootstrap4FormGenerator = new Bootstrap4FormGenerator();
 
-    const formAsset: FormAsset = tool.generate({
+    const formAsset: FormAsset = bootstrap4FormGenerator.generate({
       name: "ApplyFor#Visa",
       schema: ApplyForVisaSchema,
     });

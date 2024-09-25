@@ -23,9 +23,9 @@ import { ApplyForVisaSchema } from "../__mocks__/partternfly";
 
 describe("PatternflyFormGenerator tests", () => {
   it("Generate", () => {
-    const tool = new PatternflyFormGenerator();
+    const patternflyFormGenerator = new PatternflyFormGenerator();
 
-    const formAsset: FormAsset = tool.generate({
+    const formAsset: FormAsset = patternflyFormGenerator.generate({
       name: "ApplyFor#Visa",
       schema: ApplyForVisaSchema,
     });
