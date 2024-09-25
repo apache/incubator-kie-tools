@@ -179,7 +179,7 @@ export function usePotentialWaypointControls(
         definitions: state.dmn.model.definitions,
         drdIndex,
         beforeIndex: i - 1,
-        edgeIndex: dmnEdgeIndex,
+        dmnEdgeIndex,
         waypoint: snappedPotentialWaypoint,
       });
 

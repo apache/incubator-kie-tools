@@ -24,19 +24,19 @@ import { Normalized } from "../normalization/normalize";
 export function addEdgeWaypoint({
   definitions,
   drdIndex,
-  edgeIndex,
+  dmnEdgeIndex,
   beforeIndex,
   waypoint,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
-  edgeIndex: number;
+  dmnEdgeIndex: number;
   beforeIndex: number;
   waypoint: DC__Point;
 }) {
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
-  const diagramElement = diagramElements[edgeIndex];
+  const diagramElement = diagramElements[dmnEdgeIndex];
   if (diagramElement.__$$element !== "dmndi:DMNEdge") {
     throw new Error("DMN MUTATION: Can't add a waypoint for an element that is not a DMNEdge.");
   }
