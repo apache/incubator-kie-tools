@@ -1,4 +1,3 @@
-#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,28 +14,8 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-#
-
-apiVersion: sonataflow.org/v1alpha08
-kind: SonataFlowPlatform
-metadata:
-  name: sonataflow-platform
-spec:
-  persistence:
-    postgresql:
-      secretRef:
-        name: my-secret
-        userKey: MY_USER
-        passwordKey: MY_PASSWORD
-      serviceRef:
-        name: db_not_defined
-        port: 3456
-        databaseName: db_name
-  build:
-    template:
-      buildArgs:
-        - name: QUARKUS_EXTENSIONS
-          value: org.kie:kie-addons-quarkus-persistence-jdbc:999-20240912-SNAPSHOT,io.quarkus:quarkus-jdbc-postgresql:3.8.6,io.quarkus:quarkus-agroal:3.8.6
-    config:
-      strategyOptions:
-        KanikoBuildCacheEnabled: "true"
+github:
+  enabled_merge_buttons:
+    squash: true
+    merge: true
+    rebase: false
