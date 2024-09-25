@@ -81,8 +81,7 @@ export function addDecisionToDecisionService({
   }
 
   const diagram = addOrGetDrd({ definitions, drdIndex });
-  const hrefString = buildXmlHref({ namespace: href.namespace, id: href.id });
-  const dmnElementRef = xmlHrefToQName(hrefString, definitions);
+  const dmnElementRef = xmlHrefToQName(decisionHref, definitions);
 
   const decisionShape = diagram.diagramElements.find(
     (s) => s["@_dmnElementRef"] === dmnElementRef && s.__$$element === "dmndi:DMNShape"
@@ -95,10 +94,10 @@ export function addDecisionToDecisionService({
   const section = getSectionForDecisionInsideDecisionService({ decisionShape, decisionServiceShape, snapGrid });
   if (section === "encapsulated") {
     decisionService.encapsulatedDecision ??= [];
-    decisionService.encapsulatedDecision.push({ "@_href": `${hrefString}` });
+    decisionService.encapsulatedDecision.push({ "@_href": `${decisionHref}` });
   } else if (section === "output") {
     decisionService.outputDecision ??= [];
-    decisionService.outputDecision.push({ "@_href": `${hrefString}` });
+    decisionService.outputDecision.push({ "@_href": `${decisionHref}` });
   } else {
     throw new Error(`DMN MUTATION: Invalid section to add decision to: '${section}' `);
   }
