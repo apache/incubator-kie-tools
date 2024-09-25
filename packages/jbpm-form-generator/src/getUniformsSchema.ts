@@ -25,7 +25,7 @@ import unset from "lodash/unset";
 type Schema = { [x: string]: any };
 
 /**
- * Removes the `input` and `output` values and determines if the field should be disabled
+ * Removes the `input` and `output` properties and determines if the form field should be disabled
  */
 export function getUniformsSchema(schema: Schema) {
   const schemaClone = cloneDeep(schema);
