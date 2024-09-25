@@ -58,5 +58,5 @@ export interface FormGenerationError {
 
 export interface FormGenerator {
   type: string;
-  generate: (schema: FormSchema) => FormAsset | FormGenerationError;
+  generate: (formSchema: FormSchema) => FormAsset | FormGenerationError;
 }

@@ -49,23 +49,23 @@ export class Bootstrap4FormConfiguration implements FormConfiguration {
 export class Bootstrap4FormGenerator implements FormGenerator {
   public type: string = FormStyle.BOOTSTRAP;
 
-  public generate(inputSchema: FormSchema): FormAsset {
-    const uniformsSchema = getUniformsSchema(inputSchema.schema);
+  public generate(formSchema: FormSchema): FormAsset {
+    const uniformsSchema = getUniformsSchema(formSchema.schema);
     const form = renderForm({
-      id: inputSchema.name,
-      sanitizedId: inputSanitizationUtil(inputSchema.name),
+      id: formSchema.name,
+      sanitizedId: inputSanitizationUtil(formSchema.name),
       schema: new JSONSchemaBridge(uniformsSchema, () => true),
       disabled: false,
       placeholder: true,
     });
     return {
-      id: inputSchema.name,
-      sanitizedId: inputSanitizationUtil(inputSchema.name),
-      assetName: `${inputSchema.name}.${FormAssetType.HTML}`,
-      sanitizedAssetName: `${inputSanitizationUtil(inputSchema.name)}.${FormAssetType.HTML}`,
+      id: formSchema.name,
+      sanitizedId: inputSanitizationUtil(formSchema.name),
+      assetName: `${formSchema.name}.${FormAssetType.HTML}`,
+      sanitizedAssetName: `${inputSanitizationUtil(formSchema.name)}.${FormAssetType.HTML}`,
       type: FormAssetType.HTML,
       content: unescape(form),
-      config: new Bootstrap4FormConfiguration(inputSchema.schema),
+      config: new Bootstrap4FormConfiguration(formSchema.schema),
     };
   }
 }

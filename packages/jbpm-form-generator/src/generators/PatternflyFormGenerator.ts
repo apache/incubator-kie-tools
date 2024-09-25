@@ -40,23 +40,23 @@ export class PatternflyFormConfiguration implements FormConfiguration {
 export class PatternflyFormGenerator implements FormGenerator {
   public type: string = FormStyle.PATTERNFLY;
 
-  public generate(inputSchema: FormSchema): FormAsset {
-    const uniformsSchema = getUniformsSchema(inputSchema.schema);
+  public generate(formSchema: FormSchema): FormAsset {
+    const uniformsSchema = getUniformsSchema(formSchema.schema);
     const form = renderForm({
-      id: inputSchema.name,
-      sanitizedId: inputSanitizationUtil(inputSchema.name),
+      id: formSchema.name,
+      sanitizedId: inputSanitizationUtil(formSchema.name),
       schema: new JSONSchemaBridge(uniformsSchema, () => true),
       disabled: false,
       placeholder: true,
     });
     return {
-      id: inputSchema.name,
-      sanitizedId: inputSanitizationUtil(inputSchema.name),
-      assetName: `${inputSchema.name}.${FormAssetType.TSX}`,
-      sanitizedAssetName: `${inputSanitizationUtil(inputSchema.name)}.${FormAssetType.TSX}`,
+      id: formSchema.name,
+      sanitizedId: inputSanitizationUtil(formSchema.name),
+      assetName: `${formSchema.name}.${FormAssetType.TSX}`,
+      sanitizedAssetName: `${inputSanitizationUtil(formSchema.name)}.${FormAssetType.TSX}`,
       type: FormAssetType.TSX,
       content: unescape(form),
-      config: new PatternflyFormConfiguration(inputSchema.schema),
+      config: new PatternflyFormConfiguration(formSchema.schema),
     };
   }
 }

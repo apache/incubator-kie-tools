@@ -22,14 +22,14 @@ import { FormGenerator, FormSchema, FormAsset, FormGenerationError } from "./typ
 
 export interface Args {
   type: string;
-  forms: FormSchema[];
+  formSchemas: FormSchema[];
 }
 
-export function generateForms({ type, forms }: Args): (FormAsset | FormGenerationError)[] {
+export function generateForms({ type, formSchemas }: Args): (FormAsset | FormGenerationError)[] {
   const tool: FormGenerator = getFormGenerator(type);
-  return forms.reduce((generatedForms: (FormAsset | FormGenerationError)[], form) => {
+  return formSchemas.reduce((generatedForms: (FormAsset | FormGenerationError)[], formSchema) => {
     try {
-      generatedForms.push(tool.generate(form));
+      generatedForms.push(tool.generate(formSchema));
     } catch (error) {
       console.error(`Error generating form: ${error}`);
       generatedForms.push({ error });
