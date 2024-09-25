@@ -99,7 +99,7 @@ export function usePotentialWaypointControls(
           );
           return;
         }
-        
+
         const edgeSourceBounds = edge.data?.dmnShapeSource["dc:Bounds"];
         const edgeTargetBounds = edge.data?.dmnShapeTarget["dc:Bounds"];
         if (edgeSourceBounds === undefined || edgeTargetBounds === undefined) {
@@ -111,7 +111,6 @@ export function usePotentialWaypointControls(
 
         const sourceNode = nodesById.get(edge.source);
         const targetNode = nodesById.get(edge.target);
-
         if (sourceNode === undefined || targetNode === undefined) {
           console.debug(
             `DMN DIAGRAM: We can not add DMNEdge for '${edgeId}' edge into diagram. There are missing data sourceNode: ${sourceNode}, targetNode: ${targetNode}`
@@ -120,7 +119,6 @@ export function usePotentialWaypointControls(
         }
 
         const targetsExternalNode = targetNode.data.dmnObjectQName.prefix !== undefined;
-
         addEdge({
           definitions: state.dmn.model.definitions,
           drdIndex: state.computed(state).getDrdIndex(),
@@ -148,7 +146,7 @@ export function usePotentialWaypointControls(
             shapeId: edge.data?.dmnShapeTarget["@_id"],
           },
           keepWaypoints: false,
-          requirementEdgeTargetingExternalNodeId: isTargetExternalNode ? edgeId : undefined,
+          requirementEdgeTargetingExternalNodeId: targetsExternalNode ? edgeId : undefined,
         });
 
         console.debug(`DMN DIAGRAM: DMNEdge for '${edgeId}' edge was added into diagram.`);
