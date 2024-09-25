@@ -132,10 +132,10 @@
       { "id": "@kie-tools/extended-services" },
       { "id": "@kie-tools/extended-services-java" },
       { "id": "extended-services-vscode-extension" },
-      { "id": "@kie-tools/form-generation-tool" },
+      { "id": "@kie-tools/import-java-classes-component" },
+      { "id": "@kie-tools/jbpm-form-generator" },
       { "id": "@kie-tools/uniforms-bootstrap4-codegen" },
       { "id": "@kie-tools/uniforms-patternfly-codegen" },
-      { "id": "@kie-tools/import-java-classes-component" },
       { "id": "@kie-tools/runtime-tools-process-webapp-components" },
       { "id": "@kie-tools/runtime-tools-shared-webapp-components" },
       { "id": "@kie-tools/jobs-service-webapp" },
@@ -1619,12 +1619,37 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/form-generation-tool",
+        "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools-core/vscode-java-code-completion",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools/i18n-common-dictionary",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools-core/monaco-editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools-core/patternfly-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools-core/webpack-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/jbpm-form-generator",
         "target": "@kie-tools/uniforms-bootstrap4-codegen",
         "weight": 1
       },
       {
-        "source": "@kie-tools/form-generation-tool",
+        "source": "@kie-tools/jbpm-form-generator",
         "target": "@kie-tools/uniforms-patternfly-codegen",
         "weight": 1
       },
@@ -1666,31 +1691,6 @@
       {
         "source": "@kie-tools/uniforms-patternfly-codegen",
         "target": "@kie-tools/tsconfig",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/import-java-classes-component",
-        "target": "@kie-tools-core/vscode-java-code-completion",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/import-java-classes-component",
-        "target": "@kie-tools/i18n-common-dictionary",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/import-java-classes-component",
-        "target": "@kie-tools-core/monaco-editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/import-java-classes-component",
-        "target": "@kie-tools-core/patternfly-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/import-java-classes-component",
-        "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
       {
@@ -2567,12 +2567,12 @@
     ["@kie-tools/feel-input-component", "packages/feel-input-component"],
     ["@kie-tools/form", "packages/form"],
     ["@kie-tools/form-dmn", "packages/form-dmn"],
-    ["@kie-tools/form-generation-tool", "packages/form-generation-tool"],
     ["@kie-tools-core/i18n", "packages/i18n"],
     ["@kie-tools/i18n-common-dictionary", "packages/i18n-common-dictionary"],
     ["@kie-tools/image-builder", "packages/image-builder"],
     ["@kie-tools/image-env-to-json", "packages/image-env-to-json"],
     ["@kie-tools/import-java-classes-component", "packages/import-java-classes-component"],
+    ["@kie-tools/jbpm-form-generator", "packages/jbpm-form-generator"],
     ["@kie-tools/jbpm-quarkus-devui", "packages/jbpm-quarkus-devui"],
     ["@kie-tools/jest-base", "packages/jest-base"],
     ["@kie-tools/jobs-service-webapp", "packages/jobs-service-webapp"],
