@@ -21,16 +21,19 @@ import { PatternflyFormGenerator } from "./generators/PatternflyFormGenerator";
 import { FormGenerator } from "./types";
 import { Bootstrap4FormGenerator } from "./generators/Bootstrap4FormGenerator";
 
+/**
+ * A index of form generator type by its generator class
+ */
 const formGeneratorIndex: Map<string, FormGenerator> = new Map<string, FormGenerator>();
 
-export function registerFormGenerator(formGenerator: FormGenerator) {
+export function registerFormGeneratorType(formGenerator: FormGenerator) {
   formGeneratorIndex.set(formGenerator.type, formGenerator);
 }
 
-registerFormGenerator(new PatternflyFormGenerator());
-registerFormGenerator(new Bootstrap4FormGenerator());
+registerFormGeneratorType(new PatternflyFormGenerator());
+registerFormGeneratorType(new Bootstrap4FormGenerator());
 
-export function getFormGenerationTool(type: string): FormGenerator {
+export function getFormGenerator(type: string): FormGenerator {
   const formGenerator = formGeneratorIndex.get(type);
   if (formGenerator) {
     return formGenerator;

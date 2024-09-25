@@ -17,21 +17,20 @@
  * under the License.
  */
 
-import { getFormGenerationTool, registerFormGenerator } from "../dist/formGenerationToolRegistry";
+import { getFormGenerator, registerFormGeneratorType } from "../dist/getFormGenerator";
 import { FormGenerator, FormStyle } from "../dist/types";
 
-describe("formGenerationToolsRegistry tests", () => {
+describe("getFormGenerator tests", () => {
   it("Lookup existing tool - patternfly", () => {
-    const tool = getFormGenerationTool(FormStyle.PATTERNFLY);
+    const tool = getFormGenerator(FormStyle.PATTERNFLY);
 
     expect(tool).not.toBeUndefined();
-
     expect(tool.type).toStrictEqual(FormStyle.PATTERNFLY);
   });
 
   it("Lookup wrong tool", () => {
     const toolType = "wrong tool type";
-    expect(() => getFormGenerationTool(toolType)).toThrow(`Unsupported form type "${toolType}"`);
+    expect(() => getFormGenerator(toolType)).toThrow(`Unsupported form generation type: "${toolType}"`);
   });
 
   it("Register tool & lookup", () => {
@@ -40,13 +39,13 @@ describe("formGenerationToolsRegistry tests", () => {
       generate: jest.fn(),
     };
 
-    registerFormGenerator(tool);
+    registerFormGeneratorType(tool);
 
-    const coolTool = getFormGenerationTool(tool.type);
+    const coolTool = getFormGenerator(tool.type);
     expect(coolTool).not.toBeUndefined();
     expect(coolTool).toStrictEqual(tool);
 
-    const patternfly = getFormGenerationTool(FormStyle.PATTERNFLY);
+    const patternfly = getFormGenerator(FormStyle.PATTERNFLY);
     expect(patternfly).not.toBeUndefined();
   });
 });

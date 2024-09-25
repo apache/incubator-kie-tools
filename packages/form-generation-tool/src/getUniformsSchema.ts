@@ -22,7 +22,12 @@ import get from "lodash/get";
 import set from "lodash/set";
 import unset from "lodash/unset";
 
-export function getUniformsSchema(schema: any) {
+type Schema = { [x: string]: any };
+
+/**
+ * Removes the `input` and `output` values and determines if the field should be disabled
+ */
+export function getUniformsSchema(schema: Schema) {
   const schemaClone = cloneDeep(schema);
 
   if (schemaClone.properties) {

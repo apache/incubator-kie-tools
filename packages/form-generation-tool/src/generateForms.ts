@@ -17,15 +17,23 @@
  * under the License.
  */
 
-import { getFormGenerationTool } from "./formGenerationToolRegistry";
-import { FormGenerator, FormSchema, FormAsset } from "./types";
+import { getFormGenerator } from "./getFormGenerator";
+import { FormGenerator, FormSchema, FormAsset, FormGenerationError } from "./types";
 
 export interface Args {
   type: string;
   forms: FormSchema[];
 }
 
-export function generateForms({ type, forms }: Args): FormAsset[] {
-  const tool: FormGenerator = getFormGenerationTool(type);
-  return forms.map((form) => tool.generate(form));
+export function generateForms({ type, forms }: Args): (FormAsset | FormGenerationError)[] {
+  const tool: FormGenerator = getFormGenerator(type);
+  return forms.reduce((generatedForms: (FormAsset | FormGenerationError)[], form) => {
+    try {
+      generatedForms.push(tool.generate(form));
+    } catch (error) {
+      console.error(`Error generating form: ${error}`);
+      generatedForms.push({ error });
+    }
+    return generatedForms;
+  }, []);
 }

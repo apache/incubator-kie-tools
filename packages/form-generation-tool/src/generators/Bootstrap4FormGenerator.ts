@@ -26,10 +26,9 @@ import { inputSanitizationUtil } from "../inputSanitizationUtil";
 
 export const BOOTSTRAP4_CSS_URL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css";
 export const BOOTSTRAP4_JS_URL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js";
-
 export const JQUERY_URL = "https://code.jquery.com/jquery-3.2.1.slim.min.js";
 
-export class Bootstrap4FormConfig implements FormConfiguration {
+export class Bootstrap4FormConfiguration implements FormConfiguration {
   public readonly schema: string;
 
   constructor(formSchema: any) {
@@ -48,11 +47,10 @@ export class Bootstrap4FormConfig implements FormConfiguration {
 }
 
 export class Bootstrap4FormGenerator implements FormGenerator {
-  type: string = FormStyle.BOOTSTRAP;
+  public type: string = FormStyle.BOOTSTRAP;
 
-  generate(inputSchema: FormSchema): FormAsset {
+  public generate(inputSchema: FormSchema): FormAsset {
     const uniformsSchema = getUniformsSchema(inputSchema.schema);
-
     const form = renderForm({
       id: inputSchema.name,
       sanitizedId: inputSanitizationUtil(inputSchema.name),
@@ -67,7 +65,7 @@ export class Bootstrap4FormGenerator implements FormGenerator {
       sanitizedAssetName: `${inputSanitizationUtil(inputSchema.name)}.${FormAssetType.HTML}`,
       type: FormAssetType.HTML,
       content: unescape(form),
-      config: new Bootstrap4FormConfig(inputSchema.schema),
+      config: new Bootstrap4FormConfiguration(inputSchema.schema),
     };
   }
 }

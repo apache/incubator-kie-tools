@@ -52,7 +52,11 @@ export interface FormAsset {
   config: FormConfiguration;
 }
 
+export interface FormGenerationError {
+  error: Error;
+}
+
 export interface FormGenerator {
   type: string;
-  generate: (schema: FormSchema) => FormAsset;
+  generate: (schema: FormSchema) => FormAsset | FormGenerationError;
 }

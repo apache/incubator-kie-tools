@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { PatternflyFormConfig, PatternflyFormGenerator } from "../../dist/generators/PatternflyFormGenerator";
+import { PatternflyFormConfiguration, PatternflyFormGenerator } from "../../dist/generators/PatternflyFormGenerator";
 import { FormAsset } from "../../dist/types";
 import { ApplyForVisaSchema } from "../__mocks__/partternfly";
 
@@ -39,6 +39,6 @@ describe("PatternflyFormGenerator tests", () => {
     expect(formAsset.content).toContain("const Form__ApplyFor_Visa");
     expect(formAsset.content).toContain("export default Form__ApplyFor_Visa;");
     expect(formAsset.config).not.toBeUndefined();
-    expect(formAsset.config).toMatchObject(new PatternflyFormConfig(ApplyForVisaSchema));
+    expect(formAsset.config).toMatchObject(new PatternflyFormConfiguration(ApplyForVisaSchema));
   });
 });

@@ -20,88 +20,75 @@
 import { generateForms } from "../dist/generateForms";
 import { FormAsset, FormGenerator, FormSchema } from "../dist/types";
 import { ApplyForVisaSchema, ConfirmTravelSchema } from "./__mocks__/partternfly";
-import { registerFormGenerator } from "../dist/formGenerationToolRegistry";
+import { registerFormGeneratorType } from "../dist/getFormGenerator";
 import { inputSanitizationUtil } from "../dist/inputSanitizationUtil";
 
-describe("formGenerationCommand tests", () => {
-  const loadProjectSchemasMock = jest.spyOn(fs, "loadProjectSchemas");
-  const storeFormAssetsMock = jest.spyOn(fs, "storeFormAsset");
-
-  const sourcePath = "/a/test/path";
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
+describe("generateForms tests", () => {
   it("Generate forms with wrong tool type", () => {
-    generateForms({
-      type: "wrong type",
-    });
-
-    expect(loadProjectSchemasMock).not.toHaveBeenCalled();
-    expect(storeFormAssetsMock).not.toHaveBeenCalled();
+    expect(() =>
+      generateForms({
+        forms: [{ name: "", schema: {} }],
+        type: "wrong type",
+      })
+    ).toThrow('Unsupported form generation type: "wrong type"');
   });
 
-  it("Generate forms for empty project", () => {
-    loadProjectSchemasMock.mockReturnValueOnce([]);
-
-    generateForms({
+  it("Generate forms for empty schema", () => {
+    const formAssets = generateForms({
+      forms: [{ name: "test", schema: {} }],
       type: "patternfly",
     });
 
-    expect(loadProjectSchemasMock).toHaveBeenCalledTimes(1);
-    expect(storeFormAssetsMock).not.toHaveBeenCalled();
+    expect(formAssets[0]).toEqual(
+      expect.objectContaining({
+        id: "test",
+        sanitizedId: "test",
+        assetName: "test.tsx",
+        sanitizedAssetName: "test.tsx",
+        config: { resources: { scripts: {}, styles: {} }, schema: "{}" },
+        type: "tsx",
+      })
+    );
   });
 
   it("Generate forms project with schemas", () => {
-    const schemas: FormSchema[] = [
-      {
-        name: "Apply#For#Visa",
-        schema: ApplyForVisaSchema,
-      },
-      {
-        name: "ConfirmTravel",
-        schema: ConfirmTravelSchema,
-      },
-    ];
-
-    loadProjectSchemasMock.mockReturnValueOnce(schemas);
-
-    generateForms({
+    const formAssets = generateForms({
+      forms: [
+        { name: "Apply#For#Visa", schema: ApplyForVisaSchema },
+        { name: "ConfirmTravel", schema: ConfirmTravelSchema },
+      ],
       type: "patternfly",
     });
 
-    expect(loadProjectSchemasMock).toHaveBeenCalledTimes(1);
-    expect(storeFormAssetsMock).toHaveBeenCalledTimes(2);
-
-    const applyForVisaAsset: FormAsset = storeFormAssetsMock.mock.calls[0][0];
-    expect(applyForVisaAsset.id).toEqual("Apply#For#Visa");
-    expect(applyForVisaAsset.sanitizedId).toEqual("Apply_For_Visa");
-    expect(applyForVisaAsset.assetName).toEqual("Apply#For#Visa.tsx");
-    expect(applyForVisaAsset.sanitizedAssetName).toEqual("Apply_For_Visa.tsx");
-    expect(applyForVisaAsset.content).toContain("const Form__Apply_For_Visa");
-    expect(storeFormAssetsMock.mock.calls[0][1]).toEqual(sourcePath);
-    expect(storeFormAssetsMock.mock.calls[0][2]).toBeTruthy();
-
-    const confirmTravelAsset: FormAsset = storeFormAssetsMock.mock.calls[1][0];
-    expect(confirmTravelAsset.id).toEqual("ConfirmTravel");
-    expect(confirmTravelAsset.sanitizedId).toEqual("ConfirmTravel");
-    expect(confirmTravelAsset.assetName).toEqual("ConfirmTravel.tsx");
-    expect(confirmTravelAsset.sanitizedAssetName).toEqual("ConfirmTravel.tsx");
-    expect(confirmTravelAsset.content).toContain("const Form__ConfirmTravel");
-    expect(storeFormAssetsMock.mock.calls[1][1]).toEqual(sourcePath);
-    expect(storeFormAssetsMock.mock.calls[1][2]).toBeTruthy();
+    expect(formAssets[0]).toEqual(
+      expect.objectContaining({
+        id: "Apply#For#Visa",
+        sanitizedId: "Apply_For_Visa",
+        assetName: "Apply#For#Visa.tsx",
+        sanitizedAssetName: "Apply_For_Visa.tsx",
+        config: { resources: { scripts: {}, styles: {} }, schema: JSON.stringify(ApplyForVisaSchema) },
+        type: "tsx",
+      })
+    );
+    expect(formAssets[1]).toEqual(
+      expect.objectContaining({
+        id: "ConfirmTravel",
+        sanitizedId: "ConfirmTravel",
+        assetName: "ConfirmTravel.tsx",
+        sanitizedAssetName: "ConfirmTravel.tsx",
+        config: { resources: { scripts: {}, styles: {} }, schema: JSON.stringify(ConfirmTravelSchema) },
+        type: "tsx",
+      })
+    );
   });
 
   it("Generate forms project with schemas and one failure", () => {
-    const ERROR_MESSAGE = "Unexpected Error!";
-
-    const tool: FormGenerator = {
+    const testTool: FormGenerator = {
       type: "cool tool",
 
       generate(schema: FormSchema): FormAsset {
         if (schema.name === "ApplyForVisa") {
-          throw new Error(ERROR_MESSAGE);
+          throw new Error("Unexpected Error!");
         }
 
         return {
@@ -119,26 +106,26 @@ describe("formGenerationCommand tests", () => {
       },
     };
 
-    registerFormGenerator(tool);
+    registerFormGeneratorType(testTool);
 
-    const schemas: FormSchema[] = [
-      {
-        name: "ApplyForVisa",
-        schema: ApplyForVisaSchema,
-      },
-      {
-        name: "ConfirmTravel",
-        schema: ConfirmTravelSchema,
-      },
-    ];
-
-    loadProjectSchemasMock.mockReturnValueOnce(schemas);
-
-    generateForms({
-      type: tool.type,
+    const formAssets = generateForms({
+      forms: [
+        { name: "ApplyForVisa", schema: ApplyForVisaSchema },
+        { name: "ConfirmTravel", schema: ConfirmTravelSchema },
+      ],
+      type: testTool.type,
     });
 
-    expect(loadProjectSchemasMock).toHaveBeenCalledTimes(1);
-    expect(storeFormAssetsMock).toHaveBeenCalledTimes(1);
+    expect(formAssets[0]).toEqual({ error: new Error("Unexpected Error!") });
+    expect(formAssets[1]).toEqual(
+      expect.objectContaining({
+        id: "ConfirmTravel",
+        sanitizedId: "ConfirmTravel",
+        assetName: "ConfirmTravel.txt",
+        sanitizedAssetName: "ConfirmTravel.txt",
+        config: { resources: { scripts: {}, styles: {} }, schema: "" },
+        type: "txt",
+      })
+    );
   });
 });

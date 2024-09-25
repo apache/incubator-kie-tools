@@ -24,7 +24,7 @@ import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { getUniformsSchema } from "../getUniformsSchema";
 import { inputSanitizationUtil } from "../inputSanitizationUtil";
 
-export class PatternflyFormConfig implements FormConfiguration {
+export class PatternflyFormConfiguration implements FormConfiguration {
   public readonly schema: string;
 
   constructor(formSchema: any) {
@@ -38,9 +38,9 @@ export class PatternflyFormConfig implements FormConfiguration {
 }
 
 export class PatternflyFormGenerator implements FormGenerator {
-  type: string = FormStyle.PATTERNFLY;
+  public type: string = FormStyle.PATTERNFLY;
 
-  generate(inputSchema: FormSchema): FormAsset {
+  public generate(inputSchema: FormSchema): FormAsset {
     const uniformsSchema = getUniformsSchema(inputSchema.schema);
     const form = renderForm({
       id: inputSchema.name,
@@ -56,7 +56,7 @@ export class PatternflyFormGenerator implements FormGenerator {
       sanitizedAssetName: `${inputSanitizationUtil(inputSchema.name)}.${FormAssetType.TSX}`,
       type: FormAssetType.TSX,
       content: unescape(form),
-      config: new PatternflyFormConfig(inputSchema.schema),
+      config: new PatternflyFormConfiguration(inputSchema.schema),
     };
   }
 }
