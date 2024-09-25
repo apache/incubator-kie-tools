@@ -119,7 +119,7 @@ export function usePotentialWaypointControls(
           return;
         }
 
-        const isTargetExternalNode = targetNode.data.dmnObjectQName.prefix !== undefined;
+        const targetsExternalNode = targetNode.data.dmnObjectQName.prefix !== undefined;
 
         addEdge({
           definitions: state.dmn.model.definitions,
