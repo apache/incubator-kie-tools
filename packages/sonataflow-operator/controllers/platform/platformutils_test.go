@@ -36,9 +36,9 @@ func TestSonataFlowBuildController(t *testing.T) {
 		assert.Fail(t, "Unable to read base Dockerfile")
 	}
 	dockerfile := string(dockerfileBytes)
-	// 1 - Let's verify that the default image is used (for this unit test is docker.io/apache/incubator-kie-sonataflow-builder:10.0.x)
+	// 1 - Let's verify that the default image is used (for this unit test is docker.io/apache/incubator-kie-sonataflow-builder:10.0.0)
 	resDefault := GetCustomizedBuilderDockerfile(dockerfile, *platform)
-	foundDefault, err := regexp.MatchString("FROM docker.io/apache/incubator-kie-sonataflow-builder:10.0.x AS builder", resDefault)
+	foundDefault, err := regexp.MatchString("FROM docker.io/apache/incubator-kie-sonataflow-builder:10.0.0 AS builder", resDefault)
 	assert.NoError(t, err)
 	assert.True(t, foundDefault)
 

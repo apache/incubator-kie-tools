@@ -25,14 +25,14 @@ const (
 	// operatorVersion is the current BINARY version of the operator, not the image tag.
 	operatorVersion = "0.0.0"
 	// tagVersion is the images version tag.
-	// For example, docker.io/apache/incubator-kie-sonataflow-operator:10.0.x
+	// For example, docker.io/apache/incubator-kie-sonataflow-operator:10.0.0
 	//
 	// This tag must reflect an existing tag in the registry. In development, must follow the git branch naming.
 	// When released, this version should reflect the `major.minor` version in the registry.
-	// For example, docker.io/apache/incubator-kie-sonataflow-operator:10.0.x -> 10.0
-	tagVersion = "10.0.x"
+	// For example, docker.io/apache/incubator-kie-sonataflow-operator:10.0.0 -> 10.0
+	tagVersion = "10.0.0"
 	// Kogito images tag version. Used for data-index and jobs-service images.
-	kogitoImagesTagVersion = "10.0.999-20240717"
+	kogitoImagesTagVersion = "10.0.0"
 	// OpenJDK image tag version
 	openJDKImageTagVersion = "1.20"
 )
