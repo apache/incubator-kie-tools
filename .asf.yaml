@@ -1,4 +1,3 @@
-#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,27 +14,8 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-#
-
-name: "Release :: Dry Run (Extended Services)"
-
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: "0 4 * * *" # 4am UTC everyday
-  pull_request:
-    branches: ["**"]
-    paths:
-      - ".github/workflows/release*"
-      - ".github/actions/**"
-
-concurrency:
-  group: ${{ github.event.pull_request && format('release-dry-run-pr-{0}', github.event.pull_request.number) || format('release-dry-run-ref-{0}', github.ref_name) }}
-  cancel-in-progress: true
-
-jobs:
-  dry_run:
-    uses: ./.github/workflows/release_build_extended_services.yml
-    with:
-      dry_run: true
-      base_ref: ${{ github.event.pull_request && github.base_ref || github.ref }}
+github:
+  enabled_merge_buttons:
+    squash: true
+    merge: true
+    rebase: false

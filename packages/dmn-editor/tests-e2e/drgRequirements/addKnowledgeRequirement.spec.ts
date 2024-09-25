@@ -51,7 +51,7 @@ test.describe("Add edge - Knowledge Requirement", () => {
         to: DefaultNodeName.DECISION,
       });
 
-      expect(await edges.get({ from: "BKM - A", to: DefaultNodeName.DECISION })).toBeAttached();
+      await expect(await edges.get({ from: "BKM - A", to: DefaultNodeName.DECISION })).toBeAttached();
       expect(await edges.getType({ from: "BKM - A", to: DefaultNodeName.DECISION })).toEqual(
         EdgeType.KNOWLEDGE_REQUIREMENT
       );
@@ -71,7 +71,7 @@ test.describe("Add edge - Knowledge Requirement", () => {
         to: DefaultNodeName.BKM,
       });
 
-      expect(await edges.get({ from: "BKM - A", to: DefaultNodeName.BKM })).toBeAttached();
+      await expect(await edges.get({ from: "BKM - A", to: DefaultNodeName.BKM })).toBeAttached();
       expect(await edges.getType({ from: "BKM - A", to: DefaultNodeName.BKM })).toEqual(EdgeType.KNOWLEDGE_REQUIREMENT);
       await expect(diagram.get()).toHaveScreenshot("add-knowledge-requirement-edge-from-bkm-node-to-bkm-node.png");
     });
@@ -100,7 +100,9 @@ test.describe("Add edge - Knowledge Requirement", () => {
         to: DefaultNodeName.DECISION,
       });
 
-      expect(await edges.get({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.DECISION })).toBeAttached();
+      await expect(
+        await edges.get({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.DECISION })
+      ).toBeAttached();
       expect(await edges.getType({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.DECISION })).toEqual(
         EdgeType.KNOWLEDGE_REQUIREMENT
       );
@@ -122,7 +124,7 @@ test.describe("Add edge - Knowledge Requirement", () => {
         to: DefaultNodeName.BKM,
       });
 
-      expect(await edges.get({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.BKM })).toBeAttached();
+      await expect(await edges.get({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.BKM })).toBeAttached();
       expect(await edges.getType({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.BKM })).toEqual(
         EdgeType.KNOWLEDGE_REQUIREMENT
       );

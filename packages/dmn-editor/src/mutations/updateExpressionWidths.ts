@@ -30,20 +30,9 @@ export function updateExpressionWidths({
   drdIndex: number;
   widthsById: Map<string, number[]>;
 }): void {
-  const { widthsExtension, widths } = addOrGetDrd({ definitions, drdIndex });
-  const componentWidthsMap = widths.reduce(
-    (acc, e) =>
-      e["@_dmnElementRef"]
-        ? acc.set(
-            e["@_dmnElementRef"],
-            (e["kie:width"] ?? []).map((vv) => vv.__$$text)
-          )
-        : acc,
-    new Map<string, number[]>()
-  );
+  const { widthsExtension } = addOrGetDrd({ definitions, drdIndex });
 
-  widthsById.forEach((v, k) => componentWidthsMap.set(k, v));
-  widthsExtension["kie:ComponentWidths"] = [...componentWidthsMap.entries()].map(([k, v]) => ({
+  widthsExtension["kie:ComponentWidths"] = [...widthsById.entries()].map(([k, v]) => ({
     "@_dmnElementRef": k,
     "kie:width": v.map((vv) => ({ __$$text: vv })),
   }));

@@ -29,7 +29,7 @@ const emptyForm = require("./forms/EmptyForm");
 const formData = require("../MockData/forms/formData");
 const customDashboardData = require("../MockData/customDashboard/data");
 const hiringSchema = require("./process-forms-schema/hiring");
-const uuidv4 = require("uuid");
+const { v4: uuid } = require("uuid");
 const tasksUnableToTransition = [
   "047ec38d-5d57-4330-8c8d-9bd67b53a529",
   "841b9dba-3d91-4725-9de3-f9f4853b417e",
@@ -399,8 +399,11 @@ module.exports = controller = {
   },
 
   startProcessInstance: (req, res) => {
+    console.log(
+      `......Starting Process Instance:: id: ${req.headers["ce-id"]} type: ${req.headers["ce-type"]} source: ${req.headers["ce-source"]}`
+    );
     const businessKey = req.query.businessKey ? req.query.businessKey : null;
-    const processId = uuidv4();
+    const processId = uuid();
     const processInstance = {
       id: processId,
       processId: "hiring",

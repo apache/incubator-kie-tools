@@ -50,7 +50,7 @@ test.describe("Add edge - Association", () => {
         to: DefaultNodeName.TEXT_ANNOTATION,
       });
 
-      expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
+      await expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
       expect(await edges.getType({ from: DefaultNodeName.BKM, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
         EdgeType.ASSOCIATION
       );
@@ -70,7 +70,9 @@ test.describe("Add edge - Association", () => {
         to: DefaultNodeName.TEXT_ANNOTATION,
       });
 
-      expect(await edges.get({ from: DefaultNodeName.DECISION, to: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
+      await expect(
+        await edges.get({ from: DefaultNodeName.DECISION, to: DefaultNodeName.TEXT_ANNOTATION })
+      ).toBeAttached();
       expect(await edges.getType({ from: DefaultNodeName.DECISION, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
         EdgeType.ASSOCIATION
       );
@@ -97,7 +99,7 @@ test.describe("Add edge - Association", () => {
         to: DefaultNodeName.TEXT_ANNOTATION,
       });
 
-      expect(
+      await expect(
         await edges.get({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: DefaultNodeName.TEXT_ANNOTATION })
       ).toBeAttached();
       expect(
@@ -121,7 +123,9 @@ test.describe("Add edge - Association", () => {
         to: DefaultNodeName.TEXT_ANNOTATION,
       });
 
-      expect(await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
+      await expect(
+        await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION })
+      ).toBeAttached();
       expect(await edges.getType({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
         EdgeType.ASSOCIATION
       );
@@ -143,7 +147,7 @@ test.describe("Add edge - Association", () => {
         to: DefaultNodeName.TEXT_ANNOTATION,
       });
 
-      expect(
+      await expect(
         await edges.get({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.TEXT_ANNOTATION })
       ).toBeAttached();
       expect(
@@ -167,7 +171,9 @@ test.describe("Add edge - Association", () => {
         to: DefaultNodeName.TEXT_ANNOTATION,
       });
 
-      expect(await edges.get({ from: DefaultNodeName.GROUP, to: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
+      await expect(
+        await edges.get({ from: DefaultNodeName.GROUP, to: DefaultNodeName.TEXT_ANNOTATION })
+      ).toBeAttached();
       expect(await edges.getType({ from: DefaultNodeName.GROUP, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
         EdgeType.ASSOCIATION
       );
@@ -198,7 +204,7 @@ test.describe("Add edge - Association", () => {
         to: DefaultNodeName.BKM,
       });
 
-      expect(await edges.get({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.BKM })).toBeAttached();
+      await expect(await edges.get({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.BKM })).toBeAttached();
       expect(await edges.getType({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.BKM })).toEqual(
         EdgeType.ASSOCIATION
       );
@@ -218,7 +224,9 @@ test.describe("Add edge - Association", () => {
         to: DefaultNodeName.DECISION,
       });
 
-      expect(await edges.get({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.DECISION })).toBeAttached();
+      await expect(
+        await edges.get({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.DECISION })
+      ).toBeAttached();
       expect(await edges.getType({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.DECISION })).toEqual(
         EdgeType.ASSOCIATION
       );
@@ -240,7 +248,7 @@ test.describe("Add edge - Association", () => {
         to: DefaultNodeName.KNOWLEDGE_SOURCE,
       });
 
-      expect(
+      await expect(
         await edges.get({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.KNOWLEDGE_SOURCE })
       ).toBeAttached();
       expect(
@@ -264,7 +272,9 @@ test.describe("Add edge - Association", () => {
         to: DefaultNodeName.INPUT_DATA,
       });
 
-      expect(await edges.get({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.INPUT_DATA })).toBeAttached();
+      await expect(
+        await edges.get({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.INPUT_DATA })
+      ).toBeAttached();
       expect(await edges.getType({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.INPUT_DATA })).toEqual(
         EdgeType.ASSOCIATION
       );
@@ -287,7 +297,7 @@ test.describe("Add edge - Association", () => {
         position: NodePosition.TOP,
       });
 
-      expect(
+      await expect(
         await edges.get({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.DECISION_SERVICE })
       ).toBeAttached();
       expect(
@@ -316,7 +326,9 @@ test.describe("Add edge - Association", () => {
         position: NodePosition.TOP,
       });
 
-      expect(await edges.get({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.GROUP })).toBeAttached();
+      await expect(
+        await edges.get({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.GROUP })
+      ).toBeAttached();
       expect(await edges.getType({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.GROUP })).toEqual(
         EdgeType.ASSOCIATION
       );

@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
 import { EdgeType } from "../__fixtures__/edges";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
@@ -31,7 +32,7 @@ test.describe("Add node - Decision", () => {
       test("should add Decision node from palette", async ({ jsonModel, palette, nodes, diagram }) => {
         await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
 
-        expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
+        await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
         await expect(diagram.get()).toHaveScreenshot("add-decision-node-from-palette.png");
 
         // JSON model assertions
@@ -51,6 +52,26 @@ test.describe("Add node - Decision", () => {
           "@_width": 160,
           "@_height": 80,
         });
+      });
+
+      test("should add two Decision nodes from palette in a row", async ({ palette, nodes, diagram }) => {
+        test.info().annotations.push({
+          type: TestAnnotations.REGRESSION,
+          description: "https://github.com/apache/incubator-kie-issues/issues/980",
+        });
+
+        await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+        await palette.dragNewNode({
+          type: NodeType.DECISION,
+          targetPosition: { x: 300, y: 300 },
+          thenRenameTo: "Second Decision",
+        });
+
+        await diagram.resetFocus();
+
+        await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
+        await expect(nodes.get({ name: "Second Decision" })).toBeAttached();
+        await expect(diagram.get()).toHaveScreenshot("add-2-decision-nodes-from-palette.png");
       });
     });
 
@@ -72,7 +93,9 @@ test.describe("Add node - Decision", () => {
           targetPosition: { x: 500, y: 500 },
         });
 
-        expect(await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION })).toBeAttached();
+        await expect(
+          await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION })
+        ).toBeAttached();
         expect(await edges.getType({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION })).toEqual(
           EdgeType.INFORMATION_REQUIREMENT
         );
@@ -121,7 +144,7 @@ test.describe("Add node - Decision", () => {
           targetPosition: { x: 100, y: 300 },
         });
 
-        expect(await edges.get({ from: "Decision - A", to: DefaultNodeName.DECISION })).toBeAttached();
+        await expect(await edges.get({ from: "Decision - A", to: DefaultNodeName.DECISION })).toBeAttached();
         expect(await edges.getType({ from: "Decision - A", to: DefaultNodeName.DECISION })).toEqual(
           EdgeType.INFORMATION_REQUIREMENT
         );
@@ -139,7 +162,7 @@ test.describe("Add node - Decision", () => {
           targetPosition: { x: 500, y: 500 },
         });
 
-        expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION })).toBeAttached();
+        await expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION })).toBeAttached();
         expect(await edges.getType({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION })).toEqual(
           EdgeType.KNOWLEDGE_REQUIREMENT
         );
@@ -162,7 +185,7 @@ test.describe("Add node - Decision", () => {
           targetPosition: { x: 500, y: 500 },
         });
 
-        expect(
+        await expect(
           await edges.get({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.DECISION })
         ).toBeAttached();
         expect(await edges.getType({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.DECISION })).toEqual(
@@ -187,7 +210,7 @@ test.describe("Add node - Decision", () => {
           targetPosition: { x: 100, y: 300 },
         });
 
-        expect(
+        await expect(
           await edges.get({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: DefaultNodeName.DECISION })
         ).toBeAttached();
         expect(await edges.getType({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: DefaultNodeName.DECISION })).toEqual(

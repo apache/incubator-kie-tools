@@ -51,7 +51,7 @@ test.describe("Invalid edge - Information Requirement", () => {
         to: DefaultNodeName.INPUT_DATA,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.INPUT_DATA })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.INPUT_DATA })).not.toBeAttached();
     });
 
     test("should dim the target Input Data node", async ({ palette, nodes }) => {
@@ -93,7 +93,7 @@ test.describe("Invalid edge - Information Requirement", () => {
         to: DefaultNodeName.BKM,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.BKM })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.BKM })).not.toBeAttached();
     });
 
     test("should dim the target BKM node", async ({ palette, nodes }) => {
@@ -123,7 +123,7 @@ test.describe("Invalid edge - Information Requirement", () => {
         to: DefaultNodeName.DECISION_SERVICE,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.DECISION_SERVICE })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.DECISION_SERVICE })).not.toBeAttached();
     });
 
     test("should dim the target Decision Service node", async ({ palette, nodes }) => {
@@ -153,7 +153,7 @@ test.describe("Invalid edge - Information Requirement", () => {
         to: DefaultNodeName.KNOWLEDGE_SOURCE,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.KNOWLEDGE_SOURCE })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.KNOWLEDGE_SOURCE })).not.toBeAttached();
     });
 
     test("should dim the target Knowledge Source node", async ({ palette, nodes }) => {
@@ -184,7 +184,7 @@ test.describe("Invalid edge - Information Requirement", () => {
         position: NodePosition.TOP,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.GROUP })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.GROUP })).not.toBeAttached();
     });
 
     test("should dim the target Group node", async ({ palette, nodes }) => {
@@ -214,7 +214,7 @@ test.describe("Invalid edge - Information Requirement", () => {
         to: DefaultNodeName.TEXT_ANNOTATION,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.TEXT_ANNOTATION })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.TEXT_ANNOTATION })).not.toBeAttached();
     });
 
     test("should dim the target Text Annotation node", async ({ palette, nodes }) => {
@@ -254,7 +254,7 @@ test.describe("Invalid edge - Information Requirement", () => {
         to: DefaultNodeName.INPUT_DATA,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.INPUT_DATA })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.INPUT_DATA })).not.toBeAttached();
     });
 
     test("shouldn't add an Information Requirement edge from Decision node to BKM node", async ({
@@ -273,7 +273,7 @@ test.describe("Invalid edge - Information Requirement", () => {
         to: DefaultNodeName.BKM,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.BKM })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.BKM })).not.toBeAttached();
     });
 
     test("shouldn't add an Information Requirement edge from Decision node to Decision Service node", async ({
@@ -292,7 +292,7 @@ test.describe("Invalid edge - Information Requirement", () => {
         to: DefaultNodeName.DECISION_SERVICE,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.DECISION_SERVICE })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.DECISION_SERVICE })).not.toBeAttached();
     });
 
     test("shouldn't add an Information Requirement edge from Decision node to Knowledge Source node", async ({
@@ -311,7 +311,7 @@ test.describe("Invalid edge - Information Requirement", () => {
         to: DefaultNodeName.KNOWLEDGE_SOURCE,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.KNOWLEDGE_SOURCE })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.KNOWLEDGE_SOURCE })).not.toBeAttached();
     });
 
     test("shouldn't add an Information Requirement edge from Decision node to Group node", async ({
@@ -331,7 +331,7 @@ test.describe("Invalid edge - Information Requirement", () => {
         position: NodePosition.TOP,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.GROUP })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.GROUP })).not.toBeAttached();
     });
 
     test("shouldn't add an Information Requirement edge from Decision node to Text Annotation node", async ({
@@ -350,7 +350,7 @@ test.describe("Invalid edge - Information Requirement", () => {
         to: DefaultNodeName.TEXT_ANNOTATION,
       });
 
-      expect(await edges.get({ from: "Source Node", to: DefaultNodeName.TEXT_ANNOTATION })).not.toBeAttached();
+      await expect(await edges.get({ from: "Source Node", to: DefaultNodeName.TEXT_ANNOTATION })).not.toBeAttached();
     });
   });
 });
