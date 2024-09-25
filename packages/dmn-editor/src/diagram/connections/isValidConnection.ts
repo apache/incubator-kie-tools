@@ -40,9 +40,7 @@ export function _checkIsValidConnection(
   sourceNode: { type?: string; data: DmnDiagramNodeData } | undefined,
   targetNode: { type?: string; data: DmnDiagramNodeData } | undefined,
   edgeType: string | null | undefined,
-  extraArg?: {
-    allowExternalTarget: boolean;
-  }
+  extraArg?: { allowExternalTarget: boolean }
 ) {
   if (!sourceNode?.type || !targetNode?.type || !edgeType) {
     return false;
@@ -50,8 +48,9 @@ export function _checkIsValidConnection(
 
   // External nodes cannot be targeted by default
   // However there are exceptions, for example adding a waypoint on the edge
-  const isTargetExternalNode = targetNode.data.dmnObjectQName.prefix != undefined;
-  if (!extraArg?.allowExternalTarget && isTargetExternalNode) {
+  const targetsExternalNode = targetNode.data.dmnObjectQName.prefix != undefined;
+  const allowExternalTarget = extraArg?.allowExternalTarget ?? false;
+  if (targetsExternalNode && !allowExternalTarget) {
     return false;
   }
 
