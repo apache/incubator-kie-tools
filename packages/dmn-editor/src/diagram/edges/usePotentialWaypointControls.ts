@@ -95,7 +95,7 @@ export function usePotentialWaypointControls(
         const edge = state.computed(state).getDiagramData(externalModelsByNamespace).edgesById.get(edgeId);
         if (edge === undefined || edge.data?.dmnShapeSource === undefined || edge.data?.dmnShapeTarget == undefined) {
           console.debug(
-            `DMN MUTATION: We can not add DMNEdge for '${edgeId}' edge into diagram. There are missing data edge: ${edge}, edge.data: ${edge?.data}`
+            `DMN DIAGRAM: We can not add DMNEdge for '${edgeId}' edge into diagram. There are missing data edge: ${edge}, edge.data: ${edge?.data}`
           );
           return;
         }
@@ -104,7 +104,7 @@ export function usePotentialWaypointControls(
 
         if (edgeSourceBounds === undefined || edgeTargetBounds === undefined) {
           console.debug(
-            `DMN MUTATION: We can not add DMNEdge for '${edgeId}' edge into diagram. There are missing data edgeSourceBounds: ${edgeSourceBounds}, edgeTargetBounds: ${edgeTargetBounds}`
+            `DMN DIAGRAM: We can not add DMNEdge for '${edgeId}' edge into diagram. There are missing data edgeSourceBounds: ${edgeSourceBounds}, edgeTargetBounds: ${edgeTargetBounds}`
           );
           return;
         }
@@ -114,7 +114,7 @@ export function usePotentialWaypointControls(
 
         if (sourceNode === undefined || targetNode === undefined) {
           console.debug(
-            `DMN MUTATION: We can not add DMNEdge for '${edgeId}' edge into diagram. There are missing data sourceNode: ${sourceNode}, targetNode: ${targetNode}`
+            `DMN DIAGRAM: We can not add DMNEdge for '${edgeId}' edge into diagram. There are missing data sourceNode: ${sourceNode}, targetNode: ${targetNode}`
           );
           return;
         }
@@ -151,12 +151,12 @@ export function usePotentialWaypointControls(
           requirementEdgeTargetingExternalNodeId: isTargetExternalNode ? edgeId : undefined,
         });
 
-        console.debug(`DMN MUTATION: DMNEdge for '${edgeId}' edge was added into diagram.`);
+        console.debug(`DMN DIAGRAM: DMNEdge for '${edgeId}' edge was added into diagram.`);
       });
     }
 
     if (isExistingWaypoint(snappedPotentialWaypoint)) {
-      console.debug("Preventing overlapping waypoint creation.");
+      console.debug("DMN DIAGRAM: Preventing overlapping waypoint creation.");
       return;
     }
 
@@ -175,7 +175,7 @@ export function usePotentialWaypointControls(
     dmnEditorStoreApi.setState((state) => {
       const dmnEdgeIndex = state.computed(state).indexedDrd().dmnEdgesByDmnElementRef.get(edgeId)?.index;
       if (dmnEdgeIndex === undefined) {
-        console.debug(`DMN MUTATION: DMNEdge for '${edgeId}' edge has missing index.`);
+        console.debug(`DMN DIAGRAM: DMNEdge for '${edgeId}' edge has missing index.`);
         return;
       }
       addEdgeWaypoint({
@@ -186,7 +186,7 @@ export function usePotentialWaypointControls(
         waypoint: snappedPotentialWaypoint,
       });
 
-      console.debug(`DMN MUTATION: Waypoint on the DMNEdge for '${edgeId}' edge was added.`);
+      console.debug(`DMN DIAGRAM: Waypoint on the DMNEdge for '${edgeId}' edge was added.`);
     });
   }, [
     drdIndex,
