@@ -30,7 +30,6 @@ pipeline {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
         string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
-        booleanParam(description: 'Release Candidate', name: 'RELEASE_CANDIDATE', defaultValue: false)
         string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
@@ -80,11 +79,15 @@ pipeline {
         }
 
         stage('Load upstream images') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+            }
             steps {
                 script {
                     upstreamReleaseArtifactsDir = "${WORKSPACE}/upstream-release-artifacts"
-                    releaseUtils.downloadReleaseArtifacts("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}")
-                    dockerUtils.loadImages(releaseUtils.getUpstreamImagesArtifactsList("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}"))
+                    releaseUtils.downloadReleaseArtifacts("${pipelineVars.asfReleaseStagingRepository}", "${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}")
+                    upstreamImagesArtifacts = releaseUtils.getUpstreamImagesArtifactsList("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}")
+                    dockerUtils.loadImages(upstreamImagesArtifacts as String[])
                 }
             }
         }
@@ -107,7 +110,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm()
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsConfigFileId}")
                     }
                 }
             }
@@ -135,7 +138,7 @@ pipeline {
 
         stage('Push dev-deployment-dmn-form-webapp-image to Docker Hub') {
             when {
-                expression { !params.DRY_RUN && !params.RELEASE_CANDIDATE }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
             }
             steps {
                 script {
@@ -153,7 +156,7 @@ pipeline {
 
         stage('Setup release candidate artifacts') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
             }
             steps {
                 script {
@@ -169,19 +172,21 @@ pipeline {
 
         stage('Sign artifact for Apache release') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
             }
             steps {
-                script {
-                    releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
-                    releaseUtils.signArtifact("${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}")
+                dir("${env.RELEASE_ARTIFACTS_DIR}") {
+                    script {
+                        releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
+                        releaseUtils.signArtifact("${env.RELEASE_IMAGE_TAR_FILE}")
+                    }
                 }
             }
         }
 
         stage('Publish Release Candidate artifacts') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
             }
             steps {
                 script {

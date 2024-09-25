@@ -36,8 +36,6 @@
     "@patternfly/react-styles": "^4.92.6",
     "@patternfly/react-table": "^4.112.39",
     "lodash": "^4.17.21",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
     "react-resizable": "^1.11.0",
     "react-table": "^7.6.2",
     "uuid": "^8.3.2"
@@ -80,9 +78,13 @@
     "storybook": "^7.3.2",
     "ts-jest": "^29.1.5",
     "typescript": "^5.5.3",
-    "webpack": "^5.92.1",
+    "webpack": "^5.94.0",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.9.0"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0",
+    "react-dom": ">=17.0.2 <19.0.0"
   }
 }

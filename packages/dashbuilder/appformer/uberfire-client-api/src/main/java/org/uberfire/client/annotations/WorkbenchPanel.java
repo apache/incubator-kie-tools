@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
 /**
  * Specifies an UberFire workbench panel within a templated perspective.
  * <p>
- * <h3>Prerequisites</h3>
+ * <strong>Prerequisites</strong>
  * This annotation can only be used within a class annotated with {@link WorkbenchPerspective}, and it must target a
  * field that implements the GWT HasWidgets interface. Further, the class this annotation is used in must not have a
  * method annotated with {@link Perspective}. See {@link WorkbenchPerspective} for details.

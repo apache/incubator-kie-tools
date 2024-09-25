@@ -34,14 +34,16 @@ test.describe("Delete edge - Association", () => {
       targetPosition: { x: 100, y: 300 },
     });
 
-    expect(await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
+    await expect(
+      await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION })
+    ).toBeAttached();
   });
 
   test("should delete an Association using the delete key", async ({ diagram, edges, nodes }) => {
     await diagram.resetFocus();
     await edges.delete({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
 
-    expect(
+    await expect(
       await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION })
     ).not.toBeAttached();
 
@@ -53,7 +55,7 @@ test.describe("Delete edge - Association", () => {
     await diagram.resetFocus();
     await edges.delete({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION, isBackspace: true });
 
-    expect(
+    await expect(
       await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION })
     ).not.toBeAttached();
 

@@ -31,12 +31,12 @@
     "@kie-tools/uniforms-patternfly": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
-    "ajv": "^6.12.6",
+    "ajv": "^8.17.1",
+    "ajv-draft-04": "^1.0.0",
     "ajv-errors": "^1.0.1",
+    "ajv-formats": "^3.0.1",
     "deep-object-diff": "^1.1.9",
     "lodash": "^4.17.21",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
     "uniforms": "^3.10.2",
     "uniforms-bridge-json-schema": "^3.10.2"
   },
@@ -62,5 +62,9 @@
     "rimraf": "^3.0.2",
     "ts-jest": "^29.1.5",
     "typescript": "^5.5.3"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0",
+    "react-dom": ">=17.0.2 <19.0.0"
   }
 }

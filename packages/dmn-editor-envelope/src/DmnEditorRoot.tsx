@@ -267,7 +267,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     );
     const resource = await this.props.onRequestWorkspaceFileContent({
       normalizedPosixPathRelativeToTheWorkspaceRoot,
-      opts: { type: ContentType.TEXT },
+      opts: { type: "text" },
     });
 
     const ext = __path.extname(normalizedPosixPathRelativeToTheOpenFile);
@@ -584,7 +584,7 @@ function ExternalModelsManager({
           resources.push(
             onRequestWorkspaceFileContent({
               normalizedPosixPathRelativeToTheWorkspaceRoot,
-              opts: { type: ContentType.TEXT },
+              opts: { type: "text" },
             })
           );
         }

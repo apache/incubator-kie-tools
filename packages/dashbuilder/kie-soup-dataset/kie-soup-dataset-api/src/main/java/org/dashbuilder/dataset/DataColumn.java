@@ -100,7 +100,7 @@ public interface DataColumn {
     DataColumn cloneEmpty();
 
     /**
-     * Clone the column entirely (definition & values).
+     * Clone the column entirely (definition and values).
      */
     DataColumn cloneInstance();
 }

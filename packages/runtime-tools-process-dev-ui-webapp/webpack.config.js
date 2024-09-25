@@ -27,6 +27,8 @@ const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
+
 const { env: buildEnv } = require("./env");
 
 module.exports = async (env) => {
@@ -94,6 +96,16 @@ module.exports = async (env) => {
         favicon: "src/favicon.ico",
         chunks: ["app"],
       }),
+      new HtmlReplaceWebpackPlugin([
+        {
+          pattern: /\${WEBPACK_REPLACEMENT_WEBAPP_HOST}/g,
+          replacement: () => buildEnv.runtimeToolsProcessDevUIWebapp.host ?? "",
+        },
+        {
+          pattern: /\${WEBPACK_REPLACEMENT_WEBAPP_PORT}/g,
+          replacement: () => buildEnv.runtimeToolsProcessDevUIWebapp.port ?? "",
+        },
+      ]),
     ],
     module: {
       rules: [

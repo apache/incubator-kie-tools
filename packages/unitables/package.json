@@ -37,13 +37,13 @@
     "@patternfly/react-icons": "^4.93.6",
     "@types/lodash": "^4.14.168",
     "@types/react-table": "^7.0.25",
-    "ajv": "^6.12.6",
+    "ajv": "^8.17.1",
+    "ajv-draft-04": "^1.0.0",
     "ajv-errors": "^1.0.1",
+    "ajv-formats": "^3.0.1",
     "deep-object-diff": "^1.1.9",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
     "react-id-generator": "^3.0.1",
     "react-table": "^7.6.2",
     "uniforms": "^3.10.2",
@@ -61,5 +61,9 @@
     "copyfiles": "^2.4.1",
     "rimraf": "^3.0.2",
     "typescript": "^5.5.3"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0",
+    "react-dom": ">=17.0.2 <19.0.0"
   }
 }

@@ -93,7 +93,7 @@ export const EditorComponent = ({
         name: modelName,
         value: {
           normalizedPosixPathRelativeToTheWorkspaceRoot: modelName,
-          type: ContentType.TEXT,
+          type: "text",
           content,
         },
       },

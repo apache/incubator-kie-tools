@@ -59,7 +59,7 @@ module.exports = async (env) =>
             // redirect all POST request to test the local cluster environment
             return (
               req.method === "POST" ||
-              ["/svg", "/forms", "/customDashboard", "/q/openapi.json"].some((path) => pathname === path)
+              ["/svg", "/forms", "/customDashboard", "/q/openapi.json"].some((path) => pathname.startsWith(path))
             );
           },
           target: "http://localhost:4000",

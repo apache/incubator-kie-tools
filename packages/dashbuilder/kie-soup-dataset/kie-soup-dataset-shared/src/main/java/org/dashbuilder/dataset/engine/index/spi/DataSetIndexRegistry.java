@@ -41,7 +41,7 @@ public interface DataSetIndexRegistry {
     /**
      * Removes the index for the specified data set.
      * @param uuid The data set unique identifier.
-     * @return The removed index or <tt>null</tt> if there was no mapping for <tt>uuid</tt>.
+     * @return The removed index or <code>null</code> if there was no mapping for <code>uuid</code>.
      */
     DataSetIndex remove(String uuid);
 }

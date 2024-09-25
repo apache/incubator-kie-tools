@@ -34,16 +34,15 @@
     "@patternfly/react-icons": "^4.93.6",
     "@patternfly/react-styles": "^4.92.6",
     "@patternfly/react-table": "^4.112.39",
-    "ajv": "^6.12.6",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
     "axios": "^1.7.4",
     "copyfiles": "^2.4.1",
     "history": "^4.9.0",
     "keycloak-js": "^23.0.5",
     "lodash": "^4.17.21",
     "monaco-editor": "^0.39.0",
-    "react": "^17.0.2",
     "react-datetime-picker": "^3.5.0",
-    "react-dom": "^17.0.2",
     "react-moment": "0.9.7",
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
@@ -65,5 +64,9 @@
     "@types/uuid": "^8.3.0",
     "rimraf": "^3.0.2",
     "typescript": "^5.5.3"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0",
+    "react-dom": ">=17.0.2 <19.0.0"
   }
 }

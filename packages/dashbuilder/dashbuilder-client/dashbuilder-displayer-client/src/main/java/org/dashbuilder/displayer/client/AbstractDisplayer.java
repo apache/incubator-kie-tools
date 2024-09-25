@@ -58,7 +58,7 @@ import org.dashbuilder.displayer.client.formatter.ValueFormatter;
  * Base class for implementing custom displayers.
  * <p>Any derived class must implement:
  * <ul>
- *     <li>The draw(), redraw() & close() methods.</li>
+ *     <li>The draw(), redraw() and close() methods.</li>
  *     <li>The capture of events coming from the DisplayerListener interface.</li>
  * </ul>
  */

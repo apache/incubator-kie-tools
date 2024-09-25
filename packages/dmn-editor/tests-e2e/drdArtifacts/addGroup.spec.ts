@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
@@ -29,8 +30,28 @@ test.describe("Add node - Group", () => {
     test("should add Group node from palette", async ({ palette, nodes, diagram }) => {
       await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 100, y: 100 } });
 
-      expect(nodes.get({ name: DefaultNodeName.GROUP })).toBeAttached();
+      await expect(nodes.get({ name: DefaultNodeName.GROUP })).toBeAttached();
       await expect(diagram.get()).toHaveScreenshot("add-group-node-from-palette.png");
+    });
+
+    test("should add multiple Group nodes from palette in a row", async ({ palette, nodes, diagram }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/980",
+      });
+
+      await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 100, y: 100 } });
+      await palette.dragNewNode({
+        type: NodeType.GROUP,
+        targetPosition: { x: 300, y: 300 },
+        thenRenameTo: "Second Group",
+      });
+
+      await diagram.resetFocus();
+
+      await expect(nodes.get({ name: DefaultNodeName.GROUP })).toBeAttached();
+      await expect(nodes.get({ name: "Second Group" })).toBeAttached();
+      await expect(diagram.get()).toHaveScreenshot("add-2-group-nodes-from-palette.png");
     });
   });
 });
