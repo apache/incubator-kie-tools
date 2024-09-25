@@ -152,7 +152,7 @@ export function useImportableUrl(args: {
       }
 
       const gitHubRawFileMatch = matchPath<{ org: string; repo: string; tree: string; path: string }>(url.pathname, {
-        path: "/:org/:repo/:tree/:path*",
+        path: "/:org/:repo/refs/heads/:tree/:path*",
         exact: true,
         strict: true,
         sensitive: false,
