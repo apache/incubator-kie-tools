@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "build:dev": "rimraf dist && tsc -p tsconfig.json",
-    "build:prod": "rimraf dist && && tsc -p tsconfig.json && pnpm lint && pnpm test",
+    "build:prod": "rimraf dist && tsc -p tsconfig.json && pnpm lint && pnpm test",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
