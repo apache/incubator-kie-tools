@@ -78,6 +78,19 @@ export function deleteNode({
     return { deletedDmnObject: undefined, deletedDmnShapeOnCurrentDrd: undefined };
   }
 
+  if (
+    !isContainedInAnExternalExpandedDecisionService({
+      definitions,
+      __readonly_drdIndex,
+      __readonly_dmnObjectNamespace,
+      __readonly_dmnObjectId,
+      __readonly_externalDmnsIndex,
+    })
+  ) {
+    console.warn("DMN MUTATION: Cannot delete a Decision that's contained by a expanded external Decision Service.");
+    return { deletedDmnObject: undefined, deletedDmnShapeOnCurrentDrd: undefined };
+  }
+
   if (__readonly_mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
     // Delete Edges
     // A DRD doesn't necessarily renders all edges of the DRG, so we need to look for what DRG edges to delete when deleting a node from any DRD.
@@ -192,6 +205,51 @@ export function deleteNode({
     deletedDmnObject: __readonly_mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS ? deletedDmnObject : undefined,
     deletedDmnShapeOnCurrentDrd,
   };
+}
+
+export function isContainedInAnExternalExpandedDecisionService({
+  definitions,
+  __readonly_drdIndex,
+  __readonly_dmnObjectNamespace,
+  __readonly_dmnObjectId,
+  __readonly_externalDmnsIndex,
+}: {
+  definitions: Normalized<DMN15__tDefinitions>;
+  __readonly_dmnObjectNamespace: string;
+  __readonly_dmnObjectId: string | undefined;
+  __readonly_drdIndex: number;
+  __readonly_externalDmnsIndex: ReturnType<Computed["getDirectlyIncludedExternalModelsByNamespace"]>["dmns"];
+}) {
+  const { diagramElements } = addOrGetDrd({ definitions, drdIndex: __readonly_drdIndex });
+
+  const dmnObjectHref = buildXmlHref({
+    namespace: __readonly_dmnObjectNamespace === definitions["@_namespace"] ? undefined : __readonly_dmnObjectNamespace,
+    id: __readonly_dmnObjectId!,
+  });
+
+  const drgElementsByNamespace = new Map();
+  __readonly_externalDmnsIndex.forEach((value, key) => {
+    drgElementsByNamespace.set(key, value.model.definitions.drgElement);
+  });
+
+  const containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn =
+    computeContainingDecisionServiceHrefsByDecisionHrefs({
+      thisDmnsNamespace: definitions["@_namespace"],
+      drgElementsByNamespace,
+    });
+
+  const isContainingDecisionServiceInExpandedFormPresentInTheDrd = (
+    containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn.get(dmnObjectHref) ?? []
+  ).some((dsHref) =>
+    diagramElements.some(
+      (e) =>
+        e.__$$element === "dmndi:DMNShape" &&
+        e["@_dmnElementRef"] === xmlHrefToQName(dsHref, definitions) &&
+        !(e["@_isCollapsed"] ?? false)
+    )
+  );
+
+  return !isContainingDecisionServiceInExpandedFormPresentInTheDrd;
 }
 
 export function canRemoveNodeFromDrdOnly({
