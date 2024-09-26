@@ -149,30 +149,20 @@ export type TestScenarioSelectedColumnMetaData = {
   isBackground: boolean;
 };
 
-function TestScenarioMainPanel({
-  fileName,
-  scesimModel,
-  updateTestScenarioModel,
-}: {
-  fileName: string;
-  scesimModel: { ScenarioSimulationModel: SceSim__ScenarioSimulationModelType };
-  updateTestScenarioModel?: React.Dispatch<React.SetStateAction<SceSimModel>>;
-}) {
+function TestScenarioMainPanel({ fileName }: { fileName: string }) {
   const { i18n } = useTestScenarioEditorI18n();
-
   const navigation = useTestScenarioEditorStore((s) => s.navigation);
+  const scesimModel = useTestScenarioEditorStore((s) => s.scesim.model);
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
 
   const [alert, setAlert] = useState<TestScenarioAlert>({ enabled: false, variant: "info" });
   const [dataObjects, setDataObjects] = useState<TestScenarioDataObject[]>([]);
-  const [selectedColumnMetadata, setSelectedColumnMetaData] = useState<TestScenarioSelectedColumnMetaData | null>(null);
 
   const scenarioTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
   const backgroundTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
 
   const onTabChanged = useCallback(
     (_event, tab) => {
-      setSelectedColumnMetaData(null);
       testScenarioEditorStoreApi.setState((state) => {
         state.navigation.tab = tab;
       });
@@ -188,12 +178,6 @@ function TestScenarioMainPanel({
     },
     [testScenarioEditorStoreApi]
   );
-
-  useEffect(() => {
-    //setDockPanel({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT });
-    setSelectedColumnMetaData(null);
-    //setTab(TestScenarioEditorTab.EDITOR);
-  }, [fileName]);
 
   /** This is TEMPORARY */
   useEffect(() => {
@@ -295,9 +279,6 @@ function TestScenarioMainPanel({
                 dataObjects={dataObjects}
                 fileName={fileName}
                 onDrawerClose={() => showDockPanel(false)}
-                selectedColumnMetaData={selectedColumnMetadata}
-                updateSelectedColumnMetaData={setSelectedColumnMetaData}
-                updateTestScenarioModel={updateTestScenarioModel}
               />
             }
           >
@@ -310,7 +291,7 @@ function TestScenarioMainPanel({
               <div className="kie-scesim-editor--content-tabs">
                 <Tabs isFilled={true} activeKey={navigation.tab} onSelect={onTabChanged} role="region">
                   <Tab
-                    eventKey={TestScenarioEditorTab.SCENARIO}
+                    eventKey={TestScenarioEditorTab.SIMULATION}
                     title={
                       <>
                         <TabTitleIcon>
@@ -333,8 +314,6 @@ function TestScenarioMainPanel({
                         assetType={scesimModel.ScenarioSimulationModel.settings.type!.__$$text}
                         tableData={scesimModel.ScenarioSimulationModel.simulation}
                         scrollableParentRef={scenarioTableScrollableElementRef}
-                        updateSelectedColumnMetaData={setSelectedColumnMetaData}
-                        updateTestScenarioModel={updateTestScenarioModel}
                       />
                     </div>
                   </Tab>
@@ -362,8 +341,6 @@ function TestScenarioMainPanel({
                         assetType={scesimModel.ScenarioSimulationModel.settings.type!.__$$text}
                         tableData={scesimModel.ScenarioSimulationModel.background}
                         scrollableParentRef={backgroundTableScrollableElementRef}
-                        updateSelectedColumnMetaData={setSelectedColumnMetaData}
-                        updateTestScenarioModel={updateTestScenarioModel}
                       />
                     </div>
                   </Tab>
@@ -414,9 +391,10 @@ export const TestScenarioEditorInternal = ({
   useImperativeHandle(
     forwardRef,
     () => ({
-      reset: (model) => {
+      reset: () => {
+        console.trace("[TestScenarioEditorInternal: Reset called!");
         const state = testScenarioEditorStoreApi.getState();
-        return state.dispatch(state).scesim.reset(model);
+        state.dispatch(state).scesim.reset();
       },
       getDiagramSvg: async () => undefined,
     }),
@@ -435,6 +413,7 @@ export const TestScenarioEditorInternal = ({
 
       state.scesim.model = model;
       testScenarioEditorModelBeforeEditingRef.current = model;
+      state.dispatch(state).scesim.reset();
     });
   }, [testScenarioEditorStoreApi, model]);
 
@@ -519,7 +498,7 @@ export const TestScenarioEditorInternal = ({
               />
             );
           case TestScenarioFileStatus.VALID:
-            return <TestScenarioMainPanel fileName={"Test"} scesimModel={scesim.model} />;
+            return <TestScenarioMainPanel fileName={"Test"} />;
         }
       })()}
     </div>

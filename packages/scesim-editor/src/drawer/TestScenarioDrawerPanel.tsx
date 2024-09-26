@@ -34,7 +34,7 @@ import { SceSimModel } from "@kie-tools/scesim-marshaller";
 import TestScenarioDrawerDataSelectorPanel from "./TestScenarioDrawerDataSelectorPanel";
 import TestScenarioDrawerCheatSheetPanel from "./TestScenarioDrawerCheatSheetPanel";
 import TestScenarioDrawerSettingsPanel from "../drawer/TestScenarioDrawerSettingsPanel";
-import { TestScenarioDataObject, TestScenarioSelectedColumnMetaData, TestScenarioType } from "../TestScenarioEditor";
+import { TestScenarioDataObject, TestScenarioType } from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
 import { useTestScenarioEditorStore } from "../store/TestScenarioStoreContext";
 import { TestScenarioEditorDock } from "../store/TestScenarioEditorStore";
@@ -43,20 +43,15 @@ function TestScenarioDrawerPanel({
   dataObjects,
   fileName,
   onDrawerClose,
-  selectedColumnMetaData,
-  updateSelectedColumnMetaData,
-  updateTestScenarioModel,
 }: {
   dataObjects: TestScenarioDataObject[];
   fileName: string;
   onDrawerClose: () => void;
-  selectedColumnMetaData: TestScenarioSelectedColumnMetaData | null;
-  updateSelectedColumnMetaData: React.Dispatch<React.SetStateAction<TestScenarioSelectedColumnMetaData | null>>;
-  updateTestScenarioModel?: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   const { i18n } = useTestScenarioEditorI18n();
   const scesim = useTestScenarioEditorStore((state) => state.scesim);
   const navigation = useTestScenarioEditorStore((state) => state.navigation);
+  //TODO computed?
   const assetType = scesim.model.ScenarioSimulationModel.settings.type!.__$$text;
 
   return (
@@ -91,16 +86,7 @@ function TestScenarioDrawerPanel({
             case TestScenarioEditorDock.CHEATSHEET:
               return <TestScenarioDrawerCheatSheetPanel assetType={assetType} />;
             case TestScenarioEditorDock.DATA_OBJECT:
-              return (
-                <TestScenarioDrawerDataSelectorPanel
-                  assetType={assetType}
-                  dataObjects={dataObjects}
-                  scesimModel={scesim.model}
-                  selectedColumnMetadata={selectedColumnMetaData}
-                  updateSelectedColumnMetaData={updateSelectedColumnMetaData}
-                  updateTestScenarioModel={updateTestScenarioModel}
-                />
-              );
+              return <TestScenarioDrawerDataSelectorPanel assetType={assetType} dataObjects={dataObjects} />;
             case TestScenarioEditorDock.SETTINGS:
               return <TestScenarioDrawerSettingsPanel fileName={fileName} />;
             default:

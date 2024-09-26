@@ -52,6 +52,8 @@ import {
 } from "../common/TestScenarioCommonFunctions";
 
 import "./TestScenarioDrawerDataSelectorPanel.css";
+import { useTestScenarioEditorStore, useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
+import { TestScenarioEditorTab } from "../store/TestScenarioEditorStore";
 
 const enum TestScenarioDataSelectorState {
   DISABLED, // All subcomponents are DISABLED
@@ -62,19 +64,20 @@ const enum TestScenarioDataSelectorState {
 function TestScenarioDataSelectorPanel({
   assetType,
   dataObjects,
-  scesimModel,
-  selectedColumnMetadata,
-  updateSelectedColumnMetaData,
-  updateTestScenarioModel,
 }: {
   assetType: string;
   dataObjects: TestScenarioDataObject[];
-  scesimModel: SceSimModel;
-  selectedColumnMetadata: TestScenarioSelectedColumnMetaData | null;
-  updateSelectedColumnMetaData: React.Dispatch<React.SetStateAction<TestScenarioSelectedColumnMetaData | null>>;
-  updateTestScenarioModel?: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   const { i18n } = useTestScenarioEditorI18n();
+  const tableStatus = useTestScenarioEditorStore((s) => s.table);
+  const tabStatus = useTestScenarioEditorStore((s) => s.navigation.tab);
+  const scesimModel = useTestScenarioEditorStore((state) => state.scesim.model);
+  const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
+  // TODO Computed?
+  const selectedColumnMetadata =
+    tabStatus === TestScenarioEditorTab.SIMULATION
+      ? tableStatus.simulation.selectedColumn
+      : tableStatus.background.selectedColumn;
 
   const [allExpanded, setAllExpanded] = useState(false);
   const [dataSelectorStatus, setDataSelectorStatus] = useState(TestScenarioDataSelectorState.DISABLED);
@@ -394,10 +397,10 @@ function TestScenarioDataSelectorPanel({
     /** TODO 2 : NEED A POPUP ASKING IF WE WANT TO REPLACE VALUES OR NOT */
 
     () => {
-      updateTestScenarioModel!((prevState) => {
+      testScenarioEditorStoreApi.setState((state) => {
         const isBackground = selectedColumnMetadata!.isBackground;
-        const factMappings = retrieveModelDescriptor(prevState.ScenarioSimulationModel, isBackground).factMappings
-          .FactMapping!;
+        const factMappings = retrieveModelDescriptor(state.scesim.model.ScenarioSimulationModel, isBackground)
+          .factMappings.FactMapping!;
         const deepClonedFactMappings = JSON.parse(JSON.stringify(factMappings));
         const isRootType = isDataObjectRootParent(dataObjects, treeViewStatus.activeItems[0].id!.toString());
         const rootDataObject = findDataObjectRootParent(dataObjects, treeViewStatus.activeItems[0].id!.toString());
@@ -427,7 +430,7 @@ function TestScenarioDataSelectorPanel({
         };
 
         const deepClonedRowsData: SceSim__FactMappingValuesTypes[] = JSON.parse(
-          JSON.stringify(retrieveRowsDataFromModel(prevState.ScenarioSimulationModel, isBackground))
+          JSON.stringify(retrieveRowsDataFromModel(state.scesim.model.ScenarioSimulationModel, isBackground))
         );
 
         deepClonedRowsData.forEach((fmv, index) => {
@@ -452,45 +455,23 @@ function TestScenarioDataSelectorPanel({
         });
 
         /** Updating the selectedColumn */
-        updateSelectedColumnMetaData({
-          factMapping: JSON.parse(JSON.stringify(factMappingToUpdate)),
-          index: selectedColumnMetadata!.index,
-          isBackground: isBackground,
+        testScenarioEditorStoreApi.setState((state) => {
+          state.dispatch(state).table.updateSelectedColumn({
+            factMapping: JSON.parse(JSON.stringify(factMappingToUpdate)),
+            index: selectedColumnMetadata!.index,
+            isBackground: isBackground,
+          });
         });
 
-        return {
-          ScenarioSimulationModel: {
-            ...prevState.ScenarioSimulationModel,
-            simulation: {
-              scesimModelDescriptor: {
-                factMappings: {
-                  FactMapping: isBackground
-                    ? prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping
-                    : deepClonedFactMappings,
-                },
-              },
-              scesimData: {
-                Scenario: isBackground
-                  ? prevState.ScenarioSimulationModel.simulation.scesimData.Scenario
-                  : deepClonedRowsData,
-              },
-            },
-            background: {
-              scesimModelDescriptor: {
-                factMappings: {
-                  FactMapping: isBackground
-                    ? deepClonedFactMappings
-                    : prevState.ScenarioSimulationModel.background.scesimModelDescriptor.factMappings.FactMapping,
-                },
-              },
-              scesimData: {
-                BackgroundData: isBackground
-                  ? deepClonedRowsData
-                  : prevState.ScenarioSimulationModel.background.scesimData.BackgroundData,
-              },
-            },
-          },
-        };
+        if (isBackground) {
+          state.scesim.model.ScenarioSimulationModel.background.scesimModelDescriptor.factMappings.FactMapping =
+            deepClonedFactMappings;
+          state.scesim.model.ScenarioSimulationModel.background.scesimData.BackgroundData = deepClonedRowsData;
+        } else {
+          state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping =
+            deepClonedFactMappings;
+          state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario = deepClonedRowsData;
+        }
       });
     },
     [
@@ -498,9 +479,8 @@ function TestScenarioDataSelectorPanel({
       findDataObjectRootParent,
       isDataObjectRootParent,
       selectedColumnMetadata,
+      testScenarioEditorStoreApi,
       treeViewStatus.activeItems,
-      updateSelectedColumnMetaData,
-      updateTestScenarioModel,
     ]
   );
 

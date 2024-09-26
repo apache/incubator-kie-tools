@@ -27,6 +27,7 @@ import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { normalize, Normalized } from "../normalization/normalize"; */
 
 import { ComputedStateCache } from "./ComputedStateCache";
+import { SceSim__FactMappingType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 /*
 import { computeAllFeelVariableUniqueNames } from "./computed/computeAllFeelVariableUniqueNames";
 import { computeDataTypes } from "./computed/computeDataTypes";
@@ -39,37 +40,6 @@ import { DEFAULT_VIEWPORT } from "../diagram/Diagram"; */
 
 enableMapSet(); // Necessary because `Computed` has a lot of Maps and Sets.
 
-/*
-export interface DmnEditorDiagramNodeStatus {
-  selected: boolean;
-  dragging: boolean;
-  resizing: boolean;
-}
-
-export interface DmnEditorDiagramEdgeStatus {
-  selected: boolean;
-  draggingWaypoint: boolean;
-}
-
-export interface DmnEditorDiagramDividerLineStatus {
-  moving: boolean;
-}
-
-export interface SnapGrid {
-  isEnabled: boolean;
-  x: number;
-  y: number;
-}
-
-export enum DiagramLhsPanel {
-  NONE = "NONE",
-  DRD_SELECTOR = "DRD_SELECTOR",
-  DRG_NODES = "DRG_NODES",
-  EXTERNAL_NODES = "EXTERNAL_NODES",
-}
-
-export type DropTargetNode = undefined | RF.Node<DmnDiagramNodeData>; */
-
 export enum TestScenarioEditorDock {
   CHEATSHEET,
   DATA_OBJECT,
@@ -78,8 +48,19 @@ export enum TestScenarioEditorDock {
 
 export enum TestScenarioEditorTab {
   BACKGROUND,
-  SCENARIO,
+  SIMULATION,
 }
+
+export enum TestScenarioType {
+  DMN,
+  RULE,
+}
+
+export type TestScenarioSelectedColumnMetaData = {
+  factMapping: SceSim__FactMappingType;
+  index: number;
+  isBackground: boolean;
+};
 
 export interface State {
   computed: (s: State) => Computed;
@@ -92,6 +73,14 @@ export interface State {
     tab: TestScenarioEditorTab;
   };
   scesim: { model: SceSimModel };
+  table: {
+    background: {
+      selectedColumn: TestScenarioSelectedColumnMetaData | null;
+    };
+    simulation: {
+      selectedColumn: TestScenarioSelectedColumnMetaData | null;
+    };
+  };
 
   /*
   focus: {
@@ -152,6 +141,7 @@ export interface State {
 // Read this to understand why we need computed as part of the store.
 // https://github.com/pmndrs/zustand/issues/132#issuecomment-1120467721
 export type Computed = {
+  //getTestScenarioType() : TestScenarioType;
   /*
   isDiagramEditingInProgress(): boolean;
 
@@ -182,18 +172,11 @@ export type Computed = {
 
 export type Dispatch = {
   scesim: {
-    reset: (model: State["scesim"]["model"]) => void;
+    reset: () => void;
   };
-  /*
-  boxedExpressionEditor: {
-    open: (id: string) => void;
-    close: () => void;
+  table: {
+    updateSelectedColumn: (columnMetadata: TestScenarioSelectedColumnMetaData | null) => void;
   };
-  diagram: {
-    setNodeStatus: (nodeId: string, status: Partial<DmnEditorDiagramNodeStatus>) => void;
-    setEdgeStatus: (edgeId: string, status: Partial<DmnEditorDiagramEdgeStatus>) => void;
-    setDividerLineStatus: (decisionServiceId: string, status: Partial<DmnEditorDiagramDividerLineStatus>) => void;
-  }; */
 };
 
 export const defaultStaticState = (): Omit<State, "scesim" | "dispatch" | "computed"> => ({
@@ -202,7 +185,15 @@ export const defaultStaticState = (): Omit<State, "scesim" | "dispatch" | "compu
       isOpen: true,
       selected: TestScenarioEditorDock.DATA_OBJECT,
     },
-    tab: TestScenarioEditorTab.SCENARIO,
+    tab: TestScenarioEditorTab.SIMULATION,
+  },
+  table: {
+    background: {
+      selectedColumn: null,
+    },
+    simulation: {
+      selectedColumn: null,
+    },
   },
 });
 
@@ -217,10 +208,25 @@ export function createTestScenarioEditorStore(model: SceSimModel /*, computedCac
       scesim: {
         model: model,
       },
-      dispatch(s: State) {
+      dispatch(state: State) {
         return {
           scesim: {
-            reset: () => {},
+            reset: () => {
+              state.navigation.tab = TestScenarioEditorTab.SIMULATION;
+              state.navigation.dock.isOpen = true;
+              state.navigation.dock.selected = TestScenarioEditorDock.DATA_OBJECT;
+              state.table.background.selectedColumn = null;
+              state.table.simulation.selectedColumn = null;
+            },
+          },
+          table: {
+            updateSelectedColumn: (columnMetadata: TestScenarioSelectedColumnMetaData) => {
+              if (state.navigation.tab === TestScenarioEditorTab.BACKGROUND) {
+                state.table.background.selectedColumn = columnMetadata;
+              } else {
+                state.table.simulation.selectedColumn = columnMetadata;
+              }
+            },
           },
 
           /*dmn: {
@@ -303,8 +309,13 @@ export function createTestScenarioEditorStore(model: SceSimModel /*, computedCac
           },*/
         };
       },
-      computed(s: State) {
+      computed(state: State) {
         return {
+          // getTestScenarioType: () => {
+          //   return computedCache.cached("isDiagramEditingInProgress", () => {
+          //       return state.scesim.model.ScenarioSimulationModel.settings.type?.__$$text
+          //   }
+          // }
           /*isDiagramEditingInProgress: () => {
             return computedCache.cached(
               "isDiagramEditingInProgress",

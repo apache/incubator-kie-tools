@@ -50,7 +50,7 @@ import {
 import { SceSimModel } from "@kie-tools/scesim-marshaller";
 
 import { useTestScenarioEditorI18n } from "../i18n";
-import { TestScenarioSelectedColumnMetaData, TestScenarioType } from "../TestScenarioEditor";
+import { TestScenarioType } from "../TestScenarioEditor";
 
 import "./TestScenarioTable.css";
 import {
@@ -58,18 +58,17 @@ import {
   retrieveModelDescriptor,
   retrieveRowsDataFromModel,
 } from "../common/TestScenarioCommonFunctions";
+import { useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
 
 function TestScenarioTable({
   assetType,
   tableData,
   scrollableParentRef,
-  updateSelectedColumnMetaData,
   updateTestScenarioModel,
 }: {
   assetType: string;
   tableData: SceSim__simulationType | SceSim__backgroundType;
   scrollableParentRef: React.RefObject<HTMLElement>;
-  updateSelectedColumnMetaData: React.Dispatch<React.SetStateAction<TestScenarioSelectedColumnMetaData | null>>;
   updateTestScenarioModel?: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   enum TestScenarioTableColumnHeaderGroup {
@@ -89,6 +88,7 @@ function TestScenarioTable({
   type ROWTYPE = any; // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
 
   const { i18n } = useTestScenarioEditorI18n();
+  const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
 
   /** BACKGROUND TABLE MANAGMENT */
 
@@ -906,10 +906,12 @@ function TestScenarioTable({
           ...allFactMappingWithIndexesToRemove.map((item) => item.factMappingIndex!)
         );
         const selectedColumnIndex = firstIndexOnTheLeft > 0 ? firstIndexOnTheLeft - 1 : 0;
-        updateSelectedColumnMetaData({
-          factMapping: JSON.parse(JSON.stringify(deepClonedFactMappings[selectedColumnIndex])),
-          index: firstIndexOnTheLeft,
-          isBackground,
+        testScenarioEditorStoreApi.setState((state) => {
+          state.dispatch(state).table.updateSelectedColumn({
+            factMapping: JSON.parse(JSON.stringify(deepClonedFactMappings[selectedColumnIndex])),
+            index: firstIndexOnTheLeft,
+            isBackground: isBackground,
+          });
         });
 
         return {
@@ -949,11 +951,12 @@ function TestScenarioTable({
     },
     [
       updateTestScenarioModel,
-      TestScenarioTableColumnInstanceGroup,
+      TestScenarioTableColumnInstanceGroup.EXPECT,
+      TestScenarioTableColumnInstanceGroup.GIVEN,
       isBackground,
       determineSelectedColumnIndex,
       columnIndexStart,
-      updateSelectedColumnMetaData,
+      testScenarioEditorStoreApi,
     ]
   );
 
@@ -1093,9 +1096,11 @@ function TestScenarioTable({
    */
   const onDataCellClick = useCallback(
     (_columnID: string) => {
-      updateSelectedColumnMetaData(null);
+      testScenarioEditorStoreApi.setState((state) => {
+        state.dispatch(state).table.updateSelectedColumn(null);
+      });
     },
-    [updateSelectedColumnMetaData]
+    [testScenarioEditorStoreApi]
   );
 
   const onHeaderClick = useCallback(
@@ -1105,7 +1110,9 @@ function TestScenarioTable({
         columnKey == TestScenarioTableColumnHeaderGroup.EXPECT ||
         columnKey == TestScenarioTableColumnHeaderGroup.GIVEN
       ) {
-        updateSelectedColumnMetaData(null);
+        testScenarioEditorStoreApi.setState((state) => {
+          state.dispatch(state).table.updateSelectedColumn(null);
+        });
         return;
       }
 
@@ -1138,10 +1145,10 @@ function TestScenarioTable({
             index: selectedFactIndex ?? -1,
             isBackground: isBackground,
           };
-
-          updateSelectedColumnMetaData(selectedColumnMetaData);
         } else {
-          updateSelectedColumnMetaData(null);
+          testScenarioEditorStoreApi.setState((state) => {
+            state.dispatch(state).table.updateSelectedColumn(null);
+          });
         }
         return;
       }
@@ -1153,13 +1160,13 @@ function TestScenarioTable({
         ? modelDescriptor.factMappings.FactMapping!.indexOf(selectedFactMapping!)
         : -1;
 
-      const selectedColumnMetaData = {
-        factMapping: JSON.parse(JSON.stringify(selectedFactMapping)),
-        index: selectedFactIndex ?? -1,
-        isBackground: isBackground,
-      };
-
-      updateSelectedColumnMetaData(selectedColumnMetaData ?? null);
+      testScenarioEditorStoreApi.setState((state) => {
+        state.dispatch(state).table.updateSelectedColumn({
+          factMapping: JSON.parse(JSON.stringify(selectedFactMapping)),
+          index: selectedFactIndex ?? -1,
+          isBackground: isBackground,
+        });
+      });
     },
     [
       TestScenarioTableColumnFieldGroup,
@@ -1167,7 +1174,7 @@ function TestScenarioTable({
       isBackground,
       tableColumns.instancesGroup,
       tableData,
-      updateSelectedColumnMetaData,
+      testScenarioEditorStoreApi,
     ]
   );
 
