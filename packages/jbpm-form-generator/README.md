@@ -31,7 +31,7 @@ There are two types of form supported with differnt styling and output format:
 
 - **Patternfly**: generates a React (`.tsx`) forms using Patternfly 4 components. Implementation can be found in `@kie-tools/uniforms-patternfly-codegen`
 
-- **Bootstrap 4**: generates a HTML (`.html`) forms using Bootstrap 4 styling. Implementation can be found in `@kie-tools/bootstrap4-patternfly-codegen`
+- **Bootstrap 4**: generates a HTML (`.html`) forms using Bootstrap 4 styling. Implementation can be found in `@kie-tools/uniforms-bootstrap4-codegen`
 
 Each generated form consist in two files, the source code (`.tsx` or `.html`) and a companion `.config` file that defines the external resources (`css` / `js`) the form may need.
 
