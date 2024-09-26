@@ -61,8 +61,7 @@ export function deleteDecisionFromDecisionService({
     }
   }
 
-  const decisionServiceHref = parseXmlHref(decisionServiceId);
-  const decisionService = definitions.drgElement?.find((s) => s["@_id"] === decisionServiceHref.id);
+  const decisionService = definitions.drgElement?.find((s) => s["@_id"] === decisionServiceId);
   if (decisionService?.__$$element !== "decisionService") {
     throw new Error(
       `DMN MUTATION: DRG Element with id '${decisionServiceId}' is either not a Decision Service or doesn't exist.`
