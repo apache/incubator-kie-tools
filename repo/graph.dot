@@ -140,6 +140,14 @@ digraph G {
   "@kie-tools/online-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kn-plugin-workflow" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/sonataflow-operator" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie/kogito-base-builder-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/sonataflow-image-common" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie/kogito-data-index-ephemeral-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie/kogito-data-index-postgresql-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie/kogito-jit-runner-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie/kogito-jobs-service-allinone-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie/kogito-jobs-service-ephemeral-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie/kogito-jobs-service-postgresql-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/runtime-tools-management-console-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-task-console-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/kubernetes-bridge" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -183,7 +191,6 @@ digraph G {
   "@kie-tools/serverless-workflow-service-catalog" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "swf-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/sonataflow-image-common" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/sonataflow-devmode-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/sonataflow-management-console-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/sonataflow-management-console-image-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -431,6 +438,13 @@ digraph G {
   "@kie-tools/kie-sandbox-webapp-image" -> "@kie-tools/online-editor" [ style = "solid", color = "black" ];
   "@kie-tools/kie-sandbox-webapp-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/kn-plugin-workflow" -> "@kie-tools/sonataflow-operator" [ style = "dashed", color = "black" ];
+  "@kie/kogito-base-builder-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
+  "@kie/kogito-data-index-ephemeral-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
+  "@kie/kogito-data-index-postgresql-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
+  "@kie/kogito-jit-runner-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
+  "@kie/kogito-jobs-service-allinone-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
+  "@kie/kogito-jobs-service-ephemeral-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
+  "@kie/kogito-jobs-service-postgresql-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-management-console" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-management-console" -> "@kie-tools/image-env-to-json" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-management-console" -> "@kie-tools/runtime-tools-management-console-webapp" [ style = "dashed", color = "black" ];

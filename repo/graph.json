@@ -154,9 +154,17 @@
       { "id": "@kie-tools/sonataflow-operator" },
       { "id": "@kie-tools/sonataflow-builder-image" },
       { "id": "@kie-tools/sonataflow-devmode-image" },
+      { "id": "@kie/kogito-base-builder-image" },
+      { "id": "@kie-tools/sonataflow-image-common" },
+      { "id": "@kie-tools/python-venv" },
+      { "id": "@kie/kogito-data-index-ephemeral-image" },
+      { "id": "@kie/kogito-data-index-postgresql-image" },
+      { "id": "@kie/kogito-jit-runner-image" },
+      { "id": "@kie/kogito-jobs-service-allinone-image" },
+      { "id": "@kie/kogito-jobs-service-ephemeral-image" },
+      { "id": "@kie/kogito-jobs-service-postgresql-image" },
       { "id": "@kie-tools/unitables" },
       { "id": "pmml-vscode-extension" },
-      { "id": "@kie-tools/python-venv" },
       { "id": "@kie-tools/runtime-tools-components" },
       { "id": "@kie-tools/runtime-tools-shared-gateway-api" },
       { "id": "@kie-tools/runtime-tools-consoles-helm-chart" },
@@ -180,7 +188,6 @@
       { "id": "@kie-tools/serverless-logic-web-tools-base-builder-image" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-builder-image" },
       { "id": "sonataflow-deployment-webapp" },
-      { "id": "@kie-tools/sonataflow-image-common" },
       {
         "id": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app"
       },
@@ -1929,6 +1936,51 @@
         "weight": 1
       },
       {
+        "source": "@kie/kogito-base-builder-image",
+        "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-image-common",
+        "target": "@kie-tools/python-venv",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-image-common",
+        "target": "@kie-tools/root-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-data-index-ephemeral-image",
+        "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-data-index-postgresql-image",
+        "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-jit-runner-image",
+        "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-jobs-service-allinone-image",
+        "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-jobs-service-ephemeral-image",
+        "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-jobs-service-postgresql-image",
+        "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/unitables",
         "target": "@kie-tools/boxed-expression-component",
         "weight": 1
@@ -2251,16 +2303,6 @@
       {
         "source": "sonataflow-deployment-webapp",
         "target": "@kie-tools/sonataflow-dev-app",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/sonataflow-image-common",
-        "target": "@kie-tools/python-venv",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/sonataflow-image-common",
-        "target": "@kie-tools/root-env",
         "weight": 1
       },
       {
@@ -2588,6 +2630,13 @@
     ["@kie-tools/kie-sandbox-helm-chart", "packages/kie-sandbox-helm-chart"],
     ["@kie-tools/kie-sandbox-webapp-image", "packages/kie-sandbox-webapp-image"],
     ["@kie-tools/kn-plugin-workflow", "packages/kn-plugin-workflow"],
+    ["@kie/kogito-base-builder-image", "packages/kogito-base-builder-image"],
+    ["@kie/kogito-data-index-ephemeral-image", "packages/kogito-data-index-ephemeral-image"],
+    ["@kie/kogito-data-index-postgresql-image", "packages/kogito-data-index-postgresql-image"],
+    ["@kie/kogito-jit-runner-image", "packages/kogito-jit-runner-image"],
+    ["@kie/kogito-jobs-service-allinone-image", "packages/kogito-jobs-service-allinone-image"],
+    ["@kie/kogito-jobs-service-ephemeral-image", "packages/kogito-jobs-service-ephemeral-image"],
+    ["@kie/kogito-jobs-service-postgresql-image", "packages/kogito-jobs-service-postgresql-image"],
     ["@kie-tools/kogito-management-console", "packages/kogito-management-console"],
     ["@kie-tools/kogito-task-console", "packages/kogito-task-console"],
     ["@kie-tools-core/kubernetes-bridge", "packages/kubernetes-bridge"],

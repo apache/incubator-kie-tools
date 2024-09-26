@@ -861,13 +861,13 @@ importers:
         version: 1.67.0
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.5.2)(typescript@5.5.3))
+        version: 29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3))
       jest-junit:
         specifier: ^16.0.0
         version: 16.0.0
       jest-when:
         specifier: ^3.6.0
-        version: 3.6.0(jest@29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.5.2)(typescript@5.5.3)))
+        version: 3.6.0(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3)))
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -876,7 +876,7 @@ importers:
         version: 0.0.2
       ts-jest:
         specifier: ^29.1.5
-        version: 29.1.5(@babel/core@7.16.12)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.16.12))(jest@29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.5.2)(typescript@5.5.3)))(typescript@5.5.3)
+        version: 29.1.5(@babel/core@7.16.12)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.16.12))(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3)))(typescript@5.5.3)
       typescript:
         specifier: ^5.5.3
         version: 5.5.3
@@ -4194,7 +4194,7 @@ importers:
         version: link:../tsconfig
       '@testing-library/jest-dom':
         specifier: ^6.4.6
-        version: 6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3)))
+        version: 6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.5.2)(typescript@5.5.3)))
       '@testing-library/react':
         specifier: ^12.1.5
         version: 12.1.5(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -4221,7 +4221,7 @@ importers:
         version: 2.4.1
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3))
+        version: 29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.5.2)(typescript@5.5.3))
       jest-environment-jsdom:
         specifier: ^29.7.0
         version: 29.7.0
@@ -4230,13 +4230,13 @@ importers:
         version: 16.0.0
       jest-when:
         specifier: ^3.6.0
-        version: 3.6.0(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3)))
+        version: 3.6.0(jest@29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.5.2)(typescript@5.5.3)))
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
       ts-jest:
         specifier: ^29.1.5
-        version: 29.1.5(@babel/core@7.16.12)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.16.12))(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3)))(typescript@5.5.3)
+        version: 29.1.5(@babel/core@7.16.12)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.16.12))(jest@29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.5.2)(typescript@5.5.3)))(typescript@5.5.3)
       typescript:
         specifier: ^5.5.3
         version: 5.5.3
@@ -6114,6 +6114,174 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
+  packages/kogito-base-builder-image:
+    devDependencies:
+      '@kie-tools/python-venv':
+        specifier: workspace:*
+        version: link:../python-venv
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      '@kie-tools/sonataflow-image-common':
+        specifier: workspace:*
+        version: link:../sonataflow-image-common
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      replace-in-file:
+        specifier: ^7.1.0
+        version: 7.1.0
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
+  packages/kogito-data-index-ephemeral-image:
+    devDependencies:
+      '@kie-tools/python-venv':
+        specifier: workspace:*
+        version: link:../python-venv
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      '@kie-tools/sonataflow-image-common':
+        specifier: workspace:*
+        version: link:../sonataflow-image-common
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      replace-in-file:
+        specifier: ^7.1.0
+        version: 7.1.0
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
+  packages/kogito-data-index-postgresql-image:
+    devDependencies:
+      '@kie-tools/python-venv':
+        specifier: workspace:*
+        version: link:../python-venv
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      '@kie-tools/sonataflow-image-common':
+        specifier: workspace:*
+        version: link:../sonataflow-image-common
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      replace-in-file:
+        specifier: ^7.1.0
+        version: 7.1.0
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
+  packages/kogito-jit-runner-image:
+    devDependencies:
+      '@kie-tools/python-venv':
+        specifier: workspace:*
+        version: link:../python-venv
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      '@kie-tools/sonataflow-image-common':
+        specifier: workspace:*
+        version: link:../sonataflow-image-common
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      replace-in-file:
+        specifier: ^7.1.0
+        version: 7.1.0
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
+  packages/kogito-jobs-service-allinone-image:
+    devDependencies:
+      '@kie-tools/python-venv':
+        specifier: workspace:*
+        version: link:../python-venv
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      '@kie-tools/sonataflow-image-common':
+        specifier: workspace:*
+        version: link:../sonataflow-image-common
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      replace-in-file:
+        specifier: ^7.1.0
+        version: 7.1.0
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
+  packages/kogito-jobs-service-ephemeral-image:
+    devDependencies:
+      '@kie-tools/python-venv':
+        specifier: workspace:*
+        version: link:../python-venv
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      '@kie-tools/sonataflow-image-common':
+        specifier: workspace:*
+        version: link:../sonataflow-image-common
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      replace-in-file:
+        specifier: ^7.1.0
+        version: 7.1.0
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
+  packages/kogito-jobs-service-postgresql-image:
+    devDependencies:
+      '@kie-tools/python-venv':
+        specifier: workspace:*
+        version: link:../python-venv
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      '@kie-tools/sonataflow-image-common':
+        specifier: workspace:*
+        version: link:../sonataflow-image-common
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      replace-in-file:
+        specifier: ^7.1.0
+        version: 7.1.0
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
   packages/kogito-management-console:
     devDependencies:
       '@kie-tools/image-builder':
@@ -7808,7 +7976,7 @@ importers:
         version: 2.3.0(react@17.0.2)
       react-json-view:
         specifier: ^1.21.3
-        version: 1.21.3(@types/react@17.0.21)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        version: 1.21.3(@types/react@17.0.21)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react-moment:
         specifier: 0.9.7
         version: 0.9.7(moment@2.29.4)(prop-types@15.8.1)(react@17.0.2)
@@ -8123,7 +8291,7 @@ importers:
         version: 2.3.0(react@17.0.2)
       react-json-view:
         specifier: ^1.21.3
-        version: 1.21.3(@types/react@17.0.21)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        version: 1.21.3(@types/react@17.0.21)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react-moment:
         specifier: 0.9.7
         version: 0.9.7(moment@2.29.4)(prop-types@15.8.1)(react@17.0.2)
@@ -10961,6 +11129,9 @@ importers:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
 
   packages/sonataflow-management-console-image:
     devDependencies:
@@ -42372,21 +42543,6 @@ snapshots:
       lz-string: 1.5.0
       pretty-format: 27.5.1
 
-  '@testing-library/jest-dom@6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3)))':
-    dependencies:
-      '@adobe/css-tools': 4.4.0
-      '@babel/runtime': 7.23.6
-      aria-query: 5.1.3
-      chalk: 3.0.0
-      css.escape: 1.5.1
-      dom-accessibility-api: 0.6.3
-      lodash: 4.17.21
-      redent: 3.0.0
-    optionalDependencies:
-      '@jest/globals': 29.7.0
-      '@types/jest': 29.5.12
-      jest: 29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3))
-
   '@testing-library/jest-dom@6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@22.5.2)(typescript@5.5.3)))':
     dependencies:
       '@adobe/css-tools': 4.4.0
@@ -43511,9 +43667,9 @@ snapshots:
       webpack: 5.94.0(webpack-cli@4.10.0)
       webpack-cli: 4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0)
 
-  '@webpack-cli/configtest@1.2.0(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0))':
+  '@webpack-cli/configtest@1.2.0(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack@5.94.0(webpack-cli@4.10.0))':
     dependencies:
-      webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)
+      webpack: 5.94.0(webpack-cli@4.10.0)
       webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
 
   '@webpack-cli/configtest@1.2.0(webpack-cli@4.10.0(webpack@5.94.0))(webpack@5.94.0(webpack-cli@4.10.0))':
@@ -48496,12 +48652,6 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  fbemitter@3.0.0(encoding@0.1.13):
-    dependencies:
-      fbjs: 3.0.2(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-
   fbjs-css-vars@1.0.2: {}
 
   fbjs@3.0.2:
@@ -48746,14 +48896,6 @@ snapshots:
   flatted@3.2.4: {}
 
   flow-parser@0.218.0: {}
-
-  flux@4.0.3(encoding@0.1.13)(react@17.0.2):
-    dependencies:
-      fbemitter: 3.0.0(encoding@0.1.13)
-      fbjs: 3.0.2(encoding@0.1.13)
-      react: 17.0.2
-    transitivePeerDependencies:
-      - encoding
 
   flux@4.0.3(react@17.0.2):
     dependencies:
@@ -54407,18 +54549,6 @@ snapshots:
 
   react-is@18.1.0: {}
 
-  react-json-view@1.21.3(@types/react@17.0.21)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2):
-    dependencies:
-      flux: 4.0.3(encoding@0.1.13)(react@17.0.2)
-      react: 17.0.2
-      react-base16-styling: 0.6.0
-      react-dom: 17.0.2(react@17.0.2)
-      react-lifecycles-compat: 3.0.4
-      react-textarea-autosize: 8.3.3(@types/react@17.0.21)(react@17.0.2)
-    transitivePeerDependencies:
-      - '@types/react'
-      - encoding
-
   react-json-view@1.21.3(@types/react@17.0.21)(react-dom@17.0.2(react@17.0.2))(react@17.0.2):
     dependencies:
       flux: 4.0.3(react@17.0.2)
@@ -57964,7 +58094,7 @@ snapshots:
   webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0):
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
-      '@webpack-cli/configtest': 1.2.0(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0))
+      '@webpack-cli/configtest': 1.2.0(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack@5.94.0(webpack-cli@4.10.0))
       '@webpack-cli/info': 1.5.0(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))
       '@webpack-cli/serve': 1.7.0(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))
       colorette: 2.0.16
@@ -57974,7 +58104,7 @@ snapshots:
       import-local: 3.0.2
       interpret: 2.2.0
       rechoir: 0.7.0
-      webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)
+      webpack: 5.94.0(webpack-cli@4.10.0)
       webpack-merge: 5.9.0
     optionalDependencies:
       webpack-dev-server: 4.15.1(webpack-cli@4.10.0)(webpack@5.94.0)
@@ -57995,14 +58125,14 @@ snapshots:
       webpack: 5.94.0(webpack-cli@4.10.0)
       webpack-merge: 5.9.0
 
-  webpack-dev-middleware@5.3.3(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)):
+  webpack-dev-middleware@5.3.3(webpack@5.94.0(webpack-cli@4.10.0)):
     dependencies:
       colorette: 2.0.20
       memfs: 3.5.1
       mime-types: 2.1.34
       range-parser: 1.2.1
       schema-utils: 4.2.0
-      webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)
+      webpack: 5.94.0(webpack-cli@4.10.0)
 
   webpack-dev-middleware@5.3.3(webpack@5.94.0):
     dependencies:
@@ -58094,10 +58224,10 @@ snapshots:
       serve-index: 1.9.1
       sockjs: 0.3.24
       spdy: 4.0.2
-      webpack-dev-middleware: 5.3.3(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0))
+      webpack-dev-middleware: 5.3.3(webpack@5.94.0(webpack-cli@4.10.0))
       ws: 8.18.0
     optionalDependencies:
-      webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)
+      webpack: 5.94.0(webpack-cli@4.10.0)
       webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
     transitivePeerDependencies:
       - bufferutil
