@@ -30,7 +30,6 @@ import { addEdge } from "../../mutations/addEdge";
 import { EdgeType, NodeType } from "../connections/graphStructure";
 import { PositionalNodeHandleId } from "../connections/PositionalNodeHandles";
 import { getHandlePosition } from "../maths/DmnMaths";
-import { xmlHrefToQName } from "../../xml/xmlHrefToQName";
 
 export function usePotentialWaypointControls(
   waypoints: DC__Point[],
@@ -120,7 +119,6 @@ export function usePotentialWaypointControls(
         }
 
         const targetsExternalNode = targetNode.data.dmnObjectQName.prefix !== undefined;
-        const informationRequirementQNameRelativeToThisDmn = xmlHrefToQName(edgeId, state.dmn.model.definitions);
         addEdge({
           definitions: state.dmn.model.definitions,
           drdIndex: state.computed(state).getDrdIndex(),
@@ -148,7 +146,7 @@ export function usePotentialWaypointControls(
             shapeId: edge.data?.dmnShapeTarget["@_id"],
           },
           keepWaypoints: false,
-          dmnElementRefOfDmnEdge: targetsExternalNode ? informationRequirementQNameRelativeToThisDmn : undefined,
+          requirementEdgeTargetingExternalNodeId: targetsExternalNode ? edgeId : undefined,
         });
 
         console.debug(`DMN DIAGRAM: DMNEdge for '${edgeId}' edge was added into diagram.`);
