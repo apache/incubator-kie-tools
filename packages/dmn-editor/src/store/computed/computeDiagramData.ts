@@ -38,6 +38,7 @@ import { Computed, State } from "../Store";
 import { getDecisionServicePropertiesRelativeToThisDmn } from "../../mutations/addExistingDecisionServiceToDrd";
 import { Normalized } from "../../normalization/normalize";
 import { KIE_UNKNOWN_NAMESPACE } from "../../kie/kie";
+import { xmlHrefToQName } from "../../xml/xmlHrefToQName";
 
 export const NODE_LAYERS = {
   GROUP_NODE: 0,
@@ -99,7 +100,7 @@ export function computeDiagramData(
   const ackEdge: AckEdge = ({ id, type, dmnObject, source, target, sourceNamespace }) => {
     const data = {
       dmnObject,
-      dmnEdge: id ? indexedDrd.dmnEdgesByDmnElementRef.get(id) : undefined,
+      dmnEdge: id ? indexedDrd.dmnEdgesByDmnElementRef.get(xmlHrefToQName(id, definitions)) : undefined,
       dmnShapeSource: indexedDrd.dmnShapesByHref.get(source),
       dmnShapeTarget: indexedDrd.dmnShapesByHref.get(target),
     };
@@ -140,13 +141,7 @@ export function computeDiagramData(
   };
 
   // requirements
-  ackRequirementEdges(
-    definitions,
-    definitions["@_namespace"],
-    definitions["@_namespace"],
-    definitions.drgElement,
-    ackEdge
-  );
+  ackRequirementEdges(definitions["@_namespace"], definitions["@_namespace"], definitions.drgElement, ackEdge);
 
   // associations
   (definitions.artifact ?? []).forEach((dmnObject, index) => {
@@ -276,7 +271,6 @@ export function computeDiagramData(
     (acc, [namespace, externalDmn]) => {
       // Taking advantage of the loop to add the edges here...
       ackRequirementEdges(
-        definitions,
         definitions["@_namespace"],
         externalDmn.model.definitions["@_namespace"],
         externalDmn.model.definitions.drgElement,
@@ -397,7 +391,6 @@ export function computeDiagramData(
 }
 
 function ackRequirementEdges(
-  definitions: State["dmn"]["model"]["definitions"],
   thisDmnsNamespace: string,
   drgElementsNamespace: string,
   drgElements: Normalized<DMN15__tDefinitions>["drgElement"],
@@ -410,13 +403,12 @@ function ackRequirementEdges(
     if (dmnObject.__$$element === "decision") {
       (dmnObject.informationRequirement ?? []).forEach((ir, index) => {
         const irHref = parseXmlHref((ir.requiredDecision ?? ir.requiredInput)!["@_href"]);
-        // Search for definitions[`@_xmlns:included${includedIndex}`] that holds proper namespace
-        // and store the proper prefix: `included${includedIndex}` value
-        const namespaceIncludedPrefix = Object.entries(definitions)
-          .find(([key, val]) => val === namespace)?.[0]
-          ?.replace("@_xmlns:", "");
         ackEdge({
-          id: (namespaceIncludedPrefix ? `${namespaceIncludedPrefix}:` : "") + ir["@_id"]!,
+          // HREF format, used as RF.Edge ID
+          id:
+            drgElementsNamespace === thisDmnsNamespace
+              ? ir["@_id"]
+              : buildXmlHref({ namespace: drgElementsNamespace, id: ir["@_id"] }),
           dmnObject: {
             namespace: drgElementsNamespace,
             type: dmnObject.__$$element,
@@ -436,7 +428,11 @@ function ackRequirementEdges(
       (dmnObject.knowledgeRequirement ?? []).forEach((kr, index) => {
         const krHref = parseXmlHref(kr.requiredKnowledge["@_href"]);
         ackEdge({
-          id: kr["@_id"]!,
+          // HREF format, used as RF.Edge ID
+          id:
+            drgElementsNamespace === thisDmnsNamespace
+              ? kr["@_id"]
+              : buildXmlHref({ namespace: drgElementsNamespace, id: kr["@_id"] }),
           dmnObject: {
             namespace: drgElementsNamespace,
             type: dmnObject.__$$element,

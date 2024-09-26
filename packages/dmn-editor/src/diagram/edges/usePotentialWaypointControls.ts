@@ -30,6 +30,7 @@ import { addEdge } from "../../mutations/addEdge";
 import { EdgeType, NodeType } from "../connections/graphStructure";
 import { PositionalNodeHandleId } from "../connections/PositionalNodeHandles";
 import { getHandlePosition } from "../maths/DmnMaths";
+import { xmlHrefToQName } from "../../xml/xmlHrefToQName";
 
 export function usePotentialWaypointControls(
   waypoints: DC__Point[],
@@ -119,6 +120,7 @@ export function usePotentialWaypointControls(
         }
 
         const targetsExternalNode = targetNode.data.dmnObjectQName.prefix !== undefined;
+        const requirementEdgeQNameRelativeToThisDmn = xmlHrefToQName(edgeId, state.dmn.model.definitions);
         addEdge({
           definitions: state.dmn.model.definitions,
           drdIndex: state.computed(state).getDrdIndex(),
@@ -146,7 +148,7 @@ export function usePotentialWaypointControls(
             shapeId: edge.data?.dmnShapeTarget["@_id"],
           },
           keepWaypoints: false,
-          requirementEdgeTargetingExternalNodeId: targetsExternalNode ? edgeId : undefined,
+          dmnElementRefOfDmnEdge: targetsExternalNode ? requirementEdgeQNameRelativeToThisDmn : undefined,
         });
 
         console.debug(`DMN DIAGRAM: DMNEdge for '${edgeId}' edge was added into diagram.`);
@@ -171,7 +173,8 @@ export function usePotentialWaypointControls(
     }
 
     dmnEditorStoreApi.setState((state) => {
-      const dmnEdgeIndex = state.computed(state).indexedDrd().dmnEdgesByDmnElementRef.get(edgeId)?.index;
+      const edgeQName = xmlHrefToQName(edgeId, state.dmn.model.definitions);
+      const dmnEdgeIndex = state.computed(state).indexedDrd().dmnEdgesByDmnElementRef.get(edgeQName)?.index;
       if (dmnEdgeIndex === undefined) {
         throw new Error(`DMN DIAGRAM: Diagram computed state does not contain DMNEdge for '${edgeId}' edge.`);
       }

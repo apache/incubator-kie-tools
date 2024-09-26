@@ -48,7 +48,7 @@ export function addEdge({
   targetNode,
   edge,
   keepWaypoints,
-  requirementEdgeTargetingExternalNodeId,
+  dmnElementRefOfDmnEdge,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
@@ -74,16 +74,17 @@ export function addEdge({
     autoPositionedEdgeMarker: AutoPositionedEdgeMarker | undefined;
   };
   keepWaypoints: boolean;
-  requirementEdgeTargetingExternalNodeId?: string;
+  // QName format, used as dmnElementRef for DMNEdge targeting an external node
+  dmnElementRefOfDmnEdge?: string;
 }) {
-  const externalTargetAllowed = requirementEdgeTargetingExternalNodeId !== undefined;
+  const externalTargetAllowed = dmnElementRefOfDmnEdge !== undefined;
   if (!_checkIsValidConnection(sourceNode, targetNode, edge.type, { allowExternalTarget: externalTargetAllowed })) {
     throw new Error(`DMN MUTATION: Invalid structure: (${sourceNode.type}) --${edge.type}--> (${targetNode.type}) `);
   }
 
   const newEdgeId = generateUuid();
 
-  let existingEdgeId: string | undefined = requirementEdgeTargetingExternalNodeId;
+  let existingRequirementOrAssociationId: string | undefined = dmnElementRefOfDmnEdge;
 
   // Associations
   if (edge.type === EDGE_TYPES.association) {
@@ -101,13 +102,13 @@ export function addEdge({
       definitions.artifact,
       (a) => a.__$$element === "association" && areAssociationsEquivalent(a, newAssociation)
     );
-    existingEdgeId = removed?.["@_id"];
+    existingRequirementOrAssociationId = removed?.["@_id"];
 
     // Replace with the new one.
     definitions.artifact?.push({
       __$$element: "association",
       ...newAssociation,
-      "@_id": tryKeepingEdgeId(existingEdgeId, newEdgeId),
+      "@_id": tryKeepingEdgeId(existingRequirementOrAssociationId, newEdgeId),
     });
   }
   // Requirements
@@ -119,11 +120,11 @@ export function addEdge({
       const removed = removeFirstMatchIfPresent(drgElement.informationRequirement, (ir) =>
         doesInformationRequirementsPointTo(ir, sourceNode.href)
       );
-      existingEdgeId = removed?.["@_id"];
+      existingRequirementOrAssociationId = removed?.["@_id"];
       drgElement.informationRequirement?.push(
         ...requirements.informationRequirement.map((s) => ({
           ...s,
-          "@_id": tryKeepingEdgeId(existingEdgeId, newEdgeId),
+          "@_id": tryKeepingEdgeId(existingRequirementOrAssociationId, newEdgeId),
         }))
       );
     }
@@ -133,11 +134,11 @@ export function addEdge({
       const removed = removeFirstMatchIfPresent(drgElement.knowledgeRequirement, (kr) =>
         doesKnowledgeRequirementsPointTo(kr, sourceNode.href)
       );
-      existingEdgeId = removed?.["@_id"];
+      existingRequirementOrAssociationId = removed?.["@_id"];
       drgElement.knowledgeRequirement?.push(
         ...requirements.knowledgeRequirement.map((s) => ({
           ...s,
-          "@_id": tryKeepingEdgeId(existingEdgeId, newEdgeId),
+          "@_id": tryKeepingEdgeId(existingRequirementOrAssociationId, newEdgeId),
         }))
       );
     }
@@ -147,11 +148,11 @@ export function addEdge({
       const removed = removeFirstMatchIfPresent(drgElement.authorityRequirement, (ar) =>
         doesAuthorityRequirementsPointTo(ar, sourceNode.href)
       );
-      existingEdgeId = removed?.["@_id"];
+      existingRequirementOrAssociationId = removed?.["@_id"];
       drgElement.authorityRequirement?.push(
         ...requirements.authorityRequirement.map((s) => ({
           ...s,
-          "@_id": tryKeepingEdgeId(existingEdgeId, newEdgeId),
+          "@_id": tryKeepingEdgeId(existingRequirementOrAssociationId, newEdgeId),
         }))
       );
     }
@@ -162,7 +163,7 @@ export function addEdge({
   // Remove existing
   const removedDmnEdge = removeFirstMatchIfPresent(
     diagramElements,
-    (e) => e.__$$element === "dmndi:DMNEdge" && e["@_dmnElementRef"] === existingEdgeId
+    (e) => e.__$$element === "dmndi:DMNEdge" && e["@_dmnElementRef"] === existingRequirementOrAssociationId
   ) as Normalized<DMNDI15__DMNEdge> | undefined;
 
   const newWaypoints = keepWaypoints
@@ -181,7 +182,7 @@ export function addEdge({
     "@_id":
       withoutDiscreteAutoPosinitioningMarker(removedDmnEdge?.["@_id"] ?? generateUuid()) +
       (edge.autoPositionedEdgeMarker ?? ""),
-    "@_dmnElementRef": existingEdgeId ?? newEdgeId,
+    "@_dmnElementRef": existingRequirementOrAssociationId ?? newEdgeId,
     "@_sourceElement": sourceNode.shapeId,
     "@_targetElement": targetNode.shapeId,
     "di:waypoint": newWaypoints,
