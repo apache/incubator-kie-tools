@@ -31,7 +31,9 @@
   </parent>
 
   <artifactId>jbpm-compact-architecture-quarkus-example</artifactId>
-  <name>Kie-Tools Example :: jBPM Compact Architecture Quarkus Example</name>
+  <version>${revision}</version>
+
+  <name>KIE Tools :: Example :: jBPM Compact Architecture Quarkus Example</name>
 
   <properties>
     <kogito.management-console.image
@@ -118,6 +120,18 @@
       <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-data-audit</artifactId>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-quarkus-devui</artifactId>
+      <version>0.0.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <profiles>
@@ -162,9 +176,8 @@
     <finalName>${project.artifactId}</finalName>
     <plugins>
       <plugin>
-        <groupId>${quarkus.platform.group-id}</groupId>
+        <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
-        <version>${quarkus-plugin.version}</version>
         <executions>
           <execution>
             <goals>

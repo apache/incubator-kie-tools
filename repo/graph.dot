@@ -96,7 +96,6 @@ digraph G {
   "@kie-tools/dev-deployment-dmn-form-webapp-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/image-env-to-json" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/maven-config-setup-helper" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/maven-m2-repo-via-http-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -335,8 +334,7 @@ digraph G {
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/dev-deployment-dmn-form-webapp" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/image-env-to-json" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
-  "@kie-tools/dev-deployment-kogito-quarkus-blank-app" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
-  "@kie-tools/dev-deployment-kogito-quarkus-blank-app" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/dev-deployment-kogito-quarkus-blank-app" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" -> "@kie-tools/dev-deployment-base-image" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" -> "@kie-tools/dev-deployment-kogito-quarkus-blank-app" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" -> "@kie-tools/maven-m2-repo-via-http-image" [ style = "dashed", color = "black" ];
@@ -452,7 +450,6 @@ digraph G {
   "@kie-tools/kogito-task-console" -> "@kie-tools/image-env-to-json" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-task-console" -> "@kie-tools/runtime-tools-task-console-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools-core/kubernetes-bridge" -> "@kie-tools/cors-proxy-api" [ style = "solid", color = "purple" ];
-  "@kie-tools/maven-base" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/maven-base" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/maven-m2-repo-via-http-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/maven-m2-repo-via-http-image" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
@@ -558,8 +555,7 @@ digraph G {
   "@kie-tools/serverless-workflow-dev-ui-webapp" -> "@kie-tools/runtime-tools-swf-webapp-components" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-workflow-dev-ui-webapp" -> "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-workflow-dev-ui-webapp" -> "@kie-tools/sonataflow-dev-app" [ style = "dashed", color = "black" ];
-  "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
-  "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools/maven-base" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-workflow-diagram-editor-assets" -> "@kie-tools/serverless-workflow-diagram-editor" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-diagram-editor-assets" -> "@kie-tools/serverless-workflow-diagram-editor-envelope" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-diagram-editor-envelope" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
@@ -576,6 +572,7 @@ digraph G {
   "swf-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "swf-vscode-extension" -> "@kie-tools/serverless-workflow-diagram-editor-assets" [ style = "dashed", color = "blue" ];
   "swf-vscode-extension" -> "@kie-tools/vscode-extension-common-test-helpers" [ style = "dashed", color = "blue" ];
+  "@kie-tools/sonataflow-builder-image" -> "@kie-tools/maven-base" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-builder-image" -> "@kie-tools/maven-m2-repo-via-http-image" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-builder-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
   "sonataflow-deployment-webapp" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
@@ -670,7 +667,7 @@ digraph G {
   "@kie-tools/yard-model" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
   "@kie-tools/yard-validator" -> "@kie-tools-core/notifications" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-validator" -> "@kie-tools/yard-validator-worker" [ style = "dashed", color = "blue" ];
-  "@kie-tools/yard-validator-worker" -> "@kie-tools/yard-model" [ style = "dashed", color = "black" ];
+  "@kie-tools/yard-validator-worker" -> "@kie-tools/yard-model" [ style = "solid", color = "black" ];
   "yard-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "yard-vscode-extension" -> "@kie-tools/yard-editor" [ style = "solid", color = "blue" ];
   "yard-vscode-extension" -> "@kie-tools/vscode-extension-common-test-helpers" [ style = "dashed", color = "blue" ];

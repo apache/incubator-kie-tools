@@ -22,8 +22,8 @@ const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const nodeExternals = require("webpack-node-externals");
 const CopyPlugin = require("copy-webpack-plugin");
 
-module.exports = (env) => [
-  merge(common(env), {
+module.exports = (webpackEnv) => [
+  merge(common(webpackEnv), {
     entry: {
       index: "./src/index.ts",
     },

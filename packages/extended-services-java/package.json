@@ -27,7 +27,7 @@
     "copy:app:linux:darwin": "copyfiles -u 1 \"target/quarkus-app/**/*\" dist/",
     "copy:app:win32": "copyfiles -u 1 \"target/quarkus-app/**\" dist/",
     "dist": "rimraf dist && mkdir dist && pnpm copy:app && pnpm rename:app",
-    "install": "node install.js",
+    "install": "node mvn.bootstrap.js",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "rename:app": "run-script-os",
     "rename:app:linux:darwin": "mv dist/quarkus-app dist/extended-services-java",
@@ -38,7 +38,6 @@
     "@kie-tools/maven-base": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "copyfiles": "^2.4.1",
     "rimraf": "^3.0.2",

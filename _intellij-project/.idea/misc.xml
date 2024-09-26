@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/../examples/jbpm-compact-architecture-example/pom.xml" />
+        <option value="$PROJECT_DIR$/../packages/jbpm-quarkus-devui/pom.xml" />
+        <option value="$PROJECT_DIR$/../packages/maven-base/pom.xml" />
+        <option value="$PROJECT_DIR$/../packages/yard-model/pom.xml" />
+        <option value="$PROJECT_DIR$/../packages/yard-validator-worker/pom.xml" />
+        <option value="$PROJECT_DIR$/../packages/stunner-editors/pom.xml" />
+        <option value="$PROJECT_DIR$/../packages/sonataflow-quarkus-devui/pom.xml" />
+        <option value="$PROJECT_DIR$/../packages/serverless-workflow-diagram-editor/pom.xml" />
+        <option value="$PROJECT_DIR$/../packages/extended-services-java/pom.xml" />
+        <option value="$PROJECT_DIR$/../packages/dev-deployment-kogito-quarkus-blank-app/pom.xml" />
+        <option value="$PROJECT_DIR$/../examples/drools-process-usertasks-quarkus-example/pom.xml" />
+        <option value="$PROJECT_DIR$/../examples/sonataflow-greeting-quarkus-example/pom.xml" />
+        <option value="$PROJECT_DIR$/../packages/dashbuilder/pom.xml" />
+        <option value="$PROJECT_DIR$/../packages/dmn-testing-models/pom.xml" />
+        <option value="$PROJECT_DIR$/../packages/serverless-logic-web-tools-swf-deployment-quarkus-app/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component
+    name="ProjectRootManager"
+    version="2"
+    languageLevel="JDK_22"
+    project-jdk-name="17"
+    project-jdk-type="JavaSDK"
+  >
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>

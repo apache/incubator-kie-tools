@@ -121,6 +121,7 @@ func RunQuarkusBuildTest(t *testing.T, cfgTestInputQuarkusCreate CfgTestInputQua
 
 	err = os.Chdir(projectDir)
 	require.NoErrorf(t, err, "Expected nil error, got %v", err)
+	WriteMavenConfigFileWithTailDirs(projectDir)
 
 	// Run `quarkus build` command
 	args := transformQuarkusBuildCmdCfgToArgs(test.input)

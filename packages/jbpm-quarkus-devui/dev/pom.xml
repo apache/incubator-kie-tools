@@ -35,17 +35,7 @@
   <version>${revision}</version>
 
   <properties>
-    <compiler-plugin.version>3.13.0</compiler-plugin.version>
     <maven.compiler.parameters>true</maven.compiler.parameters>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <surefire-plugin.version>3.5.0</surefire-plugin.version>
-    <maven.site.plugin.version>3.12.1</maven.site.plugin.version>
-    <maven.remote.resources.plugin.version>3.2.0</maven.remote.resources.plugin.version>
-    <maven.jar.plugin.version>3.4.1</maven.jar.plugin.version>
-    <version.junit>4.13.2</version.junit>
     <quarkus.analytics.disabled>true</quarkus.analytics.disabled>
     <version.org.apache.commons.commons-compress>1.26.1</version.org.apache.commons.commons-compress>
     <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
@@ -54,25 +44,6 @@
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bom</artifactId>
-        <version>${quarkus.platform.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-kie-bom</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-with-drools-quarkus</artifactId>
-        <version>${version.org.kie.kogito}</version>
-      </dependency>
       <dependency>
         <groupId>org.jbpm</groupId>
         <artifactId>jbpm-quarkus-devui</artifactId>
@@ -214,7 +185,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>${maven.site.plugin.version}</version>
           <dependencies>
             <dependency>
               <groupId>org.apache.commons</groupId>
@@ -231,7 +201,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-remote-resources-plugin</artifactId>
-          <version>${maven.remote.resources.plugin.version}</version>
           <dependencies>
             <dependency>
               <groupId>org.apache.commons</groupId>
@@ -248,7 +217,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>${maven.jar.plugin.version}</version>
           <dependencies>
             <dependency>
               <groupId>org.iq80.snappy</groupId>
@@ -260,7 +228,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>${surefire-plugin.version}</version>
           <dependencies>
             <dependency>
               <groupId>org.iq80.snappy</groupId>
@@ -280,7 +247,6 @@
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
-        <version>${quarkus.platform.version}</version>
         <extensions>true</extensions>
         <executions>
           <execution>
@@ -292,14 +258,12 @@
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${compiler-plugin.version}</version>
         <configuration>
           <parameters>${maven.compiler.parameters}</parameters>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${surefire-plugin.version}</version>
         <configuration>
           <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
@@ -310,7 +274,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
-        <version>1.6.0</version>
         <configuration>
           <updatePomFile>true</updatePomFile>
           <flattenMode>resolveCiFriendliesOnly</flattenMode>

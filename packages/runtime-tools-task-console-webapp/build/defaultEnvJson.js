@@ -17,18 +17,18 @@
  * under the License.
  */
 
-const { env: buildEnv } = require("../env");
+const { env } = require("../env");
 
 const version = require("../package.json").version;
 
 module.exports = {
   defaultEnvJson: {
-    RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_ENV_MODE: buildEnv.runtimeToolsTaskConsoleWebapp.kogitoEnvMode,
+    RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_ENV_MODE: env.runtimeToolsTaskConsoleWebapp.kogitoEnvMode,
     RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_APP_NAME: "Task Console",
     RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_APP_VERSION: version,
     RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_TASK_STATES_LIST: "Ready,Reserved,Completed,Aborted,Skipped",
     RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_TASK_ACTIVE_STATES_LIST: "Ready,Reserved",
-    RUNTIME_TOOLS_TASK_CONSOLE_DATA_INDEX_ENDPOINT: buildEnv.runtimeToolsTaskConsoleWebapp.kogitoDataIndexUrl,
+    RUNTIME_TOOLS_TASK_CONSOLE_DATA_INDEX_ENDPOINT: env.runtimeToolsTaskConsoleWebapp.kogitoDataIndexUrl,
     KOGITO_CONSOLES_KEYCLOAK_DISABLE_HEALTH_CHECK: false,
     KOGITO_CONSOLES_KEYCLOAK_UPDATE_TOKEN_VALIDITY: 30,
     KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL:

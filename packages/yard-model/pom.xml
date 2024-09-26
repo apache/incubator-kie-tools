@@ -33,6 +33,8 @@
   <groupId>org.kie.kogito</groupId>
   <artifactId>yard-model</artifactId>
 
+  <name>KIE Tools :: YaRD model</name>
+
   <licenses>
     <license>
       <name>Apache Software License, Version 2.0</name>

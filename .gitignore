@@ -265,14 +265,14 @@ packages/sonataflow-operator/e2e-test-report.xml
 # When using Gradle or Maven with auto-import, you should exclude module files,
 # since they will be recreated, and may cause churn.  Uncomment if using
 # auto-import.
-.idea/artifacts
-.idea/compiler.xml
-.idea/jarRepositories.xml
-.idea/modules.xml
-.idea/*.iml
-.idea/modules
-*.iml
-*.ipr
+# .idea/artifacts
+# .idea/compiler.xml
+# .idea/jarRepositories.xml
+# .idea/modules.xml
+# .idea/*.iml
+# .idea/modules
+# *.iml
+# *.ipr
 
 # CMake
 cmake-build-*/
@@ -340,3 +340,7 @@ packages/python-venv/venv
 # turbo
 .turbo
 turbo.json
+
+# IntelliJ projects should be on _intellij-projects folder, never on specific packages.
+packages/*/.idea
+examples/*/.idea

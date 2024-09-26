@@ -25,8 +25,8 @@ const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const stunnerEditors = require("@kie-tools/stunner-editors");
 const vscodeJavaCodeCompletionExtensionPlugin = require("@kie-tools/vscode-java-code-completion-extension-plugin");
 
-module.exports = async (env) => [
-  merge(common(env), {
+module.exports = async (webpackEnv) => [
+  merge(common(webpackEnv), {
     output: {
       library: "AppFormer.VsCodePack",
       libraryTarget: "umd",
@@ -41,7 +41,7 @@ module.exports = async (env) => [
       "extension/extension": "./src/extension/extension.ts",
     },
   }),
-  merge(common(env), {
+  merge(common(webpackEnv), {
     output: {
       library: "AppFormer.VsCodePack",
       libraryTarget: "umd",
@@ -62,7 +62,7 @@ module.exports = async (env) => [
       }),
     ],
   }),
-  merge(common(env), {
+  merge(common(webpackEnv), {
     output: {
       library: "AppFormer.VsCodePackWebview",
       libraryTarget: "umd",
@@ -112,7 +112,7 @@ module.exports = async (env) => [
       }),
     ],
   }),
-  merge(common(env), {
+  merge(common(webpackEnv), {
     output: {
       library: "AppFormer.VsCodePackWebview",
       libraryTarget: "umd",

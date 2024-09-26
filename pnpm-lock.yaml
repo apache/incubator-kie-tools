@@ -306,9 +306,6 @@ importers:
         specifier: workspace:*
         version: link:../../packages/maven-base
     devDependencies:
-      '@kie-tools/maven-config-setup-helper':
-        specifier: workspace:*
-        version: link:../../packages/maven-config-setup-helper
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../../packages/root-env
@@ -331,9 +328,6 @@ importers:
       '@kie-tools/kogito-task-console':
         specifier: workspace:*
         version: link:../../packages/kogito-task-console
-      '@kie-tools/maven-config-setup-helper':
-        specifier: workspace:*
-        version: link:../../packages/maven-config-setup-helper
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../../packages/root-env
@@ -485,9 +479,6 @@ importers:
         specifier: workspace:*
         version: link:../../packages/sonataflow-quarkus-devui
     devDependencies:
-      '@kie-tools/maven-config-setup-helper':
-        specifier: workspace:*
-        version: link:../../packages/maven-config-setup-helper
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../../packages/root-env
@@ -1688,9 +1679,6 @@ importers:
       '@kie-tools/dashbuilder-component-assembler':
         specifier: workspace:*
         version: link:../dashbuilder-component-assembler
-      '@kie-tools/maven-config-setup-helper':
-        specifier: workspace:*
-        version: link:../maven-config-setup-helper
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -2994,9 +2982,6 @@ importers:
       '@kie-tools/image-builder':
         specifier: workspace:*
         version: link:../image-builder
-      '@kie-tools/maven-config-setup-helper':
-        specifier: workspace:*
-        version: link:../maven-config-setup-helper
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -3193,10 +3178,14 @@ importers:
         version: 1.1.2
 
   packages/dev-deployment-kogito-quarkus-blank-app:
-    devDependencies:
-      '@kie-tools/maven-config-setup-helper':
+    dependencies:
+      '@kie-tools/jbpm-quarkus-devui':
         specifier: workspace:*
-        version: link:../maven-config-setup-helper
+        version: link:../jbpm-quarkus-devui
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
+    devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -3216,9 +3205,9 @@ importers:
       '@kie-tools/image-builder':
         specifier: workspace:*
         version: link:../image-builder
-      '@kie-tools/maven-config-setup-helper':
+      '@kie-tools/maven-base':
         specifier: workspace:*
-        version: link:../maven-config-setup-helper
+        version: link:../maven-base
       '@kie-tools/maven-m2-repo-via-http-image':
         specifier: workspace:*
         version: link:../maven-m2-repo-via-http-image
@@ -4028,9 +4017,6 @@ importers:
         specifier: workspace:*
         version: link:../maven-base
     devDependencies:
-      '@kie-tools/maven-config-setup-helper':
-        specifier: workspace:*
-        version: link:../maven-config-setup-helper
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -4424,9 +4410,6 @@ importers:
         specifier: workspace:*
         version: link:../maven-base
     devDependencies:
-      '@kie-tools/maven-config-setup-helper':
-        specifier: workspace:*
-        version: link:../maven-config-setup-helper
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -5251,9 +5234,6 @@ importers:
         specifier: workspace:*
         version: link:../maven-base
     devDependencies:
-      '@kie-tools/maven-config-setup-helper':
-        specifier: workspace:*
-        version: link:../maven-config-setup-helper
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -6094,6 +6074,13 @@ importers:
         version: 1.1.2
 
   packages/kn-plugin-workflow:
+    dependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
+      '@kie-tools/sonataflow-quarkus-devui':
+        specifier: workspace:*
+        version: link:../sonataflow-quarkus-devui
     devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
@@ -6375,9 +6362,6 @@ importers:
 
   packages/maven-base:
     devDependencies:
-      '@kie-tools/maven-config-setup-helper':
-        specifier: workspace:*
-        version: link:../maven-config-setup-helper
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -9651,13 +9635,13 @@ importers:
 
   packages/serverless-logic-web-tools-swf-deployment-quarkus-app:
     dependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/sonataflow-quarkus-devui':
         specifier: workspace:*
         version: link:../sonataflow-quarkus-devui
     devDependencies:
-      '@kie-tools/maven-config-setup-helper':
-        specifier: workspace:*
-        version: link:../maven-config-setup-helper
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -9670,9 +9654,9 @@ importers:
       '@kie-tools/image-builder':
         specifier: workspace:*
         version: link:../image-builder
-      '@kie-tools/maven-config-setup-helper':
+      '@kie-tools/maven-base':
         specifier: workspace:*
-        version: link:../maven-config-setup-helper
+        version: link:../maven-base
       '@kie-tools/maven-m2-repo-via-http-image':
         specifier: workspace:*
         version: link:../maven-m2-repo-via-http-image
@@ -10078,9 +10062,9 @@ importers:
 
   packages/serverless-workflow-diagram-editor:
     devDependencies:
-      '@kie-tools/maven-config-setup-helper':
+      '@kie-tools/maven-base':
         specifier: workspace:*
-        version: link:../maven-config-setup-helper
+        version: link:../maven-base
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -10861,6 +10845,9 @@ importers:
       '@kie-tools/image-builder':
         specifier: workspace:*
         version: link:../image-builder
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/maven-m2-repo-via-http-image':
         specifier: workspace:*
         version: link:../maven-m2-repo-via-http-image
@@ -11111,6 +11098,9 @@ importers:
       '@kie-tools/image-builder':
         specifier: workspace:*
         version: link:../image-builder
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/maven-m2-repo-via-http-image':
         specifier: workspace:*
         version: link:../maven-m2-repo-via-http-image
@@ -11509,9 +11499,6 @@ importers:
         specifier: workspace:*
         version: link:../maven-base
     devDependencies:
-      '@kie-tools/maven-config-setup-helper':
-        specifier: workspace:*
-        version: link:../maven-config-setup-helper
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -11599,9 +11586,9 @@ importers:
 
   packages/stunner-editors:
     devDependencies:
-      '@kie-tools/maven-config-setup-helper':
+      '@kie-tools/maven-base':
         specifier: workspace:*
-        version: link:../maven-config-setup-helper
+        version: link:../maven-base
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -12743,9 +12730,6 @@ importers:
         specifier: workspace:*
         version: link:../maven-base
     devDependencies:
-      '@kie-tools/maven-config-setup-helper':
-        specifier: workspace:*
-        version: link:../maven-config-setup-helper
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -13287,9 +13271,6 @@ importers:
         specifier: workspace:*
         version: link:../maven-base
     devDependencies:
-      '@kie-tools/maven-config-setup-helper':
-        specifier: workspace:*
-        version: link:../maven-config-setup-helper
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -13342,16 +13323,13 @@ importers:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
-    devDependencies:
-      '@kie-tools/maven-config-setup-helper':
-        specifier: workspace:*
-        version: link:../maven-config-setup-helper
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../root-env
       '@kie-tools/yard-model':
         specifier: workspace:*
         version: link:../yard-model
+    devDependencies:
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
       copyfiles:
         specifier: ^2.4.1
         version: 2.4.1

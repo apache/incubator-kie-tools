@@ -24,10 +24,9 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ProvidePlugin } = require("webpack");
 const { env } = require("./env");
-const buildEnv = env;
 
-module.exports = (env) =>
-  merge(common(env), {
+module.exports = (webpackEnv) =>
+  merge(common(webpackEnv), {
     output: {
       path: path.join(__dirname, "dist"),
       filename: "[name].js",
@@ -68,7 +67,7 @@ module.exports = (env) =>
       static: [{ directory: path.join(__dirname, "./dist") }],
       compress: true,
       https: false,
-      port: buildEnv.dmnEditorStandaloneExamples.port,
+      port: env.dmnEditorStandaloneExamples.port,
       client: {
         overlay: false,
       },

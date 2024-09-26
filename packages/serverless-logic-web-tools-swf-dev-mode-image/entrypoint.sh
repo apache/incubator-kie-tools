@@ -26,6 +26,7 @@ cd /tmp/app/serverless-logic-web-tools-swf-deployment-quarkus-app
 
 mvn quarkus:dev \
   -nsu \
+  -ntp \
   -o \
   -s /home/kogito/.m2/settings.xml \
   -Ddebug=false \

@@ -37,16 +37,29 @@
   <version>0.0.0</version>
 
   <properties>
-    <compiler-plugin.version>3.13.0</compiler-plugin.version>
-    <maven.compiler.parameters>true</maven.compiler.parameters>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <surefire-plugin.version>3.5.0</surefire-plugin.version>
-    <maven.site.plugin.version>3.12.1</maven.site.plugin.version>
-    <maven.remote.resources.plugin.version>3.2.0</maven.remote.resources.plugin.version>
-    <maven.jar.plugin.version>3.4.1</maven.jar.plugin.version>
+
+    <!-- Maven versions -->
+    <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
+    <version.maven.compiler.plugin>3.13.0</version.maven.compiler.plugin>
+    <version.maven.resources.plugin>3.2.0</version.maven.resources.plugin>
+    <version.maven.failsafe.plugin>3.0.0-M7</version.maven.failsafe.plugin>
+    <version.maven.surefire.plugin>3.5.0</version.maven.surefire.plugin>
+    <version.maven.deploy.plugin>3.1.2</version.maven.deploy.plugin>
+    <version.maven.site.plugin>3.12.1</version.maven.site.plugin>
+    <version.maven.dependency.plugin>3.6.1</version.maven.dependency.plugin>
+    <version.maven.jar.plugin>3.4.1</version.maven.jar.plugin>
+    <version.maven.remote.resources.plugin>3.2.0</version.maven.remote.resources.plugin>
+    <version.maven.clean.plugin>3.4.0</version.maven.clean.plugin>
+    <version.codehaus.flatten.plugin>1.6.0</version.codehaus.flatten.plugin>
+
+    <!-- Config -->
+    <maven.compiler.parameters>true</maven.compiler.parameters>
+
+    <!-- 3rd party -->
     <version.junit>4.13.2</version.junit>
     <quarkus.analytics.disabled>true</quarkus.analytics.disabled>
     <version.org.apache.commons.commons-compress>1.26.1</version.org.apache.commons.commons-compress>
@@ -58,7 +71,7 @@
       <dependency>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-bom</artifactId>
-        <version>${quarkus.platform.version}</version>
+        <version>${version.quarkus}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -146,7 +159,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>${maven.site.plugin.version}</version>
+          <version>${version.maven.site.plugin}</version>
           <dependencies>
             <dependency>
               <groupId>org.apache.commons</groupId>
@@ -163,7 +176,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-remote-resources-plugin</artifactId>
-          <version>${maven.remote.resources.plugin.version}</version>
+          <version>${version.maven.remote.resources.plugin}</version>
           <dependencies>
             <dependency>
               <groupId>org.apache.commons</groupId>
@@ -180,7 +193,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>${maven.jar.plugin.version}</version>
+          <version>${version.maven.jar.plugin}</version>
           <dependencies>
             <dependency>
               <groupId>org.iq80.snappy</groupId>
@@ -192,7 +205,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>${surefire-plugin.version}</version>
+          <version>${version.maven.surefire.plugin}</version>
           <dependencies>
             <dependency>
               <groupId>org.iq80.snappy</groupId>
@@ -212,7 +225,7 @@
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
-        <version>${quarkus.platform.version}</version>
+        <version>${version.quarkus}</version>
         <extensions>true</extensions>
         <executions>
           <execution>
@@ -224,14 +237,14 @@
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${compiler-plugin.version}</version>
+        <version>${version.maven.compiler.plugin}</version>
         <configuration>
           <parameters>${maven.compiler.parameters}</parameters>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${surefire-plugin.version}</version>
+        <version>${version.maven.surefire.plugin}</version>
         <configuration>
           <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
@@ -242,7 +255,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
-        <version>1.6.0</version>
+        <version>${version.codehaus.flatten.plugin}</version>
         <configuration>
           <updatePomFile>true</updatePomFile>
           <flattenMode>resolveCiFriendliesOnly</flattenMode>

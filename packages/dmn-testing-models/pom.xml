@@ -33,7 +33,7 @@
   <groupId>org.kie.tools</groupId>
   <artifactId>dmn-testing-models</artifactId>
 
-  <name>DMN Testing Models</name>
+  <name>KIE Tools :: DMN Testing Models</name>
   <description>Testing models for DMN marshaller</description>
 
   <licenses>

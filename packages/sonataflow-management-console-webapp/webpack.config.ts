@@ -35,10 +35,10 @@ import { env } from "./env";
 const BG_IMAGES_DIRNAME = "bgimages";
 const buildEnv: any = env; // build-env is not typed
 
-export default async (env: any, argv: any) => {
+export default async (webpackEnv: any, webpackArgv: any) => {
   return [
     {
-      ...merge(common(env), {
+      ...merge(common(webpackEnv), {
         entry: {
           index: path.resolve(__dirname, "src", "index.tsx"),
           "serverless-workflow-combined-editor-envelope":

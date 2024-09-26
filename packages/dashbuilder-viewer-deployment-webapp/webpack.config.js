@@ -23,11 +23,10 @@ const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { env } = require("./env");
-const buildEnv = env;
 const dashbuilderClient = require("@kie-tools/dashbuilder-client");
 
-module.exports = async (env) =>
-  merge(common(env), {
+module.exports = async (webpackEnv) =>
+  merge(common(webpackEnv), {
     entry: {
       index: "./src/index.tsx",
       "dashbuilder-viewer-envelope-app": "./src/envelope/DashbuilderViewerEnvelopeApp.ts",
@@ -63,6 +62,6 @@ module.exports = async (env) =>
       historyApiFallback: false,
       static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
       compress: true,
-      port: buildEnv.dashbuilderViewerDeploymentWebApp.dev.port,
+      port: env.dashbuilderViewerDeploymentWebApp.dev.port,
     },
   });

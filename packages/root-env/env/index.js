@@ -90,11 +90,9 @@ module.exports = composeEnv([], {
       examples: {
         build: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__buildExamples)),
       },
-      kogitoRuntime: {
-        version: getOrDefault(this.vars.KOGITO_RUNTIME_version),
-      },
-      quarkusPlatform: {
-        version: getOrDefault(this.vars.QUARKUS_PLATFORM_version),
+      versions: {
+        kogito: getOrDefault(this.vars.KOGITO_RUNTIME_version),
+        quarkus: getOrDefault(this.vars.QUARKUS_PLATFORM_version),
       },
     };
   },

@@ -32,7 +32,7 @@
     "build:prod:win32": "pnpm powershell \"mvn clean install `-Dgwt.compiler.skip=true `-DskipTests\"",
     "copy:components": "pnpm delete:components && copyfiles -u 3 \"../dashbuilder-component-assembler/dist/**/*\" ./dashbuilder-runtime-parent/dashbuilder-runtime-client/src/main/webapp/dashbuilder/component",
     "delete:components": "rimraf ./dashbuilder-runtime-parent/dashbuilder-runtime-client/src/main/webapp/dashbuilder/component",
-    "install": "node install.js",
+    "install": "node mvn.bootstrap.js",
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
@@ -41,7 +41,6 @@
   },
   "devDependencies": {
     "@kie-tools/dashbuilder-component-assembler": "workspace:*",
-    "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "copyfiles": "^2.4.1",
     "rimraf": "^3.0.2",

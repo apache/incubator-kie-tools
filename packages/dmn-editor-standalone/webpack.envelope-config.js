@@ -23,8 +23,8 @@ const path = require("path");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { ProvidePlugin } = require("webpack");
 
-module.exports = (env) =>
-  merge(common(env), {
+module.exports = (webpackEnv) =>
+  merge(common(webpackEnv), {
     output: {
       path: path.join(__dirname, "dist"),
       filename: "[name].js",

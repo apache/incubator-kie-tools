@@ -27,12 +27,14 @@ set -e
 #    -Dpackaging=jar \
 #    -DgeneratePom=true
 
-ls -la /tmp/artifacts
+# ls -la /tmp/artifacts
 
-mkdir -p "${KOGITO_HOME}"/.m2/repository/org/apache/kie/
-mkdir -p "${KOGITO_HOME}"/.m2/repository/org/kie/
-tar xf /tmp/artifacts/sonataflow-quarkus-devui-maven-repo.tar -C "${KOGITO_HOME}"/.m2/repository/org/apache/kie/
-tar xf /tmp/artifacts/kie-tools-maven-base-maven-repo.tar -C "${KOGITO_HOME}"/.m2/repository/org/kie/
+# mkdir -p "${KOGITO_HOME}"/.m2/repository/org/apache/kie/
+# mkdir -p "${KOGITO_HOME}"/.m2/repository/org/kie/
+# tar xf /tmp/artifacts/sonataflow-quarkus-devui-maven-repo.tar -C "${KOGITO_HOME}"/.m2/repository/org/apache/kie/
+# tar xf /tmp/artifacts/kie-tools-maven-base-maven-repo.tar -C "${KOGITO_HOME}"/.m2/repository/org/kie/
 
-find "${KOGITO_HOME}"/.m2/repository -name _remote.repositories | xargs rm
+# find "${KOGITO_HOME}"/.m2/repository -name _remote.repositories | xargs rm
+
+echo "ok"
 

@@ -21,10 +21,9 @@ const CopyPlugin = require("copy-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { env } = require("./env");
-const buildEnv = env;
 
-module.exports = async (env) =>
-  merge(common(env), {
+module.exports = async (webpackEnv) =>
+  merge(common(webpackEnv), {
     entry: {},
     plugins: [
       new CopyPlugin({
@@ -40,6 +39,6 @@ module.exports = async (env) =>
       static: {
         directory: "./dist",
       },
-      port: buildEnv.jobsServiceWebapp.dev.port,
+      port: env.jobsServiceWebapp.dev.port,
     },
   });

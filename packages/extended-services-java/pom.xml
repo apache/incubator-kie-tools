@@ -33,8 +33,9 @@
   <groupId>org.kie.tools</groupId>
   <artifactId>extended-services-java</artifactId>
 
-  <name>Extended Services - Java</name>
-  <description>Extended Services - Java</description>
+  <name>KIE Tools :: KIE Sandbox :: Extended Services Quarkus app</name>
+  <description
+  >Quarkus-based application that wraps Kogito JIT Executor for consumption as a KIE Sandbox backend.</description>
 
   <licenses>
     <license>
@@ -86,7 +87,6 @@
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
-        <version>${quarkus.platform.version}</version>
         <extensions>true</extensions>
         <executions>
           <execution>
@@ -100,14 +100,12 @@
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${compiler-plugin.version}</version>
         <configuration>
           <parameters>${maven.compiler.parameters}</parameters>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${surefire-plugin.version}</version>
         <configuration>
           <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
@@ -116,7 +114,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>${surefire-plugin.version}</version>
         <executions>
           <execution>
             <goals>
