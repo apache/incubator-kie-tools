@@ -46,7 +46,11 @@ export const EndpointLink: React.FC<IOwnProps & OUIAProps> = ({
         isInline={true}
         {...componentOuiaProps(ouiaId, "endpoint-link", ouiaSafe)}
       >
-        <Truncate content={isLinkShown ? serviceUrl : linkLabel || "Endpoint"} style={{ maxWidth: "90%" }} />
+        <Truncate
+          content={isLinkShown ? serviceUrl : linkLabel || "Endpoint"}
+          className="pf-u-min-width"
+          style={{ maxWidth: "90%" }}
+        />
         {<ExternalLinkAltIcon className="pf-u-ml-xs" />}
       </Button>
     );
