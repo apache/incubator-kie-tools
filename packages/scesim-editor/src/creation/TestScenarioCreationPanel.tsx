@@ -65,8 +65,8 @@ function TestScenarioCreationPanel() {
       kieSessionRule: string,
       ruleFlowGroup: string
     ) =>
-      testScenarioEditorStoreApi.setState((prevState) => {
-        const settings = prevState.scesim.model.ScenarioSimulationModel.settings;
+      testScenarioEditorStoreApi.setState((state) => {
+        const settings = state.scesim.model.ScenarioSimulationModel.settings;
         settings.dmnFilePath = TestScenarioType[TestScenarioType.DMN] ? { __$$text: "./MockedDMNName.dmn" } : undefined;
         settings.dmnName = TestScenarioType[TestScenarioType.DMN] ? { __$$text: "MockedDMNName.dmn" } : undefined;
         settings.dmnNamespace = TestScenarioType[TestScenarioType.DMN] ? { __$$text: "https:\\kiegroup" } : undefined;
