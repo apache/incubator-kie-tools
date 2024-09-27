@@ -19,14 +19,13 @@
 
 import { test, expect } from "../../__fixtures__/base";
 
-test.describe("Populate Boxed Filter", () => {
-  test("should correctly create a Rebooked Flights filter", async ({ stories, page, bee }) => {
+test.describe.only("Populate Boxed Filter", () => {
+  test("should correctly create a Rebooked Flights filter", async ({ stories, bee }) => {
     await stories.openBoxedFilter("base");
-    await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Rebooked Flights");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "Any" }).click();
-    await page.keyboard.press("Enter");
+
+    await bee.expression.asFilter().expressionHeaderCell.open();
+    await bee.expression.asFilter().expressionHeaderCell.setName({ name: "Rebooked Flights", close: false });
+    await bee.expression.asFilter().expressionHeaderCell.setDataType({ dataType: "Any", close: true });
 
     // Prepare empty Filter 'in' and 'match' cells
     await bee.expression.asFilter().in.selectExpressionMenu.selectLiteral();
