@@ -22,16 +22,15 @@ const path = require("path");
 const execSync = require("child_process").execSync;
 
 const newMavenVersion = process.argv[3];
-const newImagesTag = process.argv[5];
 if (!newMavenVersion) {
-  console.error("Usage 'node update_kogito_version.js --maven [version] --images-tag [tag]'");
+  console.error("Usage 'node update_kogito_version.js --maven [version]");
   return 1;
 }
 
-if (process.argv[2] !== "--maven" || process.argv[4] !== "--images-tag") {
+if (process.argv[2] !== "--maven") {
   console.error("Arguments need to be passed in the correct order.");
   console.error(`Argv: ${process.argv.join(", ")}`);
-  console.error("Usage 'node update_kogito_version.js --maven [version] --images-tag [tag]'");
+  console.error("Usage 'node update_kogito_version.js --maven [version]");
   process.exit(1);
 }
 
@@ -50,56 +49,13 @@ try {
       )
   );
 
-  console.info("[update-kogito-version] Updating 'serverless-logic-web-tools-base-builder-image/env/index.js'...");
-  const serverlessLogicWebToolsBaseBuilderImageEnvPath = path.resolve(
-    __dirname,
-    "../../packages/serverless-logic-web-tools-base-builder-image/env/index.js"
-  );
-  fs.writeFileSync(
-    serverlessLogicWebToolsBaseBuilderImageEnvPath,
-    fs
-      .readFileSync(serverlessLogicWebToolsBaseBuilderImageEnvPath, "utf-8")
-      .replace(
-        /SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag:[\s\n]*{[\s\n]*default:[\s\n]*".*"/,
-        `SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag: {\n        default: "${newImagesTag}"`
-      )
-  );
-
-  console.info(
-    "[update-kogito-version] Updating 'packages/serverless-logic-web-tools-swf-dev-mode-image/env/index.js'..."
-  );
-  const serverlessLogicWebToolsSwfDevModeImageEnvPath = path.resolve(
-    __dirname,
-    "../../packages/serverless-logic-web-tools-swf-dev-mode-image/env/index.js"
-  );
-  fs.writeFileSync(
-    serverlessLogicWebToolsSwfDevModeImageEnvPath,
-    fs
-      .readFileSync(serverlessLogicWebToolsSwfDevModeImageEnvPath, "utf-8")
-      .replace(
-        /SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__kogitoBaseBuilderImageTag:[\s\n]*{[\s\n]*default:[\s\n]*".*"/,
-        `SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__kogitoBaseBuilderImageTag: {\n        default: "${newImagesTag}"`
-      )
-  );
-
-  console.info("[update-kogito-version] Updating 'packages/sonataflow-operator/version/version.go'...");
-  const sonataflowOperatorVersionsGo = path.resolve(__dirname, "../../packages/sonataflow-operator/version/version.go");
-  fs.writeFileSync(
-    sonataflowOperatorVersionsGo,
-    fs
-      .readFileSync(sonataflowOperatorVersionsGo, "utf-8")
-      .replace(/kogitoImagesTagVersion = ".*"/, `kogitoImagesTagVersion = "${newImagesTag}"`)
-  );
-
   console.info(`[update-kogito-version] Bootstrapping with updated Kogito version...`);
   execSync(`pnpm bootstrap`, execOpts);
 
   console.info(`[update-kogito-version] Formatting files...`);
   execSync(`pnpm pretty-quick`, execOpts);
 
-  console.info(
-    `[update-kogito-version] Updated Kogito to '${newMavenVersion}' (Maven) and '${newImagesTag}' (Images tag).`
-  );
+  console.info(`[update-kogito-version] Updated Kogito to '${newMavenVersion}' (Maven)`);
   console.info(`[update-kogito-version] Done.`);
 } catch (error) {
   console.error(error);

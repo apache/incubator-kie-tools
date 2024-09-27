@@ -23,15 +23,7 @@ set -e
 
 script_dir_path="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-if [[ $(command -v ./bats/bin/bats) ]]; then    #skip if bats already installed else will install the bats
-    echo "---> bats already available running tests"
-else
-    git clone https://github.com/bats-core/bats-core.git
-    ./bats-core/install.sh bats
-    rm -rf bats-core
-fi
-
-tests_output_path="${script_dir_path}/../../dist-tests-e2e"
+tests_output_path="${script_dir_path}/../../dist-tests"
 
 echo "----> running bats"
-./bats/bin/bats modules/sonataflow/common/scripts/tests/bats --formatter junit --report-formatter junit --output "${tests_output_path}"
+./../bats-home/bin/bats -r modules --formatter junit --report-formatter junit --output "${tests_output_path}"

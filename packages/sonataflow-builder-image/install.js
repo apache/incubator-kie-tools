@@ -33,9 +33,18 @@ const activateCmd =
 
 execSync(
   `${activateCmd} && \
-  python3 ${sonataflowImageCommonDir}/resources/scripts/versions_manager.py --bump-to ${buildEnv.env.sonataflowBuilderImage.version} --source-folder ./resources`,
+  python3 ${sonataflowImageCommonDir}/resources/scripts/versions_manager.py --bump-to ${buildEnv.env.sonataflowBuilderImage.buildTag} --source-folder ./resources`,
   { stdio: "inherit" }
 );
+
+// Creates a symlink to the bats installation dir
+try {
+  fs.symlinkSync(`${sonataflowImageCommonDir}/bats-home`, path.resolve(__dirname, "./bats-home"), "dir");
+} catch (err) {
+  if (err.code !== "EEXIST") {
+    throw err;
+  }
+}
 
 // Find and read the -image.yaml file
 const resourcesPath = path.resolve(__dirname, "./resources");

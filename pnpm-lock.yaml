@@ -9618,6 +9618,9 @@ importers:
       '@kie-tools/serverless-logic-web-tools-base-builder-image-env':
         specifier: workspace:*
         version: link:../serverless-logic-web-tools-base-builder-image-env
+      '@kie/kogito-base-builder-image':
+        specifier: workspace:*
+        version: link:../kogito-base-builder-image
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -9697,6 +9700,9 @@ importers:
       '@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env':
         specifier: workspace:*
         version: link:../serverless-logic-web-tools-swf-dev-mode-image-env
+      '@kie/kogito-base-builder-image':
+        specifier: workspace:*
+        version: link:../kogito-base-builder-image
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -11141,6 +11147,9 @@ importers:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
 
   packages/sonataflow-management-console-image:
     devDependencies:
@@ -48413,12 +48422,6 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  fbemitter@3.0.0(encoding@0.1.13):
-    dependencies:
-      fbjs: 3.0.2(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-
   fbjs-css-vars@1.0.2: {}
 
   fbjs@3.0.2:
@@ -48663,14 +48666,6 @@ snapshots:
   flatted@3.2.4: {}
 
   flow-parser@0.218.0: {}
-
-  flux@4.0.3(encoding@0.1.13)(react@17.0.2):
-    dependencies:
-      fbemitter: 3.0.0(encoding@0.1.13)
-      fbjs: 3.0.2(encoding@0.1.13)
-      react: 17.0.2
-    transitivePeerDependencies:
-      - encoding
 
   flux@4.0.3(react@17.0.2):
     dependencies:
@@ -54319,18 +54314,6 @@ snapshots:
   react-is@17.0.2: {}
 
   react-is@18.1.0: {}
-
-  react-json-view@1.21.3(@types/react@17.0.21)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2):
-    dependencies:
-      flux: 4.0.3(encoding@0.1.13)(react@17.0.2)
-      react: 17.0.2
-      react-base16-styling: 0.6.0
-      react-dom: 17.0.2(react@17.0.2)
-      react-lifecycles-compat: 3.0.4
-      react-textarea-autosize: 8.3.3(@types/react@17.0.21)(react@17.0.2)
-    transitivePeerDependencies:
-      - '@types/react'
-      - encoding
 
   react-json-view@1.21.3(@types/react@17.0.21)(react-dom@17.0.2(react@17.0.2))(react@17.0.2):
     dependencies:

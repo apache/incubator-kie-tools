@@ -323,6 +323,14 @@ packages/scesim-marshaller/**/ts-gen
 !packages/sonataflow-builder-image/test-resources/
 !packages/sonataflow-devmode-image/test-resources/
 
+# kogito-images: excluding test-resources
+!packages/kogito-data-index-ephemeral-image/test-resources/
+!packages/kogito-data-index-postgresql-image/test-resources/
+!packages/kogito-jobs-service-ephemeral-image/test-resources/
+!packages/kogito-jobs-service-postgresql-image/test-resources/
+!packages/kogito-jobs-service-allinone-image/test-resources/
+!packages/kogito-jit-runner-image/test-resources/
+
 __pycache__
 packages/python-venv/venv
 
