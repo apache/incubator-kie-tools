@@ -24,7 +24,7 @@ image along with the modules and scripts provided in `@kie-tools/sonataflow-imag
 
 - **python3** with the following packages installed:
   - `behave` `lxml` `docker` `docker-squash` `elementPath` `pyyaml` `ruamel.yaml` `python-dateutil` `Jinja2` `pykwalify` `colorlog` `click`
-- **cekit 4.11.0**: [docs.cekit.io](https://docs.cekit.io/en/latest/index.html)
+- **cekit 4.12.0**: [docs.cekit.io](https://docs.cekit.io/en/latest/index.html)
 - **s2i**: [source-to-image](https://github.com/openshift/source-to-image)
 - **make**
 - **docker**

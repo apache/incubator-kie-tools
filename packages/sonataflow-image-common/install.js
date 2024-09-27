@@ -30,6 +30,11 @@ const activateCmd =
 
 execSync(
   `${activateCmd} && \
-  python3 ./resources/scripts/versions_manager.py --bump-to ${buildEnv.env.sonataflowImageCommon.version} --source-folder ./resources`,
+  python3 ./resources/scripts/versions_manager.py --bump-to ${buildEnv.env.root.streamName} --source-folder ./resources`,
   { stdio: "inherit" }
 );
+
+// Install bats
+if (process.platform !== "win32") {
+  execSync(`. ./resources/scripts/install_bats.sh`, { stdio: "inherit" });
+}

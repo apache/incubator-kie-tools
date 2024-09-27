@@ -40,6 +40,10 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/sonataflow-builder-image": "workspace:*",
     "@kie-tools/sonataflow-devmode-image": "workspace:*",
+    "@kie/kogito-data-index-ephemeral-image": "workspace:*",
+    "@kie/kogito-data-index-postgresql-image": "workspace:*",
+    "@kie/kogito-jobs-service-ephemeral-image": "workspace:*",
+    "@kie/kogito-jobs-service-postgresql-image": "workspace:*",
     "replace-in-file": "^7.1.0",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6"

@@ -24,7 +24,7 @@ script_dir_path=$(dirname "${BASH_SOURCE[0]}")
 source "${script_dir_path}"/env.sh
 
 imageName=$(pnpm build-env sontaflowOperator.registry)/$(pnpm build-env sontaflowOperator.account)/$(pnpm build-env sontaflowOperator.name)
-imageTag=$(pnpm build-env sontaflowOperator.tag)
+imageTag=$(pnpm build-env sontaflowOperator.buildTag)
 version=$(pnpm build-env sontaflowOperator.version)
 
 targetSonataflowBuilderImage=$(pnpm build-env sontaflowOperator.sonataflowBuilderImage)
@@ -60,6 +60,7 @@ node -p "require('replace-in-file').sync({ from: /sonataflow-operator-system\/so
 
 node -p "require('replace-in-file').sync({ from: /\bOperatorVersion = .*/g, to: 'OperatorVersion = \"${version}\"', files: ['version/version.go'] });"
 node -p "require('replace-in-file').sync({ from: /\btagVersion = .*/g, to: 'tagVersion = \"${imageTag}\"', files: ['version/version.go'] });"
+node -p "require('replace-in-file').sync({ from: /\bkogitoImagesTagVersion = .*/g, to: 'kogitoImagesTagVersion = \"${imageTag}\"', files: ['version/version.go'] });"
 node -p "require('replace-in-file').sync({ from: /\bcontainerImage:.*\b/g, to: 'containerImage: ${targetSonataflowOperatorImage}', files: ['$(getCsvFile)'] });"
 
 make generate-all
