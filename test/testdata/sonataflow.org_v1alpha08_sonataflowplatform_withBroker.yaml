@@ -26,6 +26,7 @@ spec:
         value: INFO
   build:
     config:
+      strategy: operator
       registry:
         address: quay.io/kiegroup
         secret: regcred

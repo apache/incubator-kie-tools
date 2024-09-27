@@ -126,6 +126,7 @@ func getHealthStatusInContainer(podName string, containerName string, ns string)
 	GinkgoWriter.Println(fmt.Sprintf("Health status:\n%s", string(output)))
 	return &h, nil
 }
+
 func verifyWorkflowIsInRunningStateInNamespace(workflowName string, ns string) bool {
 	cmd := exec.Command("kubectl", "get", "workflow", workflowName, "-n", ns, "-o", "jsonpath={.status.conditions[?(@.type=='Running')].status}")
 	response, err := utils.Run(cmd)

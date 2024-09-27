@@ -26,8 +26,8 @@ import (
 	"time"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform/services"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/platform/services"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test/utils"
 
@@ -40,7 +40,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Validate a clusterplatform", Ordered, func() {
+var _ = Describe("Cluster Platform Use Cases :: ", Label("cluster"), Ordered, func() {
 
 	var (
 		projectDir       string

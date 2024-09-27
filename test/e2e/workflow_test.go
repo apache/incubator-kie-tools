@@ -44,7 +44,7 @@ const (
 	workflowAppLabel = "sonataflow.org/workflow-app"
 )
 
-var _ = Describe("SonataFlow Operator", Ordered, func() {
+var _ = Describe("Workflow Non-Persistence Use Cases :: ", Label("flows-non-persistence"), Ordered, func() {
 
 	var targetNamespace string
 	BeforeEach(func() {
@@ -65,7 +65,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 		}
 	})
 
-	Describe("ensure that Operator and Operand(s) can run in restricted namespaces", func() {
+	Describe("ensure basic workflow deployments", func() {
 		projectDir, _ := utils.GetProjectDir()
 
 		It("should successfully deploy the Simple Workflow in  GitOps mode and verify if it's running", func() {
@@ -149,7 +149,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 
 })
 
-var _ = Describe("Validate the persistence ", Ordered, func() {
+var _ = Describe("Workflow Persistence Use Cases :: ", Label("flows-persistence"), Ordered, func() {
 
 	const (
 		dbConnectionName = "Database connections health check"
@@ -166,7 +166,6 @@ var _ = Describe("Validate the persistence ", Ordered, func() {
 		Expect(err).NotTo(HaveOccurred())
 	})
 	AfterEach(func() {
-		// Remove platform CR if it exists
 		if len(ns) > 0 {
 			cmd := exec.Command("kubectl", "delete", "sonataflow", "--all", "-n", ns, "--wait")
 			_, err := utils.Run(cmd)

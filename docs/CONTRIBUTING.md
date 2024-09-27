@@ -61,8 +61,8 @@ the [Kubebuilder Documentation](https://book.kubebuilder.io/introduction.html)
 
 In order to build the project, you need to comply with the following requirements:
 
-- [operator-sdk-v1.25.0+](https://sdk.operatorframework.io/docs/building-operators/golang/installation/)
-- [Go 1.21+](https://go.dev/dl/)
+- [operator-sdk-v1.35.0+](https://sdk.operatorframework.io/docs/building-operators/golang/installation/)
+- [Go 1.22+](https://go.dev/dl/)
 - [Kubebuilder 3.7.0+](https://github.com/kubernetes-sigs/kubebuilder/releases)
 - [CEKit 4.8.0+](https://cekit.io/)
 

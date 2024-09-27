@@ -29,7 +29,7 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/config"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/installers"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/workflowdef"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/workflowdef"
 	srvframework "github.com/apache/incubator-kie-kogito-serverless-operator/testbdd/framework"
 )
 

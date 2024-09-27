@@ -27,7 +27,7 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 
-	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test/utils"
 
@@ -40,7 +40,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Validate the persistence", Ordered, func() {
+var _ = Describe("Platform Use Cases :: ", Label("platform"), Ordered, func() {
 
 	var (
 		projectDir       string

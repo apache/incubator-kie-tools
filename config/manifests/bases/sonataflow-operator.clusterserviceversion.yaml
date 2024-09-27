@@ -161,7 +161,7 @@ spec:
           SonataFlowClusterPlatform
         displayName: clusterPlatformRef
         path: clusterPlatformRef
-      - description: Info generic information related to the build
+      - description: Info generic information related to the Platform
         displayName: info
         path: info
       - description: Triggers list of triggers created for the SonataFlowPlatform

@@ -13,10 +13,10 @@ on:
       - ".ci/jenkins/**"
 
 env:
-  GO_VERSION: 1.21
+  GO_VERSION: 1.22
   PYTHON_VERSION: "3.10"
   KIND_VERSION: v0.20.0
-  KNATIVE_VERSION: v1.13.2
+  KNATIVE_VERSION: v1.12.5
   OPERATOR_IMAGE_NAME: "127.0.0.1:5001/kogito-serverless-operator:0.0.1"
 
 jobs:
@@ -26,9 +26,10 @@ jobs:
       cancel-in-progress: true
     timeout-minutes: 120
     runs-on: ubuntu-latest
-    name: End-to-end tests (Kind)
+    name: End-to-End Tests (Kind)
+
     steps:
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
           sudo apt-get update && \
           sudo apt-get -y install --no-install-recommends \
@@ -37,6 +38,7 @@ jobs:
           libbtrfs-dev \
           libdevmapper-dev \
           libkrb5-dev
+
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
@@ -48,7 +50,7 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
           cache: true
 
-      - name: Setup Python for cekit
+      - name: Setup Python for Cekit
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -60,49 +62,58 @@ jobs:
           pip install -r images/requirements.txt
           cekit --version
 
-      - name: Setup Kind cluster
+      - name: Setup Kind Cluster
         run: make KIND_VERSION=${{ env.KIND_VERSION }} BUILDER=docker create-cluster
 
       - name: Deploy Knative Eventing and Serving
         run: make KNATIVE_VERSION=${{ env.KNATIVE_VERSION }} deploy-knative
 
-      - name: Set OPERATOR_IMAGE_NAME to point to Kind's local registry
+      - name: Set OPERATOR_IMAGE_NAME to Point to Kind's Local Registry
         run: echo "OPERATOR_IMAGE_NAME=${{ env.OPERATOR_IMAGE_NAME }}" >> $GITHUB_ENV
 
-      - name: Build and load operator image
+      - name: Build and Load Operator Image
         run: |
           make container-build BUILDER=docker IMG=${{ env.OPERATOR_IMAGE_NAME }}
           kind load docker-image ${{ env.OPERATOR_IMAGE_NAME }}
 
-      - name: Check pods
+      - name: Check Pods
         run: |
           kubectl version
           kubectl get pods -A
 
-      - name: Deploy operator
+      - name: Deploy Operator
         run: |
           make deploy IMG=${{ env.OPERATOR_IMAGE_NAME }}
           kubectl wait pod -A -l control-plane=sonataflow-operator --for condition=Ready
 
-      - name: Run tests
-        run: make test-e2e
+      - name: Run E2E Tests for Non-Persistent Flows
+        run: make test-e2e label=flows-non-persistence
 
-      - name: Retrieve cluster events and list pods
+      - name: Run E2E Tests for Persistent Flows
+        run: make test-e2e label=flows-persistence
+
+      - name: Run E2E Tests for Platform
+        run: make test-e2e label=platform
+
+      - name: Run E2E Tests for Cluster Platform
+        run: make test-e2e label=cluster
+
+      - name: Get KIND Logs After Failure
         if: failure()
         run: |
           kubectl get events
           kubectl get pod -A
 
-      - name: Export kind logs
+      - name: Export KIND Logs
         if: always()
         run: |
           mkdir -p /tmp/kind/logs
           kind export logs --loglevel=debug /tmp/kind/logs
 
-      - name: Upload kind logs
+      - name: Upload KIND Logs
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: kind-logs-${{ env.JOB_NAME }}-${{ github.run_id }}
+          name: kind-logs-${{ job.name }}-${{ github.run_id }}
           path: /tmp/kind/logs
           retention-days: 1

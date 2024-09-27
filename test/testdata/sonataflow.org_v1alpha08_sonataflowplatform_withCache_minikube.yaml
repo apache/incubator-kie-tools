@@ -22,6 +22,7 @@ metadata:
 spec:
   build:
     config:
+      strategy: operator
       baseImage: docker.io/apache/incubator-kie-sonataflow-builder:main
       strategyOptions:
         KanikoBuildCacheEnabled: "true"

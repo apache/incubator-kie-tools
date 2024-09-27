@@ -18,4 +18,4 @@
 set -e
 
 cd /workspace
-CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags=-buildid= -a -o manager main.go;
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags=-buildid= -a -o manager cmd/main.go;

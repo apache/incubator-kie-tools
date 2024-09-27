@@ -18,13 +18,13 @@ description: Builds the operator binary
 
 artifacts:
   - name: main
-    path: "../../../../main.go"
+    path: "../../../../cmd/main.go"
     target: "main.go"
-    dest: /workspace/
+    dest: /workspace/cmd
 
   - name: controllers
-    path: "../../../../controllers"
-    dest: /workspace/controllers
+    path: "../../../../internal/controller"
+    dest: /workspace/internal/controller
 
   - name: version
     path: "../../../../version"

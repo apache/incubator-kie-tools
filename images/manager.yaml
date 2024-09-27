@@ -14,7 +14,7 @@
 
 - name: operator-builder
   version: 999.0.0-snapshot
-  from: 'golang:1.21.6'
+  from: 'golang:1.22.4'
   description: Builder Image for the Operator
 
   args:
