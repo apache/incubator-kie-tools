@@ -48,10 +48,6 @@ module.exports = composeEnv([rootEnv], {
       default: sonataFlowQuarkusDevUiEnv.env.sonataflowQuarkusDevuiExtension.version,
       description: "SonataFlow Quarkus Dev UI version",
     },
-    SONATAFLOW_DEVMODE_IMAGE__mavenM2RepoViaHttpImage: {
-      default: `${mavenM2RepoViaHttpImageEnv.registry}/${mavenM2RepoViaHttpImageEnv.account}/${mavenM2RepoViaHttpImageEnv.name}:${mavenM2RepoViaHttpImageEnv.tag}`,
-      description: "The image tag for the Maven M2 Repo via HTTP. Used during the build only.",
-    },
   }),
   get env() {
     return {
@@ -62,7 +58,7 @@ module.exports = composeEnv([rootEnv], {
         buildTag: getOrDefault(this.vars.SONATAFLOW_DEVMODE_IMAGE__buildTag),
         sonataflowQuarkusDevUiVersion: getOrDefault(this.vars.SONATAFLOW_DEVMODE_IMAGE__sonataflowQuarkusDevUiVersion),
         dev: {
-          mavenM2RepoViaHttpImage: getOrDefault(this.vars.SONATAFLOW_DEVMODE_IMAGE__mavenM2RepoViaHttpImage),
+          mavenM2RepoViaHttpImage: `${mavenM2RepoViaHttpImageEnv.registry}/${mavenM2RepoViaHttpImageEnv.account}/${mavenM2RepoViaHttpImageEnv.name}:${mavenM2RepoViaHttpImageEnv.buildTag}`,
         },
       },
     };

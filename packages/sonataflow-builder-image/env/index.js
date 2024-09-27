@@ -53,7 +53,7 @@ module.exports = composeEnv([rootEnv], {
         buildTag: getOrDefault(this.vars.SONATAFLOW_BUILDER_IMAGE__buildTag),
         version: require("../package.json").version,
         dev: {
-          mavenM2RepoViaHttpImage: `${mavenM2RepoViaHttpImageEnv.registry}/${mavenM2RepoViaHttpImageEnv.account}/${mavenM2RepoViaHttpImageEnv.name}:${mavenM2RepoViaHttpImageEnv.tag}`,
+          mavenM2RepoViaHttpImage: `${mavenM2RepoViaHttpImageEnv.registry}/${mavenM2RepoViaHttpImageEnv.account}/${mavenM2RepoViaHttpImageEnv.name}:${mavenM2RepoViaHttpImageEnv.buildTag}`,
         },
       },
     };
