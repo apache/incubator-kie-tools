@@ -17,12 +17,12 @@
  * under the License.
  */
 
-import { renderForm } from "../../form-code-generator-bootstrap4-theme/src";
+import { FormCodeGeneratorTheme, FormAsset } from "@kie-tools/form-code-generator/dist/types";
+import { renderForm } from "@kie-tools/form-code-generator-bootstrap4-theme/dist";
 import unescape from "lodash/unescape";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { getUniformsSchema } from "./getUniformsSchema";
 import { inputSanitizationUtil } from "./inputSanitizationUtil";
-import { FormCodeGeneratorTheme, FormAsset } from "@kie-tools/form-code-generator/dist/types";
 import { JbpmFormAssetBase } from "./types";
 
 export const BOOTSTRAP4_CSS_URL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css";
@@ -60,7 +60,7 @@ export const jbpmBootstrap4FormCodeGeneratorTheme: FormCodeGeneratorTheme<
       type: BOOTSTRAP4_FILE_EXT,
       content: unescape(form),
       config: {
-        schema: JSON.stringify(formSchema),
+        schema: JSON.stringify(formSchema.schema),
         resources: {
           styles: {
             "bootstrap.min.css": BOOTSTRAP4_CSS_URL,

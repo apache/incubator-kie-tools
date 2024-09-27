@@ -25,9 +25,9 @@ export interface Args<FormTheme> {
 }
 
 export class FormCodeGenerator<
-  CustomFormAsset extends FormAsset<FormThemeFileExt>,
   FormThemeFileExt extends string,
   FormThemeName extends string,
+  CustomFormAsset extends FormAsset<FormThemeFileExt>,
 > {
   constructor(...themes: FormCodeGeneratorTheme<FormThemeFileExt, FormThemeName, CustomFormAsset>[]) {
     if (themes !== undefined) {
@@ -46,7 +46,7 @@ export class FormCodeGenerator<
     this.formGeneratorIndex.set(formGenerator.theme, formGenerator);
   }
 
-  public getFormGenerator(theme: string) {
+  public getFormCodeGenerator(theme: FormThemeName) {
     const formGenerator = this.formGeneratorIndex.get(theme);
     if (formGenerator) {
       return formGenerator;
@@ -55,7 +55,7 @@ export class FormCodeGenerator<
   }
 
   public generateForms({ theme, formSchemas }: Args<FormThemeName>) {
-    const formGenerator = this.getFormGenerator(theme);
+    const formGenerator = this.getFormCodeGenerator(theme);
     return formSchemas.reduce((generatedForms, formSchema) => {
       try {
         generatedForms.push({ formAssets: formGenerator.generate(formSchema), formErrors: undefined });

@@ -17,14 +17,13 @@
  * under the License.
  */
 
-import { FormAsset } from "@kie-tools/form-code-generator/dist/types";
+import { FormAsset, FormCodeGeneratorTheme } from "@kie-tools/form-code-generator/dist/types";
 import { renderForm } from "@kie-tools/form-code-generator-patternfly-theme/dist";
 import unescape from "lodash/unescape";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { getUniformsSchema } from "./getUniformsSchema";
 import { inputSanitizationUtil } from "./inputSanitizationUtil";
 import { JbpmFormAssetBase } from "./types";
-import { FormCodeGeneratorTheme } from "@kie-tools/form-code-generator/dist/types";
 
 const PATTERNFLY_STYLE = "patternfly";
 const PATTERNFLY_FILE_EXT = "tsx";
@@ -34,7 +33,7 @@ export type PatternflyFileExt = typeof PATTERNFLY_FILE_EXT;
 
 export interface PatternflyFormAsset extends FormAsset<PatternflyFileExt>, JbpmFormAssetBase {}
 
-export const jbpmBootstrap4FormCodeGeneratorTheme: FormCodeGeneratorTheme<
+export const jbpmPatternflyFormCodeGeneratorTheme: FormCodeGeneratorTheme<
   PatternflyFileExt,
   PatternflyStyle,
   PatternflyFormAsset
@@ -57,7 +56,7 @@ export const jbpmBootstrap4FormCodeGeneratorTheme: FormCodeGeneratorTheme<
       type: PATTERNFLY_FILE_EXT,
       content: unescape(form),
       config: {
-        schema: JSON.stringify(formSchema),
+        schema: JSON.stringify(formSchema.schema),
         resources: {
           styles: {},
           scripts: {},

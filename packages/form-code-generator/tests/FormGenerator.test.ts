@@ -22,10 +22,10 @@ import { FormAsset, FormSchema } from "../dist/types";
 import { ApplyForVisaSchema, ConfirmTravelSchema, dummyPatternflyTheme } from "./__mocks__/partternfly";
 
 describe("FormCodeGenerator tests", () => {
-  describe("getFormGenerator tests", () => {
+  describe("getFormCodeGenerator tests", () => {
     it("Lookup existing formGenerator - patternfly", () => {
       const jbpmFormGenerator = new FormCodeGenerator(dummyPatternflyTheme);
-      const formGenerator = jbpmFormGenerator.getFormGenerator("patternfly");
+      const formGenerator = jbpmFormGenerator.getFormCodeGenerator("patternfly");
 
       expect(formGenerator).not.toBeUndefined();
       expect(formGenerator.theme).toStrictEqual("patternfly");
@@ -33,7 +33,7 @@ describe("FormCodeGenerator tests", () => {
 
     it("Lookup wrong formGenerator", () => {
       const jbpmFormGenerator = new FormCodeGenerator();
-      expect(() => jbpmFormGenerator.getFormGenerator("wrong formGenerator type")).toThrow(
+      expect(() => jbpmFormGenerator.getFormCodeGenerator("wrong formGenerator type")).toThrow(
         `Unsupported form generation type: "wrong formGenerator type"`
       );
     });
@@ -46,11 +46,11 @@ describe("FormCodeGenerator tests", () => {
 
       const jbpmFormGenerator = new FormCodeGenerator(dummyPatternflyTheme, myCoolFormGenerator);
 
-      const customFormGenerator = jbpmFormGenerator.getFormGenerator("cool new formGenerator");
+      const customFormGenerator = jbpmFormGenerator.getFormCodeGenerator("cool new formGenerator");
       expect(customFormGenerator).not.toBeUndefined();
       expect(customFormGenerator).toStrictEqual(myCoolFormGenerator);
 
-      const patternflyFormGenerator = jbpmFormGenerator.getFormGenerator("patternfly");
+      const patternflyFormGenerator = jbpmFormGenerator.getFormCodeGenerator("patternfly");
       expect(patternflyFormGenerator).not.toBeUndefined();
       expect(patternflyFormGenerator).toStrictEqual(dummyPatternflyTheme);
     });
