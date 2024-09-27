@@ -2,6 +2,16 @@ const parseFile = require("../src/parseFile");
 const path = require("path");
 
 describe("Parsing", () => {
+  test("empty", () => {
+    const failed = [];
+    const passed = [];
+
+    parseFile(path.join(__dirname, "./reports/empty.xml"), failed, passed);
+
+    expect(failed.length).toStrictEqual(0);
+    expect(passed.length).toStrictEqual(0);
+  });
+
   test("cypress", () => {
     const failed = [];
     const passed = [];
