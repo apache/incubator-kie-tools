@@ -17,39 +17,33 @@
  * under the License.
  */
 
+import { renderForm } from "../../form-code-generator-bootstrap4-theme/src";
 import unescape from "lodash/unescape";
-import { FormAssetType, FormAsset, FormStyle, FormConfiguration, FormGenerator, FormSchema } from "../types";
-import { renderForm } from "@kie-tools/uniforms-bootstrap4-codegen/dist";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
-import { getUniformsSchema } from "../getUniformsSchema";
-import { inputSanitizationUtil } from "../inputSanitizationUtil";
+import { getUniformsSchema } from "./getUniformsSchema";
+import { inputSanitizationUtil } from "./inputSanitizationUtil";
+import { FormCodeGeneratorTheme, FormAsset } from "@kie-tools/form-code-generator/dist/types";
+import { JbpmFormAssetBase } from "./types";
 
 export const BOOTSTRAP4_CSS_URL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css";
 export const BOOTSTRAP4_JS_URL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js";
 export const JQUERY_URL = "https://code.jquery.com/jquery-3.2.1.slim.min.js";
 
-export class Bootstrap4FormConfiguration implements FormConfiguration {
-  public readonly schema: string;
+const BOOTSTRAP4_STYLE = "bootstrap";
+const BOOTSTRAP4_FILE_EXT = "html";
 
-  constructor(formSchema: any) {
-    this.schema = JSON.stringify(formSchema);
-  }
+export type Bootstrap4Style = typeof BOOTSTRAP4_STYLE;
+export type Bootstrap4FileExt = typeof BOOTSTRAP4_FILE_EXT;
 
-  public resources = {
-    styles: {
-      "bootstrap.min.css": BOOTSTRAP4_CSS_URL,
-    },
-    scripts: {
-      "jquery.js": JQUERY_URL,
-      "bootstrap.bundle.min.js": BOOTSTRAP4_JS_URL,
-    },
-  };
-}
+export interface Bootstrap4FormAsset extends FormAsset<Bootstrap4FileExt>, JbpmFormAssetBase {}
 
-export class Bootstrap4FormGenerator implements FormGenerator {
-  public type: string = FormStyle.BOOTSTRAP;
-
-  public generate(formSchema: FormSchema): FormAsset {
+export const jbpmBootstrap4FormCodeGeneratorTheme: FormCodeGeneratorTheme<
+  Bootstrap4FileExt,
+  Bootstrap4Style,
+  Bootstrap4FormAsset
+> = {
+  theme: BOOTSTRAP4_STYLE,
+  generate: (formSchema) => {
     const uniformsSchema = getUniformsSchema(formSchema.schema);
     const form = renderForm({
       id: formSchema.name,
@@ -61,11 +55,22 @@ export class Bootstrap4FormGenerator implements FormGenerator {
     return {
       id: formSchema.name,
       sanitizedId: inputSanitizationUtil(formSchema.name),
-      assetName: `${formSchema.name}.${FormAssetType.HTML}`,
-      sanitizedAssetName: `${inputSanitizationUtil(formSchema.name)}.${FormAssetType.HTML}`,
-      type: FormAssetType.HTML,
+      assetName: `${formSchema.name}.${BOOTSTRAP4_FILE_EXT}`,
+      sanitizedAssetName: `${inputSanitizationUtil(formSchema.name)}.${BOOTSTRAP4_FILE_EXT}`,
+      type: BOOTSTRAP4_FILE_EXT,
       content: unescape(form),
-      config: new Bootstrap4FormConfiguration(formSchema.schema),
+      config: {
+        schema: JSON.stringify(formSchema),
+        resources: {
+          styles: {
+            "bootstrap.min.css": BOOTSTRAP4_CSS_URL,
+          },
+          scripts: {
+            "jquery.js": JQUERY_URL,
+            "bootstrap.bundle.min.js": BOOTSTRAP4_JS_URL,
+          },
+        },
+      },
     };
-  }
-}
+  },
+};

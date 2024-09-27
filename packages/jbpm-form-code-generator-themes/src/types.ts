@@ -17,46 +17,7 @@
  * under the License.
  */
 
-export interface FormSchema {
-  name: string;
-  schema: any;
-}
-
-export enum FormStyle {
-  PATTERNFLY = "patternfly",
-  BOOTSTRAP = "bootstrap",
-}
-
-export enum FormAssetType {
-  HTML = "html",
-  TSX = "tsx",
-}
-
-export interface FormResources {
-  styles: Record<string, string>;
-  scripts: Record<string, string>;
-}
-
-export interface FormConfiguration {
-  schema: string;
-  resources: FormResources;
-}
-
-export interface FormAsset {
-  id: string;
+export interface JbpmFormAssetBase {
   sanitizedId: string;
-  assetName: string;
   sanitizedAssetName: string;
-  content: string;
-  type: FormAssetType | string;
-  config: FormConfiguration;
-}
-
-export interface FormGenerationError {
-  error: Error;
-}
-
-export interface FormGenerator {
-  type: string;
-  generate: (formSchema: FormSchema) => FormAsset | FormGenerationError;
 }

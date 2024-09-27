@@ -17,9 +17,9 @@
  * under the License.
  */
 
-import { PatternflyFormConfiguration, PatternflyFormGenerator } from "../../dist/generators/PatternflyFormGenerator";
-import { FormAsset } from "../../dist/types";
-import { ApplyForVisaSchema } from "../__mocks__/partternfly";
+import { PatternflyFormConfiguration, PatternflyFormGenerator } from "../dist/generators/PatternflyFormGenerator";
+import { FormAsset } from "../dist/types";
+import { ApplyForVisaSchema } from "./__mocks__/partternfly";
 
 describe("PatternflyFormGenerator tests", () => {
   it("Generate", () => {

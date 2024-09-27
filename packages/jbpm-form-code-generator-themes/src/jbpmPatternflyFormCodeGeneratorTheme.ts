@@ -17,30 +17,30 @@
  * under the License.
  */
 
+import { FormAsset } from "@kie-tools/form-code-generator/dist/types";
+import { renderForm } from "@kie-tools/form-code-generator-patternfly-theme/dist";
 import unescape from "lodash/unescape";
-import { FormAssetType, FormAsset, FormStyle, FormConfiguration, FormGenerator, FormSchema } from "../types";
-import { renderForm } from "@kie-tools/uniforms-patternfly-codegen/dist";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
-import { getUniformsSchema } from "../getUniformsSchema";
-import { inputSanitizationUtil } from "../inputSanitizationUtil";
+import { getUniformsSchema } from "./getUniformsSchema";
+import { inputSanitizationUtil } from "./inputSanitizationUtil";
+import { JbpmFormAssetBase } from "./types";
+import { FormCodeGeneratorTheme } from "@kie-tools/form-code-generator/dist/types";
 
-export class PatternflyFormConfiguration implements FormConfiguration {
-  public readonly schema: string;
+const PATTERNFLY_STYLE = "patternfly";
+const PATTERNFLY_FILE_EXT = "tsx";
 
-  constructor(formSchema: any) {
-    this.schema = JSON.stringify(formSchema);
-  }
+export type PatternflyStyle = typeof PATTERNFLY_STYLE;
+export type PatternflyFileExt = typeof PATTERNFLY_FILE_EXT;
 
-  public resources = {
-    styles: {},
-    scripts: {},
-  };
-}
+export interface PatternflyFormAsset extends FormAsset<PatternflyFileExt>, JbpmFormAssetBase {}
 
-export class PatternflyFormGenerator implements FormGenerator {
-  public type: string = FormStyle.PATTERNFLY;
-
-  public generate(formSchema: FormSchema): FormAsset {
+export const jbpmBootstrap4FormCodeGeneratorTheme: FormCodeGeneratorTheme<
+  PatternflyFileExt,
+  PatternflyStyle,
+  PatternflyFormAsset
+> = {
+  theme: PATTERNFLY_STYLE,
+  generate: (formSchema) => {
     const uniformsSchema = getUniformsSchema(formSchema.schema);
     const form = renderForm({
       id: formSchema.name,
@@ -52,11 +52,17 @@ export class PatternflyFormGenerator implements FormGenerator {
     return {
       id: formSchema.name,
       sanitizedId: inputSanitizationUtil(formSchema.name),
-      assetName: `${formSchema.name}.${FormAssetType.TSX}`,
-      sanitizedAssetName: `${inputSanitizationUtil(formSchema.name)}.${FormAssetType.TSX}`,
-      type: FormAssetType.TSX,
+      assetName: `${formSchema.name}.${PATTERNFLY_FILE_EXT}`,
+      sanitizedAssetName: `${inputSanitizationUtil(formSchema.name)}.${PATTERNFLY_FILE_EXT}`,
+      type: PATTERNFLY_FILE_EXT,
       content: unescape(form),
-      config: new PatternflyFormConfiguration(formSchema.schema),
+      config: {
+        schema: JSON.stringify(formSchema),
+        resources: {
+          styles: {},
+          scripts: {},
+        },
+      },
     };
-  }
-}
+  },
+};

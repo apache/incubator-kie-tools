@@ -17,9 +17,9 @@
  * under the License.
  */
 
-import { FormAsset } from "../../dist/types";
-import { ApplyForVisaSchema } from "../__mocks__/bootstrap";
-import { Bootstrap4FormConfiguration, Bootstrap4FormGenerator } from "../../dist/generators/Bootstrap4FormGenerator";
+import { FormAsset } from "../dist/types";
+import { ApplyForVisaSchema } from "./__mocks__/bootstrap";
+import { Bootstrap4FormConfiguration, Bootstrap4FormGenerator } from "../dist/generators/Bootstrap4FormGenerator";
 
 describe("Bootstrap4FormGenerator tests", () => {
   it("Generate", () => {

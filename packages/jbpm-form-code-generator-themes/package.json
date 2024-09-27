@@ -1,5 +1,5 @@
 {
-  "name": "@kie-tools/jbpm-form-generator",
+  "name": "@kie-tools/jbpm-form-code-generator-themes",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
@@ -24,8 +24,9 @@
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
-    "@kie-tools/uniforms-bootstrap4-codegen": "workspace:*",
-    "@kie-tools/uniforms-patternfly-codegen": "workspace:*",
+    "@kie-tools/form-code-generator": "workspace:*",
+    "@kie-tools/form-code-generator-bootstrap4-theme": "workspace:*",
+    "@kie-tools/form-code-generator-patternfly-theme": "workspace:*",
     "lodash": "^4.17.21",
     "uniforms": "^3.10.2",
     "uniforms-bridge-json-schema": "^3.10.2"

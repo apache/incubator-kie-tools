@@ -17,9 +17,9 @@
 
 ## jBPM Form Generator
 
-This is a utility library to help generating forms in differents formats for BPMN processes and User Tasks in your Kogito projects.
+This is a utility library to help generating form code in differents formats for BPMN processes and User Tasks in your Kogito projects.
 
-### How does it work?
+## How it works?
 
 When building a Kogito project, Kogito generates JSON Schemas to represent the data models for both Processes and User Tasks.
 
@@ -74,8 +74,8 @@ To do so, just add the following dependency in your project `pom.xml`:
 
 ```xml
 <dependency>
-  <groupId>org.kie.kogito</groupId>
-  <artifactId>runtime-tools-quarkus-extension</artifactId>
+  <groupId>org.jbpm</groupId>
+  <artifactId>jbpm-quarkus-devui</artifactId>
   <version>${version}</version>
 </dependency>
 ```
