@@ -21,12 +21,7 @@ import { expect, test } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Populate Boxed Context", () => {
-  test.only("should correctly create pre-bureau risk category boxed context", async ({
-    page,
-    stories,
-    bee,
-    resizing,
-  }) => {
+  test("should correctly create pre-bureau risk category boxed context", async ({ page, stories, bee, resizing }) => {
     await stories.openBoxedContext();
 
     await bee.expression.asContext().expressionHeaderCell.open();
