@@ -236,6 +236,25 @@ runs:
           gir1.2-appindicator3-0.1
         fi
 
+    - name: "Setup xmllint (Ubuntu Only)"
+      shell: bash
+      run: |
+        echo "STEP: Setup xmllint library (Ubuntu Only)"
+        cd ${{ inputs.working_dir }}
+        if [ "${{ runner.os }}" == "Linux" ]; then
+          sudo apt-get install -y \
+          libxml2-utils > /dev/null 2>&1
+        fi
+
+    - name: "Update bash for macOS (macOS Only)"
+      shell: bash
+      if: runner.os == 'macOS'
+      run: |
+        echo "STEP: Update bash for macOS (macOS Only)"
+        brew update
+        brew install bash
+        echo "/usr/local/bin" >> $GITHUB_PATH
+
     - name: "Print storage usage (after setup)"
       shell: bash
       run: |
