@@ -16,7 +16,7 @@
     "build": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
     "build:dev": "pnpm build",
     "build:prod": "pnpm build",
-    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env mavenM2RepoViaHttpImage.registry)\" -a \"$(build-env mavenM2RepoViaHttpImage.account)\" -n \"$(build-env mavenM2RepoViaHttpImage.name)\" -t \"$(build-env mavenM2RepoViaHttpImage.tag)\""
+    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env mavenM2RepoViaHttpImage.registry)\" -a \"$(build-env mavenM2RepoViaHttpImage.account)\" -n \"$(build-env mavenM2RepoViaHttpImage.name)\" -t \"$(build-env mavenM2RepoViaHttpImage.buildTag)\""
   },
   "devDependencies": {
     "@kie-tools/image-builder": "workspace:*",

@@ -25,24 +25,26 @@ const {
   env: { mavenM2RepoViaHttpImage: mavenM2RepoViaHttpImageEnv },
 } = require("@kie-tools/maven-m2-repo-via-http-image/env");
 
+const {
+  env: { kogitoBaseBuilderImage: kogitoBaseBuilderImageEnv },
+} = require("@kie/kogito-base-builder-image/env");
+
 module.exports = composeEnv([rootEnv, require("@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env/env")], {
   vars: varsWithName({
-    /* (begin) This part of the file is referenced in `scripts/update-kogito-version` */
-    SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__kogitoBaseBuilderImageTag: {
-      default: "main-20240905",
-      description: "",
+    SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__baseImageTag: {
+      default: `${kogitoBaseBuilderImageEnv.registry}/${kogitoBaseBuilderImageEnv.account}/${kogitoBaseBuilderImageEnv.name}:${kogitoBaseBuilderImageEnv.buildTag}`,
+      description: "Base image complete tag.",
     },
-    /* end */
     SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__mavenM2RepoViaHttpImage: {
-      default: `${mavenM2RepoViaHttpImageEnv.registry}/${mavenM2RepoViaHttpImageEnv.account}/${mavenM2RepoViaHttpImageEnv.name}:${mavenM2RepoViaHttpImageEnv.tag}`,
+      default: `${mavenM2RepoViaHttpImageEnv.registry}/${mavenM2RepoViaHttpImageEnv.account}/${mavenM2RepoViaHttpImageEnv.name}:${mavenM2RepoViaHttpImageEnv.buildTag}`,
       description: "The image tag for the Maven M2 Repo via HTTP. Used during the build only.",
     },
   }),
   get env() {
     return {
-      swfDevModeImage: {
+      slwtDevModeImage: {
+        baseImageTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__baseImageTag),
         version: require("../package.json").version,
-        kogitoImageTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__kogitoBaseBuilderImageTag),
         dev: {
           mavenM2RepoViaHttpImage: getOrDefault(
             this.vars.SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__mavenM2RepoViaHttpImage

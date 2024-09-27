@@ -51,8 +51,7 @@ module.exports = composeEnv([rootEnv], {
         registry: getOrDefault(this.vars.SONATAFLOW_DEVMODE_IMAGE__registry),
         account: getOrDefault(this.vars.SONATAFLOW_DEVMODE_IMAGE__account),
         name: getOrDefault(this.vars.SONATAFLOW_DEVMODE_IMAGE__name),
-        tag: getOrDefault(this.vars.SONATAFLOW_DEVMODE_IMAGE__buildTag),
-        version: require("../package.json").version,
+        buildTag: getOrDefault(this.vars.SONATAFLOW_DEVMODE_IMAGE__buildTag),
         sonataflowQuarkusDevUiVersion: getOrDefault(this.vars.SONATAFLOW_DEVMODE_IMAGE__sonataflowQuarkusDevUiVersion),
       },
     };
