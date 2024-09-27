@@ -53,6 +53,7 @@ To build and test all packages of the Apache KIE Tools project, you're going to 
 - Python `3.12` _(To install, follow these instructions: https://www.python.org/downloads/)_
 - Helm `3.13.3` _(To install, follow these instructions: https://helm.sh/docs/intro/install/)_
 - Make
+- xmllint _(To install, follow these instructions: https://www.baeldung.com/linux/xmllint)_
 
 > **ℹ️ NOTE**
 >
