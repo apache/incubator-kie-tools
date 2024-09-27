@@ -24,19 +24,9 @@ import { TestScenarioEditorProps } from "./TestScenarioEditor";
 
 export type SceSimModelBeforeEditing = SceSimModel;
 
-export type TestScenarioEditorContextProviderProps = Pick<
-  TestScenarioEditorProps,
-  "issueTrackerHref" | "model"
-  //| "onRequestToJumpToPath"
-  //| "onRequestToResolvePath"
->;
+export type TestScenarioEditorContextProviderProps = Pick<TestScenarioEditorProps, "issueTrackerHref" | "model">;
 
-export type TestScenarioEditorContextType = Pick<
-  TestScenarioEditorContextProviderProps,
-  "issueTrackerHref"
-  //| "onRequestToJumpToPath"
-  //| "onRequestToResolvePath"
-> & {
+export type TestScenarioEditorContextType = Pick<TestScenarioEditorContextProviderProps, "issueTrackerHref"> & {
   testScenarioEditorModelBeforeEditingRef: React.MutableRefObject<SceSimModelBeforeEditing>;
   testScenarioEditorRootElementRef: React.RefObject<HTMLDivElement>;
 };
@@ -58,14 +48,8 @@ export function TestScenarioEditorContextProvider(
       issueTrackerHref: props.issueTrackerHref,
       testScenarioEditorModelBeforeEditingRef,
       testScenarioEditorRootElementRef,
-      //onRequestToJumpToPath: props.onRequestToJumpToPath,
-      // onRequestToResolvePath: props.onRequestToResolvePath,
     }),
-    [
-      props.issueTrackerHref,
-      //props.onRequestToJumpToPath,
-      // props.onRequestToResolvePath,
-    ]
+    [props.issueTrackerHref]
   );
   return <TestScenarioEditorContext.Provider value={value}>{props.children}</TestScenarioEditorContext.Provider>;
 }

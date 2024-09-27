@@ -40,7 +40,6 @@ import TestScenarioDrawerSettingsPanel from "../drawer/TestScenarioDrawerSetting
 function TestScenarioDrawerPanel({ fileName, onDrawerClose }: { fileName: string; onDrawerClose: () => void }) {
   const { i18n } = useTestScenarioEditorI18n();
   const state = useTestScenarioEditorStoreApi().getState();
-  const scesim = useTestScenarioEditorStore((state) => state.scesim);
   const navigation = useTestScenarioEditorStore((state) => state.navigation);
   const testScenarioType = state.computed(state).getTestScenarioType();
 
