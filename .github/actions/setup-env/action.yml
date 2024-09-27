@@ -252,7 +252,7 @@ runs:
       run: |
         echo "STEP: Update bash for macOS (macOS Only)"
         brew update
-        brew install bash@5
+        brew install bash@5.2.37
         echo "/usr/local/bin" >> $GITHUB_PATH
 
     - name: "Print storage usage (after setup)"
