@@ -24,14 +24,14 @@ source $BATS_TEST_DIRNAME/../../common/added/configure-maven.sh
 
 
 setup() {
-    export HOME=$BATS_TMPDIR/maven
-    mkdir -p ${HOME}/.m2/
-    cp $BATS_TEST_DIRNAME/../../common/maven/settings.xml ${HOME}/.m2/
-    export MAVEN_SETTINGS_PATH="${HOME}/.m2/settings.xml"
+    export KOGITO_HOME=$BATS_TMPDIR/maven
+    mkdir -p ${KOGITO_HOME}/.m2/
+    cp $BATS_TEST_DIRNAME/../../common/maven/settings.xml ${KOGITO_HOME}/.m2/
+    export MAVEN_SETTINGS_PATH="${KOGITO_HOME}/.m2/settings.xml"
 }
 
 teardown() {
-    rm -rf ${HOME}
+    rm -rf ${KOGITO_HOME}
 }
 
 # override this function, cat /dec/urandon makes the test hangs on GH actions
@@ -45,7 +45,7 @@ function _generate_random_id() {
     MAVEN_MIRROR_URL="http://localhost:8081/nexus/custom/repo/public"
     run configure_mirrors
     expected="<mirror>      <id>mirror.default</id>      <url>http://localhost:8081/nexus/custom/repo/public</url>      <mirrorOf>external:*</mirrorOf>    </mirror>"
-    result=$(xmllint --xpath "//*[local-name()='mirrors']//*[local-name()='mirror']" ${HOME}/.m2/settings.xml)
+    result=$(xmllint --xpath "//*[local-name()='mirrors']//*[local-name()='mirror']" ${KOGITO_HOME}/.m2/settings.xml)
     echo "expected=${expected}"
     echo "expected=${result}"
      [ "${expected}" = "${result}" ]
@@ -56,7 +56,7 @@ function _generate_random_id() {
     HTTPS_PROXY="https://10.10.10.10:8443"
     run configure_proxy
     expected="<proxy>         <id>genproxy</id>         <active>true</active>         <protocol>https</protocol>         <host>https://10.10.10.10</host>         <port>8443</port>       </proxy>"
-    result=$(xmllint --xpath "//*[local-name()='proxies']//*[local-name()='proxy']" ${HOME}/.m2/settings.xml)
+    result=$(xmllint --xpath "//*[local-name()='proxies']//*[local-name()='proxy']" ${KOGITO_HOME}/.m2/settings.xml)
     echo "expected=${expected}"
     echo "result=${result}"
     [ "${expected}" = "${result}" ]
@@ -67,7 +67,7 @@ function _generate_random_id() {
     HTTPS_PROXY="https://10.10.10.10:"
     run configure_proxy
     expected="<proxy>         <id>genproxy</id>         <active>true</active>         <protocol>https</protocol>         <host>https://10.10.10.10</host>         <port>443</port>       </proxy>"
-    result=$(xmllint --xpath "//*[local-name()='proxies']//*[local-name()='proxy']" ${HOME}/.m2/settings.xml)
+    result=$(xmllint --xpath "//*[local-name()='proxies']//*[local-name()='proxy']" ${KOGITO_HOME}/.m2/settings.xml)
     echo "expected=${expected}"
     echo "result=${result}"
     [ "${expected}" = "${result}" ]
@@ -80,7 +80,7 @@ function _generate_random_id() {
     PROXY_PASSWORD="impossible2guess"
     run configure_proxy
     expected="<proxy>         <id>genproxy</id>         <active>true</active>         <protocol>https</protocol>         <host>https://10.10.10.10</host>         <port>8443</port>         <username>hello</username>         <password>impossible2guess</password>       </proxy>"
-    result=$(xmllint --xpath "//*[local-name()='proxies']//*[local-name()='proxy']" ${HOME}/.m2/settings.xml)
+    result=$(xmllint --xpath "//*[local-name()='proxies']//*[local-name()='proxy']" ${KOGITO_HOME}/.m2/settings.xml)
     echo "expected=${expected}"
     echo "result=${result}"
     [ "${expected}" = "${result}" ]
@@ -91,7 +91,7 @@ function _generate_random_id() {
     HTTP_PROXY="http://10.10.10.20:8003"
     run configure_proxy
     expected="<proxy>         <id>genproxy</id>         <active>true</active>         <protocol>http</protocol>         <host>http://10.10.10.20</host>         <port>8003</port>       </proxy>"
-    result=$(xmllint --xpath "//*[local-name()='proxies']//*[local-name()='proxy']" ${HOME}/.m2/settings.xml)
+    result=$(xmllint --xpath "//*[local-name()='proxies']//*[local-name()='proxy']" ${KOGITO_HOME}/.m2/settings.xml)
     echo "expected=${expected}"
     echo "result=${result}"
     [ "${expected}" = "${result}" ]
@@ -104,7 +104,7 @@ function _generate_random_id() {
     PROXY_PASSWORD="impossible2guess"
     run configure_proxy
     expected="<proxy>         <id>genproxy</id>         <active>true</active>         <protocol>http</protocol>         <host>http://10.10.10.20</host>         <port>80</port>         <username>hello</username>         <password>impossible2guess</password>       </proxy>"
-    result=$(xmllint --xpath "//*[local-name()='proxies']//*[local-name()='proxy']" ${HOME}/.m2/settings.xml)
+    result=$(xmllint --xpath "//*[local-name()='proxies']//*[local-name()='proxy']" ${KOGITO_HOME}/.m2/settings.xml)
     echo "expected=${expected}"
     echo "result=${result}"
     [ "${expected}" = "${result}" ]
@@ -115,7 +115,7 @@ function _generate_random_id() {
     HTTP_PROXY="http://10.10.10.20:8003"
     run configure_proxy
     expected="<proxy>         <id>genproxy</id>         <active>true</active>         <protocol>http</protocol>         <host>http://10.10.10.20</host>         <port>8003</port>       </proxy>"
-    result=$(xmllint --xpath "//*[local-name()='proxies']//*[local-name()='proxy']" ${HOME}/.m2/settings.xml)
+    result=$(xmllint --xpath "//*[local-name()='proxies']//*[local-name()='proxy']" ${KOGITO_HOME}/.m2/settings.xml)
     echo "expected=${expected}"
     echo "result=${result}"
     [ "${expected}" = "${result}" ]
@@ -130,7 +130,7 @@ function _generate_random_id() {
     HTTP_PROXY_NONPROXYHOSTS="127.0.0.1|10.1.1.1"
     run configure_proxy
     expected="<proxy>         <id>genproxy</id>         <active>true</active>         <protocol>http</protocol>         <host>10.10.10.20</host>         <port>8080</port>         <username>beleza_pura</username>         <password>impossible2guess</password>         <nonProxyHosts>127.0.0.1|10.1.1.1</nonProxyHosts>       </proxy>"
-    result=$(xmllint --xpath "//*[local-name()='proxies']//*[local-name()='proxy']" ${HOME}/.m2/settings.xml)
+    result=$(xmllint --xpath "//*[local-name()='proxies']//*[local-name()='proxy']" ${KOGITO_HOME}/.m2/settings.xml)
     echo "expected=${expected}"
     echo "result=${result}"
     [ "${expected}" = "${result}" ]
@@ -142,7 +142,7 @@ function _generate_random_id() {
     HTTP_PROXY_NONPROXYHOSTS="127.0.0.1|10.1.1.1"
     run configure_proxy
     expected="<proxy>         <id>genproxy</id>         <active>true</active>         <protocol>http</protocol>         <host>10.10.10.20</host>         <port>80</port>         <nonProxyHosts>127.0.0.1|10.1.1.1</nonProxyHosts>       </proxy>"
-    result=$(xmllint --xpath "//*[local-name()='proxies']//*[local-name()='proxy']" ${HOME}/.m2/settings.xml)
+    result=$(xmllint --xpath "//*[local-name()='proxies']//*[local-name()='proxy']" ${KOGITO_HOME}/.m2/settings.xml)
     echo "expected=${expected}"
     echo "result=${result}"
     [ "${expected}" = "${result}" ]
@@ -157,7 +157,7 @@ function _generate_random_id() {
     HTTP_PROXY_NONPROXYHOSTS="127.0.0.1|10.1.1.1"
     run configure_proxy
     expected="<proxy>         <id>genproxy</id>         <active>true</active>         <protocol>https</protocol>         <host>https://10.10.10.20</host>         <port>8443</port>         <username>beleza_pura</username>         <password>impossible2guess</password>         <nonProxyHosts>127.0.0.1|10.1.1.1</nonProxyHosts>       </proxy>"
-    result=$(xmllint --xpath "//*[local-name()='proxies']//*[local-name()='proxy']" ${HOME}/.m2/settings.xml)
+    result=$(xmllint --xpath "//*[local-name()='proxies']//*[local-name()='proxy']" ${KOGITO_HOME}/.m2/settings.xml)
     echo "expected=${expected}"
     echo "result=${result}"
     [ "${expected}" = "${result}" ]
@@ -235,7 +235,7 @@ function _generate_random_id() {
                         <checksumPolicy>test</checksumPolicy>
                     </snapshots>
                 </repository>"
-    repository_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='repositories']//*[local-name()='repository'])[last()]"  ${HOME}/.m2/settings.xml)
+    repository_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='repositories']//*[local-name()='repository'])[last()]"  ${KOGITO_HOME}/.m2/settings.xml)
     echo "repository_expected=${repository_expected}"
     echo "repository_result  =${repository_result}"
     [ "${repository_expected}" = "${repository_result}" ]
@@ -256,7 +256,7 @@ function _generate_random_id() {
                         <checksumPolicy>test</checksumPolicy>
                     </snapshots>
                 </pluginRepository>"
-    plugin_repository_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='pluginRepositories']//*[local-name()='pluginRepository'])[last()]"  ${HOME}/.m2/settings.xml)
+    plugin_repository_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='pluginRepositories']//*[local-name()='pluginRepository'])[last()]"  ${KOGITO_HOME}/.m2/settings.xml)
     echo "plugin_repository_expected=${plugin_repository_expected}"
     echo "plugin_repository_result  =${plugin_repository_result}"
     [ "${plugin_repository_expected}" = "${plugin_repository_result}" ]
@@ -269,7 +269,7 @@ function _generate_random_id() {
     run add_maven_repo
 
     repository_url_expected="<url>http://my.cool.mvn.repo.severinolabs.com/group/public</url>"
-    repository_url_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='repositories']//*[local-name()='repository']//*[local-name()='url'])[last()]"  ${HOME}/.m2/settings.xml)
+    repository_url_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='repositories']//*[local-name()='repository']//*[local-name()='url'])[last()]"  ${KOGITO_HOME}/.m2/settings.xml)
     echo "repository_url_expected=${repository_url_expected}"
     echo "repository_url_result  =${repository_url_result}"
     [ "${repository_url_expected}" = "${repository_url_result}" ]
@@ -279,7 +279,7 @@ function _generate_random_id() {
                         <updatePolicy>always</updatePolicy>
                         <checksumPolicy>warn</checksumPolicy>
                     </releases>"
-    repository_releases_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='repositories']//*[local-name()='repository']//*[local-name()='releases'])[last()]"  ${HOME}/.m2/settings.xml)
+    repository_releases_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='repositories']//*[local-name()='repository']//*[local-name()='releases'])[last()]"  ${KOGITO_HOME}/.m2/settings.xml)
     echo "repository_releases_expected=${repository_releases_expected}"
     echo "repository_releases_result  =${repository_releases_result}"
     [ "${repository_releases_expected}" = "${repository_releases_result}" ]
@@ -289,14 +289,14 @@ function _generate_random_id() {
                         <updatePolicy>always</updatePolicy>
                         <checksumPolicy>warn</checksumPolicy>
                     </snapshots>"
-    repository_snapshots_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='repositories']//*[local-name()='repository']//*[local-name()='snapshots'])[last()]"  ${HOME}/.m2/settings.xml)
+    repository_snapshots_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='repositories']//*[local-name()='repository']//*[local-name()='snapshots'])[last()]"  ${KOGITO_HOME}/.m2/settings.xml)
     echo "repository_snapshots_expected=${repository_snapshots_expected}"
     echo "repository_snapshots_result  =${repository_snapshots_result}"
     [ "${repository_snapshots_expected}" = "${repository_snapshots_result}" ]
 
 
     plugin_repository_url_expected="<url>http://my.cool.mvn.repo.severinolabs.com/group/public</url>"
-    plugin_repository_url_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='pluginRepositories']//*[local-name()='pluginRepository']//*[local-name()='url'])[last()]"  ${HOME}/.m2/settings.xml)
+    plugin_repository_url_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='pluginRepositories']//*[local-name()='pluginRepository']//*[local-name()='url'])[last()]"  ${KOGITO_HOME}/.m2/settings.xml)
     echo "plugin_repository_url_expected=${plugin_repository_url_expected}"
     echo "plugin_repository_url_result  =${plugin_repository_url_result}"
     [ "${plugin_repository_url_expected}" = "${plugin_repository_url_result}" ]
@@ -306,7 +306,7 @@ function _generate_random_id() {
                         <updatePolicy>always</updatePolicy>
                         <checksumPolicy>warn</checksumPolicy>
                     </releases>"
-    plugin_repository_releases_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='pluginRepositories']//*[local-name()='pluginRepository']//*[local-name()='releases'])[last()]"  ${HOME}/.m2/settings.xml)
+    plugin_repository_releases_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='pluginRepositories']//*[local-name()='pluginRepository']//*[local-name()='releases'])[last()]"  ${KOGITO_HOME}/.m2/settings.xml)
     echo "plugin_repository_releases_expected=${plugin_repository_releases_expected}"
     echo "plugin_repository_releases_result  =${plugin_repository_releases_result}"
     [ "${plugin_repository_releases_expected}" = "${plugin_repository_releases_result}" ]
@@ -316,7 +316,7 @@ function _generate_random_id() {
                         <updatePolicy>always</updatePolicy>
                         <checksumPolicy>warn</checksumPolicy>
                     </snapshots>"
-    plugin_repository_snapshots_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='pluginRepositories']//*[local-name()='pluginRepository']//*[local-name()='snapshots'])[last()]"  ${HOME}/.m2/settings.xml)
+    plugin_repository_snapshots_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='pluginRepositories']//*[local-name()='pluginRepository']//*[local-name()='snapshots'])[last()]"  ${KOGITO_HOME}/.m2/settings.xml)
     echo "plugin_repository_snapshots_expected=${plugin_repository_snapshots_expected}"
     echo "plugin_repository_snapshots_result  =${plugin_repository_snapshots_result}"
     [ "${plugin_repository_snapshots_expected}" = "${plugin_repository_snapshots_result}" ]
@@ -363,7 +363,7 @@ function _generate_random_id() {
                         <checksumPolicy>test</checksumPolicy>
                     </snapshots>
                 </repository>"
-    central_repository_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='repositories']//*[local-name()='repository'])[last()-1]"  ${HOME}/.m2/settings.xml)
+    central_repository_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='repositories']//*[local-name()='repository'])[last()-1]"  ${KOGITO_HOME}/.m2/settings.xml)
     echo "central_repository_expected=${central_repository_expected}"
     echo "central_repository_result  =${central_repository_result}"
     [ "${central_repository_expected}" = "${central_repository_result}" ]
@@ -384,7 +384,7 @@ function _generate_random_id() {
                         <checksumPolicy>another-test</checksumPolicy>
                     </snapshots>
                 </repository>"
-    company_repository_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='repositories']//*[local-name()='repository'])[last()]"  ${HOME}/.m2/settings.xml)
+    company_repository_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='repositories']//*[local-name()='repository'])[last()]"  ${KOGITO_HOME}/.m2/settings.xml)
     echo "company_repository_expected=${company_repository_expected}"
     echo "company_repository_result  =${company_repository_result}"
     [ "${company_repository_expected}" = "${company_repository_result}" ]
@@ -406,7 +406,7 @@ function _generate_random_id() {
                         <checksumPolicy>test</checksumPolicy>
                     </snapshots>
                 </pluginRepository>"
-    central_plugin_repository_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='pluginRepositories']//*[local-name()='pluginRepository'])[last()-1]"  ${HOME}/.m2/settings.xml)
+    central_plugin_repository_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='pluginRepositories']//*[local-name()='pluginRepository'])[last()-1]"  ${KOGITO_HOME}/.m2/settings.xml)
     echo "central_plugin_repository_expected=${central_plugin_repository_expected}"
     echo "central_plugin_repository_result  =${central_plugin_repository_result}"
     [ "${central_plugin_repository_expected}" = "${central_plugin_repository_result}" ]
@@ -427,7 +427,7 @@ function _generate_random_id() {
                         <checksumPolicy>another-test</checksumPolicy>
                     </snapshots>
                 </pluginRepository>"
-    company_plugin_repository_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='pluginRepositories']//*[local-name()='pluginRepository'])[last()]"  ${HOME}/.m2/settings.xml)
+    company_plugin_repository_result=$(xmllint --xpath "(//*[local-name()='profiles']//*[local-name()='profile']//*[local-name()='pluginRepositories']//*[local-name()='pluginRepository'])[last()]"  ${KOGITO_HOME}/.m2/settings.xml)
     echo "company_plugin_repository_expected=${company_plugin_repository_expected}"
     echo "company_plugin_repository_result  =${company_plugin_repository_result}"
     [ "${company_plugin_repository_expected}" = "${company_plugin_repository_result}" ]

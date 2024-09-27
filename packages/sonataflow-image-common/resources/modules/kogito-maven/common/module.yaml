@@ -18,7 +18,7 @@
 #
 schema_version: 1
 name: org.kie.kogito.maven.common
-version: "0.0.0"
+version: "main"
 
 envs:
   - name: "MAVEN_VERSION"
@@ -28,6 +28,9 @@ envs:
   - name: "MAVEN_SETTINGS_PATH"
     description: "The location of the settings.xml file"
     value: "${KOGITO_HOME}/.m2/settings.xml"
+  - name: "MAVEN_CONTAINER_BUILD_SETTINGS_PATH"
+    description: "The location of the settings.xml file during container image build"
+    value: "${KOGITO_HOME}/.m2/maven-m2-repo-via-http-settings.xml"
   - name: "HTTP_PROXY"
     description: "The location of the http proxy, will be used for both Maven builds and Java runtime."
     example: "http://127.0.0.1:8080"

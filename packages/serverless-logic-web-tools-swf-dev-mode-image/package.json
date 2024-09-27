@@ -26,11 +26,11 @@
     "copy:sonataflow-deployment-webapp": "run-script-os",
     "copy:sonataflow-deployment-webapp:linux:darwin": "cp -R ./node_modules/sonataflow-deployment-webapp/dist/* ./dist-dev/quarkus-app/src/main/resources/META-INF/resources",
     "copy:sonataflow-deployment-webapp:win32": "pnpm powershell \"Copy-Item -R ./node_modules/sonataflow-deployment-webapp/dist/* ./dist-dev/quarkus-app/src/main/resources/META-INF/resources\"",
-    "image:docker:build": "kie-tools--image-builder build --allowHostNetworkAccess -r \"$(build-env swfDevModeImageEnv.registry)\" -a \"$(build-env swfDevModeImageEnv.account)\" -n \"$(build-env swfDevModeImageEnv.name)\" -t \"$(build-env swfDevModeImageEnv.buildTag)\" --build-arg KOGITO_IMAGE_TAG=\"$(build-env swfDevModeImage.kogitoImageTag)\"",
-    "image:docker:squash": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && DOCKER_HOST=$(docker context inspect | jq '.[].Endpoints.docker.Host' | tr -d '\"') docker-squash -t $(build-env swfDevModeImageEnv.registry)/$(build-env swfDevModeImageEnv.account)/$(build-env swfDevModeImageEnv.name):$(build-env swfDevModeImageEnv.buildTag) $(build-env swfDevModeImageEnv.registry)/$(build-env swfDevModeImageEnv.account)/$(build-env swfDevModeImageEnv.name):$(build-env swfDevModeImageEnv.buildTag)",
+    "image:docker:build": "kie-tools--image-builder build --allowHostNetworkAccess -r \"$(build-env slwtDevModeImageEnv.registry)\" -a \"$(build-env slwtDevModeImageEnv.account)\" -n \"$(build-env slwtDevModeImageEnv.name)\" -t \"$(build-env slwtDevModeImageEnv.buildTag)\" --build-arg BASE_IMAGE_TAG=\"$(build-env slwtDevModeImage.baseImageTag)\"",
+    "image:docker:squash": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && DOCKER_HOST=$(docker context inspect | jq '.[].Endpoints.docker.Host' | tr -d '\"') docker-squash -t $(build-env slwtDevModeImageEnv.registry)/$(build-env slwtDevModeImageEnv.account)/$(build-env slwtDevModeImageEnv.name):$(build-env slwtDevModeImageEnv.buildTag) $(build-env slwtDevModeImageEnv.registry)/$(build-env slwtDevModeImageEnv.account)/$(build-env slwtDevModeImageEnv.name):$(build-env slwtDevModeImageEnv.buildTag)",
     "install": "node install.js",
     "m2-repo-via-http:container:kill": "(docker container kill m2-repo-via-http || true) && (docker container rm m2-repo-via-http || true)",
-    "m2-repo-via-http:container:run": "(pnpm m2-repo-via-http:container:kill || true) && docker run --name m2-repo-via-http -v \"$(mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout):/var/www/html\" -dit $(build-env swfDevModeImage.dev.mavenM2RepoViaHttpImage)",
+    "m2-repo-via-http:container:run": "(pnpm m2-repo-via-http:container:kill || true) && docker run --name m2-repo-via-http -v \"$(mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout):/var/www/html\" -dit $(build-env slwtDevModeImage.dev.mavenM2RepoViaHttpImage)",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "devDependencies": {
@@ -41,6 +41,7 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app": "workspace:*",
     "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env": "workspace:*",
+    "@kie/kogito-base-builder-image": "workspace:*",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
     "sonataflow-deployment-webapp": "workspace:*"

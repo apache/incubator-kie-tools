@@ -15,9 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-ARG KOGITO_IMAGE_TAG
+ARG BASE_IMAGE_TAG
 
-FROM --platform=linux/amd64 docker.io/apache/incubator-kie-kogito-base-builder:$KOGITO_IMAGE_TAG
+FROM --platform=linux/amd64 $BASE_IMAGE_TAG
 
 ENV PATH="${PATH}:/usr/share/maven/bin"
 

@@ -20,6 +20,10 @@
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 const sonataFlowQuarkusDevUiEnv = require("@kie-tools/sonataflow-quarkus-devui/env");
 
+const {
+  env: { mavenM2RepoViaHttpImage: mavenM2RepoViaHttpImageEnv },
+} = require("@kie-tools/maven-m2-repo-via-http-image/env");
+
 const rootEnv = require("@kie-tools/root-env/env");
 
 module.exports = composeEnv([rootEnv], {
@@ -51,9 +55,11 @@ module.exports = composeEnv([rootEnv], {
         registry: getOrDefault(this.vars.SONATAFLOW_DEVMODE_IMAGE__registry),
         account: getOrDefault(this.vars.SONATAFLOW_DEVMODE_IMAGE__account),
         name: getOrDefault(this.vars.SONATAFLOW_DEVMODE_IMAGE__name),
-        tag: getOrDefault(this.vars.SONATAFLOW_DEVMODE_IMAGE__buildTag),
-        version: require("../package.json").version,
+        buildTag: getOrDefault(this.vars.SONATAFLOW_DEVMODE_IMAGE__buildTag),
         sonataflowQuarkusDevUiVersion: getOrDefault(this.vars.SONATAFLOW_DEVMODE_IMAGE__sonataflowQuarkusDevUiVersion),
+        dev: {
+          mavenM2RepoViaHttpImage: `${mavenM2RepoViaHttpImageEnv.registry}/${mavenM2RepoViaHttpImageEnv.account}/${mavenM2RepoViaHttpImageEnv.name}:${mavenM2RepoViaHttpImageEnv.buildTag}`,
+        },
       },
     };
   },

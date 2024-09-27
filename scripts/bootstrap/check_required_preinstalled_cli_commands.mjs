@@ -34,6 +34,7 @@ const argsByCommand = new Map([
   ["python3", ["--version"]],
   ["pip3", ["--version"]],
   ["s2i", ["version"]],
+  ["xmllint", ["-version"]],
 ]);
 
 async function main() {

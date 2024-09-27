@@ -86,16 +86,16 @@ module.exports = composeEnv(
             cypressUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__cypressUrl),
             port: 9020,
           },
-          swfBuilderImage: {
+          slwtBuilderImageEnv: {
             tag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag),
           },
-          baseBuilderImage: {
+          slwtBaseBuilderImage: {
             tag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageTag),
           },
           dashbuilderViewerImage: {
             tag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag),
           },
-          swfDevModeImage: {
+          slwtDevModeImage: {
             tag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag),
           },
           corsProxyUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl),

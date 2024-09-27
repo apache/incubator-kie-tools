@@ -189,6 +189,110 @@
         }
       }
     },
+    "libxml2@2.13.3": {
+      "last_modified": "2024-09-12T11:58:09Z",
+      "resolved": "github:NixOS/nixpkgs/280db3decab4cbeb22a4599bd472229ab74d25e1#libxml2",
+      "source": "devbox-search",
+      "version": "2.13.3",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "bin",
+              "path": "/nix/store/7gi1kd2mz9jc8ya4lkqhlv9vklc5qr2j-libxml2-2.13.3-bin",
+              "default": true
+            },
+            {
+              "name": "dev",
+              "path": "/nix/store/mnij865rdzrrnxqmhj4s0abmd1xx771v-libxml2-2.13.3-dev"
+            },
+            {
+              "name": "devdoc",
+              "path": "/nix/store/80bkizndgvrqiq42ig681irxswsf4kxv-libxml2-2.13.3-devdoc"
+            },
+            {
+              "name": "out",
+              "path": "/nix/store/sr8lnkgivqcd06113nsk5p3jz2xcx7rp-libxml2-2.13.3"
+            }
+          ],
+          "store_path": "/nix/store/7gi1kd2mz9jc8ya4lkqhlv9vklc5qr2j-libxml2-2.13.3-bin"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "bin",
+              "path": "/nix/store/gxpp5r2nbs3s0n5rw0jbnm1k5lhxrx13-libxml2-2.13.3-bin",
+              "default": true
+            },
+            {
+              "name": "devdoc",
+              "path": "/nix/store/0qnymx6l3c7998yscwvr1q64iz447hfc-libxml2-2.13.3-devdoc"
+            },
+            {
+              "name": "out",
+              "path": "/nix/store/da857dg9ip02lkci5nicgvkzf419jzc7-libxml2-2.13.3"
+            },
+            {
+              "name": "py",
+              "path": "/nix/store/qfpnqradhvhicl1hm70w7891bk95lkad-libxml2-2.13.3-py"
+            },
+            {
+              "name": "dev",
+              "path": "/nix/store/dph7mh2dhl8sl4i44wlgnmsrwdlcv0bc-libxml2-2.13.3-dev"
+            }
+          ],
+          "store_path": "/nix/store/gxpp5r2nbs3s0n5rw0jbnm1k5lhxrx13-libxml2-2.13.3-bin"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "bin",
+              "path": "/nix/store/gg4x2l8wy3lkd94bxpl0z7gnn9pa365i-libxml2-2.13.3-bin",
+              "default": true
+            },
+            {
+              "name": "dev",
+              "path": "/nix/store/pzakdvnmm99gic3mqyg8375b08dvkqxm-libxml2-2.13.3-dev"
+            },
+            {
+              "name": "devdoc",
+              "path": "/nix/store/xa27lhlrc2ya3i67g7nz53g64l3wqvjw-libxml2-2.13.3-devdoc"
+            },
+            {
+              "name": "out",
+              "path": "/nix/store/ac73mddfvraxgvd816r9h57df35mm6gd-libxml2-2.13.3"
+            }
+          ],
+          "store_path": "/nix/store/gg4x2l8wy3lkd94bxpl0z7gnn9pa365i-libxml2-2.13.3-bin"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "bin",
+              "path": "/nix/store/2y4a178s4w60v4m8749xhaawf8ga7cw5-libxml2-2.13.3-bin",
+              "default": true
+            },
+            {
+              "name": "dev",
+              "path": "/nix/store/v40g7q9zix1ycpyara08brd50m00471n-libxml2-2.13.3-dev"
+            },
+            {
+              "name": "devdoc",
+              "path": "/nix/store/cs49b70qkgygx0wxcl04dpy1d1g5vb91-libxml2-2.13.3-devdoc"
+            },
+            {
+              "name": "out",
+              "path": "/nix/store/nr8mh99sfsb1gw1b1qmrwhzmxbhj84j7-libxml2-2.13.3"
+            },
+            {
+              "name": "py",
+              "path": "/nix/store/p17nrcsmvb0q7b9g6347imljapbfcsb1-libxml2-2.13.3-py"
+            }
+          ],
+          "store_path": "/nix/store/2y4a178s4w60v4m8749xhaawf8ga7cw5-libxml2-2.13.3-bin"
+        }
+      }
+    },
     "maven@3.9.6": {
       "last_modified": "2024-03-22T11:26:23Z",
       "resolved": "github:NixOS/nixpkgs/a3ed7406349a9335cb4c2a71369b697cecd9d351#maven",
@@ -304,7 +408,7 @@
     },
     "python@3.12.2": {
       "last_modified": "2024-03-22T11:26:23Z",
-      "plugin_version": "0.0.3",
+      "plugin_version": "0.0.4",
       "resolved": "github:NixOS/nixpkgs/a3ed7406349a9335cb4c2a71369b697cecd9d351#python312",
       "source": "devbox-search",
       "version": "3.12.2",

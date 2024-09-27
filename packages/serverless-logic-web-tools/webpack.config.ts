@@ -220,10 +220,10 @@ export default async (env: any, argv: any) => {
 };
 
 function getSwfBuilderImageArgs() {
-  const swfBuilderImageRegistry = buildEnv.swfBuilderImageEnv.registry;
-  const swfBuilderImageAccount = buildEnv.swfBuilderImageEnv.account;
-  const swfBuilderImageName = buildEnv.swfBuilderImageEnv.name;
-  const swfBuilderImageTag = buildEnv.serverlessLogicWebTools.swfBuilderImage.tag;
+  const swfBuilderImageRegistry = buildEnv.slwtBuilderImageEnv.registry;
+  const swfBuilderImageAccount = buildEnv.slwtBuilderImageEnv.account;
+  const swfBuilderImageName = buildEnv.slwtBuilderImageEnv.name;
+  const swfBuilderImageTag = buildEnv.serverlessLogicWebTools.slwtBuilderImageEnv.tag;
 
   console.info("Serverless Logic Web Tools :: SWF Builder Image Registry: " + swfBuilderImageRegistry);
   console.info("Serverless Logic Web Tools :: SWF Builder Image Account: " + swfBuilderImageAccount);
@@ -234,10 +234,10 @@ function getSwfBuilderImageArgs() {
 }
 
 function getSwfDevModeImageArgs() {
-  const swfDevModeImageRegistry = buildEnv.swfDevModeImageEnv.registry;
-  const swfDevModeImageAccount = buildEnv.swfDevModeImageEnv.account;
-  const swfDevModeImageName = buildEnv.swfDevModeImageEnv.name;
-  const swfDevModeImageTag = buildEnv.serverlessLogicWebTools.swfDevModeImage.tag;
+  const swfDevModeImageRegistry = buildEnv.slwtDevModeImageEnv.registry;
+  const swfDevModeImageAccount = buildEnv.slwtDevModeImageEnv.account;
+  const swfDevModeImageName = buildEnv.slwtDevModeImageEnv.name;
+  const swfDevModeImageTag = buildEnv.serverlessLogicWebTools.slwtDevModeImage.tag;
 
   console.info("Serverless Logic Web Tools :: Dev Mode Image Registry: " + swfDevModeImageRegistry);
   console.info("Serverless Logic Web Tools :: Dev Mode Image Account: " + swfDevModeImageAccount);
@@ -248,10 +248,10 @@ function getSwfDevModeImageArgs() {
 }
 
 function getBaseBuilderImageArgs() {
-  const baseBuilderImageRegistry = buildEnv.baseBuilderImageEnv.registry;
-  const baseBuilderImageAccount = buildEnv.baseBuilderImageEnv.account;
-  const baseBuilderImageName = buildEnv.baseBuilderImageEnv.name;
-  const baseBuilderImageTag = buildEnv.serverlessLogicWebTools.baseBuilderImage.tag;
+  const baseBuilderImageRegistry = buildEnv.slwtBaseBuilderImageEnv.registry;
+  const baseBuilderImageAccount = buildEnv.slwtBaseBuilderImageEnv.account;
+  const baseBuilderImageName = buildEnv.slwtBaseBuilderImageEnv.name;
+  const baseBuilderImageTag = buildEnv.serverlessLogicWebTools.slwtBaseBuilderImage.tag;
 
   console.info("Serverless Logic Web Tools :: Base Builder Image Registry: " + baseBuilderImageRegistry);
   console.info("Serverless Logic Web Tools :: Base Builder Image Account: " + baseBuilderImageAccount);

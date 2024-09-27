@@ -86,7 +86,7 @@ You can find an example of the Quarkus upgrade in [this PR](https://github.com/a
 
 # Upgrading Kogito
 
-In the root directory, run `pnpm update-kogito-version-to --maven [version] --images-tag [tag]`.
+In the root directory, run `pnpm update-kogito-version-to --maven [version]`.
 
 Of course, a new Kogito version may lead to incompatibilities in the code and with other dependencies. In such a case, an investigation and evetually a fix is required to complete the process.
 
