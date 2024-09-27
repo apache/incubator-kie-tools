@@ -17,11 +17,7 @@
 
 ## jBPM Form Code Generator
 
-This is a library that has jBPM themes for the [Form Code Generator](../form-code-generator/README.md).
-
-## How it works?
-
-This package has two jBPM themes for the [Form Code Generator](../form-code-generator/README.md) library. It extends the [Bootstrap4 theme](../form-code-generator-bootstrap4-theme/README.md) and [PatternFly theme](../form-code-generator-patternfly-theme/README.md), modifying them by making operations over the JSON Schema and changing their return type to `JbpmFormAsset` insted of `FormAsset`.
+This package has two jBPM themes for the [Form Code Generator](../form-code-generator/README.md) library. Both themes are extensions of the [Bootstrap4 theme](../form-code-generator-bootstrap4-theme/README.md) and [PatternFly theme](../form-code-generator-patternfly-theme/README.md), resulting in the jBPM Bootstrap4 theme and jBPM PatternFly theme respectively.
 
 ## Usage
 
@@ -37,7 +33,7 @@ const jbpmFormsCode = jbpmPatternflyFormCodeGenerator.generateFormsCode({
   formSchemas: [
     {
       name: "<name>",
-      schema: {}, // your JSON Schema
+      schema: {}, // Your JSON Schema
     },
   ],
 });
@@ -107,7 +103,7 @@ const jbpmFormsCode = jbpmFormCodeGenerator.generateFormsCode({
   formSchemas: [
     {
       name: "<name>",
-      schema: {}, // your JSON Schema
+      schema: {}, // Your JSON Schema
     },
   ],
 });

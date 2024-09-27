@@ -21,7 +21,7 @@ This package is the PatternFly theme for the [Form Code Generator](../form-code-
 
 ## How it works?
 
-This package generates the form code of a [Uniforms](https://uniforms.tools/) form using PatternFly components. [Uniforms](https://uniforms.tools/) is a library that autogenerates forms based on schemas, and supports multiple themes. This package makes its own theme, describing the code that each field should have. After it, the form is rendered using `ReactDOMServer.renderToString` getting the form code.
+This package generates the form code of a [Uniforms](https://uniforms.tools/) form using PatternFly components. [Uniforms](https://uniforms.tools/) is a library that autogenerates forms based on schemas and supports multiple themes. This package makes its own theme, describing the code that each field should have. After it, the form is rendered using `ReactDOMServer.renderToString` getting the form code.
 
 ## Usage
 

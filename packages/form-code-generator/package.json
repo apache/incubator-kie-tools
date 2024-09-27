@@ -23,11 +23,6 @@
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
-  "dependencies": {
-    "lodash": "^4.17.21",
-    "uniforms": "^3.10.2",
-    "uniforms-bridge-json-schema": "^3.10.2"
-  },
   "devDependencies": {
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/jest-base": "workspace:*",

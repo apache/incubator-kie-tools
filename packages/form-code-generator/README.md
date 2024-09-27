@@ -17,7 +17,7 @@
 
 ## Form Code Generator
 
-This library is used to generate the form code from a schema. It can uses different themes, such as the [Bootstrap4](../form-code-generator-bootstrap4-theme/README.md) and [PatternFly](../form-code-generator-patternfly-theme/README.md) or any theme that implements the [FormCodeGeneratorTheme](./src/types.ts) interface.
+This library is used to generate the form code based on a schema. It can uses different themes, such as the [Bootstrap4](../form-code-generator-bootstrap4-theme/README.md) and [PatternFly](../form-code-generator-patternfly-theme/README.md) or any theme that implements the [FormCodeGeneratorTheme](./src/types.ts) interface.
 
 ## How it works?
 

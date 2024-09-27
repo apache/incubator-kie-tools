@@ -4705,16 +4705,6 @@ importers:
         version: 5.5.3
 
   packages/form-code-generator:
-    dependencies:
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
-      uniforms:
-        specifier: ^3.10.2
-        version: 3.10.2(react@17.0.2)
-      uniforms-bridge-json-schema:
-        specifier: ^3.10.2
-        version: 3.10.2(react@17.0.2)
     devDependencies:
       '@kie-tools/eslint':
         specifier: workspace:*
@@ -4849,9 +4839,6 @@ importers:
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.94.0)
-      copyfiles:
-        specifier: ^2.4.1
-        version: 2.4.1
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.5.2)(typescript@5.5.3))
