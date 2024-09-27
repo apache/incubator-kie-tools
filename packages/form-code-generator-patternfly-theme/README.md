@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## Uniforms Patternfly Codegen
+## Form Code Generator PatternFly Theme
 
 This module contains the [Uniforms](https://uniforms.tools) theme contain to generate Patternfly forms for the `@kie-tools/jbpm-form-generator`.
 
