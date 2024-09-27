@@ -50,7 +50,6 @@ import {
 import { SceSimModel } from "@kie-tools/scesim-marshaller";
 
 import { useTestScenarioEditorI18n } from "../i18n";
-import { TestScenarioType } from "../TestScenarioEditor";
 
 import "./TestScenarioTable.css";
 import {
@@ -59,14 +58,13 @@ import {
   retrieveRowsDataFromModel,
 } from "../common/TestScenarioCommonFunctions";
 import { useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
+import { TestScenarioType } from "../store/TestScenarioEditorStore";
 
 function TestScenarioTable({
-  assetType,
   tableData,
   scrollableParentRef,
   updateTestScenarioModel,
 }: {
-  assetType: string;
   tableData: SceSim__simulationType | SceSim__backgroundType;
   scrollableParentRef: React.RefObject<HTMLElement>;
   updateTestScenarioModel?: React.Dispatch<React.SetStateAction<SceSimModel>>;
@@ -89,6 +87,8 @@ function TestScenarioTable({
 
   const { i18n } = useTestScenarioEditorI18n();
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
+  const state = testScenarioEditorStoreApi.getState();
+  const assetType = state.computed(state).getTestScenarioType();
 
   /** BACKGROUND TABLE MANAGMENT */
 
@@ -119,7 +119,7 @@ function TestScenarioTable({
   const determineDataTypeLabel = useCallback(
     (dataType: string) => {
       let dataTypeLabel = dataType;
-      if (assetType === TestScenarioType[TestScenarioType.RULE]) {
+      if (assetType === TestScenarioType.RULE) {
         dataTypeLabel = dataTypeLabel.split(".").pop() ?? dataTypeLabel;
       }
       return dataTypeLabel.endsWith("Void") ? "<Undefined>" : dataTypeLabel;

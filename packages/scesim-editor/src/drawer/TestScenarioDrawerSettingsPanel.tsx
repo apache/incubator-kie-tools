@@ -38,9 +38,9 @@ import "./TestScenarioDrawerSettingsPanel.css";
 function TestScenarioDrawerSettingsPanel({ fileName }: { fileName: string }) {
   const { i18n } = useTestScenarioEditorI18n();
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
-  const scesim = useTestScenarioEditorStore((s) => s.scesim);
-  const settings = scesim.model.ScenarioSimulationModel.settings;
-  const assetType = settings!.type!.__$$text;
+  const settingsModel = useTestScenarioEditorStore((s) => s.scesim.model.ScenarioSimulationModel.settings);
+  const state = useTestScenarioEditorStoreApi().getState();
+  const testScenarioType = state.computed(state).getTestScenarioType();
 
   const updateSettingsField = useCallback(
     (fieldName: keyof SceSim__settingsType, value: string | boolean) =>
@@ -61,8 +61,13 @@ function TestScenarioDrawerSettingsPanel({ fileName }: { fileName: string }) {
       <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
         {i18n.drawer.settings.assetType}
       </Title>
-      <TextInput className={"kie-scesim-editor-drawer-settings--text-input"} value={assetType} type="text" isDisabled />
-      {assetType === TestScenarioType[TestScenarioType.DMN] ? (
+      <TextInput
+        className={"kie-scesim-editor-drawer-settings--text-input"}
+        value={TestScenarioType[testScenarioType]}
+        type="text"
+        isDisabled
+      />
+      {testScenarioType === TestScenarioType.DMN ? (
         <>
           <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
             {i18n.drawer.settings.dmnModel}
@@ -82,7 +87,7 @@ function TestScenarioDrawerSettingsPanel({ fileName }: { fileName: string }) {
           </Title>
           <TextInput
             className={"kie-scesim-editor-drawer-settings--text-input"}
-            value={settings.dmnName?.__$$text}
+            value={settingsModel.dmnName?.__$$text}
             type="text"
             isDisabled
           />
@@ -91,7 +96,7 @@ function TestScenarioDrawerSettingsPanel({ fileName }: { fileName: string }) {
           </Title>
           <TextInput
             className={"kie-scesim-editor-drawer-settings--text-input"}
-            value={settings.dmnNamespace?.__$$text}
+            value={settingsModel.dmnNamespace?.__$$text}
             type="text"
             isDisabled
           />
@@ -111,7 +116,7 @@ function TestScenarioDrawerSettingsPanel({ fileName }: { fileName: string }) {
             onChange={(value) => updateSettingsField("dmoSession", value)}
             placeholder={i18n.drawer.settings.kieSessionRulePlaceholder}
             type="text"
-            value={settings.dmoSession?.__$$text}
+            value={settingsModel.dmoSession?.__$$text}
           />
           <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
             {i18n.drawer.settings.ruleFlowGroup}
@@ -126,13 +131,13 @@ function TestScenarioDrawerSettingsPanel({ fileName }: { fileName: string }) {
             onChange={(value) => updateSettingsField("ruleFlowGroup", value)}
             placeholder={i18n.drawer.settings.ruleFlowGroupPlaceholder}
             type="text"
-            value={settings.ruleFlowGroup?.__$$text}
+            value={settingsModel.ruleFlowGroup?.__$$text}
           />
           <div className={"kie-scesim-editor-drawer-settings--checkbox-group"}>
             <div className={"kie-scesim-editor-drawer-settings--checkbox"}>
               <Checkbox
                 id="stateless-session"
-                isChecked={settings.stateless?.__$$text ?? false}
+                isChecked={settingsModel.stateless?.__$$text ?? false}
                 label={i18n.drawer.settings.statelessSessionRule}
                 onChange={(value) => updateSettingsField("stateless", value)}
               />
@@ -149,7 +154,7 @@ function TestScenarioDrawerSettingsPanel({ fileName }: { fileName: string }) {
         <div className={"kie-scesim-editor-drawer-settings--checkbox"}>
           <Checkbox
             id="skip-test"
-            isChecked={settings.skipFromBuild?.__$$text ?? false}
+            isChecked={settingsModel.skipFromBuild?.__$$text ?? false}
             label={i18n.drawer.settings.testSkipped}
             onChange={(value) => updateSettingsField("skipFromBuild", value)}
           />

@@ -41,7 +41,7 @@ import {
   SceSim__expressionElementsType,
 } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
-import { TestScenarioDataObject, TestScenarioSelectedColumnMetaData, TestScenarioType } from "../TestScenarioEditor";
+import { TestScenarioType } from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
 
 import { EMPTY_TYPE, TEST_SCENARIO_EXPRESSION_TYPE } from "../common/TestScenarioCommonConstants";
@@ -53,7 +53,7 @@ import {
 
 import "./TestScenarioDrawerDataSelectorPanel.css";
 import { useTestScenarioEditorStore, useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
-import { TestScenarioEditorTab } from "../store/TestScenarioEditorStore";
+import { TestScenarioDataObject, TestScenarioEditorTab } from "../store/TestScenarioEditorStore";
 
 const enum TestScenarioDataSelectorState {
   DISABLED, // All subcomponents are DISABLED
@@ -61,18 +61,16 @@ const enum TestScenarioDataSelectorState {
   TREEVIEW_ENABLED_ONLY, // TreeView component is enabled only, in a read only mode (when a column is selected)
 }
 
-function TestScenarioDataSelectorPanel({
-  assetType,
-  dataObjects,
-}: {
-  assetType: string;
-  dataObjects: TestScenarioDataObject[];
-}) {
+function TestScenarioDataSelectorPanel() {
   const { i18n } = useTestScenarioEditorI18n();
   const tableStatus = useTestScenarioEditorStore((s) => s.table);
   const tabStatus = useTestScenarioEditorStore((s) => s.navigation.tab);
   const scesimModel = useTestScenarioEditorStore((state) => state.scesim.model);
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
+  const state = useTestScenarioEditorStoreApi().getState();
+  const dataObjects = state.computed(state).getTestScenarioDataObjects();
+  const testScenarioType = state.computed(state).getTestScenarioType();
+
   // TODO Computed?
   const selectedColumnMetadata =
     tabStatus === TestScenarioEditorTab.SIMULATION
@@ -335,25 +333,25 @@ function TestScenarioDataSelectorPanel({
     const treeViewEmptyIcon = filteredItems.length === 0 ? WarningTriangleIcon : WarningTriangleIcon;
     const title =
       dataObjects.length === 0
-        ? assetType === TestScenarioType[TestScenarioType.DMN]
+        ? testScenarioType === TestScenarioType.DMN
           ? i18n.drawer.dataSelector.emptyDataObjectsTitleDMN
           : i18n.drawer.dataSelector.emptyDataObjectsTitleRule
         : "No more properties"; //TODO CHANGE
     const description =
       dataObjects.length === 0
-        ? assetType === TestScenarioType[TestScenarioType.DMN]
+        ? testScenarioType === TestScenarioType.DMN
           ? i18n.drawer.dataSelector.emptyDataObjectsDescriptionDMN
           : i18n.drawer.dataSelector.emptyDataObjectsDescriptionRule
         : "All the properties have been already assigned"; //TODO CHANGE
 
     {
-      assetType === TestScenarioType[TestScenarioType.DMN]
+      testScenarioType === TestScenarioType.DMN
         ? i18n.drawer.dataSelector.emptyDataObjectsTitleDMN
         : i18n.drawer.dataSelector.emptyDataObjectsTitleRule;
     }
 
     return { description: description, enabled: isTreeViewNotEmpty, icon: treeViewEmptyIcon, title: title };
-  }, [assetType, dataObjects.length, filteredItems.length, i18n]);
+  }, [testScenarioType, dataObjects.length, filteredItems.length, i18n]);
 
   const insertDataObjectButtonStatus = useMemo(() => {
     if (!selectedColumnMetadata) {
@@ -532,12 +530,12 @@ function TestScenarioDataSelectorPanel({
   return (
     <>
       <Text className="kie-scesim-editor-drawer-data-objects--text">
-        {assetType === TestScenarioType[TestScenarioType.DMN]
+        {testScenarioType === TestScenarioType.DMN
           ? i18n.drawer.dataSelector.descriptionDMN
           : i18n.drawer.dataSelector.descriptionRule}
         <Tooltip
           content={
-            assetType === TestScenarioType[TestScenarioType.DMN]
+            testScenarioType === TestScenarioType.DMN
               ? i18n.drawer.dataSelector.dataObjectsDescriptionDMN
               : i18n.drawer.dataSelector.dataObjectsDescriptionRule
           }

@@ -29,30 +29,20 @@ import {
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
-import { SceSimModel } from "@kie-tools/scesim-marshaller";
-
+import { TestScenarioType } from "../TestScenarioEditor";
+import { useTestScenarioEditorI18n } from "../i18n";
+import { useTestScenarioEditorStore, useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
+import { TestScenarioEditorDock } from "../store/TestScenarioEditorStore";
 import TestScenarioDrawerDataSelectorPanel from "./TestScenarioDrawerDataSelectorPanel";
 import TestScenarioDrawerCheatSheetPanel from "./TestScenarioDrawerCheatSheetPanel";
 import TestScenarioDrawerSettingsPanel from "../drawer/TestScenarioDrawerSettingsPanel";
-import { TestScenarioDataObject, TestScenarioType } from "../TestScenarioEditor";
-import { useTestScenarioEditorI18n } from "../i18n";
-import { useTestScenarioEditorStore } from "../store/TestScenarioStoreContext";
-import { TestScenarioEditorDock } from "../store/TestScenarioEditorStore";
 
-function TestScenarioDrawerPanel({
-  dataObjects,
-  fileName,
-  onDrawerClose,
-}: {
-  dataObjects: TestScenarioDataObject[];
-  fileName: string;
-  onDrawerClose: () => void;
-}) {
+function TestScenarioDrawerPanel({ fileName, onDrawerClose }: { fileName: string; onDrawerClose: () => void }) {
   const { i18n } = useTestScenarioEditorI18n();
+  const state = useTestScenarioEditorStoreApi().getState();
   const scesim = useTestScenarioEditorStore((state) => state.scesim);
   const navigation = useTestScenarioEditorStore((state) => state.navigation);
-  //TODO computed?
-  const assetType = scesim.model.ScenarioSimulationModel.settings.type!.__$$text;
+  const testScenarioType = state.computed(state).getTestScenarioType();
 
   return (
     <DrawerPanelContent isResizable={true} minSize={"400px"} defaultSize={"500px"}>
@@ -67,7 +57,7 @@ function TestScenarioDrawerPanel({
                 case TestScenarioEditorDock.CHEATSHEET:
                   return i18n.drawer.cheatSheet.title;
                 case TestScenarioEditorDock.DATA_OBJECT:
-                  return assetType === TestScenarioType[TestScenarioType.DMN]
+                  return testScenarioType === TestScenarioType.DMN
                     ? i18n.drawer.dataSelector.titleDMN
                     : i18n.drawer.dataSelector.titleRule;
                 case TestScenarioEditorDock.SETTINGS:
@@ -84,9 +74,9 @@ function TestScenarioDrawerPanel({
         {(() => {
           switch (navigation.dock.selected) {
             case TestScenarioEditorDock.CHEATSHEET:
-              return <TestScenarioDrawerCheatSheetPanel assetType={assetType} />;
+              return <TestScenarioDrawerCheatSheetPanel />;
             case TestScenarioEditorDock.DATA_OBJECT:
-              return <TestScenarioDrawerDataSelectorPanel assetType={assetType} dataObjects={dataObjects} />;
+              return <TestScenarioDrawerDataSelectorPanel />;
             case TestScenarioEditorDock.SETTINGS:
               return <TestScenarioDrawerSettingsPanel fileName={fileName} />;
             default:

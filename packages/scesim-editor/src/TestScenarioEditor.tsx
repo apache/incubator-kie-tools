@@ -55,11 +55,14 @@ import TestScenarioSideBarMenu from "./sidebar/TestScenarioSideBarMenu";
 import TestScenarioTable from "./table/TestScenarioTable";
 import { useTestScenarioEditorI18n } from "./i18n";
 
-import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
-
 import "./TestScenarioEditor.css";
 import { ComputedStateCache } from "./store/ComputedStateCache";
-import { Computed, createTestScenarioEditorStore, TestScenarioEditorTab } from "./store/TestScenarioEditorStore";
+import {
+  Computed,
+  createTestScenarioEditorStore,
+  TestScenarioEditorTab,
+  TestScenarioType,
+} from "./store/TestScenarioEditorStore";
 import {
   StoreApiType,
   TestScenarioEditorStoreApiContext,
@@ -69,7 +72,7 @@ import {
 import { TestScenarioEditorErrorFallback } from "./TestScenarioEditorErrorFallback";
 import { TestScenarioEditorContextProvider, useTestScenarioEditor } from "./TestScenarioEditorContext";
 import { useEffectAfterFirstRender } from "./hook/useEffectAfterFirstRender";
-import { stat } from "fs";
+import { INITIAL_COMPUTED_CACHE } from "./store/computed/initial";
 
 /* Constants */
 
@@ -83,11 +86,6 @@ enum TestScenarioFileStatus {
   NEW,
   UNSUPPORTED,
   VALID,
-}
-
-export enum TestScenarioType {
-  DMN,
-  RULE,
 }
 
 /* Types */
@@ -109,33 +107,9 @@ export type TestScenarioEditorProps = {
    */
   onModelChange?: OnSceSimModelChange;
   /**
-   * When users want to jump to another file, this method is called, allowing the controller of this component decide what to do.
-   * Links are only rendered if this is provided. Otherwise, paths will be rendered as text.
-   */
-  //onRequestToJumpToPath?: OnRequestToJumpToPath;
-  /**
-   * All paths inside the Test Scenario Editor are relative. To be able to resolve them and display them as absolute paths, this function is called.
-   * If undefined, the relative paths will be displayed.
-   */
-  //onRequestToResolvePath?: OnRequestToResolvePath;
-  /**
    * Notifies the caller when the Test Scenario Editor performs a new edit after the debounce time.
    */
   onModelDebounceStateChanged?: (changed: boolean) => void;
-};
-
-export type TestScenarioAlert = {
-  enabled: boolean;
-  message?: string;
-  variant: "success" | "danger" | "warning" | "info" | "default";
-};
-
-export type TestScenarioDataObject = {
-  id: string;
-  children?: TestScenarioDataObject[];
-  customBadgeContent?: string;
-  isSimpleTypeFact?: boolean;
-  name: string;
 };
 
 export type TestScenarioEditorRef = {
@@ -151,12 +125,11 @@ export type TestScenarioSelectedColumnMetaData = {
 
 function TestScenarioMainPanel({ fileName }: { fileName: string }) {
   const { i18n } = useTestScenarioEditorI18n();
+  const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const navigation = useTestScenarioEditorStore((s) => s.navigation);
   const scesimModel = useTestScenarioEditorStore((s) => s.scesim.model);
-  const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
-
-  const [alert, setAlert] = useState<TestScenarioAlert>({ enabled: false, variant: "info" });
-  const [dataObjects, setDataObjects] = useState<TestScenarioDataObject[]>([]);
+  const state = testScenarioEditorStoreApi.getState();
+  const alertState = state.computed(state).getTestScenarioAlert();
 
   const scenarioTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
   const backgroundTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
@@ -179,113 +152,17 @@ function TestScenarioMainPanel({ fileName }: { fileName: string }) {
     [testScenarioEditorStoreApi]
   );
 
-  /** This is TEMPORARY */
-  useEffect(() => {
-    /* To create the Data Object arrays we need an external source, in details: */
-    /* DMN Data: Retrieving DMN type from linked DMN file */
-    /* Java classes: Retrieving Java classes info from the user projects */
-    /* At this time, none of the above are supported */
-    /* Therefore, it tries to retrieve these info from the SCESIM file, if are present */
-
-    /* Retriving Data Object from the scesim file.       
-       That makes sense for previously created scesim files */
-
-    const factsMappings: SceSim__FactMappingType[] =
-      scesimModel.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping ?? [];
-
-    const dataObjects: TestScenarioDataObject[] = [];
-
-    /* The first two FactMapping are related to the "Number" and "Description" columns. 
-       If those columns only are present, no Data Objects can be detected in the scesim file */
-    for (let i = 2; i < factsMappings.length; i++) {
-      if (factsMappings[i].className!.__$$text === "java.lang.Void") {
-        continue;
-      }
-      const factID = factsMappings[i].expressionElements!.ExpressionElement![0].step.__$$text;
-      const dataObject = dataObjects.find((value) => value.id === factID);
-      const isSimpleTypeFact = factsMappings[i].expressionElements!.ExpressionElement!.length == 1;
-      const propertyID = isSimpleTypeFact //POTENTIAL BUG
-        ? factsMappings[i].expressionElements!.ExpressionElement![0].step.__$$text.concat(".")
-        : factsMappings[i]
-            .expressionElements!.ExpressionElement!.map((expressionElement) => expressionElement.step.__$$text)
-            .join(".");
-      const propertyName = isSimpleTypeFact
-        ? "value"
-        : factsMappings[i].expressionElements!.ExpressionElement!.slice(-1)[0].step.__$$text;
-      if (dataObject) {
-        if (!dataObject.children?.some((value) => value.id === propertyID)) {
-          dataObject.children!.push({
-            id: propertyID,
-            customBadgeContent: factsMappings[i].className.__$$text,
-            isSimpleTypeFact: isSimpleTypeFact,
-            name: propertyName,
-          });
-        }
-      } else {
-        dataObjects.push({
-          id: factID,
-          name: factsMappings[i].factAlias!.__$$text,
-          customBadgeContent: factsMappings[i].factIdentifier!.className!.__$$text,
-          children: [
-            {
-              id: propertyID,
-              name: propertyName,
-              customBadgeContent: factsMappings[i].className.__$$text,
-            },
-          ],
-        });
-      }
-    }
-
-    setDataObjects(dataObjects);
-  }, [
-    scesimModel.ScenarioSimulationModel.settings.type,
-    scesimModel.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping,
-  ]);
-
-  /** It determines the Alert State */
-  useEffect(() => {
-    const assetType = scesimModel.ScenarioSimulationModel.settings.type!.__$$text;
-
-    let alertEnabled = false;
-    let alertMessage = "";
-    let alertVariant: "default" | "danger" | "warning" | "info" | "success" = "danger";
-
-    if (dataObjects.length > 0) {
-      alertMessage =
-        assetType === TestScenarioType[TestScenarioType.DMN]
-          ? i18n.alerts.dmnDataRetrievedFromScesim
-          : i18n.alerts.ruleDataRetrievedFromScesim;
-      alertEnabled = true;
-    } else {
-      alertMessage =
-        assetType === TestScenarioType[TestScenarioType.DMN]
-          ? i18n.alerts.dmnDataNotAvailable
-          : i18n.alerts.ruleDataNotAvailable;
-      alertVariant = assetType === TestScenarioType[TestScenarioType.DMN] ? "warning" : "danger";
-      alertEnabled = true;
-    }
-
-    setAlert({ enabled: alertEnabled, message: alertMessage, variant: alertVariant });
-  }, [dataObjects, i18n, scesimModel.ScenarioSimulationModel.settings.type]);
-
   return (
     <>
       <div className="kie-scesim-editor--content">
         <Drawer isExpanded={navigation.dock.isOpen} isInline={true} position={"right"}>
           <DrawerContent
-            panelContent={
-              <TestScenarioDrawerPanel
-                dataObjects={dataObjects}
-                fileName={fileName}
-                onDrawerClose={() => showDockPanel(false)}
-              />
-            }
+            panelContent={<TestScenarioDrawerPanel fileName={fileName} onDrawerClose={() => showDockPanel(false)} />}
           >
             <DrawerContentBody>
-              {alert.enabled && (
+              {alertState.enabled && (
                 <div className="kie-scesim-editor--content-alert">
-                  <Alert variant={alert.variant} title={alert.message} />
+                  <Alert variant={alertState.variant} title={alertState.message} />
                 </div>
               )}
               <div className="kie-scesim-editor--content-tabs">
@@ -311,7 +188,6 @@ function TestScenarioMainPanel({ fileName }: { fileName: string }) {
                       ref={scenarioTableScrollableElementRef}
                     >
                       <TestScenarioTable
-                        assetType={scesimModel.ScenarioSimulationModel.settings.type!.__$$text}
                         tableData={scesimModel.ScenarioSimulationModel.simulation}
                         scrollableParentRef={scenarioTableScrollableElementRef}
                       />
@@ -338,7 +214,6 @@ function TestScenarioMainPanel({ fileName }: { fileName: string }) {
                       ref={backgroundTableScrollableElementRef}
                     >
                       <TestScenarioTable
-                        assetType={scesimModel.ScenarioSimulationModel.settings.type!.__$$text}
                         tableData={scesimModel.ScenarioSimulationModel.background}
                         scrollableParentRef={backgroundTableScrollableElementRef}
                       />
@@ -406,14 +281,14 @@ export const TestScenarioEditorInternal = ({
     testScenarioEditorStoreApi.setState((state) => {
       // Avoid unecessary state updates
       if (model === state.scesim.model) {
+        console.trace("[TestScenarioEditorInternal]: useEffectAfterFirstRender called, but the models are the same!");
         return;
       }
 
-      console.trace("[TestScenarioEditorInternal: model externally updated!");
+      console.trace("[TestScenarioEditorInternal]: Model internally updated!");
 
       state.scesim.model = model;
       testScenarioEditorModelBeforeEditingRef.current = model;
-      state.dispatch(state).scesim.reset();
     });
   }, [testScenarioEditorStoreApi, model]);
 
@@ -429,7 +304,7 @@ export const TestScenarioEditorInternal = ({
       }
 
       onModelDebounceStateChanged?.(true);
-      console.trace("[TestScenarioEditorInternal: Model changed!");
+      console.trace("[TestScenarioEditorInternal: Debounce State changed!");
       console.trace(scesim.model);
       onModelChange?.(scesim.model);
     }, 500);
@@ -511,8 +386,7 @@ export const TestScenarioEditor = React.forwardRef(
     console.trace(props.model);
 
     const store = useMemo(
-      /* DEFINE EMPTY CACHE */
-      () => createTestScenarioEditorStore(props.model /*new ComputedStateCache<Computed>(INITIAL_COMPUTED_CACHE)*/),
+      () => createTestScenarioEditorStore(props.model, new ComputedStateCache<Computed>(INITIAL_COMPUTED_CACHE)),
       // Purposefully empty. This memoizes the initial value of the store
       // eslint-disable-next-line react-hooks/exhaustive-deps
       []
@@ -521,7 +395,6 @@ export const TestScenarioEditor = React.forwardRef(
 
     const resetState: ErrorBoundaryPropsWithFallback["onReset"] = useCallback(({ args }) => {
       storeRef.current?.setState((state) => {
-        //state.diagram = defaultStaticState().diagram;
         state.scesim.model = args[0];
       });
     }, []);
@@ -544,3 +417,4 @@ export const TestScenarioEditor = React.forwardRef(
     );
   }
 );
+export { TestScenarioType };
