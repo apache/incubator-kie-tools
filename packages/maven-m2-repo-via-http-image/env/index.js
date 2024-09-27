@@ -46,7 +46,7 @@ module.exports = composeEnv([rootEnv], {
         registry: getOrDefault(this.vars.MAVEN_M2_REPO_VIA_HTTP_IMAGE__registry),
         account: getOrDefault(this.vars.MAVEN_M2_REPO_VIA_HTTP_IMAGE__account),
         name: getOrDefault(this.vars.MAVEN_M2_REPO_VIA_HTTP_IMAGE__name),
-        tag: getOrDefault(this.vars.MAVEN_M2_REPO_VIA_HTTP_IMAGE__buildTag),
+        buildTag: getOrDefault(this.vars.MAVEN_M2_REPO_VIA_HTTP_IMAGE__buildTag),
       },
     };
   },

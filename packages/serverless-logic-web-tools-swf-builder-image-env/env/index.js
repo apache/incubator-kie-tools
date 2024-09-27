@@ -42,7 +42,7 @@ module.exports = composeEnv([rootEnv], {
   }),
   get env() {
     return {
-      swfBuilderImageEnv: {
+      slwtBuilderImageEnv: {
         registry: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry),
         account: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount),
         name: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName),

@@ -21,7 +21,7 @@
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:assets": "pnpm copy:webapp",
     "copy:webapp": "cp -r ./node_modules/sonataflow-deployment-webapp/dist dist-dev/webapp",
-    "image:docker:build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker build --ulimit nofile=5000:5000 $(echo $(build-env swfBuilderImageEnv.buildTag) | xargs printf -- \"-t $(build-env swfBuilderImageEnv.registry)/$(build-env swfBuilderImageEnv.account)/$(build-env swfBuilderImageEnv.name):%s\n\" | xargs echo) --build-arg BASE_IMAGE_URL=$(build-env swfBuilderImage.baseImageUrl) .\" --else \"echo Docker not found, skipping image build.\""
+    "image:docker:build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker build --ulimit nofile=5000:5000 $(echo $(build-env slwtBuilderImageEnv.buildTag) | xargs printf -- \"-t $(build-env slwtBuilderImageEnv.registry)/$(build-env slwtBuilderImageEnv.account)/$(build-env slwtBuilderImageEnv.name):%s\n\" | xargs echo) --build-arg BASE_IMAGE_URL=$(build-env slwtBuilderImage.baseImageUrl) .\" --else \"echo Docker not found, skipping image build.\""
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
