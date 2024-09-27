@@ -31,7 +31,6 @@ import { Computed } from "../store/Store";
 import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeContainingDecisionServiceHrefsByDecisionHrefs.ts";
 import { xmlHrefToQName } from "../xml/xmlHrefToQName";
 import { Normalized } from "../normalization/normalize";
-import { NodeDmnObjects } from "../diagram/nodes/Nodes";
 
 export enum NodeDeletionMode {
   FROM_DRG_AND_ALL_DRDS,

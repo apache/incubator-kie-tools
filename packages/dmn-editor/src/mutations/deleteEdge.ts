@@ -27,6 +27,7 @@ import { addOrGetDrd } from "./addOrGetDrd";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { Normalized } from "../normalization/normalize";
+import { xmlHrefToQName } from "../xml/xmlHrefToQName";
 
 export enum EdgeDeletionMode {
   FROM_DRG_AND_ALL_DRDS,
@@ -88,7 +89,9 @@ export function deleteEdge({
       continue;
     }
 
-    const dmnEdgeIndex = (diagramElements ?? []).findIndex((d) => d["@_dmnElementRef"] === edge.id);
+    const dmnEdgeIndex = (diagramElements ?? []).findIndex(
+      (d) => d["@_dmnElementRef"] === xmlHrefToQName(edge.id, definitions)
+    );
     if (dmnEdgeIndex >= 0) {
       if (i === drdIndex) {
         deletedDmnEdgeOnCurrentDrd = diagramElements[dmnEdgeIndex];
