@@ -20,7 +20,7 @@
 import { Locator } from "@playwright/test";
 import { ContextMenu } from "./expressionContainer";
 
-export class ParameterDescriptionCell {
+export class NameAndDataTypeWithStandalonePopoverCell {
   constructor(private locator: Locator) {}
 
   public async open() {

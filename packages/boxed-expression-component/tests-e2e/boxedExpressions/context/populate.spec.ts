@@ -21,51 +21,59 @@ import { expect, test } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Populate Boxed Context", () => {
-  test("should correctly create pre-bureau risk category boxed context", async ({
+  test.only("should correctly create pre-bureau risk category boxed context", async ({
     page,
     stories,
     bee,
     resizing,
-    monaco,
   }) => {
     await stories.openBoxedContext();
 
-    await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Pre-bureau risk category calculation");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "number" }).click();
-    await page.keyboard.press("Enter");
+    await bee.expression.asContext().expressionHeaderCell.open();
+    await bee.expression
+      .asContext()
+      .expressionHeaderCell.setName({ name: "Pre-bureau risk category calculation", close: false });
+    await bee.expression.asContext().expressionHeaderCell.setDataType({ dataType: "number", close: true });
 
     await bee.expression.asContext().entry(0).selectExpressionMenu.selectLiteral();
-    await page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Existing Customer");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "boolean" }).click();
-    await page.keyboard.press("Enter");
-    await monaco.fill({ monacoParentLocator: page, content: "Applicant data.ExistingCustomer" });
+    await bee.expression.asContext().entry(0).variable.open();
+    await bee.expression.asContext().entry(0).variable.setName({ name: "Existing Customer" });
+    await bee.expression.asContext().entry(0).variable.setDataType({ dataType: "boolean", commit: true });
+    await bee.expression.asContext().entry(0).expression.asLiteral().fill("Applicant data.ExistingCustomer");
 
     await bee.expression.asContext().result.selectExpressionMenu.selectDecisionTable();
-    await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).hover({ position: { x: 0, y: 0 } });
-    await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).locator("svg").click();
-    await page.getByRole("cell", { name: "1", exact: true }).hover();
-    await page.getByRole("cell", { name: "1", exact: true }).locator("svg").click();
-    await page.getByRole("cell", { name: "1", exact: true }).locator("svg").click();
-    await page.getByRole("cell", { name: "1", exact: true }).locator("svg").click();
-    await page.getByRole("cell", { name: "1", exact: true }).locator("svg").click();
-    await page.getByRole("cell", { name: "1", exact: true }).locator("svg").click();
-    await page.getByRole("cell", { name: "1", exact: true }).locator("svg").click();
-    await page.getByRole("cell", { name: "1", exact: true }).locator("svg").click();
+    await bee.expression.asContext().result.expression.asDecisionTable().addInputAtEnd();
+    await bee.expression.asContext().result.expression.asDecisionTable().addRowAtTop();
+    await bee.expression.asContext().result.expression.asDecisionTable().addRowAtTop();
+    await bee.expression.asContext().result.expression.asDecisionTable().addRowAtTop();
+    await bee.expression.asContext().result.expression.asDecisionTable().addRowAtTop();
+    await bee.expression.asContext().result.expression.asDecisionTable().addRowAtTop();
+    await bee.expression.asContext().result.expression.asDecisionTable().addRowAtTop();
+    await bee.expression.asContext().result.expression.asDecisionTable().addRowAtTop();
 
-    await page.getByRole("columnheader", { name: "input-2 (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Existing customer");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "boolean" }).click();
-    await page.keyboard.press("Enter");
-    await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Application risk score");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "number" }).click();
-    await page.keyboard.press("Enter");
+    await bee.expression.asContext().result.expression.asDecisionTable().inputHeaderAt(0).open();
+    await bee.expression
+      .asContext()
+      .result.expression.asDecisionTable()
+      .inputHeaderAt(0)
+      .setName({ name: "Existing customer", close: false });
+    await bee.expression
+      .asContext()
+      .result.expression.asDecisionTable()
+      .inputHeaderAt(0)
+      .setDataType({ dataType: "boolean", close: true });
+
+    await bee.expression.asContext().result.expression.asDecisionTable().inputHeaderAt(1).open();
+    await bee.expression
+      .asContext()
+      .result.expression.asDecisionTable()
+      .inputHeaderAt(1)
+      .setName({ name: "Application risk score", close: false });
+    await bee.expression
+      .asContext()
+      .result.expression.asDecisionTable()
+      .inputHeaderAt(1)
+      .setDataType({ dataType: "number", close: true });
 
     await bee.expression.asDecisionTable().fill({
       startAtCell: 1,

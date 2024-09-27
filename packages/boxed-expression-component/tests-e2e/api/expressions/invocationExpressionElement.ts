@@ -21,7 +21,7 @@ import { Locator } from "@playwright/test";
 import { Monaco } from "../../__fixtures__/monaco";
 import { ChildExpression } from "../expressionContainer";
 import { NameAndDataTypeCell } from "../nameAndDataTypeCell";
-import { ParameterDescriptionCell } from "../parameterDescriptionCell";
+import { NameAndDataTypeWithStandalonePopoverCell as ParameterDescriptionCell } from "../nameAndDataTypeWithStandalonePopoverCell";
 
 export class InvocationExpressionElement {
   constructor(
