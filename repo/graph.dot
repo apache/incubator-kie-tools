@@ -383,14 +383,10 @@ digraph G {
   "@kie-tools/form-code-generator" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/form-code-generator" -> "@kie-tools/jest-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/form-code-generator" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
+  "@kie-tools/form-code-generator-bootstrap4-theme" -> "@kie-tools/form-code-generator" [ style = "solid", color = "blue" ];
   "@kie-tools/form-code-generator-bootstrap4-theme" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
-  "@kie-tools/form-code-generator-bootstrap4-theme" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
-  "@kie-tools/form-code-generator-bootstrap4-theme" -> "@kie-tools/jest-base" [ style = "dashed", color = "blue" ];
-  "@kie-tools/form-code-generator-bootstrap4-theme" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
+  "@kie-tools/form-code-generator-patternfly-theme" -> "@kie-tools/form-code-generator" [ style = "solid", color = "blue" ];
   "@kie-tools/form-code-generator-patternfly-theme" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
-  "@kie-tools/form-code-generator-patternfly-theme" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
-  "@kie-tools/form-code-generator-patternfly-theme" -> "@kie-tools/jest-base" [ style = "dashed", color = "blue" ];
-  "@kie-tools/form-code-generator-patternfly-theme" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/form-dmn" -> "@kie-tools/form" [ style = "solid", color = "blue" ];
   "@kie-tools-core/i18n" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/i18n" -> "@kie-tools/jest-base" [ style = "dashed", color = "purple" ];
@@ -405,7 +401,6 @@ digraph G {
   "@kie-tools/import-java-classes-component" -> "@kie-tools-core/monaco-editor" [ style = "dashed", color = "blue" ];
   "@kie-tools/import-java-classes-component" -> "@kie-tools-core/patternfly-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/import-java-classes-component" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
-  "@kie-tools/jbpm-form-code-generator-themes" -> "@kie-tools/form-code-generator" [ style = "solid", color = "blue" ];
   "@kie-tools/jbpm-form-code-generator-themes" -> "@kie-tools/form-code-generator-bootstrap4-theme" [ style = "solid", color = "blue" ];
   "@kie-tools/jbpm-form-code-generator-themes" -> "@kie-tools/form-code-generator-patternfly-theme" [ style = "solid", color = "blue" ];
   "@kie-tools/jbpm-quarkus-devui" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];

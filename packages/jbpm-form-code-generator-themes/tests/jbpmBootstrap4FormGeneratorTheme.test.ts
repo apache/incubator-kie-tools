@@ -64,7 +64,7 @@ describe("jbpmBootstrap4FormCodeGeneratorTheme tests", () => {
 
   it("FormCodeGenerator - form assets", () => {
     const formCodeGenerator = new FormCodeGenerator(jbpmBootstrap4FormCodeGeneratorTheme);
-    const formAssets = formCodeGenerator.generateForms({
+    const formAssets = formCodeGenerator.generateFormsCode({
       formSchemas: [
         { name: "Apply#For#Visa", schema: ApplyForVisaSchema },
         { name: "ConfirmTravel", schema: ConfirmTravelSchema },
@@ -74,7 +74,7 @@ describe("jbpmBootstrap4FormCodeGeneratorTheme tests", () => {
 
     expect(formAssets[0]).toEqual(
       expect.objectContaining({
-        formAssets: expect.objectContaining({
+        formAsset: expect.objectContaining({
           id: "Apply#For#Visa",
           sanitizedId: "Apply_For_Visa",
           assetName: "Apply#For#Visa.html",
@@ -93,13 +93,13 @@ describe("jbpmBootstrap4FormCodeGeneratorTheme tests", () => {
           },
           type: "html",
         }),
-        formErrors: undefined,
+        formError: undefined,
       })
     );
 
     expect(formAssets[1]).toEqual(
       expect.objectContaining({
-        formAssets: expect.objectContaining({
+        formAsset: expect.objectContaining({
           id: "ConfirmTravel",
           sanitizedId: "ConfirmTravel",
           assetName: "ConfirmTravel.html",
@@ -118,7 +118,7 @@ describe("jbpmBootstrap4FormCodeGeneratorTheme tests", () => {
           },
           type: "html",
         }),
-        formErrors: undefined,
+        formError: undefined,
       })
     );
   });

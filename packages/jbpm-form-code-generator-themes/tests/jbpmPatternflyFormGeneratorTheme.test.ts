@@ -56,7 +56,7 @@ describe("jbpmPatternflyFormCodeGeneratorTheme tests", () => {
 
   it("FormCodeGenerator - form assets", () => {
     const formCodeGenerator = new FormCodeGenerator(jbpmPatternflyFormCodeGeneratorTheme);
-    const formAssets = formCodeGenerator.generateForms({
+    const formAssets = formCodeGenerator.generateFormsCode({
       formSchemas: [
         { name: "Apply#For#Visa", schema: ApplyForVisaSchema },
         { name: "ConfirmTravel", schema: ConfirmTravelSchema },
@@ -66,7 +66,7 @@ describe("jbpmPatternflyFormCodeGeneratorTheme tests", () => {
 
     expect(formAssets[0]).toEqual(
       expect.objectContaining({
-        formAssets: expect.objectContaining({
+        formAsset: expect.objectContaining({
           id: "Apply#For#Visa",
           sanitizedId: "Apply_For_Visa",
           assetName: "Apply#For#Visa.tsx",
@@ -74,13 +74,13 @@ describe("jbpmPatternflyFormCodeGeneratorTheme tests", () => {
           config: { resources: { scripts: {}, styles: {} }, schema: JSON.stringify(ApplyForVisaSchema) },
           type: "tsx",
         }),
-        formErrors: undefined,
+        formError: undefined,
       })
     );
 
     expect(formAssets[1]).toEqual(
       expect.objectContaining({
-        formAssets: expect.objectContaining({
+        formAsset: expect.objectContaining({
           id: "ConfirmTravel",
           sanitizedId: "ConfirmTravel",
           assetName: "ConfirmTravel.tsx",
@@ -88,7 +88,7 @@ describe("jbpmPatternflyFormCodeGeneratorTheme tests", () => {
           config: { resources: { scripts: {}, styles: {} }, schema: JSON.stringify(ConfirmTravelSchema) },
           type: "tsx",
         }),
-        formErrors: undefined,
+        formError: undefined,
       })
     );
   });

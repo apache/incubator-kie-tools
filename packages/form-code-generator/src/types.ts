@@ -54,6 +54,6 @@ export interface FormCodeGeneratorTheme<
 }
 
 export interface FormCodeGeneration<FormThemeFileExt extends string> {
-  formAssets: FormAsset<FormThemeFileExt> | undefined;
-  formErrors: FormCodeGenerationError | undefined;
+  formAsset: FormAsset<FormThemeFileExt> | undefined;
+  formError: FormCodeGenerationError | undefined;
 }

@@ -4767,6 +4767,9 @@ importers:
 
   packages/form-code-generator-bootstrap4-theme:
     dependencies:
+      '@kie-tools/form-code-generator':
+        specifier: workspace:*
+        version: link:../form-code-generator
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -4785,7 +4788,7 @@ importers:
       uniforms:
         specifier: ^3.10.2
         version: 3.10.2(react@17.0.2)
-      uniforms-bridge-simple-schema-2:
+      uniforms-bridge-json-schema:
         specifier: ^3.10.2
         version: 3.10.2(react@17.0.2)
     devDependencies:
@@ -4876,6 +4879,9 @@ importers:
       typescript:
         specifier: ^5.5.3
         version: 5.5.3
+      uniforms-bridge-simple-schema-2:
+        specifier: ^3.10.2
+        version: 3.10.2(react@17.0.2)
       webpack:
         specifier: ^5.94.0
         version: 5.94.0
@@ -4891,6 +4897,9 @@ importers:
 
   packages/form-code-generator-patternfly-theme:
     dependencies:
+      '@kie-tools/form-code-generator':
+        specifier: workspace:*
+        version: link:../form-code-generator
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -4906,7 +4915,7 @@ importers:
       uniforms:
         specifier: ^3.10.2
         version: 3.10.2(react@17.0.2)
-      uniforms-bridge-simple-schema-2:
+      uniforms-bridge-json-schema:
         specifier: ^3.10.2
         version: 3.10.2(react@17.0.2)
     devDependencies:
@@ -4991,6 +5000,9 @@ importers:
       typescript:
         specifier: ^5.5.3
         version: 5.5.3
+      uniforms-bridge-simple-schema-2:
+        specifier: ^3.10.2
+        version: 3.10.2(react@17.0.2)
       webpack:
         specifier: ^5.94.0
         version: 5.94.0(webpack-cli@4.10.0)

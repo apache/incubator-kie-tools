@@ -17,7 +17,33 @@
 
 ## Form Code Generator PatternFly Theme
 
-This module contains the [Uniforms](https://uniforms.tools) theme contain to generate Patternfly forms for the `@kie-tools/jbpm-form-generator`.
+This package is the PatternFly theme for the [Form Code Generator](../form-code-generator/README.md).
+
+## How it works?
+
+This package generates the form code of a [Uniforms](https://uniforms.tools/) form using PatternFly components. [Uniforms](https://uniforms.tools/) is a library that autogenerates forms based on schemas, and supports multiple themes. This package makes its own theme, describing the code that each field should have. After it, the form is rendered using `ReactDOMServer.renderToString` getting the form code.
+
+## Usage
+
+To use this package, you must call the `renderForm` method passing its arguments:
+
+```ts
+{
+  id: string;             // The form id
+  sanitizedId: string;    // The form id, any # is replaced by _
+  disabled?: boolean;     // Enable/disable form (read only)
+  placeholder?: boolean;  // Enable/disable placeholders
+  schema: Bridge;         // A Uniforms Bridge instance
+}
+```
+
+## Build
+
+In order to build the library you must run the following command in the root folder of the repository:
+
+```shell script
+pnpm -F @kie-tools/form-code-generator-patternfly-theme... build:prod
+```
 
 ---
 

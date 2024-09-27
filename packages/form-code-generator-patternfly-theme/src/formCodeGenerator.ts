@@ -18,41 +18,34 @@
  */
 
 import { FormAsset, FormCodeGeneratorTheme } from "@kie-tools/form-code-generator/dist/types";
-import { renderForm } from "@kie-tools/form-code-generator-patternfly-theme/dist";
-import unescape from "lodash/unescape";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
-import { getUniformsSchema } from "./getUniformsSchema";
-import { inputSanitizationUtil } from "./inputSanitizationUtil";
-import { JbpmFormAssetBase } from "./types";
+import unescape from "lodash/unescape";
+import { renderForm } from ".";
 
 const PATTERNFLY_THEME_NAME = "patternfly";
 const PATTERNFLY_FILE_EXT = "tsx";
 
 export type PatternflyThemeName = typeof PATTERNFLY_THEME_NAME;
 export type PatternflyFileExt = typeof PATTERNFLY_FILE_EXT;
+export interface PatternflyFormAsset extends FormAsset<PatternflyFileExt> {}
 
-export interface PatternflyFormAsset extends FormAsset<PatternflyFileExt>, JbpmFormAssetBase {}
-
-export const jbpmPatternflyFormCodeGeneratorTheme: FormCodeGeneratorTheme<
+export const patternflyJsonSchemaFormCodeGeneratorTheme: FormCodeGeneratorTheme<
   PatternflyFileExt,
   PatternflyThemeName,
   PatternflyFormAsset
 > = {
   theme: PATTERNFLY_THEME_NAME,
   generate: (formSchema) => {
-    const uniformsSchema = getUniformsSchema(formSchema.schema);
     const form = renderForm({
       id: formSchema.name,
-      sanitizedId: inputSanitizationUtil(formSchema.name),
-      schema: new JSONSchemaBridge(uniformsSchema, () => true),
+      sanitizedId: formSchema.name,
+      schema: new JSONSchemaBridge(formSchema.schema, () => true),
       disabled: false,
       placeholder: true,
     });
     return {
       id: formSchema.name,
-      sanitizedId: inputSanitizationUtil(formSchema.name),
       assetName: `${formSchema.name}.${PATTERNFLY_FILE_EXT}`,
-      sanitizedAssetName: `${inputSanitizationUtil(formSchema.name)}.${PATTERNFLY_FILE_EXT}`,
       type: PATTERNFLY_FILE_EXT,
       content: unescape(form),
       config: {

@@ -18,12 +18,9 @@
  */
 
 import { FormCodeGeneratorTheme, FormAsset } from "@kie-tools/form-code-generator/dist/types";
-import { renderForm } from "@kie-tools/form-code-generator-bootstrap4-theme/dist";
-import unescape from "lodash/unescape";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
-import { getUniformsSchema } from "./getUniformsSchema";
-import { inputSanitizationUtil } from "./inputSanitizationUtil";
-import { JbpmFormAssetBase } from "./types";
+import unescape from "lodash/unescape";
+import { renderForm } from ".";
 
 export const BOOTSTRAP4_CSS_URL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css";
 export const BOOTSTRAP4_JS_URL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js";
@@ -34,29 +31,25 @@ const BOOTSTRAP4_FILE_EXT = "html";
 
 export type Bootstrap4ThemeName = typeof BOOTSTRAP4_THEME_NAME;
 export type Bootstrap4FileExt = typeof BOOTSTRAP4_FILE_EXT;
+export interface Bootstrap4FormAsset extends FormAsset<Bootstrap4FileExt> {}
 
-export interface Bootstrap4FormAsset extends FormAsset<Bootstrap4FileExt>, JbpmFormAssetBase {}
-
-export const jbpmBootstrap4FormCodeGeneratorTheme: FormCodeGeneratorTheme<
+export const bootstrap4JsonSchemaFormCodeGeneratorTheme: FormCodeGeneratorTheme<
   Bootstrap4FileExt,
   Bootstrap4ThemeName,
   Bootstrap4FormAsset
 > = {
   theme: BOOTSTRAP4_THEME_NAME,
   generate: (formSchema) => {
-    const uniformsSchema = getUniformsSchema(formSchema.schema);
     const form = renderForm({
       id: formSchema.name,
-      sanitizedId: inputSanitizationUtil(formSchema.name),
-      schema: new JSONSchemaBridge(uniformsSchema, () => true),
+      sanitizedId: formSchema.name,
+      schema: new JSONSchemaBridge(formSchema.schema, () => true),
       disabled: false,
       placeholder: true,
     });
     return {
       id: formSchema.name,
-      sanitizedId: inputSanitizationUtil(formSchema.name),
       assetName: `${formSchema.name}.${BOOTSTRAP4_FILE_EXT}`,
-      sanitizedAssetName: `${inputSanitizationUtil(formSchema.name)}.${BOOTSTRAP4_FILE_EXT}`,
       type: BOOTSTRAP4_FILE_EXT,
       content: unescape(form),
       config: {

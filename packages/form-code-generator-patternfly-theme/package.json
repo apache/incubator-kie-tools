@@ -22,10 +22,11 @@
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --verbose --passWithNoTests\""
   },
   "dependencies": {
+    "@kie-tools/form-code-generator": "workspace:*",
     "lodash": "^4.17.21",
     "prettier": "^2.8.8",
     "uniforms": "^3.10.2",
-    "uniforms-bridge-simple-schema-2": "^3.10.2"
+    "uniforms-bridge-json-schema": "^3.10.2"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -55,6 +56,7 @@
     "simpl-schema": "^1.12.0",
     "ts-jest": "^29.1.5",
     "typescript": "^5.5.3",
+    "uniforms-bridge-simple-schema-2": "^3.10.2",
     "webpack": "^5.94.0",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1",

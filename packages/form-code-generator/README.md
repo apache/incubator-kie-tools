@@ -17,15 +17,56 @@
 
 ## Form Code Generator
 
-This is a utility library to help generating form code in differents formats for BPMN processes and User Tasks in your Kogito projects.
+This library is used to generate the form code from a schema. It can uses different themes, such as the [Bootstrap4](../form-code-generator-bootstrap4-theme/README.md) and [PatternFly](../form-code-generator-patternfly-theme/README.md) or any theme that implements the [FormCodeGeneratorTheme](./src/types.ts) interface.
 
 ## How it works?
 
-When building a Kogito project, Kogito generates JSON Schemas to represent the data models for both Processes and User Tasks.
+This library provides capabilities to register and use themes that implement the [FormCodeGeneratorTheme](./src/types.ts).
 
-This tool locates those JSON Schemas in the project and taking advantage of the [Uniforms](https://uniforms.tools) APIs, processes them and generate static forms.
+## Usage
 
-### Form Types
+To use it, create a new instance of `FormCodeGenerator` passing your theme to its constructor:
+
+```ts
+import { FormCodeGenerator } from "@kie-tools/form-code-generator/dist/FormCodeGenerator"
+import { FormCodeGeneratorTheme } from "@kie-tools/form-code-generator/dist/types"
+
+const myAwesomeTheme: FormCodeGeneratorTheme: {
+  theme: "my theme",
+  generate: (formSchema) => { ... };
+}
+
+const myThemeFormCodeGenerator = new FormCodeGenerator(myAwesomeTheme);
+const formsCode = myThemeFormCodeGenerator.generateFormCode([
+  {
+    theme: "my theme",        // Theme name
+    formSchema: {
+      name: "my form name",   // Form name
+      schema: {},             // My form schema. The theme determines which kind of schema will be supported.
+    },
+  },
+]);
+formsCode[0];                 // FormAsset | FormGenerationError
+```
+
+Example using the [PatternFly](../form-code-generator-patternfly-theme/README.md) theme:
+
+```ts
+import { FormCodeGenerator } from "@kie-tools/form-code-generator/dist/FormCodeGenerator";
+import { patternflyJsonSchemaFormCodeGeneratorTheme } from "@kie-tools/form-code-generator-patternfly-theme/dist/formCodeGenerator";
+
+const patternflyFormCodeGenerator = new FormCodeGenerator(patternflyJsonSchemaFormCodeGeneratorTheme);
+const formsCode = patternflyFormCodeGenerator.generateFormCode([
+  {
+    theme: "patternfly", // Theme name
+    formSchema: {
+      name: "my patternfly form", // Form name
+      schema: {}, // My form JSON Schema.
+    },
+  },
+]);
+formsCode[0]; // FormAsset | FormGenerationError
+```
 
 ## Build
 
@@ -34,51 +75,6 @@ In order to build the library you must run the following command in the root fol
 ```shell script
 pnpm -F @kie-tools/form-code-generator... build:prod
 ```
-
-After the command, you can import the `generateForms` function into your codebase. It requires two arguments
-
-```tsx
-generateForms({ type, formSchemas }: Args): (FormAsset | FormGenerationError)[]
-```
-
-The `type` argument defines which kind of form will be generated. Currently, we have native support for `"bootstrap"` and `"patternfly"` but more can be added.
-
-The `formSchemas` argument is a list of JSON Schemas which will be used to generate the form code.
-
-`generateForms` will return a list of form assets, which contain the `form` and `config` file content.
-
-## Adding custom themes
-
-To add custom themes use the `registerFormGeneratorType` method, which requires a class that implements the following interface:
-
-```tsx
-export interface FormGenerator {
-  type: string;
-  generate: (formSchema: FormSchema) => FormAsset | FormGenerationError;
-}
-```
-
-## Using the Custom Forms with Runtime Tools Quarkus Extension
-
-If your project is a Quarkus based Kogito project, you can use and test them by using the **Runtime Tools Quarkus Extension**.
-
-To do so, just add the following dependency in your project `pom.xml`:
-
-```xml
-<dependency>
-  <groupId>org.jbpm</groupId>
-  <artifactId>jbpm-quarkus-devui</artifactId>
-  <version>${version}</version>
-</dependency>
-```
-
-And start the project in Dev mode with the command:
-
-```shell script
-mvn clean quarkus:dev
-```
-
-For more information on how to setup the **Runtime Tools Quarkus Extension** in your project look at the oficial Kogito [documentation](https://docs.kogito.kie.org/latest/html_single/#con-runtime-tools-dev-ui_kogito-developing-process-services).
 
 ---
 

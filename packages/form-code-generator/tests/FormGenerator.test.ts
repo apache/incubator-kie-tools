@@ -56,11 +56,11 @@ describe("FormCodeGenerator tests", () => {
     });
   });
 
-  describe("generateForms tests", () => {
+  describe("generateFormsCode tests", () => {
     it("Generate forms with wrong formGenerator type", () => {
       const jbpmFormGenerator = new FormCodeGenerator();
       expect(() =>
-        jbpmFormGenerator.generateForms({
+        jbpmFormGenerator.generateFormsCode({
           formSchemas: [{ name: "", schema: {} }],
           theme: "wrong type",
         })
@@ -69,27 +69,27 @@ describe("FormCodeGenerator tests", () => {
 
     it("Generate forms for empty schema", () => {
       const jbpmFormGenerator = new FormCodeGenerator(dummyPatternflyTheme);
-      const formAssets = jbpmFormGenerator.generateForms({
+      const formsCode = jbpmFormGenerator.generateFormsCode({
         formSchemas: [{ name: "test", schema: {} }],
         theme: "patternfly",
       });
 
-      expect(formAssets[0]).toEqual(
+      expect(formsCode[0]).toEqual(
         expect.objectContaining({
-          formAssets: expect.objectContaining({
+          formAsset: expect.objectContaining({
             id: "test",
             assetName: "test.tsx",
             config: { resources: { scripts: {}, styles: {} }, schema: "{}" },
             type: "tsx",
           }),
-          formErrors: undefined,
+          formError: undefined,
         })
       );
     });
 
     it("Generate forms project with schemas", () => {
       const jbpmFormGenerator = new FormCodeGenerator(dummyPatternflyTheme);
-      const formAssets = jbpmFormGenerator.generateForms({
+      const formsCode = jbpmFormGenerator.generateFormsCode({
         formSchemas: [
           { name: "Apply#For#Visa", schema: ApplyForVisaSchema },
           { name: "ConfirmTravel", schema: ConfirmTravelSchema },
@@ -97,26 +97,26 @@ describe("FormCodeGenerator tests", () => {
         theme: "patternfly",
       });
 
-      expect(formAssets[0]).toEqual(
+      expect(formsCode[0]).toEqual(
         expect.objectContaining({
-          formAssets: expect.objectContaining({
+          formAsset: expect.objectContaining({
             id: "Apply#For#Visa",
             assetName: "Apply#For#Visa.tsx",
             config: { resources: { scripts: {}, styles: {} }, schema: JSON.stringify(ApplyForVisaSchema) },
             type: "tsx",
           }),
-          formErrors: undefined,
+          formError: undefined,
         })
       );
-      expect(formAssets[1]).toEqual(
+      expect(formsCode[1]).toEqual(
         expect.objectContaining({
-          formAssets: expect.objectContaining({
+          formAsset: expect.objectContaining({
             id: "ConfirmTravel",
             assetName: "ConfirmTravel.tsx",
             config: { resources: { scripts: {}, styles: {} }, schema: JSON.stringify(ConfirmTravelSchema) },
             type: "tsx",
           }),
-          formErrors: undefined,
+          formError: undefined,
         })
       );
     });
@@ -143,7 +143,7 @@ describe("FormCodeGenerator tests", () => {
         },
       });
 
-      const formAssets = jbpmFormGenerator.generateForms({
+      const formsCode = jbpmFormGenerator.generateFormsCode({
         formSchemas: [
           { name: "ApplyForVisa", schema: ApplyForVisaSchema },
           { name: "ConfirmTravel", schema: ConfirmTravelSchema },
@@ -151,19 +151,19 @@ describe("FormCodeGenerator tests", () => {
         theme: "cool formGenerator",
       });
 
-      expect(formAssets[0]).toEqual({
-        formAssets: undefined,
-        formErrors: new Error("Unexpected Error!"),
+      expect(formsCode[0]).toEqual({
+        formAsset: undefined,
+        formError: new Error("Unexpected Error!"),
       });
-      expect(formAssets[1]).toEqual(
+      expect(formsCode[1]).toEqual(
         expect.objectContaining({
-          formAssets: expect.objectContaining({
+          formAsset: expect.objectContaining({
             id: "ConfirmTravel",
             assetName: "ConfirmTravel.txt",
             config: { resources: { scripts: {}, styles: {} }, schema: "" },
             type: "txt",
           }),
-          formErrors: undefined,
+          formError: undefined,
         })
       );
     });

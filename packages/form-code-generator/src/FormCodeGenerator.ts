@@ -54,14 +54,14 @@ export class FormCodeGenerator<
     throw new Error(`Unsupported form generation type: "${theme}"`);
   }
 
-  public generateForms({ theme, formSchemas }: Args<FormThemeName>) {
+  public generateFormsCode({ theme, formSchemas }: Args<FormThemeName>) {
     const formGenerator = this.getFormCodeGenerator(theme);
     return formSchemas.reduce((generatedForms, formSchema) => {
       try {
-        generatedForms.push({ formAssets: formGenerator.generate(formSchema), formErrors: undefined });
+        generatedForms.push({ formAsset: formGenerator.generate(formSchema), formError: undefined });
       } catch (error) {
         console.error(`Error generating form: ${error}`);
-        generatedForms.push({ formAssets: undefined, formErrors: error });
+        generatedForms.push({ formAsset: undefined, formError: error });
       }
       return generatedForms;
     }, [] as FormCodeGeneration<FormThemeFileExt>[]);

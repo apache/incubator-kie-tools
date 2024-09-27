@@ -1636,42 +1636,22 @@
       },
       {
         "source": "@kie-tools/form-code-generator-bootstrap4-theme",
-        "target": "@kie-tools-core/webpack-base",
+        "target": "@kie-tools/form-code-generator",
         "weight": 1
       },
       {
         "source": "@kie-tools/form-code-generator-bootstrap4-theme",
-        "target": "@kie-tools/eslint",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/form-code-generator-bootstrap4-theme",
-        "target": "@kie-tools/jest-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/form-code-generator-bootstrap4-theme",
-        "target": "@kie-tools/tsconfig",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/form-code-generator-patternfly-theme",
         "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
       {
         "source": "@kie-tools/form-code-generator-patternfly-theme",
-        "target": "@kie-tools/eslint",
+        "target": "@kie-tools/form-code-generator",
         "weight": 1
       },
       {
         "source": "@kie-tools/form-code-generator-patternfly-theme",
-        "target": "@kie-tools/jest-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/form-code-generator-patternfly-theme",
-        "target": "@kie-tools/tsconfig",
+        "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
       {
@@ -1697,11 +1677,6 @@
       {
         "source": "@kie-tools/import-java-classes-component",
         "target": "@kie-tools-core/webpack-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/jbpm-form-code-generator-themes",
-        "target": "@kie-tools/form-code-generator",
         "weight": 1
       },
       {

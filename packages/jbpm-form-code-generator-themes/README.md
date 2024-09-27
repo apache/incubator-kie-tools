@@ -15,78 +15,111 @@
    under the License.
 -->
 
-## jBPM Form Generator
+## jBPM Form Code Generator
 
-This is a utility library to help generating form code in differents formats for BPMN processes and User Tasks in your Kogito projects.
+This is a library that has jBPM themes for the [Form Code Generator](../form-code-generator/README.md).
 
 ## How it works?
 
-When building a Kogito project, Kogito generates JSON Schemas to represent the data models for both Processes and User Tasks.
+This package has two jBPM themes for the [Form Code Generator](../form-code-generator/README.md) library. It extends the [Bootstrap4 theme](../form-code-generator-bootstrap4-theme/README.md) and [PatternFly theme](../form-code-generator-patternfly-theme/README.md), modifying them by making operations over the JSON Schema and changing their return type to `JbpmFormAsset` insted of `FormAsset`.
 
-This tool locates those JSON Schemas in the project and taking advantage of the [Uniforms](https://uniforms.tools) APIs, processes them and generate static forms.
+## Usage
 
-### Form Types
+To use it, pass the jBPM theme to the `FormCodeGenerator` class and invoke the `generateFormsCode` method:
 
-There are two types of form supported with differnt styling and output format:
+```ts
+import { FormCodeGenerator } from "@kie-tools/form-code-generator/dist/FormCodeGenerator";
+import { jbpmPatternflyFormCodeGeneratorTheme } from "@kie-tools/jbpm-form-code-generator-themes/dist/jbpmPatternflyFormCodeGeneratorTheme";
 
-- **Patternfly**: generates a React (`.tsx`) forms using Patternfly 4 components. Implementation can be found in `@kie-tools/uniforms-patternfly-codegen`
+const jbpmPatternflyFormCodeGenerator = new FormCodeGenerator(jbpmPatternflyFormCodeGeneratorTheme);
+const jbpmFormsCode = jbpmPatternflyFormCodeGenerator.generateFormsCode({
+  theme: "patternfly",
+  formSchemas: [
+    {
+      name: "<name>",
+      schema: {}, // your JSON Schema
+    },
+  ],
+});
+```
 
-- **Bootstrap 4**: generates a HTML (`.html`) forms using Bootstrap 4 styling. Implementation can be found in `@kie-tools/uniforms-bootstrap4-codegen`
+The `jbpmFormsCode` will give you the following object:
 
-Each generated form consist in two files, the source code (`.tsx` or `.html`) and a companion `.config` file that defines the external resources (`css` / `js`) the form may need.
+```ts
+[{
+  formAsset: JbpmFormAssets | undefined
+  formError: FormCodeGenerationError | undefined
+}]
+```
+
+`JbpmFormAssets` is a object with the following properties:
+
+```ts
+{
+  id: string,                   // The form id
+  sanitizedId: string,          // The same value as "id" but any "#" occorrence is replaced by "_"
+  assetName: string,            // The form name
+  sanitizedAssetName: string,   // The same value as "assetName" but any "#" occorrence is replaced by "_"
+  type: string,                 // The file extension of the code
+  content: string,              // The unescaped form code
+  config: {
+    schema: string,             // The stringifyied JSON Schema
+    resources: {
+      styles: {},               // Any style that need to be loaded
+      scripts: {},              // Any script that need to be loaded
+    },
+  },
+}
+```
+
+`FormCodeGenerationError` is a object with the following properties:
+
+```ts
+{
+  error: Error; // The error object that was thrown during the form generation
+}
+```
+
+Alternatively, it's possible to pass all themes to the `FormCodeGenerator`, but it requires to manually set the type:
+
+```ts
+import { FormCodeGenerator } from "@kie-tools/form-code-generator/dist/FormCodeGenerator";
+import {
+  Bootstrap4FileExt,
+  Bootstrap4ThemeName,
+  Bootstrap4FormAsset,
+  jbpmBootstrap4FormCodeGeneratorTheme,
+} from "@kie-tools/jbpm-form-code-generator-themes/dist/jbpmBootstrap4FormCodeGeneratorTheme";
+import {
+  PatternflyFileExt,
+  PatternflyThemeName,
+  PatternflyFormAsset,
+  jbpmPatternflyFormCodeGeneratorTheme,
+} from "@kie-tools/jbpm-form-code-generator-themes/dist/jbpmPatternflyFormCodeGeneratorTheme";
+
+const jbpmFormCodeGenerator = new FormCodeGenerator<
+  Bootstrap4FileExt | PatternflyFileExt,
+  Bootstrap4ThemeName | PatternflyThemeName,
+  Bootstrap4FormAsset | PatternflyFormAsset
+>(jbpmBootstrap4FormCodeGeneratorTheme, jbpmPatternflyFormCodeGeneratorTheme);
+const jbpmFormsCode = jbpmFormCodeGenerator.generateFormsCode({
+  theme: "patternfly",
+  formSchemas: [
+    {
+      name: "<name>",
+      schema: {}, // your JSON Schema
+    },
+  ],
+});
+```
 
 ## Build
 
 In order to build the library you must run the following command in the root folder of the repository:
 
 ```shell script
-pnpm -F @kie-tools/jbpm-form-generator... build:prod
+pnpm -F @kie-tools/jbpm-form-code-generator-themes... build:prod
 ```
-
-After the command, you can import the `generateForms` function into your codebase. It requires two arguments
-
-```tsx
-generateForms({ type, formSchemas }: Args): (FormAsset | FormGenerationError)[]
-```
-
-The `type` argument defines which kind of form will be generated. Currently, we have native support for `"bootstrap"` and `"patternfly"` but more can be added.
-
-The `formSchemas` argument is a list of JSON Schemas which will be used to generate the form code.
-
-`generateForms` will return a list of form assets, which contain the `form` and `config` file content.
-
-## Adding custom themes
-
-To add custom themes use the `registerFormGeneratorType` method, which requires a class that implements the following interface:
-
-```tsx
-export interface FormGenerator {
-  type: string;
-  generate: (formSchema: FormSchema) => FormAsset | FormGenerationError;
-}
-```
-
-## Using the Custom Forms with Runtime Tools Quarkus Extension
-
-If your project is a Quarkus based Kogito project, you can use and test them by using the **Runtime Tools Quarkus Extension**.
-
-To do so, just add the following dependency in your project `pom.xml`:
-
-```xml
-<dependency>
-  <groupId>org.jbpm</groupId>
-  <artifactId>jbpm-quarkus-devui</artifactId>
-  <version>${version}</version>
-</dependency>
-```
-
-And start the project in Dev mode with the command:
-
-```shell script
-mvn clean quarkus:dev
-```
-
-For more information on how to setup the **Runtime Tools Quarkus Extension** in your project look at the oficial Kogito [documentation](https://docs.kogito.kie.org/latest/html_single/#con-runtime-tools-dev-ui_kogito-developing-process-services).
 
 ---
 

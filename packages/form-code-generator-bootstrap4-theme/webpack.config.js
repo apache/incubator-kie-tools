@@ -27,6 +27,7 @@ module.exports = (env, args) => [
   merge(common(env, args), {
     entry: {
       index: "./src/index.ts",
+      formCodeGenerator: "./src/formCodeGenerator.ts",
     },
     plugins: [new CopyPlugin({ patterns: [{ from: "./src/resources", to: "./resources" }] })],
     module: {
