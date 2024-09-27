@@ -31,7 +31,7 @@ function configure() {
 }
 
 function configure_jobs_service_events() {
-    if [ "${ENABLE_EVENTS^^}" == "TRUE" ]; then
+    if [ "$(echo "${ENABLE_EVENTS}" | tr '[:lower:]' '[:upper:]')" == "TRUE" ]; then
         KOGITO_JOBS_PROPS="${KOGITO_JOBS_PROPS} -Dquarkus.profile=events-support"
     fi
 }
