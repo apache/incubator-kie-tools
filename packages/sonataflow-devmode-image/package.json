@@ -23,18 +23,18 @@
     "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources build && cp -R resources/* build && pnpm copy-devui-repo && pnpm copy:maven-m2-repo-via-http-image--settings-xml",
     "copy-devui-repo": "tar -C ~/.m2/repository/org/apache/kie/ -cvf build/modules/sonataflow/devmode/build-config/sonataflow-quarkus-devui-maven-repo.tar sonataflow && tar -C ~/.m2/repository/org/kie/ -cvf build/modules/sonataflow/devmode/build-config/kie-tools-maven-base-maven-repo.tar kie-tools-maven-base",
     "copy-test-assets": "run-script-os",
-    "copy-test-assets:linux:darwin": "cp -R ./node_modules/@kie-tools/sonataflow-image-common/test-resources/* build && cp -R test-resources/* build",
+    "copy-test-assets:linux:darwin": "cp -R test-resources/* build",
     "format": "prettier --write . --ignore-path=../../.prettierignore --ignore-path=../../.gitignore",
     "image:build": "run-script-os",
-    "image:build:darwin:win32": "echo \"Build skipped on macOS and Windows\"",
     "image:build:linux": "pnpm setup:env make -C ./build build",
-    "image:test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"mkdir -p build/target/test/results\" \"run-script-os\" --finally \"cp -r build/target/test/results dist-e2e-tests/\"",
-    "image:test:darwin:win32": "echo \"Tests skipped on macOS and Windows\"",
+    "image:build:win32": "echo \"Build skipped on Windows\"",
+    "image:test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"mkdir -p build/target/test/results\" \"run-script-os\" --finally \"cp -R build/target/test/results dist-tests-e2e/\"",
     "image:test:linux": "pnpm copy-test-assets && pnpm setup:env make -C ./build test-image",
+    "image:test:win32": "echo \"Tests skipped on Windows\"",
     "install": "node install.js && pnpm format",
     "m2-repo-via-http:container:kill": "(docker container kill m2-repo-via-http || true) && (docker container rm m2-repo-via-http || true)",
     "m2-repo-via-http:container:run": "(pnpm m2-repo-via-http:container:kill || true) && docker run --name m2-repo-via-http -v \"$(mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout):/var/www/html\" -dit $(build-env sonataflowDevModeImage.dev.mavenM2RepoViaHttpImage)",
-    "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env SWF_IMAGE_REGISTRY=$(build-env sonataflowDevModeImage.registry) SWF_IMAGE_REGISTRY_ACCOUNT=$(build-env sonataflowDevModeImage.account) SWF_IMAGE_NAME=$(build-env sonataflowDevModeImage.name) SWF_IMAGE_TAG=$(build-env sonataflowDevModeImage.tag) QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) KOGITO_VERSION=$(build-env kogitoRuntime.version) SONATAFLOW_QUARKUS_DEVUI_VERSION=$(build-env sonataflowDevModeImage.sonataflowQuarkusDevUiVersion)"
+    "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env sonataflowDevModeImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env sonataflowDevModeImage.account) KOGITO_IMAGE_NAME=$(build-env sonataflowDevModeImage.name) KOGITO_IMAGE_TAG=$(build-env sonataflowDevModeImage.buildTag) QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) KOGITO_VERSION=$(build-env kogitoRuntime.version) SONATAFLOW_QUARKUS_DEVUI_VERSION=$(build-env sonataflowDevModeImage.sonataflowQuarkusDevUiVersion)"
   },
   "devDependencies": {
     "@kie-tools/image-builder": "workspace:*",

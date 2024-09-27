@@ -28,7 +28,7 @@
     "image:cekit:build:linux": "pnpm image:cekit:copy && pnpm image:cekit:setup:env make -C ./dist-dev build",
     "image:cekit:build:win32:darwin": "echo \"Build skipped on macOS and Windows\"",
     "image:cekit:copy": "cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources/* ./dist-dev/ && cp -R resources/* ./dist-dev/",
-    "image:cekit:setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env SWF_IMAGE_REGISTRY=$(build-env sonataflowManagementConsoleImageEnv.registry) SWF_IMAGE_REGISTRY_ACCOUNT=$(build-env sonataflowManagementConsoleImageEnv.account) SWF_IMAGE_NAME=$(build-env sonataflowManagementConsoleImageEnv.name) SWF_IMAGE_TAG=$(build-env sonataflowManagementConsoleImageEnv.buildTag) QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) KOGITO_VERSION=$(build-env kogitoRuntime.version) SONATAFLOW_MANAGEMENT_CONSOLE_PORT=$(build-env sonataflowManagementConsoleImageEnv.port)"
+    "image:cekit:setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env sonataflowManagementConsoleImageEnv.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env sonataflowManagementConsoleImageEnv.account) KOGITO_IMAGE_NAME=$(build-env sonataflowManagementConsoleImageEnv.name) KOGITO_IMAGE_TAG=$(build-env sonataflowManagementConsoleImageEnv.buildTag) QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) KOGITO_VERSION=$(build-env kogitoRuntime.version) SONATAFLOW_MANAGEMENT_CONSOLE_PORT=$(build-env sonataflowManagementConsoleImageEnv.port)"
   },
   "devDependencies": {
     "@kie-tools/image-env-to-json": "workspace:*",

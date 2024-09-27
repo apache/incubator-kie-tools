@@ -30,7 +30,7 @@ The contents of this package are:
 
 - **python3** with the following packages installed:
   - `behave` `lxml` `docker` `docker-squash` `elementPath` `pyyaml` `ruamel.yaml` `python-dateutil` `Jinja2` `pykwalify` `colorlog` `click`
-- **cekit 4.11.0**: [docs.cekit.io](https://docs.cekit.io/en/latest/index.html)
+- **cekit 4.12.0**: [docs.cekit.io](https://docs.cekit.io/en/latest/index.html)
 - **make**
 - **docker**
 
@@ -38,10 +38,10 @@ The contents of this package are:
 
 To build and tests the images the package provides a convenient `Makefile` that will do the hard work for you. It relies in the following Envs (or arguments):
 
-- `SWF_IMAGE_NAME`: (required) Specifies the image name to build. It should match the image descriptor.
-- `SWF_IMAGE_REGISTRY`: Image registry to use, defaults to 'docker.io'
-- `SWF_IMAGE_REGISTRY_ACCOUNT`: Image registry account to use, defaults to 'apache'
-- `SWF_IMAGE_TAG`: Custom tag for the image. If not provided it will use the version in the image descriptor.
+- `KOGITO_IMAGE_NAME`: (required) Specifies the image name to build. It should match the image descriptor.
+- `KOGITO_IMAGE_REGISTRY`: Image registry to use, defaults to 'docker.io'
+- `KOGITO_IMAGE_REGISTRY_ACCOUNT`: Image registry account to use, defaults to 'apache'
+- `KOGITO_IMAGE_TAG`: Custom tag for the image. If not provided it will use the version in the image descriptor.
 
 - `QUARKUS_PLATFORM_VERSION`: (required) Quarkus platform version to use inside the image.
 - `KOGITO_VERSION`: (required) Kogito platform version to use inside the image.
@@ -49,6 +49,9 @@ To build and tests the images the package provides a convenient `Makefile` that 
 - `CEKIT_BUILD_OPTIONS`: extra build options, please refer to [docs.cekit.io](https://docs.cekit.io/en/latest/index.html)
 - `BUILD_ENGINE`: (docker/podman) engine used to build the image, defaults to docker
 - `BUILD_ENGINE_OPTIONS`: extra build options to pass to the build engine
+
+- `KOGITO_APPS_TARGET_BRANCH`: Target branch from where to pull the Kogito Apps code, defaults to `main`
+- `KOGITO_APPS_TARGET_URI`: Target repository URI from where to pull the Kogito Apps code, defaults to 'https://github.com/apache/incubator-kie-kogito-apps.git'
 
 ## Building images..
 

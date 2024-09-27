@@ -23,29 +23,29 @@ CEKIT_CMD 					:= cekit
 BUILD_ENGINE 				?= docker
 BUILD_ENGINE_OPTIONS 	 	?=
 
-# Resolving the current image version from the kogito.project.versions module. Cekit will use it to tag the image.
-CURRENT_IMAGE_VERSION 		:= $(shell python3 scripts/retrieve_version.py)
-
 # SWF Image creation envs
-SWF_IMAGE_NAME				?= # Image name
-SWF_IMAGE_REGISTRY 			?= 'docker.io'
-SWF_IMAGE_REGISTRY_ACCOUNT 	?= 'apache'
-SWF_IMAGE_TAG 				?= $(CURRENT_IMAGE_VERSION) # Setting a default value if SWF_IMAGE_TAG env is not present
-SWF_FULL_IMAGE_NAME 		:= $(SWF_IMAGE_REGISTRY)/$(SWF_IMAGE_REGISTRY_ACCOUNT)/$(SWF_IMAGE_NAME)
-SWF_IMAGE_FILENAME			:= ${SWF_IMAGE_NAME}-image.yaml
+KOGITO_IMAGE_NAME				?= # Image name
+KOGITO_IMAGE_REGISTRY 			?= 'docker.io'
+KOGITO_IMAGE_REGISTRY_ACCOUNT 	?= 'apache'
+KOGITO_IMAGE_TAG 				?= $(shell pnpm build-env root.streamName) # Setting a default value if KOGITO_IMAGE_TAG env is not present
+KOGITO_FULL_IMAGE_NAME 			:= $(KOGITO_IMAGE_REGISTRY)/$(KOGITO_IMAGE_REGISTRY_ACCOUNT)/$(KOGITO_IMAGE_NAME)
+KOGITO_IMAGE_FILENAME			:= ${KOGITO_IMAGE_NAME}-image.yaml
 
-_check_swf_image_name:
-ifndef SWF_IMAGE_NAME
- $(error Cannot build image, please provide a valid image name using the SWF_IMAGE_NAME env)
+# Services Applications Image Build
+KOGITO_APPS_TARGET_URI 		?= 'https://github.com/apache/incubator-kie-kogito-apps.git'
+
+_check_kogito_image_name:
+ifndef KOGITO_IMAGE_NAME
+	$(error Cannot build image, please provide a valid image name using the KOGITO_IMAGE_NAME env)
 endif
 
 # Check if there are Quarkus and Kogito version envs
 _check_versions:
 ifndef QUARKUS_PLATFORM_VERSION
- $(error Cannot build image, please provide a valid Quarkus version using the QUARKUS_PLATFORM_VERSION env)
+	$(error Cannot build image, please provide a valid Quarkus version using the QUARKUS_PLATFORM_VERSION env)
 endif
 ifndef KOGITO_VERSION
- $(error Cannot build image, please provide a valid Kogito version using the KOGITO_VERSION env)
+	$(error Cannot build image, please provide a valid Kogito version using the KOGITO_VERSION env)
 endif
 
 # Upgrade Quarkus & Kogito versions in the images and modules
@@ -60,28 +60,26 @@ _fix_platform_versions: _check_versions _run_version_manager
 
 # Building the SWF image with Cekit
 _cekit_build:
-	${CEKIT_CMD} --descriptor ${SWF_IMAGE_FILENAME} build ${CEKIT_BUILD_OPTIONS} ${BUILD_ENGINE} ${BUILD_ENGINE_OPTIONS} --tag ${SWF_FULL_IMAGE_NAME}:${CURRENT_IMAGE_VERSION} --tag ${SWF_FULL_IMAGE_NAME}:${SWF_IMAGE_TAG} --tag ${SWF_FULL_IMAGE_NAME}:latest
-
-# Tagging the generated image if SWF_IMAGE_TAG doesn't match the CURRENT_IMAGE_VERSION
-# Currently unused, as cekit will tag the image for us
-_tag_image:
-ifneq ($(SWF_IMAGE_TAG), $(CURRENT_IMAGE_VERSION))
-	${BUILD_ENGINE} tag ${SWF_FULL_IMAGE_NAME}:${CURRENT_IMAGE_VERSION} ${SWF_FULL_IMAGE_NAME}:${SWF_IMAGE_TAG}
-endif
+	${CEKIT_CMD} --descriptor ${KOGITO_IMAGE_FILENAME} build ${CEKIT_BUILD_OPTIONS} ${BUILD_ENGINE} ${BUILD_ENGINE_OPTIONS} --tag ${KOGITO_FULL_IMAGE_NAME}:${KOGITO_IMAGE_TAG}
 
 _create_e2e_dir:
 	rm -rf ../dist-tests-e2e
 	mkdir ../dist-tests-e2e
 
-# Trigger the image tests
-.PHONY test-image: _create_e2e_dir _check_swf_image_name bats _test_image
-_test_image:
-	${CEKIT_CMD} --descriptor ${SWF_IMAGE_FILENAME} test behave
-	tests/shell/run.sh ${SWF_IMAGE_NAME} ${SWF_FULL_IMAGE_NAME}:${SWF_IMAGE_TAG}
+# Pull kogito-apps repo and build the target kogito-apps depending on the `KOGITO_IMAGE_NAME`s
+# Required for kogito-apps images only
+.PHONY build-kogito-app: _build_kogito_app
+_build_kogito_app:
+	scripts/build-kogito-apps-components.sh ${KOGITO_IMAGE_NAME} ${KOGITO_VERSION} ${KOGITO_APPS_TARGET_URI};
 
-.PHONY build: _check_swf_image_name _fix_platform_versions _cekit_build
+# Trigger the image tests
+.PHONY test-image: _create_e2e_dir _check_kogito_image_name _test_image
+_test_image:
+	tests/shell/run.sh ${KOGITO_IMAGE_NAME} ${KOGITO_FULL_IMAGE_NAME}:${KOGITO_IMAGE_TAG}
+	${CEKIT_CMD} --descriptor ${KOGITO_IMAGE_FILENAME} test behave
+
+.PHONY build: _check_kogito_image_name _fix_platform_versions _cekit_build
 
 # run bat tests locally
-.PHONY: bats
 bats:
-	./scripts/run-bats.sh
+	@./scripts/run-bats.sh

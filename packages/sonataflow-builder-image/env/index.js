@@ -43,10 +43,6 @@ module.exports = composeEnv([rootEnv], {
       default: rootEnv.env.root.streamName,
       description: "The image tag.",
     },
-    SONATAFLOW_BUILDER_IMAGE__mavenM2RepoViaHttpImage: {
-      default: `${mavenM2RepoViaHttpImageEnv.registry}/${mavenM2RepoViaHttpImageEnv.account}/${mavenM2RepoViaHttpImageEnv.name}:${mavenM2RepoViaHttpImageEnv.tag}`,
-      description: "The image tag for the Maven M2 Repo via HTTP. Used during the build only.",
-    },
   }),
   get env() {
     return {
@@ -54,10 +50,10 @@ module.exports = composeEnv([rootEnv], {
         registry: getOrDefault(this.vars.SONATAFLOW_BUILDER_IMAGE__registry),
         account: getOrDefault(this.vars.SONATAFLOW_BUILDER_IMAGE__account),
         name: getOrDefault(this.vars.SONATAFLOW_BUILDER_IMAGE__name),
-        tag: getOrDefault(this.vars.SONATAFLOW_BUILDER_IMAGE__buildTag),
+        buildTag: getOrDefault(this.vars.SONATAFLOW_BUILDER_IMAGE__buildTag),
         version: require("../package.json").version,
         dev: {
-          mavenM2RepoViaHttpImage: getOrDefault(this.vars.SONATAFLOW_BUILDER_IMAGE__mavenM2RepoViaHttpImage),
+          mavenM2RepoViaHttpImage: `${mavenM2RepoViaHttpImageEnv.registry}/${mavenM2RepoViaHttpImageEnv.account}/${mavenM2RepoViaHttpImageEnv.name}:${mavenM2RepoViaHttpImageEnv.tag}`,
         },
       },
     };
