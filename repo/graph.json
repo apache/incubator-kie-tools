@@ -1942,7 +1942,17 @@
       },
       {
         "source": "@kie-tools/sonataflow-builder-image",
+        "target": "@kie-tools/maven-m2-repo-via-http-image",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-builder-image",
         "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-devmode-image",
+        "target": "@kie-tools/maven-m2-repo-via-http-image",
         "weight": 1
       },
       {
