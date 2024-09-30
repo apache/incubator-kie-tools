@@ -20,7 +20,7 @@
 import { expect, test } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
-test.describe.only("Create Boxed Filter", () => {
+test.describe("Create Boxed Filter", () => {
   test("should rename a filter", async ({ bee, page, stories }) => {
     await stories.openBoxedFilter("base");
 

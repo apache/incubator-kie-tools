@@ -19,7 +19,7 @@
 
 import { test, expect } from "../../__fixtures__/base";
 
-test.describe.only("Populate Boxed Filter", () => {
+test.describe("Populate Boxed Filter", () => {
   test("should correctly create a Rebooked Flights filter", async ({ stories, bee }) => {
     await stories.openBoxedFilter("base");
 
