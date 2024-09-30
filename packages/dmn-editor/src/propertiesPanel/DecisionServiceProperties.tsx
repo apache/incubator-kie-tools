@@ -23,6 +23,7 @@ import {
   DMN15__tDecision,
   DMN15__tDecisionService,
   DMN15__tInputData,
+  DMN15__tDefinitions,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -44,6 +45,8 @@ import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert/Alert";
 import { Normalized } from "../normalization/normalize";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { ExternalDmn } from "../DmnEditor";
+import { Unpacked } from "../tsExt/tsExt";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export type AllKnownDrgElementsByHref = Map<
@@ -66,14 +69,24 @@ export function DecisionServiceProperties({
 
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const { externalModelsByNamespace } = useExternalModels();
-  const externalDmnsByNamespace = useDmnEditorStore(
-    (s) => s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns
-  );
+
+  const allExternalDmns = Object.entries(externalModelsByNamespace ?? {}).reduce((acc, [namespace, externalModel]) => {
+    if (!externalModel) {
+      console.warn(`DMN EDITOR: Could not find model with namespace '${namespace}'. Ignoring.`);
+      return acc;
+    }
+
+    if (externalModel.type === "dmn") {
+      acc.push(externalModel);
+    }
+
+    return acc;
+  }, new Array<Normalized<ExternalDmn>>());
 
   const allDrgElementsByHref = useMemo(() => {
     const ret: AllKnownDrgElementsByHref = new Map();
 
-    const allDmns = [{ model: thisDmn.model }, ...externalDmnsByNamespace.values()];
+    const allDmns = [{ model: thisDmn.model }, ...allExternalDmns.values()];
 
     for (let i = 0; i < allDmns.length; i++) {
       const anyDmn = allDmns[i]!;
@@ -90,7 +103,7 @@ export function DecisionServiceProperties({
     }
 
     return ret;
-  }, [externalDmnsByNamespace, thisDmn]);
+  }, [allExternalDmns, thisDmn]);
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const isReadOnly = settings.isReadOnly || (!!namespace && namespace !== thisDmnsNamespace);
@@ -410,14 +423,17 @@ function DecisionServiceEquivalentFunction({
 
       const dmnObject = allDrgElementsByHref.get(potentialExternalHref);
 
-      return dmnObject
+      const isNamespaceDirectlyIncluded =
+        importsByNamespace.has(resolvedNamespace) || resolvedNamespace === thisDmnsNamespace;
+
+      return dmnObject && isNamespaceDirectlyIncluded
         ? buildFeelQNameFromNamespace({
             namedElement: dmnObject,
             importsByNamespace,
             namespace: resolvedNamespace,
             relativeToNamespace: thisDmnsNamespace,
           }).full
-        : potentialExternalHref;
+        : buildDisplayNameForDmnObject(dmnObject, resolvedNamespace);
     },
     [allDrgElementsByHref, decisionServiceNamespace, importsByNamespace, thisDmnsNamespace]
   );
@@ -448,4 +464,11 @@ function DecisionServiceEquivalentFunction({
       </p>
     </Alert>
   );
+}
+
+function buildDisplayNameForDmnObject(
+  dmnObject: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]> | undefined,
+  namespace: string
+) {
+  return `${namespace.substring(0, 11)}...${namespace.substring(namespace.length - 4)}.${dmnObject?.["@_name"]}`;
 }

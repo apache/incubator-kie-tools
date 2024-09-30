@@ -251,6 +251,7 @@ export function IncludedModels() {
   return (
     <>
       <Modal
+        data-testid={"kie-tools--dmn-editor--included-models-modal"}
         isOpen={isModalOpen}
         onClose={() => cancel()}
         title={"Include model"}
@@ -466,11 +467,12 @@ function IncludedModelCard({
       dmnEditorStoreApi.setState((state) => {
         const externalModelTypesByNamespace = state
           .computed(state)
-          .getExternalModelTypesByNamespace(externalModelsByNamespace);
+          .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace);
         deleteImport({
           definitions: state.dmn.model.definitions,
           __readonly_index: index,
           __readonly_externalModelTypesByNamespace: externalModelTypesByNamespace,
+          __readonly_externalModelsByNamespace: externalModelsByNamespace,
         });
       });
     },

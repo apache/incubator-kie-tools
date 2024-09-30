@@ -64,7 +64,7 @@ type AckNode = (
 export function computeDiagramData(
   diagram: State["diagram"],
   definitions: State["dmn"]["model"]["definitions"],
-  externalModelTypesByNamespace: TypeOrReturnType<Computed["getExternalModelTypesByNamespace"]>,
+  externalModelTypesByNamespace: TypeOrReturnType<Computed["getDirectlyIncludedExternalModelsByNamespace"]>,
   indexedDrd: TypeOrReturnType<Computed["indexedDrd"]>,
   isAlternativeInputDataShape: boolean
 ) {
@@ -218,17 +218,17 @@ export function computeDiagramData(
     };
 
     if (dmnObject?.__$$element === "decisionService") {
-      const { containedDecisionHrefsRelativeToThisDmn } = getDecisionServicePropertiesRelativeToThisDmn({
-        thisDmnsNamespace: definitions["@_namespace"],
-        decisionServiceNamespace: dmnObjectNamespace ?? definitions["@_namespace"],
-        decisionService: dmnObject,
-      });
+      if (!shape["@_isCollapsed"]) {
+        const { containedDecisionHrefsRelativeToThisDmn } = getDecisionServicePropertiesRelativeToThisDmn({
+          thisDmnsNamespace: definitions["@_namespace"],
+          decisionServiceNamespace: dmnObjectNamespace ?? definitions["@_namespace"],
+          decisionService: dmnObject,
+        });
 
-      for (let i = 0; i < containedDecisionHrefsRelativeToThisDmn.length; i++) {
-        parentIdsById.set(containedDecisionHrefsRelativeToThisDmn[i], data);
-      }
-
-      if (shape["@_isCollapsed"]) {
+        for (let i = 0; i < containedDecisionHrefsRelativeToThisDmn.length; i++) {
+          parentIdsById.set(containedDecisionHrefsRelativeToThisDmn[i], data);
+        }
+      } else {
         newNode.style = {
           ...newNode.style,
           ...DECISION_SERVICE_COLLAPSED_DIMENSIONS,
@@ -280,11 +280,26 @@ export function computeDiagramData(
         namespace,
         (externalDmn.model.definitions.drgElement ?? []).reduce(
           (acc, e, index) => acc.set(e["@_id"]!, { element: e, index }),
-          new Map<string, { index: number; element: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]> }>()
+          new Map<
+            string,
+            {
+              index: number;
+              element: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]>;
+            }
+          >()
         )
       );
     },
-    new Map<string, Map<string, { index: number; element: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]> }>>()
+    new Map<
+      string,
+      Map<
+        string,
+        {
+          index: number;
+          element: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]>;
+        }
+      >
+    >()
   );
 
   const externalNodes = [...indexedDrd.dmnShapesByHref.entries()].flatMap(([href, shape]) => {
@@ -360,7 +375,10 @@ export function computeDiagramData(
     const parentNodeData = parentIdsById.get(sortedNodes[i].id);
     if (parentNodeData) {
       sortedNodes[i].data.parentRfNode = nodesById.get(
-        buildXmlHref({ namespace: parentNodeData.dmnObjectNamespace, id: parentNodeData.dmnObjectQName.localPart })
+        buildXmlHref({
+          namespace: parentNodeData.dmnObjectNamespace,
+          id: parentNodeData.dmnObjectQName.localPart,
+        })
       );
       sortedNodes[i].extent = undefined; // Allows the node to be dragged freely outside of parent's bounds.
       sortedNodes[i].zIndex = NODE_LAYERS.NESTED_NODES;
