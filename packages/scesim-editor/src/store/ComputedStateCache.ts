@@ -64,4 +64,33 @@ export class ComputedStateCache<T extends Record<string, any>> {
     this.cache[key].value = v;
     return v;
   }
+
+  public cachedData<K extends keyof T, D extends readonly any[], Y extends any[]>(
+    key: K,
+    delegate: (...data: Y) => TypeOrReturnType<T[K]>,
+    data: Y,
+    dependencies: D
+  ): TypeOrReturnType<T[K]> {
+    r++;
+
+    const cachedDeps = this.cache[key]?.dependencies ?? [];
+
+    let depsAreEqual = cachedDeps.length === dependencies.length;
+    if (depsAreEqual) {
+      for (let i = 0; i < cachedDeps.length; i++) {
+        if (!Object.is(cachedDeps[i], dependencies[i])) {
+          depsAreEqual = false;
+        }
+      }
+    }
+
+    if (depsAreEqual) {
+      return this.cache[key].value!;
+    }
+
+    const v = delegate(...data);
+    this.cache[key].dependencies = dependencies;
+    this.cache[key].value = v;
+    return v;
+  }
 }

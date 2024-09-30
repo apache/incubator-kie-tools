@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { State, TestScenarioDataObject } from "../TestScenarioEditorStore";
+import { Computed, State, TestScenarioDataObject } from "../TestScenarioEditorStore";
 
 export function computeTestScenarioDataObjects(
   factMappings: State["scesim"]["model"]["ScenarioSimulationModel"]["simulation"]["scesimModelDescriptor"]["factMappings"]["FactMapping"]

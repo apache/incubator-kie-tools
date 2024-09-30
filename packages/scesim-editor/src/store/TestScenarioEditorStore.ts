@@ -166,9 +166,12 @@ export function createTestScenarioEditorStore(model: SceSimModel, computedCache:
             ]);
           },
           getTestScenarioDataObjects: () => {
-            return computedCache.cached("getTestScenarioDataObjects", computeTestScenarioDataObjects, [
-              state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping,
-            ]);
+            return computedCache.cachedData(
+              "getTestScenarioDataObjects",
+              computeTestScenarioDataObjects,
+              [state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping],
+              [state.computed(state).getTestScenarioType()]
+            );
           },
           getTestScenarioType: () => {
             return computedCache.cached("getTestScenarioType", computeTestScenarioType, [
