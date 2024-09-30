@@ -1008,21 +1008,19 @@ function TestScenarioTable({
           selectedInstanceGroup?.columns[0].dataType === "<Undefined>"
         ) {
           const propertyID = selectedInstanceGroup?.columns[0].id;
-          let selectedFactMapping;
-          let selectedFactIndex;
-          if (propertyID) {
-            selectedFactMapping = modelDescriptor.factMappings.FactMapping!.find(
-              (factMapping) => factMapping.expressionIdentifier.name?.__$$text === propertyID
-            );
-            selectedFactIndex = selectedFactMapping
-              ? modelDescriptor.factMappings.FactMapping!.indexOf(selectedFactMapping!)
-              : -1;
-          }
-          const selectedColumnMetaData = {
-            factMapping: JSON.parse(JSON.stringify(selectedFactMapping)),
-            index: selectedFactIndex ?? -1,
-            isBackground: isBackground,
-          };
+          const selectedFactMapping = modelDescriptor.factMappings.FactMapping!.find(
+            (factMapping) => factMapping.expressionIdentifier.name?.__$$text === propertyID
+          );
+          const selectedFactIndex = selectedFactMapping
+            ? modelDescriptor.factMappings.FactMapping!.indexOf(selectedFactMapping!)
+            : -1;
+          testScenarioEditorStoreApi.setState((state) => {
+            state.dispatch(state).table.updateSelectedColumn({
+              factMapping: JSON.parse(JSON.stringify(selectedFactMapping)),
+              index: selectedFactIndex ?? -1,
+              isBackground: isBackground,
+            });
+          });
         } else {
           testScenarioEditorStoreApi.setState((state) => {
             state.dispatch(state).table.updateSelectedColumn(null);
