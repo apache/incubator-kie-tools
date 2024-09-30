@@ -393,74 +393,64 @@ function TestScenarioDataSelectorPanel() {
   // CHECK
   const onInsertDataObjectClick = useCallback(
     /** TODO 2 : NEED A POPUP ASKING IF WE WANT TO REPLACE VALUES OR NOT */
-
     () => {
-      testScenarioEditorStoreApi.setState((state) => {
-        const isBackground = selectedColumnMetadata!.isBackground;
-        const factMappings = retrieveModelDescriptor(state.scesim.model.ScenarioSimulationModel, isBackground)
-          .factMappings.FactMapping!;
-        const deepClonedFactMappings = JSON.parse(JSON.stringify(factMappings));
-        const isRootType = isDataObjectRootParent(dataObjects, treeViewStatus.activeItems[0].id!.toString());
-        const rootDataObject = findDataObjectRootParent(dataObjects, treeViewStatus.activeItems[0].id!.toString());
+      const isBackground = selectedColumnMetadata!.isBackground;
+      const factMappings = retrieveModelDescriptor(state.scesim.model.ScenarioSimulationModel, isBackground)
+        .factMappings.FactMapping!;
+      const deepClonedFactMappings = JSON.parse(JSON.stringify(factMappings));
+      const isRootType = isDataObjectRootParent(dataObjects, treeViewStatus.activeItems[0].id!.toString());
+      const rootDataObject = findDataObjectRootParent(dataObjects, treeViewStatus.activeItems[0].id!.toString());
 
-        const className = treeViewStatus.activeItems[0].customBadgeContent!.toString();
-        const expressionAlias = isRootType ? "Expression </>" : treeViewStatus.activeItems[0].name!.toString();
-        const expressionElementsSteps = treeViewStatus.activeItems[0].id!.split(".").filter((step) => !!step.trim()); //WARNING !!!! THIS DOESN'T WORK WITH IMPORTED DATA OBJECTS
-        const factName = treeViewStatus.activeItems[0].id!.split(".")[0]; //WARNING !!!! THIS DOESN'T WORK WITH IMPORTED DATA OBJECTS
-        const factClassName = isRootType
-          ? treeViewStatus.activeItems[0].customBadgeContent!.toString()
-          : rootDataObject.customBadgeContent!.toString();
-        const factMappingValueType = isRootType
-          ? TEST_SCENARIO_EXPRESSION_TYPE[TEST_SCENARIO_EXPRESSION_TYPE.EXPRESSION]
-          : TEST_SCENARIO_EXPRESSION_TYPE[TEST_SCENARIO_EXPRESSION_TYPE.NOT_EXPRESSION];
+      const className = treeViewStatus.activeItems[0].customBadgeContent!.toString();
+      const expressionAlias = isRootType ? "Expression </>" : treeViewStatus.activeItems[0].name!.toString();
+      const expressionElementsSteps = treeViewStatus.activeItems[0].id!.split(".").filter((step) => !!step.trim()); //WARNING !!!! THIS DOESN'T WORK WITH IMPORTED DATA OBJECTS
+      const factName = treeViewStatus.activeItems[0].id!.split(".")[0]; //WARNING !!!! THIS DOESN'T WORK WITH IMPORTED DATA OBJECTS
+      const factClassName = isRootType
+        ? treeViewStatus.activeItems[0].customBadgeContent!.toString()
+        : rootDataObject.customBadgeContent!.toString();
+      const factMappingValueType = isRootType
+        ? TEST_SCENARIO_EXPRESSION_TYPE[TEST_SCENARIO_EXPRESSION_TYPE.EXPRESSION]
+        : TEST_SCENARIO_EXPRESSION_TYPE[TEST_SCENARIO_EXPRESSION_TYPE.NOT_EXPRESSION];
 
-        const factMappingToUpdate: SceSim__FactMappingType = deepClonedFactMappings[selectedColumnMetadata!.index];
-        factMappingToUpdate.className = { __$$text: className };
-        factMappingToUpdate.factAlias = { __$$text: factName };
-        factMappingToUpdate.factIdentifier.className = { __$$text: factClassName };
-        factMappingToUpdate.factIdentifier.name = { __$$text: factName };
-        factMappingToUpdate.factMappingValueType = { __$$text: factMappingValueType };
-        factMappingToUpdate.expressionAlias = { __$$text: expressionAlias };
-        factMappingToUpdate.expressionElements = {
-          ExpressionElement: expressionElementsSteps.map((ee) => {
-            return { step: { __$$text: ee } };
-          }),
+      const factMappingToUpdate: SceSim__FactMappingType = deepClonedFactMappings[selectedColumnMetadata!.index];
+      factMappingToUpdate.className = { __$$text: className };
+      factMappingToUpdate.factAlias = { __$$text: factName };
+      factMappingToUpdate.factIdentifier.className = { __$$text: factClassName };
+      factMappingToUpdate.factIdentifier.name = { __$$text: factName };
+      factMappingToUpdate.factMappingValueType = { __$$text: factMappingValueType };
+      factMappingToUpdate.expressionAlias = { __$$text: expressionAlias };
+      factMappingToUpdate.expressionElements = {
+        ExpressionElement: expressionElementsSteps.map((ee) => {
+          return { step: { __$$text: ee } };
+        }),
+      };
+
+      const deepClonedRowsData: SceSim__FactMappingValuesTypes[] = JSON.parse(
+        JSON.stringify(retrieveRowsDataFromModel(state.scesim.model.ScenarioSimulationModel, isBackground))
+      );
+
+      deepClonedRowsData.forEach((fmv, index) => {
+        const factMappingValues = fmv.factMappingValues.FactMappingValue!;
+        const newFactMappingValues = [...factMappingValues];
+
+        const factMappingValueToUpdateIndex = retrieveFactMappingValueIndexByIdentifiers(
+          newFactMappingValues,
+          selectedColumnMetadata!.factMapping.factIdentifier,
+          selectedColumnMetadata!.factMapping.expressionIdentifier
+        );
+        const factMappingValueToUpdate = factMappingValues[factMappingValueToUpdateIndex];
+        newFactMappingValues[factMappingValueToUpdateIndex] = {
+          ...factMappingValueToUpdate,
+          factIdentifier: { className: { __$$text: factClassName }, name: { __$$text: factName } },
+          // rawValue: {
+          //   __$$text: update.value,  //TODO 2 related
+          // },
         };
 
-        const deepClonedRowsData: SceSim__FactMappingValuesTypes[] = JSON.parse(
-          JSON.stringify(retrieveRowsDataFromModel(state.scesim.model.ScenarioSimulationModel, isBackground))
-        );
+        deepClonedRowsData[index].factMappingValues.FactMappingValue = newFactMappingValues;
+      });
 
-        deepClonedRowsData.forEach((fmv, index) => {
-          const factMappingValues = fmv.factMappingValues.FactMappingValue!;
-          const newFactMappingValues = [...factMappingValues];
-
-          const factMappingValueToUpdateIndex = retrieveFactMappingValueIndexByIdentifiers(
-            newFactMappingValues,
-            selectedColumnMetadata!.factMapping.factIdentifier,
-            selectedColumnMetadata!.factMapping.expressionIdentifier
-          );
-          const factMappingValueToUpdate = factMappingValues[factMappingValueToUpdateIndex];
-          newFactMappingValues[factMappingValueToUpdateIndex] = {
-            ...factMappingValueToUpdate,
-            factIdentifier: { className: { __$$text: factClassName }, name: { __$$text: factName } },
-            // rawValue: {
-            //   __$$text: update.value,  //TODO 2 related
-            // },
-          };
-
-          deepClonedRowsData[index].factMappingValues.FactMappingValue = newFactMappingValues;
-        });
-
-        /** Updating the selectedColumn */
-        testScenarioEditorStoreApi.setState((state) => {
-          state.dispatch(state).table.updateSelectedColumn({
-            factMapping: JSON.parse(JSON.stringify(factMappingToUpdate)),
-            index: selectedColumnMetadata!.index,
-            isBackground: isBackground,
-          });
-        });
-
+      testScenarioEditorStoreApi.setState((state) => {
         if (isBackground) {
           state.scesim.model.ScenarioSimulationModel.background.scesimModelDescriptor.factMappings.FactMapping =
             deepClonedFactMappings;
@@ -471,12 +461,22 @@ function TestScenarioDataSelectorPanel() {
           state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario = deepClonedRowsData;
         }
       });
+
+      /** Updating the selectedColumn */
+      testScenarioEditorStoreApi.setState((state) => {
+        state.dispatch(state).table.updateSelectedColumn({
+          factMapping: JSON.parse(JSON.stringify(factMappingToUpdate)),
+          index: selectedColumnMetadata!.index,
+          isBackground: isBackground,
+        });
+      });
     },
     [
       dataObjects,
       findDataObjectRootParent,
       isDataObjectRootParent,
       selectedColumnMetadata,
+      state.scesim.model.ScenarioSimulationModel,
       testScenarioEditorStoreApi,
       treeViewStatus.activeItems,
     ]
