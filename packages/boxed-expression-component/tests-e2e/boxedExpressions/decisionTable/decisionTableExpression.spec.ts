@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { expect, test } from "../../__fixtures__/base";
 
 test.describe("Create Decision table", () => {
@@ -114,6 +115,11 @@ test.describe("Create Decision table", () => {
   });
 
   test("should commit annotation by cell click", async ({ bee }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/1158",
+    });
+
     await bee.expression
       .asDecisionTable()
       .annotationHeaderAt(0)

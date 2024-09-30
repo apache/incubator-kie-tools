@@ -47,6 +47,11 @@ test.describe("Create Boxed Every", () => {
   });
 
   test("should commit variable by cell click", async ({ bee }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/1158",
+    });
+
     await bee.expression.asEvery().variable.fill("Changed Variable Name");
 
     // commit a change by a click to another cell

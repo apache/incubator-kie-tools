@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../../__fixtures__/base";
 
 test.describe("Create Boxed Invocation", () => {
@@ -33,6 +34,11 @@ test.describe("Create Boxed Invocation", () => {
   });
 
   test("should commit invoked function by cell click", async ({ bee, stories, page }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/1158",
+    });
+
     await stories.openBoxedInvocation();
 
     // click to start editing and type new value
