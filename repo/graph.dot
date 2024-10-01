@@ -168,6 +168,7 @@ digraph G {
   "@kie-tools/runtime-tools-swf-webapp-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/scesim-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/scesim-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/scesim-editor-envelope" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-logic-web-tools" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/text-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -523,6 +524,9 @@ digraph G {
   "@kie-tools/runtime-tools-task-console-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/scesim-editor" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
   "@kie-tools/scesim-editor" -> "@kie-tools/scesim-marshaller" [ style = "solid", color = "blue" ];
+  "@kie-tools/scesim-editor-envelope" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
+  "@kie-tools/scesim-editor-envelope" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
+  "@kie-tools/scesim-editor-envelope" -> "@kie-tools/scesim-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/scesim-marshaller" -> "@kie-tools/xml-parser-ts-codegen" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools-core/kubernetes-bridge" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "black" ];
