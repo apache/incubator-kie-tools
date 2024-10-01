@@ -259,11 +259,10 @@ async function getDirsOfDependencies(leafPackageNames: Set<string>) {
 
 function convertToPosixPathRelativeToWorkspaceRoot(targetPath: string) {
   // If it's not an absolute path we can assume it's relative to the workspace root (the current directory).
-  const isTargetPathRelativeToWorkspaceRoot =
-    !targetPath.startsWith(path.sep) && !targetPath.startsWith(path.posix.sep) && !path.isAbsolute(targetPath);
+  const isTargetPathAbsolute = targetPath.startsWith(path.sep) || targetPath.startsWith(path.posix.sep);
 
   // Replace separators to make sure they are posix style.
-  return `${isTargetPathRelativeToWorkspaceRoot ? targetPath : path.relative(absolutePosixWorkspaceRootPath, targetPath)}`
+  return `${isTargetPathAbsolute ? path.relative(absolutePosixWorkspaceRootPath, targetPath) : targetPath}`
     .split(path.sep)
     .join(path.posix.sep);
 }
