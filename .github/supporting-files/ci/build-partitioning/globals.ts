@@ -22,7 +22,7 @@ import * as fs from "fs";
 
 export const __ROOT_PKG_NAME = "kie-tools-root";
 
-export const __PACKAGES_ROOT_DIRS = ["packages", "examples"];
+export const __PACKAGES_ROOT_PATHS = ["packages/", "examples/", "repo/", "pnpm-lock.yaml"];
 
 export const __NON_SOURCE_FILES_PATTERNS = stdoutArray(
   fs.readFileSync(path.resolve(__dirname, "../patterns/non-source-files-patterns.txt"), "utf-8")

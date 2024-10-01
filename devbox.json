@@ -15,7 +15,8 @@
     "DEVBOX_COREPACK_ENABLED": "true",
     "GOFLAGS": "-modcacherw",
     "GOPATH": "$DEVBOX_PROJECT_ROOT/.devbox/gopkgs",
-    "PATH": "$DEVBOX_PROJECT_ROOT/.devbox/gopkgs/bin:$PATH"
+    "PNPM_HOME": "$DEVBOX_PROJECT_ROOT/.devbox/pnpm-store",
+    "PATH": "$DEVBOX_PROJECT_ROOT/.devbox/gopkgs/bin:$DEVBOX_PROJECT_ROOT/.devbox/pnpm-store:$PATH"
   },
   "shell": {
     "init_hook": [
