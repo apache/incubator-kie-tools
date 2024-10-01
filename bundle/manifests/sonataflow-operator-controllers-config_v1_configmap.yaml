@@ -40,7 +40,7 @@ data:
         version: 3.8.6
       - groupId: org.kie
         artifactId: kie-addons-quarkus-persistence-jdbc
-        version: 999-SNAPSHOT
+        version: 999-20240912-SNAPSHOT
 kind: ConfigMap
 metadata:
   name: sonataflow-operator-controllers-config

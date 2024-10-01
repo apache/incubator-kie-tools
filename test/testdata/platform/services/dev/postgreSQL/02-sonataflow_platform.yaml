@@ -21,7 +21,7 @@ spec:
     template:
       buildArgs:
       - name: QUARKUS_EXTENSIONS
-        value: org.kie.kogito:kogito-addons-quarkus-jobs-knative-eventing:999-SNAPSHOT
+        value: org.kie.kogito:kogito-addons-quarkus-jobs-knative-eventing:999-20240912-SNAPSHOT
   services:
     dataIndex:
       enabled: false
