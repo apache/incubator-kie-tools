@@ -130,6 +130,7 @@ function TestScenarioMainPanel({ fileName }: { fileName: string }) {
   const scesimModel = useTestScenarioEditorStore((s) => s.scesim.model);
   const state = testScenarioEditorStoreApi.getState();
   const alertState = state.computed(state).getTestScenarioAlert();
+  const testScenarioType = state.computed(state).getTestScenarioType();
 
   const scenarioTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
   const backgroundTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
@@ -162,7 +163,14 @@ function TestScenarioMainPanel({ fileName }: { fileName: string }) {
             <DrawerContentBody>
               {alertState.enabled && (
                 <div className="kie-scesim-editor--content-alert">
-                  <Alert variant={alertState.variant} title={alertState.message} />
+                  <Alert
+                    variant={alertState.variant}
+                    title={
+                      testScenarioType === TestScenarioType.DMN
+                        ? i18n.alerts.dmnDataRetrievedFromScesim
+                        : i18n.alerts.ruleDataRetrievedFromScesim
+                    }
+                  />
                 </div>
               )}
               <div className="kie-scesim-editor--content-tabs">
@@ -289,6 +297,7 @@ export const TestScenarioEditorInternal = ({
 
       state.scesim.model = model;
       testScenarioEditorModelBeforeEditingRef.current = model;
+      //state.dispatch(state).scesim.reset();
     });
   }, [testScenarioEditorStoreApi, model]);
 
