@@ -17,19 +17,18 @@
 
 ## jBPM Form Code Generator
 
-This package has two jBPM themes for the [Form Code Generator](../form-code-generator/README.md) library. Both themes are extensions of the [Bootstrap4 theme](../form-code-generator-bootstrap4-theme/README.md) and [PatternFly theme](../form-code-generator-patternfly-theme/README.md), resulting in the jBPM Bootstrap4 theme and jBPM PatternFly theme respectively.
+This package has two jBPM themes for the [form-code-generator](../form-code-generator/README.md) library. Both themes are extensions of the [Bootstrap4 theme](../form-code-generator-bootstrap4-theme/README.md) and [PatternFly theme](../form-code-generator-patternfly-theme/README.md), resulting in the jBPM Bootstrap4 theme and jBPM PatternFly theme respectively.
 
 ## Usage
 
-To use it, pass the jBPM theme to the `FormCodeGenerator` class and invoke the `generateFormsCode` method:
+To use it, pass the jBPM theme to the `generateFormCode` fucntion:
 
 ```ts
-import { FormCodeGenerator } from "@kie-tools/form-code-generator/dist/FormCodeGenerator";
+import { generateFormCode } from "@kie-tools/form-code-generator/dist/generateFormCode";
 import { jbpmPatternflyFormCodeGeneratorTheme } from "@kie-tools/jbpm-form-code-generator-themes/dist/jbpmPatternflyFormCodeGeneratorTheme";
 
-const jbpmPatternflyFormCodeGenerator = new FormCodeGenerator(jbpmPatternflyFormCodeGeneratorTheme);
-const jbpmFormsCode = jbpmPatternflyFormCodeGenerator.generateFormsCode({
-  theme: "patternfly",
+const jbpmFormsCode = generateFormCode({
+  formCodeGeneratorTheme: jbpmPatternflyFormCodeGeneratorTheme,
   formSchemas: [
     {
       name: "<name>",
@@ -74,39 +73,6 @@ The `jbpmFormsCode` will give you the following object:
 {
   error: Error; // The error object that was thrown during the form generation
 }
-```
-
-Alternatively, it's possible to pass all themes to the `FormCodeGenerator`, but it requires to manually set the type:
-
-```ts
-import { FormCodeGenerator } from "@kie-tools/form-code-generator/dist/FormCodeGenerator";
-import {
-  Bootstrap4FileExt,
-  Bootstrap4ThemeName,
-  Bootstrap4FormAsset,
-  jbpmBootstrap4FormCodeGeneratorTheme,
-} from "@kie-tools/jbpm-form-code-generator-themes/dist/jbpmBootstrap4FormCodeGeneratorTheme";
-import {
-  PatternflyFileExt,
-  PatternflyThemeName,
-  PatternflyFormAsset,
-  jbpmPatternflyFormCodeGeneratorTheme,
-} from "@kie-tools/jbpm-form-code-generator-themes/dist/jbpmPatternflyFormCodeGeneratorTheme";
-
-const jbpmFormCodeGenerator = new FormCodeGenerator<
-  Bootstrap4FileExt | PatternflyFileExt,
-  Bootstrap4ThemeName | PatternflyThemeName,
-  Bootstrap4FormAsset | PatternflyFormAsset
->(jbpmBootstrap4FormCodeGeneratorTheme, jbpmPatternflyFormCodeGeneratorTheme);
-const jbpmFormsCode = jbpmFormCodeGenerator.generateFormsCode({
-  theme: "patternfly",
-  formSchemas: [
-    {
-      name: "<name>",
-      schema: {}, // Your JSON Schema
-    },
-  ],
-});
 ```
 
 ## Build

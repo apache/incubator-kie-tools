@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { FormCodeGenerator } from "@kie-tools/form-code-generator/dist/FormCodeGenerator";
+import { generateFormCode } from "@kie-tools/form-code-generator/dist/generateFormCode";
 import { jbpmPatternflyFormCodeGeneratorTheme } from "../dist/jbpmPatternflyFormCodeGeneratorTheme";
 import { ApplyForVisaSchema, ConfirmTravelSchema } from "./__mocks__/partternfly";
 
@@ -46,22 +46,13 @@ describe("jbpmPatternflyFormCodeGeneratorTheme tests", () => {
     });
   });
 
-  it("FormCodeGenerator - patternfly", () => {
-    const formCodeGenerator = new FormCodeGenerator(jbpmPatternflyFormCodeGeneratorTheme);
-    const patternflyCodeGenerator = formCodeGenerator.getFormCodeGenerator("patternfly");
-
-    expect(patternflyCodeGenerator).not.toBeUndefined();
-    expect(patternflyCodeGenerator.theme).toStrictEqual("patternfly");
-  });
-
-  it("FormCodeGenerator - form assets", () => {
-    const formCodeGenerator = new FormCodeGenerator(jbpmPatternflyFormCodeGeneratorTheme);
-    const formAssets = formCodeGenerator.generateFormsCode({
+  it("generateFormCode - form assets", () => {
+    const formAssets = generateFormCode({
       formSchemas: [
         { name: "Apply#For#Visa", schema: ApplyForVisaSchema },
         { name: "ConfirmTravel", schema: ConfirmTravelSchema },
       ],
-      theme: "patternfly",
+      formCodeGeneratorTheme: jbpmPatternflyFormCodeGeneratorTheme,
     });
 
     expect(formAssets[0]).toEqual(

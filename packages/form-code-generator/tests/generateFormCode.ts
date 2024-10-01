@@ -17,61 +17,44 @@
  * under the License.
  */
 
-import { FormCodeGenerator } from "../dist/FormCodeGenerator";
+import { generateFormCode } from "../dist/generateFormCode";
 import { FormAsset, FormSchema } from "../dist/types";
 import { ApplyForVisaSchema, ConfirmTravelSchema, dummyPatternflyTheme } from "./__mocks__/partternfly";
 
 describe("FormCodeGenerator tests", () => {
-  describe("getFormCodeGenerator tests", () => {
-    it("Lookup existing formGenerator - patternfly", () => {
-      const jbpmFormGenerator = new FormCodeGenerator(dummyPatternflyTheme);
-      const formGenerator = jbpmFormGenerator.getFormCodeGenerator("patternfly");
+  describe("generateFormCode tests", () => {
+    it("Generate forms with empty theme", () => {
+      const formCode = generateFormCode({
+        formSchemas: [{ name: "", schema: {} }],
+        formCodeGeneratorTheme: {
+          theme: "",
+          generate: ({ name, schema }) => ({
+            assetName: "",
+            config: { schema: "", resources: { scripts: {}, styles: {} } },
+            content: "",
+            id: "",
+            type: "",
+          }),
+        },
+      });
 
-      expect(formGenerator).not.toBeUndefined();
-      expect(formGenerator.theme).toStrictEqual("patternfly");
-    });
-
-    it("Lookup wrong formGenerator", () => {
-      const jbpmFormGenerator = new FormCodeGenerator();
-      expect(() => jbpmFormGenerator.getFormCodeGenerator("wrong formGenerator type")).toThrow(
-        `Unsupported form generation type: "wrong formGenerator type"`
+      expect(formCode[0]).toEqual(
+        expect.objectContaining({
+          formAsset: expect.objectContaining({
+            id: "",
+            assetName: "",
+            config: { resources: { scripts: {}, styles: {} }, schema: "" },
+            type: "",
+          }),
+          formError: undefined,
+        })
       );
     });
 
-    it("Register formGenerator & lookup", () => {
-      const myCoolFormGenerator = {
-        theme: "cool new formGenerator",
-        generate: jest.fn(),
-      };
-
-      const jbpmFormGenerator = new FormCodeGenerator(dummyPatternflyTheme, myCoolFormGenerator);
-
-      const customFormGenerator = jbpmFormGenerator.getFormCodeGenerator("cool new formGenerator");
-      expect(customFormGenerator).not.toBeUndefined();
-      expect(customFormGenerator).toStrictEqual(myCoolFormGenerator);
-
-      const patternflyFormGenerator = jbpmFormGenerator.getFormCodeGenerator("patternfly");
-      expect(patternflyFormGenerator).not.toBeUndefined();
-      expect(patternflyFormGenerator).toStrictEqual(dummyPatternflyTheme);
-    });
-  });
-
-  describe("generateFormsCode tests", () => {
-    it("Generate forms with wrong formGenerator type", () => {
-      const jbpmFormGenerator = new FormCodeGenerator();
-      expect(() =>
-        jbpmFormGenerator.generateFormsCode({
-          formSchemas: [{ name: "", schema: {} }],
-          theme: "wrong type",
-        })
-      ).toThrow('Unsupported form generation type: "wrong type"');
-    });
-
     it("Generate forms for empty schema", () => {
-      const jbpmFormGenerator = new FormCodeGenerator(dummyPatternflyTheme);
-      const formsCode = jbpmFormGenerator.generateFormsCode({
+      const formsCode = generateFormCode({
         formSchemas: [{ name: "test", schema: {} }],
-        theme: "patternfly",
+        formCodeGeneratorTheme: dummyPatternflyTheme,
       });
 
       expect(formsCode[0]).toEqual(
@@ -88,13 +71,12 @@ describe("FormCodeGenerator tests", () => {
     });
 
     it("Generate forms project with schemas", () => {
-      const jbpmFormGenerator = new FormCodeGenerator(dummyPatternflyTheme);
-      const formsCode = jbpmFormGenerator.generateFormsCode({
+      const formsCode = generateFormCode({
         formSchemas: [
           { name: "Apply#For#Visa", schema: ApplyForVisaSchema },
           { name: "ConfirmTravel", schema: ConfirmTravelSchema },
         ],
-        theme: "patternfly",
+        formCodeGeneratorTheme: dummyPatternflyTheme,
       });
 
       expect(formsCode[0]).toEqual(
@@ -122,33 +104,31 @@ describe("FormCodeGenerator tests", () => {
     });
 
     it("Generate forms project with schemas and one failure", () => {
-      const jbpmFormGenerator = new FormCodeGenerator({
-        theme: "cool formGenerator",
-
-        generate(schema: FormSchema): FormAsset<"txt"> {
-          if (schema.name === "ApplyForVisa") {
-            throw new Error("Unexpected Error!");
-          }
-
-          return {
-            id: schema.name,
-            content: schema.name,
-            type: "txt",
-            assetName: `${schema.name}.txt`,
-            config: {
-              schema: "",
-              resources: { styles: {}, scripts: {} },
-            },
-          };
-        },
-      });
-
-      const formsCode = jbpmFormGenerator.generateFormsCode({
+      const formsCode = generateFormCode({
         formSchemas: [
           { name: "ApplyForVisa", schema: ApplyForVisaSchema },
           { name: "ConfirmTravel", schema: ConfirmTravelSchema },
         ],
-        theme: "cool formGenerator",
+        formCodeGeneratorTheme: {
+          theme: "cool formGenerator",
+
+          generate(schema: FormSchema): FormAsset<"txt"> {
+            if (schema.name === "ApplyForVisa") {
+              throw new Error("Unexpected Error!");
+            }
+
+            return {
+              id: schema.name,
+              content: schema.name,
+              type: "txt",
+              assetName: `${schema.name}.txt`,
+              config: {
+                schema: "",
+                resources: { styles: {}, scripts: {} },
+              },
+            };
+          },
+        },
       });
 
       expect(formsCode[0]).toEqual({

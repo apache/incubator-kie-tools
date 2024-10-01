@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { FormCodeGenerator } from "@kie-tools/form-code-generator/dist/FormCodeGenerator";
+import { generateFormCode } from "@kie-tools/form-code-generator/dist/generateFormCode";
 import {
   BOOTSTRAP4_CSS_URL,
   BOOTSTRAP4_JS_URL,
@@ -54,22 +54,13 @@ describe("jbpmBootstrap4FormCodeGeneratorTheme tests", () => {
     });
   });
 
-  it("FormCodeGenerator - bootstrap4", () => {
-    const formCodeGenerator = new FormCodeGenerator(jbpmBootstrap4FormCodeGeneratorTheme);
-    const bootstrap4CodeGenerator = formCodeGenerator.getFormCodeGenerator("bootstrap");
-
-    expect(bootstrap4CodeGenerator).not.toBeUndefined();
-    expect(bootstrap4CodeGenerator.theme).toStrictEqual("bootstrap");
-  });
-
-  it("FormCodeGenerator - form assets", () => {
-    const formCodeGenerator = new FormCodeGenerator(jbpmBootstrap4FormCodeGeneratorTheme);
-    const formAssets = formCodeGenerator.generateFormsCode({
+  it("generateFormCode - form assets", () => {
+    const formAssets = generateFormCode({
       formSchemas: [
         { name: "Apply#For#Visa", schema: ApplyForVisaSchema },
         { name: "ConfirmTravel", schema: ConfirmTravelSchema },
       ],
-      theme: "bootstrap",
+      formCodeGeneratorTheme: jbpmBootstrap4FormCodeGeneratorTheme,
     });
 
     expect(formAssets[0]).toEqual(

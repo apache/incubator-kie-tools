@@ -17,7 +17,7 @@
 
 ## Form Code Generator PatternFly Theme
 
-This package is the PatternFly theme for the [Form Code Generator](../form-code-generator/README.md).
+This package is the PatternFly theme for the [form-code-generator](../form-code-generator/README.md) package.
 
 ## How it works?
 

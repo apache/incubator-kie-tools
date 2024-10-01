@@ -21,50 +21,54 @@ This library is used to generate the form code based on a schema. It can uses di
 
 ## How it works?
 
-This library provides capabilities to register and use themes that implement the [FormCodeGeneratorTheme](./src/types.ts).
+This library provides types and interfaces to be used by themes. The `generateFormCode` receives a list of schemas where the theme will be applied. The generated code or error are returned to the caller.
 
 ## Usage
 
 To use it, create a new instance of `FormCodeGenerator` passing your theme to its constructor:
 
 ```ts
-import { FormCodeGenerator } from "@kie-tools/form-code-generator/dist/FormCodeGenerator"
+import { generateFormCode } from "@kie-tools/form-code-generator/dist/generateFormCode"
 import { FormCodeGeneratorTheme } from "@kie-tools/form-code-generator/dist/types"
 
-const myAwesomeTheme: FormCodeGeneratorTheme: {
-  theme: "my theme",
-  generate: (formSchema) => { ... };
-}
-
-const myThemeFormCodeGenerator = new FormCodeGenerator(myAwesomeTheme);
-const formsCode = myThemeFormCodeGenerator.generateFormCode([
-  {
-    theme: "my theme",        // Theme name
-    formSchema: {
-      name: "my form name",   // Form name
-      schema: {},             // My form schema. The theme determines which kind of schema will be supported.
+const formCode = generateFormCode({
+  formSchemas: [
+    {
+      theme: "my theme",        // Theme name
+      formSchema: {
+        name: "my form name",   // Form name
+        schema: {},             // My form schema. The theme determines which kind of schema will be supported.
+      },
     },
+  ],
+  formCodeGeneratorTheme: {
+    theme: "my theme",
+    generate: ({ name, schema }) => { ... };
   },
-]);
+});
+
 formsCode[0];                 // FormAsset | FormGenerationError
 ```
 
 Example using the [PatternFly](../form-code-generator-patternfly-theme/README.md) theme:
 
 ```ts
-import { FormCodeGenerator } from "@kie-tools/form-code-generator/dist/FormCodeGenerator";
+import { generateFormCode } from "@kie-tools/form-code-generator/dist/generateFormCode";
 import { patternflyJsonSchemaFormCodeGeneratorTheme } from "@kie-tools/form-code-generator-patternfly-theme/dist/formCodeGenerator";
 
-const patternflyFormCodeGenerator = new FormCodeGenerator(patternflyJsonSchemaFormCodeGeneratorTheme);
-const formsCode = patternflyFormCodeGenerator.generateFormCode([
-  {
-    theme: "patternfly", // Theme name
-    formSchema: {
-      name: "my patternfly form", // Form name
-      schema: {}, // My form JSON Schema.
+const formsCode = generateFormCode({
+  formSchemas: [
+    {
+      theme: "patternfly", // Theme name
+      formSchema: {
+        name: "my patternfly form", // Form name
+        schema: {}, // My form JSON Schema.
+      },
     },
-  },
-]);
+  ],
+  formCodeGeneratorTheme: patternflyJsonSchemaFormCodeGeneratorTheme,
+});
+
 formsCode[0]; // FormAsset | FormGenerationError
 ```
 

@@ -26,7 +26,7 @@ export const BOOTSTRAP4_CSS_URL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0
 export const BOOTSTRAP4_JS_URL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js";
 export const JQUERY_URL = "https://code.jquery.com/jquery-3.2.1.slim.min.js";
 
-const BOOTSTRAP4_THEME_NAME = "bootstrap";
+const BOOTSTRAP4_THEME_NAME = "bootstrap4";
 const BOOTSTRAP4_FILE_EXT = "html";
 
 export type Bootstrap4ThemeName = typeof BOOTSTRAP4_THEME_NAME;
