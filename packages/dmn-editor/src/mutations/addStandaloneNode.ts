@@ -28,15 +28,18 @@ import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServic
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { Normalized } from "../normalization/normalize";
+import { ExternalModelsIndex } from "../DmnEditor";
 
 export function addStandaloneNode({
   definitions,
   drdIndex,
   newNode,
+  externalModelsByNamespace,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   newNode: { type: NodeType; bounds: DC__Bounds };
+  externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
   const newNodeId = generateUuid();
   const nature = nodeNatures[newNode.type];
@@ -133,7 +136,7 @@ export function addStandaloneNode({
       : {}),
   });
 
-  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
+  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions, externalModelsByNamespace });
 
   return { id: newNodeId, href: buildXmlHref({ id: newNodeId }), shapeId };
 }

@@ -148,6 +148,7 @@ export function usePotentialWaypointControls(
             shapeId: edge.data?.dmnShapeTarget["@_id"],
           },
           keepWaypoints: false,
+          externalModelsByNamespace,
           dmnElementRefOfDmnEdge: targetsExternalNode ? requirementEdgeQNameRelativeToThisDmn : undefined,
         });
 

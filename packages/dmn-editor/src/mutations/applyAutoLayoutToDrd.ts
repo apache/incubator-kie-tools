@@ -33,7 +33,7 @@ import { updateDecisionServiceDividerLine } from "../mutations/updateDecisionSer
 import { Normalized } from "../normalization/normalize";
 import { State } from "../store/Store";
 import { AutolayoutParentNode, FAKE_MARKER, visitNodeAndNested } from "../autolayout/autoLayoutInfo";
-import { ExternalDmnsIndex } from "../DmnEditor";
+import { ExternalDmnsIndex, ExternalModelsIndex } from "../DmnEditor";
 
 export function applyAutoLayoutToDrd({
   state,
@@ -46,6 +46,7 @@ export function applyAutoLayoutToDrd({
   __readonly_drdIndex,
   __readonly_dmnObjectNamespace,
   __readonly_externalDmnsIndex,
+  __readonly_externalModelsByNamespace,
 }: {
   state: State;
   __readonly_autoLayoutedInfo: {
@@ -67,6 +68,7 @@ export function applyAutoLayoutToDrd({
   __readonly_drdIndex: number;
   __readonly_dmnObjectNamespace: string | undefined;
   __readonly_externalDmnsIndex: ExternalDmnsIndex;
+  __readonly_externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
   // 7. Update all nodes positions skipping empty groups, which will be positioned manually after all nodes are done being repositioned.
   const autolayoutedElkNodesById = new Map<string, Elk.ElkNode>();
@@ -220,6 +222,7 @@ export function applyAutoLayoutToDrd({
         shapeId: targetNode.data.shape["@_id"],
       },
       keepWaypoints: false,
+      externalModelsByNamespace: __readonly_externalModelsByNamespace,
     });
   }
 }

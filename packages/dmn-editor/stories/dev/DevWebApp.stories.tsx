@@ -18,20 +18,19 @@
  */
 
 import * as React from "react";
-import type { Meta, StoryObj } from "@storybook/react";
 import { useCallback, useMemo, useRef, useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react";
 import "@patternfly/react-core/dist/styles/base.css";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { DmnLatestModel, getMarshaller, DmnMarshaller } from "@kie-tools/dmn-marshaller";
-import { Normalized, normalize } from "@kie-tools/dmn-editor/dist/normalization/normalize";
+import { DmnLatestModel, DmnMarshaller, getMarshaller } from "@kie-tools/dmn-marshaller";
+import { normalize, Normalized } from "@kie-tools/dmn-editor/dist/normalization/normalize";
 import { availableModelsByPath, modelsByNamespace } from "./availableModelsToInclude";
 import { generateEmptyDmn15 } from "../misc/empty/Empty.stories";
 import { loanPreQualificationDmn } from "../useCases/loanPreQualification/LoanPreQualification.stories";
 import { DmnEditorWrapper } from "../dmnEditorStoriesWrapper";
 import {
   DmnEditorProps,
-  DmnEditorRef,
   ExternalModelsIndex,
   OnDmnModelChange,
   OnRequestExternalModelByPath,

@@ -29,7 +29,7 @@ import { Normalized } from "../../normalization/normalize";
 export function computeDataTypes(
   namespace: State["dmn"]["model"]["definitions"]["@_namespace"],
   itemDefinitions: State["dmn"]["model"]["definitions"]["itemDefinition"],
-  externalModelTypesByNamespace: TypeOrReturnType<Computed["getExternalModelTypesByNamespace"]>,
+  externalModelTypesByNamespace: TypeOrReturnType<Computed["getDirectlyIncludedExternalModelsByNamespace"]>,
   thisDmnsImportsByNamespace: TypeOrReturnType<Computed["importsByNamespace"]>
 ) {
   const allDataTypesById: DataTypeIndex = new Map();

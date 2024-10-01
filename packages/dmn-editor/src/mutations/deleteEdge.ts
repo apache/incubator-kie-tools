@@ -28,6 +28,7 @@ import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { Normalized } from "../normalization/normalize";
 import { xmlHrefToQName } from "../xml/xmlHrefToQName";
+import { ExternalModelsIndex } from "../DmnEditor";
 
 export enum EdgeDeletionMode {
   FROM_DRG_AND_ALL_DRDS,
@@ -39,11 +40,13 @@ export function deleteEdge({
   drdIndex,
   edge,
   mode,
+  externalModelsByNamespace,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   edge: { id: string; dmnObject: DmnDiagramEdgeData["dmnObject"] };
   mode: EdgeDeletionMode;
+  externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
   if (edge.dmnObject.namespace === definitions["@_namespace"]) {
     const dmnObjects: Normalized<DMN15__tDefinitions>["drgElement" | "artifact"] =
@@ -101,7 +104,7 @@ export function deleteEdge({
     }
   }
 
-  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
+  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions, externalModelsByNamespace });
 
   return { deletedDmnEdgeOnCurrentDrd };
 }

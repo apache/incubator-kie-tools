@@ -10858,6 +10858,12 @@ importers:
 
   packages/sonataflow-builder-image:
     devDependencies:
+      '@kie-tools/image-builder':
+        specifier: workspace:*
+        version: link:../image-builder
+      '@kie-tools/maven-m2-repo-via-http-image':
+        specifier: workspace:*
+        version: link:../maven-m2-repo-via-http-image
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -11102,6 +11108,12 @@ importers:
 
   packages/sonataflow-devmode-image:
     devDependencies:
+      '@kie-tools/image-builder':
+        specifier: workspace:*
+        version: link:../image-builder
+      '@kie-tools/maven-m2-repo-via-http-image':
+        specifier: workspace:*
+        version: link:../maven-m2-repo-via-http-image
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
