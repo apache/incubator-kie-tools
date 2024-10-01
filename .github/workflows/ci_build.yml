@@ -93,6 +93,8 @@ jobs:
 
           npm -g uninstall bun turbo
 
+          rm turbo.json
+
           echo "mode=$(jq --raw-output '.[${{ matrix.partition }}].mode' /tmp/partitions.json)" >> $GITHUB_OUTPUT
           echo "bootstrapPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].bootstrapPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT
           echo "fullBuildPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].fullBuildPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT
