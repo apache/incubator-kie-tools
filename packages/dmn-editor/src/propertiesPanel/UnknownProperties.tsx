@@ -34,7 +34,7 @@ export function UnknownProperties(props: { shape: Normalized<DMNDI15__DMNShape>;
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const { externalModelsByNamespace } = useExternalModels();
   const externalDmnsByNamespace = useDmnEditorStore(
-    (s) => s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns
+    (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
   );
   const { onRequestToJumpToPath } = useDmnEditor();
 

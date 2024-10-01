@@ -134,6 +134,7 @@ export function DiagramCommands(props: {}) {
               drdIndex: state.computed(state).getDrdIndex(),
               edge: { id: edge.id, dmnObject: edge.data!.dmnObject },
               mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
+              externalModelsByNamespace,
             });
             state.dispatch(state).diagram.setEdgeStatus(edge.id, {
               selected: false,
@@ -156,10 +157,11 @@ export function DiagramCommands(props: {}) {
                   __readonly_dmnObjectQName: node.data.dmnObjectQName,
                   __readonly_dmnObjectId: node.data.dmnObject?.["@_id"],
                   __readonly_nodeNature: nodeNatures[node.type as NodeType],
-                  mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
-                  __readonly_externalModelTypesByNamespace: state
+                  __readonly_mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
+                  __readonly_externalDmnsIndex: state
                     .computed(state)
-                    .getExternalModelTypesByNamespace(externalModelsByNamespace),
+                    .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
+                  __readonly_externalModelsByNamespace: externalModelsByNamespace,
                 });
                 state.dispatch(state).diagram.setNodeStatus(node.id, {
                   selected: false,
@@ -239,12 +241,25 @@ export function DiagramCommands(props: {}) {
             definitions: state.dmn.model.definitions,
             drdIndex: state.computed(state).getDrdIndex(),
           });
-          diagramElements.push(...clipboard.shapes.map((s) => ({ ...s, __$$element: "dmndi:DMNShape" as const })));
-          diagramElements.push(...clipboard.edges.map((s) => ({ ...s, __$$element: "dmndi:DMNEdge" as const })));
+          diagramElements.push(
+            ...clipboard.shapes.map((s) => ({
+              ...s,
+              __$$element: "dmndi:DMNShape" as const,
+            }))
+          );
+          diagramElements.push(
+            ...clipboard.edges.map((s) => ({
+              ...s,
+              __$$element: "dmndi:DMNEdge" as const,
+            }))
+          );
 
           widths.push(...clipboard.widths);
 
-          repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions: state.dmn.model.definitions });
+          repopulateInputDataAndDecisionsOnAllDecisionServices({
+            definitions: state.dmn.model.definitions,
+            externalModelsByNamespace,
+          });
 
           state.diagram._selectedNodes = [...clipboard.drgElements, ...clipboard.artifacts].map((s) =>
             buildXmlHref({ id: s["@_id"]! })
@@ -256,7 +271,7 @@ export function DiagramCommands(props: {}) {
         });
       });
     };
-  }, [dmnEditorStoreApi, commandsRef]);
+  }, [dmnEditorStoreApi, commandsRef, externalModelsByNamespace]);
 
   // Select/deselect all nodes
   useEffect(() => {
@@ -317,12 +332,13 @@ export function DiagramCommands(props: {}) {
               padding: CONTAINER_NODES_DESIRABLE_PADDING,
             }),
           },
+          externalModelsByNamespace,
         });
 
         state.dispatch(state).diagram.setNodeStatus(newNodeId, { selected: true });
       });
     };
-  }, [dmnEditorStoreApi, commandsRef, rf]);
+  }, [dmnEditorStoreApi, commandsRef, rf, externalModelsByNamespace]);
 
   // Toggle hierarchy highlights
   useEffect(() => {
@@ -369,7 +385,7 @@ export function DiagramCommands(props: {}) {
               canRemoveNodeFromDrdOnly({
                 __readonly_externalDmnsIndex: state
                   .computed(state)
-                  .getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
+                  .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
                 definitions: state.dmn.model.definitions,
                 __readonly_drdIndex: state.computed(state).getDrdIndex(),
                 __readonly_dmnObjectNamespace:
@@ -380,7 +396,7 @@ export function DiagramCommands(props: {}) {
               canRemoveNodeFromDrdOnly({
                 __readonly_externalDmnsIndex: state
                   .computed(state)
-                  .getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
+                  .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
                 definitions: state.dmn.model.definitions,
                 __readonly_drdIndex: state.computed(state).getDrdIndex(),
                 __readonly_dmnObjectNamespace:
@@ -393,8 +409,12 @@ export function DiagramCommands(props: {}) {
               drdIndex: state.computed(state).getDrdIndex(),
               edge: { id: edge.id, dmnObject: edge.data!.dmnObject },
               mode: EdgeDeletionMode.FROM_CURRENT_DRD_ONLY,
+              externalModelsByNamespace,
             });
-            state.dispatch(state).diagram.setEdgeStatus(edge.id, { selected: false, draggingWaypoint: false });
+            state.dispatch(state).diagram.setEdgeStatus(edge.id, {
+              selected: false,
+              draggingWaypoint: false,
+            });
           }
         }
 
@@ -406,15 +426,16 @@ export function DiagramCommands(props: {}) {
           const { deletedDmnShapeOnCurrentDrd: deletedShape } = deleteNode({
             definitions: state.dmn.model.definitions,
             __readonly_drgEdges: [], // Deleting from DRD only.
-            __readonly_externalModelTypesByNamespace: state
+            __readonly_externalDmnsIndex: state
               .computed(state)
-              .getExternalModelTypesByNamespace(externalModelsByNamespace),
+              .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
             __readonly_drdIndex: state.computed(state).getDrdIndex(),
             __readonly_dmnObjectNamespace: node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
             __readonly_dmnObjectQName: node.data.dmnObjectQName,
             __readonly_dmnObjectId: node.data.dmnObject?.["@_id"],
             __readonly_nodeNature: nodeNatures[node.type as NodeType],
-            mode: NodeDeletionMode.FROM_CURRENT_DRD_ONLY,
+            __readonly_mode: NodeDeletionMode.FROM_CURRENT_DRD_ONLY,
+            __readonly_externalModelsByNamespace: externalModelsByNamespace,
           });
 
           if (deletedShape) {

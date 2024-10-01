@@ -41,6 +41,7 @@ import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopula
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { AutoPositionedEdgeMarker } from "../diagram/edges/AutoPositionedEdgeMarker";
 import { Normalized } from "../normalization/normalize";
+import { ExternalModelsIndex } from "../DmnEditor";
 
 export function addEdge({
   definitions,
@@ -49,6 +50,7 @@ export function addEdge({
   targetNode,
   edge,
   keepWaypoints,
+  externalModelsByNamespace,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
@@ -74,6 +76,7 @@ export function addEdge({
     autoPositionedEdgeMarker: AutoPositionedEdgeMarker | undefined;
   };
   keepWaypoints: boolean;
+  externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
   if (!_checkIsValidConnection(sourceNode, targetNode, edge.type)) {
     throw new Error(`DMN MUTATION: Invalid structure: (${sourceNode.type}) --${edge.type}--> (${targetNode.type}) `);
@@ -188,7 +191,10 @@ export function addEdge({
   // Replace with the new one.
   diagramElements.push(newDmnEdge);
 
-  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
+  repopulateInputDataAndDecisionsOnAllDecisionServices({
+    definitions,
+    externalModelsByNamespace,
+  });
 
   return { newDmnEdge };
 }
@@ -229,6 +235,7 @@ function removeFirstMatchIfPresent<T>(arr: T[], predicate: Parameters<Array<T>["
 function tryKeepingEdgeId(existingEdgeId: string | undefined, newEdgeId: string) {
   return existingEdgeId ?? newEdgeId;
 }
+
 function withoutDiscreteAutoPosinitioningMarker(edgeId: string) {
   const marker = getDiscreteAutoPositioningEdgeIdMarker(edgeId);
   return marker ? edgeId.replace(`${marker}`, "") : edgeId;
