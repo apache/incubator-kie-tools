@@ -1032,7 +1032,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           resetToBeforeEditingBegan();
         }
       },
-      [dmnEditorStoreApi, externalModelsByNamespace, resetToBeforeEditingBegan, thisDmn.model.definitions]
+      [dmnEditorStoreApi, externalModelsByNamespace, resetToBeforeEditingBegan]
     );
 
     const onEdgesChange = useCallback<RF.OnEdgesChange>(
