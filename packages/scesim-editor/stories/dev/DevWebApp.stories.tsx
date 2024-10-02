@@ -25,11 +25,17 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js";
 import { SceSimMarshaller, SceSimModel, getMarshaller } from "@kie-tools/scesim-marshaller";
-import { OnSceSimModelChange, TestScenarioEditorProps } from "../../src/TestScenarioEditor";
+import {
+  OnRequestExternalModelByPath,
+  OnRequestExternalModelsAvailableToInclude,
+  OnSceSimModelChange,
+  TestScenarioEditorProps,
+} from "../../src/TestScenarioEditor";
 import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
 import { emptyFileName, emptySceSim } from "../misc/empty/Empty.stories";
 import { isOldEnoughDrl, isOldEnoughDrlFileName } from "../useCases/IsOldEnoughRule.stories";
 import { trafficViolationDmn, trafficViolationDmnFileName } from "../useCases/TrafficViolationDmn.stories";
+import { availableModelsByPath } from "../examples/AvailableDMNModels";
 import "./DevWebApp.css";
 
 function DevWebApp(props: TestScenarioEditorProps) {
@@ -134,17 +140,13 @@ function DevWebApp(props: TestScenarioEditorProps) {
     setState((prev) => ({ ...prev, pointer: Math.max(0, prev.pointer - 1) }));
   }, []);
 
-  /* TODO: DMN DATA Retieve
-  const externalModelsByNamespace = useMemo<ExternalModelsIndex>(() => {
-    return (currentModel.definitions.import ?? []).reduce((acc, i) => {
-      acc[i["@_namespace"]] = modelsByNamespace[i["@_namespace"]];
-      return acc;
-    }, {} as ExternalModelsIndex);
-  }, [currentModel.definitions.import]);
-
   const onRequestExternalModelByPath = useCallback<OnRequestExternalModelByPath>(async (path) => {
     return availableModelsByPath[path] ?? null;
-  }, []);*/
+  }, []);
+
+  const onRequestExternalModelsAvailableToInclude = useCallback<OnRequestExternalModelsAvailableToInclude>(async () => {
+    return Object.keys(availableModelsByPath);
+  }, []);
 
   return (
     <Page onDragOver={onDragOver} onDrop={onDrop}>
@@ -220,6 +222,8 @@ function DevWebApp(props: TestScenarioEditorProps) {
           issueTrackerHref: props.issueTrackerHref,
           model: currentModel,
           onModelChange: onModelChange,
+          onRequestExternalModelsAvailableToInclude: onRequestExternalModelsAvailableToInclude,
+          onRequestExternalModelByPath: onRequestExternalModelByPath,
           openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: fileName,
         })}
       </PageSection>

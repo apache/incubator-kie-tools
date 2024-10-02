@@ -9042,6 +9042,9 @@ importers:
       '@kie-tools/boxed-expression-component':
         specifier: workspace:*
         version: link:../boxed-expression-component
+      '@kie-tools/dmn-marshaller':
+        specifier: workspace:*
+        version: link:../dmn-marshaller
       '@kie-tools/i18n-common-dictionary':
         specifier: workspace:*
         version: link:../i18n-common-dictionary

@@ -20,18 +20,16 @@
 import "@patternfly/react-core/dist/styles/base.css";
 
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { useCallback, useImperativeHandle, useMemo, useRef } from "react";
 
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 
 import { testScenarioEditorDictionaries, TestScenarioEditorI18nContext, testScenarioEditorI18nDefaults } from "./i18n";
 
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+
 import { SceSimModel } from "@kie-tools/scesim-marshaller";
-import {
-  SceSim__FactMappingType,
-  SceSim__ScenarioSimulationModelType,
-  SceSim__settingsType,
-} from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
+import { SceSim__FactMappingType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
@@ -90,7 +88,24 @@ enum TestScenarioFileStatus {
 
 /* Types */
 
+export type OnRequestExternalModelsAvailableToInclude = () => Promise<string[]>;
 export type OnSceSimModelChange = (model: SceSimModel) => void;
+
+export type OnRequestExternalModelByPath = (
+  normalizedPosixPathRelativeToTheOpenFile: string
+) => Promise<ExternalModel | null>;
+export type ExternalModelsIndex = Record<
+  string /** normalizedPosixPathRelativeToTheOpenFile */,
+  ExternalModel | undefined
+>;
+export type ExternalModel = { type: "dmn" } & ExternalDmn;
+
+//export type ExternalDmnsIndex = Map<string /** normalizedPosixPathRelativeToTheOpenFile */, ExternalDmn>;
+export type ExternalDmn = {
+  model: /*Normalized<*/ DmnLatestModel /**/;
+  normalizedPosixPathRelativeToTheOpenFile: string;
+  svg: string;
+};
 
 export type TestScenarioEditorProps = {
   /**
@@ -110,6 +125,18 @@ export type TestScenarioEditorProps = {
    * Notifies the caller when the Test Scenario Editor performs a new edit after the debounce time.
    */
   onModelDebounceStateChanged?: (changed: boolean) => void;
+  /**
+   * Called when the contents of a specific available model is necessary. Used by the "Included models" tab.
+   */
+  onRequestExternalModelByPath?: OnRequestExternalModelByPath;
+  /**
+   * Called when the list of paths of available models to be included is needed. Used by the "Included models" tab.
+   */
+  onRequestExternalModelsAvailableToInclude?: OnRequestExternalModelsAvailableToInclude;
+  /**
+   * The file path of the current opened Test Scenario scesim file
+   */
+  openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
 };
 
 export type TestScenarioEditorRef = {
@@ -123,7 +150,7 @@ export type TestScenarioSelectedColumnMetaData = {
   isBackground: boolean;
 };
 
-function TestScenarioMainPanel({ fileName }: { fileName: string }) {
+function TestScenarioMainPanel({ scesimFilePath }: { scesimFilePath: string | undefined }) {
   const { i18n } = useTestScenarioEditorI18n();
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const navigation = useTestScenarioEditorStore((s) => s.navigation);
@@ -158,7 +185,9 @@ function TestScenarioMainPanel({ fileName }: { fileName: string }) {
       <div className="kie-scesim-editor--content">
         <Drawer isExpanded={navigation.dock.isOpen} isInline={true} position={"right"}>
           <DrawerContent
-            panelContent={<TestScenarioDrawerPanel fileName={fileName} onDrawerClose={() => showDockPanel(false)} />}
+            panelContent={
+              <TestScenarioDrawerPanel scesimFilePath={scesimFilePath} onDrawerClose={() => showDockPanel(false)} />
+            }
           >
             <DrawerContentBody>
               {alertState.enabled && (
@@ -257,10 +286,11 @@ function TestScenarioParserErrorPanel({
 }
 
 export const TestScenarioEditorInternal = ({
+  forwardRef,
   model,
   onModelChange,
   onModelDebounceStateChanged,
-  forwardRef,
+  openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
 }: TestScenarioEditorProps & { forwardRef?: React.Ref<TestScenarioEditorRef> }) => {
   console.trace("[TestScenarioEditorInternal] Component creation ... ");
 
@@ -382,7 +412,7 @@ export const TestScenarioEditorInternal = ({
               />
             );
           case TestScenarioFileStatus.VALID:
-            return <TestScenarioMainPanel fileName={"Test"} />;
+            return <TestScenarioMainPanel scesimFilePath={openFilenormalizedPosixPathRelativeToTheWorkspaceRoot} />;
         }
       })()}
     </div>

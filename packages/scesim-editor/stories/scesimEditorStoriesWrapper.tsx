@@ -71,6 +71,10 @@ export function SceSimEditorWrapper(props: Partial<StorybookTestScenarioEditorPr
       model={model}
       onModelChange={onModelChange}
       onModelDebounceStateChanged={onModelDebounceStateChanged}
+      onRequestExternalModelByPath={props?.onRequestExternalModelByPath ?? args.onRequestExternalModelByPath}
+      onRequestExternalModelsAvailableToInclude={
+        props?.onRequestExternalModelsAvailableToInclude ?? args.onRequestExternalModelsAvailableToInclude
+      }
       openFilenormalizedPosixPathRelativeToTheWorkspaceRoot={
         props?.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot ??
         args.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot

@@ -21,6 +21,7 @@
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools/boxed-expression-component": "workspace:*",
+    "@kie-tools/dmn-marshaller": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@kie-tools/scesim-marshaller": "workspace:*",
     "@patternfly/react-core": "^4.276.6",

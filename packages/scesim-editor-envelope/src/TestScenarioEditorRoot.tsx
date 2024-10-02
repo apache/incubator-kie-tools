@@ -20,10 +20,9 @@
 import * as __path from "path";
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-//import * as DmnEditor from "@kie-tools/dmn-editor/dist/DmnEditor";
 import * as TestScenarioEditor from "@kie-tools/scesim-editor/dist/TestScenarioEditor";
 //import { normalize, Normalized } from "@kie-tools/dmn-editor/dist/normalization/normalize";
-//import { DMN_LATEST_VERSION, DmnLatestModel, DmnMarshaller, getMarshaller } from "@kie-tools/dmn-marshaller";
+import { DMN_LATEST_VERSION, DmnLatestModel, DmnMarshaller, getDmnMarshaller } from "@kie-tools/dmn-marshaller";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ResourceContent, SearchType, WorkspaceChannelApi, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 //import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
@@ -43,7 +42,7 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { getMarshaller, SceSimMarshaller, SceSimModel } from "@kie-tools/scesim-marshaller";
 import { EMPTY_ONE_EIGHT } from "@kie-tools/scesim-editor/dist/resources/EmptyScesimFile";
 
-export const EXTERNAL_MODELS_SEARCH_GLOB_PATTERN = "**/*.{dmn,pmml}";
+export const DMN_MODELS_SEARCH_GLOB_PATTERN = "**/*.{dmn}";
 
 export type TestScenarioEditorRootProps = {
   exposing: (s: TestScenarioEditorRoot) => void;
@@ -188,6 +187,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     }
   }
 
+  //TODO
   private setExternalModelsByNamespace = (externalModelsByNamespace: DmnEditor.ExternalModelsIndex) => {
     this.setState((prev) => ({ ...prev, externalModelsByNamespace }));
   };
@@ -209,24 +209,23 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     );
   };
 
-  private onRequestExternalModelsAvailableToInclude: DmnEditor.OnRequestExternalModelsAvailableToInclude = async () => {
-    if (!this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot) {
-      return [];
-    }
+  private onRequestExternalModelsAvailableToInclude: TestScenarioEditor.OnRequestExternalModelsAvailableToInclude =
+    async () => {
+      if (!this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot) {
+        return [];
+      }
 
-    const list = await this.props.onRequestWorkspaceFilesList({
-      pattern: EXTERNAL_MODELS_SEARCH_GLOB_PATTERN,
-      opts: { type: SearchType.TRAVERSAL },
-    });
+      const list = await this.props.onRequestWorkspaceFilesList({
+        pattern: DMN_MODELS_SEARCH_GLOB_PATTERN,
+        opts: { type: SearchType.TRAVERSAL },
+      });
 
-    return list.normalizedPosixPathsRelativeToTheWorkspaceRoot.flatMap((p) =>
-      // Do not show this DMN on the list
-      p === this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
-        ? []
-        : __path.relative(__path.dirname(this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot!), p)
-    );
-  };
+      return list.normalizedPosixPathsRelativeToTheWorkspaceRoot.flatMap((p) =>
+        __path.relative(__path.dirname(this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot!), p)
+      );
+    };
 
+  //TODO
   private onRequestToResolvePathRelativeToTheOpenFile: DmnEditor.OnRequestToResolvePath = (
     normalizedPosixPathRelativeToTheOpenFile
   ) => {
@@ -247,7 +246,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     // return (which is the normalizedPosixPathRelativeToTheWorkspaceRoot) = tmp/Tmp.dmn
   };
 
-  private onRequestExternalModelByPathsRelativeToTheOpenFile: DmnEditor.OnRequestExternalModelByPath = async (
+  private onRequestExternalModelByPathsRelativeToTheOpenFile: TestScenarioEditor.OnRequestExternalModelByPath = async (
     normalizedPosixPathRelativeToTheOpenFile
   ) => {
     const normalizedPosixPathRelativeToTheWorkspaceRoot = this.onRequestToResolvePathRelativeToTheOpenFile(
@@ -263,20 +262,15 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
       return {
         normalizedPosixPathRelativeToTheOpenFile,
         type: "dmn",
-        model: normalize(getMarshaller(resource?.content ?? "", { upgradeTo: "latest" }).parser.parse()),
+        model: /*normalize(*/ getDmnMarshaller(resource?.content ?? "", { upgradeTo: "latest" }).parser.parse() /*)*/,
         svg: "",
-      };
-    } else if (ext === ".pmml") {
-      return {
-        normalizedPosixPathRelativeToTheOpenFile,
-        type: "pmml",
-        model: XML2PMML(resource?.content ?? ""),
       };
     } else {
       throw new Error(`Unknown extension '${ext}'.`);
     }
   };
 
+  //tODO maybe not required
   private onOpenFileFromPathRelativeToTheOpenFile = (normalizedPosixPathRelativeToTheOpenFile: string) => {
     if (!this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot) {
       return;
@@ -287,6 +281,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     );
   };
 
+  /*  commands not enabled?
   public componentDidUpdate(
     prevProps: Readonly<TestScenarioEditorRootProps>,
     prevState: Readonly<TestScenarioEditorRootState>,
@@ -455,7 +450,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     this.state.keyboardShortcutsRegisterIds.forEach((id) => {
       this.props.keyboardShortcutsService?.deregister(id);
     });
-  }
+  } */
 
   public render() {
     return (
@@ -463,6 +458,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
         {this.state.error && <DmnMarshallerFallbackError error={this.state.error} />}
         {this.model && (
           <>
+            {/*
             <DmnEditor.DmnEditor
               ref={this.testScenarioEditorRef}
               originalVersion={this.state.marshaller?.originalVersion}
@@ -481,6 +477,17 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
               onRequestToJumpToPath={this.onOpenFileFromPathRelativeToTheOpenFile}
               onRequestToResolvePath={this.onRequestToResolvePathRelativeToTheOpenFile}
               // (end)
+            />  */}
+            <TestScenarioEditor.TestScenarioEditor
+              ref={this.testScenarioEditorRef}
+              issueTrackerHref={""}
+              model={this.model}
+              onModelChange={this.onModelChange}
+              onRequestExternalModelsAvailableToInclude={this.onRequestExternalModelsAvailableToInclude}
+              onRequestExternalModelByPath={this.onRequestExternalModelByPathsRelativeToTheOpenFile}
+              openFilenormalizedPosixPathRelativeToTheWorkspaceRoot={
+                this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
+              }
             />
             <ExternalModelsManager
               workspaceRootAbsolutePosixPath={this.props.workspaceRootAbsolutePosixPath}

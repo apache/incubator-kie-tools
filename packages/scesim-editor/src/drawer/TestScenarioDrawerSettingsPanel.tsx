@@ -35,7 +35,7 @@ import { TestScenarioType } from "../TestScenarioEditor";
 
 import "./TestScenarioDrawerSettingsPanel.css";
 
-function TestScenarioDrawerSettingsPanel({ fileName }: { fileName: string }) {
+function TestScenarioDrawerSettingsPanel({ scesimFilePath }: { scesimFilePath: string | undefined }) {
   const { i18n } = useTestScenarioEditorI18n();
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const settingsModel = useTestScenarioEditorStore((s) => s.scesim.model.ScenarioSimulationModel.settings);
@@ -57,15 +57,22 @@ function TestScenarioDrawerSettingsPanel({ fileName }: { fileName: string }) {
       <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
         {i18n.drawer.settings.fileName}
       </Title>
-      <TextInput className={"kie-scesim-editor-drawer-settings--text-input"} value={fileName} type="text" isDisabled />
+      <TextInput
+        aria-label="filename"
+        className={"kie-scesim-editor-drawer-settings--text-input"}
+        isDisabled
+        type="text"
+        value={scesimFilePath}
+      />
       <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
         {i18n.drawer.settings.assetType}
       </Title>
       <TextInput
+        aria-label="asset-type"
         className={"kie-scesim-editor-drawer-settings--text-input"}
-        value={TestScenarioType[testScenarioType]}
-        type="text"
         isDisabled
+        type="text"
+        value={TestScenarioType[testScenarioType]}
       />
       {testScenarioType === TestScenarioType.DMN ? (
         <>
@@ -74,10 +81,10 @@ function TestScenarioDrawerSettingsPanel({ fileName }: { fileName: string }) {
           </Title>
           {/* Temporary Mocked */}
           <FormSelect
+            aria-label="form-select-input"
             className={"kie-scesim-editor-drawer-settings--form-select"}
-            value={"1"}
-            aria-label="FormSelect Input"
             ouiaId="BasicFormSelect"
+            value={"1"}
           >
             <FormSelectOption isDisabled={true} key={0} value={"1"} label={"MockedDMN.dmn"} />
             <FormSelectOption isDisabled={true} key={1} value={"2"} label={"MockedDMN2.dmn"} />
@@ -86,19 +93,21 @@ function TestScenarioDrawerSettingsPanel({ fileName }: { fileName: string }) {
             {i18n.drawer.settings.dmnName}
           </Title>
           <TextInput
+            aria-label="dmn-name"
             className={"kie-scesim-editor-drawer-settings--text-input"}
-            value={settingsModel.dmnName?.__$$text}
-            type="text"
             isDisabled
+            type="text"
+            value={settingsModel.dmnName?.__$$text}
           />
           <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
             {i18n.drawer.settings.dmnNameSpace}
           </Title>
           <TextInput
+            aria-label="dmn-namespace"
             className={"kie-scesim-editor-drawer-settings--text-input"}
-            value={settingsModel.dmnNamespace?.__$$text}
-            type="text"
             isDisabled
+            type="text"
+            value={settingsModel.dmnNamespace?.__$$text}
           />
         </>
       ) : (
@@ -112,6 +121,7 @@ function TestScenarioDrawerSettingsPanel({ fileName }: { fileName: string }) {
             </Tooltip>
           </Title>
           <TextInput
+            aria-label="rule-session"
             className={"kie-scesim-editor-drawer-settings--text-input"}
             onChange={(value) => updateSettingsField("dmoSession", value)}
             placeholder={i18n.drawer.settings.kieSessionRulePlaceholder}
@@ -127,6 +137,7 @@ function TestScenarioDrawerSettingsPanel({ fileName }: { fileName: string }) {
             </Tooltip>
           </Title>
           <TextInput
+            aria-label="rule-flow-group"
             className={"kie-scesim-editor-drawer-settings--text-input"}
             onChange={(value) => updateSettingsField("ruleFlowGroup", value)}
             placeholder={i18n.drawer.settings.ruleFlowGroupPlaceholder}
