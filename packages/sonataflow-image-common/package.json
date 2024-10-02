@@ -13,10 +13,10 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
-    "build:prod": "run-script-if --bool \"$(build-env tests.run)\" --then \"pnpm test\"",
+    "build:prod": "pnpm test",
     "install": "node install.js",
     "test": "run-script-os",
-    "test:linux:darwin": "mkdir -p dist-tests && rm -rf dist-tests/* && make -C ./resources bats || $(build-env tests.ignoreFailures) && mv dist-tests/report.xml dist-tests/junit-report.xml || true",
+    "test:linux:darwin": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"mkdir -p dist-tests\" \"rm -rf dist-tests/*\" \"make -C ./resources bats\" --finally \"touch dist-tests/report.xml\" \"mv dist-tests/report.xml dist-tests/junit-report.xml\"",
     "test:win32": "echo \"Tests are skipped in Windows\""
   },
   "devDependencies": {
