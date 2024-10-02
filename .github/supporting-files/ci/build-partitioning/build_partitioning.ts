@@ -174,15 +174,18 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
   );
 
   // On Windows there's a 8191 character limit for commands.
-  // To circunvent this we list packages in batches and then merge them to a final list.
+  // To circunvent this we break the package list in chunks, run turbo ls, and then merge them to a final list.
+  // Chunk size is defined as 50. This is arbitrary value.
+  // If each package name has 100 characters, 50 of them is 5000 characters, making the final command less than 8191.
   const changedPackagesNamesChunks: string[][] = [];
-  const chunkSize = 15; // Arbitrary value, could be bigger.
+  const chunkSize = 50;
   for (let i = 0; i < changedPackagesNames.length; i += chunkSize) {
     changedPackagesNamesChunks.push(
       changedPackagesNames.slice(i, Math.min(i + chunkSize, changedPackagesNames.length - 1))
     );
   }
 
+  // Using a Set because it forces unique values, so no need to deduplicate.
   const affectedPackageDirsInAllPartitionsSet = new Set<string>();
   for (let packagesNameChunk of changedPackagesNamesChunks) {
     await JSON.parse(
@@ -193,15 +196,14 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
       affectedPackageDirsInAllPartitionsSet.add(convertToPosixPathRelativeToRepoRoot(item.path));
     });
   }
-  const affectedPackageDirsInAllPartitions: Array<string> = Array.from(affectedPackageDirsInAllPartitionsSet);
+  const affectedPackageDirsInAllPartitions = Array.from(affectedPackageDirsInAllPartitionsSet);
 
-  await JSON.parse(
-    execSync(
-      `bash -c "turbo ls ${changedPackagesNames.map((packageName) => `-F '...${packageName}'`).join(" ")} --output json"`
-    ).toString()
-  )
-    .packages.items.map((item: { path: string }) => item.path)
-    .map((pkgDir) => convertToPosixPathRelativeToRepoRoot(pkgDir));
+  console.log({
+    changedPackagesNames,
+    changedPackagesNamesChunks,
+    affectedPackageDirsInAllPartitionsSet,
+    affectedPackageDirsInAllPartitions,
+  });
 
   return await Promise.all(
     partitionDefinitions.map(async (partition) => {
