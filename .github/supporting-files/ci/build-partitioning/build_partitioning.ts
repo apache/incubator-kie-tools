@@ -173,9 +173,31 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
     __PACKAGES_ROOT_PATHS.every((rootPath) => !path.startsWith(rootPath))
   );
 
-  const affectedPackageDirsInAllPartitions: Array<string> = await JSON.parse(
+  // On Windows there's a 8191 character limit for commands.
+  // To circunvent this we list packages in batches and then merge them to a final list.
+  const changedPackagesNamesChunks: string[][] = [];
+  const chunkSize = 15; // Arbitrary value, could be bigger.
+  for (let i = 0; i < changedPackagesNames.length; i += chunkSize) {
+    changedPackagesNamesChunks.push(
+      changedPackagesNames.slice(i, Math.min(i + chunkSize, changedPackagesNames.length - 1))
+    );
+  }
+
+  const affectedPackageDirsInAllPartitionsSet = new Set<string>();
+  for (let packagesNameChunk of changedPackagesNamesChunks) {
+    await JSON.parse(
+      execSync(
+        `bash -c "turbo ls ${packagesNameChunk.map((packageName) => `-F '...${packageName}'`).join(" ")} --output json"`
+      ).toString()
+    ).packages.items.forEach((item: { path: string }) => {
+      affectedPackageDirsInAllPartitionsSet.add(convertToPosixPathRelativeToRepoRoot(item.path));
+    });
+  }
+  const affectedPackageDirsInAllPartitions: Array<string> = Array.from(affectedPackageDirsInAllPartitionsSet);
+
+  await JSON.parse(
     execSync(
-      `bash -c "turbo ls ${changedPackagesNames.map((packageName) => `--filter='...${packageName}'`).join(" ")} --output json"`
+      `bash -c "turbo ls ${changedPackagesNames.map((packageName) => `-F '...${packageName}'`).join(" ")} --output json"`
     ).toString()
   )
     .packages.items.map((item: { path: string }) => item.path)
