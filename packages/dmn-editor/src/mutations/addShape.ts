@@ -20,7 +20,6 @@
 import {
   DC__Point,
   DMN15__tDefinitions,
-  DMNDI15__DMNDecisionServiceDividerLine,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { NodeType } from "../diagram/connections/graphStructure";

@@ -216,7 +216,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           const sourceBounds = sourceNode.data.shape["dc:Bounds"];
           const targetBounds = targetNode.data.shape["dc:Bounds"];
           if (!sourceBounds || !targetBounds) {
-            throw new Error("Cannot create connection without target bounds!");
+            throw new Error("Cannot create connection without source and target bounds!");
           }
 
           // --------- This is where we draw the line between the diagram and the model.
@@ -1032,7 +1032,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           resetToBeforeEditingBegan();
         }
       },
-      [dmnEditorStoreApi, externalModelsByNamespace, resetToBeforeEditingBegan, thisDmn.model.definitions]
+      [dmnEditorStoreApi, externalModelsByNamespace, resetToBeforeEditingBegan]
     );
 
     const onEdgesChange = useCallback<RF.OnEdgesChange>(

@@ -18,7 +18,7 @@
  */
 
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
-import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { DC__Bounds, DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";

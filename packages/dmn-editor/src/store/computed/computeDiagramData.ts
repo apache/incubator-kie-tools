@@ -38,6 +38,7 @@ import { Computed, State } from "../Store";
 import { getDecisionServicePropertiesRelativeToThisDmn } from "../../mutations/addExistingDecisionServiceToDrd";
 import { Normalized } from "../../normalization/normalize";
 import { KIE_UNKNOWN_NAMESPACE } from "../../kie/kie";
+import { xmlHrefToQName } from "../../xml/xmlHrefToQName";
 
 export const NODE_LAYERS = {
   GROUP_NODE: 0,
@@ -99,7 +100,7 @@ export function computeDiagramData(
   const ackEdge: AckEdge = ({ id, type, dmnObject, source, target, sourceNamespace }) => {
     const data = {
       dmnObject,
-      dmnEdge: id ? indexedDrd.dmnEdgesByDmnElementRef.get(id) : undefined,
+      dmnEdge: id ? indexedDrd.dmnEdgesByDmnElementRef.get(xmlHrefToQName(id, definitions)) : undefined,
       dmnShapeSource: indexedDrd.dmnShapesByHref.get(source),
       dmnShapeTarget: indexedDrd.dmnShapesByHref.get(target),
     };
@@ -421,7 +422,11 @@ function ackRequirementEdges(
       (dmnObject.informationRequirement ?? []).forEach((ir, index) => {
         const irHref = parseXmlHref((ir.requiredDecision ?? ir.requiredInput)!["@_href"]);
         ackEdge({
-          id: ir["@_id"]!,
+          // HREF format, used as RF.Edge ID
+          id:
+            drgElementsNamespace === thisDmnsNamespace
+              ? ir["@_id"]
+              : buildXmlHref({ namespace: drgElementsNamespace, id: ir["@_id"] }),
           dmnObject: {
             namespace: drgElementsNamespace,
             type: dmnObject.__$$element,
@@ -441,7 +446,11 @@ function ackRequirementEdges(
       (dmnObject.knowledgeRequirement ?? []).forEach((kr, index) => {
         const krHref = parseXmlHref(kr.requiredKnowledge["@_href"]);
         ackEdge({
-          id: kr["@_id"]!,
+          // HREF format, used as RF.Edge ID
+          id:
+            drgElementsNamespace === thisDmnsNamespace
+              ? kr["@_id"]
+              : buildXmlHref({ namespace: drgElementsNamespace, id: kr["@_id"] }),
           dmnObject: {
             namespace: drgElementsNamespace,
             type: dmnObject.__$$element,

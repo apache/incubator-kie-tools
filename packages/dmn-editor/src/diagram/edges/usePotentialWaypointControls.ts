@@ -25,6 +25,12 @@ import { snapPoint } from "../SnapGrid";
 import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DmnDiagramNodeData } from "../nodes/Nodes";
 import { DmnDiagramEdgeData } from "./Edges";
+import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
+import { addEdge } from "../../mutations/addEdge";
+import { EdgeType, NodeType } from "../connections/graphStructure";
+import { PositionalNodeHandleId } from "../connections/PositionalNodeHandles";
+import { getHandlePosition } from "../maths/DmnMaths";
+import { xmlHrefToQName } from "../../xml/xmlHrefToQName";
 
 export function usePotentialWaypointControls(
   waypoints: DC__Point[],
@@ -38,6 +44,7 @@ export function usePotentialWaypointControls(
   const isDraggingWaypoint = useDmnEditorStore((s) => !!s.diagram.draggingWaypoints.find((e) => e === edgeId));
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const reactFlowInstance = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();
+  const { externalModelsByNamespace } = useExternalModels();
 
   const [potentialWaypoint, setPotentialWaypoint] = useState<ReturnType<typeof approximateClosestPoint> | undefined>(
     undefined
@@ -74,12 +81,83 @@ export function usePotentialWaypointControls(
   }, [snapGrid, potentialWaypoint]);
 
   const onDoubleClick = useCallback(() => {
-    if (!potentialWaypoint || !snappedPotentialWaypoint || edgeIndex === undefined) {
+    if (!potentialWaypoint || !snappedPotentialWaypoint) {
       return;
     }
 
+    if (edgeIndex === undefined) {
+      /**
+       * This means we are adding a first waypoint to one of following edges:
+       * - an edge in a non default DRD
+       * - an edge targeting an external node
+       */
+      dmnEditorStoreApi.setState((state) => {
+        const nodesById = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById;
+        const edge = state.computed(state).getDiagramData(externalModelsByNamespace).edgesById.get(edgeId);
+        if (edge === undefined || edge.data?.dmnShapeSource === undefined || edge.data?.dmnShapeTarget == undefined) {
+          console.debug(
+            `DMN DIAGRAM: We can not add DMNEdge for '${edgeId}' edge into diagram. There are missing data edge: ${edge}, edge.data: ${edge?.data}`
+          );
+          return;
+        }
+
+        const edgeSourceBounds = edge.data?.dmnShapeSource["dc:Bounds"];
+        const edgeTargetBounds = edge.data?.dmnShapeTarget["dc:Bounds"];
+        if (edgeSourceBounds === undefined || edgeTargetBounds === undefined) {
+          console.debug(
+            `DMN DIAGRAM: We can not add DMNEdge for '${edgeId}' edge into diagram. There are missing data edgeSourceBounds: ${edgeSourceBounds}, edgeTargetBounds: ${edgeTargetBounds}`
+          );
+          return;
+        }
+
+        const sourceNode = nodesById.get(edge.source);
+        const targetNode = nodesById.get(edge.target);
+        if (sourceNode === undefined || targetNode === undefined) {
+          console.debug(
+            `DMN DIAGRAM: We can not add DMNEdge for '${edgeId}' edge into diagram. There are missing data sourceNode: ${sourceNode}, targetNode: ${targetNode}`
+          );
+          return;
+        }
+
+        const targetsExternalNode = targetNode.data.dmnObjectQName.prefix !== undefined;
+        const requirementEdgeQNameRelativeToThisDmn = xmlHrefToQName(edgeId, state.dmn.model.definitions);
+        addEdge({
+          definitions: state.dmn.model.definitions,
+          drdIndex: state.computed(state).getDrdIndex(),
+          edge: {
+            type: edge.type as EdgeType,
+            targetHandle: getHandlePosition({ shapeBounds: edgeTargetBounds, waypoint: snappedPotentialWaypoint })
+              .handlePosition as PositionalNodeHandleId,
+            sourceHandle: getHandlePosition({ shapeBounds: edgeSourceBounds, waypoint: snappedPotentialWaypoint })
+              .handlePosition as PositionalNodeHandleId,
+            autoPositionedEdgeMarker: undefined,
+          },
+          sourceNode: {
+            type: sourceNode.type as NodeType,
+            data: sourceNode.data,
+            href: edge.source,
+            bounds: edgeSourceBounds,
+            shapeId: edge.data?.dmnShapeSource["@_id"],
+          },
+          targetNode: {
+            type: targetNode.type as NodeType,
+            href: edge.target,
+            data: targetNode.data,
+            bounds: edgeTargetBounds,
+            index: nodesById.get(edge.target)?.data.index ?? 0,
+            shapeId: edge.data?.dmnShapeTarget["@_id"],
+          },
+          keepWaypoints: false,
+          externalModelsByNamespace,
+          dmnElementRefOfDmnEdge: targetsExternalNode ? requirementEdgeQNameRelativeToThisDmn : undefined,
+        });
+
+        console.debug(`DMN DIAGRAM: DMNEdge for '${edgeId}' edge was added into diagram.`);
+      });
+    }
+
     if (isExistingWaypoint(snappedPotentialWaypoint)) {
-      console.debug("Preventing overlapping waypoint creation.");
+      console.debug("DMN DIAGRAM: Preventing overlapping waypoint creation.");
       return;
     }
 
@@ -96,18 +174,27 @@ export function usePotentialWaypointControls(
     }
 
     dmnEditorStoreApi.setState((state) => {
+      const edgeQName = xmlHrefToQName(edgeId, state.dmn.model.definitions);
+      const dmnEdgeIndex = state.computed(state).indexedDrd().dmnEdgesByDmnElementRef.get(edgeQName)?.index;
+      if (dmnEdgeIndex === undefined) {
+        throw new Error(`DMN DIAGRAM: Diagram computed state does not contain DMNEdge for '${edgeId}' edge.`);
+      }
       addEdgeWaypoint({
         definitions: state.dmn.model.definitions,
         drdIndex,
         beforeIndex: i - 1,
-        edgeIndex,
+        dmnEdgeIndex,
         waypoint: snappedPotentialWaypoint,
       });
+
+      console.debug(`DMN DIAGRAM: Waypoint on the DMNEdge for '${edgeId}' edge was added.`);
     });
   }, [
     drdIndex,
     dmnEditorStoreApi,
+    edgeId,
     edgeIndex,
+    externalModelsByNamespace,
     isExistingWaypoint,
     potentialWaypoint,
     snappedPotentialWaypoint,
