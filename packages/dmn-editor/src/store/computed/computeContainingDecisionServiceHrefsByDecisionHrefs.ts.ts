@@ -23,45 +23,44 @@ import { State } from "../Store";
 
 export function computeContainingDecisionServiceHrefsByDecisionHrefs({
   thisDmnsNamespace,
-  drgElementsNamespace,
-  drgElements,
+  drgElementsByNamespace,
 }: {
   thisDmnsNamespace: string;
-  drgElementsNamespace: string;
-  drgElements: State["dmn"]["model"]["definitions"]["drgElement"];
+  drgElementsByNamespace: Map<string, State["dmn"]["model"]["definitions"]["drgElement"]>;
 }) {
-  drgElements ??= [];
   const decisionServiceHrefsByDecisionHrefs = new Map<string, string[]>();
 
-  for (const drgElement of drgElements) {
-    const drgElementHref = buildXmlHref({
-      namespace: drgElementsNamespace === thisDmnsNamespace ? "" : drgElementsNamespace,
-      id: drgElement["@_id"]!,
-    });
-
-    // Decision
-    if (drgElement.__$$element === "decision") {
-      decisionServiceHrefsByDecisionHrefs.set(
-        drgElementHref,
-        decisionServiceHrefsByDecisionHrefs.get(drgElementHref) ?? []
-      );
-    }
-    // DS
-    else if (drgElement.__$$element === "decisionService") {
-      const { containedDecisionHrefsRelativeToThisDmn } = getDecisionServicePropertiesRelativeToThisDmn({
-        thisDmnsNamespace,
-        decisionServiceNamespace: drgElementsNamespace,
-        decisionService: drgElement,
+  for (const [drgElementsNamespace, drgElements] of drgElementsByNamespace) {
+    for (const drgElement of drgElements ?? []) {
+      const drgElementHref = buildXmlHref({
+        namespace: drgElementsNamespace === thisDmnsNamespace ? "" : drgElementsNamespace,
+        id: drgElement["@_id"]!,
       });
 
-      for (const containedDecisionHref of containedDecisionHrefsRelativeToThisDmn) {
-        decisionServiceHrefsByDecisionHrefs.set(containedDecisionHref, [
-          ...(decisionServiceHrefsByDecisionHrefs.get(containedDecisionHref) ?? []),
+      // Decision
+      if (drgElement.__$$element === "decision") {
+        decisionServiceHrefsByDecisionHrefs.set(
           drgElementHref,
-        ]);
+          decisionServiceHrefsByDecisionHrefs.get(drgElementHref) ?? []
+        );
       }
-    } else {
-      // Ignore other elements
+      // DS
+      else if (drgElement.__$$element === "decisionService") {
+        const { containedDecisionHrefsRelativeToThisDmn } = getDecisionServicePropertiesRelativeToThisDmn({
+          thisDmnsNamespace,
+          decisionServiceNamespace: drgElementsNamespace,
+          decisionService: drgElement,
+        });
+
+        for (const containedDecisionHref of containedDecisionHrefsRelativeToThisDmn) {
+          decisionServiceHrefsByDecisionHrefs.set(containedDecisionHref, [
+            ...(decisionServiceHrefsByDecisionHrefs.get(containedDecisionHref) ?? []),
+            drgElementHref,
+          ]);
+        }
+      } else {
+        // Ignore other elements
+      }
     }
   }
 

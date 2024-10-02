@@ -28,15 +28,18 @@ import { deleteEdge, EdgeDeletionMode } from "./deleteEdge";
 import { computeIndexedDrd } from "../store/computed/computeIndexes";
 import { Computed, defaultStaticState } from "../store/Store";
 import { TypeOrReturnType } from "../store/ComputedStateCache";
+import { ExternalModelsIndex } from "../DmnEditor";
 
 export function deleteImport({
   definitions,
   __readonly_index,
   __readonly_externalModelTypesByNamespace,
+  __readonly_externalModelsByNamespace,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   __readonly_index: number;
-  __readonly_externalModelTypesByNamespace: TypeOrReturnType<Computed["getExternalModelTypesByNamespace"]>;
+  __readonly_externalModelTypesByNamespace: TypeOrReturnType<Computed["getDirectlyIncludedExternalModelsByNamespace"]>;
+  __readonly_externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
   definitions.import ??= [];
   const [deletedImport] = definitions.import.splice(__readonly_index, 1);
@@ -67,8 +70,9 @@ export function deleteImport({
         __readonly_dmnObjectId: node.data.dmnObject?.["@_id"],
         __readonly_dmnObjectQName: node.data.dmnObjectQName,
         __readonly_dmnObjectNamespace: node.data.dmnObjectNamespace!,
-        __readonly_externalModelTypesByNamespace,
-        mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
+        __readonly_externalDmnsIndex: __readonly_externalModelTypesByNamespace.dmns,
+        __readonly_mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
+        __readonly_externalModelsByNamespace,
       });
     });
 
@@ -78,6 +82,7 @@ export function deleteImport({
         drdIndex: 0,
         edge: { id: edge.id, dmnObject: edge.data!.dmnObject },
         mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
+        externalModelsByNamespace: __readonly_externalModelsByNamespace,
       });
     });
   });

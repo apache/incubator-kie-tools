@@ -26,7 +26,7 @@ export class DrgNodes {
     public page: Page
   ) {}
 
-  public async open() {
+  public async toggle() {
     await this.page.getByTitle("DRG Nodes").click();
   }
 

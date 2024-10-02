@@ -49,6 +49,7 @@ import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useDmnEditor } from "../DmnEditorContext";
 import { getDrdId } from "./drd/drdId";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE = "application/kie-dmn-editor--new-node-from-palette";
 
@@ -65,6 +66,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
   const rfStoreApi = RF.useStoreApi();
   const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
   const drdIndex = useDmnEditorStore((s) => s.computed(s).getDrdIndex());
+  const { externalModelsByNamespace } = useExternalModels();
   const settings = useSettings();
 
   const groupNodes = useCallback(() => {
@@ -88,11 +90,12 @@ export function Palette({ pulse }: { pulse: boolean }) {
             padding: CONTAINER_NODES_DESIRABLE_PADDING,
           }),
         },
+        externalModelsByNamespace,
       });
 
       state.dispatch(state).diagram.setNodeStatus(newNodeId, { selected: true });
     });
-  }, [dmnEditorStoreApi, rfStoreApi]);
+  }, [dmnEditorStoreApi, externalModelsByNamespace, rfStoreApi]);
 
   const drd = thisDmn.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[drdIndex];
 
@@ -265,7 +268,11 @@ export function Palette({ pulse }: { pulse: boolean }) {
           <br />
           <aside className={"kie-dmn-editor--external-nodes-panel-toggle"}>
             {diagram.openLhsPanel === DiagramLhsPanel.EXTERNAL_NODES && (
-              <div className={"kie-dmn-editor--palette-nodes-popover"} style={{ maxHeight }}>
+              <div
+                className={"kie-dmn-editor--palette-nodes-popover"}
+                style={{ maxHeight }}
+                data-testid={"kie-tools--dmn-editor--external-nodes-popover"}
+              >
                 <ExternalNodesPanel />
               </div>
             )}

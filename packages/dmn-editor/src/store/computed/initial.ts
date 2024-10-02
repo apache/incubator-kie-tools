@@ -45,7 +45,7 @@ export const INITIAL_COMPUTED_CACHE: Cache<Computed> = {
     value: undefined,
     dependencies: [],
   },
-  getExternalModelTypesByNamespace: {
+  getDirectlyIncludedExternalModelsByNamespace: {
     value: undefined,
     dependencies: [],
   },

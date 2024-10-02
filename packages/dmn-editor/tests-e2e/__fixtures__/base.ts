@@ -41,6 +41,8 @@ import { BeePropertiesPanel } from "./propertiesPanel/beePropertiesPanel";
 import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/tests-e2e/__fixtures__/boxedExpression";
 import { Monaco } from "@kie-tools/boxed-expression-component/tests-e2e/__fixtures__/monaco";
 import { ProjectName } from "@kie-tools/playwright-base/projectNames";
+import { Stories } from "./stories";
+import { IncludedModels } from "./includedModels";
 
 type DmnEditorFixtures = {
   bee: BoxedExpressionEditor;
@@ -65,6 +67,8 @@ type DmnEditorFixtures = {
   knowledgeSourcePropertiesPanel: KnowledgeSourcePropertiesPanel;
   multipleNodesPropertiesPanel: MultipleNodesPropertiesPanel;
   textAnnotationPropertiesPanel: TextAnnotationPropertiesPanel;
+  stories: Stories;
+  includedModels: IncludedModels;
 };
 
 export const test = base.extend<DmnEditorFixtures>({
@@ -133,6 +137,12 @@ export const test = base.extend<DmnEditorFixtures>({
   },
   textAnnotationPropertiesPanel: async ({ diagram, page }, use) => {
     await use(new TextAnnotationPropertiesPanel(diagram, page));
+  },
+  stories: async ({ baseURL, page }, use) => {
+    await use(new Stories(page, baseURL));
+  },
+  includedModels: async ({ page }, use) => {
+    await use(new IncludedModels(page));
   },
 });
 

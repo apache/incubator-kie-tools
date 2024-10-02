@@ -38,6 +38,7 @@ import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServic
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { Normalized } from "../normalization/normalize";
+import { ExternalModelsIndex } from "../DmnEditor";
 
 export function addConnectedNode({
   definitions,
@@ -45,12 +46,14 @@ export function addConnectedNode({
   sourceNode,
   newNode,
   edgeType,
+  externalModelsByNamespace,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   sourceNode: { type: NodeType; href: string; bounds: DC__Bounds; shapeId: string | undefined };
   newNode: { type: NodeType; bounds: DC__Bounds };
   edgeType: EdgeType;
+  externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
   const newDmnObjectId = generateUuid();
   const newDmnObjectHref = buildXmlHref({ id: newDmnObjectId });
@@ -171,7 +174,7 @@ export function addConnectedNode({
     "di:waypoint": [getDmnBoundsCenterPoint(sourceNode.bounds), getDmnBoundsCenterPoint(newNode.bounds)],
   });
 
-  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
+  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions, externalModelsByNamespace });
 
   return { id: newDmnObjectId, href: newDmnObjectHref };
 }
