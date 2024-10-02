@@ -33,11 +33,11 @@ import (
 )
 
 func Test_QueryOpenShiftRoute(t *testing.T) {
-	doTestQueryOpenShiftRoute(t, false, "http://openshiftroutehost1:80")
+	doTestQueryOpenShiftRoute(t, false, "http://openshiftroutehost1")
 }
 
 func Test_QueryOpenShiftRouteWithTLS(t *testing.T) {
-	doTestQueryOpenShiftRoute(t, true, "https://openshiftroutehost1:443")
+	doTestQueryOpenShiftRoute(t, true, "https://openshiftroutehost1")
 }
 
 func doTestQueryOpenShiftRoute(t *testing.T, tls bool, expectedUri string) {

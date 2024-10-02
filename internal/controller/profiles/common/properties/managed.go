@@ -23,6 +23,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles"
+
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles/common/persistence"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
@@ -96,6 +98,10 @@ func (a *managedPropertyHandler) Build() string {
 		// produce the MicroProfileConfigServiceCatalog properties for the service discovery property values if any.
 		discoveryProps.Merge(generateDiscoveryProperties(a.ctx, a.catalog, userProps, a.workflow))
 	}
+	if profiles.IsDevProfile(a.workflow) && a.requireServiceDiscovery() {
+		// produce dev profile properties that must be calculated at service discovery time.
+		setDevProfileDiscoveryProperties(a.ctx, a.catalog, a.defaultManagedProperties, a.workflow)
+	}
 	userProps = utils.NewApplicationPropertiesBuilder().
 		WithInitialProperties(discoveryProps).
 		WithImmutableProperties(properties.MustLoadString(immutableApplicationProperties)).
@@ -148,6 +154,9 @@ func NewManagedPropertyHandler(workflow *operatorapi.SonataFlow, platform *opera
 		platform: platform,
 	}
 	props := properties.NewProperties()
+	if profiles.IsDevProfile(workflow) {
+		setDevProfileProperties(props)
+	}
 	props.Set(constants.KogitoUserTasksEventsEnabled, "false")
 	if platform != nil {
 		p, err := resolvePlatformWorkflowProperties(platform)
@@ -181,6 +190,30 @@ func NewManagedPropertyHandler(workflow *operatorapi.SonataFlow, platform *opera
 
 	handler.defaultManagedProperties = props
 	return handler.withKogitoServiceUrl(), nil
+}
+
+func setDevProfileProperties(props *properties.Properties) {
+	props.Set(constants.QuarkusDevUICorsEnabled, "false")
+}
+
+func setDevProfileDiscoveryProperties(ctx context.Context, catalog discovery.ServiceCatalog, props *properties.Properties, workflow *operatorapi.SonataFlow) {
+	if utils.IsOpenShift() {
+		// in OpenShift deployments the route is created before the workflow, at this point it can be queried safely.
+		routeUrl, err := catalog.Query(ctx, *discovery.NewResourceUriBuilder(discovery.OpenshiftScheme).
+			Kind("routes").
+			Group("route.openshift.io").
+			Version("v1").
+			Namespace(workflow.Namespace).
+			Name(workflow.Name).
+			Build(),
+			discovery.KubernetesDNSAddress)
+		if err != nil {
+			klog.V(log.E).ErrorS(err, "An error was produced while getting workflow route url. ", "workflow", workflow.Name)
+		} else {
+			props.Set(constants.QuarkusHttpCors, "true")
+			props.Set(constants.QuarkusHttpCorsOrigins, routeUrl)
+		}
+	}
 }
 
 // ApplicationManagedProperties immutable default application properties that can be used with any workflow based on Quarkus.

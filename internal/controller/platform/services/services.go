@@ -197,14 +197,6 @@ func (d *DataIndexHandler) GetEnvironmentVariables() []corev1.EnvVar {
 			Name:  "KOGITO_DATA_INDEX_QUARKUS_PROFILE",
 			Value: "http-events-support",
 		},
-		{
-			Name:  "QUARKUS_HTTP_CORS",
-			Value: "true",
-		},
-		{
-			Name:  "QUARKUS_HTTP_CORS_ORIGINS",
-			Value: "/.*/",
-		},
 	}
 }
 
@@ -373,16 +365,7 @@ func (j *JobServiceHandler) GetLocalServiceBaseUrl() string {
 }
 
 func (j *JobServiceHandler) GetEnvironmentVariables() []corev1.EnvVar {
-	return []corev1.EnvVar{
-		{
-			Name:  "QUARKUS_HTTP_CORS",
-			Value: "true",
-		},
-		{
-			Name:  "QUARKUS_HTTP_CORS_ORIGINS",
-			Value: "/.*/",
-		},
-	}
+	return []corev1.EnvVar{}
 }
 
 func (j *JobServiceHandler) GetPodResourceRequirements() corev1.ResourceRequirements {

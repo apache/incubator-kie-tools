@@ -107,12 +107,11 @@ func (c openShiftServiceCatalog) resolveOpenShiftRouteQuery(ctx context.Context,
 		return "", err
 	} else {
 		scheme := httpProtocol
-		port := defaultHttpPort
 		if route.Spec.TLS != nil {
 			scheme = httpsProtocol
-			port = defaultHttpsPort
 		}
-		return buildURI(scheme, route.Spec.Host, port), nil
+		// the OpenShift routes are only opened at the http/https standard ports.
+		return fmt.Sprintf("%s://%s", scheme, route.Spec.Host), nil
 	}
 }
 

@@ -67,14 +67,8 @@ const (
 )
 
 var (
-	enabled                           = true
-	disabled                          = false
-	jobServiceDevProperties           *properties.Properties
-	jobServiceProdProperties          *properties.Properties
-	dataIndexDevProperties            *properties.Properties
-	dataIndexProdProperties           *properties.Properties
-	dataIndexJobServiceDevProperties  *properties.Properties
-	dataIndexJobServiceProdProperties *properties.Properties
+	enabled  = true
+	disabled = false
 )
 
 type mockCatalogService struct {
@@ -231,7 +225,7 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.NoError(t, err)
 	generatedProps, propsErr := properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 11, len(generatedProps.Keys()))
+	assert.Equal(t, 12, len(generatedProps.Keys()))
 	assert.NotContains(t, "property1", generatedProps.Keys())
 	assert.NotContains(t, "property2", generatedProps.Keys())
 
@@ -344,7 +338,7 @@ var _ = Describe("Platform properties", func() {
 				Entry("has enabled field set to false and workflow with production profile",
 					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(&disabled), setPlatformNamespace("default"), setPlatformName("foo")),
-					generateJobServiceWorkflowDevProperties()),
+					generateJobServiceWorkflowProductionWithJobServiceDisabled()),
 				Entry("has enabled field undefined and workflow with dev profile",
 					generateFlow(setProfileInFlow(metadata.DevProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(nil), setPlatformNamespace("default"), setPlatformName("foo")),
@@ -352,7 +346,7 @@ var _ = Describe("Platform properties", func() {
 				Entry("has enabled field undefined and workflow with production profile",
 					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(nil), setPlatformNamespace("default"), setPlatformName("foo")),
-					generateJobServiceWorkflowDevProperties()),
+					generateJobServiceWorkflowProductionWithJobServiceDisabled()),
 				Entry("has enabled field set to true and workflow with dev profile",
 					generateFlow(setProfileInFlow(metadata.DevProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(&enabled), setPlatformName("foo"), setPlatformNamespace("default")),
@@ -368,11 +362,11 @@ var _ = Describe("Platform properties", func() {
 				Entry("has enabled field set to false and workflow with no profile",
 					generateFlow(setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(&disabled), setPlatformName("foo"), setPlatformNamespace("default")),
-					generateJobServiceWorkflowDevProperties()),
+					generateJobServiceWorkflowProductionWithJobServiceDisabled()),
 				Entry("has enabled field undefined and workflow with no profile",
 					generateFlow(setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(nil), setPlatformName("foo"), setPlatformNamespace("default")),
-					generateJobServiceWorkflowDevProperties()),
+					generateJobServiceWorkflowProductionWithJobServiceDisabled()),
 			)
 
 			DescribeTable("only data index service when the spec",
@@ -392,7 +386,7 @@ var _ = Describe("Platform properties", func() {
 				Entry("has enabled field set to false and workflow with production profile",
 					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setDataIndexEnabledValue(&disabled), setPlatformNamespace("default"), setPlatformName("foo")),
-					generateDataIndexWorkflowDevProperties()),
+					generateDataIndexWorkflowProductionPropertiesWithDataIndexDisabled()),
 				Entry("has enabled field undefined and workflow with dev profile",
 					generateFlow(setProfileInFlow(metadata.DevProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setDataIndexEnabledValue(nil), setPlatformNamespace("default"), setPlatformName("foo")),
@@ -400,7 +394,7 @@ var _ = Describe("Platform properties", func() {
 				Entry("has enabled field undefined and workflow with production profile",
 					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setDataIndexEnabledValue(nil), setPlatformNamespace("default"), setPlatformName("foo")),
-					generateDataIndexWorkflowDevProperties()),
+					generateDataIndexWorkflowProductionPropertiesWithDataIndexDisabled()),
 				Entry("has enabled field set to true and workflow with dev profile",
 					generateFlow(setProfileInFlow(metadata.DevProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setDataIndexEnabledValue(&enabled), setPlatformNamespace("default"), setPlatformName("foo")),
@@ -412,7 +406,7 @@ var _ = Describe("Platform properties", func() {
 				Entry("has enabled field set to false and workflow with no profile",
 					generateFlow(setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setDataIndexEnabledValue(&disabled), setPlatformNamespace("default"), setPlatformName("foo")),
-					generateDataIndexWorkflowDevProperties()),
+					generateDataIndexWorkflowProductionPropertiesWithDataIndexDisabled()),
 				Entry("has enabled field set to true and workflow with no profile",
 					generateFlow(setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setDataIndexEnabledValue(&enabled), setPlatformNamespace("default"), setPlatformName("foo")),
@@ -420,7 +414,7 @@ var _ = Describe("Platform properties", func() {
 				Entry("has enabled field undefined and workflow with no profile",
 					generateFlow(setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setDataIndexEnabledValue(nil), setPlatformNamespace("default"), setPlatformName("foo")),
-					generateDataIndexWorkflowDevProperties()),
+					generateDataIndexWorkflowProductionPropertiesWithDataIndexDisabled()),
 			)
 
 			DescribeTable("both Data Index and Job Services are available and", func(wf *operatorapi.SonataFlow, plfm *operatorapi.SonataFlowPlatform, expectedProperties *properties.Properties) {
@@ -439,7 +433,7 @@ var _ = Describe("Platform properties", func() {
 				Entry("both are undefined and workflow in prod profile",
 					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setPlatformNamespace("default"), setPlatformName("foo")),
-					generateDataIndexAndJobServiceWorkflowDevProperties()),
+					generateDataIndexAndJobServiceWorkflowProductionDataIndexAndJobsServiceDisabled()),
 				Entry("both have enabled field set to true and workflow with dev profile",
 					generateFlow(setProfileInFlow(metadata.DevProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(&enabled), setDataIndexEnabledValue(&enabled), setPlatformName("foo"), setPlatformNamespace("default")),
@@ -455,7 +449,7 @@ var _ = Describe("Platform properties", func() {
 				Entry("both have enabled field undefined and workflow with production profile",
 					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(nil), setDataIndexEnabledValue(nil), setPlatformName("foo"), setPlatformNamespace("default"), setJobServiceJDBC("jdbc:postgresql://postgres:5432/sonataflow?currentSchema=myschema")),
-					generateDataIndexAndJobServiceWorkflowDevProperties()),
+					generateDataIndexAndJobServiceWorkflowProductionDataIndexAndJobsServiceDisabled()),
 				Entry("both have enabled field set to false and workflow with dev profile",
 					generateFlow(setProfileInFlow(metadata.DevProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(&disabled), setDataIndexEnabledValue(&disabled), setPlatformName("foo"), setPlatformNamespace("default"), setJobServiceJDBC("jdbc:postgresql://postgres:5432/sonataflow?currentSchema=myschema")),
@@ -463,11 +457,11 @@ var _ = Describe("Platform properties", func() {
 				Entry("both have enabled field set to false and workflow with production profile",
 					generateFlow(setProfileInFlow(metadata.PreviewProfile), setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(&disabled), setDataIndexEnabledValue(&disabled), setPlatformName("foo"), setPlatformNamespace("default"), setJobServiceJDBC("jdbc:postgresql://postgres:5432/sonataflow?currentSchema=myschema")),
-					generateDataIndexAndJobServiceWorkflowDevProperties()),
+					generateDataIndexAndJobServiceWorkflowProductionDataIndexAndJobsServiceDisabled()),
 				Entry("both have enabled field set to false and workflow with no profile",
 					generateFlow(setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(&disabled), setDataIndexEnabledValue(&disabled), setPlatformName("foo"), setPlatformNamespace("default"), setJobServiceJDBC("jdbc:postgresql://postgres:5432/sonataflow?currentSchema=myschema")),
-					generateDataIndexAndJobServiceWorkflowDevProperties()),
+					generateDataIndexAndJobServiceWorkflowProductionDataIndexAndJobsServiceDisabled()),
 				Entry("both have enabled field set to true and workflow with no profile",
 					generateFlow(setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(&enabled), setDataIndexEnabledValue(&enabled), setPlatformName("foo"), setPlatformNamespace("default"), setJobServiceJDBC("jdbc:postgresql://postgres:5432/sonataflow?currentSchema=myschema")),
@@ -475,7 +469,7 @@ var _ = Describe("Platform properties", func() {
 				Entry("both have enabled field undefined and workflow with no profile",
 					generateFlow(setWorkflowName("foo"), setWorkflowNamespace("default")),
 					generatePlatform(setJobServiceEnabledValue(nil), setDataIndexEnabledValue(&disabled), setPlatformName("foo"), setPlatformNamespace("default"), setJobServiceJDBC("jdbc:postgresql://postgres:5432/sonataflow?currentSchema=myschema")),
-					generateDataIndexAndJobServiceWorkflowDevProperties()),
+					generateDataIndexAndJobServiceWorkflowProductionDataIndexAndJobsServiceDisabled()),
 			)
 		})
 	})
@@ -483,129 +477,173 @@ var _ = Describe("Platform properties", func() {
 })
 
 func generateJobServiceWorkflowDevProperties() *properties.Properties {
-	if jobServiceDevProperties == nil {
-		jobServiceDevProperties = properties.NewProperties()
-		jobServiceDevProperties.Set("kogito.service.url", "http://foo.default")
-		jobServiceDevProperties.Set("quarkus.http.host", "0.0.0.0")
-		jobServiceDevProperties.Set("quarkus.http.port", "8080")
-		jobServiceDevProperties.Set("quarkus.devservices.enabled", "false")
-		jobServiceDevProperties.Set("quarkus.kogito.devservices.enabled", "false")
-		jobServiceDevProperties.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
-		jobServiceDevProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://localhost/v2/jobs/events")
-		jobServiceDevProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
-		jobServiceDevProperties.Set("kogito.events.processdefinitions.enabled", "false")
-		jobServiceDevProperties.Set("kogito.events.processinstances.enabled", "false")
-		jobServiceDevProperties.Set("kogito.events.usertasks.enabled", "false")
-		jobServiceDevProperties.Sort()
-	}
-	return jobServiceDevProperties
+	props := properties.NewProperties()
+	props.Set("kogito.service.url", "http://foo.default")
+	props.Set("quarkus.http.host", "0.0.0.0")
+	props.Set("quarkus.http.port", "8080")
+	props.Set("quarkus.devservices.enabled", "false")
+	props.Set("quarkus.kogito.devservices.enabled", "false")
+	props.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
+	props.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://localhost/v2/jobs/events")
+	props.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+	props.Set("kogito.events.processdefinitions.enabled", "false")
+	props.Set("kogito.events.processinstances.enabled", "false")
+	props.Set("kogito.events.usertasks.enabled", "false")
+	props.Set("quarkus.dev-ui.cors.enabled", "false")
+	props.Sort()
+	return props
+}
+
+func generateJobServiceWorkflowProductionWithJobServiceDisabled() *properties.Properties {
+	props := properties.NewProperties()
+	props.Set("kogito.service.url", "http://foo.default")
+	props.Set("quarkus.http.host", "0.0.0.0")
+	props.Set("quarkus.http.port", "8080")
+	props.Set("quarkus.devservices.enabled", "false")
+	props.Set("quarkus.kogito.devservices.enabled", "false")
+	props.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
+	props.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://localhost/v2/jobs/events")
+	props.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+	props.Set("kogito.events.processdefinitions.enabled", "false")
+	props.Set("kogito.events.processinstances.enabled", "false")
+	props.Set("kogito.events.usertasks.enabled", "false")
+	props.Sort()
+	return props
 }
 
 func generateJobServiceWorkflowProductionProperties() *properties.Properties {
-	if jobServiceProdProperties == nil {
-		jobServiceProdProperties = properties.NewProperties()
-		jobServiceProdProperties.Set("kogito.service.url", "http://foo.default")
-		jobServiceProdProperties.Set("kogito.jobs-service.url", "http://foo-jobs-service.default")
-		jobServiceProdProperties.Set("quarkus.http.host", "0.0.0.0")
-		jobServiceProdProperties.Set("quarkus.http.port", "8080")
-		jobServiceProdProperties.Set("quarkus.kogito.devservices.enabled", "false")
-		jobServiceProdProperties.Set("quarkus.devservices.enabled", "false")
-		jobServiceProdProperties.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
-		jobServiceProdProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
-		jobServiceProdProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://foo-jobs-service.default/v2/jobs/events")
-		jobServiceProdProperties.Set("kogito.events.processdefinitions.enabled", "false")
-		jobServiceProdProperties.Set("kogito.events.processinstances.enabled", "false")
-		jobServiceProdProperties.Set("kogito.events.usertasks.enabled", "false")
-		jobServiceProdProperties.Sort()
-	}
-	return jobServiceProdProperties
+	props := properties.NewProperties()
+	props.Set("kogito.service.url", "http://foo.default")
+	props.Set("kogito.jobs-service.url", "http://foo-jobs-service.default")
+	props.Set("quarkus.http.host", "0.0.0.0")
+	props.Set("quarkus.http.port", "8080")
+	props.Set("quarkus.kogito.devservices.enabled", "false")
+	props.Set("quarkus.devservices.enabled", "false")
+	props.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
+	props.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+	props.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://foo-jobs-service.default/v2/jobs/events")
+	props.Set("kogito.events.processdefinitions.enabled", "false")
+	props.Set("kogito.events.processinstances.enabled", "false")
+	props.Set("kogito.events.usertasks.enabled", "false")
+	props.Sort()
+	return props
 }
 
 func generateDataIndexWorkflowDevProperties() *properties.Properties {
-	if dataIndexDevProperties == nil {
-		dataIndexDevProperties = properties.NewProperties()
-		dataIndexDevProperties.Set("kogito.service.url", "http://foo.default")
-		dataIndexDevProperties.Set("quarkus.http.host", "0.0.0.0")
-		dataIndexDevProperties.Set("quarkus.http.port", "8080")
-		dataIndexDevProperties.Set("quarkus.devservices.enabled", "false")
-		dataIndexDevProperties.Set("quarkus.kogito.devservices.enabled", "false")
-		dataIndexDevProperties.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
-		dataIndexDevProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
-		dataIndexDevProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://localhost/v2/jobs/events")
-		dataIndexDevProperties.Set("kogito.events.processdefinitions.enabled", "false")
-		dataIndexDevProperties.Set("kogito.events.processinstances.enabled", "false")
-		dataIndexDevProperties.Set("kogito.events.usertasks.enabled", "false")
-		dataIndexDevProperties.Sort()
-	}
-	return dataIndexDevProperties
+	props := properties.NewProperties()
+	props.Set("kogito.service.url", "http://foo.default")
+	props.Set("quarkus.http.host", "0.0.0.0")
+	props.Set("quarkus.http.port", "8080")
+	props.Set("quarkus.devservices.enabled", "false")
+	props.Set("quarkus.kogito.devservices.enabled", "false")
+	props.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
+	props.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+	props.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://localhost/v2/jobs/events")
+	props.Set("kogito.events.processdefinitions.enabled", "false")
+	props.Set("kogito.events.processinstances.enabled", "false")
+	props.Set("kogito.events.usertasks.enabled", "false")
+	props.Set("quarkus.dev-ui.cors.enabled", "false")
+	props.Sort()
+	return props
+}
+
+func generateDataIndexWorkflowProductionPropertiesWithDataIndexDisabled() *properties.Properties {
+	props := properties.NewProperties()
+	props = properties.NewProperties()
+	props.Set("kogito.service.url", "http://foo.default")
+	props.Set("quarkus.http.host", "0.0.0.0")
+	props.Set("quarkus.http.port", "8080")
+	props.Set("quarkus.devservices.enabled", "false")
+	props.Set("quarkus.kogito.devservices.enabled", "false")
+	props.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
+	props.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+	props.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://localhost/v2/jobs/events")
+	props.Set("kogito.events.processdefinitions.enabled", "false")
+	props.Set("kogito.events.processinstances.enabled", "false")
+	props.Set("kogito.events.usertasks.enabled", "false")
+	props.Sort()
+	return props
 }
 
 func generateDataIndexWorkflowProductionProperties() *properties.Properties {
-	if dataIndexProdProperties == nil {
-		dataIndexProdProperties = properties.NewProperties()
-		dataIndexProdProperties.Set("kogito.service.url", "http://foo.default")
-		dataIndexProdProperties.Set("kogito.data-index.url", "http://foo-data-index-service.default")
-		dataIndexProdProperties.Set("kogito.data-index.health-enabled", "true")
-		dataIndexProdProperties.Set("quarkus.http.host", "0.0.0.0")
-		dataIndexProdProperties.Set("quarkus.http.port", "8080")
-		dataIndexProdProperties.Set("quarkus.devservices.enabled", "false")
-		dataIndexProdProperties.Set("quarkus.kogito.devservices.enabled", "false")
-		dataIndexProdProperties.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
-		dataIndexProdProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
-		dataIndexProdProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://localhost/v2/jobs/events")
-		dataIndexProdProperties.Set("mp.messaging.outgoing.kogito-processdefinitions-events.url", "http://foo-data-index-service.default/definitions")
-		dataIndexProdProperties.Set("mp.messaging.outgoing.kogito-processinstances-events.url", "http://foo-data-index-service.default/processes")
-		dataIndexProdProperties.Set("kogito.events.processdefinitions.enabled", "true")
-		dataIndexProdProperties.Set("kogito.events.processdefinitions.errors.propagate", "true")
-		dataIndexProdProperties.Set("kogito.events.processinstances.enabled", "true")
-		dataIndexProdProperties.Set("kogito.events.usertasks.enabled", "false")
-		dataIndexProdProperties.Sort()
-	}
-	return dataIndexProdProperties
+	props := properties.NewProperties()
+	props.Set("kogito.service.url", "http://foo.default")
+	props.Set("kogito.data-index.url", "http://foo-data-index-service.default")
+	props.Set("kogito.data-index.health-enabled", "true")
+	props.Set("quarkus.http.host", "0.0.0.0")
+	props.Set("quarkus.http.port", "8080")
+	props.Set("quarkus.devservices.enabled", "false")
+	props.Set("quarkus.kogito.devservices.enabled", "false")
+	props.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
+	props.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+	props.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://localhost/v2/jobs/events")
+	props.Set("mp.messaging.outgoing.kogito-processdefinitions-events.url", "http://foo-data-index-service.default/definitions")
+	props.Set("mp.messaging.outgoing.kogito-processinstances-events.url", "http://foo-data-index-service.default/processes")
+	props.Set("kogito.events.processdefinitions.enabled", "true")
+	props.Set("kogito.events.processdefinitions.errors.propagate", "true")
+	props.Set("kogito.events.processinstances.enabled", "true")
+	props.Set("kogito.events.usertasks.enabled", "false")
+	props.Sort()
+	return props
 }
 
 func generateDataIndexAndJobServiceWorkflowDevProperties() *properties.Properties {
-	if dataIndexJobServiceDevProperties == nil {
-		dataIndexJobServiceDevProperties = properties.NewProperties()
-		dataIndexJobServiceDevProperties.Set("kogito.service.url", "http://foo.default")
-		dataIndexJobServiceDevProperties.Set("quarkus.http.host", "0.0.0.0")
-		dataIndexJobServiceDevProperties.Set("quarkus.http.port", "8080")
-		dataIndexJobServiceDevProperties.Set("quarkus.kogito.devservices.enabled", "false")
-		dataIndexJobServiceDevProperties.Set("quarkus.devservices.enabled", "false")
-		dataIndexJobServiceDevProperties.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
-		dataIndexJobServiceDevProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
-		dataIndexJobServiceDevProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://localhost/v2/jobs/events")
-		dataIndexJobServiceDevProperties.Set("kogito.events.processdefinitions.enabled", "false")
-		dataIndexJobServiceDevProperties.Set("kogito.events.processinstances.enabled", "false")
-		dataIndexJobServiceDevProperties.Set("kogito.events.usertasks.enabled", "false")
-		dataIndexJobServiceDevProperties.Sort()
-	}
-	return dataIndexJobServiceDevProperties
+	props := properties.NewProperties()
+	props.Set("kogito.service.url", "http://foo.default")
+	props.Set("quarkus.http.host", "0.0.0.0")
+	props.Set("quarkus.http.port", "8080")
+	props.Set("quarkus.kogito.devservices.enabled", "false")
+	props.Set("quarkus.devservices.enabled", "false")
+	props.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
+	props.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+	props.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://localhost/v2/jobs/events")
+	props.Set("kogito.events.processdefinitions.enabled", "false")
+	props.Set("kogito.events.processinstances.enabled", "false")
+	props.Set("kogito.events.usertasks.enabled", "false")
+	props.Set("quarkus.dev-ui.cors.enabled", "false")
+	props.Sort()
+	return props
+}
+
+func generateDataIndexAndJobServiceWorkflowProductionDataIndexAndJobsServiceDisabled() *properties.Properties {
+	props := properties.NewProperties()
+	props.Set("kogito.service.url", "http://foo.default")
+	props.Set("quarkus.http.host", "0.0.0.0")
+	props.Set("quarkus.http.port", "8080")
+	props.Set("quarkus.kogito.devservices.enabled", "false")
+	props.Set("quarkus.devservices.enabled", "false")
+	props.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
+	props.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+	props.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://localhost/v2/jobs/events")
+	props.Set("kogito.events.processdefinitions.enabled", "false")
+	props.Set("kogito.events.processinstances.enabled", "false")
+	props.Set("kogito.events.usertasks.enabled", "false")
+	props.Sort()
+	return props
 }
 
 func generateDataIndexAndJobServiceWorkflowProductionProperties() *properties.Properties {
-	if dataIndexJobServiceProdProperties == nil {
-		dataIndexJobServiceProdProperties = properties.NewProperties()
-		dataIndexJobServiceProdProperties.Set("kogito.service.url", "http://foo.default")
-		dataIndexJobServiceProdProperties.Set("kogito.data-index.url", "http://foo-data-index-service.default")
-		dataIndexJobServiceProdProperties.Set("kogito.data-index.health-enabled", "true")
-		dataIndexJobServiceProdProperties.Set("kogito.jobs-service.url", "http://foo-jobs-service.default")
-		dataIndexJobServiceProdProperties.Set("quarkus.http.host", "0.0.0.0")
-		dataIndexJobServiceProdProperties.Set("quarkus.http.port", "8080")
-		dataIndexJobServiceProdProperties.Set("quarkus.kogito.devservices.enabled", "false")
-		dataIndexJobServiceProdProperties.Set("quarkus.devservices.enabled", "false")
-		dataIndexJobServiceProdProperties.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
-		dataIndexJobServiceProdProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
-		dataIndexJobServiceProdProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://foo-jobs-service.default/v2/jobs/events")
-		dataIndexJobServiceProdProperties.Set("kogito.events.processdefinitions.enabled", "true")
-		dataIndexJobServiceProdProperties.Set("kogito.events.processdefinitions.errors.propagate", "true")
-		dataIndexJobServiceProdProperties.Set("kogito.events.processinstances.enabled", "true")
-		dataIndexJobServiceProdProperties.Set("kogito.events.usertasks.enabled", "false")
-		dataIndexJobServiceProdProperties.Set("mp.messaging.outgoing.kogito-processdefinitions-events.url", "http://foo-data-index-service.default/definitions")
-		dataIndexJobServiceProdProperties.Set("mp.messaging.outgoing.kogito-processinstances-events.url", "http://foo-data-index-service.default/processes")
-		dataIndexJobServiceProdProperties.Sort()
-	}
-	return dataIndexJobServiceProdProperties
+	props := properties.NewProperties()
+	props.Set("kogito.service.url", "http://foo.default")
+	props.Set("kogito.data-index.url", "http://foo-data-index-service.default")
+	props.Set("kogito.data-index.health-enabled", "true")
+	props.Set("kogito.jobs-service.url", "http://foo-jobs-service.default")
+	props.Set("quarkus.http.host", "0.0.0.0")
+	props.Set("quarkus.http.port", "8080")
+	props.Set("quarkus.kogito.devservices.enabled", "false")
+	props.Set("quarkus.devservices.enabled", "false")
+	props.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
+	props.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+	props.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://foo-jobs-service.default/v2/jobs/events")
+	props.Set("kogito.events.processdefinitions.enabled", "true")
+	props.Set("kogito.events.processdefinitions.errors.propagate", "true")
+	props.Set("kogito.events.processinstances.enabled", "true")
+	props.Set("kogito.events.usertasks.enabled", "false")
+	props.Set("mp.messaging.outgoing.kogito-processdefinitions-events.url", "http://foo-data-index-service.default/definitions")
+	props.Set("mp.messaging.outgoing.kogito-processinstances-events.url", "http://foo-data-index-service.default/processes")
+	props.Sort()
+	return props
+
 }
 
 type wfOptionFn func(wf *operatorapi.SonataFlow)
