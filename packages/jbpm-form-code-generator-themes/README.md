@@ -21,7 +21,7 @@ This package has two jBPM themes for the [form-code-generator](../form-code-gene
 
 ## Usage
 
-To use it, pass the jBPM theme to the `generateFormCode` fucntion:
+To use it, pass the jBPM theme to the `generateFormCode` function:
 
 ```ts
 import { generateFormCode } from "@kie-tools/form-code-generator/dist/generateFormCode";

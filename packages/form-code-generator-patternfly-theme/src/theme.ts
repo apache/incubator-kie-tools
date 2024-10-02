@@ -29,7 +29,7 @@ export type PatternflyThemeName = typeof PATTERNFLY_THEME_NAME;
 export type PatternflyFileExt = typeof PATTERNFLY_FILE_EXT;
 export interface PatternflyFormAsset extends FormAsset<PatternflyFileExt> {}
 
-export const patternflyJsonSchemaFormCodeGeneratorTheme: FormCodeGeneratorTheme<
+export const patternflyFormCodeGeneratorTheme: FormCodeGeneratorTheme<
   PatternflyFileExt,
   PatternflyThemeName,
   PatternflyFormAsset

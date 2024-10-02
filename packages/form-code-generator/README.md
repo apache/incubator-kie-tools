@@ -17,7 +17,7 @@
 
 ## Form Code Generator
 
-This library is used to generate the form code based on a schema. It can uses different themes, such as the [Bootstrap4](../form-code-generator-bootstrap4-theme/README.md) and [PatternFly](../form-code-generator-patternfly-theme/README.md) or any theme that implements the [FormCodeGeneratorTheme](./src/types.ts) interface.
+This library is used to generate the form code based on a schema. It uses different themes, such as the [Bootstrap4](../form-code-generator-bootstrap4-theme/README.md) and [PatternFly](../form-code-generator-patternfly-theme/README.md) or any theme that implements the [FormCodeGeneratorTheme](./src/types.ts) interface.
 
 ## How it works?
 
@@ -25,7 +25,7 @@ This library provides types and interfaces to be used by themes. The `generateFo
 
 ## Usage
 
-To use it, create a new instance of `FormCodeGenerator` passing your theme to its constructor:
+To use it, call the `generateFormCode` function passing your theme to its arguments:
 
 ```ts
 import { generateFormCode } from "@kie-tools/form-code-generator/dist/generateFormCode"
@@ -54,7 +54,7 @@ Example using the [PatternFly](../form-code-generator-patternfly-theme/README.md
 
 ```ts
 import { generateFormCode } from "@kie-tools/form-code-generator/dist/generateFormCode";
-import { patternflyJsonSchemaFormCodeGeneratorTheme } from "@kie-tools/form-code-generator-patternfly-theme/dist/formCodeGenerator";
+import { patternflyFormCodeGeneratorTheme } from "@kie-tools/form-code-generator-patternfly-theme/dist/theme";
 
 const formsCode = generateFormCode({
   formSchemas: [
@@ -66,7 +66,7 @@ const formsCode = generateFormCode({
       },
     },
   ],
-  formCodeGeneratorTheme: patternflyJsonSchemaFormCodeGeneratorTheme,
+  formCodeGeneratorTheme: patternflyFormCodeGeneratorTheme,
 });
 
 formsCode[0]; // FormAsset | FormGenerationError

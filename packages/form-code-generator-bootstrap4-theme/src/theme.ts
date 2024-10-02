@@ -33,7 +33,7 @@ export type Bootstrap4ThemeName = typeof BOOTSTRAP4_THEME_NAME;
 export type Bootstrap4FileExt = typeof BOOTSTRAP4_FILE_EXT;
 export interface Bootstrap4FormAsset extends FormAsset<Bootstrap4FileExt> {}
 
-export const bootstrap4JsonSchemaFormCodeGeneratorTheme: FormCodeGeneratorTheme<
+export const bootstrap4FormCodeGeneratorTheme: FormCodeGeneratorTheme<
   Bootstrap4FileExt,
   Bootstrap4ThemeName,
   Bootstrap4FormAsset

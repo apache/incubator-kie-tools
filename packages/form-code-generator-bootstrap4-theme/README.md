@@ -25,7 +25,11 @@ This package generates the form code of a [Uniforms](https://uniforms.tools/) fo
 
 ## Usage
 
-To use this package, you must call the `renderForm` method passing its arguments:
+You can consume this package in two ways:
+
+1. The `dist/theme.ts` file exports the `bootstrap4FormCodeGeneratorTheme` which is a theme for the `form-code-generator` package. This theme implements the `FormCodeGeneratorTheme` interface, and its `generate` function uses JSON Schemas to generate the form code.
+
+2. You can create your own theme, and implement the `FormCodeGeneratorTheme` interface, and make the `generate` fucntion use another type of schema that is supported by [Uniforms](https://uniforms.tools/). To do so, you must use the `dist/uniforms/renderForm` function, which will receive a [Uniforms Bridge](https://uniforms.tools/docs/api-bridges/) and some parameters:
 
 ```ts
 {
