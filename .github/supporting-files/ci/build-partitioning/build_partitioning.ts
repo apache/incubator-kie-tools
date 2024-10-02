@@ -173,9 +173,10 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
     __PACKAGES_ROOT_PATHS.every((rootPath) => !path.startsWith(rootPath))
   );
 
-  // On Windows there's a 8191 character limit for commands.
-  // To circunvent this we break the package list in chunks, run turbo ls, and then merge them to a final list.
-  // Chunk size is defined as 50. This is arbitrary value.
+  // On Windows there's a 8191 character limit for commands in PowerShell.
+  // See https://learn.microsoft.com/en-us/troubleshoot/windows-client/shell-experience/command-line-string-limitation
+  // To circunvent this, we break the package list in chunks, run turbo ls, and then merge them all to a final list.
+  // Chunk size is defined as 50. This is an arbitrary value.
   // If each package name has 100 characters, 50 of them is 5000 characters, making the final command less than 8191.
   const changedPackagesNamesChunks: string[][] = [];
   const chunkSize = 50;
@@ -197,13 +198,6 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
     });
   }
   const affectedPackageDirsInAllPartitions = Array.from(affectedPackageDirsInAllPartitionsSet);
-
-  console.log({
-    changedPackagesNames,
-    changedPackagesNamesChunks,
-    affectedPackageDirsInAllPartitionsSet,
-    affectedPackageDirsInAllPartitions,
-  });
 
   return await Promise.all(
     partitionDefinitions.map(async (partition) => {
