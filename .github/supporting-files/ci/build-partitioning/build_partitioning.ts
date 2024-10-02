@@ -188,10 +188,10 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
 
   // Using a Set because it forces unique values, so no need to deduplicate.
   const affectedPackageDirsInAllPartitionsSet = new Set<string>();
-  for (let packagesNameChunk of changedPackagesNamesChunks) {
+  for (let packagesNamesChunk of changedPackagesNamesChunks) {
     await JSON.parse(
       execSync(
-        `bash -c "turbo ls ${packagesNameChunk.map((packageName) => `-F '...${packageName}'`).join(" ")} --output json"`
+        `bash -c "turbo ls ${packagesNamesChunk.map((packageName) => `-F '...${packageName}'`).join(" ")} --output json"`
       ).toString()
     ).packages.items.forEach((item: { path: string }) => {
       affectedPackageDirsInAllPartitionsSet.add(convertToPosixPathRelativeToRepoRoot(item.path));
