@@ -67,10 +67,14 @@ export function SceSimEditorWrapper(props: Partial<StorybookTestScenarioEditorPr
   return (
     <TestScenarioEditor
       ref={ref}
-      issueTrackerHref={args.issueTrackerHref}
+      issueTrackerHref={props?.issueTrackerHref ?? args.issueTrackerHref}
       model={model}
       onModelChange={onModelChange}
       onModelDebounceStateChanged={onModelDebounceStateChanged}
+      openFilenormalizedPosixPathRelativeToTheWorkspaceRoot={
+        props?.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot ??
+        args.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
+      }
     />
   );
 }

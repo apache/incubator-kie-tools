@@ -22,6 +22,7 @@ import { getMarshaller } from "@kie-tools/scesim-marshaller";
 import { TestScenarioEditor } from "../../../src/TestScenarioEditor";
 import { SceSimEditorWrapper, StorybookTestScenarioEditorProps } from "../../scesimEditorStoriesWrapper";
 
+export const emptyFileName = "Untitled.scesim";
 export const emptySceSim = `<?xml version="1.0" encoding="UTF-8"?>
 <ScenarioSimulationModel version="1.8" xmlns="https://kie.org/scesim/1.8">
   <simulation>
@@ -190,6 +191,7 @@ export const Empty: Story = {
   render: (args) => SceSimEditorWrapper(args),
   args: {
     model: marshaller.parser.parse(),
+    openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: emptyFileName,
     xml: marshaller.builder.build(model),
   },
 };

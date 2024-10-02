@@ -27,18 +27,23 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js";
 import { SceSimMarshaller, SceSimModel, getMarshaller } from "@kie-tools/scesim-marshaller";
 import { OnSceSimModelChange, TestScenarioEditorProps } from "../../src/TestScenarioEditor";
 import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
-import { emptySceSim } from "../misc/empty/Empty.stories";
-import { isOldEnoughDrl } from "../useCases/IsOldEnoughRule.stories";
-import { trafficViolationDmn } from "../useCases/TrafficViolationDmn.stories";
+import { emptyFileName, emptySceSim } from "../misc/empty/Empty.stories";
+import { isOldEnoughDrl, isOldEnoughDrlFileName } from "../useCases/IsOldEnoughRule.stories";
+import { trafficViolationDmn, trafficViolationDmnFileName } from "../useCases/TrafficViolationDmn.stories";
 import "./DevWebApp.css";
 
-function DevWebApp(args: TestScenarioEditorProps) {
-  const [state, setState] = useState<{ marshaller: SceSimMarshaller; stack: SceSimModel[]; pointer: number }>(() => {
+function DevWebApp(props: TestScenarioEditorProps) {
+  const [fileName, setFileName] = useState<string | undefined>("Untitled.scesim");
+  const [state, setState] = useState<{
+    marshaller: SceSimMarshaller;
+    pointer: number;
+    stack: SceSimModel[];
+  }>(() => {
     const emptySceSimMarshaller = getMarshaller(emptySceSim);
     return {
       marshaller: emptySceSimMarshaller,
-      stack: [emptySceSimMarshaller.parser.parse()],
       pointer: 0,
+      stack: [emptySceSimMarshaller.parser.parse()],
     };
   });
 
@@ -74,9 +79,14 @@ function DevWebApp(args: TestScenarioEditorProps) {
       [...e.dataTransfer.items].forEach((item, i) => {
         if (item.kind === "file") {
           const reader = new FileReader();
+          setFileName(item.getAsFile()?.name);
           reader.addEventListener("load", ({ target }) => {
             const marshaller = getMarshaller(target?.result as string);
-            setState({ marshaller, stack: [marshaller.parser.parse()], pointer: 0 });
+            setState({
+              marshaller,
+              pointer: 0,
+              stack: [marshaller.parser.parse()],
+            });
           });
           reader.readAsText(item.getAsFile() as any);
         }
@@ -84,20 +94,25 @@ function DevWebApp(args: TestScenarioEditorProps) {
     }
   }, []);
 
-  const onModelChange = useCallback<OnSceSimModelChange>((model) => {
-    setState((prev) => {
-      const newStack = prev.stack.slice(0, prev.pointer + 1);
-      return {
-        ...prev,
-        stack: [...newStack, model],
-        pointer: newStack.length,
-      };
-    });
-  }, []);
+  const onModelChange = useCallback<OnSceSimModelChange>(
+    (model) => {
+      setState((prev) => {
+        const newStack = prev.stack.slice(0, prev.pointer + 1);
+        return {
+          ...prev,
+          stack: [...newStack, model],
+          pointer: newStack.length,
+        };
+      });
+      setFileName(props.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot);
+    },
+    [props.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot]
+  );
 
   const onSelectModel = useCallback(
-    (newModel) => {
+    (newModel, fileName) => {
       onModelChange(getMarshaller(newModel).parser.parse());
+      setFileName(fileName);
     },
     [onModelChange]
   );
@@ -110,8 +125,8 @@ function DevWebApp(args: TestScenarioEditorProps) {
     const marshaller = getMarshaller(emptySceSim);
     setState({
       marshaller,
-      stack: [marshaller.parser.parse()],
       pointer: 0,
+      stack: [marshaller.parser.parse()],
     });
   }, []);
 
@@ -148,11 +163,15 @@ function DevWebApp(args: TestScenarioEditorProps) {
           <StackItem>
             <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
               <FlexItem shrink={{ default: "shrink" }}>
-                <Button onClick={() => onSelectModel(emptySceSim)}>Empty</Button>
+                <Button onClick={() => onSelectModel(emptySceSim, emptyFileName)}>Empty</Button>
                 &nbsp; &nbsp;
-                <Button onClick={() => onSelectModel(isOldEnoughDrl)}>Are They Old Enough?</Button>
+                <Button onClick={() => onSelectModel(isOldEnoughDrl, isOldEnoughDrlFileName)}>
+                  Are They Old Enough?
+                </Button>
                 &nbsp; &nbsp;
-                <Button onClick={() => onSelectModel(trafficViolationDmn)}>Traffic Violation</Button>
+                <Button onClick={() => onSelectModel(trafficViolationDmn, trafficViolationDmnFileName)}>
+                  Traffic Violation
+                </Button>
                 &nbsp; &nbsp; | &nbsp; &nbsp;
                 <Button
                   onClick={undo}
@@ -198,9 +217,10 @@ function DevWebApp(args: TestScenarioEditorProps) {
         variant={"light"}
       >
         {SceSimEditorWrapper({
-          issueTrackerHref: args.issueTrackerHref,
+          issueTrackerHref: props.issueTrackerHref,
           model: currentModel,
           onModelChange: onModelChange,
+          openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: fileName,
         })}
       </PageSection>
     </Page>
