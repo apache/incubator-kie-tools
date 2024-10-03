@@ -4,7 +4,7 @@ To allow a quick setup of all services required to run this demo, we provide a d
 
 - Postgresql
 - PgAdmin
-- Kogito Example Service (Only available if the example has been compiled using the `container` mvn profile eg: `mvn cleanp package -Dcontainer`)
+- Kogito Example Service (Only available if the example has been compiled using the `container` mvn profile eg: `mvn clean package -Dcontainer`)
 - Kogito Management Console
 - Kogito Task Console
 - Keycloak
@@ -12,8 +12,8 @@ To allow a quick setup of all services required to run this demo, we provide a d
 The docker compose template provides three profiles to enable starting only the set of services you want to use. The profiles are:
 
 - **infra**: Starts only the minimal infrastructure to run the example (Postgresql, pgadmin, Kogito Data Index)
-- **example**: Starts the services in _infra_ profile and the Kogito Example Service. Requires the example to be compiled using the `container` mvn profile eg: `mvn cleanp package -Dcontainer`.
-- **full** (default): includes all the above and also starts the **Management Console**, **Task Console** and a **Keycloak** to handle the consoles authentication. Requires the example to be compiled using the `container` mvn profile eg: `mvn cleanp package -Dcontainer`.
+- **example**: Starts the services in _infra_ profile and the Kogito Example Service. Requires the example to be compiled using the `container` mvn profile eg: `mvn clean package -Dcontainer`.
+- **full** (default): includes all the above and also starts the **Management Console**, **Task Console** and a **Keycloak** to handle the consoles authentication. Requires the example to be compiled using the `container` mvn profile eg: `mvn clean package -Dcontainer`.
 
 > NOTE: In order to use it, please ensure you have Docker Compose installed on your machine, otherwise follow the instructions available
 > in [here](https://docs.docker.com/compose/install/).
