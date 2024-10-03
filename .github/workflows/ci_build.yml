@@ -76,7 +76,11 @@ jobs:
         shell: bash
         run: |
 
-          npm -g install bun@1.1.6
+          npm -g install bun@1.1.6 turbo@2.1.2
+
+          echo '{}' > turbo.json
+
+          turbo telemetry disable
 
           bun ./.github/supporting-files/ci/build-partitioning/build_partitioning.ts \
             --outputPath='/tmp/partitions.json' \
@@ -87,7 +91,9 @@ jobs:
             --partition='./.github/supporting-files/ci/partitions/partition0.txt' \
             --partition='./.github/supporting-files/ci/partitions/partition1.txt'
 
-          npm -g uninstall bun
+          npm -g uninstall bun turbo
+
+          rm turbo.json
 
           echo "mode=$(jq --raw-output '.[${{ matrix.partition }}].mode' /tmp/partitions.json)" >> $GITHUB_OUTPUT
           echo "bootstrapPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].bootstrapPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT
@@ -128,7 +134,7 @@ jobs:
           eval "pnpm ${{ steps.setup_build_mode.outputs.fullBuildPnpmFilterString }} --workspace-concurrency=1 build:prod"
 
       - name: "PARTIAL → Build upstream"
-        if: steps.setup_build_mode.outputs.mode == 'partial'
+        if: steps.setup_build_mode.outputs.mode == 'partial' && steps.setup_build_mode.outputs.upstreamPnpmFilterString != ''
         shell: bash
         env:
           KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os == 'Linux' }}

@@ -20,7 +20,7 @@
  */
 
 import { Partial, None, Full, PartitionDefinition } from "./types";
-import { __ROOT_PKG_NAME, __NON_SOURCE_FILES_PATTERNS, __PACKAGES_ROOT_DIRS, stdoutArray } from "./globals";
+import { __ROOT_PKG_NAME, __NON_SOURCE_FILES_PATTERNS, __PACKAGES_ROOT_PATHS, stdoutArray } from "./globals";
 import {
   assertLeafPackagesInPartitionDefinitionsDontOverlap,
   assertLeafPackagesInPartitionsExist,
@@ -56,7 +56,7 @@ const {
   allowPositionals: true,
 });
 
-const cwd = execSync("bash -c pwd").toString().trim();
+const absolutePosixRepoRootPath = execSync("bash -c pwd").toString().trim();
 
 const __ARG_forceFull = forceFull === "true";
 
@@ -142,9 +142,9 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
   });
 
   const allPackageDirs = new Set(
-    stdoutArray(await execSync(`bash -c "pnpm -F !${__ROOT_PKG_NAME}... exec bash -c pwd"`).toString())
-      .map((pkgDir) => path.relative(cwd, pkgDir))
-      .map((pkgDir) => pkgDir.split(path.sep).join(path.posix.sep))
+    stdoutArray(await execSync(`bash -c "pnpm -F !${__ROOT_PKG_NAME}... exec bash -c pwd"`).toString()).map((pkgDir) =>
+      convertToPosixPathRelativeToRepoRoot(pkgDir)
+    )
   );
 
   await assertCompleteness({ packageDirsByName, partitions: partitionDefinitions, allPackageDirs });
@@ -155,18 +155,49 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
       `bash -c "git diff --name-only ${__ARG_baseSha} ${__ARG_headSha} -- ${nonSourceFilesPatternsForGitDiff}"`
     ).toString()
   );
+  const changedPackages: Array<{ path: string; name: string }> = JSON.parse(
+    execSync(`bash -c "turbo ls --filter='[${__ARG_baseSha}...${__ARG_headSha}]' --output json"`).toString()
+  ).packages.items.map((item: { path: string; name: string }) => ({
+    path: convertToPosixPathRelativeToRepoRoot(item.path),
+    name: item.name,
+  }));
+
+  const changedPackagesDirs = changedPackages.map((item) => item.path);
+
+  const changedPackagesNames = changedPackages.map((item) => item.name);
+
   console.log("[build-partitioning] Changed source paths:");
   console.log(new Set(changedSourcePaths));
 
   const changedSourcePathsInRoot = changedSourcePaths.filter((path) =>
-    __PACKAGES_ROOT_DIRS.every((pkgDir) => !path.startsWith(`${pkgDir}/`))
+    __PACKAGES_ROOT_PATHS.every((rootPath) => !path.startsWith(rootPath))
   );
 
-  const affectedPackageDirsInAllPartitions = stdoutArray(
-    await execSync(`pnpm -F ...[${__ARG_baseSha}] exec bash -c pwd`).toString()
-  )
-    .map((pkgDir) => path.relative(cwd, pkgDir))
-    .map((pkgDir) => pkgDir.split(path.sep).join(path.posix.sep));
+  // On Windows there's a 8191 character limit for commands in PowerShell.
+  // See https://learn.microsoft.com/en-us/troubleshoot/windows-client/shell-experience/command-line-string-limitation
+  // To circunvent this, we break the package list in chunks, run turbo ls, and then merge them all to a final list.
+  // Chunk size is defined as 50. This is an arbitrary value.
+  // If each package name has 100 characters, 50 of them is 5000 characters, making the final command less than 8191.
+  const changedPackagesNamesChunks: string[][] = [];
+  const chunkSize = 50;
+  for (let i = 0; i < changedPackagesNames.length; i += chunkSize) {
+    changedPackagesNamesChunks.push(
+      changedPackagesNames.slice(i, Math.min(i + chunkSize, changedPackagesNames.length - 1))
+    );
+  }
+
+  // Using a Set because it forces unique values, so no need to deduplicate.
+  const affectedPackageDirsInAllPartitionsSet = new Set<string>();
+  for (let packagesNamesChunk of changedPackagesNamesChunks) {
+    await JSON.parse(
+      execSync(
+        `bash -c "turbo ls ${packagesNamesChunk.map((packageName) => `-F '...${packageName}'`).join(" ")} --output json"`
+      ).toString()
+    ).packages.items.forEach((item: { path: string }) => {
+      affectedPackageDirsInAllPartitionsSet.add(convertToPosixPathRelativeToRepoRoot(item.path));
+    });
+  }
+  const affectedPackageDirsInAllPartitions = Array.from(affectedPackageDirsInAllPartitionsSet);
 
   return await Promise.all(
     partitionDefinitions.map(async (partition) => {
@@ -183,8 +214,8 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
         };
       }
 
-      const changedSourcePathsInPartition = changedSourcePaths.filter((path) =>
-        [...partition.dirs].some((partitionDir) => path.startsWith(`${partitionDir}/`))
+      const changedSourcePathsInPartition = changedPackagesDirs.filter((path) =>
+        [...partition.dirs].some((partitionDir) => path.startsWith(`${partitionDir}`))
       );
 
       if (changedSourcePathsInPartition.length === 0) {
@@ -204,12 +235,11 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
       );
 
       const relevantPackageNamesInPartition = new Set(
-        [...(await getDirsOfDependencies(affectedPackageNamesInPartition, partition.name))].map(
+        [...(await getDirsOfDependencies(affectedPackageNamesInPartition))].map(
           (pkgDir) => packageNamesByDir.get(pkgDir)!
         )
       );
 
-      console.log(`[build-partitioning] 'Partial' build of '${partition.name}'`);
       console.log(
         `[build-partitioning] Building ${relevantPackageNamesInPartition.size}/${partition.dirs.size}/${allPackageDirs.size} packages.`
       );
@@ -240,8 +270,17 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
 async function getDirsOfDependencies(leafPackageNames: Set<string>) {
   const packagesFilter = [...leafPackageNames].map((pkgName) => `-F ${pkgName}...`).join(" ");
   return new Set(
-    stdoutArray(execSync(`pnpm ${packagesFilter} exec bash -c pwd`).toString()) //
-      .map((pkgDir) => path.relative(cwd, pkgDir))
-      .map((pkgDir) => pkgDir.split(path.sep).join(path.posix.sep))
+    stdoutArray(execSync(`bash -c "pnpm ${packagesFilter} exec bash -c pwd"`).toString()) //
+      .map((pkgDir) => convertToPosixPathRelativeToRepoRoot(pkgDir))
   );
+}
+
+function convertToPosixPathRelativeToRepoRoot(targetPath: string) {
+  // If it's not an absolute path we can assume it's relative to the repository root (the current directory).
+  const isTargetPathAbsolute = targetPath.startsWith(path.sep) || targetPath.startsWith(path.posix.sep);
+
+  // Replace separators to make sure they are posix style.
+  return `${isTargetPathAbsolute ? path.relative(absolutePosixRepoRootPath, targetPath) : targetPath}`
+    .split(path.sep)
+    .join(path.posix.sep);
 }

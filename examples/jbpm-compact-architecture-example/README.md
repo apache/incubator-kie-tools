@@ -6,7 +6,7 @@ This example showcases a basic implementation of the **Hiring** process that dri
 interviews until he gets hired.
 
 This quickstart project shows a simple example user task orchestration including the use of DMN decisions to
-generate the candidate offer and tºimers to skip User Tasks.
+generate the candidate offer and timers to skip User Tasks.
 
 This example also demonstrates how to configure the whole _Kogito_ environment using the new _Compact Architecture_ that
 enable simplifying the communication among _Kogito_ services removing the need of events (Kafka/HTTP) between them. This can
