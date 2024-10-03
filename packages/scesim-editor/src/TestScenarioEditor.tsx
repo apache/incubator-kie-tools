@@ -293,7 +293,7 @@ export const TestScenarioEditorInternal = ({
   onModelDebounceStateChanged,
   openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
 }: TestScenarioEditorProps & { forwardRef?: React.Ref<TestScenarioEditorRef> }) => {
-  console.trace("[TestScenarioEditorInternal] Component creation ... ");
+  console.trace("[TestScenarioEditorInternal] Component creation ...");
 
   const scesim = useTestScenarioEditorStore((s) => s.scesim);
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
@@ -324,7 +324,7 @@ export const TestScenarioEditorInternal = ({
         return;
       }
 
-      console.trace("[TestScenarioEditorInternal]: Model internally updated!");
+      console.trace("[TestScenarioEditorInternal]: Model updated!");
 
       state.scesim.model = model;
       testScenarioEditorModelBeforeEditingRef.current = model;
