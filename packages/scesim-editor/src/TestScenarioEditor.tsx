@@ -20,7 +20,7 @@
 import "@patternfly/react-core/dist/styles/base.css";
 
 import * as React from "react";
-import { useCallback, useImperativeHandle, useMemo, useRef } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 
@@ -47,6 +47,7 @@ import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
 
 import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
 
+import { Commands, CommandsContextProvider, useCommands } from "./commands/CommandsContextProvider";
 import TestScenarioCreationPanel from "./creation/TestScenarioCreationPanel";
 import TestScenarioDrawerPanel from "./drawer/TestScenarioDrawerPanel";
 import TestScenarioSideBarMenu from "./sidebar/TestScenarioSideBarMenu";
@@ -142,6 +143,7 @@ export type TestScenarioEditorProps = {
 
 export type TestScenarioEditorRef = {
   reset: (mode: SceSimModel) => void;
+  getCommands: () => Commands;
   getDiagramSvg: () => Promise<string | undefined>;
 };
 
@@ -153,6 +155,7 @@ export type TestScenarioSelectedColumnMetaData = {
 
 function TestScenarioMainPanel({ scesimFilePath }: { scesimFilePath: string | undefined }) {
   const { i18n } = useTestScenarioEditorI18n();
+  const { commandsRef } = useCommands();
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const navigation = useTestScenarioEditorStore((s) => s.navigation);
   const scesimModel = useTestScenarioEditorStore((s) => s.scesim.model);
@@ -180,6 +183,19 @@ function TestScenarioMainPanel({ scesimFilePath }: { scesimFilePath: string | un
     },
     [testScenarioEditorStoreApi]
   );
+
+  // Show Properties panel
+  useEffect(() => {
+    if (!commandsRef.current) {
+      return;
+    }
+    commandsRef.current.toggleTestScenarioDock = async () => {
+      console.debug("DMN DIAGRAM: COMMANDS: Toggle properties panel...");
+      testScenarioEditorStoreApi.setState((state) => {
+        state.navigation.dock.isOpen = !state.navigation.dock.isOpen;
+      });
+    };
+  }, [testScenarioEditorStoreApi, commandsRef]);
 
   return (
     <>
@@ -298,6 +314,7 @@ export const TestScenarioEditorInternal = ({
   const scesim = useTestScenarioEditorStore((s) => s.scesim);
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const { testScenarioEditorModelBeforeEditingRef, testScenarioEditorRootElementRef } = useTestScenarioEditor();
+  const { commandsRef } = useCommands();
 
   /** Implementing Editor APIs */
 
@@ -310,9 +327,10 @@ export const TestScenarioEditorInternal = ({
         const state = testScenarioEditorStoreApi.getState();
         state.dispatch(state).scesim.reset();
       },
+      getCommands: () => commandsRef.current,
       getDiagramSvg: async () => undefined,
     }),
-    [testScenarioEditorStoreApi]
+    [commandsRef, testScenarioEditorStoreApi]
   );
 
   // Make sure the Test Scenario Editor reacts to props changing.
@@ -449,7 +467,9 @@ export const TestScenarioEditor = React.forwardRef(
         <TestScenarioEditorContextProvider {...props}>
           <ErrorBoundary FallbackComponent={TestScenarioEditorErrorFallback} onReset={resetState}>
             <TestScenarioEditorStoreApiContext.Provider value={storeRef.current}>
-              <TestScenarioEditorInternal forwardRef={ref} {...props} />
+              <CommandsContextProvider>
+                <TestScenarioEditorInternal forwardRef={ref} {...props} />
+              </CommandsContextProvider>
             </TestScenarioEditorStoreApiContext.Provider>
           </ErrorBoundary>
         </TestScenarioEditorContextProvider>

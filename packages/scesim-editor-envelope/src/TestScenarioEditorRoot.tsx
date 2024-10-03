@@ -269,7 +269,6 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     );
   };
 
-  /*  commands not enabled?
   public componentDidUpdate(
     prevProps: Readonly<TestScenarioEditorRootProps>,
     prevState: Readonly<TestScenarioEditorRootState>,
@@ -283,149 +282,16 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     if (commands === undefined) {
       return;
     }
-    const cancelAction = this.props.keyboardShortcutsService.registerKeyPress("Escape", "Edit | Unselect", async () =>
-      commands.cancelAction()
-    );
-    const deleteSelectionBackspace = this.props.keyboardShortcutsService.registerKeyPress(
-      "Backspace",
-      "Edit | Delete selection",
-      async () => {}
-    );
-    const deleteSelectionDelete = this.props.keyboardShortcutsService.registerKeyPress(
-      "Delete",
-      "Edit | Delete selection",
-      async () => {}
-    );
-    const selectAll = this.props.keyboardShortcutsService?.registerKeyPress(
-      "A",
-      "Edit | Select/Deselect all",
-      async () => commands.selectAll()
-    );
-    const createGroup = this.props.keyboardShortcutsService?.registerKeyPress(
-      "G",
-      "Edit | Create group wrapping selection",
-      async () => {
-        console.trace(" KEY GROUP PRESSED, ", commands);
-        return commands.createGroup();
-      }
-    );
-    const hideFromDrd = this.props.keyboardShortcutsService?.registerKeyPress("X", "Edit | Hide from DRD", async () =>
-      commands.hideFromDrd()
-    );
-    const copy = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+C", "Edit | Copy nodes", async () =>
-      commands.copy()
-    );
-    const cut = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+X", "Edit | Cut nodes", async () =>
-      commands.cut()
-    );
-    const paste = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+V", "Edit | Paste nodes", async () =>
-      commands.paste()
-    );
     const togglePropertiesPanel = this.props.keyboardShortcutsService?.registerKeyPress(
       "I",
-      "Misc | Open/Close properties panel",
-      async () => commands.togglePropertiesPanel()
-    );
-    const toggleHierarchyHighlight = this.props.keyboardShortcutsService?.registerKeyPress(
-      "H",
-      "Misc | Toggle hierarchy highlights",
-      async () => commands.toggleHierarchyHighlight()
-    );
-    const moveUp = this.props.keyboardShortcutsService.registerKeyPress(
-      "Up",
-      "Move | Move selection up",
-      async () => {}
-    );
-    const moveDown = this.props.keyboardShortcutsService.registerKeyPress(
-      "Down",
-      "Move | Move selection down",
-      async () => {}
-    );
-    const moveLeft = this.props.keyboardShortcutsService.registerKeyPress(
-      "Left",
-      "Move | Move selection left",
-      async () => {}
-    );
-    const moveRight = this.props.keyboardShortcutsService.registerKeyPress(
-      "Right",
-      "Move | Move selection right",
-      async () => {}
-    );
-    const bigMoveUp = this.props.keyboardShortcutsService.registerKeyPress(
-      "Shift + Up",
-      "Move | Move selection up a big distance",
-      async () => {}
-    );
-    const bigMoveDown = this.props.keyboardShortcutsService.registerKeyPress(
-      "Shift + Down",
-      "Move | Move selection down a big distance",
-      async () => {}
-    );
-    const bigMoveLeft = this.props.keyboardShortcutsService.registerKeyPress(
-      "Shift + Left",
-      "Move | Move selection left a big distance",
-      async () => {}
-    );
-    const bigMoveRight = this.props.keyboardShortcutsService.registerKeyPress(
-      "Shift + Right",
-      "Move | Move selection right a big distance",
-      async () => {}
-    );
-    const focusOnBounds = this.props.keyboardShortcutsService?.registerKeyPress(
-      "B",
-      "Navigate | Focus on selection",
-      async () => commands.focusOnSelection()
-    );
-    const resetPosition = this.props.keyboardShortcutsService?.registerKeyPress(
-      "Space",
-      "Navigate | Reset position to origin",
-      async () => commands.resetPosition()
-    );
-    const pan = this.props.keyboardShortcutsService?.registerKeyPress(
-      "Right Mouse Button",
-      "Navigate | Hold and drag to Pan",
-      async () => {}
-    );
-    const zoom = this.props.keyboardShortcutsService?.registerKeyPress(
-      "Ctrl",
-      "Navigate | Hold and scroll to zoom in/out",
-      async () => {}
-    );
-    const navigateHorizontally = this.props.keyboardShortcutsService?.registerKeyPress(
-      "Shift",
-      "Navigate | Hold and scroll to navigate horizontally",
-      async () => {}
+      "Misc | Open/Close dock panel",
+      async () => commands.toggleTestScenarioDock()
     );
 
     this.setState((prev) => ({
       ...prev,
       keyboardShortcutsRegistred: true,
-      keyboardShortcutsRegisterIds: [
-        bigMoveDown,
-        bigMoveLeft,
-        bigMoveRight,
-        bigMoveUp,
-        cancelAction,
-        copy,
-        createGroup,
-        cut,
-        deleteSelectionBackspace,
-        deleteSelectionDelete,
-        focusOnBounds,
-        hideFromDrd,
-        moveDown,
-        moveLeft,
-        moveRight,
-        moveUp,
-        navigateHorizontally,
-        pan,
-        paste,
-        resetPosition,
-        selectAll,
-        toggleHierarchyHighlight,
-        togglePropertiesPanel,
-        zoom,
-      ],
+      keyboardShortcutsRegisterIds: [togglePropertiesPanel],
     }));
   }
 
@@ -438,7 +304,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     this.state.keyboardShortcutsRegisterIds.forEach((id) => {
       this.props.keyboardShortcutsService?.deregister(id);
     });
-  } */
+  }
 
   public render() {
     return (
