@@ -12,6 +12,7 @@
       <module fileurl="file://$PROJECT_DIR$/../packages/jbpm-quarkus-devui/jbpm-quarkus-devui-parent.iml" filepath="$PROJECT_DIR$/../packages/jbpm-quarkus-devui/jbpm-quarkus-devui-parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/../packages/maven-base/kie-tools-maven-base.iml" filepath="$PROJECT_DIR$/../packages/maven-base/kie-tools-maven-base.iml" />
       <module fileurl="file://$PROJECT_DIR$/maven-based-packages-@-kie-tools.iml" filepath="$PROJECT_DIR$/maven-based-packages-@-kie-tools.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../scripts/scripts.iml" filepath="$PROJECT_DIR$/../scripts/scripts.iml" />
       <module fileurl="file://$PROJECT_DIR$/../packages/serverless-logic-web-tools-swf-deployment-quarkus-app/serverless-logic-web-tools-swf-deployment-quarkus-app.iml" filepath="$PROJECT_DIR$/../packages/serverless-logic-web-tools-swf-deployment-quarkus-app/serverless-logic-web-tools-swf-deployment-quarkus-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/../packages/serverless-workflow-diagram-editor/serverless-workflow-diagram-editor-parent.iml" filepath="$PROJECT_DIR$/../packages/serverless-workflow-diagram-editor/serverless-workflow-diagram-editor-parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/../examples/sonataflow-greeting-quarkus-example/sonataflow-greeting-quarkus-example.iml" filepath="$PROJECT_DIR$/../examples/sonataflow-greeting-quarkus-example/sonataflow-greeting-quarkus-example.iml" />

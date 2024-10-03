@@ -120,18 +120,6 @@
       <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-data-audit</artifactId>
     </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-quarkus-devui</artifactId>
-      <version>0.0.0</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <profiles>

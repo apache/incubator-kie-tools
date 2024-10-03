@@ -54,12 +54,10 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>jitexecutor-bpmn</artifactId>
-      <version>${version.org.kie.kogito}</version>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>jitexecutor-dmn</artifactId>
-      <version>${version.org.kie.kogito}</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

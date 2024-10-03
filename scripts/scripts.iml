@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/bootstrap/node_modules" />
+      <excludeFolder url="file://$MODULE_DIR$/build-env/node_modules" />
+      <excludeFolder url="file://$MODULE_DIR$/check-junit-report-results/node_modules" />
+      <excludeFolder url="file://$MODULE_DIR$/run-script-if/node_modules" />
+      <excludeFolder url="file://$MODULE_DIR$/sparse-checkout/node_modules" />
+      <excludeFolder url="file://$MODULE_DIR$/update-kogito-version/node_modules" />
+      <excludeFolder url="file://$MODULE_DIR$/update-stream-name/node_modules" />
+      <excludeFolder url="file://$MODULE_DIR$/update-version/node_modules" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

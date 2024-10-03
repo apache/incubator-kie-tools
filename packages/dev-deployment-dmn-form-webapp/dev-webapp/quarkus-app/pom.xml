@@ -58,10 +58,10 @@
 
     <!-- Config -->
     <maven.compiler.parameters>true</maven.compiler.parameters>
+    <quarkus.analytics.disabled>true</quarkus.analytics.disabled>
 
     <!-- 3rd party -->
     <version.junit>4.13.2</version.junit>
-    <quarkus.analytics.disabled>true</quarkus.analytics.disabled>
     <version.org.apache.commons.commons-compress>1.26.1</version.org.apache.commons.commons-compress>
     <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
   </properties>

@@ -23,6 +23,7 @@
         <module name="uberfire-commons-editor-api (2) (org.kie.kogito.stunner.editors)" />
         <module name="drools-process-usertasks-quarkus-example" />
         <module name="kie-wb-common-stunner-shapes-client (1) (org.kie.kogito.stunner.serverless.editor)" />
+        <module name="uberfire-client-api (3) (org.kie.kogito.stunner.editors)" />
         <module name="kie-wb-common-stunner-kogito-client" />
         <module name="kie-wb-common-stunner-core-common (1) (org.kie.kogito.stunner.serverless.editor)" />
         <module name="kie-wb-common-kogito-api" />
@@ -31,6 +32,7 @@
         <module name="kie-wb-common-forms-crud-component" />
         <module name="uberfire-client-api (2) (org.kie.kogito.stunner.editors)" />
         <module name="kie-wb-common-dmn-webapp-kogito-marshaller" />
+        <module name="uberfire-layout-editor-api (2) (org.kie.kogito.stunner.editors)" />
         <module name="kie-wb-common-stunner-forms-client" />
         <module name="kie-wb-common-stunner-lienzo-extensions (2) (org.kie.kogito.stunner.editors)" />
         <module name="lienzo-tests (2) (org.kie.kogito.stunner.editors)" />
@@ -40,6 +42,7 @@
         <module name="kie-wb-common-kogito-webapp-base" />
         <module name="drools-wb-scenario-simulation-editor-kogito-client" />
         <module name="kie-wb-common-stunner-widgets (2) (org.kie.kogito.stunner.editors)" />
+        <module name="uberfire-widgets-table (2) (org.kie.kogito.stunner.editors)" />
         <module name="errai-javax-enterprise" />
         <module name="kie-wb-common-stunner-forms-api" />
         <module name="drools-wb-scenario-simulation-editor-api" />
@@ -56,12 +59,14 @@
         <module name="appformer-js-monaco" />
         <module name="errai-cdi-client" />
         <module name="kie-wb-common-dmn-webapp-kogito-common" />
+        <module name="uberfire-widgets-core-client (2) (org.kie.kogito.stunner.editors)" />
         <module name="uberfire-wires-core-grids" />
         <module name="uberfire-api (1) (org.kie.kogito.stunner.serverless.editor)" />
         <module name="sonataflow-greeting-quarkus-example" />
         <module name="errai-config" />
         <module name="kie-wb-common-stunner-shapes-api (1) (org.kie.kogito.stunner.serverless.editor)" />
         <module name="appformer-kogito-bridge (2) (org.kie.kogito.stunner.editors)" />
+        <module name="uberfire-layout-editor-client (2) (org.kie.kogito.stunner.editors)" />
         <module name="lienzo-tests (1) (org.kie.kogito.stunner.serverless.editor)" />
         <module name="kie-wb-common-stunner-lienzo (2) (org.kie.kogito.stunner.editors)" />
         <module name="kie-wb-common-forms-processing-engine" />
@@ -95,6 +100,7 @@
         <module name="dmn-testing-models" />
         <module name="kie-wb-common-stunner-bpmn-kogito-runtime" />
         <module name="kie-wb-common-dynamic-forms-api" />
+        <module name="uberfire-workbench-client (3) (org.kie.kogito.stunner.editors)" />
         <module name="yard-validator-worker" />
         <module name="kie-wb-common-stunner-shapes-client (2) (org.kie.kogito.stunner.editors)" />
         <module name="sw-editor-client" />
@@ -105,6 +111,7 @@
         <module name="errai-api" />
         <module name="kie-wb-common-stunner-widgets" />
         <module name="lienzo-core" />
+        <module name="uberfire-workbench-client-views-patternfly (2) (org.kie.kogito.stunner.editors)" />
         <module name="uberfire-commons-editor-api" />
         <module name="kie-wb-common-stunner-lienzo-extensions" />
         <module name="uberfire-client-api (2) (org.kie.kogito.stunner.serverless.editor)" />
@@ -120,11 +127,13 @@
         <module name="kie-wb-common-stunner-client-common (1) (org.kie.kogito.stunner.serverless.editor)" />
         <module name="uberfire-client-api (1) (org.kie.kogito.stunner.serverless.editor)" />
         <module name="kie-wb-common-stunner-lienzo" />
+        <module name="uberfire-api (3) (org.kie.kogito.stunner.editors)" />
         <module name="kie-wb-common-dmn-webapp-kogito-runtime" />
         <module name="errai-validation" />
         <module name="kie-wb-common-stunner-client-common" />
         <module name="kie-wb-common-stunner-bpmn-marshalling" />
         <module name="gwtproject" />
+        <module name="uberfire-widgets-commons (2) (org.kie.kogito.stunner.editors)" />
         <module name="kie-wb-common-forms-fields" />
         <module name="uberfire-layout-editor-api" />
         <module name="kie-wb-common-forms-adf-base" />
@@ -220,11 +229,69 @@
         <sourceTestOutputDir name="../generated-test-sources/test-annotations" />
         <module name="dashbuilder-runtime-client.test" />
       </profile>
-      <profile name="Annotation profile for KIE Tools :: jBPM Quarkus Dev UI Extension" enabled="true">
+      <profile name="Annotation profile for KIE Tools :: SonataFlow Quarkus Dev UI Extension" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/io/quarkus/quarkus-extension-processor/3.8.6/quarkus-extension-processor-3.8.6.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/jboss/jdeparser/jdeparser/2.0.3.Final/jdeparser-2.0.3.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/jsoup/jsoup/1.15.3/jsoup-1.15.3.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/github/javaparser/javaparser-core/3.25.8/javaparser-core-3.25.8.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-databind/2.17.2/jackson-databind-2.17.2.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-annotations/2.17.2/jackson-annotations-2.17.2.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-core/2.17.2/jackson-core-2.17.2.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/quarkus/quarkus-bootstrap-app-model/3.8.6/quarkus-bootstrap-app-model-3.8.6.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter/5.10.1/junit-jupiter-5.10.1.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-api/5.10.1/junit-jupiter-api-5.10.1.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-commons/1.10.1/junit-platform-commons-1.10.1.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-params/5.10.1/junit-jupiter-params-5.10.1.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-engine/5.10.1/junit-jupiter-engine-5.10.1.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-engine/1.10.1/junit-platform-engine-1.10.1.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/asciidoctor/asciidoctorj/2.5.11/asciidoctorj-2.5.11.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/asciidoctor/asciidoctorj-api/2.5.11/asciidoctorj-api-2.5.11.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/jruby/jruby/9.4.5.0/jruby-9.4.5.0.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/jruby/jruby-base/9.4.5.0/jruby-base-9.4.5.0.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/ow2/asm/asm/9.2/asm-9.2.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/ow2/asm/asm-commons/9.2/asm-commons-9.2.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/ow2/asm/asm-tree/9.2/asm-tree-9.2.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/ow2/asm/asm-analysis/9.2/asm-analysis-9.2.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/ow2/asm/asm-util/9.2/asm-util-9.2.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/github/jnr/jnr-netdb/1.2.0/jnr-netdb-1.2.0.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/github/jnr/jnr-enxio/0.32.16/jnr-enxio-0.32.16.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/github/jnr/jnr-constants/0.10.4/jnr-constants-0.10.4.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/github/jnr/jnr-unixsocket/0.38.21/jnr-unixsocket-0.38.21.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/github/jnr/jnr-posix/3.1.18/jnr-posix-3.1.18.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/github/jnr/jnr-ffi/2.2.15/jnr-ffi-2.2.15.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/github/jnr/jffi/1.3.12/jffi-1.3.12.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/github/jnr/jffi/1.3.12/jffi-1.3.12-native.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/github/jnr/jnr-a64asm/1.0.0/jnr-a64asm-1.0.0.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/github/jnr/jnr-x86asm/1.0.2/jnr-x86asm-1.0.2.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/jruby/joni/joni/2.2.1/joni-2.2.1.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/jruby/jcodings/jcodings/1.0.58/jcodings-1.0.58.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/jruby/dirgra/0.3/dirgra-0.3.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/headius/invokebinder/1.13/invokebinder-1.13.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/headius/options/1.6/options-1.6.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/jruby/jzlib/1.1.5/jzlib-1.1.5.jar" />
+          <entry name="$MAVEN_REPOSITORY$/joda-time/joda-time/2.12.5/joda-time-2.12.5.jar" />
+          <entry name="$MAVEN_REPOSITORY$/me/qmx/jitescript/jitescript/0.4.1/jitescript-0.4.1.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/headius/backport9/1.13/backport9-1.13.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/jruby/jruby-stdlib/9.4.5.0/jruby-stdlib-9.4.5.0.jar" />
+          <entry name="$MAVEN_REPOSITORY$/com/beust/jcommander/1.82/jcommander-1.82.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/jboss/logmanager/jboss-logmanager/3.0.6.Final/jboss-logmanager-3.0.6.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/jboss/logging/jboss-logging/3.5.3.Final/jboss-logging-3.5.3.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/smallrye/common/smallrye-common-constraint/2.2.0/smallrye-common-constraint-2.2.0.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/smallrye/common/smallrye-common-cpu/2.2.0/smallrye-common-cpu-2.2.0.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/smallrye/common/smallrye-common-expression/2.2.0/smallrye-common-expression-2.2.0.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/smallrye/common/smallrye-common-function/2.2.0/smallrye-common-function-2.2.0.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/smallrye/common/smallrye-common-net/2.2.0/smallrye-common-net-2.2.0.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/smallrye/common/smallrye-common-os/2.2.0/smallrye-common-os-2.2.0.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/smallrye/common/smallrye-common-ref/2.2.0/smallrye-common-ref-2.2.0.jar" />
+          <entry name="$MAVEN_REPOSITORY$/jakarta/json/jakarta.json-api/2.1.3/jakarta.json-api-2.1.3.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/eclipse/parsson/parsson/1.1.6/parsson-1.1.6.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/quarkus/quarkus-bom/3.8.6/quarkus-bom-3.8.6.pom" />
           <entry name="$MAVEN_REPOSITORY$/io/quarkus/quarkus-extension-processor/3.8.6/quarkus-extension-processor-3.8.6.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/jboss/jdeparser/jdeparser/2.0.3.Final/jdeparser-2.0.3.Final.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/jsoup/jsoup/1.15.3/jsoup-1.15.3.jar" />
@@ -295,11 +362,11 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="appformer-client-api" options="-Xlint:unchecked" />
       <module name="appformer-client-api (1) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
-      <module name="appformer-client-api (2) (org.kie.kogito.stunner.editors)" options="" />
-      <module name="appformer-js-monaco" options="" />
+      <module name="appformer-client-api (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
+      <module name="appformer-js-monaco" options="-Xlint:unchecked" />
       <module name="appformer-kogito-bridge" options="-Xlint:unchecked" />
       <module name="appformer-kogito-bridge (1) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
-      <module name="appformer-kogito-bridge (2) (org.kie.kogito.stunner.editors)" options="" />
+      <module name="appformer-kogito-bridge (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="dashbuilder-bom" options="-parameters" />
       <module name="dashbuilder-client" options="-parameters" />
       <module name="dashbuilder-common-client" options="-parameters -Xlint:unchecked" />
@@ -348,25 +415,25 @@
       <module name="dev-deployment-kogito-quarkus-blank-app" options="-parameters" />
       <module name="dmn-testing-models" options="-parameters" />
       <module name="drools-process-usertasks-quarkus-example" options="-parameters" />
-      <module name="drools-wb-scenario-simulation-editor-api" options="" />
-      <module name="drools-wb-scenario-simulation-editor-client" options="" />
-      <module name="drools-wb-scenario-simulation-editor-kogito-client" options="" />
-      <module name="drools-wb-scenario-simulation-editor-kogito-marshaller" options="" />
-      <module name="drools-wb-scenario-simulation-editor-kogito-runtime" options="" />
-      <module name="drools-wb-scenario-simulation-editor-kogito-testing" options="" />
+      <module name="drools-wb-scenario-simulation-editor-api" options="-Xlint:unchecked" />
+      <module name="drools-wb-scenario-simulation-editor-client" options="-Xlint:unchecked" />
+      <module name="drools-wb-scenario-simulation-editor-kogito-client" options="-Xlint:unchecked" />
+      <module name="drools-wb-scenario-simulation-editor-kogito-marshaller" options="-Xlint:unchecked" />
+      <module name="drools-wb-scenario-simulation-editor-kogito-runtime" options="-Xlint:unchecked" />
+      <module name="drools-wb-scenario-simulation-editor-kogito-testing" options="-Xlint:unchecked" />
       <module name="errai" options="-Xlint:unchecked" />
-      <module name="errai-api" options="" />
-      <module name="errai-cdi-client" options="" />
-      <module name="errai-cdi-shared" options="" />
-      <module name="errai-codegen" options="" />
-      <module name="errai-codegen-gwt" options="" />
-      <module name="errai-common" options="" />
-      <module name="errai-config" options="" />
-      <module name="errai-data-binding" options="" />
-      <module name="errai-ioc" options="" />
-      <module name="errai-javax-enterprise" options="" />
-      <module name="errai-ui" options="" />
-      <module name="errai-validation" options="" />
+      <module name="errai-api" options="-Xlint:unchecked" />
+      <module name="errai-cdi-client" options="-Xlint:unchecked" />
+      <module name="errai-cdi-shared" options="-Xlint:unchecked" />
+      <module name="errai-codegen" options="-Xlint:unchecked" />
+      <module name="errai-codegen-gwt" options="-Xlint:unchecked" />
+      <module name="errai-common" options="-Xlint:unchecked" />
+      <module name="errai-config" options="-Xlint:unchecked" />
+      <module name="errai-data-binding" options="-Xlint:unchecked" />
+      <module name="errai-ioc" options="-Xlint:unchecked" />
+      <module name="errai-javax-enterprise" options="-Xlint:unchecked" />
+      <module name="errai-ui" options="-Xlint:unchecked" />
+      <module name="errai-validation" options="-Xlint:unchecked" />
       <module name="extended-services-java" options="-parameters" />
       <module name="extras" options="-Xlint:unchecked" />
       <module name="gwtbootstrap3" options="-Xlint:unchecked" />
@@ -393,80 +460,80 @@
       <module name="kie-soup-json.main" options="-parameters -Xlint:unchecked" />
       <module name="kie-soup-json.test" options="-parameters -Xlint:unchecked" />
       <module name="kie-tools-maven-base" options="-parameters" />
-      <module name="kie-wb-common-dmn-api" options="" />
-      <module name="kie-wb-common-dmn-client" options="" />
-      <module name="kie-wb-common-dmn-webapp-kogito-common" options="" />
-      <module name="kie-wb-common-dmn-webapp-kogito-marshaller" options="" />
-      <module name="kie-wb-common-dmn-webapp-kogito-runtime" options="" />
-      <module name="kie-wb-common-dynamic-forms-api" options="" />
-      <module name="kie-wb-common-dynamic-forms-client" options="" />
-      <module name="kie-wb-common-forms-adf-base" options="" />
-      <module name="kie-wb-common-forms-adf-engine-api" options="" />
-      <module name="kie-wb-common-forms-adf-engine-client" options="" />
-      <module name="kie-wb-common-forms-adf-processors" options="" />
-      <module name="kie-wb-common-forms-api" options="" />
-      <module name="kie-wb-common-forms-common-rendering-client" options="" />
-      <module name="kie-wb-common-forms-common-rendering-shared" options="" />
-      <module name="kie-wb-common-forms-crud-component" options="" />
-      <module name="kie-wb-common-forms-fields" options="" />
-      <module name="kie-wb-common-forms-processing-engine" options="" />
-      <module name="kie-wb-common-kogito-api" options="" />
-      <module name="kie-wb-common-kogito-client" options="" />
-      <module name="kie-wb-common-kogito-webapp-base" options="" />
+      <module name="kie-wb-common-dmn-api" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-dmn-client" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-dmn-webapp-kogito-common" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-dmn-webapp-kogito-marshaller" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-dmn-webapp-kogito-runtime" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-dynamic-forms-api" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-dynamic-forms-client" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-forms-adf-base" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-forms-adf-engine-api" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-forms-adf-engine-client" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-forms-adf-processors" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-forms-api" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-forms-common-rendering-client" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-forms-common-rendering-shared" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-forms-crud-component" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-forms-fields" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-forms-processing-engine" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-kogito-api" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-kogito-client" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-kogito-webapp-base" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-backend-api" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-backend-api (1) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
-      <module name="kie-wb-common-stunner-backend-api (2) (org.kie.kogito.stunner.editors)" options="" />
-      <module name="kie-wb-common-stunner-bpmn" options="" />
-      <module name="kie-wb-common-stunner-bpmn-api" options="" />
-      <module name="kie-wb-common-stunner-bpmn-client" options="" />
-      <module name="kie-wb-common-stunner-bpmn-emf" options="" />
-      <module name="kie-wb-common-stunner-bpmn-kogito-runtime" options="" />
-      <module name="kie-wb-common-stunner-bpmn-marshalling" options="" />
+      <module name="kie-wb-common-stunner-backend-api (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-stunner-bpmn" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-stunner-bpmn-api" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-stunner-bpmn-client" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-stunner-bpmn-emf" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-stunner-bpmn-kogito-runtime" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-stunner-bpmn-marshalling" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-client-api" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-client-api (1) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
-      <module name="kie-wb-common-stunner-client-api (2) (org.kie.kogito.stunner.editors)" options="" />
+      <module name="kie-wb-common-stunner-client-api (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-client-common" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-client-common (1) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
-      <module name="kie-wb-common-stunner-client-common (2) (org.kie.kogito.stunner.editors)" options="" />
+      <module name="kie-wb-common-stunner-client-common (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-core-api" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-core-api (1) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
-      <module name="kie-wb-common-stunner-core-api (2) (org.kie.kogito.stunner.editors)" options="" />
+      <module name="kie-wb-common-stunner-core-api (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-core-common" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-core-common (1) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
-      <module name="kie-wb-common-stunner-core-common (2) (org.kie.kogito.stunner.editors)" options="" />
-      <module name="kie-wb-common-stunner-forms-api" options="" />
-      <module name="kie-wb-common-stunner-forms-client" options="" />
-      <module name="kie-wb-common-stunner-kogito-client" options="" />
+      <module name="kie-wb-common-stunner-core-common (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-stunner-forms-api" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-stunner-forms-client" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-stunner-kogito-client" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-lienzo" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-lienzo (1) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
-      <module name="kie-wb-common-stunner-lienzo (2) (org.kie.kogito.stunner.editors)" options="" />
+      <module name="kie-wb-common-stunner-lienzo (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-lienzo-extensions" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-lienzo-extensions (1) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
-      <module name="kie-wb-common-stunner-lienzo-extensions (2) (org.kie.kogito.stunner.editors)" options="" />
-      <module name="kie-wb-common-stunner-processors" options="" />
-      <module name="kie-wb-common-stunner-sets" options="" />
+      <module name="kie-wb-common-stunner-lienzo-extensions (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-stunner-processors" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-stunner-sets" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-shapes-api" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-shapes-api (1) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
-      <module name="kie-wb-common-stunner-shapes-api (2) (org.kie.kogito.stunner.editors)" options="" />
+      <module name="kie-wb-common-stunner-shapes-api (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-shapes-client" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-shapes-client (1) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
-      <module name="kie-wb-common-stunner-shapes-client (2) (org.kie.kogito.stunner.editors)" options="" />
-      <module name="kie-wb-common-stunner-svg-client" options="" />
-      <module name="kie-wb-common-stunner-svg-gen" options="" />
+      <module name="kie-wb-common-stunner-shapes-client (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-stunner-svg-client" options="-Xlint:unchecked" />
+      <module name="kie-wb-common-stunner-svg-gen" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-widgets" options="-Xlint:unchecked" />
       <module name="kie-wb-common-stunner-widgets (1) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
-      <module name="kie-wb-common-stunner-widgets (2) (org.kie.kogito.stunner.editors)" options="" />
+      <module name="kie-wb-common-stunner-widgets (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="kie-wb-common-ui" options="-Xlint:unchecked" />
       <module name="kie-wb-common-ui (1) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
-      <module name="kie-wb-common-ui (2) (org.kie.kogito.stunner.editors)" options="" />
+      <module name="kie-wb-common-ui (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="lienzo-core" options="-Xlint:unchecked" />
       <module name="lienzo-core (1) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
-      <module name="lienzo-core (2) (org.kie.kogito.stunner.editors)" options="" />
+      <module name="lienzo-core (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="lienzo-tests" options="-Xlint:unchecked" />
       <module name="lienzo-tests (1) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
-      <module name="lienzo-tests (2) (org.kie.kogito.stunner.editors)" options="" />
-      <module name="lienzo-webapp" options="" />
-      <module name="reflections" options="" />
+      <module name="lienzo-tests (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
+      <module name="lienzo-webapp" options="-Xlint:unchecked" />
+      <module name="reflections" options="-Xlint:unchecked" />
       <module name="serverless-logic-web-tools-swf-deployment-quarkus-app" options="-parameters" />
       <module name="sonataflow-greeting-quarkus-example" options="-parameters" />
       <module name="sonataflow-quarkus-devui" options="-parameters" />
@@ -483,6 +550,7 @@
       <module name="uberfire-api (1) (org.uberfire).test" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-api (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="uberfire-api (2) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
+      <module name="uberfire-api (3) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="uberfire-api.main" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-api.test" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-client-all" options="-parameters -Xlint:unchecked" />
@@ -495,15 +563,16 @@
       <module name="uberfire-client-api (1) (org.uberfire).test" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-client-api (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="uberfire-client-api (2) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
+      <module name="uberfire-client-api (3) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="uberfire-client-api.main" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-client-api.test" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-commons" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-commons-editor-api" options="-Xlint:unchecked" />
       <module name="uberfire-commons-editor-api (1) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
-      <module name="uberfire-commons-editor-api (2) (org.kie.kogito.stunner.editors)" options="" />
+      <module name="uberfire-commons-editor-api (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="uberfire-commons-editor-client" options="-Xlint:unchecked" />
       <module name="uberfire-commons-editor-client (1) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
-      <module name="uberfire-commons-editor-client (2) (org.kie.kogito.stunner.editors)" options="" />
+      <module name="uberfire-commons-editor-client (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="uberfire-commons.main" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-commons.test" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-extensions" options="-parameters" />
@@ -513,16 +582,18 @@
       <module name="uberfire-layout-editor-api (1) (org.uberfire)" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-layout-editor-api (1) (org.uberfire).main" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-layout-editor-api (1) (org.uberfire).test" options="-parameters -Xlint:unchecked" />
+      <module name="uberfire-layout-editor-api (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="uberfire-layout-editor-client" options="-Xlint:unchecked" />
       <module name="uberfire-layout-editor-client (1) (org.uberfire)" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-layout-editor-client (1) (org.uberfire).main" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-layout-editor-client (1) (org.uberfire).test" options="-parameters -Xlint:unchecked" />
+      <module name="uberfire-layout-editor-client (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="uberfire-parent" options="-parameters" />
       <module name="uberfire-runtime-plugins" options="-parameters" />
       <module name="uberfire-runtime-plugins-client" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-runtime-plugins-client.main" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-runtime-plugins-client.test" options="-parameters -Xlint:unchecked" />
-      <module name="uberfire-simple-docks-client" options="" />
+      <module name="uberfire-simple-docks-client" options="-Xlint:unchecked" />
       <module name="uberfire-testing-utils" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-testing-utils.main" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-testing-utils.test" options="-parameters -Xlint:unchecked" />
@@ -531,16 +602,19 @@
       <module name="uberfire-widgets-commons (1) (org.uberfire)" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-widgets-commons (1) (org.uberfire).main" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-widgets-commons (1) (org.uberfire).test" options="-parameters -Xlint:unchecked" />
+      <module name="uberfire-widgets-commons (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="uberfire-widgets-core (1) (org.uberfire)" options="-parameters" />
       <module name="uberfire-widgets-core-client" options="-Xlint:unchecked" />
       <module name="uberfire-widgets-core-client (1) (org.uberfire)" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-widgets-core-client (1) (org.uberfire).main" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-widgets-core-client (1) (org.uberfire).test" options="-parameters -Xlint:unchecked" />
+      <module name="uberfire-widgets-core-client (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="uberfire-widgets-table" options="-Xlint:unchecked" />
       <module name="uberfire-widgets-table (1) (org.uberfire)" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-widgets-table (1) (org.uberfire).main" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-widgets-table (1) (org.uberfire).test" options="-parameters -Xlint:unchecked" />
-      <module name="uberfire-wires-core-grids" options="" />
+      <module name="uberfire-widgets-table (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
+      <module name="uberfire-wires-core-grids" options="-Xlint:unchecked" />
       <module name="uberfire-workbench" options="-parameters" />
       <module name="uberfire-workbench (1) (org.uberfire)" options="-parameters" />
       <module name="uberfire-workbench-client" options="-parameters -Xlint:unchecked" />
@@ -550,16 +624,19 @@
       <module name="uberfire-workbench-client (1) (org.uberfire).test" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-workbench-client (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="uberfire-workbench-client (2) (org.kie.kogito.stunner.serverless.editor)" options="-Xlint:unchecked" />
+      <module name="uberfire-workbench-client (3) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="uberfire-workbench-client-views-patternfly" options="-Xlint:unchecked" />
       <module name="uberfire-workbench-client-views-patternfly (1) (org.uberfire)" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-workbench-client-views-patternfly (1) (org.uberfire).main" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-workbench-client-views-patternfly (1) (org.uberfire).test" options="-parameters -Xlint:unchecked" />
+      <module name="uberfire-workbench-client-views-patternfly (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="uberfire-workbench-client.main" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-workbench-client.test" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-workbench-processors" options="-Xlint:unchecked" />
       <module name="uberfire-workbench-processors (1) (org.uberfire)" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-workbench-processors (1) (org.uberfire).main" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-workbench-processors (1) (org.uberfire).test" options="-parameters -Xlint:unchecked" />
+      <module name="uberfire-workbench-processors (2) (org.kie.kogito.stunner.editors)" options="-Xlint:unchecked" />
       <module name="uberfire-workbench-processors-tests" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-workbench-processors-tests.main" options="-parameters -Xlint:unchecked" />
       <module name="uberfire-workbench-processors-tests.test" options="-parameters -Xlint:unchecked" />

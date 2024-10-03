@@ -42,16 +42,18 @@
 
   <properties>
     <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
-    <tycho.version>3.0.5</tycho.version>
-    <tycho.extras.version>${tycho.version}</tycho.extras.version>
+    <version.tycho>3.0.5</version.tycho>
+    <version.tycho.extras>${version.tycho}</version.tycho.extras>
+    <version.jacoco>0.8.12</version.jacoco>
+    <version.jdt.ls>1.30.1.20231207151730</version.jdt.ls>
+
+    <!-- Tycho -->
     <tycho.scmUrl>scm:git:https://github.com/apache/incubator-kie-tools.git</tycho.scmUrl>
     <tycho.generateSourceReferences>true</tycho.generateSourceReferences>
-    <jdt.ls.version>1.30.1.20231207151730</jdt.ls.version>
     <tycho.test.platformArgs />
     <tycho.test.jvmArgs>-Xmx512m ${tycho.test.platformArgs}</tycho.test.jvmArgs>
 
     <!-- Code coverage -->
-    <jacoco.version>0.8.12</jacoco.version>
     <coverage.filter>org.eclipse.jdt.ls.*</coverage.filter>
     <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
     <jacoco.destFile>${project.build.directory}/jacoco.exec</jacoco.destFile>
@@ -81,19 +83,19 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
-        <version>${tycho.version}</version>
+        <version>${version.tycho}</version>
         <extensions>true</extensions>
       </plugin>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
-        <version>${tycho.version}</version>
+        <version>${version.tycho}</version>
         <configuration>
           <target>
             <artifact>
               <groupId>org.eclipse.jdt.ls</groupId>
               <artifactId>org.eclipse.jdt.ls.tp</artifactId>
-              <version>${jdt.ls.version}</version>
+              <version>${version.jdt.ls}</version>
             </artifact>
           </target>
           <resolver>p2</resolver>
@@ -103,7 +105,7 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-compiler-plugin</artifactId>
-        <version>${tycho.version}</version>
+        <version>${version.tycho}</version>
         <configuration>
           <compilerArgument>-err:-forbidden</compilerArgument>
           <useProjectSettings>false</useProjectSettings>
@@ -139,7 +141,7 @@
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-packaging-plugin</artifactId>
-          <version>${tycho.version}</version>
+          <version>${version.tycho}</version>
           <configuration>
             <format>yyyyMMdd-HHmm</format>
             <sourceReferences>
@@ -150,14 +152,14 @@
             <dependency>
               <groupId>org.eclipse.tycho.extras</groupId>
               <artifactId>tycho-sourceref-jgit</artifactId>
-              <version>${tycho.extras.version}</version>
+              <version>${version.tycho.extras}</version>
             </dependency>
           </dependencies>
         </plugin>
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-surefire-plugin</artifactId>
-          <version>${tycho.version}</version>
+          <version>${version.tycho}</version>
           <configuration>
             <useUIHarness>false</useUIHarness>
             <argLine>${tycho.test.jvmArgs}</argLine>
@@ -167,7 +169,6 @@
         </plugin>
         <!-- Do not generate a source jar - It conflicts with tycho-source-plugin -->
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
           <configuration>
             <skipSource>true</skipSource>
@@ -204,7 +205,7 @@
           <plugin>
             <groupId>org.eclipse.tycho</groupId>
             <artifactId>tycho-source-plugin</artifactId>
-            <version>${tycho.version}</version>
+            <version>${version.tycho}</version>
             <executions>
               <execution>
                 <id>attach-source</id>
@@ -217,7 +218,7 @@
           <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
-            <version>${jacoco.version}</version>
+            <version>${version.jacoco}</version>
             <executions>
               <execution>
                 <goals>
