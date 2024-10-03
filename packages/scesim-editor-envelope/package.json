@@ -30,6 +30,7 @@
     "@kie-tools-core/react-hooks": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
     "@kie-tools/boxed-expression-component": "workspace:*",
+    "@kie-tools/dmn-marshaller": "workspace:*",
     "@kie-tools/scesim-editor": "workspace:*",
     "@kie-tools/scesim-marshaller": "workspace:*",
     "@kie-tools/xml-parser-ts": "workspace:*",

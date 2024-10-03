@@ -9214,6 +9214,9 @@ importers:
       '@kie-tools/boxed-expression-component':
         specifier: workspace:*
         version: link:../boxed-expression-component
+      '@kie-tools/dmn-marshaller':
+        specifier: workspace:*
+        version: link:../dmn-marshaller
       '@kie-tools/scesim-editor':
         specifier: workspace:*
         version: link:../scesim-editor

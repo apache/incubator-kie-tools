@@ -89,6 +89,7 @@ enum TestScenarioFileStatus {
 /* Types */
 
 export type OnRequestExternalModelsAvailableToInclude = () => Promise<string[]>;
+export type OnRequestToResolvePath = (normalizedPosixPathRelativeToTheOpenFile: string) => string;
 export type OnSceSimModelChange = (model: SceSimModel) => void;
 
 export type OnRequestExternalModelByPath = (

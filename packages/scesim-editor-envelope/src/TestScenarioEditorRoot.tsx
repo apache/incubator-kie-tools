@@ -19,22 +19,11 @@
 
 import * as __path from "path";
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
 import * as TestScenarioEditor from "@kie-tools/scesim-editor/dist/TestScenarioEditor";
 //import { normalize, Normalized } from "@kie-tools/dmn-editor/dist/normalization/normalize";
-import { DMN_LATEST_VERSION, DmnLatestModel, DmnMarshaller, getDmnMarshaller } from "@kie-tools/dmn-marshaller";
+import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { ResourceContent, SearchType, WorkspaceChannelApi, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
-//import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
-import { domParser } from "@kie-tools/xml-parser-ts";
-//import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
-//import { XML2PMML } from "@kie-tools/pmml-editor-marshaller";
-//import { getPmmlNamespace } from "@kie-tools/dmn-editor/dist/pmml/pmml";
-//import { getNamespaceOfDmnImport } from "@kie-tools/dmn-editor/dist/includedModels/importNamespaces";
-import {
-  imperativePromiseHandle,
-  PromiseImperativeHandle,
-} from "@kie-tools-core/react-hooks/dist/useImperativePromiseHandler";
+import { SearchType, WorkspaceChannelApi, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -57,8 +46,8 @@ export type TestScenarioEditorRootProps = {
 
 export type TestScenarioEditorRootState = {
   error: Error | undefined;
-  externalModelsByNamespace: DmnEditor.ExternalModelsIndex;
-  externalModelsManagerDoneBootstraping: boolean;
+  //externalModelsByNamespace: DmnEditor.ExternalModelsIndex;
+  //externalModelsManagerDoneBootstraping: boolean;
   isReadOnly: boolean;
   keyboardShortcutsRegistred: boolean;
   keyboardShortcutsRegisterIds: number[];
@@ -69,7 +58,7 @@ export type TestScenarioEditorRootState = {
 };
 
 export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRootProps, TestScenarioEditorRootState> {
-  private readonly externalModelsManagerDoneBootstraping = imperativePromiseHandle<void>();
+  //private readonly externalModelsManagerDoneBootstraping = imperativePromiseHandle<void>();
 
   private readonly testScenarioEditorRef: React.RefObject<TestScenarioEditor.TestScenarioEditorRef>;
 
@@ -79,8 +68,8 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     this.testScenarioEditorRef = React.createRef();
     this.state = {
       error: undefined,
-      externalModelsByNamespace: {},
-      externalModelsManagerDoneBootstraping: false,
+      //externalModelsByNamespace: {},
+      //externalModelsManagerDoneBootstraping: false,
       isReadOnly: props.isReadOnly,
       keyboardShortcutsRegisterIds: [],
       keyboardShortcutsRegistred: false,
@@ -135,7 +124,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     });
 
     // Wait the external manager models to load.
-    await this.externalModelsManagerDoneBootstraping.promise;
+    //await this.externalModelsManagerDoneBootstraping.promise;
 
     // Set the valeus to render the DMN Editor.
     this.setState((prev) => {
@@ -146,7 +135,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
       ) {
         const newStack = savedStackPointer.slice(0, prev.pointer + 1);
         return {
-          externalModelsManagerDoneBootstraping: true,
+          //externalModelsManagerDoneBootstraping: true,
           isReadOnly: prev.isReadOnly,
           openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
           marshaller,
@@ -158,7 +147,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
       // Different file opened. Need to reset everything.
       else {
         return {
-          externalModelsManagerDoneBootstraping: true,
+          //externalModelsManagerDoneBootstraping: true,
           isReadOnly: prev.isReadOnly,
           marshaller,
           openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
@@ -187,10 +176,10 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     }
   }
 
-  //TODO
-  private setExternalModelsByNamespace = (externalModelsByNamespace: DmnEditor.ExternalModelsIndex) => {
-    this.setState((prev) => ({ ...prev, externalModelsByNamespace }));
-  };
+  //TODO A che serve?
+  // private setExternalModelsByNamespace = (externalModelsByNamespace: DmnEditor.ExternalModelsIndex) => {
+  //   this.setState((prev) => ({ ...prev, externalModelsByNamespace }));
+  // };
 
   private onModelChange: TestScenarioEditor.OnSceSimModelChange = (model) => {
     this.setState(
@@ -225,8 +214,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
       );
     };
 
-  //TODO
-  private onRequestToResolvePathRelativeToTheOpenFile: DmnEditor.OnRequestToResolvePath = (
+  private onRequestToResolvePathRelativeToTheOpenFile: TestScenarioEditor.OnRequestToResolvePath = (
     normalizedPosixPathRelativeToTheOpenFile
   ) => {
     const normalizedPosixPathRelativeToTheWorkspaceRoot = __path
@@ -455,29 +443,9 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
   public render() {
     return (
       <>
-        {this.state.error && <DmnMarshallerFallbackError error={this.state.error} />}
+        {this.state.error && <TestScenarioMarshallerFallbackError error={this.state.error} />}
         {this.model && (
           <>
-            {/*
-            <DmnEditor.DmnEditor
-              ref={this.testScenarioEditorRef}
-              originalVersion={this.state.marshaller?.originalVersion}
-              model={this.model}
-              externalModelsByNamespace={this.state.externalModelsByNamespace}
-              evaluationResults={[]}
-              validationMessages={[]}
-              externalContextName={""}
-              externalContextDescription={""}
-              issueTrackerHref={""}
-              isReadOnly={this.state.isReadOnly}
-              onModelChange={this.onModelChange}
-              onRequestExternalModelsAvailableToInclude={this.onRequestExternalModelsAvailableToInclude}
-              // (begin) All paths coming from inside the DmnEditor component are paths relative to the open file.
-              onRequestExternalModelByPath={this.onRequestExternalModelByPathsRelativeToTheOpenFile}
-              onRequestToJumpToPath={this.onOpenFileFromPathRelativeToTheOpenFile}
-              onRequestToResolvePath={this.onRequestToResolvePathRelativeToTheOpenFile}
-              // (end)
-            />  */}
             <TestScenarioEditor.TestScenarioEditor
               ref={this.testScenarioEditorRef}
               issueTrackerHref={""}
@@ -489,6 +457,8 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
                 this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
               }
             />
+            /
+            {/*
             <ExternalModelsManager
               workspaceRootAbsolutePosixPath={this.props.workspaceRootAbsolutePosixPath}
               thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot={
@@ -499,7 +469,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
               onRequestWorkspaceFilesList={this.props.onRequestWorkspaceFilesList}
               onRequestWorkspaceFileContent={this.props.onRequestWorkspaceFileContent}
               externalModelsManagerDoneBootstraping={this.externalModelsManagerDoneBootstraping}
-            />
+            />*/}
           </>
         )}
       </>
@@ -507,6 +477,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
   }
 }
 
+/*
 const NAMESPACES_EFFECT_SEPARATOR = " , ";
 
 function ExternalModelsManager({
@@ -661,9 +632,9 @@ function ExternalModelsManager({
   ]);
 
   return <></>;
-}
+} */
 
-function DmnMarshallerFallbackError({ error }: { error: Error }) {
+function TestScenarioMarshallerFallbackError({ error }: { error: Error }) {
   return (
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
       <EmptyState style={{ maxWidth: "1280px" }}>
