@@ -173,13 +173,31 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
     __PACKAGES_ROOT_PATHS.every((rootPath) => !path.startsWith(rootPath))
   );
 
-  const affectedPackageDirsInAllPartitions: Array<string> = await JSON.parse(
-    execSync(
-      `bash -c "turbo ls ${changedPackagesNames.map((packageName) => `--filter='...${packageName}'`).join(" ")} --output json"`
-    ).toString()
-  )
-    .packages.items.map((item: { path: string }) => item.path)
-    .map((pkgDir) => convertToPosixPathRelativeToRepoRoot(pkgDir));
+  // On Windows there's a 8191 character limit for commands in PowerShell.
+  // See https://learn.microsoft.com/en-us/troubleshoot/windows-client/shell-experience/command-line-string-limitation
+  // To circunvent this, we break the package list in chunks, run turbo ls, and then merge them all to a final list.
+  // Chunk size is defined as 50. This is an arbitrary value.
+  // If each package name has 100 characters, 50 of them is 5000 characters, making the final command less than 8191.
+  const changedPackagesNamesChunks: string[][] = [];
+  const chunkSize = 50;
+  for (let i = 0; i < changedPackagesNames.length; i += chunkSize) {
+    changedPackagesNamesChunks.push(
+      changedPackagesNames.slice(i, Math.min(i + chunkSize, changedPackagesNames.length - 1))
+    );
+  }
+
+  // Using a Set because it forces unique values, so no need to deduplicate.
+  const affectedPackageDirsInAllPartitionsSet = new Set<string>();
+  for (let packagesNamesChunk of changedPackagesNamesChunks) {
+    await JSON.parse(
+      execSync(
+        `bash -c "turbo ls ${packagesNamesChunk.map((packageName) => `-F '...${packageName}'`).join(" ")} --output json"`
+      ).toString()
+    ).packages.items.forEach((item: { path: string }) => {
+      affectedPackageDirsInAllPartitionsSet.add(convertToPosixPathRelativeToRepoRoot(item.path));
+    });
+  }
+  const affectedPackageDirsInAllPartitions = Array.from(affectedPackageDirsInAllPartitionsSet);
 
   return await Promise.all(
     partitionDefinitions.map(async (partition) => {
