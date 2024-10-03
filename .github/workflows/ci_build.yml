@@ -134,7 +134,7 @@ jobs:
           eval "pnpm ${{ steps.setup_build_mode.outputs.fullBuildPnpmFilterString }} --workspace-concurrency=1 build:prod"
 
       - name: "PARTIAL → Build upstream"
-        if: steps.setup_build_mode.outputs.mode == 'partial'
+        if: steps.setup_build_mode.outputs.mode == 'partial' && steps.setup_build_mode.outputs.upstreamPnpmFilterString != ""
         shell: bash
         env:
           KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os == 'Linux' }}
