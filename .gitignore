@@ -336,3 +336,7 @@ packages/python-venv/venv
 
 # devbox
 .devbox
+
+# turbo
+.turbo
+turbo.json
