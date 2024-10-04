@@ -251,17 +251,24 @@ func (r *SonataFlowPlatformReconciler) updateIfActiveClusterPlatformExists(ctx c
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *SonataFlowPlatformReconciler) SetupWithManager(mgr ctrlrun.Manager) error {
-	return ctrlrun.NewControllerManagedBy(mgr).
+	builder := ctrlrun.NewControllerManagedBy(mgr).
 		For(&operatorapi.SonataFlowPlatform{}).
 		Owns(&appsv1.Deployment{}).
 		Owns(&corev1.Service{}).
 		Owns(&corev1.ConfigMap{}).
-		Owns(&eventingv1.Trigger{}).
-		Owns(&sourcesv1.SinkBinding{}).
 		Watches(&operatorapi.SonataFlowPlatform{}, handler.EnqueueRequestsFromMapFunc(r.mapPlatformToPlatformRequests)).
-		Watches(&operatorapi.SonataFlowClusterPlatform{}, handler.EnqueueRequestsFromMapFunc(r.mapClusterPlatformToPlatformRequests)).
-		Watches(&eventingv1.Trigger{}, handler.EnqueueRequestsFromMapFunc(knative.MapTriggerToPlatformRequests)).
-		Complete(r)
+		Watches(&operatorapi.SonataFlowClusterPlatform{}, handler.EnqueueRequestsFromMapFunc(r.mapClusterPlatformToPlatformRequests))
+
+	knativeAvail, err := knative.GetKnativeAvailability(mgr.GetConfig())
+	if err != nil {
+		return err
+	}
+	if knativeAvail.Eventing {
+		builder = builder.Owns(&eventingv1.Trigger{}).
+			Owns(&sourcesv1.SinkBinding{}).
+			Watches(&eventingv1.Trigger{}, handler.EnqueueRequestsFromMapFunc(knative.MapTriggerToPlatformRequests))
+	}
+	return builder.Complete(r)
 }
 
 // if active clusterplatform object is changed, reconcile all SonataFlowPlatforms in the cluster.

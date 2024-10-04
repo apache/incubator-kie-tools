@@ -218,14 +218,11 @@ func buildEnqueueRequestsFromMapFunc(c client.Client, b *operatorapi.SonataFlowB
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *SonataFlowReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	return ctrl.NewControllerManagedBy(mgr).
+	builder := ctrl.NewControllerManagedBy(mgr).
 		For(&operatorapi.SonataFlow{}).
 		Owns(&appsv1.Deployment{}).
 		Owns(&corev1.Service{}).
 		Owns(&corev1.ConfigMap{}).
-		Owns(&servingv1.Service{}).
-		Owns(&eventingv1.Trigger{}).
-		Owns(&sourcesv1.SinkBinding{}).
 		Owns(&operatorapi.SonataFlowBuild{}).
 		Watches(&operatorapi.SonataFlowPlatform{}, handler.EnqueueRequestsFromMapFunc(func(c context.Context, a client.Object) []reconcile.Request {
 			plat, ok := a.(*operatorapi.SonataFlowPlatform)
@@ -242,7 +239,19 @@ func (r *SonataFlowReconciler) SetupWithManager(mgr ctrl.Manager) error {
 				return []reconcile.Request{}
 			}
 			return buildEnqueueRequestsFromMapFunc(mgr.GetClient(), build)
-		})).
-		Watches(&eventingv1.Trigger{}, handler.EnqueueRequestsFromMapFunc(knative.MapTriggerToPlatformRequests)).
-		Complete(r)
+		}))
+
+	knativeAvail, err := knative.GetKnativeAvailability(mgr.GetConfig())
+	if err != nil {
+		return err
+	}
+	if knativeAvail.Serving {
+		builder = builder.Owns(&servingv1.Service{})
+	}
+	if knativeAvail.Eventing {
+		builder = builder.Owns(&eventingv1.Trigger{}).
+			Owns(&sourcesv1.SinkBinding{}).
+			Watches(&eventingv1.Trigger{}, handler.EnqueueRequestsFromMapFunc(knative.MapTriggerToPlatformRequests))
+	}
+	return builder.Complete(r)
 }
