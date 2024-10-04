@@ -33,7 +33,8 @@
     "test": "rimraf dist-tests && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
-    "@kie-tools/xml-parser-ts": "workspace:*"
+    "@kie-tools/xml-parser-ts": "workspace:*",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -55,7 +56,6 @@
     "jest-when": "^3.6.0",
     "rimraf": "^3.0.2",
     "ts-jest": "^29.1.5",
-    "typescript": "^5.5.3",
-    "uuid": "^8.3.2"
+    "typescript": "^5.5.3"
   }
 }
