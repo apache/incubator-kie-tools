@@ -22,6 +22,7 @@ import {
   DMN15__tFunctionDefinition,
   DMN15__tLiteralExpression,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import {
   traverseExpressionsInExpressionHolders,
   traverseItemDefinitions,
@@ -31,7 +32,6 @@ import { buildFeelQName, parseFeelQName } from "../feel/parseFeelQName";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
 import { DMN15__tContext } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
-import { Normalized } from "../normalization/normalize";
 
 export function renameImport({
   definitions,

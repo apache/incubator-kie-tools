@@ -55,7 +55,7 @@ import {
   DMN15__tContextEntry,
   DMN15__tOutputClause,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { Normalized } from "../normalization/normalize";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 
 export function getDefaultBoxedExpression({
   logicType,

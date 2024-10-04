@@ -18,8 +18,8 @@
  */
 
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
-import { Normalized } from "../normalization/normalize";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { getXmlNamespaceDeclarationName } from "@kie-tools/dmn-marshaller/dist/xml/xmlNamespaceDeclarations";
 import { computeDiagramData } from "../store/computed/computeDiagramData";
 import { deleteNode, NodeDeletionMode } from "./deleteNode";
 import { nodeNatures } from "./NodeNature";

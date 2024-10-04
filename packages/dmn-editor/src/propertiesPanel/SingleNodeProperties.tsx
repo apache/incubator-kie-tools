@@ -41,6 +41,7 @@ import {
   DMN15__tKnowledgeSource,
   DMN15__tTextAnnotation,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
 import { NodeIcon } from "../icons/Icons";
 import { GroupProperties } from "./GroupProperties";
@@ -50,7 +51,6 @@ import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import { UnknownProperties } from "./UnknownProperties";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import "./SingleNodeProperties.css";
-import { Normalized } from "../normalization/normalize";
 
 export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();

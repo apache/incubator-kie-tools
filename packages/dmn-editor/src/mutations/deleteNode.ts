@@ -18,19 +18,18 @@
  */
 
 import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { getNewDmnIdRandomizer } from "@kie-tools/dmn-marshaller/dist/idRandomizer/dmnIdRandomizer";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { buildXmlHref, xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml";
 import { NodeNature } from "./NodeNature";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { XmlQName, buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
-import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
-import { buildXmlHref } from "../xml/xmlHrefs";
 import { Unpacked } from "../tsExt/tsExt";
 import { DrgEdge } from "../diagram/graph/graph";
 import { EdgeDeletionMode, deleteEdge } from "./deleteEdge";
 import { Computed } from "../store/Store";
 import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeContainingDecisionServiceHrefsByDecisionHrefs.ts";
-import { xmlHrefToQName } from "../xml/xmlHrefToQName";
-import { Normalized } from "../normalization/normalize";
 import { ExternalDmnsIndex, ExternalModelsIndex } from "../DmnEditor";
 
 export enum NodeDeletionMode {

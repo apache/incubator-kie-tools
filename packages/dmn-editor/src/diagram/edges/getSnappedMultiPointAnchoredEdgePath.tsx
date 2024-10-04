@@ -17,12 +17,13 @@
  * under the License.
  */
 
+import * as RF from "reactflow";
 import {
   DC__Point,
   DMNDI15__DMNEdge,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import * as RF from "reactflow";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { snapPoint } from "../SnapGrid";
 import { PositionalNodeHandleId } from "../connections/PositionalNodeHandles";
@@ -31,7 +32,6 @@ import { getBoundsCenterPoint } from "../maths/Maths";
 import { Bounds, getDiscretelyAutoPositionedEdgeParams } from "../maths/Maths";
 import { AutoPositionedEdgeMarker } from "./AutoPositionedEdgeMarker";
 import { SnapGrid } from "../../store/Store";
-import { Normalized } from "../../normalization/normalize";
 
 export function getSnappedMultiPointAnchoredEdgePath({
   snapGrid,

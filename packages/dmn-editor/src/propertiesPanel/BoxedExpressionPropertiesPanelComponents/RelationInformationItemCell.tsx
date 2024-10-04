@@ -21,10 +21,10 @@ import * as React from "react";
 import { useMemo } from "react";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { InformationItemCell } from "./InformationItemCell";
-import { Normalized } from "../../normalization/normalize";
 
 export function RelationInformationItemCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;

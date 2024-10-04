@@ -17,10 +17,11 @@
  * under the License.
  */
 
-import { DMNDI15__DMNEdge, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import * as React from "react";
 import { useRef } from "react";
 import * as RF from "reactflow";
+import { DMNDI15__DMNEdge, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { DrgEdge } from "../graph/graph";
 import { DEFAULT_INTRACTION_WIDTH } from "../maths/DmnMaths";
 import { propsHaveSameValuesDeep } from "../memoization/memoization";
@@ -29,7 +30,6 @@ import { PotentialWaypoint, Waypoints } from "./Waypoints";
 import { useAlwaysVisibleEdgeUpdatersAtNodeBorders } from "./useAlwaysVisibleEdgeUpdatersAtNodeBorders";
 import { useKieEdgePath } from "./useKieEdgePath";
 import { usePotentialWaypointControls } from "./usePotentialWaypointControls";
-import { Normalized } from "../../normalization/normalize";
 import { useSettings } from "../../settings/DmnEditorSettingsContext";
 
 export type DmnDiagramEdgeData = {

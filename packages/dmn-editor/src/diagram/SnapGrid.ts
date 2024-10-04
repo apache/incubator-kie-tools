@@ -23,8 +23,8 @@ import {
   DC__Point,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { SnapGrid } from "../store/Store";
-import { Normalized } from "../normalization/normalize";
 
 export function snapShapePosition(snapGrid: SnapGrid, shape: Normalized<DMNDI15__DMNShape>) {
   return snapBoundsPosition(snapGrid, shape["dc:Bounds"]);

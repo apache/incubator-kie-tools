@@ -20,6 +20,7 @@
 import * as React from "react";
 import { useMemo } from "react";
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Unpacked } from "../tsExt/tsExt";
 import { TypeRefLabel } from "../dataTypes/TypeRefLabel";
 import { NodeIcon } from "../icons/Icons";
@@ -30,7 +31,6 @@ import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-co
 import { useDmnEditorStore } from "../store/StoreContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
-import { Normalized } from "../normalization/normalize";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 

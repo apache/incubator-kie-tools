@@ -20,6 +20,7 @@
 import * as React from "react";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert/Alert";
 import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore } from "../store/StoreContext";
 import { useMemo } from "react";
 import { Unpacked } from "../tsExt/tsExt";
@@ -28,7 +29,6 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { useDmnEditor } from "../DmnEditorContext";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
-import { Normalized } from "../normalization/normalize";
 
 export function UnknownProperties(props: { shape: Normalized<DMNDI15__DMNShape>; dmnElementRefQName: XmlQName }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);

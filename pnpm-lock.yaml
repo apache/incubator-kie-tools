@@ -3896,6 +3896,9 @@ importers:
       '@types/react':
         specifier: ^17.0.6
         version: 17.0.21
+      '@types/uuid':
+        specifier: ^8.3.0
+        version: 8.3.0
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.5.2)(typescript@5.5.3))
@@ -3914,6 +3917,9 @@ importers:
       typescript:
         specifier: ^5.5.3
         version: 5.5.3
+      uuid:
+        specifier: ^8.3.2
+        version: 8.3.2
 
   packages/dmn-marshaller-backend-compatibility-tester:
     dependencies:
