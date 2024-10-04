@@ -25,10 +25,6 @@ export function computeTestScenarioAlert(
 ): TestScenarioAlert {
   return {
     enabled: true,
-    // message: testScenarioType === TestScenarioType.DMN
-    // ? i18n.alerts.dmnDataRetrievedFromScesim
-    // : i18n.alerts.ruleDataRetrievedFromScesim,
-    message: "asd",
     variant: dataObjects.length > 0 && testScenarioType === TestScenarioType.DMN ? "warning" : "danger",
   };
 }
