@@ -152,82 +152,312 @@
       <profile name="Annotation profile for KIE Tools :: Dashbuilder" enabled="true">
         <sourceOutputDir name="../generated-sources/annotations" />
         <sourceTestOutputDir name="../generated-test-sources/test-annotations" />
-        <module name="dashbuilder-renderer-echarts.test" />
         <module name="uberfire-workbench-client.test" />
-        <module name="uberfire-widgets-core-client (1) (org.uberfire).main" />
-        <module name="dashbuilder-displayer-editor.main" />
-        <module name="dashbuilder-runtime-shared.main" />
-        <module name="dashbuilder-displayer-client.main" />
-        <module name="uberfire-runtime-plugins-client.test" />
-        <module name="kie-soup-dataset-core.test" />
-        <module name="dashbuilder-renderer-default.test" />
-        <module name="uberfire-api (1) (org.uberfire).main" />
-        <module name="uberfire-workbench-client-views-patternfly (1) (org.uberfire).test" />
-        <module name="uberfire-layout-editor-client (1) (org.uberfire).test" />
-        <module name="uberfire-widgets-table (1) (org.uberfire).main" />
-        <module name="uberfire-widgets-core-client (1) (org.uberfire).test" />
-        <module name="dashbuilder-dataset-client.test" />
         <module name="uberfire-api.main" />
-        <module name="dashbuilder-common-client.main" />
-        <module name="dashbuilder-displayer-editor.test" />
-        <module name="dashbuilder-runtime-shared.test" />
-        <module name="dashbuilder-navigation-api.main" />
-        <module name="dashbuilder-renderer-echarts.main" />
-        <module name="uberfire-client-api (1) (org.uberfire).main" />
-        <module name="kie-soup-dataset-api.main" />
-        <module name="uberfire-api (1) (org.uberfire).test" />
-        <module name="uberfire-layout-editor-client (1) (org.uberfire).main" />
-        <module name="kie-soup-dataset-external.test" />
-        <module name="dashbuilder-services-api.main" />
-        <module name="uberfire-layout-editor-api (1) (org.uberfire).test" />
-        <module name="uberfire-client-all.test" />
-        <module name="uberfire-workbench-client (1) (org.uberfire).main" />
-        <module name="dashbuilder-navigation-client.main" />
-        <module name="uberfire-runtime-plugins-client.main" />
-        <module name="uberfire-workbench-client-views-patternfly (1) (org.uberfire).main" />
-        <module name="dashbuilder-renderer-c3.test" />
-        <module name="uberfire-workbench-client (1) (org.uberfire).test" />
-        <module name="uberfire-widgets-commons (1) (org.uberfire).main" />
-        <module name="uberfire-commons.test" />
-        <module name="uberfire-client-api (1) (org.uberfire).test" />
         <module name="uberfire-api.test" />
-        <module name="dashbuilder-common-client.test" />
-        <module name="kie-soup-dataset-api.test" />
-        <module name="dashbuilder-displayer-api.test" />
-        <module name="kie-soup-dataset-core.main" />
-        <module name="uberfire-client-all.main" />
         <module name="uberfire-client-api.test" />
-        <module name="kie-soup-dataset-external.main" />
-        <module name="kie-soup-dataset-shared.test" />
-        <module name="dashbuilder-services-api.test" />
-        <module name="uberfire-testing-utils.test" />
-        <module name="dashbuilder-navigation-client.test" />
-        <module name="uberfire-layout-editor-api (1) (org.uberfire).main" />
-        <module name="uberfire-testing-utils.main" />
-        <module name="dashbuilder-renderer-default.main" />
-        <module name="uberfire-widgets-table (1) (org.uberfire).test" />
         <module name="uberfire-client-api.main" />
-        <module name="uberfire-commons.main" />
-        <module name="kie-soup-json.test" />
-        <module name="dashbuilder-navigation-api.test" />
-        <module name="dashbuilder-displayer-api.main" />
         <module name="uberfire-workbench-client.main" />
-        <module name="kie-soup-json.main" />
-        <module name="dashbuilder-renderer-c3.main" />
+      </profile>
+      <profile name="Annotation profile for uberfire-api (1) (org.uberfire).main" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-api/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-api/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-api (1) (org.uberfire).main" />
+      </profile>
+      <profile name="Annotation profile for uberfire-api (1) (org.uberfire).test" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-api/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-api/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-api (1) (org.uberfire).test" />
+      </profile>
+      <profile name="Annotation profile for uberfire-client-all.main" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-client-all/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-client-all/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-client-all.main" />
+      </profile>
+      <profile name="Annotation profile for uberfire-client-all.test" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-client-all/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-client-all/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-client-all.test" />
+      </profile>
+      <profile name="Annotation profile for uberfire-client-api (1) (org.uberfire).main" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-client-api/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-client-api/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-client-api (1) (org.uberfire).main" />
+      </profile>
+      <profile name="Annotation profile for uberfire-client-api (1) (org.uberfire).test" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-client-api/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-client-api/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-client-api (1) (org.uberfire).test" />
+      </profile>
+      <profile name="Annotation profile for uberfire-layout-editor-api (1) (org.uberfire).main" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-layout-editor/uberfire-layout-editor-api/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-layout-editor/uberfire-layout-editor-api/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-layout-editor-api (1) (org.uberfire).main" />
+      </profile>
+      <profile name="Annotation profile for uberfire-layout-editor-api (1) (org.uberfire).test" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-layout-editor/uberfire-layout-editor-api/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-layout-editor/uberfire-layout-editor-api/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-layout-editor-api (1) (org.uberfire).test" />
+      </profile>
+      <profile name="Annotation profile for uberfire-layout-editor-client (1) (org.uberfire).main" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-layout-editor/uberfire-layout-editor-client/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-layout-editor/uberfire-layout-editor-client/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-layout-editor-client (1) (org.uberfire).main" />
+      </profile>
+      <profile name="Annotation profile for uberfire-layout-editor-client (1) (org.uberfire).test" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-layout-editor/uberfire-layout-editor-client/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-layout-editor/uberfire-layout-editor-client/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-layout-editor-client (1) (org.uberfire).test" />
+      </profile>
+      <profile name="Annotation profile for uberfire-runtime-plugins-client.main" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-runtime-plugins/uberfire-runtime-plugins-client/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-runtime-plugins/uberfire-runtime-plugins-client/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-runtime-plugins-client.main" />
+      </profile>
+      <profile name="Annotation profile for uberfire-runtime-plugins-client.test" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-runtime-plugins/uberfire-runtime-plugins-client/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-runtime-plugins/uberfire-runtime-plugins-client/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-runtime-plugins-client.test" />
+      </profile>
+      <profile name="Annotation profile for uberfire-widgets-commons (1) (org.uberfire).main" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-widgets/uberfire-widgets-commons/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-widgets/uberfire-widgets-commons/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-widgets-commons (1) (org.uberfire).main" />
+      </profile>
+      <profile name="Annotation profile for uberfire-widgets-commons (1) (org.uberfire).test" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-widgets/uberfire-widgets-commons/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-widgets/uberfire-widgets-commons/target/generated-test-sources/test-annotations" />
         <module name="uberfire-widgets-commons (1) (org.uberfire).test" />
-        <module name="dashbuilder-displayer-client.test" />
+      </profile>
+      <profile name="Annotation profile for uberfire-widgets-core-client (1) (org.uberfire).main" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-widgets/uberfire-widgets-core/uberfire-widgets-core-client/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-widgets/uberfire-widgets-core/uberfire-widgets-core-client/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-widgets-core-client (1) (org.uberfire).main" />
+      </profile>
+      <profile name="Annotation profile for uberfire-widgets-core-client (1) (org.uberfire).test" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-widgets/uberfire-widgets-core/uberfire-widgets-core-client/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-widgets/uberfire-widgets-core/uberfire-widgets-core-client/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-widgets-core-client (1) (org.uberfire).test" />
+      </profile>
+      <profile name="Annotation profile for uberfire-widgets-table (1) (org.uberfire).main" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-widgets/uberfire-widgets-table/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-widgets/uberfire-widgets-table/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-widgets-table (1) (org.uberfire).main" />
+      </profile>
+      <profile name="Annotation profile for uberfire-widgets-table (1) (org.uberfire).test" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-widgets/uberfire-widgets-table/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-extensions/uberfire-widgets/uberfire-widgets-table/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-widgets-table (1) (org.uberfire).test" />
+      </profile>
+      <profile name="Annotation profile for uberfire-testing-utils.main" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-testing-utils/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-testing-utils/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-testing-utils.main" />
+      </profile>
+      <profile name="Annotation profile for uberfire-testing-utils.test" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-testing-utils/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-testing-utils/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-testing-utils.test" />
+      </profile>
+      <profile name="Annotation profile for uberfire-workbench-client (1) (org.uberfire).main" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-workbench/uberfire-workbench-client/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-workbench/uberfire-workbench-client/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-workbench-client (1) (org.uberfire).main" />
+      </profile>
+      <profile name="Annotation profile for uberfire-workbench-client (1) (org.uberfire).test" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-workbench/uberfire-workbench-client/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-workbench/uberfire-workbench-client/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-workbench-client (1) (org.uberfire).test" />
+      </profile>
+      <profile name="Annotation profile for uberfire-workbench-client-views-patternfly (1) (org.uberfire).main" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-workbench/uberfire-workbench-client-views-patternfly/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-workbench/uberfire-workbench-client-views-patternfly/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-workbench-client-views-patternfly (1) (org.uberfire).main" />
+      </profile>
+      <profile name="Annotation profile for uberfire-workbench-client-views-patternfly (1) (org.uberfire).test" enabled="true">
+        <sourceOutputDir name="../../../../../appformer/uberfire-workbench/uberfire-workbench-client-views-patternfly/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../appformer/uberfire-workbench/uberfire-workbench-client-views-patternfly/target/generated-test-sources/test-annotations" />
+        <module name="uberfire-workbench-client-views-patternfly (1) (org.uberfire).test" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-common-client.main" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-client/dashbuilder-common-client/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-client/dashbuilder-common-client/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-common-client.main" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-common-client.test" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-client/dashbuilder-common-client/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-client/dashbuilder-common-client/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-common-client.test" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-dataset-client.main" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-client/dashbuilder-dataset-client/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-client/dashbuilder-dataset-client/target/generated-test-sources/test-annotations" />
         <module name="dashbuilder-dataset-client.main" />
-        <module name="kie-soup-dataset-shared.main" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-dataset-client.test" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-client/dashbuilder-dataset-client/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-client/dashbuilder-dataset-client/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-dataset-client.test" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-displayer-client.main" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-client/dashbuilder-displayer-client/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-client/dashbuilder-displayer-client/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-displayer-client.main" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-displayer-client.test" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-client/dashbuilder-displayer-client/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-client/dashbuilder-displayer-client/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-displayer-client.test" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-displayer-editor.main" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-client/dashbuilder-displayer-editor/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-client/dashbuilder-displayer-editor/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-displayer-editor.main" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-displayer-editor.test" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-client/dashbuilder-displayer-editor/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-client/dashbuilder-displayer-editor/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-displayer-editor.test" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-navigation-client.main" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-client/dashbuilder-navigation-client/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-client/dashbuilder-navigation-client/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-navigation-client.main" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-navigation-client.test" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-client/dashbuilder-navigation-client/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-client/dashbuilder-navigation-client/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-navigation-client.test" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-renderer-c3.main" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-client/dashbuilder-renderers/dashbuilder-renderer-c3/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-client/dashbuilder-renderers/dashbuilder-renderer-c3/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-renderer-c3.main" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-renderer-c3.test" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-client/dashbuilder-renderers/dashbuilder-renderer-c3/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-client/dashbuilder-renderers/dashbuilder-renderer-c3/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-renderer-c3.test" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-renderer-default.main" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-client/dashbuilder-renderers/dashbuilder-renderer-default/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-client/dashbuilder-renderers/dashbuilder-renderer-default/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-renderer-default.main" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-renderer-default.test" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-client/dashbuilder-renderers/dashbuilder-renderer-default/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-client/dashbuilder-renderers/dashbuilder-renderer-default/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-renderer-default.test" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-renderer-echarts.main" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-client/dashbuilder-renderers/dashbuilder-renderer-echarts/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-client/dashbuilder-renderers/dashbuilder-renderer-echarts/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-renderer-echarts.main" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-renderer-echarts.test" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-client/dashbuilder-renderers/dashbuilder-renderer-echarts/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-client/dashbuilder-renderers/dashbuilder-renderer-echarts/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-renderer-echarts.test" />
       </profile>
       <profile name="Annotation profile for dashbuilder-runtime-client.main" enabled="true">
         <sourceOutputDir name="../../../../../target/generated-sources/annotations" />
-        <sourceTestOutputDir name="../generated-test-sources/test-annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-runtime-parent/dashbuilder-runtime-client/target/generated-test-sources/test-annotations" />
         <module name="dashbuilder-runtime-client.main" />
       </profile>
       <profile name="Annotation profile for dashbuilder-runtime-client.test" enabled="true">
         <sourceOutputDir name="../../../../../target/generated-sources/annotations" />
-        <sourceTestOutputDir name="../generated-test-sources/test-annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-runtime-parent/dashbuilder-runtime-client/target/generated-test-sources/test-annotations" />
         <module name="dashbuilder-runtime-client.test" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-runtime-shared.main" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-runtime-parent/dashbuilder-runtime-shared/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-runtime-parent/dashbuilder-runtime-shared/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-runtime-shared.main" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-runtime-shared.test" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-runtime-parent/dashbuilder-runtime-shared/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-runtime-parent/dashbuilder-runtime-shared/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-runtime-shared.test" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-displayer-api.main" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-shared/dashbuilder-displayer-api/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-shared/dashbuilder-displayer-api/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-displayer-api.main" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-displayer-api.test" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-shared/dashbuilder-displayer-api/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-shared/dashbuilder-displayer-api/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-displayer-api.test" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-navigation-api.main" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-shared/dashbuilder-navigation-api/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-shared/dashbuilder-navigation-api/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-navigation-api.main" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-navigation-api.test" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-shared/dashbuilder-navigation-api/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-shared/dashbuilder-navigation-api/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-navigation-api.test" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-services-api.main" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-shared/dashbuilder-services-api/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-shared/dashbuilder-services-api/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-services-api.main" />
+      </profile>
+      <profile name="Annotation profile for dashbuilder-services-api.test" enabled="true">
+        <sourceOutputDir name="../../../../../dashbuilder-shared/dashbuilder-services-api/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../dashbuilder-shared/dashbuilder-services-api/target/generated-test-sources/test-annotations" />
+        <module name="dashbuilder-services-api.test" />
+      </profile>
+      <profile name="Annotation profile for kie-soup-dataset-api.main" enabled="true">
+        <sourceOutputDir name="../../../../../kie-soup-dataset/kie-soup-dataset-api/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../kie-soup-dataset/kie-soup-dataset-api/target/generated-test-sources/test-annotations" />
+        <module name="kie-soup-dataset-api.main" />
+      </profile>
+      <profile name="Annotation profile for kie-soup-dataset-api.test" enabled="true">
+        <sourceOutputDir name="../../../../../kie-soup-dataset/kie-soup-dataset-api/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../kie-soup-dataset/kie-soup-dataset-api/target/generated-test-sources/test-annotations" />
+        <module name="kie-soup-dataset-api.test" />
+      </profile>
+      <profile name="Annotation profile for kie-soup-dataset-core.main" enabled="true">
+        <sourceOutputDir name="../../../../../kie-soup-dataset/kie-soup-dataset-core/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../kie-soup-dataset/kie-soup-dataset-core/target/generated-test-sources/test-annotations" />
+        <module name="kie-soup-dataset-core.main" />
+      </profile>
+      <profile name="Annotation profile for kie-soup-dataset-core.test" enabled="true">
+        <sourceOutputDir name="../../../../../kie-soup-dataset/kie-soup-dataset-core/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../kie-soup-dataset/kie-soup-dataset-core/target/generated-test-sources/test-annotations" />
+        <module name="kie-soup-dataset-core.test" />
+      </profile>
+      <profile name="Annotation profile for kie-soup-dataset-external.main" enabled="true">
+        <sourceOutputDir name="../../../../../kie-soup-dataset/kie-soup-dataset-external/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../kie-soup-dataset/kie-soup-dataset-external/target/generated-test-sources/test-annotations" />
+        <module name="kie-soup-dataset-external.main" />
+      </profile>
+      <profile name="Annotation profile for kie-soup-dataset-external.test" enabled="true">
+        <sourceOutputDir name="../../../../../kie-soup-dataset/kie-soup-dataset-external/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../kie-soup-dataset/kie-soup-dataset-external/target/generated-test-sources/test-annotations" />
+        <module name="kie-soup-dataset-external.test" />
+      </profile>
+      <profile name="Annotation profile for kie-soup-dataset-shared.main" enabled="true">
+        <sourceOutputDir name="../../../../../kie-soup-dataset/kie-soup-dataset-shared/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../kie-soup-dataset/kie-soup-dataset-shared/target/generated-test-sources/test-annotations" />
+        <module name="kie-soup-dataset-shared.main" />
+      </profile>
+      <profile name="Annotation profile for kie-soup-dataset-shared.test" enabled="true">
+        <sourceOutputDir name="../../../../../kie-soup-dataset/kie-soup-dataset-shared/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../kie-soup-dataset/kie-soup-dataset-shared/target/generated-test-sources/test-annotations" />
+        <module name="kie-soup-dataset-shared.test" />
+      </profile>
+      <profile name="Annotation profile for kie-soup-json.main" enabled="true">
+        <sourceOutputDir name="../../../../../kie-soup-dataset/kie-soup-json/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../kie-soup-dataset/kie-soup-json/target/generated-test-sources/test-annotations" />
+        <module name="kie-soup-json.main" />
+      </profile>
+      <profile name="Annotation profile for kie-soup-json.test" enabled="true">
+        <sourceOutputDir name="../../../../../kie-soup-dataset/kie-soup-json/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../../../../kie-soup-dataset/kie-soup-json/target/generated-test-sources/test-annotations" />
+        <module name="kie-soup-json.test" />
       </profile>
       <profile name="Annotation profile for KIE Tools :: SonataFlow Quarkus Dev UI Extension" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -357,6 +587,11 @@
         <module name="jbpm-quarkus-devui" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="uberfire-commons" target="11" />
+      <module name="uberfire-commons.main" target="11" />
+      <module name="uberfire-commons.test" target="23" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

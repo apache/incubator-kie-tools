@@ -231,9 +231,11 @@
         <version>${version.org.iq80.snappy}</version>
       </dependency>
       <dependency>
-        <!-- Transitively imported by io.quarkus:quarkus-resteasy-multipart-deployment
-                 Overriding it to fix CVE-2024-21742
-                 Can be removed once the parent dependency updates it to a 0.8.11+ version -->
+        <!--
+          Transitively imported by io.quarkus:quarkus-resteasy-multipart-deployment
+          Overriding it to fix CVE-2024-21742
+          Can be removed once the parent dependency updates it to a 0.8.11+ version
+        -->
         <groupId>org.apache.james</groupId>
         <artifactId>apache-mime4j-core</artifactId>
         <version>${version.org.apache.mime4j}</version>
@@ -274,12 +276,11 @@
           <configuration>
             <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
             <!--
-                          This configuration overrides the list of issues registered in the plugin to enable the `maven-flatten-plugin`
-                          TODO: remove as a part of: https://github.com/apache/incubator-kie-issues/issues/1371
-                        -->
-            <pluginIssues>
-                            ${session.executionRootDirectory}/node_modules/@kie-tools/maven-base/not-reproducible-plugins.properties
-                        </pluginIssues>
+              This configuration overrides the list of issues registered in the plugin to enable the `maven-flatten-plugin`
+              TODO: remove as a part of: https://github.com/apache/incubator-kie-issues/issues/1371
+            -->
+            <pluginIssues
+            >${session.executionRootDirectory}/node_modules/@kie-tools/maven-base/not-reproducible-plugins.properties</pluginIssues>
           </configuration>
         </plugin>
         <plugin>
@@ -360,10 +361,10 @@
     </pluginManagement>
 
     <plugins>
-      <!-- Necessary for CI friendly versions -->
-      <!-- See https://maven.apache.org/maven-ci-friendly.html -->
-      <!-- Won't be necessary on Maven 4. -->
       <plugin>
+        <!-- Necessary for CI friendly versions -->
+        <!-- See https://maven.apache.org/maven-ci-friendly.html -->
+        <!-- Won't be necessary on Maven 4. -->
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
         <configuration>
@@ -387,10 +388,10 @@
           </execution>
         </executions>
       </plugin>
-      <!--  -->
-      <!-- Good practice to always include sources on releases -->
-      <!--  -->
       <plugin>
+        <!--  -->
+        <!-- Good practice to always include sources on releases -->
+        <!--  -->
         <artifactId>maven-source-plugin</artifactId>
         <executions>
           <execution>
@@ -416,14 +417,15 @@
       <!-- TODO: Add explanation -->
       <!--  -->
       <id>use-maven-repo-local-tail</id>
-      <activation>
-        <property>
-          <!-- This makes this profile included even if other profiles are explicitly declared. -->
-          <!-- To disable this profile, please use `-P-use-maven-repo-local-tail` or `-P!use-maven-repo-local-tail` -->
-          <name>kieTools.do-not-use-this-property.ignoreMavenRepoLocalTail</name>
-          <value>!true</value>
-        </property>
-      </activation>
+      <!--      TEMPORARILY DISABLING MAVEN REPO LOCAL TAIL -->
+      <!--      <activation>-->
+      <!--        <property>-->
+      <!--          &lt;!&ndash; This makes this profile included even if other profiles are explicitly declared. &ndash;&gt;-->
+      <!--          &lt;!&ndash; To disable this profile, please use `-P-use-maven-repo-local-tail` or `-P!use-maven-repo-local-tail` &ndash;&gt;-->
+      <!--          <name>kieTools.do-not-use-this-property.ignoreMavenRepoLocalTail</name>-->
+      <!--          <value>!true</value>-->
+      <!--        </property>-->
+      <!--      </activation>-->
       <build>
         <pluginManagement>
           <plugins>
@@ -526,7 +528,7 @@
                 <goals>
                   <goal>check-buildplan</goal>
                 </goals>
-                <!-- 
+                <!--
                   The execution's configuration is part of the pluginManagement.
                   This piece here only makes sure the execution is enabled (by specifying a phase)
                   for builds with the 'reproducible' profile enabled.

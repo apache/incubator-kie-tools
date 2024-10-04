@@ -167,10 +167,10 @@
         </dependency>
       </dependencies>
     </profile>
-    <!--  -->
-    <!-- See `@kie-tools/maven-base` pom.xml for full details on this profile. -->
-    <!--  -->
     <profile>
+      <!--  -->
+      <!-- See `@kie-tools/maven-base` pom.xml for full details on this profile. -->
+      <!--  -->
       <id>use-maven-repo-local-tail</id>
       <activation>
         <property>
