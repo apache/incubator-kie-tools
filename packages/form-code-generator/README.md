@@ -21,7 +21,7 @@ This library is used to generate the form code based on a schema. It uses differ
 
 ## How it works?
 
-This library provides types and interfaces to be used by themes. The `generateFormCode` receives a list of schemas where the theme will be applied. The generated code or error are returned to the caller.
+This library provides types and interfaces to be used by themes. The `generateFormCode` function receives a list of schemas where the theme will be applied. The generated code or error are returned to the caller.
 
 ## Usage
 
@@ -34,7 +34,6 @@ import { FormCodeGeneratorTheme } from "@kie-tools/form-code-generator/dist/type
 const formCode = generateFormCode({
   formSchemas: [
     {
-      theme: "my theme",        // Theme name
       formSchema: {
         name: "my form name",   // Form name
         schema: {},             // My form schema. The theme determines which kind of schema will be supported.
@@ -42,7 +41,6 @@ const formCode = generateFormCode({
     },
   ],
   formCodeGeneratorTheme: {
-    theme: "my theme",
     generate: ({ name, schema }) => { ... };
   },
 });
@@ -59,7 +57,6 @@ import { patternflyFormCodeGeneratorTheme } from "@kie-tools/form-code-generator
 const formsCode = generateFormCode({
   formSchemas: [
     {
-      theme: "patternfly", // Theme name
       formSchema: {
         name: "my patternfly form", // Form name
         schema: {}, // My form JSON Schema.

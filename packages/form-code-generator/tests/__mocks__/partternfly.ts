@@ -19,9 +19,7 @@
 
 import { FormCodeGeneratorTheme, FormSchema } from "../../dist/types";
 
-export const dummyPatternflyTheme: FormCodeGeneratorTheme<"tsx", "patternfly"> = {
-  theme: "patternfly",
-
+export const dummyPatternflyTheme: FormCodeGeneratorTheme<"tsx"> = {
   generate({ schema, name }: FormSchema) {
     return {
       id: name,

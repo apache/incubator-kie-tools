@@ -21,21 +21,19 @@ import { FormCodeGeneratorTheme, FormSchema, FormAsset, FormCodeGeneration } fro
 
 export interface FormCodeGenerator<
   FormThemeFileExt extends string,
-  FormThemeName extends string,
   CustomFormAsset extends FormAsset<FormThemeFileExt>,
 > {
-  formCodeGeneratorTheme: FormCodeGeneratorTheme<FormThemeFileExt, FormThemeName, CustomFormAsset>;
+  formCodeGeneratorTheme: FormCodeGeneratorTheme<FormThemeFileExt, CustomFormAsset>;
   formSchemas: FormSchema[];
 }
 
-export function generateFormCode<
-  FormThemeFileExt extends string,
-  FormThemeName extends string,
-  CustomFormAsset extends FormAsset<FormThemeFileExt>,
->({
+/**
+ * This function receives a theme to be interated over a list of schemas, generating the form code.
+ */
+export function generateFormCode<FormThemeFileExt extends string, CustomFormAsset extends FormAsset<FormThemeFileExt>>({
   formCodeGeneratorTheme: formGeneratorTheme,
   formSchemas,
-}: FormCodeGenerator<FormThemeFileExt, FormThemeName, CustomFormAsset>) {
+}: FormCodeGenerator<FormThemeFileExt, CustomFormAsset>) {
   return formSchemas.reduce((generatedForms, formSchema) => {
     try {
       generatedForms.push({ formAsset: formGeneratorTheme.generate(formSchema), formError: undefined });

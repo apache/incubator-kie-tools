@@ -19,30 +19,22 @@
 
 import { FormCodeGeneratorTheme, FormAsset } from "@kie-tools/form-code-generator/dist/types";
 import { renderForm } from "@kie-tools/form-code-generator-bootstrap4-theme/dist";
+import {
+  BOOTSTRAP4_CSS_URL,
+  BOOTSTRAP4_FILE_EXT,
+  BOOTSTRAP4_JS_URL,
+  Bootstrap4FileExt,
+  JQUERY_URL,
+} from "@kie-tools/form-code-generator-bootstrap4-theme/dist/theme";
 import unescape from "lodash/unescape";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { getUniformsSchema } from "./getUniformsSchema";
 import { inputSanitizationUtil } from "./inputSanitizationUtil";
 import { JbpmFormAssetBase } from "./types";
 
-export const BOOTSTRAP4_CSS_URL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css";
-export const BOOTSTRAP4_JS_URL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js";
-export const JQUERY_URL = "https://code.jquery.com/jquery-3.2.1.slim.min.js";
-
-const BOOTSTRAP4_THEME_NAME = "bootstrap";
-const BOOTSTRAP4_FILE_EXT = "html";
-
-export type Bootstrap4ThemeName = typeof BOOTSTRAP4_THEME_NAME;
-export type Bootstrap4FileExt = typeof BOOTSTRAP4_FILE_EXT;
-
 export interface Bootstrap4FormAsset extends FormAsset<Bootstrap4FileExt>, JbpmFormAssetBase {}
 
-export const jbpmBootstrap4FormCodeGeneratorTheme: FormCodeGeneratorTheme<
-  Bootstrap4FileExt,
-  Bootstrap4ThemeName,
-  Bootstrap4FormAsset
-> = {
-  theme: BOOTSTRAP4_THEME_NAME,
+export const jbpmBootstrap4FormCodeGeneratorTheme: FormCodeGeneratorTheme<Bootstrap4FileExt, Bootstrap4FormAsset> = {
   generate: (formSchema) => {
     const uniformsSchema = getUniformsSchema(formSchema.schema);
     const form = renderForm({

@@ -22,19 +22,12 @@ import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import unescape from "lodash/unescape";
 import { renderForm } from ".";
 
-const PATTERNFLY_THEME_NAME = "patternfly";
-const PATTERNFLY_FILE_EXT = "tsx";
+export const PATTERNFLY_FILE_EXT = "tsx";
 
-export type PatternflyThemeName = typeof PATTERNFLY_THEME_NAME;
 export type PatternflyFileExt = typeof PATTERNFLY_FILE_EXT;
 export interface PatternflyFormAsset extends FormAsset<PatternflyFileExt> {}
 
-export const patternflyFormCodeGeneratorTheme: FormCodeGeneratorTheme<
-  PatternflyFileExt,
-  PatternflyThemeName,
-  PatternflyFormAsset
-> = {
-  theme: PATTERNFLY_THEME_NAME,
+export const patternflyFormCodeGeneratorTheme: FormCodeGeneratorTheme<PatternflyFileExt, PatternflyFormAsset> = {
   generate: (formSchema) => {
     const form = renderForm({
       id: formSchema.name,

@@ -27,7 +27,6 @@ describe("FormCodeGenerator tests", () => {
       const formCode = generateFormCode({
         formSchemas: [{ name: "", schema: {} }],
         formCodeGeneratorTheme: {
-          theme: "",
           generate: ({ name, schema }) => ({
             assetName: "",
             config: { schema: "", resources: { scripts: {}, styles: {} } },
@@ -38,6 +37,7 @@ describe("FormCodeGenerator tests", () => {
         },
       });
 
+      expect(formCode).toHaveLength(1);
       expect(formCode[0]).toEqual(
         expect.objectContaining({
           formAsset: expect.objectContaining({
@@ -52,12 +52,13 @@ describe("FormCodeGenerator tests", () => {
     });
 
     it("Generate forms for empty schema", () => {
-      const formsCode = generateFormCode({
+      const formCode = generateFormCode({
         formSchemas: [{ name: "test", schema: {} }],
         formCodeGeneratorTheme: dummyPatternflyTheme,
       });
 
-      expect(formsCode[0]).toEqual(
+      expect(formCode).toHaveLength(1);
+      expect(formCode[0]).toEqual(
         expect.objectContaining({
           formAsset: expect.objectContaining({
             id: "test",
@@ -71,7 +72,7 @@ describe("FormCodeGenerator tests", () => {
     });
 
     it("Generate forms project with schemas", () => {
-      const formsCode = generateFormCode({
+      const formCode = generateFormCode({
         formSchemas: [
           { name: "Apply#For#Visa", schema: ApplyForVisaSchema },
           { name: "ConfirmTravel", schema: ConfirmTravelSchema },
@@ -79,7 +80,8 @@ describe("FormCodeGenerator tests", () => {
         formCodeGeneratorTheme: dummyPatternflyTheme,
       });
 
-      expect(formsCode[0]).toEqual(
+      expect(formCode).toHaveLength(2);
+      expect(formCode[0]).toEqual(
         expect.objectContaining({
           formAsset: expect.objectContaining({
             id: "Apply#For#Visa",
@@ -90,7 +92,7 @@ describe("FormCodeGenerator tests", () => {
           formError: undefined,
         })
       );
-      expect(formsCode[1]).toEqual(
+      expect(formCode[1]).toEqual(
         expect.objectContaining({
           formAsset: expect.objectContaining({
             id: "ConfirmTravel",
@@ -104,14 +106,12 @@ describe("FormCodeGenerator tests", () => {
     });
 
     it("Generate forms project with schemas and one failure", () => {
-      const formsCode = generateFormCode({
+      const formCode = generateFormCode({
         formSchemas: [
           { name: "ApplyForVisa", schema: ApplyForVisaSchema },
           { name: "ConfirmTravel", schema: ConfirmTravelSchema },
         ],
         formCodeGeneratorTheme: {
-          theme: "cool formGenerator",
-
           generate(schema: FormSchema): FormAsset<"txt"> {
             if (schema.name === "ApplyForVisa") {
               throw new Error("Unexpected Error!");
@@ -131,11 +131,12 @@ describe("FormCodeGenerator tests", () => {
         },
       });
 
-      expect(formsCode[0]).toEqual({
+      expect(formCode).toHaveLength(2);
+      expect(formCode[0]).toEqual({
         formAsset: undefined,
         formError: new Error("Unexpected Error!"),
       });
-      expect(formsCode[1]).toEqual(
+      expect(formCode[1]).toEqual(
         expect.objectContaining({
           formAsset: expect.objectContaining({
             id: "ConfirmTravel",

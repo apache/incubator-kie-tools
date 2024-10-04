@@ -55,6 +55,7 @@ describe("jbpmPatternflyFormCodeGeneratorTheme tests", () => {
       formCodeGeneratorTheme: jbpmPatternflyFormCodeGeneratorTheme,
     });
 
+    expect(formAssets).toHaveLength(2);
     expect(formAssets[0]).toEqual(
       expect.objectContaining({
         formAsset: expect.objectContaining({

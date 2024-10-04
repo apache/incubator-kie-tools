@@ -60,5 +60,5 @@ export const renderNestedInputFragmentWithContext = (
     })
   );
 
-  return codegenCtx.rendered.length == 1 ? codegenCtx.rendered[0] : undefined;
+  return codegenCtx.rendered.length === 1 ? codegenCtx.rendered[0] : undefined;
 };

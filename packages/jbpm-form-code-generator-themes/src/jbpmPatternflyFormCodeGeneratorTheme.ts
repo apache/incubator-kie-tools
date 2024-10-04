@@ -19,26 +19,16 @@
 
 import { FormAsset, FormCodeGeneratorTheme } from "@kie-tools/form-code-generator/dist/types";
 import { renderForm } from "@kie-tools/form-code-generator-patternfly-theme/dist";
+import { PATTERNFLY_FILE_EXT, PatternflyFileExt } from "@kie-tools/form-code-generator-patternfly-theme/dist/theme";
 import unescape from "lodash/unescape";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { getUniformsSchema } from "./getUniformsSchema";
 import { inputSanitizationUtil } from "./inputSanitizationUtil";
 import { JbpmFormAssetBase } from "./types";
 
-const PATTERNFLY_THEME_NAME = "patternfly";
-const PATTERNFLY_FILE_EXT = "tsx";
-
-export type PatternflyThemeName = typeof PATTERNFLY_THEME_NAME;
-export type PatternflyFileExt = typeof PATTERNFLY_FILE_EXT;
-
 export interface PatternflyFormAsset extends FormAsset<PatternflyFileExt>, JbpmFormAssetBase {}
 
-export const jbpmPatternflyFormCodeGeneratorTheme: FormCodeGeneratorTheme<
-  PatternflyFileExt,
-  PatternflyThemeName,
-  PatternflyFormAsset
-> = {
-  theme: PATTERNFLY_THEME_NAME,
+export const jbpmPatternflyFormCodeGeneratorTheme: FormCodeGeneratorTheme<PatternflyFileExt, PatternflyFormAsset> = {
   generate: (formSchema) => {
     const uniformsSchema = getUniformsSchema(formSchema.schema);
     const form = renderForm({

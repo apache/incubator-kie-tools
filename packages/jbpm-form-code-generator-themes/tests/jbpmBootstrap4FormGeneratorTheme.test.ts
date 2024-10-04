@@ -21,9 +21,9 @@ import { generateFormCode } from "@kie-tools/form-code-generator/dist/generateFo
 import {
   BOOTSTRAP4_CSS_URL,
   BOOTSTRAP4_JS_URL,
-  jbpmBootstrap4FormCodeGeneratorTheme,
   JQUERY_URL,
-} from "../dist/jbpmBootstrap4FormCodeGeneratorTheme";
+} from "@kie-tools/form-code-generator-bootstrap4-theme/dist/theme";
+import { jbpmBootstrap4FormCodeGeneratorTheme } from "../dist/jbpmBootstrap4FormCodeGeneratorTheme";
 import { ApplyForVisaSchema, ConfirmTravelSchema } from "./__mocks__/bootstrap";
 
 describe("jbpmBootstrap4FormCodeGeneratorTheme tests", () => {
@@ -63,6 +63,7 @@ describe("jbpmBootstrap4FormCodeGeneratorTheme tests", () => {
       formCodeGeneratorTheme: jbpmBootstrap4FormCodeGeneratorTheme,
     });
 
+    expect(formAssets).toHaveLength(2);
     expect(formAssets[0]).toEqual(
       expect.objectContaining({
         formAsset: expect.objectContaining({

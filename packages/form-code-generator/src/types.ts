@@ -46,10 +46,8 @@ export interface FormCodeGenerationError {
 
 export interface FormCodeGeneratorTheme<
   FormThemeFileExt extends string,
-  FormThemeName extends string,
   CustomFormAsset = FormAsset<FormThemeFileExt>,
 > {
-  theme: FormThemeName;
   generate: (formSchema: FormSchema) => CustomFormAsset;
 }
 
