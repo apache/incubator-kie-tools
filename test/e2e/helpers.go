@@ -61,6 +61,55 @@ var (
 	upStatus string = "UP"
 )
 
+func kubectlApplyFileOnCluster(file, namespace string) error {
+	cmd := exec.Command("kubectl", "apply", "-f", file, "-n", namespace)
+	_, err := utils.Run(cmd)
+	return err
+}
+
+func kubectlDeleteFileOnCluster(file, namespace string) error {
+	cmd := exec.Command("kubectl", "delete", "-f", file, "-n", namespace)
+	_, err := utils.Run(cmd)
+	return err
+}
+
+func kubectlCreateNamespace(namespace string) error {
+	cmd := exec.Command("kubectl", "create", "namespace", namespace)
+	_, err := utils.Run(cmd)
+	return err
+}
+
+func kubectlNamespaceExists(namespace string) (bool, error) {
+	cmd := exec.Command("kubectl", "get", "namespace", "-o", fmt.Sprintf(`jsonpath={.items[?(@.metadata.name=="%s")].metadata.name}`, namespace))
+	output, err := utils.Run(cmd)
+	if err != nil {
+		return false, err
+	}
+	return len(output) > 0, nil
+}
+
+func kubectlDeleteNamespace(namespace string) error {
+	cmd := exec.Command("kubectl", "delete", "namespace", namespace)
+	_, err := utils.Run(cmd)
+	return err
+}
+
+func kubectlPatchSonataFlowImageAndRollout(namespace, workflowName, image string) error {
+	cmd := exec.Command("kubectl", "patch", "sonataflow", workflowName,
+		"--type", "json", "-n", namespace,
+		"-p", fmt.Sprintf(`[{"op": "replace", "path": "/spec/podTemplate/container/image", "value": "%s"}, {"op": "replace", "path": "/spec/podTemplate/replicas", "value": 1}]`, image))
+	_, err := utils.Run(cmd)
+	return err
+}
+
+func kubectlPatchSonataFlowScaleDown(namespace, workflowName string) error {
+	cmd := exec.Command("kubectl", "patch", "sonataflow", workflowName,
+		"--type", "json", "-n", namespace,
+		"-p", `[{"op": "replace", "path": "/spec/podTemplate/replicas", "value": 0}]`)
+	_, err := utils.Run(cmd)
+	return err
+}
+
 func getHealthFromPod(name, namespace string) (*health, error) {
 	// iterate over all containers to find the one that responds to the HTTP health endpoint
 	Expect(name).NotTo(BeEmpty(), "pod name is empty")
@@ -127,7 +176,7 @@ func getHealthStatusInContainer(podName string, containerName string, ns string)
 	return &h, nil
 }
 
-func verifyWorkflowIsInRunningStateInNamespace(workflowName string, ns string) bool {
+func verifyWorkflowIsInRunningState(workflowName string, ns string) bool {
 	cmd := exec.Command("kubectl", "get", "workflow", workflowName, "-n", ns, "-o", "jsonpath={.status.conditions[?(@.type=='Running')].status}")
 	response, err := utils.Run(cmd)
 	if err != nil {
@@ -146,10 +195,6 @@ func verifyWorkflowIsInRunningStateInNamespace(workflowName string, ns string) b
 		return false
 	}
 	return status
-}
-
-func verifyWorkflowIsInRunningState(workflowName string, targetNamespace string) bool {
-	return verifyWorkflowIsInRunningStateInNamespace(workflowName, targetNamespace)
 }
 
 func verifyWorkflowIsAddressable(workflowName string, targetNamespace string) bool {
@@ -191,35 +236,6 @@ func verifySchemaMigration(data, name string) bool {
 		(strings.Contains(data, fmt.Sprintf("Creating schema \"%s\"", name)) &&
 			strings.Contains(data, fmt.Sprintf("Current version of schema \"%s\"", name)) &&
 			strings.Contains(data, fmt.Sprintf("Schema \"%s\" is up to date. No migration necessary", name)))
-}
-
-func verifyKSinkInjection(label, ns string) bool {
-	cmd := exec.Command("kubectl", "get", "pod", "-n", ns, "-l", label, "-o", "jsonpath={.items[*].metadata.name}")
-	out, err := utils.Run(cmd)
-	if err != nil {
-		GinkgoWriter.Println(fmt.Errorf("failed to get pods: %v", err))
-		return false
-	}
-	podNames := strings.Fields(string(out))
-	if len(podNames) == 0 {
-		GinkgoWriter.Println("no pods found to check K_SINK")
-		return false // pods haven't created yet
-	}
-	GinkgoWriter.Println(fmt.Sprintf("pods found: %s", podNames))
-	for _, pod := range podNames {
-		cmd = exec.Command("kubectl", "get", "pod", pod, "-n", ns, "-o", "json")
-		out, err := utils.Run(cmd)
-		if err != nil {
-			GinkgoWriter.Println(fmt.Errorf("failed to get pod: %v", err))
-			return false
-		}
-		GinkgoWriter.Println(string(out))
-		if !strings.Contains(string(out), "K_SINK") { // The pod does not have K_SINK injected
-			GinkgoWriter.Println(fmt.Sprintf("Pod does not have K_SINK injected: %s", string(out)))
-			return false
-		}
-	}
-	return true
 }
 
 func waitForPodRestartCompletion(label, ns string) {

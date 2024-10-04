@@ -37,7 +37,7 @@ const dockerFile = "FROM docker.io/apache/default-test-kie-sonataflow-builder:ma
 
 func TestSonataFlowBuildController(t *testing.T) {
 	platform := test.GetBasePlatform()
-	dockerfileBytes, err := os.ReadFile("../../../test/builder/Dockerfile")
+	dockerfileBytes, err := os.ReadFile("testdata/platformTest.Dockerfile")
 	if err != nil {
 		assert.Fail(t, "Unable to read base Dockerfile")
 	}

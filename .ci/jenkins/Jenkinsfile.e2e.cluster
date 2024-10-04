@@ -40,7 +40,7 @@ pipeline {
                     helper.checkoutRepo()
 
                     assert getTestImage(): 'Please provide a Test image'
-                    container.pullImage(getTestImage()) // Verify image exists
+                    container.pullImage(getTestImage()) // Verify image namespaceExists
                 }
             }
         }

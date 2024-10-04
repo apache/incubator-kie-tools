@@ -278,27 +278,15 @@ func GetPlatformOpenshiftE2eTest() string {
 }
 
 func GetSonataFlowE2eOrderProcessingFolder() string {
-	return e2eSamples + sonataFlowOrderProcessingFolder
+	return GetPathFromE2EDirectory("order-processing")
 }
 
-func GetSonataFlowE2EPlatformServicesDirectory() string {
-	return filepath.Join(getTestDataDir(), "platform", "services")
+func GetPathFromDataDirectory(join ...string) string {
+	return filepath.Join(append([]string{getTestDataDir()}, join...)...)
 }
 
-func GetSonataFlowE2EPlatformServicesKnativeDirectory(subdir string) string {
-	return filepath.Join(getTestDataDir(), "platform", "services", "preview", "knative", subdir)
-}
-
-func GetSonataFlowE2EPlatformNoServicesDirectory() string {
-	return filepath.Join(getTestDataDir(), "platform", "noservices")
-}
-
-func GetSonataFlowE2EPlatformPersistenceSampleDataDirectory(subdir string) string {
-	return filepath.Join(getTestDataDir(), "platform", "persistence", subdir)
-}
-
-func GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory(subdir string) string {
-	return filepath.Join(getTestDataDir(), "workflow", "persistence", subdir)
+func GetPathFromE2EDirectory(join ...string) string {
+	return filepath.Join(append([]string{getProjectDir(), "test", "e2e", "testdata"}, join...)...)
 }
 
 // getTestDataDir gets the testdata directory containing every sample out there from test/testdata.

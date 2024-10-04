@@ -76,13 +76,13 @@ var _ = Describe("Platform Use Cases :: ", Label("platform"), Ordered, func() {
 	})
 	var _ = Context("with platform services", func() {
 
-		DescribeTable("when creating a simple workflow", func(testcaseDir string, profile string, persistenceType string) {
+		DescribeTable("when creating a simple workflow", func(testcaseDir string, profile metadata.ProfileType, persistenceType string) {
 			By("Deploy the SonataFlowPlatform CR")
 			var manifests []byte
 			EventuallyWithOffset(1, func() error {
 				var err error
 				cmd := exec.Command("kubectl", "kustomize", filepath.Join(projectDir,
-					testcaseDir, profile, persistenceType))
+					testcaseDir, profile.String(), persistenceType))
 				manifests, err = utils.Run(cmd)
 				return err
 			}, time.Minute, time.Second).Should(Succeed())
@@ -98,7 +98,7 @@ var _ = Describe("Platform Use Cases :: ", Label("platform"), Ordered, func() {
 				if err != nil {
 					return false
 				}
-				if profile == metadata.PreviewProfile.String() {
+				if profile == metadata.GitOpsProfile {
 					GinkgoWriter.Println("waitForPodRestartCompletion")
 					waitForPodRestartCompletion("app.kubernetes.io/name=jobs-service", targetNamespace)
 					GinkgoWriter.Println("waitForPodRestartCompletion done")
@@ -116,7 +116,7 @@ var _ = Describe("Platform Use Cases :: ", Label("platform"), Ordered, func() {
 			}
 			By("Deploy the SonataFlow CR")
 			cmd = exec.Command("kubectl", "create", "-n", targetNamespace, "-f", filepath.Join(projectDir,
-				testcaseDir, profile, persistenceType, "sonataflow"))
+				testcaseDir, profile.String(), persistenceType, "sonataflow"))
 			manifests, err = utils.Run(cmd)
 			Expect(err).NotTo(HaveOccurred())
 
@@ -126,18 +126,29 @@ var _ = Describe("Platform Use Cases :: ", Label("platform"), Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 			sfNames := strings.TrimRight(string(output), " ")
 
+			if profile == metadata.GitOpsProfile {
+				workflowTag := prebuiltWorkflows.CallBack.Tag
+				if persistenceType == postgreSQL {
+					workflowTag = prebuiltWorkflows.CallBackPersistence.Tag
+				}
+				By("Replacing the image with a prebuilt one and rollout")
+				EventuallyWithOffset(1, func() error {
+					return kubectlPatchSonataFlowImageAndRollout(targetNamespace, sfNames, workflowTag)
+				}, 3*time.Minute, time.Second).Should(Succeed())
+			}
+
 			By("Evaluate status of SonataFlow CR")
-			for _, sf := range strings.Split(string(sfNames), " ") {
+			for _, sf := range strings.Split(sfNames, " ") {
 				Expect(sf).NotTo(BeEmpty(), "sonataflow name is empty")
 				EventuallyWithOffset(1, func() bool {
-					return verifyWorkflowIsInRunningStateInNamespace(sf, targetNamespace)
-				}, 15*time.Minute, 1*time.Minute).Should(BeTrue())
+					return verifyWorkflowIsInRunningState(sf, targetNamespace)
+				}, 10*time.Minute, 5*time.Second).Should(BeTrue())
 			}
 		},
-			Entry("with both Job Service and Data Index and ephemeral persistence and the workflow in a dev profile", test.GetSonataFlowE2EPlatformServicesDirectory(), metadata.DevProfile.String(), ephemeral),
-			Entry("with both Job Service and Data Index and ephemeral persistence and the workflow in a preview profile", test.GetSonataFlowE2EPlatformServicesDirectory(), metadata.PreviewProfile.String(), ephemeral),
-			Entry("with both Job Service and Data Index and postgreSQL persistence and the workflow in a dev profile", test.GetSonataFlowE2EPlatformServicesDirectory(), metadata.DevProfile.String(), postgreSQL),
-			Entry("with both Job Service and Data Index and postgreSQL persistence and the workflow in a preview profile", test.GetSonataFlowE2EPlatformServicesDirectory(), metadata.PreviewProfile.String(), postgreSQL),
+			Entry("with both Job Service and Data Index and ephemeral persistence and the workflow in a dev profile", test.GetPathFromE2EDirectory("platform", "services"), metadata.DevProfile, ephemeral),
+			Entry("with both Job Service and Data Index and ephemeral persistence and the workflow in a gitops profile", test.GetPathFromE2EDirectory("platform", "services"), metadata.GitOpsProfile, ephemeral),
+			Entry("with both Job Service and Data Index and postgreSQL persistence and the workflow in a dev profile", test.GetPathFromE2EDirectory("platform", "services"), metadata.DevProfile, postgreSQL),
+			Entry("with both Job Service and Data Index and postgreSQL persistence and the workflow in a gitops profile", test.GetPathFromE2EDirectory("platform", "services"), metadata.GitOpsProfile, postgreSQL),
 		)
 
 	})
@@ -170,8 +181,8 @@ var _ = Describe("Platform Use Cases :: ", Label("platform"), Ordered, func() {
 			verifyHealthStatusInPod(pn, targetNamespace)
 		}
 	},
-		Entry("and both Job Service and Data Index using the persistence from platform CR", test.GetSonataFlowE2EPlatformPersistenceSampleDataDirectory("generic_from_platform_cr")),
-		Entry("and both Job Service and Data Index using the one defined in each service, discarding the one from the platform CR", test.GetSonataFlowE2EPlatformPersistenceSampleDataDirectory("overwritten_by_services")),
+		Entry("and both Job Service and Data Index using the persistence from platform CR", test.GetPathFromE2EDirectory("platform", "persistence", "generic_from_platform_cr")),
+		Entry("and both Job Service and Data Index using the one defined in each service, discarding the one from the platform CR", test.GetPathFromE2EDirectory("platform", "persistence", "overwritten_by_services")),
 	)
 
 	DescribeTable("when deploying a SonataFlowPlatform CR with brokers", func(testcaseDir string) {
@@ -237,7 +248,7 @@ var _ = Describe("Platform Use Cases :: ", Label("platform"), Ordered, func() {
 		Expect(verifyTrigger(triggers, "jobs-service-delete-job-", constants.JobServiceJobEventsPath, targetNamespace, "js-source")).NotTo(HaveOccurred())
 		Expect(verifySinkBinding("sonataflow-platform-jobs-service-sb", targetNamespace, "js-sink")).NotTo(HaveOccurred())
 	},
-		Entry("and both Job Service and Data Index have service level brokers", test.GetSonataFlowE2EPlatformServicesKnativeDirectory("service-level-broker")),
+		Entry("and both Job Service and Data Index have service level brokers", test.GetPathFromE2EDirectory("platform", "services", "gitops", "knative", "service-level-broker")),
 	)
 
 	DescribeTable("when deploying a SonataFlowPlatform CR with platform broker", func(testcaseDir string, brokerInAnotherNamespace bool) {
@@ -317,22 +328,26 @@ var _ = Describe("Platform Use Cases :: ", Label("platform"), Ordered, func() {
 		manifests, err = utils.Run(cmd)
 		Expect(err).NotTo(HaveOccurred())
 
-		sfName := "callbackstatetimeouts"
+		By("Replacing the image with a prebuilt one and rollout")
+		EventuallyWithOffset(1, func() error {
+			return kubectlPatchSonataFlowImageAndRollout(targetNamespace, prebuiltWorkflows.CallBack.Name, prebuiltWorkflows.CallBack.Tag)
+		}, 3*time.Minute, time.Second).Should(Succeed())
+
 		By("Evaluate status of SonataFlow CR")
 		EventuallyWithOffset(1, func() bool {
-			return verifyWorkflowIsInRunningStateInNamespace(sfName, targetNamespace)
-		}, 10*time.Minute, 5).Should(BeTrue())
+			return verifyWorkflowIsInRunningState(prebuiltWorkflows.CallBack.Name, targetNamespace)
+		}, 5*time.Minute, 5).Should(BeTrue())
 
 		By("Evaluate triggers and sinkbindings for the workflow")
-		cmd = exec.Command("kubectl", "get", "sonataflow", sfName, "-n", targetNamespace, "-ojsonpath={.status.triggers}")
+		cmd = exec.Command("kubectl", "get", "sonataflow", prebuiltWorkflows.CallBack.Name, "-n", targetNamespace, "-ojsonpath={.status.triggers}")
 		output, err = utils.Run(cmd)
 		Expect(err).NotTo(HaveOccurred())
 		err = json.Unmarshal(output, &triggers)
 		Expect(err).NotTo(HaveOccurred())
-		Expect(verifyTrigger(triggers, sfName, "", brokerNamespace, brokerName)).NotTo(HaveOccurred())
-		Expect(verifySinkBinding(fmt.Sprintf("%s-sb", sfName), targetNamespace, brokerName)).NotTo(HaveOccurred())
+		Expect(verifyTrigger(triggers, prebuiltWorkflows.CallBack.Name, "", brokerNamespace, brokerName)).NotTo(HaveOccurred())
+		Expect(verifySinkBinding(fmt.Sprintf("%s-sb", prebuiltWorkflows.CallBack.Name), targetNamespace, brokerName)).NotTo(HaveOccurred())
 	},
-		Entry("and with broker and platform in the same namespace", test.GetSonataFlowE2EPlatformServicesKnativeDirectory("platform-level-broker"), false),
-		Entry("and with broker and platform in a separate namespace", test.GetSonataFlowE2EPlatformServicesKnativeDirectory("platform-level-broker"), true),
+		Entry("and with broker and platform in the same namespace", test.GetPathFromE2EDirectory("platform", "services", "gitops", "knative", "platform-level-broker"), false),
+		Entry("and with broker and platform in a separate namespace", test.GetPathFromE2EDirectory("platform", "services", "gitops", "knative", "platform-level-broker"), true),
 	)
 })

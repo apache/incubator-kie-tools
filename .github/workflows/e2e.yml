@@ -86,8 +86,8 @@ jobs:
           make deploy IMG=${{ env.OPERATOR_IMAGE_NAME }}
           kubectl wait pod -A -l control-plane=sonataflow-operator --for condition=Ready
 
-      - name: Run E2E Tests for Non-Persistent Flows
-        run: make test-e2e label=flows-non-persistence
+      - name: Run E2E Tests for Ephemeral Flows
+        run: make test-e2e label=flows-ephemeral
 
       - name: Run E2E Tests for Persistent Flows
         run: make test-e2e label=flows-persistence

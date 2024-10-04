@@ -20,7 +20,8 @@
 # You must have minikube installed
 MINIKUBE_PROFILE=${1:-minikube}
 SKIP_IMG_BUILD=${2:-false}
-TEST_LABELS=${3:-"flows-non-persistence"} # possible values are flows-non-persistence, flows-persistence, platform, cluster
+TEST_LABELS=${3:-"flows-ephemeral"} # possible values are flows-ephemeral, flows-persistence, platform, cluster
+SKIP_UNDEPLOY=${4:-false}
 
 # Emoticons and enhanced messages
 echo "🚀 Using minikube profile ${MINIKUBE_PROFILE}"
@@ -37,8 +38,13 @@ fi
 # clean up previous runs, hiding logs
 echo "🧹 Cleaning up previous test namespaces..."
 kubectl get namespaces -o name | awk -F/ '/^namespace\/test/ {print $2}' | xargs kubectl delete namespace &> /dev/null
-echo "🧹 Undeploying previous instances..."
-make undeploy ignore-not-found=true &> /dev/null
+
+if [ "${SKIP_UNDEPLOY}" = false ]; then
+  echo "🧹 Cleaning up previous test resources namespace..."
+  kubectl delete namespace e2e-resources &> /dev/null
+  echo "🧹 Undeploying previous instances..."
+  make undeploy ignore-not-found=true &> /dev/null
+fi
 
 # Image build process
 if [ "${SKIP_IMG_BUILD}" = "false" ]; then
