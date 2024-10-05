@@ -1,3 +1,20 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+     http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+
 # KIE Tools @ IntelliJ IDEA
 
 To make it easier for developing Java-, Maven-based packages, this folder contains an IntelliJ IDEA project configured for select packages. It currently includes all Maven-based packages of KIE Tools. Two additional IntelliJ IDEA project modules are included too, given their "global" nature on the KIE Tools repository -- `scripts` and `root-env`.
@@ -17,7 +34,9 @@ Once prompted by IntelliJ IDEA, select "Open" and choose this folder.
 
 You should now be able to develop all Java- and Maven-based projects normally.
 
-For more information on Maven-based packages on KIE Tools, please refere to the [KIE Tools repo manual](../repo/docs/user_manual.md)
+---
+
+For more information on Maven-based packages on KIE Tools, please refere to the [KIE Tools :: Manual](../repo/docs/MANUAL.md).
 
 
 
