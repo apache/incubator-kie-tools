@@ -405,6 +405,8 @@ jobs:
   extended_services_sign_and_deploy:
     needs: [extended_services_build]
     runs-on: ubuntu-latest
+    env:
+      RELEASE_CANDIDATE_ARTIFACTS_DIR: ${{ github.workspace }}/extended-services-release-candidate-artifacts
     steps:
       - name: Import GPG key
         if: github.event_name != 'pull_request'
@@ -412,23 +414,22 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_KEY }}
 
-      - name: Create release artifacts directories
+      - name: Create release artifacts directory
         shell: bash
         run: |
-          mkdir ./extended-services-release-artifacts
-          mkdir ./extended-services-final-release-artifacts
+          mkdir $RELEASE_CANDIDATE_ARTIFACTS_DIR
 
       - name: Retrieve MacOS artifacts
         uses: actions/download-artifact@v4
         with:
           name: extended-services-macos-artifacts
-          path: ./extended-services-release-artifacts
+          path: $RELEASE_CANDIDATE_ARTIFACTS_DIR
 
       - name: Retrieve Windows artifacts
         uses: actions/download-artifact@v4
         with:
           name: extended-services-windows-artifacts
-          path: ./extended-services-release-artifacts
+          path: $RELEASE_CANDIDATE_ARTIFACTS_DIR
 
       - name: "Zip artifacts"
         id: zip_artifacts
@@ -437,13 +438,15 @@ jobs:
         env:
           RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
         run: |
-          MACOS_ARTIFACT_ZIP_FILE="${{ github.workspace }}/extended-services-final-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-macOS-x86.zip"
-          WINDOWS_ARTIFACT_ZIP_FILE="${{ github.workspace }}/extended-services-final-release-artifacts/incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-windows-x86.zip"
+          MACOS_ARTIFACT_ZIP_FILE="incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-macOS-x86.zip"
+          WINDOWS_ARTIFACT_ZIP_FILE="incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-windows-x86.zip"
           echo "MACOS_ARTIFACT_ZIP_FILE=$MACOS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
           echo "WINDOWS_ARTIFACT_ZIP_FILE=$WINDOWS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
-          cd ./extended-services-release-artifacts
-          zip $MACOS_ARTIFACT_ZIP_FILE ./Kogito.dmg
-          zip $WINDOWS_ARTIFACT_ZIP_FILE ./kie_sandbox_extended_services.exe
+          cd $RELEASE_CANDIDATE_ARTIFACTS_DIR
+          zip $RELEASE_CANDIDATE_ARTIFACTS_DIR/$MACOS_ARTIFACT_ZIP_FILE ./Kogito.dmg
+          zip $RELEASE_CANDIDATE_ARTIFACTS_DIR/$WINDOWS_ARTIFACT_ZIP_FILE ./kie_sandbox_extended_services.exe
+          rm -f ./Kogito.dmg
+          rm -f ./kie_sandbox_extended_services.exe
 
       - name: "Sign artifacts"
         if: ${{ !inputs.dry_run }}
@@ -452,6 +455,7 @@ jobs:
           MACOS_ARTIFACT_ZIP_FILE: ${{ steps.zip_artifacts.outputs.MACOS_ARTIFACT_ZIP_FILE }}
           WINDOWS_ARTIFACT_ZIP_FILE: ${{ steps.zip_artifacts.outputs.WINDOWS_ARTIFACT_ZIP_FILE }}
         run: |
+          cd $RELEASE_CANDIDATE_ARTIFACTS_DIR
           gpg --no-tty --batch --sign --pinentry-mode loopback --output $MACOS_ARTIFACT_ZIP_FILE.asc --detach-sig $MACOS_ARTIFACT_ZIP_FILE
           shasum -a 512 $MACOS_ARTIFACT_ZIP_FILE > $MACOS_ARTIFACT_ZIP_FILE.sha512
           gpg --no-tty --batch --sign --pinentry-mode loopback --output $WINDOWS_ARTIFACT_ZIP_FILE.asc --detach-sig $WINDOWS_ARTIFACT_ZIP_FILE
@@ -466,7 +470,7 @@ jobs:
           RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
         run: |
           svn co --depth=empty https://dist.apache.org/repos/dist/dev/incubator/kie/$RELEASE_CANDIDATE_VERSION/ svn-kie
-          cp ./extended-services-final-release-artifacts/* svn-kie
+          cp $RELEASE_CANDIDATE_ARTIFACTS_DIR/* svn-kie
           cd svn-kie
           svn add . --force
           svn ci --non-interactive --no-auth-cache --username $SVN_USERNAME --password "$SVN_PASSWORD" -m "Apache KIE $RELEASE_CANDIDATE_VERSION Extended Services artifacts"
