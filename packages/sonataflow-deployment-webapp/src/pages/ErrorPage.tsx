@@ -19,7 +19,13 @@
 import React from "react";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  // EmptyStateHeader,
+  // EmptyStateFooter,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
@@ -28,6 +34,7 @@ import { Link } from "react-router-dom";
 import { WorkflowDefinition } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { routes } from "../routes";
 import { BasePage } from "./BasePage";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 export enum ErrorKind {
   APPDATA_JSON = "AppDataJson",
@@ -71,7 +78,9 @@ export function ErrorPage(props: ErrorPageProps) {
       <PageSection isFilled aria-label={`${props.kind.toLowerCase()}-error-section`}>
         <PageSection variant={"light"} padding={{ default: "noPadding" }}>
           <EmptyState>
-            <EmptyStateIcon icon={ExclamationTriangleIcon} />
+            <Title headingLevel="h3">
+              <EmptyStateIcon icon={ExclamationTriangleIcon} />
+            </Title>
             <TextContent>
               <Text component={"h2"}>{title}</Text>
             </TextContent>
@@ -102,7 +111,9 @@ export function ErrorPage(props: ErrorPageProps) {
                 <br />
               </PageSection>
             </EmptyStateBody>
-            <Link to={routes.home.path({})}>Return home</Link>
+            <Title headingLevel="h4">
+              <Link to={routes.home.path({})}>Return home</Link>
+            </Title>
           </EmptyState>
         </PageSection>
       </PageSection>

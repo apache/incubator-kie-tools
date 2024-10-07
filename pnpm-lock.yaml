@@ -8490,17 +8490,17 @@ importers:
         specifier: workspace:*
         version: link:../serverless-workflow-combined-editor
       '@patternfly/patternfly':
-        specifier: ^4.224.2
-        version: 4.224.2
+        specifier: ^5.4.1
+        version: 5.4.1
       '@patternfly/react-core':
-        specifier: ^4.276.6
-        version: 4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        specifier: ^5.4.1
+        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@patternfly/react-icons':
-        specifier: ^4.93.6
-        version: 4.93.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        specifier: ^5.4.0
+        version: 5.4.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@patternfly/react-table':
-        specifier: ^4.112.39
-        version: 4.112.39(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        specifier: ^5.4.1
+        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       copyfiles:
         specifier: ^2.4.1
         version: 2.4.1
@@ -8527,7 +8527,7 @@ importers:
         version: 6.1.0(react@17.0.2)
       react-json-view:
         specifier: ^1.21.3
-        version: 1.21.3(@types/react@17.0.21)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        version: 1.21.3(@types/react@17.0.21)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react-moment:
         specifier: 0.9.7
         version: 0.9.7(moment@2.29.4)(prop-types@15.8.1)(react@17.0.2)
@@ -8564,7 +8564,7 @@ importers:
         version: link:../tsconfig
       '@testing-library/jest-dom':
         specifier: ^6.4.6
-        version: 6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.5.2)(typescript@5.5.3)))
+        version: 6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3)))
       '@testing-library/react':
         specifier: ^12.1.5
         version: 12.1.5(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -8597,7 +8597,7 @@ importers:
         version: 8.3.0
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.5.2)(typescript@5.5.3))
+        version: 29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3))
       jest-environment-jsdom:
         specifier: ^29.7.0
         version: 29.7.0
@@ -8606,13 +8606,13 @@ importers:
         version: 16.0.0
       jest-when:
         specifier: ^3.6.0
-        version: 3.6.0(jest@29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.5.2)(typescript@5.5.3)))
+        version: 3.6.0(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3)))
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
       ts-jest:
         specifier: ^29.1.5
-        version: 29.1.5(@babel/core@7.23.9)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.23.9))(jest@29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.5.2)(typescript@5.5.3)))(typescript@5.5.3)
+        version: 29.1.5(@babel/core@7.23.9)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.23.9))(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3)))(typescript@5.5.3)
       typescript:
         specifier: ^5.5.3
         version: 5.5.3
@@ -17415,6 +17415,9 @@ packages:
   '@patternfly/patternfly@4.224.2':
     resolution: {integrity: sha512-HGNV26uyHSIECuhjPg/WGn0mXbAotcs6ODfhAOkfYjIgGylddgiwElxUe1rpEHV5mQJJ2rMn4OdeJIIpzRX61g==}
 
+  '@patternfly/patternfly@5.4.1':
+    resolution: {integrity: sha512-0+KxsQJrFzOMANALW82BHAO7bSm9tEbG1RrOlGT23ME1CaBoetGSMRLymutvojn/b/EKfJIr5rLzQa+14Lvg2g==}
+
   '@patternfly/quickstarts@2.4.0':
     resolution: {integrity: sha512-dlGtAX8iQarFvmflEvZ7rHaJb1aaBrcqkbzwx0wy2QLL/BID7Y+UQ9ht7k+TBNfnxhPOljM2YTp0rugG5S9q4g==}
     peerDependencies:
@@ -17448,14 +17451,29 @@ packages:
       react: ^16.8 || ^17 || ^18
       react-dom: ^16.8 || ^17 || ^18
 
+  '@patternfly/react-core@5.4.1':
+    resolution: {integrity: sha512-PJjwN4OCR7jTdWKi0RzuFdtlSQ8gBR+0REczuDHHPW8ky0bs1cIcqGsn5p/b6OgPlztl3UaXqRYLsroiEMasOw==}
+    peerDependencies:
+      react: ^17 || ^18
+      react-dom: ^17 || ^18
+
   '@patternfly/react-icons@4.93.6':
     resolution: {integrity: sha512-ZrXegc/81oiuTIeWvoHb3nG/eZODbB4rYmekBEsrbiysyO7m/sUFoi/RLvgFINrRoh6YCJqL5fj06Jg6d7jX1g==}
     peerDependencies:
       react: ^16.8 || ^17 || ^18
       react-dom: ^16.8 || ^17 || ^18
 
+  '@patternfly/react-icons@5.4.0':
+    resolution: {integrity: sha512-2M3qN/naultvRHeG2laJMmoIroFCGAyfwTVrnCjSkG6/KnRoXV0+dqd+Xrh7xzpzvIJB1klvifC0oX42cEkDrA==}
+    peerDependencies:
+      react: ^17 || ^18
+      react-dom: ^17 || ^18
+
   '@patternfly/react-styles@4.92.6':
     resolution: {integrity: sha512-b8uQdEReMyeoMzjpMri845QxqtupY/tIFFYfVeKoB2neno8gkcW1RvDdDe62LF88q45OktCwAe/8A99ker10Iw==}
+
+  '@patternfly/react-styles@5.4.0':
+    resolution: {integrity: sha512-4ZE0s6LkX/0KsN0FOeogrDoj18m+BPA73YKnabZGB4SDRzrBNeBh2a6bSt546ZseEjkoJ+S81kOG0G8YckPQYg==}
 
   '@patternfly/react-table@4.112.39':
     resolution: {integrity: sha512-U+hOMgYlbghGH4M5MX+qt0GkVi/ocrGnxDnm11YiS3CtEGsd6Rr0NeqMmk0uoR46Od4Pr5tKuXxZhPP32sCL/w==}
@@ -17463,8 +17481,17 @@ packages:
       react: ^16.8 || ^17 || ^18
       react-dom: ^16.8 || ^17 || ^18
 
+  '@patternfly/react-table@5.4.1':
+    resolution: {integrity: sha512-T05djy6YPqjbGWjpnwUs9oqup8oqqIOBnDOcThnHukgzlwnZvLNywgdoMR5XAKxTcIx/iBE1cu8ieETlITOGLw==}
+    peerDependencies:
+      react: ^17 || ^18
+      react-dom: ^17 || ^18
+
   '@patternfly/react-tokens@4.94.6':
     resolution: {integrity: sha512-tm7C6nat+uKMr1hrapis7hS3rN9cr41tpcCKhx6cod6FLU8KwF2Yt5KUxakhIOCEcE/M/EhXhAw/qejp8w0r7Q==}
+
+  '@patternfly/react-tokens@5.4.0':
+    resolution: {integrity: sha512-KONkwCVOMyklhuuaYeYgcAsGtCBQXnsBGZeolhOdSzr2Mj0RVSW0oMrQPgZuPVzhhC/kbqgClHJJl6xuG9xheA==}
 
   '@peculiar/asn1-schema@2.3.6':
     resolution: {integrity: sha512-izNRxPoaeJeg/AyH8hER6s+H7p4itk+03QCa4sbxI3lNdseQYCuxzgsuNK8bTXChtLTjpJz6NmXKA73qLa3rCA==}
@@ -23399,6 +23426,9 @@ packages:
   focus-trap@6.9.2:
     resolution: {integrity: sha512-gBEuXOPNOKPrLdZpMFUSTyIo1eT2NSZRrwZ9r/0Jqw5tmT3Yvxfmu8KBHw8xW2XQkw6E/JoG+OlEq7UDtSUNgw==}
 
+  focus-trap@7.5.4:
+    resolution: {integrity: sha512-N7kHdlgsO/v+iD/dMoJKtsSqs5Dz/dXZVebRgJw23LDk+jMi/974zyiOYDziY2JPp8xivq9BmUGwIJMiuSBi7w==}
+
   follow-redirects@1.15.6:
     resolution: {integrity: sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==}
     engines: {node: '>=4.0'}
@@ -28938,6 +28968,9 @@ packages:
 
   tabbable@5.3.3:
     resolution: {integrity: sha512-QD9qKY3StfbZqWOPLp0++pOrAVb/HbUi5xCc8cUo4XjP19808oaMiDzn0leBY5mCespIBM0CIZePzZjgzR83kA==}
+
+  tabbable@6.2.0:
+    resolution: {integrity: sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==}
 
   tapable@2.2.0:
     resolution: {integrity: sha512-FBk4IesMV1rBxX2tfiK8RAmogtWn53puLOQlvO8XuwlgxcYbP4mVPS9Ph4aeamSyyVjOl24aYWAuc8U5kCVwMw==}
@@ -38925,6 +38958,8 @@ snapshots:
 
   '@patternfly/patternfly@4.224.2': {}
 
+  '@patternfly/patternfly@5.4.1': {}
+
   '@patternfly/quickstarts@2.4.0(@patternfly/react-core@4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(showdown@2.1.0)':
     dependencies:
       '@patternfly/react-catalog-view-extension': 4.96.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -38992,12 +39027,30 @@ snapshots:
       tippy.js: 5.1.2
       tslib: 2.6.2
 
+  '@patternfly/react-core@5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
+    dependencies:
+      '@patternfly/react-icons': 5.4.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      '@patternfly/react-styles': 5.4.0
+      '@patternfly/react-tokens': 5.4.0
+      focus-trap: 7.5.4
+      react: 17.0.2
+      react-dom: 17.0.2(react@17.0.2)
+      react-dropzone: 11.7.1(react@17.0.2)
+      tslib: 2.7.0
+
   '@patternfly/react-icons@4.93.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
     dependencies:
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
 
+  '@patternfly/react-icons@5.4.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
+    dependencies:
+      react: 17.0.2
+      react-dom: 17.0.2(react@17.0.2)
+
   '@patternfly/react-styles@4.92.6': {}
+
+  '@patternfly/react-styles@5.4.0': {}
 
   '@patternfly/react-table@4.112.39(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
     dependencies:
@@ -39010,7 +39063,20 @@ snapshots:
       react-dom: 17.0.2(react@17.0.2)
       tslib: 2.5.0
 
+  '@patternfly/react-table@5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
+    dependencies:
+      '@patternfly/react-core': 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      '@patternfly/react-icons': 5.4.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      '@patternfly/react-styles': 5.4.0
+      '@patternfly/react-tokens': 5.4.0
+      lodash: 4.17.21
+      react: 17.0.2
+      react-dom: 17.0.2(react@17.0.2)
+      tslib: 2.7.0
+
   '@patternfly/react-tokens@4.94.6': {}
+
+  '@patternfly/react-tokens@5.4.0': {}
 
   '@peculiar/asn1-schema@2.3.6':
     dependencies:
@@ -42564,6 +42630,21 @@ snapshots:
       dom-accessibility-api: 0.5.11
       lz-string: 1.5.0
       pretty-format: 27.5.1
+
+  '@testing-library/jest-dom@6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3)))':
+    dependencies:
+      '@adobe/css-tools': 4.4.0
+      '@babel/runtime': 7.23.6
+      aria-query: 5.1.3
+      chalk: 3.0.0
+      css.escape: 1.5.1
+      dom-accessibility-api: 0.6.3
+      lodash: 4.17.21
+      redent: 3.0.0
+    optionalDependencies:
+      '@jest/globals': 29.7.0
+      '@types/jest': 29.5.12
+      jest: 29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3))
 
   '@testing-library/jest-dom@6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@22.5.2)(typescript@5.5.3)))':
     dependencies:
@@ -48672,6 +48753,12 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  fbemitter@3.0.0(encoding@0.1.13):
+    dependencies:
+      fbjs: 3.0.2(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+
   fbjs-css-vars@1.0.2: {}
 
   fbjs@3.0.2:
@@ -48749,7 +48836,7 @@ snapshots:
 
   file-selector@0.4.0:
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.7.0
 
   file-system-cache@2.3.0:
     dependencies:
@@ -48917,6 +49004,14 @@ snapshots:
 
   flow-parser@0.218.0: {}
 
+  flux@4.0.3(encoding@0.1.13)(react@17.0.2):
+    dependencies:
+      fbemitter: 3.0.0(encoding@0.1.13)
+      fbjs: 3.0.2(encoding@0.1.13)
+      react: 17.0.2
+    transitivePeerDependencies:
+      - encoding
+
   flux@4.0.3(react@17.0.2):
     dependencies:
       fbemitter: 3.0.0
@@ -48928,6 +49023,10 @@ snapshots:
   focus-trap@6.9.2:
     dependencies:
       tabbable: 5.3.3
+
+  focus-trap@7.5.4:
+    dependencies:
+      tabbable: 6.2.0
 
   follow-redirects@1.15.6: {}
 
@@ -54569,6 +54668,18 @@ snapshots:
 
   react-is@18.1.0: {}
 
+  react-json-view@1.21.3(@types/react@17.0.21)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2):
+    dependencies:
+      flux: 4.0.3(encoding@0.1.13)(react@17.0.2)
+      react: 17.0.2
+      react-base16-styling: 0.6.0
+      react-dom: 17.0.2(react@17.0.2)
+      react-lifecycles-compat: 3.0.4
+      react-textarea-autosize: 8.3.3(@types/react@17.0.21)(react@17.0.2)
+    transitivePeerDependencies:
+      - '@types/react'
+      - encoding
+
   react-json-view@1.21.3(@types/react@17.0.21)(react-dom@17.0.2(react@17.0.2))(react@17.0.2):
     dependencies:
       flux: 4.0.3(react@17.0.2)
@@ -56401,6 +56512,8 @@ snapshots:
 
   tabbable@5.3.3: {}
 
+  tabbable@6.2.0: {}
+
   tapable@2.2.0: {}
 
   tapable@2.2.1: {}
@@ -57169,7 +57282,7 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
       '@types/node': 20.14.2
-      acorn: 8.10.0
+      acorn: 8.12.1
       acorn-walk: 8.2.0
       arg: 4.1.0
       create-require: 1.1.1

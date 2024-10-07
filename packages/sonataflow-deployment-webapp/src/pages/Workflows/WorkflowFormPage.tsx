@@ -200,9 +200,8 @@ export function WorkflowFormPage(props: { workflowId: string }) {
           <CardBody isFilled>
             {openApi.openApiPromise.status === PromiseStateStatus.PENDING ? (
               <EmptyState>
-                <EmptyStateIcon variant="container" component={Spinner} />
-                <Title size="lg" headingLevel="h4">
-                  Loading...
+                <Title headingLevel="h4">
+                  Loading... <EmptyStateIcon icon={Spinner} />
                 </Title>
               </EmptyState>
             ) : workflowResponse ? (

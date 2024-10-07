@@ -68,7 +68,13 @@ export function BasePage(props: { children?: React.ReactNode }) {
 
   return (
     <Page
-      sidebar={<PageSidebar nav={<ManagementConsoleNav pathname={history.location.pathname} />} theme="dark" />}
+      sidebar={
+        <PageSidebar theme="dark">
+          {/* <PageSidebarBody> */}
+          <ManagementConsoleNav pathname={history.location.pathname} />
+          {/* </PageSidebarBody> */}
+        </PageSidebar>
+      }
       header={masthead}
       isManagedSidebar
     >

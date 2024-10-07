@@ -29,6 +29,7 @@ import { Job } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import "../styles.css";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
+import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
 
 interface IOwnProps {
   actionType: string;
@@ -107,7 +108,7 @@ export const JobsRescheduleModal: React.FC<IOwnProps & OUIAProps> = ({
           <FormGroup
             label="Repeat Interval"
             fieldId="repeat-interval"
-            helperText={repeatInterval === null ? "Input disabled since it is an one-time run job" : null}
+            // helperText={repeatInterval === null ? "Input disabled since it is an one-time run job" : null}
           >
             <TextInput
               type="text"
@@ -115,14 +116,21 @@ export const JobsRescheduleModal: React.FC<IOwnProps & OUIAProps> = ({
               name="repeat-interval-input"
               aria-describedby="repeat-interval"
               value={repeatInterval || ""}
-              onChange={handleIntervalChange}
+              onChange={(_event, value: number | string) => handleIntervalChange(value)}
               isDisabled={repeatInterval === null}
             />
+            {repeatLimit === null ? (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant="error">Input disabled since it is an one-time run job</HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            ) : null}
           </FormGroup>
           <FormGroup
             label="Repeat Limit"
             fieldId="repeat-limit"
-            helperText={repeatLimit === null ? "Input disabled since it is an one-time run job" : null}
+            // helperText={repeatLimit === null ? "Input disabled since it is an one-time run job" : null}
           >
             <TextInput
               type="text"
@@ -130,9 +138,16 @@ export const JobsRescheduleModal: React.FC<IOwnProps & OUIAProps> = ({
               name="repeat-limit-input"
               aria-describedby="repeat-limit"
               value={repeatLimit || ""}
-              onChange={handleLimitChange}
+              onChange={(_event, value: number | string) => handleLimitChange(value)}
               isDisabled={repeatLimit === null}
             />
+            {repeatLimit === null ? (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant="error">Input disabled since it is an one-time run job</HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            ) : null}
           </FormGroup>
         </Form>
       </ModalBoxBody>

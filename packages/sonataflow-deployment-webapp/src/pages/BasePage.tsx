@@ -55,6 +55,7 @@ export function BasePage(props: { children?: React.ReactNode }) {
         </MastheadToggle>
         <MastheadMain>
           <MastheadBrand
+            component="a"
             onClick={() => history.push({ pathname: routes.home.path({}) })}
             style={{ textDecoration: "none" }}
           >
@@ -73,7 +74,8 @@ export function BasePage(props: { children?: React.ReactNode }) {
           <Toolbar id="toolbar" isFullHeight isStatic>
             <ToolbarContent>
               {app.data.showDisclaimer && (
-                <ToolbarItem alignment={{ default: "alignRight" }}>
+                // <ToolbarItem align={{ default: "alignRight" }}>
+                <ToolbarItem>
                   <Tooltip
                     className="app--masterhead__disclaimer"
                     position="bottom-end"
@@ -109,7 +111,17 @@ export function BasePage(props: { children?: React.ReactNode }) {
   }, [history, app.appDataPromise]);
 
   return (
-    <Page sidebar={<PageSidebar nav={<BasePageNav />} theme="dark" />} header={masthead} isManagedSidebar>
+    <Page
+      sidebar={
+        <PageSidebar theme="dark">
+          {/* <PageSidebarBody> */}
+          <BasePageNav />
+          {/* </PageSidebarBody> */}
+        </PageSidebar>
+      }
+      header={masthead}
+      isManagedSidebar
+    >
       {props.children}
     </Page>
   );
