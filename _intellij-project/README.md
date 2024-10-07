@@ -29,14 +29,25 @@ It's recommended to that before opening IntelliJ IDEA to make indexing faster on
 
 Once prompted by IntelliJ IDEA, select "Open" and choose this folder.
 
-<img src="docs/intellij-open.png" alt="drawing" style="max-width:600px; display:block" />
-<img src="docs/intellij-select-folder.png" alt="drawing" style="max-width:600px; display:block" />
+<img src="docs/intellij-open.png" alt="Open" style="max-width:600px; display:block" />
+<img src="docs/intellij-select-folder.png" alt="Select folder" style="max-width:600px; display:block" />
+
+---
+
+After you're done importing the project, please also configure the code formatter (or Code Style, in IntelliJ IDEA terminology.)
+
+Apache KIE Tools uses an Eclipse Formatter XML, so please install https://plugins.jetbrains.com/plugin/6546-adapter-for-eclipse-code-formatter and configure it like in the screenshot below:
+
+<img src="docs/intellij-eclipse-formatter-config.png" alt="Configure Eclipse formatter" style="width:600px" />
+
+
+---
 
 You should now be able to develop all Java- and Maven-based projects normally.
 
 ---
 
-For more information on Maven-based packages on KIE Tools, please refere to the [KIE Tools :: Manual](../repo/docs/MANUAL.md).
+> For more information on Maven-based packages on KIE Tools, please refere to the [KIE Tools :: Manual](../repo/docs/MANUAL.md).
 
 
 

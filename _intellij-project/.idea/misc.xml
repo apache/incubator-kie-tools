@@ -21,11 +21,6 @@
         <option value="$PROJECT_DIR$/../packages/serverless-logic-web-tools-swf-deployment-quarkus-app/pom.xml" />
       </list>
     </option>
-    <option name="ignoredFiles">
-      <set>
-        <option value="$PROJECT_DIR$/../packages/dashbuilder/appformer/uberfire-commons/pom.xml" />
-      </set>
-    </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_16" project-jdk-name="17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
