@@ -204,8 +204,8 @@ pipeline {
                     env.STUNNER_EDITORS_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-stunner-editors.zip"
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
-                    cd ${WORSKPACE}/kie-tools/packages/online-editor/dist && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.ONLINE_EDITOR_RELEASE_ZIP_FILE}" .
-                    cd ${WORSKPACE}/kie-tools/packages/stunner-editors/dist && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.STUNNER_EDITORS_RELEASE_ZIP_FILE}" .
+                    cd "${WORKSPACE}/kie-tools/packages/online-editor/dist" && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.ONLINE_EDITOR_RELEASE_ZIP_FILE}" .
+                    cd "${WORKSPACE}/kie-tools/packages/stunner-editors/dist" && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.STUNNER_EDITORS_RELEASE_ZIP_FILE}" .
                     """.trim()
                 }
             }
