@@ -300,7 +300,7 @@ function TestScenarioDataSelectorPanel() {
         .join(".");
     }
 
-    //TODO 1 This not work with multiple level and expressions fields.
+    //TODO 1 This not work with multiple level and expressions fields. see kie-issues#1514
     const treeViewItemToActivate = filteredDataObjects
       .reduce((acc: TestScenarioDataObject[], item) => {
         return item.children ? acc.concat(item.children) : acc;
@@ -388,7 +388,7 @@ function TestScenarioDataSelectorPanel() {
 
   // CHECK
   const onInsertDataObjectClick = useCallback(
-    /** TODO 2 : NEED A POPUP ASKING IF WE WANT TO REPLACE VALUES OR NOT */
+    /** TODO 2 : NEED A POPUP ASKING IF WE WANT TO REPLACE VALUES OR NOT see kie-issues#1514 */
     () => {
       const isBackground = selectedColumnMetadata!.isBackground;
       const factMappings = retrieveModelDescriptor(scesimModel.ScenarioSimulationModel, isBackground).factMappings
@@ -399,8 +399,8 @@ function TestScenarioDataSelectorPanel() {
 
       const className = treeViewStatus.activeItems[0].customBadgeContent!.toString();
       const expressionAlias = isRootType ? "Expression </>" : treeViewStatus.activeItems[0].name!.toString();
-      const expressionElementsSteps = treeViewStatus.activeItems[0].id!.split(".").filter((step) => !!step.trim()); //WARNING !!!! THIS DOESN'T WORK WITH IMPORTED DATA OBJECTS
-      const factName = treeViewStatus.activeItems[0].id!.split(".")[0]; //WARNING !!!! THIS DOESN'T WORK WITH IMPORTED DATA OBJECTS
+      const expressionElementsSteps = treeViewStatus.activeItems[0].id!.split(".").filter((step) => !!step.trim()); //WARNING !!!! THIS DOESN'T WORK WITH IMPORTED DATA OBJECTS see kie-issues#1514
+      const factName = treeViewStatus.activeItems[0].id!.split(".")[0]; //WARNING !!!! THIS DOESN'T WORK WITH IMPORTED DATA OBJECTS see kie-issues#1514
       const factClassName = isRootType
         ? treeViewStatus.activeItems[0].customBadgeContent!.toString()
         : rootDataObject.customBadgeContent!.toString();
@@ -439,7 +439,7 @@ function TestScenarioDataSelectorPanel() {
           ...factMappingValueToUpdate,
           factIdentifier: { className: { __$$text: factClassName }, name: { __$$text: factName } },
           // rawValue: {
-          //   __$$text: update.value,  //TODO 2 related
+          //   __$$text: update.value,  //TODO 2 related see kie-issues#1514
           // },
         };
 

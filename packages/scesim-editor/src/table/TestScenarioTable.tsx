@@ -55,8 +55,7 @@ import {
   retrieveModelDescriptor,
   retrieveRowsDataFromModel,
 } from "../common/TestScenarioCommonFunctions";
-import { useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
-import { TestScenarioType } from "../store/TestScenarioEditorStore";
+import { useTestScenarioEditorStore, useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
 
 function TestScenarioTable({
   tableData,
@@ -83,8 +82,8 @@ function TestScenarioTable({
 
   const { i18n } = useTestScenarioEditorI18n();
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
-  const state = testScenarioEditorStoreApi.getState();
-  const assetType = state.computed(state).getTestScenarioType();
+  const settingsModel = useTestScenarioEditorStore((state) => state.scesim.model.ScenarioSimulationModel.settings);
+  const testScenarioType = settingsModel.type?.__$$text.toUpperCase();
 
   /** BACKGROUND TABLE MANAGMENT */
 
@@ -115,12 +114,12 @@ function TestScenarioTable({
   const determineDataTypeLabel = useCallback(
     (dataType: string) => {
       let dataTypeLabel = dataType;
-      if (assetType === TestScenarioType.RULE) {
+      if (testScenarioType === "RULE") {
         dataTypeLabel = dataTypeLabel.split(".").pop() ?? dataTypeLabel;
       }
       return dataTypeLabel.endsWith("Void") ? "<Undefined>" : dataTypeLabel;
     },
-    [assetType]
+    [testScenarioType]
   );
 
   /* It updates any column width change in the Model */
