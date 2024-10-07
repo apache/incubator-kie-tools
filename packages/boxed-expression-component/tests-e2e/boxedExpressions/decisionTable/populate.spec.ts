@@ -24,47 +24,39 @@ test.describe("Populate Decision table", () => {
   test("should correctly create a routing decision table", async ({ stories, page, bee, resizing }) => {
     await stories.openDecisionTable();
 
-    await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Post-bureau risk category");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "string" }).click();
-    await page.keyboard.press("Enter");
+    await bee.expression.asDecisionTable().inputHeaderAt(0).open();
+    await bee.expression
+      .asDecisionTable()
+      .inputHeaderAt(0)
+      .setName({ name: "Post-bureau risk category", close: false });
+    await bee.expression.asDecisionTable().inputHeaderAt(0).setDataType({ dataType: "string", close: true });
     await resizing.reset(page.getByRole("columnheader", { name: "Post-bureau risk category (string)" }));
-    await page
-      .getByRole("columnheader", { name: "Post-bureau risk category (string)" })
-      .hover({ position: { x: 0, y: 0 } });
-    await page.getByRole("row", { name: "Post-bureau risk category (string)" }).locator("svg").click();
+    await bee.expression.asDecisionTable().addInputAtStart();
 
-    await page.getByRole("columnheader", { name: "input-2 (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Post-bureau affordability");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "boolean" }).click();
-    await page.keyboard.press("Enter");
+    await bee.expression.asDecisionTable().inputHeaderAt(0).open();
+    await bee.expression
+      .asDecisionTable()
+      .inputHeaderAt(0)
+      .setName({ name: "Post-bureau affordability", close: false });
+    await bee.expression.asDecisionTable().inputHeaderAt(0).setDataType({ dataType: "boolean", close: true });
     await resizing.reset(page.getByRole("columnheader", { name: "Post-bureau affordability (boolean)" }));
-    await page
-      .getByRole("columnheader", { name: "Post-bureau affordability (boolean)" })
-      .hover({ position: { x: 0, y: 0 } });
-    await page.getByRole("row", { name: "Post-bureau affordability (boolean)" }).locator("svg").click();
+    await bee.expression.asDecisionTable().addInputAtStart();
 
-    await page.getByRole("columnheader", { name: "input-3 (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Credit Score");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "number" }).click();
-    await page.keyboard.press("Enter");
-    await page.getByRole("columnheader", { name: "Credit Score (number)" }).hover({ position: { x: 0, y: 0 } });
-    await page.getByRole("row", { name: "Credit Score (number)" }).locator("svg").click();
+    await bee.expression.asDecisionTable().inputHeaderAt(0).open();
+    await bee.expression.asDecisionTable().inputHeaderAt(0).setName({ name: "Credit Score", close: false });
+    await bee.expression.asDecisionTable().inputHeaderAt(0).setDataType({ dataType: "number", close: true });
+    await resizing.reset(page.getByRole("columnheader", { name: "Credit Score (number)" }));
+    await bee.expression.asDecisionTable().addInputAtStart();
 
-    await page.getByRole("columnheader", { name: "input-4 (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Bankrupt");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "boolean" }).click();
-    await page.keyboard.press("Enter");
+    await bee.expression.asDecisionTable().inputHeaderAt(0).open();
+    await bee.expression.asDecisionTable().inputHeaderAt(0).setName({ name: "Bankrupt", close: false });
+    await bee.expression.asDecisionTable().inputHeaderAt(0).setDataType({ dataType: "boolean", close: true });
+    await resizing.reset(page.getByRole("columnheader", { name: "Bankrupt (boolean)" }));
 
-    await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Routing");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "string" }).click();
-    await page.keyboard.press("Enter");
+    await bee.expression.asDecisionTable().outputHeaderAt(0).open();
+    await bee.expression.asDecisionTable().outputHeaderAt(0).setName({ name: "Routing", close: false });
+    await bee.expression.asDecisionTable().outputHeaderAt(0).setDataType({ dataType: "string", close: true });
+    await resizing.reset(page.getByRole("columnheader", { name: "Routing (string)" }));
 
     test.info().annotations.push({
       type: TestAnnotations.WORKAROUND_DUE_TO,
@@ -81,11 +73,10 @@ test.describe("Populate Decision table", () => {
     await page.getByRole("columnheader", { name: "Bankrupt (boolean)" }).hover({ position: { x: 0, y: 0 } });
     await page.getByRole("columnheader", { name: "Routing (string)" }).hover({ position: { x: 0, y: 0 } });
 
-    await page.getByRole("cell", { name: "1" }).hover();
-    await page.getByRole("cell", { name: "1" }).locator("svg").click();
-    await page.getByRole("cell", { name: "1" }).locator("svg").click();
-    await page.getByRole("cell", { name: "1" }).locator("svg").click();
-    await page.getByRole("cell", { name: "1" }).locator("svg").click();
+    await bee.expression.asDecisionTable().addRowAtBottomOfIndex(1);
+    await bee.expression.asDecisionTable().addRowAtBottomOfIndex(2);
+    await bee.expression.asDecisionTable().addRowAtBottomOfIndex(3);
+    await bee.expression.asDecisionTable().addRowAtBottomOfIndex(4);
 
     await bee.expression.asDecisionTable().fill({
       startAtCell: 0,

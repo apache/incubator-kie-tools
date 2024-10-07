@@ -32,9 +32,9 @@ import {
   OnRequestExternalModelsAvailableToInclude,
   OnDmnModelChange,
 } from "@kie-tools/dmn-editor/dist/DmnEditor";
-import { normalize, Normalized } from "@kie-tools/dmn-editor/dist/normalization/normalize";
+import { normalize, Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 
-import { DmnEditorWrapper, StorybookDmnEditorProps } from "../../dmnEditorStoriesWrapper";
+import { DmnEditorWrapper } from "../../dmnEditorStoriesWrapper";
 
 import { availableModelsByPath, modelsByNamespace } from "./availableModelsToInclude";
 

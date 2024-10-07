@@ -19,7 +19,7 @@
 
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { DMN15__tDefinitions, DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { Normalized } from "../normalization/normalize";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 
 export function addImport({
   definitions,

@@ -18,9 +18,9 @@
  */
 
 import { DMN15__tImport, DMN15__tNamedElement } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { XmlParserTsRootElementBaseType } from "@kie-tools/xml-parser-ts";
-import { Normalized } from "../normalization/normalize";
 
 export type FeelQNameBuild = {
   full: string;

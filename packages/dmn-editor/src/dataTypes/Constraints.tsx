@@ -24,6 +24,7 @@ import {
   DMN15__tItemDefinition,
   DMN15__tUnaryTests,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ConstraintsEnum, isEnum } from "./ConstraintsEnum";
 import { ConstraintsRange, isRange } from "./ConstraintsRange";
@@ -50,7 +51,6 @@ import { useDmnEditorStore } from "../store/StoreContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
-import { Normalized } from "../normalization/normalize";
 
 export type TypeHelper = {
   check: (value: string) => boolean;

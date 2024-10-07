@@ -25,6 +25,7 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContex
 import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { buildFeelQNameFromXmlQName } from "../../feel/buildFeelQName";
 import { DMN15__tNamedElement } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
@@ -34,7 +35,6 @@ import { flushSync } from "react-dom";
 import { NodeLabelPosition } from "./NodeSvgs";
 import { State } from "../../store/Store";
 import "./EditableNodeLabel.css";
-import { Normalized } from "../../normalization/normalize";
 import { useSettings } from "../../settings/DmnEditorSettingsContext";
 
 export type OnEditableNodeLabelChange = (value: string | undefined) => void;

@@ -19,6 +19,7 @@
 
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { DC__Bounds } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { addNamespaceToHref, parseXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import ELK, * as Elk from "elkjs/lib/elk.bundled.js";
 import { Edge, Node } from "reactflow";
 import { NodeType } from "../diagram/connections/graphStructure";
@@ -29,7 +30,6 @@ import { DEFAULT_NODE_SIZES, MIN_NODE_SIZES } from "../diagram/nodes/DefaultSize
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { SnapGrid } from "../store/Store";
-import { addNamespaceToHref, parseXmlHref } from "../xml/xmlHrefs";
 
 const elk = new ELK();
 

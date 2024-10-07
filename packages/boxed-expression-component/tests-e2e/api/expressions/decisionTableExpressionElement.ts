@@ -21,6 +21,7 @@ import { Locator } from "@playwright/test";
 import { Monaco } from "../../__fixtures__/monaco";
 import { ExpressionCell } from "../expressionContainer";
 import { NameAndDataTypeCell } from "../nameAndDataTypeCell";
+import { AnnotationCell } from "../annotationCell";
 
 export class DecisionTableExpressionElement {
   constructor(
@@ -284,7 +285,7 @@ export class DecisionTableExpressionElement {
   }
 
   public annotationHeaderAt(index: number) {
-    return new NameAndDataTypeCell(this.locator.getByTestId("kie-tools--bee--table-header-annotation").nth(index));
+    return new AnnotationCell(this.locator.getByTestId("kie-tools--bee--table-header-annotation").nth(index));
   }
 
   get expressionHeaderCell() {

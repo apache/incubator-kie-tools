@@ -24,9 +24,9 @@ import {
   DrawerHead,
   DrawerPanelContent,
 } from "@patternfly/react-core/dist/js/components/Drawer";
+import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { useMemo } from "react";
-import { buildXmlHref } from "../xml/xmlHrefs";
 import { SingleNodeProperties } from "./SingleNodeProperties";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 

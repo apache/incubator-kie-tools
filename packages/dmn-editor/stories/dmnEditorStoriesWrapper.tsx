@@ -22,7 +22,7 @@ import { useCallback, useState, useRef, useMemo, useEffect } from "react";
 import { useArgs } from "@storybook/preview-api";
 import { DmnEditor, DmnEditorProps, DmnEditorRef, EvaluationResults, ValidationMessages } from "../src/DmnEditor";
 import { DmnLatestModel, getMarshaller } from "@kie-tools/dmn-marshaller";
-import { normalize } from "@kie-tools/dmn-editor/dist/normalization/normalize";
+import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { diff } from "deep-object-diff";
 import { generateEmptyDmn15 } from "./misc/empty/Empty.stories";
 

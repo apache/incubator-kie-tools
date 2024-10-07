@@ -21,8 +21,8 @@ import {
   DMN15__tDefinitions,
   DMN15__tItemDefinition,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getNewItemDefinition } from "../dataTypes/DataTypeSpec";
-import { Normalized } from "../normalization/normalize";
 
 export function addTopLevelItemDefinition({
   definitions,

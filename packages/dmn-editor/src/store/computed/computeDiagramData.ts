@@ -21,6 +21,8 @@ import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import * as RF from "reactflow";
 import { KIE_DMN_UNKNOWN_NAMESPACE } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { buildXmlHref, parseXmlHref, xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml";
 import { snapShapeDimensions, snapShapePosition } from "../../diagram/SnapGrid";
 import { EdgeType, NodeType } from "../../diagram/connections/graphStructure";
 import { EDGE_TYPES } from "../../diagram/edges/EdgeTypes";
@@ -32,13 +34,10 @@ import { ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glit
 import { NODE_TYPES } from "../../diagram/nodes/NodeTypes";
 import { DmnDiagramNodeData, NodeDmnObjects } from "../../diagram/nodes/Nodes";
 import { Unpacked } from "../../tsExt/tsExt";
-import { buildXmlHref, parseXmlHref } from "../../xml/xmlHrefs";
 import { TypeOrReturnType } from "../ComputedStateCache";
 import { Computed, State } from "../Store";
 import { getDecisionServicePropertiesRelativeToThisDmn } from "../../mutations/addExistingDecisionServiceToDrd";
-import { Normalized } from "../../normalization/normalize";
 import { KIE_UNKNOWN_NAMESPACE } from "../../kie/kie";
-import { xmlHrefToQName } from "../../xml/xmlHrefToQName";
 
 export const NODE_LAYERS = {
   GROUP_NODE: 0,

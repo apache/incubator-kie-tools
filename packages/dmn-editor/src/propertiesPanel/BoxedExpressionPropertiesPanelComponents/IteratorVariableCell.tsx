@@ -24,7 +24,7 @@ import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionInde
 import { useDmnEditorStore } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { DMN15__tIterator } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { Normalized } from "../../normalization/normalize";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 
 export function IteratorVariableCell(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadOnly: boolean }) {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);

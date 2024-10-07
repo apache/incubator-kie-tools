@@ -20,14 +20,14 @@
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { DC__Bounds, DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { NodeNature, nodeNatures } from "./NodeNature";
 import { addOrGetDrd as getDefaultDiagram } from "./addOrGetDrd";
 import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
-import { buildXmlHref } from "../xml/xmlHrefs";
-import { Normalized } from "../normalization/normalize";
 import { ExternalModelsIndex } from "../DmnEditor";
 
 export function addStandaloneNode({
