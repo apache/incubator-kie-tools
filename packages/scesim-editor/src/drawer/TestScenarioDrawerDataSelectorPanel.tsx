@@ -34,14 +34,12 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip/";
 import { TreeView, TreeViewDataItem, TreeViewSearch } from "@patternfly/react-core/dist/js/components/TreeView/";
 import { WarningTriangleIcon } from "@patternfly/react-icons/dist/esm/icons/warning-triangle-icon";
 
-import { SceSimModel } from "@kie-tools/scesim-marshaller";
 import {
   SceSim__FactMappingType,
   SceSim__FactMappingValuesTypes,
   SceSim__expressionElementsType,
 } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
-import { TestScenarioType } from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
 
 import { EMPTY_TYPE, TEST_SCENARIO_EXPRESSION_TYPE } from "../common/TestScenarioCommonConstants";
@@ -63,15 +61,13 @@ const enum TestScenarioDataSelectorState {
 
 function TestScenarioDataSelectorPanel() {
   const { i18n } = useTestScenarioEditorI18n();
-  const tableStatus = useTestScenarioEditorStore((s) => s.table);
-  const tabStatus = useTestScenarioEditorStore((s) => s.navigation.tab);
+  const dataObjects = useTestScenarioEditorStore((state) => state.computed(state).getTestScenarioDataObjects());
   const scesimModel = useTestScenarioEditorStore((state) => state.scesim.model);
+  const tableStatus = useTestScenarioEditorStore((state) => state.table);
+  const tabStatus = useTestScenarioEditorStore((state) => state.navigation.tab);
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
-  const state = useTestScenarioEditorStoreApi().getState();
-  const dataObjects = state.computed(state).getTestScenarioDataObjects();
-  const testScenarioType = state.computed(state).getTestScenarioType();
+  const testScenarioType = scesimModel.ScenarioSimulationModel.settings.type?.__$$text.toUpperCase();
 
-  // TODO Computed?
   const selectedColumnMetadata =
     tabStatus === TestScenarioEditorTab.SIMULATION
       ? tableStatus.simulation.selectedColumn
@@ -333,19 +329,19 @@ function TestScenarioDataSelectorPanel() {
     const treeViewEmptyIcon = filteredItems.length === 0 ? WarningTriangleIcon : WarningTriangleIcon;
     const title =
       dataObjects.length === 0
-        ? testScenarioType === TestScenarioType.DMN
+        ? testScenarioType === "DMN"
           ? i18n.drawer.dataSelector.emptyDataObjectsTitleDMN
           : i18n.drawer.dataSelector.emptyDataObjectsTitleRule
         : "No more properties"; //TODO CHANGE
     const description =
       dataObjects.length === 0
-        ? testScenarioType === TestScenarioType.DMN
+        ? testScenarioType === "DMN"
           ? i18n.drawer.dataSelector.emptyDataObjectsDescriptionDMN
           : i18n.drawer.dataSelector.emptyDataObjectsDescriptionRule
         : "All the properties have been already assigned"; //TODO CHANGE
 
     {
-      testScenarioType === TestScenarioType.DMN
+      testScenarioType === "DMN"
         ? i18n.drawer.dataSelector.emptyDataObjectsTitleDMN
         : i18n.drawer.dataSelector.emptyDataObjectsTitleRule;
     }
@@ -395,8 +391,8 @@ function TestScenarioDataSelectorPanel() {
     /** TODO 2 : NEED A POPUP ASKING IF WE WANT TO REPLACE VALUES OR NOT */
     () => {
       const isBackground = selectedColumnMetadata!.isBackground;
-      const factMappings = retrieveModelDescriptor(state.scesim.model.ScenarioSimulationModel, isBackground)
-        .factMappings.FactMapping!;
+      const factMappings = retrieveModelDescriptor(scesimModel.ScenarioSimulationModel, isBackground).factMappings
+        .FactMapping!;
       const deepClonedFactMappings = JSON.parse(JSON.stringify(factMappings));
       const isRootType = isDataObjectRootParent(dataObjects, treeViewStatus.activeItems[0].id!.toString());
       const rootDataObject = findDataObjectRootParent(dataObjects, treeViewStatus.activeItems[0].id!.toString());
@@ -426,7 +422,7 @@ function TestScenarioDataSelectorPanel() {
       };
 
       const deepClonedRowsData: SceSim__FactMappingValuesTypes[] = JSON.parse(
-        JSON.stringify(retrieveRowsDataFromModel(state.scesim.model.ScenarioSimulationModel, isBackground))
+        JSON.stringify(retrieveRowsDataFromModel(scesimModel.ScenarioSimulationModel, isBackground))
       );
 
       deepClonedRowsData.forEach((fmv, index) => {
@@ -476,7 +472,7 @@ function TestScenarioDataSelectorPanel() {
       findDataObjectRootParent,
       isDataObjectRootParent,
       selectedColumnMetadata,
-      state.scesim.model.ScenarioSimulationModel,
+      scesimModel,
       testScenarioEditorStoreApi,
       treeViewStatus.activeItems,
     ]
@@ -530,12 +526,12 @@ function TestScenarioDataSelectorPanel() {
   return (
     <>
       <Text className="kie-scesim-editor-drawer-data-objects--text">
-        {testScenarioType === TestScenarioType.DMN
+        {testScenarioType === "DMN"
           ? i18n.drawer.dataSelector.descriptionDMN
           : i18n.drawer.dataSelector.descriptionRule}
         <Tooltip
           content={
-            testScenarioType === TestScenarioType.DMN
+            testScenarioType === "DMN"
               ? i18n.drawer.dataSelector.dataObjectsDescriptionDMN
               : i18n.drawer.dataSelector.dataObjectsDescriptionRule
           }

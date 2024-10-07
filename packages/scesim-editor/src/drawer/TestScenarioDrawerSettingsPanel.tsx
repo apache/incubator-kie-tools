@@ -36,8 +36,8 @@ import "./TestScenarioDrawerSettingsPanel.css";
 
 function TestScenarioDrawerSettingsPanel({ fileName }: { fileName: string }) {
   const { i18n } = useTestScenarioEditorI18n();
+  const settingsModel = useTestScenarioEditorStore((state) => state.scesim.model.ScenarioSimulationModel.settings);
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
-  const settingsModel = useTestScenarioEditorStore((s) => s.scesim.model.ScenarioSimulationModel.settings);
   const testScenarioType = settingsModel.type?.__$$text.toUpperCase();
 
   const updateSettingsField = useCallback(
