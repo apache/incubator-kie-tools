@@ -74,7 +74,11 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
   }, []);
 
   const displaySelectedFunctionKind = useMemo(
-    () => <div className="selected-function-kind">{_.first(selectedFunctionKind)}</div>,
+    () => (
+      <div className="selected-function-kind" data-testid="kie-tools--bee--selected-function-kind">
+        {_.first(selectedFunctionKind)}
+      </div>
+    ),
     [selectedFunctionKind]
   );
 
