@@ -19,8 +19,8 @@
 
 import { DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { allDmnImportNamespaces } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { allPmmlImportNamespaces, getPmmlNamespaceFromDmnImport } from "../pmml/pmml";
-import { Normalized } from "../normalization/normalize";
 
 export function getNamespaceOfDmnImport({ dmnImport }: { dmnImport: Normalized<DMN15__tImport> }) {
   if (allDmnImportNamespaces.has(dmnImport["@_importType"])) {

@@ -24,40 +24,29 @@ test.describe("Populate Relation", () => {
   test("should correctly create a people relation", async ({ stories, page, bee, resizing }) => {
     await stories.openRelation();
 
-    await page.getByRole("columnheader", { name: "column-1 (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Name");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "string" }).click();
-    await page.keyboard.press("Enter");
+    await bee.expression.asRelation().columnHeaderAtIndex(1).open();
+    await bee.expression.asRelation().columnHeaderAtIndex(1).setName({ name: "Name", close: false });
+    await bee.expression.asRelation().columnHeaderAtIndex(1).setDataType({ dataType: "string", close: true });
     await resizing.resizeCell(
       page.getByRole("columnheader", { name: "Name (string)" }),
       { x: 0, y: 0 },
       { x: 40, y: 0 }
     );
-    await page.getByRole("columnheader", { name: "Name (string)" }).hover();
-    await page.getByRole("row", { name: "Name (string)" }).locator("svg").click();
+    await bee.expression.asRelation().addColumnAtRightOfIndex(1);
 
-    await page.getByRole("columnheader", { name: "column-2 (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Age");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "number" }).click();
-    await page.keyboard.press("Enter");
-    await page.getByRole("columnheader", { name: "Age (number)" }).hover();
-    await page.getByRole("row", { name: "Age (number)" }).locator("svg").click();
+    await bee.expression.asRelation().columnHeaderAtIndex(2).open();
+    await bee.expression.asRelation().columnHeaderAtIndex(2).setName({ name: "Age", close: false });
+    await bee.expression.asRelation().columnHeaderAtIndex(2).setDataType({ dataType: "number", close: true });
+    await bee.expression.asRelation().addColumnAtRightOfIndex(2);
 
-    await page.getByRole("columnheader", { name: "column-3 (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Country");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "string" }).click();
-    await page.keyboard.press("Enter");
-    await page.getByRole("columnheader", { name: "Country (string)" }).hover();
-    await page.getByRole("row", { name: "Country (string)" }).locator("svg").click();
+    await bee.expression.asRelation().columnHeaderAtIndex(3).open();
+    await bee.expression.asRelation().columnHeaderAtIndex(3).setName({ name: "Country", close: false });
+    await bee.expression.asRelation().columnHeaderAtIndex(3).setDataType({ dataType: "string", close: true });
+    await bee.expression.asRelation().addColumnAtRightOfIndex(3);
 
-    await page.getByRole("columnheader", { name: "column-4 (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Married");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "boolean" }).click();
-    await page.keyboard.press("Enter");
+    await bee.expression.asRelation().columnHeaderAtIndex(4).open();
+    await bee.expression.asRelation().columnHeaderAtIndex(4).setName({ name: "Married", close: false });
+    await bee.expression.asRelation().columnHeaderAtIndex(4).setDataType({ dataType: "boolean", close: true });
 
     test.info().annotations.push({
       type: TestAnnotations.WORKAROUND_DUE_TO,
@@ -73,9 +62,8 @@ test.describe("Populate Relation", () => {
     await page.getByPlaceholder("Expression Name").fill("People");
     await page.keyboard.press("Enter");
 
-    await page.getByRole("cell", { name: "1" }).hover();
-    await page.getByRole("cell", { name: "1" }).locator("svg").click();
-    await page.getByRole("cell", { name: "1" }).locator("svg").click();
+    await bee.expression.asRelation().addRowAtBellowOfRowAtIndex(1);
+    await bee.expression.asRelation().addRowAtBellowOfRowAtIndex(1);
 
     await bee.expression.asRelation().fill({
       startAtCell: 0,

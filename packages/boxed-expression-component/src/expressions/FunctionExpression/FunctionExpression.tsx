@@ -156,7 +156,10 @@ export function useFunctionExpressionParametersColumnHeader(
 
   const expressionParametersContent = useMemo(
     () => (
-      <div className={`parameters-list ${_.isEmpty(formalParameters) ? "empty-parameters" : ""}`}>
+      <div
+        data-testid="kie-tools--bee--parameters-list"
+        className={`parameters-list ${_.isEmpty(formalParameters) ? "empty-parameters" : ""}`}
+      >
         <p className="pf-u-text-truncate">
           {_.isEmpty(formalParameters) ? (
             i18n.editParameters

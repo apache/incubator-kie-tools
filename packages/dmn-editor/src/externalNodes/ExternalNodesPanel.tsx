@@ -19,10 +19,10 @@
 
 import * as React from "react";
 import { useCallback, useState } from "react";
+import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { DiagramLhsPanel, DmnEditorTab } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { buildXmlHref } from "../xml/xmlHrefs";
 import {
   EmptyState,
   EmptyStateBody,

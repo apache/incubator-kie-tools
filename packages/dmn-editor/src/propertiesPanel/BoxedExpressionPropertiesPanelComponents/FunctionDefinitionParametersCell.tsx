@@ -29,13 +29,13 @@ import {
   DMN15__tFunctionDefinition,
   DMN15__tInformationItem,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constraints";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { State } from "../../store/Store";
-import { Normalized } from "../../normalization/normalize";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 export function FunctionDefinitionParameterCell(props: {

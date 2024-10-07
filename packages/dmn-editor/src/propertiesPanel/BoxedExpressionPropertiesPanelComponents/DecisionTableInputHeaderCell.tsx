@@ -23,8 +23,9 @@ import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionInde
 import { ContentField, DescriptionField, ExpressionLanguageField, NameField, TypeRefField } from "./Fields";
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { DMN15__tInputClause } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditor } from "../../DmnEditorContext";
-import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
@@ -32,7 +33,6 @@ import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constrai
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { State } from "../../store/Store";
-import { Normalized } from "../../normalization/normalize";
 
 export function DecisionTableInputHeaderCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;

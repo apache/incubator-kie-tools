@@ -18,7 +18,7 @@
  */
 
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
-import { normalize } from "@kie-tools/dmn-editor/dist/normalization/normalize";
+import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 import * as DmnEditor from "@kie-tools/dmn-editor/dist/DmnEditor";
 import { getPmmlNamespace } from "@kie-tools/dmn-editor/dist/pmml/pmml";

@@ -21,6 +21,7 @@ import { Locator } from "@playwright/test";
 import { Monaco } from "../../__fixtures__/monaco";
 import { ChildExpression } from "../expressionContainer";
 import { NameAndDataTypeCell } from "../nameAndDataTypeCell";
+import { NameAndDataTypeWithStandalonePopoverCell as VariableDescriptionCell } from "../nameAndDataTypeWithStandalonePopoverCell";
 
 export class ContextExpressionElement {
   constructor(
@@ -102,7 +103,7 @@ export class ContextExpressionEntry {
   }
 
   get variable() {
-    return new NameAndDataTypeCell(this.locator.getByRole("cell").nth(0));
+    return new VariableDescriptionCell(this.locator.getByRole("cell").nth(0));
   }
 
   public async getPopoverMenu() {

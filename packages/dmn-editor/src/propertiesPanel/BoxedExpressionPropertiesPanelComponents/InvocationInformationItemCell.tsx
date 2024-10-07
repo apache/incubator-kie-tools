@@ -24,10 +24,10 @@ import {
   DMN15__tInformationItem,
   DMN15__tInvocation,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { InformationItemCell } from "./InformationItemCell";
-import { Normalized } from "../../normalization/normalize";
 
 export function InvocationInformationItemCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;

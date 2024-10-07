@@ -17,10 +17,57 @@
  * under the License.
  */
 
-import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { Normalized } from "../normalization/normalize";
+import { DmnLatestModel } from "..";
+import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
+import { DMN15__tDefinitions } from "../schemas/dmn-1_5/ts-gen/types";
 
-export function addMissingImportNamespaces(definitions: Normalized<DMN15__tDefinitions>) {
+export type Normalized<T> = WithRequiredDeep<T, "@_id">;
+
+type WithRequiredDeep<T, K extends keyof any> = T extends undefined
+  ? T
+  : T extends Array<infer U>
+    ? Array<WithRequiredDeep<U, K>>
+    : { [P in keyof T]: WithRequiredDeep<T[P], K> } & (K extends keyof T
+        ? { [P in K]-?: NonNullable<WithRequiredDeep<T[P], K>> }
+        : T);
+
+export function normalize(model: DmnLatestModel): Normalized<DmnLatestModel> {
+  getNewDmnIdRandomizer()
+    .ack({
+      json: model.definitions.drgElement,
+      type: "DMN15__tDefinitions",
+      attr: "drgElement",
+    })
+    .ack({
+      json: model.definitions.artifact,
+      type: "DMN15__tDefinitions",
+      attr: "artifact",
+    })
+    .ack({
+      json: model.definitions["dmndi:DMNDI"],
+      type: "DMN15__tDefinitions",
+      attr: "dmndi:DMNDI",
+    })
+    .ack({
+      json: model.definitions.import,
+      type: "DMN15__tDefinitions",
+      attr: "import",
+    })
+    .ack({
+      json: model.definitions.itemDefinition,
+      type: "DMN15__tDefinitions",
+      attr: "itemDefinition",
+    })
+    .randomize({ skipAlreadyAttributedIds: true });
+
+  const normalizedModel = model as Normalized<DmnLatestModel>;
+
+  addMissingImportNamespaces(normalizedModel.definitions);
+
+  return normalizedModel;
+}
+
+function addMissingImportNamespaces(definitions: Normalized<DMN15__tDefinitions>) {
   if (definitions.import === undefined) {
     return;
   }

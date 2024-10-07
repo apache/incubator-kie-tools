@@ -18,8 +18,8 @@
  */
 
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Unpacked } from "../../tsExt/tsExt";
-import { Normalized } from "../../normalization/normalize";
 
 export type AdjMatrix = Record<
   string,

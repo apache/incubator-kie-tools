@@ -22,11 +22,11 @@ import { test, expect } from "../../__fixtures__/base";
 test.describe("Populate Boxed List", () => {
   test("should correctly create an age group boxed list", async ({ stories, bee, page, monaco }) => {
     await stories.openBoxedList();
-    await page.getByRole("cell", { name: "1" }).hover();
-    await page.getByRole("cell", { name: "1" }).locator("svg").click();
-    await page.getByRole("cell", { name: "1" }).locator("svg").click();
-    await page.getByRole("cell", { name: "1" }).locator("svg").click();
-    await page.getByRole("cell", { name: "1" }).locator("svg").click();
+
+    await bee.expression.asList().addEntryAtTop();
+    await bee.expression.asList().addEntryAtTop();
+    await bee.expression.asList().addEntryAtTop();
+    await bee.expression.asList().addEntryAtTop();
 
     await bee.expression.asList().row(0).selectExpressionMenu.selectLiteral();
     await bee.expression.asList().row(1).selectExpressionMenu.selectLiteral();
@@ -34,11 +34,9 @@ test.describe("Populate Boxed List", () => {
     await bee.expression.asList().row(3).selectExpressionMenu.selectLiteral();
     await bee.expression.asList().row(4).selectExpressionMenu.selectLiteral();
 
-    await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Age groups");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "number" }).click();
-    await page.keyboard.press("Enter");
+    await bee.expression.asList().expressionHeaderCell.open();
+    await bee.expression.asList().expressionHeaderCell.setName({ name: "Age groups", close: false });
+    await bee.expression.asList().expressionHeaderCell.setDataType({ dataType: "number", close: true });
 
     await monaco.fill({ monacoParentLocator: page, nth: 0, content: "<18" });
     await monaco.fill({ monacoParentLocator: page, nth: 1, content: "[18..30)" });
