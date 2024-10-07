@@ -11,5 +11,5 @@ repo
 .vscode
 .idea
 .ci
-_intellij-project
+./_intellij-project
 .github/CODEOWNERS
