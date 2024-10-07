@@ -22,11 +22,9 @@ import { test, expect } from "../../__fixtures__/base";
 test.describe("Populate Boxed Literal", () => {
   test("should correctly create a can drive boxed literal", async ({ stories, page, bee, resizing, monaco }) => {
     await stories.openBoxedLiteral();
-    await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Can drive?");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "boolean" }).click();
-    await page.keyboard.press("Enter");
+    await bee.expression.asLiteral().expressionHeaderCell.open();
+    await bee.expression.asLiteral().expressionHeaderCell.setName({ name: "Can drive?", close: false });
+    await bee.expression.asLiteral().expressionHeaderCell.setDataType({ dataType: "boolean", close: true });
 
     await monaco.fill({ monacoParentLocator: page, nth: 0, content: "Age >= 18 then true else false" });
     await resizing.resizeCell(

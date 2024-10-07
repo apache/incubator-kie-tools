@@ -21,23 +21,20 @@ import { expect, test } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Create Boxed Filter", () => {
-  test("should rename a filter", async ({ page, stories }) => {
+  test("should rename a filter", async ({ bee, page, stories }) => {
     await stories.openBoxedFilter("base");
 
-    await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Filter Expression Name");
-    await page.keyboard.press("Enter");
+    await bee.expression.asFilter().expressionHeaderCell.open();
+    await bee.expression.asFilter().expressionHeaderCell.setName({ name: "Filter Expression Name", close: true });
 
     await expect(page.getByRole("columnheader", { name: "Filter Expression Name (<Undefined>)" })).toBeVisible();
   });
 
-  test("should change a filter data type", async ({ page, stories }) => {
+  test("should change a filter data type", async ({ bee, page, stories }) => {
     await stories.openBoxedFilter("base");
 
-    await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "boolean" }).click();
-    await page.keyboard.press("Enter");
+    await bee.expression.asFilter().expressionHeaderCell.open();
+    await bee.expression.asFilter().expressionHeaderCell.setDataType({ dataType: "boolean", close: true });
 
     await expect(page.getByRole("columnheader", { name: "Expression Name (boolean)" })).toBeVisible();
   });
@@ -117,8 +114,6 @@ test.describe("Create Boxed Filter", () => {
 
     test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - Context Expression", async ({
       bee,
-      page,
-      stories,
     }) => {
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
@@ -133,8 +128,6 @@ test.describe("Create Boxed Filter", () => {
 
     test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - Decision Table", async ({
       bee,
-      jsonModel,
-      stories,
     }) => {
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
@@ -149,8 +142,6 @@ test.describe("Create Boxed Filter", () => {
 
     test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - List", async ({
       bee,
-      jsonModel,
-      stories,
     }) => {
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
@@ -165,8 +156,6 @@ test.describe("Create Boxed Filter", () => {
 
     test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - Invocation", async ({
       bee,
-      jsonModel,
-      stories,
     }) => {
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
@@ -181,8 +170,6 @@ test.describe("Create Boxed Filter", () => {
 
     test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - Function", async ({
       bee,
-      jsonModel,
-      stories,
     }) => {
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
@@ -197,8 +184,6 @@ test.describe("Create Boxed Filter", () => {
 
     test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - Conditional", async ({
       bee,
-      jsonModel,
-      stories,
     }) => {
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
@@ -213,8 +198,6 @@ test.describe("Create Boxed Filter", () => {
 
     test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - For", async ({
       bee,
-      jsonModel,
-      stories,
     }) => {
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
@@ -229,8 +212,6 @@ test.describe("Create Boxed Filter", () => {
 
     test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - Every", async ({
       bee,
-      jsonModel,
-      stories,
     }) => {
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
@@ -245,8 +226,6 @@ test.describe("Create Boxed Filter", () => {
 
     test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - Some", async ({
       bee,
-      jsonModel,
-      stories,
     }) => {
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
@@ -261,8 +240,6 @@ test.describe("Create Boxed Filter", () => {
 
     test("should correctly fill the 'in' cell when the 'match' cell is larger than the 'in' cell - Filter", async ({
       bee,
-      jsonModel,
-      stories,
     }) => {
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,

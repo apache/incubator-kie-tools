@@ -30,58 +30,41 @@ test.describe("Populate Boxed Function", () => {
     await page.getByRole("option", { name: "boolean" }).click();
     await page.keyboard.press("Enter");
 
-    await page.getByText("Edit parameters").click();
-    await page.getByRole("button", { name: "Add parameter" }).click();
-    await page.getByPlaceholder("Parameter name").nth(0).click();
-    await page.getByPlaceholder("Parameter name").nth(0).fill("Monthly Income");
-    await page.keyboard.press("Tab");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "number" }).click();
-
-    await page.getByRole("button", { name: "Add parameter" }).click();
-    await page.getByPlaceholder("Parameter name").nth(1).click();
-    await page.getByPlaceholder("Parameter name").nth(1).fill("Monthly Repayments");
-    await page.keyboard.press("Tab");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "number" }).click();
-
-    await page.getByRole("button", { name: "Add parameter" }).click();
-    await page.getByPlaceholder("Parameter name").nth(2).click();
-    await page.getByPlaceholder("Parameter name").nth(2).fill("Monthly Expenses");
-    await page.keyboard.press("Tab");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "number" }).click();
-
-    await page.getByRole("button", { name: "Add parameter" }).click();
-    await page.getByPlaceholder("Parameter name").nth(3).click();
-    await page.getByPlaceholder("Parameter name").nth(3).fill("Risk Category");
-    await page.keyboard.press("Tab");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "string" }).click();
-
-    await page.getByRole("button", { name: "Add parameter" }).click();
-    await page.getByPlaceholder("Parameter name").nth(4).click();
-    await page.getByPlaceholder("Parameter name").nth(4).fill("Required Monthly Income");
-    await page.keyboard.press("Tab");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "number" }).click();
-    await page.keyboard.press("Escape");
+    await bee.expression.asFunction().addParameter({ name: "Monthly Income", dataType: "number" });
+    await bee.expression.asFunction().addParameter({ name: "Monthly Repayments", dataType: "number" });
+    await bee.expression.asFunction().addParameter({ name: "Monthly Expenses", dataType: "number" });
+    await bee.expression.asFunction().addParameter({ name: "Risk Category", dataType: "string" });
+    await bee.expression.asFunction().addParameter({ name: "Required Monthly Income", dataType: "number" });
 
     await bee.expression.asFunction().entry(0).selectExpressionMenu.selectContext();
-    await page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)", exact: true }).hover();
-    await page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)", exact: true }).locator("svg").click();
+    await bee.expression.asFunction().entry(0).expression.asContext().addEntryBelowOfEntryAtIndex(0);
+    await bee.expression.asFunction().entry(0).expression.asContext().entry(0).variable.open();
+    await bee.expression
+      .asFunction()
+      .entry(0)
+      .expression.asContext()
+      .entry(0)
+      .variable.setName({ name: "Disposable income" });
+    await bee.expression
+      .asFunction()
+      .entry(0)
+      .expression.asContext()
+      .entry(0)
+      .variable.setDataType({ dataType: "number", commit: true });
 
-    await page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)", exact: true }).click();
-    await page.getByPlaceholder("Expression Name").fill("Disposable income");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "number" }).click();
-    await page.keyboard.press("Enter");
-
-    await page.getByRole("cell", { name: "ContextEntry-2 (<Undefined>)", exact: true }).click();
-    await page.getByPlaceholder("Expression Name").fill("Credit contingency factor");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "number" }).click();
-    await page.keyboard.press("Enter");
+    await bee.expression.asFunction().entry(0).expression.asContext().entry(1).variable.open();
+    await bee.expression
+      .asFunction()
+      .entry(0)
+      .expression.asContext()
+      .entry(1)
+      .variable.setName({ name: "Credit contingency factor" });
+    await bee.expression
+      .asFunction()
+      .entry(0)
+      .expression.asContext()
+      .entry(1)
+      .variable.setDataType({ dataType: "number", commit: true });
 
     await resizing.reset(page.getByRole("cell", { name: "Credit contingency factor (number)", exact: true }));
 
@@ -99,9 +82,21 @@ test.describe("Populate Boxed Function", () => {
       content: "Monthly Income - (Monthly Repayments + Monthly Expenses)",
     });
 
-    await page.getByRole("cell", { name: "1", exact: true }).nth(1).hover();
-    await page.getByRole("cell", { name: "1", exact: true }).locator("svg").click();
-    await page.getByRole("cell", { name: "1", exact: true }).locator("svg").click();
+    await bee.expression
+      .asFunction()
+      .entry(0)
+      .expression.asContext()
+      .entry(1)
+      .expression.asDecisionTable()
+      .addRowAtBottomOfIndex(1);
+
+    await bee.expression
+      .asFunction()
+      .entry(0)
+      .expression.asContext()
+      .entry(1)
+      .expression.asDecisionTable()
+      .addRowAtBottomOfIndex(1);
 
     await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).click();
     await page.getByPlaceholder("Expression Name").fill("Risk category");
