@@ -233,8 +233,7 @@ https://www.mojohaus.org/flatten-maven-plugin/
 
 #### package.json → scripts → install:
 
-Has to be at least `node mvn.bootstrap.js`
-The `mvn.bootstrap.js` script uses `@kie-tools/maven-base` to set up properties like `-Drevision`, `-Dmaven.repo.local.tail`.
+Has to be at least `node install.js`, using `@kie-tools/maven-base` to set up properties like `-Drevision`, `-Dmaven.repo.local.tail`.
 
 #### package.json → scripts → build:dev:
 

@@ -20,7 +20,7 @@
     "build:dev:linux:darwin": "mvn clean verify",
     "build:dev:win32": "pnpm powershell \"mvn clean verify\"",
     "build:prod": "pnpm build:dev",
-    "install": "node mvn.bootstrap.js",
+    "install": "node install.js",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "dependencies": {

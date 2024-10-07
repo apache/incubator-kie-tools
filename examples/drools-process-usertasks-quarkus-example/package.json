@@ -19,7 +19,7 @@
     "build:prod": "pnpm lint && run-script-if --bool \"$(build-env examples.build)\" --then run-script-os",
     "build:prod:darwin:linux": "mvn clean compile -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
     "build:prod:win32": "pnpm powershell \"mvn clean compile `-DskipTests `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
-    "install": "node mvn.bootstrap.js",
+    "install": "node install.js",
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "quarkus:dev": "run-script-os",

@@ -24,7 +24,7 @@
     "create-test-image:minikube": "kie-tools--image-builder minikube -r \"$(build-env devDeploymentBaseImage.registry)\" -a \"$(build-env devDeploymentBaseImage.account)\" -n \"$(build-env devDeploymentBaseImage.name)\" -t \"$(build-env devDeploymentBaseImage.buildTag)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env devDeploymentBaseImage.builderImage)\"",
     "create-test-image:openshift": "kie-tools--image-builder openshift -r \"$(build-env devDeploymentBaseImage.registry)\" -a \"$(build-env devDeploymentBaseImage.account)\" -n \"$(build-env devDeploymentBaseImage.name)\" -t \"$(build-env devDeploymentBaseImage.buildTag)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env devDeploymentBaseImage.builderImage)\"",
     "image:docker:build": "kie-tools--image-builder build -r \"$(build-env devDeploymentBaseImage.registry)\" -a \"$(build-env devDeploymentBaseImage.account)\" -n \"$(build-env devDeploymentBaseImage.name)\" -t \"$(build-env devDeploymentBaseImage.buildTag)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env devDeploymentBaseImage.builderImage)\" --build-arg USER_ID_ARG=\"$(build-env devDeploymentBaseImage.userId)\" --build-arg HOME_PATH_ARG=\"$(build-env devDeploymentBaseImage.homePath)\"",
-    "install": "node mvn.bootstrap.js",
+    "install": "node install.js",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "dependencies": {

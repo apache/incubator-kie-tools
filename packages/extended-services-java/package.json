@@ -27,7 +27,7 @@
     "copy:app:linux:darwin": "copyfiles -u 1 \"target/quarkus-app/**/*\" dist/",
     "copy:app:win32": "copyfiles -u 1 \"target/quarkus-app/**\" dist/",
     "dist": "rimraf dist && mkdir dist && pnpm copy:app && pnpm rename:app",
-    "install": "node mvn.bootstrap.js",
+    "install": "node install.js",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "rename:app": "run-script-os",
     "rename:app:linux:darwin": "mv dist/quarkus-app dist/extended-services-java",

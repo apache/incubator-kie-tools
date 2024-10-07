@@ -21,7 +21,7 @@
     "build:prod:darwin:linux": "mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -Dreproducible",
     "build:prod:win32": "pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-Dreproducible\"",
     "copy:webworker": "copyfiles -f target/worker/yard-validator-worker/yard-validator-worker.js dist",
-    "install": "node mvn.bootstrap.js",
+    "install": "node install.js",
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
