@@ -29,9 +29,8 @@ import {
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
-import { TestScenarioType } from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
-import { useTestScenarioEditorStore, useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
+import { useTestScenarioEditorStore } from "../store/TestScenarioStoreContext";
 import { TestScenarioEditorDock } from "../store/TestScenarioEditorStore";
 import TestScenarioDrawerDataSelectorPanel from "./TestScenarioDrawerDataSelectorPanel";
 import TestScenarioDrawerCheatSheetPanel from "./TestScenarioDrawerCheatSheetPanel";
@@ -39,9 +38,9 @@ import TestScenarioDrawerSettingsPanel from "../drawer/TestScenarioDrawerSetting
 
 function TestScenarioDrawerPanel({ fileName, onDrawerClose }: { fileName: string; onDrawerClose: () => void }) {
   const { i18n } = useTestScenarioEditorI18n();
-  const state = useTestScenarioEditorStoreApi().getState();
   const navigation = useTestScenarioEditorStore((state) => state.navigation);
-  const testScenarioType = state.computed(state).getTestScenarioType();
+  const settingsModel = useTestScenarioEditorStore((state) => state.scesim.model.ScenarioSimulationModel.settings);
+  const testScenarioType = settingsModel.type?.__$$text.toUpperCase();
 
   return (
     <DrawerPanelContent isResizable={true} minSize={"400px"} defaultSize={"500px"}>
@@ -56,7 +55,7 @@ function TestScenarioDrawerPanel({ fileName, onDrawerClose }: { fileName: string
                 case TestScenarioEditorDock.CHEATSHEET:
                   return i18n.drawer.cheatSheet.title;
                 case TestScenarioEditorDock.DATA_OBJECT:
-                  return testScenarioType === TestScenarioType.DMN
+                  return testScenarioType === "DMN"
                     ? i18n.drawer.dataSelector.titleDMN
                     : i18n.drawer.dataSelector.titleRule;
                 case TestScenarioEditorDock.SETTINGS:

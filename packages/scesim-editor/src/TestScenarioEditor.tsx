@@ -20,18 +20,14 @@
 import "@patternfly/react-core/dist/styles/base.css";
 
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { useCallback, useImperativeHandle, useMemo, useRef } from "react";
 
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 
 import { testScenarioEditorDictionaries, TestScenarioEditorI18nContext, testScenarioEditorI18nDefaults } from "./i18n";
 
 import { SceSimModel } from "@kie-tools/scesim-marshaller";
-import {
-  SceSim__FactMappingType,
-  SceSim__ScenarioSimulationModelType,
-  SceSim__settingsType,
-} from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
+import { SceSim__FactMappingType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
@@ -57,12 +53,7 @@ import { useTestScenarioEditorI18n } from "./i18n";
 
 import "./TestScenarioEditor.css";
 import { ComputedStateCache } from "./store/ComputedStateCache";
-import {
-  Computed,
-  createTestScenarioEditorStore,
-  TestScenarioEditorTab,
-  TestScenarioType,
-} from "./store/TestScenarioEditorStore";
+import { Computed, createTestScenarioEditorStore, TestScenarioEditorTab } from "./store/TestScenarioEditorStore";
 import {
   StoreApiType,
   TestScenarioEditorStoreApiContext,
@@ -128,9 +119,8 @@ function TestScenarioMainPanel({ fileName }: { fileName: string }) {
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const navigation = useTestScenarioEditorStore((s) => s.navigation);
   const scesimModel = useTestScenarioEditorStore((s) => s.scesim.model);
-  const state = testScenarioEditorStoreApi.getState();
-  const alertState = state.computed(state).getTestScenarioAlert();
-  const testScenarioType = state.computed(state).getTestScenarioType();
+  const isAlertEnabled = true; // Will be managed in kie-issue#970
+  const testScenarioType = scesimModel.ScenarioSimulationModel.settings.type?.__$$text.toUpperCase();
 
   const scenarioTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
   const backgroundTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
@@ -161,12 +151,12 @@ function TestScenarioMainPanel({ fileName }: { fileName: string }) {
             panelContent={<TestScenarioDrawerPanel fileName={fileName} onDrawerClose={() => showDockPanel(false)} />}
           >
             <DrawerContentBody>
-              {alertState.enabled && (
+              {isAlertEnabled && (
                 <div className="kie-scesim-editor--content-alert">
                   <Alert
-                    variant={alertState.variant}
+                    variant={testScenarioType === "DMN" ? "warning" : "danger"}
                     title={
-                      testScenarioType === TestScenarioType.DMN
+                      testScenarioType === "DMN"
                         ? i18n.alerts.dmnDataRetrievedFromScesim
                         : i18n.alerts.ruleDataRetrievedFromScesim
                     }
@@ -426,4 +416,3 @@ export const TestScenarioEditor = React.forwardRef(
     );
   }
 );
-export { TestScenarioType };

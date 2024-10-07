@@ -31,7 +31,6 @@ import { SceSim__settingsType } from "@kie-tools/scesim-marshaller/dist/schemas/
 
 import { useTestScenarioEditorI18n } from "../i18n";
 import { useTestScenarioEditorStore, useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
-import { TestScenarioType } from "../TestScenarioEditor";
 
 import "./TestScenarioDrawerSettingsPanel.css";
 
@@ -39,8 +38,7 @@ function TestScenarioDrawerSettingsPanel({ fileName }: { fileName: string }) {
   const { i18n } = useTestScenarioEditorI18n();
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const settingsModel = useTestScenarioEditorStore((s) => s.scesim.model.ScenarioSimulationModel.settings);
-  const state = useTestScenarioEditorStoreApi().getState();
-  const testScenarioType = state.computed(state).getTestScenarioType();
+  const testScenarioType = settingsModel.type?.__$$text.toUpperCase();
 
   const updateSettingsField = useCallback(
     (fieldName: keyof SceSim__settingsType, value: string | boolean) =>
@@ -63,11 +61,11 @@ function TestScenarioDrawerSettingsPanel({ fileName }: { fileName: string }) {
       </Title>
       <TextInput
         className={"kie-scesim-editor-drawer-settings--text-input"}
-        value={TestScenarioType[testScenarioType]}
+        value={testScenarioType}
         type="text"
         isDisabled
       />
-      {testScenarioType === TestScenarioType.DMN ? (
+      {testScenarioType === "DMN" ? (
         <>
           <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
             {i18n.drawer.settings.dmnModel}

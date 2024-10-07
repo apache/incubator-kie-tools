@@ -25,9 +25,7 @@ import { immer } from "zustand/middleware/immer";
 import { SceSim__FactMappingType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
 import { ComputedStateCache } from "./ComputedStateCache";
-import { computeTestScenarioType } from "./computed/computeTestScenarioType";
 import { computeTestScenarioDataObjects } from "./computed/computeTestScenarioDataObjects";
-import { computeTestScenarioAlert } from "./computed/computeTestScenarioAlert";
 
 enableMapSet(); // Necessary because `Computed` has a lot of Maps and Sets.
 
@@ -40,12 +38,6 @@ export enum TestScenarioEditorDock {
 export enum TestScenarioEditorTab {
   BACKGROUND,
   SIMULATION,
-}
-
-export enum TestScenarioType {
-  DMN,
-  NONE,
-  RULE,
 }
 
 export type TestScenarioAlert = {
@@ -92,9 +84,7 @@ export interface State {
 // Read this to understand why we need computed as part of the store.
 // https://github.com/pmndrs/zustand/issues/132#issuecomment-1120467721
 export type Computed = {
-  getTestScenarioAlert(): TestScenarioAlert;
   getTestScenarioDataObjects(): TestScenarioDataObject[];
-  getTestScenarioType(): TestScenarioType;
 };
 
 export type Dispatch = {
@@ -159,24 +149,13 @@ export function createTestScenarioEditorStore(model: SceSimModel, computedCache:
       },
       computed(state: State) {
         return {
-          getTestScenarioAlert: () => {
-            return computedCache.cached("getTestScenarioAlert", computeTestScenarioAlert, [
-              state.computed(state).getTestScenarioDataObjects(),
-              state.computed(state).getTestScenarioType(),
-            ]);
-          },
           getTestScenarioDataObjects: () => {
             return computedCache.cachedData(
               "getTestScenarioDataObjects",
               computeTestScenarioDataObjects,
               [state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping],
-              [state.computed(state).getTestScenarioType()]
+              [state.scesim.model.ScenarioSimulationModel.settings.type]
             );
-          },
-          getTestScenarioType: () => {
-            return computedCache.cached("getTestScenarioType", computeTestScenarioType, [
-              state.scesim.model.ScenarioSimulationModel.settings.type,
-            ]);
           },
         };
       },
