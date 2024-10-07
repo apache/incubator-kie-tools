@@ -18,17 +18,15 @@
  */
 
 import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { parseXmlHref, xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml";
 import { getContainmentRelationship, getDecisionServiceDividerLineLocalY } from "../diagram/maths/DmnMaths";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { SnapGrid } from "../store/Store";
 import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
-import { Normalized } from "../normalization/normalize";
 import { ExternalModelsIndex } from "../DmnEditor";
-import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
-import { DmnLatestModel } from "@kie-tools/dmn-marshaller/dist";
-import { xmlHrefToQName } from "../xml/xmlHrefToQName";
 
 export function addDecisionToDecisionService({
   definitions,

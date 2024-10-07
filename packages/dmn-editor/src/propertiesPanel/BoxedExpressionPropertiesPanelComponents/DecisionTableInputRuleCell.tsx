@@ -22,6 +22,7 @@ import { useMemo } from "react";
 import { DescriptionField, ExpressionLanguageField, TypeRefField } from "./Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { DMN15__tDecisionTable, DMN15__tUnaryTests } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
@@ -30,7 +31,6 @@ import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constrai
 import { useDmnEditor } from "../../DmnEditorContext";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
-import { Normalized } from "../../normalization/normalize";
 
 export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadOnly: boolean }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();

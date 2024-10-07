@@ -21,16 +21,10 @@ import * as __path from "path";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import * as DmnEditor from "@kie-tools/dmn-editor/dist/DmnEditor";
-import { normalize, Normalized } from "@kie-tools/dmn-editor/dist/normalization/normalize";
+import { normalize, Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { DMN_LATEST_VERSION, DmnLatestModel, DmnMarshaller, getMarshaller } from "@kie-tools/dmn-marshaller";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import {
-  ContentType,
-  ResourceContent,
-  SearchType,
-  WorkspaceChannelApi,
-  WorkspaceEdit,
-} from "@kie-tools-core/workspace/dist/api";
+import { ResourceContent, SearchType, WorkspaceChannelApi, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { domParser } from "@kie-tools/xml-parser-ts";
 import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";

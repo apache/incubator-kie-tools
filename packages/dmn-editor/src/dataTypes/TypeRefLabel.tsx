@@ -22,8 +22,8 @@ import { useMemo } from "react";
 import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { buildFeelQNameFromXmlQName } from "../feel/buildFeelQName";
 import { buildXmlQName, parseXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
+import { getXmlNamespaceDeclarationName } from "@kie-tools/dmn-marshaller/dist/xml/xmlNamespaceDeclarations";
 import { useDmnEditorStore } from "../store/StoreContext";
-import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 import { parseFeelQName } from "../feel/parseFeelQName";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 

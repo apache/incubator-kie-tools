@@ -21,9 +21,9 @@ import {
   DMN15__tDecisionService,
   DMN15__tDefinitions,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { Normalized } from "../normalization/normalize";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { buildXmlHref, parseXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { ExternalModelsIndex } from "../DmnEditor";
-import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
 
 export function repopulateInputDataAndDecisionsOnAllDecisionServices({
   definitions,

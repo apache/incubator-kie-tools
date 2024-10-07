@@ -22,18 +22,17 @@ import {
   DMN15__tDecisionService,
   DMN15__tDefinitions,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { buildXmlHref, parseXmlHref, xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml";
 import { ExternalModelsIndex } from "../DmnEditor";
 import { getAutoLayoutedInfo } from "../autolayout/autoLayoutInfo";
 import { DECISION_SERVICE_COLLAPSED_DIMENSIONS, MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
-import { Normalized } from "../normalization/normalize";
 import { Computed, SnapGrid, State } from "../store/Store";
 import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeContainingDecisionServiceHrefsByDecisionHrefs.ts";
 import { computeDiagramData } from "../store/computed/computeDiagramData";
 import { computeDirectlyIncludedExternalModelsByNamespace } from "../store/computed/computeDirectlyIncludedExternalModelsByNamespace";
 import { computeIndexedDrd } from "../store/computed/computeIndexes";
-import { xmlHrefToQName } from "../xml/xmlHrefToQName";
-import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { addShape } from "./addShape";
 import { applyAutoLayoutToDrd } from "./applyAutoLayoutToDrd";

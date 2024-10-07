@@ -19,12 +19,12 @@
 
 import { DMN15__tImport, DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { builtInFeelTypeNames } from "../../dataTypes/BuiltInFeelTypes";
 import { DataType, DataTypeIndex } from "../../dataTypes/DataTypes";
 import { buildFeelQNameFromNamespace } from "../../feel/buildFeelQName";
 import { TypeOrReturnType } from "../ComputedStateCache";
 import { Computed, State } from "../Store";
-import { Normalized } from "../../normalization/normalize";
 
 export function computeDataTypes(
   namespace: State["dmn"]["model"]["definitions"]["@_namespace"],

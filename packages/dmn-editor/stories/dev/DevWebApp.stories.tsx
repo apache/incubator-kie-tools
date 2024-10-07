@@ -24,7 +24,7 @@ import "@patternfly/react-core/dist/styles/base.css";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DmnLatestModel, DmnMarshaller, getMarshaller } from "@kie-tools/dmn-marshaller";
-import { normalize, Normalized } from "@kie-tools/dmn-editor/dist/normalization/normalize";
+import { normalize, Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { availableModelsByPath, modelsByNamespace } from "./availableModelsToInclude";
 import { generateEmptyDmn15 } from "../misc/empty/Empty.stories";
 import { loanPreQualificationDmn } from "../useCases/loanPreQualification/LoanPreQualification.stories";

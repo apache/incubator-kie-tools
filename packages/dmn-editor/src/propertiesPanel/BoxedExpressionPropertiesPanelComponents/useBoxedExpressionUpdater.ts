@@ -23,11 +23,11 @@ import {
   DMN15__tBusinessKnowledgeModel,
   DMN15__tDecision,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
-import { buildXmlHref } from "../../xml/xmlHrefs";
 import { AllExpressionsWithoutTypes } from "../../dataTypes/DataTypeSpec";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
-import { Normalized } from "../../normalization/normalize";
 
 export function useBoxedExpressionUpdater<T extends AllExpressionsWithoutTypes>(
   expressionPath: ExpressionPath[] | undefined

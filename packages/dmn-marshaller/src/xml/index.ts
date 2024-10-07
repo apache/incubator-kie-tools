@@ -17,25 +17,6 @@
  * under the License.
  */
 
-import { buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
-import { parseXmlHref } from "./xmlHrefs";
-import { getXmlNamespaceDeclarationName } from "./xmlNamespaceDeclarations";
-import { XmlParserTsRootElementBaseType } from "@kie-tools/xml-parser-ts";
-
-export function xmlHrefToQName(hrefString: string, rootElement: XmlParserTsRootElementBaseType | undefined) {
-  const href = parseXmlHref(hrefString);
-
-  const qNamePrefix = href.namespace
-    ? getXmlNamespaceDeclarationName({ rootElement, namespace: href.namespace })
-    : undefined;
-
-  if (href.namespace && !qNamePrefix) {
-    throw new Error(`Can't find namespace declaration for namespace '${href.namespace}'`);
-  }
-
-  return buildXmlQName({
-    type: "xml-qname",
-    localPart: href.id,
-    prefix: qNamePrefix,
-  });
-}
+export * from "./xmlHrefs";
+export * from "./xmlHrefToQName";
+export * from "./xmlNamespaceDeclarations";

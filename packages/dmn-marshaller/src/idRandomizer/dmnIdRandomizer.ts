@@ -17,19 +17,16 @@
  * under the License.
  */
 
-import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import {
-  elements as dmn15elements,
-  meta as dmn15meta,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
+import { v4 as uuid } from "uuid";
 import { XmlParserTsIdRandomizer, XmlParserTsIdRandomizerMatcher } from "@kie-tools/xml-parser-ts/dist/idRandomizer";
+import { elements as dmn15elements, meta as dmn15meta } from "../schemas/dmn-1_5/ts-gen/meta";
 import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
 
 export function getNewDmnIdRandomizer() {
   return new XmlParserTsIdRandomizer({
     meta: dmn15meta,
     elements: dmn15elements,
-    newIdGenerator: generateUuid,
+    newIdGenerator: () => `_${uuid()}`.toLocaleUpperCase(),
     matchers: [tDmnElementReferenceIdRandomizerMatcher],
   });
 }
