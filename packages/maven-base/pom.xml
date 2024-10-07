@@ -414,7 +414,13 @@
   <profiles>
     <profile>
       <!--  -->
-      <!-- TODO: Add explanation -->
+      <!-- This profile configures Maven to skip installing  -->
+      <!-- artifacts to the default maven.repo.local directory -->
+      <!-- And instead copies them to `dist/1st-party-m2/repository. -->
+      <!--  -->
+      <!-- This allows for Maven-based packages not to pollute the -->
+      <!-- "shared" local Maven repository and risk being available -->
+      <!-- for packages that do not declare its dependencies correctly. -->
       <!--  -->
       <id>use-maven-repo-local-tail</id>
       <!--      TEMPORARILY DISABLING MAVEN REPO LOCAL TAIL -->
@@ -506,9 +512,6 @@
         </plugins>
       </build>
     </profile>
-    <!--  -->
-    <!-- TODO: Add explanation -->
-    <!--  -->
     <profile>
       <id>reproducible-build</id>
       <activation>
