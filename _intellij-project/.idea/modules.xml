@@ -20,6 +20,7 @@
       <module fileurl="file://$PROJECT_DIR$/../examples/sonataflow-greeting-quarkus-example/sonataflow-greeting-quarkus-example.iml" filepath="$PROJECT_DIR$/../examples/sonataflow-greeting-quarkus-example/sonataflow-greeting-quarkus-example.iml" />
       <module fileurl="file://$PROJECT_DIR$/../packages/sonataflow-quarkus-devui/sonataflow-quarkus-devui-parent.iml" filepath="$PROJECT_DIR$/../packages/sonataflow-quarkus-devui/sonataflow-quarkus-devui-parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/../packages/stunner-editors/stunner-editors-parent.iml" filepath="$PROJECT_DIR$/../packages/stunner-editors/stunner-editors-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../packages/vscode-java-code-completion-extension-plugin/vscode-java-code-completion-extension-plugin.iml" filepath="$PROJECT_DIR$/../packages/vscode-java-code-completion-extension-plugin/vscode-java-code-completion-extension-plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/../packages/yard-model/yard-model.iml" filepath="$PROJECT_DIR$/../packages/yard-model/yard-model.iml" />
       <module fileurl="file://$PROJECT_DIR$/../packages/yard-validator-worker/yard-validator-worker.iml" filepath="$PROJECT_DIR$/../packages/yard-validator-worker/yard-validator-worker.iml" />
     </modules>

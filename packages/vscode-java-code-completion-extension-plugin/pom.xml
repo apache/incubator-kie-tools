@@ -33,7 +33,8 @@
   <groupId>org.apache.kie</groupId>
   <artifactId>vscode-java-code-completion-extension-plugin</artifactId>
   <packaging>pom</packaging>
-  <name>vscode-java-code-completion-extension-plugin :: parent</name>
+
+  <name>KIE Tools :: VS Code :: Java code completion extension plugin</name>
   <description>vscode-java-code-completion-extension-plugin parent</description>
 
   <modules>
