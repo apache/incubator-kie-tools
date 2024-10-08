@@ -44,6 +44,7 @@ import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 export function BasePage(props: { children?: React.ReactNode }) {
   const history = useHistory();
   const app = useApp();
+  const tooltipRef = React.useRef<HTMLButtonElement>(null);
 
   const masthead = useMemo(
     () => (
@@ -80,6 +81,7 @@ export function BasePage(props: { children?: React.ReactNode }) {
                     className="app--masterhead__disclaimer"
                     position="bottom-end"
                     key="disclaimer-tooltip"
+                    triggerRef={tooltipRef}
                     content={
                       <>
                         This deployment is intended to be used during <b>development</b>, so users should not use the

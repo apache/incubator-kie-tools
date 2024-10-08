@@ -23,6 +23,8 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
+  EmptyStateHeader,
+  EmptyStateFooter,
   // EmptyStateHeader,
   // EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -34,7 +36,7 @@ import { Link } from "react-router-dom";
 import { WorkflowDefinition } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { routes } from "../routes";
 import { BasePage } from "./BasePage";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Title } from "@patternfly/react-core";
 
 export enum ErrorKind {
   APPDATA_JSON = "AppDataJson",
@@ -78,9 +80,14 @@ export function ErrorPage(props: ErrorPageProps) {
       <PageSection isFilled aria-label={`${props.kind.toLowerCase()}-error-section`}>
         <PageSection variant={"light"} padding={{ default: "noPadding" }}>
           <EmptyState>
-            <Title headingLevel="h3">
-              <EmptyStateIcon icon={ExclamationTriangleIcon} />
-            </Title>
+            <EmptyStateHeader
+              titleText={
+                <>
+                  <EmptyStateIcon icon={ExclamationTriangleIcon} />
+                </>
+              }
+              headingLevel="h3"
+            />
             <TextContent>
               <Text component={"h2"}>{title}</Text>
             </TextContent>
@@ -111,9 +118,11 @@ export function ErrorPage(props: ErrorPageProps) {
                 <br />
               </PageSection>
             </EmptyStateBody>
-            <Title headingLevel="h4">
-              <Link to={routes.home.path({})}>Return home</Link>
-            </Title>
+            <EmptyStateFooter>
+              <Title headingLevel="h4">
+                <Link to={routes.home.path({})}>Return home</Link>
+              </Title>
+            </EmptyStateFooter>
           </EmptyState>
         </PageSection>
       </PageSection>
