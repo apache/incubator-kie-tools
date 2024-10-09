@@ -17,6 +17,12 @@
 
 ## @kie-tools-scripts/update-version
 
+Updates the `version` property of `package.json` files and runs `pnpm bootstrap` at the end.
+
+### Usage
+
+`pnpm update-version-to [version-in-semver-format] [pnpm-filter?]`
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software

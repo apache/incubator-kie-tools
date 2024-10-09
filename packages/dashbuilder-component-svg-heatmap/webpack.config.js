@@ -23,8 +23,8 @@ const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-module.exports = async (env) => {
-  return merge(common(env), {
+module.exports = async (webpackEnv) => {
+  return merge(common(webpackEnv), {
     entry: {
       index: "./src/index.tsx",
     },

@@ -17,9 +17,12 @@
  * under the License.
  */
 
-const buildEnv = require("./env");
-const { setup } = require("@kie-tools/maven-config-setup-helper");
+const { env } = require("./env");
+const { setupMavenConfigFile, installMvnw, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
 
-setup(`
-    -Drevision=${buildEnv.env.yardModel.version}
+setupMavenConfigFile(`
+    -Drevision=${env.yardModel.version}
+    -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
 `);
+
+installMvnw();

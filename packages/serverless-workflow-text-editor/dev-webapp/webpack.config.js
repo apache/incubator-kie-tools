@@ -24,10 +24,9 @@ const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const { env } = require("../env");
-const buildEnv = env;
 
-module.exports = (env) =>
-  merge(common(env), {
+module.exports = (webpackEnv) =>
+  merge(common(webpackEnv), {
     mode: "development",
     entry: {
       index: path.resolve(__dirname, "./index.tsx"),
@@ -72,6 +71,6 @@ module.exports = (env) =>
       historyApiFallback: true,
       static: [{ directory: path.join(__dirname) }],
       compress: true,
-      port: buildEnv.serverlessWorkflowTextEditor.dev.port,
+      port: env.serverlessWorkflowTextEditor.dev.port,
     },
   });

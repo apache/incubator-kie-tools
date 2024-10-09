@@ -17,9 +17,19 @@
  * under the License.
  */
 
-const buildEnv = require("./env");
-const { setup } = require("@kie-tools/maven-config-setup-helper");
+const { env } = require("./env");
+const {
+  setupMavenConfigFile,
+  buildTailFromPackageJsonDependencies,
+  DEFAULT_LOCAL_REPO,
+} = require("@kie-tools/maven-base");
 
-setup(`
-    -Drevision=${buildEnv.env.swfDiagramEditor.version}
-`);
+setupMavenConfigFile(
+  `
+    --batch-mode
+    -Dstyle.color=always
+    -Drevision=${env.swfDiagramEditor.version}
+    -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()},${DEFAULT_LOCAL_REPO} 
+    `, // For some reason, j2cl-maven-plugin needs the DEFAULT_LOCAL_REPO here as the last tail too.
+  { ignoreDefault: true } // Default <repositories> configuration doesn't work for this module. Since this module is not going to last long, we rely on this workaround for a while.
+);

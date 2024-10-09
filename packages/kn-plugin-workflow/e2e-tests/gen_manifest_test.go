@@ -94,6 +94,7 @@ func TestGenManifestProjectSuccess(t *testing.T) {
 		projectDir := filepath.Join(TempTestsPath, projectName)
 		err := os.Chdir(projectDir)
 		require.NoErrorf(t, err, "Expected nil error, got %v", err)
+		WriteMavenConfigFileWithTailDirs(projectDir)
 
 		for _, run := range tests {
 			_, err = ExecuteKnWorkflow(run.args...)

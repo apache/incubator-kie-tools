@@ -42,6 +42,7 @@ fi
 
 "${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
     -nsu \
+    -ntp \
     -s "${MAVEN_SETTINGS_PATH}" \
     -DplatformVersion="${QUARKUS_PLATFORM_VERSION}" \
     -Dextensions="${extensions}" \

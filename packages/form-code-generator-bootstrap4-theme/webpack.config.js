@@ -23,8 +23,8 @@ const nodeExternals = require("webpack-node-externals");
 const CopyPlugin = require("copy-webpack-plugin");
 const path = require("path");
 
-module.exports = (env, args) => [
-  merge(common(env, args), {
+module.exports = (webpackEnv) => [
+  merge(common(webpackEnv), {
     entry: {
       index: "./src/index.ts",
       theme: "./src/theme.ts",

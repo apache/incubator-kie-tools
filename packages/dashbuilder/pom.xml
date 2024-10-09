@@ -34,9 +34,9 @@
   <artifactId>dashbuilder-parent</artifactId>
   <packaging>pom</packaging>
 
-  <name>Dashbuilder parent</name>
+  <name>KIE Tools :: Dashbuilder</name>
   <description>
-    The parent contains all metadata (including plugins) and also dependency versions for all DashBuilder modules
+    The parent contains all metadata (including plugins) and also dependency versions for all Dashbuilder modules
   </description>
   <inceptionYear>2021</inceptionYear>
   <licenses>
@@ -111,7 +111,6 @@
     <version.resources.plugin>3.2.0</version.resources.plugin>
     <version.war.plugin>3.2.3</version.war.plugin>
     <version.checkstyle.plugin>3.1.1</version.checkstyle.plugin>
-    <version.deploy.plugin>2.8.2</version.deploy.plugin>
     <version.install.plugin>2.5.2</version.install.plugin>
     <version.site.plugin>3.8.2</version.site.plugin>
     <version.antrun.plugin>1.8</version.antrun.plugin>
@@ -1138,39 +1137,12 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>${version.deploy.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>${version.install.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>${version.site.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-antrun-plugin</artifactId>
           <version>${version.antrun.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <version>${version.org.apache.maven.plugins.dependency}</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <version>${version.org.maven.dependency.plugin}</version>
         </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
-      <plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
-      </plugin>
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
       </plugin>
@@ -1294,17 +1266,8 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-      </plugin>
-      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
-        <version>1.6.0</version>
         <configuration>
           <updatePomFile>true</updatePomFile>
           <flattenMode>resolveCiFriendliesOnly</flattenMode>

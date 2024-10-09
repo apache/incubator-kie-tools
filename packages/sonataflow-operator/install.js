@@ -19,13 +19,14 @@
 
 const fs = require("fs");
 const path = require("path");
-const buildEnv = require("./env");
+const { env } = require("./env");
 
 const sonataflowPlatformFiles = fs
   .readdirSync(path.resolve(__dirname, "test/testdata"), {
     recursive: true,
   })
   .filter((fileName) => fileName.endsWith("02-sonataflow_platform.yaml"));
+
 sonataflowPlatformFiles.forEach((filePath) => {
   const fullFilePath = path.resolve(__dirname, path.join("test/testdata"), filePath);
   fs.writeFileSync(
@@ -34,11 +35,11 @@ sonataflowPlatformFiles.forEach((filePath) => {
       .readFileSync(fullFilePath, "utf-8")
       .replace(
         /org\.kie:kie-addons-quarkus-persistence-jdbc:[^,\n]*/,
-        `org.kie:kie-addons-quarkus-persistence-jdbc:${buildEnv.env.kogitoRuntime.version}`
+        `org.kie:kie-addons-quarkus-persistence-jdbc:${env.versions.kogito}`
       )
       .replace(
         /org\.kie\.kogito:kogito-addons-quarkus-jobs-knative-eventing:[^,\n]*/,
-        `org.kie.kogito:kogito-addons-quarkus-jobs-knative-eventing:${buildEnv.env.kogitoRuntime.version}`
+        `org.kie.kogito:kogito-addons-quarkus-jobs-knative-eventing:${env.versions.kogito}`
       )
   );
 });

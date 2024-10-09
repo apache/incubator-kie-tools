@@ -17,10 +17,16 @@
  * under the License.
  */
 
-const buildEnv = require("./env");
-const { setup } = require("@kie-tools/maven-config-setup-helper");
+const { env } = require("./env");
+const { setupMavenConfigFile, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
 
-setup(`
-    -Drevision=${buildEnv.env.stunnerEditors.version}
-    -Dversion.org.kie.kogito=${buildEnv.env.kogitoRuntime.version}
-`);
+setupMavenConfigFile(
+  `
+    --batch-mode
+    -Dstyle.color=always
+    -Drevision=${env.stunnerEditors.version}
+    -Dversion.org.kie.kogito=${env.versions.kogito}
+    -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
+`,
+  { ignoreDefault: true } // Default <repositories> configuration doesn't work for this module. Since this module is not going to last long, we rely on this workaround for a while.
+);

@@ -19,13 +19,13 @@
 
 import { EnvJson } from "../src/env/EnvJson";
 import { routes } from "../src/navigation/Routes";
+import { AuthProviderGroup, AuthProviderType } from "../src/authProviders/AuthProvidersApi";
+import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
+import { GLOB_PATTERN } from "../src/envelopeLocator/EditorEnvelopeLocatorFactory";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { env } from "../env";
-import { AuthProviderGroup, AuthProviderType } from "../src/authProviders/AuthProvidersApi";
-import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
-import { GLOB_PATTERN } from "../src/envelopeLocator/EditorEnvelopeLocatorFactory";
 const buildEnv: any = env; // build-env is not typed
 
 function getDevDeploymentImageUrl(imageEnvVars: any) {

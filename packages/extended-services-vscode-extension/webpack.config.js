@@ -20,8 +20,8 @@
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 
-const commonConfig = (env) =>
-  merge(common(env), {
+const commonConfig = (webpackEnv) =>
+  merge(common(webpackEnv), {
     output: {
       library: "ExtendedServices",
       libraryTarget: "umd",
@@ -34,14 +34,14 @@ const commonConfig = (env) =>
     plugins: [],
   });
 
-module.exports = async (env) => [
-  merge(commonConfig(env), {
+module.exports = async (webpackEnv) => [
+  merge(commonConfig(webpackEnv), {
     target: "node",
     entry: {
       "extension/extension-main": "./src/extension/extension-main.ts",
     },
   }),
-  merge(commonConfig(env), {
+  merge(commonConfig(webpackEnv), {
     target: "web",
     entry: {
       "extension/extension-browser": "./src/extension/extension-browser.ts",

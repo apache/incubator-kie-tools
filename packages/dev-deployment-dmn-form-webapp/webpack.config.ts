@@ -26,8 +26,8 @@ import { ProvidePlugin } from "webpack";
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 import { defaultEnvJson } from "./build/defaultEnvJson";
 
-export default async (env: any, argv: any) => {
-  return merge(common(env), {
+export default async (webpackEnv: any, webpackArgv: any) => {
+  return merge(common(webpackEnv), {
     entry: {
       index: "./src/index.tsx",
     },
