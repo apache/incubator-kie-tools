@@ -35,7 +35,6 @@ import AddIcon from "@patternfly/react-icons/dist/esm/icons/add-circle-o-icon";
 import CubesIcon from "@patternfly/react-icons/dist/esm/icons/cubes-icon";
 
 import { useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
-import { TestScenarioType } from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
 
 import "./TestScenarioCreationPanel.css";
