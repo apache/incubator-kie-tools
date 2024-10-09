@@ -54,7 +54,14 @@ const fontsRule = {
       // Limit at 50k. larger files emitted into separate files
       limit: 5000,
       outputPath: "fonts",
-      name: "[name].[ext]",
+      name: (file) => {
+        const fileName = path.basename(file);
+        console.log("### file", file, file.includes("react-core@4"), fileName);
+        if (file.includes("react-core@4")) {
+          return `v4/${fileName}`;
+        }
+        return file.includes("react-core@5") ? `v5/${fileName}` : fileName;
+      },
     },
   },
 };
