@@ -36,38 +36,33 @@ export interface Bootstrap4FormAsset extends FormAsset<Bootstrap4FileExt>, JbpmF
 
 export const jbpmBootstrap4FormCodeGeneratorTheme: FormCodeGeneratorTheme<Bootstrap4FileExt, Bootstrap4FormAsset> = {
   generate: (formSchema) => {
-    try {
-      const uniformsSchema = getUniformsSchema(formSchema.schema);
-      const form = renderForm({
-        id: formSchema.name,
-        sanitizedId: inputSanitizationUtil(formSchema.name),
-        schema: new JSONSchemaBridge(uniformsSchema, () => true),
-        disabled: false,
-        placeholder: true,
-      });
-      return {
-        id: formSchema.name,
-        sanitizedId: inputSanitizationUtil(formSchema.name),
-        assetName: `${formSchema.name}.${BOOTSTRAP4_FILE_EXT}`,
-        sanitizedAssetName: `${inputSanitizationUtil(formSchema.name)}.${BOOTSTRAP4_FILE_EXT}`,
-        type: BOOTSTRAP4_FILE_EXT,
-        content: unescape(form),
-        config: {
-          schema: JSON.stringify(formSchema.schema),
-          resources: {
-            styles: {
-              "bootstrap.min.css": BOOTSTRAP4_CSS_URL,
-            },
-            scripts: {
-              "jquery.js": JQUERY_URL,
-              "bootstrap.bundle.min.js": BOOTSTRAP4_JS_URL,
-            },
+    const uniformsSchema = getUniformsSchema(formSchema.schema);
+    const form = renderForm({
+      id: formSchema.name,
+      sanitizedId: inputSanitizationUtil(formSchema.name),
+      schema: new JSONSchemaBridge(uniformsSchema, () => true),
+      disabled: false,
+      placeholder: true,
+    });
+    return {
+      id: formSchema.name,
+      sanitizedId: inputSanitizationUtil(formSchema.name),
+      assetName: `${formSchema.name}.${BOOTSTRAP4_FILE_EXT}`,
+      sanitizedAssetName: `${inputSanitizationUtil(formSchema.name)}.${BOOTSTRAP4_FILE_EXT}`,
+      type: BOOTSTRAP4_FILE_EXT,
+      content: unescape(form),
+      config: {
+        schema: JSON.stringify(formSchema.schema),
+        resources: {
+          styles: {
+            "bootstrap.min.css": BOOTSTRAP4_CSS_URL,
+          },
+          scripts: {
+            "jquery.js": JQUERY_URL,
+            "bootstrap.bundle.min.js": BOOTSTRAP4_JS_URL,
           },
         },
-      };
-    } catch (error) {
-      console.trace("here,", error);
-      throw error;
-    }
+      },
+    };
   },
 };
