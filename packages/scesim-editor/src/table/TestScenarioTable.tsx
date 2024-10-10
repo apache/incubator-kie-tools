@@ -21,7 +21,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 
 import * as ReactTable from "react-table";
-import _, { isNumber } from "lodash";
+import _ from "lodash";
 import { v4 as uuid } from "uuid";
 
 import {
@@ -56,6 +56,7 @@ import {
   retrieveRowsDataFromModel,
 } from "../common/TestScenarioCommonFunctions";
 import { useTestScenarioEditorStore, useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
+import { deleteColumn } from "../mutations/deleteColumn";
 
 function TestScenarioTable({
   tableData,
@@ -773,85 +774,24 @@ function TestScenarioTable({
       testScenarioEditorStoreApi.setState((state) => {
         const factMappings = retrieveModelDescriptor(state.scesim.model.ScenarioSimulationModel, isBackground)
           .factMappings.FactMapping!;
-        const columnIndexToRemove = determineSelectedColumnIndex(factMappings, args.columnIndex + 1, isInstance);
+        const factMappingValues = retrieveRowsDataFromModel(state.scesim.model.ScenarioSimulationModel, isBackground);
+        const factMappingIndexToRemove = determineSelectedColumnIndex(factMappings, args.columnIndex + 1, isInstance);
 
-        /* Retriving the FactMapping (Column) to be removed). If the user selected a single column, it finds the exact
-       FactMapping to delete. If the user selected an instance (group of columns), it retrives all the FactMappings
-       that belongs to the the instance group */
-        const factMappingToRemove = factMappings[columnIndexToRemove];
-        const groupType = factMappingToRemove.expressionIdentifier.type!.__$$text;
-        const instanceName = factMappingToRemove.factIdentifier.name!.__$$text;
-        const instanceType = factMappingToRemove.factIdentifier.className!.__$$text;
-
-        const allFactMappingWithIndexesToRemove = isInstance
-          ? factMappings
-              .map((factMapping, index) => {
-                if (
-                  factMapping.expressionIdentifier.type!.__$$text === groupType &&
-                  factMapping.factIdentifier.name?.__$$text === instanceName &&
-                  factMapping.factIdentifier.className?.__$$text === instanceType
-                ) {
-                  return { factMappingIndex: index, factMapping: factMapping };
-                } else {
-                  return {};
-                }
-              })
-              .filter((item) => isNumber(item.factMappingIndex))
-          : [{ factMappingIndex: args.columnIndex + columnIndexStart, factMapping: factMappingToRemove }];
-
-        /* Cloning the FactMappings list (Columns) and and removing the FactMapping (Column) at given index */
-        const deepClonedFactMappings = JSON.parse(
-          JSON.stringify(
-            retrieveModelDescriptor(state.scesim.model.ScenarioSimulationModel, isBackground).factMappings.FactMapping
-          )
-        );
-        deepClonedFactMappings.splice(
-          allFactMappingWithIndexesToRemove[0].factMappingIndex,
-          allFactMappingWithIndexesToRemove.length
-        );
-
-        /* Cloning the Scenario List (Rows) and finding the Cell(s) to remove accordingly to the factMapping data of 
-      the removed columns */
-        const deepClonedRowsData: SceSim__FactMappingValuesTypes[] = JSON.parse(
-          JSON.stringify(retrieveRowsDataFromModel(state.scesim.model.ScenarioSimulationModel, isBackground) ?? [])
-        );
-        deepClonedRowsData.forEach((rowData) => {
-          allFactMappingWithIndexesToRemove.forEach((itemToRemove) => {
-            const factMappingValueColumnIndexToRemove = retrieveFactMappingValueIndexByIdentifiers(
-              rowData.factMappingValues.FactMappingValue!,
-              itemToRemove.factMapping!.factIdentifier,
-              itemToRemove.factMapping!.expressionIdentifier
-            )!;
-
-            return {
-              factMappingValues: {
-                FactMappingValue: rowData.factMappingValues.FactMappingValue!.splice(
-                  factMappingValueColumnIndexToRemove,
-                  1
-                ),
-              },
-            };
-          });
+        const { deletedFactMappingIndexs } = deleteColumn({
+          factMappingIndexToRemove: factMappingIndexToRemove,
+          factMappings: factMappings,
+          factMappingValues: factMappingValues,
+          isBackground: isBackground,
+          isInstance: isInstance,
+          selectedColumnIndex: args.columnIndex,
         });
 
-        if (isBackground) {
-          state.scesim.model.ScenarioSimulationModel.background.scesimModelDescriptor.factMappings.FactMapping =
-            deepClonedFactMappings;
-          state.scesim.model.ScenarioSimulationModel.background.scesimData.BackgroundData = deepClonedRowsData;
-        } else {
-          state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping =
-            deepClonedFactMappings;
-          state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario = deepClonedRowsData;
-        }
-
         /** Updating the selectedColumn. When deleting, BEETable automatically shifts the selected cell in the left */
-        const firstIndexOnTheLeft = Math.min(
-          ...allFactMappingWithIndexesToRemove.map((item) => item.factMappingIndex!)
-        );
+        const firstIndexOnTheLeft = Math.min(...deletedFactMappingIndexs);
         const selectedColumnIndex = firstIndexOnTheLeft > 0 ? firstIndexOnTheLeft - 1 : 0;
 
         state.dispatch(state).table.updateSelectedColumn({
-          factMapping: JSON.parse(JSON.stringify(deepClonedFactMappings[selectedColumnIndex])),
+          factMapping: JSON.parse(JSON.stringify(factMappings[selectedColumnIndex])),
           index: firstIndexOnTheLeft,
           isBackground: isBackground,
         });
@@ -860,7 +800,6 @@ function TestScenarioTable({
 
     [
       determineSelectedColumnIndex,
-      columnIndexStart,
       isBackground,
       testScenarioEditorStoreApi,
       TestScenarioTableColumnInstanceGroup.EXPECT,

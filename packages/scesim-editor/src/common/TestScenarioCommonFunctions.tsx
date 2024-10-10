@@ -53,8 +53,8 @@ export const retrieveModelDescriptor = (scesimModel: SceSim__ScenarioSimulationM
 
 export const retrieveRowsDataFromModel = (scesimModel: SceSim__ScenarioSimulationModelType, isBackground: boolean) => {
   if (isBackground) {
-    return scesimModel.background.scesimData.BackgroundData;
+    return scesimModel.background.scesimData.BackgroundData!;
   } else {
-    return scesimModel.simulation.scesimData.Scenario;
+    return scesimModel.simulation.scesimData.Scenario!;
   }
 };

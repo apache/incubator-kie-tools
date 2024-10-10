@@ -18,31 +18,32 @@
  */
 
 import _, { isNumber } from "lodash";
-import { SceSim__ScenarioSimulationModelType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
+import {
+  SceSim__FactMappingType,
+  SceSim__FactMappingValuesTypes,
+} from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
 export function deleteColumn({
-  columnIndex,
+  factMappingIndexToRemove,
+  factMappings,
+  factMappingValues,
   isBackground,
   isInstance,
-  scesimModel,
+  selectedColumnIndex,
 }: {
-  columnIndex: number;
+  factMappingIndexToRemove: number;
+  factMappings: SceSim__FactMappingType[];
+  factMappingValues: SceSim__FactMappingValuesTypes[];
   isBackground: boolean;
   isInstance: boolean;
-  scesimModel: SceSim__ScenarioSimulationModelType;
+  selectedColumnIndex: number;
 }): {
   deletedFactMappingIndexs: number[];
 } {
-  const factMappings = isBackground
-    ? scesimModel.background.scesimModelDescriptor.factMappings.FactMapping!
-    : scesimModel.simulation.scesimModelDescriptor.factMappings.FactMapping!;
-  const columnIndexToRemove = determineSelectedColumnIndex(factMappings, columnIndex + 1, isInstance);
-  const columnIndexStart = isBackground ? 0 : 1;
-
   /* Retriving the FactMapping (Column) to be removed). If the user selected a single column, it finds the exact
-   FactMapping to delete. If the user selected an instance (group of columns), it retrives all the FactMappings
-   that belongs to the the instance group */
-  const factMappingToRemove = factMappings[columnIndexToRemove];
+       FactMapping to delete. If the user selected an instance (group of columns), it retrives all the FactMappings
+       that belongs to the the instance group */
+  const factMappingToRemove = factMappings[factMappingIndexToRemove];
   const groupType = factMappingToRemove.expressionIdentifier.type!.__$$text;
   const instanceName = factMappingToRemove.factIdentifier.name!.__$$text;
   const instanceType = factMappingToRemove.factIdentifier.className!.__$$text;
@@ -61,41 +62,26 @@ export function deleteColumn({
           }
         })
         .filter((item) => isNumber(item.factMappingIndex))
-    : [{ factMappingIndex: columnIndex + columnIndexStart, factMapping: factMappingToRemove }];
+    : [{ factMappingIndex: selectedColumnIndex + (isBackground ? 0 : 1), factMapping: factMappingToRemove }];
 
-  if (isBackground) {
-    scesimModel.background.scesimModelDescriptor.factMappings.FactMapping!.splice(
-      allFactMappingWithIndexesToRemove[0].factMappingIndex!,
-      allFactMappingWithIndexesToRemove.length
-    );
-    //state.scesim.model.ScenarioSimulationModel.background.scesimData.BackgroundData = deepClonedRowsData;
-  } else {
-    scesimModel.simulation.scesimModelDescriptor.factMappings.FactMapping!.splice(
-      allFactMappingWithIndexesToRemove[0].factMappingIndex!,
-      allFactMappingWithIndexesToRemove.length
-    );
-    // state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario = deepClonedRowsData;
-  }
+  factMappings.splice(allFactMappingWithIndexesToRemove[0].factMappingIndex!, allFactMappingWithIndexesToRemove.length);
 
-  /* Cloning the Scenario List (Rows) and finding the Cell(s) to remove accordingly to the factMapping data of 
-  the removed columns */
-  //   const deepClonedRowsData: SceSim__FactMappingValuesTypes[] = JSON.parse(
-  //     JSON.stringify(retrieveRowsDataFromModel(state.scesim.model.ScenarioSimulationModel, isBackground) ?? [])
-  //   );
-  //   deepClonedRowsData.forEach((rowData) => {
-  //     allFactMappingWithIndexesToRemove.forEach((itemToRemove) => {
-  //       const factMappingValueColumnIndexToRemove = retrieveFactMappingValueIndexByIdentifiers(
-  //         rowData.factMappingValues.FactMappingValue!,
-  //         itemToRemove.factMapping!.factIdentifier,
-  //         itemToRemove.factMapping!.expressionIdentifier
-  //       )!;
+  factMappingValues.forEach((rowData) => {
+    allFactMappingWithIndexesToRemove.forEach((itemToRemove) => {
+      const factMappingValueColumnIndexToRemove = rowData.factMappingValues.FactMappingValue!.findIndex(
+        (factMappingValue) =>
+          factMappingValue.factIdentifier.name?.__$$text == itemToRemove.factMapping!.factIdentifier.name?.__$$text &&
+          factMappingValue.factIdentifier.className?.__$$text ==
+            itemToRemove.factMapping!.factIdentifier.className?.__$$text &&
+          factMappingValue.expressionIdentifier.name?.__$$text ==
+            itemToRemove.factMapping!.expressionIdentifier.name?.__$$text &&
+          factMappingValue.expressionIdentifier.type?.__$$text ==
+            itemToRemove.factMapping!.expressionIdentifier.type?.__$$text
+      );
 
-  //       return {
-  //         factMappingValues: {
-  //           FactMappingValue: rowData.factMappingValues.FactMappingValue!.splice(factMappingValueColumnIndexToRemove, 1),
-  //         },
-  //       };
-  //     });
-  //   });
+      rowData.factMappingValues.FactMappingValue!.splice(factMappingValueColumnIndexToRemove, 1);
+    });
+  });
+
   return { deletedFactMappingIndexs: allFactMappingWithIndexesToRemove.flatMap((item) => item.factMappingIndex!) };
 }
