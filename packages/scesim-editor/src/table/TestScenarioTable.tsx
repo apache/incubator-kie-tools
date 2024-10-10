@@ -41,17 +41,11 @@ import {
   SceSim__backgroundDatasType,
   SceSim__backgroundType,
   SceSim__FactMappingType,
-  SceSim__FactMappingValuesTypes,
   SceSim__scenariosType,
   SceSim__simulationType,
 } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
 import { useTestScenarioEditorI18n } from "../i18n";
-import {
-  retrieveFactMappingValueIndexByIdentifiers,
-  retrieveModelDescriptor,
-  retrieveRowsDataFromModel,
-} from "../common/TestScenarioCommonFunctions";
 import { useTestScenarioEditorStore, useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
 import { addColumn } from "../mutations/addColumn";
 import { deleteColumn } from "../mutations/deleteColumn";
