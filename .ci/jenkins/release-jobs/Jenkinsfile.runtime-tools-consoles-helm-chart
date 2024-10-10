@@ -47,6 +47,7 @@ pipeline {
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
         RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/release-candidate-artifacts"
+        LEGAL_FILES_DIR = "${WORKSPACE}/legal-files"
         UPSTREAM_RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/upstream-release-artifacts"
 
         RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-runtime-tools-console-helm-chart.tar.gz"
@@ -133,6 +134,19 @@ pipeline {
             }
         }
 
+        stage('Copy legal files') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        releaseUtils.copyLegalFiles("${LEGAL_FILES_DIR}")
+                    }
+                }
+            }
+        }
+
         stage('Setup PNPM') {
             when {
                 expression { params.JOB_TYPE == 'release-candidate' }
@@ -178,12 +192,11 @@ pipeline {
             }
             steps {
                 script {
-                    env.RELEASE_TAR_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-runtime-tools-console-helm-chart.tar.gz"
-
                     sh """#!/bin/bash -el
                     mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
                     cp "kie-tools/packages/runtime-tools-consoles-helm-chart/dist/${RUNTIME_TOOLS_CONSOLES_HELM_CHART__name}-${RUNTIME_TOOLS_CONSOLES_HELM_CHART__tag}.tgz" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${RELEASE_FILE}"
                     """.trim()
+                    releaseUtils.addLegalfilesToTarGzFile("${RELEASE_CANDIDATE_ARTIFACTS_DIR}", "${RELEASE_FILE}", "${LEGAL_FILES_DIR}")
                 }
             }
         }

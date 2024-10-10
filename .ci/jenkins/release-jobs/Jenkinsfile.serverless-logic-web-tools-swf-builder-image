@@ -49,6 +49,7 @@ pipeline {
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
         RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/release-candidate-artifacts"
+        LEGAL_FILES_DIR = "${WORKSPACE}/legal-files"
         UPSTREAM_RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/upstream-release-artifacts"
 
         RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-serverless-logic-web-tools-swf-builder-image.tar.gz"
@@ -134,6 +135,19 @@ pipeline {
             }
         }
 
+        stage('Copy legal files') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        releaseUtils.copyLegalFiles("${LEGAL_FILES_DIR}")
+                    }
+                }
+            }
+        }
+
         stage('Setup PNPM') {
             when {
                 expression { params.JOB_TYPE == 'release-candidate' }
@@ -197,6 +211,7 @@ pipeline {
                     mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
                     docker save "${SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry}/${SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount}/${SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName}:${params.RELEASE_VERSION}" | gzip > "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${RELEASE_FILE}"
                     """.trim()
+                    releaseUtils.addLegalfilesToTarGzFile("${RELEASE_CANDIDATE_ARTIFACTS_DIR}", "${RELEASE_FILE}", "${LEGAL_FILES_DIR}")
                 }
             }
         }

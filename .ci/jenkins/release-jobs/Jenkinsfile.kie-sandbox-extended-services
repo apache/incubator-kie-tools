@@ -51,6 +51,7 @@ pipeline {
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
         RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/release-candidate-artifacts"
+        LEGAL_FILES_DIR = "${WORKSPACE}/legal-files"
         UPSTREAM_RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/upstream-release-artifacts"
 
         RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sandbox-extended-services-image.tar.gz"
@@ -137,6 +138,19 @@ pipeline {
             }
         }
 
+        stage('Copy legal files') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        releaseUtils.copyLegalFiles("${LEGAL_FILES_DIR}")
+                    }
+                }
+            }
+        }
+
         stage('Setup PNPM') {
             when {
                 expression { params.JOB_TYPE == 'release-candidate' }
@@ -186,6 +200,7 @@ pipeline {
                     mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
                     docker save "${KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry}/${KIE_SANDBOX_EXTENDED_SERVICES__imageAccount}/${KIE_SANDBOX_EXTENDED_SERVICES__imageName}:${params.RELEASE_VERSION}" | gzip > "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${RELEASE_FILE}"
                     """.trim()
+                    releaseUtils.addLegalfilesToTarGzFile("${RELEASE_CANDIDATE_ARTIFACTS_DIR}", "${RELEASE_FILE}", "${LEGAL_FILES_DIR}")
                 }
             }
         }

@@ -99,4 +99,27 @@ def renameArtifactsToFinalVersion(String releaseCandidateArtifactsDir, String re
     }
 }
 
+/**
+* Copy legal files to a specific directory
+**/
+def copyLegalFiles(String targetDir) {
+    sh """#!/bin/bash -el
+    mkdir -p "${targetDir}" || true"
+    cp {LICENSE.txt,NOTICE.txt,DISCLAIMER-WIP.txt} ${targetDir}
+    """.trim()
+}
+
+/**
+* Add Apache legal files to a .tar.gz file
+**/
+def addLegalfilesToTarGzFile(String artifactsDir, String tarGzFile, String legalFilesDir) {
+    tarFile = tarGzFile.replace('.gz', '')
+    sh """#!/bin/bash -el
+    cd ${legalFilesDir}
+    zcat ${artifactsDir}/${tarGzFile} | dd of=${tarFile} bs=512 skip=1
+    tar -rvf ${tarFile} ./*.txt
+    gzip -q -c ${tarFile} > ${artifactsDir}/${tarGzFile}
+    """.trim()
+}
+
 return this

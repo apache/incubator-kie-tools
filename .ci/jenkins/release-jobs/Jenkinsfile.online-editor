@@ -62,6 +62,7 @@ pipeline {
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
         RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/release-candidate-artifacts"
+        LEGAL_FILES_DIR = "${WORKSPACE}/legal-files"
 
         ONLINE_EDITOR_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sandbox-webapp.zip"
         STUNNER_EDITORS_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-stunner-editors.zip"
@@ -115,6 +116,19 @@ pipeline {
             }
         }
 
+        stage('Copy legal files') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        releaseUtils.copyLegalFiles("${LEGAL_FILES_DIR}")
+                    }
+                }
+            }
+        }
+
         stage('Setup PNPM') {
             when {
                 expression { params.JOB_TYPE == 'release-candidate' }
@@ -159,6 +173,8 @@ pipeline {
                 script {
                     sh """#!/bin/bash -el
                     mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
+                    cp "${LEGAL_FILES_DIR}/*" "${WORKSPACE}/kie-tools/packages/online-editor/dist"
+                    cp "${LEGAL_FILES_DIR}/*" "${WORKSPACE}/kie-tools/packages/stunner-editors/dist"
                     cd "${WORKSPACE}/kie-tools/packages/online-editor/dist" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${ONLINE_EDITOR_RELEASE_FILE}" .
                     cd "${WORKSPACE}/kie-tools/packages/stunner-editors/dist" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${STUNNER_EDITORS_RELEASE_FILE}" .
                     """.trim()

@@ -42,6 +42,7 @@ pipeline {
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
         RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/release-candidate-artifacts"
+        LEGAL_FILES_DIR = "${WORKSPACE}/legal-files"
 
         BUSINESS_AUTOMATION_STANDALONE_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-business-automation-standalone-editors.zip"
         SONATAFLOW_STANDALONE_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sonataflow-standalone-editors.zip"
@@ -96,6 +97,19 @@ pipeline {
             }
         }
 
+        stage('Copy legal files') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        releaseUtils.copyLegalFiles("${LEGAL_FILES_DIR}")
+                    }
+                }
+            }
+        }
+
         stage('Setup PNPM') {
             when {
                 expression { params.JOB_TYPE == 'release-candidate' }
@@ -140,8 +154,10 @@ pipeline {
                 script {
                     sh """#!/bin/bash -el
                     mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
-                    cd ${WORKSPACE}/kie-tools/packages/kie-editors-standalone/dist && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${BUSINESS_AUTOMATION_STANDALONE_RELEASE_FILE}" .
-                    cd ${WORKSPACE}/kie-tools/packages/serverless-workflow-standalone-editor/dist && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${SONATAFLOW_STANDALONE_RELEASE_FILE}" .
+                    cp "${LEGAL_FILES_DIR}/*" "${WORKSPACE}/kie-tools/packages/kie-editors-standalone/dist"
+                    cp "${LEGAL_FILES_DIR}/*" "${WORKSPACE}/kie-tools/packages/serverless-workflow-standalone-editor/dist"
+                    cd "${WORKSPACE}/kie-tools/packages/kie-editors-standalone/dist" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${BUSINESS_AUTOMATION_STANDALONE_RELEASE_FILE}" .
+                    cd "${WORKSPACE}/kie-tools/packages/serverless-workflow-standalone-editor/dist" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${SONATAFLOW_STANDALONE_RELEASE_FILE}" .
                     """.trim()
                 }
             }

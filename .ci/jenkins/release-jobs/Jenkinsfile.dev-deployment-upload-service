@@ -43,6 +43,7 @@ pipeline {
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
         RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/release-candidate-artifacts"
+        LEGAL_FILES_DIR = "${WORKSPACE}/legal-files"
 
         DEV_DEPLOYMENT_UPLOAD_SERVICE_MAC_ARM64_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sandbox-dev-deployment-upload-service-macOS-arm64.tar.gz"
         DEV_DEPLOYMENT_UPLOAD_SERVICE_MAC_X86_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sandbox-dev-deployment-upload-service-macOS-x86.tar.gz"
@@ -92,6 +93,19 @@ pipeline {
                             "${params.BASE_REF}",
                             "${pipelineVars.kieToolsBotGithubCredentialsId}"
                         )
+                    }
+                }
+            }
+        }
+
+        stage('Copy legal files') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        releaseUtils.copyLegalFiles("${LEGAL_FILES_DIR}")
                     }
                 }
             }
@@ -149,6 +163,10 @@ pipeline {
                     cp "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-linux-amd64-${params.RELEASE_VERSION}.tar.gz" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${DEV_DEPLOYMENT_UPLOAD_SERVICE_LINUX_X86_RELEASE_FILE}"
                     cp "kie-tools/packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-windows-amd64-${params.RELEASE_VERSION}.tar.gz" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${DEV_DEPLOYMENT_UPLOAD_SERVICE_WINDOWS_X86_RELEASE_FILE}"
                     """.trim()
+                    releaseUtils.addLegalfilesToTarGzFile("${RELEASE_CANDIDATE_ARTIFACTS_DIR}", "${DEV_DEPLOYMENT_UPLOAD_SERVICE_MAC_ARM64_RELEASE_FILE}", "${LEGAL_FILES_DIR}")
+                    releaseUtils.addLegalfilesToTarGzFile("${RELEASE_CANDIDATE_ARTIFACTS_DIR}", "${DEV_DEPLOYMENT_UPLOAD_SERVICE_MAC_X86_RELEASE_FILE}", "${LEGAL_FILES_DIR}")
+                    releaseUtils.addLegalfilesToTarGzFile("${RELEASE_CANDIDATE_ARTIFACTS_DIR}", "${DEV_DEPLOYMENT_UPLOAD_SERVICE_LINUX_X86_RELEASE_FILE}", "${LEGAL_FILES_DIR}")
+                    releaseUtils.addLegalfilesToTarGzFile("${RELEASE_CANDIDATE_ARTIFACTS_DIR}", "${DEV_DEPLOYMENT_UPLOAD_SERVICE_WINDOWS_X86_RELEASE_FILE}", "${LEGAL_FILES_DIR}")
                 }
             }
         }

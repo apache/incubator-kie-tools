@@ -42,6 +42,7 @@ pipeline {
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
         RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/release-candidate-artifacts"
+        LEGAL_FILES_DIR = "${WORKSPACE}/legal-files"
 
         RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-tools-npm-packages.zip"
     }
@@ -87,6 +88,19 @@ pipeline {
                             "${params.BASE_REF}",
                             "${pipelineVars.kieToolsBotGithubCredentialsId}"
                         )
+                    }
+                }
+            }
+        }
+
+        stage('Copy legal files') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        releaseUtils.copyLegalFiles("${LEGAL_FILES_DIR}")
                     }
                 }
             }
@@ -152,6 +166,7 @@ pipeline {
                         PNPM_FILTER_STRING_FOR_PUBLISHING=\$(pnpm -r exec 'bash' '-c' 'PKG_NAME=\$(jq -r ".name" package.json) PKG_IS_PVT=\$(jq -r ".private" package.json); if [[ "\$PKG_IS_PVT" != "true" ]]; then echo "-F \$PKG_NAME"; fi')
                         echo \$PNPM_FILTER_STRING_FOR_PUBLISHING
                         pnpm \$PNPM_FILTER_STRING_FOR_PUBLISHING exec 'bash' '-c' 'pnpm pack --pack-destination ${TMP_RELEASE_CANDIDATE_ARTIFACTS_DIR}'
+                        cp "${LEGAL_FILES_DIR}/*" "${TMP_RELEASE_CANDIDATE_ARTIFACTS_DIR}"
                         cd "${TMP_RELEASE_CANDIDATE_ARTIFACTS_DIR}" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${RELEASE_FILE}" .
                         """.trim()
                     }

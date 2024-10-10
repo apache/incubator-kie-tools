@@ -47,6 +47,7 @@ pipeline {
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
         RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/release-candidate-artifacts"
+        LEGAL_FILES_DIR = "${WORKSPACE}/legal-files"
         UPSTREAM_RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/upstream-release-artifacts"
 
         RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-kogito-task-console-image.tar.gz"
@@ -132,6 +133,19 @@ pipeline {
             }
         }
 
+        stage('Copy legal files') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        releaseUtils.copyLegalFiles("${LEGAL_FILES_DIR}")
+                    }
+                }
+            }
+        }
+
         stage('Setup PNPM') {
             when {
                 expression { params.JOB_TYPE == 'release-candidate' }
@@ -181,6 +195,7 @@ pipeline {
                     mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
                     docker save "${KOGITO_TASK_CONSOLE__registry}/${KOGITO_TASK_CONSOLE__account}/${KOGITO_TASK_CONSOLE__name}:${params.RELEASE_VERSION}" | gzip > "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${RELEASE_FILE}"
                     """.trim()
+                    releaseUtils.addLegalfilesToTarGzFile("${RELEASE_CANDIDATE_ARTIFACTS_DIR}", "${RELEASE_FILE}", "${LEGAL_FILES_DIR}")
                 }
             }
         }

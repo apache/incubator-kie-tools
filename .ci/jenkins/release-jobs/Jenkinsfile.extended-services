@@ -43,6 +43,7 @@ pipeline {
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
         RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/release-candidate-artifacts"
+        LEGAL_FILES_DIR = "${WORKSPACE}/legal-files"
 
         EXTENDED_SERVICES_LINUX_X86_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sandbox-extended-services-linux-x86.zip"
         EXTENDED_SERVICES_MACOS_X86_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sandbox-extended-services-macOS-x86.zip"
@@ -96,6 +97,19 @@ pipeline {
             }
         }
 
+        stage('Copy legal files') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        releaseUtils.copyLegalFiles("${LEGAL_FILES_DIR}")
+                    }
+                }
+            }
+        }
+
         stage('Setup PNPM') {
             when {
                 expression { params.JOB_TYPE == 'release-candidate' }
@@ -143,8 +157,9 @@ pipeline {
                 script {
                     sh """#!/bin/bash -el
                     mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
+                    cp "${LEGAL_FILES_DIR}/*" kie-tools/packages/extended-services/dist/linux
                     cd kie-tools/packages/extended-services/dist/linux
-                    zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${EXTENDED_SERVICES_LINUX_X86_RELEASE_FILE}" ./kie_sandbox_extended_services
+                    zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${EXTENDED_SERVICES_LINUX_X86_RELEASE_FILE}" ./kie_sandbox_extended_services ./*.txt
                     """.trim()
                 }
             }
