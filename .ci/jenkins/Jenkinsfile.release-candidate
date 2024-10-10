@@ -174,9 +174,10 @@ pipeline {
                 build job: 'KIE/kie-tools/kie-tools-release-build', parameters: [
                     booleanParam(name: 'DRY_RUN', value: false),
                     string(name: 'BASE_REF', value: "${env.TAG_NAME}"),
-                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
                     string(name: 'RUNNERS', value: "${params.RUNNERS}"),
-                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${TAG_NAME}")
+                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${TAG_NAME}"),
+                    choice(name: 'JOB_TYPE', value: 'release-candidate')
                 ]
             }
         }

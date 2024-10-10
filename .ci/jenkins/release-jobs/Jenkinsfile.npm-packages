@@ -28,9 +28,10 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
-        string(description: 'Base Ref', name: 'BASE_REF')
+        string(description: 'Base Ref', name: 'BASE_REF', defaultValue: '')
+        string(description: 'Release Version', name: 'RELEASE_VERSION')
         string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
+        choice(description: 'Job Type', name: 'JOB_TYPE', choices: ['release-candidate', 'release-promote'], defaultValue: 'release-candidate')
     }
 
     environment {
@@ -40,6 +41,9 @@ pipeline {
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
+        RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/release-candidate-artifacts"
+
+        RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-tools-npm-packages.zip"
     }
 
     stages {
@@ -55,21 +59,26 @@ pipeline {
             }
         }
 
-        stage('Start required services for build and tests (DinD, Xvfb, Fluxbox)') {
+        stage('Initialize') {
             steps {
                 script {
                     buildUtils.startRequiredServices()
+
+                    cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+
+                    if (params.JOB_TYPE == 'release-candidate') {
+                        currentBuild.displayName = 'Release Candidate: ' + params.RELEASE_CANDIDATE_VERSION
+                    } else {
+                        currentBuild.displayName = 'Release Promotion: ' + params.RELEASE_CANDIDATE_VERSION + ' > ' + params.RELEASE_VERSION
+                    }
                 }
             }
         }
 
-        stage('Clean workspace before build') {
-            steps {
-                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
-            }
-        }
-
         stage('Checkout kie-tools') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
             steps {
                 dir('kie-tools') {
                     script {
@@ -84,6 +93,9 @@ pipeline {
         }
 
         stage('Setup PNPM') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
             steps {
                 dir('kie-tools') {
                     script {
@@ -111,7 +123,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING_FOR_BUILDING}")
+                        buildUtils.pnpmBootstrap("${PNPM_FILTER_STRING_FOR_BUILDING}")
                     }
                 }
             }
@@ -121,25 +133,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING_FOR_BUILDING}")
-                    }
-                }
-            }
-        }
-
-        stage('Publish packages to the NPM registry') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
-            }
-            steps {
-                dir('kie-tools') {
-                    withCredentials([string(credentialsId: "${pipelineVars.npmTokenCredentialsId}", variable: 'NPM_TOKEN')]) {
-                        sh """#!/bin/bash -el
-                        echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-                        PNPM_FILTER_STRING_FOR_PUBLISHING=\$(pnpm -r exec 'bash' '-c' 'PKG_NAME=\$(jq -r ".name" package.json) PKG_IS_PVT=\$(jq -r ".private" package.json); if [[ "\$PKG_IS_PVT" != "true" ]]; then echo "-F \$PKG_NAME"; fi')
-                        echo \$PNPM_FILTER_STRING_FOR_PUBLISHING
-                        pnpm \$PNPM_FILTER_STRING_FOR_PUBLISHING exec 'bash' '-c' 'PKG_NAME=\$(jq -r ".name" package.json); NPM_PKG_INFO=\$(npm view \$PKG_NAME@${params.RELEASE_VERSION} name || echo ""); if [[ -z \$NPM_PKG_INFO ]]; then pnpm publish --no-git-checks --access public; fi'
-                        """.trim()
+                        buildUtils.pnpmBuild("${PNPM_FILTER_STRING_FOR_BUILDING}")
                     }
                 }
             }
@@ -147,48 +141,46 @@ pipeline {
 
         stage('Setup release candidate artifacts') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
             }
             steps {
                 dir('kie-tools') {
                     script {
-                        env.RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-tools-npm-packages.zip"
-                        env.TMP_RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-tools-npm-packages"
-
+                        env.TMP_RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-tools-npm-packages"
                         sh """#!/bin/bash -el
-                        mkdir ${env.TMP_RELEASE_ARTIFACTS_DIR} ${env.RELEASE_ARTIFACTS_DIR}
+                        mkdir ${TMP_RELEASE_CANDIDATE_ARTIFACTS_DIR} ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
                         PNPM_FILTER_STRING_FOR_PUBLISHING=\$(pnpm -r exec 'bash' '-c' 'PKG_NAME=\$(jq -r ".name" package.json) PKG_IS_PVT=\$(jq -r ".private" package.json); if [[ "\$PKG_IS_PVT" != "true" ]]; then echo "-F \$PKG_NAME"; fi')
                         echo \$PNPM_FILTER_STRING_FOR_PUBLISHING
-                        pnpm \$PNPM_FILTER_STRING_FOR_PUBLISHING exec 'bash' '-c' 'pnpm pack --pack-destination ${env.TMP_RELEASE_ARTIFACTS_DIR}'
-                        cd "${env.TMP_RELEASE_ARTIFACTS_DIR}" && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_ZIP_FILE}" .
+                        pnpm \$PNPM_FILTER_STRING_FOR_PUBLISHING exec 'bash' '-c' 'pnpm pack --pack-destination ${TMP_RELEASE_CANDIDATE_ARTIFACTS_DIR}'
+                        cd "${TMP_RELEASE_CANDIDATE_ARTIFACTS_DIR}" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${RELEASE_FILE}" .
                         """.trim()
                     }
                 }
             }
         }
 
-        stage('Sign artifact for Apache release') {
+        stage('Sign release candidate artifacts') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
             }
             steps {
-                dir("${env.RELEASE_ARTIFACTS_DIR}") {
+                dir("${RELEASE_CANDIDATE_ARTIFACTS_DIR}") {
                     script {
                         releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
-                        releaseUtils.signArtifact("${env.RELEASE_ZIP_FILE}")
+                        releaseUtils.signArtifact("${RELEASE_FILE}")
                     }
                 }
             }
         }
 
-        stage('Publish Release Candidate artifacts') {
+        stage('Push release candidate artifacts to the staging SVN') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
             }
             steps {
                 script {
                     releaseUtils.publishArtifacts(
-                        "${env.RELEASE_ARTIFACTS_DIR}",
+                        "${RELEASE_CANDIDATE_ARTIFACTS_DIR}",
                         "${pipelineVars.asfReleaseStagingRepository}",
                         "${params.RELEASE_CANDIDATE_VERSION}",
                         "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
@@ -196,10 +188,60 @@ pipeline {
                 }
             }
         }
+
+        stage('Download release candidate artifacts from the staging SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                script {
+                    releaseUtils.downloadReleaseArtifacts(
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${RELEASE_ARTIFACTS_DIR}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${RELEASE_FILE}"
+                    )
+                }
+            }
+        }
+
+        stage('Push release artifacts to the release SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${RELEASE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseRepository}",
+                        "${params.RELEASE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Publish packages to the NPM registry') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                withCredentials([string(credentialsId: "${pipelineVars.npmTokenCredentialsId}", variable: 'NPM_TOKEN')]) {
+                    sh """#!/bin/bash -el
+                    echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+                    unzip ${RELEASE_ARTIFACTS_DIR}/${RELEASE_FILE} -d ${WORKSPACE}/npm-packages
+                    for filename in ${WORKSPACE}/npm-packages/*.tar.gz; do
+                        pnpm publish --no-git-checks --access public \$filename
+                    done
+                    """.trim()
+                }
+            }
+        }
     }
 
     post {
         always {
+            archiveArtifacts artifacts: "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/*,${RELEASE_ARTIFACTS_DIR}/*", allowEmptyArchive: true
             cleanWs(deleteDirs: true)
         }
     }

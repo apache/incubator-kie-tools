@@ -32,11 +32,12 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Base Ref', name: 'BASE_REF')
-        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
+        string(description: 'Base Ref', name: 'BASE_REF', defaultValue: '')
         string(description: 'Upload asset url', name: 'UPLOAD_ASSET_URL', defaultValue: '')
+        string(description: 'Release Version', name: 'RELEASE_VERSION')
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION')
+        choice(description: 'Job Type', name: 'JOB_TYPE', choices: ['release-candidate', 'release-promote'], defaultValue: 'release-candidate')
         string(description: 'Runners', name: 'RUNNERS', defaultValue: '{"chrome_extensions":"false","cors_proxy_image":"false","dashbuilder_viewer_image":"false","dev_deployment_base_image":"false","dev_deployment_dmn_form_webapp_image":"false","dev_deployment_kogito_quakus_blank_app_image":"false","dev_deployment_upload_service":"false","extended_services":"false","jbpm_quarkus_devui":"false","kie_sandbox_extended_services_image":"false","kie_sandbox_helm_chart":"false","kie_sandbox_image":"false","kn_plugin_workflow":"false","kogito_task_console":"false","kogito_management_console":"false","kogito_swf_builder":"false","kogito_swf_devmode":"false","kogito_serverless_operator":"false","npm_packages":"false","online_editor":"false","serverless_logic_web_tools":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","standalone_editors_cdn":"false","sonataflow_quarkus_devui":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false"}')
-        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
     environment {
@@ -486,7 +487,8 @@ def devDeploymentKogitoQuarkusBlankAppImageBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -499,7 +501,8 @@ def devDeploymentUploadServiceBuildJob() {
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
             string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -512,7 +515,9 @@ def vscodeExtensionsDevBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}")
+            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -525,7 +530,8 @@ def vscodeExtensionsProdBuildJob() {
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
             string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -537,7 +543,8 @@ def npmPackagesBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -550,7 +557,8 @@ def knPluginWorkflowBuildJob() {
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
             string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -562,7 +570,8 @@ def serverlessLogicWebToolsSwfBuilderImageBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -574,7 +583,8 @@ def serverlessLogicWebToolsSwfDevModeImageBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -586,7 +596,8 @@ def serverlessLogicWebToolsBaseBuilderImageBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -598,7 +609,8 @@ def dashbuilderViewerImageBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -609,7 +621,9 @@ def serverlessLogicWebToolsBuildJob() {
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -621,7 +635,8 @@ def kogitoTaskConsoleBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -633,7 +648,8 @@ def kogitoManagementConsoleBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -645,7 +661,8 @@ def kogitoSwfBuilderBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -657,7 +674,8 @@ def kogitoSwfDevmodeBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -669,7 +687,8 @@ def kogitoServerlessOperatorBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -680,7 +699,9 @@ def jbpmQuarkusDevuiBuildJob() {
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -691,7 +712,9 @@ def sonataflowQuarkusDevuiBuildJob() {
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -703,7 +726,8 @@ def devDeploymentBaseImageBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -715,7 +739,8 @@ def devDeploymentDmnFormWebappImageBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -728,7 +753,8 @@ def extendedServicesBuildJob() {
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
             string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -740,7 +766,8 @@ def onlineEditorBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -753,7 +780,8 @@ def chromeExtensionsBuildJob() {
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
             string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -765,7 +793,8 @@ def standaloneEditorsCdnBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }
@@ -777,7 +806,8 @@ def kieSandboxExtendedServicesImageBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
     env.KIE_SANDBOX_EXTENDED_SERVICES_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", 'kie-sandbox-extended-services', "${pipelineVars.openshiftCredentialsId}")
@@ -790,7 +820,8 @@ def corsProxyImageBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
     env.KIE_SANDBOX_CORS_PROXY_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", 'cors-proxy', "${pipelineVars.openshiftCredentialsId}")
@@ -805,7 +836,8 @@ def kieSandboxImageBuildJob() {
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
             string(name: 'KIE_SANDBOX_EXTENDED_SERVICES_URL', value: "${env.KIE_SANDBOX_EXTENDED_SERVICES_URL}"),
             string(name: 'KIE_SANDBOX_CORS_PROXY_URL', value: "${env.KIE_SANDBOX_CORS_PROXY_URL}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
     env.KIE_SANDBOX_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", 'kie-sandbox', "${pipelineVars.openshiftCredentialsId}")
@@ -818,7 +850,8 @@ def kieSandboxHelmChartBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            choice(name: 'JOB_TYPE', value: "${params.JOB_TYPE}")
         ]
     ).result
 }

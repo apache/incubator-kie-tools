@@ -28,8 +28,9 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
+        string(description: 'Release Version', name: 'RELEASE_VERSION')
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION')
     }
 
     environment {
@@ -55,17 +56,15 @@ pipeline {
             }
         }
 
-        stage('Start required services for build and tests (DinD, Xvfb, Fluxbox)') {
+        stage('Initialize') {
             steps {
                 script {
                     buildUtils.startRequiredServices()
-                }
-            }
-        }
 
-        stage('Clean workspace before build') {
-            steps {
-                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+                    cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+
+                    currentBuild.displayName = 'Release Candidate: ' + params.RELEASE_CANDIDATE_VERSION
+                }
             }
         }
 
@@ -97,7 +96,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBootstrap("${PNPM_FILTER_STRING}")
                     }
                 }
             }
@@ -121,11 +120,11 @@ pipeline {
                         withCredentials([usernamePassword(credentialsId: "${pipelineVars.mavenDeployStagingCredentialsId}", usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
                             configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
                                 sh """#!/bin/bash -el
-                                pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
-                                pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dapache.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
-                                pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dapache.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
-                                pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Papache-release >> .mvn/maven.config'
-                                pnpm ${env.PNPM_FILTER_STRING} build:prod
+                                pnpm ${PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
+                                pnpm ${PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dapache.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
+                                pnpm ${PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dapache.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
+                                pnpm ${PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Papache-release >> .mvn/maven.config'
+                                pnpm ${PNPM_FILTER_STRING} build:prod
                                 """.trim()
                             }
                         }

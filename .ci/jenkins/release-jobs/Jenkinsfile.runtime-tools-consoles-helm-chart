@@ -17,13 +17,13 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:10.0.999'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
 
     options {
-        timeout(time: 120, unit: 'MINUTES')
+        timeout(time: 60, unit: 'MINUTES')
     }
 
     parameters {
@@ -40,21 +40,20 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        KIE_SANDBOX_HELM_CHART__registry = 'docker.io'
-        KIE_SANDBOX_HELM_CHART__account = 'apache'
-        KIE_SANDBOX_HELM_CHART__name = 'incubator-kie-sandbox-helm-chart'
-        KIE_SANDBOX_HELM_CHART__tag = "${params.RELEASE_VERSION}"
+        RUNTIME_TOOLS_CONSOLES_HELM_CHART__registry = 'docker.io'
+        RUNTIME_TOOLS_CONSOLES_HELM_CHART__account = 'apache'
+        RUNTIME_TOOLS_CONSOLES_HELM_CHART__name = 'incubator-kie-runtime-tools-consoles-helm-chart'
+        RUNTIME_TOOLS_CONSOLES_HELM_CHART__tag = "${params.RELEASE_VERSION}"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
         RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/release-candidate-artifacts"
         UPSTREAM_RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/upstream-release-artifacts"
 
-        RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sandbox-helm-chart.tar.gz"
-        RELEASE_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-helm-chart.tar.gz"
+        RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-runtime-tools-console-helm-chart.tar.gz"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
-        PNPM_FILTER_STRING = '-F @kie-tools/kie-sandbox-helm-chart...'
+        PNPM_FILTER_STRING = '-F @kie-tools/runtime-tools-consoles-helm-chart...'
     }
 
     stages {
@@ -179,9 +178,11 @@ pipeline {
             }
             steps {
                 script {
+                    env.RELEASE_TAR_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-runtime-tools-console-helm-chart.tar.gz"
+
                     sh """#!/bin/bash -el
                     mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
-                    cp "kie-tools/packages/kie-sandbox-helm-chart/dist/${KIE_SANDBOX_HELM_CHART__name}-${KIE_SANDBOX_HELM_CHART__tag}.tgz" "${RELEASE_ARTIFACTS_DIR}/${RELEASE_FILE}"
+                    cp "kie-tools/packages/runtime-tools-consoles-helm-chart/dist/${RUNTIME_TOOLS_CONSOLES_HELM_CHART__name}-${RUNTIME_TOOLS_CONSOLES_HELM_CHART__tag}.tgz" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${RELEASE_FILE}"
                     """.trim()
                 }
             }
@@ -249,16 +250,16 @@ pipeline {
             }
         }
 
-        stage('Push kie-sandbox-helm-chart to Docker Hub') {
+        stage('Push runtime-tools-consoles-helm-chart to Docker Hub') {
             when {
-                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+                expression { !params.DRY_RUN && !params.RELEASE_CANDIDATE  }
             }
             steps {
-                dir("${RELEASE_ARTIFACTS_DIR}") {
+                dir('kie-tools') {
                     script {
                         helmUtils.pushChartToRegistry(
-                            "${KIE_SANDBOX_HELM_CHART__registry}",
-                            "${KIE_SANDBOX_HELM_CHART__account}",
+                            "${RUNTIME_TOOLS_CONSOLES_HELM_CHART__registry}",
+                            "${RUNTIME_TOOLS_CONSOLES_HELM_CHART__account}",
                             "${RELEASE_FILE}",
                             "${pipelineVars.dockerHubUserCredentialsId}",
                             "${pipelineVars.dockerHubTokenCredentialsId}"

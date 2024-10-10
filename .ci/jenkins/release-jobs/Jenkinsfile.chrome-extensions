@@ -28,10 +28,11 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
-        string(description: 'Base Ref', name: 'BASE_REF')
-        string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL')
+        string(description: 'Base Ref', name: 'BASE_REF', defaultValue: '')
+        string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL', defaultValue: '')
+        string(description: 'Release Version', name: 'RELEASE_VERSION')
         string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
+        choice(description: 'Job Type', name: 'JOB_TYPE', choices: ['release-candidate', 'release-promote'], defaultValue: 'release-candidate')
     }
 
     environment {
@@ -49,6 +50,12 @@ pipeline {
         SWF_CHROME_EXTENSION__manifestFile = 'manifest.prod.json'
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
+        RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/release-candidate-artifacts"
+
+        CHROME_EXTENSION_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-business-automation-chrome-extension.zip"
+        SWF_CHROME_EXTENSION_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sonataflow-chrome-extension.zip"
+        CHROME_EXTENSION_EDITORS_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-business-automation-chrome-extension-editors.zip"
+        SWF_CHROME_EXTENSION_EDITORS_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sonataflow-chrome-extension-editors.zip"
 
         PNPM_FILTER_STRING = '-F chrome-extension-pack-kogito-kie-editors... -F chrome-extension-serverless-workflow-editor...'
     }
@@ -67,21 +74,26 @@ pipeline {
             }
         }
 
-        stage('Start required services for build and tests (DinD, Xvfb, Fluxbox)') {
+        stage('Initialize') {
             steps {
                 script {
                     buildUtils.startRequiredServices()
+
+                    cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+
+                    if (params.JOB_TYPE == 'release-candidate') {
+                        currentBuild.displayName = 'Release Candidate: ' + params.RELEASE_CANDIDATE_VERSION
+                    } else {
+                        currentBuild.displayName = 'Release Promotion: ' + params.RELEASE_CANDIDATE_VERSION + ' > ' + params.RELEASE_VERSION
+                    }
                 }
             }
         }
 
-        stage('Clean workspace before build') {
-            steps {
-                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
-            }
-        }
-
         stage('Checkout kie-tools') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
             steps {
                 dir('kie-tools') {
                     script {
@@ -95,7 +107,155 @@ pipeline {
             }
         }
 
+        stage('Setup PNPM') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsConfigFileId}")
+                    }
+                }
+            }
+        }
+
+        stage('PNPM Bootstrap') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBootstrap("${PNPM_FILTER_STRING}")
+                    }
+                }
+            }
+        }
+
+        stage('Build') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBuild("${PNPM_FILTER_STRING}")
+                    }
+                }
+            }
+        }
+
+        stage('Setup release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                script {
+                    sh """#!/bin/bash -el
+                    mkdir -p ${RELEASE_CANDIDATE_ARTIFACTS_DIR}/{business-automation-chrome-extension-editors,sonataflow-chrome-extension-editors}
+                    cp -r kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/{fonts,*-envelope.*} "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/business-automation-chrome-extension-editors"
+                    cp -r kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/{fonts,diagram,*-envelope.*,*.bundle.js,*.worker.js} "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/sonataflow-chrome-extension-editors"
+                    cp "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.RELEASE_VERSION}.zip" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${CHROME_EXTENCHROME_EXTENSION_RELEASE_FILE}"
+                    cp "kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${params.RELEASE_VERSION}.zip" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${SWF_CHROME_EXTENSION_RELEASE_FILE}"
+                    cd "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/business-automation-chrome-extension-editors" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${CHROME_EXTENSION_EDITORS_RELEASE_FILE}" .
+                    cd "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/sonataflow-chrome-extension-editors" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${SWF_CHROME_EXTENSION_EDITORS_RELEASE_FILE}" .
+                    rm -rf "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/business-automation-chrome-extension-editors"
+                    rm -rf "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/sonataflow-chrome-extension-editors"
+                    """.trim()
+                }
+            }
+        }
+
+        stage('Sign release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir("${RELEASE_CANDIDATE_ARTIFACTS_DIR}") {
+                    script {
+                        releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
+                        releaseUtils.signArtifact("${CHROME_EXTENCHROME_EXTENSION_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${SWF_CHROME_EXTENSION_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${CHROME_EXTENSION_EDITORS_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${SWF_CHROME_EXTENSION_EDITORS_RELEASE_FILE}")
+                    }
+                }
+            }
+        }
+
+        stage('Push release candidate artifacts to the staging SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${RELEASE_CANDIDATE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Download release candidate artifacts from the staging SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                script {
+                    releaseUtils.downloadReleaseArtifacts(
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${RELEASE_ARTIFACTS_DIR}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${CHROME_EXTENCHROME_EXTENSION_RELEASE_FILE}",
+                        "${SWF_CHROME_EXTENSION_RELEASE_FILE}",
+                        "${CHROME_EXTENSION_EDITORS_RELEASE_FILE}",
+                        "${SWF_CHROME_EXTENSION_EDITORS_RELEASE_FILE}"
+                    )
+                }
+            }
+        }
+
+        stage('Push release artifacts to the release SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${RELEASE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseRepository}",
+                        "${params.RELEASE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Upload Chrome Extension for Kogito KIE Editors') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                script {
+                    githubUtils.uploadReleaseAsset(
+                        "${params.UPLOAD_ASSET_URL}",
+                        "${CHROME_EXTENSION_RELEASE_FILE}",
+                        "${CHROME_EXTENSION_RELEASE_FILE}",
+                        'application/zip',
+                        "${pipelineVars.asfGithubPushCredentialsId}"
+                    )
+                }
+            }
+        }
+
         stage('Checkout kogito-online') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
             steps {
                 dir('kogito-online') {
                     script {
@@ -109,56 +269,9 @@ pipeline {
             }
         }
 
-        stage('Setup PNPM') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsConfigFileId}")
-                    }
-                }
-            }
-        }
-
-        stage('PNPM Bootstrap') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
-                    }
-                }
-            }
-        }
-
-        stage('Build') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
-                    }
-                }
-            }
-        }
-
-        stage('Upload Chrome Extension for Kogito KIE Editors') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
-            }
-            steps {
-                script {
-                    githubUtils.uploadReleaseAsset(
-                        "${params.UPLOAD_ASSET_URL}",
-                        "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.RELEASE_VERSION}.zip",
-                        "chrome_extension_kogito_kie_editors_${params.RELEASE_VERSION}.zip",
-                        'application/zip',
-                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
-                    )
-                }
-            }
-        }
-
         stage('Deploy Chrome Extension for KIE Editors to GitHub Pages (kogito-online)') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
                 dir('kogito-online') {
@@ -175,7 +288,7 @@ pipeline {
                         echo "Copy Chrome Extension resources"
                         rm -rf ${CHROME_EXTENSION_DIR}
                         mkdir -p ${CHROME_EXTENSION_DIR}
-                        cp -r ${WORKSPACE}/kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/{fonts,*-envelope.*} ${CHROME_EXTENSION_DIR}
+                        unzip ${RELEASE_ARTIFACTS_DIR}/${CHROME_EXTENSION_EDITORS_RELEASE_FILE} -d ${CHROME_EXTENSION_DIR}
                         ln -s ../../${EDITORS_DIR}/bpmn ${CHROME_EXTENSION_DIR}/bpmn
                         ln -s ../../${EDITORS_DIR}/dmn ${CHROME_EXTENSION_DIR}/dmn
                         ln -s ../../${EDITORS_DIR}/scesim ${CHROME_EXTENSION_DIR}/scesim
@@ -193,14 +306,14 @@ pipeline {
 
         stage('Upload Chrome Extension for KIE Editors to the Chrome Store') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
                 script {
                     env.CHROME_EXTESION_KIE_EDITORS_UPLOAD_STATUS = chromeStoreUtils.uploadExtension(
                         "${pipelineVars.chromeStoreCredentialsId}",
                         "${pipelineVars.chromeStoreRefreshTokenCredentialsId}",
-                        "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.RELEASE_VERSION}.zip",
+                        "${CHROME_EXTENSION_RELEASE_FILE}",
                         "${pipelineVars.chromeExtensionIdCredentialsId}"
                     )
                 }
@@ -209,18 +322,18 @@ pipeline {
 
         stage('Check Upload - Chrome Extension for KIE Editors') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
                 sh """#!/bin/bash -el
-                [[ "${env.CHROME_EXTESION_KIE_EDITORS_UPLOAD_STATUS}" == "SUCCESS" ]]"
+                [[ "${CHROME_EXTESION_KIE_EDITORS_UPLOAD_STATUS}" == "SUCCESS" ]]"
                 """.trim()
             }
         }
 
         stage('Publish Chrome Extension for KIE Editors for users') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
                 script {
@@ -235,27 +348,27 @@ pipeline {
 
         stage('Check Publish - Chrome Extension for KIE Editors') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
                 sh """#!/bin/bash -el
-                [[ "${env.CHROME_EXTESION_KIE_EDITORS_PUBLISH_STATUS}" == "OK" ]] || [[ "${env.CHROME_EXTESION_KIE_EDITORS_PUBLISH_STATUS}" == "PUBLISHED_WITH_FRICTION_WARNING" ]]
+                [[ "${CHROME_EXTESION_KIE_EDITORS_PUBLISH_STATUS}" == "OK" ]] || [[ "${CHROME_EXTESION_KIE_EDITORS_PUBLISH_STATUS}" == "PUBLISHED_WITH_FRICTION_WARNING" ]]
                 """.trim()
             }
         }
 
         stage('Upload Chrome Extension for Serverless Workflow Editor') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
                 script {
                     githubUtils.uploadReleaseAsset(
                         "${params.UPLOAD_ASSET_URL}",
-                        "kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${params.RELEASE_VERSION}.zip",
-                        "chrome_extension_serverless_workflow_editor_${params.RELEASE_VERSION}.zip",
+                        "${SWF_CHROME_EXTENSION_RELEASE_FILE}",
+                        "${SWF_CHROME_EXTENSION_RELEASE_FILE}",
                         'application/zip',
-                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                        "${pipelineVars.asfGithubPushCredentialsId}"
                     )
                 }
             }
@@ -263,7 +376,7 @@ pipeline {
 
         stage('Deploy Chrome Extension for Serverless Workflow Editor to GitHub Pages (kogito-online)') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
                 dir('kogito-online') {
@@ -279,7 +392,7 @@ pipeline {
                         echo "Copy Chrome Extension resources"
                         rm -rf ${DEPLOYMENT_DIR}
                         mkdir -p ${DEPLOYMENT_DIR}
-                        cp -r ${WORKSPACE}/kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/{fonts,diagram,*-envelope.*,*.bundle.js,*.worker.js} ${DEPLOYMENT_DIR}
+                        unzip ${RELEASE_ARTIFACTS_DIR}/${SWF_CHROME_EXTENSION_EDITORS_RELEASE_FILE} -d ${DEPLOYMENT_DIR}
 
                         echo "Commit changes and push"
                         git add .
@@ -294,14 +407,14 @@ pipeline {
 
         stage('Upload Chrome Extension for Serverless Workflow Editor to the Chrome Store') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
                 script {
                     env.CHROME_EXTESION_SERVERLESS_WORKFLOW_EDITOR_UPLOAD_STATUS = chromeStoreUtils.uploadExtension(
                         "${pipelineVars.chromeStoreCredentialsId}",
                         "${pipelineVars.chromeStoreRefreshTokenCredentialsId}",
-                        "kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${params.RELEASE_VERSION}.zip",
+                        "${SWF_CHROME_EXTENSION_RELEASE_FILE}",
                         "${pipelineVars.swfChromeExtensionIdCredentialsId}"
                     )
                 }
@@ -310,18 +423,18 @@ pipeline {
 
         stage('Check Upload - Chrome Extension for Serverless Workflow Editor') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
                 sh """#!/bin/bash -el
-                [[ "${env.CHROME_EXTESION_SERVERLESS_WORKFLOW_EDITOR_UPLOAD_STATUS}" == "SUCCESS" ]]
+                [[ "${CHROME_EXTESION_SERVERLESS_WORKFLOW_EDITOR_UPLOAD_STATUS}" == "SUCCESS" ]]
                 """.trim()
             }
         }
 
         stage('Publish Chrome Extension for Serverless Workflow Editor for users') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
                 script {
@@ -336,77 +449,19 @@ pipeline {
 
         stage('Check Publish - Chrome Extension for Serverless Workflow Editor') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
                 sh """#!/bin/bash -el
-                [[ "${env.CHROME_EXTESION_SERVERLESS_WORKFLOW_EDITOR_PUBLISH_STATUS}" == "OK" ]] || [[ "${env.CHROME_EXTESION_SERVERLESS_WORKFLOW_EDITOR_PUBLISH_STATUS}" == "PUBLISHED_WITH_FRICTION_WARNING" ]]
+                [[ "${CHROME_EXTESION_SERVERLESS_WORKFLOW_EDITOR_PUBLISH_STATUS}" == "OK" ]] || [[ "${CHROME_EXTESION_SERVERLESS_WORKFLOW_EDITOR_PUBLISH_STATUS}" == "PUBLISHED_WITH_FRICTION_WARNING" ]]
                 """.trim()
-            }
-        }
-
-        stage('Setup release candidate artifacts') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
-            steps {
-                script {
-                    env.CHROME_EXTENSION_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-business-automation-chrome-extension.zip"
-                    env.SWF_CHROME_EXTENSION_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-chrome-extension.zip"
-                    env.CHROME_EXTENSION_EDITORS_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-business-automation-chrome-extension-editors.zip"
-                    env.SWF_CHROME_EXTENSION_EDITORS_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-chrome-extension-editors.zip"
-
-                    sh """#!/bin/bash -el
-                    mkdir -p ${env.RELEASE_ARTIFACTS_DIR}/{business-automation-chrome-extension-editors,sonataflow-chrome-extension-editors}
-                    cp -r kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/{fonts,*-envelope.*} "${env.RELEASE_ARTIFACTS_DIR}/business-automation-chrome-extension-editors"
-                    cp -r kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/{fonts,diagram,*-envelope.*,*.bundle.js,*.worker.js} "${env.RELEASE_ARTIFACTS_DIR}/sonataflow-chrome-extension-editors"
-                    cp "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.RELEASE_VERSION}.zip" "${env.RELEASE_ARTIFACTS_DIR}/${CHROME_EXTENSION_RELEASE_ZIP_FILE}"
-                    cp "kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${params.RELEASE_VERSION}.zip" "${env.RELEASE_ARTIFACTS_DIR}/${SWF_CHROME_EXTENSION_RELEASE_ZIP_FILE}"
-                    cd "${env.RELEASE_ARTIFACTS_DIR}/business-automation-chrome-extension-editors" && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.CHROME_EXTENSION_EDITORS_RELEASE_ZIP_FILE}" .
-                    cd "${env.RELEASE_ARTIFACTS_DIR}/sonataflow-chrome-extension-editors" && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.SWF_CHROME_EXTENSION_EDITORS_RELEASE_ZIP_FILE}" .
-                    rm -rf "${env.RELEASE_ARTIFACTS_DIR}/business-automation-chrome-extension-editors"
-                    rm -rf "${env.RELEASE_ARTIFACTS_DIR}/sonataflow-chrome-extension-editors"
-                    """.trim()
-                }
-            }
-        }
-
-        stage('Sign artifacts for Apache release') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
-            steps {
-                dir("${env.RELEASE_ARTIFACTS_DIR}") {
-                    script {
-                        releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
-                        releaseUtils.signArtifact("${env.CHROME_EXTENSION_RELEASE_ZIP_FILE}")
-                        releaseUtils.signArtifact("${env.SWF_CHROME_EXTENSION_RELEASE_ZIP_FILE}")
-                        releaseUtils.signArtifact("${env.CHROME_EXTENSION_EDITORS_RELEASE_ZIP_FILE}")
-                        releaseUtils.signArtifact("${env.SWF_CHROME_EXTENSION_EDITORS_RELEASE_ZIP_FILE}")
-                    }
-                }
-            }
-        }
-
-        stage('Publish Release Candidate artifacts') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
-            steps {
-                script {
-                    releaseUtils.publishArtifacts(
-                        "${env.RELEASE_ARTIFACTS_DIR}",
-                        "${pipelineVars.asfReleaseStagingRepository}",
-                        "${params.RELEASE_CANDIDATE_VERSION}",
-                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
-                    )
-                }
             }
         }
     }
 
     post {
         always {
+            archiveArtifacts artifacts: "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/*,${RELEASE_ARTIFACTS_DIR}/*", allowEmptyArchive: true
             cleanWs(deleteDirs: true)
         }
     }

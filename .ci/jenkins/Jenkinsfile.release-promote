@@ -1,0 +1,137 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@Library('jenkins-pipeline-shared-libraries')_
+
+pipeline {
+    agent {
+        docker {
+            image 'docker.io/apache/incubator-kie-tools-ci-build:10.0.999'
+            label util.avoidFaultyNodes()
+        }
+    }
+
+    options {
+        timeout(time: 900, unit: 'MINUTES')
+    }
+
+    parameters {
+        string(description: 'Release Version', name: 'RELEASE_VERSION')
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION')
+        string(description: 'Runners', name: 'RUNNERS', defaultValue: '{"chrome_extensions":"false","cors_proxy_image":"false","dashbuilder_viewer_image":"false","dev_deployment_base_image":"false","dev_deployment_dmn_form_webapp_image":"false","dev_deployment_kogito_quakus_blank_app_image":"false","dev_deployment_upload_service":"false","extended_services":"false","kie_sandbox_extended_services_image":"false","kie_sandbox_helm_chart":"false","kie_sandbox_image":"false","kn_plugin_workflow":"false","kogito_task_console":"false","kogito_management_console":"false","kogito_swf_builder":"false","kogito_swf_devmode":"false","kogito_serverless_operator":"false","npm_packages":"false","online_editor":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","standalone_editors_cdn":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false"}')
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                }
+            }
+        }
+
+        stage('Clean workspace before build') {
+            steps {
+                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Checkout kie-tools') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            "http://github.com/${pipelineVars.githubRepositorySlug}.git",
+                            "${env.RELEASE_CANDIDATE_VERSION}",
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Check `release version` against `package.json.version`') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        packageVersion = sh(returnStdout: true, script: "#!/bin/bash -el \n node -p \"require('./package.json').version\"").trim()
+                        sh """#!/bin/bash -el
+                        [[ "${params.RELEASE_VERSION}" == "${packageVersion}" ]]
+                        """.trim()
+                    }
+                }
+            }
+        }
+
+        stage('Create the release tag') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        sh """
+                        git config user.email asf-ci-kie@jenkins.kie.apache.org
+                        git config user.name asf-ci-kie
+                        git tag -f "${params.RELEASE_VERSION}" "${params.RELEASE_CANDIDATE_VERSION}"
+                        """.trim()
+                        githubUtils.pushObject('origin', "${params.RELEASE_VERSION}", "${pipelineVars.asfGithubPushCredentialsId}")
+                    }
+                }
+            }
+        }
+
+        stage('Create github release') {
+            steps {
+                script {
+                    response = githubUtils.createRelease(
+                        "${pipelineVars.githubRepositorySlug}",
+                        "${params.RELEASE_VERSION}",
+                        "${params.RELEASE_VERSION}",
+                        "${env.COMMIT_SHA}",
+                        false,
+                        true,
+                        "${pipelineVars.asfGithubPushCredentialsId}"
+                    )
+
+                    respJSON = readJSON text: response
+
+                    env.RELEASE_ID = respJSON.id
+                    env.RELEASE_HTML_URL = respJSON.html_url
+                    env.RELEASE_UPLOAD_ASSET_URL = githubUtils.parseReleaseAssetUploadUrl(respJSON.upload_url)
+                }
+            }
+        }
+
+        stage('Release Promotion') {
+            steps {
+                build job: 'KIE/kie-tools/kie-tools-release-build', parameters: [
+                    booleanParam(name: 'DRY_RUN', value: false),
+                    string(name: 'RUNNERS', value: "${params.RUNNERS}"),
+                    string(name: 'UPLOAD_ASSET_URL', value: "${env.RELEASE_UPLOAD_ASSET_URL}"),
+                    string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+                    choice(name: 'JOB_TYPE', value: 'release-promote')
+                ]
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs(deleteDirs: true)
+        }
+    }
+}

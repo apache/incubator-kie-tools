@@ -28,9 +28,10 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
-        string(description: 'Base Ref', name: 'BASE_REF')
+        string(description: 'Base Ref', name: 'BASE_REF', defaultValue: '')
+        string(description: 'Release Version', name: 'RELEASE_VERSION')
         string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
+        choice(description: 'Job Type', name: 'JOB_TYPE', choices: ['release-candidate', 'release-promote'], defaultValue: 'release-candidate')
     }
 
     environment {
@@ -40,6 +41,10 @@ pipeline {
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
+        RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/release-candidate-artifacts"
+
+        BUSINESS_AUTOMATION_STANDALONE_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-business-automation-standalone-editors.zip"
+        SONATAFLOW_STANDALONE_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sonataflow-standalone-editors.zip"
 
         PNPM_FILTER_STRING = '-F @kie-tools/kie-editors-standalone... -F @kie-tools/serverless-workflow-standalone-editor...'
     }
@@ -58,21 +63,26 @@ pipeline {
             }
         }
 
-        stage('Start required services for build and tests (DinD, Xvfb, Fluxbox)') {
+        stage('Initialize') {
             steps {
                 script {
                     buildUtils.startRequiredServices()
+
+                    cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+
+                    if (params.JOB_TYPE == 'release-candidate') {
+                        currentBuild.displayName = 'Release Candidate: ' + params.RELEASE_CANDIDATE_VERSION
+                    } else {
+                        currentBuild.displayName = 'Release Promotion: ' + params.RELEASE_CANDIDATE_VERSION + ' > ' + params.RELEASE_VERSION
+                    }
                 }
             }
         }
 
-        stage('Clean workspace before build') {
-            steps {
-                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
-            }
-        }
-
         stage('Checkout kie-tools') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
             steps {
                 dir('kie-tools') {
                     script {
@@ -86,7 +96,125 @@ pipeline {
             }
         }
 
+        stage('Setup PNPM') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsConfigFileId}")
+                    }
+                }
+            }
+        }
+
+        stage('PNPM Bootstrap') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBootstrap("${PNPM_FILTER_STRING}")
+                    }
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBuild("${PNPM_FILTER_STRING}")
+                    }
+                }
+            }
+        }
+
+        stage('Setup release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                script {
+                    sh """#!/bin/bash -el
+                    mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
+                    cd ${WORKSPACE}/kie-tools/packages/kie-editors-standalone/dist && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${BUSINESS_AUTOMATION_STANDALONE_RELEASE_FILE}" .
+                    cd ${WORKSPACE}/kie-tools/packages/serverless-workflow-standalone-editor/dist && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${SONATAFLOW_STANDALONE_RELEASE_FILE}" .
+                    """.trim()
+                }
+            }
+        }
+
+        stage('Sign release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir("${RELEASE_CANDIDATE_ARTIFACTS_DIR}") {
+                    script {
+                        releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
+                        releaseUtils.signArtifact("${BUSINESS_AUTOMATION_STANDALONE_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${SONATAFLOW_STANDALONE_RELEASE_FILE}")
+                    }
+                }
+            }
+        }
+
+        stage('Push release candidate artifacts to the staging SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${RELEASE_CANDIDATE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Download release candidate artifacts from the staging SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                script {
+                    releaseUtils.downloadReleaseArtifacts(
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${RELEASE_ARTIFACTS_DIR}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${BUSINESS_AUTOMATION_STANDALONE_RELEASE_FILE}",
+                        "${SONATAFLOW_STANDALONE_RELEASE_FILE}"
+                    )
+                }
+            }
+        }
+
+        stage('Push release artifacts to the release SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${RELEASE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseRepository}",
+                        "${params.RELEASE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNCredentialsId}"
+                    )
+                }
+            }
+        }
+
         stage('Checkout kogito-online') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
             steps {
                 dir('kogito-online') {
                     script {
@@ -100,39 +228,9 @@ pipeline {
             }
         }
 
-        stage('Setup PNPM') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsConfigFileId}")
-                    }
-                }
-            }
-        }
-
-        stage('PNPM Bootstrap') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
-                    }
-                }
-            }
-        }
-
-        stage('Build') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
-                    }
-                }
-            }
-        }
-
         stage('Deploy to GitHub Pages (kogito-online)') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
                 dir('kogito-online') {
@@ -148,9 +246,14 @@ pipeline {
                         echo "Copy standalone resources"
                         rm -rf ${STANDALONE_EDITORS_DIR}
                         mkdir -p ${STANDALONE_EDITORS_DIR}/bpmn ${STANDALONE_EDITORS_DIR}/dmn ${STANDALONE_EDITORS_DIR}/swf
-                        cp ${WORKSPACE}/kie-tools/packages/kie-editors-standalone/dist/bpmn/index.js ${STANDALONE_EDITORS_DIR}/bpmn/
-                        cp ${WORKSPACE}/kie-tools/packages/kie-editors-standalone/dist/dmn/index.js ${STANDALONE_EDITORS_DIR}/dmn/
-                        cp ${WORKSPACE}/kie-tools/packages/serverless-workflow-standalone-editor/dist/swf/index.js ${STANDALONE_EDITORS_DIR}/swf/
+
+                        unzip ${RELEASE_ARTIFACTS_DIR}/${BUSINESS_AUTOMATION_STANDALONE_RELEASE_FILE} -d ${WORKSPACE}/kie-editors-standalone
+                        unzip ${RELEASE_ARTIFACTS_DIR}/${SONATAFLOW_STANDALONE_RELEASE_FILE} -d ${WORKSPACE}/serverless-workflow-standalone-editor
+
+                        cp ${WORKSPACE}/kie-editors-standalone/bpmn/index.js ${STANDALONE_EDITORS_DIR}/bpmn/
+                        cp ${WORKSPACE}/kie-editors-standalone/dmn/index.js ${STANDALONE_EDITORS_DIR}/dmn/
+                        cp ${WORKSPACE}/serverless-workflow-standalone-editor/swf/index.js ${STANDALONE_EDITORS_DIR}/swf/
+
                         rm -f ./standalone/bpmn/index.js
                         rm -f ./standalone/dmn/index.js
                         rm -f ./standalone/swf/index.js
@@ -168,59 +271,11 @@ pipeline {
                 }
             }
         }
-
-        stage('Setup release candidate artifacts') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
-            steps {
-                script {
-                    env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-business-automation-standalone-editors.zip"
-                    env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-standalone-editors.zip"
-
-                    sh """#!/bin/bash -el
-                    mkdir ${env.RELEASE_ARTIFACTS_DIR}
-                    cd ${WORKSPACE}/kie-tools/packages/kie-editors-standalone/dist && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE}" .
-                    cd ${WORKSPACE}/kie-tools/packages/serverless-workflow-standalone-editor/dist && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE}" .
-                    """.trim()
-                }
-            }
-        }
-
-        stage('Sign artifacts for Apache release') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
-            steps {
-                dir("${env.RELEASE_ARTIFACTS_DIR}") {
-                    script {
-                        releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
-                        releaseUtils.signArtifact("${env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE}")
-                        releaseUtils.signArtifact("${env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE}")
-                    }
-                }
-            }
-        }
-
-        stage('Publish Release Candidate artifacts') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
-            steps {
-                script {
-                    releaseUtils.publishArtifacts(
-                        "${env.RELEASE_ARTIFACTS_DIR}",
-                        "${pipelineVars.asfReleaseStagingRepository}",
-                        "${params.RELEASE_CANDIDATE_VERSION}",
-                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
-                    )
-                }
-            }
-        }
     }
 
     post {
         always {
+            archiveArtifacts artifacts: "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/*,${RELEASE_ARTIFACTS_DIR}/*", allowEmptyArchive: true
             cleanWs(deleteDirs: true)
         }
     }

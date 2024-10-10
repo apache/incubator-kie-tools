@@ -28,9 +28,10 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
-        string(description: 'Base Ref', name: 'BASE_REF')
+        string(description: 'Base Ref', name: 'BASE_REF', defaultValue: '')
+        string(description: 'Release Version', name: 'RELEASE_VERSION')
         string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
+        choice(description: 'Job Type', name: 'JOB_TYPE', choices: ['release-candidate', 'release-promote'], defaultValue: 'release-candidate')
     }
 
     environment {
@@ -60,6 +61,10 @@ pipeline {
         ONLINE_EDITOR__corsProxyUrl = 'https://cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
+        RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/release-candidate-artifacts"
+
+        ONLINE_EDITOR_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sandbox-webapp.zip"
+        STUNNER_EDITORS_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-stunner-editors.zip"
 
         PNPM_FILTER_STRING = '-F @kie-tools/online-editor...'
     }
@@ -77,21 +82,26 @@ pipeline {
             }
         }
 
-        stage('Start required services for build and tests (DinD, Xvfb, Fluxbox)') {
+        stage('Initialize') {
             steps {
                 script {
                     buildUtils.startRequiredServices()
+
+                    cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+
+                    if (params.JOB_TYPE == 'release-candidate') {
+                        currentBuild.displayName = 'Release Candidate: ' + params.RELEASE_CANDIDATE_VERSION
+                    } else {
+                        currentBuild.displayName = 'Release Promotion: ' + params.RELEASE_CANDIDATE_VERSION + ' > ' + params.RELEASE_VERSION
+                    }
                 }
             }
         }
 
-        stage('Clean workspace before build') {
-            steps {
-                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
-            }
-        }
-
         stage('Checkout kie-tools') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
             steps {
                 dir('kie-tools') {
                     script {
@@ -101,6 +111,121 @@ pipeline {
                             "${pipelineVars.kieToolsBotGithubCredentialsId}"
                         )
                     }
+                }
+            }
+        }
+
+        stage('Setup PNPM') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsConfigFileId}")
+                    }
+                }
+            }
+        }
+
+        stage('PNPM Bootstrap') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBootstrap("${PNPM_FILTER_STRING}")
+                    }
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBuild("${PNPM_FILTER_STRING}")
+                    }
+                }
+            }
+        }
+
+        stage('Setup release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                script {
+                    sh """#!/bin/bash -el
+                    mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
+                    cd "${WORKSPACE}/kie-tools/packages/online-editor/dist" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${ONLINE_EDITOR_RELEASE_FILE}" .
+                    cd "${WORKSPACE}/kie-tools/packages/stunner-editors/dist" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${STUNNER_EDITORS_RELEASE_FILE}" .
+                    """.trim()
+                }
+            }
+        }
+
+        stage('Sign release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir("${RELEASE_CANDIDATE_ARTIFACTS_DIR}") {
+                    script {
+                        releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
+                        releaseUtils.signArtifact("${ONLINE_EDITOR_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${STUNNER_EDITORS_RELEASE_FILE}")
+                    }
+                }
+            }
+        }
+
+        stage('Push release candidate artifacts to the staging SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${RELEASE_CANDIDATE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Download release candidate artifacts from the staging SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                script {
+                    releaseUtils.downloadReleaseArtifacts(
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${RELEASE_ARTIFACTS_DIR}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${ONLINE_EDITOR_RELEASE_FILE}",
+                        "${STUNNER_EDITORS_RELEASE_FILE}"
+                    )
+                }
+            }
+        }
+
+        stage('Push release artifacts to the release SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${RELEASE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseRepository}",
+                        "${params.RELEASE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNCredentialsId}"
+                    )
                 }
             }
         }
@@ -119,125 +244,49 @@ pipeline {
             }
         }
 
-        stage('Setup PNPM') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsConfigFileId}")
-                    }
-                }
-            }
-        }
-
-        stage('PNPM Bootstrap') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
-                    }
-                }
-            }
-        }
-
-        stage('Build') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
-                    }
-                }
-            }
-        }
-
         stage('Deploy to GitHub Pages (kogito-online)') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
-            }
-            steps {
-                dir('kogito-online') {
-                    script {
-                        EDITORS_DIR = "editors/${params.RELEASE_VERSION}"
-
-                        sh """#!/bin/bash -el
-                        git config user.email asf-ci-kie@jenkins.kie.apache.org
-                        git config user.name asf-ci-kie
-
-                        git checkout gh-pages
-
-                        echo "Reset deployment dir"
-                        shopt -s extglob
-                        rm -rf -- !("dev"|"editors"|"standalone"|"chrome-extension"|"swf-chrome-extension"|".nojekyll"|"CNAME"|"0.23.0")
-
-                        echo "Copy Editor resources"
-                        rm -rf ${EDITORS_DIR}
-                        mkdir -p ${EDITORS_DIR}
-                        cp -RL ${WORKSPACE}/kie-tools/packages/stunner-editors/dist/dmn ${EDITORS_DIR}
-                        cp -RL ${WORKSPACE}/kie-tools/packages/stunner-editors/dist/bpmn ${EDITORS_DIR}
-                        cp -RL ${WORKSPACE}/kie-tools/packages/stunner-editors/dist/scesim ${EDITORS_DIR}
-                        rm -rf ./editors/latest
-                        ln -s ${params.RELEASE_VERSION} ./editors/latest
-
-                        echo "Copy Online Editor resources"
-                        rm -rf ./gwt-editors
-                        cp -r ${WORKSPACE}/kie-tools/packages/online-editor/dist/* .
-                        rm -rf ./gwt-editors
-                        ln -s ${EDITORS_DIR} gwt-editors
-
-                        echo "Commit changes and push"
-                        git add .
-                        git commit -m "Deploy ${params.RELEASE_VERSION} (Editors + Online Editor)"
-                        """.trim()
-
-                        githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.asfGithubPushCredentialsId}")
-                    }
-                }
-            }
-        }
-
-        stage('Setup release candidate artifacts') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
                 script {
-                    env.ONLINE_EDITOR_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-webapp.zip"
-                    env.STUNNER_EDITORS_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-stunner-editors.zip"
+                    EDITORS_DIR = "editors/${params.RELEASE_VERSION}"
+
                     sh """#!/bin/bash -el
-                    mkdir ${env.RELEASE_ARTIFACTS_DIR}
-                    cd "${WORKSPACE}/kie-tools/packages/online-editor/dist" && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.ONLINE_EDITOR_RELEASE_ZIP_FILE}" .
-                    cd "${WORKSPACE}/kie-tools/packages/stunner-editors/dist" && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.STUNNER_EDITORS_RELEASE_ZIP_FILE}" .
+                    git config user.email asf-ci-kie@jenkins.kie.apache.org
+                    git config user.name asf-ci-kie
+
+                    git checkout gh-pages
+
+                    echo "Reset deployment dir"
+                    shopt -s extglob
+                    rm -rf -- !("dev"|"editors"|"standalone"|"chrome-extension"|"swf-chrome-extension"|".nojekyll"|"CNAME"|"0.23.0")
+
+                    echo "Copy Editor resources"
+                    rm -rf ${EDITORS_DIR}
+                    mkdir -p ${EDITORS_DIR}
+
+                    unzip ${RELEASE_ARTIFACTS_DIR}/${STUNNER_EDITORS_RELEASE_FILE} -d ${WORKSPACE}/stunner-editors
+
+                    cp -RL ${WORKSPACE}/stunner-editors/dmn ${EDITORS_DIR}
+                    cp -RL ${WORKSPACE}/stunner-editors/bpmn ${EDITORS_DIR}
+                    cp -RL ${WORKSPACE}/stunner-editors/scesim ${EDITORS_DIR}
+
+                    rm -rf ./editors/latest
+                    ln -s ${params.RELEASE_VERSION} ./editors/latest
+
+                    echo "Copy Online Editor resources"
+                    rm -rf ./gwt-editors
+                    unzip ${RELEASE_ARTIFACTS_DIR}/${ONLINE_EDITOR_RELEASE_FILE} -d .
+                    rm -rf ./gwt-editors
+                    ln -s ${EDITORS_DIR} gwt-editors
+
+                    echo "Commit changes and push"
+                    git add .
+                    git commit -m "Deploy ${params.RELEASE_VERSION} (Editors + Online Editor)"
                     """.trim()
-                }
-            }
-        }
 
-        stage('Sign artifacts for Apache release') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
-            steps {
-                dir("${env.RELEASE_ARTIFACTS_DIR}") {
-                    script {
-                        releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
-                        releaseUtils.signArtifact("${env.ONLINE_EDITOR_RELEASE_ZIP_FILE}")
-                        releaseUtils.signArtifact("${env.STUNNER_EDITORS_RELEASE_ZIP_FILE}")
-                    }
-                }
-            }
-        }
-
-        stage('Publish Release Candidate artifacts') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
-            steps {
-                script {
-                    releaseUtils.publishArtifacts(
-                        "${env.RELEASE_ARTIFACTS_DIR}",
-                        "${pipelineVars.asfReleaseStagingRepository}",
-                        "${params.RELEASE_CANDIDATE_VERSION}",
-                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
-                    )
+                    githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.asfGithubPushCredentialsId}")
                 }
             }
         }
@@ -245,6 +294,7 @@ pipeline {
 
     post {
         always {
+            archiveArtifacts artifacts: "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/*,${RELEASE_ARTIFACTS_DIR}/*", allowEmptyArchive: true
             cleanWs(deleteDirs: true)
         }
     }
