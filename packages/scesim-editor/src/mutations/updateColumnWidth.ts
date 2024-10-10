@@ -17,9 +17,22 @@
  * under the License.
  */
 
-export const EMPTY_TYPE = "java.lang.Void";
+import { SceSim__FactMappingType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
-export enum TEST_SCENARIO_EXPRESSION_TYPE {
-  EXPRESSION,
-  NOT_EXPRESSION,
+export function updateColumnWidth({
+  factMappings,
+  inputIndex,
+  newWidth,
+  oldWidth,
+}: {
+  factMappings: SceSim__FactMappingType[];
+  inputIndex: number;
+  newWidth: number | undefined;
+  oldWidth: number | undefined;
+}) {
+  if (newWidth && oldWidth !== newWidth) {
+    factMappings[inputIndex].columnWidth = {
+      __$$text: newWidth,
+    };
+  }
 }

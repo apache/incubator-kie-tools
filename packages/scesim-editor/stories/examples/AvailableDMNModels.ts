@@ -47,12 +47,3 @@ export const avaiableModels: {
 //   },
 //   {} as Record<string, DmnEditor.ExternalModel>
 // );
-
-// export const modelsByNamespace = Object.values(avaiableModels).reduce((acc, v) => {
-//   if (v.type === "dmn") {
-//     acc[v.model.definitions["@_namespace"]] = v;
-//   } else if (v.type === "pmml") {
-//     acc[getPmmlNamespace({ normalizedPosixPathRelativeToTheOpenFile: v.normalizedPosixPathRelativeToTheOpenFile })] = v;
-//   }
-//   return acc;
-// }, {} as DmnEditor.ExternalModelsIndex);
