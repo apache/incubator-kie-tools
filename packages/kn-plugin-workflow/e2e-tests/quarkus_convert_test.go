@@ -106,6 +106,7 @@ func RunQuarkusConvertTest(t *testing.T, cfgTestInputCreateConvert CfgTestInputC
 
 	err = os.Chdir(projectDir)
 	require.NoErrorf(t, err, "Expected nil error, got %v", err)
+	WriteMavenConfigFileWithTailDirs(projectDir)
 
 	// Run `quarkus convert` command
 	_, err = ExecuteKnWorkflowQuarkus(transformQuarkusConvertCmdCfgToArgs(t, test.input)...)
@@ -158,6 +159,7 @@ func TestQuarkusConvertProjectFailed(t *testing.T) {
 
 			err = os.Chdir(projectDir)
 			require.NoErrorf(t, err, "Expected nil error, got %v", err)
+			WriteMavenConfigFileWithTailDirs(projectDir)
 
 			// Run `quarkus convert` command
 			_, err = ExecuteKnWorkflowQuarkus(transformQuarkusConvertCmdCfgToArgs(t, test.input)...)
@@ -182,6 +184,7 @@ func TestQuarkusConvertProjectFailedAlreadyQuarkus(t *testing.T) {
 
 			err = os.Chdir(projectDir)
 			require.NoErrorf(t, err, "Expected nil error, got %v", err)
+			WriteMavenConfigFileWithTailDirs(projectDir)
 
 			// Run `quarkus convert` command
 			_, err = ExecuteKnWorkflowQuarkus(transformQuarkusConvertCmdCfgToArgs(t, test.input)...)

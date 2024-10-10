@@ -19,7 +19,7 @@
 
 const { execSync } = require("child_process");
 
-const buildEnv = require("./env");
+const { env } = require("./env");
 const path = require("path");
 const pythonVenvDir = path.dirname(require.resolve("@kie-tools/python-venv/package.json"));
 
@@ -30,7 +30,7 @@ const activateCmd =
 
 execSync(
   `${activateCmd} && \
-  python3 ./resources/scripts/versions_manager.py --bump-to ${buildEnv.env.root.streamName} --source-folder ./resources`,
+  python3 ./resources/scripts/versions_manager.py --bump-to ${env.root.streamName} --source-folder ./resources`,
   { stdio: "inherit" }
 );
 

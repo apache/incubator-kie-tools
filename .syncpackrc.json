@@ -3,8 +3,8 @@
     {
       "dependencies": ["prettier"],
       "packages": [
-        "@kie-tools/uniforms-bootstrap4-codegen",
-        "@kie-tools/uniforms-patternfly-codegen",
+        "@kie-tools/form-code-generator-bootstrap4-theme",
+        "@kie-tools/form-code-generator-patternfly-theme",
         "@kie-tools/yaml-language-server"
       ]
     },

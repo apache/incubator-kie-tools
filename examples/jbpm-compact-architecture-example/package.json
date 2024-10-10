@@ -42,7 +42,6 @@
   "devDependencies": {
     "@kie-tools/kogito-management-console": "workspace:*",
     "@kie-tools/kogito-task-console": "workspace:*",
-    "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "run-script-os": "^1.1.6"
   },

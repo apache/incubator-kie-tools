@@ -33,9 +33,9 @@
   <artifactId>dashbuilder-bom</artifactId>
   <packaging>pom</packaging>
 
-  <name>DashBuilder BOM (Bill Of Materials)</name>
+  <name>Dashbuilder BOM (Bill Of Materials)</name>
   <description>
-    Import this BOM in your dependencyManagement if you want to depend on multiple DashBuilder artifacts.
+    Import this BOM in your dependencyManagement if you want to depend on multiple Dashbuilder artifacts.
   </description>
 
   <inceptionYear>2021</inceptionYear>

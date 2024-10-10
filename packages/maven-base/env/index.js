@@ -31,6 +31,9 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       mavenBase: {
         version: require("../package.json").version,
       },
+      mvnw: {
+        version: "3.3.0",
+      },
       maven: {
         deploy: {
           skip: getOrDefault(this.vars.KIE_TOOLS_BUILD__mavenDeploySkip),

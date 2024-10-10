@@ -17,6 +17,15 @@
 
 ## @kie-tools-scripts/check-junit-report-results
 
+GitHub script that checks whether supplied JUnit XML files contain failing tests. This package is meant to be used inside GitHub Actions workflows.
+
+### Usage
+
+```js
+const script = require("./scripts/check-junit-report-results/src/index.js");
+await script({ core, glob, patterns });
+```
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software

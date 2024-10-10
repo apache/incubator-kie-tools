@@ -32,7 +32,6 @@
     "@kie-tools/sonataflow-quarkus-devui": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "run-script-os": "^1.1.6"
   },

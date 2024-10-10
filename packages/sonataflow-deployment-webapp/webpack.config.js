@@ -27,10 +27,9 @@ const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const swEditorAssets = require("@kie-tools/serverless-workflow-diagram-editor-assets");
 const { env } = require("./env");
-const buildEnv = env;
 
-module.exports = async (env) =>
-  merge(common(env), {
+module.exports = async (webpackEnv) =>
+  merge(common(webpackEnv), {
     entry: {
       index: "./src/index.tsx",
       "serverless-workflow-combined-editor-envelope": "./src/envelope/ServerlessWorkflowCombinedEditorEnvelopeApp.ts",
@@ -95,7 +94,7 @@ module.exports = async (env) =>
       historyApiFallback: false,
       static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
       compress: true,
-      port: buildEnv.sonataFlowDeploymentWebapp.dev.port,
+      port: env.sonataFlowDeploymentWebapp.dev.port,
       client: {
         overlay: false,
       },

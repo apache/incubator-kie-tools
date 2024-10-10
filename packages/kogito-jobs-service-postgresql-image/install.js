@@ -20,7 +20,7 @@
 const { execSync } = require("child_process");
 const fs = require("fs");
 
-const buildEnv = require("./env");
+const { env } = require("./env");
 const path = require("path");
 const pythonVenvDir = path.dirname(require.resolve("@kie-tools/python-venv/package.json"));
 const sonataflowImageCommonDir = path.dirname(require.resolve("@kie-tools/sonataflow-image-common/package.json"));
@@ -33,7 +33,7 @@ const activateCmd =
 
 execSync(
   `${activateCmd} && \
-  python3 ${sonataflowImageCommonDir}/resources/scripts/versions_manager.py --bump-to ${buildEnv.env.kogitoJobsServicePostgresqlImage.buildTag} --source-folder ./resources`,
+  python3 ${sonataflowImageCommonDir}/resources/scripts/versions_manager.py --bump-to ${env.kogitoJobsServicePostgresqlImage.buildTag} --source-folder ./resources`,
   { stdio: "inherit" }
 );
 
@@ -47,17 +47,14 @@ if (imageYamlFiles.length !== 1) {
 const originalYamlPath = path.join(resourcesPath, imageYamlFiles[0]);
 let imageYaml = fs.readFileSync(originalYamlPath, "utf8");
 
-const imageUrl = `${buildEnv.env.kogitoJobsServicePostgresqlImage.registry}/${buildEnv.env.kogitoJobsServicePostgresqlImage.account}/${buildEnv.env.kogitoJobsServicePostgresqlImage.name}`;
+const imageUrl = `${env.kogitoJobsServicePostgresqlImage.registry}/${env.kogitoJobsServicePostgresqlImage.account}/${env.kogitoJobsServicePostgresqlImage.name}`;
 
 // Replace the whole string between quotes ("") with the image name
 imageYaml = imageYaml.replace(/(?<=")(.*kogito-jobs-service-postgresql.*)(?=")/gm, imageUrl);
 
 // Write file and then rename it to match the image name
 fs.writeFileSync(originalYamlPath, imageYaml);
-fs.renameSync(
-  originalYamlPath,
-  path.join(resourcesPath, `${buildEnv.env.kogitoJobsServicePostgresqlImage.name}-image.yaml`)
-);
+fs.renameSync(originalYamlPath, path.join(resourcesPath, `${env.kogitoJobsServicePostgresqlImage.name}-image.yaml`));
 
 // Replace image URL in .feature files
 replaceInFile.sync({

@@ -25,10 +25,9 @@ const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { merge } = require("webpack-merge");
 const stunnerEditors = require("@kie-tools/stunner-editors");
 const { env } = require("./env");
-const buildEnv = env;
 
-module.exports = (env) => [
-  merge(common(env), {
+module.exports = (webpackEnv) => [
+  merge(common(webpackEnv), {
     entry: {
       index: "./src/index.tsx",
       "envelope/base64-editor": "./src/envelope/base64-editor.ts",
@@ -72,7 +71,7 @@ module.exports = (env) => [
       historyApiFallback: false,
       static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
       compress: true,
-      port: buildEnv.exampleWebapp.port,
+      port: env.exampleWebapp.port,
     },
     ignoreWarnings: [/Failed to parse source map/],
   }),

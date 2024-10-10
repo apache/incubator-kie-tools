@@ -20,7 +20,7 @@
 const { execSync } = require("child_process");
 const { argv } = require("process");
 const version = require("../package.json").version;
-const buildEnv = require("../env");
+const { env } = require("../env");
 
 const network = "ddus-network";
 const builder = "ddus-builder";
@@ -38,9 +38,9 @@ const imagesNames = {
 };
 
 const containersPorts = {
-  fileserver: buildEnv.env.devDeploymentUploadService.dev.fileServerPort,
-  buildtimeInstall: buildEnv.env.devDeploymentUploadService.dev.buildTimePort,
-  runTimeInstall: buildEnv.env.devDeploymentUploadService.dev.runtTimePort,
+  fileserver: env.devDeploymentUploadService.dev.fileServerPort,
+  buildtimeInstall: env.devDeploymentUploadService.dev.buildTimePort,
+  runTimeInstall: env.devDeploymentUploadService.dev.runtTimePort,
 };
 
 function runCommand(command, returnResult = false) {

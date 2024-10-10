@@ -21,8 +21,8 @@ const patternflyBase = require("@kie-tools-core/patternfly-base");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { merge } = require("webpack-merge");
 
-const commonConfig = (env) =>
-  merge(common(env), {
+const commonConfig = (webpackEnv) =>
+  merge(common(webpackEnv), {
     output: {
       library: "VsCodePackSimpleReact",
       libraryTarget: "umd",
@@ -33,15 +33,15 @@ const commonConfig = (env) =>
     },
   });
 
-module.exports = (env) => [
-  merge(commonConfig(env), {
+module.exports = (webpackEnv) => [
+  merge(commonConfig(webpackEnv), {
     target: "node",
     entry: {
       extension: "./src/extension.ts",
     },
     plugins: [],
   }),
-  merge(commonConfig(env), {
+  merge(commonConfig(webpackEnv), {
     target: "web",
     entry: {
       "envelope/index": "./src/envelope/index.ts",

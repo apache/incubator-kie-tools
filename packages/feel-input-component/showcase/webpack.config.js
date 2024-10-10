@@ -24,10 +24,9 @@ const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { EnvironmentPlugin } = require("webpack");
 const { env } = require("../env");
-const buildEnv = env;
 
-module.exports = (env) =>
-  merge(common(env), {
+module.exports = (webpackEnv) =>
+  merge(common(webpackEnv), {
     mode: "development",
     entry: {
       index: path.resolve(__dirname, "./index.tsx"),
@@ -40,7 +39,7 @@ module.exports = (env) =>
         patterns: [{ from: path.resolve(__dirname, "./static"), to: "./" }],
       }),
       new EnvironmentPlugin({
-        WEBPACK_REPLACE__FEEL_INPUT_COMPONENT_DEV_WEBAPP__feelServerUrl: buildEnv.feelInputComponent.dev.feelServerUrl,
+        WEBPACK_REPLACE__FEEL_INPUT_COMPONENT_DEV_WEBAPP__feelServerUrl: env.feelInputComponent.dev.feelServerUrl,
       }),
     ],
     module: {
@@ -63,7 +62,7 @@ module.exports = (env) =>
     devServer: {
       historyApiFallback: true,
       compress: true,
-      port: buildEnv.feelInputComponent.dev.port,
+      port: env.feelInputComponent.dev.port,
       open: false,
       hot: true,
       client: {

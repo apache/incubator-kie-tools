@@ -17,6 +17,14 @@
 
 ## @kie-tools/maven-base
 
+Foundational files for Maven-based packages.
+
+- `pom.xml`: Centralized, common Maven configurations. Should be used as parent of Maven-based pacakges.
+- `settings.xml`: Moslty repositories configuration.
+- `index.js`: Essential scripts for configuring properties such as `-Drevision` and `-Dmaven.repo.local.tail`.
+
+For more information, refer to the [KIE Tools :: Manual](../../repo/docs/MANUAL.md#specifics--maven)
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software

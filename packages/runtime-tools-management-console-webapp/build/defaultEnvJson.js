@@ -17,17 +17,16 @@
  * under the License.
  */
 
-const { env: buildEnv } = require("../env");
+const { env } = require("../env");
 
 const version = require("../package.json").version;
 
 module.exports = {
   defaultEnvJson: {
-    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE: buildEnv.runtimeToolsManagementConsoleWebapp.kogitoEnvMode,
+    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE: env.runtimeToolsManagementConsoleWebapp.kogitoEnvMode,
     RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_APP_NAME: "Management Console",
     RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_APP_VERSION: version,
-    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT:
-      buildEnv.runtimeToolsManagementConsoleWebapp.kogitoDataIndexUrl,
+    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT: env.runtimeToolsManagementConsoleWebapp.kogitoDataIndexUrl,
     KOGITO_CONSOLES_KEYCLOAK_DISABLE_HEALTH_CHECK: false,
     KOGITO_CONSOLES_KEYCLOAK_UPDATE_TOKEN_VALIDITY: 30,
     KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL:

@@ -22,13 +22,13 @@ const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
-const { env: buildEnv } = require("./env");
+const { env } = require("./env");
 const { defaultEnvJson } = require("./build/defaultEnvJson");
 
 const BG_IMAGES_DIRNAME = "bgimages";
 
-module.exports = async (env) => {
-  return merge(common(env), {
+module.exports = async (webpackEnv) => {
+  return merge(common(webpackEnv), {
     entry: {
       index: path.resolve(__dirname, "src", "index.tsx"),
       "resources/form-displayer": "./src/resources/form-displayer.ts",
@@ -37,8 +37,8 @@ module.exports = async (env) => {
       static: {
         directory: "./dist",
       },
-      host: buildEnv.runtimeToolsTaskConsoleWebapp.host,
-      port: buildEnv.runtimeToolsTaskConsoleWebapp.port,
+      host: env.runtimeToolsTaskConsoleWebapp.host,
+      port: env.runtimeToolsTaskConsoleWebapp.port,
       compress: true,
       historyApiFallback: true,
       hot: true,

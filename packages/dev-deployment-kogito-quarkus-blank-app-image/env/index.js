@@ -51,10 +51,6 @@ module.exports = composeEnv([rootEnv], {
       default: rootEnv.env.root.streamName,
       description: "Tag version of this image. E.g., `main` or `10.0.x` or `10.0.0",
     },
-    DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__mavenM2RepoViaHttpImage: {
-      default: `${mavenM2RepoViaHttpImageEnv.registry}/${mavenM2RepoViaHttpImageEnv.account}/${mavenM2RepoViaHttpImageEnv.name}:${mavenM2RepoViaHttpImageEnv.buildTag}`,
-      description: "The image tag for the Maven M2 Repo via HTTP. Used during the build only.",
-    },
   }),
   get env() {
     return {
@@ -66,9 +62,7 @@ module.exports = composeEnv([rootEnv], {
         buildTag: getOrDefault(this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag),
         version: require("../package.json").version,
         dev: {
-          mavenM2RepoViaHttpImage: getOrDefault(
-            this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__mavenM2RepoViaHttpImage
-          ),
+          mavenM2RepoViaHttpImage: `${mavenM2RepoViaHttpImageEnv.registry}/${mavenM2RepoViaHttpImageEnv.account}/${mavenM2RepoViaHttpImageEnv.name}:${mavenM2RepoViaHttpImageEnv.buildTag}`,
         },
       },
     };
