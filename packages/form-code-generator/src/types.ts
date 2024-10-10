@@ -42,6 +42,7 @@ export interface FormAsset<FormThemeFileExt extends string> {
 
 export interface FormCodeGenerationError {
   error: Error;
+  fileName: string;
 }
 
 export interface FormCodeGeneratorTheme<

@@ -74,7 +74,7 @@
         "title": "Generate SVG without any notification"
       },
       {
-        "command": "extension.kogito.generateForms",
+        "command": "extension.kie.generateFormCode",
         "title": "Generate form code for human interactions"
       }
     ],
