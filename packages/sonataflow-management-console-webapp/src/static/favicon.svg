@@ -1,4 +1,4 @@
-<?xml version='1.0'?>
+<?xml version='1.0' ?>
 <!--
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
@@ -17,7 +17,6 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
-
 <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
   <defs>
     <style>.cls-1{fill:#f5891f;}.cls-2{fill:#97d4e8;}.cls-3{fill:#fff;}.cls-4{fill:#085870;}</style>
