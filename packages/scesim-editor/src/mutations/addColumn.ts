@@ -124,7 +124,7 @@ const determineNewColumnTargetIndex = (
   const instanceName = selectedFactMapping.factIdentifier.name!.__$$text;
   const instanceType = selectedFactMapping.factIdentifier.className!.__$$text;
 
-  if (isInstance) {
+  if (!isInstance) {
     if (insertDirection === InsertRowColumnsDirection.AboveOrRight) {
       return selectedColumnIndex + 1;
     } else {

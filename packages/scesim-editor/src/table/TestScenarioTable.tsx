@@ -201,7 +201,7 @@ function TestScenarioTable({
     |   |               +--------------------------------+-----+----------------------------------+-----+
     | # |               | givenInstance (given-instance) | ... | expectGroup (expect-instance)    | ... |
     |   |               +----------------+---------------+-----+----------------------------------+-----+
-    |   |               | field (given)  | field (given)| ...  | field (expect)  | field  (expect)| ... |
+    |   |               | field (given)  | field (given) | ... | field (expect)  | field  (expect)| ... |
     +---+---------------+----------------+---------------+-----+-----------------+----------------+-----+
     Every section has its related groupType in the rounded brackets, that are crucial to determine 
     the correct context menu behavior (adding/removing an instance requires a different logic than
@@ -529,9 +529,13 @@ function TestScenarioTable({
       columnsCount: number;
       insertDirection: InsertRowColumnsDirection;
     }) => {
-      /* GIVEN and EXPECTED column types can be added only */
-      if (TestScenarioTableColumnFieldGroup.OTHER === args.groupType) {
-        console.error("Can't add a 'OTHER' type column.");
+      /* GIVEN and EXPECTED of FIELD and INSTANCE column types can be added only */
+      if (
+        TestScenarioTableColumnFieldGroup.OTHER === args.groupType ||
+        TestScenarioTableColumnHeaderGroup.EXPECT === args.groupType ||
+        TestScenarioTableColumnHeaderGroup.GIVEN === args.groupType
+      ) {
+        console.error("Can't add a " + args.groupType + " type column.");
         return;
       }
       const isInstance =
@@ -566,6 +570,7 @@ function TestScenarioTable({
       isBackground,
       testScenarioEditorStoreApi,
       TestScenarioTableColumnFieldGroup,
+      TestScenarioTableColumnHeaderGroup,
       TestScenarioTableColumnInstanceGroup,
     ]
   );
@@ -575,9 +580,13 @@ function TestScenarioTable({
    */
   const onColumnDeleted = useCallback(
     (args: { columnIndex: number; groupType: string }) => {
-      /* GIVEN and EXPECTED column types can be deleted only */
-      if (TestScenarioTableColumnFieldGroup.OTHER === args.groupType) {
-        console.error("Can't delete a 'OTHER' type column.");
+      /* GIVEN and EXPECTED of FIELD and INSTANCE column types can be added only */
+      if (
+        TestScenarioTableColumnFieldGroup.OTHER === args.groupType ||
+        TestScenarioTableColumnHeaderGroup.EXPECT === args.groupType ||
+        TestScenarioTableColumnHeaderGroup.GIVEN === args.groupType
+      ) {
+        console.error("Can't add a " + args.groupType + " type column.");
         return;
       }
       const isInstance =
@@ -617,6 +626,7 @@ function TestScenarioTable({
       isBackground,
       testScenarioEditorStoreApi,
       TestScenarioTableColumnFieldGroup,
+      TestScenarioTableColumnHeaderGroup,
       TestScenarioTableColumnInstanceGroup,
     ]
   );
