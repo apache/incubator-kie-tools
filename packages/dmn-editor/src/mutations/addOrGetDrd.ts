@@ -19,7 +19,7 @@
 
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { Normalized } from "../normalization/normalize";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 
 export function getDefaultDrdName({ drdIndex }: { drdIndex: number }) {
   return drdIndex === 0 ? "Default DRD" : "Unnamed DRD";

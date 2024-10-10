@@ -19,15 +19,15 @@
 
 const { execSync, execFileSync } = require("child_process");
 const path = require("path");
-const buildEnv = require("../env");
+const { env } = require("../env");
 const version = require("../package.json").version;
 
 const filePath = path.join(process.cwd(), "tests/test.zip");
 
 const containersPorts = {
-  fileserver: buildEnv.env.devDeploymentUploadService.dev.fileServerPort,
-  buildtimeInstall: buildEnv.env.devDeploymentUploadService.dev.buildTimePort,
-  runTimeInstall: buildEnv.env.devDeploymentUploadService.dev.runtTimePort,
+  fileserver: env.devDeploymentUploadService.dev.fileServerPort,
+  buildtimeInstall: env.devDeploymentUploadService.dev.buildTimePort,
+  runTimeInstall: env.devDeploymentUploadService.dev.runtTimePort,
 };
 
 const dockerInfo = JSON.parse(execSync(`docker info --format '{{ json . }}'`).toString().trim());

@@ -182,7 +182,7 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
   const chunkSize = 50;
   for (let i = 0; i < changedPackagesNames.length; i += chunkSize) {
     changedPackagesNamesChunks.push(
-      changedPackagesNames.slice(i, Math.min(i + chunkSize, changedPackagesNames.length - 1))
+      changedPackagesNames.slice(i, Math.min(i + chunkSize, changedPackagesNames.length))
     );
   }
 
@@ -215,7 +215,7 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
       }
 
       const changedSourcePathsInPartition = changedPackagesDirs.filter((path) =>
-        [...partition.dirs].some((partitionDir) => path.startsWith(`${partitionDir}`))
+        [...partition.dirs].some((partitionDir) => path === partitionDir)
       );
 
       if (changedSourcePathsInPartition.length === 0) {
@@ -268,6 +268,9 @@ async function getPartitions(): Promise<Array<None | Full | Partial>> {
 }
 
 async function getDirsOfDependencies(leafPackageNames: Set<string>) {
+  if (leafPackageNames.size === 0) {
+    return new Set<string>();
+  }
   const packagesFilter = [...leafPackageNames].map((pkgName) => `-F ${pkgName}...`).join(" ");
   return new Set(
     stdoutArray(execSync(`bash -c "pnpm ${packagesFilter} exec bash -c pwd"`).toString()) //

@@ -27,7 +27,7 @@
     "image:test:darwin:linux": "pnpm copy-test-assets && pnpm setup:env make -C ./build test-image",
     "image:test:win32": "echo \"Tests skipped on Windows\"",
     "install": "node install.js && pnpm format",
-    "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env kogitoJobsServicePostgresqlImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env kogitoJobsServicePostgresqlImage.account) KOGITO_IMAGE_NAME=$(build-env kogitoJobsServicePostgresqlImage.name) KOGITO_IMAGE_TAG=$(build-env kogitoJobsServicePostgresqlImage.buildTag) QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) KOGITO_VERSION=$(build-env kogitoRuntime.version)"
+    "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env kogitoJobsServicePostgresqlImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env kogitoJobsServicePostgresqlImage.account) KOGITO_IMAGE_NAME=$(build-env kogitoJobsServicePostgresqlImage.name) KOGITO_IMAGE_TAG=$(build-env kogitoJobsServicePostgresqlImage.buildTag) QUARKUS_PLATFORM_VERSION=$(build-env versions.quarkus) KOGITO_VERSION=$(build-env versions.kogito)"
   },
   "devDependencies": {
     "@kie-tools/python-venv": "workspace:*",

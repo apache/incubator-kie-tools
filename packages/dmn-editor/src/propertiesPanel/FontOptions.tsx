@@ -18,6 +18,7 @@
  */
 
 import { DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { NumberInput } from "@patternfly/react-core/dist/js/components/NumberInput";
@@ -36,7 +37,6 @@ import { ColorPicker } from "./ColorPicker";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import "./FontOptions.css";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { Normalized } from "../normalization/normalize";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 // https://www.w3schools.com/cssref/css_websafe_fonts.php

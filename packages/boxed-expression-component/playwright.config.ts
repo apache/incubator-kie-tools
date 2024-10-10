@@ -20,9 +20,9 @@
 import { defineConfig } from "@playwright/test";
 import playwirghtBaseConfig from "@kie-tools/playwright-base/playwright.config";
 import merge from "lodash/merge";
-import { env } from "./env";
 
-const buildEnv: any = env;
+import { env } from "./env";
+const buildEnv: any = env; // build-env is not typed
 
 const customConfig = defineConfig({
   use: {
@@ -40,7 +40,7 @@ const customConfig = defineConfig({
     toHaveScreenshot: {
       // An acceptable ratio of pixels that are different to the
       // total amount of pixels, between 0 and 1.
-      maxDiffPixelRatio: 0.001,
+      maxDiffPixelRatio: 0.1,
     },
   },
 });

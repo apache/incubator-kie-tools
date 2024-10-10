@@ -96,34 +96,56 @@
   </mailingLists>
 
   <properties>
-    <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
-    <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
-    <maven.compiler.parameters>true</maven.compiler.parameters>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <compiler-plugin.version>3.13.0</compiler-plugin.version>
-    <version.resources.plugin>3.2.0</version.resources.plugin>
-    <version.flatten.plugin>1.6.0</version.flatten.plugin>
-    <version.junit>4.13.2</version.junit>
-    <surefire-plugin.version>3.5.0</surefire-plugin.version>
-    <quarkus.platform.version>3.8.6</quarkus.platform.version>
+
+    <!-- Config -->
+    <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
+    <maven.compiler.parameters>true</maven.compiler.parameters>
+
+    <!-- Maven versions -->
+    <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
+    <version.maven.compiler.plugin>3.13.0</version.maven.compiler.plugin>
+    <version.maven.resources.plugin>3.2.0</version.maven.resources.plugin>
+    <version.maven.failsafe.plugin>3.0.0-M7</version.maven.failsafe.plugin>
+    <version.maven.surefire.plugin>3.5.0</version.maven.surefire.plugin>
+    <version.maven.install.plugin>3.1.3</version.maven.install.plugin>
+    <version.maven.helper.plugin>3.2.0</version.maven.helper.plugin>
+    <version.maven.deploy.plugin>3.1.2</version.maven.deploy.plugin>
+    <version.maven.site.plugin>3.12.1</version.maven.site.plugin>
+    <version.maven.source.plugin>3.3.1</version.maven.source.plugin>
+    <version.maven.dependency.plugin>3.6.1</version.maven.dependency.plugin>
+    <version.maven.jar.plugin>3.4.1</version.maven.jar.plugin>
+    <version.maven.remote.resources.plugin>3.2.0</version.maven.remote.resources.plugin>
+    <version.maven.clean.plugin>3.4.0</version.maven.clean.plugin>
+    <version.codehaus.flatten.plugin>1.6.0</version.codehaus.flatten.plugin>
+
+    <!-- Apache KIE -->
     <version.org.kie.kogito>999-20240912-SNAPSHOT</version.org.kie.kogito>
-    <quarkus-plugin.version>${quarkus.platform.version}</quarkus-plugin.version>
-    <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-    <version.failsafe.plugin>3.0.0-M7</version.failsafe.plugin>
+
+    <!-- Quarkus -->
+    <version.quarkus>3.8.6</version.quarkus>
+
+    <!-- 3rd party dependencies -->
+    <version.junit>4.13.2</version.junit>
+    <version.org.apache.commons.commons-compress>1.26.1</version.org.apache.commons.commons-compress>
+    <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
+    <version.io.quarkiverse.embedded.postgresql>0.2.2</version.io.quarkiverse.embedded.postgresql>
+    <version.org.apache.mime4j>0.8.11</version.org.apache.mime4j>
+    <version.org.freemarker>2.3.32</version.org.freemarker>
+    <version.org.assertj>3.25.3</version.org.assertj>
+    <version.org.junit.jupiter>5.10.2</version.org.junit.jupiter>
+    <version.org.mockito>4.11.0</version.org.mockito>
+    <version.org.kie.j2cl.tools.yaml.mapper>0.4</version.org.kie.j2cl.tools.yaml.mapper>
+    <version.j2cl.maven.plugin>0.23.0</version.j2cl.maven.plugin>
   </properties>
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bom</artifactId>
-        <version>${quarkus.platform.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
+      <!-- Apache KIE -->
+
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-bom</artifactId>
@@ -157,6 +179,90 @@
         <artifactId>kogito-quarkus-test-utils</artifactId>
         <version>${version.org.kie.kogito}</version>
       </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-test-resources</artifactId>
+        <version>${version.org.kie.kogito}</version>
+        <classifier>tests</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.j2cl.tools.yaml.mapper</groupId>
+        <artifactId>common</artifactId>
+        <version>${version.org.kie.j2cl.tools.yaml.mapper}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.j2cl.tools.yaml.mapper</groupId>
+        <artifactId>processor</artifactId>
+        <version>${version.org.kie.j2cl.tools.yaml.mapper}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <!-- Quarkus -->
+
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-bom</artifactId>
+        <version>${version.quarkus}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- 3rd party -->
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${version.junit}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>${version.org.apache.commons.commons-compress}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkiverse.embedded.postgresql</groupId>
+        <artifactId>quarkus-embedded-postgresql</artifactId>
+        <version>${version.io.quarkiverse.embedded.postgresql}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.iq80.snappy</groupId>
+        <artifactId>snappy</artifactId>
+        <version>${version.org.iq80.snappy}</version>
+      </dependency>
+      <dependency>
+        <!--
+          Transitively imported by io.quarkus:quarkus-resteasy-multipart-deployment
+          Overriding it to fix CVE-2024-21742
+          Can be removed once the parent dependency updates it to a 0.8.11+ version
+        -->
+        <groupId>org.apache.james</groupId>
+        <artifactId>apache-mime4j-core</artifactId>
+        <version>${version.org.apache.mime4j}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.freemarker</groupId>
+        <artifactId>freemarker</artifactId>
+        <version>${version.org.freemarker}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>${version.org.junit.jupiter}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${version.org.assertj}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-inline</artifactId>
+        <version>${version.org.mockito}</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -170,20 +276,97 @@
           <configuration>
             <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
             <!--
-            This configuration overrides the list of issues registered in the plugin to enable the `maven-flatten-plugin`
-            TODO: remove as a part of: https://github.com/apache/incubator-kie-issues/issues/1371
+              This configuration overrides the list of issues registered in the plugin to enable the `maven-flatten-plugin`
+              TODO: remove as a part of: https://github.com/apache/incubator-kie-issues/issues/1371
             -->
             <pluginIssues
             >${session.executionRootDirectory}/node_modules/@kie-tools/maven-base/not-reproducible-plugins.properties</pluginIssues>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${version.maven.install.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${version.maven.deploy.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-helper-plugin</artifactId>
+          <version>${version.maven.helper.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${version.maven.dependency.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${version.maven.compiler.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${version.maven.failsafe.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>${version.maven.clean.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${version.maven.surefire.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${version.maven.jar.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${version.maven.source.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <version>${version.maven.remote.resources.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>flatten-maven-plugin</artifactId>
+          <version>${version.codehaus.flatten.plugin}</version>
+        </plugin>
+
+        <!-- Quarkus -->
+        <plugin>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-maven-plugin</artifactId>
+          <version>${version.quarkus}</version>
+        </plugin>
+
+        <!-- 3rd party -->
+        <plugin>
+          <groupId>org.kie.j2cl.tools</groupId>
+          <artifactId>j2cl-maven-plugin</artifactId>
+          <version>${version.j2cl.maven.plugin}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
+
     <plugins>
       <plugin>
+        <!-- Necessary for CI friendly versions -->
+        <!-- See https://maven.apache.org/maven-ci-friendly.html -->
+        <!-- Won't be necessary on Maven 4. -->
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
-        <version>${version.flatten.plugin}</version>
         <configuration>
           <updatePomFile>true</updatePomFile>
           <flattenMode>resolveCiFriendliesOnly</flattenMode>
@@ -206,7 +389,9 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
+        <!--  -->
+        <!-- Good practice to always include sources on releases -->
+        <!--  -->
         <artifactId>maven-source-plugin</artifactId>
         <executions>
           <execution>
@@ -228,6 +413,106 @@
 
   <profiles>
     <profile>
+      <!--  -->
+      <!-- This profile configures Maven to skip installing  -->
+      <!-- artifacts to the default maven.repo.local directory -->
+      <!-- And instead copies them to `dist/1st-party-m2/repository. -->
+      <!--  -->
+      <!-- This allows for Maven-based packages not to pollute the -->
+      <!-- "shared" local Maven repository and risk being available -->
+      <!-- for packages that do not declare its dependencies correctly. -->
+      <!--  -->
+      <id>use-maven-repo-local-tail</id>
+      <!--      TEMPORARILY DISABLING MAVEN REPO LOCAL TAIL -->
+      <!--      <activation>-->
+      <!--        <property>-->
+      <!--          &lt;!&ndash; This makes this profile included even if other profiles are explicitly declared. &ndash;&gt;-->
+      <!--          &lt;!&ndash; To disable this profile, please use `-P-use-maven-repo-local-tail` or `-P!use-maven-repo-local-tail` &ndash;&gt;-->
+      <!--          <name>kieTools.do-not-use-this-property.ignoreMavenRepoLocalTail</name>-->
+      <!--          <value>!true</value>-->
+      <!--        </property>-->
+      <!--      </activation>-->
+      <build>
+        <pluginManagement>
+          <plugins>
+            <!--  -->
+            <!-- Skipping the "install:install" execution, we prevent accessing -->
+            <!-- previously-built packages without declaring them as dependencies. -->
+            <!--  -->
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-install-plugin</artifactId>
+              <version>${version.maven.install.plugin}</version>
+              <configuration>
+                <skip>true</skip>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+        <plugins>
+          <!--  -->
+          <!-- Removes the local Maven repository from the `dist` folder. -->
+          <!--  -->
+          <plugin>
+            <artifactId>maven-clean-plugin</artifactId>
+            <configuration>
+              <filesets>
+                <fileset>
+                  <directory>${basedir}/dist/1st-party-m2</directory>
+                  <includes>
+                    <include>**/*</include>
+                  </includes>
+                  <followSymlinks>false</followSymlinks>
+                </fileset>
+              </filesets>
+            </configuration>
+          </plugin>
+          <!-- -->
+          <!-- Removes this module's artifacts from the local maven repository, -->
+          <!-- to make sure `dist/1st-party-m2` is the only place it's available. -->
+          <!-- -->
+          <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>clean-local-repo</id>
+                <phase>clean</phase>
+                <goals>
+                  <goal>purge-local-repository</goal>
+                </goals>
+                <configuration>
+                  <excludes>**/*</excludes>
+                  <actTransitively>false</actTransitively>
+                  <manualInclude>${project.groupId}:${project.artifactId}:${project.version}</manualInclude>
+                  <verbose>true</verbose>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <!--  -->
+          <!-- This execution makes modules installed in the `dist` directory of packages. -->
+          <!--  -->
+          <plugin>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>deploy-to-local-dist-1st-party-m2</id>
+                <phase>install</phase>
+                <goals>
+                  <goal>deploy</goal>
+                </goals>
+                <configuration>
+                  <skip>false</skip>
+                  <altDeploymentRepository
+                  >kie-tools--local-dist-1st-party-m2::file://${maven.multiModuleProjectDirectory}/dist/1st-party-m2/repository</altDeploymentRepository>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
       <id>reproducible-build</id>
       <activation>
         <activeByDefault>false</activeByDefault>
@@ -238,7 +523,6 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-artifact-plugin</artifactId>
             <configuration />
             <executions>
@@ -247,8 +531,11 @@
                 <goals>
                   <goal>check-buildplan</goal>
                 </goals>
-                <!-- The execution's configuration is part of the pluginManagement. This piece here only makes sure the
-                     execution is enabled (by specifying a phase) for full profile builds. -->
+                <!--
+                  The execution's configuration is part of the pluginManagement.
+                  This piece here only makes sure the execution is enabled (by specifying a phase)
+                  for builds with the 'reproducible' profile enabled.
+                -->
                 <phase>validate</phase>
               </execution>
               <execution>
@@ -256,8 +543,11 @@
                 <goals>
                   <goal>compare</goal>
                 </goals>
-                <!-- The execution's configuration is part of the pluginManagement. This piece here only makes sure the
-                     execution is enabled (by specifying a phase) for full profile builds. -->
+                <!--
+                  The execution's configuration is part of the pluginManagement.
+                  This piece here only makes sure the execution is enabled (by specifying a phase)
+                  for builds with the 'reproducible' profile enabled.
+                -->
                 <phase>install</phase>
               </execution>
             </executions>

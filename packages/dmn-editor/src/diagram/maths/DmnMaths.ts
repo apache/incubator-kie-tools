@@ -24,6 +24,7 @@ import {
   DC__Point,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { SnapGrid } from "../../store/Store";
 import { snapBoundsDimensions, snapBoundsPosition } from "../SnapGrid";
 import { PositionalNodeHandleId } from "../connections/PositionalNodeHandles";
@@ -31,7 +32,6 @@ import { AutoPositionedEdgeMarker } from "../edges/AutoPositionedEdgeMarker";
 import { NODE_TYPES } from "../nodes/NodeTypes";
 import { NodeDmnObjects } from "../nodes/Nodes";
 import { getCenter } from "./Maths";
-import { Normalized } from "../../normalization/normalize";
 
 export const DEFAULT_INTRACTION_WIDTH = 40;
 export const CONTAINER_NODES_DESIRABLE_PADDING = 60;

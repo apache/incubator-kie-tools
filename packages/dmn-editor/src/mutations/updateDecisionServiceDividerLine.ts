@@ -24,14 +24,14 @@ import {
   DMNDI15__DMNDecisionServiceDividerLine,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { addNamespaceToHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
 import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { SnapGrid } from "../store/Store";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
-import { Normalized } from "../normalization/normalize";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { addNamespaceToHref } from "../xml/xmlHrefs";
 import { ExternalDmnsIndex } from "../DmnEditor";
 
 export const DECISION_SERVICE_DIVIDER_LINE_PADDING = 100;

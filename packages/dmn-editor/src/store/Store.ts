@@ -18,6 +18,7 @@
  */
 
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import { normalize, Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { enableMapSet } from "immer";
 import * as RF from "reactflow";
@@ -25,7 +26,6 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { ExternalModelsIndex } from "../DmnEditor";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
-import { normalize, Normalized } from "../normalization/normalize";
 import { ComputedStateCache } from "./ComputedStateCache";
 import { computeAllFeelVariableUniqueNames } from "./computed/computeAllFeelVariableUniqueNames";
 import { computeDataTypes } from "./computed/computeDataTypes";

@@ -31,8 +31,8 @@
   <version>${revision}</version>
   <packaging>pom</packaging>
 
-  <name>Stunner Editors Java - Parent</name>
-  <description>Stunner Editors Java - Parent</description>
+  <name>KIE Tools :: Stunner Editors (BPMN, DMN, and SceSim)</name>
+  <description>GWT- and Stunner-based graphical editors for .bpmn, .dmn, and .scesim files</description>
 
   <url>http://kogito.kie.org</url>
   <inceptionYear>2021</inceptionYear>
@@ -2102,6 +2102,31 @@
         <!--suppress UnresolvedMavenProperty -->
         <sonar.pullrequest.base>${env.ghprbTargetBranch}</sonar.pullrequest.base>
       </properties>
+    </profile>
+    <profile>
+      <!--  -->
+      <!-- See `@kie-tools/maven-base` pom.xml for full details on this profile. -->
+      <!--  -->
+      <id>use-maven-repo-local-tail</id>
+      <activation>
+        <property>
+          <name>kieTools.do-not-use-this-property.ignoreMavenRepoLocalTail</name>
+          <value>!true</value>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-install-plugin</artifactId>
+              <configuration>
+                <skip>true</skip>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
     </profile>
   </profiles>
 </project>

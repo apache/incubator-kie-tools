@@ -17,6 +17,8 @@
 
 ## @kie-tools/root-env
 
+Foundational environment variables used by most packages of `kie-tools`.
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software

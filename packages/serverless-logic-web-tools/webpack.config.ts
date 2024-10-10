@@ -36,10 +36,9 @@ import HtmlReplaceWebpackPlugin from "html-replace-webpack-plugin";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { env } from "./env";
-
 const buildEnv: any = env; // build-env is not typed
 
-export default async (env: any, argv: any) => {
+export default async (webpackEnv: any, webpackArgv: any) => {
   const buildInfo = getBuildInfo();
   const gtmResource = getGtmResource();
   const [swfBuilderImageRegistry, swfBuilderImageAccount, swfBuilderImageName, swfBuilderImageTag] =
@@ -56,7 +55,7 @@ export default async (env: any, argv: any) => {
   ] = getDashbuilderViewerImageArgs();
 
   return [
-    merge(common(env), {
+    merge(common(webpackEnv), {
       entry: {
         "workspace/worker/sharedWorker": "./src/workspace/worker/sharedWorker.ts",
       },
@@ -80,7 +79,7 @@ export default async (env: any, argv: any) => {
       ],
     }),
     {
-      ...merge(common(env), {
+      ...merge(common(webpackEnv), {
         entry: {
           index: "./src/index.tsx",
           "yard-editor-envelope": "./src/envelope/YardEditorEnvelopeApp.ts",

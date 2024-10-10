@@ -18,6 +18,7 @@
  */
 
 import { DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import * as Elk from "elkjs/lib/elk.bundled.js";
 import * as RF from "reactflow";
@@ -30,7 +31,6 @@ import { addEdge } from "../mutations/addEdge";
 import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
 import { updateDecisionServiceDividerLine } from "../mutations/updateDecisionServiceDividerLine";
-import { Normalized } from "../normalization/normalize";
 import { State } from "../store/Store";
 import { AutolayoutParentNode, FAKE_MARKER, visitNodeAndNested } from "../autolayout/autoLayoutInfo";
 import { ExternalDmnsIndex, ExternalModelsIndex } from "../DmnEditor";

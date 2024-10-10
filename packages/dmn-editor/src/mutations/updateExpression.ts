@@ -22,8 +22,8 @@ import {
   DMN15__tDefinitions,
   DMN15__tFunctionDefinition,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { renameDrgElement } from "./renameNode";
-import { Normalized } from "../normalization/normalize";
 
 export function updateExpression({
   definitions,

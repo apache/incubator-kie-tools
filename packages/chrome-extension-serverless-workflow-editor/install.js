@@ -17,7 +17,7 @@
  * under the License.
  */
 
-const buildEnv = require("./env");
+const { env } = require("./env");
 const path = require("path");
 const fs = require("fs");
 const prettier = require("prettier");
@@ -32,7 +32,7 @@ async function updateChromeExtensionManifest(version, manifestFilePath) {
 
 async function main() {
   console.info("[chrome-extension-serverless-workflow-editor-install] Updating manifest files...");
-  const version = buildEnv.env.swfChromeExtension.version;
+  const version = env.swfChromeExtension.version;
   await updateChromeExtensionManifest(version, path.resolve("manifest.dev.json"));
   await updateChromeExtensionManifest(version, path.resolve("manifest.prod.json"));
   console.info("[chrome-extension-serverless-workflow-editor-install] Done.");

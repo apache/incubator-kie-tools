@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import { Normalized } from "@kie-tools/dmn-editor/dist/normalization/normalize";
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { KIE__tComponentsWidthsExtension } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { updateExpressionWidths } from "@kie-tools/dmn-editor/dist/mutations/updateExpressionWidths";
 
 describe("updateExpressionWidth", () => {

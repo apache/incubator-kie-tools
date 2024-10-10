@@ -35,7 +35,6 @@ import AddIcon from "@patternfly/react-icons/dist/esm/icons/add-circle-o-icon";
 import CubesIcon from "@patternfly/react-icons/dist/esm/icons/cubes-icon";
 
 import { useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
-import { TestScenarioType } from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
 
 import "./TestScenarioCreationPanel.css";
@@ -45,11 +44,11 @@ function TestScenarioCreationPanel() {
 
   const assetsOption = [
     { value: "", label: i18n.creationPanel.assetsOption.noChoice, disabled: true },
-    { value: TestScenarioType[TestScenarioType.DMN], label: i18n.creationPanel.assetsOption.dmn, disabled: false },
-    { value: TestScenarioType[TestScenarioType.RULE], label: i18n.creationPanel.assetsOption.rule, disabled: false },
+    { value: "DMN", label: i18n.creationPanel.assetsOption.dmn, disabled: false },
+    { value: "RULE", label: i18n.creationPanel.assetsOption.rule, disabled: false },
   ];
 
-  const [assetType, setAssetType] = React.useState("");
+  const [assetType, setAssetType] = React.useState<"" | "DMN" | "RULE">("");
   const [isAutoFillTableEnabled, setAutoFillTableEnabled] = React.useState(true);
   const [isStatelessSessionRule, setStatelessSessionRule] = React.useState(false);
   const [isTestSkipped, setTestSkipped] = React.useState(false);
@@ -67,20 +66,13 @@ function TestScenarioCreationPanel() {
     ) =>
       testScenarioEditorStoreApi.setState((state) => {
         const settings = state.scesim.model.ScenarioSimulationModel.settings;
-        settings.dmnFilePath = TestScenarioType[TestScenarioType.DMN] ? { __$$text: "./MockedDMNName.dmn" } : undefined;
-        settings.dmnName = TestScenarioType[TestScenarioType.DMN] ? { __$$text: "MockedDMNName.dmn" } : undefined;
-        settings.dmnNamespace = TestScenarioType[TestScenarioType.DMN] ? { __$$text: "https:\\kiegroup" } : undefined;
-        (settings.dmoSession =
-          assetType === TestScenarioType[TestScenarioType.RULE] && kieSessionRule
-            ? { __$$text: kieSessionRule }
-            : undefined),
-          (settings.ruleFlowGroup =
-            assetType === TestScenarioType[TestScenarioType.RULE] && ruleFlowGroup
-              ? { __$$text: ruleFlowGroup }
-              : undefined),
+        settings.dmnFilePath = assetType === "DMN" ? { __$$text: "./MockedDMNName.dmn" } : undefined;
+        settings.dmnName = assetType === "DMN" ? { __$$text: "MockedDMNName.dmn" } : undefined;
+        settings.dmnNamespace = assetType === "DMN" ? { __$$text: "https:\\kiegroup" } : undefined;
+        (settings.dmoSession = assetType === "RULE" && kieSessionRule ? { __$$text: kieSessionRule } : undefined),
+          (settings.ruleFlowGroup = assetType === "RULE" && ruleFlowGroup ? { __$$text: ruleFlowGroup } : undefined),
           (settings.skipFromBuild = { __$$text: isTestSkipped }),
-          (settings.stateless =
-            assetType === TestScenarioType[TestScenarioType.RULE] ? { __$$text: isStatelessSessionRule } : undefined),
+          (settings.stateless = assetType === "RULE" ? { __$$text: isStatelessSessionRule } : undefined),
           (settings.type = { __$$text: assetType });
       }),
     [testScenarioEditorStoreApi]
@@ -97,7 +89,7 @@ function TestScenarioCreationPanel() {
           <FormSelect
             id="asset-type-select"
             name="asset-type-select"
-            onChange={(value: string) => setAssetType(value)}
+            onChange={(value: "" | "DMN" | "RULE") => setAssetType(value)}
             value={assetType}
           >
             {assetsOption.map((option, index) => (
@@ -105,7 +97,7 @@ function TestScenarioCreationPanel() {
             ))}
           </FormSelect>
         </FormGroup>
-        {assetType === TestScenarioType[TestScenarioType.DMN] && (
+        {assetType === "DMN" && (
           <>
             <FormGroup label={i18n.creationPanel.dmnGroup} isRequired>
               <FormSelect id="dmn-select" name="dmn-select" value={""} isDisabled>
@@ -133,7 +125,7 @@ function TestScenarioCreationPanel() {
             </FormGroup>
           </>
         )}
-        {assetType === TestScenarioType[TestScenarioType.RULE] && (
+        {assetType === "RULE" && (
           <>
             <FormGroup label={i18n.creationPanel.kieSessionGroup}>
               <TextInput

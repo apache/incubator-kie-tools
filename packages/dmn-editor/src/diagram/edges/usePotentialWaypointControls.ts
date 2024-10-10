@@ -23,6 +23,7 @@ import { addEdgeWaypoint } from "../../mutations/addEdgeWaypoint";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { snapPoint } from "../SnapGrid";
 import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefToQName";
 import { DmnDiagramNodeData } from "../nodes/Nodes";
 import { DmnDiagramEdgeData } from "./Edges";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
@@ -30,7 +31,6 @@ import { addEdge } from "../../mutations/addEdge";
 import { EdgeType, NodeType } from "../connections/graphStructure";
 import { PositionalNodeHandleId } from "../connections/PositionalNodeHandles";
 import { getHandlePosition } from "../maths/DmnMaths";
-import { xmlHrefToQName } from "../../xml/xmlHrefToQName";
 
 export function usePotentialWaypointControls(
   waypoints: DC__Point[],

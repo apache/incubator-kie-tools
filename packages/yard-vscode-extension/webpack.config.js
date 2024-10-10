@@ -23,8 +23,8 @@ const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const { ProvidePlugin } = require("webpack");
 
-const commonConfig = (env) =>
-  merge(common(env), {
+const commonConfig = (webpackEnv) =>
+  merge(common(webpackEnv), {
     output: {
       library: "YardEditor",
       libraryTarget: "umd",
@@ -36,14 +36,14 @@ const commonConfig = (env) =>
     },
   });
 
-module.exports = async (env) => [
-  merge(commonConfig(env), {
+module.exports = async (webpackEnv) => [
+  merge(commonConfig(webpackEnv), {
     target: "node",
     entry: {
       "extension/extension": "./src/extension/extension.ts",
     },
   }),
-  merge(commonConfig(env), {
+  merge(commonConfig(webpackEnv), {
     target: "webworker",
     entry: {
       "extension/extensionWeb": "./src/extension/extension.ts",
@@ -55,7 +55,7 @@ module.exports = async (env) => [
       }),
     ],
   }),
-  merge(commonConfig(env), {
+  merge(commonConfig(webpackEnv), {
     target: "web",
     entry: {
       "webview/YardEditorEnvelopeApp": "./src/webview/YardEditorEnvelopeApp.ts",

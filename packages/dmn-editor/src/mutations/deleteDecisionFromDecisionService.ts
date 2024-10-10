@@ -18,9 +18,9 @@
  */
 
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { parseXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
-import { Normalized } from "../normalization/normalize";
-import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
 import { ExternalModelsIndex } from "../DmnEditor";
 
 export function deleteDecisionFromDecisionService({

@@ -18,7 +18,7 @@
  */
 
 import * as path from "path";
-const buildEnv = require("../env");
+const { env } = require("../env");
 const jbang = require("@jbangdev/jbang");
 
 const parentScriptPath = path.join(__dirname, "..", "src", "DmnMarshallerBackendCompatibilityTesterScript.java");
@@ -81,7 +81,7 @@ function executeScript(scriptPath: string, args?: string[]) {
   const quoteChar = isWindowsPath ? '"' : "'";
 
   const jbangArgs = [] as string[];
-  jbangArgs.push("-Dkogito-runtime.version=" + buildEnv.env.kogitoRuntime.version);
+  jbangArgs.push("-Dkogito-runtime.version=" + env.versions.kogito);
   jbangArgs.push(scriptPath);
   args?.forEach((arg) => jbangArgs.push(quoteChar + arg + quoteChar));
 

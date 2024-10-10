@@ -23,8 +23,8 @@ import {
   traverseItemDefinitions,
   traverseTypeRefedInExpressionHolders,
 } from "../dataTypes/DataTypeSpec";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
-import { Normalized } from "../normalization/normalize";
 
 export function renameItemDefinition({
   definitions,

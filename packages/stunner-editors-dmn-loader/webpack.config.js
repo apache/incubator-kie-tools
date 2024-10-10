@@ -22,13 +22,12 @@ const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { env } = require("./env");
-const buildEnv = env;
 
-module.exports = (env) => {
-  const outputPath = buildEnv.stunnerEditors.dmnLoader.outputPath;
+module.exports = (webpackEnv) => {
+  const outputPath = env.stunnerEditors.dmnLoader.outputPath;
   console.info(`Stunner Editors :: DMN Loader :: Output path: '${outputPath}'`);
 
-  return merge(common(env), {
+  return merge(common(webpackEnv), {
     entry: "./src/index.tsx",
 
     target: "web",

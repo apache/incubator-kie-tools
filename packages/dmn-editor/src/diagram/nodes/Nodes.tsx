@@ -30,6 +30,7 @@ import {
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { drag } from "d3-drag";
 import { select } from "d3-selection";
 import * as React from "react";
@@ -71,7 +72,6 @@ import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
 import { propsHaveSameValuesDeep } from "../memoization/memoization";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { NODE_LAYERS } from "../../store/computed/computeDiagramData";
-import { Normalized } from "../../normalization/normalize";
 import { useSettings } from "../../settings/DmnEditorSettingsContext";
 
 export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any

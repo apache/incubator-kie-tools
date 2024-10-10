@@ -20,7 +20,7 @@
 import "@patternfly/react-core/dist/styles/base.css";
 
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
+import { useCallback, useImperativeHandle, useMemo, useRef } from "react";
 
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 
@@ -56,12 +56,7 @@ import { useTestScenarioEditorI18n } from "./i18n";
 
 import "./TestScenarioEditor.css";
 import { ComputedStateCache } from "./store/ComputedStateCache";
-import {
-  Computed,
-  createTestScenarioEditorStore,
-  TestScenarioEditorTab,
-  TestScenarioType,
-} from "./store/TestScenarioEditorStore";
+import { Computed, createTestScenarioEditorStore, TestScenarioEditorTab } from "./store/TestScenarioEditorStore";
 import {
   StoreApiType,
   TestScenarioEditorStoreApiContext,
@@ -159,9 +154,8 @@ function TestScenarioMainPanel({ scesimFilePath }: { scesimFilePath: string | un
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const navigation = useTestScenarioEditorStore((s) => s.navigation);
   const scesimModel = useTestScenarioEditorStore((s) => s.scesim.model);
-  const state = testScenarioEditorStoreApi.getState();
-  const alertState = state.computed(state).getTestScenarioAlert();
-  const testScenarioType = state.computed(state).getTestScenarioType();
+  const isAlertEnabled = true; // Will be managed in kie-issue#970
+  const testScenarioType = scesimModel.ScenarioSimulationModel.settings.type?.__$$text.toUpperCase();
 
   const scenarioTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
   const backgroundTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
@@ -207,12 +201,12 @@ function TestScenarioMainPanel({ scesimFilePath }: { scesimFilePath: string | un
             }
           >
             <DrawerContentBody>
-              {alertState.enabled && (
+              {isAlertEnabled && (
                 <div className="kie-scesim-editor--content-alert">
                   <Alert
-                    variant={alertState.variant}
+                    variant={testScenarioType === "DMN" ? "warning" : "danger"}
                     title={
-                      testScenarioType === TestScenarioType.DMN
+                      testScenarioType === "DMN"
                         ? i18n.alerts.dmnDataRetrievedFromScesim
                         : i18n.alerts.ruleDataRetrievedFromScesim
                     }
@@ -477,4 +471,3 @@ export const TestScenarioEditor = React.forwardRef(
     );
   }
 );
-export { TestScenarioType };
