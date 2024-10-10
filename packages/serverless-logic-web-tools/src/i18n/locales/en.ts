@@ -108,4 +108,10 @@ export const en: AppI18n = {
       dependencyWarningTooltip: "Models in this workspace may depend on deployments from other workspaces.",
     },
   },
+  RuntimeToolsSettings: {
+    configModal: {
+      validDataIndexURLError: "Please enter a valid Data Index URL.",
+      dataIndexConnectionError: "Connection refused. Please check the information provided.",
+    },
+  },
 };

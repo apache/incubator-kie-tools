@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { ActionGroup, Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -43,14 +43,31 @@ import {
   saveConfigCookie,
 } from "./RuntimeToolsConfig";
 import { removeTrailingSlashFromUrl } from "../../url";
+import { isDataIndexUrlValid } from "../../url";
+import { Alert } from "@patternfly/react-core/dist/js";
+import { useAppI18n } from "../../i18n";
+import { verifyDataIndex } from "@kie-tools/runtime-tools-swf-gateway-api/src/gatewayApi/apis";
 
 const PAGE_TITLE = "Runtime Tools";
 
+enum FormValiationOptions {
+  INITIAL = "INITIAL",
+  INVALID = "INVALID",
+  CONNECTION_ERROR = "CONNECTION_ERROR",
+}
+
 export function RuntimeToolsSettings(props: SettingsPageProps) {
+  const { i18n } = useAppI18n();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [config, setConfig] = useState(settings.runtimeTools.config);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfigValidated, setConfigValidated] = useState(FormValiationOptions.INITIAL);
+  const [dataIndexUrlAvailable, setDataIndexUrlAvailable] = useState<boolean>(false);
+
+  useEffect(() => {
+    setConfigValidated(FormValiationOptions.INITIAL);
+  }, [config]);
 
   const handleModalToggle = useCallback(() => {
     setIsModalOpen((prevIsModalOpen) => !prevIsModalOpen);
@@ -76,10 +93,23 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
     resetConfigCookie();
   }, [settingsDispatch.runtimeTools]);
 
-  const onApply = useCallback(() => {
+  const onApply = useCallback(async () => {
     const newConfig: RuntimeToolsSettingsConfig = {
       dataIndexUrl: removeTrailingSlashFromUrl(config.dataIndexUrl),
     };
+    const isDataIndexUrlVerified = await verifyDataIndex(config.dataIndexUrl);
+    if (!isDataIndexUrlValid(config.dataIndexUrl)) {
+      setConfigValidated(FormValiationOptions.INVALID);
+      return;
+    } else {
+      if (isDataIndexUrlVerified == true) {
+        setDataIndexUrlAvailable(true);
+      } else {
+        setConfigValidated(FormValiationOptions.CONNECTION_ERROR);
+        return;
+      }
+    }
+
     setConfig(newConfig);
     settingsDispatch.runtimeTools.setConfig(newConfig);
     saveConfigCookie(newConfig);
@@ -144,6 +174,28 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
           appendTo={props.pageContainerRef.current || document.body}
         >
           <Form>
+            {isConfigValidated === FormValiationOptions.INVALID && (
+              <FormAlert>
+                <Alert
+                  variant="danger"
+                  title={i18n.RuntimeToolsSettings.configModal.validDataIndexURLError}
+                  aria-live="polite"
+                  isInline
+                  data-testid="alert-data-index-url-invalid"
+                />
+              </FormAlert>
+            )}
+            {isConfigValidated === FormValiationOptions.CONNECTION_ERROR && (
+              <FormAlert>
+                <Alert
+                  variant="danger"
+                  title={i18n.RuntimeToolsSettings.configModal.dataIndexConnectionError}
+                  aria-live="polite"
+                  isInline
+                  data-testid="alert-data-index-url-connection-error"
+                />
+              </FormAlert>
+            )}
             <FormGroup
               label={"Data Index URL"}
               labelIcon={

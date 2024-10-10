@@ -17,15 +17,15 @@
  * under the License.
  */
 
-import { routes } from "../routes";
+import { isDataIndexUrlValid } from "../../src/url";
 
-export interface AppData {
-  appName: string;
-  showDisclaimer: boolean;
-  dataIndexUrl: string;
-}
-
-export async function fetchAppData(): Promise<AppData> {
-  const response = await fetch(routes.dataJson.path({}));
-  return (await response.json()) as AppData;
-}
+describe("isDataIndexUrlValid", () => {
+  it.each([
+    ["http://example.com", true],
+    ["http://example.com/", true],
+    ["https://example.com/", true],
+    ["ftps://example.com/", false],
+  ])("the data index URL %s validation should be %s", (inputUrl, isValidUrl) => {
+    expect(isDataIndexUrlValid(inputUrl)).toBe(isValidUrl);
+  });
+});

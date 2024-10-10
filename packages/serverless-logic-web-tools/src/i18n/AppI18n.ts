@@ -105,6 +105,12 @@ interface AppDictionary extends ReferenceDictionary {
       dependencyWarningTooltip: string;
     };
   };
+  RuntimeToolsSettings: {
+    configModal: {
+      validDataIndexURLError: string;
+      dataIndexConnectionError: string;
+    };
+  };
 }
 
 export interface AppI18n extends AppDictionary, CommonI18n {}
