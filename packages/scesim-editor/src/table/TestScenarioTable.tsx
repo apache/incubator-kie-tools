@@ -60,6 +60,8 @@ import "./TestScenarioTable.css";
 import { addRow } from "../mutations/addRow";
 import { deleteRow } from "../mutations/deleteRow";
 import { dupliacteRow } from "../mutations/duplicateRow";
+import { updateCell } from "../mutations/updateCell";
+import { updateColumnWidth } from "../mutations/updateColumnWidth";
 
 function TestScenarioTable({
   tableData,
@@ -130,35 +132,18 @@ function TestScenarioTable({
   const setColumnWidth = useCallback(
     (inputIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {
       testScenarioEditorStoreApi.setState((state) => {
-        const oldWidth = retrieveModelDescriptor(state.scesim.model.ScenarioSimulationModel, isBackground).factMappings
-          .FactMapping![inputIndex].columnWidth?.__$$text;
+        const factMappings = isBackground
+          ? state.scesim.model.ScenarioSimulationModel.background.scesimModelDescriptor.factMappings.FactMapping!
+          : state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!;
+        const oldWidth = factMappings[inputIndex].columnWidth?.__$$text;
         const newWidth = typeof newWidthAction === "function" ? newWidthAction(oldWidth) : newWidthAction;
 
-        if (newWidth && oldWidth !== newWidth) {
-          /* Cloning the FactMapping list and updating the new width */
-          const deepClonedFactMappings: SceSim__FactMappingType[] = JSON.parse(
-            JSON.stringify(
-              retrieveModelDescriptor(state.scesim.model.ScenarioSimulationModel, isBackground).factMappings.FactMapping
-            )
-          );
-          const factMappingToUpdate = deepClonedFactMappings[inputIndex];
-
-          if (factMappingToUpdate.columnWidth?.__$$text) {
-            factMappingToUpdate.columnWidth.__$$text = newWidth;
-          } else {
-            factMappingToUpdate.columnWidth = {
-              __$$text: newWidth,
-            };
-          }
-
-          if (isBackground) {
-            state.scesim.model.ScenarioSimulationModel.background.scesimModelDescriptor.factMappings.FactMapping =
-              deepClonedFactMappings;
-          } else {
-            state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping =
-              deepClonedFactMappings;
-          }
-        }
+        updateColumnWidth({
+          factMappings: factMappings,
+          inputIndex: inputIndex,
+          newWidth: newWidth,
+          oldWidth: oldWidth,
+        });
       });
     },
     [isBackground, testScenarioEditorStoreApi]
@@ -486,42 +471,20 @@ function TestScenarioTable({
     (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
       cellUpdates.forEach((update) => {
         testScenarioEditorStoreApi.setState((state) => {
-          /* To update the related FactMappingValue, it compares every FactMappingValue associated with the Scenario (Row)
-             that contains the cell with the FactMapping (Column) fields factIdentifier and expressionIdentifier */
-          const factMapping = retrieveModelDescriptor(state.scesim.model.ScenarioSimulationModel, isBackground)
-            .factMappings.FactMapping![update.columnIndex + columnIndexStart];
+          const factMappings = isBackground
+            ? state.scesim.model.ScenarioSimulationModel.background.scesimModelDescriptor.factMappings.FactMapping!
+            : state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!;
+          const factMappingValuesTypes = isBackground
+            ? state.scesim.model.ScenarioSimulationModel.background.scesimData.BackgroundData!
+            : state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!;
 
-          const deepClonedRowsData: SceSim__FactMappingValuesTypes[] = JSON.parse(
-            JSON.stringify(retrieveRowsDataFromModel(state.scesim.model.ScenarioSimulationModel, isBackground))
-          );
-          const factMappingValues = deepClonedRowsData[update.rowIndex].factMappingValues.FactMappingValue!;
-          const newFactMappingValues = [...factMappingValues];
-
-          const factMappingValueToUpdateIndex = retrieveFactMappingValueIndexByIdentifiers(
-            newFactMappingValues,
-            factMapping.factIdentifier,
-            factMapping.expressionIdentifier
-          );
-          const factMappingValueToUpdate = factMappingValues[factMappingValueToUpdateIndex];
-
-          if (factMappingValueToUpdate.rawValue) {
-            factMappingValueToUpdate.rawValue!.__$$text = update.value;
-          } else {
-            newFactMappingValues[factMappingValueToUpdateIndex] = {
-              ...factMappingValueToUpdate,
-              rawValue: {
-                __$$text: update.value,
-              },
-            };
-          }
-
-          deepClonedRowsData[update.rowIndex].factMappingValues.FactMappingValue = newFactMappingValues;
-
-          if (isBackground) {
-            state.scesim.model.ScenarioSimulationModel.background.scesimData.BackgroundData = deepClonedRowsData;
-          } else {
-            state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario = deepClonedRowsData;
-          }
+          updateCell({
+            columnIndex: update.columnIndex + columnIndexStart,
+            factMappings: factMappings,
+            factMappingValuesTypes: factMappingValuesTypes,
+            rowIndex: update.rowIndex,
+            value: update.value,
+          });
         });
       });
     },
