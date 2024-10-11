@@ -21,6 +21,7 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
 import { generateFormCode } from "@kie-tools/form-code-generator/dist/generateFormCode";
+import { removeInvalidVarChars } from "@kie-tools/jbpm-form-code-generator-themes/dist/removeInvalidVarChars";
 import { jbpmBootstrap4FormCodeGeneratorTheme } from "@kie-tools/jbpm-form-code-generator-themes/dist/jbpmBootstrap4FormCodeGeneratorTheme";
 import { jbpmPatternflyFormCodeGeneratorTheme } from "@kie-tools/jbpm-form-code-generator-themes/dist/jbpmPatternflyFormCodeGeneratorTheme";
 import { FormSchema } from "@kie-tools/form-code-generator/dist/types";
@@ -82,14 +83,14 @@ export async function generateFormsCommand() {
     // Check if form `tsx` or `html` file already exists
     if (
       fs.existsSync(
-        `${projectPath}/${FORM_CODE_GENERATION_DEST_PATH}/${path.parse(fileName).name}.${PATTERNFLY_FILE_EXT}`
+        `${projectPath}/${FORM_CODE_GENERATION_DEST_PATH}/${removeInvalidVarChars(path.parse(fileName).name)}.${PATTERNFLY_FILE_EXT}`
       )
     ) {
       existingFiles.push({ fileName, ext: PATTERNFLY_FILE_EXT });
     }
     if (
       fs.existsSync(
-        `${projectPath}/${FORM_CODE_GENERATION_DEST_PATH}/${path.parse(fileName).name}.${BOOTSTRAP4_FILE_EXT}`
+        `${projectPath}/${FORM_CODE_GENERATION_DEST_PATH}/${removeInvalidVarChars(path.parse(fileName).name)}.${BOOTSTRAP4_FILE_EXT}`
       )
     ) {
       existingFiles.push({ fileName, ext: BOOTSTRAP4_FILE_EXT });
@@ -105,9 +106,12 @@ export async function generateFormsCommand() {
     placeHolder: "You already have custom forms in this project. Do you want to override them?",
   });
   if (shouldOverride === "Override") {
-    // Remove
+    // Remove previous files.
+    // In case the user has `tsx` files and are generating `html` files, the `tsx` files should be removed
     existingFiles.forEach(({ fileName, ext }) => {
-      fs.rmSync(`${projectPath}/${FORM_CODE_GENERATION_DEST_PATH}/${path.parse(fileName).name}.${ext}`);
+      fs.rmSync(
+        `${projectPath}/${FORM_CODE_GENERATION_DEST_PATH}/${removeInvalidVarChars(path.parse(fileName).name)}.${ext}`
+      );
     });
     saveFormCode(projectPath, theme, formSchemas);
   }
@@ -164,7 +168,7 @@ function readAndParseJsonSchemas(projectPath: string, jsonSchemaFilesName: strin
   for (const jsonSchemaFileName of jsonSchemaFilesName) {
     try {
       formSchemas.push({
-        name: path.parse(jsonSchemaFileName).name, // remove file extension
+        name: path.parse(jsonSchemaFileName).name,
         schema: JSON.parse(fs.readFileSync(`${projectPath}/${JSON_SCHEMA_PATH}/${jsonSchemaFileName}`, "utf-8")),
       });
     } catch (error) {
@@ -201,11 +205,14 @@ function saveFormCode(projectPath: string, theme: string, formSchemas: FormSchem
     if (fs.existsSync(`${projectPath}/${FORM_CODE_GENERATION_DEST_PATH}`) === false) {
       fs.mkdirSync(`${projectPath}/${FORM_CODE_GENERATION_DEST_PATH}`);
     }
-    // Create form and config file
+    // Create form code and config files
     formAssets.forEach((formAsset) => {
-      fs.writeFileSync(`${projectPath}/${FORM_CODE_GENERATION_DEST_PATH}/${formAsset.fileName}`, formAsset.content);
       fs.writeFileSync(
-        `${projectPath}/${FORM_CODE_GENERATION_DEST_PATH}/${formAsset.name}.config`,
+        `${projectPath}/${FORM_CODE_GENERATION_DEST_PATH}/${formAsset.fileNameWithoutInvalidVarChars}`,
+        formAsset.content
+      );
+      fs.writeFileSync(
+        `${projectPath}/${FORM_CODE_GENERATION_DEST_PATH}/${formAsset.nameWithoutInvalidVarChars}.config`,
         JSON.stringify(formAsset.config, null, 2)
       );
     });
