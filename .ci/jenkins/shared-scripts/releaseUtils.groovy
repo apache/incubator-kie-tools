@@ -105,7 +105,7 @@ def renameArtifactsToFinalVersion(String releaseCandidateArtifactsDir, String re
 def copyLegalFiles(String targetDir) {
     sh """#!/bin/bash -el
     mkdir -p "${targetDir}" || true
-    cp {LICENSE,NOTICE,DISCLAIMER} ${targetDir}
+    cp {LICENSE,NOTICE,DISCLAIMER-WIP} ${targetDir}
     """.trim()
 }
 
@@ -117,7 +117,7 @@ def addLegalfilesToTarGzFile(String artifactsDir, String tarGzFile, String legal
     sh """#!/bin/bash -el
     cd ${legalFilesDir}
     zcat ${artifactsDir}/${tarGzFile} | dd of=${tarFile} bs=512 skip=1
-    tar -rvf ${tarFile} ./*.txt
+    tar -rvf ${tarFile} ./LICENSE ./NOTICE ./DISCLAIMER-WIP
     gzip -q -c ${tarFile} > ${artifactsDir}/${tarGzFile}
     """.trim()
 }
