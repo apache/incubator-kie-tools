@@ -52,7 +52,10 @@ export interface FormCodeGeneratorTheme<
   generate: (formSchema: FormSchema) => CustomFormAsset;
 }
 
-export interface FormCodeGeneration<FormThemeFileExt extends string> {
-  formAsset: FormAsset<FormThemeFileExt> | undefined;
+export interface FormCodeGeneration<
+  FormThemeFileExt extends string,
+  CustomFormAsset extends FormAsset<FormThemeFileExt>,
+> {
+  formAsset: CustomFormAsset | undefined;
   formError: FormCodeGenerationError | undefined;
 }

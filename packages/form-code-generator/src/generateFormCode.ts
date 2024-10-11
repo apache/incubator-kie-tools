@@ -34,13 +34,16 @@ export function generateFormCode<FormThemeFileExt extends string, CustomFormAsse
   formCodeGeneratorTheme: formGeneratorTheme,
   formSchemas,
 }: FormCodeGenerator<FormThemeFileExt, CustomFormAsset>) {
-  return formSchemas.reduce((generatedForms, formSchema) => {
-    try {
-      generatedForms.push({ formAsset: formGeneratorTheme.generate(formSchema), formError: undefined });
-    } catch (error) {
-      console.trace(`Error generating form: `, error);
-      generatedForms.push({ formAsset: undefined, formError: error });
-    }
-    return generatedForms;
-  }, [] as FormCodeGeneration<FormThemeFileExt>[]);
+  return formSchemas.reduce(
+    (generatedForms, formSchema) => {
+      try {
+        generatedForms.push({ formAsset: formGeneratorTheme.generate(formSchema), formError: undefined });
+      } catch (error) {
+        console.trace(`Error generating form: `, error);
+        generatedForms.push({ formAsset: undefined, formError: error });
+      }
+      return generatedForms;
+    },
+    [] as FormCodeGeneration<FormThemeFileExt, CustomFormAsset>[]
+  );
 }
