@@ -105,7 +105,7 @@ def renameArtifactsToFinalVersion(String releaseCandidateArtifactsDir, String re
 def copyLegalFiles(String targetDir) {
     sh """#!/bin/bash -el
     mkdir -p "${targetDir}" || true
-    cp {LICENSE,NOTICE,DISCLAIMER-WIP} ${targetDir}
+    cp {LICENSE,NOTICE,DISCLAIMER} ${targetDir}
     """.trim()
 }
 
