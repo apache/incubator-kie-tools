@@ -24,6 +24,8 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Slider } from "@patternfly/react-core/dist/js/components/Slider";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { useLayoutEffect, useRef } from "react";
+import { Icon, Tooltip } from "@patternfly/react-core";
+import { HelpIcon } from "@patternfly/react-icons";
 
 const MIN_SNAP = 5;
 const MAX_SNAP = 50;
@@ -155,6 +157,27 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
             onChange={(newValue) =>
               dmnEditorStoreApi.setState((state) => {
                 state.diagram.overlays.enableCustomNodeStyles = newValue;
+              })
+            }
+          />
+        </FormGroup>
+        <FormGroup
+          label={"Enable evaluation highlights"}
+          labelIcon={
+            <Tooltip
+              content={"Enable evaluation highlights on nodes(decisions?), decision tables and conditional expressions"}
+            >
+              <Icon size="sm" status="info">
+                <HelpIcon />
+              </Icon>
+            </Tooltip>
+          }
+        >
+          <Switch
+            isChecked={diagram.overlays.evaluationHighlights}
+            onChange={(newValue) =>
+              dmnEditorStoreApi.setState((state) => {
+                state.diagram.overlays.evaluationHighlights = newValue;
               })
             }
           />

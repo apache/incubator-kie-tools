@@ -1708,6 +1708,21 @@ export function TopRightCornerPanels({ availableHeight }: TopRightCornerPanelsPr
   return (
     <>
       <RF.Panel position={"top-right"} style={{ display: "flex" }}>
+        {diagram.overlays.evaluationHighlights && (
+          <aside className={"kie-dmn-editor--evaluation-highlights-panel-toggle"}>
+            <button
+              className={"kie-dmn-editor--evaluation-highlights-panel-toggle-button"}
+              onClick={() => {
+                dmnEditorStoreApi.setState((state) => {
+                  state.diagram.overlays.evaluationHighlights = !state.diagram.overlays.evaluationHighlights;
+                });
+              }}
+              title={"Evaluation highlights (beta)"}
+            >
+              Evaluation Highlights: {dmnEditorStoreApi.getState().diagram.overlays.evaluationHighlights ? "On" : "Off"}
+            </button>
+          </aside>
+        )}
         {!settings.isReadOnly && (
           <aside className={"kie-dmn-editor--autolayout-panel-toggle"}>
             <AutolayoutButton />

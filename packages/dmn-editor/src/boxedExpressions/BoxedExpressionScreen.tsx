@@ -319,6 +319,8 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
     return NodeIcon({ nodeType, isAlternativeInputDataShape });
   }, [drgElement, isAlternativeInputDataShape]);
 
+  const isEvaluationHighlights = useDmnEditorStore((s) => s.diagram.overlays.evaluationHighlights);
+
   return (
     <>
       <>
@@ -361,24 +363,45 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
             </Flex>
           </FlexItem>
 
-          <aside
-            className={"kie-dmn-editor--properties-panel-toggle"}
-            style={{ visibility: isPropertiesPanelOpen ? "hidden" : undefined }}
-          >
-            <button
-              className={"kie-dmn-editor--properties-panel-toggle-button"}
-              title={"Properties panel"}
-              onClick={() => {
-                dmnEditorStoreApi.setState((state) => {
-                  state.boxedExpressionEditor.propertiesPanel.isOpen =
-                    !state.boxedExpressionEditor.propertiesPanel.isOpen;
-                });
-              }}
+          <Flex>
+            <aside className={"kie-dmn-editor--evaluation-highlights-panel-toggle"}>
+              <button
+                className={
+                  isEvaluationHighlights
+                    ? "kie-dmn-editor--evaluation-highlights-panel-toggle-button"
+                    : "kie-dmn-editor--evaluation-highlights-panel-toggle-button-off"
+                }
+                onClick={() => {
+                  dmnEditorStoreApi.setState((state) => {
+                    state.diagram.overlays.evaluationHighlights = !state.diagram.overlays.evaluationHighlights;
+                  });
+                }}
+                title={"Evaluation highlights (beta)"}
+              >
+                Evaluation Highlights:{" "}
+                {dmnEditorStoreApi.getState().diagram.overlays.evaluationHighlights ? "On" : "Off"}
+              </button>
+            </aside>
+            <aside
+              className={"kie-dmn-editor--properties-panel-toggle"}
+              style={{ visibility: isPropertiesPanelOpen ? "hidden" : undefined }}
             >
-              <InfoIcon size={"sm"} />
-            </button>
-          </aside>
+              <button
+                className={"kie-dmn-editor--properties-panel-toggle-button"}
+                title={"Properties panel"}
+                onClick={() => {
+                  dmnEditorStoreApi.setState((state) => {
+                    state.boxedExpressionEditor.propertiesPanel.isOpen =
+                      !state.boxedExpressionEditor.propertiesPanel.isOpen;
+                  });
+                }}
+              >
+                <InfoIcon size={"sm"} />
+              </button>
+            </aside>
+          </Flex>
         </Flex>
+
         <div style={{ flexGrow: 1 }}>
           <BoxedExpressionEditor
             beeGwtService={beeGwtService}

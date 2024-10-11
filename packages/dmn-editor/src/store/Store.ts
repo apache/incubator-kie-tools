@@ -110,6 +110,7 @@ export interface State {
       enableExecutionHitsHighlights: boolean;
       enableDataTypesToolbarOnNodes: boolean;
       enableCustomNodeStyles: boolean;
+      evaluationHighlights: boolean;
     };
     snapGrid: SnapGrid;
     _selectedNodes: Array<string>;
@@ -217,6 +218,7 @@ export const defaultStaticState = (): Omit<State, "dmn" | "dispatch" | "computed
       enableExecutionHitsHighlights: false,
       enableCustomNodeStyles: true,
       enableDataTypesToolbarOnNodes: true,
+      evaluationHighlights: false,
     },
     snapGrid: {
       isEnabled: true,
