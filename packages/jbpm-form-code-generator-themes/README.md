@@ -51,17 +51,17 @@ The `jbpmFormsCode` will give you the following object:
 
 ```ts
 {
-  name: string,                 // The form id
-  sanitizedName: string,        // The same value as "id" but any "#" occorrence is replaced by "_"
-  fileName: string,             // The form name
-sanitizedFileName: string,      // The same value as "assetName" but any "#" occorrence is replaced by "_"
-  fileExt: string,              // The file extension of the code
-  content: string,              // The unescaped form code
+  name: string,                             // The form id
+  nameWithoutInvalidVarChars: string,          // The same value as "id" but any "#" occorrence is replaced by "_"
+  fileName: string,                         // The form name
+  fileNameWithoutInvalidVarChars: string,      // The same value as "assetName" but any "#" occorrence is replaced by "_"
+  fileExt: string,                          // The file extension of the code
+  content: string,                          // The unescaped form code
   config: {
-    schema: string,             // The stringifyied JSON Schema
+    schema: string,                         // The stringifyied JSON Schema
     resources: {
-      styles: {},               // Any style that need to be loaded
-      scripts: {},              // Any script that need to be loaded
+      styles: {},                           // Any style that need to be loaded
+      scripts: {},                          // Any script that need to be loaded
     },
   },
 }

@@ -31,7 +31,6 @@ export const patternflyFormCodeGeneratorTheme: FormCodeGeneratorTheme<Patternfly
   generate: (formSchema) => {
     const form = renderForm({
       id: formSchema.name,
-      sanitizedId: formSchema.name,
       schema: new JSONSchemaBridge(formSchema.schema, () => true),
       disabled: false,
       placeholder: true,

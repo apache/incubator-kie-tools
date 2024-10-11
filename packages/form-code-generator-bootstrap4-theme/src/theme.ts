@@ -35,7 +35,6 @@ export const bootstrap4FormCodeGeneratorTheme: FormCodeGeneratorTheme<Bootstrap4
   generate: (formSchema) => {
     const form = renderForm({
       id: formSchema.name,
-      sanitizedId: formSchema.name,
       schema: new JSONSchemaBridge(formSchema.schema, () => true),
       disabled: false,
       placeholder: true,

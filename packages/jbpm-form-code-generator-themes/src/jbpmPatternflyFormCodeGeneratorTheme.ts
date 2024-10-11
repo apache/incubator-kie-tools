@@ -23,7 +23,7 @@ import { PATTERNFLY_FILE_EXT, PatternflyFileExt } from "@kie-tools/form-code-gen
 import unescape from "lodash/unescape";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { getUniformsSchema } from "./getUniformsSchema";
-import { inputSanitizationUtil } from "./inputSanitizationUtil";
+import { removeInvalidVarChars } from "./removeInvalidVarChars";
 import { JbpmFormAssetBase } from "./types";
 
 export interface PatternflyFormAsset extends FormAsset<PatternflyFileExt>, JbpmFormAssetBase {}
@@ -33,16 +33,16 @@ export const jbpmPatternflyFormCodeGeneratorTheme: FormCodeGeneratorTheme<Patter
     const uniformsSchema = getUniformsSchema(formSchema.schema);
     const form = renderForm({
       id: formSchema.name,
-      sanitizedId: inputSanitizationUtil(formSchema.name),
+      idWithoutInvalidVarChars: removeInvalidVarChars(formSchema.name),
       schema: new JSONSchemaBridge(uniformsSchema, () => true),
       disabled: false,
       placeholder: true,
     });
     return {
       name: formSchema.name,
-      sanitizedName: inputSanitizationUtil(formSchema.name),
+      nameWithoutInvalidVarChars: removeInvalidVarChars(formSchema.name),
       fileName: `${formSchema.name}.${PATTERNFLY_FILE_EXT}`,
-      sanitizedFileName: `${inputSanitizationUtil(formSchema.name)}.${PATTERNFLY_FILE_EXT}`,
+      fileNameWithoutInvalidVarChars: `${removeInvalidVarChars(formSchema.name)}.${PATTERNFLY_FILE_EXT}`,
       fileExt: PATTERNFLY_FILE_EXT,
       content: unescape(form),
       config: {

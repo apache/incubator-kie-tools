@@ -76,7 +76,7 @@ const schema = {
 
 const props: AutoFormProps = {
   id: "HRInterview",
-  sanitizedId: "HRInterview",
+  idWithoutInvalidVarChars: "HRInterview",
   schema: createSchema(schema),
   disabled: false,
   placeholder: true,

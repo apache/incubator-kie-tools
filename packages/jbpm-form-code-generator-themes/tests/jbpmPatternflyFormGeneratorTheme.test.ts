@@ -30,9 +30,9 @@ describe("jbpmPatternflyFormCodeGeneratorTheme tests", () => {
 
     expect(formAsset).not.toBeUndefined();
     expect(formAsset.name).toStrictEqual("ApplyFor#Visa");
-    expect(formAsset.sanitizedName).toStrictEqual("ApplyFor_Visa");
+    expect(formAsset.nameWithoutInvalidVarChars).toStrictEqual("ApplyFor_Visa");
     expect(formAsset.fileName).toStrictEqual("ApplyFor#Visa.tsx");
-    expect(formAsset.sanitizedFileName).toStrictEqual("ApplyFor_Visa.tsx");
+    expect(formAsset.fileNameWithoutInvalidVarChars).toStrictEqual("ApplyFor_Visa.tsx");
     expect(formAsset.content).not.toBeUndefined();
     expect(formAsset.content).toContain("const Form__ApplyFor_Visa");
     expect(formAsset.content).toContain("export default Form__ApplyFor_Visa;");
@@ -60,9 +60,9 @@ describe("jbpmPatternflyFormCodeGeneratorTheme tests", () => {
       expect.objectContaining({
         formAsset: expect.objectContaining({
           name: "Apply#For#Visa",
-          sanitizedName: "Apply_For_Visa",
+          nameWithoutInvalidVarChars: "Apply_For_Visa",
           fileName: "Apply#For#Visa.tsx",
-          sanitizedFileName: "Apply_For_Visa.tsx",
+          fileNameWithoutInvalidVarChars: "Apply_For_Visa.tsx",
           config: { resources: { scripts: {}, styles: {} }, schema: JSON.stringify(ApplyForVisaSchema) },
           fileExt: "tsx",
         }),
@@ -74,9 +74,9 @@ describe("jbpmPatternflyFormCodeGeneratorTheme tests", () => {
       expect.objectContaining({
         formAsset: expect.objectContaining({
           name: "ConfirmTravel",
-          sanitizedName: "ConfirmTravel",
+          nameWithoutInvalidVarChars: "ConfirmTravel",
           fileName: "ConfirmTravel.tsx",
-          sanitizedFileName: "ConfirmTravel.tsx",
+          fileNameWithoutInvalidVarChars: "ConfirmTravel.tsx",
           config: { resources: { scripts: {}, styles: {} }, schema: JSON.stringify(ConfirmTravelSchema) },
           fileExt: "tsx",
         }),

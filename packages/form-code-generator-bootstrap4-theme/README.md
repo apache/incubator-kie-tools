@@ -33,11 +33,11 @@ You can consume this package in two ways:
 
 ```ts
 {
-  id: string;             // The form id
-  sanitizedId: string;    // The form id, any # is replaced by _
-  disabled?: boolean;     // Enable/disable form (read only)
-  placeholder?: boolean;  // Enable/disable placeholders
-  schema: Bridge;         // A Uniforms Bridge instance
+  id: string;                          // The form id
+  idWithoutInvalidVarChars: string;    // The form id, any # is replaced by _
+  disabled?: boolean;                  // Enable/disable form (read only)
+  placeholder?: boolean;               // Enable/disable placeholders
+  schema: Bridge;                      // A Uniforms Bridge instance
 }
 ```
 

@@ -35,9 +35,9 @@ describe("jbpmBootstrap4FormCodeGeneratorTheme tests", () => {
 
     expect(formAsset).not.toBeUndefined();
     expect(formAsset.name).toStrictEqual("ApplyFor#Visa");
-    expect(formAsset.sanitizedName).toStrictEqual("ApplyFor_Visa");
+    expect(formAsset.nameWithoutInvalidVarChars).toStrictEqual("ApplyFor_Visa");
     expect(formAsset.fileName).toStrictEqual("ApplyFor#Visa.html");
-    expect(formAsset.sanitizedFileName).toStrictEqual("ApplyFor_Visa.html");
+    expect(formAsset.fileNameWithoutInvalidVarChars).toStrictEqual("ApplyFor_Visa.html");
     expect(formAsset.content).not.toBeUndefined();
     expect(formAsset.config).not.toBeUndefined();
     expect(formAsset.config).toMatchObject({
@@ -68,9 +68,9 @@ describe("jbpmBootstrap4FormCodeGeneratorTheme tests", () => {
       expect.objectContaining({
         formAsset: expect.objectContaining({
           name: "Apply#For#Visa",
-          sanitizedName: "Apply_For_Visa",
+          nameWithoutInvalidVarChars: "Apply_For_Visa",
           fileName: "Apply#For#Visa.html",
-          sanitizedFileName: "Apply_For_Visa.html",
+          fileNameWithoutInvalidVarChars: "Apply_For_Visa.html",
           config: {
             resources: {
               styles: {
@@ -93,9 +93,9 @@ describe("jbpmBootstrap4FormCodeGeneratorTheme tests", () => {
       expect.objectContaining({
         formAsset: expect.objectContaining({
           name: "ConfirmTravel",
-          sanitizedName: "ConfirmTravel",
+          nameWithoutInvalidVarChars: "ConfirmTravel",
           fileName: "ConfirmTravel.html",
-          sanitizedFileName: "ConfirmTravel.html",
+          fileNameWithoutInvalidVarChars: "ConfirmTravel.html",
           config: {
             resources: {
               styles: {

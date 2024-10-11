@@ -17,7 +17,8 @@
  * under the License.
  */
 
+// https://github.com/apache/incubator-kie-issues/issues/528
 export interface JbpmFormAssetBase {
-  sanitizedName: string;
-  sanitizedFileName: string;
+  nameWithoutInvalidVarChars: string;
+  fileNameWithoutInvalidVarChars: string;
 }
