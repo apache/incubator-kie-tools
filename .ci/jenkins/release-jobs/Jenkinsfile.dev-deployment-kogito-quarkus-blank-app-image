@@ -51,7 +51,6 @@ pipeline {
         UPSTREAM_RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/upstream-release-artifacts"
 
         RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sandbox-dev-deployment-quarkus-blank-app-image.tar.gz"
-        RELEASE_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-dev-deployment-quarkus-blank-app-image.tar.gz"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
