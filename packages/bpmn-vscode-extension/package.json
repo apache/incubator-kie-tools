@@ -31,6 +31,8 @@
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/vscode-extension": "workspace:*",
     "@kie-tools/form-code-generator": "workspace:*",
+    "@kie-tools/form-code-generator-bootstrap4-theme": "workspace:*",
+    "@kie-tools/form-code-generator-patternfly-theme": "workspace:*",
     "@kie-tools/jbpm-form-code-generator-themes": "workspace:*",
     "@kie-tools/kie-bc-editors": "workspace:*"
   },
@@ -67,15 +69,15 @@
           "dark": "./static/svg-icon-dark.png",
           "light": "./static/svg-icon-light.png"
         },
-        "title": "Get BPMN Editor Preview SVG"
+        "title": "Apache KIE™ BPMN Editor: Get BPMN Editor Preview SVG"
       },
       {
         "command": "extension.kogito.silentlyGenerateSvgBpmn",
-        "title": "Generate SVG without any notification"
+        "title": "Apache KIE™ BPMN Editor: Generate SVG without any notification"
       },
       {
         "command": "extension.kie.generateFormCode",
-        "title": "Generate form code for human interactions"
+        "title": "Apache KIE™ BPMN Editor: Generate form code for human interactions"
       }
     ],
     "configuration": {

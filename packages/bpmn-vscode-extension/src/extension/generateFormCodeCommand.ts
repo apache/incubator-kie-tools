@@ -19,18 +19,22 @@
 
 import * as vscode from "vscode";
 import * as fs from "fs";
+import * as path from "path";
 import { generateFormCode } from "@kie-tools/form-code-generator/dist/generateFormCode";
 import { jbpmBootstrap4FormCodeGeneratorTheme } from "@kie-tools/jbpm-form-code-generator-themes/dist/jbpmBootstrap4FormCodeGeneratorTheme";
 import { jbpmPatternflyFormCodeGeneratorTheme } from "@kie-tools/jbpm-form-code-generator-themes/dist/jbpmPatternflyFormCodeGeneratorTheme";
 import { FormSchema } from "@kie-tools/form-code-generator/dist/types";
+import { PATTERNFLY_FILE_EXT } from "@kie-tools/form-code-generator-patternfly-theme/dist/theme";
+import { BOOTSTRAP4_FILE_EXT } from "@kie-tools/form-code-generator-bootstrap4-theme/dist/theme";
 
 const FORMS_PATH = "src/main/resources/forms";
 const JSON_SCHEMA_PATH = "target/classes/META-INF/jsonSchema";
 
 export async function generateFormsCommand() {
-  // Use the workspace path as default value
+  // Get workspace path as default value
   const defaultPath = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.fsPath : undefined;
 
+  // Select project path
   const projectUri = await vscode.window.showOpenDialog({
     canSelectFiles: false,
     canSelectFolders: true,
@@ -39,6 +43,7 @@ export async function generateFormsCommand() {
     defaultUri: defaultPath ? vscode.Uri.file(defaultPath) : undefined,
   });
 
+  // Check if a path was selected
   if (projectUri === undefined || projectUri[0] === undefined) {
     vscode.window.showErrorMessage("You must select a project folder to generate the form code");
     return;
@@ -47,13 +52,14 @@ export async function generateFormsCommand() {
   // Get project path
   const projectPath = projectUri[0].fsPath;
 
-  // Check if is a valid project
+  // Check if project has a target folder
   if (fs.existsSync(`${projectPath}/target`) === false) {
     vscode.window.showInformationMessage(
       `Couldn't find project's "target" folder. Please, install the project before using the command.`
     );
     return;
   }
+  // Check if project has the JSON Schemas folder
   if (fs.existsSync(`${projectPath}/${JSON_SCHEMA_PATH}`) === false) {
     vscode.window.showInformationMessage(
       `Couldn't find any JSON Schema, did you install your project ("mvn clean install") using the jbpm dependency?`
@@ -61,39 +67,45 @@ export async function generateFormsCommand() {
     return;
   }
 
-  // Here you can perform actions based on the selected options
+  // Select theme
   const theme = await vscode.window.showQuickPick(["Bootstrap4", "Patternfly"], {
     placeHolder: "Select the form theme",
   });
+  // Check if a theme was selected
   if (theme === undefined) {
     vscode.window.showInformationMessage(`Invalid theme. theme: ${theme}`);
     return;
   }
 
-  const formSchemas = await getFormSchemas(projectPath);
+  const formSchemas: FormSchema[] = await getFormSchemas(projectPath);
 
-  const filesThatWillBeOverriden = [];
-  for (const formSchema of formSchemas) {
-    if (
-      fs.existsSync(`${projectPath}/${FORMS_PATH}/${formSchema.name.split(".json")[0]}.tsx`) ||
-      fs.existsSync(`${projectPath}/${FORMS_PATH}/${formSchema.name.split(".json")[0]}.html`)
-    ) {
-      filesThatWillBeOverriden.push(formSchema);
+  const existingFiles: { fileName: string; ext: string }[] = [];
+  for (const { name: fileName } of formSchemas) {
+    // Check if form `tsx` or `html` file already exists
+    if (fs.existsSync(`${projectPath}/${FORMS_PATH}/${path.parse(fileName).name}.${PATTERNFLY_FILE_EXT}`)) {
+      existingFiles.push({ fileName, ext: PATTERNFLY_FILE_EXT });
+    }
+    if (fs.existsSync(`${projectPath}/${FORMS_PATH}/${path.parse(fileName).name}.${BOOTSTRAP4_FILE_EXT}`)) {
+      existingFiles.push({ fileName, ext: BOOTSTRAP4_FILE_EXT });
     }
   }
 
-  console.log("FORM SCHEMAS", formSchemas);
-  console.log("STRINGIFYIED", JSON.stringify(formSchemas));
-  if (filesThatWillBeOverriden.length === 0) {
+  if (existingFiles.length === 0) {
     saveFormCode(projectPath, theme, formSchemas);
-  } else {
-    const override = await vscode.window.showQuickPick(["Override", "Cancel"], {
-      placeHolder: "Select an option",
-    });
-    if (override === "Override") {
-      saveFormCode(projectPath, theme, formSchemas);
-    }
+    return;
   }
+
+  const shouldOverride = await vscode.window.showQuickPick(["Override", "Cancel"], {
+    placeHolder: "You already have custom forms in this project. Do you want to override them?",
+  });
+  if (shouldOverride === "Override") {
+    // Remove
+    existingFiles.forEach(({ fileName, ext }) => {
+      fs.rmSync(`${projectPath}/${FORMS_PATH}/${path.parse(fileName).name}.${ext}`);
+    });
+    saveFormCode(projectPath, theme, formSchemas);
+  }
+  return;
 }
 
 async function getFormSchemas(projectPath: string): Promise<FormSchema[]> {
@@ -108,19 +120,19 @@ async function getFormSchemas(projectPath: string): Promise<FormSchema[]> {
 
   const jsonSchemaFilesName = fs.readdirSync(`${projectPath}/${JSON_SCHEMA_PATH}`);
   if (humanInteraction === GENERATE_FOR_SPECIFIC_HUMAN_INTERACTIONS) {
-    const humanInteractionOptions = jsonSchemaFilesName.map((jsonSchemaFile) => ({
-      label: jsonSchemaFile.split(".json")[0],
-      picked: false,
-    }));
-
-    const selectedOptions = await vscode.window.showQuickPick(humanInteractionOptions, {
-      canPickMany: true,
-      placeHolder: "Choose the human interactions",
-    });
+    const selectedOptions = await vscode.window.showQuickPick(
+      jsonSchemaFilesName.map((jsonSchemaFile) => ({
+        label: jsonSchemaFile.split(".json")[0],
+      })),
+      {
+        canPickMany: true,
+        placeHolder: "Choose the human interactions",
+      }
+    );
 
     if (selectedOptions && selectedOptions.length > 0) {
       const jsonSchemaFileNames = selectedOptions.reduce((acc: string[], option) => {
-        if (option.picked === true) {
+        if (option.label) {
           acc.push(`${option.label}.json`);
         }
         return acc;
@@ -145,7 +157,7 @@ function readAndParseJsonSchemas(projectPath: string, jsonSchemaFilesName: strin
   for (const jsonSchemaFileName of jsonSchemaFilesName) {
     try {
       formSchemas.push({
-        name: jsonSchemaFileName.split(".json")[0], // remove file extension
+        name: path.parse(jsonSchemaFileName).name, // remove file extension
         schema: JSON.parse(fs.readFileSync(`${projectPath}/${JSON_SCHEMA_PATH}/${jsonSchemaFileName}`, "utf-8")),
       });
     } catch (error) {
@@ -171,7 +183,7 @@ function saveFormCode(projectPath: string, theme: string, formSchemas: FormSchem
         : undefined;
 
   if (formCode === undefined) {
-    vscode.window.showInformationMessage(`Invalid theme. theme: ${theme}`);
+    vscode.window.showInformationMessage(`It wasn't possible to generate the form code for the theme "${theme}"`);
     return undefined;
   }
 
@@ -183,6 +195,10 @@ function saveFormCode(projectPath: string, theme: string, formSchemas: FormSchem
     }
     formAssets.forEach((formAsset) => {
       fs.writeFileSync(`${projectPath}/${FORMS_PATH}/${formAsset.assetName}`, formAsset.content);
+      fs.writeFileSync(
+        `${projectPath}/${FORMS_PATH}/${formAsset.id}.config`,
+        JSON.stringify(formAsset.config, null, 4)
+      );
     });
     vscode.window.showInformationMessage(
       `Sucess generating form code for the following files: ${formAssets.map((formAsset) => formAsset.assetName).join(", ")}`
@@ -195,7 +211,6 @@ function saveFormCode(projectPath: string, theme: string, formSchemas: FormSchem
     []
   );
   if (formErrors.length > 0) {
-    console.log(JSON.stringify(formErrors));
     vscode.window.showInformationMessage(
       `Error generating the form for the following files: ${formErrors.map((formError) => formError.fileName).join(", ")}`
     );

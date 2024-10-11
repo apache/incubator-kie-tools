@@ -1146,6 +1146,12 @@ importers:
       '@kie-tools/form-code-generator':
         specifier: workspace:*
         version: link:../form-code-generator
+      '@kie-tools/form-code-generator-bootstrap4-theme':
+        specifier: workspace:*
+        version: link:../form-code-generator-bootstrap4-theme
+      '@kie-tools/form-code-generator-patternfly-theme':
+        specifier: workspace:*
+        version: link:../form-code-generator-patternfly-theme
       '@kie-tools/jbpm-form-code-generator-themes':
         specifier: workspace:*
         version: link:../jbpm-form-code-generator-themes
