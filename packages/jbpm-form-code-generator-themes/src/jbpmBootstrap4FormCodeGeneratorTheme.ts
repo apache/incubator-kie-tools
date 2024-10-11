@@ -45,11 +45,11 @@ export const jbpmBootstrap4FormCodeGeneratorTheme: FormCodeGeneratorTheme<Bootst
       placeholder: true,
     });
     return {
-      id: formSchema.name,
-      sanitizedId: inputSanitizationUtil(formSchema.name),
-      assetName: `${formSchema.name}.${BOOTSTRAP4_FILE_EXT}`,
-      sanitizedAssetName: `${inputSanitizationUtil(formSchema.name)}.${BOOTSTRAP4_FILE_EXT}`,
-      type: BOOTSTRAP4_FILE_EXT,
+      name: formSchema.name,
+      sanitizedName: inputSanitizationUtil(formSchema.name),
+      fileName: `${formSchema.name}.${BOOTSTRAP4_FILE_EXT}`,
+      sanitizedFileName: `${inputSanitizationUtil(formSchema.name)}.${BOOTSTRAP4_FILE_EXT}`,
+      fileExt: BOOTSTRAP4_FILE_EXT,
       content: unescape(form),
       config: {
         schema: JSON.stringify(formSchema.schema),

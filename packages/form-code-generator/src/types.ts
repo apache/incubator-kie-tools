@@ -33,10 +33,10 @@ export interface FormConfiguration {
 }
 
 export interface FormAsset<FormThemeFileExt extends string> {
-  id: string;
-  assetName: string;
+  name: string;
+  fileName: string;
   content: string;
-  type: FormThemeFileExt;
+  fileExt: FormThemeFileExt;
   config: FormConfiguration;
 }
 

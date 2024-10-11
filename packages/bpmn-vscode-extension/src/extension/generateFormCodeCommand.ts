@@ -197,14 +197,14 @@ function saveFormCode(projectPath: string, theme: string, formSchemas: FormSchem
     }
     // Create form and config file
     formAssets.forEach((formAsset) => {
-      fs.writeFileSync(`${projectPath}/${FORMS_PATH}/${formAsset.assetName}`, formAsset.content);
+      fs.writeFileSync(`${projectPath}/${FORMS_PATH}/${formAsset.fileName}`, formAsset.content);
       fs.writeFileSync(
-        `${projectPath}/${FORMS_PATH}/${formAsset.id}.config`,
+        `${projectPath}/${FORMS_PATH}/${formAsset.name}.config`,
         JSON.stringify(formAsset.config, null, 2)
       );
     });
     vscode.window.showInformationMessage(
-      `Sucess generating form code for the following files: ${formAssets.map((formAsset) => formAsset.assetName).join(", ")}`
+      `Sucess generating form code for the following files: ${formAssets.map((formAsset) => formAsset.fileName).join(", ")}`
     );
   }
 

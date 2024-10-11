@@ -41,9 +41,9 @@ export const bootstrap4FormCodeGeneratorTheme: FormCodeGeneratorTheme<Bootstrap4
       placeholder: true,
     });
     return {
-      id: formSchema.name,
-      assetName: `${formSchema.name}.${BOOTSTRAP4_FILE_EXT}`,
-      type: BOOTSTRAP4_FILE_EXT,
+      name: formSchema.name,
+      fileName: `${formSchema.name}.${BOOTSTRAP4_FILE_EXT}`,
+      fileExt: BOOTSTRAP4_FILE_EXT,
       content: unescape(form),
       config: {
         schema: JSON.stringify(formSchema.schema),

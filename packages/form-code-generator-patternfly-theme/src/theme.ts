@@ -37,9 +37,9 @@ export const patternflyFormCodeGeneratorTheme: FormCodeGeneratorTheme<Patternfly
       placeholder: true,
     });
     return {
-      id: formSchema.name,
-      assetName: `${formSchema.name}.${PATTERNFLY_FILE_EXT}`,
-      type: PATTERNFLY_FILE_EXT,
+      name: formSchema.name,
+      fileName: `${formSchema.name}.${PATTERNFLY_FILE_EXT}`,
+      fileExt: PATTERNFLY_FILE_EXT,
       content: unescape(form),
       config: {
         schema: JSON.stringify(formSchema.schema),

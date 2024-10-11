@@ -39,11 +39,11 @@ export const jbpmPatternflyFormCodeGeneratorTheme: FormCodeGeneratorTheme<Patter
       placeholder: true,
     });
     return {
-      id: formSchema.name,
-      sanitizedId: inputSanitizationUtil(formSchema.name),
-      assetName: `${formSchema.name}.${PATTERNFLY_FILE_EXT}`,
-      sanitizedAssetName: `${inputSanitizationUtil(formSchema.name)}.${PATTERNFLY_FILE_EXT}`,
-      type: PATTERNFLY_FILE_EXT,
+      name: formSchema.name,
+      sanitizedName: inputSanitizationUtil(formSchema.name),
+      fileName: `${formSchema.name}.${PATTERNFLY_FILE_EXT}`,
+      sanitizedFileName: `${inputSanitizationUtil(formSchema.name)}.${PATTERNFLY_FILE_EXT}`,
+      fileExt: PATTERNFLY_FILE_EXT,
       content: unescape(form),
       config: {
         schema: JSON.stringify(formSchema.schema),

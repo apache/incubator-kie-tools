@@ -18,6 +18,6 @@
  */
 
 export interface JbpmFormAssetBase {
-  sanitizedId: string;
-  sanitizedAssetName: string;
+  sanitizedName: string;
+  sanitizedFileName: string;
 }

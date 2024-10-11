@@ -34,10 +34,10 @@ describe("jbpmBootstrap4FormCodeGeneratorTheme tests", () => {
     });
 
     expect(formAsset).not.toBeUndefined();
-    expect(formAsset.id).toStrictEqual("ApplyFor#Visa");
-    expect(formAsset.sanitizedId).toStrictEqual("ApplyFor_Visa");
-    expect(formAsset.assetName).toStrictEqual("ApplyFor#Visa.html");
-    expect(formAsset.sanitizedAssetName).toStrictEqual("ApplyFor_Visa.html");
+    expect(formAsset.name).toStrictEqual("ApplyFor#Visa");
+    expect(formAsset.sanitizedName).toStrictEqual("ApplyFor_Visa");
+    expect(formAsset.fileName).toStrictEqual("ApplyFor#Visa.html");
+    expect(formAsset.sanitizedFileName).toStrictEqual("ApplyFor_Visa.html");
     expect(formAsset.content).not.toBeUndefined();
     expect(formAsset.config).not.toBeUndefined();
     expect(formAsset.config).toMatchObject({
@@ -67,10 +67,10 @@ describe("jbpmBootstrap4FormCodeGeneratorTheme tests", () => {
     expect(formAssets[0]).toEqual(
       expect.objectContaining({
         formAsset: expect.objectContaining({
-          id: "Apply#For#Visa",
-          sanitizedId: "Apply_For_Visa",
-          assetName: "Apply#For#Visa.html",
-          sanitizedAssetName: "Apply_For_Visa.html",
+          name: "Apply#For#Visa",
+          sanitizedName: "Apply_For_Visa",
+          fileName: "Apply#For#Visa.html",
+          sanitizedFileName: "Apply_For_Visa.html",
           config: {
             resources: {
               styles: {
@@ -83,7 +83,7 @@ describe("jbpmBootstrap4FormCodeGeneratorTheme tests", () => {
             },
             schema: JSON.stringify(ApplyForVisaSchema),
           },
-          type: "html",
+          fileExt: "html",
         }),
         formError: undefined,
       })
@@ -92,10 +92,10 @@ describe("jbpmBootstrap4FormCodeGeneratorTheme tests", () => {
     expect(formAssets[1]).toEqual(
       expect.objectContaining({
         formAsset: expect.objectContaining({
-          id: "ConfirmTravel",
-          sanitizedId: "ConfirmTravel",
-          assetName: "ConfirmTravel.html",
-          sanitizedAssetName: "ConfirmTravel.html",
+          name: "ConfirmTravel",
+          sanitizedName: "ConfirmTravel",
+          fileName: "ConfirmTravel.html",
+          sanitizedFileName: "ConfirmTravel.html",
           config: {
             resources: {
               styles: {
@@ -108,7 +108,7 @@ describe("jbpmBootstrap4FormCodeGeneratorTheme tests", () => {
             },
             schema: JSON.stringify(ConfirmTravelSchema),
           },
-          type: "html",
+          fileExt: "html",
         }),
         formError: undefined,
       })
