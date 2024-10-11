@@ -32,7 +32,7 @@ pipeline {
         string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL', defaultValue: '')
         string(description: 'Release Version', name: 'RELEASE_VERSION')
         string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
-        choice(description: 'Job Type', name: 'JOB_TYPE', choices: ['release-candidate', 'release-promote'], defaultValue: 'release-candidate')
+        choice(description: 'Job Type', name: 'JOB_TYPE', choices: ['release-candidate', 'release-promote'])
     }
 
     environment {

@@ -36,7 +36,7 @@ pipeline {
         string(description: 'Upload asset url', name: 'UPLOAD_ASSET_URL', defaultValue: '')
         string(description: 'Release Version', name: 'RELEASE_VERSION')
         string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION')
-        choice(description: 'Job Type', name: 'JOB_TYPE', choices: ['release-candidate', 'release-promote'], defaultValue: 'release-candidate')
+        choice(description: 'Job Type', name: 'JOB_TYPE', choices: ['release-candidate', 'release-promote'])
         string(description: 'Runners', name: 'RUNNERS', defaultValue: '{"chrome_extensions":"false","cors_proxy_image":"false","dashbuilder_viewer_image":"false","dev_deployment_base_image":"false","dev_deployment_dmn_form_webapp_image":"false","dev_deployment_kogito_quakus_blank_app_image":"false","dev_deployment_upload_service":"false","extended_services":"false","jbpm_quarkus_devui":"false","kie_sandbox_extended_services_image":"false","kie_sandbox_helm_chart":"false","kie_sandbox_image":"false","kn_plugin_workflow":"false","kogito_task_console":"false","kogito_management_console":"false","kogito_swf_builder":"false","kogito_swf_devmode":"false","kogito_serverless_operator":"false","npm_packages":"false","online_editor":"false","serverless_logic_web_tools":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","standalone_editors_cdn":"false","sonataflow_quarkus_devui":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false"}')
     }
 
