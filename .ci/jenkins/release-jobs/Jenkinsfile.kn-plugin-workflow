@@ -177,10 +177,10 @@ pipeline {
                     mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
                     cp "${LEGAL_FILES_DIR}/*" kie-tools/packages/kn-plugin-workflow/dist
                     cd kie-tools/packages/kn-plugin-workflow/dist
-                    zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${KN_PLUGIN_LINUX_X86_RELEASE_FILE}" ./kn-workflow-linux-amd64 ./*.txt
-                    zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${KN_PLUGIN_MACOS_ARM_RELEASE_FILE}" ./kn-workflow-darwin-arm64 ./*.txt
-                    zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${KN_PLUGIN_MACOS_X86_RELEASE_FILE}" ./kn-workflow-darwin-amd64 ./*.txt
-                    zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${KN_PLUGIN_WINDOWS_X86_RELEASE_FILE}" ./kn-workflow-windows-amd64.exe ./*.txt
+                    zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${KN_PLUGIN_LINUX_X86_RELEASE_FILE}" ./kn-workflow-linux-amd64 ./NOTICE ./LICENSE ./DISCLAIMER-WIP
+                    zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${KN_PLUGIN_MACOS_ARM_RELEASE_FILE}" ./kn-workflow-darwin-arm64 ./NOTICE ./LICENSE ./DISCLAIMER-WIP
+                    zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${KN_PLUGIN_MACOS_X86_RELEASE_FILE}" ./kn-workflow-darwin-amd64 ./NOTICE ./LICENSE ./DISCLAIMER-WIP
+                    zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${KN_PLUGIN_WINDOWS_X86_RELEASE_FILE}" ./kn-workflow-windows-amd64.exe ./NOTICE ./LICENSE ./DISCLAIMER-WIP
                     """.trim()
                 }
             }

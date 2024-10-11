@@ -213,7 +213,7 @@ pipeline {
                     mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
                     docker save "${SONATAFLOW_OPERATOR__registry}/${SONATAFLOW_OPERATOR__account}/${SONATAFLOW_OPERATOR__name}:${params.RELEASE_VERSION}" | gzip > "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${IMAGE_RELEASE_FILE}"
                     cp "${LEGAL_FILES_DIR}/*" kie-tools/packages/sonataflow-operator
-                    cd kie-tools/packages/sonataflow-operator && zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${OPERATOR_RELEASE_FILE}" ./operator.yaml ./*.txt
+                    cd kie-tools/packages/sonataflow-operator && zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${OPERATOR_RELEASE_FILE}" ./operator.yaml ./NOTICE ./LICENSE ./DISCLAIMER-WIP
                     """.trim()
                     releaseUtils.addLegalfilesToTarGzFile("${RELEASE_CANDIDATE_ARTIFACTS_DIR}", "${IMAGE_RELEASE_FILE}", "${LEGAL_FILES_DIR}")
                 }
