@@ -58,7 +58,7 @@ def publishArtifacts(String artifactsDir, String releaseRepository, String relea
 */
 def downloadReleaseArtifacts(String releaseRepository, String releaseVersion, String artifactsDir, String... artifactsNames) {
     sh """#!/bin/bash -el
-    mkdir -p "${artifactsDir}" || true"
+    mkdir -p "${artifactsDir}" || true
     """.trim()
     for (artifactName in artifactsNames) {
         sh """#!/bin/bash -el
@@ -104,7 +104,7 @@ def renameArtifactsToFinalVersion(String releaseCandidateArtifactsDir, String re
 **/
 def copyLegalFiles(String targetDir) {
     sh """#!/bin/bash -el
-    mkdir -p "${targetDir}" || true"
+    mkdir -p "${targetDir}" || true
     cp {LICENSE,NOTICE,DISCLAIMER-WIP} ${targetDir}
     """.trim()
 }
