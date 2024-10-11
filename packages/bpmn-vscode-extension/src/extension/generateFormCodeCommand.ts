@@ -111,6 +111,7 @@ export async function generateFormsCommand() {
 async function getFormSchemas(projectPath: string): Promise<FormSchema[]> {
   const GENERATE_FOR_ALL_HUMAN_INTERACTIONS = "Generate form code all human interactions";
   const GENERATE_FOR_SPECIFIC_HUMAN_INTERACTIONS = "Generate form code for specific human interactions";
+
   const humanInteraction = await vscode.window.showQuickPick(
     [GENERATE_FOR_ALL_HUMAN_INTERACTIONS, GENERATE_FOR_SPECIFIC_HUMAN_INTERACTIONS],
     {
@@ -122,7 +123,7 @@ async function getFormSchemas(projectPath: string): Promise<FormSchema[]> {
   if (humanInteraction === GENERATE_FOR_SPECIFIC_HUMAN_INTERACTIONS) {
     const selectedOptions = await vscode.window.showQuickPick(
       jsonSchemaFilesName.map((jsonSchemaFile) => ({
-        label: jsonSchemaFile.split(".json")[0],
+        label: path.parse(jsonSchemaFile).name,
       })),
       {
         canPickMany: true,
@@ -190,14 +191,16 @@ function saveFormCode(projectPath: string, theme: string, formSchemas: FormSchem
   // Save form assets
   const formAssets = formCode.reduce((acc, { formAsset }) => (formAsset !== undefined ? [...acc, formAsset] : acc), []);
   if (formAssets.length > 0) {
+    // Create FORMS_PATH directory if doesn't exist
     if (fs.existsSync(`${projectPath}/${FORMS_PATH}`) === false) {
       fs.mkdirSync(`${projectPath}/${FORMS_PATH}`);
     }
+    // Create form and config file
     formAssets.forEach((formAsset) => {
       fs.writeFileSync(`${projectPath}/${FORMS_PATH}/${formAsset.assetName}`, formAsset.content);
       fs.writeFileSync(
         `${projectPath}/${FORMS_PATH}/${formAsset.id}.config`,
-        JSON.stringify(formAsset.config, null, 4)
+        JSON.stringify(formAsset.config, null, 2)
       );
     });
     vscode.window.showInformationMessage(
