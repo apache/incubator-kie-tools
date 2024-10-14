@@ -1744,6 +1744,11 @@
       },
       {
         "source": "kie-editors-dev-vscode-extension",
+        "target": "@kie-tools/form-code-generator-vscode-command",
+        "weight": 1
+      },
+      {
+        "source": "kie-editors-dev-vscode-extension",
         "target": "@kie-tools/kie-bc-editors",
         "weight": 1
       },

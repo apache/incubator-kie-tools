@@ -428,6 +428,7 @@ digraph G {
   "@kie-tools/kie-bc-editors" -> "@kie-tools/dmn-language-service" [ style = "solid", color = "blue" ];
   "@kie-tools/kie-bc-editors" -> "@kie-tools/pmml-editor-marshaller" [ style = "solid", color = "blue" ];
   "kie-editors-dev-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "black" ];
+  "kie-editors-dev-vscode-extension" -> "@kie-tools/form-code-generator-vscode-command" [ style = "solid", color = "black" ];
   "kie-editors-dev-vscode-extension" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "kie-editors-dev-vscode-extension" -> "@kie-tools/pmml-editor" [ style = "solid", color = "black" ];
   "kie-editors-dev-vscode-extension" -> "@kie-tools/vscode-java-code-completion-extension-plugin" [ style = "solid", color = "black" ];
