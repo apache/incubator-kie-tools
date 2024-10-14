@@ -81,6 +81,7 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { getDefaultColumnWidth } from "./getDefaultColumnWidth";
 import { getDefaultBoxedExpression } from "./getDefaultBoxedExpression";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { EvaluationHighlightsBadge } from "../evaluationHighlights/EvaluationHighlightsBadge";
 
 export function BoxedExpressionScreen({ container }: { container: React.RefObject<HTMLElement> }) {
   const { externalModelsByNamespace } = useExternalModels();
@@ -364,24 +365,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
           </FlexItem>
 
           <Flex>
-            <aside className={"kie-dmn-editor--evaluation-highlights-panel-toggle"}>
-              <button
-                className={
-                  isEvaluationHighlights
-                    ? "kie-dmn-editor--evaluation-highlights-panel-toggle-button"
-                    : "kie-dmn-editor--evaluation-highlights-panel-toggle-button-off"
-                }
-                onClick={() => {
-                  dmnEditorStoreApi.setState((state) => {
-                    state.diagram.overlays.evaluationHighlights = !state.diagram.overlays.evaluationHighlights;
-                  });
-                }}
-                title={"Evaluation highlights (beta)"}
-              >
-                Evaluation Highlights:{" "}
-                {dmnEditorStoreApi.getState().diagram.overlays.evaluationHighlights ? "On" : "Off"}
-              </button>
-            </aside>
+            <EvaluationHighlightsBadge />
             <aside
               className={"kie-dmn-editor--properties-panel-toggle"}
               style={{ visibility: isPropertiesPanelOpen ? "hidden" : undefined }}
