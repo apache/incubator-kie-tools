@@ -19,10 +19,15 @@
 
 import * as TestScenarioEditor from "../../src/TestScenarioEditor";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
+import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { LOAN_PRE_QUALIFICATION, TRAFFIC_VIOLATION } from "./ExternalDmnModels";
 
-export const loanPreQualification = getMarshaller(LOAN_PRE_QUALIFICATION, { upgradeTo: "latest" }).parser.parse(); // TODO NORMALIZE?
-export const trafficViolationModel = getMarshaller(TRAFFIC_VIOLATION, { upgradeTo: "latest" }).parser.parse();
+export const loanPreQualification = normalize(
+  getMarshaller(LOAN_PRE_QUALIFICATION, { upgradeTo: "latest" }).parser.parse()
+); // TODO NORMALIZE?
+export const trafficViolationModel = normalize(
+  getMarshaller(TRAFFIC_VIOLATION, { upgradeTo: "latest" }).parser.parse()
+);
 
 export const avaiableModels: TestScenarioEditor.ExternalModel[] = [
   {
