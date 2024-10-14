@@ -320,8 +320,6 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
     return NodeIcon({ nodeType, isAlternativeInputDataShape });
   }, [drgElement, isAlternativeInputDataShape]);
 
-  const isEvaluationHighlights = useDmnEditorStore((s) => s.diagram.overlays.evaluationHighlights);
-
   return (
     <>
       <>
