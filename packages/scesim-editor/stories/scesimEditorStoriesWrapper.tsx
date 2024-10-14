@@ -79,6 +79,7 @@ export function SceSimEditorWrapper(props: Partial<StorybookTestScenarioEditorPr
         props?.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot ??
         args.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
       }
+      onRequestToJumpToPath={props?.onRequestToJumpToPath ?? args.onRequestToJumpToPath}
     />
   );
 }

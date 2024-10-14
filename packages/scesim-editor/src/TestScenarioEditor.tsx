@@ -86,6 +86,7 @@ enum TestScenarioFileStatus {
 /* Types */
 
 export type OnRequestExternalModelsAvailableToInclude = () => Promise<string[]>;
+export type OnRequestToJumpToPath = (normalizedPosixPathRelativeToTheOpenFile: string) => void;
 export type OnRequestToResolvePath = (normalizedPosixPathRelativeToTheOpenFile: string) => string;
 export type OnSceSimModelChange = (model: SceSimModel) => void;
 
@@ -131,6 +132,16 @@ export type TestScenarioEditorProps = {
    * Called when the list of paths of available models to be included is needed. Used by the "Included models" tab.
    */
   onRequestExternalModelsAvailableToInclude?: OnRequestExternalModelsAvailableToInclude;
+  /**
+   * When users want to jump to another file, this method is called, allowing the controller of this component decide what to do.
+   * Links are only rendered if this is provided. Otherwise, paths will be rendered as text.
+   */
+  onRequestToJumpToPath?: OnRequestToJumpToPath;
+  /**
+   * All paths inside the DMN Editor are relative. To be able to resolve them and display them as absolute paths, this function is called.
+   * If undefined, the relative paths will be displayed.
+   */
+  onRequestToResolvePath?: OnRequestToResolvePath;
   /**
    * The file path of the current opened Test Scenario scesim file
    */

@@ -28,6 +28,7 @@ import { SceSimMarshaller, SceSimModel, getMarshaller } from "@kie-tools/scesim-
 import {
   OnRequestExternalModelByPath,
   OnRequestExternalModelsAvailableToInclude,
+  OnRequestToJumpToPath,
   OnSceSimModelChange,
   TestScenarioEditorProps,
 } from "../../src/TestScenarioEditor";
@@ -114,6 +115,10 @@ function DevWebApp(props: TestScenarioEditorProps) {
     },
     [props.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot]
   );
+
+  const onRequestToJumpToPath = useCallback<OnRequestToJumpToPath>((path) => {
+    alert("A request to open this file: " + path);
+  }, []);
 
   const onSelectModel = useCallback(
     (newModel, fileName) => {
@@ -224,6 +229,7 @@ function DevWebApp(props: TestScenarioEditorProps) {
           onModelChange: onModelChange,
           onRequestExternalModelsAvailableToInclude: onRequestExternalModelsAvailableToInclude,
           onRequestExternalModelByPath: onRequestExternalModelByPath,
+          onRequestToJumpToPath: onRequestToJumpToPath,
           openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: fileName,
         })}
       </PageSection>
