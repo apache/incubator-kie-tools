@@ -51,7 +51,9 @@ export function activate(context: vscode.ExtensionContext) {
   });
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("extension.kie.generateFormCode", async (args: any) => generateFormsCommand())
+    vscode.commands.registerCommand("extension.apache.kie.bpmnEditor.generateFormCode", async (args: any) =>
+      generateFormsCommand()
+    )
   );
 
   KogitoVsCode.VsCodeRecommendation.showExtendedServicesRecommendation(context);

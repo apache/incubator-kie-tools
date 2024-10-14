@@ -69,14 +69,14 @@
           "dark": "./static/svg-icon-dark.png",
           "light": "./static/svg-icon-light.png"
         },
-        "title": "BPMN Editor: Get BPMN Editor Preview SVG"
+        "title": "BPMN Editor: Get preview SVG"
       },
       {
         "command": "extension.kogito.silentlyGenerateSvgBpmn",
         "title": "BPMN Editor: Generate SVG without any notification"
       },
       {
-        "command": "extension.kie.generateFormCode",
+        "command": "extension.apache.kie.bpmnEditor.generateFormCode",
         "title": "BPMN Editor: Generate form code for human interactions from jBPM project"
       }
     ],
@@ -101,7 +101,7 @@
     },
     "customEditors": [
       {
-        "displayName": "BPMN Editor",
+        "displayName": "Apache KIE BPMN Editor",
         "selector": [
           {
             "filenamePattern": "*.{bpmn,bpmn2}"
