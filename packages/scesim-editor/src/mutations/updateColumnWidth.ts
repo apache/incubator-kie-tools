@@ -21,17 +21,17 @@ import { SceSim__FactMappingType } from "@kie-tools/scesim-marshaller/dist/schem
 
 export function updateColumnWidth({
   factMappings,
-  inputIndex,
+  columnIndex,
   newWidth,
   oldWidth,
 }: {
   factMappings: SceSim__FactMappingType[];
-  inputIndex: number;
+  columnIndex: number;
   newWidth: number | undefined;
   oldWidth: number | undefined;
 }) {
   if (newWidth && oldWidth !== newWidth) {
-    factMappings[inputIndex].columnWidth = {
+    factMappings[columnIndex].columnWidth = {
       __$$text: newWidth,
     };
   }

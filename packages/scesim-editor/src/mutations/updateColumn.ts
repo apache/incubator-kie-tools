@@ -69,10 +69,10 @@ export function updateColumn({
     const factMappingValues = fmv.factMappingValues.FactMappingValue!;
     const factMappingValueToUpdateIndex = factMappingValues.findIndex(
       (factMappingValue) =>
-        factMappingValue.factIdentifier.name?.__$$text == factIdentifierName &&
-        factMappingValue.factIdentifier.className?.__$$text == factIdentifierClassName &&
-        factMappingValue.expressionIdentifier.name?.__$$text == expressionIdentifierName &&
-        factMappingValue.expressionIdentifier.type?.__$$text == expressionIdentifierType
+        factMappingValue.factIdentifier.name?.__$$text === factIdentifierName &&
+        factMappingValue.factIdentifier.className?.__$$text === factIdentifierClassName &&
+        factMappingValue.expressionIdentifier.name?.__$$text === expressionIdentifierName &&
+        factMappingValue.expressionIdentifier.type?.__$$text === expressionIdentifierType
     );
     const factMappingValueToUpdate = factMappingValues[factMappingValueToUpdateIndex];
     factMappingValueToUpdate.factIdentifier.className = { __$$text: factClassName };
