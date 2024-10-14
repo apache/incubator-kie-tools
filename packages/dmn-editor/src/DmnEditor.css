@@ -397,9 +397,7 @@
 
 /* (begin) evaluation-highlights panel toggle */
 .kie-dmn-editor--evaluation-highlights-panel-toggle {
-  background: #fff;
   border-radius: 40px;
-  border: 1px solid black;
 }
 .kie-dmn-editor--evaluation-highlights-panel-toggle:not(:last-child) {
   margin-right: 16px;
@@ -417,9 +415,11 @@
 }
 .kie-dmn-editor--evaluation-highlights-panel-toggle-button {
   background: white;
+  border: 1px solid black;
 }
 .kie-dmn-editor--evaluation-highlights-panel-toggle-button-off {
-  background: lightgray;
+  background: var(--pf-global--palette--black-150);
+  border: 1px solid var(--pf-global--BorderColor--100);
 }
 .kie-dmn-editor--evaluation-highlights-panel-toggle-button:hover {
   filter: brightness(95%);
