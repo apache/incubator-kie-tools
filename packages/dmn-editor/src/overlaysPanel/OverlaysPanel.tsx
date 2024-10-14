@@ -24,8 +24,9 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Slider } from "@patternfly/react-core/dist/js/components/Slider";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { useLayoutEffect, useRef } from "react";
-import { Icon, Tooltip } from "@patternfly/react-core";
-import { HelpIcon } from "@patternfly/react-icons";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 
 const MIN_SNAP = 5;
 const MAX_SNAP = 50;
