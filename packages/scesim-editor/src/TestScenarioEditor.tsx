@@ -66,9 +66,9 @@ import {
 } from "./store/TestScenarioStoreContext";
 import { TestScenarioEditorErrorFallback } from "./TestScenarioEditorErrorFallback";
 import { TestScenarioEditorContextProvider, useTestScenarioEditor } from "./TestScenarioEditorContext";
+import { TestScenarioEditorExternalModelsContextProvider } from "./externalModels/TestScenarioEditorDependenciesContext";
 import { useEffectAfterFirstRender } from "./hook/useEffectAfterFirstRender";
 import { INITIAL_COMPUTED_CACHE } from "./store/computed/initial";
-import { TestScenarioEditorExternalModelsContextProvider } from "./externalModels/TestScenarioEditorDependenciesContext";
 
 /* Constants */
 
