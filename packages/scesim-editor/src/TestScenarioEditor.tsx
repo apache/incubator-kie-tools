@@ -68,6 +68,7 @@ import { TestScenarioEditorErrorFallback } from "./TestScenarioEditorErrorFallba
 import { TestScenarioEditorContextProvider, useTestScenarioEditor } from "./TestScenarioEditorContext";
 import { useEffectAfterFirstRender } from "./hook/useEffectAfterFirstRender";
 import { INITIAL_COMPUTED_CACHE } from "./store/computed/initial";
+import { TestScenarioEditorExternalModelsContextProvider } from "./externalModels/TestScenarioEditorDependenciesContext";
 
 /* Constants */
 
@@ -472,11 +473,13 @@ export const TestScenarioEditor = React.forwardRef(
       >
         <TestScenarioEditorContextProvider {...props}>
           <ErrorBoundary FallbackComponent={TestScenarioEditorErrorFallback} onReset={resetState}>
-            <TestScenarioEditorStoreApiContext.Provider value={storeRef.current}>
-              <CommandsContextProvider>
-                <TestScenarioEditorInternal forwardRef={ref} {...props} />
-              </CommandsContextProvider>
-            </TestScenarioEditorStoreApiContext.Provider>
+            <TestScenarioEditorExternalModelsContextProvider {...props}>
+              <TestScenarioEditorStoreApiContext.Provider value={storeRef.current}>
+                <CommandsContextProvider>
+                  <TestScenarioEditorInternal forwardRef={ref} {...props} />
+                </CommandsContextProvider>
+              </TestScenarioEditorStoreApiContext.Provider>
+            </TestScenarioEditorExternalModelsContextProvider>
           </ErrorBoundary>
         </TestScenarioEditorContextProvider>
       </I18nDictionariesProvider>
