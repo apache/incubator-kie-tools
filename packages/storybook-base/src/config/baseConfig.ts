@@ -60,7 +60,9 @@ export const baseConfig: (
       path.dirname(require.resolve("@storybook/addon-webpack5-compiler-babel/package.json")),
     ],
     webpackFinal: async (config) => {
-      return merge(config, common);
+      // Preserve Storybook output configurations
+      const commonConfig = { ...common, output: undefined };
+      return merge(config, commonConfig);
     },
   };
 };

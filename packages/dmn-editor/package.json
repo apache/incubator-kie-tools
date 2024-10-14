@@ -19,7 +19,7 @@
   "scripts": {
     "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.json",
     "build:prod": "rimraf dist && pnpm copy:css && pnpm lint && tsc -p tsconfig.json && pnpm test-e2e && pnpm test",
-    "build:storybook": "storybook build -o dist-storybook",
+    "build:storybook": "rimraf dist-storybook && NODE_ENV=development storybook build -o dist-storybook",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "run-script-os",
