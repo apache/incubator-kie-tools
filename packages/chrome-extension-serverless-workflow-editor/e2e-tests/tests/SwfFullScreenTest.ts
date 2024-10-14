@@ -23,14 +23,14 @@ import GitHubEditorPage from "@kie-tools/chrome-extension-test-helper/dist/frame
 import GitHubRepoPage from "@kie-tools/chrome-extension-test-helper/dist/framework/github-repo/GitHubRepoPage";
 import Tools from "@kie-tools/chrome-extension-test-helper/dist/utils/Tools";
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { env } from "../../env";
+const buildEnv: any = env; // build-env is not typed
 
 const TEST_NAME = "SwfFullScreenTest";
 
 let tools: Tools;
-
-const buildEnv: any = env;
 
 beforeEach(async () => {
   tools = await Tools.init(TEST_NAME);

@@ -91,8 +91,10 @@ func RunQuarkusRunTest(t *testing.T, cfgTestInputPrepareQuarkusCreateRun CfgTest
 	// Create and build the quarkus project
 	projectName := RunQuarkusCreateTest(t, cfgTestInputPrepareQuarkusCreateRun)
 	projectDir := filepath.Join(TempTestsPath, projectName)
+
 	err = os.Chdir(projectDir)
 	require.NoErrorf(t, err, "Expected nil error, got %v", err)
+	WriteMavenConfigFileWithTailDirs(projectDir)
 
 	cmd := exec.Command(KnExecutable)
 

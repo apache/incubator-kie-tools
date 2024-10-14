@@ -23,6 +23,7 @@ package e2e_tests
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -108,7 +109,10 @@ func RunQuarkusCreateTest(t *testing.T, test CfgTestInputQuarkusCreate) string {
 
 	// Run `quarkus create` command
 	_, err = ExecuteKnWorkflowQuarkus(transformQuarkusCreateCmdCfgToArgs(test.input)...)
+
+	err = os.Chdir(projectDir)
 	require.NoErrorf(t, err, "Expected nil error, got: %v", err)
+	WriteMavenConfigFileWithTailDirs(projectDir)
 
 	// Check if the project directory was created
 	require.DirExistsf(t, projectDir, "Expected project directory '%s' to be created", projectDir)

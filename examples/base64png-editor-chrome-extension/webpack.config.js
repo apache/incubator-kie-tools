@@ -25,12 +25,11 @@ const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { merge } = require("webpack-merge");
 const { EnvironmentPlugin } = require("webpack");
 const { env } = require("./env");
-const buildEnv = env;
 
-module.exports = (env) => {
-  const router_targetOrigin = `https://localhost:${buildEnv.exampleChromeExtension.envelope.port}`;
+module.exports = (webpackEnv) => {
+  const router_targetOrigin = `https://localhost:${env.exampleChromeExtension.envelope.port}`;
 
-  return merge(common(env), {
+  return merge(common(webpackEnv), {
     entry: {
       contentscript: "./src/contentscript.ts",
       "envelope/index": "./src/envelope/index.ts",
@@ -38,7 +37,7 @@ module.exports = (env) => {
     devServer: {
       compress: true,
       https: true,
-      port: buildEnv.exampleChromeExtension.envelope.port,
+      port: env.exampleChromeExtension.envelope.port,
     },
     plugins: [
       new CopyPlugin({

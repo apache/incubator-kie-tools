@@ -55,7 +55,7 @@
 
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-rest-client</artifactId>
+      <artifactId>quarkus-resteasy-client</artifactId>
     </dependency>
 
     <dependency>
@@ -125,12 +125,13 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
     <plugins>
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-extension-maven-plugin</artifactId>
-        <version>${quarkus.platform.version}</version>
+        <version>${version.quarkus}</version>
         <executions>
           <execution>
             <phase>compile</phase>
@@ -153,7 +154,7 @@
             <path>
               <groupId>io.quarkus</groupId>
               <artifactId>quarkus-extension-processor</artifactId>
-              <version>${quarkus.platform.version}</version>
+              <version>${version.quarkus}</version>
             </path>
           </annotationProcessorPaths>
         </configuration>

@@ -20,8 +20,8 @@
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 
-module.exports = (env, argv) => [
-  merge(common(env, argv), {
+module.exports = (webpackEnv, webpackArgv) => [
+  merge(common(webpackEnv, webpackArgv), {
     entry: {
       index: "./src/index.ts",
     },

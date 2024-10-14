@@ -15,7 +15,7 @@
    under the License.
 -->
 
-# KIE Tools :: Sparse checkout
+## @kie-tools-scripts/sparse-checkout
 
 Sparse checkout lets you partially clone the KIE Tools monorepo. Doing a sparse checkout will help you save time and disk space, while also reducing the amount of code you need to deal with when developing.
 
@@ -23,7 +23,7 @@ This script will look at `repo/graph.json` to decide what packages need to be do
 
 Keep in mind that sparse checkouts make Git behave a little differently for some commands. Read more at https://git-scm.com/docs/git-sparse-checkout.
 
-## Usage
+### Usage
 
 - zsh
 

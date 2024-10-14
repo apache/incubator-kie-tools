@@ -24,8 +24,8 @@ const CopyPlugin = require("copy-webpack-plugin");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-module.exports = async (env) => {
-  return merge(common(env), {
+module.exports = async (webpackEnv) => {
+  return merge(common(webpackEnv), {
     mode: "development",
     entry: {
       index: path.resolve(__dirname, "./index.tsx"),

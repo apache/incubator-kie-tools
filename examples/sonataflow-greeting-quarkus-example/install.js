@@ -17,9 +17,10 @@
  * under the License.
  */
 
-const buildEnv = require("./env");
-const { setup } = require("@kie-tools/maven-config-setup-helper");
+const { env } = require("./env");
+const { setupMavenConfigFile, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
 
-setup(`
-    -Drevision=${buildEnv.env.sonataflowGreetingQuarkus.version}
+setupMavenConfigFile(`
+    -Drevision=${env.sonataflowGreetingQuarkus.version}
+    -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
 `);

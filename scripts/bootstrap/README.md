@@ -17,6 +17,12 @@
 
 ## @kie-tools-scripts/bootstrap
 
+Wires the repository together through `node_modules` and runs `install` scripts on every package, respecting topological order.
+
+### Usage
+
+`pnpm bootstrap [pnpm-filter?]`
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software
