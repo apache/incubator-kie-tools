@@ -1143,18 +1143,9 @@ importers:
       '@kie-tools-core/vscode-extension':
         specifier: workspace:*
         version: link:../vscode-extension
-      '@kie-tools/form-code-generator':
+      '@kie-tools/form-code-generator-vscode-command':
         specifier: workspace:*
-        version: link:../form-code-generator
-      '@kie-tools/form-code-generator-bootstrap4-theme':
-        specifier: workspace:*
-        version: link:../form-code-generator-bootstrap4-theme
-      '@kie-tools/form-code-generator-patternfly-theme':
-        specifier: workspace:*
-        version: link:../form-code-generator-patternfly-theme
-      '@kie-tools/jbpm-form-code-generator-themes':
-        specifier: workspace:*
-        version: link:../jbpm-form-code-generator-themes
+        version: link:../form-code-generator-vscode-command
       '@kie-tools/kie-bc-editors':
         specifier: workspace:*
         version: link:../kie-bc-editors
@@ -5044,6 +5035,43 @@ importers:
       webpack-node-externals:
         specifier: ^3.0.0
         version: 3.0.0
+
+  packages/form-code-generator-vscode-command:
+    dependencies:
+      '@kie-tools/form-code-generator':
+        specifier: workspace:*
+        version: link:../form-code-generator
+      '@kie-tools/form-code-generator-bootstrap4-theme':
+        specifier: workspace:*
+        version: link:../form-code-generator-bootstrap4-theme
+      '@kie-tools/form-code-generator-patternfly-theme':
+        specifier: workspace:*
+        version: link:../form-code-generator-patternfly-theme
+      '@kie-tools/jbpm-form-code-generator-themes':
+        specifier: workspace:*
+        version: link:../jbpm-form-code-generator-themes
+      react:
+        specifier: '>=17.0.2 <19.0.0'
+        version: 17.0.2
+      react-dom:
+        specifier: '>=17.0.2 <19.0.0'
+        version: 17.0.2(react@17.0.2)
+    devDependencies:
+      '@kie-tools/eslint':
+        specifier: workspace:*
+        version: link:../eslint
+      '@kie-tools/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/vscode':
+        specifier: 1.67.0
+        version: 1.67.0
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      typescript:
+        specifier: ^5.5.3
+        version: 5.5.3
 
   packages/form-dmn:
     dependencies:

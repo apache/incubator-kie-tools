@@ -1,0 +1,40 @@
+{
+  "name": "@kie-tools/form-code-generator-vscode-command",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:dev": "rimraf dist && tsc",
+    "build:prod": "pnpm lint && pnpm test && rimraf dist && tsc",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\""
+  },
+  "dependencies": {
+    "@kie-tools/form-code-generator": "workspace:*",
+    "@kie-tools/form-code-generator-bootstrap4-theme": "workspace:*",
+    "@kie-tools/form-code-generator-patternfly-theme": "workspace:*",
+    "@kie-tools/jbpm-form-code-generator-themes": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@types/vscode": "1.67.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^5.5.3"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0",
+    "react-dom": ">=17.0.2 <19.0.0"
+  }
+}

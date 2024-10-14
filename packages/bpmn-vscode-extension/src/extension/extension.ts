@@ -23,7 +23,7 @@ import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
-import { generateFormsCommand } from "./generateFormCodeCommand";
+import { generateFormsCommand } from "@kie-tools/form-code-generator-vscode-command/dist/generateFormCodeCommand";
 
 let backendProxy: VsCodeBackendProxy;
 

@@ -50,7 +50,7 @@ digraph G {
   "@kie-tools/bpmn-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/xml-parser-ts-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "bpmn-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/jbpm-form-code-generator-themes" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/form-code-generator-vscode-command" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/kie-bc-editors" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/stunner-editors" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/vscode-java-code-completion-extension-plugin" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -123,6 +123,7 @@ digraph G {
   "@kie-tools/form-code-generator" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/form-code-generator-bootstrap4-theme" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/form-code-generator-patternfly-theme" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/jbpm-form-code-generator-themes" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/i18n" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/import-java-classes-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/vscode-java-code-completion" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -253,7 +254,7 @@ digraph G {
   "@kie-tools/boxed-expression-component" -> "@kie-tools/storybook-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/bpmn-marshaller" -> "@kie-tools/xml-parser-ts-codegen" [ style = "dashed", color = "blue" ];
   "bpmn-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
-  "bpmn-vscode-extension" -> "@kie-tools/jbpm-form-code-generator-themes" [ style = "solid", color = "blue" ];
+  "bpmn-vscode-extension" -> "@kie-tools/form-code-generator-vscode-command" [ style = "solid", color = "blue" ];
   "bpmn-vscode-extension" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
   "bpmn-vscode-extension" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "blue" ];
   "bpmn-vscode-extension" -> "@kie-tools/vscode-java-code-completion-extension-plugin" [ style = "dashed", color = "blue" ];
@@ -395,6 +396,7 @@ digraph G {
   "@kie-tools/form-code-generator-bootstrap4-theme" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/form-code-generator-patternfly-theme" -> "@kie-tools/form-code-generator" [ style = "solid", color = "blue" ];
   "@kie-tools/form-code-generator-patternfly-theme" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
+  "@kie-tools/form-code-generator-vscode-command" -> "@kie-tools/jbpm-form-code-generator-themes" [ style = "solid", color = "blue" ];
   "@kie-tools/form-dmn" -> "@kie-tools/form" [ style = "solid", color = "blue" ];
   "@kie-tools-core/i18n" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/i18n" -> "@kie-tools/jest-base" [ style = "dashed", color = "purple" ];
