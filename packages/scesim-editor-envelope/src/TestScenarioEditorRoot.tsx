@@ -19,17 +19,22 @@
 
 import * as __path from "path";
 import * as React from "react";
-import * as TestScenarioEditor from "@kie-tools/scesim-editor/dist/TestScenarioEditor";
-import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
-import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
+import {
+  imperativePromiseHandle,
+  PromiseImperativeHandle,
+} from "@kie-tools-core/react-hooks/dist/useImperativePromiseHandler";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { SearchType, WorkspaceChannelApi, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
+import { ResourceContent, SearchType, WorkspaceChannelApi, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
+import * as TestScenarioEditor from "@kie-tools/scesim-editor/dist/TestScenarioEditor";
 import { getMarshaller, SceSimMarshaller, SceSimModel } from "@kie-tools/scesim-marshaller";
 import { EMPTY_ONE_EIGHT } from "@kie-tools/scesim-editor/dist/resources/EmptyScesimFile";
+import { useEffect, useMemo, useState } from "react";
 
 export const DMN_MODELS_SEARCH_GLOB_PATTERN = "**/*.{dmn}";
 
@@ -46,8 +51,8 @@ export type TestScenarioEditorRootProps = {
 
 export type TestScenarioEditorRootState = {
   error: Error | undefined;
-  //externalModelsByNamespace: DmnEditor.ExternalModelsIndex;
-  //externalModelsManagerDoneBootstraping: boolean;
+  externalModelsByNamespace: TestScenarioEditor.ExternalModelsIndex;
+  externalModelsManagerDoneBootstraping: boolean;
   isReadOnly: boolean;
   keyboardShortcutsRegistred: boolean;
   keyboardShortcutsRegisterIds: number[];
@@ -58,7 +63,7 @@ export type TestScenarioEditorRootState = {
 };
 
 export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRootProps, TestScenarioEditorRootState> {
-  //private readonly externalModelsManagerDoneBootstraping = imperativePromiseHandle<void>();
+  private readonly externalModelsManagerDoneBootstraping = imperativePromiseHandle<void>();
 
   private readonly testScenarioEditorRef: React.RefObject<TestScenarioEditor.TestScenarioEditorRef>;
 
@@ -68,8 +73,8 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     this.testScenarioEditorRef = React.createRef();
     this.state = {
       error: undefined,
-      //externalModelsByNamespace: {},
-      //externalModelsManagerDoneBootstraping: false,
+      externalModelsByNamespace: {},
+      externalModelsManagerDoneBootstraping: false,
       isReadOnly: props.isReadOnly,
       keyboardShortcutsRegisterIds: [],
       keyboardShortcutsRegistred: false,
@@ -124,9 +129,9 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     });
 
     // Wait the external manager models to load.
-    //await this.externalModelsManagerDoneBootstraping.promise;
+    await this.externalModelsManagerDoneBootstraping.promise;
 
-    // Set the valeus to render the DMN Editor.
+    // Set the valeus to render the Test Scenario Editor.
     this.setState((prev) => {
       // External change to the same file.
       if (
@@ -135,7 +140,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
       ) {
         const newStack = savedStackPointer.slice(0, prev.pointer + 1);
         return {
-          //externalModelsManagerDoneBootstraping: true,
+          externalModelsManagerDoneBootstraping: true,
           isReadOnly: prev.isReadOnly,
           openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
           marshaller,
@@ -147,7 +152,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
       // Different file opened. Need to reset everything.
       else {
         return {
-          //externalModelsManagerDoneBootstraping: true,
+          externalModelsManagerDoneBootstraping: true,
           isReadOnly: prev.isReadOnly,
           marshaller,
           openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
@@ -176,10 +181,9 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     }
   }
 
-  //TODO A che serve?
-  // private setExternalModelsByNamespace = (externalModelsByNamespace: DmnEditor.ExternalModelsIndex) => {
-  //   this.setState((prev) => ({ ...prev, externalModelsByNamespace }));
-  // };
+  private setExternalModelsByNamespace = (externalModelsByNamespace: TestScenarioEditor.ExternalModelsIndex) => {
+    this.setState((prev) => ({ ...prev, externalModelsByNamespace }));
+  };
 
   private onModelChange: TestScenarioEditor.OnSceSimModelChange = (model) => {
     this.setState(
@@ -258,7 +262,6 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     }
   };
 
-  //tODO maybe not required
   private onOpenFileFromPathRelativeToTheOpenFile = (normalizedPosixPathRelativeToTheOpenFile: string) => {
     if (!this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot) {
       return;
@@ -319,23 +322,26 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
               onModelChange={this.onModelChange}
               onRequestExternalModelsAvailableToInclude={this.onRequestExternalModelsAvailableToInclude}
               onRequestExternalModelByPath={this.onRequestExternalModelByPathsRelativeToTheOpenFile}
+              onRequestToJumpToPath={this.onOpenFileFromPathRelativeToTheOpenFile}
+              onRequestToResolvePath={this.onRequestToResolvePathRelativeToTheOpenFile}
               openFilenormalizedPosixPathRelativeToTheWorkspaceRoot={
                 this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
               }
             />
             /
-            {/*
-            <ExternalModelsManager
-              workspaceRootAbsolutePosixPath={this.props.workspaceRootAbsolutePosixPath}
-              thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot={
-                this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
-              }
-              model={this.model}
-              onChange={this.setExternalModelsByNamespace}
-              onRequestWorkspaceFilesList={this.props.onRequestWorkspaceFilesList}
-              onRequestWorkspaceFileContent={this.props.onRequestWorkspaceFileContent}
-              externalModelsManagerDoneBootstraping={this.externalModelsManagerDoneBootstraping}
-            />*/}
+            {
+              <ExternalModelsManager
+                workspaceRootAbsolutePosixPath={this.props.workspaceRootAbsolutePosixPath}
+                thisScesimsNormalizedPosixPathRelativeToTheWorkspaceRoot={
+                  this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
+                }
+                model={this.model}
+                onChange={this.setExternalModelsByNamespace}
+                onRequestWorkspaceFilesList={this.props.onRequestWorkspaceFilesList}
+                onRequestWorkspaceFileContent={this.props.onRequestWorkspaceFileContent}
+                externalModelsManagerDoneBootstraping={this.externalModelsManagerDoneBootstraping}
+              />
+            }
           </>
         )}
       </>
@@ -343,12 +349,11 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
   }
 }
 
-/*
 const NAMESPACES_EFFECT_SEPARATOR = " , ";
 
 function ExternalModelsManager({
   workspaceRootAbsolutePosixPath,
-  thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot,
+  thisScesimsNormalizedPosixPathRelativeToTheWorkspaceRoot: thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot,
   model,
   onChange,
   onRequestWorkspaceFileContent,
@@ -356,9 +361,9 @@ function ExternalModelsManager({
   externalModelsManagerDoneBootstraping,
 }: {
   workspaceRootAbsolutePosixPath: string;
-  thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
-  model: Normalized<DmnLatestModel>;
-  onChange: (externalModelsByNamespace: DmnEditor.ExternalModelsIndex) => void;
+  thisScesimsNormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
+  model: SceSimModel;
+  onChange: (externalModelsByNamespace: TestScenarioEditor.ExternalModelsIndex) => void;
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onRequestWorkspaceFilesList: WorkspaceChannelApi["kogitoWorkspace_resourceListRequest"];
   externalModelsManagerDoneBootstraping: PromiseImperativeHandle<void>;
@@ -384,7 +389,7 @@ function ExternalModelsManager({
     bc.onmessage = ({ data }) => {
       // Changes to `thisDmn` shouldn't update its references to external models.
       // Here, `data?.relativePath` is relative to the workspace root.
-      if (data?.relativePath === thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot) {
+      if (data?.relativePath === thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot) {
         return;
       }
 
@@ -393,23 +398,25 @@ function ExternalModelsManager({
     return () => {
       bc.close();
     };
-  }, [thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot]);
+  }, [thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot]);
 
   // This effect actually populates `externalModelsByNamespace` through the `onChange` call.
   useEffect(() => {
     let canceled = false;
 
-    if (!thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot) {
+    if (!thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot) {
       return;
     }
 
-    onRequestWorkspaceFilesList({ pattern: EXTERNAL_MODELS_SEARCH_GLOB_PATTERN, opts: { type: SearchType.TRAVERSAL } })
+    onRequestWorkspaceFilesList({ pattern: DMN_MODELS_SEARCH_GLOB_PATTERN, opts: { type: SearchType.TRAVERSAL } })
       .then((list) => {
         const resources: Array<Promise<ResourceContent | undefined>> = [];
         for (let i = 0; i < list.normalizedPosixPathsRelativeToTheWorkspaceRoot.length; i++) {
           const normalizedPosixPathRelativeToTheWorkspaceRoot = list.normalizedPosixPathsRelativeToTheWorkspaceRoot[i];
 
-          if (normalizedPosixPathRelativeToTheWorkspaceRoot === thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot) {
+          if (
+            normalizedPosixPathRelativeToTheWorkspaceRoot === thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot
+          ) {
             continue;
           }
 
@@ -436,7 +443,7 @@ function ExternalModelsManager({
           const content = resource.content ?? "";
 
           const normalizedPosixPathRelativeToTheOpenFile = __path.relative(
-            __path.dirname(thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot),
+            __path.dirname(thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot),
             resource.normalizedPosixPathRelativeToTheWorkspaceRoot
           );
 
@@ -462,16 +469,6 @@ function ExternalModelsManager({
                 svg: "",
               };
             }
-          } else if (ext === ".pmml") {
-            const namespace = getPmmlNamespace({ normalizedPosixPathRelativeToTheOpenFile });
-            if (namespace && namespacesSet.has(namespace)) {
-              // No need to check for namespaces being equal becuase there can't be two files with the same relativePath.
-              externalModelsIndex[namespace] = {
-                normalizedPosixPathRelativeToTheOpenFile,
-                model: XML2PMML(content),
-                type: "pmml",
-              };
-            }
           } else {
             throw new Error(`Unknown extension '${ext}'.`);
           }
@@ -491,14 +488,14 @@ function ExternalModelsManager({
     onChange,
     onRequestWorkspaceFileContent,
     onRequestWorkspaceFilesList,
-    thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot,
+    thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot,
     externalUpdatesCount,
     workspaceRootAbsolutePosixPath,
     externalModelsManagerDoneBootstraping,
   ]);
 
   return <></>;
-} */
+}
 
 function TestScenarioMarshallerFallbackError({ error }: { error: Error }) {
   return (
