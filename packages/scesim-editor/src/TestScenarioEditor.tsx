@@ -93,14 +93,9 @@ export type OnSceSimModelChange = (model: SceSimModel) => void;
 
 export type OnRequestExternalModelByPath = (
   normalizedPosixPathRelativeToTheOpenFile: string
-) => Promise<ExternalModel | null>;
-export type ExternalModelsIndex = Record<
-  string /** normalizedPosixPathRelativeToTheOpenFile */,
-  ExternalModel | undefined
->;
-export type ExternalModel = { type: "dmn" } & ExternalDmn;
+) => Promise<ExternalDmn | null>;
+export type ExternalDmnsIndex = Record<string /** normalizedPosixPathRelativeToTheOpenFile */, ExternalDmn | undefined>;
 
-//export type ExternalDmnsIndex = Map<string /** normalizedPosixPathRelativeToTheOpenFile */, ExternalDmn>;
 export type ExternalDmn = {
   model: Normalized<DmnLatestModel>;
   normalizedPosixPathRelativeToTheOpenFile: string;
@@ -108,6 +103,11 @@ export type ExternalDmn = {
 };
 
 export type TestScenarioEditorProps = {
+  /**
+   * When the SceSim represented by `model` ("This SceSim") is DMN-type Test Scenario this prop needs to map their contents by namespace.
+   * The SceSim model won't be correctly rendered if an included model is not found on this object.
+   */
+  externalModelsByNamespace?: ExternalDmnsIndex;
   /**
    * A link that will take users to an issue tracker so they can report problems they find on the Test Scenario Editor.
    * This is shown on the ErrorBoundary fallback component, when an uncaught error happens.

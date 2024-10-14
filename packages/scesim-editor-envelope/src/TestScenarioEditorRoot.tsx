@@ -17,8 +17,9 @@
  * under the License.
  */
 
-import * as __path from "path";
 import * as React from "react";
+import { useEffect, useMemo, useState } from "react";
+import * as __path from "path";
 import {
   imperativePromiseHandle,
   PromiseImperativeHandle,
@@ -34,7 +35,6 @@ import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
 import * as TestScenarioEditor from "@kie-tools/scesim-editor/dist/TestScenarioEditor";
 import { getMarshaller, SceSimMarshaller, SceSimModel } from "@kie-tools/scesim-marshaller";
 import { EMPTY_ONE_EIGHT } from "@kie-tools/scesim-editor/dist/resources/EmptyScesimFile";
-import { useEffect, useMemo, useState } from "react";
 
 export const DMN_MODELS_SEARCH_GLOB_PATTERN = "**/*.{dmn}";
 
@@ -332,7 +332,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
             {
               <ExternalModelsManager
                 workspaceRootAbsolutePosixPath={this.props.workspaceRootAbsolutePosixPath}
-                thisScesimsNormalizedPosixPathRelativeToTheWorkspaceRoot={
+                thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot={
                   this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
                 }
                 model={this.model}
@@ -353,7 +353,7 @@ const NAMESPACES_EFFECT_SEPARATOR = " , ";
 
 function ExternalModelsManager({
   workspaceRootAbsolutePosixPath,
-  thisScesimsNormalizedPosixPathRelativeToTheWorkspaceRoot: thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot,
+  thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot,
   model,
   onChange,
   onRequestWorkspaceFileContent,
@@ -361,7 +361,7 @@ function ExternalModelsManager({
   externalModelsManagerDoneBootstraping,
 }: {
   workspaceRootAbsolutePosixPath: string;
-  thisScesimsNormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
+  thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
   model: SceSimModel;
   onChange: (externalModelsByNamespace: TestScenarioEditor.ExternalModelsIndex) => void;
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
@@ -369,11 +369,8 @@ function ExternalModelsManager({
   externalModelsManagerDoneBootstraping: PromiseImperativeHandle<void>;
 }) {
   const namespaces = useMemo(
-    () =>
-      (model.definitions.import ?? [])
-        .map((i) => getNamespaceOfDmnImport({ dmnImport: i }))
-        .join(NAMESPACES_EFFECT_SEPARATOR),
-    [model.definitions.import]
+    () => model.ScenarioSimulationModel.settings.dmnNamespace?.__$$text ?? [],
+    [model.ScenarioSimulationModel.settings.dmnNamespace]
   );
 
   const [externalUpdatesCount, setExternalUpdatesCount] = useState(0);
@@ -390,6 +387,11 @@ function ExternalModelsManager({
       // Changes to `thisDmn` shouldn't update its references to external models.
       // Here, `data?.relativePath` is relative to the workspace root.
       if (data?.relativePath === thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot) {
+        return;
+      }
+      //TODO doublecheck
+      const ext = __path.extname(thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot!);
+      if (ext !== "dmn") {
         return;
       }
 
@@ -464,7 +466,7 @@ function ExternalModelsManager({
 
               externalModelsIndex[namespace] = {
                 normalizedPosixPathRelativeToTheOpenFile,
-                model: normalize(getMarshaller(content, { upgradeTo: "latest" }).parser.parse()),
+                model: normalize(getDmnMarshaller(content, { upgradeTo: "latest" }).parser.parse()),
                 type: "dmn",
                 svg: "",
               };

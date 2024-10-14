@@ -17,15 +17,18 @@
  * under the License.
  */
 
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import "@patternfly/react-core/dist/styles/base.css";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js";
+import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
+import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { SceSimMarshaller, SceSimModel, getMarshaller } from "@kie-tools/scesim-marshaller";
 import {
+  ExternalDmnsIndex,
   OnRequestExternalModelByPath,
   OnRequestExternalModelsAvailableToInclude,
   OnRequestToJumpToPath,
@@ -71,6 +74,11 @@ function DevWebApp(props: TestScenarioEditorProps) {
       downloadRef.current.click();
     }
   }, [currentModel, state.marshaller.builder]);
+
+  // TODO Unmarshall here the DMN
+  const externalModelsByNamespace = useMemo<ExternalDmnsIndex>(() => {
+    return currentModel.ScenarioSimulationModel.settings.dmnNamespace?.__$$text, {} as ExternalDmnsIndex;
+  }, [currentModel.ScenarioSimulationModel.settings.dmnNamespace]);
 
   const onDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault(); // Necessary to disable the browser's default 'onDrop' handling.
@@ -225,6 +233,7 @@ function DevWebApp(props: TestScenarioEditorProps) {
       >
         {SceSimEditorWrapper({
           issueTrackerHref: props.issueTrackerHref,
+          externalModelsByNamespace: externalModelsByNamespace,
           model: currentModel,
           onModelChange: onModelChange,
           onRequestExternalModelsAvailableToInclude: onRequestExternalModelsAvailableToInclude,
