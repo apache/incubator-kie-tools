@@ -35,7 +35,7 @@ import { getStaticCodeBlock } from "./staticCode/staticCodeBlocks";
 
 export type AutoFormProps = {
   id: string;
-  idWithoutInvalidVarChars?: string;
+  idWithoutInvalidTsVarChars?: string;
   disabled?: boolean;
   placeholder?: boolean;
   schema: Bridge;
@@ -54,7 +54,7 @@ const AutoForm: React.FC<AutoFormProps> = (props) => {
     staticCodeArray = union(staticCodeArray, input.requiredCode);
   });
 
-  const formId = props.idWithoutInvalidVarChars ?? props.id;
+  const formId = props.idWithoutInvalidTsVarChars ?? props.id;
   const formName = `Form${formId ? `${NS_SEPARATOR}${formId}` : ""}`;
   const hooks = inputs.map((input) => input.stateCode).join("\n");
   const elements = inputs.map((input) => input.jsxCode).join("\n");

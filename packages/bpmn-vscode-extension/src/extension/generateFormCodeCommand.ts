@@ -212,7 +212,7 @@ function saveFormCode(projectPath: string, theme: string, formSchemas: FormSchem
         formAsset.content
       );
       fs.writeFileSync(
-        `${projectPath}/${FORM_CODE_GENERATION_DEST_PATH}/${formAsset.nameWithoutInvalidVarChars}.config`,
+        `${projectPath}/${FORM_CODE_GENERATION_DEST_PATH}/${formAsset.nameWithoutInvalidTsVarChars}.config`,
         JSON.stringify(formAsset.config, null, 2)
       );
     });

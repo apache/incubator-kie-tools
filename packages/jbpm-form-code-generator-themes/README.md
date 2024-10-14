@@ -52,7 +52,7 @@ The `jbpmFormsCode` will give you the following object:
 ```ts
 {
   name: string,                             // The form id
-  nameWithoutInvalidVarChars: string,          // The same value as "id" but any "#" occorrence is replaced by "_"
+  nameWithoutInvalidTsVarChars: string,     // The same value as "id" but any "#" occorrence is replaced by "_"
   fileName: string,                         // The form name
   fileNameWithoutInvalidVarChars: string,      // The same value as "assetName" but any "#" occorrence is replaced by "_"
   fileExt: string,                          // The file extension of the code

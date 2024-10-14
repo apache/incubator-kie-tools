@@ -33,14 +33,14 @@ export const jbpmPatternflyFormCodeGeneratorTheme: FormCodeGeneratorTheme<Patter
     const uniformsSchema = getUniformsSchema(formSchema.schema);
     const form = renderForm({
       id: formSchema.name,
-      idWithoutInvalidVarChars: removeInvalidVarChars(formSchema.name),
+      idWithoutInvalidTsVarChars: removeInvalidVarChars(formSchema.name),
       schema: new JSONSchemaBridge(uniformsSchema, () => true),
       disabled: false,
       placeholder: true,
     });
     return {
       name: formSchema.name,
-      nameWithoutInvalidVarChars: removeInvalidVarChars(formSchema.name),
+      nameWithoutInvalidTsVarChars: removeInvalidVarChars(formSchema.name),
       fileName: `${formSchema.name}.${PATTERNFLY_FILE_EXT}`,
       fileNameWithoutInvalidVarChars: `${removeInvalidVarChars(formSchema.name)}.${PATTERNFLY_FILE_EXT}`,
       fileExt: PATTERNFLY_FILE_EXT,

@@ -19,6 +19,6 @@
 
 // https://github.com/apache/incubator-kie-issues/issues/528
 export interface JbpmFormAssetBase {
-  nameWithoutInvalidVarChars: string;
+  nameWithoutInvalidTsVarChars: string;
   fileNameWithoutInvalidVarChars: string;
 }
