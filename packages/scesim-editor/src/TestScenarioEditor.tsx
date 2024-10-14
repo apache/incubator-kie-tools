@@ -20,13 +20,14 @@
 import "@patternfly/react-core/dist/styles/base.css";
 
 import * as React from "react";
-import { useCallback, useImperativeHandle, useMemo, useRef } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 
 import { testScenarioEditorDictionaries, TestScenarioEditorI18nContext, testScenarioEditorI18nDefaults } from "./i18n";
 
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 
 import { SceSimModel } from "@kie-tools/scesim-marshaller";
 import { SceSim__FactMappingType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
@@ -99,7 +100,7 @@ export type ExternalModel = { type: "dmn" } & ExternalDmn;
 
 //export type ExternalDmnsIndex = Map<string /** normalizedPosixPathRelativeToTheOpenFile */, ExternalDmn>;
 export type ExternalDmn = {
-  model: /*Normalized<*/ DmnLatestModel /**/;
+  model: Normalized<DmnLatestModel>;
   normalizedPosixPathRelativeToTheOpenFile: string;
   svg: string;
 };

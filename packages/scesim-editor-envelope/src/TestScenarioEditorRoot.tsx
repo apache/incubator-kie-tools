@@ -20,7 +20,7 @@
 import * as __path from "path";
 import * as React from "react";
 import * as TestScenarioEditor from "@kie-tools/scesim-editor/dist/TestScenarioEditor";
-//import { normalize, Normalized } from "@kie-tools/dmn-editor/dist/normalization/normalize";
+import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { SearchType, WorkspaceChannelApi, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
@@ -250,7 +250,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
       return {
         normalizedPosixPathRelativeToTheOpenFile,
         type: "dmn",
-        model: /*normalize(*/ getDmnMarshaller(resource?.content ?? "", { upgradeTo: "latest" }).parser.parse() /*)*/,
+        model: normalize(getDmnMarshaller(resource?.content ?? "", { upgradeTo: "latest" }).parser.parse()),
         svg: "",
       };
     } else {
