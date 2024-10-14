@@ -69,11 +69,11 @@ function TestScenarioCreationPanel() {
         settings.dmnFilePath = assetType === "DMN" ? { __$$text: "./MockedDMNName.dmn" } : undefined;
         settings.dmnName = assetType === "DMN" ? { __$$text: "MockedDMNName.dmn" } : undefined;
         settings.dmnNamespace = assetType === "DMN" ? { __$$text: "https:\\kiegroup" } : undefined;
-        (settings.dmoSession = assetType === "RULE" && kieSessionRule ? { __$$text: kieSessionRule } : undefined),
-          (settings.ruleFlowGroup = assetType === "RULE" && ruleFlowGroup ? { __$$text: ruleFlowGroup } : undefined),
-          (settings.skipFromBuild = { __$$text: isTestSkipped }),
-          (settings.stateless = assetType === "RULE" ? { __$$text: isStatelessSessionRule } : undefined),
-          (settings.type = { __$$text: assetType });
+        settings.dmoSession = assetType === "RULE" && kieSessionRule ? { __$$text: kieSessionRule } : undefined;
+        settings.ruleFlowGroup = assetType === "RULE" && ruleFlowGroup ? { __$$text: ruleFlowGroup } : undefined;
+        settings.skipFromBuild = { __$$text: isTestSkipped };
+        settings.stateless = assetType === "RULE" ? { __$$text: isStatelessSessionRule } : undefined;
+        settings.type = { __$$text: assetType };
       }),
     [testScenarioEditorStoreApi]
   );
