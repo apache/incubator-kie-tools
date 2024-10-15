@@ -586,7 +586,7 @@ function TestScenarioTable({
         TestScenarioTableColumnHeaderGroup.EXPECT === args.groupType ||
         TestScenarioTableColumnHeaderGroup.GIVEN === args.groupType
       ) {
-        console.error("Can't add a " + args.groupType + " type column.");
+        console.error("Can't delete a " + args.groupType + " type column.");
         return;
       }
       const isInstance =
