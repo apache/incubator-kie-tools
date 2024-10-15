@@ -157,6 +157,7 @@ digraph G {
   "@kie-tools/python-venv" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/runtime-tools-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-shared-gateway-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/runtime-tools-components-pf5" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-consoles-helm-chart" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/runtime-tools-process-webapp-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-shared-webapp-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -493,6 +494,10 @@ digraph G {
   "@kie-tools/runtime-tools-components" -> "@kie-tools/json-yaml-language-service" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-components" -> "@kie-tools/runtime-tools-shared-gateway-api" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-components" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-components-pf5" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-components-pf5" -> "@kie-tools/json-yaml-language-service" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-components-pf5" -> "@kie-tools/runtime-tools-shared-gateway-api" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-components-pf5" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-consoles-helm-chart" -> "@kie-tools/kogito-management-console" [ style = "solid", color = "black" ];
   "@kie-tools/runtime-tools-consoles-helm-chart" -> "@kie-tools/kogito-task-console" [ style = "solid", color = "black" ];
   "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools/runtime-tools-process-webapp-components" [ style = "solid", color = "blue" ];

@@ -63,3 +63,9 @@
 .Dev-ui__custom-dashboard-viewer > div {
   height: 100%;
 }
+
+.app--masthead {
+  justify-content: space-between;
+  justify-items: end;
+  padding-right: 0px;
+}

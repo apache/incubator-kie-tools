@@ -1,0 +1,9 @@
+{
+  "extends": "@kie-tools/tsconfig/tsconfig.esm.json",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "noImplicitAny": false
+  },
+  "include": ["src", "./config/declare.d.ts"]
+}

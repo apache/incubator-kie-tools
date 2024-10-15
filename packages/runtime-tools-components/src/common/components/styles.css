@@ -43,3 +43,7 @@
 .kogito-consoles-common--PageLayout .pf-c-page__header-brand-link .pf-c-brand {
   --pf-c-page__header-brand-link--c-brand--MaxHeight: 42px;
 }
+
+.page--toolbar {
+  background-color: #151515;
+}
