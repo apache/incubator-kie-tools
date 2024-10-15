@@ -396,7 +396,7 @@ function ExternalModelsManager({
       // We want to track changes on DMN files only.
       if (
         !thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot &&
-        __path.extname(thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot!) !== "dmn"
+        __path.extname(thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot!).toUpperCase() !== "dmn"
       ) {
         return;
       }
@@ -460,7 +460,7 @@ function ExternalModelsManager({
               // Check for multiplicity of namespaces on DMN models
               if (externalModelsIndex[namespace]) {
                 console.warn(
-                  `DMN EDITOR ROOT: Multiple DMN models encountered with the same namespace '${namespace}': '${
+                  `TEST SCENARIO EDITOR ROOT: Multiple DMN models encountered with the same namespace '${namespace}': '${
                     resource.normalizedPosixPathRelativeToTheWorkspaceRoot
                   }' and '${
                     externalModelsIndex[namespace]!.normalizedPosixPathRelativeToTheOpenFile
