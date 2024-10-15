@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "build:dev": "rimraf dist && tsc",
-    "build:prod": "pnpm lint && pnpm test && rimraf dist && tsc",
+    "build:prod": "pnpm lint && rimraf dist && tsc",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\""
   },
   "dependencies": {
