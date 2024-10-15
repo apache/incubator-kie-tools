@@ -42,7 +42,7 @@ export function computeTestScenarioDataObjects(
     }
     const factID = factsMappings[i].expressionElements!.ExpressionElement![0].step.__$$text;
     const dataObject = dataObjects.find((value) => value.id === factID);
-    const isSimpleTypeFact = factsMappings[i].expressionElements!.ExpressionElement!.length == 1;
+    const isSimpleTypeFact = factsMappings[i].expressionElements!.ExpressionElement!.length === 1;
     const propertyID = isSimpleTypeFact //POTENTIAL BUG
       ? factsMappings[i].expressionElements!.ExpressionElement![0].step.__$$text.concat(".")
       : factsMappings[i]

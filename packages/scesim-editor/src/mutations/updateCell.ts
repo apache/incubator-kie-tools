@@ -42,10 +42,10 @@ export function updateCell({
 
   const factMappingValueToUpdateIndex = factMappingValues.findIndex(
     (factMappingValue) =>
-      factMappingValue.factIdentifier.name?.__$$text == factMapping!.factIdentifier.name?.__$$text &&
-      factMappingValue.factIdentifier.className?.__$$text == factMapping!.factIdentifier.className?.__$$text &&
-      factMappingValue.expressionIdentifier.name?.__$$text == factMapping!.expressionIdentifier.name?.__$$text &&
-      factMappingValue.expressionIdentifier.type?.__$$text == factMapping!.expressionIdentifier.type?.__$$text
+      factMappingValue.factIdentifier.name?.__$$text === factMapping!.factIdentifier.name?.__$$text &&
+      factMappingValue.factIdentifier.className?.__$$text === factMapping!.factIdentifier.className?.__$$text &&
+      factMappingValue.expressionIdentifier.name?.__$$text === factMapping!.expressionIdentifier.name?.__$$text &&
+      factMappingValue.expressionIdentifier.type?.__$$text === factMapping!.expressionIdentifier.type?.__$$text
   );
   const factMappingValueToUpdate = factMappingValues[factMappingValueToUpdateIndex];
   factMappingValueToUpdate.rawValue = { __$$text: value };

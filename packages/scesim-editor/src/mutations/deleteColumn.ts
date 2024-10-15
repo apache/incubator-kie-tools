@@ -70,12 +70,12 @@ export function deleteColumn({
     allFactMappingWithIndexesToRemove.forEach((itemToRemove) => {
       const factMappingValueColumnIndexToRemove = rowData.factMappingValues.FactMappingValue!.findIndex(
         (factMappingValue) =>
-          factMappingValue.factIdentifier.name?.__$$text == itemToRemove.factMapping!.factIdentifier.name?.__$$text &&
-          factMappingValue.factIdentifier.className?.__$$text ==
+          factMappingValue.factIdentifier.name?.__$$text === itemToRemove.factMapping!.factIdentifier.name?.__$$text &&
+          factMappingValue.factIdentifier.className?.__$$text ===
             itemToRemove.factMapping!.factIdentifier.className?.__$$text &&
-          factMappingValue.expressionIdentifier.name?.__$$text ==
+          factMappingValue.expressionIdentifier.name?.__$$text ===
             itemToRemove.factMapping!.expressionIdentifier.name?.__$$text &&
-          factMappingValue.expressionIdentifier.type?.__$$text ==
+          factMappingValue.expressionIdentifier.type?.__$$text ===
             itemToRemove.factMapping!.expressionIdentifier.type?.__$$text
       );
 

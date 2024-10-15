@@ -134,7 +134,7 @@ function TestScenarioTable({
 
         updateColumnWidth({
           factMappings: factMappings,
-          inputIndex: inputIndex,
+          columnIndex: inputIndex,
           newWidth: newWidth,
           oldWidth: oldWidth,
         });
@@ -580,7 +580,7 @@ function TestScenarioTable({
    */
   const onColumnDeleted = useCallback(
     (args: { columnIndex: number; groupType: string }) => {
-      /* GIVEN and EXPECTED of FIELD and INSTANCE column types can be added only */
+      /* GIVEN and EXPECTED of FIELD and INSTANCE column types can be deleted only */
       if (
         TestScenarioTableColumnFieldGroup.OTHER === args.groupType ||
         TestScenarioTableColumnHeaderGroup.EXPECT === args.groupType ||
