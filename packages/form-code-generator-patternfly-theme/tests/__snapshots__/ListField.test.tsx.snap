@@ -1,0 +1,145 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ListField> tests <ListField> 1`] = `
+<div>
+  import React, { useCallback, useEffect, useState } from &#39;react&#39;;
+import {
+	Split,
+	SplitItem,
+	Button,
+	Card,
+	CardBody,
+	TextInput,
+	FormGroup,
+} from &#39;@patternfly/react-core&#39;;
+const Form__id: React.FC&lt;any&gt; = (props: any) =&gt; {
+	const [formApi, setFormApi] = useState&lt;any&gt;();
+	const [friends, set__friends] = useState&lt;any[]&gt;([]);
+	/* Utility function that fills the form with the data received from the kogito runtime */
+	const setFormData = (data) =&gt; {
+		if (!data) {
+			return;
+		}
+		set__friends(data?.friends ?? []);
+	};
+	/* Utility function to generate the expected form output as a json object */
+	const getFormData = useCallback(() =&gt; {
+		const formData: any = {};
+		formData.friends = friends;
+		return formData;
+	}, [friends]);
+	/* Utility function to validate the form on the &#39;beforeSubmit&#39; Lifecycle Hook */
+	const validateForm = useCallback(() =&gt; {}, []);
+	/* Utility function to perform actions on the on the &#39;afterSubmit&#39; Lifecycle Hook */
+	const afterSubmit = useCallback((result) =&gt; {}, []);
+	useEffect(() =&gt; {
+		if (formApi) {
+			/*
+        Form Lifecycle Hook that will be executed before the form is submitted.
+        Throwing an error will stop the form submit. Usually should be used to validate the form.
+      */
+			formApi.beforeSubmit = () =&gt; validateForm();
+			/*
+        Form Lifecycle Hook that will be executed after the form is submitted.
+        It will receive a response object containing the \`type\` flag indicating if the submit has been successful and \`info\` with extra information about the submit result.
+      */
+			formApi.afterSubmit = (result) =&gt; afterSubmit(result);
+			/* Generates the expected form output object to be posted */
+			formApi.getFormData = () =&gt; getFormData();
+		}
+	}, [getFormData, validateForm, afterSubmit]);
+	useEffect(() =&gt; {
+		/*
+      Call to the Kogito console form engine. It will establish the connection with the console embeding the form
+      and return an instance of FormAPI that will allow hook custom code into the form lifecycle.
+      The \`window.Form.openForm\` call expects an object with the following entries:
+        - onOpen: Callback that will be called after the connection with the console is established. The callback
+        will receive the following arguments:
+          - data: the data to be bound into the form
+          - ctx: info about the context where the form is being displayed. This will contain information such as the form JSON Schema, process/task, user...
+    */
+		const api = window.Form.openForm({
+			onOpen: (data, context) =&gt; {
+				setFormData(data);
+			},
+		});
+		setFormApi(api);
+	}, []);
+	return (
+		&lt;div className={&#39;pf-c-form&#39;}&gt;
+			&lt;div fieldId={&#39;uniforms-0000-0001&#39;}&gt;
+				&lt;Split hasGutter&gt;
+					&lt;SplitItem&gt;{&#39;Friends&#39; &amp;&amp; &lt;label&gt;&#39;Friends&#39;&lt;/label&gt;}&lt;/SplitItem&gt;
+					&lt;SplitItem isFilled /&gt;
+					&lt;SplitItem&gt;
+						&lt;Button
+							name=&#39;$&#39;
+							variant=&#39;plain&#39;
+							style={{ paddingLeft: &#39;0&#39;, paddingRight: &#39;0&#39; }}
+							disabled={false}
+							onClick={() =&gt; {
+								!false &amp;&amp; set__friends((friends ?? []).concat([]));
+							}}&gt;
+							+{/* &lt;PlusCircleIcon color=&#39;#0088ce&#39; /&gt; */}
+						&lt;/Button&gt;
+					&lt;/SplitItem&gt;
+				&lt;/Split&gt;
+				&lt;div&gt;
+					{friends?.map((_, itemIndex) =&gt; (
+						&lt;div
+							key={itemIndex}
+							style={{
+								marginBottom: &#39;1rem&#39;,
+								display: &#39;flex&#39;,
+								justifyContent: &#39;space-between&#39;,
+							}}&gt;
+							&lt;div style={{ width: &#39;100%&#39;, marginRight: &#39;10px&#39; }}&gt;
+								&lt;Card&gt;
+									&lt;CardBody className=&#39;pf-c-form&#39;&gt;
+										&lt;FormGroup
+											fieldId={&#39;uniforms-0000-0004&#39;}
+											label={&#39;Name&#39;}
+											isRequired={true}&gt;
+											&lt;TextInput
+												name={\`friends.\${itemIndex}.name\`}
+												id={&#39;uniforms-0000-0004&#39;}
+												isDisabled={false}
+												placeholder={&#39;&#39;}
+												type={&#39;text&#39;}
+												value={friends[itemIndex].name}
+												onChange={(newValue) =&gt;
+													set__friends((s) =&gt; {
+														const newState = [...s];
+														newState[itemIndex].name = newValue;
+														return newState;
+													})
+												}
+											/&gt;
+										&lt;/FormGroup&gt;
+									&lt;/CardBody&gt;
+								&lt;/Card&gt;
+							&lt;/div&gt;
+							&lt;div&gt;
+								&lt;Button
+									disabled={false}
+									variant=&#39;plain&#39;
+									style={{ paddingLeft: &#39;0&#39;, paddingRight: &#39;0&#39; }}
+									onClick={() =&gt; {
+										const value = friends!.slice();
+										value.splice(NaN, 1);
+										!false &amp;&amp; set__friends(value);
+									}}&gt;
+									- {/* &lt;MinusCircleIcon color=&#39;#cc0000&#39; /&gt; */}
+								&lt;/Button&gt;
+							&lt;/div&gt;
+						&lt;/div&gt;
+					))}
+				&lt;/div&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
+	);
+};
+export default Form__id;
+
+</div>
+`;

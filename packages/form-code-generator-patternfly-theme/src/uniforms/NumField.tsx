@@ -24,6 +24,7 @@ import { buildDefaultInputElement, getInputReference, renderField } from "./util
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 import { NUMBER } from "./utils/dataTypes";
+import { getListItemName, getListItemOnChange, getListItemValue, ListItemProps } from "./rendering/ListItemField";
 
 export type NumFieldProps = HTMLFieldProps<
   string,
@@ -34,6 +35,7 @@ export type NumFieldProps = HTMLFieldProps<
     decimal?: boolean;
     min?: string;
     max?: string;
+    itemProps?: ListItemProps;
   }
 >;
 
@@ -45,13 +47,13 @@ const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
 
   const inputJsxCode = `<TextInput
       type={'number'}
-      name={'${props.name}'}
+      name={${props.itemProps?.isListItem ? getListItemName(props.itemProps, props.name) : `'${props.name}'`}}
       isDisabled={${props.disabled || "false"}}
       id={'${props.id}'}
       placeholder={'${props.placeholder}'}
       step={${props.decimal ? 0.01 : 1}} ${max} ${min}
-      value={${ref.stateName}}
-      onChange={(newValue) => ${ref.stateSetter}(Number(newValue))}
+      value={${props.itemProps?.isListItem ? getListItemValue(props.itemProps, props.name) : ref.stateName}}
+      onChange={${props.itemProps?.isListItem ? getListItemOnChange(props.itemProps, props.name, (value: string) => `Number(${value})`) : `(newValue) => ${ref.stateSetter}(Number(newValue))`}}
     />`;
 
   const element: FormInput = buildDefaultInputElement({

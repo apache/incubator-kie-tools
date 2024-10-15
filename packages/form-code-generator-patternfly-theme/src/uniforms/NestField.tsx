@@ -26,7 +26,7 @@ import { codeGenContext } from "./CodeGenContext";
 import { union } from "lodash";
 import { OBJECT } from "./utils/dataTypes";
 
-export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { itemProps?: object }>;
+export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { itemProps?: any }>;
 
 const Nest: React.FunctionComponent<NestFieldProps> = ({
   id,
@@ -75,7 +75,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
     });
   }
 
-  const bodyLabel = label ? `<label><b>${label}</b></label>` : "";
+  const bodyLabel = label && !itemProps?.isListItem ? `<label><b>${label}</b></label>` : "";
 
   const stateCode = nestedStates.join("\n");
   const jsxCode = `<Card>

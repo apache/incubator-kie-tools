@@ -25,6 +25,7 @@ import { FormInput, InputReference } from "../api";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
 import { DATE_FUNCTIONS } from "./staticCode/staticCodeBlocks";
 import { DATE, STRING } from "./utils/dataTypes";
+import { getListItemName, getListItemOnChange, getListItemValue, ListItemProps } from "./rendering/ListItemField";
 
 export type TextFieldProps = HTMLFieldProps<
   string,
@@ -32,6 +33,7 @@ export type TextFieldProps = HTMLFieldProps<
   {
     label: string;
     required: boolean;
+    itemProps?: ListItemProps;
   }
 >;
 
@@ -44,9 +46,9 @@ const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
     const inputJsxCode = `<DatePicker
           id={'date-picker-${props.id}'}
           isDisabled={${props.disabled || false}}
-          name={'${props.name}'}
-          onChange={newDate => onDateChange(newDate, ${ref.stateSetter},  ${ref.stateName})}
-          value={parseDate(${ref.stateName})}
+          name={${props.itemProps?.isListItem ? getListItemName(props.itemProps, props.name) : `'${props.name}'`}}
+          onChange={${props.itemProps?.isListItem ? getListItemOnChange(props.itemProps, props.name, (value: string) => `onDateChange(${value}, ${ref.stateSetter},  ${ref.stateName})`) : `newDate => onDateChange(newDate, ${ref.stateSetter},  ${ref.stateName})`}}
+          value={${props.itemProps?.isListItem ? `parseDate(${getListItemValue(props.itemProps, props.name)})` : `parseDate(${ref.stateName})`}}
         />`;
     return buildDefaultInputElement({
       pfImports: ["DatePicker"],
@@ -64,13 +66,13 @@ const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
 
   const getTextInputElement = (): FormInput => {
     const inputJsxCode = `<TextInput
-        name={'${props.name}'}
+        name={${props.itemProps?.isListItem ? getListItemName(props.itemProps, props.name) : `'${props.name}'`}}
         id={'${props.id}'}
         isDisabled={${props.disabled || "false"}}
         placeholder={'${props.placeholder}'}
         type={'${props.type || "text"}'}
-        value={${ref.stateName}}
-        onChange={${ref.stateSetter}}
+        value={${props.itemProps?.isListItem ? getListItemValue(props.itemProps, props.name) : ref.stateName}}
+        onChange={${props.itemProps?.isListItem ? getListItemOnChange(props.itemProps, props.name) : ref.stateSetter}}
         />`;
 
     return buildDefaultInputElement({
