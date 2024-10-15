@@ -28,6 +28,7 @@
     "@kie-tools-core/react-hooks": "workspace:*",
     "@kie-tools/dashbuilder-client": "workspace:*",
     "@kie-tools/runtime-tools-components": "workspace:*",
+    "@kie-tools/runtime-tools-components-pf5": "workspace:*",
     "@kie-tools/runtime-tools-process-enveloped-components": "workspace:*",
     "@kie-tools/runtime-tools-process-gateway-api": "workspace:*",
     "@kie-tools/runtime-tools-process-webapp-components": "workspace:*",

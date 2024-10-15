@@ -28,6 +28,7 @@
     "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools/json-yaml-language-service": "workspace:*",
+    "@kie-tools/runtime-tools-components": "workspace:*",
     "@kie-tools/runtime-tools-shared-gateway-api": "workspace:*",
     "@kie-tools/uniforms-patternfly": "workspace:*",
     "@patternfly/react-core": "^5.4.1",

@@ -7374,6 +7374,9 @@ importers:
       '@kie-tools/json-yaml-language-service':
         specifier: workspace:*
         version: link:../json-yaml-language-service
+      '@kie-tools/runtime-tools-components':
+        specifier: workspace:*
+        version: link:../runtime-tools-components
       '@kie-tools/runtime-tools-shared-gateway-api':
         specifier: workspace:*
         version: link:../runtime-tools-shared-gateway-api
@@ -11331,6 +11334,9 @@ importers:
       '@kie-tools/runtime-tools-components':
         specifier: workspace:*
         version: link:../runtime-tools-components
+      '@kie-tools/runtime-tools-components-pf5':
+        specifier: workspace:*
+        version: link:../runtime-tools-components-pf5
       '@kie-tools/runtime-tools-process-enveloped-components':
         specifier: workspace:*
         version: link:../runtime-tools-process-enveloped-components

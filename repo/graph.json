@@ -2068,22 +2068,7 @@
       },
       {
         "source": "@kie-tools/runtime-tools-components-pf5",
-        "target": "@kie-tools-core/editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-components-pf5",
-        "target": "@kie-tools/json-yaml-language-service",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-components-pf5",
-        "target": "@kie-tools/runtime-tools-shared-gateway-api",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-components-pf5",
-        "target": "@kie-tools/uniforms-patternfly",
+        "target": "@kie-tools/runtime-tools-components",
         "weight": 1
       },
       {
@@ -2484,6 +2469,11 @@
       {
         "source": "@kie-tools/sonataflow-management-console-webapp",
         "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-management-console-webapp",
+        "target": "@kie-tools/runtime-tools-components-pf5",
         "weight": 1
       },
       {

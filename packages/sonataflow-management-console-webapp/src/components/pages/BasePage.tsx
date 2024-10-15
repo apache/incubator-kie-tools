@@ -31,7 +31,7 @@ import { PageSidebar } from "@patternfly/react-core/dist/js/components/Page/Page
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { BarsIcon } from "@patternfly/react-icons/dist/js/icons";
 // import PageToolbar from "@kie-tools/runtime-tools-components/dist/components/PageToolbar/PageToolbar";
-import PageToolbar from "../../../../runtime-tools-components-pf5/dist/runtime-tools-components-pf5/src/PageToolbar/PageToolbar";
+import PageToolbar from "@kie-tools/runtime-tools-components-pf5/dist/PageToolbar";
 import { useMemo } from "react";
 import { useHistory } from "react-router";
 import { routes } from "../../navigation/Routes";
