@@ -24,8 +24,6 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js";
-import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
-import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { SceSimMarshaller, SceSimModel, getMarshaller } from "@kie-tools/scesim-marshaller";
 import {
   ExternalDmnsIndex,

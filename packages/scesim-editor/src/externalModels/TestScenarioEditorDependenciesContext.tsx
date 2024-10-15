@@ -22,13 +22,13 @@ import { useContext, useMemo } from "react";
 import {
   OnRequestExternalModelsAvailableToInclude,
   OnRequestExternalModelByPath,
-  ExternalModelsIndex,
+  ExternalDmnsIndex,
 } from "../TestScenarioEditor";
 
 export interface TestScenarioEditorExternalModelsContextType {
   onRequestExternalModelByPath?: OnRequestExternalModelByPath;
   onRequestExternalModelsAvailableToInclude?: OnRequestExternalModelsAvailableToInclude;
-  externalModelsByNamespace?: ExternalModelsIndex;
+  externalModelsByNamespace?: ExternalDmnsIndex;
 }
 
 const TestScenarioEditorExternalModelsContext = React.createContext<TestScenarioEditorExternalModelsContextType>(

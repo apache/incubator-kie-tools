@@ -30,6 +30,7 @@ import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dis
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { domParser } from "@kie-tools/xml-parser-ts";
 import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
 import * as TestScenarioEditor from "@kie-tools/scesim-editor/dist/TestScenarioEditor";
@@ -51,7 +52,7 @@ export type TestScenarioEditorRootProps = {
 
 export type TestScenarioEditorRootState = {
   error: Error | undefined;
-  externalModelsByNamespace: TestScenarioEditor.ExternalModelsIndex;
+  externalModelsByNamespace: TestScenarioEditor.ExternalDmnsIndex;
   externalModelsManagerDoneBootstraping: boolean;
   isReadOnly: boolean;
   keyboardShortcutsRegistred: boolean;
@@ -181,7 +182,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     }
   }
 
-  private setExternalModelsByNamespace = (externalModelsByNamespace: TestScenarioEditor.ExternalModelsIndex) => {
+  private setExternalModelsByNamespace = (externalModelsByNamespace: TestScenarioEditor.ExternalDmnsIndex) => {
     this.setState((prev) => ({ ...prev, externalModelsByNamespace }));
   };
 
@@ -349,8 +350,6 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
   }
 }
 
-const NAMESPACES_EFFECT_SEPARATOR = " , ";
-
 function ExternalModelsManager({
   workspaceRootAbsolutePosixPath,
   thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot,
@@ -363,15 +362,20 @@ function ExternalModelsManager({
   workspaceRootAbsolutePosixPath: string;
   thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
   model: SceSimModel;
-  onChange: (externalModelsByNamespace: TestScenarioEditor.ExternalModelsIndex) => void;
+  onChange: (externalModelsByNamespace: TestScenarioEditor.ExternalDmnsIndex) => void;
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onRequestWorkspaceFilesList: WorkspaceChannelApi["kogitoWorkspace_resourceListRequest"];
   externalModelsManagerDoneBootstraping: PromiseImperativeHandle<void>;
 }) {
-  const namespaces = useMemo(
-    () => model.ScenarioSimulationModel.settings.dmnNamespace?.__$$text ?? [],
-    [model.ScenarioSimulationModel.settings.dmnNamespace]
-  );
+  const targetNamespace = useMemo(() => {
+    if (model.ScenarioSimulationModel.settings.type?.__$$text !== "DMN") {
+      return null;
+    }
+    if (model.ScenarioSimulationModel.settings.dmnNamespace?.__$$text) {
+      return model.ScenarioSimulationModel.settings.dmnNamespace?.__$$text.toUpperCase();
+    }
+    return null;
+  }, [model.ScenarioSimulationModel.settings]);
 
   const [externalUpdatesCount, setExternalUpdatesCount] = useState(0);
 
@@ -389,9 +393,11 @@ function ExternalModelsManager({
       if (data?.relativePath === thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot) {
         return;
       }
-      //TODO doublecheck
-      const ext = __path.extname(thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot!);
-      if (ext !== "dmn") {
+      // We want to track changes on DMN files only.
+      if (
+        !thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot &&
+        __path.extname(thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot!) !== "dmn"
+      ) {
         return;
       }
 
@@ -406,7 +412,7 @@ function ExternalModelsManager({
   useEffect(() => {
     let canceled = false;
 
-    if (!thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot) {
+    if (!thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot || !targetNamespace) {
       return;
     }
 
@@ -432,9 +438,7 @@ function ExternalModelsManager({
         return Promise.all(resources);
       })
       .then((resources) => {
-        const externalModelsIndex: DmnEditor.ExternalModelsIndex = {};
-
-        const namespacesSet = new Set(namespaces.split(NAMESPACES_EFFECT_SEPARATOR));
+        const externalModelsIndex: TestScenarioEditor.ExternalDmnsIndex = {};
 
         for (let i = 0; i < resources.length; i++) {
           const resource = resources[i];
@@ -452,7 +456,7 @@ function ExternalModelsManager({
           const ext = __path.extname(resource.normalizedPosixPathRelativeToTheWorkspaceRoot);
           if (ext === ".dmn") {
             const namespace = domParser.getDomDocument(content).documentElement.getAttribute("namespace");
-            if (namespace && namespacesSet.has(namespace)) {
+            if (namespace === targetNamespace) {
               // Check for multiplicity of namespaces on DMN models
               if (externalModelsIndex[namespace]) {
                 console.warn(
@@ -467,7 +471,6 @@ function ExternalModelsManager({
               externalModelsIndex[namespace] = {
                 normalizedPosixPathRelativeToTheOpenFile,
                 model: normalize(getDmnMarshaller(content, { upgradeTo: "latest" }).parser.parse()),
-                type: "dmn",
                 svg: "",
               };
             }
@@ -486,7 +489,7 @@ function ExternalModelsManager({
       canceled = true;
     };
   }, [
-    namespaces,
+    targetNamespace,
     onChange,
     onRequestWorkspaceFileContent,
     onRequestWorkspaceFilesList,
