@@ -29,27 +29,25 @@ export const trafficViolationModel = normalize(
   getMarshaller(TRAFFIC_VIOLATION, { upgradeTo: "latest" }).parser.parse()
 );
 
-export const avaiableModels: TestScenarioEditor.ExternalModel[] = [
+export const avaiableModels: TestScenarioEditor.ExternalDmn[] = [
   {
-    type: "dmn",
     model: loanPreQualification,
     svg: "",
     normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/loan-pre-qualification.dmn",
   },
   {
-    type: "dmn",
     model: trafficViolationModel,
     svg: "",
     normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/traffic-violation.dmn",
   },
 ];
 
-export const availableModelsByPath: Record<string, TestScenarioEditor.ExternalModel> = Object.values(
+export const availableModelsByPath: Record<string, TestScenarioEditor.ExternalDmn> = Object.values(
   avaiableModels
 ).reduce(
   (acc, v) => {
     acc[v.normalizedPosixPathRelativeToTheOpenFile] = v;
     return acc;
   },
-  {} as Record<string, TestScenarioEditor.ExternalModel>
+  {} as Record<string, TestScenarioEditor.ExternalDmn>
 );
