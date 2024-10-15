@@ -107,10 +107,9 @@ export interface State {
     openLhsPanel: DiagramLhsPanel;
     overlays: {
       enableNodeHierarchyHighlight: boolean;
-      enableExecutionHitsHighlights: boolean;
       enableDataTypesToolbarOnNodes: boolean;
       enableCustomNodeStyles: boolean;
-      evaluationHighlights: boolean;
+      enableEvaluationHighlights: boolean;
     };
     snapGrid: SnapGrid;
     _selectedNodes: Array<string>;
@@ -215,10 +214,9 @@ export const defaultStaticState = (): Omit<State, "dmn" | "dispatch" | "computed
     openLhsPanel: DiagramLhsPanel.NONE,
     overlays: {
       enableNodeHierarchyHighlight: false,
-      enableExecutionHitsHighlights: false,
       enableCustomNodeStyles: true,
       enableDataTypesToolbarOnNodes: true,
-      evaluationHighlights: false,
+      enableEvaluationHighlights: false,
     },
     snapGrid: {
       isEnabled: true,

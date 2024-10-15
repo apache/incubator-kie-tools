@@ -118,17 +118,6 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
       <Form
         onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Overlays Panel
       >
-        {/* <FormGroup label={"Highlight execution hits"}>
-          <Switch
-            aria-label={"Highlight execution hits"}
-            isChecked={diagram.overlays.enableExecutionHitsHighlights}
-            onChange={(newValue) =>
-              dmnEditorStoreApi.setState((state) => {
-                state.diagram.overlays.enableExecutionHitsHighlights = newValue;
-              })
-            }
-          />
-        </FormGroup> */}
         <FormGroup label={"Highlight selected node(s) hierarchy"}>
           <Switch
             aria-label={"Highlight selected node(s) hierarchy"}
@@ -166,7 +155,9 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
           label={"Enable evaluation highlights"}
           labelIcon={
             <Tooltip
-              content={"Enable evaluation highlights on nodes(decisions?), decision tables and conditional expressions"}
+              content={
+                "Enable highlighting Decision Table rules and Boxed Conditional Expression branches based on evaluation results, also showing success/error status badges on Decision nodes."
+              }
             >
               <Icon size="sm" status="info">
                 <HelpIcon />
@@ -175,10 +166,10 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
           }
         >
           <Switch
-            isChecked={diagram.overlays.evaluationHighlights}
+            isChecked={diagram.overlays.enableEvaluationHighlights}
             onChange={(newValue) =>
               dmnEditorStoreApi.setState((state) => {
-                state.diagram.overlays.evaluationHighlights = newValue;
+                state.diagram.overlays.enableEvaluationHighlights = newValue;
               })
             }
           />

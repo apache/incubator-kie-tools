@@ -1709,7 +1709,7 @@ export function TopRightCornerPanels({ availableHeight }: TopRightCornerPanelsPr
   return (
     <>
       <RF.Panel position={"top-right"} style={{ display: "flex" }}>
-        {diagram.overlays.evaluationHighlights && <EvaluationHighlightsBadge />}
+        {diagram.overlays.enableEvaluationHighlights && <EvaluationHighlightsBadge />}
         {!settings.isReadOnly && (
           <aside className={"kie-dmn-editor--autolayout-panel-toggle"}>
             <AutolayoutButton />

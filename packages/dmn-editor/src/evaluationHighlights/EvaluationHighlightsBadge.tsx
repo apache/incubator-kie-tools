@@ -22,7 +22,7 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 
 export function EvaluationHighlightsBadge() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const isEvaluationHighlights = useDmnEditorStore((s) => s.diagram.overlays.evaluationHighlights);
+  const isEvaluationHighlights = useDmnEditorStore((s) => s.diagram.overlays.enableEvaluationHighlights);
 
   return (
     <aside className={"kie-dmn-editor--evaluation-highlights-panel-toggle"}>
@@ -34,12 +34,12 @@ export function EvaluationHighlightsBadge() {
         }
         onClick={() => {
           dmnEditorStoreApi.setState((state) => {
-            state.diagram.overlays.evaluationHighlights = !state.diagram.overlays.evaluationHighlights;
+            state.diagram.overlays.enableEvaluationHighlights = !state.diagram.overlays.enableEvaluationHighlights;
           });
         }}
         title={"Evaluation highlights (beta)"}
       >
-        Evaluation Highlights: {dmnEditorStoreApi.getState().diagram.overlays.evaluationHighlights ? "On" : "Off"}
+        Evaluation Highlights: {dmnEditorStoreApi.getState().diagram.overlays.enableEvaluationHighlights ? "On" : "Off"}
       </button>
     </aside>
   );
