@@ -17,11 +17,25 @@
 
 ## Form Code Generator VS Code command
 
+This package is a VS Code command for generating form code from jBPM projects.
+
 ## How it works?
+
+The command provides a user-friendly interface for generating form code from jBPM projects. It interacts with the file system getting the jBPM JSON Schemas that are generated during compile time, and feeding them to the "form-code-generator" that will generate the form code using one of two themes: Bootstrap4 or Patternfly.
 
 ## Usage
 
+The command name will change depending on the host extension, but it should be available in the command palette. After starting the command, the user will be prompted with a few questions, which can be represented using the following diagram:
+
+![VS Code command diagram](./docs/vscode-command-diagram.png?raw=true "VS Code command diagram")
+
 ## Build
+
+In order to build the library you must run the following command in the root folder of the repository:
+
+```shell script
+pnpm -F @kie-tools/form-code-generator-vscode-command... build:prod
+```
 
 ---
 
