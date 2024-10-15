@@ -28,8 +28,9 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
+        string(description: 'Release Version', name: 'RELEASE_VERSION')
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
         string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL')
     }
 
@@ -53,17 +54,15 @@ pipeline {
             }
         }
 
-        stage('Start required services for build and tests (DinD, Xvfb, Fluxbox)') {
+        stage('Initialize') {
             steps {
                 script {
                     buildUtils.startRequiredServices()
-                }
-            }
-        }
 
-        stage('Clean workspace before build') {
-            steps {
-                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+                    cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+
+                    currentBuild.displayName = 'Release Candidate: ' + params.RELEASE_CANDIDATE_VERSION
+                }
             }
         }
 
@@ -95,7 +94,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBootstrap("${PNPM_FILTER_STRING}")
                     }
                 }
             }
@@ -105,7 +104,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBuild("${PNPM_FILTER_STRING}")
                     }
                 }
             }
@@ -123,7 +122,7 @@ pipeline {
                             "packages/kie-editors-dev-vscode-extension/dist/kie_editors_dev_vscode_extension_${params.RELEASE_VERSION}.vsix",
                             "vscode_extension_dev_${params.RELEASE_VERSION}.vsix",
                             'application/zip',
-                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                            "${pipelineVars.asfGithubPushCredentialsId}"
                         )
                     }
                 }
@@ -133,6 +132,7 @@ pipeline {
 
     post {
         always {
+            archiveArtifacts artifacts: 'release-candidate-artifacts/*,release-artifacts/*', allowEmptyArchive: true
             cleanWs(deleteDirs: true)
         }
     }

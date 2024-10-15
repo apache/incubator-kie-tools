@@ -28,11 +28,12 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
-        string(description: 'Base Ref', name: 'BASE_REF')
+        string(description: 'Base Ref', name: 'BASE_REF', defaultValue: '')
+        string(description: 'Release Version', name: 'RELEASE_VERSION')
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
+        choice(description: 'Job Type', name: 'JOB_TYPE', choices: ['release-candidate', 'release-promote'])
         string(description: 'Kie Sandbox Extendend Services Url', name: 'KIE_SANDBOX_EXTENDED_SERVICES_URL')
         string(description: 'Kie Sandbox Cors Proxy Url', name: 'KIE_SANDBOX_CORS_PROXY_URL')
-        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
     environment {
@@ -65,6 +66,11 @@ pipeline {
         ONLINE_EDITOR__gtmId = 'GTM-PQGMKNW'
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
+        RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/release-candidate-artifacts"
+        LEGAL_FILES_DIR = "${WORKSPACE}/legal-files"
+        UPSTREAM_RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/upstream-release-artifacts"
+
+        RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sandbox-webapp-image.tar.gz"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
@@ -85,35 +91,56 @@ pipeline {
             }
         }
 
-        stage('Start required services for build and tests (DinD, Xvfb, Fluxbox)') {
+        stage('Initialize') {
             steps {
                 script {
                     buildUtils.startRequiredServices()
+
+                    cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+
+                    if (params.JOB_TYPE == 'release-candidate') {
+                        currentBuild.displayName = 'Release Candidate: ' + params.RELEASE_CANDIDATE_VERSION
+                    } else {
+                        currentBuild.displayName = 'Release Promotion: ' + params.RELEASE_CANDIDATE_VERSION + ' > ' + params.RELEASE_VERSION
+                    }
                 }
             }
         }
 
-        stage('Clean workspace before build') {
+        stage('Download upstream images from staging SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
+            }
             steps {
-                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+                script {
+                    env.UPSTREAM_IMAGES_ARTIFACTS = releaseUtils.getUpstreamImagesArtifactsList("${params.RELEASE_CANDIDATE_VERSION}")
+                    releaseUtils.downloadReleaseArtifacts(
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${UPSTREAM_RELEASE_ARTIFACTS_DIR}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${UPSTREAM_IMAGES_ARTIFACTS}"
+                    )
+                }
             }
         }
 
         stage('Load upstream images') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
             }
             steps {
-                script {
-                    upstreamReleaseArtifactsDir = "${WORKSPACE}/upstream-release-artifacts"
-                    releaseUtils.downloadReleaseArtifacts("${pipelineVars.asfReleaseStagingRepository}", "${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}")
-                    upstreamImagesArtifacts = releaseUtils.getUpstreamImagesArtifactsList("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}")
-                    dockerUtils.loadImages(upstreamImagesArtifacts as String[])
+                dir("${UPSTREAM_RELEASE_ARTIFACTS_DIR}") {
+                    script {
+                        dockerUtils.loadImages("${UPSTREAM_IMAGES_ARTIFACTS}")
+                    }
                 }
             }
         }
 
         stage('Checkout kie-tools') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
             steps {
                 dir('kie-tools') {
                     script {
@@ -127,7 +154,23 @@ pipeline {
             }
         }
 
+        stage('Copy legal files') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        releaseUtils.copyLegalFiles("${LEGAL_FILES_DIR}")
+                    }
+                }
+            }
+        }
+
         stage('Setup PNPM') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
             steps {
                 dir('kie-tools') {
                     script {
@@ -138,20 +181,116 @@ pipeline {
         }
 
         stage('PNPM Bootstrap') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBootstrap("${PNPM_FILTER_STRING}")
                     }
                 }
             }
         }
 
         stage('Build') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBuild("${PNPM_FILTER_STRING}")
+                    }
+                }
+            }
+        }
+
+        stage('Setup release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                script {
+                    sh """#!/bin/bash -el
+                    mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
+                    docker save "${KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}/${KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}/${KIE_SANDBOX_WEBAPP_IMAGE__imageName}:${params.RELEASE_VERSION}" | gzip > "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${RELEASE_FILE}"
+                    """.trim()
+                    releaseUtils.addLegalfilesToTarGzFile("${RELEASE_CANDIDATE_ARTIFACTS_DIR}", "${RELEASE_FILE}", "${LEGAL_FILES_DIR}")
+                }
+            }
+        }
+
+        stage('Sign release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir("${RELEASE_CANDIDATE_ARTIFACTS_DIR}") {
+                    script {
+                        releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
+                        releaseUtils.signArtifact("${RELEASE_FILE}")
+                    }
+                }
+            }
+        }
+
+        stage('Push release candidate artifacts to the staging SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${RELEASE_CANDIDATE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Download release candidate artifacts from the staging SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                script {
+                    releaseUtils.downloadReleaseArtifacts(
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${RELEASE_ARTIFACTS_DIR}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${RELEASE_FILE}"
+                    )
+                }
+            }
+        }
+
+        stage('Push release artifacts to the release SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${RELEASE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseRepository}",
+                        "${params.RELEASE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Load release image artifact') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                dir("${RELEASE_ARTIFACTS_DIR}") {
+                    script {
+                        dockerUtils.loadImages("${RELEASE_FILE}")
                     }
                 }
             }
@@ -159,15 +298,15 @@ pipeline {
 
         stage('Push kie-sandbox-image to Docker Hub') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}",
-                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}",
-                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageName}",
-                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTag}",
+                        "${KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}",
+                        "${KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}",
+                        "${KIE_SANDBOX_WEBAPP_IMAGE__imageName}",
+                        "${KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
@@ -177,7 +316,7 @@ pipeline {
 
         stage('Prepare environment variables for OpenShift deployment') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
                 sh """#!/bin/bash -el
@@ -189,65 +328,19 @@ pipeline {
 
         stage('Deploy kie-sandbox-image to OpenShift') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
                 script {
                     openShiftUtils.createOrUpdateApp(
-                        "${env.OPENSHIFT_NAMESPACE}",
-                        "${env.OPENSHIFT_APP_NAME}",
+                        "${OPENSHIFT_NAMESPACE}",
+                        "${OPENSHIFT_APP_NAME}",
                         "${params.RELEASE_VERSION}",
-                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageName}:${params.RELEASE_VERSION}",
-                        "${env.OPENSHIFT_PART_OF}",
+                        "${KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}/${KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}/${KIE_SANDBOX_WEBAPP_IMAGE__imageName}:${params.RELEASE_VERSION}",
+                        "${OPENSHIFT_PART_OF}",
                         'js',
                         "${pipelineVars.openshiftCredentialsId}",
                         './deployment.env'
-                    )
-                }
-            }
-        }
-
-        stage('Setup release candidate artifacts') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
-            steps {
-                script {
-                    env.RELEASE_IMAGE_TAR_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-webapp-image.tar.gz"
-
-                    sh """#!/bin/bash -el
-                    mkdir ${env.RELEASE_ARTIFACTS_DIR}
-                    docker save "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageName}:${params.RELEASE_VERSION}" | gzip > "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}"
-                    """.trim()
-                }
-            }
-        }
-
-        stage('Sign artifact for Apache release') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
-            steps {
-                dir("${env.RELEASE_ARTIFACTS_DIR}") {
-                    script {
-                        releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
-                        releaseUtils.signArtifact("${env.RELEASE_IMAGE_TAR_FILE}")
-                    }
-                }
-            }
-        }
-
-        stage('Publish Release Candidate artifacts') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
-            steps {
-                script {
-                    releaseUtils.publishArtifacts(
-                        "${env.RELEASE_ARTIFACTS_DIR}",
-                        "${pipelineVars.asfReleaseStagingRepository}",
-                        "${params.RELEASE_CANDIDATE_VERSION}",
-                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
                     )
                 }
             }
@@ -256,6 +349,7 @@ pipeline {
 
     post {
         always {
+            archiveArtifacts artifacts: 'release-candidate-artifacts/*,release-artifacts/*', allowEmptyArchive: true
             cleanWs(deleteDirs: true)
         }
     }

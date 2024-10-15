@@ -56,26 +56,70 @@ def publishArtifacts(String artifactsDir, String releaseRepository, String relea
 /**
 * Download release artifacts from a specific release
 */
-def downloadReleaseArtifacts(String releaseRepository, String artifactsDir, String releaseVersion) {
+def downloadReleaseArtifacts(String releaseRepository, String releaseVersion, String artifactsDir, String... artifactsNames) {
     sh """#!/bin/bash -el
-    mkdir -p "${artifactsDir}"
-    svn co "${releaseRepository}/${releaseVersion}" "${artifactsDir}"
+    mkdir -p "${artifactsDir}" || true
     """.trim()
+    for (artifactName in artifactsNames) {
+        sh """#!/bin/bash -el
+        svn cat "${releaseRepository}/${releaseVersion}/${artifactName}" > "${artifactsDir}/${artifactName}"
+        svn cat "${releaseRepository}/${releaseVersion}/${artifactName}.asc" > "${artifactsDir}/${artifactName}.asc"
+        svn cat "${releaseRepository}/${releaseVersion}/${artifactName}.sha512" > "${artifactsDir}/${artifactName}.sha512"
+        """.trim()
+    }
 }
 
 /**
 * Return a list of upstream images artifacts
 */
-def getUpstreamImagesArtifactsList(String artifactsDir, String releaseVersion) {
+def getUpstreamImagesArtifactsList(String releaseVersion) {
     return [
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-base-builder-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-data-index-ephemeral-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-data-index-postgresql-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jit-runner-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jobs-service-allinone-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jobs-service-ephemeral-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jobs-service-postgresql-image.tar.gz"
-    ]
+        "apache-kie-${releaseVersion}-incubating-kogito-base-builder-image.tar.gz",
+        "apache-kie-${releaseVersion}-incubating-kogito-data-index-ephemeral-image.tar.gz",
+        "apache-kie-${releaseVersion}-incubating-kogito-data-index-postgresql-image.tar.gz",
+        "apache-kie-${releaseVersion}-incubating-kogito-jit-runner-image.tar.gz",
+        "apache-kie-${releaseVersion}-incubating-kogito-jobs-service-allinone-image.tar.gz",
+        "apache-kie-${releaseVersion}-incubating-kogito-jobs-service-ephemeral-image.tar.gz",
+        "apache-kie-${releaseVersion}-incubating-kogito-jobs-service-postgresql-image.tar.gz"
+    ].toArray()
+}
+
+/**
+* Rename a release candidate artifact name to the final release name
+**/
+def renameArtifactsToFinalVersion(String releaseCandidateArtifactsDir, String releaseCandidateVersion, String releaseVersion, String releaseArtifactsDir, String... releaseCandidateArtifactsNames) {
+    for (releaseCandidateArtifactName in releaseCandidateArtifactsNames) {
+        finalArtifactName = releaseCandidateArtifactName.replace(releaseCandidateVersion, releaseVersion)
+        sh """#!/bin/bash -el
+        mv ${releaseCandidateArtifactsDir}/${releaseCandidateArtifactName} ${releaseArtifactsDir}/${finalArtifactName}
+        mv ${releaseCandidateArtifactsDir}/${releaseCandidateArtifactName}.asc ${releaseArtifactsDir}/${finalArtifactName}.asc
+        mv ${releaseCandidateArtifactsDir}/${releaseCandidateArtifactName}.sha512 ${releaseArtifactsDir}/${finalArtifactName}.sha512
+        sed -i 's/${releaseCandidateVersion}/${releaseVersion}/g' ${releaseArtifactsDir}/${finalArtifactName}.sha512
+        """.trim()
+    }
+}
+
+/**
+* Copy legal files to a specific directory
+**/
+def copyLegalFiles(String targetDir) {
+    sh """#!/bin/bash -el
+    mkdir -p "${targetDir}" || true
+    cp {LICENSE,NOTICE,DISCLAIMER-WIP} ${targetDir}
+    """.trim()
+}
+
+/**
+* Add Apache legal files to a .tar.gz file
+**/
+def addLegalfilesToTarGzFile(String artifactsDir, String tarGzFile, String legalFilesDir) {
+    tarFile = tarGzFile.replace('.gz', '')
+    sh """#!/bin/bash -el
+    cd ${legalFilesDir}
+    zcat ${artifactsDir}/${tarGzFile} | dd of=${tarFile} bs=512 skip=1
+    tar -rvf ${tarFile} ./LICENSE ./NOTICE ./DISCLAIMER-WIP
+    gzip -q -c ${tarFile} > ${artifactsDir}/${tarGzFile}
+    """.trim()
 }
 
 return this

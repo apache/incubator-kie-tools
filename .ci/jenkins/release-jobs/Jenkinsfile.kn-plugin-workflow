@@ -28,10 +28,11 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
-        string(description: 'Base Ref', name: 'BASE_REF')
-        string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL')
+        string(description: 'Base Ref', name: 'BASE_REF', defaultValue: '')
+        string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL', defaultValue: '')
+        string(description: 'Release Version', name: 'RELEASE_VERSION')
         string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
+        choice(description: 'Job Type', name: 'JOB_TYPE', choices: ['release-candidate', 'release-promote'])
     }
 
     environment {
@@ -43,6 +44,13 @@ pipeline {
         MAVEN_SETTINGS_PATH = "${WORKSPACE}/kie-settings.xml"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
+        RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/release-candidate-artifacts"
+        LEGAL_FILES_DIR = "${WORKSPACE}/legal-files"
+
+        KN_PLUGIN_LINUX_X86_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sonataflow-knative-plugin-linux-x86.zip"
+        KN_PLUGIN_MACOS_ARM_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sonataflow-knative-plugin-macOS-arm64.zip"
+        KN_PLUGIN_MACOS_X86_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sonataflow-knative-plugin-macOS-x86.zip"
+        KN_PLUGIN_WINDOWS_X86_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sonataflow-knative-plugin-windows-x86.zip"
 
         PNPM_FILTER_STRING = '-F @kie-tools/kn-plugin-workflow...'
     }
@@ -60,21 +68,26 @@ pipeline {
             }
         }
 
-        stage('Start required services for build and tests (DinD, Xvfb, Fluxbox)') {
+        stage('Initialize') {
             steps {
                 script {
                     buildUtils.startRequiredServices()
+
+                    cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+
+                    if (params.JOB_TYPE == 'release-candidate') {
+                        currentBuild.displayName = 'Release Candidate: ' + params.RELEASE_CANDIDATE_VERSION
+                    } else {
+                        currentBuild.displayName = 'Release Promotion: ' + params.RELEASE_CANDIDATE_VERSION + ' > ' + params.RELEASE_VERSION
+                    }
                 }
             }
         }
 
-        stage('Clean workspace before build') {
-            steps {
-                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
-            }
-        }
-
         stage('Checkout kie-tools') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
             steps {
                 dir('kie-tools') {
                     script {
@@ -88,7 +101,23 @@ pipeline {
             }
         }
 
+        stage('Copy legal files') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        releaseUtils.copyLegalFiles("${LEGAL_FILES_DIR}")
+                    }
+                }
+            }
+        }
+
         stage('Setup PNPM') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
             steps {
                 dir('kie-tools') {
                     script {
@@ -99,13 +128,16 @@ pipeline {
         }
 
         stage('Setup maven') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
             steps {
                 dir('kie-tools') {
                     script {
                         defaultSettingsFile = 'packages/sonataflow-image-common/resources/modules/kogito-maven/common/maven/maven-m2-repo-via-http-settings.xml.envsubst'
                         sh """#!/bin/bash -el
                         rm -rf "${defaultSettingsFile}"
-                        cp "${env.MAVEN_SETTINGS_PATH}" "${defaultSettingsFile}"
+                        cp "${MAVEN_SETTINGS_PATH}" "${defaultSettingsFile}"
                         """.trim()
                     }
                 }
@@ -113,10 +145,13 @@ pipeline {
         }
 
         stage('PNPM Bootstrap') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBootstrap("${PNPM_FILTER_STRING}")
                     }
                 }
             }
@@ -126,25 +161,112 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBuild("${PNPM_FILTER_STRING}")
                     }
+                }
+            }
+        }
+
+        stage('Setup release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                script {
+                    sh """#!/bin/bash -el
+                    mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
+                    cp "${LEGAL_FILES_DIR}/*" kie-tools/packages/kn-plugin-workflow/dist
+                    cd kie-tools/packages/kn-plugin-workflow/dist
+                    zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${KN_PLUGIN_LINUX_X86_RELEASE_FILE}" ./kn-workflow-linux-amd64 ./NOTICE ./LICENSE ./DISCLAIMER-WIP
+                    zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${KN_PLUGIN_MACOS_ARM_RELEASE_FILE}" ./kn-workflow-darwin-arm64 ./NOTICE ./LICENSE ./DISCLAIMER-WIP
+                    zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${KN_PLUGIN_MACOS_X86_RELEASE_FILE}" ./kn-workflow-darwin-amd64 ./NOTICE ./LICENSE ./DISCLAIMER-WIP
+                    zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${KN_PLUGIN_WINDOWS_X86_RELEASE_FILE}" ./kn-workflow-windows-amd64.exe ./NOTICE ./LICENSE ./DISCLAIMER-WIP
+                    """.trim()
+                }
+            }
+        }
+
+        stage('Sign release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir("${RELEASE_ARTIFACTS_DIR}") {
+                    script {
+                        releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
+                        releaseUtils.signArtifact("${KN_PLUGIN_LINUX_X86_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${KN_PLUGIN_MACOS_ARM_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${KN_PLUGIN_MACOS_X86_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${KN_PLUGIN_WINDOWS_X86_RELEASE_FILE}")
+                    }
+                }
+            }
+        }
+
+        stage('Push release candidate artifacts to the staging SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${RELEASE_CANDIDATE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Download release candidate artifacts from the staging SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                script {
+                    releaseUtils.downloadReleaseArtifacts(
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${RELEASE_ARTIFACTS_DIR}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${KN_PLUGIN_LINUX_X86_RELEASE_FILE}",
+                        "${KN_PLUGIN_MACOS_ARM_RELEASE_FILE}",
+                        "${KN_PLUGIN_MACOS_X86_RELEASE_FILE}",
+                        "${KN_PLUGIN_WINDOWS_X86_RELEASE_FILE}"
+                    )
+                }
+            }
+        }
+
+        stage('Push release artifacts to the release SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${RELEASE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseRepository}",
+                        "${params.RELEASE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNCredentialsId}"
+                    )
                 }
             }
         }
 
         stage('Upload Knative CLI Workflow Plugin for Linux') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
-                dir('kie-tools') {
+                dir("${RELEASE_ARTIFACTS_DIR}") {
                     script {
                         githubUtils.uploadReleaseAsset(
                             "${params.UPLOAD_ASSET_URL}",
-                            'packages/kn-plugin-workflow/dist/kn-workflow-linux-amd64',
-                            "kn-workflow-linux-amd64-${params.RELEASE_VERSION}",
+                            "${KN_PLUGIN_LINUX_X86_RELEASE_FILE}",
+                            "${KN_PLUGIN_LINUX_X86_RELEASE_FILE}",
                             'application/octet-stream',
-                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                            "${pipelineVars.asfGithubPushCredentialsId}"
                         )
                     }
                 }
@@ -153,17 +275,17 @@ pipeline {
 
         stage('Upload Knative CLI Workflow Plugin for macOS') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
-                dir('kie-tools') {
+                dir("${RELEASE_ARTIFACTS_DIR}") {
                     script {
                         githubUtils.uploadReleaseAsset(
                             "${params.UPLOAD_ASSET_URL}",
-                            'packages/kn-plugin-workflow/dist/kn-workflow-darwin-amd64',
-                            "kn-workflow-darwin-amd64-${params.RELEASE_VERSION}",
+                            "${KN_PLUGIN_MACOS_ARM_RELEASE_FILE}",
+                            "${KN_PLUGIN_MACOS_ARM_RELEASE_FILE}",
                             'application/octet-stream',
-                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                            "${pipelineVars.asfGithubPushCredentialsId}"
                         )
                     }
                 }
@@ -172,17 +294,17 @@ pipeline {
 
         stage('Upload Knative CLI Workflow Plugin for macOS M1') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
-                dir('kie-tools') {
+                dir("${RELEASE_ARTIFACTS_DIR}") {
                     script {
                         githubUtils.uploadReleaseAsset(
                             "${params.UPLOAD_ASSET_URL}",
-                            'packages/kn-plugin-workflow/dist/kn-workflow-darwin-arm64',
-                            "kn-workflow-darwin-arm64-${params.RELEASE_VERSION}",
+                            "${KN_PLUGIN_MACOS_X86_RELEASE_FILE}",
+                            "${KN_PLUGIN_MACOS_X86_RELEASE_FILE}",
                             'application/octet-stream',
-                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                            "${pipelineVars.asfGithubPushCredentialsId}"
                         )
                     }
                 }
@@ -191,75 +313,19 @@ pipeline {
 
         stage('Upload Knative CLI Workflow Plugin for Windows') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
-                dir('kie-tools') {
+                dir("${RELEASE_ARTIFACTS_DIR}") {
                     script {
                         githubUtils.uploadReleaseAsset(
                             "${params.UPLOAD_ASSET_URL}",
-                            'packages/kn-plugin-workflow/dist/kn-workflow-windows-amd64.exe',
-                            "kn-workflow-windows-amd64-${params.RELEASE_VERSION}.exe",
+                            "${KN_PLUGIN_WINDOWS_X86_RELEASE_FILE}",
+                            "${KN_PLUGIN_WINDOWS_X86_RELEASE_FILE}",
                             'application/octet-stream',
-                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                            "${pipelineVars.asfGithubPushCredentialsId}"
                         )
                     }
-                }
-            }
-        }
-
-        stage('Setup release candidate artifacts') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
-            steps {
-                script {
-                    env.KN_PLUGIN_LINUX_X86_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-knative-plugin-linux-x86.zip"
-                    env.KN_PLUGIN_MACOS_ARM_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-knative-plugin-macOS-arm64.zip"
-                    env.KN_PLUGIN_MACOS_X86_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-knative-plugin-macOS-x86.zip"
-                    env.KN_PLUGIN_WINDOWS_X86_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-knative-plugin-windows-x86.zip"
-
-                    sh """#!/bin/bash -el
-                    mkdir ${env.RELEASE_ARTIFACTS_DIR}
-                    cd kie-tools/packages/kn-plugin-workflow/dist
-                    zip "${env.RELEASE_ARTIFACTS_DIR}/${env.KN_PLUGIN_LINUX_X86_RELEASE_ZIP_FILE}" ./kn-workflow-linux-amd64
-                    zip "${env.RELEASE_ARTIFACTS_DIR}/${env.KN_PLUGIN_MACOS_ARM_RELEASE_ZIP_FILE}" ./kn-workflow-darwin-arm64
-                    zip "${env.RELEASE_ARTIFACTS_DIR}/${env.KN_PLUGIN_MACOS_X86_RELEASE_ZIP_FILE}" ./kn-workflow-darwin-amd64
-                    zip "${env.RELEASE_ARTIFACTS_DIR}/${env.KN_PLUGIN_WINDOWS_X86_RELEASE_ZIP_FILE}" ./kn-workflow-windows-amd64.exe
-                    """.trim()
-                }
-            }
-        }
-
-        stage('Sign artifacts for Apache release') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
-            steps {
-                dir("${env.RELEASE_ARTIFACTS_DIR}") {
-                    script {
-                        releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
-                        releaseUtils.signArtifact("${env.KN_PLUGIN_LINUX_X86_RELEASE_ZIP_FILE}")
-                        releaseUtils.signArtifact("${env.KN_PLUGIN_MACOS_ARM_RELEASE_ZIP_FILE}")
-                        releaseUtils.signArtifact("${env.KN_PLUGIN_MACOS_X86_RELEASE_ZIP_FILE}")
-                        releaseUtils.signArtifact("${env.KN_PLUGIN_WINDOWS_X86_RELEASE_ZIP_FILE}")
-                    }
-                }
-            }
-        }
-
-        stage('Publish Release Candidate artifacts') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
-            steps {
-                script {
-                    releaseUtils.publishArtifacts(
-                        "${env.RELEASE_ARTIFACTS_DIR}",
-                        "${pipelineVars.asfReleaseStagingRepository}",
-                        "${params.RELEASE_CANDIDATE_VERSION}",
-                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
-                    )
                 }
             }
         }
@@ -267,6 +333,7 @@ pipeline {
 
     post {
         always {
+            archiveArtifacts artifacts: 'release-candidate-artifacts/*,release-artifacts/*', allowEmptyArchive: true
             cleanWs(deleteDirs: true)
         }
     }

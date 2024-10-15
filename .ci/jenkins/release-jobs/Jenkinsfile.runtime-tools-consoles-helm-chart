@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:10.0.999'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -40,21 +40,21 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        KOGITO_MANAGEMENT_CONSOLE__registry = 'docker.io'
-        KOGITO_MANAGEMENT_CONSOLE__account = 'apache'
-        KOGITO_MANAGEMENT_CONSOLE__name = 'incubator-kie-kogito-management-console'
-        KOGITO_MANAGEMENT_CONSOLE__buildTag = "latest ${params.RELEASE_VERSION}"
+        RUNTIME_TOOLS_CONSOLES_HELM_CHART__registry = 'docker.io'
+        RUNTIME_TOOLS_CONSOLES_HELM_CHART__account = 'apache'
+        RUNTIME_TOOLS_CONSOLES_HELM_CHART__name = 'incubator-kie-runtime-tools-consoles-helm-chart'
+        RUNTIME_TOOLS_CONSOLES_HELM_CHART__tag = "${params.RELEASE_VERSION}"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
         RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/release-candidate-artifacts"
         LEGAL_FILES_DIR = "${WORKSPACE}/legal-files"
         UPSTREAM_RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/upstream-release-artifacts"
 
-        RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-kogito-management-console-image.tar.gz"
+        RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-runtime-tools-console-helm-chart.tar.gz"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
-        PNPM_FILTER_STRING = '-F @kie-tools/kogito-management-console...'
+        PNPM_FILTER_STRING = '-F @kie-tools/runtime-tools-consoles-helm-chart...'
     }
 
     stages {
@@ -64,6 +64,7 @@ pipeline {
                     pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
                     buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
                     githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                    helmUtils = load '.ci/jenkins/shared-scripts/helmUtils.groovy'
                     dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
                     releaseUtils = load '.ci/jenkins/shared-scripts/releaseUtils.groovy'
                 }
@@ -193,7 +194,7 @@ pipeline {
                 script {
                     sh """#!/bin/bash -el
                     mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
-                    docker save "${KOGITO_MANAGEMENT_CONSOLE__registry}/${KOGITO_MANAGEMENT_CONSOLE__account}/${KOGITO_MANAGEMENT_CONSOLE__name}:${params.RELEASE_VERSION}" | gzip > "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${RELEASE_FILE}"
+                    cp "kie-tools/packages/runtime-tools-consoles-helm-chart/dist/${RUNTIME_TOOLS_CONSOLES_HELM_CHART__name}-${RUNTIME_TOOLS_CONSOLES_HELM_CHART__tag}.tgz" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${RELEASE_FILE}"
                     """.trim()
                     releaseUtils.addLegalfilesToTarGzFile("${RELEASE_CANDIDATE_ARTIFACTS_DIR}", "${RELEASE_FILE}", "${LEGAL_FILES_DIR}")
                 }
@@ -262,33 +263,21 @@ pipeline {
             }
         }
 
-        stage('Load release image artifact') {
+        stage('Push runtime-tools-consoles-helm-chart to Docker Hub') {
             when {
-                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+                expression { !params.DRY_RUN && !params.RELEASE_CANDIDATE  }
             }
             steps {
-                dir("${RELEASE_ARTIFACTS_DIR}") {
+                dir('kie-tools') {
                     script {
-                        dockerUtils.loadImages("${RELEASE_FILE}")
+                        helmUtils.pushChartToRegistry(
+                            "${RUNTIME_TOOLS_CONSOLES_HELM_CHART__registry}",
+                            "${RUNTIME_TOOLS_CONSOLES_HELM_CHART__account}",
+                            "${RELEASE_FILE}",
+                            "${pipelineVars.dockerHubUserCredentialsId}",
+                            "${pipelineVars.dockerHubTokenCredentialsId}"
+                        )
                     }
-                }
-            }
-        }
-
-        stage('Push kogito-management-console to Docker Hub') {
-            when {
-                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
-            }
-            steps {
-                script {
-                    dockerUtils.pushImageToRegistry(
-                        "${KOGITO_MANAGEMENT_CONSOLE__registry}",
-                        "${KOGITO_MANAGEMENT_CONSOLE__account}",
-                        "${KOGITO_MANAGEMENT_CONSOLE__name}",
-                        "${KOGITO_MANAGEMENT_CONSOLE__buildTag}",
-                        "${pipelineVars.dockerHubUserCredentialsId}",
-                        "${pipelineVars.dockerHubTokenCredentialsId}"
-                    )
                 }
             }
         }

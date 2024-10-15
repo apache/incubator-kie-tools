@@ -438,15 +438,17 @@ jobs:
         env:
           RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
         run: |
-          MACOS_ARTIFACT_ZIP_FILE="incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-macOS-x86.zip"
-          WINDOWS_ARTIFACT_ZIP_FILE="incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-windows-x86.zip"
+          MACOS_ARTIFACT_ZIP_FILE="apache-kie-$RELEASE_CANDIDATE_VERSION-incubating-sandbox-extended-services-macOS-x86.zip"
+          WINDOWS_ARTIFACT_ZIP_FILE="apache-kie-$RELEASE_CANDIDATE_VERSION-incubating-sandbox-extended-services-windows-x86.zip"
           echo "MACOS_ARTIFACT_ZIP_FILE=$MACOS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
           echo "WINDOWS_ARTIFACT_ZIP_FILE=$WINDOWS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
+          cp ./{NOTICE,DICLAIMER-WIP,LICENSE} $RELEASE_CANDIDATE_ARTIFACTS_DIR
           cd $RELEASE_CANDIDATE_ARTIFACTS_DIR
-          zip $RELEASE_CANDIDATE_ARTIFACTS_DIR/$MACOS_ARTIFACT_ZIP_FILE ./Kogito.dmg
-          zip $RELEASE_CANDIDATE_ARTIFACTS_DIR/$WINDOWS_ARTIFACT_ZIP_FILE ./kie_sandbox_extended_services.exe
+          zip $RELEASE_CANDIDATE_ARTIFACTS_DIR/$MACOS_ARTIFACT_ZIP_FILE ./Kogito.dmg ./NOTICE ./DICLAIMER-WIP ./LICENSE
+          zip $RELEASE_CANDIDATE_ARTIFACTS_DIR/$WINDOWS_ARTIFACT_ZIP_FILE ./kie_sandbox_extended_services.exe ./NOTICE ./DICLAIMER-WIP ./LICENSE
           rm -f ./Kogito.dmg
           rm -f ./kie_sandbox_extended_services.exe
+          rm -f ./{NOTICE,DICLAIMER-WIP,LICENSE}
 
       - name: "Sign artifacts"
         if: ${{ !inputs.dry_run }}

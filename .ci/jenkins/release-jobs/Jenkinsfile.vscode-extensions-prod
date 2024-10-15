@@ -28,10 +28,11 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
-        string(description: 'Base Ref', name: 'BASE_REF')
-        string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL')
+        string(description: 'Base Ref', name: 'BASE_REF', defaultValue: '')
+        string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL', defaultValue: '')
+        string(description: 'Release Version', name: 'RELEASE_VERSION')
         string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
+        choice(description: 'Job Type', name: 'JOB_TYPE', choices: ['release-candidate', 'release-promote'])
     }
 
     environment {
@@ -41,6 +42,18 @@ pipeline {
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
+        RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/release-candidate-artifacts"
+        LEGAL_FILES_DIR = "${WORKSPACE}/legal-files"
+
+        BPMN_VSCODE_EXTENSION_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-bpmn-vscode-extension.vsix"
+        DMN_VSCODE_EXTENSION_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-dmn-vscode-extension.vsix"
+        PMML_VSCODE_EXTENSION_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-pmml-vscode-extension.vsix"
+        DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-dashbuilder-vscode-extension.vsix"
+        SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sonataflow-vscode-extension.vsix"
+        YARD_VSCODE_EXTENSION_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-yard-vscode-extension.vsix"
+        KOGITO_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-kogito-bundle-vscode-extension.vsix"
+        BUSINESS_AUTOMATION_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-business-automation-bundle-vscode-extension.vsix"
+        EXTENDED_SERVICES_VSCODE_EXTENSION_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-extended-services-vscode-extension.vsix"
     }
 
     stages {
@@ -55,21 +68,26 @@ pipeline {
             }
         }
 
-        stage('Start required services for build and tests (DinD, Xvfb, Fluxbox)') {
+        stage('Initialize') {
             steps {
                 script {
                     buildUtils.startRequiredServices()
+
+                    cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+
+                    if (params.JOB_TYPE == 'release-candidate') {
+                        currentBuild.displayName = 'Release Candidate: ' + params.RELEASE_CANDIDATE_VERSION
+                    } else {
+                        currentBuild.displayName = 'Release Promotion: ' + params.RELEASE_CANDIDATE_VERSION + ' > ' + params.RELEASE_VERSION
+                    }
                 }
             }
         }
 
-        stage('Clean workspace before build') {
-            steps {
-                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
-            }
-        }
-
         stage('Checkout kie-tools') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
             steps {
                 dir('kie-tools') {
                     script {
@@ -83,7 +101,23 @@ pipeline {
             }
         }
 
+        stage('Copy legal files') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        releaseUtils.copyLegalFiles("${LEGAL_FILES_DIR}")
+                    }
+                }
+            }
+        }
+
         stage('Setup PNPM') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
             steps {
                 dir('kie-tools') {
                     script {
@@ -130,19 +164,119 @@ pipeline {
             }
         }
 
-        stage('Upload VS Code Extension - BPMN Editor (prod)') {
+        stage('Setup release candidate artifacts') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
             }
             steps {
-                dir('kie-tools') {
+                script {
+                    sh """#!/bin/bash -el
+                    mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
+                    cp "kie-tools/packages/bpmn-vscode-extension/dist/bpmn_vscode_extension_${params.RELEASE_VERSION}.vsix" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${BPMN_VSCODE_EXTENSION_RELEASE_FILE}"
+                    cp "kie-tools/packages/dmn-vscode-extension/dist/dmn_vscode_extension_${params.RELEASE_VERSION}.vsix" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${DMN_VSCODE_EXTENSION_RELEASE_FILE}"
+                    cp "kie-tools/packages/pmml-vscode-extension/dist/pmml_vscode_extension_${params.RELEASE_VERSION}.vsix" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${PMML_VSCODE_EXTENSION_RELEASE_FILE}"
+                    cp "kie-tools/packages/vscode-extension-dashbuilder-editor/dist/vscode_extension_dashbuilder_editor_${params.RELEASE_VERSION}.vsix" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE}"
+                    cp "kie-tools/packages/serverless-workflow-vscode-extension/dist/serverless_workflow_vscode_extension_${params.RELEASE_VERSION}.vsix" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE}"
+                    cp "kie-tools/packages/yard-vscode-extension/dist/yard_vscode_extension_${params.RELEASE_VERSION}.vsix" "${RELEASE_ARTIFACTS_DIR}/${YARD_VSCODE_EXTENSION_RELEASE_FILE}"
+                    cp "kie-tools/packages/vscode-extension-kogito-bundle/dist/vscode_extension_kogito_bundle_${params.RELEASE_VERSION}.vsix" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${KOGITO_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}"
+                    cp "kie-tools/packages/vscode-extension-kie-ba-bundle/dist/vscode_extension_kie_ba_bundle_${params.RELEASE_VERSION}.vsix" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${BUSINESS_AUTOMATION_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}"
+                    cp "kie-tools/packages/extended-services-vscode-extension/dist/extended_services_vscode_extension_${params.RELEASE_VERSION}.vsix" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${EXTENDED_SERVICES_VSCODE_EXTENSION_RELEASE_FILE}"
+                    """.trim()
+                }
+            }
+        }
+
+        stage('Sign release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir("${RELEASE_CANDIDATE_ARTIFACTS_DIR}") {
+                    script {
+                        releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
+                        releaseUtils.signArtifact("${BPMN_VSCODE_EXTENSION_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${DMN_VSCODE_EXTENSION_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${PMML_VSCODE_EXTENSION_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${YARD_VSCODE_EXTENSION_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${KOGITO_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${BUSINESS_AUTOMATION_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${EXTENDED_SERVICES_VSCODE_EXTENSION_RELEASE_FILE}")
+                    }
+                }
+            }
+        }
+
+        stage('Push release candidate artifacts to the staging SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${RELEASE_CANDIDATE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Download release candidate artifacts from the staging SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                script {
+                    releaseUtils.downloadReleaseArtifacts(
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${RELEASE_ARTIFACTS_DIR}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${BPMN_VSCODE_EXTENSION_RELEASE_FILE}",
+                        "${DMN_VSCODE_EXTENSION_RELEASE_FILE}",
+                        "${PMML_VSCODE_EXTENSION_RELEASE_FILE}",
+                        "${DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE}",
+                        "${SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE}",
+                        "${YARD_VSCODE_EXTENSION_RELEASE_FILE}",
+                        "${KOGITO_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}",
+                        "${BUSINESS_AUTOMATION_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}",
+                        "${EXTENDED_SERVICES_VSCODE_EXTENSION_RELEASE_FILE}"
+                    )
+                }
+            }
+        }
+
+        stage('Push release artifacts to the release SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${RELEASE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseRepository}",
+                        "${params.RELEASE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Upload VS Code Extension - BPMN Editor (prod)') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                dir("${RELEASE_ARTIFACTS_DIR}") {
                     script {
                         githubUtils.uploadReleaseAsset(
                             "${params.UPLOAD_ASSET_URL}",
-                            "packages/bpmn-vscode-extension/dist/bpmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
-                            "bpmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
+                            "${BPMN_VSCODE_EXTENSION_RELEASE_FILE}",
+                            "${BPMN_VSCODE_EXTENSION_RELEASE_FILE}",
                             'application/zip',
-                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                            "${pipelineVars.asfGithubPushCredentialsId}"
                         )
                     }
                 }
@@ -151,17 +285,17 @@ pipeline {
 
         stage('Upload VS Code Extension - DMN Editor (prod)') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
-                dir('kie-tools') {
+                dir("${RELEASE_ARTIFACTS_DIR}") {
                     script {
                         githubUtils.uploadReleaseAsset(
                             "${params.UPLOAD_ASSET_URL}",
-                            "packages/dmn-vscode-extension/dist/dmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
-                            "dmn_vscode_extension_${params.RELEASE_VERSION}.vsix",
+                            "${DMN_VSCODE_EXTENSION_RELEASE_FILE}",
+                            "${DMN_VSCODE_EXTENSION_RELEASE_FILE}",
                             'application/zip',
-                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                            "${pipelineVars.asfGithubPushCredentialsId}"
                         )
                     }
                 }
@@ -170,17 +304,17 @@ pipeline {
 
         stage('Upload VS Code Extension - PMML Editor (prod)') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
-                dir('kie-tools') {
+                dir("${RELEASE_ARTIFACTS_DIR}") {
                     script {
                         githubUtils.uploadReleaseAsset(
                             "${params.UPLOAD_ASSET_URL}",
-                            "packages/pmml-vscode-extension/dist/pmml_vscode_extension_${params.RELEASE_VERSION}.vsix",
-                            "pmml_vscode_extension_${params.RELEASE_VERSION}.vsix",
+                            "${PMML_VSCODE_EXTENSION_RELEASE_FILE}",
+                            "${PMML_VSCODE_EXTENSION_RELEASE_FILE}",
                             'application/zip',
-                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                            "${pipelineVars.asfGithubPushCredentialsId}"
                         )
                     }
                 }
@@ -189,17 +323,17 @@ pipeline {
 
         stage('Upload VS Code Extension - Kogito Bundle (prod)') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
-                dir('kie-tools') {
+                dir("${RELEASE_ARTIFACTS_DIR}") {
                     script {
                         githubUtils.uploadReleaseAsset(
                             "${params.UPLOAD_ASSET_URL}",
-                            "packages/vscode-extension-kogito-bundle/dist/vscode_extension_kogito_bundle_${params.RELEASE_VERSION}.vsix",
-                            "vscode_extension_kogito_bundle_${params.RELEASE_VERSION}.vsix",
+                            "${KOGITO_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}",
+                            "${KOGITO_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}",
                             'application/zip',
-                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                            "${pipelineVars.asfGithubPushCredentialsId}"
                         )
                     }
                 }
@@ -208,17 +342,17 @@ pipeline {
 
         stage('Upload VS Code Extension - KIE Business Automation Bundle (prod)') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
-                dir('kie-tools') {
+                dir("${RELEASE_ARTIFACTS_DIR}") {
                     script {
                         githubUtils.uploadReleaseAsset(
                             "${params.UPLOAD_ASSET_URL}",
-                            "packages/vscode-extension-kie-ba-bundle/dist/vscode_extension_kie_ba_bundle_${params.RELEASE_VERSION}.vsix",
-                            "vscode_extension_kie_ba_bundle_${params.RELEASE_VERSION}.vsix",
+                            "${BUSINESS_AUTOMATION_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}",
+                            "${BUSINESS_AUTOMATION_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}",
                             'application/zip',
-                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                            "${pipelineVars.asfGithubPushCredentialsId}"
                         )
                     }
                 }
@@ -227,17 +361,17 @@ pipeline {
 
         stage('Upload VS Code Extension - Serverless Workflow Editor - KIE (prod)') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
-                dir('kie-tools') {
+                dir("${RELEASE_ARTIFACTS_DIR}") {
                     script {
                         githubUtils.uploadReleaseAsset(
                             "${params.UPLOAD_ASSET_URL}",
-                            "packages/serverless-workflow-vscode-extension/dist/serverless_workflow_vscode_extension_${params.RELEASE_VERSION}.vsix",
-                            "serverless_workflow_vscode_extension_${params.RELEASE_VERSION}.vsix",
+                            "${SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE}",
+                            "${SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE}",
                             'application/zip',
-                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                            "${pipelineVars.asfGithubPushCredentialsId}"
                         )
                     }
                 }
@@ -246,17 +380,17 @@ pipeline {
 
         stage('Upload VS Code Extension - Dashbuilder Editor (prod)') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
-                dir('kie-tools') {
+                dir("${RELEASE_ARTIFACTS_DIR}") {
                     script {
                         githubUtils.uploadReleaseAsset(
                             "${params.UPLOAD_ASSET_URL}",
-                            "packages/vscode-extension-dashbuilder-editor/dist/vscode_extension_dashbuilder_editor_${params.RELEASE_VERSION}.vsix",
-                            "vscode_extension_dashbuilder_editor_${params.RELEASE_VERSION}.vsix",
+                            "${DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE}",
+                            "${DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE}",
                             'application/zip',
-                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                            "${pipelineVars.asfGithubPushCredentialsId}"
                         )
                     }
                 }
@@ -265,17 +399,17 @@ pipeline {
 
         stage('Upload VS Code Extension - Yard (prod)') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
-                dir('kie-tools') {
+                dir("${RELEASE_ARTIFACTS_DIR}") {
                     script {
                         githubUtils.uploadReleaseAsset(
                             "${params.UPLOAD_ASSET_URL}",
-                            "packages/yard-vscode-extension/dist/yard_vscode_extension_${params.RELEASE_VERSION}.vsix",
-                            "yard_vscode_extension_${params.RELEASE_VERSION}.vsix",
+                            "${YARD_VSCODE_EXTENSION_RELEASE_FILE}",
+                            "${YARD_VSCODE_EXTENSION_RELEASE_FILE}",
                             'application/zip',
-                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                            "${pipelineVars.asfGithubPushCredentialsId}"
                         )
                     }
                 }
@@ -284,89 +418,43 @@ pipeline {
 
         stage('Upload VS Code Extension - Extended Services (prod)') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
-                dir('kie-tools') {
+                dir("${RELEASE_ARTIFACTS_DIR}") {
                     script {
                         githubUtils.uploadReleaseAsset(
                             "${params.UPLOAD_ASSET_URL}",
-                            "packages/extended-services-vscode-extension/dist/extendend_services_vscode_extension_${params.RELEASE_VERSION}.vsix",
-                            "extendend_services_vscode_extension_${params.RELEASE_VERSION}.vsix",
+                            "${EXTENDED_SERVICES_VSCODE_EXTENSION_RELEASE_FILE}",
+                            "${EXTENDED_SERVICES_VSCODE_EXTENSION_RELEASE_FILE}",
                             'application/zip',
-                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                            "${pipelineVars.asfGithubPushCredentialsId}"
                         )
                     }
                 }
             }
         }
 
-        stage('Setup release candidate artifacts') {
+        stage('Publish to marketplace') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
             }
             steps {
-                script {
-                    env.BPMN_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-bpmn-vscode-extension.vsix"
-                    env.DMN_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-dmn-vscode-extension.vsix"
-                    env.PMML_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-pmml-vscode-extension.vsix"
-                    env.DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-dashbuilder-vscode-extension.vsix"
-                    env.SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-vscode-extension.vsix"
-                    env.YARD_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-yard-vscode-extension.vsix"
-                    env.KOGITO_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-kogito-bundle-vscode-extension.vsix"
-                    env.BUSINESS_AUTOMATION_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-business-automation-bundle-vscode-extension.vsix"
-                    env.EXTENDED_SERVICES_VSCODE_EXTENSION_RELEASE_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-extended-services-vscode-extension.vsix"
-
-                    sh """#!/bin/bash -el
-                    mkdir ${env.RELEASE_ARTIFACTS_DIR}
-                    cp "kie-tools/packages/bpmn-vscode-extension/dist/bpmn_vscode_extension_${params.RELEASE_VERSION}.vsix" "${env.RELEASE_ARTIFACTS_DIR}/${env.BPMN_VSCODE_EXTENSION_RELEASE_FILE}"
-                    cp "kie-tools/packages/dmn-vscode-extension/dist/dmn_vscode_extension_${params.RELEASE_VERSION}.vsix" "${env.RELEASE_ARTIFACTS_DIR}/${env.DMN_VSCODE_EXTENSION_RELEASE_FILE}"
-                    cp "kie-tools/packages/pmml-vscode-extension/dist/pmml_vscode_extension_${params.RELEASE_VERSION}.vsix" "${env.RELEASE_ARTIFACTS_DIR}/${env.PMML_VSCODE_EXTENSION_RELEASE_FILE}"
-                    cp "kie-tools/packages/vscode-extension-dashbuilder-editor/dist/vscode_extension_dashbuilder_editor_${params.RELEASE_VERSION}.vsix" "${env.RELEASE_ARTIFACTS_DIR}/${env.DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE}"
-                    cp "kie-tools/packages/serverless-workflow-vscode-extension/dist/serverless_workflow_vscode_extension_${params.RELEASE_VERSION}.vsix" "${env.RELEASE_ARTIFACTS_DIR}/${env.SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE}"
-                    cp "kie-tools/packages/yard-vscode-extension/dist/yard_vscode_extension_${params.RELEASE_VERSION}.vsix" "${env.RELEASE_ARTIFACTS_DIR}/${env.YARD_VSCODE_EXTENSION_RELEASE_FILE}"
-                    cp "kie-tools/packages/vscode-extension-kogito-bundle/dist/vscode_extension_kogito_bundle_${params.RELEASE_VERSION}.vsix" "${env.RELEASE_ARTIFACTS_DIR}/${env.KOGITO_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}"
-                    cp "kie-tools/packages/vscode-extension-kie-ba-bundle/dist/vscode_extension_kie_ba_bundle_${params.RELEASE_VERSION}.vsix" "${env.RELEASE_ARTIFACTS_DIR}/${env.BUSINESS_AUTOMATION_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}"
-                    cp "kie-tools/packages/extended-services-vscode-extension/dist/extended_services_vscode_extension_${params.RELEASE_VERSION}.vsix" "${env.RELEASE_ARTIFACTS_DIR}/${env.EXTENDED_SERVICES_VSCODE_EXTENSION_RELEASE_FILE}"
-                    """.trim()
-                }
-            }
-        }
-
-        stage('Sign artifacts for Apache release') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
-            steps {
-                dir("${env.RELEASE_ARTIFACTS_DIR}") {
-                    script {
-                        releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
-                        releaseUtils.signArtifact("${env.BPMN_VSCODE_EXTENSION_RELEASE_FILE}")
-                        releaseUtils.signArtifact("${env.DMN_VSCODE_EXTENSION_RELEASE_FILE}")
-                        releaseUtils.signArtifact("${env.PMML_VSCODE_EXTENSION_RELEASE_FILE}")
-                        releaseUtils.signArtifact("${env.DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE}")
-                        releaseUtils.signArtifact("${env.SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE}")
-                        releaseUtils.signArtifact("${env.YARD_VSCODE_EXTENSION_RELEASE_FILE}")
-                        releaseUtils.signArtifact("${env.KOGITO_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}")
-                        releaseUtils.signArtifact("${env.BUSINESS_AUTOMATION_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}")
-                        releaseUtils.signArtifact("${env.EXTENDED_SERVICES_VSCODE_EXTENSION_RELEASE_FILE}")
+                dir("${RELEASE_ARTIFACTS_DIR}") {
+                    withCredentials([string(credentialsId: pipelineVars.vscodeMarketplaceTokenCredentialsId, variable: 'TOKEN')]) {
+                        sh """#!/bin/bash -el
+                        npm install -g @vscode/vsce
+                        vsce publish -p ${TOKEN} --packagePath' + "${BPMN_VSCODE_EXTENSION_RELEASE_FILE}"
+                        vsce publish -p ${TOKEN} --packagePath' + "${DMN_VSCODE_EXTENSION_RELEASE_FILE}"
+                        vsce publish -p ${TOKEN} --packagePath' + "${PMML_VSCODE_EXTENSION_RELEASE_FILE}"
+                        vsce publish -p ${TOKEN} --packagePath' + "${KOGITO_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}"
+                        vsce publish -p ${TOKEN} --packagePath' + "${BUSINESS_AUTOMATION_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}"
+                        vsce publish -p ${TOKEN} --packagePath' + "${SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE}"
+                        vsce publish -p ${TOKEN} --packagePath' + "${DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE}"
+                        vsce publish -p ${TOKEN} --packagePath' + "${YARD_VSCODE_EXTENSION_RELEASE_FILE}"
+                        vsce publish -p ${TOKEN} --packagePath' + "${EXTENDED_SERVICES_VSCODE_EXTENSION_RELEASE_FILE}"
+                        """.trim()
                     }
-                }
-            }
-        }
-
-        stage('Publish Release Candidate artifacts') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
-            steps {
-                script {
-                    releaseUtils.publishArtifacts(
-                        "${env.RELEASE_ARTIFACTS_DIR}",
-                        "${pipelineVars.asfReleaseStagingRepository}",
-                        "${params.RELEASE_CANDIDATE_VERSION}",
-                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
-                    )
                 }
             }
         }
@@ -374,6 +462,7 @@ pipeline {
 
     post {
         always {
+            archiveArtifacts artifacts: 'release-candidate-artifacts/*,release-artifacts/*', allowEmptyArchive: true
             cleanWs(deleteDirs: true)
         }
     }

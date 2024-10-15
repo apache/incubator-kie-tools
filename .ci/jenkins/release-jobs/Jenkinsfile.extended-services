@@ -28,10 +28,11 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
-        string(description: 'Base Ref', name: 'BASE_REF')
-        string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL')
+        string(description: 'Base Ref', name: 'BASE_REF', defaultValue: '')
+        string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL', defaultValue: '')
+        string(description: 'Release Version', name: 'RELEASE_VERSION')
         string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
+        choice(description: 'Job Type', name: 'JOB_TYPE', choices: ['release-candidate', 'release-promote'])
     }
 
     environment {
@@ -41,6 +42,12 @@ pipeline {
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
+        RELEASE_CANDIDATE_ARTIFACTS_DIR = "${WORKSPACE}/release-candidate-artifacts"
+        LEGAL_FILES_DIR = "${WORKSPACE}/legal-files"
+
+        EXTENDED_SERVICES_LINUX_X86_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sandbox-extended-services-linux-x86.zip"
+        EXTENDED_SERVICES_MACOS_X86_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sandbox-extended-services-macOS-x86.zip"
+        EXTENDED_SERVICES_WINDOWS_X86_RELEASE_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sandbox-extended-services-windows-x86.zip"
 
         PNPM_FILTER_STRING = '-F @kie-tools/extended-services...'
     }
@@ -57,21 +64,26 @@ pipeline {
             }
         }
 
-        stage('Start required services for build and tests (DinD, Xvfb, Fluxbox)') {
+        stage('Initialize') {
             steps {
                 script {
                     buildUtils.startRequiredServices()
+
+                    cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+
+                    if (params.JOB_TYPE == 'release-candidate') {
+                        currentBuild.displayName = 'Release Candidate: ' + params.RELEASE_CANDIDATE_VERSION
+                    } else {
+                        currentBuild.displayName = 'Release Promotion: ' + params.RELEASE_CANDIDATE_VERSION + ' > ' + params.RELEASE_VERSION
+                    }
                 }
             }
         }
 
-        stage('Clean workspace before build') {
-            steps {
-                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
-            }
-        }
-
         stage('Checkout kie-tools') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
             steps {
                 dir('kie-tools') {
                     script {
@@ -85,7 +97,23 @@ pipeline {
             }
         }
 
+        stage('Copy legal files') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        releaseUtils.copyLegalFiles("${LEGAL_FILES_DIR}")
+                    }
+                }
+            }
+        }
+
         stage('Setup PNPM') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
             steps {
                 dir('kie-tools') {
                     script {
@@ -96,39 +124,26 @@ pipeline {
         }
 
         stage('PNPM Bootstrap') {
+            when {
+                expression { params.JOB_TYPE == 'release-candidate' }
+            }
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBootstrap("${PNPM_FILTER_STRING}")
                     }
                 }
             }
         }
 
         stage('Build') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
-                    }
-                }
-            }
-        }
-
-        stage('Upload Extended Services for Linux') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
+                expression { params.JOB_TYPE == 'release-candidate' }
             }
             steps {
                 dir('kie-tools') {
                     script {
-                        githubUtils.uploadReleaseAsset(
-                            "${params.UPLOAD_ASSET_URL}",
-                            'packages/extended-services/dist/linux/kie_sandbox_extended_services.tar.gz',
-                            "kie_sandbox_extended_services_linux_${params.RELEASE_VERSION}.tar.gz",
-                            'application/tar+gzip',
-                            "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
-                        )
+                        buildUtils.pnpmBuild("${PNPM_FILTER_STRING}")
                     }
                 }
             }
@@ -136,43 +151,42 @@ pipeline {
 
         stage('Setup release candidate artifacts') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
             }
             steps {
                 script {
-                    env.RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-extended-services-linux-x86.zip"
-
                     sh """#!/bin/bash -el
-                    mkdir ${env.RELEASE_ARTIFACTS_DIR}
+                    mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
+                    cp "${LEGAL_FILES_DIR}/*" kie-tools/packages/extended-services/dist/linux
                     cd kie-tools/packages/extended-services/dist/linux
-                    zip "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_ZIP_FILE}" ./kie_sandbox_extended_services
+                    zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${EXTENDED_SERVICES_LINUX_X86_RELEASE_FILE}" ./kie_sandbox_extended_services ./NOTICE ./LICENSE ./DISCLAIMER-WIP
                     """.trim()
                 }
             }
         }
 
-        stage('Sign artifacts for Apache release') {
+        stage('Sign release candidate artifacts') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
             }
             steps {
-                dir("${env.RELEASE_ARTIFACTS_DIR}") {
+                dir("${RELEASE_ARTIFACTS_DIR}") {
                     script {
                         releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
-                        releaseUtils.signArtifact("${RELEASE_ZIP_FILE}")
+                        releaseUtils.signArtifact("${EXTENDED_SERVICES_LINUX_X86_RELEASE_FILE}")
                     }
                 }
             }
         }
 
-        stage('Publish Release Candidate artifacts') {
+        stage('Push release candidate artifacts to the staging SVN') {
             when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
             }
             steps {
                 script {
                     releaseUtils.publishArtifacts(
-                        "${env.RELEASE_ARTIFACTS_DIR}",
+                        "${RELEASE_CANDIDATE_ARTIFACTS_DIR}",
                         "${pipelineVars.asfReleaseStagingRepository}",
                         "${params.RELEASE_CANDIDATE_VERSION}",
                         "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
@@ -180,10 +194,102 @@ pipeline {
                 }
             }
         }
+
+        stage('Download release candidate artifacts from the staging SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                script {
+                    releaseUtils.downloadReleaseArtifacts(
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${RELEASE_ARTIFACTS_DIR}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${EXTENDED_SERVICES_LINUX_X86_RELEASE_FILE}",
+                        "${EXTENDED_SERVICES_MACOS_X86_RELEASE_FILE}",
+                        "${EXTENDED_SERVICES_WINDOWS_X86_RELEASE_FILE}"
+                    )
+                }
+            }
+        }
+
+        stage('Push release artifacts to the release SVN') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${RELEASE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseRepository}",
+                        "${params.RELEASE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Upload Extended Services for Linux') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                dir("${RELEASE_ARTIFACTS_DIR}") {
+                    script {
+                        githubUtils.uploadReleaseAsset(
+                            "${params.UPLOAD_ASSET_URL}",
+                            "${EXTENDED_SERVICES_LINUX_X86_RELEASE_FILE}",
+                            "${EXTENDED_SERVICES_LINUX_X86_RELEASE_FILE}",
+                            'application/zip',
+                            "${pipelineVars.asfGithubPushCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Upload Extended Services for MacOS') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                dir("${RELEASE_ARTIFACTS_DIR}") {
+                    script {
+                        githubUtils.uploadReleaseAsset(
+                            "${params.UPLOAD_ASSET_URL}",
+                            "${EXTENDED_SERVICES_MACOS_X86_RELEASE_FILE}",
+                            "${EXTENDED_SERVICES_MACOS_X86_RELEASE_FILE}",
+                            'application/zip',
+                            "${pipelineVars.asfGithubPushCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Upload Extended Services for Windows') {
+            when {
+                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
+            }
+            steps {
+                dir("${RELEASE_ARTIFACTS_DIR}") {
+                    script {
+                        githubUtils.uploadReleaseAsset(
+                            "${params.UPLOAD_ASSET_URL}",
+                            "${EXTENDED_SERVICES_WINDOWS_X86_RELEASE_FILE}",
+                            "${EXTENDED_SERVICES_WINDOWS_X86_RELEASE_FILE}",
+                            'application/zip',
+                            "${pipelineVars.asfGithubPushCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
     }
 
     post {
         always {
+            archiveArtifacts artifacts: 'release-candidate-artifacts/*,release-artifacts/*', allowEmptyArchive: true
             cleanWs(deleteDirs: true)
         }
     }
