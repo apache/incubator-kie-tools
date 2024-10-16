@@ -41,7 +41,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-13, windows-latest]
-        partition: [0, 1]
+        partition: [0]
     runs-on: ${{ matrix.os }}
     steps:
       - name: "Support longpaths"
@@ -76,30 +76,30 @@ jobs:
         shell: bash
         run: |
 
-          npm -g install bun@1.1.6 turbo@2.1.2
+          # npm -g install bun@1.1.6 turbo@2.1.2
 
-          echo '{}' > turbo.json
+          # echo '{}' > turbo.json
 
-          turbo telemetry disable
+          # turbo telemetry disable
 
-          bun ./.github/supporting-files/ci/build-partitioning/build_partitioning.ts \
-            --outputPath='/tmp/partitions.json' \
-            --forceFull='${{ !github.event.pull_request }}' \
-            --baseSha='${{ steps.checkout_pr.outputs.base_sha }}' \
-            --headSha='${{steps.checkout_pr.outputs.head_sha }}' \
-            --graphJsonPath='./repo/graph.json' \
-            --partition='./.github/supporting-files/ci/partitions/partition0.txt' \
-            --partition='./.github/supporting-files/ci/partitions/partition1.txt'
+          # bun ./.github/supporting-files/ci/build-partitioning/build_partitioning.ts \
+          #   --outputPath='/tmp/partitions.json' \
+          #   --forceFull='${{ !github.event.pull_request }}' \
+          #   --baseSha='${{ steps.checkout_pr.outputs.base_sha }}' \
+          #   --headSha='${{steps.checkout_pr.outputs.head_sha }}' \
+          #   --graphJsonPath='./repo/graph.json' \
+          #   --partition='./.github/supporting-files/ci/partitions/partition0.txt' \
+          #   --partition='./.github/supporting-files/ci/partitions/partition1.txt'
 
-          npm -g uninstall bun turbo
+          # npm -g uninstall bun turbo
 
-          rm turbo.json
+          # rm turbo.json
 
-          echo "mode=$(jq --raw-output '.[${{ matrix.partition }}].mode' /tmp/partitions.json)" >> $GITHUB_OUTPUT
-          echo "bootstrapPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].bootstrapPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT
-          echo "fullBuildPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].fullBuildPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT
-          echo "upstreamPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].upstreamPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT
-          echo "affectedPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].affectedPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT
+          echo "mode=partial" >> $GITHUB_OUTPUT
+          echo "bootstrapPnpmFilterString='-F kie-editors-dev-vscode-extension...'" >> $GITHUB_OUTPUT
+          echo "fullBuildPnpmFilterString='-F kie-editors-dev-vscode-extension...'" >> $GITHUB_OUTPUT
+          echo "upstreamPnpmFilterString='-F kie-editors-dev-vscode-extension^...'" >> $GITHUB_OUTPUT
+          echo "affectedPnpmFilterString='-F kie-editors-dev-vscode-extension'" >> $GITHUB_OUTPUT
           echo "Done."
 
       - name: "Setup environment"
