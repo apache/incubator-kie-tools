@@ -174,58 +174,6 @@
         <directory>src/main/resources</directory>
       </resource>
     </resources>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <artifactId>maven-site-plugin</artifactId>
-          <dependencies>
-            <dependency>
-              <groupId>org.apache.commons</groupId>
-              <artifactId>commons-compress</artifactId>
-            </dependency>
-            <dependency>
-              <groupId>org.iq80.snappy</groupId>
-              <artifactId>snappy</artifactId>
-            </dependency>
-          </dependencies>
-        </plugin>
-        <plugin>
-          <artifactId>maven-remote-resources-plugin</artifactId>
-          <dependencies>
-            <dependency>
-              <groupId>org.apache.commons</groupId>
-              <artifactId>commons-compress</artifactId>
-            </dependency>
-            <dependency>
-              <groupId>org.iq80.snappy</groupId>
-              <artifactId>snappy</artifactId>
-            </dependency>
-          </dependencies>
-        </plugin>
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <dependencies>
-            <dependency>
-              <groupId>org.iq80.snappy</groupId>
-              <artifactId>snappy</artifactId>
-            </dependency>
-          </dependencies>
-        </plugin>
-        <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <dependencies>
-            <dependency>
-              <groupId>org.iq80.snappy</groupId>
-              <artifactId>snappy</artifactId>
-            </dependency>
-            <dependency>
-              <groupId>org.apache.commons</groupId>
-              <artifactId>commons-compress</artifactId>
-            </dependency>
-          </dependencies>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>io.quarkus</groupId>
