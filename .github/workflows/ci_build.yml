@@ -96,7 +96,7 @@ jobs:
           # rm turbo.json
 
           echo "mode=partial" >> $GITHUB_OUTPUT
-          echo "bootstrapPnpmFilterString=--filter=kie-editors-dev-vscode-extension..." >> $GITHUB_OUTPUT
+          echo "bootstrapPnpmFilterString=" >> $GITHUB_OUTPUT
           echo "fullBuildPnpmFilterString=--filter=kie-editors-dev-vscode-extension..." >> $GITHUB_OUTPUT
           echo "upstreamPnpmFilterString=--filter=kie-editors-dev-vscode-extension^..." >> $GITHUB_OUTPUT
           echo "affectedPnpmFilterString=--filter=kie-editors-dev-vscode-extension" >> $GITHUB_OUTPUT
