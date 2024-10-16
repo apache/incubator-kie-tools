@@ -72,18 +72,21 @@ const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
             goToProcessDefinition();
           },
         },
-        {
-          label: "Go to Process details",
-          onClick: () => {
-            setNotification(null);
-            goToProcessDetails();
-          },
-        },
       ],
       close: () => {
         setNotification(null);
       },
     });
+    return (
+      <>
+        {processId && (
+          <div>
+            <label>Go to Process details</label>
+            <button onClick={handleClick}>Click Here</button>
+          </div>
+        )}
+      </>
+    );
   };
 
   const onSubmitSuccess = (id: string): void => {
@@ -95,6 +98,11 @@ const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const onSubmitError = (details?: string) => {
     const message = "Failed to start the process.";
     showNotification("error", message, details);
+  };
+
+  const handleClick = () => {
+    setNotification(null);
+    goToProcessDetails();
   };
 
   return (
