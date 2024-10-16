@@ -34,7 +34,7 @@ import DecisionNavigatorHelper from "./helpers/dmn/DecisionNavigatorHelper";
  * file for the integration e.g. "extensions-editors-dmn-bpmn.test.ts"
  */
 describe("KIE Editors End to End Test Suite - DMN Editor", () => {
-  const RESOURCES: string = path.resolve("e2e-tests-tmp", "resources");
+  const RESOURCES: string = path.resolve("new-e2e-tests-tmp", "resources");
   const DIST_E2E_TESTS_FOLDER: string = path.resolve("dist-tests-e2e");
   const DEMO_DMN: string = "demo.dmn";
   const DEMO_EXPRESSION_DMN: string = "demo-expression.dmn";

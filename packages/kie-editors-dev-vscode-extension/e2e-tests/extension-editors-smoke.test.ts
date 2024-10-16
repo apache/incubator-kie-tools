@@ -30,7 +30,7 @@ import PmmlEditorTestHelper from "./helpers/PmmlEditorTestHelper";
  * Anything above this level should go to respectives editors test suite.
  */
 describe("KIE Editors End to End Test Suite - Smoke tests", () => {
-  const RESOURCES: string = path.resolve("e2e-tests-tmp", "resources");
+  const RESOURCES: string = path.resolve("new-e2e-tests-tmp", "resources");
   const DIST_E2E_TESTS_FOLDER: string = path.resolve("dist-tests-e2e");
   const DEMO_BPMN: string = "demo.bpmn";
   const DEMO_DMN: string = "demo.dmn";

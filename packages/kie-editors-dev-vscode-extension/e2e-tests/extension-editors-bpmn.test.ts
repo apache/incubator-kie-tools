@@ -43,7 +43,7 @@ import ImplementationExecutionHelper from "./helpers/bpmn/ImplementationExecutio
  */
 
 describe("KIE Editors End to End Test Suite - BPMN Editor", () => {
-  const RESOURCES: string = path.resolve("e2e-tests-tmp", "resources");
+  const RESOURCES: string = path.resolve("new-e2e-tests-tmp", "resources");
   const DIST_E2E_TESTS_FOLDER: string = path.resolve("dist-tests-e2e");
   const MULTIPLE_INSTANCE_BPMN: string = "MultipleInstanceSubprocess.bpmn";
   const USER_TASK_BPMN: string = "UserTask.bpmn";
