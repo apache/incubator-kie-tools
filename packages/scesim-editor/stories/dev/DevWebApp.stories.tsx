@@ -17,26 +17,22 @@
  * under the License.
  */
 
-import React, { useCallback, useRef, useState, useEffect } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { SceSimEditorWrapper, SceSimEditorWrapperProps } from "../scesimEditorStoriesWrapper";
-import { Button, Flex, FlexItem, Page, PageSection } from "@patternfly/react-core/dist/js";
-import { TestScenarioEditorRef } from "../../src/TestScenarioEditor";
-import { SceSimMarshaller } from "../../../scesim-marshaller/src/index";
-import { SceSimModel, getMarshaller } from "@kie-tools/scesim-marshaller";
+import "@patternfly/react-core/dist/styles/base.css";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js";
+import { SceSimMarshaller, SceSimModel, getMarshaller } from "@kie-tools/scesim-marshaller";
+import { OnSceSimModelChange, TestScenarioEditorProps } from "../../src/TestScenarioEditor";
+import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
 import { emptySceSim } from "../misc/empty/Empty.stories";
 import { isOldEnoughDrl } from "../useCases/IsOldEnoughRule.stories";
 import { trafficViolationDmn } from "../useCases/TrafficViolationDmn.stories";
-import { useArgs } from "@storybook/preview-api";
-
 import "./DevWebApp.css";
 
-type DevWebAppProps = SceSimEditorWrapperProps;
-
-function DevWebApp(props: DevWebAppProps) {
-  const ref = useRef<TestScenarioEditorRef>(null);
-  const [args, updateArgs] = useArgs<DevWebAppProps>();
-
+function DevWebApp(args: TestScenarioEditorProps) {
   const [state, setState] = useState<{ marshaller: SceSimMarshaller; stack: SceSimModel[]; pointer: number }>(() => {
     const emptySceSimMarshaller = getMarshaller(emptySceSim);
     return {
@@ -46,8 +42,49 @@ function DevWebApp(props: DevWebAppProps) {
     };
   });
 
-  const onSelectModel = useCallback((newModel) => {
-    const model = getMarshaller(newModel).parser.parse();
+  const currentModel = state.stack[state.pointer];
+  const downloadRef = useRef<HTMLAnchorElement>(null);
+  const isUndoEnabled = state.pointer > 0;
+  const isRedoEnabled = state.pointer !== state.stack.length - 1;
+
+  const copyAsXml = useCallback(() => {
+    navigator.clipboard.writeText(state.marshaller.builder.build(currentModel));
+  }, [currentModel, state.marshaller.builder]);
+
+  const downloadAsXml = useCallback(() => {
+    if (downloadRef.current) {
+      const fileBlob = new Blob([state.marshaller.builder.build(currentModel)], { type: "text/xml" });
+      downloadRef.current.download = `scesim-test-${makeid(10)}.scesim`;
+      downloadRef.current.href = URL.createObjectURL(fileBlob);
+      downloadRef.current.click();
+    }
+  }, [currentModel, state.marshaller.builder]);
+
+  const onDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault(); // Necessary to disable the browser's default 'onDrop' handling.
+  }, []);
+
+  const onDrop = useCallback((e: React.DragEvent) => {
+    console.log("Test Scenario Editor :: Dev webapp :: File(s) dropped! Opening it.");
+
+    e.preventDefault(); // Necessary to disable the browser's default 'onDrop' handling.
+
+    if (e.dataTransfer.items) {
+      // Use DataTransferItemList interface to access the file(s)
+      [...e.dataTransfer.items].forEach((item, i) => {
+        if (item.kind === "file") {
+          const reader = new FileReader();
+          reader.addEventListener("load", ({ target }) => {
+            const marshaller = getMarshaller(target?.result as string);
+            setState({ marshaller, stack: [marshaller.parser.parse()], pointer: 0 });
+          });
+          reader.readAsText(item.getAsFile() as any);
+        }
+      });
+    }
+  }, []);
+
+  const onModelChange = useCallback<OnSceSimModelChange>((model) => {
     setState((prev) => {
       const newStack = prev.stack.slice(0, prev.pointer + 1);
       return {
@@ -58,26 +95,15 @@ function DevWebApp(props: DevWebAppProps) {
     });
   }, []);
 
-  const onDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault(); // Necessary to disable the browser's default 'onDrop' handling.
+  const onSelectModel = useCallback(
+    (newModel) => {
+      onModelChange(getMarshaller(newModel).parser.parse());
+    },
+    [onModelChange]
+  );
 
-    if (e.dataTransfer.items) {
-      // Use DataTransferItemList interface to access the file(s)
-      [...e.dataTransfer.items].forEach((item, i) => {
-        if (item.kind === "file") {
-          const fileName = item.getAsFile()?.name;
-          const reader = new FileReader();
-          reader.addEventListener("load", ({ target }) =>
-            ref.current?.setContent(fileName ?? "", target?.result as string)
-          );
-          reader.readAsText(item.getAsFile() as any);
-        }
-      });
-    }
-  }, []);
-
-  const onDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault(); // Necessary to disable the browser's default 'onDrop' handling.
+  const redo = useCallback(() => {
+    setState((prev) => ({ ...prev, pointer: Math.min(prev.stack.length - 1, prev.pointer + 1) }));
   }, []);
 
   const reset = useCallback(() => {
@@ -89,40 +115,27 @@ function DevWebApp(props: DevWebAppProps) {
     });
   }, []);
 
-  const currentModel = state.stack[state.pointer];
+  const undo = useCallback(() => {
+    setState((prev) => ({ ...prev, pointer: Math.max(0, prev.pointer - 1) }));
+  }, []);
 
-  const downloadRef = useRef<HTMLAnchorElement>(null);
-  const downloadAsXml = useCallback(() => {
-    if (downloadRef.current) {
-      const fileBlob = new Blob([state.marshaller.builder.build(currentModel)], { type: "text/xml" });
-      downloadRef.current.download = `scesim-${makeid(10)}.scesim`;
-      downloadRef.current.href = URL.createObjectURL(fileBlob);
-      downloadRef.current.click();
-    }
-  }, [currentModel, state.marshaller.builder]);
+  /* TODO: DMN DATA Retieve
+  const externalModelsByNamespace = useMemo<ExternalModelsIndex>(() => {
+    return (currentModel.definitions.import ?? []).reduce((acc, i) => {
+      acc[i["@_namespace"]] = modelsByNamespace[i["@_namespace"]];
+      return acc;
+    }, {} as ExternalModelsIndex);
+  }, [currentModel.definitions.import]);
 
-  const copyAsXml = useCallback(() => {
-    navigator.clipboard.writeText(state.marshaller.builder.build(currentModel));
-  }, [currentModel, state.marshaller.builder]);
-
-  useEffect(() => {
-    updateArgs({ content: state.marshaller.builder.build(state.stack[state.stack.length - 1]) });
-  }, [state.marshaller.builder, state.stack, updateArgs]);
-
-  useEffect(() => {
-    onSelectModel(args.content);
-  }, [args.content, onSelectModel]);
+  const onRequestExternalModelByPath = useCallback<OnRequestExternalModelByPath>(async (path) => {
+    return availableModelsByPath[path] ?? null;
+  }, []);*/
 
   return (
-    <>
-      <div>
-        <Page onDragOver={onDragOver} onDrop={onDrop}>
-          <PageSection
-            aria-label={"dev-app-header"}
-            variant={"light"}
-            isFilled={false}
-            padding={{ default: "padding" }}
-          >
+    <Page onDragOver={onDragOver} onDrop={onDrop}>
+      <PageSection aria-label={"dev-app-header"} variant={"light"} isFilled={false}>
+        <Stack hasGutter>
+          <StackItem>
             <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
               <FlexItem shrink={{ default: "shrink" }}>
                 <h3>Test Scenario Editor :: Dev WebApp</h3>
@@ -130,6 +143,10 @@ function DevWebApp(props: DevWebAppProps) {
               <FlexItem>
                 <h5>(Drag & drop a file anywhere to open it)</h5>
               </FlexItem>
+            </Flex>
+          </StackItem>
+          <StackItem>
+            <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
               <FlexItem shrink={{ default: "shrink" }}>
                 <Button onClick={() => onSelectModel(emptySceSim)}>Empty</Button>
                 &nbsp; &nbsp;
@@ -137,31 +154,56 @@ function DevWebApp(props: DevWebAppProps) {
                 &nbsp; &nbsp;
                 <Button onClick={() => onSelectModel(trafficViolationDmn)}>Traffic Violation</Button>
                 &nbsp; &nbsp; | &nbsp; &nbsp;
-                <button onClick={reset}>Reset</button>
+                <Button
+                  onClick={undo}
+                  disabled={!isUndoEnabled}
+                  style={{ opacity: isUndoEnabled ? 1 : 0.5 }}
+                  variant="secondary"
+                >
+                  {`Undo (${state.pointer})`}
+                </Button>
                 &nbsp; &nbsp;
-                <button onClick={copyAsXml}>Copy as XML</button>
+                <Button
+                  onClick={redo}
+                  disabled={!isRedoEnabled}
+                  style={{ opacity: isRedoEnabled ? 1 : 0.5 }}
+                  variant="secondary"
+                >
+                  {`Redo (${state.stack.length - 1 - state.pointer})`}
+                </Button>
+                &nbsp; &nbsp; | &nbsp; &nbsp;
+                <Button onClick={reset} variant="tertiary">
+                  Reset
+                </Button>
                 &nbsp; &nbsp;
-                <button onClick={downloadAsXml}>Download as XML</button>
+                <Button onClick={copyAsXml} variant="tertiary">
+                  Copy as XML
+                </Button>
+                &nbsp; &nbsp;
+                <Button onClick={downloadAsXml} variant="tertiary">
+                  Download
+                </Button>
               </FlexItem>
             </Flex>
-            <a ref={downloadRef} />
-          </PageSection>
-          <hr />
-          <PageSection
-            aria-label={"dev-app-body"}
-            className={"section-body"}
-            isFilled={true}
-            hasOverflowScroll={true}
-            variant={"light"}
-          >
-            {SceSimEditorWrapper({
-              pathRelativeToTheWorkspaceRoot: "dev.scesim",
-              content: state.marshaller.builder.build(state.stack[state.stack.length - 1]),
-            })}
-          </PageSection>
-        </Page>
-      </div>
-    </>
+          </StackItem>
+        </Stack>
+        <a ref={downloadRef} />
+      </PageSection>
+      <hr />
+      <PageSection
+        aria-label={"dev-app-body"}
+        className={"section-body"}
+        isFilled={true}
+        hasOverflowScroll={true}
+        variant={"light"}
+      >
+        {SceSimEditorWrapper({
+          issueTrackerHref: args.issueTrackerHref,
+          model: currentModel,
+          onModelChange: onModelChange,
+        })}
+      </PageSection>
+    </Page>
   );
 }
 
@@ -177,18 +219,18 @@ function makeid(length: number) {
   return result;
 }
 
-const meta: Meta<DevWebAppProps> = {
+const meta: Meta<typeof DevWebApp> = {
   title: "Dev/Web App",
   component: DevWebApp,
 };
 
 export default meta;
-type Story = StoryObj<DevWebAppProps>;
+type Story = StoryObj<typeof DevWebApp>;
 
 export const WebApp: Story = {
   render: (args) => DevWebApp(args),
   args: {
-    pathRelativeToTheWorkspaceRoot: "dev.scesim",
-    content: emptySceSim,
+    issueTrackerHref: "https://github.com/apache/incubator-kie-issues/issues/new",
+    model: getMarshaller(emptySceSim).parser.parse(),
   },
 };
