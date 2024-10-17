@@ -23,9 +23,11 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
-} from "@patternfly/react-core/dist/js/components/EmptyState";
+  EmptyStateHeader,
+  EmptyStateFooter,
+} from "@patternfly/react-core/components";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { SearchIcon } from "@patternfly/react-icons/dist/js/icons/search-icon";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
@@ -52,29 +54,28 @@ export const KogitoEmptyState: React.FC<IOwnProps & OUIAProps> = ({ type, title,
       <EmptyState variant={EmptyStateVariant.full}>
         {type === KogitoEmptyStateType.Search && <EmptyStateIcon icon={SearchIcon} />}
         {(type === KogitoEmptyStateType.Refresh || type === KogitoEmptyStateType.Reset) && (
-          <EmptyStateIcon icon={ExclamationTriangleIcon} color="var(--pf-global--warning-color--100)" />
+          <EmptyStateIcon icon={ExclamationTriangleIcon} color="var(--pf-v5-global--warning-color--100)" />
         )}
         {type === KogitoEmptyStateType.Info && (
-          <EmptyStateIcon icon={InfoCircleIcon} color="var(--pf-global--info-color--100)" />
+          <EmptyStateIcon icon={InfoCircleIcon} color="var(--pf-v5-global--info-color--100)" />
         )}
 
-        <Title headingLevel="h5" size="lg">
-          {title}
-        </Title>
+        <EmptyStateHeader titleText={<>{title}</>} headingLevel="h5" />
 
         <EmptyStateBody>{body}</EmptyStateBody>
+        <EmptyStateFooter>
+          {type === KogitoEmptyStateType.Refresh && (
+            <Button variant="primary" onClick={onClick}>
+              Refresh
+            </Button>
+          )}
 
-        {type === KogitoEmptyStateType.Refresh && (
-          <Button variant="primary" onClick={onClick}>
-            Refresh
-          </Button>
-        )}
-
-        {type === KogitoEmptyStateType.Reset && (
-          <Button variant="link" onClick={onClick}>
-            Reset to default
-          </Button>
-        )}
+          {type === KogitoEmptyStateType.Reset && (
+            <Button variant="link" onClick={onClick}>
+              Reset to default
+            </Button>
+          )}
+        </EmptyStateFooter>
       </EmptyState>
     </Bullseye>
   );

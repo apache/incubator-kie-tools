@@ -7257,17 +7257,17 @@ importers:
         specifier: workspace:*
         version: link:../uniforms-patternfly
       '@patternfly/react-core':
-        specifier: ^4.276.6
-        version: 4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        specifier: ^5.4.1
+        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@patternfly/react-icons':
-        specifier: ^4.93.6
-        version: 4.93.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        specifier: ^5.4.0
+        version: 5.4.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@patternfly/react-styles':
-        specifier: ^4.92.6
-        version: 4.92.6
+        specifier: ^5.4.0
+        version: 5.4.0
       '@patternfly/react-table':
-        specifier: ^4.112.39
-        version: 4.112.39(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        specifier: ^5.4.1
+        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       ajv:
         specifier: ^8.17.1
         version: 8.17.1

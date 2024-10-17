@@ -18,11 +18,11 @@
  */
 
 .kogito-components-common__load-more {
-  margin-bottom: var(--pf-global--spacer--lg) !important;
+  margin-bottom: var(--pf-v5-global--spacer--lg) !important;
   text-align: center;
 }
 
-.pf-c-spinner .pf-m-md .kogito-components-common__load-more-spinner {
+.pf-v5-c-spinner .pf-m-md .kogito-components-common__load-more-spinner {
   overflow: hidden;
   margin-left: 5px;
 }
@@ -36,12 +36,12 @@
   height: 350px;
   padding: 5px;
 }
-.kogito-consoles-common--aboutModalBox .pf-c-about-modal-box__hero {
+.kogito-consoles-common--aboutModalBox .pf-v5-c-about-modal-box__hero {
   background-attachment: unset;
 }
 
-.kogito-consoles-common--PageLayout .pf-c-page__header-brand-link .pf-c-brand {
-  --pf-c-page__header-brand-link--c-brand--MaxHeight: 42px;
+.kogito-consoles-common--PageLayout .pf-v5-c-page__header-brand-link .pf-v5-c-brand {
+  --pf-v5-c-page__header-brand-link--c-brand--MaxHeight: 42px;
 }
 
 .page--toolbar {

@@ -20,16 +20,12 @@
 import React, { useState } from "react";
 import { DataList, DataListItem, DataListCell } from "@patternfly/react-core/dist/js/components/DataList";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
-import {
-  DropdownItem,
-  Dropdown,
-  DropdownToggle,
-  DropdownToggleAction,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownItem, Dropdown, DropdownToggle, DropdownToggleAction } from "@patternfly/react-core/deprecated";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { OUIAProps, componentOuiaProps } from "../../ouiaTools";
 import "../styles.css";
 import { CheckIcon } from "@patternfly/react-icons/dist/js/icons/check-icon";
+import { Icon } from "@patternfly/react-core";
 
 interface IOwnProps {
   offset: number;
@@ -76,7 +72,10 @@ export const LoadMore: React.FC<IOwnProps & OUIAProps> = ({
           <SplitItem>Load {count} more</SplitItem>
           {loadMoreValue === count && (
             <SplitItem>
-              <CheckIcon size="sm" color="var(--pf-global--info-color--100)" />
+              <Icon size="sm" color="var(--pf-v5-global--info-color--100)">
+                <CheckIcon />
+              </Icon>
+              {/* <CheckIcon size="sm" color="var(--pf-v5-global--info-color--100)" /> */}
             </SplitItem>
           )}
         </Split>
@@ -90,14 +89,14 @@ export const LoadMore: React.FC<IOwnProps & OUIAProps> = ({
     >
       <DataListItem aria-labelledby="kie-datalist-item">
         <DataListCell className="kogito-components-common__load-more">
-          <div className="pf-u-float-right pf-u-mr-md">
+          <div className="pf-v5-u-float-right pf-v5-u-mr-md">
             <Dropdown
               onSelect={onSelect}
               direction="up"
               toggle={
                 <DropdownToggle
                   id={`toggle-id`}
-                  onToggle={onToggle}
+                  onToggle={(_event, isDropdownOpen: boolean) => onToggle(isDropdownOpen)}
                   splitButtonItems={[
                     <DropdownToggleAction
                       key={`toggle-id-${ouiaId}`}

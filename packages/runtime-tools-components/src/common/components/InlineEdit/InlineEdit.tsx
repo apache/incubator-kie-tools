@@ -72,41 +72,41 @@ export const InlineEdit = React.forwardRef<InlineEditApi, InlineEditProps & OUIA
     return (
       <div
         {...componentOuiaProps(ouiaId, "inline-edit", ouiaSafe)}
-        className={`pf-c-inline-edit ${isEditable && "pf-m-inline-editable"}`}
+        className={`pf-v5-c-inline-edit ${isEditable && "pf-m-inline-editable"}`}
         id="inline-edit-toggle-example"
       >
-        <div className="pf-c-inline-edit__group">
-          <div className="pf-c-inline-edit__value" id="single-editable-example-label">
+        <div className="pf-v5-c-inline-edit__group">
+          <div className="pf-v5-c-inline-edit__value" id="single-editable-example-label">
             {currentBusinessKey.length > 0 ? (
               currentBusinessKey
             ) : (
-              <span className="pf-u-disabled-color-100">Business key</span>
+              <span className="pf-v5-u-disabled-color-100">Business key</span>
             )}
           </div>
-          <div className="pf-c-inline-edit__action pf-m-enable-editable">
+          <div className="pf-v5-c-inline-edit__action pf-m-enable-editable">
             <Button variant="plain" onClick={toggleEditableMode}>
               <PencilAltIcon />
             </Button>
           </div>
         </div>
 
-        <div className="pf-c-inline-edit__group">
-          <div className="pf-c-inline-edit__input">
+        <div className="pf-v5-c-inline-edit__group">
+          <div className="pf-v5-c-inline-edit__input">
             <TextInput
               value={inputValue}
               type="text"
               placeholder={"Enter business key"}
-              onChange={setInputValue}
+              onChange={(_event, val) => setInputValue(val)}
               aria-label="text input example"
             />
           </div>
-          <div className="pf-c-inline-edit__group pf-m-action-group pf-m-icon-group">
-            <div className="pf-c-inline-edit__action pf-m-valid">
+          <div className="pf-v5-c-inline-edit__group pf-m-action-group pf-m-icon-group">
+            <div className="pf-v5-c-inline-edit__action pf-m-valid">
               <Button variant="plain" onClick={() => confirmBusinessKey(true)}>
                 <CheckIcon />
               </Button>
             </div>
-            <div className="pf-c-inline-edit__action">
+            <div className="pf-v5-c-inline-edit__action">
               <Button variant="plain" onClick={() => confirmBusinessKey(false)}>
                 <TimesIcon />
               </Button>

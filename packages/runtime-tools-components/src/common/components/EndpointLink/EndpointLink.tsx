@@ -46,7 +46,7 @@ export const EndpointLink: React.FC<IOwnProps & OUIAProps> = ({
         {...componentOuiaProps(ouiaId, "endpoint-link", ouiaSafe)}
       >
         {isLinkShown ? serviceUrl : linkLabel || "Endpoint"}
-        {<ExternalLinkAltIcon className="pf-u-ml-xs" />}
+        {<ExternalLinkAltIcon className="pf-v5-u-ml-xs" />}
       </Button>
     );
   } else {

@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import { Page, PageHeader, PageHeaderTools, PageSidebar } from "@patternfly/react-core/dist/js/components/Page";
+import { Page, PageSidebar } from "@patternfly/react-core/dist/js/components/Page";
+import { PageHeader, PageHeaderTools } from "@patternfly/react-core/deprecated";
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { componentOuiaProps, ouiaAttribute, OUIAProps } from "../../ouiaTools";
 import "../styles.css";

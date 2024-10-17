@@ -17,12 +17,7 @@
  * under the License.
  */
 import React, { useState } from "react";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownSeparator,
-  DropdownToggle,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownItem, DropdownSeparator, DropdownToggle } from "@patternfly/react-core/deprecated";
 import { Toolbar, ToolbarGroup, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { Avatar } from "@patternfly/react-core/dist/js/components/Avatar";
 import accessibleStyles from "@patternfly/react-styles/css/utilities/Accessibility/accessibility";
@@ -95,7 +90,7 @@ const PageToolbar: React.FunctionComponent<OUIAProps> = ({ ouiaId, ouiaSafe }) =
     <React.Fragment>
       <AboutModalBox isOpenProp={modalToggle} handleModalToggleProp={handleAboutModalToggle} />
       <Toolbar {...componentOuiaProps(ouiaId, "page-toolbar", ouiaSafe)} className="page--toolbar">
-        <ToolbarGroup alignment={{ default: "alignRight" }}>
+        <ToolbarGroup align={{ default: "alignRight" }}>
           <ToolbarItem className={css(accessibleStyles.screenReader, accessibleStyles.visibleOnMd)}>
             <Dropdown
               isPlain
@@ -103,7 +98,12 @@ const PageToolbar: React.FunctionComponent<OUIAProps> = ({ ouiaId, ouiaSafe }) =
               onSelect={onDropdownSelect}
               isOpen={isDropdownOpen}
               toggle={
-                <DropdownToggle onToggle={onDropdownToggle} icon={<Avatar src={userImage} alt="User Avatar" />}>
+                <DropdownToggle
+                  onToggle={(_event, _isDropdownOpen: boolean | ((prevState: boolean) => boolean)) =>
+                    onDropdownToggle(_isDropdownOpen)
+                  }
+                  icon={<Avatar src={userImage} alt="User Avatar" />}
+                >
                   {getUserName()}
                 </DropdownToggle>
               }

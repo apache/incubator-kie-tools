@@ -20,9 +20,6 @@
 import React, { useEffect, useState } from "react";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import {
-  Table,
-  TableHeader,
-  TableBody,
   IRow,
   ITransform,
   ICell,
@@ -30,6 +27,7 @@ import {
   ISortBy,
   SortByDirection,
 } from "@patternfly/react-table/dist/js/components/Table";
+import { Table, TableHeader, TableBody } from "@patternfly/react-table/deprecated";
 import isEmpty from "lodash/isEmpty";
 import filter from "lodash/filter";
 import get from "lodash/get";
@@ -197,7 +195,7 @@ export const DataTable: React.FC<IOwnProps & OUIAProps> = ({
     return ErrorComponent ? (
       <React.Fragment>{ErrorComponent}</React.Fragment>
     ) : (
-      <div className=".pf-u-my-xl">
+      <div className=".pf-v5-u-my-xl">
         <KogitoEmptyState
           type={KogitoEmptyStateType.Refresh}
           title="Oops... error while loading"
