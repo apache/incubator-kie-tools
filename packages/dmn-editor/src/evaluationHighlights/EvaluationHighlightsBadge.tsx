@@ -22,13 +22,13 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 
 export function EvaluationHighlightsBadge() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const isEvaluationHighlights = useDmnEditorStore((s) => s.diagram.overlays.enableEvaluationHighlights);
+  const isEvaluationHighlightsEnabled = useDmnEditorStore((s) => s.diagram.overlays.enableEvaluationHighlights);
 
   return (
     <aside className={"kie-dmn-editor--evaluation-highlights-panel-toggle"}>
       <button
         className={
-          isEvaluationHighlights
+          isEvaluationHighlightsEnabled
             ? "kie-dmn-editor--evaluation-highlights-panel-toggle-button"
             : "kie-dmn-editor--evaluation-highlights-panel-toggle-button-off"
         }
