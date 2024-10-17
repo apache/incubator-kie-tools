@@ -33,7 +33,7 @@ import { assert } from "chai";
  * file for the integration e.g. "extensions-editors-dmn-scesim.test.ts"
  */
 describe("KIE Editors End to End Test Suite - SCESIM Editor", () => {
-  const RESOURCES: string = path.resolve("e2e-tests-tmp", "resources");
+  const RESOURCES: string = path.resolve("new-e2e-tests-tmp", "resources");
   const DIST_E2E_TESTS_FOLDER: string = path.resolve("dist-tests-e2e");
   const DEMO_DMN: string = "demo.dmn";
   const DEMO_DMN_SCESIM: string = "demo-dmn.scesim";

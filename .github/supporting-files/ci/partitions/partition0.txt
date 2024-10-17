@@ -1,1 +1,1 @@
-@kie-tools/kn-plugin-workflow
+kie-editors-dev-vscode-extension
