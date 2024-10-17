@@ -22,7 +22,8 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
-import { Page, PageHeader } from "@patternfly/react-core/dist/js/components/Page";
+import { Page } from "@patternfly/react-core/dist/js/components/Page";
+import { PageHeader } from "@patternfly/react-core/deprecated";
 import { HashRouter as Router, Link, Route, Switch } from "react-router-dom";
 import { Base64PngPage } from "./Pages/Base64Png/Base64PngPage";
 import { BpmnPage } from "./Pages/KogitoEditors/BpmnPage";
@@ -81,7 +82,7 @@ export function App() {
           <PageHeader
             logo={<Brand src={"logo.png"} alt="Logo" />}
             topNav={
-              <Nav onSelect={(e) => setLocation(e.itemId as Location)} aria-label="Nav" variant="horizontal">
+              <Nav onSelect={(_event, e) => setLocation(e.itemId as Location)} aria-label="Nav" variant="horizontal">
                 <NavList>
                   <NavItem itemId={Location.HOME} isActive={location === Location.HOME}>
                     <Link to={Location.HOME}>Home</Link>

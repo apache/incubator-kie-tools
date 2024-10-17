@@ -110,7 +110,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                       name="display-name"
                       aria-describedby="Display Name"
                       value={displayName}
-                      onChange={(value) => setDisplayName(value)}
+                      onChange={(_event, value) => setDisplayName(value)}
                       autoComplete="off"
                       onBlur={() =>
                         onSave({
@@ -133,9 +133,9 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                           <button
                             aria-label="More info for Cyclic Type"
                             onClick={(e) => e.preventDefault()}
-                            className="pf-c-form__group-label-help"
+                            className="pf-v5-c-form__group-label-help"
                           >
-                            <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                            <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                           </button>
                         </Tooltip>
                       ) : (
@@ -191,7 +191,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                       name="missing-value"
                       aria-describedby="Missing Value"
                       value={missingValue}
-                      onChange={(value) => setMissingValue(value)}
+                      onChange={(_event, value) => setMissingValue(value)}
                       autoComplete="off"
                       onBlur={() =>
                         onSave({
@@ -215,7 +215,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                       name="invalid-value"
                       aria-describedby="Invalid Value"
                       value={invalidValue}
-                      onChange={(value) => setInvalidValue(value)}
+                      onChange={(_event, value) => setInvalidValue(value)}
                       autoComplete="off"
                       onBlur={() =>
                         onSave({

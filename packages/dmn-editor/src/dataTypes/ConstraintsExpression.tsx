@@ -114,7 +114,7 @@ export function ConstraintsExpression({
           (value ? (
             <span
               data-testid={"kie-tools--dmn-editor--readonly-expression-constraint-with-value"}
-              className="editable-cell-value pf-u-text-break-word"
+              className="editable-cell-value pf-v5-u-text-break-word"
               dangerouslySetInnerHTML={{ __html: preview }}
             />
           ) : (

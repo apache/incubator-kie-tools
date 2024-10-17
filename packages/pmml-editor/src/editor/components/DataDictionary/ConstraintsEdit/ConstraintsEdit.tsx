@@ -21,7 +21,7 @@ import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { ConstraintType, DDDataField, RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
@@ -206,9 +206,9 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
                 aria-label="More info for Constraints Type"
                 onClick={(e) => e.preventDefault()}
                 aria-describedby="constraints-type"
-                className="pf-c-form__group-label-help"
+                className="pf-v5-c-form__group-label-help"
               >
-                <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
               </button>
             </Tooltip>
           ) : (

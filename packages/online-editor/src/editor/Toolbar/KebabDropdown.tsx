@@ -18,7 +18,7 @@
  */
 
 import React from "react";
-import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/deprecated";
 import EllipsisVIcon from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
 
 export function KebabDropdown(props: {
@@ -37,7 +37,7 @@ export function KebabDropdown(props: {
         <DropdownToggle
           id={props.id}
           toggleIndicator={null}
-          onToggle={(isOpen) => props.state[1](isOpen)}
+          onToggle={(_event, isOpen) => props.state[1](isOpen)}
           ouiaId={props.id}
         >
           <EllipsisVIcon />

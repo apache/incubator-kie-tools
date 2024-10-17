@@ -73,7 +73,7 @@ function UnitablesListField({
         )}
         <SplitItem
           style={{
-            borderRight: "3px solid var(--pf-global--palette--black-300)",
+            borderRight: "3px solid var(--pf-v5-global--palette--black-300)",
           }}
         >
           <ListAddField
@@ -123,7 +123,7 @@ function UnitablesListField({
                       ...itemProps,
                       style:
                         props.value!.length - 1 !== itemIndex
-                          ? { width: "100%", borderRight: "3px solid var(--pf-global--palette--black-300)" }
+                          ? { width: "100%", borderRight: "3px solid var(--pf-v5-global--palette--black-300)" }
                           : { width: "100%" },
                     }
                   )

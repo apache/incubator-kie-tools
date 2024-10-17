@@ -18,12 +18,7 @@
  */
 import * as React from "react";
 import { useState } from "react";
-import {
-  Select,
-  SelectOption,
-  SelectOptionObject,
-  SelectVariant,
-} from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectOptionObject, SelectVariant } from "@patternfly/react-core/deprecated";
 
 interface GenericSelectorProps {
   id: string;
@@ -50,7 +45,7 @@ export const GenericSelector = (props: GenericSelectorProps) => {
       className="generic-selector ignore-onclickoutside"
       variant={SelectVariant.single}
       aria-label="Select"
-      onToggle={onToggle}
+      onToggle={(_event, _isOpen: boolean) => onToggle(_isOpen)}
       onSelect={onSelect}
       selections={props.selection}
       isOpen={isOpen}

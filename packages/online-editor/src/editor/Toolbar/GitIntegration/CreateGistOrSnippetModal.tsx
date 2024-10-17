@@ -24,7 +24,7 @@ import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/work
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { Form, FormAlert, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
-import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
+
 import { UsersIcon } from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { LockIcon } from "@patternfly/react-icons/dist/js/icons/lock-icon";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
@@ -299,7 +299,7 @@ If you are, it means that creating this Snippet failed and it can safely be dele
           />
         </FormGroup>
         <FormGroup
-          helperText={<FormHelperText icon={<CheckCircleIcon />} isHidden={false} style={{ visibility: "hidden" }} />}
+          helperText={<FormHelperText style={{ visibility: "hidden" }} />}
           helperTextInvalidIcon={<ExclamationCircleIcon />}
           fieldId="gist-or-snippet-visibility"
         >

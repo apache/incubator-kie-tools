@@ -21,7 +21,7 @@ import React, { useCallback, useState } from "react";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupText, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
@@ -169,7 +169,7 @@ export function ConnecToOpenShiftSimple(props: {
         style={{ paddingLeft: 0 }}
         id="dev-deployments-config-use-wizard-button"
         key="use-wizard"
-        className="pf-u-p-0"
+        className="pf-v5-u-p-0"
         variant="link"
         onClick={() => props.setMode(OpenShiftSettingsTabMode.WIZARD)}
         data-testid="use-wizard-button"
@@ -177,7 +177,7 @@ export function ConnecToOpenShiftSimple(props: {
       >
         {i18n.devDeployments.configModal.useOpenShiftWizard}
         &nbsp;
-        <ArrowRightIcon className="pf-u-ml-sm" />
+        <ArrowRightIcon className="pf-v5-u-ml-sm" />
       </Button>
 
       <br />
@@ -193,7 +193,7 @@ export function ConnecToOpenShiftSimple(props: {
                 aria-label="More info for namespace field"
                 onClick={(e) => e.preventDefault()}
                 aria-describedby="namespace-field"
-                className="pf-c-form__group-label-help"
+                className="pf-v5-c-form__group-label-help"
               >
                 <HelpIcon noVerticalAlign />
               </button>
@@ -202,24 +202,26 @@ export function ConnecToOpenShiftSimple(props: {
           isRequired
           fieldId="namespace-field"
         >
-          <InputGroup className="pf-u-mt-sm">
-            <TextInput
-              autoFocus={true}
-              autoComplete={"off"}
-              isRequired
-              type="text"
-              id="namespace-field"
-              name="namespace-field"
-              aria-label="Namespace field"
-              aria-describedby="namespace-field-helper"
-              value={props.connection.namespace}
-              onChange={onNamespaceChanged}
-              isDisabled={isConnecting}
-              tabIndex={1}
-              data-testid="namespace-text-field"
-            />
+          <InputGroup className="pf-v5-u-mt-sm">
+            <InputGroupItem isFill>
+              <TextInput
+                autoFocus={true}
+                autoComplete={"off"}
+                isRequired
+                type="text"
+                id="namespace-field"
+                name="namespace-field"
+                aria-label="Namespace field"
+                aria-describedby="namespace-field-helper"
+                value={props.connection.namespace}
+                onChange={onNamespaceChanged}
+                isDisabled={isConnecting}
+                tabIndex={1}
+                data-testid="namespace-text-field"
+              />
+            </InputGroupItem>
             <InputGroupText>
-              <Button isSmall variant="plain" aria-label="Clear namespace button" onClick={onClearNamespace}>
+              <Button size="sm" variant="plain" aria-label="Clear namespace button" onClick={onClearNamespace}>
                 <TimesIcon />
               </Button>
             </InputGroupText>
@@ -234,7 +236,7 @@ export function ConnecToOpenShiftSimple(props: {
                 aria-label="More info for host field"
                 onClick={(e) => e.preventDefault()}
                 aria-describedby="host-field"
-                className="pf-c-form__group-label-help"
+                className="pf-v5-c-form__group-label-help"
               >
                 <HelpIcon noVerticalAlign />
               </button>
@@ -243,23 +245,25 @@ export function ConnecToOpenShiftSimple(props: {
           isRequired
           fieldId="host-field"
         >
-          <InputGroup className="pf-u-mt-sm">
-            <TextInput
-              autoComplete={"off"}
-              isRequired
-              type="text"
-              id="host-field"
-              name="host-field"
-              aria-label="Host field"
-              aria-describedby="host-field-helper"
-              value={props.connection.host}
-              onChange={onHostChanged}
-              isDisabled={isConnecting}
-              tabIndex={2}
-              data-testid="host-text-field"
-            />
+          <InputGroup className="pf-v5-u-mt-sm">
+            <InputGroupItem isFill>
+              <TextInput
+                autoComplete={"off"}
+                isRequired
+                type="text"
+                id="host-field"
+                name="host-field"
+                aria-label="Host field"
+                aria-describedby="host-field-helper"
+                value={props.connection.host}
+                onChange={onHostChanged}
+                isDisabled={isConnecting}
+                tabIndex={2}
+                data-testid="host-text-field"
+              />
+            </InputGroupItem>
             <InputGroupText>
-              <Button isSmall variant="plain" aria-label="Clear host button" onClick={onClearHost}>
+              <Button size="sm" variant="plain" aria-label="Clear host button" onClick={onClearHost}>
                 <TimesIcon />
               </Button>
             </InputGroupText>
@@ -274,7 +278,7 @@ export function ConnecToOpenShiftSimple(props: {
                 aria-label="More info for token field"
                 onClick={(e) => e.preventDefault()}
                 aria-describedby="token-field"
-                className="pf-c-form__group-label-help"
+                className="pf-v5-c-form__group-label-help"
               >
                 <HelpIcon noVerticalAlign />
               </button>
@@ -283,23 +287,25 @@ export function ConnecToOpenShiftSimple(props: {
           isRequired
           fieldId="token-field"
         >
-          <InputGroup className="pf-u-mt-sm">
-            <TextInput
-              autoComplete={"off"}
-              isRequired
-              type="text"
-              id="token-field"
-              name="token-field"
-              aria-label="Token field"
-              aria-describedby="token-field-helper"
-              value={props.connection.token}
-              onChange={onTokenChanged}
-              isDisabled={isConnecting}
-              tabIndex={3}
-              data-testid="token-text-field"
-            />
+          <InputGroup className="pf-v5-u-mt-sm">
+            <InputGroupItem isFill>
+              <TextInput
+                autoComplete={"off"}
+                isRequired
+                type="text"
+                id="token-field"
+                name="token-field"
+                aria-label="Token field"
+                aria-describedby="token-field-helper"
+                value={props.connection.token}
+                onChange={onTokenChanged}
+                isDisabled={isConnecting}
+                tabIndex={3}
+                data-testid="token-text-field"
+              />
+            </InputGroupItem>
             <InputGroupText>
-              <Button isSmall variant="plain" aria-label="Clear token button" onClick={onClearToken}>
+              <Button size="sm" variant="plain" aria-label="Clear token button" onClick={onClearToken}>
                 <TimesIcon />
               </Button>
             </InputGroupText>

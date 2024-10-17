@@ -25,7 +25,7 @@ import {
   SelectPosition,
   SelectProps,
   SelectVariant,
-} from "@patternfly/react-core/dist/js/components/Select";
+} from "@patternfly/react-core/deprecated";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
 import { useAuthSession, useAuthSessions } from "./AuthSessionsContext";
 import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
@@ -142,7 +142,7 @@ export function AuthSessionSelect(props: {
       variant={SelectVariant.single}
       selections={selectedAuthSessionId}
       isOpen={isAuthSessionSelectorOpen}
-      onToggle={setAuthSessionSelectorOpen}
+      onToggle={(_event, val) => setAuthSessionSelectorOpen(val)}
       isPlain={validated === ValidatedOptions.default ? props.isPlain : false}
       onSelect={(e, value) => {
         e.stopPropagation();
@@ -218,13 +218,13 @@ export function AuthSessionSelect(props: {
                     <SelectGroup
                       key={groupLabel}
                       label={groupLabel}
-                      style={{ boxShadow: "var(--pf-global--BoxShadow--sm-top)", marginTop: "8px" }}
+                      style={{ boxShadow: "var(--pf-v5-global--BoxShadow--sm-top)", marginTop: "8px" }}
                     ></SelectGroup>,
                   ]
                 : [
                     <div
                       key={uuid()}
-                      style={{ boxShadow: "var(--pf-global--BoxShadow--sm-top)", marginTop: "8px", height: "8px" }}
+                      style={{ boxShadow: "var(--pf-v5-global--BoxShadow--sm-top)", marginTop: "8px", height: "8px" }}
                     />,
                   ]),
             ],
@@ -306,7 +306,7 @@ export function InvalidAuthSessionIcon() {
       content={"Could not authenticate using this session. Its Token was probably revoked, or expired."}
     >
       <>
-        <ExclamationCircleIcon style={{ color: "var(--pf-global--palette--red-100)" }} />
+        <ExclamationCircleIcon style={{ color: "var(--pf-v5-global--palette--red-100)" }} />
       </>
     </Tooltip>
   );

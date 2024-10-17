@@ -79,7 +79,7 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
       <ToolbarContent>
         <ToolbarGroup
           variant="icon-button-group"
-          alignment={{ default: "alignRight" }}
+          align={{ default: "alignRight" }}
           spacer={{ default: "spacerNone", md: "spacerMd" }}
         >
           <ToolbarItem>
@@ -120,6 +120,7 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
       </MastheadToggle>
       <MastheadMain>
         <MastheadBrand
+          component="a"
           onClick={() => history.push({ pathname: routes.home.path({}) })}
           style={{ textDecoration: "none" }}
         >
@@ -144,7 +145,11 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
     [location, isRouteInSettingsSection]
   );
 
-  const sidebar = <PageSidebar nav={pageNav} theme="dark" />;
+  const sidebar = (
+    <PageSidebar theme="dark">
+      <PageSidebarBody>{pageNav}</PageSidebarBody>
+    </PageSidebar>
+  );
   const mainContainerId = "main-content-page-layout-tertiary-nav";
 
   const pageSkipToContent = <SkipToContent href={`#${mainContainerId}`}>Skip to content</SkipToContent>;

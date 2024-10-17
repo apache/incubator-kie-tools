@@ -170,9 +170,9 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
               <button
                 aria-label="More info for Target Field"
                 onClick={(e) => e.preventDefault()}
-                className="pf-c-form__group-label-help"
+                className="pf-v5-c-form__group-label-help"
               >
-                <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
               </button>
             </Tooltip>
           ) : (
@@ -183,7 +183,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
         <FormSelect
           id="output-targetField"
           value={(targetField ?? "").toString()}
-          onChange={(selection) => {
+          onChange={(_event, selection) => {
             if (selection !== targetField) {
               setTargetField(selection === "" ? undefined : selection);
               commit({ targetField: selection === "" ? undefined : selection });
@@ -207,9 +207,9 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
             <button
               aria-label="More info about Feature"
               onClick={(e) => e.preventDefault()}
-              className="pf-c-form__group-label-help"
+              className="pf-v5-c-form__group-label-help"
             >
-              <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+              <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
             </button>
           </Tooltip>
         }
@@ -226,9 +226,9 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
             <button
               aria-label="More info about Feature"
               onClick={(e) => e.preventDefault()}
-              className="pf-c-form__group-label-help"
+              className="pf-v5-c-form__group-label-help"
             >
-              <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+              <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
             </button>
           </Tooltip>
         }
@@ -259,9 +259,9 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
             <button
               aria-label="More info about Feature"
               onClick={(e) => e.preventDefault()}
-              className="pf-c-form__group-label-help"
+              className="pf-v5-c-form__group-label-help"
             >
-              <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+              <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
             </button>
           </Tooltip>
         }

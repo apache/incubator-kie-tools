@@ -290,7 +290,7 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
                     name="usernameInput"
                     aria-describedby="username-text-input-helper"
                     placeholder={i18n.connectToGitModal[props.authProvider.type].form.username?.placeHolder}
-                    onChange={(v) => setUsernameInput(v.trim())}
+                    onChange={(_event, v) => setUsernameInput(v.trim())}
                   />
                 </FormGroup>
               ),
@@ -332,7 +332,7 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
             >
               {i18n.connectToGitModal[props.authProvider.type].footer.createNewToken}
               &nbsp;
-              <ExternalLinkAltIcon className="pf-u-mx-sm" />
+              <ExternalLinkAltIcon className="pf-v5-u-mx-sm" />
             </a>
           </h3>
           <br />
@@ -341,7 +341,7 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
             <Text component={TextVariants.blockquote}>
               <InfoAltIcon />
               &nbsp;
-              <span className="pf-u-mr-sm">{i18n.connectToGitModal.auth.disclaimer}&nbsp;</span>
+              <span className="pf-v5-u-mr-sm">{i18n.connectToGitModal.auth.disclaimer}&nbsp;</span>
               <a
                 href={switchExpression(props.authProvider.type, {
                   bitbucket: BITBUCKET_TOKENS_HOW_TO_URL,
@@ -352,7 +352,7 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
               >
                 {i18n.connectToGitModal[props.authProvider.type].body.learnMore}
                 &nbsp;
-                <ExternalLinkAltIcon className="pf-u-mx-sm" />
+                <ExternalLinkAltIcon className="pf-v5-u-mx-sm" />
               </a>
             </Text>
           </TextContent>

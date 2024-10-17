@@ -17,7 +17,8 @@
  * under the License.
  */
 import { ProcessListDriver } from "../../../api";
-import { ICell, IRow, IRowCell, Table, TableBody, TableHeader } from "@patternfly/react-table/dist/js/components/Table";
+import { ICell, IRow, IRowCell } from "@patternfly/react-table/dist/js/components/Table";
+import { Table, TableBody, TableHeader } from "@patternfly/react-table/deprecated";
 import React, { useEffect, useState } from "react";
 import { getProcessInstanceDescription, ProcessInstanceIconCreator } from "../utils/ProcessListUtils";
 import { HistoryIcon } from "@patternfly/react-icons/dist/js/icons/history-icon";
@@ -169,7 +170,7 @@ const ProcessListChildTable: React.FC<ProcessListChildTableProps & OUIAProps> = 
             title: child.lastUpdate ? (
               <span>
                 {" "}
-                <HistoryIcon className="pf-u-mr-sm" /> Updated{" "}
+                <HistoryIcon className="pf-v5-u-mr-sm" /> Updated{" "}
                 <Moment fromNow>{new Date(`${child.lastUpdate}`)}</Moment>
               </span>
             ) : (

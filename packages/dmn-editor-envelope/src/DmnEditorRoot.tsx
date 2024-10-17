@@ -43,8 +43,13 @@ import {
 } from "@kie-tools-core/react-hooks/dist/useImperativePromiseHandler";
 import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 
 export const EXTERNAL_MODELS_SEARCH_GLOB_PATTERN = "**/*.{dmn,pmml}";
 
@@ -712,10 +717,11 @@ function DmnMarshallerFallbackError({ error }: { error: Error }) {
   return (
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
       <EmptyState style={{ maxWidth: "1280px" }}>
-        <EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />
-        <Title size={"lg"} headingLevel={"h4"}>
-          Unable to open file.
-        </Title>
+        <EmptyStateHeader
+          titleText="Unable to open file."
+          icon={<EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />}
+          headingLevel={"h4"}
+        />
         <br />
         <EmptyStateBody>Error details: {error.message}</EmptyStateBody>
       </EmptyState>

@@ -29,12 +29,7 @@ import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { TypeRefSelector } from "./TypeRefSelector";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownSeparator,
-  KebabToggle,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownItem, DropdownSeparator, KebabToggle } from "@patternfly/react-core/deprecated";
 import { DataType, DataTypeIndex, EditItemDefinition, AddItemComponent } from "./DataTypes";
 import { DataTypeName } from "./DataTypeName";
 import { ItemComponentsTable } from "./ItemComponentsTable";
@@ -272,7 +267,9 @@ export function DataTypePanel({
             <span>|</span>
             <Button variant={ButtonVariant.link}>View usages</Button> */}
           <Dropdown
-            toggle={<KebabToggle id={"toggle-kebab-top-level"} onToggle={setTopLevelDropdownOpen} />}
+            toggle={
+              <KebabToggle id={"toggle-kebab-top-level"} onToggle={(_event, val) => setTopLevelDropdownOpen(val)} />
+            }
             onSelect={() => setTopLevelDropdownOpen(false)}
             isOpen={topLevelDropdownOpen}
             menuAppendTo={document.body}

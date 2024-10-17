@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownItem } from "@patternfly/react-core/deprecated";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
@@ -160,7 +160,7 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
           <Tooltip content={"Restore its original state"}>
             <Button
               className="kogito--editor__openshift-deployments-dropdown-item-action"
-              style={{ color: "var(--pf-global--palette--black-500)" }}
+              style={{ color: "var(--pf-v5-global--palette--black-500)" }}
               variant={ButtonVariant.plain}
               onClick={onRestoreClicked}
               icon={<HistoryIcon />}

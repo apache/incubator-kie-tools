@@ -18,7 +18,7 @@
  */
 
 import React from "react";
-import { DropdownToggle, DropdownToggleProps } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownToggle, DropdownToggleProps } from "@patternfly/react-core/deprecated";
 import { useResponsiveDropdownContext } from "./ResponsiveDropdownContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 

@@ -111,7 +111,7 @@ export function StorageSettings() {
                 label="Cookies"
                 description={"Delete all cookies."}
                 isChecked={isDeleteCookiesChecked}
-                onChange={setDeleteCookiesChecked}
+                onChange={(_event, val) => setDeleteCookiesChecked(val)}
               />
               <br />
               <Checkbox
@@ -119,7 +119,7 @@ export function StorageSettings() {
                 label="LocalStorage"
                 description={"Delete all localStorage information."}
                 isChecked={isDeleteLocalStorageChecked}
-                onChange={setDeleteLocalStorageChecked}
+                onChange={(_event, val) => setDeleteLocalStorageChecked(val)}
               />
             </Alert>
           </Form>

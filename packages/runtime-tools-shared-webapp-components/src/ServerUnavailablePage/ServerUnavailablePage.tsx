@@ -23,10 +23,12 @@ import {
   EmptyStateIcon,
   EmptyStateVariant,
   EmptyStateBody,
+  EmptyStateHeader,
+  EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
@@ -43,19 +45,22 @@ export const ServerUnavailablePage: React.FC<Props & OUIAProps> = ({ displayName
     <PageSection variant="light" {...componentOuiaProps(ouiaId, "server-unavailable", ouiaSafe)}>
       <Bullseye>
         <EmptyState variant={EmptyStateVariant.full}>
-          <EmptyStateIcon icon={ExclamationCircleIcon} color="var(--pf-global--danger-color--100)" />
-          <Title headingLevel="h1" size="4xl">
-            Error connecting server
-          </Title>
+          <EmptyStateHeader
+            titleText="Error connecting server"
+            icon={<EmptyStateIcon icon={ExclamationCircleIcon} color="var(--pf-v5-global--danger-color--100)" />}
+            headingLevel="h1"
+          />
           <EmptyStateBody data-testid="empty-state-body">
             {`The ${name} could not access the server to display content.`}
           </EmptyStateBody>
-          <EmptyStateBody data-testid="empty-state-body">
-            Try reloading the page, or contact your administrator for more information.
-          </EmptyStateBody>
-          <Button variant="primary" onClick={reload} data-testid="refresh-button">
-            Refresh
-          </Button>
+          <EmptyStateFooter>
+            <EmptyStateBody data-testid="empty-state-body">
+              Try reloading the page, or contact your administrator for more information.
+            </EmptyStateBody>
+            <Button variant="primary" onClick={reload} data-testid="refresh-button">
+              Refresh
+            </Button>
+          </EmptyStateFooter>
         </EmptyState>
       </Bullseye>
     </PageSection>

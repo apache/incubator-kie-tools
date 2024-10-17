@@ -18,12 +18,7 @@
  */
 
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownPosition,
-  DropdownToggle,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownItem, DropdownPosition, DropdownToggle } from "@patternfly/react-core/deprecated";
 import {
   Toolbar,
   ToolbarContent,
@@ -41,7 +36,8 @@ import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
-import { PageHeaderToolsItem, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { PageHeaderToolsItem } from "@patternfly/react-core/deprecated";
 import { FileLabel } from "../../filesList/FileLabel";
 import {
   useWorkspaceGitStatusPromise,
@@ -324,7 +320,10 @@ export function EditorToolbarWithWorkspace(
                     <>
                       <Dropdown
                         toggle={
-                          <Toggle onToggle={setNewDmnEditorDropdownOpen} id="new-dmn-editor-dropdown-toggle">
+                          <Toggle
+                            onToggle={(_event, val) => setNewDmnEditorDropdownOpen(val)}
+                            id="new-dmn-editor-dropdown-toggle"
+                          >
                             <Label color="cyan" variant={"outline"}>
                               &nbsp;{`New DMN Editor`}&nbsp;&nbsp;
                               <CaretDownIcon />
@@ -435,7 +434,7 @@ export function EditorToolbarWithWorkspace(
                         <DropdownToggle
                           id={"share-dropdown"}
                           data-testid={"share-dropdown"}
-                          onToggle={(isOpen) => setShareDropdownOpen(isOpen)}
+                          onToggle={(_event, isOpen) => setShareDropdownOpen(isOpen)}
                         >
                           {i18n.editorToolbar.share}
                         </DropdownToggle>

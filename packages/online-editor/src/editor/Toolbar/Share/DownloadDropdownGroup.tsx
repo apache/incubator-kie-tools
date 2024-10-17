@@ -18,7 +18,7 @@
  */
 
 import React, { useCallback, useEffect, useMemo } from "react";
-import { DropdownGroup, DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownGroup, DropdownItem } from "@patternfly/react-core/deprecated";
 import DownloadIcon from "@patternfly/react-icons/dist/js/icons/download-icon";
 import FolderIcon from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import ImageIcon from "@patternfly/react-icons/dist/js/icons/image-icon";

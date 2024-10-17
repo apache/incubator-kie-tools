@@ -115,7 +115,7 @@ export const JobsRescheduleModal: React.FC<IOwnProps & OUIAProps> = ({
               name="repeat-interval-input"
               aria-describedby="repeat-interval"
               value={repeatInterval || ""}
-              onChange={handleIntervalChange}
+              onChange={(_event, value: number | string) => handleIntervalChange(value)}
               isDisabled={repeatInterval === null}
             />
           </FormGroup>
@@ -130,7 +130,7 @@ export const JobsRescheduleModal: React.FC<IOwnProps & OUIAProps> = ({
               name="repeat-limit-input"
               aria-describedby="repeat-limit"
               value={repeatLimit || ""}
-              onChange={handleLimitChange}
+              onChange={(_event, value: number | string) => handleLimitChange(value)}
               isDisabled={repeatLimit === null}
             />
           </FormGroup>

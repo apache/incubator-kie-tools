@@ -191,13 +191,13 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                   {predicateValidation.length > 0 && (
                     <div>
                       <ValidationIndicator validations={predicateValidation} />
-                      <span className="pf-c-form__helper-text pf-m-warning attribute-editor__validation-message">
+                      <span className="pf-v5-c-form__helper-text pf-m-warning attribute-editor__validation-message">
                         {predicateValidation[0].message}
                       </span>
                     </div>
                   )}
                   {predicateValidation.length === 0 && (
-                    <div className="pf-c-form__helper-text">
+                    <div className="pf-v5-c-form__helper-text">
                       The condition upon which the mapping between input attribute and partial score takes place.
                     </div>
                   )}
@@ -229,9 +229,9 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                       <button
                         aria-label="More information for Partial Score"
                         onClick={(e) => e.preventDefault()}
-                        className="pf-c-form__group-label-help"
+                        className="pf-v5-c-form__group-label-help"
                       >
-                        <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                        <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                       </button>
                     </Tooltip>
                   }
@@ -271,9 +271,9 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                       <button
                         aria-label="More information for Partial Score"
                         onClick={(e) => e.preventDefault()}
-                        className="pf-c-form__group-label-help"
+                        className="pf-v5-c-form__group-label-help"
                       >
-                        <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                        <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                       </button>
                     </Tooltip>
                   }

@@ -18,22 +18,24 @@
  */
 
 import * as React from "react";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
+  EmptyStateHeader,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { BoxesIcon } from "@patternfly/react-icons/dist/js/icons/boxes-icon";
 
 const EmptyDataDictionary = () => {
   return (
-    <EmptyState variant={EmptyStateVariant.large}>
-      <EmptyStateIcon icon={BoxesIcon} />
-      <Title headingLevel="h4" size="lg" ouiaId="no-data-fields-title">
-        No Data Fields Defined
-      </Title>
+    <EmptyState variant={EmptyStateVariant.lg}>
+      <EmptyStateHeader
+        titleText="No Data Fields Defined"
+        icon={<EmptyStateIcon icon={BoxesIcon} />}
+        headingLevel="h4"
+      />
       <EmptyStateBody>It looks empty here. Start adding fields using the buttons above.</EmptyStateBody>
     </EmptyState>
   );

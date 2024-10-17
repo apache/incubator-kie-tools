@@ -19,13 +19,14 @@
 
 import * as React from "react";
 import { useCallback } from "react";
-import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import { Text, TextContent, EmptyStateActions } from "@patternfly/react-core/dist/js/components/Text";
 import {
   EmptyState,
   EmptyStateBody,
-  EmptyStateSecondaryActions,
+  EmptyStateActions,
+  EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { Button, ButtonVariant, EmptyStateActions } from "@patternfly/react-core/dist/js/components/Button";
 import { useRoutes } from "./navigation/Hooks";
 import { useHistory } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
@@ -45,11 +46,13 @@ export function NoMatchPage() {
           <Text component={"h1"}>{"404"}</Text>
         </TextContent>
         <EmptyStateBody>{`The requested page could not be found.`}</EmptyStateBody>
-        <EmptyStateSecondaryActions>
-          <Button variant={ButtonVariant.link} onClick={returnHome}>
-            Return home
-          </Button>
-        </EmptyStateSecondaryActions>
+        <EmptyStateFooter>
+          <EmptyStateActions>
+            <Button variant={ButtonVariant.link} onClick={returnHome}>
+              Return home
+            </Button>
+          </EmptyStateActions>
+        </EmptyStateFooter>
       </EmptyState>
     </Bullseye>
   );

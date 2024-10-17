@@ -221,7 +221,7 @@
 /* (end) textAnnotation, and unknown nodes */
 
 /* (begin) palette */
-.kie-dmn-editor--drd-selector-popover .pf-c-popover__body {
+.kie-dmn-editor--drd-selector-popover .pf-v5-c-popover__body {
   padding: 0;
 }
 .kie-dmn-editor--drd-selector {
@@ -359,7 +359,7 @@
 /* (end) properties panel toggle */
 
 /* (begin) version popover */
-.kie-dmn-editor--version-popover .pf-c-popover__body {
+.kie-dmn-editor--version-popover .pf-v5-c-popover__body {
   padding: 0;
 }
 /* (end) version popover */
@@ -425,7 +425,7 @@
   filter: brightness(90%);
 }
 
-.kie-dmn-editor--snap-slider .pf-c-slider__value > input {
+.kie-dmn-editor--snap-slider .pf-v5-c-slider__value > input {
   max-width: 60px;
   min-width: 60px;
   width: 60px;
@@ -625,10 +625,10 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   border-radius: 99999px;
   outline: none;
 }
-.kie-dmn-editor--data-type-node-panel .pf-c-select__toggle.pf-m-typeahead {
+.kie-dmn-editor--data-type-node-panel .pf-v5-c-select__toggle.pf-m-typeahead {
   padding-left: 10px;
 }
-.kie-dmn-editor--data-type-node-panel .pf-c-select__toggle-wrapper {
+.kie-dmn-editor--data-type-node-panel .pf-v5-c-select__toggle-wrapper {
   padding-left: 10px;
 }
 .kie-dmn-editor--data-type-node-panel > div {
@@ -636,18 +636,18 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   background: white;
   box-shadow: 5px 5px 2px 0px rgb(127 127 127);
 }
-.kie-dmn-editor--data-type-node-panel .pf-c-select__menu.pf-m-static {
+.kie-dmn-editor--data-type-node-panel .pf-v5-c-select__menu.pf-m-static {
   text-align: left;
   z-index: 999999;
 }
 .kie-dmn-editor--data-type-node-panel span {
   height: 19px;
 }
-.kie-dmn-editor--data-type-node-panel .pf-c-button.pf-c-select__toggle-button.pf-m-plain {
+.kie-dmn-editor--data-type-node-panel .pf-v5-c-button.pf-v5-c-select__toggle-button.pf-m-plain {
   margin-left: 24px;
 }
-.kie-dmn-editor--data-type-node-panel .pf-c-button.pf-m-control::after,
-.kie-dmn-editor--data-type-node-panel .pf-c-select__toggle.pf-m-typeahead::before {
+.kie-dmn-editor--data-type-node-panel .pf-v5-c-button.pf-m-control::after,
+.kie-dmn-editor--data-type-node-panel .pf-v5-c-select__toggle.pf-m-typeahead::before {
   border: 0;
 }
 /* edit button on decision and bkm nodes */
@@ -661,7 +661,7 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   background: white;
   color: black;
 }
-.kie-dmn-editor--edit-expression-node-panel > .pf-c-label__content::before {
+.kie-dmn-editor--edit-expression-node-panel > .pf-v5-c-label__content::before {
   border: 1px solid black;
 }
 .kie-dmn-editor--edit-expression-node-panel:hover {
@@ -691,7 +691,7 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   font-weight: bold;
   box-shadow: 4px 4px 2px 0px rgb(127 127 127);
 }
-.kie-dmn-editor--info-label > .pf-c-label__content::before {
+.kie-dmn-editor--info-label > .pf-v5-c-label__content::before {
   border: 1px solid black;
 }
 .kie-dmn-editor--info-label:hover {
@@ -711,7 +711,7 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   width: 160px;
   justify-content: center;
 }
-.kie-dmn-editor--boxed-expression-back > .pf-c-label__content::before {
+.kie-dmn-editor--boxed-expression-back > .pf-v5-c-label__content::before {
   border: 1px solid black;
 }
 .kie-dmn-editor--boxed-expression-back:hover {
@@ -919,8 +919,8 @@ th {
   text-underline-position: under;
 }
 
-.kie-dmn-editor--data-types-container .pf-c-switch__input:disabled:checked ~ .pf-c-switch__toggle {
-  background-color: var(--pf-global--primary-color--100);
+.kie-dmn-editor--data-types-container .pf-v5-c-switch__input:disabled:checked ~ .pf-v5-c-switch__toggle {
+  background-color: var(--pf-v5-global--primary-color--100);
   opacity: 50%;
 }
 /* (end) data types */
@@ -1101,16 +1101,16 @@ th {
 /* ******************************* */
 /*   ⬇ (begin) pf4 overrides ⬇    */
 /* ******************************* */
-.pf-c-popover {
+.pf-v5-c-popover {
   max-width: unset;
 }
 
-.pf-c-truncate,
-.pf-c-truncate__start {
+.pf-v5-c-truncate,
+.pf-v5-c-truncate__start {
   min-width: 0 !important;
 }
 
-.pf-c-select__menu {
+.pf-v5-c-select__menu {
   margin-top: 1px;
 }
 /*   ⬆ (end) pf4 overrides ⬆      */

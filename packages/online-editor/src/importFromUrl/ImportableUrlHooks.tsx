@@ -19,11 +19,11 @@
 
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
-import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
-import CheckCircleIcon from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
+
 import { extname } from "path";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
@@ -537,18 +537,14 @@ export function useImportableUrlValidation(
     if (!url) {
       return {
         option: ValidatedOptions.default,
-        helperText: <FormHelperText isHidden={true} icon={<Spinner size={"sm"} />} />,
+        helperText: <FormHelperText />,
       };
     }
 
     if (clonableUrl.gitServerRefsPromise.status === PromiseStateStatus.PENDING) {
       return {
         option: ValidatedOptions.default,
-        helperText: (
-          <FormHelperText isHidden={false} icon={<Spinner size={"sm"} />}>
-            Loading...
-          </FormHelperText>
-        ),
+        helperText: <FormHelperText>Loading...</FormHelperText>,
       };
     }
 
@@ -568,11 +564,7 @@ export function useImportableUrlValidation(
     return {
       option: ValidatedOptions.success,
       helperText: (
-        <FormHelperText
-          isHidden={false}
-          icon={<CheckCircleIcon style={{ visibility: "hidden", width: 0 }} />}
-          style={gitRefName ? { display: "flex", flexWrap: "nowrap" } : { visibility: "hidden" }}
-        >
+        <FormHelperText style={gitRefName ? { display: "flex", flexWrap: "nowrap" } : { visibility: "hidden" }}>
           <Flex justifyContent={{ default: "justifyContentFlexStart" }} style={{ display: "inline-flex" }}>
             <FlexItem style={{ minWidth: 0 }}>
               <GitRefTypeIcon type={getGitRefType(gitRefName)} />
@@ -586,7 +578,7 @@ export function useImportableUrlValidation(
             </FlexItem>
             <FlexItem style={{ minWidth: 0 }}>
               <Button
-                isSmall={true}
+                size="sm"
                 variant={ButtonVariant.link}
                 style={{ padding: 0 }}
                 onClick={() => advancedImportModalRef?.current?.open()}

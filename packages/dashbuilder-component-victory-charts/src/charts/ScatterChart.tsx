@@ -18,7 +18,7 @@
  */
 import * as React from "react";
 
-import { ChartArea, ChartGroup, ChartScatter } from "@patternfly/react-charts";
+import { ChartGroup, ChartScatter } from "@patternfly/react-charts";
 import { XYChart } from "./XYChart";
 
 export class ScatterChart extends XYChart {

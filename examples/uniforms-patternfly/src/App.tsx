@@ -23,7 +23,8 @@ import "../static/resources/styles.css";
 import { useState } from "react";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
-import { Page, PageHeader } from "@patternfly/react-core/dist/js/components/Page";
+import { Page } from "@patternfly/react-core/dist/js/components/Page";
+import { PageHeader } from "@patternfly/react-core/deprecated";
 import { Form } from "./Form";
 
 export enum SchemaType {
@@ -40,7 +41,7 @@ export function App() {
         <PageHeader
           logo={<Brand src={"logo.png"} alt="Logo" />}
           topNav={
-            <Nav onSelect={(e) => setSchemaType(e.itemId as SchemaType)} aria-label="Nav" variant="horizontal">
+            <Nav onSelect={(_event, e) => setSchemaType(e.itemId as SchemaType)} aria-label="Nav" variant="horizontal">
               <NavList>
                 <NavItem itemId={SchemaType.JsonSchema} isActive={schemaType === SchemaType.JsonSchema}>
                   JSON Schema

@@ -18,7 +18,13 @@
  */
 
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+  EmptyStateFooter,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -51,7 +57,7 @@ export function EditorPageErrorPage(props: Props) {
   return (
     <Bullseye>
       <EmptyState>
-        <EmptyStateIcon icon={ExclamationTriangleIcon} />
+        <EmptyStateHeader icon={<EmptyStateIcon icon={ExclamationTriangleIcon} />} />
         <TextContent>
           <Text component={"h2"}>{props.title}</Text>
         </TextContent>
@@ -80,9 +86,11 @@ export function EditorPageErrorPage(props: Props) {
             <br />
           </PageSection>
         </EmptyStateBody>
-        <Button variant={ButtonVariant.tertiary} onClick={returnHome}>
-          Return home
-        </Button>
+        <EmptyStateFooter>
+          <Button variant={ButtonVariant.tertiary} onClick={returnHome}>
+            Return home
+          </Button>
+        </EmptyStateFooter>
       </EmptyState>
     </Bullseye>
   );

@@ -22,7 +22,7 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import "./OutputFieldRow.scss";
 import { DataType, OpType, OutputField, RankOrder, ResultFeature } from "@kie-tools/pmml-editor-marshaller";
 import { OutputLabelsEditMode } from "../atoms";
@@ -204,7 +204,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                   aria-describedby="output-dataType-helper"
                   className="ignore-onclickoutside"
                   variant={SelectVariant.single}
-                  onToggle={typeToggle}
+                  onToggle={(_event, isOpen: boolean) => typeToggle(isOpen)}
                   onSelect={(event: any, selection: any, isPlaceholder: boolean) => {
                     setIsTypeSelectOpen(false);
                     setDataType(isPlaceholder ? undefined : selection);

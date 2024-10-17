@@ -44,9 +44,9 @@
   flex-direction: column;
 }
 
-.pf-c-select.pmml-document-select > button {
+.pf-v5-c-select.pmml-document-select > button {
   min-height: 60px;
 }
-.pmml-document-select.pf-c-select .pf-c-select__toggle::before {
+.pmml-document-select.pf-v5-c-select .pf-v5-c-select__toggle::before {
   border-style: hidden;
 }

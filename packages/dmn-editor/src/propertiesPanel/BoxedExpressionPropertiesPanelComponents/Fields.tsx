@@ -81,7 +81,7 @@ export function NameField(props: {
         name={props.name}
         isReadOnly={props.isReadOnly}
         shouldCommitOnBlur={true}
-        className={"pf-c-form-control"}
+        className={"pf-v5-c-form-control"}
         onRenamed={(newName) => props.onChange?.(newName)}
         allUniqueNames={props.getAllUniqueNames}
       />
@@ -163,7 +163,7 @@ export function TextField({
           type={"text"}
           isDisabled={props.isReadOnly}
           value={value}
-          onChange={(newContent) => {
+          onChange={(_event, newContent) => {
             setValue(newContent);
             valueRef.current = newContent;
             isEditing.current = true;
@@ -186,7 +186,7 @@ export function TextField({
           type={"text"}
           isDisabled={props.isReadOnly}
           value={value}
-          onChange={(newContent) => {
+          onChange={(_event, newContent) => {
             setValue(newContent);
             valueRef.current = newContent;
             isEditing.current = true;

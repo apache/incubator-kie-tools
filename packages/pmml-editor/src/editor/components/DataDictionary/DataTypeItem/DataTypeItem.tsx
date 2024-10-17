@@ -26,12 +26,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import {
-  Select,
-  SelectOption,
-  SelectOptionObject,
-  SelectVariant,
-} from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectOptionObject, SelectVariant } from "@patternfly/react-core/deprecated";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { ArrowAltCircleRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-alt-circle-right-icon";
@@ -237,7 +232,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                             id="name"
                             name="name"
                             value={name}
-                            onChange={handleNameChange}
+                            onChange={(_event, value: string) => handleNameChange(value)}
                             placeholder="Name"
                             validated={validation}
                             onBlur={handleNameSave}
@@ -251,7 +246,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                             id="type"
                             variant={SelectVariant.single}
                             aria-label="Select Input Type"
-                            onToggle={typeToggle}
+                            onToggle={(_event, isOpen: boolean) => typeToggle(isOpen)}
                             onSelect={typeSelect}
                             selections={typeSelection}
                             isOpen={isTypeSelectOpen}
@@ -281,7 +276,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                             id="optype"
                             variant={SelectVariant.single}
                             aria-label="Select Op Type"
-                            onToggle={optypeToggle}
+                            onToggle={(_event, isOpen: boolean) => optypeToggle(isOpen)}
                             onSelect={optypeSelect}
                             selections={optypeSelection}
                             isOpen={isOptypeSelectOpen}

@@ -44,7 +44,7 @@ const CommitValidationErrorMessages = (props: { validations?: string[] }) => {
             <li key={validation}>
               <Text
                 component={TextVariants.small}
-                style={{ whiteSpace: "pre-line", color: "var(--pf-global--danger-color--100)" }}
+                style={{ whiteSpace: "pre-line", color: "var(--pf-v5-global--danger-color--100)" }}
               >
                 {validation}
               </Text>
@@ -125,7 +125,7 @@ export const WorkspaceCommitModal: PromiseModalChildren<string, WorkspaceCommitM
             value={commitMessage}
             type={"text"}
             id={"kie-sandbox-custom-commit-message"}
-            onChange={(value) => setCommitMessage(value)}
+            onChange={(_event, value) => setCommitMessage(value)}
             isRequired={true}
             style={{ minHeight: "10vw" }}
             placeholder={i18n.commitModal.placeholder}

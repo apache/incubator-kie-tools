@@ -20,14 +20,8 @@ import React, { useMemo } from "react";
 import { Card, CardHeader, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import {
-  Table,
-  TableVariant,
-  TableHeader,
-  TableBody,
-  IRow,
-  ICell,
-} from "@patternfly/react-table/dist/js/components/Table";
+import { TableVariant, IRow, ICell } from "@patternfly/react-table/dist/js/components/Table";
+import { Table, TableHeader, TableBody } from "@patternfly/react-table/deprecated";
 import Moment from "react-moment";
 import JobActionsKebab from "../JobActionsKebab/JobActionsKebab";
 import { JobsIconCreator } from "../../../utils/Utils";

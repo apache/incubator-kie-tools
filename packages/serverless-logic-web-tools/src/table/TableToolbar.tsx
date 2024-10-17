@@ -22,7 +22,7 @@ import {
   DropdownToggle,
   DropdownToggleCheckbox,
   KebabToggle,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+} from "@patternfly/react-core/deprecated";
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
 import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import * as React from "react";
@@ -105,14 +105,14 @@ export function TableToolbar(props: TableToolbarProps) {
   return (
     <Toolbar>
       <ToolbarContent style={{ paddingLeft: "10px", paddingRight: "10px" }}>
-        <ToolbarItem alignment={{ default: "alignLeft" }}>
+        <ToolbarItem align={{ default: "alignLeft" }}>
           <Dropdown
             onSelect={onBulkDropDownSelect}
             toggle={
               <DropdownToggle
                 splitButtonItems={[
                   <DropdownToggleCheckbox
-                    onChange={(checked) => onToggleAllElements(checked)}
+                    onChange={(_event, checked) => onToggleAllElements(checked)}
                     isChecked={isBulkCheckBoxChecked}
                     id="split-button-text-checkbox"
                     key="bulk-check-box"

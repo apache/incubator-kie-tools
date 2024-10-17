@@ -32,7 +32,12 @@ import {
 } from "@patternfly/react-core/dist/js/components/DescriptionList";
 import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { formDmnI18n } from "./i18n";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
@@ -272,7 +277,7 @@ export function FormDmnOutputs({ openExecutionTab, ...props }: FormDmnOutputsPro
     () => (
       <div>
         <EmptyState>
-          <EmptyStateIcon icon={ExclamationTriangleIcon} />
+          <EmptyStateHeader icon={<EmptyStateIcon icon={ExclamationTriangleIcon} />} />
           <TextContent>
             <Text component={"h2"}>{i18n.result.error.title}</Text>
           </TextContent>
@@ -318,7 +323,7 @@ export function FormDmnOutputs({ openExecutionTab, ...props }: FormDmnOutputsPro
     <>
       {formResultStatus === FormDmnOutputsStatus.EMPTY && (
         <EmptyState>
-          <EmptyStateIcon icon={InfoCircleIcon} />
+          <EmptyStateHeader icon={<EmptyStateIcon icon={InfoCircleIcon} />} />
           <TextContent>
             <Text component={"h2"}>{i18n.result.withoutResponse.title}</Text>
           </TextContent>

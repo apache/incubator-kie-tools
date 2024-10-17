@@ -104,7 +104,7 @@ function TestScenarioDrawerSettingsPanel({
           </Title>
           <TextInput
             className={"kie-scesim-editor-drawer-settings--text-input"}
-            onChange={(value) => onUpdateSettingField("dmoSession", value)}
+            onChange={(_event, value) => onUpdateSettingField("dmoSession", value)}
             placeholder={i18n.drawer.settings.kieSessionRulePlaceholder}
             type="text"
             value={testScenarioSettings.kieSessionRule}
@@ -119,7 +119,7 @@ function TestScenarioDrawerSettingsPanel({
           </Title>
           <TextInput
             className={"kie-scesim-editor-drawer-settings--text-input"}
-            onChange={(value) => onUpdateSettingField("ruleFlowGroup", value)}
+            onChange={(_event, value) => onUpdateSettingField("ruleFlowGroup", value)}
             placeholder={i18n.drawer.settings.ruleFlowGroupPlaceholder}
             type="text"
             value={testScenarioSettings.ruleFlowGroup}
@@ -130,7 +130,7 @@ function TestScenarioDrawerSettingsPanel({
                 id="stateless-session"
                 isChecked={testScenarioSettings.isStatelessSessionRule}
                 label={i18n.drawer.settings.statelessSessionRule}
-                onChange={(value) => onUpdateSettingField("stateless", value)}
+                onChange={(_event, value) => onUpdateSettingField("stateless", value)}
               />
             </div>
             <Tooltip content={i18n.drawer.settings.statelessSessionRuleTooltip}>
@@ -147,7 +147,7 @@ function TestScenarioDrawerSettingsPanel({
             id="skip-test"
             isChecked={testScenarioSettings.isTestSkipped}
             label={i18n.drawer.settings.testSkipped}
-            onChange={(value) => onUpdateSettingField("skipFromBuild", value)}
+            onChange={(_event, value) => onUpdateSettingField("skipFromBuild", value)}
           />
         </div>
         <Tooltip content={i18n.drawer.settings.testSkippedTooltip}>

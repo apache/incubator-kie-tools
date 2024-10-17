@@ -142,7 +142,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
             key={DiagramLhsPanel.DRD_SELECTOR}
             aria-label={"DRD Selector Popover"}
             isVisible={diagram.openLhsPanel === DiagramLhsPanel.DRD_SELECTOR}
-            reference={() => drdSelectorPopoverRef.current!}
+            triggerRef={() => drdSelectorPopoverRef.current!}
             shouldClose={() => {
               dmnEditorStoreApi.setState((state) => {
                 state.diagram.openLhsPanel = DiagramLhsPanel.NONE;

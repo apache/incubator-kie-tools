@@ -54,12 +54,12 @@ const FormCard: React.FC<FormCardProps & OUIAProps> = ({ formData, driver, ouiaI
         <CardHeaderMain>{getLabel()}</CardHeaderMain>
       </CardHeader>
       <CardHeader>
-        <Text component={TextVariants.h1} className="pf-u-font-weight-bold">
+        <Text component={TextVariants.h1} className="pf-v5-u-font-weight-bold">
           {formData.name}
         </Text>
       </CardHeader>
       <CardBody>
-        <div className="pf-u-mt-md">
+        <div className="pf-v5-u-mt-md">
           <Form>
             <FormGroup label="Type" fieldId="type">
               <Text component={TextVariants.p}>{formData.type}</Text>

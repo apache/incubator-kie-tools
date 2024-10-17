@@ -63,7 +63,7 @@ export function InputDataProperties({
           name={inputData["@_name"]}
           isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
-          className={"pf-c-form-control"}
+          className={"pf-v5-c-form-control"}
           onRenamed={(newName) => {
             setState((state) => {
               renameDrgElement({
@@ -96,7 +96,7 @@ export function InputDataProperties({
           type={"text"}
           isDisabled={isReadOnly}
           value={inputData.description?.__$$text}
-          onChange={(newDescription) => {
+          onChange={(_event, newDescription) => {
             setState((state) => {
               (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tInputData>).description = {
                 __$$text: newDescription,

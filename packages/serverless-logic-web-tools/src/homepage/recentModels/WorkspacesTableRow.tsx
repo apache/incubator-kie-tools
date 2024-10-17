@@ -194,7 +194,7 @@ export function WorkspacesTableRowError(props: { rowData: WorkspacesTableRowData
               </>
             }
           >
-            <OutlinedQuestionCircleIcon className="pf-c-question-circle-icon" />
+            <OutlinedQuestionCircleIcon className="pf-v5-c-question-circle-icon" />
           </Popover>
         </Td>
         <Td isActionCell>

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/deprecated";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useOpenShift } from "../../openshift/OpenShiftContext";

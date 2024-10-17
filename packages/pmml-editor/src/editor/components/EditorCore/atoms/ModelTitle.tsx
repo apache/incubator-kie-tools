@@ -84,7 +84,7 @@ export const ModelTitle = (props: ModelTitleProps) => {
     () =>
       `${
         commitModelName !== undefined ? "modelTitle" : "modelTitle modelTitle--editing"
-      } pf-c-title pf-m-2xl pf-c-form-control`,
+      } pf-v5-c-title pf-m-2xl pf-v5-c-form-control`,
     [commitModelName]
   );
 
@@ -114,9 +114,9 @@ export const ModelTitle = (props: ModelTitleProps) => {
                 <button
                   aria-label="More info about Model Name"
                   onClick={(e) => e.preventDefault()}
-                  className="pf-c-form__group-label-help modelTitle__icon"
+                  className="pf-v5-c-form__group-label-help modelTitle__icon"
                 >
-                  <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                  <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                 </button>
               </Tooltip>
             </SplitItem>
@@ -140,7 +140,7 @@ export const ModelTitle = (props: ModelTitleProps) => {
                     autoFocus={true}
                     value={title}
                     placeholder={MODEL_NAME_NOT_SET}
-                    onChange={setTitle}
+                    onChange={(_event, val) => setTitle(val)}
                     onBlur={onCommitAndClose}
                     ouiaId="set-model-name"
                   />

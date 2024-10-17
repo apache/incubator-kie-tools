@@ -157,7 +157,7 @@ export function useFunctionExpressionParametersColumnHeader(
   const expressionParametersContent = useMemo(
     () => (
       <div className={`parameters-list ${_.isEmpty(formalParameters) ? "empty-parameters" : ""}`}>
-        <p className="pf-u-text-truncate">
+        <p className="pf-v5-u-text-truncate">
           {_.isEmpty(formalParameters) ? (
             i18n.editParameters
           ) : (

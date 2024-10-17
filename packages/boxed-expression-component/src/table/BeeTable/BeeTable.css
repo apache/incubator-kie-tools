@@ -79,8 +79,8 @@
 
 .expression-container .table-component table thead th,
 .expression-container .table-component table tbody td {
-  border-top: 1px solid var(--pf-global--palette--black-300);
-  border-left: 1px solid var(--pf-global--palette--black-300);
+  border-top: 1px solid var(--pf-v5-global--palette--black-300);
+  border-left: 1px solid var(--pf-v5-global--palette--black-300);
   border-right: 0;
   border-bottom: 0;
   outline: none;
@@ -88,12 +88,12 @@
 
 .expression-container .table-component table thead th:last-child,
 .expression-container .table-component table tbody td:last-child {
-  border-right: 1px solid var(--pf-global--palette--black-300);
+  border-right: 1px solid var(--pf-v5-global--palette--black-300);
 }
 
 .expression-container .table-component table thead tr:last-child th,
 .expression-container .table-component table tbody tr:last-child td {
-  border-bottom: 1px solid var(--pf-global--palette--black-300);
+  border-bottom: 1px solid var(--pf-v5-global--palette--black-300);
 }
 
 /* SELECTION */
@@ -121,19 +121,19 @@
 }
 
 .expression-container .table-component table thead tr th {
-  border-top: 1px solid var(--pf-global--palette--black-400);
-  border-left: 1px solid var(--pf-global--palette--black-400);
-  border-right: 1px solid var(--pf-global--palette--black-400);
-  border-bottom: 1px solid var(--pf-global--palette--black-400);
+  border-top: 1px solid var(--pf-v5-global--palette--black-400);
+  border-left: 1px solid var(--pf-v5-global--palette--black-400);
+  border-right: 1px solid var(--pf-v5-global--palette--black-400);
+  border-bottom: 1px solid var(--pf-v5-global--palette--black-400);
 }
 
 .expression-container .table-component table tbody tr td:first-child {
-  border-top: 1px solid var(--pf-global--palette--black-400);
-  border-left: 1px solid var(--pf-global--palette--black-400);
-  border-right: 1px solid var(--pf-global--palette--black-400);
+  border-top: 1px solid var(--pf-v5-global--palette--black-400);
+  border-left: 1px solid var(--pf-v5-global--palette--black-400);
+  border-right: 1px solid var(--pf-v5-global--palette--black-400);
 }
 .expression-container .table-component table tbody tr:last-child td:first-child {
-  border-bottom: 1px solid var(--pf-global--palette--black-400);
+  border-bottom: 1px solid var(--pf-v5-global--palette--black-400);
 }
 
 .expression-container .table-component table thead th.selected:not(.editing):after,
@@ -234,19 +234,19 @@
 
 /** Handle for resizing columns */
 
-.expression-container .pf-c-drawer {
+.expression-container .pf-v5-c-drawer {
   background-color: inherit;
   width: 8px;
   min-width: 8px;
 }
 
-.expression-container .pf-c-drawer__splitter {
+.expression-container .pf-v5-c-drawer__splitter {
   background-color: inherit;
   width: 8px;
 }
 
-.expression-container .pf-c-drawer {
-  --pf-c-drawer__splitter--after--BorderLeftWidth: var(--pf-global--BorderWidth--sm);
+.expression-container .pf-v5-c-drawer {
+  --pf-v5-c-drawer__splitter--after--BorderLeftWidth: var(--pf-v5-global--BorderWidth--sm);
   position: absolute;
   min-width: 8px;
   max-width: 8px;
@@ -255,32 +255,32 @@
   bottom: 0;
 }
 
-.expression-container .pf-c-drawer.resizer-disabled * {
+.expression-container .pf-v5-c-drawer.resizer-disabled * {
   cursor: not-allowed;
 }
 
-.expression-container .pf-c-drawer.resizer-disabled .pf-c-drawer__splitter {
+.expression-container .pf-v5-c-drawer.resizer-disabled .pf-v5-c-drawer__splitter {
   background-color: lightgray;
 }
 
-.expression-container .pf-c-drawer .pf-c-drawer__splitter {
+.expression-container .pf-v5-c-drawer .pf-v5-c-drawer__splitter {
   z-index: 10;
   background-color: #00000010;
 }
 
-.expression-container .pf-c-drawer .pf-c-drawer__splitter.min {
+.expression-container .pf-v5-c-drawer .pf-v5-c-drawer__splitter.min {
   background-color: #00ffb739;
 }
 
-.expression-container .pf-c-drawer .pf-c-drawer__splitter.min-basis {
+.expression-container .pf-v5-c-drawer .pf-v5-c-drawer__splitter.min-basis {
   background-color: #ffe10039;
 }
 
-.expression-container .pf-c-drawer .pf-c-drawer__splitter.actual {
+.expression-container .pf-v5-c-drawer .pf-v5-c-drawer__splitter.actual {
   background-color: rgba(144, 0, 255, 0.137);
 }
 
-.expression-container .pf-c-drawer .pf-c-drawer__splitter.error {
+.expression-container .pf-v5-c-drawer .pf-v5-c-drawer__splitter.error {
   background-color: red;
 }
 /** Additional row section */
@@ -291,7 +291,7 @@
 
 /** Hiding popover arrow for the Table context menu */
 
-.boxed-expression-provider .table-context-menu .pf-c-popover__arrow {
+.boxed-expression-provider .table-context-menu .pf-v5-c-popover__arrow {
   display: none;
 }
 
@@ -299,7 +299,7 @@
 
 .add-row-button {
   position: absolute;
-  border: 1px solid var(--pf-global--palette--black-400);
+  border: 1px solid var(--pf-v5-global--palette--black-400);
   height: 18px;
   width: 18px;
   display: flex;
@@ -322,7 +322,7 @@
 
 .add-column-button {
   position: absolute;
-  border: 1px solid var(--pf-global--palette--black-400);
+  border: 1px solid var(--pf-v5-global--palette--black-400);
   bottom: 5px;
   height: 18px;
   width: 18px;
@@ -344,7 +344,7 @@
   filter: brightness(0.8);
 }
 
-.logic-type-popover .pf-c-menu {
+.logic-type-popover .pf-v5-c-menu {
   box-shadow: none;
   min-width: 210px;
 }

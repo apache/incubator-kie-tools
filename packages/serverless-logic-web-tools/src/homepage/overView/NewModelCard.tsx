@@ -61,14 +61,14 @@ export function NewModelCard(props: {
           <Flex>
             {jsonExtension && (
               <Link to={{ pathname: routes.newModel.path({ extension: jsonExtension }) }}>
-                <Button variant={ButtonVariant.secondary} ouiaId={`new-${jsonExtension}-button`} isSmall>
+                <Button variant={ButtonVariant.secondary} ouiaId={`new-${jsonExtension}-button`} size="sm">
                   JSON
                 </Button>
               </Link>
             )}
             {yamlExtension && (
               <Link to={{ pathname: routes.newModel.path({ extension: yamlExtension }) }}>
-                <Button variant={ButtonVariant.secondary} ouiaId={`new-${yamlExtension}-button`} isSmall>
+                <Button variant={ButtonVariant.secondary} ouiaId={`new-${yamlExtension}-button`} size="sm">
                   YAML
                 </Button>
               </Link>

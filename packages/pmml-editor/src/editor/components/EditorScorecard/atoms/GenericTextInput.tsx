@@ -43,7 +43,7 @@ export const GenericTextInput = (props: GenericTextInputProps) => {
     <TextInput
       id={props.id}
       value={state}
-      onChange={onChange}
+      onChange={(_event, _value: string) => onChange(_value)}
       onBlur={onBlur}
       validated={props.validated}
       isRequired={true}

@@ -82,7 +82,7 @@ const MultipleDataTypeAdd = ({ onAdd, onCancel }: MultipleDataTypeAddProps) => {
                 className="data-dictionary__multiple-data-types"
                 data-ouia-component-id="multiple-data-types"
                 value={input}
-                onChange={handleInputChange}
+                onChange={(_event, value: string) => handleInputChange(value)}
                 name="data-types"
                 isRequired={true}
                 id="data-types"

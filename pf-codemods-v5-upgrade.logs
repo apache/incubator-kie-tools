@@ -1,0 +1,944 @@
+
+ src/framework/editor/Editor.ts
+  24:  [90mprivate static readonly LOADING_POPUP_LOCATOR: By = By.className("pf-[39m[32mv5-[39m[90ml-bullseye");[39m
+ src/MockData/forms/examples/react_hiring_ITInterview.tsx
+  66:  [90m<div className={"pf-[39m[32mv5-[39m[90mc-form"}>[39m
+  78:  [90m<CardBody className="pf-[39m[32mv5-[39m[90mc-form">[39m
+ src/MockData/forms/examples/react_hiring_HRInterview.tsx
+  76:  [90m<div className={"pf-[39m[32mv5-[39m[90mc-form"}>[39m
+  78:  [90m<CardBody className="pf-[39m[32mv5-[39m[90mc-form">[39m
+ src/wrapField.tsx
+  86:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+ src/NestField.tsx
+  41:  [90m<CardBody className="pf-[39m[32mv5-[39m[90mc-form">[39m
+ src/uniforms/NestField.tsx
+  82:  [90m<CardBody className="pf-[39m[32mv5-[39m[90mc-form">[39m
+ src/uniforms/AutoForm.tsx
+  131:  [90m<div className={'pf-[39m[32mv5-[39m[90mc-form'}>[39m
+ src/components/ImportJavaClasses/ImportJavaClassesWizardThirdStep.css
+  20:  [90m.import-java-classes .fields-table .pf-[39m[32mv5-[39m[90mc-table {[39m
+  21:  [90m--pf-[39m[32mv5-[39m[90mglobal--Color--100: #6a6e73;[39m
+ src/envelope/styles.scss
+  21:  [90m.kie-tools--loading-screen .pf-[39m[32mv5-[39m[90ml-bullseye {[39m
+  22:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mglobal--Color--dark-100);[39m
+  23:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--light-100);[39m
+  27:  [90m.vscode-dark .kie-tools--loading-screen .pf-[39m[32mv5-[39m[90ml-bullseye {[39m
+  28:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mglobal--Color--light-100);[39m
+  29:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--dark-100);[39m
+  79:  [90mfont-family: var(--pf-[39m[32mv5-[39m[90mglobal--FontFamily--sans-serif);[39m
+  80:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mglobal--Color--dark-100);[39m
+  87:  [90m.pf-[39m[32mv5-[39m[90mc-modal-box.kie-tools--keyboard-shortcuts.dark {[39m
+  107:  [90m.pf-[39m[32mv5-[39m[90mc-button.pf-m-plain {[39m
+  110:  [90m.pf-[39m[32mv5-[39m[90mc-button.pf-m-plain:hover {[39m
+  116:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mglobal--Color-dark--100);[39m
+  125:  [90mline-height: var(--pf-[39m[32mv5-[39m[90mglobal--LineHeight--md) !important;[39m
+ src/editor/components/Outputs/organisms/OutputsContainer.scss
+  50:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--200);[39m
+  56:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--200);[39m
+  58:  [90m// overriding disabled select background color because it doesn't play nice with --pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--200[39m
+  59:  [90m.pf-[39m[32mv5-[39m[90mc-select__toggle.pf-m-disabled {[39m
+  60:  [90m--pf-[39m[32mv5-[39m[90mc-select__toggle--disabled--BackgroundColor: var(--pf-[39m [90mc-select__toggle--disabled--BackgroundColor: var(--pf-[39m[32mv5-[39m[90mglobal--disabled-color--200);[39m
+  62:  [90m.pf-[39m[32mv5-[39m[90mc-form-control:disabled {[39m
+  63:  [90m--pf-[39m[32mv5-[39m[90mc-form-control--BackgroundColor: var(--pf-[39m [90mc-form-control--BackgroundColor: var(--pf-[39m[32mv5-[39m[90mglobal--disabled-color--200);[39m
+ src/editor/components/Outputs/organisms/OutputsBatchAdd.scss
+  23:  [90mfont-size: var(--pf-[39m[32mv5-[39m[90mglobal--FontSize--lg);[39m
+ src/editor/components/Outputs/organisms/OutputFieldExtendedProperties.tsx
+  173:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  175:  [90m<HelpIcon style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100)" }} />[39m
+  210:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  212:  [90m<HelpIcon style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100)" }} />[39m
+  229:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  231:  [90m<HelpIcon style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100)" }} />[39m
+  262:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  264:  [90m<HelpIcon style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100)" }} />[39m
+ src/editor/components/Outputs/organisms/OutputFieldsTable.scss
+  31:  [90mpadding-right: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--sm);[39m
+  35:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100);[39m
+ src/editor/components/Outputs/molecules/OutputFieldRow.scss
+  9:  [90mmargin-right: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--sm);[39m
+  10:  [90mmargin-bottom: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--sm);[39m
+  15:  [90m.pf-[39m[32mv5-[39m[90mc-select__toggle {[39m
+ src/editor/components/Outputs/atoms/OutputFieldLabel.scss
+  22:  [90mmargin-right: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--sm);[39m
+  23:  [90mmargin-bottom: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--sm);[39m
+ src/editor/components/MiningSchema/MiningSchemaPropertiesEdit/MiningSchemaPropertiesEdit.tsx
+  330:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  332:  [90m<HelpIcon style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100)" }} />[39m
+  367:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  369:  [90m<HelpIcon style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100)" }} />[39m
+  422:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  424:  [90m<HelpIcon style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100)" }} />[39m
+  476:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  478:  [90m<HelpIcon style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100)" }} />[39m
+ src/editor/components/MiningSchema/MiningSchemaPropertiesEdit/MiningSchemaPropertiesEdit.scss
+  6:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--200);[39m
+  9:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--BorderColor--100);[39m
+  14:  [90mmargin-top: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--md);[39m
+ src/editor/components/MiningSchema/MiningSchemaFields/MiningSchemaFields.scss
+  12:  [90mmargin-left: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--sm);[39m
+ src/editor/components/MiningSchema/MiningSchemaFieldLabels/MiningSchemaFieldLabels.scss
+  3:  [90mmargin-right: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--sm);[39m
+  4:  [90mmargin-bottom: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--xs);[39m
+  5:  [90mmargin-top: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--xs);[39m
+ src/editor/components/MiningSchema/MiningSchemaContainer/MiningSchemaContainer.scss
+  14:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--200);[39m
+ src/editor/components/EditorScorecard/templates/ScorecardEditorPage.scss
+  29:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mc-page__main-section--m-light--BackgroundColor);[39m
+  40:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mc-page__main-section--BackgroundColor);[39m
+  57:  [90mborder: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--BorderColor--100);[39m
+  72:  [90mbox-shadow: var(--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--lg);[39m
+  73:  [90mborder-left: var(--pf-[39m[32mv5-[39m[90mglobal--BorderWidth--lg) solid var(--pf-[39m [90mglobal--BorderWidth--lg) solid var(--pf-[39m[32mv5-[39m[90mglobal--BorderColor--light-100);[39m
+  98:  [90mbox-shadow: var(--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--sm-top), var(--pf-[39m [90mglobal--BoxShadow--sm-top), var(--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--sm-bottom);[39m
+  99:  [90mborder-left: var(--pf-[39m[32mv5-[39m[90mglobal--BorderWidth--lg) solid var(--pf-[39m [90mglobal--BorderWidth--lg) solid var(--pf-[39m[32mv5-[39m[90mglobal--active-color--100);[39m
+ src/editor/components/EditorScorecard/organisms/CorePropertiesTable.scss
+  22:  [90mmargin-right: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--sm);[39m
+ src/editor/components/EditorScorecard/organisms/CorePropertiesTable.tsx
+  356:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  358:  [90m<HelpIcon style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100)" }} />[39m
+ src/editor/components/EditorScorecard/organisms/AttributesTable.scss
+  32:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100);[39m
+ src/editor/components/EditorScorecard/organisms/CharacteristicsContainer.scss
+  34:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--200);[39m
+  59:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--200);[39m
+  61:  [90m// overriding disabled input background color because it doesn't play nice with --pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--200[39m
+  62:  [90m.pf-[39m[32mv5-[39m[90mc-form-control:disabled {[39m
+  63:  [90m--pf-[39m[32mv5-[39m[90mc-form-control--BackgroundColor: var(--pf-[39m [90mc-form-control--BackgroundColor: var(--pf-[39m[32mv5-[39m[90mglobal--disabled-color--200);[39m
+ src/editor/components/EditorScorecard/molecules/CharacteristicsToolbar.scss
+  21:  [90m--pf-[39m[32mv5-[39m[90mc-toolbar__content--PaddingLeft: 0;[39m
+  22:  [90m--pf-[39m[32mv5-[39m[90mc-toolbar__content--PaddingRight: 0;[39m
+  23:  [90m--pf-[39m[32mv5-[39m[90mc-toolbar--PaddingTop: 0;[39m
+ src/editor/components/EditorScorecard/molecules/CharacteristicsTableEditRow.tsx
+  266:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  268:  [90m<HelpIcon style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100)" }} />[39m
+  311:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  313:  [90m<HelpIcon style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100)" }} />[39m
+ src/editor/components/EditorScorecard/molecules/AttributeEditor.scss
+  21:  [90mmargin-left: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--xs);[39m
+ src/editor/components/EditorScorecard/molecules/AttributeEditor.tsx
+  194:  [90m<span className="pf-[39m[32mv5-[39m[90mc-form__helper-text pf-m-warning attribute-editor__validation-message">[39m
+  200:  [90m<div className="pf-[39m[32mv5-[39m[90mc-form__helper-text">[39m
+  232:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  234:  [90m<HelpIcon style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100)" }} />[39m
+  274:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  276:  [90m<HelpIcon style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100)" }} />[39m
+ src/editor/components/EditorScorecard/atoms/CharacteristicLabel.scss
+  22:  [90mmargin-right: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--sm);[39m
+  23:  [90mmargin-bottom: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--sm);[39m
+ src/editor/components/EditorScorecard/atoms/AttributeLabel.scss
+  22:  [90mmargin-right: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--sm);[39m
+  23:  [90mmargin-bottom: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--sm);[39m
+ src/editor/components/EditorCore/atoms/ModelTitle.tsx
+  87:  [90m} pf-[39m[32mv5-[39m[90mc-title pf-m-2xl pf-[39m [90mc-title pf-m-2xl pf-[39m[32mv5-[39m[90mc-form-control`,[39m
+  117:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help modelTitle__icon"[39m
+  119:  [90m<HelpIcon style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100)" }} />[39m
+ src/editor/components/EditorCore/atoms/ModelTitle.scss
+  22:  [90m.pf-[39m[32mv5-[39m[90ml-split__item.modelTitle__icon {[39m
+  60:  [90mborder: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--BorderColor--100) !important;[39m
+  68:  [90m// Overrides for pf-[39m[32mv5-[39m[90mc-form__group-label-help[39m
+  79:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mglobal--Color--200) !important;[39m
+ src/editor/components/DataDictionary/PropertiesLabels/PropertiesLabels.scss
+  22:  [90mmargin-bottom: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--xs);[39m
+  23:  [90mmargin-top: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--xs);[39m
+  25:  [90mmargin-right: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--xs);[39m
+ src/editor/components/DataDictionary/MultipleDataTypeAdd/MultipleDataTypesAdd.scss
+  24:  [90mfont-size: var(--pf-[39m[32mv5-[39m[90mglobal--FontSize--lg);[39m
+ src/editor/components/DataDictionary/DataTypeItem/DataTypeItem.scss
+  33:  [90mmargin-top: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--xs);[39m
+  34:  [90mmargin-bottom: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--xs);[39m
+  38:  [90m.pf-[39m[32mv5-[39m[90mc-select__toggle {[39m
+ src/editor/components/DataDictionary/DataDictionaryPropertiesEdit/DataDictionaryPropertiesEdit.tsx
+  136:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  138:  [90m<HelpIcon style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100)" }} />[39m
+ src/editor/components/DataDictionary/DataDictionaryPropertiesEdit/DataDictionaryPropertiesEdit.scss
+  26:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--200);[39m
+  31:  [90m--pf-[39m[32mv5-[39m[90ml-split--m-gutter--MarginRight: 2em;[39m
+  35:  [90mmargin-top: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--lg);[39m
+ src/editor/components/DataDictionary/DataDictionaryContainer/DataDictionaryContainer.scss
+  31:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--200);[39m
+ src/editor/components/DataDictionary/ConstraintsRangeEdit/ConstraintsRangeEdit.scss
+  21:  [90mborder-top: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--BorderColor--100);[39m
+  23:  [90mborder-bottom: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--BorderColor--100);[39m
+  30:  [90mfont-weight: var(--pf-[39m[32mv5-[39m[90mc-form__label-text--FontWeight);[39m
+  31:  [90mfont-size: var(--pf-[39m[32mv5-[39m[90mc-form__label--FontSize);[39m
+ src/editor/components/DataDictionary/ConstraintsLabel/ConstraintsLabel.scss
+  21:  [90mmargin-right: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--sm);[39m
+ src/editor/components/DataDictionary/ConstraintsEdit/ConstraintsEdit.tsx
+  213:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  215:  [90m<HelpIcon style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100)" }} />[39m
+ src/editor/components/DataDictionary/ConstraintsEnumEdit/ConstraintsEnumEdit.scss
+  22:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--100);[39m
+  23:  [90mborder-top: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--BorderColor--100);[39m
+  25:  [90mborder-bottom: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--BorderColor--100);[39m
+ src/editor/components/DataDictionary/ConstraintsEdit/ConstraintsEdit.scss
+  24:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--200);[39m
+  25:  [90m// overriding disabled select background color because it doesn't play nice with --pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--200[39m
+  26:  [90m.pf-[39m[32mv5-[39m[90mc-select__toggle.pf-m-disabled {[39m
+  27:  [90m--pf-[39m[32mv5-[39m[90mc-select__toggle--disabled--BackgroundColor: var(--pf-[39m [90mc-select__toggle--disabled--BackgroundColor: var(--pf-[39m[32mv5-[39m[90mglobal--disabled-color--200);[39m
+ src/uiEditor/YardUIEditor.css
+  47:  [90m.yard-ui-editor .pf-[39m[32mv5-[39m[90mc-divider {[39m
+ src/editor/YardEditor.css
+  21:  [90m--pf-[39m[32mv5-[39m[90mc-drawer--child--PaddingTop: 5px;[39m
+  22:  [90m--pf-[39m[32mv5-[39m[90mc-drawer--child--PaddingRight: 5px;[39m
+  23:  [90m--pf-[39m[32mv5-[39m[90mc-drawer--child--PaddingBottom: 5px;[39m
+  24:  [90m--pf-[39m[32mv5-[39m[90mc-drawer--child--PaddingLeft: 5px;[39m
+ src/styles.scss
+  28:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-600);[39m
+  31:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-100);[39m
+ src/ServerUnavailablePage/ServerUnavailablePage.tsx
+  46:  [90m<EmptyStateHeader titleText="Error connecting server" icon={<EmptyStateIcon icon={ExclamationCircleIcon} color="var(--pf-[39m[32mv5-[39m[90mglobal--danger-color--100)" />} headingLevel="h1" />[39m
+ src/PageNotFound/PageNotFound.tsx
+  69:  [90m<EmptyStateHeader titleText="404 Error: page not found" icon={<EmptyStateIcon icon={ExclamationCircleIcon} color="var(--pf-[39m[32mv5-[39m[90mglobal--danger-color--100)" />} headingLevel="h1" />[39m
+ src/formsList/envelope/components/FormCard/FormCard.tsx
+  57:  [90m<Text component={TextVariants.h1} className="pf-[39m[32mv5-[39m[90mu-font-weight-bold">[39m
+  62:  [90m<div className="pf-[39m[32mv5-[39m[90mu-mt-md">[39m
+ src/formDetails/envelope/components/styles.css
+  20:  [90m.pf-[39m[32mv5-[39m[90mc-code-editor__controls > button:nth-child(1) {[39m
+ src/formDetails/envelope/components/FormDetails/FormDetails.tsx
+  157:  [90mbackground: "var(--pf-[39m[32mv5-[39m[90mc-page__main-section--BackgroundColor)",[39m
+  182:  [90mbackground: "var(--pf-[39m[32mv5-[39m[90mc-page__main-section--BackgroundColor)",[39m
+ src/customDashboardList/envelope/components/CustomDashboardCard/CustomDashboardCard.tsx
+  54:  [90m<Text component={TextVariants.h1} className="pf-[39m[32mv5-[39m[90mu-font-weight-bold">[39m
+  59:  [90m<div className="pf-[39m[32mv5-[39m[90mu-mt-md">[39m
+ src/base-no-reset-wrapped.css
+  21:  [90m--pf-[39m[32mv5-[39m[90mglobal--Color--100: var(--pf-[39m [90mglobal--Color--100: var(--pf-[39m[32mv5-[39m[90mglobal--Color--dark-100);[39m
+  22:  [90m--pf-[39m[32mv5-[39m[90mglobal--Color--200: var(--pf-[39m [90mglobal--Color--200: var(--pf-[39m[32mv5-[39m[90mglobal--Color--dark-200);[39m
+  23:  [90m--pf-[39m[32mv5-[39m[90mglobal--BorderColor--100: var(--pf-[39m [90mglobal--BorderColor--100: var(--pf-[39m[32mv5-[39m[90mglobal--BorderColor--dark-100);[39m
+  24:  [90m--pf-[39m[32mv5-[39m[90mglobal--primary-color--100: var(--pf-[39m [90mglobal--primary-color--100: var(--pf-[39m[32mv5-[39m[90mglobal--primary-color--dark-100);[39m
+  25:  [90m--pf-[39m[32mv5-[39m[90mglobal--link--Color: var(--pf-[39m [90mglobal--link--Color: var(--pf-[39m[32mv5-[39m[90mglobal--link--Color--dark);[39m
+  26:  [90m--pf-[39m[32mv5-[39m[90mglobal--link--Color--hover: var(--pf-[39m [90mglobal--link--Color--hover: var(--pf-[39m[32mv5-[39m[90mglobal--link--Color--dark--hover);[39m
+  27:  [90m--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--100: var(--pf-[39m [90mglobal--BackgroundColor--100: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--light-100);[39m
+  31:  [90m--pf-[39m[32mv5-[39m[90mglobal--Color--100: var(--pf-[39m [90mglobal--Color--100: var(--pf-[39m[32mv5-[39m[90mglobal--Color--light-100);[39m
+  32:  [90m--pf-[39m[32mv5-[39m[90mglobal--Color--200: var(--pf-[39m [90mglobal--Color--200: var(--pf-[39m[32mv5-[39m[90mglobal--Color--light-200);[39m
+  33:  [90m--pf-[39m[32mv5-[39m[90mglobal--BorderColor--100: var(--pf-[39m [90mglobal--BorderColor--100: var(--pf-[39m[32mv5-[39m[90mglobal--BorderColor--light-100);[39m
+  34:  [90m--pf-[39m[32mv5-[39m[90mglobal--primary-color--100: var(--pf-[39m [90mglobal--primary-color--100: var(--pf-[39m[32mv5-[39m[90mglobal--primary-color--light-100);[39m
+  35:  [90m--pf-[39m[32mv5-[39m[90mglobal--link--Color: var(--pf-[39m [90mglobal--link--Color: var(--pf-[39m[32mv5-[39m[90mglobal--link--Color--light);[39m
+  36:  [90m--pf-[39m[32mv5-[39m[90mglobal--link--Color--hover: var(--pf-[39m [90mglobal--link--Color--hover: var(--pf-[39m[32mv5-[39m[90mglobal--link--Color--light);[39m
+  37:  [90m--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--100: var(--pf-[39m [90mglobal--BackgroundColor--100: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--dark-100);[39m
+  40:  [90m.boxed-expression-provider .pf-t-dark .pf-[39m[32mv5-[39m[90mc-card {[39m
+  41:  [90m--pf-[39m[32mv5-[39m[90mc-card--BackgroundColor: var(--pf-[39m [90mc-card--BackgroundColor: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--dark-transparent-200);[39m
+  44:  [90m.boxed-expression-provider .pf-t-dark .pf-[39m[32mv5-[39m[90mc-button {[39m
+  45:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-primary--Color: var(--pf-[39m [90mc-button--m-primary--Color: var(--pf-[39m[32mv5-[39m[90mglobal--primary-color--dark-100);[39m
+  46:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-primary--hover--Color: var(--pf-[39m [90mc-button--m-primary--hover--Color: var(--pf-[39m[32mv5-[39m[90mglobal--primary-color--dark-100);[39m
+  47:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-primary--focus--Color: var(--pf-[39m [90mc-button--m-primary--focus--Color: var(--pf-[39m[32mv5-[39m[90mglobal--primary-color--dark-100);[39m
+  48:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-primary--active--Color: var(--pf-[39m [90mc-button--m-primary--active--Color: var(--pf-[39m[32mv5-[39m[90mglobal--primary-color--dark-100);[39m
+  49:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-primary--BackgroundColor: var(--pf-[39m [90mc-button--m-primary--BackgroundColor: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--light-100);[39m
+  50:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-primary--hover--BackgroundColor: var(--pf-[39m [90mc-button--m-primary--hover--BackgroundColor: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--light-300);[39m
+  51:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-primary--focus--BackgroundColor: var(--pf-[39m [90mc-button--m-primary--focus--BackgroundColor: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--light-300);[39m
+  52:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-primary--active--BackgroundColor: var(--pf-[39m [90mc-button--m-primary--active--BackgroundColor: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--light-300);[39m
+  53:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-secondary--Color: var(--pf-[39m [90mc-button--m-secondary--Color: var(--pf-[39m[32mv5-[39m[90mglobal--Color--light-100);[39m
+  54:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-secondary--hover--Color: var(--pf-[39m [90mc-button--m-secondary--hover--Color: var(--pf-[39m[32mv5-[39m[90mglobal--Color--light-100);[39m
+  55:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-secondary--focus--Color: var(--pf-[39m [90mc-button--m-secondary--focus--Color: var(--pf-[39m[32mv5-[39m[90mglobal--Color--light-100);[39m
+  56:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-secondary--active--Color: var(--pf-[39m [90mc-button--m-secondary--active--Color: var(--pf-[39m[32mv5-[39m[90mglobal--Color--light-100);[39m
+  57:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-secondary--BorderColor: var(--pf-[39m [90mc-button--m-secondary--BorderColor: var(--pf-[39m[32mv5-[39m[90mglobal--Color--light-100);[39m
+  58:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-secondary--hover--BorderColor: var(--pf-[39m [90mc-button--m-secondary--hover--BorderColor: var(--pf-[39m[32mv5-[39m[90mglobal--Color--light-100);[39m
+  59:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-secondary--focus--BorderColor: var(--pf-[39m [90mc-button--m-secondary--focus--BorderColor: var(--pf-[39m[32mv5-[39m[90mglobal--Color--light-100);[39m
+  60:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-secondary--active--BorderColor: var(--pf-[39m [90mc-button--m-secondary--active--BorderColor: var(--pf-[39m[32mv5-[39m[90mglobal--Color--light-100);[39m
+  64:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--black-100: #fafafa;[39m
+  65:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--black-150: #f5f5f5;[39m
+  66:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--black-200: #f0f0f0;[39m
+  67:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--black-300: #d2d2d2;[39m
+  68:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--black-400: #b8bbbe;[39m
+  69:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--black-500: #8a8d90;[39m
+  70:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--black-600: #6a6e73;[39m
+  71:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--black-700: #4f5255;[39m
+  72:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--black-800: #3c3f42;[39m
+  73:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--black-850: #212427;[39m
+  74:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--black-900: #151515;[39m
+  75:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--black-1000: #030303;[39m
+  76:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--blue-50: #e7f1fa;[39m
+  77:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--blue-100: #bee1f4;[39m
+  78:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--blue-200: #73bcf7;[39m
+  79:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--blue-300: #2b9af3;[39m
+  80:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--blue-400: #06c;[39m
+  81:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--blue-500: #004080;[39m
+  82:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--blue-600: #002952;[39m
+  83:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--blue-700: #001223;[39m
+  84:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--cyan-50: #f2f9f9;[39m
+  85:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--cyan-100: #a2d9d9;[39m
+  86:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--cyan-200: #73c5c5;[39m
+  87:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--cyan-300: #009596;[39m
+  88:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--cyan-400: #005f60;[39m
+  89:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--cyan-500: #003737;[39m
+  90:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--cyan-600: #002323;[39m
+  91:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--cyan-700: #000f0f;[39m
+  92:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--gold-50: #fdf7e7;[39m
+  93:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--gold-100: #f9e0a2;[39m
+  94:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--gold-200: #f6d173;[39m
+  95:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--gold-300: #f4c145;[39m
+  96:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--gold-400: #f0ab00;[39m
+  97:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--gold-500: #c58c00;[39m
+  98:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--gold-600: #795600;[39m
+  99:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--gold-700: #3d2c00;[39m
+  100:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--green-50: #f3faf2;[39m
+  101:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--green-100: #bde5b8;[39m
+  102:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--green-200: #95d58e;[39m
+  103:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--green-300: #6ec664;[39m
+  104:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--green-400: #5ba352;[39m
+  105:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--green-500: #3e8635;[39m
+  106:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--green-600: #1e4f18;[39m
+  107:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--green-700: #0f280d;[39m
+  108:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--light-blue-100: #beedf9;[39m
+  109:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--light-blue-200: #7cdbf3;[39m
+  110:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--light-blue-300: #35caed;[39m
+  111:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--light-blue-400: #00b9e4;[39m
+  112:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--light-blue-500: #008bad;[39m
+  113:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--light-blue-600: #005c73;[39m
+  114:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--light-blue-700: #002d39;[39m
+  115:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--light-green-100: #e4f5bc;[39m
+  116:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--light-green-200: #c8eb79;[39m
+  117:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--light-green-300: #ace12e;[39m
+  118:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--light-green-400: #92d400;[39m
+  119:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--light-green-500: #6ca100;[39m
+  120:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--light-green-600: #486b00;[39m
+  121:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--light-green-700: #253600;[39m
+  122:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--orange-100: #f4b678;[39m
+  123:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--orange-200: #ef9234;[39m
+  124:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--orange-300: #ec7a08;[39m
+  125:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--orange-400: #c46100;[39m
+  126:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--orange-500: #8f4700;[39m
+  127:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--orange-600: #773d00;[39m
+  128:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--orange-700: #3b1f00;[39m
+  129:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--purple-50: #f2f0fc;[39m
+  130:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--purple-100: #cbc1ff;[39m
+  131:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--purple-200: #b2a3ff;[39m
+  132:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--purple-300: #a18fff;[39m
+  133:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--purple-400: #8476d1;[39m
+  134:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--purple-500: #6753ac;[39m
+  135:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--purple-600: #40199a;[39m
+  136:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--purple-700: #1f0066;[39m
+  137:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--red-50: #faeae8;[39m
+  138:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--red-100: #c9190b;[39m
+  139:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--red-200: #a30000;[39m
+  140:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--red-300: #7d1007;[39m
+  141:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--red-400: #470000;[39m
+  142:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--red-500: #2c0000;[39m
+  143:  [90m--pf-[39m[32mv5-[39m[90mglobal--palette--white: #fff;[39m
+  144:  [90m--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--100: #fff;[39m
+  145:  [90m--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--200: #f0f0f0;[39m
+  146:  [90m--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--light-100: #fff;[39m
+  147:  [90m--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--light-200: #fafafa;[39m
+  148:  [90m--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--light-300: #f0f0f0;[39m
+  149:  [90m--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--dark-100: #151515;[39m
+  150:  [90m--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--dark-200: #3c3f42;[39m
+  151:  [90m--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--dark-300: #212427;[39m
+  152:  [90m--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--dark-400: #4f5255;[39m
+  153:  [90m--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--dark-transparent-100: rgba(3, 3, 3, 0.62);[39m
+  154:  [90m--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--dark-transparent-200: rgba(3, 3, 3, 0.32);[39m
+  155:  [90m--pf-[39m[32mv5-[39m[90mglobal--Color--100: #151515;[39m
+  156:  [90m--pf-[39m[32mv5-[39m[90mglobal--Color--200: #6a6e73;[39m
+  157:  [90m--pf-[39m[32mv5-[39m[90mglobal--Color--300: #3c3f42;[39m
+  158:  [90m--pf-[39m[32mv5-[39m[90mglobal--Color--400: #8a8d90;[39m
+  159:  [90m--pf-[39m[32mv5-[39m[90mglobal--Color--light-100: #fff;[39m
+  160:  [90m--pf-[39m[32mv5-[39m[90mglobal--Color--light-200: #f0f0f0;[39m
+  161:  [90m--pf-[39m[32mv5-[39m[90mglobal--Color--light-300: #d2d2d2;[39m
+  162:  [90m--pf-[39m[32mv5-[39m[90mglobal--Color--dark-100: #151515;[39m
+  163:  [90m--pf-[39m[32mv5-[39m[90mglobal--Color--dark-200: #6a6e73;[39m
+  164:  [90m--pf-[39m[32mv5-[39m[90mglobal--active-color--100: #06c;[39m
+  165:  [90m--pf-[39m[32mv5-[39m[90mglobal--active-color--200: #bee1f4;[39m
+  166:  [90m--pf-[39m[32mv5-[39m[90mglobal--active-color--300: #2b9af3;[39m
+  167:  [90m--pf-[39m[32mv5-[39m[90mglobal--active-color--400: #73bcf7;[39m
+  168:  [90m--pf-[39m[32mv5-[39m[90mglobal--disabled-color--100: #6a6e73;[39m
+  169:  [90m--pf-[39m[32mv5-[39m[90mglobal--disabled-color--200: #d2d2d2;[39m
+  170:  [90m--pf-[39m[32mv5-[39m[90mglobal--disabled-color--300: #f0f0f0;[39m
+  171:  [90m--pf-[39m[32mv5-[39m[90mglobal--primary-color--100: #06c;[39m
+  172:  [90m--pf-[39m[32mv5-[39m[90mglobal--primary-color--200: #004080;[39m
+  173:  [90m--pf-[39m[32mv5-[39m[90mglobal--primary-color--light-100: #73bcf7;[39m
+  174:  [90m--pf-[39m[32mv5-[39m[90mglobal--primary-color--dark-100: #06c;[39m
+  175:  [90m--pf-[39m[32mv5-[39m[90mglobal--secondary-color--100: #6a6e73;[39m
+  176:  [90m--pf-[39m[32mv5-[39m[90mglobal--default-color--100: #73c5c5;[39m
+  177:  [90m--pf-[39m[32mv5-[39m[90mglobal--default-color--200: #009596;[39m
+  178:  [90m--pf-[39m[32mv5-[39m[90mglobal--default-color--300: #003737;[39m
+  179:  [90m--pf-[39m[32mv5-[39m[90mglobal--success-color--100: #3e8635;[39m
+  180:  [90m--pf-[39m[32mv5-[39m[90mglobal--success-color--200: #1e4f18;[39m
+  181:  [90m--pf-[39m[32mv5-[39m[90mglobal--info-color--100: #2b9af3;[39m
+  182:  [90m--pf-[39m[32mv5-[39m[90mglobal--info-color--200: #002952;[39m
+  183:  [90m--pf-[39m[32mv5-[39m[90mglobal--warning-color--100: #f0ab00;[39m
+  184:  [90m--pf-[39m[32mv5-[39m[90mglobal--warning-color--200: #795600;[39m
+  185:  [90m--pf-[39m[32mv5-[39m[90mglobal--danger-color--100: #c9190b;[39m
+  186:  [90m--pf-[39m[32mv5-[39m[90mglobal--danger-color--200: #a30000;[39m
+  187:  [90m--pf-[39m[32mv5-[39m[90mglobal--danger-color--300: #470000;[39m
+  188:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--sm: 0 0.0625rem 0.125rem 0 rgba(3, 3, 3, 0.12), 0 0 0.125rem 0 rgba(3, 3, 3, 0.06);[39m
+  189:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--sm-top: 0 -0.125rem 0.25rem -0.0625rem rgba(3, 3, 3, 0.16);[39m
+  190:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--sm-right: 0.125rem 0 0.25rem -0.0625rem rgba(3, 3, 3, 0.16);[39m
+  191:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--sm-bottom: 0 0.125rem 0.25rem -0.0625rem rgba(3, 3, 3, 0.16);[39m
+  192:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--sm-left: -0.125rem 0 0.25rem -0.0625rem rgba(3, 3, 3, 0.16);[39m
+  193:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--md: 0 0.25rem 0.5rem 0rem rgba(3, 3, 3, 0.12), 0 0 0.25rem 0 rgba(3, 3, 3, 0.06);[39m
+  194:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--md-top: 0 -0.5rem 0.5rem -0.375rem rgba(3, 3, 3, 0.18);[39m
+  195:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--md-right: 0.5rem 0 0.5rem -0.375rem rgba(3, 3, 3, 0.18);[39m
+  196:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--md-bottom: 0 0.5rem 0.5rem -0.375rem rgba(3, 3, 3, 0.18);[39m
+  197:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--md-left: -0.5rem 0 0.5rem -0.375rem rgba(3, 3, 3, 0.18);[39m
+  198:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--lg: 0 0.5rem 1rem 0 rgba(3, 3, 3, 0.16), 0 0 0.375rem 0 rgba(3, 3, 3, 0.08);[39m
+  199:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--lg-top: 0 -0.75rem 0.75rem -0.5rem rgba(3, 3, 3, 0.18);[39m
+  200:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--lg-right: 0.75rem 0 0.75rem -0.5rem rgba(3, 3, 3, 0.18);[39m
+  201:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--lg-bottom: 0 0.75rem 0.75rem -0.5rem rgba(3, 3, 3, 0.18);[39m
+  202:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--lg-left: -0.75rem 0 0.75rem -0.5rem rgba(3, 3, 3, 0.18);[39m
+  203:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--xl: 0 1rem 2rem 0 rgba(3, 3, 3, 0.16), 0 0 0.5rem 0 rgba(3, 3, 3, 0.1);[39m
+  204:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--xl-top: 0 -1rem 1rem -0.5rem rgba(3, 3, 3, 0.2);[39m
+  205:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--xl-right: 1rem 0 1rem -0.5rem rgba(3, 3, 3, 0.2);[39m
+  206:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--xl-bottom: 0 1rem 1rem -0.5rem rgba(3, 3, 3, 0.2);[39m
+  207:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--xl-left: -1rem 0 1rem -0.5rem rgba(3, 3, 3, 0.2);[39m
+  208:  [90m--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--inset: inset 0 0 0.625rem 0 rgba(3, 3, 3, 0.25);[39m
+  209:  [90m--pf-[39m[32mv5-[39m[90mglobal--spacer--xs: 0.25rem;[39m
+  210:  [90m--pf-[39m[32mv5-[39m[90mglobal--spacer--sm: 0.5rem;[39m
+  211:  [90m--pf-[39m[32mv5-[39m[90mglobal--spacer--md: 1rem;[39m
+  212:  [90m--pf-[39m[32mv5-[39m[90mglobal--spacer--lg: 1.5rem;[39m
+  213:  [90m--pf-[39m[32mv5-[39m[90mglobal--spacer--xl: 2rem;[39m
+  214:  [90m--pf-[39m[32mv5-[39m[90mglobal--spacer--2xl: 3rem;[39m
+  215:  [90m--pf-[39m[32mv5-[39m[90mglobal--spacer--3xl: 4rem;[39m
+  216:  [90m--pf-[39m[32mv5-[39m[90mglobal--spacer--4xl: 5rem;[39m
+  217:  [90m--pf-[39m[32mv5-[39m[90mglobal--spacer--form-element: 0.375rem;[39m
+  218:  [90m--pf-[39m[32mv5-[39m[90mglobal--gutter: 1rem;[39m
+  219:  [90m--pf-[39m[32mv5-[39m[90mglobal--gutter--md: 1.5rem;[39m
+  220:  [90m--pf-[39m[32mv5-[39m[90mglobal--ZIndex--xs: 100;[39m
+  221:  [90m--pf-[39m[32mv5-[39m[90mglobal--ZIndex--sm: 200;[39m
+  222:  [90m--pf-[39m[32mv5-[39m[90mglobal--ZIndex--md: 300;[39m
+  223:  [90m--pf-[39m[32mv5-[39m[90mglobal--ZIndex--lg: 400;[39m
+  224:  [90m--pf-[39m[32mv5-[39m[90mglobal--ZIndex--xl: 500;[39m
+  225:  [90m--pf-[39m[32mv5-[39m[90mglobal--ZIndex--2xl: 600;[39m
+  226:  [90m--pf-[39m[32mv5-[39m[90mglobal--breakpoint--xs: 0;[39m
+  227:  [90m--pf-[39m[32mv5-[39m[90mglobal--breakpoint--sm: 576px;[39m
+  228:  [90m--pf-[39m[32mv5-[39m[90mglobal--breakpoint--md: 768px;[39m
+  229:  [90m--pf-[39m[32mv5-[39m[90mglobal--breakpoint--lg: 992px;[39m
+  230:  [90m--pf-[39m[32mv5-[39m[90mglobal--breakpoint--xl: 1200px;[39m
+  231:  [90m--pf-[39m[32mv5-[39m[90mglobal--breakpoint--2xl: 1450px;[39m
+  232:  [90m--pf-[39m[32mv5-[39m[90mglobal--link--Color: #06c;[39m
+  233:  [90m--pf-[39m[32mv5-[39m[90mglobal--link--Color--hover: #004080;[39m
+  234:  [90m--pf-[39m[32mv5-[39m[90mglobal--link--Color--light: #2b9af3;[39m
+  235:  [90m--pf-[39m[32mv5-[39m[90mglobal--link--Color--light--hover: #73bcf7;[39m
+  236:  [90m--pf-[39m[32mv5-[39m[90mglobal--link--Color--dark: #06c;[39m
+  237:  [90m--pf-[39m[32mv5-[39m[90mglobal--link--Color--dark--hover: #004080;[39m
+  238:  [90m--pf-[39m[32mv5-[39m[90mglobal--link--Color--visited: #40199a;[39m
+  239:  [90m--pf-[39m[32mv5-[39m[90mglobal--link--TextDecoration: none;[39m
+  240:  [90m--pf-[39m[32mv5-[39m[90mglobal--link--TextDecoration--hover: underline;[39m
+  241:  [90m--pf-[39m[32mv5-[39m[90mglobal--BorderWidth--sm: 1px;[39m
+  242:  [90m--pf-[39m[32mv5-[39m[90mglobal--BorderWidth--md: 2px;[39m
+  243:  [90m--pf-[39m[32mv5-[39m[90mglobal--BorderWidth--lg: 3px;[39m
+  244:  [90m--pf-[39m[32mv5-[39m[90mglobal--BorderWidth--xl: 4px;[39m
+  245:  [90m--pf-[39m[32mv5-[39m[90mglobal--BorderColor--100: #d2d2d2;[39m
+  246:  [90m--pf-[39m[32mv5-[39m[90mglobal--BorderColor--200: #8a8d90;[39m
+  247:  [90m--pf-[39m[32mv5-[39m[90mglobal--BorderColor--300: #f0f0f0;[39m
+  248:  [90m--pf-[39m[32mv5-[39m[90mglobal--BorderColor--dark-100: #d2d2d2;[39m
+  249:  [90m--pf-[39m[32mv5-[39m[90mglobal--BorderColor--light-100: #b8bbbe;[39m
+  250:  [90m--pf-[39m[32mv5-[39m[90mglobal--BorderRadius--sm: 3px;[39m
+  251:  [90m--pf-[39m[32mv5-[39m[90mglobal--BorderRadius--lg: 30em;[39m
+  252:  [90m--pf-[39m[32mv5-[39m[90mglobal--icon--Color--light: #6a6e73;[39m
+  253:  [90m--pf-[39m[32mv5-[39m[90mglobal--icon--Color--dark: #151515;[39m
+  254:  [90m--pf-[39m[32mv5-[39m[90mglobal--icon--FontSize--sm: 0.625rem;[39m
+  255:  [90m--pf-[39m[32mv5-[39m[90mglobal--icon--FontSize--md: 1.125rem;[39m
+  256:  [90m--pf-[39m[32mv5-[39m[90mglobal--icon--FontSize--lg: 1.5rem;[39m
+  257:  [90m--pf-[39m[32mv5-[39m[90mglobal--icon--FontSize--xl: 3.375rem;[39m
+  258:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontFamily--sans-serif: "RedHatText", "Overpass", overpass, helvetica, arial, sans-serif;[39m
+  259:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontFamily--heading--sans-serif: "RedHatDisplay", "Overpass", overpass, helvetica, arial, sans-serif;[39m
+  260:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontFamily--monospace: "Liberation Mono", consolas, "SFMono-Regular", menlo, monaco, "Courier New",[39m
+  262:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontFamily--overpass--sans-serif: "overpass", overpass, "open sans", -apple-system, blinkmacsystemfont,[39m
+  264:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontFamily--overpass--monospace: "overpass-mono", overpass-mono, "SFMono-Regular", menlo, monaco,[39m
+  266:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontSize--4xl: 2.25rem;[39m
+  267:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontSize--3xl: 1.75rem;[39m
+  268:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontSize--2xl: 1.5rem;[39m
+  269:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontSize--xl: 1.25rem;[39m
+  270:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontSize--lg: 1.125rem;[39m
+  271:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontSize--md: 1rem;[39m
+  272:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontSize--sm: 0.875rem;[39m
+  273:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontSize--xs: 0.75rem;[39m
+  274:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontWeight--light: 300;[39m
+  275:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontWeight--normal: 400;[39m
+  276:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontWeight--semi-bold: 700;[39m
+  277:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontWeight--overpass--semi-bold: 500;[39m
+  278:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontWeight--bold: 700;[39m
+  279:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontWeight--overpass--bold: 600;[39m
+  280:  [90m--pf-[39m[32mv5-[39m[90mglobal--LineHeight--sm: 1.3;[39m
+  281:  [90m--pf-[39m[32mv5-[39m[90mglobal--LineHeight--md: 1.5;[39m
+  282:  [90m--pf-[39m[32mv5-[39m[90mglobal--ListStyle: disc outside;[39m
+  283:  [90m--pf-[39m[32mv5-[39m[90mglobal--Transition: all 250ms cubic-bezier(0.42, 0, 0.58, 1);[39m
+  284:  [90m--pf-[39m[32mv5-[39m[90mglobal--TimingFunction: cubic-bezier(0.645, 0.045, 0.355, 1);[39m
+  285:  [90m--pf-[39m[32mv5-[39m[90mglobal--TransitionDuration: 250ms;[39m
+  286:  [90m--pf-[39m[32mv5-[39m[90mglobal--arrow--width: 0.9375rem;[39m
+  287:  [90m--pf-[39m[32mv5-[39m[90mglobal--arrow--width-lg: 1.5625rem;[39m
+  288:  [90m--pf-[39m[32mv5-[39m[90mglobal--target-size--MinWidth: 44px;[39m
+  289:  [90m--pf-[39m[32mv5-[39m[90mglobal--target-size--MinHeight: 44px;[39m
+  293:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontFamily--sans-serif: var(--pf-[39m [90mglobal--FontFamily--sans-serif: var(--pf-[39m[32mv5-[39m[90mglobal--FontFamily--overpass--sans-serif);[39m
+  294:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontFamily--heading--sans-serif: var(--pf-[39m [90mglobal--FontFamily--heading--sans-serif: var(--pf-[39m[32mv5-[39m[90mglobal--FontFamily--sans-serif);[39m
+  295:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontFamily--monospace: var(--pf-[39m [90mglobal--FontFamily--monospace: var(--pf-[39m[32mv5-[39m[90mglobal--FontFamily--overpass--monospace);[39m
+  296:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontWeight--semi-bold: var(--pf-[39m [90mglobal--FontWeight--semi-bold: var(--pf-[39m[32mv5-[39m[90mglobal--FontWeight--overpass--semi-bold);[39m
+  297:  [90m--pf-[39m[32mv5-[39m[90mglobal--FontWeight--bold: var(--pf-[39m [90mglobal--FontWeight--bold: var(--pf-[39m[32mv5-[39m[90mglobal--FontWeight--overpass--bold);[39m
+ src/BoxedExpressionEditorContext.css
+  25:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--100);[39m
+  26:  [90mfont-family: var(--pf-[39m[32mv5-[39m[90mglobal--FontFamily--sans-serif);[39m
+  27:  [90mfont-size: var(--pf-[39m[32mv5-[39m[90mglobal--FontSize--md);[39m
+  28:  [90mfont-weight: var(--pf-[39m[32mv5-[39m[90mglobal--FontWeight--normal);[39m
+  29:  [90mline-height: var(--pf-[39m[32mv5-[39m[90mglobal--LineHeight--md);[39m
+  59:  [90mline-height: var(--pf-[39m[32mv5-[39m[90mglobal--LineHeight--md);[39m
+  60:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mglobal--Color--100);[39m
+  90:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-600);[39m
+ src/table/BeeTable/InlineEditableTextInput.tsx
+  98:  [90mclassName={"inline-editable-preview pf-[39m[32mv5-[39m[90mu-text-truncate"}[39m
+ src/table/BeeTable/BeeTableEditableCellContent.tsx
+  208:  [90m<span className="editable-cell-value pf-[39m[32mv5-[39m[90mu-text-break-word" dangerouslySetInnerHTML={{ __html: preview }} />[39m
+ src/table/BeeTable/BeeTableHeader.tsx
+  255:  [90mclassName="expression-info-name pf-[39m[32mv5-[39m[90mu-text-truncate name"[39m
+  263:  [90mclassName="expression-info-data-type pf-[39m[32mv5-[39m[90mu-text-truncate data-type"[39m
+ src/table/BeeTable/BeeTableContextMenuHandler.css
+  29:  [90m.table-context-menu .pf-[39m[32mv5-[39m[90mc-menu__group-title {[39m
+  32:  [90mpadding-left: var(--pf-[39m[32mv5-[39m[90mc-menu__group-title--PaddingLeft);[39m
+  34:  [90mfont-weight: var(--pf-[39m[32mv5-[39m[90mc-menu__group-title--FontWeight);[39m
+  35:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mc-menu__group-title--Color);[39m
+  38:  [90m.table-context-menu .pf-[39m[32mv5-[39m[90mc-menu__item {[39m
+  39:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mc-menu__item--Color);[39m
+  42:  [90m.table-context-menu .pf-[39m[32mv5-[39m[90mc-number-input .pf-[39m [90mc-number-input .pf-[39m[32mv5-[39m[90mc-form-control {[39m
+ src/table/BeeTable/BeeTable.css
+  82:  [90mborder-top: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-300);[39m
+  83:  [90mborder-left: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-300);[39m
+  91:  [90mborder-right: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-300);[39m
+  96:  [90mborder-bottom: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-300);[39m
+  124:  [90mborder-top: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-400);[39m
+  125:  [90mborder-left: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-400);[39m
+  126:  [90mborder-right: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-400);[39m
+  127:  [90mborder-bottom: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-400);[39m
+  131:  [90mborder-top: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-400);[39m
+  132:  [90mborder-left: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-400);[39m
+  133:  [90mborder-right: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-400);[39m
+  136:  [90mborder-bottom: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-400);[39m
+  237:  [90m.expression-container .pf-[39m[32mv5-[39m[90mc-drawer {[39m
+  243:  [90m.expression-container .pf-[39m[32mv5-[39m[90mc-drawer__splitter {[39m
+  248:  [90m.expression-container .pf-[39m[32mv5-[39m[90mc-drawer {[39m
+  249:  [90m--pf-[39m[32mv5-[39m[90mc-drawer__splitter--after--BorderLeftWidth: var(--pf-[39m [90mc-drawer__splitter--after--BorderLeftWidth: var(--pf-[39m[32mv5-[39m[90mglobal--BorderWidth--sm);[39m
+  258:  [90m.expression-container .pf-[39m[32mv5-[39m[90mc-drawer.resizer-disabled * {[39m
+  262:  [90m.expression-container .pf-[39m[32mv5-[39m[90mc-drawer.resizer-disabled .pf-[39m [90mc-drawer.resizer-disabled .pf-[39m[32mv5-[39m[90mc-drawer__splitter {[39m
+  266:  [90m.expression-container .pf-[39m[32mv5-[39m[90mc-drawer .pf-[39m [90mc-drawer .pf-[39m[32mv5-[39m[90mc-drawer__splitter {[39m
+  271:  [90m.expression-container .pf-[39m[32mv5-[39m[90mc-drawer .pf-[39m [90mc-drawer .pf-[39m[32mv5-[39m[90mc-drawer__splitter.min {[39m
+  275:  [90m.expression-container .pf-[39m[32mv5-[39m[90mc-drawer .pf-[39m [90mc-drawer .pf-[39m[32mv5-[39m[90mc-drawer__splitter.min-basis {[39m
+  279:  [90m.expression-container .pf-[39m[32mv5-[39m[90mc-drawer .pf-[39m [90mc-drawer .pf-[39m[32mv5-[39m[90mc-drawer__splitter.actual {[39m
+  283:  [90m.expression-container .pf-[39m[32mv5-[39m[90mc-drawer .pf-[39m [90mc-drawer .pf-[39m[32mv5-[39m[90mc-drawer__splitter.error {[39m
+  294:  [90m.boxed-expression-provider .table-context-menu .pf-[39m[32mv5-[39m[90mc-popover__arrow {[39m
+  302:  [90mborder: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-400);[39m
+  325:  [90mborder: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-400);[39m
+  347:  [90m.logic-type-popover .pf-[39m[32mv5-[39m[90mc-menu {[39m
+ src/resizing/Resizer/Resizer.tsx
+  176:  [90m<div className="pf-[39m[32mv5-[39m[90mc-drawer" style={{ position: "absolute", left: width - 10 }}>[39m
+  177:  [90m<div className={`pf-[39m[32mv5-[39m[90mc-drawer__splitter pf-m-vertical actual`}>[39m
+  178:  [90m<div className={`pf-[39m[32mv5-[39m[90mc-drawer__splitter-handle`} />[39m
+  184:  [90m<div className="pf-[39m[32mv5-[39m[90mc-drawer" style={{ position: "absolute", left: minWidth - 10 }}>[39m
+  185:  [90m<div className={`pf-[39m[32mv5-[39m[90mc-drawer__splitter pf-m-vertical min-basis`}>[39m
+  186:  [90m<div className={`pf-[39m[32mv5-[39m[90mc-drawer__splitter-handle`} />[39m
+  202:  [90m<div className="pf-[39m[32mv5-[39m[90mc-drawer" onDoubleClick={onDoubleClick} data-testid={"kie-tools--bee--resizer-handle"}>[39m
+  203:  [90m<div className={`pf-[39m[32mv5-[39m[90mc-drawer__splitter pf-m-vertical ${debuggingHandleClassNames}`}>[39m
+  204:  [90m<div className={`pf-[39m[32mv5-[39m[90mc-drawer__splitter-handle`} />[39m
+ src/resizing/Resizer/Resizer.css
+  32:  [90m.expression-container .pf-[39m[32mv5-[39m[90mc-drawer__splitter::after {[39m
+  36:  [90m.expression-container .pf-[39m[32mv5-[39m[90mc-drawer__splitter-handle::after {[39m
+ src/expressions/LiteralExpression/LiteralExpression.css
+  22:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mglobal--Color--100);[39m
+  23:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--100);[39m
+  46:  [90mborder: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-300);[39m
+  65:  [90mborder-right: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-300);[39m
+  66:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-200);[39m
+  70:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-600);[39m
+ src/expressions/FunctionExpression/PmmlFunctionExpression.css
+  47:  [90m.pf-[39m[32mv5-[39m[90mc-select.pmml-document-select > button {[39m
+  50:  [90m.pmml-document-select.pf-[39m[32mv5-[39m[90mc-select .pf-[39m [90mc-select .pf-[39m[32mv5-[39m[90mc-select__toggle::before {[39m
+ src/expressions/FunctionExpression/ParametersPopover.css
+  32:  [90mborder: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-300);[39m
+  39:  [90mborder: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-300);[39m
+ src/expressions/FunctionExpression/JavaFunctionExpression.css
+  51:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100);[39m
+  56:  [90m.java-function-parameter-help-popover .pf-[39m[32mv5-[39m[90mc-title {[39m
+ src/expressions/FunctionExpression/FunctionExpression.tsx
+  160:  [90m<p className="pf-[39m[32mv5-[39m[90mu-text-truncate">[39m
+ src/expressions/FunctionExpression/FunctionExpression.css
+  40:  [90m.function-kind-popover .pf-[39m[32mv5-[39m[90mc-menu {[39m
+ src/expressions/FilterExpression/FilterExpressionMatchCell.tsx
+  100:  [90mstyle={{ borderRight: "1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-300)" }}[39m
+  122:  [90mstyle={{ borderLeft: "1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-300)" }}[39m
+ src/expressions/FilterExpression/FilterExpression.css
+  26:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-200);[39m
+  30:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-600);[39m
+ src/expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector.css
+  53:  [90mborder-bottom: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-500);[39m
+  54:  [90mborder-top: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-400);[39m
+  55:  [90mborder-left: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-400);[39m
+  56:  [90mborder-right: 1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-400);[39m
+  63:  [90m.expression-container .logic-type-selector.logic-type-selected .logic-type-selected-header .pf-[39m[32mv5-[39m[90mc-dropdown__menu {[39m
+  67:  [90m.expression-container .logic-type-selector.logic-type-selected .logic-type-selected-header .pf-[39m[32mv5-[39m[90mc-dropdown__toggle-icon {[39m
+  71:  [90m.logic-type-popover .pf-[39m[32mv5-[39m[90mc-menu {[39m
+  75:  [90m.paste-from-clipboard-error .pf-[39m[32mv5-[39m[90mc-menu__item-description {[39m
+  76:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mglobal--danger-color--100);[39m
+ src/expressions/ExpressionDefinitionRoot/ExpressionDefinitionRoot.css
+  22:  [90mborder: 2px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-300);[39m
+ src/expressions/DecisionTableExpression/HitPolicySelector.css
+  31:  [90m.hit-policy-flex-container .pf-[39m[32mv5-[39m[90mc-menu {[39m
+ src/expressions/ContextExpression/ContextExpression.css
+  25:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-600);[39m
+ src/expressionVariable/ExpressionVariableMenu.tsx
+  173:  [90mclassName="form-control pf-[39m[32mv5-[39m[90mc-form-control"[39m
+ src/expressionVariable/ExpressionVariableCell.tsx
+  117:  [90mclassName="expression-info-name pf-[39m[32mv5-[39m[90mu-text-truncate"[39m
+  125:  [90mclassName="expression-info-data-type pf-[39m[32mv5-[39m[90mu-text-truncate"[39m
+ src/contextMenu/PopoverMenu/PopoverMenu.css
+  20:  [90m.popover-menu-selector .pf-[39m[32mv5-[39m[90mc-popover__content > .pf-[39m [90mc-popover__content > .pf-[39m[32mv5-[39m[90mc-button {[39m
+  24:  [90m.popover-menu-selector .pf-[39m[32mv5-[39m[90mc-popover__content,[39m
+  25:  [90m.popover-menu-selector .pf-[39m[32mv5-[39m[90mc-title,[39m
+  26:  [90m.popover-menu-selector .pf-[39m[32mv5-[39m[90mc-popover__content > .pf-[39m [90mc-popover__content > .pf-[39m[32mv5-[39m[90mc-button + * {[39m
+  30:  [90m.popover-menu-selector .pf-[39m[32mv5-[39m[90mc-popover__content {[39m
+  34:  [90m.popover-menu-selector .pf-[39m[32mv5-[39m[90mc-title .selector-menu-title {[39m
+  44:  [90m.popover-menu-selector .pf-[39m[32mv5-[39m[90mc-title .selector-menu-title,[39m
+  45:  [90m.popover-menu-selector .pf-[39m[32mv5-[39m[90mc-menu__item-text {[39m
+ src/contextMenu/MenuWithHelp/MenuWithHelp.css
+  20:  [90m.menu-item-with-help .pf-[39m[32mv5-[39m[90mc-menu__item {[39m
+  24:  [90m.menu-item-with-help .pf-[39m[32mv5-[39m[90mc-menu__item-description {[39m
+  29:  [90m.menu-item-with-help .pf-[39m[32mv5-[39m[90mc-menu__item-action {[39m
+  30:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100);[39m
+  33:  [90m.menu-item-with-help .pf-[39m[32mv5-[39m[90mc-menu__item-action:hover {[39m
+  34:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-400);[39m
+  37:  [90m.menu-with-help .pf-[39m[32mv5-[39m[90mc-menu__group-title {[39m
+ src/DmnFormToolbar.tsx
+  90:  [90m<HelpIcon className="pf-[39m[32mv5-[39m[90mu-ml-sm" />[39m
+  132:  [90m<ExternalLinkAltIcon className="pf-[39m[32mv5-[39m[90mu-mx-sm" />[39m
+ src/taskForm/envelope/components/EmptyTaskForm/EmptyTaskForm.tsx
+  71:  [90m<EmptyStateHeader titleText={<>{"Cannot show task form"}</>} icon={<EmptyStateIcon icon={InfoCircleIcon} color="var(--pf-[39m[32mv5-[39m[90mglobal--info-color--100)" />} headingLevel="h4" />[39m
+ src/taskDetails/envelope/components/TaskState.tsx
+  54:  [90mreturn <BanIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" />;[39m
+  56:  [90mreturn <CheckCircleIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" color="var(--pf-[39m [90mu-mr-sm" color="var(--pf-[39m[32mv5-[39m[90mglobal--success-color--100)" />;[39m
+  58:  [90mreturn <OnRunningIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" />;[39m
+ src/processList/envelope/components/styles.css
+  19:  [90m.kogito-management-console__state-dropdown-list .pf-[39m[32mv5-[39m[90mc-data-toolbar__item:first-child .pf-[39m [90mc-data-toolbar__item:first-child .pf-[39m[32mv5-[39m[90mc-chip__text::first-letter {[39m
+  22:  [90m.kogito-management-console__state-dropdown-list .pf-[39m[32mv5-[39m[90mc-data-toolbar__item:first-child .pf-[39m [90mc-data-toolbar__item:first-child .pf-[39m[32mv5-[39m[90mc-chip__text {[39m
+  26:  [90m.kogito-management-console__state-dropdown-list .pf-[39m[32mv5-[39m[90mc-check__label::first-letter {[39m
+  30:  [90m.kogito-management-console__state-dropdown-list .pf-[39m[32mv5-[39m[90mc-check__label {[39m
+  40:  [90mborder-left-color: var(--pf-[39m[32mv5-[39m[90mglobal--active-color--100);[39m
+ src/processList/envelope/components/utils/ProcessListUtils.tsx
+  33:  [90m<OnRunningIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" />[39m
+  40:  [90m<CheckCircleIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" color="var(--pf-[39m [90mu-mr-sm" color="var(--pf-[39m[32mv5-[39m[90mglobal--success-color--100)" />[39m
+  47:  [90m<BanIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" />[39m
+  54:  [90m<PausedIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" />[39m
+  61:  [90m<ErrorCircleOIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" color="var(--pf-[39m [90mu-mr-sm" color="var(--pf-[39m[32mv5-[39m[90mglobal--danger-color--100)" />[39m
+ src/processList/envelope/components/ProcessListToolbar/ProcessListToolbar.tsx
+  580:  [90mclassName="kogito-management-console__state-dropdown-list pf-[39m[32mv5-[39m[90mu-mr-sm"[39m
+  621:  [90m<ToolbarGroup className="pf-[39m[32mv5-[39m[90mu-ml-md" id="process-management-buttons">[39m
+ src/processList/envelope/components/ProcessListTable/ProcessListTable.tsx
+  244:  [90m<HistoryIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" /> {"Updated "}[39m
+ src/processList/envelope/components/ProcessListChildTable/ProcessListChildTable.tsx
+  181:  [90m<HistoryIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" /> Updated{" "}[39m
+ src/processList/envelope/components/ErrorPopover/ErrorPopover.tsx
+  55:  [90mclassName="pf-[39m[32mv5-[39m[90mu-mr-sm"[39m
+  65:  [90mclassName="pf-[39m[32mv5-[39m[90mu-mr-sm"[39m
+ src/processDetails/utils/Utils.tsx
+  36:  [90m<ErrorCircleOIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" color="var(--pf-[39m [90mu-mr-sm" color="var(--pf-[39m[32mv5-[39m[90mglobal--danger-color--100)" />[39m
+  43:  [90m<BanIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" />[39m
+  50:  [90m<CheckCircleIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" color="var(--pf-[39m [90mu-mr-sm" color="var(--pf-[39m[32mv5-[39m[90mglobal--success-color--100)" />[39m
+  57:  [90m<UndoIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" />[39m
+  64:  [90m<ClockIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" />[39m
+ src/processDetails/envelope/components/styles.css
+  20:  [90m--pf-[39m[32mv5-[39m[90mc-content--small--Color: var(--pf-[39m [90mc-content--small--Color: var(--pf-[39m[32mv5-[39m[90mglobal--Color--100) !important;[39m
+  23:  [90mmargin-right: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--md) !important;[39m
+  80:  [90mborder-left: var(--pf-[39m[32mv5-[39m[90mglobal--BorderWidth--md) dashed var(--pf-[39m [90mglobal--BorderWidth--md) dashed var(--pf-[39m[32mv5-[39m[90mglobal--BorderColor--300);[39m
+  81:  [90mmargin-left: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--sm);[39m
+  82:  [90mmargin-top: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--sm);[39m
+  86:  [90mmargin-left: calc(-1 * var(--pf-[39m[32mv5-[39m[90mglobal--spacer--sm));[39m
+  89:  [90mmargin-top: calc(-1 * var(--pf-[39m[32mv5-[39m[90mglobal--spacer--sm));[39m
+  92:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--100);[39m
+  93:  [90mmargin-left: calc(-1 * var(--pf-[39m[32mv5-[39m[90mglobal--spacer--sm));[39m
+ src/processDetails/envelope/components/ProcessDetailsTimelinePanel/ProcessDetailsTimelinePanel.tsx
+  355:  [90mclassName="pf-[39m[32mv5-[39m[90mu-ml-sm"[39m
+  356:  [90mcolor="var(--pf-[39m[32mv5-[39m[90mglobal--icon--Color--dark)"[39m
+  430:  [90mcolor="var(--pf-[39m[32mv5-[39m[90mglobal--danger-color--100)"[39m
+  441:  [90mcolor="var(--pf-[39m[32mv5-[39m[90mglobal--success-color--100)"[39m
+  456:  [90m<UserIcon className="pf-[39m[32mv5-[39m[90mu-ml-sm" color="var(--pf-[39m [90mu-ml-sm" color="var(--pf-[39m[32mv5-[39m[90mglobal--icon--Color--light)" />[39m
+ src/processDetails/envelope/components/ProcessDetailsNodeTrigger/ProcessDetailsNodeTrigger.tsx
+  175:  [90m<div className="pf-[39m[32mv5-[39m[90mu-mt-md">[39m
+  220:  [90m<div className="pf-[39m[32mv5-[39m[90mu-mt-md">[39m
+ src/processDetails/envelope/components/ProcessDetails/ProcessDetails.tsx
+  380:  [90m<InfoCircleIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" color="var(--pf-[39m [90mu-mr-sm" color="var(--pf-[39m[32mv5-[39m[90mglobal--warning-color--100)" />[39m
+  427:  [90m<InfoCircleIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" color="var(--pf-[39m [90mu-mr-sm" color="var(--pf-[39m[32mv5-[39m[90mglobal--danger-color--100)" />[39m
+  459:  [90m<Split hasGutter={true} component={"div"} className="pf-[39m[32mv5-[39m[90mu-align-items-center">[39m
+ src/jobsManagement/utils/utils.tsx
+  32:  [90m<ErrorCircleOIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" color="var(--pf-[39m [90mu-mr-sm" color="var(--pf-[39m[32mv5-[39m[90mglobal--danger-color--100)" />[39m
+  39:  [90m<BanIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" />[39m
+  46:  [90m<CheckCircleIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" color="var(--pf-[39m [90mu-mr-sm" color="var(--pf-[39m[32mv5-[39m[90mglobal--success-color--100)" />[39m
+  53:  [90m<UndoIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" />[39m
+  60:  [90m<ClockIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" />[39m
+ src/jobsManagement/envelope/components/styles.css
+  19:  [90m.kogito-jobs-management__state-dropdown-list .pf-[39m[32mv5-[39m[90mc-data-toolbar__item:first-child .pf-[39m [90mc-data-toolbar__item:first-child .pf-[39m[32mv5-[39m[90mc-chip__text::first-letter {[39m
+  22:  [90m.kogito-jobs-management__state-dropdown-list .pf-[39m[32mv5-[39m[90mc-data-toolbar__item:first-child .pf-[39m [90mc-data-toolbar__item:first-child .pf-[39m[32mv5-[39m[90mc-chip__text {[39m
+  26:  [90m.kogito-jobs-management__state-dropdown-list .pf-[39m[32mv5-[39m[90mc-check__label::first-letter {[39m
+  30:  [90m.kogito-jobs-management__state-dropdown-list .pf-[39m[32mv5-[39m[90mc-check__label {[39m
+  34:  [90m.kogito-jobs-management__table .pf-[39m[32mv5-[39m[90mc-table__sort .pf-[39m [90mc-table__sort .pf-[39m[32mv5-[39m[90mc-table__button {[39m
+  40:  [90m.pf-[39m[32mv5-[39m[90mc-chip-group .pf-[39m [90mc-chip-group .pf-[39m[32mv5-[39m[90mc-chip__text {[39m
+  48:  [90m.kogito-jobs-management__table .pf-[39m[32mv5-[39m[90mc-table__action {[39m
+ src/jobsManagement/envelope/components/JobsManagementToolbar/JobsManagementToolbar.tsx
+  254:  [90m<ToolbarGroup className="pf-[39m[32mv5-[39m[90mu-ml-md" id="jobs-management-buttons">[39m
+ src/jobsManagement/envelope/components/JobsManagementTable/JobsManagementTable.tsx
+  118:  [90mcolumn["props"] = { className: "pf-[39m[32mv5-[39m[90mu-text-align-center" };[39m
+  169:  [90m<HistoryIcon className="pf-[39m[32mv5-[39m[90mu-mr-sm" /> Updated <Moment fromNow>{job.lastUpdate}</Moment>[39m
+ src/components/AppToolbar.tsx
+  97:  [90m<PageHeaderToolsItem className={"pf-[39m[32mv5-[39m[90ml-flex"}>[39m
+ src/sidebar/TestScenarioSideBarMenu.css
+  27:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--BackgroundColor--100);[39m
+  30:  [90m.kie-scesim-editor--side-bar .pf-[39m[32mv5-[39m[90mc-button {[39m
+  36:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-plain--Color: #06c;[39m
+  37:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-plain--hover--Color: #06c;[39m
+  43:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-plain--BackgroundColor: #06c;[39m
+  44:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-plain--Color: #fff;[39m
+  45:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-plain--focus--BackgroundColor: #06c;[39m
+  46:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-plain--focus--Color: #fff;[39m
+  47:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-plain--hover--BackgroundColor: #06c;[39m
+  48:  [90m--pf-[39m[32mv5-[39m[90mc-button--m-plain--hover--Color: #fff;[39m
+ src/DmnEditor.css
+  224:  [90m.kie-dmn-editor--drd-selector-popover .pf-[39m[32mv5-[39m[90mc-popover__body {[39m
+  362:  [90m.kie-dmn-editor--version-popover .pf-[39m[32mv5-[39m[90mc-popover__body {[39m
+  428:  [90m.kie-dmn-editor--snap-slider .pf-[39m[32mv5-[39m[90mc-slider__value > input {[39m
+  628:  [90m.kie-dmn-editor--data-type-node-panel .pf-[39m[32mv5-[39m[90mc-select__toggle.pf-m-typeahead {[39m
+  631:  [90m.kie-dmn-editor--data-type-node-panel .pf-[39m[32mv5-[39m[90mc-select__toggle-wrapper {[39m
+  639:  [90m.kie-dmn-editor--data-type-node-panel .pf-[39m[32mv5-[39m[90mc-select__menu.pf-m-static {[39m
+  646:  [90m.kie-dmn-editor--data-type-node-panel .pf-[39m[32mv5-[39m[90mc-button.pf-[39m [90mc-button.pf-[39m[32mv5-[39m[90mc-select__toggle-button.pf-m-plain {[39m
+  649:  [90m.kie-dmn-editor--data-type-node-panel .pf-[39m[32mv5-[39m[90mc-button.pf-m-control::after,[39m
+  650:  [90m.kie-dmn-editor--data-type-node-panel .pf-[39m[32mv5-[39m[90mc-select__toggle.pf-m-typeahead::before {[39m
+  664:  [90m.kie-dmn-editor--edit-expression-node-panel > .pf-[39m[32mv5-[39m[90mc-label__content::before {[39m
+  694:  [90m.kie-dmn-editor--info-label > .pf-[39m[32mv5-[39m[90mc-label__content::before {[39m
+  714:  [90m.kie-dmn-editor--boxed-expression-back > .pf-[39m[32mv5-[39m[90mc-label__content::before {[39m
+  922:  [90m.kie-dmn-editor--data-types-container .pf-[39m[32mv5-[39m[90mc-switch__input:disabled:checked ~ .pf-[39m [90mc-switch__input:disabled:checked ~ .pf-[39m[32mv5-[39m[90mc-switch__toggle {[39m
+  923:  [90mbackground-color: var(--pf-[39m[32mv5-[39m[90mglobal--primary-color--100);[39m
+  1104:  [90m.pf-[39m[32mv5-[39m[90mc-popover {[39m
+  1108:  [90m.pf-[39m[32mv5-[39m[90mc-truncate,[39m
+  1109:  [90m.pf-[39m[32mv5-[39m[90mc-truncate__start {[39m
+  1113:  [90m.pf-[39m[32mv5-[39m[90mc-select__menu {[39m
+ src/propertiesPanel/KnowledgeSourceProperties.tsx
+  59:  [90mclassName={"pf-[39m[32mv5-[39m[90mc-form-control"}[39m
+ src/propertiesPanel/InputDataProperties.tsx
+  66:  [90mclassName={"pf-[39m[32mv5-[39m[90mc-form-control"}[39m
+ src/propertiesPanel/GlobalDiagramProperties.tsx
+  85:  [90mclassName={"pf-[39m[32mv5-[39m[90mc-form-control"}[39m
+ src/propertiesPanel/DocumentationLinksFormGroup.tsx
+  203:  [90m<label className={"pf-[39m[32mv5-[39m[90mc-form__label"} style={{ flexGrow: 1, cursor: "auto" }}>[39m
+  204:  [90m<span className={"pf-[39m[32mv5-[39m[90mc-form__label-text"}>Documentation links</span>[39m
+ src/propertiesPanel/DiagramPropertiesPanel.css
+  20:  [90m.pf-[39m[32mv5-[39m[90mc-form__field-group-body {[39m
+ src/propertiesPanel/DecisionServiceProperties.tsx
+  125:  [90mclassName={"pf-[39m[32mv5-[39m[90mc-form-control"}[39m
+ src/propertiesPanel/BkmProperties.tsx
+  66:  [90mclassName={"pf-[39m[32mv5-[39m[90mc-form-control"}[39m
+ src/propertiesPanel/DecisionProperties.tsx
+  66:  [90mclassName={"pf-[39m[32mv5-[39m[90mc-form-control"}[39m
+ src/propertiesPanel/BoxedExpressionPropertiesPanelComponents/Fields.tsx
+  84:  [90mclassName={"pf-[39m[32mv5-[39m[90mc-form-control"}[39m
+ src/includedModels/IncludedModels.tsx
+  366:  [90mclassName={"pf-[39m[32mv5-[39m[90mc-form-control"}[39m
+  564:  [90mstyle={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--danger-color--200)", fontWeight: "bold" }}[39m
+ src/includedModels/IncludedModels.css
+  2:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mglobal--danger-color--100);[39m
+ src/dataTypes/ConstraintsExpression.tsx
+  117:  [90mclassName="editable-cell-value pf-[39m[32mv5-[39m[90mu-text-break-word"[39m
+ src/Unitables.css
+  20:  [90m.standalone-bee-table .pf-[39m[32mv5-[39m[90mc-select .pf-[39m [90mc-select .pf-[39m[32mv5-[39m[90mc-select__toggle::before {[39m
+  24:  [90m.standalone-bee-table .pf-[39m[32mv5-[39m[90mc-form-control {[39m
+ src/uniforms/UnitablesNestField.tsx
+  47:  [90m<div key={field} style={{ width: "100%", borderRight: "1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-300)" }}>[39m
+ src/uniforms/UnitablesListItemField.tsx
+  48:  [90m<div style={{ width: "100%", borderRight: "1px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-300)" }}>[39m
+ src/uniforms/UnitablesListField.tsx
+  76:  [90mborderRight: "3px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-300)",[39m
+  126:  [90m? { width: "100%", borderRight: "3px solid var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-300)" }[39m
+ src/components/pages/TaskDetailsPage/TaskDetailsPage.tsx
+  262:  [90m<CardBody className="pf-[39m[32mv5-[39m[90mu-h-100">[39m
+ src/components/pages/ProcessFormPage/ProcessFormPage.tsx
+  125:  [90m<CardBody className="pf-[39m[32mv5-[39m[90mu-h-100">[39m
+ src/components/pages/TaskDetailsPage/TaskDetailsPage.tsx
+  247:  [90m<CardBody className="pf-[39m[32mv5-[39m[90mu-h-100">[39m
+ src/components/pages/ProcessFormPage/components/InlineEdit/InlineEdit.tsx
+  74:  [90mclassName={`pf-[39m[32mv5-[39m[90mc-inline-edit ${isEditable && "pf-m-inline-editable"}`}[39m
+  77:  [90m<div className="pf-[39m[32mv5-[39m[90mc-inline-edit__group">[39m
+  78:  [90m<div className="pf-[39m[32mv5-[39m[90mc-inline-edit__value" id="single-editable-example-label">[39m
+  82:  [90m<span className="pf-[39m[32mv5-[39m[90mu-disabled-color-100">Business key</span>[39m
+  85:  [90m<div className="pf-[39m[32mv5-[39m[90mc-inline-edit__action pf-m-enable-editable">[39m
+  92:  [90m<div className="pf-[39m[32mv5-[39m[90mc-inline-edit__group">[39m
+  93:  [90m<div className="pf-[39m[32mv5-[39m[90mc-inline-edit__input">[39m
+  102:  [90m<div className="pf-[39m[32mv5-[39m[90mc-inline-edit__group pf-m-action-group pf-m-icon-group">[39m
+  103:  [90m<div className="pf-[39m[32mv5-[39m[90mc-inline-edit__action pf-m-valid">[39m
+  108:  [90m<div className="pf-[39m[32mv5-[39m[90mc-inline-edit__action">[39m
+ src/editor/styles.scss
+  21:  [90m--pf-[39m[32mv5-[39m[90mc-drawer__splitter-handle--after--BorderColor: #b1b1b1;[39m
+  22:  [90m--pf-[39m[32mv5-[39m[90mc-drawer__splitter--hover__splitter-handle--after--BorderColor: #e0e0e0;[39m
+  23:  [90m--pf-[39m[32mv5-[39m[90mc-drawer__splitter--after--BorderColor: #3c3c3c;[39m
+  24:  [90m--pf-[39m[32mv5-[39m[90mc-drawer__splitter--BackgroundColor: black;[39m
+  25:  [90m--pf-[39m[32mv5-[39m[90mc-drawer__content--BackgroundColor: black;[39m
+  26:  [90m--pf-[39m[32mv5-[39m[90mc-drawer__panel--BackgroundColor: black;[39m
+  27:  [90m--pf-[39m[32mv5-[39m[90mc-drawer__section--BackgroundColor: black;[39m
+ src/workspace/components/WorkspaceLoadingCard.tsx
+  39:  [90mborderTop: "var(--pf-[39m[32mv5-[39m[90mglobal--BorderWidth--sm) solid var(--pf-[39m [90mglobal--BorderWidth--sm) solid var(--pf-[39m[32mv5-[39m[90mglobal--BorderColor--100)",[39m
+ src/workspace/components/WorkspaceCommitModal.tsx
+  47:  [90mstyle={{ whiteSpace: "pre-line", color: "var(--pf-[39m[32mv5-[39m[90mglobal--danger-color--100)" }}[39m
+ src/workspace/components/GitStatusIndicatorActions.tsx
+  470:  [90mstyle={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--danger-color--200)", fontWeight: "bold" }}[39m
+ src/importFromUrl/AdvancedImportModalContent.tsx
+  165:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+ src/home/HomePage.tsx
+  141:  [90m<Grid hasGutter style={{ minWidth: "1280px", gridGap: "var(--pf-[39m[32mv5-[39m[90mc-page__main-section--PaddingTop)" }}>[39m
+  151:  [90m// var(--pf-[39m[32mv5-[39m[90mc-page__main-section--PaddingTop) is the "Gutter" width.[39m
+  153:  [90mdefault: "calc(" + 100 / editorsConfig.length + "% - var(--pf-[39m[32mv5-[39m[90mc-page__main-section--PaddingTop))",[39m
+  179:  [90m// var(--pf-[39m[32mv5-[39m[90mc-page__main-section--PaddingTop) is the "Gutter" width.[39m
+  180:  [90mminWidths={{ default: "calc(50% - var(--pf-[39m[32mv5-[39m[90mc-page__main-section--PaddingTop))" }}[39m
+ src/extendedServices/ExtendedServicesModal.tsx
+  681:  [90mclassName="pf-[39m[32mv5-[39m[90mu-mt-xl kogito--editor__extended-services-modal-initial-center"[39m
+  718:  [90m<TextContent className="pf-[39m[32mv5-[39m[90mu-mt-sm pf-[39m [90mu-mt-sm pf-[39m[32mv5-[39m[90mu-mb-md">[39m
+  724:  [90m<div className="pf-[39m[32mv5-[39m[90mu-display-flex pf-[39m [90mu-display-flex pf-[39m[32mv5-[39m[90mu-flex-direction-row">[39m
+  725:  [90m<div className="pf-[39m[32mv5-[39m[90mu-w-25 pf-[39m [90mu-w-25 pf-[39m[32mv5-[39m[90mu-ml-sm">[39m
+  730:  [90m<TextContent className="pf-[39m[32mv5-[39m[90mu-mt-md">[39m
+  734:  [90m<TextContent className="pf-[39m[32mv5-[39m[90mu-mt-md">[39m
+  743:  [90m<div className="pf-[39m[32mv5-[39m[90mu-w-75 pf-[39m [90mu-w-75 pf-[39m[32mv5-[39m[90mu-p-sm">[39m
+  745:  [90mclassName="pf-[39m[32mv5-[39m[90mu-h-100"[39m
+  754:  [90m<div className="pf-[39m[32mv5-[39m[90mu-mt-xl pf-[39m [90mu-mt-xl pf-[39m[32mv5-[39m[90mu-display-flex pf-[39m [90mu-display-flex pf-[39m[32mv5-[39m[90mu-flex-direction-row">[39m
+  755:  [90m<div className="pf-[39m[32mv5-[39m[90mu-w-25 pf-[39m [90mu-w-25 pf-[39m[32mv5-[39m[90mu-mr-sm">[39m
+  760:  [90m<TextContent className="pf-[39m[32mv5-[39m[90mu-mt-md">[39m
+  767:  [90m<div className="pf-[39m[32mv5-[39m[90mu-w-75">[39m
+  769:  [90mclassName="pf-[39m[32mv5-[39m[90mu-h-100"[39m
+ src/editor/Toolbar/FileSwitcher.tsx
+  462:  [90mborderTop: "var(--pf-[39m[32mv5-[39m[90mglobal--BorderWidth--sm) solid var(--pf-[39m [90mglobal--BorderWidth--sm) solid var(--pf-[39m[32mv5-[39m[90mglobal--BorderColor--100)",[39m
+  871:  [90mborderTop: "var(--pf-[39m[32mv5-[39m[90mglobal--BorderWidth--sm) solid var(--pf-[39m [90mglobal--BorderWidth--sm) solid var(--pf-[39m[32mv5-[39m[90mglobal--BorderColor--100)",[39m
+ src/dmnRunner/DmnRunnerTable.tsx
+  96:  [90mdocument.querySelector(".kie-tools--dmn-runner-table--drawer")?.querySelector(".pf-[39m[32mv5-[39m[90mc-drawer__content") ?? null;[39m
+  98:  [90mdocument.querySelector(".kie-tools--dmn-runner-table--drawer")?.querySelector(".pf-[39m[32mv5-[39m[90mc-drawer__panel-main") ?? null;[39m
+  301:  [90m".kie-tools--dmn-runner-table--drawer .pf-[39m[32mv5-[39m[90mc-drawer__panel .pf-[39m [90mc-drawer__panel .pf-[39m[32mv5-[39m[90mc-drawer__splitter.pf-m-vertical"[39m
+  324:  [90mconst content = document.querySelector(".kie-tools--dmn-runner-table--drawer .pf-[39m[32mv5-[39m[90mc-drawer__content") as[39m
+  328:  [90mconst panel = document.querySelector(".kie-tools--dmn-runner-table--drawer .pf-[39m[32mv5-[39m[90mc-drawer__panel-main") as[39m
+ src/dmnRunner/DmnRunnerTable.css
+  24:  [90m.kie-tools--dmn-runner-table--drawer .pf-[39m[32mv5-[39m[90mc-drawer__panel-main .expression-container-box {[39m
+ src/devDeployments/DevDeploymentsDropdownItem.tsx
+  196:  [90mstyle={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-500)" }}[39m
+ src/devDeployments/DevDeploymentsDropdown.tsx
+  181:  [90mstyle={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--danger-color--100)" }}[39m
+ src/authSessions/AuthSessionsList.tsx
+  141:  [90m<ExclamationCircleIcon style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--palette--red-100)" }} />[39m
+ src/authSessions/AuthSessionSelect.tsx
+  221:  [90mstyle={{ boxShadow: "var(--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--sm-top)", marginTop: "8px" }}[39m
+  227:  [90mstyle={{ boxShadow: "var(--pf-[39m[32mv5-[39m[90mglobal--BoxShadow--sm-top)", marginTop: "8px", height: "8px" }}[39m
+  309:  [90m<ExclamationCircleIcon style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--palette--red-100)" }} />[39m
+ src/accounts/openshift/ConnectToDeveloperSandboxForRedHatOpenShiftWizard.tsx
+  196:  [90m<List component={ListComponent.ol} type={OrderType.number} className="pf-[39m[32mv5-[39m[90mu-mt-md">[39m
+  203:  [90m<ExternalLinkAltIcon className="pf-[39m[32mv5-[39m[90mu-mx-sm" />[39m
+  225:  [90m<Form className="pf-[39m[32mv5-[39m[90mu-mt-md" onSubmit={(e) => e.preventDefault()}>[39m
+  255:  [90m<Text className="pf-[39m[32mv5-[39m[90mu-my-md" component={TextVariants.p}>[39m
+  270:  [90m<List className="pf-[39m[32mv5-[39m[90mu-my-md" component={ListComponent.ol} type={OrderType.number}>[39m
+  295:  [90m<Form className="pf-[39m[32mv5-[39m[90mu-mt-md">[39m
+  368:  [90m<Text className="pf-[39m[32mv5-[39m[90mu-my-md" component={TextVariants.p}>[39m
+  392:  [90m<Text className="pf-[39m[32mv5-[39m[90mu-mt-md" component={TextVariants.p}>[39m
+  396:  [90m<Text className="pf-[39m[32mv5-[39m[90mu-mt-md" component={TextVariants.p}>[39m
+  409:  [90m<Text className="pf-[39m[32mv5-[39m[90mu-mt-md" component={TextVariants.p}>[39m
+  413:  [90m<Text className="pf-[39m[32mv5-[39m[90mu-mt-md" component={TextVariants.p}>[39m
+  417:  [90m<List className="pf-[39m[32mv5-[39m[90mu-my-md">[39m
+  442:  [90m<Text className="pf-[39m[32mv5-[39m[90mu-mt-md" component={TextVariants.p}>[39m
+ src/accounts/openshift/ConnecToOpenShiftSimple.tsx
+  172:  [90mclassName="pf-[39m[32mv5-[39m[90mu-p-0"[39m
+  180:  [90m<ArrowRightIcon className="pf-[39m[32mv5-[39m[90mu-ml-sm" />[39m
+  196:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  205:  [90m<InputGroup className="pf-[39m[32mv5-[39m[90mu-mt-sm">[39m
+  237:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  246:  [90m<InputGroup className="pf-[39m[32mv5-[39m[90mu-mt-sm">[39m
+  277:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  286:  [90m<InputGroup className="pf-[39m[32mv5-[39m[90mu-mt-sm">[39m
+ src/accounts/kubernetes/ConnectToLocalKubernetesClusterWizard.tsx
+  286:  [90m<List component={ListComponent.ol} type={OrderType.number} className="pf-[39m[32mv5-[39m[90mu-mt-md">[39m
+  293:  [90m<ExternalLinkAltIcon className="pf-[39m[32mv5-[39m[90mu-mx-sm" />[39m
+  304:  [90m<ExternalLinkAltIcon className="pf-[39m[32mv5-[39m[90mu-mx-sm" />[39m
+  410:  [90m<Text component={TextVariants.small} style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--palette--red-100)" }}>[39m
+  415:  [90m<Form className="pf-[39m[32mv5-[39m[90mu-mt-md" onSubmit={(e) => e.preventDefault()}>[39m
+  494:  [90m<Form className="pf-[39m[32mv5-[39m[90mu-mt-md">[39m
+  537:  [90m<Text className="pf-[39m[32mv5-[39m[90mu-my-md" component={TextVariants.p}>[39m
+  561:  [90m<Text className="pf-[39m[32mv5-[39m[90mu-mt-md" component={TextVariants.p}>[39m
+  565:  [90m<Text className="pf-[39m[32mv5-[39m[90mu-mt-md" component={TextVariants.p}>[39m
+  578:  [90m<Text className="pf-[39m[32mv5-[39m[90mu-mt-md" component={TextVariants.p}>[39m
+  582:  [90m<Text className="pf-[39m[32mv5-[39m[90mu-mt-md" component={TextVariants.p}>[39m
+  586:  [90m<List className="pf-[39m[32mv5-[39m[90mu-my-md">[39m
+  614:  [90m<Text className="pf-[39m[32mv5-[39m[90mu-mt-md" component={TextVariants.p}>[39m
+ src/accounts/kubernetes/ConnectToKubernetesSimple.tsx
+  209:  [90mclassName="pf-[39m[32mv5-[39m[90mu-p-0"[39m
+  217:  [90m<ArrowRightIcon className="pf-[39m[32mv5-[39m[90mu-ml-sm" />[39m
+  233:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  242:  [90m<InputGroup className="pf-[39m[32mv5-[39m[90mu-mt-sm">[39m
+  274:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  283:  [90m<InputGroup className="pf-[39m[32mv5-[39m[90mu-mt-sm">[39m
+  314:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  323:  [90m<InputGroup className="pf-[39m[32mv5-[39m[90mu-mt-sm">[39m
+ src/accounts/git/ConnectToGitSection.tsx
+  335:  [90m<ExternalLinkAltIcon className="pf-[39m[32mv5-[39m[90mu-mx-sm" />[39m
+  344:  [90m<span className="pf-[39m[32mv5-[39m[90mu-mr-sm">{i18n.connectToGitModal.auth.disclaimer}&nbsp;</span>[39m
+  355:  [90m<ExternalLinkAltIcon className="pf-[39m[32mv5-[39m[90mu-mx-sm" />[39m
+ src/Pages/StandaloneEditors/SwfEditorEmptyState.tsx
+  85:  [90m<div style={{ marginTop: "var(--pf-[39m[32mv5-[39m[90mc-empty-state__primary--MarginTop)" }}>[39m
+  86:  [90m<label htmlFor="file-upload" className="pf-[39m[32mv5-[39m[90mc-button pf-m-primary" data-ouia-component-id="upload-button">[39m
+ src/Pages/KogitoEditors/Sidebar.tsx
+  168:  [90mclassName={"webapp--page-kogito-editors-sidebar--navigation-nav-item-open-file pf-[39m[32mv5-[39m[90mc-button"}[39m
+ src/components/pages/WorkflowFormPage/WorkflowFormPage.tsx
+  131:  [90m<CardBody className="pf-[39m[32mv5-[39m[90mu-h-100">[39m
+ src/components/pages/CloudEventFormPage/CloudEventFormPage.tsx
+  111:  [90m<CardBody className="pf-[39m[32mv5-[39m[90mu-h-100">[39m
+ src/workspace/startupBlockers/StartupBlockerTemplate.tsx
+  37:  [90m<PageHeaderToolsItem className={"pf-[39m[32mv5-[39m[90ml-flex"}>[39m
+ src/table/Table.css
+  20:  [90m.pf-[39m[32mv5-[39m[90mc-question-circle-icon {[39m
+  21:  [90mcolor: var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-600);[39m
+  22:  [90mmargin-left: var(--pf-[39m[32mv5-[39m[90mglobal--spacer--sm);[39m
+ src/settings/serviceRegistry/ServiceRegistrySettings.tsx
+  107:  [90m<EmptyStateHeader icon={<EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-[39m[32mv5-[39m[90mglobal--success-color--100)"} />} /><TextContent>[39m
+  163:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  172:  [90m<InputGroup className="pf-[39m[32mv5-[39m[90mu-mt-sm">[39m
+  202:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  211:  [90m<InputGroup className="pf-[39m[32mv5-[39m[90mu-mt-sm">[39m
+ src/settings/serviceAccount/ServiceAccountSettings.tsx
+  106:  [90m<EmptyStateHeader icon={<EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-[39m[32mv5-[39m[90mglobal--success-color--100)"} />} /><TextContent>[39m
+  160:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  169:  [90m<InputGroup className="pf-[39m[32mv5-[39m[90mu-mt-sm">[39m
+  199:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  208:  [90m<InputGroup className="pf-[39m[32mv5-[39m[90mu-mt-sm">[39m
+ src/settings/openshift/OpenShiftSettingsSimpleConfig.tsx
+  201:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  210:  [90m<InputGroup className="pf-[39m[32mv5-[39m[90mu-mt-sm">[39m
+  241:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  250:  [90m<InputGroup className="pf-[39m[32mv5-[39m[90mu-mt-sm">[39m
+  281:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  290:  [90m<InputGroup className="pf-[39m[32mv5-[39m[90mu-mt-sm">[39m
+  332:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  370:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+ src/settings/openshift/OpenShiftSettings.tsx
+  81:  [90m<EmptyStateHeader icon={<EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-[39m[32mv5-[39m[90mglobal--success-color--100)"} />} /><TextContent>[39m
+ src/settings/github/GitHubSettings.tsx
+  145:  [90m<EmptyStateHeader icon={<EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-[39m[32mv5-[39m[90mglobal--success-color--100)"} />} /><TextContent>[39m
+ src/settings/runtimeTools/RuntimeToolsSettings.tsx
+  103:  [90m<EmptyStateHeader icon={<EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-[39m[32mv5-[39m[90mglobal--success-color--100)"} />} /><TextContent>[39m
+  158:  [90mclassName="pf-[39m[32mv5-[39m[90mc-form__group-label-help"[39m
+  167:  [90m<InputGroup className="pf-[39m[32mv5-[39m[90mu-mt-sm">[39m
+ src/samples/SamplePanelContent.tsx
+  80:  [90mstyle={{ borderBottom: "var(--pf-[39m[32mv5-[39m[90mglobal--BorderWidth--sm) solid var(--pf-[39m [90mglobal--BorderWidth--sm) solid var(--pf-[39m[32mv5-[39m[90mglobal--BorderColor--100)" }}[39m
+ src/samples/SampleCard.tsx
+  100:  [90m"--pf-[39m[32mv5-[39m[90mc-button--PaddingLeft": "0",[39m
+  101:  [90m"--pf-[39m[32mv5-[39m[90mc-button--PaddingRight": "0",[39m
+ src/runtimeTools/pages/RuntimeToolsTriggerCloudEvent.tsx
+  40:  [90mclassName="pf-[39m[32mv5-[39m[90mu-mb-md"[39m
+  55:  [90mclassName="pf-[39m[32mv5-[39m[90mu-mb-md"[39m
+ src/runtimeTools/pages/RuntimeToolsWorkflowForm.tsx
+  73:  [90mclassName="pf-[39m[32mv5-[39m[90mu-mb-md"[39m
+  96:  [90mclassName="pf-[39m[32mv5-[39m[90mu-mb-md"[39m
+ src/openshift/swfDevMode/DevModeContext.tsx
+  94:  [90mclassName="pf-[39m[32mv5-[39m[90mu-mb-md"[39m
+  109:  [90mclassName="pf-[39m[32mv5-[39m[90mu-mb-md"[39m
+ src/openshift/dropdown/OpenShiftDeploymentDropdownItem.tsx
+  165:  [90mstyle={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--palette--black-500)" }}[39m
+ src/homepage/recentModels/WorkspacesTableRow.tsx
+  197:  [90m<OutlinedQuestionCircleIcon className="pf-[39m[32mv5-[39m[90mc-question-circle-icon" />[39m
+ src/homepage/overView/Overview.tsx
+  60:  [90m<Text className="appsrv-marketing--banner__tagline pf-[39m[32mv5-[39m[90mu-color-200">[39m
+  90:  [90m<Title className="pf-[39m[32mv5-[39m[90mu-mb-lg" size="xl" headingLevel="h3">[39m
+  108:  [90m<Text className="pf-[39m[32mv5-[39m[90mu-color-200 pf-[39m [90mu-color-200 pf-[39m[32mv5-[39m[90mu-ml-md">In this video, you will learn how to:</Text>[39m
+ src/editor/FileSwitcher.tsx
+  643:  [90m<div className={"pf-[39m[32mv5-[39m[90mc-dropdown__menu-item-description"}>[39m
+ src/editor/hooks/useDeployDropdownItems.tsx
+  83:  [90mclassName="pf-[39m[32mv5-[39m[90mu-mb-md"[39m
+  104:  [90mclassName="pf-[39m[32mv5-[39m[90mu-mb-md"[39m
+  133:  [90mclassName="pf-[39m[32mv5-[39m[90mu-mb-md"[39m
+  154:  [90mclassName="pf-[39m[32mv5-[39m[90mu-mb-md"[39m
+  179:  [90mclassName="pf-[39m[32mv5-[39m[90mu-mb-md"[39m
+  324:  [90m<DropdownItem icon={<RegistryIcon color="var(--pf-[39m[32mv5-[39m[90mglobal--warning-color--100)" />} isDisabled>[39m
+  327:  [90m<Text component="small" style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--warning-color--200)" }}>[39m
+  345:  [90m<DropdownItem icon={<ExclamationCircleIcon color="var(--pf-[39m[32mv5-[39m[90mglobal--danger-color--100)" />} isDisabled>[39m
+  348:  [90m<Text component="small" style={{ color: "var(--pf-[39m[32mv5-[39m[90mglobal--danger-color--300)" }}>[39m
+ src/editor/Deploy/ConfirmDeployModal.tsx
+  77:  [90mclassName="pf-[39m[32mv5-[39m[90mu-mb-md"[39m
+  95:  [90mclassName="pf-[39m[32mv5-[39m[90mu-mb-md"[39m

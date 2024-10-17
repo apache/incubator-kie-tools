@@ -32,8 +32,14 @@ import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
 import { AuthSessionsList } from "../authSessions/AuthSessionsList";
 import { useAuthSessions } from "../authSessions/AuthSessionsContext";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+  EmptyStateFooter,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import UsersIcon from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "./AccountsContext";
 import { ConnectToOpenShiftSection } from "./openshift/ConnectToOpenShiftSection";
@@ -189,23 +195,28 @@ export function AccountsIcon() {
                     {authSessions.size <= 0 && (
                       <Bullseye>
                         <EmptyState style={{ maxWidth: "400px" }}>
-                          <EmptyStateIcon icon={UsersIcon} />
-                          <Title headingLevel="h4" size="md">
-                            {`Looks like you don't have any accounts connected yet`}
-                          </Title>
+                          <EmptyStateHeader
+                            titleText={<>{`Looks like you don't have any accounts connected yet`}</>}
+                            icon={<EmptyStateIcon icon={UsersIcon} />}
+                            headingLevel="h4"
+                          />
                           <br />
                           <br />
 
                           <EmptyStateBody>{`Connecting to external accounts enables Git and Cloud integrations.`}</EmptyStateBody>
-                          <EmptyStateBody>
-                            <small>{`The connected accounts credentials are stored locally in this browser and are not shared with anyone.`}</small>
-                          </EmptyStateBody>
-                          <Button
-                            variant="primary"
-                            onClick={() => accountsDispatch({ kind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER })}
-                          >
-                            Connect to an account
-                          </Button>
+                          <EmptyStateFooter>
+                            <EmptyStateBody>
+                              <small>{`The connected accounts credentials are stored locally in this browser and are not shared with anyone.`}</small>
+                            </EmptyStateBody>
+                            <Button
+                              variant="primary"
+                              onClick={() =>
+                                accountsDispatch({ kind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER })
+                              }
+                            >
+                              Connect to an account
+                            </Button>
+                          </EmptyStateFooter>
                         </EmptyState>
                       </Bullseye>
                     )}

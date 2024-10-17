@@ -24,7 +24,7 @@ import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { Form, FormAlert, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
+
 import { UsersIcon } from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { LockIcon } from "@patternfly/react-icons/dist/js/icons/lock-icon";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
@@ -251,7 +251,7 @@ export function CreateGitHubRepositoryModal(props: {
           helperTextInvalid={
             "Invalid name. Only letters, numbers, dashes (-), dots (.), and underscores (_) are allowed."
           }
-          helperText={<FormHelperText icon={<CheckCircleIcon />} isHidden={false} style={{ visibility: "hidden" }} />}
+          helperText={<FormHelperText style={{ visibility: "hidden" }} />}
           helperTextInvalidIcon={<ExclamationCircleIcon />}
           fieldId="github-repository-name"
           validated={validated}
@@ -262,12 +262,12 @@ export function CreateGitHubRepositoryModal(props: {
             isRequired={true}
             placeholder={"Name"}
             value={name}
-            onChange={setName}
+            onChange={(_event, val) => setName(val)}
           />
         </FormGroup>
         <Divider inset={{ default: "inset3xl" }} />
         <FormGroup
-          helperText={<FormHelperText icon={<CheckCircleIcon />} isHidden={false} style={{ visibility: "hidden" }} />}
+          helperText={<FormHelperText style={{ visibility: "hidden" }} />}
           helperTextInvalidIcon={<ExclamationCircleIcon />}
           fieldId="github-repo-visibility"
         >
@@ -317,7 +317,7 @@ export function CreateGitHubRepositoryModal(props: {
                 </>
               }
               isChecked={shouldUseAccelerator}
-              onChange={(checked) => setShouldUseAccelerator(checked)}
+              onChange={(_event, checked) => setShouldUseAccelerator(checked)}
               isDisabled={!canAcceleratorBeUsed}
             />
           </Tooltip>

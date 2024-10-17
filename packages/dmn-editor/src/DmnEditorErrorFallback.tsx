@@ -24,9 +24,11 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStatePrimary,
+  EmptyStateActions,
+  EmptyStateHeader,
+  EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { FallbackProps } from "react-error-boundary";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
@@ -47,46 +49,49 @@ export function DmnEditorErrorFallback({ error, resetErrorBoundary }: FallbackPr
   return (
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
       <EmptyState style={{ maxWidth: "1280px" }}>
-        <EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />
-        <Title size={"lg"} headingLevel={"h4"}>
-          An unexpected error happened
-        </Title>
+        <EmptyStateHeader
+          titleText="An unexpected error happened"
+          icon={<EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />}
+          headingLevel={"h4"}
+        />
         <EmptyStateBody>
           This is a bug. Please consider reporting it so the DMN Editor can continue improving. See the details below.
         </EmptyStateBody>
-        <br />
-        <ClipboardCopy
-          isReadOnly={true}
-          isExpanded={false}
-          hoverTip={"Copy"}
-          clickTip={"Copied"}
-          variant={ClipboardCopyVariant.expansion}
-          style={{ textAlign: "left", whiteSpace: "pre-wrap", fontFamily: "monospace" }}
-        >
-          {JSON.stringify(
-            {
-              name: error.name,
-              message: error.message,
-              cause: error.cause,
-              stack: error.stack,
-            },
-            null,
-            2
-          ).replaceAll("\\n", "\n")}
-        </ClipboardCopy>
-        <br />
-        <EmptyStatePrimary>
-          <Button variant={ButtonVariant.link} onClick={resetToLastWorkingState}>
-            Try undoing last action
-          </Button>
-          {issueTrackerHref && (
-            <a href={issueTrackerHref} target={"_blank"}>
-              <Button variant={ButtonVariant.link} icon={<ExternalLinkAltIcon />}>
-                File an issue...
-              </Button>
-            </a>
-          )}
-        </EmptyStatePrimary>
+        <EmptyStateFooter>
+          <br />
+          <ClipboardCopy
+            isReadOnly={true}
+            isExpanded={false}
+            hoverTip={"Copy"}
+            clickTip={"Copied"}
+            variant={ClipboardCopyVariant.expansion}
+            style={{ textAlign: "left", whiteSpace: "pre-wrap", fontFamily: "monospace" }}
+          >
+            {JSON.stringify(
+              {
+                name: error.name,
+                message: error.message,
+                cause: error.cause,
+                stack: error.stack,
+              },
+              null,
+              2
+            ).replaceAll("\\n", "\n")}
+          </ClipboardCopy>
+          <br />
+          <EmptyStateActions>
+            <Button variant={ButtonVariant.link} onClick={resetToLastWorkingState}>
+              Try undoing last action
+            </Button>
+            {issueTrackerHref && (
+              <a href={issueTrackerHref} target={"_blank"}>
+                <Button variant={ButtonVariant.link} icon={<ExternalLinkAltIcon />}>
+                  File an issue...
+                </Button>
+              </a>
+            )}
+          </EmptyStateActions>
+        </EmptyStateFooter>
       </EmptyState>
     </Flex>
   );

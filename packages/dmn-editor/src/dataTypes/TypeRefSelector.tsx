@@ -18,7 +18,7 @@
  */
 
 import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import * as React from "react";
 import { useCallback, useRef, useState } from "react";
 import { TypeRefLabel } from "./TypeRefLabel";

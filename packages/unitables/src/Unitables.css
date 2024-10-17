@@ -17,11 +17,11 @@
  * under the License. 
  */
 
-.standalone-bee-table .pf-c-select .pf-c-select__toggle::before {
+.standalone-bee-table .pf-v5-c-select .pf-v5-c-select__toggle::before {
   border-style: hidden;
 }
 
-.standalone-bee-table .pf-c-form-control {
+.standalone-bee-table .pf-v5-c-form-control {
   border-style: hidden;
   outline: none;
 }

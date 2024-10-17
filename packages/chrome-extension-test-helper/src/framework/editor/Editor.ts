@@ -21,7 +21,7 @@ import { By } from "selenium-webdriver";
 import PageFragment from "../PageFragment";
 
 export default abstract class Editor extends PageFragment {
-  private static readonly LOADING_POPUP_LOCATOR: By = By.className("pf-l-bullseye");
+  private static readonly LOADING_POPUP_LOCATOR: By = By.className("pf-v5-l-bullseye");
   private static readonly ENVELOPE_LOCATOR: By = By.xpath("//div[@id='envelope-app' or @id='combined-envelope-app']");
 
   public async waitUntilLoaded(): Promise<void> {

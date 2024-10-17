@@ -22,7 +22,7 @@ import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { join } from "path";
-import { Dropdown } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown } from "@patternfly/react-core/deprecated";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { FileLabel } from "../../filesList/FileLabel";
 import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggle";
@@ -37,9 +37,10 @@ import {
   Menu,
   MenuContent,
   MenuGroup,
-  MenuInput,
+  MenuSearch,
   MenuItem,
   MenuList,
+  MenuSearchInput,
 } from "@patternfly/react-core/dist/js/components/Menu";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
@@ -51,10 +52,10 @@ import { PromiseStateWrapper, useCombinedPromiseState } from "@kie-tools-core/re
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { useWorkspacesFilesPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesFiles";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
-import { Card, CardBody, CardHeader, CardHeaderMain } from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { EmptyState, EmptyStateIcon, EmptyStateHeader } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { useEditorEnvelopeLocator } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { VariableSizeList } from "react-window";
@@ -260,7 +261,7 @@ export function FileSwitcher(props: {
             isPlain={true}
             toggle={
               <Toggle
-                onToggle={(isOpen) =>
+                onToggle={(_event, isOpen) =>
                   setFilesDropdownOpen((prev) => {
                     if (workspaceFileNameRef.current === document.activeElement) {
                       return prev;
@@ -457,7 +458,7 @@ export function WorkspacesMenuItems(props: {
                   {workspaceFiles.get(descriptor.workspaceId)!.length > 1 && (
                     <MenuItem
                       style={{
-                        borderTop: "var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100)",
+                        borderTop: "var(--pf-v5-global--BorderWidth--sm) solid var(--pf-v5-global--BorderColor--100)",
                       }}
                       className={"kie-tools--file-switcher-no-padding-menu-item"}
                       itemId={descriptor.workspaceId}
@@ -591,10 +592,11 @@ export function FilteredFilesMenuGroup(props: {
         {props.filteredFiles.length <= 0 && (
           <Bullseye>
             <EmptyState>
-              <EmptyStateIcon icon={CubesIcon} />
-              <Title headingLevel="h4" size="lg">
-                {`No files match '${props.search}'.`}
-              </Title>
+              <EmptyStateHeader
+                titleText={<>{`No files match '${props.search}'.`}</>}
+                icon={<EmptyStateIcon icon={CubesIcon} />}
+                headingLevel="h4"
+              />
             </EmptyState>
           </Bullseye>
         )}
@@ -690,21 +692,23 @@ export function FilesMenuItems(props: {
   const searchInput = useCallback(
     (searchRef?: React.RefObject<HTMLInputElement>) => {
       return (
-        <MenuInput onKeyDown={(e) => e.stopPropagation()}>
-          <SearchInput
-            ref={searchRef}
-            value={searchValue}
-            type={"search"}
-            onChange={(_ev, value) => {
-              setSearchValue(value);
-            }}
-            placeholder={`In '${props.workspace.descriptor.name}'`}
-            style={{ fontSize: "small" }}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          />
-        </MenuInput>
+        <MenuSearch>
+          <MenuSearchInput onKeyDown={(e) => e.stopPropagation()}>
+            <SearchInput
+              ref={searchRef}
+              value={searchValue}
+              type={"search"}
+              onChange={(_ev, value) => {
+                setSearchValue(value);
+              }}
+              placeholder={`In '${props.workspace.descriptor.name}'`}
+              style={{ fontSize: "small" }}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            />
+          </MenuSearchInput>
+        </MenuSearch>
       );
     },
     [props.workspace.descriptor.name, searchValue]
@@ -779,7 +783,7 @@ export function FilesMenuItems(props: {
                 id={"filter-git-status-modified-locally"}
                 aria-label={"Select to display only modified, added, or deleted files"}
                 isChecked={filteredGitSyncStatus === WorkspaceGitLocalChangesStatus.pending}
-                onChange={(checked) => {
+                onChange={(_event, checked) => {
                   setFilteredGitSyncStatus(checked ? WorkspaceGitLocalChangesStatus.pending : undefined);
                 }}
               />
@@ -869,7 +873,7 @@ export function FilesMenuItems(props: {
                 style={{
                   paddingLeft: "8px",
                   paddingRight: "8px",
-                  borderTop: "var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100)",
+                  borderTop: "var(--pf-v5-global--BorderWidth--sm) solid var(--pf-v5-global--BorderColor--100)",
                 }}
               >
                 {shouldScrollToTop && <div ref={carouselScrollRef} />}
@@ -1002,15 +1006,18 @@ const FilesMenuItemCarouselCard = (props: {
 }) => {
   const cardInternals = [
     <CardHeader style={{ display: "block" }} key={0}>
-      <CardHeaderMain>
-        <FileListItem
-          file={props.file}
-          displayMode={props.displayMode}
-          gitStatusProps={props.gitStatusProps}
-          isCurrentWorkspaceFile={props.isCurrentWorkspaceFile}
-          onDeletedWorkspaceFile={props.onDeletedWorkspaceFile}
-        />
-      </CardHeaderMain>
+      actions=
+      {
+        <>
+          <FileListItem
+            file={props.file}
+            displayMode={props.displayMode}
+            gitStatusProps={props.gitStatusProps}
+            isCurrentWorkspaceFile={props.isCurrentWorkspaceFile}
+            onDeletedWorkspaceFile={props.onDeletedWorkspaceFile}
+          />
+        </>
+      }
     </CardHeader>,
     <Divider inset={{ default: "insetMd" }} key={1} />,
     <CardBody style={{ padding: 0 }} key={2}>

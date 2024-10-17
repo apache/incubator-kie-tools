@@ -263,9 +263,9 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                     <button
                       aria-label="More information for Reason code"
                       onClick={(e) => e.preventDefault()}
-                      className="pf-c-form__group-label-help"
+                      className="pf-v5-c-form__group-label-help"
                     >
-                      <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                      <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                     </button>
                   </Tooltip>
                 }
@@ -308,9 +308,9 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                     <button
                       aria-label="More information for Baseline score"
                       onClick={(e) => e.preventDefault()}
-                      className="pf-c-form__group-label-help"
+                      className="pf-v5-c-form__group-label-help"
                     >
-                      <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                      <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                     </button>
                   </Tooltip>
                 }

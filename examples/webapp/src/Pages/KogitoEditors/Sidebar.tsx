@@ -147,7 +147,7 @@ export function Sidebar({ editorEnvelopeLocator, editor, setFile, file, fileExte
                 value={fileName}
                 type={"text"}
                 aria-label={"Edit file name"}
-                onChange={setFileName}
+                onChange={(_event, val) => setFileName(val)}
                 onBlur={onChangeName}
               />
             </div>
@@ -165,7 +165,7 @@ export function Sidebar({ editorEnvelopeLocator, editor, setFile, file, fileExte
                 Open File
                 <input
                   accept={accept}
-                  className={"webapp--page-kogito-editors-sidebar--navigation-nav-item-open-file pf-c-button"}
+                  className={"webapp--page-kogito-editors-sidebar--navigation-nav-item-open-file pf-v5-c-button"}
                   type="file"
                   aria-label="File selection"
                   onChange={onOpenFile}

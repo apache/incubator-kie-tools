@@ -17,21 +17,23 @@
  * under the License.
  */
 import * as React from "react";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
+  EmptyStateHeader,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 
 export const EmptyStateNoContent = () => (
-  <EmptyState data-testid="empty-state-no-content" variant={EmptyStateVariant.small}>
-    <EmptyStateIcon icon={ExclamationTriangleIcon} />
-    <Title headingLevel="h4" size="lg">
-      Editor content has not been set.
-    </Title>
+  <EmptyState data-testid="empty-state-no-content" variant={EmptyStateVariant.sm}>
+    <EmptyStateHeader
+      titleText="Editor content has not been set."
+      icon={<EmptyStateIcon icon={ExclamationTriangleIcon} />}
+      headingLevel="h4"
+    />
     <EmptyStateBody>
       Something went wrong. An attempt has been made to view the editor before content is set.
     </EmptyStateBody>

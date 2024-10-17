@@ -93,12 +93,12 @@ export function SampleCard(props: SampleCardProps) {
                 <Button
                   type="button"
                   onClick={handleModalToggle}
-                  isLarge
+                  size="lg"
                   variant="plain"
                   style={
                     {
-                      "--pf-c-button--PaddingLeft": "0",
-                      "--pf-c-button--PaddingRight": "0",
+                      "--pf-v5-c-button--PaddingLeft": "0",
+                      "--pf-v5-c-button--PaddingRight": "0",
                       marginTop: "-16px",
                       marginLeft: "80%",
                     } as React.CSSProperties

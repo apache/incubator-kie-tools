@@ -237,7 +237,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                           isChecked={isScorable === true}
                           aria-label="Is scorable"
                           data-testid="core-properties-table-isScorable"
-                          onChange={(checked) => {
+                          onChange={(_event, checked) => {
                             setScorable(checked);
                             onCommit({ isScorable: checked });
                           }}
@@ -309,7 +309,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                           isChecked={areReasonCodesUsed}
                           aria-label="Use reason codes"
                           data-testid="core-properties-table-useReasonCodes"
-                          onChange={(checked) => {
+                          onChange={(_event, checked) => {
                             setAreReasonCodesUsed(checked);
                             onCommit({ areReasonCodesUsed: checked });
                           }}
@@ -353,9 +353,9 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                             <button
                               aria-label="More information for Baseline score"
                               onClick={(e) => e.preventDefault()}
-                              className="pf-c-form__group-label-help"
+                              className="pf-v5-c-form__group-label-help"
                             >
-                              <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                              <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                             </button>
                           </Tooltip>
                         }

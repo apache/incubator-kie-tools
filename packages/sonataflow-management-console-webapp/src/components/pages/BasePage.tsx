@@ -50,6 +50,7 @@ export function BasePage(props: { children?: React.ReactNode }) {
         </MastheadToggle>
         <MastheadMain>
           <MastheadBrand
+            component="a"
             onClick={() => history.push({ pathname: routes.home.path({}) })}
             style={{ textDecoration: "none" }}
           >

@@ -17,21 +17,23 @@
  * under the License.
  */
 import * as React from "react";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
+  EmptyStateHeader,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 
 export const EmptyStateModelNotFound = () => (
-  <EmptyState data-testid="empty-state-model-not-found" variant={EmptyStateVariant.small}>
-    <EmptyStateIcon icon={ExclamationTriangleIcon} />
-    <Title headingLevel="h4" size="lg">
-      Not found.
-    </Title>
+  <EmptyState data-testid="empty-state-model-not-found" variant={EmptyStateVariant.sm}>
+    <EmptyStateHeader
+      titleText="Not found."
+      icon={<EmptyStateIcon icon={ExclamationTriangleIcon} />}
+      headingLevel="h4"
+    />
     <EmptyStateBody>Something went wrong. An attempt has been made to view a Model that does not exist.</EmptyStateBody>
   </EmptyState>
 );

@@ -63,7 +63,7 @@ export function DecisionProperties({
           name={decision["@_name"]}
           isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
-          className={"pf-c-form-control"}
+          className={"pf-v5-c-form-control"}
           onRenamed={(newName) => {
             setState((state) => {
               renameDrgElement({
@@ -98,7 +98,7 @@ export function DecisionProperties({
           type={"text"}
           isDisabled={isReadOnly}
           value={decision.description?.__$$text}
-          onChange={(newDescription) => {
+          onChange={(_event, newDescription) => {
             setState((state) => {
               (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).description = {
                 __$$text: newDescription,
@@ -123,7 +123,7 @@ export function DecisionProperties({
           type={"text"}
           isDisabled={isReadOnly}
           value={decision.question?.__$$text}
-          onChange={(newQuestion) => {
+          onChange={(_event, newQuestion) => {
             setState((state) => {
               (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).question = {
                 __$$text: newQuestion,
@@ -142,7 +142,7 @@ export function DecisionProperties({
           type={"text"}
           isDisabled={isReadOnly}
           value={decision.allowedAnswers?.__$$text}
-          onChange={(newAllowedAnswers) => {
+          onChange={(_event, newAllowedAnswers) => {
             setState((state) => {
               (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).allowedAnswers = {
                 __$$text: newAllowedAnswers,

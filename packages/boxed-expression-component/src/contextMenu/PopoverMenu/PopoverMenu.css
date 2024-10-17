@@ -17,21 +17,21 @@
  * under the License.
  */
 
-.popover-menu-selector .pf-c-popover__content > .pf-c-button {
+.popover-menu-selector .pf-v5-c-popover__content > .pf-v5-c-button {
   display: none;
 }
 
-.popover-menu-selector .pf-c-popover__content,
-.popover-menu-selector .pf-c-title,
-.popover-menu-selector .pf-c-popover__content > .pf-c-button + * {
+.popover-menu-selector .pf-v5-c-popover__content,
+.popover-menu-selector .pf-v5-c-title,
+.popover-menu-selector .pf-v5-c-popover__content > .pf-v5-c-button + * {
   padding: 0;
   text-align: left;
 }
-.popover-menu-selector .pf-c-popover__content {
+.popover-menu-selector .pf-v5-c-popover__content {
   padding-bottom: 16px;
 }
 
-.popover-menu-selector .pf-c-title .selector-menu-title {
+.popover-menu-selector .pf-v5-c-title .selector-menu-title {
   border-bottom: none;
   border-radius: 0;
   color: #4d5258;
@@ -41,8 +41,8 @@
   text-align: center;
 }
 
-.popover-menu-selector .pf-c-title .selector-menu-title,
-.popover-menu-selector .pf-c-menu__item-text {
+.popover-menu-selector .pf-v5-c-title .selector-menu-title,
+.popover-menu-selector .pf-v5-c-menu__item-text {
   font-size: var(--small-font-size);
   font-style: normal;
 }

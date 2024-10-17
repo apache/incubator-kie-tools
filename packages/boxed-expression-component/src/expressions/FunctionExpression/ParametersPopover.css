@@ -29,14 +29,14 @@
   height: 200px;
   overflow-y: scroll;
   margin-top: 10px;
-  border: 1px solid var(--pf-global--palette--black-300);
+  border: 1px solid var(--pf-v5-global--palette--black-300);
   padding: 0 5px 5px 5px;
 }
 
 .boxed-expression-provider .parameters-editor-popover .parameters-editor .parameters-container-empty {
   overflow: hidden;
   margin-top: 10px;
-  border: 1px solid var(--pf-global--palette--black-300);
+  border: 1px solid var(--pf-v5-global--palette--black-300);
   padding: 0 5px 5px 5px;
 }
 

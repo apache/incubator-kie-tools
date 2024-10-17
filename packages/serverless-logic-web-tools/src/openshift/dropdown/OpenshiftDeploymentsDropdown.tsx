@@ -18,9 +18,9 @@
  */
 
 import * as React from "react";
-import { DropdownItem, DropdownSeparator } from "@patternfly/react-core/dist/js/components/Dropdown";
-import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { DropdownItem, DropdownSeparator } from "@patternfly/react-core/deprecated";
+import { EmptyState, EmptyStateIcon, EmptyStateHeader } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { OpenshiftIcon } from "@patternfly/react-icons/dist/js/icons/openshift-icon";
@@ -131,10 +131,11 @@ export function OpenshiftDeploymentsDropdown() {
         <DropdownItem key="disabled link" isDisabled>
           <Bullseye>
             <EmptyState>
-              <EmptyStateIcon icon={TopologyIcon} />
-              <Title headingLevel="h4" size="md">
-                {"Error fetching deployments"}
-              </Title>
+              <EmptyStateHeader
+                titleText={<>{"Error fetching deployments"}</>}
+                icon={<EmptyStateIcon icon={TopologyIcon} />}
+                headingLevel="h4"
+              />
             </EmptyState>
           </Bullseye>
         </DropdownItem>,
@@ -144,10 +145,11 @@ export function OpenshiftDeploymentsDropdown() {
         <DropdownItem key="disabled link" isDisabled>
           <Bullseye>
             <EmptyState>
-              <EmptyStateIcon icon={TopologyIcon} />
-              <Title headingLevel="h4" size="md">
-                {"No deployments found"}
-              </Title>
+              <EmptyStateHeader
+                titleText={<>{"No deployments found"}</>}
+                icon={<EmptyStateIcon icon={TopologyIcon} />}
+                headingLevel="h4"
+              />
             </EmptyState>
           </Bullseye>
         </DropdownItem>,

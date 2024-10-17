@@ -170,7 +170,7 @@ export function ExpressionVariableMenu({
               value={expressionName}
               onChange={onExpressionNameChange}
               onBlur={onExpressionNameChange}
-              className="form-control pf-c-form-control"
+              className="form-control pf-v5-c-form-control"
               placeholder={DEFAULT_EXPRESSION_VARIABLE_NAME}
               onKeyDown={onKeyDown}
             />

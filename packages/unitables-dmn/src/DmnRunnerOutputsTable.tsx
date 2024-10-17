@@ -19,7 +19,12 @@
 
 import * as React from "react";
 import { ErrorBoundary } from "@kie-tools/dmn-runner/dist/ErrorBoundary";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
@@ -84,7 +89,7 @@ export function DmnRunnerOutputsTable({ i18n, jsonSchemaBridge, results, scrolla
         </ErrorBoundary>
       ) : (
         <EmptyState>
-          <EmptyStateIcon icon={CubeIcon} />
+          <EmptyStateHeader icon={<EmptyStateIcon icon={CubeIcon} />} />
           <TextContent>
             <Text component={"h2"}>No Decision results yet...</Text>
           </TextContent>
@@ -103,7 +108,7 @@ function OutputError() {
   return (
     <div>
       <EmptyState>
-        <EmptyStateIcon icon={ExclamationIcon} />
+        <EmptyStateHeader icon={<EmptyStateIcon icon={ExclamationIcon} />} />
         <TextContent>
           <Text component={"h2"}>Error</Text>
         </TextContent>

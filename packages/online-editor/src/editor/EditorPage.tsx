@@ -57,7 +57,12 @@ import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { EditorPageDockContextProvider } from "./EditorPageDockContextProvider";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { useEnv } from "../env/hooks/EnvContext";
@@ -369,7 +374,7 @@ Error details: ${err}`);
     () => (
       <div>
         <EmptyState>
-          <EmptyStateIcon icon={ExclamationTriangleIcon} />
+          <EmptyStateHeader icon={<EmptyStateIcon icon={ExclamationTriangleIcon} />} />
           <TextContent>
             <Text component={"h2"}>{i18n.editorPage.error.title}</Text>
           </TextContent>

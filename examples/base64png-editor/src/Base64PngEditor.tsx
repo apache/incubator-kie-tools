@@ -20,11 +20,11 @@
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { EditorApi, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
-import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { EmptyState, EmptyStateIcon, EmptyStateHeader } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
 import { Page } from "@patternfly/react-core/dist/js/components/Page";
 import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import "./styles.scss";
 import { Base64PngEdit, Base64PngStateControl } from "./Base64PngStateControl";
@@ -450,10 +450,7 @@ export const Base64PngEditor = React.forwardRef<EditorApi, Props>((props, forwar
           />
           {disabled && (
             <EmptyState>
-              <EmptyStateIcon icon={CubesIcon} />
-              <Title headingLevel="h5" size="4xl">
-                Empty image
-              </Title>
+              <EmptyStateHeader titleText="Empty image" icon={<EmptyStateIcon icon={CubesIcon} />} headingLevel="h5" />
             </EmptyState>
           )}
           <canvas ref={canvasRef} className={"base64png-editor--canvas"} />
@@ -543,7 +540,7 @@ export const Base64PngEditor = React.forwardRef<EditorApi, Props>((props, forwar
                     id="invert-switch"
                     isDisabled={disabled}
                     isChecked={invert === "100"}
-                    onChange={(value) => tweakInvert(value ? "100" : "0")}
+                    onChange={(_event, value) => tweakInvert(value ? "100" : "0")}
                   />
                 </div>
               </NavItem>

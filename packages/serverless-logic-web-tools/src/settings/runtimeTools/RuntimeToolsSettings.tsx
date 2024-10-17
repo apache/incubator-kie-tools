@@ -19,9 +19,14 @@
 
 import React from "react";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ActionGroup, Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupText, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
@@ -100,7 +105,9 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
         <PageSection variant={"light"}>
           {isStoredConfigValid ? (
             <EmptyState>
-              <EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-global--success-color--100)"} />
+              <EmptyStateHeader
+                icon={<EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-v5-global--success-color--100)"} />}
+              />
               <TextContent>
                 <Text component={"h2"}>{"Your Runtime Tools connection information is set."}</Text>
               </TextContent>
@@ -118,7 +125,7 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
             </EmptyState>
           ) : (
             <EmptyState>
-              <EmptyStateIcon icon={AddCircleOIcon} />
+              <EmptyStateHeader icon={<EmptyStateIcon icon={AddCircleOIcon} />} />
               <TextContent>
                 <Text component={"h2"}>No Runtime Tools connection yet</Text>
               </TextContent>
@@ -157,7 +164,7 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
                     aria-label="More info for Data Index URL field"
                     onClick={(e) => e.preventDefault()}
                     aria-describedby="data-index-url-field"
-                    className="pf-c-form__group-label-help"
+                    className="pf-v5-c-form__group-label-help"
                   >
                     <HelpIcon noVerticalAlign />
                   </button>
@@ -166,23 +173,25 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
               isRequired
               fieldId="name-field"
             >
-              <InputGroup className="pf-u-mt-sm">
-                <TextInput
-                  autoComplete={"off"}
-                  isRequired
-                  type="text"
-                  id="data-index-url-field"
-                  name="data-index-url-field"
-                  aria-label="Data Index URL field"
-                  aria-describedby="data-index-url-field-helper"
-                  value={config.dataIndexUrl}
-                  onChange={onDataIndexURLChanged}
-                  tabIndex={1}
-                  data-testid="data-index-url-text-field"
-                />
+              <InputGroup className="pf-v5-u-mt-sm">
+                <InputGroupItem isFill>
+                  <TextInput
+                    autoComplete={"off"}
+                    isRequired
+                    type="text"
+                    id="data-index-url-field"
+                    name="data-index-url-field"
+                    aria-label="Data Index URL field"
+                    aria-describedby="data-index-url-field-helper"
+                    value={config.dataIndexUrl}
+                    onChange={onDataIndexURLChanged}
+                    tabIndex={1}
+                    data-testid="data-index-url-text-field"
+                  />
+                </InputGroupItem>
                 <InputGroupText>
                   <Button
-                    isSmall
+                    size="sm"
                     variant="plain"
                     aria-label="Clear Data Index URL button"
                     onClick={onClearDataIndexUrl}

@@ -259,7 +259,7 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({ oui
               <Grid hasGutter md={1} className={"kogito-task-console__full-size"}>
                 <GridItem span={12} className={"kogito-task-console__full-size"}>
                   <Card className={"kogito-task-console__full-size"}>
-                    <CardBody className="pf-u-h-100">
+                    <CardBody className="pf-v5-u-h-100">
                       <TaskFormContainer
                         userTask={userTask}
                         onSubmitSuccess={onSubmitSuccess}

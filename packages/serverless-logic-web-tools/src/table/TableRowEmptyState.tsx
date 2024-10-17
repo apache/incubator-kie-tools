@@ -18,8 +18,14 @@
  */
 import React from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+  EmptyStateFooter,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { SearchIcon } from "@patternfly/react-icons/dist/js/icons";
 import { Td, Tr } from "@patternfly/react-table/dist/esm";
@@ -36,15 +42,18 @@ export function TableRowEmptyState(props: TableRowEmptyStateProps) {
     <Tr>
       <Td colSpan={props.colSpan}>
         <Bullseye>
-          <EmptyState variant="small">
-            <EmptyStateIcon icon={SearchIcon} />
-            <Title headingLevel="h2" size="lg">
-              No matching {props.elementsName} found
-            </Title>
+          <EmptyState variant="sm">
+            <EmptyStateHeader
+              titleText={<>No matching{props.elementsName}found</>}
+              icon={<EmptyStateIcon icon={SearchIcon} />}
+              headingLevel="h2"
+            />
             <EmptyStateBody>This filter criteria matches no groups. Try changing your filter settings.</EmptyStateBody>
-            <Button variant="link" onClick={props.onClearFilters}>
-              Clear all filters
-            </Button>
+            <EmptyStateFooter>
+              <Button variant="link" onClick={props.onClearFilters}>
+                Clear all filters
+              </Button>
+            </EmptyStateFooter>
           </EmptyState>
         </Bullseye>
       </Td>

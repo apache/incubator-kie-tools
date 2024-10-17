@@ -27,7 +27,7 @@ import { useDevDeployments } from "./DevDeploymentsContext";
 import { useGlobalAlert } from "../alerts";
 import { useAuthSession } from "../authSessions/AuthSessionsContext";
 import { CloudAuthSessionType, isCloudAuthSession } from "../authSessions/AuthSessionApi";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { DeploymentOption, DeploymentParameter } from "./services/deploymentOptions/types";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
@@ -198,7 +198,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
                   label={parameter.name}
                   aria-label={parameter.name}
                   isChecked={Boolean(deploymentParameters[parameter.id])}
-                  onChange={(checked) => updateParameters(parameter, checked)}
+                  onChange={(_event, checked) => updateParameters(parameter, checked)}
                 />
               </FormGroup>
             );
@@ -217,7 +217,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
                   id={parameter.id}
                   value={String(deploymentParameters[parameter.id])}
                   aria-label={parameter.name}
-                  onChange={(value) => updateParameters(parameter, value)}
+                  onChange={(_event, value) => updateParameters(parameter, value)}
                   autoResize={true}
                 />
               </FormGroup>
@@ -238,7 +238,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
                   value={Number(deploymentParameters[parameter.id])}
                   aria-label={parameter.name}
                   type="number"
-                  onChange={(value) => updateParameters(parameter, Number(value))}
+                  onChange={(_event, value) => updateParameters(parameter, Number(value))}
                 />
               </FormGroup>
             );
@@ -281,7 +281,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
             <Select
               variant={SelectVariant.single}
               menuAppendTo={"parent"}
-              onToggle={setDeploymentOptionsDropdownOpen}
+              onToggle={(_event, val) => setDeploymentOptionsDropdownOpen(val)}
               isOpen={isDeploymentOptionsDropdownOpen}
               onSelect={onSelectDeploymentOptions}
               selections={deploymentOption.name}

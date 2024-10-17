@@ -24,11 +24,16 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Button } from "@patternfly/react-core/dist/js/components/Button/";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider/";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { HelpIcon } from "@patternfly/react-icons/dist/esm/icons/help-icon";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar/";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip/";
 import { TreeView, TreeViewDataItem, TreeViewSearch } from "@patternfly/react-core/dist/js/components/TreeView/";
@@ -589,10 +594,11 @@ function TestScenarioDataSelectorPanel({
         ) : (
           <Bullseye>
             <EmptyState>
-              <EmptyStateIcon icon={treeViewEmptyStatus.icon} />
-              <Title headingLevel="h4" size="lg">
-                {treeViewEmptyStatus.title}
-              </Title>
+              <EmptyStateHeader
+                titleText={<>{treeViewEmptyStatus.title}</>}
+                icon={<EmptyStateIcon icon={treeViewEmptyStatus.icon} />}
+                headingLevel="h4"
+              />
               <EmptyStateBody>{treeViewEmptyStatus.description}</EmptyStateBody>
             </EmptyState>
           </Bullseye>

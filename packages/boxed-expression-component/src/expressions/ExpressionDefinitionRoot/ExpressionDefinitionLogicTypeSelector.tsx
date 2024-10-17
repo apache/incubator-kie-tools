@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/esm/components/Dropdown";
+import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/esm/deprecated/components/Dropdown";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Menu } from "@patternfly/react-core/dist/js/components/Menu/Menu";
 import { MenuGroup } from "@patternfly/react-core/dist/js/components/Menu/MenuGroup";
@@ -533,7 +533,7 @@ export function ExpressionDefinitionLogicTypeSelector({
                   data-testid={"kie-tools--bee--expression-header-dropdown"}
                   icon={<>{logicTypeIcon(expression.__$$element)}</>}
                   style={{ padding: 0 }}
-                  onToggle={setDropdownOpen}
+                  onToggle={(_event, val) => setDropdownOpen(val)}
                   tabIndex={-1}
                 >
                   {getLogicTypeLabel(expression?.__$$element)}

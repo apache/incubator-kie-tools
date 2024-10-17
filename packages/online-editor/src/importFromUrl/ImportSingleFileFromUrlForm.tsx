@@ -20,7 +20,7 @@
 import { Form, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
-import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
+
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import * as React from "react";
 import { FormEvent, useCallback, useMemo } from "react";
@@ -101,7 +101,7 @@ export function ImportSingleFileFromUrlForm(props: {
         label={"URL"}
         isRequired={true}
         helperTextInvalid={helperTextInvalid}
-        helperText={<FormHelperText icon={<CheckCircleIcon />} isHidden={false} style={{ visibility: "hidden" }} />}
+        helperText={<FormHelperText style={{ visibility: "hidden" }} />}
         helperTextInvalidIcon={<ExclamationCircleIcon />}
         fieldId="url"
         validated={validatedOption}

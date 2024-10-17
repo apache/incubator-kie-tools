@@ -27,11 +27,16 @@ import {
   DataListItem,
   DataListItemRow,
 } from "@patternfly/react-core/dist/js/components/DataList";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { useImportJavaClassesWizardI18n } from "../../i18n";
 import { useCallback, useState } from "react";
@@ -146,7 +151,7 @@ export const ImportJavaClassesWizardFirstStep = ({
       </div>
       {isRequestLoading ? (
         <Bullseye>
-          <Spinner isSVG={true} />
+          <Spinner />
         </Bullseye>
       ) : retrievedJavaClassesNames.length > 0 || selectedJavaClasses.length > 0 ? (
         <DataList aria-label={"class-data-list"}>
@@ -184,10 +189,11 @@ const EmptyStep = ({
 }) => {
   return (
     <EmptyState>
-      <EmptyStateIcon icon={CubesIcon} />
-      <Title headingLevel={"h6"} size={"md"}>
-        {emptyStateTitleText}
-      </Title>
+      <EmptyStateHeader
+        titleText={<>{emptyStateTitleText}</>}
+        icon={<EmptyStateIcon icon={CubesIcon} />}
+        headingLevel={"h6"}
+      />
       <EmptyStateBody>{emptyStateBodyText}</EmptyStateBody>
     </EmptyState>
   );

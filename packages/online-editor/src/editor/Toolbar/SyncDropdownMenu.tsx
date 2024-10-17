@@ -30,7 +30,7 @@ import {
   DropdownItem,
   DropdownPosition,
   DropdownToggle,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+} from "@patternfly/react-core/deprecated";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { useOnlineI18n } from "../../i18n";
@@ -80,7 +80,7 @@ export function SyncDropdownMenu(props: Props) {
             <DropdownToggle
               id={"sync-dropdown"}
               data-testid={"sync-dropdown"}
-              onToggle={(isOpen) => setSyncGistOrSnippetDropdownOpen(isOpen)}
+              onToggle={(_event, isOpen) => setSyncGistOrSnippetDropdownOpen(isOpen)}
             >
               Sync
             </DropdownToggle>
@@ -122,7 +122,7 @@ export function SyncDropdownMenu(props: Props) {
                       <li role="menuitem">
                         <Alert
                           isInline={true}
-                          variant={"default"}
+                          variant={"custom"}
                           title={<span style={{ whiteSpace: "nowrap" }}>{"Can't update Gists you don't own"}</span>}
                         >
                           <br />
@@ -132,7 +132,7 @@ export function SyncDropdownMenu(props: Props) {
                           <Button
                             onClick={forkGitHubGist}
                             variant={ButtonVariant.link}
-                            isSmall={true}
+                            size="sm"
                             style={{ paddingLeft: 0 }}
                           >
                             {`Fork Gist`}
@@ -165,7 +165,7 @@ export function SyncDropdownMenu(props: Props) {
                       <Divider />
                       <Alert
                         isInline={true}
-                        variant={"default"}
+                        variant={"custom"}
                         title={`Can't Update ${switchExpression(authProvider?.type as GitAuthProviderType, {
                           github: "GitHub repository",
                           bitbucket: "Bitbucket repository",
@@ -215,7 +215,7 @@ export function SyncDropdownMenu(props: Props) {
             <DropdownToggle
               id={"sync-dropdown"}
               data-testid={"sync-dropdown"}
-              onToggle={(isOpen) => setSyncGitRepositoryDropdownOpen(isOpen)}
+              onToggle={(_event, isOpen) => setSyncGitRepositoryDropdownOpen(isOpen)}
             >
               Sync
             </DropdownToggle>
@@ -248,7 +248,7 @@ export function SyncDropdownMenu(props: Props) {
                     <>
                       <Alert
                         isInline={true}
-                        variant={"default"}
+                        variant={"custom"}
                         title={"Can't Push without selecting an authentication source"}
                         actionLinks={
                           <AuthSessionSelect

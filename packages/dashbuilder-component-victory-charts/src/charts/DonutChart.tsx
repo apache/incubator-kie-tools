@@ -40,7 +40,6 @@ export class DonutChart extends PieBaseChart {
         subTitle={this.props.donutSubTitle || ""}
         title={this.props.donutTitle || ""}
         themeColor={themeColor}
-        themeVariant={themeVariant}
         width={width}
         height={height}
       />

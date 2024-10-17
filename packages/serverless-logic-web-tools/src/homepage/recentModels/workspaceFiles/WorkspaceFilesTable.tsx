@@ -19,7 +19,7 @@
 import * as React from "react";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import {
-  TableComposable,
+  Table /* data-codemods */,
   Tbody,
   Th,
   Thead,
@@ -124,7 +124,7 @@ export function WorkspaceFilesTable(props: WorkspaceFilesTableProps) {
 
   return (
     <>
-      <TableComposable aria-label="Selectable table">
+      <Table aria-label="Selectable table">
         <Thead>
           <Tr>
             <Th>&nbsp;</Th>
@@ -154,7 +154,7 @@ export function WorkspaceFilesTable(props: WorkspaceFilesTableProps) {
             ))
           )}
         </Tbody>
-      </TableComposable>
+      </Table>
     </>
   );
 }

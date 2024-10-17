@@ -122,7 +122,7 @@ const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
         {...componentOuiaProps(`content${ouiaId ? "-" + ouiaId : ""}`, "process-form-page-section", ouiaSafe)}
       >
         <Card className="Dev-ui__card-size">
-          <CardBody className="pf-u-h-100">
+          <CardBody className="pf-v5-u-h-100">
             <ProcessFormContainer
               processDefinitionData={processDefinition}
               onSubmitSuccess={onSubmitSuccess}

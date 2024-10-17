@@ -93,9 +93,10 @@ export function DmnRunnerTable() {
 
   useEffect(() => {
     inputsScrollableElementRef.current.current =
-      document.querySelector(".kie-tools--dmn-runner-table--drawer")?.querySelector(".pf-c-drawer__content") ?? null;
+      document.querySelector(".kie-tools--dmn-runner-table--drawer")?.querySelector(".pf-v5-c-drawer__content") ?? null;
     outputsScrollableElementRef.current.current =
-      document.querySelector(".kie-tools--dmn-runner-table--drawer")?.querySelector(".pf-c-drawer__panel-main") ?? null;
+      document.querySelector(".kie-tools--dmn-runner-table--drawer")?.querySelector(".pf-v5-c-drawer__panel-main") ??
+      null;
   }, []);
 
   const setWidth = useCallback(
@@ -298,7 +299,7 @@ function useAnchoredUnitablesDrawerPanel(args: {
   useIntervalUntil(
     useCallback(async () => {
       const resizer = document.querySelector(
-        ".kie-tools--dmn-runner-table--drawer .pf-c-drawer__panel .pf-c-drawer__splitter.pf-m-vertical"
+        ".kie-tools--dmn-runner-table--drawer .pf-v5-c-drawer__panel .pf-v5-c-drawer__splitter.pf-m-vertical"
       ) as HTMLElement | undefined;
 
       if (!resizer) {
@@ -321,11 +322,11 @@ function useAnchoredUnitablesDrawerPanel(args: {
 
   // Keep scrolls in sync and set scrollbarWidth
   useEffect(() => {
-    const content = document.querySelector(".kie-tools--dmn-runner-table--drawer .pf-c-drawer__content") as
+    const content = document.querySelector(".kie-tools--dmn-runner-table--drawer .pf-v5-c-drawer__content") as
       | HTMLElement
       | undefined;
 
-    const panel = document.querySelector(".kie-tools--dmn-runner-table--drawer .pf-c-drawer__panel-main") as
+    const panel = document.querySelector(".kie-tools--dmn-runner-table--drawer .pf-v5-c-drawer__panel-main") as
       | HTMLElement
       | undefined;
 

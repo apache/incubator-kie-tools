@@ -90,7 +90,7 @@ const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
           variant="secondary"
           onClick={addRange}
           isDisabled={countLimit !== undefined && ranges.length >= countLimit}
-          isSmall={true}
+          size="sm"
           ouiaId="add-another-interval"
         >
           Add another interval
@@ -187,7 +187,7 @@ const RangeEdit = (props: RangeEditProps) => {
               name="start-value"
               value={rangeValues.start.value}
               validated={validations.length === 0 ? "default" : "warning"}
-              onChange={handleRangeChange}
+              onChange={(event, value: string | boolean) => handleRangeChange(value, event)}
               onBlur={saveChange}
               tabIndex={(index + 1) * 10 + 1}
               autoComplete="off"
@@ -201,7 +201,7 @@ const RangeEdit = (props: RangeEditProps) => {
               id={`start-included-${index}`}
               name="start-included"
               isChecked={rangeValues.start.included}
-              onChange={handleRangeChange}
+              onChange={(event, value: string | boolean) => handleRangeChange(value, event)}
               onClick={saveChange}
               tabIndex={(index + 1) * 10 + 3}
               ouiaId="is-start-included"
@@ -220,7 +220,7 @@ const RangeEdit = (props: RangeEditProps) => {
               name="end-value"
               value={rangeValues.end.value}
               validated={validations.length === 0 ? "default" : "warning"}
-              onChange={handleRangeChange}
+              onChange={(event, value: string | boolean) => handleRangeChange(value, event)}
               onBlur={saveChange}
               tabIndex={(index + 1) * 10 + 2}
               autoComplete="off"
@@ -234,7 +234,7 @@ const RangeEdit = (props: RangeEditProps) => {
               id={`end-included-${index}`}
               name="end-included"
               isChecked={rangeValues.end.included}
-              onChange={handleRangeChange}
+              onChange={(event, value: string | boolean) => handleRangeChange(value, event)}
               onClick={saveChange}
               tabIndex={(index + 1) * 10 + 4}
               ouiaId="is-end-included"

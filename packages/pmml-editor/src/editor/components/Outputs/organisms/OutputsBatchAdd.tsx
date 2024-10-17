@@ -80,7 +80,7 @@ const OutputsBatchAdd = ({ onAdd, onCancel }: OutputsBatchAddProps) => {
               <TextArea
                 className="outputs-container__multiple-outputs"
                 value={input}
-                onChange={handleInputChange}
+                onChange={(_event, value: string) => handleInputChange(value)}
                 name="outputs"
                 isRequired={true}
                 id="outputs"

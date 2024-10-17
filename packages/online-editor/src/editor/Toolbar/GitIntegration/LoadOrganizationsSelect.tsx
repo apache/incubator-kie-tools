@@ -22,7 +22,7 @@ import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/work
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import { useCallback, useEffect, useState } from "react";
 import { AuthProviderType, isSupportedGitAuthProviderType } from "../../../authProviders/AuthProvidersApi";
 import { useAuthProvider } from "../../../authProviders/AuthProvidersContext";
@@ -212,7 +212,7 @@ export const LoadOrganizationsSelect = (props: Props) => {
               bitbucket: <BitbucketIcon />,
               github: <GithubIcon />,
             })}
-            onToggle={setOrganizationDropdownOpen}
+            onToggle={(_event, val) => setOrganizationDropdownOpen(val)}
             selections={internalSelectedOption}
             isDisabled={props.readonly}
           >
@@ -224,7 +224,7 @@ export const LoadOrganizationsSelect = (props: Props) => {
         <Button
           variant="link"
           aria-label="Reload"
-          isSmall={true}
+          size="sm"
           isLoading={isLoadingOrganizations}
           onClick={loadOrganizations}
           isDisabled={props.readonly}

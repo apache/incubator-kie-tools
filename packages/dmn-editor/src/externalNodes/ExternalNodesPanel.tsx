@@ -27,10 +27,12 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStatePrimary,
+  EmptyStateActions,
+  EmptyStateHeader,
+  EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Button, ButtonVariant, EmptyStateActions } from "@patternfly/react-core/dist/js/components/Button";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { DmnObjectListItem } from "./DmnObjectListItem";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
@@ -74,26 +76,29 @@ export function ExternalNodesPanel() {
       {externalDmnsByNamespace.size === 0 && (
         <>
           <EmptyState>
-            <EmptyStateIcon icon={CubesIcon} />
-            <Title size={"md"} headingLevel={"h4"}>
-              No external nodes available
-            </Title>
+            <EmptyStateHeader
+              titleText="No external nodes available"
+              icon={<EmptyStateIcon icon={CubesIcon} />}
+              headingLevel={"h4"}
+            />
             <EmptyStateBody>
               Maybe the included models have no exported nodes, or there are no included models.
             </EmptyStateBody>
-            <br />
-            <EmptyStatePrimary>
-              <Button
-                variant={ButtonVariant.link}
-                onClick={() =>
-                  dmnEditorStoreApi.setState((state) => {
-                    state.navigation.tab = DmnEditorTab.INCLUDED_MODELS;
-                  })
-                }
-              >
-                Include model...
-              </Button>
-            </EmptyStatePrimary>
+            <EmptyStateFooter>
+              <br />
+              <EmptyStateActions>
+                <Button
+                  variant={ButtonVariant.link}
+                  onClick={() =>
+                    dmnEditorStoreApi.setState((state) => {
+                      state.navigation.tab = DmnEditorTab.INCLUDED_MODELS;
+                    })
+                  }
+                >
+                  Include model...
+                </Button>
+              </EmptyStateActions>
+            </EmptyStateFooter>
           </EmptyState>
         </>
       )}

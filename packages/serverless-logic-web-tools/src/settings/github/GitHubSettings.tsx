@@ -19,9 +19,15 @@
 
 import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+  EmptyStateFooter,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
@@ -118,33 +124,39 @@ export function GitHubSettings(props: SettingsPageProps) {
         <PageSection variant={"light"}>
           {settings.github.authStatus === AuthStatus.TOKEN_EXPIRED && (
             <EmptyState>
-              <EmptyStateIcon icon={ExclamationTriangleIcon} />
+              <EmptyStateHeader icon={<EmptyStateIcon icon={ExclamationTriangleIcon} />} />
               <TextContent>
                 <Text component={"h2"}>GitHub Token expired</Text>
               </TextContent>
               <EmptyStateBody>
                 <TextContent>Reset your token to sign in with GitHub again.</TextContent>
               </EmptyStateBody>
-              <br />
-              <Button variant={ButtonVariant.secondary} onClick={onSignOutFromGitHub}>
-                Reset
-              </Button>
+              <EmptyStateFooter>
+                <br />
+                <Button variant={ButtonVariant.secondary} onClick={onSignOutFromGitHub}>
+                  Reset
+                </Button>
+              </EmptyStateFooter>
             </EmptyState>
           )}
           {settings.github.authStatus === AuthStatus.LOADING && (
             <EmptyState>
-              <EmptyStateIcon icon={GithubIcon} />
-              <TextContent>
-                <Text component={"h2"}>Signing in with GitHub</Text>
-              </TextContent>
-              <br />
-              <br />
-              <Spinner />
+              <EmptyStateHeader icon={<EmptyStateIcon icon={GithubIcon} />} />
+              <EmptyStateFooter>
+                <TextContent>
+                  <Text component={"h2"}>Signing in with GitHub</Text>
+                </TextContent>
+                <br />
+                <br />
+                <Spinner />
+              </EmptyStateFooter>
             </EmptyState>
           )}
           {settings.github.authStatus === AuthStatus.SIGNED_IN && (
             <EmptyState>
-              <EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-global--success-color--100)"} />
+              <EmptyStateHeader
+                icon={<EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-v5-global--success-color--100)"} />}
+              />
               <TextContent>
                 <Text component={"h2"} ouiaId={"signed-in-text"}>
                   {"You're signed in with GitHub."}
@@ -165,15 +177,17 @@ export function GitHubSettings(props: SettingsPageProps) {
                 <b>Scope: </b>
                 <i>{settings.github.scopes?.join(", ") || "(none)"}</i>
               </EmptyStateBody>
-              <br />
-              <Button variant={ButtonVariant.secondary} onClick={onSignOutFromGitHub}>
-                Sign out
-              </Button>
+              <EmptyStateFooter>
+                <br />
+                <Button variant={ButtonVariant.secondary} onClick={onSignOutFromGitHub}>
+                  Sign out
+                </Button>
+              </EmptyStateFooter>
             </EmptyState>
           )}
           {settings.github.authStatus === AuthStatus.SIGNED_OUT && (
             <EmptyState>
-              <EmptyStateIcon icon={AddCircleOIcon} />
+              <EmptyStateHeader icon={<EmptyStateIcon icon={AddCircleOIcon} />} />
               <TextContent>
                 <Text component={"h2"}>{"No access token"}</Text>
               </TextContent>
@@ -181,9 +195,11 @@ export function GitHubSettings(props: SettingsPageProps) {
                 You currently have no tokens to display. Access tokens allow you for creating repositories containing
                 models you design, and syncing changes with GitHub.
               </EmptyStateBody>
-              <Button variant={ButtonVariant.primary} onClick={handleModalToggle} ouiaId={"add-access-token-button"}>
-                Add access token
-              </Button>
+              <EmptyStateFooter>
+                <Button variant={ButtonVariant.primary} onClick={handleModalToggle} ouiaId={"add-access-token-button"}>
+                  Add access token
+                </Button>
+              </EmptyStateFooter>
             </EmptyState>
           )}
         </PageSection>
@@ -213,20 +229,22 @@ export function GitHubSettings(props: SettingsPageProps) {
               helperText={"Your token must include the 'repo' scope."}
             >
               <InputGroup>
-                <TextInput
-                  ref={tokenInput}
-                  autoComplete={"off"}
-                  id="token-input"
-                  name="tokenInput"
-                  aria-describedby="token-text-input-helper"
-                  placeholder={"Paste your GitHub token here"}
-                  maxLength={GITHUB_OAUTH_TOKEN_SIZE}
-                  validated={githubTokenValidated}
-                  value={githubTokenToDisplay}
-                  onPaste={onPasteGitHubToken}
-                  tabIndex={1}
-                  ouiaId={"token-input"}
-                />
+                <InputGroupItem isFill>
+                  <TextInput
+                    ref={tokenInput}
+                    autoComplete={"off"}
+                    id="token-input"
+                    name="tokenInput"
+                    aria-describedby="token-text-input-helper"
+                    placeholder={"Paste your GitHub token here"}
+                    maxLength={GITHUB_OAUTH_TOKEN_SIZE}
+                    validated={githubTokenValidated}
+                    value={githubTokenToDisplay}
+                    onPaste={onPasteGitHubToken}
+                    tabIndex={1}
+                    ouiaId={"token-input"}
+                  />
+                </InputGroupItem>
               </InputGroup>
             </FormGroup>
             <TextContent>

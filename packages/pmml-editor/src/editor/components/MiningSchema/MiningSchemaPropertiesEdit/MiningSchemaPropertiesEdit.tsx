@@ -276,7 +276,7 @@ const MiningSchemaPropertiesEdit = ({
                     ouiaId="importance"
                     data-ouia-component-type="double-input"
                     validated={validationsImportance.length === 0 ? "default" : "warning"}
-                    onChange={(value) => setImportance(toNumberOrUndefined(value))}
+                    onChange={(_event, value) => setImportance(toNumberOrUndefined(value))}
                     onBlur={() => {
                       if (importance !== undefined) {
                         let _importance = importance;
@@ -327,9 +327,9 @@ const MiningSchemaPropertiesEdit = ({
                           <button
                             aria-label="More information for Low Value field"
                             onClick={(e) => e.preventDefault()}
-                            className="pf-c-form__group-label-help"
+                            className="pf-v5-c-form__group-label-help"
                           >
-                            <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                            <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                           </button>
                         </Tooltip>
                       }
@@ -344,7 +344,7 @@ const MiningSchemaPropertiesEdit = ({
                         isDisabled={!enableLowValueComponent}
                         placeholder={!enableLowValueComponent ? "<Not needed>" : ""}
                         className={!enableLowValueComponent ? "mining-schema__edit__form__disabled" : ""}
-                        onChange={(value) => setLowValue(toNumberOrUndefined(value))}
+                        onChange={(_event, value) => setLowValue(toNumberOrUndefined(value))}
                         onBlur={handleSave}
                         ouiaId="low-value"
                       />
@@ -364,9 +364,9 @@ const MiningSchemaPropertiesEdit = ({
                           <button
                             aria-label="More information for High Value field"
                             onClick={(e) => e.preventDefault()}
-                            className="pf-c-form__group-label-help"
+                            className="pf-v5-c-form__group-label-help"
                           >
-                            <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                            <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                           </button>
                         </Tooltip>
                       }
@@ -381,7 +381,7 @@ const MiningSchemaPropertiesEdit = ({
                         isDisabled={!enableHighValueComponent}
                         placeholder={!enableHighValueComponent ? "<Not needed>" : ""}
                         className={!enableHighValueComponent ? "mining-schema__edit__form__disabled" : ""}
-                        onChange={(value) => setHighValue(toNumberOrUndefined(value))}
+                        onChange={(_event, value) => setHighValue(toNumberOrUndefined(value))}
                         onBlur={handleSave}
                         ouiaId="high-value"
                       />
@@ -419,9 +419,9 @@ const MiningSchemaPropertiesEdit = ({
                           <button
                             aria-label="More information for Missing Value Replacement field"
                             onClick={(e) => e.preventDefault()}
-                            className="pf-c-form__group-label-help"
+                            className="pf-v5-c-form__group-label-help"
                           >
-                            <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                            <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                           </button>
                         </Tooltip>
                       }
@@ -436,7 +436,7 @@ const MiningSchemaPropertiesEdit = ({
                         isDisabled={!enableMissingValueComponent}
                         placeholder={!enableMissingValueComponent ? "<Not needed>" : ""}
                         className={!enableMissingValueComponent ? "mining-schema__edit__form__disabled" : ""}
-                        onChange={(value) => setMissingValueReplacement(value)}
+                        onChange={(_event, value) => setMissingValueReplacement(value)}
                         onBlur={handleSave}
                       />
                     </FormGroup>
@@ -473,9 +473,9 @@ const MiningSchemaPropertiesEdit = ({
                           <button
                             aria-label="More information for Invalid Value Replacement field"
                             onClick={(e) => e.preventDefault()}
-                            className="pf-c-form__group-label-help"
+                            className="pf-v5-c-form__group-label-help"
                           >
-                            <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                            <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                           </button>
                         </Tooltip>
                       }
@@ -490,7 +490,7 @@ const MiningSchemaPropertiesEdit = ({
                         isDisabled={!enableInvalidValueComponent}
                         placeholder={!enableInvalidValueComponent ? "<Not needed>" : ""}
                         className={!enableInvalidValueComponent ? "mining-schema__edit__form__disabled" : ""}
-                        onChange={(value) => setInvalidValueReplacement(value)}
+                        onChange={(_event, value) => setInvalidValueReplacement(value)}
                         onBlur={handleSave}
                       />
                     </FormGroup>

@@ -23,10 +23,12 @@ import {
   EmptyStateIcon,
   EmptyStateVariant,
   EmptyStateBody,
+  EmptyStateHeader,
+  EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { Redirect, StaticContext, RouteComponentProps } from "react-router";
@@ -66,14 +68,17 @@ export const PageNotFound: React.FC<PageNotFoundProps> = ({ ouiaId, ouiaSafe, ..
       <PageSection variant="light" {...componentOuiaProps(ouiaId, "page-not-found", ouiaSafe ? ouiaSafe : !isRedirect)}>
         <Bullseye>
           <EmptyState variant={EmptyStateVariant.full}>
-            <EmptyStateIcon icon={ExclamationCircleIcon} color="var(--pf-global--danger-color--100)" />
-            <Title headingLevel="h1" size="4xl">
-              404 Error: page not found
-            </Title>
+            <EmptyStateHeader
+              titleText="404 Error: page not found"
+              icon={<EmptyStateIcon icon={ExclamationCircleIcon} color="var(--pf-v5-global--danger-color--100)" />}
+              headingLevel="h1"
+            />
             <EmptyStateBody>This page could not be found.</EmptyStateBody>
-            <Button variant="primary" onClick={redirectHandler} data-testid="redirect-button">
-              {props.defaultButton}
-            </Button>
+            <EmptyStateFooter>
+              <Button variant="primary" onClick={redirectHandler} data-testid="redirect-button">
+                {props.defaultButton}
+              </Button>
+            </EmptyStateFooter>
           </EmptyState>
         </Bullseye>
       </PageSection>

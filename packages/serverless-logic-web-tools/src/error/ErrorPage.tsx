@@ -19,7 +19,13 @@
 
 import * as React from "react";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+  EmptyStateFooter,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -104,7 +110,7 @@ export function ErrorPage(props: ErrorPageProps) {
     <PageSection isFilled aria-label={`${props.kind.toLowerCase()}-error-section`}>
       <PageSection variant={"light"} padding={{ default: "noPadding" }}>
         <EmptyState>
-          <EmptyStateIcon icon={ExclamationTriangleIcon} />
+          <EmptyStateHeader icon={<EmptyStateIcon icon={ExclamationTriangleIcon} />} />
           <TextContent>
             <Text component={"h2"}>{title}</Text>
           </TextContent>
@@ -135,9 +141,11 @@ export function ErrorPage(props: ErrorPageProps) {
               <br />
             </PageSection>
           </EmptyStateBody>
-          <Button variant={ButtonVariant.tertiary} onClick={returnRecentModels}>
-            Return home
-          </Button>
+          <EmptyStateFooter>
+            <Button variant={ButtonVariant.tertiary} onClick={returnRecentModels}>
+              Return home
+            </Button>
+          </EmptyStateFooter>
         </EmptyState>
       </PageSection>
     </PageSection>

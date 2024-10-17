@@ -18,15 +18,17 @@
  */
 
 import * as React from "react";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Button, EmptyStateActions } from "@patternfly/react-core/dist/js/components/Button";
 import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateSecondaryActions,
   EmptyStateVariant,
+  EmptyStateActions,
+  EmptyStateHeader,
+  EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ChangeEvent } from "react";
 
@@ -44,25 +46,28 @@ interface UploadProps {
 interface AllProps extends NewProps, UploadProps {}
 
 export const ServerlessWorkflowEmptyState = (props: AllProps) => (
-  <EmptyState variant={EmptyStateVariant.small}>
-    <EmptyStateIcon icon={CubesIcon} />
-    <Title headingLevel="h4" size="lg">
-      No serverless workflow document
-    </Title>
+  <EmptyState variant={EmptyStateVariant.sm}>
+    <EmptyStateHeader
+      titleText="No serverless workflow document"
+      icon={<EmptyStateIcon icon={CubesIcon} />}
+      headingLevel="h4"
+    />
     <EmptyStateBody>
       No serverless workflow document has been selected. Please either upload an existing document or create a new one.
     </EmptyStateBody>
-    <FileChooser setContent={props.setContent} />
-    {!props.isDiagramOnly && !props.isTextOnly && (
-      <EmptyStateSecondaryActions>
-        <Button variant="link" onClick={(e) => props.newContent("json")} ouiaId="new-button">
-          New JSON
-        </Button>
-        <Button variant="link" onClick={(e) => props.newContent("yaml")} ouiaId="new-button">
-          New YAML
-        </Button>
-      </EmptyStateSecondaryActions>
-    )}
+    <EmptyStateFooter>
+      <FileChooser setContent={props.setContent} />
+      {!props.isDiagramOnly && !props.isTextOnly && (
+        <EmptyStateActions>
+          <Button variant="link" onClick={(e) => props.newContent("json")} ouiaId="new-button">
+            New JSON
+          </Button>
+          <Button variant="link" onClick={(e) => props.newContent("yaml")} ouiaId="new-button">
+            New YAML
+          </Button>
+        </EmptyStateActions>
+      )}
+    </EmptyStateFooter>
   </EmptyState>
 );
 
@@ -86,8 +91,8 @@ const FileChooser = (props: UploadProps) => {
   };
 
   return (
-    <div style={{ marginTop: "var(--pf-c-empty-state__primary--MarginTop)" }}>
-      <label htmlFor="file-upload" className="pf-c-button pf-m-primary" data-ouia-component-id="upload-button">
+    <div style={{ marginTop: "var(--pf-v5-c-empty-state__primary--MarginTop)" }}>
+      <label htmlFor="file-upload" className="pf-v5-c-button pf-m-primary" data-ouia-component-id="upload-button">
         <i className="fa fa-cloud-upload" />
         Upload
       </label>

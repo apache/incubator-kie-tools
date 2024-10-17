@@ -23,7 +23,7 @@ import {
   DropdownPosition,
   DropdownToggle,
   DropdownToggleAction,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+} from "@patternfly/react-core/deprecated";
 import * as React from "react";
 import { useCallback, useRef, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
@@ -145,7 +145,7 @@ export function ExtendedServicesButtons(props: Props) {
                     </DropdownToggleAction>,
                   ]}
                   splitButtonVariant="action"
-                  onToggle={(isOpen) => {
+                  onToggle={(_event, isOpen) => {
                     setRunModeOpen(isOpen);
                   }}
                 />
