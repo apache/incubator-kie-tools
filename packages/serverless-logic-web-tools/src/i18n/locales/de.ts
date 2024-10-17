@@ -112,4 +112,10 @@ export const de: AppI18n = {
         "Modelle in diesem Arbeitsbereich können von Bereitstellungen aus anderen Arbeitsbereichen abhängen.",
     },
   },
+  RuntimeToolsSettings: {
+    configModal: {
+      validDataIndexURLError: "Bitte geben Sie eine gültige Datenindex-URL ein.",
+      dataIndexConnectionError: "Verbindung abgelehnt. Bitte überprüfen Sie die bereitgestellten Informationen.",
+    },
+  },
 };

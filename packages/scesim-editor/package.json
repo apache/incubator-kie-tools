@@ -7,7 +7,7 @@
   "scripts": {
     "build:dev": "rimraf dist && tsc -p tsconfig.json",
     "build:prod": "rimraf dist && pnpm lint && tsc -p tsconfig.json && pnpm test-e2e",
-    "build:storybook": "storybook build -o dist-storybook",
+    "build:storybook": "rimraf dist-storybook && NODE_ENV=development storybook build -o dist-storybook",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "start": "run-script-os",
