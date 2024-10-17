@@ -197,7 +197,7 @@ function TestScenarioMainPanel({ scesimFilePath }: { scesimFilePath: string | un
       return;
     }
     commandsRef.current.toggleTestScenarioDock = async () => {
-      console.debug("DMN DIAGRAM: COMMANDS: Toggle properties panel...");
+      console.trace("Test Scenario Editor: COMMANDS: Toggle dock panel...");
       testScenarioEditorStoreApi.setState((state) => {
         state.navigation.dock.isOpen = !state.navigation.dock.isOpen;
       });
