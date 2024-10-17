@@ -35,15 +35,14 @@ export const bootstrap4FormCodeGeneratorTheme: FormCodeGeneratorTheme<Bootstrap4
   generate: (formSchema) => {
     const form = renderForm({
       id: formSchema.name,
-      sanitizedId: formSchema.name,
       schema: new JSONSchemaBridge(formSchema.schema, () => true),
       disabled: false,
       placeholder: true,
     });
     return {
-      id: formSchema.name,
-      assetName: `${formSchema.name}.${BOOTSTRAP4_FILE_EXT}`,
-      type: BOOTSTRAP4_FILE_EXT,
+      name: formSchema.name,
+      fileName: `${formSchema.name}.${BOOTSTRAP4_FILE_EXT}`,
+      fileExt: BOOTSTRAP4_FILE_EXT,
       content: unescape(form),
       config: {
         schema: JSON.stringify(formSchema.schema),
