@@ -92,7 +92,7 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
   const Sidebar = (
     <PageSidebar
       nav={PageNav}
-      isNavOpen={isNavOpen}
+      isSidebarOpen={isNavOpen}
       theme="dark"
       {...ouiaAttribute("data-ouia-navigation", "true")}
       data-testid="page-sidebar"
