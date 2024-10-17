@@ -24,8 +24,8 @@
   },
   "dependencies": {
     "@kie-tools/runtime-tools-components": "workspace:*",
-    "@patternfly/react-core": "^4.276.6",
-    "@patternfly/react-icons": "^4.93.6",
+    "@patternfly/react-core": "^5.4.1",
+    "@patternfly/react-icons": "^5.4.0",
     "history": "^4.9.0",
     "react-router": "^5.3.4"
   },

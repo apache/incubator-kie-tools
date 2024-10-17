@@ -32,8 +32,8 @@
     "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
-    "@patternfly/react-core": "^4.276.6",
-    "@patternfly/react-icons": "^4.93.6"
+    "@patternfly/react-core": "^5.4.1",
+    "@patternfly/react-icons": "^5.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
