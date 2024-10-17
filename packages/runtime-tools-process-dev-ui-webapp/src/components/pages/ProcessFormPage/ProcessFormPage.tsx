@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import ProcessFormContainer from "../../containers/ProcessFormContainer/ProcessFormContainer";
@@ -49,10 +49,6 @@ const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
 
   const goToProcessDefinition = () => {
     history.push("/Processes");
-  };
-
-  const goToProcessDetails = () => {
-    history.push(`/Process/${processId}`);
   };
 
   const showNotification = (
@@ -100,10 +96,13 @@ const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
     showNotification("error", message, details);
   };
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
+    const goToProcessDetails = () => {
+      history.push(`/Process/${processId}`);
+    };
     setNotification(null);
     goToProcessDetails();
-  };
+  }, [setNotification, history, processId]);
 
   return (
     <React.Fragment>
