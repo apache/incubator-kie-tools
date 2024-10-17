@@ -5033,12 +5033,6 @@ importers:
       '@kie-tools/jbpm-form-code-generator-themes':
         specifier: workspace:*
         version: link:../jbpm-form-code-generator-themes
-      react:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2
-      react-dom:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2(react@17.0.2)
     devDependencies:
       '@kie-tools/eslint':
         specifier: workspace:*
