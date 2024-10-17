@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { componentOuiaProps, OUIAProps } from "../../ouiaTools";
 
@@ -42,6 +42,10 @@ export const FormNotification: React.FC<IOwnProps & OUIAProps> = ({ notification
   const variant = notification.type === "error" ? "danger" : "success";
 
   const [showDetails, setShowDetails] = useState<boolean>(false);
+  const content = useMemo(
+    () => showDetails && notification.details && <p>{notification.details}</p>,
+    [showDetails, notification.details]
+  );
   return (
     <Alert
       isInline
@@ -66,7 +70,7 @@ export const FormNotification: React.FC<IOwnProps & OUIAProps> = ({ notification
       actionClose={<AlertActionCloseButton onClose={notification.close} />}
       {...componentOuiaProps(ouiaId, "form-notification-alert", ouiaSafe)}
     >
-      {showDetails && notification.details && <p>{notification.details}</p>}
+      {content}
     </Alert>
   );
 };
