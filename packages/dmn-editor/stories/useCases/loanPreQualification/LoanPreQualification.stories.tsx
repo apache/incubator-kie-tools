@@ -792,7 +792,6 @@ const model = marshaller.parser.parse();
 export const LoanPreQualification: Story = {
   render: Empty.render,
   args: {
-    ...Empty.args,
     model: model,
     xml: marshaller.builder.build(model),
   },

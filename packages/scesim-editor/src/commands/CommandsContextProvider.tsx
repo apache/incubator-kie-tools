@@ -18,45 +18,26 @@
  */
 
 import * as React from "react";
-import { ErrorInfo } from "react";
+import { useContext, useRef } from "react";
 
-interface State {
-  hasError: boolean;
+export interface Commands {
+  toggleTestScenarioDock: () => void;
 }
 
-interface Props {
-  children: React.ReactNode;
-  error: React.ReactNode;
-  setError?: React.Dispatch<Error | null>;
+const CommandsContext = React.createContext<{
+  commandsRef: React.MutableRefObject<Commands>;
+}>({} as any);
+
+export function useCommands() {
+  return useContext(CommandsContext);
 }
 
-export class ErrorBoundary extends React.Component<Props, State> {
-  constructor(props: any) {
-    super(props);
-    this.state = { hasError: false };
-  }
+export function CommandsContextProvider(props: React.PropsWithChildren<{}>) {
+  const commandsRef = useRef<Commands>({
+    toggleTestScenarioDock: () => {
+      throw new Error("Test Scenario EDITOR: toggleTestScenarioDock command not implemented.");
+    },
+  });
 
-  public reset() {
-    this.props.setError?.(null);
-    this.setState({ hasError: false });
-  }
-
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    this.props.setError?.(error);
-    console.error(error);
-  }
-
-  public render() {
-    if (this.state.hasError) {
-      return this.props.error;
-    }
-
-    return this.props.children;
-  }
-
-  public static getDerivedStateFromError(error: Error) {
-    return { hasError: true };
-  }
+  return <CommandsContext.Provider value={{ commandsRef }}>{props.children}</CommandsContext.Provider>;
 }
-
-export default ErrorBoundary;

@@ -17,9 +17,25 @@
  * under the License.
  */
 
-export const EMPTY_TYPE = "java.lang.Void";
+import { SceSim__FactMappingValuesTypes } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
-export enum TEST_SCENARIO_EXPRESSION_TYPE {
-  EXPRESSION,
-  NOT_EXPRESSION,
+export function dupliacteRow({
+  rowIndex,
+  factMappingValues,
+}: {
+  rowIndex: number;
+  factMappingValues: SceSim__FactMappingValuesTypes[];
+}) {
+  /* It simply clones a Scenario (Row) and adds it in a current-cloned Scenario list */
+  const factMappingValuesItems = JSON.parse(
+    JSON.stringify(factMappingValues[rowIndex].factMappingValues.FactMappingValue)
+  );
+
+  const newScenario = {
+    factMappingValues: {
+      FactMappingValue: factMappingValuesItems,
+    },
+  };
+
+  factMappingValues.splice(rowIndex, 0, newScenario);
 }
