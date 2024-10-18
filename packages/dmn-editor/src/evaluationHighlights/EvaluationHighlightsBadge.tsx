@@ -37,7 +37,7 @@ export function EvaluationHighlightsBadge() {
             state.diagram.overlays.enableEvaluationHighlights = !state.diagram.overlays.enableEvaluationHighlights;
           });
         }}
-        title={"Evaluation highlights (beta)"}
+        title={"Evaluation highlights"}
       >
         Evaluation Highlights: {dmnEditorStoreApi.getState().diagram.overlays.enableEvaluationHighlights ? "On" : "Off"}
       </button>
