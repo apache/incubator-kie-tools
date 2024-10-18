@@ -226,8 +226,8 @@
   position: absolute;
   top: 0px;
   left: 0px;
-  height: 100%;
-  width: 100%;
+  height: 55px;
+  width: 55px;
   clip-path: polygon(0% 65%, 65% 0%, 0% 0%);
   padding-left: 0.2em;
 }
@@ -241,8 +241,8 @@
   position: absolute;
   top: 0px;
   left: 0px;
-  height: 100%;
-  width: 100%;
+  height: 55px;
+  width: 55px;
   clip-path: polygon(0% 65%, 65% 0%, 0% 0%);
   padding-left: 0.2em;
 }
