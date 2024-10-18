@@ -26,7 +26,7 @@ spec:
     template:
       buildArgs:
         - name: QUARKUS_EXTENSION
-          value: org.kie.kogito:kogito-addons-quarkus-jobs-knative-eventing:999-20240912-SNAPSHOT
+          value: org.kie.kogito:kogito-addons-quarkus-jobs-knative-eventing:999-20241016-SNAPSHOT
     config:
       strategyOptions:
         KanikoBuildCacheEnabled: "true"
