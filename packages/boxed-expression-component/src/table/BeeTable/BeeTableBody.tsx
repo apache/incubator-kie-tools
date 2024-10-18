@@ -25,6 +25,7 @@ import { BeeTableTdForAdditionalRow } from "./BeeTableTdForAdditionalRow";
 import { BeeTableTd } from "./BeeTableTd";
 import { BeeTableCoordinatesContextProvider } from "../../selection/BeeTableSelectionContext";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
+import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 
 export interface BeeTableBodyProps<R extends object> {
   /** Table instance */
@@ -73,12 +74,18 @@ export function BeeTableBody<R extends object>({
   rowWrapper,
   isReadOnly,
 }: BeeTableBodyProps<R>) {
+  const { evaluationHitIds } = useBoxedExpressionEditor();
+
   const renderRow = useCallback(
     (row: ReactTable.Row<R>, rowIndex: number) => {
       reactTableInstance.prepareRow(row);
 
+      const rowKey = getRowKey(row);
+      const rowHitCount = evaluationHitIds?.filter((hitId) => hitId === rowKey).length!;
+      const rowClassName = rowKey + (rowHitCount > 0 ? " evaluation-highlights-row-overlay" : "");
+
       const renderTr = () => (
-        <tr className={rowKey} key={rowKey} data-testid={`kie-tools--bee--expression-row-${rowIndex}`}>
+        <tr className={rowClassName} key={rowKey} data-testid={`kie-tools--bee--expression-row-${rowIndex}`}>
           {row.cells.map((cell, cellIndex) => {
             const columnKey = getColumnKey(reactTableInstance.allColumns[cellIndex]);
             return (
@@ -104,6 +111,7 @@ export function BeeTableBody<R extends object>({
                       cellIndex === reactTableInstance.allColumns.length - 1 ? lastColumnMinWidth : undefined
                     }
                     isReadOnly={isReadOnly}
+                    evaluationHitsCount={rowHitCount}
                   />
                 )}
               </React.Fragment>
@@ -113,8 +121,6 @@ export function BeeTableBody<R extends object>({
       );
 
       const RowWrapper = rowWrapper;
-
-      const rowKey = getRowKey(row);
 
       return (
         <React.Fragment key={rowKey}>
