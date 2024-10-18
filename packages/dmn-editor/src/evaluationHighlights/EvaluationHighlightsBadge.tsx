@@ -19,6 +19,8 @@
 
 import * as React from "react";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { OffIcon, OnIcon } from "@patternfly/react-icons/dist/js/icons";
 
 export function EvaluationHighlightsBadge() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -26,12 +28,9 @@ export function EvaluationHighlightsBadge() {
 
   return (
     <aside className={"kie-dmn-editor--evaluation-highlights-panel-toggle"}>
-      <button
-        className={
-          isEvaluationHighlightsEnabled
-            ? "kie-dmn-editor--evaluation-highlights-panel-toggle-button"
-            : "kie-dmn-editor--evaluation-highlights-panel-toggle-button-off"
-        }
+      <Label
+        icon={isEvaluationHighlightsEnabled ? <OnIcon /> : <OffIcon />}
+        color={isEvaluationHighlightsEnabled ? "green" : "grey"}
         onClick={() => {
           dmnEditorStoreApi.setState((state) => {
             state.diagram.overlays.enableEvaluationHighlights = !state.diagram.overlays.enableEvaluationHighlights;
@@ -39,8 +38,8 @@ export function EvaluationHighlightsBadge() {
         }}
         title={"Evaluation highlights"}
       >
-        Evaluation Highlights: {dmnEditorStoreApi.getState().diagram.overlays.enableEvaluationHighlights ? "On" : "Off"}
-      </button>
+        Evaluation highlights: {dmnEditorStoreApi.getState().diagram.overlays.enableEvaluationHighlights ? "on" : "off"}
+      </Label>
     </aside>
   );
 }

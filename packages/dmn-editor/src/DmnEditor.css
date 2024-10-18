@@ -397,35 +397,7 @@
 
 /* (begin) evaluation-highlights panel toggle */
 .kie-dmn-editor--evaluation-highlights-panel-toggle {
-  border-radius: 40px;
-}
-.kie-dmn-editor--evaluation-highlights-panel-toggle:not(:last-child) {
-  margin-right: 16px;
-}
-
-.kie-dmn-editor--evaluation-highlights-panel-toggle:hover {
-  box-shadow: -4px 4px 2px 0px rgb(127 127 127);
-}
-.kie-dmn-editor--evaluation-highlights-panel-toggle-button,
-.kie-dmn-editor--evaluation-highlights-panel-toggle-button-off {
-  margin: 0;
-  height: 40px;
-  border-radius: 40px;
-  border: 0;
-}
-.kie-dmn-editor--evaluation-highlights-panel-toggle-button {
-  background: white;
-  border: 1px solid black;
-}
-.kie-dmn-editor--evaluation-highlights-panel-toggle-button-off {
-  background: var(--pf-global--palette--black-150);
-  border: 1px solid var(--pf-global--BorderColor--100);
-}
-.kie-dmn-editor--evaluation-highlights-panel-toggle-button:hover {
-  filter: brightness(95%);
-}
-.kie-dmn-editor--evaluation-highlights-panel-toggle-button:active {
-  filter: brightness(90%);
+  min-width: 190px;
 }
 /* (end) evaluation-highlights panel toggle */
 
