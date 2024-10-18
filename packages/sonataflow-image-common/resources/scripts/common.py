@@ -268,7 +268,7 @@ def update_label_value_in_file(filename, label_name, label_value):
     :param label_name: label name to update
     :param label_value: value to set
     """
-    print("Updating {0} label {1} with value {2}".format(filename, label_name, label_value))
+    print(f"Updating {filename} label {label_name} with value {label_value}")
     try:
         with open(filename) as yaml_file:
             data = yaml_loader().load(yaml_file)
@@ -281,7 +281,7 @@ def update_label_value_in_file(filename, label_name, label_value):
         raise
 
 
-def update_label_value_in_data(data, label_name, label_value, ignore_empty = False):
+def update_label_value_in_data(data, label_name, label_value, ignore_empty=False):
     """
     Update label value in data dict if exists
     :param data: dict to update
@@ -296,7 +296,7 @@ def update_label_value_in_data(data, label_name, label_value, ignore_empty = Fal
         if ignore_empty:
             if 'labels' not in data:
                 data['labels'] = []
-            data['labels'] += [ dict(name=label_name, value=label_value) ]
+            data['labels'] += [dict(name=label_name, value=label_value)]
         elif 'labels' in data:
             for _, label in enumerate(data['labels'], start=0):
                 if label['name'] == label_name:

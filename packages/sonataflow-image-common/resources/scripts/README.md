@@ -63,10 +63,6 @@ Usage:
 - `--quarkus-version`: Sets the Quarkus version
 - `--kogito-version`: Sets the Kogito version
 
-## Build Kogito Apps Components
-
-The [build-kogito-apps-components.sh](build-kogito-apps-components.sh) script pulls and build the target Kogito Apps application, e.g., Data Index. Required to build Kogito Services images in any flavour.
-
 ## Setup Maven
 
 The [setup-maven.sh](setup-maven.sh) script configures the internal image Maven repository such as adding new repositories, setup other profiles and so on.
