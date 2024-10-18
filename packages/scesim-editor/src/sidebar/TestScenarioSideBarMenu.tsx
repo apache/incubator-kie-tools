@@ -27,25 +27,32 @@ import CogIcon from "@patternfly/react-icons/dist/esm/icons/cog-icon";
 import EditIcon from "@patternfly/react-icons/dist/esm/icons/edit-alt-icon";
 import InfoIcon from "@patternfly/react-icons/dist/esm/icons/info-icon";
 
-import { TestScenarioEditorDock } from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
+import { TestScenarioEditorDock } from "../store/TestScenarioEditorStore";
+import { useTestScenarioEditorStore, useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
 
 import "./TestScenarioSideBarMenu.css";
 
-function TestScenarioSideBarMenu({
-  onSideBarButtonClicked,
-  selectedSideBarMenuItem,
-}: {
-  onSideBarButtonClicked: (selected: TestScenarioEditorDock) => void;
-  selectedSideBarMenuItem: { isOpen: boolean; selected: TestScenarioEditorDock };
-}) {
+function TestScenarioSideBarMenu() {
   const { i18n } = useTestScenarioEditorI18n();
+  const navigation = useTestScenarioEditorStore((state) => state.navigation);
+  const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
 
   const isSelectedMenuItem = useCallback(
     (item: TestScenarioEditorDock) => {
-      return selectedSideBarMenuItem.isOpen && selectedSideBarMenuItem.selected === item;
+      return navigation.dock.isOpen && navigation.dock.selected === item;
     },
-    [selectedSideBarMenuItem]
+    [navigation.dock]
+  );
+
+  const updateSelectedDock = useCallback(
+    (selected: TestScenarioEditorDock) => {
+      testScenarioEditorStoreApi.setState((state) => {
+        state.navigation.dock.isOpen = true;
+        state.navigation.dock.selected = selected;
+      });
+    },
+    [testScenarioEditorStoreApi]
   );
 
   return (
@@ -58,7 +65,7 @@ function TestScenarioSideBarMenu({
               : "kie-scesim-editor-side-bar-menu--button"
           }
           variant="plain"
-          onClick={() => onSideBarButtonClicked(TestScenarioEditorDock.DATA_OBJECT)}
+          onClick={() => updateSelectedDock(TestScenarioEditorDock.DATA_OBJECT)}
           icon={<EditIcon />}
         />
       </Tooltip>
@@ -70,7 +77,7 @@ function TestScenarioSideBarMenu({
               : "kie-scesim-editor-side-bar-menu--button"
           }
           icon={<InfoIcon />}
-          onClick={() => onSideBarButtonClicked(TestScenarioEditorDock.CHEATSHEET)}
+          onClick={() => updateSelectedDock(TestScenarioEditorDock.CHEATSHEET)}
           variant="plain"
         />
       </Tooltip>
@@ -82,7 +89,7 @@ function TestScenarioSideBarMenu({
               : "kie-scesim-editor-side-bar-menu--button"
           }
           icon={<CogIcon />}
-          onClick={() => onSideBarButtonClicked(TestScenarioEditorDock.SETTINGS)}
+          onClick={() => updateSelectedDock(TestScenarioEditorDock.SETTINGS)}
           variant="plain"
         />
       </Tooltip>
