@@ -57,7 +57,7 @@ const ProcessFormContainer: React.FC<ProcessFormContainerProps & OUIAProps> = ({
               onSubmitSuccess(id);
             })
             .catch((error) => {
-              const message = error.response ? error.response.data : error.message;
+              const message = error.response ? `${error.response.statusText} : ${error.message}` : error.message;
               onSubmitError(message);
             });
         },
