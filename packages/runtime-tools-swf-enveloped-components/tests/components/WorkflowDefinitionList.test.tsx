@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { render, waitFor, screen, fireEvent, act } from "@testing-library/react";
+import { render, waitFor, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import WorkflowDefinitionList from "@kie-tools/runtime-tools-swf-enveloped-components/dist/workflowDefinitions/envelope/components/WorkflowDefinitionList/WorkflowDefinitionList";
 
