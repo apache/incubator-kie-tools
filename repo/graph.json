@@ -1967,12 +1967,27 @@
       },
       {
         "source": "@kie/kogito-data-index-postgresql-image",
+        "target": "@kie-tools/maven-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-data-index-postgresql-image",
         "target": "@kie-tools/sonataflow-image-common",
         "weight": 1
       },
       {
         "source": "@kie/kogito-jobs-service-ephemeral-image",
+        "target": "@kie-tools/maven-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-jobs-service-ephemeral-image",
         "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-jobs-service-postgresql-image",
+        "target": "@kie-tools/maven-base",
         "weight": 1
       },
       {
@@ -1997,7 +2012,17 @@
       },
       {
         "source": "@kie/kogito-jit-runner-image",
+        "target": "@kie-tools/maven-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-jit-runner-image",
         "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-jobs-service-allinone-image",
+        "target": "@kie-tools/maven-base",
         "weight": 1
       },
       {

@@ -6429,6 +6429,9 @@ importers:
 
   packages/kogito-data-index-postgresql-image:
     devDependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -6453,6 +6456,9 @@ importers:
 
   packages/kogito-jit-runner-image:
     devDependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -6477,6 +6483,9 @@ importers:
 
   packages/kogito-jobs-service-allinone-image:
     devDependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -6501,6 +6510,9 @@ importers:
 
   packages/kogito-jobs-service-ephemeral-image:
     devDependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -6525,6 +6537,9 @@ importers:
 
   packages/kogito-jobs-service-postgresql-image:
     devDependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -6646,8 +6661,6 @@ importers:
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6
-
-  packages/maven-config-setup-helper: {}
 
   packages/maven-m2-repo-via-http-image:
     devDependencies:

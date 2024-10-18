@@ -45,4 +45,4 @@ DYNAMIC_RESOURCES_OPTS="$(${JBOSS_CONTAINER_JAVA_JVM_MODULE}/java-default-option
 exec java ${SHOW_JVM_SETTINGS} ${DYNAMIC_RESOURCES_OPTS} ${JAVA_OPTIONS} ${KOGITO_JOBS_PROPS} ${CUSTOM_TRUSTSTORE_ARGS} \
     -Dquarkus.http.host=0.0.0.0 \
     -Dquarkus.http.port=8080 \
-    -jar "${KOGITO_HOME}"/bin/ephemeral/quarkus-app/quarkus-run.jar
+    -jar "${KOGITO_HOME}"/bin/quarkus-app/quarkus-run.jar
