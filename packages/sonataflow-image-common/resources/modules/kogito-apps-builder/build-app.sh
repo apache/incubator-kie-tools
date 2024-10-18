@@ -1,3 +1,4 @@
+#!/bin/sh
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -16,17 +17,18 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-schema_version: 1
-name: org.kie.kogito.dataindex.ephemeral.quarkus.app
-version: "main"
-description: "Kogito Data Index Ephemeral Quarkus App Builder"
+set -e
 
-execute:
-  - script: configure-app.sh
+SCRIPT_DIR=$(dirname "${0}")
+ADDED_DIR="${SCRIPT_DIR}"/added
+BUILD_DIR="${KOGITO_HOME}"/build
+APPS_MAVEN_OPTIONS="-Dquarkus.package.type=fast-jar -Dquarkus.build.image=false -Dquarkus.container-image.build=false -B"
+MAVEN_OPTIONS="${MAVEN_OPTIONS} ${APPS_MAVEN_OPTIONS}"
 
-artifacts:
-  - name: maven-base
-    # comes from the `build` directory. See `copy-assets:linux:darwin` in package.js
-    # the path is relative to the modules/kogito-data-index-ephemeral-quarkus-app/
-    path: "../../../../maven-base/"
-    dest: /home/kogito/build/maven-base
+mkdir -p "${BUILD_DIR}"
+cp -v "${ADDED_DIR}"/* "${BUILD_DIR}"
+
+env MAVEN_SETTINGS_PATH=${MAVEN_CONTAINER_BUILD_SETTINGS_PATH} mvn -am package ${MAVEN_OPTIONS} -f "${BUILD_DIR}"/pom.xml
+
+chown -R 1001:0 "${KOGITO_HOME}"
+chmod -R ug+rwX "${KOGITO_HOME}"

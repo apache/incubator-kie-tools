@@ -20,12 +20,10 @@ schema_version: 1
 name: org.kie.kogito.dataindex.ephemeral
 version: "main"
 
-# Multi-stage builder, see kogito-data-index-ephemeral-quarks-app
+# Relative to build/target/image/modules/, that's why the four `../`
 artifacts:
-  - image: builder
-    # comes from the multi-stage builder
-    path: /home/kogito/build/target/quarkus-app
-    dest: /home/kogito/bin
+  - path: ../../../../app/target/quarkus-app
+    dest: /home/kogito/bin/quarkus-app
 
 execute:
   - script: configure

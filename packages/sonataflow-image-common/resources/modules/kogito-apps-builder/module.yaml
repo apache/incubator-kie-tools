@@ -1,4 +1,3 @@
-#!/bin/sh
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -17,16 +16,18 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-set -e
+schema_version: 1
+name: org.kie.kogito.apps.builder
+version: "main"
+description: "Kogito Apps Component Builder"
 
-SCRIPT_DIR=$(dirname "${0}")
-ADDED_DIR="${SCRIPT_DIR}"/added
-BUILD_DIR="${KOGITO_HOME}"/build
+execute:
+  - script: build-app.sh
 
-mkdir -p "${BUILD_DIR}"
-cp -v "${ADDED_DIR}"/* "${BUILD_DIR}"
-
-env MAVEN_SETTINGS_PATH=${MAVEN_CONTAINER_BUILD_SETTINGS_PATH} mvn -am package -Dquarkus.container-image.build=false -f "${BUILD_DIR}"/pom.xml
-
-chown -R 1001:0 "${KOGITO_HOME}"
-chmod -R ug+rwX "${KOGITO_HOME}"
+artifacts:
+  - name: maven-base
+    # When using this module, maven-base MUST be available in the `dist-dev` or `build` directory in your package
+    # For example, use a copy stage in package.js to copy over this files:
+    # mkdir -p build/maven-base && cp ./node_modules/@kie-tools/maven-base/pom.xml build/maven-base/pom.xml
+    path: "../../../../maven-base/"
+    dest: /home/kogito/build/maven-base

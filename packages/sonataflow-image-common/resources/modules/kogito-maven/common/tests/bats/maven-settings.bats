@@ -20,13 +20,13 @@
 
 
 # imports
-source $BATS_TEST_DIRNAME/../../common/added/configure-maven.sh
+source $BATS_TEST_DIRNAME/../../added/configure-maven.sh
 
 
 setup() {
     export KOGITO_HOME=$BATS_TMPDIR/maven
     mkdir -p ${KOGITO_HOME}/.m2/
-    cp $BATS_TEST_DIRNAME/../../common/maven/settings.xml ${KOGITO_HOME}/.m2/
+    cp $BATS_TEST_DIRNAME/../../maven/settings.xml ${KOGITO_HOME}/.m2/
     export MAVEN_SETTINGS_PATH="${KOGITO_HOME}/.m2/settings.xml"
 }
 
