@@ -17,15 +17,16 @@
 # under the License.
 #
 schema_version: 1
-name: org.kie.kogito.dataindex.ephemeral
+name: org.kie.kogito.dataindex.ephemeral.quarkus.app
 version: "main"
-
-# Multi-stage builder, see kogito-data-index-ephemeral-quarks-app
-artifacts:
-  - image: builder
-    # comes from the multi-stage builder
-    path: /home/kogito/build/target/quarkus-app
-    dest: /home/kogito/bin
+description: "Kogito Data Index Ephemeral Quarkus App Builder"
 
 execute:
-  - script: configure
+  - script: configure-app.sh
+
+artifacts:
+  - name: maven-base
+    # comes from the `build` directory. See `copy-assets:linux:darwin` in package.js
+    # the path is relative to the modules/kogito-data-index-ephemeral-quarkus-app/
+    path: "../../../../maven-base/"
+    dest: /home/kogito/build/maven-base

@@ -16,12 +16,12 @@
     "build:dev": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm image:build\"",
     "build:prod": "pnpm build:dev && pnpm image:test",
     "copy-assets": "run-script-os",
-    "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources build && cp -R resources/* build",
+    "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources build && mkdir -p build/maven-base && cp ./node_modules/@kie-tools/maven-base/pom.xml build/maven-base/pom.xml && cp -R resources/* build",
     "copy-test-assets": "run-script-os",
     "copy-test-assets:linux:darwin": "cp -R test-resources/. build",
     "format": "prettier --write . --ignore-path=../../.prettierignore --ignore-path=../../.gitignore",
     "image:build": "run-script-os",
-    "image:build:darwin:linux": "pnpm setup:env make -C ./build build-kogito-app build",
+    "image:build:darwin:linux": "pnpm setup:env make -C ./build build",
     "image:build:win32": "echo \"Build skipped on Windows\"",
     "image:test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"mkdir -p build/target/test/results\" \"run-script-os\" --finally \"mkdir -p build/target/test/results && cp -R build/target/test/results dist-tests-e2e/\"",
     "image:test:darwin:linux": "pnpm copy-test-assets && pnpm setup:env make -C ./build test-image",
@@ -30,6 +30,7 @@
     "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env kogitoDataIndexEphemeralImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env kogitoDataIndexEphemeralImage.account) KOGITO_IMAGE_NAME=$(build-env kogitoDataIndexEphemeralImage.name) KOGITO_IMAGE_TAG=$(build-env kogitoDataIndexEphemeralImage.buildTag) QUARKUS_PLATFORM_VERSION=$(build-env versions.quarkus) KOGITO_VERSION=$(build-env versions.kogito)"
   },
   "devDependencies": {
+    "@kie-tools/maven-base": "workspace:*",
     "@kie-tools/python-venv": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/sonataflow-image-common": "workspace:*",

@@ -1957,6 +1957,11 @@
       },
       {
         "source": "@kie/kogito-data-index-ephemeral-image",
+        "target": "@kie-tools/maven-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-data-index-ephemeral-image",
         "target": "@kie-tools/sonataflow-image-common",
         "weight": 1
       },

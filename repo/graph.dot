@@ -445,6 +445,7 @@ digraph G {
   "@kie-tools/kie-sandbox-webapp-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/kn-plugin-workflow" -> "@kie-tools/sonataflow-operator" [ style = "dashed", color = "black" ];
   "@kie/kogito-base-builder-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
+  "@kie/kogito-data-index-ephemeral-image" -> "@kie-tools/maven-base" [ style = "dashed", color = "black" ];
   "@kie/kogito-data-index-ephemeral-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
   "@kie/kogito-data-index-postgresql-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
   "@kie/kogito-jit-runner-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
