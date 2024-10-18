@@ -265,7 +265,10 @@ func verifyTrigger(triggers []operatorapi.SonataFlowPlatformTriggerRef, namePref
 	GinkgoWriter.Println("Triggers from platform status:", triggers)
 	for _, ref := range triggers {
 		if strings.HasPrefix(ref.Name, namePrefix) && ref.Namespace == ns {
-			return verifyTriggerData(ref.Name, ns, path, broker)
+			EventuallyWithOffset(1, func() error {
+				return verifyTriggerData(ref.Name, ns, path, broker)
+			}, 2*time.Minute, 5).Should(Succeed())
+			return nil
 		}
 	}
 	return fmt.Errorf("failed to find trigger to verify with prefix: %v, namespace: %v", namePrefix, ns)
