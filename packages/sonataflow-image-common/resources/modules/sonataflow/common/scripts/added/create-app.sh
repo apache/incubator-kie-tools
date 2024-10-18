@@ -135,6 +135,8 @@ fi
   -s "${MAVEN_SETTINGS_PATH}" \
   -DskipTests=true \
   -Dmaven.javadoc.skip=true \
+  -Dhttp.keepAlive=false \
+  -Dmaven.wagon.http.pool=false \
   clean dependency:go-offline io.quarkus.platform:quarkus-maven-plugin:"${QUARKUS_PLATFORM_VERSION}":go-offline install
 
 # clean up
