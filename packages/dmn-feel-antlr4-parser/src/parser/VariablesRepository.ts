@@ -379,6 +379,35 @@ export class VariablesRepository {
     this.addVariable(id, "", FeelSyntacticSymbolNature.LocalVariable, parent);
   }
 
+  private addDecisionTableEntryNode(parent: VariableContext, entryId: string) {
+    const ruleInputElementNode = this.addVariable(entryId, "", FeelSyntacticSymbolNature.LocalVariable, parent);
+    parent.children.set(ruleInputElementNode.uuid, ruleInputElementNode);
+    this.addVariable(ruleInputElementNode.uuid, "", FeelSyntacticSymbolNature.LocalVariable, ruleInputElementNode);
+  }
+
+  private addDecisionTable(parent: VariableContext, decisionTable: DmnDecisionTable) {
+    const variableNode = this.addVariable(
+      decisionTable["@_id"] ?? "",
+      "",
+      FeelSyntacticSymbolNature.LocalVariable,
+      parent
+    );
+    parent.children.set(variableNode.uuid, variableNode);
+
+    if (decisionTable.rule) {
+      for (const ruleElement of decisionTable.rule) {
+        ruleElement.inputEntry?.forEach((ruleInputElement) =>
+          this.addDecisionTableEntryNode(parent, ruleInputElement["@_id"] ?? "")
+        );
+        ruleElement.outputEntry?.forEach((ruleOutputElement) =>
+          this.addDecisionTableEntryNode(parent, ruleOutputElement["@_id"] ?? "")
+        );
+      }
+    }
+
+    this.addVariable(variableNode.uuid, "", FeelSyntacticSymbolNature.LocalVariable, parent);
+  }
+
   private addInvocation(parent: VariableContext, element: DmnInvocation) {
     if (element.binding) {
       for (const bindingElement of element.binding) {
@@ -594,7 +623,8 @@ export class VariablesRepository {
         break;
 
       case "decisionTable":
-        // Do nothing because DecisionTable does not define variables
+        // It doesn't define variables but we need it to create its own context to use variables inside of Decision Table.
+        this.addDecisionTable(parent, expression);
         break;
 
       case "context":
