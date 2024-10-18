@@ -26,7 +26,7 @@ spec:
     template:
       buildArgs:
         - name: QUARKUS_EXTENSIONS
-          value: org.kie:kie-addons-quarkus-persistence-jdbc:999-20240912-SNAPSHOT,io.quarkus:quarkus-jdbc-postgresql:3.8.6,io.quarkus:quarkus-agroal:3.8.6
+          value: org.kie:kie-addons-quarkus-persistence-jdbc:999-20241016-SNAPSHOT,io.quarkus:quarkus-jdbc-postgresql:3.8.6,io.quarkus:quarkus-agroal:3.8.6
     config:
       strategyOptions:
         KanikoBuildCacheEnabled: "true"

@@ -98,8 +98,8 @@ for ctx in ${contextDir}; do
     MAVEN_OPTIONS="${MAVEN_OPTIONS} ${APPS_MAVEN_OPTIONS}"
 
     if stat ${HOME}/.m2/repository/ &> /dev/null; then
-        echo "Copy current maven repo to maven context local repo ${mvn_local_repo}"
-        cp -R ${HOME}/.m2/repository/* "${mvn_local_repo}"
+        echo "Not copying current maven repo to maven context local repo ${mvn_local_repo}"
+        # cp -R ${HOME}/.m2/repository/* "${mvn_local_repo}"
     fi
 
     cd ${build_target_dir}
@@ -113,7 +113,7 @@ for ctx in ${contextDir}; do
     fi
     cd ${KOGITO_APPS_DIR} && echo "working dir `pwd`"
     echo "Got MAVEN_OPTIONS = ${MAVEN_OPTIONS}"
-    mvn_command="mvn -am -pl ${ctx} package ${MAVEN_OPTIONS} -Dmaven.repo.local=${mvn_local_repo} -Dquarkus.container-image.build=false"
+    mvn_command="mvn -am -pl ${ctx} package ${MAVEN_OPTIONS} -Dmaven.repo.local=${mvn_local_repo} -Dquarkus.container-image.build=false -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false"
     echo "Building component(s) ${contextDir} with the following maven command [${mvn_command}]"
     export YARN_CACHE_FOLDER=/tmp/cache/yarn/${ctx} # Fix for building yarn apps in parallel
     export CYPRESS_CACHE_FOLDER=/tmp/cache/cypress/${ctx} # https://docs.cypress.io/guides/getting-started/installing-cypress#Advanced
