@@ -264,7 +264,7 @@ func (in *Flow) DeepCopyInto(out *Flow) {
 	if in.DataInputSchema != nil {
 		in, out := &in.DataInputSchema, &out.DataInputSchema
 		*out = new(model.DataInputSchema)
-		**out = **in
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Secrets != nil {
 		in, out := &in.Secrets, &out.Secrets

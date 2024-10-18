@@ -105,11 +105,13 @@ func doTestQueryKnativeBroker(t *testing.T, expectedUri string) {
 		},
 		Spec: eventingv1.BrokerSpec{},
 		Status: eventingv1.BrokerStatus{
-			Address: duckv1.Addressable{
-				URL: &apis.URL{
-					Scheme: "http",
-					Host:   "broker-ingress.knative-eventing.svc.cluster.local",
-					Path:   "/" + namespace1 + "/" + knBrokerName1,
+			AddressStatus: duckv1.AddressStatus{
+				Address: &duckv1.Addressable{
+					URL: &apis.URL{
+						Scheme: "http",
+						Host:   "broker-ingress.knative-eventing.svc.cluster.local",
+						Path:   "/" + namespace1 + "/" + knBrokerName1,
+					},
 				},
 			},
 		},

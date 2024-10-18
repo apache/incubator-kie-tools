@@ -25,83 +25,8 @@ rules:
   - sonataflow.org
   resources:
   - sonataflowbuilds
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - sonataflow.org
-  resources:
-  - sonataflowbuilds/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - sonataflow.org
-  resources:
-  - sonataflowbuilds/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - sonataflow.org
-  resources:
   - sonataflowclusterplatforms
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - sonataflow.org
-  resources:
-  - sonataflowclusterplatforms/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - sonataflow.org
-  resources:
-  - sonataflowclusterplatforms/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - sonataflow.org
-  resources:
   - sonataflowplatforms
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - sonataflow.org
-  resources:
-  - sonataflowplatforms/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - sonataflow.org
-  resources:
-  - sonataflowplatforms/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - sonataflow.org
-  resources:
   - sonataflows
   verbs:
   - create
@@ -114,12 +39,18 @@ rules:
 - apiGroups:
   - sonataflow.org
   resources:
+  - sonataflowbuilds/finalizers
+  - sonataflowclusterplatforms/finalizers
+  - sonataflowplatforms/finalizers
   - sonataflows/finalizers
   verbs:
   - update
 - apiGroups:
   - sonataflow.org
   resources:
+  - sonataflowbuilds/status
+  - sonataflowclusterplatforms/status
+  - sonataflowplatforms/status
   - sonataflows/status
   verbs:
   - get
