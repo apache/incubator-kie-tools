@@ -12,7 +12,6 @@ Feature: Serverless Workflow builder images
       | wait                 | 480               |
       | request_method       | GET               |
       | expected_status_code | 200               |
-    And container log should contain --no-transfer-progress
     And container log should contain -Duser.home=/home/kogito
     And container log should match regex Installed features:.*kogito-serverless-workflow
     And container log should match regex Installed features:.*kie-addon-knative-eventing-extension

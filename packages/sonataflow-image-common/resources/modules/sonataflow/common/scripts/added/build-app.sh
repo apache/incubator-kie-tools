@@ -59,7 +59,7 @@ cd ${KOGITO_HOME}/serverless-workflow-project
 
 "${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
     -nsu \
-    -ntp \
+    -B \
     -s "${MAVEN_SETTINGS_PATH}" \
     -DskipTests \
     -Dquarkus.container-image.build=false \

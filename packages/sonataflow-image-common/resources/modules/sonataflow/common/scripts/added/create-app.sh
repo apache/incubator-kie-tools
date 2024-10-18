@@ -36,7 +36,7 @@ source "${script_dir_path}"/configure-jvm-mvn.sh
 
 "${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
   -nsu \
-  -ntp \
+  -B \
   -s "${MAVEN_SETTINGS_PATH}" \
   io.quarkus.platform:quarkus-maven-plugin:"${QUARKUS_PLATFORM_VERSION}":create ${QUARKUS_CREATE_ARGS} \
   -DprojectGroupId="${PROJECT_GROUP_ID}" \
@@ -131,15 +131,17 @@ fi
 #   https://maven.apache.org/plugins/maven-dependency-plugin/go-offline-mojo.html
 "${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
   -nsu \
-  -ntp \
+  -B \
   -s "${MAVEN_SETTINGS_PATH}" \
   -DskipTests=true \
   -Dmaven.javadoc.skip=true \
+  -Dhttp.keepAlive=false \
+  -Dmaven.wagon.http.pool=false \
   clean dependency:go-offline io.quarkus.platform:quarkus-maven-plugin:"${QUARKUS_PLATFORM_VERSION}":go-offline install
 
 # clean up
 "${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
   -nsu \
-  -ntp \
+  -B \
   -s "${MAVEN_SETTINGS_PATH}" \
   clean
