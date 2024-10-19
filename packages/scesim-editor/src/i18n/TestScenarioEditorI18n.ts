@@ -115,6 +115,12 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
       title: string;
     };
   };
+  errorFallBack: {
+    title: string;
+    body: string;
+    lastActionButton: string;
+    fileIssueHref: string;
+  };
   sidebar: {
     cheatSheetTooltip: string;
     dataSelectorTooltip: string;
