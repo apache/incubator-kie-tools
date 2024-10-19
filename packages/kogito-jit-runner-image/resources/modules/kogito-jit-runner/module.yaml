@@ -20,12 +20,10 @@ schema_version: 1
 name: org.kie.kogito.jit-runner
 version: "main"
 
-# see build-kogito-apps-components.sh script, responsible for build it.
-# called by the Makefile before builds
+# Relative to build/target/image/modules/, that's why the four `../`
 artifacts:
-  - path: /tmp/build/jitexecutor-runner
-    dest: /home/kogito/bin
-    name: quarkus-app
+  - path: ../../../../app/target/quarkus-app
+    dest: /home/kogito/bin/quarkus-app
 
 execute:
   - script: configure
