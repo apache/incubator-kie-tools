@@ -24,6 +24,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/docker/distribution/reference"
 	"io"
 	"os"
 	"os/exec"
@@ -35,7 +36,6 @@ import (
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/docker/go-connections/nat"
@@ -49,6 +49,10 @@ const (
 type DockerLogMessage struct {
 	Status string `json:"status,omitempty"`
 	ID     string `json:"id,omitempty"`
+}
+
+type DockerClient interface {
+	ImageList(ctx context.Context, options types.ImageListOptions) ([]types.ImageSummary, error)
 }
 
 func getDockerClient() (*client.Client, error) {
@@ -203,16 +207,13 @@ func pullDockerImage(cli *client.Client, ctx context.Context) (io.ReadCloser, er
 	// For that we should check only the image name and tag, removing the registry,
 	// as `docker image ls --filter reference=<image_full_url>` will return empty if the image_full_url is not the first tag
 	// of an image.
-	imageNameWithoutRegistry := strings.Split(metadata.DevModeImage, "/")
-	imageFilters := filters.NewArgs()
-	imageFilters.Add("reference", fmt.Sprintf("*/%s", imageNameWithoutRegistry[len(imageNameWithoutRegistry)-1]))
-	images, err := cli.ImageList(ctx, types.ImageListOptions{Filters: imageFilters})
+	exists, err := CheckImageExists(cli, ctx, metadata.DevModeImage)
 	if err != nil {
 		return nil, fmt.Errorf("error listing images: %s", err)
 	}
 
 	// If the image is not found locally, pull it from the remote registry
-	if len(images) == 0 {
+	if !exists {
 		reader, err := cli.ImagePull(ctx, metadata.DevModeImage, types.ImagePullOptions{})
 		if err != nil {
 			return nil, fmt.Errorf("\nError pulling image: %s. Error is: %s", metadata.DevModeImage, err)
@@ -221,6 +222,29 @@ func pullDockerImage(cli *client.Client, ctx context.Context) (io.ReadCloser, er
 	}
 
 	return nil, nil
+}
+
+func CheckImageExists(cli DockerClient, ctx context.Context, imageName string) (bool, error) {
+	named, err := reference.ParseNormalizedNamed(imageName)
+
+	if tagged, ok := named.(reference.Tagged); ok {
+		imageName = fmt.Sprintf("%s:%s", reference.Path(named), tagged.Tag())
+	} else {
+		imageName = fmt.Sprintf("%s:%s", reference.Path(named), "latest")
+	}
+	images, err := cli.ImageList(ctx, types.ImageListOptions{All: true})
+	if err != nil {
+		return false, fmt.Errorf("error listing images: %s", err)
+	}
+
+	for _, image := range images {
+		for _, tag := range image.RepoTags {
+			if strings.HasSuffix(tag, imageName) {
+				return true, nil
+			}
+		}
+	}
+	return false, nil
 }
 
 func processDockerImagePullLogs(reader io.ReadCloser) error {
