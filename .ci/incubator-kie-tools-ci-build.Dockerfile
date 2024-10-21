@@ -28,6 +28,7 @@ libglvnd0 \
 libbtrfs-dev \
 libgpgme-dev \
 libdevmapper-dev \
+libxml2-utils \
 python3 \
 python3-pip \
 python3-dev \
