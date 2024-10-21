@@ -191,7 +191,7 @@ export const Empty: Story = {
   render: (args) => SceSimEditorWrapper(args),
   args: {
     model: marshaller.parser.parse(),
-    openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: emptyFileName,
+    openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: emptyFileName,
     xml: marshaller.builder.build(model),
   },
 };

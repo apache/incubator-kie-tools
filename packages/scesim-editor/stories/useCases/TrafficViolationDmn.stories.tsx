@@ -807,7 +807,7 @@ export const TrafficViolation: Story = {
   render: (args) => SceSimEditorWrapper(args),
   args: {
     model: marshaller.parser.parse(),
-    openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: trafficViolationDmnFileName,
+    openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: trafficViolationDmnFileName,
     xml: marshaller.builder.build(model),
   },
 };

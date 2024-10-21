@@ -405,7 +405,7 @@ export const IsOldEnough: Story = {
   args: {
     model: marshaller.parser.parse(),
     xml: marshaller.builder.build(model),
-    openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: isOldEnoughDrlFileName,
+    openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: isOldEnoughDrlFileName,
   },
   render: (args) => SceSimEditorWrapper(args),
 };
