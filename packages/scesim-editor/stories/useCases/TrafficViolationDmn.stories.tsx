@@ -23,6 +23,7 @@ import { getMarshaller } from "@kie-tools/scesim-marshaller";
 import { TestScenarioEditor } from "../../src/TestScenarioEditor";
 import { SceSimEditorWrapper, StorybookTestScenarioEditorProps } from "../scesimEditorStoriesWrapper";
 
+export const trafficViolationDmnFileName = "TrafficViolation.scesim";
 export const trafficViolationDmn = `<?xml version="1.0" encoding="UTF-8"?>
 <ScenarioSimulationModel version="1.8" xmlns="https://kie.org/scesim/1.8">
   <simulation>
@@ -806,6 +807,7 @@ export const TrafficViolation: Story = {
   render: (args) => SceSimEditorWrapper(args),
   args: {
     model: marshaller.parser.parse(),
+    openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: trafficViolationDmnFileName,
     xml: marshaller.builder.build(model),
   },
 };

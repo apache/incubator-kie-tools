@@ -20,11 +20,14 @@
 import "@patternfly/react-core/dist/styles/base.css";
 
 import * as React from "react";
-import { useCallback, useImperativeHandle, useMemo, useRef } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 
 import { testScenarioEditorDictionaries, TestScenarioEditorI18nContext, testScenarioEditorI18nDefaults } from "./i18n";
+
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 
 import { SceSimModel } from "@kie-tools/scesim-marshaller";
 import { SceSim__FactMappingType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
@@ -45,6 +48,7 @@ import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
 
 import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
 
+import { Commands, CommandsContextProvider, useCommands } from "./commands/CommandsContextProvider";
 import TestScenarioCreationPanel from "./creation/TestScenarioCreationPanel";
 import TestScenarioDrawerPanel from "./drawer/TestScenarioDrawerPanel";
 import TestScenarioSideBarMenu from "./sidebar/TestScenarioSideBarMenu";
@@ -62,6 +66,7 @@ import {
 } from "./store/TestScenarioStoreContext";
 import { TestScenarioEditorErrorFallback } from "./TestScenarioEditorErrorFallback";
 import { TestScenarioEditorContextProvider, useTestScenarioEditor } from "./TestScenarioEditorContext";
+import { TestScenarioEditorExternalModelsContextProvider } from "./externalModels/TestScenarioEditorDependenciesContext";
 import { useEffectAfterFirstRender } from "./hook/useEffectAfterFirstRender";
 import { INITIAL_COMPUTED_CACHE } from "./store/computed/initial";
 
@@ -81,9 +86,28 @@ enum TestScenarioFileStatus {
 
 /* Types */
 
+export type OnRequestExternalModelsAvailableToInclude = () => Promise<string[]>;
+export type OnRequestToJumpToPath = (normalizedPosixPathRelativeToTheOpenFile: string) => void;
+export type OnRequestToResolvePath = (normalizedPosixPathRelativeToTheOpenFile: string) => string;
 export type OnSceSimModelChange = (model: SceSimModel) => void;
 
+export type OnRequestExternalModelByPath = (
+  normalizedPosixPathRelativeToTheOpenFile: string
+) => Promise<ExternalDmn | null>;
+export type ExternalDmnsIndex = Record<string /** normalizedPosixPathRelativeToTheOpenFile */, ExternalDmn | undefined>;
+
+export type ExternalDmn = {
+  model: Normalized<DmnLatestModel>;
+  normalizedPosixPathRelativeToTheOpenFile: string;
+  svg: string;
+};
+
 export type TestScenarioEditorProps = {
+  /**
+   * When the SceSim represented by `model` ("This SceSim") is DMN-type Test Scenario this prop needs to map their contents by namespace.
+   * The SceSim model won't be correctly rendered if an included model is not found on this object.
+   */
+  externalModelsByNamespace?: ExternalDmnsIndex;
   /**
    * A link that will take users to an issue tracker so they can report problems they find on the Test Scenario Editor.
    * This is shown on the ErrorBoundary fallback component, when an uncaught error happens.
@@ -101,10 +125,33 @@ export type TestScenarioEditorProps = {
    * Notifies the caller when the Test Scenario Editor performs a new edit after the debounce time.
    */
   onModelDebounceStateChanged?: (changed: boolean) => void;
+  /**
+   * Called when the contents of a specific available model is necessary. Used by the "Included models" tab.
+   */
+  onRequestExternalModelByPath?: OnRequestExternalModelByPath;
+  /**
+   * Called when the list of paths of available models to be included is needed. Used by the "Included models" tab.
+   */
+  onRequestExternalModelsAvailableToInclude?: OnRequestExternalModelsAvailableToInclude;
+  /**
+   * When users want to jump to another file, this method is called, allowing the controller of this component decide what to do.
+   * Links are only rendered if this is provided. Otherwise, paths will be rendered as text.
+   */
+  onRequestToJumpToPath?: OnRequestToJumpToPath;
+  /**
+   * All paths inside the DMN Editor are relative. To be able to resolve them and display them as absolute paths, this function is called.
+   * If undefined, the relative paths will be displayed.
+   */
+  onRequestToResolvePath?: OnRequestToResolvePath;
+  /**
+   * The file path of the current opened Test Scenario scesim file
+   */
+  openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
 };
 
 export type TestScenarioEditorRef = {
   reset: (mode: SceSimModel) => void;
+  getCommands: () => Commands;
   getDiagramSvg: () => Promise<string | undefined>;
 };
 
@@ -114,8 +161,9 @@ export type TestScenarioSelectedColumnMetaData = {
   isBackground: boolean;
 };
 
-function TestScenarioMainPanel({ fileName }: { fileName: string }) {
+function TestScenarioMainPanel({ scesimFilePath }: { scesimFilePath: string | undefined }) {
   const { i18n } = useTestScenarioEditorI18n();
+  const { commandsRef } = useCommands();
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const navigation = useTestScenarioEditorStore((s) => s.navigation);
   const scesimModel = useTestScenarioEditorStore((s) => s.scesim.model);
@@ -143,12 +191,27 @@ function TestScenarioMainPanel({ fileName }: { fileName: string }) {
     [testScenarioEditorStoreApi]
   );
 
+  // Show Properties panel
+  useEffect(() => {
+    if (!commandsRef.current) {
+      return;
+    }
+    commandsRef.current.toggleTestScenarioDock = async () => {
+      console.trace("Test Scenario Editor: COMMANDS: Toggle dock panel...");
+      testScenarioEditorStoreApi.setState((state) => {
+        state.navigation.dock.isOpen = !state.navigation.dock.isOpen;
+      });
+    };
+  }, [testScenarioEditorStoreApi, commandsRef]);
+
   return (
     <>
       <div className="kie-scesim-editor--content">
         <Drawer isExpanded={navigation.dock.isOpen} isInline={true} position={"right"}>
           <DrawerContent
-            panelContent={<TestScenarioDrawerPanel fileName={fileName} onDrawerClose={() => showDockPanel(false)} />}
+            panelContent={
+              <TestScenarioDrawerPanel scesimFilePath={scesimFilePath} onDrawerClose={() => showDockPanel(false)} />
+            }
           >
             <DrawerContentBody>
               {isAlertEnabled && (
@@ -247,16 +310,18 @@ function TestScenarioParserErrorPanel({
 }
 
 export const TestScenarioEditorInternal = ({
+  forwardRef,
   model,
   onModelChange,
   onModelDebounceStateChanged,
-  forwardRef,
+  openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
 }: TestScenarioEditorProps & { forwardRef?: React.Ref<TestScenarioEditorRef> }) => {
   console.trace("[TestScenarioEditorInternal] Component creation ...");
 
   const scesim = useTestScenarioEditorStore((s) => s.scesim);
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const { testScenarioEditorModelBeforeEditingRef, testScenarioEditorRootElementRef } = useTestScenarioEditor();
+  const { commandsRef } = useCommands();
 
   /** Implementing Editor APIs */
 
@@ -269,9 +334,10 @@ export const TestScenarioEditorInternal = ({
         const state = testScenarioEditorStoreApi.getState();
         state.dispatch(state).scesim.reset();
       },
+      getCommands: () => commandsRef.current,
       getDiagramSvg: async () => undefined,
     }),
-    [testScenarioEditorStoreApi]
+    [commandsRef, testScenarioEditorStoreApi]
   );
 
   // Make sure the Test Scenario Editor reacts to props changing.
@@ -372,7 +438,7 @@ export const TestScenarioEditorInternal = ({
               />
             );
           case TestScenarioFileStatus.VALID:
-            return <TestScenarioMainPanel fileName={"Test"} />;
+            return <TestScenarioMainPanel scesimFilePath={openFilenormalizedPosixPathRelativeToTheWorkspaceRoot} />;
         }
       })()}
     </div>
@@ -407,9 +473,13 @@ export const TestScenarioEditor = React.forwardRef(
       >
         <TestScenarioEditorContextProvider {...props}>
           <ErrorBoundary FallbackComponent={TestScenarioEditorErrorFallback} onReset={resetState}>
-            <TestScenarioEditorStoreApiContext.Provider value={storeRef.current}>
-              <TestScenarioEditorInternal forwardRef={ref} {...props} />
-            </TestScenarioEditorStoreApiContext.Provider>
+            <TestScenarioEditorExternalModelsContextProvider {...props}>
+              <TestScenarioEditorStoreApiContext.Provider value={storeRef.current}>
+                <CommandsContextProvider>
+                  <TestScenarioEditorInternal forwardRef={ref} {...props} />
+                </CommandsContextProvider>
+              </TestScenarioEditorStoreApiContext.Provider>
+            </TestScenarioEditorExternalModelsContextProvider>
           </ErrorBoundary>
         </TestScenarioEditorContextProvider>
       </I18nDictionariesProvider>

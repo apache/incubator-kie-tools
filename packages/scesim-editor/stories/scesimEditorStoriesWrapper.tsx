@@ -67,10 +67,19 @@ export function SceSimEditorWrapper(props: Partial<StorybookTestScenarioEditorPr
   return (
     <TestScenarioEditor
       ref={ref}
-      issueTrackerHref={args.issueTrackerHref}
+      issueTrackerHref={props?.issueTrackerHref ?? args.issueTrackerHref}
       model={model}
       onModelChange={onModelChange}
       onModelDebounceStateChanged={onModelDebounceStateChanged}
+      onRequestExternalModelByPath={props?.onRequestExternalModelByPath ?? args.onRequestExternalModelByPath}
+      onRequestExternalModelsAvailableToInclude={
+        props?.onRequestExternalModelsAvailableToInclude ?? args.onRequestExternalModelsAvailableToInclude
+      }
+      openFilenormalizedPosixPathRelativeToTheWorkspaceRoot={
+        props?.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot ??
+        args.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
+      }
+      onRequestToJumpToPath={props?.onRequestToJumpToPath ?? args.onRequestToJumpToPath}
     />
   );
 }

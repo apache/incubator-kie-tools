@@ -23,6 +23,7 @@ import { getMarshaller } from "@kie-tools/scesim-marshaller";
 import { TestScenarioEditor } from "../../src/TestScenarioEditor";
 import { SceSimEditorWrapper, StorybookTestScenarioEditorProps } from "../scesimEditorStoriesWrapper";
 
+export const isOldEnoughDrlFileName = "IsOldEnough.scesim";
 export const isOldEnoughDrl = `<ScenarioSimulationModel version="1.8" xmlns="https://kie.org/scesim/1.8">
 <simulation>
   <scesimModelDescriptor>
@@ -401,9 +402,10 @@ const marshaller = getMarshaller(isOldEnoughDrl);
 const model = marshaller.parser.parse();
 
 export const IsOldEnough: Story = {
-  render: (args) => SceSimEditorWrapper(args),
   args: {
     model: marshaller.parser.parse(),
     xml: marshaller.builder.build(model),
+    openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: isOldEnoughDrlFileName,
   },
+  render: (args) => SceSimEditorWrapper(args),
 };
