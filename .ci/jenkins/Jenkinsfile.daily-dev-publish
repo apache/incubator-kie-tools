@@ -596,17 +596,13 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.mavenDeploySnapshotsCredentialsId}", usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
-                            configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
-                                sh """#!/bin/bash -el
-                                export KIE_TOOLS_BUILD__mavenDeploySkip=false
-                                pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
-                                pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Dapache.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
-                                pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Dapache.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
-                                pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Drevision=999-SNAPSHOT >> .mvn/maven.config'
-                                pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... build:prod
-                                """.trim()
-                            }
+                        configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsNightlyConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
+                            sh """#!/bin/bash -el
+                            export KIE_TOOLS_BUILD__mavenDeploySkip=false
+                            pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
+                            pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Drevision=999-SNAPSHOT >> .mvn/maven.config'
+                            pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... build:prod
+                            """.trim()
                         }
                     }
                 }
