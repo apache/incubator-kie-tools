@@ -31,7 +31,8 @@
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/vscode-extension": "workspace:*",
     "@kie-tools/dmn-editor-envelope": "workspace:*",
-    "@kie-tools/kie-bc-editors": "workspace:*"
+    "@kie-tools/kie-bc-editors": "workspace:*",
+    "@kie-tools/scesim-editor-envelope": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
@@ -108,7 +109,7 @@
     },
     "customEditors": [
       {
-        "displayName": "KIE DMN/SceSim Editors (classic)",
+        "displayName": "KIE DMN/Test Scenario Editors (classic)",
         "selector": [
           {
             "filenamePattern": "*.{dmn,scesim}"
@@ -117,10 +118,10 @@
         "viewType": "kieKogitoWebviewEditorsDmn"
       },
       {
-        "displayName": "KIE DMN Editor",
+        "displayName": "KIE DMN/Test Scenario Editors",
         "selector": [
           {
-            "filenamePattern": "*.dmn"
+            "filenamePattern": "*.{dmn,scesim}"
           }
         ],
         "viewType": "kieToolsDmnEditor"
