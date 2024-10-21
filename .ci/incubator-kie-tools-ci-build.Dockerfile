@@ -44,6 +44,7 @@ unzip \
 bzip2 \
 xvfb \
 fluxbox \
+rsync \
 subversion && \
 apt-get clean autoclean && apt-get autoremove --yes && \
 rm -rf /var/lib/{apt,cache,log}/
