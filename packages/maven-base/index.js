@@ -171,16 +171,15 @@ module.exports = {
     console.info(`${originalMvnConfigString}` || "<empty>");
     fs.writeFileSync(MVN_CONFIG_ORIGINAL_FILE_PATH, originalMvnConfigString);
 
-    const trimmedMavenConfigString = mavenConfigString
+    const packageSpecificMavenConfigString = mavenConfigString
       .trim()
       .split("\n")
       .map((l) => l.trim())
-      .join("\n")
-      .trim();
+      .join("\n");
 
     const newMavenConfigString =
       (args?.ignoreDefault ? "" : `${DEFAULT_MAVEN_CONFIG}\n`) +
-      (trimmedMavenConfigString ? `${trimmedMavenConfigString}\n` : "") +
+      (packageSpecificMavenConfigString ? `${packageSpecificMavenConfigString}\n` : "") +
       (originalMvnConfigString ? `${originalMvnConfigString}\n` : "");
 
     console.info(`[maven-base] Writing '${MVN_CONFIG_FILE_PATH}'...`);
