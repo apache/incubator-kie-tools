@@ -329,7 +329,6 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
                 this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
               }
             />
-            /
             {
               <ExternalModelsManager
                 workspaceRootAbsolutePosixPath={this.props.workspaceRootAbsolutePosixPath}
