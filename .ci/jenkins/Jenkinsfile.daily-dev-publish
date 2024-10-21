@@ -145,11 +145,6 @@ pipeline {
         SONATAFLOW_DEVMODE_IMAGE__name = 'incubator-kie-sonataflow-devmode'
         SONATAFLOW_DEVMODE_IMAGE__buildTag = "${params.BRANCH_NAME}"
 
-        SONATAFLOW_MANAGEMENT_CONSOLE__registry = 'docker.io'
-        SONATAFLOW_MANAGEMENT_CONSOLE__account = 'apache'
-        SONATAFLOW_MANAGEMENT_CONSOLE__name = 'incubator-kie-sonataflow-management-console'
-        SONATAFLOW_MANAGEMENT_CONSOLE__buildTag = "${params.BRANCH_NAME}"
-
         SONATAFLOW_OPERATOR__registry = 'docker.io'
         SONATAFLOW_OPERATOR__account = 'apache'
         SONATAFLOW_OPERATOR__name = 'incubator-kie-sonataflow-operator'
@@ -271,21 +266,6 @@ pipeline {
                         "${env.SONATAFLOW_DEVMODE_IMAGE__account}",
                         "${env.SONATAFLOW_DEVMODE_IMAGE__name}",
                         "${env.SONATAFLOW_DEVMODE_IMAGE__buildTag}",
-                        "${pipelineVars.dockerHubUserCredentialsId}",
-                        "${pipelineVars.dockerHubTokenCredentialsId}"
-                    )
-                }
-            }
-        }
-
-        stage('Push sonataflow-management-console to Docker Hub') {
-            steps {
-                script {
-                    dockerUtils.pushImageToRegistry(
-                        "${env.SONATAFLOW_MANAGEMENT_CONSOLE__registry}",
-                        "${env.SONATAFLOW_MANAGEMENT_CONSOLE__account}",
-                        "${env.SONATAFLOW_MANAGEMENT_CONSOLE__name}",
-                        "${env.SONATAFLOW_MANAGEMENT_CONSOLE__buildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
