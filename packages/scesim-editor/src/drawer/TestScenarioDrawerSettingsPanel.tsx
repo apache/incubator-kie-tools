@@ -33,9 +33,11 @@ import { useTestScenarioEditorI18n } from "../i18n";
 import { useTestScenarioEditorStore, useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
 
 import "./TestScenarioDrawerSettingsPanel.css";
+import { useTestScenarioEditor } from "../TestScenarioEditorContext";
 
-function TestScenarioDrawerSettingsPanel({ scesimFilePath }: { scesimFilePath: string | undefined }) {
+function TestScenarioDrawerSettingsPanel() {
   const { i18n } = useTestScenarioEditorI18n();
+  const { openFileNormalizedPosixPathRelativeToTheWorkspaceRoot } = useTestScenarioEditor();
   const settingsModel = useTestScenarioEditorStore((state) => state.scesim.model.ScenarioSimulationModel.settings);
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const testScenarioType = settingsModel.type?.__$$text.toUpperCase();
@@ -60,7 +62,7 @@ function TestScenarioDrawerSettingsPanel({ scesimFilePath }: { scesimFilePath: s
         className={"kie-scesim-editor-drawer-settings--text-input"}
         isDisabled
         type="text"
-        value={scesimFilePath}
+        value={openFileNormalizedPosixPathRelativeToTheWorkspaceRoot}
       />
       <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
         {i18n.drawer.settings.assetType}

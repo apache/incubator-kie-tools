@@ -325,7 +325,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
               onRequestExternalModelByPath={this.onRequestExternalModelByPathsRelativeToTheOpenFile}
               onRequestToJumpToPath={this.onOpenFileFromPathRelativeToTheOpenFile}
               onRequestToResolvePath={this.onRequestToResolvePathRelativeToTheOpenFile}
-              openFilenormalizedPosixPathRelativeToTheWorkspaceRoot={
+              openFileNormalizedPosixPathRelativeToTheWorkspaceRoot={
                 this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
               }
             />
