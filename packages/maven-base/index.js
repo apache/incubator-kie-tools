@@ -175,21 +175,18 @@ module.exports = {
       .trim()
       .split("\n")
       .map((l) => l.trim())
-      .join("\n");
+      .join("\n")
+      .trim();
 
-    const newMavenConfigString = `${originalMvnConfigString ? `\n${originalMvnConfigString}\n` : ``}
-${trimmedMavenConfigString.trim()}`;
+    const newMavenConfigString =
+      (args?.ignoreDefault ? "" : `${DEFAULT_MAVEN_CONFIG}\n`) +
+      (trimmedMavenConfigString ? `${trimmedMavenConfigString}\n` : "") +
+      (originalMvnConfigString ? `${originalMvnConfigString}\n` : "");
 
     console.info(`[maven-base] Writing '${MVN_CONFIG_FILE_PATH}'...`);
     console.info(newMavenConfigString);
 
-    const defaultMavenConfigString = args?.ignoreDefault
-      ? ""
-      : `
-
-${DEFAULT_MAVEN_CONFIG}`;
-
-    fs.writeFileSync(MVN_CONFIG_FILE_PATH, `${newMavenConfigString}${defaultMavenConfigString}`);
+    fs.writeFileSync(MVN_CONFIG_FILE_PATH, newMavenConfigString);
     console.timeEnd(`[maven-base] Configuring Maven through .mvn/maven.config...`);
   },
 };
