@@ -21,7 +21,9 @@ import * as React from "react";
 import { Ref } from "react";
 import { TextInput, TextInputProps } from "@patternfly/react-core/dist/js/components/TextInput";
 import { connectField } from "uniforms";
-import wrapField from "./wrapField";
+import wrapField, { WrapFieldProps } from "./wrapField";
+import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
+import { ExclamationCircleIcon } from "@patternfly/react-icons";
 
 export type NumFieldProps = {
   id: string;
@@ -29,9 +31,12 @@ export type NumFieldProps = {
   inputRef?: Ref<HTMLInputElement>;
   onChange: (value?: number) => void;
   disabled?: boolean;
+  errorMessage?: string;
+  helperText?: string;
   value?: number;
   error?: boolean;
-} & Omit<TextInputProps, "isDisabled">;
+} & Omit<TextInputProps, "isDisabled"> &
+  WrapFieldProps;
 
 function NumField(props: NumFieldProps) {
   const onChange = (value: string, event: React.FormEvent<HTMLInputElement>) => {
@@ -42,22 +47,31 @@ function NumField(props: NumFieldProps) {
 
   return wrapField(
     props,
-    <TextInput
-      aria-label={"uniforms num field"}
-      data-testid={"num-field"}
-      name={props.name}
-      isDisabled={props.disabled}
-      id={props.id}
-      max={props.max}
-      min={props.min}
-      onChange={(event, value: string) => onChange(value, event)}
-      placeholder={props.placeholder}
-      ref={props.inputRef}
-      step={props.step ?? (props.decimal ? 0.01 : 1)}
-      type="number"
-      value={`${props.value ?? ""}`}
-      validated={props.error ? "error" : "default"}
-    />
+    <>
+      <TextInput
+        aria-label="uniforms num field"
+        data-testid="num-field"
+        name={props.name}
+        isDisabled={props.disabled}
+        id={props.id}
+        max={props.max}
+        min={props.min}
+        onChange={(event, value: string) => onChange(value, event)}
+        placeholder={props.placeholder}
+        ref={props.inputRef}
+        step={props.step ?? (props.decimal ? 0.01 : 1)}
+        type="number"
+        value={props.value ?? ""}
+        validated={props.error ? "error" : "default"}
+      />
+      <FormHelperText>
+        <HelperText>
+          <HelperTextItem icon={props.error && <ExclamationCircleIcon />} variant={props.error ? "error" : "default"}>
+            {!props.error ? props.helperText : props.errorMessage}
+          </HelperTextItem>
+        </HelperText>
+      </FormHelperText>
+    </>
   );
 }
 

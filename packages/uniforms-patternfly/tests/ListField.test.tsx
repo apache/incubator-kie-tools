@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import * as React from "react";
-import { ListField } from "../src";
+import React from "react";
+import ListField from "../src/ListField";
 import { render, screen } from "@testing-library/react";
 import { usingUniformsContext } from "./test-utils";
 
@@ -30,7 +30,10 @@ test("<ListField> - works", () => {
 
 test("<ListField> - renders ListAddField", () => {
   render(
-    usingUniformsContext(<ListField name="x" label="ListFieldLabel" />, { x: { type: Array }, "x.$": { type: String } })
+    usingUniformsContext(<ListField name="x" label="ListFieldLabel" />, {
+      x: { type: Array },
+      "x.$": { type: String },
+    })
   );
 
   expect(screen.getByTestId("list-add-field")).toBeInTheDocument();
@@ -39,7 +42,10 @@ test("<ListField> - renders ListAddField", () => {
 
 test("<ListField> - renders correct label (specified)", () => {
   render(
-    usingUniformsContext(<ListField name="x" label="ListFieldLabel" />, { x: { type: Array }, "x.$": { type: String } })
+    usingUniformsContext(<ListField name="x" label="ListFieldLabel" />, {
+      x: { type: Array },
+      "x.$": { type: String },
+    })
   );
 
   expect(screen.getByText("ListFieldLabel")).toBeInTheDocument();
@@ -47,7 +53,11 @@ test("<ListField> - renders correct label (specified)", () => {
 
 test("<ListField> - renders correct numer of items with initialCount (specified)", () => {
   render(
-    usingUniformsContext(<ListField name="x" initialCount={3} />, { x: { type: Array }, "x.$": { type: String } })
+    usingUniformsContext(
+      <ListField name="x" />,
+      { x: { type: Array }, "x.$": { type: String } },
+      { model: { x: ["string1", "string2", "string3"] } }
+    )
   );
 
   expect(screen.getAllByTestId("text-field")).toHaveLength(3);
@@ -58,10 +68,11 @@ test("<ListField> - renders children (specified)", () => {
 
   render(
     usingUniformsContext(
-      <ListField name="x" initialCount={2}>
+      <ListField name="x">
         <Child />
       </ListField>,
-      { x: { type: Array }, "x.$": { type: String } }
+      { x: { type: Array }, "x.$": { type: String } },
+      { model: { x: ["string1", "string2"] } }
     )
   );
 
@@ -73,10 +84,11 @@ test("<ListField> - renders children with correct name (children)", () => {
 
   render(
     usingUniformsContext(
-      <ListField name="x" initialCount={2}>
+      <ListField name="x">
         <Child name="$" />
       </ListField>,
-      { x: { type: Array }, "x.$": { type: String } }
+      { x: { type: Array }, "x.$": { type: String } },
+      { model: { x: ["string1", "string2"] } }
     )
   );
 
@@ -87,7 +99,11 @@ test("<ListField> - renders children with correct name (children)", () => {
 
 test("<ListField> - renders children with correct name (value)", () => {
   render(
-    usingUniformsContext(<ListField name="x" initialCount={2} />, { x: { type: Array }, "x.$": { type: String } })
+    usingUniformsContext(
+      <ListField name="x" />,
+      { x: { type: Array }, "x.$": { type: String } },
+      { model: { x: ["string1", "string2"] } }
+    )
   );
 
   const textFields = screen.getAllByTestId("text-field");

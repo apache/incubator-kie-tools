@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import * as React from "react";
-import { HiddenField } from "../src";
+import React from "react";
+import HiddenField from "../src/HiddenField";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { usingUniformsContext } from "./test-utils";
 

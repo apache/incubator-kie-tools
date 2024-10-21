@@ -31,7 +31,7 @@ import TextField from "./TextField";
 export type AutoFieldProps = Parameters<typeof AutoField>[0];
 
 const AutoField = createAutoField((props) => {
-  if (props.allowedValues) {
+  if (props.options) {
     return props.checkboxes && props.fieldType !== Array ? RadioField : SelectField;
   }
 

@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import * as React from "react";
-import { ValidatedQuickForm } from "../src";
+import React from "react";
+import ValidatedQuickForm from "../src/ValidatedQuickForm";
 import { render, screen } from "@testing-library/react";
 import { createSimpleSchema, usingUniformsContext } from "./test-utils";
 

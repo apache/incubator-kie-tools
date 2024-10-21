@@ -17,11 +17,13 @@
  * under the License.
  */
 
+import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core/dist/js";
+import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+import { TextInput, TextInputProps } from "@patternfly/react-core/dist/js/components/TextInput";
 import * as React from "react";
 import { Ref, useCallback, useMemo } from "react";
-import { TextInput, TextInputProps } from "@patternfly/react-core/dist/js/components/TextInput";
 import { connectField, filterDOMProps } from "uniforms";
-import wrapField from "./wrapField";
+import wrapField, { WrapFieldProps } from "./wrapField";
 
 export type TextFieldProps = {
   id: string;
@@ -34,7 +36,8 @@ export type TextFieldProps = {
   errorMessage?: string;
   helperText?: string;
   field?: { format: string };
-} & Omit<TextInputProps, "isDisabled">;
+} & Omit<TextInputProps, "isDisabled"> &
+  Omit<WrapFieldProps, "ref">;
 
 const timeRgx = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?/;
 
@@ -124,7 +127,7 @@ function TextField({ onChange, ...props }: TextFieldProps) {
   }, [props.field?.format, props.type]);
 
   const onTextInputChange = useCallback(
-    (value, event) => {
+    (event: React.FormEvent<HTMLInputElement>, value: string) => {
       if (fieldType !== "time" || value === "") {
         onChange((event.target as any)?.value);
         return;
@@ -184,6 +187,13 @@ function TextField({ onChange, ...props }: TextFieldProps) {
           {isDateInvalid}
         </div>
       )}
+      <FormHelperText>
+        <HelperText>
+          <HelperTextItem icon={props.error && <ExclamationCircleIcon />} variant={props.error ? "error" : "default"}>
+            {!props.error ? props.helperText : props.errorMessage}
+          </HelperTextItem>
+        </HelperText>
+      </FormHelperText>
     </>
   );
 }

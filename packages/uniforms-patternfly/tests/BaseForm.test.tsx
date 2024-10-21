@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import * as React from "react";
-import { BaseForm } from "../src";
+import React from "react";
+import BaseForm from "../src/BaseForm";
 import { usingUniformsContext, createSimpleSchema } from "./test-utils";
 import { render, screen } from "@testing-library/react";
 

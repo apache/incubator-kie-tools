@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import * as React from "react";
-import { LongTextField } from "../src";
+import React from "react";
+import LongTextField from "../src/LongTextField";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { usingUniformsContext } from "./test-utils";
 
@@ -32,7 +32,7 @@ test("<LongTextField> - renders a textarea with correct disabled state", () => {
   render(usingUniformsContext(<LongTextField name="x" disabled />, { x: { type: String } }));
 
   expect(screen.getByTestId("long-text-field")).toBeInTheDocument();
-  const textarea = screen.getByTestId("long-text-field").getElementsByTagName("textarea")[0];
+  const textarea = screen.getByTestId("long-text-field");
   expect(textarea).toBeDisabled();
 });
 
@@ -40,7 +40,7 @@ test("<LongTextField> - renders a textarea with correct id (inherited)", () => {
   render(usingUniformsContext(<LongTextField name="x" />, { x: { type: String } }));
 
   expect(screen.getByTestId("long-text-field")).toBeInTheDocument();
-  const textarea = screen.getByTestId("long-text-field").getElementsByTagName("textarea")[0];
+  const textarea = screen.getByTestId("long-text-field");
   expect(textarea.getAttribute("id")).toBeTruthy();
 });
 
@@ -48,7 +48,7 @@ test("<LongTextField> - renders a textarea with correct id (specified)", () => {
   render(usingUniformsContext(<LongTextField name="x" id="y" />, { x: { type: String } }));
 
   expect(screen.getByTestId("long-text-field")).toBeInTheDocument();
-  const textarea = screen.getByTestId("long-text-field").getElementsByTagName("textarea")[0];
+  const textarea = screen.getByTestId("long-text-field");
   expect(textarea.getAttribute("id")).toBe("y");
 });
 
@@ -56,7 +56,7 @@ test("<LongTextField> - renders a textarea with correct name", () => {
   render(usingUniformsContext(<LongTextField name="x" />, { x: { type: String } }));
 
   expect(screen.getByTestId("long-text-field")).toBeInTheDocument();
-  const textarea = screen.getByTestId("long-text-field").getElementsByTagName("textarea")[0];
+  const textarea = screen.getByTestId("long-text-field");
   expect(textarea.getAttribute("name")).toBe("x");
 });
 
@@ -64,7 +64,7 @@ test("<LongTextField> - renders a textarea with correct placeholder", () => {
   render(usingUniformsContext(<LongTextField name="x" placeholder="y" />, { x: { type: String } }));
 
   expect(screen.getByTestId("long-text-field")).toBeInTheDocument();
-  const textarea = screen.getByTestId("long-text-field").getElementsByTagName("textarea")[0];
+  const textarea = screen.getByTestId("long-text-field");
   expect(textarea.getAttribute("placeholder")).toBe("y");
 });
 
@@ -72,7 +72,7 @@ test("<LongTextField> - renders a textarea with correct value (default)", () => 
   render(usingUniformsContext(<LongTextField name="x" />, { x: { type: String } }));
 
   expect(screen.getByTestId("long-text-field")).toBeInTheDocument();
-  const textarea = screen.getByTestId("long-text-field").getElementsByTagName("textarea")[0];
+  const textarea = screen.getByTestId("long-text-field");
   expect(textarea.getAttribute("value")).toBe(null);
 });
 
@@ -96,7 +96,7 @@ test("<LongTextField> - renders a textarea which correctly reacts on change", ()
   render(usingUniformsContext(<LongTextField name="x" />, { x: { type: String } }, { onChange }));
 
   expect(screen.getByTestId("long-text-field")).toBeInTheDocument();
-  const textarea = screen.getByTestId("long-text-field").getElementsByTagName("textarea")[0];
+  const textarea = screen.getByTestId("long-text-field");
   fireEvent.change(textarea, { target: { value: "y" } });
   expect(onChange).toHaveBeenLastCalledWith("x", "y");
 });
@@ -107,7 +107,7 @@ test("<LongTextField> - renders a textarea which correctly reacts on change (emp
   render(usingUniformsContext(<LongTextField name="x" />, { x: { type: String } }, { onChange }));
 
   expect(screen.getByTestId("long-text-field")).toBeInTheDocument();
-  const textarea = screen.getByTestId("long-text-field").getElementsByTagName("textarea")[0];
+  const textarea = screen.getByTestId("long-text-field");
   fireEvent.change(textarea, { target: { value: "" } });
   expect(onChange).not.toHaveBeenCalled();
 });
@@ -118,7 +118,7 @@ test("<LongTextField> - renders a textarea which correctly reacts on change (sam
   render(usingUniformsContext(<LongTextField name="x" />, { x: { type: String } }, { model: { x: "y" }, onChange }));
 
   expect(screen.getByTestId("long-text-field")).toBeInTheDocument();
-  const textarea = screen.getByTestId("long-text-field").getElementsByTagName("textarea")[0];
+  const textarea = screen.getByTestId("long-text-field");
   fireEvent.change(textarea, { target: { value: "y" } });
   expect(screen.getByText("y")).toBeInTheDocument();
   expect(onChange).not.toHaveBeenCalled();

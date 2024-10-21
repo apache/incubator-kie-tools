@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import * as React from "react";
-import { NestField } from "../src";
+import React from "react";
+import NestField from "../src/NestField";
 import { render, screen } from "@testing-library/react";
 import { usingUniformsContext } from "./test-utils";
 

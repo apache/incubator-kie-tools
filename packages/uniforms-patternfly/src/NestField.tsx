@@ -21,6 +21,7 @@ import * as React from "react";
 import { connectField, filterDOMProps, HTMLFieldProps } from "uniforms";
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import AutoField from "./AutoField";
+import "./NestField.scss";
 
 export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { helperText?: string; itemProps?: object }>;
 
@@ -38,7 +39,7 @@ function NestField({
 }: NestFieldProps) {
   return (
     <Card data-testid={"nest-field"} {...filterDOMProps(props)}>
-      <CardBody className="pf-v5-c-form">
+      <CardBody className="pf-c-form nestfield-spacing">
         {label && (
           <label>
             <b>{label}</b>

@@ -17,9 +17,10 @@
  * under the License.
  */
 
-import * as React from "react";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
-import { connectField, filterDOMProps, HTMLFieldProps } from "uniforms";
+import * as React from "react";
+import { connectField, HTMLFieldProps } from "uniforms";
+import wrapField from "./wrapField";
 
 export type LongTextFieldProps = HTMLFieldProps<
   string,
@@ -29,6 +30,7 @@ export type LongTextFieldProps = HTMLFieldProps<
     onChange: (value: string, event: React.ChangeEvent<HTMLTextAreaElement>) => void;
     value?: string;
     prefix?: string;
+    autoResize?: boolean;
   }
 >;
 
@@ -41,22 +43,26 @@ function LongTextField({
   onChange,
   placeholder,
   value,
+  rows,
+  autoResize,
   ...props
 }: LongTextFieldProps) {
-  return (
-    <div data-testid={"long-text-field"} {...filterDOMProps(props)}>
-      {label && <label htmlFor={id}>{label}</label>}
-      <TextArea
-        id={id}
-        disabled={disabled}
-        name={name}
-        aria-label={name}
-        onChange={(event, value) => onChange(event.target.value)}
-        placeholder={placeholder}
-        ref={inputRef}
-        value={value ?? ""}
-      />
-    </div>
+  return wrapField(
+    { id, label, name, value, ...props },
+    <TextArea
+      id={id}
+      disabled={disabled}
+      name={name}
+      data-testid={"long-text-field"}
+      aria-label={name}
+      onChange={(event, value) => onChange(event.target.value)}
+      placeholder={placeholder}
+      ref={inputRef}
+      resizeOrientation="vertical"
+      value={value ?? ""}
+      rows={rows}
+      autoResize={autoResize}
+    />
   );
 }
 

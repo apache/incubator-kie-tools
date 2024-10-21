@@ -17,28 +17,21 @@
  * under the License.
  */
 
-import * as React from "react";
+import { FormSelect, FormSelectOption } from "@patternfly/react-core";
 import { useCallback, useMemo, useState } from "react";
-import { Select, SelectOption, SelectOptionObject, SelectVariant } from "@patternfly/react-core/deprecated";
+import { SelectInputProps, isSelectOptionObject } from "./SelectField.types";
 import wrapField from "./wrapField";
-import { SelectInputProps } from "./SelectField";
 
-type SelectFieldValue = string | string[];
+type SelectFieldValue = string | string[] | number | number[];
 
-function isSelectOptionObject(
-  toBeDetermined: string | number | SelectOptionObject
-): toBeDetermined is SelectOptionObject {
-  return typeof toBeDetermined === "object" && !Array.isArray(toBeDetermined) && toBeDetermined !== null;
+function isSelectOptionString(toBeDetermined: string[] | number[]): toBeDetermined is string[] {
+  return (toBeDetermined.length > 0 && typeof toBeDetermined[0] === "string") || toBeDetermined.length === 0;
 }
 
 function SelectInputsField(props: SelectInputProps) {
-  const [expanded, setExpanded] = useState<boolean>(false);
   const [selected, setSelected] = useState<SelectFieldValue | undefined>(() => {
-    if (props.value === undefined) {
+    if (!props.value) {
       return [];
-    }
-    if (props.value === null) {
-      return "null";
     }
     if (Array.isArray(props.value)) {
       return [...props.value];
@@ -46,24 +39,26 @@ function SelectInputsField(props: SelectInputProps) {
     return props.value;
   });
 
-  // Parses the selection to a string or string[]
-  // This prevents a bug where the number 0 can't be selected
-  const parseSelection = useCallback(
-    (selection: string | number | SelectOptionObject, fieldType: typeof Array): SelectFieldValue => {
-      if (selection === null) {
-        return `${selection}`;
-      }
+  const parseInput = useCallback(
+    (selection: string | number, fieldType?: typeof Array): SelectFieldValue => {
       const parsedSelection = isSelectOptionObject(selection) ? selection.toString() : selection;
 
       if (fieldType !== Array) {
-        return parsedSelection !== "" ? `${parsedSelection}` : "";
+        return parsedSelection !== "" ? parsedSelection : "";
       }
 
       if (Array.isArray(selected)) {
-        if (selected.includes(`${parsedSelection}`)) {
-          return selected.filter((s) => s !== `${parsedSelection}`);
+        if (isSelectOptionString(selected) && typeof parsedSelection === "string") {
+          if (selected.includes(parsedSelection)) {
+            return selected.filter((s) => s !== parsedSelection);
+          }
+          return [parsedSelection, ...selected];
+        } else if (!isSelectOptionString(selected) && typeof parsedSelection === "number") {
+          if (selected.includes(parsedSelection)) {
+            return selected.filter((s) => s !== parsedSelection);
+          }
+          return [parsedSelection, ...selected];
         }
-        return [`${parsedSelection}`, ...selected];
       }
       return [];
     },
@@ -71,69 +66,62 @@ function SelectInputsField(props: SelectInputProps) {
   );
 
   const handleSelect = useCallback(
-    (event: React.MouseEvent | React.ChangeEvent, selection: string | number | SelectOptionObject) => {
+    (_event: unknown, selection: string) => {
       if (selection === props.placeholder) {
         props.onChange(undefined);
         setSelected([]);
       } else {
-        if (selection === "null") {
-          props.onChange(null);
-          setSelected("null");
-        } else {
-          const selectedItems = parseSelection(selection, props.fieldType);
-          // If the selection is a number we should convert the selectedItems back to a number
-          const onChanged =
-            selection === null
-              ? null
-              : typeof selection === "number"
-                ? Array.isArray(selectedItems)
-                  ? selectedItems.map((item) => JSON.parse(item))
-                  : JSON.parse(selectedItems)
-                : selectedItems;
-          props.onChange(onChanged);
-          setSelected(selectedItems);
-        }
+        const items = parseInput(selection, props.fieldType);
+        props.onChange(items);
+        setSelected(items);
       }
-      setExpanded(false);
     },
-    [parseSelection, props]
+    [parseInput, props]
   );
 
   const selectOptions = useMemo(() => {
     const options: JSX.Element[] = [];
     if (props.placeholder) {
       options.push(
-        <SelectOption key={`placeholder ${props.allowedValues!.length}`} isPlaceholder value={props.placeholder} />
+        <FormSelectOption
+          isPlaceholder
+          key={`placeholder ${props.options!.length}`}
+          value={props.placeholder}
+          label={props.placeholder}
+        >
+          {props.placeholder}
+        </FormSelectOption>
       );
     }
-    props.allowedValues?.forEach((value) =>
+
+    props.options?.forEach((option) => {
+      const value = isSelectOptionObject(option) ? option.value : option;
+      const label = props.transform?.(value).label ?? value;
+
       options.push(
-        <SelectOption key={value} value={value}>
-          {props.transform ? props.transform(value) : `${value}`}
-        </SelectOption>
-      )
-    );
+        <FormSelectOption key={value} value={value} label={label.toString()}>
+          {label}
+        </FormSelectOption>
+      );
+    });
+
     return options;
   }, [props]);
 
   return wrapField(
     props as any,
     <div data-testid={"select-inputs-field"} id={props.id}>
-      <Select
-        isDisabled={props.disabled}
+      <FormSelect
+        role="listbox"
+        placeholder={props.placeholder}
+        value={props.value || (props.fieldType === Array ? [] : undefined)}
         id={props.id}
-        variant={props.fieldType === Array ? SelectVariant.typeaheadMulti : SelectVariant.single}
+        isDisabled={props.disabled}
         name={props.name}
-        placeholderText={props.placeholder}
-        isOpen={expanded}
-        selections={selected}
-        onToggle={(_event, isExpanded) => setExpanded(isExpanded)}
-        onSelect={handleSelect}
-        menuAppendTo={props.menuAppendTo}
-        direction={props.direction}
+        onChange={handleSelect}
       >
         {selectOptions}
-      </Select>
+      </FormSelect>
     </div>
   );
 }

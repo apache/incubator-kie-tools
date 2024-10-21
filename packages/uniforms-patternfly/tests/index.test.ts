@@ -29,6 +29,9 @@ it("exports everything", () => {
     DateField: expect.any(Function),
     ErrorField: expect.any(Function),
     ErrorsField: expect.any(Function),
+    FieldHintPopover: expect.any(Function),
+    FieldDeprecatedPopover: expect.any(Function),
+    FieldDetailsPopover: expect.any(Function),
     HiddenField: expect.any(Function),
     ListAddField: expect.any(Function),
     ListDelField: expect.any(Function),
@@ -44,5 +47,6 @@ it("exports everything", () => {
     TextField: expect.any(Function),
     ValidatedForm: expect.any(Function),
     ValidatedQuickForm: expect.any(Function),
+    wrapField: expect.any(Function),
   });
 });

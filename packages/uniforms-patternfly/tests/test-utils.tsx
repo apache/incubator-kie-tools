@@ -25,7 +25,9 @@ import { SimpleSchema2Bridge } from "uniforms-bridge-simple-schema-2";
 const randomId = randomIds();
 
 export function createSimpleSchema(schema = {}) {
-  return new SimpleSchema2Bridge(new SimpleSchema(schema));
+  SimpleSchema.extendOptions(["uniforms", "options"]);
+
+  return new SimpleSchema2Bridge({ schema: new SimpleSchema(schema) });
 }
 
 export function usingUniformsContext(children: React.ReactElement, schema = {}, ctx?: Partial<Context<any>>) {
@@ -46,7 +48,6 @@ export function usingUniformsContext(children: React.ReactElement, schema = {}, 
       autosave: false,
       autosaveDelay: 0,
       error: false,
-      label: true,
       model: {},
       noValidate: false,
       onSubmit: (event) => {},
@@ -56,7 +57,6 @@ export function usingUniformsContext(children: React.ReactElement, schema = {}, 
     state: {
       disabled: false,
       label: false,
-      placeholder: false,
       showInlineError: false,
       readOnly: false,
     },

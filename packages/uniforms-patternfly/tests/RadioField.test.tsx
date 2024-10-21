@@ -17,13 +17,13 @@
  * under the License.
  */
 
-import * as React from "react";
-import { RadioField } from "../src";
+import React from "react";
+import RadioField from "../src/RadioField";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { usingUniformsContext } from "./test-utils";
 
 test("<RadioField> - renders a set of checkboxes", () => {
-  render(usingUniformsContext(<RadioField name="x" allowedValues={[]} />, { x: { type: String, allowedValues: [] } }));
+  render(usingUniformsContext(<RadioField name="x" options={[]} />, { x: { type: String, options: [] } }));
 
   expect(screen.getByTestId("radio-field")).toBeInTheDocument();
   expect(screen.getByTestId("radio-field").getElementsByTagName("input")).toHaveLength(0);
@@ -31,8 +31,8 @@ test("<RadioField> - renders a set of checkboxes", () => {
 
 test("<RadioField> - renders a set of checkboxes", () => {
   render(
-    usingUniformsContext(<RadioField name="x" allowedValues={["a", "b"]} />, {
-      x: { type: String, allowedValues: ["a", "b"] },
+    usingUniformsContext(<RadioField name="x" options={["a", "b"]} />, {
+      x: { type: String, options: ["a", "b"] },
     })
   );
 
@@ -42,8 +42,8 @@ test("<RadioField> - renders a set of checkboxes", () => {
 
 test("<RadioField> - renders a set of checkboxes with correct disabled state", () => {
   render(
-    usingUniformsContext(<RadioField name="x" disabled allowedValues={["a", "b"]} />, {
-      x: { type: String, allowedValues: ["a", "b"] },
+    usingUniformsContext(<RadioField name="x" disabled options={["a", "b"]} />, {
+      x: { type: String, options: ["a", "b"] },
     })
   );
 
@@ -55,8 +55,8 @@ test("<RadioField> - renders a set of checkboxes with correct disabled state", (
 
 test("<RadioField> - renders a set of checkboxes with correct id (inherited)", () => {
   render(
-    usingUniformsContext(<RadioField name="x" allowedValues={["a", "b"]} />, {
-      x: { type: String, allowedValues: ["a", "b"] },
+    usingUniformsContext(<RadioField name="x" options={["a", "b"]} />, {
+      x: { type: String, options: ["a", "b"] },
     })
   );
 
@@ -68,8 +68,8 @@ test("<RadioField> - renders a set of checkboxes with correct id (inherited)", (
 
 test("<RadioField> - renders a set of checkboxes with correct id (specified)", () => {
   render(
-    usingUniformsContext(<RadioField name="x" id="y" allowedValues={["a", "b"]} />, {
-      x: { type: String, allowedValues: ["a", "b"] },
+    usingUniformsContext(<RadioField name="x" id="y" options={["a", "b"]} />, {
+      x: { type: String, options: ["a", "b"] },
     })
   );
 
@@ -81,8 +81,8 @@ test("<RadioField> - renders a set of checkboxes with correct id (specified)", (
 
 test("<RadioField> - renders a set of checkboxes with correct name", () => {
   render(
-    usingUniformsContext(<RadioField name="x" allowedValues={["a", "b"]} />, {
-      x: { type: String, allowedValues: ["a", "b"] },
+    usingUniformsContext(<RadioField name="x" options={["a", "b"]} />, {
+      x: { type: String, options: ["a", "b"] },
     })
   );
 
@@ -92,37 +92,57 @@ test("<RadioField> - renders a set of checkboxes with correct name", () => {
   expect(screen.getByTestId("radio-field").getElementsByTagName("input")[1].getAttribute("name")).toBe("x");
 });
 
+test("<RadioField> - renders an input with correct hint popover description provided", () => {
+  const { getByTestId } = render(
+    usingUniformsContext(<RadioField name="x" options={["a", "b"]} description="RadioFieldDescription" />, {
+      x: { type: String, options: ["a", "b"] },
+    })
+  );
+
+  expect(getByTestId("field-hint-button")).toBeInTheDocument();
+});
+
+test("<RadioField> - renders an input with no hint popover when description is not provided", () => {
+  const { queryByTestId } = render(
+    usingUniformsContext(<RadioField name="x" options={["a", "b"]} />, {
+      x: { type: String, options: ["a", "b"] },
+    })
+  );
+
+  expect(queryByTestId("field-hint-button")).not.toBeInTheDocument();
+});
+
 test("<RadioField> - renders a set of checkboxes with correct options", () => {
   render(
-    usingUniformsContext(<RadioField name="x" allowedValues={["a", "b"]} />, {
-      x: { type: String, allowedValues: ["a", "b"] },
+    usingUniformsContext(<RadioField name="x" options={["a", "b"]} />, {
+      x: { type: String, options: ["a", "b"] },
     })
   );
 
   expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
-  expect(screen.getByTestId("wrapper-field").getElementsByTagName("label")).toHaveLength(2);
-  expect(screen.getByTestId("radio-field").getElementsByTagName("label")[0].textContent).toBe("a");
-  expect(screen.getByTestId("radio-field").getElementsByTagName("label")[1].textContent).toBe("b");
+  expect(screen.getByTestId("wrapper-field").getElementsByClassName("pf-v5-c-radio__label")).toHaveLength(2);
+  expect(screen.getByTestId("radio-field").getElementsByClassName("pf-v5-c-radio__label")[0].textContent).toBe("a");
+  expect(screen.getByTestId("radio-field").getElementsByClassName("pf-v5-c-radio__label")[1].textContent).toBe("b");
 });
 
 test("<RadioField> - renders a set of checkboxes with correct options (transform)", () => {
   render(
     usingUniformsContext(
-      <RadioField name="x" transform={(x: string) => x.toUpperCase()} allowedValues={["a", "b"]} />,
-      { x: { type: String, allowedValues: ["a", "b"] } }
+      <RadioField name="x" transform={(x: string) => ({ label: x.toUpperCase() })} options={["a", "b"]} />,
+      { x: { type: String, options: ["a", "b"] } }
     )
   );
 
   expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
-  expect(screen.getByTestId("wrapper-field").getElementsByTagName("label")).toHaveLength(2);
-  expect(screen.getByTestId("radio-field").getElementsByTagName("label")[0].textContent).toBe("A");
-  expect(screen.getByTestId("radio-field").getElementsByTagName("label")[1].textContent).toBe("B");
+  expect(screen.getByTestId("wrapper-field").getElementsByClassName("pf-v5-c-radio__label")).toHaveLength(2);
+  expect(screen.getByTestId("radio-field").getElementsByClassName("pf-v5-c-radio__label")[0].textContent).toBe("A");
+  expect(screen.getByTestId("radio-field").getElementsByClassName("pf-v5-c-radio__label")[1].textContent).toBe("B");
 });
 
 test("<RadioField> - renders a set of checkboxes with correct value (default)", () => {
   render(
-    usingUniformsContext(<RadioField name="x" allowedValues={["a", "b"]} />, {
-      x: { type: String, allowedValues: ["a", "b"] },
+    usingUniformsContext(<RadioField name="x" options={["a", "b"]} />, {
+      x: { type: String, options: ["a", "b"] },
     })
   );
 
@@ -135,8 +155,8 @@ test("<RadioField> - renders a set of checkboxes with correct value (default)", 
 test("<RadioField> - renders a set of checkboxes with correct value (model)", () => {
   render(
     usingUniformsContext(
-      <RadioField name="x" allowedValues={["a", "b"]} />,
-      { x: { type: String, allowedValues: ["a", "b"] } },
+      <RadioField name="x" options={["a", "b"]} />,
+      { x: { type: String, options: ["a", "b"] } },
       { model: { x: "b" } }
     )
   );
@@ -149,8 +169,8 @@ test("<RadioField> - renders a set of checkboxes with correct value (model)", ()
 
 test("<RadioField> - renders a set of checkboxes with correct value (specified)", () => {
   render(
-    usingUniformsContext(<RadioField name="x" value="b" allowedValues={["a", "b"]} />, {
-      x: { type: String, allowedValues: ["a", "b"] },
+    usingUniformsContext(<RadioField name="x" value="b" options={["a", "b"]} />, {
+      x: { type: String, options: ["a", "b"] },
     })
   );
 
@@ -165,8 +185,8 @@ test("<RadioField> - renders a set of checkboxes which correctly reacts on chang
 
   render(
     usingUniformsContext(
-      <RadioField name="x" allowedValues={["a", "b"]} />,
-      { x: { type: String, allowedValues: ["a", "b"] } },
+      <RadioField name="x" options={["a", "b"]} />,
+      { x: { type: String, options: ["a", "b"] } },
       { onChange }
     )
   );
@@ -183,8 +203,8 @@ test("<RadioField> - renders a set of checkboxes which correctly reacts on chang
 
   render(
     usingUniformsContext(
-      <RadioField name="x" allowedValues={["a", "b"]} />,
-      { x: { type: String, allowedValues: ["a", "b"] } },
+      <RadioField name="x" options={["a", "b"]} />,
+      { x: { type: String, options: ["a", "b"] } },
       { model: { x: "b" }, onChange }
     )
   );
@@ -198,8 +218,8 @@ test("<RadioField> - renders a set of checkboxes which correctly reacts on chang
 
 test("<RadioField> - renders a label", () => {
   render(
-    usingUniformsContext(<RadioField required={false} name="x" label="y" allowedValues={["a", "b"]} />, {
-      x: { type: String, allowedValues: ["a", "b"] },
+    usingUniformsContext(<RadioField required={false} name="x" label="y" options={["a", "b"]} />, {
+      x: { type: String, options: ["a", "b"] },
     })
   );
 
@@ -210,8 +230,8 @@ test("<RadioField> - renders a label", () => {
 
 test("<RadioField> - renders a label (required)", () => {
   render(
-    usingUniformsContext(<RadioField required={true} name="x" label="y" allowedValues={["a", "b"]} />, {
-      x: { type: String, allowedValues: ["a", "b"] },
+    usingUniformsContext(<RadioField required={true} name="x" label="y" options={["a", "b"]} />, {
+      x: { type: String, options: ["a", "b"] },
     })
   );
 

@@ -21,13 +21,34 @@ import * as React from "react";
 import { HTMLProps } from "react";
 import { useForm, filterDOMProps } from "uniforms";
 
-export type ErrorsFieldProps = HTMLProps<HTMLDivElement>;
+// Define the type for the style prop
+type Style = React.CSSProperties;
 
-function ErrorsField({ children, ...props }: ErrorsFieldProps) {
+// Define the ErrorsFieldProps without defaultProps
+export type ErrorsFieldProps = HTMLProps<HTMLDivElement> & {
+  style?: Style;
+};
+
+const defaultStyle: Style = {
+  backgroundColor: "rgba(255, 85, 0, 0.2)",
+  border: "1px solid rgb(255, 85, 0)",
+  borderRadius: "7px",
+  margin: "20px 0px",
+  padding: "10px",
+};
+
+function ErrorsField({ children, style = {}, ...props }: ErrorsFieldProps): React.ReactElement | null {
   const { error, schema } = useForm();
 
-  return !error && !children ? null : (
-    <div data-testid={"errors-field"} {...filterDOMProps(props)}>
+  if (!error && !children) {
+    return null;
+  }
+
+  // Merge default styles with any styles passed via props
+  const combinedStyle: Style = { ...defaultStyle, ...style };
+
+  return (
+    <div data-testid="errors-field" style={combinedStyle} {...filterDOMProps(props)}>
       {children}
       <ul>
         {schema.getErrorMessages(error).map((message, index) => (
@@ -39,15 +60,5 @@ function ErrorsField({ children, ...props }: ErrorsFieldProps) {
     </div>
   );
 }
-
-ErrorsField.defaultProps = {
-  style: {
-    backgroundColor: "rgba(255, 85, 0, 0.2)",
-    border: "1px solid rgb(255, 85, 0)",
-    borderRadius: "7px",
-    margin: "20px 0px",
-    padding: "10px",
-  },
-};
 
 export default ErrorsField;

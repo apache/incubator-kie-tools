@@ -17,11 +17,10 @@
  * under the License.
  */
 
-import * as React from "react";
 import { FormGroup, FormGroupProps } from "@patternfly/react-core/dist/js/components/Form";
-import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
-import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
-import { filterDOMProps } from "uniforms";
+import * as React from "react";
+import { FilterDOMPropsKeys, filterDOMProps } from "uniforms";
+import FielDetailsPopover from "./FieldDetailsPopover";
 
 declare module "uniforms" {
   interface FilterDOMProps {
@@ -43,16 +42,24 @@ filterDOMProps.register(
   "isDisabled",
   "exclusiveMaximum",
   "exclusiveMinimum",
-  "menuAppendTo"
+  "menuAppendTo",
+  "checkboxes",
+  "helperText" as FilterDOMPropsKeys,
+  "initialCount" as FilterDOMPropsKeys,
+  "deprecated" as FilterDOMPropsKeys,
+  "transform" as FilterDOMPropsKeys,
+  "placeholder" as FilterDOMPropsKeys
 );
 
-type WrapperProps = {
+export type WrapFieldProps = {
   id: string;
-  error?: boolean;
+  error?: any;
   errorMessage?: string;
   help?: string;
   showInlineError?: boolean;
   description?: React.ReactNode;
+  deprecated?: boolean;
+  field?: unknown;
 } & Omit<FormGroupProps, "onChange" | "fieldId">;
 
 export default function wrapField(
@@ -67,34 +74,24 @@ export default function wrapField(
     help,
     required,
     description,
+    deprecated,
     ...props
-  }: WrapperProps,
+  }: WrapFieldProps,
   children: React.ReactNode
 ) {
+  let defaultValue;
+  if (typeof props.field === "object" && props.field !== null && "default" in props.field) {
+    defaultValue = props.field.default;
+  }
   return (
     <FormGroup
-      data-testid={"wrapper-field"}
+      data-testid="wrapper-field"
+      data-fieldname={props.name}
       fieldId={id}
       label={label}
-      labelIcon={
-        description ? (
-          <Popover bodyContent={description}>
-            <button
-              type="button"
-              aria-label="field description"
-              onClick={(e) => e.preventDefault()}
-              className="pf-v5-c-form__group-label-help"
-            >
-              <HelpIcon noVerticalAlign />
-            </button>
-          </Popover>
-        ) : undefined
-      }
       isRequired={required}
-      validated={error ? "error" : "default"}
       type={type}
-      helperText={help}
-      helperTextInvalid={errorMessage}
+      labelIcon={<FielDetailsPopover default={defaultValue} description={description} deprecated={deprecated} />}
       {...filterDOMProps(props)}
     >
       {children}

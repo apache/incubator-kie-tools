@@ -22,7 +22,7 @@ import { useMemo } from "react";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
 import { filterDOMProps } from "uniforms";
-import { SelectCheckboxProps } from "./SelectField";
+import { SelectCheckboxProps, isSelectOptionObject } from "./SelectField.types";
 
 function xor<T>(item: T, array: T[]) {
   const index = array.indexOf(item);
@@ -41,10 +41,12 @@ function SelectCheckboxField(props: SelectCheckboxProps) {
   return (
     <div data-testid={"select-checkbox-field"} {...filterDOMProps(props)}>
       {props.label && <label>{props.label}</label>}
-      {props.allowedValues!.map((item: string, index: number) => {
+      {props.options!.map((item: string, index: number) => {
+        const label = props.transform?.(item).label ?? item;
+
         return (
           <React.Fragment key={index}>
-            <label htmlFor={props.id}>{props.transform ? props.transform(item) : item}</label>
+            <label htmlFor={props.id}>{label}</label>
             <Group
               id={`${props.id}-${item}`}
               isDisabled={props.disabled}

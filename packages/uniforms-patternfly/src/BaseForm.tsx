@@ -28,9 +28,10 @@ function Patternfly(parent: any): any {
     static displayName = `Patternfly${parent.displayName}`;
 
     render() {
+      const { key, ...props } = this.getNativeFormProps();
       return (
         <context.Provider value={this.getContext()}>
-          <Form data-testid="base-form" {...this.getNativeFormProps()} />
+          <Form key={key} data-testid="base-form" {...props} />
         </context.Provider>
       );
     }

@@ -45,6 +45,7 @@ function ListDelField({ name, disabled, ...props }: ListDelFieldProps) {
         !disabled && limitNotReached && parent.onChange(value);
       }}
       {...filterDOMProps(props)}
+      label="THIS IS A LABEL"
     >
       <MinusCircleIcon color="#cc0000" />
     </Button>

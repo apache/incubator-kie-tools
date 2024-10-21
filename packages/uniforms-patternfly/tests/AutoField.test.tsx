@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import * as React from "react";
-import { AutoField } from "../src";
+import React from "react";
+import AutoField from "../src/AutoField";
 import { usingUniformsContext } from "./test-utils";
 import { render, screen } from "@testing-library/react";
 
@@ -32,7 +32,7 @@ test("<AutoField> - renders RadioField", () => {
     usingUniformsContext(<AutoField name="x" />, {
       x: {
         type: String,
-        allowedValues: ["x", "y"],
+        options: ["x", "y"],
         uniforms: { checkboxes: true },
       },
     })
@@ -44,7 +44,7 @@ test("<AutoField> - renders RadioField", () => {
 test("<AutoField> - renders SelectField - input", () => {
   render(
     usingUniformsContext(<AutoField name="x" />, {
-      x: { type: Array, allowedValues: ["x", "y"] },
+      x: { type: Array, options: ["x", "y"] },
       "x.$": { type: String },
     })
   );
@@ -54,14 +54,10 @@ test("<AutoField> - renders SelectField - input", () => {
 
 test("<AutoField> - renders SelectField - checkbox", () => {
   render(
-    usingUniformsContext(
-      <AutoField name="x" checkboxes={true} />,
-
-      {
-        x: { type: Array, allowedValues: ["x", "y"] },
-        "x.$": { type: String },
-      }
-    )
+    usingUniformsContext(<AutoField name="x" checkboxes={true} />, {
+      x: { type: Array, options: ["x", "y"] },
+      "x.$": { type: String },
+    })
   );
 
   expect(screen.getByTestId("select-checkbox-field")).toBeInTheDocument();
@@ -97,13 +93,21 @@ test("<AutoField> - renders BoolField", () => {
   expect(screen.getByTestId("bool-field")).toBeInTheDocument();
 });
 
-test("<AutoField> - renders Component (model)", () => {
+/**
+ * This test was disabled since the API changed in uniforms 4.0.0
+ * https://uniforms.tools/docs/uth-autofield-algorithm/#overriding-autofield
+ */
+test.skip("<AutoField> - renders Component (model)", () => {
   const Component = jest.fn(() => null);
   render(usingUniformsContext(<AutoField name="x" />, { x: { type: String, uniforms: { component: Component } } }));
   expect(Component).toHaveBeenCalledTimes(1);
 });
 
-test("<AutoField> - renders Component (specified)", () => {
+/**
+ * This test was disabled since the API changed in uniforms 4.0.0
+ * https://uniforms.tools/docs/uth-autofield-algorithm/#overriding-autofield
+ */
+test.skip("<AutoField> - renders Component (specified)", () => {
   const Component = jest.fn(() => null);
   render(usingUniformsContext(<AutoField name="x" component={Component} />, { x: { type: String } }));
   expect(Component).toHaveBeenCalledTimes(1);
