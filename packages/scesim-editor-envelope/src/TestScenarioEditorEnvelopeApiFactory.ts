@@ -27,7 +27,7 @@ import {
 } from "@kie-tools-core/editor/dist/api";
 import { TestScenarioEditorFactory } from "./TestScenarioEditorFactory";
 
-export type DmnEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
+export type TestScenarioEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
   KogitoEditorEnvelopeApi,
   KogitoEditorChannelApi,
   EditorEnvelopeViewApi<Editor>,
@@ -38,7 +38,7 @@ export class TestScenarioEditorEnvelopeApiImpl
   extends KogitoEditorEnvelopeApiImpl<Editor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi>
   implements KogitoEditorEnvelopeApi
 {
-  constructor(readonly scesimArgs: DmnEnvelopeApiFactoryArgs) {
+  constructor(readonly scesimArgs: TestScenarioEnvelopeApiFactoryArgs) {
     super(scesimArgs, new TestScenarioEditorFactory());
   }
 }
