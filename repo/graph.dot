@@ -150,6 +150,8 @@ digraph G {
   "@kie-tools/sonataflow-image-common" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie/kogito-data-index-ephemeral-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie/kogito-data-index-postgresql-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/kogito-db-migrator-tool" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/kogito-db-migrator-tool-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie/kogito-jit-runner-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie/kogito-jobs-service-allinone-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie/kogito-jobs-service-ephemeral-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -471,6 +473,9 @@ digraph G {
   "@kie/kogito-data-index-ephemeral-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
   "@kie/kogito-data-index-postgresql-image" -> "@kie-tools/maven-base" [ style = "dashed", color = "black" ];
   "@kie/kogito-data-index-postgresql-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
+  "@kie-tools/kogito-db-migrator-tool" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
+  "@kie-tools/kogito-db-migrator-tool-image" -> "@kie-tools/kogito-db-migrator-tool" [ style = "solid", color = "black" ];
+  "@kie-tools/kogito-db-migrator-tool-image" -> "@kie-tools/sonataflow-image-common" [ style = "solid", color = "black" ];
   "@kie/kogito-jit-runner-image" -> "@kie-tools/maven-base" [ style = "dashed", color = "black" ];
   "@kie/kogito-jit-runner-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
   "@kie/kogito-jobs-service-allinone-image" -> "@kie-tools/maven-base" [ style = "dashed", color = "black" ];
