@@ -98,7 +98,7 @@
     <!-- Data Index Addon -->
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kogito-addons-quarkus-data-index-postgresql</artifactId>
+      <artifactId>kogito-addons-quarkus-data-index-jpa</artifactId>
     </dependency>
 
     <!-- Jobs Service -->
@@ -108,7 +108,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>jobs-service-postgresql-common</artifactId>
+      <artifactId>jobs-service-storage-jpa</artifactId>
     </dependency>
 
     <!-- Data Audit -->
@@ -155,6 +155,10 @@
         <dependency>
           <groupId>org.jbpm</groupId>
           <artifactId>jbpm-quarkus-devui</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-jdbc-h2</artifactId>
         </dependency>
       </dependencies>
     </profile>
