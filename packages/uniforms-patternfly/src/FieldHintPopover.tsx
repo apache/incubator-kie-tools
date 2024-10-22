@@ -1,7 +1,7 @@
 import { Button, Popover, PopoverProps, Text, TextVariants } from "@patternfly/react-core";
 import { HelpIcon } from "@patternfly/react-icons";
 import { FunctionComponent } from "react";
-import "./FieldHintPopover.scss";
+// import "./FieldHintPopover.scss";
 
 interface FieldHintPopoverProps {
   default?: any;

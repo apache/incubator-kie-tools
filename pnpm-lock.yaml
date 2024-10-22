@@ -7360,133 +7360,6 @@ importers:
         specifier: ^5.5.3
         version: 5.5.3
 
-  packages/runtime-tools-components-pf5:
-    dependencies:
-      '@kie-tools-core/editor':
-        specifier: workspace:*
-        version: link:../editor
-      '@kie-tools-core/operating-system':
-        specifier: workspace:*
-        version: link:../operating-system
-      '@kie-tools-core/patternfly-base':
-        specifier: workspace:*
-        version: link:../patternfly-base
-      '@kie-tools/json-yaml-language-service':
-        specifier: workspace:*
-        version: link:../json-yaml-language-service
-      '@kie-tools/runtime-tools-components':
-        specifier: workspace:*
-        version: link:../runtime-tools-components
-      '@kie-tools/runtime-tools-shared-gateway-api':
-        specifier: workspace:*
-        version: link:../runtime-tools-shared-gateway-api
-      '@kie-tools/uniforms-patternfly':
-        specifier: workspace:*
-        version: link:../uniforms-patternfly
-      '@patternfly/react-core':
-        specifier: ^5.4.1
-        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      '@patternfly/react-icons':
-        specifier: ^5.4.0
-        version: 5.4.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      '@patternfly/react-styles':
-        specifier: ^5.4.0
-        version: 5.4.0
-      '@patternfly/react-table':
-        specifier: ^5.4.1
-        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      ajv:
-        specifier: ^8.17.1
-        version: 8.17.1
-      ajv-formats:
-        specifier: ^3.0.1
-        version: 3.0.1(ajv@8.17.1)
-      axios:
-        specifier: ^1.7.4
-        version: 1.7.4
-      copyfiles:
-        specifier: ^2.4.1
-        version: 2.4.1
-      history:
-        specifier: ^4.9.0
-        version: 4.10.1
-      keycloak-js:
-        specifier: ^23.0.5
-        version: 23.0.7
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
-      monaco-editor:
-        specifier: ^0.39.0
-        version: 0.39.0
-      react:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2
-      react-datetime-picker:
-        specifier: ^3.5.0
-        version: 3.5.0(@types/react-dom@17.0.8)(@types/react@17.0.21)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      react-dom:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2(react@17.0.2)
-      react-moment:
-        specifier: 0.9.7
-        version: 0.9.7(moment@2.29.4)(prop-types@15.8.1)(react@17.0.2)
-      react-router:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
-      react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
-      uniforms:
-        specifier: ^3.10.2
-        version: 3.10.2(react@17.0.2)
-      uniforms-bridge-json-schema:
-        specifier: ^3.10.2
-        version: 3.10.2(react@17.0.2)
-      uuid:
-        specifier: ^8.3.2
-        version: 8.3.2
-    devDependencies:
-      '@kie-tools/eslint':
-        specifier: workspace:*
-        version: link:../eslint
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      '@types/history':
-        specifier: ^4.7.3
-        version: 4.7.11
-      '@types/lodash':
-        specifier: ^4.14.168
-        version: 4.14.202
-      '@types/react':
-        specifier: ^17.0.6
-        version: 17.0.21
-      '@types/react-datetime-picker':
-        specifier: ^3.4.1
-        version: 3.4.1
-      '@types/react-dom':
-        specifier: ^17.0.5
-        version: 17.0.8
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
-      '@types/uuid':
-        specifier: ^8.3.0
-        version: 8.3.0
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-
   packages/runtime-tools-consoles-helm-chart:
     dependencies:
       '@kie-tools/kogito-management-console':
@@ -12070,6 +11943,9 @@ importers:
       invariant:
         specifier: ^2.2.4
         version: 2.2.4
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       lodash.clonedeep:
         specifier: ^4.5.0
         version: 4.5.0

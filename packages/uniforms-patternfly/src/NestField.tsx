@@ -21,7 +21,7 @@ import * as React from "react";
 import { connectField, filterDOMProps, HTMLFieldProps } from "uniforms";
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import AutoField from "./AutoField";
-import "./NestField.scss";
+// import "./NestField.scss";
 
 export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { helperText?: string; itemProps?: object }>;
 

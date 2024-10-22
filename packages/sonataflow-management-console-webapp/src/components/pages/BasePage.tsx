@@ -30,8 +30,7 @@ import { Page, PageToggleButton } from "@patternfly/react-core/dist/js/component
 import { PageSidebar } from "@patternfly/react-core/dist/js/components/Page/PageSidebar";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { BarsIcon } from "@patternfly/react-icons/dist/js/icons";
-// import PageToolbar from "@kie-tools/runtime-tools-components/dist/components/PageToolbar/PageToolbar";
-import PageToolbar from "@kie-tools/runtime-tools-components-pf5/dist/PageToolbar";
+import PageToolbar from "@kie-tools/runtime-tools-components/dist/components/PageToolbar/PageToolbar";
 import { useMemo } from "react";
 import { useHistory } from "react-router";
 import { routes } from "../../navigation/Routes";

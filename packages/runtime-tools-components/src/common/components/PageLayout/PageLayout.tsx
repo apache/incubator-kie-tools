@@ -25,6 +25,7 @@ import "../styles.css";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { BrandContext } from "../../contexts/BrandContext/BrandContext";
 import PageToolbar from "../PageToolbar/PageToolbar";
+import { PageSidebarBody } from "@patternfly/react-core";
 
 interface IOwnProps {
   children: React.ReactNode;
@@ -91,12 +92,13 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
 
   const Sidebar = (
     <PageSidebar
-      nav={PageNav}
       isSidebarOpen={isNavOpen}
       theme="dark"
       {...ouiaAttribute("data-ouia-navigation", "true")}
       data-testid="page-sidebar"
-    />
+    >
+      <PageSidebarBody>nav={PageNav}</PageSidebarBody>
+    </PageSidebar>
   );
 
   return (

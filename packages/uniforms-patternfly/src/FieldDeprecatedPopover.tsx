@@ -1,7 +1,7 @@
 import { Button, Popover, Icon } from "@patternfly/react-core";
 import { FunctionComponent } from "react";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
-import "./FieldDeprecatedPopover.scss";
+// import "./FieldDeprecatedPopover.scss";
 
 interface FieldDeprecatedPopoverProps {
   deprecated?: any;
