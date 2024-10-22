@@ -58,7 +58,7 @@ pipeline {
                         dir('kie-tools') {
                             sh '''#!/bin/bash -el
                             pnpm bootstrap:root
-                            npx --yes syncpack@6.2.0 list-mismatches
+                            npx --yes syncpack@13.0.0 list-mismatches
                             '''.trim()
                         }
                     }
