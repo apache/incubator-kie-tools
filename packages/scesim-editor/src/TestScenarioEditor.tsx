@@ -126,11 +126,11 @@ export type TestScenarioEditorProps = {
    */
   onModelDebounceStateChanged?: (changed: boolean) => void;
   /**
-   * Called when the contents of a specific available model is necessary. Used by the "Included models" tab.
+   * Called when the contents of a specific available DMN model is necessary.
    */
   onRequestExternalModelByPath?: OnRequestExternalModelByPath;
   /**
-   * Called when the list of paths of available models to be included is needed. Used by the "Included models" tab.
+   * Called when the list of paths of available DMN models
    */
   onRequestExternalModelsAvailableToInclude?: OnRequestExternalModelsAvailableToInclude;
   /**
@@ -139,7 +139,7 @@ export type TestScenarioEditorProps = {
    */
   onRequestToJumpToPath?: OnRequestToJumpToPath;
   /**
-   * All paths inside the DMN Editor are relative. To be able to resolve them and display them as absolute paths, this function is called.
+   * All paths inside the Test Scenario Editor are relative. To be able to resolve them and display them as absolute paths, this function is called.
    * If undefined, the relative paths will be displayed.
    */
   onRequestToResolvePath?: OnRequestToResolvePath;
