@@ -39,7 +39,6 @@ RUN microdnf --disableplugin=subscription-manager install -y tar gzip \
 
 COPY dist-dev/dev-deployment-upload-service /usr/local/bin/
 COPY .mvn $HOME_PATH/app/.mvn
-COPY mvnw $HOME_PATH/app
 
 RUN chgrp -R 0 $HOME_PATH/app && \
     chmod -R 777 $HOME_PATH/app && \

@@ -18,7 +18,7 @@
  */
 
 const { env } = require("./env");
-const { setupMavenConfigFile, installMvnw, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
+const { setupMavenConfigFile, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
 
 setupMavenConfigFile(
   `
@@ -31,5 +31,3 @@ setupMavenConfigFile(
 `,
   { ignoreDefault: true } // Can't have special <repositories> configuration that only works inside this repo.
 );
-
-installMvnw();

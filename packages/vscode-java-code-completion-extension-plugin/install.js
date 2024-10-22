@@ -18,7 +18,7 @@
  */
 
 const { env } = require("./env");
-const { setupMavenConfigFile, installMvnw, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
+const { setupMavenConfigFile, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
 
 const version = env.vscodeJavaCodeCompletionExtensionPlugin.version;
 
@@ -26,8 +26,6 @@ setupMavenConfigFile(`
   -Drevision=${version}
   -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
 `);
-
-installMvnw();
 
 // Manifest file
 

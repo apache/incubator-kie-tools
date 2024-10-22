@@ -45,7 +45,7 @@ Docker image with Java and Maven, as well as the dev-deployment-upload-service b
 
 Run the image with:
 
-- `docker run -p 8080:8080 -e DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=123 docker.io/apache/incubator-kie-sandbox-dev-deployment-base:main 'dev-deployment-upload-service && ./mvnw quarkus:dev'`
+- `docker run -p 8080:8080 -e DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=123 docker.io/apache/incubator-kie-sandbox-dev-deployment-base:main 'dev-deployment-upload-service && ./mvn quarkus:dev'`
 
 Then upload a zip file containing the resources (full Java project)
 

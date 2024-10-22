@@ -62,24 +62,6 @@ module.exports = {
   EMPTY_POM_XML_PATH,
 
   /**
-   * Installs `mvnw` on the same directory of invocation.
-   *  */
-  installMvnw: () => {
-    console.info(`[maven-base] Installing mvnw...`);
-    console.time(`[maven-base] Installing mvnw...`);
-
-    const cmd = `mvn -e org.apache.maven.plugins:maven-wrapper-plugin:${env.mvnw.version}:wrapper ${BOOTSTRAP_CLI_ARGS}`;
-
-    if (process.platform === "win32") {
-      cp.execSync(cmd.replaceAll(" -", " `-"), { stdio: "inherit", shell: "powershell.exe" });
-    } else {
-      cp.execSync(cmd, { stdio: "inherit" });
-    }
-
-    console.timeEnd(`[maven-base] Installing mvnw...`);
-  },
-
-  /**
    * Helps setting up an array of absolute paths that will be used to configure `-Dmaven.repo.local.tail`.
    *
    * @param dirname Where to locate the first package.json.
