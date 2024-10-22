@@ -17,17 +17,19 @@
  * under the License.
  */
 
-import { DmnLatestModel, getMarshaller } from "@kie-tools/dmn-marshaller";
+import * as TestScenarioEditor from "../../src/TestScenarioEditor";
+import { getMarshaller } from "@kie-tools/dmn-marshaller";
+import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { LOAN_PRE_QUALIFICATION, TRAFFIC_VIOLATION } from "./ExternalDmnModels";
 
-export const loanPreQualification = getMarshaller(LOAN_PRE_QUALIFICATION, { upgradeTo: "latest" }).parser.parse();
-export const trafficViolationModel = getMarshaller(TRAFFIC_VIOLATION, { upgradeTo: "latest" }).parser.parse();
+export const loanPreQualification = normalize(
+  getMarshaller(LOAN_PRE_QUALIFICATION, { upgradeTo: "latest" }).parser.parse()
+);
+export const trafficViolationModel = normalize(
+  getMarshaller(TRAFFIC_VIOLATION, { upgradeTo: "latest" }).parser.parse()
+);
 
-export const avaiableModels: {
-  model: DmnLatestModel;
-  normalizedPosixPathRelativeToTheOpenFile: string;
-  svg: string;
-}[] = [
+export const avaiableModels: TestScenarioEditor.ExternalDmn[] = [
   {
     model: loanPreQualification,
     svg: "",
@@ -40,10 +42,12 @@ export const avaiableModels: {
   },
 ];
 
-// export const availableModelsByPath: Record<string, DmnEditor.ExternalModel> = Object.values(avaiableModels).reduce(
-//   (acc, v) => {
-//     acc[v.normalizedPosixPathRelativeToTheOpenFile] = v;
-//     return acc;
-//   },
-//   {} as Record<string, DmnEditor.ExternalModel>
-// );
+export const availableModelsByPath: Record<string, TestScenarioEditor.ExternalDmn> = Object.values(
+  avaiableModels
+).reduce(
+  (acc, v) => {
+    acc[v.normalizedPosixPathRelativeToTheOpenFile] = v;
+    return acc;
+  },
+  {} as Record<string, TestScenarioEditor.ExternalDmn>
+);

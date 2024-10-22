@@ -24,9 +24,22 @@ import { TestScenarioEditorProps } from "./TestScenarioEditor";
 
 export type SceSimModelBeforeEditing = SceSimModel;
 
-export type TestScenarioEditorContextProviderProps = Pick<TestScenarioEditorProps, "issueTrackerHref" | "model">;
+export type TestScenarioEditorContextProviderProps = Pick<
+  TestScenarioEditorProps,
+  | "issueTrackerHref"
+  | "model"
+  | "onRequestToJumpToPath"
+  | "onRequestToResolvePath"
+  | "openFileNormalizedPosixPathRelativeToTheWorkspaceRoot"
+>;
 
-export type TestScenarioEditorContextType = Pick<TestScenarioEditorContextProviderProps, "issueTrackerHref"> & {
+export type TestScenarioEditorContextType = Pick<
+  TestScenarioEditorContextProviderProps,
+  | "issueTrackerHref"
+  | "onRequestToJumpToPath"
+  | "onRequestToResolvePath"
+  | "openFileNormalizedPosixPathRelativeToTheWorkspaceRoot"
+> & {
   testScenarioEditorModelBeforeEditingRef: React.MutableRefObject<SceSimModelBeforeEditing>;
   testScenarioEditorRootElementRef: React.RefObject<HTMLDivElement>;
 };
@@ -48,8 +61,17 @@ export function TestScenarioEditorContextProvider(
       issueTrackerHref: props.issueTrackerHref,
       testScenarioEditorModelBeforeEditingRef,
       testScenarioEditorRootElementRef,
+      onRequestToJumpToPath: props.onRequestToJumpToPath,
+      onRequestToResolvePath: props.onRequestToResolvePath,
+      openFileNormalizedPosixPathRelativeToTheWorkspaceRoot:
+        props.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
     }),
-    [props.issueTrackerHref]
+    [
+      props.issueTrackerHref,
+      props.onRequestToJumpToPath,
+      props.onRequestToResolvePath,
+      props.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
+    ]
   );
   return <TestScenarioEditorContext.Provider value={value}>{props.children}</TestScenarioEditorContext.Provider>;
 }
