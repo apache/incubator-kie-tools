@@ -56,6 +56,9 @@ if [ ! -z "${CYPRESS_BINARY_URL}" ]; then
 fi
 
 case ${imageName} in
+    "incubator-kie-kogito-db-migrator-tool")
+        contextDir="db-migrator-tool/image"
+        ;;
     "incubator-kie-kogito-data-index-ephemeral")
         contextDir="data-index/data-index-service/data-index-service-inmemory"
         ;;
