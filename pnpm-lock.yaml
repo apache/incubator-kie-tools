@@ -9317,6 +9317,9 @@ importers:
       '@kie-tools/boxed-expression-component':
         specifier: workspace:*
         version: link:../boxed-expression-component
+      '@kie-tools/dmn-marshaller':
+        specifier: workspace:*
+        version: link:../dmn-marshaller
       '@kie-tools/i18n-common-dictionary':
         specifier: workspace:*
         version: link:../i18n-common-dictionary
@@ -9459,6 +9462,85 @@ importers:
       webpack-merge:
         specifier: ^5.9.0
         version: 5.9.0
+
+  packages/scesim-editor-envelope:
+    dependencies:
+      '@kie-tools-core/editor':
+        specifier: workspace:*
+        version: link:../editor
+      '@kie-tools-core/envelope':
+        specifier: workspace:*
+        version: link:../envelope
+      '@kie-tools-core/envelope-bus':
+        specifier: workspace:*
+        version: link:../envelope-bus
+      '@kie-tools-core/keyboard-shortcuts':
+        specifier: workspace:*
+        version: link:../keyboard-shortcuts
+      '@kie-tools-core/notifications':
+        specifier: workspace:*
+        version: link:../notifications
+      '@kie-tools-core/react-hooks':
+        specifier: workspace:*
+        version: link:../react-hooks
+      '@kie-tools-core/workspace':
+        specifier: workspace:*
+        version: link:../workspace
+      '@kie-tools/boxed-expression-component':
+        specifier: workspace:*
+        version: link:../boxed-expression-component
+      '@kie-tools/dmn-marshaller':
+        specifier: workspace:*
+        version: link:../dmn-marshaller
+      '@kie-tools/scesim-editor':
+        specifier: workspace:*
+        version: link:../scesim-editor
+      '@kie-tools/scesim-marshaller':
+        specifier: workspace:*
+        version: link:../scesim-marshaller
+      '@kie-tools/xml-parser-ts':
+        specifier: workspace:*
+        version: link:../xml-parser-ts
+      '@patternfly/react-core':
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      react:
+        specifier: '>=17.0.2 <19.0.0'
+        version: 17.0.2
+      react-dom:
+        specifier: '>=17.0.2 <19.0.0'
+        version: 17.0.2(react@17.0.2)
+    devDependencies:
+      '@babel/core':
+        specifier: ^7.16.0
+        version: 7.24.9
+      '@babel/preset-env':
+        specifier: ^7.16.0
+        version: 7.24.7(@babel/core@7.24.9)
+      '@babel/preset-react':
+        specifier: ^7.16.0
+        version: 7.22.15(@babel/core@7.24.9)
+      '@kie-tools/eslint':
+        specifier: workspace:*
+        version: link:../eslint
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      '@kie-tools/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/react':
+        specifier: ^17.0.6
+        version: 17.0.21
+      '@types/react-dom':
+        specifier: ^17.0.5
+        version: 17.0.8
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      typescript:
+        specifier: ^5.5.3
+        version: 5.5.3
 
   packages/scesim-marshaller:
     dependencies:
