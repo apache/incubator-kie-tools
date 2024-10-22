@@ -8,6 +8,4 @@ dependencies:
   - name: management-console
     version: 0.0.0
     condition: management-console.enabled
-  - name: task-console
-    version: 0.0.0
-    condition: task-console.enabled
+  - version: 0.0.0
