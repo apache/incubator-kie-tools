@@ -1,0 +1,26 @@
+{
+  "private": true,
+  "name": "@kie-tools/kogito-db-migrator-tool-image",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "scripts": {
+    "build": "./build-container-image.sh",
+    "build:dev": "pnpm build",
+    "build:prod": "pnpm build",
+    "install": "node install.js"
+  },
+  "dependencies": {
+    "@kie-tools/kogito-db-migrator-tool": "workspace:*",
+    "@kie-tools/python-venv": "workspace:*",
+    "@kie-tools/root-env": "workspace:*"
+  }
+}
