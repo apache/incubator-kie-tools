@@ -114,7 +114,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: string,
     content: string
   ): Promise<void> {
-    const marshaller = this.getMarshaller(content);
+    const marshaller = this.getMarshaller(content || EMPTY_ONE_EIGHT);
 
     // Save stack
     let savedStackPointer: SceSimModel[] = [];
