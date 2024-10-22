@@ -18,7 +18,7 @@
  */
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import axios from "axios";
-import { User } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
+import { ANONYMOUS_USER, User } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface TaskFormGatewayApi {
@@ -34,7 +34,7 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
 
   doSubmit(userTask: UserTaskInstance, phase: string, payload: any): Promise<any> {
     return new Promise<any>((resolve, reject) => {
-      const endpoint = `${userTask.endpoint}?phase=${phase}&${getTaskEndpointSecurityParams(this.getCurrentUser())}`;
+      const endpoint = `${userTask.endpoint}?phase=${phase}&${getTaskEndpointSecurityParams(userTask, this.getCurrentUser())}`;
       axios
         .post(endpoint, payload, {
           headers: {
@@ -79,7 +79,7 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
   }
 }
 
-function getTaskSchemaEndPoint(task: UserTaskInstance, user: User): string {
+function getTaskSchemaEndPoint(task: UserTaskInstance, user?: User): string {
   let params = "";
   let endpoint = task.endpoint;
 
@@ -88,13 +88,17 @@ function getTaskSchemaEndPoint(task: UserTaskInstance, user: User): string {
     endpoint = endpoint!.slice(0, -(task.id.length + 1));
     endpoint = endpoint.replace(task.processInstanceId + "/", "");
   } else {
-    params = `?${getTaskEndpointSecurityParams(user)}`;
+    params = `?${getTaskEndpointSecurityParams(task, user)}`;
   }
 
   return `${endpoint}/schema${params}`;
 }
 
-function getTaskEndpointSecurityParams(user: User): string {
+function getTaskEndpointSecurityParams(task: UserTaskInstance, user?: User): string {
+  if (!user || user.id === ANONYMOUS_USER.id) {
+    return `user=${task.potentialUsers?.[0] ?? "admin"}`;
+  }
+
   let groups = "";
 
   if (user.groups && user.groups.length > 0) {
