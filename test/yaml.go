@@ -323,12 +323,13 @@ func getProjectDir() string {
 	return projectDir
 }
 
-func CreateFakeKnativeDiscoveryClient() discovery.DiscoveryInterface {
+func CreateFakeKnativeAndMonitoringDiscoveryClient() discovery.DiscoveryInterface {
 	return &discfake.FakeDiscovery{
 		Fake: &clienttesting.Fake{
 			Resources: []*metav1.APIResourceList{
 				{GroupVersion: "serving.knative.dev/v1"},
 				{GroupVersion: "eventing.knative.dev/v1"},
+				{GroupVersion: "monitoring.coreos.com/v1"},
 			},
 		},
 	}

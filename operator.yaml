@@ -1054,6 +1054,14 @@ spec:
                         type: string
                     type: object
                 type: object
+              monitoring:
+                description: Settings for Prometheus monitoring
+                properties:
+                  enabled:
+                    description: Enabled indicates whether monitoring with Prometheus
+                      metrics is enabled
+                    type: boolean
+                type: object
               persistence:
                 description: |-
                   Persistence defines the platform persistence configuration. When this field is set,
@@ -27727,6 +27735,17 @@ kind: ClusterRole
 metadata:
   name: sonataflow-operator-manager-role
 rules:
+- apiGroups:
+  - monitoring.coreos.com
+  resources:
+  - servicemonitors
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - update
+  - watch
 - apiGroups:
   - sonataflow.org
   resources:

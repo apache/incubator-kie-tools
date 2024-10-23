@@ -30,7 +30,6 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/client-go/discovery"
 	"k8s.io/client-go/rest"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
@@ -44,7 +43,6 @@ import (
 
 var servingClient clientservingv1.ServingV1Interface
 var eventingClient clienteventingv1.EventingV1Interface
-var discoveryClient discovery.DiscoveryInterface
 
 type Availability struct {
 	Eventing bool
@@ -92,23 +90,8 @@ func NewKnativeEventingClient(cfg *rest.Config) (*clienteventingv1.EventingV1Cli
 	return clienteventingv1.NewForConfig(cfg)
 }
 
-func getDiscoveryClient(cfg *rest.Config) (discovery.DiscoveryInterface, error) {
-	if discoveryClient == nil {
-		if cli, err := discovery.NewDiscoveryClientForConfig(cfg); err != nil {
-			return nil, err
-		} else {
-			discoveryClient = cli
-		}
-	}
-	return discoveryClient, nil
-}
-
-func SetDiscoveryClient(cli discovery.DiscoveryInterface) {
-	discoveryClient = cli
-}
-
 func GetKnativeAvailability(cfg *rest.Config) (*Availability, error) {
-	if cli, err := getDiscoveryClient(cfg); err != nil {
+	if cli, err := utils.GetDiscoveryClient(cfg); err != nil {
 		return nil, err
 	} else {
 		apiList, err := cli.ServerGroups()

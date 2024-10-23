@@ -26,9 +26,11 @@ import (
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/knative"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles/common"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
+	prometheus "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -50,7 +52,7 @@ func Test_Reconciler_ProdCustomPod(t *testing.T) {
 	client := test.NewSonataFlowClientBuilder().
 		WithRuntimeObjects(workflow, build, platform).
 		WithStatusSubresource(workflow, build, platform).Build()
-	knative.SetDiscoveryClient(test.CreateFakeKnativeDiscoveryClient())
+	utils.SetDiscoveryClient(test.CreateFakeKnativeAndMonitoringDiscoveryClient())
 	_, err := NewProfileReconciler(client, &rest.Config{}, test.NewFakeRecorder()).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 
@@ -82,7 +84,7 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 	client := test.NewSonataFlowClientBuilder().
 		WithRuntimeObjects(workflow, platform).
 		WithStatusSubresource(workflow, platform, &operatorapi.SonataFlowBuild{}).Build()
-	knative.SetDiscoveryClient(test.CreateFakeKnativeDiscoveryClient())
+	utils.SetDiscoveryClient(test.CreateFakeKnativeAndMonitoringDiscoveryClient())
 	result, err := NewProfileReconciler(client, &rest.Config{}, test.NewFakeRecorder()).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 
@@ -139,12 +141,13 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 func Test_deployWorkflowReconciliationHandler_handleObjects(t *testing.T) {
 	workflow := test.GetBaseSonataFlow(t.Name())
 	platform := test.GetBasePlatformInReadyPhase(t.Name())
+	platform.Spec.Monitoring = &operatorapi.PlatformMonitoringOptionsSpec{Enabled: true}
 	build := test.GetLocalSucceedSonataFlowBuild(workflow.Name, workflow.Namespace)
-	client := test.NewSonataFlowClientBuilder().
+	client := test.NewKogitoClientBuilderWithOpenShift().
 		WithRuntimeObjects(workflow, platform, build).
 		WithStatusSubresource(workflow, platform, build).
 		Build()
-	knative.SetDiscoveryClient(test.CreateFakeKnativeDiscoveryClient())
+	utils.SetDiscoveryClient(test.CreateFakeKnativeAndMonitoringDiscoveryClient())
 	handler := &deployWithBuildWorkflowState{
 		StateSupport: fakeReconcilerSupport(client),
 		ensurers:     NewObjectEnsurers(&common.StateSupport{C: client}),
@@ -153,7 +156,7 @@ func Test_deployWorkflowReconciliationHandler_handleObjects(t *testing.T) {
 	assert.Greater(t, result.RequeueAfter, int64(0))
 	assert.NoError(t, err)
 	assert.NotNil(t, result)
-	assert.Len(t, objects, 3)
+	assert.Len(t, objects, 4)
 
 	deployment := &appsv1.Deployment{}
 	err = client.Get(context.TODO(), clientruntime.ObjectKeyFromObject(workflow), deployment)
@@ -164,6 +167,18 @@ func Test_deployWorkflowReconciliationHandler_handleObjects(t *testing.T) {
 	assert.NoError(t, err)
 	assert.False(t, workflow.Status.IsReady())
 	assert.Equal(t, api.WaitingForDeploymentReason, workflow.Status.GetTopLevelCondition().Reason)
+
+	serviceMonitor := &prometheus.ServiceMonitor{}
+	err = client.Get(context.TODO(), clientruntime.ObjectKeyFromObject(workflow), serviceMonitor)
+	assert.NoError(t, err)
+	assert.NotEmpty(t, serviceMonitor.Spec)
+	assert.NotEmpty(t, serviceMonitor.Spec.Selector)
+	assert.Equal(t, len(serviceMonitor.Spec.Selector.MatchLabels), 2)
+	assert.Equal(t, serviceMonitor.Spec.Selector.MatchLabels[workflowproj.LabelWorkflow], workflow.Name)
+	assert.Equal(t, serviceMonitor.Spec.Selector.MatchLabels[workflowproj.LabelWorkflowNamespace], workflow.Namespace)
+	assert.Equal(t, len(serviceMonitor.Spec.Endpoints), 1)
+	assert.Equal(t, serviceMonitor.Spec.Endpoints[0].Port, "web")
+	assert.Equal(t, serviceMonitor.Spec.Endpoints[0].Path, "/q/metrics")
 }
 
 func Test_GenerationAnnotationCheck(t *testing.T) {
@@ -173,7 +188,7 @@ func Test_GenerationAnnotationCheck(t *testing.T) {
 	client := test.NewSonataFlowClientBuilder().
 		WithRuntimeObjects(workflow, platform).
 		WithStatusSubresource(workflow, platform, &operatorapi.SonataFlowBuild{}).Build()
-	knative.SetDiscoveryClient(test.CreateFakeKnativeDiscoveryClient())
+	utils.SetDiscoveryClient(test.CreateFakeKnativeAndMonitoringDiscoveryClient())
 	handler := &deployWithBuildWorkflowState{
 		StateSupport: fakeReconcilerSupport(client),
 		ensurers:     NewObjectEnsurers(&common.StateSupport{C: client}),

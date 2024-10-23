@@ -27,13 +27,13 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/cfg"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/version"
+	prometheus "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
+	"k8s.io/klog/v2/klogr"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
-
-	"k8s.io/klog/v2/klogr"
 
 	"k8s.io/klog/v2"
 
@@ -66,6 +66,7 @@ func init() {
 	utilruntime.Must(sourcesv1.AddToScheme(scheme))
 	utilruntime.Must(eventingv1.AddToScheme(scheme))
 	utilruntime.Must(servingv1.AddToScheme(scheme))
+	utilruntime.Must(prometheus.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 

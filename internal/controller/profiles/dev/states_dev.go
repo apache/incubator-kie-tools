@@ -34,6 +34,7 @@ import (
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/monitoring"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/platform"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles/common"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles/common/constants"
@@ -111,6 +112,14 @@ func (e *ensureRunningWorkflowState) Do(ctx context.Context, workflow *operatora
 	}
 	objs = append(objs, service)
 
+	serviceMonitor, err := e.ensureServiceMonitor(ctx, workflow, pl)
+	if err != nil {
+		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, objs, err
+	}
+	if serviceMonitor != nil {
+		objs = append(objs, serviceMonitor)
+	}
+
 	route, _, err := e.ensurers.network.Ensure(ctx, workflow)
 	if err != nil {
 		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, objs, err
@@ -140,6 +149,14 @@ func (e *ensureRunningWorkflowState) Do(ctx context.Context, workflow *operatora
 	}
 
 	return ctrl.Result{RequeueAfter: constants.RequeueAfterIsRunning}, objs, nil
+}
+
+func (e *ensureRunningWorkflowState) ensureServiceMonitor(ctx context.Context, workflow *operatorapi.SonataFlow, pl *operatorapi.SonataFlowPlatform) (client.Object, error) {
+	if monitoring.IsMonitoringEnabled(pl) {
+		serviceMonitor, _, err := e.ensurers.serviceMonitor.Ensure(ctx, workflow)
+		return serviceMonitor, err
+	}
+	return nil, nil
 }
 
 func (e *ensureRunningWorkflowState) PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error {

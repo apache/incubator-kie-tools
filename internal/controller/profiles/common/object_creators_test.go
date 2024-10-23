@@ -25,6 +25,7 @@ import (
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 	"github.com/magiconair/properties"
+	prometheus "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -940,4 +941,31 @@ func doTestDefaultContainer_WithPlatformPersistence(t *testing.T, workflow *v1al
 		//no persistence
 		assert.Nil(t, container.Env)
 	}
+}
+
+func TestEnsureWorkflowServiceMonitorIsCreatedWhenDeployedAsDeployment(t *testing.T) {
+	workflow := test.GetVetEventSonataFlow(t.Name())
+	assert.Equal(t, workflow.IsKnativeDeployment(), false)
+	serviceMonitor, err := ServiceMonitorCreator(workflow)
+	assert.NoError(t, err)
+	assert.NotNil(t, serviceMonitor)
+	serviceMonitor.SetUID("1")
+	serviceMonitor.SetResourceVersion("1")
+	reflectServiceMonitor := serviceMonitor.(*prometheus.ServiceMonitor)
+
+	assert.NotNil(t, reflectServiceMonitor)
+	assert.NotNil(t, reflectServiceMonitor.Spec)
+	assert.Equal(t, len(reflectServiceMonitor.Spec.Selector.MatchLabels), 2)
+	assert.Equal(t, reflectServiceMonitor.Spec.Selector.MatchLabels[workflowproj.LabelWorkflow], workflow.Name)
+	assert.Equal(t, reflectServiceMonitor.Spec.Selector.MatchLabels[workflowproj.LabelWorkflowNamespace], workflow.Namespace)
+	assert.Equal(t, reflectServiceMonitor.Spec.Endpoints[0].Port, k8sServicePortName)
+	assert.Equal(t, reflectServiceMonitor.Spec.Endpoints[0].Path, metricsServicePortPath)
+	assert.NotNil(t, reflectServiceMonitor.GetLabels())
+	assert.Equal(t, reflectServiceMonitor.ObjectMeta.Labels, map[string]string{
+		"app":                               workflow.Name,
+		"sonataflow.org/workflow-app":       workflow.Name,
+		"sonataflow.org/workflow-namespace": workflow.Namespace,
+		"app.kubernetes.io/name":            workflow.Name,
+		"app.kubernetes.io/component":       "serverless-workflow",
+		"app.kubernetes.io/managed-by":      "sonataflow-operator"})
 }

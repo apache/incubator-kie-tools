@@ -17,23 +17,36 @@
  * under the License.
  */
 
-package kubernetes
+package monitoring
 
 import (
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
-	corev1 "k8s.io/api/core/v1"
+	"k8s.io/client-go/rest"
 )
 
-func SecurityDefaults() *corev1.SecurityContext {
-	return &corev1.SecurityContext{
-		AllowPrivilegeEscalation: utils.Pbool(false),
-		Privileged:               utils.Pbool(false),
-		RunAsNonRoot:             utils.Pbool(true),
-		SeccompProfile: &corev1.SeccompProfile{
-			Type: corev1.SeccompProfileTypeRuntimeDefault,
-		},
-		Capabilities: &corev1.Capabilities{
-			Drop: []corev1.Capability{"ALL"},
-		},
+const (
+	prometheusGroup = "monitoring.coreos.com"
+)
+
+func GetPrometheusAvailability(cfg *rest.Config) (bool, error) {
+	cli, err := utils.GetDiscoveryClient(cfg)
+	if err != nil {
+		return false, err
 	}
+	apiList, err := cli.ServerGroups()
+	if err != nil {
+		return false, err
+	}
+	for _, group := range apiList.Groups {
+		if group.Name == prometheusGroup {
+			return true, nil
+		}
+
+	}
+	return false, nil
+}
+
+func IsMonitoringEnabled(pl *operatorapi.SonataFlowPlatform) bool {
+	return pl != nil && pl.Spec.Monitoring != nil && pl.Spec.Monitoring.Enabled
 }

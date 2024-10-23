@@ -63,6 +63,9 @@ type SonataFlowPlatformSpec struct {
 	// These properties MAY NOT be propagated to a SonataFlowClusterPlatform since PropertyVarSource can only refer local context sources.
 	// +optional
 	Properties *PropertyPlatformSpec `json:"properties,omitempty"`
+	// Settings for Prometheus monitoring
+	// +optional
+	Monitoring *PlatformMonitoringOptionsSpec `json:"monitoring,omitempty"`
 }
 
 // PlatformEventingSpec specifies the Knative Eventing integration details in the platform.
@@ -72,6 +75,15 @@ type PlatformEventingSpec struct {
 	// +optional
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="broker"
 	Broker *duckv1.Destination `json:"broker,omitempty"`
+}
+
+// PlatformMonitoringOptionsSpec specifies the settings for monitoring
+// +k8s:openapi-gen=true
+type PlatformMonitoringOptionsSpec struct {
+	// Enabled indicates whether monitoring with Prometheus metrics is enabled
+	// +optional
+	// +default: false
+	Enabled bool `json:"enabled,omitempty"`
 }
 
 // PlatformCluster is the kind of orchestration cluster the platform is installed into

@@ -23,8 +23,8 @@ import (
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/knative"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -43,7 +43,7 @@ func Test_Reconciler_ProdOps(t *testing.T) {
 		WithRuntimeObjects(workflow).
 		WithStatusSubresource(workflow, &operatorapi.SonataFlowBuild{}).Build()
 
-	knative.SetDiscoveryClient(test.CreateFakeKnativeDiscoveryClient())
+	utils.SetDiscoveryClient(test.CreateFakeKnativeAndMonitoringDiscoveryClient())
 
 	result, err := NewProfileForOpsReconciler(client, &rest.Config{}, test.NewFakeRecorder()).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)

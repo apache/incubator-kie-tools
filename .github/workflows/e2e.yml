@@ -17,6 +17,7 @@ env:
   PYTHON_VERSION: "3.10"
   KIND_VERSION: v0.20.0
   KNATIVE_VERSION: v1.12.5
+  PROMETHEUS_VERSION: v0.70.0
   OPERATOR_IMAGE_NAME: "127.0.0.1:5001/kogito-serverless-operator:0.0.1"
 
 jobs:
@@ -68,6 +69,9 @@ jobs:
       - name: Deploy Knative Eventing and Serving
         run: make KNATIVE_VERSION=${{ env.KNATIVE_VERSION }} deploy-knative
 
+      - name: Deploy Prometheus
+        run: make PROMETHEUS_VERSION=${{ env.PROMETHEUS_VERSION }} deploy-prometheus
+
       - name: Set OPERATOR_IMAGE_NAME to Point to Kind's Local Registry
         run: echo "OPERATOR_IMAGE_NAME=${{ env.OPERATOR_IMAGE_NAME }}" >> $GITHUB_ENV
 
@@ -91,6 +95,9 @@ jobs:
 
       - name: Run E2E Tests for Persistent Flows
         run: make test-e2e label=flows-persistence
+
+      - name: Run E2E Tests for Workflow Monitoring
+        run: make test-e2e label=flows-monitoring
 
       - name: Run E2E Tests for Platform
         run: make test-e2e label=platform

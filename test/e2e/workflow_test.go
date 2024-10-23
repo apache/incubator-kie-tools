@@ -136,9 +136,7 @@ var _ = Describe("Workflow Non-Persistence Use Cases :: ", Label("flows-ephemera
 				return err
 			}, 3*time.Minute, time.Second).Should(Succeed())
 		})
-
 	})
-
 })
 
 var _ = Describe("Workflow Persistence Use Cases :: ", Label("flows-persistence"), Ordered, func() {
@@ -168,7 +166,6 @@ var _ = Describe("Workflow Persistence Use Cases :: ", Label("flows-persistence"
 		}
 
 	})
-
 	DescribeTable("when deploying a SonataFlow CR with PostgreSQL persistence", func(testcaseDir string, withPersistence bool, waitKSinkInjection bool) {
 		By("Deploy the CR")
 		var manifests []byte
@@ -274,5 +271,96 @@ var _ = Describe("Workflow Persistence Use Cases :: ", Label("flows-persistence"
 		Entry("defined from the sonataflow platform as reference and without DI and JS", test.GetPathFromE2EDirectory("workflows", "persistence", "from_platform_without_di_and_js_services"), true, false),
 		Entry("defined from the sonataflow platform as reference but not required by the workflow", test.GetPathFromE2EDirectory("workflows", "persistence", "from_platform_with_no_persistence_required"), false, false),
 	)
+})
 
+var _ = Describe("Workflow Monitoring Use Cases :: ", Label("flows-monitoring"), Ordered, func() {
+
+	var targetNamespace string
+	BeforeEach(func() {
+		targetNamespace = fmt.Sprintf("test-%d", rand.Intn(randomIntRange)+1)
+		err := kubectlCreateNamespace(targetNamespace)
+		Expect(err).NotTo(HaveOccurred())
+	})
+	AfterEach(func() {
+		// Remove resources in test namespace
+		if !CurrentSpecReport().Failed() && len(targetNamespace) > 0 {
+			cmd := exec.Command("kubectl", "delete", "sonataflow", "--all", "-n", targetNamespace, "--wait")
+			_, err := utils.Run(cmd)
+			Expect(err).NotTo(HaveOccurred())
+			err = kubectlDeleteNamespace(targetNamespace)
+			Expect(err).NotTo(HaveOccurred())
+		}
+	})
+	Describe("basic workflow monitoring", func() {
+		It("should create servicemonitor for workflow deployed as k8s deployment when monitoring enabled in platform", func() {
+			By("Deploy the SonataFlowPlatform CR and the workflow")
+			var manifests []byte
+			EventuallyWithOffset(1, func() error {
+				var err error
+				cmd := exec.Command("kubectl", "kustomize", test.GetPathFromE2EDirectory("workflows", "prometheus", "k8s_deployment"))
+				manifests, err = utils.Run(cmd)
+				return err
+			}, time.Minute, time.Second).Should(Succeed())
+			cmd := exec.Command("kubectl", "create", "-n", targetNamespace, "-f", "-")
+			cmd.Stdin = bytes.NewBuffer(manifests)
+			_, err := utils.Run(cmd)
+			Expect(err).NotTo(HaveOccurred())
+
+			workflowName := prebuiltWorkflows.Greetings.Name
+			By("Replacing the image with a prebuilt one and rollout")
+			EventuallyWithOffset(1, func() error {
+				return kubectlPatchSonataFlowImageAndRollout(targetNamespace, workflowName, prebuiltWorkflows.Greetings.Tag)
+			}, 3*time.Minute, time.Second).Should(Succeed())
+
+			By("check the workflow is in running state")
+			EventuallyWithOffset(1, func() bool { return verifyWorkflowIsInRunningState(workflowName, targetNamespace) }, 10*time.Minute, 30*time.Second).Should(BeTrue())
+
+			By("Retrieve the name of the running pod for the workflow")
+			labels := fmt.Sprintf("sonataflow.org/workflow-app=%s,sonataflow.org/workflow-namespace=%s", workflowName, targetNamespace)
+			podName := waitForPodRestartCompletion(labels, targetNamespace)
+
+			By("check service monitor has been created")
+			EventuallyWithOffset(1, func() bool {
+				cmd := exec.Command("kubectl", "get", "servicemonitor", workflowName, "-n", targetNamespace)
+				_, err := utils.Run(cmd)
+				if err != nil {
+					GinkgoWriter.Println(fmt.Errorf("failed to get servicemonitor: %v", err))
+					return false
+				}
+				return true
+			}, 1*time.Minute, 5).Should(BeTrue())
+
+			By("trigger a new workflow instance")
+			EventuallyWithOffset(1, func() bool {
+				curlCmd := fmt.Sprintf("curl -X POST -H 'Content-Type: application/json' -H 'Accept: */*' -d '{\"workflowdata\": {}}' http://%s/%s", workflowName, workflowName)
+				cmd := exec.Command("kubectl", "exec", podName, "-c", "workflow", "-n", targetNamespace, "--", "/bin/bash", "-c", curlCmd)
+				resp, err := utils.Run(cmd)
+				if err != nil {
+					GinkgoWriter.Println(fmt.Errorf("failed to trigger workflow instance: %v", err))
+					return false
+				}
+				GinkgoWriter.Println(fmt.Errorf("Response: %v", string(resp)))
+				return strings.Contains(string(resp), "Hello World")
+			}, 2*time.Minute, 5).Should(BeTrue())
+
+			By("check prometheus server has workflow instance metrics")
+			EventuallyWithOffset(1, func() bool {
+				curlCmd := fmt.Sprintf("curl http://prometheus-operated.default:9090/api/v1/query --data-urlencode 'query=kogito_process_instance_duration_seconds_count{job=\"%s\",namespace=\"%s\"}'", workflowName, targetNamespace)
+				GinkgoWriter.Println(curlCmd)
+				cmd := exec.Command("kubectl", "exec", podName, "-c", "workflow", "-n", targetNamespace, "--", "/bin/bash", "-c", curlCmd)
+				resp, err := utils.Run(cmd)
+				if err != nil {
+					GinkgoWriter.Println(fmt.Errorf("failed to get metrics from prometheus server: %v", err))
+					return false
+				}
+				if val, err := getMetricValue(string(resp)); err != nil {
+					GinkgoWriter.Println(err)
+					return false
+				} else {
+					GinkgoWriter.Println("metric value found:", val)
+					return val == "1"
+				}
+			}, 5*time.Minute, 5).Should(BeTrue())
+		})
+	})
 })

@@ -25,7 +25,6 @@ import (
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/clusterplatform"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/knative"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/platform/services"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
@@ -874,7 +873,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		// Create a fake client to mock API calls.
 		cl := test.NewKogitoClientBuilderWithOpenShift().WithRuntimeObjects(ksp, broker).WithStatusSubresource(ksp, broker).Build()
 		utils.SetClient(cl)
-		knative.SetDiscoveryClient(test.CreateFakeKnativeDiscoveryClient())
+		utils.SetDiscoveryClient(test.CreateFakeKnativeAndMonitoringDiscoveryClient())
 		// Create a SonataFlowPlatformReconciler object with the scheme and fake client.
 		r := &SonataFlowPlatformReconciler{cl, cl, cl.Scheme(), &rest.Config{}, &record.FakeRecorder{}}
 
@@ -975,7 +974,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		// Create a fake client to mock API calls.
 		cl := test.NewKogitoClientBuilderWithOpenShift().WithRuntimeObjects(ksp, broker, brokerDataIndexSource, brokerJobsServiceSource, brokerJobsServiceSink).WithStatusSubresource(ksp, broker, brokerDataIndexSource, brokerJobsServiceSource, brokerJobsServiceSink).Build()
 		utils.SetClient(cl)
-		knative.SetDiscoveryClient(test.CreateFakeKnativeDiscoveryClient())
+		utils.SetDiscoveryClient(test.CreateFakeKnativeAndMonitoringDiscoveryClient())
 		// Create a SonataFlowPlatformReconciler object with the scheme and fake client.
 		r := &SonataFlowPlatformReconciler{cl, cl, cl.Scheme(), &rest.Config{}, &record.FakeRecorder{}}
 

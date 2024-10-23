@@ -25,6 +25,7 @@ import (
 	"time"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/knative"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/monitoring"
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 
 	"k8s.io/klog/v2"
@@ -134,6 +135,16 @@ func (r *SonataFlowPlatformReconciler) Reconcile(ctx context.Context, req reconc
 			return reconcile.Result{}, err
 		}
 		return reconcile.Result{}, nil
+	}
+
+	if monitoring.IsMonitoringEnabled(&instance) {
+		monitoringAvail, err := monitoring.GetPrometheusAvailability(r.Config)
+		if err != nil {
+			return reconcile.Result{}, err
+		}
+		if !monitoringAvail {
+			r.Recorder.Event(&instance, corev1.EventTypeWarning, "PrometheusNotAvailable", fmt.Sprintf("Monitoring is enabled in platform %s, but Prometheus is not installed", instance.Name))
+		}
 	}
 
 	for _, a := range actions {

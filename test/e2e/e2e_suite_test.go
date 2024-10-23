@@ -101,6 +101,10 @@ var _ = BeforeSuite(func() {
 	} else {
 		GinkgoWriter.Println("Fetch pre-built workflows images in the cluster")
 		err = fetchImageTagsBuiltWorkflows(workflows)
+		if err != nil {
+			GinkgoWriter.Println("Failed to fetch pre-built workflows images, try to build them")
+			err = deployWorkflowsAndWaitForBuild(workflows)
+		}
 		Expect(err).NotTo(HaveOccurred())
 	}
 

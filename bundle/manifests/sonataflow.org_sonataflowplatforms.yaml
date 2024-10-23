@@ -524,6 +524,14 @@ spec:
                         type: string
                     type: object
                 type: object
+              monitoring:
+                description: Settings for Prometheus monitoring
+                properties:
+                  enabled:
+                    description: Enabled indicates whether monitoring with Prometheus
+                      metrics is enabled
+                    type: boolean
+                type: object
               persistence:
                 description: |-
                   Persistence defines the platform persistence configuration. When this field is set,

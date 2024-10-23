@@ -15,55 +15,59 @@
 # specific language governing permissions and limitations
 # under the License.
 
+
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: prometheus
+spec:
+  serviceAccountName: prometheus
+  serviceMonitorNamespaceSelector: {}
+  serviceMonitorSelector: {}
+  podMonitorSelector: {}
+  resources:
+    requests:
+      memory: 400Mi
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: manager-role
+  name: prometheus
 rules:
-- apiGroups:
-  - monitoring.coreos.com
+- apiGroups: [""]
   resources:
-  - servicemonitors
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - update
-  - watch
-- apiGroups:
-  - sonataflow.org
+  - nodes
+  - nodes/metrics
+  - services
+  - endpoints
+  - pods
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
   resources:
-  - sonataflowbuilds
-  - sonataflowclusterplatforms
-  - sonataflowplatforms
-  - sonataflows
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
+  - configmaps
+  verbs: ["get"]
 - apiGroups:
-  - sonataflow.org
+  - networking.k8s.io
   resources:
-  - sonataflowbuilds/finalizers
-  - sonataflowclusterplatforms/finalizers
-  - sonataflowplatforms/finalizers
-  - sonataflows/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - sonataflow.org
-  resources:
-  - sonataflowbuilds/status
-  - sonataflowclusterplatforms/status
-  - sonataflowplatforms/status
-  - sonataflows/status
-  verbs:
-  - get
-  - patch
-  - update
+  - ingresses
+  verbs: ["get", "list", "watch"]
+- nonResourceURLs: ["/metrics"]
+  verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: prometheus
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prometheus
+subjects:
+- kind: ServiceAccount
+  name: prometheus
+  namespace: default

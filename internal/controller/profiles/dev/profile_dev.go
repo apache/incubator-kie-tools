@@ -78,6 +78,7 @@ func newObjectEnsurers(support *common.StateSupport) *objectEnsurers {
 	return &objectEnsurers{
 		deployment:            common.NewObjectEnsurerWithPlatform(support.C, deploymentCreator),
 		service:               common.NewObjectEnsurer(support.C, serviceCreator),
+		serviceMonitor:        common.NewObjectEnsurer(support.C, common.ServiceMonitorCreator),
 		network:               common.NewNoopObjectEnsurer(),
 		definitionConfigMap:   common.NewObjectEnsurer(support.C, workflowDefConfigMapCreator),
 		userPropsConfigMap:    common.NewObjectEnsurer(support.C, common.UserPropsConfigMapCreator),
@@ -89,6 +90,7 @@ func newObjectEnsurersOpenShift(support *common.StateSupport) *objectEnsurers {
 	return &objectEnsurers{
 		deployment:            common.NewObjectEnsurerWithPlatform(support.C, deploymentCreator),
 		service:               common.NewObjectEnsurer(support.C, serviceCreator),
+		serviceMonitor:        common.NewObjectEnsurer(support.C, common.ServiceMonitorCreator),
 		network:               common.NewObjectEnsurer(support.C, common.OpenShiftRouteCreator),
 		definitionConfigMap:   common.NewObjectEnsurer(support.C, workflowDefConfigMapCreator),
 		userPropsConfigMap:    common.NewObjectEnsurer(support.C, common.UserPropsConfigMapCreator),
@@ -111,6 +113,7 @@ func newStatusEnrichersOpenShift(support *common.StateSupport) *statusEnrichers 
 type objectEnsurers struct {
 	deployment            common.ObjectEnsurerWithPlatform
 	service               common.ObjectEnsurer
+	serviceMonitor        common.ObjectEnsurer
 	network               common.ObjectEnsurer
 	definitionConfigMap   common.ObjectEnsurer
 	userPropsConfigMap    common.ObjectEnsurer

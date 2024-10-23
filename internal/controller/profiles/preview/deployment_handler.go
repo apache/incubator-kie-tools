@@ -29,6 +29,7 @@ import (
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/monitoring"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/platform"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/platform/services"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles/common"
@@ -157,12 +158,21 @@ func (d *DeploymentReconciler) ensureObjects(ctx context.Context, workflow *oper
 		return reconcile.Result{}, nil, err
 	}
 
+	objs := []client.Object{deployment, managedPropsCM, service}
 	eventingObjs, err := common.NewKnativeEventingHandler(d.StateSupport, pl).Ensure(ctx, workflow)
 	if err != nil {
 		return reconcile.Result{}, nil, err
 	}
+	objs = append(objs, eventingObjs...)
 
-	objs := []client.Object{deployment, managedPropsCM, service}
+	serviceMonitor, err := d.ensureServiceMonitor(ctx, workflow, pl)
+	if err != nil {
+		return reconcile.Result{}, nil, err
+	}
+	if serviceMonitor != nil {
+		objs = append(objs, serviceMonitor)
+	}
+
 	if deploymentOp == controllerutil.OperationResultCreated {
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForDeploymentReason, "")
 		if _, err := d.PerformStatusUpdate(ctx, workflow); err != nil {
@@ -170,9 +180,15 @@ func (d *DeploymentReconciler) ensureObjects(ctx context.Context, workflow *oper
 		}
 		return reconcile.Result{RequeueAfter: constants.RequeueAfterFollowDeployment, Requeue: true}, objs, nil
 	}
-	objs = append(objs, eventingObjs...)
-
 	return reconcile.Result{}, objs, nil
+}
+
+func (d *DeploymentReconciler) ensureServiceMonitor(ctx context.Context, workflow *operatorapi.SonataFlow, pl *operatorapi.SonataFlowPlatform) (client.Object, error) {
+	if monitoring.IsMonitoringEnabled(pl) {
+		serviceMonitor, _, err := d.ensurers.ServiceMonitorByDeploymentModel(workflow).Ensure(ctx, workflow)
+		return serviceMonitor, err
+	}
+	return nil, nil
 }
 
 func (d *DeploymentReconciler) deploymentModelMutateVisitors(

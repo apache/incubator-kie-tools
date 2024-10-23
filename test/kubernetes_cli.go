@@ -25,6 +25,7 @@ import (
 	"testing"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
+	prometheus "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
@@ -103,6 +104,7 @@ func NewKogitoClientBuilderWithOpenShift() *SonataFlowClientBuilder {
 	utilruntime.Must(operatorapi.AddToScheme(s))
 	utilruntime.Must(eventingv1.AddToScheme(s))
 	utilruntime.Must(sourcesv1.AddToScheme(s))
+	utilruntime.Must(prometheus.AddToScheme(s))
 	builder := fake.NewClientBuilder().WithScheme(s)
 	return &SonataFlowClientBuilder{
 		innerBuilder: builder,

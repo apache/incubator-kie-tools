@@ -241,7 +241,36 @@ func verifySchemaMigration(data, name string) bool {
 			strings.Contains(data, fmt.Sprintf("Schema \"%s\" is up to date. No migration necessary", name)))
 }
 
-func waitForPodRestartCompletion(label, ns string) {
+func verifyKSinkInjection(label, ns string) bool {
+	cmd := exec.Command("kubectl", "get", "pod", "-n", ns, "-l", label, "-o", "jsonpath={.items[*].metadata.name}")
+	out, err := utils.Run(cmd)
+	if err != nil {
+		GinkgoWriter.Println(fmt.Errorf("failed to get pods: %v", err))
+		return false
+	}
+	podNames := strings.Fields(string(out))
+	if len(podNames) == 0 {
+		GinkgoWriter.Println("no pods found to check K_SINK")
+		return false // pods haven't created yet
+	}
+	GinkgoWriter.Println(fmt.Sprintf("pods found: %s", podNames))
+	for _, pod := range podNames {
+		cmd = exec.Command("kubectl", "get", "pod", pod, "-n", ns, "-o", "json")
+		out, err := utils.Run(cmd)
+		if err != nil {
+			GinkgoWriter.Println(fmt.Errorf("failed to get pod: %v", err))
+			return false
+		}
+		GinkgoWriter.Println(string(out))
+		if !strings.Contains(string(out), "K_SINK") { // The pod does not have K_SINK injected
+			GinkgoWriter.Println(fmt.Sprintf("Pod does not have K_SINK injected: %s", string(out)))
+			return false
+		}
+	}
+	return true
+}
+
+func waitForPodRestartCompletion(label, ns string) (podRunning string) {
 	EventuallyWithOffset(1, func() bool {
 		cmd := exec.Command("kubectl", "get", "pod", "-n", ns, "-l", label, "-o", "jsonpath={.items[*].metadata.name}")
 		out, err := utils.Run(cmd)
@@ -257,8 +286,11 @@ func waitForPodRestartCompletion(label, ns string) {
 			GinkgoWriter.Println("multiple pods found")
 			return false // multiple pods found, wait for other pods to terminate
 		}
+		podRunning = podNames[0]
 		return true
-	}, 1*time.Minute, 5).Should(BeTrue())
+	}, 10*time.Minute, 5).Should(BeTrue())
+
+	return
 }
 
 func verifyTrigger(triggers []operatorapi.SonataFlowPlatformTriggerRef, namePrefix, path, ns, broker string) error {
@@ -284,7 +316,7 @@ func verifyTriggerData(name, ns, path, broker string) error {
 	if len(data) == 3 && broker == data[0] && strings.HasSuffix(data[1], path) && data[2] == "True" {
 		return nil
 	}
-	return fmt.Errorf("failed to verify trigger %v, data=%s", name, string(out))
+	return fmt.Errorf("failed to verify trigger %v with namespace %v, path %v, broker %s, and received data=%s", name, ns, path, broker, string(out))
 }
 
 func verifySinkBinding(name, ns, broker string) error {
@@ -298,4 +330,73 @@ func verifySinkBinding(name, ns, broker string) error {
 		return nil
 	}
 	return fmt.Errorf("failed to verify sinkbinding %v, data=%s", name, string(out))
+}
+
+func getWorkflowId(resp string) (string, error) {
+	// First find the json data
+	ind1 := strings.Index(resp, "{")
+	ind2 := strings.LastIndex(resp, "}")
+	data := resp[ind1 : ind2+1]
+	// Retrieve the id from json data
+	m := make(map[string]interface{})
+	err := json.Unmarshal([]byte(data), &m)
+	if err != nil {
+		return "", err
+	}
+	if id, ok := m["id"].(string); ok {
+		return id, nil
+	}
+	return "", fmt.Errorf("failed to find workflow id")
+}
+
+func getMetricValue(resp string) (string, error) {
+	fmt.Println(resp)
+	ind1 := strings.Index(resp, "{")
+	ind2 := strings.LastIndex(resp, "}")
+	data := resp[ind1 : ind2+1]
+
+	// Retrieve the metric value from json data
+	m := make(map[string]interface{})
+	err := json.Unmarshal([]byte(data), &m)
+	if err != nil {
+		return "", err
+	}
+	result, ok := m["data"].(map[string]interface{})["result"]
+	if !ok {
+		return "", fmt.Errorf("no valid response data received")
+	}
+	metrics := result.([]interface{})
+	if len(metrics) == 0 {
+		return "", fmt.Errorf("no valid metric data retrieved")
+	}
+	metric := metrics[0]
+	values := metric.(map[string]interface{})["value"]
+	if val, ok := (values.([]interface{}))[1].(string); ok {
+		return val, nil
+	} else {
+		return "", fmt.Errorf("failed to get metric value")
+	}
+}
+
+func getPodNameAfterWorkflowInstCreation(name, ns string) (string, error) {
+	labels := fmt.Sprintf("sonataflow.org/workflow-app=%s,sonataflow.org/workflow-namespace=%s", name, ns)
+	cmd := exec.Command("kubectl", "get", "pod", "-n", ns, "-l", labels, "-o=jsonpath='{range .items[*]}{.metadata.name} {.status.conditions[?(@.type=='Ready')].status}{';'}{end}'")
+	fmt.Println(cmd.String())
+	out, err := utils.Run(cmd)
+	if err != nil {
+		return "", err
+	}
+	fmt.Println(string(out))
+	data := strings.Split(string(out), ";")
+	for _, line := range data {
+		res := strings.Fields(line)
+		if len(res) == 2 && strings.Contains(res[0], "-00002-deployment-") {
+			if res[1] == "True" {
+				return res[0], nil
+			} else {
+				return "", fmt.Errorf("pod %s is not ready=", res)
+			}
+		}
+	}
+	return "", fmt.Errorf("invalid data received: %s", string(out))
 }
