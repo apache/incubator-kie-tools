@@ -33,6 +33,7 @@ if [ -f "$SOURCE_FILE" ]; then
    # Build the container image
    cd ./cekit || exit
    cekit -v build "$CEKIT_BUILDER"
+   cd .. || exit
    rm -f $TARGET_FILE
 else
    echo "The file: $SOURCE_FILE not found. Please build kogito-db-migrator-tool package first before building the image."

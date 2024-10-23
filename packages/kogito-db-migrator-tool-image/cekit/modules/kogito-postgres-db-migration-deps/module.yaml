@@ -20,11 +20,6 @@ schema_version: 1
 name: kogito-postgres-db-migration-deps
 version: "1.0"
 artifacts:
-  - name: migration.sh
-    path: migration.sh
-    dest: /home/kogito
   - name: sonataflow-db-migrator-runner.jar
     path: sonataflow-db-migrator-runner.jar
     dest: /home/kogito
-execute:
-  - script: install

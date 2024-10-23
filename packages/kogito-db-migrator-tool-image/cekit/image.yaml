@@ -18,12 +18,12 @@
 #
 name: "docker.io/apache/incubator-kie-kogito-service-db-migration-postgresql"
 version: "999-SNAPSHOT"
-from: registry.access.redhat.com/ubi8/openjdk-17-runtime:1.19
+from: registry.access.redhat.com/ubi8/openjdk-17-runtime:1.20
 description: Flyway image for DI/JS database migration
 
 labels:
   - name: "org.kie.kogito.version"
-    value: "999-SNAPSHOT"
+    value: "### SET ME DURING BUILD PROCESS ###"
   - name: "maintainer"
     value: "Apache KIE <dev@kie.apache.org>"
   - name: "io.k8s.description"
@@ -35,11 +35,18 @@ labels:
 
 modules:
   repositories:
-    - path: modules
+    - name: sonataflow-image-common
+      path: ../../sonataflow-image-common/resources/modules/kogito-system-user
+    - name: kogito-db-migrator-tool-image
+      path: modules
   install:
+    - name: org.kie.kogito.system.user
     - name: kogito-postgres-db-migration-deps
 
 run:
   workdir: "/home/kogito"
   entrypoint:
-    - "/home/kogito/migration.sh"
+    - "java"
+  cmd:
+    - "-jar"
+    - "sonataflow-db-migrator-runner.jar"

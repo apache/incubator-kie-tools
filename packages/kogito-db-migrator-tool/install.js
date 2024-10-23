@@ -31,5 +31,3 @@ setupMavenConfigFile(
 `,
   { ignoreDefault: true } // Can't have special <repositories> configuration that only works inside this repo.
 );
-
-installMvnw();
