@@ -33,7 +33,6 @@ chartFiles.forEach((file) => {
   doc.setIn(["appVersion"], env.runtimeToolsConsolesHelmChart.tag);
   if (doc.getIn(["dependencies"])) {
     doc.setIn(["dependencies", "0", "version"], env.runtimeToolsConsolesHelmChart.tag);
-    doc.setIn(["dependencies", "1", "version"], env.runtimeToolsConsolesHelmChart.tag);
   }
   console.log(yaml.stringify(doc));
   fs.writeFileSync(file, yaml.stringify(doc), "utf8");
