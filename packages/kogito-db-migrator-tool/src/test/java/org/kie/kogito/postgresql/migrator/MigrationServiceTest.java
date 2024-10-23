@@ -35,7 +35,7 @@ public class MigrationServiceTest {
     @BeforeEach
     public void setupEach() {
         flyway = mock(Flyway.class);
-        when(flyway.migrate()).thenReturn(new MigrateResult("flywayVersion", "db", "schema", "postgres"));
+        when(flyway.migrate()).thenReturn(new MigrateResult("flywayVersion", "db", "schema"));
         when(flyway.clean()).thenReturn(new CleanResult("flywayVersion", "db"));
     }
 

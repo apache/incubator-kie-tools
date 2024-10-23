@@ -1,37 +1,61 @@
-# kogito-db-migrator-tool-image
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+     http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
 
-This is a cekit based image builder for the database migrator application. Details about the database migrator application are [here](../kogito-db-migrator-tool/README.md)
+# Kogito Postgres DB Migrator Tool Image
 
-## Build and Run container image locally
+This package contains the `Containerfile/Dockerfile` and scripts to build a container image for Kogito Postgres DB Migrator Tool. Details about the Kogito Postgres DB Migrator Tool can be found [here](../kogito-db-migrator-tool/README.md)
 
-You can build the cekit build of container image by using the provided image builder shell script
+## Additional requirements
 
-```shell
-./build-container-image.sh
+- docker
+
+## Build
+
+_NOTE_: Before performing this step, be sure that the Kogito Postgres DB Migrator Tool jar has been built and available for inclusion in the image.
+
+- Enable the image to be built:
+
+  ```bash
+  export KIE_TOOLS_BUILD__buildContainerImages=true
+  ```
+
+Run the following in the root folder of the repository to build the package:
+
+```bash
+pnpm -F @kie-tools/kogito-db-migrator-tool-image... build:prod
 ```
 
-_NOTE_: Before performing this step, be sure that the database migrator application jar has been built and available for inclusion in the image.
+- Then check if the image is correctly stored:
 
-Ensure the script completes without errors.
+  ```bash
+  docker images
+  ```
 
-Assuming you have a Postgres database running locally, e.g., a `di` database for data index and a `js` database for jobs service, you can run the image with the following command. Substitute appropriate values:
+## Run
 
-```shell
-podman run \
---env MIGRATE_DB_DATAINDEX=true \
---env QUARKUS_DATASOURCE_DATAINDEX_JDBC_URL=<data-index-db-url e.g. jdbc:postgresql://host.docker.internal:5432/di> \
---env QUARKUS_DATASOURCE_DATAINDEX_USERNAME=<data-index-db-user> \
---env QUARKUS_DATASOURCE_DATAINDEX_PASSWORD=<data-index-db-password> \
---env QUARKUS_FLYWAY_DATAINDEX_SCHEMAS=dataindex \
---env MIGRATE_DB_JOBSSERVICE=true \
---env QUARKUS_DATASOURCE_JOBSSERVICE_JDBC_URL=<jobs-service-db-url e.g. jdbc:postgresql://host.docker.internal:5432/js> \
---env QUARKUS_DATASOURCE_JOBSSERVICE_USERNAME=<jobs-service-db-user> \
---env QUARKUS_DATASOURCE_JOBSSERVICE_PASSWORD=<jobs-service-db-password> \
---env QUARKUS_FLYWAY_JOBSSERVICE_SCHEMAS=jobsservice \
-docker.io/apache/incubator-kie-kogito-service-db-migration-postgresql:999-SNAPSHOT
-```
+- Start up a clean container with:
 
-### Environment variables
+  ```bash
+    docker run docker.io/apache/incubator-kie-kogito-service-db-migration-postgresql:latest
+  ```
+
+## Customization
+
+1. Run a container with custom environment variables:
 
 | NAME                                    | DESCRIPTION                                                                      | DEFAULT                                   |
 | --------------------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------- |
@@ -45,3 +69,48 @@ docker.io/apache/incubator-kie-kogito-service-db-migration-postgresql:999-SNAPSH
 | QUARKUS_DATASOURCE_JOBSSERVICE_USERNAME | Jobs service database username                                                   | postgres                                  |
 | QUARKUS_DATASOURCE_JOBSSERVICE_PASSWORD | Jobs service database password                                                   | postgres                                  |
 | QUARKUS_FLYWAY_JOBSSERVICE_SCHEMAS      | Jobs service database schema                                                     | jobsservice                               |
+
+### Example
+
+An example to use diverse environment variables
+
+```bash
+   docker run \
+   --env MIGRATE_DB_DATAINDEX=true \
+   --env QUARKUS_DATASOURCE_DATAINDEX_JDBC_URL=<data-index-db-url e.g. jdbc:postgresql://host.docker.internal:5432/di> \
+   --env QUARKUS_DATASOURCE_DATAINDEX_USERNAME=<data-index-db-user> \
+   --env QUARKUS_DATASOURCE_DATAINDEX_PASSWORD=<data-index-db-password> \
+   --env QUARKUS_FLYWAY_DATAINDEX_SCHEMAS=dataindex \
+   --env MIGRATE_DB_JOBSSERVICE=true \
+   --env QUARKUS_DATASOURCE_JOBSSERVICE_JDBC_URL=<jobs-service-db-url e.g. jdbc:postgresql://host.docker.internal:5432/js> \
+   --env QUARKUS_DATASOURCE_JOBSSERVICE_USERNAME=<jobs-service-db-user> \
+   --env QUARKUS_DATASOURCE_JOBSSERVICE_PASSWORD=<jobs-service-db-password> \
+   --env QUARKUS_FLYWAY_JOBSSERVICE_SCHEMAS=jobsservice \
+   docker.io/apache/incubator-kie-kogito-service-db-migration-postgresql:999-SNAPSHOT
+```
+
+---
+
+Apache KIE (incubating) is an effort undergoing incubation at The Apache Software
+Foundation (ASF), sponsored by the name of Apache Incubator. Incubation is
+required of all newly accepted projects until a further review indicates that
+the infrastructure, communications, and decision making process have stabilized
+in a manner consistent with other successful ASF projects. While incubation
+status is not necessarily a reflection of the completeness or stability of the
+code, it does indicate that the project has yet to be fully endorsed by the ASF.
+
+Some of the incubating project’s releases may not be fully compliant with ASF
+policy. For example, releases may have incomplete or un-reviewed licensing
+conditions. What follows is a list of known issues the project is currently
+aware of (note that this list, by definition, is likely to be incomplete):
+
+- Hibernate, an LGPL project, is being used. Hibernate is in the process of
+  relicensing to ASL v2
+- Some files, particularly test files, and those not supporting comments, may
+  be missing the ASF Licensing Header
+
+If you are planning to incorporate this work into your product/project, please
+be aware that you will need to conduct a thorough licensing review to determine
+the overall implications of including this work. For the current status of this
+project through the Apache Incubator visit:
+https://incubator.apache.org/projects/kie.html

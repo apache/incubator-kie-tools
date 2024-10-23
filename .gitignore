@@ -351,6 +351,3 @@ examples/*/.idea
 **/*.jar
 # Apache RAT check excludes file
 !.rat-excludes
-
-# Jar files
-**/*.jar
