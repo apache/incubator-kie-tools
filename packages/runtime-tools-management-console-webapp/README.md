@@ -185,11 +185,11 @@ The milestones panel show the list of milestones present and their current state
 
 ![Milestones](./docs/milestones.png?raw=true "Milestones")
 
-## Working with the Task panel
+## Working with the Tasks panel
 
 The tasks panel shows a list of user tasks which are available for a process. Each column contains detailed information about the user task which are - _Name_, _Process_, _Priority_, _Status_, _Started_ and _Last update_. The columns are sortable.
 
-![Task Console](./docs/taskconsole.png?raw=true "TaskConsole")
+![Tasks](./docs/taskconsole.png?raw=true "Tasks")
 
 The task console consist of filters, which can be used to narrow down the search on a user task. There are two filters available
 

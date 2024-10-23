@@ -22,7 +22,7 @@ const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/b
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__kogitoDataIndexUrl: {
-      default: "http://localhost:8080/graphql",
+      default: "http://localhost:4000/graphql",
       description: "URL for the Data Index service",
     },
     RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__kogitoEnvMode: {
