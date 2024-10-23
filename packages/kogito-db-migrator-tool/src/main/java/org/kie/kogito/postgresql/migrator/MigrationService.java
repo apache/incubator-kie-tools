@@ -52,7 +52,7 @@ public class MigrationService {
         }
         flywayService.migrate();
         if (flywayService.info() != null) {
-            Log.info(flywayService.info().current().getVersion().toString());
+            Log.info("Migrated to version " + flywayService.info().current().toString());
         }
     }
 
