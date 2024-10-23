@@ -17,7 +17,7 @@
 
 # runtime-tools-consoles-helm-chart
 
-This chart can be used to deploy Task and Management consoles images on a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart can be used to deploy the Management Console image on a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Additional requirements
 

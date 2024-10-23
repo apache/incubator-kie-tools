@@ -48,7 +48,7 @@ const TaskFormContainer: React.FC<Props & OUIAProps> = ({
       driver={{
         doSubmit(phase?: string, payload?: any): Promise<any> {
           return gatewayApi
-            .doSubmit(userTask, phase, payload)
+            .doSubmitAsAnonymous(userTask, phase, payload)
             .then((result) => onSubmitSuccess(phase))
             .catch((error) => {
               const message = error.response ? error.response.data : error.message;
@@ -56,7 +56,7 @@ const TaskFormContainer: React.FC<Props & OUIAProps> = ({
             });
         },
         getTaskFormSchema(): Promise<Record<string, any>> {
-          return gatewayApi.getTaskFormSchema(userTask);
+          return gatewayApi.getTaskFormSchemaAsAnonymous(userTask);
         },
         getCustomForm(): Promise<Form> {
           return gatewayApi.getCustomForm(userTask);

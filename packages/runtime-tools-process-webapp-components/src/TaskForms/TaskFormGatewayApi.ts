@@ -24,17 +24,20 @@ import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 export interface TaskFormGatewayApi {
   getTaskFormSchema(userTask: UserTaskInstance): Promise<Record<string, any>>;
 
+  getTaskFormSchemaAsAnonymous(userTask: UserTaskInstance): Promise<Record<string, any>>;
+
   getCustomForm(userTask: UserTaskInstance): Promise<Form>;
 
   doSubmit(userTask: UserTaskInstance, phase: string, payload: any): Promise<any>;
+
+  doSubmitAsAnonymous(userTask: UserTaskInstance, phase: string, payload: any): Promise<any>;
 }
 
 export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
   constructor(private readonly getCurrentUser: () => User) {}
 
-  doSubmit(userTask: UserTaskInstance, phase: string, payload: any): Promise<any> {
+  submitTaskForm(endpoint: string, payload: any) {
     return new Promise<any>((resolve, reject) => {
-      const endpoint = `${userTask.endpoint}?phase=${phase}&${getTaskEndpointSecurityParams(userTask, this.getCurrentUser())}`;
       axios
         .post(endpoint, payload, {
           headers: {
@@ -53,9 +56,8 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
     });
   }
 
-  getTaskFormSchema(userTask: UserTaskInstance): Promise<Record<string, any>> {
+  fetchTaskFormSchema(endpoint: string) {
     return new Promise<Record<string, any>>((resolve, reject) => {
-      const endpoint = getTaskSchemaEndPoint(userTask, this.getCurrentUser());
       axios
         .get(endpoint, {
           headers: {
@@ -72,6 +74,26 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
         })
         .catch((error) => reject(error));
     });
+  }
+
+  doSubmit(userTask: UserTaskInstance, phase: string, payload: any): Promise<any> {
+    const endpoint = `${userTask.endpoint}?phase=${phase}&${getTaskEndpointSecurityParams(userTask, this.getCurrentUser())}`;
+    return this.submitTaskForm(endpoint, payload);
+  }
+
+  getTaskFormSchema(userTask: UserTaskInstance): Promise<Record<string, any>> {
+    const endpoint = getTaskSchemaEndPoint(userTask, this.getCurrentUser());
+    return this.fetchTaskFormSchema(endpoint);
+  }
+
+  doSubmitAsAnonymous(userTask: UserTaskInstance, phase: string, payload: any): Promise<any> {
+    const endpoint = `${userTask.endpoint}?phase=${phase}&${getTaskEndpointSecurityParams(userTask)}`;
+    return this.submitTaskForm(endpoint, payload);
+  }
+
+  getTaskFormSchemaAsAnonymous(userTask: UserTaskInstance): Promise<Record<string, any>> {
+    const endpoint = getTaskSchemaEndPoint(userTask);
+    return this.fetchTaskFormSchema(endpoint);
   }
 
   getCustomForm(userTask: UserTaskInstance): Promise<Form> {

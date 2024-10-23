@@ -25,7 +25,6 @@ A Helm chart to deploy Runtime Tools Consoles on Kubernetes
 
 | Repository | Name               | Version |
 | ---------- | ------------------ | ------- |
-|            |                    | 0.0.0   |
 |            | management-console | 0.0.0   |
 
 ## Values
