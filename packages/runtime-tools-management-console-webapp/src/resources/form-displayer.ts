@@ -16,15 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-.kogito-management-console__card-size {
-  height: 100%;
-  position: relative;
-}
+import { init } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/formDisplayer";
+import type { EnvelopeBusMessage } from "@kie-tools-core/envelope-bus/dist/api";
+import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 
-.kogito-management-console__full-size {
-  height: 100%;
-}
-
-.kogito-management-console__task-details-page {
-  margin-top: 21px;
-}
+init({
+  container: document.getElementById("displayer-app")!,
+  config: { containerType: ContainerType.IFRAME },
+  bus: {
+    postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, transfer?: any) {
+      window.parent.postMessage(message, "*", transfer);
+    },
+  },
+});

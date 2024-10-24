@@ -31,6 +31,7 @@ module.exports = async (webpackEnv) => {
   return merge(common(webpackEnv), {
     entry: {
       index: path.resolve(__dirname, "src", "index.tsx"),
+      "resources/form-displayer": "./src/resources/form-displayer.ts",
     },
     devServer: {
       static: {

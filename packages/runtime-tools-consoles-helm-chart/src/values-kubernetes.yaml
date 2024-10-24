@@ -17,11 +17,6 @@
 # under the License.
 #
 
-# Task Console application
-task-console:
-  ingress:
-    enabled: true
-
 # Management Console application
 management-console:
   ingress:

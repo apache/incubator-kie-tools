@@ -16,15 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-.kogito-management-console__card-size {
-  height: 100%;
-  position: relative;
-}
+import * as React from "react";
+import { OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { EmbeddedJobsManagement } from "@kie-tools/runtime-tools-process-enveloped-components/dist/jobsManagement";
+import {
+  JobsManagementGatewayApi,
+  useJobsManagementGatewayApi,
+} from "@kie-tools/runtime-tools-process-webapp-components/dist/JobsManagement";
 
-.kogito-management-console__full-size {
-  height: 100%;
-}
+const JobsContainer: React.FC<OUIAProps> = () => {
+  const gatewayApi: JobsManagementGatewayApi = useJobsManagementGatewayApi();
+  return <EmbeddedJobsManagement driver={gatewayApi} targetOrigin={window.location.origin} />;
+};
 
-.kogito-management-console__task-details-page {
-  margin-top: 21px;
-}
+export default JobsContainer;
