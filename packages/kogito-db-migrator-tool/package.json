@@ -1,0 +1,33 @@
+{
+  "private": true,
+  "name": "@kie-tools/kogito-db-migrator-tool",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "scripts": {
+    "build:dev": "./build-db-migrator-jar.sh true",
+    "build:prod": "./build-db-migrator-jar.sh false",
+    "install": "node install.js"
+  },
+  "dependencies": {
+    "@kie-tools/maven-base": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*",
+    "run-script-os": "^1.1.6"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "java",
+      "mvn"
+    ]
+  }
+}
