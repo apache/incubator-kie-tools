@@ -108,6 +108,14 @@
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>jetty-annotations</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>net.sourceforge.htmlunit</groupId>
+          <artifactId>htmlunit</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.ibm.icu</groupId>
+          <artifactId>icu4j</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
   </dependencies>

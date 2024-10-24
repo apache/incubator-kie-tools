@@ -28,8 +28,8 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
-import static com.ibm.icu.impl.Assert.fail;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 import static org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils.EXPRESSION_TEXT_PADDING;
 import static org.kie.workbench.common.dmn.client.widgets.grid.model.BaseHasDynamicHeightCell.DEFAULT_HEIGHT;
 
@@ -146,7 +146,7 @@ public abstract class BaseHasDynamicHeightCellTest<CELL extends BaseGridCell & H
             m.setAccessible(true);
             m.invoke(cell, value);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            fail(e);
+            fail(e.getMessage());
         }
     }
 }

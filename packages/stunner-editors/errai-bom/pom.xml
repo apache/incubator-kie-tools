@@ -564,6 +564,16 @@
         <groupId>org.gwtproject</groupId>
         <artifactId>gwt-dev</artifactId>
         <version>${gwt.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sourceforge.htmlunit</groupId>
+            <artifactId>htmlunit</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.ibm.icu</groupId>
+            <artifactId>icu4j</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>com.googlecode.gwtphonegap</groupId>
