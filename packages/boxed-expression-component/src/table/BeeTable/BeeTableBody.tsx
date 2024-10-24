@@ -25,6 +25,7 @@ import { BeeTableTdForAdditionalRow } from "./BeeTableTdForAdditionalRow";
 import { BeeTableTd } from "./BeeTableTd";
 import { BeeTableCoordinatesContextProvider } from "../../selection/BeeTableSelectionContext";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
+import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 
 export interface BeeTableBodyProps<R extends object> {
   /** Table instance */
@@ -55,6 +56,7 @@ export interface BeeTableBodyProps<R extends object> {
   rowWrapper?: React.FunctionComponent<React.PropsWithChildren<{ row: R; rowIndex: number }>>;
 
   isReadOnly: boolean;
+  evaluationHitsCountColumnIndex?: number;
 }
 
 export function BeeTableBody<R extends object>({
@@ -72,15 +74,24 @@ export function BeeTableBody<R extends object>({
   lastColumnMinWidth,
   rowWrapper,
   isReadOnly,
+  evaluationHitsCountColumnIndex,
 }: BeeTableBodyProps<R>) {
+  const { evaluationHitIds } = useBoxedExpressionEditor();
+  // const evaluationHitIds = ["_1FA12B9F-288C-42E8-B77F-BE2D3702B7B6", "_1FA12B9F-288C-42E8-B77F-BE2D3702B7B7"];
+
   const renderRow = useCallback(
     (row: ReactTable.Row<R>, rowIndex: number) => {
       reactTableInstance.prepareRow(row);
 
+      const rowKey = getRowKey(row);
+      const rowHitCount = evaluationHitIds?.filter((hitId) => hitId === rowKey).length!;
+      const rowClassName = rowKey + (rowHitCount > 0 ? " evaluation-highlights-row-overlay" : "");
       const renderTr = () => (
-        <tr className={rowKey} key={rowKey} data-testid={`kie-tools--bee--expression-row-${rowIndex}`}>
+        <tr className={rowClassName} key={rowKey} data-testid={`kie-tools--bee--expression-row-${rowIndex}`}>
           {row.cells.map((cell, cellIndex) => {
             const columnKey = getColumnKey(reactTableInstance.allColumns[cellIndex]);
+            const shouldDisplayEvaluationHitsCount =
+              rowHitCount !== undefined && cellIndex === evaluationHitsCountColumnIndex;
             return (
               <React.Fragment key={columnKey}>
                 {((cell.column.isRowIndexColumn && shouldRenderRowIndexColumn) || !cell.column.isRowIndexColumn) && (
@@ -104,6 +115,8 @@ export function BeeTableBody<R extends object>({
                       cellIndex === reactTableInstance.allColumns.length - 1 ? lastColumnMinWidth : undefined
                     }
                     isReadOnly={isReadOnly}
+                    shouldDisplayEvaluationHitsCount={shouldDisplayEvaluationHitsCount}
+                    evaluationHitsCount={rowHitCount}
                   />
                 )}
               </React.Fragment>
@@ -113,8 +126,6 @@ export function BeeTableBody<R extends object>({
       );
 
       const RowWrapper = rowWrapper;
-
-      const rowKey = getRowKey(row);
 
       return (
         <React.Fragment key={rowKey}>

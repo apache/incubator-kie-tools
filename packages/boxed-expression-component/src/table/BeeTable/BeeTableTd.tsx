@@ -49,6 +49,8 @@ export interface BeeTableTdProps<R extends object> {
   onDataCellClick?: (columnID: string) => void;
   onDataCellKeyUp?: (columnID: string) => void;
   isReadOnly: boolean;
+  shouldDisplayEvaluationHitsCount?: boolean;
+  evaluationHitsCount?: number;
 }
 
 export type HoverInfo =
@@ -73,6 +75,8 @@ export function BeeTableTd<R extends object>({
   onDataCellClick,
   onDataCellKeyUp,
   isReadOnly,
+  shouldDisplayEvaluationHitsCount,
+  evaluationHitsCount,
 }: BeeTableTdProps<R>) {
   const [isResizing, setResizing] = useState(false);
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
@@ -225,6 +229,12 @@ export function BeeTableTd<R extends object>({
     return onDataCellKeyUp?.(column.id);
   }, [column.id, onDataCellKeyUp]);
 
+  const evaluationHitsCountCss = shouldDisplayEvaluationHitsCount
+    ? (evaluationHitsCount ?? 0) > 0
+      ? "evaluation-hit-count-overlay-colored"
+      : "evaluation-hit-count-overlay-non-colored"
+    : "";
+
   return (
     <BeeTableCoordinatesContextProvider coordinates={coordinates}>
       <td
@@ -246,9 +256,11 @@ export function BeeTableTd<R extends object>({
         }}
       >
         {column.isRowIndexColumn ? (
-          <>{rowIndexLabel}</>
+          <div className={evaluationHitsCountCss} data-evaluation-hits-count={evaluationHitsCount}>
+            {rowIndexLabel}
+          </div>
         ) : (
-          <>
+          <div className={evaluationHitsCountCss} data-evaluation-hits-count={evaluationHitsCount}>
             {tdContent}
 
             {!isReadOnly && shouldRenderResizer && (
@@ -262,7 +274,7 @@ export function BeeTableTd<R extends object>({
                 setResizing={setResizing}
               />
             )}
-          </>
+          </div>
         )}
 
         {!isReadOnly &&
