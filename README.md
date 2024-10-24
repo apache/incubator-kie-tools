@@ -33,7 +33,7 @@ This repository contains tooling applications and libraries for KIE projects.
 
 ## Contribute
 
-- _Work in progress 🔨_
+To contribute to the project, check the [CONTRIBUTING.MD file](CONTRIBUTING.md).
 
 ## Build from source
 
