@@ -22,6 +22,9 @@ import { BuiltInTypes, DmnDefinitions, FeelVariables } from "@kie-tools/dmn-feel
 
 import * as Monaco from "@kie-tools-core/monaco-editor";
 import { Element } from "@kie-tools/feel-input-component/dist/themes/Element";
+import * as fs from "fs";
+import * as path from "path";
+import { getMarshaller } from "@kie-tools/dmn-marshaller";
 
 describe("Semantic Tokens Provider", () => {
   const cancellationTokenMock = {
@@ -286,6 +289,145 @@ ThatShouldFailWhenBreakLine`,
       }
     });
   });
+
+  describe("variables inside Decision Tables", () => {
+    const dmnModelWithIncludesPosixPathRelativeToTheTestFile =
+      "../tests-data/variables-inside-decision-tables/modelWithInclude.dmn";
+    const includedDmnModelPosixPathRelativeToTheTestFile =
+      "../tests-data/variables-inside-decision-tables/included.dmn";
+    const localModel = getDmnModelFromFilePath(dmnModelWithIncludesPosixPathRelativeToTheTestFile);
+    const includedModel = getDmnModelFromFilePath(includedDmnModelPosixPathRelativeToTheTestFile);
+
+    test("should recognize local nodes", async () => {
+      const expression = "LocalInput + LocalDecision";
+      const id = "_AEC3EEB0-8436-4767-A214-20FF5E5CB7BE";
+      const modelMock = createModelMockForExpression(expression);
+
+      const feelVariables = new FeelVariables(
+        localModel.definitions,
+        new Map([[includedModel.definitions["@_namespace"] ?? "", includedModel]])
+      );
+
+      const semanticTokensProvider = new SemanticTokensProvider(feelVariables, id, () => {});
+
+      const semanticMonacoTokens = await semanticTokensProvider.provideDocumentSemanticTokens(
+        modelMock as unknown as Monaco.editor.ITextModel,
+        null,
+        cancellationTokenMock
+      );
+
+      const expected = [
+        ...getMonacoSemanticToken({
+          startLineRelativeToPreviousLine: 0,
+          startIndexRelativeToPreviousStartIndex: 0,
+          tokenLength: "LocalInput".length,
+        }),
+        ...getMonacoSemanticToken({
+          startLineRelativeToPreviousLine: 0,
+          startIndexRelativeToPreviousStartIndex: "LocalInput".length + 3, // +3 because of the " + "
+          tokenLength: "LocalDecision".length,
+        }),
+      ];
+
+      for (let i = 0; i < expected.length; i++) {
+        expect(semanticMonacoTokens?.data[i]).toEqual(expected[i]);
+      }
+    });
+
+    test("should recognize included nodes", async () => {
+      const expression = "MyIncludedModel.MyDS(LocalInput) + MyIncludedModel.RemoteInput";
+      const id = "_206131ED-0B81-4013-980A-4BB2539A53D0";
+      const modelMock = createModelMockForExpression(expression);
+
+      const feelVariables = new FeelVariables(
+        localModel.definitions,
+        new Map([[includedModel.definitions["@_namespace"] ?? "", includedModel]])
+      );
+
+      const semanticTokensProvider = new SemanticTokensProvider(feelVariables, id, () => {});
+
+      const semanticMonacoTokens = await semanticTokensProvider.provideDocumentSemanticTokens(
+        modelMock as unknown as Monaco.editor.ITextModel,
+        null,
+        cancellationTokenMock
+      );
+
+      const expected = [
+        ...getMonacoSemanticToken({
+          startLineRelativeToPreviousLine: 0,
+          startIndexRelativeToPreviousStartIndex: 0,
+          tokenLength: "MyIncludedModel.MyDS".length,
+          tokenType: Element.FunctionCall,
+        }),
+        ...getMonacoSemanticToken({
+          startLineRelativeToPreviousLine: 0,
+          startIndexRelativeToPreviousStartIndex: "MyIncludedModel.MyDS".length + 1, // +1 because of the "("
+          tokenLength: "LocalInput".length,
+        }),
+        ...getMonacoSemanticToken({
+          startLineRelativeToPreviousLine: 0,
+          startIndexRelativeToPreviousStartIndex: "LocalInput".length + ") + ".length,
+          tokenLength: "MyIncludedModel.RemoteInput".length,
+        }),
+      ];
+
+      for (let i = 0; i < expected.length; i++) {
+        expect(semanticMonacoTokens?.data[i]).toEqual(expected[i]);
+      }
+    });
+
+    test("should recognize included nodes mixed with included nodes", async () => {
+      const expression = "MyIncludedModel.MyDS(LocalInput) + MyIncludedModel.RemoteInput + LocalInput + LocalDecision";
+      const id = "_18832484-9481-49BC-BD40-927CB9872C6B";
+      const modelMock = createModelMockForExpression(expression);
+
+      const feelVariables = new FeelVariables(
+        localModel.definitions,
+        new Map([[includedModel.definitions["@_namespace"] ?? "", includedModel]])
+      );
+
+      const semanticTokensProvider = new SemanticTokensProvider(feelVariables, id, () => {});
+
+      const semanticMonacoTokens = await semanticTokensProvider.provideDocumentSemanticTokens(
+        modelMock as unknown as Monaco.editor.ITextModel,
+        null,
+        cancellationTokenMock
+      );
+
+      const expected = [
+        ...getMonacoSemanticToken({
+          startLineRelativeToPreviousLine: 0,
+          startIndexRelativeToPreviousStartIndex: 0,
+          tokenLength: "MyIncludedModel.MyDS".length,
+          tokenType: Element.FunctionCall,
+        }),
+        ...getMonacoSemanticToken({
+          startLineRelativeToPreviousLine: 0,
+          startIndexRelativeToPreviousStartIndex: "MyIncludedModel.MyDS".length + 1, // +1 because of the "("
+          tokenLength: "LocalInput".length,
+        }),
+        ...getMonacoSemanticToken({
+          startLineRelativeToPreviousLine: 0,
+          startIndexRelativeToPreviousStartIndex: "LocalInput".length + ") + ".length,
+          tokenLength: "MyIncludedModel.RemoteInput".length,
+        }),
+        ...getMonacoSemanticToken({
+          startLineRelativeToPreviousLine: 0,
+          startIndexRelativeToPreviousStartIndex: "MyIncludedModel.RemoteInput".length + " + ".length,
+          tokenLength: "LocalInput".length,
+        }),
+        ...getMonacoSemanticToken({
+          startLineRelativeToPreviousLine: 0,
+          startIndexRelativeToPreviousStartIndex: "LocalInput".length + " + ".length,
+          tokenLength: "LocalDecision".length,
+        }),
+      ];
+
+      for (let i = 0; i < expected.length; i++) {
+        expect(semanticMonacoTokens?.data[i]).toEqual(expected[i]);
+      }
+    });
+  });
 });
 
 function getDmnModelWithContextEntry({
@@ -376,4 +518,12 @@ function createModelMockForExpression(expression: string) {
     getValue: jest.fn().mockReturnValue(expression),
     getLinesContent: jest.fn().mockReturnValue(expression.split("\n")),
   };
+}
+
+function getDmnModelFromFilePath(modelFilePosixPathRelativeToTheTestFile: string) {
+  const { parser } = getMarshaller(
+    fs.readFileSync(path.join(__dirname, modelFilePosixPathRelativeToTheTestFile), "utf-8"),
+    { upgradeTo: "latest" }
+  );
+  return parser.parse();
 }
