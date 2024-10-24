@@ -55,3 +55,6 @@ postgreSQLPersistenceExtensions:
   - groupId: org.kie
     artifactId: kie-addons-quarkus-persistence-jdbc
     version: 999-20240912-SNAPSHOT
+# If true, the workflow deployments will be configured to send accumulated workflow status change events to the Data
+# Index Service reducing the number of produced events. Set to false to send individual events.
+kogitoEventsGrouping: true

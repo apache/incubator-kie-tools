@@ -24,6 +24,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/cfg"
+
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -313,6 +315,48 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceDataSourceReactiveURL, ""))
 	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceStatusChangeEvents, ""))
 	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceStatusChangeEventsURL, ""))
+}
+
+func Test_appPropertyHandler_KogitoEventsGroupingTrueWithDevProfile(t *testing.T) {
+	doTestManagedPropsForKogitoEventsGrouping(t, metadata.DevProfile, true, false)
+}
+
+func Test_appPropertyHandler_KogitoEventsGroupingTrueWithPreviewProfile(t *testing.T) {
+	doTestManagedPropsForKogitoEventsGrouping(t, metadata.PreviewProfile, true, true)
+}
+
+func Test_appPropertyHandler_KogitoEventsGroupingTrueWithGitOpsProfile(t *testing.T) {
+	doTestManagedPropsForKogitoEventsGrouping(t, metadata.GitOpsProfile, true, true)
+}
+
+func Test_appPropertyHandler_KogitoEventsGroupingFalseWithDevProfile(t *testing.T) {
+	doTestManagedPropsForKogitoEventsGrouping(t, metadata.DevProfile, false, false)
+}
+
+func Test_appPropertyHandler_KogitoEventsGroupingFalseWithPreviewProfile(t *testing.T) {
+	doTestManagedPropsForKogitoEventsGrouping(t, metadata.PreviewProfile, false, false)
+}
+
+func Test_appPropertyHandler_KogitoEventsGroupingFalseWithGitOpsProfile(t *testing.T) {
+	doTestManagedPropsForKogitoEventsGrouping(t, metadata.GitOpsProfile, false, false)
+}
+
+func doTestManagedPropsForKogitoEventsGrouping(t *testing.T, profile metadata.ProfileType, kogitoEventsGrouping bool, shouldContain bool) {
+	currentKogitoEventGroupingValue := cfg.GetCfg().KogitoEventsGrouping
+	cfg.GetCfg().KogitoEventsGrouping = kogitoEventsGrouping
+	workflow := test.GetBaseSonataFlow("default")
+	setProfileInFlow(profile)(workflow)
+	platform := test.GetBasePlatform()
+	handler, err := NewManagedPropertyHandler(workflow, platform)
+	cfg.GetCfg().KogitoEventsGrouping = currentKogitoEventGroupingValue
+	assert.NoError(t, err)
+	generatedProps, propsErr := properties.LoadString(handler.Build())
+	assert.NoError(t, propsErr)
+	if shouldContain {
+		assertHasProperty(t, generatedProps, "kogito.events.grouping", "true")
+	} else {
+		assert.NotContains(t, generatedProps.Keys(), "kogito.events.grouping")
+	}
 }
 
 var _ = Describe("Platform properties", func() {

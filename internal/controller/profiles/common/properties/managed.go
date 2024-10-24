@@ -23,6 +23,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/cfg"
+
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles/common/persistence"
@@ -157,6 +159,7 @@ func NewManagedPropertyHandler(workflow *operatorapi.SonataFlow, platform *opera
 	if profiles.IsDevProfile(workflow) {
 		setDevProfileProperties(props)
 	}
+	setControllersConfigProperties(workflow, props)
 	props.Set(constants.KogitoUserTasksEventsEnabled, "false")
 	if platform != nil {
 		p, err := resolvePlatformWorkflowProperties(platform)
@@ -190,6 +193,12 @@ func NewManagedPropertyHandler(workflow *operatorapi.SonataFlow, platform *opera
 
 	handler.defaultManagedProperties = props
 	return handler.withKogitoServiceUrl(), nil
+}
+
+func setControllersConfigProperties(workflow *operatorapi.SonataFlow, props *properties.Properties) {
+	if !profiles.IsDevProfile(workflow) && cfg.GetCfg().KogitoEventsGrouping {
+		props.Set(constants.KogitoEventsGrouping, "true")
+	}
 }
 
 func setDevProfileProperties(props *properties.Properties) {

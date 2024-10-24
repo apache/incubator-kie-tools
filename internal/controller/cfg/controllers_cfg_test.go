@@ -54,6 +54,7 @@ func TestInitializeControllersCfgAt_ValidFile(t *testing.T) {
 		ArtifactId: "kie-addons-quarkus-persistence-jdbc",
 		Version:    "999-SNAPSHOT",
 	}, postgresExtensions[2])
+	assert.True(t, cfg.KogitoEventsGrouping)
 }
 
 func TestInitializeControllersCfgAt_FileNotFound(t *testing.T) {

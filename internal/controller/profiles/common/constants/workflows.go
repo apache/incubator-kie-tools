@@ -29,4 +29,5 @@ const (
 	QuarkusDevUICorsEnabled                  = "quarkus.dev-ui.cors.enabled"
 	QuarkusHttpCors                          = "quarkus.http.cors"
 	QuarkusHttpCorsOrigins                   = "quarkus.http.cors.origins"
+	KogitoEventsGrouping                     = "kogito.events.grouping"
 )

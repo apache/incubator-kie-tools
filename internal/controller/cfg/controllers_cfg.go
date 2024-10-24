@@ -71,6 +71,7 @@ type ControllersCfg struct {
 	SonataFlowDevModeImageTag       string `yaml:"sonataFlowDevModeImageTag,omitempty"`
 	BuilderConfigMapName            string `yaml:"builderConfigMapName,omitempty"`
 	PostgreSQLPersistenceExtensions []GAV  `yaml:"postgreSQLPersistenceExtensions,omitempty"`
+	KogitoEventsGrouping            bool   `yaml:"kogitoEventsGrouping,omitempty"`
 }
 
 // InitializeControllersCfg initializes the platform configuration for this instance.

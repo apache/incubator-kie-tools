@@ -38,11 +38,13 @@ const (
 	JobServiceLeaderCheckExpirationInSeconds        = "kogito.jobs-service.management.leader-check.expiration-in-seconds"
 	DefaultJobServiceLeaderCheckExpirationInSeconds = "60"
 
-	KogitoProcessInstancesEventsConnector       = "mp.messaging.outgoing.kogito-processinstances-events.connector"
-	KogitoProcessInstancesEventsMethod          = "mp.messaging.outgoing.kogito-processinstances-events.method"
-	KogitoProcessInstancesEventsURL             = "mp.messaging.outgoing.kogito-processinstances-events.url"
-	KogitoProcessInstancesEventsEnabled         = "kogito.events.processinstances.enabled"
-	KogitoProcessInstancesEventsPath            = "/processes"
+	KogitoProcessInstancesEventsConnector = "mp.messaging.outgoing.kogito-processinstances-events.connector"
+	KogitoProcessInstancesEventsMethod    = "mp.messaging.outgoing.kogito-processinstances-events.method"
+	KogitoProcessInstancesEventsURL       = "mp.messaging.outgoing.kogito-processinstances-events.url"
+	KogitoProcessInstancesEventsEnabled   = "kogito.events.processinstances.enabled"
+	KogitoProcessInstancesEventsPath      = "/processes"
+	// KogitoProcessInstancesMultiEventsPath Same value as KogitoProcessInstancesEventsPath intentionally
+	KogitoProcessInstancesMultiEventsPath       = "/processes"
 	KogitoProcessDefinitionsEventsConnector     = "mp.messaging.outgoing.kogito-processdefinitions-events.connector"
 	KogitoProcessDefinitionsEventsMethod        = "mp.messaging.outgoing.kogito-processdefinitions-events.method"
 	KogitoProcessDefinitionsEventsURL           = "mp.messaging.outgoing.kogito-processdefinitions-events.url"

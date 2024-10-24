@@ -35,3 +35,4 @@ postgreSQLPersistenceExtensions:
   - groupId: org.kie
     artifactId: kie-addons-quarkus-persistence-jdbc
     version: 999-SNAPSHOT
+kogitoEventsGrouping: true
