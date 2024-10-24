@@ -25,7 +25,6 @@ import { Element } from "@kie-tools/feel-input-component/dist/themes/Element";
 import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
-//import {getMarshaller} from "@kie-tools/dmn-marshaller/d"
 
 describe("Semantic Tokens Provider", () => {
   const cancellationTokenMock = {
@@ -292,15 +291,17 @@ ThatShouldFailWhenBreakLine`,
   });
 
   describe("variables inside Decision Tables", () => {
-    const dmnModelWithInclude = "../tests-data/variables-inside-decision-tables/modelWithInclude.dmn";
-    const includedDmnModel = "../tests-data/variables-inside-decision-tables/included.dmn";
+    const dmnModelWithIncludesPosixPathRelativeToTheTestFile =
+      "../tests-data/variables-inside-decision-tables/modelWithInclude.dmn";
+    const includedDmnModelPosixPathRelativeToTheTestFile =
+      "../tests-data/variables-inside-decision-tables/included.dmn";
+    const localModel = getDmnModelFromFilePath(dmnModelWithIncludesPosixPathRelativeToTheTestFile);
+    const includedModel = getDmnModelFromFilePath(includedDmnModelPosixPathRelativeToTheTestFile);
+
     test("should recognize local nodes", async () => {
       const expression = "LocalInput + LocalDecision";
       const id = "_AEC3EEB0-8436-4767-A214-20FF5E5CB7BE";
       const modelMock = createModelMockForExpression(expression);
-
-      const localModel = getDmnModelFromFilePath(dmnModelWithInclude);
-      const includedModel = getDmnModelFromFilePath(includedDmnModel);
 
       const feelVariables = new FeelVariables(
         localModel.definitions,
@@ -337,9 +338,6 @@ ThatShouldFailWhenBreakLine`,
       const expression = "MyIncludedModel.MyDS(LocalInput) + MyIncludedModel.RemoteInput";
       const id = "_206131ED-0B81-4013-980A-4BB2539A53D0";
       const modelMock = createModelMockForExpression(expression);
-
-      const localModel = getDmnModelFromFilePath(dmnModelWithInclude);
-      const includedModel = getDmnModelFromFilePath(includedDmnModel);
 
       const feelVariables = new FeelVariables(
         localModel.definitions,
@@ -382,9 +380,6 @@ ThatShouldFailWhenBreakLine`,
       const expression = "MyIncludedModel.MyDS(LocalInput) + MyIncludedModel.RemoteInput + LocalInput + LocalDecision";
       const id = "_18832484-9481-49BC-BD40-927CB9872C6B";
       const modelMock = createModelMockForExpression(expression);
-
-      const localModel = getDmnModelFromFilePath(dmnModelWithInclude);
-      const includedModel = getDmnModelFromFilePath(includedDmnModel);
 
       const feelVariables = new FeelVariables(
         localModel.definitions,
@@ -525,7 +520,10 @@ function createModelMockForExpression(expression: string) {
   };
 }
 
-function getDmnModelFromFilePath(filePath: string) {
-  const { parser } = getMarshaller(fs.readFileSync(path.join(__dirname, filePath), "utf-8"), { upgradeTo: "latest" });
+function getDmnModelFromFilePath(modelFilePosixPathRelativeToTheTestFile: string) {
+  const { parser } = getMarshaller(
+    fs.readFileSync(path.join(__dirname, modelFilePosixPathRelativeToTheTestFile), "utf-8"),
+    { upgradeTo: "latest" }
+  );
   return parser.parse();
 }
