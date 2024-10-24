@@ -16,8 +16,8 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-name: "docker.io/apache/incubator-kie-kogito-service-db-migration-postgresql"
-version: "999-SNAPSHOT"
+name: "docker.io/apache/kogito-db-migrator-tool"
+version: "main"
 from: registry.access.redhat.com/ubi8/openjdk-17-runtime:1.20
 description: Flyway image for DI/JS database migration
 
@@ -35,13 +35,10 @@ labels:
 
 modules:
   repositories:
-    - name: sonataflow-image-common
-      path: ../../sonataflow-image-common/resources/modules/kogito-system-user
-    - name: kogito-db-migrator-tool-image
-      path: modules
+    - path: modules
   install:
     - name: org.kie.kogito.system.user
-    - name: kogito-postgres-db-migration-deps
+    - name: org.kie.kogito.postgresql.db-migration-deps
 
 run:
   workdir: "/home/kogito"

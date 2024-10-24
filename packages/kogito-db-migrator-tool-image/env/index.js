@@ -17,4 +17,37 @@
  * under the License.
  */
 
-console.log("index.js");
+const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
+
+const rootEnv = require("@kie-tools/root-env/env");
+
+module.exports = composeEnv([rootEnv], {
+  vars: varsWithName({
+    KOGITO_DB_MIGRATOR_TOOL_IMAGE__registry: {
+      default: "docker.io",
+      description: "The image registry.",
+    },
+    KOGITO_DB_MIGRATOR_TOOL_IMAGE__account: {
+      default: "apache",
+      description: "The image registry account.",
+    },
+    KOGITO_DB_MIGRATOR_TOOL_IMAGE__name: {
+      default: "kogito-db-migrator-tool",
+      description: "The image name.",
+    },
+    KOGITO_DB_MIGRATOR_TOOL_IMAGE__buildTag: {
+      default: rootEnv.env.root.streamName,
+      description: "The image tag.",
+    },
+  }),
+  get env() {
+    return {
+      kogitoDbMigratorToolImage: {
+        registry: getOrDefault(this.vars.KOGITO_DB_MIGRATOR_TOOL_IMAGE__registry),
+        account: getOrDefault(this.vars.KOGITO_DB_MIGRATOR_TOOL_IMAGE__account),
+        name: getOrDefault(this.vars.KOGITO_DB_MIGRATOR_TOOL_IMAGE__name),
+        buildTag: getOrDefault(this.vars.KOGITO_DB_MIGRATOR_TOOL_IMAGE__buildTag),
+      },
+    };
+  },
+});

@@ -23,19 +23,14 @@ set -e
 
 CEKIT_BUILDER=docker
 SOURCE_FILE=/tmp/kogito-db-migrator-tool/sonataflow-db-migrator-0.0.0-runner.jar
-TARGET_FILE=./cekit/modules/kogito-postgres-db-migration-deps/sonataflow-db-migrator-runner.jar
+TARGET_FILE=./resources/modules/kogito-postgres-db-migration-deps/sonataflow-db-migrator-runner.jar
+CEKIT_DESCRIPTOR_FILE=build/kogito-db-migrator-tool-image.yaml
 
-if [ -f "$SOURCE_FILE" ]; then
-   echo "The file: $SOURCE_FILE found and will be used to build image."
-   rm -f $TARGET_FILE
-   cp $SOURCE_FILE $TARGET_FILE
+echo "The file: $SOURCE_FILE found and will be used to build image."
+rm -f $TARGET_FILE
+cp $SOURCE_FILE $TARGET_FILE
 
-   # Build the container image
-   cd ./cekit || exit
-   cekit -v build "$CEKIT_BUILDER"
-   cd .. || exit
-   rm -f $TARGET_FILE
-else
-   echo "The file: $SOURCE_FILE not found. Please build kogito-db-migrator-tool package first before building the image."
-   exit 1
-fi
+# Build the container image
+cekit --descriptor $CEKIT_DESCRIPTOR_FILE -v build "$CEKIT_BUILDER"
+cd .. || exit
+rm -f $TARGET_FILE

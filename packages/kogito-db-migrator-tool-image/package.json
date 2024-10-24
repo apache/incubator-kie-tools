@@ -13,14 +13,26 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
-    "build": "./build-container-image.sh",
+    "build": "pnpm copy-assets && pnpm image:build && rimraf build && rimraf target && rimraf dist-tests-e2e",
     "build:dev": "pnpm build",
     "build:prod": "pnpm build",
-    "install": "node install.js"
+    "copy-assets": "run-script-os",
+    "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources build && cp -R resources/* build",
+    "format": "prettier --write . --ignore-path=../../.prettierignore --ignore-path=../../.gitignore",
+    "image:build": "run-script-os",
+    "image:build:darwin:linux": "pnpm setup:env && ./resources/build-container-image.sh",
+    "image:build:win32": "echo \"Build skipped on Windows\"",
+    "install": "node install.js && pnpm format",
+    "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env kogitoDbMigratorToolImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env kogitoDbMigratorToolImage.account) KOGITO_IMAGE_NAME=$(build-env kogitoDbMigratorToolImage.name) KOGITO_IMAGE_TAG=$(build-env kogitoDbMigratorToolImage.buildTag) QUARKUS_PLATFORM_VERSION=$(build-env versions.quarkus) KOGITO_VERSION=$(build-env versions.kogito)"
   },
   "dependencies": {
     "@kie-tools/kogito-db-migrator-tool": "workspace:*",
     "@kie-tools/python-venv": "workspace:*",
-    "@kie-tools/root-env": "workspace:*"
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/sonataflow-image-common": "workspace:*",
+    "cross-env": "^7.0.3",
+    "replace-in-file": "^7.1.0",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
   }
 }

@@ -17,8 +17,8 @@
 # under the License.
 #
 schema_version: 1
-name: kogito-postgres-db-migration-deps
-version: "1.0"
+name: org.kie.kogito.postgresql.db-migration-deps
+version: "main"
 artifacts:
   - name: sonataflow-db-migrator-runner.jar
     path: sonataflow-db-migrator-runner.jar

@@ -24,7 +24,7 @@ setupMavenConfigFile(
   `
     --batch-mode
     -Dstyle.color=always
-    -Drevision=${env.devDeploymentQuarkusApp.version}
+    -Drevision=${env.kogitoDBMigratorTool.version}
     -Dversion.quarkus=${env.versions.quarkus}
     -Dversion.org.kie.kogito=${env.versions.kogito}
     -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
