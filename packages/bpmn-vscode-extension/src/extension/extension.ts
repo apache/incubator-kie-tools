@@ -23,6 +23,7 @@ import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
+import { generateFormsCommand } from "@kie-tools/form-code-generator-vscode-command/dist/generateFormCodeCommand";
 
 let backendProxy: VsCodeBackendProxy;
 
@@ -48,6 +49,12 @@ export function activate(context: vscode.ExtensionContext) {
     ]),
     backendProxy: backendProxy,
   });
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("extension.apache.kie.bpmnEditor.generateFormCode", async (args: any) =>
+      generateFormsCommand()
+    )
+  );
 
   KogitoVsCode.VsCodeRecommendation.showExtendedServicesRecommendation(context);
 

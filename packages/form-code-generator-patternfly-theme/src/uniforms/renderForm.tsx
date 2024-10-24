@@ -25,7 +25,7 @@ import unescape from "lodash/unescape";
 
 interface Args {
   id: string;
-  sanitizedId: string;
+  idWithoutInvalidTsVarChars?: string;
   disabled?: boolean;
   placeholder?: boolean;
   schema: Bridge;

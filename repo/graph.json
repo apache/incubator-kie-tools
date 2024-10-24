@@ -71,7 +71,9 @@
       { "id": "@kie-tools/xml-parser-ts-codegen" },
       { "id": "@kie-tools/xml-parser-ts" },
       { "id": "bpmn-vscode-extension" },
+      { "id": "@kie-tools/form-code-generator-vscode-command" },
       { "id": "@kie-tools/vscode-java-code-completion-extension-plugin" },
+      { "id": "@kie-tools/jbpm-form-code-generator-themes" },
       { "id": "@kie-tools/pmml-editor-marshaller" },
       { "id": "@kie-tools/stunner-editors-dmn-loader" },
       { "id": "chrome-extension-pack-kogito-kie-editors" },
@@ -133,7 +135,6 @@
       { "id": "@kie-tools/form-code-generator-bootstrap4-theme" },
       { "id": "@kie-tools/form-code-generator-patternfly-theme" },
       { "id": "@kie-tools/import-java-classes-component" },
-      { "id": "@kie-tools/jbpm-form-code-generator-themes" },
       { "id": "@kie-tools/runtime-tools-process-webapp-components" },
       { "id": "@kie-tools/runtime-tools-shared-webapp-components" },
       { "id": "@kie-tools/jobs-service-webapp" },
@@ -856,6 +857,11 @@
       },
       {
         "source": "bpmn-vscode-extension",
+        "target": "@kie-tools/form-code-generator-vscode-command",
+        "weight": 1
+      },
+      {
+        "source": "bpmn-vscode-extension",
         "target": "@kie-tools/kie-bc-editors",
         "weight": 1
       },
@@ -870,8 +876,23 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/form-code-generator-vscode-command",
+        "target": "@kie-tools/jbpm-form-code-generator-themes",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/vscode-java-code-completion-extension-plugin",
         "target": "@kie-tools/maven-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/jbpm-form-code-generator-themes",
+        "target": "@kie-tools/form-code-generator-bootstrap4-theme",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/jbpm-form-code-generator-themes",
+        "target": "@kie-tools/form-code-generator-patternfly-theme",
         "weight": 1
       },
       {
@@ -1640,16 +1661,6 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/jbpm-form-code-generator-themes",
-        "target": "@kie-tools/form-code-generator-bootstrap4-theme",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/jbpm-form-code-generator-themes",
-        "target": "@kie-tools/form-code-generator-patternfly-theme",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools/runtime-tools-process-webapp-components",
         "target": "@kie-tools/runtime-tools-process-enveloped-components",
         "weight": 1
@@ -1682,6 +1693,11 @@
       {
         "source": "kie-editors-dev-vscode-extension",
         "target": "@kie-tools-core/vscode-extension",
+        "weight": 1
+      },
+      {
+        "source": "kie-editors-dev-vscode-extension",
+        "target": "@kie-tools/form-code-generator-vscode-command",
         "weight": 1
       },
       {
@@ -2635,6 +2651,7 @@
     ["@kie-tools/form-code-generator", "packages/form-code-generator"],
     ["@kie-tools/form-code-generator-bootstrap4-theme", "packages/form-code-generator-bootstrap4-theme"],
     ["@kie-tools/form-code-generator-patternfly-theme", "packages/form-code-generator-patternfly-theme"],
+    ["@kie-tools/form-code-generator-vscode-command", "packages/form-code-generator-vscode-command"],
     ["@kie-tools/form-dmn", "packages/form-dmn"],
     ["@kie-tools-core/i18n", "packages/i18n"],
     ["@kie-tools/i18n-common-dictionary", "packages/i18n-common-dictionary"],

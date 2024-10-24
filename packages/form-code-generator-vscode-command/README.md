@@ -15,72 +15,26 @@
    under the License.
 -->
 
-## jBPM Form Code Generator
+## Form Code Generator VS Code command
 
-This package has two jBPM themes for the [form-code-generator](../form-code-generator/README.md) library. Both themes are extensions of the [Bootstrap4 theme](../form-code-generator-bootstrap4-theme/README.md) and [PatternFly theme](../form-code-generator-patternfly-theme/README.md), resulting in the jBPM Bootstrap4 theme and jBPM PatternFly theme respectively.
+This package is a VS Code command for generating form code from jBPM projects.
+
+## How it works?
+
+The command provides a user-friendly interface for generating form code from jBPM projects. It interacts with the file system getting the jBPM JSON Schemas that are generated during compile time, and feeding them to the "form-code-generator" that will generate the form code using one of two themes: Bootstrap4 or Patternfly.
 
 ## Usage
 
-To use it, pass the jBPM theme to the `generateFormCode` function:
+The command name will change depending on the host extension, but it should be available in the command palette. After starting the command, the user will be prompted with a few questions, which can be represented using the following diagram:
 
-```ts
-import { generateFormCode } from "@kie-tools/form-code-generator/dist/generateFormCode";
-import { jbpmPatternflyFormCodeGeneratorTheme } from "@kie-tools/jbpm-form-code-generator-themes/dist/jbpmPatternflyFormCodeGeneratorTheme";
-
-const jbpmFormsCode = generateFormCode({
-  formCodeGeneratorTheme: jbpmPatternflyFormCodeGeneratorTheme,
-  formSchemas: [
-    {
-      name: "<name>",
-      schema: {}, // Your JSON Schema
-    },
-  ],
-});
-```
-
-The `jbpmFormsCode` will give you the following object:
-
-```ts
-[{
-  formAsset: JbpmFormAssets | undefined
-  formError: FormCodeGenerationError | undefined
-}]
-```
-
-`JbpmFormAssets` is a object with the following properties:
-
-```ts
-{
-  name: string,                             // The form id
-  nameWithoutInvalidTsVarChars: string,     // The same value as "id" but any "#" occorrence is replaced by "_"
-  fileName: string,                         // The form name
-  fileNameWithoutInvalidVarChars: string,      // The same value as "assetName" but any "#" occorrence is replaced by "_"
-  fileExt: string,                          // The file extension of the code
-  content: string,                          // The unescaped form code
-  config: {
-    schema: string,                         // The stringifyied JSON Schema
-    resources: {
-      styles: {},                           // Any style that need to be loaded
-      scripts: {},                          // Any script that need to be loaded
-    },
-  },
-}
-```
-
-`FormCodeGenerationError` is a object with the following properties:
-
-```ts
-{
-  error: Error; // The error object that was thrown during the form generation
-}
-```
+![VS Code command diagram](./docs/vscode-command-diagram.png?raw=true "VS Code command diagram")
 
 ## Build
 
 In order to build the library you must run the following command in the root folder of the repository:
 
 ```shell script
-pnpm -F @kie-tools/jbpm-form-code-generator-themes... build:prod
+pnpm -F @kie-tools/form-code-generator-vscode-command... build:prod
 ```
 
 ---
