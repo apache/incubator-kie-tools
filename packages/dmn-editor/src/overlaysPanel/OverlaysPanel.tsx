@@ -24,6 +24,9 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Slider } from "@patternfly/react-core/dist/js/components/Slider";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { useLayoutEffect, useRef } from "react";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 
 const MIN_SNAP = 5;
 const MAX_SNAP = 50;
@@ -115,17 +118,6 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
       <Form
         onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Overlays Panel
       >
-        {/* <FormGroup label={"Highlight execution hits"}>
-          <Switch
-            aria-label={"Highlight execution hits"}
-            isChecked={diagram.overlays.enableExecutionHitsHighlights}
-            onChange={(newValue) =>
-              dmnEditorStoreApi.setState((state) => {
-                state.diagram.overlays.enableExecutionHitsHighlights = newValue;
-              })
-            }
-          />
-        </FormGroup> */}
         <FormGroup label={"Highlight selected node(s) hierarchy"}>
           <Switch
             aria-label={"Highlight selected node(s) hierarchy"}
@@ -155,6 +147,29 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
             onChange={(newValue) =>
               dmnEditorStoreApi.setState((state) => {
                 state.diagram.overlays.enableCustomNodeStyles = newValue;
+              })
+            }
+          />
+        </FormGroup>
+        <FormGroup
+          label={"Enable evaluation highlights"}
+          labelIcon={
+            <Tooltip
+              content={
+                "Enable highlighting Decision Table rules and Boxed Conditional Expression branches based on evaluation results, also showing success/error status badges on Decision nodes."
+              }
+            >
+              <Icon size="sm" status="info">
+                <HelpIcon />
+              </Icon>
+            </Tooltip>
+          }
+        >
+          <Switch
+            isChecked={diagram.overlays.enableEvaluationHighlights}
+            onChange={(newValue) =>
+              dmnEditorStoreApi.setState((state) => {
+                state.diagram.overlays.enableEvaluationHighlights = newValue;
               })
             }
           />
