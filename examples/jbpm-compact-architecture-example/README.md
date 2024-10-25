@@ -12,6 +12,8 @@ them. This is achieved using the following _Quarkus_ addons:
   _Data-Index_ database.
 - `kogito-addons-quarkus-jobs`: enables collocating the _Jobs Service_ inside the _Kogito Runtime_.
 
+---
+
 ### The _"Hiring"_ Process (BPMN)
 
 The process handles the following _Variables_:
@@ -157,6 +159,8 @@ public class Offer {
 }
 ```
 
+---
+
 ## Running
 
 ### Prerequisites
@@ -228,8 +232,10 @@ sh startContainers.sh example-only
 ```
 
 - **infra**: Starts only the minimal infrastructure to run the example (PostgreSQL, pgadmin, Kogito Data-Index)
-- **example-only**: Starts the services in _infra_ profile and this example's app. Requires the example to be compiled with `mvn clean package -Pcontainer`.
-- **full** (default): includes all the above and also starts the **Management Console** and **Keycloak** to handle the console authentication. Requires the example to be compiled with `mvn clean package -Pcontainer`.
+- **example-only**: Starts the services in _infra_ profile and this example's app. Requires the example to be compiled
+  with `mvn clean package -Pcontainer`.
+- **full** (default): includes all the above and also starts the **Management Console** and **Keycloak** to handle the
+  console authentication. Requires the example to be compiled with `mvn clean package -Pcontainer`.
 
 ### Running in Development mode
 
@@ -248,6 +254,8 @@ at http://localhost:8080/q/dev
 > **_NOTE:_** For more information about how to work with Process Quarkus Dev UI Extension, please refer to the
 > [Kogito Documentation](https://docs.kogito.kie.org/latest/html_single/#con-runtime-tools-dev-ui_kogito-developing-process-services)
 > page.
+
+---
 
 ## Using
 
@@ -376,7 +384,8 @@ application_.
 
 In this guide we'll see how to use the _Management Console_ to view the state of the Hiring process instances.
 
-1. With the example built and all the _Infrastructure Services_ running, let's start an instance of the \_Hiring_process.
+1. With the example built and all the _Infrastructure Services_ running, let's start an instance of the
+   \_Hiring_process.
    To do so, in a Terminal just run:
 
    ```bash
@@ -454,7 +463,8 @@ process _User Tasks_.
 
 > **_NOTE_**: For simplicity, all the _User Tasks_ are assigned to the user _jdoe_.
 
-1. With the example built and all the _Infrastructure Services_ running, let's start an instance of the \_Hiring_process.
+1. With the example built and all the _Infrastructure Services_ running, let's start an instance of the
+   \_Hiring_process.
    To do so, in a Terminal just run:
 
    ```bash
@@ -537,7 +547,8 @@ process _User Tasks_.
       </figure>
    </div>
 
-   With the _HR Interview_ task successfully completed the process has moved forward and reached the \_IT Interview_task.
+   With the _HR Interview_ task successfully completed the process has moved forward and reached the \_IT
+   Interview_task.
 
    Optionally, you can check the process instance state in the **Management Console** and verify the current
    execution path.

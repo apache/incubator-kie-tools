@@ -30,7 +30,6 @@ import {
   ouiaPageTypeAndObjectId,
 } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
-import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/components/PageSectionHeader";
 
 const TaskInboxPage: React.FC<OUIAProps> = (ouiaId, ouiaSafe) => {
   const appContext = useDevUIAppContext();
