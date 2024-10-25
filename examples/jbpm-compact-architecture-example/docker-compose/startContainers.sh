@@ -17,7 +17,7 @@ if [ -n "$1" ]; then
     echo "Unknown docker profile '$1'. The supported profiles are:"
     echo "* 'infra': Use this profile to start only the minimum infrastructure to run the example (postgresql, data-index & jobs-service)."
     echo "* 'example-only': Use this profile to start the example infrastructure and the kogito-example service. Requires the example to have been compiled using the 'container' profile (-Pcontainer)"
-    echo "* 'full' (default): Starts full example setup, including infrastructure (database, data-index & jobs-service), the kogito-example-service container, Managemenet Console, and Keycloak. Requires the example to have been compiled using the 'container' profile (-Pcontainer)"
+    echo "* 'full' (default): Starts full example setup, including infrastructure (database, data-index & jobs-service), the kogito-example-service container, Management Console, and Keycloak. Requires the example to have been compiled using the 'container' profile (-Pcontainer)"
     exit 1;
   fi
 fi
