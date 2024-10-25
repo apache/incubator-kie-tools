@@ -31,7 +31,7 @@ import { Card } from "@patternfly/react-core/dist/js/components/Card";
 
 const TasksPage: React.FC<OUIAProps> = (ouiaId, ouiaSafe) => {
   useEffect(() => {
-    return ouiaPageTypeAndObjectId("task-inbox-page");
+    return ouiaPageTypeAndObjectId("tasks-page");
   });
 
   return (
