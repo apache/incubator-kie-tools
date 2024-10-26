@@ -30,6 +30,7 @@ The process handles the following _Variables_:
 <div style="text-align:center">
    <figure>
       <img width=75%  src="docs/images/hiring_diagram.png" alt="Hiring Process Diagram">
+      <br/>
       <figcaption>Hiring Process Diagram</figcaption>
    </figure>
 </div>
@@ -46,6 +47,7 @@ variable.
 <div style="text-align:center">
    <figure>
       <img width=75%  src="docs/images/generate_offer_assignments.png" alt="Offer assignments">
+      <br/>
       <figcaption><b>Generate base Offer</b> data assignments</figcaption>
    </figure>
 </div>
@@ -57,7 +59,8 @@ will produce the `hr_approve` boolean and an updated `offer`.
 <div style="text-align:center">
    <figure>
       <img width=75%  src="docs/images/hr_interview_assignments.png" alt="HR Interview assignments">
-      <figcaption><b>HR Interviewr</b> task data assignments</figcaption>
+      <br/>
+      <figcaption><b>HR Interview</b> task data assignments</figcaption>
    </figure>
 </div>
 
@@ -76,7 +79,8 @@ but as an output will produce the `it_approve` boolean.
 <div style="text-align:center">
    <figure>
       <img width=75%  src="docs/images/it_interview_assignments.png" alt="IT Interview assignments">
-      <figcaption><b>IT Interviewr</b> task data assignments</figcaption>
+      <br/>
+      <figcaption><b>IT Interview</b> task data assignments</figcaption>
    </figure>
 </div>
 
@@ -99,6 +103,7 @@ has a requirement of a `CandidateData` _Input Data_.
 <div style="text-align:center">
    <figure>
       <img width=55%  src="docs/images/new_hiring_offer_dmn.png" alt="DMN Diagram">
+      <br/>
       <figcaption>New Hiring Offer DMN diagram</figcaption>
    </figure>
 </div>
@@ -110,6 +115,7 @@ The DMN defines the following data types (`tCandidateData` & `tOffer` ) matching
    <figure>
       <img width=49%  src="docs/images/new_hiring_offer_dmn_types_tCandidateData.png" alt="DMN Type Definitions">
       <img width=49%  src="docs/images/new_hiring_offer_dmn_types_tOffer.png" alt="DMN Type Definitions">
+      <br/>
       <figcaption>New Hiring Offer DMN types</figcaption>
    </figure>
 </div>
@@ -121,6 +127,7 @@ The `Offer` Decision uses the following _Boxed Expression_ to generate the `tOff
 <div style="text-align:center">
    <figure>
       <img width=75%  src="docs/images/new_hiring_offer_dmn_decision.png" alt="DMN Decision">
+      <br/>
       <figcaption><i>"New Hiring Offer"</i> DMN Decision</figcaption>
    </figure>
 </div>
@@ -411,6 +418,7 @@ In this guide we'll see how to use the _Management Console_ to view the state of
    <div style="text-align:center;">
       <figure>
          <img width=75%  src="docs/images/g1_1_mc_list.png" alt="Process List">
+         <br/>
          <figcaption><b>Process List</b> in <i>Management Console</i></figcaption>
       </figure>
    </div>
@@ -423,6 +431,7 @@ In this guide we'll see how to use the _Management Console_ to view the state of
    <div style="text-align:center">
       <figure>
          <img width=75%  src="docs/images/g1_2_mc_details.png" alt="Process Details">
+         <br/>
          <figcaption><b>Process Instance Details</b> page</figcaption>
       </figure>
    </div>
@@ -440,6 +449,7 @@ In this guide we'll see how to use the _Management Console_ to view the state of
    <div style="text-align:center">
       <figure>
          <img width=75%  src="docs/images/g1_3_mc_details_executed_job.png" alt="Process Details after timer">
+         <br/>
          <figcaption>Process Instance completed after the timer execution.</figcaption>
       </figure>
    </div>
@@ -489,6 +499,7 @@ process _User Tasks_.
    <div style="text-align:center;">
       <figure>
          <img width=75%  src="docs/images/g2_1_mc_list.png" alt="Process List"/>
+         <br/>
          <figcaption>Process List in <i>Management Console</i></figcaption>
       </figure>
    </div>
@@ -496,6 +507,7 @@ process _User Tasks_.
    <div style="text-align:center">
       <figure>
          <img width=75%  src="docs/images/g2_2_mc_details.png" alt="Process Details">
+         <br/>
          <figcaption>Process instance Details page.</figcaption>
       </figure>
    </div>
@@ -512,6 +524,7 @@ process _User Tasks_.
    <div style="text-align:center;">
       <figure>
          <img width=75%  src="docs/images/g2_3_tc_inbox.png" alt="Tasks page on Management Console"/>
+         <br/>
          <figcaption><b>Tasks</b> in <i>Management Console</i></figcaption>
       </figure>
    </div>
@@ -527,6 +540,7 @@ process _User Tasks_.
    <div style="text-align:center;">
       <figure>
          <img width=75%  src="docs/images/g2_4_tc_hr_form.png" alt="HR Interview Form"/>
+         <br/>
          <figcaption><i>HR Interview</i> <b>Task Form</b></figcaption>
       </figure>
    </div>
@@ -543,6 +557,7 @@ process _User Tasks_.
    <div style="text-align:center;">
       <figure>
          <img width=75%  src="docs/images/g2_5_tc_hr_form_notification.png" alt="HR Interview Form Notification"/>
+         <br/>
          <figcaption><i>HR Interview</i> Success notification!</figcaption>
       </figure>
    </div>
@@ -556,6 +571,7 @@ process _User Tasks_.
    <div style="text-align:center;">
       <figure>
          <img width=75%  src="docs/images/g2_6_mc_details.png" alt="Process Details"/>
+         <br/>
          <figcaption>Process Instance details stopped in <i>IT Interview</i></figcaption>
       </figure>
    </div>
@@ -567,6 +583,7 @@ process _User Tasks_.
    <div style="text-align:center;">
       <figure>
          <img width=75%  src="docs/images/g2_7_tc_inbox.png" alt="Tasks"/>
+         <br/>
          <figcaption><i>IT Interview</i> in <b>Tasks</b></figcaption>
       </figure>
    </div>
@@ -578,6 +595,7 @@ process _User Tasks_.
    <div style="text-align:center;">
       <figure>
          <img width=75%  src="docs/images/g2_8_tc_it_form.png" alt="IT Interview Form"/>
+         <br/>
          <figcaption><i>IT Interview</i> <b>Task Form</b></figcaption>
       </figure>
    </div>
@@ -591,6 +609,7 @@ process _User Tasks_.
    <div style="text-align:center;">
       <figure>
          <img width=75%  src="docs/images/g2_9_tc_inbox_empty.png" alt="Empty Tasks"/>
+         <br/>
          <figcaption>Empty **Tasks** after completing the *IT Interview* Task</figcaption>
       </figure>
    </div>
@@ -601,6 +620,7 @@ process _User Tasks_.
    <div style="text-align:center;">
       <figure>
          <img width=75%  src="docs/images/g2_10_mc_details_completed.png" alt="Hiring Process succesfully completed"/>
+         <br/>
          <figcaption>Hiring Process sucessfully completed</figcaption>
       </figure>
    </div>
