@@ -59,26 +59,27 @@ func NewMinifier(params *OpenApiMinifierParams) *OpenApiMinifier {
 }
 
 // Minify removes unused operations from OpenAPI specs based on the functions used in workflows.
-func (m *OpenApiMinifier) Minify() error {
+func (m *OpenApiMinifier) Minify() (map[string]string, error) {
 	if err := m.findWorkflowFile(); err != nil {
-		return err
+		return nil, err
 	}
 
 	m.findSubflowsFiles(m.params)
 
 	if err := m.processFunctions(); err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := m.validateSpecsFiles(); err != nil {
-		return err
+		return nil, err
 	}
 
-	if err := m.minifySpecsFiles(); err != nil {
-		return err
+	minifySpecsFiles, err := m.minifySpecsFiles()
+	if err != nil {
+		return nil, err
 	}
 
-	return nil
+	return minifySpecsFiles, nil
 }
 
 func (m *OpenApiMinifier) processFunctions() error {
@@ -132,25 +133,28 @@ func (m *OpenApiMinifier) validateSpecsFiles() error {
 	return nil
 }
 
-func (m *OpenApiMinifier) minifySpecsFiles() error {
+func (m *OpenApiMinifier) minifySpecsFiles() (map[string]string, error) {
+	minifySpecsFiles := map[string]string{}
 	for key, value := range m.operations {
-		if err := m.minifySpecsFile(key, value); err != nil {
-			return err
+		minifiedSpecName, err := m.minifySpecsFile(key, value)
+		if err != nil {
+			return nil, err
 		}
+		minifySpecsFiles[key] = minifiedSpecName
 	}
-	return nil
+	return minifySpecsFiles, nil
 }
 
-func (m *OpenApiMinifier) minifySpecsFile(specFileName string, operations sets.Set[string]) error {
+func (m *OpenApiMinifier) minifySpecsFile(specFileName string, operations sets.Set[string]) (string, error) {
 	specFile := filepath.Join(m.params.SpecsDir, specFileName)
 	data, err := os.ReadFile(specFile)
 	if err != nil {
-		return fmt.Errorf("❌ ERROR: failed to read OpenAPI document: %w", err)
+		return "", fmt.Errorf("❌ ERROR: failed to read OpenAPI document: %w", err)
 	}
 
 	doc, err := openapi3.NewLoader().LoadFromData(data)
 	if err != nil {
-		return fmt.Errorf("❌ ERROR: failed to load OpenAPI document: %w", err)
+		return "", fmt.Errorf("❌ ERROR: failed to load OpenAPI document: %w", err)
 	}
 	for key, value := range doc.Paths.Map() {
 		for method, operation := range value.Operations() {
@@ -165,20 +169,20 @@ func (m *OpenApiMinifier) minifySpecsFile(specFileName string, operations sets.S
 
 	minifiedFile, err := m.writeMinifiedFileToDisk(specFile, doc)
 	if err != nil {
-		return fmt.Errorf("❌ ERROR: failed to write minified file of %s : %w", specFile, err)
+		return "", fmt.Errorf("❌ ERROR: failed to write minified file of %s : %w", specFile, err)
 	}
 	finalSize, err := ValidateSpecsFileSize(minifiedFile)
 	if err != nil {
-		return fmt.Errorf("❌ ERROR: Minification of %s failed: %w", specFile, err)
+		return "", fmt.Errorf("❌ ERROR: Minification of %s failed: %w", specFile, err)
 	}
 
 	initialSize, err := os.Stat(specFile)
 	if err != nil {
-		return fmt.Errorf("❌ ERROR: failed to get file %s info: %w", specFile, err)
+		return "", fmt.Errorf("❌ ERROR: failed to get file %s info: %w", specFile, err)
 	}
 
 	fmt.Printf("✅ Minified file %s created with %d bytes (original size: %d bytes)\n", minifiedFile, finalSize, initialSize.Size())
-	return nil
+	return minifiedFile, nil
 }
 
 func (m *OpenApiMinifier) findWorkflowFile() error {

@@ -46,7 +46,7 @@ type DeployUndeployCmdConfig struct {
 	Profile                    string
 	Image                      string
 	SchemasFilesPath           []string
-	SpecsFilesPath             []string
+	SpecsFilesPath             map[string]string
 	SubFlowsFilesPath          []string
 	DashboardsPath             []string
 }
@@ -122,14 +122,14 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 	supportFileExtensions := []string{metadata.JSONExtension, metadata.YAMLExtension, metadata.YMLExtension}
 
 	fmt.Println("🔍 Looking for specs files...")
-	files, err = common.FindFilesWithExtensions(cfg.SpecsDir, supportFileExtensions)
+	minifiedfiles, err := common.NewMinifier(&common.OpenApiMinifierParams{
+		SpecsDir:    cfg.SpecsDir,
+		SubflowsDir: cfg.SubflowsDir,
+	}).Minify()
 	if err != nil {
-		return fmt.Errorf("❌ ERROR: failed to get supportFiles directory: %w", err)
+		return fmt.Errorf("❌ ERROR: failed to minify specs files: %w", err)
 	}
-	cfg.SpecsFilesPath = files
-	for _, file := range cfg.SpecsFilesPath {
-		fmt.Printf(" - ✅ Specs file found: %s\n", file)
-	}
+	cfg.SpecsFilesPath = minifiedfiles
 
 	fmt.Println("🔍 Looking for schema files...")
 	files, err = common.FindFilesWithExtensions(cfg.SchemasDir, supportFileExtensions)
@@ -186,8 +186,8 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 		handler.AddResourceAt(filepath.Base(supportFile), filepath.Base(cfg.SchemasDir), specIO)
 	}
 
-	for _, supportFile := range cfg.SpecsFilesPath {
-		specIO, err := common.MustGetFile(supportFile)
+	for supportFile, minifiedFile := range cfg.SpecsFilesPath {
+		specIO, err := common.MustGetFile(minifiedFile)
 		if err != nil {
 			return err
 		}

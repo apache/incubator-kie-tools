@@ -73,5 +73,6 @@ func runMinifyOpenApi() error {
 	}
 
 	minifier := common.NewMinifier(cfg)
-	return minifier.Minify()
+	_, err := minifier.Minify()
+	return err
 }
