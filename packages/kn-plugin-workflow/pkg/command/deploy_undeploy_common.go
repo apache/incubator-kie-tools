@@ -87,7 +87,7 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 	fmt.Println("\n🛠️  Generating your manifests...")
 
 	fmt.Println("🔍 Looking for your SonataFlow files...")
-	if file, err := findSonataFlowFile(workflowExtensionsType); err != nil {
+	if file, err := common.FindSonataFlowFile(workflowExtensionsType); err != nil {
 		return err
 	} else {
 		cfg.SonataFlowFile = file
@@ -232,29 +232,6 @@ func findApplicationPropertiesPath(directoryPath string) string {
 	}
 
 	return filePath
-}
-
-func findSonataFlowFile(extensions []string) (string, error) {
-
-	dir, err := os.Getwd()
-	if err != nil {
-		return "", fmt.Errorf("❌ ERROR: failed to get current directory: %w", err)
-	}
-
-	var matchingFiles []string
-	for _, ext := range extensions {
-		files, _ := filepath.Glob(filepath.Join(dir, "*."+ext))
-		matchingFiles = append(matchingFiles, files...)
-	}
-
-	switch len(matchingFiles) {
-	case 0:
-		return "", fmt.Errorf("❌ ERROR: no matching files found")
-	case 1:
-		return matchingFiles[0], nil
-	default:
-		return "", fmt.Errorf("❌ ERROR: multiple SonataFlow definition files found")
-	}
 }
 
 func setupConfigManifestPath(cfg *DeployUndeployCmdConfig) error {
