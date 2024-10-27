@@ -30,10 +30,16 @@ func SpecsCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "specs",
 		Short: "Set of utilities to work with specs",
-		Long:  "Set of utilities to work with specs",
+		Long: `
+	Minification of OpenAPI specs:
+	Minification allows us to reduce the size of an OpenAPI spec file, which is essential given the maximum YAML
+	size supported by Kubernetes is limited to 3,145,728 bytes.`,
+		Example: `
+	#Minify the workflow project's OpenAPI spec file located in the current project.
+	{{.Name}} specs minify openapi
+		`,
 	}
 
-	//add --help flag
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	cmd.AddCommand(minifyCommand())

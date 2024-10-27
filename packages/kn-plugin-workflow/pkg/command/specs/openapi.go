@@ -30,9 +30,22 @@ import (
 func minifyOpenApi() *cobra.Command {
 
 	var cmd = &cobra.Command{
-		Use:     "openapi",
-		Short:   "Minify the openAPI spec files to trim operations only used by the workflows",
-		Long:    "Minify the openAPI spec files to trim operations only used by the workflows",
+		Use:   "openapi",
+		Short: "Minify the openAPI spec files to trim operations only used by the workflows",
+		Long: `
+	Minification of OpenAPI specs:
+	Minification allows us to reduce the size of an OpenAPI spec file, which is essential given the maximum YAML
+	size supported by Kubernetes is limited to 3,145,728 bytes.`,
+		Example: `
+	#Minify the workflow project's OpenAPI spec file located in the current project.
+	{{.Name}} specs minify openapi
+
+	# Specify a custom subflows files directory. (default: ./subflows)
+	{{.Name}} specs minify openapi --subflows-dir=<full_directory_path>
+
+	# Specify a custom support specs directory. (default: ./specs)
+	{{.Name}} specs minify openapi --specs-dir=<full_directory_path>
+		`,
 		PreRunE: common.BindEnv("specs-dir", "subflows-dir"),
 	}
 

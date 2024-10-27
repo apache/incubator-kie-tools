@@ -156,6 +156,9 @@ func (m *OpenApiMinifier) minifySpecsFile(specFileName string, operations sets.S
 	if err != nil {
 		return "", fmt.Errorf("❌ ERROR: failed to load OpenAPI document: %w", err)
 	}
+	if doc.Paths == nil {
+		return "", fmt.Errorf("OpenAPI document %s has no paths", specFileName)
+	}
 	for key, value := range doc.Paths.Map() {
 		for method, operation := range value.Operations() {
 			if !operations.Has(operation.OperationID) {
