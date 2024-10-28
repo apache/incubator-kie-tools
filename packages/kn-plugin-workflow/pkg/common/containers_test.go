@@ -44,18 +44,18 @@ func TestCheckImageExists(t *testing.T) {
 		images   []string
 		expected bool
 	}{
-		{"docker.io/apache/incubator-kie-sonataflow-devmode:main", []string{"docker.io/apache/incubator-kie-sonataflow-devmode:main"}, true},
-		{"docker.io/apache/incubator-kie-sonataflow-devmode:main", []string{"apache/incubator-kie-sonataflow-devmode:main"}, true},
+		{"docker.io/example/app-image:latest", []string{"docker.io/example/app-image:latest"}, true},
+		{"docker.io/demo/service-image:1.0", []string{"demo/service-image:1.0"}, true},
 
-		{"docker.io/apache/incubator-kie-sonataflow-devmode", []string{"docker.io/apache/incubator-kie-sonataflow-devmode:latest"}, true},
-		{"docker.io/apache/incubator-kie-sonataflow-devmode", []string{"apache/incubator-kie-sonataflow-devmode:latest"}, true},
+		{"docker.io/testuser/sample-app", []string{"docker.io/testuser/sample-app:latest"}, true},
+		{"docker.io/testuser/sample-app", []string{"testuser/sample-app:latest"}, true},
 
-		{"apache/incubator-kie-sonataflow-devmode:main", []string{"docker.io/apache/incubator-kie-sonataflow-devmode:main"}, true},
-		{"apache/incubator-kie-sonataflow-devmode:main", []string{"apache/incubator-kie-sonataflow-devmode:main"}, true},
+		{"testuser/sample-app:dev", []string{"docker.io/testuser/sample-app:dev"}, true},
+		{"testuser/sample-app:dev", []string{"testuser/sample-app:dev"}, true},
 
-		{"docker.io/apache/incubator-kie-sonataflow-devmode:main", []string{"incubator-kie-sonataflow-devmode:main"}, false},
-		{"docker.io/apache/incubator-kie-sonataflow-devmode", []string{"incubator-kie-sonataflow-devmode:latest"}, false},
-		{"apache/incubator-kie-sonataflow-devmode:main", []string{"incubator-kie-sonataflow-devmode:main"}, false},
+		{"docker.io/example/app-image:latest", []string{"app-image:latest"}, false},
+		{"docker.io/testuser/sample-app", []string{"sample-app:latest"}, false},
+		{"testuser/sample-app:dev", []string{"sample-app:dev"}, false},
 	}
 
 	for _, test := range tests {
