@@ -35,7 +35,7 @@ const TaskInboxPage: React.FC<OUIAProps> = (ouiaId, ouiaSafe) => {
   const appContext = useDevUIAppContext();
   const user: string = appContext.getCurrentUser().id;
   useEffect(() => {
-    return ouiaPageTypeAndObjectId("task-inbox-page");
+    return ouiaPageTypeAndObjectId("tasks-page");
   });
 
   const renderTaskInbox = (): JSX.Element => {
@@ -46,18 +46,16 @@ const TaskInboxPage: React.FC<OUIAProps> = (ouiaId, ouiaSafe) => {
     <React.Fragment>
       <PageSection
         variant="light"
-        {...componentOuiaProps("header" + (ouiaId ? "-" + ouiaId : ""), "task-inbox-page", ouiaSafe)}
+        {...componentOuiaProps("header" + (ouiaId ? "-" + ouiaId : ""), "tasks-page", ouiaSafe)}
       >
         <Grid>
           <GridItem span={10}>
-            <PageTitle title="Task Inbox" />
+            <PageTitle title="Tasks" />
           </GridItem>
           <GridItem span={2}>{user.length > 0 && <TaskInboxSwitchUser user={user} />}</GridItem>
         </Grid>
       </PageSection>
-      <PageSection
-        {...componentOuiaProps("content" + (ouiaId ? "-" + ouiaId : ""), "task-inbox-page-section", ouiaSafe)}
-      >
+      <PageSection {...componentOuiaProps("content" + (ouiaId ? "-" + ouiaId : ""), "tasks-page-section", ouiaSafe)}>
         <Card className="Dev-ui__card-size">{renderTaskInbox()}</Card>
       </PageSection>
     </React.Fragment>
