@@ -40,7 +40,7 @@ export async function generateFormsCommand() {
     canSelectFiles: false,
     canSelectFolders: true,
     canSelectMany: false,
-    openLabel: "Select Project Folder",
+    title: "Select Project Folder",
     defaultUri: defaultPath ? vscode.Uri.file(defaultPath) : undefined,
   });
 
