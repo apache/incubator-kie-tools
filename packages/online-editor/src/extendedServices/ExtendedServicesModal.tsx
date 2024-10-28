@@ -41,6 +41,7 @@ import { ExtendedServicesStatus } from "./ExtendedServicesStatus";
 import { useRoutes } from "../navigation/Hooks";
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { useEnv } from "../env/hooks/EnvContext";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 enum ModalPage {
   INITIAL,
@@ -867,12 +868,12 @@ function ExtendedServicesPortForm() {
         <FormGroup
           fieldId={"extended-services-port"}
           label={i18n.dmnRunner.modal.wizard.advancedSettings.label}
-          validated={
-            config.port === "" || parseInt(config.port, 10) < 0 || parseInt(config.port, 10) > 65353
-              ? "error"
-              : "success"
-          }
-          helperTextInvalid={i18n.dmnRunner.modal.wizard.advancedSettings.helperTextInvalid}
+          // validated={
+          //   config.port === "" || parseInt(config.port, 10) < 0 || parseInt(config.port, 10) > 65353
+          //     ? "error"
+          //     : "success"
+          // }
+          // helperTextInvalid={i18n.dmnRunner.modal.wizard.advancedSettings.helperTextInvalid}
         >
           <TextInput
             value={config.port}
@@ -883,6 +884,15 @@ function ExtendedServicesPortForm() {
               })
             }
           />
+          <HelperText>
+            {config.port === "error" ? (
+              <HelperTextItem variant="error" icon={<ExclamationCircleIcon />}>
+                {i18n.dmnRunner.modal.wizard.advancedSettings.helperTextInvalid}
+              </HelperTextItem>
+            ) : (
+              <HelperTextItem icon={config.port === "success"}></HelperTextItem>
+            )}
+          </HelperText>
         </FormGroup>
       </Form>
     </>

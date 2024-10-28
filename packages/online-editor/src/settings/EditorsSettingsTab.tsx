@@ -31,7 +31,7 @@ export function EditorsSettingsTab() {
   const settingsDispatch = useSettingsDispatch();
 
   const onChange = useCallback(
-    (isChecked: boolean) => {
+    (event, isChecked: boolean) => {
       settingsDispatch.set((settings) => {
         settings.editors.useLegacyDmnEditor = isChecked;
       });

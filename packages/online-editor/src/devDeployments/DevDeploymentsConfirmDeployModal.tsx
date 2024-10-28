@@ -39,6 +39,7 @@ import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { DevDeploymentsTokensList } from "./DevDeploymentsTokensList";
+import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
 
 interface Props {
   workspaceFile: WorkspaceFile;
@@ -186,11 +187,11 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
             return (
               <FormGroup
                 key={parameter.id}
-                helperText={
-                  <small>
-                    <i>{parameter.description}</i>
-                  </small>
-                }
+                // helperText={
+                //   <small>
+                //     <i>{parameter.description}</i>
+                //   </small>
+                // }
               >
                 <Checkbox
                   id={parameter.id}
@@ -200,6 +201,13 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
                   isChecked={Boolean(deploymentParameters[parameter.id])}
                   onChange={(_event, checked) => updateParameters(parameter, checked)}
                 />
+                <FormHelperText>
+                  <HelperText>
+                    <HelperTextItem>
+                      <i>{parameter.description}</i>
+                    </HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
               </FormGroup>
             );
           } else if (parameter.type === "text") {
@@ -207,11 +215,11 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
               <FormGroup
                 label={<b>{parameter.name}:</b>}
                 key={parameter.id}
-                helperText={
-                  <small>
-                    <i>{parameter.description}</i>
-                  </small>
-                }
+                // helperText={
+                //   <small>
+                //     <i>{parameter.description}</i>
+                //   </small>
+                // }
               >
                 <TextArea
                   id={parameter.id}
@@ -220,6 +228,13 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
                   onChange={(_event, value) => updateParameters(parameter, value)}
                   autoResize={true}
                 />
+                <FormHelperText>
+                  <HelperText>
+                    <HelperTextItem>
+                      <i>{parameter.description}</i>
+                    </HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
               </FormGroup>
             );
           } else if (parameter.type === "number") {
@@ -227,11 +242,11 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
               <FormGroup
                 label={<b>{parameter.name}:</b>}
                 key={parameter.id}
-                helperText={
-                  <small>
-                    <i>{parameter.description}</i>
-                  </small>
-                }
+                // helperText={
+                //   <small>
+                //     <i>{parameter.description}</i>
+                //   </small>
+                // }
               >
                 <TextInput
                   id={parameter.id}
@@ -240,6 +255,13 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
                   type="number"
                   onChange={(_event, value) => updateParameters(parameter, Number(value))}
                 />
+                <FormHelperText>
+                  <HelperText>
+                    <HelperTextItem>
+                      <i>{parameter.description}</i>
+                    </HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
               </FormGroup>
             );
           }

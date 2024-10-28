@@ -72,7 +72,7 @@ export function DmnRunnerDrawerPanelContent() {
 
   const formInputs: InputRow = useMemo(() => inputs[currentInputIndex], [inputs, currentInputIndex]);
 
-  const onResize = useCallback((width: number) => {
+  const onResize = useCallback((event: MouseEvent | TouchEvent, width: number) => {
     // FIXME: PatternFly bug. The first interaction without resizing the splitter will result in width === 0.
     if (width === 0) {
       return;

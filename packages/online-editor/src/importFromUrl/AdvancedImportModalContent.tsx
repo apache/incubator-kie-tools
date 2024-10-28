@@ -40,6 +40,7 @@ import { useOnlineI18n } from "../i18n";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
+import { HelperText, HelperTextItem, Icon } from "@patternfly/react-core";
 
 export interface AdvancedImportModalRef {
   open(): void;
@@ -159,7 +160,9 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                           aria-describedby="disable-tls-validation-field"
                           className="pf-v5-c-form__group-label-help"
                         >
-                          <HelpIcon noVerticalAlign />
+                          <Icon isInline>
+                            <HelpIcon />
+                          </Icon>
                         </button>
                       </Popover>
                     </>
@@ -174,16 +177,16 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                 fieldId="url"
                 label="URL"
                 isRequired={true}
-                helperTextInvalid={props.validation.helperTextInvalid}
-                helperTextInvalidIcon={<ExclamationCircleIcon />}
-                helperText={
-                  props.validation.option !== ValidatedOptions.success ? (
-                    props.validation.helperText
-                  ) : (
-                    <FormHelperText />
-                  )
-                }
-                validated={props.validation.option}
+                // helperTextInvalid={props.validation.helperTextInvalid}
+                // helperTextInvalidIcon={<ExclamationCircleIcon />}
+                // helperText={
+                //   props.validation.option !== ValidatedOptions.success ? (
+                //     props.validation.helperText
+                //   ) : (
+                //     <FormHelperText />
+                //   )
+                // }
+                // validated={props.validation.option}
               >
                 <TextInput
                   type="text"
@@ -193,13 +196,26 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                   value={props.url}
                   onChange={(_event, value) => props.setUrl(value)}
                 />
+                <HelperText>
+                  {props.validation.helperTextInvalid === "error" ? (
+                    <HelperTextItem variant="error" icon={<ExclamationCircleIcon />}>
+                      {props.validation.option !== ValidatedOptions.success ? (
+                        props.validation.helperText
+                      ) : (
+                        <FormHelperText />
+                      )}
+                    </HelperTextItem>
+                  ) : (
+                    <HelperTextItem icon={props.validation.option}></HelperTextItem>
+                  )}
+                </HelperText>
               </FormGroup>
               <FormGroup
                 style={!isPotentiallyGit(props.clonableUrl.clonableUrl.type) ? { visibility: "hidden" } : {}}
                 fieldId="gitRefName"
                 label="Branch/Tag"
                 isRequired={true}
-                helperText={<FormHelperText>Loading...</FormHelperText>}
+                // helperText={<FormHelperText>Loading...</FormHelperText>}
               >
                 <Select
                   isDisabled={props.validation.option !== ValidatedOptions.success}
@@ -228,6 +244,11 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                       </SelectGroup>
                     ))}
                 </Select>
+                <HelperText>
+                  <HelperTextItem variant="error" icon={ValidatedOptions.default}>
+                    {<FormHelperText>Loading...</FormHelperText>}
+                  </HelperTextItem>
+                </HelperText>
               </FormGroup>
             </Form>
             <br />

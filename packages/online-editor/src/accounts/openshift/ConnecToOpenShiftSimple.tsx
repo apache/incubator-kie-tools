@@ -45,6 +45,7 @@ import {
   isKubernetesConnectionValid,
 } from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
+import { Icon } from "@patternfly/react-core";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -106,28 +107,28 @@ export function ConnecToOpenShiftSimple(props: {
   const onClearToken = useCallback(() => props.setConnection({ ...props.connection, token: "" }), [props]);
 
   const onHostChanged = useCallback(
-    (newValue: string) => {
+    (event: React.FormEvent<HTMLInputElement>, newValue: string) => {
       props.setConnection({ ...props.connection, host: newValue });
     },
     [props]
   );
 
   const onNamespaceChanged = useCallback(
-    (newValue: string) => {
+    (event: React.FormEvent<HTMLInputElement>, newValue: string) => {
       props.setConnection({ ...props.connection, namespace: newValue });
     },
     [props]
   );
 
   const onTokenChanged = useCallback(
-    (newValue: string) => {
+    (event: React.FormEvent<HTMLInputElement>, newValue: string) => {
       props.setConnection({ ...props.connection, token: newValue });
     },
     [props]
   );
 
   const onInsecurelyDisableTlsCertificateValidationChange = useCallback(
-    (checked: boolean) => {
+    (event: React.FormEvent<HTMLInputElement>, checked: boolean) => {
       props.setConnection({ ...props.connection, insecurelyDisableTlsCertificateValidation: checked });
     },
     [props]
@@ -195,7 +196,9 @@ export function ConnecToOpenShiftSimple(props: {
                 aria-describedby="namespace-field"
                 className="pf-v5-c-form__group-label-help"
               >
-                <HelpIcon noVerticalAlign />
+                <Icon isInline>
+                  <HelpIcon />
+                </Icon>
               </button>
             </Popover>
           }
@@ -238,7 +241,9 @@ export function ConnecToOpenShiftSimple(props: {
                 aria-describedby="host-field"
                 className="pf-v5-c-form__group-label-help"
               >
-                <HelpIcon noVerticalAlign />
+                <Icon isInline>
+                  <HelpIcon />
+                </Icon>{" "}
               </button>
             </Popover>
           }
@@ -280,7 +285,9 @@ export function ConnecToOpenShiftSimple(props: {
                 aria-describedby="token-field"
                 className="pf-v5-c-form__group-label-help"
               >
-                <HelpIcon noVerticalAlign />
+                <Icon isInline>
+                  <HelpIcon />
+                </Icon>{" "}
               </button>
             </Popover>
           }

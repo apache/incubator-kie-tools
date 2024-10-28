@@ -45,6 +45,7 @@ import {
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { AuthOptionsType, getBitbucketClient } from "../../bitbucket/Hooks";
 import { useEnv } from "../../env/hooks/EnvContext";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 export const BITBUCKET_OAUTH_TOKEN_SIZE = 40;
@@ -298,11 +299,11 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
             })}
             <FormGroup
               isRequired={true}
-              helperTextIcon={validation.helperTextIcon}
-              helperTextInvalidIcon={validation.helperTextInvalidIcon}
-              helperTextInvalid={validation.helperTextInvalid}
-              helperText={validation.helperText}
-              validated={validation.validated}
+              // helperTextIcon={validation.helperTextIcon}
+              // helperTextInvalidIcon={validation.helperTextInvalidIcon}
+              // helperTextInvalid={validation.helperTextInvalid}
+              // helperText={validation.helperText}
+              // validated={validation.validated}
               label={i18n.connectToGitModal[props.authProvider.type].form.token.label}
               fieldId={"github-pat"}
             >
@@ -318,6 +319,15 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
                 onPaste={(e) => setTokenInput(e.clipboardData.getData("text/plain").slice(0, tokenSize()))}
                 autoFocus={true}
               />
+              <HelperText>
+                {validation.validated === "error" ? (
+                  <HelperTextItem variant="error" icon={validation.helperTextInvalidIcon}>
+                    {validation.helperTextInvalid}
+                  </HelperTextItem>
+                ) : (
+                  <HelperTextItem icon={validation.helperTextIcon}>{validation.helperText}</HelperTextItem>
+                )}
+              </HelperText>
             </FormGroup>
           </Form>
           <br />

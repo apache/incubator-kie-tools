@@ -43,6 +43,7 @@ import {
 } from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
 import { KubernetesSettingsTabMode } from "./ConnectToKubernetesSection";
 import ArrowRightIcon from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
+import { Icon } from "@patternfly/react-core";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -114,21 +115,21 @@ export function ConnectToKubernetesSimple(props: {
   const onClearToken = useCallback(() => props.setConnection({ ...props.connection, token: "" }), [props]);
 
   const onHostChanged = useCallback(
-    (newValue: string) => {
+    (event: React.FormEvent<HTMLInputElement>, newValue: string) => {
       props.setConnection({ ...props.connection, host: newValue });
     },
     [props]
   );
 
   const onNamespaceChanged = useCallback(
-    (newValue: string) => {
+    (event: React.FormEvent<HTMLInputElement>, newValue: string) => {
       props.setConnection({ ...props.connection, namespace: newValue });
     },
     [props]
   );
 
   const onTokenChanged = useCallback(
-    (newValue: string) => {
+    (event: React.FormEvent<HTMLInputElement>, newValue: string) => {
       props.setConnection({ ...props.connection, token: newValue });
     },
     [props]
@@ -232,7 +233,9 @@ export function ConnectToKubernetesSimple(props: {
                 aria-describedby="namespace-field"
                 className="pf-v5-c-form__group-label-help"
               >
-                <HelpIcon noVerticalAlign />
+                <Icon isInline>
+                  <HelpIcon />
+                </Icon>
               </button>
             </Popover>
           }
@@ -275,7 +278,9 @@ export function ConnectToKubernetesSimple(props: {
                 aria-describedby="host-field"
                 className="pf-v5-c-form__group-label-help"
               >
-                <HelpIcon noVerticalAlign />
+                <Icon isInline>
+                  <HelpIcon />
+                </Icon>
               </button>
             </Popover>
           }
@@ -317,7 +322,9 @@ export function ConnectToKubernetesSimple(props: {
                 aria-describedby="token-field"
                 className="pf-v5-c-form__group-label-help"
               >
-                <HelpIcon noVerticalAlign />
+                <Icon isInline>
+                  <HelpIcon />
+                </Icon>
               </button>
             </Popover>
           }

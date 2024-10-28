@@ -31,6 +31,7 @@ import {
   CommitMessageValidationService,
 } from "../commitMessageValidationService/CommitMessageValidationService";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 const CommitValidationErrorMessages = (props: { validations?: string[] }) => {
   if (!props.validations) {
@@ -118,8 +119,8 @@ export const WorkspaceCommitModal: PromiseModalChildren<string, WorkspaceCommitM
       <Form onSubmit={onSubmit}>
         <FormGroup
           fieldId={"kie-sandbox-custom-commit-message"}
-          validated={validation.result ? ValidatedOptions.success : ValidatedOptions.error}
-          helperTextInvalid={<CommitValidationErrorMessages validations={validation.reasons} />}
+          // validated={validation.result ? ValidatedOptions.success : ValidatedOptions.error}
+          // helperTextInvalid={<CommitValidationErrorMessages validations={validation.reasons} />}
         >
           <TextArea
             value={commitMessage}
@@ -130,6 +131,15 @@ export const WorkspaceCommitModal: PromiseModalChildren<string, WorkspaceCommitM
             style={{ minHeight: "10vw" }}
             placeholder={i18n.commitModal.placeholder}
           />
+          <HelperText>
+            {validation.result === false ? (
+              <HelperTextItem variant="error" icon={ValidatedOptions.error}>
+                {<CommitValidationErrorMessages validations={validation.reasons} />}
+              </HelperTextItem>
+            ) : (
+              <HelperTextItem icon={ValidatedOptions.success}></HelperTextItem>
+            )}
+          </HelperText>
         </FormGroup>
         <Flex justifyContent={{ default: "justifyContentFlexEnd" }}>
           <Button

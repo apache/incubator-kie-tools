@@ -22,7 +22,7 @@ import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
+// import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
 
 import { extname } from "path";
 import * as React from "react";
@@ -39,6 +39,7 @@ import { PromiseStateStatus, useLivePromiseState } from "@kie-tools-core/react-h
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { GitServerRef } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/GitServerRef";
 import { GitRefTypeIcon } from "../gitRefs/GitRefTypeIcon";
+import { Icon } from "@patternfly/react-core";
 
 export enum UrlType {
   //git
@@ -572,7 +573,9 @@ export function useImportableUrlValidation(
               {getGitRefName(gitRefName)}
             </FlexItem>
             <FlexItem style={{ minWidth: 0 }}>
-              <AuthProviderIcon authProvider={authProvider} size={IconSize.sm} />
+              <Icon iconSize="sm">
+                <AuthProviderIcon authProvider={authProvider} />
+              </Icon>
               &nbsp;&nbsp;
               {authSession?.login}
             </FlexItem>

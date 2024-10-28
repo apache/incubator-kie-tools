@@ -87,6 +87,7 @@ import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { GitStatusProps } from "../../workspace/components/GitStatusIndicatorActions";
+import { Icon } from "@patternfly/react-core";
 
 const ROOT_MENU_ID = "rootMenu";
 
@@ -540,7 +541,9 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
         rejected={() => (
           <div style={{ height: "180px", margin: "10px", borderRadius: "5px", backgroundColor: "#EEE" }}>
             <Bullseye>
-              <ImageIcon size={"xl"} color={"gray"} />
+              <Icon size={"xl"}>
+                <ImageIcon color={"gray"} />
+              </Icon>
             </Bullseye>
           </div>
         )}

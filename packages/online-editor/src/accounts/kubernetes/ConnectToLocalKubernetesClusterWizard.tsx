@@ -54,6 +54,7 @@ import { Tab, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/componen
 import ExternalLinkAltIcon from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { useRoutes } from "../../navigation/Hooks";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
+import { HelperText, HelperTextItem, ValidatedOptions } from "@patternfly/react-core";
 
 enum WizardStepIds {
   CREATE_CLUSTER = "CREATE_CLUSTER",
@@ -199,21 +200,21 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
   }, [props, previousConnection]);
 
   const onNamespaceInputChanged = useCallback(
-    (newValue: string) => {
+    (event: React.FormEvent<HTMLInputElement>, newValue: string) => {
       props.setConnection((c) => ({ ...c, namespace: newValue }));
     },
     [props]
   );
 
   const onHostInputChanged = useCallback(
-    (newValue: string) => {
+    (event: React.FormEvent<HTMLInputElement>, newValue: string) => {
       props.setConnection((c) => ({ ...c, host: newValue }));
     },
     [props]
   );
 
   const onTokenInputChanged = useCallback(
-    (newValue: string) => {
+    (event: React.FormEvent<HTMLInputElement>, newValue: string) => {
       props.setConnection((c) => ({ ...c, token: newValue }));
     },
     [props]
@@ -410,8 +411,8 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
               <FormGroup
                 fieldId={"dev-deployments-config-namespace"}
                 label={i18n.devDeployments.kubernetesConfigWizard.fields.namespace}
-                validated={isNamespaceValidated ? "success" : "error"}
-                helperTextInvalid={i18n.devDeployments.common.requiredField}
+                // validated={isNamespaceValidated ? "success" : "error"}
+                // helperTextInvalid={i18n.devDeployments.common.requiredField}
                 isRequired={true}
               >
                 <InputGroup>
@@ -434,6 +435,13 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                     </Button>
                   </InputGroupText>
                 </InputGroup>
+                <HelperText>
+                  {isNamespaceValidated === true ? (
+                    <HelperTextItem variant="error">{i18n.devDeployments.common.requiredField}</HelperTextItem>
+                  ) : (
+                    <HelperTextItem icon={ValidatedOptions.success}></HelperTextItem>
+                  )}
+                </HelperText>
               </FormGroup>
               <Text component={TextVariants.p}>
                 {i18n.devDeployments.kubernetesConfigWizard.steps.second.namespaceInputReason}
@@ -441,8 +449,8 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
               <FormGroup
                 fieldId={"dev-deployments-config-host"}
                 label={i18n.devDeployments.kubernetesConfigWizard.fields.kubernetesApiServerUrl}
-                validated={isHostValidated ? "success" : "error"}
-                helperTextInvalid={i18n.devDeployments.common.requiredField}
+                // validated={isHostValidated ? "success" : "error"}
+                // helperTextInvalid={i18n.devDeployments.common.requiredField}
                 isRequired={true}
               >
                 <InputGroup>
@@ -466,6 +474,13 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                     </Button>
                   </InputGroupText>
                 </InputGroup>
+                <HelperText>
+                  {isHostValidated === true ? (
+                    <HelperTextItem variant="error">{i18n.devDeployments.common.requiredField}</HelperTextItem>
+                  ) : (
+                    <HelperTextItem icon={ValidatedOptions.success}></HelperTextItem>
+                  )}
+                </HelperText>
               </FormGroup>
               <Text component={TextVariants.p}>
                 {i18n.devDeployments.kubernetesConfigWizard.steps.second.hostInputReason}
@@ -493,8 +508,8 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
               <FormGroup
                 fieldId={"dev-deployments-config-token"}
                 label={i18n.terms.token}
-                validated={isTokenValidated ? "success" : "error"}
-                helperTextInvalid={i18n.devDeployments.common.requiredField}
+                // validated={isTokenValidated ? "success" : "error"}
+                // helperTextInvalid={i18n.devDeployments.common.requiredField}
                 isRequired={true}
               >
                 <InputGroup>
@@ -518,6 +533,13 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                     </Button>
                   </InputGroupText>
                 </InputGroup>
+                <HelperText>
+                  {isTokenValidated === true ? (
+                    <HelperTextItem variant="error">{i18n.devDeployments.common.requiredField}</HelperTextItem>
+                  ) : (
+                    <HelperTextItem icon={ValidatedOptions.success}></HelperTextItem>
+                  )}
+                </HelperText>
               </FormGroup>
               {/* 
               TODO: uncomment when enabling kubernetes deployment to use cors-proxy

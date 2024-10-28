@@ -28,6 +28,7 @@ import OutlinedClockIcon from "@patternfly/react-icons/dist/js/icons/outlined-cl
 import DesktopIcon from "@patternfly/react-icons/dist/js/icons/desktop-icon";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import OutlinedHddIcon from "@patternfly/react-icons/dist/js/icons/outlined-hdd-icon";
+import { Icon } from "@patternfly/react-core";
 
 type Props = {
   workspace: ActiveWorkspace;
@@ -71,7 +72,9 @@ export function FileStatus(props: Props) {
                 data-testid="is-saving-in-memory-indicator"
                 component={TextVariants.small}
               >
-                <OutlinedClockIcon size={"sm"} style={{ margin: 0 }} />
+                <Icon size={"sm"}>
+                  <OutlinedClockIcon style={{ margin: 0 }} />
+                </Icon>
               </Text>
             </TextContent>
           </Tooltip>
@@ -84,7 +87,9 @@ export function FileStatus(props: Props) {
                 data-testid="is-saved-in-memory-indicator"
                 component={TextVariants.small}
               >
-                <DesktopIcon size={"sm"} style={{ margin: 0 }} />
+                <Icon size={"sm"}>
+                  <DesktopIcon style={{ margin: 0 }} />
+                </Icon>
               </Text>
             </TextContent>
           </Tooltip>
@@ -100,7 +105,9 @@ export function FileStatus(props: Props) {
                 data-testid="is-writing-indicator"
                 component={TextVariants.small}
               >
-                <OutlinedClockIcon size={"sm"} style={{ margin: 0 }} />
+                <Icon size={"sm"}>
+                  <OutlinedClockIcon style={{ margin: 0 }} />
+                </Icon>
               </Text>
             </TextContent>
           </Tooltip>
@@ -113,7 +120,9 @@ export function FileStatus(props: Props) {
                 data-testid="is-written-indicator"
                 component={TextVariants.small}
               >
-                <OutlinedHddIcon size={"sm"} style={{ margin: 0 }} />
+                <Icon size={"sm"}>
+                  <OutlinedHddIcon style={{ margin: 0 }} />
+                </Icon>
               </Text>
             </TextContent>
           </Tooltip>

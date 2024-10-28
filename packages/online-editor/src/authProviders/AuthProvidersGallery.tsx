@@ -32,6 +32,7 @@ import {
 import { AuthProviderIcon } from "./AuthProviderIcon";
 import { AuthProvider, AuthProviderGroup } from "./AuthProvidersApi";
 import { useAuthProviders } from "./AuthProvidersContext";
+import { Icon } from "@patternfly/react-core";
 
 export function AuthProvidersGallery(props: {
   backActionKind: AccountsDispatchActionKind.GO_HOME | AccountsDispatchActionKind.SELECT_AUTH_PROVIDER;
@@ -148,7 +149,9 @@ export function AuthProvidersGallery(props: {
                     </CardHeader>
                     <br />
                     <CardBody>
-                      <AuthProviderIcon authProvider={authProvider} size={"xl"} />
+                      <Icon size={"xl"}>
+                        <AuthProviderIcon authProvider={authProvider} />
+                      </Icon>
                     </CardBody>
                   </Card>
                 ))}

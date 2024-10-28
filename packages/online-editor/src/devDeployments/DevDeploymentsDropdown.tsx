@@ -185,7 +185,7 @@ export function DevDeploymentsDropdown() {
             style={{ color: "var(--pf-v5-global--danger-color--100)" }}
             icon={
               <small>
-                <TrashIcon size={"sm"} />
+                <TrashIcon />
               </small>
             }
           >

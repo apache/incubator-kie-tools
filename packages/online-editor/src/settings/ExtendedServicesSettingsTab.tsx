@@ -28,6 +28,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
+import { HelperText, HelperTextItem, ValidatedOptions } from "@patternfly/react-core";
 
 export function ExtendedServicesSettingsTab() {
   const { settings } = useSettings();
@@ -73,8 +74,8 @@ export function ExtendedServicesSettingsTab() {
               </FormAlert>
               <FormGroup
                 isRequired={true}
-                helperTextInvalid={""}
-                validated={"default"}
+                // helperTextInvalid={""}
+                // validated={"default"}
                 label={"Host"}
                 fieldId={"host-input"}
               >
@@ -92,11 +93,18 @@ export function ExtendedServicesSettingsTab() {
                     />
                   </InputGroupItem>
                 </InputGroup>
+                <HelperText>
+                  (
+                  <HelperTextItem variant="default" icon={ValidatedOptions.default}>
+                    {""}
+                  </HelperTextItem>
+                  )
+                </HelperText>
               </FormGroup>
               <FormGroup
                 isRequired={false}
-                helperTextInvalid={""}
-                validated={"default"}
+                // helperTextInvalid={""}
+                // validated={"default"}
                 label={"Port"}
                 fieldId={"port-input"}
               >
@@ -114,6 +122,13 @@ export function ExtendedServicesSettingsTab() {
                     />
                   </InputGroupItem>
                 </InputGroup>
+                <HelperText>
+                  (
+                  <HelperTextItem variant="default" icon={ValidatedOptions.default}>
+                    {""}
+                  </HelperTextItem>
+                  )
+                </HelperText>
               </FormGroup>
               <ActionGroup>
                 <Button

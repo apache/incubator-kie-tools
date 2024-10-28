@@ -78,7 +78,7 @@ export function ExtendedServicesButtons(props: Props) {
   }, [setDmnRunnerContextProviderState, extendedServices, mode, onTogglePanel]);
 
   const toggleDevDeploymentsDropdown = useCallback(
-    (isOpen: boolean) => {
+    (_event, isOpen: boolean) => {
       devDeployments.setDeployDropdownOpen(isOpen);
     },
     [devDeployments]

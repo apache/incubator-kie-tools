@@ -28,6 +28,7 @@ import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
 import { gitAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSessions";
 import { ImportableUrl } from "./ImportableUrlHooks";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 export function ImportSingleFileFromUrlForm(props: {
   url: string;
@@ -84,7 +85,7 @@ export function ImportSingleFileFromUrlForm(props: {
         fieldId="auth-source"
         label="Authentication"
         isRequired={true}
-        helperText={props.authSessionSelectHelperText}
+        // helperText={props.authSessionSelectHelperText}
       >
         <AuthSessionSelect
           menuAppendTo={document.body}
@@ -95,6 +96,13 @@ export function ImportSingleFileFromUrlForm(props: {
           filter={gitAuthSessionSelectFilter()}
           showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.GIT}
         />
+        <HelperText>
+          (
+          <HelperTextItem variant="default" icon={ValidatedOptions.default}>
+            {props.authSessionSelectHelperText}
+          </HelperTextItem>
+          )
+        </HelperText>
       </FormGroup>
       <FormGroup
         autoFocus={true}

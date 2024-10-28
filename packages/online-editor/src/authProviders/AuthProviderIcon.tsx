@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { getSize, IconSize } from "@patternfly/react-icons/dist/js/createIcon";
+// import { getSize, IconSize } from "@patternfly/react-icons/dist/js/createIcon";
 import BitbucketIcon from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
 import GithubIcon from "@patternfly/react-icons/dist/js/icons/github-icon";
 import GitlabIcon from "@patternfly/react-icons/dist/js/icons/gitlab-icon";
@@ -29,34 +29,34 @@ import { AuthProvider } from "./AuthProvidersApi";
 
 export function AuthProviderIcon(props: {
   authProvider: AuthProvider | undefined;
-  size: IconSize | keyof typeof IconSize;
+  // size: IconSize | keyof typeof IconSize;
 }) {
   if (!props.authProvider) {
-    return <UsersIcon size={props.size} />;
+    return <UsersIcon />;
   }
 
-  if (props.authProvider.iconPath) {
-    const baseAlign = -0.125 * Number.parseFloat(getSize(props.size)); // Copied from PatternFly
-    return (
-      <img style={{ height: getSize(props.size), verticalAlign: `${baseAlign}em` }} src={props.authProvider.iconPath} />
-    );
-  }
+  // if (props.authProvider.iconPath) {
+  //   const baseAlign = -0.125 * Number.parseFloat(getSize(props.size)); // Copied from PatternFly
+  //   return (
+  //     <img style={{ height: getSize(props.size), verticalAlign: `${baseAlign}em` }} src={props.authProvider.iconPath} />
+  //   );
+  // }
 
   if (props.authProvider.type === "github") {
-    return <GithubIcon size={props.size} />;
+    return <GithubIcon />;
   }
 
   if (props.authProvider.type === "bitbucket") {
-    return <BitbucketIcon size={props.size} />;
+    return <BitbucketIcon />;
   }
 
   if (props.authProvider.type === "gitlab") {
-    return <GitlabIcon size={props.size} />;
+    return <GitlabIcon />;
   }
 
   if (props.authProvider.type === "openshift") {
-    return <OpenshiftIcon size={props.size} />;
+    return <OpenshiftIcon />;
   }
 
-  return <QuestionIcon size={props.size} />;
+  return <QuestionIcon />;
 }

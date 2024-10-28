@@ -45,6 +45,7 @@ import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDi
 import { ConnectToOpenShiftSection } from "./openshift/ConnectToOpenShiftSection";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ConnectToKubernetesSection } from "./kubernetes/ConnectToKubernetesSection";
+import { Icon } from "@patternfly/react-core";
 
 export function AccountsIcon() {
   const accounts = useAccounts();
@@ -138,7 +139,9 @@ export function AccountsIcon() {
                         </TextContent>
                       </Flex>
                     </FlexItem>
-                    <AuthProviderIcon authProvider={accounts.selectedAuthProvider} size={"sm"} />
+                    <Icon iconSize="sm">
+                      <AuthProviderIcon authProvider={accounts.selectedAuthProvider} />
+                    </Icon>
                   </Flex>
                 </>
               )}
@@ -164,7 +167,9 @@ export function AccountsIcon() {
                         </TextContent>
                       </Flex>
                     </FlexItem>
-                    <AuthProviderIcon authProvider={accounts.selectedAuthProvider} size={"sm"} />
+                    <Icon size={"sm"}>
+                      <AuthProviderIcon authProvider={accounts.selectedAuthProvider} />
+                    </Icon>
                   </Flex>
                 </>
               )}

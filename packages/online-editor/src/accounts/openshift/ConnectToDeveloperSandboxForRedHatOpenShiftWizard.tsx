@@ -52,6 +52,7 @@ import {
 } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { HelperText, HelperTextItem, ValidatedOptions } from "@patternfly/react-core";
 
 enum WizardStepIds {
   NAMESPACE = "NAMESPACE",
@@ -119,28 +120,28 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
   }, [props]);
 
   const onNamespaceInputChanged = useCallback(
-    (newValue: string) => {
+    (event: React.FormEvent<HTMLInputElement>, newValue: string) => {
       props.setConnection((c) => ({ ...c, namespace: newValue }));
     },
     [props]
   );
 
   const onHostInputChanged = useCallback(
-    (newValue: string) => {
+    (event: React.FormEvent<HTMLInputElement>, newValue: string) => {
       props.setConnection((c) => ({ ...c, host: newValue }));
     },
     [props]
   );
 
   const onTokenInputChanged = useCallback(
-    (newValue: string) => {
+    (event: React.FormEvent<HTMLInputElement>, newValue: string) => {
       props.setConnection((c) => ({ ...c, token: newValue }));
     },
     [props]
   );
 
   const onInsecurelyDisableTlsCertificateValidationChange = useCallback(
-    (checked: boolean) => {
+    (event: React.FormEvent<HTMLInputElement>, checked: boolean) => {
       props.setConnection({ ...props.connection, insecurelyDisableTlsCertificateValidation: checked });
     },
     [props]
@@ -222,8 +223,8 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
               <FormGroup
                 fieldId={"dev-deployments-config-namespace"}
                 label={i18n.terms.namespace}
-                validated={isNamespaceValidated ? "success" : "error"}
-                helperTextInvalid={i18n.devDeployments.common.requiredField}
+                // validated={isNamespaceValidated ? "success" : "error"}
+                // helperTextInvalid={i18n.devDeployments.common.requiredField}
                 isRequired={true}
               >
                 <InputGroup>
@@ -246,6 +247,13 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
                     </Button>
                   </InputGroupText>
                 </InputGroup>
+                <HelperText>
+                  {isNamespaceValidated === false ? (
+                    <HelperTextItem variant="error">{i18n.devDeployments.common.requiredField}</HelperTextItem>
+                  ) : (
+                    <HelperTextItem icon={ValidatedOptions.success}></HelperTextItem>
+                  )}
+                </HelperText>
               </FormGroup>
             </Form>
             <br />
@@ -294,8 +302,8 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
               <FormGroup
                 fieldId={"dev-deployments-config-host"}
                 label={i18n.terms.host}
-                validated={isHostValidated ? "success" : "error"}
-                helperTextInvalid={i18n.devDeployments.common.requiredField}
+                // validated={isHostValidated ? "success" : "error"}
+                // helperTextInvalid={i18n.devDeployments.common.requiredField}
                 isRequired={true}
               >
                 <InputGroup>
@@ -320,12 +328,19 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
                     </Button>
                   </InputGroupText>
                 </InputGroup>
+                <HelperText>
+                  {isHostValidated === false ? (
+                    <HelperTextItem variant="error">{i18n.devDeployments.common.requiredField}</HelperTextItem>
+                  ) : (
+                    <HelperTextItem icon={ValidatedOptions.success}></HelperTextItem>
+                  )}
+                </HelperText>
               </FormGroup>
               <FormGroup
                 fieldId={"dev-deployments-config-token"}
                 label={i18n.terms.token}
-                validated={isTokenValidated ? "success" : "error"}
-                helperTextInvalid={i18n.devDeployments.common.requiredField}
+                // validated={isTokenValidated ? "success" : "error"}
+                // helperTextInvalid={i18n.devDeployments.common.requiredField}
                 isRequired={true}
               >
                 <InputGroup>
@@ -349,6 +364,13 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
                     </Button>
                   </InputGroupText>
                 </InputGroup>
+                <HelperText>
+                  {isTokenValidated === false ? (
+                    <HelperTextItem variant="error">{i18n.devDeployments.common.requiredField}</HelperTextItem>
+                  ) : (
+                    <HelperTextItem icon={ValidatedOptions.success}></HelperTextItem>
+                  )}
+                </HelperText>
               </FormGroup>
               <FormGroup fieldId="disable-tls-validation">
                 <Checkbox
