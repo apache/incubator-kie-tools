@@ -18,7 +18,7 @@
  */
 import * as React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import { JobsManagementPage, ProcessListPage, ProcessDetailsPage } from "../../pages";
+import { JobsPage, ProcessListPage, ProcessDetailsPage, TasksPage, TaskDetailsPage } from "../../pages";
 import { PageNotFound } from "@kie-tools/runtime-tools-shared-webapp-components/dist/PageNotFound";
 import { NoData } from "@kie-tools/runtime-tools-shared-webapp-components/dist/NoData";
 
@@ -27,17 +27,17 @@ const ManagementConsoleRoutes: React.FC = () => {
     <Switch>
       <Route exact path="/" render={() => <Redirect to="/ProcessInstances" />} />
       <Route exact path="/ProcessInstances" component={ProcessListPage} />
-      <Route exact path="/JobsManagement" component={JobsManagementPage} />
+      <Route exact path="/Jobs" component={JobsPage} />
       <Route exact path="/Process/:instanceID" component={ProcessDetailsPage} />
+      <Route exact path="/Tasks" component={TasksPage} />
+      <Route exact path="/TaskDetails/:taskId" render={(routeProps) => <TaskDetailsPage {...routeProps} />} />
       <Route
         path="/NoData"
-        render={(_props) => <NoData {..._props} defaultPath="/JobsManagement" defaultButton="Go to jobs management" />}
+        render={(_props) => <NoData {..._props} defaultPath="/Jobs" defaultButton="Go to Jobs" />}
       />
       <Route
         path="*"
-        render={(_props) => (
-          <PageNotFound {..._props} defaultPath="/JobsManagement" defaultButton="Go to jobs management" />
-        )}
+        render={(_props) => <PageNotFound {..._props} defaultPath="/Jobs" defaultButton="Go to Jobs" />}
       />
     </Switch>
   );

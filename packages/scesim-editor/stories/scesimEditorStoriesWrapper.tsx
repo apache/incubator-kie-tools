@@ -18,25 +18,68 @@
  */
 
 import * as React from "react";
-import { useEffect, useRef } from "react";
-import { TestScenarioEditor, TestScenarioEditorRef } from "../src/TestScenarioEditor";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useArgs } from "@storybook/preview-api";
+import { diff } from "deep-object-diff";
+import { SceSimModel, getMarshaller } from "@kie-tools/scesim-marshaller";
+import { TestScenarioEditor, TestScenarioEditorProps, TestScenarioEditorRef } from "../src/TestScenarioEditor";
+import { EMPTY_ONE_EIGHT } from "../src/resources/EmptyScesimFile";
 
-export interface SceSimEditorWrapperProps {
-  pathRelativeToTheWorkspaceRoot: string;
-  content: string;
-}
+export type StorybookTestScenarioEditorProps = TestScenarioEditorProps & { xml: string };
 
-export function SceSimEditorWrapper(props: SceSimEditorWrapperProps) {
+export function SceSimEditorWrapper(props: Partial<StorybookTestScenarioEditorProps>) {
+  const [args, updateArgs] = useArgs<StorybookTestScenarioEditorProps>();
+  const argsCopy = useRef(args);
   const ref = useRef<TestScenarioEditorRef>(null);
+  const [modelArgs, setModelArgs] = useState<SceSimModel>(args.model);
+  const model = useMemo(() => props?.model ?? modelArgs, [modelArgs, props?.model]);
+
+  const onModelChange = useMemo(
+    () => (props?.onModelChange ? props.onModelChange : setModelArgs),
+    [props?.onModelChange]
+  );
 
   useEffect(() => {
-    /* Simulating a call from "Foundation" code */
-    ref.current?.setContent(props.pathRelativeToTheWorkspaceRoot, props.content);
-  }, [ref, props.content, props.pathRelativeToTheWorkspaceRoot]);
+    if (Object.keys(diff(argsCopy.current.model, model)).length !== 0) {
+      updateArgs({
+        ...argsCopy.current,
+        model: model,
+        xml: getMarshaller(EMPTY_ONE_EIGHT).builder.build(model),
+      });
+    }
+  }, [updateArgs, model]);
+
+  useEffect(() => {
+    if (Object.keys(diff(argsCopy.current, args)).length === 0) {
+      return;
+    }
+    argsCopy.current = args;
+    if (Object.keys(diff(args.model, model)).length === 0) {
+      return;
+    }
+    onModelChange(args.model);
+  }, [args, model, onModelChange]);
+
+  const onModelDebounceStateChanged = useCallback(() => {
+    console.debug("[scesimEditorStoriesWrapper] Model Debounce state");
+  }, []);
 
   return (
-    <div>
-      <TestScenarioEditor ref={ref} />
-    </div>
+    <TestScenarioEditor
+      ref={ref}
+      issueTrackerHref={props?.issueTrackerHref ?? args.issueTrackerHref}
+      model={model}
+      onModelChange={onModelChange}
+      onModelDebounceStateChanged={onModelDebounceStateChanged}
+      onRequestExternalModelByPath={props?.onRequestExternalModelByPath ?? args.onRequestExternalModelByPath}
+      onRequestExternalModelsAvailableToInclude={
+        props?.onRequestExternalModelsAvailableToInclude ?? args.onRequestExternalModelsAvailableToInclude
+      }
+      openFileNormalizedPosixPathRelativeToTheWorkspaceRoot={
+        props?.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot ??
+        args.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot
+      }
+      onRequestToJumpToPath={props?.onRequestToJumpToPath ?? args.onRequestToJumpToPath}
+    />
   );
 }

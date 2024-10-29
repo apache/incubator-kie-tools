@@ -185,6 +185,41 @@ The milestones panel show the list of milestones present and their current state
 
 ![Milestones](./docs/milestones.png?raw=true "Milestones")
 
+## Working with the Tasks panel
+
+The tasks panel shows a list of user tasks which are available for a process. Each column contains detailed information about the user task which are - _Name_, _Process_, _Priority_, _Status_, _Started_ and _Last update_. The columns are sortable.
+
+![Tasks](./docs/taskconsole.png?raw=true "Tasks")
+
+The task console consist of filters, which can be used to narrow down the search on a user task. There are two filters available
+
+- A filter based on the status(dropdown)
+- A filter based on the task name(text search)
+
+![Filters](./docs/taskfilters.png?raw=true "Filters")
+
+The _Status_ filter can be dropped down to view the and select the states available
+
+![States](./docs/taskstates.png?raw=true "States")
+
+A _refresh_ button is available to refresh the list of user tasks
+
+A _Reset to default_ button is available to reset the filters to its initial state.
+
+The user task list also supports pagination.
+
+Clicking on the name of the user task will navigate to another screen, which consist of the auto generated forms.
+
+### Task details
+
+The task details page consist of an auto generated forms and buttons to perform corresponding action on the user tasks.
+
+![Forms](./docs/taskforms.png?raw=true "Forms")
+
+The task details page also contains a _View details_ button, to view more details about the task.
+
+![Details](./docs/taskdetails.png?raw=true "Details")
+
 ## Enabling Keycloak security
 
 ### Starting and Configuring the Keycloak Server

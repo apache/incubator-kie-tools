@@ -29,8 +29,3 @@ setPomProperty({
   key: "kogito.management-console.image",
   value: env.jbpmCompactArchitectureExample.kogitoManagementConsoleImage,
 });
-
-setPomProperty({
-  key: "kogito.task-console.image",
-  value: env.jbpmCompactArchitectureExample.kogitoTaskConsoleImage,
-});

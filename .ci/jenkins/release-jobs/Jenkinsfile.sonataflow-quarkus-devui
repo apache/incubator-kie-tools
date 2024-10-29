@@ -87,7 +87,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsConfigFileId}")
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsReleaseConfigFileId}")
                     }
                 }
             }
@@ -118,16 +118,12 @@ pipeline {
                         if (params.DRY_RUN) {
                             env.KIE_TOOLS_BUILD__mavenDeploySkip = 'true'
                         }
-                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.mavenDeployStagingCredentialsId}", usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
-                            configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
-                                sh """#!/bin/bash -el
-                                pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
-                                pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dapache.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
-                                pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Dapache.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
-                                pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Papache-release >> .mvn/maven.config'
-                                pnpm ${env.PNPM_FILTER_STRING} build:prod
-                                """.trim()
-                            }
+                        configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsReleaseConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
+                            sh """#!/bin/bash -el
+                            pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
+                            pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Papache-release >> .mvn/maven.config'
+                            pnpm ${env.PNPM_FILTER_STRING} build:prod
+                            """.trim()
                         }
                     }
                 }

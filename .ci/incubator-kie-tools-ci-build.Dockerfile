@@ -28,6 +28,7 @@ libglvnd0 \
 libbtrfs-dev \
 libgpgme-dev \
 libdevmapper-dev \
+libxml2-utils \
 python3 \
 python3-pip \
 python3-dev \
@@ -43,6 +44,7 @@ unzip \
 bzip2 \
 xvfb \
 fluxbox \
+rsync \
 subversion && \
 apt-get clean autoclean && apt-get autoremove --yes && \
 rm -rf /var/lib/{apt,cache,log}/

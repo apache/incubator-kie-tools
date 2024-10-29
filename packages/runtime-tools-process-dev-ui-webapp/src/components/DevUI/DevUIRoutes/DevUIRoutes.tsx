@@ -35,9 +35,9 @@ interface IOwnProps {
 
 type DevUIRoute = { enabled: () => boolean; node: React.ReactNode };
 
-const defaultPath = "/JobsManagement";
+const defaultPath = "/Jobs";
 
-const defaultButton = "Go to jobs management";
+const defaultButton = "Go to Jobs";
 
 const DevUIRoutes: React.FC<IOwnProps> = ({ navigate }) => {
   const context = useDevUIAppContext();
@@ -58,11 +58,11 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ navigate }) => {
       },
       {
         enabled: () => context.isProcessEnabled,
-        node: <Route key="3" exact path="/JobsManagement" component={JobsManagementPage} />,
+        node: <Route key="3" exact path="/Jobs" component={JobsManagementPage} />,
       },
       {
         enabled: () => context.isProcessEnabled,
-        node: <Route key="4" exact path="/TaskInbox" component={TaskInboxPage} />,
+        node: <Route key="4" exact path="/Tasks" component={TaskInboxPage} />,
       },
       {
         enabled: () => context.isProcessEnabled,

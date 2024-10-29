@@ -1,10 +1,8 @@
-version: "3"
-
 services:
   postgres:
     container_name: postgres
     image: postgres:16.1-alpine3.19
-    profiles: ["infra", "example", "full"]
+    profiles: ["infra", "example-only", "full"]
     ports:
       - "5432:5432"
     volumes:
@@ -21,7 +19,7 @@ services:
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4:8.2
-    profiles: ["infra", "example", "full"]
+    profiles: ["infra", "example-only", "full"]
     ports:
       - 8055:80
     depends_on:
@@ -45,7 +43,7 @@ services:
   jbpm-compact-architecture-example-service:
     container_name: jbpm-compact-architecture-example-service
     image: dev.local/${USER}/jbpm-compact-architecture-example-service:${PROJECT_VERSION}
-    profiles: ["example", "full"]
+    profiles: ["example-only", "full"]
     ports:
       - "8080:8080"
     environment:
@@ -97,27 +95,14 @@ services:
     depends_on:
       jbpm-compact-architecture-example-service:
         condition: service_started
+      # keycloak:
+      #   condition: service_healthy
     volumes:
       - ./svg/:/home/kogito/data/svg/
     environment:
       RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE: "DEV"
       RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT: http://${DOCKER_GATEWAY_HOST:-host.docker.internal}:8080/graphql
-
-  task-console:
-    container_name: task-console
-    image: ${KOGITO_TASK_CONSOLE_IMAGE}
-    profiles: ["full"]
-    ports:
-      - 8380:8080
-    depends_on:
-      jbpm-compact-architecture-example-service:
-        condition: service_started
-      keycloak:
-        condition: service_healthy
-    environment:
-      RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_ENV_MODE: "PROD"
-      RUNTIME_TOOLS_TASK_CONSOLE_DATA_INDEX_ENDPOINT: http://${DOCKER_GATEWAY_HOST:-host.docker.internal}:8080/graphql
-      KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL: http://localhost:8480/auth/realms/kogito/.well-known/openid-configuration
-      KOGITO_CONSOLES_KEYCLOAK_URL: http://localhost:8480/auth
-      KOGITO_CONSOLES_KEYCLOAK_REALM: kogito
-      KOGITO_CONSOLES_KEYCLOAK_CLIENT_ID: kogito-console-quarkus
+      # KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL: http://localhost:8480/auth/realms/kogito/.well-known/openid-configuration
+      # KOGITO_CONSOLES_KEYCLOAK_URL: http://localhost:8480/auth
+      # KOGITO_CONSOLES_KEYCLOAK_REALM: kogito
+      # KOGITO_CONSOLES_KEYCLOAK_CLIENT_ID: kogito-console-quarkus

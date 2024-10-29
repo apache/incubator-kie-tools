@@ -25,8 +25,7 @@
     "update-readmes": "node scripts/update-readmes.js && pnpm format"
   },
   "dependencies": {
-    "@kie-tools/kogito-management-console": "workspace:*",
-    "@kie-tools/kogito-task-console": "workspace:*"
+    "@kie-tools/kogito-management-console": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",

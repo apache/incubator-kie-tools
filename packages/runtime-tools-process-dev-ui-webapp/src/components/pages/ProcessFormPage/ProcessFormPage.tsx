@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import ProcessFormContainer from "../../containers/ProcessFormContainer/ProcessFormContainer";
@@ -51,10 +51,6 @@ const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
     history.push("/Processes");
   };
 
-  const goToProcessDetails = () => {
-    history.push(`/Process/${processId}`);
-  };
-
   const showNotification = (
     notificationType: Notification["type"],
     submitMessage: string,
@@ -72,18 +68,21 @@ const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
             goToProcessDefinition();
           },
         },
-        {
-          label: "Go to Process details",
-          onClick: () => {
-            setNotification(null);
-            goToProcessDetails();
-          },
-        },
       ],
       close: () => {
         setNotification(null);
       },
     });
+    return (
+      <>
+        {processId && (
+          <div>
+            <label>Go to Process details</label>
+            <button onClick={handleClick}>Click Here</button>
+          </div>
+        )}
+      </>
+    );
   };
 
   const onSubmitSuccess = (id: string): void => {
@@ -96,6 +95,14 @@ const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
     const message = "Failed to start the process.";
     showNotification("error", message, details);
   };
+
+  const handleClick = useCallback(() => {
+    const goToProcessDetails = () => {
+      history.push(`/Process/${processId}`);
+    };
+    setNotification(null);
+    goToProcessDetails();
+  }, [setNotification, history, processId]);
 
   return (
     <React.Fragment>

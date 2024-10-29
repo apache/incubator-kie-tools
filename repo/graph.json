@@ -34,11 +34,9 @@
       { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
       { "id": "@kie-tools-examples/jbpm-compact-architecture-example" },
       { "id": "@kie-tools/kogito-management-console" },
-      { "id": "@kie-tools/kogito-task-console" },
       { "id": "@kie-tools/image-builder" },
       { "id": "@kie-tools/image-env-to-json" },
       { "id": "@kie-tools/runtime-tools-management-console-webapp" },
-      { "id": "@kie-tools/runtime-tools-task-console-webapp" },
       { "id": "@kie-tools-examples/ping-pong-view" },
       { "id": "@kie-tools-core/envelope-bus" },
       { "id": "@kie-tools-examples/ping-pong-view-angular" },
@@ -176,6 +174,7 @@
       { "id": "@kie-tools/runtime-tools-swf-webapp-components" },
       { "id": "@kie-tools/scesim-editor" },
       { "id": "@kie-tools/scesim-marshaller" },
+      { "id": "@kie-tools/scesim-editor-envelope" },
       { "id": "@kie-tools/serverless-logic-web-tools" },
       { "id": "@kie-tools/text-editor" },
       { "id": "@kie-tools/yard-editor" },
@@ -441,11 +440,6 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/jbpm-compact-architecture-example",
-        "target": "@kie-tools/kogito-task-console",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools/kogito-management-console",
         "target": "@kie-tools/image-builder",
         "weight": 1
@@ -458,21 +452,6 @@
       {
         "source": "@kie-tools/kogito-management-console",
         "target": "@kie-tools/runtime-tools-management-console-webapp",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kogito-task-console",
-        "target": "@kie-tools/image-builder",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kogito-task-console",
-        "target": "@kie-tools/image-env-to-json",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kogito-task-console",
-        "target": "@kie-tools/runtime-tools-task-console-webapp",
         "weight": 1
       },
       {
@@ -502,21 +481,6 @@
       },
       {
         "source": "@kie-tools/runtime-tools-management-console-webapp",
-        "target": "@kie-tools/runtime-tools-shared-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-task-console-webapp",
-        "target": "@kie-tools-core/react-hooks",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-task-console-webapp",
-        "target": "@kie-tools/runtime-tools-process-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-task-console-webapp",
         "target": "@kie-tools/runtime-tools-shared-webapp-components",
         "weight": 1
       },
@@ -1957,7 +1921,17 @@
       },
       {
         "source": "@kie/kogito-data-index-ephemeral-image",
+        "target": "@kie-tools/maven-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-data-index-ephemeral-image",
         "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-data-index-postgresql-image",
+        "target": "@kie-tools/maven-base",
         "weight": 1
       },
       {
@@ -1967,7 +1941,17 @@
       },
       {
         "source": "@kie/kogito-jobs-service-ephemeral-image",
+        "target": "@kie-tools/maven-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-jobs-service-ephemeral-image",
         "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-jobs-service-postgresql-image",
+        "target": "@kie-tools/maven-base",
         "weight": 1
       },
       {
@@ -1992,7 +1976,17 @@
       },
       {
         "source": "@kie/kogito-jit-runner-image",
+        "target": "@kie-tools/maven-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-jit-runner-image",
         "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-jobs-service-allinone-image",
+        "target": "@kie-tools/maven-base",
         "weight": 1
       },
       {
@@ -2058,11 +2052,6 @@
       {
         "source": "@kie-tools/runtime-tools-consoles-helm-chart",
         "target": "@kie-tools/kogito-management-console",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-consoles-helm-chart",
-        "target": "@kie-tools/kogito-task-console",
         "weight": 1
       },
       {
@@ -2148,6 +2137,21 @@
       {
         "source": "@kie-tools/scesim-marshaller",
         "target": "@kie-tools/xml-parser-ts-codegen",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/scesim-editor-envelope",
+        "target": "@kie-tools-core/editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/scesim-editor-envelope",
+        "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/scesim-editor-envelope",
+        "target": "@kie-tools/scesim-editor",
         "weight": 1
       },
       {
@@ -2661,7 +2665,6 @@
     ["@kie/kogito-jobs-service-ephemeral-image", "packages/kogito-jobs-service-ephemeral-image"],
     ["@kie/kogito-jobs-service-postgresql-image", "packages/kogito-jobs-service-postgresql-image"],
     ["@kie-tools/kogito-management-console", "packages/kogito-management-console"],
-    ["@kie-tools/kogito-task-console", "packages/kogito-task-console"],
     ["@kie-tools-core/kubernetes-bridge", "packages/kubernetes-bridge"],
     ["@kie-tools/maven-base", "packages/maven-base"],
     ["@kie-tools/maven-m2-repo-via-http-image", "packages/maven-m2-repo-via-http-image"],
@@ -2690,8 +2693,8 @@
     ["@kie-tools/runtime-tools-swf-enveloped-components", "packages/runtime-tools-swf-enveloped-components"],
     ["@kie-tools/runtime-tools-swf-gateway-api", "packages/runtime-tools-swf-gateway-api"],
     ["@kie-tools/runtime-tools-swf-webapp-components", "packages/runtime-tools-swf-webapp-components"],
-    ["@kie-tools/runtime-tools-task-console-webapp", "packages/runtime-tools-task-console-webapp"],
     ["@kie-tools/scesim-editor", "packages/scesim-editor"],
+    ["@kie-tools/scesim-editor-envelope", "packages/scesim-editor-envelope"],
     ["@kie-tools/scesim-marshaller", "packages/scesim-marshaller"],
     ["@kie-tools/serverless-logic-web-tools", "packages/serverless-logic-web-tools"],
     [

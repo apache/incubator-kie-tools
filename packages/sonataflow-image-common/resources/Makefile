@@ -66,12 +66,6 @@ _create_e2e_dir:
 	rm -rf ../dist-tests-e2e
 	mkdir ../dist-tests-e2e
 
-# Pull kogito-apps repo and build the target kogito-apps depending on the `KOGITO_IMAGE_NAME`s
-# Required for kogito-apps images only
-.PHONY build-kogito-app: _build_kogito_app
-_build_kogito_app:
-	scripts/build-kogito-apps-components.sh ${KOGITO_IMAGE_NAME} ${KOGITO_VERSION} ${KOGITO_APPS_TARGET_URI};
-
 # Trigger the image tests
 .PHONY test-image: _create_e2e_dir _check_kogito_image_name _test_image
 _test_image:
