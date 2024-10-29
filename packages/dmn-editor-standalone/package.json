@@ -33,7 +33,6 @@
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
     "@babel/preset-typescript": "^7.22.5",
-    "@kie-tools-core/backend": "workspace:*",
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",

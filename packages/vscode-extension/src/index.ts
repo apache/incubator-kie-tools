@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeJavaCodeCompletionApiImpl } from "@kie-tools-core/vscode-java-code-completion/dist/vscode";
@@ -42,7 +41,6 @@ import { VsCodeRecommendation } from "./VsCodeRecommendation";
  *  @param args.webviewLocation The relative path to search for an "index.js" file for the WebView panel.
  *  @param args.context The vscode.ExtensionContext provided on the activate method of the extension.
  *  @param args.routes The routes to be used to find resources for each language.
- *  @param args.backendProxy The proxy between channels and available backend services.
  *  @param args.channelApiProducer Optional producer of custom KogitoEditorChannelApi instances.
  */
 export async function startExtension(args: {
@@ -52,12 +50,9 @@ export async function startExtension(args: {
   generateSvgCommandId?: string;
   silentlyGenerateSvgCommandId?: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
-  backendProxy: VsCodeBackendProxy;
   channelApiProducer?: VsCodeKieEditorChannelApiProducer;
   editorDocumentType?: "text" | "custom";
 }) {
-  await args.backendProxy.tryLoadBackendExtension(true);
-
   const i18n = new I18n(vsCodeI18nDefaults, vsCodeI18nDictionaries, vscode.env.language);
   const vscodeWorkspace = new VsCodeWorkspaceChannelApiImpl();
   const editorStore = new VsCodeKieEditorStore();
@@ -71,7 +66,6 @@ export async function startExtension(args: {
     args.editorEnvelopeLocator,
     messageBroadcaster,
     vscodeWorkspace,
-    args.backendProxy,
     vscodeNotifications,
     vsCodeJavaCodeCompletionChannelApi,
     args.viewType,

@@ -17,14 +17,10 @@
  * under the License.
  */
 
-import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
-import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
 import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
-import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
 import * as path from "path";
-import { BackendManagerService } from "@kie-tools-core/backend/dist/api";
 import { ComponentServer } from "./ComponentsHttpServer";
 import { DashbuilderVsCodeExtensionConfiguration } from "./configuration";
 import { setupDashboardEditorControls } from "./setupDashboardEditorControls";
@@ -32,28 +28,11 @@ import { DashbuilderViewerChannelApiProducer } from "../api/DashbuilderViewerCha
 import { setupBuiltInVsCodeEditorDashbuilderContributions } from "./builtInVsCodeEditorDashbuilderContributions";
 import { VsCodeDashbuilderLanguageService } from "./languageService/VsCodeDashbuilderLanguageService";
 
-let backendProxy: VsCodeBackendProxy;
-
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
   const componentsPath = path.join(context.extensionPath, "/dist/webview/dashbuilder/component/");
   const componentServer = new ComponentServer(componentsPath);
-  const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
-  const backendManager = new BackendManagerService({ localHttpServer: componentServer });
-  backendProxy = new VsCodeBackendProxy(context, backendI18n);
-
-  backendProxy.registerBackendManager(backendManager);
-
-  await backendManager.start().catch((e) => {
-    console.info("Not able to start component server.");
-  });
-
-  context.subscriptions.push(
-    new vscode.Disposable(() => {
-      return backendProxy.stopServices();
-    })
-  );
 
   const kieEditorsStore = await KogitoVsCode.startExtension({
     extensionName: "kie-group.vscode-extension-dashbuilder-editor",
@@ -70,11 +49,10 @@ export async function activate(context: vscode.ExtensionContext) {
     ]),
     channelApiProducer: new DashbuilderViewerChannelApiProducer(
       new Promise((resolve) => {
-        const componentServerUrl = `http://localhost:${componentServer.getPort()}`;
+        const componentServerUrl = `http://localhost:${componentServer.port}`;
         resolve(componentServerUrl);
       })
     ),
-    backendProxy: backendProxy,
   });
 
   const configuration = new DashbuilderVsCodeExtensionConfiguration();
