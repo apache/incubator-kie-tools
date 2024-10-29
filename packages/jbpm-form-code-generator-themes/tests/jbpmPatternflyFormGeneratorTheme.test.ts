@@ -29,10 +29,10 @@ describe("jbpmPatternflyFormCodeGeneratorTheme tests", () => {
     });
 
     expect(formAsset).not.toBeUndefined();
-    expect(formAsset.id).toStrictEqual("ApplyFor#Visa");
-    expect(formAsset.sanitizedId).toStrictEqual("ApplyFor_Visa");
-    expect(formAsset.assetName).toStrictEqual("ApplyFor#Visa.tsx");
-    expect(formAsset.sanitizedAssetName).toStrictEqual("ApplyFor_Visa.tsx");
+    expect(formAsset.name).toStrictEqual("ApplyFor#Visa");
+    expect(formAsset.nameWithoutInvalidTsVarChars).toStrictEqual("ApplyFor_Visa");
+    expect(formAsset.fileName).toStrictEqual("ApplyFor#Visa.tsx");
+    expect(formAsset.fileNameWithoutInvalidVarChars).toStrictEqual("ApplyFor_Visa.tsx");
     expect(formAsset.content).not.toBeUndefined();
     expect(formAsset.content).toContain("const Form__ApplyFor_Visa");
     expect(formAsset.content).toContain("export default Form__ApplyFor_Visa;");
@@ -59,12 +59,12 @@ describe("jbpmPatternflyFormCodeGeneratorTheme tests", () => {
     expect(formAssets[0]).toEqual(
       expect.objectContaining({
         formAsset: expect.objectContaining({
-          id: "Apply#For#Visa",
-          sanitizedId: "Apply_For_Visa",
-          assetName: "Apply#For#Visa.tsx",
-          sanitizedAssetName: "Apply_For_Visa.tsx",
+          name: "Apply#For#Visa",
+          nameWithoutInvalidTsVarChars: "Apply_For_Visa",
+          fileName: "Apply#For#Visa.tsx",
+          fileNameWithoutInvalidVarChars: "Apply_For_Visa.tsx",
           config: { resources: { scripts: {}, styles: {} }, schema: JSON.stringify(ApplyForVisaSchema) },
-          type: "tsx",
+          fileExt: "tsx",
         }),
         formError: undefined,
       })
@@ -73,12 +73,12 @@ describe("jbpmPatternflyFormCodeGeneratorTheme tests", () => {
     expect(formAssets[1]).toEqual(
       expect.objectContaining({
         formAsset: expect.objectContaining({
-          id: "ConfirmTravel",
-          sanitizedId: "ConfirmTravel",
-          assetName: "ConfirmTravel.tsx",
-          sanitizedAssetName: "ConfirmTravel.tsx",
+          name: "ConfirmTravel",
+          nameWithoutInvalidTsVarChars: "ConfirmTravel",
+          fileName: "ConfirmTravel.tsx",
+          fileNameWithoutInvalidVarChars: "ConfirmTravel.tsx",
           config: { resources: { scripts: {}, styles: {} }, schema: JSON.stringify(ConfirmTravelSchema) },
-          type: "tsx",
+          fileExt: "tsx",
         }),
         formError: undefined,
       })
