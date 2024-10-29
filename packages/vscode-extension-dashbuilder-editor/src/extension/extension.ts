@@ -28,11 +28,13 @@ import { DashbuilderViewerChannelApiProducer } from "../api/DashbuilderViewerCha
 import { setupBuiltInVsCodeEditorDashbuilderContributions } from "./builtInVsCodeEditorDashbuilderContributions";
 import { VsCodeDashbuilderLanguageService } from "./languageService/VsCodeDashbuilderLanguageService";
 
+let componentServer: ComponentServer;
+
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
   const componentsPath = path.join(context.extensionPath, "/dist/webview/dashbuilder/component/");
-  const componentServer = new ComponentServer(componentsPath);
+  componentServer = new ComponentServer(componentsPath);
 
   const kieEditorsStore = await KogitoVsCode.startExtension({
     extensionName: "kie-group.vscode-extension-dashbuilder-editor",
@@ -73,4 +75,8 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   console.info("Extension is successfully setup.");
+}
+
+export async function deactivate() {
+  componentServer?.stop();
 }
