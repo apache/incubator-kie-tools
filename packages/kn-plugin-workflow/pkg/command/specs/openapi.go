@@ -22,6 +22,7 @@ package specs
 import (
 	"fmt"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/specs"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 	"os"
@@ -64,7 +65,7 @@ func minifyOpenApi() *cobra.Command {
 
 func runMinifyOpenApi() error {
 
-	var cfg = &common.OpenApiMinifierParams{
+	var cfg = &specs.OpenApiMinifierOpts{
 		SpecsDir:    viper.GetString("specs-dir"),
 		SubflowsDir: viper.GetString("subflows-dir"),
 	}
@@ -85,7 +86,7 @@ func runMinifyOpenApi() error {
 		}
 	}
 
-	minifier := common.NewMinifier(cfg)
+	minifier := specs.NewMinifier(cfg)
 	_, err := minifier.Minify()
 	return err
 }

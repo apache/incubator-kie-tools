@@ -26,6 +26,7 @@ import (
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/specs"
 	apimetadata "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
 )
@@ -122,7 +123,7 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 	supportFileExtensions := []string{metadata.JSONExtension, metadata.YAMLExtension, metadata.YMLExtension}
 
 	fmt.Println("🔍 Looking for specs files...")
-	minifiedfiles, err := common.NewMinifier(&common.OpenApiMinifierParams{
+	minifiedfiles, err := specs.NewMinifier(&specs.OpenApiMinifierOpts{
 		SpecsDir:    cfg.SpecsDir,
 		SubflowsDir: cfg.SubflowsDir,
 	}).Minify()

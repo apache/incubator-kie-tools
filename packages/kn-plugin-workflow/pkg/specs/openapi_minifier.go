@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package common
+package specs
 
 import (
 	"encoding/json"
@@ -27,6 +27,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/getkin/kin-openapi/openapi3"
@@ -37,11 +38,11 @@ import (
 
 type OpenApiMinifier struct {
 	workflows  []string
-	params     *OpenApiMinifierParams
+	params     *OpenApiMinifierOpts
 	operations map[string]sets.Set[string]
 }
 
-type OpenApiMinifierParams struct {
+type OpenApiMinifierOpts struct {
 	RootPath    string
 	SpecsDir    string
 	SubflowsDir string
@@ -54,7 +55,7 @@ var minifiedExtensionsType = []string{metadata.YAMLExtension, metadata.YMLExtens
 // k8sFileSizeLimit defines the maximum file size allowed (e.g., Kubernetes ConfigMap size limit is 1MB)
 const k8sFileSizeLimit = 3145728 // 3MB
 
-func NewMinifier(params *OpenApiMinifierParams) *OpenApiMinifier {
+func NewMinifier(params *OpenApiMinifierOpts) *OpenApiMinifier {
 	return &OpenApiMinifier{params: params, operations: make(map[string]sets.Set[string]), workflows: []string{}}
 }
 
@@ -110,7 +111,13 @@ func (m *OpenApiMinifier) processFunction(workflowFile string) error {
 	for _, function := range workflow.Functions {
 		if strings.HasPrefix(function.Operation, relativePath) {
 			trimmedPrefix := strings.TrimPrefix(function.Operation, relativePath+"/")
-			parts := strings.Split(trimmedPrefix, "#")
+			if !strings.Contains(trimmedPrefix, "#") {
+				return fmt.Errorf("Invalid operation format in function: %s", function.Operation)
+			}
+			parts := strings.SplitN(trimmedPrefix, "#", 2)
+			if len(parts) != 2 {
+				return fmt.Errorf("❌ ERROR: Invalid operation format: %s", function.Operation)
+			}
 			apiFileName := parts[0]
 			operation := parts[1]
 
@@ -174,7 +181,7 @@ func (m *OpenApiMinifier) minifySpecsFile(specFileName string, operations sets.S
 	if err != nil {
 		return "", fmt.Errorf("❌ ERROR: failed to write minified file of %s : %w", specFile, err)
 	}
-	finalSize, err := ValidateSpecsFileSize(minifiedFile)
+	finalSize, err := validateSpecsFileSize(minifiedFile)
 	if err != nil {
 		return "", fmt.Errorf("❌ ERROR: Minification of %s failed: %w", specFile, err)
 	}
@@ -189,7 +196,7 @@ func (m *OpenApiMinifier) minifySpecsFile(specFileName string, operations sets.S
 }
 
 func (m *OpenApiMinifier) findWorkflowFile() error {
-	file, err := FindSonataFlowFile(workflowExtensionsType)
+	file, err := common.FindSonataFlowFile(workflowExtensionsType)
 	if err != nil {
 		return err
 	}
@@ -197,8 +204,8 @@ func (m *OpenApiMinifier) findWorkflowFile() error {
 	return nil
 }
 
-func (m *OpenApiMinifier) findSubflowsFiles(cfg *OpenApiMinifierParams) {
-	files := FindSonataFlowFiles(cfg.SubflowsDir, workflowExtensionsType)
+func (m *OpenApiMinifier) findSubflowsFiles(cfg *OpenApiMinifierOpts) {
+	files := common.FindSonataFlowFiles(cfg.SubflowsDir, workflowExtensionsType)
 	m.workflows = append(m.workflows, files...)
 }
 
@@ -246,7 +253,7 @@ func (m *OpenApiMinifier) writeMinifiedFileToDisk(specFile string, doc *openapi3
 	return minifiedSpecFile, nil
 }
 
-func ValidateSpecsFileSize(specFile string) (int64, error) {
+func validateSpecsFileSize(specFile string) (int64, error) {
 	file, err := os.Stat(specFile)
 	if err != nil {
 		return -1, fmt.Errorf("❌ ERROR: failed to get file info: %w", err)
