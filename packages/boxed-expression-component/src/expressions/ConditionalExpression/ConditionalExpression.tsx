@@ -230,6 +230,10 @@ export function ConditionalExpression({
     return row.original.part["@_id"];
   }, []);
 
+  const getEvaluationHitsCountSupportedByRow = useCallback((row: ReactTable.Row<ROWTYPE>) => {
+    return row.original.label !== "if";
+  }, []);
+
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div data-testid={"kie-tools--boxed-expression-component---conditional"}>
@@ -253,6 +257,7 @@ export function ConditionalExpression({
           shouldShowRowsInlineControls={false}
           shouldShowColumnsInlineControls={false}
           evaluationHitsCountColumnIndex={1}
+          getEvaluationHitsCountSupportedByRow={getEvaluationHitsCountSupportedByRow}
         />
       </div>
     </NestedExpressionContainerContext.Provider>

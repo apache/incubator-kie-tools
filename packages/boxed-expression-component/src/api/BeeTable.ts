@@ -98,6 +98,7 @@ export interface BeeTableProps<R extends object> {
   resizerStopBehavior: ResizerStopBehavior;
   lastColumnMinWidth?: number;
   evaluationHitsCountColumnIndex?: number;
+  getEvaluationHitsCountSupportedByRow?: (row: ReactTable.Row<R>) => boolean;
 }
 
 /** Possible status for the visibility of the Table's Header */
