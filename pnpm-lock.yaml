@@ -4532,6 +4532,9 @@ importers:
       '@kie-tools-core/webpack-base':
         specifier: workspace:*
         version: link:../webpack-base
+      '@kie-tools/dmn-marshaller':
+        specifier: workspace:*
+        version: link:../dmn-marshaller
       '@kie-tools/eslint':
         specifier: workspace:*
         version: link:../eslint
