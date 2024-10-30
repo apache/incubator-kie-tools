@@ -19,20 +19,12 @@
 
 import * as vscode from "vscode";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
-import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
-import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
 import * as path from "path";
 import * as fs from "fs";
 import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 
-let backendProxy: VsCodeBackendProxy;
-
 export function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
-
-  const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
-  backendProxy = new VsCodeBackendProxy(context, backendI18n);
 
   /**
    * Starts the extension and set initial properties:
@@ -58,7 +50,6 @@ export function activate(context: vscode.ExtensionContext) {
         envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/envelope/index.js" },
       }),
     ]),
-    backendProxy: backendProxy,
   });
 
   /**
@@ -92,5 +83,4 @@ export function activate(context: vscode.ExtensionContext) {
 
 export function deactivate() {
   console.info("Extension is deactivating");
-  backendProxy?.stopServices();
 }

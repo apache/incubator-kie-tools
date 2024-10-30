@@ -39,8 +39,6 @@ digraph G {
   "@kie-tools-examples/webapp" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/kie-editors-standalone" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-standalone-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools-core/backend" [ color = "purple", fontcolor = "purple", style = "rounded" ];
-  "@kie-tools-core/notifications" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/boxed-expression-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/operating-system" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/feel-input-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -112,6 +110,7 @@ digraph G {
   "@kie-tools/extended-services-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "dmn-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/keyboard-shortcuts" [ color = "purple", fontcolor = "purple", style = "rounded" ];
+  "@kie-tools-core/notifications" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/envelope-bus" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/extended-services" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/extended-services-java" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -244,7 +243,6 @@ digraph G {
   "@kie-tools-examples/webapp" -> "@kie-tools/dmn-editor-standalone" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools/kie-editors-standalone" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools/serverless-workflow-standalone-editor" [ style = "solid", color = "orange" ];
-  "@kie-tools-core/backend" -> "@kie-tools-core/notifications" [ style = "solid", color = "purple" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools-core/operating-system" [ style = "solid", color = "blue" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools/feel-input-component" [ style = "solid", color = "blue" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools/playwright-base" [ style = "dashed", color = "blue" ];
@@ -363,9 +361,9 @@ digraph G {
   "dmn-vscode-extension" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
   "dmn-vscode-extension" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "blue" ];
   "dmn-vscode-extension" -> "@kie-tools/vscode-java-code-completion-extension-plugin" [ style = "dashed", color = "blue" ];
-  "@kie-tools-core/editor" -> "@kie-tools-core/backend" [ style = "solid", color = "purple" ];
   "@kie-tools-core/editor" -> "@kie-tools-core/envelope" [ style = "solid", color = "purple" ];
   "@kie-tools-core/editor" -> "@kie-tools-core/keyboard-shortcuts" [ style = "solid", color = "purple" ];
+  "@kie-tools-core/editor" -> "@kie-tools-core/notifications" [ style = "solid", color = "purple" ];
   "@kie-tools-core/editor" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "purple" ];
   "@kie-tools-core/envelope" -> "@kie-tools-core/envelope-bus" [ style = "solid", color = "purple" ];
   "@kie-tools-core/envelope-bus" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];

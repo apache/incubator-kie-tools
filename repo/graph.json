@@ -13,9 +13,9 @@
       { "id": "@kie-tools/tsconfig" },
       { "id": "@kie-tools-examples/base64png-editor" },
       { "id": "@kie-tools-core/editor" },
-      { "id": "@kie-tools-core/backend" },
       { "id": "@kie-tools-core/envelope" },
       { "id": "@kie-tools-core/keyboard-shortcuts" },
+      { "id": "@kie-tools-core/notifications" },
       { "id": "@kie-tools-core/patternfly-base" },
       { "id": "@kie-tools-examples/base64png-editor-chrome-extension" },
       { "id": "@kie-tools-core/chrome-extension" },
@@ -56,9 +56,6 @@
       { "id": "@kie-tools/kie-bc-editors" },
       { "id": "@kie-tools/stunner-editors" },
       { "id": "@kie-tools/serverless-workflow-combined-editor" },
-      { "id": "@kie-tools-core/notifications" },
-      { "id": "@kie-tools-core/i18n" },
-      { "id": "@kie-tools-core/workspace" },
       { "id": "@kie-tools/boxed-expression-component" },
       { "id": "@kie-tools-core/operating-system" },
       { "id": "@kie-tools/feel-input-component" },
@@ -106,7 +103,9 @@
       { "id": "@kie-tools/dashbuilder-viewer-deployment-webapp" },
       { "id": "@kie-tools-core/workspaces-git-fs" },
       { "id": "@kie-tools-core/react-hooks" },
+      { "id": "@kie-tools-core/workspace" },
       { "id": "@kie-tools/kie-sandbox-fs" },
+      { "id": "@kie-tools-core/i18n" },
       { "id": "@kie-tools/dashbuilder-viewer-image" },
       { "id": "@kie-tools/dashbuilder-viewer-image-env" },
       { "id": "@kie-tools/data-index-webapp" },
@@ -267,11 +266,6 @@
       },
       {
         "source": "@kie-tools-core/editor",
-        "target": "@kie-tools-core/backend",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/editor",
         "target": "@kie-tools-core/envelope",
         "weight": 1
       },
@@ -282,12 +276,12 @@
       },
       {
         "source": "@kie-tools-core/editor",
-        "target": "@kie-tools-core/patternfly-base",
+        "target": "@kie-tools-core/notifications",
         "weight": 1
       },
       {
-        "source": "@kie-tools-core/backend",
-        "target": "@kie-tools-core/notifications",
+        "source": "@kie-tools-core/editor",
+        "target": "@kie-tools-core/patternfly-base",
         "weight": 1
       },
       {
@@ -303,6 +297,16 @@
       {
         "source": "@kie-tools-core/keyboard-shortcuts",
         "target": "@kie-tools-core/operating-system",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/notifications",
+        "target": "@kie-tools-core/i18n",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/notifications",
+        "target": "@kie-tools-core/workspace",
         "weight": 1
       },
       {
@@ -683,36 +687,6 @@
       {
         "source": "@kie-tools/serverless-workflow-combined-editor",
         "target": "@kie-tools/serverless-workflow-text-editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/notifications",
-        "target": "@kie-tools-core/i18n",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/notifications",
-        "target": "@kie-tools-core/workspace",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/i18n",
-        "target": "@kie-tools/eslint",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/i18n",
-        "target": "@kie-tools/jest-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/i18n",
-        "target": "@kie-tools/tsconfig",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/workspace",
-        "target": "@kie-tools-core/operating-system",
         "weight": 1
       },
       {
@@ -1341,12 +1315,32 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools-core/workspace",
+        "target": "@kie-tools-core/operating-system",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/kie-sandbox-fs",
         "target": "@kie-tools/root-env",
         "weight": 1
       },
       {
         "source": "@kie-tools/kie-sandbox-fs",
+        "target": "@kie-tools/tsconfig",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/i18n",
+        "target": "@kie-tools/eslint",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/i18n",
+        "target": "@kie-tools/jest-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/i18n",
         "target": "@kie-tools/tsconfig",
         "weight": 1
       },
@@ -2587,7 +2581,6 @@
     ["kie-tools-examples-todo-list-view-vscode-extension", "examples/todo-list-view-vscode-extension"],
     ["@kie-tools-examples/uniforms-patternfly", "examples/uniforms-patternfly"],
     ["@kie-tools-examples/webapp", "examples/webapp"],
-    ["@kie-tools-core/backend", "packages/backend"],
     ["@kie-tools/boxed-expression-component", "packages/boxed-expression-component"],
     ["@kie-tools/bpmn-marshaller", "packages/bpmn-marshaller"],
     ["bpmn-vscode-extension", "packages/bpmn-vscode-extension"],

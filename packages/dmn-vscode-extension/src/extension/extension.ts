@@ -17,20 +17,12 @@
  * under the License.
  */
 
-import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
-import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
 import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
-import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
 
-let backendProxy: VsCodeBackendProxy;
-
 export function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
-
-  const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
-  backendProxy = new VsCodeBackendProxy(context, backendI18n);
 
   KogitoVsCode.startExtension({
     extensionName: "kie-group.dmn-vscode-extension",
@@ -52,7 +44,6 @@ export function activate(context: vscode.ExtensionContext) {
         envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/SceSimEditorEnvelopeApp.js" },
       }),
     ]),
-    backendProxy: backendProxy,
   });
 
   KogitoVsCode.startExtension({
@@ -69,7 +60,6 @@ export function activate(context: vscode.ExtensionContext) {
         envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/NewDmnEditorEnvelopeApp.js" },
       }),
     ]),
-    backendProxy: backendProxy,
   });
 
   KogitoVsCode.VsCodeRecommendation.showExtendedServicesRecommendation(context);
@@ -78,5 +68,5 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
-  backendProxy?.stopServices();
+  console.info("Extension is deactivated.");
 }
