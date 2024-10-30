@@ -64,6 +64,7 @@
     <version.org.apache.commons.commons-compress>1.26.1</version.org.apache.commons.commons-compress>
     <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
     <version.commons-io>2.16.1</version.commons-io>
+    <version.com.google.protobuf>3.25.5</version.com.google.protobuf>
   </properties>
 
   <dependencyManagement>
@@ -91,6 +92,16 @@
   </dependencyManagement>
 
   <dependencies>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>${version.com.google.protobuf}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java-util</artifactId>
+      <version>${version.com.google.protobuf}</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
