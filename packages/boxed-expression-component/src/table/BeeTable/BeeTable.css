@@ -203,11 +203,7 @@
   border: 0;
 }
 
-.expression-container .table-component .evaluation-highlights-row-overlay td {
-  position: relative;
-}
-
-.expression-container .table-component .evaluation-highlights-row-overlay td::before {
+.expression-container .table-component tr.evaluation-highlights-row-overlay > td:first-child::before {
   content: "";
   position: absolute;
   background-color: rgb(215, 201, 255, 0.5);
@@ -226,9 +222,9 @@
   position: absolute;
   top: 0px;
   left: 0px;
-  height: 55px;
-  width: 55px;
-  clip-path: polygon(0% 65%, 65% 0%, 0% 0%);
+  height: 40px;
+  width: 40px;
+  clip-path: polygon(0% 100%, 100% 0%, 0% 0%);
   padding-left: 0.2em;
 }
 
@@ -241,9 +237,9 @@
   position: absolute;
   top: 0px;
   left: 0px;
-  height: 55px;
-  width: 55px;
-  clip-path: polygon(0% 65%, 65% 0%, 0% 0%);
+  height: 40px;
+  width: 40px;
+  clip-path: polygon(0% 100%, 100% 0%, 0% 0%);
   padding-left: 0.2em;
 }
 
