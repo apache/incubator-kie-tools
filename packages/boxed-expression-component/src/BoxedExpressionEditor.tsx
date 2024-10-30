@@ -59,8 +59,7 @@ export interface BoxedExpressionEditorProps {
   isReadOnly?: boolean;
   /** PMML models available to use on Boxed PMML Function */
   pmmlDocuments?: PmmlDocument[];
-  /** Array of the hit sub-expressions UUID IDs (Decision Tables rules and Conditional Expression branches). IDs may repeat in the array as mentioned sub-expressions may hit more times. */
-  evaluationHitIds?: string[];
+  evaluationHitsCountPerId?: Map<string, number>;
   /** The containing HTMLElement which is scrollable */
   scrollableParentRef: React.RefObject<HTMLElement>;
   /** Parsed variables used for syntax coloring and auto-complete */
@@ -81,7 +80,7 @@ export function BoxedExpressionEditor({
   isResetSupportedOnRootExpression,
   scrollableParentRef,
   pmmlDocuments,
-  evaluationHitIds,
+  evaluationHitsCountPerId,
   onRequestFeelVariables,
   widthsById,
   onWidthsChange,
@@ -106,7 +105,7 @@ export function BoxedExpressionEditor({
         isReadOnly={isReadOnly}
         dataTypes={dataTypes}
         pmmlDocuments={pmmlDocuments}
-        evaluationHitIds={evaluationHitIds}
+        evaluationHitsCountPerId={evaluationHitsCountPerId}
         onRequestFeelVariables={onRequestFeelVariables}
         widthsById={widthsById}
         hideDmn14BoxedExpressions={hideDmn14BoxedExpressions}

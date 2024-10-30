@@ -76,16 +76,20 @@ export function BeeTableBody<R extends object>({
   isReadOnly,
   evaluationHitsCountColumnIndex,
 }: BeeTableBodyProps<R>) {
-  const { evaluationHitIds } = useBoxedExpressionEditor();
-  // const evaluationHitIds = ["_1FA12B9F-288C-42E8-B77F-BE2D3702B7B6", "_1FA12B9F-288C-42E8-B77F-BE2D3702B7B7"];
+  // const { evaluationHitsCountPerId } = useBoxedExpressionEditor();
+  const evaluationHitsCountPerId: Map<string, number> = new Map();
+  evaluationHitsCountPerId.set("_1FA12B9F-288C-42E8-B77F-BE2D3702B7B6", 10);
+  evaluationHitsCountPerId.set("_1FA12B9F-288C-42E8-B77F-BE2D3702B7B7", 20);
 
   const renderRow = useCallback(
     (row: ReactTable.Row<R>, rowIndex: number) => {
       reactTableInstance.prepareRow(row);
 
       const rowKey = getRowKey(row);
-      const rowHitCount = evaluationHitIds?.filter((hitId) => hitId === rowKey).length!;
-      const rowClassName = rowKey + (rowHitCount > 0 ? " evaluation-highlights-row-overlay" : "");
+      const rowHitCount = evaluationHitsCountPerId ? evaluationHitsCountPerId?.get(rowKey) ?? 0 : undefined;
+      const rowClassName = rowHitCount
+        ? rowKey + (rowHitCount > 0 ? " evaluation-highlights-row-overlay" : "")
+        : undefined;
       const renderTr = () => (
         <tr className={rowClassName} key={rowKey} data-testid={`kie-tools--bee--expression-row-${rowIndex}`}>
           {row.cells.map((cell, cellIndex) => {
