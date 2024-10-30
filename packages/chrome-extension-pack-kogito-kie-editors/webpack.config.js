@@ -108,5 +108,10 @@ module.exports = async (webpackEnv) => {
     module: {
       rules: [...patternflyBase.webpackModuleRules],
     },
+    resolve: {
+      fallback: {
+        stream: require.resolve("stream-browserify"),
+      },
+    },
   });
 };
