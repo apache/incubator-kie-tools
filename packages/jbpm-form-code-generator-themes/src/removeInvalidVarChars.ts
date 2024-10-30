@@ -17,6 +17,7 @@
  * under the License.
  */
 
-export const inputSanitizationUtil = (unsanitizedString: string) => {
+// Remove character that are invalid during variable declaration
+export const removeInvalidVarChars = (unsanitizedString: string) => {
   return unsanitizedString.replaceAll("#", "_");
 };

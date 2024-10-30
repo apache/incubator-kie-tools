@@ -23,6 +23,7 @@ import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@ki
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
+import { generateFormsCommand } from "@kie-tools/form-code-generator-vscode-command/dist/generateFormCodeCommand";
 
 let backendProxy: VsCodeBackendProxy;
 
@@ -66,6 +67,12 @@ export async function activate(context: vscode.ExtensionContext) {
     ]),
     backendProxy: backendProxy,
   });
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("extension.apache.kie.kogitoEditors.generateFormCode", async (args: any) =>
+      generateFormsCommand()
+    )
+  );
 
   console.info("Extension is successfully setup.");
 }
