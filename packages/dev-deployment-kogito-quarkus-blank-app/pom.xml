@@ -92,6 +92,8 @@
   </dependencyManagement>
 
   <dependencies>
+    <!-- This was added when the latest version of protobuf brought by Quarkus was 3.25.0 -->
+    <!-- To address CVE-2024-7254, affecting protobuf:3.25.0 -->
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
@@ -350,4 +352,26 @@
       </plugin>
     </plugins>
   </build>
+  <repositories>
+    <repositories>
+      <repository>
+        <id>apache.snapshots</id>
+        <name>Apache Snapshot Repository</name>
+        <url>https://repository.apache.org/snapshots</url>
+        <releases>
+          <enabled>false</enabled>
+        </releases>
+      </repository>
+    </repositories>
+    <pluginRepositories>
+      <pluginRepository>
+        <id>apache.snapshots</id>
+        <name>Apache Snapshot Repository</name>
+        <url>https://repository.apache.org/snapshots</url>
+        <releases>
+          <enabled>false</enabled>
+        </releases>
+      </pluginRepository>
+    </pluginRepositories>
+  </repositories>
 </project>
