@@ -49,7 +49,9 @@ export interface BeeTableTdProps<R extends object> {
   onDataCellClick?: (columnID: string) => void;
   onDataCellKeyUp?: (columnID: string) => void;
   isReadOnly: boolean;
-  shouldDisplayEvaluationHitsCount?: boolean;
+  /** True means the table cell can display evaluation hits count. False means evaluation hits count is not displayed in the table cell. */
+  canDisplayEvaluationHitsCountBadge?: boolean;
+  /** Actuall evaluation hits count number that will be displayed in the table cell if 'canDisplayEvaluationHitsCountBadge' is set to true. */
   evaluationHitsCount?: number;
 }
 
@@ -75,7 +77,7 @@ export function BeeTableTd<R extends object>({
   onDataCellClick,
   onDataCellKeyUp,
   isReadOnly,
-  shouldDisplayEvaluationHitsCount,
+  canDisplayEvaluationHitsCountBadge,
   evaluationHitsCount,
 }: BeeTableTdProps<R>) {
   const [isResizing, setResizing] = useState(false);
@@ -229,10 +231,10 @@ export function BeeTableTd<R extends object>({
     return onDataCellKeyUp?.(column.id);
   }, [column.id, onDataCellKeyUp]);
 
-  const evaluationHitsCountCss = shouldDisplayEvaluationHitsCount
+  const evaluationHitsCountBadgeClassName = canDisplayEvaluationHitsCountBadge
     ? (evaluationHitsCount ?? 0) > 0
-      ? "evaluation-hit-count-overlay-colored"
-      : "evaluation-hit-count-overlay-non-colored"
+      ? "evaluation-hits-count-badge-colored"
+      : "evaluation-hits-count-badge-non-colored"
     : "";
 
   return (
@@ -256,11 +258,11 @@ export function BeeTableTd<R extends object>({
         }}
       >
         {column.isRowIndexColumn ? (
-          <div className={evaluationHitsCountCss} data-evaluation-hits-count={evaluationHitsCount}>
+          <div className={evaluationHitsCountBadgeClassName} data-evaluation-hits-count={evaluationHitsCount}>
             {rowIndexLabel}
           </div>
         ) : (
-          <div className={evaluationHitsCountCss} data-evaluation-hits-count={evaluationHitsCount}>
+          <div className={evaluationHitsCountBadgeClassName} data-evaluation-hits-count={evaluationHitsCount}>
             {tdContent}
 
             {!isReadOnly && shouldRenderResizer && (

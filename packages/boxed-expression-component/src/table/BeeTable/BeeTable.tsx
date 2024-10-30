@@ -660,7 +660,7 @@ export function BeeTableInternal<R extends object>({
           lastColumnMinWidth={lastColumnMinWidth}
           isReadOnly={isReadOnly}
           evaluationHitsCountColumnIndex={evaluationHitsCountColumnIndex}
-          getEvalationHitsCountSupportedByRow={getEvaluationHitsCountSupportedByRow}
+          getEvaluationHitsCountSupportedByRow={getEvaluationHitsCountSupportedByRow}
         />
       </table>
       <BeeTableContextMenuHandler

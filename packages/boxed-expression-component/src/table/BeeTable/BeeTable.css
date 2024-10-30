@@ -203,7 +203,7 @@
   border: 0;
 }
 
-.expression-container .table-component tr.evaluation-highlights-row-overlay > td:first-child::before {
+.expression-container .table-component tr.evaluation-hits-count-row-overlay > td:first-child::before {
   content: "";
   position: absolute;
   background-color: rgb(215, 201, 255, 0.5);
@@ -213,7 +213,7 @@
   height: 100%;
 }
 
-.evaluation-hit-count-overlay-non-colored::before {
+.evaluation-hits-count-badge-non-colored::before {
   content: attr(data-evaluation-hits-count);
   font-size: 0.8em;
   text-align: left;
@@ -228,7 +228,7 @@
   padding-left: 0.2em;
 }
 
-.evaluation-hit-count-overlay-colored::before {
+.evaluation-hits-count-badge-colored::before {
   content: attr(data-evaluation-hits-count);
   font-size: 0.8em;
   text-align: left;

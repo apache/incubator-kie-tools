@@ -56,8 +56,10 @@ export interface BeeTableBodyProps<R extends object> {
   rowWrapper?: React.FunctionComponent<React.PropsWithChildren<{ row: R; rowIndex: number }>>;
 
   isReadOnly: boolean;
+  /** See BeeTable.ts */
   evaluationHitsCountColumnIndex?: number;
-  getEvalationHitsCountSupportedByRow?: (row: ReactTable.Row<R>) => boolean;
+  /** See BeeTable.ts */
+  getEvaluationHitsCountSupportedByRow?: (row: ReactTable.Row<R>) => boolean;
 }
 
 export function BeeTableBody<R extends object>({
@@ -76,7 +78,7 @@ export function BeeTableBody<R extends object>({
   rowWrapper,
   isReadOnly,
   evaluationHitsCountColumnIndex,
-  getEvalationHitsCountSupportedByRow,
+  getEvaluationHitsCountSupportedByRow,
 }: BeeTableBodyProps<R>) {
   // const { evaluationHitsCountPerId } = useBoxedExpressionEditor();
   const evaluationHitsCountPerId: Map<string, number> = new Map();
@@ -94,20 +96,19 @@ export function BeeTableBody<R extends object>({
       reactTableInstance.prepareRow(row);
 
       const rowKey = getRowKey(row);
-      const isEvalationHitsCountSupportedByRow: boolean = getEvalationHitsCountSupportedByRow?.(row) ?? false;
-      const rowHitCount = evaluationHitsCountPerId ? evaluationHitsCountPerId?.get(rowKey) ?? 0 : undefined;
-      const rowClassName =
-        rowHitCount && isEvalationHitsCountSupportedByRow
-          ? rowKey + (rowHitCount > 0 ? " evaluation-highlights-row-overlay" : "")
-          : undefined;
+      const isEvalationHitsCountSupportedByRow: boolean = getEvaluationHitsCountSupportedByRow?.(row) ?? false;
+      const rowEvaluationHitsCount = evaluationHitsCountPerId ? evaluationHitsCountPerId?.get(rowKey) ?? 0 : undefined;
+      const canDisplayEvaluationHitsCountRowOverlay =
+        rowEvaluationHitsCount !== undefined && isEvalationHitsCountSupportedByRow === true;
+      const rowClassName = canDisplayEvaluationHitsCountRowOverlay
+        ? rowKey + (rowEvaluationHitsCount > 0 ? " evaluation-hits-count-row-overlay" : "")
+        : rowKey;
       const renderTr = () => (
         <tr className={rowClassName} key={rowKey} data-testid={`kie-tools--bee--expression-row-${rowIndex}`}>
           {row.cells.map((cell, cellIndex) => {
             const columnKey = getColumnKey(reactTableInstance.allColumns[cellIndex]);
-            const shouldDisplayEvaluationHitsCount =
-              rowHitCount !== undefined &&
-              cellIndex === evaluationHitsCountColumnIndex &&
-              isEvalationHitsCountSupportedByRow;
+            const canDisplayEvaluationHitsCountBadge =
+              canDisplayEvaluationHitsCountRowOverlay && cellIndex === evaluationHitsCountColumnIndex;
             return (
               <React.Fragment key={columnKey}>
                 {((cell.column.isRowIndexColumn && shouldRenderRowIndexColumn) || !cell.column.isRowIndexColumn) && (
@@ -131,8 +132,8 @@ export function BeeTableBody<R extends object>({
                       cellIndex === reactTableInstance.allColumns.length - 1 ? lastColumnMinWidth : undefined
                     }
                     isReadOnly={isReadOnly}
-                    shouldDisplayEvaluationHitsCount={shouldDisplayEvaluationHitsCount}
-                    evaluationHitsCount={rowHitCount}
+                    canDisplayEvaluationHitsCountBadge={canDisplayEvaluationHitsCountBadge}
+                    evaluationHitsCount={rowEvaluationHitsCount}
                   />
                 )}
               </React.Fragment>
