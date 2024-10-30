@@ -80,16 +80,7 @@ export function BeeTableBody<R extends object>({
   evaluationHitsCountColumnIndex,
   getEvaluationHitsCountSupportedByRow,
 }: BeeTableBodyProps<R>) {
-  // const { evaluationHitsCountPerId } = useBoxedExpressionEditor();
-  const evaluationHitsCountPerId: Map<string, number> = new Map();
-  evaluationHitsCountPerId.set("_1FA12B9F-288C-42E8-B77F-BE2D3702B7B6", 10);
-  evaluationHitsCountPerId.set("_1FA12B9F-288C-42E8-B77F-BE2D3702B7B7", 20);
-  evaluationHitsCountPerId.set("_1FA12B9F-288C-42E8-B77F-BE2D3702B7B8", 30);
-  evaluationHitsCountPerId.set("_1FA12B9F-288C-42E8-B77F-BE2D3702B7B9", 40);
-  evaluationHitsCountPerId.set("_1FA12B9F-288C-42E8-B77F-BE2D3702B7B0", 50);
-  evaluationHitsCountPerId.set("_1FA12B9F-288C-42E8-B77F-BE2D3702B7B1", 60);
-  evaluationHitsCountPerId.set("_1FA12B9F-288C-42E8-B77F-BE2D3702B7B2", 70);
-  evaluationHitsCountPerId.set("_1FA12B9F-288C-42E8-B77F-BE2D3702B7B3", 80);
+  const { evaluationHitsCountPerId } = useBoxedExpressionEditor();
 
   const renderRow = useCallback(
     (row: ReactTable.Row<R>, rowIndex: number) => {
