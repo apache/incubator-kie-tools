@@ -781,91 +781,6 @@ importers:
         specifier: ^5.9.0
         version: 5.9.0
 
-  packages/backend:
-    dependencies:
-      '@kie-tools-core/i18n':
-        specifier: workspace:*
-        version: link:../i18n
-      '@kie-tools-core/notifications':
-        specifier: workspace:*
-        version: link:../notifications
-      '@kie-tools-core/workspace':
-        specifier: workspace:*
-        version: link:../workspace
-      axios:
-        specifier: ^1.7.4
-        version: 1.7.4
-      fast-xml-parser:
-        specifier: ^4.4.1
-        version: 4.4.1
-      portfinder:
-        specifier: ^1.0.32
-        version: 1.0.32
-      semver:
-        specifier: ^7.5.4
-        version: 7.5.4
-      sinon:
-        specifier: ^11.1.1
-        version: 11.1.1
-    devDependencies:
-      '@babel/core':
-        specifier: ^7.16.0
-        version: 7.16.12
-      '@babel/preset-env':
-        specifier: ^7.16.0
-        version: 7.16.11(@babel/core@7.16.12)
-      '@babel/preset-react':
-        specifier: ^7.16.0
-        version: 7.16.0(@babel/core@7.16.12)
-      '@kie-tools/eslint':
-        specifier: workspace:*
-        version: link:../eslint
-      '@kie-tools/jest-base':
-        specifier: workspace:*
-        version: link:../jest-base
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      '@types/jest':
-        specifier: ^29.5.12
-        version: 29.5.12
-      '@types/jest-when':
-        specifier: ^3.5.5
-        version: 3.5.5
-      '@types/semver':
-        specifier: ^7.5.2
-        version: 7.5.2
-      '@types/sinon':
-        specifier: ^10.0.2
-        version: 10.0.2
-      '@types/vscode':
-        specifier: 1.67.0
-        version: 1.67.0
-      jest:
-        specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3))
-      jest-junit:
-        specifier: ^16.0.0
-        version: 16.0.0
-      jest-when:
-        specifier: ^3.6.0
-        version: 3.6.0(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3)))
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      stream:
-        specifier: ^0.0.2
-        version: 0.0.2
-      ts-jest:
-        specifier: ^29.1.5
-        version: 29.1.5(@babel/core@7.16.12)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.16.12))(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3)))(typescript@5.5.3)
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-
   packages/boxed-expression-component:
     dependencies:
       '@kie-tools-core/i18n':
@@ -3379,7 +3294,7 @@ importers:
         version: 7.6.13(react@17.0.2)
       '@storybook/addon-webpack5-compiler-babel':
         specifier: ^3.0.3
-        version: 3.0.3(webpack@5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0))
+        version: 3.0.3(webpack@5.94.0(webpack-cli@4.10.0))
       '@storybook/blocks':
         specifier: ^7.3.2
         version: 7.6.13(@types/react-dom@17.0.8)(@types/react@17.0.21)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -3394,7 +3309,7 @@ importers:
         version: 7.6.13(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@5.5.3)
       '@storybook/react-webpack5':
         specifier: ^7.3.2
-        version: 7.6.13(@babel/core@7.23.0)(@swc/core@1.3.92)(@types/webpack@4.41.39)(encoding@0.1.13)(esbuild@0.18.20)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.26.1)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))(webpack-hot-middleware@2.25.4)
+        version: 7.6.13(@babel/core@7.23.0)(@types/webpack@4.41.39)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.26.1)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))(webpack-hot-middleware@2.25.4)
       '@types/d3-drag':
         specifier: ^3.0.3
         version: 3.0.7
@@ -3424,7 +3339,7 @@ importers:
         version: 8.3.0
       copy-webpack-plugin:
         specifier: ^11.0.0
-        version: 11.0.0(webpack@5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0))
+        version: 11.0.0(webpack@5.94.0(webpack-cli@4.10.0))
       copyfiles:
         specifier: ^2.4.1
         version: 2.4.1
@@ -3436,16 +3351,16 @@ importers:
         version: 1.1.9
       file-loader:
         specifier: ^6.2.0
-        version: 6.2.0(webpack@5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0))
+        version: 6.2.0(webpack@5.94.0(webpack-cli@4.10.0))
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@20.14.2)(typescript@5.5.3))
+        version: 29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3))
       jest-junit:
         specifier: ^16.0.0
         version: 16.0.0
       jest-when:
         specifier: ^3.6.0
-        version: 3.6.0(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@20.14.2)(typescript@5.5.3)))
+        version: 3.6.0(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3)))
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -3463,13 +3378,13 @@ importers:
         version: 7.6.13(encoding@0.1.13)
       ts-jest:
         specifier: ^29.1.5
-        version: 29.1.5(@babel/core@7.23.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.23.0))(esbuild@0.18.20)(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@20.14.2)(typescript@5.5.3)))(typescript@5.5.3)
+        version: 29.1.5(@babel/core@7.23.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.23.0))(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3)))(typescript@5.5.3)
       typescript:
         specifier: ^5.5.3
         version: 5.5.3
       webpack:
         specifier: ^5.94.0
-        version: 5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0)
+        version: 5.94.0(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
         version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
@@ -3635,7 +3550,7 @@ importers:
         version: 7.6.13(react@17.0.2)
       '@storybook/addon-webpack5-compiler-babel':
         specifier: ^3.0.3
-        version: 3.0.3(webpack@5.94.0(webpack-cli@4.10.0))
+        version: 3.0.3(webpack@5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0))
       '@storybook/blocks':
         specifier: ^7.3.2
         version: 7.6.13(@types/react-dom@17.0.8)(@types/react@17.0.21)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -3650,7 +3565,7 @@ importers:
         version: 7.6.13(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@5.5.3)
       '@storybook/react-webpack5':
         specifier: ^7.3.2
-        version: 7.6.13(@babel/core@7.23.9)(@types/webpack@4.41.39)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.26.1)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))(webpack-hot-middleware@2.25.4)
+        version: 7.6.13(@babel/core@7.23.9)(@swc/core@1.3.92)(@types/webpack@4.41.39)(encoding@0.1.13)(esbuild@0.18.20)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.26.1)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))(webpack-hot-middleware@2.25.4)
       '@types/jest-when':
         specifier: ^3.5.5
         version: 3.5.5
@@ -3683,7 +3598,7 @@ importers:
         version: 9.5.1
       html-webpack-plugin:
         specifier: ^5.3.2
-        version: 5.5.3(webpack@5.94.0(webpack-cli@4.10.0))
+        version: 5.5.3(webpack@5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0))
       junit-report-merger:
         specifier: ^4.0.0
         version: 4.0.0
@@ -3704,7 +3619,7 @@ importers:
         version: 0.11.10
       raw-loader:
         specifier: ^4.0.2
-        version: 4.0.2(webpack@5.94.0(webpack-cli@4.10.0))
+        version: 4.0.2(webpack@5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0))
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -3725,7 +3640,7 @@ importers:
         version: 5.5.3
       webpack:
         specifier: ^5.94.0
-        version: 5.94.0(webpack-cli@4.10.0)
+        version: 5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0)
       webpack-bundle-analyzer:
         specifier: ^4.10.2
         version: 4.10.2
@@ -14371,196 +14286,168 @@ packages:
   '@babel/plugin-proposal-async-generator-functions@7.16.8':
     resolution: {integrity: sha512-71YHIvMuiuqWJQkebWJtdhQTfd4Q4mF76q2IX37uZPkG9+olBxsX+rH1vkhFto4UeJZ9dPY2s+mDvhDm1u2BGQ==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-async-generator-functions instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-async-generator-functions@7.18.10':
     resolution: {integrity: sha512-1mFuY2TOsR1hxbjCo4QL+qlIjV07p4H4EUYw2J/WCqsvFV6V9X9z9YhXbWndc/4fw+hYGlDT7egYxliMp5O6Ew==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-async-generator-functions instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-class-properties@7.16.7':
     resolution: {integrity: sha512-IobU0Xme31ewjYOShSIqd/ZGM/r/cuOz2z0MDbNrhF5FW+ZVgi0f2lyeoj9KFPDOAqsYxmLWZte1WOwlvY9aww==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-class-properties instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-class-properties@7.18.6':
     resolution: {integrity: sha512-cumfXOF0+nzZrrN8Rf0t7M+tF6sZc7vhQwYQck9q1/5w2OExlD+b4v4RpMJFaV1Z7WcDRgO6FqvxqxGlwo+RHQ==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-class-properties instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-class-static-block@7.17.6':
     resolution: {integrity: sha512-X/tididvL2zbs7jZCeeRJ8167U/+Ac135AM6jCAx6gYXDUviZV5Ku9UDvWS2NCuWlFjIRXklYhwo6HhAC7ETnA==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-class-static-block instead.
     peerDependencies:
       '@babel/core': ^7.12.0
 
   '@babel/plugin-proposal-class-static-block@7.21.0':
     resolution: {integrity: sha512-XP5G9MWNUskFuP30IfFSEFB0Z6HzLIUcjYM4bYOPHXl7eiJ9HFv8tWj6TXTN5QODiEhDZAeI4hLok2iHFFV4hw==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-class-static-block instead.
     peerDependencies:
       '@babel/core': ^7.12.0
 
   '@babel/plugin-proposal-dynamic-import@7.16.7':
     resolution: {integrity: sha512-I8SW9Ho3/8DRSdmDdH3gORdyUuYnk1m4cMxUAdu5oy4n3OfN8flDEH+d60iG7dUfi0KkYwSvoalHzzdRzpWHTg==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-dynamic-import instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-dynamic-import@7.18.6':
     resolution: {integrity: sha512-1auuwmK+Rz13SJj36R+jqFPMJWyKEDd7lLSdOj4oJK0UTgGueSAtkrCvz9ewmgyU/P941Rv2fQwZJN8s6QruXw==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-dynamic-import instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-export-namespace-from@7.16.7':
     resolution: {integrity: sha512-ZxdtqDXLRGBL64ocZcs7ovt71L3jhC1RGSyR996svrCi3PYqHNkb3SwPJCs8RIzD86s+WPpt2S73+EHCGO+NUA==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-export-namespace-from instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-export-namespace-from@7.18.9':
     resolution: {integrity: sha512-k1NtHyOMvlDDFeb9G5PhUXuGj8m/wiwojgQVEhJ/fsVsMCpLyOP4h0uGEjYJKrRI+EVPlb5Jk+Gt9P97lOGwtA==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-export-namespace-from instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-json-strings@7.16.7':
     resolution: {integrity: sha512-lNZ3EEggsGY78JavgbHsK9u5P3pQaW7k4axlgFLYkMd7UBsiNahCITShLjNQschPyjtO6dADrL24757IdhBrsQ==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-json-strings instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-json-strings@7.18.6':
     resolution: {integrity: sha512-lr1peyn9kOdbYc0xr0OdHTZ5FMqS6Di+H0Fz2I/JwMzGmzJETNeOFq2pBySw6X/KFL5EWDjlJuMsUGRFb8fQgQ==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-json-strings instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-logical-assignment-operators@7.16.7':
     resolution: {integrity: sha512-K3XzyZJGQCr00+EtYtrDjmwX7o7PLK6U9bi1nCwkQioRFVUv6dJoxbQjtWVtP+bCPy82bONBKG8NPyQ4+i6yjg==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-logical-assignment-operators instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-logical-assignment-operators@7.20.7':
     resolution: {integrity: sha512-y7C7cZgpMIjWlKE5T7eJwp+tnRYM89HmRvWM5EQuB5BoHEONjmQ8lSNmBUwOyy/GFRsohJED51YBF79hE1djug==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-logical-assignment-operators instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-nullish-coalescing-operator@7.16.7':
     resolution: {integrity: sha512-aUOrYU3EVtjf62jQrCj63pYZ7k6vns2h/DQvHPWGmsJRYzWXZ6/AsfgpiRy6XiuIDADhJzP2Q9MwSMKauBQ+UQ==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-nullish-coalescing-operator instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-nullish-coalescing-operator@7.18.6':
     resolution: {integrity: sha512-wQxQzxYeJqHcfppzBDnm1yAY0jSRkUXR2z8RePZYrKwMKgMlE8+Z6LUno+bd6LvbGh8Gltvy74+9pIYkr+XkKA==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-nullish-coalescing-operator instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-numeric-separator@7.16.7':
     resolution: {integrity: sha512-vQgPMknOIgiuVqbokToyXbkY/OmmjAzr/0lhSIbG/KmnzXPGwW/AdhdKpi+O4X/VkWiWjnkKOBiqJrTaC98VKw==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-numeric-separator instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-numeric-separator@7.18.6':
     resolution: {integrity: sha512-ozlZFogPqoLm8WBr5Z8UckIoE4YQ5KESVcNudyXOR8uqIkliTEgJ3RoketfG6pmzLdeZF0H/wjE9/cCEitBl7Q==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-numeric-separator instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-object-rest-spread@7.17.3':
     resolution: {integrity: sha512-yuL5iQA/TbZn+RGAfxQXfi7CNLmKi1f8zInn4IgobuCWcAb7i+zj4TYzQ9l8cEzVyJ89PDGuqxK1xZpUDISesw==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-object-rest-spread instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-object-rest-spread@7.20.7':
     resolution: {integrity: sha512-d2S98yCiLxDVmBmE8UjGcfPvNEUbA1U5q5WxaWFUGRzJSVAZqm5W6MbPct0jxnegUZ0niLeNX+IOzEs7wYg9Dg==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-object-rest-spread instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-optional-catch-binding@7.16.7':
     resolution: {integrity: sha512-eMOH/L4OvWSZAE1VkHbr1vckLG1WUcHGJSLqqQwl2GaUqG6QjddvrOaTUMNYiv77H5IKPMZ9U9P7EaHwvAShfA==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-optional-catch-binding instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-optional-catch-binding@7.18.6':
     resolution: {integrity: sha512-Q40HEhs9DJQyaZfUjjn6vE8Cv4GmMHCYuMGIWUnlxH6400VGxOuwWsPt4FxXxJkC/5eOzgn0z21M9gMT4MOhbw==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-optional-catch-binding instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-optional-chaining@7.16.7':
     resolution: {integrity: sha512-eC3xy+ZrUcBtP7x+sq62Q/HYd674pPTb/77XZMb5wbDPGWIdUbSr4Agr052+zaUPSb+gGRnjxXfKFvx5iMJ+DA==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-optional-chaining instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-optional-chaining@7.21.0':
     resolution: {integrity: sha512-p4zeefM72gpmEe2fkUr/OnOXpWEf8nAgk7ZYVqqfFiyIG7oFfVZcCrU64hWn5xp4tQ9LkV4bTIa5rD0KANpKNA==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-optional-chaining instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-private-methods@7.16.11':
     resolution: {integrity: sha512-F/2uAkPlXDr8+BHpZvo19w3hLFKge+k75XUprE6jaqKxjGkSYcK+4c+bup5PdW/7W/Rpjwql7FTVEDW+fRAQsw==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-private-methods instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-private-methods@7.18.6':
     resolution: {integrity: sha512-nutsvktDItsNn4rpGItSNV2sz1XwS+nfU0Rg8aCx3W3NOKVzdMjJRu0O5OkgDp3ZGICSTbgRpxZoWsxoKRvbeA==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-private-methods instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-private-property-in-object@7.16.7':
     resolution: {integrity: sha512-rMQkjcOFbm+ufe3bTZLyOfsOUOxyvLXZJCTARhJr+8UMSoZmqTe1K1BgkFcrW37rAchWg57yI69ORxiWvUINuQ==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-private-property-in-object instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-private-property-in-object@7.21.0':
     resolution: {integrity: sha512-ha4zfehbJjc5MmXBlHec1igel5TJXXLDDRbuJ4+XT2TJcyD9/V1919BA8gMvsdHcNMBy4WBUBiRb3nw/EQUtBw==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-private-property-in-object instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
@@ -14573,14 +14460,12 @@ packages:
   '@babel/plugin-proposal-unicode-property-regex@7.16.7':
     resolution: {integrity: sha512-QRK0YI/40VLhNVGIjRNAAQkEHws0cswSdFFjpFyt943YmJIU1da9uW63Iu6NFV6CxTZW5eTDCrwZUstBWgp/Rg==}
     engines: {node: '>=4'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-unicode-property-regex instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-proposal-unicode-property-regex@7.18.6':
     resolution: {integrity: sha512-2BShG/d5yoZyXZfVePH91urL5wTG6ASZU9M4o03lKK8u8UW1y08OMttBSOADTcJrnPMpvDXRG3G8fyLh4ovs8w==}
     engines: {node: '>=4'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-unicode-property-regex instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
@@ -16827,7 +16712,6 @@ packages:
   '@humanwhocodes/config-array@0.11.13':
     resolution: {integrity: sha512-JSBDMiDKSzQVngfRjOdFXgFfklaXI4K9nLF49Auh21lmBWRLIK3+xTErTWD4KU54pb6coM6ESE7Awz/FNU3zgQ==}
     engines: {node: '>=10.10.0'}
-    deprecated: Use @eslint/config-array instead
 
   '@humanwhocodes/module-importer@1.0.1':
     resolution: {integrity: sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA==}
@@ -16839,7 +16723,6 @@ packages:
 
   '@humanwhocodes/object-schema@2.0.1':
     resolution: {integrity: sha512-dvuCeX5fC9dXgJn9t+X5atfmgQAzUOWqS1254Gh0m6i8wKd10ebXkfNKiRK+1GWi/yTvvLDHpoxLr0xxxeslWw==}
-    deprecated: Use @eslint/object-schema instead
 
   '@inquirer/checkbox@2.4.5':
     resolution: {integrity: sha512-+YlCyS6JBWeZugIvReh/YL5HJcowlklz5RykQuYKQfgWQeCJh5Us0nWcRddvIVkjmYa0I/8bwWioSLu850J8sA==}
@@ -17071,7 +16954,6 @@ packages:
   '@koa/router@10.1.1':
     resolution: {integrity: sha512-ORNjq5z4EmQPriKbR0ER3k4Gh7YGNhWDL7JBW+8wXDrHLbWYKYSJaOJ9aN06npF5tbTxe2JBOsurpJDAvjiXKw==}
     engines: {node: '>= 8.0.0'}
-    deprecated: '**IMPORTANT 10x+ PERFORMANCE UPGRADE**: Please upgrade to v12.0.1+ as we have fixed an issue with debuglog causing 10x slower router benchmark performance, see https://github.com/koajs/router/pull/173'
 
   '@kubernetes-models/apimachinery@1.1.0':
     resolution: {integrity: sha512-DvCNeou3+M5ESJluVs8daVp7g03/hWnwXHou9Se8qNRZpqH6lQHvRjXy6HWSqBV9fKZOnWcOExmkUPQGbVIa6A==}
@@ -17217,7 +17099,6 @@ packages:
   '@npmcli/fs@1.1.0':
     resolution: {integrity: sha512-VhP1qZLXcrXRIaPoqb4YA55JQxLNF3jNR4T55IdOJa3+IFJKNYHtPvtXx8slmeMavj37vCzCfrqQM1vWLsYKLA==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16}
-    deprecated: this version had an improper engines field added, update to 1.1.1
 
   '@npmcli/fs@3.1.1':
     resolution: {integrity: sha512-q9CRWjpHCMIh5sVyefoD1cA7PkvILqCZsnSOEUUivORLjxCO/Irmue2DprETiNgEqktDBZaM1Bi+jrarx1XdCg==}
@@ -17235,7 +17116,6 @@ packages:
   '@npmcli/move-file@1.1.2':
     resolution: {integrity: sha512-1SUf/Cg2GzGDyaf15aR9St9TWlb+XvbZXWpDx8YKs7MLzMH/BCeopv+y9vzrzgkfykCGuWOlSu3mZhj2+FQcrg==}
     engines: {node: '>=10'}
-    deprecated: This functionality has been moved to @npmcli/fs
 
   '@npmcli/node-gyp@3.0.0':
     resolution: {integrity: sha512-gp8pRXC2oOxu0DUE1/M3bYtb1b3/DbJ5aM113+XJBgfXdussRAsX0YOrOhdd8WvnAR6auDBvJomGAkLKA5ydxA==}
@@ -18373,23 +18253,11 @@ packages:
     resolution: {integrity: sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg==}
     engines: {node: '>=18'}
 
-  '@sinonjs/commons@1.8.3':
-    resolution: {integrity: sha512-xkNcLAn/wZaX14RPlwizcKicDk9G3F8m2nU3L7Ukm5zBgTwiT0wsoFAHx9Jq56fJA1z/7uKGtCRu16sOUCLIHQ==}
-
   '@sinonjs/commons@3.0.1':
     resolution: {integrity: sha512-K3mCHKQ9sVh8o1C9cxkwxaOmXoAMlDxC1mYyHrjqOWEcBjYr76t96zL2zlj5dUGZ3HSw240X1qgH3Mjf1yJWpQ==}
 
   '@sinonjs/fake-timers@10.3.0':
     resolution: {integrity: sha512-V4BG07kuYSUkTCSBHG8G8TNhM+F19jXFWnQtzj+we8DrkpSBCee9Z3Ms8yiGer/dlmhe35/Xdgyo3/0rQKg7YA==}
-
-  '@sinonjs/fake-timers@7.1.2':
-    resolution: {integrity: sha512-iQADsW4LBMISqZ6Ci1dupJL9pprqwcVFTcOsEmQOEhW+KLCVn/Y4Jrvg2k19fIHCp+iFprriYPTdRcQR8NbUPg==}
-
-  '@sinonjs/samsam@6.0.2':
-    resolution: {integrity: sha512-jxPRPp9n93ci7b8hMfJOFDPRLFYadN6FSpeROFTR4UNF4i5b+EK6m4QXPO46BDhFgRy1JuS87zAnFOzCUwMJcQ==}
-
-  '@sinonjs/text-encoding@0.7.1':
-    resolution: {integrity: sha512-+iTbntw2IZPb/anVDbypzfQa+ay64MW0Zo8aJ8gZPWMMK6/OubMVb6lUPMagqjOPnmtauXnFCACVl3O7ogjeqQ==}
 
   '@socket.io/base64-arraybuffer@1.0.2':
     resolution: {integrity: sha512-dOlCBKnDw4iShaIsH/bxujKTM18+2TOAsYz+KSc11Am38H4q5Xw8Bbz97ZYdrVNM+um3p7w86Bvvmcn9q+5+eQ==}
@@ -19570,9 +19438,6 @@ packages:
   '@types/simpl-schema@1.12.2':
     resolution: {integrity: sha512-Uk1uqh0X6xDUoTkGBE4i/xnTPGb0vnrMia2fATSGZditNMXdzvdaGiYuAvOLfHXLuH2l5p3fZKZw1iplRwuINQ==}
 
-  '@types/sinon@10.0.2':
-    resolution: {integrity: sha512-BHn8Bpkapj8Wdfxvh2jWIUoaYB/9/XhsL0oOvBfRagJtKlSl9NWPcFOz2lRukI9szwGxFtYZCTejJSqsGDbdmw==}
-
   '@types/sinonjs__fake-timers@8.1.1':
     resolution: {integrity: sha512-0kSuKjAS0TrGLJ0M/+8MaFkGsQhZpB6pxOmvS3K8FYI72K//YmdfoW9X2qPsAKh1mkwxGD5zib9s1FIFed6E8g==}
 
@@ -20025,11 +19890,9 @@ packages:
 
   abab@2.0.5:
     resolution: {integrity: sha512-9IK9EadsbHo6jLWIpxpR6pL0sazTXV6+SQv25ZB+F7Bj9mJNaOc4nCRabwd5M/JwmUa8idz6Eci6eKfJryPs6Q==}
-    deprecated: Use your platform's native atob() and btoa() methods instead
 
   abab@2.0.6:
     resolution: {integrity: sha512-j2afSsaIENvHZN2B8GOpF566vZ5WVk5opAiMTvWgaQT8DkbOqsTfvNAvHoRGU2zzP8cPoqys+xHTRDWW8L+/BA==}
-    deprecated: Use your platform's native atob() and btoa() methods instead
 
   abbrev@1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
@@ -20259,7 +20122,6 @@ packages:
   apollo-datasource@3.3.2:
     resolution: {integrity: sha512-L5TiS8E2Hn/Yz7SSnWIVbZw0ZfEIXZCa5VUiVxD9P53JvSrf4aStvsFDlGWPvpIdCR+aly2CfoB79B9/JjKFqg==}
     engines: {node: '>=12.0'}
-    deprecated: The `apollo-datasource` package is part of Apollo Server v2 and v3, which are now deprecated (end-of-life October 22nd 2023 and October 22nd 2024, respectively). See https://www.apollographql.com/docs/apollo-server/previous-versions/ for more details.
 
   apollo-link-context@1.0.20:
     resolution: {integrity: sha512-MLLPYvhzNb8AglNsk2NcL9AvhO/Vc9hn2ZZuegbhRHGet3oGr0YH9s30NS9+ieoM0sGT11p7oZ6oAILM/kiRBA==}
@@ -20284,7 +20146,6 @@ packages:
 
   apollo-reporting-protobuf@3.4.0:
     resolution: {integrity: sha512-h0u3EbC/9RpihWOmcSsvTW2O6RXVaD/mPEjfrPkxRPTEPWqncsgOoRJw+wih4OqfH3PvTJvoEIf4LwKrUaqWog==}
-    deprecated: The `apollo-reporting-protobuf` package is part of Apollo Server v2 and v3, which are now deprecated (end-of-life October 22nd 2023 and October 22nd 2024, respectively). This package's functionality is now found in the `@apollo/usage-reporting-protobuf` package. See https://www.apollographql.com/docs/apollo-server/previous-versions/ for more details.
 
   apollo-server-core@3.13.0:
     resolution: {integrity: sha512-v/g6DR6KuHn9DYSdtQijz8dLOkP78I5JSVJzPkARhDbhpH74QNwrQ2PP2URAPPEDJ2EeZNQDX8PvbYkAKqg+kg==}
@@ -20295,12 +20156,10 @@ packages:
   apollo-server-env@4.2.1:
     resolution: {integrity: sha512-vm/7c7ld+zFMxibzqZ7SSa5tBENc4B0uye9LTfjJwGoQFY5xsUPH5FpO5j0bMUDZ8YYNbrF9SNtzc5Cngcr90g==}
     engines: {node: '>=12.0'}
-    deprecated: The `apollo-server-env` package is part of Apollo Server v2 and v3, which are now deprecated (end-of-life October 22nd 2023 and October 22nd 2024, respectively). This package's functionality is now found in the `@apollo/utils.fetcher` package. See https://www.apollographql.com/docs/apollo-server/previous-versions/ for more details.
 
   apollo-server-errors@3.3.1:
     resolution: {integrity: sha512-xnZJ5QWs6FixHICXHxUfm+ZWqqxrNuPlQ+kj5m6RtEgIpekOPssH/SD9gf2B4HuWV0QozorrygwZnux8POvyPA==}
     engines: {node: '>=12.0'}
-    deprecated: The `apollo-server-errors` package is part of Apollo Server v2 and v3, which are now deprecated (end-of-life October 22nd 2023 and October 22nd 2024, respectively). This package's functionality is now found in the `@apollo/server` package. See https://www.apollographql.com/docs/apollo-server/previous-versions/ for more details.
     peerDependencies:
       graphql: ^15.3.0 || ^16.0.0
 
@@ -20314,14 +20173,12 @@ packages:
   apollo-server-plugin-base@3.7.2:
     resolution: {integrity: sha512-wE8dwGDvBOGehSsPTRZ8P/33Jan6/PmL0y0aN/1Z5a5GcbFhDaaJCjK5cav6npbbGL2DPKK0r6MPXi3k3N45aw==}
     engines: {node: '>=12.0'}
-    deprecated: The `apollo-server-plugin-base` package is part of Apollo Server v2 and v3, which are now deprecated (end-of-life October 22nd 2023 and October 22nd 2024, respectively). This package's functionality is now found in the `@apollo/server` package. See https://www.apollographql.com/docs/apollo-server/previous-versions/ for more details.
     peerDependencies:
       graphql: ^15.3.0 || ^16.0.0
 
   apollo-server-types@3.8.0:
     resolution: {integrity: sha512-ZI/8rTE4ww8BHktsVpb91Sdq7Cb71rdSkXELSwdSR0eXu600/sY+1UXhTWdiJvk+Eq5ljqoHLwLbY2+Clq2b9A==}
     engines: {node: '>=12.0'}
-    deprecated: The `apollo-server-types` package is part of Apollo Server v2 and v3, which are now deprecated (end-of-life October 22nd 2023 and October 22nd 2024, respectively). This package's functionality is now found in the `@apollo/server` package. See https://www.apollographql.com/docs/apollo-server/previous-versions/ for more details.
     peerDependencies:
       graphql: ^15.3.0 || ^16.0.0
 
@@ -20353,7 +20210,6 @@ packages:
   are-we-there-yet@2.0.0:
     resolution: {integrity: sha512-Ci/qENmwHnsYo9xKIcUJN5LeDKdJ6R1Z1j9V/J5wyq8nh/mYPEpIKJbBZXtZjG04HiK7zV/p6Vs9952MrMeUIw==}
     engines: {node: '>=10'}
-    deprecated: This package is no longer supported.
 
   arg@2.0.0:
     resolution: {integrity: sha512-XxNTUzKnz1ctK3ZIcI2XUPlD96wbHP2nGqkPKpvk/HNRlPveYrXIVSTk9m3LcqOgDPg3B1nMvdV/K8wZd7PG4w==}
@@ -21562,7 +21418,6 @@ packages:
 
   core-js@3.6.5:
     resolution: {integrity: sha512-vZVEEwZoIsI+vPEuoF9Iqf5H7/M3eeQqWlQnYa8FSKKePuYTf5MWnxb5SDAzCa60b3JBRS5g9b+Dq7b1y/RCrA==}
-    deprecated: core-js@<3.23.3 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Some versions have web compatibility issues. Please, upgrade your dependencies to the actual version of core-js.
 
   core-util-is@1.0.2:
     resolution: {integrity: sha512-3lqz5YjWTYnW6dlDa5TLaTCcShfar1e40rmcJVwCBJC6mWlFuj0eCHIElmG1g5kyuJ/GD+8Wn4FFCcz4gJPfaQ==}
@@ -22375,7 +22230,6 @@ packages:
   domexception@4.0.0:
     resolution: {integrity: sha512-A2is4PLG+eeSfoTMA95/s4pvAoSo2mKtiM5jlHkAVewmiO8ISFTFKZjH7UAM1Atli/OT/7JHOrJRJiMKUZKYBw==}
     engines: {node: '>=12'}
-    deprecated: Use your platform's native DOMException instead
 
   domhandler@4.3.1:
     resolution: {integrity: sha512-GrwoxYN+uWlzO8uhUXRl0P+kHE4GtVPfYzVLcUxPL7KNdHKj66vvlhiweIHqYYXWlw+T8iLMp42Lm67ghw4WMQ==}
@@ -22474,9 +22328,6 @@ packages:
 
   elliptic@6.5.4:
     resolution: {integrity: sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==}
-
-  emitter-component@1.1.1:
-    resolution: {integrity: sha512-G+mpdiAySMuB7kesVRLuyvYRqDmshB7ReKEVuyBPkzQlmiDiLrt7hHHIy4Aff552bgknVN7B2/d3lzhGO5dvpQ==}
 
   emittery@0.13.1:
     resolution: {integrity: sha512-DeWwawk6r5yR9jFgnDKYt4sLS0LmHJJi3ZOnb5/JdbYwj3nW+FxQnHIjhBKz8YLC7oRNPVM9NQ47I3CVx34eqQ==}
@@ -22905,7 +22756,6 @@ packages:
   eslint@8.52.0:
     resolution: {integrity: sha512-zh/JHnaixqHZsolRB/w9/02akBk9EPrOs9JwcTP2ek7yL5bVvXuRariiaAjjoJ5DvuwQ1WAE/HsMz+w17YgBCg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   espree@9.6.1:
@@ -23461,7 +23311,6 @@ packages:
   gauge@4.0.0:
     resolution: {integrity: sha512-F8sU45yQpjQjxKkm1UOAhf0U/O0aFt//Fl7hsrNVto+patMHjs7dPI9mFOGUKbhrgKm0S3EjW3scMFuQmWSROw==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16}
-    deprecated: This package is no longer supported.
 
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
@@ -23583,16 +23432,13 @@ packages:
 
   glob@7.2.0:
     resolution: {integrity: sha512-lmLf6gtyrPq8tTjSmrO94wBeQbFR3HbLHbuyD69wuyQkImp2hWqMGB47OX65FBkPffO641IP9jWa1z4ivqG26Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@8.1.0:
     resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
     engines: {node: '>=12'}
-    deprecated: Glob versions prior to v9 are no longer supported
 
   global-dirs@3.0.0:
     resolution: {integrity: sha512-v8ho2DS5RiCjftj1nD9NmnfaOzTdud7RRnVd9kFNOjqZbISlx5DQ+OrTkywgd0dIt7oFCvKetZSHoHcP3sDdiA==}
@@ -24099,7 +23945,6 @@ packages:
 
   inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
-    deprecated: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
 
   inherits@2.0.3:
     resolution: {integrity: sha512-x00IRNXNy63jwGkJmzPigoySHbaqpNuzKbBOmzK+g2OdZpQ9w+sxCN+VSB3ja7IAge2OP2qpfxTjeNcyjmW1uw==}
@@ -24177,12 +24022,10 @@ packages:
   is-accessor-descriptor@0.1.6:
     resolution: {integrity: sha512-e1BM1qnDbMRG3ll2U9dSK0UMHuWOs3pY3AtcFsmvwPtKL3MML/Q86i+GilLfvqEs4GW+ExB91tQ3Ig9noDIZ+A==}
     engines: {node: '>=0.10.0'}
-    deprecated: Please upgrade to v0.1.7
 
   is-accessor-descriptor@1.0.0:
     resolution: {integrity: sha512-m5hnHTkcVsPfqx3AKlyttIPb7J+XykHvJP2B9bZDjlhLIoEq4XoK64Vg7boZlVWYK6LUY94dYPEE7Lh0ZkZKcQ==}
     engines: {node: '>=0.10.0'}
-    deprecated: Please upgrade to v1.0.1
 
   is-arguments@1.1.1:
     resolution: {integrity: sha512-8Q7EARjzEnKpt/PCD7e1cgUS0a6X8u5tdSiMqXhojOdoV9TsMsiO+9VLC5vAmO8N7/GmXn7yjR8qnA6bVAEzfA==}
@@ -24238,12 +24081,10 @@ packages:
   is-data-descriptor@0.1.4:
     resolution: {integrity: sha512-+w9D5ulSoBNlmw9OHn3U2v51SyoCd0he+bB3xMl62oijhrspxowjU+AIcDY0N3iEJbUEkB15IlMASQsxYigvXg==}
     engines: {node: '>=0.10.0'}
-    deprecated: Please upgrade to v0.1.5
 
   is-data-descriptor@1.0.0:
     resolution: {integrity: sha512-jbRXy1FmtAoCjQkVmIVYwuuqDFUbaOeDjmed1tOGPrsMhtJA4rD9tkgA0F1qJ3gRFRXcHYVkdeaP50Q5rE/jLQ==}
     engines: {node: '>=0.10.0'}
-    deprecated: Please upgrade to v1.0.1
 
   is-data-view@1.0.1:
     resolution: {integrity: sha512-AHkaJrsUVW6wq6JS8y3JnM/GJF/9cf+k20+iDzlSaJrinEo5+7vRiteOSwBhHRiAyQATN1AmY4hwzxJKPmYf+w==}
@@ -24969,9 +24810,6 @@ packages:
   just-debounce-it@3.0.1:
     resolution: {integrity: sha512-6EQWOpRV8fm/ame6XvGBSxvsjoMbqj7JS9TV/4Q9aOXt9DQw22GBfTGP6gTAqcBNN/PbzlwtwH7jtM0k9oe9pg==}
 
-  just-extend@4.2.1:
-    resolution: {integrity: sha512-g3UB796vUFIY90VIv/WX3L2c8CS2MdWUww3CNrYmqza1Fg0DURc2K/O4YrnklBdQarSJ/y8JnJYDGc+1iumQjg==}
-
   just-once@2.0.1:
     resolution: {integrity: sha512-r/s9ilXHAh+uia0/HaHe/ZxvTX9JbCDjtwEwVe7YhSzIZ4vBiCz4MB4Acij1wegnWoytnhkAfQWYZ2SI9Z1n/g==}
 
@@ -25301,9 +25139,6 @@ packages:
   lodash.flow@3.5.0:
     resolution: {integrity: sha512-ff3BX/tSioo+XojX4MOsOMhJw0nZoUEF011LX8g8d3gvjVbxd89cCio4BCXronjxcTUIJUoqKEUA+n4CqvvRPw==}
 
-  lodash.get@4.4.2:
-    resolution: {integrity: sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==}
-
   lodash.includes@4.3.0:
     resolution: {integrity: sha512-W3Bx6mdkRTGtlJISOvVD/lbqjTlPPUDTMnlXZFnVwi9NKJ6tiAk6LVdlhZMm17VZisqhKcgzpO5Wz91PCt5b0w==}
 
@@ -25381,7 +25216,6 @@ packages:
 
   loupe@2.3.6:
     resolution: {integrity: sha512-RaPMZKiMy8/JruncMU5Bt6na1eftNoo++R4Y+N2FrxkDVTrGvcyzFTsaGif4QTeKESheMGegbhw6iUAq+5A8zA==}
-    deprecated: Please upgrade to 2.3.7 which fixes GHSA-4q6p-r6v2-jvc5
 
   lower-case-first@2.0.2:
     resolution: {integrity: sha512-EVm/rR94FJTZi3zefZ82fLWab+GX14LJN4HrWBcuo6Evmsl9hEfnqxgcHCKb9q+mNf6EVdsjx/qucYFIIB84pg==}
@@ -25952,9 +25786,6 @@ packages:
   nice-try@1.0.5:
     resolution: {integrity: sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==}
 
-  nise@5.1.0:
-    resolution: {integrity: sha512-W5WlHu+wvo3PaKLsJJkgPup2LrsXCcm7AWwyNZkUnn5rwPkuPBi3Iwk5SQtN0mv+K65k7nKKjwNQ30wg3wLAQQ==}
-
   no-case@3.0.4:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
 
@@ -26169,7 +26000,6 @@ packages:
   npmlog@6.0.0:
     resolution: {integrity: sha512-03ppFRGlsyUaQFbGC2C8QWJN/C/K7PsfyD9aQdhVKAQIH4sQBc8WASqFBP7O+Ut4d2oo5LoeoboB3cGdBZSp6Q==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16}
-    deprecated: This package is no longer supported.
 
   nth-check@2.0.1:
     resolution: {integrity: sha512-it1vE95zF6dTT9lBsYbxvqh0Soy4SPowchj0UBGj/V6cTPnXXtQOPUbhZ6CmGzAD/rW22LQK6E96pcdJXk4A4w==}
@@ -26592,8 +26422,8 @@ packages:
   path-to-regexp@0.1.7:
     resolution: {integrity: sha512-5DFkuoqlv1uYQKxy8omFBeJPQcdoE07Kv2sferDCrAq1ohOU+MSDswDIbnx3YAM60qIOnYa53wBhXW0EbMonrQ==}
 
-  path-to-regexp@1.8.0:
-    resolution: {integrity: sha512-n43JRhlUKUAlibEJhPeir1ncUID16QnEjNpwzNdO3Lm4ywrBpBZ5oLD0I6br9evr1Y9JTqwRtAh7JLoOzAQdVA==}
+  path-to-regexp@1.9.0:
+    resolution: {integrity: sha512-xIp7/apCFJuUHdDLWe8O1HIkb0kQrOMb/0u6FXQjemHn/ii5LrIzU6bdECnsiTF/GjZkMEKg1xdiZwNqDYlZ6g==}
 
   path-to-regexp@2.2.1:
     resolution: {integrity: sha512-gu9bD6Ta5bwGrrU8muHzVOBFFREpp2iRkVfhBJahwJ6p6Xw20SjT0MxLnwkjOibQmGSYhiUnf2FLe7k+jcFmGQ==}
@@ -26742,7 +26572,6 @@ packages:
 
   popper.js@1.16.1:
     resolution: {integrity: sha512-Wb4p1J4zyFTbM+u6WuO4XstYx4Ky9Cewe4DWrel7B0w6VVICvPwdOpotjzcf6eD8TsckVnIMNONQyPIUFOUbCQ==}
-    deprecated: You can find the new Popper v2 at @popperjs/core, this package is dedicated to the legacy v1
 
   portfinder@1.0.32:
     resolution: {integrity: sha512-on2ZJVVDXRADWE6jnQaX0ioEylzgBpQk8r55NE4wjXW1ZxO+BgDlY6DXwj20i0V8eB4SenDQ00WEaxfiIQPcxg==}
@@ -27177,7 +27006,6 @@ packages:
   puppeteer@13.1.2:
     resolution: {integrity: sha512-ozVM8Tdg0patMtm/xAr3Uh7rQ28vBpbTHLP+ECmoAxG/s4PKrVLN764H/poLux7Ln77jHThOd8OBJj5mTuA6Iw==}
     engines: {node: '>=10.18.1'}
-    deprecated: < 22.8.2 is no longer supported
 
   pure-color@1.3.0:
     resolution: {integrity: sha512-QFADYnsVoBMw1srW7OVKEYjG+MbIa49s54w1MA1EDY6r2r/sTcKKYqRX1f4GYvnXP7eN/Pe9HFcX+hwzmrXRHA==}
@@ -27195,10 +27023,6 @@ packages:
   q@1.5.1:
     resolution: {integrity: sha512-kV/CThkXo6xyFEZUugw/+pIOywXcDbFYgSct5cT3gqlbkBE1SJdwy6UQoZvodiWF/ckQLZyDE/Bu1M6gVu5lVw==}
     engines: {node: '>=0.6.0', teleport: '>=0.2.0'}
-    deprecated: |-
-      You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
-
-      (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
 
   qjobs@1.2.0:
     resolution: {integrity: sha512-8YOJEHtxpySA3fFDyCRxA+UUV+fA+rTWnuWvylOK/NCjhY+b4ocCtmu8TtsWb+mYeU+GCHf/S66KZF/AsteKHg==}
@@ -27278,7 +27102,6 @@ packages:
 
   rdk@6.5.0:
     resolution: {integrity: sha512-Jrv4YFVH07JI03wxwsQhosypdyqOHirzNU0pfmteIfylhSpaIi8VnAp3MbznD3/ZKZyt6YRj0kMtQopTwIxMUw==}
-    deprecated: 'deprecated: use reablocks instead'
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
@@ -27620,7 +27443,6 @@ packages:
 
   react-use-gesture@8.0.1:
     resolution: {integrity: sha512-CXzUNkulUdgouaAlvAsC5ZVo0fi9KGSBSk81WrE4kOIcJccpANe9zZkAYr5YZZhqpicIFxitsrGVS4wmoMun9A==}
-    deprecated: This package is no longer maintained. Please use @use-gesture/react instead
     peerDependencies:
       react: '>= 16.8.0'
 
@@ -27904,7 +27726,6 @@ packages:
 
   resolve-url@0.2.1:
     resolution: {integrity: sha512-ZuF55hVUQaaczgOIwqWzkEcEidmlD/xl44x1UZnhOXcYuFN2S6+rcxpG+C1N3So0wvNI3DmJICUFfu2SxhBmvg==}
-    deprecated: https://github.com/lydell/resolve-url#deprecated
 
   resolve.exports@2.0.2:
     resolution: {integrity: sha512-X2UW6Nw3n/aMgDVy+0rSqgHlv39WZAlZrXCdnbyEiKm17DSqHX4MmQMaST3FbeWR5FTuRcUwYAziZajji0Y7mg==}
@@ -27971,26 +27792,21 @@ packages:
   right-pad@1.0.1:
     resolution: {integrity: sha512-bYBjgxmkvTAfgIYy328fmkwhp39v8lwVgWhhrzxPV3yHtcSqyYKe9/XOhvW48UFjATg3VuJbpsp5822ACNvkmw==}
     engines: {node: '>= 0.10'}
-    deprecated: Please use String.prototype.padEnd() over this package.
 
   rimraf@2.5.4:
     resolution: {integrity: sha512-Lw7SHMjssciQb/rRz7JyPIy9+bbUshEucPoLRvWqy09vC5zQixl8Uet+Zl+SROBB/JMWHJRdCk1qdxNWHNMvlQ==}
-    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rimraf@2.6.3:
     resolution: {integrity: sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA==}
-    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rimraf@2.7.1:
     resolution: {integrity: sha512-uWjbaKIK3T1OSVptzX7Nl6PvQ3qAGtKEtVRjRuazjfL3Bx5eI409VZSqgND+4UNnmzLVdPj9FqFJNPqBZFve4w==}
-    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
-    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rimraf@5.0.10:
@@ -28087,7 +27903,6 @@ packages:
   sane@4.1.0:
     resolution: {integrity: sha512-hhbzAgTIX8O7SHfp2c8/kREfEn4qO/9q8C9beyY6+tvZ87EpoZ3i1RIEvp27YBswnNbY9mWd6paKVmKbAgLfZA==}
     engines: {node: 6.* || 8.* || >= 10.*}
-    deprecated: some dependency vulnerabilities fixed, support for node < 10 dropped, and newer ECMAScript syntax/features added
     hasBin: true
 
   sanitize-filename-ts@1.0.2:
@@ -28366,10 +28181,6 @@ packages:
     resolution: {integrity: sha512-a2B9Y0KlNXl9u/vsW6sTIu9vGEpfKu2wRV6l1H3XEas/0gUIzGzBoP/IouTcUQbm9JWZLH3COxyn03TYlFax6w==}
     engines: {node: '>=10'}
 
-  sinon@11.1.1:
-    resolution: {integrity: sha512-ZSSmlkSyhUWbkF01Z9tEbxZLF/5tRC9eojCdFh33gtQaP7ITQVaMWQHGuFM7Cuf/KEfihuh1tTl3/ABju3AQMg==}
-    deprecated: 16.1.1
-
   sirv@2.0.4:
     resolution: {integrity: sha512-94Bdh3cC2PKrbgSOUqTiGPWVZeSiXfKOVZNJniWoqrWrRkB1CJzBU3NEbiTsPcYy1lDsANA/THzS+9WBiy5nfQ==}
     engines: {node: '>= 10'}
@@ -28495,7 +28306,6 @@ packages:
 
   source-map-resolve@0.5.3:
     resolution: {integrity: sha512-Htz+RnsXWk5+P2slx5Jh3Q66vhQj1Cllm0zvnaY98+NFx+Dv2CF/f5O/t8x+KaNdrdIAsruNzoh/KpialbqAnw==}
-    deprecated: See https://github.com/lydell/source-map-resolve#deprecated
 
   source-map-support@0.5.13:
     resolution: {integrity: sha512-SHSKFHadjVA5oR4PPqhtAVdcBWwRYVd6g6cAXnIbRiIwc2EhPrTuKUBdSLvlEKyIP3GCf89fltvcZiP9MMFA1w==}
@@ -28505,7 +28315,6 @@ packages:
 
   source-map-url@0.4.0:
     resolution: {integrity: sha512-liJwHPI9x9d9w5WSIjM58MqGmmb7XzNqwdUA3kSBQ4lmDngexlKwawGzK3J1mKXi6+sysoMDlpVyZh9sv5vRfw==}
-    deprecated: See https://github.com/lydell/source-map-url#deprecated
 
   source-map@0.5.7:
     resolution: {integrity: sha512-LbrmJOMUSdEVxIKvdcJzQC+nQhe8FUZQTXQy6+I75skNgn3OoQ0DZA8YnFa7gp8tqtL3KPf1kmo0R5DoApeSGQ==}
@@ -28578,7 +28387,6 @@ packages:
 
   stable@0.1.8:
     resolution: {integrity: sha512-ji9qxRnOVfcuLDySj9qzhGSEFVobyt1kIOSkj1qZzYLzq7Tos/oUUWvotUPQLlrsidqsK6tBH89Bc9kL5zHA6w==}
-    deprecated: 'Modern JS already guarantees Array#sort() is a stable sort, so this library is deprecated. See the compatibility table on MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#browser_compatibility'
 
   stack-utils@2.0.4:
     resolution: {integrity: sha512-ERg+H//lSSYlZhBIUu+wJnqg30AbyBbpZlIhcshpn7BNzpoRODZgfyr9J+8ERf3ooC6af3u7Lcl01nleau7MrA==}
@@ -28650,9 +28458,6 @@ packages:
 
   stream-to-promise@2.2.0:
     resolution: {integrity: sha512-HAGUASw8NT0k8JvIVutB2Y/9iBk7gpgEyAudXwNJmZERdMITGdajOa4VJfD/kNiA3TppQpTP4J+CtcHwdzKBAw==}
-
-  stream@0.0.2:
-    resolution: {integrity: sha512-gCq3NDI2P35B2n6t76YJuOp7d6cN/C7Rt0577l91wllh0sY9ZBuw9KaSGqH/b0hzn3CWWJbpbW0W0WvQ1H/Q7g==}
 
   streamroller@3.0.2:
     resolution: {integrity: sha512-ur6y5S5dopOaRXBuRIZ1u6GC5bcEXHRZKgfBjfCglMhmIf+roVCECjvkEYzNQOXIN2/JPnkMPW/8B3CZoKaEPA==}
@@ -28803,7 +28608,6 @@ packages:
   superagent@7.1.6:
     resolution: {integrity: sha512-gZkVCQR1gy/oUXr+kxJMLDjla434KmSOKbx5iGD30Ql+AkJQ/YlPKECJy2nhqOsHLjGHzoDTXNSjhnvWhzKk7g==}
     engines: {node: '>=6.4.0 <13 || >=14'}
-    deprecated: Please upgrade to v9.0.0+ as we have fixed a public vulnerability with formidable dependency. Note that v9.0.0+ requires Node.js v14.18.0+. See https://github.com/ladjs/superagent/pull/1800 for insight. This project is supported and maintained by the team at Forward Email @ https://forwardemail.net
 
   supports-color@5.5.0:
     resolution: {integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==}
@@ -29382,7 +29186,6 @@ packages:
 
   uid-number@0.0.6:
     resolution: {integrity: sha512-c461FXIljswCuscZn67xq9PpszkPT6RjheWFQTgCyabJrTUozElanb0YEqv2UGgk247YpcJkFBuSGNvBlpXM9w==}
-    deprecated: This package is no longer supported.
 
   umask@1.1.0:
     resolution: {integrity: sha512-lE/rxOhmiScJu9L6RTNVgB/zZbF+vGC0/p6D3xnkAePI2o0sMyFG966iR5Ki50OI/0mNi2yaRnxfLsPmEZF/JA==}
@@ -29554,7 +29357,6 @@ packages:
 
   urix@0.1.0:
     resolution: {integrity: sha512-Am1ousAhSLBeB9cG/7k7r2R0zj50uDRlZHPGbazid5s9rlF1F/QKYObEKSIunSjIOkJZqwRRLpvewjEkM7pSqg==}
-    deprecated: Please see https://github.com/lydell/urix#deprecated
 
   url-join@4.0.1:
     resolution: {integrity: sha512-jk1+QP6ZJqyOiuEI9AEWQfju/nB2Pw466kbA0LEZljHwKeMgd9WrAEgEGxjPDD2+TNbbb37rTyhEfrCXfuKXnA==}
@@ -39922,10 +39724,6 @@ snapshots:
 
   '@sindresorhus/merge-streams@2.3.0': {}
 
-  '@sinonjs/commons@1.8.3':
-    dependencies:
-      type-detect: 4.0.8
-
   '@sinonjs/commons@3.0.1':
     dependencies:
       type-detect: 4.0.8
@@ -39933,18 +39731,6 @@ snapshots:
   '@sinonjs/fake-timers@10.3.0':
     dependencies:
       '@sinonjs/commons': 3.0.1
-
-  '@sinonjs/fake-timers@7.1.2':
-    dependencies:
-      '@sinonjs/commons': 1.8.3
-
-  '@sinonjs/samsam@6.0.2':
-    dependencies:
-      '@sinonjs/commons': 1.8.3
-      lodash.get: 4.4.2
-      type-detect: 4.0.8
-
-  '@sinonjs/text-encoding@0.7.1': {}
 
   '@socket.io/base64-arraybuffer@1.0.2': {}
 
@@ -40413,7 +40199,7 @@ snapshots:
       - uglify-js
       - webpack-cli
 
-  '@storybook/builder-webpack5@7.6.13(encoding@0.1.13)(esbuild@0.18.20)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))':
+  '@storybook/builder-webpack5@7.6.13(encoding@0.1.13)(esbuild@0.18.20)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))':
     dependencies:
       '@babel/core': 7.24.9
       '@storybook/channels': 7.6.13
@@ -40451,56 +40237,6 @@ snapshots:
       util-deprecate: 1.0.2
       webpack: 5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0)
       webpack-dev-middleware: 6.1.1(webpack@5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0))
-      webpack-hot-middleware: 2.25.4
-      webpack-virtual-modules: 0.5.0
-    optionalDependencies:
-      typescript: 5.5.3
-    transitivePeerDependencies:
-      - '@swc/helpers'
-      - encoding
-      - esbuild
-      - supports-color
-      - uglify-js
-      - webpack-cli
-
-  '@storybook/builder-webpack5@7.6.13(encoding@0.1.13)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))':
-    dependencies:
-      '@babel/core': 7.24.9
-      '@storybook/channels': 7.6.13
-      '@storybook/client-logger': 7.6.13
-      '@storybook/core-common': 7.6.13(encoding@0.1.13)
-      '@storybook/core-events': 7.6.13
-      '@storybook/core-webpack': 7.6.13(encoding@0.1.13)
-      '@storybook/node-logger': 7.6.13
-      '@storybook/preview': 7.6.13
-      '@storybook/preview-api': 7.6.13
-      '@swc/core': 1.3.92
-      '@types/node': 18.17.18
-      '@types/semver': 7.5.2
-      babel-loader: 9.1.3(@babel/core@7.24.9)(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0)))
-      browser-assert: 1.2.1
-      case-sensitive-paths-webpack-plugin: 2.4.0
-      cjs-module-lexer: 1.2.3
-      constants-browserify: 1.0.0
-      css-loader: 6.7.1(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0)))
-      es-module-lexer: 1.4.1
-      express: 4.21.1
-      fork-ts-checker-webpack-plugin: 8.0.0(typescript@5.5.3)(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0)))
-      fs-extra: 11.1.1
-      html-webpack-plugin: 5.5.3(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0)))
-      magic-string: 0.30.7
-      path-browserify: 1.0.1
-      process: 0.11.10
-      semver: 7.5.4
-      style-loader: 3.3.3(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0)))
-      swc-loader: 0.2.3(@swc/core@1.3.92)(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0)))
-      terser-webpack-plugin: 5.3.10(@swc/core@1.3.92)(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0)))
-      ts-dedent: 2.2.0
-      url: 0.11.3
-      util: 0.12.5
-      util-deprecate: 1.0.2
-      webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))
-      webpack-dev-middleware: 6.1.1(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0)))
       webpack-hot-middleware: 2.25.4
       webpack-virtual-modules: 0.5.0
     optionalDependencies:
@@ -41347,48 +41083,10 @@ snapshots:
       - webpack-hot-middleware
       - webpack-plugin-serve
 
-  '@storybook/preset-react-webpack@7.6.13(@babel/core@7.23.0)(@swc/core@1.3.92)(@types/webpack@4.41.39)(encoding@0.1.13)(esbuild@0.18.20)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.26.1)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))(webpack-hot-middleware@2.25.4)':
+  '@storybook/preset-react-webpack@7.6.13(@babel/core@7.23.0)(@types/webpack@4.41.39)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.26.1)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))(webpack-hot-middleware@2.25.4)':
     dependencies:
       '@babel/preset-flow': 7.22.15(@babel/core@7.23.0)
       '@babel/preset-react': 7.22.15(@babel/core@7.23.0)
-      '@pmmmwh/react-refresh-webpack-plugin': 0.5.11(@types/webpack@4.41.39)(react-refresh@0.14.0)(type-fest@4.26.1)(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))(webpack-hot-middleware@2.25.4)(webpack@5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0))
-      '@storybook/core-webpack': 7.6.13(encoding@0.1.13)
-      '@storybook/docs-tools': 7.6.13(encoding@0.1.13)
-      '@storybook/node-logger': 7.6.13
-      '@storybook/react': 7.6.13(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@5.5.3)
-      '@storybook/react-docgen-typescript-plugin': 1.0.6--canary.9.0c3f3b7.0(typescript@5.5.3)(webpack@5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0))
-      '@types/node': 18.17.18
-      '@types/semver': 7.5.2
-      babel-plugin-add-react-displayname: 0.0.5
-      fs-extra: 11.1.1
-      magic-string: 0.30.7
-      react: 17.0.2
-      react-docgen: 7.0.3
-      react-dom: 17.0.2(react@17.0.2)
-      react-refresh: 0.14.0
-      semver: 7.5.4
-      webpack: 5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0)
-    optionalDependencies:
-      '@babel/core': 7.23.0
-      typescript: 5.5.3
-    transitivePeerDependencies:
-      - '@swc/core'
-      - '@types/webpack'
-      - encoding
-      - esbuild
-      - sockjs-client
-      - supports-color
-      - type-fest
-      - uglify-js
-      - webpack-cli
-      - webpack-dev-server
-      - webpack-hot-middleware
-      - webpack-plugin-serve
-
-  '@storybook/preset-react-webpack@7.6.13(@babel/core@7.23.9)(@types/webpack@4.41.39)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.26.1)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))(webpack-hot-middleware@2.25.4)':
-    dependencies:
-      '@babel/preset-flow': 7.22.15(@babel/core@7.23.9)
-      '@babel/preset-react': 7.22.15(@babel/core@7.23.9)
       '@pmmmwh/react-refresh-webpack-plugin': 0.5.11(@types/webpack@4.41.39)(react-refresh@0.14.0)(type-fest@4.26.1)(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))(webpack-hot-middleware@2.25.4)(webpack@5.94.0(webpack-cli@4.10.0))
       '@storybook/core-webpack': 7.6.13(encoding@0.1.13)
       '@storybook/docs-tools': 7.6.13(encoding@0.1.13)
@@ -41406,6 +41104,44 @@ snapshots:
       react-refresh: 0.14.0
       semver: 7.5.4
       webpack: 5.94.0(webpack-cli@4.10.0)
+    optionalDependencies:
+      '@babel/core': 7.23.0
+      typescript: 5.5.3
+    transitivePeerDependencies:
+      - '@swc/core'
+      - '@types/webpack'
+      - encoding
+      - esbuild
+      - sockjs-client
+      - supports-color
+      - type-fest
+      - uglify-js
+      - webpack-cli
+      - webpack-dev-server
+      - webpack-hot-middleware
+      - webpack-plugin-serve
+
+  '@storybook/preset-react-webpack@7.6.13(@babel/core@7.23.9)(@swc/core@1.3.92)(@types/webpack@4.41.39)(encoding@0.1.13)(esbuild@0.18.20)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.26.1)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))(webpack-hot-middleware@2.25.4)':
+    dependencies:
+      '@babel/preset-flow': 7.22.15(@babel/core@7.23.9)
+      '@babel/preset-react': 7.22.15(@babel/core@7.23.9)
+      '@pmmmwh/react-refresh-webpack-plugin': 0.5.11(@types/webpack@4.41.39)(react-refresh@0.14.0)(type-fest@4.26.1)(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))(webpack-hot-middleware@2.25.4)(webpack@5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0))
+      '@storybook/core-webpack': 7.6.13(encoding@0.1.13)
+      '@storybook/docs-tools': 7.6.13(encoding@0.1.13)
+      '@storybook/node-logger': 7.6.13
+      '@storybook/react': 7.6.13(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@5.5.3)
+      '@storybook/react-docgen-typescript-plugin': 1.0.6--canary.9.0c3f3b7.0(typescript@5.5.3)(webpack@5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0))
+      '@types/node': 18.17.18
+      '@types/semver': 7.5.2
+      babel-plugin-add-react-displayname: 0.0.5
+      fs-extra: 11.1.1
+      magic-string: 0.30.7
+      react: 17.0.2
+      react-docgen: 7.0.3
+      react-dom: 17.0.2(react@17.0.2)
+      react-refresh: 0.14.0
+      semver: 7.5.4
+      webpack: 5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0)
     optionalDependencies:
       '@babel/core': 7.23.9
       typescript: 5.5.3
@@ -41595,10 +41331,10 @@ snapshots:
       - webpack-hot-middleware
       - webpack-plugin-serve
 
-  '@storybook/react-webpack5@7.6.13(@babel/core@7.23.0)(@swc/core@1.3.92)(@types/webpack@4.41.39)(encoding@0.1.13)(esbuild@0.18.20)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.26.1)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))(webpack-hot-middleware@2.25.4)':
+  '@storybook/react-webpack5@7.6.13(@babel/core@7.23.0)(@types/webpack@4.41.39)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.26.1)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))(webpack-hot-middleware@2.25.4)':
     dependencies:
-      '@storybook/builder-webpack5': 7.6.13(encoding@0.1.13)(esbuild@0.18.20)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))
-      '@storybook/preset-react-webpack': 7.6.13(@babel/core@7.23.0)(@swc/core@1.3.92)(@types/webpack@4.41.39)(encoding@0.1.13)(esbuild@0.18.20)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.26.1)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))(webpack-hot-middleware@2.25.4)
+      '@storybook/builder-webpack5': 7.6.13(encoding@0.1.13)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))
+      '@storybook/preset-react-webpack': 7.6.13(@babel/core@7.23.0)(@types/webpack@4.41.39)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.26.1)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))(webpack-hot-middleware@2.25.4)
       '@storybook/react': 7.6.13(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@5.5.3)
       '@types/node': 18.17.18
       react: 17.0.2
@@ -41621,10 +41357,10 @@ snapshots:
       - webpack-hot-middleware
       - webpack-plugin-serve
 
-  '@storybook/react-webpack5@7.6.13(@babel/core@7.23.9)(@types/webpack@4.41.39)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.26.1)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))(webpack-hot-middleware@2.25.4)':
+  '@storybook/react-webpack5@7.6.13(@babel/core@7.23.9)(@swc/core@1.3.92)(@types/webpack@4.41.39)(encoding@0.1.13)(esbuild@0.18.20)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.26.1)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))(webpack-hot-middleware@2.25.4)':
     dependencies:
-      '@storybook/builder-webpack5': 7.6.13(encoding@0.1.13)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))
-      '@storybook/preset-react-webpack': 7.6.13(@babel/core@7.23.9)(@types/webpack@4.41.39)(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.26.1)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))(webpack-hot-middleware@2.25.4)
+      '@storybook/builder-webpack5': 7.6.13(encoding@0.1.13)(esbuild@0.18.20)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))
+      '@storybook/preset-react-webpack': 7.6.13(@babel/core@7.23.9)(@swc/core@1.3.92)(@types/webpack@4.41.39)(encoding@0.1.13)(esbuild@0.18.20)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(type-fest@4.26.1)(typescript@5.5.3)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))(webpack-hot-middleware@2.25.4)
       '@storybook/react': 7.6.13(encoding@0.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@5.5.3)
       '@types/node': 18.17.18
       react: 17.0.2
@@ -42698,10 +42434,6 @@ snapshots:
   '@types/simpl-schema@1.12.2':
     dependencies:
       '@types/meteor': 1.4.70
-
-  '@types/sinon@10.0.2':
-    dependencies:
-      '@sinonjs/fake-timers': 7.1.2
 
   '@types/sinonjs__fake-timers@8.1.1': {}
 
@@ -44235,13 +43967,6 @@ snapshots:
       find-cache-dir: 4.0.0
       schema-utils: 4.2.0
       webpack: 5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)
-
-  babel-loader@9.1.3(@babel/core@7.24.9)(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))):
-    dependencies:
-      '@babel/core': 7.24.9
-      find-cache-dir: 4.0.0
-      schema-utils: 4.2.0
-      webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))
 
   babel-loader@9.1.3(@babel/core@7.24.9)(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))):
     dependencies:
@@ -46119,18 +45844,6 @@ snapshots:
       semver: 7.6.2
       webpack: 5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)
 
-  css-loader@6.7.1(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))):
-    dependencies:
-      icss-utils: 5.1.0(postcss@8.4.38)
-      postcss: 8.4.38
-      postcss-modules-extract-imports: 3.0.0(postcss@8.4.38)
-      postcss-modules-local-by-default: 4.0.0(postcss@8.4.38)
-      postcss-modules-scope: 3.0.0(postcss@8.4.38)
-      postcss-modules-values: 4.0.0(postcss@8.4.38)
-      postcss-value-parser: 4.2.0
-      semver: 7.6.2
-      webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))
-
   css-loader@6.7.1(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))):
     dependencies:
       icss-utils: 5.1.0(postcss@8.4.38)
@@ -47057,8 +46770,6 @@ snapshots:
       inherits: 2.0.4
       minimalistic-assert: 1.0.1
       minimalistic-crypto-utils: 1.0.1
-
-  emitter-component@1.1.1: {}
 
   emittery@0.13.1: {}
 
@@ -48380,23 +48091,6 @@ snapshots:
       typescript: 5.5.3
       webpack: 5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)
 
-  fork-ts-checker-webpack-plugin@8.0.0(typescript@5.5.3)(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))):
-    dependencies:
-      '@babel/code-frame': 7.23.5
-      chalk: 4.1.2
-      chokidar: 3.5.3
-      cosmiconfig: 7.0.1
-      deepmerge: 4.2.2
-      fs-extra: 10.1.0
-      memfs: 3.5.1
-      minimatch: 3.1.2
-      node-abort-controller: 3.1.1
-      schema-utils: 3.3.0
-      semver: 7.5.4
-      tapable: 2.2.1
-      typescript: 5.5.3
-      webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))
-
   fork-ts-checker-webpack-plugin@8.0.0(typescript@5.5.3)(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))):
     dependencies:
       '@babel/code-frame': 7.23.5
@@ -49078,15 +48772,6 @@ snapshots:
       pretty-error: 4.0.0
       tapable: 2.2.1
       webpack: 5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)
-
-  html-webpack-plugin@5.5.3(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))):
-    dependencies:
-      '@types/html-minifier-terser': 6.1.0
-      html-minifier-terser: 6.1.0
-      lodash: 4.17.21
-      pretty-error: 4.0.0
-      tapable: 2.2.1
-      webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))
 
   html-webpack-plugin@5.5.3(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))):
     dependencies:
@@ -50997,8 +50682,6 @@ snapshots:
 
   just-debounce-it@3.0.1: {}
 
-  just-extend@4.2.1: {}
-
   just-once@2.0.1: {}
 
   jwa@1.4.1:
@@ -51436,8 +51119,6 @@ snapshots:
   lodash.flattendeep@4.4.0: {}
 
   lodash.flow@3.5.0: {}
-
-  lodash.get@4.4.2: {}
 
   lodash.includes@4.3.0: {}
 
@@ -52150,14 +51831,6 @@ snapshots:
     optional: true
 
   nice-try@1.0.5: {}
-
-  nise@5.1.0:
-    dependencies:
-      '@sinonjs/commons': 1.8.3
-      '@sinonjs/fake-timers': 7.1.2
-      '@sinonjs/text-encoding': 0.7.1
-      just-extend: 4.2.1
-      path-to-regexp: 1.8.0
 
   no-case@3.0.4:
     dependencies:
@@ -52939,7 +52612,7 @@ snapshots:
 
   path-to-regexp@0.1.7: {}
 
-  path-to-regexp@1.8.0:
+  path-to-regexp@1.9.0:
     dependencies:
       isarray: 0.0.1
 
@@ -53629,6 +53302,12 @@ snapshots:
       iconv-lite: 0.4.24
       unpipe: 1.0.0
 
+  raw-loader@4.0.2(webpack@5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0)):
+    dependencies:
+      loader-utils: 2.0.4
+      schema-utils: 3.3.0
+      webpack: 5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0)
+
   raw-loader@4.0.2(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)):
     dependencies:
       loader-utils: 2.0.4
@@ -54014,7 +53693,7 @@ snapshots:
       history: 4.10.1
       hoist-non-react-statics: 3.3.2
       loose-envify: 1.4.0
-      path-to-regexp: 1.8.0
+      path-to-regexp: 1.9.0
       prop-types: 15.8.1
       react: 17.0.2
       react-is: 16.13.1
@@ -55060,15 +54739,6 @@ snapshots:
     dependencies:
       semver: 7.5.4
 
-  sinon@11.1.1:
-    dependencies:
-      '@sinonjs/commons': 1.8.3
-      '@sinonjs/fake-timers': 7.1.2
-      '@sinonjs/samsam': 6.0.2
-      diff: 5.1.0
-      nise: 5.1.0
-      supports-color: 7.2.0
-
   sirv@2.0.4:
     dependencies:
       '@polka/url': 1.0.0-next.25
@@ -55429,10 +55099,6 @@ snapshots:
       end-of-stream: 1.1.0
       stream-to-array: 2.3.0
 
-  stream@0.0.2:
-    dependencies:
-      emitter-component: 1.1.1
-
   streamroller@3.0.2:
     dependencies:
       date-format: 4.0.3
@@ -55605,10 +55271,6 @@ snapshots:
     dependencies:
       webpack: 5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)
 
-  style-loader@3.3.3(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))):
-    dependencies:
-      webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))
-
   style-loader@3.3.3(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))):
     dependencies:
       webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))
@@ -55717,11 +55379,6 @@ snapshots:
     dependencies:
       '@swc/core': 1.3.92
       webpack: 5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)
-
-  swc-loader@0.2.3(@swc/core@1.3.92)(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))):
-    dependencies:
-      '@swc/core': 1.3.92
-      webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))
 
   swc-loader@0.2.3(@swc/core@1.3.92)(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))):
     dependencies:
@@ -55872,17 +55529,6 @@ snapshots:
     optionalDependencies:
       '@swc/core': 1.3.92
       esbuild: 0.18.20
-
-  terser-webpack-plugin@5.3.10(@swc/core@1.3.92)(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))):
-    dependencies:
-      '@jridgewell/trace-mapping': 0.3.25
-      jest-worker: 27.5.1
-      schema-utils: 3.3.0
-      serialize-javascript: 6.0.2
-      terser: 5.31.6
-      webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))
-    optionalDependencies:
-      '@swc/core': 1.3.92
 
   terser-webpack-plugin@5.3.10(@swc/core@1.3.92)(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))):
     dependencies:
@@ -56172,24 +55818,6 @@ snapshots:
       babel-jest: 29.7.0(@babel/core@7.16.12)
       esbuild: 0.18.20
 
-  ts-jest@29.1.5(@babel/core@7.16.12)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.16.12))(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3)))(typescript@5.5.3):
-    dependencies:
-      bs-logger: 0.2.6
-      fast-json-stable-stringify: 2.1.0
-      jest: 29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3))
-      jest-util: 29.7.0
-      json5: 2.2.3
-      lodash.memoize: 4.1.2
-      make-error: 1.3.6
-      semver: 7.5.4
-      typescript: 5.5.3
-      yargs-parser: 21.1.1
-    optionalDependencies:
-      '@babel/core': 7.16.12
-      '@jest/transform': 29.7.0
-      '@jest/types': 29.6.3
-      babel-jest: 29.7.0(@babel/core@7.16.12)
-
   ts-jest@29.1.5(@babel/core@7.16.12)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.16.12))(jest@29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@22.5.2)(typescript@5.5.3)))(typescript@5.5.3):
     dependencies:
       bs-logger: 0.2.6
@@ -56244,11 +55872,11 @@ snapshots:
       '@jest/types': 29.6.3
       babel-jest: 29.7.0(@babel/core@7.18.10)
 
-  ts-jest@29.1.5(@babel/core@7.23.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.23.0))(esbuild@0.18.20)(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@20.14.2)(typescript@5.5.3)))(typescript@5.5.3):
+  ts-jest@29.1.5(@babel/core@7.23.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.23.0))(jest@29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3)))(typescript@5.5.3):
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@20.14.2)(typescript@5.5.3))
+      jest: 29.7.0(@types/node@20.14.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.5.3))
       jest-util: 29.7.0
       json5: 2.2.3
       lodash.memoize: 4.1.2
@@ -56261,7 +55889,6 @@ snapshots:
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
       babel-jest: 29.7.0(@babel/core@7.23.0)
-      esbuild: 0.18.20
 
   ts-jest@29.1.5(@babel/core@7.23.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.23.0))(jest@29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@22.5.2)(typescript@5.5.3)))(typescript@5.5.3):
     dependencies:
@@ -57515,16 +57142,6 @@ snapshots:
     optionalDependencies:
       webpack: 5.94.0(@swc/core@1.3.92)(esbuild@0.18.20)
 
-  webpack-dev-middleware@6.1.1(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))):
-    dependencies:
-      colorette: 2.0.20
-      memfs: 3.5.1
-      mime-types: 2.1.35
-      range-parser: 1.2.1
-      schema-utils: 4.2.0
-    optionalDependencies:
-      webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))
-
   webpack-dev-middleware@6.1.1(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))):
     dependencies:
       colorette: 2.0.20
@@ -57819,38 +57436,6 @@ snapshots:
       webpack-sources: 3.2.3
     optionalDependencies:
       webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
-    transitivePeerDependencies:
-      - '@swc/core'
-      - esbuild
-      - uglify-js
-
-  webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0)):
-    dependencies:
-      '@types/estree': 1.0.5
-      '@webassemblyjs/ast': 1.12.1
-      '@webassemblyjs/wasm-edit': 1.12.1
-      '@webassemblyjs/wasm-parser': 1.12.1
-      acorn: 8.12.1
-      acorn-import-attributes: 1.9.5(acorn@8.12.1)
-      browserslist: 4.23.3
-      chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.17.1
-      es-module-lexer: 1.5.4
-      eslint-scope: 5.1.1
-      events: 3.3.0
-      glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.11
-      json-parse-even-better-errors: 2.3.1
-      loader-runner: 4.3.0
-      mime-types: 2.1.35
-      neo-async: 2.6.2
-      schema-utils: 3.3.0
-      tapable: 2.2.1
-      terser-webpack-plugin: 5.3.10(@swc/core@1.3.92)(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0)))
-      watchpack: 2.4.2
-      webpack-sources: 3.2.3
-    optionalDependencies:
-      webpack-cli: 4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0)
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild
