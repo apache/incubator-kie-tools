@@ -19,7 +19,6 @@ package preview
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/knative"
 	v1 "k8s.io/api/core/v1"
@@ -31,7 +30,6 @@ import (
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/monitoring"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/platform"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/platform/services"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles/common"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
@@ -56,11 +54,6 @@ func (d *DeploymentReconciler) Reconcile(ctx context.Context, workflow *operator
 func (d *DeploymentReconciler) reconcileWithImage(ctx context.Context, workflow *operatorapi.SonataFlow, image string) (reconcile.Result, []client.Object, error) {
 	// Checks if we need Knative installed and is not present.
 	if requires, err := d.ensureKnativeServingRequired(workflow); requires || err != nil {
-		return reconcile.Result{Requeue: false}, nil, err
-	}
-
-	// Checks if the workflow has sink configured.
-	if requires, err := d.ensureKnativeSinkConfigured(workflow); requires || err != nil {
 		return reconcile.Result{Requeue: false}, nil, err
 	}
 
@@ -96,32 +89,6 @@ func (d *DeploymentReconciler) ensureKnativeServingRequired(workflow *operatorap
 				operatorapi.KubernetesDeploymentModel)
 			return true, nil
 		}
-	}
-	return false, nil
-}
-
-// if Knative Eventing is available, the workflow should have a sink configured, or the platform should have a broker defined
-func (d *DeploymentReconciler) ensureKnativeSinkConfigured(workflow *operatorapi.SonataFlow) (bool, error) {
-	avail, err := knative.GetKnativeAvailability(d.Cfg)
-	if err != nil {
-		return true, err
-	}
-	if !avail.Eventing {
-		return false, nil
-	}
-	platform, err := platform.GetActivePlatform(context.TODO(), d.C, workflow.Namespace)
-	if err != nil {
-		return true, err
-	}
-	sink, err := knative.GetWorkflowSink(workflow, platform)
-	if err != nil {
-		return true, err
-	}
-	if sink == nil && (services.IsDataIndexEnabled(platform) || services.IsJobServiceEnabled(platform)) {
-		d.Recorder.Eventf(workflow, v1.EventTypeWarning,
-			"KnativeSinkNotConfigured",
-			"Failed to deploy workflow. No sink configured in the workflow or the platform when Job Service or Data Index Service is enabled.")
-		return true, fmt.Errorf("no sink configured in the workflow or the platform when Job Service or Data Index Service is enabled")
 	}
 	return false, nil
 }

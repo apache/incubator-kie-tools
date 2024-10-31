@@ -15,13 +15,17 @@
 # specific language governing permissions and limitations
 # under the License.
 
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-
-resources:
-- 02-sonataflow_platform.yaml
-- sonataflow/03-sonataflow_callbackstatetimeouts.sw.yaml
-
-sortOptions:
-  order: fifo
-
+apiVersion: sonataflow.org/v1alpha08
+kind: SonataFlowPlatform
+metadata:
+  name: sonataflow-platform
+spec:
+  build:
+    config:
+      strategyOptions:
+        KanikoBuildCacheEnabled: "true"
+  services:
+    dataIndex:
+      enabled: true
+    jobService:
+      enabled: true

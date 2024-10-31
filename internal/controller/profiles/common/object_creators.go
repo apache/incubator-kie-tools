@@ -26,7 +26,6 @@ import (
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles"
 
-	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/workflowdef"
 	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 
 	cncfmodel "github.com/serverlessworkflow/sdk-go/v2/model"
@@ -47,7 +46,6 @@ import (
 
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/knative"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/platform/services"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles/common/persistence"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles/common/properties"
@@ -285,14 +283,7 @@ func SinkBindingCreator(workflow *operatorapi.SonataFlow, plf *operatorapi.Sonat
 	if err != nil {
 		return nil, err
 	}
-	dataIndexEnabled := services.IsDataIndexEnabled(plf)
-	jobServiceEnabled := services.IsJobServiceEnabled(plf)
-
-	// skip if no produced event is found and there is no DataIndex/JobService enabled
 	if sink == nil {
-		if dataIndexEnabled || jobServiceEnabled || workflowdef.ContainsEventKind(workflow, cncfmodel.EventKindProduced) {
-			return nil, fmt.Errorf("a sink in the SonataFlow %s or broker in the SonataFlowPlatform %s should be configured when DataIndex or JobService is enabled", workflow.Name, plf.Name)
-		}
 		return nil, nil /*nothing to do*/
 	}
 
@@ -389,11 +380,9 @@ func TriggersCreator(workflow *operatorapi.SonataFlow, plf *operatorapi.SonataFl
 		if err != nil {
 			return nil, err
 		}
-		if brokerRef == nil {
-			return nil, fmt.Errorf("no broker configured for eventType %s in SonataFlow %s", event.Type, workflow.Name)
-		}
-		if !knative.IsKnativeBroker(brokerRef) {
-			return nil, fmt.Errorf("no valid broker configured for eventType %s in SonataFlow %s", event.Type, workflow.Name)
+		if brokerRef == nil || !knative.IsKnativeBroker(brokerRef) {
+			// No broker configured for the eventType. Skip and will not create trigger for it.
+			continue
 		}
 		if err := knative.ValidateBroker(brokerRef.Name, brokerRef.Namespace); err != nil {
 			return nil, err

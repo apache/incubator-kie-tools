@@ -230,7 +230,8 @@ var _ = Describe("Cluster Platform Use Cases :: ", Label("cluster"), Ordered, fu
 			Expect(err).NotTo(HaveOccurred())
 		},
 			Entry("without services configured", test.GetPathFromE2EDirectory("platform", "noservices"), metadata.GitOpsProfile.String(), ephemeral, false),
-			Entry("with services configured", test.GetPathFromE2EDirectory("platform", "services"), metadata.GitOpsProfile.String(), "ephemeral-with-workflow", true),
+			Entry("with services configured and platform broker", test.GetPathFromE2EDirectory("platform", "services"), metadata.GitOpsProfile.String(), "ephemeral-with-workflow", true),
+			Entry("with services configured and no broker", test.GetPathFromE2EDirectory("platform", "services"), metadata.GitOpsProfile.String(), "ephemeral-with-workflow-no-broker", true),
 		)
 
 		DescribeTable("against a platform in a separate namespace", func(testcaseDir string, profile string, persistenceType string) {

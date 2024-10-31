@@ -246,8 +246,7 @@ func TestEnsureWorkflowSinkBindingWithoutBrokerAreNotCreated(t *testing.T) {
 	plf := test.GetBasePlatformWithBroker()
 	plf.Spec.Eventing = nil // No broker configured in the platform, but data index and jobs service are enabled
 	sinkBinding, err := SinkBindingCreator(workflow, plf)
-	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "a sink in the SonataFlow vet or broker in the SonataFlowPlatform sonataflow-platform should be configured when DataIndex or JobService is enabled")
+	assert.NoError(t, err)
 	assert.Nil(t, sinkBinding)
 }
 
@@ -372,8 +371,7 @@ func TestEnsureWorkflowTriggersWithoutBrokerAreNotCreated(t *testing.T) {
 	plf := test.GetBasePlatform()
 
 	triggers, err := TriggersCreator(workflow, plf)
-	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "no broker configured for eventType events.vet.appointments in SonataFlow vet")
+	assert.NoError(t, err)
 	assert.Nil(t, triggers)
 }
 
