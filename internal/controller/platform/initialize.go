@@ -61,24 +61,24 @@ func (action *initializeAction) CanHandle(platform *operatorapi.SonataFlowPlatfo
 	return platform.Status.GetTopLevelCondition().IsUnknown() || platform.Status.IsDuplicated()
 }
 
-func (action *initializeAction) Handle(ctx context.Context, platform *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, error) {
+func (action *initializeAction) Handle(ctx context.Context, platform *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, *corev1.Event, error) {
 	duplicate, err := action.isPrimaryDuplicate(ctx, platform)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	if duplicate {
 		// another platform already present in the namespace
 		if !platform.Status.IsDuplicated() {
 			plat := platform.DeepCopy()
 			plat.Status.Manager().MarkFalse(api.SucceedConditionType, operatorapi.PlatformDuplicatedReason, "")
-			return plat, nil
+			return plat, nil, nil
 		}
 
-		return nil, nil
+		return nil, nil, nil
 	}
 
 	if err = CreateOrUpdateWithDefaults(ctx, platform, true); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	// nolint: staticcheck
 	if platform.Spec.Build.Config.BuildStrategy == operatorapi.OperatorBuildStrategy {
@@ -88,13 +88,13 @@ func (action *initializeAction) Handle(ctx context.Context, platform *operatorap
 			klog.V(log.I).InfoS("Create persistent volume claim")
 			err := createPersistentVolumeClaim(ctx, action.client, platform)
 			if err != nil {
-				return nil, err
+				return nil, nil, err
 			}
 			// Create the Kaniko warmer pod that caches the base image into the SonataFlow builder volume
 			klog.V(log.I).InfoS("Create Kaniko cache warmer pod")
 			err = createKanikoCacheWarmerPod(ctx, action.client, platform)
 			if err != nil {
-				return nil, err
+				return nil, nil, err
 			}
 			platform.Status.Manager().MarkFalse(api.SucceedConditionType, operatorapi.PlatformWarmingReason, "")
 		} else {
@@ -106,7 +106,7 @@ func (action *initializeAction) Handle(ctx context.Context, platform *operatorap
 	}
 	platform.Status.Version = metadata.SpecVersion
 
-	return platform, nil
+	return platform, nil, nil
 }
 
 // TODO: move this to Kaniko packages based on the platform context

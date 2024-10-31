@@ -54,7 +54,7 @@ func (action *warmAction) CanHandle(platform *operatorapi.SonataFlowPlatform) bo
 	return platform.Status.IsWarming()
 }
 
-func (action *warmAction) Handle(ctx context.Context, platform *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, error) {
+func (action *warmAction) Handle(ctx context.Context, platform *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, *corev1.Event, error) {
 	// Check Kaniko warmer pod status
 	pod := corev1.Pod{
 		TypeMeta: metav1.TypeMeta{
@@ -69,19 +69,19 @@ func (action *warmAction) Handle(ctx context.Context, platform *operatorapi.Sona
 
 	err := action.reader.Get(ctx, types.NamespacedName{Namespace: pod.Namespace, Name: pod.Name}, &pod)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	switch pod.Status.Phase {
 	case corev1.PodSucceeded:
 		klog.V(log.D).InfoS("Kaniko cache successfully warmed up")
 		platform.Status.Manager().MarkTrueWithReason(api.SucceedConditionType, operatorapi.PlatformWarmingReason, "Kaniko cache successfully warmed up")
-		return platform, nil
+		return platform, nil, nil
 	case corev1.PodFailed:
-		return nil, errors.New("failed to warm up Kaniko cache")
+		return nil, nil, errors.New("failed to warm up Kaniko cache")
 	default:
 		klog.V(log.I).InfoS("Waiting for Kaniko cache to warm up...")
 		// Requeue
-		return nil, nil
+		return nil, nil, nil
 	}
 }

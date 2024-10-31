@@ -28,8 +28,6 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/monitoring"
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 
-	"k8s.io/klog/v2"
-
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	clientr "github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
@@ -46,6 +44,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/record"
+	"k8s.io/klog/v2"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 	ctrlrun "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -155,7 +154,10 @@ func (r *SonataFlowPlatformReconciler) Reconcile(ctx context.Context, req reconc
 
 			klog.V(log.I).InfoS("Invoking action", "Name", a.Name())
 
-			target, err = a.Handle(ctx, target)
+			target, event, err := a.Handle(ctx, target)
+			if event != nil {
+				r.Recorder.Event(&instance, event.Type, event.Reason, event.Message)
+			}
 			if err != nil {
 				if target != nil {
 					target.Status.Manager().MarkFalse(api.SucceedConditionType, operatorapi.PlatformFailureReason, err.Error())

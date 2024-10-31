@@ -49,6 +49,7 @@ import (
 const (
 	quarkusHibernateORMDatabaseGeneration string = "QUARKUS_HIBERNATE_ORM_DATABASE_GENERATION"
 	quarkusFlywayMigrateAtStart           string = "QUARKUS_FLYWAY_MIGRATE_AT_START"
+	WaitingKnativeEventing                       = "WaitingKnativeEventing"
 )
 
 type PlatformServiceHandler interface {
@@ -83,7 +84,7 @@ type PlatformServiceHandler interface {
 	// GenerateServiceProperties returns a property object that contains the application properties required by the service deployment
 	GenerateServiceProperties() (*properties.Properties, error)
 	// GenerateKnativeResources returns knative resources that bridge between workflow deploys and the service
-	GenerateKnativeResources(platform *operatorapi.SonataFlowPlatform, lbl map[string]string) ([]client.Object, error)
+	GenerateKnativeResources(platform *operatorapi.SonataFlowPlatform, lbl map[string]string) ([]client.Object, *corev1.Event, error)
 
 	// IsServiceSetInSpec returns true if the service is set in the spec.
 	IsServiceSetInSpec() bool
@@ -582,10 +583,10 @@ func (d *DataIndexHandler) newTrigger(labels map[string]string, brokerName, name
 		},
 	}
 }
-func (d *DataIndexHandler) GenerateKnativeResources(platform *operatorapi.SonataFlowPlatform, lbl map[string]string) ([]client.Object, error) {
+func (d *DataIndexHandler) GenerateKnativeResources(platform *operatorapi.SonataFlowPlatform, lbl map[string]string) ([]client.Object, *corev1.Event, error) {
 	broker := d.GetSourceBroker()
 	if broker == nil || len(broker.Ref.Name) == 0 {
-		return nil, nil // Nothing to do
+		return nil, nil, nil // Nothing to do
 	}
 	brokerName := broker.Ref.Name
 	namespace := broker.Ref.Namespace
@@ -593,7 +594,12 @@ func (d *DataIndexHandler) GenerateKnativeResources(platform *operatorapi.Sonata
 		namespace = platform.Namespace
 	}
 	if err := knative.ValidateBroker(brokerName, namespace); err != nil {
-		return nil, err
+		event := &corev1.Event{
+			Type:    corev1.EventTypeWarning,
+			Reason:  WaitingKnativeEventing,
+			Message: fmt.Sprintf("%s for service: %s", err.Error(), d.GetServiceName()),
+		}
+		return nil, event, err
 	}
 	serviceName := d.GetServiceName()
 	return []client.Object{
@@ -604,7 +610,7 @@ func (d *DataIndexHandler) GenerateKnativeResources(platform *operatorapi.Sonata
 		d.newTrigger(lbl, brokerName, namespace, serviceName, "process-variable", "ProcessInstanceVariableDataEvent", constants.KogitoProcessInstancesEventsPath, platform),
 		d.newTrigger(lbl, brokerName, namespace, serviceName, "process-definition", "ProcessDefinitionEvent", constants.KogitoProcessDefinitionsEventsPath, platform),
 		d.newTrigger(lbl, brokerName, namespace, serviceName, "process-instance-multiple", "MultipleProcessInstanceDataEvent", constants.KogitoProcessInstancesMultiEventsPath, platform),
-		d.newTrigger(lbl, brokerName, namespace, serviceName, "jobs", "JobEvent", constants.KogitoJobsPath, platform)}, nil
+		d.newTrigger(lbl, brokerName, namespace, serviceName, "jobs", "JobEvent", constants.KogitoJobsPath, platform)}, nil, nil
 }
 
 func (d JobServiceHandler) GetSourceBroker() *duckv1.Destination {
@@ -621,7 +627,7 @@ func (d JobServiceHandler) GetSink() *duckv1.Destination {
 	return GetPlatformBroker(d.platform)
 }
 
-func (j *JobServiceHandler) GenerateKnativeResources(platform *operatorapi.SonataFlowPlatform, lbl map[string]string) ([]client.Object, error) {
+func (j *JobServiceHandler) GenerateKnativeResources(platform *operatorapi.SonataFlowPlatform, lbl map[string]string) ([]client.Object, *corev1.Event, error) {
 	broker := j.GetSourceBroker()
 	sink := j.GetSink()
 	resultObjs := []client.Object{}
@@ -633,7 +639,12 @@ func (j *JobServiceHandler) GenerateKnativeResources(platform *operatorapi.Sonat
 			namespace = platform.Namespace
 		}
 		if err := knative.ValidateBroker(brokerName, namespace); err != nil {
-			return nil, err
+			event := &corev1.Event{
+				Type:    corev1.EventTypeWarning,
+				Reason:  WaitingKnativeEventing,
+				Message: fmt.Sprintf("%s for service: %s", err.Error(), j.GetServiceName()),
+			}
+			return nil, event, err
 		}
 		jobCreateTrigger := &eventingv1.Trigger{
 			ObjectMeta: metav1.ObjectMeta{
@@ -713,7 +724,7 @@ func (j *JobServiceHandler) GenerateKnativeResources(platform *operatorapi.Sonat
 		}
 		resultObjs = append(resultObjs, sinkBinding)
 	}
-	return resultObjs, nil
+	return resultObjs, nil, nil
 }
 
 func (j *JobServiceHandler) CheckKSinkInjected() (bool, error) {

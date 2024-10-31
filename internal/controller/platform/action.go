@@ -22,9 +22,9 @@ package platform
 import (
 	"context"
 
-	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
-
 	v08 "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
+	corev1 "k8s.io/api/core/v1"
 )
 
 // Action --.
@@ -38,7 +38,7 @@ type Action interface {
 	CanHandle(platform *v08.SonataFlowPlatform) bool
 
 	// executes the handling function
-	Handle(ctx context.Context, platform *v08.SonataFlowPlatform) (*v08.SonataFlowPlatform, error)
+	Handle(ctx context.Context, platform *v08.SonataFlowPlatform) (*v08.SonataFlowPlatform, *corev1.Event, error)
 }
 
 type baseAction struct {

@@ -22,6 +22,8 @@ package platform
 import (
 	"context"
 
+	corev1 "k8s.io/api/core/v1"
+
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
 	v08 "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 )
@@ -43,9 +45,9 @@ func (action *createAction) CanHandle(platform *v08.SonataFlowPlatform) bool {
 	return platform.Status.IsCreating()
 }
 
-func (action *createAction) Handle(ctx context.Context, platform *v08.SonataFlowPlatform) (*v08.SonataFlowPlatform, error) {
+func (action *createAction) Handle(ctx context.Context, platform *v08.SonataFlowPlatform) (*v08.SonataFlowPlatform, *corev1.Event, error) {
 	//TODO: Perform the actions needed for the Platform creation
 	platform.Status.Manager().MarkTrue(api.SucceedConditionType)
 
-	return platform, nil
+	return platform, nil, nil
 }

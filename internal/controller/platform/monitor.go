@@ -22,6 +22,7 @@ package platform
 import (
 	"context"
 
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/klog/v2"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
@@ -46,7 +47,7 @@ func (action *monitorAction) CanHandle(platform *operatorapi.SonataFlowPlatform)
 	return platform.Status.IsReady()
 }
 
-func (action *monitorAction) Handle(ctx context.Context, platform *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, error) {
+func (action *monitorAction) Handle(ctx context.Context, platform *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, *corev1.Event, error) {
 	// Just track the version of the operator in the platform resource
 	if platform.Status.Version != metadata.SpecVersion {
 		platform.Status.Version = metadata.SpecVersion
@@ -55,8 +56,8 @@ func (action *monitorAction) Handle(ctx context.Context, platform *operatorapi.S
 
 	// Refresh applied configuration
 	if err := CreateOrUpdateWithDefaults(ctx, platform, false); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return platform, nil
+	return platform, nil, nil
 }

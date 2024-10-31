@@ -886,7 +886,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 			},
 		}
 		_, err := r.Reconcile(context.TODO(), req)
-		if err != nil && err.Error() != "waiting for K_SINK injection for sonataflow-platform-jobs-service to complete" {
+		if err != nil && err.Error() != "waiting for K_SINK injection for service sonataflow-platform-jobs-service to complete" {
 			t.Fatalf("reconcile: (%v)", err)
 		}
 
@@ -987,7 +987,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 			},
 		}
 		_, err := r.Reconcile(context.TODO(), req)
-		if err != nil && err.Error() != "waiting for K_SINK injection for sonataflow-platform-jobs-service to complete" {
+		if err != nil && err.Error() != "waiting for K_SINK injection for service sonataflow-platform-jobs-service to complete" {
 			t.Fatalf("reconcile: (%v)", err)
 		}
 
