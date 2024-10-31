@@ -22,6 +22,8 @@ package services
 import (
 	"fmt"
 
+	appsv1 "k8s.io/api/apps/v1"
+
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/cfg"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/knative"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles"
@@ -70,6 +72,8 @@ type PlatformServiceHandler interface {
 	GetPodResourceRequirements() corev1.ResourceRequirements
 	// GetReplicaCount Returns the default pod replica count for the given service
 	GetReplicaCount() int32
+	// GetDeploymentStrategy Returns the deployment strategy for the service
+	GetDeploymentStrategy() appsv1.DeploymentStrategy
 
 	// MergeContainerSpec performs a merge with override using the containerSpec argument and the expected values based on the service's pod template specifications. The returning
 	// object is the merged result
@@ -255,6 +259,10 @@ func (d *DataIndexHandler) GetReplicaCount() int32 {
 	return 1
 }
 
+func (d *DataIndexHandler) GetDeploymentStrategy() appsv1.DeploymentStrategy {
+	return appsv1.DeploymentStrategy{}
+}
+
 func (d *DataIndexHandler) GetServiceCmName() string {
 	return fmt.Sprintf("%s-props", d.GetServiceName())
 }
@@ -383,7 +391,17 @@ func (j *JobServiceHandler) GetPodResourceRequirements() corev1.ResourceRequirem
 }
 
 func (j *JobServiceHandler) GetReplicaCount() int32 {
+	if j.platform.Spec.Services.JobService.PodTemplate.Replicas != nil && *j.platform.Spec.Services.JobService.PodTemplate.Replicas == 0 {
+		return 0
+	}
 	return 1
+}
+
+func (j *JobServiceHandler) GetDeploymentStrategy() appsv1.DeploymentStrategy {
+	return appsv1.DeploymentStrategy{
+		Type:          appsv1.RecreateDeploymentStrategyType,
+		RollingUpdate: nil,
+	}
 }
 
 func (j JobServiceHandler) MergeContainerSpec(containerSpec *corev1.Container) (*corev1.Container, error) {

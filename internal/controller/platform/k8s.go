@@ -159,6 +159,7 @@ func createOrUpdateDeployment(ctx context.Context, client client.Client, platfor
 			MatchLabels: selectorLbl,
 		},
 		Replicas: &replicas,
+		Strategy: psh.GetDeploymentStrategy(),
 		Template: corev1.PodTemplateSpec{
 			ObjectMeta: metav1.ObjectMeta{
 				Labels: lbl,
@@ -200,6 +201,9 @@ func createOrUpdateDeployment(ctx context.Context, client client.Client, platfor
 	if op, err := controllerutil.CreateOrUpdate(ctx, client, serviceDeployment, func() error {
 		knative.SaveKnativeData(&serviceDeploymentSpec.Template.Spec, &serviceDeployment.Spec.Template.Spec)
 		err := mergo.Merge(&(serviceDeployment.Spec), serviceDeploymentSpec, mergo.WithOverride)
+		// mergo.Merge algorithm is not setting the serviceDeployment.Spec.Replicas when the
+		// *serviceDeploymentSpec.Replicas is 0. Making impossible to scale to zero. Ensure the value.
+		serviceDeployment.Spec.Replicas = serviceDeploymentSpec.Replicas
 		if err != nil {
 			return err
 		}
