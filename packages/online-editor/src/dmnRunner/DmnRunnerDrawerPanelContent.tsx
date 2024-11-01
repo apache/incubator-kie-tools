@@ -324,6 +324,12 @@ export function DmnRunnerDrawerPanelContent() {
                       locale={locale}
                       notificationsPanel={true}
                       openExecutionTab={openExecutionTab}
+                      openBoxedExpressionEditor={(nodeId) => {
+                        // TODO we need somehow access 'dmnEditorStoreApi'
+                        // dmnEditorStoreApi.setState((state) => {
+                        //   state.dispatch(state).boxedExpressionEditor.open(nodeId);
+                        // })
+                      }}
                     />
                   </PageSection>
                 </div>
