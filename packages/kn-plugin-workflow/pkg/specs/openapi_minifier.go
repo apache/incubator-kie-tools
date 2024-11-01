@@ -99,10 +99,7 @@ func (m *OpenApiMinifier) processFunction(workflowFile string) error {
 		return err
 	}
 
-	relativePath, err := filepath.Rel(filepath.Dir(workflowFile), m.params.SpecsDir)
-	if err != nil {
-		return err
-	}
+	relativePath := filepath.Base(m.params.SpecsDir)
 
 	if workflow.Functions == nil {
 		return nil
@@ -110,7 +107,7 @@ func (m *OpenApiMinifier) processFunction(workflowFile string) error {
 
 	for _, function := range workflow.Functions {
 		if strings.HasPrefix(function.Operation, relativePath) {
-			trimmedPrefix := strings.TrimPrefix(function.Operation, relativePath+"/")
+			trimmedPrefix := strings.TrimPrefix(function.Operation, relativePath+string(os.PathSeparator))
 			if !strings.Contains(trimmedPrefix, "#") {
 				return fmt.Errorf("Invalid operation format in function: %s", function.Operation)
 			}
