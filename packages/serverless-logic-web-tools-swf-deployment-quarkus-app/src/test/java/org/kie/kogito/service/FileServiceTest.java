@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.api.FileService;
 import org.kie.kogito.model.FileType;
@@ -152,6 +153,7 @@ public class FileServiceTest {
     }
 
     @Test
+    @Disabled("disabled due use of binary file, which is not allowed in Apache source")
     void testValidateFiles() throws IOException {
         Path zipFilePath = Path.of("src/test/resources/test.zip");
         Path destinationFolderPath = Files.createTempDirectory("unzip");
@@ -164,6 +166,7 @@ public class FileServiceTest {
     }
 
     @Test
+    @Disabled("disabled due use of binary file, which is not allowed in Apache source")
     void testValidateFilesWithInvalid() throws IOException {
         Path zipFilePath = Path.of("src/test/resources/test-with-invalid.zip");
         Path destinationFolderPath = Files.createTempDirectory("unzip");

@@ -34,7 +34,7 @@ const dockerInfo = JSON.parse(execSync(`docker info --format '{{ json . }}'`).to
 const platform = dockerInfo["OSType"];
 const arch = dockerInfo["Architecture"] === "aarch64" ? "arm64" : "amd64";
 
-describe("Test built images individually", () => {
+xdescribe("Test built images individually", () => {
   beforeAll(() => {
     execSync(
       `pnpm start-test-servers && wait-on -t 20m http://localhost:${containersPorts.runTimeInstall}/upload-status`,

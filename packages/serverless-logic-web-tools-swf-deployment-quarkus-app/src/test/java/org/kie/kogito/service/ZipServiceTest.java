@@ -25,11 +25,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.api.ZipService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled("disabled due use of binary file, which is not allowed in Apache source")
 public class ZipServiceTest {
 
     private final ZipService zipService = new ZipServiceImpl();
