@@ -214,7 +214,7 @@ func checkResult(t *testing.T, test minifyTest, minifiedFiles map[string]string)
 		minified := minifiedFiles[file]
 		data, err := os.ReadFile(minified)
 		if err != nil {
-			t.Fatalf("Error reading minified file: %v", err)
+			t.Fatalf("Error reading minified file %s: %v", minified, err)
 		}
 		doc, err := openapi3.NewLoader().LoadFromData(data)
 		for _, value := range doc.Paths.Map() {
@@ -234,7 +234,7 @@ func checkResult(t *testing.T, test minifyTest, minifiedFiles map[string]string)
 func parseFunctions(t *testing.T, functions map[string]sets.Set[string], workflow *v1alpha08.Flow, test minifyTest) {
 	for _, function := range workflow.Functions {
 		if strings.HasPrefix(function.Operation, test.specsDir) {
-			trimmedPrefix := strings.TrimPrefix(function.Operation, test.specsDir+string(os.PathSeparator))
+			trimmedPrefix := strings.TrimPrefix(function.Operation, test.specsDir+"/")
 			if !strings.Contains(trimmedPrefix, "#") {
 				t.Fatalf("Invalid operation format in function: %s", function.Operation)
 			}
@@ -242,7 +242,7 @@ func parseFunctions(t *testing.T, functions map[string]sets.Set[string], workflo
 			if len(parts) != 2 {
 				t.Fatalf("Invalid operation format: %s", function.Operation)
 			}
-			apiFileName := parts[0]
+			apiFileName := path.Base(parts[0])
 			operation := parts[1]
 
 			if _, ok := functions[apiFileName]; !ok {

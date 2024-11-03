@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -67,7 +68,7 @@ func (m *OpenApiMinifier) Minify() (map[string]string, error) {
 
 	m.findSubflowsFiles(m.params)
 
-	if err := m.processFunctions(); err != nil {
+	if err := m.fetchSpecFromFunctions(); err != nil {
 		return nil, err
 	}
 
@@ -83,9 +84,9 @@ func (m *OpenApiMinifier) Minify() (map[string]string, error) {
 	return minifySpecsFiles, nil
 }
 
-func (m *OpenApiMinifier) processFunctions() error {
+func (m *OpenApiMinifier) fetchSpecFromFunctions() error {
 	for _, workflowFile := range m.workflows {
-		err := m.processFunction(workflowFile)
+		err := m.fetchSpecFromFunction(workflowFile)
 		if err != nil {
 			return err
 		}
@@ -93,7 +94,7 @@ func (m *OpenApiMinifier) processFunctions() error {
 	return nil
 }
 
-func (m *OpenApiMinifier) processFunction(workflowFile string) error {
+func (m *OpenApiMinifier) fetchSpecFromFunction(workflowFile string) error {
 	workflow, err := m.GetWorkflow(workflowFile)
 	if err != nil {
 		return err
@@ -107,7 +108,7 @@ func (m *OpenApiMinifier) processFunction(workflowFile string) error {
 
 	for _, function := range workflow.Functions {
 		if strings.HasPrefix(function.Operation, relativePath) {
-			trimmedPrefix := strings.TrimPrefix(function.Operation, relativePath+string(os.PathSeparator))
+			trimmedPrefix := strings.TrimPrefix(function.Operation, relativePath+"/")
 			if !strings.Contains(trimmedPrefix, "#") {
 				return fmt.Errorf("Invalid operation format in function: %s", function.Operation)
 			}
@@ -115,7 +116,7 @@ func (m *OpenApiMinifier) processFunction(workflowFile string) error {
 			if len(parts) != 2 {
 				return fmt.Errorf("❌ ERROR: Invalid operation format: %s", function.Operation)
 			}
-			apiFileName := parts[0]
+			apiFileName := path.Base(parts[0])
 			operation := parts[1]
 
 			if _, ok := m.operations[apiFileName]; !ok {
