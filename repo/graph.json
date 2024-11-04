@@ -2718,7 +2718,7 @@
       "examples/micro-frontends-multiplying-architecture-todo-list-view-vscode-extension"
     ],
     ["@kie-tools-examples/process-compact-architecture", "examples/process-compact-architecture"],
-    ["@kie-tools-examples/process-user-tasks-subsystem", "examples/process-usertasks-subsystem"],
+    ["@kie-tools-examples/process-user-tasks-subsystem", "examples/process-user-tasks-subsystem"],
     [
       "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp",
       "examples/serverless-workflow-editor-standalone-on-webapp"

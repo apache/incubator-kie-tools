@@ -77,162 +77,6 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0(prettier@3.3.2)
 
-  examples/base64png-editor:
-    dependencies:
-      '@kie-tools-core/editor':
-        specifier: workspace:*
-        version: link:../../packages/editor
-      '@kie-tools-core/notifications':
-        specifier: workspace:*
-        version: link:../../packages/notifications
-      '@kie-tools-core/patternfly-base':
-        specifier: workspace:*
-        version: link:../../packages/patternfly-base
-      '@kie-tools-core/workspace':
-        specifier: workspace:*
-        version: link:../../packages/workspace
-      '@patternfly/react-core':
-        specifier: ^4.276.6
-        version: 4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      '@patternfly/react-icons':
-        specifier: ^4.93.6
-        version: 4.93.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      react:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2
-      react-dom:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2(react@17.0.2)
-    devDependencies:
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@types/react':
-        specifier: ^17.0.6
-        version: 17.0.21
-      '@types/react-dom':
-        specifier: ^17.0.5
-        version: 17.0.8
-      copyfiles:
-        specifier: ^2.4.1
-        version: 2.4.1
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-
-  examples/base64png-editor-chrome-extension:
-    dependencies:
-      '@kie-tools-core/chrome-extension':
-        specifier: workspace:*
-        version: link:../../packages/chrome-extension
-      '@kie-tools-core/editor':
-        specifier: workspace:*
-        version: link:../../packages/editor
-      '@kie-tools-core/envelope-bus':
-        specifier: workspace:*
-        version: link:../../packages/envelope-bus
-      '@kie-tools-core/patternfly-base':
-        specifier: workspace:*
-        version: link:../../packages/patternfly-base
-      '@kie-tools-examples/base64png-editor':
-        specifier: workspace:*
-        version: link:../base64png-editor
-    devDependencies:
-      '@kie-tools-core/webpack-base':
-        specifier: workspace:*
-        version: link:../../packages/webpack-base
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@types/chrome':
-        specifier: ^0.0.193
-        version: 0.0.193
-      copy-webpack-plugin:
-        specifier: ^11.0.0
-        version: 11.0.0(webpack@5.94.0(webpack-cli@4.10.0))
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-      webpack:
-        specifier: ^5.94.0
-        version: 5.94.0(webpack-cli@4.10.0)
-      webpack-cli:
-        specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
-      webpack-dev-server:
-        specifier: ^4.15.1
-        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.94.0)
-      webpack-merge:
-        specifier: ^5.9.0
-        version: 5.9.0
-      zip-webpack-plugin:
-        specifier: ^4.0.1
-        version: 4.0.1(webpack-sources@3.2.3)(webpack@5.94.0(webpack-cli@4.10.0))
-
-  examples/base64png-editor-vscode-extension:
-    dependencies:
-      '@kie-tools-core/editor':
-        specifier: workspace:*
-        version: link:../../packages/editor
-      '@kie-tools-core/i18n':
-        specifier: workspace:*
-        version: link:../../packages/i18n
-      '@kie-tools-core/patternfly-base':
-        specifier: workspace:*
-        version: link:../../packages/patternfly-base
-      '@kie-tools-core/vscode-extension':
-        specifier: workspace:*
-        version: link:../../packages/vscode-extension
-      '@kie-tools-examples/base64png-editor':
-        specifier: workspace:*
-        version: link:../base64png-editor
-    devDependencies:
-      '@kie-tools-core/webpack-base':
-        specifier: workspace:*
-        version: link:../../packages/webpack-base
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@types/vscode':
-        specifier: 1.67.0
-        version: 1.67.0
-      '@vscode/vsce':
-        specifier: ^2.22.0
-        version: 2.22.0
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-      webpack:
-        specifier: ^5.94.0
-        version: 5.94.0(webpack-cli@4.10.0)
-      webpack-cli:
-        specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
-      webpack-dev-server:
-        specifier: ^4.15.1
-        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.94.0)
-      webpack-merge:
-        specifier: ^5.9.0
-        version: 5.9.0
-
   examples/bpmn-editor-classic-on-webapp:
     devDependencies:
       '@kie-tools-core/editor':
@@ -304,18 +148,6 @@ importers:
       webpack-merge:
         specifier: ^5.9.0
         version: 5.10.0
-
-  examples/commit-message-validation-service:
-    devDependencies:
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6
 
   examples/dmn-editor-classic-on-webapp:
     devDependencies:
@@ -451,55 +283,6 @@ importers:
       webpack-cli:
         specifier: ^4.10.0
         version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
-      webpack-dev-server:
-        specifier: ^4.15.1
-        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.94.0)
-      webpack-merge:
-        specifier: ^5.9.0
-        version: 5.10.0
-
-  examples/dmn-editor-standalone-examples:
-    dependencies:
-      '@kie-tools/dmn-editor-standalone':
-        specifier: workspace:*
-        version: link:../../packages/dmn-editor-standalone
-    devDependencies:
-      '@kie-tools-core/webpack-base':
-        specifier: workspace:*
-        version: link:../../packages/webpack-base
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      copy-webpack-plugin:
-        specifier: ^11.0.0
-        version: 11.0.0(webpack@5.94.0(webpack-cli@4.10.0))
-      html-webpack-plugin:
-        specifier: ^5.3.2
-        version: 5.5.3(webpack@5.94.0(webpack-cli@4.10.0))
-      process:
-        specifier: ^0.11.10
-        version: 0.11.10
-      raw-loader:
-        specifier: ^4.0.2
-        version: 4.0.2(webpack@5.94.0(webpack-cli@4.10.0))
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-      webpack:
-        specifier: ^5.94.0
-        version: 5.94.0(webpack-cli@4.10.0)
-      webpack-bundle-analyzer:
-        specifier: ^4.10.2
-        version: 4.10.2
-      webpack-cli:
-        specifier: ^4.10.0
-        version: 4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0)
       webpack-dev-server:
         specifier: ^4.15.1
         version: 4.15.1(webpack-cli@4.10.0)(webpack@5.94.0)
@@ -1158,141 +941,6 @@ importers:
         specifier: ^5.9.0
         version: 5.10.0
 
-  examples/ping-pong-view:
-    dependencies:
-      '@kie-tools-core/envelope':
-        specifier: workspace:*
-        version: link:../../packages/envelope
-      '@kie-tools-core/envelope-bus':
-        specifier: workspace:*
-        version: link:../../packages/envelope-bus
-      react:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2
-      react-dom:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2(react@17.0.2)
-    devDependencies:
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@types/react':
-        specifier: ^17.0.6
-        version: 17.0.21
-      '@types/react-dom':
-        specifier: ^17.0.5
-        version: 17.0.8
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-
-  examples/ping-pong-view-angular:
-    dependencies:
-      '@angular/common':
-        specifier: ^18.1.2
-        version: 18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(rxjs@7.5.2)
-      '@angular/compiler':
-        specifier: ^18.1.2
-        version: 18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))
-      '@angular/core':
-        specifier: ^18.1.2
-        version: 18.1.3(rxjs@7.5.2)(zone.js@0.14.8)
-      '@angular/elements':
-        specifier: ^18.1.2
-        version: 18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(rxjs@7.5.2)
-      '@angular/platform-browser':
-        specifier: ^18.1.2
-        version: 18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(rxjs@7.5.2))(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))
-      '@angular/platform-browser-dynamic':
-        specifier: ^18.1.2
-        version: 18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(rxjs@7.5.2))(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(@angular/platform-browser@18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(rxjs@7.5.2))(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))
-      '@kie-tools-core/envelope':
-        specifier: workspace:*
-        version: link:../../packages/envelope
-      '@kie-tools-core/envelope-bus':
-        specifier: workspace:*
-        version: link:../../packages/envelope-bus
-      '@kie-tools-examples/ping-pong-view':
-        specifier: workspace:*
-        version: link:../ping-pong-view
-      rxjs:
-        specifier: ^7.4.0
-        version: 7.5.2
-      zone.js:
-        specifier: ^0.14.8
-        version: 0.14.8
-    devDependencies:
-      '@angular-devkit/build-angular':
-        specifier: ^18.1.2
-        version: 18.1.3(@angular/compiler-cli@18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3))(@types/node@22.5.2)(chokidar@3.6.0)(html-webpack-plugin@5.5.3(webpack@5.94.0))(jest-environment-jsdom@29.7.0)(jest@29.7.0(@types/node@22.5.2))(karma@6.4.2)(stylus@0.59.0)(typescript@5.5.3)
-      '@angular/cli':
-        specifier: ^18.1.2
-        version: 18.1.3(chokidar@3.6.0)
-      '@angular/compiler-cli':
-        specifier: ^18.1.2
-        version: 18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3)
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-      webpack:
-        specifier: ^5.94.0
-        version: 5.94.0
-
-  examples/ping-pong-view-react:
-    dependencies:
-      '@kie-tools-core/envelope':
-        specifier: workspace:*
-        version: link:../../packages/envelope
-      '@kie-tools-core/envelope-bus':
-        specifier: workspace:*
-        version: link:../../packages/envelope-bus
-      '@kie-tools-examples/ping-pong-view':
-        specifier: workspace:*
-        version: link:../ping-pong-view
-      react:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2
-      react-dom:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2(react@17.0.2)
-    devDependencies:
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@types/react':
-        specifier: ^17.0.6
-        version: 17.0.21
-      '@types/react-dom':
-        specifier: ^17.0.5
-        version: 17.0.8
-      copyfiles:
-        specifier: ^2.4.1
-        version: 2.4.1
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-
   examples/process-compact-architecture:
     dependencies:
       '@kie-tools/jbpm-quarkus-devui':
@@ -1313,22 +961,6 @@ importers:
         version: 1.1.6
 
   examples/process-user-tasks-subsystem:
-    dependencies:
-      '@kie-tools/jbpm-quarkus-devui':
-        specifier: workspace:*
-        version: link:../../packages/jbpm-quarkus-devui
-      '@kie-tools/maven-base':
-        specifier: workspace:*
-        version: link:../../packages/maven-base
-    devDependencies:
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6
-
-  examples/process-usertasks-subsystem:
     dependencies:
       '@kie-tools/jbpm-quarkus-devui':
         specifier: workspace:*
@@ -1435,95 +1067,6 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
-  examples/todo-list-view:
-    dependencies:
-      '@kie-tools-core/envelope':
-        specifier: workspace:*
-        version: link:../../packages/envelope
-      '@kie-tools-core/envelope-bus':
-        specifier: workspace:*
-        version: link:../../packages/envelope-bus
-      react:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2
-      react-dom:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2(react@17.0.2)
-    devDependencies:
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@types/react':
-        specifier: ^17.0.6
-        version: 17.0.21
-      '@types/react-dom':
-        specifier: ^17.0.5
-        version: 17.0.8
-      '@types/vscode':
-        specifier: 1.67.0
-        version: 1.67.0
-      copyfiles:
-        specifier: ^2.4.1
-        version: 2.4.1
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-
-  examples/todo-list-view-vscode-extension:
-    dependencies:
-      '@kie-tools-core/envelope-bus':
-        specifier: workspace:*
-        version: link:../../packages/envelope-bus
-      '@kie-tools-core/vscode-extension':
-        specifier: workspace:*
-        version: link:../../packages/vscode-extension
-      '@kie-tools-examples/todo-list-view':
-        specifier: workspace:*
-        version: link:../todo-list-view
-    devDependencies:
-      '@kie-tools-core/patternfly-base':
-        specifier: workspace:*
-        version: link:../../packages/patternfly-base
-      '@kie-tools-core/webpack-base':
-        specifier: workspace:*
-        version: link:../../packages/webpack-base
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@types/vscode':
-        specifier: 1.67.0
-        version: 1.67.0
-      '@vscode/vsce':
-        specifier: ^2.22.0
-        version: 2.22.0
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-      webpack:
-        specifier: ^5.94.0
-        version: 5.94.0(webpack-cli@4.10.0)
-      webpack-cli:
-        specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
-      webpack-dev-server:
-        specifier: ^4.15.1
-        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.94.0)
-      webpack-merge:
-        specifier: ^5.9.0
-        version: 5.9.0
-
   examples/uniforms-patternfly:
     dependencies:
       '@kie-tools-core/patternfly-base':
@@ -1596,124 +1139,6 @@ importers:
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.94.0(webpack-cli@4.10.0))
-      react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-      webpack:
-        specifier: ^5.94.0
-        version: 5.94.0(webpack-cli@4.10.0)
-      webpack-cli:
-        specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
-      webpack-dev-server:
-        specifier: ^4.15.1
-        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.94.0)
-      webpack-merge:
-        specifier: ^5.9.0
-        version: 5.9.0
-
-  examples/webapp:
-    dependencies:
-      '@kie-tools-core/editor':
-        specifier: workspace:*
-        version: link:../../packages/editor
-      '@kie-tools-core/envelope-bus':
-        specifier: workspace:*
-        version: link:../../packages/envelope-bus
-      '@kie-tools-core/monaco-editor':
-        specifier: workspace:*
-        version: link:../../packages/monaco-editor
-      '@kie-tools-core/patternfly-base':
-        specifier: workspace:*
-        version: link:../../packages/patternfly-base
-      '@kie-tools-core/react-hooks':
-        specifier: workspace:*
-        version: link:../../packages/react-hooks
-      '@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor':
-        specifier: workspace:*
-        version: link:../micro-frontends-multiplying-architecture-base64png-editor
-      '@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view':
-        specifier: workspace:*
-        version: link:../micro-frontends-multiplying-architecture-ping-pong-view
-      '@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-angular':
-        specifier: workspace:*
-        version: link:../micro-frontends-multiplying-architecture-ping-pong-view-in-angular
-      '@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-react':
-        specifier: workspace:*
-        version: link:../micro-frontends-multiplying-architecture-ping-pong-view-in-react
-      '@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view':
-        specifier: workspace:*
-        version: link:../micro-frontends-multiplying-architecture-todo-list-view
-      '@kie-tools/dmn-editor':
-        specifier: workspace:*
-        version: link:../../packages/dmn-editor
-      '@kie-tools/dmn-editor-envelope':
-        specifier: workspace:*
-        version: link:../../packages/dmn-editor-envelope
-      '@kie-tools/dmn-editor-standalone':
-        specifier: workspace:*
-        version: link:../../packages/dmn-editor-standalone
-      '@kie-tools/kie-bc-editors':
-        specifier: workspace:*
-        version: link:../../packages/kie-bc-editors
-      '@kie-tools/kie-editors-standalone':
-        specifier: workspace:*
-        version: link:../../packages/kie-editors-standalone
-      '@kie-tools/serverless-workflow-standalone-editor':
-        specifier: workspace:*
-        version: link:../../packages/serverless-workflow-standalone-editor
-      '@patternfly/react-core':
-        specifier: ^4.276.6
-        version: 4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      '@patternfly/react-icons':
-        specifier: ^4.93.6
-        version: 4.93.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      monaco-editor:
-        specifier: ^0.39.0
-        version: 0.39.0
-      react:
-        specifier: ^17.0.2
-        version: 17.0.2
-      react-dom:
-        specifier: ^17.0.2
-        version: 17.0.2(react@17.0.2)
-    devDependencies:
-      '@kie-tools-core/webpack-base':
-        specifier: workspace:*
-        version: link:../../packages/webpack-base
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/stunner-editors':
-        specifier: workspace:*
-        version: link:../../packages/stunner-editors
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@types/react':
-        specifier: ^17.0.6
-        version: 17.0.21
-      '@types/react-dom':
-        specifier: ^17.0.5
-        version: 17.0.8
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
-      copy-webpack-plugin:
-        specifier: ^11.0.0
-        version: 11.0.0(webpack@5.94.0(webpack-cli@4.10.0))
-      process:
-        specifier: ^0.11.10
-        version: 0.11.10
       react-router-dom:
         specifier: ^5.3.4
         version: 5.3.4(react@17.0.2)
@@ -6984,7 +6409,7 @@ importers:
         version: 5.3.2(webpack@5.94.0(webpack-cli@4.10.0))
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.5.2)(typescript@5.5.3))
+        version: 29.7.0(@types/node@22.8.7)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3))
       jest-environment-jsdom:
         specifier: ^29.7.0
         version: 29.7.0
@@ -6993,7 +6418,7 @@ importers:
         version: 16.0.0
       jest-when:
         specifier: ^3.6.0
-        version: 3.6.0(jest@29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.5.2)(typescript@5.5.3)))
+        version: 3.6.0(jest@29.7.0(@types/node@22.8.7)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3)))
       junit-report-merger:
         specifier: ^4.0.0
         version: 4.0.0
@@ -7026,7 +6451,7 @@ importers:
         version: 2.0.3
       ts-jest:
         specifier: ^29.1.5
-        version: 29.1.5(@babel/core@7.16.12)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.16.12))(jest@29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.5.2)(typescript@5.5.3)))(typescript@5.5.3)
+        version: 29.1.5(@babel/core@7.16.12)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.16.12))(jest@29.7.0(@types/node@22.8.7)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3)))(typescript@5.5.3)
       typescript:
         specifier: ^5.5.3
         version: 5.5.3
@@ -17072,6 +16497,10 @@ packages:
     resolution: {integrity: sha512-TWivJlJi8ZDx2wGOw1dbLuHJKUYX7bWySw377nlnGOW3hP9/MUKIsEdXT/YngWxVdgNCHRBmFlBipE+5/2ZZlQ==}
     engines: {node: '>= 6'}
 
+  '@cypress/request@3.0.6':
+    resolution: {integrity: sha512-fi0eVdCOtKu5Ed6+E8mYxUF6ZTFJDZvHogCBelM0xVXmrDEkyM22gRArQzq1YcHPm1V47Vf/iAD+WgVdUlJCGg==}
+    engines: {node: '>= 6'}
+
   '@cypress/xvfb@1.2.4':
     resolution: {integrity: sha512-skbBzPggOVYCbnGgV+0dmBdW/s77ZkAOXIC1knS8NagwDjBrNC1LuXtQJeiN6l+m7lzmHtaoUw/ctJKdqkG57Q==}
 
@@ -20267,6 +19696,9 @@ packages:
   '@types/node@22.5.2':
     resolution: {integrity: sha512-acJsPTEqYqulZS/Yp/S3GgeE6GZ0qYODUR8aVr/DkhHQ8l9nd4j5x1/ZJy9/gHrRlFMqkO6i0I3E27Alu4jjPg==}
 
+  '@types/node@22.8.7':
+    resolution: {integrity: sha512-LidcG+2UeYIWcMuMUpBKOnryBWG/rnmOHQR5apjn8myTQcx3rinFRn7DcIFhMnS0PPFSC6OafdIKEad0lj6U0Q==}
+
   '@types/normalize-package-data@2.4.0':
     resolution: {integrity: sha512-f5j5b/Gf71L+dbqxIpQ4Z2WlmI/mPJ0fOkGGmFgtb6sAu97EPczzbS3/tJKxmcYDj55OX6ssqwDAWOHIYDRDGA==}
 
@@ -20393,8 +19825,8 @@ packages:
   '@types/sizzle@2.3.2':
     resolution: {integrity: sha512-7EJYyKTL7tFR8+gDbB6Wwz/arpGa0Mywk1TJbNzKzHtzbwVmY4HR9WqS5VV7dsBUKQmPNr192jHr/VpBluj/hg==}
 
-  '@types/sizzle@2.3.8':
-    resolution: {integrity: sha512-0vWLNK2D5MT9dg0iOo8GlKguPAU02QjmZitPEsXRuJXU/OGIOt9vT9Fc26wtYuavLxtO45v9PGleoL9Z0k1LHg==}
+  '@types/sizzle@2.3.9':
+    resolution: {integrity: sha512-xzLEyKB50yqCUPUJkIsrVvoWNfFUbIZI+RspLWt8u+tIW/BetMBZtgV2LY/2o+tYH8dRvQ+eoPf3NdhQCcLE2w==}
 
   '@types/sockjs@0.3.36':
     resolution: {integrity: sha512-MK9V6NzAS1+Ud7JV9lJLFqW85VbC9dq3LmwZCuBe4wBDgKC0Kj/jd8Xl+nSviU+Qc3+m7umHHyHg//2KSa0a0Q==}
@@ -20804,8 +20236,8 @@ packages:
     engines: {node: '>=12 <14 || 14.2 - 14.9 || >14.10.0'}
     hasBin: true
 
-  '@yarnpkg/shell@4.0.2':
-    resolution: {integrity: sha512-DLZSx06OoEbPY1uePt7pKEgpWDk96PldrCdWBPqI5Np5/YAEo6+toVcjz+6fORMOE8PS3Bsep1Nfm2mUrY1Oxg==}
+  '@yarnpkg/shell@4.1.0':
+    resolution: {integrity: sha512-vm0QqqCBuNrVZbzk1gre0G/FUoT8naCYu/gjz+WlmBKPgV5MmFe2Bdm4ApGLQqvg6eS94TXmUpjSHdBzzN3P0Q==}
     engines: {node: '>=18.12.0'}
     hasBin: true
 
@@ -21256,6 +20688,9 @@ packages:
   asn1@0.2.4:
     resolution: {integrity: sha512-jxwzQpLQjSmWXgwaCZE9Nz+glAG01yF1QnWgbhGwHI5A6FRIEY6IVqtHhIepHqI7/kyEyQEagBC5mBEFlIYvdg==}
 
+  asn1@0.2.6:
+    resolution: {integrity: sha512-ix/FxPn0MDjeyJ7i/yoHGFt/EX6LyNbxSEhPPXODPL+KB0VPk86UYfL0lMdy+KCnv+fmvIzySwaK5COwqVbWTQ==}
+
   asn1js@3.0.5:
     resolution: {integrity: sha512-FVnvrKJwpt9LP2lAMl8qZswRNm3T4q9CON+bxldk2iwk3FFpuwhx2FfinyitizWHsVYyaY+y5JzDR0rCMV5yTQ==}
     engines: {node: '>=12.0.0'}
@@ -21344,6 +20779,9 @@ packages:
 
   aws4@1.11.0:
     resolution: {integrity: sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==}
+
+  aws4@1.13.2:
+    resolution: {integrity: sha512-lHe62zvbTB5eEABUVi/AwVh0ZKY9rMMDhmm+eeyuuUQbQ3+J+fONVQOZyj+DdrvD4BY33uYniyRJ4UJIaSKAfw==}
 
   axios@0.27.2:
     resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
@@ -22050,8 +21488,8 @@ packages:
     peerDependencies:
       typanion: '*'
 
-  clipanion@4.0.0-rc.3:
-    resolution: {integrity: sha512-+rJOJMt2N6Oikgtfqmo/Duvme7uz3SIedL2b6ycgCztQMiTfr3aQh2DDyLHl+QUPClKMNpSg3gDJFvNQYIcq1g==}
+  clipanion@4.0.0-rc.4:
+    resolution: {integrity: sha512-CXkMQxU6s9GklO/1f714dkKBMu1lopS1WFF0B8o4AxPykR1hpozxSiUZ5ZUeBjfPgCWqbcNOtZVFhB8Lkfp1+Q==}
     peerDependencies:
       typanion: '*'
 
@@ -22613,8 +22051,8 @@ packages:
     engines: {node: ^16.0.0 || ^18.0.0 || >=20.0.0}
     hasBin: true
 
-  cypress@13.14.1:
-    resolution: {integrity: sha512-Wo+byPmjps66hACEH5udhXINEiN3qS3jWNGRzJOjrRJF3D0+YrcP2LVB1T7oYaVQM/S+eanqEvBWYc8cf7Vcbg==}
+  cypress@13.15.1:
+    resolution: {integrity: sha512-DwUFiKXo4lef9kA0M4iEhixFqoqp2hw8igr0lTqafRb9qtU3X0XGxKbkSYsUFdkrAkphc7MPDxoNPhk5pj9PVg==}
     engines: {node: ^16.0.0 || ^18.0.0 || >=20.0.0}
     hasBin: true
 
@@ -22847,6 +22285,15 @@ packages:
 
   debug@4.3.6:
     resolution: {integrity: sha512-O/09Bd4Z1fBrU4VzkhFqVgpPzaGbw6Sm9FEkBT1A/YBXQFGuuSxa1dN2nxgxS34JmKXqYx8CZAwEVoJFImUXIg==}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+
+  debug@4.3.7:
+    resolution: {integrity: sha512-Er2nc/H7RrMXZBFCEim6TCmMk02Z8vLC2Rbi1KEBggpo0fS6l0S1nnapwmIi3yW/+GOJap1Krg4w0Hg80oCqgQ==}
     engines: {node: '>=6.0'}
     peerDependencies:
       supports-color: '*'
@@ -24134,6 +23581,10 @@ packages:
     resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
     engines: {node: '>= 6'}
 
+  form-data@4.0.1:
+    resolution: {integrity: sha512-tzN8e4TX8+kkxGPK8D5u0FNmjPUjw3lwC9lSLxxoB/+GtsJG91CO8bSWy73APlgAZzZbXEYZJuxjkHH2w+Ezhw==}
+    engines: {node: '>= 6'}
+
   formdata-polyfill@4.0.10:
     resolution: {integrity: sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==}
     engines: {node: '>=12.20.0'}
@@ -24718,6 +24169,10 @@ packages:
 
   http-signature@1.3.6:
     resolution: {integrity: sha512-3adrsD6zqo4GsTqtO7FyrejHNv+NgiIfAfv68+jVlFmSr9OGy7zrxONceFRLKvnnZA5jbxQBX1u9PpB6Wi32Gw==}
+    engines: {node: '>=0.10'}
+
+  http-signature@1.4.0:
+    resolution: {integrity: sha512-G5akfn7eKbpDN+8nPS/cb57YeA1jLTVxjpCj7tmm3QKPdyDy7T+qSC40e9ptydSWvkwjSXw1VbkpyEm39ukeAg==}
     engines: {node: '>=0.10'}
 
   http2-wrapper@1.0.3:
@@ -28767,9 +28222,6 @@ packages:
     resolution: {integrity: sha512-ql6P2LzhBTTDfzKts+Qo4H94VUKpxKDFz6QxxwaUZN0mwvi7L3lpOI7BqPCq7lgDh3XLl0dpeXwfcVIitlrYrw==}
     hasBin: true
 
-  rxjs@7.5.2:
-    resolution: {integrity: sha512-PwDt186XaL3QN5qXj/H9DGyHhP3/RYYgZZwqBv9Tv8rsAaiwFH1IsJJlcgD37J7UW5a6O67qX0KWKS3/pu0m4w==}
-
   rxjs@7.8.1:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
 
@@ -29289,6 +28741,11 @@ packages:
     engines: {node: '>=0.10.0'}
     hasBin: true
 
+  sshpk@1.18.0:
+    resolution: {integrity: sha512-2p2KJZTSqQ/I3+HX42EpYOa2l3f8Erv8MWKsy2I9uf4wA7yFIkXRffYdsx86y6z4vHtV8u7g+pPlr8/4ouAxsQ==}
+    engines: {node: '>=0.10.0'}
+    hasBin: true
+
   ssri@10.0.6:
     resolution: {integrity: sha512-MGrFH9Z4NP9Iyhqn16sDtBpRRNJ0Y2hNa6D65h736fVSaPCHr4DM4sWUNvVaSuC+0OBGhwsrydQwmgfg5LncqQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
@@ -29773,6 +29230,13 @@ packages:
   title-case@3.0.3:
     resolution: {integrity: sha512-e1zGYRvbffpcHIrnuqT0Dh+gEJtDaxDSoG4JAIpq4oDFyooziLBIiYQv0GBT4FUAnUop5uZ1hiIAj7oAF6sOCA==}
 
+  tldts-core@6.1.58:
+    resolution: {integrity: sha512-dR936xmhBm7AeqHIhCWwK765gZ7dFyL+IqLSFAjJbFlUXGMLCb8i2PzlzaOuWBuplBTaBYseSb565nk/ZEM0Bg==}
+
+  tldts@6.1.58:
+    resolution: {integrity: sha512-MQJrJhjHOYGYb8DobR6Y4AdDbd4TYkyQ+KBDVc5ODzs1cbrvPpfN1IemYi9jfipJ/vR1YWvrDli0hg1y19VRoA==}
+    hasBin: true
+
   tmp@0.0.33:
     resolution: {integrity: sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==}
     engines: {node: '>=0.6.0'}
@@ -29833,6 +29297,10 @@ packages:
   tough-cookie@4.1.3:
     resolution: {integrity: sha512-aX/y5pVRkfRnfmuX+OdbSdXvPe6ieKX/G2s7e98f4poJHnqH3281gDPm/metm6E/WRamfx7WC4HUqkWHfQHprw==}
     engines: {node: '>=6'}
+
+  tough-cookie@5.0.0:
+    resolution: {integrity: sha512-FRKsF7cz96xIIeMZ82ehjC3xW2E+O2+v11udrDYewUbszngYhsGa8z6YUMMzO9QJZzzyd0nGGXnML/TReX6W8Q==}
+    engines: {node: '>=16'}
 
   tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
@@ -29958,6 +29426,9 @@ packages:
 
   tslib@2.7.0:
     resolution: {integrity: sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==}
+
+  tslib@2.8.1:
+    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
   tsscmp@1.0.6:
     resolution: {integrity: sha512-LxhtAkPDTkVCMQjt2h6eBVY28KCjikZqZfMcC15YBeNjkgUpdCfBu5HoiOTDu86v6smE8yOjyEktJ8hlbANHQA==}
@@ -31170,96 +30641,6 @@ snapshots:
     transitivePeerDependencies:
       - chokidar
 
-  '@angular-devkit/build-angular@18.1.3(@angular/compiler-cli@18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3))(@types/node@22.5.2)(chokidar@3.6.0)(html-webpack-plugin@5.5.3(webpack@5.94.0))(jest-environment-jsdom@29.7.0)(jest@29.7.0(@types/node@22.5.2))(karma@6.4.2)(stylus@0.59.0)(typescript@5.5.3)':
-    dependencies:
-      '@ampproject/remapping': 2.3.0
-      '@angular-devkit/architect': 0.1801.3(chokidar@3.6.0)
-      '@angular-devkit/build-webpack': 0.1801.3(chokidar@3.6.0)(webpack-dev-server@5.0.4(webpack@5.94.0))(webpack@5.92.1(esbuild@0.21.5))
-      '@angular-devkit/core': 18.1.3(chokidar@3.6.0)
-      '@angular/build': 18.1.3(@angular/compiler-cli@18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3))(@types/node@22.5.2)(chokidar@3.6.0)(less@4.2.0)(postcss@8.4.38)(stylus@0.59.0)(terser@5.29.2)(typescript@5.5.3)
-      '@angular/compiler-cli': 18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3)
-      '@babel/core': 7.24.7
-      '@babel/generator': 7.24.7
-      '@babel/helper-annotate-as-pure': 7.24.7
-      '@babel/helper-split-export-declaration': 7.24.7
-      '@babel/plugin-transform-async-generator-functions': 7.24.7(@babel/core@7.24.7)
-      '@babel/plugin-transform-async-to-generator': 7.24.7(@babel/core@7.24.7)
-      '@babel/plugin-transform-runtime': 7.24.7(@babel/core@7.24.7)
-      '@babel/preset-env': 7.24.7(@babel/core@7.24.7)
-      '@babel/runtime': 7.24.7
-      '@discoveryjs/json-ext': 0.5.7
-      '@ngtools/webpack': 18.1.3(@angular/compiler-cli@18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3))(typescript@5.5.3)(webpack@5.92.1(esbuild@0.21.5))
-      '@vitejs/plugin-basic-ssl': 1.1.0(vite@5.3.2(@types/node@22.5.2)(less@4.2.0)(sass@1.77.6)(stylus@0.59.0)(terser@5.29.2))
-      ansi-colors: 4.1.3
-      autoprefixer: 10.4.19(postcss@8.4.38)
-      babel-loader: 9.1.3(@babel/core@7.24.7)(webpack@5.92.1(esbuild@0.21.5))
-      browserslist: 4.23.0
-      copy-webpack-plugin: 12.0.2(webpack@5.92.1(esbuild@0.21.5))
-      critters: 0.0.24
-      css-loader: 7.1.2(webpack@5.92.1(esbuild@0.21.5))
-      esbuild-wasm: 0.21.5
-      fast-glob: 3.3.2
-      http-proxy-middleware: 3.0.0
-      https-proxy-agent: 7.0.5
-      istanbul-lib-instrument: 6.0.2
-      jsonc-parser: 3.3.1
-      karma-source-map-support: 1.4.0
-      less: 4.2.0
-      less-loader: 12.2.0(less@4.2.0)(webpack@5.92.1(esbuild@0.21.5))
-      license-webpack-plugin: 4.0.2(webpack@5.92.1(esbuild@0.21.5))
-      loader-utils: 3.3.1
-      magic-string: 0.30.10
-      mini-css-extract-plugin: 2.9.0(webpack@5.92.1(esbuild@0.21.5))
-      mrmime: 2.0.0
-      open: 10.1.0
-      ora: 5.4.1
-      parse5-html-rewriting-stream: 7.0.0
-      picomatch: 4.0.2
-      piscina: 4.6.1
-      postcss: 8.4.38
-      postcss-loader: 8.1.1(postcss@8.4.38)(typescript@5.5.3)(webpack@5.92.1(esbuild@0.21.5))
-      resolve-url-loader: 5.0.0
-      rxjs: 7.8.1
-      sass: 1.77.6
-      sass-loader: 14.2.1(sass@1.77.6)(webpack@5.92.1(esbuild@0.21.5))
-      semver: 7.6.2
-      source-map-loader: 5.0.0(webpack@5.92.1(esbuild@0.21.5))
-      source-map-support: 0.5.21
-      terser: 5.29.2
-      tree-kill: 1.2.2
-      tslib: 2.6.3
-      typescript: 5.5.3
-      undici: 6.19.2
-      vite: 5.3.2(@types/node@22.5.2)(less@4.2.0)(sass@1.77.6)(stylus@0.59.0)(terser@5.29.2)
-      watchpack: 2.4.1
-      webpack: 5.92.1(esbuild@0.21.5)
-      webpack-dev-middleware: 7.2.1(webpack@5.92.1(esbuild@0.21.5))
-      webpack-dev-server: 5.0.4(webpack@5.92.1(esbuild@0.21.5))
-      webpack-merge: 5.10.0
-      webpack-subresource-integrity: 5.1.0(html-webpack-plugin@5.5.3(webpack@5.94.0))(webpack@5.92.1(esbuild@0.21.5))
-    optionalDependencies:
-      esbuild: 0.21.5
-      jest: 29.7.0(@types/node@22.5.2)
-      jest-environment-jsdom: 29.7.0
-      karma: 6.4.2
-    transitivePeerDependencies:
-      - '@rspack/core'
-      - '@swc/core'
-      - '@types/node'
-      - bufferutil
-      - chokidar
-      - debug
-      - html-webpack-plugin
-      - lightningcss
-      - node-sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - uglify-js
-      - utf-8-validate
-      - webpack-cli
-
   '@angular-devkit/build-angular@18.1.3(@angular/compiler-cli@18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8)))(typescript@5.5.3))(@types/node@22.5.2)(chokidar@3.6.0)(html-webpack-plugin@5.5.3(webpack@5.94.0))(jest-environment-jsdom@29.7.0)(jest@29.7.0(@types/node@22.5.2))(karma@6.4.2)(stylus@0.59.0)(typescript@5.5.3)':
     dependencies:
       '@ampproject/remapping': 2.3.0
@@ -31380,49 +30761,6 @@ snapshots:
     transitivePeerDependencies:
       - chokidar
 
-  '@angular/build@18.1.3(@angular/compiler-cli@18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3))(@types/node@22.5.2)(chokidar@3.6.0)(less@4.2.0)(postcss@8.4.38)(stylus@0.59.0)(terser@5.29.2)(typescript@5.5.3)':
-    dependencies:
-      '@ampproject/remapping': 2.3.0
-      '@angular-devkit/architect': 0.1801.3(chokidar@3.6.0)
-      '@angular/compiler-cli': 18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3)
-      '@babel/core': 7.24.7
-      '@babel/helper-annotate-as-pure': 7.24.7
-      '@babel/helper-split-export-declaration': 7.24.7
-      '@babel/plugin-syntax-import-attributes': 7.24.7(@babel/core@7.24.7)
-      '@inquirer/confirm': 3.1.11
-      '@vitejs/plugin-basic-ssl': 1.1.0(vite@5.3.2(@types/node@22.5.2)(less@4.2.0)(sass@1.77.6)(stylus@0.59.0)(terser@5.29.2))
-      ansi-colors: 4.1.3
-      browserslist: 4.23.0
-      critters: 0.0.24
-      esbuild: 0.21.5
-      fast-glob: 3.3.2
-      https-proxy-agent: 7.0.5
-      lmdb: 3.0.12
-      magic-string: 0.30.10
-      mrmime: 2.0.0
-      ora: 5.4.1
-      parse5-html-rewriting-stream: 7.0.0
-      picomatch: 4.0.2
-      piscina: 4.6.1
-      rollup: 4.18.0
-      sass: 1.77.6
-      semver: 7.6.2
-      typescript: 5.5.3
-      undici: 6.19.2
-      vite: 5.3.2(@types/node@22.5.2)(less@4.2.0)(sass@1.77.6)(stylus@0.59.0)(terser@5.29.2)
-      watchpack: 2.4.1
-    optionalDependencies:
-      less: 4.2.0
-      postcss: 8.4.38
-    transitivePeerDependencies:
-      - '@types/node'
-      - chokidar
-      - lightningcss
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-
   '@angular/build@18.1.3(@angular/compiler-cli@18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8)))(typescript@5.5.3))(@types/node@22.5.2)(chokidar@3.6.0)(less@4.2.0)(postcss@8.4.38)(stylus@0.59.0)(terser@5.29.2)(typescript@5.5.3)':
     dependencies:
       '@ampproject/remapping': 2.3.0
@@ -31490,32 +30828,11 @@ snapshots:
       - chokidar
       - supports-color
 
-  '@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(rxjs@7.5.2)':
-    dependencies:
-      '@angular/core': 18.1.3(rxjs@7.5.2)(zone.js@0.14.8)
-      rxjs: 7.5.2
-      tslib: 2.6.2
-
   '@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1)':
     dependencies:
       '@angular/core': 18.1.3(rxjs@7.8.1)(zone.js@0.14.8)
       rxjs: 7.8.1
       tslib: 2.7.0
-
-  '@angular/compiler-cli@18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3)':
-    dependencies:
-      '@angular/compiler': 18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))
-      '@babel/core': 7.24.9
-      '@jridgewell/sourcemap-codec': 1.4.15
-      chokidar: 3.5.3
-      convert-source-map: 1.7.0
-      reflect-metadata: 0.2.2
-      semver: 7.5.4
-      tslib: 2.6.2
-      typescript: 5.5.3
-      yargs: 17.7.2
-    transitivePeerDependencies:
-      - supports-color
 
   '@angular/compiler-cli@18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8)))(typescript@5.5.3)':
     dependencies:
@@ -31532,23 +30849,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))':
-    dependencies:
-      tslib: 2.6.2
-    optionalDependencies:
-      '@angular/core': 18.1.3(rxjs@7.5.2)(zone.js@0.14.8)
-
   '@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))':
     dependencies:
       tslib: 2.7.0
     optionalDependencies:
       '@angular/core': 18.1.3(rxjs@7.8.1)(zone.js@0.14.8)
-
-  '@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)':
-    dependencies:
-      rxjs: 7.5.2
-      tslib: 2.6.2
-      zone.js: 0.14.8
 
   '@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8)':
     dependencies:
@@ -31556,25 +30861,11 @@ snapshots:
       tslib: 2.7.0
       zone.js: 0.14.8
 
-  '@angular/elements@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(rxjs@7.5.2)':
-    dependencies:
-      '@angular/core': 18.1.3(rxjs@7.5.2)(zone.js@0.14.8)
-      rxjs: 7.5.2
-      tslib: 2.6.2
-
   '@angular/elements@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1)':
     dependencies:
       '@angular/core': 18.1.3(rxjs@7.8.1)(zone.js@0.14.8)
       rxjs: 7.8.1
       tslib: 2.7.0
-
-  '@angular/platform-browser-dynamic@18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(rxjs@7.5.2))(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(@angular/platform-browser@18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(rxjs@7.5.2))(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))':
-    dependencies:
-      '@angular/common': 18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(rxjs@7.5.2)
-      '@angular/compiler': 18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))
-      '@angular/core': 18.1.3(rxjs@7.5.2)(zone.js@0.14.8)
-      '@angular/platform-browser': 18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(rxjs@7.5.2))(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))
-      tslib: 2.6.2
 
   '@angular/platform-browser-dynamic@18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1))(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8)))(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(@angular/platform-browser@18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1))(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8)))':
     dependencies:
@@ -31583,12 +30874,6 @@ snapshots:
       '@angular/core': 18.1.3(rxjs@7.8.1)(zone.js@0.14.8)
       '@angular/platform-browser': 18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1))(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))
       tslib: 2.7.0
-
-  '@angular/platform-browser@18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(rxjs@7.5.2))(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))':
-    dependencies:
-      '@angular/common': 18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(rxjs@7.5.2)
-      '@angular/core': 18.1.3(rxjs@7.5.2)(zone.js@0.14.8)
-      tslib: 2.6.2
 
   '@angular/platform-browser@18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1))(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))':
     dependencies:
@@ -37553,6 +36838,27 @@ snapshots:
       tunnel-agent: 0.6.0
       uuid: 8.3.2
 
+  '@cypress/request@3.0.6':
+    dependencies:
+      aws-sign2: 0.7.0
+      aws4: 1.13.2
+      caseless: 0.12.0
+      combined-stream: 1.0.8
+      extend: 3.0.2
+      forever-agent: 0.6.1
+      form-data: 4.0.1
+      http-signature: 1.4.0
+      is-typedarray: 1.0.0
+      isstream: 0.1.2
+      json-stringify-safe: 5.0.1
+      mime-types: 2.1.35
+      performance-now: 2.1.0
+      qs: 6.13.0
+      safe-buffer: 5.2.1
+      tough-cookie: 5.0.0
+      tunnel-agent: 0.6.0
+      uuid: 8.3.2
+
   '@cypress/xvfb@1.2.4(supports-color@8.1.1)':
     dependencies:
       debug: 3.2.7(supports-color@8.1.1)
@@ -38663,6 +37969,43 @@ snapshots:
       - supports-color
       - ts-node
 
+  '@jest/core@29.7.0(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3))':
+    dependencies:
+      '@jest/console': 29.7.0
+      '@jest/reporters': 29.7.0(node-notifier@8.0.2)
+      '@jest/test-result': 29.7.0
+      '@jest/transform': 29.7.0
+      '@jest/types': 29.6.3
+      '@types/node': 20.14.2
+      ansi-escapes: 4.3.2
+      chalk: 4.1.2
+      ci-info: 3.3.2
+      exit: 0.1.2
+      graceful-fs: 4.2.11
+      jest-changed-files: 29.7.0
+      jest-config: 29.7.0(@types/node@20.14.2)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3))
+      jest-haste-map: 29.7.0
+      jest-message-util: 29.7.0
+      jest-regex-util: 29.6.3
+      jest-resolve: 29.7.0
+      jest-resolve-dependencies: 29.7.0
+      jest-runner: 29.7.0
+      jest-runtime: 29.7.0
+      jest-snapshot: 29.7.0
+      jest-util: 29.7.0
+      jest-validate: 29.7.0
+      jest-watcher: 29.7.0
+      micromatch: 4.0.5
+      pretty-format: 29.7.0
+      slash: 3.0.0
+      strip-ansi: 6.0.1
+    optionalDependencies:
+      node-notifier: 8.0.2
+    transitivePeerDependencies:
+      - babel-plugin-macros
+      - supports-color
+      - ts-node
+
   '@jest/environment@29.7.0':
     dependencies:
       '@jest/fake-timers': 29.7.0
@@ -39045,12 +38388,6 @@ snapshots:
       gunzip-maybe: 1.4.2
       pump: 3.0.0
       tar-fs: 2.1.1
-
-  '@ngtools/webpack@18.1.3(@angular/compiler-cli@18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3))(typescript@5.5.3)(webpack@5.92.1(esbuild@0.21.5))':
-    dependencies:
-      '@angular/compiler-cli': 18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3)
-      typescript: 5.5.3
-      webpack: 5.92.1(esbuild@0.21.5)
 
   '@ngtools/webpack@18.1.3(@angular/compiler-cli@18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8)))(typescript@5.5.3))(typescript@5.5.3)(webpack@5.92.1(esbuild@0.21.5))':
     dependencies:
@@ -43008,7 +42345,7 @@ snapshots:
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 20.14.13
+      '@types/node': 22.8.7
       '@types/responselike': 1.0.3
 
   '@types/chai@4.3.7': {}
@@ -43047,7 +42384,7 @@ snapshots:
 
   '@types/cypress@1.1.3':
     dependencies:
-      cypress: 13.14.1
+      cypress: 13.15.1
 
   '@types/d3-array@3.0.4': {}
 
@@ -43367,7 +42704,7 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 20.14.13
+      '@types/node': 22.8.7
 
   '@types/leaflet@0.7.35':
     dependencies:
@@ -43431,6 +42768,10 @@ snapshots:
       undici-types: 5.26.5
 
   '@types/node@22.5.2':
+    dependencies:
+      undici-types: 6.19.8
+
+  '@types/node@22.8.7':
     dependencies:
       undici-types: 6.19.8
 
@@ -43531,7 +42872,7 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 20.14.13
+      '@types/node': 22.8.7
 
   '@types/retry@0.12.2': {}
 
@@ -43584,7 +42925,7 @@ snapshots:
 
   '@types/sizzle@2.3.2': {}
 
-  '@types/sizzle@2.3.8': {}
+  '@types/sizzle@2.3.9': {}
 
   '@types/sockjs@0.3.36':
     dependencies:
@@ -44169,11 +43510,11 @@ snapshots:
       '@yarnpkg/fslib': 3.1.0
       '@yarnpkg/libzip': 3.1.0(@yarnpkg/fslib@3.1.0)
       '@yarnpkg/parsers': 3.0.2
-      '@yarnpkg/shell': 4.0.2(typanion@3.9.0)
+      '@yarnpkg/shell': 4.1.0(typanion@3.9.0)
       camelcase: 5.3.1
       chalk: 3.0.0
       ci-info: 3.9.0
-      clipanion: 4.0.0-rc.3(typanion@3.9.0)
+      clipanion: 4.0.0-rc.4(typanion@3.9.0)
       cross-spawn: 7.0.3
       diff: 5.2.0
       dotenv: 16.4.5
@@ -44187,7 +43528,7 @@ snapshots:
       tar: 6.2.1
       tinylogic: 2.0.0
       treeify: 1.1.0
-      tslib: 2.7.0
+      tslib: 2.8.1
       tunnel: 0.0.6
     transitivePeerDependencies:
       - typanion
@@ -44208,7 +43549,7 @@ snapshots:
 
   '@yarnpkg/fslib@3.1.0':
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.1
 
   '@yarnpkg/json-proxy@2.1.1':
     dependencies:
@@ -44224,7 +43565,7 @@ snapshots:
     dependencies:
       '@types/emscripten': 1.39.13
       '@yarnpkg/fslib': 3.1.0
-      tslib: 2.7.0
+      tslib: 2.8.1
 
   '@yarnpkg/lockfile@1.1.0': {}
 
@@ -44243,7 +43584,7 @@ snapshots:
   '@yarnpkg/parsers@3.0.2':
     dependencies:
       js-yaml: 3.14.1
-      tslib: 2.7.0
+      tslib: 2.8.1
 
   '@yarnpkg/pnp@2.3.2':
     dependencies:
@@ -44284,16 +43625,16 @@ snapshots:
     transitivePeerDependencies:
       - typanion
 
-  '@yarnpkg/shell@4.0.2(typanion@3.9.0)':
+  '@yarnpkg/shell@4.1.0(typanion@3.9.0)':
     dependencies:
       '@yarnpkg/fslib': 3.1.0
       '@yarnpkg/parsers': 3.0.2
       chalk: 3.0.0
-      clipanion: 4.0.0-rc.3(typanion@3.9.0)
+      clipanion: 4.0.0-rc.4(typanion@3.9.0)
       cross-spawn: 7.0.3
       fast-glob: 3.3.2
       micromatch: 4.0.8
-      tslib: 2.7.0
+      tslib: 2.8.1
     transitivePeerDependencies:
       - typanion
 
@@ -44847,6 +44188,10 @@ snapshots:
     dependencies:
       safer-buffer: 2.1.2
 
+  asn1@0.2.6:
+    dependencies:
+      safer-buffer: 2.1.2
+
   asn1js@3.0.5:
     dependencies:
       pvtsutils: 1.3.5
@@ -44926,6 +44271,8 @@ snapshots:
   aws-sign2@0.7.0: {}
 
   aws4@1.11.0: {}
+
+  aws4@1.13.2: {}
 
   axios@0.27.2:
     dependencies:
@@ -46319,7 +45666,7 @@ snapshots:
     dependencies:
       typanion: 3.9.0
 
-  clipanion@4.0.0-rc.3(typanion@3.9.0):
+  clipanion@4.0.0-rc.4(typanion@3.9.0):
     dependencies:
       typanion: 3.9.0
 
@@ -46835,6 +46182,21 @@ snapshots:
       - supports-color
       - ts-node
 
+  create-jest@29.7.0(@types/node@22.8.7)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3)):
+    dependencies:
+      '@jest/types': 29.6.3
+      chalk: 4.1.2
+      exit: 0.1.2
+      graceful-fs: 4.2.11
+      jest-config: 29.7.0(@types/node@22.8.7)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3))
+      jest-util: 29.7.0
+      prompts: 2.4.2
+    transitivePeerDependencies:
+      - '@types/node'
+      - babel-plugin-macros
+      - supports-color
+      - ts-node
+
   create-require@1.1.1: {}
 
   critters@0.0.24:
@@ -47194,12 +46556,12 @@ snapshots:
       untildify: 4.0.0
       yauzl: 2.10.0
 
-  cypress@13.14.1:
+  cypress@13.15.1:
     dependencies:
-      '@cypress/request': 3.0.1
+      '@cypress/request': 3.0.6
       '@cypress/xvfb': 1.2.4(supports-color@8.1.1)
       '@types/sinonjs__fake-timers': 8.1.1
-      '@types/sizzle': 2.3.8
+      '@types/sizzle': 2.3.9
       arch: 2.2.0
       blob-util: 2.0.2
       bluebird: 3.7.2
@@ -47212,7 +46574,7 @@ snapshots:
       commander: 6.2.1
       common-tags: 1.8.2
       dayjs: 1.11.13
-      debug: 4.3.6(supports-color@8.1.1)
+      debug: 4.3.7(supports-color@8.1.1)
       enquirer: 2.4.1
       eventemitter2: 6.4.7
       execa: 4.1.0
@@ -47236,6 +46598,7 @@ snapshots:
       semver: 7.6.3
       supports-color: 8.1.1
       tmp: 0.2.3
+      tree-kill: 1.2.2
       untildify: 4.0.0
       yauzl: 2.10.0
 
@@ -47484,6 +46847,17 @@ snapshots:
   debug@4.3.6(supports-color@8.1.1):
     dependencies:
       ms: 2.1.2
+    optionalDependencies:
+      supports-color: 8.1.1
+
+  debug@4.3.7:
+    dependencies:
+      ms: 2.1.3
+    optional: true
+
+  debug@4.3.7(supports-color@8.1.1):
+    dependencies:
+      ms: 2.1.3
     optionalDependencies:
       supports-color: 8.1.1
 
@@ -49276,6 +48650,12 @@ snapshots:
       combined-stream: 1.0.8
       mime-types: 2.1.34
 
+  form-data@4.0.1:
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      mime-types: 2.1.35
+
   formdata-polyfill@4.0.10:
     dependencies:
       fetch-blob: 3.2.0
@@ -50094,6 +49474,12 @@ snapshots:
       jsprim: 2.0.2
       sshpk: 1.17.0
 
+  http-signature@1.4.0:
+    dependencies:
+      assert-plus: 1.0.0
+      jsprim: 2.0.2
+      sshpk: 1.18.0
+
   http2-wrapper@1.0.3:
     dependencies:
       quick-lru: 5.1.1
@@ -50851,6 +50237,27 @@ snapshots:
       - supports-color
       - ts-node
 
+  jest-cli@29.7.0(@types/node@22.8.7)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3)):
+    dependencies:
+      '@jest/core': 29.7.0(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3))
+      '@jest/test-result': 29.7.0
+      '@jest/types': 29.6.3
+      chalk: 4.1.2
+      create-jest: 29.7.0(@types/node@22.8.7)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3))
+      exit: 0.1.2
+      import-local: 3.0.2
+      jest-config: 29.7.0(@types/node@22.8.7)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3))
+      jest-util: 29.7.0
+      jest-validate: 29.7.0
+      yargs: 17.7.2
+    optionalDependencies:
+      node-notifier: 8.0.2
+    transitivePeerDependencies:
+      - '@types/node'
+      - babel-plugin-macros
+      - supports-color
+      - ts-node
+
   jest-config@29.7.0(@types/node@20.14.2):
     dependencies:
       '@babel/core': 7.24.9
@@ -51037,6 +50444,37 @@ snapshots:
       - babel-plugin-macros
       - supports-color
 
+  jest-config@29.7.0(@types/node@20.14.2)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3)):
+    dependencies:
+      '@babel/core': 7.24.9
+      '@jest/test-sequencer': 29.7.0
+      '@jest/types': 29.6.3
+      babel-jest: 29.7.0(@babel/core@7.24.9)
+      chalk: 4.1.2
+      ci-info: 3.3.2
+      deepmerge: 4.2.2
+      glob: 7.2.3
+      graceful-fs: 4.2.11
+      jest-circus: 29.7.0
+      jest-environment-node: 29.7.0
+      jest-get-type: 29.6.3
+      jest-regex-util: 29.6.3
+      jest-resolve: 29.7.0
+      jest-runner: 29.7.0
+      jest-util: 29.7.0
+      jest-validate: 29.7.0
+      micromatch: 4.0.5
+      parse-json: 5.2.0
+      pretty-format: 29.7.0
+      slash: 3.0.0
+      strip-json-comments: 3.1.1
+    optionalDependencies:
+      '@types/node': 20.14.2
+      ts-node: 10.9.2(@types/node@22.8.7)(typescript@5.5.3)
+    transitivePeerDependencies:
+      - babel-plugin-macros
+      - supports-color
+
   jest-config@29.7.0(@types/node@22.5.2):
     dependencies:
       '@babel/core': 7.24.9
@@ -51157,6 +50595,37 @@ snapshots:
     optionalDependencies:
       '@types/node': 22.5.2
       ts-node: 10.9.2(@types/node@22.5.2)
+    transitivePeerDependencies:
+      - babel-plugin-macros
+      - supports-color
+
+  jest-config@29.7.0(@types/node@22.8.7)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3)):
+    dependencies:
+      '@babel/core': 7.24.9
+      '@jest/test-sequencer': 29.7.0
+      '@jest/types': 29.6.3
+      babel-jest: 29.7.0(@babel/core@7.24.9)
+      chalk: 4.1.2
+      ci-info: 3.3.2
+      deepmerge: 4.2.2
+      glob: 7.2.3
+      graceful-fs: 4.2.11
+      jest-circus: 29.7.0
+      jest-environment-node: 29.7.0
+      jest-get-type: 29.6.3
+      jest-regex-util: 29.6.3
+      jest-resolve: 29.7.0
+      jest-runner: 29.7.0
+      jest-util: 29.7.0
+      jest-validate: 29.7.0
+      micromatch: 4.0.5
+      parse-json: 5.2.0
+      pretty-format: 29.7.0
+      slash: 3.0.0
+      strip-json-comments: 3.1.1
+    optionalDependencies:
+      '@types/node': 22.8.7
+      ts-node: 10.9.2(@types/node@22.8.7)(typescript@5.5.3)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -51445,6 +50914,10 @@ snapshots:
     dependencies:
       jest: 29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.5.2)(typescript@5.5.3))
 
+  jest-when@3.6.0(jest@29.7.0(@types/node@22.8.7)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3))):
+    dependencies:
+      jest: 29.7.0(@types/node@22.8.7)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3))
+
   jest-worker@25.5.0:
     dependencies:
       merge-stream: 2.0.0
@@ -51544,6 +51017,20 @@ snapshots:
       '@jest/types': 29.6.3
       import-local: 3.0.2
       jest-cli: 29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.5.2))
+    optionalDependencies:
+      node-notifier: 8.0.2
+    transitivePeerDependencies:
+      - '@types/node'
+      - babel-plugin-macros
+      - supports-color
+      - ts-node
+
+  jest@29.7.0(@types/node@22.8.7)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3)):
+    dependencies:
+      '@jest/core': 29.7.0(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3))
+      '@jest/types': 29.6.3
+      import-local: 3.0.2
+      jest-cli: 29.7.0(@types/node@22.8.7)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3))
     optionalDependencies:
       node-notifier: 8.0.2
     transitivePeerDependencies:
@@ -55425,10 +54912,6 @@ snapshots:
 
   run-script-os@1.1.6: {}
 
-  rxjs@7.5.2:
-    dependencies:
-      tslib: 2.3.1
-
   rxjs@7.8.1:
     dependencies:
       tslib: 2.7.0
@@ -56106,6 +55589,18 @@ snapshots:
       safer-buffer: 2.1.2
       tweetnacl: 0.14.5
 
+  sshpk@1.18.0:
+    dependencies:
+      asn1: 0.2.6
+      assert-plus: 1.0.0
+      bcrypt-pbkdf: 1.0.2
+      dashdash: 1.14.1
+      ecc-jsbn: 0.1.2
+      getpass: 0.1.7
+      jsbn: 0.1.1
+      safer-buffer: 2.1.2
+      tweetnacl: 0.14.5
+
   ssri@10.0.6:
     dependencies:
       minipass: 7.1.2
@@ -56408,7 +55903,7 @@ snapshots:
   stylus@0.59.0:
     dependencies:
       '@adobe/css-tools': 4.4.0
-      debug: 4.3.6
+      debug: 4.3.7
       glob: 7.2.3
       sax: 1.2.4
       source-map: 0.7.4
@@ -56829,6 +56324,12 @@ snapshots:
     dependencies:
       tslib: 2.7.0
 
+  tldts-core@6.1.58: {}
+
+  tldts@6.1.58:
+    dependencies:
+      tldts-core: 6.1.58
+
   tmp@0.0.33:
     dependencies:
       os-tmpdir: 1.0.2
@@ -56885,6 +56386,10 @@ snapshots:
       punycode: 2.3.0
       universalify: 0.2.0
       url-parse: 1.5.10
+
+  tough-cookie@5.0.0:
+    dependencies:
+      tldts: 6.1.58
 
   tr46@0.0.3: {}
 
@@ -56981,6 +56486,24 @@ snapshots:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
       jest: 29.7.0(@types/node@22.5.2)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.5.2)(typescript@5.5.3))
+      jest-util: 29.7.0
+      json5: 2.2.3
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.5.4
+      typescript: 5.5.3
+      yargs-parser: 21.1.1
+    optionalDependencies:
+      '@babel/core': 7.16.12
+      '@jest/transform': 29.7.0
+      '@jest/types': 29.6.3
+      babel-jest: 29.7.0(@babel/core@7.16.12)
+
+  ts-jest@29.1.5(@babel/core@7.16.12)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.16.12))(jest@29.7.0(@types/node@22.8.7)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3)))(typescript@5.5.3):
+    dependencies:
+      bs-logger: 0.2.6
+      fast-json-stable-stringify: 2.1.0
+      jest: 29.7.0(@types/node@22.8.7)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3))
       jest-util: 29.7.0
       json5: 2.2.3
       lodash.memoize: 4.1.2
@@ -57311,6 +56834,25 @@ snapshots:
       yn: 3.1.1
     optional: true
 
+  ts-node@10.9.2(@types/node@22.8.7)(typescript@5.5.3):
+    dependencies:
+      '@cspotcode/source-map-support': 0.8.1
+      '@tsconfig/node10': 1.0.9
+      '@tsconfig/node12': 1.0.11
+      '@tsconfig/node14': 1.0.3
+      '@tsconfig/node16': 1.0.3
+      '@types/node': 22.8.7
+      acorn: 8.10.0
+      acorn-walk: 8.2.0
+      arg: 4.1.0
+      create-require: 1.1.1
+      diff: 4.0.1
+      make-error: 1.3.6
+      typescript: 5.5.3
+      v8-compile-cache-lib: 3.0.1
+      yn: 3.1.1
+    optional: true
+
   tsconfig-paths-webpack-plugin@3.5.2:
     dependencies:
       chalk: 4.1.2
@@ -57339,6 +56881,8 @@ snapshots:
   tslib@2.6.3: {}
 
   tslib@2.7.0: {}
+
+  tslib@2.8.1: {}
 
   tsscmp@1.0.6: {}
 
