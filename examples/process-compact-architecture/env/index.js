@@ -25,7 +25,7 @@ const {
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
-    JBPM_COMPACT_ARCHITECTURE_EXAMPLE__managementConsoleImage: {
+    KIE_TOOLS_EXAMPLE__PROCESS_COMPACT_ARCHITECTURE__managementConsoleImage: {
       default: `${kogitoManagementConsoleImageEnv.registry}/${kogitoManagementConsoleImageEnv.account}/${kogitoManagementConsoleImageEnv.name}:${kogitoManagementConsoleImageEnv.buildTag}`,
       description: "The image for the Kogito Management Console.",
     },
@@ -33,7 +33,9 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   get env() {
     return {
       processCompactArchitectureExample: {
-        kogitoManagementConsoleImage: getOrDefault(this.vars.JBPM_COMPACT_ARCHITECTURE_EXAMPLE__managementConsoleImage),
+        kogitoManagementConsoleImage: getOrDefault(
+          this.vars.KIE_TOOLS_EXAMPLE__PROCESS_COMPACT_ARCHITECTURE__managementConsoleImage
+        ),
         version: require("../package.json").version,
       },
     };
