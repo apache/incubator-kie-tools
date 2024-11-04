@@ -1,0 +1,17 @@
+{
+  "name": "KIE Tools Example :: Base64 PNG Editor",
+  "version": "0.0.0",
+  "manifest_version": 2,
+  "description": "Micro-frontends Multiplying Architecture Editor",
+  "content_scripts": [
+    {
+      "run_at": "document_idle",
+      "js": ["contentscript.js"],
+      "matches": ["https://github.com/*"],
+      "all_frames": true
+    }
+  ],
+  "icons": { "128": "./icon_128.png" },
+  "web_accessible_resources": ["./*"],
+  "permissions": ["https://*.github.com/*", "http://*.github.com/*"]
+}
