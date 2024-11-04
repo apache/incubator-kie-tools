@@ -69,31 +69,31 @@ export function App() {
                     itemId={Location.PING_PONG_REACT_IFRAME_PAGES}
                     isActive={location === Location.PING_PONG_REACT_IFRAME_PAGES}
                   >
-                    <Link to={Location.PING_PONG_REACT_IFRAME_PAGES}>Ping-Pong View in React inside IFrame</Link>
+                    <Link to={Location.PING_PONG_REACT_IFRAME_PAGES}>React + IFrames</Link>
                   </NavItem>
                   <NavItem
                     itemId={Location.PING_PONG_REACT_DIV_PAGES}
                     isActive={location === Location.PING_PONG_REACT_DIV_PAGES}
                   >
-                    <Link to={Location.PING_PONG_REACT_DIV_PAGES}>Ping-Pong View in React inside Div</Link>
+                    <Link to={Location.PING_PONG_REACT_DIV_PAGES}>React + Divs</Link>
                   </NavItem>
                   <NavItem
                     itemId={Location.PING_PONG_ANGULAR_IFRAME_PAGES}
                     isActive={location === Location.PING_PONG_ANGULAR_IFRAME_PAGES}
                   >
-                    <Link to={Location.PING_PONG_ANGULAR_IFRAME_PAGES}>Ping-Pong View in Angular inside IFrame</Link>
+                    <Link to={Location.PING_PONG_ANGULAR_IFRAME_PAGES}>Angular + IFrames</Link>
                   </NavItem>
                   <NavItem
                     itemId={Location.PING_PONG_ANGULAR_DIV_PAGES}
                     isActive={location === Location.PING_PONG_ANGULAR_DIV_PAGES}
                   >
-                    <Link to={Location.PING_PONG_ANGULAR_DIV_PAGES}>Ping-Pong View in Angular inside Div</Link>
+                    <Link to={Location.PING_PONG_ANGULAR_DIV_PAGES}>Angular + Divs</Link>
                   </NavItem>
                   <NavItem
                     itemId={Location.PING_PONG_MIXED_PAGES}
                     isActive={location === Location.PING_PONG_MIXED_PAGES}
                   >
-                    <Link to={Location.PING_PONG_MIXED_PAGES}>Ping-Pong Views Mixed</Link>
+                    <Link to={Location.PING_PONG_MIXED_PAGES}>All mixed</Link>
                   </NavItem>
                 </NavList>
               </Nav>

@@ -25,7 +25,7 @@ import { PingPongApi } from "@kie-tools-examples/micro-frontends-multiplying-arc
 import { StatsSidebar } from "../StatsSidebar";
 import { usePingPongApiCallbacks, usePingPongChannelApi } from "../hooks";
 
-const reactEnvelopePath = "envelope/ping-pong-view-react-impl.html";
+const reactEnvelopePath = "ping-pong-view-in-react-envelope.html";
 
 export function PingPongReactIFrameViewsPage() {
   const { pingsCount, pongsCount, lastPing, lastPong, apiImpl } = usePingPongChannelApi();

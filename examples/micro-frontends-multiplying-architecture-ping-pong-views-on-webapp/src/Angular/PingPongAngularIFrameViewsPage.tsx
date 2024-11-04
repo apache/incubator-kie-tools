@@ -25,7 +25,7 @@ import { PingPongApi } from "@kie-tools-examples/micro-frontends-multiplying-arc
 import { StatsSidebar } from "../StatsSidebar";
 import { usePingPongApiCallbacks, usePingPongChannelApi } from "../hooks";
 
-const envelopePath = "envelope/angular/index.html";
+const envelopePath = "ping-pong-view-in-angular-envelope/index.html";
 
 export function PingPongAngularIFrameViewsPage() {
   const { pingsCount, pongsCount, lastPing, lastPong, apiImpl } = usePingPongChannelApi();

@@ -42,7 +42,7 @@ module.exports = (webpackEnv) => [
           { from: "./static", to: "." },
           {
             from: `${path.dirname(require.resolve("@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-angular/package.json"))}/dist/app`,
-            to: "./envelope/angular",
+            to: "./ping-pong-view-in-angular-envelope",
           },
         ],
       }),

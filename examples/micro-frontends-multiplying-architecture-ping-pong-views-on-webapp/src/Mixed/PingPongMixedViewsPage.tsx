@@ -30,8 +30,8 @@ import { pingPongEnvelopViewRenderDiv as renderReactDiv } from "@kie-tools-examp
 import { pingPongEnvelopViewRenderDiv as renderAngularDiv } from "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-angular/dist/wc/lib";
 import { usePingPongApiCallbacks, usePingPongChannelApi } from "../hooks";
 
-const reactEnvelopePath = "envelope/ping-pong-view-react-impl.html";
-const angularEnvelopePath = "envelope/angular/index.html";
+const reactEnvelopePath = "ping-pong-view-in-react-envelope.html";
+const angularEnvelopePath = "ping-pong-view-in-angular-envelope/index.html";
 
 export function PingPongMixedViewsPage() {
   const { pingsCount, pongsCount, lastPing, lastPong, apiImpl } = usePingPongChannelApi();
