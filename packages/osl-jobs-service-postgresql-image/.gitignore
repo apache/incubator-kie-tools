@@ -1,0 +1,5 @@
+!generated
+generated/scripts
+generated/tests
+generated/Makefile
+generated/modules/**/tests

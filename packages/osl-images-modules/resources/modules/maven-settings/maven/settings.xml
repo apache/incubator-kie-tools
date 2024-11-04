@@ -1,0 +1,89 @@
+<settings
+  xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      https://maven.apache.org/xsd/settings-1.0.0.xsd"
+>
+  <mirrors>
+    <!-- ### configured mirrors ### -->
+  </mirrors>
+
+  <proxies>
+    <!-- ### configured http proxy ### -->
+  </proxies>
+
+  <profiles>
+    <!-- ### extra maven repositories ### -->
+
+    <profile>
+      <id>kogito-images</id>
+      <repositories>
+        <repository>
+          <id>maven-central</id>
+          <name>Maven Central Repository</name>
+          <url>https://repo.maven.apache.org/maven2/</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </repository>
+        <repository>
+          <id>redhat</id>
+          <name>Red Hat GA Repository</name>
+          <url>https://maven.repository.redhat.com/ga/</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </repository>
+        <!-- ### configured repositories ### -->
+      </repositories>
+
+      <pluginRepositories>
+        <pluginRepository>
+          <id>maven-central</id>
+          <name>Maven Central Repository</name>
+          <url>https://repo.maven.apache.org/maven2/</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+          <id>redhat</id>
+          <name>Red Hat GA Repository</name>
+          <url>https://maven.repository.redhat.com/ga/</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </pluginRepository>
+        <!-- ### configured plugin repositories ### -->
+      </pluginRepositories>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <!-- ### extra maven profile ### -->
+    <activeProfile>kogito-images</activeProfile>
+  </activeProfiles>
+</settings>

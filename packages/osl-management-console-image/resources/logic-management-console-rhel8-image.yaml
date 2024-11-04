@@ -1,0 +1,79 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+name: "openshift-serverless-1/logic-management-console-rhel8"
+from: "registry.access.redhat.com/ubi8/httpd-24:latest"
+version: "main"
+description: "OpenShift Serverless Logic Management Console Image"
+
+labels:
+  - name: "io.quarkus.platform.version"
+    value: "### SET ME DURING BUILD PROCESS ###"
+  - name: "org.kie.kogito.version"
+    value: "### SET ME DURING BUILD PROCESS ###"
+  - name: "maintainer"
+    value: "Red Hat <serverless-logic-team@redhat.com>"
+  - name: "io.k8s.description"
+    value: "OpenShift Serverless Logic Management Console Image."
+  - name: "io.k8s.display-name"
+    value: "OpenShift Serverless Logic Management Console"
+  - name: "io.openshift.tags"
+    value: "sonataflow,serverless,workflow,osl,serverless-logic"
+  - name: "io.openshift.expose-services"
+    value: "8080:http"
+  - name: "com.redhat.component"
+    value: "openshift-serverless-1-logic-management-console-rhel8-container"
+
+modules:
+  repositories:
+    - path: modules
+  install:
+    - name: org.kie.kogito.system.user
+    - name: org.kie.kogito.project.versions
+    - name: com.redhat.osl.management.console
+
+ports:
+  - value: 8080
+
+envs:
+  - name: SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE
+    value: PROD
+  - name: SUMMARY
+    value: "OpenShift Serverless Logic Management Console"
+
+run:
+  workdir: "/home/kogito/management-console"
+  user: 1001
+  cmd:
+    - "/home/kogito/management-console/launch/entrypoint.sh"
+
+packages:
+  content_sets_file: content_sets.yaml
+
+osbs:
+  configuration:
+    container:
+      platforms:
+        only:
+          - x86_64
+      compose:
+        pulp_repos: true
+  extra_dir: osbs-extra/logic-management-console-rhel8
+  repository:
+    name: containers/openshift-serverless-1-logic-management-console
+    branch: openshift-serverless-main-rhel-8

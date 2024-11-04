@@ -1,0 +1,50 @@
+{
+  "$id": "EnvJson",
+  "$ref": "#/definitions/EnvJson",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "EnvJson": {
+      "additionalProperties": false,
+      "properties": {
+        "KOGITO_CONSOLES_KEYCLOAK_CLIENT_ID": {
+          "type": "string"
+        },
+        "KOGITO_CONSOLES_KEYCLOAK_DISABLE_HEALTH_CHECK": {
+          "type": "boolean"
+        },
+        "KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL": {
+          "type": "string"
+        },
+        "KOGITO_CONSOLES_KEYCLOAK_REALM": {
+          "type": "string"
+        },
+        "KOGITO_CONSOLES_KEYCLOAK_UPDATE_TOKEN_VALIDITY": {
+          "type": "number"
+        },
+        "KOGITO_CONSOLES_KEYCLOAK_URL": {
+          "type": "string"
+        },
+        "SONATAFLOW_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT": {
+          "type": "string"
+        },
+        "SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_APP_NAME": {
+          "type": "string"
+        },
+        "SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_APP_VERSION": {
+          "type": "string"
+        },
+        "SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE": {
+          "enum": ["DEV", "PROD"],
+          "type": "string"
+        }
+      },
+      "required": [
+        "SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE",
+        "SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_APP_NAME",
+        "SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_APP_VERSION",
+        "SONATAFLOW_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT"
+      ],
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,201 @@
+#!/usr/bin/env bash
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+# =================================================================
+# Detect whether running in a container and set appropriate options
+# for limiting Java VM resources
+#
+# Usage: JAVA_OPTS="$(java-default-options) $(debug_options)"
+
+# Env Vars respected:
+
+# JAVA_OPTIONS: Checked for already set options.
+# JAVA_OPTS: Checked for already set options
+# JAVA_INITIAL_MEM_RATIO: Ratio of maximum memory to use for initial heap size
+#                         (i.e. -Xms).  Defaults to 25 (i.e -Xms=-Xmx/4).
+# JAVA_MAX_INITIAL_MEM: The maximum value of the initial heap size, defaults to 4G.
+# JAVA_MAX_MEM_RATIO: Ratio use to calculate a default maximum Memory, in percent.
+#                     E.g. the default value "50" implies that 50% of the Memory
+#                     given to the container is used as the maximum heap memory with
+#                     '-Xmx'. It is a heuristic and should be better backed up with real
+#                     experiments and measurements.
+#                     For a good overviews what tuning options are available -->
+#                             https://youtu.be/Vt4G-pHXfs4
+#                             https://www.youtube.com/watch?v=w1rZOY5gbvk
+#                             https://vimeo.com/album/4133413/video/181900266
+# Also note that heap is only a small portion of the memory used by a JVM. There are lot
+# of other memory areas (metadata, thread, code cache, ...) which addes to the overall
+# size. There is no easy solution for this, 50% seems to be are reasonable compromise.
+# However, when your container gets killed because of an OOM, then you should tune
+# the absolute values
+#
+if [ "${SCRIPT_DEBUG}" = "true" ] ; then
+    set -x
+fi
+
+__DEFAULT_JAVA_MAX_MEM_RATIO=50
+__DEFAULT_JAVA_INITIAL_MEM_RATIO=25
+__DEFAULT_JAVA_MAX_INITIAL_MEM=4096
+
+# stubs for jvm specific overrides
+jvm_specific_options() {
+    :
+}
+
+jvm_specific_diagnostics() {
+    :
+}
+
+# Include overridden jvm_specific_*() functions
+if [ -f "${JBOSS_CONTAINER_OPENJDK_JDK_MODULE}/jvm-options" ]; then
+    source "${JBOSS_CONTAINER_OPENJDK_JDK_MODULE}/jvm-options"
+fi
+
+initialize_container_limits() {
+    # we can't run without limits
+    source ${JBOSS_CONTAINER_JAVA_JVM_MODULE}/container-limits
+}
+
+# Check for memory options and calculate a sane default if not given
+max_memory() {
+    # Check whether -Xmx is already given in JAVA_OPTIONS. Then we dont
+    # do anything here
+    # XXX: I think this should be removed.  If folks want to hard code max/min,
+    # then they can set the ratios to zero and set the options in JAVA_OPTS_APPEND.
+    if echo "${JAVA_OPTS:-${JAVA_OPTIONS}}" | grep -q -- "-Xmx"; then
+        return
+    fi
+
+    # Check if explicitly disabled
+    if [ "x$JAVA_MAX_MEM_RATIO" = "x0" ]; then
+        return
+    fi
+
+    # Check for the 'real memory size' and calculate mx from a ratio
+    # given (default is 50%)
+    if [ "x$CONTAINER_MAX_MEMORY" != x ]; then
+        local max_mem="${CONTAINER_MAX_MEMORY}"
+        local ratio=${JAVA_MAX_MEM_RATIO:-${__DEFAULT_JAVA_MAX_MEM_RATIO}}
+        local mx=$(echo "${max_mem} ${ratio} 1048576" | awk '{printf "%d\n" , ($1*$2)/(100*$3) + 0.5}')
+        echo "-Xmx${mx}m"
+    fi
+}
+
+# Check for memory options and calculate a sane default if not given
+initial_memory() {
+    # Check whether -Xms is already given in JAVA_OPTS. Then we dont
+    # do anything here
+    # XXX: I think this should be removed.  If folks want to hard code max/min,
+    # then they can set the ratios to zero and set the options in JAVA_OPTS_APPEND.
+    if echo "${JAVA_OPTS:-${JAVA_OPTIONS}}" | grep -q -- "-Xms"; then
+        return
+    fi
+
+    # Check if explicitly disabled
+    if [ "x$JAVA_INITIAL_MEM_RATIO" = "x0" ]; then
+        return
+    fi
+
+    # Check for the 'real memory size' and calculate ms from a ratio
+    # given (default is 25%)
+    if [ "x$CONTAINER_MAX_MEMORY" != x ]; then
+        local max_mem="${CONTAINER_MAX_MEMORY}"
+        local max_ratio=${JAVA_MAX_MEM_RATIO:-${__DEFAULT_JAVA_MAX_MEM_RATIO}}
+        local initial_ratio=${JAVA_INITIAL_MEM_RATIO:-${__DEFAULT_JAVA_INITIAL_MEM_RATIO}}
+        local ms=$(echo "${max_mem} ${max_ratio} ${initial_ratio} 1048576" | awk '{printf "%d\n" , ($1*(($2*$3)/10000))/$4 + 0.5}')
+        local max_initial_memory=${JAVA_MAX_INITIAL_MEM:-${__DEFAULT_JAVA_MAX_INITIAL_MEM}}
+        if [ "${ms}" -lt "${max_initial_memory}" ] ; then
+          echo "-Xms${ms}m"
+        else
+          echo "-Xms${max_initial_memory}m"
+        fi
+    fi
+}
+
+# Switch on diagnostics except when switched off
+diagnostics() {
+    if [ "x$JAVA_DIAGNOSTICS" != "x" ]; then
+        echo "$(jvm_specific_diagnostics)"
+    fi
+}
+
+cpu_core_tunning() {
+    # If both are set rely on JAVA_CORE_LIMIT limited to CONTAINER_CORE_LIMIT
+    # If none are set, just return.
+    local core_limit=${JAVA_CORE_LIMIT:-${CONTAINER_CORE_LIMIT}}
+    if [ "x$core_limit" = "x0" -o "x$core_limit" = "x" ]; then
+        return
+    else
+        if [ "x$CONTAINER_CORE_LIMIT" != "x" ] && [ $core_limit -gt $CONTAINER_CORE_LIMIT ]; then
+            core_limit=$CONTAINER_CORE_LIMIT
+        fi
+         echo "-XX:ParallelGCThreads=${core_limit} " \
+              "-Djava.util.concurrent.ForkJoinPool.common.parallelism=${core_limit} "\
+              "-XX:CICompilerCount=2"
+    fi
+}
+
+gc_config() {
+    local minHeapFreeRatio=${GC_MIN_HEAP_FREE_RATIO:-10}
+    local maxHeapFreeRatio=${GC_MAX_HEAP_FREE_RATIO:-20}
+    local timeRatio=${GC_TIME_RATIO:-4}
+    local adaptiveSizePolicyWeight=${GC_ADAPTIVE_SIZE_POLICY_WEIGHT:-90}
+    local maxMetaspaceSize
+    local gcOptions="${GC_CONTAINER_OPTIONS:--XX:+UseParallelGC}"
+    # for compat reasons we don't set a default value for metaspaceSize
+    local metaspaceSize
+
+    if [ -n "${GC_MAX_METASPACE_SIZE}" ]; then
+        maxMetaspaceSize=${GC_MAX_METASPACE_SIZE}
+    fi
+
+    if [ -n "${GC_METASPACE_SIZE}" ]; then
+        metaspaceSize=${GC_METASPACE_SIZE}
+        if [ -n "${maxMetaspaceSize}" ]; then
+        # clamp the max size of metaspaceSize to be <= maxMetaspaceSize
+            if [ "${metaspaceSize}" -gt "${maxMetaspaceSize}" ]; then
+                metaspaceSize=${maxMetaspaceSize}
+            fi
+        fi
+    fi
+
+    local allOptions="$(jvm_specific_options) "
+    allOptions+="${gcOptions} "
+    allOptions+="-XX:MinHeapFreeRatio=${minHeapFreeRatio} "
+    allOptions+="-XX:MaxHeapFreeRatio=${maxHeapFreeRatio} "
+    allOptions+="-XX:GCTimeRatio=${timeRatio} "
+    allOptions+="-XX:AdaptiveSizePolicyWeight=${adaptiveSizePolicyWeight} "
+    if [ -n "${maxMetaspaceSize}" ]; then
+        allOptions+="-XX:MaxMetaspaceSize=${maxMetaspaceSize}m "
+    fi
+    if [ -n "${metaspaceSize}" ]; then
+        allOptions+="-XX:MetaspaceSize=${metaspaceSize}m "
+    fi
+
+    echo "${allOptions}"
+}
+
+error_handling() {
+    echo "-XX:+ExitOnOutOfMemoryError"
+}
+
+initialize_container_limits > /dev/null
+
+## Echo options, trimming trailing and multiple spaces
+echo "$(initial_memory) $(max_memory) $(gc_config) $(diagnostics) $(cpu_core_tunning) $(error_handling)" | awk '$1=$1'

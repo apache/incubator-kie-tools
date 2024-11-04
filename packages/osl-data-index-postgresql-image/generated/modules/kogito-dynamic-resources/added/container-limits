@@ -1,0 +1,137 @@
+#!/bin/sh
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+# Detects container limits
+# If found these are exposed as the following environment variables:
+#
+# - CONTAINER_MAX_MEMORY
+# - CONTAINER_CORE_LIMIT
+#
+# This script is meant to be sourced.
+
+if [ "${SCRIPT_DEBUG}" = "true" ] ; then
+    set -x
+fi
+
+# query the resources based on cgroups version
+# cgroups v1 points to tmpfs
+# cgroups v2 points to cgroup2fs
+CGROUPS_VERSION="v1"
+tmp_fs=$(stat -fc %T /sys/fs/cgroup)
+if [ "${tmp_fs}" = "cgroup2fs" ]; then
+    CGROUPS_VERSION="v2"
+fi
+
+
+ceiling() {
+    awk -vnumber="$1" -vdiv="$2" '
+        function ceiling(x){
+            return x%1 ? int(x)+1 : x
+        }
+        BEGIN{
+            print ceiling(number/div)
+        }
+    '
+}
+
+# Based on the cgroups limits, figure out the max number of core we should use
+core_limit() {
+    if [ "${CGROUPS_VERSION}" = "v1" ]; then
+        local cpu_period_file="/sys/fs/cgroup/cpu/cpu.cfs_period_us"
+        local cpu_quota_file="/sys/fs/cgroup/cpu/cpu.cfs_quota_us"
+        if [ -r "${cpu_period_file}" ]; then
+            local cpu_period="$(cat ${cpu_period_file})"
+            if [ -r "${cpu_quota_file}" ]; then
+                local cpu_quota="$(cat ${cpu_quota_file})"
+                # cfs_quota_us == -1 --> no restrictions
+                if [ "x$cpu_quota" != "x-1" ]; then
+                    ceiling "$cpu_quota" "$cpu_period"
+                fi
+            fi
+        fi
+    else
+        # v2
+        # on cgroupsv2 the period and quota a queried from the same file
+        local cpu_max_file="/sys/fs/cgroup/cpu.max"
+        # when both are set we will have the following output:
+        # $MAX $PERIOD
+        # where the first number is the quota/max and the second is the period
+        # if the quota/max is not set then we will have only the period set:
+        # max 100000
+        if [ -r "${cpu_max_file}" ]; then
+            local cpu_max="$(cat ${cpu_max_file})"
+            if [ "x$cpu_max" != "x" ]; then
+                local cpu_quota="$(echo $cpu_max | awk '{print $1}')"
+                local cpu_period="$(echo $cpu_max | awk '{print $2}')"
+                if [ "$cpu_quota" != "max" ] && [ "x$cpu_period" != "x" ]; then
+                    ceiling "$cpu_quota" "$cpu_period"
+                fi
+            fi
+        fi
+    fi
+}
+
+max_unbounded() {
+    cat /proc/meminfo | grep 'MemTotal:' | awk '{print $2*1024}'
+}
+
+container_memory() {
+    local max_mem_unbounded="$(max_unbounded)"
+    # High number which is the max limit unit which memory is supposed to be unbounded.
+    if [ "${CGROUPS_VERSION}" = "v1" ]; then
+        local mem_file="/sys/fs/cgroup/memory/memory.limit_in_bytes"
+        if [ -r "${mem_file}" ]; then
+            local max_mem="$(cat ${mem_file})"
+            if [ ${max_mem} -lt ${max_mem_unbounded} ]; then
+                echo "${max_mem}"
+            fi
+        fi
+    else
+        # v2
+        local mem_file="/sys/fs/cgroup/memory.max"
+        if [ -r "${mem_file}" ]; then
+            local max_mem="$(cat ${mem_file})"
+            # if not set, it will contain only the string "max"
+            if [ "$max_mem" != "max" ]; then
+                if [ ${max_mem} -lt ${max_mem_unbounded} ]; then
+                    echo "${max_mem}"
+                fi
+            fi
+        fi
+    fi
+}
+
+min() {
+    printf "%s\n" "$@" | sort -g | head -n1
+}
+
+limit="$(core_limit)"
+if [ x$limit != x ]; then
+    export CONTAINER_CORE_LIMIT="$limit"
+fi
+
+env_core_limit="$(min $CONTAINER_CORE_LIMIT $JAVA_CORE_LIMIT)"
+if [ -n "$env_core_limit" ]; then
+    export CORE_LIMIT="$env_core_limit"
+fi
+
+max_mem="$(container_memory)"
+if [ x$max_mem != x ]; then
+    export CONTAINER_MAX_MEMORY="$max_mem"
+fi

@@ -1,0 +1,18 @@
+{
+  "private": true,
+  "name": "@osl/redhat-python-venv",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "scripts": {
+    "install": "python3 -m venv ./venv && run-script-os",
+    "install:linux:darwin": ". ./venv/bin/activate && pnpm install:pip",
+    "install:pip": "pip3 install -r ./node_modules/@kie-tools/python-venv/requirements.txt -r requirements.txt",
+    "install:win32": ".\\venv\\Scripts\\Activate.bat && pnpm install:pip"
+  },
+  "devDependencies": {
+    "@kie-tools/python-venv": "workspace:*",
+    "run-script-os": "^1.1.6"
+  }
+}

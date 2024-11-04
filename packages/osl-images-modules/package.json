@@ -1,0 +1,31 @@
+{
+  "private": true,
+  "name": "@osl/osl-images-modules",
+  "version": "0.0.0",
+  "description": "Core Modules for OSL Images",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/kubesmarts/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kubesmarts/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://issues.redhat.com/projects/SRVLOGIC"
+  },
+  "scripts": {},
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/sonataflow-image-common": "workspace:*",
+    "cross-env": "^7.0.3",
+    "replace-in-file": "^7.1.0",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "python3",
+      "make",
+      "s2i"
+    ]
+  }
+}

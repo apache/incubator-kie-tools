@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "name": "@osl/redhat-env",
+  "version": "0.0.0",
+  "keywords": [],
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*"
+  }
+}

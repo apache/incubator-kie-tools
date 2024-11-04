@@ -1,0 +1,52 @@
+{
+  "private": true,
+  "name": "@osl/osl-jobs-service-ephemeral-image",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/kubesmarts/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kubesmarts/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://issues.redhat.com/projects/SRVLOGIC"
+  },
+  "scripts": {
+    "build:dev": "pnpm image:cekit:generated",
+    "build:prod": "pnpm build:dev",
+    "cleanup": "rimraf generated && mkdir generated",
+    "format": "prettier --write . --ignore-path=../../.prettierignore --ignore-path=../../.gitignore",
+    "image:cekit:build": "run-script-os",
+    "image:cekit:build:linux:darwin": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm build:dev\" \"pnpm setup:env make -C ./generated build\"",
+    "image:cekit:build:win32": "echo \"Build skipped on Windows\"",
+    "image:cekit:cache:artifacts": ". ./node_modules/@osl/redhat-python-venv/venv/bin/activate && ./generated/scripts/process-cekit-artifact.sh \"$(build-env oslJobsServiceEphemeralImage.artifactUrl)\" modules/osl-jobs-service-ephemeral/module.yaml",
+    "image:cekit:copy": "rsync -av --exclude='modules/kogito-data-index*' --exclude='modules/kogito-maven' --exclude='modules/sonataflow*' --include='*'  node_modules/@kie-tools/sonataflow-image-common/resources/ generated/ && cp -R node_modules/@osl/osl-images-modules/resources/* ./generated/ && cp -R resources/* ./generated/ && cp -r node_modules/@kie/kogito-jobs-service-ephemeral-image/resources/modules/kogito-jobs-service-ephemeral/added generated/modules/osl-jobs-service-ephemeral/",
+    "image:cekit:generate": "pnpm setup:env make -C ./generated _fix_platform_versions",
+    "image:cekit:generated": "run-script-os",
+    "image:cekit:generated:linux:darwin": "pnpm cleanup && pnpm image:cekit:copy && pnpm image:cekit:cache:artifacts && pnpm image:cekit:generate && pnpm format",
+    "image:cekit:generated:win32": "echo \"Build skipped on Windows\"",
+    "install": "node install.js && pnpm format",
+    "setup:env": ". ./node_modules/@osl/redhat-python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env oslJobsServiceEphemeralImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env oslJobsServiceEphemeralImage.account) KOGITO_IMAGE_NAME=$(build-env oslJobsServiceEphemeralImage.name) KOGITO_IMAGE_TAG=$(build-env oslJobsServiceEphemeralImage.buildTag) QUARKUS_PLATFORM_VERSION=$(build-env versions.quarkus) KOGITO_VERSION=$(build-env versions.kogito)"
+  },
+  "devDependencies": {
+    "@kie-tools/maven-base": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/sonataflow-image-common": "workspace:*",
+    "@kie/kogito-jobs-service-ephemeral-image": "workspace:*",
+    "@osl/osl-images-modules": "workspace:*",
+    "@osl/redhat-env": "workspace:*",
+    "@osl/redhat-python-venv": "workspace:*",
+    "cross-env": "^7.0.3",
+    "replace-in-file": "^7.1.0",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "python3",
+      "make",
+      "s2i"
+    ]
+  }
+}

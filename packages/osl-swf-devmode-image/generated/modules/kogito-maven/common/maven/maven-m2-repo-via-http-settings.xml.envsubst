@@ -1,0 +1,134 @@
+<settings
+  xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      https://maven.apache.org/xsd/settings-1.0.0.xsd"
+>
+  <mirrors>
+    <mirror>
+      <id>kie-tools--maven-m2-repo-via-http-allowed</id>
+      <mirrorOf>kie-tools--maven-m2-repo-via-http</mirrorOf>
+      <name>Mirror to override default blocking mirror that blocks http.</name>
+      <url>http://$M2_REPO_VIA_HTTP_URL_WITHOUT_PROTOCOL</url>
+    </mirror>
+  </mirrors>
+
+  <proxies>
+    <!-- ### configured http proxy ### -->
+  </proxies>
+
+  <profiles>
+    <!-- ### extra maven repositories ### -->
+
+    <profile>
+      <id>kie-tools--maven-m2-repo-via-http-allowed-profile</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <repositories>
+        <repository>
+          <id>kie-tools--maven-m2-repo-via-http</id>
+          <name>KIE Tools :: Maven M2 Repo via HTTP</name>
+          <url>http://$M2_REPO_VIA_HTTP_URL_WITHOUT_PROTOCOL/</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+            <checksumPolicy>ignore</checksumPolicy> <!-- was already checked when downloaded on host machine -->
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+            <checksumPolicy>ignore</checksumPolicy> <!-- was already checked when downloaded on host machine -->
+          </snapshots>
+        </repository>
+        <repository>
+          <id>apache.snapshots</id>
+          <name>Apache Snapshot Repository</name>
+          <url>https://repository.apache.org/snapshots</url>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </repository>
+        <repository>
+          <id>central</id>
+          <name>Central Repository</name>
+          <url>https://repo.maven.apache.org/maven2</url>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+        <repository>
+          <id>apache-public-repository-group</id>
+          <name>Apache Public Repository Group</name>
+          <url>https://repo.maven.apache.org/maven2</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </repository>
+        <repository>
+          <id>jboss-public-repository-group</id>
+          <name>JBOSS Public Repository Group</name>
+          <url>https://repo.maven.apache.org/maven2</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </repository>
+      </repositories>
+
+      <pluginRepositories>
+        <pluginRepository>
+          <id>kie-tools--maven-m2-repo-via-http</id>
+          <name>KIE Tools :: Maven M2 Repo via HTTP</name>
+          <url>http://$M2_REPO_VIA_HTTP_URL_WITHOUT_PROTOCOL/</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+            <checksumPolicy>ignore</checksumPolicy> <!-- was already checked when downloaded on host machine -->
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+            <checksumPolicy>ignore</checksumPolicy> <!-- was already checked when downloaded on host machine -->
+          </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+          <id>apache-public-repository-group</id>
+          <name>Apache Public Repository Group</name>
+          <url>https://repository.apache.org/content/groups/public/</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+
+  <activeProfiles>
+    <!-- ### extra maven profile ### -->
+    <activeProfile>kie-tools--maven-m2-repo-via-http-allowed-profile</activeProfile>  
+  </activeProfiles>
+</settings>
