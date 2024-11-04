@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 import { DmnEditorFactory } from "@kie-tools/kie-bc-editors/dist/dmn/envelope";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 
 EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,

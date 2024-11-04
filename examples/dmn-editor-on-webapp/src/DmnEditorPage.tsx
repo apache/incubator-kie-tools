@@ -46,7 +46,7 @@ export function DmnEditorPage() {
 
   /**
    * The Editor envelope locator informs the EmbeddedEditor what file extension the Editor can open, and it maps to the respective envelope path and the Editor resources (like CSS, icons, etc).
-   * On this example, we're using a local envelope. To do this, it's necessary to copy the files from the @kie-tools/kie-bc-editors-unpacked on the webpack.config
+   * On this example, we're using a local envelope. To do this, it's necessary to copy the files from @kie-tools/dmn-editor on webpack.config
    */
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(() => {
     return new EditorEnvelopeLocator(window.location.origin, [
