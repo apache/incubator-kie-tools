@@ -30,11 +30,10 @@
     <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
   </parent>
 
-  <artifactId>drools-process-usertasks-quarkus-example</artifactId>
+  <artifactId>process-user-tasks-subsystem</artifactId>
   <version>${revision}</version>
 
-  <name>KIE Tools :: Example :: Process with Usertasks Quarkus</name>
-  <description>Kogito user tasks orchestration - Quarkus</description>
+  <name>KIE Tools :: Example :: Process User Tasks Subsystem</name>
 
   <dependencies>
     <dependency>

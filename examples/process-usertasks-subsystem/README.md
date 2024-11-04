@@ -15,11 +15,9 @@
    under the License.
 -->
 
-# Process user task orchestration
+# Example :: Process User Task Subsystem
 
-## Description
-
-A quickstart project shows very typical user task orchestration. It comes with two tasks assigned
+A quickstart project shows very typical User Task orchestration. It comes with two tasks assigned
 to human actors via groups assignments - `managers`. So essentially anyone who is a member of that
 group can act on the tasks. Though this example applies four eye principle which essentially means
 that user who approved first task cannot approve second one. So there must be always at least two
@@ -27,7 +25,7 @@ distinct manager involved.
 
 This example shows
 
-- working with user tasks
+- working with User Tasks
 - four eye principle with user tasks
 
 <p align="center"><img width=75% height=50% src="docs/images/process.png"></p>
@@ -59,13 +57,13 @@ This example shows
 
 You will need:
 
-- Java 17+ installed
+- Java 17 installed
 - Environment variable JAVA_HOME set accordingly
-- Maven 3.9.6+ installed
+- Maven 3.9.6 installed
 
 When using native image compilation, you will also need:
 
-- GraalVM 19.3+ installed
+- GraalVM 20.3+ installed
 - Environment variable GRAALVM_HOME set accordingly
 - GraalVM native image needs as well native-image extension: https://www.graalvm.org/reference-manual/native-image/
 - Note that GraalVM native image compilation typically requires other packages (glibc-devel, zlib-devel and gcc) to be installed too, please refer to GraalVM installation documentation for more details.
@@ -85,7 +83,7 @@ mvn clean package
 java -jar target/quarkus-app/quarkus-run.jar
 ```
 
-or on windows
+or on Windows
 
 ```sh
 mvn clean package

@@ -19,10 +19,6 @@ digraph G {
   "@kie-tools/dmn-editor-envelope" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-examples/dmn-editor-standalone-on-webapp" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/dmn-editor-standalone" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools-examples/drools-process-usertasks-quarkus-example" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
-  "@kie-tools/jbpm-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools-examples/jbpm-compact-architecture-example" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
-  "@kie-tools/kogito-management-console" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/kie-sandbox-commit-message-validation-service" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/root-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
@@ -41,6 +37,10 @@ digraph G {
   "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "kie-tools-examples-micro-frontends-multuplying-architecture-todo-list-view-vscode-extension" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "@kie-tools-examples/process-compact-architecture" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "@kie-tools/jbpm-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/kogito-management-console" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools-examples/process-user-tasks-subsystem" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-standalone-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-examples/sonataflow-greeting" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
@@ -227,9 +227,6 @@ digraph G {
   "@kie-tools-examples/dmn-editor-classic-on-webapp" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/dmn-editor-on-webapp" -> "@kie-tools/dmn-editor-envelope" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/dmn-editor-standalone-on-webapp" -> "@kie-tools/dmn-editor-standalone" [ style = "solid", color = "orange" ];
-  "@kie-tools-examples/drools-process-usertasks-quarkus-example" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
-  "@kie-tools-examples/jbpm-compact-architecture-example" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
-  "@kie-tools-examples/jbpm-compact-architecture-example" -> "@kie-tools/kogito-management-console" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/kie-sandbox-commit-message-validation-service" -> "@kie-tools/root-env" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor-chrome-extension" -> "@kie-tools-core/chrome-extension" [ style = "dashed", color = "orange" ];
@@ -257,6 +254,9 @@ digraph G {
   "kie-tools-examples-micro-frontends-multuplying-architecture-todo-list-view-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "dashed", color = "orange" ];
   "kie-tools-examples-micro-frontends-multuplying-architecture-todo-list-view-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "orange" ];
   "kie-tools-examples-micro-frontends-multuplying-architecture-todo-list-view-vscode-extension" -> "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view" [ style = "dashed", color = "orange" ];
+  "@kie-tools-examples/process-compact-architecture" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
+  "@kie-tools-examples/process-compact-architecture" -> "@kie-tools/kogito-management-console" [ style = "dashed", color = "orange" ];
+  "@kie-tools-examples/process-user-tasks-subsystem" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp" -> "@kie-tools-core/react-hooks" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp" -> "@kie-tools/serverless-workflow-standalone-editor" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/sonataflow-greeting" -> "@kie-tools/sonataflow-quarkus-devui" [ style = "solid", color = "orange" ];

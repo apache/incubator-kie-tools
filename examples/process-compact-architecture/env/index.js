@@ -17,13 +17,23 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
+
+const {
+  env: { kogitoManagementConsole: kogitoManagementConsoleImageEnv },
+} = require("@kie-tools/kogito-management-console/env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
+  vars: varsWithName({
+    JBPM_COMPACT_ARCHITECTURE_EXAMPLE__managementConsoleImage: {
+      default: `${kogitoManagementConsoleImageEnv.registry}/${kogitoManagementConsoleImageEnv.account}/${kogitoManagementConsoleImageEnv.name}:${kogitoManagementConsoleImageEnv.buildTag}`,
+      description: "The image for the Kogito Management Console.",
+    },
+  }),
   get env() {
     return {
-      droolsProcessUsertasksQuarkusExample: {
+      processCompactArchitectureExample: {
+        kogitoManagementConsoleImage: getOrDefault(this.vars.JBPM_COMPACT_ARCHITECTURE_EXAMPLE__managementConsoleImage),
         version: require("../package.json").version,
       },
     };

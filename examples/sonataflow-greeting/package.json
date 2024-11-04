@@ -22,7 +22,7 @@
     "install": "node install.js",
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
-    "start": "pnpm quarkus:dev"
+    "start": "mvn quarkus:dev"
   },
   "dependencies": {
     "@kie-tools/maven-base": "workspace:*",

@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@kie-tools-examples/drools-process-usertasks-quarkus-example",
+  "name": "@kie-tools-examples/process-compact-architecture",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
@@ -15,23 +15,28 @@
   "scripts": {
     "build:dev": "run-script-if --bool \"$(build-env examples.build)\" --then run-script-os",
     "build:dev:darwin:linux": "mvn clean compile -DskipTests",
-    "build:dev:win32": "pnpm powershell \"mvn clean compile -DskipTests \"",
+    "build:dev:win32": "pnpm powershell \"mvn clean compile `-DskipTests\"",
     "build:prod": "pnpm lint && run-script-if --bool \"$(build-env examples.build)\" --then run-script-os",
-    "build:prod:darwin:linux": "mvn clean compile -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
-    "build:prod:win32": "pnpm powershell \"mvn clean compile `-DskipTests `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
+    "build:prod:darwin:linux": "mvn clean compile -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -Pcontainer",
+    "build:prod:win32": "pnpm powershell \"mvn clean compile `-DskipTests `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-Pcontainer\"",
     "install": "node install.js",
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
-    "quarkus:dev": "run-script-os",
-    "quarkus:dev:darwin:linux": "mvn clean compile quarkus:dev -DskipTests",
-    "quarkus:dev:win32": "mvn clean compile quarkus:dev -DskipTests",
-    "start": "pnpm quarkus:dev"
+    "start": "run-script-os",
+    "start:darwin:linux": "mvn quarkus:dev -DskipTests -Pdevelopment",
+    "start:win32": "mvn quarkus:dev `-DskipTests `-Pdevelopment",
+    "startContainers": "run-script-os || pnpm run stopContainers",
+    "startContainers:darwin:linux": "mvn clean install -Pcontainer && cd ./docker-compose && sh startContainers.sh",
+    "startContainers:win32": "echo Running containers example is not supported on Windows",
+    "stopContainers": "run-script-os",
+    "stopContainers:darwin:linux": "cd ./docker-compose && docker compose down"
   },
   "dependencies": {
     "@kie-tools/jbpm-quarkus-devui": "workspace:*",
     "@kie-tools/maven-base": "workspace:*"
   },
   "devDependencies": {
+    "@kie-tools/kogito-management-console": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "run-script-os": "^1.1.6"
   },

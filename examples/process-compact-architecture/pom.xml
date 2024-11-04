@@ -30,10 +30,10 @@
     <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
   </parent>
 
-  <artifactId>jbpm-compact-architecture-quarkus-example</artifactId>
+  <artifactId>process-compact-architecture</artifactId>
   <version>${revision}</version>
 
-  <name>KIE Tools :: Example :: jBPM Compact Architecture Quarkus Example</name>
+  <name>KIE Tools :: Example :: Process Compact Architecture</name>
 
   <properties>
     <kogito.management-console.image

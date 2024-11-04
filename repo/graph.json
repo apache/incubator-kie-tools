@@ -28,15 +28,6 @@
       { "id": "@kie-tools/dmn-editor" },
       { "id": "@kie-tools-examples/dmn-editor-standalone-on-webapp" },
       { "id": "@kie-tools/dmn-editor-standalone" },
-      { "id": "@kie-tools-examples/drools-process-usertasks-quarkus-example" },
-      { "id": "@kie-tools/jbpm-quarkus-devui" },
-      { "id": "@kie-tools/maven-base" },
-      { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
-      { "id": "@kie-tools-examples/jbpm-compact-architecture-example" },
-      { "id": "@kie-tools/kogito-management-console" },
-      { "id": "@kie-tools/image-builder" },
-      { "id": "@kie-tools/image-env-to-json" },
-      { "id": "@kie-tools/runtime-tools-management-console-webapp" },
       {
         "id": "@kie-tools-examples/kie-sandbox-commit-message-validation-service"
       },
@@ -81,6 +72,15 @@
       {
         "id": "kie-tools-examples-micro-frontends-multuplying-architecture-todo-list-view-vscode-extension"
       },
+      { "id": "@kie-tools-examples/process-compact-architecture" },
+      { "id": "@kie-tools/jbpm-quarkus-devui" },
+      { "id": "@kie-tools/kogito-management-console" },
+      { "id": "@kie-tools/maven-base" },
+      { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
+      { "id": "@kie-tools/image-builder" },
+      { "id": "@kie-tools/image-env-to-json" },
+      { "id": "@kie-tools/runtime-tools-management-console-webapp" },
+      { "id": "@kie-tools-examples/process-user-tasks-subsystem" },
       {
         "id": "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp"
       },
@@ -472,91 +472,6 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/drools-process-usertasks-quarkus-example",
-        "target": "@kie-tools/jbpm-quarkus-devui",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/jbpm-quarkus-devui",
-        "target": "@kie-tools/maven-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/jbpm-quarkus-devui",
-        "target": "@kie-tools/runtime-tools-process-dev-ui-webapp",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/maven-base",
-        "target": "@kie-tools/root-env",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-process-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-shared-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-examples/jbpm-compact-architecture-example",
-        "target": "@kie-tools/jbpm-quarkus-devui",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-examples/jbpm-compact-architecture-example",
-        "target": "@kie-tools/kogito-management-console",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kogito-management-console",
-        "target": "@kie-tools/image-builder",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kogito-management-console",
-        "target": "@kie-tools/image-env-to-json",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kogito-management-console",
-        "target": "@kie-tools/runtime-tools-management-console-webapp",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/image-builder",
-        "target": "@kie-tools/tsconfig",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/image-env-to-json",
-        "target": "@kie-tools-core/webpack-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/image-env-to-json",
-        "target": "@kie-tools/eslint",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/image-env-to-json",
-        "target": "@kie-tools/tsconfig",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-management-console-webapp",
-        "target": "@kie-tools/runtime-tools-process-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-management-console-webapp",
-        "target": "@kie-tools/runtime-tools-shared-webapp-components",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools-examples/kie-sandbox-commit-message-validation-service",
         "target": "@kie-tools/root-env",
         "weight": 1
@@ -754,6 +669,91 @@
       {
         "source": "kie-tools-examples-micro-frontends-multuplying-architecture-todo-list-view-vscode-extension",
         "target": "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-compact-architecture",
+        "target": "@kie-tools/jbpm-quarkus-devui",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-compact-architecture",
+        "target": "@kie-tools/kogito-management-console",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/jbpm-quarkus-devui",
+        "target": "@kie-tools/maven-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/jbpm-quarkus-devui",
+        "target": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kogito-management-console",
+        "target": "@kie-tools/image-builder",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kogito-management-console",
+        "target": "@kie-tools/image-env-to-json",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kogito-management-console",
+        "target": "@kie-tools/runtime-tools-management-console-webapp",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/maven-base",
+        "target": "@kie-tools/root-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/image-builder",
+        "target": "@kie-tools/tsconfig",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/image-env-to-json",
+        "target": "@kie-tools-core/webpack-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/image-env-to-json",
+        "target": "@kie-tools/eslint",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/image-env-to-json",
+        "target": "@kie-tools/tsconfig",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-management-console-webapp",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-management-console-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-user-tasks-subsystem",
+        "target": "@kie-tools/jbpm-quarkus-devui",
         "weight": 1
       },
       {
@@ -2670,11 +2670,6 @@
     ["@kie-tools-examples/dmn-editor-on-webapp", "examples/dmn-editor-on-webapp"],
     ["@kie-tools-examples/dmn-editor-standalone-on-webapp", "examples/dmn-editor-standalone-on-webapp"],
     [
-      "@kie-tools-examples/drools-process-usertasks-quarkus-example",
-      "examples/drools-process-usertasks-quarkus-example"
-    ],
-    ["@kie-tools-examples/jbpm-compact-architecture-example", "examples/jbpm-compact-architecture-example"],
-    [
       "@kie-tools-examples/kie-sandbox-commit-message-validation-service",
       "examples/kie-sandbox-commit-message-validation-service"
     ],
@@ -2722,6 +2717,8 @@
       "kie-tools-examples-micro-frontends-multuplying-architecture-todo-list-view-vscode-extension",
       "examples/micro-frontends-multiplying-architecture-todo-list-view-vscode-extension"
     ],
+    ["@kie-tools-examples/process-compact-architecture", "examples/process-compact-architecture"],
+    ["@kie-tools-examples/process-user-tasks-subsystem", "examples/process-usertasks-subsystem"],
     [
       "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp",
       "examples/serverless-workflow-editor-standalone-on-webapp"

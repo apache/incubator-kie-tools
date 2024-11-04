@@ -40,9 +40,9 @@ services:
       PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
       GUNICORN_ACCESS_LOGFILE: "/dev/null"
 
-  jbpm-compact-architecture-example-service:
-    container_name: jbpm-compact-architecture-example-service
-    image: dev.local/${USER}/jbpm-compact-architecture-example-service:${PROJECT_VERSION}
+  process-compact-architecture-service:
+    container_name: process-compact-architecture-service
+    image: dev.local/${USER}/process-compact-architecture-service:${PROJECT_VERSION}
     profiles: ["example-only", "full"]
     ports:
       - "8080:8080"
@@ -93,7 +93,7 @@ services:
     ports:
       - 8280:8080
     depends_on:
-      jbpm-compact-architecture-example-service:
+      process-compact-architecture-service:
         condition: service_started
       # keycloak:
       #   condition: service_healthy

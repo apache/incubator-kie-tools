@@ -21,6 +21,6 @@ const { env } = require("./env");
 const { setupMavenConfigFile, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
 
 setupMavenConfigFile(`
-    -Drevision=${env.droolsProcessUsertasksQuarkusExample.version}
+    -Drevision=${env.processUserTasksSubsystemExample.version}
     -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
 `);

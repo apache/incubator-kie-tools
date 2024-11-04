@@ -21,11 +21,11 @@ const { env } = require("./env");
 const { setupMavenConfigFile, setPomProperty, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
 
 setupMavenConfigFile(`
-    -Drevision=${env.jbpmCompactArchitectureExample.version}
+    -Drevision=${env.processCompactArchitectureExample.version}
     -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
 `);
 
 setPomProperty({
   key: "kogito.management-console.image",
-  value: env.jbpmCompactArchitectureExample.kogitoManagementConsoleImage,
+  value: env.processCompactArchitectureExample.kogitoManagementConsoleImage,
 });
