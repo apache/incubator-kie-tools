@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
@@ -48,7 +48,12 @@ import WorkflowVariables from "../WorkflowVariables/WorkflowVariables";
 import WorkflowDetailsMilestonesPanel from "../WorkflowDetailsMilestonesPanel/WorkflowDetailsMilestonesPanel";
 import WorkflowDetailsTimelinePanel from "../WorkflowDetailsTimelinePanel/WorkflowDetailsTimelinePanel";
 import SwfCombinedEditor from "../SwfCombinedEditor/SwfCombinedEditor";
-import { Job, WorkflowInstance, WorkflowInstanceState } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import {
+  Job,
+  JobStatus,
+  WorkflowInstance,
+  WorkflowInstanceState,
+} from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 
 const SWFCOMBINEDEDITOR_WIDTH = 1000;
 
@@ -58,6 +63,7 @@ interface WorkflowDetailsProps {
   workflowDetails: WorkflowInstance;
 }
 
+console.log("## Update number: 32");
 const WorkflowDetails: React.FC<WorkflowDetailsProps> = ({ isEnvelopeConnectedToChannel, driver, workflowDetails }) => {
   const [data, setData] = useState<WorkflowInstance>({} as WorkflowInstance);
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -78,7 +84,7 @@ const WorkflowDetails: React.FC<WorkflowDetailsProps> = ({ isEnvelopeConnectedTo
     try {
       const workflowResponse: WorkflowInstance = await driver.workflowDetailsQuery(workflowDetails.id);
       workflowResponse && setData(workflowResponse);
-      getAllJobs();
+      loadJobs();
       setIsLoading(false);
     } catch (errorString) {
       setError(errorString);
@@ -86,10 +92,41 @@ const WorkflowDetails: React.FC<WorkflowDetailsProps> = ({ isEnvelopeConnectedTo
     }
   };
 
-  const getAllJobs = async (): Promise<void> => {
+  const loadJobs = useCallback(async () => {
     const jobsResponse: Job[] = await driver.jobsQuery(workflowDetails.id);
+    jobsResponse && console.log("## setJobs", { jobsResponse, expirationTime: jobsResponse[0].expirationTime });
     jobsResponse && setJobs(jobsResponse);
-  };
+  }, [workflowDetails.id, driver]);
+
+  /**
+   * check every N seconds for jobs which are SCHEDULED and epired
+   * @return
+   */
+  const checkExpiredJobs = useCallback(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    console.log("## Check jobs", jobs);
+    const scheduledJobs = jobs.filter((job) => job.status === JobStatus.Scheduled);
+
+    if (!scheduledJobs.length) {
+      return;
+    }
+
+    const expiredJob = scheduledJobs.find((job) => new Date(job.expirationTime) < new Date());
+
+    if (expiredJob) {
+      console.log("## Found expired Jobs");
+      loadJobs();
+      return;
+    }
+
+    console.log("## Found scheduled jobs");
+    checkExpiredJobs();
+  }, [loadJobs, jobs]);
+
+  useEffect(() => {
+    console.log("## call checkExpiredJobs ");
+    jobs.length && checkExpiredJobs();
+  }, [jobs, checkExpiredJobs]);
 
   useEffect(() => {
     const getVariableJSON = (): void => {
@@ -101,7 +138,7 @@ const WorkflowDetails: React.FC<WorkflowDetailsProps> = ({ isEnvelopeConnectedTo
     if (isEnvelopeConnectedToChannel) {
       getVariableJSON();
     }
-  }, [data]);
+  }, [data, isEnvelopeConnectedToChannel, workflowDetails.id]);
 
   useEffect(() => {
     if (variableError && variableError.length > 0) {
@@ -109,12 +146,17 @@ const WorkflowDetails: React.FC<WorkflowDetailsProps> = ({ isEnvelopeConnectedTo
     }
   }, [variableError]);
 
-  useEffect(() => {
-    if (isEnvelopeConnectedToChannel) {
-      setData(workflowDetails);
-      getAllJobs();
-    }
-  }, [isEnvelopeConnectedToChannel]);
+  useEffect(
+    () => {
+      if (isEnvelopeConnectedToChannel) {
+        setData(workflowDetails);
+        console.log("## call loadJobs", workflowDetails);
+        loadJobs();
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isEnvelopeConnectedToChannel]
+  );
 
   const handleSave = (): void => {
     driver
