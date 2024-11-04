@@ -1,4 +1,4 @@
-# Example ::Process Compact Architecture
+# Example :: Process Compact Architecture
 
 This example showcases a basic implementation of a **Hiring** Process that drives a _Candidate_ through different
 interviews until they get hired. It features simple User Task orchestration including the use of DMN decisions to
