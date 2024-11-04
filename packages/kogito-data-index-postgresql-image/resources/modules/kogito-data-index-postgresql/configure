@@ -23,4 +23,5 @@ SCRIPT_DIR=$(dirname "${0}")
 ADDED_DIR="${SCRIPT_DIR}"/added
 
 cp -v "${ADDED_DIR}"/kogito-app-launch.sh "${KOGITO_HOME}"
+
 chmod +x-w "${KOGITO_HOME}"/kogito-app-launch.sh
