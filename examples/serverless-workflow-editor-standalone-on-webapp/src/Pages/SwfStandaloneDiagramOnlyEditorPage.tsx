@@ -37,9 +37,8 @@ export const SwfStandaloneDiagramOnlyEditorPage = () => {
   const [editor, setEditor] = useState<StandaloneEditorApi>();
 
   const onSetContent = useCallback((normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string) => {
-    const match = /\.sw\.(json|yaml)$/.exec(normalizedPosixPathRelativeToTheWorkspaceRoot.toLowerCase());
-    const dotExtension = match ? match[0] : extname(normalizedPosixPathRelativeToTheWorkspaceRoot);
-    const extension = dotExtension.slice(1);
+    const match = /\.sw\.(json|yaml|yml)$/.exec(normalizedPosixPathRelativeToTheWorkspaceRoot.toLowerCase());
+    const extension = match ? match[1] : extname(normalizedPosixPathRelativeToTheWorkspaceRoot);
 
     const editorApi = SwfEditor.open({
       container: swfEditorContainer.current!,
