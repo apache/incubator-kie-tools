@@ -38,56 +38,6 @@
   padding: 20px;
 }
 
-.webapp--page-base64png-gallery--navigation-nav-item {
-  display: flex;
-  align-items: center;
-}
-
-.webapp--page-base64png-gallery--navigation-nav-item:hover {
-  width: 200px;
-}
-
-.webapp--page-base64png-gallery--navigation-nav-item-card {
-  width: 200px;
-}
-
-.webapp--page-kogito-editors-sidebar {
-  display: flex;
-}
-
-.webapp--page-kogito-editors-sidebar--navigation {
-  background-color: rgb(24, 24, 24);
-  height: 100%;
-}
-
-.webapp--page-kogito-editors-sidebar--navigation-nav-item {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.webapp--page-kogito-editors-sidebar--navigation-nav-item-text-input {
-  width: 100px;
-}
-
-.webapp--page-kogito-editors-sidebar--navigation-nav-item-div {
-  width: 100%;
-}
-
-.webapp--page-kogito-editors-sidebar--navigation-nav-item-a {
-  color: white;
-}
-
-.webapp--page-kogito-editors-sidebar--navigation-nav-item-open-file {
-  position: absolute;
-  left: 0;
-  top: 0;
-  opacity: 0;
-  cursor: pointer;
-  width: 100%;
-  z-index: 999;
-}
-
 .webapp--page-ping-pong-view {
   display: flex;
   width: 100%;
@@ -95,8 +45,4 @@
 
 .webapp--page-ping-pong-view-navigation {
   width: 200px;
-}
-
-.webapp--page-to-do-view {
-  display: flex;
 }
