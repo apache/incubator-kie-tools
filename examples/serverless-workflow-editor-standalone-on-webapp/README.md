@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## Example :: Serverless Workflow Editor Standalone on webapp
+# Example :: Serverless Workflow Editor Standalone on webapp
 
 ---
 

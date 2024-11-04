@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## Example :: DMN Editor (classic) on webapp
+# Example :: DMN Editor (classic) on webapp
 
 ---
 

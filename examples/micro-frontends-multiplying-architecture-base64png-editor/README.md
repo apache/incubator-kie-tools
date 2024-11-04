@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## Example :: Micro-frontends Multiplying Architecture :: Base64 PNG Editor
+# Example :: Micro-frontends Multiplying Architecture :: Base64 PNG Editor
 
 This package is a Custom Editor made with React, which enables you to edit a `.base64png` file.
 

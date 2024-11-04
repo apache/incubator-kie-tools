@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## Example :: KIE Sandbox commit message validation service
+# Example :: KIE Sandbox commit message validation service
 
 Provides a simple service to check for patterns in a commit message.
 

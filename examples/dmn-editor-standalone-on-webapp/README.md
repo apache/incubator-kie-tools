@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## Example :: DMN Editor Standalone on webapp
+# Example :: DMN Editor Standalone on webapp
 
 A series of examples on how to use the DMN Editor Standalone in different applications.
 

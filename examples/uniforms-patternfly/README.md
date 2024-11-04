@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## Example :: Uniforms PatternFly
+# Example :: Uniforms PatternFly
 
 ---
 

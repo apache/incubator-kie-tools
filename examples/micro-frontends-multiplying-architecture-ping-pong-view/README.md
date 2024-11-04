@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## Example :: Micro-frontends Multiplying Architecture :: Ping-Pong View
+# Example :: Micro-frontends Multiplying Architecture :: Ping-Pong View
 
 This package exposes the necessary files for you to create a Ping-Pong View Envelope with your Ping-Pong View implementation.
 

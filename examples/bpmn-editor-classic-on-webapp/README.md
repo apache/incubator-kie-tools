@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## Example :: BPMN Editor (classic) on webapp
+# Example :: BPMN Editor (classic) on webapp
 
 ---
 
