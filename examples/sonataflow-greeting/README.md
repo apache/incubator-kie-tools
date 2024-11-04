@@ -19,7 +19,7 @@
 
 This example contains two simple greeting workflow services.
 The services are described using both JSON and YAML formats as defined in the
-[CNCF Serverless Workflow specification](https://github.com/cncf/wg-serverless/tree/main/workflow/spec).
+[CNCF Serverless Workflow specification](https://github.com/serverlessworkflow/specification).
 
 The workflow expects as JSON input containing the name of the person to greet, and the language in
 which to greet them in (see details in the [Submit a request](#Submit-a-request) section).
@@ -45,7 +45,7 @@ You will need:
 
 When using native image compilation, you will also need:
 
-- [GraalVm](https://www.graalvm.org/downloads/) 19.3.1+ installed
+- [GraalVM](https://www.graalvm.org/downloads/) 20.3+ installed
 - Environment variable GRAALVM_HOME set accordingly
 - Note that GraalVM native image compilation typically requires other packages (glibc-devel, zlib-devel and gcc) to be installed too. You also need 'native-image' installed in GraalVM (using 'gu install native-image'). Please refer to [GraalVM installation documentation](https://www.graalvm.org/docs/reference-manual/aot-compilation/#prerequisites) for more details.
 
