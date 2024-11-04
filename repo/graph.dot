@@ -43,7 +43,7 @@ digraph G {
   "kie-tools-examples-micro-frontends-multuplying-architecture-todo-list-view-vscode-extension" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-standalone-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools-examples/sonataflow-greeting-quarkus-example" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "@kie-tools-examples/sonataflow-greeting" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/sonataflow-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/uniforms-patternfly" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-core/patternfly-base" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -259,7 +259,7 @@ digraph G {
   "kie-tools-examples-micro-frontends-multuplying-architecture-todo-list-view-vscode-extension" -> "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp" -> "@kie-tools-core/react-hooks" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp" -> "@kie-tools/serverless-workflow-standalone-editor" [ style = "dashed", color = "orange" ];
-  "@kie-tools-examples/sonataflow-greeting-quarkus-example" -> "@kie-tools/sonataflow-quarkus-devui" [ style = "solid", color = "orange" ];
+  "@kie-tools-examples/sonataflow-greeting" -> "@kie-tools/sonataflow-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/uniforms-patternfly" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/uniforms-patternfly" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/uniforms-patternfly" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "orange" ];

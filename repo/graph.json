@@ -86,7 +86,7 @@
       },
       { "id": "@kie-tools/serverless-workflow-standalone-editor" },
       { "id": "@kie-tools/serverless-workflow-combined-editor" },
-      { "id": "@kie-tools-examples/sonataflow-greeting-quarkus-example" },
+      { "id": "@kie-tools-examples/sonataflow-greeting" },
       { "id": "@kie-tools/sonataflow-quarkus-devui" },
       { "id": "@kie-tools/serverless-workflow-dev-ui-webapp" },
       { "id": "@kie-tools-examples/uniforms-patternfly" },
@@ -782,7 +782,7 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/sonataflow-greeting-quarkus-example",
+        "source": "@kie-tools-examples/sonataflow-greeting",
         "target": "@kie-tools/sonataflow-quarkus-devui",
         "weight": 1
       },
@@ -2726,7 +2726,7 @@
       "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp",
       "examples/serverless-workflow-editor-standalone-on-webapp"
     ],
-    ["@kie-tools-examples/sonataflow-greeting-quarkus-example", "examples/sonataflow-greeting-quarkus-example"],
+    ["@kie-tools-examples/sonataflow-greeting", "examples/sonataflow-greeting"],
     ["@kie-tools-examples/uniforms-patternfly", "examples/uniforms-patternfly"],
     ["@kie-tools/boxed-expression-component", "packages/boxed-expression-component"],
     ["@kie-tools/bpmn-marshaller", "packages/bpmn-marshaller"],

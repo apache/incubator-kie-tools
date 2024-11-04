@@ -15,17 +15,14 @@
    under the License.
 -->
 
-# KIE-Tools SonataFlow - Greeting Example
-
-## Description
+# Example :: SonataFlow Greeting
 
 This example contains two simple greeting workflow services.
 The services are described using both JSON and YAML formats as defined in the
 [CNCF Serverless Workflow specification](https://github.com/cncf/wg-serverless/tree/main/workflow/spec).
 
 The workflow expects as JSON input containing the name of the person to greet, and the language in
-which to greet them in
-(see details in the [Submit a request](#Submit-a-request) section).
+which to greet them in (see details in the [Submit a request](#Submit-a-request) section).
 
 The workflow starts with a SWITCH state, which is like a gateway. The switch state
 decides which language to greet the person in based on the workflow input "language" parameter.
@@ -42,9 +39,9 @@ The function then prints out the greeting to the console.
 
 You will need:
 
-- Java 11+ installed
+- Java 17 installed
 - Environment variable JAVA_HOME set accordingly
-- Maven 3.8.6+ installed
+- Maven 3.9.6 installed
 
 When using native image compilation, you will also need:
 
@@ -65,7 +62,7 @@ mvn clean package
 java -jar target/quarkus-app/quarkus-run.jar
 ```
 
-or on windows
+or on Windows
 
 ```sh
 mvn clean package
@@ -163,10 +160,6 @@ Hello from YAML Workflow, John
 ```
 
 You can also change the language parameter value to "Spanish" to get the greeting in Spanish.
-
-## Deploying with Kogito Operator
-
-In the [`operator`](operator) directory you'll find the custom resources needed to deploy this example on OpenShift with the [Kogito Operator](https://docs.jboss.org/kogito/release/latest/html_single/#chap_kogito-deploying-on-openshift).
 
 ---
 

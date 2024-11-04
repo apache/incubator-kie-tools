@@ -32,11 +32,11 @@
   </parent>
 
   <groupId>org.apache.kie.sonataflow.examples</groupId>
-  <artifactId>sonataflow-greeting-quarkus-example</artifactId>
+  <artifactId>sonataflow-greeting</artifactId>
   <version>${revision}</version>
 
-  <name>KIE Tools :: Example :: SonataFlow Greeting :: Quarkus</name>
-  <description>SonataFlow Example - Quarkus</description>
+  <name>KIE Tools :: Example :: SonataFlow Greeting</name>
+  <description>SonataFlow Greeting Example</description>
 
   <dependencies>
     <dependency>

@@ -1403,7 +1403,7 @@ importers:
         specifier: ^5.9.0
         version: 5.10.0
 
-  examples/sonataflow-greeting-quarkus-example:
+  examples/sonataflow-greeting:
     dependencies:
       '@kie-tools/maven-base':
         specifier: workspace:*
