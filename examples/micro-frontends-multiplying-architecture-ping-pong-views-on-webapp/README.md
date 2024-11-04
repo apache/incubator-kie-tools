@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## Example :: Micro-frontends Multiplying Architrecure Ping-Pong Views on webapp
+## Example :: Micro-frontends Multiplying Architecture :: Ping-Pong Views on webapp
 
 ---
 

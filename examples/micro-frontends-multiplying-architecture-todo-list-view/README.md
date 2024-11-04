@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## Example :: Micro-frontends Multiplying Architrecure 'To do' List View
+## Example :: Micro-frontends Multiplying Architecture :: 'To do' List View
 
 This package exposes the necessary files for you to create a 'To do' list Envelope.
 

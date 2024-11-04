@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## Example :: Micro-frontends Multiplying Architecture Base64 PNG Editor - VS Code Extension
+## Example :: Micro-frontends Multiplying Architecture :: Base64 PNG Editor VS Code Extension
 
 ---
 

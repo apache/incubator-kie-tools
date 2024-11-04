@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## Example :: Micro-frontends Multiplying Architrecure 'To do' List View on webapp
+## Example :: Micro-frontends Multiplying Architecture :: 'To do' List View on webapp
 
 ---
 

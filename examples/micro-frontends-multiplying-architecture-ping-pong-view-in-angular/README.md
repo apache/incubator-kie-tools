@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## Example :: Micro-frontends Multiplying Architrecure Ping-Pong View - Angular implementation
+## Example :: Micro-frontends Multiplying Architecture :: Ping-Pong View - Angular implementation
 
 The Ping-Pong View is an interface that components can implement to be used inside a Ping-Pong View Envelope.
 

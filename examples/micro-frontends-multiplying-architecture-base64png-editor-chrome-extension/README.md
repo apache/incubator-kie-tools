@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## Example :: Micro-frontends Multiplying Architecture Base64 PNG Editor - Chrome Extension
+## Example :: Micro-frontends Multiplying Architecture :: Base64 PNG Editor Chrome Extension
 
 ---
 
