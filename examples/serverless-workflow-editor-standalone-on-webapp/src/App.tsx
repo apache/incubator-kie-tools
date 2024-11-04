@@ -71,17 +71,13 @@ export function App() {
                     itemId={Location.SWF_STANDALONE_EDITOR_DIAGRAM_ONLY}
                     isActive={location === Location.SWF_STANDALONE_EDITOR_DIAGRAM_ONLY}
                   >
-                    <Link to={Location.SWF_STANDALONE_EDITOR_DIAGRAM_ONLY}>
-                      Serverless Workflow Editor Standalone - Diagram only
-                    </Link>
+                    <Link to={Location.SWF_STANDALONE_EDITOR_DIAGRAM_ONLY}>Diagram only</Link>
                   </NavItem>
                   <NavItem
                     itemId={Location.SWF_STANDALONE_EDITOR_TEXT_ONLY}
                     isActive={location === Location.SWF_STANDALONE_EDITOR_TEXT_ONLY}
                   >
-                    <Link to={Location.SWF_STANDALONE_EDITOR_TEXT_ONLY}>
-                      Serverless Workflow Editor Standalone - Text only
-                    </Link>
+                    <Link to={Location.SWF_STANDALONE_EDITOR_TEXT_ONLY}>Text only</Link>
                   </NavItem>
                 </NavList>
               </Nav>
