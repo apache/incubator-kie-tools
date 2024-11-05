@@ -17,13 +17,14 @@
  * under the License.
  */
 
-import { ChannelType, EnvelopeContentType } from "@kie-tools-core/editor/dist/api";
 import * as React from "react";
+import { ChannelType, EnvelopeContentType } from "@kie-tools-core/editor/dist/api";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { useMemo, useState } from "react";
-import { Page } from "@patternfly/react-core/dist/js/components/Page";
 import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
+import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
+import { Page, PageSection, PageHeader } from "@patternfly/react-core/dist/js/components/Page";
 import { Sidebar } from "./Sidebar";
 
 export function DmnEditorClassicPage() {
@@ -60,8 +61,9 @@ export function DmnEditorClassicPage() {
   }, []);
 
   return (
-    <Page>
-      <div className={"webapp--page-main-div"}>
+    <Page
+      header={<PageHeader logo={<Brand src={"logo.png"} alt="Logo" />} />}
+      sidebar={
         <Sidebar
           editor={editor}
           editorEnvelopeLocator={editorEnvelopeLocator}
@@ -70,6 +72,9 @@ export function DmnEditorClassicPage() {
           fileExtension={"dmn"}
           accept={".dmn"}
         />
+      }
+    >
+      <PageSection padding={{ default: "noPadding" }}>
         <EmbeddedEditor
           ref={editorRef}
           file={file}
@@ -77,7 +82,7 @@ export function DmnEditorClassicPage() {
           channelType={ChannelType.EMBEDDED}
           locale={"en"}
         />
-      </div>
+      </PageSection>
     </Page>
   );
 }

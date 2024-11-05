@@ -20,30 +20,6 @@
 import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
-import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
-import { Page, PageHeader } from "@patternfly/react-core/dist/js/components/Page";
 import { Base64PngEditorPage } from "./Base64PngEditorPage";
-import "./index.css";
 
-ReactDOM.render(
-  <Page
-    header={
-      <PageHeader
-        logo={<Brand src={"logo.png"} alt="Logo" />}
-        topNav={
-          <Nav aria-label="Nav" variant="horizontal">
-            <NavList>
-              <NavItem isActive={true}>
-                <span>Base64 PNG Editor</span>
-              </NavItem>
-            </NavList>
-          </Nav>
-        }
-      />
-    }
-  >
-    <Base64PngEditorPage />
-  </Page>,
-  document.getElementById("app")
-);
+ReactDOM.render(<Base64PngEditorPage />, document.getElementById("app"));

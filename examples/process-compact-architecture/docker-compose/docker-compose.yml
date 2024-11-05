@@ -46,6 +46,9 @@ services:
     profiles: ["example-only", "full"]
     ports:
       - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       QUARKUS_HTTP_CORS_ORIGINS: "/.*/"
       QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://postgres:5432/kogito"

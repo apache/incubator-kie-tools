@@ -19,8 +19,6 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 
@@ -33,12 +31,8 @@ const samplePaths = [
 
 /**
  * A gallery component with samples to be opened
- *
- * @param props
- * @constructor
  */
 export function Base64PngGallery({ setFile }: { setFile: React.Dispatch<EmbeddedEditorFile> }) {
-  // Set the chosen file
   const openSample = useCallback(
     (fileName: string, filePath: string) => {
       setFile({
@@ -64,27 +58,17 @@ export function Base64PngGallery({ setFile }: { setFile: React.Dispatch<Embedded
   }, []);
 
   return (
-    <div>
-      <Nav className={"webapp--page-navigation"}>
-        <div className={"webapp--page-navigation-title-div"}>
-          <Title className={"webapp--page-navigation-title-h3"} headingLevel="h3" size="xl">
-            Gallery
-          </Title>
-        </div>
-        <NavList>
-          {images.map((image) => (
-            <NavItem
-              key={image.name}
-              className={"webapp--page-base64png-gallery--navigation-nav-item"}
-              onClick={() => openSample(image.name, image.path)}
-            >
-              <Card className={"webapp--page-base64png-gallery--navigation-nav-item-card"}>
-                <img alt={image.name} src={`data:image/png;base64,${image.content}`} />
-              </Card>
-            </NavItem>
-          ))}
-        </NavList>
-      </Nav>
+    <div style={{ padding: "16px" }}>
+      {images.map((image) => (
+        <Card
+          key={image.name}
+          onClick={() => openSample(image.name, image.path)}
+          isSelectable={true}
+          style={{ padding: "8px", marginBottom: "16px" }}
+        >
+          <img alt={image.name} width={"140px"} src={`data:image/png;base64,${image.content}`} />
+        </Card>
+      ))}
     </div>
   );
 }

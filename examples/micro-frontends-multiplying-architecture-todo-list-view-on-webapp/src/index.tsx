@@ -20,30 +20,6 @@
 import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
-import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
-import { Page, PageHeader } from "@patternfly/react-core/dist/js/components/Page";
 import { TodoListViewPage } from "./TodoListViewPage";
-import "./index.css";
 
-ReactDOM.render(
-  <Page
-    header={
-      <PageHeader
-        logo={<Brand src={"logo.png"} alt="Logo" />}
-        topNav={
-          <Nav aria-label="Nav" variant="horizontal">
-            <NavList>
-              <NavItem isActive={true}>
-                <span>Todo List View</span>
-              </NavItem>
-            </NavList>
-          </Nav>
-        }
-      />
-    }
-  >
-    <TodoListViewPage />
-  </Page>,
-  document.getElementById("app")
-);
+ReactDOM.render(<TodoListViewPage />, document.getElementById("app"));

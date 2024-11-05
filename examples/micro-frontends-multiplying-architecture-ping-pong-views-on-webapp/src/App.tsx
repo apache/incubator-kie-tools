@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
@@ -29,7 +28,6 @@ import { PingPongReactDivViewsPage } from "./React/PingPongReactDivViewsPage";
 import { PingPongAngularIFrameViewsPage } from "./Angular/PingPongAngularIFrameViewsPage";
 import { PingPongMixedViewsPage } from "./Mixed/PingPongMixedViewsPage";
 import { PingPongAngularDivViewsPage } from "./Angular/PingPongAngularDivViewsPage";
-import "./index.css";
 
 enum Location {
   PING_PONG_REACT_IFRAME_PAGES = "/page/ping-pong-react/iframe-pages",

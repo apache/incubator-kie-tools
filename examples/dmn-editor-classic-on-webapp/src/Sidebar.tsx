@@ -24,6 +24,8 @@ import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { EmbeddedEditorRef, useDirtyState } from "@kie-tools-core/editor/dist/embedded";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 
 function extractFileExtension(fileName: string) {
   return fileName.match(/[.]/)
@@ -134,65 +136,53 @@ export function Sidebar({ editorEnvelopeLocator, editor, setFile, file, fileExte
   );
 
   return (
-    <div>
-      <Nav className={"webapp--page-navigation"}>
-        <NavList>
-          <NavItem className={"webapp--page-kogito-editors-sidebar--navigation-nav-item"}>
-            <div className={"webapp--page-kogito-editors-sidebar--navigation-nav-item-div"}>
-              <TextInput
-                className={"webapp--page-kogito-editors-sidebar--navigation-nav-item-text-input"}
-                value={fileName}
-                type={"text"}
-                aria-label={"Edit file name"}
-                onChange={setFileName}
-                onBlur={onChangeName}
-              />
-            </div>
-          </NavItem>
-          <NavItem className={"webapp--page-kogito-editors-sidebar--navigation-nav-item"}>
-            <div className={"webapp--page-kogito-editors-sidebar--navigation-nav-item-div"}>
-              <a className={"webapp--page-kogito-editors-sidebar--navigation-nav-item-a"} onClick={onNewFile}>
-                New empty file
-              </a>
-            </div>
-          </NavItem>
-          <NavItem className={"webapp--page-kogito-editors-sidebar--navigation-nav-item"}>
-            <div className={"webapp--page-kogito-editors-sidebar--navigation-nav-item-div"}>
-              <a className={"webapp--page-kogito-editors-sidebar--navigation-nav-item-a"}>
-                Open file
-                <input
-                  accept={accept}
-                  className={"webapp--page-kogito-editors-sidebar--navigation-nav-item-open-file pf-c-button"}
-                  type="file"
-                  aria-label="File selection"
-                  onChange={onOpenFile}
-                  ref={inputRef}
-                />
-              </a>
-            </div>
-          </NavItem>
-          <NavItem className={"webapp--page-kogito-editors-sidebar--navigation-nav-item"}>
-            <div className={"webapp--page-kogito-editors-sidebar--navigation-nav-item-div"}>
-              <a className={"webapp--page-kogito-editors-sidebar--navigation-nav-item-a"} onClick={onOpenSample}>
-                Open Sample
-              </a>
-            </div>
-          </NavItem>
-          <NavItem className={"webapp--page-kogito-editors-sidebar--navigation-nav-item"}>
-            <div className={"webapp--page-kogito-editors-sidebar--navigation-nav-item-div"}>
-              <a className={"webapp--page-kogito-editors-sidebar--navigation-nav-item-a"} onClick={onDownload}>
-                Download
-              </a>
-            </div>
-          </NavItem>
-          {isDirty && (
-            <div style={{ display: "flex", alignItems: "center", padding: "20px" }}>
-              <p style={{ color: "red" }}>File edited.</p>
-            </div>
-          )}
+    <>
+      <Nav>
+        <NavList style={{ padding: "8px" }}>
+          <TextInput
+            value={fileName}
+            type={"text"}
+            aria-label={"Edit file name"}
+            onChange={setFileName}
+            onBlur={onChangeName}
+          />
+          <br />
+          <Button variant={ButtonVariant.plain} onClick={onNewFile}>
+            New empty file
+          </Button>
+          <br />
+          <Button variant={ButtonVariant.plain} onClick={onOpenSample}>
+            Open file
+            <input
+              accept={accept}
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                opacity: 0,
+                cursor: "pointer",
+                width: "100%",
+                zIndex: 999,
+              }}
+              type="file"
+              aria-label="File selection"
+              onChange={onOpenFile}
+              ref={inputRef}
+            />
+          </Button>
+          <br />
+          <Button variant={ButtonVariant.plain} onClick={onOpenSample}>
+            Open Sample
+          </Button>
+          <br />
+          <Button variant={ButtonVariant.plain} onClick={onDownload}>
+            Download
+          </Button>
+          <br />
+          {isDirty && <Label color={"blue"}>File edited</Label>}
         </NavList>
+        <a ref={downloadRef} />
       </Nav>
-      <a ref={downloadRef} />
-    </div>
+    </>
   );
 }

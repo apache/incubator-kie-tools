@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 interface Props {
@@ -34,9 +34,6 @@ interface Props {
 
 /**
  * A sidebar that shows the current stats of the pings/pongs
- *
- * @param props
- * @constructor
  */
 export function StatsSidebar(props: Props) {
   const [lastPingTimestamp, setLastPingTimestamp] = useState<string>("-");
@@ -52,51 +49,47 @@ export function StatsSidebar(props: Props) {
   }, [pings, onGetLastPingTimestamp]);
 
   return (
-    <div>
-      <Nav className={"webapp--page-navigation webapp--page-ping-pong-view-navigation"}>
-        <div className={"webapp--page-navigation-title-div"}>
-          <Title className={"webapp--page-navigation-title-h3"} headingLevel="h3" size="xl">
-            Stats
-          </Title>
-        </div>
-        <NavList>
-          <NavItem>
-            <div>
-              Pings: &nbsp;
-              <Label>{pings}</Label>
-            </div>
-          </NavItem>
-          <NavItem>
-            <div>
-              Pongs: &nbsp;
-              <Label>{pongs}</Label>
-            </div>
-          </NavItem>
-          <NavItem>
-            <div>
-              Last ping: &nbsp;
-              <Label>{lastPing}</Label>
-            </div>
-          </NavItem>
-          <NavItem>
-            <div>
-              Last ping timestamp: &nbsp;
-              <Label>{lastPingTimestamp}</Label>
-            </div>
-          </NavItem>
-          <NavItem>
-            <div>
-              Last pong: &nbsp;
-              <Label>{lastPong}</Label>
-            </div>
-          </NavItem>
-          <NavItem>
-            <div>
-              <button onClick={onClearLogs}>Clear logs!</button>
-            </div>
-          </NavItem>
-        </NavList>
-      </Nav>
+    <div style={{ padding: "16px" }}>
+      <Stack hasGutter={true}>
+        <StackItem>
+          <b>Stats</b>
+        </StackItem>
+        <StackItem>
+          <div>
+            Pings: &nbsp;
+            <Label>{pings}</Label>
+          </div>
+        </StackItem>
+        <StackItem>
+          <div>
+            Pongs: &nbsp;
+            <Label>{pongs}</Label>
+          </div>
+        </StackItem>
+        <StackItem>
+          <div>
+            Last ping: &nbsp;
+            <Label>{lastPing}</Label>
+          </div>
+        </StackItem>
+        <StackItem>
+          <div>
+            Last ping timestamp: &nbsp;
+            <Label>{lastPingTimestamp}</Label>
+          </div>
+        </StackItem>
+        <StackItem>
+          <div>
+            Last pong: &nbsp;
+            <Label>{lastPong}</Label>
+          </div>
+        </StackItem>
+        <StackItem>
+          <div>
+            <button onClick={onClearLogs}>Clear logs!</button>
+          </div>
+        </StackItem>
+      </Stack>
     </div>
   );
 }

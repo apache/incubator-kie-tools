@@ -17,11 +17,12 @@
  * under the License.
  */
 
-import { ChannelType, EnvelopeContentType } from "@kie-tools-core/editor/dist/api";
 import * as React from "react";
+import { ChannelType, EnvelopeContentType } from "@kie-tools-core/editor/dist/api";
+import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { useMemo, useState } from "react";
-import { Page } from "@patternfly/react-core/dist/js/components/Page";
+import { Page, PageHeader, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { EmbeddedEditor } from "@kie-tools-core/editor/dist/embedded";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { Base64PngGallery } from "./Base64PngGallery";
@@ -60,16 +61,18 @@ export function Base64PngEditorPage() {
   );
 
   return (
-    <Page>
-      <div className={"webapp--page-main-div"}>
-        <Base64PngGallery setFile={setFile} />
+    <Page
+      header={<PageHeader logo={<Brand src={"logo.png"} alt="Logo" />}></PageHeader>}
+      sidebar={<Base64PngGallery setFile={setFile} />}
+    >
+      <PageSection padding={{ default: "noPadding" }}>
         <EmbeddedEditor
           file={file}
           editorEnvelopeLocator={editorEnvelopeLocator}
           channelType={ChannelType.EMBEDDED}
           locale={"en"}
         />
-      </div>
+      </PageSection>
     </Page>
   );
 }

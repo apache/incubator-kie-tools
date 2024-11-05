@@ -19,7 +19,6 @@
     "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-angular": "workspace:*",
     "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-react": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
-    "@kie-tools/stunner-editors": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",

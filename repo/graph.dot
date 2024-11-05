@@ -243,9 +243,9 @@ digraph G {
   "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-react" -> "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp" -> "@kie-tools-core/editor" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp" -> "@kie-tools-core/react-hooks" [ style = "dashed", color = "orange" ];
+  "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp" -> "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-angular" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp" -> "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-react" [ style = "dashed", color = "orange" ];
-  "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view" -> "@kie-tools-core/envelope" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp" -> "@kie-tools-core/editor" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp" -> "@kie-tools-core/react-hooks" [ style = "dashed", color = "orange" ];

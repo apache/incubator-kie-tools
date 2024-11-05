@@ -19,13 +19,15 @@
 
 import * as React from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import {
   EmbeddedTodoList,
   EmbeddedTodoListRef,
 } from "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view/dist/embedded";
+import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
+import { Page, PageHeader, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button/Button";
+
 import { useStateAsSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 
 export function TodoListViewPage() {
@@ -61,40 +63,38 @@ export function TodoListViewPage() {
   }, [handleItemRemoved]);
 
   return (
-    <Page>
-      <div className={"webapp--page-main-div"}>
-        <div>
-          <Nav className={"webapp--page-navigation"}>
-            <div className={"webapp--page-navigation-title-div"}>
-              <Title className={"webapp--page-navigation-title-h3"} headingLevel="h3" size="xl">
-                Actions
-              </Title>
-            </div>
-            <NavList>
-              <NavItem onClick={embeddedTodoListRef.current?.markAllAsCompleted}>Mark all as completed</NavItem>
-              <NavItem>
-                <form onSubmit={addItem}>
-                  <input
-                    type={"text"}
-                    value={newItem}
-                    onChange={(e) => setNewItem(e.target.value)}
-                    placeholder={"New item"}
-                  />
-                  <button>Add</button>
-                </form>
-              </NavItem>
-            </NavList>
-          </Nav>
-        </div>
-        <PageSection>
-          <EmbeddedTodoList
-            ref={embeddedTodoListRef}
-            targetOrigin={window.location.origin}
-            envelopePath={"envelope/todo-list-view.html"}
-            apiImpl={apiImpl}
-          />
-        </PageSection>
-      </div>
+    <Page
+      header={<PageHeader logo={<Brand src={"logo.png"} alt="Logo" />} />}
+      sidebar={
+        <Stack hasGutter={true} style={{ padding: "16px" }}>
+          <StackItem>Actions</StackItem>
+          <StackItem>
+            <form onSubmit={addItem}>
+              <input
+                type={"text"}
+                value={newItem}
+                onChange={(e) => setNewItem(e.target.value)}
+                placeholder={"New item"}
+              />
+              <button>Add</button>
+            </form>
+          </StackItem>
+          <StackItem>
+            <Button variant={ButtonVariant.plain} onClick={embeddedTodoListRef.current?.markAllAsCompleted}>
+              Mark all as completed
+            </Button>
+          </StackItem>
+        </Stack>
+      }
+    >
+      <PageSection>
+        <EmbeddedTodoList
+          ref={embeddedTodoListRef}
+          targetOrigin={window.location.origin}
+          envelopePath={"./todo-list-view-envelope.html"}
+          apiImpl={apiImpl}
+        />
+      </PageSection>
     </Page>
   );
 }

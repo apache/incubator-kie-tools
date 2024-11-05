@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
@@ -27,7 +26,6 @@ import { HashRouter as Router, Link, Route, Switch } from "react-router-dom";
 import { SwfStandaloneEditorPage } from "./Pages/SwfStandaloneEditorPage";
 import { SwfStandaloneDiagramOnlyEditorPage } from "./Pages/SwfStandaloneDiagramOnlyEditorPage";
 import { SwfStandaloneTextOnlyEditorPage } from "./Pages/SwfStandaloneTextOnlyEditorPage";
-import "./index.css";
 
 enum Location {
   SWF_STANDALONE_EDITOR = "/page/swf-standalone-editor",

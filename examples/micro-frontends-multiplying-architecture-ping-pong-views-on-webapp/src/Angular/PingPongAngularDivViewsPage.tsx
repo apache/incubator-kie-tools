@@ -19,12 +19,16 @@
 
 import * as React from "react";
 import { useMemo, useRef } from "react";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
+
 import { EmbeddedDivPingPong } from "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view/dist/embedded";
-import { StatsSidebar } from "../StatsSidebar";
 import { pingPongEnvelopViewRenderDiv } from "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-angular/dist/wc/lib";
 import { PingPongApi } from "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view/dist/api";
 import { usePingPongApiCallbacks, usePingPongChannelApi } from "../hooks";
+
+import { StatsSidebar } from "../StatsSidebar";
 
 export function PingPongAngularDivViewsPage() {
   const { pingsCount, pongsCount, lastPing, lastPong, apiImpl } = usePingPongChannelApi();
@@ -38,48 +42,47 @@ export function PingPongAngularDivViewsPage() {
   const { onClearLogs, onGetLastPingTimestamp } = usePingPongApiCallbacks(refs);
 
   return (
-    <Page>
-      <div className={"webapp--page-main-div"}>
-        <StatsSidebar
-          lastPing={lastPing}
-          lastPong={lastPong}
-          pings={pingsCount}
-          pongs={pongsCount}
-          onClearLogs={onClearLogs}
-          onGetLastPingTimestamp={onGetLastPingTimestamp}
-        />
-        <div className={"webapp--page-ping-pong-view"}>
-          <PageSection style={{ flex: "1 1" }}>
-            <EmbeddedDivPingPong
-              apiImpl={apiImpl}
-              name={"Angular 1"}
-              ref={angular1}
-              targetOrigin={window.location.origin}
-              renderView={pingPongEnvelopViewRenderDiv}
-            />
-          </PageSection>
-
-          <PageSection style={{ flex: "1 1" }}>
-            <EmbeddedDivPingPong
-              apiImpl={apiImpl}
-              name={"Angular 2"}
-              ref={angular2}
-              targetOrigin={window.location.origin}
-              renderView={pingPongEnvelopViewRenderDiv}
-            />
-          </PageSection>
-
-          <PageSection style={{ flex: "1 1" }}>
-            <EmbeddedDivPingPong
-              apiImpl={apiImpl}
-              name={"Angular 3"}
-              ref={angular3}
-              targetOrigin={window.location.origin}
-              renderView={pingPongEnvelopViewRenderDiv}
-            />
-          </PageSection>
-        </div>
-      </div>
-    </Page>
+    <PageSection isFilled={true}>
+      <Grid hasGutter={true}>
+        <GridItem span={2}>
+          <StatsSidebar
+            lastPing={lastPing}
+            lastPong={lastPong}
+            pings={pingsCount}
+            pongs={pongsCount}
+            onClearLogs={onClearLogs}
+            onGetLastPingTimestamp={onGetLastPingTimestamp}
+          />
+        </GridItem>
+        <GridItem span={1} />
+        <GridItem span={3}>
+          <EmbeddedDivPingPong
+            apiImpl={apiImpl}
+            name={"Angular 1"}
+            ref={angular1}
+            targetOrigin={window.location.origin}
+            renderView={pingPongEnvelopViewRenderDiv}
+          />
+        </GridItem>
+        <GridItem span={3}>
+          <EmbeddedDivPingPong
+            apiImpl={apiImpl}
+            name={"Angular 2"}
+            ref={angular2}
+            targetOrigin={window.location.origin}
+            renderView={pingPongEnvelopViewRenderDiv}
+          />
+        </GridItem>
+        <GridItem span={3}>
+          <EmbeddedDivPingPong
+            apiImpl={apiImpl}
+            name={"Angular 3"}
+            ref={angular3}
+            targetOrigin={window.location.origin}
+            renderView={pingPongEnvelopViewRenderDiv}
+          />{" "}
+        </GridItem>
+      </Grid>
+    </PageSection>
   );
 }

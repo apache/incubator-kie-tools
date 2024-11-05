@@ -618,17 +618,17 @@
       },
       {
         "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp",
+        "target": "@kie-tools-core/webpack-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp",
         "target": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-angular",
         "weight": 1
       },
       {
         "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp",
         "target": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-react",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp",
-        "target": "@kie-tools/stunner-editors",
         "weight": 1
       },
       {

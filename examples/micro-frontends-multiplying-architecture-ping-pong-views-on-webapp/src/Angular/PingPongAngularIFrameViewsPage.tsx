@@ -19,11 +19,15 @@
 
 import * as React from "react";
 import { useMemo, useRef } from "react";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
+
 import { EmbeddedIFramePingPong } from "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view/dist/embedded";
 import { PingPongApi } from "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view/dist/api";
-import { StatsSidebar } from "../StatsSidebar";
 import { usePingPongApiCallbacks, usePingPongChannelApi } from "../hooks";
+
+import { StatsSidebar } from "../StatsSidebar";
 
 const envelopePath = "ping-pong-view-in-angular-envelope/index.html";
 
@@ -39,48 +43,51 @@ export function PingPongAngularIFrameViewsPage() {
   const { onClearLogs, onGetLastPingTimestamp } = usePingPongApiCallbacks(refs);
 
   return (
-    <Page>
-      <div className={"webapp--page-main-div"}>
-        <StatsSidebar
-          lastPing={lastPing}
-          lastPong={lastPong}
-          pings={pingsCount}
-          pongs={pongsCount}
-          onClearLogs={onClearLogs}
-          onGetLastPingTimestamp={onGetLastPingTimestamp}
-        />
-        <div className={"webapp--page-ping-pong-view"}>
-          <PageSection style={{ flex: "1 1" }}>
-            <EmbeddedIFramePingPong
-              apiImpl={apiImpl}
-              name={"Angular 1"}
-              ref={angular1}
-              targetOrigin={window.location.origin}
-              envelopePath={envelopePath}
-            />
-          </PageSection>
+    <PageSection isFilled={true}>
+      <Grid hasGutter={true}>
+        <GridItem span={2}>
+          <StatsSidebar
+            lastPing={lastPing}
+            lastPong={lastPong}
+            pings={pingsCount}
+            pongs={pongsCount}
+            onClearLogs={onClearLogs}
+            onGetLastPingTimestamp={onGetLastPingTimestamp}
+          />
+        </GridItem>
 
-          <PageSection style={{ flex: "1 1" }}>
-            <EmbeddedIFramePingPong
-              apiImpl={apiImpl}
-              name={"Angular 2"}
-              ref={angular2}
-              targetOrigin={window.location.origin}
-              envelopePath={envelopePath}
-            />
-          </PageSection>
+        <GridItem span={1} />
 
-          <PageSection style={{ flex: "1 1" }}>
-            <EmbeddedIFramePingPong
-              apiImpl={apiImpl}
-              name={"Angular 3"}
-              ref={angular3}
-              targetOrigin={window.location.origin}
-              envelopePath={envelopePath}
-            />
-          </PageSection>
-        </div>
-      </div>
-    </Page>
+        <GridItem span={3}>
+          <EmbeddedIFramePingPong
+            apiImpl={apiImpl}
+            name={"Angular 1"}
+            ref={angular1}
+            targetOrigin={window.location.origin}
+            envelopePath={envelopePath}
+          />
+        </GridItem>
+
+        <GridItem span={3}>
+          <EmbeddedIFramePingPong
+            apiImpl={apiImpl}
+            name={"Angular 2"}
+            ref={angular2}
+            targetOrigin={window.location.origin}
+            envelopePath={envelopePath}
+          />
+        </GridItem>
+
+        <GridItem span={3}>
+          <EmbeddedIFramePingPong
+            apiImpl={apiImpl}
+            name={"Angular 3"}
+            ref={angular3}
+            targetOrigin={window.location.origin}
+            envelopePath={envelopePath}
+          />
+        </GridItem>
+      </Grid>
+    </PageSection>
   );
 }
