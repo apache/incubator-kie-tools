@@ -19,7 +19,7 @@
 
 This package exposes the necessary files for you to create a 'To do' List Envelope.
 
-It's divided in the following submodules:
+It's divided in the following directories:
 
 1. `api`
    - Provides the APIs that the Channel/Envelope expose to each other.

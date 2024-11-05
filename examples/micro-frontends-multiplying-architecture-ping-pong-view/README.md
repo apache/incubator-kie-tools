@@ -19,7 +19,7 @@
 
 This package exposes a library with the necessary files for you to create a Ping-Pong View Envelope with your Ping-Pong View implementation.
 
-It's divided into the following directories:
+It's divided in the following directories:
 
 1. `api`
    - Provides the APIs that the Channel/Envelope expose to each other.
