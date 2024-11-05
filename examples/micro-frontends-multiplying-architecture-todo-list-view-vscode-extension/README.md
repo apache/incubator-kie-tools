@@ -26,9 +26,21 @@ This package provides a VS Code Extension containing a 'To do' List View, which 
 1. `TODO: Mark all as completed`
    - Marks all the items in the 'To do' List as completed.
 
-## Building
+### Building the dependencies
 
-Run `KIE_TOOLS_BUILD__buildExamples=true pnpm build:prod`. A `.vsix` file will be on the `dist` folder. Drag it to the Extensions panel on VS Code to install it.
+Before running this example, building its dependencies is required. Run the following command on a Terminal:
+
+```shell script
+KIE_TOOLS_BUILD__buildExamples=true pnpm -F @kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-vscode-extension^... build:dev
+```
+
+### Building
+
+```shell script
+KIE_TOOLS_BUILD__buildExamples=true pnpm build:prod
+```
+
+A `.vsix` file will be on the `dist` folder. Drag it to the Extensions panel on VS Code to install it.
 
 ---
 

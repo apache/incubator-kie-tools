@@ -19,7 +19,15 @@
 
 This package contains a web application that features a 'To do' List View, a simple component wrapped inside an Envelope with a simple API for manging 'To do' items. It also features a very simple demo of Multiplying Architecture's Shared Value.
 
-## Starting the application
+### Building the dependencies
+
+Before running this example, building its dependencies is required. Run the following command on a Terminal:
+
+```shell script
+KIE_TOOLS_BUILD__buildExamples=true pnpm -F @kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp^... build:dev
+```
+
+### Running
 
 ```shell script
 pnpm start

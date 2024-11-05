@@ -19,7 +19,15 @@
 
 This package contains a web application that features the DMN Editor (classic) as a wrapped inside a Micro-frontend Multiplying Architecture Envelope.
 
-## Running
+### Building the dependencies
+
+Before running this example, building its dependencies is required. Run the following command on a Terminal:
+
+```shell script
+KIE_TOOLS_BUILD__buildExamples=true pnpm -F @kie-tools-examples/dmn-editor-classic-on-webapp^... build:dev
+```
+
+### Running
 
 ```shell script
 pnpm start

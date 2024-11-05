@@ -19,7 +19,15 @@
 
 This package contains a web application that features multiple ways of using Ping-Pong Views wrapped inside Micro-frontends Multiplying Architecture Envelopes, showcasing both Promises and Notifications features of Multiplying Architecture Channel and Envelope APIs.
 
-## Starting the application
+### Building the dependencies
+
+Before running this example, building its dependencies is required. Run the following command on a Terminal:
+
+```shell script
+KIE_TOOLS_BUILD__buildExamples=true pnpm -F @kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp^... build:dev
+```
+
+### Running
 
 ```shell script
 pnpm start

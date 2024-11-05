@@ -19,7 +19,15 @@
 
 Allows seeing `.base64png` files directly in GitHub's website.
 
-## Running
+### Building the dependencies
+
+Before running this example, building its dependencies is required. Run the following command on a Terminal:
+
+```shell script
+KIE_TOOLS_BUILD__buildExamples=true pnpm -F @kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor-chrome-extension^... build:dev
+```
+
+### Running
 
 First, run this command on your Terminal. It will build the Chrome Extension and start an HTTP server acting as the hosting application for the Base64 Editor Envelope.
 

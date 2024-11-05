@@ -19,25 +19,22 @@
 
 A series of examples on how to use the DMN Editor (standalone) in different applications.
 
-- [State Control]("src/stateControl/index.ts"): Shows how to leverage the Editor API to undo/redo changes to a Decision, get its contents, and download an SVG of the diagram.
-- [Read Only]("src/readOnly/index.ts"): Loads the editor in "Read Only" mode, where a decision can be displayed and explored but not changed.
-- [With Included Models]("src/withIncludedModels/index.ts"): Displays how Decisions can be imported into other Decisions as "Included Models", using the `resources` parameter of DMN Editor (standalone).
+- [State Control](src/stateControl/index.ts): Shows how to leverage the Editor API to undo/redo changes to a Decision, get its contents, and download an SVG of the diagram.
+- [Read Only](src/readOnly/index.ts): Loads the editor in "Read Only" mode, where a decision can be displayed and explored but not changed.
+- [With Included Models](src/withIncludedModels/index.ts): Displays how Decisions can be imported into other Decisions as "Included Models", using the `resources` parameter of DMN Editor (standalone).
 
-### Build
+### Building the dependencies
 
-To build the examples, execute one of the following commands on the root folder of the project:
+Before running this example, building its dependencies is required. Run the following command on a Terminal:
 
 ```shell script
-KIE_TOOLS_BUILD__buildExamples=true pnpm -F @kie-tools-examples/dmn-editor-standalone-examples... build:dev
-KIE_TOOLS_BUILD__buildExamples=true pnpm -F @kie-tools-examples/dmn-editor-standalone-examples... build:prod
+KIE_TOOLS_BUILD__buildExamples=true pnpm -F @kie-tools-examples/dmn-editor-standalone-on-webapp^... build:dev
 ```
 
-### Run
-
-To start the examples application, execute the following command on the root folder of the project:
+### Running
 
 ```shell script
-pnpm -F @kie-tools-examples/dmn-editor-standalone-examples start
+pnpm -F @kie-tools-examples/dmn-editor-standalone-on-webapp start
 ```
 
 Open http://localhost:9102 to see the list of files bundled by Webpack, then choose an example:

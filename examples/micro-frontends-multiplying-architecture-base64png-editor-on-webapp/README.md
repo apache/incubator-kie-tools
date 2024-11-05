@@ -17,6 +17,20 @@
 
 # Example :: Micro-frontends Multiplying Architecture :: Base64 PNG Editor on webapp
 
+### Building the dependencies
+
+Before running this example, building its dependencies is required. Run the following command on a Terminal:
+
+```shell script
+KIE_TOOLS_BUILD__buildExamples=true pnpm -F @kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor-on-webapp^... build:dev
+```
+
+### Running
+
+```shell script
+pnpm start
+```
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software

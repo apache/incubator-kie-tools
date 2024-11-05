@@ -26,9 +26,21 @@ To make it easier to create `.base64png` files and exporting them to other forma
 1. `Base64 PNG: Save as SVG`
    - When a `.base64png` is open, you can click the little SVG icon at the top-right corner of the Editor, or run it from the command palette. A new SVG file will be created at the same directory as the `.base64png` file.
 
-## Building
+### Building the dependencies
 
-Run `KIE_TOOLS_BUILD__buildExamples=true pnpm build:prod`. A `.vsix` file will be on the `dist` folder. Drag it to the Extensions panel on VS Code to install it.
+Before running this example, building its dependencies is required. Run the following command on a Terminal:
+
+```shell script
+KIE_TOOLS_BUILD__buildExamples=true pnpm -F @kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor-vscode-extension^... build:dev
+```
+
+### Building
+
+```shell script
+KIE_TOOLS_BUILD__buildExamples=true pnpm build:prod
+```
+
+A `.vsix` file will be on the `dist` folder. Drag it to the Extensions panel on VS Code to install it.
 
 ---
 
