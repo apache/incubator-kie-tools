@@ -18,7 +18,7 @@
 #
 schema_version: 1
 
-name: "docker.io/apache/incubator-kie-kogito-data-index-ephemeral"
+name: "docker.io/apache/incubator-kie-kogito-data-index-postgresql"
 version: "main"
 from: "registry.access.redhat.com/ubi8/openjdk-17-runtime:1.20"
 description: "Runtime image for Kogito Data Index Service for PostgreSQL persistence provider"
@@ -54,8 +54,8 @@ modules:
     - name: org.kie.kogito.dynamic.resources
     - name: org.kie.kogito.launch.scripts
     - name: org.kie.kogito.dataindex.postgresql
-    - name: org.kie.kogito.dataindex.common
     - name: org.kie.kogito.security.custom.truststores
+    - name: org.kie.kogito.dataindex.common
 
 run:
   workdir: "/home/kogito"
