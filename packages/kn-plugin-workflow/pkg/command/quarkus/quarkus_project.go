@@ -23,6 +23,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path"
 	"strings"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
@@ -71,12 +72,12 @@ func CreateQuarkusProject(cfg CreateQuarkusProjectConfig) error {
 	}
 
 	//Until we are part of Quarkus 3.x bom we need to manipulate the pom.xml to use the right kogito dependencies
-	pomPath := cfg.ProjectName + "/pom.xml"
+	pomPath := path.Join(cfg.ProjectName, "pom.xml")
 	if err := manipulatePomToKogito(pomPath, cfg); err != nil {
 		return err
 	}
 
-	dockerIgnorePath := cfg.ProjectName + "/.dockerignore"
+	dockerIgnorePath := path.Join(cfg.ProjectName, ".dockerignore")
 	if err := manipulateDockerIgnore(dockerIgnorePath); err != nil {
 		return err
 	}
@@ -84,7 +85,7 @@ func CreateQuarkusProject(cfg CreateQuarkusProjectConfig) error {
 	extensions := []string{"jvm", "legacy-jar", "native", "native-micro"}
 
 	for _, extension := range extensions {
-		dockerfilePath := cfg.ProjectName + "/src/main/docker/Dockerfile." + extension
+		dockerfilePath := path.Join(cfg.ProjectName, "src/main/docker", "Dockerfile."+extension)
 		if err := manipulateDockerfile(dockerfilePath); err != nil {
 			return err
 		}
@@ -95,7 +96,7 @@ func CreateQuarkusProject(cfg CreateQuarkusProjectConfig) error {
 
 func PostMavenCleanup(cfg CreateQuarkusProjectConfig) error {
 	for _, file := range filesToRemove {
-		var fqdn = cfg.ProjectName + "/" + file
+		var fqdn = path.Join(cfg.ProjectName, file)
 		if err := os.RemoveAll(fqdn); err != nil {
 			return fmt.Errorf("error removing %s: %w", fqdn, err)
 		}
