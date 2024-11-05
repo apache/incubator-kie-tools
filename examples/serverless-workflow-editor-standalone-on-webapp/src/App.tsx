@@ -65,7 +65,7 @@ export function App() {
                     itemId={Location.SWF_STANDALONE_EDITOR}
                     isActive={location === Location.SWF_STANDALONE_EDITOR}
                   >
-                    <Link to={Location.SWF_STANDALONE_EDITOR}>Serverless Workflow Editor Standalone</Link>
+                    <Link to={Location.SWF_STANDALONE_EDITOR}>Serverless Workflow Editor (standalone)</Link>
                   </NavItem>
                   <NavItem
                     itemId={Location.SWF_STANDALONE_EDITOR_DIAGRAM_ONLY}

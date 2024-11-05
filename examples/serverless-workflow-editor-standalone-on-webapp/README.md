@@ -15,9 +15,9 @@
    under the License.
 -->
 
-# Example :: Serverless Workflow Editor Standalone on webapp
+# Example :: Serverless Workflow Editor (standalone) on webapp
 
-This package contains a web application that features the Serverless Workflow Diagram Editor Standalone.
+This package contains a web application that features the Serverless Workflow Editor (standalone).
 
 ### Building the dependencies
 
