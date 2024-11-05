@@ -16,7 +16,7 @@
     "build": "rimraf dist && webpack",
     "build:dev": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build --env dev\"",
     "build:prod": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build\"",
-    "serve-envelope": "webpack-dev-server"
+    "start": "webpack-dev-server"
   },
   "devDependencies": {
     "@kie-tools-core/chrome-extension": "workspace:*",

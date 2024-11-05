@@ -38,7 +38,7 @@ export function activate(context: vscode.ExtensionContext) {
     context,
     {
       envelopePath: "dist/todo-list-view-envelope.js",
-      title: "//TODO", // This is displayed as the title of the Webview tab.
+      title: "// TODO", // This is displayed as the title of the Webview tab.
       targetOrigin: "vscode",
     },
     {
@@ -92,7 +92,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const selected = await vscode.window.showInformationMessage(
-        `'To do' list not open. Would you like to open it and add ${items.length} item(s)?`,
+        `'To do' List not open. Would you like to open it and add ${items.length} item(s)?`,
         "Yes!"
       );
 

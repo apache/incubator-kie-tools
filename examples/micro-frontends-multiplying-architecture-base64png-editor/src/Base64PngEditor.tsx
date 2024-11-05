@@ -26,7 +26,7 @@ import { Page } from "@patternfly/react-core/dist/js/components/Page";
 import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import { Base64PngEdit, Base64PngStateControl } from "./Base64PngStateControl";
+import { Base64PngEdit, Base64PngEditorStateControl } from "./Base64PngEditorStateControl";
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import "./Base64PngEditor.scss";
 
@@ -74,7 +74,7 @@ export const Base64PngEditor = React.forwardRef<EditorApi, Props>((props, forwar
    * Initialize the StateControl instance. When the original content is modified it's necessary to get an another instance
    * so the states aren't shared across contents.
    */
-  const stateControl = useMemo(() => new Base64PngStateControl(), [originalContent]);
+  const stateControl = useMemo(() => new Base64PngEditorStateControl(), [originalContent]);
 
   /**
    * Callback is exposed to the Channel to retrieve the current value of the Editor. It returns the value of
@@ -425,16 +425,18 @@ export const Base64PngEditor = React.forwardRef<EditorApi, Props>((props, forwar
     canvasRef.current!.width = 0;
     canvasRef.current!.height = 0;
 
-    imageRef.current!.onload = () => {
-      canvasRef.current!.width = imageRef.current!.width;
-      canvasRef.current!.height = imageRef.current!.height;
-      ctx.drawImage(imageRef.current!, 0, 0);
+    const r = imageRef.current;
+
+    r!.onload = () => {
+      canvasRef.current!.width = r!.width;
+      canvasRef.current!.height = r!.height;
+      ctx.drawImage(r!, 0, 0);
       setEditorContent(canvasRef.current!.toDataURL().split(",")[1]);
       setDisabled(false);
     };
 
     return () => {
-      imageRef.current!.onload = null;
+      r!.onload = null;
     };
   }, []);
 

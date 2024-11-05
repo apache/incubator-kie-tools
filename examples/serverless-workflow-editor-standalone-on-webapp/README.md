@@ -17,6 +17,14 @@
 
 # Example :: Serverless Workflow Editor Standalone on webapp
 
+This package contains a web application that features the Serverless Workflow Diagram Editor Standalone.
+
+## Running
+
+```shell script
+pnpm start
+```
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software

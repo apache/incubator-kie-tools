@@ -19,7 +19,7 @@
 
 The Ping-Pong View is an interface that components can implement to be used inside a Ping-Pong View Envelope.
 
-This package provides a Ping-Pong View implementation as a Angular application.
+This package provides a library containing a Ping-Pong View implementation as a Angular application.
 
 It's build into 3 projects:
 

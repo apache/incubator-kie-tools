@@ -32,9 +32,9 @@ const resourcesPathPrefix = process.env["WEBPACK_REPLACE__targetOrigin"];
  * @params args.editorEnvelopeLocator.mapping A map associating a file extension with the respective envelope path and resources path.
  */
 startExtension({
-  name: "KIE Tools Example :: Micro-frontends Multiplying Architecutre Base64 PNG Editor",
-  extensionIconUrl: chrome.extension.getURL("/kie_icon_rgb_fullcolor_default.svg"),
-  githubAuthTokenCookieName: "github-oauth-token-base64--png-editors",
+  name: "Apache KIE Tools Example :: Micro-frontends Multiplying Architecutre :: Base64 PNG Editor",
+  extensionIconUrl: chrome.extension.getURL("/kie-logo-rgb-fullcolor-default.svg"),
+  githubAuthTokenCookieName: "github-oauth-token-base64png-editors",
   editorEnvelopeLocator: new EditorEnvelopeLocator(window.location.origin, [
     new EnvelopeMapping({
       type: "base64png",
@@ -42,7 +42,7 @@ startExtension({
       resourcesPathPrefix: `${resourcesPathPrefix}/dist/`,
       envelopeContent: {
         type: EnvelopeContentType.PATH,
-        path: `${resourcesPathPrefix}/dist/base64png-editor-envelope.html`,
+        path: `${resourcesPathPrefix}/base64png-editor-envelope.html`,
       },
     }),
   ]),

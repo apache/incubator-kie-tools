@@ -29,6 +29,12 @@ Provides a simple service to check for patterns in a commit message.
 
   Enables and configures validators. The value is a list of `;` separated validators that are parameterized with anything after `:`. e.g.: `Length:5-72;IssuePrefix:kie-issues#*` will enable the Lenght validator, with min 5 and max 72 characters, and will also enable the IssuePrefix validator, with the prefix pattern being `kie-issues#*`.
 
+## Running
+
+```shell script
+pnpm start
+```
+
 ## API
 
 ### - `/validate`

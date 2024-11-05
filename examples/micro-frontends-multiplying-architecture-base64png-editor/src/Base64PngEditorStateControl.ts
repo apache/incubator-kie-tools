@@ -34,12 +34,12 @@ export interface Base64PngEdit extends WorkspaceEdit {
 }
 
 /**
- * A Base64PngStateControl extends the Kogito State Control which is a class that implements a command stack, and all
+ * A Base64PngEditorStateControl extends the default StateControl which is a class that implements a command stack, and all
  * methods necessary to do undo/redo operations or even if the editor is dirty.
  *
  * The use of this implementation is optional, you can use your own if required.
  */
-export class Base64PngStateControl extends StateControl {
+export class Base64PngEditorStateControl extends StateControl {
   /**
    * The command stack on the Kogito State Control accept strings only, this method retrieve the Base64PngEdit object.
    */

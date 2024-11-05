@@ -15,13 +15,13 @@
    under the License.
 -->
 
-# Example :: DMN Editor Standalone on webapp
+# Example :: DMN Editor (standalone) on webapp
 
-A series of examples on how to use the DMN Editor Standalone in different applications.
+A series of examples on how to use the DMN Editor (standalone) in different applications.
 
-- [State Control]("src/stateControl/index.ts"): Shows how to leverage the Editor API to undo/redo changes to a decision, get its contents and download an SVG of the diagram.
-- [Read Only]("src/readOnly/index.ts"): Loads the editor in "Read Only" mode, where a decision can be displayed and navigated but not changed.
-- [With Included Models]("src/withIncludedModels/index.ts"): Displays how Decisions can be imported into other Decisions as "Included Models", using the `resources` parameter from the DMN Editor.
+- [State Control]("src/stateControl/index.ts"): Shows how to leverage the Editor API to undo/redo changes to a Decision, get its contents, and download an SVG of the diagram.
+- [Read Only]("src/readOnly/index.ts"): Loads the editor in "Read Only" mode, where a decision can be displayed and explored but not changed.
+- [With Included Models]("src/withIncludedModels/index.ts"): Displays how Decisions can be imported into other Decisions as "Included Models", using the `resources` parameter of DMN Editor (standalone).
 
 ### Build
 
@@ -40,7 +40,7 @@ To start the examples application, execute the following command on the root fol
 pnpm -F @kie-tools-examples/dmn-editor-standalone-examples start
 ```
 
-Open http://localhost:9102 to see the list of files bundled by webpack, then choose an example:
+Open http://localhost:9102 to see the list of files bundled by Webpack, then choose an example:
 
 - State Control: http://localhost:9102/state_control.html
 - Read Only: http://localhost:9102/read_only.html

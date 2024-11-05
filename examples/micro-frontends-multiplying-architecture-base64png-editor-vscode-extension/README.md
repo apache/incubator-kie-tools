@@ -17,6 +17,19 @@
 
 # Example :: Micro-frontends Multiplying Architecture :: Base64 PNG Editor VS Code Extension
 
+This package provides a VS Code Extension containing a Base64 PNG Editor, which allows editing `.base64png` files.
+
+To make it easier to create `.base64png` files and exporting them to other formats, this extension also provides two commands:
+
+1. `Base64 PNG: New from .png`
+   - Creates a new `.base64png` file from a PNG. You can right-click a PNG file to run this command.
+1. `Base64 PNG: Save as SVG`
+   - When a `.base64png` is open, you can click the little SVG icon at the top-right corner of the Editor, or run it from the command palette. A new SVG file will be created at the same directory as the `.base64png` file.
+
+## Building
+
+Run `KIE_TOOLS_BUILD__buildExamples=true pnpm build:prod`. A `.vsix` file will be on the `dist` folder. Drag it to the Extensions panel on VS Code to install it.
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software

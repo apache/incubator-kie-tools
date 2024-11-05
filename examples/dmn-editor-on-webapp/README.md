@@ -17,6 +17,14 @@
 
 # Example :: DMN Editor on webapp
 
+This package contains a web application that features the DMN Editor as a wrapped inside a Micro-frontend Multiplying Architecture Envelope.
+
+## Running
+
+```shell script
+pnpm start
+```
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software

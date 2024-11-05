@@ -17,9 +17,9 @@
 
 # Example :: Micro-frontends Multiplying Architecture :: Ping-Pong View
 
-This package exposes the necessary files for you to create a Ping-Pong View Envelope with your Ping-Pong View implementation.
+This package exposes a library with the necessary files for you to create a Ping-Pong View Envelope with your Ping-Pong View implementation.
 
-It's divided into the following submodules:
+It's divided into the following directories:
 
 1. `api`
    - Provides the APIs that the Channel/Envelope expose to each other.
@@ -40,26 +40,26 @@ It's divided into the following submodules:
    - The `pingPongView__init` will be responsible for associating the `envelopeClient` with the `envelopeServer` and then calling the `create` method from your factory implementation;
    - From the `create` call you should get the `PingPongApi` implementation and use it to fulfill the `PingPongEnvelopeApi` methods.
 3. **Running inside an `EmbeddedEnvelope`**
-   - Your project can run inside a `div` or an `iFrame`, and for that, both are available inside the `embedded` directory.
+   - Your project can run inside a `<div>` or an `<iframe>`, and for that, both are available inside the `embedded` directory.
    - Both require similar props and these are the ones that are common to them:
      ```js
      apiImpl: PingPongChannelApi; // The API implementation
      targetOrigin: string; // The current location origin url
      name: string; // The envelope name
      ```
-   - For **div** the `renderView` prop is required:
+   - For **`<div>`** the `renderView` prop is required:
      ```js
      renderView: (container: HTMLDivElement, envelopeId?: string) => Promise<void>;
      ```
      It's responsible for rendering the Ping Pong view inside the `container` element and passing the `envelopeId` to be used when initializing the envelope.
-   - For **iFrame** the `envelopePath` prop is required:
+   - For **`<iframe>`** the `envelopePath` prop is required:
      ```
      envelopePath: string;
      ```
-     It should receive the URL to be loaded inside the iFrame.
+     It should receive the URL to be loaded inside the `<iframe>`.
 4. **Initializing**
 
-   - When loading your ping pong implementation call the `init` method from the `PingPongEnvelope` class
+   - When loading your Ping-Pong View implementation call the `init` method from the `PingPongEnvelope` class
    - It should receive the following arguments:
 
      ```js
@@ -70,7 +70,7 @@ It's divided into the following submodules:
      }
      ```
 
-     - **config** is one of `EnvelopeDivConfig` or `EnvelopeIFrameConfig`, specifying if the envelope is running in an _iFrame_ or a _div_, passing the `envelopeId` if in a _div_;
+     - **config** is one of `EnvelopeDivConfig` or `EnvelopeIFrameConfig`, specifying if the envelope is running in an _`<iframe>`_ or a _`<div>`_, passing the `envelopeId` if in a _`<div>`_;
      - **bus** is the medium through which messages will be transmitted/received. By default we use:
        ```js
        {

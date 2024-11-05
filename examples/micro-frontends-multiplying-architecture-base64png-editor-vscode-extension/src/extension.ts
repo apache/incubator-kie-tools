@@ -18,7 +18,7 @@
  */
 
 import * as vscode from "vscode";
-import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
+import { startExtension } from "@kie-tools-core/vscode-extension";
 import * as path from "path";
 import * as fs from "fs";
 import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
@@ -30,15 +30,16 @@ export function activate(context: vscode.ExtensionContext) {
    * Starts the extension and set initial properties:
    *
    * @params args.extensionName The extension name.
-   * @params args.context The VS Code context.
+   * @params args.context The VS Code extension context.
    * @params args.viewType The name of the view command to open the Editor.
-   * @params args.getPreviewCommandId The name of the command to generate a SVG file. (it was set on the package.json)
+   * @params args.generateSvgCommandId The name of the command to generate a SVG file. (it was set on the package.json)
+   * @params args.silentlyGenerateSvgCommandId Same as above but without the toast notification.
    * @params args.editorEnvelopeLocator.targetOrigin The initial path of the envelope.
    * @params args.editorEnvelopeLocator.mapping A map associating a file extension with the respective envelope path and resources path.
    */
-  KogitoVsCode.startExtension({
-    extensionName: "kie-tools-examples.base64png-editor-vscode-extension",
-    context: context,
+  startExtension({
+    extensionName: "kie-tools-examples-base64png-editor-vscode-extension",
+    context,
     viewType: "kieToolsExampleBase64PngEditor",
     generateSvgCommandId: "extension.kie.tools.examples.base64PngEditor.getPreviewSvg",
     silentlyGenerateSvgCommandId: "",
@@ -57,9 +58,9 @@ export function activate(context: vscode.ExtensionContext) {
    */
   context.subscriptions.push(
     /**
-     * This command works on any png image. It will create a new file, it converts a PNG image to a base64png file.
+     * This command works on any png image. It will create a new file, it converts a PNG image to a `.base64png` file.
      *
-     * To use it, can click on the Kogito icon on the top right or use the VS Code command pallet.
+     * To use it, can click on the Apache KIE icon at the top-right or use the VS Code command pallet.
      */
     vscode.commands.registerCommand(
       "extension.kie.tools.examples.base64PngEditor.createBase64Png",
@@ -70,13 +71,15 @@ export function activate(context: vscode.ExtensionContext) {
         const base64AbsoluteFsPath = path.join(parsedPath.dir, base64FileName);
         fs.writeFileSync(base64AbsoluteFsPath, buffer.toString("base64"));
 
-        vscode.window.showInformationMessage("Generated the Base64 file with success!", "Open").then((selected) => {
-          if (!selected) {
-            return;
-          }
+        vscode.window
+          .showInformationMessage("Generated Base64 PNG (.base64png) file successfully.", "Open")
+          .then((selected) => {
+            if (!selected) {
+              return;
+            }
 
-          vscode.commands.executeCommand("vscode.open", vscode.Uri.file(base64AbsoluteFsPath));
-        });
+            vscode.commands.executeCommand("vscode.open", vscode.Uri.file(base64AbsoluteFsPath));
+          });
       }
     )
   );

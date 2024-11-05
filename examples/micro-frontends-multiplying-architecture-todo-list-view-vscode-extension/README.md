@@ -17,18 +17,18 @@
 
 # Example :: Micro-frontends Multiplying Architecture :: 'To do' List View VS Code Extension
 
-This package provides a VS Code Extension containing a 'To do' list View and the following commands:
+This package provides a VS Code Extension containing a 'To do' List View, which can and the following commands:
 
 1. `TODO: Open list`
-   - Opens a Webview with the 'To do' list View.
+   - Opens a Webview with the 'To do' List View.
 1. `TODO: Add item(s)`
-   - When there's a selected text in a text editor (e.g. `txt`) you can right-click it to add the selection as a 'To do' item.
+   - When there's a selected text in a text editor (E.g., a `.txt` file) you can right-click it to add the selection as a 'To do' item. Selecting multiple lines will add multiple items.
 1. `TODO: Mark all as completed`
-   - Marks all the items in the 'To do' list as completed.
+   - Marks all the items in the 'To do' List as completed.
 
 ## Building
 
-Run `pnpm build:prod`. A `.vsix` file will be on the `dist` folder.
+Run `KIE_TOOLS_BUILD__buildExamples=true pnpm build:prod`. A `.vsix` file will be on the `dist` folder. Drag it to the Extensions panel on VS Code to install it.
 
 ---
 

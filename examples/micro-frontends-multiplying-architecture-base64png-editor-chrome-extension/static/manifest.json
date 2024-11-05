@@ -1,8 +1,8 @@
 {
-  "name": "KIE Tools Example :: Base64 PNG Editor",
+  "name": "Apache KIE Tools Example :: Base64 PNG Editor",
   "version": "0.0.0",
   "manifest_version": 2,
-  "description": "Micro-frontends Multiplying Architecture Editor",
+  "description": "An example Chrome Extension to showcase a Base64 PNG (.base64png) Editor displaying files directly on GitHub's website.",
   "content_scripts": [
     {
       "run_at": "document_idle",
@@ -11,7 +11,7 @@
       "all_frames": true
     }
   ],
-  "icons": { "128": "./icon_128.png" },
+  "icons": { "128": "./kie-logo-128x128.png" },
   "web_accessible_resources": ["./*"],
   "permissions": ["https://*.github.com/*", "http://*.github.com/*"]
 }

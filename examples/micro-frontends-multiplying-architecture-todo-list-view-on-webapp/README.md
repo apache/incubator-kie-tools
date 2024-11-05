@@ -17,6 +17,14 @@
 
 # Example :: Micro-frontends Multiplying Architecture :: 'To do' List View on webapp
 
+This package contains a web application that features a 'To do' List View, a simple component wrapped inside an Envelope with a simple API for manging 'To do' items. It also features a very simple demo of Multiplying Architecture's Shared Value.
+
+## Starting the application
+
+```shell script
+pnpm start
+```
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software

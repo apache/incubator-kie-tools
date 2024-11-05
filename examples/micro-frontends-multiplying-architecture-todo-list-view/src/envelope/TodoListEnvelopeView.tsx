@@ -100,7 +100,7 @@ export const TodoListEnvelopeView = React.forwardRef<TodoListEnvelopeViewApi, Pr
 
           <hr />
 
-          <h2>{`Here's your 'To do' list:`}</h2>
+          <h2>{`Here's your 'To do' List:`}</h2>
 
           {(items.length <= 0 && !potentialNewItem && (
             <>

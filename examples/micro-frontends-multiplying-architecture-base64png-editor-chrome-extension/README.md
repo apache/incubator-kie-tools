@@ -17,6 +17,18 @@
 
 # Example :: Micro-frontends Multiplying Architecture :: Base64 PNG Editor Chrome Extension
 
+Allows seeing `.base64png` files directly in GitHub's website.
+
+## Running
+
+First, run this command on your Terminal. It will build the Chrome Extension and start an HTTP server acting as the hosting application for the Base64 Editor Envelope.
+
+```shell script
+  KIE_TOOLS_BUILD__buildExamples=true pnpm build:dev && pnpm start
+```
+
+Then, head over to `chrome://extensions` on Chrome, click "Load unpacked", and select this package's `dist` folder. The extension will be installed. If you change the code, Ctrl+C the running app in your Terminal and run the same command again. Rebuilding it will be necessary.
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software

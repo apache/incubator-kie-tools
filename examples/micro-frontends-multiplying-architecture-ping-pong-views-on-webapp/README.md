@@ -17,6 +17,14 @@
 
 # Example :: Micro-frontends Multiplying Architecture :: Ping-Pong Views on webapp
 
+This package contains a web application that features multiple ways of using Ping-Pong Views wrapped inside Micro-frontends Multiplying Architecture Envelopes, showcasing both Promises and Notifications features of Multiplying Architecture Channel and Envelope APIs.
+
+## Starting the application
+
+```shell script
+pnpm start
+```
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software

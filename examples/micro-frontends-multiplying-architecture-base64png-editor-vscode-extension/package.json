@@ -17,9 +17,8 @@
   "scripts": {
     "build": "rimraf dist && webpack",
     "build:dev": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build --env dev\"",
-    "build:prod": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build\" \"pnpm pack\"",
-    "compile": "pnpm build --env dev",
-    "pack": "vsce package --no-dependencies -o ./dist/kie_tools_examples_base64_png_editor_vscode_extension_$npm_package_version.vsix",
+    "build:prod": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build\" \"pnpm build:vsix\"",
+    "build:vsix": "vsce package --allow-star-activation --no-dependencies -o ./dist/kie_tools_examples_base64png_editor_vscode_extension_$npm_package_version.vsix",
     "watch": "export WEBPACK__sourceMaps=true; WEBPACK__minimize=false; webpack --env dev"
   },
   "devDependencies": {
@@ -43,7 +42,7 @@
   "engines": {
     "vscode": "^1.75.0"
   },
-  "displayName": "KIE Tools Example :: Micro-frontends Multiplying Architecture :: Base64 PNG Editor",
+  "displayName": "Apache KIE Tools Example :: Base64 PNG Editor",
   "categories": [
     "Other"
   ],
@@ -52,10 +51,10 @@
       {
         "command": "extension.kie.tools.examples.base64PngEditor.createBase64Png",
         "icon": {
-          "dark": "./static/kogito-logo-128x128.png",
-          "light": "./static/kogito-logo-128x128.png"
+          "dark": "./static/kie-logo-128x128.png",
+          "light": "./static/kie-logo-128x128.png"
         },
-        "title": "Create Base64 PNG"
+        "title": "Base64 PNG: New from .png"
       },
       {
         "command": "extension.kie.tools.examples.base64PngEditor.getPreviewSvg",
@@ -63,12 +62,12 @@
           "dark": "./static/svg-icon-dark.png",
           "light": "./static/svg-icon-light.png"
         },
-        "title": "Base64 PNG Editor :: Save preview SVG"
+        "title": "Base64 PNG: Save as SVG"
       }
     ],
     "customEditors": [
       {
-        "displayName": "KIE Tools Example :: Base64 PNG Editor",
+        "displayName": "Apache KIE Tools Example :: Base64 PNG Editor",
         "selector": [
           {
             "filenamePattern": "*.base64png"
@@ -103,11 +102,11 @@
       "commandPalette": [
         {
           "command": "extension.kie.tools.examples.base64PngEditor.createBase64Png",
-          "when": "resourceLangId == png"
+          "when": "resourceExtname == .png"
         },
         {
           "command": "extension.kie.tools.examples.base64PngEditor.getPreviewSvg",
-          "when": "resourceLangId == base64png"
+          "when": "resourceExtname == .base64png"
         }
       ],
       "editor/title": [
@@ -121,7 +120,21 @@
           "group": "navigation",
           "when": "resourceLangId == base64png"
         }
+      ],
+      "explorer/context": [
+        {
+          "command": "extension.kie.tools.examples.base64PngEditor.createBase64Png",
+          "when": "resourceLangId == png"
+        },
+        {
+          "command": "extension.kie.tools.examples.base64PngEditor.getPreviewSvg",
+          "when": "resourceLangId == base64png"
+        }
       ]
     }
-  }
+  },
+  "activationEvents": [
+    "*"
+  ],
+  "icon": "./static/kie-logo-128x128.png"
 }
