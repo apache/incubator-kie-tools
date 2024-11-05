@@ -46,6 +46,7 @@ modules:
     - name: org.kie.kogito.system.user
     - name: org.kie.kogito.project.versions
     - name: com.redhat.osl.management.console
+    - name: com.redhat.osl.pkg-update
 
 ports:
   - value: 8080
