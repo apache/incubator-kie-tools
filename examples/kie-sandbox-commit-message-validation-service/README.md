@@ -46,7 +46,7 @@ pnpm start
   String with your commit message.
   ```
 - **Request response:**
-  ```json
+  ```js
   {
     "result": true | false,
     "reasons": []string | undefined
