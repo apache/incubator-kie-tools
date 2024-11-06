@@ -29,6 +29,26 @@ To run the development app, use the following command:
 
 `pnpm start`
 
+### GraphQL Modifications
+
+This section covers modifications to the GraphQL database.
+
+## Changing Job Status to Executed
+
+To update a job's status to `"EXECUTED"`, use the following `curl` command. Replace `{JOB_ID}` with the actual ID of the job you want to update.
+
+```bash
+curl -X POST http://localhost:4000/graphql \
+     -H "Content-Type: application/json" \
+     -d '{
+           "query": "mutation JobExecute($id: String!) { JobExecute(id: $id) }",
+           "variables": {
+             "id": "{JOB_ID}"
+           }
+         }'
+
+```
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software

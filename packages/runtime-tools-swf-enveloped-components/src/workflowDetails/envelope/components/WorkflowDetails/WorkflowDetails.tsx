@@ -56,6 +56,7 @@ import {
 } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 
 const SWFCOMBINEDEDITOR_WIDTH = 1000;
+const CHECK_EXPIRED_JOBS_TIMEOUT = 5000;
 
 interface WorkflowDetailsProps {
   isEnvelopeConnectedToChannel: boolean;
@@ -63,7 +64,6 @@ interface WorkflowDetailsProps {
   workflowDetails: WorkflowInstance;
 }
 
-console.log("## Update number: 32");
 const WorkflowDetails: React.FC<WorkflowDetailsProps> = ({ isEnvelopeConnectedToChannel, driver, workflowDetails }) => {
   const [data, setData] = useState<WorkflowInstance>({} as WorkflowInstance);
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -94,7 +94,6 @@ const WorkflowDetails: React.FC<WorkflowDetailsProps> = ({ isEnvelopeConnectedTo
 
   const loadJobs = useCallback(async () => {
     const jobsResponse: Job[] = await driver.jobsQuery(workflowDetails.id);
-    jobsResponse && console.log("## setJobs", { jobsResponse, expirationTime: jobsResponse[0].expirationTime });
     jobsResponse && setJobs(jobsResponse);
   }, [workflowDetails.id, driver]);
 
@@ -103,8 +102,7 @@ const WorkflowDetails: React.FC<WorkflowDetailsProps> = ({ isEnvelopeConnectedTo
    * @return
    */
   const checkExpiredJobs = useCallback(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-    console.log("## Check jobs", jobs);
+    await new Promise((resolve) => setTimeout(resolve, CHECK_EXPIRED_JOBS_TIMEOUT));
     const scheduledJobs = jobs.filter((job) => job.status === JobStatus.Scheduled);
 
     if (!scheduledJobs.length) {
@@ -114,17 +112,14 @@ const WorkflowDetails: React.FC<WorkflowDetailsProps> = ({ isEnvelopeConnectedTo
     const expiredJob = scheduledJobs.find((job) => new Date(job.expirationTime) < new Date());
 
     if (expiredJob) {
-      console.log("## Found expired Jobs");
       loadJobs();
       return;
     }
 
-    console.log("## Found scheduled jobs");
     checkExpiredJobs();
   }, [loadJobs, jobs]);
 
   useEffect(() => {
-    console.log("## call checkExpiredJobs ");
     jobs.length && checkExpiredJobs();
   }, [jobs, checkExpiredJobs]);
 
@@ -150,7 +145,6 @@ const WorkflowDetails: React.FC<WorkflowDetailsProps> = ({ isEnvelopeConnectedTo
     () => {
       if (isEnvelopeConnectedToChannel) {
         setData(workflowDetails);
-        console.log("## call loadJobs", workflowDetails);
         loadJobs();
       }
     },

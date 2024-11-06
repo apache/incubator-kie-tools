@@ -27,8 +27,7 @@ module.exports = typeDefs = gql`
   }
 
   type Mutation {
-    JobCancel(id: String): String
-    JobReschedule(id: String, data: String): String
+    JobExecute(id: String): String
   }
 
   type Query {

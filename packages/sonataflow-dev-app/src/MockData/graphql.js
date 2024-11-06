@@ -667,7 +667,7 @@ module.exports = {
       rootProcessId: null,
       status: "SCHEDULED",
       expirationTime: () => new Date(Date.now() + 1 * 10 * 1000).toISOString(),
-      priority: null,
+      priority: 0,
       callbackEndpoint:
         "http://localhost:4000/management/jobs/callback_state_timeouts/instances/9750c042-3fb2-40b7-96ba-ff10b6178c58/timers/-1",
       repeatInterval: 0,
@@ -687,7 +687,7 @@ module.exports = {
       rootProcessId: null,
       status: "EXECUTED",
       expirationTime: null,
-      priority: null,
+      priority: 0,
       callbackEndpoint:
         "http://localhost:4000/management/jobs/callback_state_timeouts/instances/d818e6dc-e949-4b11-b87b-678b614c0739/timers/-1",
       repeatInterval: 0,

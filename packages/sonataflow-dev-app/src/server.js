@@ -36,7 +36,7 @@ const data = require("./MockData/graphql");
 const controller = require("./MockData/controllers");
 const typeDefs = require("./MockData/types");
 
-const DEFAULT_TIMEOUT = 0;
+const DEFAULT_TIMEOUT = 2000;
 
 const swaggerOptions = {
   swaggerOptions: {
@@ -113,7 +113,7 @@ function paginatedResult(arr, offset, limit) {
 // Provide resolver functions for your schema fields
 const resolvers = {
   Mutation: {
-    JobReschedule: async (_parent, args) => {
+    JobExecute: async (_parent, args) => {
       const job = data.JobsData.find((data) => {
         return data.id === args["id"];
       });
