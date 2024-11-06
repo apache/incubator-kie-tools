@@ -363,8 +363,8 @@ github.com/santhosh-tekuri/jsonschema/v5 v5.3.0 h1:uIkTLo0AGRc8l7h5l9r+GcYi9qfVP
 github.com/santhosh-tekuri/jsonschema/v5 v5.3.0/go.mod h1:FKdcjfQW6rpZSnxxUvEA5H/cDPdvJ/SZJQLWWXWGrZ0=
 github.com/sergi/go-diff v1.1.0 h1:we8PVUC3FE2uYfodKH/nBHMSetSfHDR6scGdBi+erh0=
 github.com/sergi/go-diff v1.1.0/go.mod h1:STckp+ISIX8hZLjrqAeVduY0gWCT9IjLuqbuNXdaHfM=
-github.com/serverlessworkflow/sdk-go/v2 v2.4.1 h1:9NnaYGhSKZj19rRC8gTZ3IVJJ4EjFG0LJuQe/bt510Q=
-github.com/serverlessworkflow/sdk-go/v2 v2.4.1/go.mod h1:gl5WYsxKseaozFkHJwWNO5EGcG7Zztqk2HGuqeCovj4=
+github.com/serverlessworkflow/sdk-go/v2 v2.4.2 h1:dqRa/i5J885rk0bGIXzUVLwEFfRWB9gpQfOdXlbejsI=
+github.com/serverlessworkflow/sdk-go/v2 v2.4.2/go.mod h1:WGJR0YhXp035Y/toMKwHeIT5/EDEkDEDozn6VIGSUqI=
 github.com/sirupsen/logrus v1.2.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPxbbu5VWo=
 github.com/sirupsen/logrus v1.4.2/go.mod h1:tLMulIdttU9McNUspp0xgXVQah82FyeX6MwdIuYE2rE=
 github.com/sirupsen/logrus v1.6.0/go.mod h1:7uNnSEd1DgxDLC74fIahvMZmmYsHGZGEOFrfsX/uA88=

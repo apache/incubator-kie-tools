@@ -1,9 +1,9 @@
 module github.com/apache/incubator-kie-kogito-serverless-operator/api
 
-go 1.22.8
+go 1.22.0
 
 require (
-	github.com/serverlessworkflow/sdk-go/v2 v2.4.1
+	github.com/serverlessworkflow/sdk-go/v2 v2.4.2
 	k8s.io/api v0.31.1
 	k8s.io/apimachinery v0.31.1
 	knative.dev/pkg v0.0.0-20231023151236-29775d7c9e5c

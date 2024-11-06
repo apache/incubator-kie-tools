@@ -1,6 +1,6 @@
 module github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj
 
-go 1.22.8
+go 1.22.0
 
 // Internal dependencies
 replace github.com/apache/incubator-kie-kogito-serverless-operator/api => ../api
@@ -10,7 +10,7 @@ require (
 	github.com/pb33f/libopenapi v0.8.4
 	github.com/pkg/errors v0.9.1
 	github.com/santhosh-tekuri/jsonschema/v5 v5.3.0
-	github.com/serverlessworkflow/sdk-go/v2 v2.4.1
+	github.com/serverlessworkflow/sdk-go/v2 v2.4.2
 	github.com/stretchr/testify v1.9.0
 	k8s.io/api v0.31.1
 	k8s.io/apimachinery v0.31.1

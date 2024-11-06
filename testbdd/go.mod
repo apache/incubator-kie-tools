@@ -1,6 +1,6 @@
 module github.com/apache/incubator-kie-kogito-serverless-operator/testbdd
 
-go 1.22.8
+go 1.22.0
 
 replace (
 	github.com/apache/incubator-kie-kogito-serverless-operator => ../
@@ -108,7 +108,7 @@ require (
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/santhosh-tekuri/jsonschema/v5 v5.3.0 // indirect
 	github.com/sergi/go-diff v1.1.0 // indirect
-	github.com/serverlessworkflow/sdk-go/v2 v2.4.1 // indirect
+	github.com/serverlessworkflow/sdk-go/v2 v2.4.2 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/sosodev/duration v1.3.1 // indirect
 	github.com/src-d/gcfg v1.4.0 // indirect
