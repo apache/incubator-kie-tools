@@ -55,6 +55,8 @@ func TestInitializeControllersCfgAt_ValidFile(t *testing.T) {
 		Version:    "999-SNAPSHOT",
 	}, postgresExtensions[2])
 	assert.True(t, cfg.KogitoEventsGrouping)
+	assert.True(t, cfg.KogitoEventsGroupingBinary)
+	assert.False(t, cfg.KogitoEventsGroupingCompress)
 }
 
 func TestInitializeControllersCfgAt_FileNotFound(t *testing.T) {

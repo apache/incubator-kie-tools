@@ -30,4 +30,6 @@ const (
 	QuarkusHttpCors                          = "quarkus.http.cors"
 	QuarkusHttpCorsOrigins                   = "quarkus.http.cors.origins"
 	KogitoEventsGrouping                     = "kogito.events.grouping"
+	KogitoEventsGroupingBinary               = "kogito.events.grouping.binary"
+	KogitoEventsGroupingCompress             = "kogito.events.grouping.compress"
 )

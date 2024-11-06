@@ -317,45 +317,97 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceStatusChangeEventsURL, ""))
 }
 
+type eventsGroupingTestSpec struct {
+	kogitoEventsGrouping                bool
+	kogitoEventsGroupingBinary          bool
+	kogitoEventsGroupingCompress        bool
+	shouldContainEventsGrouping         bool
+	shouldContainEventsGroupingBinary   bool
+	shouldContainEventsGroupingCompress bool
+}
+
+func newTestSpec(eventsGrouping bool, eventsGroupingBinary bool, eventsGroupingCompress bool,
+	shouldContainEventsGrouping bool, shouldContainEventsGroupingBinary bool, shouldContainEventsGroupingCompress bool) *eventsGroupingTestSpec {
+	return &eventsGroupingTestSpec{
+		kogitoEventsGrouping:                eventsGrouping,
+		kogitoEventsGroupingBinary:          eventsGroupingBinary,
+		kogitoEventsGroupingCompress:        eventsGroupingCompress,
+		shouldContainEventsGrouping:         shouldContainEventsGrouping,
+		shouldContainEventsGroupingBinary:   shouldContainEventsGroupingBinary,
+		shouldContainEventsGroupingCompress: shouldContainEventsGroupingCompress,
+	}
+}
 func Test_appPropertyHandler_KogitoEventsGroupingTrueWithDevProfile(t *testing.T) {
-	doTestManagedPropsForKogitoEventsGrouping(t, metadata.DevProfile, true, false)
+	doTestManagedPropsForKogitoEventsGrouping(t, metadata.DevProfile, newTestSpec(false, false, false, false, false, false))
 }
 
 func Test_appPropertyHandler_KogitoEventsGroupingTrueWithPreviewProfile(t *testing.T) {
-	doTestManagedPropsForKogitoEventsGrouping(t, metadata.PreviewProfile, true, true)
+	doTestManagedPropsForKogitoEventsGrouping(t, metadata.PreviewProfile, newTestSpec(true, false, false, true, false, false))
 }
 
 func Test_appPropertyHandler_KogitoEventsGroupingTrueWithGitOpsProfile(t *testing.T) {
-	doTestManagedPropsForKogitoEventsGrouping(t, metadata.GitOpsProfile, true, true)
+	doTestManagedPropsForKogitoEventsGrouping(t, metadata.GitOpsProfile, newTestSpec(true, false, false, true, false, false))
 }
 
 func Test_appPropertyHandler_KogitoEventsGroupingFalseWithDevProfile(t *testing.T) {
-	doTestManagedPropsForKogitoEventsGrouping(t, metadata.DevProfile, false, false)
+	doTestManagedPropsForKogitoEventsGrouping(t, metadata.DevProfile, newTestSpec(false, false, false, false, false, false))
 }
 
 func Test_appPropertyHandler_KogitoEventsGroupingFalseWithPreviewProfile(t *testing.T) {
-	doTestManagedPropsForKogitoEventsGrouping(t, metadata.PreviewProfile, false, false)
+	doTestManagedPropsForKogitoEventsGrouping(t, metadata.PreviewProfile, newTestSpec(false, false, false, false, false, false))
+}
+
+func Test_appPropertyHandler_KogitoEventsGroupingTrueBinaryTrueCompressFalseWithPreviewProfile(t *testing.T) {
+	doTestManagedPropsForKogitoEventsGrouping(t, metadata.PreviewProfile, newTestSpec(true, true, false, true, true, false))
+}
+
+func Test_appPropertyHandler_KogitoEventsGroupingTrueBinaryTrueCompressTrueWithPreviewProfile(t *testing.T) {
+	doTestManagedPropsForKogitoEventsGrouping(t, metadata.PreviewProfile, newTestSpec(true, true, true, true, true, true))
 }
 
 func Test_appPropertyHandler_KogitoEventsGroupingFalseWithGitOpsProfile(t *testing.T) {
-	doTestManagedPropsForKogitoEventsGrouping(t, metadata.GitOpsProfile, false, false)
+	doTestManagedPropsForKogitoEventsGrouping(t, metadata.GitOpsProfile, newTestSpec(false, false, false, false, false, false))
 }
 
-func doTestManagedPropsForKogitoEventsGrouping(t *testing.T, profile metadata.ProfileType, kogitoEventsGrouping bool, shouldContain bool) {
+func Test_appPropertyHandler_KogitoEventsGroupingTrueBinaryTrueCompressFalseWithGitOpsProfile(t *testing.T) {
+	doTestManagedPropsForKogitoEventsGrouping(t, metadata.GitOpsProfile, newTestSpec(true, true, false, true, true, false))
+}
+
+func Test_appPropertyHandler_KogitoEventsGroupingTrueBinaryTrueCompressTrueWithGitOpsProfile(t *testing.T) {
+	doTestManagedPropsForKogitoEventsGrouping(t, metadata.GitOpsProfile, newTestSpec(true, true, true, true, true, true))
+}
+
+func doTestManagedPropsForKogitoEventsGrouping(t *testing.T, profile metadata.ProfileType, testSpec *eventsGroupingTestSpec) {
 	currentKogitoEventGroupingValue := cfg.GetCfg().KogitoEventsGrouping
-	cfg.GetCfg().KogitoEventsGrouping = kogitoEventsGrouping
+	currentKogitoEventGroupingBinaryValue := cfg.GetCfg().KogitoEventsGroupingBinary
+	currentKogitoEventGroupingCompressValue := cfg.GetCfg().KogitoEventsGroupingCompress
+	cfg.GetCfg().KogitoEventsGrouping = testSpec.kogitoEventsGrouping
+	cfg.GetCfg().KogitoEventsGroupingBinary = testSpec.kogitoEventsGroupingBinary
+	cfg.GetCfg().KogitoEventsGroupingCompress = testSpec.kogitoEventsGroupingCompress
 	workflow := test.GetBaseSonataFlow("default")
 	setProfileInFlow(profile)(workflow)
 	platform := test.GetBasePlatform()
 	handler, err := NewManagedPropertyHandler(workflow, platform)
 	cfg.GetCfg().KogitoEventsGrouping = currentKogitoEventGroupingValue
+	cfg.GetCfg().KogitoEventsGroupingBinary = currentKogitoEventGroupingBinaryValue
+	cfg.GetCfg().KogitoEventsGroupingCompress = currentKogitoEventGroupingCompressValue
 	assert.NoError(t, err)
 	generatedProps, propsErr := properties.LoadString(handler.Build())
 	assert.NoError(t, propsErr)
-	if shouldContain {
+	if testSpec.shouldContainEventsGrouping {
 		assertHasProperty(t, generatedProps, "kogito.events.grouping", "true")
 	} else {
 		assert.NotContains(t, generatedProps.Keys(), "kogito.events.grouping")
+	}
+	if testSpec.shouldContainEventsGroupingBinary {
+		assertHasProperty(t, generatedProps, "kogito.events.grouping.binary", "true")
+	} else {
+		assert.NotContains(t, generatedProps.Keys(), "kogito.events.grouping.binary", "true")
+	}
+	if testSpec.shouldContainEventsGroupingCompress {
+		assertHasProperty(t, generatedProps, "kogito.events.grouping.compress", "true")
+	} else {
+		assert.NotContains(t, generatedProps.Keys(), "kogito.events.grouping.compress", "true")
 	}
 }
 

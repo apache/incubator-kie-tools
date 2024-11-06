@@ -28155,6 +28155,11 @@ data:
     # If true, the workflow deployments will be configured to send accumulated workflow status change events to the Data
     # Index Service reducing the number of produced events. Set to false to send individual events.
     kogitoEventsGrouping: true
+    # If true, the accumulated workflow status change events will be sent in binary mode. (reduces the evens size)
+    kogitoEventsGroupingBinary: true
+    # If true, the accumulated workflow status change events, when sent in binary mode, will be gzipped at the cost of
+    # some performance.
+    kogitoEventsGroupingCompress: false
 kind: ConfigMap
 metadata:
   name: sonataflow-operator-controllers-config

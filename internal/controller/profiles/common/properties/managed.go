@@ -198,6 +198,12 @@ func NewManagedPropertyHandler(workflow *operatorapi.SonataFlow, platform *opera
 func setControllersConfigProperties(workflow *operatorapi.SonataFlow, props *properties.Properties) {
 	if !profiles.IsDevProfile(workflow) && cfg.GetCfg().KogitoEventsGrouping {
 		props.Set(constants.KogitoEventsGrouping, "true")
+		if cfg.GetCfg().KogitoEventsGroupingBinary {
+			props.Set(constants.KogitoEventsGroupingBinary, "true")
+			if cfg.GetCfg().KogitoEventsGroupingCompress {
+				props.Set(constants.KogitoEventsGroupingCompress, "true")
+			}
+		}
 	}
 }
 

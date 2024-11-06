@@ -72,6 +72,8 @@ type ControllersCfg struct {
 	BuilderConfigMapName            string `yaml:"builderConfigMapName,omitempty"`
 	PostgreSQLPersistenceExtensions []GAV  `yaml:"postgreSQLPersistenceExtensions,omitempty"`
 	KogitoEventsGrouping            bool   `yaml:"kogitoEventsGrouping,omitempty"`
+	KogitoEventsGroupingBinary      bool   `yaml:"KogitoEventsGroupingBinary,omitempty"`
+	KogitoEventsGroupingCompress    bool   `yaml:"KogitoEventsGroupingCompress,omitempty"`
 }
 
 // InitializeControllersCfg initializes the platform configuration for this instance.
