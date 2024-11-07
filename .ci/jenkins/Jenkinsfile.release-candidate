@@ -177,7 +177,7 @@ pipeline {
                     string(name: 'RUNNERS', value: "${params.RUNNERS}"),
                     string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
                     string(name: 'RELEASE_CANDIDATE_VERSION', value: "${TAG_NAME}"),
-                    choice(name: 'JOB_TYPE', value: 'release-candidate')
+                    string(name: 'JOB_TYPE', value: 'release-candidate')
                 ]
             }
         }
