@@ -1,0 +1,77 @@
+name: "CI :: OSL :: Sync Main"
+
+on:
+  workflow_dispatch: # Allows you to run the workflow manually from the Actions tab
+  schedule:
+    - cron: "0 2 * * 1" # Runs every Monday at 2 AM UTC (adjust as needed)
+
+env:
+  UPSTREAM_URL: ${{ vars.UPSTREAM_URL }}
+  IGNORED_FILES: ${{ vars.IGNORED_FILES }}
+  SYNC_BRANCH: "main-sync-$(date +'%Y%m%d-%H%M%S')"
+
+jobs:
+  sync_main_apache:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          ref: main # Check out the "main" branch in your fork
+
+      - name: Add Upstream Remote
+        run: |
+          git remote add upstream $UPSTREAM_URL
+          git fetch upstream main
+
+      - name: Setup Git Environment
+        shell: bash
+        run: |
+          git config --global user.name "${{ secrets.KIE1_USER_NAME }}"
+          git config --global user.email "${{ secrets.KIE1_EMAIL }}"
+
+      - name: Create Sync Branch
+        run: |
+          SYNC_BRANCH="main-sync-$(date +'%Y%m%d-%H%M%S')"
+          echo "SYNC_BRANCH=$SYNC_BRANCH" >> $GITHUB_ENV
+          git checkout -b $SYNC_BRANCH
+          git push -u origin $SYNC_BRANCH
+
+      - name: Move Ignored Files Temporarily
+        run: |
+          mkdir temp_ignored_files
+          for item in $IGNORED_ITEMS; do
+            [ -e "$item" ] && mv "$item" temp_ignored_items/
+          done
+
+      - name: Sync with Upstream Main
+        run: |
+          git merge upstream/main -X theirs --no-edit
+
+      - name: Restore and Recreate Ignored Files
+        run: |
+          for item in $IGNORED_ITEMS; do
+             [ -e "temp_ignored_items/$(basename "$item")" ] && mv "temp_ignored_items/$(basename "$item")" "$item"
+           done
+           rm -rf temp_ignored_items
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+
+      - name: Bootstrap
+        env:
+          PLAYWRIGHT_BASE__installDeps: "true"
+        uses: ./.github/actions/bootstrap
+
+      - name: Commit and Push Changes to Sync Branch
+        run: |
+          git add .
+          git commit -m "Sync with upstream/main and recreated ignored files"
+          git push origin "${{ env.SYNC_BRANCH }}"
+
+      - name: Create Pull Request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create --title "[$(date +'%Y%m%d-%H%M%S')] - Sync with upstream/main" --body "Automated sync with upstream main" --head "${{ env.SYNC_BRANCH }}" --base main
