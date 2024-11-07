@@ -40,7 +40,7 @@ jobs:
       - name: Move Ignored Files Temporarily
         run: |
           mkdir temp_ignored_items
-          for item in $IGNORED_ITEMS; do
+          for item in $IGNORED_FILES; do
             if [ -e "$item" ]; then
               mv -v "$item" temp_ignored_items/
             else
@@ -54,7 +54,7 @@ jobs:
 
       - name: Restore and Recreate Ignored Files
         run: |
-          for item in $IGNORED_ITEMS; do
+          for item in $IGNORED_FILES; do
              [ -e "temp_ignored_items/$(basename "$item")" ] && mv -v "temp_ignored_items/$(basename "$item")" "$item"
            done
            rm -rf temp_ignored_items
