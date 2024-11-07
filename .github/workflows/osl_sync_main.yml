@@ -7,7 +7,7 @@ on:
 
 env:
   UPSTREAM_URL: ${{ vars.UPSTREAM_URL }}
-  IGNORED_FILES: ${{ vars.IGNORED_FILES }}
+  IGNORED_FILES: "${{ vars.IGNORED_FILES }}"
   SYNC_BRANCH: "main-sync-$(date +'%Y%m%d-%H%M%S')"
 
 jobs:
@@ -39,9 +39,13 @@ jobs:
 
       - name: Move Ignored Files Temporarily
         run: |
-          mkdir temp_ignored_files
+          mkdir temp_ignored_items
           for item in $IGNORED_ITEMS; do
-            [ -e "$item" ] && mv "$item" temp_ignored_items/
+            if [ -e "$item" ]; then
+              mv -v "$item" temp_ignored_items/
+            else
+              echo "Warning: $item does not exist"
+            fi
           done
 
       - name: Sync with Upstream Main
@@ -51,7 +55,7 @@ jobs:
       - name: Restore and Recreate Ignored Files
         run: |
           for item in $IGNORED_ITEMS; do
-             [ -e "temp_ignored_items/$(basename "$item")" ] && mv "temp_ignored_items/$(basename "$item")" "$item"
+             [ -e "temp_ignored_items/$(basename "$item")" ] && mv -v "temp_ignored_items/$(basename "$item")" "$item"
            done
            rm -rf temp_ignored_items
 
