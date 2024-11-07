@@ -64,10 +64,8 @@ jobs:
       - name: Setup environment
         uses: ./.github/actions/setup-env
 
-      - name: Bootstrap
-        env:
-          PLAYWRIGHT_BASE__installDeps: "true"
-        uses: ./.github/actions/bootstrap
+      - name: Bootstrap (Regenerate Dependencies)
+        run: pnpm bootstrap --no-frozen-lockfile
 
       - name: Commit and Push Changes to Sync Branch
         run: |
