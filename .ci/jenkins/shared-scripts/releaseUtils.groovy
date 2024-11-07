@@ -56,11 +56,13 @@ def publishArtifacts(String artifactsDir, String releaseRepository, String relea
 /**
 * Download release artifacts from a specific release
 */
-def downloadReleaseArtifacts(String releaseRepository, String releaseVersion, String artifactsDir, String... artifactsNames) {
+def downloadReleaseArtifacts(String releaseRepository, String artifactsDir, String releaseVersion, String... artifactsNames) {
     sh """#!/bin/bash -el
     mkdir -p "${artifactsDir}" || true
     """.trim()
     for (artifactName in artifactsNames) {
+        println(artifactName)
+        println("svn cat ${releaseRepository}/${releaseVersion}/${artifactName}")
         sh """#!/bin/bash -el
         svn cat "${releaseRepository}/${releaseVersion}/${artifactName}" > "${artifactsDir}/${artifactName}"
         svn cat "${releaseRepository}/${releaseVersion}/${artifactName}.asc" > "${artifactsDir}/${artifactName}.asc"
@@ -73,7 +75,7 @@ def downloadReleaseArtifacts(String releaseRepository, String releaseVersion, St
 * Return a list of upstream images artifacts
 */
 def getUpstreamImagesArtifactsList(String releaseVersion) {
-    return [
+    String[] images = [
         "apache-kie-${releaseVersion}-incubating-kogito-base-builder-image.tar.gz",
         "apache-kie-${releaseVersion}-incubating-kogito-data-index-ephemeral-image.tar.gz",
         "apache-kie-${releaseVersion}-incubating-kogito-data-index-postgresql-image.tar.gz",
@@ -81,7 +83,8 @@ def getUpstreamImagesArtifactsList(String releaseVersion) {
         "apache-kie-${releaseVersion}-incubating-kogito-jobs-service-allinone-image.tar.gz",
         "apache-kie-${releaseVersion}-incubating-kogito-jobs-service-ephemeral-image.tar.gz",
         "apache-kie-${releaseVersion}-incubating-kogito-jobs-service-postgresql-image.tar.gz"
-    ].toArray()
+    ]
+    return images
 }
 
 /**

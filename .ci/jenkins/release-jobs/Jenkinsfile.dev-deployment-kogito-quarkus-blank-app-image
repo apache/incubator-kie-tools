@@ -86,31 +86,21 @@ pipeline {
             }
         }
 
-        stage('Download upstream images from staging SVN') {
+        stage('Download upstream images from staging SVN and load them on Docker') {
             when {
                 expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
             }
             steps {
                 script {
-                    env.UPSTREAM_IMAGES_ARTIFACTS = releaseUtils.getUpstreamImagesArtifactsList("${params.RELEASE_CANDIDATE_VERSION}")
+                    String[] upstream_images_artifacts = releaseUtils.getUpstreamImagesArtifactsList("${params.RELEASE_VERSION}")
                     releaseUtils.downloadReleaseArtifacts(
                         "${pipelineVars.asfReleaseStagingRepository}",
                         "${UPSTREAM_RELEASE_ARTIFACTS_DIR}",
                         "${params.RELEASE_CANDIDATE_VERSION}",
-                        "${UPSTREAM_IMAGES_ARTIFACTS}"
+                        upstream_images_artifacts,
                     )
-                }
-            }
-        }
-
-        stage('Load upstream images') {
-            when {
-                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
-            }
-            steps {
-                dir("${UPSTREAM_RELEASE_ARTIFACTS_DIR}") {
-                    script {
-                        dockerUtils.loadImages("${UPSTREAM_IMAGES_ARTIFACTS}")
+                    dir("${UPSTREAM_RELEASE_ARTIFACTS_DIR}") {
+                        dockerUtils.loadImages(upstream_images_artifacts)
                     }
                 }
             }
