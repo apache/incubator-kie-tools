@@ -36,7 +36,6 @@ jobs:
           SYNC_BRANCH="main-sync-$(date +'%Y%m%d-%H%M%S')"
           echo "SYNC_BRANCH=$SYNC_BRANCH" >> $GITHUB_ENV
           git checkout -b $SYNC_BRANCH
-          git push -u origin $SYNC_BRANCH
 
       - name: Move Ignored Files Temporarily
         run: |
@@ -47,7 +46,7 @@ jobs:
 
       - name: Sync with Upstream Main
         run: |
-          git merge upstream/main -X theirs --no-edit
+          git merge upstream/main -X theirs --no-edit --allow-unrelated-histories
 
       - name: Restore and Recreate Ignored Files
         run: |
@@ -68,7 +67,7 @@ jobs:
         run: |
           git add .
           git commit -m "Sync with upstream/main and recreated ignored files"
-          git push origin "${{ env.SYNC_BRANCH }}"
+          git push -u origin "${{ env.SYNC_BRANCH }}"
 
       - name: Create Pull Request
         env:
