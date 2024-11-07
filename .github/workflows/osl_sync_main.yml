@@ -48,6 +48,9 @@ jobs:
             fi
           done
 
+      - name: Remove conflicts before Merge
+        run: rm -f pnpm-lock.yaml repo/graph.dot repo/graph.json
+
       - name: Sync with Upstream Main
         run: |
           git merge upstream/main -X theirs --no-edit --allow-unrelated-histories
@@ -56,9 +59,7 @@ jobs:
         run: |
           for item in $IGNORED_FILES; do
              [ -e "temp_ignored_items/$(basename "$item")" ] && mv -v "temp_ignored_items/$(basename "$item")" "$item"
-           done
-           rm -rf temp_ignored_items
-           rm -rf pnpm-lock.yaml
+          done
 
       - name: Setup environment
         uses: ./.github/actions/setup-env
