@@ -61,8 +61,6 @@ def downloadReleaseArtifacts(String releaseRepository, String artifactsDir, Stri
     mkdir -p "${artifactsDir}" || true
     """.trim()
     for (artifactName in artifactsNames) {
-        println(artifactName)
-        println("svn cat ${releaseRepository}/${releaseVersion}/${artifactName}")
         sh """#!/bin/bash -el
         svn cat "${releaseRepository}/${releaseVersion}/${artifactName}" > "${artifactsDir}/${artifactName}"
         svn cat "${releaseRepository}/${releaseVersion}/${artifactName}.asc" > "${artifactsDir}/${artifactName}.asc"
