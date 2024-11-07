@@ -58,6 +58,7 @@ jobs:
              [ -e "temp_ignored_items/$(basename "$item")" ] && mv -v "temp_ignored_items/$(basename "$item")" "$item"
            done
            rm -rf temp_ignored_items
+           rm -rf pnpm-lock.yaml
 
       - name: Setup environment
         uses: ./.github/actions/setup-env
