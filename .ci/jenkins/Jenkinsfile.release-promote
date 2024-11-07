@@ -123,7 +123,7 @@ pipeline {
                     string(name: 'UPLOAD_ASSET_URL', value: "${env.RELEASE_UPLOAD_ASSET_URL}"),
                     string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
                     string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
-                    choice(name: 'JOB_TYPE', value: 'release-promote')
+                    string(name: 'JOB_TYPE', value: 'release-promote')
                 ]
             }
         }
