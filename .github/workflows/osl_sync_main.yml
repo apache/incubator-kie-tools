@@ -1,5 +1,9 @@
 name: "CI :: OSL :: Sync Main"
 
+permissions:
+  contents: write
+  pull-requests: write
+
 on:
   workflow_dispatch: # Allows you to run the workflow manually from the Actions tab
   schedule:
@@ -76,5 +80,16 @@ jobs:
       - name: Create Pull Request
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
         run: |
-          gh pr create --title "[$(date +'%Y%m%d-%H%M%S')] - Sync with upstream/main" --body "Automated sync with upstream main" --head "${{ env.SYNC_BRANCH }}" --base main
+          set -x
+          runUrl="${{github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          prTitle="Automatic PR: Sync main with main-apache"
+          prBody="This pull request has been created by a GitHub workflow to synchronize the main branch with Apache upstream/main.<br /><br />\
+              > [!WARNING] \n \
+              > Please don't merge using squash, not to lose the git history.<br /><br />\
+              [View Action](${runUrl})"
+          if [[ -n "${{ vars.SYNC_REVIEWERS }}" ]]; then
+            reviewersOption="--reviewer ${{ vars.SYNC_REVIEWERS }}"
+          fi
+          gh pr create --title "${prTitle}" --body "${prBody}" --base main $reviewersOption
