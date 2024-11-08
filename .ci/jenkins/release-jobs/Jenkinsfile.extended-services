@@ -157,7 +157,7 @@ pipeline {
                 script {
                     sh """#!/bin/bash -el
                     mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
-                    cp "${LEGAL_FILES_DIR}/*" kie-tools/packages/extended-services/dist/linux
+                    cp "${LEGAL_FILES_DIR}/." kie-tools/packages/extended-services/dist/linux
                     cd kie-tools/packages/extended-services/dist/linux
                     zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${EXTENDED_SERVICES_LINUX_X86_RELEASE_FILE}" ./kie_sandbox_extended_services ./NOTICE ./LICENSE ./DISCLAIMER-WIP
                     """.trim()

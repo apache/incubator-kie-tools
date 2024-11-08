@@ -173,8 +173,8 @@ pipeline {
                 script {
                     sh """#!/bin/bash -el
                     mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
-                    cp "${LEGAL_FILES_DIR}/*" "${WORKSPACE}/kie-tools/packages/online-editor/dist"
-                    cp "${LEGAL_FILES_DIR}/*" "${WORKSPACE}/kie-tools/packages/stunner-editors/dist"
+                    cp "${LEGAL_FILES_DIR}/." "${WORKSPACE}/kie-tools/packages/online-editor/dist"
+                    cp "${LEGAL_FILES_DIR}/." "${WORKSPACE}/kie-tools/packages/stunner-editors/dist"
                     cd "${WORKSPACE}/kie-tools/packages/online-editor/dist" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${ONLINE_EDITOR_RELEASE_FILE}" .
                     cd "${WORKSPACE}/kie-tools/packages/stunner-editors/dist" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${STUNNER_EDITORS_RELEASE_FILE}" .
                     """.trim()
