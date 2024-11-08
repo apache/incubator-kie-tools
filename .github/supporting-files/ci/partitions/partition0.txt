@@ -1,8 +1,1 @@
 @kie-tools/kn-plugin-workflow
-@osl/osl-data-index-ephemeral-image
-@osl/osl-data-index-postgresql-image
-@osl/osl-jobs-service-ephemeral-image
-@osl/osl-jobs-service-postgresql-image
-@osl/osl-management-console-image
-@osl/osl-swf-builder-image
-@osl/osl-swf-devmode-image

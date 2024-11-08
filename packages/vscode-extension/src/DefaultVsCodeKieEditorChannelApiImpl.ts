@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { BackendProxy } from "@kie-tools-core/backend/dist/api";
 import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
@@ -47,7 +46,6 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
     protected readonly editor: VsCodeKieEditorController,
     protected readonly resourceContentService: ResourceContentService,
     protected readonly vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
-    protected readonly backendProxy: BackendProxy,
     protected readonly vscodeNotifications: VsCodeNotificationsChannelApiImpl,
     protected readonly javaCodeCompletionApi: JavaCodeCompletionApi,
     protected readonly viewType: string,

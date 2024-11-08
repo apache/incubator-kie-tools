@@ -35,7 +35,7 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
 
   return (
     <React.Fragment>
-      <PageSectionHeader titleText="Jobs Management" ouiaId={ouiaId} />
+      <PageSectionHeader titleText="Jobs" ouiaId={ouiaId} />
       <PageSection {...componentOuiaProps(ouiaId, "jobs-management-page-section", ouiaSafe)}>
         <Card className="Dev-ui__card-size">
           <JobsManagementContainer />

@@ -30,7 +30,6 @@
     "watch": "export WEBPACK__sourceMaps=true; WEBPACK__minimize=false; webpack --env dev"
   },
   "dependencies": {
-    "@kie-tools-core/backend": "workspace:*",
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/envelope": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",
@@ -39,6 +38,7 @@
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/vscode-extension": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
+    "@kie-tools/form-code-generator-vscode-command": "workspace:*",
     "@kie-tools/kie-bc-editors": "workspace:*",
     "@kie-tools/pmml-editor": "workspace:*",
     "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*",
@@ -96,15 +96,19 @@
           "dark": "./static/svg-icon-dark.png",
           "light": "./static/svg-icon-light.png"
         },
-        "title": "Save Preview SVG"
+        "title": "Kogito Editors: Save Preview SVG"
       },
       {
         "command": "extension.kogito.runTest",
-        "title": "Run"
+        "title": "Kogito Editors: Run"
       },
       {
         "command": "extension.kogito.silentlyGenerateSvg",
-        "title": "Generate SVG without any notification"
+        "title": "Kogito Editors: Generate SVG without any notification"
+      },
+      {
+        "command": "extension.apache.kie.kogitoEditors.generateFormCode",
+        "title": "Kogito Editors: Generate form code for human interactions from jBPM project"
       }
     ],
     "configuration": {
@@ -144,7 +148,7 @@
     },
     "customEditors": [
       {
-        "displayName": "KIE Kogito Editors",
+        "displayName": "Apache KIE Kogito Editors",
         "selector": [
           {
             "filenamePattern": "*.{dmn,bpmn,bpmn2,scesim,pmml}"

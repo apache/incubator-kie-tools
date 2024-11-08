@@ -29,7 +29,7 @@ import {
 import unescape from "lodash/unescape";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { getUniformsSchema } from "./getUniformsSchema";
-import { inputSanitizationUtil } from "./inputSanitizationUtil";
+import { removeInvalidVarChars } from "./removeInvalidVarChars";
 import { JbpmFormAssetBase } from "./types";
 
 export interface Bootstrap4FormAsset extends FormAsset<Bootstrap4FileExt>, JbpmFormAssetBase {}
@@ -39,17 +39,17 @@ export const jbpmBootstrap4FormCodeGeneratorTheme: FormCodeGeneratorTheme<Bootst
     const uniformsSchema = getUniformsSchema(formSchema.schema);
     const form = renderForm({
       id: formSchema.name,
-      sanitizedId: inputSanitizationUtil(formSchema.name),
+      idWithoutInvalidTsVarChars: removeInvalidVarChars(formSchema.name),
       schema: new JSONSchemaBridge(uniformsSchema, () => true),
       disabled: false,
       placeholder: true,
     });
     return {
-      id: formSchema.name,
-      sanitizedId: inputSanitizationUtil(formSchema.name),
-      assetName: `${formSchema.name}.${BOOTSTRAP4_FILE_EXT}`,
-      sanitizedAssetName: `${inputSanitizationUtil(formSchema.name)}.${BOOTSTRAP4_FILE_EXT}`,
-      type: BOOTSTRAP4_FILE_EXT,
+      name: formSchema.name,
+      nameWithoutInvalidTsVarChars: removeInvalidVarChars(formSchema.name),
+      fileName: `${formSchema.name}.${BOOTSTRAP4_FILE_EXT}`,
+      fileNameWithoutInvalidVarChars: `${removeInvalidVarChars(formSchema.name)}.${BOOTSTRAP4_FILE_EXT}`,
+      fileExt: BOOTSTRAP4_FILE_EXT,
       content: unescape(form),
       config: {
         schema: JSON.stringify(formSchema.schema),

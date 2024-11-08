@@ -12,6 +12,7 @@ require (
 	github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api v0.0.0
 	github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj v0.0.0
 	github.com/beevik/etree v1.2.0
+	github.com/docker/distribution v2.8.2+incompatible
 	github.com/docker/docker v24.0.9+incompatible
 	github.com/docker/go-connections v0.4.0
 	github.com/jstemmer/go-junit-report/v2 v2.0.0
@@ -31,7 +32,6 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
-	github.com/docker/distribution v2.8.2+incompatible // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/dprotaso/go-yit v0.0.0-20220510233725-9ba8df137936 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
@@ -88,6 +88,7 @@ require (
 	github.com/spf13/cast v1.5.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/stretchr/objx v0.5.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/vmware-labs/yaml-jsonpath v0.3.2 // indirect
 	golang.org/x/crypto v0.21.0 // indirect
