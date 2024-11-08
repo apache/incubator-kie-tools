@@ -19,9 +19,7 @@
 
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { VsCodeKieEditorController } from "./VsCodeKieEditorController";
-import { ResourceContentService, WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
-import { BackendProxy } from "@kie-tools-core/backend/dist/api";
-import { NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
+import { ResourceContentService } from "@kie-tools-core/workspace/dist/api";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeI18n } from "./i18n";
@@ -39,7 +37,6 @@ export interface VsCodeKieEditorChannelApiProducer {
    * @param editor
    * @param resourceContentService
    * @param vscodeWorkspace
-   * @param backendProxy
    * @param vscodeNotifications
    * @param javaCodeCompletionApi
    * @param viewType
@@ -49,7 +46,6 @@ export interface VsCodeKieEditorChannelApiProducer {
     editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
     vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
-    backendProxy: BackendProxy,
     vscodeNotifications: VsCodeNotificationsChannelApiImpl,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
@@ -62,7 +58,6 @@ export class DefaultVsCodeEditorChannelApiProducer implements VsCodeKieEditorCha
     editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
     vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
-    backendProxy: BackendProxy,
     vscodeNotifications: VsCodeNotificationsChannelApiImpl,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
@@ -72,7 +67,6 @@ export class DefaultVsCodeEditorChannelApiProducer implements VsCodeKieEditorCha
       editor,
       resourceContentService,
       vscodeWorkspace,
-      backendProxy,
       vscodeNotifications,
       javaCodeCompletionApi,
       viewType,

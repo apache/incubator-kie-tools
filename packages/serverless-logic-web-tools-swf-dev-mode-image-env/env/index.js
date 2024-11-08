@@ -32,7 +32,7 @@ module.exports = composeEnv([rootEnv], {
       description: "E.g,. `apache` or `kie-tools-bot`",
     },
     SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName: {
-      default: "incubator-serverless-logic-web-tools-swf-dev-mode",
+      default: "incubator-kie-serverless-logic-web-tools-swf-dev-mode",
       description: "Name of the image itself.",
     },
     SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTag: {
