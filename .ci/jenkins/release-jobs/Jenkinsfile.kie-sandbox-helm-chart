@@ -184,7 +184,7 @@ pipeline {
                 script {
                     sh """#!/bin/bash -el
                     mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
-                    cp "kie-tools/packages/kie-sandbox-helm-chart/dist/${KIE_SANDBOX_HELM_CHART__name}-${KIE_SANDBOX_HELM_CHART__tag}.tgz" "${RELEASE_ARTIFACTS_DIR}/${RELEASE_FILE}"
+                    cp "kie-tools/packages/kie-sandbox-helm-chart/dist/${KIE_SANDBOX_HELM_CHART__name}-${KIE_SANDBOX_HELM_CHART__tag}.tgz" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${RELEASE_FILE}"
                     """.trim()
                     releaseUtils.addLegalfilesToTarGzFile("${RELEASE_CANDIDATE_ARTIFACTS_DIR}", "${RELEASE_FILE}", "${LEGAL_FILES_DIR}")
                 }

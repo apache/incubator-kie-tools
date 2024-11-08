@@ -170,7 +170,7 @@ pipeline {
                     mkdir -p ${RELEASE_CANDIDATE_ARTIFACTS_DIR}/{business-automation-chrome-extension-editors,sonataflow-chrome-extension-editors}
                     cp -r kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/{fonts,*-envelope.*} "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/business-automation-chrome-extension-editors"
                     cp -r kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/{fonts,diagram,*-envelope.*,*.bundle.js,*.worker.js} "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/sonataflow-chrome-extension-editors"
-                    cp "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.RELEASE_VERSION}.zip" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${CHROME_EXTENCHROME_EXTENSION_RELEASE_FILE}"
+                    cp "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.RELEASE_VERSION}.zip" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${CHROME_EXTENSION_RELEASE_FILE}"
                     cp "kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${params.RELEASE_VERSION}.zip" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${SWF_CHROME_EXTENSION_RELEASE_FILE}"
                     cp -r "${LEGAL_FILES_DIR}/." ${RELEASE_CANDIDATE_ARTIFACTS_DIR}/business-automation-chrome-extension-editors
                     cp -r "${LEGAL_FILES_DIR}/." ${RELEASE_CANDIDATE_ARTIFACTS_DIR}/sonataflow-chrome-extension-editors
