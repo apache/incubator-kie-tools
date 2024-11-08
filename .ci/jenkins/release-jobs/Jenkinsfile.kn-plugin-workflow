@@ -175,7 +175,7 @@ pipeline {
                 script {
                     sh """#!/bin/bash -el
                     mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
-                    cp "${LEGAL_FILES_DIR}/*" kie-tools/packages/kn-plugin-workflow/dist
+                    cp -r "${LEGAL_FILES_DIR}/." kie-tools/packages/kn-plugin-workflow/dist
                     cd kie-tools/packages/kn-plugin-workflow/dist
                     zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${KN_PLUGIN_LINUX_X86_RELEASE_FILE}" ./kn-workflow-linux-amd64 ./NOTICE ./LICENSE ./DISCLAIMER-WIP
                     zip "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${KN_PLUGIN_MACOS_ARM_RELEASE_FILE}" ./kn-workflow-darwin-arm64 ./NOTICE ./LICENSE ./DISCLAIMER-WIP
@@ -191,7 +191,7 @@ pipeline {
                 expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
             }
             steps {
-                dir("${RELEASE_ARTIFACTS_DIR}") {
+                dir("${RELEASE_CANDIDATE_ARTIFACTS_DIR}") {
                     script {
                         releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
                         releaseUtils.signArtifact("${KN_PLUGIN_LINUX_X86_RELEASE_FILE}")

@@ -225,22 +225,6 @@ pipeline {
             }
         }
 
-        stage('Push release candidate artifacts to the staging SVN') {
-            when {
-                expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
-            }
-            steps {
-                script {
-                    releaseUtils.publishArtifacts(
-                        "${RELEASE_CANDIDATE_ARTIFACTS_DIR}",
-                        "${pipelineVars.asfReleaseStagingRepository}",
-                        "${params.RELEASE_CANDIDATE_VERSION}",
-                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
-                    )
-                }
-            }
-        }
-
         stage('Download release candidate artifacts from the staging SVN') {
             when {
                 expression { !params.DRY_RUN && params.JOB_TYPE == 'release-promote' }
