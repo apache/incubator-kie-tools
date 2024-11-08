@@ -1,9 +1,5 @@
 name: "CI :: OSL :: Sync Main"
 
-permissions:
-  contents: write
-  pull-requests: write
-
 on:
   workflow_dispatch: # Allows you to run the workflow manually from the Actions tab
   schedule:
