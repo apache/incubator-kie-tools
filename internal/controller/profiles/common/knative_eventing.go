@@ -20,9 +20,9 @@ package common
 import (
 	"context"
 
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"k8s.io/klog/v2"
 
-	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/knative"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 	"sigs.k8s.io/controller-runtime/pkg/client"

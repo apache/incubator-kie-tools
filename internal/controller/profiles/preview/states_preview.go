@@ -22,21 +22,31 @@ package preview
 import (
 	"context"
 	"fmt"
+	"sort"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/klog/v2"
+	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/builder"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/knative"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/platform"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles/common"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
+)
+
+const (
+	kSink             = "K_SINK"
+	workflowContainer = "workflow"
 )
 
 type newBuilderState struct {
@@ -221,8 +231,8 @@ func (h *deployWithBuildWorkflowState) Do(ctx context.Context, workflow *operato
 }
 
 func (h *deployWithBuildWorkflowState) PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error {
-	//By default, we don't want to perform anything after the reconciliation, and so we will simply return no error
-	return nil
+	// Clean up the outdated Knative revisions, if any
+	return h.cleanupOutdatedRevisions(ctx, workflow)
 }
 
 // isWorkflowChanged marks the workflow status as unknown to require a new build reconciliation
@@ -232,4 +242,76 @@ func (h *deployWithBuildWorkflowState) isWorkflowChanged(workflow *operatorapi.S
 		return true
 	}
 	return false
+}
+
+func (h *deployWithBuildWorkflowState) cleanupOutdatedRevisions(ctx context.Context, workflow *operatorapi.SonataFlow) error {
+	if !workflow.IsKnativeDeployment() {
+		return nil
+	}
+	avail, err := knative.GetKnativeAvailability(h.Cfg)
+	if err != nil {
+		return err
+	}
+	if !avail.Serving || !avail.Eventing {
+		return nil
+	}
+	injected, err := knative.CheckKSinkInjected(workflow.Name, workflow.Namespace)
+	if err != nil {
+		return err
+	}
+	if !injected {
+		return fmt.Errorf("waiting for Sinkbinding K_SINK injection to complete")
+	}
+	opts := &client.ListOptions{
+		LabelSelector: labels.SelectorFromSet(
+			map[string]string{
+				workflowproj.LabelWorkflow:          workflow.Name,
+				workflowproj.LabelWorkflowNamespace: workflow.Namespace,
+			},
+		),
+		Namespace: workflow.Namespace,
+	}
+	revisionList := &servingv1.RevisionList{}
+	if err := h.C.List(ctx, revisionList, opts); err != nil {
+		return err
+	}
+	// Sort the revisions based on creation timestamp
+	sortRevisions(revisionList.Items)
+	// Clean up previous revisions that do not have K_SINK injected
+	for i := 0; i < len(revisionList.Items)-1; i++ {
+		revision := &revisionList.Items[i]
+		if !containsKSink(revision) {
+			klog.V(log.I).InfoS("Revision %s does not have K_SINK injected and can be cleaned up.", revision.Name)
+			if err := h.C.Delete(ctx, revision, &client.DeleteOptions{}); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func containsKSink(revision *servingv1.Revision) bool {
+	for _, container := range revision.Spec.PodSpec.Containers {
+		if container.Name == workflowContainer {
+			for _, env := range container.Env {
+				if env.Name == kSink {
+					return true
+				}
+			}
+			break
+		}
+	}
+	return false
+}
+
+type CreationTimestamp []servingv1.Revision
+
+func (a CreationTimestamp) Len() int { return len(a) }
+func (a CreationTimestamp) Less(i, j int) bool {
+	return a[i].CreationTimestamp.Before(&a[j].CreationTimestamp)
+}
+func (a CreationTimestamp) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+
+func sortRevisions(revisions []servingv1.Revision) {
+	sort.Sort(CreationTimestamp(revisions))
 }

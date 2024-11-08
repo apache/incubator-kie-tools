@@ -33,6 +33,14 @@ rules:
   - update
   - watch
 - apiGroups:
+  - serving.knative.dev
+  resources:
+  - revisions
+  verbs:
+  - delete
+  - list
+  - watch
+- apiGroups:
   - sonataflow.org
   resources:
   - sonataflowbuilds
