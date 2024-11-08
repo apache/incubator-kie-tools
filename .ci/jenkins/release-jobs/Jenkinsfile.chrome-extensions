@@ -191,7 +191,7 @@ pipeline {
                 dir("${RELEASE_CANDIDATE_ARTIFACTS_DIR}") {
                     script {
                         releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
-                        releaseUtils.signArtifact("${CHROME_EXTENCHROME_EXTENSION_RELEASE_FILE}")
+                        releaseUtils.signArtifact("${CHROME_EXTENSION_RELEASE_FILE}")
                         releaseUtils.signArtifact("${SWF_CHROME_EXTENSION_RELEASE_FILE}")
                         releaseUtils.signArtifact("${CHROME_EXTENSION_EDITORS_RELEASE_FILE}")
                         releaseUtils.signArtifact("${SWF_CHROME_EXTENSION_EDITORS_RELEASE_FILE}")
@@ -226,7 +226,7 @@ pipeline {
                         "${pipelineVars.asfReleaseStagingRepository}",
                         "${RELEASE_ARTIFACTS_DIR}",
                         "${params.RELEASE_CANDIDATE_VERSION}",
-                        "${CHROME_EXTENCHROME_EXTENSION_RELEASE_FILE}",
+                        "${CHROME_EXTENSION_RELEASE_FILE}",
                         "${SWF_CHROME_EXTENSION_RELEASE_FILE}",
                         "${CHROME_EXTENSION_EDITORS_RELEASE_FILE}",
                         "${SWF_CHROME_EXTENSION_EDITORS_RELEASE_FILE}"
