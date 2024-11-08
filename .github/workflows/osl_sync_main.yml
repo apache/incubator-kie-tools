@@ -13,7 +13,8 @@ env:
   UPSTREAM_URL: ${{ vars.UPSTREAM_URL }}
   IGNORED_FILES: "${{ vars.IGNORED_FILES }}"
   SYNC_BRANCH: "main-sync-$(date +'%Y%m%d-%H%M%S')"
-
+  GITHUB_TOKEN: ${{ secrets.KIE1_TOKEN }}
+  
 jobs:
   sync_main_apache:
     runs-on: ubuntu-latest
@@ -78,8 +79,6 @@ jobs:
           git push -u origin "${{ env.SYNC_BRANCH }}"
 
       - name: Create Pull Request
-        env:
-          GITHUB_TOKEN: ${{ secrets.KIE1_TOKEN }}
         shell: bash
         run: |
           set -x
