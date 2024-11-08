@@ -177,7 +177,7 @@ pipeline {
                     cp "kie-tools/packages/pmml-vscode-extension/dist/pmml_vscode_extension_${params.RELEASE_VERSION}.vsix" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${PMML_VSCODE_EXTENSION_RELEASE_FILE}"
                     cp "kie-tools/packages/vscode-extension-dashbuilder-editor/dist/vscode_extension_dashbuilder_editor_${params.RELEASE_VERSION}.vsix" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${DASHBUILDER_VSCODE_EXTENSION_RELEASE_FILE}"
                     cp "kie-tools/packages/serverless-workflow-vscode-extension/dist/serverless_workflow_vscode_extension_${params.RELEASE_VERSION}.vsix" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${SONATAFLOW_VSCODE_EXTENSION_RELEASE_FILE}"
-                    cp "kie-tools/packages/yard-vscode-extension/dist/yard_vscode_extension_${params.RELEASE_VERSION}.vsix" "${RELEASE_ARTIFACTS_DIR}/${YARD_VSCODE_EXTENSION_RELEASE_FILE}"
+                    cp "kie-tools/packages/yard-vscode-extension/dist/yard_vscode_extension_${params.RELEASE_VERSION}.vsix" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${YARD_VSCODE_EXTENSION_RELEASE_FILE}"
                     cp "kie-tools/packages/vscode-extension-kogito-bundle/dist/vscode_extension_kogito_bundle_${params.RELEASE_VERSION}.vsix" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${KOGITO_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}"
                     cp "kie-tools/packages/vscode-extension-kie-ba-bundle/dist/vscode_extension_kie_ba_bundle_${params.RELEASE_VERSION}.vsix" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${BUSINESS_AUTOMATION_BUNDLE_VSCODE_EXTENSION_RELEASE_FILE}"
                     cp "kie-tools/packages/extended-services-vscode-extension/dist/extended_services_vscode_extension_${params.RELEASE_VERSION}.vsix" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${EXTENDED_SERVICES_VSCODE_EXTENSION_RELEASE_FILE}"
