@@ -117,9 +117,10 @@ def addLegalfilesToTarGzFile(String artifactsDir, String tarGzFile, String legal
     tarFile = tarGzFile.replace('.gz', '')
     sh """#!/bin/bash -el
     cd ${legalFilesDir}
-    zcat ${artifactsDir}/${tarGzFile} | dd of=${tarFile} bs=512 skip=1
-    tar -rvf ${tarFile} ./LICENSE ./NOTICE ./DISCLAIMER-WIP
-    gzip -q -c ${tarFile} > ${artifactsDir}/${tarGzFile}
+    gzip -q -d ${artifactsDir}/${tarGzFile}
+    tar -rvf ${artifactsDir}/${tarFile} ./LICENSE ./NOTICE ./DISCLAIMER-WIP
+    gzip -q -c ${artifactsDir}/${tarFile} > ${artifactsDir}/${tarGzFile}
+    rm -rf ${artifactsDir}/${tarFile}
     """.trim()
 }
 
