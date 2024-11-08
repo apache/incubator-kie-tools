@@ -170,7 +170,7 @@ pipeline {
                 expression { !params.DRY_RUN && params.JOB_TYPE == 'release-candidate' }
             }
             steps {
-                dir("${RELEASE_ARTIFACTS_DIR}") {
+                dir("${RELEASE_CANDIDATE_ARTIFACTS_DIR}") {
                     script {
                         releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
                         releaseUtils.signArtifact("${EXTENDED_SERVICES_LINUX_X86_RELEASE_FILE}")
