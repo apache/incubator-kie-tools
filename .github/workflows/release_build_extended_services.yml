@@ -408,6 +408,14 @@ jobs:
     env:
       RELEASE_CANDIDATE_ARTIFACTS_DIR: ${{ github.workspace }}/extended-services-release-candidate-artifacts
     steps:
+      - name: "Checkout @ GitHub default"
+        uses: actions/checkout@v3
+
+      - name: "Checkout @ Simulated squashed-merge if PR"
+        uses: ./.github/actions/checkout-pr
+        with:
+          ref: ${{ inputs.base_ref }}
+
       - name: Import GPG key
         if: github.event_name != 'pull_request'
         uses: crazy-max/ghaction-import-gpg@111c56156bcc6918c056dbef52164cfa583dc549
