@@ -139,14 +139,14 @@ public class DevConsoleProcessor {
 
         cardPageBuildItem.addPage(Page.webComponentPageBuilder()
                 .componentLink("qwc-jbpm-quarkus-devui.js")
-                .metadata("page", "TaskInbox")
+                .metadata("page", "Tasks")
                 .title("Tasks")
                 .icon("font-awesome-solid:bars-progress")
                 .dynamicLabelJsonRPCMethodName("queryTasksCount"));
 
         cardPageBuildItem.addPage(Page.webComponentPageBuilder()
                 .componentLink("qwc-jbpm-quarkus-devui.js")
-                .metadata("page", "JobsManagement")
+                .metadata("page", "Jobs")
                 .title("Jobs")
                 .icon("font-awesome-solid:clock")
                 .dynamicLabelJsonRPCMethodName("queryJobsCount"));

@@ -28,7 +28,7 @@ import io.quarkus.runtime.annotations.ConfigRoot;
 public class DevConsoleRuntimeConfig {
 
     /**
-     * Mocked users data for the task inbox screen.
+     * Mocked users data for the Tasks screen.
      */
     @ConfigItem(name = "users")
     public Map<String, UserConfig> userConfigByUser;
