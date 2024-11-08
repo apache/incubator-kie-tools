@@ -154,8 +154,8 @@ pipeline {
                 script {
                     sh """#!/bin/bash -el
                     mkdir ${RELEASE_CANDIDATE_ARTIFACTS_DIR}
-                    cp "${LEGAL_FILES_DIR}/." "${WORKSPACE}/kie-tools/packages/kie-editors-standalone/dist"
-                    cp "${LEGAL_FILES_DIR}/." "${WORKSPACE}/kie-tools/packages/serverless-workflow-standalone-editor/dist"
+                    cp -r "${LEGAL_FILES_DIR}/." "${WORKSPACE}/kie-tools/packages/kie-editors-standalone/dist"
+                    cp -r "${LEGAL_FILES_DIR}/." "${WORKSPACE}/kie-tools/packages/serverless-workflow-standalone-editor/dist"
                     cd "${WORKSPACE}/kie-tools/packages/kie-editors-standalone/dist" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${BUSINESS_AUTOMATION_STANDALONE_RELEASE_FILE}" .
                     cd "${WORKSPACE}/kie-tools/packages/serverless-workflow-standalone-editor/dist" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${SONATAFLOW_STANDALONE_RELEASE_FILE}" .
                     """.trim()

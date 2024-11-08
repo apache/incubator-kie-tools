@@ -166,7 +166,7 @@ pipeline {
                         PNPM_FILTER_STRING_FOR_PUBLISHING=\$(pnpm -r exec 'bash' '-c' 'PKG_NAME=\$(jq -r ".name" package.json) PKG_IS_PVT=\$(jq -r ".private" package.json); if [[ "\$PKG_IS_PVT" != "true" ]]; then echo "-F \$PKG_NAME"; fi')
                         echo \$PNPM_FILTER_STRING_FOR_PUBLISHING
                         pnpm \$PNPM_FILTER_STRING_FOR_PUBLISHING exec 'bash' '-c' 'pnpm pack --pack-destination ${TMP_RELEASE_CANDIDATE_ARTIFACTS_DIR}'
-                        cp "${LEGAL_FILES_DIR}/." "${TMP_RELEASE_CANDIDATE_ARTIFACTS_DIR}"
+                        cp -r "${LEGAL_FILES_DIR}/." "${TMP_RELEASE_CANDIDATE_ARTIFACTS_DIR}"
                         cd "${TMP_RELEASE_CANDIDATE_ARTIFACTS_DIR}" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${RELEASE_FILE}" .
                         """.trim()
                     }
