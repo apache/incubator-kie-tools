@@ -72,7 +72,7 @@ spec:
       params:
         - name: script
           value: >
-            curl https://raw.githubusercontent.com/apache/incubator-kie-tools/main/packages/sonataflow-operator/operator.yaml | sed -E 's|image: docker.io/apache/incubator-kie.*|image: image-registry.openshift-image-registry.svc:5000/sonataflow-operator-system/sonataflow-operator:10.0.x|g' | kubectl apply -f -
+            curl https://raw.githubusercontent.com/apache/incubator-kie-tools/main/packages/sonataflow-operator/operator.yaml | sed -E 's|image: docker.io/apache/incubator-kie.*|image: image-registry.openshift-image-registry.svc:5000/sonataflow-operator-system/sonataflow-operator:10.0.0|g' | kubectl apply -f -
         # This image name and tag is auto-replaced using environment variables during install, don't touch.
       runAfter:
         - build-image

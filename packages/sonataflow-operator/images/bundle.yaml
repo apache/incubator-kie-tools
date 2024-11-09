@@ -20,7 +20,7 @@
 schema_version: 1
 name: "sonataflow-operator-bundle"
 description: "SonataFlow Operator Bundle"
-version: 10.0.999
+version: 10.0.0
 from: "scratch"
 
 labels:
