@@ -174,10 +174,16 @@ pipeline {
                     cp "kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${params.RELEASE_VERSION}.zip" "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${SWF_CHROME_EXTENSION_RELEASE_FILE}"
                     cp -r "${LEGAL_FILES_DIR}/." ${RELEASE_CANDIDATE_ARTIFACTS_DIR}/business-automation-chrome-extension-editors
                     cp -r "${LEGAL_FILES_DIR}/." ${RELEASE_CANDIDATE_ARTIFACTS_DIR}/sonataflow-chrome-extension-editors
+                    echo "regular extensions start"
+                    cp -r "${LEGAL_FILES_DIR}/." "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/"
+                    zip -r "${CHROME_EXTENSION_RELEASE_FILE}" NOTICE LICENSE DISCLAIMER-WIP
+                    zip -r "${SWF_CHROME_EXTENSION_RELEASE_FILE}" NOTICE LICENSE DISCLAIMER-WIP
+                    echo "regular extensions end"
                     cd "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/business-automation-chrome-extension-editors" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${CHROME_EXTENSION_EDITORS_RELEASE_FILE}" .
                     cd "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/sonataflow-chrome-extension-editors" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${SWF_CHROME_EXTENSION_EDITORS_RELEASE_FILE}" .
                     rm -rf "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/business-automation-chrome-extension-editors"
                     rm -rf "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/sonataflow-chrome-extension-editors"
+                    rm -rf "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/{NOTICE,LICENSE,DISCLAIMER-WIP}"
                     """.trim()
                 }
             }
