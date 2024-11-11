@@ -26,17 +26,17 @@ export type ServerArgs = {
   port: number;
   origin: string;
   verbose: boolean;
-  domainsToUseHttp: string[];
+  hostsToUseHttp: string[];
 };
 
 export const startServer = (args: ServerArgs): void => {
   console.log("Starting CORS proxy...");
-  console.log("=================================");
+  console.log("====================================================");
   console.log(`Origin:                     ${args.origin}`);
   console.log(`Port:                       ${args.port}`);
   console.log(`Verbose:                    ${args.verbose}`);
-  console.log(`Domains to proxy with HTTP: ${args.domainsToUseHttp}`);
-  console.log("=================================");
+  console.log(`Hosts to proxy with HTTP:   ${args.hostsToUseHttp}`);
+  console.log("====================================================");
 
   const app: express.Express = express();
 

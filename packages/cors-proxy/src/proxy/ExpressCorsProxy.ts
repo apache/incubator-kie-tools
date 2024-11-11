@@ -37,7 +37,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
     private readonly args: {
       origin: string;
       verbose: boolean;
-      domainsToUseHttp: string[];
+      hostsToUseHttp: string[];
     }
   ) {
     this.logger = new Logger(args.verbose);
@@ -140,7 +140,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
     }
 
     const proxyUrl = new URL(`protocol://${targetUrl.substring(1)}`);
-    const protocol = this.args.domainsToUseHttp.includes(proxyUrl.host) ? "http" : "https";
+    const protocol = this.args.hostsToUseHttp.includes(proxyUrl.host) ? "http" : "https";
     const proxyUrlString = targetUrl.startsWith("/") ? `${protocol}:/${targetUrl}` : undefined;
 
     return new ProxyRequestInfo({

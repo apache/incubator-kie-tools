@@ -32,7 +32,7 @@ export const run = () => {
     port: getPort(),
     origin: process.env.CORS_PROXY_ORIGIN ?? "*",
     verbose: process.env.CORS_PROXY_VERBOSE === "true",
-    domainsToUseHttp: (process.env.CORS_PROXY_USE_HTTP_FOR_DOMAINS || undefined)?.split(",") ?? [],
+    hostsToUseHttp: (process.env.CORS_PROXY_USE_HTTP_FOR_HOSTS || undefined)?.split(",") ?? [],
   });
 };
 
