@@ -23,7 +23,6 @@ import { Request, Response } from "express";
 import { GIT_CORS_CONFIG, isGitOperation } from "./git";
 import { CorsProxyHeaderKeys, CorsConfig, CorsProxy } from "@kie-tools/cors-proxy-api/dist";
 
-const HTTPS_PROTOCOL = "https:";
 const BANNED_PROXY_HEADERS = [
   "origin",
   "host",
@@ -38,6 +37,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
     private readonly args: {
       origin: string;
       verbose: boolean;
+      domainsToUseHttp: string[];
     }
   ) {
     this.logger = new Logger(args.verbose);
@@ -135,16 +135,17 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
 
   private resolveRequestInfo(request: Request): ProxyRequestInfo {
     const targetUrl: string = (request.headers[CorsProxyHeaderKeys.TARGET_URL] as string) ?? request.url;
-
     if (!targetUrl || targetUrl == "/") {
-      throw new Error("Couldn't resolve the target url...");
+      throw new Error("Couldn't resolve the target URL...");
     }
 
-    const proxyUrl = targetUrl.startsWith("/") ? `https:/${targetUrl}` : undefined;
+    const proxyUrl = new URL(`protocol://${targetUrl.substring(1)}`);
+    const protocol = this.args.domainsToUseHttp.includes(proxyUrl.host) ? "http" : "https";
+    const proxyUrlString = targetUrl.startsWith("/") ? `${protocol}:/${targetUrl}` : undefined;
 
     return new ProxyRequestInfo({
       targetUrl,
-      proxyUrl,
+      proxyUrl: proxyUrlString,
       corsConfig: this.resolveCorsConfig(targetUrl, request),
       insecurelyDisableTLSCertificateValidation:
         request.headers[CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION] === "true",
@@ -152,7 +153,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
   }
 
   private getProxyAgent(info: ProxyRequestInfo): https.Agent | undefined {
-    if (info.insecurelyDisableTLSCertificateValidation && info.proxyUrl.protocol === HTTPS_PROTOCOL) {
+    if (info.insecurelyDisableTLSCertificateValidation && info.proxyUrl.protocol === "https:") {
       return new https.Agent({
         rejectUnauthorized: false,
       });

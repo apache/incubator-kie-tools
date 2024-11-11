@@ -131,6 +131,7 @@ digraph G {
   "kie-editors-dev-vscode-extension" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/vscode-extension-common-test-helpers" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/kie-sandbox-accelerator-quarkus" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kie-sandbox-distribution" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kie-sandbox-extended-services-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kie-sandbox-webapp-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -430,6 +431,7 @@ digraph G {
   "kie-editors-dev-vscode-extension" -> "@kie-tools/vscode-extension-common-test-helpers" [ style = "dashed", color = "black" ];
   "@kie-tools/kie-editors-standalone" -> "@kie-tools/kie-bc-editors" [ style = "dashed", color = "blue" ];
   "@kie-tools/kie-editors-standalone" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "blue" ];
+  "@kie-tools/kie-sandbox-accelerator-quarkus" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/kie-sandbox-distribution" -> "@kie-tools/cors-proxy-image" [ style = "solid", color = "black" ];
   "@kie-tools/kie-sandbox-distribution" -> "@kie-tools/kie-sandbox-extended-services-image" [ style = "solid", color = "black" ];
   "@kie-tools/kie-sandbox-distribution" -> "@kie-tools/kie-sandbox-webapp-image" [ style = "solid", color = "black" ];
@@ -479,6 +481,8 @@ digraph G {
   "@kie-tools/online-editor" -> "@kie-tools/unitables-dmn" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/cors-proxy" [ style = "dashed", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/extended-services" [ style = "dashed", color = "black" ];
+  "@kie-tools/online-editor" -> "@kie-tools/extended-services-java" [ style = "dashed", color = "black" ];
+  "@kie-tools/online-editor" -> "@kie-tools/kie-sandbox-accelerator-quarkus" [ style = "dashed", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
   "@kie-tools-core/operating-system" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/operating-system" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];

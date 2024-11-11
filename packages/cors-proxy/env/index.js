@@ -33,6 +33,10 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: true,
       description: "Allows the proxy to run in verbose mode... useful to trace requests on development environments",
     },
+    CORS_PROXY__useHttpForDomains: {
+      default: true,
+      description: "Use `http` as default protocol for proxied requests. If `false`, `https` is used.",
+    },
   }),
   get env() {
     return {
@@ -41,6 +45,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
           port: getOrDefault(this.vars.CORS_PROXY__port),
           origin: getOrDefault(this.vars.CORS_PROXY__origin),
           verbose: getOrDefault(this.vars.CORS_PROXY__verbose),
+          useHttpForDomains: getOrDefault(this.vars.CORS_PROXY__useHttpForDomains),
         },
       },
     };
