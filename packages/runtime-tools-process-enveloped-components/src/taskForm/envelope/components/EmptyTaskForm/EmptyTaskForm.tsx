@@ -69,7 +69,7 @@ const EmptyTaskForm: React.FC<IOwnProps & OUIAProps> = ({
 
   return (
     <Bullseye {...componentOuiaProps(ouiaId, "empty-task-form", ouiaSafe)}>
-      <EmptyState variant={"large"}>
+      <EmptyState variant={"lg"}>
         <EmptyStateHeader
           titleText={<>{"Cannot show task form"}</>}
           icon={<EmptyStateIcon icon={InfoCircleIcon} color="var(--pf-v5-global--info-color--100)" />}

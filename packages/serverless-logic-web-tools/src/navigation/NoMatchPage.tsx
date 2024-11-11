@@ -19,17 +19,13 @@
 
 import * as React from "react";
 import { useCallback } from "react";
-import { Text, TextContent, EmptyStateActions } from "@patternfly/react-core/dist/js/components/Text";
-import {
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateActions,
-  EmptyStateFooter,
-} from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Button, ButtonVariant, EmptyStateActions } from "@patternfly/react-core/dist/js/components/Button";
+import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import { EmptyState, EmptyStateBody, EmptyStateFooter } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useHistory } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { useRoutes } from "./Hooks";
+import { EmptyStateActions } from "@patternfly/react-core";
 
 export function NoMatchPage() {
   const routes = useRoutes();

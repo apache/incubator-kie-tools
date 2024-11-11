@@ -102,6 +102,7 @@ import { Link } from "react-router-dom";
 import { routes } from "../navigation/Routes";
 import { isEditable } from "../extension";
 import { ConfirmDeleteModal } from "../table";
+import { Icon } from "@patternfly/react-core";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
@@ -1489,7 +1490,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               component={TextVariants.small}
                             >
                               <span>
-                                <OutlinedClockIcon size={"sm"} />
+                                <Icon size={"sm"}>
+                                  <OutlinedClockIcon />
+                                </Icon>
                               </span>
                             </Text>
                           </TextContent>
@@ -1505,7 +1508,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               component={TextVariants.small}
                             >
                               <span>
-                                <DesktopIcon size={"sm"} />
+                                <Icon size={"sm"}>
+                                  <DesktopIcon />
+                                </Icon>
                               </span>
                             </Text>
                           </TextContent>
@@ -1524,7 +1529,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               component={TextVariants.small}
                             >
                               <span>
-                                <OutlinedClockIcon size={"sm"} />
+                                <Icon size={"sm"}>
+                                  <OutlinedClockIcon />
+                                </Icon>
                               </span>
                             </Text>
                           </TextContent>
@@ -1540,7 +1547,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               component={TextVariants.small}
                             >
                               <span>
-                                <OutlinedHddIcon size={"sm"} />
+                                <Icon size={"sm"}>
+                                  <OutlinedHddIcon />
+                                </Icon>
                               </span>
                             </Text>
                           </TextContent>

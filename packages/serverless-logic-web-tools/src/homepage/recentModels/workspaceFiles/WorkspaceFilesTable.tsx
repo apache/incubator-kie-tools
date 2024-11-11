@@ -18,14 +18,7 @@
  */
 import * as React from "react";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import {
-  Table /* data-codemods */,
-  Tbody,
-  Th,
-  Thead,
-  ThProps,
-  Tr,
-} from "@patternfly/react-table/dist/js/components/TableComposable";
+import { Table /* data-codemods */, Tbody, Th, Thead, ThProps, Tr } from "@patternfly/react-table";
 import { useCallback, useMemo, useState } from "react";
 import { isEditable } from "../../../extension";
 import { WorkspaceFilesTableRow } from "./WorkspaceFilesTableRow";

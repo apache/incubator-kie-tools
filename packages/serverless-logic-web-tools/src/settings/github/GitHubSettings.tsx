@@ -45,6 +45,7 @@ import { QuickStartIds } from "../../quickstarts-data";
 import { AuthStatus, useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { SettingsPageContainer } from "../SettingsPageContainer";
 import { SettingsPageProps } from "../types";
+import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
 
 const PAGE_TITLE = "GitHub";
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
@@ -222,11 +223,11 @@ export function GitHubSettings(props: SettingsPageProps) {
             </h3>
             <FormGroup
               isRequired={true}
-              helperTextInvalid={githubTokenHelperText}
-              validated={githubTokenValidated}
+              // helperTextInvalid={githubTokenHelperText}
+              // validated={githubTokenValidated}
               label={"Token"}
               fieldId={"github-pat"}
-              helperText={"Your token must include the 'repo' scope."}
+              // helperText={"Your token must include the 'repo' scope."}
             >
               <InputGroup>
                 <InputGroupItem isFill>
@@ -246,6 +247,19 @@ export function GitHubSettings(props: SettingsPageProps) {
                   />
                 </InputGroupItem>
               </InputGroup>
+              {githubTokenValidated === "error" ? (
+                <FormHelperText>
+                  <HelperText>
+                    <HelperTextItem variant="error">{githubTokenHelperText}</HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
+              ) : (
+                <FormHelperText>
+                  <HelperText>
+                    <HelperTextItem variant="default">Your token must include the 'repo' scope.</HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
+              )}
             </FormGroup>
             <TextContent>
               <Text>

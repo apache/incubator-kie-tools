@@ -25,6 +25,7 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { ActionGroup, Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import "./MultipleDataTypesAdd.scss";
+import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
 
 interface MultipleDataTypeAddProps {
   onAdd: (types: string) => void;
@@ -75,8 +76,8 @@ const MultipleDataTypeAdd = ({ onAdd, onCancel }: MultipleDataTypeAddProps) => {
               label="Data Types"
               fieldId="data-types"
               isRequired={true}
-              validated={inputValidation}
-              helperTextInvalid={"Please enter at least one Data Type Name"}
+              // validated={inputValidation}
+              // helperTextInvalid={"Please enter at least one Data Type Name"}
             >
               <TextArea
                 className="data-dictionary__multiple-data-types"
@@ -88,6 +89,19 @@ const MultipleDataTypeAdd = ({ onAdd, onCancel }: MultipleDataTypeAddProps) => {
                 id="data-types"
                 placeholder={"First Data Type\nSecond Data Type\n..."}
               />
+              {inputValidation === "error" ? (
+                <FormHelperText>
+                  <HelperText>
+                    <HelperTextItem variant="error">Please enter at least one Data Type Name</HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
+              ) : (
+                <FormHelperText>
+                  <HelperText>
+                    <HelperTextItem variant="success"></HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
+              )}
             </FormGroup>
             <ActionGroup>
               <Button variant="primary" type="submit" ouiaId="add-them">

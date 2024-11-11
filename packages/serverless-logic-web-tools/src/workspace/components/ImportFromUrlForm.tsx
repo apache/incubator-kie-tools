@@ -26,6 +26,7 @@ import { useEffect, FormEvent, useCallback, useMemo } from "react";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
 import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 export function ImportFromUrlForm(props: {
   allowedTypes?: UrlType[];
@@ -89,11 +90,11 @@ export function ImportFromUrlForm(props: {
   return (
     <Form onSubmit={onSubmit}>
       <FormGroup
-        helperTextInvalid={displayError}
-        helperText={<FormHelperText style={{ visibility: "hidden" }} />}
-        helperTextInvalidIcon={<ExclamationCircleIcon />}
+        // helperTextInvalid={displayError}
+        // helperText={<FormHelperText style={{ visibility: "hidden" }} />}
+        // helperTextInvalidIcon={<ExclamationCircleIcon />}
         fieldId="import-url-form-input"
-        validated={validatedOption}
+        // validated={validatedOption}
       >
         <TextInput
           ref={props.urlInputRef}
@@ -103,8 +104,21 @@ export function ImportFromUrlForm(props: {
           isRequired={true}
           placeholder={"URL"}
           value={props.url}
-          onChange={props.onChange}
+          onChange={(_event, val) => props.onChange}
         />
+        {validatedOption === "error" ? (
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant="error">{displayError}</HelperTextItem>
+            </HelperText>
+          </FormHelperText>
+        ) : (
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant="success"></HelperTextItem>
+            </HelperText>
+          </FormHelperText>
+        )}
       </FormGroup>
     </Form>
   );

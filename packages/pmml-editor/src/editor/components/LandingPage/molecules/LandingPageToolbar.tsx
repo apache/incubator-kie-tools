@@ -51,7 +51,7 @@ export const LandingPageToolbar = (props: LandingPageToolbarProps) => {
                     type="search"
                     aria-label="filter models"
                     placeholder="Filter models by name"
-                    onChange={(e) => setFilter(e)}
+                    onChange={(_event, e) => setFilter(e)}
                   />
                   <Button
                     id="models-filter"
@@ -75,7 +75,7 @@ export const LandingPageToolbar = (props: LandingPageToolbarProps) => {
               data-testid="landing-page-toolbar__supported-models"
               label="Show unsupported models"
               isChecked={showUnsupportedModels}
-              onChange={onShowUnsupportedModels}
+              onChange={(_event, val) => onShowUnsupportedModels}
             />
           </ToolbarItem>
         )}

@@ -63,7 +63,7 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
                         aria-label="filter characteristics"
                         placeholder="Filter by name"
                         value={filter}
-                        onChange={(e) => setFilter(e)}
+                        onChange={(_event, e) => setFilter(e)}
                       />
                       <Button
                         id="characteristics-filter"

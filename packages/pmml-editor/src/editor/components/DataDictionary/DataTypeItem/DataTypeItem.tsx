@@ -39,6 +39,7 @@ import PropertiesLabels from "../PropertiesLabels/PropertiesLabels";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 import { ValidationIndicator } from "../../EditorCore/atoms";
+import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
 
 interface DataTypeItemProps {
   dataType: DDDataField;
@@ -220,9 +221,9 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                         <FormGroup
                           fieldId="name"
                           label="Name"
-                          helperTextInvalid="Name is mandatory and must be unique"
-                          helperTextInvalidIcon={<ExclamationCircleIcon />}
-                          validated={validation}
+                          // helperTextInvalid="Name is mandatory and must be unique"
+                          // helperTextInvalidIcon={<ExclamationCircleIcon />}
+                          // validated={validation}
                           style={{ width: 280 }}
                           isRequired={true}
                           data-ouia-component-type="field-name"
@@ -238,6 +239,19 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                             onBlur={handleNameSave}
                             autoComplete="off"
                           />
+                          {validation === "error" ? (
+                            <FormHelperText>
+                              <HelperText>
+                                <HelperTextItem variant="error">Name is mandatory and must be unique</HelperTextItem>
+                              </HelperText>
+                            </FormHelperText>
+                          ) : (
+                            <FormHelperText>
+                              <HelperText>
+                                <HelperTextItem variant="success"></HelperTextItem>
+                              </HelperText>
+                            </FormHelperText>
+                          )}
                         </FormGroup>
                       </SplitItem>
                       <SplitItem>

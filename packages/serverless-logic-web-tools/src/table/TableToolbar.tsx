@@ -121,7 +121,7 @@ export function TableToolbar(props: TableToolbarProps) {
                     {selectedElementsCount ? `${selectedElementsCount} selected` : ""}
                   </DropdownToggleCheckbox>,
                 ]}
-                onToggle={onBulkDropDownToggle}
+                onToggle={(_event, _val) => onBulkDropDownToggle}
                 id="toggle-split-button-text"
               />
             }

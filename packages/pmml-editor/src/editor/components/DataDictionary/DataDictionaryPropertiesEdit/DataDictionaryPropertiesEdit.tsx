@@ -33,6 +33,7 @@ import { ArrowAltCircleLeftIcon } from "@patternfly/react-icons/dist/js/icons/ar
 import { ConstraintType, DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
 import "./DataDictionaryPropertiesEdit.scss";
+import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
 
 interface DataDictionaryPropertiesEditProps {
   dataType: DDDataField;
@@ -102,7 +103,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                     className="data-dictionary__properties-edit__field"
                     label="Display Name"
                     fieldId="display-name"
-                    helperText="Display Name to use instead of the data type name"
+                    // helperText="Display Name to use instead of the data type name"
                   >
                     <TextInput
                       type="text"
@@ -119,6 +120,13 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                       }
                       ouiaId="display-name"
                     />
+                    <FormHelperText>
+                      <HelperText>
+                        <HelperTextItem variant="error">
+                          Display Name to use instead of the data type name
+                        </HelperTextItem>
+                      </HelperText>
+                    </FormHelperText>
                   </FormGroup>
                 </StackItem>
                 <StackItem>
@@ -183,7 +191,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                     className="data-dictionary__properties-edit__field"
                     label="Missing Value"
                     fieldId="missing-value"
-                    helperText="Value for when the input is missing"
+                    // helperText="Value for when the input is missing"
                   >
                     <TextInput
                       type="text"
@@ -200,6 +208,11 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                       }
                       ouiaId="missing-value"
                     />
+                    <FormHelperText>
+                      <HelperText>
+                        <HelperTextItem variant="error">Value for when the input is missing</HelperTextItem>
+                      </HelperText>
+                    </FormHelperText>
                   </FormGroup>
                 </StackItem>
                 <StackItem>
@@ -207,7 +220,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                     className="data-dictionary__properties-edit__field"
                     label="Invalid Value"
                     fieldId="missing-value"
-                    helperText="Value for when the input is invalid"
+                    // helperText="Value for when the input is invalid"
                   >
                     <TextInput
                       type="text"
@@ -224,6 +237,11 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                       }
                       ouiaId="invalid-value"
                     />
+                    <FormHelperText>
+                      <HelperText>
+                        <HelperTextItem variant="error">Value for when the input is invalid</HelperTextItem>
+                      </HelperText>
+                    </FormHelperText>
                   </FormGroup>
                 </StackItem>
               </Stack>

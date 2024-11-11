@@ -78,7 +78,7 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
-import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggle";
+// import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggle";
 import BellIcon from "@patternfly/react-icons/dist/js/icons/bell-icon";
 import { SettingsTabs } from "../../settings/SettingsModalBody";
 
@@ -320,15 +320,15 @@ export function EditorToolbarWithWorkspace(
                     <>
                       <Dropdown
                         toggle={
-                          <Toggle
-                            onToggle={(_event, val) => setNewDmnEditorDropdownOpen(val)}
+                          <DropdownToggle
+                            onToggle={(_event, _) => setNewDmnEditorDropdownOpen}
                             id="new-dmn-editor-dropdown-toggle"
                           >
                             <Label color="cyan" variant={"outline"}>
                               &nbsp;{`New DMN Editor`}&nbsp;&nbsp;
                               <CaretDownIcon />
                             </Label>
-                          </Toggle>
+                          </DropdownToggle>
                         }
                         onSelect={() => setNewDmnEditorDropdownOpen(false)}
                         isOpen={isNewDmnEditorDropdownOpen}
@@ -386,7 +386,8 @@ export function EditorToolbarWithWorkspace(
                       toggle={
                         <ResponsiveDropdownToggle
                           onToggle={() => setNewFileDropdownMenuOpen((prev) => !prev)}
-                          isPrimary={true}
+                          // isPrimary={true}
+                          toggleVariant="primary"
                           toggleIndicator={CaretDownIcon}
                         >
                           <PlusIcon />

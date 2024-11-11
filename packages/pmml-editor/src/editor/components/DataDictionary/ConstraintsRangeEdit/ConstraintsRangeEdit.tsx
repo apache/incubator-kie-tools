@@ -32,6 +32,7 @@ import { RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContai
 import "./ConstraintsRangeEdit.scss";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
+import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
 
 interface ConstraintsRangeEditProps {
   dataFieldIndex: number | undefined;
@@ -179,7 +180,7 @@ const RangeEdit = (props: RangeEditProps) => {
           <FormGroup
             label="Start Value"
             fieldId={`start-value-${index}`}
-            helperText={validations[0] ? "Please enter start and/or end value" : ""}
+            // helperText={validations[0] ? "Please enter start and/or end value" : ""}
           >
             <TextInput
               type="number"
@@ -193,6 +194,13 @@ const RangeEdit = (props: RangeEditProps) => {
               autoComplete="off"
               ouiaId="start-value"
             />
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="error">
+                  {validations[0] ? "Please enter start and/or end value" : ""}
+                </HelperTextItem>
+              </HelperText>
+            </FormHelperText>
           </FormGroup>
           <FormGroup fieldId={`start-included-${index}`} className="constraints__include-range">
             <Checkbox
@@ -212,7 +220,7 @@ const RangeEdit = (props: RangeEditProps) => {
           <FormGroup
             label="End Value"
             fieldId={`end-value-${index}`}
-            helperText={validations[0] ? "Please enter start and/or end value" : ""}
+            // helperText={validations[0] ? "Please enter start and/or end value" : ""}
           >
             <TextInput
               type="number"
@@ -226,6 +234,13 @@ const RangeEdit = (props: RangeEditProps) => {
               autoComplete="off"
               ouiaId="end-value"
             />
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="error">
+                  {validations[0] ? "Please enter start and/or end value" : ""}
+                </HelperTextItem>
+              </HelperText>
+            </FormHelperText>
           </FormGroup>
           <FormGroup fieldId={`end-included-${index}`} className="constraints__include-range">
             <Checkbox

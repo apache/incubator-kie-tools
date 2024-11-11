@@ -42,6 +42,7 @@ import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { EMPTY_CONFIG, saveConfigCookie, saveDevModeEnabledConfigCookie } from "./OpenShiftSettingsConfig";
 import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons";
+import { Icon } from "@patternfly/react-core";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -200,7 +201,9 @@ export function OpenShiftSettingsSimpleConfig() {
                 aria-describedby="namespace-field"
                 className="pf-v5-c-form__group-label-help"
               >
-                <HelpIcon noVerticalAlign />
+                <Icon isInline>
+                  <HelpIcon />
+                </Icon>
               </button>
             </Popover>
           }
@@ -218,7 +221,7 @@ export function OpenShiftSettingsSimpleConfig() {
                 aria-label="Namespace field"
                 aria-describedby="namespace-field-helper"
                 value={config.namespace}
-                onChange={onNamespaceChanged}
+                onChange={(_event, value) => onNamespaceChanged}
                 isDisabled={isConnecting}
                 tabIndex={1}
                 data-testid="namespace-text-field"
@@ -242,7 +245,9 @@ export function OpenShiftSettingsSimpleConfig() {
                 aria-describedby="host-field"
                 className="pf-v5-c-form__group-label-help"
               >
-                <HelpIcon noVerticalAlign />
+                <Icon isInline>
+                  <HelpIcon />
+                </Icon>
               </button>
             </Popover>
           }
@@ -260,7 +265,7 @@ export function OpenShiftSettingsSimpleConfig() {
                 aria-label="Host field"
                 aria-describedby="host-field-helper"
                 value={config.host}
-                onChange={onHostChanged}
+                onChange={(_event, value) => onHostChanged}
                 isDisabled={isConnecting}
                 tabIndex={2}
                 data-testid="host-text-field"
@@ -284,7 +289,9 @@ export function OpenShiftSettingsSimpleConfig() {
                 aria-describedby="token-field"
                 className="pf-v5-c-form__group-label-help"
               >
-                <HelpIcon noVerticalAlign />
+                <Icon isInline>
+                  <HelpIcon />
+                </Icon>
               </button>
             </Popover>
           }
@@ -302,7 +309,7 @@ export function OpenShiftSettingsSimpleConfig() {
                 aria-label="Token field"
                 aria-describedby="token-field-helper"
                 value={config.token}
-                onChange={onTokenChanged}
+                onChange={(_event, value) => onTokenChanged}
                 isDisabled={isConnecting}
                 tabIndex={3}
                 data-testid="token-text-field"
@@ -345,7 +352,7 @@ export function OpenShiftSettingsSimpleConfig() {
             aria-label="Disable TLS Certificate Validation"
             tabIndex={4}
             isChecked={config.insecurelyDisableTlsCertificateValidation}
-            onChange={onInsecurelyDisableTlsCertificateValidationChange}
+            onChange={(_event, value) => onInsecurelyDisableTlsCertificateValidationChange}
           />
           <br />
           <Button
@@ -375,7 +382,9 @@ export function OpenShiftSettingsSimpleConfig() {
                 aria-describedby="dev-mode-field"
                 className="pf-v5-c-form__group-label-help"
               >
-                <HelpIcon noVerticalAlign />
+                <Icon isInline>
+                  <HelpIcon />
+                </Icon>
               </button>
             </Popover>
           }
@@ -389,7 +398,7 @@ export function OpenShiftSettingsSimpleConfig() {
               "Be sure to set up at least 4GB of ram for your OpenShift deployments, otherwise, the Dev Mode deployment may run into issues."
             }
             isChecked={isDevModeConfigEnabled}
-            onChange={onEnableDevModeConfigChanged}
+            onChange={(_event, value) => onEnableDevModeConfigChanged}
           />
         </FormGroup>
         <ActionGroup>

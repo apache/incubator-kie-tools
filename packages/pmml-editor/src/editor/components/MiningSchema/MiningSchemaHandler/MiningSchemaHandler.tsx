@@ -33,6 +33,7 @@ import { useBatchDispatch, useHistoryService } from "../../../history";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 import { ValidationIndicatorTooltip } from "../../EditorCore/atoms";
+import { Icon } from "@patternfly/react-core";
 
 interface MiningSchemaHandlerProps {
   miningSchema?: MiningSchema;
@@ -130,11 +131,14 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
         <ValidationIndicatorTooltip validations={validations}>
           <Button
             variant="secondary"
-            icon={<WarningTriangleIcon size={"sm"} color={"orange"} />}
+            // icon={<WarningTriangleIcon size={"sm"} color={"orange"} />}
             onClick={handleMiningSchemaToggle}
             data-title="MiningSchema"
             ouiaId="open-mining-schema-editor"
           >
+            <Icon size="sm">
+              <WarningTriangleIcon color={"orange"} />
+            </Icon>
             Set Mining Schema
           </Button>
         </ValidationIndicatorTooltip>

@@ -17,7 +17,7 @@
  * under the License.
  */
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
-import { Stack, StackItem } from "@patternfly/react-core/layouts/Stack";
+import { Stack, StackItem } from "@patternfly/react-core";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { ProcessFormDriver } from "../../../api";

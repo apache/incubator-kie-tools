@@ -50,6 +50,7 @@ import {
   resetConfigCookie,
   saveConfigCookie,
 } from "./ServiceRegistryConfig";
+import { Icon } from "@patternfly/react-core";
 
 const PAGE_TITLE = "Service Registry";
 
@@ -171,7 +172,9 @@ export function ServiceRegistrySettings(props: SettingsPageProps) {
                     aria-describedby="name-field"
                     className="pf-v5-c-form__group-label-help"
                   >
-                    <HelpIcon noVerticalAlign />
+                    <Icon isInline>
+                      <HelpIcon />
+                    </Icon>
                   </button>
                 </Popover>
               }
@@ -189,7 +192,7 @@ export function ServiceRegistrySettings(props: SettingsPageProps) {
                     aria-label="Name field"
                     aria-describedby="name-field-helper"
                     value={config.name}
-                    onChange={onNameChanged}
+                    onChange={(_event, value) => onNameChanged}
                     tabIndex={1}
                     data-testid="name-text-field"
                   />
@@ -212,7 +215,9 @@ export function ServiceRegistrySettings(props: SettingsPageProps) {
                     aria-describedby="core-registry-api-field"
                     className="pf-v5-c-form__group-label-help"
                   >
-                    <HelpIcon noVerticalAlign />
+                    <Icon isInline>
+                      <HelpIcon />
+                    </Icon>
                   </button>
                 </Popover>
               }
@@ -230,7 +235,7 @@ export function ServiceRegistrySettings(props: SettingsPageProps) {
                     aria-label="Core Registry API field"
                     aria-describedby="core-registry-api-field-helper"
                     value={config.coreRegistryApi}
-                    onChange={onCoreRegistryApiChanged}
+                    onChange={(_event, value) => onCoreRegistryApiChanged}
                     tabIndex={2}
                     data-testid="core-registry-api-text-field"
                   />

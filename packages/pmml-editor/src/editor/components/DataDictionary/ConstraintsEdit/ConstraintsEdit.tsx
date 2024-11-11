@@ -28,6 +28,7 @@ import { ConstraintType, DDDataField, RangeConstraint } from "../DataDictionaryC
 import ConstraintsRangeEdit from "../ConstraintsRangeEdit/ConstraintsRangeEdit";
 import ConstraintsEnumEdit from "../ConstraintsEnumEdit/ConstraintsEnumEdit";
 import "./ConstraintsEdit.scss";
+import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
 
 interface ConstraintsEditProps {
   dataType: DDDataField;
@@ -196,9 +197,9 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
       <FormGroup
         fieldId="constraints-type"
         label="Constraints Type"
-        helperText={
-          enabledTypeOptionsCount > 1 ? "Select the type of constraint and then fill in the required fields." : ""
-        }
+        // helperText={
+        //   enabledTypeOptionsCount > 1 ? "Select the type of constraint and then fill in the required fields." : ""
+        // }
         labelIcon={
           typeDescription.length > 0 ? (
             <Tooltip content={typeDescription}>
@@ -242,6 +243,13 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
             ))}
           </Select>
         </div>
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem variant="error">
+              {enabledTypeOptionsCount > 1 ? "Select the type of constraint and then fill in the required fields." : ""}
+            </HelperTextItem>
+          </HelperText>
+        </FormHelperText>
       </FormGroup>
       {constraintType === ConstraintType.RANGE && ranges !== undefined && (
         <Card isCompact={true} className="constraints__card">

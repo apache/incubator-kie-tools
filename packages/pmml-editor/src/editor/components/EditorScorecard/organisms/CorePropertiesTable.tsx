@@ -41,6 +41,7 @@ import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import set = Reflect.set;
 import get = Reflect.get;
+import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
 
 export interface CoreProperties {
   modelIndex: number;
@@ -278,7 +279,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                           aria-describedby="core-algorithmName"
                           data-testid="core-properties-table-algorithmName"
                           value={algorithmName ?? ""}
-                          onChange={(e) => setAlgorithmName(e)}
+                          onChange={(_event, e) => setAlgorithmName(e)}
                           onBlur={() => {
                             onCommit({
                               algorithmName: algorithmName === "" ? undefined : algorithmName,
@@ -293,7 +294,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                         <TextInput
                           id="core-initialScore"
                           value={initialScore}
-                          onChange={(e) => setInitialScore(toNumber(e))}
+                          onChange={(_event, e) => setInitialScore(toNumber(e))}
                           onBlur={() => {
                             onCommit({ initialScore: initialScore });
                           }}
@@ -337,8 +338,8 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                       <FormGroup
                         label="Baseline score"
                         fieldId="core-baselineScore"
-                        validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
-                        helperText={baselineScoreValidation.length > 0 ? baselineScoreValidation[0].message : undefined}
+                        // validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
+                        // helperText={baselineScoreValidation.length > 0 ? baselineScoreValidation[0].message : undefined}
                         labelIcon={
                           <Tooltip
                             content={
@@ -363,7 +364,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                         <TextInput
                           id="core-baselineScore"
                           value={baselineScore ?? ""}
-                          onChange={(e) => setBaselineScore(toNumber(e))}
+                          onChange={(_event, e) => setBaselineScore(toNumber(e))}
                           onBlur={() => {
                             onCommit({ baselineScore: baselineScore });
                           }}
@@ -372,6 +373,19 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                           isDisabled={props.isBaselineScoreDisabled}
                           ouiaId="baseline-score"
                         />
+                        {baselineScoreValidation.length > 0 ? (
+                          <FormHelperText>
+                            <HelperText>
+                              <HelperTextItem variant="warning">{baselineScoreValidation[0].message}</HelperTextItem>
+                            </HelperText>
+                          </FormHelperText>
+                        ) : (
+                          <FormHelperText>
+                            <HelperText>
+                              <HelperTextItem variant="default"></HelperTextItem>
+                            </HelperText>
+                          </FormHelperText>
+                        )}
                       </FormGroup>
                     </LevelItem>
                     <LevelItem>

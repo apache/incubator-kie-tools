@@ -30,6 +30,7 @@ import { Operation, useOperation } from "../../EditorScorecard";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 import { ValidationIndicatorTooltip } from "../../EditorCore/atoms";
+import { Icon } from "@patternfly/react-core";
 
 interface OutputsHandlerProps {
   modelIndex: number;
@@ -84,10 +85,13 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
         <ValidationIndicatorTooltip validations={validations}>
           <Button
             variant="secondary"
-            icon={<WarningTriangleIcon size={"sm"} color={"orange"} />}
+            // icon={<WarningTriangleIcon size={"sm"} color={"orange"} />}
             onClick={toggleModal}
             data-title="Outputs"
           >
+            <Icon size="sm">
+              <WarningTriangleIcon color={"orange"} />
+            </Icon>
             Set Outputs
           </Button>
         </ValidationIndicatorTooltip>

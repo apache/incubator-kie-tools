@@ -29,6 +29,7 @@ import {
 } from "../../selection/BeeTableSelectionContext";
 import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 import { InsertRowColumnsDirection } from "../../api";
+import { Icon } from "@patternfly/react-core";
 
 export interface BeeTableThProps<R extends object> {
   groupType: string | undefined;
@@ -211,7 +212,9 @@ export function BeeTableTh<R extends object>({
             className={"add-column-button"}
             style={addColumButtonStyle}
           >
-            <PlusIcon size="sm" />
+            <Icon size="sm">
+              <PlusIcon />
+            </Icon>
           </div>
         )}
       </th>

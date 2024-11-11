@@ -48,6 +48,7 @@ import {
   saveConfigCookie,
 } from "./RuntimeToolsConfig";
 import { removeTrailingSlashFromUrl } from "../../url";
+import { Icon } from "@patternfly/react-core";
 
 const PAGE_TITLE = "Runtime Tools";
 
@@ -166,7 +167,9 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
                     aria-describedby="data-index-url-field"
                     className="pf-v5-c-form__group-label-help"
                   >
-                    <HelpIcon noVerticalAlign />
+                    <Icon isInline>
+                      <HelpIcon />
+                    </Icon>
                   </button>
                 </Popover>
               }
@@ -184,7 +187,7 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
                     aria-label="Data Index URL field"
                     aria-describedby="data-index-url-field-helper"
                     value={config.dataIndexUrl}
-                    onChange={onDataIndexURLChanged}
+                    onChange={(_event, value) => onDataIndexURLChanged}
                     tabIndex={1}
                     data-testid="data-index-url-text-field"
                   />

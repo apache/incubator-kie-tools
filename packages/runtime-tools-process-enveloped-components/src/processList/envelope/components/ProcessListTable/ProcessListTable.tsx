@@ -18,14 +18,7 @@
  */
 import React, { useEffect, useMemo, useState } from "react";
 import { ExpandableRowContent } from "@patternfly/react-table/dist/js/components/Table";
-import {
-  Table /* data-codemods */,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-} from "@patternfly/react-table/dist/js/components/TableComposable";
+import { Table /* data-codemods */, Thead, Tbody, Tr, Th, Td } from "@patternfly/react-table";
 import _ from "lodash";
 import ProcessListChildTable from "../ProcessListChildTable/ProcessListChildTable";
 import { HistoryIcon } from "@patternfly/react-icons/dist/js/icons/history-icon";

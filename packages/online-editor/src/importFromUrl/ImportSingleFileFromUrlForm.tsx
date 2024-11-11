@@ -108,11 +108,11 @@ export function ImportSingleFileFromUrlForm(props: {
         autoFocus={true}
         label={"URL"}
         isRequired={true}
-        helperTextInvalid={helperTextInvalid}
-        helperText={<FormHelperText style={{ visibility: "hidden" }} />}
-        helperTextInvalidIcon={<ExclamationCircleIcon />}
+        // helperTextInvalid={helperTextInvalid}
+        // helperText={<FormHelperText style={{ visibility: "hidden" }} />}
+        // helperTextInvalidIcon={<ExclamationCircleIcon />}
         fieldId="url"
-        validated={validatedOption}
+        // validated={validatedOption}
       >
         <TextInput
           ref={props.urlInputRef}
@@ -122,8 +122,21 @@ export function ImportSingleFileFromUrlForm(props: {
           isRequired={true}
           placeholder={"File URL"}
           value={props.url}
-          onChange={props.setUrl}
+          onChange={(_event, val) => props.setUrl}
         />
+        {validatedOption === "error" ? (
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant="error">{helperTextInvalid}</HelperTextItem>
+            </HelperText>
+          </FormHelperText>
+        ) : (
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant="success"></HelperTextItem>
+            </HelperText>
+          </FormHelperText>
+        )}
       </FormGroup>
     </Form>
   );

@@ -32,6 +32,7 @@ import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation, useOperation } from "../../EditorScorecard";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
+import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
 
 interface OutputFieldEditRowProps {
   modelIndex: number;
@@ -154,9 +155,9 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                 label="Name"
                 fieldId="output-name-helper"
                 isRequired={true}
-                helperTextInvalid="Name is mandatory and must be unique"
-                helperTextInvalidIcon={<ExclamationCircleIcon />}
-                validated={name?.valid ? "default" : "error"}
+                // helperTextInvalid="Name is mandatory and must be unique"
+                // helperTextInvalidIcon={<ExclamationCircleIcon />}
+                // validated={name?.valid ? "default" : "error"}
               >
                 <TextInput
                   type="text"
@@ -167,7 +168,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                   placeholder="Name"
                   validated={name?.valid ? "default" : "error"}
                   autoFocus={true}
-                  onChange={(e) => {
+                  onChange={(_event, e) => {
                     setName({
                       value: e,
                       valid: validateOutputName(e),
@@ -187,6 +188,19 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                   }}
                   ouiaId="set-output-field-name"
                 />
+                {name?.valid === true ? (
+                  <FormHelperText>
+                    <HelperText>
+                      <HelperTextItem variant="default"></HelperTextItem>
+                    </HelperText>
+                  </FormHelperText>
+                ) : (
+                  <FormHelperText>
+                    <HelperText>
+                      <HelperTextItem variant="error">Name is mandatory and must be unique</HelperTextItem>
+                    </HelperText>
+                  </FormHelperText>
+                )}
               </FormGroup>
             </SplitItem>
             <SplitItem isFilled={true}>

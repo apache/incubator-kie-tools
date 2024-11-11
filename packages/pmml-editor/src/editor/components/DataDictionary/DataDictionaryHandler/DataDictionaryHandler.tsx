@@ -35,6 +35,7 @@ import { useBatchDispatch, useHistoryService } from "../../../history";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 import { ValidationIndicatorTooltip } from "../../EditorCore/atoms";
+import { Icon } from "@patternfly/react-core";
 
 const DataDictionaryHandler = () => {
   const [isDataDictionaryOpen, setIsDataDictionaryOpen] = useState(false);
@@ -141,10 +142,13 @@ const DataDictionaryHandler = () => {
         <ValidationIndicatorTooltip validations={validations}>
           <Button
             variant="secondary"
-            icon={<WarningTriangleIcon size={"sm"} color={"orange"} />}
+            // icon={<WarningTriangleIcon size={"sm"} color={"orange"} />}
             onClick={handleDataDictionaryToggle}
             data-title="DataDictionary"
           >
+            <Icon size="sm">
+              <WarningTriangleIcon color={"orange"} />
+            </Icon>
             Set Data Dictionary
           </Button>
         </ValidationIndicatorTooltip>

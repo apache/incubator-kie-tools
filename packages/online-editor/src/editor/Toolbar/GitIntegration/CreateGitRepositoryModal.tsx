@@ -45,6 +45,7 @@ import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { useOnlineI18n } from "../../../i18n";
 import { LoadOrganizationsSelect, SelectOptionObjectType } from "./LoadOrganizationsSelect";
 import { useGitIntegration } from "./GitIntegrationContextProvider";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 export interface CreateRepositoryResponse {
   cloneUrl: string;
@@ -302,19 +303,26 @@ export function CreateGitRepositoryModal(props: {
         )}
         <FormGroup
           label={i18n.createGitRepositoryModal[authProvider.type].form.select.label}
-          helperText={i18n.createGitRepositoryModal[authProvider.type].form.select.description}
+          // helperText={i18n.createGitRepositoryModal[authProvider.type].form.select.description}
           fieldId="organization"
         >
           <LoadOrganizationsSelect workspace={props.workspace} onSelect={setSelectedOrganization} />
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant="error">
+                {i18n.createGitRepositoryModal[authProvider.type].form.select.description}
+              </HelperTextItem>
+            </HelperText>
+          </FormHelperText>
         </FormGroup>
         <FormGroup
           label={i18n.createGitRepositoryModal.form.nameField.label}
           isRequired={true}
-          helperTextInvalid={i18n.createGitRepositoryModal.form.nameField.hint}
-          helperText={<FormHelperText style={{ visibility: "hidden" }} />}
-          helperTextInvalidIcon={<ExclamationCircleIcon />}
+          // helperTextInvalid={i18n.createGitRepositoryModal.form.nameField.hint}
+          // helperText={<FormHelperText style={{ visibility: "hidden" }} />}
+          // helperTextInvalidIcon={<ExclamationCircleIcon />}
           fieldId="repository-name"
-          validated={validated}
+          // validated={validated}
         >
           <TextInput
             id={"repo-name"}
@@ -324,11 +332,24 @@ export function CreateGitRepositoryModal(props: {
             value={name}
             onChange={(_event, val) => setName(val)}
           />
+          {validated === "error" ? (
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="error">{i18n.createGitRepositoryModal.form.nameField.hint}</HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          ) : (
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="success"></HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          )}
         </FormGroup>
         <Divider inset={{ default: "inset3xl" }} />
         <FormGroup
-          helperText={<FormHelperText style={{ visibility: "hidden" }} />}
-          helperTextInvalidIcon={<ExclamationCircleIcon />}
+          // helperText={<FormHelperText style={{ visibility: "hidden" }} />}
+          // helperTextInvalidIcon={<ExclamationCircleIcon />}
           fieldId="repo-visibility"
         >
           <Radio
@@ -358,6 +379,13 @@ export function CreateGitRepositoryModal(props: {
             description={i18n.createGitRepositoryModal.form.visibility.private.description}
             onChange={() => setPrivate(true)}
           />
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant="error">
+                <ExclamationCircleIcon />{" "}
+              </HelperTextItem>
+            </HelperText>
+          </FormHelperText>
         </FormGroup>
       </Form>
     </Modal>

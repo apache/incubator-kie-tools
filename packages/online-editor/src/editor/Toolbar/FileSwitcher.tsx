@@ -25,7 +25,8 @@ import { join } from "path";
 import { Dropdown } from "@patternfly/react-core/deprecated";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { FileLabel } from "../../filesList/FileLabel";
-import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggle";
+// import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggle";
+import { DropdownToggle } from "@patternfly/react-core/deprecated";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
@@ -261,7 +262,7 @@ export function FileSwitcher(props: {
             isOpen={isFilesDropdownOpen}
             isPlain={true}
             toggle={
-              <Toggle
+              <DropdownToggle
                 onToggle={(_event, isOpen) =>
                   setFilesDropdownOpen((prev) => {
                     if (workspaceFileNameRef.current === document.activeElement) {
@@ -333,7 +334,7 @@ export function FileSwitcher(props: {
                               }
                             }}
                             onKeyDown={handleWorkspaceFileNameKeyDown}
-                            onChange={checkNewFileName}
+                            onChange={(_event, val) => checkNewFileName}
                             ref={workspaceFileNameRef}
                             type={"text"}
                             aria-label={"Edit file name"}
@@ -348,7 +349,7 @@ export function FileSwitcher(props: {
                     <CaretDownIcon color={"rgb(21, 21, 21)"} />
                   </FlexItem>
                 </Flex>
-              </Toggle>
+              </DropdownToggle>
             }
           >
             <Menu

@@ -43,6 +43,7 @@ import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { SettingsPageContainer } from "../SettingsPageContainer";
 import { SettingsPageProps } from "../types";
 import { EMPTY_CONFIG, isServiceAccountConfigValid, resetConfigCookie, saveConfigCookie } from "./ServiceAccountConfig";
+import { Icon } from "@patternfly/react-core";
 
 const PAGE_TITLE = "Service Account";
 
@@ -168,7 +169,9 @@ export function ServiceAccountSettings(props: SettingsPageProps) {
                     aria-describedby="client-id-field"
                     className="pf-v5-c-form__group-label-help"
                   >
-                    <HelpIcon noVerticalAlign />
+                    <Icon isInline>
+                      <HelpIcon />
+                    </Icon>
                   </button>
                 </Popover>
               }
@@ -186,7 +189,7 @@ export function ServiceAccountSettings(props: SettingsPageProps) {
                     aria-label="Client ID field"
                     aria-describedby="client-id-field-helper"
                     value={config.clientId}
-                    onChange={onClientIdChanged}
+                    onChange={(_event, value) => onClientIdChanged}
                     tabIndex={1}
                     data-testid="client-id-text-field"
                   />
@@ -209,7 +212,9 @@ export function ServiceAccountSettings(props: SettingsPageProps) {
                     aria-describedby="client-secret-field"
                     className="pf-v5-c-form__group-label-help"
                   >
-                    <HelpIcon noVerticalAlign />
+                    <Icon isInline>
+                      <HelpIcon />
+                    </Icon>
                   </button>
                 </Popover>
               }
@@ -227,7 +232,7 @@ export function ServiceAccountSettings(props: SettingsPageProps) {
                     aria-label="Client secret field"
                     aria-describedby="client-secret-field-helper"
                     value={config.clientSecret}
-                    onChange={onClientSecretChanged}
+                    onChange={(_event, value) => onClientSecretChanged}
                     tabIndex={2}
                     data-testid="client-secret-text-field"
                   />

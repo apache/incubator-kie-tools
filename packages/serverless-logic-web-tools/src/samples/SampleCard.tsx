@@ -32,6 +32,7 @@ import { useRoutes } from "../navigation/Hooks";
 import { SampleCategoryComponent } from "./SampleCategoryComponent";
 import { Sample } from "./types";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
+import { Icon } from "@patternfly/react-core";
 
 function SampleSvgImg(props: {
   sample: Sample;
@@ -104,7 +105,9 @@ export function SampleCard(props: SampleCardProps) {
                     } as React.CSSProperties
                   }
                 >
-                  <SearchPlusIcon size="sm" />
+                  <Icon size="sm">
+                    <SearchPlusIcon />
+                  </Icon>
                 </Button>
               )}
               <SampleCategoryComponent category={props.sample.definition.category} />

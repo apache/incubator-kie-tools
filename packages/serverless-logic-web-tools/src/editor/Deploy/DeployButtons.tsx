@@ -41,7 +41,10 @@ export function DeployButtons(props: Props) {
   const settings = useSettings();
 
   const toggleDeployDropdown = useCallback(
-    (isOpen: boolean) => {
+    (
+      event: MouseEvent | TouchEvent | KeyboardEvent | React.KeyboardEvent<any> | React.MouseEvent<HTMLButtonElement>,
+      isOpen: boolean
+    ) => {
       openshift.setDeployDropdownOpen(isOpen);
     },
     [openshift]

@@ -46,6 +46,7 @@ import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/Ac
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ApplyAcceleratorResult, useAccelerator } from "../accelerator/useAccelerator";
 import { KOGITO_QUARKUS_ACCELERATOR } from "../accelerator/Accelerators";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 const getSuggestedRepositoryName = (name: string) =>
   name
@@ -248,13 +249,13 @@ export function CreateGitHubRepositoryModal(props: {
         <FormGroup
           label="Name"
           isRequired={true}
-          helperTextInvalid={
-            "Invalid name. Only letters, numbers, dashes (-), dots (.), and underscores (_) are allowed."
-          }
-          helperText={<FormHelperText style={{ visibility: "hidden" }} />}
-          helperTextInvalidIcon={<ExclamationCircleIcon />}
+          // helperTextInvalid={
+          //   "Invalid name. Only letters, numbers, dashes (-), dots (.), and underscores (_) are allowed."
+          // }
+          // helperText={<FormHelperText style={{ visibility: "hidden" }} />}
+          // helperTextInvalidIcon={<ExclamationCircleIcon />}
           fieldId="github-repository-name"
-          validated={validated}
+          // validated={validated}
         >
           <TextInput
             id={"github-repo-name"}
@@ -264,11 +265,26 @@ export function CreateGitHubRepositoryModal(props: {
             value={name}
             onChange={(_event, val) => setName(val)}
           />
+          {validated === "error" ? (
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="error">
+                  {"Invalid name. Only letters, numbers, dashes (-), dots (.), and underscores (_) are allowed."}
+                </HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          ) : (
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="success"></HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          )}
         </FormGroup>
         <Divider inset={{ default: "inset3xl" }} />
         <FormGroup
-          helperText={<FormHelperText style={{ visibility: "hidden" }} />}
-          helperTextInvalidIcon={<ExclamationCircleIcon />}
+          // helperText={<FormHelperText style={{ visibility: "hidden" }} />}
+          // helperTextInvalidIcon={<ExclamationCircleIcon />}
           fieldId="github-repo-visibility"
         >
           <Radio
@@ -321,6 +337,13 @@ export function CreateGitHubRepositoryModal(props: {
               isDisabled={!canAcceleratorBeUsed}
             />
           </Tooltip>
+          {
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="default"></HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          }
         </FormGroup>
       </Form>
     </Modal>
