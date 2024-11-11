@@ -26,7 +26,7 @@ import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/depr
 import "./OutputFieldRow.scss";
 import { DataType, OpType, OutputField, RankOrder, ResultFeature } from "@kie-tools/pmml-editor-marshaller";
 import { OutputLabelsEditMode } from "../atoms";
-import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+
 import { ValidatedType } from "../../../types";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation, useOperation } from "../../EditorScorecard";

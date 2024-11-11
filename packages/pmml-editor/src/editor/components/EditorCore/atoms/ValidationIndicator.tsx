@@ -21,7 +21,7 @@ import { ReactElement, useMemo } from "react";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
-import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
+
 import "./ModelTitle.scss";
 import { ValidationEntry, ValidationLevel } from "../../../validation";
 import { Icon } from "@patternfly/react-core";

@@ -19,7 +19,6 @@
 
 import { Form, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 
-import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import * as React from "react";
 import { useEffect, FormEvent, useCallback, useMemo } from "react";

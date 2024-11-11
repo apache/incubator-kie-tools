@@ -24,7 +24,7 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+
 import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 import "./CharacteristicsTableRow.scss";
 import "../../EditorScorecard/templates/ScorecardEditorPage.scss";

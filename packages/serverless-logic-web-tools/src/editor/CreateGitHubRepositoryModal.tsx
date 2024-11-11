@@ -27,7 +27,7 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 
 import { UsersIcon } from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { LockIcon } from "@patternfly/react-icons/dist/js/icons/lock-icon";
-import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";

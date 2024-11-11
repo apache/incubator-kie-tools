@@ -30,7 +30,7 @@ import { Select, SelectOption, SelectOptionObject, SelectVariant } from "@patter
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { ArrowAltCircleRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-alt-circle-right-icon";
-import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+
 import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./DataTypeItem.scss";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
