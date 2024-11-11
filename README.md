@@ -41,7 +41,7 @@ This repository contains tooling applications and libraries for KIE projects.
 
 > **💡 RECOMMENDED**
 >
-> **Nix development environment**: A _devbox_ configuration is provided to automatically setup all the tools below. Read more in [here](./NIX_DEV_ENV.md).
+> **Nix development environment**: A _devbox_ configuration is provided to automatically setup all the tools below. Read more in [here](./repo/NIX_DEV_ENV.md).
 
 To build and test all packages of the Apache KIE Tools project, you're going to need:
 
