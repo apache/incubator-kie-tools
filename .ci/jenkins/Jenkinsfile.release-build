@@ -88,6 +88,17 @@ pipeline {
 
         stage('Parallel - Builds') {
             parallel {
+                stage('KIE Sandbox Accelerator Quarkus') {
+                    when {
+                        expression { env.KIE_SANDBOX_ACCELERATOR_QUARKUS == 'true' }
+                    }
+                    steps {
+                        script {
+                            kieSandboxAcceleratorQuarkusBuildJob()
+                        }
+                    }
+                }
+
                 stage('Dev Deployment Kogito Quarkus Blank App Image') {
                     when {
                         expression { env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE == 'true' }
@@ -205,17 +216,6 @@ pipeline {
                     steps {
                         script {
                             serverlessLogicWebToolsBuildJob()
-                        }
-                    }
-                }
-
-                stage('Kogito Task Console Image') {
-                    when {
-                        expression { env.KOGITO_TASK_CONSOLE == 'true' }
-                    }
-                    steps {
-                        script {
-                            kogitoTaskConsoleBuildJob()
                         }
                     }
                 }
@@ -427,6 +427,7 @@ pipeline {
 
 def setRunners() {
     runners = readJSON text: "${params.RUNNERS}"
+    env.KIE_SANDBOX_ACCELERATOR_QUARKUS = runners.kie_sandbox_accelerator_quarkus
     env.DEV_DEPLOYMENT_BASE_IMAGE = runners.dev_deployment_base_image
     env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE = runners.dev_deployment_kogito_quakus_blank_app_image
     env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE = runners.dev_deployment_dmn_form_webapp_image
@@ -460,6 +461,7 @@ def setRunners() {
 
 def printRunners() {
     sh """
+    echo "kie_sandbox_accelerator_quarkus: ${env.KIE_SANDBOX_ACCELERATOR_QUARKUS}"
     echo "dev_deployment_base_image: ${env.DEV_DEPLOYMENT_BASE_IMAGE}"
     echo "dev_deployment_kogito_quakus_blank_app_image: ${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE}"
     echo "dev_deployment_dmn_form_webapp_image: ${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE}"
@@ -623,18 +625,6 @@ def serverlessLogicWebToolsBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
-        ]
-    ).result
-}
-
-def kogitoTaskConsoleBuildJob() {
-    env.KOGITO_TASK_CONSOLE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/kogito-task-console',
-        parameters: [
-            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
         ]
     ).result
 }
