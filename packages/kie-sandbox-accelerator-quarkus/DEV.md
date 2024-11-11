@@ -17,4 +17,4 @@
 
 # @kie-tools/kie-sandbox-accelerator-quarkus (dev)
 
-Developing this packages requires you to actually run KIE Sandbox (`../online-editor`), so you can see it being applied on top of a new Workpsace in there. Follow the development instructions on KIE Sandbox directly and rebuild this package after you make changes to it.
+Developing this packages requires you to actually run KIE Sandbox (`../online-editor`), so you can see it being applied on top of a new Workspace in there. Follow the development instructions on KIE Sandbox directly and rebuild this package after you make changes to it.
