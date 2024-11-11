@@ -26,7 +26,7 @@ The `cors-proxy` can be configured via environment variables:
 - CORS_PROXY_HTTP_PORT: Sets the HTTP Port the proxy should listen to
 - CORS_PROXY_ORIGIN: Sets the value of the 'Access-Control-Allow-Origin' header. Defaults to `*`.
 - CORS_PROXY_VERBOSE: Allows the proxy to run in verbose mode... useful to trace requests on development environments. Defaults to `false`
-- CORS_PROXY_USE_HTTP_FOR_HOSTS: Comma-separated list of domains that should use the `http` protocol proxied requests. Defaults to an empty list.
+- CORS_PROXY_USE_HTTP_FOR_HOSTS: Comma-separated list of hosts that should use the `http` protocol for proxied requests. Defaults to an empty list.
 
 For example:
 
