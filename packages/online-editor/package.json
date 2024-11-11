@@ -19,7 +19,7 @@
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack && pnpm test-e2e",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "concurrently 'pnpm start:cors-proxy' 'pnpm start:extended-services' 'pnpm start:kie-sandbox' 'pnpm start:kie-sandbox-accelerator-quarkus'",
-    "start:cors-proxy": "cross-env CORS_PROXY__useHttpForDomains='localhost:8787' npm --prefix ./node_modules/@kie-tools/cors-proxy run start",
+    "start:cors-proxy": "cross-env CORS_PROXY__useHttpForDomains=\"localhost:$(build-env kieSandboxAcceleratorQuarkus.dev.port)\" npm --prefix ./node_modules/@kie-tools/cors-proxy run start",
     "start:extended-services": "npm --prefix ./node_modules/@kie-tools/extended-services-java run start",
     "start:kie-sandbox": "webpack serve --host 0.0.0.0 --env dev",
     "start:kie-sandbox-accelerator-quarkus": "npm --prefix ./node_modules/@kie-tools/kie-sandbox-accelerator-quarkus run start",

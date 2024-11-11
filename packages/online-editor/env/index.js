@@ -133,7 +133,7 @@ module.exports = composeEnv([rootEnv, extendedServicesJavaEnv, corsProxyEnv, kie
       description: "The image pull policy. Can be 'Always', 'IfNotPresent', or 'Never'.",
     },
     ONLINE_EDITOR__quarkusAcceleratorGitRepoUrl: {
-      default: `http://localhost:${kieSandboxAcceleratorQuarkusEnv.env.kieSandboxAcceleratorQuarkus.dev.port}`,
+      default: `http://localhost:${kieSandboxAcceleratorQuarkusEnv.env.kieSandboxAcceleratorQuarkus.dev.port}/git-repo-bare.git`,
       description: "Default Quarkus Accelerator's Git repository URL.",
     },
     ONLINE_EDITOR__quarkusAcceleratorIconUrl: {

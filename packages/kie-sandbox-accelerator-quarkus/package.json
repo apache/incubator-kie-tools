@@ -17,15 +17,18 @@
     "_:build:setup-git-repo-content": "mkdir -p ./dist/git-repo-content && cp -r ./git-repo-content/* ./dist/git-repo-content && cd ./dist/git-repo-content && git init && git remote add repo ../git-repo-bare.git && git add . && git commit -m 'Accelerator dev commit' && git push repo main && cd ../git-repo-bare.git && git update-server-info",
     "build": "rimraf ./dist && pnpm run _:build:setup-git-repo-bare && pnpm run _:build:setup-git-repo-content",
     "build:dev": "pnpm run build",
-    "build:prod": "pnpm run build",
-    "start": "node server/server.mjs"
+    "build:prod": "pnpm run build && pnpm run test",
+    "start": "node dev-server/server.mjs $(build-env kieSandboxAcceleratorQuarkus.dev.port) ./dist",
+    "test": "mvn -f ./git-repo-content clean install -DskipTests"
   },
   "dependencies": {},
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
     "copyfiles": "^2.4.1",
+    "finalhandler": "^1.3.1",
     "http-server": "^14.1.1",
     "rimraf": "^3.0.2",
-    "run-script-os": "^1.1.6"
+    "run-script-os": "^1.1.6",
+    "serve-static": "^1.16.2"
   }
 }

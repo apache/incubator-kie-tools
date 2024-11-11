@@ -52,7 +52,7 @@ export default async (webpackEnv: any, webpackArgv: any) => {
     lastCommitHash = childProcess.execSync("git rev-parse --short HEAD").toString().trim();
     JSON.stringify(lastCommitHash);
   } catch (e) {
-    throw new Error(e);
+    lastCommitHash = "not-built-from-git-clone";
   }
 
   return [
