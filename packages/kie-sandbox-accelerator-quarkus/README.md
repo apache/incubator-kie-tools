@@ -17,7 +17,14 @@
 
 # @kie-tools/kie-sandbox-accelerator-quarkus
 
-This package contains the source code of a KIE Sandbox accelerator for Quarkus projects. It serves as a template which users can apply on top of their models on KIE Sandbox to have an executable project.
+This package contains the source code of a KIE Sandbox Accelerator for Quarkus projects.
+
+---
+
+See:
+
+- [ARCHITECTURE.md](./ARCHITECTURE.md) for more details on how it's implemented; and
+- [DEV.md](./DEV.md) for details on how to develop it.
 
 ---
 

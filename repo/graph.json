@@ -1747,7 +1747,7 @@
       },
       {
         "source": "@kie-tools/kie-sandbox-accelerator-quarkus",
-        "target": "@kie-tools/root-env",
+        "target": "@kie-tools/jbpm-quarkus-devui",
         "weight": 1
       },
       {

@@ -17,6 +17,8 @@
 
 # @kie-tools/kie-sandbox-accelerator-quarkus (dev)
 
+Developing this packages requires you to actually run KIE Sandbox (`../online-editor`), so you can see it being applied on top of a new Workpsace in there.
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software

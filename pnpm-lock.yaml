@@ -6092,6 +6092,10 @@ importers:
         version: 5.9.0
 
   packages/kie-sandbox-accelerator-quarkus:
+    dependencies:
+      '@kie-tools/jbpm-quarkus-devui':
+        specifier: workspace:*
+        version: link:../jbpm-quarkus-devui
     devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*

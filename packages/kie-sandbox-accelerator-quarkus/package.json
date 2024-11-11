@@ -13,15 +13,19 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
-    "_:build:setup-git-repo-bare": "mkdir -p ./dist/git-repo-bare.git && cd ./dist/git-repo-bare.git && git init --bare && git --bare update-server-info && mv hooks/post-update.sample hooks/post-update",
-    "_:build:setup-git-repo-content": "mkdir -p ./dist/git-repo-content && cp -r ./git-repo-content/* ./dist/git-repo-content && cd ./dist/git-repo-content && git init && git remote add repo ../git-repo-bare.git && git add . && git commit -m 'Accelerator dev commit' && git push repo main && cd ../git-repo-bare.git && git update-server-info",
-    "build": "rimraf ./dist && pnpm run _:build:setup-git-repo-bare && pnpm run _:build:setup-git-repo-content",
+    "_:build:copy-git-repo-content": "mkdir -p ./dist/git-repo-content && cp -r ./git-repo-content-src/* ./dist/git-repo-content/",
+    "_:build:interpolate-pom": "ENVSUBST__VERSION_QUARKUS=\"$(build-env versions.quarkus)\" ENVSUBST__VERSION_KOGITO=\"$(build-env versions.kogito)\" ENVSUBST__VERSION_JBPM_QUARKUS_DEVUI_BOM=\"$(build-env jbpmQuarkusDevuiExtension.version)\" envsubst < ./dist/git-repo-content/pom.xml.envsubst > ./dist/git-repo-content/pom.xml && rm ./dist/git-repo-content/pom.xml.envsubst",
+    "_:build:setup-git-repo-bare": "mkdir -p ./dist-dev/git-repo-bare.git && cd ./dist-dev/git-repo-bare.git && git init --bare && git --bare update-server-info && mv hooks/post-update.sample hooks/post-update",
+    "_:build:setup-git-repo-content": "mkdir -p ./dist-dev/git-repo-content && cp -r ./dist/git-repo-content/* ./dist-dev/git-repo-content && cd ./dist-dev/git-repo-content && git init && git remote add repo ../git-repo-bare.git && git add . && git commit -m 'Single commit' && git push repo main",
+    "build": "rimraf ./dist ./dist-dev && pnpm run _:build:copy-git-repo-content && pnpm run _:build:interpolate-pom && pnpm run _:build:setup-git-repo-bare && pnpm run _:build:setup-git-repo-content",
     "build:dev": "pnpm run build",
     "build:prod": "pnpm run build && pnpm run test",
-    "start": "node dev-server/server.mjs $(build-env kieSandboxAcceleratorQuarkus.dev.port) ./dist",
-    "test": "mvn -f ./git-repo-content clean install -DskipTests"
+    "start": "node dev-server/server.mjs $(build-env kieSandboxAcceleratorQuarkus.dev.port) ./dist-dev",
+    "test": "mvn -f ./dist/git-repo-content clean package"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@kie-tools/jbpm-quarkus-devui": "workspace:*"
+  },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
     "copyfiles": "^2.4.1",
