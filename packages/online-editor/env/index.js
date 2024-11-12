@@ -136,10 +136,6 @@ module.exports = composeEnv([rootEnv, extendedServicesJavaEnv, corsProxyEnv, kie
       default: `http://localhost:${kieSandboxAcceleratorQuarkusEnv.env.kieSandboxAcceleratorQuarkus.dev.port}/git-repo-bare.git`,
       description: "Default Quarkus Accelerator's Git repository URL.",
     },
-    ONLINE_EDITOR__quarkusAcceleratorIconUrl: {
-      default: `http://localhost:${kieSandboxAcceleratorQuarkusEnv.env.kieSandboxAcceleratorQuarkus.dev.port}/git-repo-content/quarkus-logo.png`,
-      description: "Default Quarkus Accelerator's icon URL.",
-    },
     ONLINE_EDITOR__quarkusAcceleratorGitRef: {
       default: "main",
       description: "Default Quarkus Accelerator's Git ref to be used when cloning it.",
@@ -174,7 +170,6 @@ module.exports = composeEnv([rootEnv, extendedServicesJavaEnv, corsProxyEnv, kie
           quarkus: {
             gitRepoUrl: getOrDefault(this.vars.ONLINE_EDITOR__quarkusAcceleratorGitRepoUrl),
             gitRef: getOrDefault(this.vars.ONLINE_EDITOR__quarkusAcceleratorGitRef),
-            iconUrl: getOrDefault(this.vars.ONLINE_EDITOR__quarkusAcceleratorIconUrl),
           },
         },
         appName: getOrDefault(this.vars.ONLINE_EDITOR__appName),

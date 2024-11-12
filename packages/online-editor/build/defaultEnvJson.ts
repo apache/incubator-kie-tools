@@ -110,7 +110,7 @@ export const defaultEnvJson: EnvJson = {
   KIE_SANDBOX_ACCELERATORS: [
     {
       name: "Quarkus",
-      iconUrl: buildEnv.onlineEditor.accelerators.quarkus.iconUrl,
+      iconUrl: "images/quarkus-logo.png",
       gitRepositoryUrl: buildEnv.onlineEditor.accelerators.quarkus.gitRepoUrl,
       gitRepositoryGitRef: buildEnv.onlineEditor.accelerators.quarkus.gitRef,
       dmnDestinationFolder: "src/main/resources/dmn",

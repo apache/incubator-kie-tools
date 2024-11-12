@@ -21,7 +21,7 @@
     "build:dev": "pnpm run build",
     "build:prod": "pnpm run build && pnpm run test",
     "start": "node dev-server/server.mjs $(build-env kieSandboxAcceleratorQuarkus.dev.port) ./dist-dev",
-    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"cpy ./dist ./dist-tests\" \"mvn -f ./dist-tests/git-repo-content clean package\" --finally \"rimraf ./dist-tests\""
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"rimraf ./dist-tests\" \"cpy . ../../dist-tests --cwd dist\" \"cpy ./empty.bpmn ../../../../dist-tests/git-repo-content/src/main/resources --cwd ./tests/models\" \"mvn -f ./dist-tests/git-repo-content clean package\" --finally \"rimraf ./dist-tests\""
   },
   "dependencies": {
     "@kie-tools/jbpm-quarkus-devui": "workspace:*"
