@@ -33,7 +33,10 @@ func minifyCommand() *cobra.Command {
 		Long: `
 	Minification of OpenAPI specs:
 	Minification allows us to reduce the size of an OpenAPI spec file, which is essential given the maximum YAML
-	size supported by Kubernetes is limited to 3,145,728 bytes.`,
+	size supported by Kubernetes is limited to 3,145,728 bytes.
+
+	Note: right now only OpenAPI specs are supported for minification, see examples below.
+	`,
 		Example: `
 	#Minify the workflow project's OpenAPI spec file located in the current project.
 	{{.Name}} specs minify openapi

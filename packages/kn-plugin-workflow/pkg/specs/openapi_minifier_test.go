@@ -129,6 +129,27 @@ func TestOpenAPIMinify(t *testing.T) {
 			subflowsDir:      "mySubFlowDir",
 			subflows:         []string{"testdata/subflow-mySpecsDir.sw.yaml"},
 		},
+		{
+			workflowFile: 	  "testdata/workflow-greeting.sw.yaml", // check we can process subflows with the same file name but different extensions
+			openapiSpecFiles: []spec{{"testdata/greetingAPI.yaml", 3, 1}},
+			specsDir:         "specs",
+			subflowsDir:      "custom_subflows",
+			subflows:         []string{"testdata/hello.sw.json", "testdata/hello.sw.yaml"}, // 2 subflows, 1 of them has a function that uses the greetingAPI.yaml
+		},
+		{
+			workflowFile: 	  "testdata/workflow-greeting.sw.yaml", // check we can process subflows with the same file name but different extensions
+			openapiSpecFiles: []spec{{"testdata/flink-openapi.yaml", 5, 2}},
+			specsDir:         "custom_specs",
+			subflowsDir:      "custom_subflows",
+			subflows:         []string{"testdata/subflow-custom.sw.json", "testdata/subflow-custom.sw.yaml"}, // 2 subflows, each one has a function that uses the flink-openapi.yaml
+		},
+		{
+			workflowFile: 	  "testdata/workflow-subflow-custom.sw.yaml", // workflow with a function that uses a subflow with a function that uses the flink-openapi.yaml
+			openapiSpecFiles: []spec{{"testdata/flink-openapi.yaml", 5, 3}},
+			specsDir:         "custom_specs",
+			subflowsDir:      "custom_subflows",
+			subflows:         []string{"testdata/subflow-custom.sw.json", "testdata/subflow-custom.sw.yaml"}, // 2 subflows, each one has a function that uses the flink-openapi.yaml
+		},
 	}
 
 	current, err := os.Getwd()

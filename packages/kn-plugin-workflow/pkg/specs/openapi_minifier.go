@@ -20,6 +20,7 @@
 package specs
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -230,7 +231,11 @@ func (m *OpenApiMinifier) writeMinifiedFileToDisk(specFile string, doc *openapi3
 	var output []byte
 	var err error
 	if strings.HasSuffix(specFile, metadata.YAMLExtension) || strings.HasSuffix(specFile, metadata.YMLExtension) {
-		output, err = yaml.Marshal(doc)
+		var buf bytes.Buffer
+		encoder := yaml.NewEncoder(&buf)
+		encoder.SetIndent(2)
+		err = encoder.Encode(doc)
+		output = buf.Bytes()
 	} else {
 		output, err = json.Marshal(doc)
 	}
