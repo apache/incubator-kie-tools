@@ -1,0 +1,79 @@
+openapi: 3.0.1
+info:
+  title: Flink JobManager REST API
+  contact:
+    email: user@flink.apache.org
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v1/1.20-SNAPSHOT
+paths:
+  /jars:
+    get:
+      description: Returns a list of all jars previously uploaded via '/jars/upload'.
+      operationId: getJarList
+      responses:
+        "200":
+          description: The request was successful.
+  /jars/{jarid}/run:
+    post:
+      description: Submits a job for execution.
+      operationId: submitJobFromJar
+      parameters:
+        - name: jarid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The request was successful.
+  /jobs/{jobid}:
+    get:
+      description: Returns details of a job.
+      operationId: getJobDetails
+      parameters:
+        - name: jobid
+          in: path
+          description: 32-character hexadecimal string value that identifies a job.
+          required: true
+      responses:
+        "200":
+          description: The request was successful.
+    patch:
+      description: Terminates a job.
+      operationId: cancelJob
+      parameters:
+        - name: jobid
+          in: path
+          description: 32-character hexadecimal string value that identifies a job.
+          required: true
+        - name: mode
+          in: query
+          description: "String value that specifies the termination mode. The only supported\
+            \ value is: \"cancel\"."
+          required: false
+          style: form
+      responses:
+        "202":
+          description: The request was successful.
+  /jars/upload:
+    post:
+      description: Uploads a jar.
+      operationId: uploadJar
+      requestBody:
+        content:
+          application/x-java-archive:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "200":
+          description: The request was successful.
+  /test:
+    get:
+      description: Test endpoint
+      operationId: test
+      responses:
+        "200":
+          description: The request was successful.
