@@ -27,6 +27,8 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
+
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
@@ -71,6 +73,7 @@ func GetSonataFlow(testFile, namespace string) *operatorapi.SonataFlow {
 	GetKubernetesResource(testFile, ksw)
 	klog.V(log.D).InfoS("Successfully read KSW", "ksw", spew.Sprint(ksw))
 	ksw.Namespace = namespace
+	ksw.Status.FlowCRC, _ = utils.Crc32Checksum(ksw.Spec.Flow)
 	return ksw
 }
 

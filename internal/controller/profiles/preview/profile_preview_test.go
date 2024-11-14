@@ -181,7 +181,7 @@ func Test_deployWorkflowReconciliationHandler_handleObjects(t *testing.T) {
 	assert.Equal(t, serviceMonitor.Spec.Endpoints[0].Path, "/q/metrics")
 }
 
-func Test_GenerationAnnotationCheck(t *testing.T) {
+func Test_WorkflowChangedCheck(t *testing.T) {
 	// we load a workflow with metadata.generation to 0
 	workflow := test.GetBaseSonataFlow(t.Name())
 	platform := test.GetBasePlatformInReadyPhase(t.Name())
@@ -199,15 +199,14 @@ func Test_GenerationAnnotationCheck(t *testing.T) {
 	assert.NotNil(t, result)
 	assert.Len(t, objects, 3)
 
-	// then we load a workflow with metadata.generation set to 1
+	// then we load the current workflow
 	workflowChanged := &operatorapi.SonataFlow{}
 	err = client.Get(context.TODO(), clientruntime.ObjectKeyFromObject(workflow), workflowChanged)
 	assert.NoError(t, err)
-	//we set the generation to 1
-	workflowChanged.Generation = int64(1)
-	err = client.Update(context.TODO(), workflowChanged)
-	assert.NoError(t, err)
-	// reconcile
+	//we change something within the flow
+	workflowChanged.Spec.Flow.AutoRetries = true
+
+	// reconcile -> the one in the k8s DB is different, so there's a change.
 	handler = &deployWithBuildWorkflowState{
 		StateSupport: fakeReconcilerSupport(client),
 		ensurers:     NewObjectEnsurers(&common.StateSupport{C: client}),

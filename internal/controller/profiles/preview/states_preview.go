@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"sort"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/labels"
@@ -40,7 +41,6 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles/common"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
-	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
 )
 
@@ -209,7 +209,11 @@ func (h *deployWithBuildWorkflowState) Do(ctx context.Context, workflow *operato
 		return ctrl.Result{}, nil, err
 	}
 
-	if h.isWorkflowChanged(workflow) { // Let's check that the 2 resWorkflowDef definition are different
+	hasChanged, err := h.isWorkflowChanged(workflow)
+	if err != nil {
+		return ctrl.Result{}, nil, err
+	}
+	if hasChanged { // Let's check that the 2 resWorkflowDef definition are different
 		if err = buildManager.MarkToRestart(build); err != nil {
 			return ctrl.Result{}, nil, err
 		}
@@ -235,13 +239,18 @@ func (h *deployWithBuildWorkflowState) PostReconcile(ctx context.Context, workfl
 	return h.cleanupOutdatedRevisions(ctx, workflow)
 }
 
-// isWorkflowChanged marks the workflow status as unknown to require a new build reconciliation
-func (h *deployWithBuildWorkflowState) isWorkflowChanged(workflow *operatorapi.SonataFlow) bool {
-	generation := kubeutil.GetLastGeneration(workflow.Namespace, workflow.Name, h.C, context.TODO())
-	if generation > workflow.Status.ObservedGeneration {
-		return true
+// isWorkflowChanged checks whether the contents of .spec.flow of the given workflow has changed.
+func (h *deployWithBuildWorkflowState) isWorkflowChanged(workflow *operatorapi.SonataFlow) (bool, error) {
+	// Added this guard for backward compatibility for workflows deployed with a previous operator version, so we won't kick thousands of builds on users' cluster.
+	// After this reconciliation cycle, the CRC should be updated
+	if workflow.Status.FlowCRC == 0 {
+		return false, nil
 	}
-	return false
+	actualCRC, err := utils.Crc32Checksum(workflow.Spec.Flow)
+	if err != nil {
+		return false, err
+	}
+	return actualCRC != workflow.Status.FlowCRC, nil
 }
 
 func (h *deployWithBuildWorkflowState) cleanupOutdatedRevisions(ctx context.Context, workflow *operatorapi.SonataFlow) error {

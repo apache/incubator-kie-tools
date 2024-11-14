@@ -239,6 +239,8 @@ spec:
       - description: Endpoint is an externally accessible URL of the workflow
         displayName: endpoint
         path: endpoint
+      - displayName: flowRevision
+        path: flowCRC
       - displayName: lastTimeRecoverAttempt
         path: lastTimeRecoverAttempt
       - description: Platform displays which platform is being used by this workflow

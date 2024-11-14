@@ -200,6 +200,8 @@ type SonataFlowStatus struct {
 	// Triggers list of triggers created for the SonataFlow
 	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="triggers"
 	Triggers []SonataFlowTriggerRef `json:"triggers,omitempty"`
+	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="flowRevision"
+	FlowCRC uint32 `json:"flowCRC,omitempty"`
 }
 
 // SonataFlowTriggerRef defines a trigger created for the SonataFlow.

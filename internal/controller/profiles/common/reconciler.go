@@ -23,6 +23,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
+
 	"k8s.io/client-go/rest"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/internal/controller/discovery"
@@ -56,6 +58,10 @@ func (s *StateSupport) PerformStatusUpdate(ctx context.Context, workflow *operat
 		return false, err
 	}
 	workflow.Status.ObservedGeneration = workflow.Generation
+	workflow.Status.FlowCRC, err = utils.Crc32Checksum(workflow.Spec.Flow)
+	if err != nil {
+		return false, err
+	}
 	services.SetServiceUrlsInWorkflowStatus(pl, workflow)
 	if workflow.Status.Platform == nil {
 		workflow.Status.Platform = &operatorapi.SonataFlowPlatformRef{}
