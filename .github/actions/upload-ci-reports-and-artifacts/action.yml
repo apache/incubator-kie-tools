@@ -59,7 +59,7 @@ runs:
         ls -la $RUNNER_TEMP
 
     - name: "Upload tests reports"
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: ${{ runner.os }}_${{ inputs.partition_index }}__tests-reports
@@ -67,7 +67,7 @@ runs:
           ${{ runner.temp }}/tests-reports.zip
 
     - name: "Upload end-to-end tests reports"
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: ${{ runner.os }}_${{ inputs.partition_index }}__end-to-end-tests-reports
@@ -75,7 +75,7 @@ runs:
           ${{ runner.temp }}/end-to-end-tests-reports.zip
 
     - name: "Upload end-to-end tests artifacts"
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: ${{ runner.os }}_${{ inputs.partition_index }}__end-to-end-tests-artifacts
@@ -83,7 +83,7 @@ runs:
           ${{ runner.temp }}/end-to-end-tests-artifacts.zip
 
     - name: "Upload build artifacts"
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: ${{ runner.os }}_${{ inputs.partition_index }}__build-artifacts
