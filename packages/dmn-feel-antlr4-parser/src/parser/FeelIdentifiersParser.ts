@@ -17,47 +17,34 @@
  * under the License.
  */
 
-import { VariablesRepository } from "./VariablesRepository";
+import { IdentifiersRepository } from "./IdentifiersRepository";
 import { CharStream, CommonTokenStream } from "antlr4";
 import FEEL_1_1Parser from "./grammar/generated-parser/FEEL_1_1Parser";
 import FEEL_1_1Lexer from "./grammar/generated-parser/FEEL_1_1Lexer";
 import { DataType } from "./DataType";
 import { Type } from "./grammar/Type";
-import { FeelVariable } from "./FeelVariable";
+import { FeelIdentifiedSymbol } from "./FeelIdentifiedSymbol";
 import { MapBackedType } from "./grammar/MapBackedType";
-import { VariableContext } from "./VariableContext";
+import { IdentifierContext } from "./IdentifierContext";
 import { ParsedExpression } from "./ParsedExpression";
 import { FeelSyntacticSymbolNature } from "./FeelSyntacticSymbolNature";
+import { Expression } from "./Expression";
 
-export class FeelVariablesParser {
-  private variablesRepository: VariablesRepository;
+export class FeelIdentifiersParser {
+  private repository: IdentifiersRepository;
 
-  constructor(variablesSource: VariablesRepository) {
-    this.variablesRepository = variablesSource;
-    this.refreshExpressions();
-  }
-
-  public refreshExpressions() {
-    for (const expression of this.variablesRepository.expressions.values()) {
-      for (const variable of expression.variables) {
-        variable.source?.expressions.delete(expression.uuid);
-      }
-      const parsedExpression = this.parse(expression.uuid, expression.fullExpression);
-      expression.variables = parsedExpression.feelVariables;
-      for (const variable of parsedExpression.feelVariables) {
-        variable.source?.expressions.set(expression.uuid, expression);
-      }
-    }
+  constructor(identifiersRepository: IdentifiersRepository) {
+    this.repository = identifiersRepository;
   }
 
   public parse(variableContextUuid: string, expression: string): ParsedExpression {
-    const variables = new Array<FeelVariable>();
+    const variables = new Array<FeelIdentifiedSymbol>();
     const chars = new CharStream(expression);
     const lexer = new FEEL_1_1Lexer(chars);
     const feelTokens = new CommonTokenStream(lexer);
     const parser = new FEEL_1_1Parser(feelTokens);
 
-    const variableContext = this.variablesRepository.variables.get(variableContextUuid);
+    const variableContext = this.repository.identifiers.get(variableContextUuid);
     if (variableContext) {
       this.defineVariables(variableContext, parser);
     }
@@ -71,28 +58,28 @@ export class FeelVariablesParser {
 
     return {
       availableSymbols: parser.helper.availableSymbols,
-      feelVariables: variables,
+      feelIdentifiedSymbols: variables,
     };
   }
 
-  private defineVariables(variableContext: VariableContext, parser: FEEL_1_1Parser) {
-    this.defineInputVariables(variableContext.inputVariables, parser);
+  private defineVariables(variableContext: IdentifierContext, parser: FEEL_1_1Parser) {
+    this.defineInputVariables(variableContext.inputIdentifiers, parser);
     this.addToParser(parser, variableContext);
 
     if (variableContext.parent) {
       this.defineParentVariable(variableContext.parent, parser);
     }
 
-    for (const inputVariableContext of variableContext.inputVariables) {
-      const localVariable = this.variablesRepository.variables.get(inputVariableContext);
+    for (const inputVariableContext of variableContext.inputIdentifiers) {
+      const localVariable = this.repository.identifiers.get(inputVariableContext);
       if (localVariable) {
         this.addToParser(parser, localVariable);
       }
     }
   }
 
-  private defineParentVariable(variableNode: VariableContext, parser: FEEL_1_1Parser) {
-    this.defineInputVariables(variableNode.inputVariables, parser);
+  private defineParentVariable(variableNode: IdentifierContext, parser: FEEL_1_1Parser) {
+    this.defineInputVariables(variableNode.inputIdentifiers, parser);
     this.addToParser(parser, variableNode);
 
     if (variableNode.parent) {
@@ -102,7 +89,7 @@ export class FeelVariablesParser {
 
   private createType(dataType: DataType | string): Type {
     if (typeof dataType !== "string") {
-      const type = new MapBackedType(dataType.name, dataType.typeRef ?? dataType.name);
+      const type = new MapBackedType(dataType.name, dataType.typeRef ?? dataType.name, dataType.source);
 
       for (const property of dataType.properties) {
         const innerType = this.createType(property[1]);
@@ -114,31 +101,36 @@ export class FeelVariablesParser {
       return {
         name: dataType,
         typeRef: dataType,
+        source: {
+          value: dataType,
+          feelSyntacticSymbolNature: FeelSyntacticSymbolNature.GlobalVariable,
+          expressionsThatUseTheIdentifier: new Map<string, Expression>(),
+        },
       };
     }
   }
 
   private defineInputVariables(inputVariables: Array<string>, parser: FEEL_1_1Parser) {
     for (const inputVariableId of inputVariables) {
-      const inputVariable = this.variablesRepository.variables.get(inputVariableId);
+      const inputVariable = this.repository.identifiers.get(inputVariableId);
       if (inputVariable) {
         this.addToParser(parser, inputVariable, true);
       }
     }
   }
 
-  private addToParser(parser: FEEL_1_1Parser, context: VariableContext, addInvisibleVariables?: boolean) {
+  private addToParser(parser: FEEL_1_1Parser, context: IdentifierContext, addInvisibleVariables?: boolean) {
     if (
-      context.variable.value !== "" &&
+      context.identifier.value !== "" &&
       ((!addInvisibleVariables &&
-        context.variable.feelSyntacticSymbolNature != FeelSyntacticSymbolNature.InvisibleVariables) ||
+        context.identifier.feelSyntacticSymbolNature != FeelSyntacticSymbolNature.InvisibleVariables) ||
         addInvisibleVariables)
     ) {
       parser.helper.defineVariable(
-        context.variable.value,
-        context.variable.typeRef ? this.createType(context.variable.typeRef) : undefined,
-        context.variable.feelSyntacticSymbolNature,
-        context.variable,
+        context.identifier.value,
+        context.identifier.typeRef ? this.createType(context.identifier.typeRef) : undefined,
+        context.identifier.feelSyntacticSymbolNature,
+        context.identifier,
         context.allowDynamicVariables
       );
     }

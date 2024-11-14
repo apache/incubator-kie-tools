@@ -56,20 +56,23 @@ export function FilterExpressionMatchCell({
   }, [beeGwtService, expression, isActive]);
 
   const onSetExpression = useCallback<OnSetExpression>(
-    ({ getNewExpression }) => {
-      setExpression((prev: Normalized<BoxedFilter>) => {
-        const newExpression = getNewExpression(prev.match.expression);
+    ({ getNewExpression, expressionChangedArgs }) => {
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedFilter>) => {
+          const newExpression = getNewExpression(prev.match.expression);
 
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedFilter> = {
-          ...prev,
-          match: {
-            ...prev.match,
-            expression: newExpression!, // SPEC DISCREPANCY
-          },
-        };
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedFilter> = {
+            ...prev,
+            match: {
+              ...prev.match,
+              expression: newExpression!, // SPEC DISCREPANCY
+            },
+          };
 
-        return ret;
+          return ret;
+        },
+        expressionChangedArgs,
       });
     },
     [setExpression]

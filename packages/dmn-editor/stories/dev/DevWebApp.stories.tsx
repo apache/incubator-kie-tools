@@ -36,7 +36,7 @@ import {
   OnRequestExternalModelByPath,
   OnRequestExternalModelsAvailableToInclude,
   OnRequestToJumpToPath,
-} from "../../src/DmnEditor";
+} from "@kie-tools/dmn-editor/dist/DmnEditor";
 
 const initialModel = generateEmptyDmn15();
 

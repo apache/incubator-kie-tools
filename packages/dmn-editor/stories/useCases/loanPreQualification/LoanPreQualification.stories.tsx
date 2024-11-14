@@ -21,7 +21,7 @@ import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { Empty } from "../../misc/empty/Empty.stories";
-import { DmnEditor, DmnEditorProps } from "../../../src/DmnEditor";
+import { DmnEditor, DmnEditorProps } from "@kie-tools/dmn-editor/dist/DmnEditor";
 import { StorybookDmnEditorProps } from "../../dmnEditorStoriesWrapper";
 
 export const loanPreQualificationDmn = `<?xml version="1.0" encoding="UTF-8" ?>

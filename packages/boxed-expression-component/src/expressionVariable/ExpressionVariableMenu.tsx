@@ -28,8 +28,13 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { NavigationKeysUtils } from "../keysUtils/keyUtils";
 import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 import "./ExpressionVariableMenu.css";
+import { Action, ExpressionChangedArgs, VariableChangedArgs } from "../api";
 
-export type OnExpressionVariableUpdated = (args: { name: string; typeRef: string | undefined }) => void;
+export type OnExpressionVariableUpdated = (args: {
+  name: string;
+  typeRef: string | undefined;
+  changes: VariableChangedArgs;
+}) => void;
 
 export interface ExpressionVariableMenuProps {
   /** Optional children element to be considered for triggering the edit expression menu */
@@ -51,6 +56,8 @@ export interface ExpressionVariableMenuProps {
   /** Function to be called when the expression gets updated, passing the most updated version of it */
   onVariableUpdated: OnExpressionVariableUpdated;
   position?: PopoverPosition;
+  /** The UUID of the variable. */
+  variableUuid: string;
 }
 
 export const DEFAULT_EXPRESSION_VARIABLE_NAME = "Expression Name";
@@ -65,6 +72,7 @@ export function ExpressionVariableMenu({
   selectedExpressionName,
   onVariableUpdated,
   position,
+  variableUuid,
 }: ExpressionVariableMenuProps) {
   const { editorRef, beeGwtService } = useBoxedExpressionEditor();
   const { i18n } = useBoxedExpressionEditorI18n();
@@ -100,17 +108,36 @@ export function ExpressionVariableMenu({
   }, [beeGwtService]);
 
   const saveExpression = useCallback(() => {
-    if (expressionName !== selectedExpressionName || dataType !== selectedDataType) {
-      onVariableUpdated({ name: expressionName, typeRef: dataType });
+    const changes: ExpressionChangedArgs = {
+      action: Action.VariableChanged,
+      variableUuid: variableUuid,
+      typeChange:
+        dataType !== selectedDataType
+          ? {
+              from: dataType,
+              to: selectedDataType,
+            }
+          : undefined,
+      nameChange:
+        expressionName !== selectedExpressionName
+          ? {
+              from: expressionName,
+              to: selectedExpressionName,
+            }
+          : undefined,
+    };
+
+    if (changes.nameChange || changes.typeChange) {
+      onVariableUpdated({ name: expressionName, typeRef: dataType, changes });
     }
-  }, [expressionName, selectedExpressionName, dataType, selectedDataType, onVariableUpdated]);
+  }, [expressionName, selectedExpressionName, dataType, selectedDataType, variableUuid, onVariableUpdated]);
 
   const resetFormData = useCallback(() => {
     setExpressionName(selectedExpressionName);
     setDataType(selectedDataType);
   }, [selectedExpressionName, selectedDataType]);
 
-  // onCancel doens't prevent the onHide call
+  // onCancel doesn't prevent the onHide call
   // With this ref we ensure the "saveExpression" inside onHide will not be called
   const cancelEdit = useRef<boolean>(false);
 

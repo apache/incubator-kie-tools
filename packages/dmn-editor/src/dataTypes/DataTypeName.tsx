@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -32,6 +32,7 @@ import { InlineFeelNameInput, OnInlineFeelNameRenamed } from "../feel/InlineFeel
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { State } from "../store/Store";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 
 export function DataTypeName({
   isReadOnly,
@@ -70,6 +71,19 @@ export function DataTypeName({
     relativeToNamespace,
   });
 
+  const externalDmnsByNamespace = useDmnEditorStore(
+    (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
+  );
+
+  const externalModelsByNamespaceMap = useMemo(() => {
+    const externalModels = new Map<string, Normalized<DmnLatestModel>>();
+
+    for (const [key, externalDmn] of externalDmnsByNamespace) {
+      externalModels.set(key, externalDmn.model);
+    }
+    return externalModels;
+  }, [externalDmnsByNamespace]);
+
   const onRenamed = useCallback<OnInlineFeelNameRenamed>(
     (newName) => {
       if (isReadOnly) {
@@ -82,10 +96,11 @@ export function DataTypeName({
           newName,
           itemDefinitionId: itemDefinition["@_id"]!,
           allDataTypesById: state.computed(state).getDataTypes(externalModelsByNamespace).allDataTypesById,
+          externalModelsByNamespaceMap,
         });
       });
     },
-    [dmnEditorStoreApi, externalModelsByNamespace, isReadOnly, itemDefinition]
+    [dmnEditorStoreApi, externalModelsByNamespace, externalModelsByNamespaceMap, isReadOnly, itemDefinition]
   );
 
   const _shouldCommitOnBlur = shouldCommitOnBlur ?? true; // Defaults to true

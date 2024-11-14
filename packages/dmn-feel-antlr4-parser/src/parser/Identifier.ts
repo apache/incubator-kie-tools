@@ -19,29 +19,39 @@
 
 import { DataType } from "./DataType";
 import { FeelSyntacticSymbolNature } from "./FeelSyntacticSymbolNature";
-import { Expression } from "./VariableOccurrence";
+import { Expression } from "./Expression";
 
 /**
- * Describe a variable in FEEL.
+ * Describe an identifier in FEEL.
  */
-export interface Variable {
+export interface Identifier {
   /**
-   * The name/value of the variable.
+   * The name/value of the identifier.
    */
   value: string;
 
   /**
-   * The nature of the variable.
+   * The nature of the identifier.
    */
   feelSyntacticSymbolNature: FeelSyntacticSymbolNature;
 
   /**
-   * The type of the variable, which can be a custom data type defined by the user, a built-in type or not defined.
+   * The type of the identifier, which can be a custom data type defined by the user, a built-in type or not defined.
    */
   typeRef?: DataType | string | undefined;
 
   /**
-   * The expressions where this variable is being used.
+   * The expressions where this identifier is being used.
    */
-  expressions: Map<string, Expression>;
+  expressionsThatUseTheIdentifier: Map<string, Expression>;
+
+  /**
+   * Apply the name/value of the identifier to the source that originates this identifier.
+   */
+  applyValueToSource?(): void;
+
+  /**
+   * Apply the type of the identifier to the source that originates this identifier.
+   */
+  applyTypeRefToSource?(): void;
 }

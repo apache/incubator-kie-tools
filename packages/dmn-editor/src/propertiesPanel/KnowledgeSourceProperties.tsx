@@ -18,7 +18,10 @@
  */
 
 import * as React from "react";
-import { DMN15__tKnowledgeSource } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import {
+  DMN15__tDefinitions,
+  DMN15__tKnowledgeSource,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -28,8 +31,15 @@ import { DocumentationLinksFormGroup } from "./DocumentationLinksFormGroup";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
-import { useCallback } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import {
+  isIdentifierReferencedInSomeExpression,
+  RefactorConfirmationDialog,
+} from "../refactor/RefactorConfirmationDialog";
+import { OnEditableNodeLabelChange } from "../diagram/nodes/EditableNodeLabel";
 
 export function KnowledgeSourceProperties({
   knowledgeSource,
@@ -45,9 +55,93 @@ export function KnowledgeSourceProperties({
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const isReadOnly = settings.isReadOnly || (!!namespace && namespace !== thisDmnsNamespace);
+  const { externalModelsByNamespace } = useExternalModels();
+  const externalDmnsByNamespace = useDmnEditorStore(
+    (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
+  );
+  const externalDmnModelsByNamespaceMap = useMemo(() => {
+    const externalModels = new Map<string, Normalized<DmnLatestModel>>();
+
+    for (const [key, externalDmn] of externalDmnsByNamespace) {
+      externalModels.set(key, externalDmn.model);
+    }
+    return externalModels;
+  }, [externalDmnsByNamespace]);
+
+  const [isRefactorModalOpen, setIsRefactorModalOpen] = useState(false);
+  const [newName, setNewName] = useState("");
+  const identifierId = useMemo(() => knowledgeSource["@_id"], [knowledgeSource]);
+  const oldName = useMemo(() => knowledgeSource["@_label"] ?? knowledgeSource["@_name"], [knowledgeSource]);
+
+  const applyRename = useCallback(
+    (args: {
+      definitions: Normalized<DMN15__tDefinitions>;
+      newName: string;
+      shouldRenameReferencedExpressions: boolean;
+    }) => {
+      renameDrgElement({
+        ...args,
+        index,
+        externalDmnModelsByNamespaceMap,
+      });
+    },
+    [externalDmnModelsByNamespaceMap, index]
+  );
+
+  const setName = useCallback<OnEditableNodeLabelChange>(
+    (name: string) => {
+      if (name === oldName) {
+        return;
+      }
+      setState((state) => {
+        if (
+          isIdentifierReferencedInSomeExpression({
+            identifierUuid: identifierId,
+            dmnDefinitions: state.dmn.model.definitions,
+            externalDmnModelsByNamespaceMap,
+          })
+        ) {
+          setNewName(name);
+          setIsRefactorModalOpen(true);
+        } else {
+          applyRename({
+            definitions: state.dmn.model.definitions,
+            newName: name,
+            shouldRenameReferencedExpressions: false,
+          });
+        }
+      });
+    },
+    [applyRename, externalDmnModelsByNamespaceMap, oldName, identifierId, setState]
+  );
 
   return (
     <>
+      <RefactorConfirmationDialog
+        onConfirmExpressionRefactor={() => {
+          setIsRefactorModalOpen(false);
+          setState((state) => {
+            applyRename({
+              definitions: state.dmn.model.definitions,
+              newName,
+              shouldRenameReferencedExpressions: true,
+            });
+          });
+        }}
+        onConfirmRenameOnly={() => {
+          setIsRefactorModalOpen(false);
+          setState((state) => {
+            applyRename({
+              definitions: state.dmn.model.definitions,
+              newName,
+              shouldRenameReferencedExpressions: false,
+            });
+          });
+        }}
+        isRefactorModalOpen={isRefactorModalOpen}
+        fromName={oldName}
+        toName={newName}
+      />
       <FormGroup label="Name">
         <InlineFeelNameInput
           enableAutoFocusing={false}
@@ -57,15 +151,7 @@ export function KnowledgeSourceProperties({
           isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
           className={"pf-c-form-control"}
-          onRenamed={(newName) => {
-            setState((state) => {
-              renameDrgElement({
-                definitions: state.dmn.model.definitions,
-                index,
-                newName,
-              });
-            });
-          }}
+          onRenamed={setName}
           allUniqueNames={useCallback((s) => s.computed(s).getAllFeelVariableUniqueNames(), [])}
         />
       </FormGroup>

@@ -19,7 +19,12 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { BeeGwtService, BoxedExpression, DmnBuiltInDataType, Normalized } from "../../src/api";
+import {
+  BeeGwtService,
+  BoxedExpression,
+  DmnBuiltInDataType,
+  Normalized,
+} from "@kie-tools/boxed-expression-component/dist/api";
 import { getDefaultBoxedExpressionForDevWebapp } from "./getDefaultBoxedExpressionForDevWebapp";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../boxedExpressionStoriesWrapper";
@@ -34,6 +39,7 @@ import {
   postBureauAffordabilityExpression,
   postBureauAffordabilityWidthsById,
 } from "../useCases/LoanOriginations/RoutingDecisionService/PostBureauAffordability/PostBureauAffordability.stories";
+import { OnExpressionChange } from "@kie-tools/boxed-expression-component/dist/BoxedExpressionEditorContext";
 
 /**
  * Constants copied from tests to fix debugger
@@ -111,6 +117,18 @@ function App() {
     []
   );
 
+  const onExpressionChange = useCallback<OnExpressionChange>(
+    (args) => {
+      const newExpression =
+        typeof args.setExpressionAction === "function"
+          ? args.setExpressionAction(boxedExpression)
+          : args.setExpressionAction;
+
+      setBoxedExpression(newExpression);
+    },
+    [boxedExpression]
+  );
+
   const beeGwtService: BeeGwtService = {
     getDefaultExpressionDefinition(logicType, typeRef) {
       return {
@@ -154,7 +172,7 @@ function App() {
               {BoxedExpressionEditorStory({
                 expressionHolderId: "_00000000-0000-0000-0000-000000000000",
                 expression: boxedExpression,
-                onExpressionChange: setBoxedExpression,
+                onExpressionChange: onExpressionChange,
                 widthsById: widthsById,
                 onWidthsChange: setWidthsById,
                 isResetSupportedOnRootExpression: true,

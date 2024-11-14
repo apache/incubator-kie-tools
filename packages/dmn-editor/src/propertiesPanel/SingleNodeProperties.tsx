@@ -51,6 +51,7 @@ import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import { UnknownProperties } from "./UnknownProperties";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import "./SingleNodeProperties.css";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 
 export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -59,6 +60,18 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
   const [isSectionExpanded, setSectionExpanded] = useState<boolean>(true);
   const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
   const nodeIds = useMemo(() => (node?.id ? [node.id] : []), [node?.id]);
+  const externalDmnsByNamespace = useDmnEditorStore(
+    (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
+  );
+
+  const externalDmnModelsByNamespaceMap = useMemo(() => {
+    const externalModels = new Map<string, Normalized<DmnLatestModel>>();
+
+    for (const [key, externalDmn] of externalDmnsByNamespace) {
+      externalModels.set(key, externalDmn.model);
+    }
+    return externalModels;
+  }, [externalDmnsByNamespace]);
 
   const Icon = useMemo(() => {
     if (node?.data?.dmnObject === undefined) {
@@ -137,6 +150,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                         inputData={node.data!.dmnObject as Normalized<DMN15__tInputData>}
                         namespace={node.data.dmnObjectNamespace}
                         index={node.data.index}
+                        externalDmnModelsByNamespaceMap={externalDmnModelsByNamespaceMap}
                       />
                     );
                   case NODE_TYPES.decision:
@@ -145,6 +159,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                         decision={node.data!.dmnObject as Normalized<DMN15__tDecision>}
                         namespace={node.data.dmnObjectNamespace}
                         index={node.data.index}
+                        externalDmnModelsByNamespaceMap={externalDmnModelsByNamespaceMap}
                       />
                     );
                   case NODE_TYPES.bkm:
@@ -153,6 +168,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                         bkm={node.data!.dmnObject as Normalized<DMN15__tBusinessKnowledgeModel>}
                         namespace={node.data.dmnObjectNamespace}
                         index={node.data.index}
+                        externalDmnModelsByNamespaceMap={externalDmnModelsByNamespaceMap}
                       />
                     );
                   case NODE_TYPES.decisionService:
@@ -161,6 +177,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                         decisionService={node.data!.dmnObject as Normalized<DMN15__tDecisionService>}
                         namespace={node.data.dmnObjectNamespace}
                         index={node.data.index}
+                        externalDmnModelsByNamespaceMap={externalDmnModelsByNamespaceMap}
                       />
                     );
                   case NODE_TYPES.knowledgeSource:

@@ -19,11 +19,11 @@
 
 import * as Monaco from "@kie-tools-core/monaco-editor";
 import { Element } from "./themes/Element";
-import { FeelSyntacticSymbolNature, FeelVariables, ParsedExpression } from "@kie-tools/dmn-feel-antlr4-parser";
+import { FeelSyntacticSymbolNature, FeelIdentifiers, ParsedExpression } from "@kie-tools/dmn-feel-antlr4-parser";
 
 export class SemanticTokensProvider implements Monaco.languages.DocumentSemanticTokensProvider {
   constructor(
-    private feelVariables: FeelVariables | undefined,
+    private feelIdentifiers: FeelIdentifiers | undefined,
     private expressionId: string | undefined,
     private setCurrentParsedExpression: (
       value: ((prevState: ParsedExpression) => ParsedExpression) | ParsedExpression
@@ -46,13 +46,16 @@ export class SemanticTokensProvider implements Monaco.languages.DocumentSemantic
   ): Monaco.languages.ProviderResult<Monaco.languages.SemanticTokens> {
     const tokenTypes = new Array<number>();
 
-    if (!this.feelVariables) {
+    if (!this.feelIdentifiers) {
       return;
     }
 
     const text = model.getValue().replaceAll("\r\n", "\n");
     const contentByLines = model.getLinesContent();
-    const parsedExpression = this.feelVariables.parser.parse(this.expressionId ?? "", text);
+    const parsedExpression = this.feelIdentifiers.parse({
+      identifierContextUuid: this.expressionId ?? "",
+      expression: text,
+    });
 
     // This is to autocomplete, so we don't need to parse it again.
     this.setCurrentParsedExpression(parsedExpression);
@@ -71,48 +74,50 @@ export class SemanticTokensProvider implements Monaco.languages.DocumentSemantic
     //
     // The code bellow does this calculation fixing the startIndex solved by the parser to the
     // startIndex we need here, relative to the LINE where the variable is, not to the full expression.
-    for (const variable of parsedExpression.feelVariables) {
+    for (const feelIdentifiedSymbol of parsedExpression.feelIdentifiedSymbols) {
       let lineOffset = 0;
-      for (let i = 0; i < variable.startLine; i++) {
+      for (let i = 0; i < feelIdentifiedSymbol.startLine; i++) {
         lineOffset += contentByLines[i].length + 1; // +1 = is the line break
       }
-      variable.startIndex -= lineOffset;
+      feelIdentifiedSymbol.startIndex -= lineOffset;
     }
 
     let startOfPreviousVariable = 0;
     let previousLine = 0;
-    for (const variable of parsedExpression.feelVariables) {
-      if (previousLine != variable.startLine) {
+    for (const feelIdentifiedSymbol of parsedExpression.feelIdentifiedSymbols) {
+      if (previousLine != feelIdentifiedSymbol.startLine) {
         startOfPreviousVariable = 0;
       }
 
       // It is a variable that it is NOT split in multiple-lines
-      if (variable.startLine === variable.endLine) {
+      if (feelIdentifiedSymbol.startLine === feelIdentifiedSymbol.endLine) {
         tokenTypes.push(
-          variable.startLine - previousLine, // lineIndex = relative to the PREVIOUS line
-          variable.startIndex - startOfPreviousVariable, // columnIndex = relative to the start of the PREVIOUS token NOT to the start of the line
-          variable.length,
-          this.getTokenTypeIndex(variable.feelSymbolNature),
+          feelIdentifiedSymbol.startLine - previousLine, // lineIndex = relative to the PREVIOUS line
+          feelIdentifiedSymbol.startIndex - startOfPreviousVariable, // columnIndex = relative to the start of the PREVIOUS token NOT to the start of the line
+          feelIdentifiedSymbol.length,
+          this.getTokenTypeIndex(feelIdentifiedSymbol.feelSymbolNature),
           0 // token modifier = not used so we keep it 0
         );
 
-        previousLine = variable.startLine;
-        startOfPreviousVariable = variable.startIndex;
+        previousLine = feelIdentifiedSymbol.startLine;
+        startOfPreviousVariable = feelIdentifiedSymbol.startIndex;
       } else {
         // It is a MULTILINE variable.
         // We colorize the first line of the variable and then other lines.
         tokenTypes.push(
-          variable.startLine - previousLine,
-          variable.startIndex - startOfPreviousVariable,
-          contentByLines[variable.startLine - previousLine].length - variable.startIndex,
-          this.getTokenTypeIndex(variable.feelSymbolNature),
+          feelIdentifiedSymbol.startLine - previousLine,
+          feelIdentifiedSymbol.startIndex - startOfPreviousVariable,
+          contentByLines[feelIdentifiedSymbol.startLine - previousLine].length - feelIdentifiedSymbol.startIndex,
+          this.getTokenTypeIndex(feelIdentifiedSymbol.feelSymbolNature),
           0
         );
 
         let remainingChars =
-          variable.length - 1 - (contentByLines[variable.startLine - previousLine].length - variable.startIndex); // -1 = line break
-        const remainingLines = variable.endLine - variable.startLine;
-        let currentLine = variable.startLine + 1;
+          feelIdentifiedSymbol.length -
+          1 -
+          (contentByLines[feelIdentifiedSymbol.startLine - previousLine].length - feelIdentifiedSymbol.startIndex); // -1 = line break
+        const remainingLines = feelIdentifiedSymbol.endLine - feelIdentifiedSymbol.startLine;
+        let currentLine = feelIdentifiedSymbol.startLine + 1;
 
         // We colorize the remaining lines here. It can be one of the following cases:
         // 1. The entire line is part of the variable, colorize the entire line;
@@ -124,7 +129,7 @@ export class SemanticTokensProvider implements Monaco.languages.DocumentSemantic
             toColorize = contentByLines[currentLine].length;
           }
 
-          tokenTypes.push(1, 0, toColorize, this.getTokenTypeIndex(variable.feelSymbolNature), 0);
+          tokenTypes.push(1, 0, toColorize, this.getTokenTypeIndex(feelIdentifiedSymbol.feelSymbolNature), 0);
 
           remainingChars -= toColorize + 1;
           currentLine++;
@@ -135,7 +140,7 @@ export class SemanticTokensProvider implements Monaco.languages.DocumentSemantic
         // the line. So, here, we're setting it to 0 because the last painted "part of the variable"
         // was painted at position 0 of the line.
         startOfPreviousVariable = 0;
-        previousLine = variable.endLine;
+        previousLine = feelIdentifiedSymbol.endLine;
       }
     }
 

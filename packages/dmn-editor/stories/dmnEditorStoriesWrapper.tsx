@@ -20,7 +20,13 @@
 import * as React from "react";
 import { useCallback, useState, useRef, useMemo, useEffect } from "react";
 import { useArgs } from "@storybook/preview-api";
-import { DmnEditor, DmnEditorProps, DmnEditorRef, EvaluationResults, ValidationMessages } from "../src/DmnEditor";
+import {
+  DmnEditor,
+  DmnEditorProps,
+  DmnEditorRef,
+  EvaluationResults,
+  ValidationMessages,
+} from "@kie-tools/dmn-editor/dist/DmnEditor";
 import { DmnLatestModel, getMarshaller } from "@kie-tools/dmn-marshaller";
 import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { diff } from "deep-object-diff";

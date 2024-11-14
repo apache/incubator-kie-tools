@@ -33,7 +33,7 @@ import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { DocumentationLinksFormGroup } from "./DocumentationLinksFormGroup";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { DmnObjectListItem } from "../externalNodes/DmnObjectListItem";
 import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
@@ -48,6 +48,12 @@ import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ExternalDmn } from "../DmnEditor";
 import { Unpacked } from "../tsExt/tsExt";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import {
+  isIdentifierReferencedInSomeExpression,
+  RefactorConfirmationDialog,
+} from "../refactor/RefactorConfirmationDialog";
+import { OnEditableNodeLabelChange } from "../diagram/nodes/EditableNodeLabel";
 
 export type AllKnownDrgElementsByHref = Map<
   string,
@@ -59,10 +65,12 @@ export function DecisionServiceProperties({
   decisionService,
   namespace,
   index,
+  externalDmnModelsByNamespaceMap,
 }: {
   decisionService: Normalized<DMN15__tDecisionService>;
   namespace: string | undefined;
   index: number;
+  externalDmnModelsByNamespaceMap: Map<string, Normalized<DmnLatestModel>>;
 }) {
   const { setState } = useDmnEditorStoreApi();
   const settings = useSettings();
@@ -112,8 +120,80 @@ export function DecisionServiceProperties({
 
   const resolvedTypeRef = useResolvedTypeRef(decisionService.variable?.["@_typeRef"], namespace);
 
+  const [isRefactorModalOpen, setIsRefactorModalOpen] = useState(false);
+  const [newName, setNewName] = useState("");
+  const identifierId = useMemo(() => decisionService["@_id"], [decisionService]);
+  const oldName = useMemo(() => decisionService["@_label"] ?? decisionService["@_name"], [decisionService]);
+
+  const applyRename = useCallback(
+    (args: {
+      definitions: Normalized<DMN15__tDefinitions>;
+      newName: string;
+      shouldRenameReferencedExpressions: boolean;
+    }) => {
+      renameDrgElement({
+        ...args,
+        index,
+        externalDmnModelsByNamespaceMap,
+      });
+    },
+    [externalDmnModelsByNamespaceMap, index]
+  );
+
+  const setName = useCallback<OnEditableNodeLabelChange>(
+    (name: string) => {
+      if (name === oldName) {
+        return;
+      }
+      setState((state) => {
+        if (
+          isIdentifierReferencedInSomeExpression({
+            identifierUuid: identifierId,
+            dmnDefinitions: state.dmn.model.definitions,
+            externalDmnModelsByNamespaceMap,
+          })
+        ) {
+          setNewName(name);
+          setIsRefactorModalOpen(true);
+        } else {
+          applyRename({
+            definitions: state.dmn.model.definitions,
+            newName: name,
+            shouldRenameReferencedExpressions: false,
+          });
+        }
+      });
+    },
+    [applyRename, externalDmnModelsByNamespaceMap, oldName, identifierId, setState]
+  );
+
   return (
     <>
+      <RefactorConfirmationDialog
+        onConfirmExpressionRefactor={() => {
+          setIsRefactorModalOpen(false);
+          setState((state) => {
+            applyRename({
+              definitions: state.dmn.model.definitions,
+              newName,
+              shouldRenameReferencedExpressions: true,
+            });
+          });
+        }}
+        onConfirmRenameOnly={() => {
+          setIsRefactorModalOpen(false);
+          setState((state) => {
+            applyRename({
+              definitions: state.dmn.model.definitions,
+              newName,
+              shouldRenameReferencedExpressions: false,
+            });
+          });
+        }}
+        isRefactorModalOpen={isRefactorModalOpen}
+        fromName={oldName}
+        toName={newName}
+      />
       <FormGroup label="Name">
         <InlineFeelNameInput
           enableAutoFocusing={false}
@@ -123,15 +203,7 @@ export function DecisionServiceProperties({
           isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
           className={"pf-c-form-control"}
-          onRenamed={(newName) => {
-            setState((state) => {
-              renameDrgElement({
-                definitions: state.dmn.model.definitions,
-                index,
-                newName,
-              });
-            });
-          }}
+          onRenamed={setName}
           allUniqueNames={useCallback((s) => s.computed(s).getAllFeelVariableUniqueNames(), [])}
         />
       </FormGroup>

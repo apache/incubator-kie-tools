@@ -25,17 +25,21 @@ import {
 } from "../dataTypes/DataTypeSpec";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import { IdentifiersRefactor } from "@kie-tools/dmn-language-service";
 
 export function renameItemDefinition({
   definitions,
   newName,
   allDataTypesById,
   itemDefinitionId,
+  externalModelsByNamespaceMap,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   newName: string;
   itemDefinitionId: string;
   allDataTypesById: DataTypeIndex;
+  externalModelsByNamespaceMap: Map<string, Normalized<DmnLatestModel>>;
 }) {
   const dataType = allDataTypesById.get(itemDefinitionId);
   if (!dataType) {
@@ -86,7 +90,12 @@ export function renameItemDefinition({
 
   // Not top-level.. meaning that we need to update FEEL expressions referencing it
   else {
-    // FIXME: Daniel --> Implement this...
+    const identifiersRefactor = new IdentifiersRefactor({
+      writeableDmnDefinitions: definitions,
+      _readonly_externalDmnModelsByNamespaceMap: externalModelsByNamespaceMap,
+    });
+
+    identifiersRefactor.rename({ identifierUuid: itemDefinitionId, newName: trimmedNewName });
   }
 
   itemDefinition["@_name"] = trimmedNewName;

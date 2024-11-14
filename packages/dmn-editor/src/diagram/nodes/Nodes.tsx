@@ -73,6 +73,11 @@ import { propsHaveSameValuesDeep } from "../memoization/memoization";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { NODE_LAYERS } from "../../store/computed/computeDiagramData";
 import { useSettings } from "../../settings/DmnEditorSettingsContext";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import {
+  isIdentifierReferencedInSomeExpression,
+  RefactorConfirmationDialog,
+} from "../../refactor/RefactorConfirmationDialog";
 
 export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any
   ? E["__$$element"] extends Filter
@@ -136,13 +141,64 @@ export const InputDataNode = React.memo(
       isAlternativeInputDataShape,
     });
 
-    const setName = useCallback<OnEditableNodeLabelChange>(
-      (newName: string) => {
-        dmnEditorStoreApi.setState((state) => {
-          renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
+    const { externalModelsByNamespace } = useExternalModels();
+    const externalDmnsByNamespace = useDmnEditorStore(
+      (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
+    );
+    const externalDmnModelsByNamespaceMap = useMemo(() => {
+      const externalModels = new Map<string, Normalized<DmnLatestModel>>();
+
+      for (const [key, externalDmn] of externalDmnsByNamespace) {
+        externalModels.set(key, externalDmn.model);
+      }
+      return externalModels;
+    }, [externalDmnsByNamespace]);
+
+    const [isRefactorModalOpen, setIsRefactorModalOpen] = useState(false);
+    const [newName, setNewName] = useState("");
+    const identifierId = useMemo(() => inputData["@_id"], [inputData]);
+    const oldName = useMemo(() => inputData["@_label"] ?? inputData["@_name"], [inputData]);
+
+    const applyRename = useCallback(
+      (args: {
+        definitions: Normalized<DMN15__tDefinitions>;
+        newName: string;
+        shouldRenameReferencedExpressions: boolean;
+      }) => {
+        renameDrgElement({
+          ...args,
+          index,
+          externalDmnModelsByNamespaceMap,
         });
       },
-      [dmnEditorStoreApi, index]
+      [externalDmnModelsByNamespaceMap, index]
+    );
+
+    const setName = useCallback<OnEditableNodeLabelChange>(
+      (name: string) => {
+        if (name === oldName) {
+          return;
+        }
+        dmnEditorStoreApi.setState((state) => {
+          if (
+            isIdentifierReferencedInSomeExpression({
+              identifierUuid: identifierId,
+              dmnDefinitions: state.dmn.model.definitions,
+              externalDmnModelsByNamespaceMap,
+            })
+          ) {
+            setNewName(name);
+            setIsRefactorModalOpen(true);
+          } else {
+            applyRename({
+              definitions: state.dmn.model.definitions,
+              newName: name,
+              shouldRenameReferencedExpressions: false,
+            });
+          }
+        });
+      },
+      [oldName, dmnEditorStoreApi, identifierId, externalDmnModelsByNamespaceMap, applyRename]
     );
 
     const onTypeRefChange = useCallback<OnTypeRefChange>(
@@ -165,8 +221,6 @@ export const InputDataNode = React.memo(
       nodeType: type as NodeType,
       isEnabled: enableCustomNodeStyles,
     });
-
-    const { externalModelsByNamespace } = useExternalModels();
 
     const isCollection = useDmnEditorStore((s) => {
       const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = s
@@ -193,7 +247,7 @@ export const InputDataNode = React.memo(
             }px`,
           } as any)
         : undefined;
-      // The dependecy should be "nodeDimension" to trigger an adjustment on width changes as well.
+      // The dependency should be "nodeDimension" to trigger an adjustment on width changes as well.
     }, [isAlternativeInputDataShape, nodeDimensions, isEditingLabel, alternativeEditableNodeHeight]);
 
     const selectedAlternativeClass = useMemo(
@@ -203,6 +257,31 @@ export const InputDataNode = React.memo(
 
     return (
       <>
+        <RefactorConfirmationDialog
+          onConfirmExpressionRefactor={() => {
+            setIsRefactorModalOpen(false);
+            dmnEditorStoreApi.setState((state) => {
+              applyRename({
+                definitions: state.dmn.model.definitions,
+                newName,
+                shouldRenameReferencedExpressions: true,
+              });
+            });
+          }}
+          onConfirmRenameOnly={() => {
+            setIsRefactorModalOpen(false);
+            dmnEditorStoreApi.setState((state) => {
+              applyRename({
+                definitions: state.dmn.model.definitions,
+                newName,
+                shouldRenameReferencedExpressions: false,
+              });
+            });
+          }}
+          isRefactorModalOpen={isRefactorModalOpen}
+          fromName={oldName}
+          toName={newName}
+        />
         <svg
           className={`kie-dmn-editor--node-shape ${className} ${isAlternativeInputDataShape ? "alternative" : ""} ${
             selected ? "selected" : ""
@@ -356,13 +435,65 @@ export const DecisionNode = React.memo(
       snapGrid,
       shape,
     });
-    const setName = useCallback<OnEditableNodeLabelChange>(
-      (newName: string) => {
-        dmnEditorStoreApi.setState((state) => {
-          renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
+
+    const { externalModelsByNamespace } = useExternalModels();
+    const externalDmnsByNamespace = useDmnEditorStore(
+      (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
+    );
+    const externalDmnModelsByNamespaceMap = useMemo(() => {
+      const externalModels = new Map<string, Normalized<DmnLatestModel>>();
+
+      for (const [key, externalDmn] of externalDmnsByNamespace) {
+        externalModels.set(key, externalDmn.model);
+      }
+      return externalModels;
+    }, [externalDmnsByNamespace]);
+
+    const [isRefactorModalOpen, setIsRefactorModalOpen] = useState(false);
+    const [newName, setNewName] = useState("");
+    const identifierId = useMemo(() => decision["@_id"], [decision]);
+    const oldName = useMemo(() => decision["@_label"] ?? decision["@_name"], [decision]);
+
+    const applyRename = useCallback(
+      (args: {
+        definitions: Normalized<DMN15__tDefinitions>;
+        newName: string;
+        shouldRenameReferencedExpressions: boolean;
+      }) => {
+        renameDrgElement({
+          ...args,
+          index,
+          externalDmnModelsByNamespaceMap,
         });
       },
-      [dmnEditorStoreApi, index]
+      [externalDmnModelsByNamespaceMap, index]
+    );
+
+    const setName = useCallback<OnEditableNodeLabelChange>(
+      (name: string) => {
+        if (name === oldName) {
+          return;
+        }
+        dmnEditorStoreApi.setState((state) => {
+          if (
+            isIdentifierReferencedInSomeExpression({
+              identifierUuid: identifierId,
+              dmnDefinitions: state.dmn.model.definitions,
+              externalDmnModelsByNamespaceMap,
+            })
+          ) {
+            setNewName(name);
+            setIsRefactorModalOpen(true);
+          } else {
+            applyRename({
+              definitions: state.dmn.model.definitions,
+              newName: name,
+              shouldRenameReferencedExpressions: false,
+            });
+          }
+        });
+      },
+      [oldName, dmnEditorStoreApi, identifierId, externalDmnModelsByNamespaceMap, applyRename]
     );
 
     const onTypeRefChange = useCallback<OnTypeRefChange>(
@@ -389,8 +520,6 @@ export const DecisionNode = React.memo(
       isEnabled: enableCustomNodeStyles,
     });
 
-    const { externalModelsByNamespace } = useExternalModels();
-
     const isCollection = useDmnEditorStore((s) => {
       const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = s
         .computed(s)
@@ -404,6 +533,31 @@ export const DecisionNode = React.memo(
 
     return (
       <>
+        <RefactorConfirmationDialog
+          onConfirmExpressionRefactor={() => {
+            setIsRefactorModalOpen(false);
+            dmnEditorStoreApi.setState((state) => {
+              applyRename({
+                definitions: state.dmn.model.definitions,
+                newName,
+                shouldRenameReferencedExpressions: true,
+              });
+            });
+          }}
+          onConfirmRenameOnly={() => {
+            setIsRefactorModalOpen(false);
+            dmnEditorStoreApi.setState((state) => {
+              applyRename({
+                definitions: state.dmn.model.definitions,
+                newName,
+                shouldRenameReferencedExpressions: false,
+              });
+            });
+          }}
+          isRefactorModalOpen={isRefactorModalOpen}
+          fromName={oldName}
+          toName={newName}
+        />
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <DecisionNodeSvg
             isCollection={isCollection}
@@ -508,13 +662,65 @@ export const BkmNode = React.memo(
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
     const className = useNodeClassName(isValidConnectionTarget, id);
     const nodeDimensions = useNodeDimensions({ nodeType: type as typeof NODE_TYPES.bkm, snapGrid, shape });
-    const setName = useCallback<OnEditableNodeLabelChange>(
-      (newName: string) => {
-        dmnEditorStoreApi.setState((state) => {
-          renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
+
+    const { externalModelsByNamespace } = useExternalModels();
+    const externalDmnsByNamespace = useDmnEditorStore(
+      (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
+    );
+    const externalDmnModelsByNamespaceMap = useMemo(() => {
+      const externalModels = new Map<string, Normalized<DmnLatestModel>>();
+
+      for (const [key, externalDmn] of externalDmnsByNamespace) {
+        externalModels.set(key, externalDmn.model);
+      }
+      return externalModels;
+    }, [externalDmnsByNamespace]);
+
+    const [isRefactorModalOpen, setIsRefactorModalOpen] = useState(false);
+    const [newName, setNewName] = useState("");
+    const identifierId = useMemo(() => bkm["@_id"], [bkm]);
+    const oldName = useMemo(() => bkm["@_label"] ?? bkm["@_name"], [bkm]);
+
+    const applyRename = useCallback(
+      (args: {
+        definitions: Normalized<DMN15__tDefinitions>;
+        newName: string;
+        shouldRenameReferencedExpressions: boolean;
+      }) => {
+        renameDrgElement({
+          ...args,
+          index,
+          externalDmnModelsByNamespaceMap,
         });
       },
-      [dmnEditorStoreApi, index]
+      [externalDmnModelsByNamespaceMap, index]
+    );
+
+    const setName = useCallback<OnEditableNodeLabelChange>(
+      (name: string) => {
+        if (name === oldName) {
+          return;
+        }
+        dmnEditorStoreApi.setState((state) => {
+          if (
+            isIdentifierReferencedInSomeExpression({
+              identifierUuid: identifierId,
+              dmnDefinitions: state.dmn.model.definitions,
+              externalDmnModelsByNamespaceMap,
+            })
+          ) {
+            setNewName(name);
+            setIsRefactorModalOpen(true);
+          } else {
+            applyRename({
+              definitions: state.dmn.model.definitions,
+              newName: name,
+              shouldRenameReferencedExpressions: false,
+            });
+          }
+        });
+      },
+      [oldName, dmnEditorStoreApi, identifierId, externalDmnModelsByNamespaceMap, applyRename]
     );
 
     const onTypeRefChange = useCallback<OnTypeRefChange>(
@@ -545,6 +751,32 @@ export const BkmNode = React.memo(
 
     return (
       <>
+        <RefactorConfirmationDialog
+          onConfirmExpressionRefactor={() => {
+            setIsRefactorModalOpen(false);
+            dmnEditorStoreApi.setState((state) => {
+              applyRename({
+                definitions: state.dmn.model.definitions,
+                newName,
+                shouldRenameReferencedExpressions: true,
+              });
+            });
+          }}
+          onConfirmRenameOnly={() => {
+            setIsRefactorModalOpen(false);
+            dmnEditorStoreApi.setState((state) => {
+              applyRename({
+                definitions: state.dmn.model.definitions,
+                newName,
+                shouldRenameReferencedExpressions: false,
+              });
+            });
+          }}
+          isRefactorModalOpen={isRefactorModalOpen}
+          fromName={oldName}
+          toName={newName}
+        />
+
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <BkmNodeSvg
             {...nodeDimensions}
@@ -647,13 +879,65 @@ export const KnowledgeSourceNode = React.memo(
       snapGrid,
       shape,
     });
-    const setName = useCallback<OnEditableNodeLabelChange>(
-      (newName: string) => {
-        dmnEditorStoreApi.setState((state) => {
-          renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
+
+    const { externalModelsByNamespace } = useExternalModels();
+    const externalDmnsByNamespace = useDmnEditorStore(
+      (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
+    );
+    const externalDmnModelsByNamespaceMap = useMemo(() => {
+      const externalModels = new Map<string, Normalized<DmnLatestModel>>();
+
+      for (const [key, externalDmn] of externalDmnsByNamespace) {
+        externalModels.set(key, externalDmn.model);
+      }
+      return externalModels;
+    }, [externalDmnsByNamespace]);
+
+    const [isRefactorModalOpen, setIsRefactorModalOpen] = useState(false);
+    const [newName, setNewName] = useState("");
+    const identifierId = useMemo(() => knowledgeSource["@_id"], [knowledgeSource]);
+    const oldName = useMemo(() => knowledgeSource["@_label"] ?? knowledgeSource["@_name"], [knowledgeSource]);
+
+    const applyRename = useCallback(
+      (args: {
+        definitions: Normalized<DMN15__tDefinitions>;
+        newName: string;
+        shouldRenameReferencedExpressions: boolean;
+      }) => {
+        renameDrgElement({
+          ...args,
+          index,
+          externalDmnModelsByNamespaceMap,
         });
       },
-      [dmnEditorStoreApi, index]
+      [externalDmnModelsByNamespaceMap, index]
+    );
+
+    const setName = useCallback<OnEditableNodeLabelChange>(
+      (name: string) => {
+        if (name === oldName) {
+          return;
+        }
+        dmnEditorStoreApi.setState((state) => {
+          if (
+            isIdentifierReferencedInSomeExpression({
+              identifierUuid: identifierId,
+              dmnDefinitions: state.dmn.model.definitions,
+              externalDmnModelsByNamespaceMap,
+            })
+          ) {
+            setNewName(name);
+            setIsRefactorModalOpen(true);
+          } else {
+            applyRename({
+              definitions: state.dmn.model.definitions,
+              newName: name,
+              shouldRenameReferencedExpressions: false,
+            });
+          }
+        });
+      },
+      [oldName, dmnEditorStoreApi, identifierId, externalDmnModelsByNamespaceMap, applyRename]
     );
 
     const getAllFeelVariableUniqueNames = useCallback((s: State) => s.computed(s).getAllFeelVariableUniqueNames(), []);
@@ -666,6 +950,31 @@ export const KnowledgeSourceNode = React.memo(
 
     return (
       <>
+        <RefactorConfirmationDialog
+          onConfirmExpressionRefactor={() => {
+            setIsRefactorModalOpen(false);
+            dmnEditorStoreApi.setState((state) => {
+              applyRename({
+                definitions: state.dmn.model.definitions,
+                newName,
+                shouldRenameReferencedExpressions: true,
+              });
+            });
+          }}
+          onConfirmRenameOnly={() => {
+            setIsRefactorModalOpen(false);
+            dmnEditorStoreApi.setState((state) => {
+              applyRename({
+                definitions: state.dmn.model.definitions,
+                newName,
+                shouldRenameReferencedExpressions: false,
+              });
+            });
+          }}
+          isRefactorModalOpen={isRefactorModalOpen}
+          fromName={oldName}
+          toName={newName}
+        />
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <KnowledgeSourceNodeSvg
             {...nodeDimensions}
@@ -870,13 +1179,64 @@ export const DecisionServiceNode = React.memo(
       snapGrid,
       shape,
     });
-    const setName = useCallback<OnEditableNodeLabelChange>(
-      (newName: string) => {
-        dmnEditorStoreApi.setState((state) => {
-          renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
+
+    const externalDmnsByNamespace = useDmnEditorStore(
+      (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
+    );
+    const externalDmnModelsByNamespaceMap = useMemo(() => {
+      const externalModels = new Map<string, Normalized<DmnLatestModel>>();
+
+      for (const [key, externalDmn] of externalDmnsByNamespace) {
+        externalModels.set(key, externalDmn.model);
+      }
+      return externalModels;
+    }, [externalDmnsByNamespace]);
+
+    const [isRefactorModalOpen, setIsRefactorModalOpen] = useState(false);
+    const [newName, setNewName] = useState("");
+    const identifierId = useMemo(() => decisionService["@_id"], [decisionService]);
+    const oldName = useMemo(() => decisionService["@_label"] ?? decisionService["@_name"], [decisionService]);
+
+    const applyRename = useCallback(
+      (args: {
+        definitions: Normalized<DMN15__tDefinitions>;
+        newName: string;
+        shouldRenameReferencedExpressions: boolean;
+      }) => {
+        renameDrgElement({
+          ...args,
+          index,
+          externalDmnModelsByNamespaceMap,
         });
       },
-      [dmnEditorStoreApi, index]
+      [externalDmnModelsByNamespaceMap, index]
+    );
+
+    const setName = useCallback<OnEditableNodeLabelChange>(
+      (name: string) => {
+        if (name === oldName) {
+          return;
+        }
+        dmnEditorStoreApi.setState((state) => {
+          if (
+            isIdentifierReferencedInSomeExpression({
+              identifierUuid: identifierId,
+              dmnDefinitions: state.dmn.model.definitions,
+              externalDmnModelsByNamespaceMap,
+            })
+          ) {
+            setNewName(name);
+            setIsRefactorModalOpen(true);
+          } else {
+            applyRename({
+              definitions: state.dmn.model.definitions,
+              newName: name,
+              shouldRenameReferencedExpressions: false,
+            });
+          }
+        });
+      },
+      [oldName, dmnEditorStoreApi, identifierId, externalDmnModelsByNamespaceMap, applyRename]
     );
 
     // Select nodes representing output and encapsulated decisions contained by the Decision Service
@@ -966,6 +1326,31 @@ export const DecisionServiceNode = React.memo(
 
     return (
       <>
+        <RefactorConfirmationDialog
+          onConfirmExpressionRefactor={() => {
+            setIsRefactorModalOpen(false);
+            dmnEditorStoreApi.setState((state) => {
+              applyRename({
+                definitions: state.dmn.model.definitions,
+                newName,
+                shouldRenameReferencedExpressions: true,
+              });
+            });
+          }}
+          onConfirmRenameOnly={() => {
+            setIsRefactorModalOpen(false);
+            dmnEditorStoreApi.setState((state) => {
+              applyRename({
+                definitions: state.dmn.model.definitions,
+                newName,
+                shouldRenameReferencedExpressions: false,
+              });
+            });
+          }}
+          isRefactorModalOpen={isRefactorModalOpen}
+          fromName={oldName}
+          toName={newName}
+        />
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <DecisionServiceNodeSvg
             dividerLineRef={dividerLineRef}
