@@ -17,26 +17,26 @@
  * under the License. 
  */
 
-.pf-c-page__header {
+.pf-v5-c-page__header {
   /* this adjusts the max specifically for our logo */
-  --pf-c-page__header-brand-link--c-brand--MaxHeight: 39px;
+  --pf-v5-c-page__header-brand-link--c-brand--MaxHeight: 39px;
 }
 
-.pf-c-dropdown__group-title {
+.pf-v5-c-dropdown__group-title {
   white-space: nowrap;
 }
 
 .kogito--editor-hub-download_link {
   text-decoration: none;
-  color: var(--pf-global--Color--light-100);
+  color: var(--pf-v5-global--Color--light-100);
 }
 
 .kogito--editor-landing__gallery {
-  --pf-l-gallery--GridTemplateColumns: repeat(auto-fill, minmax(23em, 1fr));
+  --pf-v5-l-gallery--GridTemplateColumns: repeat(auto-fill, minmax(23em, 1fr));
 }
 
-.kogito--editor-landing__title-section .pf-c-title {
-  color: var(--pf-global--Color--light-200);
+.kogito--editor-landing__title-section .pf-v5-c-title {
+  color: var(--pf-v5-global--Color--light-200);
 }
 
 .kogito--editor__toolbar-name-container {
@@ -45,16 +45,16 @@
 }
 
 .kogito--editor__toolbar-name-container.invalid {
-  border: var(--pf-global--BorderWidth--md) solid var(--pf-global--danger-color--100);
-  border-radius: var(--pf-global--BorderRadius--sm);
+  border: var(--pf-v5-global--BorderWidth--md) solid var(--pf-v5-global--danger-color--100);
+  border-radius: var(--pf-v5-global--BorderRadius--sm);
 }
 
 .kogito--editor__toolbar-name-container h3 {
   display: inline-block;
   visibility: hidden;
   white-space: pre;
-  border: var(--pf-global--BorderWidth--md) solid var(--pf-c-page__main-section--m-light--BackgroundColor);
-  padding: var(--pf-global--spacer--xs);
+  border: var(--pf-v5-global--BorderWidth--md) solid var(--pf-v5-c-page__main-section--m-light--BackgroundColor);
+  padding: var(--pf-v5-global--spacer--xs);
 }
 
 .kogito--editor__toolbar-name-container.readonly h3 {
@@ -64,9 +64,9 @@
 }
 
 .kogito--editor__toolbar-name-container input {
-  border: var(--pf-global--BorderWidth--md) solid var(--pf-c-page__main-section--m-light--BackgroundColor);
-  border-radius: var(--pf-global--BorderRadius--sm);
-  padding: var(--pf-global--spacer--xs);
+  border: var(--pf-v5-global--BorderWidth--md) solid var(--pf-v5-c-page__main-section--m-light--BackgroundColor);
+  border-radius: var(--pf-v5-global--BorderRadius--sm);
+  padding: var(--pf-v5-global--spacer--xs);
   position: absolute;
   top: 0;
   left: 0;
@@ -78,7 +78,7 @@
 }
 
 .kogito--editor__toolbar-name-container input:focus {
-  border: var(--pf-global--BorderWidth--md) solid var(--pf-global--active-color--100);
+  border: var(--pf-v5-global--BorderWidth--md) solid var(--pf-v5-global--active-color--100);
 }
 
 .kogito--full-screen__toolbar {
@@ -117,61 +117,61 @@
   transform: translateX(-50%);
 }
 
-.kogito--alert-container .pf-c-alert {
+.kogito--alert-container .pf-v5-c-alert {
   pointer-events: visible;
 }
 
 .kogito--editor__toolbar {
-  --pf-c-page__header--MinHeight: 6.75rem;
+  --pf-v5-c-page__header--MinHeight: 6.75rem;
 }
 
 @media (min-width: 1200px) {
   .kogito--editor__toolbar {
-    --pf-c-page__header--MinHeight: unset;
+    --pf-v5-c-page__header--MinHeight: unset;
   }
 }
 
-.kogito--editor__toolbar .pf-c-page__header-nav {
+.kogito--editor__toolbar .pf-v5-c-page__header-nav {
   align-self: center;
   justify-content: center;
   height: 100%;
 }
 
 .kogito--editor__toolbar-subtitle {
-  color: var(--pf-global--BackgroundColor--dark-200);
-  background-color: var(--pf-c-page__main-section--m-light--BackgroundColor);
-  border: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
-  font-size: var(--pf-global--FontSize--md);
+  color: var(--pf-v5-global--BackgroundColor--dark-200);
+  background-color: var(--pf-v5-c-page__main-section--m-light--BackgroundColor);
+  border: var(--pf-v5-global--BorderWidth--md) solid var(--pf-v5-global--BorderColor--200);
+  font-size: var(--pf-v5-global--FontSize--md);
   text-align: center;
 }
 
 .kogito--editor__toolbar-subtitle:focus {
-  background-color: var(--pf-c-form-control--BackgroundColor);
-  color: var(--pf-global--BackgroundColor--dark-200);
+  background-color: var(--pf-v5-c-form-control--BackgroundColor);
+  color: var(--pf-v5-global--BackgroundColor--dark-200);
 }
 
 .kogito--editor__toolbar-subtitle h3 {
   font-weight: bold;
   display: inline;
-  color: var(--pf-global--BackgroundColor--dark-200);
+  color: var(--pf-v5-global--BackgroundColor--dark-200);
 }
 
 .kogito--editor__toolbar-subtitle:hover {
-  border: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
-  border-radius: var(--pf-global--BorderRadius--sm);
-  padding: var(--pf-global--spacer--xs);
+  border: var(--pf-v5-global--BorderWidth--md) solid var(--pf-v5-global--BorderColor--200);
+  border-radius: var(--pf-v5-global--BorderRadius--sm);
+  padding: var(--pf-v5-global--spacer--xs);
 }
 
 .kogito--editor__toolbar-title {
-  background-color: var(--pf-c-page__main-section--m-light--BackgroundColor);
-  border: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
-  font-size: var(--pf-global--FontSize--2xl);
+  background-color: var(--pf-v5-c-page__main-section--m-light--BackgroundColor);
+  border: var(--pf-v5-global--BorderWidth--md) solid var(--pf-v5-global--BorderColor--200);
+  font-size: var(--pf-v5-global--FontSize--2xl);
   text-align: center;
 }
 
 .kogito--editor__toolbar-title:focus {
-  background-color: var(--pf-c-form-control--BackgroundColor);
-  color: var(--pf-global--Color--100);
+  background-color: var(--pf-v5-c-form-control--BackgroundColor);
+  color: var(--pf-v5-global--Color--100);
 }
 
 .kogito--editor__toolbar-title h3 {
@@ -179,44 +179,44 @@
 }
 
 .kogito--editor__toolbar-title:hover {
-  border: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
-  border-radius: var(--pf-global--BorderRadius--sm);
-  padding: var(--pf-global--spacer--xs);
+  border: var(--pf-v5-global--BorderWidth--md) solid var(--pf-v5-global--BorderColor--200);
+  border-radius: var(--pf-v5-global--BorderRadius--sm);
+  padding: var(--pf-v5-global--spacer--xs);
 }
 
 .kogito--editor__toolbar-icon-button {
-  --pf-c-button--FontSize: var(--pf-global--icon--FontSize--md);
+  --pf-v5-c-button--FontSize: var(--pf-v5-global--icon--FontSize--md);
 }
 
 .kogito--editor__toolbar.button {
-  background-color: var(--pf-global--palette--blue-400);
-  color: var(--pf-global--palette--white);
-  padding-top: var(--pf-global--spacer--form-element);
-  padding-right: var(--pf-global--spacer--md);
-  padding-bottom: var(--pf-global--spacer--form-element);
-  padding-left: var(--pf-global--spacer--md);
-  line-height: var(--pf-global--LineHeight--md);
-  font-weight: var(--pf-global--FontWeight--normal);
-  font-size: var(--pf-global--FontSize--md);
-  border-radius: var(--pf-global--BorderRadius--sm);
+  background-color: var(--pf-v5-global--palette--blue-400);
+  color: var(--pf-v5-global--palette--white);
+  padding-top: var(--pf-v5-global--spacer--form-element);
+  padding-right: var(--pf-v5-global--spacer--md);
+  padding-bottom: var(--pf-v5-global--spacer--form-element);
+  padding-left: var(--pf-v5-global--spacer--md);
+  line-height: var(--pf-v5-global--LineHeight--md);
+  font-weight: var(--pf-v5-global--FontWeight--normal);
+  font-size: var(--pf-v5-global--FontSize--md);
+  border-radius: var(--pf-v5-global--BorderRadius--sm);
 }
 
 .kogito--editor__toolbar.button:hover,
 .kogito--editor__toolbar-button:focus,
 .kogito--editor__toolbar-button:active {
-  background-color: var(--pf-global--palette--blue-500);
+  background-color: var(--pf-v5-global--palette--blue-500);
 }
 
 .kogito--editor__toolbar.button:after {
-  border-radius: var(--pf-global--BorderRadius--sm);
+  border-radius: var(--pf-v5-global--BorderRadius--sm);
   border-color: transparent;
-  border-width: var(--pf-global--BorderWidth--sm);
+  border-width: var(--pf-v5-global--BorderWidth--sm);
 }
 
 .kogito--editor__toolbar.button:after:hover,
 .kogito--editor__toolbar.button:after:focus,
 .kogito--editor__toolbar.button:after:active {
-  border-width: var(--pf-global--BorderWidth--sm);
+  border-width: var(--pf-v5-global--BorderWidth--sm);
 }
 
 .kie-tools--build-info {
@@ -231,10 +231,10 @@
 }
 
 .kogito--code {
-  font-family: var(--pf-global--FontFamily--monospace);
-  font-weight: var(--pf-global--FontWeight--normal);
-  line-height: var(--pf-global--LineHeight--md);
-  font-size: var(--pf-global--FontSize--md);
+  font-family: var(--pf-v5-global--FontFamily--monospace);
+  font-weight: var(--pf-v5-global--FontWeight--normal);
+  line-height: var(--pf-v5-global--LineHeight--md);
+  font-size: var(--pf-v5-global--FontSize--md);
   display: inline;
 }
 
@@ -297,9 +297,9 @@
   align-items: center;
   justify-content: center;
   width: 35px;
-  font-size: var(--pf-global--FontSize--md);
+  font-size: var(--pf-v5-global--FontSize--md);
   cursor: pointer;
-  color: var(--pf-global--Color--dark-100) !important;
+  color: var(--pf-v5-global--Color--dark-100) !important;
 }
 
 .kogito--editor__notifications-panel-button.open {
@@ -364,7 +364,7 @@
 }
 
 .kogito--editor__not-chromium-icon {
-  color: var(--pf-global--warning-color--100);
+  color: var(--pf-v5-global--warning-color--100);
 }
 
 .kogito--editor__not-chromium-icon:focus {
@@ -372,40 +372,40 @@
 }
 
 .kogito--editor__light-tooltip {
-  --pf-c-tooltip__content--Color: var(--pf-global--BackgroundColor--dark-100);
-  --pf-c-tooltip__content--BackgroundColor: var(--pf-global--BackgroundColor--light-100);
+  --pf-v5-c-tooltip__content--Color: var(--pf-v5-global--BackgroundColor--dark-100);
+  --pf-v5-c-tooltip__content--BackgroundColor: var(--pf-v5-global--BackgroundColor--light-100);
 }
 
 .success-icon {
-  color: var(--pf-global--success-color--100);
+  color: var(--pf-v5-global--success-color--100);
 }
 
 .success-icon:hover {
-  color: var(--pf-global--success-color--200);
+  color: var(--pf-v5-global--success-color--200);
 }
 
 .in-progress-icon {
-  color: var(--pf-global--palette--black-800);
+  color: var(--pf-v5-global--palette--black-800);
 }
 
 .in-progress-icon:hover {
-  color: var(--pf-global--info-color--200);
+  color: var(--pf-v5-global--info-color--200);
 }
 
 .warning-icon {
-  color: var(--pf-global--warning-color--100);
+  color: var(--pf-v5-global--warning-color--100);
 }
 
 .warning-icon:hover {
-  color: var(--pf-global--palette--gold-500);
+  color: var(--pf-v5-global--palette--gold-500);
 }
 
 .error-icon {
-  color: var(--pf-global--danger-color--100);
+  color: var(--pf-v5-global--danger-color--100);
 }
 
 .error-icon:hover {
-  color: var(--pf-global--danger-color--200);
+  color: var(--pf-v5-global--danger-color--200);
 }
 
 @-webkit-keyframes rotating /* Safari and Chrome */ {
@@ -448,7 +448,7 @@
 
 .kogito--editor__workspace-files-dropdown-open {
   pointer-events: auto;
-  color: var(--pf-global--primary-color--100);
+  color: var(--pf-v5-global--primary-color--100);
 }
 
 .kogito--editor__workspace-files-dropdown-open:focus {
@@ -456,7 +456,7 @@
 }
 
 .kogito--editor__workspace-files-dropdown-open:hover {
-  color: var(--pf-global--primary-color--200);
+  color: var(--pf-v5-global--primary-color--200);
 }
 
 section.kie-tools--settings-tab {
@@ -480,7 +480,7 @@ section.kie-tools--settings-tab {
   height: 28.6px;
 }
 
-.pf-c-expandable-section.plain .pf-c-expandable-section__toggle {
+.pf-v5-c-expandable-section.plain .pf-v5-c-expandable-section__toggle {
   color: black;
 }
 
@@ -489,20 +489,20 @@ section.kie-tools--settings-tab {
 }
 
 .kogito--editor__openshift-deployments-dropdown-item-action:not(disabled):hover {
-  color: var(--pf-global--palette--black-800) !important;
+  color: var(--pf-v5-global--palette--black-800) !important;
 }
 
 @media screen and (min-width: 576px) {
-  .kogito--editor__openshift-deployments-dropdown .pf-c-dropdown__menu {
+  .kogito--editor__openshift-deployments-dropdown .pf-v5-c-dropdown__menu {
     min-width: 400px;
   }
 }
 
 .kogito--editor__responsive-dropdown-container {
-  margin: var(--pf-global--spacer--lg) 0 0 0;
+  margin: var(--pf-v5-global--spacer--lg) 0 0 0;
 }
 
-.kogito--editor__responsive-dropdown-container .pf-c-dropdown__menu {
+.kogito--editor__responsive-dropdown-container .pf-v5-c-dropdown__menu {
   position: relative;
   min-width: 100%;
 }
@@ -517,25 +517,25 @@ section.kie-tools--settings-tab {
   }
 }
 
-.pf-c-masthead__main::before {
+.pf-v5-c-masthead__main::before {
   display: none;
 }
 
-.pf-c-menu__item-description {
+.pf-v5-c-menu__item-description {
   word-break: normal !important;
 }
 .brand-name {
   color: #fff;
-  padding: 0 var(--pf-global--spacer--sm) 0 var(--pf-global--spacer--sm);
-  font-weight: var(--pf-global--FontWeight--semi-bold);
+  padding: 0 var(--pf-v5-global--spacer--sm) 0 var(--pf-v5-global--spacer--sm);
+  font-weight: var(--pf-v5-global--FontWeight--semi-bold);
 }
 .chr-c-app-title {
   color: #fff;
-  padding: var(--pf-global--spacer--md) var(--pf-global--spacer--sm) var(--pf-global--spacer--md)
-    var(--pf-global--spacer--lg);
+  padding: var(--pf-v5-global--spacer--md) var(--pf-v5-global--spacer--sm) var(--pf-v5-global--spacer--md)
+    var(--pf-v5-global--spacer--lg);
   width: 100%;
-  border-bottom: var(--pf-global--spacer--xs) solid var(--pf-global--Color--300);
-  font-weight: var(--pf-global--FontWeight--semi-bold);
+  border-bottom: var(--pf-v5-global--spacer--xs) solid var(--pf-v5-global--Color--300);
+  font-weight: var(--pf-v5-global--FontWeight--semi-bold);
   white-space: normal;
   text-align: left;
   font-size: 17px;
@@ -545,6 +545,6 @@ section.kie-tools--settings-tab {
   height: 100%;
 }
 
-#page-container .pf-c-backdrop {
+#page-container .pf-v5-c-backdrop {
   position: absolute !important;
 }
