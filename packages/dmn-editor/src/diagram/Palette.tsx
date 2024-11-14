@@ -50,6 +50,7 @@ import { useDmnEditor } from "../DmnEditorContext";
 import { getDrdId } from "./drd/drdId";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { Icon } from "@patternfly/react-core";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE = "application/kie-dmn-editor--new-node-from-palette";
 
@@ -262,7 +263,9 @@ export function Palette({ pulse }: { pulse: boolean }) {
                 });
               }}
             >
-              <BarsIcon size={"sm"} />
+              <Icon size="sm">
+                <BarsIcon />
+              </Icon>
             </button>
           </aside>
           <br />
@@ -291,7 +294,10 @@ export function Palette({ pulse }: { pulse: boolean }) {
                 });
               }}
             >
-              <MigrationIcon size={"sm"} />
+              <Icon size="sm">
+                {" "}
+                <MigrationIcon />
+              </Icon>
             </button>
           </aside>
         </RF.Panel>

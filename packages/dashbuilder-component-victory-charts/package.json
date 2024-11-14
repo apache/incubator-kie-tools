@@ -24,7 +24,7 @@
   "dependencies": {
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools/dashbuilder-component-api": "workspace:*",
-    "@patternfly/react-charts": "^5.3.22",
+    "@patternfly/react-charts": "^6.94.18",
     "@patternfly/react-core": "^5.4.1",
     "@patternfly/react-table": "^5.4.1",
     "numeral": "^2.0.6",

@@ -63,7 +63,7 @@ function DmnFeelContext({ onChange, ...props }: DmnFeelContextComponentProps) {
         name={props.name}
         isDisabled={props.disabled}
         validated={props.error ? "error" : "default"}
-        onChange={onTextInputChange}
+        onChange={(_event, _val) => onTextInputChange}
         placeholder={props.placeholder}
         ref={props.inputRef}
         type={props.type ?? "text"}

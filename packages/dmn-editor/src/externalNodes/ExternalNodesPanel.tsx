@@ -31,7 +31,7 @@ import {
   EmptyStateHeader,
   EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Button, ButtonVariant, EmptyStateActions } from "@patternfly/react-core/dist/js/components/Button";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import {} from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { DmnObjectListItem } from "./DmnObjectListItem";

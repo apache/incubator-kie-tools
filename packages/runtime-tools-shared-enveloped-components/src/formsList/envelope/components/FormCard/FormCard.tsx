@@ -20,7 +20,7 @@
 import React from "react";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { FormGroup, Form } from "@patternfly/react-core/dist/js/components/Form";
-import { Card, CardBody, CardHeaderMain, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
 import { TextVariants, Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/src/types";
@@ -50,9 +50,7 @@ const FormCard: React.FC<FormCardProps & OUIAProps> = ({ formData, driver, ouiaI
 
   return (
     <Card {...componentOuiaProps(ouiaId, "forms-card", ouiaSafe)} isSelectable onClick={handleCardClick}>
-      <CardHeader>
-        <CardHeaderMain>{getLabel()}</CardHeaderMain>
-      </CardHeader>
+      <CardHeader>{getLabel()}</CardHeader>
       <CardHeader>
         <Text component={TextVariants.h1} className="pf-v5-u-font-weight-bold">
           {formData.name}

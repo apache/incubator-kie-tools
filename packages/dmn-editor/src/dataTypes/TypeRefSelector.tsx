@@ -134,7 +134,7 @@ export function TypeRefSelector({
         isDisabled={isDisabled}
         variant={SelectVariant.typeahead}
         typeAheadAriaLabel={DmnBuiltInDataType.Undefined}
-        onToggle={_onToggle}
+        onToggle={(_event, _val) => _onToggle}
         onSelect={(e, v) => {
           _onToggle(false);
           onChange(v === DmnBuiltInDataType.Undefined ? undefined : (v as string));

@@ -29,7 +29,7 @@ import {
   DMN15__tDefinitions,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
-import { Button, ButtonVariant, EmptyStateActions } from "@patternfly/react-core/dist/js/components/Button";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import {
   EmptyState,
   EmptyStateBody,
@@ -39,8 +39,8 @@ import {
   EmptyStateHeader,
   EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Label, EmptyStateActions } from "@patternfly/react-core/dist/js/components/Label";
-import { Popover, EmptyStateActions } from "@patternfly/react-core/dist/js/components/Popover";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import {} from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { BlueprintIcon } from "@patternfly/react-icons/dist/js/icons/blueprint-icon";
@@ -129,6 +129,7 @@ import { normalize, Normalized } from "../normalization/normalize";
 import OptimizeIcon from "@patternfly/react-icons/dist/js/icons/optimize-icon";
 import { applyAutoLayoutToDrd } from "../mutations/applyAutoLayoutToDrd";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { Icon } from "@patternfly/react-core";
 
 const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
 
@@ -1739,7 +1740,9 @@ export function TopRightCornerPanels({ availableHeight }: TopRightCornerPanelsPr
               onClick={toggleOverlaysPanel}
               title={"Overlays"}
             >
-              <VirtualMachineIcon size={"sm"} />
+              <Icon size="sm">
+                <VirtualMachineIcon />{" "}
+              </Icon>
             </button>
           </Popover>
         </aside>
@@ -1750,7 +1753,9 @@ export function TopRightCornerPanels({ availableHeight }: TopRightCornerPanelsPr
               onClick={togglePropertiesPanel}
               title={"Properties panel"}
             >
-              <InfoIcon size={"sm"} />
+              <Icon size="sm">
+                <InfoIcon />
+              </Icon>
             </button>
           </aside>
         )}
