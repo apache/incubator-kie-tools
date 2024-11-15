@@ -1,0 +1,58 @@
+{
+  "private": true,
+  "name": "@kie-tools/sonataflow-operator",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "scripts": {
+    "build:dev": "run-script-os",
+    "build:dev:darwin:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && make generate-all && make build && pnpm image:build && pnpm format",
+    "build:dev:win32": "echo 'Build not supported on Windows'",
+    "build:prod": "run-script-os",
+    "build:prod:darwin:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && make generate-all && make build && pnpm image:build && pnpm test && pnpm test-e2e && pnpm format",
+    "build:prod:win32": "echo 'Build not supported on Windows'",
+    "bump-version": "run-script-os",
+    "bump-version:darwin:linux": "./hack/bump-version.sh",
+    "bump-version:win32": "echo 'Bumping version not supported on Windows'",
+    "format": "prettier --write . --ignore-path=../../.prettierignore --ignore-path=../../.gitignore",
+    "image:build": "run-script-os",
+    "image:build:darwin:win32": "echo 'Image build not supported on Windows and macOS'",
+    "image:build:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && run-script-if --bool \"$(build-env containerImages.build)\" --then \"make container-build\"",
+    "install": "rimraf bin && go work sync && go mod tidy && node install.js && pnpm bump-version && pnpm format",
+    "test": "run-script-os",
+    "test:darwin:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"make test\"",
+    "test:win32": ".\\node_modules\\@kie-tools\\python-venv\\venv\\Scripts\\Activate.bat && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"make test\"",
+    "test-e2e": "run-script-os",
+    "test-e2e:darwin:win32": "echo 'E2E tests not supported on Windows and macOS'",
+    "test-e2e:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(false)\" --then \"make full-test-e2e\""
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@kie-tools/python-venv": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/sonataflow-builder-image": "workspace:*",
+    "@kie-tools/sonataflow-devmode-image": "workspace:*",
+    "@kie/kogito-data-index-ephemeral-image": "workspace:*",
+    "@kie/kogito-data-index-postgresql-image": "workspace:*",
+    "@kie/kogito-jobs-service-ephemeral-image": "workspace:*",
+    "@kie/kogito-jobs-service-postgresql-image": "workspace:*",
+    "replace-in-file": "^7.1.0",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "go",
+      "make",
+      "python3"
+    ]
+  }
+}

@@ -1,8 +1,0 @@
-blank_issues_enabled: true
-contact_links:
-  - name: GitHub Issues
-    url: https://github.com/apache/incubator-kie-kogito-serverless-operator/issues
-    about: GitHub Issues page in case you need to report a bug or wish to ask for a new feature.
-  - name: Question
-    url: https://github.com/apache/incubator-kie-kogito-serverless-operator/discussions
-    about: I have a question about how to use the operator.
