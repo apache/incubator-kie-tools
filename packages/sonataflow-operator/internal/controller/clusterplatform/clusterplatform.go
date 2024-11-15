@@ -22,12 +22,13 @@ package clusterplatform
 import (
 	"context"
 
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/klog/v2"
+
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
-	k8serrors "k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/klog/v2"
 )
 
 const (

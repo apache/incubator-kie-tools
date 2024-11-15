@@ -16,5 +16,5 @@
 # under the License.
 
 resources:
-- 01-sonataflow_clusterplatform.yaml
-- 02-sonataflow_platform.yaml
+  - 01-sonataflow_clusterplatform.yaml
+  - 02-sonataflow_platform.yaml

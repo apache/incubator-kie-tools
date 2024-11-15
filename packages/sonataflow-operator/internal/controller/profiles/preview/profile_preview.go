@@ -22,12 +22,14 @@ package preview
 import (
 	"time"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"k8s.io/client-go/rest"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/discovery"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
+
 	"k8s.io/client-go/tools/record"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/discovery"
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
 

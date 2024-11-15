@@ -42,7 +42,7 @@ spec:
     start: PrintStartMessage
     events:
       - name: callbackEvent
-        source: ''
+        source: ""
         type: callback_event_type
     functions:
       - name: systemOut
@@ -56,7 +56,7 @@ spec:
             functionRef:
               refName: systemOut
               arguments:
-                message: "${\"callback-state-timeouts: \" + $WORKFLOW.instanceId + \" has started.\"}"
+                message: '${"callback-state-timeouts: " + $WORKFLOW.instanceId + " has started."}'
         transition: CallbackState
       - name: CallbackState
         type: callback
@@ -65,7 +65,7 @@ spec:
           functionRef:
             refName: systemOut
             arguments:
-              message: "${\"callback-state-timeouts: \" + $WORKFLOW.instanceId + \" has executed the callbackFunction.\"}"
+              message: '${"callback-state-timeouts: " + $WORKFLOW.instanceId + " has executed the callbackFunction."}'
         eventRef: callbackEvent
         transition: CheckEventArrival
         timeouts:
@@ -94,5 +94,5 @@ spec:
             functionRef:
               refName: systemOut
               arguments:
-                message: "${\"callback-state-timeouts: \" + $WORKFLOW.instanceId + \" has finalized. \" + .exitMessage + \" eventData: \" + .eventData}"
+                message: '${"callback-state-timeouts: " + $WORKFLOW.instanceId + " has finalized. " + .exitMessage + " eventData: " + .eventData}'
         end: true

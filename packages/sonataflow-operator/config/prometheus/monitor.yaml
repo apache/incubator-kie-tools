@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 # Prometheus Monitor Service (Metrics)
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor

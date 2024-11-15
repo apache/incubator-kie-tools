@@ -20,11 +20,12 @@ package properties
 import (
 	"testing"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/test"
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/test"
 )
 
 func Test_resolvePlatformWorkflowProperties(t *testing.T) {

@@ -20,4 +20,3 @@ kind: Broker
 metadata:
   name: default
 spec: {}
-

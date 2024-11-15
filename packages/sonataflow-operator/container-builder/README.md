@@ -12,7 +12,7 @@ To run it on minikube, you can do:
 - Enable the internal registry via `minikube addons enable registry`
 - Run with `go run main.go`
 
-Please note that the [`main.go`](main.go) file is a usage example. *Don't use it in production level code*.
+Please note that the [`main.go`](main.go) file is a usage example. _Don't use it in production level code_.
 
 ## History
 
@@ -81,15 +81,17 @@ To connect on a remote Podman registry we can use one of the following uri conne
 
 To connect with a remote server we must set as environment variables the follows:
 Envs
+
 - CONTAINER_HOST
 - CONTAINER_SSHKEY
 - CONTAINER_PASSPHRASE
 
 Otherwise, for local connection will be used the env var
+
 - XDG_RUNTIME_DIR
 
 with ROOTLESS access
-unix://run/user/1000/podman/podman.sock 
+unix://run/user/1000/podman/podman.sock
 
 Note start the podman rootless socket with:
 `systemctl --user start podman.socket`
@@ -111,27 +113,30 @@ add on /etc/containers/registries.conf
 insecure = true
 location = "localhost:5000"`
 
-
 NOTE on Registry container
 TO enable the images deletion you need to set the following environment variable:
+
 ```bash
 REGISTRY_STORAGE_DELETE_ENABLED=true
 ```
+
 otherwise it will return an HTTP 405 error (Not Allowed).
 
 ## Kaniko Vanilla
+
 Kaniko Vanilla is our API to run a Kaniko build outside Kubernetes Cluster
 when it is needed to measure the time of a dockerfile to correctly improve the operations.
 
 To run Kaniko locally first we need to start a local registry:
 
-```sh 
+```sh
 docker run -d -p 5000:5000 --name registry registry:latest
 ```
 
 then after replaced <user> with your current user and <projectpath> with your current project path
 run a build with
-```sh 
+
+```sh
 docker run  \
         --net=host \
         -v /<projectpath>/examples:/workspace \
@@ -142,10 +147,11 @@ docker run  \
         -d localhost:5000/kaniko-test/kaniko-dockerfile_test_swf \
         --force \
         -c /workspace \
-        --verbosity debug 
+        --verbosity debug
 ```
 
 to see the image in the container registry open your browser at the address:
-```sh 
+
+```sh
 http://localhost:5000/v2/_catalog
 ```

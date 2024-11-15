@@ -29,14 +29,14 @@ spec:
     container:
       image: replaceme
       env:
-      # set the flyway initialization in the WF container env
-      - name: QUARKUS_FLYWAY_MIGRATE_AT_START
-        value: "true"
+        # set the flyway initialization in the WF container env
+        - name: QUARKUS_FLYWAY_MIGRATE_AT_START
+          value: "true"
   flow:
     start: PrintStartMessage
     events:
       - name: callbackEvent
-        source: ''
+        source: ""
         type: callback_event_type
     functions:
       - name: systemOut
@@ -50,7 +50,7 @@ spec:
             functionRef:
               refName: systemOut
               arguments:
-                message: "${\"callback-state-timeouts: \" + $WORKFLOW.instanceId + \" has started.\"}"
+                message: '${"callback-state-timeouts: " + $WORKFLOW.instanceId + " has started."}'
         transition: CallbackState
       - name: CallbackState
         type: callback
@@ -59,7 +59,7 @@ spec:
           functionRef:
             refName: systemOut
             arguments:
-              message: "${\"callback-state-timeouts: \" + $WORKFLOW.instanceId + \" has executed the callbackFunction.\"}"
+              message: '${"callback-state-timeouts: " + $WORKFLOW.instanceId + " has executed the callbackFunction."}'
         eventRef: callbackEvent
         transition: CheckEventArrival
         timeouts:
@@ -88,5 +88,5 @@ spec:
             functionRef:
               refName: systemOut
               arguments:
-                message: "${\"callback-state-timeouts: \" + $WORKFLOW.instanceId + \" has finalized. \" + .exitMessage + \" eventData: \" + .eventData}"
+                message: '${"callback-state-timeouts: " + $WORKFLOW.instanceId + " has finalized. " + .exitMessage + " eventData: " + .eventData}'
         end: true

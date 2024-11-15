@@ -24,6 +24,6 @@ roleRef:
   kind: ClusterRole
   name: openshift-manager-role
 subjects:
-- kind: ServiceAccount
-  name: controller-manager
-  namespace: system
+  - kind: ServiceAccount
+    name: controller-manager
+    namespace: system

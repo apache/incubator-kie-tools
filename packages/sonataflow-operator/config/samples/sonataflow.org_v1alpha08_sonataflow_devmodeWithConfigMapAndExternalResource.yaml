@@ -19,21 +19,21 @@
 apiVersion: v1
 data:
   camelroute.xml: '<route routeConfigurationId="xmlError">
-        <from uri="timer:xml?period=5s"/>
-        <log message="I am XML"/>
-        <throwException exceptionType="java.lang.Exception" message="Some kind of XML error"/>
-        </route>'
-  camelroute.yaml: '- from:
-         uri: direct:numberToWords
-         steps:
-           - bean:
-               beanType: java.math.BigInteger
-               method: valueOf
-           - setHeader:
-                 name: operationName
-                 constant: NumberToWords
-           - toD:
-               uri: cxf://{{com.dataaccess.webservicesserver.url}}?serviceClass=com.dataaccess.webservicesserver.NumberConversionSoapType&wsdlURL=/wsdl/numberconversion.wsdl'
+    <from uri="timer:xml?period=5s"/>
+    <log message="I am XML"/>
+    <throwException exceptionType="java.lang.Exception" message="Some kind of XML error"/>
+    </route>'
+  camelroute.yaml: "- from:
+    uri: direct:numberToWords
+    steps:
+    - bean:
+    beanType: java.math.BigInteger
+    method: valueOf
+    - setHeader:
+    name: operationName
+    constant: NumberToWords
+    - toD:
+    uri: cxf://{{com.dataaccess.webservicesserver.url}}?serviceClass=com.dataaccess.webservicesserver.NumberConversionSoapType&wsdlURL=/wsdl/numberconversion.wsdl"
 metadata:
   name: mycamel-configmap
 kind: ConfigMap
@@ -61,9 +61,9 @@ spec:
       - name: ChooseOnLanguage
         type: switch
         dataConditions:
-          - condition: "${ .language == \"English\" }"
+          - condition: '${ .language == "English" }'
             transition: GreetInEnglish
-          - condition: "${ .language == \"Spanish\" }"
+          - condition: '${ .language == "Spanish" }'
             transition: GreetInSpanish
         defaultCondition: GreetInEnglish
       - name: GreetInEnglish
@@ -85,4 +85,3 @@ spec:
               arguments:
                 message: ".greeting+.name"
         end: true
-

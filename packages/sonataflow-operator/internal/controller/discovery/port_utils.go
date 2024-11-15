@@ -20,8 +20,9 @@
 package discovery
 
 import (
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils/kubernetes"
 	corev1 "k8s.io/api/core/v1"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils/kubernetes"
 )
 
 func isSecurePort(port int) bool {

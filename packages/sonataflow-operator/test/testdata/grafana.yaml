@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: Grafana

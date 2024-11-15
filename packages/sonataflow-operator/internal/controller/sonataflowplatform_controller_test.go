@@ -23,12 +23,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/clusterplatform"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/platform/services"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/constants"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/test"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -41,6 +35,13 @@ import (
 	"knative.dev/pkg/kmeta"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/clusterplatform"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/platform/services"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/constants"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/test"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
 )
 
 var (
@@ -82,7 +83,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: ksp.Name, Namespace: ksp.Namespace}, ksp))
 
 		// Perform some checks on the created CR
-		assert.Equal(t, "quay.io/kiegroup", ksp.Spec.Build.Config.Registry.Address)
+		assert.Equal(t, "docker.io/apache", ksp.Spec.Build.Config.Registry.Address)
 		assert.Equal(t, "regcred", ksp.Spec.Build.Config.Registry.Secret)
 		assert.Equal(t, v1alpha08.OperatorBuildStrategy, ksp.Spec.Build.Config.BuildStrategy)
 		assert.Equal(t, v1alpha08.PlatformClusterKubernetes, ksp.Status.Cluster)
@@ -120,7 +121,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: ksp.Name, Namespace: ksp.Namespace}, ksp))
 
 		// Perform some checks on the created CR
-		assert.Equal(t, "quay.io/kiegroup", ksp.Spec.Build.Config.Registry.Address)
+		assert.Equal(t, "docker.io/apache", ksp.Spec.Build.Config.Registry.Address)
 		assert.Equal(t, "regcred", ksp.Spec.Build.Config.Registry.Secret)
 		assert.Equal(t, v1alpha08.OperatorBuildStrategy, ksp.Spec.Build.Config.BuildStrategy)
 		assert.NotNil(t, ksp.Spec.Services.DataIndex)
@@ -213,7 +214,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: ksp.Name, Namespace: ksp.Namespace}, ksp))
 
 		// Perform some checks on the created CR
-		assert.Equal(t, "quay.io/kiegroup", ksp.Spec.Build.Config.Registry.Address)
+		assert.Equal(t, "docker.io/apache", ksp.Spec.Build.Config.Registry.Address)
 		assert.Equal(t, "regcred", ksp.Spec.Build.Config.Registry.Secret)
 		assert.Equal(t, v1alpha08.OperatorBuildStrategy, ksp.Spec.Build.Config.BuildStrategy)
 		assert.NotNil(t, ksp.Spec.Services.DataIndex)
@@ -523,7 +524,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: ksp.Name, Namespace: ksp.Namespace}, ksp))
 
 		// Perform some checks on the created CR
-		assert.Equal(t, "quay.io/kiegroup", ksp.Spec.Build.Config.Registry.Address)
+		assert.Equal(t, "docker.io/apache", ksp.Spec.Build.Config.Registry.Address)
 		assert.Equal(t, "regcred", ksp.Spec.Build.Config.Registry.Secret)
 		assert.Equal(t, v1alpha08.OperatorBuildStrategy, ksp.Spec.Build.Config.BuildStrategy)
 		assert.NotNil(t, ksp.Spec.Services.JobService)
@@ -611,7 +612,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: ksp.Name, Namespace: ksp.Namespace}, ksp))
 
 		// Perform some checks on the created CR
-		assert.Equal(t, "quay.io/kiegroup", ksp.Spec.Build.Config.Registry.Address)
+		assert.Equal(t, "docker.io/apache", ksp.Spec.Build.Config.Registry.Address)
 		assert.Equal(t, "regcred", ksp.Spec.Build.Config.Registry.Secret)
 		assert.Equal(t, v1alpha08.OperatorBuildStrategy, ksp.Spec.Build.Config.BuildStrategy)
 		assert.NotNil(t, ksp.Spec.Services.JobService)
@@ -687,7 +688,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: ksp.Name, Namespace: ksp.Namespace}, ksp))
 
 		// Perform some checks on the created CR
-		assert.Equal(t, "quay.io/kiegroup", ksp.Spec.Build.Config.Registry.Address)
+		assert.Equal(t, "docker.io/apache", ksp.Spec.Build.Config.Registry.Address)
 		assert.Equal(t, "regcred", ksp.Spec.Build.Config.Registry.Secret)
 		assert.Equal(t, v1alpha08.OperatorBuildStrategy, ksp.Spec.Build.Config.BuildStrategy)
 		assert.NotNil(t, ksp.Spec.Services.DataIndex)
@@ -779,7 +780,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		// Perform some checks on the created CR
 		assert.True(t, ksp.Status.IsReady())
 		assert.True(t, kscp.Status.IsReady())
-		assert.Equal(t, "quay.io/kiegroup", ksp.Spec.Build.Config.Registry.Address)
+		assert.Equal(t, "docker.io/apache", ksp.Spec.Build.Config.Registry.Address)
 		assert.Equal(t, "regcred", ksp.Spec.Build.Config.Registry.Secret)
 		assert.Equal(t, v1alpha08.OperatorBuildStrategy, ksp.Spec.Build.Config.BuildStrategy)
 		assert.NotNil(t, ksp.Spec.Services.DataIndex)
@@ -893,7 +894,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: ksp.Name, Namespace: ksp.Namespace}, ksp))
 
 		// Perform some checks on the created CR
-		assert.Equal(t, "quay.io/kiegroup", ksp.Spec.Build.Config.Registry.Address)
+		assert.Equal(t, "docker.io/apache", ksp.Spec.Build.Config.Registry.Address)
 		assert.Equal(t, "regcred", ksp.Spec.Build.Config.Registry.Secret)
 		assert.Equal(t, v1alpha08.OperatorBuildStrategy, ksp.Spec.Build.Config.BuildStrategy)
 		assert.NotNil(t, ksp.Spec.Eventing)
@@ -994,7 +995,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: ksp.Name, Namespace: ksp.Namespace}, ksp))
 
 		// Perform some checks on the created CR
-		assert.Equal(t, "quay.io/kiegroup", ksp.Spec.Build.Config.Registry.Address)
+		assert.Equal(t, "docker.io/apache", ksp.Spec.Build.Config.Registry.Address)
 		assert.Equal(t, "regcred", ksp.Spec.Build.Config.Registry.Secret)
 		assert.Equal(t, v1alpha08.OperatorBuildStrategy, ksp.Spec.Build.Config.BuildStrategy)
 		assert.NotNil(t, ksp.Spec.Eventing)

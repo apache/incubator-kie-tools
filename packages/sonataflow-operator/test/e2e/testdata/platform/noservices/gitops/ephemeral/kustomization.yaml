@@ -19,10 +19,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-- 00-broker.yaml
-- 02-sonataflow_platform.yaml
-- sonataflow/03-sonataflow_callbackstatetimeouts.sw.yaml
+  - 00-broker.yaml
+  - 02-sonataflow_platform.yaml
+  - sonataflow/03-sonataflow_callbackstatetimeouts.sw.yaml
 
 sortOptions:
   order: fifo
-

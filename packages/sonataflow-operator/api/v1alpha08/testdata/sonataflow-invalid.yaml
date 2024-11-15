@@ -24,4 +24,4 @@ metadata:
     sonataflow.org/version: "1.0"
     sonataflow.org/description: A valid workflow should have states.
 spec:
-  flow: { }
+  flow: {}

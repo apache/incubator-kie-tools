@@ -3,8 +3,8 @@
 # To re-generate a bundle for another specific version without changing the standard setup, you can:
 # - use the VERSION as arg of the bundle target (e.g make bundle VERSION=0.0.2)
 # - use environment variables to overwrite this value (e.g export VERSION=0.0.2)
-VERSION ?= 0.0.0
-IMAGE_TAG ?= main
+VERSION ?= $(shell pnpm build-env sonataFlowOperator.version)
+IMAGE_TAG ?= $(shell pnpm build-env sonataFlowOperator.buildTag)
 
 # CHANNELS define the bundle channels used in the bundle.
 # Add a new line here if you would like to change its default config. (E.g CHANNELS = "candidate,fast,stable")
@@ -29,8 +29,8 @@ BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 # This variable is used to construct full image tags for bundle and catalog images.
 #
 # For example, running 'make bundle-build bundle-push catalog-build catalog-push' will build and push both
-# kiegroup.org/kogito-serverless-operator-bundle:$VERSION and kiegroup.org/kogito-serverless-operator-catalog:$VERSION.
-IMAGE_TAG_BASE ?= docker.io/apache/incubator-kie-sonataflow-operator
+# apache/sonataflow-operator-bundle:$VERSION and apache/sonataflow-operator-catalog:$VERSION.
+IMAGE_TAG_BASE ?= $(shell pnpm build-env sonataFlowOperator.registry)/$(shell pnpm build-env sonataFlowOperator.account)/$(shell pnpm build-env sonataFlowOperator.name)
 
 # BUNDLE_IMG defines the image:tag used for the bundle.
 # You can use it as an arg. (E.g make bundle-build BUNDLE_IMG=<some-registry>/<project-name-bundle>:<tag>)
@@ -42,7 +42,7 @@ BUNDLE_IMG ?= $(IMAGE_TAG_BASE)-bundle:v$(IMAGE_TAG)
 BUNDLE_GEN_FLAGS ?= -q --overwrite=false --version $(VERSION) $(BUNDLE_METADATA_OPTS)
 
 # Container runtime engine used for building the images
-BUILDER ?= podman
+BUILDER ?= docker
 
 # USE_IMAGE_DIGESTS defines if images are resolved via tags or digests
 # You can enable this value if you would like to use SHA Based Digests
@@ -118,12 +118,12 @@ vet: ## Run go vet against code.
 	@go vet ./...
 
 .PHONY: test
-test: manifests generate envtest test-api ## Run tests.
+test: manifests generate test-api ## Run tests.
 	@$(MAKE) addheaders
 	@$(MAKE) vet
 	@$(MAKE) fmt
 	@echo "🔍 Running controller tests..."
-	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test $(shell go list ./... | grep -v /test/) -coverprofile cover.out
+	go test $(shell go list ./... | grep -v /test/) -coverprofile cover.out
 	@echo "✅  Tests completed successfully. Coverage report generated: cover.out."
 
 .PHONY: test-api
@@ -165,7 +165,7 @@ test-workflowproj:
 ##@ Build
 
 .PHONY: build
-build: manifests generate fmt vet ## Build manager binary.
+build: ## Build manager binary.
 	CGO_ENABLED=0 go build -trimpath -ldflags=-buildid= -o bin/manager cmd/main.go
 
 .PHONY: build-4-debug
@@ -277,7 +277,7 @@ $(KUSTOMIZE): $(LOCALBIN)
 
 .PHONY: controller-gen
 controller-gen: $(CONTROLLER_GEN) ## Download controller-gen locally if necessary.
-	@echo "⬇️ Ensuring controller-gen is installed..."
+	@echo "⬇️  Ensuring controller-gen is installed..."
 	@test -s $(CONTROLLER_GEN) || (GOBIN=$(LOCALBIN) go install sigs.k8s.io/controller-tools/cmd/controller-gen@$(CONTROLLER_TOOLS_VERSION) > /dev/null 2>&1 && echo "✅  controller-gen installed successfully!")
 
 $(CONTROLLER_GEN):
@@ -316,7 +316,7 @@ bundle: manifests kustomize install-operator-sdk ## Generate bundle manifests an
 	@cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMG) > /dev/null 2>&1
 	@echo "🔨 Building Kustomize and generating bundle..."
 	@$(KUSTOMIZE) build config/manifests | operator-sdk generate bundle $(BUNDLE_GEN_FLAGS) > /dev/null 2>&1
-	@echo "🛠️ Validating generated bundle..."
+	@echo "🛠️  Validating generated bundle..."
 	@operator-sdk bundle validate ./bundle > /dev/null 2>&1
 
 .PHONY: bundle-build
@@ -459,7 +459,7 @@ install-kind:
 
 .PHONY: create-cluster
 create-cluster: install-kind
-	kind get clusters | grep kind >/dev/null || ./hack/ci/create-kind-cluster-with-registry.sh $(BUILDER)
+	kind get clusters | grep kind >/dev/null || ./hack/create-kind-cluster-with-registry.sh $(BUILDER)
 
 .PHONY: deploy-knative
 deploy-knative:

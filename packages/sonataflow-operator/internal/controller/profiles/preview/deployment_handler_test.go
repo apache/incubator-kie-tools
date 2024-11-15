@@ -21,11 +21,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/test"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
 	"github.com/magiconair/properties"
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/api/apps/v1"
@@ -33,6 +28,12 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/test"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
 )
 
 type fakeDeploymentReconciler struct {
@@ -84,7 +85,7 @@ func Test_CheckPodTemplateChangesReflectDeployment(t *testing.T) {
 	assert.True(t, result.Requeue)
 
 	// Second reconciliation, we do change the image and that must reflect the deployment
-	expectedImg := "quay.io/apache/my-new-workflow:1.0.0"
+	expectedImg := "docker.io/apache/my-new-workflow:1.0.0"
 	workflow.Spec.PodTemplate.Container.Image = expectedImg
 	utilruntime.Must(client.Update(context.TODO(), workflow))
 	result, objects, err = handler.Reconcile(context.TODO(), workflow)

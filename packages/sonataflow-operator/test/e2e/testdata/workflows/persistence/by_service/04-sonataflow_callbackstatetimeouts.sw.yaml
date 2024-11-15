@@ -43,12 +43,17 @@ spec:
       - name: init-postgres
         image: registry.access.redhat.com/ubi9/ubi-micro:latest
         imagePullPolicy: IfNotPresent
-        command: [ 'sh', '-c', 'until (echo 1 > /dev/tcp/postgres.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local/5432) >/dev/null 2>&1; do echo "Waiting for postgres server"; sleep 3; done;' ]
+        command:
+          [
+            "sh",
+            "-c",
+            'until (echo 1 > /dev/tcp/postgres.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local/5432) >/dev/null 2>&1; do echo "Waiting for postgres server"; sleep 3; done;',
+          ]
   flow:
     start: PrintStartMessage
     events:
       - name: callbackEvent
-        source: ''
+        source: ""
         type: callback_event_type
     functions:
       - name: systemOut
@@ -62,7 +67,7 @@ spec:
             functionRef:
               refName: systemOut
               arguments:
-                message: "${\"callback-state-timeouts: \" + $WORKFLOW.instanceId + \" has started.\"}"
+                message: '${"callback-state-timeouts: " + $WORKFLOW.instanceId + " has started."}'
         transition: CallbackState
       - name: CallbackState
         type: callback
@@ -71,7 +76,7 @@ spec:
           functionRef:
             refName: systemOut
             arguments:
-              message: "${\"callback-state-timeouts: \" + $WORKFLOW.instanceId + \" has executed the callbackFunction.\"}"
+              message: '${"callback-state-timeouts: " + $WORKFLOW.instanceId + " has executed the callbackFunction."}'
         eventRef: callbackEvent
         transition: CheckEventArrival
         timeouts:
@@ -100,5 +105,5 @@ spec:
             functionRef:
               refName: systemOut
               arguments:
-                message: "${\"callback-state-timeouts: \" + $WORKFLOW.instanceId + \" has finalized. \" + .exitMessage + \" eventData: \" + .eventData}"
+                message: '${"callback-state-timeouts: " + $WORKFLOW.instanceId + " has finalized. " + .exitMessage + " eventData: " + .eventData}'
         end: true

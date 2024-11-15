@@ -25,6 +25,14 @@ import (
 
 	"k8s.io/klog/v2"
 
+	"github.com/imdario/mergo"
+	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
+	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
+
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/container-builder/client"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/knative"
@@ -35,13 +43,6 @@ import (
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
 	kubeutil "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils/kubernetes"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
-	"github.com/imdario/mergo"
-	appsv1 "k8s.io/api/apps/v1"
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
-	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
-	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
 // NewServiceAction returns an action that deploys the services.

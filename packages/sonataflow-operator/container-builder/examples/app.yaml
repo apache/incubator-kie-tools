@@ -23,6 +23,6 @@ spec:
             - containerPort: 8080
           env:
             - name: QUARKUS_LAUNCH_DEVMODE
-              value: 'true'
+              value: "true"
             - name: QUARKUS_KOGITO_DEVSERVICES_ENABLED
-              value: 'false'
+              value: "false"

@@ -20,14 +20,16 @@ package persistence
 import (
 	"fmt"
 
+	"github.com/magiconair/properties"
+
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles"
-	"github.com/magiconair/properties"
+
+	corev1 "k8s.io/api/core/v1"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/constants"
-	corev1 "k8s.io/api/core/v1"
 )
 
 const (

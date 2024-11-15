@@ -16,8 +16,8 @@
 # under the License.
 
 - name: operator-builder
-  version: "main"
-  from: 'golang:1.22'
+  version: 0.0.0"
+  from: "golang:1.22"
   description: Builder Image for the Operator
 
   args:
@@ -32,8 +32,8 @@
       - name: org.apache.kie.sonataflow.operatorBuilder
 
 - name: sonataflow-operator
-  version: 999.0.0-snapshot
-  from: 'registry.access.redhat.com/ubi9/ubi-micro:9.5-1731519709'
+  version: 0.0.0
+  from: "registry.access.redhat.com/ubi9/ubi-micro:9.5-1731519709"
   description: Runtime Image for the Operator
 
   args:
@@ -52,6 +52,6 @@
 
   run:
     workdir: /usr/local/bin
-    user: '65532:65532'
+    user: "65532:65532"
     entrypoint:
       - manager

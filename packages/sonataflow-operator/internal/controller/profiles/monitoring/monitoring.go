@@ -20,12 +20,13 @@ package monitoring
 import (
 	"context"
 
+	"k8s.io/klog/v2"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/monitoring"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
-	"k8s.io/klog/v2"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 var _ MonitoringEventingHandler = &monitoringObjectManager{}

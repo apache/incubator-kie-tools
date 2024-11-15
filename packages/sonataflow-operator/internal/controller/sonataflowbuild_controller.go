@@ -25,9 +25,10 @@ import (
 	"reflect"
 	"time"
 
+	"k8s.io/klog/v2"
+
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/workflows"
 	kubeutil "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils/kubernetes"
-	"k8s.io/klog/v2"
 
 	buildv1 "github.com/openshift/api/build/v1"
 	imgv1 "github.com/openshift/api/image/v1"

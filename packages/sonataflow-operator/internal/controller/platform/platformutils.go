@@ -24,14 +24,16 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/util/retry"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
+
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
 
-	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
+
+	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 )
 
 var builderDockerfileFromRE = regexp.MustCompile(`FROM (.*) AS builder`)

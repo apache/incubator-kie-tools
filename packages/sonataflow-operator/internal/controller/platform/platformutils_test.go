@@ -24,16 +24,17 @@ import (
 	"regexp"
 	"testing"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/stretchr/testify/assert"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/test"
 )
 
-const dockerFile = "FROM docker.io/apache/default-test-kie-sonataflow-builder:main AS builder\n\n# ETC, \n\n# ETC, \n\n# ETC"
+const dockerFile = "FROM host/namespace/default-test-kie-sonataflow-builder:main AS builder\n\n# ETC, \n\n# ETC, \n\n# ETC"
 
 func TestSonataFlowBuildController(t *testing.T) {
 	platform := test.GetBasePlatform()

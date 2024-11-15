@@ -46,13 +46,18 @@ spec:
           - name: init-postgres
             image: registry.access.redhat.com/ubi9/ubi-micro:latest
             imagePullPolicy: IfNotPresent
-            command: [ 'sh', '-c', 'until (echo 1 > /dev/tcp/postgres.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local/5432) >/dev/null 2>&1; do echo "Waiting for postgres server"; sleep 3; done;' ]
+            command:
+              [
+                "sh",
+                "-c",
+                'until (echo 1 > /dev/tcp/postgres.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local/5432) >/dev/null 2>&1; do echo "Waiting for postgres server"; sleep 3; done;',
+              ]
         container:
           env:
             - name: MY_CUSTOM_VARIABLE
               value: "OKAY"
             - name: QUARKUS_DATASOURCE_PASSWORD
-#             This value should not be used since it's already set by the operator. If used, the test will fail.
+              #             This value should not be used since it's already set by the operator. If used, the test will fail.
               value: "SHOULD_NOT_BE_USED"
     jobService:
       enabled: true
@@ -69,11 +74,16 @@ spec:
           - name: init-postgres
             image: registry.access.redhat.com/ubi9/ubi-micro:latest
             imagePullPolicy: IfNotPresent
-            command: [ 'sh', '-c', 'until (echo 1 > /dev/tcp/postgres.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local/5432) >/dev/null 2>&1; do echo "Waiting for postgres server"; sleep 3; done;' ]
+            command:
+              [
+                "sh",
+                "-c",
+                'until (echo 1 > /dev/tcp/postgres.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local/5432) >/dev/null 2>&1; do echo "Waiting for postgres server"; sleep 3; done;',
+              ]
         container:
           env:
             - name: MY_CUSTOM_VARIABLE
               value: "OKAY"
             - name: QUARKUS_DATASOURCE_PASSWORD
-#             This value should not be used since it's already set by the operator. If used, the test will fail.
+              #             This value should not be used since it's already set by the operator. If used, the test will fail.
               value: "SHOULD_NOT_BE_USED"

@@ -24,12 +24,12 @@ spec:
   template:
     spec:
       containers:
-      - name: manager
-        volumeMounts:
-        - name: controllers-config
-          mountPath: /config/controllers_cfg.yaml
-          subPath: controllers_cfg.yaml
+        - name: manager
+          volumeMounts:
+            - name: controllers-config
+              mountPath: /config/controllers_cfg.yaml
+              subPath: controllers_cfg.yaml
       volumes:
-      - name: controllers-config
-        configMap:
-          name: controllers-config
+        - name: controllers-config
+          configMap:
+            name: controllers-config

@@ -27,10 +27,6 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api"
-	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
 	"github.com/davecgh/go-spew/spew"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -41,6 +37,11 @@ import (
 	klog "k8s.io/klog/v2"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api"
+	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
 )
 
 const (
@@ -247,7 +248,7 @@ func GetBasePlatformWithBaseImageInReadyPhase(namespace string) *operatorapi.Son
 	platform := GetBasePlatform()
 	platform.Namespace = namespace
 	platform.Status.Manager().MarkTrue(api.SucceedConditionType)
-	platform.Spec.Build.Config.BaseImage = "quay.io/customx/custom-swf-builder:24.8.17"
+	platform.Spec.Build.Config.BaseImage = "docker.io/customx/custom-swf-builder:24.8.17"
 	return platform
 }
 
@@ -255,7 +256,7 @@ func GetBasePlatformWithDevBaseImageInReadyPhase(namespace string) *operatorapi.
 	platform := GetBasePlatform()
 	platform.Namespace = namespace
 	platform.Status.Manager().MarkTrue(api.SucceedConditionType)
-	platform.Spec.DevMode.BaseImage = "quay.io/customgroup/custom-swf-builder-nightly:42.43.7"
+	platform.Spec.DevMode.BaseImage = "docker.io/customgroup/custom-swf-builder-nightly:42.43.7"
 	return platform
 }
 

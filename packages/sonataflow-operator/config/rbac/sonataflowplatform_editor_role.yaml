@@ -21,21 +21,21 @@ kind: ClusterRole
 metadata:
   name: sonataflowplatform-editor-role
 rules:
-- apiGroups:
-  - sonataflow.org
-  resources:
-  - sonataflowplatforms
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - sonataflow.org
-  resources:
-  - sonataflowplatforms/status
-  verbs:
-  - get
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowplatforms
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowplatforms/status
+    verbs:
+      - get

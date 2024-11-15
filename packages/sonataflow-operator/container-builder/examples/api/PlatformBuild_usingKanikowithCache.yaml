@@ -3,7 +3,7 @@ spec:
   publishStrategy: "Kaniko"
   baseImage: docker.io/apache/incubator-kie-sonataflow-builder:main
   registry:
-    address: quay.io/kiegroup
+    address: docker.io/apache
     secret: regcred
   PublishStrategyOptions:
     KanikoBuildCacheEnabled: "true"

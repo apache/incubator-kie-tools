@@ -22,9 +22,10 @@ package platform
 import (
 	"context"
 
+	corev1 "k8s.io/api/core/v1"
+
 	v08 "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/container-builder/client"
-	corev1 "k8s.io/api/core/v1"
 )
 
 // Action --.

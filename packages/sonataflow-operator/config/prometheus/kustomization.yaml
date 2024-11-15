@@ -16,4 +16,4 @@
 # under the License.
 
 resources:
-- monitor.yaml
+  - monitor.yaml

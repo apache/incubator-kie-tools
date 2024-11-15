@@ -23,13 +23,14 @@ import (
 	"context"
 	"fmt"
 
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/klog/v2"
+
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
-	k8serrors "k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/klog/v2"
 )
 
 // NewInitializeAction returns an action that initializes the platform configuration when not provided by the user.

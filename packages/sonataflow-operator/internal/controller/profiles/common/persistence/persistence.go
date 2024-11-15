@@ -18,8 +18,9 @@
 package persistence
 
 import (
-	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/magiconair/properties"
+
+	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 )
 
 const (

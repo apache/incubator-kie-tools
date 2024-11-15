@@ -22,10 +22,11 @@ import (
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/test"
 	"github.com/serverlessworkflow/sdk-go/v2/model"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/test"
 )
 
 func Test_deployWithBuildWorkflowState_isWorkflowChanged(t *testing.T) {

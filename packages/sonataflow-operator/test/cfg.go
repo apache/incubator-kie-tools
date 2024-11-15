@@ -20,8 +20,9 @@ package test
 import (
 	"testing"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
 )
 
 // RestoreControllersConfig Utility function to restore the controllers global configuration in situations where

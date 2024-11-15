@@ -28,21 +28,21 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
   name: sonataflowclusterplatform-editor-role
 rules:
-- apiGroups:
-  - sonataflow.org
-  resources:
-  - sonataflowclusterplatforms
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - sonataflow.org
-  resources:
-  - sonataflowclusterplatforms/status
-  verbs:
-  - get
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowclusterplatforms
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowclusterplatforms/status
+    verbs:
+      - get

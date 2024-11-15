@@ -26,10 +26,6 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/knative"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils/kubernetes"
 	"github.com/imdario/mergo"
 	"github.com/magiconair/properties"
 	corev1 "k8s.io/api/core/v1"
@@ -43,6 +39,11 @@ import (
 	"knative.dev/pkg/kmeta"
 	"knative.dev/pkg/tracker"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/knative"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils/kubernetes"
 
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/constants"
@@ -133,7 +134,7 @@ func (d DataIndexHandler) GetServiceImageName(persistenceType constants.Persiste
 		return cfg.GetCfg().DataIndexEphemeralImageTag
 	}
 	// returns "docker.io/apache/incubator-kie-kogito-data-index-<persistence_layer>:<tag>"
-	return fmt.Sprintf("%s-%s-%s:%s", constants.ImageNamePrefix, constants.DataIndexName, persistenceType.String(), version.GetOperatorVersion())
+	return fmt.Sprintf("%s-%s-%s:%s", constants.ImageNamePrefix, constants.DataIndexName, persistenceType.String(), version.GetImageTagVersion())
 }
 
 func (d *DataIndexHandler) GetServiceName() string {
@@ -306,7 +307,7 @@ func (j JobServiceHandler) GetServiceImageName(persistenceType constants.Persist
 		return cfg.GetCfg().JobsServiceEphemeralImageTag
 	}
 	// returns "docker.io/apache/incubator-kie-kogito-jobs-service-<persistece_layer>:<tag>"
-	return fmt.Sprintf("%s-%s-%s:%s", constants.ImageNamePrefix, constants.JobServiceName, persistenceType.String(), version.GetOperatorVersion())
+	return fmt.Sprintf("%s-%s-%s:%s", constants.ImageNamePrefix, constants.JobServiceName, persistenceType.String(), version.GetImageTagVersion())
 }
 
 func (j *JobServiceHandler) GetServiceName() string {

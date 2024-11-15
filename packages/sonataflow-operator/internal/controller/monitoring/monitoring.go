@@ -20,9 +20,10 @@
 package monitoring
 
 import (
+	"k8s.io/client-go/rest"
+
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
-	"k8s.io/client-go/rest"
 )
 
 const (

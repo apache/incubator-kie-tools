@@ -24,10 +24,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
 	"github.com/imdario/mergo"
 	"k8s.io/apimachinery/pkg/util/yaml"
 	"k8s.io/klog/v2"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
 )
 
 const (

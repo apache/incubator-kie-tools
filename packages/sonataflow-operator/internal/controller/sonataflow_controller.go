@@ -23,10 +23,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/knative"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/monitoring"
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/knative"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/monitoring"
 
 	"k8s.io/klog/v2"
 

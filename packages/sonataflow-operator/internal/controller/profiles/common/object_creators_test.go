@@ -23,7 +23,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 	"github.com/magiconair/properties"
 	prometheus "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/stretchr/testify/assert"
@@ -35,6 +34,8 @@ import (
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 	"knative.dev/pkg/kmeta"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
 	kubeutil "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils/kubernetes"
@@ -105,7 +106,7 @@ func TestMergePodSpec(t *testing.T) {
 	workflow.Spec.PodTemplate = v1alpha08.FlowPodTemplateSpec{
 		Container: v1alpha08.ContainerSpec{
 			// this one we can override
-			Image: "quay.io/example/my-workflow:1.0.0",
+			Image: "docker.io/example/my-workflow:1.0.0",
 			Ports: []corev1.ContainerPort{
 				// let's override a immutable attribute
 				{Name: utils.DefaultServicePortName, ContainerPort: 9090},
@@ -147,7 +148,7 @@ func TestMergePodSpec(t *testing.T) {
 	assert.Equal(t, "superuser", deployment.Spec.Template.Spec.ServiceAccountName)
 	assert.Len(t, deployment.Spec.Template.Spec.Volumes, 1)
 	flowContainer, _ := kubeutil.GetContainerByName(v1alpha08.DefaultContainerName, &deployment.Spec.Template.Spec)
-	assert.Equal(t, "quay.io/example/my-workflow:1.0.0", flowContainer.Image)
+	assert.Equal(t, "docker.io/example/my-workflow:1.0.0", flowContainer.Image)
 	assert.Equal(t, int32(8080), flowContainer.Ports[0].ContainerPort)
 	assert.Equal(t, "VALUE_CUSTOM", flowContainer.Env[0].Value)
 	assert.Len(t, flowContainer.VolumeMounts, 1)
@@ -161,7 +162,7 @@ func TestMergePodSpecOverrideContainers(t *testing.T) {
 			Containers: []corev1.Container{
 				{
 					Name:  v1alpha08.DefaultContainerName,
-					Image: "quay.io/example/my-workflow:1.0.0",
+					Image: "docker.io/example/my-workflow:1.0.0",
 					Ports: []corev1.ContainerPort{
 						{Name: utils.DefaultServicePortName, ContainerPort: 9090},
 					},
@@ -180,7 +181,7 @@ func TestMergePodSpecOverrideContainers(t *testing.T) {
 
 	assert.Len(t, deployment.Spec.Template.Spec.Containers, 1)
 	flowContainer, _ := kubeutil.GetContainerByName(v1alpha08.DefaultContainerName, &deployment.Spec.Template.Spec)
-	assert.NotEqual(t, "quay.io/example/my-workflow:1.0.0", flowContainer.Image)
+	assert.NotEqual(t, "docker.io/example/my-workflow:1.0.0", flowContainer.Image)
 	assert.Equal(t, int32(8080), flowContainer.Ports[0].ContainerPort)
 	assert.Empty(t, flowContainer.Env)
 }
@@ -381,7 +382,7 @@ func TestMergePodSpec_WithPostgreSQL_and_JDBC_URL_field(t *testing.T) {
 		PodTemplate: v1alpha08.FlowPodTemplateSpec{
 			Container: v1alpha08.ContainerSpec{
 				// this one we can override
-				Image: "quay.io/example/my-workflow:1.0.0",
+				Image: "docker.io/example/my-workflow:1.0.0",
 				Ports: []corev1.ContainerPort{
 					// let's override a immutable attribute
 					{Name: utils.DefaultServicePortName, ContainerPort: 9090},
@@ -465,7 +466,7 @@ func TestMergePodSpec_WithPostgreSQL_and_JDBC_URL_field(t *testing.T) {
 	assert.Equal(t, "superuser", deployment.Spec.Template.Spec.ServiceAccountName)
 	assert.Len(t, deployment.Spec.Template.Spec.Volumes, 1)
 	flowContainer, _ := kubeutil.GetContainerByName(v1alpha08.DefaultContainerName, &deployment.Spec.Template.Spec)
-	assert.Equal(t, "quay.io/example/my-workflow:1.0.0", flowContainer.Image)
+	assert.Equal(t, "docker.io/example/my-workflow:1.0.0", flowContainer.Image)
 	assert.Equal(t, int32(8080), flowContainer.Ports[0].ContainerPort)
 	assert.Equal(t, expectedEnvVars, flowContainer.Env)
 	assert.Len(t, flowContainer.VolumeMounts, 1)
@@ -484,7 +485,7 @@ func TestMergePodSpec_OverrideContainers_WithPostgreSQL_In_Workflow_CR(t *testin
 				Containers: []corev1.Container{
 					{
 						Name:  v1alpha08.DefaultContainerName,
-						Image: "quay.io/example/my-workflow:1.0.0",
+						Image: "docker.io/example/my-workflow:1.0.0",
 						Ports: []corev1.ContainerPort{
 							{Name: utils.DefaultServicePortName, ContainerPort: 9090},
 						},
@@ -657,7 +658,7 @@ func TestMergePodSpec_WithServicedPostgreSQL_In_Platform_And_In_Workflow_CR(t *t
 				Containers: []corev1.Container{
 					{
 						Name:  v1alpha08.DefaultContainerName,
-						Image: "quay.io/example/my-workflow:1.0.0",
+						Image: "docker.io/example/my-workflow:1.0.0",
 						Ports: []corev1.ContainerPort{
 							{Name: utils.DefaultServicePortName, ContainerPort: 9090},
 						},

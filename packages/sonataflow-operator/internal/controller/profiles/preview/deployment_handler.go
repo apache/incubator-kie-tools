@@ -20,11 +20,12 @@ package preview
 import (
 	"context"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/knative"
 	v1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/knative"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api"
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"

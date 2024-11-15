@@ -24,8 +24,9 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
 	"k8s.io/client-go/rest"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
 
 	corev1 "k8s.io/api/core/v1"
 
@@ -240,7 +241,7 @@ func Test_devProfileWithImageSnapshotOverrideWithPlatform(t *testing.T) {
 
 	// check if the objects have been created
 	deployment := test.MustGetDeployment(t, client, workflow)
-	assert.Equal(t, "quay.io/customgroup/custom-swf-builder-nightly:42.43.7", deployment.Spec.Template.Spec.Containers[0].Image)
+	assert.Equal(t, "docker.io/customgroup/custom-swf-builder-nightly:42.43.7", deployment.Spec.Template.Spec.Containers[0].Image)
 }
 
 func Test_devProfileWithWPlatformWithoutDevBaseImageAndWithBaseImage(t *testing.T) {

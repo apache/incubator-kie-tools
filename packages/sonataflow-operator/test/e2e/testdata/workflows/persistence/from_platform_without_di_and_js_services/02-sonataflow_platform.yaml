@@ -33,4 +33,4 @@ spec:
   build:
     config:
       strategyOptions:
-        KanikoBuildCacheEnabled: "true"  
+        KanikoBuildCacheEnabled: "true"

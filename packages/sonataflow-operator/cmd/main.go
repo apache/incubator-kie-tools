@@ -26,8 +26,6 @@ import (
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/version"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
 	prometheus "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"k8s.io/klog/v2/klogr"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
@@ -35,6 +33,9 @@ import (
 	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
 
 	"k8s.io/klog/v2"
 

@@ -41,25 +41,25 @@ status:
     knative.dev/channelKind: InMemoryChannel
     knative.dev/channelName: default-kne-trigger
   conditions:
-  - lastTransitionTime: "2024-07-16T18:58:35Z"
-    status: "True"
-    type: Addressable
-  - lastTransitionTime: "2024-07-16T18:58:35Z"
-    message: No dead letter sink is configured.
-    reason: DeadLetterSinkNotConfigured
-    severity: Info
-    status: "True"
-    type: DeadLetterSinkResolved
-  - lastTransitionTime: "2024-07-16T18:58:35Z"
-    status: "True"
-    type: FilterReady
-  - lastTransitionTime: "2024-07-16T18:58:35Z"
-    status: "True"
-    type: IngressReady
-  - lastTransitionTime: "2024-07-16T18:58:35Z"
-    status: "True"
-    type: Ready
-  - lastTransitionTime: "2024-07-16T18:58:35Z"
-    status: "True"
-    type: TriggerChannelReady
+    - lastTransitionTime: "2024-07-16T18:58:35Z"
+      status: "True"
+      type: Addressable
+    - lastTransitionTime: "2024-07-16T18:58:35Z"
+      message: No dead letter sink is configured.
+      reason: DeadLetterSinkNotConfigured
+      severity: Info
+      status: "True"
+      type: DeadLetterSinkResolved
+    - lastTransitionTime: "2024-07-16T18:58:35Z"
+      status: "True"
+      type: FilterReady
+    - lastTransitionTime: "2024-07-16T18:58:35Z"
+      status: "True"
+      type: IngressReady
+    - lastTransitionTime: "2024-07-16T18:58:35Z"
+      status: "True"
+      type: Ready
+    - lastTransitionTime: "2024-07-16T18:58:35Z"
+      status: "True"
+      type: TriggerChannelReady
   observedGeneration: 1

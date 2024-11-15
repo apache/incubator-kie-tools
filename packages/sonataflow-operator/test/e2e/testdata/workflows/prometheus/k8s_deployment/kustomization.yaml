@@ -15,10 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 resources:
-- 01-sonataflow_platform.yaml
-- 02-sonataflow_greetings.yaml
+  - 01-sonataflow_platform.yaml
+  - 02-sonataflow_greetings.yaml
 
 sortOptions:
   order: fifo

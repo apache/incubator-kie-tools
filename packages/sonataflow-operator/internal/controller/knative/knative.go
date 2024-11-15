@@ -23,10 +23,6 @@ import (
 	"context"
 	"fmt"
 
-	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
-	kubeutil "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils/kubernetes"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
@@ -39,6 +35,11 @@ import (
 	clientservingv1 "knative.dev/serving/pkg/client/clientset/versioned/typed/serving/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
+
+	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
+	kubeutil "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils/kubernetes"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
 )
 
 var servingClient clientservingv1.ServingV1Interface

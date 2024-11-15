@@ -28,17 +28,17 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
   name: sonataflowclusterplatform-viewer-role
 rules:
-- apiGroups:
-  - sonataflow.org
-  resources:
-  - sonataflowclusterplatforms
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - sonataflow.org
-  resources:
-  - sonataflowclusterplatforms/status
-  verbs:
-  - get
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowclusterplatforms
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowclusterplatforms/status
+    verbs:
+      - get

@@ -18,8 +18,9 @@
 package variables
 
 import (
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/constants"
 	"k8s.io/apimachinery/pkg/util/intstr"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/constants"
 )
 
 var (

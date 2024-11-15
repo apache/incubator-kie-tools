@@ -20,12 +20,13 @@
 package dev
 
 import (
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/discovery"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/record"
 	"k8s.io/klog/v2"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/discovery"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common"

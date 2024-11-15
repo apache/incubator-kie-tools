@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 # The default size of Kaniko PVC when using the internal operator builder manager
 defaultPvcKanikoSize: 2Gi
 healthFailureThresholdDevMode: 555
@@ -34,7 +33,7 @@ postgreSQLPersistenceExtensions:
     version: 3.8.6
   - groupId: org.kie
     artifactId: kie-addons-quarkus-persistence-jdbc
-    version: 999-SNAPSHOT
+    version: 999-20241016-SNAPSHOT
 kogitoEventsGrouping: true
 kogitoEventsGroupingBinary: true
 kogitoEventsGroupingCompress: false

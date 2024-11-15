@@ -21,57 +21,57 @@ kind: ClusterRole
 metadata:
   name: manager-role
 rules:
-- apiGroups:
-  - monitoring.coreos.com
-  resources:
-  - servicemonitors
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - update
-  - watch
-- apiGroups:
-  - serving.knative.dev
-  resources:
-  - revisions
-  verbs:
-  - delete
-  - list
-  - watch
-- apiGroups:
-  - sonataflow.org
-  resources:
-  - sonataflowbuilds
-  - sonataflowclusterplatforms
-  - sonataflowplatforms
-  - sonataflows
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - sonataflow.org
-  resources:
-  - sonataflowbuilds/finalizers
-  - sonataflowclusterplatforms/finalizers
-  - sonataflowplatforms/finalizers
-  - sonataflows/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - sonataflow.org
-  resources:
-  - sonataflowbuilds/status
-  - sonataflowclusterplatforms/status
-  - sonataflowplatforms/status
-  - sonataflows/status
-  verbs:
-  - get
-  - patch
-  - update
+  - apiGroups:
+      - monitoring.coreos.com
+    resources:
+      - servicemonitors
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - update
+      - watch
+  - apiGroups:
+      - serving.knative.dev
+    resources:
+      - revisions
+    verbs:
+      - delete
+      - list
+      - watch
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowbuilds
+      - sonataflowclusterplatforms
+      - sonataflowplatforms
+      - sonataflows
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowbuilds/finalizers
+      - sonataflowclusterplatforms/finalizers
+      - sonataflowplatforms/finalizers
+      - sonataflows/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowbuilds/status
+      - sonataflowclusterplatforms/status
+      - sonataflowplatforms/status
+      - sonataflows/status
+    verbs:
+      - get
+      - patch
+      - update

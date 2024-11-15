@@ -16,11 +16,11 @@
 # under the License.
 
 resources:
-- 00-broker.yaml
-- 01-postgres.yaml
-- 02-sonataflow_platform.yaml
-- 03-configmap_callbackstatetimeouts-props.yaml
-- 04-sonataflow_callbackstatetimeouts.sw.yaml
+  - 00-broker.yaml
+  - 01-postgres.yaml
+  - 02-sonataflow_platform.yaml
+  - 03-configmap_callbackstatetimeouts-props.yaml
+  - 04-sonataflow_callbackstatetimeouts.sw.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
@@ -35,4 +35,3 @@ secretGenerator:
 
 sortOptions:
   order: fifo
-

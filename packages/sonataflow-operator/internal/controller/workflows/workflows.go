@@ -20,10 +20,11 @@ package workflows
 import (
 	"context"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 )
 
 var _ WorkflowManager = &workflowManager{}

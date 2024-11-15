@@ -18,13 +18,14 @@
 package gitops
 
 import (
+	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/record"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/discovery"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common"
-	"k8s.io/client-go/rest"
-	"k8s.io/client-go/tools/record"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 var _ profiles.ProfileReconciler = &gitOpsProfile{}

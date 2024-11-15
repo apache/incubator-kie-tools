@@ -20,15 +20,16 @@ package properties
 import (
 	"context"
 
-	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
 	"github.com/magiconair/properties"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/klog/v2"
+
+	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
 )
 
 func resolvePlatformWorkflowProperties(platform *operatorapi.SonataFlowPlatform) (*properties.Properties, error) {

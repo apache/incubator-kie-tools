@@ -24,18 +24,19 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api"
-	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/test"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
 	prometheus "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/rest"
 	clientruntime "sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api"
+	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/test"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
 )
 
 func Test_Reconciler_ProdCustomPod(t *testing.T) {

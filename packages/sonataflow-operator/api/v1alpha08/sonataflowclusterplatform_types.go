@@ -16,8 +16,9 @@
 package v1alpha08
 
 import (
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api"
 )
 
 const (

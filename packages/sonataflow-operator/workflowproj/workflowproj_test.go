@@ -30,10 +30,11 @@ import (
 
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 	"github.com/stretchr/testify/assert"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes/scheme"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 )
 
 func Test_Handler_WorkflowMinimal(t *testing.T) {
@@ -236,9 +237,9 @@ func Test_Handler_WorkflowService_SaveAs(t *testing.T) {
 func TestWorkflowProjectHandler_Image(t *testing.T) {
 	handler := New("default").WithWorkflow(getWorkflowService())
 	proj, err := handler.AsObjects()
-	handler.Image("quay.io/kiegroup/kogito-service:latest")
+	handler.Image("host/namespace/service:latest")
 	assert.NoError(t, err)
-	assert.Equal(t, "quay.io/kiegroup/kogito-service:latest", proj.Workflow.Spec.PodTemplate.Container.Image)
+	assert.Equal(t, "host/namespace/service:latest", proj.Workflow.Spec.PodTemplate.Container.Image)
 }
 
 func getWorkflowMinimalInvalid() io.Reader {

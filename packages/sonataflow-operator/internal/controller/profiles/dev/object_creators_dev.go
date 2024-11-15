@@ -22,12 +22,13 @@ package dev
 import (
 	"path"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles"
 
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common"

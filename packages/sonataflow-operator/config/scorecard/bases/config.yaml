@@ -20,5 +20,5 @@ kind: Configuration
 metadata:
   name: config
 stages:
-- parallel: true
-  tests: []
+  - parallel: true
+    tests: []

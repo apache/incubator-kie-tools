@@ -25,11 +25,12 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/magiconair/properties"
+	"k8s.io/klog/v2"
+
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/discovery"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
-	"github.com/magiconair/properties"
-	"k8s.io/klog/v2"
 )
 
 const (

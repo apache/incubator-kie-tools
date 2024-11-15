@@ -107,7 +107,7 @@ type PublishTask struct {
 }
 
 // GetRepositoryImageTag gets the full qualified Repository Name for the given image in the PublishTask.
-// For example quay.io/myrepo/myimage:latest.
+// For example docker.io/myrepo/myimage:latest.
 func (p *PublishTask) GetRepositoryImageTag() string {
 	if len(p.Registry.Address) > 0 {
 		return fmt.Sprintf("%s/%s", p.Registry.Address, p.Image)

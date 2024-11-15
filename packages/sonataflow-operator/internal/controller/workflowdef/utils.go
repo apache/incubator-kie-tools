@@ -20,8 +20,9 @@
 package workflowdef
 
 import (
-	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/serverlessworkflow/sdk-go/v2/model"
+
+	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 )
 
 // HasTimeouts returns true if current workflow has configured any of the SonataFlow supported timeouts, false

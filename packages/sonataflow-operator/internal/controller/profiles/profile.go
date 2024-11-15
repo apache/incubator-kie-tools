@@ -22,10 +22,11 @@ package profiles
 import (
 	"context"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
 
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 )

@@ -29,10 +29,10 @@ spec:
     start: printWaitMessage
     events:
       - name: startEvent
-        source: ''
+        source: ""
         type: start
       - name: moveEvent
-        source: ''
+        source: ""
         type: move
     functions:
       - name: printMessage

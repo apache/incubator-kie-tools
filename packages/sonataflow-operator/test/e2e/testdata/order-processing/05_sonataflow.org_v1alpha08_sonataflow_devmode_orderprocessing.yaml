@@ -28,7 +28,7 @@ spec:
   resources:
     configMaps:
       - configMap:
-           name: orderprocessing-subflows
+          name: orderprocessing-subflows
   flow:
     start: ReceiveOrder
     events:

@@ -16,8 +16,7 @@
 # under the License.
 
 resources:
-- 02-sonataflow_platform.yaml
+  - 02-sonataflow_platform.yaml
 
 sortOptions:
   order: fifo
-

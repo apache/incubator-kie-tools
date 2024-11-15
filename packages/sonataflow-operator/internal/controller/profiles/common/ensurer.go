@@ -22,13 +22,14 @@ package common
 import (
 	"context"
 
-	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/constants"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
 	"k8s.io/klog/v2"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
+
+	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/constants"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
 )
 
 var _ ObjectEnsurer = &defaultObjectEnsurer{}

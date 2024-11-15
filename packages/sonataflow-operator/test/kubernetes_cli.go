@@ -24,11 +24,12 @@ import (
 
 	"testing"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
 	prometheus "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
 
 	buildv1 "github.com/openshift/api/build/v1"
 	imgv1 "github.com/openshift/api/image/v1"

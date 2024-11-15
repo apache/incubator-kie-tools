@@ -24,13 +24,14 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/labels"
 	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
 
 	klog "k8s.io/klog/v2"
 

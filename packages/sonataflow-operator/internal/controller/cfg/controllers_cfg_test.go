@@ -52,7 +52,7 @@ func TestInitializeControllersCfgAt_ValidFile(t *testing.T) {
 	assert.Equal(t, GAV{
 		GroupId:    "org.kie",
 		ArtifactId: "kie-addons-quarkus-persistence-jdbc",
-		Version:    "999-SNAPSHOT",
+		Version:    "999-20241016-SNAPSHOT",
 	}, postgresExtensions[2])
 	assert.True(t, cfg.KogitoEventsGrouping)
 	assert.True(t, cfg.KogitoEventsGroupingBinary)

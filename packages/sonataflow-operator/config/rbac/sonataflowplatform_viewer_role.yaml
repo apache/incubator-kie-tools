@@ -21,17 +21,17 @@ kind: ClusterRole
 metadata:
   name: sonataflowplatform-viewer-role
 rules:
-- apiGroups:
-  - sonataflow.org
-  resources:
-  - sonataflowplatforms
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - sonataflow.org
-  resources:
-  - sonataflowplatforms/status
-  verbs:
-  - get
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowplatforms
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - sonataflow.org
+    resources:
+      - sonataflowplatforms/status
+    verbs:
+      - get

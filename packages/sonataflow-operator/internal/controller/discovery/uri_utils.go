@@ -23,8 +23,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils/kubernetes"
 	corev1 "k8s.io/api/core/v1"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils/kubernetes"
 )
 
 func resolveServiceUri(service *corev1.Service, customPort string, outputFormat string) (string, error) {

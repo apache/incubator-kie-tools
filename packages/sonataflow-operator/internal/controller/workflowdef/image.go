@@ -65,5 +65,5 @@ func GetDefaultWorkflowBuilderImageTag() string {
 }
 
 func GetDefaultImageTag(imgTag string) string {
-	return fmt.Sprintf("%s:%s", imgTag, version.GetOperatorVersion())
+	return fmt.Sprintf("%s:%s", imgTag, version.GetImageTagVersion())
 }

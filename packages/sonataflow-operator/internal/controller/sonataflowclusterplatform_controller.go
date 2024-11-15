@@ -20,11 +20,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api"
-	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
-	clientr "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/container-builder/client"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/clusterplatform"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -37,6 +32,12 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api"
+	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
+	clientr "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/container-builder/client"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/clusterplatform"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
 )
 
 // SonataFlowClusterPlatformReconciler reconciles a SonataFlowClusterPlatform object

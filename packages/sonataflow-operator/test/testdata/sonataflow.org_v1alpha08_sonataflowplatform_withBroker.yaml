@@ -28,7 +28,7 @@ spec:
     config:
       strategy: operator
       registry:
-        address: quay.io/kiegroup
+        address: docker.io/apache
         secret: regcred
   eventing:
     broker:

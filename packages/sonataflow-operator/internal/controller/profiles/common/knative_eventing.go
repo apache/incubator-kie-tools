@@ -20,12 +20,14 @@ package common
 import (
 	"context"
 
-	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"k8s.io/klog/v2"
+
+	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
+
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/knative"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 var _ KnativeEventingHandler = &knativeObjectManager{}

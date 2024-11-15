@@ -28,7 +28,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SubtractionOperation'
+              $ref: "#/components/schemas/SubtractionOperation"
       responses:
         "200":
           description: OK
