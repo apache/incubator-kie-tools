@@ -1,0 +1,49 @@
+{
+  "id": "foreach",
+  "version": "1.0",
+  "description": "An example of how to use for each state",
+  "start": "start",
+  "specVersion": "0.8",
+  "functions": [
+    {
+      "name": "printMessage",
+      "type": "custom",
+      "operation": "sysout"
+    },
+    {
+      "name": "increase",
+      "type": "expression",
+      "operation": ".item + 1"
+    }
+  ],
+  "states": [
+    {
+      "name": "start",
+      "type": "foreach",
+      "iterationParam": "item",
+      "inputCollection": ".input",
+      "outputCollection": ".output",
+      "stateDataFilter": {
+        "output": "{output: .output}"
+      },
+      "actions": [
+        {
+          "name": "increase",
+          "functionRef": {
+            "refName": "increase"
+          }
+        },
+        {
+          "name": "printAction",
+          "functionRef": {
+            "refName": "printMessage",
+            "arguments": {
+              "message": ".item"
+            }
+          }
+        }
+      ],
+      "end": true
+    }
+  ]
+}

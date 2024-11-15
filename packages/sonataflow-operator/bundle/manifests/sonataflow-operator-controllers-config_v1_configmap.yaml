@@ -1,0 +1,71 @@
+apiVersion: v1
+data:
+  controllers_cfg.yaml: |-
+    # Licensed to the Apache Software Foundation (ASF) under one
+    # or more contributor license agreements.  See the NOTICE file
+    # distributed with this work for additional information
+    # regarding copyright ownership.  The ASF licenses this file
+    # to you under the Apache License, Version 2.0 (the
+    # "License"); you may not use this file except in compliance
+    # with the License.  You may obtain a copy of the License at
+    #
+    #   http://www.apache.org/licenses/LICENSE-2.0
+    #
+    # Unless required by applicable law or agreed to in writing,
+    # software distributed under the License is distributed on an
+    # "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    # KIND, either express or implied.  See the License for the
+    # specific language governing permissions and limitations
+    # under the License.
+
+    # The default size of Kaniko PVC when using the internal operator builder manager
+    defaultPvcKanikoSize: 1Gi
+    # How much time (in seconds) to wait for a devmode workflow to start.
+    # This information is used for the controller manager to create new devmode containers and setup the healthcheck probes.
+    healthFailureThresholdDevMode: 50
+    # Default image used internally by the Operator Managed Kaniko builder to create the warmup pods
+    kanikoDefaultWarmerImageTag: gcr.io/kaniko-project/warmer:v1.9.0
+    # Default image used internally by the Operator Managed Kaniko builder to create the executor pods
+    kanikoExecutorImageTag: gcr.io/kaniko-project/executor:v1.9.0
+    # The Jobs Service image to use, if empty the operator will use the default Apache Community one based on the current operator's version
+    jobsServicePostgreSQLImageTag: ""
+    jobsServiceEphemeralImageTag: ""
+    # The Data Index image to use, if empty the operator will use the default Apache Community one based on the current operator's version
+    dataIndexPostgreSQLImageTag: ""
+    dataIndexEphemeralImageTag: ""
+    # SonataFlow base builder image used in the internal Dockerfile to build workflow applications in preview profile
+    # Order of precedence is:
+    # 1. SonataFlowPlatform in the given namespace
+    # 2. This configuration
+    # 3. The FROM in the Dockerfile in the operator's namespace "sonataflow-operator-builder-config" configMap.
+    # If 1 or 2, the FROM tag will be replaced by the tag se there.
+    # If empty the operator will use the default Apache Community one based on the current operator's version.
+    sonataFlowBaseBuilderImageTag: ""
+    # The image to use to deploy SonataFlow workflow images in devmode profile.
+    # If empty the operator will use the default Apache Community one based on the current operator's version.
+    sonataFlowDevModeImageTag: ""
+    # The default name of the builder configMap in the operator's namespace
+    builderConfigMapName: "sonataflow-operator-builder-config"
+    # Quarkus extensions required for workflows persistence. These extensions are used by the SonataFlow build system,
+    # in cases where the workflow being built has configured postgresql persistence.
+    postgreSQLPersistenceExtensions:
+      - groupId: io.quarkus
+        artifactId: quarkus-jdbc-postgresql
+        version: 3.8.6
+      - groupId: io.quarkus
+        artifactId: quarkus-agroal
+        version: 3.8.6
+      - groupId: org.kie
+        artifactId: kie-addons-quarkus-persistence-jdbc
+        version: 999-20240912-SNAPSHOT
+    # If true, the workflow deployments will be configured to send accumulated workflow status change events to the Data
+    # Index Service reducing the number of produced events. Set to false to send individual events.
+    kogitoEventsGrouping: true
+    # If true, the accumulated workflow status change events will be sent in binary mode. (reduces the evens size)
+    kogitoEventsGroupingBinary: true
+    # If true, the accumulated workflow status change events, when sent in binary mode, will be gzipped at the cost of
+    # some performance.
+    kogitoEventsGroupingCompress: false
+kind: ConfigMap
+metadata:
+  name: sonataflow-operator-controllers-config

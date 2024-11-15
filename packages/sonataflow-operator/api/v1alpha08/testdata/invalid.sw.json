@@ -1,0 +1,6 @@
+{
+  "id": "invalid",
+  "version": "1.0",
+  "specVersion": "0.8",
+  "description": "A valid workflow should have states."
+}
