@@ -81,16 +81,6 @@ func (c *collector) collect(operations sets.Set[string]) (map[string]map[string]
 		}
 		preserve[node.section][node.subsection].Insert(node.object)
 	}
-	//TODO remove debug print
-	/*	for section, subsections := range preserve {
-		fmt.Println(section)
-		for subsection, elms := range subsections {
-			fmt.Println(" ", subsection)
-			for _, elm := range elms.UnsortedList() {
-				fmt.Println("   ", elm)
-			}
-		}
-	}*/
 	return preserve, nil
 }
 

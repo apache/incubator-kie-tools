@@ -186,6 +186,41 @@ func TestOpenAPIMinifyRefs(t *testing.T) {
 			specsDir:         "specs",
 			subflowsDir:      "subflows",
 		},
+		{
+			workflowFile:     "testdata/refs/workflow.sw.yaml",
+			openapiSpecFiles: []spec{{file: "testdata/refs/openapi.yaml", expected: "testdata/refs/openapi.expected.yaml", initial: 5, minified: 3}},
+			specsDir:         "my_specs",
+			subflowsDir:      "subflows",
+		},
+		{
+			workflowFile:     "testdata/refs/emptyworkflow.sw.yaml",
+			openapiSpecFiles: []spec{{file: "testdata/refs/openapi1.yaml", expected: "testdata/refs/openapi1.expected.yaml", initial: 1, minified: 1},
+				                     {file: "testdata/refs/openapi2.yaml", expected: "testdata/refs/openapi2.expected.yaml", initial: 1, minified: 1}},
+			specsDir:         "specs",
+			subflowsDir:      "subflows",
+		},
+		{
+			workflowFile:     "testdata/refs/emptyworkflow.sw.yaml",
+			openapiSpecFiles: []spec{{file: "testdata/refs/openapi1.yaml", expected: "testdata/refs/openapi1.expected.yaml", initial: 1, minified: 1},
+				                     {file: "testdata/refs/openapi2.yaml", expected: "testdata/refs/openapi2.expected.yaml", initial: 1, minified: 1}},
+			specsDir:         "my_specs",
+			subflowsDir:      "subflows",
+		},
+		{
+			workflowFile:     "testdata/refs/emptyworkflow.sw.yaml",
+			openapiSpecFiles: []spec{{file: "testdata/refs/openapi1.yaml", expected: "testdata/refs/openapi1.expected.yaml", initial: 1, minified: 1},
+				                     {file: "testdata/refs/openapi2.yaml", expected: "testdata/refs/openapi2.expected.yaml", initial: 1, minified: 1}},
+			specsDir:         "my_specs",
+			subflowsDir:      "custom_specs",
+			subflows:         []string{"testdata/refs//subflow2.sw.yaml", "testdata/refs/subflow2.sw.yaml"}, // 2 subflows, each one has a function that uses the flink-openapi.yaml
+		},
+		{
+			workflowFile:     "testdata/refs/emptyworkflow.sw.yaml",
+			openapiSpecFiles: []spec{{file: "testdata/refs/openapi.yaml", expected: "testdata/refs/openapi-subflow34.expected.yaml", initial: 5, minified: 2}},
+			specsDir:         "specs",
+			subflowsDir:      "custom_specs",
+			subflows:         []string{"testdata/refs//subflow3.sw.yaml", "testdata/refs/subflow4.sw.yaml"}, // 2 subflows, each one has a function that uses the flink-openapi.yaml
+		},
 	}
 
 	current, err := os.Getwd()
