@@ -17,11 +17,14 @@
 # under the License.
 #
 
-name: CI :: Check license headers
+name: "CI :: Check license headers"
 
 on:
+  push:
+    branches: [main]
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    branches: ["**"]
+    types: [opened, reopened, ready_for_review, synchronize]
 
 jobs:
   check-license-headers:
