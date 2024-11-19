@@ -26,6 +26,10 @@ module.exports = typeDefs = gql`
     query: Query
   }
 
+  type Mutation {
+    JobExecute(id: String): String
+  }
+
   type Query {
     ProcessInstances(
       where: ProcessInstanceArgument

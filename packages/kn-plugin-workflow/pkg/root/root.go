@@ -21,6 +21,7 @@ package root
 
 import (
 	"fmt"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command/specs"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command/quarkus"
 
@@ -76,6 +77,7 @@ func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	cmd.AddCommand(command.NewGenManifest())
 	cmd.AddCommand(quarkus.NewQuarkusCommand())
 	cmd.AddCommand(command.NewVersionCommand(cfg.Version))
+	cmd.AddCommand(specs.SpecsCommand())
 
 	cmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
 		runRootHelp(cmd, args)
