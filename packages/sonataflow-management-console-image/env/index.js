@@ -20,14 +20,18 @@
 const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
 const rootEnv = require("@kie-tools/root-env/env");
+const sonataflowImageCommonEnv = require("@kie-tools/sonataflow-image-common/env");
 
-module.exports = composeEnv([rootEnv, require("@kie-tools/sonataflow-management-console-image-env/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      sonataflowManagementConsoleImage: {
-        version: require("../package.json").version,
-      },
-    };
-  },
-});
+module.exports = composeEnv(
+  [rootEnv, sonataflowImageCommonEnv, require("@kie-tools/sonataflow-management-console-image-env/env")],
+  {
+    vars: varsWithName({}),
+    get env() {
+      return {
+        sonataflowManagementConsoleImage: {
+          version: require("../package.json").version,
+        },
+      };
+    },
+  }
+);
