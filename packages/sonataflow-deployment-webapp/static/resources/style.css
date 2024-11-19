@@ -49,7 +49,7 @@
 }
 
 #page-sidebar {
-  --pf-v5-c-page__sidebar--BackgroundColor: var(--sidebar-bg);
+  --pf-v5-c-page__sidebar--BackgroundColor: var(#212427);
 }
 
 #page-sidebar .pf-m-current {
