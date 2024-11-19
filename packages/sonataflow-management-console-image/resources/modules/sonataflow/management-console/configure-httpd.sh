@@ -31,6 +31,7 @@ sed -i "s/Listen 80/Listen ${SONATAFLOW_MANAGEMENT_CONSOLE_PORT}/g" "${HTTPD_MAI
 sed -i "s/#ServerName www.example.com:80/ServerName 127.0.0.1:${SONATAFLOW_MANAGEMENT_CONSOLE_PORT}/g" "${HTTPD_MAIN_CONF_PATH}/httpd.conf"
 sed -i '$ a ServerTokens Prod' "${HTTPD_MAIN_CONF_PATH}/httpd.conf"
 sed -i '$ a ServerSignature Off' "${HTTPD_MAIN_CONF_PATH}/httpd.conf"
+sed -i '$ a SSLProxyEngine on' "${HTTPD_MAIN_CONF_PATH}/httpd.conf"
 
 # Add RewriteRules
 sed -i -e '/<Directory "\/var\/www\/html">/a \
