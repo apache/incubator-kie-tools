@@ -24,8 +24,10 @@ import {
   EmptyStateIcon,
   EmptyStateActions,
   EmptyStateVariant,
+  EmptyStateHeader,
+  EmptyStateFooter,
 } from "@patternfly/react-core";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import * as React from "react";
 import { ChangeEvent } from "react";
@@ -43,22 +45,25 @@ interface AllProps extends NewProps, UploadProps {}
 
 export const ServerlessWorkflowEmptyState = (props: AllProps) => (
   <EmptyState variant={EmptyStateVariant.sm}>
-    <EmptyStateIcon icon={CubesIcon} />
-    <Title headingLevel="h4" size="lg">
-      No serverless workflow document
-    </Title>
+    <EmptyStateHeader
+      titleText="No serverless workflow document"
+      icon={<EmptyStateIcon icon={CubesIcon} />}
+      headingLevel="h4"
+    />
     <EmptyStateBody>
       No serverless workflow document has been selected. Please either upload an existing document or create a new one.
     </EmptyStateBody>
-    <FileChooser setContent={props.setContent} />
-    <EmptyStateActions>
-      <Button variant="link" onClick={(e) => props.newContent("json")} ouiaId="new-button">
-        New JSON
-      </Button>
-      <Button variant="link" onClick={(e) => props.newContent("yaml")} ouiaId="new-button">
-        New YAML
-      </Button>
-    </EmptyStateActions>
+    <EmptyStateFooter>
+      <FileChooser setContent={props.setContent} />
+      <EmptyStateActions>
+        <Button variant="link" onClick={(e) => props.newContent("json")} ouiaId="new-button">
+          New JSON
+        </Button>
+        <Button variant="link" onClick={(e) => props.newContent("yaml")} ouiaId="new-button">
+          New YAML
+        </Button>
+      </EmptyStateActions>
+    </EmptyStateFooter>
   </EmptyState>
 );
 
