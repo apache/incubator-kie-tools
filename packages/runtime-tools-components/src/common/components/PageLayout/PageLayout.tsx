@@ -97,7 +97,7 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
       {...ouiaAttribute("data-ouia-navigation", "true")}
       data-testid="page-sidebar"
     >
-      <PageSidebarBody>nav={PageNav}</PageSidebarBody>
+      <PageSidebarBody>{PageNav}</PageSidebarBody>
     </PageSidebar>
   );
 
