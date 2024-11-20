@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { Button, EmptyStateActions } from "@patternfly/react-core/dist/js/components/Button";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import {
   EmptyState,
   EmptyStateBody,

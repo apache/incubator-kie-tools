@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { EditorApi, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
-import { EmptyState, EmptyStateIcon, EmptyStateHeader } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { EmptyState, EmptyStateIcon, EmptyStateHeader } from "@patternfly/react-core";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
 import { Page } from "@patternfly/react-core/dist/js/components/Page";
 import { Switch } from "@patternfly/react-core/dist/js/components/Switch";

@@ -92,11 +92,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/workspace
       '@patternfly/react-core':
-        specifier: ^4.276.6
-        version: 4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        specifier: ^5.4.1
+        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@patternfly/react-icons':
-        specifier: ^4.93.6
-        version: 4.93.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        specifier: ^5.4.0
+        version: 5.4.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react:
         specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
@@ -593,11 +593,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/uniforms-patternfly
       '@patternfly/react-core':
-        specifier: ^4.276.6
-        version: 4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        specifier: ^5.4.1
+        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@patternfly/react-icons':
-        specifier: ^4.93.6
-        version: 4.93.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        specifier: ^5.4.0
+        version: 5.4.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       ajv:
         specifier: ^8.17.1
         version: 8.17.1
@@ -729,11 +729,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/serverless-workflow-standalone-editor
       '@patternfly/react-core':
-        specifier: ^4.276.6
-        version: 4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        specifier: ^5.4.1
+        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@patternfly/react-icons':
-        specifier: ^4.93.6
-        version: 4.93.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        specifier: ^5.4.0
+        version: 5.4.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       monaco-editor:
         specifier: ^0.39.0
         version: 0.39.0
@@ -17483,32 +17483,17 @@ packages:
       react: ^17 || ^18
       react-dom: ^17 || ^18
 
-  '@patternfly/react-core@4.276.6':
-    resolution: {integrity: sha512-G0K+378jf9jw9g+hCAoKnsAe/UGTRspqPeuAYypF2FgNr+dC7dUpc7/VkNhZBVqSJzUWVEK8NyXcqkfi0IemIg==}
-    peerDependencies:
-      react: ^16.8 || ^17 || ^18
-      react-dom: ^16.8 || ^17 || ^18
-
   '@patternfly/react-core@5.4.1':
     resolution: {integrity: sha512-PJjwN4OCR7jTdWKi0RzuFdtlSQ8gBR+0REczuDHHPW8ky0bs1cIcqGsn5p/b6OgPlztl3UaXqRYLsroiEMasOw==}
     peerDependencies:
       react: ^17 || ^18
       react-dom: ^17 || ^18
 
-  '@patternfly/react-icons@4.93.6':
-    resolution: {integrity: sha512-ZrXegc/81oiuTIeWvoHb3nG/eZODbB4rYmekBEsrbiysyO7m/sUFoi/RLvgFINrRoh6YCJqL5fj06Jg6d7jX1g==}
-    peerDependencies:
-      react: ^16.8 || ^17 || ^18
-      react-dom: ^16.8 || ^17 || ^18
-
   '@patternfly/react-icons@5.4.0':
     resolution: {integrity: sha512-2M3qN/naultvRHeG2laJMmoIroFCGAyfwTVrnCjSkG6/KnRoXV0+dqd+Xrh7xzpzvIJB1klvifC0oX42cEkDrA==}
     peerDependencies:
       react: ^17 || ^18
       react-dom: ^17 || ^18
-
-  '@patternfly/react-styles@4.92.6':
-    resolution: {integrity: sha512-b8uQdEReMyeoMzjpMri845QxqtupY/tIFFYfVeKoB2neno8gkcW1RvDdDe62LF88q45OktCwAe/8A99ker10Iw==}
 
   '@patternfly/react-styles@4.92.8':
     resolution: {integrity: sha512-K4lUU8O4HiCX9NeuNUIrPgN3wlGERCxJVio+PAjd8hpJD/PKnjFfOJ9u6/Cii3qLy/5ZviWPRNHbGiwA/+YUhg==}
@@ -17521,9 +17506,6 @@ packages:
     peerDependencies:
       react: ^17 || ^18
       react-dom: ^17 || ^18
-
-  '@patternfly/react-tokens@4.94.6':
-    resolution: {integrity: sha512-tm7C6nat+uKMr1hrapis7hS3rN9cr41tpcCKhx6cod6FLU8KwF2Yt5KUxakhIOCEcE/M/EhXhAw/qejp8w0r7Q==}
 
   '@patternfly/react-tokens@4.94.7':
     resolution: {integrity: sha512-h+ducOLDMSxcuec3+YY3x+stM5ZUSnrl/lC/eVmjypil2El08NuE2MNEPMQWdhrod6VRRZFMNqZw/m82iv6U1A==}
@@ -23463,9 +23445,6 @@ packages:
     peerDependencies:
       react: ^15.0.2 || ^16.0.0 || ^17.0.0
 
-  focus-trap@6.9.2:
-    resolution: {integrity: sha512-gBEuXOPNOKPrLdZpMFUSTyIo1eT2NSZRrwZ9r/0Jqw5tmT3Yvxfmu8KBHw8xW2XQkw6E/JoG+OlEq7UDtSUNgw==}
-
   focus-trap@7.5.4:
     resolution: {integrity: sha512-N7kHdlgsO/v+iD/dMoJKtsSqs5Dz/dXZVebRgJw23LDk+jMi/974zyiOYDziY2JPp8xivq9BmUGwIJMiuSBi7w==}
 
@@ -29014,9 +28993,6 @@ packages:
     resolution: {integrity: sha512-ulAk51I9UVUyJgxlv9M6lFot2WP3e7t8Kz9+IS6D4rVba1tR9kON+Ey69f+1R4Q8cd45Lod6a4IcJIxnzGc/zA==}
     engines: {node: '>=18'}
 
-  tabbable@5.3.3:
-    resolution: {integrity: sha512-QD9qKY3StfbZqWOPLp0++pOrAVb/HbUi5xCc8cUo4XjP19808oaMiDzn0leBY5mCespIBM0CIZePzZjgzR83kA==}
-
   tabbable@6.2.0:
     resolution: {integrity: sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==}
 
@@ -29186,9 +29162,6 @@ packages:
 
   tinylogic@2.0.0:
     resolution: {integrity: sha512-dljTkiLLITtsjqBvTA1MRZQK/sGP4kI3UJKc3yA9fMzYbMF2RhcN04SeROVqJBIYYOoJMM8u0WDnhFwMSFQotw==}
-
-  tippy.js@5.1.2:
-    resolution: {integrity: sha512-Qtrv2wqbRbaKMUb6bWWBQWPayvcDKNrGlvihxtsyowhT7RLGEh1STWuy6EMXC6QLkfKPB2MLnf8W2mzql9VDAw==}
 
   title-case@3.0.3:
     resolution: {integrity: sha512-e1zGYRvbffpcHIrnuqT0Dh+gEJtDaxDSoG4JAIpq4oDFyooziLBIiYQv0GBT4FUAnUop5uZ1hiIAj7oAF6sOCA==}
@@ -38207,18 +38180,6 @@ snapshots:
     transitivePeerDependencies:
       - monaco-editor
 
-  '@patternfly/react-core@4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
-    dependencies:
-      '@patternfly/react-icons': 4.93.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      '@patternfly/react-styles': 4.92.6
-      '@patternfly/react-tokens': 4.94.6
-      focus-trap: 6.9.2
-      react: 17.0.2
-      react-dom: 17.0.2(react@17.0.2)
-      react-dropzone: 11.7.1(react@17.0.2)
-      tippy.js: 5.1.2
-      tslib: 2.7.0
-
   '@patternfly/react-core@5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
     dependencies:
       '@patternfly/react-icons': 5.4.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -38241,11 +38202,6 @@ snapshots:
       react-dropzone: 11.7.1(react@17.0.2)
       tslib: 2.7.0
 
-  '@patternfly/react-icons@4.93.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
-    dependencies:
-      react: 17.0.2
-      react-dom: 17.0.2(react@17.0.2)
-
   '@patternfly/react-icons@5.4.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
     dependencies:
       react: 17.0.2
@@ -38255,8 +38211,6 @@ snapshots:
     dependencies:
       react: 17.0.2
       react-dom: 18.3.1(react@17.0.2)
-
-  '@patternfly/react-styles@4.92.6': {}
 
   '@patternfly/react-styles@4.92.8': {}
 
@@ -38272,8 +38226,6 @@ snapshots:
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
       tslib: 2.7.0
-
-  '@patternfly/react-tokens@4.94.6': {}
 
   '@patternfly/react-tokens@4.94.7': {}
 
@@ -48570,10 +48522,6 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  focus-trap@6.9.2:
-    dependencies:
-      tabbable: 5.3.3
-
   focus-trap@7.5.4:
     dependencies:
       tabbable: 6.2.0
@@ -56224,8 +56172,6 @@ snapshots:
 
   system-architecture@0.1.0: {}
 
-  tabbable@5.3.3: {}
-
   tabbable@6.2.0: {}
 
   tapable@2.2.0: {}
@@ -56517,10 +56463,6 @@ snapshots:
       chevrotain: 9.1.0
 
   tinylogic@2.0.0: {}
-
-  tippy.js@5.1.2:
-    dependencies:
-      popper.js: 1.16.1
 
   title-case@3.0.3:
     dependencies:

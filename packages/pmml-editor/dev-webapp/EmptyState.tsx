@@ -25,9 +25,9 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateSecondaryActions,
+  EmptyStateActions,
   EmptyStateVariant,
-} from "@patternfly/react-core/dist/js/components/EmptyState";
+} from "@patternfly/react-core";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 
 interface NewProps {
@@ -41,7 +41,7 @@ interface UploadProps {
 interface AllProps extends NewProps, UploadProps {}
 
 export const PMMLEmptyState = (props: AllProps) => (
-  <EmptyState variant={EmptyStateVariant.small}>
+  <EmptyState variant={EmptyStateVariant.sm}>
     <EmptyStateIcon icon={CubesIcon} />
     <Title headingLevel="h4" size="lg">
       No PMML document
@@ -50,11 +50,11 @@ export const PMMLEmptyState = (props: AllProps) => (
       No PMML document has been selected. Please either upload an existing document or create a new one.
     </EmptyStateBody>
     <FileChooser setContent={props.setContent} />
-    <EmptyStateSecondaryActions>
+    <EmptyStateActions>
       <Button variant="link" onClick={(e) => props.newContent()} ouiaId="new-button">
         New
       </Button>
-    </EmptyStateSecondaryActions>
+    </EmptyStateActions>
   </EmptyState>
 );
 
