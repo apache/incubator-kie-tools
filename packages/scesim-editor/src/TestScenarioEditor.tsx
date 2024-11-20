@@ -97,7 +97,7 @@ export enum TestScenarioType {
 export type TestScenarioAlert = {
   enabled: boolean;
   message?: string;
-  variant: "success" | "danger" | "warning" | "info" | "default";
+  variant: "success" | "danger" | "warning" | "info" | "custom";
 };
 
 export type TestScenarioDataObject = {
@@ -242,7 +242,7 @@ function TestScenarioMainPanel({
 
     let alertEnabled = false;
     let alertMessage = "";
-    let alertVariant: "default" | "danger" | "warning" | "info" | "success" = "danger";
+    let alertVariant: "custom" | "danger" | "warning" | "info" | "success" = "danger";
 
     if (dataObjects.length > 0) {
       alertMessage =
