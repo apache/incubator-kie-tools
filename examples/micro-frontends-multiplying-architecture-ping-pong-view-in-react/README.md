@@ -19,7 +19,7 @@
 
 The Ping-Pong View is an interface that components can implement to be used inside a Ping-Pong View Envelope.
 
-Ths package provides a library containing a Ping-Pong View implementation as a React component.
+Ths package provides a library containing a Ping-Pong View implementation as a React component. To see it in action, refer to the [Ping-Pong Views on Webapp](../micro-frontends-multiplying-architecture-ping-pong-views-on-webapp/) example.
 
 ---
 

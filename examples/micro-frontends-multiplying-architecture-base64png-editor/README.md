@@ -21,6 +21,8 @@ This package is a Custom Editor made with React, which enables you to edit a `.b
 
 A `.base64png` file is a PNG image converted to base64 without its headers (e.g. data:image/png;base64).
 
+To see it in action, refer to the [Base64 PNG Editor on Webapp](../micro-frontends-multiplying-architecture-base64png-editor-on-webapp/), the [Base64 PNG Editor VS Code Extension](../micro-frontends-multiplying-architecture-base64png-editor-vscode-extension/), or the [Base64 PNG Editor Chrome Extension](../micro-frontends-multiplying-architecture-base64png-editor-chrome-extension/) examples.
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software

@@ -31,7 +31,7 @@ To make it easier to create `.base64png` files and exporting them to other forma
 Before running this example, building its dependencies is required. Run the following command on a Terminal:
 
 ```shell script
-KIE_TOOLS_BUILD__buildExamples=true pnpm -F @kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor-vscode-extension^... build:dev
+KIE_TOOLS_BUILD__buildExamples=true pnpm -F kie-tools-examples-micro-frontends-multiplying-architecture-base64png-editor-vscode-extension^... build:dev
 ```
 
 ### Building

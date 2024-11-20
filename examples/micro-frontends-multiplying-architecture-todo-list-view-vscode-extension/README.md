@@ -31,7 +31,7 @@ This package provides a VS Code Extension containing a 'To do' List View, which 
 Before running this example, building its dependencies is required. Run the following command on a Terminal:
 
 ```shell script
-KIE_TOOLS_BUILD__buildExamples=true pnpm -F @kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-vscode-extension^... build:dev
+KIE_TOOLS_BUILD__buildExamples=true pnpm -F kie-tools-examples-micro-frontends-multuplying-architecture-todo-list-view-vscode-extension^... build:dev
 ```
 
 ### Building

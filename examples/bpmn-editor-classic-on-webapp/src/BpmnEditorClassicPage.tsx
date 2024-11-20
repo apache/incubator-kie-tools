@@ -69,8 +69,8 @@ export function BpmnEditorClassicPage() {
           editorEnvelopeLocator={editorEnvelopeLocator}
           file={file}
           setFile={setFile}
-          fileExtension={"dmn"}
-          accept={".dmn"}
+          fileExtension={"bpmn"}
+          accept={".bpmn"}
         />
       }
     >

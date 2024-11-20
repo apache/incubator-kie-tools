@@ -37,11 +37,11 @@ KIE_TOOLS_BUILD__buildExamples=true pnpm -F @kie-tools-examples/dmn-editor-stand
 pnpm -F @kie-tools-examples/dmn-editor-standalone-on-webapp start
 ```
 
-Open http://localhost:9102 to see the list of files bundled by Webpack, then choose an example:
+Open http://localhost:7778 to see the list of files bundled by Webpack, then choose an example:
 
-- State Control: http://localhost:9102/state_control.html
-- Read Only: http://localhost:9102/read_only.html
-- With Included Models: http://localhost:9102/with_included_models.html
+- State Control: http://localhost:7778/state_control.html
+- Read Only: http://localhost:7778/read_only.html
+- With Included Models: http://localhost:7778/with_included_models.html
 
 ---
 

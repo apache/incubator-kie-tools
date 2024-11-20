@@ -20,7 +20,7 @@
 import * as React from "react";
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import { useCallback, useRef, useState } from "react";
-import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
+import { Nav, NavList } from "@patternfly/react-core/dist/js/components/Nav";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { EmbeddedEditorRef, useDirtyState } from "@kie-tools-core/editor/dist/embedded";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";

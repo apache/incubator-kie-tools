@@ -30,6 +30,8 @@ It's divided in the following directories:
 1. `vscode`
    - Provides a convenience class to create a Webview inside a VS Code Extension.
 
+To see it in action, refer to the ['To do' List views on Webapp](../micro-frontends-multiplying-architecture-ping-pong-views-on-webapp/), or the ['To do' List VS Code Extension](../micro-frontends-multiplying-architecture-todo-list-view-vscode-extension/) examples.
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software
