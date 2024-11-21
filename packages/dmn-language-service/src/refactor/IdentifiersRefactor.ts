@@ -127,7 +127,9 @@ export class IdentifiersRefactor {
   public getExpressionsThatUseTheIdentifier(identifierId: string) {
     const identifierContext = this.repository.identifiers.get(identifierId);
     if (!identifierContext) {
-      return [];
+      return (
+        this.repository.dataTypeIndexedByUuid.get(identifierId)?.source.expressionsThatUseTheIdentifier.values() ?? []
+      );
     }
 
     return identifierContext.identifier.expressionsThatUseTheIdentifier.values();

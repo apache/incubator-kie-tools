@@ -77,7 +77,6 @@ describe("Refactor renamed identifiers", () => {
       newName: "MON",
     });
 
-    // id="_4a4d01be-fe97-49a2-8c4c-3a49ff27968d" name="Tax"
     // Rename the "Tax" property of "Monthly" data type to "The Tax"
     identifiersRefactor.rename({
       identifierUuid: "_4a4d01be-fe97-49a2-8c4c-3a49ff27968d",
@@ -193,7 +192,6 @@ describe("Refactor renamed identifiers", () => {
     ).toEqual("x > 2");
   });
 
-  // test("rename decision service element - should update referenced expressions",  async () => {});
   test("rename included model - should update referenced expressions", async () => {
     const identifiersRefactor = new IdentifiersRefactor({
       writeableDmnDefinitions: getDefinitions(includeMathModelDmn()),

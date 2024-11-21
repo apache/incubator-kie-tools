@@ -18,8 +18,11 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
-import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { useCallback, useMemo, useState } from "react";
+import {
+  DMN15__tDefinitions,
+  DMN15__tItemDefinition,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { EditableNodeLabel, useEditableNodeLabel } from "../diagram/nodes/EditableNodeLabel";
@@ -33,6 +36,11 @@ import { useExternalModels } from "../includedModels/DmnEditorDependenciesContex
 import { State } from "../store/Store";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import {
+  isIdentifierReferencedInSomeExpression,
+  RefactorConfirmationDialog,
+} from "../refactor/RefactorConfirmationDialog";
+import { DataTypeIndex } from "./DataTypes";
 
 export function DataTypeName({
   isReadOnly,
@@ -75,7 +83,7 @@ export function DataTypeName({
     (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
   );
 
-  const externalModelsByNamespaceMap = useMemo(() => {
+  const externalDmnModelsByNamespaceMap = useMemo(() => {
     const externalModels = new Map<string, Normalized<DmnLatestModel>>();
 
     for (const [key, externalDmn] of externalDmnsByNamespace) {
@@ -84,29 +92,94 @@ export function DataTypeName({
     return externalModels;
   }, [externalDmnsByNamespace]);
 
+  const _shouldCommitOnBlur = shouldCommitOnBlur ?? true; // Defaults to true
+
+  const [isRefactorModalOpen, setIsRefactorModalOpen] = useState(false);
+  const [newName, setNewName] = useState("");
+  const identifierId = useMemo(() => itemDefinition["@_id"], [itemDefinition]);
+  const oldName = useMemo(() => itemDefinition["@_name"], [itemDefinition]);
+
+  const applyRename = useCallback(
+    (args: {
+      definitions: Normalized<DMN15__tDefinitions>;
+      newName: string;
+      shouldRenameReferencedExpressions: boolean;
+      allDataTypesById: DataTypeIndex;
+    }) => {
+      renameItemDefinition({
+        ...args,
+        itemDefinitionId: itemDefinition["@_id"]!,
+        externalDmnModelsByNamespaceMap,
+      });
+    },
+    [externalDmnModelsByNamespaceMap, itemDefinition]
+  );
+
   const onRenamed = useCallback<OnInlineFeelNameRenamed>(
     (newName) => {
-      if (isReadOnly) {
+      if (isReadOnly || newName === oldName) {
         return;
       }
 
       dmnEditorStoreApi.setState((state) => {
-        renameItemDefinition({
+        if (
+          isIdentifierReferencedInSomeExpression({
+            identifierUuid: identifierId,
+            dmnDefinitions: state.dmn.model.definitions,
+            externalDmnModelsByNamespaceMap,
+          })
+        ) {
+          setNewName(newName);
+          setIsRefactorModalOpen(true);
+        } else {
+          applyRename({
+            definitions: state.dmn.model.definitions,
+            newName,
+            shouldRenameReferencedExpressions: false,
+            allDataTypesById: state.computed(state).getDataTypes(externalModelsByNamespace).allDataTypesById,
+          });
+        }
+      });
+    },
+    [
+      applyRename,
+      dmnEditorStoreApi,
+      externalDmnModelsByNamespaceMap,
+      externalModelsByNamespace,
+      identifierId,
+      isReadOnly,
+      oldName,
+    ]
+  );
+
+  const confirmRename = useCallback(
+    (shouldRenameReferencedExpressions: boolean) => {
+      setIsRefactorModalOpen(false);
+      dmnEditorStoreApi.setState((state) => {
+        applyRename({
           definitions: state.dmn.model.definitions,
           newName,
-          itemDefinitionId: itemDefinition["@_id"]!,
+          shouldRenameReferencedExpressions,
           allDataTypesById: state.computed(state).getDataTypes(externalModelsByNamespace).allDataTypesById,
-          externalModelsByNamespaceMap,
         });
       });
     },
-    [dmnEditorStoreApi, externalModelsByNamespace, externalModelsByNamespaceMap, isReadOnly, itemDefinition]
+    [applyRename, dmnEditorStoreApi, externalModelsByNamespace, newName]
   );
-
-  const _shouldCommitOnBlur = shouldCommitOnBlur ?? true; // Defaults to true
 
   return (
     <>
+      <RefactorConfirmationDialog
+        onConfirmExpressionRefactor={() => {
+          confirmRename(true);
+        }}
+        onConfirmRenameOnly={() => {
+          confirmRename(false);
+        }}
+        isRefactorModalOpen={isRefactorModalOpen}
+        fromName={oldName}
+        toName={newName}
+      />
       {editMode === "hover" && (
         <InlineFeelNameInput
           isPlain={true}

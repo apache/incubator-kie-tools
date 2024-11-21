@@ -33,13 +33,15 @@ export function renameItemDefinition({
   newName,
   allDataTypesById,
   itemDefinitionId,
-  externalModelsByNamespaceMap,
+  externalDmnModelsByNamespaceMap,
+  shouldRenameReferencedExpressions,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   newName: string;
   itemDefinitionId: string;
   allDataTypesById: DataTypeIndex;
-  externalModelsByNamespaceMap: Map<string, Normalized<DmnLatestModel>>;
+  externalDmnModelsByNamespaceMap: Map<string, Normalized<DmnLatestModel>>;
+  shouldRenameReferencedExpressions: boolean;
 }) {
   const dataType = allDataTypesById.get(itemDefinitionId);
   if (!dataType) {
@@ -90,12 +92,14 @@ export function renameItemDefinition({
 
   // Not top-level.. meaning that we need to update FEEL expressions referencing it
   else {
-    const identifiersRefactor = new IdentifiersRefactor({
-      writeableDmnDefinitions: definitions,
-      _readonly_externalDmnModelsByNamespaceMap: externalModelsByNamespaceMap,
-    });
+    if (shouldRenameReferencedExpressions) {
+      const identifiersRefactor = new IdentifiersRefactor({
+        writeableDmnDefinitions: definitions,
+        _readonly_externalDmnModelsByNamespaceMap: externalDmnModelsByNamespaceMap,
+      });
 
-    identifiersRefactor.rename({ identifierUuid: itemDefinitionId, newName: trimmedNewName });
+      identifiersRefactor.rename({ identifierUuid: itemDefinitionId, newName: trimmedNewName });
+    }
   }
 
   itemDefinition["@_name"] = trimmedNewName;
