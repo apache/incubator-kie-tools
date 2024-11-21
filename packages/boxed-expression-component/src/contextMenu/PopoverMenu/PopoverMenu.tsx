@@ -107,7 +107,7 @@ export const PopoverMenu = React.forwardRef(
     }, []);
 
     const shouldClose: PopoverProps["shouldClose"] = useCallback(
-      (tip, hideFunction, event): void => {
+      (event, hideFunction): void => {
         if (event instanceof KeyboardEvent && NavigationKeysUtils.isEsc(event.key)) {
           onCancel(event);
         } else {
