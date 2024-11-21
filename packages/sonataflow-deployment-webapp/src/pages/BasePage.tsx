@@ -76,7 +76,7 @@ export function BasePage(props: { children?: React.ReactNode }) {
             <ToolbarContent>
               {app.data.showDisclaimer && (
                 // <ToolbarItem align={{ default: "alignRight" }}>
-                <ToolbarItem>
+                <ToolbarItem align={{ default: "alignRight" }}>
                   <Tooltip
                     className="app--masterhead__disclaimer"
                     position="bottom-end"
