@@ -81,6 +81,9 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({ oui
     try {
       const task = await taskInboxGatewayApi.getTaskById(taskId);
       setUserTask(task);
+      if (appContext.getCurrentUser()?.id && !task?.potentialUsers?.includes(appContext.getCurrentUser()?.id)) {
+        setIsDetailsExpanded(true);
+      }
     } catch (err) {
       setError(err);
     } finally {
@@ -118,7 +121,7 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({ oui
 
   const goToInbox = () => {
     taskInboxGatewayApi.clearOpenTask();
-    props.history.push("/TaskInbox");
+    props.history.push("/Tasks");
   };
 
   const onSubmitSuccess = (phase: string) => {

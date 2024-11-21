@@ -72,6 +72,11 @@ export interface JobsSortBy {
   executionCounter?: OrderBy;
 }
 
+export interface JobsManagementState {
+  filters: JobStatus[];
+  orderBy: JobsSortBy;
+}
+
 export interface BulkProcessInstanceActionResponse {
   successProcessInstances: ProcessInstance[];
   failedProcessInstances: ProcessInstance[];

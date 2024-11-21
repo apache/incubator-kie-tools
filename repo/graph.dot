@@ -502,10 +502,13 @@ digraph G {
   "@kie-tools/runtime-tools-components" -> "@kie-tools/runtime-tools-shared-gateway-api" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-components" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-consoles-helm-chart" -> "@kie-tools/kogito-management-console" [ style = "solid", color = "black" ];
+  "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools/runtime-tools-process-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools/maven-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/runtime-tools-process-dev-ui-webapp" -> "@kie-tools/runtime-tools-process-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-process-dev-ui-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-process-enveloped-components" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-process-enveloped-components" -> "@kie-tools/runtime-tools-process-gateway-api" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-process-enveloped-components" -> "@kie-tools/runtime-tools-shared-enveloped-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-process-gateway-api" -> "@kie-tools/runtime-tools-shared-gateway-api" [ style = "solid", color = "blue" ];
@@ -601,7 +604,6 @@ digraph G {
   "@kie-tools/sonataflow-management-console-image" -> "@kie-tools/sonataflow-management-console-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-management-console-image" -> "@kie-tools/sonataflow-management-console-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-management-console-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
-  "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
   "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/runtime-tools-process-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/runtime-tools-swf-webapp-components" [ style = "solid", color = "blue" ];

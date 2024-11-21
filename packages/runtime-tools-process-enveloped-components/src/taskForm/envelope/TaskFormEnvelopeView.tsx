@@ -33,6 +33,7 @@ import {
   KogitoEmptyState,
   KogitoEmptyStateType,
 } from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 
 export interface TaskFormEnvelopeViewApi {
   initialize: (initArgs: TaskFormInitArgs) => void;
@@ -66,41 +67,46 @@ export const TaskFormEnvelopeView = React.forwardRef<TaskFormEnvelopeViewApi, Pr
       []
     );
 
-    useEffect(() => {
-      if (isEnvelopeConnectedToChannel) {
-        loadForm();
-      }
-    }, [isEnvelopeConnectedToChannel]);
+    useCancelableEffect(
+      useCallback(
+        ({ canceled }) => {
+          if (!isEnvelopeConnectedToChannel) {
+            setIsLoading(true);
+          } else {
+            const customFormPromise: Promise<void> = new Promise<void>((resolve) => {
+              driver
+                .getCustomForm()
+                .then((customForm) => {
+                  if (canceled.get()) {
+                    return;
+                  }
+                  setCustomForm(customForm);
+                  resolve();
+                })
+                .catch((error) => resolve());
+            });
 
-    const loadForm = useCallback(async () => {
-      if (!isEnvelopeConnectedToChannel) {
-        setIsLoading(true);
-      }
+            const schemaPromise: Promise<void> = new Promise<void>((resolve) => {
+              driver
+                .getTaskFormSchema()
+                .then((schema) => {
+                  if (canceled.get()) {
+                    return;
+                  }
+                  setTaskFormSchema(schema);
+                  resolve();
+                })
+                .catch((error) => resolve());
+            });
 
-      const customFormPromise: Promise<void> = new Promise<void>((resolve) => {
-        driver
-          .getCustomForm()
-          .then((customForm) => {
-            setCustomForm(customForm);
-            resolve();
-          })
-          .catch((error) => resolve());
-      });
-
-      const schemaPromise: Promise<void> = new Promise<void>((resolve) => {
-        driver
-          .getTaskFormSchema()
-          .then((schema) => {
-            setTaskFormSchema(schema);
-            resolve();
-          })
-          .catch((error) => resolve());
-      });
-
-      Promise.all([customFormPromise, schemaPromise]).then((values) => {
-        setIsLoading(false);
-      });
-    }, [isEnvelopeConnectedToChannel]);
+            Promise.all([customFormPromise, schemaPromise]).then((values) => {
+              setIsLoading(false);
+            });
+          }
+        },
+        [driver, isEnvelopeConnectedToChannel]
+      )
+    );
 
     if (isLoading) {
       return (
