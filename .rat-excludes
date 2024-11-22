@@ -648,8 +648,6 @@ settings.xml
 settings.xml.envsubst
 # packages/online-editor/Caddyfile
 Caddyfile
-# packages/online-editor/docs/DEV_DEPLOYMENTS_ARCHITECTURE.md
-DEV_DEPLOYMENTS_ARCHITECTURE.md
 # packages/online-editor/src/accelerators/test.dmn
 test.dmn
 # packages/pmml-editor/e2e-tests/fixtures/compound-predicate.pmml
