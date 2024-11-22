@@ -46,8 +46,6 @@ init.sql
 application.properties
 # examples/jbpm-compact-architecture-example/src/main/resources/hiring.bpmn
 hiring.bpmn
-# examples/jbpm-compact-architecture-example/src/main/resources/META-INF/processSVG/hiring.svg
-hiring.svg
 # examples/ping-pong-view-angular/src/assets/.gitkeep
 .gitkeep
 # examples/sonataflow-greeting-quarkus-example/sonataflow-greeting-quarkus-example.iml
@@ -364,10 +362,6 @@ go.sum
 Info.plist
 # packages/extended-services-java/extended-services-java.iml
 extended-services-java.iml
-# packages/extended-services-vscode-extension/static/extended-services-connected.svg
-extended-services-connected.svg
-# packages/extended-services-vscode-extension/static/extended-services-disconnected.svg
-extended-services-disconnected.svg
 # packages/form-code-generator-bootstrap4-theme/src/resources/staticCode/getCheckboxGroupValue.txt
 getCheckboxGroupValue.txt
 # packages/form-code-generator-bootstrap4-theme/src/resources/staticCode/getMultipleSelectValue.txt
@@ -954,8 +948,6 @@ common.py
 MonitoringReport.dash.yml
 # packages/sonataflow-management-console-webapp/resources/monitoring-webapp/WorkflowDetails.dash.yml
 WorkflowDetails.dash.yml
-# packages/sonataflow-management-console-webapp/src/static/favicon.svg
-favicon.svg
 # packages/sonataflow-operator/PROJECT
 PROJECT
 # packages/sonataflow-operator/go.mod
