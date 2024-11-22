@@ -34,8 +34,6 @@ Dockerfile.jvm
 Dockerfile.native
 # examples/jbpm-compact-architecture-example/.gitignore
 .gitignore
-# examples/jbpm-compact-architecture-example/README.md
-README.md
 # examples/jbpm-compact-architecture-example/jbpm-compact-architecture-quarkus-example.iml
 jbpm-compact-architecture-quarkus-example.iml
 # examples/jbpm-compact-architecture-example/docker-compose/docker-compose.yml
@@ -360,8 +358,6 @@ KeyBindingsHelpOverlay.test.tsx.snap
 LoadingScreen.test.tsx.snap
 # packages/editor/tests/envelope/__snapshots__/EditorEnvelopeView.test.tsx.snap
 EditorEnvelopeView.test.tsx.snap
-# packages/envelope/README.md
-README.md
 # packages/extended-services/go.mod
 go.mod
 # packages/extended-services/go.sum
@@ -492,10 +488,6 @@ UnsupportedField.test.tsx.snap
 FormDmn.test.tsx.snap
 # packages/form-dmn/tests/__snapshots__/FormDmnOutputs.test.tsx.snap
 FormDmnOutputs.test.tsx.snap
-# packages/i18n-common-dictionary/README.md
-README.md
-# packages/image-builder/README.md
-README.md
 # packages/import-java-classes-component/tests/ImportJavaClasses/__snapshots__/ImportJavaClasses.test.tsx.snap
 ImportJavaClasses.test.tsx.snap
 # packages/jbpm-quarkus-devui/jbpm-quarkus-devui-parent.iml
@@ -682,8 +674,6 @@ workflow2.sw.yaml
 kie-tools-maven-base.iml
 # packages/maven-base/settings.xml
 settings.xml
-# packages/maven-m2-repo-via-http-image/README.md
-README.md
 # packages/maven-m2-repo-via-http-image/settings.xml.envsubst
 settings.xml.envsubst
 # packages/online-editor/Caddyfile
@@ -2030,5 +2020,3 @@ scripts.iml
 index.test.js
 # scripts/check-junit-report-results/tests/reports/empty.xml
 empty.xml
-# scripts/run-script-if/README.md
-README.md
