@@ -106,10 +106,6 @@ wysihtml.toolbar.min.js
 advanced_and_extended.js
 # packages/dashbuilder/appformer/uberfire-extensions/uberfire-widgets/uberfire-widgets-commons/src/main/resources/org/uberfire/ext/widgets/common/public/highlight/highlight.min.js
 highlight.min.js
-# packages/dashbuilder/appformer/uberfire-workbench/uberfire-workbench-client-views-patternfly/src/main/java/org/uberfire/client/views/pfly/multiscreen/MultiScreenView.less
-MultiScreenView.less
-# packages/dashbuilder/appformer/uberfire-workbench/uberfire-workbench-client-views-patternfly/src/main/resources/org/uberfire/client/views/static/uberfire-variables.less
-uberfire-variables.less
 # packages/dashbuilder/appformer/uberfire-workbench/uberfire-workbench-client-views-patternfly/src/main/resources/org/uberfire/client/views/static/jquery-ui/jquery-ui.min.css
 jquery-ui.min.css
 # packages/dashbuilder/appformer/uberfire-workbench/uberfire-workbench-client-views-patternfly/src/main/resources/org/uberfire/client/views/static/jquery-ui/jquery-ui.min.js
@@ -768,10 +764,6 @@ serverless-logic-web-tools-swf-deployment-quarkus-app.iml
 .dockerignore
 # packages/serverless-workflow-diagram-editor/serverless-workflow-diagram-editor-parent.iml
 serverless-workflow-diagram-editor-parent.iml
-# packages/serverless-workflow-diagram-editor/kie-wb-common-stunner/kie-wb-common-stunner-client/kie-wb-common-stunner-lienzo/src/main/java/org/kie/workbench/common/stunner/client/lienzo/components/alerts/AlertsView.less
-AlertsView.less
-# packages/serverless-workflow-diagram-editor/kie-wb-common-stunner/kie-wb-common-stunner-client/kie-wb-common-stunner-widgets/src/main/java/org/kie/workbench/common/stunner/client/widgets/presenters/session/impl/SessionPresenterView.less
-SessionPresenterView.less
 # packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/java/externs/C2S.externs.js
 C2S.externs.js
 # packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/java/externs/FileSaver.externs.js
@@ -1092,8 +1084,6 @@ beans.xml
 beans.xml
 # packages/stunner-editors/kie-wb-common-stunner/kie-wb-common-stunner-client/kie-wb-common-stunner-shapes/kie-wb-common-stunner-shapes-api/src/main/resources/META-INF/beans.xml
 beans.xml
-# packages/stunner-editors/kie-wb-common-stunner/kie-wb-common-stunner-client/kie-wb-common-stunner-widgets/src/main/java/org/kie/workbench/common/stunner/client/widgets/presenters/session/impl/SessionPresenterView.less
-SessionPresenterView.less
 # packages/stunner-editors/kie-wb-common-stunner/kie-wb-common-stunner-core/kie-wb-common-stunner-api/kie-wb-common-stunner-backend-api/src/main/resources/META-INF/beans.xml
 beans.xml
 # packages/stunner-editors/kie-wb-common-stunner/kie-wb-common-stunner-core/kie-wb-common-stunner-api/kie-wb-common-stunner-core-api/src/main/resources/META-INF/beans.xml
@@ -1938,8 +1928,6 @@ singleRowComponentLayoutWithParts.txt
 singleRowTwoComponentsLayout.txt
 # packages/stunner-editors/uberfire-workbench/uberfire-workbench-client/src/main/resources/META-INF/beans.xml
 beans.xml
-# packages/stunner-editors/uberfire-workbench/uberfire-workbench-client-views-patternfly/src/main/resources/org/uberfire/client/views/static/uberfire-variables.less
-uberfire-variables.less
 # packages/uniforms-patternfly/.eslintignore
 .eslintignore
 # packages/vscode-extension/tests/test-workspace/resource1.txt
