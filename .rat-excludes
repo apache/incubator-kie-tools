@@ -276,8 +276,6 @@ go.sum
 integrationTest.test.js.snap
 # packages/dmn-editor/src/spec.txt
 spec.txt
-# packages/dmn-editor/stories/misc/emptyWithAvailableExternalModels/EmptyWithAvailableExternalModels.mdx
-EmptyWithAvailableExternalModels.mdx
 # packages/dmn-feel-antlr4-parser/src/parser/grammar/FEEL_1_1.g4
 FEEL_1_1.g4
 # packages/dmn-feel-antlr4-parser/src/parser/grammar/generated-parser/FEEL_1_1.interp
