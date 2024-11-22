@@ -26,16 +26,6 @@ maven-based-packages-@-kie-tools.iml
 go.mod
 # examples/commit-message-validation-service/go.sum
 go.sum
-# examples/dmn-editor-standalone-examples/static/models/can-drive-types.dmn
-can-drive-types.dmn
-# examples/dmn-editor-standalone-examples/static/models/can-drive.dmn
-can-drive.dmn
-# examples/dmn-editor-standalone-examples/static/models/empty-drd.dmn
-empty-drd.dmn
-# examples/dmn-editor-standalone-examples/static/models/empty.dmn
-empty.dmn
-# examples/dmn-editor-standalone-examples/static/models/loan-pre-qualification.dmn
-loan-pre-qualification.dmn
 # examples/drools-process-usertasks-quarkus-example/drools-process-usertasks-quarkus-example.iml
 drools-process-usertasks-quarkus-example.iml
 # examples/drools-process-usertasks-quarkus-example/src/main/docker/Dockerfile.jvm
@@ -56,8 +46,6 @@ startContainers.sh
 pgpass
 # examples/jbpm-compact-architecture-example/docker-compose/sql/init.sql
 init.sql
-# examples/jbpm-compact-architecture-example/src/main/resources/NewHiringOffer.dmn
-NewHiringOffer.dmn
 # examples/jbpm-compact-architecture-example/src/main/resources/application.properties
 application.properties
 # examples/jbpm-compact-architecture-example/src/main/resources/hiring.bpmn
@@ -308,12 +296,6 @@ spec.txt
 IncludedModels.css
 # packages/dmn-editor/stories/misc/emptyWithAvailableExternalModels/EmptyWithAvailableExternalModels.mdx
 EmptyWithAvailableExternalModels.mdx
-# packages/dmn-editor-standalone/tests-e2e/__fixtures__/files/empty-drd.dmn
-empty-drd.dmn
-# packages/dmn-editor-standalone/tests-e2e/__fixtures__/files/empty.dmn
-empty.dmn
-# packages/dmn-editor-standalone/tests-e2e/__fixtures__/files/loan-pre-qualification.dmn
-loan-pre-qualification.dmn
 # packages/dmn-feel-antlr4-parser/src/parser/grammar/FEEL_1_1.g4
 FEEL_1_1.g4
 # packages/dmn-feel-antlr4-parser/src/parser/grammar/generated-parser/FEEL_1_1.interp
@@ -392,10 +374,6 @@ extended-services-java.iml
 extended-services-connected.svg
 # packages/extended-services-vscode-extension/static/extended-services-disconnected.svg
 extended-services-disconnected.svg
-# packages/feel-input-component/tests-data/variables-inside-decision-tables/included.dmn
-included.dmn
-# packages/feel-input-component/tests-data/variables-inside-decision-tables/modelWithInclude.dmn
-modelWithInclude.dmn
 # packages/form-code-generator-bootstrap4-theme/src/resources/staticCode/getCheckboxGroupValue.txt
 getCheckboxGroupValue.txt
 # packages/form-code-generator-bootstrap4-theme/src/resources/staticCode/getMultipleSelectValue.txt
