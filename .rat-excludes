@@ -56,8 +56,6 @@ luiz.base64png
 sample.base64png
 # examples/webapp/static/examples/tiago.base64png
 tiago.base64png
-# packages/boxed-expression-component/tests-e2e/api/types.ts
-types.ts
 # packages/bpmn-marshaller/src/schemas/bpmn-2_0/BPMN20.xsd
 BPMN20.xsd
 # packages/bpmn-marshaller/src/schemas/bpmn-2_0/BPMNDI.xsd
