@@ -266,8 +266,6 @@ salesYear2014.dset
 salesPerYear.dset
 # packages/dashbuilder-language-service/tests/__snapshots__/DashbuilderYamlLanguageService.test.ts.snap
 DashbuilderYamlLanguageService.test.ts.snap
-# packages/data-index-webapp/src/styles.css
-styles.css
 # packages/dev-deployment-kogito-quarkus-blank-app/dev-deployment-kogito-quarkus-blank-app.iml
 dev-deployment-kogito-quarkus-blank-app.iml
 # packages/dev-deployment-upload-service/go.mod
@@ -278,8 +276,6 @@ go.sum
 integrationTest.test.js.snap
 # packages/dmn-editor/src/spec.txt
 spec.txt
-# packages/dmn-editor/src/includedModels/IncludedModels.css
-IncludedModels.css
 # packages/dmn-editor/stories/misc/emptyWithAvailableExternalModels/EmptyWithAvailableExternalModels.mdx
 EmptyWithAvailableExternalModels.mdx
 # packages/dmn-feel-antlr4-parser/src/parser/grammar/FEEL_1_1.g4
@@ -480,8 +476,6 @@ jbpm-quarkus-devui-parent.iml
 hiring_HRInterview.config
 # packages/jbpm-quarkus-devui/jbpm-quarkus-devui-runtime/src/test/resources/forms/hiring_ITInterview.config
 hiring_ITInterview.config
-# packages/jobs-service-webapp/src/styles.css
-styles.css
 # packages/json-yaml-language-service/tests/__snapshots__/EditorJsonLanguageService.test.ts.snap
 EditorJsonLanguageService.test.ts.snap
 # packages/json-yaml-language-service/tests/__snapshots__/EditorYamlLanguageService.test.ts.snap
@@ -674,16 +668,6 @@ empty-characteristics-DD-defined-types.pmml
 empty-characteristics-DD-defined.pmml
 # packages/pmml-editor/e2e-tests/fixtures/simple-predicate.pmml
 simple-predicate.pmml
-# packages/pmml-editor/src/editor/components/MiningSchema/MiningSchemaContainer/MiningSchemaContainer.scss
-MiningSchemaContainer.scss
-# packages/pmml-editor/src/editor/components/MiningSchema/MiningSchemaFieldLabels/MiningSchemaFieldLabels.scss
-MiningSchemaFieldLabels.scss
-# packages/pmml-editor/src/editor/components/MiningSchema/MiningSchemaFields/MiningSchemaFields.scss
-MiningSchemaFields.scss
-# packages/pmml-editor/src/editor/components/MiningSchema/MiningSchemaPropertiesEdit/MiningSchemaPropertiesEdit.scss
-MiningSchemaPropertiesEdit.scss
-# packages/pmml-editor/src/editor/components/Outputs/molecules/OutputFieldRow.scss
-OutputFieldRow.scss
 # packages/pmml-editor/tests/editor/components/DataDictionary/DataDictionaryContainer/__snapshots__/DataDictionaryContainer.test.tsx.snap
 DataDictionaryContainer.test.tsx.snap
 # packages/pmml-editor/tests/editor/components/EditorScorecard/organisms/__snapshots__/AttributesTable.test.tsx.snap
