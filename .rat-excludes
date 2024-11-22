@@ -36,8 +36,6 @@ Dockerfile.native
 .gitignore
 # examples/jbpm-compact-architecture-example/jbpm-compact-architecture-quarkus-example.iml
 jbpm-compact-architecture-quarkus-example.iml
-# examples/jbpm-compact-architecture-example/docker-compose/docker-compose.yml
-docker-compose.yml
 # examples/jbpm-compact-architecture-example/docker-compose/startContainers.sh
 startContainers.sh
 # examples/jbpm-compact-architecture-example/docker-compose/pgadmin/pgpass
