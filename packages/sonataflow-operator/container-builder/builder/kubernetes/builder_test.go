@@ -57,7 +57,7 @@ func TestNewBuild(t *testing.T) {
 		},
 	}
 	// create the new build, schedule
-	build, err := NewBuild(ContainerBuilderInfo{FinalImageName: "docker.io/apache/incubator-kie-buildexample:latest", BuildUniqueName: "build1", Platform: platform}).
+	build, err := NewBuild(ContainerBuilderInfo{FinalImageName: "host/namespace/myservice:latest", BuildUniqueName: "build1", Platform: platform}).
 		WithClient(c).
 		AddResource("Dockerfile", dockerFile).
 		AddResource("greetings.sw.json", workflowDefinition).
