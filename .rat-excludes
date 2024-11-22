@@ -22,8 +22,6 @@ pnpm-workspace.yaml
 maven-based-packages-@-kie-tools.iml
 # examples/base64png-editor-vscode-extension/.vscodeignore
 .vscodeignore
-# examples/commit-message-validation-service/Makefile
-Makefile
 # examples/commit-message-validation-service/go.mod
 go.mod
 # examples/commit-message-validation-service/go.sum
@@ -298,8 +296,6 @@ DashbuilderYamlLanguageService.test.ts.snap
 styles.css
 # packages/dev-deployment-kogito-quarkus-blank-app/dev-deployment-kogito-quarkus-blank-app.iml
 dev-deployment-kogito-quarkus-blank-app.iml
-# packages/dev-deployment-upload-service/Makefile
-Makefile
 # packages/dev-deployment-upload-service/go.mod
 go.mod
 # packages/dev-deployment-upload-service/go.sum
@@ -384,8 +380,6 @@ LoadingScreen.test.tsx.snap
 EditorEnvelopeView.test.tsx.snap
 # packages/envelope/README.md
 README.md
-# packages/extended-services/Makefile
-Makefile
 # packages/extended-services/go.mod
 go.mod
 # packages/extended-services/go.sum
