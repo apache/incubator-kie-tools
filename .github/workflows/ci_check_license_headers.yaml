@@ -17,7 +17,7 @@
 # under the License.
 #
 
-name: "CI :: Check license headers"
+name: "CI :: License headers"
 
 on:
   push:
@@ -27,7 +27,7 @@ on:
     types: [opened, reopened, ready_for_review, synchronize]
 
 jobs:
-  check-license-headers:
+  check:
     runs-on: ubuntu-latest
 
     steps:
