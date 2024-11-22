@@ -42,8 +42,6 @@ startContainers.sh
 pgpass
 # examples/jbpm-compact-architecture-example/docker-compose/sql/init.sql
 init.sql
-# examples/jbpm-compact-architecture-example/src/main/resources/hiring.bpmn
-hiring.bpmn
 # examples/ping-pong-view-angular/src/assets/.gitkeep
 .gitkeep
 # examples/sonataflow-greeting-quarkus-example/sonataflow-greeting-quarkus-example.iml
