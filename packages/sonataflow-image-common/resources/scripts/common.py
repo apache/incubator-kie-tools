@@ -11,6 +11,8 @@ PROJECT_VERSIONS_MODULE = "modules/kogito-project-versions/module.yaml"
 KOGITO_VERSION_ENV_KEY = "KOGITO_VERSION"
 KOGITO_VERSION_LABEL_NAME = "org.kie.kogito.version"
 
+QUARKUS_PLATFORM_GROUPID_ENV_KEY = "QUARKUS_PLATFORM_GROUPID"
+
 QUARKUS_PLATFORM_VERSION_ENV_KEY = "QUARKUS_PLATFORM_VERSION"
 QUARKUS_PLATFORM_VERSION_LABEL_NAME = "io.quarkus.platform.version"
 
@@ -150,6 +152,14 @@ def update_kogito_platform_version(kogito_platform_version):
     print("Setting Kogito Platform version: " + kogito_platform_version)
     update_env_value(KOGITO_VERSION_ENV_KEY, kogito_platform_version)
     update_label_value(KOGITO_VERSION_LABEL_NAME, kogito_platform_version)
+
+def update_quarkus_platform_groupid(quarkus_platform_groupid):
+    """
+    Update quarkus_platform_groupid into images/modules
+    :param quarkus_platform_groupid: quarkus groupid to set
+    """
+    print("Setting Quarkus groupid: " + quarkus_platform_groupid)
+    update_env_value(QUARKUS_PLATFORM_GROUPID_ENV_KEY, quarkus_platform_groupid)
 
 def update_quarkus_platform_version(quarkus_platform_version):
     """

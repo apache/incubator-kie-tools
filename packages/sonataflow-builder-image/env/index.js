@@ -24,8 +24,9 @@ const {
 } = require("@kie-tools/maven-m2-repo-via-http-image/env");
 
 const rootEnv = require("@kie-tools/root-env/env");
+const sonataflowImageCommonEnv = require("@kie-tools/sonataflow-image-common/env");
 
-module.exports = composeEnv([rootEnv], {
+module.exports = composeEnv([rootEnv, sonataflowImageCommonEnv], {
   vars: varsWithName({
     SONATAFLOW_BUILDER_IMAGE__registry: {
       default: "docker.io",
