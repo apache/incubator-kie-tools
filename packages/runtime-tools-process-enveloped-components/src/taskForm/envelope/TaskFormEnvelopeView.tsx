@@ -113,7 +113,7 @@ export const TaskFormEnvelopeView = React.forwardRef<TaskFormEnvelopeViewApi, Pr
         <Bullseye
           {...componentOuiaProps((ouiaId ? ouiaId : "task-form-envelope-view") + "-loading-spinner", "task-form", true)}
         >
-          <KogitoSpinner spinnerText={`Loading task form...`} />
+          <KogitoSpinner spinnerText={`Loading Task form...`} />
         </Bullseye>
       );
     }

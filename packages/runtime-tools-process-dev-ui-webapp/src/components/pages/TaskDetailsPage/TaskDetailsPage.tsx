@@ -81,8 +81,13 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({ oui
     try {
       const task = await taskInboxGatewayApi.getTaskById(taskId);
       setUserTask(task);
-      if (appContext.getCurrentUser()?.id && !task?.potentialUsers?.includes(appContext.getCurrentUser()?.id)) {
+      if (
+        (appContext.getCurrentUser().id && !task?.potentialUsers?.includes(appContext.getCurrentUser()?.id)) ||
+        (!appContext.getCurrentUser().id && (task?.potentialUsers?.length ?? 0) > 0)
+      ) {
         setIsDetailsExpanded(true);
+      } else {
+        setIsDetailsExpanded(false);
       }
     } catch (err) {
       setError(err);
@@ -180,8 +185,8 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({ oui
             <Card className={"Dev-ui__card-size"}>
               <KogitoEmptyState
                 type={KogitoEmptyStateType.Info}
-                title={"Cannot find task"}
-                body={`Cannot find task with id '${taskId}'`}
+                title={"Cannot find Task"}
+                body={`Cannot find Task with id '${taskId}'`}
               />
             </Card>
           </GridItem>

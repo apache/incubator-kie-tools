@@ -88,3 +88,10 @@
 .kogito-consoles-common--PageLayout .pf-c-page__header-brand-link .pf-c-brand {
   --pf-c-page__header-brand-link--c-brand--MaxHeight: 42px;
 }
+
+.kogito-management-console__impersonation-hint {
+  width: 100%;
+  padding: 0;
+  margin-bottom: 24px;
+  border-radius: 16px;
+}

@@ -73,7 +73,7 @@ export type OpenIDConfiguration = {
 
 export enum AuthSessionType {
   OPENID_CONNECT = "oidc",
-  UNAUTHENTICATED = "unauthenticaded",
+  UNAUTHENTICATED = "unauthenticated",
 }
 
 export type OpenIDConnectAuthSession = {
@@ -147,21 +147,38 @@ export function isUnauthenticatedAuthSession(authSession?: AuthSession): authSes
   return authSession?.type === AuthSessionType.UNAUTHENTICATED;
 }
 
-export function getAuthSessionDisplayInfo(authSession: AuthSession) {
+export function getAuthSessionDisplayInfo(authSession: undefined | AuthSession) {
+  authSession ??= {
+    id: "unknwon",
+    type: AuthSessionType.UNAUTHENTICATED,
+    version: 0,
+    name: "Unknown",
+    impersonator: true,
+    runtimeUrl: "",
+    status: AuthSessionStatus.INVALID,
+    createdAtDateISO: new Date().toISOString(),
+  };
+
   // username @ http://runtime.url
   const shortDisplayName = `${isOpenIdConnectAuthSession(authSession) ? `${authSession.username ?? "Unknown user"} @ ` : "Unknown user @ "}${authSession.runtimeUrl}`;
-  // Session Name [username @ http://runtime.url]
+
+  // Session Name (username @ http://runtime.url)
   const fullDisplayName = `${authSession.name} (${shortDisplayName})`;
+
   // username @ Auth Session Name
   const userFriendlyName = `${isOpenIdConnectAuthSession(authSession) ? `${authSession.username ?? "Unknown user"} @ ` : "Unknown user @ "}${authSession.name}`;
-  // OpenID Connect | Unauthenticaded
-  const type = isOpenIdConnectAuthSession(authSession) ? "OpenID Connect" : "Unauthenticaded";
+
+  // OpenID Connect | Unauthenticated
+  const type = isOpenIdConnectAuthSession(authSession) ? "OpenID Connect" : "Unauthenticated";
+
+  const username = `${isOpenIdConnectAuthSession(authSession) ? `${authSession.username ?? "Unknown user"}` : "Unknown user"}`;
 
   return {
     shortDisplayName,
     fullDisplayName,
     userFriendlyName,
     type,
+    username,
   };
 }
 

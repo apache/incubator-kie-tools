@@ -25,7 +25,7 @@ import { useHistory } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
 import { AuthSession, useAuthSessionsDispatch } from "../authSessions";
 import { useRuntimePageLayoutDispatch } from "../runtime/RuntimePageLayoutContext";
-import { ImpersonationForm } from "./components/ImpersonationForm";
+import { ImpersonationPageSection } from "./components/ImpersonationPageSection";
 
 export const TasksPage: React.FC = (ouiaId, ouiaSafe) => {
   const { env } = useEnv();
@@ -77,9 +77,11 @@ export const TasksPage: React.FC = (ouiaId, ouiaSafe) => {
   );
 
   return (
-    <Card className="kogito-management-console__card-size">
-      <ImpersonationForm />
-      <Tasks onNavigateToTaskDetails={onNavigateToTaskDetails} />
-    </Card>
+    <>
+      <ImpersonationPageSection />
+      <Card className="kogito-management-console__card-size">
+        <Tasks onNavigateToTaskDetails={onNavigateToTaskDetails} />
+      </Card>
+    </>
   );
 };

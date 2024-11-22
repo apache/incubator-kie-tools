@@ -64,7 +64,7 @@ export type RuntimeContextType = {
   isRefreshingToken: boolean;
   runtimePathSearchParams: Map<string, RuntimePathSearchParams>;
   impersonationUsername?: string;
-  impersonationGroup?: string;
+  impersonationGroups?: string;
 };
 
 export const RuntimeContext = createContext({} as RuntimeContextType);
@@ -75,7 +75,7 @@ export type RuntimeDispatchContextType = {
     React.SetStateAction<Map<RuntimePathSearchParamsRoutes, RuntimePathSearchParams>>
   >;
   setImpersonationUsername: React.Dispatch<React.SetStateAction<string | undefined>>;
-  setImpersonationGroup: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setImpersonationGroups: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 export const RuntimeDispatchContext = createContext({} as RuntimeDispatchContextType);
@@ -101,14 +101,14 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
   const routes = useRoutes();
   const user = useQueryParam(QueryParams.USER);
   const impersonationUsernameQueryParam = useQueryParam(QueryParams.IMPERSONATION_USER);
-  const impersonationGroupQueryParam = useQueryParam(QueryParams.IMPERSONATION_GROUP);
+  const impersonationGroupsQueryParam = useQueryParam(QueryParams.IMPERSONATION_GROUPS);
   const queryParams = useQueryParams();
   const [runtimeUrl, setRuntimeUrl] = useState<string>();
   const [username, setUsername] = useState<string>();
   const [impersonationUsername, setImpersonationUsername] = useState<string | undefined>(
     impersonationUsernameQueryParam
   );
-  const [impersonationGroup, setImpersonationGroup] = useState<string | undefined>(impersonationGroupQueryParam);
+  const [impersonationGroups, setImpersonationGroups] = useState<string | undefined>(impersonationGroupsQueryParam);
   const [accessToken, setAccessToken] = useState<string>();
   const [apolloClient, setApolloClient] = useState<ApolloClient<NormalizedCacheObject>>();
   const [userContext, setUserContext] = useState<UserContext>();
@@ -327,8 +327,8 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
   }, [createApolloClient, runtimeUrl, accessToken]);
 
   useEffect(() => {
-    setUserContext(createUserContext(username, impersonationUsername, impersonationGroup));
-  }, [createUserContext, username, impersonationUsername, impersonationGroup]);
+    setUserContext(createUserContext(username, impersonationUsername, impersonationGroups));
+  }, [createUserContext, username, impersonationUsername, impersonationGroups]);
 
   const value = useMemo(
     () => ({
@@ -339,7 +339,7 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
       isRefreshingToken,
       runtimePathSearchParams,
       impersonationUsername,
-      impersonationGroup,
+      impersonationGroups,
     }),
     [
       apolloClient,
@@ -349,12 +349,17 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
       isRefreshingToken,
       runtimePathSearchParams,
       impersonationUsername,
-      impersonationGroup,
+      impersonationGroups,
     ]
   );
 
   const dispatch = useMemo(
-    () => ({ refreshToken, setRuntimePathSearchParams, setImpersonationUsername, setImpersonationGroup }),
+    () => ({
+      refreshToken,
+      setRuntimePathSearchParams,
+      setImpersonationUsername,
+      setImpersonationGroups,
+    }),
     [refreshToken, setRuntimePathSearchParams]
   );
 
@@ -411,7 +416,7 @@ export function useRuntimeInfo() {
     return currentAuthSession.tokens.access_token;
   }, [currentAuthSession]);
 
-  const canImpersonate = useMemo(() => currentAuthSession?.impersonator, [currentAuthSession?.impersonator]);
+  const canImpersonate = useMemo(() => currentAuthSession?.impersonator ?? false, [currentAuthSession?.impersonator]);
 
   return useMemo(
     () => ({ runtimeUrl, username, accessToken, runtimeDisplayInfo, isRefreshingToken, canImpersonate }),

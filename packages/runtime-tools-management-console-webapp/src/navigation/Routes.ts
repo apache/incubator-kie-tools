@@ -17,8 +17,6 @@
  * under the License.
  */
 
-import { LocationDescriptor } from "history";
-
 declare global {
   interface Window {
     BASE_PATH: string;
@@ -33,7 +31,7 @@ export enum QueryParams {
   SORT_BY = "sort",
   ORDER_BY = "order",
   IMPERSONATION_USER = "impersonationUsername",
-  IMPERSONATION_GROUP = "impersonationGroup",
+  IMPERSONATION_GROUPS = "impersonationGroups",
 }
 
 export enum PathParams {
@@ -155,12 +153,12 @@ export const routes = {
         | QueryParams.FILTERS
         | QueryParams.SORT_BY
         | QueryParams.IMPERSONATION_USER
-        | QueryParams.IMPERSONATION_GROUP;
+        | QueryParams.IMPERSONATION_GROUPS;
     }>(({ runtimeUrl }) => `/${runtimeUrl}/tasks`),
 
     taskDetails: new Route<{
       pathParams: PathParams.RUNTIME_URL | PathParams.TASK_ID;
-      queryParams: QueryParams.USER | QueryParams.IMPERSONATION_USER | QueryParams.IMPERSONATION_GROUP;
+      queryParams: QueryParams.USER | QueryParams.IMPERSONATION_USER | QueryParams.IMPERSONATION_GROUPS;
     }>(({ runtimeUrl, taskId }) => `/${runtimeUrl}/task/${taskId}`),
   },
 

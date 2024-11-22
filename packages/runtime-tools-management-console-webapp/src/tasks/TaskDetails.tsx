@@ -51,10 +51,9 @@ import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/d
 import { TaskState } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskDetails";
 import { TaskForm } from "./TaskForm";
 import { FormNotification, Notification } from "./components";
-import { useRuntimeDispatch, useRuntimeInfo, useRuntimeSpecificRoutes } from "../runtime/RuntimeContext";
+import { useRuntime, useRuntimeDispatch, useRuntimeInfo, useRuntimeSpecificRoutes } from "../runtime/RuntimeContext";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { isOpenIdConnectAuthSession, useAuthSessions } from "../authSessions";
-import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
 interface Props {
   taskId?: string;
@@ -65,6 +64,7 @@ export const TaskDetails: React.FC<Props> = ({ taskId }) => {
   const history = useHistory();
   const runtimeRoutes = useRuntimeSpecificRoutes();
   const { username, accessToken } = useRuntimeInfo();
+  const { impersonationUsername } = useRuntime();
   const { currentAuthSession } = useAuthSessions();
   const { refreshToken } = useRuntimeDispatch();
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -88,8 +88,13 @@ export const TaskDetails: React.FC<Props> = ({ taskId }) => {
               return;
             }
             setUserTask(taskData);
-            if (username && !taskData?.potentialUsers?.includes(username)) {
+            if (
+              (username && !taskData?.potentialUsers?.includes(username)) ||
+              (!(username || impersonationUsername) && (taskData?.potentialUsers?.length ?? 0) > 0)
+            ) {
               setIsDetailsExpanded(true);
+            } else {
+              setIsDetailsExpanded(false);
             }
           })
           .catch((e) => {
@@ -100,7 +105,7 @@ export const TaskDetails: React.FC<Props> = ({ taskId }) => {
             setIsLoading(false);
           });
       },
-      [taskId, taskInboxGatewayApi, username]
+      [impersonationUsername, taskId, taskInboxGatewayApi, username]
     )
   );
 
@@ -205,8 +210,8 @@ export const TaskDetails: React.FC<Props> = ({ taskId }) => {
             <Card className={"kogito-management-console__full-size"}>
               <KogitoEmptyState
                 type={KogitoEmptyStateType.Info}
-                title={"Cannot find task"}
-                body={`Cannot find task with id '${taskId}'`}
+                title={"Cannot find Task"}
+                body={`Cannot find Task with id '${taskId}'`}
               />
             </Card>
           </GridItem>

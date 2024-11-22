@@ -24,7 +24,7 @@ import { useEnv } from "../env/hooks/EnvContext";
 import { useRoutes } from "../navigation/Hooks";
 import { TaskDetails } from "./TaskDetails";
 import { useRuntimePageLayoutDispatch } from "../runtime/RuntimePageLayoutContext";
-import { ImpersonationForm } from "./components/ImpersonationForm";
+import { ImpersonationPageSection } from "./components/ImpersonationPageSection";
 
 interface Props {
   taskId?: string;
@@ -63,7 +63,6 @@ export const TaskDetailsPage: React.FC<Props> = ({ taskId }) => {
   }, [history, onNavigateToTaskDetails, setOnSelectAuthSession]);
 
   useEffect(() => {
-    setCurrentPageTitle("Task");
     setBreadcrumbText(["Home", runtimeDisplayInfo?.fullDisplayName ?? "Runtime", "Tasks", taskId ?? ""]);
     setBreadcrumbPath([
       routes.home.path({}),
@@ -73,7 +72,6 @@ export const TaskDetailsPage: React.FC<Props> = ({ taskId }) => {
     ]);
 
     return () => {
-      setCurrentPageTitle("");
       setBreadcrumbText([]);
       setBreadcrumbPath([]);
     };
@@ -89,7 +87,7 @@ export const TaskDetailsPage: React.FC<Props> = ({ taskId }) => {
 
   return (
     <>
-      <ImpersonationForm />
+      <ImpersonationPageSection />
       <TaskDetails taskId={taskId} />
     </>
   );
