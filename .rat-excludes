@@ -776,6 +776,8 @@ OpenSans-Bold-webfont.svg
 OpenSans-Regular-webfont.svg
 # packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-Semibold-webfont.svg
 OpenSans-Semibold-webfont.svg
+# packages/serverless-workflow-diagram-editor/third_party/errai/src/main/java/org/jboss/errai/common/client/util/Base64Util.java
+Base64Util.java
 # packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/resources/org/gwtbootstrap3/client/resource/css/bootstrap-3.4.1.min.cache.css
 bootstrap-3.4.1.min.cache.css
 # packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/resources/org/gwtbootstrap3/client/resource/css/bootstrap-theme-3.4.1.min.cache.css
@@ -942,6 +944,8 @@ bindings.xjb
 scesim.xsd
 # packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/resources/org/drools/workbench/scenariosimulation/kogito/marshaller/js/SCESIMMainJs.js
 SCESIMMainJs.js
+# packages/stunner-editors/errai-common/src/main/java/org/jboss/errai/common/client/util/Base64Util.java
+Base64Util.java
 # packages/stunner-editors/errai-common/src/main/java/org/jboss/errai/common/client/util/TimeUnit.java
 TimeUnit.java
 # packages/stunner-editors/errai-common/src/main/java/org/jboss/errai/common/compat/README.eclipse
