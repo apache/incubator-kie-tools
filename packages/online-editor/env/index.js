@@ -21,9 +21,11 @@ const { varsWithName, getOrDefault, composeEnv, str2bool } = require("@kie-tools
 
 const rootEnv = require("@kie-tools/root-env/env");
 const extendedServicesEnv = require("@kie-tools/extended-services/env");
+const extendedServicesJavaEnv = require("@kie-tools/extended-services-java/env");
 const corsProxyEnv = require("@kie-tools/cors-proxy/env");
+const kieSandboxAcceleratorQuarkusEnv = require("@kie-tools/kie-sandbox-accelerator-quarkus/env");
 
-module.exports = composeEnv([rootEnv, extendedServicesEnv, corsProxyEnv], {
+module.exports = composeEnv([rootEnv, extendedServicesJavaEnv, corsProxyEnv, kieSandboxAcceleratorQuarkusEnv], {
   vars: varsWithName({
     ONLINE_EDITOR__buildInfo: {
       default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
@@ -55,7 +57,7 @@ module.exports = composeEnv([rootEnv, extendedServicesEnv, corsProxyEnv], {
       description: "CORS Proxy URL.",
     },
     ONLINE_EDITOR__extendedServicesUrl: {
-      default: `http://${extendedServicesEnv.env.extendedServices.ip}:${extendedServicesEnv.env.extendedServices.port}`,
+      default: `http://${extendedServicesJavaEnv.env.extendedServicesJava.host}:${extendedServicesJavaEnv.env.extendedServicesJava.port}`,
       description: "Extended Services URL.",
     },
     ONLINE_EDITOR__disableExtendedServicesWizard: {
@@ -130,12 +132,20 @@ module.exports = composeEnv([rootEnv, extendedServicesEnv, corsProxyEnv], {
       default: "IfNotPresent",
       description: "The image pull policy. Can be 'Always', 'IfNotPresent', or 'Never'.",
     },
+    ONLINE_EDITOR__quarkusAcceleratorGitRepoUrl: {
+      default: `http://localhost:${kieSandboxAcceleratorQuarkusEnv.env.kieSandboxAcceleratorQuarkus.dev.port}/git-repo-bare.git`,
+      description: "Default Quarkus Accelerator's Git repository URL.",
+    },
+    ONLINE_EDITOR__quarkusAcceleratorGitRef: {
+      default: "main",
+      description: "Default Quarkus Accelerator's Git ref to be used when cloning it.",
+    },
     ONLINE_EDITOR_DEV__port: {
       default: 9001,
       description: "The development web server port",
     },
     ONLINE_EDITOR_DEV__https: {
-      default: "true",
+      default: "false",
       description: "Tells if the development web server should use https",
     },
   }),
@@ -154,6 +164,12 @@ module.exports = composeEnv([rootEnv, extendedServicesEnv, corsProxyEnv], {
             linux: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesDownloadUrlLinux),
             macOs: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesDownloadUrlMacOs),
             windows: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesDownloadUrlWindows),
+          },
+        },
+        accelerators: {
+          quarkus: {
+            gitRepoUrl: getOrDefault(this.vars.ONLINE_EDITOR__quarkusAcceleratorGitRepoUrl),
+            gitRef: getOrDefault(this.vars.ONLINE_EDITOR__quarkusAcceleratorGitRef),
           },
         },
         appName: getOrDefault(this.vars.ONLINE_EDITOR__appName),

@@ -15,58 +15,16 @@
    under the License.
 -->
 
-# cors-proxy
+# @kie-tools/kie-sandbox-accelerator-quarkus
 
-This package contains a `cors-proxy`, which is a simple Node.js application intended to be used to solve CORS issues while connecting our front end tools (online-editor, serverless-logic-web-tools) with external services (GitHub, Bitbucket, OpenShift, Kubernetes...)
+This package contains the source code of a KIE Sandbox Accelerator for Quarkus projects.
 
-# Configuration
+---
 
-The `cors-proxy` can be configured via environment variables:
+See:
 
-- CORS_PROXY_HTTP_PORT: Sets the HTTP Port the proxy should listen to
-- CORS_PROXY_ORIGIN: Sets the value of the 'Access-Control-Allow-Origin' header. Defaults to `*`.
-- CORS_PROXY_VERBOSE: Allows the proxy to run in verbose mode... useful to trace requests on development environments. Defaults to `false`
-- CORS_PROXY_USE_HTTP_FOR_HOSTS: Comma-separated list of hosts that should use the `http` protocol for proxied requests. Defaults to an empty list.
-
-For example:
-
-```bash
-$ export CORS_PROXY_HTTP_PORT=8080
-$ export CORS_PROXY_ORIGIN=*
-$ export CORS_PROXY_VERBOSE=false
-$ export CORS_PROXY_USE_HTTP_FOR_HOSTS="localhost:8080,localhost:8081"
-```
-
-# Build
-
-```bash
-$ pnpm -F @kie-tools/cors-proxy... build:prod
-```
-
-# Running `cors-proxy`
-
-After building the package and setting up the environment variables, in the package folder run the following command:
-
-```bash
-$ node ./dist/index.js
-```
-
-# Running `cors-proxy` in dev mode.
-
-```bash
-$ pnpm -F @kie-tools/cors-proxy start
-```
-
-You can also use the following envs to configure `cors-proxy` when starting in dev-mode:
-
-```bash
-$ export CORS_PROXY__port=*
-$ export CORS_PROXY__origin=*
-$ export CORS_PROXY__verbose=false
-$ export CORS_PROXY__useHttpForHosts="localhost:8080,localhost:8081"
-```
-
-Default values can be found [here](./env/index.js).
+- [ARCHITECTURE.md](./ARCHITECTURE.md) for more details on how it's implemented; and
+- [DEV.md](./DEV.md) for details on how to develop it.
 
 ---
 
