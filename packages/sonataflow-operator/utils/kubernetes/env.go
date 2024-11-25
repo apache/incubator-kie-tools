@@ -36,3 +36,15 @@ func CreateOrReplaceEnv(container *v1.Container, name, value string) {
 		})
 	}
 }
+
+// AddEnvIfNotPresent Adds and env variable to a container if not already present. Returns true if the variable didn't exist
+// and was added, false in any other case.
+func AddEnvIfNotPresent(container *v1.Container, envVar v1.EnvVar) bool {
+	for i := range container.Env {
+		if container.Env[i].Name == envVar.Name {
+			return false
+		}
+	}
+	container.Env = append(container.Env, envVar)
+	return true
+}

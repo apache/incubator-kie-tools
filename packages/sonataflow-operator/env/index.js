@@ -21,6 +21,10 @@ const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/b
 
 const sonataflowBuilderImageEnv = require("@kie-tools/sonataflow-builder-image/env");
 const sonataflowDevModeImageEnv = require("@kie-tools/sonataflow-devmode-image/env");
+const kogitoJobsServiceEphemeralImageEnv = require("@kie/kogito-jobs-service-ephemeral-image/env");
+const kogitoJobsServicePostgresqlImageEnv = require("@kie/kogito-jobs-service-postgresql-image/env");
+const kogitoDataIndexEphemeralImageEnv = require("@kie/kogito-data-index-ephemeral-image/env");
+const kogitoDataIndexPostgresqlImageEnv = require("@kie/kogito-data-index-postgresql-image/env");
 const rootEnv = require("@kie-tools/root-env/env");
 
 module.exports = composeEnv([rootEnv, sonataflowBuilderImageEnv, sonataflowDevModeImageEnv], {
@@ -49,10 +53,26 @@ module.exports = composeEnv([rootEnv, sonataflowBuilderImageEnv, sonataflowDevMo
       default: `${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.registry}/${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.account}/${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.name}:${sonataflowDevModeImageEnv.env.sonataflowDevModeImage.buildTag}`,
       description: "Sonataflow DevMode image",
     },
+    SONATAFLOW_OPERATOR__kogitoJobsServiceEphemeralImage: {
+      default: `${kogitoJobsServiceEphemeralImageEnv.env.kogitoJobsServiceEphemeralImage.registry}/${kogitoJobsServiceEphemeralImageEnv.env.kogitoJobsServiceEphemeralImage.account}/${kogitoJobsServiceEphemeralImageEnv.env.kogitoJobsServiceEphemeralImage.name}:${kogitoJobsServiceEphemeralImageEnv.env.kogitoJobsServiceEphemeralImage.buildTag}`,
+      description: "Kogito Jobs Service Ephemeral image",
+    },
+    SONATAFLOW_OPERATOR__kogitoJobsServicePostgresqlImage: {
+      default: `${kogitoJobsServicePostgresqlImageEnv.env.kogitoJobsServicePostgresqlImage.registry}/${kogitoJobsServicePostgresqlImageEnv.env.kogitoJobsServicePostgresqlImage.account}/${kogitoJobsServicePostgresqlImageEnv.env.kogitoJobsServicePostgresqlImage.name}:${kogitoJobsServicePostgresqlImageEnv.env.kogitoJobsServicePostgresqlImage.buildTag}`,
+      description: "Kogito Jobs Service PostgreSQL image",
+    },
+    SONATAFLOW_OPERATOR__kogitoDataIndexEphemeralImage: {
+      default: `${kogitoDataIndexEphemeralImageEnv.env.kogitoDataIndexEphemeralImage.registry}/${kogitoDataIndexEphemeralImageEnv.env.kogitoDataIndexEphemeralImage.account}/${kogitoDataIndexEphemeralImageEnv.env.kogitoDataIndexEphemeralImage.name}:${kogitoDataIndexEphemeralImageEnv.env.kogitoDataIndexEphemeralImage.buildTag}`,
+      description: "Kogito Data Index Ephemeral image",
+    },
+    SONATAFLOW_OPERATOR__kogitoDataIndexPostgresqlImage: {
+      default: `${kogitoDataIndexPostgresqlImageEnv.env.kogitoDataIndexPostgresqlImage.registry}/${kogitoDataIndexPostgresqlImageEnv.env.kogitoDataIndexPostgresqlImage.account}/${kogitoDataIndexPostgresqlImageEnv.env.kogitoDataIndexPostgresqlImage.name}:${kogitoDataIndexPostgresqlImageEnv.env.kogitoDataIndexPostgresqlImage.buildTag}`,
+      description: "Kogito Data Index PostgreSQL image",
+    },
   }),
   get env() {
     return {
-      sontaflowOperator: {
+      sonataFlowOperator: {
         registry: getOrDefault(this.vars.SONATAFLOW_OPERATOR__registry),
         account: getOrDefault(this.vars.SONATAFLOW_OPERATOR__account),
         name: getOrDefault(this.vars.SONATAFLOW_OPERATOR__name),
@@ -60,6 +80,10 @@ module.exports = composeEnv([rootEnv, sonataflowBuilderImageEnv, sonataflowDevMo
         version: require("../package.json").version,
         sonataflowBuilderImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__sonataflowBuilderImage),
         sonataflowDevModeImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__sonataflowDevModeImage),
+        kogitoJobsServiceEphemeralImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__kogitoJobsServiceEphemeralImage),
+        kogitoJobsServicePostgresqlImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__kogitoJobsServicePostgresqlImage),
+        kogitoDataIndexEphemeralImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__kogitoDataIndexEphemeralImage),
+        kogitoDataIndexPostgresqlImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__kogitoDataIndexPostgresqlImage),
       },
     };
   },
