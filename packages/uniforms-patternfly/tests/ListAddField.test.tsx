@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import React from "react";
-import ListAddField from "../src/ListAddField";
+import * as React from "react";
+import { ListAddField } from "../src";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { usingUniformsContext } from "./test-utils";
 

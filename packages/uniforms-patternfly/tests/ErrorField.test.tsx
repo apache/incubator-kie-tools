@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import React from "react";
-import ErrorField from "../src/ErrorField";
+import * as React from "react";
+import { ErrorField } from "../src";
 import { render, screen } from "@testing-library/react";
 import { usingUniformsContext } from "./test-utils";
 

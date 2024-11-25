@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import React from "react";
-import BoolField from "../src/BoolField";
+import * as React from "react";
+import { BoolField } from "../src";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { usingUniformsContext } from "./test-utils";
 
@@ -28,21 +28,21 @@ test("<BoolField> - renders an input", () => {
   expect(screen.getByTestId("bool-field")).toBeInTheDocument();
 });
 
-test("<BoolField> - renders an input with correct id (inherited)", () => {
+test("<BoolField> - renders a input with correct id (inherited)", () => {
   render(usingUniformsContext(<BoolField name="x" />, { x: { type: Boolean } }));
 
   expect(screen.getByTestId("bool-field")).toBeInTheDocument();
   expect(screen.getByTestId("bool-field").getAttribute("id")).toEqual("uniforms-0000-0001");
 });
 
-test("<BoolField> - renders an input with correct id (specified)", () => {
+test("<BoolField> - renders a input with correct id (specified)", () => {
   render(usingUniformsContext(<BoolField name="x" id="y" />, { x: { type: Boolean } }));
 
   expect(screen.getByTestId("bool-field")).toBeInTheDocument();
   expect(screen.getByTestId("bool-field").getAttribute("id")).toBe("y");
 });
 
-test("<BoolField> - renders an input with correct name", () => {
+test("<BoolField> - renders a input with correct name", () => {
   render(usingUniformsContext(<BoolField name="x" />, { x: { type: Boolean } }));
 
   expect(screen.getByTestId("bool-field")).toBeInTheDocument();
@@ -63,46 +63,32 @@ test("<BoolField> - renders an input with correct disabled state", () => {
   expect(screen.getByTestId("bool-field")).toBeDisabled();
 });
 
-test("<BoolField> - renders an input with correct label (specified)", () => {
+test("<BoolField> - renders a input with correct label (specified)", () => {
   render(usingUniformsContext(<BoolField name="x" label="BoolFieldLabel" />, { x: { type: Boolean } }));
 
   expect(screen.getByTestId("bool-field")).toBeInTheDocument();
   expect(screen.getByText("BoolFieldLabel")).toBeInTheDocument();
 });
 
-test("<BoolField> - renders an input with correct value (default)", () => {
+test("<BoolField> - renders a input with correct value (default)", () => {
   render(usingUniformsContext(<BoolField name="x" />, { x: { type: Boolean } }));
 
   expect(screen.getByTestId("bool-field")).toBeInTheDocument();
   expect(screen.getByTestId("bool-field")).not.toHaveAttribute("checked");
 });
 
-test("<BoolField> - renders an input with correct value (model)", () => {
+test("<BoolField> - renders a input with correct value (model)", () => {
   render(usingUniformsContext(<BoolField name="x" />, { x: { type: Boolean } }, { model: { x: true } }));
 
   expect(screen.getByTestId("bool-field")).toBeInTheDocument();
   expect(screen.getByTestId("bool-field")).toHaveAttribute("checked");
 });
 
-test("<BoolField> - renders an input with correct value (specified)", () => {
+test("<BoolField> - renders a input with correct value (specified)", () => {
   render(usingUniformsContext(<BoolField name="x" value />, { x: { type: Boolean } }));
 
   expect(screen.getByTestId("bool-field")).toBeInTheDocument();
   expect(screen.getByTestId("bool-field")).toHaveAttribute("checked");
-});
-
-test("<BoolField> - renders an input with correct hint popover description provided", () => {
-  const { getByTestId } = render(
-    usingUniformsContext(<BoolField name="x" description="BoolFieldDescription" />, { x: { type: Boolean } })
-  );
-
-  expect(getByTestId("field-hint-button")).toBeInTheDocument();
-});
-
-test("<BoolField> - renders an input without hint popover when description not provided", () => {
-  const { queryByTestId } = render(usingUniformsContext(<BoolField name="x" />, { x: { type: Boolean } }));
-
-  expect(queryByTestId("field-hint-button")).not.toBeInTheDocument();
 });
 
 test("<BoolField> - renders a input which correctly reacts on change", () => {

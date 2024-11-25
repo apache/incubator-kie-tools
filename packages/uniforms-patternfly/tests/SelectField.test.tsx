@@ -17,15 +17,15 @@
  * under the License.
  */
 
-import React from "react";
-import SelectField from "../src/SelectField";
-import { render, screen, fireEvent, act } from "@testing-library/react";
+import * as React from "react";
+import { SelectField } from "../src";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { usingUniformsContext } from "./test-utils";
 
 test("<SelectField checkboxes> - renders a set of checkboxes", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} name="x" checkboxes={true} />, {
-      x: { type: String, options: ["a", "b"] },
+      x: { type: String, allowedValues: ["a", "b"] },
     })
   );
 
@@ -36,7 +36,7 @@ test("<SelectField checkboxes> - renders a set of checkboxes", () => {
 test("<SelectField checkboxes> - renders a set of checkboxes with correct disabled state", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} name="x" disabled checkboxes={true} />, {
-      x: { type: String, options: ["a", "b"] },
+      x: { type: String, allowedValues: ["a", "b"] },
     })
   );
 
@@ -49,7 +49,7 @@ test("<SelectField checkboxes> - renders a set of checkboxes with correct disabl
 test("<SelectField checkboxes> - renders a set of checkboxes with correct id (inherited)", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} name="x" checkboxes={true} />, {
-      x: { type: String, options: ["a", "b"] },
+      x: { type: String, allowedValues: ["a", "b"] },
     })
   );
 
@@ -62,7 +62,7 @@ test("<SelectField checkboxes> - renders a set of checkboxes with correct id (in
 test("<SelectField checkboxes> - renders a set of checkboxes with correct id (specified)", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} name="x" id="y" checkboxes={true} />, {
-      x: { type: String, options: ["a", "b"] },
+      x: { type: String, allowedValues: ["a", "b"] },
     })
   );
 
@@ -75,7 +75,7 @@ test("<SelectField checkboxes> - renders a set of checkboxes with correct id (sp
 test("<SelectField checkboxes> - renders a set of checkboxes with correct name", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} name="x" checkboxes={true} />, {
-      x: { type: String, options: ["a", "b"] },
+      x: { type: String, allowedValues: ["a", "b"] },
     })
   );
 
@@ -88,39 +88,34 @@ test("<SelectField checkboxes> - renders a set of checkboxes with correct name",
 test("<SelectField checkboxes> - renders a set of checkboxes with correct options", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} name="x" checkboxes={true} />, {
-      x: { type: String, options: ["a", "b"] },
+      x: { type: String, allowedValues: ["a", "b"] },
     })
   );
 
   expect(screen.getByTestId("select-checkbox-field")).toBeInTheDocument();
-  expect(screen.getByTestId("select-checkbox-field").getElementsByTagName("label")).toHaveLength(3);
-  expect(screen.getByTestId("select-checkbox-field").getElementsByTagName("label")[1].textContent).toBe("a");
-  expect(screen.getByTestId("select-checkbox-field").getElementsByTagName("label")[2].textContent).toBe("b");
+  expect(screen.getByTestId("select-checkbox-field").getElementsByTagName("label")).toHaveLength(2);
+  expect(screen.getByTestId("select-checkbox-field").getElementsByTagName("label")[0].textContent).toBe("a");
+  expect(screen.getByTestId("select-checkbox-field").getElementsByTagName("label")[1].textContent).toBe("b");
 });
 
 test("<SelectField checkboxes> - renders a set of checkboxes with correct options (transform)", () => {
   render(
     usingUniformsContext(
-      <SelectField
-        onToggle={() => {}}
-        name="x"
-        transform={(x: string) => ({ label: x.toUpperCase() })}
-        checkboxes={true}
-      />,
-      { x: { type: String, options: ["a", "b"] } }
+      <SelectField onToggle={() => {}} name="x" transform={(x: string) => x.toUpperCase()} checkboxes={true} />,
+      { x: { type: String, allowedValues: ["a", "b"] } }
     )
   );
 
   expect(screen.getByTestId("select-checkbox-field")).toBeInTheDocument();
-  expect(screen.getByTestId("select-checkbox-field").getElementsByTagName("label")).toHaveLength(3);
-  expect(screen.getByTestId("select-checkbox-field").getElementsByTagName("label")[1].textContent).toBe("A");
-  expect(screen.getByTestId("select-checkbox-field").getElementsByTagName("label")[2].textContent).toBe("B");
+  expect(screen.getByTestId("select-checkbox-field").getElementsByTagName("label")).toHaveLength(2);
+  expect(screen.getByTestId("select-checkbox-field").getElementsByTagName("label")[0].textContent).toBe("A");
+  expect(screen.getByTestId("select-checkbox-field").getElementsByTagName("label")[1].textContent).toBe("B");
 });
 
 test("<SelectField checkboxes> - renders a set of checkboxes with correct value (default)", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} name="x" checkboxes={true} />, {
-      x: { type: String, options: ["a", "b"] },
+      x: { type: String, allowedValues: ["a", "b"] },
     })
   );
 
@@ -134,7 +129,7 @@ test("<SelectField checkboxes> - renders a set of checkboxes with correct value 
   render(
     usingUniformsContext(
       <SelectField onToggle={() => {}} name="x" checkboxes={true} />,
-      { x: { type: String, options: ["a", "b"] } },
+      { x: { type: String, allowedValues: ["a", "b"] } },
       { model: { x: "b" } }
     )
   );
@@ -148,7 +143,7 @@ test("<SelectField checkboxes> - renders a set of checkboxes with correct value 
 test("<SelectField checkboxes> - renders a set of checkboxes with correct value (specified)", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} name="x" value="b" checkboxes={true} />, {
-      x: { type: String, options: ["a", "b"] },
+      x: { type: String, allowedValues: ["a", "b"] },
     })
   );
 
@@ -164,7 +159,7 @@ test("<SelectField checkboxes> - renders a set of checkboxes which correctly rea
   render(
     usingUniformsContext(
       <SelectField onToggle={() => {}} name="x" checkboxes={true} />,
-      { x: { type: String, options: ["a", "b"] } },
+      { x: { type: String, allowedValues: ["a", "b"] } },
       { onChange }
     )
   );
@@ -184,7 +179,7 @@ test("<SelectField checkboxes> - renders a set of checkboxes which correctly rea
       <SelectField onToggle={() => {}} name="x" checkboxes={true} />,
       {
         x: { type: Array },
-        "x.$": { type: String, options: ["a", "b"] },
+        "x.$": { type: String, allowedValues: ["a", "b"] },
       },
       { onChange }
     )
@@ -205,7 +200,7 @@ test("<SelectField checkboxes> - renders a set of checkboxes which correctly rea
       <SelectField onToggle={() => {}} name="x" value={["b"]} checkboxes={true} />,
       {
         x: { type: Array },
-        "x.$": { type: String, options: ["a", "b"] },
+        "x.$": { type: String, allowedValues: ["a", "b"] },
       },
       { onChange }
     )
@@ -224,7 +219,7 @@ test("<SelectField checkboxes> - renders a set of checkboxes which correctly rea
   render(
     usingUniformsContext(
       <SelectField onToggle={() => {}} name="x" checkboxes={true} />,
-      { x: { type: String, options: ["a", "b"] } },
+      { x: { type: String, allowedValues: ["a", "b"] } },
       { model: { x: "b" }, onChange }
     )
   );
@@ -240,7 +235,7 @@ test("<SelectField checkboxes> - renders a set of checkboxes which correctly rea
 test("<SelectField checkboxes> - renders a label", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} name="x" label="y" checkboxes={true} />, {
-      x: { type: String, options: ["a", "b"] },
+      x: { type: String, allowedValues: ["a", "b"] },
     })
   );
 
@@ -252,47 +247,47 @@ test("<SelectField checkboxes> - renders a label", () => {
 test("<SelectField> - renders a select", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} name="x" />, {
-      x: { type: String, options: ["a", "b"] },
+      x: { type: String, allowedValues: ["a", "b"] },
     })
   );
 
-  const select = screen.getByRole("listbox");
-  expect(select).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
 });
 
 test("<SelectField> - renders a select with correct disabled state", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} name="x" disabled />, {
-      x: { type: String, options: ["a", "b"] },
+      x: { type: String, allowedValues: ["a", "b"] },
     })
   );
 
-  const select = screen.getByRole("listbox");
-  expect(select).toBeInTheDocument();
-  expect(select).toBeDisabled();
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[0]).toBeDisabled();
 });
 
 test("<SelectField> - renders a select with correct id (specified)", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} name="x" id="y" />, {
-      x: { type: String, options: ["a", "b"] },
+      x: { type: String, allowedValues: ["a", "b"] },
     })
   );
 
-  const select = screen.getByRole("listbox");
-  expect(select).toBeInTheDocument();
-  expect(select).toHaveAttribute("id", "y");
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
+  expect(screen.getByTestId("select-inputs-field").getAttribute("id")).toBe("y");
 });
 
 test("<SelectField> - renders a select with correct name", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} name="x" />, {
-      x: { type: String, options: ["a", "b"] },
+      x: { type: String, allowedValues: ["a", "b"] },
     })
   );
 
-  const select = screen.getByRole("listbox");
-  expect(select).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
   // patternfly don't pass down the name property
   // expect(screen.getByTestId("select-inputs-field").getAttribute("name")).toBe("x");
 });
@@ -300,51 +295,50 @@ test("<SelectField> - renders a select with correct name", () => {
 test("<SelectField> - renders a select with correct options", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} name="x" />, {
-      x: { type: String, options: ["a", "b"] },
+      x: { type: String, allowedValues: ["a", "b"] },
     })
   );
 
-  const select = screen.getByRole("listbox");
-  expect(select).toBeInTheDocument();
-  fireEvent.click(select);
-  expect(screen.getAllByRole("option").length).toBe(2);
-  expect(screen.getAllByRole("option")[0].textContent).toBe("a");
-  expect(screen.getAllByRole("option")[1].textContent).toBe("b");
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[0]);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(3);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[1].textContent).toBe("a");
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[2].textContent).toBe("b");
 });
 
 test("<SelectField> - renders a select with correct options (transform)", () => {
   render(
-    usingUniformsContext(
-      <SelectField onToggle={() => {}} name="x" transform={(x: string) => ({ label: x.toUpperCase() })} />,
-      {
-        x: { type: String, options: ["a", "b"] },
-      }
-    )
+    usingUniformsContext(<SelectField onToggle={() => {}} name="x" transform={(x: string) => x.toUpperCase()} />, {
+      x: { type: String, allowedValues: ["a", "b"] },
+    })
   );
 
-  const select = screen.getByRole("listbox");
-  expect(select).toBeInTheDocument();
-  fireEvent.click(select);
-  expect(screen.getAllByRole("option").length).toBe(2);
-  expect(screen.getAllByRole("option")[0].textContent).toBe("A");
-  expect(screen.getAllByRole("option")[1].textContent).toBe("B");
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[0]);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(3);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[1].textContent).toBe("A");
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[2].textContent).toBe("B");
 });
 
 test("<SelectField> - renders a select with correct options (numbers)", () => {
-  render(usingUniformsContext(<SelectField onToggle={() => {}} name="x" />, { x: { type: String, options: [1, 2] } }));
+  render(
+    usingUniformsContext(<SelectField onToggle={() => {}} name="x" />, { x: { type: String, allowedValues: [1, 2] } })
+  );
 
-  const select = screen.getByRole("listbox");
-  expect(select).toBeInTheDocument();
-  fireEvent.click(select);
-  expect(screen.getAllByRole("option").length).toBe(2);
-  expect(screen.getAllByRole("option")[0].textContent).toBe("1");
-  expect(screen.getAllByRole("option")[1].textContent).toBe("2");
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[0]);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(3);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[1].textContent).toBe("1");
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[2].textContent).toBe("2");
 });
 
-test.skip("<SelectField> - renders a select with correct placeholder (implicit)", () => {
+test("<SelectField> - renders a select with correct placeholder (implicit)", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} name="x" placeholder="y" />, {
-      x: { type: String, options: ["a", "b"] },
+      x: { type: String, allowedValues: ["a", "b"] },
     })
   );
 
@@ -354,10 +348,10 @@ test.skip("<SelectField> - renders a select with correct placeholder (implicit)"
   expect(screen.getByTestId("select-inputs-field").getAttribute("value")).toBe(null);
 });
 
-test.skip("<SelectField> - renders a select with correct value (default)", () => {
+test("<SelectField> - renders a select with correct value (default)", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} name="x" />, {
-      x: { type: String, options: ["a", "b"] },
+      x: { type: String, allowedValues: ["a", "b"] },
     })
   );
 
@@ -370,26 +364,26 @@ test("<SelectField> - renders a select with correct value (model)", () => {
   render(
     usingUniformsContext(
       <SelectField onToggle={() => {}} name="x" />,
-      { x: { type: String, options: ["a", "b"] } },
+      { x: { type: String, allowedValues: ["a", "b"] } },
       { model: { x: "b" } }
     )
   );
 
-  const select = screen.getByRole("listbox");
-  expect(select).toBeInTheDocument();
-  expect(select).toHaveValue("b");
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
+  expect(screen.getByTestId("select-inputs-field").textContent).toBe("b");
 });
 
 test("<SelectField> - renders a select with correct value (specified)", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} name="x" value="b" />, {
-      x: { type: String, options: ["a", "b"] },
+      x: { type: String, allowedValues: ["a", "b"] },
     })
   );
 
-  const select = screen.getByRole("listbox");
-  expect(select).toBeInTheDocument();
-  expect(select).toHaveValue("b");
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("span")[0].textContent).toBe("b");
 });
 
 test("<SelectField> - renders a select which correctly reacts on change", () => {
@@ -397,16 +391,16 @@ test("<SelectField> - renders a select which correctly reacts on change", () => 
   render(
     usingUniformsContext(
       <SelectField onToggle={() => {}} name="x" />,
-      { x: { type: String, options: ["a", "b"] } },
+      { x: { type: String, allowedValues: ["a", "b"] } },
       { onChange }
     )
   );
 
-  const select = screen.getByRole("listbox");
-  expect(select).toBeInTheDocument();
-  fireEvent.click(select);
-  expect(screen.getAllByRole("option").length).toBe(2);
-  fireEvent.change(select, { target: { value: "b" } });
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[0]);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(3);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[2]);
   expect(onChange).toHaveBeenLastCalledWith("x", "b");
 });
 
@@ -418,17 +412,17 @@ test("<SelectField> - renders a select which correctly reacts on change (array)"
       <SelectField onToggle={() => {}} name="x" value={undefined} />,
       {
         x: { type: Array },
-        "x.$": { type: String, options: ["a", "b"] },
+        "x.$": { type: String, allowedValues: ["a", "b"] },
       },
       { onChange }
     )
   );
 
-  const select = screen.getByRole("listbox");
-  expect(select).toBeInTheDocument();
-  fireEvent.click(select);
-  expect(screen.getAllByRole("option").length).toBe(2);
-  fireEvent.change(select, { target: { value: "b" } });
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[0]);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(3);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[2]);
   expect(onChange).toHaveBeenLastCalledWith("x", ["b"]);
 });
 
@@ -438,17 +432,17 @@ test("<SelectField> - renders a select which correctly reacts on change (placeho
   render(
     usingUniformsContext(
       <SelectField onToggle={() => {}} name="x" placeholder={"test"} />,
-      { x: { type: String, options: ["a", "b"] } },
+      { x: { type: String, allowedValues: ["a", "b"] } },
       { onChange }
     )
   );
 
-  const select = screen.getByRole("listbox");
-  expect(select).toBeInTheDocument();
-  fireEvent.click(select);
-  expect(screen.getAllByRole("option").length).toBe(3);
-  fireEvent.change(select, { target: { value: "b" } });
-  expect(onChange).toHaveBeenLastCalledWith("x", "b");
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[0]);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(4);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[1]);
+  expect(onChange).toHaveBeenCalled();
 });
 
 test("<SelectField> - renders a select which correctly reacts on change (same value)", () => {
@@ -457,23 +451,23 @@ test("<SelectField> - renders a select which correctly reacts on change (same va
   render(
     usingUniformsContext(
       <SelectField onToggle={() => {}} name="x" />,
-      { x: { type: String, options: ["a", "b"] } },
+      { x: { type: String, allowedValues: ["a", "b"] } },
       { model: { x: "b" }, onChange }
     )
   );
 
-  const select = screen.getByRole("listbox");
-  expect(select).toBeInTheDocument();
-  fireEvent.click(select);
-  expect(screen.getAllByRole("option").length).toBe(2);
-  fireEvent.change(select, { target: { value: "b" } });
+  expect(screen.getByTestId("select-inputs-field")).toBeInTheDocument();
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(1);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[0]);
+  expect(screen.getByTestId("select-inputs-field").getElementsByTagName("button")).toHaveLength(3);
+  fireEvent.click(screen.getByTestId("select-inputs-field").getElementsByTagName("button")[2]);
   expect(onChange).toHaveBeenLastCalledWith("x", "b");
 });
 
 test("<SelectField> - renders a label", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} required={false} name="x" label="y" />, {
-      x: { type: String, options: ["a", "b"] },
+      x: { type: String, allowedValues: ["a", "b"] },
     })
   );
 
@@ -485,7 +479,7 @@ test("<SelectField> - renders a label", () => {
 test("<SelectField> - renders a label", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} required={true} name="x" label="y" />, {
-      x: { type: String, options: ["a", "b"] },
+      x: { type: String, allowedValues: ["a", "b"] },
     })
   );
 
@@ -497,7 +491,7 @@ test("<SelectField> - renders a label", () => {
 test("<SelectField> - renders a number label", () => {
   render(
     usingUniformsContext(<SelectField onToggle={() => {}} required={true} name="x" label={1} />, {
-      x: { type: Number, options: [1, 2] },
+      x: { type: Number, allowedValues: [1, 2] },
     })
   );
 

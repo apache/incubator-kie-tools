@@ -17,10 +17,13 @@
  * under the License.
  */
 
-import { FormGroup, FormGroupProps } from "@patternfly/react-core/dist/js/components/Form";
 import * as React from "react";
-import { FilterDOMPropsKeys, filterDOMProps } from "uniforms";
-import FielDetailsPopover from "./FieldDetailsPopover";
+import { FormGroup, FormGroupProps, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
+import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
+import { filterDOMProps } from "uniforms";
+import { Icon } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 declare module "uniforms" {
   interface FilterDOMProps {
@@ -42,24 +45,16 @@ filterDOMProps.register(
   "isDisabled",
   "exclusiveMaximum",
   "exclusiveMinimum",
-  "menuAppendTo",
-  "checkboxes",
-  "helperText" as FilterDOMPropsKeys,
-  "initialCount" as FilterDOMPropsKeys,
-  "deprecated" as FilterDOMPropsKeys,
-  "transform" as FilterDOMPropsKeys,
-  "placeholder" as FilterDOMPropsKeys
+  "menuAppendTo"
 );
 
-export type WrapFieldProps = {
+type WrapperProps = {
   id: string;
-  error?: any;
+  error?: boolean;
   errorMessage?: string;
   help?: string;
   showInlineError?: boolean;
   description?: React.ReactNode;
-  deprecated?: boolean;
-  field?: unknown;
 } & Omit<FormGroupProps, "onChange" | "fieldId">;
 
 export default function wrapField(
@@ -74,27 +69,48 @@ export default function wrapField(
     help,
     required,
     description,
-    deprecated,
     ...props
-  }: WrapFieldProps,
+  }: WrapperProps,
   children: React.ReactNode
 ) {
-  let defaultValue;
-  if (typeof props.field === "object" && props.field !== null && "default" in props.field) {
-    defaultValue = props.field.default;
-  }
   return (
     <FormGroup
-      data-testid="wrapper-field"
-      data-fieldname={props.name}
+      data-testid={"wrapper-field"}
       fieldId={id}
       label={label}
+      labelIcon={
+        description ? (
+          <Popover bodyContent={description}>
+            <button
+              type="button"
+              aria-label="field description"
+              onClick={(e) => e.preventDefault()}
+              className="pf-c-form__group-label-help"
+            >
+              <Icon isInline>
+                <HelpIcon />
+              </Icon>
+            </button>
+          </Popover>
+        ) : undefined
+      }
       isRequired={required}
+      // validated={error ? "error" : "default"}
       type={type}
-      labelIcon={<FielDetailsPopover default={defaultValue} description={description} deprecated={deprecated} />}
+      // helperText={help}
+      // helperTextInvalid={errorMessage}
       {...filterDOMProps(props)}
     >
       {children}
+      {error === true ? (
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem variant="error">{errorMessage}</HelperTextItem>
+          </HelperText>
+        </FormHelperText>
+      ) : (
+        <HelperTextItem variant="default">{help}</HelperTextItem>
+      )}
     </FormGroup>
   );
 }

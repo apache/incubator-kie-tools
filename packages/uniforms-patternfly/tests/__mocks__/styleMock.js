@@ -17,19 +17,4 @@
  * under the License.
  */
 
-import React from "react";
-import { screen } from "@testing-library/dom";
-import { act, fireEvent, render, waitFor } from "@testing-library/react";
-import FieldHintPopover from "../src/FieldHintPopover";
-
-test("<FieldHintPopover> - renders hint icon", async () => {
-  render(<FieldHintPopover description="This is description" />);
-
-  const element = screen.getByTestId("field-hint-button");
-  expect(element).toBeInTheDocument();
-
-  await act(async () => {
-    fireEvent.mouseOver(element);
-    waitFor(() => expect(screen.getByTestId("property-description-popover")).toBeInTheDocument());
-  });
-});
+module.exports = {};

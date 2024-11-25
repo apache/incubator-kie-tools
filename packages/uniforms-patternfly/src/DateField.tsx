@@ -21,11 +21,11 @@ import * as React from "react";
 import { useMemo } from "react";
 import { connectField, FieldProps } from "uniforms";
 import { TextInput, TextInputProps } from "@patternfly/react-core/dist/js/components/TextInput";
-import wrapField, { WrapFieldProps } from "./wrapField";
+import wrapField from "./wrapField";
 
 export type DateFieldProps = FieldProps<
   Date,
-  TextInputProps & WrapFieldProps,
+  TextInputProps,
   {
     inputRef?: React.RefObject<HTMLInputElement>;
     labelProps?: object;
@@ -70,12 +70,12 @@ const dateParse = (value: string, onChange: DateFieldProps["onChange"]) => {
 
 function DateField({ onChange, ...props }: DateFieldProps) {
   const isInvalid = useMemo(() => {
-    if (!props.value) {
+    if (props.value === undefined) {
       return false;
     }
 
     if (props.min) {
-      const minDate = new Date(props.min);
+      const minDate = new DateConstructor(props.min);
       if (minDate.toString() === "Invalid Date") {
         return false;
       } else if (props.value < minDate) {
@@ -83,7 +83,7 @@ function DateField({ onChange, ...props }: DateFieldProps) {
       }
     }
     if (props.max) {
-      const maxDate = new Date(props.max);
+      const maxDate = new DateConstructor(props.max);
       if (maxDate.toString() === "Invalid Date") {
         return false;
       } else if (props.value > maxDate) {

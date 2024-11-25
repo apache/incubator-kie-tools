@@ -51,7 +51,6 @@ function ListAddField({ disabled = false, name, value, ...props }: ListAddFieldP
         !disabled && limitNotReached && parent.onChange((parent.value ?? []).concat([cloneDeep(value)]));
       }}
       {...filterDOMProps(props)}
-      label="THIS IS A LABEL"
     >
       <PlusCircleIcon color="#0088ce" />
     </Button>

@@ -19,7 +19,6 @@
 
 import { AutoForm } from "uniforms";
 import ValidatedQuickForm from "./ValidatedQuickForm";
-// import "./AutoForm.scss";
 
 function Auto(parent: any): any {
   class _ extends AutoForm.Auto(parent) {

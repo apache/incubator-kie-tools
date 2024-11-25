@@ -26,27 +26,25 @@ export type ErrorFieldProps = Override<
   {
     error?: boolean;
     errorMessage?: string;
-    style?: React.CSSProperties;
   }
 >;
 
-const defaultStyle: React.CSSProperties = {
-  backgroundColor: "rgba(255, 85, 0, 0.2)",
-  border: "1px solid rgb(255, 85, 0)",
-  borderRadius: "7px",
-  margin: "20px 0px",
-  padding: "10px",
-};
-
-function ErrorField({ children, error, errorMessage, style = {}, ...props }: ErrorFieldProps) {
-  // Merge default styles with any styles passed via props
-  const combinedStyle: React.CSSProperties = { ...defaultStyle, ...style };
-
+function ErrorField({ children, error, errorMessage, ...props }: ErrorFieldProps) {
   return !error ? null : (
-    <div data-testid={"error-field"} style={combinedStyle} {...filterDOMProps(props)}>
+    <div data-testid={"error-field"} {...filterDOMProps(props)}>
       {children ? children : <div style={{ margin: "3px" }}>{errorMessage}</div>}
     </div>
   );
 }
+
+ErrorField.defaultProps = {
+  style: {
+    backgroundColor: "rgba(255, 85, 0, 0.2)",
+    border: "1px solid rgb(255, 85, 0)",
+    borderRadius: "7px",
+    margin: "20px 0px",
+    padding: "10px",
+  },
+};
 
 export default connectField<ErrorFieldProps>(ErrorField, { initialValue: false });

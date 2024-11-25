@@ -17,19 +17,19 @@
  * under the License.
  */
 
-import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import * as React from "react";
-import { Children, ReactNode, cloneElement, isValidElement } from "react";
-import { HTMLFieldProps, connectField, filterDOMProps } from "uniforms";
-import FieldDetailsPopover from "./FieldDetailsPopover";
-import ListAddField from "./ListAddField";
+import { Children, cloneElement, isValidElement, ReactNode } from "react";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons/outlined-question-circle-icon";
+import { connectField, filterDOMProps, HTMLFieldProps } from "uniforms";
 import ListItemField from "./ListItemField";
-import { WrapFieldProps } from "./wrapField";
+import ListAddField from "./ListAddField";
 
 export type ListFieldProps = HTMLFieldProps<
   unknown[],
   HTMLDivElement,
-  WrapFieldProps & {
+  {
     children?: ReactNode;
     info?: string;
     error?: boolean;
@@ -59,8 +59,6 @@ function ListField({
   name,
   value,
   showInlineError,
-  deprecated,
-  defaultValue,
   ...props
 }: ListFieldProps) {
   return (
@@ -70,8 +68,13 @@ function ListField({
           {label && (
             <label>
               {label}
-              {props.description && (
-                <FieldDetailsPopover default={defaultValue} description={props.description} deprecated={deprecated} />
+              {!!info && (
+                <span>
+                  &nbsp;
+                  <Tooltip content={info}>
+                    <OutlinedQuestionCircleIcon />
+                  </Tooltip>
+                </span>
               )}
             </label>
           )}
@@ -89,7 +92,6 @@ function ListField({
               ? cloneElement(child as React.ReactElement<{ name: string }, string>, {
                   key: `${itemIndex}-${childIndex}`,
                   name: child.props.name
-                    // ?.split(/\$(.*)/s)
                     // The /\$(.*)/s RegExp has the same behavior, but it's only available targeting es2018.
                     // `uniforms-patternfly` targets both es5 and es2018 meaning the RegExp should be compatible with es5 the older implementation (es5).
                     ?.split(/\$([\s\S]*)/)

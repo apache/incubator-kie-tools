@@ -17,42 +17,40 @@
  * under the License.
  */
 
+import * as React from "react";
 import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
-import { Fragment } from "react";
 import { connectField, filterDOMProps, HTMLFieldProps } from "uniforms";
-import { TransformFn } from "./SelectField.types";
-import wrapField, { WrapFieldProps } from "./wrapField";
+import wrapField from "./wrapField";
 
 export type RadioFieldProps = HTMLFieldProps<
   string,
   HTMLDivElement,
   {
-    transform?: TransformFn;
-    options: string[];
+    transform?: (string?: string) => string;
+    allowedValues: string[];
     onChange: (value: string) => void;
     value?: string;
     disabled?: boolean;
-  } & WrapFieldProps
+  }
 >;
 
 function RadioField(props: RadioFieldProps) {
   filterDOMProps.register("checkboxes", "decimal");
-
   return wrapField(
     props,
     <div data-testid={"radio-field"} {...filterDOMProps(props)}>
-      {props.options?.map((item) => (
-        <Fragment key={item}>
+      {props.allowedValues?.map((item) => (
+        <React.Fragment key={item}>
           <Radio
             isChecked={item === props.value}
             isDisabled={props.disabled}
             id={`${props.id}`}
             name={props.name}
-            label={props.transform ? props.transform(item).label : item}
+            label={props.transform ? props.transform(item) : item}
             aria-label={props.name}
             onChange={() => props.onChange(item)}
           />
-        </Fragment>
+        </React.Fragment>
       ))}
     </div>
   );

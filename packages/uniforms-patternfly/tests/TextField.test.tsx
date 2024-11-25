@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import React from "react";
-import TextField from "../src/TextField";
+import * as React from "react";
+import { TextField } from "../src";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { usingUniformsContext } from "./test-utils";
 
@@ -127,7 +127,7 @@ test("<TextField> - renders a label", () => {
   expect(screen.getByText("y")).toBeInTheDocument();
 });
 
-test("<TextField> - renders a label with required indicator", () => {
+test("<TextField> - renders a label", () => {
   render(usingUniformsContext(<TextField required={true} name="x" label="y" />, { x: { type: String } }));
 
   expect(screen.getByText("y")).toBeInTheDocument();
@@ -137,22 +137,8 @@ test("<TextField> - renders a label with required indicator", () => {
 test("<TextField> - renders a help", () => {
   render(usingUniformsContext(<TextField required={false} name="x" helperText="y" />, { x: { type: String } }));
 
-  expect(screen.getByTestId("wrapper-field").querySelector(".pf-v5-c-form__helper-text")).toBeInTheDocument();
-  expect(screen.getByTestId("wrapper-field").querySelector(".pf-v5-c-form__helper-text")?.textContent).toBe("y");
-});
-
-test("<TextField> - renders an input with correct hint popover description provided", () => {
-  const { getByTestId } = render(
-    usingUniformsContext(<TextField name="x" description="TextFieldDescription" />, { x: { type: String } })
-  );
-
-  expect(getByTestId("field-hint-button")).toBeInTheDocument();
-});
-
-test("<TextField> - renders an input with no hint popover when description is not provided", () => {
-  const { queryByTestId } = render(usingUniformsContext(<TextField name="x" />, { x: { type: String } }));
-
-  expect(queryByTestId("field-hint-button")).not.toBeInTheDocument();
+  expect(screen.getByTestId("wrapper-field").querySelector(".pf-c-form__helper-text")).toBeInTheDocument();
+  expect(screen.getByTestId("wrapper-field").querySelector(".pf-c-form__helper-text")?.textContent).toBe("y");
 });
 
 test("<TextField> - renders a initial value on date field (type = date)", () => {
@@ -180,7 +166,7 @@ test("<TextField> - renders a disabled date field (type = date)", () => {
   expect(screen.getByTestId("text-field") as HTMLInputElement).toBeDisabled();
 });
 
-test("<TextField> - renders an input which correctly reacts on change (type = date)", () => {
+test("<TextField> - renders a input which correctly reacts on change (type = date)", () => {
   const onChange = jest.fn();
   const date = "2000-04-04";
 
@@ -200,7 +186,7 @@ test("<TextField> - renders an input which correctly reacts on change (type = da
   expect(onChange).toHaveBeenLastCalledWith("x", date);
 });
 
-test("<TextField> - renders an input which correctly reacts on change (type = date - empty)", () => {
+test("<TextField> - renders a input which correctly reacts on change (type = date - empty)", () => {
   const onChange = jest.fn();
   const date = "";
 
@@ -245,7 +231,7 @@ test("<TextField> - renders a disabled date field (type = time)", () => {
   expect(screen.getByTestId("text-field")).toBeDisabled();
 });
 
-test("<TextField> - renders an input which correctly reacts on change (type = time)", () => {
+test("<TextField> - renders a input which correctly reacts on change (type = time)", () => {
   const onChange = jest.fn();
   const time = "10:10";
 
@@ -265,7 +251,7 @@ test("<TextField> - renders an input which correctly reacts on change (type = ti
   expect(onChange).toHaveBeenLastCalledWith("x", "10:10:00");
 });
 
-test("<TextField> - renders an input which correctly reacts on change (type = time - empty)", () => {
+test("<TextField> - renders a input which correctly reacts on change (type = time - empty)", () => {
   const onChange = jest.fn();
   const time = "";
 
@@ -289,9 +275,7 @@ test("<TextField> - test max property (type = time - valid)", () => {
   const time = "10:00";
   const max = "12:00";
   render(
-    usingUniformsContext(<TextField name="x" label="y" max={max} type={"time"} value={time} />, {
-      x: { type: String },
-    })
+    usingUniformsContext(<TextField name="x" label="y" max={max} type={"time"} value={time} />, { x: { type: String } })
   );
 
   expect(screen.getByTestId("text-field")).toBeInTheDocument();
@@ -302,9 +286,7 @@ test("<TextField> - test max property (type = time - invalid)", () => {
   const time = "13:00";
   const max = "12:00";
   render(
-    usingUniformsContext(<TextField name="x" label="y" max={max} type={"time"} value={time} />, {
-      x: { type: String },
-    })
+    usingUniformsContext(<TextField name="x" label="y" max={max} type={"time"} value={time} />, { x: { type: String } })
   );
 
   expect(screen.getByTestId("text-field")).toBeInTheDocument();
@@ -315,9 +297,7 @@ test("<TextField> - test min property (type = time - valid)", () => {
   const time = "13:00";
   const min = "12:00";
   render(
-    usingUniformsContext(<TextField name="x" label="y" min={min} type={"time"} value={time} />, {
-      x: { type: String },
-    })
+    usingUniformsContext(<TextField name="x" label="y" min={min} type={"time"} value={time} />, { x: { type: String } })
   );
 
   expect(screen.getByTestId("text-field")).toBeInTheDocument();
@@ -328,9 +308,7 @@ test("<TextField> - test min property (type = time - invalid)", () => {
   const time = "10:00";
   const min = "12:00";
   render(
-    usingUniformsContext(<TextField name="x" label="y" min={min} type={"time"} value={time} />, {
-      x: { type: String },
-    })
+    usingUniformsContext(<TextField name="x" label="y" min={min} type={"time"} value={time} />, { x: { type: String } })
   );
 
   expect(screen.getByTestId("text-field")).toBeInTheDocument();
@@ -341,9 +319,7 @@ test("<TextField> - test max property (type = date - valid)", () => {
   const date = "2000-01-01";
   const max = "2000-01-02";
   render(
-    usingUniformsContext(<TextField name="x" label="y" max={max} type={"date"} value={date} />, {
-      x: { type: String },
-    })
+    usingUniformsContext(<TextField name="x" label="y" max={max} type={"date"} value={date} />, { x: { type: String } })
   );
 
   expect(screen.getByTestId("text-field")).toBeInTheDocument();
@@ -354,9 +330,7 @@ test("<TextField> - test max property (type = date - invalid)", () => {
   const date = "2000-01-02";
   const max = "2000-01-01";
   render(
-    usingUniformsContext(<TextField name="x" label="y" max={max} type={"date"} value={date} />, {
-      x: { type: String },
-    })
+    usingUniformsContext(<TextField name="x" label="y" max={max} type={"date"} value={date} />, { x: { type: String } })
   );
 
   expect(screen.getByTestId("text-field")).toBeInTheDocument();
@@ -367,9 +341,7 @@ test("<TextField> - test min property (type = date - valid)", () => {
   const date = "2000-01-02";
   const min = "2000-01-01";
   render(
-    usingUniformsContext(<TextField name="x" label="y" min={min} type={"date"} value={date} />, {
-      x: { type: String },
-    })
+    usingUniformsContext(<TextField name="x" label="y" min={min} type={"date"} value={date} />, { x: { type: String } })
   );
 
   expect(screen.getByTestId("text-field")).toBeInTheDocument();
@@ -380,9 +352,7 @@ test("<TextField> - test min property (type = date - invalid)", () => {
   const date = "2000-01-01";
   const min = "2000-01-02";
   render(
-    usingUniformsContext(<TextField name="x" label="y" min={min} type={"date"} value={date} />, {
-      x: { type: String },
-    })
+    usingUniformsContext(<TextField name="x" label="y" min={min} type={"date"} value={date} />, { x: { type: String } })
   );
 
   expect(screen.getByTestId("text-field")).toBeInTheDocument();
