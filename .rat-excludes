@@ -464,6 +464,8 @@ UnsupportedField.test.tsx.snap
 FormDmn.test.tsx.snap
 # packages/form-dmn/tests/__snapshots__/FormDmnOutputs.test.tsx.snap
 FormDmnOutputs.test.tsx.snap
+# packages/image-builder/README.md
+README.md
 # packages/import-java-classes-component/tests/ImportJavaClasses/__snapshots__/ImportJavaClasses.test.tsx.snap
 ImportJavaClasses.test.tsx.snap
 # packages/jbpm-quarkus-devui/jbpm-quarkus-devui-parent.iml
@@ -1950,6 +1952,8 @@ zustand@4.4.2.patch
 graph.dot
 # repo/repo.iml
 repo.iml
+# scripts/run-script-if/README.md
+README.md
 # scripts/scripts.iml
 scripts.iml
 # scripts/check-junit-report-results/tests/index.test.js
