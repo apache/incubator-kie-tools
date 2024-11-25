@@ -92,20 +92,6 @@ Of course, a new Kogito version may lead to incompatibilities in the code and wi
 
 You can find an example of the Kogito version upgrade in [this PR](https://github.com/apache/incubator-kie-tools/pull/2229)
 
-# Upgrading kie-sandbox-quarkus-accelerator
-
-The above updates (Java, Maven, Quarkus, and Kogito) must be reflected in the `kie-sandbox-quarkus-accelerator` module, which lives in another [repo](https://github.com/apache/incubator-kie-sandbox-quarkus-accelerator/)
-
-You need to update the `pom.xml` file of the `0.0.0` branch with the same version you applied in the `kie-tools` repo.
-To test the `kie-sandbox-quarkus-accelerator` module with the updated version, please follow these steps:
-
-- Create a PR with the updated version in the `pom.xml` file;
-- In kie-tools, `temporarily change gitRepositoryUrl` (fork link) and `gitRepositoryGitRef` (branch name) keys in `packages/online-editor/build/defaultEnvJson.ts` to point to your fork's PR (the one created in the above step)
-- Run `pnpm -F @kie-tools/cors-proxy... build:dev` and `pnpm -F @kie-tools/cors-proxy start`;
-- Run `pnpm -F @kie-tools/online-editor... build:dev` and `pnpm -F @kie-tools/online-editor start` to test it.
-
-You can find an example of the Kogito version upgrade in [this PR](https://github.com/apache/incubator-kie-sandbox-quarkus-accelerator/pull/8)
-
 # Upgrading GraphQL schemas in `@kie-tools/runtime-tools-process-gateway-api`& `@kie-tools/runtime-tools-swf-gateway-api`
 
 The following commands will help to sync up the gateway apis the GraphQL schema with the new Kogito Data Index GraphQL schema:
