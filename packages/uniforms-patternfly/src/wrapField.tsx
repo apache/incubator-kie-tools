@@ -85,7 +85,7 @@ export default function wrapField(
               type="button"
               aria-label="field description"
               onClick={(e) => e.preventDefault()}
-              className="pf-c-form__group-label-help"
+              className="pf-v5-c-form__group-label-help"
             >
               <Icon isInline>
                 <HelpIcon />
@@ -109,7 +109,11 @@ export default function wrapField(
           </HelperText>
         </FormHelperText>
       ) : (
-        <HelperTextItem variant="default">{help}</HelperTextItem>
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem variant="default">{help}</HelperTextItem>
+          </HelperText>
+        </FormHelperText>
       )}
     </FormGroup>
   );
