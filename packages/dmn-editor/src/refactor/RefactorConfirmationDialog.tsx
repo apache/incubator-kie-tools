@@ -22,8 +22,8 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import * as React from "react";
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { IdentifiersRefactor } from "../../../dmn-language-service";
-import { DmnLatestModel } from "../../../dmn-marshaller";
+import { IdentifiersRefactor } from "@kie-tools/dmn-language-service";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller/dist";
 
 export function RefactorConfirmationDialog({
   onConfirmExpressionRefactor,
