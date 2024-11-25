@@ -805,7 +805,7 @@ event that testing suites are implemented or approved by Object Management Group
 specification may claim compliance or conformance with the specification only if the software satisfactorily completes
 the testing suites.
 
----------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 for packages/bpmn-marshaller/src/schemas/bpmn-2_0/DI.xsd
     packages/bpmn-marshaller/src/schemas/bpmn-2_0/DC.xsd
     packages/bpmn-marshaller/src/schemas/bpmn-2_0/Semantic.xsd
@@ -903,6 +903,7 @@ event that testing suites are implemented or approved by Object Management Group
 specification may claim compliance or conformance with the specification only if the software satisfactorily completes
 the testing suites.
 
+----------------------------------------------------------------------------------------------------------------------------------
 for packages/serverless-workflow-diagram-editor/third_party/errai/src/main/java/org/jboss/errai/common/client/util/Base64Util.java
     packages/stunner-editors/errai-common/src/main/java/org/jboss/errai/common/client/util/Base64Util.java
 
