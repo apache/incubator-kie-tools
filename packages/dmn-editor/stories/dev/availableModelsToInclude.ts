@@ -20,8 +20,8 @@
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { XML2PMML } from "@kie-tools/pmml-editor-marshaller";
-import * as DmnEditor from "@kie-tools/dmn-editor/dist/DmnEditor";
-import { getPmmlNamespace } from "@kie-tools/dmn-editor/dist/pmml/pmml";
+import * as DmnEditor from "../../src/DmnEditor";
+import { getPmmlNamespace } from "../../src/pmml/pmml";
 import { sumBkm, sumDiffDs, testTreePmml } from "./externalModels";
 
 export const sumBkmModel = normalize(getMarshaller(sumBkm, { upgradeTo: "latest" }).parser.parse());

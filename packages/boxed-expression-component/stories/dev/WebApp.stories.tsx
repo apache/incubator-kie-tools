@@ -19,12 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import {
-  BeeGwtService,
-  BoxedExpression,
-  DmnBuiltInDataType,
-  Normalized,
-} from "@kie-tools/boxed-expression-component/dist/api";
+import { BeeGwtService, BoxedExpression, DmnBuiltInDataType, Normalized } from "../../src/api";
 import { getDefaultBoxedExpressionForDevWebapp } from "./getDefaultBoxedExpressionForDevWebapp";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../boxedExpressionStoriesWrapper";
@@ -39,7 +34,7 @@ import {
   postBureauAffordabilityExpression,
   postBureauAffordabilityWidthsById,
 } from "../useCases/LoanOriginations/RoutingDecisionService/PostBureauAffordability/PostBureauAffordability.stories";
-import { OnExpressionChange } from "@kie-tools/boxed-expression-component/dist/BoxedExpressionEditorContext";
+import { OnExpressionChange } from "../../src/BoxedExpressionEditorContext";
 
 /**
  * Constants copied from tests to fix debugger

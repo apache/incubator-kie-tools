@@ -46,6 +46,7 @@ import { Expression } from "./Expression";
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import { BuiltInTypes } from "./BuiltInTypes";
 
+export type ExpressionSource = { text?: { __$$text: string }; "@_id"?: string };
 export type DmnLiteralExpression = { __$$element: "literalExpression" } & DMN15__tLiteralExpression;
 export type DmnInvocation = { __$$element: "invocation" } & DMN15__tInvocation;
 export type DmnDecisionTable = { __$$element: "decisionTable" } & DMN15__tDecisionTable;
@@ -459,7 +460,7 @@ export class IdentifiersRepository {
     return properties;
   }
 
-  private addLiteralExpression(parent: IdentifierContext, element: DmnLiteralExpression) {
+  private addExpression(parent: IdentifierContext, element: ExpressionSource) {
     const id = element["@_id"] ?? "";
     const expression = new Expression(id, element);
     this._expressionsIndexedByUuid.set(id, expression);
@@ -707,7 +708,7 @@ export class IdentifiersRepository {
   ) {
     switch (expression.__$$element) {
       case "literalExpression":
-        this.addLiteralExpression(parent, expression);
+        this.addExpression(parent, expression);
         break;
 
       case "invocation":
@@ -757,20 +758,15 @@ export class IdentifiersRepository {
     }
   }
 
-  private addDecisionTableEntryNode(parent: IdentifierContext, entryId: string) {
+  private addDecisionTableEntryNode(parent: IdentifierContext, entryNode: ExpressionSource) {
     const ruleInputElementNode = this.addIdentifier({
-      uuid: entryId,
+      uuid: entryNode["@_id"] ?? "",
       name: "",
       kind: FeelSyntacticSymbolNature.LocalVariable,
       parentContext: parent,
     });
     parent.children.set(ruleInputElementNode.uuid, ruleInputElementNode);
-    this.addIdentifier({
-      uuid: ruleInputElementNode.uuid,
-      name: "",
-      kind: FeelSyntacticSymbolNature.LocalVariable,
-      parentContext: ruleInputElementNode,
-    });
+    this.addExpression(parent, entryNode);
   }
 
   private addDecisionTable(parent: IdentifierContext, decisionTable: DmnDecisionTable) {
@@ -783,12 +779,8 @@ export class IdentifiersRepository {
     parent.children.set(variableNode.uuid, variableNode);
     if (decisionTable.rule) {
       for (const ruleElement of decisionTable.rule) {
-        ruleElement.inputEntry?.forEach((ruleInputElement) =>
-          this.addDecisionTableEntryNode(parent, ruleInputElement["@_id"] ?? "")
-        );
-        ruleElement.outputEntry?.forEach((ruleOutputElement) =>
-          this.addDecisionTableEntryNode(parent, ruleOutputElement["@_id"] ?? "")
-        );
+        ruleElement.inputEntry?.forEach((inputElement) => this.addDecisionTableEntryNode(parent, inputElement));
+        ruleElement.outputEntry?.forEach((outputElement) => this.addDecisionTableEntryNode(parent, outputElement));
       }
     }
     this.addIdentifier({
@@ -835,16 +827,16 @@ export class IdentifiersRepository {
   }
 
   private loadImportedIdentifiers(dmnDefinitions: DmnDefinitions, externalDefinitions?: Map<string, DmnLatestModel>) {
-    if (dmnDefinitions.import && externalDefinitions) {
-      for (const dmnImport of dmnDefinitions.import) {
-        if (externalDefinitions.has(dmnImport["@_namespace"])) {
-          this.currentIdentifierNamePrefix = dmnImport["@_name"];
-          this.currentUuidPrefix = dmnImport["@_namespace"];
-          const externalDef = externalDefinitions.get(dmnImport["@_namespace"]);
-          if (externalDef) {
-            this.loadIdentifiers(externalDef.definitions);
-          }
-        }
+    if (!(dmnDefinitions.import && externalDefinitions)) {
+      return;
+    }
+
+    for (const dmnImport of dmnDefinitions.import.filter((imp) => externalDefinitions.has(imp["@_namespace"]))) {
+      this.currentIdentifierNamePrefix = dmnImport["@_name"];
+      this.currentUuidPrefix = dmnImport["@_namespace"];
+      const externalDef = externalDefinitions.get(dmnImport["@_namespace"]);
+      if (externalDef) {
+        this.loadIdentifiers(externalDef.definitions);
       }
     }
   }

@@ -19,15 +19,15 @@
 
 import { Identifier } from "./Identifier";
 import { FeelIdentifiedSymbol } from "./FeelIdentifiedSymbol";
-import { DmnLiteralExpression } from "./IdentifiersRepository";
+import { ExpressionSource } from "./IdentifiersRepository";
 
 export class Expression {
   private readonly _uuid: string;
   private _fullExpression: string;
   private _identifiersOfTheExpression: Array<FeelIdentifiedSymbol>;
-  private source: DmnLiteralExpression;
+  private source: ExpressionSource;
 
-  constructor(uuid: string, source: DmnLiteralExpression) {
+  constructor(uuid: string, source: ExpressionSource) {
     this._uuid = uuid;
     this._identifiersOfTheExpression = new Array<FeelIdentifiedSymbol>();
     this._fullExpression = source.text?.__$$text ?? "";
