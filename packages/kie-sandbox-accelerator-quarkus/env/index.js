@@ -17,23 +17,17 @@
  * under the License.
  */
 
-import { startServer } from "./proxy";
+const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
-function getPort(): number {
-  const port = Number(process.env.CORS_PROXY_HTTP_PORT);
-  if (!isNaN(port)) {
-    return port;
-  }
-  return 8080;
-}
-
-export const run = () => {
-  startServer({
-    port: getPort(),
-    origin: process.env.CORS_PROXY_ORIGIN ?? "*",
-    verbose: process.env.CORS_PROXY_VERBOSE === "true",
-    hostsToUseHttp: (process.env.CORS_PROXY_USE_HTTP_FOR_HOSTS || undefined)?.split(",") ?? [],
-  });
-};
-
-run();
+module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools/jbpm-quarkus-devui/env")], {
+  vars: varsWithName({}),
+  get env() {
+    return {
+      kieSandboxAcceleratorQuarkus: {
+        dev: {
+          port: "8787",
+        },
+      },
+    };
+  },
+});

@@ -141,6 +141,7 @@
       { "id": "kie-editors-dev-vscode-extension" },
       { "id": "@kie-tools/pmml-editor" },
       { "id": "@kie-tools/vscode-extension-common-test-helpers" },
+      { "id": "@kie-tools/kie-sandbox-accelerator-quarkus" },
       { "id": "@kie-tools/kie-sandbox-distribution" },
       { "id": "@kie-tools/kie-sandbox-extended-services-image" },
       { "id": "@kie-tools/kie-sandbox-webapp-image" },
@@ -1745,6 +1746,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/kie-sandbox-accelerator-quarkus",
+        "target": "@kie-tools/jbpm-quarkus-devui",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/kie-sandbox-distribution",
         "target": "@kie-tools/cors-proxy-image",
         "weight": 1
@@ -1832,6 +1838,16 @@
       {
         "source": "@kie-tools/online-editor",
         "target": "@kie-tools/extended-services",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/online-editor",
+        "target": "@kie-tools/extended-services-java",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/online-editor",
+        "target": "@kie-tools/kie-sandbox-accelerator-quarkus",
         "weight": 1
       },
       {
@@ -2661,6 +2677,7 @@
     ["@kie-tools/kie-bc-editors", "packages/kie-bc-editors"],
     ["kie-editors-dev-vscode-extension", "packages/kie-editors-dev-vscode-extension"],
     ["@kie-tools/kie-editors-standalone", "packages/kie-editors-standalone"],
+    ["@kie-tools/kie-sandbox-accelerator-quarkus", "packages/kie-sandbox-accelerator-quarkus"],
     ["@kie-tools/kie-sandbox-distribution", "packages/kie-sandbox-distribution"],
     ["@kie-tools/kie-sandbox-extended-services-image", "packages/kie-sandbox-extended-services-image"],
     ["@kie-tools/kie-sandbox-fs", "packages/kie-sandbox-fs"],
