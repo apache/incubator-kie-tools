@@ -25,8 +25,7 @@ import { join } from "path";
 import { Dropdown } from "@patternfly/react-core/deprecated";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { FileLabel } from "../../filesList/FileLabel";
-// import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggle";
-import { DropdownToggle } from "@patternfly/react-core/deprecated";
+import { Toggle } from "@patternfly/react-core/dist/js/deprecated/components/Dropdown/Toggle";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
@@ -88,7 +87,7 @@ import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { GitStatusProps } from "../../workspace/components/GitStatusIndicatorActions";
-import { Icon } from "@patternfly/react-core";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 const ROOT_MENU_ID = "rootMenu";
 
@@ -125,7 +124,7 @@ export function FileSwitcher(props: {
   }, [props.workspaceFile]);
 
   const checkNewFileName = useCallback(
-    async (newFileNameWithoutExtension: string) => {
+    async (_event: React.FormEvent<HTMLInputElement>, newFileNameWithoutExtension: string) => {
       const trimmedNewFileNameWithoutExtension = newFileNameWithoutExtension.trim();
       if (trimmedNewFileNameWithoutExtension === props.workspaceFile.nameWithoutExtension) {
         setNewFileNameValid(true);
@@ -255,85 +254,6 @@ export function FileSwitcher(props: {
         className={"kie-sandbox--file-switcher"}
       >
         <FlexItem style={{ display: "flex", alignItems: "baseline", minWidth: 0 }}>
-          <Flex
-            flexWrap={{ default: "nowrap" }}
-            alignItems={{ default: "alignItemsCenter" }}
-            style={{ display: "inline-flex" }}
-          >
-            {/* <FlexItem /> */}
-            <FlexItem>
-              <b>
-                <FileLabel extension={props.workspaceFile.extension} />
-              </b>
-            </FlexItem>
-            <FlexItem>
-              <Popover
-                hasAutoWidth={true}
-                distance={15}
-                showClose={false}
-                shouldClose={() => setPopoverVisible(false)}
-                hideOnOutsideClick={true}
-                enableFlip={false}
-                withFocusTrap={false}
-                bodyContent={
-                  <>
-                    <FolderIcon />
-                    &nbsp;&nbsp;{props.workspaceFile.relativeDirPath.split("/").join(" > ")}
-                  </>
-                }
-                isVisible={isPopoverVisible}
-                position={"bottom-start"}
-              >
-                <div
-                  data-testid={"toolbar-title"}
-                  className={`kogito--editor__toolbar-name-container ${newFileNameValid ? "" : "invalid"}`}
-                  style={{ width: "100%" }}
-                >
-                  <Title
-                    data-testid={"toolbar-title"}
-                    className={`kogito--editor__toolbar-name-container ${newFileNameValid ? "" : "invalid"}`}
-                    aria-label={"EmbeddedEditorFile name"}
-                    headingLevel={"h3"}
-                    size={"2xl"}
-                  >
-                    {props.workspaceFile.nameWithoutExtension}
-                  </Title>
-                  <Tooltip
-                    content={
-                      <Text component={TextVariants.p}>
-                        {`A file already exists at this location or this name has invalid characters. Please choose a different name.`}
-                      </Text>
-                    }
-                    position={"bottom"}
-                    trigger={"manual"}
-                    isVisible={!newFileNameValid}
-                    className="kogito--editor__light-tooltip"
-                  >
-                    <TextInput
-                      style={{ fontWeight: "bold" }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        //FIXME: Change this when it is possible to move a file.
-                        if (props.workspaceFile.relativePath !== props.workspaceFile.name) {
-                          setPopoverVisible(true);
-                        }
-                      }}
-                      onKeyDown={handleWorkspaceFileNameKeyDown}
-                      onChange={(_event, val) => checkNewFileName}
-                      ref={workspaceFileNameRef}
-                      type={"text"}
-                      aria-label={"Edit file name"}
-                      className={"kogito--editor__toolbar-title"}
-                      onBlur={(e) => renameWorkspaceFile(e.target.value)}
-                    />
-                  </Tooltip>
-                </div>
-              </Popover>
-            </FlexItem>
-            {/* <FlexItem>
-              <CaretDownIcon color={"rgb(21, 21, 21)"} />
-            </FlexItem> */}
-          </Flex>
           <Dropdown
             style={{ position: "relative" }}
             position={"left"}
@@ -341,7 +261,7 @@ export function FileSwitcher(props: {
             isOpen={isFilesDropdownOpen}
             isPlain={true}
             toggle={
-              <DropdownToggle
+              <Toggle
                 onToggle={(_event, isOpen) =>
                   setFilesDropdownOpen((prev) => {
                     if (workspaceFileNameRef.current === document.activeElement) {
@@ -352,7 +272,83 @@ export function FileSwitcher(props: {
                   })
                 }
                 id={"editor-page-masthead-files-dropdown-toggle"}
-              ></DropdownToggle>
+              >
+                <Flex flexWrap={{ default: "nowrap" }} alignItems={{ default: "alignItemsCenter" }}>
+                  <FlexItem />
+                  <FlexItem>
+                    <b>
+                      <FileLabel extension={props.workspaceFile.extension} />
+                    </b>
+                  </FlexItem>
+
+                  <FlexItem style={{ minWidth: 0 }}>
+                    <Popover
+                      hasAutoWidth={true}
+                      distance={15}
+                      showClose={false}
+                      shouldClose={() => setPopoverVisible(false)}
+                      hideOnOutsideClick={true}
+                      enableFlip={false}
+                      withFocusTrap={false}
+                      bodyContent={
+                        <>
+                          <FolderIcon />
+                          &nbsp;&nbsp;{props.workspaceFile.relativeDirPath.split("/").join(" > ")}
+                        </>
+                      }
+                      isVisible={isPopoverVisible}
+                      position={"bottom-start"}
+                    >
+                      <div
+                        data-testid={"toolbar-title"}
+                        className={`kogito--editor__toolbar-name-container ${newFileNameValid ? "" : "invalid"}`}
+                        style={{ width: "100%" }}
+                      >
+                        <Title
+                          aria-label={"EmbeddedEditorFile name"}
+                          headingLevel={"h3"}
+                          size={"2xl"}
+                          style={{ fontWeight: "bold" }}
+                        >
+                          {props.workspaceFile.nameWithoutExtension}
+                        </Title>
+                        <Tooltip
+                          content={
+                            <Text component={TextVariants.p}>
+                              {`A file already exists at this location or this name has invalid characters. Please choose a different name.`}
+                            </Text>
+                          }
+                          position={"bottom"}
+                          trigger={"manual"}
+                          isVisible={!newFileNameValid}
+                          className="kogito--editor__light-tooltip"
+                        >
+                          <TextInput
+                            style={{ fontWeight: "bold" }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              //FIXME: Change this when it is possible to move a file.
+                              if (props.workspaceFile.relativePath !== props.workspaceFile.name) {
+                                setPopoverVisible(true);
+                              }
+                            }}
+                            onKeyDown={handleWorkspaceFileNameKeyDown}
+                            onChange={checkNewFileName}
+                            ref={workspaceFileNameRef}
+                            type={"text"}
+                            aria-label={"Edit file name"}
+                            className={"kogito--editor__toolbar-title"}
+                            onBlur={(e) => renameWorkspaceFile(e.target.value)}
+                          />
+                        </Tooltip>
+                      </div>
+                    </Popover>
+                  </FlexItem>
+                  <FlexItem>
+                    <CaretDownIcon color={"rgb(21, 21, 21)"} />
+                  </FlexItem>
+                </Flex>
+              </Toggle>
             }
           >
             <Menu
@@ -1013,18 +1009,13 @@ const FilesMenuItemCarouselCard = (props: {
 }) => {
   const cardInternals = [
     <CardHeader style={{ display: "block" }} key={0}>
-      actions=
-      {
-        <>
-          <FileListItem
-            file={props.file}
-            displayMode={props.displayMode}
-            gitStatusProps={props.gitStatusProps}
-            isCurrentWorkspaceFile={props.isCurrentWorkspaceFile}
-            onDeletedWorkspaceFile={props.onDeletedWorkspaceFile}
-          />
-        </>
-      }
+      <FileListItem
+        file={props.file}
+        displayMode={props.displayMode}
+        gitStatusProps={props.gitStatusProps}
+        isCurrentWorkspaceFile={props.isCurrentWorkspaceFile}
+        onDeletedWorkspaceFile={props.onDeletedWorkspaceFile}
+      />
     </CardHeader>,
     <Divider inset={{ default: "insetMd" }} key={1} />,
     <CardBody style={{ padding: 0 }} key={2}>

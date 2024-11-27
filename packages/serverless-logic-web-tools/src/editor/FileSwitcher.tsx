@@ -23,11 +23,11 @@ import { useRoutes } from "../navigation/Hooks";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { join } from "path";
-import { Dropdown, DropdownToggle } from "@patternfly/react-core/deprecated";
+import { Dropdown } from "@patternfly/react-core/deprecated";
 import { Link } from "react-router-dom";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { FileLabel } from "../workspace/components/FileLabel";
-// import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggle";
+import { Toggle } from "@patternfly/react-core/dist/js/deprecated/components/Dropdown/Toggle";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
@@ -231,7 +231,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
             isOpen={isFilesDropdownOpen}
             isPlain={true}
             toggle={
-              <DropdownToggle
+              <Toggle
                 onToggle={(_event, isOpen: boolean) =>
                   setFilesDropdownOpen((prev) => {
                     if (workspaceFileNameRef.current === document.activeElement) {
@@ -323,7 +323,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                     <CaretDownIcon />
                   </FlexItem>
                 </Flex>
-              </DropdownToggle>
+              </Toggle>
             }
           >
             <Menu

@@ -67,7 +67,7 @@
   font-weight: 100;
 }
 
-.kogito--editor__toolbar-name-container input {
+.kogito--editor__toolbar-name-container span {
   border: var(--pf-v5-global--BorderWidth--md) solid var(--pf-v5-c-page__main-section--m-light--BackgroundColor);
   border-radius: var(--pf-v5-global--BorderRadius--sm);
   padding: var(--pf-v5-global--spacer--xs);
@@ -81,8 +81,12 @@
   overflow: hidden;
 }
 
-.kogito--editor__toolbar-name-container input:focus {
+.kogito--editor__toolbar-name-container span:focus {
   border: var(--pf-v5-global--BorderWidth--md) solid var(--pf-v5-global--active-color--100);
+}
+
+.kogito--editor__toolbar-name-container span input {
+  padding: 0;
 }
 
 .kogito--full-screen__toolbar {
