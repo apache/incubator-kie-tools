@@ -256,20 +256,6 @@ Bootstrap v3.4.1
 Copyright 2011-2019 Twitter, Inc.
 Licensed under the MIT License (MIT)
 
--------------------------------------------------------------------------------------------------------------
-for  files/that/are/present/only/after/repo/is/built/and/are/named/bootstrap-datepicker3-1.6.4.min.cache.css ??????????????
-
-* bootstrap-datepicker (https://github.com/smalot/bootstrap-datetimepicker)
-
-   Copyright 2012 Stefan Petre
-
--------------------------------------------------------------------------------------------------------------
-for  files/that/are/present/only/after/repo/is/built/and/are/named/bootstrap-select.min.js ???????????
-
-* bootstrap-select (http://silviomoreto.github.io/bootstrap-select)
-
-   Copyright 2013-2017 bootstrap-select
-
 ----------------------------------------------------------------------------------------------------------------------
 for packages/stunner-editors/errai-javax-enterprise/src/main/java/javax/enterprise/super/javax/inject/Qualifier.java
     packages/stunner-editors/errai-javax-enterprise/src/main/java/javax/enterprise/super/javax/inject/Named.java
@@ -613,40 +599,12 @@ for packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/s
 Copyright 2011 The Closure Compiler Authors.
 Licensed under the Apache License, Version 2.0
 
--------------------------------------------
-for  ??????????
-
-* libgdx (https://github.com/libgdx/libgdx)
-
-   Copyright (c) 2008, Avian Contributors
-
 ------------------------------------------------------------------------------------------------------------------------
 for packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/java/externs/moment.externs.js
 
 moment.js 2.10.0
 Copyright 2015 TAKAHASHI kazunari
 Licensed under the Apache License, Version 2.0
-
----------------------------------------------------
-for  files/that/has/reference/but/are/present/only/after/project/is/built   ???????????????????????????
-
-    packages/dashbuilder/appformer/uberfire-workbench/uberfire-workbench-client-views-patternfly/target/bootstrap-select/META-INF/resources/webjars/bootstrap-select/1.10.0/docs/custom_theme/base.html
-    packages/dashbuilder/appformer/uberfire-workbench/uberfire-workbench-client-views-patternfly/target/bootstrap-daterangepicker/META-INF/resources/webjars/bootstrap-daterangepicker/2.1.25/website/index.html
-    packages/dashbuilder/appformer/uberfire-workbench/uberfire-workbench-client-views-patternfly/target/bootstrap-daterangepicker/META-INF/resources/webjars/bootstrap-daterangepicker/2.1.25/demo.html
-    packages/stunner-editors/uberfire-workbench/uberfire-workbench-client-views-patternfly/target/bootstrap-daterangepicker/META-INF/resources/webjars/bootstrap-daterangepicker/2.1.25/website/index.html
-    packages/stunner-editors/uberfire-workbench/uberfire-workbench-client-views-patternfly/target/bootstrap-daterangepicker/META-INF/resources/webjars/bootstrap-daterangepicker/2.1.25/demo.html
-
-* Respond.js (https://github.com/scottjehl/Respond)
-
-Copyright 2013 Scott Jehl
-
--------------------------------------------------------
-for  files/present/just/after/repos/is/built/like/file/below?
-    packages/yard-validator/dist/yard-validator-worker.js 
-
-* SnakeYAML (https://bitbucket.org/snakeyaml/snakeyaml)
-
-   Copyright (c) 2018, SnakeYAML
 
 ----------------------------------------------------------------------------
 for packages/serverless-workflow-diagram-editor/lienzo-core/src/test/java/com/ait/lienzo/shared/core/tests/ColorTest.java
