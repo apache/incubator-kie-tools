@@ -575,12 +575,13 @@ func (d *DataIndexHandler) GetSourceBroker() *duckv1.Destination {
 	return GetPlatformBroker(d.platform)
 }
 
-func (d *DataIndexHandler) newTrigger(labels map[string]string, brokerName, namespace, serviceName, tag, eventType, path string, platform *operatorapi.SonataFlowPlatform) *eventingv1.Trigger {
+func (d *DataIndexHandler) newTrigger(labels map[string]string, annotations map[string]string, brokerName, namespace, serviceName, tag, eventType, path string, platform *operatorapi.SonataFlowPlatform) *eventingv1.Trigger {
 	return &eventingv1.Trigger{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      kmeta.ChildName(fmt.Sprintf("data-index-%s-", tag), string(platform.GetUID())),
-			Namespace: namespace,
-			Labels:    labels,
+			Name:        kmeta.ChildName(fmt.Sprintf("data-index-%s-", tag), string(platform.GetUID())),
+			Namespace:   namespace,
+			Labels:      labels,
+			Annotations: annotations,
 		},
 		Spec: eventingv1.TriggerSpec{
 			Broker: brokerName,
@@ -613,7 +614,9 @@ func (d *DataIndexHandler) GenerateKnativeResources(platform *operatorapi.Sonata
 	if len(namespace) == 0 {
 		namespace = platform.Namespace
 	}
-	if err := knative.ValidateBroker(brokerName, namespace); err != nil {
+	var brokerObject *eventingv1.Broker
+	var err error
+	if brokerObject, err = knative.ValidateBroker(brokerName, namespace); err != nil {
 		event := &corev1.Event{
 			Type:    corev1.EventTypeWarning,
 			Reason:  WaitingKnativeEventing,
@@ -621,16 +624,18 @@ func (d *DataIndexHandler) GenerateKnativeResources(platform *operatorapi.Sonata
 		}
 		return nil, event, err
 	}
+	annotations := make(map[string]string)
+	managedAnnotations := make(map[string]string)
+	addTriggerAnnotations(knative.GetBrokerClass(brokerObject), managedAnnotations)
 	serviceName := d.GetServiceName()
 	return []client.Object{
-		d.newTrigger(lbl, brokerName, namespace, serviceName, "process-error", "ProcessInstanceErrorDataEvent", constants.KogitoProcessInstancesEventsPath, platform),
-		d.newTrigger(lbl, brokerName, namespace, serviceName, "process-node", "ProcessInstanceNodeDataEvent", constants.KogitoProcessInstancesEventsPath, platform),
-		d.newTrigger(lbl, brokerName, namespace, serviceName, "process-sla", "ProcessInstanceSLADataEvent", constants.KogitoProcessInstancesEventsPath, platform),
-		d.newTrigger(lbl, brokerName, namespace, serviceName, "process-state", "ProcessInstanceStateDataEvent", constants.KogitoProcessInstancesEventsPath, platform),
-		d.newTrigger(lbl, brokerName, namespace, serviceName, "process-variable", "ProcessInstanceVariableDataEvent", constants.KogitoProcessInstancesEventsPath, platform),
-		d.newTrigger(lbl, brokerName, namespace, serviceName, "process-definition", "ProcessDefinitionEvent", constants.KogitoProcessDefinitionsEventsPath, platform),
-		d.newTrigger(lbl, brokerName, namespace, serviceName, "process-instance-multiple", "MultipleProcessInstanceDataEvent", constants.KogitoProcessInstancesMultiEventsPath, platform),
-		d.newTrigger(lbl, brokerName, namespace, serviceName, "jobs", "JobEvent", constants.KogitoJobsPath, platform)}, nil, nil
+		d.newTrigger(lbl, annotations, brokerName, namespace, serviceName, "process-error", "ProcessInstanceErrorDataEvent", constants.KogitoProcessInstancesEventsPath, platform),
+		d.newTrigger(lbl, annotations, brokerName, namespace, serviceName, "process-node", "ProcessInstanceNodeDataEvent", constants.KogitoProcessInstancesEventsPath, platform),
+		d.newTrigger(lbl, annotations, brokerName, namespace, serviceName, "process-state", "ProcessInstanceStateDataEvent", constants.KogitoProcessInstancesEventsPath, platform),
+		d.newTrigger(lbl, annotations, brokerName, namespace, serviceName, "process-variable", "ProcessInstanceVariableDataEvent", constants.KogitoProcessInstancesEventsPath, platform),
+		d.newTrigger(lbl, annotations, brokerName, namespace, serviceName, "process-definition", "ProcessDefinitionEvent", constants.KogitoProcessDefinitionsEventsPath, platform),
+		d.newTrigger(lbl, annotations, brokerName, namespace, serviceName, "process-instance-multiple", "MultipleProcessInstanceDataEvent", constants.KogitoProcessInstancesMultiEventsPath, platform),
+		d.newTrigger(lbl, managedAnnotations, brokerName, namespace, serviceName, "jobs", "JobEvent", constants.KogitoJobsPath, platform)}, nil, nil
 }
 
 func (d JobServiceHandler) GetSourceBroker() *duckv1.Destination {
@@ -638,6 +643,12 @@ func (d JobServiceHandler) GetSourceBroker() *duckv1.Destination {
 		return d.platform.Spec.Services.JobService.Source
 	}
 	return GetPlatformBroker(d.platform)
+}
+
+func addTriggerAnnotations(brokerClass string, annotations map[string]string) {
+	if knative.IsKafkaBroker(brokerClass) {
+		annotations[knative.KafkaKnativeEventingDeliveryOrder] = knative.KafkaKnativeEventingDeliveryOrderOrdered
+	}
 }
 
 func (d JobServiceHandler) GetSink() *duckv1.Destination {
@@ -658,7 +669,9 @@ func (j *JobServiceHandler) GenerateKnativeResources(platform *operatorapi.Sonat
 		if len(namespace) == 0 {
 			namespace = platform.Namespace
 		}
-		if err := knative.ValidateBroker(brokerName, namespace); err != nil {
+		var brokerObject *eventingv1.Broker
+		var err error
+		if brokerObject, err = knative.ValidateBroker(brokerName, namespace); err != nil {
 			event := &corev1.Event{
 				Type:    corev1.EventTypeWarning,
 				Reason:  WaitingKnativeEventing,
@@ -666,11 +679,14 @@ func (j *JobServiceHandler) GenerateKnativeResources(platform *operatorapi.Sonat
 			}
 			return nil, event, err
 		}
+		annotations := make(map[string]string)
+		addTriggerAnnotations(knative.GetBrokerClass(brokerObject), annotations)
 		jobCreateTrigger := &eventingv1.Trigger{
 			ObjectMeta: metav1.ObjectMeta{
-				Name:      kmeta.ChildName("jobs-service-create-job-", string(platform.GetUID())),
-				Namespace: namespace,
-				Labels:    lbl,
+				Name:        kmeta.ChildName("jobs-service-create-job-", string(platform.GetUID())),
+				Namespace:   namespace,
+				Labels:      lbl,
+				Annotations: annotations,
 			},
 			Spec: eventingv1.TriggerSpec{
 				Broker: brokerName,
@@ -695,9 +711,10 @@ func (j *JobServiceHandler) GenerateKnativeResources(platform *operatorapi.Sonat
 		resultObjs = append(resultObjs, jobCreateTrigger)
 		jobDeleteTrigger := &eventingv1.Trigger{
 			ObjectMeta: metav1.ObjectMeta{
-				Name:      kmeta.ChildName("jobs-service-delete-job-", string(platform.GetUID())),
-				Namespace: namespace,
-				Labels:    lbl,
+				Name:        kmeta.ChildName("jobs-service-delete-job-", string(platform.GetUID())),
+				Namespace:   namespace,
+				Labels:      lbl,
+				Annotations: annotations,
 			},
 			Spec: eventingv1.TriggerSpec{
 				Broker: brokerName,

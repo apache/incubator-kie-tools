@@ -384,7 +384,7 @@ func TriggersCreator(workflow *operatorapi.SonataFlow, plf *operatorapi.SonataFl
 			// No broker configured for the eventType. Skip and will not create trigger for it.
 			continue
 		}
-		if err := knative.ValidateBroker(brokerRef.Name, brokerRef.Namespace); err != nil {
+		if _, err := knative.ValidateBroker(brokerRef.Name, brokerRef.Namespace); err != nil {
 			return nil, err
 		}
 		// construct eventingv1.Trigger
