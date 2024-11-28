@@ -161,9 +161,9 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 	{
 	}
 	return (
-		&lt;div className={&#39;pf-c-form&#39;}&gt;
+		&lt;div className={&#39;pf-v5-c-form&#39;}&gt;
 			&lt;Card&gt;
-				&lt;CardBody className=&#39;pf-c-form&#39;&gt;
+				&lt;CardBody className=&#39;pf-v5-c-form&#39;&gt;
 					&lt;label&gt;
 						&lt;b&gt;Personal data&lt;/b&gt;
 					&lt;/label&gt;
@@ -196,7 +196,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 						/&gt;
 					&lt;/FormGroup&gt;
 					&lt;Card&gt;
-						&lt;CardBody className=&#39;pf-c-form&#39;&gt;
+						&lt;CardBody className=&#39;pf-v5-c-form&#39;&gt;
 							&lt;label&gt;
 								&lt;b&gt;Child&lt;/b&gt;
 							&lt;/label&gt;
@@ -219,7 +219,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 				&lt;/CardBody&gt;
 			&lt;/Card&gt;
 			&lt;Card&gt;
-				&lt;CardBody className=&#39;pf-c-form&#39;&gt;
+				&lt;CardBody className=&#39;pf-v5-c-form&#39;&gt;
 					&lt;label&gt;
 						&lt;b&gt;Address&lt;/b&gt;
 					&lt;/label&gt;
@@ -283,7 +283,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 				&lt;/CardBody&gt;
 			&lt;/Card&gt;
 			&lt;Card&gt;
-				&lt;CardBody className=&#39;pf-c-form&#39;&gt;
+				&lt;CardBody className=&#39;pf-v5-c-form&#39;&gt;
 					&lt;label&gt;
 						&lt;b&gt;Interview&lt;/b&gt;
 					&lt;/label&gt;
