@@ -505,6 +505,11 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
           isRefactorModalOpen={isRefactorModalOpen}
           fromName={variableChangedArgs?.nameChange?.from}
           toName={variableChangedArgs?.nameChange?.to}
+          onCancel={() => {
+            setIsRefactorModalOpen(false);
+            setVariableChangedArgs(undefined);
+            setNewExpression(undefined);
+          }}
         />
         <div style={{ flexGrow: 1 }}>
           <BoxedExpressionEditor

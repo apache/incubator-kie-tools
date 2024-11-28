@@ -124,6 +124,9 @@ export function DecisionServiceProperties({
   const [newName, setNewName] = useState("");
   const identifierId = useMemo(() => decisionService["@_id"], [decisionService]);
   const oldName = useMemo(() => decisionService["@_label"] ?? decisionService["@_name"], [decisionService]);
+  const currentName = useMemo(() => {
+    return newName === "" ? oldName : newName;
+  }, [newName, oldName]);
 
   const applyRename = useCallback(
     (args: {
@@ -190,6 +193,10 @@ export function DecisionServiceProperties({
             });
           });
         }}
+        onCancel={() => {
+          setIsRefactorModalOpen(false);
+          setNewName("");
+        }}
         isRefactorModalOpen={isRefactorModalOpen}
         fromName={oldName}
         toName={newName}
@@ -199,7 +206,7 @@ export function DecisionServiceProperties({
           enableAutoFocusing={false}
           isPlain={false}
           id={decisionService["@_id"]!}
-          name={decisionService["@_name"]}
+          name={currentName}
           isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
           className={"pf-c-form-control"}

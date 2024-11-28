@@ -99,6 +99,16 @@ export function DataTypeName({
   const identifierId = useMemo(() => itemDefinition["@_id"], [itemDefinition]);
   const oldName = useMemo(() => itemDefinition["@_name"], [itemDefinition]);
 
+  const currentName = useMemo(() => {
+    if (editMode === "hover") {
+      return newName === "" ? feelQNameToDisplay.full : newName;
+    } else if (editMode === "double-click") {
+      return newName === "" ? itemDefinition["@_name"] : newName;
+    } else {
+      throw new Error(`Unknown edit mode in DataTypeName: ${editMode}`);
+    }
+  }, [editMode, feelQNameToDisplay.full, itemDefinition, newName]);
+
   const applyRename = useCallback(
     (args: {
       definitions: Normalized<DMN15__tDefinitions>;
@@ -179,6 +189,10 @@ export function DataTypeName({
         isRefactorModalOpen={isRefactorModalOpen}
         fromName={oldName}
         toName={newName}
+        onCancel={() => {
+          setNewName("");
+          setIsRefactorModalOpen(false);
+        }}
       />
       {editMode === "hover" && (
         <InlineFeelNameInput
@@ -186,7 +200,7 @@ export function DataTypeName({
           isReadOnly={isReadOnly}
           id={itemDefinition["@_id"]!}
           shouldCommitOnBlur={_shouldCommitOnBlur}
-          name={feelQNameToDisplay.full}
+          name={currentName}
           onRenamed={onRenamed}
           allUniqueNames={onGetAllUniqueNames}
           enableAutoFocusing={enableAutoFocusing}
@@ -212,7 +226,7 @@ export function DataTypeName({
             setEditing={setEditingLabel}
             onChange={onRenamed}
             shouldCommitOnBlur={shouldCommitOnBlur}
-            value={itemDefinition["@_name"]}
+            value={currentName}
             key={itemDefinition["@_id"]}
             position={"top-left"}
             namedElement={itemDefinition}

@@ -65,6 +65,9 @@ export function InputDataProperties({
   const [newName, setNewName] = useState("");
   const identifierId = useMemo(() => inputData["@_id"], [inputData]);
   const oldName = useMemo(() => inputData["@_label"] ?? inputData["@_name"], [inputData]);
+  const currentName = useMemo(() => {
+    return newName === "" ? oldName : newName;
+  }, [newName, oldName]);
 
   const applyRename = useCallback(
     (args: {
@@ -131,6 +134,10 @@ export function InputDataProperties({
             });
           });
         }}
+        onCancel={() => {
+          setIsRefactorModalOpen(false);
+          setNewName("");
+        }}
         isRefactorModalOpen={isRefactorModalOpen}
         fromName={oldName}
         toName={newName}
@@ -140,7 +147,7 @@ export function InputDataProperties({
           enableAutoFocusing={false}
           isPlain={false}
           id={inputData["@_id"]!}
-          name={inputData["@_name"]}
+          name={currentName}
           isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
           className={"pf-c-form-control"}

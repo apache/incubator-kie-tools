@@ -68,6 +68,9 @@ export function BkmProperties({
   const [newName, setNewName] = useState("");
   const identifierId = useMemo(() => bkm["@_id"], [bkm]);
   const oldName = useMemo(() => bkm["@_label"] ?? bkm["@_name"], [bkm]);
+  const currentName = useMemo(() => {
+    return newName === "" ? oldName : newName;
+  }, [newName, oldName]);
 
   const applyRename = useCallback(
     (args: {
@@ -134,6 +137,10 @@ export function BkmProperties({
             });
           });
         }}
+        onCancel={() => {
+          setIsRefactorModalOpen(false);
+          setNewName("");
+        }}
         isRefactorModalOpen={isRefactorModalOpen}
         fromName={oldName}
         toName={newName}
@@ -143,7 +150,7 @@ export function BkmProperties({
           enableAutoFocusing={false}
           isPlain={false}
           id={bkm["@_id"]!}
-          name={bkm["@_name"]}
+          name={currentName}
           isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
           className={"pf-c-form-control"}

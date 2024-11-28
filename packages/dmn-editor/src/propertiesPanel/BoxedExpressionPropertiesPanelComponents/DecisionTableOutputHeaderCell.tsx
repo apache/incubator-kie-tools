@@ -220,6 +220,9 @@ export function DecisionTableOutputHeaderCell(props: {
             });
           });
         }}
+        onCancel={() => {
+          setIsRefactorModalOpen(false);
+        }}
         isRefactorModalOpen={isRefactorModalOpen}
         fromName={oldName}
         toName={newName}

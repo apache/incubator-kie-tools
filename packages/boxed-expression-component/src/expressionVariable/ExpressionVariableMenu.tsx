@@ -148,7 +148,12 @@ export function ExpressionVariableMenu({
     }
     saveExpression();
     popoverMenuRef?.current?.setIsVisible(false);
-  }, [saveExpression]);
+    // We reset the expression name to its default because the name change could be canceled outside.
+    // If we don't reset it, we will keep it an outdated name.
+    // If the change is confirmed, then the selectExpressionName will be updated to the new one in the next
+    // render of this component.
+    setExpressionName(selectedExpressionName);
+  }, [saveExpression, selectedExpressionName]);
 
   const onCancel = useCallback(() => {
     cancelEdit.current = true;

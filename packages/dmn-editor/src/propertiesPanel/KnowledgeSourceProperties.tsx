@@ -72,6 +72,9 @@ export function KnowledgeSourceProperties({
   const [newName, setNewName] = useState("");
   const identifierId = useMemo(() => knowledgeSource["@_id"], [knowledgeSource]);
   const oldName = useMemo(() => knowledgeSource["@_label"] ?? knowledgeSource["@_name"], [knowledgeSource]);
+  const currentName = useMemo(() => {
+    return newName === "" ? oldName : newName;
+  }, [newName, oldName]);
 
   const applyRename = useCallback(
     (args: {
@@ -138,6 +141,10 @@ export function KnowledgeSourceProperties({
             });
           });
         }}
+        onCancel={() => {
+          setIsRefactorModalOpen(false);
+          setNewName("");
+        }}
         isRefactorModalOpen={isRefactorModalOpen}
         fromName={oldName}
         toName={newName}
@@ -147,7 +154,7 @@ export function KnowledgeSourceProperties({
           enableAutoFocusing={false}
           isPlain={false}
           id={knowledgeSource["@_id"]!}
-          name={knowledgeSource["@_name"]}
+          name={currentName}
           isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
           className={"pf-c-form-control"}

@@ -278,6 +278,9 @@ export const InputDataNode = React.memo(
               });
             });
           }}
+          onCancel={() => {
+            setIsRefactorModalOpen(false);
+          }}
           isRefactorModalOpen={isRefactorModalOpen}
           fromName={oldName}
           toName={newName}
@@ -554,6 +557,9 @@ export const DecisionNode = React.memo(
               });
             });
           }}
+          onCancel={() => {
+            setIsRefactorModalOpen(false);
+          }}
           isRefactorModalOpen={isRefactorModalOpen}
           fromName={oldName}
           toName={newName}
@@ -772,6 +778,9 @@ export const BkmNode = React.memo(
               });
             });
           }}
+          onCancel={() => {
+            setIsRefactorModalOpen(false);
+          }}
           isRefactorModalOpen={isRefactorModalOpen}
           fromName={oldName}
           toName={newName}
@@ -970,6 +979,9 @@ export const KnowledgeSourceNode = React.memo(
                 shouldRenameReferencedExpressions: false,
               });
             });
+          }}
+          onCancel={() => {
+            setIsRefactorModalOpen(false);
           }}
           isRefactorModalOpen={isRefactorModalOpen}
           fromName={oldName}
@@ -1346,6 +1358,9 @@ export const DecisionServiceNode = React.memo(
                 shouldRenameReferencedExpressions: false,
               });
             });
+          }}
+          onCancel={() => {
+            setIsRefactorModalOpen(false);
           }}
           isRefactorModalOpen={isRefactorModalOpen}
           fromName={oldName}

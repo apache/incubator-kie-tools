@@ -65,6 +65,9 @@ export function DecisionProperties({
   const [newName, setNewName] = useState("");
   const identifierId = useMemo(() => decision["@_id"], [decision]);
   const oldName = useMemo(() => decision["@_label"] ?? decision["@_name"], [decision]);
+  const currentName = useMemo(() => {
+    return newName === "" ? oldName : newName;
+  }, [newName, oldName]);
 
   const applyRename = useCallback(
     (args: {
@@ -131,6 +134,10 @@ export function DecisionProperties({
             });
           });
         }}
+        onCancel={() => {
+          setIsRefactorModalOpen(false);
+          setNewName("");
+        }}
         isRefactorModalOpen={isRefactorModalOpen}
         fromName={oldName}
         toName={newName}
@@ -140,7 +147,7 @@ export function DecisionProperties({
           enableAutoFocusing={false}
           isPlain={false}
           id={decision["@_id"]!}
-          name={decision["@_name"]}
+          name={currentName}
           isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
           className={"pf-c-form-control"}

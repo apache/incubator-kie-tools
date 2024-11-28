@@ -28,12 +28,14 @@ import { DmnLatestModel } from "@kie-tools/dmn-marshaller/dist";
 export function RefactorConfirmationDialog({
   onConfirmExpressionRefactor,
   onConfirmRenameOnly,
+  onCancel,
   isRefactorModalOpen,
   fromName,
   toName,
 }: {
   onConfirmExpressionRefactor: () => void;
   onConfirmRenameOnly: () => void;
+  onCancel: () => void;
   isRefactorModalOpen: boolean;
   fromName: string | undefined;
   toName: string | undefined;
@@ -43,12 +45,13 @@ export function RefactorConfirmationDialog({
       aria-labelledby={"identifier-renamed"}
       variant={ModalVariant.small}
       isOpen={isRefactorModalOpen}
-      showClose={false}
+      showClose={true}
+      onClose={onCancel}
       actions={[
         <Button key="confirm" variant={ButtonVariant.primary} onClick={onConfirmExpressionRefactor}>
           Yes, rename and update the expressions
         </Button>,
-        <Button key="cancel" variant="link" onClick={onConfirmRenameOnly}>
+        <Button key="rename" variant={ButtonVariant.secondary} onClick={onConfirmRenameOnly}>
           No, just rename
         </Button>,
       ]}
