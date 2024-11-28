@@ -19,6 +19,7 @@ package persistence
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/magiconair/properties"
 
@@ -169,4 +170,59 @@ func GetPostgreSQLWorkflowProperties(workflow *operatorapi.SonataFlow) *properti
 		props.Set(KogitoPersistenceProtoMarshaller, "false")
 	}
 	return props
+}
+
+// GetDBSchemaName Parses jdbc url and returns the schema name
+func GetDBSchemaName(persistencePostgreSQL *operatorapi.PersistencePostgreSQL, defaultSchemaName string) string {
+	if persistencePostgreSQL != nil && persistencePostgreSQL.ServiceRef != nil && len(persistencePostgreSQL.ServiceRef.DatabaseSchema) > 0 {
+		return persistencePostgreSQL.ServiceRef.DatabaseSchema
+	}
+
+	if persistencePostgreSQL != nil && len(persistencePostgreSQL.JdbcUrl) > 0 {
+		jdbcURL := persistencePostgreSQL.JdbcUrl
+		_, a, found := strings.Cut(jdbcURL, "currentSchema=")
+
+		if found {
+			if strings.Contains(a, "&") {
+				b, _, found := strings.Cut(a, "&")
+				if found {
+					return b
+				}
+			} else {
+				return a
+			}
+		}
+	}
+	return defaultSchemaName
+}
+
+func MapToPersistencePostgreSQL(platform *operatorapi.SonataFlowPlatform, defaultSchemaName string) *operatorapi.PersistencePostgreSQL {
+	if platform.Spec.Persistence != nil && platform.Spec.Persistence.PostgreSQL != nil {
+		persistencePostgreSQL := &operatorapi.PersistencePostgreSQL{}
+		persistencePostgreSQL.SecretRef = platform.Spec.Persistence.PostgreSQL.SecretRef
+
+		if len(platform.Spec.Persistence.PostgreSQL.JdbcUrl) > 0 {
+			persistencePostgreSQL.JdbcUrl = platform.Spec.Persistence.PostgreSQL.JdbcUrl
+		}
+
+		serviceRef := &operatorapi.PostgreSQLServiceOptions{}
+		if platform.Spec.Persistence.PostgreSQL.ServiceRef != nil {
+
+			serviceRef.DatabaseSchema = defaultSchemaName
+			serviceRef.SQLServiceOptions = &operatorapi.SQLServiceOptions{}
+
+			if len(platform.Spec.Persistence.PostgreSQL.ServiceRef.Name) > 0 {
+				serviceRef.SQLServiceOptions.Name = platform.Spec.Persistence.PostgreSQL.ServiceRef.Name
+			}
+
+			if len(platform.Spec.Persistence.PostgreSQL.ServiceRef.DatabaseName) > 0 {
+				serviceRef.SQLServiceOptions.DatabaseName = platform.Spec.Persistence.PostgreSQL.ServiceRef.DatabaseName
+			}
+
+			persistencePostgreSQL.ServiceRef = serviceRef
+		}
+		return persistencePostgreSQL
+	}
+
+	return nil
 }
