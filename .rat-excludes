@@ -532,6 +532,10 @@ update-readmes.js
 .helmignore
 # packages/kie-sandbox-helm-chart/src/Chart.lock
 Chart.lock
+# packages/kie-sandbox-helm-chart/src/Chart.yaml
+Chart.yaml
+# packages/kie-sandbox-helm-chart/src/charts/cors_proxy/Chart.yaml
+Chart.yaml
 # packages/kie-sandbox-helm-chart/src/charts/cors_proxy/templates/_helpers.tpl
 _helpers.tpl
 # packages/kie-sandbox-helm-chart/src/charts/cors_proxy/templates/deployment.yaml.helm
@@ -546,6 +550,8 @@ route.yaml.helm
 service.yaml.helm
 # packages/kie-sandbox-helm-chart/src/charts/cors_proxy/templates/serviceaccount.yaml.helm
 serviceaccount.yaml.helm
+# packages/kie-sandbox-helm-chart/src/charts/extended_services/Chart.yaml
+Chart.yaml
 # packages/kie-sandbox-helm-chart/src/charts/extended_services/templates/_helpers.tpl
 _helpers.tpl
 # packages/kie-sandbox-helm-chart/src/charts/extended_services/templates/deployment.yaml.helm
@@ -560,6 +566,8 @@ route.yaml.helm
 service.yaml.helm
 # packages/kie-sandbox-helm-chart/src/charts/extended_services/templates/serviceaccount.yaml.helm
 serviceaccount.yaml.helm
+# packages/kie-sandbox-helm-chart/src/charts/kie_sandbox/Chart.yaml
+Chart.yaml
 # packages/kie-sandbox-helm-chart/src/charts/kie_sandbox/templates/_helpers.tpl
 _helpers.tpl
 # packages/kie-sandbox-helm-chart/src/charts/kie_sandbox/templates/deployment.yaml.helm
@@ -688,6 +696,10 @@ update-readmes.js
 .helmignore
 # packages/runtime-tools-consoles-helm-chart/src/Chart.lock
 Chart.lock
+# packages/runtime-tools-consoles-helm-chart/src/Chart.yaml
+Chart.yaml
+# packages/runtime-tools-consoles-helm-chart/src/charts/management-console/Chart.yaml
+Chart.yaml
 # packages/runtime-tools-consoles-helm-chart/src/charts/management-console/templates/_helpers.tpl
 _helpers.tpl
 # packages/runtime-tools-consoles-helm-chart/src/charts/management-console/templates/deployment.yaml.helm
