@@ -10,10 +10,10 @@ exports[`EditorEnvelopeView after loading stops 1`] = `
     >
       <svg
         aria-hidden="true"
+        class="pf-v5-svg"
         fill="currentColor"
         height="1em"
         role="img"
-        style="vertical-align: -0.125em;"
         viewBox="0 0 576 512"
         width="1em"
       >
@@ -26,7 +26,6 @@ exports[`EditorEnvelopeView after loading stops 1`] = `
       style="position: absolute; width: 100vw; height: 100vh; top: 0px; left: 0px;"
     />
   </div>
-  <div />
 </body>
 `;
 
@@ -40,10 +39,10 @@ exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
     >
       <svg
         aria-hidden="true"
+        class="pf-v5-svg"
         fill="currentColor"
         height="1em"
         role="img"
-        style="vertical-align: -0.125em;"
         viewBox="0 0 576 512"
         width="1em"
       >
@@ -63,7 +62,6 @@ exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
       </div>
     </div>
   </div>
-  <div />
 </body>
 `;
 
@@ -77,10 +75,10 @@ exports[`EditorEnvelopeView after set content 1`] = `
     >
       <svg
         aria-hidden="true"
+        class="pf-v5-svg"
         fill="currentColor"
         height="1em"
         role="img"
-        style="vertical-align: -0.125em;"
         viewBox="0 0 576 512"
         width="1em"
       >
@@ -100,7 +98,6 @@ exports[`EditorEnvelopeView after set content 1`] = `
       </div>
     </div>
   </div>
-  <div />
 </body>
 `;
 
@@ -116,33 +113,32 @@ exports[`EditorEnvelopeView first open 1`] = `
         data-testid="loading-screen-div"
       >
         <div
-          class="pf-l-bullseye"
+          class="pf-v5-l-bullseye"
         >
           <div
             class="kie-tools--loading-screen-spinner"
           >
             <div>
-              <span
+              <svg
                 aria-label="Contents"
                 aria-valuetext="Loading..."
-                class="pf-c-spinner pf-m-xl"
+                class="pf-v5-c-spinner pf-m-xl"
                 role="progressbar"
+                viewBox="0 0 100 100"
               >
-                <span
-                  class="pf-c-spinner__clipper"
+                <circle
+                  class="pf-v5-c-spinner__path"
+                  cx="50"
+                  cy="50"
+                  fill="none"
+                  r="45"
                 />
-                <span
-                  class="pf-c-spinner__lead-ball"
-                />
-                <span
-                  class="pf-c-spinner__tail-ball"
-                />
-              </span>
+              </svg>
             </div>
             <h5
-              class="pf-c-title pf-m-md"
+              class="pf-v5-c-title pf-m-md"
               data-ouia-component-id="OUIA-Generated-Title-1"
-              data-ouia-component-type="PF4/Title"
+              data-ouia-component-type="PF5/Title"
               data-ouia-safe="true"
             >
               Loading...
