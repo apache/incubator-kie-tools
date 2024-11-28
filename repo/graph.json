@@ -173,6 +173,7 @@
       { "id": "@kie-tools/runtime-tools-swf-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-swf-gateway-api" },
       { "id": "@kie-tools/runtime-tools-swf-webapp-components" },
+      { "id": "@kie-tools/runtime-tools-task-console-webapp" },
       { "id": "@kie-tools/scesim-editor" },
       { "id": "@kie-tools/scesim-marshaller" },
       { "id": "@kie-tools/scesim-editor-envelope" },
@@ -2151,6 +2152,21 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/runtime-tools-task-console-webapp",
+        "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-task-console-webapp",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-task-console-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/scesim-editor",
         "target": "@kie-tools/boxed-expression-component",
         "weight": 1
@@ -2720,6 +2736,7 @@
     ["@kie-tools/runtime-tools-swf-enveloped-components", "packages/runtime-tools-swf-enveloped-components"],
     ["@kie-tools/runtime-tools-swf-gateway-api", "packages/runtime-tools-swf-gateway-api"],
     ["@kie-tools/runtime-tools-swf-webapp-components", "packages/runtime-tools-swf-webapp-components"],
+    ["@kie-tools/runtime-tools-task-console-webapp", "packages/runtime-tools-task-console-webapp"],
     ["@kie-tools/scesim-editor", "packages/scesim-editor"],
     ["@kie-tools/scesim-editor-envelope", "packages/scesim-editor-envelope"],
     ["@kie-tools/scesim-marshaller", "packages/scesim-marshaller"],

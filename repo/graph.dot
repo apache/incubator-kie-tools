@@ -165,6 +165,7 @@ digraph G {
   "@kie-tools/runtime-tools-swf-enveloped-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-swf-gateway-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-swf-webapp-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/runtime-tools-task-console-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/scesim-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/scesim-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/scesim-editor-envelope" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -529,6 +530,9 @@ digraph G {
   "@kie-tools/runtime-tools-swf-gateway-api" -> "@kie-tools/runtime-tools-shared-gateway-api" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-swf-gateway-api" -> "@kie-tools/jest-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/runtime-tools-swf-webapp-components" -> "@kie-tools/runtime-tools-swf-enveloped-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-task-console-webapp" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-task-console-webapp" -> "@kie-tools/runtime-tools-process-webapp-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-task-console-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/scesim-editor" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
   "@kie-tools/scesim-editor" -> "@kie-tools/scesim-marshaller" [ style = "solid", color = "blue" ];
   "@kie-tools/scesim-editor-envelope" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
