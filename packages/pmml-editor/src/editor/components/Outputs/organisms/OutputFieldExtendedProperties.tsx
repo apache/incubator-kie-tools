@@ -28,7 +28,8 @@ import { GenericSelector, GenericSelectorOption } from "../../EditorScorecard/at
 import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
-import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 interface OutputFieldExtendedPropertiesProps {
   modelIndex: number;

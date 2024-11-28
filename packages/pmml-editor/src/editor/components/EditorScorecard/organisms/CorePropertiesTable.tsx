@@ -41,7 +41,8 @@ import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import set = Reflect.set;
 import get = Reflect.get;
-import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 export interface CoreProperties {
   modelIndex: number;

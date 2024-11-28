@@ -39,7 +39,8 @@ import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { DevDeploymentsTokensList } from "./DevDeploymentsTokensList";
-import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 interface Props {
   workspaceFile: WorkspaceFile;

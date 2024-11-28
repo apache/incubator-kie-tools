@@ -32,7 +32,8 @@ import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation, useOperation } from "../../EditorScorecard";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
-import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 interface OutputFieldEditRowProps {
   modelIndex: number;

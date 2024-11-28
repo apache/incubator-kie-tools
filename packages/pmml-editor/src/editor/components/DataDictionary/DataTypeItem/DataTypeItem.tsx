@@ -39,7 +39,8 @@ import PropertiesLabels from "../PropertiesLabels/PropertiesLabels";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 import { ValidationIndicator } from "../../EditorCore/atoms";
-import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 interface DataTypeItemProps {
   dataType: DDDataField;

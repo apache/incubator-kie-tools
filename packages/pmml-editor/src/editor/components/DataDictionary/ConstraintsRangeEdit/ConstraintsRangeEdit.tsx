@@ -32,7 +32,9 @@ import { RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContai
 import "./ConstraintsRangeEdit.scss";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
-import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
+
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 interface ConstraintsRangeEditProps {
   dataFieldIndex: number | undefined;

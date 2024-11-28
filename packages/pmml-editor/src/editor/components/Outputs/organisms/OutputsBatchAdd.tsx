@@ -24,7 +24,8 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { ActionGroup, Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import "./OutputsBatchAdd.scss";
-import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 interface OutputsBatchAddProps {
   onAdd: (types: string) => void;

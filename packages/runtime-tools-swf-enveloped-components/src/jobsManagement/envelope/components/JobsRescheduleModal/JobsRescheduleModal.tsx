@@ -29,7 +29,8 @@ import { Job } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import "../styles.css";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
-import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 interface IOwnProps {
   actionType: string;

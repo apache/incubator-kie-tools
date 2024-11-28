@@ -33,7 +33,8 @@ import { ArrowAltCircleLeftIcon } from "@patternfly/react-icons/dist/js/icons/ar
 import { ConstraintType, DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
 import "./DataDictionaryPropertiesEdit.scss";
-import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 interface DataDictionaryPropertiesEditProps {
   dataType: DDDataField;

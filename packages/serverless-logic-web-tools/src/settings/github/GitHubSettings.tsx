@@ -45,7 +45,8 @@ import { QuickStartIds } from "../../quickstarts-data";
 import { AuthStatus, useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { SettingsPageContainer } from "../SettingsPageContainer";
 import { SettingsPageProps } from "../types";
-import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 const PAGE_TITLE = "GitHub";
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;

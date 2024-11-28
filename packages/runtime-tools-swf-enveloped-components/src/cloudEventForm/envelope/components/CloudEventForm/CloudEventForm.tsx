@@ -43,7 +43,8 @@ import {
   KOGITO_BUSINESS_KEY,
   KOGITO_PROCESS_REFERENCE_ID,
 } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
-import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 export interface CloudEventFormProps {
   driver: CloudEventFormDriver;

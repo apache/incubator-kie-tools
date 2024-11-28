@@ -28,7 +28,8 @@ import { ConstraintType, DDDataField, RangeConstraint } from "../DataDictionaryC
 import ConstraintsRangeEdit from "../ConstraintsRangeEdit/ConstraintsRangeEdit";
 import ConstraintsEnumEdit from "../ConstraintsEnumEdit/ConstraintsEnumEdit";
 import "./ConstraintsEdit.scss";
-import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 interface ConstraintsEditProps {
   dataType: DDDataField;

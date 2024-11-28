@@ -42,7 +42,8 @@ import { useValidationRegistry } from "../../../validation";
 import { isEqual } from "lodash";
 import get = Reflect.get;
 import set = Reflect.set;
-import { FormHelperText, HelperText, HelperTextItem } from "@patternfly/react-core";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 interface CharacteristicsTableEditRowProps {
   modelIndex: number;
