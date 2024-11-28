@@ -22,7 +22,7 @@ import { FormGroup, FormGroupProps, FormHelperText } from "@patternfly/react-cor
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { filterDOMProps } from "uniforms";
-import { Icon } from "@patternfly/react-core";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 declare module "uniforms" {

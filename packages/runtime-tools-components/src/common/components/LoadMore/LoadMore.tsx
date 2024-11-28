@@ -25,7 +25,7 @@ import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { OUIAProps, componentOuiaProps } from "../../ouiaTools";
 import "../styles.css";
 import { CheckIcon } from "@patternfly/react-icons/dist/js/icons/check-icon";
-import { Icon } from "@patternfly/react-core";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 interface IOwnProps {
   offset: number;

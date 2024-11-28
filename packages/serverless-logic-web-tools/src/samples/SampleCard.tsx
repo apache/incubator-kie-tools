@@ -32,7 +32,7 @@ import { useRoutes } from "../navigation/Hooks";
 import { SampleCategoryComponent } from "./SampleCategoryComponent";
 import { Sample } from "./types";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
-import { Icon } from "@patternfly/react-core";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 function SampleSvgImg(props: {
   sample: Sample;

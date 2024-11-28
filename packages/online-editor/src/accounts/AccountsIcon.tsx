@@ -45,7 +45,7 @@ import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDi
 import { ConnectToOpenShiftSection } from "./openshift/ConnectToOpenShiftSection";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ConnectToKubernetesSection } from "./kubernetes/ConnectToKubernetesSection";
-import { Icon } from "@patternfly/react-core";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 export function AccountsIcon() {
   const accounts = useAccounts();

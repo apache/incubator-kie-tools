@@ -50,7 +50,7 @@ import { useDmnEditor } from "../DmnEditorContext";
 import { getDrdId } from "./drd/drdId";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
-import { Icon } from "@patternfly/react-core";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE = "application/kie-dmn-editor--new-node-from-palette";
 

@@ -48,7 +48,7 @@ import {
   saveConfigCookie,
 } from "./RuntimeToolsConfig";
 import { removeTrailingSlashFromUrl } from "../../url";
-import { Icon } from "@patternfly/react-core";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { isDataIndexUrlValid } from "../../url";
 import { Alert } from "@patternfly/react-core/dist/js";
 import { useAppI18n } from "../../i18n";

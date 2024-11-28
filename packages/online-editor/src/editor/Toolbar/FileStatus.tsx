@@ -28,7 +28,7 @@ import OutlinedClockIcon from "@patternfly/react-icons/dist/js/icons/outlined-cl
 import DesktopIcon from "@patternfly/react-icons/dist/js/icons/desktop-icon";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import OutlinedHddIcon from "@patternfly/react-icons/dist/js/icons/outlined-hdd-icon";
-import { Icon } from "@patternfly/react-core";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 type Props = {
   workspace: ActiveWorkspace;

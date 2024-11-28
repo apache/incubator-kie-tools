@@ -50,7 +50,7 @@ import {
   resetConfigCookie,
   saveConfigCookie,
 } from "./ServiceRegistryConfig";
-import { Icon } from "@patternfly/react-core";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 const PAGE_TITLE = "Service Registry";
 

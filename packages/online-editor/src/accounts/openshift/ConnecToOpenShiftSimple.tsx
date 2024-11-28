@@ -45,7 +45,7 @@ import {
   isKubernetesConnectionValid,
 } from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
-import { Icon } from "@patternfly/react-core";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",

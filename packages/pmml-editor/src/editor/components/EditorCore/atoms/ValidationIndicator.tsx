@@ -24,7 +24,7 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 
 import "./ModelTitle.scss";
 import { ValidationEntry, ValidationLevel } from "../../../validation";
-import { Icon } from "@patternfly/react-core";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 interface ValidationIndicatorProps {
   validations: ValidationEntry[];

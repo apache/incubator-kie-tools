@@ -43,7 +43,7 @@ import {
 } from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
 import { KubernetesSettingsTabMode } from "./ConnectToKubernetesSection";
 import ArrowRightIcon from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
-import { Icon } from "@patternfly/react-core";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",

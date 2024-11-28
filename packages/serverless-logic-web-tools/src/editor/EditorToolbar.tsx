@@ -102,7 +102,7 @@ import { Link } from "react-router-dom";
 import { routes } from "../navigation/Routes";
 import { isEditable } from "../extension";
 import { ConfirmDeleteModal } from "../table";
-import { Icon } from "@patternfly/react-core";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;

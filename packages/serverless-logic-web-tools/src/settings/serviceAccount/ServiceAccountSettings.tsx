@@ -43,7 +43,7 @@ import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { SettingsPageContainer } from "../SettingsPageContainer";
 import { SettingsPageProps } from "../types";
 import { EMPTY_CONFIG, isServiceAccountConfigValid, resetConfigCookie, saveConfigCookie } from "./ServiceAccountConfig";
-import { Icon } from "@patternfly/react-core";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 const PAGE_TITLE = "Service Account";
 

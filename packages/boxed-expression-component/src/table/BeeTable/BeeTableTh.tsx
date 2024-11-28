@@ -29,7 +29,7 @@ import {
 } from "../../selection/BeeTableSelectionContext";
 import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 import { InsertRowColumnsDirection } from "../../api";
-import { Icon } from "@patternfly/react-core";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 export interface BeeTableThProps<R extends object> {
   groupType: string | undefined;

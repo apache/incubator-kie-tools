@@ -32,7 +32,7 @@ import {
 import { AuthProviderIcon } from "./AuthProviderIcon";
 import { AuthProvider, AuthProviderGroup } from "./AuthProvidersApi";
 import { useAuthProviders } from "./AuthProvidersContext";
-import { Icon } from "@patternfly/react-core";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 export function AuthProvidersGallery(props: {
   backActionKind: AccountsDispatchActionKind.GO_HOME | AccountsDispatchActionKind.SELECT_AUTH_PROVIDER;

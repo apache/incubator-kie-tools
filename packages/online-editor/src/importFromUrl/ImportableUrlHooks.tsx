@@ -39,7 +39,7 @@ import { PromiseStateStatus, useLivePromiseState } from "@kie-tools-core/react-h
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { GitServerRef } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/GitServerRef";
 import { GitRefTypeIcon } from "../gitRefs/GitRefTypeIcon";
-import { Icon } from "@patternfly/react-core";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 export enum UrlType {
   //git

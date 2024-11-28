@@ -42,7 +42,7 @@ import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { EMPTY_CONFIG, saveConfigCookie, saveDevModeEnabledConfigCookie } from "./OpenShiftSettingsConfig";
 import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons";
-import { Icon } from "@patternfly/react-core";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",

@@ -43,7 +43,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
 import { v4 as uuid } from "uuid";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
-import { Icon } from "@patternfly/react-core";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 export type AuthSessionSelectItem = {
   groupLabel: string;
