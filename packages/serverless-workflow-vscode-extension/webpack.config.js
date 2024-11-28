@@ -24,8 +24,8 @@ const { merge } = require("webpack-merge");
 const { ProvidePlugin } = require("webpack");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 
-const commonConfig = (env) =>
-  merge(common(env), {
+const commonConfig = (webpackEnv) =>
+  merge(common(webpackEnv), {
     output: {
       library: "ServerlessWorkflowEditor",
       libraryTarget: "umd",
@@ -37,14 +37,14 @@ const commonConfig = (env) =>
     },
   });
 
-module.exports = async (env) => [
-  merge(commonConfig(env), {
+module.exports = async (webpackEnv) => [
+  merge(commonConfig(webpackEnv), {
     target: "node",
     entry: {
       "extension/extension": "./src/extension/extension.ts",
     },
   }),
-  merge(commonConfig(env), {
+  merge(commonConfig(webpackEnv), {
     target: "webworker",
     entry: {
       "extension/extensionWeb": "./src/extension/extension.ts",
@@ -56,7 +56,7 @@ module.exports = async (env) => [
       }),
     ],
   }),
-  merge(commonConfig(env), {
+  merge(commonConfig(webpackEnv), {
     target: "web",
     entry: {
       "webview/editors/serverless-workflow/serverless-workflow-diagram-editor-envelope":

@@ -40,15 +40,15 @@ module.exports = composeEnv([rootEnv], {
       description: "HTTP port",
     },
     EXTENDED_SERVICES__nativeBinaryPath_macOS: {
-      default: `./dist-dev/jitexecutor-native-darwin-${rootEnv.env.kogitoRuntime.version}-runner`,
+      default: `./dist-dev/jitexecutor-native-darwin-${rootEnv.env.versions.kogito}-runner`,
       description: "",
     },
     EXTENDED_SERVICES__nativeBinaryPath_linux: {
-      default: `./dist-dev/jitexecutor-native-linux-${rootEnv.env.kogitoRuntime.version}-runner`,
+      default: `./dist-dev/jitexecutor-native-linux-${rootEnv.env.versions.kogito}-runner`,
       description: "",
     },
     EXTENDED_SERVICES__nativeBinaryPath_win32: {
-      default: `.\\dist-dev\\jitexecutor-native-win32-${rootEnv.env.kogitoRuntime.version}-runner.exe`,
+      default: `.\\dist-dev\\jitexecutor-native-win32-${rootEnv.env.versions.kogito}-runner.exe`,
       description: "",
     },
   }),

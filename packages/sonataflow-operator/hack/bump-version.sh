@@ -23,12 +23,16 @@ set -e
 script_dir_path=$(dirname "${BASH_SOURCE[0]}")
 source "${script_dir_path}"/env.sh
 
-imageName=$(pnpm build-env sontaflowOperator.registry)/$(pnpm build-env sontaflowOperator.account)/$(pnpm build-env sontaflowOperator.name)
-imageTag=$(pnpm build-env sontaflowOperator.buildTag)
-version=$(pnpm build-env sontaflowOperator.version)
+imageName=$(pnpm build-env sonataFlowOperator.registry)/$(pnpm build-env sonataFlowOperator.account)/$(pnpm build-env sonataFlowOperator.name)
+imageTag=$(pnpm build-env sonataFlowOperator.buildTag)
+version=$(pnpm build-env sonataFlowOperator.version)
 
-targetSonataflowBuilderImage=$(pnpm build-env sontaflowOperator.sonataflowBuilderImage)
-targetSonataflowDevModeImage=$(pnpm build-env sontaflowOperator.sonataflowDevModeImage)
+targetSonataflowBuilderImage=$(pnpm build-env sonataFlowOperator.sonataflowBuilderImage)
+targetSonataflowDevModeImage=$(pnpm build-env sonataFlowOperator.sonataflowDevModeImage)
+targetKogitoDataIndexEphemeralImage=$(pnpm build-env sonataFlowOperator.kogitoDataIndexEphemeralImage)
+targetKogitoDataIndexPostgresqlImage=$(pnpm build-env sonataFlowOperator.kogitoDataIndexPostgresqlImage)
+targetKogitoJobsServiceEphemeralImage=$(pnpm build-env sonataFlowOperator.kogitoJobsServiceEphemeralImage)
+targetKogitoJobsServicePostgresqlImage=$(pnpm build-env sonataFlowOperator.kogitoJobsServicePostgresqlImage)
 
 if [ -z "${version}" ]; then
   echo "Please inform the new version"
@@ -41,11 +45,6 @@ targetSonataflowOperatorImage="${imageName}:${imageTag}"
 
 echo "Set new version to ${version} (majorMinor = ${newMajorMinorVersion}, imageName:imageTag = ${targetSonataflowOperatorImage})"
 
-node -p "require('replace-in-file').sync({ from: /\bVERSION\ \?=.*\b/g, to: 'VERSION ?= ${version}', files: ['./Makefile'] });"
-node -p "require('replace-in-file').sync({ from: /\bREDUCED_VERSION\ \?=.*\b/g, to: 'REDUCED_VERSION ?= ${newMajorMinorVersion}', files: ['./Makefile'] });"
-node -p "require('replace-in-file').sync({ from: /\bIMAGE_TAG\ \?=.*\b/g, to: 'IMAGE_TAG ?= ${imageTag}', files: ['./Makefile'] });"
-node -p "require('replace-in-file').sync({ from: /\bIMAGE_TAG_BASE\ \?=.*\b/g, to: 'IMAGE_TAG_BASE ?= ${imageName}', files: ['./Makefile'] });"
-
 node -p "require('replace-in-file').sync({ from: /\bnewTag:.*\b/g, to: 'newTag: ${version}', files: ['./config/manager/kustomization.yaml'] });"
 node -p "require('replace-in-file').sync({ from: /\bnewName:.*\b/g, to: 'newName: ${imageName}', files: ['./config/manager/kustomization.yaml'] });"
 
@@ -56,14 +55,19 @@ node -p "require('replace-in-file').sync({ from: /\bversion: .*\b/g, to: 'versio
 node -p "require('replace-in-file').sync({ from: /docker\.io\/apache\/incubator-kie-sonataflow-builder:[\w\.]*/g, to: '${targetSonataflowBuilderImage}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*Dockerfile', '**/*.go'] });"
 node -p "require('replace-in-file').sync({ from: /docker\.io\/apache\/incubator-kie-sonataflow-devmode:[\w\.]*/g, to: '${targetSonataflowDevModeImage}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*Dockerfile', '**/*.go'] });"
 node -p "require('replace-in-file').sync({ from: /docker\.io\/apache\/incubator-kie-sonataflow-operator:[\w\.]*/g, to: '${targetSonataflowOperatorImage}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*Dockerfile', '**/*.go'] });"
+node -p "require('replace-in-file').sync({ from: /docker\.io\/apache\/incubator-kie-kogito-data-index-ephemeral:[\w\.]*/g, to: '${targetKogitoDataIndexEphemeralImage}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*Dockerfile', '**/*.go'] });"
+node -p "require('replace-in-file').sync({ from: /docker\.io\/apache\/incubator-kie-kogito-data-index-postgresql:[\w\.]*/g, to: '${targetKogitoDataIndexPostgresqlImage}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*Dockerfile', '**/*.go'] });"
+node -p "require('replace-in-file').sync({ from: /docker\.io\/apache\/incubator-kie-kogito-jobs-service-ephemeral:[\w\.]*/g, to: '${targetKogitoJobsServiceEphemeralImage}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*Dockerfile', '**/*.go'] });"
+node -p "require('replace-in-file').sync({ from: /docker\.io\/apache\/incubator-kie-kogito-jobs-service-postgresql:[\w\.]*/g, to: '${targetKogitoJobsServicePostgresqlImage}', files: ['**/*.yaml', '**/*.containerfile', '**/*.dockerfile', '**/*Dockerfile', '**/*.go'] });"
+
 node -p "require('replace-in-file').sync({ from: /sonataflow-operator-system\/sonataflow-operator:[\w\.]*/g, to: 'sonataflow-operator-system/sonataflow-operator:${imageTag}', files: ['**/*.yaml'] });"
 
-node -p "require('replace-in-file').sync({ from: /\bOperatorVersion = .*/g, to: 'OperatorVersion = \"${version}\"', files: ['version/version.go'] });"
+node -p "require('replace-in-file').sync({ from: /\boperatorVersion = .*/g, to: 'operatorVersion = \"${version}\"', files: ['version/version.go'] });"
 node -p "require('replace-in-file').sync({ from: /\btagVersion = .*/g, to: 'tagVersion = \"${imageTag}\"', files: ['version/version.go'] });"
-node -p "require('replace-in-file').sync({ from: /\bkogitoImagesTagVersion = .*/g, to: 'kogitoImagesTagVersion = \"${imageTag}\"', files: ['version/version.go'] });"
+
 node -p "require('replace-in-file').sync({ from: /\bcontainerImage:.*\b/g, to: 'containerImage: ${targetSonataflowOperatorImage}', files: ['$(getCsvFile)'] });"
 
 make generate-all
 make vet
 
-echo "Version bumped to ${new_version}"
+echo "Version bumped to ${version}"

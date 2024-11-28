@@ -99,7 +99,7 @@ export class TaskInboxGatewayApiImpl implements TaskInboxGatewayApi {
   query(offset: number, limit: number): Promise<UserTaskInstance[]> {
     return new Promise<UserTaskInstance[]>((resolve, reject) => {
       this.queries
-        .getUserTasks(this.getCurrentUser(), offset, limit, this._taskInboxState.filters, this._taskInboxState.sortBy)
+        .getAllTasks(offset, limit, this._taskInboxState.filters, this._taskInboxState.sortBy)
         .then((value) => {
           this._taskInboxState.currentPage = { offset, limit };
           resolve(value);

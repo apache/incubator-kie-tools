@@ -31,7 +31,9 @@
   </parent>
 
   <artifactId>jbpm-compact-architecture-quarkus-example</artifactId>
-  <name>Kie-Tools Example :: jBPM Compact Architecture Quarkus Example</name>
+  <version>${revision}</version>
+
+  <name>KIE Tools :: Example :: jBPM Compact Architecture Quarkus Example</name>
 
   <properties>
     <kogito.management-console.image
@@ -93,10 +95,10 @@
       <artifactId>kie-addons-quarkus-persistence-jdbc</artifactId>
     </dependency>
 
-    <!-- Data Index Addon -->
+    <!-- Data-Index Addon -->
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kogito-addons-quarkus-data-index-postgresql</artifactId>
+      <artifactId>kogito-addons-quarkus-data-index-jpa</artifactId>
     </dependency>
 
     <!-- Jobs Service -->
@@ -106,7 +108,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>jobs-service-postgresql-common</artifactId>
+      <artifactId>jobs-service-storage-jpa</artifactId>
     </dependency>
 
     <!-- Data Audit -->
@@ -154,6 +156,10 @@
           <groupId>org.jbpm</groupId>
           <artifactId>jbpm-quarkus-devui</artifactId>
         </dependency>
+        <dependency>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-jdbc-h2</artifactId>
+        </dependency>
       </dependencies>
     </profile>
   </profiles>
@@ -162,9 +168,8 @@
     <finalName>${project.artifactId}</finalName>
     <plugins>
       <plugin>
-        <groupId>${quarkus.platform.group-id}</groupId>
+        <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
-        <version>${quarkus-plugin.version}</version>
         <executions>
           <execution>
             <goals>

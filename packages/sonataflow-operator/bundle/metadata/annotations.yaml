@@ -1,4 +1,3 @@
-#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,7 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-#
 
 annotations:
   # Core bundle annotations.
@@ -24,7 +22,7 @@ annotations:
   operators.operatorframework.io.bundle.metadata.v1: metadata/
   operators.operatorframework.io.bundle.package.v1: sonataflow-operator
   operators.operatorframework.io.bundle.channels.v1: alpha
-  operators.operatorframework.io.metrics.builder: operator-sdk-v1.25.0
+  operators.operatorframework.io.metrics.builder: operator-sdk-v1.34.0
   operators.operatorframework.io.metrics.mediatype.v1: metrics+v1
   operators.operatorframework.io.metrics.project_layout: go.kubebuilder.io/v3
   com.redhat.openshift.versions: v4.11

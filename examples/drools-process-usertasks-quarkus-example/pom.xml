@@ -29,21 +29,12 @@
     <version>${revision}</version>
     <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
   </parent>
-  <artifactId>drools-process-usertasks-quarkus-example</artifactId>
-  <name>Kie-Tools Example :: Process with Usertasks Quarkus</name>
-  <description>Kogito user tasks orchestration - Quarkus</description>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-quarkus-devui-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+  <artifactId>drools-process-usertasks-quarkus-example</artifactId>
+  <version>${revision}</version>
+
+  <name>KIE Tools :: Example :: Process with Usertasks Quarkus</name>
+  <description>Kogito user tasks orchestration - Quarkus</description>
 
   <dependencies>
     <dependency>
@@ -57,10 +48,6 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-with-drools-quarkus</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-quarkus-devui</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -89,13 +76,42 @@
       <artifactId>kie-addons-quarkus-process-svg</artifactId>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>include-1st-party-dependencies</id>
+      <activation>
+        <property>
+          <name>kieTools.do-not-use-this-property.ignore1stPartyDependencies</name>
+          <value>!true</value>
+        </property>
+      </activation>
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-quarkus-devui-bom</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
+      <dependencies>
+        <dependency>
+          <groupId>org.jbpm</groupId>
+          <artifactId>jbpm-quarkus-devui</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
   <build>
     <finalName>${project.artifactId}</finalName>
     <plugins>
       <plugin>
-        <groupId>${quarkus.platform.group-id}</groupId>
+        <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
-        <version>${quarkus-plugin.version}</version>
         <executions>
           <execution>
             <goals>

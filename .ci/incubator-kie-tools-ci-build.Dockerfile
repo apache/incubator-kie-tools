@@ -28,6 +28,7 @@ libglvnd0 \
 libbtrfs-dev \
 libgpgme-dev \
 libdevmapper-dev \
+libxml2-utils \
 python3 \
 python3-pip \
 python3-dev \
@@ -43,6 +44,7 @@ unzip \
 bzip2 \
 xvfb \
 fluxbox \
+rsync \
 subversion && \
 apt-get clean autoclean && apt-get autoremove --yes && \
 rm -rf /var/lib/{apt,cache,log}/
@@ -98,8 +100,8 @@ RUN curl -s "https://get.sdkman.io" | bash && \
     sdk flush
 
 # Golang setup
-RUN wget https://go.dev/dl/go1.21.9.linux-amd64.tar.gz -P /tmp && \
-    sudo tar xzf /tmp/go1.21.9.linux-amd64.tar.gz -C /opt && rm /tmp/go1.21.9.linux-amd64.tar.gz && \
+RUN wget https://go.dev/dl/go1.22.9.linux-amd64.tar.gz -P /tmp && \
+    sudo tar xzf /tmp/go1.22.9.linux-amd64.tar.gz -C /opt && rm /tmp/go1.22.9.linux-amd64.tar.gz && \
     echo 'export GOPATH=${HOME}/go' | sudo tee /etc/profile.d/go.sh && \
     echo 'export PATH=${PATH}:/opt/go/bin:${GOPATH}/bin' | sudo tee -a /etc/profile.d/go.sh && \
     echo "source /etc/profile.d/go.sh" >> $HOME/.bashrc && \

@@ -26,7 +26,6 @@
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
-    "@kie-tools-core/backend": "workspace:*",
     "@kie-tools-core/envelope": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",

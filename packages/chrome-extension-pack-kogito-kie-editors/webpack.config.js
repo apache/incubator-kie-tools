@@ -27,11 +27,10 @@ const stunnerEditors = require("@kie-tools/stunner-editors");
 const { EnvironmentPlugin, ProvidePlugin } = require("webpack");
 const path = require("path");
 const { env } = require("./env");
-const buildEnv = env;
 
 function getRouterArgs() {
-  const targetOrigin = buildEnv.chromeExtension.routerTargetOrigin;
-  const relativePath = buildEnv.chromeExtension.routerRelativePath;
+  const targetOrigin = env.chromeExtension.routerTargetOrigin;
+  const relativePath = env.chromeExtension.routerRelativePath;
 
   console.info(`Chrome Extension :: Router target origin: ${targetOrigin}`);
   console.info(`Chrome Extension :: Router relative path: ${relativePath}`);
@@ -40,8 +39,8 @@ function getRouterArgs() {
 }
 
 function getOnlineEditorArgs() {
-  const onlineEditorUrl = buildEnv.chromeExtension.onlineEditorUrl;
-  const manifestFile = buildEnv.chromeExtension.manifestFile;
+  const onlineEditorUrl = env.chromeExtension.onlineEditorUrl;
+  const manifestFile = env.chromeExtension.manifestFile;
 
   console.info(`Chrome Extension :: Online Editor URL: ${onlineEditorUrl}`);
   console.info(`Chrome Extension :: Manifest file: ${manifestFile}`);
@@ -49,11 +48,11 @@ function getOnlineEditorArgs() {
   return [onlineEditorUrl, manifestFile];
 }
 
-module.exports = async (env) => {
-  const [router_targetOrigin, router_relativePath] = getRouterArgs(env);
-  const [onlineEditor_url, manifestFile] = getOnlineEditorArgs(env);
+module.exports = async (webpackEnv) => {
+  const [router_targetOrigin, router_relativePath] = getRouterArgs(webpackEnv);
+  const [onlineEditor_url, manifestFile] = getOnlineEditorArgs(webpackEnv);
 
-  return merge(common(env), {
+  return merge(common(webpackEnv), {
     entry: {
       "content_scripts/github": "./src/github-content-script.ts",
       background: "./src/background.ts",
@@ -65,7 +64,7 @@ module.exports = async (env) => {
       static: [{ directory: path.join(__dirname, "./dist") }],
       compress: true,
       https: true,
-      port: buildEnv.chromeExtension.dev.port,
+      port: env.chromeExtension.dev.port,
     },
     plugins: [
       new ProvidePlugin({

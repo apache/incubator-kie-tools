@@ -20,14 +20,12 @@
 const path = require("path");
 const webpackBaseEnv = require("./env");
 
-module.exports = (env) => {
-  const webpackEnv = env.dev ? webpackBaseEnv.env.webpack.dev : webpackBaseEnv.env.webpack.prod;
+module.exports = (webpackEnv) => {
+  const { transpileOnly, minimize, sourceMaps, mode } = webpackEnv.dev
+    ? webpackBaseEnv.env.webpack.dev
+    : webpackBaseEnv.env.webpack.prod;
 
-  const transpileOnly = webpackEnv.transpileOnly;
-  const minimize = webpackEnv.minimize;
-  const sourceMaps = webpackEnv.sourceMaps;
-  const mode = webpackEnv.mode;
-  const live = env.live;
+  const live = webpackEnv.live;
 
   console.info(`Webpack :: ts-loader :: transpileOnly: ${transpileOnly}`);
   console.info(`Webpack :: minimize: ${minimize}`);
@@ -123,6 +121,7 @@ module.exports = (env) => {
         child_process: false,
         net: false,
         buffer: require.resolve("buffer/"),
+        stream: require.resolve("stream-browserify"),
         querystring: require.resolve("querystring-es3"),
       },
       extensions: [".tsx", ".ts", ".js", ".jsx"],

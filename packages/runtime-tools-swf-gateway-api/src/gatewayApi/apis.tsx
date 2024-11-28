@@ -729,3 +729,22 @@ export const saveFormContent = (formName: string, content: FormContent): Promise
       .catch((error) => reject(error));
   });
 };
+
+export async function verifyDataIndex(dataIndexUrl?: string): Promise<boolean> {
+  if (!dataIndexUrl) {
+    return false;
+  }
+
+  try {
+    const response = await fetch(dataIndexUrl, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: '{"query":""}',
+    });
+    return response.status === 200;
+  } catch (e) {
+    return false;
+  }
+}

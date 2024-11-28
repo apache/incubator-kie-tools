@@ -26,7 +26,8 @@ import {
   buildClipboardFromDiagram,
   getClipboard,
 } from "../clipboard/Clipboard";
-import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
+import { buildXmlHref, parseXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
+import { getNewDmnIdRandomizer } from "@kie-tools/dmn-marshaller/dist/idRandomizer/dmnIdRandomizer";
 import { NodeNature, nodeNatures } from "../mutations/NodeNature";
 import { addOrGetDrd } from "../mutations/addOrGetDrd";
 import { addStandaloneNode } from "../mutations/addStandaloneNode";
@@ -40,7 +41,6 @@ import { NODE_TYPES } from "./nodes/NodeTypes";
 import { DmnDiagramNodeData } from "./nodes/Nodes";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { NodeType } from "./connections/graphStructure";
-import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
 import { DEFAULT_VIEWPORT } from "./Diagram";
 import { useCommands } from "../commands/CommandsContextProvider";
 

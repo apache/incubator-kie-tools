@@ -23,11 +23,11 @@ import {
   DMN15__tDefinitions,
   DMNDI15__DMNEdge,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefToQName";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
-import { Normalized } from "../normalization/normalize";
-import { xmlHrefToQName } from "../xml/xmlHrefToQName";
 import { ExternalModelsIndex } from "../DmnEditor";
 
 export enum EdgeDeletionMode {

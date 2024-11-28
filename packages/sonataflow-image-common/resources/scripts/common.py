@@ -11,6 +11,8 @@ PROJECT_VERSIONS_MODULE = "modules/kogito-project-versions/module.yaml"
 KOGITO_VERSION_ENV_KEY = "KOGITO_VERSION"
 KOGITO_VERSION_LABEL_NAME = "org.kie.kogito.version"
 
+QUARKUS_PLATFORM_GROUPID_ENV_KEY = "QUARKUS_PLATFORM_GROUPID"
+
 QUARKUS_PLATFORM_VERSION_ENV_KEY = "QUARKUS_PLATFORM_VERSION"
 QUARKUS_PLATFORM_VERSION_LABEL_NAME = "io.quarkus.platform.version"
 
@@ -151,6 +153,14 @@ def update_kogito_platform_version(kogito_platform_version):
     update_env_value(KOGITO_VERSION_ENV_KEY, kogito_platform_version)
     update_label_value(KOGITO_VERSION_LABEL_NAME, kogito_platform_version)
 
+def update_quarkus_platform_groupid(quarkus_platform_groupid):
+    """
+    Update quarkus_platform_groupid into images/modules
+    :param quarkus_platform_groupid: quarkus groupid to set
+    """
+    print("Setting Quarkus groupid: " + quarkus_platform_groupid)
+    update_env_value(QUARKUS_PLATFORM_GROUPID_ENV_KEY, quarkus_platform_groupid)
+
 def update_quarkus_platform_version(quarkus_platform_version):
     """
     Update quarkus_platform_version version into images/modules
@@ -268,7 +278,7 @@ def update_label_value_in_file(filename, label_name, label_value):
     :param label_name: label name to update
     :param label_value: value to set
     """
-    print("Updating {0} label {1} with value {2}".format(filename, label_name, label_value))
+    print(f"Updating {filename} label {label_name} with value {label_value}")
     try:
         with open(filename) as yaml_file:
             data = yaml_loader().load(yaml_file)
@@ -281,7 +291,7 @@ def update_label_value_in_file(filename, label_name, label_value):
         raise
 
 
-def update_label_value_in_data(data, label_name, label_value, ignore_empty = False):
+def update_label_value_in_data(data, label_name, label_value, ignore_empty=False):
     """
     Update label value in data dict if exists
     :param data: dict to update
@@ -296,7 +306,7 @@ def update_label_value_in_data(data, label_name, label_value, ignore_empty = Fal
         if ignore_empty:
             if 'labels' not in data:
                 data['labels'] = []
-            data['labels'] += [ dict(name=label_name, value=label_value) ]
+            data['labels'] += [dict(name=label_name, value=label_value)]
         elif 'labels' in data:
             for _, label in enumerate(data['labels'], start=0):
                 if label['name'] == label_name:

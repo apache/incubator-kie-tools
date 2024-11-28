@@ -19,13 +19,13 @@
 
 import { EnvJson } from "../src/env/EnvJson";
 import { routes } from "../src/navigation/Routes";
+import { AuthProviderGroup, AuthProviderType } from "../src/authProviders/AuthProvidersApi";
+import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
+import { GLOB_PATTERN } from "../src/envelopeLocator/EditorEnvelopeLocatorFactory";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { env } from "../env";
-import { AuthProviderGroup, AuthProviderType } from "../src/authProviders/AuthProvidersApi";
-import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
-import { GLOB_PATTERN } from "../src/envelopeLocator/EditorEnvelopeLocatorFactory";
 const buildEnv: any = env; // build-env is not typed
 
 function getDevDeploymentImageUrl(imageEnvVars: any) {
@@ -110,9 +110,9 @@ export const defaultEnvJson: EnvJson = {
   KIE_SANDBOX_ACCELERATORS: [
     {
       name: "Quarkus",
-      iconUrl: `https://github.com/apache/incubator-kie-sandbox-quarkus-accelerator/raw/${buildEnv.root.version}/quarkus-logo.png`,
-      gitRepositoryUrl: "https://github.com/apache/incubator-kie-sandbox-quarkus-accelerator",
-      gitRepositoryGitRef: buildEnv.root.version,
+      iconUrl: "images/quarkus-logo.png",
+      gitRepositoryUrl: buildEnv.onlineEditor.accelerators.quarkus.gitRepoUrl,
+      gitRepositoryGitRef: buildEnv.onlineEditor.accelerators.quarkus.gitRef,
       dmnDestinationFolder: "src/main/resources/dmn",
       bpmnDestinationFolder: "src/main/resources/bpmn",
       otherFilesDestinationFolder: "src/main/resources/others",

@@ -22,15 +22,14 @@ import { useCallback, useMemo } from "react";
 import { DescriptionField, NameField, TypeRefField } from "./Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditor } from "../../DmnEditorContext";
-import { Constraints, ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constraints";
+import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constraints";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { State } from "../../store/Store";
-import { Normalized } from "../../normalization/normalize";
 
 export function InformationItemCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;

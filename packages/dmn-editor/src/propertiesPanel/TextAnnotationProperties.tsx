@@ -19,13 +19,13 @@
 
 import * as React from "react";
 import { DMN15__tTextAnnotation } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { useDmnEditorStoreApi } from "../store/StoreContext";
 import { updateTextAnnotation } from "../mutations/renameNode";
-import { Normalized } from "../normalization/normalize";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export function TextAnnotationProperties({

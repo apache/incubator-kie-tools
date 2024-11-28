@@ -22,10 +22,9 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { merge } = require("webpack-merge");
 const { env } = require("../env");
-const buildEnv = env;
 
-module.exports = (env) =>
-  merge(common(env), {
+module.exports = (webpackEnv) =>
+  merge(common(webpackEnv), {
     mode: "development",
     entry: {
       app: path.resolve(__dirname, "src", "index.tsx"),
@@ -48,6 +47,6 @@ module.exports = (env) =>
         overlay: true,
       },
       open: false,
-      port: buildEnv.standaloneEditors.dev.port,
+      port: env.standaloneEditors.dev.port,
     },
   });

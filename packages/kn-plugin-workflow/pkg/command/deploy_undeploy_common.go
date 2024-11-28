@@ -26,6 +26,7 @@ import (
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/specs"
 	apimetadata "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
 )
@@ -46,9 +47,10 @@ type DeployUndeployCmdConfig struct {
 	Profile                    string
 	Image                      string
 	SchemasFilesPath           []string
-	SpecsFilesPath             []string
+	SpecsFilesPath             map[string]string
 	SubFlowsFilesPath          []string
 	DashboardsPath             []string
+	Minify                     bool
 }
 
 func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
@@ -87,7 +89,7 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 	fmt.Println("\n🛠️  Generating your manifests...")
 
 	fmt.Println("🔍 Looking for your SonataFlow files...")
-	if file, err := findSonataFlowFile(workflowExtensionsType); err != nil {
+	if file, err := common.FindSonataFlowFile(workflowExtensionsType); err != nil {
 		return err
 	} else {
 		cfg.SonataFlowFile = file
@@ -122,13 +124,25 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 	supportFileExtensions := []string{metadata.JSONExtension, metadata.YAMLExtension, metadata.YMLExtension}
 
 	fmt.Println("🔍 Looking for specs files...")
-	files, err = common.FindFilesWithExtensions(cfg.SpecsDir, supportFileExtensions)
-	if err != nil {
-		return fmt.Errorf("❌ ERROR: failed to get supportFiles directory: %w", err)
-	}
-	cfg.SpecsFilesPath = files
-	for _, file := range cfg.SpecsFilesPath {
-		fmt.Printf(" - ✅ Specs file found: %s\n", file)
+	if cfg.Minify {
+		minifiedfiles, err := specs.NewMinifier(&specs.OpenApiMinifierOpts{
+			SpecsDir:    cfg.SpecsDir,
+			SubflowsDir: cfg.SubflowsDir,
+		}).Minify()
+		if err != nil {
+			return fmt.Errorf("❌ ERROR: failed to minify specs files: %w", err)
+		}
+		cfg.SpecsFilesPath = minifiedfiles
+	} else {
+		files, err = common.FindFilesWithExtensions(cfg.SpecsDir, supportFileExtensions)
+		if err != nil {
+			return fmt.Errorf("❌ ERROR: failed to get supportFiles directory: %w", err)
+		}
+		cfg.SpecsFilesPath = map[string]string{}
+		for _, file := range files {
+			cfg.SpecsFilesPath[file] = file
+			fmt.Printf(" - ✅ Specs file found: %s\n", file)
+		}
 	}
 
 	fmt.Println("🔍 Looking for schema files...")
@@ -186,8 +200,8 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 		handler.AddResourceAt(filepath.Base(supportFile), filepath.Base(cfg.SchemasDir), specIO)
 	}
 
-	for _, supportFile := range cfg.SpecsFilesPath {
-		specIO, err := common.MustGetFile(supportFile)
+	for supportFile, minifiedFile := range cfg.SpecsFilesPath {
+		specIO, err := common.MustGetFile(minifiedFile)
 		if err != nil {
 			return err
 		}
@@ -232,29 +246,6 @@ func findApplicationPropertiesPath(directoryPath string) string {
 	}
 
 	return filePath
-}
-
-func findSonataFlowFile(extensions []string) (string, error) {
-
-	dir, err := os.Getwd()
-	if err != nil {
-		return "", fmt.Errorf("❌ ERROR: failed to get current directory: %w", err)
-	}
-
-	var matchingFiles []string
-	for _, ext := range extensions {
-		files, _ := filepath.Glob(filepath.Join(dir, "*."+ext))
-		matchingFiles = append(matchingFiles, files...)
-	}
-
-	switch len(matchingFiles) {
-	case 0:
-		return "", fmt.Errorf("❌ ERROR: no matching files found")
-	case 1:
-		return matchingFiles[0], nil
-	default:
-		return "", fmt.Errorf("❌ ERROR: multiple SonataFlow definition files found")
-	}
 }
 
 func setupConfigManifestPath(cfg *DeployUndeployCmdConfig) error {

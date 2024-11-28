@@ -28,6 +28,7 @@ import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState 
 import { original } from "immer";
 import { PMML } from "@kie-tools/pmml-editor-marshaller";
 import { DmnLatestModel, AllDmnMarshallers } from "@kie-tools/dmn-marshaller";
+import { Normalized, normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { FileIcon } from "@patternfly/react-icons/dist/js/icons/file-icon";
 import { InfrastructureIcon } from "@patternfly/react-icons/dist/js/icons/infrastructure-icon";
 import { PficonTemplateIcon } from "@patternfly/react-icons/dist/js/icons/pficon-template-icon";
@@ -38,7 +39,6 @@ import { BoxedExpressionScreen } from "./boxedExpressions/BoxedExpressionScreen"
 import { DataTypes } from "./dataTypes/DataTypes";
 import { Diagram, DiagramRef } from "./diagram/Diagram";
 import { DmnVersionLabel } from "./diagram/DmnVersionLabel";
-import { Normalized, normalize } from "./normalization/normalize";
 import { BoxedExpressionPropertiesPanel } from "./propertiesPanel/BoxedExpressionPropertiesPanel";
 import { DmnEditorContextProvider, useDmnEditor } from "./DmnEditorContext";
 import { DmnEditorErrorFallback } from "./DmnEditorErrorFallback";

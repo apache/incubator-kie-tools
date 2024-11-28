@@ -23,10 +23,9 @@ const patternflyBase = require("@kie-tools-core/patternfly-base");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { merge } = require("webpack-merge");
 const { env } = require("./env");
-const buildEnv = env;
 
-module.exports = (env) => [
-  merge(common(env), {
+module.exports = (webpackEnv) => [
+  merge(common(webpackEnv), {
     entry: {
       index: "./src/index.tsx",
     },
@@ -45,7 +44,7 @@ module.exports = (env) => [
       historyApiFallback: false,
       static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
       compress: true,
-      port: buildEnv.exampleUniformsPatternflyPort.port,
+      port: env.exampleUniformsPatternflyPort.port,
     },
     ignoreWarnings: [/Failed to parse source map/],
   }),

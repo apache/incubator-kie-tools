@@ -13,9 +13,9 @@
       { "id": "@kie-tools/tsconfig" },
       { "id": "@kie-tools-examples/base64png-editor" },
       { "id": "@kie-tools-core/editor" },
-      { "id": "@kie-tools-core/backend" },
       { "id": "@kie-tools-core/envelope" },
       { "id": "@kie-tools-core/keyboard-shortcuts" },
+      { "id": "@kie-tools-core/notifications" },
       { "id": "@kie-tools-core/patternfly-base" },
       { "id": "@kie-tools-examples/base64png-editor-chrome-extension" },
       { "id": "@kie-tools-core/chrome-extension" },
@@ -34,11 +34,9 @@
       { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
       { "id": "@kie-tools-examples/jbpm-compact-architecture-example" },
       { "id": "@kie-tools/kogito-management-console" },
-      { "id": "@kie-tools/kogito-task-console" },
       { "id": "@kie-tools/image-builder" },
       { "id": "@kie-tools/image-env-to-json" },
       { "id": "@kie-tools/runtime-tools-management-console-webapp" },
-      { "id": "@kie-tools/runtime-tools-task-console-webapp" },
       { "id": "@kie-tools-examples/ping-pong-view" },
       { "id": "@kie-tools-core/envelope-bus" },
       { "id": "@kie-tools-examples/ping-pong-view-angular" },
@@ -58,9 +56,6 @@
       { "id": "@kie-tools/kie-bc-editors" },
       { "id": "@kie-tools/stunner-editors" },
       { "id": "@kie-tools/serverless-workflow-combined-editor" },
-      { "id": "@kie-tools-core/notifications" },
-      { "id": "@kie-tools-core/i18n" },
-      { "id": "@kie-tools-core/workspace" },
       { "id": "@kie-tools/boxed-expression-component" },
       { "id": "@kie-tools-core/operating-system" },
       { "id": "@kie-tools/feel-input-component" },
@@ -73,7 +68,9 @@
       { "id": "@kie-tools/xml-parser-ts-codegen" },
       { "id": "@kie-tools/xml-parser-ts" },
       { "id": "bpmn-vscode-extension" },
+      { "id": "@kie-tools/form-code-generator-vscode-command" },
       { "id": "@kie-tools/vscode-java-code-completion-extension-plugin" },
+      { "id": "@kie-tools/jbpm-form-code-generator-themes" },
       { "id": "@kie-tools/pmml-editor-marshaller" },
       { "id": "@kie-tools/stunner-editors-dmn-loader" },
       { "id": "chrome-extension-pack-kogito-kie-editors" },
@@ -86,7 +83,6 @@
       { "id": "@kie-tools/cors-proxy-image" },
       { "id": "@kie-tools/dashbuilder" },
       { "id": "@kie-tools/dashbuilder-component-assembler" },
-      { "id": "@kie-tools/maven-config-setup-helper" },
       { "id": "@kie-tools/dashbuilder-component-echarts" },
       { "id": "@kie-tools/dashbuilder-component-map" },
       { "id": "@kie-tools/dashbuilder-component-svg-heatmap" },
@@ -107,7 +103,9 @@
       { "id": "@kie-tools/dashbuilder-viewer-deployment-webapp" },
       { "id": "@kie-tools-core/workspaces-git-fs" },
       { "id": "@kie-tools-core/react-hooks" },
+      { "id": "@kie-tools-core/workspace" },
       { "id": "@kie-tools/kie-sandbox-fs" },
+      { "id": "@kie-tools-core/i18n" },
       { "id": "@kie-tools/dashbuilder-viewer-image" },
       { "id": "@kie-tools/dashbuilder-viewer-image-env" },
       { "id": "@kie-tools/data-index-webapp" },
@@ -132,9 +130,9 @@
       { "id": "@kie-tools/extended-services" },
       { "id": "@kie-tools/extended-services-java" },
       { "id": "extended-services-vscode-extension" },
-      { "id": "@kie-tools/form-generation-tool" },
-      { "id": "@kie-tools/uniforms-bootstrap4-codegen" },
-      { "id": "@kie-tools/uniforms-patternfly-codegen" },
+      { "id": "@kie-tools/form-code-generator" },
+      { "id": "@kie-tools/form-code-generator-bootstrap4-theme" },
+      { "id": "@kie-tools/form-code-generator-patternfly-theme" },
       { "id": "@kie-tools/import-java-classes-component" },
       { "id": "@kie-tools/runtime-tools-process-webapp-components" },
       { "id": "@kie-tools/runtime-tools-shared-webapp-components" },
@@ -143,6 +141,7 @@
       { "id": "kie-editors-dev-vscode-extension" },
       { "id": "@kie-tools/pmml-editor" },
       { "id": "@kie-tools/vscode-extension-common-test-helpers" },
+      { "id": "@kie-tools/kie-sandbox-accelerator-quarkus" },
       { "id": "@kie-tools/kie-sandbox-distribution" },
       { "id": "@kie-tools/kie-sandbox-extended-services-image" },
       { "id": "@kie-tools/kie-sandbox-webapp-image" },
@@ -176,6 +175,7 @@
       { "id": "@kie-tools/runtime-tools-swf-webapp-components" },
       { "id": "@kie-tools/scesim-editor" },
       { "id": "@kie-tools/scesim-marshaller" },
+      { "id": "@kie-tools/scesim-editor-envelope" },
       { "id": "@kie-tools/serverless-logic-web-tools" },
       { "id": "@kie-tools/text-editor" },
       { "id": "@kie-tools/yard-editor" },
@@ -267,11 +267,6 @@
       },
       {
         "source": "@kie-tools-core/editor",
-        "target": "@kie-tools-core/backend",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/editor",
         "target": "@kie-tools-core/envelope",
         "weight": 1
       },
@@ -282,12 +277,12 @@
       },
       {
         "source": "@kie-tools-core/editor",
-        "target": "@kie-tools-core/patternfly-base",
+        "target": "@kie-tools-core/notifications",
         "weight": 1
       },
       {
-        "source": "@kie-tools-core/backend",
-        "target": "@kie-tools-core/notifications",
+        "source": "@kie-tools-core/editor",
+        "target": "@kie-tools-core/patternfly-base",
         "weight": 1
       },
       {
@@ -303,6 +298,16 @@
       {
         "source": "@kie-tools-core/keyboard-shortcuts",
         "target": "@kie-tools-core/operating-system",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/notifications",
+        "target": "@kie-tools-core/i18n",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/notifications",
+        "target": "@kie-tools-core/workspace",
         "weight": 1
       },
       {
@@ -417,11 +422,6 @@
       },
       {
         "source": "@kie-tools/maven-base",
-        "target": "@kie-tools/maven-config-setup-helper",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/maven-base",
         "target": "@kie-tools/root-env",
         "weight": 1
       },
@@ -446,11 +446,6 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/jbpm-compact-architecture-example",
-        "target": "@kie-tools/kogito-task-console",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools/kogito-management-console",
         "target": "@kie-tools/image-builder",
         "weight": 1
@@ -463,21 +458,6 @@
       {
         "source": "@kie-tools/kogito-management-console",
         "target": "@kie-tools/runtime-tools-management-console-webapp",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kogito-task-console",
-        "target": "@kie-tools/image-builder",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kogito-task-console",
-        "target": "@kie-tools/image-env-to-json",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kogito-task-console",
-        "target": "@kie-tools/runtime-tools-task-console-webapp",
         "weight": 1
       },
       {
@@ -507,21 +487,6 @@
       },
       {
         "source": "@kie-tools/runtime-tools-management-console-webapp",
-        "target": "@kie-tools/runtime-tools-shared-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-task-console-webapp",
-        "target": "@kie-tools-core/react-hooks",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-task-console-webapp",
-        "target": "@kie-tools/runtime-tools-process-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-task-console-webapp",
         "target": "@kie-tools/runtime-tools-shared-webapp-components",
         "weight": 1
       },
@@ -726,36 +691,6 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools-core/notifications",
-        "target": "@kie-tools-core/i18n",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/notifications",
-        "target": "@kie-tools-core/workspace",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/i18n",
-        "target": "@kie-tools/eslint",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/i18n",
-        "target": "@kie-tools/jest-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/i18n",
-        "target": "@kie-tools/tsconfig",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/workspace",
-        "target": "@kie-tools-core/operating-system",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools/boxed-expression-component",
         "target": "@kie-tools-core/operating-system",
         "weight": 1
@@ -897,6 +832,11 @@
       },
       {
         "source": "bpmn-vscode-extension",
+        "target": "@kie-tools/form-code-generator-vscode-command",
+        "weight": 1
+      },
+      {
+        "source": "bpmn-vscode-extension",
         "target": "@kie-tools/kie-bc-editors",
         "weight": 1
       },
@@ -911,8 +851,23 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/form-code-generator-vscode-command",
+        "target": "@kie-tools/jbpm-form-code-generator-themes",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/vscode-java-code-completion-extension-plugin",
         "target": "@kie-tools/maven-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/jbpm-form-code-generator-themes",
+        "target": "@kie-tools/form-code-generator-bootstrap4-theme",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/jbpm-form-code-generator-themes",
+        "target": "@kie-tools/form-code-generator-patternfly-theme",
         "weight": 1
       },
       {
@@ -1361,12 +1316,32 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools-core/workspace",
+        "target": "@kie-tools-core/operating-system",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/kie-sandbox-fs",
         "target": "@kie-tools/root-env",
         "weight": 1
       },
       {
         "source": "@kie-tools/kie-sandbox-fs",
+        "target": "@kie-tools/tsconfig",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/i18n",
+        "target": "@kie-tools/eslint",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/i18n",
+        "target": "@kie-tools/jest-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/i18n",
         "target": "@kie-tools/tsconfig",
         "weight": 1
       },
@@ -1457,12 +1432,7 @@
       },
       {
         "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app",
-        "target": "@kie-tools/maven-config-setup-helper",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app",
-        "target": "@kie-tools/root-env",
+        "target": "@kie-tools/jbpm-quarkus-devui",
         "weight": 1
       },
       {
@@ -1626,53 +1596,38 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/form-generation-tool",
-        "target": "@kie-tools/uniforms-bootstrap4-codegen",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/form-generation-tool",
-        "target": "@kie-tools/uniforms-patternfly-codegen",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/uniforms-bootstrap4-codegen",
-        "target": "@kie-tools-core/webpack-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/uniforms-bootstrap4-codegen",
+        "source": "@kie-tools/form-code-generator",
         "target": "@kie-tools/eslint",
         "weight": 1
       },
       {
-        "source": "@kie-tools/uniforms-bootstrap4-codegen",
+        "source": "@kie-tools/form-code-generator",
         "target": "@kie-tools/jest-base",
         "weight": 1
       },
       {
-        "source": "@kie-tools/uniforms-bootstrap4-codegen",
+        "source": "@kie-tools/form-code-generator",
         "target": "@kie-tools/tsconfig",
         "weight": 1
       },
       {
-        "source": "@kie-tools/uniforms-patternfly-codegen",
+        "source": "@kie-tools/form-code-generator-bootstrap4-theme",
+        "target": "@kie-tools/form-code-generator",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/form-code-generator-bootstrap4-theme",
         "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
       {
-        "source": "@kie-tools/uniforms-patternfly-codegen",
-        "target": "@kie-tools/eslint",
+        "source": "@kie-tools/form-code-generator-patternfly-theme",
+        "target": "@kie-tools/form-code-generator",
         "weight": 1
       },
       {
-        "source": "@kie-tools/uniforms-patternfly-codegen",
-        "target": "@kie-tools/jest-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/uniforms-patternfly-codegen",
-        "target": "@kie-tools/tsconfig",
+        "source": "@kie-tools/form-code-generator-patternfly-theme",
+        "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
       {
@@ -1737,6 +1692,11 @@
       },
       {
         "source": "kie-editors-dev-vscode-extension",
+        "target": "@kie-tools/form-code-generator-vscode-command",
+        "weight": 1
+      },
+      {
+        "source": "kie-editors-dev-vscode-extension",
         "target": "@kie-tools/kie-bc-editors",
         "weight": 1
       },
@@ -1783,6 +1743,11 @@
       {
         "source": "@kie-tools/vscode-extension-common-test-helpers",
         "target": "@kie-tools/tsconfig",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kie-sandbox-accelerator-quarkus",
+        "target": "@kie-tools/jbpm-quarkus-devui",
         "weight": 1
       },
       {
@@ -1877,6 +1842,16 @@
       },
       {
         "source": "@kie-tools/online-editor",
+        "target": "@kie-tools/extended-services-java",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/online-editor",
+        "target": "@kie-tools/kie-sandbox-accelerator-quarkus",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/online-editor",
         "target": "@kie-tools/stunner-editors",
         "weight": 1
       },
@@ -1942,6 +1917,11 @@
       },
       {
         "source": "@kie-tools/sonataflow-builder-image",
+        "target": "@kie-tools/maven-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-builder-image",
         "target": "@kie-tools/maven-m2-repo-via-http-image",
         "weight": 1
       },
@@ -1967,7 +1947,17 @@
       },
       {
         "source": "@kie/kogito-data-index-ephemeral-image",
+        "target": "@kie-tools/maven-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-data-index-ephemeral-image",
         "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-data-index-postgresql-image",
+        "target": "@kie-tools/maven-base",
         "weight": 1
       },
       {
@@ -1977,7 +1967,17 @@
       },
       {
         "source": "@kie/kogito-jobs-service-ephemeral-image",
+        "target": "@kie-tools/maven-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-jobs-service-ephemeral-image",
         "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-jobs-service-postgresql-image",
+        "target": "@kie-tools/maven-base",
         "weight": 1
       },
       {
@@ -2002,7 +2002,17 @@
       },
       {
         "source": "@kie/kogito-jit-runner-image",
+        "target": "@kie-tools/maven-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-jit-runner-image",
         "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-jobs-service-allinone-image",
+        "target": "@kie-tools/maven-base",
         "weight": 1
       },
       {
@@ -2068,11 +2078,6 @@
       {
         "source": "@kie-tools/runtime-tools-consoles-helm-chart",
         "target": "@kie-tools/kogito-management-console",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-consoles-helm-chart",
-        "target": "@kie-tools/kogito-task-console",
         "weight": 1
       },
       {
@@ -2158,6 +2163,21 @@
       {
         "source": "@kie-tools/scesim-marshaller",
         "target": "@kie-tools/xml-parser-ts-codegen",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/scesim-editor-envelope",
+        "target": "@kie-tools-core/editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/scesim-editor-envelope",
+        "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/scesim-editor-envelope",
+        "target": "@kie-tools/scesim-editor",
         "weight": 1
       },
       {
@@ -2372,12 +2392,7 @@
       },
       {
         "source": "@kie-tools/serverless-workflow-diagram-editor",
-        "target": "@kie-tools/maven-config-setup-helper",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-workflow-diagram-editor",
-        "target": "@kie-tools/root-env",
+        "target": "@kie-tools/maven-base",
         "weight": 1
       },
       {
@@ -2582,7 +2597,6 @@
     ["kie-tools-examples-todo-list-view-vscode-extension", "examples/todo-list-view-vscode-extension"],
     ["@kie-tools-examples/uniforms-patternfly", "examples/uniforms-patternfly"],
     ["@kie-tools-examples/webapp", "examples/webapp"],
-    ["@kie-tools-core/backend", "packages/backend"],
     ["@kie-tools/boxed-expression-component", "packages/boxed-expression-component"],
     ["@kie-tools/bpmn-marshaller", "packages/bpmn-marshaller"],
     ["bpmn-vscode-extension", "packages/bpmn-vscode-extension"],
@@ -2643,13 +2657,17 @@
     ["extended-services-vscode-extension", "packages/extended-services-vscode-extension"],
     ["@kie-tools/feel-input-component", "packages/feel-input-component"],
     ["@kie-tools/form", "packages/form"],
+    ["@kie-tools/form-code-generator", "packages/form-code-generator"],
+    ["@kie-tools/form-code-generator-bootstrap4-theme", "packages/form-code-generator-bootstrap4-theme"],
+    ["@kie-tools/form-code-generator-patternfly-theme", "packages/form-code-generator-patternfly-theme"],
+    ["@kie-tools/form-code-generator-vscode-command", "packages/form-code-generator-vscode-command"],
     ["@kie-tools/form-dmn", "packages/form-dmn"],
-    ["@kie-tools/form-generation-tool", "packages/form-generation-tool"],
     ["@kie-tools-core/i18n", "packages/i18n"],
     ["@kie-tools/i18n-common-dictionary", "packages/i18n-common-dictionary"],
     ["@kie-tools/image-builder", "packages/image-builder"],
     ["@kie-tools/image-env-to-json", "packages/image-env-to-json"],
     ["@kie-tools/import-java-classes-component", "packages/import-java-classes-component"],
+    ["@kie-tools/jbpm-form-code-generator-themes", "packages/jbpm-form-code-generator-themes"],
     ["@kie-tools/jbpm-quarkus-devui", "packages/jbpm-quarkus-devui"],
     ["@kie-tools/jest-base", "packages/jest-base"],
     ["@kie-tools/jobs-service-webapp", "packages/jobs-service-webapp"],
@@ -2659,6 +2677,7 @@
     ["@kie-tools/kie-bc-editors", "packages/kie-bc-editors"],
     ["kie-editors-dev-vscode-extension", "packages/kie-editors-dev-vscode-extension"],
     ["@kie-tools/kie-editors-standalone", "packages/kie-editors-standalone"],
+    ["@kie-tools/kie-sandbox-accelerator-quarkus", "packages/kie-sandbox-accelerator-quarkus"],
     ["@kie-tools/kie-sandbox-distribution", "packages/kie-sandbox-distribution"],
     ["@kie-tools/kie-sandbox-extended-services-image", "packages/kie-sandbox-extended-services-image"],
     ["@kie-tools/kie-sandbox-fs", "packages/kie-sandbox-fs"],
@@ -2673,10 +2692,8 @@
     ["@kie/kogito-jobs-service-ephemeral-image", "packages/kogito-jobs-service-ephemeral-image"],
     ["@kie/kogito-jobs-service-postgresql-image", "packages/kogito-jobs-service-postgresql-image"],
     ["@kie-tools/kogito-management-console", "packages/kogito-management-console"],
-    ["@kie-tools/kogito-task-console", "packages/kogito-task-console"],
     ["@kie-tools-core/kubernetes-bridge", "packages/kubernetes-bridge"],
     ["@kie-tools/maven-base", "packages/maven-base"],
-    ["@kie-tools/maven-config-setup-helper", "packages/maven-config-setup-helper"],
     ["@kie-tools/maven-m2-repo-via-http-image", "packages/maven-m2-repo-via-http-image"],
     ["@kie-tools-core/monaco-editor", "packages/monaco-editor"],
     ["@kie-tools-core/notifications", "packages/notifications"],
@@ -2703,8 +2720,8 @@
     ["@kie-tools/runtime-tools-swf-enveloped-components", "packages/runtime-tools-swf-enveloped-components"],
     ["@kie-tools/runtime-tools-swf-gateway-api", "packages/runtime-tools-swf-gateway-api"],
     ["@kie-tools/runtime-tools-swf-webapp-components", "packages/runtime-tools-swf-webapp-components"],
-    ["@kie-tools/runtime-tools-task-console-webapp", "packages/runtime-tools-task-console-webapp"],
     ["@kie-tools/scesim-editor", "packages/scesim-editor"],
+    ["@kie-tools/scesim-editor-envelope", "packages/scesim-editor-envelope"],
     ["@kie-tools/scesim-marshaller", "packages/scesim-marshaller"],
     ["@kie-tools/serverless-logic-web-tools", "packages/serverless-logic-web-tools"],
     [
@@ -2766,9 +2783,7 @@
     ["@kie-tools-core/switch-expression-ts", "packages/switch-expression-ts"],
     ["@kie-tools/text-editor", "packages/text-editor"],
     ["@kie-tools/tsconfig", "packages/tsconfig"],
-    ["@kie-tools/uniforms-bootstrap4-codegen", "packages/uniforms-bootstrap4-codegen"],
     ["@kie-tools/uniforms-patternfly", "packages/uniforms-patternfly"],
-    ["@kie-tools/uniforms-patternfly-codegen", "packages/uniforms-patternfly-codegen"],
     ["@kie-tools/unitables", "packages/unitables"],
     ["@kie-tools/unitables-dmn", "packages/unitables-dmn"],
     ["@kie-tools-core/vscode-extension", "packages/vscode-extension"],

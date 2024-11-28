@@ -127,7 +127,7 @@ function configure_mirrors() {
 
 function configure_maven_download_output() {
     if [ "${MAVEN_DOWNLOAD_OUTPUT}" != "true" ]; then
-        export MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND} --no-transfer-progress"
+        export MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND}"
     fi
 }
 

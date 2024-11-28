@@ -29,56 +29,43 @@ test.describe("Populate Boxed Invocation", () => {
   }) => {
     await stories.openBoxedInvocation();
 
-    await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Installment calculation");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "number" }).click();
-    await page.keyboard.press("Enter");
+    await bee.expression.asInvocation().expressionHeaderCell.open();
+    await bee.expression.asInvocation().expressionHeaderCell.setName({ name: "Installment calculation", close: false });
+    await bee.expression.asInvocation().expressionHeaderCell.setDataType({ dataType: "number", close: true });
 
-    await page.getByRole("cell", { name: "p-1 (<Undefined>)" }).hover();
-    await page.getByRole("cell", { name: "p-1 (<Undefined>)" }).locator("svg").click();
-    await page.getByRole("cell", { name: "p-1 (<Undefined>)" }).locator("svg").click();
-    await page.getByRole("cell", { name: "p-1 (<Undefined>)" }).locator("svg").click();
-    await page.getByRole("cell", { name: "p-1 (<Undefined>)" }).locator("svg").click();
+    await bee.expression.asInvocation().addParameterBelowOfEntryAtIndex(0);
+    await bee.expression.asInvocation().addParameterBelowOfEntryAtIndex(0);
+    await bee.expression.asInvocation().addParameterBelowOfEntryAtIndex(0);
+    await bee.expression.asInvocation().addParameterBelowOfEntryAtIndex(0);
 
     await bee.expression.asInvocation().parameter(0).selectExpressionMenu.selectLiteral();
-    await page.getByRole("cell", { name: "p-1 (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Monthly income");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "number" }).click();
-    await page.keyboard.press("Enter");
-
-    await bee.expression.asInvocation().parameter(4).selectExpressionMenu.selectLiteral();
-    await page.getByRole("cell", { name: "p-5 (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Monthly repayments");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "number" }).click();
-    await page.keyboard.press("Enter");
-
-    await bee.expression.asInvocation().parameter(3).selectExpressionMenu.selectLiteral();
-    await page.getByRole("cell", { name: "p-4 (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Monthly expenses");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "number" }).click();
-    await page.keyboard.press("Enter");
-
-    await bee.expression.asInvocation().parameter(2).selectExpressionMenu.selectLiteral();
-    await page.getByRole("cell", { name: "p-3 (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Risk category");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "number" }).click();
-    await page.keyboard.press("Enter");
+    await bee.expression.asInvocation().parameter(0).descriptionCell.open();
+    await bee.expression.asInvocation().parameter(0).descriptionCell.setName({ name: "Monthly income" });
+    await bee.expression.asInvocation().parameter(0).descriptionCell.setDataType({ dataType: "number", commit: true });
 
     await bee.expression.asInvocation().parameter(1).selectExpressionMenu.selectLiteral();
-    await page.getByRole("cell", { name: "p-2 (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Required monthly installment");
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "number" }).click();
-    await page.keyboard.press("Enter");
+    await bee.expression.asInvocation().parameter(1).descriptionCell.open();
+    await bee.expression.asInvocation().parameter(1).descriptionCell.setName({ name: "Monthly repayments" });
+    await bee.expression.asInvocation().parameter(1).descriptionCell.setDataType({ dataType: "number", commit: true });
+
+    await bee.expression.asInvocation().parameter(2).selectExpressionMenu.selectLiteral();
+    await bee.expression.asInvocation().parameter(2).descriptionCell.open();
+    await bee.expression.asInvocation().parameter(2).descriptionCell.setName({ name: "Monthly expenses" });
+    await bee.expression.asInvocation().parameter(2).descriptionCell.setDataType({ dataType: "number", commit: true });
+
+    await bee.expression.asInvocation().parameter(3).selectExpressionMenu.selectLiteral();
+    await bee.expression.asInvocation().parameter(3).descriptionCell.open();
+    await bee.expression.asInvocation().parameter(3).descriptionCell.setName({ name: "Risk category" });
+    await bee.expression.asInvocation().parameter(3).descriptionCell.setDataType({ dataType: "number", commit: true });
+
+    await bee.expression.asInvocation().parameter(4).selectExpressionMenu.selectLiteral();
+    await bee.expression.asInvocation().parameter(4).descriptionCell.open();
+    await bee.expression.asInvocation().parameter(4).descriptionCell.setName({ name: "Required monthly installment" });
+    await bee.expression.asInvocation().parameter(4).descriptionCell.setDataType({ dataType: "number", commit: true });
 
     await resizing.reset(page.getByRole("cell", { name: "Required monthly installment" }));
 
-    await page.getByRole("columnheader", { name: "FUNCTION NAME" }).click();
+    await bee.expression.asInvocation().invokedFunctionNameCell.click();
     await page.keyboard.type(`Affordability calculation`);
     await page.keyboard.press("Enter");
 

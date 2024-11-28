@@ -29,44 +29,18 @@ import {
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
-import { SceSimModel } from "@kie-tools/scesim-marshaller";
-
+import { useTestScenarioEditorI18n } from "../i18n";
+import { useTestScenarioEditorStore } from "../store/TestScenarioStoreContext";
+import { TestScenarioEditorDock } from "../store/TestScenarioEditorStore";
 import TestScenarioDrawerDataSelectorPanel from "./TestScenarioDrawerDataSelectorPanel";
 import TestScenarioDrawerCheatSheetPanel from "./TestScenarioDrawerCheatSheetPanel";
 import TestScenarioDrawerSettingsPanel from "../drawer/TestScenarioDrawerSettingsPanel";
-import {
-  TestScenarioDataObject,
-  TestScenarioEditorDock,
-  TestScenarioSelectedColumnMetaData,
-  TestScenarioSettings,
-  TestScenarioType,
-} from "../TestScenarioEditor";
-import { useTestScenarioEditorI18n } from "../i18n";
 
-function TestScenarioDrawerPanel({
-  dataObjects,
-  fileName,
-  onDrawerClose,
-  onUpdateSettingField,
-  scesimModel,
-  selectedColumnMetaData,
-  selectedDock,
-  testScenarioSettings,
-  updateSelectedColumnMetaData,
-  updateTestScenarioModel,
-}: {
-  dataObjects: TestScenarioDataObject[];
-  fileName: string;
-  onDrawerClose: () => void;
-  onUpdateSettingField: (field: string, value: boolean | string) => void;
-  scesimModel: SceSimModel;
-  selectedColumnMetaData: TestScenarioSelectedColumnMetaData | null;
-  selectedDock: TestScenarioEditorDock;
-  testScenarioSettings: TestScenarioSettings;
-  updateSelectedColumnMetaData: React.Dispatch<React.SetStateAction<TestScenarioSelectedColumnMetaData | null>>;
-  updateTestScenarioModel: React.Dispatch<React.SetStateAction<SceSimModel>>;
-}) {
+function TestScenarioDrawerPanel({ onDrawerClose }: { onDrawerClose: () => void }) {
   const { i18n } = useTestScenarioEditorI18n();
+  const navigation = useTestScenarioEditorStore((state) => state.navigation);
+  const settingsModel = useTestScenarioEditorStore((state) => state.scesim.model.ScenarioSimulationModel.settings);
+  const testScenarioType = settingsModel.type?.__$$text.toUpperCase();
 
   return (
     <DrawerPanelContent isResizable={true} minSize={"400px"} defaultSize={"500px"}>
@@ -77,17 +51,17 @@ function TestScenarioDrawerPanel({
         <TextContent>
           <Text component={TextVariants.h2}>
             {(() => {
-              switch (selectedDock) {
+              switch (navigation.dock.selected) {
                 case TestScenarioEditorDock.CHEATSHEET:
                   return i18n.drawer.cheatSheet.title;
                 case TestScenarioEditorDock.DATA_OBJECT:
-                  return testScenarioSettings.assetType === TestScenarioType[TestScenarioType.DMN]
+                  return testScenarioType === "DMN"
                     ? i18n.drawer.dataSelector.titleDMN
                     : i18n.drawer.dataSelector.titleRule;
                 case TestScenarioEditorDock.SETTINGS:
                   return i18n.drawer.settings.title;
                 default:
-                  throw new Error("Wrong state, an invalid dock has been selected " + selectedDock);
+                  throw new Error("Wrong state, an invalid dock has been selected " + navigation.dock.selected);
               }
             })()}
           </Text>
@@ -96,30 +70,15 @@ function TestScenarioDrawerPanel({
       </DrawerHead>
       <DrawerPanelBody>
         {(() => {
-          switch (selectedDock) {
+          switch (navigation.dock.selected) {
             case TestScenarioEditorDock.CHEATSHEET:
-              return <TestScenarioDrawerCheatSheetPanel assetType={testScenarioSettings.assetType} />;
+              return <TestScenarioDrawerCheatSheetPanel />;
             case TestScenarioEditorDock.DATA_OBJECT:
-              return (
-                <TestScenarioDrawerDataSelectorPanel
-                  assetType={testScenarioSettings.assetType}
-                  dataObjects={dataObjects}
-                  scesimModel={scesimModel}
-                  selectedColumnMetadata={selectedColumnMetaData}
-                  updateSelectedColumnMetaData={updateSelectedColumnMetaData}
-                  updateTestScenarioModel={updateTestScenarioModel}
-                />
-              );
+              return <TestScenarioDrawerDataSelectorPanel />;
             case TestScenarioEditorDock.SETTINGS:
-              return (
-                <TestScenarioDrawerSettingsPanel
-                  fileName={fileName}
-                  onUpdateSettingField={onUpdateSettingField}
-                  testScenarioSettings={testScenarioSettings}
-                />
-              );
+              return <TestScenarioDrawerSettingsPanel />;
             default:
-              throw new Error("Wrong state, an invalid dock has been selected " + selectedDock);
+              throw new Error("Wrong state, an invalid dock has been selected " + navigation.dock.selected);
           }
         })()}
       </DrawerPanelBody>

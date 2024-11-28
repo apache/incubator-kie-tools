@@ -19,4 +19,4 @@
 
 import * as webpack from "webpack";
 
-export default function common(env: any): webpack.Configuration;
+export default function common(webpackEnv: any): webpack.Configuration;

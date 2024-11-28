@@ -71,7 +71,7 @@ const TaskInboxSwitchUser: React.FC<IOwnProps & OUIAProps> = ({ user, ouiaId, ou
       isPlain
       dropdownItems={dropdownItems()}
       className="DevUI-switchUser-dropdown-styling"
-      {...componentOuiaProps(ouiaId, "task-inbox-switch-user", ouiaSafe)}
+      {...componentOuiaProps(ouiaId, "tasks-switch-user", ouiaSafe)}
     />
   );
 };

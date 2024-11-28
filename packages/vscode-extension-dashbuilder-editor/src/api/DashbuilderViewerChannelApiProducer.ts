@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { BackendProxy } from "@kie-tools-core/backend/dist/api";
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeKieEditorChannelApiProducer } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorChannelApiProducer";
@@ -40,7 +39,6 @@ export class DashbuilderViewerChannelApiProducer implements VsCodeKieEditorChann
     editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
     vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
-    backendProxy: BackendProxy,
     vscodeNotifications: VsCodeNotificationsChannelApiImpl,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
@@ -50,7 +48,6 @@ export class DashbuilderViewerChannelApiProducer implements VsCodeKieEditorChann
       editor,
       resourceContentService,
       vscodeWorkspace,
-      backendProxy,
       vscodeNotifications,
       javaCodeCompletionApi,
       viewType,

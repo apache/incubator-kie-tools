@@ -17,17 +17,37 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../../__fixtures__/base";
 
 test.describe("Create Boxed Invocation", () => {
   test("should render expression correctly", async ({ bee, stories, page }) => {
     await stories.openBoxedInvocation();
-    await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "FUNCTION" })).toBeAttached();
+    expect(await bee.expression.asInvocation().expressionHeaderCell.getName()).toEqual("Expression Name");
+    expect(await bee.expression.asInvocation().expressionHeaderCell.getDataType()).toEqual("(<Undefined>)");
+    await expect(bee.expression.asInvocation().invokedFunctionNameCell).toBeAttached();
     await expect(page.getByRole("cell", { name: "p-1" })).toBeAttached();
     await expect(page.getByText("Select expression")).toHaveCount(1);
     await expect(page.getByRole("columnheader")).toHaveCount(2);
     await expect(page.getByRole("cell")).toHaveCount(2);
     await expect(bee.getContainer()).toHaveScreenshot("boxed-invocation.png");
+  });
+
+  test("should commit invoked function by cell click", async ({ bee, stories, page }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/1158",
+    });
+
+    await stories.openBoxedInvocation();
+
+    // click to start editing and type new value
+    await bee.expression.asInvocation().invokedFunctionNameCell.click();
+    await page.keyboard.type("Changed Invoked Function Name");
+
+    // commit a change by a click to another cell
+    await bee.expression.asInvocation().parameter(0).descriptionCell.select();
+
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-invocation-commit-function-by-cell-click.png");
   });
 });

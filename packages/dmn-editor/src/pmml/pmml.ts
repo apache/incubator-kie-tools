@@ -18,9 +18,9 @@
  */
 
 import { DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { buildXmlHref } from "../xml/xmlHrefs";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import * as __path from "path";
-import { Normalized } from "../normalization/normalize";
 
 export const KIE_PMML_NAMESPACE = "https://kie.org/pmml";
 

@@ -18,23 +18,26 @@
  */
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import axios from "axios";
-import { User } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
+import { ANONYMOUS_USER, User } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface TaskFormGatewayApi {
   getTaskFormSchema(userTask: UserTaskInstance): Promise<Record<string, any>>;
 
+  getTaskFormSchemaAsAnonymous(userTask: UserTaskInstance): Promise<Record<string, any>>;
+
   getCustomForm(userTask: UserTaskInstance): Promise<Form>;
 
   doSubmit(userTask: UserTaskInstance, phase: string, payload: any): Promise<any>;
+
+  doSubmitAsAnonymous(userTask: UserTaskInstance, phase: string, payload: any): Promise<any>;
 }
 
 export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
   constructor(private readonly getCurrentUser: () => User) {}
 
-  doSubmit(userTask: UserTaskInstance, phase: string, payload: any): Promise<any> {
+  submitTaskForm(endpoint: string, payload: any) {
     return new Promise<any>((resolve, reject) => {
-      const endpoint = `${userTask.endpoint}?phase=${phase}&${getTaskEndpointSecurityParams(this.getCurrentUser())}`;
       axios
         .post(endpoint, payload, {
           headers: {
@@ -53,9 +56,8 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
     });
   }
 
-  getTaskFormSchema(userTask: UserTaskInstance): Promise<Record<string, any>> {
+  fetchTaskFormSchema(endpoint: string) {
     return new Promise<Record<string, any>>((resolve, reject) => {
-      const endpoint = getTaskSchemaEndPoint(userTask, this.getCurrentUser());
       axios
         .get(endpoint, {
           headers: {
@@ -74,12 +76,32 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
     });
   }
 
+  doSubmit(userTask: UserTaskInstance, phase: string, payload: any): Promise<any> {
+    const endpoint = `${userTask.endpoint}?phase=${phase}&${getTaskEndpointSecurityParams(userTask, this.getCurrentUser())}`;
+    return this.submitTaskForm(endpoint, payload);
+  }
+
+  getTaskFormSchema(userTask: UserTaskInstance): Promise<Record<string, any>> {
+    const endpoint = getTaskSchemaEndPoint(userTask, this.getCurrentUser());
+    return this.fetchTaskFormSchema(endpoint);
+  }
+
+  doSubmitAsAnonymous(userTask: UserTaskInstance, phase: string, payload: any): Promise<any> {
+    const endpoint = `${userTask.endpoint}?phase=${phase}&${getTaskEndpointSecurityParams(userTask)}`;
+    return this.submitTaskForm(endpoint, payload);
+  }
+
+  getTaskFormSchemaAsAnonymous(userTask: UserTaskInstance): Promise<Record<string, any>> {
+    const endpoint = getTaskSchemaEndPoint(userTask);
+    return this.fetchTaskFormSchema(endpoint);
+  }
+
   getCustomForm(userTask: UserTaskInstance): Promise<Form> {
     return Promise.reject();
   }
 }
 
-function getTaskSchemaEndPoint(task: UserTaskInstance, user: User): string {
+function getTaskSchemaEndPoint(task: UserTaskInstance, user?: User): string {
   let params = "";
   let endpoint = task.endpoint;
 
@@ -88,13 +110,17 @@ function getTaskSchemaEndPoint(task: UserTaskInstance, user: User): string {
     endpoint = endpoint!.slice(0, -(task.id.length + 1));
     endpoint = endpoint.replace(task.processInstanceId + "/", "");
   } else {
-    params = `?${getTaskEndpointSecurityParams(user)}`;
+    params = `?${getTaskEndpointSecurityParams(task, user)}`;
   }
 
   return `${endpoint}/schema${params}`;
 }
 
-function getTaskEndpointSecurityParams(user: User): string {
+function getTaskEndpointSecurityParams(task: UserTaskInstance, user?: User): string {
+  if (!user || user.id === ANONYMOUS_USER.id) {
+    return `user=${task.potentialUsers?.[0] ?? "admin"}`;
+  }
+
   let groups = "";
 
   if (user.groups && user.groups.length > 0) {

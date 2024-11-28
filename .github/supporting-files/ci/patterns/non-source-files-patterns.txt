@@ -8,7 +8,9 @@
 docs
 gifs
 repo
+devbox.*
 .vscode
 .idea
 .ci
+./_intellij-project
 .github/CODEOWNERS

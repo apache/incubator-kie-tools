@@ -18,7 +18,7 @@
  */
 
 import { getDecisionServicePropertiesRelativeToThisDmn } from "../../mutations/addExistingDecisionServiceToDrd";
-import { buildXmlHref } from "../../xml/xmlHrefs";
+import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { State } from "../Store";
 
 export function computeContainingDecisionServiceHrefsByDecisionHrefs({

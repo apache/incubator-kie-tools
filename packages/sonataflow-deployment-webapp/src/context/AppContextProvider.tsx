@@ -19,9 +19,10 @@
 
 import React, { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { DEFAULT_APPDATA_VALUES } from "../AppConstants";
-import { AppData, verifyDataIndex } from "../data";
+import { AppData } from "../data";
 import { useAppDataPromise } from "../hooks/useAppDataPromise";
 import { AppContext } from "./AppContext";
+import { verifyDataIndex } from "@kie-tools/runtime-tools-swf-gateway-api/src/gatewayApi/apis";
 
 export function AppContextProvider(props: PropsWithChildren<{}>) {
   const appDataPromise = useAppDataPromise();

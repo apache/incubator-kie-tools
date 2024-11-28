@@ -46,17 +46,16 @@ import {
   DmnEditorDataTypesClipboard,
   getClipboard,
 } from "../clipboard/Clipboard";
-import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
+import { getNewDmnIdRandomizer } from "@kie-tools/dmn-marshaller/dist/idRandomizer/dmnIdRandomizer";
 import { isEnum } from "./ConstraintsEnum";
 import { isRange } from "./ConstraintsRange";
 import { constraintTypeHelper, recursivelyGetRootItemDefinition } from "./Constraints";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 import { useDmnEditor } from "../DmnEditorContext";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { resolveTypeRef } from "./resolveTypeRef";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
-import { Normalized } from "../normalization/normalize";
-import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export const BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL = 5;
 export const STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE = 95;

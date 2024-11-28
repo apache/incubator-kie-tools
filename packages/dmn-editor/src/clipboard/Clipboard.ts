@@ -25,6 +25,9 @@ import {
   DMNDI15__DMNEdge,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { parseXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
+import { getNewDmnIdRandomizer } from "@kie-tools/dmn-marshaller/dist/idRandomizer/dmnIdRandomizer";
 import { Unpacked } from "../tsExt/tsExt";
 import * as RF from "reactflow";
 import { State } from "../store/Store";
@@ -35,9 +38,6 @@ import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { KIE, Namespaced } from "@kie-tools/dmn-marshaller/dist/kie-extensions";
 import { KIE__tComponentWidths } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
 import { DataType } from "../dataTypes/DataTypes";
-import { parseXmlHref } from "../xml/xmlHrefs";
-import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
-import { Normalized } from "../normalization/normalize";
 
 export const DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE = "application/json+kie-dmn-editor--diagram" as const;
 export const DMN_EDITOR_BOXED_EXPRESSION_CLIPBOARD_MIME_TYPE =

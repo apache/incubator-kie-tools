@@ -42,8 +42,9 @@ fi
 
 "${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
     -nsu \
+    -B \
     -s "${MAVEN_SETTINGS_PATH}" \
     -DplatformVersion="${QUARKUS_PLATFORM_VERSION}" \
     -Dextensions="${extensions}" \
     ${QUARKUS_ADD_EXTENSION_ARGS} \
-    io.quarkus.platform:quarkus-maven-plugin:"${QUARKUS_PLATFORM_VERSION}":add-extension
+    "${QUARKUS_PLATFORM_GROUPID}":quarkus-maven-plugin:"${QUARKUS_PLATFORM_VERSION}":add-extension

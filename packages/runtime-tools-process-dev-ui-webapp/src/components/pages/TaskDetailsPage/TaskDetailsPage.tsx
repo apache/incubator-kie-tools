@@ -103,7 +103,7 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({ oui
       details: notificationDetails,
       customActions: [
         {
-          label: "Go to Task Inbox",
+          label: "Go to Tasks",
           onClick: () => {
             setNotification(null);
             goToInbox();

@@ -45,7 +45,7 @@ shift $#
 script_dir_path=$(cd `dirname "${BASH_SOURCE[0]}"`; pwd -P)
 
 export NODE_OPTIONS="${NODE_OPTIONS} --max_old_space_size=4096"
-APPS_MAVEN_OPTIONS="-Dquarkus.package.type=fast-jar -Dquarkus.build.image=false"
+APPS_MAVEN_OPTIONS="-Dquarkus.package.type=fast-jar -Dquarkus.build.image=false -B"
 # used for all-in-one image
 extended_context=""
 

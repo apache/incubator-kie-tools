@@ -24,6 +24,7 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import { DC__Bounds, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { State } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { addOrGetDrd } from "../mutations/addOrGetDrd";
@@ -39,7 +40,6 @@ import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { DC__Dimension } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_2/ts-gen/types";
-import { Normalized } from "../normalization/normalize";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 

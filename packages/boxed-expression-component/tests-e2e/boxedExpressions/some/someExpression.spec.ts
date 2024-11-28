@@ -45,4 +45,18 @@ test.describe("Create Boxed Some", () => {
     expect((await jsonModel.getSomeExpression()).in["@_id"]).not.toBeUndefined();
     expect((await jsonModel.getSomeExpression()).satisfies["@_id"]).not.toBeUndefined();
   });
+
+  test("should commit variable by cell click", async ({ bee }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/1158",
+    });
+
+    await bee.expression.asSome().variable.fill("Changed Variable Name");
+
+    // commit a change by a click to another cell
+    await bee.expression.asSome().in.elementCell.click();
+
+    await expect(bee.getContainer()).toHaveScreenshot("boxed-some-commit-variable-by-cell-click.png");
+  });
 });

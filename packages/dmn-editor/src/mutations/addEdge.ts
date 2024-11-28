@@ -28,6 +28,7 @@ import {
   DMN15__tKnowledgeRequirement,
   DMNDI15__DMNEdge,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { PositionalNodeHandleId } from "../diagram/connections/PositionalNodeHandles";
 import { EdgeType, NodeType } from "../diagram/connections/graphStructure";
 import { _checkIsValidConnection } from "../diagram/connections/isValidConnection";
@@ -39,7 +40,6 @@ import { Unpacked } from "../tsExt/tsExt";
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { AutoPositionedEdgeMarker } from "../diagram/edges/AutoPositionedEdgeMarker";
-import { Normalized } from "../normalization/normalize";
 import { ExternalModelsIndex } from "../DmnEditor";
 
 export function addEdge({

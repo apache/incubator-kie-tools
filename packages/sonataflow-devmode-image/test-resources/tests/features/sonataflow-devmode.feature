@@ -12,7 +12,6 @@ Feature: Serverless Workflow devmode images
       | wait                 | 480               |
       | request_method       | GET               |
       | expected_status_code | 200               |
-    And container log should contain --no-transfer-progress
     And container log should contain -Duser.home=/home/kogito -o
     And container log should contain -Dquarkus.test.continuous-testing=disabled
     And container log should match regex Installed features:.*kogito-serverless-workflow

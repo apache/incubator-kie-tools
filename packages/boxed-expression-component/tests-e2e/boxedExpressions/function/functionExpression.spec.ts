@@ -26,8 +26,8 @@ test.describe("Create Boxed Function", () => {
 
   test("should render FEEL function expression correctly", async ({ bee, page }) => {
     await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "F", exact: true })).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "Edit parameters" })).toBeAttached();
+    await expect(await bee.expression.asFunction().functionType.content.textContent()).toEqual("F");
+    await expect(await bee.expression.asFunction().parameters.textContent()).toEqual("Edit parameters");
     await expect(page.getByText("Select expression")).toHaveCount(1);
     await expect(page.getByRole("columnheader")).toHaveCount(3);
     await expect(page.getByRole("cell")).toHaveCount(2);
@@ -35,13 +35,13 @@ test.describe("Create Boxed Function", () => {
   });
 
   test("should render Java function expression correctly", async ({ bee, page }) => {
-    await page.getByRole("columnheader", { name: "F", exact: true }).click();
-    await page.getByRole("menuitem", { name: "Java" }).click();
+    await bee.expression.asFunction().functionType.open();
+    await bee.expression.asFunction().functionType.setType({ type: "Java" });
     await expect(bee.getContainer()).toHaveScreenshot("boxed-java-function.png");
 
-    await expect(page.getByRole("columnheader", { name: "J", exact: true })).toBeAttached();
+    await expect(await bee.expression.asFunction().functionType.content.textContent()).toEqual("J");
     // the "onmouseenter" events triggers if the mouse was outside of the element before it appears on screen.
-    await page.getByRole("columnheader", { name: "J", exact: true }).hover();
+    await bee.expression.asFunction().functionType.content.hover();
     await page.getByText("Class name(string)").hover();
     await expect(page.getByRole("cell", { name: "Class name (string)" }).locator("svg")).toBeAttached();
     await page.getByText("Method signature(string)").hover();
@@ -53,8 +53,8 @@ test.describe("Create Boxed Function", () => {
   });
 
   test("should render PMML function expression correctly", async ({ bee, page }) => {
-    await page.getByRole("columnheader", { name: "F", exact: true }).click();
-    await page.getByRole("menuitem", { name: "PMML" }).click();
+    await bee.expression.asFunction().functionType.open();
+    await bee.expression.asFunction().functionType.setType({ type: "PMML" });
     await expect(bee.getContainer()).toHaveScreenshot("boxed-pmml-function.png");
 
     await expect(page.getByRole("columnheader", { name: "P", exact: true })).toBeAttached();
@@ -88,8 +88,8 @@ test.describe("Create Boxed Function", () => {
   });
 
   test.describe("Change function type", () => {
-    test.beforeEach(async ({ page }) => {
-      await page.getByRole("columnheader", { name: "F", exact: true }).click();
+    test.beforeEach(async ({ bee }) => {
+      await bee.expression.asFunction().functionType.open();
     });
 
     const functioTypes = [
@@ -99,37 +99,24 @@ test.describe("Create Boxed Function", () => {
     ];
 
     for (const [functionName, abbreviation] of functioTypes) {
-      test(`should change function type to ${functionName}`, async ({ page }) => {
+      test(`should change function type to ${functionName}`, async ({ bee, page }) => {
         await page.getByRole("menuitem", { name: functionName }).hover();
         await expect(page.getByLabel(`${functionName}-help`)).toBeAttached();
-        await page.getByRole("menuitem", { name: functionName }).click();
+        await bee.expression.asFunction().functionType.setType({ type: functionName as "FEEL" | "Java" | "PMML" });
         await expect(page.getByRole("columnheader", { name: abbreviation, exact: true })).toBeAttached();
       });
     }
   });
 
-  test("should edit function parameters", async ({ page }) => {
-    await page.getByRole("columnheader", { name: "Edit parameters" }).click();
-    await expect(page.getByRole("button", { name: "Add parameter" })).toBeAttached();
+  test("should edit function parameters", async ({ bee }) => {
+    await bee.expression.asFunction().addParameter({ name: "test", dataType: "boolean" });
+    await bee.expression.asFunction().addParameter({});
 
-    await page.getByRole("button", { name: "Add parameter" }).click();
-    await expect(page.getByRole("button", { name: "Add parameter" })).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "(p-1: (<Undefined>))" })).toBeAttached();
+    expect(await bee.expression.asFunction().parameters.textContent()).toEqual("(test: (boolean), p-2: (<Undefined>))");
 
-    await page.getByRole("textbox").click();
-    await page.getByRole("textbox").press("Control+a");
-    await page.getByRole("textbox").fill("test");
-    await page.getByRole("textbox").press("Tab");
+    await bee.expression.asFunction().deleteParameter({ nth: 1 });
+    await bee.expression.asFunction().deleteParameter({ nth: 0 });
 
-    await page.getByLabel("<Undefined>").click();
-    await page.getByRole("option", { name: "boolean" }).click();
-    await expect(page.getByRole("columnheader", { name: "(test: (boolean))" })).toBeAttached();
-    await page.getByRole("button", { name: "Add parameter" }).click();
-    await expect(page.getByRole("columnheader", { name: "(test: (boolean), p-2: (<Undefined>))" })).toBeAttached();
-    await page.getByLabel("", { exact: true }).getByRole("button").nth(2).click();
-    await expect(page.getByRole("columnheader", { name: "(p-2: (<Undefined>))" })).toBeAttached();
-
-    await page.getByLabel("", { exact: true }).getByRole("button").nth(2).click();
-    await expect(page.getByRole("columnheader", { name: "Edit parameters" })).toBeAttached();
+    expect(await bee.expression.asFunction().parameters.textContent()).toEqual("Edit parameters");
   });
 });

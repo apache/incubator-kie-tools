@@ -20,6 +20,8 @@
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { getNewDmnIdRandomizer } from "@kie-tools/dmn-marshaller/dist/idRandomizer/dmnIdRandomizer";
 import {
   Drawer,
   DrawerContent,
@@ -53,11 +55,8 @@ import {
   DmnEditorDataTypesClipboard,
   getClipboard,
 } from "../clipboard/Clipboard";
-import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 import { addTopLevelItemDefinition as _addTopLevelItemDefinition } from "../mutations/addTopLevelItemDefinition";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
-import { Normalized } from "../normalization/normalize";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export type DataType = {

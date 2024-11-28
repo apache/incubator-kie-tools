@@ -17,19 +17,24 @@
  * under the License.
  */
 
-const buildEnv = require("./env");
-const { setup } = require("@kie-tools/maven-config-setup-helper");
+const { env } = require("./env");
+const { setupMavenConfigFile, installMvnw, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
+
+const version = env.vscodeJavaCodeCompletionExtensionPlugin.version;
+
+setupMavenConfigFile(`
+  -Drevision=${version}
+  -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
+`);
+
+installMvnw();
+
+// Manifest file
+
 const fs = require("fs");
 const path = require("path");
 
 const MANIFEST_FILE = path.resolve("vscode-java-code-completion-extension-plugin-core/META-INF/MANIFEST.MF");
-
-console.info("[vscode-java-code-completion-extension-plugin-install] Updating '.mvn/maven.config'...");
-const version = buildEnv.env.vscodeJavaCodeCompletionExtensionPlugin.version;
-
-setup(`
-    -Drevision=${version}
-`);
 
 console.info("[vscode-java-code-completion-extension-plugin-install] Updating manifest file...");
 const manifestFile = fs.readFileSync(MANIFEST_FILE, "utf-8");

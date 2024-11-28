@@ -25,7 +25,7 @@ import {
   DrawerPanelContent,
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { useMemo } from "react";
-import { buildXmlHref } from "../xml/xmlHrefs";
+import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { SingleNodeProperties } from "./SingleNodeProperties";
 import { generateBoxedExpressionIndex } from "../boxedExpressions/boxedExpressionIndex";
 import { Form, FormSection } from "@patternfly/react-core/dist/js/components/Form";
@@ -35,7 +35,6 @@ import { DecisionTableOutputHeaderCell } from "./BoxedExpressionPropertiesPanelC
 import { LiteralExpressionContentCell } from "./BoxedExpressionPropertiesPanelComponents/LiteralExpressionContentCell";
 import { ExpressionRootCell } from "./BoxedExpressionPropertiesPanelComponents/ExpressionRootCell";
 import { DecisionTableInputRule } from "./BoxedExpressionPropertiesPanelComponents/DecisionTableInputRuleCell";
-import { AllExpressions } from "../dataTypes/DataTypeSpec";
 import { DecisionTableRootCell } from "./BoxedExpressionPropertiesPanelComponents/DecisionTableRootCell";
 import { InvocationFunctionCallCell } from "./BoxedExpressionPropertiesPanelComponents/InvocationFunctionCallCell";
 import { FunctionDefinitionParameterCell } from "./BoxedExpressionPropertiesPanelComponents/FunctionDefinitionParametersCell";

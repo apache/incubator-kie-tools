@@ -48,26 +48,6 @@ configure
 
 export MAVEN_OPTIONS="${MAVEN_OPTIONS} -s ${maven_settings_path}"
 
-# Add NPM registry if needed
-if [ ! -z "${NPM_REGISTRY_URL}" ]; then
-    echo "enabling npm repository: ${NPM_REGISTRY_URL}"
-    npm_profile="\
-<profile>\
-<id>internal-npm-registry</id>\
-<properties>\
-<npmRegistryURL>${NPM_REGISTRY_URL}</npmRegistryURL>\
-<yarnDownloadRoot>http://download.devel.redhat.com/rcm-guest/staging/rhba/dist/yarn/</yarnDownloadRoot>\
-<nodeDownloadRoot>http://download.devel.redhat.com/rcm-guest/staging/rhba/dist/node/</nodeDownloadRoot>\
-<npmDownloadRoot>http://download.devel.redhat.com/rcm-guest/staging/rhba/dist/npm/</npmDownloadRoot>\
-<pnpmDownloadRoot>http://download.devel.redhat.com/rcm-guest/staging/rhba/dist/pnpm/</pnpmDownloadRoot>\
-</properties>\
-</profile>\
-"   
-    sed -i.bak -E "s|(<!-- ### extra maven repositories ### -->)|\1\n${npm_profile}|" "${MAVEN_SETTINGS_PATH}"
-    sed -i.bak -E "s|(<!-- ### extra maven profile ### -->)|\1\n<activeProfile>internal-npm-registry</activeProfile>|" "${MAVEN_SETTINGS_PATH}"
-    
-    rm -rf "${MAVEN_SETTINGS_PATH}/*.bak"
-fi
 
 cat "${maven_settings_path}"
 

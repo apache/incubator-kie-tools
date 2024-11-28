@@ -30,6 +30,7 @@
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
     "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/dmn-marshaller": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/jest-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",

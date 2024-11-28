@@ -22,7 +22,7 @@ const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 
-module.exports = async (env) => {
+module.exports = async (webpackEnv) => {
   const components = ["uniforms", "table", "echarts", "svg-heatmap", "timeseries", "victory-charts", "map"];
   const copyResources = [];
 
@@ -33,7 +33,7 @@ module.exports = async (env) => {
     });
   });
 
-  return merge(common(env), {
+  return merge(common(webpackEnv), {
     entry: {},
     plugins: [
       new CopyPlugin({

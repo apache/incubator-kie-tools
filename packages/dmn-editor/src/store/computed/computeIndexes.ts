@@ -17,12 +17,12 @@
  * under the License.
  */
 
-import { DMNDI15__DMNEdge, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { XmlQName, parseXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
+import { DMNDI15__DMNEdge, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { KIE_DMN_UNKNOWN_NAMESPACE } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
-import { buildXmlHref } from "../../xml/xmlHrefs";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { Computed, State } from "../Store";
-import { Normalized } from "../../normalization/normalize";
 
 export function computeIndexedDrd(
   thisDmnsNamespace: string,

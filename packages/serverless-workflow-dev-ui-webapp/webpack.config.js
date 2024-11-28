@@ -29,10 +29,9 @@ const swEditor = require("@kie-tools/serverless-workflow-diagram-editor-assets")
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { env } = require("./env");
-const buildEnv = env;
 
-module.exports = async (env) =>
-  merge(common(env), {
+module.exports = async (webpackEnv) =>
+  merge(common(webpackEnv), {
     entry: {
       standalone: path.resolve(__dirname, "src", "standalone", "standalone.ts"),
       envelope: path.resolve(__dirname, "src", "standalone", "EnvelopeApp.ts"),
@@ -45,7 +44,7 @@ module.exports = async (env) =>
       static: {
         directory: "./dist",
       },
-      port: buildEnv.runtimeToolsDevUiWebapp.dev.port,
+      port: env.runtimeToolsDevUiWebapp.dev.port,
       compress: true,
       historyApiFallback: true,
       hot: true,

@@ -32,7 +32,7 @@ clean:
 
 .PHONY: docker-integration-test
 docker-integration-test: ## Test docker integration tests
-	go test ./... -tags integration_docker -v
+	go test ./... -tags integration_docker
 
 .PHONY: kaniko-docker-integration-test
 kaniko-docker-integration-test: ## Test kaniko integration docker tests

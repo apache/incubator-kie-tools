@@ -25,6 +25,8 @@ import {
   DMN15__tInputData,
   DMN15__tDefinitions,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { buildXmlHref, parseXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
@@ -32,7 +34,6 @@ import { DocumentationLinksFormGroup } from "./DocumentationLinksFormGroup";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { useCallback, useMemo } from "react";
-import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
 import { DmnObjectListItem } from "../externalNodes/DmnObjectListItem";
 import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
@@ -43,7 +44,6 @@ import { useExternalModels } from "../includedModels/DmnEditorDependenciesContex
 import { DragAndDrop, Draggable } from "../draggable/Draggable";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert/Alert";
-import { Normalized } from "../normalization/normalize";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ExternalDmn } from "../DmnEditor";
 import { Unpacked } from "../tsExt/tsExt";

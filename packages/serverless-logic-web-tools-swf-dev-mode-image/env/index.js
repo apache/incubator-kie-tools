@@ -35,10 +35,6 @@ module.exports = composeEnv([rootEnv, require("@kie-tools/serverless-logic-web-t
       default: `${kogitoBaseBuilderImageEnv.registry}/${kogitoBaseBuilderImageEnv.account}/${kogitoBaseBuilderImageEnv.name}:${kogitoBaseBuilderImageEnv.buildTag}`,
       description: "Base image complete tag.",
     },
-    SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__mavenM2RepoViaHttpImage: {
-      default: `${mavenM2RepoViaHttpImageEnv.registry}/${mavenM2RepoViaHttpImageEnv.account}/${mavenM2RepoViaHttpImageEnv.name}:${mavenM2RepoViaHttpImageEnv.buildTag}`,
-      description: "The image tag for the Maven M2 Repo via HTTP. Used during the build only.",
-    },
   }),
   get env() {
     return {
@@ -46,9 +42,7 @@ module.exports = composeEnv([rootEnv, require("@kie-tools/serverless-logic-web-t
         baseImageTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__baseImageTag),
         version: require("../package.json").version,
         dev: {
-          mavenM2RepoViaHttpImage: getOrDefault(
-            this.vars.SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__mavenM2RepoViaHttpImage
-          ),
+          mavenM2RepoViaHttpImage: `${mavenM2RepoViaHttpImageEnv.registry}/${mavenM2RepoViaHttpImageEnv.account}/${mavenM2RepoViaHttpImageEnv.name}:${mavenM2RepoViaHttpImageEnv.buildTag}`,
         },
       },
     };

@@ -17,11 +17,20 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
+  vars: varsWithName({
+    KOGITO_IMAGES_CEKIT_MODULES__quarkusGroupId: {
+      default: "io.quarkus.platform",
+      description: "Quarkus platform group id.",
+    },
+  }),
   get env() {
-    return {};
+    return {
+      kogitoImagesCekitModules: {
+        quarkusGroupId: getOrDefault(this.vars.KOGITO_IMAGES_CEKIT_MODULES__quarkusGroupId),
+      },
+    };
   },
 });

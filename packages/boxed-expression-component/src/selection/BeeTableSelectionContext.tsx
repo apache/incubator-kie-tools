@@ -1019,6 +1019,10 @@ export function useBeeTableSelectableCell(
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
+      if (document.activeElement instanceof HTMLInputElement) {
+        // See https://github.com/apache/incubator-kie-issues/issues/1158
+        (document.activeElement as any)?.blur?.();
+      }
       e.stopPropagation();
 
       if (

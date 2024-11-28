@@ -89,7 +89,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsConfigFileId}")
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsReleaseConfigFileId}")
                     }
                 }
             }
@@ -140,11 +140,12 @@ pipeline {
             }
             steps {
                 script {
-                    env.RELEASE_TAR_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-extended-services-linux-x86.tar.gz"
+                    env.RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-extended-services-linux-x86.zip"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
-                    cp kie-tools/packages/extended-services/dist/linux/kie_sandbox_extended_services.tar.gz "${env.RELEASE_ARTIFACTS_DIR}/${RELEASE_TAR_FILE}"
+                    cd kie-tools/packages/extended-services/dist/linux
+                    zip "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_ZIP_FILE}" ./kie_sandbox_extended_services
                     """.trim()
                 }
             }
@@ -158,7 +159,7 @@ pipeline {
                 dir("${env.RELEASE_ARTIFACTS_DIR}") {
                     script {
                         releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
-                        releaseUtils.signArtifact("${RELEASE_TAR_FILE}")
+                        releaseUtils.signArtifact("${RELEASE_ZIP_FILE}")
                     }
                 }
             }

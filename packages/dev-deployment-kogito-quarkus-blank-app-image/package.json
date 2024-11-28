@@ -13,7 +13,7 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
-    "build": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm m2-repo-via-http:container:run\" \"pnpm copy:assets\" \"pnpm image:docker:build\" --finally \"pnpm m2-repo-via-http:container:kill\"",
+    "build": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm m2-repo-via-http:container:run\" \"pnpm copy:assets\" \"pnpm image:docker:build\" --finally \"pnpm m2-repo-via-http:container:kill\" \"rimraf ./dist/tmp-m2\"",
     "build:dev": "pnpm build",
     "build:prod": "pnpm build",
     "copy:assets": "rimraf dist-dev && mkdir -p ./dist-dev && pnpm copy:quarkus-app && pnpm copy:maven-m2-repo-via-http-image--settings-xml",
@@ -28,9 +28,9 @@
     "create-test-image:minikube": "kie-tools--image-builder minikube -r \"$(build-env devDeploymentKogitoQuarkusBlankAppImage.registry)\" -a \"$(build-env devDeploymentKogitoQuarkusBlankAppImage.account)\" -n \"$(build-env devDeploymentKogitoQuarkusBlankAppImage.name)\" -t \"$(build-env devDeploymentKogitoQuarkusBlankAppImage.buildTag)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env devDeploymentKogitoQuarkusBlankAppImage.builderImage)\" --build-arg ROOT_PATH=/",
     "create-test-image:openshift": "kie-tools--image-builder openshift -r \"$(build-env devDeploymentKogitoQuarkusBlankAppImage.registry)\" -a \"$(build-env devDeploymentKogitoQuarkusBlankAppImage.account)\" -n \"$(build-env devDeploymentKogitoQuarkusBlankAppImage.name)\" -t \"$(build-env devDeploymentKogitoQuarkusBlankAppImage.buildTag)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env devDeploymentKogitoQuarkusBlankAppImage.builderImage)\" --build-arg ROOT_PATH=/",
     "image:docker:build": "kie-tools--image-builder build --allowHostNetworkAccess -r \"$(build-env devDeploymentKogitoQuarkusBlankAppImage.registry)\" -a \"$(build-env devDeploymentKogitoQuarkusBlankAppImage.account)\" -n \"$(build-env devDeploymentKogitoQuarkusBlankAppImage.name)\" -t \"$(build-env devDeploymentKogitoQuarkusBlankAppImage.buildTag)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env devDeploymentKogitoQuarkusBlankAppImage.builderImage)\" --build-arg ROOT_PATH=/",
-    "install": "node install.js",
     "m2-repo-via-http:container:kill": "(docker container kill m2-repo-via-http || true) && (docker container rm m2-repo-via-http || true)",
-    "m2-repo-via-http:container:run": "(pnpm m2-repo-via-http:container:kill || true) && docker run --name m2-repo-via-http -v \"$(mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout):/var/www/html\" -dit $(build-env devDeploymentKogitoQuarkusBlankAppImage.dev.mavenM2RepoViaHttpImage)",
+    "m2-repo-via-http:container:prepare-m2-repo-volume": "node -e 'require(`@kie-tools/maven-base`).prepareHardLinkedM2ForPackage(`./dist/tmp-m2/repository`, `./node_modules/@kie-tools/dev-deployment-kogito-quarkus-blank-app`)'",
+    "m2-repo-via-http:container:run": "(pnpm m2-repo-via-http:container:kill || true) && pnpm m2-repo-via-http:container:prepare-m2-repo-volume && docker run -p 8888:80 --name m2-repo-via-http -v \"./dist/tmp-m2/repository:/var/www/html\" -dit $(build-env devDeploymentKogitoQuarkusBlankAppImage.dev.mavenM2RepoViaHttpImage)",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "dependencies": {
@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@kie-tools/image-builder": "workspace:*",
-    "@kie-tools/maven-config-setup-helper": "workspace:*",
+    "@kie-tools/maven-base": "workspace:*",
     "@kie-tools/maven-m2-repo-via-http-image": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "rimraf": "^3.0.2",

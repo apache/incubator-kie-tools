@@ -1,91 +1,51 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  creationTimestamp: null
   name: manager-role
 rules:
+  - apiGroups:
+      - monitoring.coreos.com
+    resources:
+      - servicemonitors
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - update
+      - watch
+  - apiGroups:
+      - serving.knative.dev
+    resources:
+      - revisions
+    verbs:
+      - delete
+      - list
+      - watch
   - apiGroups:
       - sonataflow.org
     resources:
       - sonataflowbuilds
-    verbs:
-      - create
-      - delete
-      - get
-      - list
-      - patch
-      - update
-      - watch
-  - apiGroups:
-      - sonataflow.org
-    resources:
-      - sonataflowbuilds/finalizers
-    verbs:
-      - update
-  - apiGroups:
-      - sonataflow.org
-    resources:
-      - sonataflowbuilds/status
-    verbs:
-      - get
-      - patch
-      - update
-  - apiGroups:
-      - sonataflow.org
-    resources:
       - sonataflowclusterplatforms
-    verbs:
-      - create
-      - delete
-      - get
-      - list
-      - patch
-      - update
-      - watch
-  - apiGroups:
-      - sonataflow.org
-    resources:
-      - sonataflowclusterplatforms/finalizers
-    verbs:
-      - update
-  - apiGroups:
-      - sonataflow.org
-    resources:
-      - sonataflowclusterplatforms/status
-    verbs:
-      - get
-      - patch
-      - update
-  - apiGroups:
-      - sonataflow.org
-    resources:
       - sonataflowplatforms
-    verbs:
-      - create
-      - delete
-      - get
-      - list
-      - patch
-      - update
-      - watch
-  - apiGroups:
-      - sonataflow.org
-    resources:
-      - sonataflowplatforms/finalizers
-    verbs:
-      - update
-  - apiGroups:
-      - sonataflow.org
-    resources:
-      - sonataflowplatforms/status
-    verbs:
-      - get
-      - patch
-      - update
-  - apiGroups:
-      - sonataflow.org
-    resources:
       - sonataflows
     verbs:
       - create
@@ -98,12 +58,18 @@ rules:
   - apiGroups:
       - sonataflow.org
     resources:
+      - sonataflowbuilds/finalizers
+      - sonataflowclusterplatforms/finalizers
+      - sonataflowplatforms/finalizers
       - sonataflows/finalizers
     verbs:
       - update
   - apiGroups:
       - sonataflow.org
     resources:
+      - sonataflowbuilds/status
+      - sonataflowclusterplatforms/status
+      - sonataflowplatforms/status
       - sonataflows/status
     verbs:
       - get

@@ -1,3 +1,20 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 apiVersion: operators.coreos.com/v1alpha1
 kind: ClusterServiceVersion
 metadata:
@@ -10,7 +27,7 @@ metadata:
       based on the CNCF Serverless Workflow specification
     operators.operatorframework.io/internal-objects: '["sonataflowbuilds.sonataflow.org"]'
     repository: https://github.com/apache/incubator-kie-tools/packages/sonataflow-operator
-    support: Red Hat
+    support: Apache KIE
   name: sonataflow-operator.v0.0.0
   namespace: placeholder
 spec:
@@ -19,7 +36,7 @@ spec:
     owned:
       - description: SonataFlowBuild is an internal custom resource to control workflow
           build instances in the target platform
-        displayName: Sonata Flow Build
+        displayName: SonataFlowBuild
         kind: SonataFlowBuild
         name: sonataflowbuilds.sonataflow.org
         resources:
@@ -66,7 +83,7 @@ spec:
         version: v1alpha08
       - description: SonataFlowClusterPlatform is the Schema for the sonataflowclusterplatforms
           API
-        displayName: Sonata Flow Cluster Platform
+        displayName: SonataFlowClusterPlatform
         kind: SonataFlowClusterPlatform
         name: sonataflowclusterplatforms.sonataflow.org
         resources:
@@ -95,7 +112,7 @@ spec:
         version: v1alpha08
       - description: SonataFlowPlatform is the descriptor for the workflow platform
           infrastructure.
-        displayName: Sonata Flow Platform
+        displayName: SonataFlowPlatform
         kind: SonataFlowPlatform
         name: sonataflowplatforms.sonataflow.org
         resources:
@@ -132,6 +149,11 @@ spec:
               no build required)
             displayName: DevMode
             path: devMode
+          - description: Broker to communicate with workflow deployment.  It can be the
+              default broker when the workflow, Dataindex, or Jobservice does not have
+              a sink or source specified.
+            displayName: broker
+            path: eventing.broker
           - description: "Services attributes for deploying supporting applications like
               Data Index & Job Service. Only workflows without the `sonataflow.org/profile:
               dev` annotation will be configured to use these service(s). Setting this
@@ -156,22 +178,28 @@ spec:
               SonataFlowClusterPlatform
             displayName: clusterPlatformRef
             path: clusterPlatformRef
-          - description: Info generic information related to the build
+          - description: Info generic information related to the Platform
             displayName: info
             path: info
+          - description: Triggers list of triggers created for the SonataFlowPlatform
+            displayName: triggers
+            path: triggers
           - description: Version the operator version controlling this Platform
             displayName: version
             path: version
         version: v1alpha08
       - description: SonataFlow is the descriptor representation for a workflow application
           based on the CNCF Serverless Workflow specification.
-        displayName: Sonata Flow
+        displayName: SonataFlow
         kind: SonataFlow
         name: sonataflows.sonataflow.org
         resources:
           - kind: Deployment
             name: A Deployment for the Flow
             version: apps/v1
+          - kind: Service
+            name: A Knative Serving Service for the Flow
+            version: serving.knative.dev/v1
           - kind: Service
             name: A Service for the Flow
             version: v1
@@ -199,6 +227,10 @@ spec:
           - description: Sink describes the sinkBinding details of this SonataFlow instance.
             displayName: sink
             path: sink
+          - description: Sources describes the list of sources used to create triggers
+              for events consumed by this SonataFlow instance.
+            displayName: sources
+            path: sources
         statusDescriptors:
           - description: Address is used as a part of Addressable interface (status.address.url)
               for knative
@@ -207,8 +239,13 @@ spec:
           - description: Endpoint is an externally accessible URL of the workflow
             displayName: endpoint
             path: endpoint
+          - displayName: flowRevision
+            path: flowCRC
           - displayName: lastTimeRecoverAttempt
             path: lastTimeRecoverAttempt
+          - description: Platform displays which platform is being used by this workflow
+            displayName: platform
+            path: platform
           - description: keeps track of how many failure recovers a given workflow had
               so far
             displayName: recoverFailureAttempts
@@ -217,6 +254,9 @@ spec:
               workflow
             displayName: services
             path: services
+          - description: Triggers list of triggers created for the SonataFlow
+            displayName: triggers
+            path: triggers
         version: v1alpha08
   description: |-
     SonataFlow Kubernetes Operator for deploying workflow applications
@@ -247,10 +287,10 @@ spec:
     - name: Product Page
       url: https://sonataflow.org/serverlessworkflow/latest/index.html
   maintainers:
-    - email: bsig-cloud@redhat.com
-      name: Red Hat
+    - email: dev@kie.apache.org
+      name: Apache KIE
   maturity: alpha
   minKubeVersion: 1.23.0
   provider:
-    name: Red Hat
+    name: Apache KIE
   version: 0.0.0

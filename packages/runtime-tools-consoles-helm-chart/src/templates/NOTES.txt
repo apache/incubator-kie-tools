@@ -29,33 +29,6 @@ In order to get {{ .Release.Name }} running you need to run these commands:
 {{- end }}
 {{- end }}
 
-{{- if and (index .Values "task-console" "enabled") (index .Values "task-console" "ingress" "enabled") }}
-2. Task Console available at:
-{{- range $host := index .Values "task-console" "ingress" "hosts" }}
-  {{- range .paths }}
-  http{{ if index $.Values "task-console" "ingress" "tls" }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
-  {{- end }}
-{{- end }}
-{{- else }}
-
-2. Run the following commands in a separate terminal to port-forward Task Console application:
-{{- if contains "NodePort" ( index .Values "task-console" "service" "type" ) }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "taskConsole.fullname" ( index .Subcharts "task-console" ) }})
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT
-{{- else if contains "LoadBalancer" ( index .Values "task-console" "service" "type" ) }}
-     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-           You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "taskConsole.fullname" ( index .Subcharts "task-console" ) }}'
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "taskConsole.fullname" ( index .Subcharts "task-console" ) }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  echo http://$SERVICE_IP:{{ index .Values "task-console" "service" "port" }}
-{{- else if contains "ClusterIP" ( index .Values "task-console" "service" "type" ) }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/component={{ index .Values "task-console" "name" }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
-  echo "Task Console URL: http://127.0.0.1:{{ index .Values "task-console" "service" "port" }}"
-  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME {{ index .Values "task-console" "service" "port" }}:$CONTAINER_PORT
-{{- end }}
-{{- end }}
-
 {{- else if eq .Values.global.ingressSource "minikube" }}
 
 You may need to add the above hostnames to your /etc/hosts file, mapping them to your minikube ip.
@@ -70,23 +43,12 @@ Run the following commands:
   {{- end }}
 {{- end }}
 {{- end }}
-{{- if index .Values "task-console" "enabled" }}
-{{- range $host := index .Values "task-console" "ingress" "hosts" }}
-  {{- range .paths }}
-  echo "$MINIKUBE_IP {{ tpl $host.host $ }}" | sudo tee -a /etc/hosts
-  {{- end }}
-{{- end }}
-{{- end }}
 
 {{- else if eq .Values.global.ingressSource "openshift" }}
 
 {{- if index .Values "management-console" "enabled" }}
 1. Management Console available at:
   http{{ if index $.Values "management-console" "openshiftRoute" "tls" }}s{{ end }}://{{ tpl (index .Values "management-console" "openshiftRoute" "host") . }}
-{{- end }}
-{{- if index .Values "task-console" "enabled"  }}
-2. Task Console available at:
-  http{{ if index $.Values "task-console" "openshiftRoute" "tls" }}s{{ end }}://{{ tpl (index .Values "task-console" "openshiftRoute" "host") . }}
 {{- end }}
 
 {{- else }}
@@ -95,14 +57,6 @@ Run the following commands:
 {{- range $host := index .Values "management-console" "ingress" "hosts" }}
   {{- range .paths }}
   http{{ if index $.Values "management-console" "ingress" "tls" }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
-  {{- end }}
-{{- end }}
-{{- end }}
-{{- if and ( index .Values "task-console" "enabled" ) ( index .Values "task-console" "ingress" "enabled" ) }}
-2. Task Console available at:
-{{- range $host := index .Values "task-console" "ingress" "hosts" }}
-  {{- range .paths }}
-  http{{ if index $.Values "task-console" "ingress" "tls" }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
   {{- end }}
 {{- end }}
 {{- end }}

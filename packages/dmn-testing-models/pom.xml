@@ -33,7 +33,7 @@
   <groupId>org.kie.tools</groupId>
   <artifactId>dmn-testing-models</artifactId>
 
-  <name>DMN Testing Models</name>
+  <name>KIE Tools :: DMN Testing Models</name>
   <description>Testing models for DMN marshaller</description>
 
   <licenses>
@@ -43,21 +43,6 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-
-  <properties>
-    <dependency-plugin.version>3.6.1</dependency-plugin.version>
-  </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-test-resources</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <classifier>tests</classifier>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -71,9 +56,7 @@
     <plugins>
       <!-- Unpack DMN resources from org.kie:kie-dmn-test-resources -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>${dependency-plugin.version}</version>
         <executions>
           <execution>
             <id>unpack</id>

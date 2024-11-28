@@ -21,6 +21,7 @@ import React from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { componentOuiaProps, OUIAProps } from "../../ouiaTools";
+import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 
 interface IOwnProps {
   serviceUrl?: string;

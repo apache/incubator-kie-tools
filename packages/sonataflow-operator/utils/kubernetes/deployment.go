@@ -26,13 +26,14 @@ import (
 	"fmt"
 	"time"
 
+	appsv1 "k8s.io/api/apps/v1"
+	v1 "k8s.io/api/core/v1"
+	"k8s.io/klog/v2"
+
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
-	appsv1 "k8s.io/api/apps/v1"
-	v1 "k8s.io/api/core/v1"
-	"k8s.io/klog/v2"
 )
 
 const (

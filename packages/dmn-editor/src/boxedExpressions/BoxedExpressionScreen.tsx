@@ -32,6 +32,7 @@ import {
   DMN15__tDecision,
   DMN15__tItemDefinition,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { PMMLDocumentData } from "@kie-tools/pmml-editor-marshaller/dist/api";
 import { PMMLFieldData } from "@kie-tools/pmml-editor-marshaller/dist/api/PMMLFieldData";
 import { PMMLModelData } from "@kie-tools/pmml-editor-marshaller/dist/api/PMMLModelData";
@@ -79,7 +80,6 @@ import { DmnEditorTab } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { getDefaultColumnWidth } from "./getDefaultColumnWidth";
 import { getDefaultBoxedExpression } from "./getDefaultBoxedExpression";
-import { Normalized } from "../normalization/normalize";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export function BoxedExpressionScreen({ container }: { container: React.RefObject<HTMLElement> }) {
