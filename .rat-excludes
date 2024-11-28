@@ -274,6 +274,8 @@ go.sum
 integrationTest.test.js.snap
 # packages/dmn-editor/src/spec.txt
 spec.txt
+# packages/dmn-editor-standalone/tests-e2e/__fixtures__/files/loan-pre-qualification.dmn
+loan-pre-qualification.dmn
 # packages/dmn-feel-antlr4-parser/src/parser/grammar/generated-parser/FEEL_1_1.interp
 FEEL_1_1.interp
 # packages/dmn-feel-antlr4-parser/src/parser/grammar/generated-parser/FEEL_1_1.tokens
