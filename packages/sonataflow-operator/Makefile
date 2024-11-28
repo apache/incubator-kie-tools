@@ -309,19 +309,21 @@ endef
 
 
 .PHONY: bundle
-bundle: manifests kustomize install-operator-sdk ## Generate bundle manifests and metadata, then validate generated files.
+PACKAGE_NAME = "sonataflow-operator"
+bundle: kustomize install-operator-sdk ## Generate bundle manifests and metadata, then validate generated files.
 	@echo "📦 Generating bundle manifests and metadata..."
-	@operator-sdk generate kustomize manifests -q > /dev/null 2>&1
+	@operator-sdk generate kustomize manifests --package=$(PACKAGE_NAME) -q > /dev/null 2>&1
 	@echo "🔧 Setting controller image in Kustomize..."
 	@cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMG) > /dev/null 2>&1
 	@echo "🔨 Building Kustomize and generating bundle..."
-	@$(KUSTOMIZE) build config/manifests | operator-sdk generate bundle $(BUNDLE_GEN_FLAGS) > /dev/null 2>&1
+	@$(KUSTOMIZE) build config/manifests | operator-sdk generate bundle $(BUNDLE_GEN_FLAGS) --package=$(PACKAGE_NAME) > /dev/null 2>&1
 	@echo "🛠️  Validating generated bundle..."
 	@operator-sdk bundle validate ./bundle > /dev/null 2>&1
 
 .PHONY: bundle-build
+BUNDLE_DESCRIPTOR = "images/bundle.yaml"
 bundle-build: ## Build the bundle image
-	cekit -v --descriptor images/bundle.yaml build ${build_options} $(BUILDER) --no-squash --build-arg SOURCE_DATE_EPOCH="$(shell git log -1 --pretty=%ct)"
+	cekit -v --descriptor $(BUNDLE_DESCRIPTOR) build ${build_options} $(BUILDER) --no-squash --build-arg SOURCE_DATE_EPOCH="$(shell git log -1 --pretty=%ct)"
 ifneq ($(ignore_tag),true)
 	$(BUILDER) tag sonataflow-operator-bundle:latest $(BUNDLE_IMG)
 endif
