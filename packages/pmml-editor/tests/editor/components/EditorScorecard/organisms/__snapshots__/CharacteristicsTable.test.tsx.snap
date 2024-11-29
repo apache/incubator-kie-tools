@@ -2,7 +2,7 @@
 
 exports[`CharacteristicsTable Characteristic:Render 1`] = `
 <form
-  class="pf-c-form characteristics-container__overview__form"
+  class="pf-v5-c-form characteristics-container__overview__form"
   data-testid="characteristics-table"
   novalidate=""
 >
@@ -17,26 +17,26 @@ exports[`CharacteristicsTable Characteristic:Render 1`] = `
       tabindex="0"
     >
       <div
-        class="pf-l-split pf-m-gutter"
+        class="pf-v5-l-split pf-m-gutter"
         style="height: 100%;"
       >
         <div
-          class="pf-l-split__item"
+          class="pf-v5-l-split__item"
         >
           <strong>
             characteristic1
           </strong>
         </div>
         <div
-          class="pf-l-split__item pf-m-fill"
+          class="pf-v5-l-split__item pf-m-fill"
         >
           <ul />
         </div>
         <div
-          class="pf-l-split__item"
+          class="pf-v5-l-split__item"
         >
           <div
-            class="pf-l-flex pf-m-align-items-center"
+            class="pf-v5-l-flex pf-m-align-items-center"
             style="height: 100%;"
           >
             <div
@@ -44,9 +44,9 @@ exports[`CharacteristicsTable Characteristic:Render 1`] = `
             >
               <button
                 aria-disabled="false"
-                class="pf-c-button pf-m-plain editable-item__delete"
+                class="pf-v5-c-button pf-m-plain editable-item__delete"
                 data-ouia-component-id="OUIA-Generated-Button-plain-1"
-                data-ouia-component-type="PF4/Button"
+                data-ouia-component-type="PF5/Button"
                 data-ouia-safe="true"
                 data-testid="characteristic-n0__delete"
                 id="characteristic-n0__delete"
@@ -54,10 +54,10 @@ exports[`CharacteristicsTable Characteristic:Render 1`] = `
               >
                 <svg
                   aria-hidden="true"
+                  class="pf-v5-svg"
                   fill="currentColor"
                   height="1em"
                   role="img"
-                  style="vertical-align: -0.125em;"
                   viewBox="0 0 448 512"
                   width="1em"
                 >
@@ -83,26 +83,26 @@ exports[`CharacteristicsTable Characteristic:Render 1`] = `
       tabindex="0"
     >
       <div
-        class="pf-l-split pf-m-gutter"
+        class="pf-v5-l-split pf-m-gutter"
         style="height: 100%;"
       >
         <div
-          class="pf-l-split__item"
+          class="pf-v5-l-split__item"
         >
           <strong>
             characteristic2
           </strong>
         </div>
         <div
-          class="pf-l-split__item pf-m-fill"
+          class="pf-v5-l-split__item pf-m-fill"
         >
           <ul />
         </div>
         <div
-          class="pf-l-split__item"
+          class="pf-v5-l-split__item"
         >
           <div
-            class="pf-l-flex pf-m-align-items-center"
+            class="pf-v5-l-flex pf-m-align-items-center"
             style="height: 100%;"
           >
             <div
@@ -110,9 +110,9 @@ exports[`CharacteristicsTable Characteristic:Render 1`] = `
             >
               <button
                 aria-disabled="false"
-                class="pf-c-button pf-m-plain editable-item__delete"
+                class="pf-v5-c-button pf-m-plain editable-item__delete"
                 data-ouia-component-id="OUIA-Generated-Button-plain-2"
-                data-ouia-component-type="PF4/Button"
+                data-ouia-component-type="PF5/Button"
                 data-ouia-safe="true"
                 data-testid="characteristic-n1__delete"
                 id="characteristic-n1__delete"
@@ -120,10 +120,10 @@ exports[`CharacteristicsTable Characteristic:Render 1`] = `
               >
                 <svg
                   aria-hidden="true"
+                  class="pf-v5-svg"
                   fill="currentColor"
                   height="1em"
                   role="img"
-                  style="vertical-align: -0.125em;"
                   viewBox="0 0 448 512"
                   width="1em"
                 >

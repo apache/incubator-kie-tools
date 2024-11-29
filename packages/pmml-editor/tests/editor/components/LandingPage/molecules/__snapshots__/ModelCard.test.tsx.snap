@@ -1,20 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ModelCard render::Basics 1`] = `
-<article
-  class="pf-c-card pf-m-selectable model-card"
+<div
+  class="pf-v5-c-card model-card"
   data-ouia-component-id="OUIA-Generated-Card-1"
-  data-ouia-component-type="PF4/Card"
+  data-ouia-component-type="PF5/Card"
   data-ouia-safe="true"
   data-testid="model-card"
   id=""
 >
   <div
-    class="pf-c-card__header"
+    class="pf-v5-c-card__header"
   >
     <div
-      class=""
+      class="pf-v5-c-card__header-main"
     >
+      actions=
       <img
         alt="Scorecard"
         class="model-card__icon"
@@ -24,17 +25,25 @@ exports[`ModelCard render::Basics 1`] = `
     </div>
   </div>
   <div
-    class="pf-c-card__title model-card__title"
+    style="display: contents;"
   >
-    <span
-      data-testid="model-card__title"
+    <div
+      class="pf-v5-c-card__title"
     >
-      Name
-    </span>
+      <div
+        class="pf-v5-c-card__title-text model-card__title"
+      >
+        <span
+          data-testid="model-card__title"
+        >
+          Name
+        </span>
+      </div>
+    </div>
   </div>
    
   <div
-    class="pf-c-card__body"
+    class="pf-v5-c-card__body"
   >
     <div
       data-testid="model-card__model-type"
@@ -43,13 +52,13 @@ exports[`ModelCard render::Basics 1`] = `
     </div>
   </div>
   <div
-    class="pf-c-card__footer"
+    class="pf-v5-c-card__footer"
   >
     <button
       aria-disabled="false"
-      class="pf-c-button pf-m-primary"
+      class="pf-v5-c-button pf-m-primary"
       data-ouia-component-id="OUIA-Generated-Button-primary-1"
-      data-ouia-component-type="PF4/Button"
+      data-ouia-component-type="PF5/Button"
       data-ouia-safe="true"
       data-testid="model-card__delete"
       type="button"
@@ -57,5 +66,5 @@ exports[`ModelCard render::Basics 1`] = `
       Delete
     </button>
   </div>
-</article>
+</div>
 `;
