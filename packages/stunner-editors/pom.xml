@@ -162,28 +162,6 @@
     <!-- Properties from KIE-WB-COMMON parent POM -->
 
     <spotbugs.failOnViolation>true</spotbugs.failOnViolation>
-    <checkstyle.header.template
-    ><![CDATA[
-^\/\*$\n^
-\* Licensed to the Apache Software Foundation \(ASF\) under one$\n^
-\* or more contributor license agreements\.  See the NOTICE file$\n^
-\* distributed with this work for additional information$\n^
-\* regarding copyright ownership\.  The ASF licenses this file$\n^
-\* to you under the Apache License, Version 2\.0 \(the$\n^
-\* &quot;License&quot;\); you may not use this file except in compliance$\n^
-\* with the License\.  You may obtain a copy of the License at$\n^
-\*$\n^
-\*   http:\/\/www\.apache\.org\/licenses\/LICENSE-2\.0$\n^
-\*$\n^
-\* Unless required by applicable law or agreed to in writing,$\n^
-\* software distributed under the License is distributed on an$\n^
-\* &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY$\n^
-\* KIND, either express or implied\.  See the License for the$\n^
-\* specific language governing permissions and limitations$\n^
-\* under the License\.$\n^
-\*\/$
-]]>
-    </checkstyle.header.template>
 
     <!-- Properties from DROOLS-WB parent POM -->
     <!-- TODO: Enable these flags after fixing all checkstyle issues -->
@@ -204,7 +182,6 @@
     <!--suppress UnresolvedMavenProperty -->
     <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
     <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
-    <checkstyle.header.extensions>java</checkstyle.header.extensions>
 
     <!-- Maven Plugins -->
     <version.antrun.plugin>1.8</version.antrun.plugin>
@@ -919,10 +896,6 @@
                         />
                       </module>
                       <module name="EqualsHashCode" />
-                    </module>
-                    <module name="RegexpHeader">
-                      <property name="header" value="${checkstyle.header.template}" />
-                      <property name="fileExtensions" value="${checkstyle.header.extensions}" />
                     </module>
                   </module>
                 </checkstyleRules>

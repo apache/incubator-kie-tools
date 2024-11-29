@@ -325,3 +325,6 @@ packages/python-venv/venv
 
 # devbox
 .devbox
+
+# Apache RAT check excludes file
+!.rat-excludes
