@@ -49,7 +49,7 @@ export function RefactorConfirmationDialog({
       onClose={onCancel}
       actions={[
         <Button key="confirm" variant={ButtonVariant.primary} onClick={onConfirmExpressionRefactor}>
-          Yes, rename and update the expressions
+          Yes, rename and replace
         </Button>,
         <Button key="rename" variant={ButtonVariant.secondary} onClick={onConfirmRenameOnly}>
           No, just rename
@@ -62,7 +62,8 @@ export function RefactorConfirmationDialog({
       This identifier is used in one or more expressions.
       <br />
       <br />
-      Would you like to automatically replace all instances of `{fromName ?? "<undefined>"}` with `{toName ?? "<undefined>"}`?
+      Would you like to automatically replace all instances of `{fromName ?? "<undefined>"}` with `
+      {toName ?? "<undefined>"}`?
     </Modal>
   );
 }
