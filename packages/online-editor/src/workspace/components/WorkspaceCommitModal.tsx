@@ -31,7 +31,7 @@ import {
   CommitMessageValidationService,
 } from "../commitMessageValidationService/CommitMessageValidationService";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
-import { HelperText, HelperTextItem } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 const CommitValidationErrorMessages = (props: { validations?: string[] }) => {
   if (!props.validations) {

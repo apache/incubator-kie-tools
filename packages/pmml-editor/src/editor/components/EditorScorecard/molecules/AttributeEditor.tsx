@@ -47,7 +47,7 @@ import { ValidationIndicator } from "../../EditorCore/atoms";
 import set = Reflect.set;
 import get = Reflect.get;
 import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
-import { HelperText, HelperTextItem } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 interface AttributeEditorContent {
   partialScore?: number;

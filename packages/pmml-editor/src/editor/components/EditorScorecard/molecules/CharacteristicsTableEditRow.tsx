@@ -43,7 +43,7 @@ import { isEqual } from "lodash";
 import get = Reflect.get;
 import set = Reflect.set;
 import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
-import { HelperText, HelperTextItem } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 interface CharacteristicsTableEditRowProps {
   modelIndex: number;

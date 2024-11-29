@@ -29,7 +29,7 @@ import { Job } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import "../styles.css";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
-import { HelperText, HelperTextItem } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 interface IOwnProps {
   actionType: string;

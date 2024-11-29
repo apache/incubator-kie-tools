@@ -27,7 +27,7 @@ import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
 import { gitAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSessions";
 import { ImportableUrl } from "./ImportableUrlHooks";
-import { HelperText, HelperTextItem } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 export function ImportSingleFileFromUrlForm(props: {
   url: string;

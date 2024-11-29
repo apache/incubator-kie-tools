@@ -46,7 +46,7 @@ import { AuthStatus, useSettings, useSettingsDispatch } from "../../settings/Set
 import { SettingsPageContainer } from "../SettingsPageContainer";
 import { SettingsPageProps } from "../types";
 import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
-import { HelperText, HelperTextItem } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 const PAGE_TITLE = "GitHub";
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;

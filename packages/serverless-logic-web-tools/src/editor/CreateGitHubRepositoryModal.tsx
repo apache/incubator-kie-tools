@@ -46,7 +46,7 @@ import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/Ac
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ApplyAcceleratorResult, useAccelerator } from "../accelerator/useAccelerator";
 import { KOGITO_QUARKUS_ACCELERATOR } from "../accelerator/Accelerators";
-import { HelperText, HelperTextItem } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 const getSuggestedRepositoryName = (name: string) =>
   name

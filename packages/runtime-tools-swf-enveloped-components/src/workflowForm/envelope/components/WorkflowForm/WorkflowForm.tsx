@@ -36,7 +36,7 @@ import {
   RequestDataEditorApi,
 } from "@kie-tools/runtime-tools-components/dist/components/RequestDataEditor";
 import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
-import { HelperText, HelperTextItem } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 export interface WorkflowFormProps {
   workflowDefinition: WorkflowDefinition;

@@ -40,7 +40,7 @@ import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { DevDeploymentsTokensList } from "./DevDeploymentsTokensList";
 import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
-import { HelperText, HelperTextItem } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 interface Props {
   workspaceFile: WorkspaceFile;

@@ -34,7 +34,7 @@ import { ConstraintType, DDDataField } from "../DataDictionaryContainer/DataDict
 import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
 import "./DataDictionaryPropertiesEdit.scss";
 import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
-import { HelperText, HelperTextItem } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 interface DataDictionaryPropertiesEditProps {
   dataType: DDDataField;

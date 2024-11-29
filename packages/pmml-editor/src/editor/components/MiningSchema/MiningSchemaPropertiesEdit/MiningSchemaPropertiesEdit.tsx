@@ -46,7 +46,7 @@ import {
   isMissingValueReplacementRequired,
 } from "../../../validation/MiningSchema";
 import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
-import { HelperText, HelperTextItem } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 interface MiningSchemaPropertiesEditProps {
   modelIndex: number;

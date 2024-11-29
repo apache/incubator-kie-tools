@@ -45,7 +45,7 @@ import {
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { AuthOptionsType, getBitbucketClient } from "../../bitbucket/Hooks";
 import { useEnv } from "../../env/hooks/EnvContext";
-import { HelperText, HelperTextItem } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 export const BITBUCKET_OAUTH_TOKEN_SIZE = 40;

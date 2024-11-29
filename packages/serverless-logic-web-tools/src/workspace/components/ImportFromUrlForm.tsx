@@ -25,7 +25,7 @@ import { useEffect, FormEvent, useCallback, useMemo } from "react";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
 import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
-import { HelperText, HelperTextItem } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 export function ImportFromUrlForm(props: {
   allowedTypes?: UrlType[];
