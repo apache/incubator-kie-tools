@@ -74,6 +74,8 @@ SingleEditorToolbar.test.tsx.snap
 chrome_sample.sw.yaml
 # packages/dashbuilder/dashbuilder-parent.iml
 dashbuilder-parent.iml
+# packages/dashbuilder/appformer/uberfire-api/src/main/resources/org/uberfire/jre/org/uberfire/util/uri.min.js
+uri.min.js
 # packages/dashbuilder/appformer/uberfire-extensions/uberfire-layout-editor/uberfire-layout-editor-client/src/test/resources/org/uberfire/ext/layout/editor/client/columnWithComponentsLayout.txt
 columnWithComponentsLayout.txt
 # packages/dashbuilder/appformer/uberfire-extensions/uberfire-layout-editor/uberfire-layout-editor-client/src/test/resources/org/uberfire/ext/layout/editor/client/fullLayoutFluid.txt
@@ -276,6 +278,8 @@ integrationTest.test.js.snap
 spec.txt
 # packages/dmn-editor-standalone/tests-e2e/__fixtures__/files/loan-pre-qualification.dmn
 loan-pre-qualification.dmn
+# packages/dmn-editor-standalone/tests-e2e/__fixtures__/files/scorecard.pmml
+scorecard.pmml
 # packages/dmn-feel-antlr4-parser/src/parser/grammar/generated-parser/FEEL_1_1.interp
 FEEL_1_1.interp
 # packages/dmn-feel-antlr4-parser/src/parser/grammar/generated-parser/FEEL_1_1.tokens
@@ -656,6 +660,8 @@ settings.xml.envsubst
 Caddyfile
 # packages/online-editor/src/accelerators/test.dmn
 test.dmn
+# packages/online-editor/static/samples/Sample.pmml
+Sample.pmml
 # packages/pmml-editor/e2e-tests/fixtures/compound-predicate.pmml
 compound-predicate.pmml
 # packages/pmml-editor/e2e-tests/fixtures/empty-characteristics-DD-defined-types.pmml
@@ -686,6 +692,44 @@ LandingPage.test.tsx.snap
 MiningSchemaContainer.test.tsx.snap
 # packages/pmml-editor/tests/editor/components/Outputs/organisms/OutputFieldsTable/__snapshots__/OutputFieldsTable.test.tsx.snap
 OutputFieldsTable.test.tsx.snap
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_AnomalyDetectionModel.ts
+TestData_AnomalyDetectionModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_AssociationModel.ts
+TestData_AssociationModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_BaselineModel.ts
+TestData_BaselineModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_BayesianNetworkModel.ts
+TestData_BayesianNetworkModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_ClusteringModel.ts
+TestData_ClusteringModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_GaussianProcessModel.ts
+TestData_GaussianProcessModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_GeneralRegressionModel.ts
+TestData_GeneralRegressionModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_LinearRegressions.ts
+TestData_LinearRegressions.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_MiningModel.ts
+TestData_MiningModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_MiningSchema.ts
+TestData_MiningSchema.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_NaiveBayesModel.ts
+TestData_NaiveBayesModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_NearestNeighborModel.ts
+TestData_NearestNeighborModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_NeuralNetwork.ts
+TestData_NeuralNetwork.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_RuleSetModel.ts
+TestData_RuleSetModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_SequenceModel.ts
+TestData_SequenceModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_SupportVectorMachineModel.ts
+TestData_SupportVectorMachineModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_TextModel.ts
+TestData_TextModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_TimeSeriesModel.ts
+TestData_TimeSeriesModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_TreeModel.ts
+TestData_TreeModel.ts
 # packages/python-venv/requirements.txt
 requirements.txt
 # packages/root-env/root-env.iml
@@ -1892,6 +1936,8 @@ DiValidator.java
 WorkDefinitions.wid
 # packages/stunner-editors/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-marshalling/src/test/resources/META-INF/ErraiApp.properties
 ErraiApp.properties
+# packages/stunner-editors/uberfire-api/src/main/resources/org/uberfire/jre/org/uberfire/util/uri.min.js
+uri.min.js
 # packages/stunner-editors/uberfire-extensions/uberfire-layout-editor/uberfire-layout-editor-client/src/test/resources/org/uberfire/ext/layout/editor/client/columnWithComponentsLayout.txt
 columnWithComponentsLayout.txt
 # packages/stunner-editors/uberfire-extensions/uberfire-layout-editor/uberfire-layout-editor-client/src/test/resources/org/uberfire/ext/layout/editor/client/fullLayoutFluid.txt
