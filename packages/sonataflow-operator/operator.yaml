@@ -1219,10 +1219,15 @@ spec:
                             by default.
                           maxProperties: 2
                           properties:
-                            migrateDBOnStartUp:
-                              description: Whether to migrate database on service startup?
-                              type: boolean
-                            postgresql:
+                            dbMigrationStrategy:
+                              default: service
+                              description: |-
+                                DB Migration approach for service?
+                                job: use job based approach
+                                service: service itself shall migrate the db
+                                none: no db migration needed
+                              type: string
+                          postgresql:
                               description: Connect configured services to a postgresql
                                 database.
                               maxProperties: 2
@@ -9247,9 +9252,14 @@ spec:
                             by default.
                           maxProperties: 2
                           properties:
-                            migrateDBOnStartUp:
-                              description: Whether to migrate database on service startup?
-                              type: boolean
+                            dbMigrationStrategy:
+                              default: service
+                              description: |-
+                                DB Migration approach for service?
+                                job: use job based approach
+                                service: service itself shall migrate the db
+                                none: no db migration needed
+                              type: string
                             postgresql:
                               description: Connect configured services to a postgresql
                                 database.
@@ -17416,6 +17426,15 @@ spec:
                   description: The generation observed by the deployment controller.
                   format: int64
                   type: integer
+                sonataFlowPlatformDBMigrationPhase:
+                  properties:
+                    dbMigrationStatus:
+                      type: string
+                    message:
+                      type: string
+                    reason:
+                      type: string
+                  type: object
                 triggers:
                   description: Triggers list of triggers created for the SonataFlowPlatform
                   items:
@@ -19403,9 +19422,14 @@ spec:
                     for the workflow
                   maxProperties: 2
                   properties:
-                    migrateDBOnStartUp:
-                      description: Whether to migrate database on service startup?
-                      type: boolean
+                    dbMigrationStrategy:
+                      default: service
+                      description: |-
+                        DB Migration approach for service?
+                        job: use job based approach
+                        service: service itself shall migrate the db
+                        none: no db migration needed
+                      type: string 
                     postgresql:
                       description: Connect configured services to a postgresql database.
                       maxProperties: 2
@@ -27738,6 +27762,18 @@ kind: ClusterRole
 metadata:
   name: sonataflow-operator-manager-role
 rules:
+  - apiGroups:
+      - batch
+    resources:
+      - jobs
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
   - apiGroups:
       - monitoring.coreos.com
     resources:
