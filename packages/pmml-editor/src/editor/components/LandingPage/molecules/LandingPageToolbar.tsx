@@ -75,7 +75,7 @@ export const LandingPageToolbar = (props: LandingPageToolbarProps) => {
               data-testid="landing-page-toolbar__supported-models"
               label="Show unsupported models"
               isChecked={showUnsupportedModels}
-              onChange={(_event, val) => onShowUnsupportedModels}
+              onChange={(_event, val) => onShowUnsupportedModels(val)}
             />
           </ToolbarItem>
         )}
