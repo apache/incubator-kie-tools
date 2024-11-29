@@ -28083,13 +28083,23 @@ subjects:
 apiVersion: v1
 data:
   DEFAULT_WORKFLOW_EXTENSION: .sw.json
-  Dockerfile: "FROM docker.io/apache/incubator-kie-sonataflow-builder:main AS builder\n\n#
-    variables that can be overridden by the builder\n# To add a Quarkus extension
-    to your application\nARG QUARKUS_EXTENSIONS\n# Args to pass to the Quarkus CLI
-    add extension command\nARG QUARKUS_ADD_EXTENSION_ARGS\n# Additional java/mvn arguments
-    to pass to the builder\nARG MAVEN_ARGS_APPEND\n\n# Copy from build context to
-    skeleton resources project\nCOPY --chown=1001 . ./resources\n\nRUN /home/kogito/launch/build-app.sh
-    ./resources\n  \n#=============================\n# Runtime Run\n#=============================\nFROM
+  Dockerfile: "# Licensed to the Apache Software Foundation (ASF) under one\n# or
+    more contributor license agreements.  See the NOTICE file\n# distributed with
+    this work for additional information\n# regarding copyright ownership.  The ASF
+    licenses this file\n# to you under the Apache License, Version 2.0 (the\n# \"License\");
+    you may not use this file except in compliance\n# with the License.  You may obtain
+    a copy of the License at\n#\n#  http://www.apache.org/licenses/LICENSE-2.0\n#\n#
+    Unless required by applicable law or agreed to in writing,\n# software distributed
+    under the License is distributed on an\n# \"AS IS\" BASIS, WITHOUT WARRANTIES
+    OR CONDITIONS OF ANY\n# KIND, either express or implied.  See the License for
+    the\n# specific language governing permissions and limitations\n# under the License.\n\nFROM
+    docker.io/apache/incubator-kie-sonataflow-builder:main AS builder\n\n# variables
+    that can be overridden by the builder\n# To add a Quarkus extension to your application\nARG
+    QUARKUS_EXTENSIONS\n# Args to pass to the Quarkus CLI add extension command\nARG
+    QUARKUS_ADD_EXTENSION_ARGS\n# Additional java/mvn arguments to pass to the builder\nARG
+    MAVEN_ARGS_APPEND\n\n# Copy from build context to skeleton resources project\nCOPY
+    --chown=1001 . ./resources\n\nRUN /home/kogito/launch/build-app.sh ./resources\n
+    \ \n#=============================\n# Runtime Run\n#=============================\nFROM
     registry.access.redhat.com/ubi9/openjdk-17-runtime:latest\n\nENV LANG='en_US.UTF-8'
     LANGUAGE='en_US:en'\n  \n# We make four distinct layers so if there are application
     changes the library layers can be re-used\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/lib/
