@@ -62,7 +62,7 @@ export function RefactorConfirmationDialog({
       This identifier is used in one or more expressions.
       <br />
       <br />
-      Do you want also automatically update the expressions to the new name?
+      Would you like to automatically replace all instances of `{fromName ?? "<undefined>"}` with `{toName ?? "<undefined>"}`?
     </Modal>
   );
 }
