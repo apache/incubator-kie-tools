@@ -20,6 +20,7 @@
 package command
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"sync"
@@ -137,6 +138,34 @@ func runSWFProjectDevMode(containerTool string, cfg RunCmdConfig) (err error) {
 	pollInterval := 5 * time.Second
 	common.ReadyCheck(readyCheckURL, pollInterval, cfg.PortMapping, cfg.OpenDevUI)
 
+	if err := stopContainer(containerTool); err != nil {
+		return err
+	}
+
 	wg.Wait()
 	return err
 }
+
+func stopContainer(containerTool string) error {
+	fmt.Println("Press ENTER to stop the container")
+
+	reader := bufio.NewReader(os.Stdin)
+
+	_, err := reader.ReadString('\n')
+	if err != nil {
+		return fmt.Errorf("error reading from stdin: %w", err)
+	}
+
+	fmt.Println("⏳ Stopping the container...")
+
+	containerID, err := common.GetContainerID(containerTool)
+	if err != nil {
+		return err
+	}
+	if err := common.StopContainer(containerTool, containerID); err != nil {
+		return err
+	}
+	return nil
+}
+
+
