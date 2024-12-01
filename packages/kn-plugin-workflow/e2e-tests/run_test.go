@@ -44,8 +44,8 @@ type cfgTestInputRun struct {
 }
 
 var cfgTestInputRun_Success = []cfgTestInputRun{
-	{input: command.RunCmdConfig{PortMapping: "8081", OpenDevUI: false}},
-	{input: command.RunCmdConfig{}},
+	{input: command.RunCmdConfig{PortMapping: "8081", OpenDevUI: false, StopContainerOnUserInput: false}},
+	{input: command.RunCmdConfig{StopContainerOnUserInput: false}},
 }
 
 func transformRunCmdCfgToArgs(cfg command.RunCmdConfig) []string {
@@ -55,6 +55,9 @@ func transformRunCmdCfgToArgs(cfg command.RunCmdConfig) []string {
 	}
 	if cfg.PortMapping != "" {
 		args = append(args, "--port", cfg.PortMapping)
+	}
+	if cfg.StopContainerOnUserInput {
+		args = append(args, "--stop-container-on-user-input=false")
 	}
 	return args
 }
