@@ -176,8 +176,7 @@ pipeline {
                     cp -r "${LEGAL_FILES_DIR}/." ${RELEASE_CANDIDATE_ARTIFACTS_DIR}/sonataflow-chrome-extension-editors
                     echo "regular extensions start"
                     cp -r "${LEGAL_FILES_DIR}/." "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/"
-                    zip -r "${CHROME_EXTENSION_RELEASE_FILE}" NOTICE LICENSE DISCLAIMER-WIP
-                    zip -r "${SWF_CHROME_EXTENSION_RELEASE_FILE}" NOTICE LICENSE DISCLAIMER-WIP
+                    cd "${RELEASE_CANDIDATE_ARTIFACTS_DIR}" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${CHROME_EXTENSION_RELEASE_FILE}" ./NOTICE ./LICENSE ./DISCLAIMER-WIP && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${SWF_CHROME_EXTENSION_RELEASE_FILE}" ./NOTICE ./LICENSE ./DISCLAIMER-WIP
                     echo "regular extensions end"
                     cd "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/business-automation-chrome-extension-editors" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${CHROME_EXTENSION_EDITORS_RELEASE_FILE}" .
                     cd "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/sonataflow-chrome-extension-editors" && zip -r "${RELEASE_CANDIDATE_ARTIFACTS_DIR}/${SWF_CHROME_EXTENSION_EDITORS_RELEASE_FILE}" .

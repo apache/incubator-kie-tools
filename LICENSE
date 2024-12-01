@@ -199,3 +199,688 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+for packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/extras/src/main/java/org/gwtbootstrap3/extras/animate/client/resource/css/animate-3.5.2.min.cache.css
+
+* animate.css (http://daneden.me/animate)
+
+Version - 3.5.1
+
+Copyright (c) 2016 Daniel Eden
+Licensed under the MIT License (MIT)
+
+The MIT License (MIT)
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+for packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/extras/src/main/java/org/gwtbootstrap3/extras/notify/client/resource/js/bootstrap-notify-3.1.3.min.cache
+
+* bootstrap growl (https://github.com/mouse0270/bootstrap-growl v3.1.3)
+
+Copyright (c) 2014 Robert McIntosh
+Licensed under the MIT License (MIT)
+
+-------------------------------------------------------------------------------------------------------------
+for packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/extras/src/main/java/org/gwtbootstrap3/extras/notify/client/resource/css/bootstrap-notify-custom.min.cache.css
+
+* Bootstrap Notify Custom CSS (https://github.com/gwtbootstrap3/gwtbootstrap3-extras/blob/master/src/main/resources/org/gwtbootstrap3/extras/notify/client/resource/css/bootstrap-notify-custom.min.cache.css)
+Licensed under the Apache License, Version 2.0
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+for packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/resources/org/gwtbootstrap3/client/resource/css/bootstrap-3.4.1.min.cache.css
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/resources/org/gwtbootstrap3/client/resource/css/bootstrap-theme-3.4.1.min.cache.css
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/resources/org/gwtbootstrap3/client/resource/js/bootstrap-3.4.1.min.cache.js.back
+
+* bootstrap (https://getbootstrap.com/)
+
+Bootstrap v3.4.1
+Copyright 2011-2019 Twitter, Inc.
+Licensed under the MIT License (MIT)
+
+----------------------------------------------------------------------------------------------------------------------
+for packages/stunner-editors/errai-javax-enterprise/src/main/java/javax/enterprise/super/javax/inject/Qualifier.java
+    packages/stunner-editors/errai-javax-enterprise/src/main/java/javax/enterprise/super/javax/inject/Named.java
+    packages/stunner-editors/errai-javax-enterprise/src/main/java/javax/enterprise/super/javax/inject/Singleton.java
+    packages/stunner-editors/errai-javax-enterprise/src/main/java/javax/enterprise/super/javax/inject/Scope.java
+
+* Context Dependency Injection (CDI)
+
+Copyright (C) 2009 The JSR-330 Expert Group
+Licensed under the Apache License, Version 2.0
+
+--------------------------------------------------------------------------------
+for packages/stunner-editors/lienzo-webapp/src/main/webapp/LienzoShowcase.html
+    packages/stunner-editors/lienzo-webapp/src/main/java/org/kie/lienzo/client/LienzoExamples.native.js
+
+* connected (https://github.com/Vertispan/connected)
+
+Copyright (C) 2017 Vertispan
+Licensed under the Apache License, Version 2.0
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+for packages/stunner-editors/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-emf/*
+
+* Eclipse Modeling Framework (https://eclipse.dev/modeling/emf/)
+		
+Copyright (c) 2010 SAP AG.
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the Eclipse Public License v1.0
+which accompanies this distribution, and is available at
+http://www.eclipse.org/legal/epl-v10.html
+  
+Contributors:
+    Reiner Hille-Doering (SAP AG) - initial API and implementation and/or initial documentation
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+for packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/FontAwesome.otf
+    packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/fontawesome-webfont.svg
+    packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/fontawesome-webfont.woff
+    packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/fontawesome-webfont.eot
+    packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/fontawesome-webfont.woff2
+    packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/fontawesome-webfont.ttf
+    packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/resources/org/kie/workbench/common/stunner/sw/resources/public/fonts/FontAwesome.otf
+    packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/resources/org/kie/workbench/common/stunner/sw/resources/public/fonts/fontawesome-webfont.svg
+    packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/resources/org/kie/workbench/common/stunner/sw/resources/public/fonts/fontawesome-webfont.woff
+    packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/resources/org/kie/workbench/common/stunner/sw/resources/public/fonts/fontawesome-webfont.eot
+    packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/resources/org/kie/workbench/common/stunner/sw/resources/public/fonts/fontawesome-webfont.woff2
+    packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/resources/org/kie/workbench/common/stunner/sw/resources/public/fonts/fontawesome-webfont.ttf
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/resources/org/gwtbootstrap3/client/resource/css/font-awesome-4.7.0.min.cache.css
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/resources/org/gwtbootstrap3/client/resource/fonts/fontawesome-webfont.svg
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/resources/org/gwtbootstrap3/client/resource/fonts/FontAwesome.otf
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/resources/org/gwtbootstrap3/client/resource/fonts/fontawesome-webfont.eot
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/resources/org/gwtbootstrap3/client/resource/fonts/fontawesome-webfont.ttf
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/resources/org/gwtbootstrap3/client/resource/fonts/fontawesome-webfont.woff
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/resources/org/gwtbootstrap3/client/resource/fonts/fontawesome-webfont.woff2
+
+* Font Awesome (https://fontawesome.com/)
+
+########################################################
+The Font Awesome font is licensed under the SIL OFL 1.1:
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+
+\----------------------------------------------------------------------
+
+&nbsp;
+
+PREAMBLE
+-----------
+
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded,
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply
+to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+-----------
+
+"Font Software" refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the
+copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting,
+or substituting -- in part or in whole -- any of the components of the
+Original Version, by changing formats or by porting the Font Software to a
+new environment.
+
+"Author" refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+-----------
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font
+Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder. This restriction only applies to the primary font name as
+presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created
+using the Font Software.
+
+TERMINATION
+-----------
+
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+-----------
+
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+
+######################################
+Font Awesome CSS, LESS, and Sass files
+Licensed under the MIT License (MIT)
+
+-----------------------------------------------------------------------------------------------
+for packages/stunner-editors/lienzo-core/src/main/java/com/ait/lienzo/tools/client/Timer.java
+    packages/stunner-editors/lienzo-core/src/main/java/com/ait/lienzo/gwtlienzo/i18n/Constants.java
+    packages/stunner-editors/lienzo-tests/src/main/java/com/ait/lienzo/test/stub/overlays/Timer.java
+    packages/serverless-workflow-diagram-editor/lienzo-core/src/main/java/com/ait/lienzo/tools/client/Timer.java
+    packages/serverless-workflow-diagram-editor/lienzo-core/src/main/java/com/ait/lienzo/gwtlienzo/i18n/Constants.java
+    packages/serverless-workflow-diagram-editor/lienzo-tests/src/main/java/com/ait/lienzo/test/stub/overlays/Timer.java
+
+* Google Web Toolkit (GWT) (https://www.gwtproject.org/)
+
+Copyright 2007 Google Inc.
+Licensed under the Apache License, Version 2.0
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+for packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/java/org/gwtbootstrap3/client/ui/constants/Toggle.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/java/org/gwtbootstrap3/client/ui/constants/IconType.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/java/org/gwtbootstrap3/client/ui/constants/Type.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/java/org/gwtbootstrap3/client/ui/constants/Styles.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/java/org/gwtbootstrap3/client/ui/base/helper/EnumHelper.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/java/org/gwtbootstrap3/client/ui/base/helper/StyleHelper.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/java/org/gwtbootstrap3/client/shared/js/JQuery.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/java/org/gwtbootstrap3/client/shared/js/EventHandler.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/resources/org/gwtbootstrap3/client/resource/js/gwtbootstrap3.js.back
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/extras/src/main/java/org/gwtbootstrap3/extras/animate/client/ui/Animate.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/extras/src/main/java/org/gwtbootstrap3/extras/animate/client/ui/constants/Animation.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/extras/src/main/java/org/gwtbootstrap3/extras/notify/client/constants/NotifyType.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/extras/src/main/java/org/gwtbootstrap3/extras/notify/client/constants/NotifyPosition.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/extras/src/main/java/org/gwtbootstrap3/extras/notify/client/constants/NotifyIconType.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/extras/src/main/java/org/gwtbootstrap3/extras/notify/client/constants/NotifyUrlTarget.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/extras/src/main/java/org/gwtbootstrap3/extras/notify/client/constants/NotifyPlacement.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/extras/src/main/java/org/gwtbootstrap3/extras/notify/client/ui/Notify.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/extras/src/main/java/org/gwtbootstrap3/extras/notify/client/ui/NotifySettings.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/extras/src/main/java/org/gwtbootstrap3/extras/notify/client/event/NotifyShowHandler.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/extras/src/main/java/org/gwtbootstrap3/extras/notify/client/event/NotifyClosedHandler.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/extras/src/main/java/org/gwtbootstrap3/extras/notify/client/event/NotifyCloseHandler.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/extras/src/main/java/org/gwtbootstrap3/extras/notify/client/event/NotifyShownHandler.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/extras/src/main/java/org/gwtbootstrap3/extras/notify/client/NotifyClientBundle.java
+
+* GWT Bootstrap 3 (https://github.com/gwtbootstrap3/gwtbootstrap3)
+
+Copyright (C) 2013 GwtBootstrap3
+Licensed under the Apache License, Version 2.0
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+for packages/dashbuilder/appformer/uberfire-extensions/uberfire-widgets/uberfire-widgets-commons/src/main/resources/org/uberfire/ext/widgets/common/public/highlight/highlight.min.js
+
+* highlight.js (https://highlightjs.org)
+
+highlight.js v9.15.8
+
+Copyright (c) 2006, Ivan Sagalaev
+All rights reserved.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of highlight.js nor the names of its contributors 
+      may be used to endorse or promote products derived from this software 
+      without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND ANY
+EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE REGENTS AND CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+----------------------------------------------------------------------------------------------------------------------------------
+for packages/stunner-editors/errai-javax-enterprise/src/main/java/javax/enterprise/super/javax/enterprise/context/Dependent.java
+    packages/stunner-editors/errai-javax-enterprise/src/main/java/javax/enterprise/super/javax/enterprise/context/ApplicationScoped.java
+
+* Jakarta EE (https://jakarta.ee/)
+Copyright 2010, Red Hat, Inc., and individual contributors
+Licensed under the Apache License, Version 2.0
+
+----------------------------------------------------------------------------------------------------------------------------------
+for packages/stunner-editors/errai-common/src/main/java/org/jboss/errai/common/compat/javax/annotation/processing/Generated.java
+
+Copyright (c) 2005-2013 Oracle and/or its affiliates. All rights reserved.
+ 
+The contents of this file are subject to the terms of either the GNU
+General Public License Version 2 only ("GPL") or the Common Development
+and Distribution License("CDDL") (collectively, the "License").  You
+may not use this file except in compliance with the License.  You can
+obtain a copy of the License at
+https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+or packager/legal/LICENSE.txt.  See the License for the specific
+language governing permissions and limitations under the License.
+
+When distributing the software, include this License Header Notice in each
+file and include the License file at packager/legal/LICENSE.txt.
+
+GPL Classpath Exception:
+Oracle designates this particular file as subject to the "Classpath"
+exception as provided by Oracle in the GPL Version 2 section of the License
+file that accompanied this code.
+
+Modifications:
+If applicable, add the following below the License Header, with the fields
+enclosed by brackets [] replaced by your own identifying information:
+"Portions Copyright [year] [name of copyright owner]"
+
+Contributor(s):
+If you wish your version of this file to be governed by only the CDDL or
+only the GPL Version 2, indicate your decision by adding "[Contributor]
+elects to include this software in this distribution under the [CDDL or GPL
+Version 2] license."  If you don't indicate a single choice of license, a
+recipient has the option to distribute your version of this file under
+either the CDDL, the GPL Version 2 or to extend the choice of license to
+its licensees as provided above.  However, if you add GPL Version 2 code
+and therefore, elected the GPL Version 2 license, then the option applies
+only if the new code is made subject to such option by the copyright
+holder.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+for packages/dashbuilder/appformer/uberfire-workbench/uberfire-workbench-client-views-patternfly/src/main/resources/org/uberfire/client/views/static/jquery-ui/jquery-ui.min.js
+    packages/dashbuilder/appformer/uberfire-workbench/uberfire-workbench-client-views-patternfly/src/main/resources/org/uberfire/client/views/static/jquery-ui/jquery-ui.min.css
+    packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/resources/org/gwtbootstrap3/client/resource/js/jquery-1.12.4.min.cache.js.back
+
+jQuery UI - v1.12.1 - 2019-07-25
+Copyright jQuery Foundation and other contributors, https://jquery.org/
+
+This software consists of voluntary contributions made by many
+individuals. For exact contribution history, see the revision history
+available at https://github.com/jquery/jquery-ui
+
+The following license applies to all parts of this software except as
+documented below:
+
+====
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+====
+
+Copyright and related rights for sample code are waived via CC0. Sample
+code is defined as all source code contained within the demos directory.
+
+CC0: http://creativecommons.org/publicdomain/zero/1.0/
+
+====
+
+All files located in the node_modules and external directories are
+externally maintained libraries used by this software which have their
+own licenses; we recommend you read them, as their terms may differ from
+the terms above.
+
+----------------------------------------------------------------------------------------------------------------
+for packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/java/externs/jquery.js
+    packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/java/externs/jquery_plugins.js
+
+Copyright 2011 The Closure Compiler Authors.
+Licensed under the Apache License, Version 2.0
+
+------------------------------------------------------------------------------------------------------------------------
+for packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/java/externs/moment.externs.js
+
+moment.js 2.10.0
+Copyright 2015 TAKAHASHI kazunari
+Licensed under the Apache License, Version 2.0
+
+----------------------------------------------------------------------------
+for packages/serverless-workflow-diagram-editor/lienzo-core/src/test/java/com/ait/lienzo/shared/core/tests/ColorTest.java
+    packages/serverless-workflow-diagram-editor/lienzo-core/src/main/java/com/ait/lienzo/tools/common/api/*
+    packages/serverless-workflow-diagram-editor/lienzo-core/src/main/java/com/ait/lienzo/tools/client/*
+    packages/serverless-workflow-diagram-editor/lienzo-core/src/main/java/com/ait/lienzo/shared/core/types/*
+    packages/serverless-workflow-diagram-editor/lienzo-core/src/main/java/com/ait/lienzo/client/core/*
+    packages/serverless-workflow-diagram-editor/lienzo-core/src/main/java/com/ait/lienzo/client/widget/*
+    packages/serverless-workflow-diagram-editor/lienzo-tests/src/test/java/com/ait/lienzo/test/*
+    packages/serverless-workflow-diagram-editor/lienzo-tests/src/test/java/com/ait/lienzo/client/core/*
+    packages/serverless-workflow-diagram-editor/lienzo-tests/src/main/java/com/ait/lienzo/test/*
+    packages/stunner-editors/lienzo-core/src/main/java/com/ait/lienzo/client/core/types/Transform.java
+
+* Lienzo (https://github.com/dikalo/lienzo-core)
+
+Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
+Licensed under the Apache License, Version 2.0
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+for packages/dashbuilder/appformer/uberfire-extensions/uberfire-widgets/uberfire-widgets-commons/src/main/resources/org/uberfire/ext/widgets/common/client/resources/js/wysihtml/*
+
+* wysihtml (https://github.com/Voog/wysihtml v0.6.0-beta1)
+
+Copyright (C) 2012-2016 XING AG, Voog and contributors
+Licensed under the MIT License (MIT)
+
+ ------------------------------------------------------------------------------------
+for packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/resources/DI.xsd
+   packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/resources/DC.xsd
+   packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/resources/DMN12.xsd
+   packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/resources/DMNDI12.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_2/DI.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_2/DC.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_2/DMN12.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_2/DMNDI12.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_3/DI.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_3/DC.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_3/DMN13.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_3/DMNDI13.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_5/DMNDI15.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_5/DI.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_5/DC.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_5/DMN15.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_0/dmn3.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_0/dmn.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_4/DI.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_4/DC.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_4/DMN14.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_4/DMNDI13.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_1/dmn.xsd
+
+Copyright © 2019-2021, 88solutions
+Copyright © 2019-2023, BOC Products & Services AG
+Copyright © 2015-2023, Camunda Services GmbH
+Copyright © 2013-2023, Decision Management Solutions
+Copyright © 2019-2021, Department of Veterans Affairs
+Copyright © 2013-2019, Escape Velocity LLC
+Copyright © 2013-2023, Fair Isaac Corporation
+Copyright © 2019-2023, GfSE e.V.
+Copyright © 2013-2023, International Business Machines Corporation
+Copyright © 2013-2023, KU Leuven
+Copyright © 2013-2019, Model Systems Limited
+Copyright © 2015-2019, Oracle Incorporated
+Copyright © 2019-2023, PNA Group
+Copyright © 2020-2023, processCentric GmbH
+Copyright © 2013-2023, Red Hat Inc
+Copyright © 2013-2023, Sapiens Decision NA
+Copyright © 2019-2021, Signavio GmbH
+Copyright © 2019-2023, Sparx Systems Pty Ltd
+Copyright © 2019-2023, Thematix Partners LLC
+Copyright © 2014-2019, TIBCO Software Inc.
+Copyright © 2015-2023, Trisotech
+Copyright © 2015-2023, Object Management Group, Inc.
+
+USE OF SPECIFICATION – TERMS, CONDITIONS & NOTICES
+The material in this document details an Object Management Group specification in accordance with the terms,
+conditions and notices set forth below. This document does not represent a commitment to implement any portion of this
+specification in any company's products. The information contained in this document is subject to change without notice.
+
+LICENSES
+The companies listed above have granted to the Object Management Group, Inc. (OMG) a nonexclusive, royalty-free,
+paid up, worldwide license to copy and distribute this document and to modify this document and distribute copies of the
+modified version. Each of the copyright holders listed above has agreed that no person shall be deemed to have infringed
+the copyright in the included material of any such copyright holder by reason of having used the specification set forth
+herein or having conformed any computer software to the specification.
+Subject to all of the terms and conditions below, the owners of the copyright in this specification hereby grant you a
+fully-paid up, non-exclusive, nontransferable, perpetual, worldwide license (without the right to sublicense), to use this
+specification to create and distribute software and special purpose specifications that are based upon this specification,
+and to use, copy, and distribute this specification as provided under the Copyright Act; provided that: (1) both the
+copyright notice identified above and this permission notice appear on any copies of this specification; (2) the use of the
+specifications is for informational purposes and will not be copied or posted on any network computer or broadcast in
+any media and will not be otherwise resold or transferred for commercial purposes; and (3) no modifications are made to
+this specification. This limited permission automatically terminates without notice if you breach any of these terms or
+conditions. Upon termination, you will destroy immediately any copies of the specifications in your possession or
+control.
+
+PATENTS
+The attention of adopters is directed to the possibility that compliance with or adoption of OMG specifications may
+require use of an invention covered by patent rights. OMG shall not be responsible for identifying patents for which a
+license may be required by any OMG specification, or for conducting legal inquiries into the legal validity or scope of
+those patents that are brought to its attention. OMG specifications are prospective and advisory only. Prospective users
+are responsible for protecting themselves against liability for infringement of patents.
+
+GENERAL USE RESTRICTIONS
+Any unauthorized use of this specification may violate copyright laws, trademark laws, and communications regulations
+and statutes. This document contains information which is protected by copyright. All Rights Reserved. No part of this
+work covered by copyright herein may be reproduced or used in any form or by any means--graphic, electronic, or
+mechanical, including photocopying, recording, taping, or information storage and retrieval systems--without permission
+of the copyright owner.
+
+DISCLAIMER OF WARRANTY
+WHILE THIS PUBLICATION IS BELIEVED TO BE ACCURATE, IT IS PROVIDED "AS IS" AND MAY CONTAIN
+ERRORS OR MISPRINTS. THE OBJECT MANAGEMENT GROUP AND THE COMPANIES LISTED ABOVE
+MAKE NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, WITH REGARD TO THIS PUBLICATION,
+INCLUDING BUT NOT LIMITED TO ANY WARRANTY OF TITLE OR OWNERSHIP, IMPLIED WARRANTY
+OF MERCHANTABILITY OR WARRANTY OF FITNESS FOR A PARTICULAR PURPOSE OR USE. IN NO
+EVENT SHALL THE OBJECT MANAGEMENT GROUP OR ANY OF THE COMPANIES LISTED ABOVE BE
+LIABLE FOR ERRORS CONTAINED HEREIN OR FOR DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+CONSEQUENTIAL, RELIANCE OR COVER DAMAGES, INCLUDING LOSS OF PROFITS, REVENUE, DATA
+OR USE, INCURRED BY ANY USER OR ANY THIRD PARTY IN CONNECTION WITH THE FURNISHING,
+PERFORMANCE, OR USE OF THIS MATERIAL, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGES.
+The entire risk as to the quality and performance of software developed using this specification is borne by you. This
+disclaimer of warranty constitutes an essential part of the license granted to you to use this specification.
+
+RESTRICTED RIGHTS LEGEND
+Use, duplication or disclosure by the U.S. Government is subject to the restrictions set forth in subparagraph (c) (1) (ii) of
+The Rights in Technical Data and Computer Software Clause at DFARS 252.227-7013 or in subparagraph (c)(1) and (2)
+of the Commercial Computer Software - Restricted Rights clauses at 48 C.F.R. 52.227-19 or as specified in 48 C.F.R.
+227-7202-2 of the DoD F.A.R. Supplement and its successors, or as specified in 48 C.F.R. 12.212 of the Federal
+Acquisition Regulations and its successors, as applicable. The specification copyright owners are as indicated above and
+may be contacted through the Object Management Group, 9C Medway Rd, PMB 274, Milford, MA 01757, U.S.A.
+
+TRADEMARKS
+CORBA®, CORBA logos®, FIBO®, Financial Industry Business Ontology®, FINANCIAL INSTRUMENT GLOBAL
+IDENTIFIER®, IIOP®, IMM®, Model Driven Architecture®, MDA®, Object Management Group®, OMG®, OMG Logo, 
+SoaML®, SOAML®, SysML®, UAF®, Unified Modeling Language®, UML®, UML Cube Logo®, VSIPL®, and XMI® are
+registered trademarks of the Object Management Group, Inc.
+For a complete list of trademarks, see: https://www.omg.org/legal/tm_list.htm. All other products or company names
+mentioned are used for identification purposes only and may be trademarks of their respective owners.
+
+COMPLIANCE
+The copyright holders listed above acknowledge that the Object Management Group (acting itself or through its
+designees) is and shall at all times be the sole entity that may authorize developers, suppliers and sellers of computer
+software to use certification marks, trademarks or other special designations to indicate compliance with these materials.
+Software developed under the terms of this license may claim compliance or conformance with this specification if and
+only if the software compliance is of a nature fully matching the applicable compliance points as stated in the
+specification. Software developed only partially matching the applicable compliance points may claim only that the
+software was based on this specification, but may not claim compliance or conformance with this specification. In the
+event that testing suites are implemented or approved by Object Management Group, Inc., software developed using this
+specification may claim compliance or conformance with the specification only if the software satisfactorily completes
+the testing suites.
+
+----------------------------------------------------------------------------------------------------------------------
+for packages/bpmn-marshaller/src/schemas/bpmn-2_0/DI.xsd
+    packages/bpmn-marshaller/src/schemas/bpmn-2_0/DC.xsd
+    packages/bpmn-marshaller/src/schemas/bpmn-2_0/Semantic.xsd
+    packages/bpmn-marshaller/src/schemas/bpmn-2_0/BPMNDI.xsd
+    packages/bpmn-marshaller/src/schemas/bpmn-2_0/BPMN20.xsd
+
+Copyright © 2010, Axway
+Copyright © 2010, BizAgi
+Copyright © 2010, Bruce Silver Associates
+Copyright © 2010, IDS Scheer
+Copyright © 2010, IBM Corp.
+Copyright © 2010, MEGA International
+Copyright © 2010, Model Driven Solutions
+Copyright © 2010, Object Management Group
+Copyright © 2010, Oracle
+Copyright © 2010, SAP AG
+Copyright © 2010, Software AG
+Copyright © 2010, TIBCO Software
+Copyright © 2010, Unisys
+
+USE OF SPECIFICATION - TERMS, CONDITIONS & NOTICES
+The material in this document details an Object Management Group specification in accordance with the terms,
+conditions and notices set forth below. This document does not represent a commitment to implement any portion of this
+specification in any company's products. The information contained in this document is subject to change without notice.
+
+LICENSES
+The companies listed above have granted to the Object Management Group, Inc. (OMG) a nonexclusive, royalty-free,
+paid up, worldwide license to copy and distribute this document and to modify this document and distribute copies of the
+modified version. Each of the copyright holders listed above has agreed that no person shall be deemed to have infringed
+the copyright in the included material of any such copyright holder by reason of having used the specification set forth
+herein or having conformed any computer software to the specification.
+Subject to all of the terms and conditions below, the owners of the copyright in this specification hereby grant you a fullypaid up, non-exclusive, nontransferable, perpetual, worldwide license (without the right to sublicense), to use this
+specification to create and distribute software and special purpose specifications that are based upon this specification,
+and to use, copy, and distribute this specification as provided under the Copyright Act; provided that: (1) both the
+copyright notice identified above and this permission notice appear on any copies of this specification; (2) the use of the
+specifications is for informational purposes and will not be copied or posted on any network computer or broadcast in any
+media and will not be otherwise resold or transferred for commercial purposes; and (3) no modifications are made to this
+specification. This limited permission automatically terminates without notice if you breach any of these terms or
+conditions. Upon termination, you will destroy immediately any copies of the specifications in your possession or control.
+
+PATENTS
+The attention of adopters is directed to the possibility that compliance with or adoption of OMG specifications may
+require use of an invention covered by patent rights. OMG shall not be responsible for identifying patents for which a
+license may be required by any OMG specification, or for conducting legal inquiries into the legal validity or scope of
+those patents that are brought to its attention. OMG specifications are prospective and advisory only. Prospective users are
+responsible for protecting themselves against liability for infringement of patents.
+
+GENERAL USE RESTRICTIONS
+Any unauthorized use of this specification may violate copyright laws, trademark laws, and communications regulations
+and statutes. This document contains information which is protected by copyright. All Rights Reserved. No part of this
+work covered by copyright herein may be reproduced or used in any form or by any means--graphic, electronic, or
+mechanical, including photocopying, recording, taping, or information storage and retrieval systems--without permission
+of the copyright owner.
+
+DISCLAIMER OF WARRANTY
+WHILE THIS PUBLICATION IS BELIEVED TO BE ACCURATE, IT IS PROVIDED "AS IS" AND MAY CONTAIN
+ERRORS OR MISPRINTS. THE OBJECT MANAGEMENT GROUP AND THE COMPANIES LISTED ABOVE
+MAKE NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, WITH REGARD TO THIS PUBLICATION,
+INCLUDING BUT NOT LIMITED TO ANY WARRANTY OF TITLE OR OWNERSHIP, IMPLIED WARRANTY OF
+MERCHANTABILITY OR WARRANTY OF FITNESS FOR A PARTICULAR PURPOSE OR USE.
+IN NO EVENT SHALL THE OBJECT MANAGEMENT GROUP OR ANY OF THE COMPANIES LISTED ABOVE
+BE LIABLE FOR ERRORS CONTAINED HEREIN OR FOR DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+CONSEQUENTIAL, RELIANCE OR COVER DAMAGES, INCLUDING LOSS OF PROFITS, REVENUE, DATA OR
+USE, INCURRED BY ANY USER OR ANY THIRD PARTY IN CONNECTION WITH THE FURNISHING,
+PERFORMANCE, OR USE OF THIS MATERIAL, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGES.
+The entire risk as to the quality and performance of software developed using this specification is borne by you. This
+disclaimer of warranty constitutes an essential part of the license granted to you to use this specification.
+
+RESTRICTED RIGHTS LEGEND
+Use, duplication or disclosure by the U.S. Government is subject to the restrictions set forth in subparagraph (c) (1) (ii) of
+The Rights in Technical Data and Computer Software Clause at DFARS 252.227-7013 or in subparagraph (c)(1) and (2)
+of the Commercial Computer Software - Restricted Rights clauses at 48 C.F.R. 52.227-19 or as specified in 48 C.F.R. 227-
+7202-2 of the DoD F.A.R. Supplement and its successors, or as specified in 48 C.F.R. 12.212 of the Federal Acquisition
+Regulations and its successors, as applicable. The specification copyright owners are as indicated above and may be
+contacted through the Object Management Group, 140 Kendrick Street, Needham, MA 02494, U.S.A.
+
+TRADEMARKS
+MDA®, Model Driven Architecture®, UML®, UML Cube logo®, OMG Logo®, CORBA® and XMI® are registered
+trademarks of the Object Management Group, Inc., and Object Management Group™, OMG™ , Unified Modeling
+Language™, Model Driven Architecture Logo™, Model Driven Architecture Diagram™, CORBA logos™, XMI
+Logo™, CWM™, CWM Logo™, IIOP™ , IMM™ , MOF™ , OMG Interface Definition Language (IDL)™ , and OMG
+Systems Modeling Language (OMG SysML)™ are trademarks of the Object Management Group. All other products or
+company names mentioned are used for identification purposes only, and may be trademarks of their respective owners.
+
+COMPLIANCE
+The copyright holders listed above acknowledge that the Object Management Group (acting itself or through its
+designees) is and shall at all times be the sole entity that may authorize developers, suppliers and sellers of computer
+software to use certification marks, trademarks or other special designations to indicate compliance with these materials.
+Software developed under the terms of this license may claim compliance or conformance with this specification if and
+only if the software compliance is of a nature fully matching the applicable compliance points as stated in the
+specification. Software developed only partially matching the applicable compliance points may claim only that the
+software was based on this specification, but may not claim compliance or conformance with this specification. In the
+event that testing suites are implemented or approved by Object Management Group, Inc., software developed using this
+specification may claim compliance or conformance with the specification only if the software satisfactorily completes
+the testing suites.
+
+----------------------------------------------------------------------------------------------------------------------------------
+for packages/serverless-workflow-diagram-editor/third_party/errai/src/main/java/org/jboss/errai/common/client/util/Base64Util.java
+    packages/stunner-editors/errai-common/src/main/java/org/jboss/errai/common/client/util/Base64Util.java
+
+License (https://github.com/mooreds/gwt-crypto/blob/master/bouncycastle-lic.txt)
+
+Copyright (c) 2000 - 2006 The Legion Of The Bouncy Castle (http://www.bouncycastle.org)
+Licensed under the MIT License (MIT)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+for packages/serverless-workflow-diagram-editor/uberfire-extensions/uberfire-commons-editor/uberfire-commons-editor-client/src/main/resources/org/uberfire/ext/editor/commons/client/file/exports/js/FileSaver.min.js.back
+
+(https://github.com/eligrey/FileSaver.js/blob/master/LICENSE.md)
+
+Copyright © 2016 [Eli Grey][1].
+Licensed under the MIT License (MIT)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+for packages/serverless-workflow-diagram-editor/uberfire-extensions/uberfire-commons-editor/uberfire-commons-editor-client/src/main/resources/org/uberfire/ext/editor/commons/client/file/exports/js/canvas2svg.js.back
+
+Copyright (c) 2014 Gliffy Inc.
+Licensed under the MIT License (MIT)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+for packages/serverless-workflow-diagram-editor/uberfire-extensions/uberfire-commons-editor/uberfire-commons-editor-client/src/main/resources/org/uberfire/ext/editor/commons/client/file/exports/js/jspdf.min.js.back
+
+Copyright (c) 2010-2016 James Hall, https://github.com/MrRio/jsPDF
+Licensed under the MIT License (MIT)
