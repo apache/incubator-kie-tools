@@ -64,7 +64,7 @@ export function BasePage(props: { children?: React.ReactNode }) {
         </MastheadContent>
       </Masthead>
     ),
-    []
+    [history]
   );
 
   return (
