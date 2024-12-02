@@ -135,21 +135,21 @@ public class DevConsoleProcessor {
                 .metadata("page", "Processes")
                 .title("Process Instances")
                 .icon("font-awesome-solid:diagram-project")
-                .dynamicLabelJsonRPCMethodName("queryProcessInstancesCount"));
+                .streamingLabelJsonRPCMethodName("queryProcessInstancesCount"));
 
         cardPageBuildItem.addPage(Page.webComponentPageBuilder()
                 .componentLink("qwc-jbpm-quarkus-devui.js")
                 .metadata("page", "Tasks")
                 .title("Tasks")
                 .icon("font-awesome-solid:bars-progress")
-                .dynamicLabelJsonRPCMethodName("queryTasksCount"));
+                .streamingLabelJsonRPCMethodName("queryTasksCount"));
 
         cardPageBuildItem.addPage(Page.webComponentPageBuilder()
                 .componentLink("qwc-jbpm-quarkus-devui.js")
                 .metadata("page", "Jobs")
                 .title("Jobs")
                 .icon("font-awesome-solid:clock")
-                .dynamicLabelJsonRPCMethodName("queryJobsCount"));
+                .streamingLabelJsonRPCMethodName("queryJobsCount"));
 
         cardPageBuildItem.addPage(Page.webComponentPageBuilder()
                 .componentLink("qwc-jbpm-quarkus-devui.js")
