@@ -182,6 +182,10 @@ func (r *SonataFlowPlatformReconciler) Reconcile(ctx context.Context, req reconc
 				if err != nil {
 					return reconcile.Result{}, err
 				}
+			} else {
+				return reconcile.Result{
+					RequeueAfter: 5 * time.Second,
+				}, nil			
 			}
 
 			// handle one action at time so the resource
