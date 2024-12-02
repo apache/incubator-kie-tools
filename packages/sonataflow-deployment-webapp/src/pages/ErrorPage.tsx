@@ -36,7 +36,7 @@ import { Link } from "react-router-dom";
 import { WorkflowDefinition } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { routes } from "../routes";
 import { BasePage } from "./BasePage";
-import { Title } from "@patternfly/react-core";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 export enum ErrorKind {
   APPDATA_JSON = "AppDataJson",
