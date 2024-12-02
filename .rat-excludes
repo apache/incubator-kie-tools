@@ -464,6 +464,10 @@ UnsupportedField.test.tsx.snap
 FormDmn.test.tsx.snap
 # packages/form-dmn/tests/__snapshots__/FormDmnOutputs.test.tsx.snap
 FormDmnOutputs.test.tsx.snap
+# packages/form-generation-tool/tests/generation/fs/resources/empty/pom.xml
+pom.xml
+# packages/form-generation-tool/tests/generation/fs/resources/full/pom.xml
+pom.xml
 # packages/image-builder/README.md
 README.md
 # packages/import-java-classes-component/tests/ImportJavaClasses/__snapshots__/ImportJavaClasses.test.tsx.snap
