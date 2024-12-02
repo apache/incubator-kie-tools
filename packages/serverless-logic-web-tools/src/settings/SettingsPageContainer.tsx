@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Breadcrumb, BreadcrumbItem } from "@patternfly/react-core";
+import { Breadcrumb, BreadcrumbItem } from "@patternfly/react-core/dist/js/components/Breadcrumb";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import * as React from "react";

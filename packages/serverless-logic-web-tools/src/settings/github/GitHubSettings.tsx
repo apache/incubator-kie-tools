@@ -257,7 +257,9 @@ export function GitHubSettings(props: SettingsPageProps) {
               ) : (
                 <FormHelperText>
                   <HelperText>
-                    <HelperTextItem variant="default">Your token must include the 'repo' scope.</HelperTextItem>
+                    <HelperTextItem variant="default">
+                      Your token must include the &apos; repo &apos; scope.
+                    </HelperTextItem>
                   </HelperText>
                 </FormHelperText>
               )}

@@ -22,7 +22,7 @@ import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/
 import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
-import { BreadcrumbItem, Breadcrumb } from "@patternfly/react-core";
+import { BreadcrumbItem, Breadcrumb } from "@patternfly/react-core/dist/js/components/Breadcrumb";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { Dropdown, DropdownToggle } from "@patternfly/react-core/deprecated";
 import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";

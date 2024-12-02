@@ -18,7 +18,7 @@
  */
 import React from "react";
 import { Chip } from "@patternfly/react-core/dist/js/components/Chip";
-import { ChipGroup } from "@patternfly/react-core";
+import { ChipGroup } from "@patternfly/react-core/dist/js/components/Chip";
 import {
   DescriptionList,
   DescriptionListDescription,

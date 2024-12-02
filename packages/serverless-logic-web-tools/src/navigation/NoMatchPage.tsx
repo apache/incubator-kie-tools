@@ -25,7 +25,7 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { useHistory } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { useRoutes } from "./Hooks";
-import { EmptyStateActions } from "@patternfly/react-core";
+import { EmptyStateActions } from "@patternfly/react-core/dist/js/components/EmptyState";
 
 export function NoMatchPage() {
   const routes = useRoutes();

@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { Breadcrumb, BreadcrumbItem } from "@patternfly/react-core";
+import { Breadcrumb, BreadcrumbItem } from "@patternfly/react-core/dist/js/components/Breadcrumb";
 
 export function HomepageBreadcrumb(props: { paths: string[] }) {
   const getPath = (path: string): string => {
