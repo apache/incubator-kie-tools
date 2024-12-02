@@ -22,7 +22,7 @@ metadata:
     alm-examples: "[]"
     capabilities: Basic Install
     categories: Application Runtime
-    containerImage: docker.io/apache/incubator-kie-sonataflow-operator:10.0.x
+    containerImage: docker.io/apache/incubator-kie-sonataflow-operator:10.0.0
     description: SonataFlow Kubernetes Operator for deploying workflow applications
       based on the CNCF Serverless Workflow specification
     operators.operatorframework.io/internal-objects: '["sonataflowbuilds.sonataflow.org"]'
