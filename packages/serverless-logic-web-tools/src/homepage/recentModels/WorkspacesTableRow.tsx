@@ -25,7 +25,7 @@ import { ExclamationTriangleIcon, OutlinedQuestionCircleIcon } from "@patternfly
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
 import { ActionsColumn, Td, Tr } from "@patternfly/react-table/dist/esm";
-import { TdSelectType } from "@patternfly/react-table/dist/esm/components/Table/base";
+import { TdSelectType } from "@patternfly/react-table/dist/esm/components/Table/base/types";
 import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { RelativeDate } from "../../dates/RelativeDate";

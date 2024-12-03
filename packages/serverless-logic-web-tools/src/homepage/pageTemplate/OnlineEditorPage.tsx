@@ -27,7 +27,7 @@ import {
   MastheadMain,
   MastheadToggle,
 } from "@patternfly/react-core/dist/js/components/Masthead";
-import { PageSidebar, PageSidebarBody } from "@patternfly/react-core/dist/js/components/page";
+import { PageSidebar, PageSidebarBody } from "@patternfly/react-core/dist/js/components/Page";
 import { SkipToContent } from "@patternfly/react-core/dist/js/components/SkipToContent";
 import { Toolbar, ToolbarContent, ToolbarGroup, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { Page, PageToggleButton } from "@patternfly/react-core/dist/js/components/Page";
