@@ -25,7 +25,7 @@
     "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@kie-tools/scesim-marshaller": "workspace:*",
     "@patternfly/react-core": "^5.4.1",
-    "@patternfly/react-icons": "^5.4.0",
+    "@patternfly/react-icons": "^5.4.1",
     "@patternfly/react-styles": "^5.4.0",
     "immer": "^10.0.3",
     "lodash": "^4.17.21",

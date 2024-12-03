@@ -43,7 +43,7 @@
     "@kie-tools/pmml-editor-marshaller": "workspace:*",
     "@patternfly/react-charts": "^7.4.7",
     "@patternfly/react-core": "^5.4.1",
-    "@patternfly/react-icons": "^5.4.0",
+    "@patternfly/react-icons": "^5.4.1",
     "combine-reducer": "^1.0.2",
     "csstype": "^3.0.11",
     "immer": "^10.0.3",

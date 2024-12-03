@@ -34,7 +34,7 @@
     "@kie-tools/serverless-workflow-language-service": "workspace:*",
     "@kie-tools/serverless-workflow-service-catalog": "workspace:*",
     "@patternfly/react-core": "^5.4.1",
-    "@patternfly/react-icons": "^5.4.0",
+    "@patternfly/react-icons": "^5.4.1",
     "json-schema": "^0.4.0",
     "monaco-editor": "^0.39.0",
     "monaco-yaml": "^4.0.4",

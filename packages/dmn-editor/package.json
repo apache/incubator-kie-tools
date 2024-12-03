@@ -45,7 +45,7 @@
     "@kie-tools/pmml-editor-marshaller": "workspace:*",
     "@kie-tools/xml-parser-ts": "workspace:*",
     "@patternfly/react-core": "^5.4.1",
-    "@patternfly/react-icons": "^5.4.0",
+    "@patternfly/react-icons": "^5.4.1",
     "@patternfly/react-styles": "^5.4.0",
     "@visx/text": "^3.3.0",
     "d3-drag": "^3.0.0",

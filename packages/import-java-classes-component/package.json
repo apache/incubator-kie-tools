@@ -21,7 +21,7 @@
     "@kie-tools-core/vscode-java-code-completion": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@patternfly/react-core": "^5.4.1",
-    "@patternfly/react-icons": "^5.4.0",
+    "@patternfly/react-icons": "^5.4.1",
     "@patternfly/react-table": "^5.4.1"
   },
   "devDependencies": {

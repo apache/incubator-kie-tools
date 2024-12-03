@@ -31,7 +31,7 @@
     "@kie-tools/runtime-tools-shared-gateway-api": "workspace:*",
     "@kie-tools/uniforms-patternfly": "workspace:*",
     "@patternfly/react-core": "^5.4.1",
-    "@patternfly/react-icons": "^5.4.0",
+    "@patternfly/react-icons": "^5.4.1",
     "@patternfly/react-styles": "^5.4.0",
     "@patternfly/react-table": "^5.4.1",
     "ajv": "^8.17.1",

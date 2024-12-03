@@ -19,13 +19,10 @@
       "pinVersion": "workspace:*"
     },
     {
-      "dependencies": ["patternfly"],
-      "packages": [
-        "@kie-tools/runtime-tools-swf-webapp-components",
-        "@kie-tools/runtime-tools-swf-enveloped-components",
-        "@kie-tools/sonataflow-management-console-webapp",
-        "@kie-ttols/sonataflow-deployment-webapp"
-      ]
+      "label": "Align all @patternfly/react-* versions",
+      "dependencies": ["@patternfly/react-*"],
+      "packages": ["*"],
+      "policy": "same"
     }
   ]
 }

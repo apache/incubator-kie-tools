@@ -42,7 +42,7 @@
     "@kie-tools/serverless-workflow-text-editor": "workspace:*",
     "@patternfly/patternfly": "^5.4.1",
     "@patternfly/react-core": "^5.4.1",
-    "@patternfly/react-icons": "^5.4.0",
+    "@patternfly/react-icons": "^5.4.1",
     "apollo-cache-inmemory": "1.6.6",
     "apollo-client": "2.6.10",
     "apollo-link-context": "^1.0.20",
