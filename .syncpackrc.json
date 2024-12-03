@@ -17,12 +17,6 @@
       "dependencies": ["$LOCAL"],
       "dependencyTypes": ["prod", "dev"],
       "pinVersion": "workspace:*"
-    },
-    {
-      "label": "Align all @patternfly/react-* versions",
-      "dependencies": ["@patternfly/react-*"],
-      "packages": ["*"],
-      "policy": "same"
     }
   ]
 }
