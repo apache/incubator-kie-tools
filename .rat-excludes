@@ -828,10 +828,24 @@ OpenSans-SemiboldItalic-webfont.svg
 fontawesome-webfont.svg
 # packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-Bold-webfont.svg
 OpenSans-Bold-webfont.svg
+# packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-BoldItalic-webfont.svg
+OpenSans-BoldItalic-webfont.svg
+# packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-ExtraBold-webfont.svg
+OpenSans-ExtraBold-webfont.svg
+# packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-ExtraBoldItalic-webfont.svg
+OpenSans-ExtraBoldItalic-webfont.svg
+# packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-Italic-webfont.svg
+OpenSans-Italic-webfont.svg
+# packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-Light-webfont.svg
+OpenSans-Light-webfont.svg
+# packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-LightItalic-webfont.svg
+OpenSans-LightItalic-webfont.svg
 # packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-Regular-webfont.svg
 OpenSans-Regular-webfont.svg
 # packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-Semibold-webfont.svg
 OpenSans-Semibold-webfont.svg
+# packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-SemiboldItalic-webfont.svg
+OpenSans-SemiboldItalic-webfont.svg
 # packages/serverless-workflow-diagram-editor/third_party/errai/src/main/java/org/jboss/errai/common/client/util/Base64Util.java
 Base64Util.java
 # packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/resources/org/gwtbootstrap3/client/resource/css/bootstrap-3.4.1.min.cache.css
