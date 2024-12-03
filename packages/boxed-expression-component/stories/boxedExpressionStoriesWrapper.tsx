@@ -148,17 +148,9 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
     });
   }, [props?.widthsById, updateArgs]);
 
-  const onExpressionChange = useCallback<OnExpressionChange>(
-    (args) => {
-      const newExpression =
-        typeof args.setExpressionAction === "function"
-          ? args.setExpressionAction(expressionState)
-          : args.setExpressionAction;
-
-      setExpressionState(newExpression);
-    },
-    [expressionState]
-  );
+  const onExpressionChange = useCallback<OnExpressionChange>((args) => {
+    setExpressionState(args.setExpressionAction);
+  }, []);
 
   // Keep expression args in sync with state
   useEffect(() => {
