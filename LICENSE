@@ -541,6 +541,14 @@ for packages/stunner-editors/lienzo-core/src/main/java/com/ait/lienzo/tools/clie
 Copyright 2007 Google Inc.
 Licensed under the Apache License, Version 2.0
 
+-----------------------------------------------------------------------------------------------------------------------------------
+packages/serverless-workflow-diagram-editor/lienzo-core/src/main/java/com/ait/lienzo/gwtlienzo/i18n/client/LocalizableResource.java
+packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/dom/client/Style.java
+packages/stunner-editors/lienzo-core/src/main/java/com/ait/lienzo/gwtlienzo/i18n/client/LocalizableResource.java
+
+Copyright 2008 Google Inc.
+Licensed under the Apache License, Version 2.0
+
 -------------------------------------------------------------------------------------------------------------------------------------------
 for packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/core/client/Scheduler.java
     packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/core/client/impl/SchedulerImpl.java
@@ -881,20 +889,17 @@ Copyright 2015 TAKAHASHI kazunari
 Licensed under the Apache License, Version 2.0
 
 ----------------------------------------------------------------------------
-for packages/serverless-workflow-diagram-editor/lienzo-core/src/test/java/com/ait/lienzo/shared/core/tests/ColorTest.java
-    packages/serverless-workflow-diagram-editor/lienzo-core/src/main/java/com/ait/lienzo/tools/common/api/*
-    packages/serverless-workflow-diagram-editor/lienzo-core/src/main/java/com/ait/lienzo/tools/client/*
-    packages/serverless-workflow-diagram-editor/lienzo-core/src/main/java/com/ait/lienzo/shared/core/types/*
-    packages/serverless-workflow-diagram-editor/lienzo-core/src/main/java/com/ait/lienzo/client/core/*
-    packages/serverless-workflow-diagram-editor/lienzo-core/src/main/java/com/ait/lienzo/client/widget/*
-    packages/serverless-workflow-diagram-editor/lienzo-tests/src/test/java/com/ait/lienzo/test/*
-    packages/serverless-workflow-diagram-editor/lienzo-tests/src/test/java/com/ait/lienzo/client/core/*
-    packages/serverless-workflow-diagram-editor/lienzo-tests/src/main/java/com/ait/lienzo/test/*
-    packages/stunner-editors/lienzo-core/src/main/java/com/ait/lienzo/client/core/types/Transform.java
+for packages/serverless-workflow-diagram-editor/lienzo-core/*
+    packages/serverless-workflow-diagram-editor/lienzo-core/*
+    packages/stunner-editors/lienzo-core/src/main/java/*
+    packages/stunner-editors/lienzo-tests/src/main/java/*
 
 * Lienzo (https://github.com/dikalo/lienzo-core)
 
-Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
+Copyright (c) 2017 Ahome' Innovation Technologies.
+and
+Copyright (c) 2018 Ahome' Innovation Technologies.
+All rights reserved.
 Licensed under the Apache License, Version 2.0
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1277,9 +1282,3 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
 OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS RELEASE, EVEN IF ADVISED 
 OF THE POSSIBILITY OF SUCH DAMAGE. 
 -------------------------------------------------------------------------------------------------------------------
-
-TODO
-
-Found more "Copyright Ahome" files than ones listed in LICENSE. e.g. grep -r -i Ahome . Need to add them to LICENSE as Apache License : Not blocker (Category A)
-
-packages/stunner-editors/lienzo-core/src/main/java/com/ait/lienzo/gwtlienzo/i18n/client/LocalizableResource.java : Copyright 2008 Google Inc. with Apache License. Need to add it to LICENSE - not blocker (Category A)
