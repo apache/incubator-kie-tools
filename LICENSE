@@ -541,6 +541,49 @@ for packages/stunner-editors/lienzo-core/src/main/java/com/ait/lienzo/tools/clie
 Copyright 2007 Google Inc.
 Licensed under the Apache License, Version 2.0
 
+-------------------------------------------------------------------------------------------------------------------------------------------
+for packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/core/client/Scheduler.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/core/client/impl/SchedulerImpl.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/core/client/Duration.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/SafeHtml.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/SafeUriString.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/SafeHtmlString.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/HtmlSanitizer.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/SafeUriHostedModeUtils.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/SimpleHtmlSanitizer.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/UriUtils.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/SafeHtmlBuilder.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/GwtIncompatible.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/SafeUri.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/SafeHtmlHostedModeUtils.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/SafeHtmlUtils.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/client/HasSafeHtml.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/shared/package-info.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/shared/NativeRegExpFactory.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/shared/JavaRegExpFactory.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/shared/RegExp.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/shared/GwtIncompatible.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/shared/SplitResult.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/shared/RegExpFactory.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/shared/MatchResult.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/server/JavaMatchResult.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/server/JavaRegExp.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/server/JavaSplitResult.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/client/NativeMatchResult.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/client/NativeRegExp.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/client/NativeSplitResult.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/timer/client/Timer.java
+
+Copyright © 2019 The GWT Authors
+Licensed under the Apache License, Version 2.0
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+for packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/animation/client/Animation.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/animation/client/AnimationSchedulerImplStandard.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/animation/client/AnimationScheduler.java
+
+Copyright © 2020 The GWT Authors
+Licensed under the Apache License, Version 2.0
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 for packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/java/org/gwtbootstrap3/client/ui/constants/Toggle.java
@@ -1238,7 +1281,5 @@ OF THE POSSIBILITY OF SUCH DAMAGE.
 TODO
 
 Found more "Copyright Ahome" files than ones listed in LICENSE. e.g. grep -r -i Ahome . Need to add them to LICENSE as Apache License : Not blocker (Category A)
-
-files under ./packages/serverless-workflow-diagram-editor/third_party/gwtproject : Copyright © 2019 The GWT Project Authors with Apache License. Need to add them to LICENSE - not blocker (Category A)
 
 packages/stunner-editors/lienzo-core/src/main/java/com/ait/lienzo/gwtlienzo/i18n/client/LocalizableResource.java : Copyright 2008 Google Inc. with Apache License. Need to add it to LICENSE - not blocker (Category A)
