@@ -19,7 +19,7 @@
 
 import { WorkflowListDriver } from "../../../api";
 import { ICell, IRow, IRowCell } from "@patternfly/react-table/dist/js/components/Table";
-import { Table, TableBody, TableHeader } from "@patternfly/react-table/deprecated";
+import { Table, TableBody, TableHeader } from "@patternfly/react-table/dist/js/deprecated";
 import React, { useEffect, useState } from "react";
 import { WorkflowInstance, WorkflowInstanceState } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import _ from "lodash";

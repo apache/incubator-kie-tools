@@ -21,7 +21,7 @@ import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/Wo
 import { BanIcon, CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
 import { ActionsColumn, Td, Tr } from "@patternfly/react-table/dist/esm";
-import { TdSelectType } from "@patternfly/react-table/src/components/Table/base/types";
+import { TdSelectType } from "@patternfly/react-table/dist/esm/components/Table/base/types";
 import { useCallback, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
 import { routes } from "../../../navigation/Routes";

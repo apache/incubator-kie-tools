@@ -22,7 +22,7 @@ import { Card, CardHeader, CardBody } from "@patternfly/react-core/dist/js/compo
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { TableVariant, IRow, ICell } from "@patternfly/react-table/dist/js/components/Table";
-import { Table, TableHeader, TableBody } from "@patternfly/react-table/deprecated";
+import { Table, TableHeader, TableBody } from "@patternfly/react-table/dist/js/deprecated";
 import Moment from "react-moment";
 import JobActionsKebab from "../JobActionsKebab/JobActionsKebab";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";

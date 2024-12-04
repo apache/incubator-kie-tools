@@ -19,7 +19,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { ExpandableRowContent } from "@patternfly/react-table/dist/js/components/Table";
-import { Table /* data-codemods */, Thead, Tbody, Tr, Th, Td } from "@patternfly/react-table";
+import { Table, Thead, Tbody, Tr, Th, Td } from "@patternfly/react-table/dist/js/components/Table";
 import _ from "lodash";
 import { WorkflowInstance, WorkflowInstanceState } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";

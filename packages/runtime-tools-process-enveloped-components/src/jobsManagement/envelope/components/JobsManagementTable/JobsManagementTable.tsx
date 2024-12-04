@@ -18,7 +18,7 @@
  */
 import React, { useState, useEffect, useCallback } from "react";
 import { sortable, IRow, ISortBy } from "@patternfly/react-table/dist/js/components/Table";
-import { Table, TableHeader, TableBody } from "@patternfly/react-table/deprecated";
+import { Table, TableHeader, TableBody } from "@patternfly/react-table/dist/js/deprecated";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 import { Job, JobsSortBy } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";

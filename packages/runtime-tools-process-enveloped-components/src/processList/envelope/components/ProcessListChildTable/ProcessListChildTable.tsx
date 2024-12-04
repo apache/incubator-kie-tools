@@ -18,7 +18,7 @@
  */
 import { ProcessListDriver } from "../../../api";
 import { ICell, IRow, IRowCell } from "@patternfly/react-table/dist/js/components/Table";
-import { Table, TableBody, TableHeader } from "@patternfly/react-table/deprecated";
+import { Table, TableBody, TableHeader } from "@patternfly/react-table/dist/js/deprecated";
 import React, { useEffect, useState } from "react";
 import { getProcessInstanceDescription, ProcessInstanceIconCreator } from "../utils/ProcessListUtils";
 import { HistoryIcon } from "@patternfly/react-icons/dist/js/icons/history-icon";

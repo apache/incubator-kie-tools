@@ -27,7 +27,7 @@ import {
   ISortBy,
   SortByDirection,
 } from "@patternfly/react-table/dist/js/components/Table";
-import { Table, TableHeader, TableBody } from "@patternfly/react-table/deprecated";
+import { Table, TableHeader, TableBody } from "@patternfly/react-table/dist/js/deprecated";
 import isEmpty from "lodash/isEmpty";
 import filter from "lodash/filter";
 import get from "lodash/get";
