@@ -25,15 +25,16 @@ import (
 	"strconv"
 	"strings"
 
-	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/container-builder/client"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/platform/services"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
 	"k8s.io/utils/pointer"
+
+	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/container-builder/client"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/platform/services"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
 )
 
 type QuarkusDataSource struct {

@@ -13,8 +13,8 @@
 # limitations under the License.
 
 resources:
-- 01-postgres.yaml
-- 02-sonataflow_platform.yaml
+  - 01-postgres.yaml
+  - 02-sonataflow_platform.yaml
 
 generatorOptions:
   disableNameSuffixHash: true

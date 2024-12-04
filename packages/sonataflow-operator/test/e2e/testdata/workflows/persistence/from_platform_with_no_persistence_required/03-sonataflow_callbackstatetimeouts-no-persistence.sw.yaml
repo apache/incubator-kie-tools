@@ -24,9 +24,7 @@ metadata:
     sonataflow.org/version: 0.0.1
     sonataflow.org/profile: gitops
 spec:
-  persistence: {
-    dbMigrationStrategy: service
-  }
+  persistence: { dbMigrationStrategy: service }
   podTemplate:
     replicas: 0
     container:

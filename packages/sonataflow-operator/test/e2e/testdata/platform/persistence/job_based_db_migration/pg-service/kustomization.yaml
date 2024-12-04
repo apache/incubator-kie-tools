@@ -13,7 +13,7 @@
 # limitations under the License.
 
 resources:
-- 01-postgres.yaml
+  - 01-postgres.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
