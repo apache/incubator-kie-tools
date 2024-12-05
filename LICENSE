@@ -256,6 +256,11 @@ Bootstrap v3.4.1
 Copyright 2011-2019 Twitter, Inc.
 Licensed under the MIT License (MIT)
 
+--------------------------------------------------------------------------------------------------
+for packages/stunner-editors/errai-ioc/src/test/java/org/jboss/errai/ioc/tests/wiring/js/native.js
+
+Licensed under the Apache License, Version 2.0
+
 ----------------------------------------------------------------------------------------------------------------------
 for packages/stunner-editors/errai-javax-enterprise/src/main/java/javax/enterprise/super/javax/inject/Qualifier.java
     packages/stunner-editors/errai-javax-enterprise/src/main/java/javax/enterprise/super/javax/inject/Named.java
@@ -490,6 +495,39 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 Font Awesome CSS, LESS, and Sass files
 Licensed under the MIT License (MIT)
 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+for packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/resources/org/kie/workbench/common/stunner/sw/resources/public/fonts/OpenSans-*
+    packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-*
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide development of collaborative font projects, to support the font creation efforts of academic and linguistic communities, and to provide a free and open framework in which fonts may be shared and improved in partnership with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and redistributed freely as long as they are not sold by themselves. The fonts, including any derivative works, can be bundled, embedded, redistributed and/or sold with any software provided that any reserved names are not used by derivative works. The fonts and derivatives, however, cannot be released under any other type of license. The requirement for fonts to remain under this license does not apply to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+"Font Software" refers to the set of files released by the Copyright Holder(s) under this license and clearly marked as such. This may include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as distributed by the Copyright Holder(s).
+"Modified Version" refers to any derivative made by adding to, deleting, or substituting -- in part or in whole -- any of the components of the Original Version, by changing formats or by porting the Font Software to a new environment.
+
+"Author" refers to any designer, engineer, programmer, technical writer or other person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining a copy of the Font Software, to use, study, copy, merge, embed, modify, redistribute, and sell modified and unmodified copies of the Font Software, subject to the following conditions:
+
+Neither the Font Software nor any of its individual components, in Original or Modified Versions, may be sold by itself.
+Original or Modified Versions of the Font Software may be bundled, redistributed and/or sold with any software, provided that each copy contains the above copyright notice and this license. These can be included either as stand-alone text files, human-readable headers or in the appropriate machine-readable metadata fields within text or binary files as long as those fields can be easily viewed by the user.
+No Modified Version of the Font Software may use the Reserved Font Name(s) unless explicit written permission is granted by the corresponding Copyright Holder. This restriction only applies to the primary font name as presented to the users.
+The name(s) of the Copyright Holder(s) or the Author(s) of the Font Software shall not be used to promote, endorse or advertise any Modified Version, except to acknowledge the contribution(s) of the Copyright Holder(s) and the Author(s) or with their explicit written permission.
+The Font Software, modified or unmodified, in part or in whole, must be distributed entirely under this license, and must not be distributed under any other license. The requirement for fonts to remain under this license does not apply to any document created using the Font Software.
+TERMINATION
+This license becomes null and void if any of the above conditions are not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS IN THE FONT SOFTWARE.
+
 -----------------------------------------------------------------------------------------------
 for packages/stunner-editors/lienzo-core/src/main/java/com/ait/lienzo/tools/client/Timer.java
     packages/stunner-editors/lienzo-core/src/main/java/com/ait/lienzo/gwtlienzo/i18n/Constants.java
@@ -503,6 +541,57 @@ for packages/stunner-editors/lienzo-core/src/main/java/com/ait/lienzo/tools/clie
 Copyright 2007 Google Inc.
 Licensed under the Apache License, Version 2.0
 
+-----------------------------------------------------------------------------------------------------------------------------------
+packages/serverless-workflow-diagram-editor/lienzo-core/src/main/java/com/ait/lienzo/gwtlienzo/i18n/client/LocalizableResource.java
+packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/dom/client/Style.java
+packages/stunner-editors/lienzo-core/src/main/java/com/ait/lienzo/gwtlienzo/i18n/client/LocalizableResource.java
+
+Copyright 2008 Google Inc.
+Licensed under the Apache License, Version 2.0
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+for packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/core/client/Scheduler.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/core/client/impl/SchedulerImpl.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/core/client/Duration.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/SafeHtml.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/SafeUriString.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/SafeHtmlString.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/HtmlSanitizer.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/SafeUriHostedModeUtils.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/SimpleHtmlSanitizer.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/UriUtils.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/SafeHtmlBuilder.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/GwtIncompatible.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/SafeUri.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/SafeHtmlHostedModeUtils.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/shared/SafeHtmlUtils.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/safehtml/client/HasSafeHtml.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/shared/package-info.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/shared/NativeRegExpFactory.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/shared/JavaRegExpFactory.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/shared/RegExp.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/shared/GwtIncompatible.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/shared/SplitResult.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/shared/RegExpFactory.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/shared/MatchResult.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/server/JavaMatchResult.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/server/JavaRegExp.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/server/JavaSplitResult.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/client/NativeMatchResult.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/client/NativeRegExp.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/regexp/client/NativeSplitResult.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/timer/client/Timer.java
+
+Copyright © 2019 The GWT Authors
+Licensed under the Apache License, Version 2.0
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+for packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/animation/client/Animation.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/animation/client/AnimationSchedulerImplStandard.java
+    packages/serverless-workflow-diagram-editor/third_party/gwtproject/src/main/java/org/gwtproject/animation/client/AnimationScheduler.java
+
+Copyright © 2020 The GWT Authors
+Licensed under the Apache License, Version 2.0
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 for packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/java/org/gwtbootstrap3/client/ui/constants/Toggle.java
@@ -800,20 +889,17 @@ Copyright 2015 TAKAHASHI kazunari
 Licensed under the Apache License, Version 2.0
 
 ----------------------------------------------------------------------------
-for packages/serverless-workflow-diagram-editor/lienzo-core/src/test/java/com/ait/lienzo/shared/core/tests/ColorTest.java
-    packages/serverless-workflow-diagram-editor/lienzo-core/src/main/java/com/ait/lienzo/tools/common/api/*
-    packages/serverless-workflow-diagram-editor/lienzo-core/src/main/java/com/ait/lienzo/tools/client/*
-    packages/serverless-workflow-diagram-editor/lienzo-core/src/main/java/com/ait/lienzo/shared/core/types/*
-    packages/serverless-workflow-diagram-editor/lienzo-core/src/main/java/com/ait/lienzo/client/core/*
-    packages/serverless-workflow-diagram-editor/lienzo-core/src/main/java/com/ait/lienzo/client/widget/*
-    packages/serverless-workflow-diagram-editor/lienzo-tests/src/test/java/com/ait/lienzo/test/*
-    packages/serverless-workflow-diagram-editor/lienzo-tests/src/test/java/com/ait/lienzo/client/core/*
-    packages/serverless-workflow-diagram-editor/lienzo-tests/src/main/java/com/ait/lienzo/test/*
-    packages/stunner-editors/lienzo-core/src/main/java/com/ait/lienzo/client/core/types/Transform.java
+for packages/serverless-workflow-diagram-editor/lienzo-core/*
+    packages/serverless-workflow-diagram-editor/lienzo-core/*
+    packages/stunner-editors/lienzo-core/src/main/java/*
+    packages/stunner-editors/lienzo-tests/src/main/java/*
 
 * Lienzo (https://github.com/dikalo/lienzo-core)
 
-Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
+Copyright (c) 2017 Ahome' Innovation Technologies.
+and
+Copyright (c) 2018 Ahome' Innovation Technologies.
+All rights reserved.
 Licensed under the Apache License, Version 2.0
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1058,6 +1144,13 @@ License (https://github.com/mooreds/gwt-crypto/blob/master/bouncycastle-lic.txt)
 Copyright (c) 2000 - 2006 The Legion Of The Bouncy Castle (http://www.bouncycastle.org)
 Licensed under the MIT License (MIT)
 
+--------------------------------------------------------------------------------------------------------
+for packages/stunner-editors/errai-common/src/main/java/org/jboss/errai/common/client/util/TimeUnit.java
+
+Written by Doug Lea with assistance from members of JCP JSR-166
+Expert Group and released to the public domain, as explained at
+http://creativecommons.org/licenses/publicdomain (CC0 1.0 Universal)
+
 --------------------------------------------------------------------------------------------------------------------------------------------------
 for packages/serverless-workflow-diagram-editor/uberfire-extensions/uberfire-commons-editor/uberfire-commons-editor-client/src/main/resources/org/uberfire/ext/editor/commons/client/file/exports/js/FileSaver.min.js.back
 
@@ -1077,3 +1170,115 @@ for packages/serverless-workflow-diagram-editor/uberfire-extensions/uberfire-com
 
 Copyright (c) 2010-2016 James Hall, https://github.com/MrRio/jsPDF
 Licensed under the MIT License (MIT)
+
+--------------------------------------------------------------
+for packages/kn-plugin-workflow/e2e-tests/gen_manifest_test.go
+
+Copyright 2024 Red Hat, Inc. and/or its affiliates.
+Licensed under the Apache License, Version 2.0
+
+-------------------------------------------------
+for packages/kie-sandbox-fs/src/DefaultBackend.js
+
+Copyright (c) 2018 wmhilton
+Licensed under the MIT License (MIT)
+
+-----------------------------------------------------------
+for packages/xml-parser-ts-codegen/src/schemas/xsd/HFP.xsd
+    packages/xml-parser-ts-codegen/src/schemas/xsd/XSD.xsd
+    packages/xml-parser-ts-codegen/src/schemas/xsd/xml.xsd
+    packages/xml-parser-ts-codegen/src/schemas/xsd-incomplete--manually-written/HFP.xsd
+    packages/xml-parser-ts-codegen/src/schemas/xsd-incomplete--manually-written/XSD.xsd
+
+License
+By obtaining and/or copying this work, you (the licensee) agree that you have read, understood, and will comply with the following terms and conditions.
+
+Permission to copy, modify, and distribute this work, with or without modification, for any purpose and without fee or royalty is hereby granted, provided that you include the following on ALL copies of the work or portions thereof, including modifications:
+
+The full text of this NOTICE in a location viewable to users of the redistributed or derivative work.
+Any pre-existing intellectual property disclaimers, notices, or terms and conditions. If none exist, the W3C software and document short notice should be included.
+Notice of any changes or modifications, through a copyright statement on the new code or document such as "This software or document includes material copied from or derived from [title and URI of the W3C document]. Copyright © [$year-of-document] World Wide Web Consortium. https://www.w3.org/copyright/software-license-2023/"
+
+Disclaimers
+THIS WORK IS PROVIDED "AS IS," AND COPYRIGHT HOLDERS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF THE SOFTWARE OR DOCUMENT WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
+
+COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE SOFTWARE OR DOCUMENT.
+
+The name and trademarks of copyright holders may NOT be used in advertising or publicity pertaining to the work without specific, written prior permission. Title to copyright in this work will at all times remain with copyright holders.
+
+Versions
+This version: https://www.w3.org/copyright/software-license-2023/
+Latest version: https://www.w3.org/copyright/software-license/
+Previous version: https://www.w3.org/copyright/software-license-2015/
+
+Changes since the previous document
+The 2023 version updates identification of the copyright holder.
+
+----------------------------------------------------------------------------------------------------------------
+for packages/dashbuilder/appformer/uberfire-api/src/main/resources/org/uberfire/jre/org/uberfire/util/uri.min.js
+    packages/stunner-editors/uberfire-api/src/main/resources/org/uberfire/jre/org/uberfire/util/uri.min.js
+
+Copyright 2011 Gary Court. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1.	Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2.	Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY GARY COURT "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL GARY COURT OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The views and conclusions contained in the software and documentation are those of the authors and should not be interpreted as representing official policies, either expressed or implied, of Gary Court.
+
+---------------------------------------------------------------------------------
+for packages/dmn-editor-standalone/tests-e2e/__fixtures__/files/scorecard.pmml
+    packages/online-editor/static/samples/Sample.pmml
+    packages/pmml-editor-marshaller/tests/marshaller/TestData_AnomalyDetectionModel.ts
+    packages/pmml-editor-marshaller/tests/marshaller/TestData_AssociationModel.ts
+    packages/pmml-editor-marshaller/tests/marshaller/TestData_BaselineModel.ts
+    packages/pmml-editor-marshaller/tests/marshaller/TestData_BayesianNetworkModel.ts
+    packages/pmml-editor-marshaller/tests/marshaller/TestData_ClusteringModel.ts
+    packages/pmml-editor-marshaller/tests/marshaller/TestData_GaussianProcessModel.ts
+    packages/pmml-editor-marshaller/tests/marshaller/TestData_GeneralRegressionModel.ts
+    packages/pmml-editor-marshaller/tests/marshaller/TestData_LinearRegressions.ts
+    packages/pmml-editor-marshaller/tests/marshaller/TestData_MiningModel.ts
+    packages/pmml-editor-marshaller/tests/marshaller/TestData_MiningSchema.ts
+    packages/pmml-editor-marshaller/tests/marshaller/TestData_NaiveBayesModel.ts
+    packages/pmml-editor-marshaller/tests/marshaller/TestData_NearestNeighborModel.ts
+    packages/pmml-editor-marshaller/tests/marshaller/TestData_NeuralNetwork.ts
+    packages/pmml-editor-marshaller/tests/marshaller/TestData_RuleSetModel.ts
+    packages/pmml-editor-marshaller/tests/marshaller/TestData_SequenceModel.ts
+    packages/pmml-editor-marshaller/tests/marshaller/TestData_SupportVectorMachineModel.ts
+    packages/pmml-editor-marshaller/tests/marshaller/TestData_TextModel.ts
+    packages/pmml-editor-marshaller/tests/marshaller/TestData_TimeSeriesModel.ts
+    packages/pmml-editor-marshaller/tests/marshaller/TestData_TreeModel.ts
+
+Copyright (c) 2008-2016,  The Data Mining Group
+All rights reserved. 
+This notice and license applies the.pmml
+notice and license is selected by the working group developing the release and is approved 
+by the DMG Chair.
+
+Redistribution and use in source and binary forms, with or without modification, are 
+permitted provided that the following conditions are met: 
+* Redistributions of source code must include the copyright notice below, this list of 
+conditions and the following disclaimer. 
+* Redistributions in binary form must reproduce the copyright notice below, this list 
+of conditions and the following disclaimer in the documentation and/or other 
+materials provided with the distribution 
+* Neither the name of the Data Mining Group nor the names of its members or 
+contributors may be used to endorse or promote products derived from a release
+without specific prior written permission. 
+
+THIS STANDARD IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS 
+IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS RELEASE, EVEN IF ADVISED 
+OF THE POSSIBILITY OF SUCH DAMAGE. 
+-------------------------------------------------------------------------------------------------------------------
