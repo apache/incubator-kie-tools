@@ -54,8 +54,10 @@ type DBMigratorJob struct {
 const (
 	dbMigrationJobName       = "sonataflow-db-migrator-job"
 	dbMigrationContainerName = "db-migration-container"
-	dbMigratorToolImage      = "docker.io/apache/incubator-kie-kogito-db-migrator-tool:latest"
+	dbMigratorToolImage      = "quay.io/rhkp/incubator-kie-kogito-service-db-migration-postgresql:latest"
 	dbMigrationCmd           = "./migration.sh"
+	dbMigrationJobFailed     = 1
+	dbMigrationJobSucceeded  = 1
 )
 
 type DBMigrationJobCfg struct {
@@ -90,14 +92,16 @@ func getDBSchemaName(persistencePostgreSQL *operatorapi.PersistencePostgreSQL, d
 }
 
 func getQuarkusDataSourceFromPersistence(ctx context.Context, platform *operatorapi.SonataFlowPlatform, persistence *operatorapi.PersistenceOptionsSpec, defaultSchemaName string) *QuarkusDataSource {
-	quarkusDataSource := &QuarkusDataSource{}
 	if persistence != nil && persistence.PostgreSQL != nil {
+		quarkusDataSource := &QuarkusDataSource{}
 		quarkusDataSource.JdbcUrl = persistence.PostgreSQL.JdbcUrl
 		quarkusDataSource.Username, _ = services.GetSecretKeyValueString(ctx, persistence.PostgreSQL.SecretRef.Name, persistence.PostgreSQL.SecretRef.UserKey, platform.Namespace)
 		quarkusDataSource.Password, _ = services.GetSecretKeyValueString(ctx, persistence.PostgreSQL.SecretRef.Name, persistence.PostgreSQL.SecretRef.PasswordKey, platform.Namespace)
 		quarkusDataSource.Schema = getDBSchemaName(persistence.PostgreSQL, defaultSchemaName)
+		return quarkusDataSource
 	}
-	return quarkusDataSource
+
+	return nil
 }
 
 func NewDBMigratorJobData(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, pshDI services.PlatformServiceHandler, pshJS services.PlatformServiceHandler) *DBMigratorJob {
@@ -134,7 +138,34 @@ func NewDBMigratorJobData(ctx context.Context, client client.Client, platform *o
 	return nil
 }
 
+func getNewQuarkusDataSource(jdbcURL string, userName string, password string, schema string) *QuarkusDataSource{
+	return &QuarkusDataSource{
+		JdbcUrl: jdbcURL,
+		Username: userName,
+		Password: password,
+		Schema: schema,
+	}
+}
+
 func (dbmj DBMigratorJob) CreateJobDBMigration(platform *operatorapi.SonataFlowPlatform) *batchv1.Job {
+	
+	diQuarkusDataSource := getNewQuarkusDataSource("", "", "", "")
+	jsQuarkusDataSource := getNewQuarkusDataSource("", "", "", "")
+
+	if dbmj.DataIndexDataSource != nil {
+		diQuarkusDataSource.JdbcUrl = dbmj.DataIndexDataSource.JdbcUrl
+		diQuarkusDataSource.Username = dbmj.DataIndexDataSource.Username
+		diQuarkusDataSource.Password = dbmj.DataIndexDataSource.Password
+		diQuarkusDataSource.Schema = dbmj.DataIndexDataSource.Schema
+	}
+
+	if dbmj.JobsServiceDataSource != nil {
+		jsQuarkusDataSource.JdbcUrl = dbmj.JobsServiceDataSource.JdbcUrl
+		jsQuarkusDataSource.Username = dbmj.JobsServiceDataSource.Username
+		jsQuarkusDataSource.Password = dbmj.JobsServiceDataSource.Password
+		jsQuarkusDataSource.Schema = dbmj.JobsServiceDataSource.Schema
+	}
+
 	dbMigrationJobCfg := getDBMigrationJobCfg()
 	job := &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
@@ -155,19 +186,19 @@ func (dbmj DBMigratorJob) CreateJobDBMigration(platform *operatorapi.SonataFlowP
 								},
 								{
 									Name:  "QUARKUS_DATASOURCE_DATAINDEX_JDBC_URL",
-									Value: dbmj.DataIndexDataSource.JdbcUrl,
+									Value: diQuarkusDataSource.JdbcUrl,
 								},
 								{
 									Name:  "QUARKUS_DATASOURCE_DATAINDEX_USERNAME",
-									Value: dbmj.DataIndexDataSource.Username,
+									Value: diQuarkusDataSource.Username,
 								},
 								{
 									Name:  "QUARKUS_DATASOURCE_DATAINDEX_PASSWORD",
-									Value: dbmj.DataIndexDataSource.Password,
+									Value: diQuarkusDataSource.Password,
 								},
 								{
 									Name:  "QUARKUS_FLYWAY_DATAINDEX_SCHEMAS",
-									Value: dbmj.DataIndexDataSource.Schema,
+									Value: diQuarkusDataSource.Schema,
 								},
 								{
 									Name:  "MIGRATE_DB_JOBSSERVICE",
@@ -175,19 +206,19 @@ func (dbmj DBMigratorJob) CreateJobDBMigration(platform *operatorapi.SonataFlowP
 								},
 								{
 									Name:  "QUARKUS_DATASOURCE_JOBSSERVICE_JDBC_URL",
-									Value: dbmj.JobsServiceDataSource.JdbcUrl,
+									Value: jsQuarkusDataSource.JdbcUrl,
 								},
 								{
 									Name:  "QUARKUS_DATASOURCE_JOBSSERVICE_USERNAME",
-									Value: dbmj.JobsServiceDataSource.Username,
+									Value: jsQuarkusDataSource.Username,
 								},
 								{
 									Name:  "QUARKUS_DATASOURCE_JOBSSERVICE_PASSWORD",
-									Value: dbmj.JobsServiceDataSource.Password,
+									Value: jsQuarkusDataSource.Password,
 								},
 								{
 									Name:  "QUARKUS_FLYWAY_JOBSSERVICE_SCHEMAS",
-									Value: dbmj.JobsServiceDataSource.Schema,
+									Value: jsQuarkusDataSource.Schema,
 								},
 							},
 							Command: []string{
@@ -254,11 +285,11 @@ func (dbmj DBMigratorJob) ReconcileDBMigrationJob(ctx context.Context, client cl
 
 	klog.V(log.I).InfoS("Db migration job status: ", "active", dbMigratorJobStatus.Active, "ready", dbMigratorJobStatus.Ready, "failed", dbMigratorJobStatus.Failed, "success", dbMigratorJobStatus.Succeeded, "CompletedIndexes", dbMigratorJobStatus.CompletedIndexes, "terminatedPods", dbMigratorJobStatus.UncountedTerminatedPods)
 
-	if dbMigratorJobStatus.Failed == 1 {
+	if dbMigratorJobStatus.Failed == dbMigrationJobFailed {
 		platform.Status.SonataFlowPlatformDBMigrationPhase = UpdateSonataFlowPlatformDBMigrationPhase(platform.Status.SonataFlowPlatformDBMigrationPhase, operatorapi.DBMigrationStatusFailed, operatorapi.MessageDBMigrationStatusFailed, operatorapi.ReasonDBMigrationStatusFailed)
 		klog.V(log.I).InfoS("DB migration job failed")
 		return dbMigratorJobStatus, errors.New("DB migration job failed")
-	} else if dbMigratorJobStatus.Succeeded == 1 {
+	} else if dbMigratorJobStatus.Succeeded == dbMigrationJobSucceeded {
 		platform.Status.SonataFlowPlatformDBMigrationPhase = UpdateSonataFlowPlatformDBMigrationPhase(platform.Status.SonataFlowPlatformDBMigrationPhase, operatorapi.DBMigrationStatusSucceeded, operatorapi.MessageDBMigrationStatusSucceeded, operatorapi.ReasonDBMigrationStatusSucceeded)
 		klog.V(log.I).InfoS("DB migration job succeeded")
 	} else {
