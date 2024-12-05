@@ -226,6 +226,14 @@ export function ConditionalExpression({
     [setExpression]
   );
 
+  const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
+    return row.original.part["@_id"];
+  }, []);
+
+  const getEvaluationHitsCountSupportedByRow = useCallback((row: ReactTable.Row<ROWTYPE>) => {
+    return row.original.label !== "if";
+  }, []);
+
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div data-testid={"kie-tools--boxed-expression-component---conditional"}>
@@ -234,6 +242,7 @@ export function ConditionalExpression({
           isEditableHeader={!isReadOnly}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={id}
+          getRowKey={getRowKey}
           headerLevelCountForAppendingRowIndexColumn={1}
           headerVisibility={headerVisibility}
           cellComponentByColumnAccessor={cellComponentByColumnAccessor}
@@ -247,6 +256,8 @@ export function ConditionalExpression({
           shouldRenderRowIndexColumn={false}
           shouldShowRowsInlineControls={false}
           shouldShowColumnsInlineControls={false}
+          evaluationHitsCountColumnIndex={1}
+          getEvaluationHitsCountSupportedByRow={getEvaluationHitsCountSupportedByRow}
         />
       </div>
     </NestedExpressionContainerContext.Provider>
