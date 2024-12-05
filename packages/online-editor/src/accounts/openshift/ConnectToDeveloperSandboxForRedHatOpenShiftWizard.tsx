@@ -52,7 +52,8 @@ import {
 } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
-import { HelperText, HelperTextItem, ValidatedOptions } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/src/components/HelperText";
+import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 
 enum WizardStepIds {
   NAMESPACE = "NAMESPACE",

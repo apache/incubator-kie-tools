@@ -54,7 +54,8 @@ import { Tab, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/componen
 import ExternalLinkAltIcon from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { useRoutes } from "../../navigation/Hooks";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
-import { HelperText, HelperTextItem, ValidatedOptions } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/src/components/HelperText";
+import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 
 enum WizardStepIds {
   CREATE_CLUSTER = "CREATE_CLUSTER",

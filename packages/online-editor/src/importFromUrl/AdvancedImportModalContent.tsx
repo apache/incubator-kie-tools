@@ -40,7 +40,8 @@ import { useOnlineI18n } from "../i18n";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
-import { HelperText, HelperTextItem, Icon } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/src/components/HelperText";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 export interface AdvancedImportModalRef {
   open(): void;

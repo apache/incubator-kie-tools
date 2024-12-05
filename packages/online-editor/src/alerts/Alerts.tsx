@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
-import { AlertGroup } from "@patternfly/react-core";
+import { AlertGroup } from "@patternfly/react-core/src/components/Alert";
 
 type MapValueType<A> = A extends Map<any, infer V> ? V : never;
 

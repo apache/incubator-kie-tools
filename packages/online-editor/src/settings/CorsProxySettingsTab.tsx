@@ -25,7 +25,8 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useEnv } from "../env/hooks/EnvContext";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import { HelperText, HelperTextItem, ValidatedOptions } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/src/components/HelperText";
+import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 
 export function CorsProxySettingsTab() {
   const { env } = useEnv();
