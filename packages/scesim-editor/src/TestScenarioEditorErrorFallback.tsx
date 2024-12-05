@@ -24,7 +24,7 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStatePrimary,
+  EmptyStateActions,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
@@ -75,7 +75,7 @@ export function TestScenarioEditorErrorFallback({ error, resetErrorBoundary }: F
           ).replaceAll("\\n", "\n")}
         </ClipboardCopy>
         <br />
-        <EmptyStatePrimary>
+        <EmptyStateActions>
           <Button variant={ButtonVariant.link} onClick={resetToLastWorkingState}>
             {i18n.errorFallBack.lastActionButton}
           </Button>
@@ -86,7 +86,7 @@ export function TestScenarioEditorErrorFallback({ error, resetErrorBoundary }: F
               </Button>
             </a>
           )}
-        </EmptyStatePrimary>
+        </EmptyStateActions>
       </EmptyState>
     </Flex>
   );
