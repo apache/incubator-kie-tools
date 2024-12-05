@@ -24,6 +24,9 @@ import java.net.URL;
 import java.util.Optional;
 
 import io.smallrye.mutiny.Uni;
+import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.operators.multi.processors.BroadcastProcessor;
+import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClient;
@@ -41,6 +44,10 @@ import org.slf4j.LoggerFactory;
 public class JBPMDevuiJsonRPCService {
     private static final String DATA_INDEX_URL = "kogito.data-index.url";
 
+    private final BroadcastProcessor<String> processesStream = BroadcastProcessor.create();
+    private final BroadcastProcessor<String> userTaskStream = BroadcastProcessor.create();
+    private final BroadcastProcessor<String> jobsStreams = BroadcastProcessor.create();
+
     private static final Logger LOGGER = LoggerFactory.getLogger(JBPMDevuiJsonRPCService.class);
 
     public static final String PROCESS_INSTANCES = "ProcessInstances";
@@ -54,18 +61,26 @@ public class JBPMDevuiJsonRPCService {
     private WebClient dataIndexWebClient;
 
     private final Vertx vertx;
+    private final JBPMDevUIEventPublisher eventPublisher;
     private final FormsStorage formsStorage;
 
     @Inject
-    public JBPMDevuiJsonRPCService(Vertx vertx, FormsStorage formsStorage) {
+    public JBPMDevuiJsonRPCService(Vertx vertx, JBPMDevUIEventPublisher eventPublisher, FormsStorage formsStorage) {
         this.vertx = vertx;
+        this.eventPublisher = eventPublisher;
         this.formsStorage = formsStorage;
+        this.eventPublisher.setOnProcessEventListener(this::onProcessEvent);
+        this.eventPublisher.setOnTaskEventListener(this::onUserTaskEvent);
+        this.eventPublisher.setOnJobEventListener(this::onJobEvent);
     }
 
     @PostConstruct
     public void init() {
         Optional<String> dataIndexURL = ConfigProvider.getConfig().getOptionalValue(DATA_INDEX_URL, String.class);
         dataIndexURL.ifPresent(this::initDataIndexWebClient);
+        this.onProcessEvent();
+        this.onUserTaskEvent();
+        this.onJobEvent();
     }
 
     private void initDataIndexWebClient(String dataIndexURL) {
@@ -84,24 +99,43 @@ public class JBPMDevuiJsonRPCService {
                 .setSsl(url.getProtocol().compareToIgnoreCase("https") == 0);
     }
 
-    public Uni<String> queryProcessInstancesCount() {
-        return doQuery(ALL_PROCESS_INSTANCES_IDS_QUERY, PROCESS_INSTANCES);
+    public Multi<String> queryProcessInstancesCount() {
+        return processesStream;
     }
 
-    public Uni<String> queryTasksCount() {
-        return doQuery(ALL_TASKS_IDS_QUERY, USER_TASKS);
+    public Multi<String> queryTasksCount() {
+        return userTaskStream;
     }
 
-    public Uni<String> queryJobsCount() {
-        return doQuery(ALL_JOBS_IDS_QUERY, JOBS);
+    public Multi<String> queryJobsCount() {
+        return jobsStreams;
     }
 
-    private Uni<String> doQuery(String query, String graphModelName) {
+    private void onProcessEvent() {
+        doQuery(processesStream, ALL_PROCESS_INSTANCES_IDS_QUERY, PROCESS_INSTANCES);
+    }
+    private void onUserTaskEvent() {
+        doQuery(userTaskStream, ALL_TASKS_IDS_QUERY, USER_TASKS);
+    }
+    private void onJobEvent() {
+        doQuery(jobsStreams, ALL_JOBS_IDS_QUERY, JOBS);
+    }
+
+    private void doQuery(BroadcastProcessor<String> stream, String query, String graphModelName) {
+        LOGGER.warn("Query: " + graphModelName);
+        doQuery(query, graphModelName).toCompletionStage()
+                .thenAccept(result -> {
+            LOGGER.warn("Query: " + graphModelName + ". Received response: " + result);
+            stream.onNext(result);
+        });
+    }
+
+    private Future<String> doQuery(String query, String graphModelName) {
         if(dataIndexWebClient == null) {
             LOGGER.warn("Cannot perform '{}' query, dataIndexWebClient couldn't be set. Is DataIndex correctly? Please verify '{}' value", graphModelName, DATA_INDEX_URL);
-            return Uni.createFrom().item("-");
+            return Future.succeededFuture("-");
         }
-        return Uni.createFrom().completionStage(this.dataIndexWebClient.post("/graphql")
+        return this.dataIndexWebClient.post("/graphql")
                 .putHeader("content-type", "application/json")
                 .sendJson(new JsonObject(query))
                 .map(response -> {
@@ -110,7 +144,7 @@ public class JBPMDevuiJsonRPCService {
                         return String.valueOf(responseData.getJsonArray(graphModelName).size());
                     }
                     return "-";
-                }).toCompletionStage());
+                });
     }
 
     public Uni<String> getFormsCount() {
