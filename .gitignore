@@ -324,6 +324,7 @@ packages/scesim-marshaller/**/ts-gen
 !packages/sonataflow-image-common/test-resources/
 !packages/sonataflow-builder-image/test-resources/
 !packages/sonataflow-devmode-image/test-resources/
+!packages/sonataflow-management-console-image/test-resources/
 
 # kogito-images: excluding test-resources
 !packages/kogito-data-index-ephemeral-image/test-resources/
