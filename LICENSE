@@ -1038,8 +1038,7 @@ THIS SOFTWARE IS PROVIDED BY GARY COURT "AS IS" AND ANY EXPRESS OR IMPLIED WARRA
 The views and conclusions contained in the software and documentation are those of the authors and should not be interpreted as representing official policies, either expressed or implied, of Gary Court.
 
 ---------------------------------------------------------------------------------
-for packages/dmn-editor-standalone/tests-e2e/__fixtures__/files/scorecard.pmml
-    packages/online-editor/static/samples/Sample.pmml
+for packages/online-editor/static/samples/Sample.pmml
     packages/pmml-editor-marshaller/tests/marshaller/TestData_AnomalyDetectionModel.ts
     packages/pmml-editor-marshaller/tests/marshaller/TestData_AssociationModel.ts
     packages/pmml-editor-marshaller/tests/marshaller/TestData_BaselineModel.ts
