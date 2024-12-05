@@ -17,27 +17,30 @@
 # under the License.
 #
 
-name: "CI :: License headers"
+name: "CI :: Notice Copyright year"
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: ["**"]
-    types: [opened, reopened, ready_for_review, synchronize]
+  schedule:
+    - cron '* * 1 1 *'
 
 jobs:
-  check:
+  keepNoticeCopyrightYearUpToDate:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Download Apache RAT
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Update NOTICE Copyright year
         run: |
-          curl -LO https://repo1.maven.org/maven2/org/apache/rat/apache-rat/0.16.1/apache-rat-0.16.1.jar
+          sed -i s/"Copyright 2023-$(($(date +%Y)-1)) The Apache Software Foundation"/"Copyright 2023-$(date +%Y) The Apache Software Foundation"/g NOTICE
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          add-paths: |
+            NOTICE
+          branch: |
+            notice-copyright-year
+          commit-message: |
+            "Update NOTICE Copyright $(date +%Y)"
 
-      - name: Run Apache RAT
-        run: |
-          java -jar apache-rat-0.16.1.jar -d . -E .rat-excludes | grep "== File:" && echo "The files listed above are missing license headers." && exit 1 || echo "All files have license headers."
+            Please delete the notice-copyright-year branch once the pull request is merged
