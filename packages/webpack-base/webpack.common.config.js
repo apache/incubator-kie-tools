@@ -121,6 +121,7 @@ module.exports = (webpackEnv) => {
         child_process: false,
         net: false,
         buffer: require.resolve("buffer/"),
+        stream: require.resolve("stream-browserify"),
         querystring: require.resolve("querystring-es3"),
       },
       extensions: [".tsx", ".ts", ".js", ".jsx"],

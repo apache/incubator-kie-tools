@@ -23,7 +23,7 @@ const fs = require("fs");
 
 // Set version for the Chart (and its dependencies) and Subcharts
 console.log("[runtime-tools-consoles-helm-chart install.js] Updating Chart.yaml files...");
-const chartFiles = ["src/Chart.yaml", "src/charts/task-console/Chart.yaml", "src/charts/management-console/Chart.yaml"];
+const chartFiles = ["src/Chart.yaml", "src/charts/management-console/Chart.yaml"];
 chartFiles.forEach((file) => {
   const doc = yaml.parseDocument(fs.readFileSync(file, "utf8"));
   if (file == "src/Chart.yaml") {
@@ -33,7 +33,6 @@ chartFiles.forEach((file) => {
   doc.setIn(["appVersion"], env.runtimeToolsConsolesHelmChart.tag);
   if (doc.getIn(["dependencies"])) {
     doc.setIn(["dependencies", "0", "version"], env.runtimeToolsConsolesHelmChart.tag);
-    doc.setIn(["dependencies", "1", "version"], env.runtimeToolsConsolesHelmChart.tag);
   }
   console.log(yaml.stringify(doc));
   fs.writeFileSync(file, yaml.stringify(doc), "utf8");
@@ -41,7 +40,7 @@ chartFiles.forEach((file) => {
 
 // Set tags used for images
 console.log("[runtime-tools-consoles-helm-chart install.js] Updating values.yaml files...");
-const valuesFiles = ["src/charts/task-console/values.yaml", "src/charts/management-console/values.yaml"];
+const valuesFiles = ["src/charts/management-console/values.yaml"];
 valuesFiles.forEach((file) => {
   const doc = yaml.parseDocument(fs.readFileSync(file, "utf8"));
   doc.setIn(["image", "tag"], env.root.streamName);

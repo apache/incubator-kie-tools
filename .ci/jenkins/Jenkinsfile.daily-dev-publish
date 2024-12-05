@@ -145,6 +145,11 @@ pipeline {
         SONATAFLOW_DEVMODE_IMAGE__name = 'incubator-kie-sonataflow-devmode'
         SONATAFLOW_DEVMODE_IMAGE__buildTag = "${params.BRANCH_NAME}"
 
+        SONATAFLOW_MANAGEMENT_CONSOLE__registry = 'docker.io'
+        SONATAFLOW_MANAGEMENT_CONSOLE__account = 'apache'
+        SONATAFLOW_MANAGEMENT_CONSOLE__name = 'incubator-kie-sonataflow-management-console'
+        SONATAFLOW_MANAGEMENT_CONSOLE__buildTag = "${params.BRANCH_NAME}"
+
         SONATAFLOW_OPERATOR__registry = 'docker.io'
         SONATAFLOW_OPERATOR__account = 'apache'
         SONATAFLOW_OPERATOR__name = 'incubator-kie-sonataflow-operator'
@@ -266,6 +271,21 @@ pipeline {
                         "${env.SONATAFLOW_DEVMODE_IMAGE__account}",
                         "${env.SONATAFLOW_DEVMODE_IMAGE__name}",
                         "${env.SONATAFLOW_DEVMODE_IMAGE__buildTag}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Push sonataflow-management-console to Docker Hub') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.SONATAFLOW_MANAGEMENT_CONSOLE__registry}",
+                        "${env.SONATAFLOW_MANAGEMENT_CONSOLE__account}",
+                        "${env.SONATAFLOW_MANAGEMENT_CONSOLE__name}",
+                        "${env.SONATAFLOW_MANAGEMENT_CONSOLE__buildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
@@ -596,17 +616,13 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.mavenDeploySnapshotsCredentialsId}", usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
-                            configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
-                                sh """#!/bin/bash -el
-                                export KIE_TOOLS_BUILD__mavenDeploySkip=false
-                                pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
-                                pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Dapache.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
-                                pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Dapache.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
-                                pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Drevision=999-SNAPSHOT >> .mvn/maven.config'
-                                pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... build:prod
-                                """.trim()
-                            }
+                        configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsNightlyConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
+                            sh """#!/bin/bash -el
+                            export KIE_TOOLS_BUILD__mavenDeploySkip=false
+                            pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
+                            pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Drevision=999-SNAPSHOT >> .mvn/maven.config'
+                            pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... build:prod
+                            """.trim()
                         }
                     }
                 }

@@ -16,6 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export { default as JobsManagementPage } from "./JobsManagementPage/JobsManagementPage";
+export { default as JobsPage } from "./JobsPage/JobsPage";
 export { default as ProcessListPage } from "./ProcessListPage/ProcessListPage";
 export { default as ProcessDetailsPage } from "./ProcessDetailsPage/ProcessDetailsPage";
+export { default as TaskDetailsPage } from "./TaskDetailsPage/TaskDetailsPage";
+export { default as TasksPage } from "./TasksPage/TasksPage";

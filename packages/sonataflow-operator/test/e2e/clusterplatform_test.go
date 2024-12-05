@@ -29,8 +29,8 @@ import (
 	"time"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/controllers/platform/services"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/controllers/profiles/common/constants"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/platform/services"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/constants"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/test"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/test/utils"
 
@@ -43,7 +43,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Validate a clusterplatform", Ordered, func() {
+var _ = Describe("Cluster Platform Use Cases :: ", Label("cluster"), Ordered, func() {
 
 	var (
 		projectDir       string
@@ -52,12 +52,12 @@ var _ = Describe("Validate a clusterplatform", Ordered, func() {
 	)
 
 	BeforeEach(func() {
-		targetNamespace = fmt.Sprintf("test-%d", rand.Intn(1024)+1)
+		targetNamespace = fmt.Sprintf("test-%d", rand.Intn(randomIntRange)+1)
 		cmd := exec.Command("kubectl", "create", "namespace", targetNamespace)
 		_, err := utils.Run(cmd)
 		Expect(err).NotTo(HaveOccurred())
 
-		targetNamespace2 = fmt.Sprintf("test-%d", rand.Intn(1024)+1)
+		targetNamespace2 = fmt.Sprintf("test-%d", rand.Intn(randomIntRange)+1)
 		cmd = exec.Command("kubectl", "create", "namespace", targetNamespace2)
 		_, err = utils.Run(cmd)
 		Expect(err).NotTo(HaveOccurred())
@@ -76,6 +76,11 @@ var _ = Describe("Validate a clusterplatform", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 			}
 		}
+
+		// Remove SonataFlowClusterPlatform created in the last run
+		cmd := exec.Command("kubectl", "delete", "sonataflowclusterplatform", "--all", "--wait")
+		_, err := utils.Run(cmd)
+		Expect(err).NotTo(HaveOccurred())
 	})
 	var _ = Context("with supporting services enabled", func() {
 		DescribeTable("against a platform in a separate namespace", func(testcaseDir string, profile string, persistenceType string, withServices bool) {
@@ -83,8 +88,8 @@ var _ = Describe("Validate a clusterplatform", Ordered, func() {
 			var manifests []byte
 			EventuallyWithOffset(1, func() error {
 				var err error
-				cmd := exec.Command("kubectl", "kustomize", filepath.Join(projectDir,
-					test.GetSonataFlowE2EPlatformServicesDirectory(), profile, clusterWideEphemeral))
+				cmd := exec.Command("kubectl", "kustomize",
+					test.GetPathFromE2EDirectory("platform", "services", profile, clusterWideEphemeral))
 				manifests, err = utils.Run(cmd)
 				return err
 			}, time.Minute, time.Second).Should(Succeed())
@@ -94,7 +99,7 @@ var _ = Describe("Validate a clusterplatform", Ordered, func() {
 			_, err := utils.Run(cmd)
 			Expect(err).NotTo(HaveOccurred())
 
-			By("Wait for SonatatFlowPlatform CR in " + targetNamespace + " to be ready")
+			By("Wait for SonataFlowPlatform CR in " + targetNamespace + " to be ready")
 			// wait for platform to be ready
 			EventuallyWithOffset(1, func() error {
 				cmd = exec.Command("kubectl", "wait", "sfplatform", "-n", targetNamespace, "sonataflow-platform", "--for", "condition=Succeed", "--timeout=5s")
@@ -119,7 +124,7 @@ var _ = Describe("Validate a clusterplatform", Ordered, func() {
 			}, 20*time.Minute, 5).Should(Succeed())
 
 			if withServices {
-				By("Deploy SonatatFlowPlatform CR with services configured in " + targetNamespace2)
+				By("Deploy SonataFlowPlatform CR with services configured in " + targetNamespace2)
 				EventuallyWithOffset(1, func() error {
 					var err error
 					cmd := exec.Command("kubectl", "kustomize", filepath.Join(projectDir,
@@ -151,18 +156,24 @@ var _ = Describe("Validate a clusterplatform", Ordered, func() {
 					return returnedValue
 				}, 20*time.Minute, 5).Should(Equal([]byte("''")))
 
-				dataIndexServiceUrl := services.GenerateServiceURL(constants.KogitoServiceURLProtocol, targetNamespace2, "sonataflow-platform-"+constants.DataIndexServiceName)
-				jobServiceUrl := services.GenerateServiceURL(constants.KogitoServiceURLProtocol, targetNamespace2, "sonataflow-platform-"+constants.JobServiceName)
+				By("Replacing the image with a prebuilt one and rollout")
+				EventuallyWithOffset(1, func() error {
+					return kubectlPatchSonataFlowImageAndRollout(targetNamespace2, prebuiltWorkflows.CallBack.Name, prebuiltWorkflows.CallBack.Tag)
+				}, 3*time.Minute, time.Second).Should(Succeed())
+
+				By("Waiting for Data Index and Jobs Service URLs")
+				dataIndexServiceUrl := services.GenerateServiceURL(constants.DefaultHTTPProtocol, targetNamespace2, "sonataflow-platform-"+constants.DataIndexServiceName)
+				jobServiceUrl := services.GenerateServiceURL(constants.DefaultHTTPProtocol, targetNamespace2, "sonataflow-platform-"+constants.JobServiceName)
 				EventuallyWithOffset(1, func() []byte {
-					cmd = exec.Command("kubectl", "get", "sf", "-n", targetNamespace2, "callbackstatetimeouts", "-o", "jsonpath='{.status.services.dataIndexRef.url}'")
+					cmd = exec.Command("kubectl", "get", "sf", "-n", targetNamespace2, prebuiltWorkflows.CallBack.Name, "-o", "jsonpath='{.status.services.dataIndexRef.url}'")
 					returnedValue, _ := utils.Run(cmd)
 					return returnedValue
-				}, 20*time.Minute, 5).Should(Equal([]byte("'" + dataIndexServiceUrl + "'")))
+				}, 3*time.Minute, 5).Should(Equal([]byte("'" + dataIndexServiceUrl + "'")))
 				EventuallyWithOffset(1, func() []byte {
-					cmd = exec.Command("kubectl", "get", "sf", "-n", targetNamespace2, "callbackstatetimeouts", "-o", "jsonpath='{.status.services.jobServiceRef.url}'")
+					cmd = exec.Command("kubectl", "get", "sf", "-n", targetNamespace2, prebuiltWorkflows.CallBack.Name, "-o", "jsonpath='{.status.services.jobServiceRef.url}'")
 					returnedValue, _ := utils.Run(cmd)
 					return returnedValue
-				}, 20*time.Minute, 5).Should(Equal([]byte("'" + jobServiceUrl + "'")))
+				}, 3*time.Minute, 5).Should(Equal([]byte("'" + jobServiceUrl + "'")))
 			} else {
 				EventuallyWithOffset(1, func() error {
 					var err error
@@ -178,8 +189,8 @@ var _ = Describe("Validate a clusterplatform", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				By("Wait for SonatatFlowPlatform CR in " + targetNamespace2 + " to be ready")
-				dataIndexServiceUrl := services.GenerateServiceURL(constants.KogitoServiceURLProtocol, targetNamespace, "sonataflow-platform-"+constants.DataIndexServiceName)
-				jobServiceUrl := services.GenerateServiceURL(constants.KogitoServiceURLProtocol, targetNamespace, "sonataflow-platform-"+constants.JobServiceName)
+				dataIndexServiceUrl := services.GenerateServiceURL(constants.DefaultHTTPProtocol, targetNamespace, "sonataflow-platform-"+constants.DataIndexServiceName)
+				jobServiceUrl := services.GenerateServiceURL(constants.DefaultHTTPProtocol, targetNamespace, "sonataflow-platform-"+constants.JobServiceName)
 				// wait for platform to be ready
 				EventuallyWithOffset(1, func() error {
 					cmd = exec.Command("kubectl", "wait", "sfplatform", "-n", targetNamespace2, "sonataflow-platform", "--for", "condition=Succeed", "--timeout=5s")
@@ -196,23 +207,31 @@ var _ = Describe("Validate a clusterplatform", Ordered, func() {
 					returnedValue, _ := utils.Run(cmd)
 					return returnedValue
 				}, 20*time.Minute, 5).Should(Equal([]byte("'" + jobServiceUrl + "'")))
+
+				By("Replacing the image with a prebuilt one and rollout")
+				EventuallyWithOffset(1, func() error {
+					return kubectlPatchSonataFlowImageAndRollout(targetNamespace2, prebuiltWorkflows.CallBack.Name, prebuiltWorkflows.CallBack.Tag)
+				}, 3*time.Minute, time.Second).Should(Succeed())
+
+				By("Waiting for Data Index and Jobs Service URLs")
 				EventuallyWithOffset(1, func() []byte {
-					cmd = exec.Command("kubectl", "get", "sf", "-n", targetNamespace2, "callbackstatetimeouts", "-o", "jsonpath='{.status.services.dataIndexRef.url}'")
+					cmd = exec.Command("kubectl", "get", "sf", "-n", targetNamespace2, prebuiltWorkflows.CallBack.Name, "-o", "jsonpath='{.status.services.dataIndexRef.url}'")
 					returnedValue, _ := utils.Run(cmd)
 					return returnedValue
-				}, 20*time.Minute, 5).Should(Equal([]byte("'" + dataIndexServiceUrl + "'")))
+				}, 3*time.Minute, 5).Should(Equal([]byte("'" + dataIndexServiceUrl + "'")))
 				EventuallyWithOffset(1, func() []byte {
-					cmd = exec.Command("kubectl", "get", "sf", "-n", targetNamespace2, "callbackstatetimeouts", "-o", "jsonpath='{.status.services.jobServiceRef.url}'")
+					cmd = exec.Command("kubectl", "get", "sf", "-n", targetNamespace2, prebuiltWorkflows.CallBack.Name, "-o", "jsonpath='{.status.services.jobServiceRef.url}'")
 					returnedValue, _ := utils.Run(cmd)
 					return returnedValue
-				}, 20*time.Minute, 5).Should(Equal([]byte("'" + jobServiceUrl + "'")))
+				}, 3*time.Minute, 5).Should(Equal([]byte("'" + jobServiceUrl + "'")))
 			}
 			cmd = exec.Command("kubectl", "delete", "SonataFlowClusterPlatform", "cluster", "--wait")
 			_, err = utils.Run(cmd)
 			Expect(err).NotTo(HaveOccurred())
 		},
-			Entry("without services configured", test.GetSonataFlowE2EPlatformNoServicesDirectory(), metadata.PreviewProfile.String(), ephemeral, false),
-			Entry("with services configured", test.GetSonataFlowE2EPlatformServicesDirectory(), metadata.PreviewProfile.String(), "ephemeral-with-workflow", true),
+			Entry("without services configured", test.GetPathFromE2EDirectory("platform", "noservices"), metadata.GitOpsProfile.String(), ephemeral, false),
+			Entry("with services configured and platform broker", test.GetPathFromE2EDirectory("platform", "services"), metadata.GitOpsProfile.String(), "ephemeral-with-workflow", true),
+			Entry("with services configured and no broker", test.GetPathFromE2EDirectory("platform", "services"), metadata.GitOpsProfile.String(), "ephemeral-with-workflow-no-broker", true),
 		)
 
 		DescribeTable("against a platform in a separate namespace", func(testcaseDir string, profile string, persistenceType string) {
@@ -220,8 +239,7 @@ var _ = Describe("Validate a clusterplatform", Ordered, func() {
 			var manifests []byte
 			EventuallyWithOffset(1, func() error {
 				var err error
-				cmd := exec.Command("kubectl", "kustomize", filepath.Join(projectDir,
-					test.GetSonataFlowE2EPlatformServicesDirectory(), profile, clusterWideEphemeral))
+				cmd := exec.Command("kubectl", "kustomize", test.GetPathFromE2EDirectory("platform", "services", profile, clusterWideEphemeral))
 				manifests, err = utils.Run(cmd)
 				return err
 			}, time.Minute, time.Second).Should(Succeed())
@@ -290,8 +308,8 @@ var _ = Describe("Validate a clusterplatform", Ordered, func() {
 			_, err = utils.Run(cmd)
 			Expect(err).NotTo(HaveOccurred())
 		},
-			Entry("with only Data Index configured", test.GetSonataFlowE2EPlatformServicesDirectory(), metadata.PreviewProfile.String(), ephemeralDataIndex),
-			Entry("with only Job Service configured", test.GetSonataFlowE2EPlatformServicesDirectory(), metadata.PreviewProfile.String(), ephemeralJobService),
+			Entry("with only Data Index configured", test.GetPathFromE2EDirectory("platform", "services"), metadata.GitOpsProfile.String(), ephemeralDataIndex),
+			Entry("with only Job Service configured", test.GetPathFromE2EDirectory("platform", "services"), metadata.GitOpsProfile.String(), ephemeralJobService),
 		)
 	})
 })

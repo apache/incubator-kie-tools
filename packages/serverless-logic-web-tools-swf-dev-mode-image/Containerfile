@@ -34,7 +34,6 @@ RUN chown kogito /home/kogito/.m2 && \
   mvn clean package \
   quarkus:go-offline \
   -B \
-  -ntp \
   -s /home/kogito/.m2/settings.xml \
   -Dmaven.test.skip \
   -Dmaven.repo.local=/home/kogito/.m2/repository \

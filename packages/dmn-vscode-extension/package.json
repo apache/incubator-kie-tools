@@ -25,7 +25,6 @@
     "watch": "export WEBPACK__sourceMaps=true; WEBPACK__minimize=false; webpack --env dev"
   },
   "dependencies": {
-    "@kie-tools-core/backend": "workspace:*",
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
@@ -48,7 +47,6 @@
     "copy-webpack-plugin": "^11.0.0",
     "process": "^0.11.10",
     "rimraf": "^3.0.2",
-    "stream-browserify": "3.0.0",
     "webpack": "^5.94.0",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1",

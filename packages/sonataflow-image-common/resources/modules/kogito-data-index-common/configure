@@ -26,4 +26,6 @@ mkdir -p "${KOGITO_HOME}"/launch
 mkdir -p "${KOGITO_HOME}"/data/protobufs/
 
 cp -v "${ADDED_DIR}"/kogito-data-index-common.sh "${KOGITO_HOME}"/launch
-chmod +x-w "${KOGITO_HOME}"/launch/kogito-data-index-common.sh
+
+chown -R ${USER_ID}:0 "${KOGITO_HOME}"
+chmod -R ug+rwX "${KOGITO_HOME}"

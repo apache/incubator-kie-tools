@@ -46,6 +46,7 @@ func TestNewRootCommand(t *testing.T) {
 			"deploy",
 			"quarkus",
 			"run",
+			"specs",
 			"undeploy",
 			"gen-manifest",
 			"version",

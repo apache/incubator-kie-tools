@@ -30,7 +30,6 @@
     "watch": "export WEBPACK__sourceMaps=true; WEBPACK__minimize=false; webpack --env dev"
   },
   "dependencies": {
-    "@kie-tools-core/backend": "workspace:*",
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",
@@ -80,7 +79,7 @@
     "sanitize-filename-ts": "^1.0.2",
     "selenium-webdriver": "^4.15.0",
     "typescript": "^5.5.3",
-    "vscode-extension-tester": "^8.3.1",
+    "vscode-extension-tester": "^8.8.0",
     "webpack": "^5.94.0",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1",
