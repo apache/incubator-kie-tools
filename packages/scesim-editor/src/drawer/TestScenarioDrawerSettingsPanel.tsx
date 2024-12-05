@@ -123,7 +123,7 @@ function TestScenarioDrawerSettingsPanel() {
           <TextInput
             aria-label="rule-session"
             className={"kie-scesim-editor-drawer-settings--text-input"}
-            onChange={(_event, value) => onUpdateSettingField("dmoSession", value)}
+            onChange={(_event, value) => updateSettingsField("dmoSession", value)}
             placeholder={i18n.drawer.settings.kieSessionRulePlaceholder}
             type="text"
             value={settingsModel.dmoSession?.__$$text}
