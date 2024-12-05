@@ -23,3 +23,4 @@ export * from "./DmnBuiltInDataType";
 export * from "./DmnDataType";
 export * from "./BoxedExpression";
 export * from "./BeeTable";
+export * from "./ExpressionChange";

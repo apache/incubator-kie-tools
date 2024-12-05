@@ -21,11 +21,13 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
 import {
+  Action,
   BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BoxedLiteral,
   DmnBuiltInDataType,
+  ExpressionChangedArgs,
   Normalized,
 } from "../../api";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
@@ -63,10 +65,17 @@ export function LiteralExpression({
 
   const setValue = useCallback(
     (value: string) => {
-      setExpression((prev: Normalized<BoxedLiteral>) => {
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedLiteral> = { ...literalExpression, text: { __$$text: value } };
-        return ret;
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedLiteral>) => {
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedLiteral> = { ...literalExpression, text: { __$$text: value } };
+          return ret;
+        },
+        expressionChangedArgs: {
+          action: Action.LiteralTextExpressionChanged,
+          from: literalExpression?.text?.__$$text ?? "",
+          to: value,
+        },
       });
     },
     [literalExpression, setExpression]
@@ -86,15 +95,35 @@ export function LiteralExpression({
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression(
-        (): Normalized<BoxedLiteral> => ({
+      const expressionChangedArgs: ExpressionChangedArgs = {
+        action: Action.VariableChanged,
+        variableUuid: expressionHolderId,
+        typeChange:
+          typeRef !== literalExpression["@_typeRef"]
+            ? {
+                from: literalExpression["@_typeRef"] ?? "",
+                to: typeRef,
+              }
+            : undefined,
+        nameChange:
+          name !== literalExpression["@_label"]
+            ? {
+                from: literalExpression["@_label"] ?? "",
+                to: name,
+              }
+            : undefined,
+      };
+
+      setExpression({
+        setExpressionAction: (): Normalized<BoxedLiteral> => ({
           ...literalExpression,
           "@_label": name,
           "@_typeRef": typeRef,
-        })
-      );
+        }),
+        expressionChangedArgs,
+      });
     },
-    [literalExpression, setExpression]
+    [expressionHolderId, literalExpression, setExpression]
   );
 
   const setLiteralExpressionWidth = useCallback(

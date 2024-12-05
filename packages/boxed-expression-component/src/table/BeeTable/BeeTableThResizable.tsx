@@ -214,6 +214,7 @@ export function BeeTableThResizable<R extends object>({
             selectedDataType={column.dataType}
             onVariableUpdated={onExpressionHeaderUpdated}
             appendTo={getAppendToElement}
+            variableUuid={column.id}
           >
             {headerCellInfo}
           </ExpressionVariableMenu>

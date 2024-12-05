@@ -21,6 +21,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import * as ReactTable from "react-table";
 import {
+  Action,
   BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
@@ -29,6 +30,7 @@ import {
   BoxedContext,
   BoxedExpression,
   DmnBuiltInDataType,
+  ExpressionChangedArgs,
   generateUuid,
   getNextAvailablePrefixedName,
   Normalized,
@@ -185,18 +187,40 @@ export function ContextExpression({
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev: Normalized<BoxedContext>) => {
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedContext> = {
-          ...prev,
-          "@_label": name,
-          "@_typeRef": typeRef,
-        };
+      const expressionChangedArgs: ExpressionChangedArgs = {
+        action: Action.VariableChanged,
+        variableUuid: expressionHolderId,
+        typeChange:
+          typeRef !== contextExpression["@_typeRef"]
+            ? {
+                from: contextExpression["@_typeRef"] ?? "",
+                to: typeRef,
+              }
+            : undefined,
+        nameChange:
+          name !== contextExpression["@_label"]
+            ? {
+                from: contextExpression["@_label"] ?? "",
+                to: name,
+              }
+            : undefined,
+      };
 
-        return ret;
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedContext>) => {
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedContext> = {
+            ...prev,
+            "@_label": name,
+            "@_typeRef": typeRef,
+          };
+
+          return ret;
+        },
+        expressionChangedArgs,
       });
     },
-    [setExpression]
+    [contextExpression, expressionHolderId, setExpression]
   );
 
   const headerVisibility = useMemo(() => {
@@ -204,23 +228,25 @@ export function ContextExpression({
   }, [isNested]);
 
   const updateVariable = useCallback(
-    (index: number, { expression, variable }: ExpressionWithVariable) => {
-      setExpression((prev: Normalized<BoxedContext>) => {
-        const contextEntries = [...(prev.contextEntry ?? [])];
+    (index: number, { expression, variable }: ExpressionWithVariable, variableChangedArgs) => {
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedContext>) => {
+          const contextEntries = [...(prev.contextEntry ?? [])];
+          contextEntries[index] = {
+            ...contextEntries[index],
+            expression: expression ?? undefined!, // SPEC DISCREPANCY
+            variable: variable,
+          };
 
-        contextEntries[index] = {
-          ...contextEntries[index],
-          expression: expression ?? undefined!, // SPEC DISCREPANCY
-          variable: variable,
-        };
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedContext> = {
+            ...prev,
+            contextEntry: contextEntries,
+          };
 
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedContext> = {
-          ...prev,
-          contextEntry: contextEntries,
-        };
-
-        return ret;
+          return ret;
+        },
+        expressionChangedArgs: variableChangedArgs,
       });
     },
     [setExpression]
@@ -297,28 +323,31 @@ export function ContextExpression({
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number }) => {
-      setExpression((prev: Normalized<BoxedContext>) => {
-        const newContextEntries = [...(prev.contextEntry ?? [])];
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedContext>) => {
+          const newContextEntries = [...(prev.contextEntry ?? [])];
 
-        const newEntries = [];
-        const names = newContextEntries.map((e) => e.variable?.["@_name"] ?? "").filter((e) => e !== "");
-        for (let i = 0; i < args.rowsCount; i++) {
-          const name = getNextAvailablePrefixedName(names, "ContextEntry");
-          names.push(name);
-          newEntries.push(getDefaultContextEntry(name));
-        }
+          const newEntries = [];
+          const names = newContextEntries.map((e) => e.variable?.["@_name"] ?? "").filter((e) => e !== "");
+          for (let i = 0; i < args.rowsCount; i++) {
+            const name = getNextAvailablePrefixedName(names, "ContextEntry");
+            names.push(name);
+            newEntries.push(getDefaultContextEntry(name));
+          }
 
-        for (const newEntry of newEntries) {
-          newContextEntries.splice(args.beforeIndex, 0, newEntry);
-        }
+          for (const newEntry of newEntries) {
+            newContextEntries.splice(args.beforeIndex, 0, newEntry);
+          }
 
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedContext> = {
-          ...prev,
-          contextEntry: newContextEntries,
-        };
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedContext> = {
+            ...prev,
+            contextEntry: newContextEntries,
+          };
 
-        return ret;
+          return ret;
+        },
+        expressionChangedArgs: { action: Action.RowsAdded, rowIndex: args.beforeIndex, rowsCount: args.rowsCount },
       });
     },
     [getDefaultContextEntry, setExpression]
@@ -328,28 +357,31 @@ export function ContextExpression({
     (args: { rowIndex: number }) => {
       let oldExpression: Normalized<BoxedExpression> | undefined;
 
-      setExpression((prev: Normalized<BoxedContext>) => {
-        const newContextEntries = [...(prev.contextEntry ?? [])];
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedContext>) => {
+          const newContextEntries = [...(prev.contextEntry ?? [])];
 
-        const { isResultOperation: isDeletingResult, entryIndex } = solveResultAndEntriesIndex({
-          contextEntries: newContextEntries,
-          rowIndex: args.rowIndex,
-        });
+          const { isResultOperation: isDeletingResult, entryIndex } = solveResultAndEntriesIndex({
+            contextEntries: newContextEntries,
+            rowIndex: args.rowIndex,
+          });
 
-        if (isDeletingResult) {
-          throw new Error("It's not possible to delete the <result> row");
-        } else {
-          oldExpression = newContextEntries[entryIndex]?.expression;
-          newContextEntries.splice(entryIndex, 1);
-        }
+          if (isDeletingResult) {
+            throw new Error("It's not possible to delete the <result> row");
+          } else {
+            oldExpression = newContextEntries[entryIndex]?.expression;
+            newContextEntries.splice(entryIndex, 1);
+          }
 
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedContext> = {
-          ...prev,
-          contextEntry: newContextEntries,
-        };
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedContext> = {
+            ...prev,
+            contextEntry: newContextEntries,
+          };
 
-        return ret;
+          return ret;
+        },
+        expressionChangedArgs: { action: Action.RowRemoved, rowIndex: args.rowIndex },
       });
 
       setWidthsById(({ newMap }) => {
@@ -365,39 +397,42 @@ export function ContextExpression({
     (args: { rowIndex: number }) => {
       let oldExpression: Normalized<BoxedExpression> | undefined;
 
-      setExpression((prev: Normalized<BoxedContext>) => {
-        const newContextEntries = [...(prev.contextEntry ?? [])];
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedContext>) => {
+          const newContextEntries = [...(prev.contextEntry ?? [])];
 
-        const {
-          isResultOperation: isResettingResult,
-          hasResultEntry: hasResultExpression,
-          resultIndex,
-          entryIndex,
-        } = solveResultAndEntriesIndex({
-          contextEntries: newContextEntries,
-          rowIndex: args.rowIndex,
-        });
+          const {
+            isResultOperation: isResettingResult,
+            hasResultEntry: hasResultExpression,
+            resultIndex,
+            entryIndex,
+          } = solveResultAndEntriesIndex({
+            contextEntries: newContextEntries,
+            rowIndex: args.rowIndex,
+          });
 
-        if (isResettingResult) {
-          if (hasResultExpression) {
-            oldExpression = newContextEntries[resultIndex]?.expression;
-            newContextEntries.splice(resultIndex, 1);
+          if (isResettingResult) {
+            if (hasResultExpression) {
+              oldExpression = newContextEntries[resultIndex]?.expression;
+              newContextEntries.splice(resultIndex, 1);
+            } else {
+              // ignore
+            }
           } else {
-            // ignore
+            oldExpression = newContextEntries[entryIndex]?.expression;
+            const defaultContextEntry = getDefaultContextEntry(newContextEntries[entryIndex]?.variable?.["@_name"]);
+            newContextEntries.splice(entryIndex, 1, defaultContextEntry);
           }
-        } else {
-          oldExpression = newContextEntries[entryIndex]?.expression;
-          const defaultContextEntry = getDefaultContextEntry(newContextEntries[entryIndex]?.variable?.["@_name"]);
-          newContextEntries.splice(entryIndex, 1, defaultContextEntry);
-        }
 
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedContext> = {
-          ...prev,
-          contextEntry: newContextEntries,
-        };
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedContext> = {
+            ...prev,
+            contextEntry: newContextEntries,
+          };
 
-        return ret;
+          return ret;
+        },
+        expressionChangedArgs: { action: Action.RowReset, rowIndex: args.rowIndex },
       });
 
       setWidthsById(({ newMap }) => {

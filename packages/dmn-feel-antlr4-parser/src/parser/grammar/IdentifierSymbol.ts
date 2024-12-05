@@ -19,37 +19,50 @@
 
 import { BaseSymbol } from "./BaseSymbol";
 import { Type } from "./Type";
-
 import { FeelSyntacticSymbolNature } from "../FeelSyntacticSymbolNature";
-import { Variable } from "../Variable";
-import { Scope } from "./Scope";
+import { Identifier } from "../Identifier";
 
-export class VariableSymbol extends BaseSymbol {
+/**
+ * Defines a symbol that represents a variable, property or any other known symbol that is not a {@link FunctionSymbol}.
+ */
+export class IdentifierSymbol extends BaseSymbol {
   private readonly _symbolType: FeelSyntacticSymbolNature | undefined;
-  private readonly _variableSource: Variable | undefined;
+  private readonly _symbolSource: Identifier | undefined;
   private readonly _allowDynamicVariables: boolean | undefined;
 
   constructor(
     id?: string,
     type?: Type,
     variableType?: FeelSyntacticSymbolNature,
-    variableSource?: Variable,
+    variableSource?: Identifier,
     allowDynamicVariables?: boolean
   ) {
     super(id, type);
     this._symbolType = variableType;
-    this._variableSource = variableSource;
+    this._symbolSource = variableSource;
     this._allowDynamicVariables = allowDynamicVariables;
   }
 
+  /**
+   * The nature of the symbol. See {@link FeelSyntacticSymbolNature}.
+   */
   get symbolType(): FeelSyntacticSymbolNature | undefined {
     return this._symbolType;
   }
 
-  get variableSource(): Variable | undefined {
-    return this._variableSource;
+  /**
+   * The source that originated this symbol.
+   */
+  get symbolSource(): Identifier | undefined {
+    return this._symbolSource;
   }
 
+  /**
+   * If it is a symbol where the context allow dynamic variables.
+   * Dynamic variables are variables that are validate during runtime and the parser can not determine if they are
+   * valid or not.
+   * See {@link https://github.com/apache/incubator-kie-tools/pull/2296}
+   */
   get allowDynamicVariables(): boolean | undefined {
     return this._allowDynamicVariables;
   }

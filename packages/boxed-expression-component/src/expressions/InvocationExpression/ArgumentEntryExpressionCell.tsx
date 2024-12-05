@@ -46,21 +46,24 @@ export const ArgumentEntryExpressionCell: React.FunctionComponent<
   }, [beeGwtService, columnIndex, expression, isActive]);
 
   const onSetExpression = useCallback<OnSetExpression>(
-    ({ getNewExpression }) => {
-      setExpression((prev: Normalized<BoxedInvocation>) => {
-        const newBindings = [...(prev.binding ?? [])];
-        newBindings[index] = {
-          ...newBindings[index],
-          expression: getNewExpression(newBindings[index]?.expression ?? undefined!),
-        };
+    ({ getNewExpression, expressionChangedArgs }) => {
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedInvocation>) => {
+          const newBindings = [...(prev.binding ?? [])];
+          newBindings[index] = {
+            ...newBindings[index],
+            expression: getNewExpression(newBindings[index]?.expression ?? undefined!),
+          };
 
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedInvocation> = {
-          ...prev,
-          binding: newBindings,
-        };
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedInvocation> = {
+            ...prev,
+            binding: newBindings,
+          };
 
-        return ret;
+          return ret;
+        },
+        expressionChangedArgs,
       });
     },
     [index, setExpression]

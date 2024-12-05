@@ -18,21 +18,23 @@
  */
 
 import { BoxedExpression } from "@kie-tools/boxed-expression-component/dist/api";
-import {
-  DMN15__tDefinitions,
-  DMN15__tFunctionDefinition,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { renameDrgElement } from "./renameNode";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller/dist";
+import { setDrgElementExpression } from "./setDrgElementExpression";
+import { updateDrgElementType } from "./updateDrgElementType";
 
 export function updateExpression({
   definitions,
   expression,
   drgElementIndex,
+  externalDmnModelsByNamespaceMap,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   expression: Normalized<BoxedExpression>;
   drgElementIndex: number;
+  externalDmnModelsByNamespaceMap: Map<string, Normalized<DmnLatestModel>>;
 }): void {
   const drgElement = definitions.drgElement?.[drgElementIndex];
   if (!drgElement) {
@@ -43,25 +45,19 @@ export function updateExpression({
     definitions,
     newName: expression?.["@_label"] ?? drgElement!["@_name"]!,
     index: drgElementIndex,
+    externalDmnModelsByNamespaceMap,
+    shouldRenameReferencedExpressions: false,
   });
 
-  if (drgElement?.__$$element === "decision") {
-    drgElement.expression = expression;
-    drgElement.variable!["@_typeRef"] = expression ? expression["@_typeRef"] : drgElement.variable!["@_typeRef"];
-  } else if (drgElement?.__$$element === "businessKnowledgeModel") {
-    if (expression.__$$element !== "functionDefinition") {
-      throw new Error("DMN MUTATION: Can't have an expression on a BKM that is not a Function.");
-    }
+  setDrgElementExpression({
+    definitions,
+    expression,
+    drgElementIndex,
+  });
 
-    if (!expression?.__$$element) {
-      throw new Error("DMN MUTATION: Can't determine expression type without its __$$element property.");
-    }
-
-    // We remove the __$$element here, because otherwise the "functionDefinition" element name will be used in the final XML.
-    const { __$$element, ..._updateExpression } = expression;
-    drgElement.encapsulatedLogic = _updateExpression as Normalized<DMN15__tFunctionDefinition>;
-    drgElement.variable!["@_typeRef"] = _updateExpression?.["@_typeRef"] ?? drgElement.variable!["@_typeRef"];
-  } else {
-    throw new Error("DMN MUTATION: Can't update expression for drgElement that is not a Decision or a BKM.");
-  }
+  updateDrgElementType({
+    definitions,
+    expression,
+    drgElementIndex,
+  });
 }

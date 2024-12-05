@@ -19,8 +19,8 @@
 
 import * as React from "react";
 import { useContext, useMemo, useRef, useState } from "react";
-import { BeeGwtService, BoxedExpression, DmnDataType, Normalized, PmmlDocument } from "./api";
-import { BoxedExpressionEditorProps, OnRequestFeelVariables } from "./BoxedExpressionEditor";
+import { BeeGwtService, BoxedExpression, DmnDataType, ExpressionChangedArgs, Normalized, PmmlDocument } from "./api";
+import { BoxedExpressionEditorProps, OnRequestFeelIdentifiers } from "./BoxedExpressionEditor";
 import "./BoxedExpressionEditorContext.css";
 
 export interface BoxedExpressionEditorContextType {
@@ -39,13 +39,13 @@ export interface BoxedExpressionEditorContextType {
   currentlyOpenContextMenu: string | undefined;
   setCurrentlyOpenContextMenu: React.Dispatch<React.SetStateAction<string | undefined>>;
 
-  onRequestFeelVariables?: OnRequestFeelVariables;
+  onRequestFeelIdentifiers?: OnRequestFeelIdentifiers;
   widthsById: Map<string, number[]>;
   hideDmn14BoxedExpressions?: boolean;
 }
 
 export interface BoxedExpressionEditorDispatchContextType {
-  setExpression: React.Dispatch<React.SetStateAction<Normalized<BoxedExpression>>>;
+  setExpression: OnExpressionChange;
   setWidthsById: (mutation: ({ newMap }: { newMap: Map<string, number[]> }) => void) => void;
 }
 
@@ -75,7 +75,7 @@ export function BoxedExpressionEditorContextProvider({
   children,
   pmmlDocuments,
   scrollableParentRef,
-  onRequestFeelVariables,
+  onRequestFeelIdentifiers,
   widthsById,
   hideDmn14BoxedExpressions,
 }: React.PropsWithChildren<BoxedExpressionEditorProps>) {
@@ -118,7 +118,7 @@ export function BoxedExpressionEditorContextProvider({
         //state // FIXME: Move to a separate context (https://github.com/apache/incubator-kie-issues/issues/168)
         currentlyOpenContextMenu,
         setCurrentlyOpenContextMenu,
-        onRequestFeelVariables,
+        onRequestFeelIdentifiers,
         widthsById,
         hideDmn14BoxedExpressions,
       }}
@@ -134,6 +134,12 @@ export function BoxedExpressionEditorContextProvider({
 
 export type OnSetExpression = (args: {
   getNewExpression: (prev: Normalized<BoxedExpression> | undefined) => Normalized<BoxedExpression> | undefined;
+  expressionChangedArgs: ExpressionChangedArgs;
+}) => void;
+
+export type OnExpressionChange = (args: {
+  setExpressionAction: React.SetStateAction<Normalized<BoxedExpression> | undefined>;
+  expressionChangedArgs: ExpressionChangedArgs;
 }) => void;
 
 export function NestedExpressionDispatchContextProvider({
@@ -145,12 +151,14 @@ export function NestedExpressionDispatchContextProvider({
   const { setWidthsById } = useBoxedExpressionEditorDispatch();
   const nestedExpressionDispatch = useMemo<BoxedExpressionEditorDispatchContextType>(() => {
     return {
-      setExpression: (newExpressionAction: React.SetStateAction<Normalized<BoxedExpression>>) => {
+      setExpression: (OnExpressionChange) => {
         function getNewExpression(prev: Normalized<BoxedExpression>) {
-          return typeof newExpressionAction === "function" ? newExpressionAction(prev) : newExpressionAction;
+          return typeof OnExpressionChange.setExpressionAction === "function"
+            ? (OnExpressionChange.setExpressionAction(prev)! as Normalized<BoxedExpression>)
+            : OnExpressionChange.setExpressionAction;
         }
 
-        onSetExpression({ getNewExpression });
+        onSetExpression({ getNewExpression, expressionChangedArgs: OnExpressionChange.expressionChangedArgs });
       },
       setWidthsById,
     };

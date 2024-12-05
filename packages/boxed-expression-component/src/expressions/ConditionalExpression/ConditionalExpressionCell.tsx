@@ -38,32 +38,35 @@ export function ConditionalExpressionCell({
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onSetExpression = useCallback<OnSetExpression>(
-    ({ getNewExpression }) => {
-      setExpression((prev: Normalized<BoxedConditional>) => {
-        if (rowIndex === 0) {
-          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const ret: Normalized<BoxedConditional> = {
-            ...prev,
-            if: { ...prev.if, expression: getNewExpression(prev.if.expression)! },
-          };
-          return ret;
-        } else if (rowIndex === 1) {
-          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const ret: Normalized<BoxedConditional> = {
-            ...prev,
-            then: { ...prev.then, expression: getNewExpression(prev.then.expression)! },
-          };
-          return ret;
-        } else if (rowIndex === 2) {
-          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const ret: Normalized<BoxedConditional> = {
-            ...prev,
-            else: { ...prev.else, expression: getNewExpression(prev.else.expression)! },
-          };
-          return ret;
-        } else {
-          throw new Error("ConditionalExpression shouldn't have more than 3 rows.");
-        }
+    ({ getNewExpression, expressionChangedArgs }) => {
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedConditional>) => {
+          if (rowIndex === 0) {
+            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+            const ret: Normalized<BoxedConditional> = {
+              ...prev,
+              if: { ...prev.if, expression: getNewExpression(prev.if.expression)! },
+            };
+            return ret;
+          } else if (rowIndex === 1) {
+            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+            const ret: Normalized<BoxedConditional> = {
+              ...prev,
+              then: { ...prev.then, expression: getNewExpression(prev.then.expression)! },
+            };
+            return ret;
+          } else if (rowIndex === 2) {
+            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+            const ret: Normalized<BoxedConditional> = {
+              ...prev,
+              else: { ...prev.else, expression: getNewExpression(prev.else.expression)! },
+            };
+            return ret;
+          } else {
+            throw new Error("ConditionalExpression shouldn't have more than 3 rows.");
+          }
+        },
+        expressionChangedArgs,
       });
     },
     [rowIndex, setExpression]

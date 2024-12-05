@@ -18,7 +18,7 @@
  */
 
 import { SemanticTokensProvider } from "@kie-tools/feel-input-component/dist/semanticTokensProvider";
-import { BuiltInTypes, DmnDefinitions, FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
+import { BuiltInTypes, DmnDefinitions, FeelIdentifiers } from "@kie-tools/dmn-feel-antlr4-parser";
 
 import * as Monaco from "@kie-tools-core/monaco-editor";
 import { Element } from "@kie-tools/feel-input-component/dist/themes/Element";
@@ -217,7 +217,10 @@ ThatShouldFailWhenBreakLine`,
         },
       });
 
-      const feelVariables = new FeelVariables(dmnDefinitions, new Map());
+      const feelVariables = new FeelIdentifiers({
+        _readonly_dmnDefinitions: dmnDefinitions,
+        _readonly_externalDefinitions: new Map(),
+      });
       const semanticTokensProvider = new SemanticTokensProvider(feelVariables, id, () => {});
 
       const semanticMonacoTokens = await semanticTokensProvider.provideDocumentSemanticTokens(
@@ -274,7 +277,10 @@ ThatShouldFailWhenBreakLine`,
           },
         });
 
-        const feelVariables = new FeelVariables(model, new Map());
+        const feelVariables = new FeelIdentifiers({
+          _readonly_dmnDefinitions: model,
+          _readonly_externalDefinitions: new Map(),
+        });
         const semanticTokensProvider = new SemanticTokensProvider(feelVariables, id, () => {});
 
         const semanticMonacoTokens = await semanticTokensProvider.provideDocumentSemanticTokens(
@@ -303,10 +309,10 @@ ThatShouldFailWhenBreakLine`,
       const id = "_AEC3EEB0-8436-4767-A214-20FF5E5CB7BE";
       const modelMock = createModelMockForExpression(expression);
 
-      const feelVariables = new FeelVariables(
-        localModel.definitions,
-        new Map([[includedModel.definitions["@_namespace"] ?? "", includedModel]])
-      );
+      const feelVariables = new FeelIdentifiers({
+        _readonly_dmnDefinitions: localModel.definitions,
+        _readonly_externalDefinitions: new Map([[includedModel.definitions["@_namespace"] ?? "", includedModel]]),
+      });
 
       const semanticTokensProvider = new SemanticTokensProvider(feelVariables, id, () => {});
 
@@ -339,10 +345,10 @@ ThatShouldFailWhenBreakLine`,
       const id = "_206131ED-0B81-4013-980A-4BB2539A53D0";
       const modelMock = createModelMockForExpression(expression);
 
-      const feelVariables = new FeelVariables(
-        localModel.definitions,
-        new Map([[includedModel.definitions["@_namespace"] ?? "", includedModel]])
-      );
+      const feelVariables = new FeelIdentifiers({
+        _readonly_dmnDefinitions: localModel.definitions,
+        _readonly_externalDefinitions: new Map([[includedModel.definitions["@_namespace"] ?? "", includedModel]]),
+      });
 
       const semanticTokensProvider = new SemanticTokensProvider(feelVariables, id, () => {});
 
@@ -381,10 +387,10 @@ ThatShouldFailWhenBreakLine`,
       const id = "_18832484-9481-49BC-BD40-927CB9872C6B";
       const modelMock = createModelMockForExpression(expression);
 
-      const feelVariables = new FeelVariables(
-        localModel.definitions,
-        new Map([[includedModel.definitions["@_namespace"] ?? "", includedModel]])
-      );
+      const feelVariables = new FeelIdentifiers({
+        _readonly_dmnDefinitions: localModel.definitions,
+        _readonly_externalDefinitions: new Map([[includedModel.definitions["@_namespace"] ?? "", includedModel]]),
+      });
 
       const semanticTokensProvider = new SemanticTokensProvider(feelVariables, id, () => {});
 
