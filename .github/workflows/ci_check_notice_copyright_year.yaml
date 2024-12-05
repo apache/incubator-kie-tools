@@ -21,7 +21,7 @@ name: "CI :: Notice Copyright year"
 
 on:
   schedule:
-    - cron '* * 1 1 *'
+    - cron '0 0 1 1 *'
 
 jobs:
   keepNoticeCopyrightYearUpToDate:
