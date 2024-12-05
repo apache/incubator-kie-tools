@@ -17,11 +17,7 @@
  * under the License.
  */
 
-import { KogitoConsolesKeycloakEnv } from "@kie-tools/runtime-tools-components/dist/utils/KeycloakClient";
-
-export interface EnvJson extends KogitoConsolesKeycloakEnv {
-  RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE: "DEV" | "PROD";
-  RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_APP_NAME: string;
-  RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_APP_VERSION: string;
-  RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT: string;
+export interface EnvJson {
+  RUNTIME_TOOLS_MANAGEMENT_CONSOLE_APP_NAME: string;
+  RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID: string;
 }

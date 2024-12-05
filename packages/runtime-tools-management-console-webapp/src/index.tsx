@@ -16,91 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import ApolloClient from "apollo-client";
 import "@patternfly/patternfly/patternfly.css";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/react-core/dist/styles/base.css";
-import { HttpLink } from "apollo-link-http";
-import { setContext } from "apollo-link-context";
-import { onError } from "apollo-link-error";
-import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
-import ManagementConsole from "./components/console/ManagementConsole/ManagementConsole";
-import ManagementConsoleRoutes from "./components/console/ManagementConsoleRoutes/ManagementConsoleRoutes";
-import { KeycloakUnavailablePage } from "@kie-tools/runtime-tools-components/src/common/components/KeycloakUnavailablePage";
-import { ServerUnavailablePage } from "@kie-tools/runtime-tools-shared-webapp-components/dist/ServerUnavailablePage";
-import { UserContext } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
-import {
-  isAuthEnabled,
-  updateKeycloakToken,
-  getToken,
-  appRenderWithAxiosInterceptorConfig,
-} from "@kie-tools/runtime-tools-components/dist/utils/KeycloakClient";
-import { initEnv } from "./env/Env";
-import { ENV_PREFIX } from "./env/EnvConstants";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import { App } from "./managementConsole/ManagementConsole";
+import "./styles.css";
 
-const onLoadFailure = (): void => {
-  ReactDOM.render(<KeycloakUnavailablePage />, document.getElementById("root"));
-};
-
-const appRender = async (ctx: UserContext) => {
-  const httpLink = new HttpLink({
-    uri: window["DATA_INDEX_ENDPOINT"],
-  });
-  const fallbackUI = onError(({ networkError }: any) => {
-    if (networkError && networkError.stack === "TypeError: Failed to fetch") {
-      // eslint-disable-next-line react/no-render-return-value
-      return ReactDOM.render(
-        <ManagementConsole apolloClient={client} userContext={ctx}>
-          <ServerUnavailablePage displayName={"Management Console"} reload={() => window.location.reload()} />
-        </ManagementConsole>,
-        document.getElementById("root")
-      );
-    }
-  });
-
-  const setGQLContext = setContext((_, { headers }) => {
-    if (!isAuthEnabled()) {
-      return {
-        headers,
-      };
-    }
-    return new Promise((resolve, reject) => {
-      updateKeycloakToken()
-        .then(() => {
-          const token = getToken();
-          resolve({
-            headers: {
-              ...headers,
-              authorization: token ? `Bearer ${token}` : "",
-            },
-          });
-        })
-        .catch(() => {
-          reject();
-        });
-    });
-  });
-
-  const cache = new InMemoryCache();
-  const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
-    cache,
-    link: setGQLContext.concat(fallbackUI.concat(httpLink)),
-  });
-  ReactDOM.render(
-    <ManagementConsole apolloClient={client} userContext={ctx}>
-      <ManagementConsoleRoutes />
-    </ManagementConsole>,
-    document.getElementById("root")
-  );
-};
-
-initEnv().then((env) => {
-  if (env) {
-    Object.keys(env).forEach((key) => {
-      window[key.replace(`${ENV_PREFIX}_`, "")] = env[key];
-    });
-  }
-  appRenderWithAxiosInterceptorConfig((ctx: UserContext) => appRender(ctx), onLoadFailure);
-});
+ReactDOM.render(<App />, document.getElementById("root"));
