@@ -38,6 +38,9 @@ type RunCmdConfig struct {
 	StopContainerOnUserInput bool
 }
 
+const StopContainerMsg = "Press any key to stop the container"
+
+
 func NewRunCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "run",
@@ -64,7 +67,7 @@ func NewRunCommand() *cobra.Command {
 
 		 `,
 		SuggestFor: []string{"rnu", "start"}, //nolint:misspell
-		PreRunE:    common.BindEnv("port", "open-dev-ui"),
+		PreRunE:    common.BindEnv("port", "open-dev-ui", "stop-container-on-user-input"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -156,7 +159,7 @@ func runSWFProjectDevMode(containerTool string, cfg RunCmdConfig) (err error) {
 }
 
 func stopContainer(containerTool string) error {
-	fmt.Println("Press ENTER to stop the container")
+	fmt.Println(StopContainerMsg)
 
 	reader := bufio.NewReader(os.Stdin)
 
