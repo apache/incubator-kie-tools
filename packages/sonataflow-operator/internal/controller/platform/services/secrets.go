@@ -28,10 +28,7 @@ import (
 func GetSecretKeyValueString(ctx context.Context, secretName string, secretKey string, nameSpace string) (string, error) {
 	secret := corev1.Secret{}
 	err := utils.GetClient().Get(ctx, ctrl.ObjectKey{Namespace: nameSpace, Name: secretName}, &secret)
-	if err != nil {
-		panic(err.Error())
-	}
-
+	
 	if err != nil {
 		klog.V(log.E).InfoS("Error extracting secret: ", "namespace", nameSpace, "error", err)
 		return "", err

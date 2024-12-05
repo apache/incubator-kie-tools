@@ -54,7 +54,7 @@ type DBMigratorJob struct {
 const (
 	dbMigrationJobName       = "sonataflow-db-migrator-job"
 	dbMigrationContainerName = "db-migration-container"
-	dbMigratorToolImage      = "quay.io/rhkp/incubator-kie-kogito-service-db-migration-postgresql:latest"
+	dbMigratorToolImage      = "docker.io/apache/incubator-kie-kogito-db-migrator-tool:latest"
 	dbMigrationCmd           = "./migration.sh"
 )
 
@@ -89,17 +89,8 @@ func getDBSchemaName(persistencePostgreSQL *operatorapi.PersistencePostgreSQL, d
 	return defaultSchemaName
 }
 
-func getNewQuarkusDataSource(jdbcURL string, userName string, password string, schema string) *QuarkusDataSource {
-	return &QuarkusDataSource{
-		JdbcUrl:  jdbcURL,
-		Username: userName,
-		Password: password,
-		Schema:   schema,
-	}
-}
-
 func getQuarkusDataSourceFromPersistence(ctx context.Context, platform *operatorapi.SonataFlowPlatform, persistence *operatorapi.PersistenceOptionsSpec, defaultSchemaName string) *QuarkusDataSource {
-	quarkusDataSource := getNewQuarkusDataSource("", "", "", "")
+	quarkusDataSource := &QuarkusDataSource{}
 	if persistence != nil && persistence.PostgreSQL != nil {
 		quarkusDataSource.JdbcUrl = persistence.PostgreSQL.JdbcUrl
 		quarkusDataSource.Username, _ = services.GetSecretKeyValueString(ctx, persistence.PostgreSQL.SecretRef.Name, persistence.PostgreSQL.SecretRef.UserKey, platform.Namespace)
@@ -122,8 +113,8 @@ func NewDBMigratorJobData(ctx context.Context, client client.Client, platform *o
 	}
 
 	if (pshDI.IsServiceSetInSpec() && diJobsBasedDBMigration) || (pshJS.IsServiceSetInSpec() && jsJobsBasedDBMigration) {
-		quarkusDataSourceDataIndex := getNewQuarkusDataSource("", "", "", "")
-		quarkusDataSourceJobService := getNewQuarkusDataSource("", "", "", "")
+		quarkusDataSourceDataIndex := &QuarkusDataSource{}
+		quarkusDataSourceJobService := &QuarkusDataSource{}
 
 		if diJobsBasedDBMigration {
 			quarkusDataSourceDataIndex = getQuarkusDataSourceFromPersistence(ctx, platform, platform.Spec.Services.DataIndex.Persistence, "defaultDi")
