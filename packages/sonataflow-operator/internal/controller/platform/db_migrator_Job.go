@@ -138,17 +138,17 @@ func NewDBMigratorJobData(ctx context.Context, client client.Client, platform *o
 	return nil
 }
 
-func getNewQuarkusDataSource(jdbcURL string, userName string, password string, schema string) *QuarkusDataSource{
+func getNewQuarkusDataSource(jdbcURL string, userName string, password string, schema string) *QuarkusDataSource {
 	return &QuarkusDataSource{
-		JdbcUrl: jdbcURL,
+		JdbcUrl:  jdbcURL,
 		Username: userName,
 		Password: password,
-		Schema: schema,
+		Schema:   schema,
 	}
 }
 
 func (dbmj DBMigratorJob) CreateJobDBMigration(platform *operatorapi.SonataFlowPlatform) *batchv1.Job {
-	
+
 	diQuarkusDataSource := getNewQuarkusDataSource("", "", "", "")
 	jsQuarkusDataSource := getNewQuarkusDataSource("", "", "", "")
 
