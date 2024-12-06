@@ -127,7 +127,7 @@ func getBuildArg(buildArgs []v1.EnvVar, name string) *v1.EnvVar {
 	return nil
 }
 
-func hasAnyExtensionPresent(buildArg *v1.EnvVar, extensions []cfg.GAV) bool {
+func hasAnyExtensionPresent(buildArg *v1.EnvVar, extensions []cfg.GroupArtifactId) bool {
 	for _, extension := range extensions {
 		if isExtensionPresent(buildArg, extension) {
 			return true
@@ -136,6 +136,6 @@ func hasAnyExtensionPresent(buildArg *v1.EnvVar, extensions []cfg.GAV) bool {
 	return false
 }
 
-func isExtensionPresent(buildArg *v1.EnvVar, extension cfg.GAV) bool {
-	return strings.Contains(buildArg.Value, extension.GroupAndArtifact())
+func isExtensionPresent(buildArg *v1.EnvVar, extension cfg.GroupArtifactId) bool {
+	return strings.Contains(buildArg.Value, extension.String())
 }
