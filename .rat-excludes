@@ -28,6 +28,10 @@ go.mod
 go.sum
 # examples/process-user-tasks-subsystem/process-user-tasks-subsystem.iml
 process-user-tasks-subsystem.iml
+# examples/process-user-tasks-subsystem/src/main/docker/Dockerfile.jvm
+Dockerfile.jvm
+# examples/process-user-tasks-subsystem/src/main/docker/Dockerfile.native
+Dockerfile.native
 # examples/process-compact-architecture/.gitignore
 .gitignore
 # examples/process-compact-architecture/process-compact-architecture.iml
@@ -41,7 +45,7 @@ init.sql
 # examples/micro-frontends-multiplying-architecture-ping-pong-view-in-angular/src/assets/.gitkeep
 .gitkeep
 # examples/sonataflow-greeting-quarkus-example/sonataflow-greeting-quarkus-example.iml
-sonataflow-greeting-quarkus-example.iml
+sonataflow-greeting.iml
 # examples/micro-frontends-multiplying-architecture-todo-list-view-vscode-extension/.vscodeignore
 .vscodeignore
 # examples/micro-frontends-multiplying-architecture-base64png-editor-on-webapp/static/examples/dorinha.base64png
