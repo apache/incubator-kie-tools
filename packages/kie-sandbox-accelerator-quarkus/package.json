@@ -1,0 +1,43 @@
+{
+  "private": true,
+  "name": "@kie-tools/kie-sandbox-accelerator-quarkus",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "scripts": {
+    "_build": "run-script-os",
+    "_build:darwin:linux": "rimraf ./dist ./dist-dev && pnpm run _build-step:copy-git-repo-content && pnpm run _build-step:interpolate-pom && pnpm run _build-step:setup-git-repo-bare && pnpm run _build-step:setup-git-repo-content",
+    "_build:win32": "echo Build not supported on Windows.",
+    "_build-step:copy-git-repo-content": "mkdirp ./dist/git-repo-content && cpy './git-repo-content-src/**' ./dist/git-repo-content/",
+    "_build-step:interpolate-pom": "ENVSUBST__VERSION_QUARKUS=\"$(build-env versions.quarkus)\" ENVSUBST__VERSION_KOGITO=\"$(build-env versions.kogito)\" ENVSUBST__VERSION_JBPM_QUARKUS_DEVUI_BOM=\"$(build-env jbpmQuarkusDevuiExtension.version)\" envsubst < ./dist/git-repo-content/pom.xml.envsubst > ./dist/git-repo-content/pom.xml && rm ./dist/git-repo-content/pom.xml.envsubst",
+    "_build-step:setup-git-repo-bare": "mkdirp ./dist-dev/git-repo-bare.git && cd ./dist-dev/git-repo-bare.git && git init --bare && git --bare update-server-info && mv hooks/post-update.sample hooks/post-update",
+    "_build-step:setup-git-repo-content": "mkdirp ./dist-dev/git-repo-content && cpy './dist/git-repo-content/**' ./dist-dev/git-repo-content && cd ./dist-dev/git-repo-content && git init --initial-branch main && git remote add repo ../git-repo-bare.git && git add . && git commit -m 'Single commit' && git push repo main",
+    "build:dev": "pnpm run _build",
+    "build:prod": "pnpm run _build && pnpm run test",
+    "start": "node dev-server/server.mjs $(build-env kieSandboxAcceleratorQuarkus.dev.port) ./dist-dev",
+    "test": "run-script-os",
+    "test:darwin:linux": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"rimraf ./dist-tests\" \"cp -r ./dist ./dist-tests\" \"cp ./tests/models/empty.bpmn ./dist-tests/git-repo-content/src/main/resources\" \"mvn -f ./dist-tests/git-repo-content clean package\" --finally \"rimraf ./dist-tests\"",
+    "test:win32": "echo Testing not supported on Windows."
+  },
+  "dependencies": {
+    "@kie-tools/jbpm-quarkus-devui": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*",
+    "cpy-cli": "^5.0.0",
+    "finalhandler": "^1.3.1",
+    "http-server": "^14.1.1",
+    "mkdirp": "^3.0.1",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6",
+    "serve-static": "^1.16.2"
+  }
+}

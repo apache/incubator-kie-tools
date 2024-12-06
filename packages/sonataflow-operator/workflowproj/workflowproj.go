@@ -316,7 +316,6 @@ func (w *workflowProjectHandler) addResourceConfigMapToProject(cm *corev1.Config
 	}
 	return nil
 }
-
 func (w *workflowProjectHandler) Image(image string) WorkflowProjectHandler {
 	w.project.Workflow.Spec.PodTemplate.Container.Image = image
 	return w
@@ -324,9 +323,18 @@ func (w *workflowProjectHandler) Image(image string) WorkflowProjectHandler {
 
 // IsDevProfile detects if the workflow is using the Dev profile or not
 func IsDevProfile(workflow *operatorapi.SonataFlow) bool {
+	return isProfile(workflow, metadata.DevProfile)
+}
+
+// IsGitOpsProfile detects if the workflow is using the GitOps profile or not
+func IsGitOpsProfile(workflow *operatorapi.SonataFlow) bool {
+	return isProfile(workflow, metadata.GitOpsProfile)
+}
+
+func isProfile(workflow *operatorapi.SonataFlow, profileType metadata.ProfileType) bool {
 	profile := workflow.Annotations[metadata.Profile]
 	if len(profile) == 0 {
 		return false
 	}
-	return metadata.ProfileType(profile) == metadata.DevProfile
+	return metadata.ProfileType(profile) == profileType
 }

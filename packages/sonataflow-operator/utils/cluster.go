@@ -20,7 +20,9 @@
 package utils
 
 import (
-	"github.com/RHsyseng/operator-utils/pkg/utils/openshift"
+	"fmt"
+
+	"k8s.io/client-go/discovery"
 	"k8s.io/client-go/rest"
 )
 
@@ -34,9 +36,23 @@ func IsOpenShift() bool {
 // SetIsOpenShift sets the global flag isOpenShift by the controller manager.
 // We don't need to keep fetching the API every reconciliation cycle that we need to know about the platform.
 func SetIsOpenShift(cfg *rest.Config) {
-	var err error
-	isOpenShift, err = openshift.IsOpenShift(cfg)
+	if cfg == nil {
+		panic("Rest Config struct is nil, impossible to get cluster information")
+	}
+	// Adapted from https://github.com/RHsyseng/operator-utils/blob/main/internal/platform/platform_versioner.go#L95
+	client, err := discovery.NewDiscoveryClientForConfig(cfg)
 	if err != nil {
-		panic("Impossible to verify if the cluster is OpenShift or not: " + err.Error())
+		panic(fmt.Sprintf("Impossible to get new client for config when fetching cluster information: %s", err))
+	}
+	apiList, err := client.ServerGroups()
+	if err != nil {
+		panic(fmt.Sprintf("issue occurred while fetching ServerGroups: %s", err))
+	}
+
+	for _, v := range apiList.Groups {
+		if v.Name == "route.openshift.io" {
+			isOpenShift = true
+			break
+		}
 	}
 }

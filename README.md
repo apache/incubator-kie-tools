@@ -41,7 +41,7 @@ This repository contains tooling applications and libraries for KIE projects.
 
 > **💡 RECOMMENDED**
 >
-> **Nix development environment**: A _devbox_ configuration is provided to automatically setup all the tools below. Read more in [here](./NIX_DEV_ENV.md).
+> **Nix development environment**: A _devbox_ configuration is provided to automatically setup all the tools below. Read more in [here](./repo/NIX_DEV_ENV.md).
 
 To build and test all packages of the Apache KIE Tools project, you're going to need:
 
@@ -49,7 +49,7 @@ To build and test all packages of the Apache KIE Tools project, you're going to 
 - pnpm `9.3.0` _(To install, follow these instructions: https://pnpm.io/installation#using-npm)_
 - Maven `3.9.6`
 - Java `17`
-- Go `1.21.13` _(To install, follow these instructions: https://go.dev/doc/install)_
+- Go `1.22.9` _(To install, follow these instructions: https://go.dev/doc/install)_
 - Python `3.12` _(To install, follow these instructions: https://www.python.org/downloads/)_
 - Helm `3.13.3` _(To install, follow these instructions: https://helm.sh/docs/intro/install/)_
 - Make

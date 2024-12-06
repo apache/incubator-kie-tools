@@ -17,10 +17,11 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+version=v1.1.1
 
 if ! hash addlicense 2>/dev/null; then
-  go install -modcacherw github.com/google/addlicense@latest
+  go install "github.com/google/addlicense@${version}"
 fi
 
 # shellcheck disable=SC2035
-addlicense -f=hack/license-header.txt -ignore=test/samples/*.yaml -ignore=container-builder/examples/**/*.yaml hack api controllers utils test container-builder workflowproj bundle config ./operator.yaml
+addlicense -f=hack/license-header.txt -ignore=test/samples/*.yaml -ignore=container-builder/examples/**/*.yaml api bundle cmd config container-builder env hack images internal log test utils version workflowproj ./operator.yaml
