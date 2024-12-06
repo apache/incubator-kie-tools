@@ -89,7 +89,7 @@ export function ConfirmDeleteModal(props: ConfirmDeleteModalProps) {
           label="I understand that this action cannot be undone."
           id="delete-model-check"
           isChecked={isDeleteCheck}
-          onChange={(_event, val) => onDeleteCheckChange}
+          onChange={(_event, val) => onDeleteCheckChange(val)}
           aria-label="Confirm checkbox delete model"
           ouiaId="confirm-delete-checkbox"
         />
