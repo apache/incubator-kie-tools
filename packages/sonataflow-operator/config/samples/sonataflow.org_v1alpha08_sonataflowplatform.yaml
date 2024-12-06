@@ -23,5 +23,5 @@ spec:
   build:
     config:
       registry:
-        address: docker.io/apache
+        address: host/namespace
         secret: regcred
