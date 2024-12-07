@@ -50,7 +50,7 @@ function loadEditor() {
     initialContent: loadFile("can-drive.dmn"),
     resources: new Map<string, DmnEditorStandaloneResource>([
       ["path1/can-drive-types.dmn", { contentType: "text", content: loadFile("can-drive-types.dmn") }],
-      ["path2/loan-pre-qualification.dmn", { contentType: "text", content: loadFile("loan-pre-qualification.dmn") }],
+      ["path2/loan-pre-qualification.dmn", { contentType: "text", content: loadFile("loan-pre-qualification.dmn") }], // Won't be available! Read comment above.
     ]),
     readOnly: false,
   });
