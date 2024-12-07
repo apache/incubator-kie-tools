@@ -4,7 +4,7 @@
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
-        <option value="$PROJECT_DIR$/../examples/jbpm-compact-architecture-example/pom.xml" />
+        <option value="$PROJECT_DIR$/../examples/process-compact-architecture/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/jbpm-quarkus-devui/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/maven-base/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/yard-model/pom.xml" />
@@ -14,8 +14,8 @@
         <option value="$PROJECT_DIR$/../packages/serverless-workflow-diagram-editor/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/extended-services-java/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/dev-deployment-kogito-quarkus-blank-app/pom.xml" />
-        <option value="$PROJECT_DIR$/../examples/drools-process-usertasks-quarkus-example/pom.xml" />
-        <option value="$PROJECT_DIR$/../examples/sonataflow-greeting-quarkus-example/pom.xml" />
+        <option value="$PROJECT_DIR$/../examples/process-user-tasks-subsystem/pom.xml" />
+        <option value="$PROJECT_DIR$/../examples/sonataflow-greeting/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/dashbuilder/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/dmn-testing-models/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/serverless-logic-web-tools-swf-deployment-quarkus-app/pom.xml" />

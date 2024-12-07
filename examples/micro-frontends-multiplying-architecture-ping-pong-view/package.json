@@ -1,0 +1,38 @@
+{
+  "private": true,
+  "name": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "build:dev": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build\"",
+    "build:prod": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build\""
+  },
+  "dependencies": {
+    "@kie-tools-core/envelope": "workspace:*",
+    "@kie-tools-core/envelope-bus": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@types/react": "^17.0.6",
+    "@types/react-dom": "^17.0.5",
+    "rimraf": "^3.0.2",
+    "typescript": "^5.5.3"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0",
+    "react-dom": ">=17.0.2 <19.0.0"
+  }
+}
