@@ -28,7 +28,9 @@ import org.kie.j2cl.tools.processors.annotations.GWT3Export;
 import org.kie.j2cl.tools.yaml.mapper.api.annotation.YAMLMapper;
 import org.kie.j2cl.tools.yaml.mapper.api.annotation.YamlTypeDeserializer;
 import org.kie.j2cl.tools.yaml.mapper.api.annotation.YamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.StateExecTimeoutJsonSerializer;
 import org.kie.workbench.common.stunner.sw.marshall.json.WorkflowExecTimeoutJsonSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.StateExecTimeoutYamlSerializer;
 import org.kie.workbench.common.stunner.sw.marshall.yaml.WorkflowExecTimeoutYamlSerializer;
 
 @JSONMapper
@@ -42,7 +44,12 @@ public class WorkflowTimeouts {
     @YamlTypeSerializer(WorkflowExecTimeoutYamlSerializer.class)
     @YamlTypeDeserializer(WorkflowExecTimeoutYamlSerializer.class)
     private Object workflowExecTimeout;
-    private String stateExecTimeout;
+
+    @JsonbTypeSerializer(StateExecTimeoutJsonSerializer.class)
+    @JsonbTypeDeserializer(StateExecTimeoutJsonSerializer.class)
+    @YamlTypeSerializer(StateExecTimeoutYamlSerializer.class)
+    @YamlTypeDeserializer(StateExecTimeoutYamlSerializer.class)
+    private Object stateExecTimeout;
     private String actionExecTimeout;
     private String branchExecTimeout;
     private String eventTimeout;
@@ -55,11 +62,11 @@ public class WorkflowTimeouts {
         this.workflowExecTimeout = workflowExecTimeout;
     }
 
-    public final String getStateExecTimeout() {
+    public final Object getStateExecTimeout() {
         return stateExecTimeout;
     }
 
-    public final void setStateExecTimeout(String stateExecTimeout) {
+    public final void setStateExecTimeout(Object stateExecTimeout) {
         this.stateExecTimeout = stateExecTimeout;
     }
 
