@@ -28164,12 +28164,12 @@ data:
     # Quarkus extensions required for workflows persistence. These extensions are used by the SonataFlow build system,
     # in cases where the workflow being built has configured postgresql persistence.
     postgreSQLPersistenceExtensions:
-      - groupId: io.quarkus
-        artifactId: quarkus-jdbc-postgresql
-      - groupId: io.quarkus
-        artifactId: quarkus-agroal
-      - groupId: org.kie
-        artifactId: kie-addons-quarkus-persistence-jdbc
+    - groupId: io.quarkus
+      artifactId: quarkus-jdbc-postgresql
+    - groupId: io.quarkus
+      artifactId: quarkus-agroal
+    - groupId: org.kie
+      artifactId: kie-addons-quarkus-persistence-jdbc
     # If true, the workflow deployments will be configured to send accumulated workflow status change events to the Data
     # Index Service reducing the number of produced events. Set to false to send individual events.
     kogitoEventsGrouping: true
