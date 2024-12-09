@@ -35,7 +35,9 @@ configMapGenerator:
       - controllers_cfg.yaml
     name: controllers-config
 apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
+kind:
+  Kustomization
+  # Changed during "make build", do not attempt to modify it manually!
 images:
   - name: controller
     newName: docker.io/apache/incubator-kie-sonataflow-operator

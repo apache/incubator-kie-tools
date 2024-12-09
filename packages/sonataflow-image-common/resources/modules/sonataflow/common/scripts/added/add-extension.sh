@@ -20,31 +20,15 @@
 
 set -e
 
-script_dir_path="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # extensions to be added, comma separated.
 extensions="$1"
+if [ -z "$extensions" ]; then
+    return 0
+fi
+
 # parameter passed which will trigger or not the jvm/maven configuration.
 ignore_jvm_settings=${2:-false}
 
-# shellcheck source=/dev/null
-source "${script_dir_path}"/logging.sh
+source "${KOGITO_HOME}"/launch/quarkus-mvn-plugin.sh
 
-if [ "${SCRIPT_DEBUG}" = "true" ] ; then
-    set -x
-    export MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND} -X --batch-mode"
-    log_info "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
-    printenv
-fi
-
-if [ "${ignore_jvm_settings}" != "true" ]; then
-    source "${script_dir_path}"/configure-jvm-mvn.sh
-fi
-
-"${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
-    -nsu \
-    -B \
-    -s "${MAVEN_SETTINGS_PATH}" \
-    -DplatformVersion="${QUARKUS_PLATFORM_VERSION}" \
-    -Dextensions="${extensions}" \
-    ${QUARKUS_ADD_EXTENSION_ARGS} \
-    "${QUARKUS_PLATFORM_GROUPID}":quarkus-maven-plugin:"${QUARKUS_PLATFORM_VERSION}":add-extension
+run_quarkus_mvn_add_extension "$extensions", "$ignore_jvm_settings"

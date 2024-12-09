@@ -37,22 +37,19 @@ func TestInitializeControllersCfgAt_ValidFile(t *testing.T) {
 	assert.Equal(t, "local/sonataflow-devmode:1.0.0", cfg.SonataFlowDevModeImageTag)
 	assert.Equal(t, 3, len(cfg.PostgreSQLPersistenceExtensions))
 	postgresExtensions := cfg.PostgreSQLPersistenceExtensions
-	assert.Equal(t, GAV{
+	assert.Equal(t, GroupArtifactId{
 		GroupId:    "io.quarkus",
 		ArtifactId: "quarkus-jdbc-postgresql",
-		Version:    "3.8.6",
 	}, postgresExtensions[0])
 
-	assert.Equal(t, GAV{
+	assert.Equal(t, GroupArtifactId{
 		GroupId:    "io.quarkus",
 		ArtifactId: "quarkus-agroal",
-		Version:    "3.8.6",
 	}, postgresExtensions[1])
 
-	assert.Equal(t, GAV{
+	assert.Equal(t, GroupArtifactId{
 		GroupId:    "org.kie",
 		ArtifactId: "kie-addons-quarkus-persistence-jdbc",
-		Version:    "999-20241016-SNAPSHOT",
 	}, postgresExtensions[2])
 	assert.True(t, cfg.KogitoEventsGrouping)
 	assert.True(t, cfg.KogitoEventsGroupingBinary)
