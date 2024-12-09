@@ -102,7 +102,7 @@ export const PopoverMenu = React.forwardRef(
       onShown();
     }, [setCurrentlyOpenContextMenu, id, onShown]);
 
-    const shouldOpen: PopoverProps["shouldOpen"] = useCallback((showFunction) => {
+    const shouldOpen: PopoverProps["shouldOpen"] = useCallback((_event, showFunction) => {
       showFunction?.();
     }, []);
 
