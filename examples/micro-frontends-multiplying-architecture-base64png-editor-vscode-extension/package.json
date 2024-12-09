@@ -1,0 +1,140 @@
+{
+  "private": true,
+  "name": "kie-tools-examples-micro-frontends-multiplying-architecture-base64png-editor-vscode-extension",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "publisher": "kie-tools-examples",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "main": "dist/extension.js",
+  "scripts": {
+    "build": "rimraf dist && webpack",
+    "build:dev": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build --env dev\"",
+    "build:prod": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build\" \"pnpm build:vsix\"",
+    "build:vsix": "vsce package --allow-star-activation --no-dependencies -o ./dist/kie_tools_examples_base64png_editor_vscode_extension_$npm_package_version.vsix",
+    "watch": "export WEBPACK__sourceMaps=true; WEBPACK__minimize=false; webpack --env dev"
+  },
+  "devDependencies": {
+    "@kie-tools-core/editor": "workspace:*",
+    "@kie-tools-core/i18n": "workspace:*",
+    "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools-core/vscode-extension": "workspace:*",
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@types/vscode": "1.67.0",
+    "@vscode/vsce": "^2.22.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^5.5.3",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.15.1",
+    "webpack-merge": "^5.9.0"
+  },
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "displayName": "Apache KIE Tools Example :: Base64 PNG Editor",
+  "categories": [
+    "Other"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.kie.tools.examples.base64PngEditor.createBase64Png",
+        "icon": {
+          "dark": "./static/kie-logo-128x128.png",
+          "light": "./static/kie-logo-128x128.png"
+        },
+        "title": "Base64 PNG: New from .png"
+      },
+      {
+        "command": "extension.kie.tools.examples.base64PngEditor.getPreviewSvg",
+        "icon": {
+          "dark": "./static/svg-icon-dark.png",
+          "light": "./static/svg-icon-light.png"
+        },
+        "title": "Base64 PNG: Save as SVG"
+      }
+    ],
+    "customEditors": [
+      {
+        "displayName": "Apache KIE Tools Example :: Base64 PNG Editor",
+        "selector": [
+          {
+            "filenamePattern": "*.base64png"
+          }
+        ],
+        "viewType": "kieToolsExampleBase64PngEditor"
+      }
+    ],
+    "languages": [
+      {
+        "aliases": [
+          "base64png",
+          "Base64 PNG"
+        ],
+        "extensions": [
+          ".base64png"
+        ],
+        "id": "base64png"
+      },
+      {
+        "aliases": [
+          "png",
+          "Png"
+        ],
+        "extensions": [
+          ".png"
+        ],
+        "id": "png"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "extension.kie.tools.examples.base64PngEditor.createBase64Png",
+          "when": "resourceExtname == .png"
+        },
+        {
+          "command": "extension.kie.tools.examples.base64PngEditor.getPreviewSvg",
+          "when": "resourceExtname == .base64png"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "extension.kie.tools.examples.base64PngEditor.createBase64Png",
+          "group": "navigation",
+          "when": "resourceLangId == png"
+        },
+        {
+          "command": "extension.kie.tools.examples.base64PngEditor.getPreviewSvg",
+          "group": "navigation",
+          "when": "resourceLangId == base64png"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "extension.kie.tools.examples.base64PngEditor.createBase64Png",
+          "when": "resourceLangId == png"
+        },
+        {
+          "command": "extension.kie.tools.examples.base64PngEditor.getPreviewSvg",
+          "when": "resourceLangId == base64png"
+        }
+      ]
+    }
+  },
+  "activationEvents": [
+    "*"
+  ],
+  "icon": "./static/kie-logo-128x128.png"
+}
