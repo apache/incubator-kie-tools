@@ -21,6 +21,7 @@ package platform
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"k8s.io/klog/v2"
@@ -62,6 +63,64 @@ func (action *serviceAction) CanHandle(platform *operatorapi.SonataFlowPlatform)
 	return platform.Status.IsReady()
 }
 
+func (action *serviceAction) createOrUpdateDBMigrationJob(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, pshDI services.PlatformServiceHandler, pshJS services.PlatformServiceHandler) (*DBMigratorJob, error) {
+	dbMigratorJob := NewDBMigratorJobData(ctx, action.client, platform, pshDI, pshJS)
+
+	// Invoke DB Migration only if both or either DI/JS services are requested, in addition to DBMigrationStrategyJob
+	if dbMigratorJob != nil {
+		klog.V(log.I).InfoS("Starting DB Migration Job: ")
+
+		job := dbMigratorJob.CreateJobDBMigration(platform)
+		if op, err := controllerutil.CreateOrUpdate(ctx, client, job, func() error {
+			return nil
+		}); err != nil {
+			return dbMigratorJob, err
+		} else {
+			klog.V(log.I).InfoS("DB Migration Job successfully created on cluster", "operation", op)
+		}
+	}
+	return dbMigratorJob, nil
+}
+
+func (action *serviceAction) handleDBMigrationJob(ctx context.Context, platform *operatorapi.SonataFlowPlatform, psDI services.PlatformServiceHandler, psJS services.PlatformServiceHandler) (*operatorapi.SonataFlowPlatform, error) {
+
+	dbMigratorJob, err := action.createOrUpdateDBMigrationJob(ctx, action.client, platform, psDI, psJS)
+	if err != nil {
+		return nil, err
+	}
+	if dbMigratorJob != nil {
+		klog.V(log.E).InfoS("Created DB migration job")
+		dbMigratorJobStatus, err := dbMigratorJob.ReconcileDBMigrationJob(ctx, action.client, platform)
+		if err != nil {
+			return nil, err
+		}
+		if dbMigratorJobStatus.Failed == 1 {
+			return nil, errors.New("DB migration job failed")
+		} else if dbMigratorJobStatus.Succeeded == 1 {
+			return platform, nil
+		} else {
+			// DB migration is still running
+			return nil, nil
+		}
+	}
+
+	return platform, nil
+}
+
+func (action *serviceAction) isJobsBasedDBMigration(platform *operatorapi.SonataFlowPlatform, pshDI services.PlatformServiceHandler, pshJS services.PlatformServiceHandler) bool {
+	diJobsBasedDBMigration := false
+	jsJobsBasedDBMigration := false
+
+	if pshDI.IsPersistenceEnabledtInSpec() {
+		diJobsBasedDBMigration = services.IsJobsBasedDBMigration(platform.Spec.Services.DataIndex.Persistence)
+	}
+	if pshJS.IsPersistenceEnabledtInSpec() {
+		jsJobsBasedDBMigration = services.IsJobsBasedDBMigration(platform.Spec.Services.JobService.Persistence)
+	}
+
+	return (pshDI.IsServiceSetInSpec() && diJobsBasedDBMigration) || (pshJS.IsServiceSetInSpec() && jsJobsBasedDBMigration)
+}
+
 func (action *serviceAction) Handle(ctx context.Context, platform *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, *corev1.Event, error) {
 	// Refresh applied configuration
 	if err := CreateOrUpdateWithDefaults(ctx, platform, false); err != nil {
@@ -69,13 +128,21 @@ func (action *serviceAction) Handle(ctx context.Context, platform *operatorapi.S
 	}
 
 	psDI := services.NewDataIndexHandler(platform)
+	psJS := services.NewJobServiceHandler(platform)
+
+	if action.isJobsBasedDBMigration(platform, psDI, psJS) {
+		p, err := action.handleDBMigrationJob(ctx, platform, psDI, psJS)
+		if p == nil {
+			return nil, nil, err
+		}
+	}
+
 	if psDI.IsServiceSetInSpec() {
 		if event, err := createOrUpdateServiceComponents(ctx, action.client, platform, psDI); err != nil {
 			return nil, event, err
 		}
 	}
 
-	psJS := services.NewJobServiceHandler(platform)
 	if psJS.IsServiceSetInSpec() {
 		if event, err := createOrUpdateServiceComponents(ctx, action.client, platform, psJS); err != nil {
 			return nil, event, err
