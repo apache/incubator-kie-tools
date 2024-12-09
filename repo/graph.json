@@ -70,7 +70,7 @@
         "id": "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp"
       },
       {
-        "id": "kie-tools-examples-micro-frontends-multuplying-architecture-todo-list-view-vscode-extension"
+        "id": "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension"
       },
       { "id": "@kie-tools-examples/process-compact-architecture" },
       { "id": "@kie-tools/jbpm-quarkus-devui" },
@@ -658,17 +658,17 @@
         "weight": 1
       },
       {
-        "source": "kie-tools-examples-micro-frontends-multuplying-architecture-todo-list-view-vscode-extension",
+        "source": "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension",
         "target": "@kie-tools-core/vscode-extension",
         "weight": 1
       },
       {
-        "source": "kie-tools-examples-micro-frontends-multuplying-architecture-todo-list-view-vscode-extension",
+        "source": "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension",
         "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
       {
-        "source": "kie-tools-examples-micro-frontends-multuplying-architecture-todo-list-view-vscode-extension",
+        "source": "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension",
         "target": "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view",
         "weight": 1
       },
@@ -2730,7 +2730,7 @@
       "examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp"
     ],
     [
-      "kie-tools-examples-micro-frontends-multuplying-architecture-todo-list-view-vscode-extension",
+      "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension",
       "examples/micro-frontends-multiplying-architecture-todo-list-view-vscode-extension"
     ],
     ["@kie-tools-examples/process-compact-architecture", "examples/process-compact-architecture"],

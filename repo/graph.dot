@@ -36,7 +36,7 @@ digraph G {
   "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
-  "kie-tools-examples-micro-frontends-multuplying-architecture-todo-list-view-vscode-extension" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/process-compact-architecture" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/jbpm-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kogito-management-console" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -252,9 +252,9 @@ digraph G {
   "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp" -> "@kie-tools-core/react-hooks" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp" -> "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view" [ style = "dashed", color = "orange" ];
-  "kie-tools-examples-micro-frontends-multuplying-architecture-todo-list-view-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "dashed", color = "orange" ];
-  "kie-tools-examples-micro-frontends-multuplying-architecture-todo-list-view-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "orange" ];
-  "kie-tools-examples-micro-frontends-multuplying-architecture-todo-list-view-vscode-extension" -> "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view" [ style = "dashed", color = "orange" ];
+  "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "dashed", color = "orange" ];
+  "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "orange" ];
+  "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension" -> "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/process-compact-architecture" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/process-compact-architecture" -> "@kie-tools/kogito-management-console" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/process-user-tasks-subsystem" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];

@@ -44,7 +44,7 @@ pgpass
 init.sql
 # examples/micro-frontends-multiplying-architecture-ping-pong-view-in-angular/src/assets/.gitkeep
 .gitkeep
-# examples/sonataflow-greeting-quarkus-example/sonataflow-greeting-quarkus-example.iml
+# examples/sonataflow-greeting/sonataflow-greeting.iml
 sonataflow-greeting.iml
 # examples/micro-frontends-multiplying-architecture-todo-list-view-vscode-extension/.vscodeignore
 .vscodeignore
