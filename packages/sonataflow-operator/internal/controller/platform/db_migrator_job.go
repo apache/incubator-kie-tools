@@ -147,6 +147,7 @@ func getNewQuarkusDataSource(jdbcURL string, userName string, password string, s
 	}
 }
 
+// CreateJobDBMigration Creates DB Migration Job and returns to the caller
 func (dbmj DBMigratorJob) CreateJobDBMigration(platform *operatorapi.SonataFlowPlatform) *batchv1.Job {
 
 	diQuarkusDataSource := getNewQuarkusDataSource("", "", "", "")
