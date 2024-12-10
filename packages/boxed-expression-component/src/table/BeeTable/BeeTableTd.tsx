@@ -231,11 +231,13 @@ export function BeeTableTd<R extends object>({
     return onDataCellKeyUp?.(column.id);
   }, [column.id, onDataCellKeyUp]);
 
-  const evaluationHitsCountBadgeClassName = canDisplayEvaluationHitsCountBadge
-    ? (evaluationHitsCount ?? 0) > 0
-      ? "evaluation-hits-count-badge-colored"
-      : "evaluation-hits-count-badge-non-colored"
-    : "";
+  const evaluationHitsCountBadgeClassName = useMemo(() => {
+    canDisplayEvaluationHitsCountBadge
+      ? (evaluationHitsCount ?? 0) > 0
+        ? "evaluation-hits-count-badge-colored"
+        : "evaluation-hits-count-badge-non-colored"
+      : "";
+  }, [canDisplayEvaluationHitsCountBadge, evaluationHitsCount]);
 
   return (
     <BeeTableCoordinatesContextProvider coordinates={coordinates}>
