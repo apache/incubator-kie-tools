@@ -3,6 +3,7 @@ package k8sclient
 import (
 	"fmt"
 	"github.com/spf13/afero"
+	v1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/yaml"
@@ -47,4 +48,12 @@ func (m Fake) FakeParseYamlFile(path string) ([]unstructured.Unstructured, error
 		result = append(result, *rawObj)
 	}
 	return result, nil
+}
+
+func (m Fake) GetDeploymentStatus(namespace, deploymentName string) (v1.DeploymentStatus, error) {
+	return v1.DeploymentStatus{}, nil
+}
+
+func (m Fake) PortForward(namespace, serviceName, portFrom, portTo string) error  {
+	return nil
 }

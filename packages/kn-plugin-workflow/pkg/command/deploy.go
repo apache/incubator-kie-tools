@@ -22,10 +22,12 @@ package command
 import (
 	"errors"
 	"fmt"
+	"gopkg.in/yaml.v2"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"os"
 	"path"
+	"time"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 
@@ -65,9 +67,12 @@ func NewDeployCommand() *cobra.Command {
 	# Specify a custom support schemas directory. (default: ./schemas)
 	{{.Name}} deploy --schemas-dir=<full_directory_path>
 
+	# Wait for the deployment to complete and open the browser to the deployed workflow.
+	{{.Name}} deploy --wait
+
 		`,
 
-		PreRunE:    common.BindEnv("namespace", "custom-manifests-dir", "custom-generated-manifests-dir", "specs-dir", "schemas-dir", "subflows-dir"),
+		PreRunE:    common.BindEnv("namespace", "custom-manifests-dir", "custom-generated-manifests-dir", "specs-dir", "schemas-dir", "subflows-dir", "wait"),
 		SuggestFor: []string{"delpoy", "deplyo"},
 	}
 
@@ -82,6 +87,7 @@ func NewDeployCommand() *cobra.Command {
 	cmd.Flags().StringP("subflows-dir", "s", "", "Specify a custom subflows files directory")
 	cmd.Flags().StringP("schemas-dir", "t", "", "Specify a custom schemas files directory")
 	cmd.Flags().BoolP("minify", "f", true, "Minify the OpenAPI specs files before deploying")
+	cmd.Flags().BoolP("wait", "w", false, "Wait for the deployment to complete and open the browser to the deployed workflow")
 
 	if err := viper.BindPFlag("minify", cmd.Flags().Lookup("minify")); err != nil {
 		fmt.Println("❌ ERROR: failed to bind minify flag")
@@ -152,7 +158,63 @@ func deploy(cfg *DeployUndeployCmdConfig) error {
 		fmt.Printf(" - ✅ Manifest %s successfully deployed in namespace %s\n", path.Base(file), cfg.NameSpace)
 
 	}
+	if cfg.Wait {
+		if err := waitForDeploymentAndOpenDevUi(cfg); err != nil {
+			return fmt.Errorf("❌ ERROR: failed to wait for deployment and open dev ui: %w", err)
+		}
+	}
 	return nil
+}
+
+func waitForDeploymentAndOpenDevUi(cfg *DeployUndeployCmdConfig) error {
+	bytes, err := os.ReadFile(cfg.SonataFlowFile)
+	if err != nil {
+		return fmt.Errorf("❌ ERROR: failed to read SonataFlow file: %w", err)
+	}
+	workflow :=  &common.Workflow{}
+	err = yaml.Unmarshal(bytes, &workflow)
+	if err != nil {
+		return fmt.Errorf("❌ ERROR: failed to unmarshal SonataFlow file: %w", err)
+	}
+	// run goroutine and wait for the deployment to complete using GetDeploymentStatus
+	deployed := make(chan bool)
+	errCan := make(chan error)
+	defer close(deployed)
+	defer close(errCan)
+
+	fmt.Println("🔍 Waiting for the deployment to complete...", workflow.Id)
+
+	go PollGetDeploymentStatus(cfg.NameSpace, workflow.Id, 5*time.Second, deployed, errCan)
+
+	select {
+	case <-deployed:
+		fmt.Printf(" - ✅ Deployment of %s completed\n", workflow.Id)
+	case <- time.After(5 * time.Minute):
+		return fmt.Errorf("❌ ERROR: deployment of %s timed out", workflow.Id)
+	case err := <-errCan:
+		return fmt.Errorf("❌ ERROR: failed to get deployment status: %w", err)
+	}
+
+	if err := common.PortForward(cfg.NameSpace, workflow.Id, "8080", "8080"); err != nil {
+		return fmt.Errorf("❌ ERROR: failed to port forward: %w", err)
+	}
+
+	return nil
+}
+
+func PollGetDeploymentStatus(namespace, deploymentName string, interval time.Duration, ready chan<- bool, errCan chan<- error) {
+	for {
+		status, err := common.GetDeploymentStatus(namespace, deploymentName)
+		if err != nil {
+			errCan <- fmt.Errorf("❌ ERROR: failed to get deployment status: %w", err)
+			return
+		}
+		if status.ReadyReplicas == status.Replicas {
+			ready <- true
+			return
+		}
+		time.Sleep(interval)
+	}
 }
 
 func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, err error) {
@@ -165,6 +227,7 @@ func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, err er
 		SchemasDir:                 viper.GetString("schemas-dir"),
 		SubflowsDir:                viper.GetString("subflows-dir"),
 		Minify:                     viper.GetBool("minify"),
+		Wait:                       viper.GetBool("wait"),
 	}
 
 	if len(cfg.SubflowsDir) == 0 {

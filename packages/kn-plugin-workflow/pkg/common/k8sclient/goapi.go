@@ -3,8 +3,13 @@ package k8sclient
 import (
 	"context"
 	"fmt"
+	v1 "k8s.io/api/apps/v1"
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/tools/portforward"
+	"k8s.io/client-go/transport/spdy"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -143,6 +148,120 @@ func (m GoAPI) CheckCrdExists(crd string) error {
 	if err != nil {
 		return err
 	}
+
+	return nil
+}
+
+func (m GoAPI) GetDeploymentStatus(namespace, deploymentName string) (v1.DeploymentStatus, error) {
+	if namespace == "" {
+		currentNamespace, err := m.GetNamespace()
+		if err != nil {
+			return v1.DeploymentStatus{}, fmt.Errorf("❌ ERROR: Failed to get current namespace: %w", err)
+		}
+		namespace = currentNamespace
+	}
+
+	config, err := KubeRestConfig()
+	if err != nil {
+		return v1.DeploymentStatus{}, fmt.Errorf("❌ ERROR: Failed to create rest config for Kubernetes client: %v", err)
+	}
+
+	newConfig, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		return v1.DeploymentStatus{}, fmt.Errorf("❌ ERROR: Failed to create k8s client: %v", err)
+	}
+	deployments, err := newConfig.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{
+		LabelSelector: "app=my-app",
+	})
+
+	if deployments.Size() == 0 {
+		return v1.DeploymentStatus{}, fmt.Errorf("❌ ERROR: No deployment named %s in namespace %s found", deploymentName, namespace)
+	}
+
+	if deployments.Size() > 1 {
+		return v1.DeploymentStatus{}, fmt.Errorf("❌ ERROR: More than one deployment named %s in namespace %s found", deploymentName, namespace)
+	}
+
+	return deployments.Items[0].Status, nil
+}
+
+func (m GoAPI) PortForward(namespace, serviceName, portFrom, portTo string) error  {
+	if namespace == "" {
+		currentNamespace, err := m.GetNamespace()
+		if err != nil {
+			return fmt.Errorf("❌ ERROR: Failed to get current namespace: %w", err)
+		}
+		namespace = currentNamespace
+	}
+
+	config, err := KubeRestConfig()
+	if err != nil {
+		return fmt.Errorf("❌ ERROR: Failed to create rest config for Kubernetes client: %v", err)
+	}
+
+	newConfig, err := kubernetes.NewForConfig(config)
+
+	service, err := newConfig.CoreV1().Services(namespace).Get(context.TODO(), serviceName, metav1.GetOptions{})
+	if err != nil {
+		return fmt.Errorf("❌ ERROR: Failed to get service: %v", err)
+	}
+
+	var labelSelector string
+	for key, value := range service.Spec.Selector {
+		if labelSelector != "" {
+			labelSelector += ","
+		}
+		labelSelector += fmt.Sprintf("%s=%s", key, value)
+	}
+
+	pods, err := newConfig.CoreV1().Pods(namespace).List(context.TODO(), metav1.ListOptions{
+		LabelSelector: labelSelector,
+	})
+	if err != nil {
+		return fmt.Errorf("❌ ERROR: Failed to get pods: %v", err)
+	}
+
+	if len(pods.Items) == 0 {
+		return fmt.Errorf("❌ ERROR: No pods found for service %s in namespace %s", serviceName, namespace)
+	}
+
+	req := newConfig.CoreV1().RESTClient().Post().
+										Resource("pods").
+										Namespace(pods.Items[0].Namespace).
+										Name(pods.Items[0].Name).
+										SubResource("portforward")
+
+	transport, upgrader, err := spdy.RoundTripperFor(config)
+	if err != nil {
+		return fmt.Errorf("❌ ERROR: Failed to create round tripper: %v", err)
+	}
+
+	dialer := spdy.NewDialer(upgrader, &http.Client{Transport: transport}, "POST", req.URL())
+
+	errCh := make(chan error)
+	stopCh := make(chan struct{})
+	readyCh := make(chan struct{})
+
+	ports := []string{fmt.Sprintf("%s:%s", portFrom, portTo)}
+
+	go func() {
+		forwardPorts, err := portforward.New(dialer, ports, stopCh, readyCh, os.Stdout, os.Stderr);
+		if err != nil {
+			errCh <- err
+		}
+		err = forwardPorts.ForwardPorts()
+		if err != nil {
+			errCh <- err
+		}
+	}()
+
+	select {
+	case <-readyCh:
+		fmt.Println("Port forwarding started successfully.")
+	case err := <-errCh:
+		fmt.Printf("Error starting port forwarding: %v\n", err)
+	}
+	<-stopCh
 
 	return nil
 }
