@@ -75,7 +75,7 @@ export function BoxedExpressionEditorContextProvider({
   beeGwtService,
   children,
   pmmlDocuments,
-  evaluationHitsCountPerId,
+  evaluationHitsCountById,
   scrollableParentRef,
   onRequestFeelVariables,
   widthsById,
@@ -116,7 +116,7 @@ export function BoxedExpressionEditorContextProvider({
         dataTypes,
         isReadOnly,
         pmmlDocuments,
-        evaluationHitsCountPerId,
+        evaluationHitsCountById,
 
         //state // FIXME: Move to a separate context (https://github.com/apache/incubator-kie-issues/issues/168)
         currentlyOpenContextMenu,
