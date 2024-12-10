@@ -13,7 +13,7 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
-    "build": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && pnpm copy-assets && pnpm image:build && rimraf build && rimraf target && rimraf dist-tests-e2e && rimraf resources/modules/kogito-postgres-db-migration-deps/quarkus-app",
+    "build": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && pnpm copy-assets && pnpm image:build && rimraf build && rimraf target && rimraf dist-tests-e2e",
     "build:dev": "run-script-os",
     "build:dev:linux": "pnpm build",
     "build:dev:win32:darwin": "echo \"Build skipped on Windows and MacOS\"",
@@ -21,10 +21,10 @@
     "build:prod:linux": "pnpm build",
     "build:prod:win32:darwin": "echo \"Build skipped on Windows and MacOS\"",
     "copy-assets": "run-script-os",
-    "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources build && mkdir -p resources/modules/kogito-postgres-db-migration-deps/quarkus-app && cp -R ./node_modules/@kie-tools/kogito-db-migrator-tool/target/quarkus-app/* resources/modules/kogito-postgres-db-migration-deps/quarkus-app && cp -R resources/* build ",
+    "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources build && cp -R resources/* build && mkdir -p build/modules/kogito-postgres-db-migration-deps/quarkus-app && cp -R ./node_modules/@kie-tools/kogito-db-migrator-tool/target/quarkus-app/* build/modules/kogito-postgres-db-migration-deps/quarkus-app",
     "format": "prettier --write . --ignore-path=../../.prettierignore --ignore-path=../../.gitignore",
     "image:build": "run-script-os",
-    "image:build:linux": "pnpm setup:env && cekit --descriptor build/incubator-kie-kogito-db-migrator-tool-image.yaml -v build docker",
+    "image:build:linux": "pnpm setup:env && make -C ./build build",
     "image:build:win32:darwin": "echo \"Build skipped on Windows and MacOS\"",
     "install": "node install.js && pnpm format",
     "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env kogitoDbMigratorToolImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env kogitoDbMigratorToolImage.account) KOGITO_IMAGE_NAME=$(build-env kogitoDbMigratorToolImage.name) KOGITO_IMAGE_TAG=$(build-env kogitoDbMigratorToolImage.buildTag) QUARKUS_PLATFORM_VERSION=$(build-env versions.quarkus) KOGITO_VERSION=$(build-env versions.kogito)"

@@ -20,6 +20,7 @@ schema_version: 1
 name: org.kie.kogito.postgresql.db-migration-deps
 version: "main"
 artifacts:
+  # The following artifact comes from the package kogito-db-migrator-tool during the pnpm build:dev phase
   - name: sonataflow-db-migrator-quarkus-app
     path: ./quarkus-app
     dest: /home/kogito/bin

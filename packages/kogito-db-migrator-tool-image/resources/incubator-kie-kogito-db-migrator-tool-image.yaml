@@ -38,6 +38,7 @@ modules:
     - path: modules
   install:
     - name: org.kie.kogito.system.user
+    - name: org.kie.kogito.project.versions
     - name: org.kie.kogito.postgresql.db-migration-deps
 
 run:
