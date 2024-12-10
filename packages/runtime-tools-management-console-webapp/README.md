@@ -15,7 +15,9 @@
    under the License.
 -->
 
-# runtime-tools-management-console-webapp
+# Apache KIE™ Management Console
+
+A web application to manage multiple Runtimes.
 
 ## Working with Management Console features
 
