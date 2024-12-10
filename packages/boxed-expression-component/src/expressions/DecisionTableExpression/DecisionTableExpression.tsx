@@ -1045,7 +1045,7 @@ export function DecisionTableExpression({
     [beeTableRows.length]
   );
 
-  const getEvaluationHitsCountSupportedByRow = useCallback((row: ReactTable.Row<ROWTYPE>) => {
+  const supportsEvaluationHitsCount = useCallback((row: ReactTable.Row<ROWTYPE>) => {
     return true;
   }, []);
 
@@ -1078,7 +1078,7 @@ export function DecisionTableExpression({
         shouldShowRowsInlineControls={true}
         shouldShowColumnsInlineControls={true}
         evaluationHitsCountColumnIndex={0}
-        getEvaluationHitsCountSupportedByRow={getEvaluationHitsCountSupportedByRow}
+        supportsEvaluationHitsCount={supportsEvaluationHitsCount}
         // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Check if this is a good strategy or not when doing https://github.com/apache/incubator-kie-issues/issues/181
       />
     </div>

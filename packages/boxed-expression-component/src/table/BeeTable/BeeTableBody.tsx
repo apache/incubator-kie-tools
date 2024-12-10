@@ -59,7 +59,7 @@ export interface BeeTableBodyProps<R extends object> {
   /** See BeeTable.ts */
   evaluationHitsCountColumnIndex?: number;
   /** See BeeTable.ts */
-  getEvaluationHitsCountSupportedByRow?: (row: ReactTable.Row<R>) => boolean;
+  supportsEvaluationHitsCount?: (row: ReactTable.Row<R>) => boolean;
 }
 
 export function BeeTableBody<R extends object>({
@@ -78,7 +78,7 @@ export function BeeTableBody<R extends object>({
   rowWrapper,
   isReadOnly,
   evaluationHitsCountColumnIndex,
-  getEvaluationHitsCountSupportedByRow,
+  supportsEvaluationHitsCount,
 }: BeeTableBodyProps<R>) {
   const { evaluationHitsCountById } = useBoxedExpressionEditor();
 
@@ -87,7 +87,7 @@ export function BeeTableBody<R extends object>({
       reactTableInstance.prepareRow(row);
 
       const rowKey = getRowKey(row);
-      const isEvalationHitsCountSupportedByRow: boolean = getEvaluationHitsCountSupportedByRow?.(row) ?? false;
+      const isEvalationHitsCountSupportedByRow: boolean = supportsEvaluationHitsCount?.(row) ?? false;
       const rowEvaluationHitsCount = evaluationHitsCountById ? evaluationHitsCountById?.get(rowKey) ?? 0 : undefined;
       const canDisplayEvaluationHitsCountRowOverlay =
         rowEvaluationHitsCount !== undefined && isEvalationHitsCountSupportedByRow === true;

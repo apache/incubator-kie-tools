@@ -104,7 +104,7 @@ export function BeeTableInternal<R extends object>({
   lastColumnMinWidth,
   rowWrapper,
   evaluationHitsCountColumnIndex,
-  getEvaluationHitsCountSupportedByRow,
+  supportsEvaluationHitsCount,
 }: BeeTableProps<R> & {
   selectionRef?: React.RefObject<BeeTableSelectionRef>;
 }) {
@@ -660,7 +660,7 @@ export function BeeTableInternal<R extends object>({
           lastColumnMinWidth={lastColumnMinWidth}
           isReadOnly={isReadOnly}
           evaluationHitsCountColumnIndex={evaluationHitsCountColumnIndex}
-          getEvaluationHitsCountSupportedByRow={getEvaluationHitsCountSupportedByRow}
+          supportsEvaluationHitsCount={supportsEvaluationHitsCount}
         />
       </table>
       <BeeTableContextMenuHandler

@@ -230,7 +230,7 @@ export function ConditionalExpression({
     return row.original.part["@_id"];
   }, []);
 
-  const getEvaluationHitsCountSupportedByRow = useCallback((row: ReactTable.Row<ROWTYPE>) => {
+  const supportsEvaluationHitsCount = useCallback((row: ReactTable.Row<ROWTYPE>) => {
     return row.original.label !== "if";
   }, []);
 
@@ -257,7 +257,7 @@ export function ConditionalExpression({
           shouldShowRowsInlineControls={false}
           shouldShowColumnsInlineControls={false}
           evaluationHitsCountColumnIndex={1}
-          getEvaluationHitsCountSupportedByRow={getEvaluationHitsCountSupportedByRow}
+          supportsEvaluationHitsCount={supportsEvaluationHitsCount}
         />
       </div>
     </NestedExpressionContainerContext.Provider>
