@@ -34,7 +34,7 @@ export interface BoxedExpressionEditorContextType {
   pmmlDocuments?: PmmlDocument[];
   dataTypes: DmnDataType[];
   isReadOnly?: boolean;
-  evaluationHitsCountPerId?: Map<string, number>;
+  evaluationHitsCountById?: Map<string, number>;
 
   // State
   currentlyOpenContextMenu: string | undefined;
