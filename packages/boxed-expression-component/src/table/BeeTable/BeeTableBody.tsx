@@ -90,9 +90,8 @@ export function BeeTableBody<R extends object>({
       const rowEvaluationHitsCount = evaluationHitsCountById ? evaluationHitsCountById?.get(rowKey) ?? 0 : undefined;
       const canDisplayEvaluationHitsCountRowOverlay =
         rowEvaluationHitsCount !== undefined && (supportsEvaluationHitsCount?.(row) ?? false);
-      const rowClassName = canDisplayEvaluationHitsCountRowOverlay
-        ? rowKey + (rowEvaluationHitsCount > 0 ? " evaluation-hits-count-row-overlay" : "")
-        : rowKey;
+      const rowClassName = `${rowKey}${canDisplayEvaluationHitsCountRowOverlay && rowEvaluationHitsCount > 0 ? " evaluation-hits-count-row-overlay" : ""}`;
+
       const renderTr = () => (
         <tr className={rowClassName} key={rowKey} data-testid={`kie-tools--bee--expression-row-${rowIndex}`}>
           {row.cells.map((cell, cellIndex) => {
