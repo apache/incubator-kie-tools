@@ -147,6 +147,9 @@ export function BeeTableBody<R extends object>({
       );
     },
     [
+      evaluationHitsCountById,
+      evaluationHitsCountColumnIndex,
+      supportsEvaluationHitsCount,
       reactTableInstance,
       rowWrapper,
       getRowKey,
