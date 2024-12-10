@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~ 
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~ 
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.      
+-->
+<definitions
+  xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
+  xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:kie="https://kie.org/dmn/extensions/1.0"
+  expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+  namespace="https://kie.org/dmn/_B2A15CAD-A32F-461F-9BEA-4E4BC46B76D6"
+  id="_8D96437B-D31F-437F-8B32-CD54C071A151"
+  name="DMN_B739B18D-74D9-4C75-A8E9-6845E731D3EB"
+>
+  <decisionService name="MyDS" id="_B141585F-BF2D-4A06-AD30-E2B8EC2A6D55">
+    <variable name="MyDS" id="_2C33EB78-3C0F-45E2-9A68-DC9BF1E09DCB" typeRef="Any" />
+    <outputDecision href="#_E2884578-AEA4-4CE5-8B23-00060D4C2EC9" />
+    <encapsulatedDecision href="#_0A37D837-F93A-4A5A-A335-E51F55D0070D" />
+    <inputData href="#_8ABF251F-B9D6-478E-BF18-AA8E7724CEE9" />
+  </decisionService>
+  <decision name="RemoteDecision" id="_0A37D837-F93A-4A5A-A335-E51F55D0070D">
+    <variable name="RemoteDecision" id="_3FEA818D-47C3-474D-A2B2-46AB7BB46B90" typeRef="Any" />
+    <informationRequirement id="_B64D2B58-DF44-4D4B-ADB4-4888AF677C08">
+      <requiredInput href="#_8ABF251F-B9D6-478E-BF18-AA8E7724CEE9" />
+    </informationRequirement>
+    <literalExpression id="_CADCEE70-2AFB-406A-8943-722C1B1DB1E6" typeRef="Any" label="RemoteDecision">
+      <text>Input</text>
+    </literalExpression>
+  </decision>
+  <inputData name="RemoteInput" id="_8ABF251F-B9D6-478E-BF18-AA8E7724CEE9">
+    <variable name="RemoteInput" id="_E30CE2A8-D907-489A-86FF-5E9040C85DA0" typeRef="Any" />
+  </inputData>
+  <decision name="AnotherRemoteDecision" id="_E2884578-AEA4-4CE5-8B23-00060D4C2EC9">
+    <variable name="AnotherRemoteDecision" id="_BCF70EC9-BB49-47F1-B978-F95120D7D6A8" />
+    <informationRequirement id="_A20B4362-1424-46CA-9737-5B5F812DD836">
+      <requiredDecision href="#_0A37D837-F93A-4A5A-A335-E51F55D0070D" />
+    </informationRequirement>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram
+      id="_319C4D28-9892-4521-B714-A0B607DED18F"
+      name="Default DRD"
+      useAlternativeInputDataShape="false"
+    >
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_CADCEE70-2AFB-406A-8943-722C1B1DB1E6">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape
+        id="_B8C611D4-7FC8-46B9-BC24-B0804CC45382"
+        dmnElementRef="_B141585F-BF2D-4A06-AD30-E2B8EC2A6D55"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="220" y="-40" width="320" height="320" />
+        <dmndi:DMNDecisionServiceDividerLine id="_6C99D7D5-A864-4D84-95C2-8CCF6C8D521C">
+          <di:waypoint x="220" y="120" />
+          <di:waypoint x="540" y="120" />
+        </dmndi:DMNDecisionServiceDividerLine>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape
+        id="_89705EA9-4E6F-4699-A7FF-C01B433FC20E"
+        dmnElementRef="_0A37D837-F93A-4A5A-A335-E51F55D0070D"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="300" y="160" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape
+        id="_40457313-1A43-4486-A369-BEE1EE1B9845"
+        dmnElementRef="_8ABF251F-B9D6-478E-BF18-AA8E7724CEE9"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="0" y="160" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge
+        id="_C802FEE9-EFE0-4F17-8A57-4C5BBB0A7CF4"
+        dmnElementRef="_B64D2B58-DF44-4D4B-ADB4-4888AF677C08"
+        sourceElement="_40457313-1A43-4486-A369-BEE1EE1B9845"
+        targetElement="_89705EA9-4E6F-4699-A7FF-C01B433FC20E"
+      >
+        <di:waypoint x="80" y="200" />
+        <di:waypoint x="380" y="200" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape
+        id="_19C09A3C-ACCD-47AD-A3C7-C7EB308B053F"
+        dmnElementRef="_E2884578-AEA4-4CE5-8B23-00060D4C2EC9"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="300" y="20" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge
+        id="_A237BF8B-4CF2-4DE0-8302-9D9D3E730FFC"
+        dmnElementRef="_A20B4362-1424-46CA-9737-5B5F812DD836"
+        sourceElement="_89705EA9-4E6F-4699-A7FF-C01B433FC20E"
+        targetElement="_19C09A3C-ACCD-47AD-A3C7-C7EB308B053F"
+      >
+        <di:waypoint x="380" y="200" />
+        <di:waypoint x="380" y="60" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

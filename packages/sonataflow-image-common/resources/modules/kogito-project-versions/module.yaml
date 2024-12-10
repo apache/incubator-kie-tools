@@ -25,6 +25,9 @@ envs:
   - name: "KOGITO_VERSION"
     value: "### SET ME DURING BUILD PROCESS ###"
     description: Defines the Kogito version to be used by the builder images. Not intended to be changed by end user.
+  - name: "QUARKUS_PLATFORM_GROUPID"
+    value: "### SET ME DURING BUILD PROCESS ###"
+    description: Defines the Quarkus Platform groupId to be used by the builder images. Not intended to be changed by end user.
   - name: "QUARKUS_PLATFORM_VERSION"
     value: "### SET ME DURING BUILD PROCESS ###"
     description: Defines the Quarkus Platform version to be used by the builder images. Not intended to be changed by end user.

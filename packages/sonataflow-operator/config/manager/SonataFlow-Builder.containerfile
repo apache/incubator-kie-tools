@@ -16,7 +16,6 @@
 # under the License.
 
 FROM docker.io/apache/incubator-kie-sonataflow-builder:main AS builder
-# This image name and tag is auto-replaced using environment variables during install, don't touch.
 
 # variables that can be overridden by the builder
 # To add a Quarkus extension to your application
@@ -30,14 +29,14 @@ ARG MAVEN_ARGS_APPEND
 COPY --chown=1001 . ./resources
 
 RUN /home/kogito/launch/build-app.sh ./resources
-
+  
 #=============================
 # Runtime Run
 #=============================
 FROM registry.access.redhat.com/ubi9/openjdk-17-runtime:latest
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
-
+  
 # We make four distinct layers so if there are application changes the library layers can be re-used
 COPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/lib/ /deployments/lib/
 COPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/*.jar /deployments/

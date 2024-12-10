@@ -112,6 +112,16 @@ function paginatedResult(arr, offset, limit) {
 }
 // Provide resolver functions for your schema fields
 const resolvers = {
+  Mutation: {
+    JobExecute: async (_parent, args) => {
+      const job = data.JobsData.find((data) => {
+        return data.id === args["id"];
+      });
+      if (!job) return;
+      job.expirationTime = null;
+      job.status = "EXECUTED";
+    },
+  },
   Query: {
     ProcessInstances: async (parent, args) => {
       let result = data.ProcessInstanceData.filter((datum) => {
@@ -169,7 +179,16 @@ const resolvers = {
       await timeout();
       return data.ProcessDefinitionData;
     },
-    Jobs: () => [],
+    Jobs: async (parent, args) =>
+      data.JobsData.filter((job) => {
+        if (!args["where"]) {
+          return true;
+        } else if (args["where"].processInstanceId && args["where"].processInstanceId.equal) {
+          return job.processInstanceId == args["where"].processInstanceId.equal;
+        } else {
+          return false;
+        }
+      }),
   },
 
   DateTime: new GraphQLScalarType({

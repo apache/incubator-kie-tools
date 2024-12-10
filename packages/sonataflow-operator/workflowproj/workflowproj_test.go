@@ -30,10 +30,11 @@ import (
 
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 	"github.com/stretchr/testify/assert"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes/scheme"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 )
 
 func Test_Handler_WorkflowMinimal(t *testing.T) {
@@ -78,7 +79,14 @@ func Test_Handler_WorkflowMinimalAndPropsAndSpec(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, proj.Workflow)
 	assert.NotNil(t, proj.Workflow.ObjectMeta)
-	assert.Equal(t, proj.Workflow.ObjectMeta.Labels, map[string]string{"app": "hello", "sonataflow.org/workflow-app": "hello"})
+	assert.Equal(t, proj.Workflow.ObjectMeta.Labels, map[string]string{
+		"app":                               "hello",
+		"sonataflow.org/workflow-app":       "hello",
+		"sonataflow.org/workflow-namespace": "default",
+		"app.kubernetes.io/name":            "hello",
+		"app.kubernetes.io/component":       "serverless-workflow",
+		"app.kubernetes.io/managed-by":      "sonataflow-operator",
+	})
 	assert.NotNil(t, proj.Properties)
 	assert.NotEmpty(t, proj.Resources)
 	assert.Equal(t, "hello", proj.Workflow.Name)
@@ -224,6 +232,14 @@ func Test_Handler_WorkflowService_SaveAs(t *testing.T) {
 	t.Run("SaveAs with empty namespace namespace", func(t *testing.T) {
 		testRun(t, New("").WithWorkflow(getWorkflowService()))
 	})
+}
+
+func TestWorkflowProjectHandler_Image(t *testing.T) {
+	handler := New("default").WithWorkflow(getWorkflowService())
+	proj, err := handler.AsObjects()
+	handler.Image("host/namespace/service:latest")
+	assert.NoError(t, err)
+	assert.Equal(t, "host/namespace/service:latest", proj.Workflow.Spec.PodTemplate.Container.Image)
 }
 
 func getWorkflowMinimalInvalid() io.Reader {

@@ -1,0 +1,282 @@
+---
+openapi: 3.0.0
+info:
+  title: greeting-flow API
+  version: "1.0"
+paths:
+  /:
+    post:
+      requestBody:
+        content:
+          "*/*":
+            schema:
+              $ref: "#/components/schemas/CloudEvent"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+  /hello:
+    get:
+      tags:
+        - Reactive Greeting Resource
+      operationId: hello
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /messaging/topics:
+    get:
+      tags:
+        - Quarkus Topics Information Resource
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    Type:
+      type: object
+      properties:
+        tags:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+    CloudEvent:
+      type: object
+      properties:
+        specVersion:
+          $ref: "#/components/schemas/SpecVersion"
+        id:
+          type: string
+        type:
+          type: string
+        source:
+          format: uri
+          type: string
+        dataContentType:
+          type: string
+        dataSchema:
+          format: uri
+          type: string
+        subject:
+          type: string
+        time:
+          format: date-time
+          type: string
+        attributeNames:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        extensionNames:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        data:
+          $ref: "#/components/schemas/CloudEventData"
+    CloudEventData:
+      type: object
+    EntityTag:
+      type: object
+      properties:
+        value:
+          type: string
+        weak:
+          type: boolean
+    Family:
+      enum:
+        - INFORMATIONAL
+        - SUCCESSFUL
+        - REDIRECTION
+        - CLIENT_ERROR
+        - SERVER_ERROR
+        - OTHER
+      type: string
+    Link:
+      type: object
+      properties:
+        uri:
+          format: uri
+          type: string
+        uriBuilder:
+          $ref: "#/components/schemas/UriBuilder"
+        rel:
+          type: string
+        rels:
+          type: array
+          items:
+            type: string
+        title:
+          type: string
+        type:
+          type: string
+        params:
+          type: object
+          additionalProperties:
+            type: string
+    Locale:
+      type: object
+      properties:
+        language:
+          type: string
+        script:
+          type: string
+        country:
+          type: string
+        variant:
+          type: string
+        extensionKeys:
+          uniqueItems: true
+          type: array
+          items:
+            format: byte
+            type: string
+        unicodeLocaleAttributes:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        unicodeLocaleKeys:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        iSO3Language:
+          type: string
+        iSO3Country:
+          type: string
+        displayLanguage:
+          type: string
+        displayScript:
+          type: string
+        displayCountry:
+          type: string
+        displayVariant:
+          type: string
+        displayName:
+          type: string
+    MediaType:
+      type: object
+      properties:
+        type:
+          type: string
+        subtype:
+          type: string
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
+        wildcardType:
+          type: boolean
+        wildcardSubtype:
+          type: boolean
+    MultivaluedMapStringObject:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: object
+    MultivaluedMapStringString:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: string
+    NewCookie:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+        version:
+          format: int32
+          type: integer
+        path:
+          type: string
+        domain:
+          type: string
+        comment:
+          type: string
+        maxAge:
+          format: int32
+          type: integer
+        expiry:
+          format: date
+          type: string
+        secure:
+          type: boolean
+        httpOnly:
+          type: boolean
+    Response:
+      type: object
+      properties:
+        status:
+          format: int32
+          type: integer
+        statusInfo:
+          $ref: "#/components/schemas/StatusType"
+        entity:
+          type: object
+        mediaType:
+          $ref: "#/components/schemas/MediaType"
+        language:
+          $ref: "#/components/schemas/Locale"
+        length:
+          format: int32
+          type: integer
+        allowedMethods:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        cookies:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/NewCookie"
+        entityTag:
+          $ref: "#/components/schemas/EntityTag"
+        date:
+          format: date
+          type: string
+        lastModified:
+          format: date
+          type: string
+        location:
+          format: uri
+          type: string
+        links:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/Link"
+        metadata:
+          $ref: "#/components/schemas/MultivaluedMapStringObject"
+        headers:
+          $ref: "#/components/schemas/MultivaluedMapStringObject"
+        stringHeaders:
+          $ref: "#/components/schemas/MultivaluedMapStringString"
+    SpecVersion:
+      enum:
+        - V03
+        - V1
+      type: string
+    StatusType:
+      type: object
+      properties:
+        statusCode:
+          format: int32
+          type: integer
+        family:
+          $ref: "#/components/schemas/Family"
+        reasonPhrase:
+          type: string
+    UriBuilder:
+      type: object
