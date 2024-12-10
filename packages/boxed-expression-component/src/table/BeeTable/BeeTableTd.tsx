@@ -232,7 +232,7 @@ export function BeeTableTd<R extends object>({
   }, [column.id, onDataCellKeyUp]);
 
   const evaluationHitsCountBadgeClassName = useMemo(() => {
-    canDisplayEvaluationHitsCountBadge
+    return canDisplayEvaluationHitsCountBadge
       ? (evaluationHitsCount ?? 0) > 0
         ? "evaluation-hits-count-badge-colored"
         : "evaluation-hits-count-badge-non-colored"
