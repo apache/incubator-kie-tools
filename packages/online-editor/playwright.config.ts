@@ -36,19 +36,25 @@ const customConfig = defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: "pnpm test-e2e:start:cors-proxy",
+      command: "pnpm start:cors-proxy",
       url: `http://localhost:${buildEnv.corsProxy.dev.port}/ping`,
       reuseExistingServer: !process.env.CI || true,
       stdout: "pipe",
     },
     {
-      command: "pnpm test-e2e:start:extended-services",
-      url: `http://localhost:${buildEnv.extendedServices.port}/ping`,
+      command: "pnpm start:extended-services",
+      url: `http://localhost:${buildEnv.extendedServicesJava.port}/ping`,
       reuseExistingServer: !process.env.CI || true,
       stdout: "pipe",
     },
     {
-      command: "pnpm start",
+      command: "pnpm start:kie-sandbox-accelerator-quarkus",
+      url: `http://localhost:${buildEnv.kieSandboxAcceleratorQuarkus.dev.port}/git-repo-bare.git`,
+      reuseExistingServer: !process.env.CI || true,
+      stdout: "pipe",
+    },
+    {
+      command: "pnpm start:kie-sandbox",
       url: `http://localhost:${buildEnv.onlineEditor.dev.port}`,
       reuseExistingServer: !process.env.CI || true,
       ignoreHTTPSErrors: true,

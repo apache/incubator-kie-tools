@@ -22,9 +22,12 @@ import (
 	"fmt"
 	"net/url"
 	"os/exec"
+	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
+	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/test/utils"
 
 	//nolint:golint
@@ -47,9 +50,68 @@ type check struct {
 	Data   map[string]string `json:"data"`
 }
 
+const (
+	ephemeral            = "ephemeral"
+	postgreSQL           = "postgreSQL"
+	clusterWideEphemeral = "cluster-wide-ephemeral"
+	ephemeralDataIndex   = "ephemeral-data-index"
+	ephemeralJobService  = "ephemeral-job-service"
+)
+
+const randomIntRange = 16384 //Set to large number to avoid cluster namespace name collisions
+
 var (
 	upStatus string = "UP"
 )
+
+func kubectlApplyFileOnCluster(file, namespace string) error {
+	cmd := exec.Command("kubectl", "apply", "-f", file, "-n", namespace)
+	_, err := utils.Run(cmd)
+	return err
+}
+
+func kubectlDeleteFileOnCluster(file, namespace string) error {
+	cmd := exec.Command("kubectl", "delete", "-f", file, "-n", namespace)
+	_, err := utils.Run(cmd)
+	return err
+}
+
+func kubectlCreateNamespace(namespace string) error {
+	cmd := exec.Command("kubectl", "create", "namespace", namespace)
+	_, err := utils.Run(cmd)
+	return err
+}
+
+func kubectlNamespaceExists(namespace string) (bool, error) {
+	cmd := exec.Command("kubectl", "get", "namespace", "-o", fmt.Sprintf(`jsonpath={.items[?(@.metadata.name=="%s")].metadata.name}`, namespace))
+	output, err := utils.Run(cmd)
+	if err != nil {
+		return false, err
+	}
+	return len(output) > 0, nil
+}
+
+func kubectlDeleteNamespace(namespace string) error {
+	cmd := exec.Command("kubectl", "delete", "namespace", namespace)
+	_, err := utils.Run(cmd)
+	return err
+}
+
+func kubectlPatchSonataFlowImageAndRollout(namespace, workflowName, image string) error {
+	cmd := exec.Command("kubectl", "patch", "sonataflow", workflowName,
+		"--type", "json", "-n", namespace,
+		"-p", fmt.Sprintf(`[{"op": "replace", "path": "/spec/podTemplate/container/image", "value": "%s"}, {"op": "replace", "path": "/spec/podTemplate/replicas", "value": 1}]`, image))
+	_, err := utils.Run(cmd)
+	return err
+}
+
+func kubectlPatchSonataFlowScaleDown(namespace, workflowName string) error {
+	cmd := exec.Command("kubectl", "patch", "sonataflow", workflowName,
+		"--type", "json", "-n", namespace,
+		"-p", `[{"op": "replace", "path": "/spec/podTemplate/replicas", "value": 0}]`)
+	_, err := utils.Run(cmd)
+	return err
+}
 
 func getHealthFromPod(name, namespace string) (*health, error) {
 	// iterate over all containers to find the one that responds to the HTTP health endpoint
@@ -116,7 +178,8 @@ func getHealthStatusInContainer(podName string, containerName string, ns string)
 	GinkgoWriter.Println(fmt.Sprintf("Health status:\n%s", string(output)))
 	return &h, nil
 }
-func verifyWorkflowIsInRunningStateInNamespace(workflowName string, ns string) bool {
+
+func verifyWorkflowIsInRunningState(workflowName string, ns string) bool {
 	cmd := exec.Command("kubectl", "get", "workflow", workflowName, "-n", ns, "-o", "jsonpath={.status.conditions[?(@.type=='Running')].status}")
 	response, err := utils.Run(cmd)
 	if err != nil {
@@ -137,12 +200,8 @@ func verifyWorkflowIsInRunningStateInNamespace(workflowName string, ns string) b
 	return status
 }
 
-func verifyWorkflowIsInRunningState(workflowName string, targetNamespace string) bool {
-	return verifyWorkflowIsInRunningStateInNamespace(workflowName, targetNamespace)
-}
-
 func verifyWorkflowIsAddressable(workflowName string, targetNamespace string) bool {
-	cmd := exec.Command("kubectl", "get", "workflow", workflowName, "-n", targetNamespace, "-o", "jsonpath={.status.address.url}")
+	cmd := exec.Command("kubectl", "get", "workflow", workflowName, "-n", targetNamespace, "-ojsonpath={.status.address.url}")
 	if response, err := utils.Run(cmd); err != nil {
 		GinkgoWriter.Println(fmt.Errorf("failed to check if greeting workflow is running: %v", err))
 		return false
@@ -159,4 +218,185 @@ func verifyWorkflowIsAddressable(workflowName string, targetNamespace string) bo
 		}
 		return false
 	}
+}
+
+func verifySchemaMigration(data, name string) bool {
+	matched1, err := regexp.MatchString(fmt.Sprintf("Successfully applied \\d migrations to schema \"%s\"", name), data)
+	if err != nil {
+		GinkgoWriter.Println(fmt.Errorf("string match error:%v", err))
+		return false
+	}
+	matched2, err := regexp.MatchString("Successfully validated \\d (migration|migrations)", data)
+	if err != nil {
+		GinkgoWriter.Println(fmt.Errorf("string match error:%v", err))
+		return false
+	}
+	GinkgoWriter.Println(fmt.Sprintf("verifying schemaMigration, logs=%v", data))
+	return (matched1 && strings.Contains(data, fmt.Sprintf("Creating schema \"%s\"", name)) &&
+		strings.Contains(data, fmt.Sprintf("Migrating schema \"%s\" to version", name))) ||
+		(matched2 && strings.Contains(data, fmt.Sprintf("Current version of schema \"%s\"", name)) &&
+			strings.Contains(data, fmt.Sprintf("Schema \"%s\" is up to date. No migration necessary", name))) ||
+		(strings.Contains(data, fmt.Sprintf("Creating schema \"%s\"", name)) &&
+			strings.Contains(data, fmt.Sprintf("Current version of schema \"%s\"", name)) &&
+			strings.Contains(data, fmt.Sprintf("Schema \"%s\" is up to date. No migration necessary", name)))
+}
+
+func verifyKSinkInjection(label, ns string) bool {
+	cmd := exec.Command("kubectl", "get", "pod", "-n", ns, "-l", label, "-o", "jsonpath={.items[*].metadata.name}")
+	out, err := utils.Run(cmd)
+	if err != nil {
+		GinkgoWriter.Println(fmt.Errorf("failed to get pods: %v", err))
+		return false
+	}
+	podNames := strings.Fields(string(out))
+	if len(podNames) == 0 {
+		GinkgoWriter.Println("no pods found to check K_SINK")
+		return false // pods haven't created yet
+	}
+	GinkgoWriter.Println(fmt.Sprintf("pods found: %s", podNames))
+	for _, pod := range podNames {
+		cmd = exec.Command("kubectl", "get", "pod", pod, "-n", ns, "-o", "json")
+		out, err := utils.Run(cmd)
+		if err != nil {
+			GinkgoWriter.Println(fmt.Errorf("failed to get pod: %v", err))
+			return false
+		}
+		GinkgoWriter.Println(string(out))
+		if !strings.Contains(string(out), "K_SINK") { // The pod does not have K_SINK injected
+			GinkgoWriter.Println(fmt.Sprintf("Pod does not have K_SINK injected: %s", string(out)))
+			return false
+		}
+	}
+	return true
+}
+
+func waitForPodRestartCompletion(label, ns string) (podRunning string) {
+	EventuallyWithOffset(1, func() bool {
+		cmd := exec.Command("kubectl", "get", "pod", "-n", ns, "-l", label, "-o", "jsonpath={.items[*].metadata.name}")
+		out, err := utils.Run(cmd)
+		if err != nil {
+			GinkgoWriter.Println(fmt.Errorf("failed to get pods: %v", err))
+			return false
+		}
+		podNames := strings.Fields(string(out))
+		if len(podNames) == 0 {
+			GinkgoWriter.Println("no pods found")
+			return false // pods haven't created yet
+		} else if len(podNames) > 1 {
+			GinkgoWriter.Println("multiple pods found")
+			return false // multiple pods found, wait for other pods to terminate
+		}
+		podRunning = podNames[0]
+		return true
+	}, 10*time.Minute, 5).Should(BeTrue())
+
+	return
+}
+
+func verifyTrigger(triggers []operatorapi.SonataFlowPlatformTriggerRef, namePrefix, path, ns, broker string) error {
+	GinkgoWriter.Println("Triggers from platform status:", triggers)
+	for _, ref := range triggers {
+		if strings.HasPrefix(ref.Name, namePrefix) && ref.Namespace == ns {
+			EventuallyWithOffset(1, func() error {
+				return verifyTriggerData(ref.Name, ns, path, broker)
+			}, 2*time.Minute, 5).Should(Succeed())
+			return nil
+		}
+	}
+	return fmt.Errorf("failed to find trigger to verify with prefix: %v, namespace: %v", namePrefix, ns)
+}
+
+func verifyTriggerData(name, ns, path, broker string) error {
+	cmd := exec.Command("kubectl", "get", "trigger", name, "-n", ns, "-ojsonpath={.spec.broker} {.status.subscriberUri} {.status.conditions[?(@.type=='Ready')].status}")
+	out, err := utils.Run(cmd)
+	if err != nil {
+		return err
+	}
+	data := strings.Fields(string(out))
+	if len(data) == 3 && broker == data[0] && strings.HasSuffix(data[1], path) && data[2] == "True" {
+		return nil
+	}
+	return fmt.Errorf("failed to verify trigger %v with namespace %v, path %v, broker %s, and received data=%s", name, ns, path, broker, string(out))
+}
+
+func verifySinkBinding(name, ns, broker string) error {
+	cmd := exec.Command("kubectl", "get", "sinkbinding", name, "-n", ns, "-ojsonpath={.status.sinkUri} {.status.conditions[?(@.type=='Ready')].status}")
+	out, err := utils.Run(cmd)
+	if err != nil {
+		return err
+	}
+	data := strings.Fields(string(out))
+	if len(data) == 2 && strings.HasSuffix(data[0], broker) && data[1] == "True" {
+		return nil
+	}
+	return fmt.Errorf("failed to verify sinkbinding %v, data=%s", name, string(out))
+}
+
+func getWorkflowId(resp string) (string, error) {
+	// First find the json data
+	ind1 := strings.Index(resp, "{")
+	ind2 := strings.LastIndex(resp, "}")
+	data := resp[ind1 : ind2+1]
+	// Retrieve the id from json data
+	m := make(map[string]interface{})
+	err := json.Unmarshal([]byte(data), &m)
+	if err != nil {
+		return "", err
+	}
+	if id, ok := m["id"].(string); ok {
+		return id, nil
+	}
+	return "", fmt.Errorf("failed to find workflow id")
+}
+
+func getMetricValue(resp string) (string, error) {
+	fmt.Println(resp)
+	ind1 := strings.Index(resp, "{")
+	ind2 := strings.LastIndex(resp, "}")
+	data := resp[ind1 : ind2+1]
+
+	// Retrieve the metric value from json data
+	m := make(map[string]interface{})
+	err := json.Unmarshal([]byte(data), &m)
+	if err != nil {
+		return "", err
+	}
+	result, ok := m["data"].(map[string]interface{})["result"]
+	if !ok {
+		return "", fmt.Errorf("no valid response data received")
+	}
+	metrics := result.([]interface{})
+	if len(metrics) == 0 {
+		return "", fmt.Errorf("no valid metric data retrieved")
+	}
+	metric := metrics[0]
+	values := metric.(map[string]interface{})["value"]
+	if val, ok := (values.([]interface{}))[1].(string); ok {
+		return val, nil
+	} else {
+		return "", fmt.Errorf("failed to get metric value")
+	}
+}
+
+func getPodNameAfterWorkflowInstCreation(name, ns string) (string, error) {
+	labels := fmt.Sprintf("sonataflow.org/workflow-app=%s,sonataflow.org/workflow-namespace=%s", name, ns)
+	cmd := exec.Command("kubectl", "get", "pod", "-n", ns, "-l", labels, "-o=jsonpath='{range .items[*]}{.metadata.name} {.status.conditions[?(@.type=='Ready')].status}{';'}{end}'")
+	fmt.Println(cmd.String())
+	out, err := utils.Run(cmd)
+	if err != nil {
+		return "", err
+	}
+	fmt.Println(string(out))
+	data := strings.Split(string(out), ";")
+	for _, line := range data {
+		res := strings.Fields(line)
+		if len(res) == 2 && strings.Contains(res[0], "-00002-deployment-") {
+			if res[1] == "True" {
+				return res[0], nil
+			} else {
+				return "", fmt.Errorf("pod %s is not ready=", res)
+			}
+		}
+	}
+	return "", fmt.Errorf("invalid data received: %s", string(out))
 }

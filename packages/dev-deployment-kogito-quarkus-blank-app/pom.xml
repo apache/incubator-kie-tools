@@ -54,6 +54,9 @@
     <version.maven.jar.plugin>3.4.1</version.maven.jar.plugin>
     <version.maven.clean.plugin>3.4.0</version.maven.clean.plugin>
     <version.codehaus.flatten.plugin>1.6.0</version.codehaus.flatten.plugin>
+    <!-- Temporary declaring xstream dependency, a version (1.4.20) is transitively imported by Quarkus 3.8 affected by CVE
+      When upgrading Quarkus (> 3.15.x) to a new version, please evaluate if this exclusion can be removed   -->
+    <version.com.thoughtworks.xstream>1.4.21</version.com.thoughtworks.xstream>
 
     <!-- Config -->
     <maven.compiler.parameters>true</maven.compiler.parameters>
@@ -87,6 +90,13 @@
         <groupId>org.jbpm</groupId>
         <artifactId>jbpm-with-drools-quarkus</artifactId>
         <version>${version.org.kie.kogito}</version>
+      </dependency>
+      <!-- Temporary declaring xstream dependency, a version (1.4.20) is transitively imported by Quarkus 3.8 affected by CVE
+           When upgrading Quarkus (> 3.15.x) to a new version, please evaluate if this exclusion can be removed   -->
+      <dependency>
+        <groupId>com.thoughtworks.xstream</groupId>
+        <artifactId>xstream</artifactId>
+        <version>${version.com.thoughtworks.xstream}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

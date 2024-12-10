@@ -1,4 +1,3 @@
-#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,12 +14,11 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-#
 
 name: platform-kaniko-using-cache
 spec:
   publishStrategy: "Kaniko"
-  baseImage: docker.io/apache/incubator-kie-sonataflow-builder:main # This image name and tag is auto-replaced using environment variables during install, don't touch.
+  baseImage: docker.io/apache/incubator-kie-sonataflow-builder:main
   registry:
     address: docker.io/apache
     secret: regcred

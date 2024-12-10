@@ -16,8 +16,9 @@
 package v1alpha08
 
 import (
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api"
 )
 
 const (
@@ -93,6 +94,7 @@ func (in *SonataFlowClusterPlatformStatus) IsDuplicated() bool {
 // +kubebuilder:printcolumn:name="Ready",type=string,JSONPath=`.status.conditions[?(@.type=='Succeed')].status`
 // +kubebuilder:printcolumn:name="Reason",type=string,JSONPath=`.status.conditions[?(@.type=='Succeed')].reason`
 // +operator-sdk:csv:customresourcedefinitions:resources={{SonataFlowPlatform,sonataflow.org/v1alpha08,"A SonataFlow Platform"}}
+// +operator-sdk:csv:customresourcedefinitions:displayName="SonataFlowClusterPlatform"
 type SonataFlowClusterPlatform struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
