@@ -22,6 +22,7 @@ package command
 import (
 	"errors"
 	"fmt"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common/k8sclient"
 	"gopkg.in/yaml.v2"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -184,13 +185,11 @@ func waitForDeploymentAndOpenDevUi(cfg *DeployUndeployCmdConfig) error {
 
 	fmt.Println("🔍 Waiting for the deployment to complete...", workflow.Id)
 
-	go PollGetDeploymentStatus(cfg.NameSpace, workflow.Id, 5*time.Second, deployed, errCan)
+	go PollGetDeploymentStatus(cfg.NameSpace, workflow.Id, 5*time.Second,5 * time.Minute, deployed, errCan)
 
 	select {
 	case <-deployed:
 		fmt.Printf(" - ✅ Deployment of %s completed\n", workflow.Id)
-	case <- time.After(5 * time.Minute):
-		return fmt.Errorf("❌ ERROR: deployment of %s timed out", workflow.Id)
 	case err := <-errCan:
 		return fmt.Errorf("❌ ERROR: failed to get deployment status: %w", err)
 	}
@@ -202,18 +201,33 @@ func waitForDeploymentAndOpenDevUi(cfg *DeployUndeployCmdConfig) error {
 	return nil
 }
 
-func PollGetDeploymentStatus(namespace, deploymentName string, interval time.Duration, ready chan<- bool, errCan chan<- error) {
+func PollGetDeploymentStatus(namespace, deploymentName string, interval, timeout time.Duration, ready chan<- bool, errChan chan<- error) {
+	var noDeploymentFound k8sclient.NoDeploymentFoundError
+	timeoutCh := time.After(timeout)
+
 	for {
-		status, err := common.GetDeploymentStatus(namespace, deploymentName)
-		if err != nil {
-			errCan <- fmt.Errorf("❌ ERROR: failed to get deployment status: %w", err)
+		select {
+		case <-timeoutCh:
+			errChan <- fmt.Errorf("timeout riched for deployment %s in namespace %s", deploymentName, namespace)
 			return
+		default:
+			status, err := common.GetDeploymentStatus(namespace, deploymentName)
+			if err != nil {
+				if errors.As(err, &noDeploymentFound) {
+					// ALL GOOD
+				} else {
+					errChan <- err
+					return
+				}
+			} else {
+				if status.ReadyReplicas == status.Replicas {
+					ready <- true
+					return
+				}
+			}
+
+			time.Sleep(interval)
 		}
-		if status.ReadyReplicas == status.Replicas {
-			ready <- true
-			return
-		}
-		time.Sleep(interval)
 	}
 }
 

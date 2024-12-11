@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package k8sclient
 
 import (
@@ -170,12 +189,16 @@ func (m GoAPI) GetDeploymentStatus(namespace, deploymentName string) (v1.Deploym
 	if err != nil {
 		return v1.DeploymentStatus{}, fmt.Errorf("❌ ERROR: Failed to create k8s client: %v", err)
 	}
-	deployments, err := newConfig.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{
-		LabelSelector: "app=my-app",
+	deployments, err := newConfig.AppsV1().Deployments("default").List(context.TODO(), metav1.ListOptions{
+		LabelSelector: fmt.Sprintf("sonataflow.org/workflow-app=%s", deploymentName),
 	})
 
-	if deployments.Size() == 0 {
-		return v1.DeploymentStatus{}, fmt.Errorf("❌ ERROR: No deployment named %s in namespace %s found", deploymentName, namespace)
+	if err != nil {
+		return v1.DeploymentStatus{}, fmt.Errorf("❌ ERROR: Failed to get deployments: %v", err)
+	}
+
+	if len(deployments.Items) == 0 {
+		return v1.DeploymentStatus{}, NoDeploymentFound
 	}
 
 	if deployments.Size() > 1 {
@@ -243,7 +266,7 @@ func (m GoAPI) PortForward(namespace, serviceName, portFrom, portTo string) erro
 	readyCh := make(chan struct{})
 
 	ports := []string{fmt.Sprintf("%s:%s", portFrom, portTo)}
-
+	//TODO do we goroutine this?
 	go func() {
 		forwardPorts, err := portforward.New(dialer, ports, stopCh, readyCh, os.Stdout, os.Stderr);
 		if err != nil {
@@ -259,7 +282,7 @@ func (m GoAPI) PortForward(namespace, serviceName, portFrom, portTo string) erro
 	case <-readyCh:
 		fmt.Println("Port forwarding started successfully.")
 	case err := <-errCh:
-		fmt.Printf("Error starting port forwarding: %v\n", err)
+		return fmt.Errorf("Error starting port forwarding: %v\n", err)
 	}
 	<-stopCh
 
