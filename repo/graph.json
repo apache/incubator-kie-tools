@@ -176,7 +176,6 @@
       { "id": "@kie-tools/runtime-tools-swf-gateway-api" },
       { "id": "@kie-tools/runtime-tools-swf-webapp-components" },
       { "id": "@kie-tools/scesim-marshaller" },
-      { "id": "@kie-tools/scesim-editor-envelope" },
       { "id": "@kie-tools/serverless-logic-web-tools" },
       { "id": "@kie-tools/text-editor" },
       { "id": "@kie-tools/yard-editor" },
@@ -2184,21 +2183,6 @@
       {
         "source": "@kie-tools/scesim-marshaller",
         "target": "@kie-tools/xml-parser-ts-codegen",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/scesim-editor-envelope",
-        "target": "@kie-tools-core/editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/scesim-editor-envelope",
-        "target": "@kie-tools-core/react-hooks",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/scesim-editor-envelope",
-        "target": "@kie-tools/scesim-editor",
         "weight": 1
       },
       {

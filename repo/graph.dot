@@ -168,7 +168,6 @@ digraph G {
   "@kie-tools/runtime-tools-swf-webapp-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/scesim-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/scesim-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/scesim-editor-envelope" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-logic-web-tools" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/text-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
